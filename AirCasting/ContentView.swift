@@ -28,23 +28,46 @@ extension Color {
 struct ContentView: View {
     
     var body: some View {
+
         TabView {
-            NavigationView {
-                VStack {
-                    Picker(selection: /*@START_MENU_TOKEN@*/.constant(1)/*@END_MENU_TOKEN@*/, label: /*@START_MENU_TOKEN@*/Text("Picker")/*@END_MENU_TOKEN@*/, content: {
-                        Text("Following").tag(1)
-                        Text("Active").tag(2)
-                        Text("Dormant").tag(3)
-                        Text("Fixed").tag(4)
-                    })
-                    .pickerStyle(SegmentedPickerStyle())
-                    .padding()
-                    
-                    emptyState
-                }
-            }
-            .tabItem { Text("+") }
+            dashboardBar
+            createSessionBar
+            settingsTab
         }
+    }
+    
+    var dashboardBar: some View {
+        NavigationView {
+            VStack {
+                Picker(selection: /*@START_MENU_TOKEN@*/.constant(1)/*@END_MENU_TOKEN@*/, label: /*@START_MENU_TOKEN@*/Text("Picker")/*@END_MENU_TOKEN@*/, content: {
+                    Text("Following").tag(1)
+                    Text("Active").tag(2)
+                    Text("Dormant").tag(3)
+                    Text("Fixed").tag(4)
+                })
+                .pickerStyle(SegmentedPickerStyle())
+                .padding()
+                
+                emptyState
+            }
+        }
+        .tabItem {
+            Image(systemName: "house")
+        }
+    }
+
+    var createSessionBar: some View {
+        Color.aircastingGray
+            .tabItem {
+                Image(systemName: "plus")
+            }
+    }
+    
+    var settingsTab: some View {
+        Color.aircastingGray
+            .tabItem {
+                Image(systemName: "gearshape")
+            }
     }
     
     private var emptyState: some View {
@@ -84,10 +107,9 @@ struct ContentView: View {
         }
         .padding()
         .navigationBarTitle("Dashboard")
+        .background(Color(red: 251/255, green: 253/255, blue: 255/255))
     }
-    
 }
-
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
