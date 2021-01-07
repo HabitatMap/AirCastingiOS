@@ -7,6 +7,24 @@
 
 import SwiftUI
 
+extension Font {
+    static func muli(size: CGFloat, weight: Font.Weight = .regular) -> Font {
+        return Font.custom("Muli", fixedSize: size).weight(weight)
+    }
+    static func moderate(size: CGFloat, weight: Font.Weight = .regular) -> Font {
+        return Font.custom("Moderat-Trial-Regular", fixedSize: size).weight(weight)
+    }
+}
+
+extension Color {
+    static var aircastingGray: Color {
+        return Color("AircastingGray700")
+    }
+    static var darkBlue: Color {
+        return Color("DarkBlue")
+    }
+}
+
 struct ContentView: View {
     
     var body: some View {
@@ -30,20 +48,26 @@ struct ContentView: View {
     }
     
     private var emptyState: some View {
-        VStack(spacing: 40) {
+        VStack(spacing: 45) {
             Spacer()
-            VStack(spacing: 20) {
+            VStack(spacing: 14) {
+                
                 Text("Ready to get started?")
-                    .bold()
+                    .font(Font.moderate(size: 24, weight: .bold))
+                    .foregroundColor(Color.darkBlue)
+                
                 Text("Explore & follow existing AirCasting sessions or use your own device to record a new session and monitor your health & environment.")
+                    .font(Font.muli(size: 16))
+                    .foregroundColor(Color.aircastingGray)
                     .multilineTextAlignment(.center)
-                    .lineSpacing(/*@START_MENU_TOKEN@*/10.0/*@END_MENU_TOKEN@*/)
+                    .lineSpacing(9.0)
+                    .padding(.horizontal, 45)
             }
             VStack(spacing: 20) {
                 Button(action: {}, label: {
                     Text("Record new session")
                         .bold()
-                        .foregroundColor(Color.white)
+                        .foregroundColor(.white)
                         .padding(.vertical, 12)
                         .padding(.horizontal, 40)
                         .background(Color.accentColor)
@@ -53,6 +77,7 @@ struct ContentView: View {
                 })
                 Button(action: {}, label: {
                     Text("Explore existing sessions")
+                        .foregroundColor(.accentColor)
                 })
             }
             Spacer()

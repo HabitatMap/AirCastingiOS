@@ -22,7 +22,6 @@
 		AC7EB3A625A7152000A7F2AF /* Muli-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB39025A7152000A7F2AF /* Muli-ExtraBold.ttf */; };
 		AC7EB3A725A7152000A7F2AF /* Muli-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB39125A7152000A7F2AF /* Muli-Bold.ttf */; };
 		AC7EB3A825A7152000A7F2AF /* Muli-ExtraBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB39225A7152000A7F2AF /* Muli-ExtraBoldItalic.ttf */; };
-		AC7EB3A925A7152000A7F2AF /* Moderat-Bold.woff in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB39325A7152000A7F2AF /* Moderat-Bold.woff */; };
 		AC7EB3AA25A7152000A7F2AF /* Muli-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB39425A7152000A7F2AF /* Muli-Italic.ttf */; };
 		AC7EB3AB25A7152000A7F2AF /* Muli-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB39525A7152000A7F2AF /* Muli-SemiBold.ttf */; };
 		AC7EB3AC25A7152000A7F2AF /* Muli-SemiBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB39625A7152000A7F2AF /* Muli-SemiBoldItalic.ttf */; };
@@ -52,7 +51,6 @@
 		AC7EB39025A7152000A7F2AF /* Muli-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Muli-ExtraBold.ttf"; sourceTree = "<group>"; };
 		AC7EB39125A7152000A7F2AF /* Muli-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Muli-Bold.ttf"; sourceTree = "<group>"; };
 		AC7EB39225A7152000A7F2AF /* Muli-ExtraBoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Muli-ExtraBoldItalic.ttf"; sourceTree = "<group>"; };
-		AC7EB39325A7152000A7F2AF /* Moderat-Bold.woff */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Moderat-Bold.woff"; sourceTree = "<group>"; };
 		AC7EB39425A7152000A7F2AF /* Muli-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Muli-Italic.ttf"; sourceTree = "<group>"; };
 		AC7EB39525A7152000A7F2AF /* Muli-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Muli-SemiBold.ttf"; sourceTree = "<group>"; };
 		AC7EB39625A7152000A7F2AF /* Muli-SemiBoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Muli-SemiBoldItalic.ttf"; sourceTree = "<group>"; };
@@ -134,7 +132,6 @@
 				AC7EB39025A7152000A7F2AF /* Muli-ExtraBold.ttf */,
 				AC7EB39125A7152000A7F2AF /* Muli-Bold.ttf */,
 				AC7EB39225A7152000A7F2AF /* Muli-ExtraBoldItalic.ttf */,
-				AC7EB39325A7152000A7F2AF /* Moderat-Bold.woff */,
 				AC7EB39425A7152000A7F2AF /* Muli-Italic.ttf */,
 				AC7EB39525A7152000A7F2AF /* Muli-SemiBold.ttf */,
 				AC7EB39625A7152000A7F2AF /* Muli-SemiBoldItalic.ttf */,
@@ -221,7 +218,6 @@
 				AC7EB3B025A7152000A7F2AF /* Muli-Light.ttf in Resources */,
 				AC7EB3A025A7152000A7F2AF /* Muli-ExtraLightItalic.ttf in Resources */,
 				AC7EB3A425A7152000A7F2AF /* Muli-Italic-VariableFont_wght.ttf in Resources */,
-				AC7EB3A925A7152000A7F2AF /* Moderat-Bold.woff in Resources */,
 				AC7EB3B225A7152000A7F2AF /* Muli-LightItalic.ttf in Resources */,
 				AC7EB3A825A7152000A7F2AF /* Muli-ExtraBoldItalic.ttf in Resources */,
 				AC7EB37A25A6FB3D00A7F2AF /* Assets.xcassets in Resources */,
