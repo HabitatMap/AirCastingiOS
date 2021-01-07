@@ -39,10 +39,20 @@ struct ContentView: View {
                     .multilineTextAlignment(.center)
                     .lineSpacing(/*@START_MENU_TOKEN@*/10.0/*@END_MENU_TOKEN@*/)
             }
-            VStack {
-                Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/, label: {
+            VStack(spacing: 20) {
+                Button(action: {}, label: {
                     Text("Record new session")
-                    
+                        .bold()
+                        .foregroundColor(Color.white)
+                        .padding(.vertical, 12)
+                        .padding(.horizontal, 40)
+                        .background(Color.accentColor)
+                        .cornerRadius(5)
+                        .padding(-3)
+                        .shadow(color: Color(white: 150/255, opacity: 0.5), radius: 9, x: 0, y: 1)
+                })
+                Button(action: {}, label: {
+                    Text("Explore existing sessions")
                 })
             }
             Spacer()

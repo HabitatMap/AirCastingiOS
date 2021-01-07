@@ -11,6 +11,27 @@
 		AC7EB37825A6FB3A00A7F2AF /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC7EB37725A6FB3A00A7F2AF /* ContentView.swift */; };
 		AC7EB37A25A6FB3D00A7F2AF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB37925A6FB3D00A7F2AF /* Assets.xcassets */; };
 		AC7EB37D25A6FB3D00A7F2AF /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB37C25A6FB3D00A7F2AF /* Preview Assets.xcassets */; };
+		AC7EB39E25A7152000A7F2AF /* Moderat-Trial-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB38825A7152000A7F2AF /* Moderat-Trial-Medium.otf */; };
+		AC7EB39F25A7152000A7F2AF /* Muli-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB38925A7152000A7F2AF /* Muli-ExtraLight.ttf */; };
+		AC7EB3A025A7152000A7F2AF /* Muli-ExtraLightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB38A25A7152000A7F2AF /* Muli-ExtraLightItalic.ttf */; };
+		AC7EB3A125A7152000A7F2AF /* Muli-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB38B25A7152000A7F2AF /* Muli-BoldItalic.ttf */; };
+		AC7EB3A225A7152000A7F2AF /* Moderat-Trial-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB38C25A7152000A7F2AF /* Moderat-Trial-Bold.otf */; };
+		AC7EB3A325A7152000A7F2AF /* Muli-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB38D25A7152000A7F2AF /* Muli-Black.ttf */; };
+		AC7EB3A425A7152000A7F2AF /* Muli-Italic-VariableFont_wght.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB38E25A7152000A7F2AF /* Muli-Italic-VariableFont_wght.ttf */; };
+		AC7EB3A525A7152000A7F2AF /* Muli-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB38F25A7152000A7F2AF /* Muli-MediumItalic.ttf */; };
+		AC7EB3A625A7152000A7F2AF /* Muli-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB39025A7152000A7F2AF /* Muli-ExtraBold.ttf */; };
+		AC7EB3A725A7152000A7F2AF /* Muli-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB39125A7152000A7F2AF /* Muli-Bold.ttf */; };
+		AC7EB3A825A7152000A7F2AF /* Muli-ExtraBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB39225A7152000A7F2AF /* Muli-ExtraBoldItalic.ttf */; };
+		AC7EB3A925A7152000A7F2AF /* Moderat-Bold.woff in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB39325A7152000A7F2AF /* Moderat-Bold.woff */; };
+		AC7EB3AA25A7152000A7F2AF /* Muli-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB39425A7152000A7F2AF /* Muli-Italic.ttf */; };
+		AC7EB3AB25A7152000A7F2AF /* Muli-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB39525A7152000A7F2AF /* Muli-SemiBold.ttf */; };
+		AC7EB3AC25A7152000A7F2AF /* Muli-SemiBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB39625A7152000A7F2AF /* Muli-SemiBoldItalic.ttf */; };
+		AC7EB3AD25A7152000A7F2AF /* Moderat-Trial-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB39725A7152000A7F2AF /* Moderat-Trial-Regular.otf */; };
+		AC7EB3AE25A7152000A7F2AF /* Muli-BlackItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB39825A7152000A7F2AF /* Muli-BlackItalic.ttf */; };
+		AC7EB3B025A7152000A7F2AF /* Muli-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB39A25A7152000A7F2AF /* Muli-Light.ttf */; };
+		AC7EB3B125A7152000A7F2AF /* Muli-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB39B25A7152000A7F2AF /* Muli-Regular.ttf */; };
+		AC7EB3B225A7152000A7F2AF /* Muli-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB39C25A7152000A7F2AF /* Muli-LightItalic.ttf */; };
+		AC7EB3B325A7152000A7F2AF /* Moderat-Trial-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB39D25A7152000A7F2AF /* Moderat-Trial-Black.otf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -20,6 +41,27 @@
 		AC7EB37925A6FB3D00A7F2AF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AC7EB37C25A6FB3D00A7F2AF /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		AC7EB37E25A6FB3D00A7F2AF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AC7EB38825A7152000A7F2AF /* Moderat-Trial-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Moderat-Trial-Medium.otf"; sourceTree = "<group>"; };
+		AC7EB38925A7152000A7F2AF /* Muli-ExtraLight.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Muli-ExtraLight.ttf"; sourceTree = "<group>"; };
+		AC7EB38A25A7152000A7F2AF /* Muli-ExtraLightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Muli-ExtraLightItalic.ttf"; sourceTree = "<group>"; };
+		AC7EB38B25A7152000A7F2AF /* Muli-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Muli-BoldItalic.ttf"; sourceTree = "<group>"; };
+		AC7EB38C25A7152000A7F2AF /* Moderat-Trial-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Moderat-Trial-Bold.otf"; sourceTree = "<group>"; };
+		AC7EB38D25A7152000A7F2AF /* Muli-Black.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Muli-Black.ttf"; sourceTree = "<group>"; };
+		AC7EB38E25A7152000A7F2AF /* Muli-Italic-VariableFont_wght.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Muli-Italic-VariableFont_wght.ttf"; sourceTree = "<group>"; };
+		AC7EB38F25A7152000A7F2AF /* Muli-MediumItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Muli-MediumItalic.ttf"; sourceTree = "<group>"; };
+		AC7EB39025A7152000A7F2AF /* Muli-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Muli-ExtraBold.ttf"; sourceTree = "<group>"; };
+		AC7EB39125A7152000A7F2AF /* Muli-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Muli-Bold.ttf"; sourceTree = "<group>"; };
+		AC7EB39225A7152000A7F2AF /* Muli-ExtraBoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Muli-ExtraBoldItalic.ttf"; sourceTree = "<group>"; };
+		AC7EB39325A7152000A7F2AF /* Moderat-Bold.woff */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Moderat-Bold.woff"; sourceTree = "<group>"; };
+		AC7EB39425A7152000A7F2AF /* Muli-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Muli-Italic.ttf"; sourceTree = "<group>"; };
+		AC7EB39525A7152000A7F2AF /* Muli-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Muli-SemiBold.ttf"; sourceTree = "<group>"; };
+		AC7EB39625A7152000A7F2AF /* Muli-SemiBoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Muli-SemiBoldItalic.ttf"; sourceTree = "<group>"; };
+		AC7EB39725A7152000A7F2AF /* Moderat-Trial-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Moderat-Trial-Regular.otf"; sourceTree = "<group>"; };
+		AC7EB39825A7152000A7F2AF /* Muli-BlackItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Muli-BlackItalic.ttf"; sourceTree = "<group>"; };
+		AC7EB39A25A7152000A7F2AF /* Muli-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Muli-Light.ttf"; sourceTree = "<group>"; };
+		AC7EB39B25A7152000A7F2AF /* Muli-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Muli-Regular.ttf"; sourceTree = "<group>"; };
+		AC7EB39C25A7152000A7F2AF /* Muli-LightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Muli-LightItalic.ttf"; sourceTree = "<group>"; };
+		AC7EB39D25A7152000A7F2AF /* Moderat-Trial-Black.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Moderat-Trial-Black.otf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,6 +97,7 @@
 				AC7EB37525A6FB3A00A7F2AF /* AirCastingApp.swift */,
 				AC7EB37725A6FB3A00A7F2AF /* ContentView.swift */,
 				AC7EB37925A6FB3D00A7F2AF /* Assets.xcassets */,
+				AC7EB38625A7152000A7F2AF /* Resources */,
 				AC7EB37E25A6FB3D00A7F2AF /* Info.plist */,
 				AC7EB37B25A6FB3D00A7F2AF /* Preview Content */,
 			);
@@ -67,6 +110,42 @@
 				AC7EB37C25A6FB3D00A7F2AF /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		AC7EB38625A7152000A7F2AF /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				AC7EB38725A7152000A7F2AF /* Fonts */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		AC7EB38725A7152000A7F2AF /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				AC7EB38825A7152000A7F2AF /* Moderat-Trial-Medium.otf */,
+				AC7EB38925A7152000A7F2AF /* Muli-ExtraLight.ttf */,
+				AC7EB38A25A7152000A7F2AF /* Muli-ExtraLightItalic.ttf */,
+				AC7EB38B25A7152000A7F2AF /* Muli-BoldItalic.ttf */,
+				AC7EB38C25A7152000A7F2AF /* Moderat-Trial-Bold.otf */,
+				AC7EB38D25A7152000A7F2AF /* Muli-Black.ttf */,
+				AC7EB38E25A7152000A7F2AF /* Muli-Italic-VariableFont_wght.ttf */,
+				AC7EB38F25A7152000A7F2AF /* Muli-MediumItalic.ttf */,
+				AC7EB39025A7152000A7F2AF /* Muli-ExtraBold.ttf */,
+				AC7EB39125A7152000A7F2AF /* Muli-Bold.ttf */,
+				AC7EB39225A7152000A7F2AF /* Muli-ExtraBoldItalic.ttf */,
+				AC7EB39325A7152000A7F2AF /* Moderat-Bold.woff */,
+				AC7EB39425A7152000A7F2AF /* Muli-Italic.ttf */,
+				AC7EB39525A7152000A7F2AF /* Muli-SemiBold.ttf */,
+				AC7EB39625A7152000A7F2AF /* Muli-SemiBoldItalic.ttf */,
+				AC7EB39725A7152000A7F2AF /* Moderat-Trial-Regular.otf */,
+				AC7EB39825A7152000A7F2AF /* Muli-BlackItalic.ttf */,
+				AC7EB39A25A7152000A7F2AF /* Muli-Light.ttf */,
+				AC7EB39B25A7152000A7F2AF /* Muli-Regular.ttf */,
+				AC7EB39C25A7152000A7F2AF /* Muli-LightItalic.ttf */,
+				AC7EB39D25A7152000A7F2AF /* Moderat-Trial-Black.otf */,
+			);
+			path = Fonts;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -126,8 +205,29 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AC7EB3AB25A7152000A7F2AF /* Muli-SemiBold.ttf in Resources */,
+				AC7EB3A225A7152000A7F2AF /* Moderat-Trial-Bold.otf in Resources */,
+				AC7EB3A125A7152000A7F2AF /* Muli-BoldItalic.ttf in Resources */,
+				AC7EB3AE25A7152000A7F2AF /* Muli-BlackItalic.ttf in Resources */,
+				AC7EB39E25A7152000A7F2AF /* Moderat-Trial-Medium.otf in Resources */,
+				AC7EB3A325A7152000A7F2AF /* Muli-Black.ttf in Resources */,
+				AC7EB3A625A7152000A7F2AF /* Muli-ExtraBold.ttf in Resources */,
+				AC7EB3B125A7152000A7F2AF /* Muli-Regular.ttf in Resources */,
 				AC7EB37D25A6FB3D00A7F2AF /* Preview Assets.xcassets in Resources */,
+				AC7EB3A725A7152000A7F2AF /* Muli-Bold.ttf in Resources */,
+				AC7EB3AD25A7152000A7F2AF /* Moderat-Trial-Regular.otf in Resources */,
+				AC7EB3AC25A7152000A7F2AF /* Muli-SemiBoldItalic.ttf in Resources */,
+				AC7EB3AA25A7152000A7F2AF /* Muli-Italic.ttf in Resources */,
+				AC7EB3B025A7152000A7F2AF /* Muli-Light.ttf in Resources */,
+				AC7EB3A025A7152000A7F2AF /* Muli-ExtraLightItalic.ttf in Resources */,
+				AC7EB3A425A7152000A7F2AF /* Muli-Italic-VariableFont_wght.ttf in Resources */,
+				AC7EB3A925A7152000A7F2AF /* Moderat-Bold.woff in Resources */,
+				AC7EB3B225A7152000A7F2AF /* Muli-LightItalic.ttf in Resources */,
+				AC7EB3A825A7152000A7F2AF /* Muli-ExtraBoldItalic.ttf in Resources */,
 				AC7EB37A25A6FB3D00A7F2AF /* Assets.xcassets in Resources */,
+				AC7EB3B325A7152000A7F2AF /* Moderat-Trial-Black.otf in Resources */,
+				AC7EB3A525A7152000A7F2AF /* Muli-MediumItalic.ttf in Resources */,
+				AC7EB39F25A7152000A7F2AF /* Muli-ExtraLight.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

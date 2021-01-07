@@ -46,5 +46,28 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>UIAppFonts</key>
+	<array>
+        <string>Moderat-Trial-Black</string>
+        <string>Moderat-Trial-Bold</string>
+        <string>Moderat-Trial-Medium</string>
+        <string>Moderat-Trial-Regular</string>
+        <string>Muli-Black</string>
+        <string>Muli-BlackItalic</string>
+        <string>Muli-Bold</string>
+        <string>Muli-BoldItalic</string>
+        <string>Muli-ExtraBold</string>
+        <string>Muli-ExtraBoldItalic</string>
+        <string>Muli-ExtraLight</string>
+        <string>Muli-ExtraLightItalic</string>
+        <string>Muli-Italic-VariableFont_wght</string>
+        <string>Muli-Italic</string>
+        <string>Muli-Light</string>
+        <string>Muli-LightItalic</string>
+        <string>Muli-MediumItalic</string>
+        <string>Muli-Regular</string>
+        <string>Muli-SemiBold</string>
+        <string>Muli-SemiBoldItalic</string>
+    </array>
 </dict>
 </plist>
