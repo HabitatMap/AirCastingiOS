@@ -7,47 +7,20 @@
 
 import SwiftUI
 
-extension Font {
-    static func muli(size: CGFloat, weight: Font.Weight = .regular) -> Font {
-        return Font.custom("Muli", fixedSize: size).weight(weight)
-    }
-    static func moderate(size: CGFloat, weight: Font.Weight = .regular) -> Font {
-        return Font.custom("Moderat-Trial-Regular", fixedSize: size).weight(weight)
-    }
-}
-
-extension Color {
-    static var aircastingGray: Color {
-        return Color("AircastingGray700")
-    }
-    static var darkBlue: Color {
-        return Color("DarkBlue")
-    }
-}
-
-struct ContentView: View {
+struct Dashboard: View {
     
     var body: some View {
-
         TabView {
-            dashboardBar
-            createSessionBar
+            dashboardTab
+            createSessionTab
             settingsTab
         }
     }
     
-    var dashboardBar: some View {
+    private var dashboardTab: some View {
         NavigationView {
             VStack {
-                Picker(selection: /*@START_MENU_TOKEN@*/.constant(1)/*@END_MENU_TOKEN@*/, label: /*@START_MENU_TOKEN@*/Text("Picker")/*@END_MENU_TOKEN@*/, content: {
-                    Text("Following").tag(1)
-                    Text("Active").tag(2)
-                    Text("Dormant").tag(3)
-                    Text("Fixed").tag(4)
-                })
-                .pickerStyle(SegmentedPickerStyle())
-                .padding()
-                
+                sectionPicker
                 emptyState
             }
         }
@@ -55,19 +28,28 @@ struct ContentView: View {
             Image(systemName: "house")
         }
     }
-
-    var createSessionBar: some View {
+    private var createSessionTab: some View {
         Color.aircastingGray
             .tabItem {
                 Image(systemName: "plus")
             }
     }
-    
-    var settingsTab: some View {
+    private var settingsTab: some View {
         Color.aircastingGray
             .tabItem {
                 Image(systemName: "gearshape")
             }
+    }
+    
+    var sectionPicker: some View {
+        Picker(selection: .constant(1), label: Text("Picker"), content: {
+            Text("Following").tag(1)
+            Text("Active").tag(2)
+            Text("Dormant").tag(3)
+            Text("Fixed").tag(4)
+        })
+        .pickerStyle(SegmentedPickerStyle())
+        .padding()
     }
     
     private var emptyState: some View {
@@ -90,14 +72,9 @@ struct ContentView: View {
                 Button(action: {}, label: {
                     Text("Record new session")
                         .bold()
-                        .foregroundColor(.white)
-                        .padding(.vertical, 12)
-                        .padding(.horizontal, 40)
-                        .background(Color.accentColor)
-                        .cornerRadius(5)
-                        .padding(-3)
-                        .shadow(color: Color(white: 150/255, opacity: 0.5), radius: 9, x: 0, y: 1)
                 })
+                .buttonStyle(AirButtonStyle())
+                
                 Button(action: {}, label: {
                     Text("Explore existing sessions")
                         .foregroundColor(.accentColor)
@@ -113,6 +90,6 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        Dashboard()
     }
 }
