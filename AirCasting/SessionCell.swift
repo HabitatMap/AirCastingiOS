@@ -15,15 +15,15 @@ struct SessionCell: View {
             nameLabelAndExpandButton
             measurementsTitle
             measurements
-                .padding(.horizontal, 15)
         }
         .font(Font.moderate(size: 13, weight: .regular))
         .foregroundColor(.aircastingGray)
         .padding()
-        .frame(height: 190)
-        .shadow(color: Color(red: 205/255, green: 209/255, blue: 214/255, opacity: 0.36), radius: 9, x: 0, y: 1)
+        .background(
+            Color.white
+                .shadow(color: Color(red: 205/255, green: 209/255, blue: 214/255, opacity: 0.36), radius: 9, x: 0, y: 1)
+        )
     }
-    
     
     var dateAndTime: some View {
         Text("03/20/2020 10:35-15:56")
@@ -48,35 +48,27 @@ struct SessionCell: View {
     }
     
     var measurements: some View {
-        HStack() {
-            VStack {
-                Text("PM1")
-                    .font(Font.moderate(size: 13, weight: .regular))
-                Text("23")
-                    .font(Font.moderate(size: 14, weight: .regular))
+        HStack {
+            Group {
+                singleMeasurement(name: "PM1", value: 23)
+                singleMeasurement(name: "PM2", value: 1)
+                singleMeasurement(name: "PM10", value: 23)
+                singleMeasurement(name: "F", value: 10)
+                singleMeasurement(name: "RH", value: 23)
             }
-            VStack {
-                Text("PM2.5")
-                    .font(Font.moderate(size: 13, weight: .regular))
-                    Text("23")
-                        .font(Font.moderate(size: 14, weight: .regular))
-            }
-            VStack {
-                Text("PM10")
-                    .font(Font.moderate(size: 13, weight: .regular))
-                Text("23")
-                    .font(Font.moderate(size: 14, weight: .regular))
-            }
-            VStack {
-                Text("F")
-                    .font(Font.moderate(size: 13, weight: .regular))
-                Text("23")
-                    .font(Font.moderate(size: 14, weight: .regular))
-            }
-            VStack {
-                Text("RH")
-                    .font(Font.moderate(size: 13, weight: .regular))
-                Text("23")
+            .frame(maxWidth: .infinity)
+        }
+    }
+    
+    func singleMeasurement(name: String, value: Int) -> some View {
+        VStack(spacing: 3) {
+            Text(name)
+                .font(Font.system(size: 13))
+            HStack(spacing: 3){
+                Color.green
+                    .clipShape(Circle())
+                    .frame(width: 5, height: 5)
+                Text("\(value)")
                     .font(Font.moderate(size: 14, weight: .regular))
             }
         }
@@ -86,5 +78,7 @@ struct SessionCell: View {
 struct SessionCell_Previews: PreviewProvider {
     static var previews: some View {
         SessionCell()
+            .padding()
+            .previewLayout(.sizeThatFits)
     }
 }
