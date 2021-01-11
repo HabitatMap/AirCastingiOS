@@ -15,4 +15,17 @@ extension Color {
     static var darkBlue: Color {
         return Color("DarkBlue")
     }
+    static var chartGreen: Color {
+        return Color("ChartGreen")
+    }
+    static var chartYellow: Color {
+        return Color("ChartYellow")
+    }
+    static var chartOrange: Color {
+        return Color("ChartOrange")
+    }
+    static var chartRed: Color {
+        return Color("ChartRed")
+    }
 }
+

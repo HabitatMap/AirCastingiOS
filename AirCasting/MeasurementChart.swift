@@ -31,12 +31,22 @@ class UI_MeasurementChart: UIView {
                               ChartDataEntry(x: 2, y: 2),
                               ChartDataEntry(x: 3, y: 4),
                               ChartDataEntry(x: 4, y: 2)]
+        
         let dataSet = LineChartDataSet(entries: entries)
         dataSet.mode = .cubicBezier
-        lineChartView.data = LineChartData(dataSet: dataSet)
         
+        let data = LineChartData(dataSet: dataSet)
+        data.setValueFont(UIFont(name: "Muli Regular", size: 12)!)
+        data.setValueTextColor(UIColor(.aircastingGray))
+        lineChartView.data = data
+        
+        //format data labels
+        let formatter = NumberFormatter()
+        formatter.maximumFractionDigits = 0
+        data.setValueFormatter(DefaultValueFormatter(formatter: formatter))
         
         //remove lines and legend
+        lineChartView.drawGridBackgroundEnabled = false
         lineChartView.xAxis.drawLabelsEnabled = false
         lineChartView.xAxis.drawGridLinesEnabled = false
         lineChartView.leftAxis.drawLabelsEnabled = false
@@ -44,6 +54,12 @@ class UI_MeasurementChart: UIView {
         lineChartView.rightAxis.drawLabelsEnabled = false
         lineChartView.rightAxis.drawAxisLineEnabled = false
         lineChartView.legend.enabled = false
+        
+        //dots colors
+        dataSet.setColor(UIColor(.aircastingGray))
+        dataSet.circleHoleColor = UIColor(.chartGreen)
+        dataSet.setCircleColors(UIColor(.chartGreen).withAlphaComponent(0.5))
+
     }
     
     required init?(coder: NSCoder) {
@@ -64,6 +80,6 @@ struct MeasurementChart: UIViewRepresentable {
 struct MeasurementChart_Previews: PreviewProvider {
     static var previews: some View {
         MeasurementChart()
-            .frame(width: 300, height: 300, alignment: .center)
+            .frame(width: 300, height: 250, alignment: .center)
     }
 }
