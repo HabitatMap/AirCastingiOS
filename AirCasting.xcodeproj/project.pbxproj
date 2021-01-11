@@ -3,10 +3,11 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AC6D567C25AC540D00D221BA /* Charts in Frameworks */ = {isa = PBXBuildFile; productRef = AC6D567B25AC540D00D221BA /* Charts */; };
 		AC7EB37625A6FB3A00A7F2AF /* AirCastingApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC7EB37525A6FB3A00A7F2AF /* AirCastingApp.swift */; };
 		AC7EB37825A6FB3A00A7F2AF /* Dashboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC7EB37725A6FB3A00A7F2AF /* Dashboard.swift */; };
 		AC7EB37A25A6FB3D00A7F2AF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB37925A6FB3D00A7F2AF /* Assets.xcassets */; };
@@ -75,6 +76,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AC6D567C25AC540D00D221BA /* Charts in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -181,6 +183,9 @@
 			dependencies = (
 			);
 			name = AirCasting;
+			packageProductDependencies = (
+				AC6D567B25AC540D00D221BA /* Charts */,
+			);
 			productName = AirCasting;
 			productReference = AC7EB37225A6FB3A00A7F2AF /* AirCasting.app */;
 			productType = "com.apple.product-type.application";
@@ -208,6 +213,9 @@
 				Base,
 			);
 			mainGroup = AC7EB36925A6FB3A00A7F2AF;
+			packageReferences = (
+				AC6D567A25AC540D00D221BA /* XCRemoteSwiftPackageReference "Charts" */,
+			);
 			productRefGroup = AC7EB37325A6FB3A00A7F2AF /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -448,6 +456,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		AC6D567A25AC540D00D221BA /* XCRemoteSwiftPackageReference "Charts" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/danielgindi/Charts";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		AC6D567B25AC540D00D221BA /* Charts */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AC6D567A25AC540D00D221BA /* XCRemoteSwiftPackageReference "Charts" */;
+			productName = Charts;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = AC7EB36A25A6FB3A00A7F2AF /* Project object */;
 }
