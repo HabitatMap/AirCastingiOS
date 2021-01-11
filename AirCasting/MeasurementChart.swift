@@ -24,8 +24,9 @@ class UI_MeasurementChart: UIView {
             lineChartView.bottomAnchor.constraint(equalTo: self.bottomAnchor)
         ])
         
-        
+
         // Data
+        //TO DO: replace mocked data with data from AirBeam
         let entries = [ChartDataEntry(x: 1, y: 3),
                               ChartDataEntry(x: 2, y: 2),
                               ChartDataEntry(x: 3, y: 4),
@@ -33,24 +34,22 @@ class UI_MeasurementChart: UIView {
         let dataSet = LineChartDataSet(entries: entries)
         dataSet.mode = .cubicBezier
         lineChartView.data = LineChartData(dataSet: dataSet)
+        
+        
+        //remove lines and legend
+        lineChartView.xAxis.drawLabelsEnabled = false
+        lineChartView.xAxis.drawGridLinesEnabled = false
+        lineChartView.leftAxis.drawLabelsEnabled = false
+        lineChartView.leftAxis.drawAxisLineEnabled = false
+        lineChartView.rightAxis.drawLabelsEnabled = false
+        lineChartView.rightAxis.drawAxisLineEnabled = false
+        lineChartView.legend.enabled = false
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    
 }
-
-
-
-
-
-
-
-
-
-
 
 struct MeasurementChart: UIViewRepresentable {
     func makeUIView(context: Context) -> some UIView {
@@ -61,11 +60,6 @@ struct MeasurementChart: UIViewRepresentable {
         
     }
 }
-//struct MeasurementChart: View {
-//    var body: some View {
-//        Text("")
-//    }
-//}
 
 struct MeasurementChart_Previews: PreviewProvider {
     static var previews: some View {
