@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		AC6D567C25AC540D00D221BA /* Charts in Frameworks */ = {isa = PBXBuildFile; productRef = AC6D567B25AC540D00D221BA /* Charts */; };
+		AC6D567F25AC54A400D221BA /* MeasurementChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6D567E25AC54A400D221BA /* MeasurementChart.swift */; };
 		AC7EB37625A6FB3A00A7F2AF /* AirCastingApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC7EB37525A6FB3A00A7F2AF /* AirCastingApp.swift */; };
 		AC7EB37825A6FB3A00A7F2AF /* Dashboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC7EB37725A6FB3A00A7F2AF /* Dashboard.swift */; };
 		AC7EB37A25A6FB3D00A7F2AF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB37925A6FB3D00A7F2AF /* Assets.xcassets */; };
@@ -39,6 +40,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		AC6D567E25AC54A400D221BA /* MeasurementChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementChart.swift; sourceTree = "<group>"; };
 		AC7EB37225A6FB3A00A7F2AF /* AirCasting.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AirCasting.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AC7EB37525A6FB3A00A7F2AF /* AirCastingApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirCastingApp.swift; sourceTree = "<group>"; };
 		AC7EB37725A6FB3A00A7F2AF /* Dashboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dashboard.swift; sourceTree = "<group>"; };
@@ -106,6 +108,7 @@
 				AC7EB37725A6FB3A00A7F2AF /* Dashboard.swift */,
 				ACF77DFA25A8888700BB85B7 /* SessionCell.swift */,
 				ACF77DF725A866E700BB85B7 /* AirButtonStyle.swift */,
+				AC6D567E25AC54A400D221BA /* MeasurementChart.swift */,
 				AC7EB37925A6FB3D00A7F2AF /* Assets.xcassets */,
 				ACF77DEE25A7502600BB85B7 /* Extensions */,
 				AC7EB38625A7152000A7F2AF /* Resources */,
@@ -266,6 +269,7 @@
 				AC7EB37825A6FB3A00A7F2AF /* Dashboard.swift in Sources */,
 				ACF77DFB25A8888700BB85B7 /* SessionCell.swift in Sources */,
 				ACF77DF425A750E000BB85B7 /* Color.swift in Sources */,
+				AC6D567F25AC54A400D221BA /* MeasurementChart.swift in Sources */,
 				AC7EB37625A6FB3A00A7F2AF /* AirCastingApp.swift in Sources */,
 				ACF77DF025A750C200BB85B7 /* Font.swift in Sources */,
 			);
@@ -463,7 +467,7 @@
 			repositoryURL = "https://github.com/danielgindi/Charts";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 4.0.0;
+				minimumVersion = 3.0.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
