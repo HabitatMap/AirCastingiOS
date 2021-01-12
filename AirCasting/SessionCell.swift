@@ -9,12 +9,17 @@ import SwiftUI
 
 struct SessionCell: View {
     
+    @State private var isCollapsed = false
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 13) {
             dateAndTime
             nameLabelAndExpandButton
             measurementsTitle
             measurements
+            if !isCollapsed {
+                pollutionChart
+            }
         }
         .font(Font.moderate(size: 13, weight: .regular))
         .foregroundColor(.aircastingGray)
@@ -35,7 +40,14 @@ struct SessionCell: View {
                 Text("Neighborhood check")
                     .font(Font.moderate(size: 18, weight: .bold))
                 Spacer()
-                Button("v") {}
+                Button(action: {
+                    withAnimation {
+                        isCollapsed = !isCollapsed
+                    }
+                }) {
+                    Image("expandButtonIcon")
+                        .renderingMode(.original)
+                }
             }
             Text("Fixed, AirBeam3")
                 .font(Font.moderate(size: 13, weight: .regular))
@@ -72,6 +84,11 @@ struct SessionCell: View {
                     .font(Font.moderate(size: 14, weight: .regular))
             }
         }
+    }
+    
+    var pollutionChart: some View {
+        PollutionChart()
+            .frame(height: 200)
     }
 }
 
