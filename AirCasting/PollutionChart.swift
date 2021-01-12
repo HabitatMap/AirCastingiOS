@@ -26,9 +26,9 @@ class UI_PollutionChart: UIView {
         // Data
         //TO DO: replace mocked data with data from AirBeam
         let entries = [ChartDataEntry(x: 1, y: 3),
-                              ChartDataEntry(x: 2, y: 2),
-                              ChartDataEntry(x: 3, y: 1),
-                              ChartDataEntry(x: 4, y: 4)]
+                       ChartDataEntry(x: 2, y: 2),
+                       ChartDataEntry(x: 3, y: 1),
+                       ChartDataEntry(x: 4, y: 4)]
         
         let dataSet = LineChartDataSet(entries: entries)
         let data = LineChartData(dataSet: dataSet)
@@ -49,7 +49,7 @@ class UI_PollutionChart: UIView {
         lineChartView.leftAxis.drawLabelsEnabled = false
         lineChartView.leftAxis.drawAxisLineEnabled = false
         lineChartView.leftAxis.gridColor = UIColor(.aircastingGray).withAlphaComponent(0.4)
-
+        
         lineChartView.rightAxis.enabled = false
         lineChartView.rightAxis.drawLabelsEnabled = false
         lineChartView.rightAxis.drawAxisLineEnabled = false
@@ -77,9 +77,7 @@ struct PollutionChart: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: UI_PollutionChart, context: Context) {
-        
     }
-    
 }
 
 struct MeasurementChart_Previews: PreviewProvider {

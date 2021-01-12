@@ -41,9 +41,9 @@ struct SessionCell: View {
                     .font(Font.moderate(size: 18, weight: .bold))
                 Spacer()
                 Button(action: {
-                        withAnimation {
-                            isCollapsed = !isCollapsed
-                        }
+                    withAnimation {
+                        isCollapsed = !isCollapsed
+                    }
                 }) {
                     Image("expandButtonIcon")
                         .renderingMode(.original)
