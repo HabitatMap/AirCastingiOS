@@ -9,7 +9,6 @@ import SwiftUI
 import Charts
 
 class UI_PollutionChart: UIView {
-    
     init() {
         super.init(frame: .zero)
         
@@ -24,7 +23,6 @@ class UI_PollutionChart: UIView {
             lineChartView.bottomAnchor.constraint(equalTo: self.bottomAnchor)
         ])
         
-
         // Data
         //TO DO: replace mocked data with data from AirBeam
         let entries = [ChartDataEntry(x: 1, y: 3),

@@ -40,10 +40,13 @@ struct SessionCell: View {
                 Text("Neighborhood check")
                     .font(Font.moderate(size: 18, weight: .bold))
                 Spacer()
-                Button("v") {
-                    withAnimation {
-                        isCollapsed = !isCollapsed
-                    }
+                Button(action: {
+                        withAnimation {
+                            isCollapsed = !isCollapsed
+                        }
+                }) {
+                    Image("expandButtonIcon")
+                        .renderingMode(.original)
                 }
             }
             Text("Fixed, AirBeam3")
