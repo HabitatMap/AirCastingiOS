@@ -18,7 +18,10 @@ struct SessionCell: View {
             measurementsTitle
             measurements
             if !isCollapsed {
-                pollutionChart
+                VStack(alignment: .trailing, spacing: 40) {
+                    pollutionChart
+                    buttons
+                }
             }
         }
         .font(Font.moderate(size: 13, weight: .regular))
@@ -89,6 +92,18 @@ struct SessionCell: View {
     var pollutionChart: some View {
         PollutionChart()
             .frame(height: 200)
+    }
+    var graphButton: some View {
+        Button("graph") {}
+    }
+    var mapButton: some View {
+        Button("map") {}
+    }
+    var buttons: some View {
+        HStack(spacing: 20){
+            mapButton
+            graphButton
+        }
     }
 }
 
