@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		AC6D567C25AC540D00D221BA /* Charts in Frameworks */ = {isa = PBXBuildFile; productRef = AC6D567B25AC540D00D221BA /* Charts */; };
 		AC6D567F25AC54A400D221BA /* PollutionChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6D567E25AC54A400D221BA /* PollutionChart.swift */; };
+		AC6D569A25ADE57800D221BA /* GrayButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6D569925ADE57800D221BA /* GrayButtonStyle.swift */; };
+		AC6D569F25AEEAE700D221BA /* SessionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6D569E25AEEAE700D221BA /* SessionHeader.swift */; };
 		AC7EB37625A6FB3A00A7F2AF /* AirCastingApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC7EB37525A6FB3A00A7F2AF /* AirCastingApp.swift */; };
 		AC7EB37825A6FB3A00A7F2AF /* Dashboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC7EB37725A6FB3A00A7F2AF /* Dashboard.swift */; };
 		AC7EB37A25A6FB3D00A7F2AF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB37925A6FB3D00A7F2AF /* Assets.xcassets */; };
@@ -35,16 +37,18 @@
 		AC7EB3B325A7152000A7F2AF /* Moderat-Trial-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB39D25A7152000A7F2AF /* Moderat-Trial-Black.otf */; };
 		ACF77DF025A750C200BB85B7 /* Font.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACF77DEF25A750C200BB85B7 /* Font.swift */; };
 		ACF77DF425A750E000BB85B7 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACF77DF325A750E000BB85B7 /* Color.swift */; };
-		ACF77DF825A866E700BB85B7 /* AirButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACF77DF725A866E700BB85B7 /* AirButtonStyle.swift */; };
+		ACF77DF825A866E700BB85B7 /* BlueButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACF77DF725A866E700BB85B7 /* BlueButtonStyle.swift */; };
 		ACF77DFB25A8888700BB85B7 /* SessionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACF77DFA25A8888700BB85B7 /* SessionCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		AC6D567E25AC54A400D221BA /* PollutionChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollutionChart.swift; sourceTree = "<group>"; };
+		AC6D569925ADE57800D221BA /* GrayButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrayButtonStyle.swift; sourceTree = "<group>"; };
+		AC6D569E25AEEAE700D221BA /* SessionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionHeader.swift; sourceTree = "<group>"; };
 		AC7EB37225A6FB3A00A7F2AF /* AirCasting.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AirCasting.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AC7EB37525A6FB3A00A7F2AF /* AirCastingApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirCastingApp.swift; sourceTree = "<group>"; };
 		AC7EB37725A6FB3A00A7F2AF /* Dashboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dashboard.swift; sourceTree = "<group>"; };
-		AC7EB37925A6FB3D00A7F2AF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		AC7EB37925A6FB3D00A7F2AF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = /Users/lunar/Desktop/AirCastingiOS/AirCasting/Assets.xcassets; sourceTree = "<absolute>"; };
 		AC7EB37C25A6FB3D00A7F2AF /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		AC7EB37E25A6FB3D00A7F2AF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AC7EB38825A7152000A7F2AF /* Moderat-Trial-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Moderat-Trial-Medium.otf"; sourceTree = "<group>"; };
@@ -69,7 +73,7 @@
 		AC7EB39D25A7152000A7F2AF /* Moderat-Trial-Black.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Moderat-Trial-Black.otf"; sourceTree = "<group>"; };
 		ACF77DEF25A750C200BB85B7 /* Font.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Font.swift; sourceTree = "<group>"; };
 		ACF77DF325A750E000BB85B7 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
-		ACF77DF725A866E700BB85B7 /* AirButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirButtonStyle.swift; sourceTree = "<group>"; };
+		ACF77DF725A866E700BB85B7 /* BlueButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlueButtonStyle.swift; sourceTree = "<group>"; };
 		ACF77DFA25A8888700BB85B7 /* SessionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -85,6 +89,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		AC6D569825ADE55B00D221BA /* ButtonStyles */ = {
+			isa = PBXGroup;
+			children = (
+				ACF77DF725A866E700BB85B7 /* BlueButtonStyle.swift */,
+				AC6D569925ADE57800D221BA /* GrayButtonStyle.swift */,
+			);
+			path = ButtonStyles;
+			sourceTree = "<group>";
+		};
 		AC7EB36925A6FB3A00A7F2AF = {
 			isa = PBXGroup;
 			children = (
@@ -107,8 +120,9 @@
 				AC7EB37525A6FB3A00A7F2AF /* AirCastingApp.swift */,
 				AC7EB37725A6FB3A00A7F2AF /* Dashboard.swift */,
 				ACF77DFA25A8888700BB85B7 /* SessionCell.swift */,
-				ACF77DF725A866E700BB85B7 /* AirButtonStyle.swift */,
+				AC6D569E25AEEAE700D221BA /* SessionHeader.swift */,
 				AC6D567E25AC54A400D221BA /* PollutionChart.swift */,
+				AC6D569825ADE55B00D221BA /* ButtonStyles */,
 				AC7EB37925A6FB3D00A7F2AF /* Assets.xcassets */,
 				ACF77DEE25A7502600BB85B7 /* Extensions */,
 				AC7EB38625A7152000A7F2AF /* Resources */,
@@ -265,9 +279,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ACF77DF825A866E700BB85B7 /* AirButtonStyle.swift in Sources */,
+				AC6D569A25ADE57800D221BA /* GrayButtonStyle.swift in Sources */,
+				ACF77DF825A866E700BB85B7 /* BlueButtonStyle.swift in Sources */,
 				AC7EB37825A6FB3A00A7F2AF /* Dashboard.swift in Sources */,
 				ACF77DFB25A8888700BB85B7 /* SessionCell.swift in Sources */,
+				AC6D569F25AEEAE700D221BA /* SessionHeader.swift in Sources */,
 				ACF77DF425A750E000BB85B7 /* Color.swift in Sources */,
 				AC6D567F25AC54A400D221BA /* PollutionChart.swift in Sources */,
 				AC7EB37625A6FB3A00A7F2AF /* AirCastingApp.swift in Sources */,

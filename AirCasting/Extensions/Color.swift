@@ -27,5 +27,8 @@ extension Color {
     static var chartRed: Color {
         return Color("ChartRed")
     }
+    static var buttonGray: Color {
+        return Color("ButtonGray")
+    }
 }
 

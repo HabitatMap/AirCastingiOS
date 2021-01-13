@@ -73,7 +73,7 @@ struct Dashboard: View {
                     Text("Record new session")
                         .bold()
                 })
-                .buttonStyle(AirButtonStyle())
+                .buttonStyle(BlueButtonStyle())
                 
                 Button(action: {}, label: {
                     Text("Explore existing sessions")
