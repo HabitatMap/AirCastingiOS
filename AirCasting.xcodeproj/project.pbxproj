@@ -11,6 +11,7 @@
 		AC6D567F25AC54A400D221BA /* PollutionChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6D567E25AC54A400D221BA /* PollutionChart.swift */; };
 		AC6D569A25ADE57800D221BA /* GrayButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6D569925ADE57800D221BA /* GrayButtonStyle.swift */; };
 		AC6D569F25AEEAE700D221BA /* SessionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6D569E25AEEAE700D221BA /* SessionHeader.swift */; };
+		AC6D56A225AEF55C00D221BA /* GraphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6D56A125AEF55C00D221BA /* GraphView.swift */; };
 		AC7EB37625A6FB3A00A7F2AF /* AirCastingApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC7EB37525A6FB3A00A7F2AF /* AirCastingApp.swift */; };
 		AC7EB37825A6FB3A00A7F2AF /* Dashboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC7EB37725A6FB3A00A7F2AF /* Dashboard.swift */; };
 		AC7EB37A25A6FB3D00A7F2AF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB37925A6FB3D00A7F2AF /* Assets.xcassets */; };
@@ -45,6 +46,7 @@
 		AC6D567E25AC54A400D221BA /* PollutionChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollutionChart.swift; sourceTree = "<group>"; };
 		AC6D569925ADE57800D221BA /* GrayButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrayButtonStyle.swift; sourceTree = "<group>"; };
 		AC6D569E25AEEAE700D221BA /* SessionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionHeader.swift; sourceTree = "<group>"; };
+		AC6D56A125AEF55C00D221BA /* GraphView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphView.swift; sourceTree = "<group>"; };
 		AC7EB37225A6FB3A00A7F2AF /* AirCasting.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AirCasting.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AC7EB37525A6FB3A00A7F2AF /* AirCastingApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirCastingApp.swift; sourceTree = "<group>"; };
 		AC7EB37725A6FB3A00A7F2AF /* Dashboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dashboard.swift; sourceTree = "<group>"; };
@@ -122,6 +124,7 @@
 				ACF77DFA25A8888700BB85B7 /* SessionCell.swift */,
 				AC6D569E25AEEAE700D221BA /* SessionHeader.swift */,
 				AC6D567E25AC54A400D221BA /* PollutionChart.swift */,
+				AC6D56A125AEF55C00D221BA /* GraphView.swift */,
 				AC6D569825ADE55B00D221BA /* ButtonStyles */,
 				AC7EB37925A6FB3D00A7F2AF /* Assets.xcassets */,
 				ACF77DEE25A7502600BB85B7 /* Extensions */,
@@ -284,6 +287,7 @@
 				AC7EB37825A6FB3A00A7F2AF /* Dashboard.swift in Sources */,
 				ACF77DFB25A8888700BB85B7 /* SessionCell.swift in Sources */,
 				AC6D569F25AEEAE700D221BA /* SessionHeader.swift in Sources */,
+				AC6D56A225AEF55C00D221BA /* GraphView.swift in Sources */,
 				ACF77DF425A750E000BB85B7 /* Color.swift in Sources */,
 				AC6D567F25AC54A400D221BA /* PollutionChart.swift in Sources */,
 				AC7EB37625A6FB3A00A7F2AF /* AirCastingApp.swift in Sources */,
