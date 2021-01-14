@@ -10,7 +10,7 @@ import SwiftUI
 struct MultiSlider: View {
     
     var maxValue: Float = 100
-    var values: [Float] = [43, 56, 78]
+    @State var values: [Float] = [43, 56, 78]
     var colors: [Color] = [Color.chartGreen, Color.chartYellow, Color.chartOrange, Color.chartRed]
     
     var body: some View {
@@ -27,14 +27,17 @@ struct MultiSlider: View {
                                   y:  geometry.frame(in: .local).size.height / 2)
                 }
                 
-                ForEach(values, id: \.self) { value in
+                ForEach(values.indices, id: \.self) { index in
+                    let value = values[index]
+                    
                     sliderButton
                         .position(x: CGFloat(value) * frameWidth / CGFloat(maxValue),
                                   y: geometry.frame(in: .local).size.height / 2)
+                        .gesture(dragGesture(index: index, geometry: geometry))
                 }
                 labels(geometry: geometry)
             }
-
+                .coordinateSpace(name: "MultiSliderSpace")
         }
         .frame(height: 5)
         .padding()
@@ -45,6 +48,22 @@ struct MultiSlider: View {
                 .frame(width: 15, height: 15)
                 .clipShape(Circle())
                 .shadow(color: Color(red: 156/255, green: 155/255, blue: 155/255, opacity: 0.5), radius: 9)
+    }
+    
+    func dragGesture(index: Int, geometry: GeometryProxy) -> some Gesture {
+        DragGesture(minimumDistance: 0, coordinateSpace: .named("MultiSliderSpace"))
+            .onChanged { (dragValue) in
+                let newX = dragValue.location.x
+                var newValue = Float(newX * CGFloat(maxValue) / geometry.frame(in: .local).size.width)
+                                
+                let previousValue = index > 0 ? values[index-1] : 0
+                let nextValue = index == values.count-1 ? 100 : values[index+1]
+                
+                newValue = min(nextValue,  newValue)
+                newValue = max(previousValue, newValue)
+
+                values.replaceSubrange(index...index, with: [Float(newValue)])
+            }
     }
     
     func labels(geometry: GeometryProxy) -> some View {

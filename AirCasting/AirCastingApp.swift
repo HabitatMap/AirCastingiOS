@@ -11,8 +11,8 @@ import SwiftUI
 struct AirCastingApp: App {
     var body: some Scene {
         WindowGroup {
-            PollutionChart()
-//            Dashboard()
+            MultiSlider()
+            //            Dashboard()
         }
     }
 }
