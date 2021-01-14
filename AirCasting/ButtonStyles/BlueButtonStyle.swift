@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct AirButtonStyle: ButtonStyle {
+struct BlueButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration
             .label
@@ -24,6 +24,6 @@ struct AirButtonStyle: ButtonStyle {
 struct AirButtonStyle_Previews: PreviewProvider {
     static var previews: some View {
         Button("AitButtonStyle") {}
-            .buttonStyle(AirButtonStyle())
+            .buttonStyle(BlueButtonStyle())
     }
 }
