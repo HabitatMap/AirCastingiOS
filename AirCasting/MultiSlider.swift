@@ -10,7 +10,8 @@ import SwiftUI
 struct MultiSlider: View {
     
     var maxValue: Float = 100
-    @State var values: [Float] = [43, 56, 78]
+    var minValue: Float = 0
+    @State var values: [Float] = [43, 56, 99]
     var colors: [Color] = [Color.chartGreen, Color.chartYellow, Color.chartOrange, Color.chartRed]
     
     var body: some View {
@@ -69,19 +70,17 @@ struct MultiSlider: View {
     func labels(geometry: GeometryProxy) -> some View {
         let frameWidth = geometry.frame(in: .local).size.width
         let y = geometry.frame(in: .local).size.height / 2
-        
-        return ForEach(values.indices, id: \.self) { index in
-            let ints = Int(values[index])
+        let allValues = [minValue] + values + [maxValue]
+        return ForEach(allValues.indices, id: \.self) { index in
+            let ints = Int(allValues[index])
             Text("\(ints)")
-                .position(x: CGFloat(values[index]) * frameWidth / CGFloat(maxValue),
+                .position(x: CGFloat(allValues[index]) * frameWidth / CGFloat(maxValue),
                           y: y)
                 .foregroundColor(.aircastingGray)
                 .font(Font.muli(size: 12))
                 .offset(x: 0, y: 20)
         }
     }
-    
-    
 }
 
 struct MultiSlider_Previews: PreviewProvider {

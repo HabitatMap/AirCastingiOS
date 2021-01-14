@@ -12,7 +12,9 @@ struct GraphView: View {
         VStack{
             SessionHeader {}
             Spacer()
+            MultiSlider()
         }
+        .padding()
         .navigationBarTitleDisplayMode(.inline)
     }
 }
