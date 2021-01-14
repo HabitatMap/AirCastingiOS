@@ -102,6 +102,24 @@
 			path = ButtonStyles;
 			sourceTree = "<group>";
 		};
+		AC6D56A725B0833F00D221BA /* Graph */ = {
+			isa = PBXGroup;
+			children = (
+				AC6D56A125AEF55C00D221BA /* GraphView.swift */,
+				AC6D56A425AF211200D221BA /* MultiSlider.swift */,
+			);
+			path = Graph;
+			sourceTree = "<group>";
+		};
+		AC6D56A825B0837500D221BA /* Session */ = {
+			isa = PBXGroup;
+			children = (
+				ACF77DFA25A8888700BB85B7 /* SessionCell.swift */,
+				AC6D569E25AEEAE700D221BA /* SessionHeader.swift */,
+			);
+			path = Session;
+			sourceTree = "<group>";
+		};
 		AC7EB36925A6FB3A00A7F2AF = {
 			isa = PBXGroup;
 			children = (
@@ -123,11 +141,9 @@
 			children = (
 				AC7EB37525A6FB3A00A7F2AF /* AirCastingApp.swift */,
 				AC7EB37725A6FB3A00A7F2AF /* Dashboard.swift */,
-				ACF77DFA25A8888700BB85B7 /* SessionCell.swift */,
-				AC6D56A425AF211200D221BA /* MultiSlider.swift */,
-				AC6D569E25AEEAE700D221BA /* SessionHeader.swift */,
+				AC6D56A825B0837500D221BA /* Session */,
+				AC6D56A725B0833F00D221BA /* Graph */,
 				AC6D567E25AC54A400D221BA /* PollutionChart.swift */,
-				AC6D56A125AEF55C00D221BA /* GraphView.swift */,
 				AC6D569825ADE55B00D221BA /* ButtonStyles */,
 				AC7EB37925A6FB3D00A7F2AF /* Assets.xcassets */,
 				ACF77DEE25A7502600BB85B7 /* Extensions */,

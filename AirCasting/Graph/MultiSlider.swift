@@ -11,7 +11,7 @@ struct MultiSlider: View {
     
     var maxValue: Float = 100
     var minValue: Float = 0
-    @State var values: [Float] = [43, 56, 99]
+    @State var values: [Float] = [43, 56, 70]
     var colors: [Color] = [Color.chartGreen, Color.chartYellow, Color.chartOrange, Color.chartRed]
     
     var body: some View {
