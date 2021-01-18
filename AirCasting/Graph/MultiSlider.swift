@@ -9,11 +9,11 @@ import SwiftUI
 
 struct MultiSlider: View {
     
+    @Binding var values: [Float]
     var maxValue: Float = 100
     var minValue: Float = 0
-    @State var values: [Float] = [43, 56, 70]
     var colors: [Color] = [Color.chartGreen, Color.chartYellow, Color.chartOrange, Color.chartRed]
-    
+        
     var body: some View {
         GeometryReader { geometry in
             let frameWidth = geometry.frame(in: .local).size.width
@@ -85,6 +85,6 @@ struct MultiSlider: View {
 
 struct MultiSlider_Previews: PreviewProvider {
     static var previews: some View {
-        MultiSlider()
+        MultiSlider(values: .constant([0,1,2,3]))
     }
 }

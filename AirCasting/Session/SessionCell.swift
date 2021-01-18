@@ -15,11 +15,12 @@ struct SessionCell: View {
         
         NavigationView {
             VStack(alignment: .leading, spacing: 13) {
-                SessionHeader {
+                SessionHeader(action:  {
                     withAnimation {
                         isCollapsed = !isCollapsed
                     }
-                }
+                }, isExpandButtonNeeded: true)
+               
                 
                 if !isCollapsed {
                     VStack(alignment: .trailing, spacing: 40) {

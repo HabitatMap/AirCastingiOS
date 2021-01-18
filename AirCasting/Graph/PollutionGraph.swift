@@ -9,10 +9,12 @@ import SwiftUI
 import Charts
 
 class UI_PollutionGraph: UIView {
+    
+    let lineChartView = LineChartView()
+    
     init() {
         super.init(frame: .zero)
         
-        let lineChartView = LineChartView()
         self.addSubview(lineChartView)
         
         lineChartView.translatesAutoresizingMaskIntoConstraints = false
@@ -48,7 +50,7 @@ class UI_PollutionGraph: UIView {
         lineChartView.leftAxis.drawLabelsEnabled = false
         lineChartView.leftAxis.drawAxisLineEnabled = false
         lineChartView.leftAxis.drawGridLinesEnabled = true
-
+        
         lineChartView.rightAxis.enabled = false
         lineChartView.rightAxis.drawLabelsEnabled = false
         lineChartView.rightAxis.drawAxisLineEnabled = false
@@ -57,12 +59,18 @@ class UI_PollutionGraph: UIView {
         
         // Line styling
         dataSet.drawCirclesEnabled = false
-        dataSet.setColor(UIColor(.gray))
-        dataSet.lineWidth = 3
+        dataSet.setColor(UIColor(.white))
+        dataSet.mode = .linear
+        dataSet.lineWidth = 4
         
         lineChartView.leftYAxisRenderer = MultiColorGridRenderer(viewPortHandler: lineChartView.viewPortHandler,
                                                                  yAxis: lineChartView.leftAxis,
                                                                  transformer: lineChartView.getTransformer(forAxis: .left))
+    }
+    
+    func updateWith(values: [Float]) {
+        (lineChartView.leftYAxisRenderer as! MultiColorGridRenderer).values = values
+        lineChartView.setNeedsDisplay()
     }
     
     required init?(coder: NSCoder) {
@@ -71,15 +79,18 @@ class UI_PollutionGraph: UIView {
 }
 
 class MultiColorGridRenderer: YAxisRenderer {
-
     
-    var values: [Float] = [12, 34, 56, 100]
-    var colors = [UIColor.green, UIColor.yellow, UIColor.orange, UIColor.red]
+    var values: [Float] = []
+    
+    var colors = [ UIColor(red: 249/255, green: 193/255, blue: 192/255, alpha: 1),
+                   UIColor(red: 254/255, green: 222/255, blue: 188/255, alpha: 1),
+                   UIColor(red: 254/255, green: 239/255, blue: 195/255, alpha: 1),
+                   UIColor(red: 182/255, green: 227/255, blue: 172/255, alpha: 1) ]
     
     override func renderGridLines(context: CGContext) {
-        
-        for index in values.indices.reversed() {
-            let value = values[index]
+        let allValues = values + [100]
+        for index in allValues.indices.reversed() {
+            let value = allValues[index]
             let yMax = gridClippingRect.maxY
             let height = CGFloat(value) * yMax / 100
             let y = yMax - height
@@ -90,24 +101,26 @@ class MultiColorGridRenderer: YAxisRenderer {
                                  width: gridClippingRect.width,
                                  height: CGFloat(height))))
         }
-        
     }
 }
 
 struct PollutionGraph: UIViewRepresentable {
     typealias UIViewType = UI_PollutionGraph
-
+    
+    let values: [Float]
+    
     func makeUIView(context: Context) -> UI_PollutionGraph {
         UI_PollutionGraph()
     }
     
     func updateUIView(_ uiView: UI_PollutionGraph, context: Context) {
+        uiView.updateWith(values: values)
     }
 }
 
 struct PollutionGraph_Previews: PreviewProvider {
     static var previews: some View {
-        PollutionGraph()
+        PollutionGraph(values: [13, 25, 67])
             .frame(width: 300, height: 300, alignment: .center)
             .border(Color.black, width: 1)
     }

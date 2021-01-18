@@ -8,11 +8,13 @@
 import SwiftUI
 
 struct GraphView: View {
+    @State private var values: [Float] = [30, 56, 74]
     var body: some View {
         VStack{
-            SessionHeader {}
+            SessionHeader(action: {}, isExpandButtonNeeded: false)
             Spacer()
-            MultiSlider()
+            PollutionGraph(values: values)
+            MultiSlider(values: $values)
         }
         .padding()
         .navigationBarTitleDisplayMode(.inline)
