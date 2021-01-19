@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		AC4EC6BC25B5ABB700C1E312 /* StatisticsContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC4EC6BB25B5ABB700C1E312 /* StatisticsContainer.swift */; };
+		AC4EC6C125B6F18A00C1E312 /* EditButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC4EC6C025B6F18A00C1E312 /* EditButton.swift */; };
+		AC4EC6C425B6FE0D00C1E312 /* HeatmapSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC4EC6C325B6FE0D00C1E312 /* HeatmapSettings.swift */; };
 		AC5832DA25B196DD008C5DD5 /* PollutionGraph.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC5832D925B196DD008C5DD5 /* PollutionGraph.swift */; };
 		AC6D567C25AC540D00D221BA /* Charts in Frameworks */ = {isa = PBXBuildFile; productRef = AC6D567B25AC540D00D221BA /* Charts */; };
 		AC6D567F25AC54A400D221BA /* PollutionChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6D567E25AC54A400D221BA /* PollutionChart.swift */; };
@@ -47,6 +49,8 @@
 
 /* Begin PBXFileReference section */
 		AC4EC6BB25B5ABB700C1E312 /* StatisticsContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsContainer.swift; sourceTree = "<group>"; };
+		AC4EC6C025B6F18A00C1E312 /* EditButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditButton.swift; sourceTree = "<group>"; };
+		AC4EC6C325B6FE0D00C1E312 /* HeatmapSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeatmapSettings.swift; sourceTree = "<group>"; };
 		AC5832D925B196DD008C5DD5 /* PollutionGraph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollutionGraph.swift; sourceTree = "<group>"; };
 		AC6D567E25AC54A400D221BA /* PollutionChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollutionChart.swift; sourceTree = "<group>"; };
 		AC6D569925ADE57800D221BA /* GrayButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrayButtonStyle.swift; sourceTree = "<group>"; };
@@ -113,6 +117,7 @@
 				AC6D56A425AF211200D221BA /* MultiSlider.swift */,
 				AC5832D925B196DD008C5DD5 /* PollutionGraph.swift */,
 				AC4EC6BB25B5ABB700C1E312 /* StatisticsContainer.swift */,
+				AC4EC6C325B6FE0D00C1E312 /* HeatmapSettings.swift */,
 			);
 			path = Graph;
 			sourceTree = "<group>";
@@ -122,6 +127,7 @@
 			children = (
 				ACF77DFA25A8888700BB85B7 /* SessionCell.swift */,
 				AC6D569E25AEEAE700D221BA /* SessionHeader.swift */,
+				AC4EC6C025B6F18A00C1E312 /* EditButton.swift */,
 			);
 			path = Session;
 			sourceTree = "<group>";
@@ -316,8 +322,10 @@
 				AC6D56A525AF211200D221BA /* MultiSlider.swift in Sources */,
 				AC6D56A225AEF55C00D221BA /* GraphView.swift in Sources */,
 				ACF77DF425A750E000BB85B7 /* Color.swift in Sources */,
+				AC4EC6C125B6F18A00C1E312 /* EditButton.swift in Sources */,
 				AC6D567F25AC54A400D221BA /* PollutionChart.swift in Sources */,
 				AC4EC6BC25B5ABB700C1E312 /* StatisticsContainer.swift in Sources */,
+				AC4EC6C425B6FE0D00C1E312 /* HeatmapSettings.swift in Sources */,
 				AC7EB37625A6FB3A00A7F2AF /* AirCastingApp.swift in Sources */,
 				ACF77DF025A750C200BB85B7 /* Font.swift in Sources */,
 			);

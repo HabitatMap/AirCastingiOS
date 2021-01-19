@@ -10,18 +10,20 @@ import SwiftUI
 struct GraphView: View {
     @State private var values: [Float] = [30, 50, 70]
     var body: some View {
-        VStack{
+        VStack(alignment: .trailing) {
             SessionHeader(action: {}, isExpandButtonNeeded: false)
                 .padding()
-
+            
             ZStack(alignment: .topLeading) {
                 PollutionGraph(values: values)
                 StatisticsContainer()
             }
-        
+            EditButton()
+                .padding()
+            
             MultiSlider(values: $values)
                 .padding()
-
+            
         }
         .navigationBarTitleDisplayMode(.inline)
     }
