@@ -16,7 +16,7 @@ class UI_PollutionGraph: UIView {
         super.init(frame: .zero)
         
         self.addSubview(lineChartView)
-        
+                
         lineChartView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             lineChartView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
@@ -29,18 +29,25 @@ class UI_PollutionGraph: UIView {
         //TO DO: replace mocked data with data from AirBeam
         let entries = [ChartDataEntry(x: 1, y: 1),
                        ChartDataEntry(x: 2, y: 3),
-                       ChartDataEntry(x: 3, y: 2),
-                       ChartDataEntry(x: 4, y: 1),
-                       ChartDataEntry(x: 5, y: 2),
-                       ChartDataEntry(x: 6, y: 2),
-                       ChartDataEntry(x: 7, y: 3)]
+                       ChartDataEntry(x: 3, y: 15),
+                       ChartDataEntry(x: 4, y: 6),
+                       ChartDataEntry(x: 5, y: 7),
+                       ChartDataEntry(x: 6, y: 4),
+                       ChartDataEntry(x: 7, y: 25)]
         
         let dataSet = LineChartDataSet(entries: entries)
         let data = LineChartData(dataSet: dataSet)
         lineChartView.data = data
         
+        //min & max yaxis values
+        lineChartView.leftAxis.axisMinimum = 0
+        lineChartView.leftAxis.axisMaximum = 100
+        
         //format data labels
         data.setDrawValues(false)
+        
+        //set edges
+        lineChartView.minOffset = 0.0
         
         //remove border lines and legend
         lineChartView.xAxis.enabled = false
@@ -81,11 +88,12 @@ class UI_PollutionGraph: UIView {
 class MultiColorGridRenderer: YAxisRenderer {
     
     var values: [Float] = []
-    
-    var colors = [ UIColor(red: 249/255, green: 193/255, blue: 192/255, alpha: 1),
-                   UIColor(red: 254/255, green: 222/255, blue: 188/255, alpha: 1),
-                   UIColor(red: 254/255, green: 239/255, blue: 195/255, alpha: 1),
-                   UIColor(red: 182/255, green: 227/255, blue: 172/255, alpha: 1) ]
+   
+    var colors = [UIColor(red: 182/255, green: 227/255, blue: 172/255, alpha: 1),
+                  UIColor(red: 254/255, green: 239/255, blue: 195/255, alpha: 1),
+                  UIColor(red: 254/255, green: 222/255, blue: 188/255, alpha: 1),
+                  UIColor(red: 249/255, green: 193/255, blue: 192/255, alpha: 1)
+    ]
     
     override func renderGridLines(context: CGContext) {
         let allValues = values + [100]
@@ -121,7 +129,5 @@ struct PollutionGraph: UIViewRepresentable {
 struct PollutionGraph_Previews: PreviewProvider {
     static var previews: some View {
         PollutionGraph(values: [13, 25, 67])
-            .frame(width: 300, height: 300, alignment: .center)
-            .border(Color.black, width: 1)
     }
 }

@@ -8,15 +8,21 @@
 import SwiftUI
 
 struct GraphView: View {
-    @State private var values: [Float] = [30, 56, 74]
+    @State private var values: [Float] = [30, 50, 70]
     var body: some View {
         VStack{
             SessionHeader(action: {}, isExpandButtonNeeded: false)
-            Spacer()
-            PollutionGraph(values: values)
+                .padding()
+
+            ZStack(alignment: .topLeading) {
+                PollutionGraph(values: values)
+                StatisticsContainer()
+            }
+        
             MultiSlider(values: $values)
+                .padding()
+
         }
-        .padding()
         .navigationBarTitleDisplayMode(.inline)
     }
 }

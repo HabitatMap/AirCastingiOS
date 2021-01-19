@@ -21,7 +21,6 @@ struct SessionHeader: View {
         }
         .font(Font.moderate(size: 13, weight: .regular))
         .foregroundColor(.aircastingGray)
-        .padding()
     }
     
     var dateAndTime: some View {

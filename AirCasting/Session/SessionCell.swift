@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SessionCell: View {
     
-    @State private var isCollapsed = false
+    @State private var isCollapsed = true
     
     var body: some View {
         

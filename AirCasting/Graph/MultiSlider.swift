@@ -41,7 +41,6 @@ struct MultiSlider: View {
                 .coordinateSpace(name: "MultiSliderSpace")
         }
         .frame(height: 5)
-        .padding()
     }
     
     var sliderButton: some View {
