@@ -9,7 +9,7 @@ import SwiftUI
 
 struct EditButton: View {
     var body: some View {
-            dots
+        dots
     }
     
     var dot: some View {

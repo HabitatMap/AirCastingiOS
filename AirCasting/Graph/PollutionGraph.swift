@@ -31,17 +31,13 @@ class UI_PollutionGraph: UIView {
                        ChartDataEntry(x: 2, y: 3),
                        ChartDataEntry(x: 3, y: 15),
                        ChartDataEntry(x: 4, y: 6),
-                       ChartDataEntry(x: 5, y: 7),
-                       ChartDataEntry(x: 6, y: 4),
-                       ChartDataEntry(x: 7, y: 25)]
+                       ChartDataEntry(x: 5, y: 170),
+                       ChartDataEntry(x: 6, y: 200),
+                       ChartDataEntry(x: 7, y: 150)]
         
         let dataSet = LineChartDataSet(entries: entries)
         let data = LineChartData(dataSet: dataSet)
         lineChartView.data = data
-        
-        //min & max yaxis values
-        lineChartView.leftAxis.axisMinimum = 0
-        lineChartView.leftAxis.axisMaximum = 100
         
         //format data labels
         data.setDrawValues(false)
@@ -77,6 +73,14 @@ class UI_PollutionGraph: UIView {
     
     func updateWith(values: [Float]) {
         (lineChartView.leftYAxisRenderer as! MultiColorGridRenderer).values = values
+        
+        //min & max yaxis values
+        lineChartView.leftAxis.axisMinimum = Double(values.first ?? 0)
+        lineChartView.leftAxis.axisMaximum = Double(values.last ?? 200)
+        print("\(lineChartView.leftAxis.axisMinimum) - \(lineChartView.leftAxis.axisMaximum)")
+        
+        // Needed to redraw the chart
+        lineChartView.data = lineChartView.data
         lineChartView.setNeedsDisplay()
     }
     
@@ -97,10 +101,12 @@ class MultiColorGridRenderer: YAxisRenderer {
     
     override func renderGridLines(context: CGContext) {
         let colorValues = Array(values.dropFirst())
+        let maxValue = CGFloat(values.last ?? 200)
+        let minValue = CGFloat(values[0])
         for index in colorValues.indices.reversed() {
-            let value = colorValues[index]
+            let value = CGFloat(colorValues[index])
             let yMax = gridClippingRect.maxY
-            let height = CGFloat(value) * yMax / 100
+            let height = (value - minValue) * yMax / (maxValue - minValue)
             let y = yMax - height
             
             context.setFillColor(colors[index].cgColor)
@@ -128,6 +134,6 @@ struct PollutionGraph: UIViewRepresentable {
 
 struct PollutionGraph_Previews: PreviewProvider {
     static var previews: some View {
-        PollutionGraph(values: [13, 25, 67])
+        PollutionGraph(values: [30, 60, 70, 170, 200])
     }
 }

@@ -13,7 +13,6 @@ struct SessionCell: View {
     
     var body: some View {
         
-        NavigationView {
             VStack(alignment: .leading, spacing: 13) {
                 SessionHeader(action:  {
                     withAnimation {
@@ -58,7 +57,6 @@ struct SessionCell: View {
         }
         .buttonStyle(GrayButtonStyle())
     }
-}
 
 struct SessionCell_Previews: PreviewProvider {
     static var previews: some View {

@@ -21,7 +21,7 @@ struct MultiSlider: View {
         }
     }
     var maxValue: Float {
-        values.last ?? 100
+        values.last ?? 200
     }
     var minValue: Float {
         values.first ?? 0

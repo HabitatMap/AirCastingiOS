@@ -10,8 +10,11 @@ import SwiftUI
 @main
 struct AirCastingApp: App {
     var body: some Scene {
-        WindowGroup {
-            SessionCell()
+            WindowGroup {
+                NavigationView {
+                    GraphView()
+//                    SessionCell()
+            }
         }
     }
 }

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct GraphView: View {
     
-    @State private var values: [Float] = [0, 30, 50, 70, 100]
+    @State private var values: [Float] = [0, 70, 120, 170, 200]
     
     var body: some View {
         VStack(alignment: .trailing) {
@@ -23,6 +23,7 @@ struct GraphView: View {
             NavigationLink(destination: HeatmapSettings(changedValues: $values)) {
                 EditButton()
             }
+            .padding()
             
             MultiSlider(values: $values)
                 .padding()

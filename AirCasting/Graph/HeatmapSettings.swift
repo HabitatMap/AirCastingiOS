@@ -43,6 +43,13 @@ struct HeatmapSettings: View {
             .buttonStyle(BlueButtonStyle())
         }
         .padding()
+        .onAppear {
+            minValue = "\(changedValues[0])"
+            lowValue = "\(changedValues[1])"
+            mediumValue = "\(changedValues[2])"
+            highValue = "\(changedValues[3])"
+            maxValue = "\(changedValues[4])"
+        }
     }
     
     func saveChanges() {
@@ -52,7 +59,7 @@ struct HeatmapSettings: View {
             let convertedValue = convertToFloat(value: value)
             newValues.append(convertedValue)
         }
-        changedValues = newValues
+        changedValues = newValues.reversed()
     }
     
     func convertToFloat(value: String) -> Float {
@@ -66,41 +73,42 @@ struct HeatmapSettings: View {
             .foregroundColor(.aircastingGray)
     }
     
-    func showValuesTextfield(initialValue: String, value: Binding<String>) -> some View {
-        TextField(initialValue, text: value)
+    func showValuesTextfield(value: Binding<String>) -> some View {
+        TextField("0", text: value)
             .font(Font.muli(size: 14))
+            .foregroundColor(.aircastingGray)
             .multilineTextAlignment(.trailing)
     }
     
     var maxTextfield: some View {
         HStack {
             showDescriptionLabel(text: "Max")
-            showValuesTextfield(initialValue: "\(changedValues[0])", value: $maxValue)
+            showValuesTextfield(value: $maxValue)
         }
     }
     var highTextfield: some View {
         HStack {
             showDescriptionLabel(text: "High")
-            showValuesTextfield(initialValue: "\(changedValues[1])", value: $highValue)
+            showValuesTextfield(value: $highValue)
         }
     }
     var mediumTextfield: some View {
         HStack {
             showDescriptionLabel(text: "Medium")
-            showValuesTextfield(initialValue: "\(changedValues[2])", value: $mediumValue)
+            showValuesTextfield(value: $mediumValue)
         }
     }
     
     var lowTextfield: some View {
         HStack {
             showDescriptionLabel(text: "Low")
-            showValuesTextfield(initialValue: "\(changedValues[3])", value: $lowValue)
+            showValuesTextfield(value: $lowValue)
         }
     }
     var minTextfield: some View {
         HStack {
             showDescriptionLabel(text: "Min")
-            showValuesTextfield(initialValue: "\(changedValues[4])", value: $minValue)
+            showValuesTextfield(value: $minValue)
         }
     }
 
@@ -108,6 +116,6 @@ struct HeatmapSettings: View {
 
 struct HeatmapSettings_Previews: PreviewProvider {
     static var previews: some View {
-        HeatmapSettings(changedValues: .constant([130, 90, 40, 30, 20, 0]))
+        HeatmapSettings(changedValues: .constant([0, 20, 30, 40, 50]))
     }
 }
