@@ -15,12 +15,14 @@ struct HeatmapSettings: View {
     @State private var highValue = ""
     @State private var maxValue = ""
     
+    @Binding var changedValues: [Float]
+    
     var body: some View {
         Form {
             VStack(alignment: .leading, spacing: 16) {
                 Text("Heatmap settings")
                     .foregroundColor(.darkBlue)
-                    //powinno być ekstra bold, dlaczego nie jest?
+                    //heavy = extra bold?
                     .font(Font.muli(size: 24, weight: .heavy))
                 Text("Values beyoung Min and Max will not be displayed.")
                     .foregroundColor(.aircastingGray)
@@ -34,58 +36,71 @@ struct HeatmapSettings: View {
                 lowTextfield
                 minTextfield
             }
+            Button("Save changes", action: {
+                saveChanges()
+            })
+            .frame(width: 300, height: 40, alignment: .center)
+            .buttonStyle(BlueButtonStyle())
         }
         .padding()
     }
     
+    func saveChanges() {
+        let stringValues = [maxValue, highValue, mediumValue, lowValue, minValue]
+        var newValues: [Float] = []
+        for value in stringValues {
+            let convertedValue = convertToFloat(value: value)
+            newValues.append(convertedValue)
+        }
+        changedValues = newValues
+    }
+    
+    func convertToFloat(value: String) -> Float {
+        let floatValue = Float(value) ?? 0
+        return floatValue
+    }
+    
+    func showDescriptionLabel(text: String) -> some View {
+        Text(text)
+            .font(Font.muli(size: 13))
+            .foregroundColor(.aircastingGray)
+    }
+    
+    func showValuesTextfield(initialValue: String, value: Binding<String>) -> some View {
+        TextField(initialValue, text: value)
+            .font(Font.muli(size: 14))
+            .multilineTextAlignment(.trailing)
+    }
+    
     var maxTextfield: some View {
         HStack {
-            Text("Max")
-                .font(Font.muli(size: 13))
-                .foregroundColor(.aircastingGray)
-            TextField("130", text: $maxValue)
-                .font(Font.muli(size: 14))
-                .multilineTextAlignment(.trailing)
+            showDescriptionLabel(text: "Max")
+            showValuesTextfield(initialValue: "\(changedValues[0])", value: $maxValue)
         }
     }
     var highTextfield: some View {
         HStack {
-            Text("High")
-                .font(Font.muli(size: 13))
-                .foregroundColor(.aircastingGray)
-            TextField("90", text: $highValue)
-                .font(Font.muli(size: 14))
-                .multilineTextAlignment(.trailing)
+            showDescriptionLabel(text: "High")
+            showValuesTextfield(initialValue: "\(changedValues[1])", value: $highValue)
         }
     }
     var mediumTextfield: some View {
         HStack {
-            Text("Medium")
-                .font(Font.muli(size: 13))
-                .foregroundColor(.aircastingGray)
-            TextField("65", text: $mediumValue)
-                .font(Font.muli(size: 14))
-                .multilineTextAlignment(.trailing)
+            showDescriptionLabel(text: "Medium")
+            showValuesTextfield(initialValue: "\(changedValues[2])", value: $mediumValue)
         }
     }
+    
     var lowTextfield: some View {
         HStack {
-            Text("Low")
-                .font(Font.muli(size: 13))
-                .foregroundColor(.aircastingGray)
-            TextField("30", text: $lowValue)
-                .font(Font.muli(size: 14))
-                .multilineTextAlignment(.trailing)
+            showDescriptionLabel(text: "Low")
+            showValuesTextfield(initialValue: "\(changedValues[3])", value: $lowValue)
         }
     }
     var minTextfield: some View {
         HStack {
-            Text("Min")
-                .font(Font.muli(size: 13))
-                .foregroundColor(.aircastingGray)
-            TextField("0", text: $minValue)
-                .font(Font.muli(size: 14))
-                .multilineTextAlignment(.trailing)
+            showDescriptionLabel(text: "Min")
+            showValuesTextfield(initialValue: "\(changedValues[4])", value: $minValue)
         }
     }
 
@@ -93,6 +108,6 @@ struct HeatmapSettings: View {
 
 struct HeatmapSettings_Previews: PreviewProvider {
     static var previews: some View {
-        HeatmapSettings()
+        HeatmapSettings(changedValues: .constant([130, 90, 40, 30, 20, 0]))
     }
 }

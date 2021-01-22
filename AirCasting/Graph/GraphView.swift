@@ -8,7 +8,9 @@
 import SwiftUI
 
 struct GraphView: View {
-    @State private var values: [Float] = [30, 50, 70]
+    
+    @State private var values: [Float] = [0, 30, 50, 70, 100]
+    
     var body: some View {
         VStack(alignment: .trailing) {
             SessionHeader(action: {}, isExpandButtonNeeded: false)
@@ -18,8 +20,9 @@ struct GraphView: View {
                 PollutionGraph(values: values)
                 StatisticsContainer()
             }
-            EditButton()
-                .padding()
+            NavigationLink(destination: HeatmapSettings(changedValues: $values)) {
+                EditButton()
+            }
             
             MultiSlider(values: $values)
                 .padding()

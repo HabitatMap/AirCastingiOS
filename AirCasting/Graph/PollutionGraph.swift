@@ -96,9 +96,9 @@ class MultiColorGridRenderer: YAxisRenderer {
     ]
     
     override func renderGridLines(context: CGContext) {
-        let allValues = values + [100]
-        for index in allValues.indices.reversed() {
-            let value = allValues[index]
+        let colorValues = Array(values.dropFirst())
+        for index in colorValues.indices.reversed() {
+            let value = colorValues[index]
             let yMax = gridClippingRect.maxY
             let height = CGFloat(value) * yMax / 100
             let y = yMax - height

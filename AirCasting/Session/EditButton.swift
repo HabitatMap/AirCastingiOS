@@ -9,9 +9,7 @@ import SwiftUI
 
 struct EditButton: View {
     var body: some View {
-        NavigationLink(destination: HeatmapSettings()) {
             dots
-        }
     }
     
     var dot: some View {
