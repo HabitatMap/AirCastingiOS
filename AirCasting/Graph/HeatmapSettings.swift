@@ -14,9 +14,9 @@ struct HeatmapSettings: View {
     @State private var mediumValue = ""
     @State private var highValue = ""
     @State private var maxValue = ""
-    
     @Binding var changedValues: [Float]
-    
+    @Environment(\.presentationMode) var presentationMode
+
     var body: some View {
         Form {
             VStack(alignment: .leading, spacing: 16) {
@@ -24,10 +24,11 @@ struct HeatmapSettings: View {
                     .foregroundColor(.darkBlue)
                     //heavy = extra bold?
                     .font(Font.muli(size: 24, weight: .heavy))
-                Text("Values beyoung Min and Max will not be displayed.")
+                Text("Values beyond Min and Max will not be displayed.")
                     .foregroundColor(.aircastingGray)
                     .font(Font.moderate(size: 16, weight: .regular))
             }
+            .padding()
             
             Section {
                 maxTextfield
@@ -36,19 +37,31 @@ struct HeatmapSettings: View {
                 lowTextfield
                 minTextfield
             }
-            Button("Save changes", action: {
-                saveChanges()
-            })
-            .frame(width: 300, height: 40, alignment: .center)
-            .buttonStyle(BlueButtonStyle())
+            
+            VStack {
+                Button(action: {
+                    saveChanges()
+                    presentationMode.wrappedValue.dismiss()
+                })
+                {
+                    Text("Save changes")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(BlueButtonStyle())
+                
+                Button("Reset to default", action: {
+                    presentationMode.wrappedValue.dismiss()
+                })
+                .frame(minHeight: 35)
+            }
+            .buttonStyle(BorderlessButtonStyle())
         }
-        .padding()
         .onAppear {
-            minValue = "\(changedValues[0])"
-            lowValue = "\(changedValues[1])"
-            mediumValue = "\(changedValues[2])"
-            highValue = "\(changedValues[3])"
-            maxValue = "\(changedValues[4])"
+            minValue = "\(Int(changedValues[0]))"
+            lowValue = "\(Int(changedValues[1]))"
+            mediumValue = "\(Int(changedValues[2]))"
+            highValue = "\(Int(changedValues[3]))"
+            maxValue = "\(Int(changedValues[4]))"
         }
     }
     

@@ -13,6 +13,7 @@ struct AirCastingApp: App {
             WindowGroup {
                 NavigationView {
                     GraphView()
+//                    Dashboard()
 //                    SessionCell()
             }
         }
