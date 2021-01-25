@@ -9,7 +9,8 @@ import SwiftUI
 
 struct GraphView: View {
     
-    @State private var values: [Float] = [0, 70, 120, 170, 200]
+    // TO DO: Change key name
+    @AppStorage("values") var values: [Float] = [0, 70, 120, 170, 200]
     
     var body: some View {
         VStack(alignment: .trailing) {

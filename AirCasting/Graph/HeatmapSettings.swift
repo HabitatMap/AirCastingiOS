@@ -72,7 +72,8 @@ struct HeatmapSettings: View {
             let convertedValue = convertToFloat(value: value)
             newValues.append(convertedValue)
         }
-        changedValues = newValues.reversed()
+        let sortedValues = newValues.sorted { $0 < $1 }
+        changedValues = sortedValues
     }
     
     func convertToFloat(value: String) -> Float {
