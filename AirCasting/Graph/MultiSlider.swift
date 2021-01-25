@@ -9,27 +9,40 @@ import SwiftUI
 
 struct MultiSlider: View {
     
-    var maxValue: Float = 100
-    var minValue: Float = 0
-    @State var values: [Float] = [43, 56, 70]
-    var colors: [Color] = [Color.chartGreen, Color.chartYellow, Color.chartOrange, Color.chartRed]
+    @Binding var values: [Float]
     
+    private var buttonValues: [Float] {
+        get {
+            let v =  Array(values.dropFirst())
+            return  Array(v.dropLast())
+        }
+        nonmutating set {
+            values = [minValue] + newValue + [maxValue]
+        }
+    }
+    var maxValue: Float {
+        values.last ?? 200
+    }
+    var minValue: Float {
+        values.first ?? 0
+    }
+    var colors: [Color] = [Color.chartGreen, Color.chartYellow, Color.chartOrange, Color.chartRed]
+        
     var body: some View {
         GeometryReader { geometry in
             let frameWidth = geometry.frame(in: .local).size.width
             
             ZStack {
                 colors.last
-                
-                ForEach(values.indices.reversed(), id: \.self) { index in
+                ForEach(buttonValues.indices.reversed(), id: \.self) { index in
                     colors[index]
-                        .frame(width: CGFloat(values[index]) * frameWidth / CGFloat(maxValue))
-                        .position(x: CGFloat(values[index]) * frameWidth / CGFloat(maxValue) / 2,
+                        .frame(width: CGFloat(buttonValues[index]) * frameWidth / CGFloat(maxValue))
+                        .position(x: CGFloat(buttonValues[index]) * frameWidth / CGFloat(maxValue) / 2,
                                   y:  geometry.frame(in: .local).size.height / 2)
                 }
                 
-                ForEach(values.indices, id: \.self) { index in
-                    let value = values[index]
+                ForEach(buttonValues.indices, id: \.self) { index in
+                    let value = buttonValues[index]
                     
                     sliderButton
                         .position(x: CGFloat(value) * frameWidth / CGFloat(maxValue),
@@ -41,7 +54,6 @@ struct MultiSlider: View {
                 .coordinateSpace(name: "MultiSliderSpace")
         }
         .frame(height: 5)
-        .padding()
     }
     
     var sliderButton: some View {
@@ -57,24 +69,23 @@ struct MultiSlider: View {
                 let newX = dragValue.location.x
                 var newValue = Float(newX * CGFloat(maxValue) / geometry.frame(in: .local).size.width)
                                 
-                let previousValue = index > 0 ? values[index-1] : 0
-                let nextValue = index == values.count-1 ? 100 : values[index+1]
+                let previousValue = index > 0 ? buttonValues[index-1] : minValue
+                let nextValue = index == buttonValues.count-1 ? maxValue : buttonValues[index+1]
                 
                 newValue = min(nextValue,  newValue)
                 newValue = max(previousValue, newValue)
 
-                values.replaceSubrange(index...index, with: [Float(newValue)])
+                buttonValues.replaceSubrange(index...index, with: [Float(newValue)])
             }
     }
     
     func labels(geometry: GeometryProxy) -> some View {
         let frameWidth = geometry.frame(in: .local).size.width
         let y = geometry.frame(in: .local).size.height / 2
-        let allValues = [minValue] + values + [maxValue]
-        return ForEach(allValues.indices, id: \.self) { index in
-            let ints = Int(allValues[index])
+        return ForEach(values.indices, id: \.self) { index in
+            let ints = Int(values[index])
             Text("\(ints)")
-                .position(x: CGFloat(allValues[index]) * frameWidth / CGFloat(maxValue),
+                .position(x: CGFloat(values[index]) * frameWidth / CGFloat(maxValue),
                           y: y)
                 .foregroundColor(.aircastingGray)
                 .font(Font.muli(size: 12))
@@ -85,6 +96,6 @@ struct MultiSlider: View {
 
 struct MultiSlider_Previews: PreviewProvider {
     static var previews: some View {
-        MultiSlider()
+        MultiSlider(values: .constant([0,1,2,3]))
     }
 }

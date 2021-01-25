@@ -8,13 +8,28 @@
 import SwiftUI
 
 struct GraphView: View {
+    
+    // TO DO: Change key name
+    @AppStorage("values") var values: [Float] = [0, 70, 120, 170, 200]
+    
     var body: some View {
-        VStack{
-            SessionHeader {}
-            Spacer()
-            MultiSlider()
+        VStack(alignment: .trailing) {
+            SessionHeader(action: {}, isExpandButtonNeeded: false)
+                .padding()
+            
+            ZStack(alignment: .topLeading) {
+                PollutionGraph(values: values)
+                StatisticsContainer()
+            }
+            NavigationLink(destination: HeatmapSettings(changedValues: $values)) {
+                EditButton()
+            }
+            .padding()
+            
+            MultiSlider(values: $values)
+                .padding()
+            
         }
-        .padding()
         .navigationBarTitleDisplayMode(.inline)
     }
 }

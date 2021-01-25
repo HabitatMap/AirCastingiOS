@@ -9,17 +9,17 @@ import SwiftUI
 
 struct SessionCell: View {
     
-    @State private var isCollapsed = false
+    @State private var isCollapsed = true
     
     var body: some View {
         
-        NavigationView {
             VStack(alignment: .leading, spacing: 13) {
-                SessionHeader {
+                SessionHeader(action:  {
                     withAnimation {
                         isCollapsed = !isCollapsed
                     }
-                }
+                }, isExpandButtonNeeded: true)
+               
                 
                 if !isCollapsed {
                     VStack(alignment: .trailing, spacing: 40) {
@@ -57,7 +57,6 @@ struct SessionCell: View {
         }
         .buttonStyle(GrayButtonStyle())
     }
-}
 
 struct SessionCell_Previews: PreviewProvider {
     static var previews: some View {

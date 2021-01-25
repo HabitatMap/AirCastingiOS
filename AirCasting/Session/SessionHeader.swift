@@ -10,6 +10,7 @@ import SwiftUI
 struct SessionHeader: View {
     
     let action: () -> Void
+    let isExpandButtonNeeded: Bool
     
     var body: some View {
         VStack(alignment: .leading, spacing: 13){
@@ -20,7 +21,6 @@ struct SessionHeader: View {
         }
         .font(Font.moderate(size: 13, weight: .regular))
         .foregroundColor(.aircastingGray)
-        .padding()
     }
     
     var dateAndTime: some View {
@@ -33,11 +33,13 @@ struct SessionHeader: View {
                 Text("Neighborhood check")
                     .font(Font.moderate(size: 18, weight: .bold))
                 Spacer()
-                Button(action: {
-                    action()
-                }) {
-                    Image("expandButtonIcon")
-                        .renderingMode(.original)
+                if isExpandButtonNeeded {
+                    Button(action: {
+                        action()
+                    }) {
+                        Image("expandButtonIcon")
+                            .renderingMode(.original)
+                    }
                 }
             }
             Text("Fixed, AirBeam3")
@@ -80,6 +82,5 @@ struct SessionHeader: View {
 
 struct SessionHeader_Previews: PreviewProvider {
     static var previews: some View {
-        SessionHeader(action: {})
-    }
+        SessionHeader(action: {}, isExpandButtonNeeded: true)    }
 }

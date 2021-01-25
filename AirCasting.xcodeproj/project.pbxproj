@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AC4EC6BC25B5ABB700C1E312 /* StatisticsContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC4EC6BB25B5ABB700C1E312 /* StatisticsContainer.swift */; };
+		AC4EC6C125B6F18A00C1E312 /* EditButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC4EC6C025B6F18A00C1E312 /* EditButton.swift */; };
+		AC4EC6C425B6FE0D00C1E312 /* HeatmapSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC4EC6C325B6FE0D00C1E312 /* HeatmapSettings.swift */; };
+		AC5832DA25B196DD008C5DD5 /* PollutionGraph.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC5832D925B196DD008C5DD5 /* PollutionGraph.swift */; };
 		AC6D567C25AC540D00D221BA /* Charts in Frameworks */ = {isa = PBXBuildFile; productRef = AC6D567B25AC540D00D221BA /* Charts */; };
 		AC6D567F25AC54A400D221BA /* PollutionChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6D567E25AC54A400D221BA /* PollutionChart.swift */; };
 		AC6D569A25ADE57800D221BA /* GrayButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6D569925ADE57800D221BA /* GrayButtonStyle.swift */; };
@@ -37,6 +41,7 @@
 		AC7EB3B125A7152000A7F2AF /* Muli-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB39B25A7152000A7F2AF /* Muli-Regular.ttf */; };
 		AC7EB3B225A7152000A7F2AF /* Muli-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB39C25A7152000A7F2AF /* Muli-LightItalic.ttf */; };
 		AC7EB3B325A7152000A7F2AF /* Moderat-Trial-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB39D25A7152000A7F2AF /* Moderat-Trial-Black.otf */; };
+		AC93B8DA25BEDC46003D0A0D /* Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC93B8D925BEDC46003D0A0D /* Array.swift */; };
 		ACF77DF025A750C200BB85B7 /* Font.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACF77DEF25A750C200BB85B7 /* Font.swift */; };
 		ACF77DF425A750E000BB85B7 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACF77DF325A750E000BB85B7 /* Color.swift */; };
 		ACF77DF825A866E700BB85B7 /* BlueButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACF77DF725A866E700BB85B7 /* BlueButtonStyle.swift */; };
@@ -44,6 +49,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		AC4EC6BB25B5ABB700C1E312 /* StatisticsContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsContainer.swift; sourceTree = "<group>"; };
+		AC4EC6C025B6F18A00C1E312 /* EditButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditButton.swift; sourceTree = "<group>"; };
+		AC4EC6C325B6FE0D00C1E312 /* HeatmapSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeatmapSettings.swift; sourceTree = "<group>"; };
+		AC5832D925B196DD008C5DD5 /* PollutionGraph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollutionGraph.swift; sourceTree = "<group>"; };
 		AC6D567E25AC54A400D221BA /* PollutionChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollutionChart.swift; sourceTree = "<group>"; };
 		AC6D569925ADE57800D221BA /* GrayButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrayButtonStyle.swift; sourceTree = "<group>"; };
 		AC6D569E25AEEAE700D221BA /* SessionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionHeader.swift; sourceTree = "<group>"; };
@@ -75,6 +84,7 @@
 		AC7EB39B25A7152000A7F2AF /* Muli-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Muli-Regular.ttf"; sourceTree = "<group>"; };
 		AC7EB39C25A7152000A7F2AF /* Muli-LightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Muli-LightItalic.ttf"; sourceTree = "<group>"; };
 		AC7EB39D25A7152000A7F2AF /* Moderat-Trial-Black.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Moderat-Trial-Black.otf"; sourceTree = "<group>"; };
+		AC93B8D925BEDC46003D0A0D /* Array.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Array.swift; sourceTree = "<group>"; };
 		ACF77DEF25A750C200BB85B7 /* Font.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Font.swift; sourceTree = "<group>"; };
 		ACF77DF325A750E000BB85B7 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
 		ACF77DF725A866E700BB85B7 /* BlueButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlueButtonStyle.swift; sourceTree = "<group>"; };
@@ -107,6 +117,9 @@
 			children = (
 				AC6D56A125AEF55C00D221BA /* GraphView.swift */,
 				AC6D56A425AF211200D221BA /* MultiSlider.swift */,
+				AC5832D925B196DD008C5DD5 /* PollutionGraph.swift */,
+				AC4EC6BB25B5ABB700C1E312 /* StatisticsContainer.swift */,
+				AC4EC6C325B6FE0D00C1E312 /* HeatmapSettings.swift */,
 			);
 			path = Graph;
 			sourceTree = "<group>";
@@ -116,6 +129,7 @@
 			children = (
 				ACF77DFA25A8888700BB85B7 /* SessionCell.swift */,
 				AC6D569E25AEEAE700D221BA /* SessionHeader.swift */,
+				AC4EC6C025B6F18A00C1E312 /* EditButton.swift */,
 			);
 			path = Session;
 			sourceTree = "<group>";
@@ -200,6 +214,7 @@
 		ACF77DEE25A7502600BB85B7 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				AC93B8D925BEDC46003D0A0D /* Array.swift */,
 				ACF77DEF25A750C200BB85B7 /* Font.swift */,
 				ACF77DF325A750E000BB85B7 /* Color.swift */,
 			);
@@ -304,12 +319,17 @@
 				AC6D569A25ADE57800D221BA /* GrayButtonStyle.swift in Sources */,
 				ACF77DF825A866E700BB85B7 /* BlueButtonStyle.swift in Sources */,
 				AC7EB37825A6FB3A00A7F2AF /* Dashboard.swift in Sources */,
+				AC5832DA25B196DD008C5DD5 /* PollutionGraph.swift in Sources */,
 				ACF77DFB25A8888700BB85B7 /* SessionCell.swift in Sources */,
+				AC93B8DA25BEDC46003D0A0D /* Array.swift in Sources */,
 				AC6D569F25AEEAE700D221BA /* SessionHeader.swift in Sources */,
 				AC6D56A525AF211200D221BA /* MultiSlider.swift in Sources */,
 				AC6D56A225AEF55C00D221BA /* GraphView.swift in Sources */,
 				ACF77DF425A750E000BB85B7 /* Color.swift in Sources */,
+				AC4EC6C125B6F18A00C1E312 /* EditButton.swift in Sources */,
 				AC6D567F25AC54A400D221BA /* PollutionChart.swift in Sources */,
+				AC4EC6BC25B5ABB700C1E312 /* StatisticsContainer.swift in Sources */,
+				AC4EC6C425B6FE0D00C1E312 /* HeatmapSettings.swift in Sources */,
 				AC7EB37625A6FB3A00A7F2AF /* AirCastingApp.swift in Sources */,
 				ACF77DF025A750C200BB85B7 /* Font.swift in Sources */,
 			);
