@@ -18,7 +18,7 @@ struct GraphView: View {
                 .padding()
             
             ZStack(alignment: .topLeading) {
-                PollutionGraph(values: values)
+                Graph(values: values)
                 StatisticsContainer()
             }
             NavigationLink(destination: HeatmapSettings(changedValues: $values)) {

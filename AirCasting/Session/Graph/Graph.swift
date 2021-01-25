@@ -118,7 +118,7 @@ class MultiColorGridRenderer: YAxisRenderer {
     }
 }
 
-struct PollutionGraph: UIViewRepresentable {
+struct Graph: UIViewRepresentable {
     typealias UIViewType = UI_PollutionGraph
     
     let values: [Float]
@@ -134,6 +134,6 @@ struct PollutionGraph: UIViewRepresentable {
 
 struct PollutionGraph_Previews: PreviewProvider {
     static var previews: some View {
-        PollutionGraph(values: [30, 60, 70, 170, 200])
+        Graph(values: [30, 60, 70, 170, 200])
     }
 }

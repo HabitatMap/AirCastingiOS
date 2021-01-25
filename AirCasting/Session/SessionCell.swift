@@ -38,7 +38,7 @@ struct SessionCell: View {
         }
     }
     var pollutionChart: some View {
-        PollutionChart()
+        Chart()
             .frame(height: 200)
     }
     var graphButton: some View {
