@@ -96,6 +96,6 @@ struct MultiSlider: View {
 
 struct MultiSlider_Previews: PreviewProvider {
     static var previews: some View {
-        MultiSlider(values: .constant([0,1,2,3]))
+        MultiSlider(values: .constant([0,5,10,13,20]))
     }
 }
