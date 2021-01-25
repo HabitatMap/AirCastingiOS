@@ -10,41 +10,43 @@ import SwiftUI
 struct SessionCell: View {
     
     @State private var isCollapsed = true
+    // TO DO: Change key name
+    @AppStorage("values") var values: [Float] = [0, 70, 120, 170, 200]
     
     var body: some View {
         
-            VStack(alignment: .leading, spacing: 13) {
-                SessionHeader(action:  {
-                    withAnimation {
-                        isCollapsed = !isCollapsed
-                    }
-                }, isExpandButtonNeeded: true)
-               
-                
-                if !isCollapsed {
-                    VStack(alignment: .trailing, spacing: 40) {
-                        pollutionChart
-                        buttons
-                    }
+        VStack(alignment: .leading, spacing: 13) {
+            SessionHeader(action:  {
+                withAnimation {
+                    isCollapsed = !isCollapsed
+                }
+            }, isExpandButtonNeeded: true)
+            
+            
+            if !isCollapsed {
+                VStack(alignment: .trailing, spacing: 40) {
+                    pollutionChart
+                    buttons
                 }
             }
-            .font(Font.moderate(size: 13, weight: .regular))
-            .foregroundColor(.aircastingGray)
-            .padding()
-            .background(
-                Color.white
-                    .shadow(color: Color(red: 205/255, green: 209/255, blue: 214/255, opacity: 0.36), radius: 9, x: 0, y: 1)
-            )
         }
+        .font(Font.moderate(size: 13, weight: .regular))
+        .foregroundColor(.aircastingGray)
+        .padding()
+        .background(
+            Color.white
+                .shadow(color: Color(red: 205/255, green: 209/255, blue: 214/255, opacity: 0.36), radius: 9, x: 0, y: 1)
+        )
     }
+    
     var pollutionChart: some View {
         Chart()
             .frame(height: 200)
     }
     var graphButton: some View {
-            NavigationLink(destination: GraphView()) {
-                Text("graph")
-            }
+        NavigationLink(destination: GraphView(values: $values)) {
+            Text("graph")
+        }
     }
     
     var mapButton: some View {
@@ -57,6 +59,7 @@ struct SessionCell: View {
         }
         .buttonStyle(GrayButtonStyle())
     }
+}
 
 struct SessionCell_Previews: PreviewProvider {
     static var previews: some View {

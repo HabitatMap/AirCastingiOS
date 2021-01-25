@@ -9,9 +9,8 @@ import SwiftUI
 
 struct GraphView: View {
     
-    // TO DO: Change key name
-    @AppStorage("values") var values: [Float] = [0, 70, 120, 170, 200]
-    
+    @Binding var values: [Float]
+
     var body: some View {
         VStack(alignment: .trailing) {
             SessionHeader(action: {}, isExpandButtonNeeded: false)
@@ -36,6 +35,6 @@ struct GraphView: View {
 
 struct GraphView_Previews: PreviewProvider {
     static var previews: some View {
-        GraphView()
+        GraphView(values: .constant([0,1,2,3]))
     }
 }
