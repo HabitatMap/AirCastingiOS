@@ -18,15 +18,16 @@ struct GoogleMapView: UIViewRepresentable {
     
     
     func makeUIView(context: Context) -> GMSMapView {
-        let camera = GMSCameraPosition.camera(withLatitude: -33.86, longitude: 151.20, zoom: 6.0)
+        GMSServices.provideAPIKey(GOOGLE_MAP_KEY)
+        GMSPlacesClient.provideAPIKey(GOOGLE_MAP_KEY)
+        let camera = GMSCameraPosition.camera(withLatitude: 40.73, longitude: -73.93, zoom: 10.0)
         let frame = CGRect(x: 0, y: 0, width: 300, height: 300)
-//        let mapView = GMSMapView(frame: frame, camera: camera)
         let mapView = GMSMapView.map(withFrame: frame, camera: camera)
         
         let marker = GMSMarker()
-              marker.position = CLLocationCoordinate2D(latitude: -33.86, longitude: 151.20)
-              marker.title = "Sydney"
-              marker.snippet = "Australia"
+              marker.position = CLLocationCoordinate2D(latitude: 40.73, longitude: -73.93)
+              marker.title = "New York"
+              marker.snippet = "NY"
               marker.map = mapView
         
         return mapView
