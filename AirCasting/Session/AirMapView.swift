@@ -9,7 +9,7 @@ import SwiftUI
 import CoreLocation
 import Foundation
 
-struct MapView: View {
+struct AirMapView: View {
     
     @Binding var values: [Float]
     
@@ -17,7 +17,6 @@ struct MapView: View {
         VStack {
             SessionHeader(action: {}, isExpandButtonNeeded: false)
             ZStack {
-                
                 StatisticsContainer()
             }
             MultiSlider(values: $values)
@@ -39,6 +38,6 @@ struct MapView: View {
 
 struct Map_Previews: PreviewProvider {
     static var previews: some View {
-        MapView(values: .constant([0,1,2,3,10]))
+        AirMapView(values: .constant([0,1,2,3,10]))
     }
 }

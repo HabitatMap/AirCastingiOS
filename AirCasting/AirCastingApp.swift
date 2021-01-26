@@ -14,7 +14,8 @@ struct AirCastingApp: App {
                 NavigationView {
 //                    GraphView()
 //                    Dashboard()
-                    SessionCell()
+//                    SessionCell()
+                    GoogleMapView()
             }
         }
     }
