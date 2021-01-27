@@ -13,6 +13,8 @@ class LocationTracker: NSObject, ObservableObject, CLLocationManagerDelegate {
     
     private let locationManager = CLLocationManager()
 
+    @Published var allLocations: [CLLocation] = []
+    
     override init() {
         super.init()
         self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
@@ -35,6 +37,7 @@ class LocationTracker: NSObject, ObservableObject, CLLocationManagerDelegate {
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        allLocations.append(contentsOf: locations)
         print("\(locations)")
     }
 }

@@ -13,21 +13,23 @@ struct AirCastingApp: App {
     
     @StateObject var provider = LocationTracker()
     
+    var pathPoints: [PathPoint] {
+        let allLocationPoints = provider.allLocations
+        
+        let points = allLocationPoints.map { (location) in
+            PathPoint(location: location.coordinate,
+                      measurement: Float(arc4random() % 20))
+        }
+        return points
+    }
+    
     var body: some Scene {
             WindowGroup {
                 NavigationView {
 //                    GraphView()
 //                    Dashboard()
 //                    SessionCell()
-                    GoogleMapView(pathPoints: [PathPoint(location: CLLocationCoordinate2D(latitude: 40.73,
-                                                                                          longitude: -73.93),
-                                                         measurement: 30),
-                                               PathPoint(location: CLLocationCoordinate2D(latitude: 40.83,
-                                                                                          longitude: -73.93),
-                                                         measurement: 30),
-                                               PathPoint(location: CLLocationCoordinate2D(latitude: 40.93,
-                                                                                          longitude: -73.83),
-                                                         measurement: 30)])
+                    GoogleMapView(pathPoints: pathPoints)
             }
         }
     }

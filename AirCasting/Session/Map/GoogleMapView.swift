@@ -18,23 +18,22 @@ struct GoogleMapView: UIViewRepresentable {
     func makeUIView(context: Context) -> GMSMapView {
         GMSServices.provideAPIKey(GOOGLE_MAP_KEY)
         GMSPlacesClient.provideAPIKey(GOOGLE_MAP_KEY)
-        let camera = GMSCameraPosition.camera(withLatitude: 40.73, longitude: -73.93, zoom: 10.0)
+        let camera = GMSCameraPosition.camera(withLatitude: 37.33, longitude: -122.03, zoom: 10.0)
         let frame = CGRect(x: 0, y: 0, width: 300, height: 300)
         let mapView = GMSMapView.map(withFrame: frame, camera: camera)
         
+        return mapView
+    }
+    
+    // Drawing the path
+    func updateUIView(_ uiView: GMSMapView, context: Context) {
         let path = GMSMutablePath()
         for point in pathPoints {
             let coordinate = point.location
             path.add(coordinate)
         }
         let polyline = GMSPolyline(path: path)
-        polyline.map = mapView
-        
-        return mapView
-    }
-    
-    func updateUIView(_ uiView: GMSMapView, context: Context) {
-        
+        polyline.map = uiView
     }
     
     typealias UIViewType = GMSMapView
