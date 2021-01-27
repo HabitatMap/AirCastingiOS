@@ -13,9 +13,7 @@ import GooglePlaces
 
 struct GoogleMapView: UIViewRepresentable {
     
-    
-    
-    
+    let pathPoints: [PathPoint]
     
     func makeUIView(context: Context) -> GMSMapView {
         GMSServices.provideAPIKey(GOOGLE_MAP_KEY)
@@ -24,11 +22,13 @@ struct GoogleMapView: UIViewRepresentable {
         let frame = CGRect(x: 0, y: 0, width: 300, height: 300)
         let mapView = GMSMapView.map(withFrame: frame, camera: camera)
         
-        let marker = GMSMarker()
-              marker.position = CLLocationCoordinate2D(latitude: 40.73, longitude: -73.93)
-              marker.title = "New York"
-              marker.snippet = "NY"
-              marker.map = mapView
+        let path = GMSMutablePath()
+        for point in pathPoints {
+            let coordinate = point.location
+            path.add(coordinate)
+        }
+        let polyline = GMSPolyline(path: path)
+        polyline.map = mapView
         
         return mapView
     }
@@ -42,7 +42,15 @@ struct GoogleMapView: UIViewRepresentable {
 
 struct GoogleMapView_Previews: PreviewProvider {
     static var previews: some View {
-        GoogleMapView()
+        GoogleMapView(pathPoints: [PathPoint(location: CLLocationCoordinate2D(latitude: 40.73,
+                                                                              longitude: -73.93),
+                                             measurement: 30),
+                                   PathPoint(location: CLLocationCoordinate2D(latitude: 40.83,
+                                                                              longitude: -73.93),
+                                             measurement: 30),
+                                   PathPoint(location: CLLocationCoordinate2D(latitude: 40.93,
+                                                                              longitude: -73.83),
+                                             measurement: 30)])
             .padding()
     }
 }
