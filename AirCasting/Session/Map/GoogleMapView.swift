@@ -12,7 +12,8 @@ import GoogleMaps
 import GooglePlaces
 
 struct GoogleMapView: UIViewRepresentable {
-    
+    typealias UIViewType = GMSMapView
+
     let pathPoints: [PathPoint]
     
     func makeUIView(context: Context) -> GMSMapView {
@@ -33,10 +34,37 @@ struct GoogleMapView: UIViewRepresentable {
             path.add(coordinate)
         }
         let polyline = GMSPolyline(path: path)
+        
+        let spans = pathPoints.map { point -> GMSStyleSpan in
+            let color = colorPolyline(point: point)
+            return GMSStyleSpan(style: GMSStrokeStyle.solidColor(color),
+                                segments: 1)
+        }
+        
+        polyline.spans = spans
+        polyline.strokeWidth = 6
+        
         polyline.map = uiView
     }
     
-    typealias UIViewType = GMSMapView
+    func colorPolyline(point: PathPoint) -> UIColor {
+        let measurement = point.measurement
+
+        switch measurement {
+        case 0..<20:
+            // UIColor.chartGreen
+            return UIColor(named: "ChartGreen")!
+        case 20..<50:
+            return UIColor(named: "ChartYellow")!
+        case 50..<75:
+            return UIColor(named: "ChartOrange")!
+        case 77...:
+            return UIColor(named: "ChartRed")!
+        default:
+            return UIColor.white
+        }
+    }
+    
 }
 
 struct GoogleMapView_Previews: PreviewProvider {

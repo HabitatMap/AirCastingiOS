@@ -15,10 +15,9 @@ struct AirCastingApp: App {
     
     var pathPoints: [PathPoint] {
         let allLocationPoints = provider.allLocations
-        
         let points = allLocationPoints.map { (location) in
             PathPoint(location: location.coordinate,
-                      measurement: Float(arc4random() % 20))
+                      measurement: Float(arc4random() % 100))
         }
         return points
     }

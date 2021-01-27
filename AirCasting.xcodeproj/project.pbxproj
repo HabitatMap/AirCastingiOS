@@ -244,8 +244,8 @@
 				AC93B8E625BEFE4F003D0A0D /* AirMapView.swift */,
 				AC93B8FD25C02E0B003D0A0D /* GoogleMapView.swift */,
 				AC8D6C7125C0574800ED74D1 /* LocationTracker.swift */,
-				AC8D6C6925C049E300ED74D1 /* Environment.swift */,
 				AC8D6C6D25C056B400ED74D1 /* PathPoint.swift */,
+				AC8D6C6925C049E300ED74D1 /* Environment.swift */,
 			);
 			path = Map;
 			sourceTree = "<group>";
