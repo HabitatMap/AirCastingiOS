@@ -44,12 +44,12 @@ struct StatisticsContainer: View {
     
     var parameter: some View {
         ZStack {
-            Color.chartGreen
+            Color.aircastingGreen
                 .opacity(0.32)
                 .frame(width: 54, height: 27, alignment: .center)
                 .cornerRadius(7.5)
             HStack(spacing: 16) {
-                Color.chartGreen
+                Color.aircastingGreen
                     .clipShape(Circle())
                     .frame(width: 6, height: 6)
                 Text("23")
@@ -58,12 +58,12 @@ struct StatisticsContainer: View {
     }
     var nowParameter: some View {
         ZStack {
-            Color.chartGreen
+            Color.aircastingGreen
                 .opacity(0.32)
                 .frame(width: 68, height: 33, alignment: .center)
                 .cornerRadius(7.5)
             HStack(spacing: 16) {
-                Color.chartGreen
+                Color.aircastingGreen
                     .clipShape(Circle())
                     .frame(width: 8, height: 8)
                 Text("2")

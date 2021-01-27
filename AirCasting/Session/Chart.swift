@@ -57,8 +57,8 @@ class UI_PollutionChart: UIView {
         lineChartView.legend.enabled = false
         
         //dots colors
-        dataSet.circleHoleColor = UIColor(.chartGreen)
-        dataSet.setCircleColors(UIColor(.chartGreen).withAlphaComponent(0.5))
+        dataSet.circleHoleColor = UIColor(.aircastingGreen)
+        dataSet.setCircleColors(UIColor(.aircastingGreen).withAlphaComponent(0.5))
         //line color
         dataSet.setColor(UIColor(.aircastingGray).withAlphaComponent(0.7))
     }

@@ -26,7 +26,7 @@ struct MultiSlider: View {
     var minValue: Float {
         values.first ?? 0
     }
-    var colors: [Color] = [Color.chartGreen, Color.chartYellow, Color.chartOrange, Color.chartRed]
+    var colors: [Color] = [Color.aircastingGreen, Color.aircastingYellow, Color.aircastingOrange, Color.aircastingRed]
         
     var body: some View {
         GeometryReader { geometry in

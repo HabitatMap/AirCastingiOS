@@ -19,7 +19,7 @@ struct GoogleMapView: UIViewRepresentable {
     func makeUIView(context: Context) -> GMSMapView {
         GMSServices.provideAPIKey(GOOGLE_MAP_KEY)
         GMSPlacesClient.provideAPIKey(GOOGLE_MAP_KEY)
-        let camera = GMSCameraPosition.camera(withLatitude: 37.33, longitude: -122.03, zoom: 10.0)
+        let camera = GMSCameraPosition.camera(withLatitude: 37.33, longitude: -122.03, zoom: 12.0)
         let frame = CGRect(x: 0, y: 0, width: 300, height: 300)
         let mapView = GMSMapView.map(withFrame: frame, camera: camera)
         
@@ -52,14 +52,13 @@ struct GoogleMapView: UIViewRepresentable {
 
         switch measurement {
         case 0..<20:
-            // UIColor.chartGreen
-            return UIColor(named: "ChartGreen")!
+            return UIColor.aircastingGreen
         case 20..<50:
-            return UIColor(named: "ChartYellow")!
+            return UIColor.aircastingYellow
         case 50..<75:
-            return UIColor(named: "ChartOrange")!
+            return UIColor.aircastingOrange
         case 77...:
-            return UIColor(named: "ChartRed")!
+            return UIColor.aircastingRed
         default:
             return UIColor.white
         }
