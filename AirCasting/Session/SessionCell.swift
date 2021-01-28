@@ -6,12 +6,15 @@
 //
 
 import SwiftUI
+import CoreLocation
 
 struct SessionCell: View {
     
     @State private var isCollapsed = true
     // TO DO: Change key name
     @AppStorage("values") var values: [Float] = [0, 70, 120, 170, 200]
+    @StateObject var provider = LocationTracker()
+
     
     var body: some View {
         
@@ -39,6 +42,15 @@ struct SessionCell: View {
         )
     }
     
+    var pathPoints: [PathPoint] {
+        let allLocationPoints = provider.allLocations
+        let points = allLocationPoints.map { (location) in
+            PathPoint(location: location.coordinate,
+                      measurement: Float(arc4random() % 100))
+        }
+        return points
+    }
+    
     var pollutionChart: some View {
         Chart()
             .frame(height: 200)
@@ -50,7 +62,10 @@ struct SessionCell: View {
     }
     
     var mapButton: some View {
-        Button("map") {}
+        NavigationLink(destination: AirMapView(values: $values,
+                                               pathPoints: pathPoints)) {
+            Text("map")
+        }
     }
     var buttons: some View {
         HStack(spacing: 20){

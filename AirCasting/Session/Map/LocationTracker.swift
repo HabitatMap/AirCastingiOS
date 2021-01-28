@@ -27,7 +27,7 @@ class LocationTracker: NSObject, ObservableObject, CLLocationManagerDelegate {
         switch manager.authorizationStatus {
         case .authorizedAlways, .authorizedWhenInUse:
             locationManager.startUpdatingLocation()
-            // TO DO: handle denied state
+            // TO DO: handle denied state.
         case .denied: break
         case .notDetermined: break
         case .restricted: break
@@ -35,7 +35,7 @@ class LocationTracker: NSObject, ObservableObject, CLLocationManagerDelegate {
             fatalError()
         }
     }
-    
+        
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         allLocations.append(contentsOf: locations)
         print("\(locations)")
