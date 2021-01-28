@@ -21,9 +21,9 @@ struct GoogleMapView: UIViewRepresentable {
         GMSServices.provideAPIKey(GOOGLE_MAP_KEY)
         GMSPlacesClient.provideAPIKey(GOOGLE_MAP_KEY)
         
-        let camera = GMSCameraPosition.camera(withLatitude: 37.33, longitude: -122.03, zoom: 10)
+        let startingPoint = updateCameraView(points: pathPoints)
         let frame = CGRect(x: 0, y: 0, width: 300, height: 300)
-        let mapView = GMSMapView.map(withFrame: frame, camera: camera)
+        let mapView = GMSMapView.map(withFrame: frame, camera: startingPoint)
         
         return mapView
     }
@@ -45,6 +45,23 @@ struct GoogleMapView: UIViewRepresentable {
         polyline.spans = spans
         polyline.strokeWidth = 6
         polyline.map = uiView
+        
+        // Update camera position.
+        // TO DO: Add animation.
+        let newCameraPosition = updateCameraView(points: pathPoints)
+        uiView.camera = newCameraPosition
+    }
+    
+    func updateCameraView(points: [PathPoint]) -> GMSCameraPosition {
+        if let lastPoint = points.last {
+            let long = lastPoint.location.longitude
+            let lat = lastPoint.location.latitude
+            let newCameraPosition =  GMSCameraPosition.camera(withLatitude: lat, longitude: long, zoom: 15)
+            return newCameraPosition
+        } else {
+            let appleParkPostion = GMSCameraPosition.camera(withLatitude: 37.33, longitude: -122.03, zoom: 15)
+            return appleParkPostion
+        }
     }
 
     func colorPolyline(point: PathPoint) -> UIColor {
