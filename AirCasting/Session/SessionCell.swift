@@ -46,7 +46,7 @@ struct SessionCell: View {
         let allLocationPoints = provider.allLocations
         let points = allLocationPoints.map { (location) in
             PathPoint(location: location.coordinate,
-                      measurement: Float(arc4random() % 100))
+                      measurement: Float(arc4random() % 200))
         }
         return points
     }

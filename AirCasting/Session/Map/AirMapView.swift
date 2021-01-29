@@ -15,11 +15,14 @@ struct AirMapView: View {
     let pathPoints: [PathPoint]
     
     var body: some View {
-        VStack {
+        VStack(alignment: .trailing, spacing: 20) {
             SessionHeader(action: {}, isExpandButtonNeeded: false)
             ZStack(alignment: .topLeading) {
                 GoogleMapView(pathPoints: pathPoints, values: values)
                 StatisticsContainer()
+            }
+            NavigationLink(destination: HeatmapSettings(changedValues: $values)) {
+                EditButton()
             }
             MultiSlider(values: $values)
         }

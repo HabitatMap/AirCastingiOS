@@ -21,8 +21,7 @@ struct GoogleMapView: UIViewRepresentable {
         GMSServices.provideAPIKey(GOOGLE_MAP_KEY)
         GMSPlacesClient.provideAPIKey(GOOGLE_MAP_KEY)
         
-        let startingPoint = setStartingPoint(points: pathPoints,
-                                             zoom: 15)
+        let startingPoint = setStartingPoint(points: pathPoints)
         
         let frame = CGRect(x: 0, y: 0,
                            width: 300,
@@ -50,8 +49,7 @@ struct GoogleMapView: UIViewRepresentable {
         
         // Update starting point
         if !context.coordinator.didSetInitLocation && !pathPoints.isEmpty {
-            let updatedCameraPosition = setStartingPoint(points: pathPoints,
-                                                         zoom: 15)
+            let updatedCameraPosition = setStartingPoint(points: pathPoints)
             DispatchQueue.main.async {
                 uiView.camera = updatedCameraPosition
             }
@@ -62,18 +60,18 @@ struct GoogleMapView: UIViewRepresentable {
         polyline.map = uiView
     }
     
-    func setStartingPoint(points: [PathPoint], zoom: Float) -> GMSCameraPosition {
+    func setStartingPoint(points: [PathPoint]) -> GMSCameraPosition {
         if let lastPoint = points.last {
             let long = lastPoint.location.longitude
             let lat = lastPoint.location.latitude
             let newCameraPosition =  GMSCameraPosition.camera(withLatitude: lat,
                                                               longitude: long,
-                                                              zoom: zoom)
+                                                              zoom: 17)
             return newCameraPosition
         } else {
             let appleParkPostion = GMSCameraPosition.camera(withLatitude: 37.35,
                                                             longitude: -122.05,
-                                                            zoom: zoom)
+                                                            zoom: 17)
             return appleParkPostion
         }
     }
@@ -94,7 +92,6 @@ struct GoogleMapView: UIViewRepresentable {
             return UIColor.white
         }
     }
-    
     
     class Coordinator {
         var didSetInitLocation: Bool = false
