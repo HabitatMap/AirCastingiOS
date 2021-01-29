@@ -21,8 +21,9 @@ struct GoogleMapView: UIViewRepresentable {
         GMSServices.provideAPIKey(GOOGLE_MAP_KEY)
         GMSPlacesClient.provideAPIKey(GOOGLE_MAP_KEY)
         
-        let startingPoint = updateCameraView(points: pathPoints,
+        let startingPoint = setStartingPoint(points: pathPoints,
                                              zoom: 15)
+        
         let frame = CGRect(x: 0, y: 0,
                            width: 300,
                            height: 300)
@@ -32,6 +33,7 @@ struct GoogleMapView: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: GMSMapView, context: Context) {
+        
         // Drawing the path
         let path = GMSMutablePath()
         for point in pathPoints {
@@ -45,18 +47,22 @@ struct GoogleMapView: UIViewRepresentable {
             return GMSStyleSpan(style: GMSStrokeStyle.solidColor(color),
                                 segments: 1)
         }
+        
+        // Update starting point
+        if !context.coordinator.didSetInitLocation && !pathPoints.isEmpty {
+            let updatedCameraPosition = setStartingPoint(points: pathPoints,
+                                                         zoom: 15)
+            DispatchQueue.main.async {
+                uiView.camera = updatedCameraPosition
+            }
+            context.coordinator.didSetInitLocation = true
+        }
         polyline.spans = spans
         polyline.strokeWidth = 6
         polyline.map = uiView
-        
-        // Update camera position.
-        // TO DO: Add animation.
-        let newCameraPosition = updateCameraView(points: pathPoints,
-                                                 zoom: uiView.camera.zoom)
-        uiView.camera = newCameraPosition
     }
     
-    func updateCameraView(points: [PathPoint], zoom: Float) -> GMSCameraPosition {
+    func setStartingPoint(points: [PathPoint], zoom: Float) -> GMSCameraPosition {
         if let lastPoint = points.last {
             let long = lastPoint.location.longitude
             let lat = lastPoint.location.latitude
@@ -65,8 +71,8 @@ struct GoogleMapView: UIViewRepresentable {
                                                               zoom: zoom)
             return newCameraPosition
         } else {
-            let appleParkPostion = GMSCameraPosition.camera(withLatitude: 37.33,
-                                                            longitude: -122.03,
+            let appleParkPostion = GMSCameraPosition.camera(withLatitude: 37.35,
+                                                            longitude: -122.05,
                                                             zoom: zoom)
             return appleParkPostion
         }
@@ -88,6 +94,16 @@ struct GoogleMapView: UIViewRepresentable {
             return UIColor.white
         }
     }
+    
+    
+    class Coordinator {
+        var didSetInitLocation: Bool = false
+    }
+    
+    func makeCoordinator() -> Coordinator {
+        Coordinator()
+    }
+    
 }
 
 struct GoogleMapView_Previews: PreviewProvider {
