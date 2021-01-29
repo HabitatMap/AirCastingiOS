@@ -21,10 +21,13 @@ struct GoogleMapView: UIViewRepresentable {
         GMSServices.provideAPIKey(GOOGLE_MAP_KEY)
         GMSPlacesClient.provideAPIKey(GOOGLE_MAP_KEY)
         
-        let startingPoint = updateCameraView(points: pathPoints)
-        let frame = CGRect(x: 0, y: 0, width: 300, height: 300)
-        let mapView = GMSMapView.map(withFrame: frame, camera: startingPoint)
-        
+        let startingPoint = updateCameraView(points: pathPoints,
+                                             zoom: 15)
+        let frame = CGRect(x: 0, y: 0,
+                           width: 300,
+                           height: 300)
+        let mapView = GMSMapView.map(withFrame: frame,
+                                     camera: startingPoint)
         return mapView
     }
     
@@ -48,18 +51,23 @@ struct GoogleMapView: UIViewRepresentable {
         
         // Update camera position.
         // TO DO: Add animation.
-        let newCameraPosition = updateCameraView(points: pathPoints)
+        let newCameraPosition = updateCameraView(points: pathPoints,
+                                                 zoom: uiView.camera.zoom)
         uiView.camera = newCameraPosition
     }
     
-    func updateCameraView(points: [PathPoint]) -> GMSCameraPosition {
+    func updateCameraView(points: [PathPoint], zoom: Float) -> GMSCameraPosition {
         if let lastPoint = points.last {
             let long = lastPoint.location.longitude
             let lat = lastPoint.location.latitude
-            let newCameraPosition =  GMSCameraPosition.camera(withLatitude: lat, longitude: long, zoom: 15)
+            let newCameraPosition =  GMSCameraPosition.camera(withLatitude: lat,
+                                                              longitude: long,
+                                                              zoom: zoom)
             return newCameraPosition
         } else {
-            let appleParkPostion = GMSCameraPosition.camera(withLatitude: 37.33, longitude: -122.03, zoom: 15)
+            let appleParkPostion = GMSCameraPosition.camera(withLatitude: 37.33,
+                                                            longitude: -122.03,
+                                                            zoom: zoom)
             return appleParkPostion
         }
     }

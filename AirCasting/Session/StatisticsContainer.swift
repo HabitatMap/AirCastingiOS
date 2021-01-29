@@ -18,6 +18,7 @@ struct StatisticsContainer: View {
         .foregroundColor(.aircastingGray)
         .frame(width: 260, height: 85)
         .background(Color.white)
+        .cornerRadius(8)
         .padding()
     }
     

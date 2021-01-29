@@ -17,12 +17,14 @@ struct AirMapView: View {
     var body: some View {
         VStack {
             SessionHeader(action: {}, isExpandButtonNeeded: false)
-            ZStack {
-                StatisticsContainer()
+            ZStack(alignment: .topLeading) {
                 GoogleMapView(pathPoints: pathPoints, values: values)
+                StatisticsContainer()
             }
             MultiSlider(values: $values)
         }
+        .navigationBarTitleDisplayMode(.inline)
+        .padding()
     }
 }
 
