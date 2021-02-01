@@ -18,6 +18,7 @@ struct GraphView: View {
             
             ZStack(alignment: .topLeading) {
                 Graph(values: values)
+//                    .frame(height: 200)
                 StatisticsContainer()
             }
             NavigationLink(destination: HeatmapSettings(changedValues: $values)) {
@@ -27,7 +28,9 @@ struct GraphView: View {
             
             MultiSlider(values: $values)
                 .padding()
-            
+                // Fixes labels covered by tabbar
+                .padding(.bottom)
+            Spacer()
         }
         .navigationBarTitleDisplayMode(.inline)
     }

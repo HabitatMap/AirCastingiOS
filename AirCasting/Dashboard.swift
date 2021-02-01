@@ -26,10 +26,11 @@ struct Dashboard: View {
                     }
                     .padding()
                 }
+                .frame(maxWidth: .infinity)
+                .background(Color.aircastingGray.opacity(0.05))
             }
             .navigationBarTitle("Dashboard")
         }
-
         .tabItem {
             Image(systemName: "house")
         }
