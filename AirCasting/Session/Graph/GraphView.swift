@@ -9,16 +9,15 @@ import SwiftUI
 
 struct GraphView: View {
     
-    // TO DO: Change key name
-    @AppStorage("values") var values: [Float] = [0, 70, 120, 170, 200]
-    
+    @Binding var values: [Float]
+
     var body: some View {
         VStack(alignment: .trailing) {
             SessionHeader(action: {}, isExpandButtonNeeded: false)
                 .padding()
             
             ZStack(alignment: .topLeading) {
-                PollutionGraph(values: values)
+                Graph(values: values)
                 StatisticsContainer()
             }
             NavigationLink(destination: HeatmapSettings(changedValues: $values)) {
@@ -36,6 +35,6 @@ struct GraphView: View {
 
 struct GraphView_Previews: PreviewProvider {
     static var previews: some View {
-        GraphView()
+        GraphView(values: .constant([0,1,2,3]))
     }
 }
