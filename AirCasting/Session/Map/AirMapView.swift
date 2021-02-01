@@ -25,6 +25,8 @@ struct AirMapView: View {
                 EditButton()
             }
             MultiSlider(values: $values)
+                // Fixes labels covered by tabbar
+                .padding(.bottom)
         }
         .navigationBarTitleDisplayMode(.inline)
         .padding()
