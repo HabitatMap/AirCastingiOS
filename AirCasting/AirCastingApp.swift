@@ -11,6 +11,9 @@ import Firebase
 @main
 struct AirCastingApp: App {
     
+    init() {
+        FirebaseApp.configure()
+    }
     
     var body: some Scene {
         WindowGroup {
@@ -21,7 +24,7 @@ struct AirCastingApp: App {
                 
             }
             .onAppear {
-                FirebaseApp.configure()
+                
             }
         }
     }

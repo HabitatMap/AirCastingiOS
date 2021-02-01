@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -12,7 +12,7 @@
 		AC4EC6C425B6FE0D00C1E312 /* HeatmapSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC4EC6C325B6FE0D00C1E312 /* HeatmapSettings.swift */; };
 		AC5832DA25B196DD008C5DD5 /* Graph.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC5832D925B196DD008C5DD5 /* Graph.swift */; };
 		AC5EF72C25C83B56003657B1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = AC5EF72B25C83B56003657B1 /* GoogleService-Info.plist */; };
-		AC6D567C25AC540D00D221BA /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = AC6D567B25AC540D00D221BA /* SwiftPackageProductDependency */; };
+		AC6D567C25AC540D00D221BA /* Charts in Frameworks */ = {isa = PBXBuildFile; productRef = AC6D567B25AC540D00D221BA /* Charts */; };
 		AC6D567F25AC54A400D221BA /* Chart.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6D567E25AC54A400D221BA /* Chart.swift */; };
 		AC6D569A25ADE57800D221BA /* GrayButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6D569925ADE57800D221BA /* GrayButtonStyle.swift */; };
 		AC6D569F25AEEAE700D221BA /* SessionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6D569E25AEEAE700D221BA /* SessionHeader.swift */; };
@@ -114,7 +114,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AC6D567C25AC540D00D221BA /* BuildFile in Frameworks */,
+				AC6D567C25AC540D00D221BA /* Charts in Frameworks */,
 				F76B6F660F0BD398629EDD83 /* Pods_AirCasting.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -287,6 +287,7 @@
 				AC7EB37025A6FB3A00A7F2AF /* Resources */,
 				C3AC27DFF567C636D29031C2 /* [CP] Copy Pods Resources */,
 				CDF508737F6F7BD54E344891 /* [CP] Embed Pods Frameworks */,
+				AC5EF74B25C83F0E003657B1 /* Firebase Crashlytics */,
 			);
 			buildRules = (
 			);
@@ -294,7 +295,7 @@
 			);
 			name = AirCasting;
 			packageProductDependencies = (
-				AC6D567B25AC540D00D221BA /* SwiftPackageProductDependency */,
+				AC6D567B25AC540D00D221BA /* Charts */,
 			);
 			productName = AirCasting;
 			productReference = AC7EB37225A6FB3A00A7F2AF /* AirCasting.app */;
@@ -324,7 +325,7 @@
 			);
 			mainGroup = AC7EB36925A6FB3A00A7F2AF;
 			packageReferences = (
-				AC6D567A25AC540D00D221BA /* RemoteSwiftPackageReference */,
+				AC6D567A25AC540D00D221BA /* XCRemoteSwiftPackageReference "Charts" */,
 			);
 			productRefGroup = AC7EB37325A6FB3A00A7F2AF /* Products */;
 			projectDirPath = "";
@@ -369,6 +370,27 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		AC5EF74B25C83F0E003657B1 /* Firebase Crashlytics */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
+				"$(SRCROOT)/$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
+			);
+			name = "Firebase Crashlytics";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"${PODS_ROOT}/FirebaseCrashlytics/run\"\n";
+		};
 		BA797DF3793837CC1AFA2CA9 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -583,6 +605,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"AirCasting/Preview Content\"";
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
@@ -646,7 +669,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		AC6D567A25AC540D00D221BA /* RemoteSwiftPackageReference */ = {
+		AC6D567A25AC540D00D221BA /* XCRemoteSwiftPackageReference "Charts" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/danielgindi/Charts";
 			requirement = {
@@ -657,9 +680,9 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		AC6D567B25AC540D00D221BA /* SwiftPackageProductDependency */ = {
+		AC6D567B25AC540D00D221BA /* Charts */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = AC6D567A25AC540D00D221BA /* RemoteSwiftPackageReference */;
+			package = AC6D567A25AC540D00D221BA /* XCRemoteSwiftPackageReference "Charts" */;
 			productName = Charts;
 		};
 /* End XCSwiftPackageProductDependency section */
