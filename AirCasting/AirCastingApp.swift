@@ -12,8 +12,11 @@ import Firebase
 struct AirCastingApp: App {
     
     var body: some Scene {
-            WindowGroup {
-                MainTabBarView()
+        WindowGroup {
+            MainTabBarView()
+                .onAppear {
+                    FirebaseApp.configure()
+                }
         }
     }
 }
