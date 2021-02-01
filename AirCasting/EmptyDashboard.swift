@@ -43,7 +43,6 @@ struct EmptyDashboard: View {
             Spacer()
         }
         .padding()
-        .navigationBarTitle("Dashboard")
         .background(Color(red: 251/255, green: 253/255, blue: 255/255))
     }
 }

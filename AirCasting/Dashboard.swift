@@ -8,13 +8,28 @@
 import SwiftUI
 
 struct Dashboard: View {
+    
+    let sessions: [Session] = [Session(name: "Podgórze"),
+                               Session(name: "Krowodrza Górka"),
+                               Session(name: "Mistrzejowice")]
+    
     var body: some View {
         NavigationView {
             VStack {
                 sectionPicker
-                EmptyDashboard()
+                
+                ScrollView(.vertical) {
+                    LazyVStack(spacing: 20) {
+                        ForEach(sessions) { (session) in
+                            SessionCell()
+                        }
+                    }
+                    .padding()
+                }
             }
+            .navigationBarTitle("Dashboard")
         }
+
         .tabItem {
             Image(systemName: "house")
         }

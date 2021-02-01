@@ -13,10 +13,7 @@ struct AirCastingApp: App {
     
     var body: some Scene {
             WindowGroup {
-                NavigationView {
-                    MainTabBarView()
-
-            }
+                MainTabBarView()
         }
     }
 }
