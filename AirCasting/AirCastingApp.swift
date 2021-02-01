@@ -11,20 +11,16 @@ import Firebase
 @main
 struct AirCastingApp: App {
     
-    init() {
-        FirebaseApp.configure()
-    }
-    
     var body: some Scene {
         WindowGroup {
             NavigationView {
                 // GraphView()
-                 Dashboard()
+//                 Dashboard()
                 SessionCell()
                 
             }
             .onAppear {
-                
+                FirebaseApp.configure()
             }
         }
     }
