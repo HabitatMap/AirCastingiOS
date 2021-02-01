@@ -11,7 +11,8 @@
 		AC4EC6C125B6F18A00C1E312 /* EditButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC4EC6C025B6F18A00C1E312 /* EditButton.swift */; };
 		AC4EC6C425B6FE0D00C1E312 /* HeatmapSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC4EC6C325B6FE0D00C1E312 /* HeatmapSettings.swift */; };
 		AC5832DA25B196DD008C5DD5 /* Graph.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC5832D925B196DD008C5DD5 /* Graph.swift */; };
-		AC6D567C25AC540D00D221BA /* Charts in Frameworks */ = {isa = PBXBuildFile; productRef = AC6D567B25AC540D00D221BA /* Charts */; };
+		AC5EF72C25C83B56003657B1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = AC5EF72B25C83B56003657B1 /* GoogleService-Info.plist */; };
+		AC6D567C25AC540D00D221BA /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = AC6D567B25AC540D00D221BA /* SwiftPackageProductDependency */; };
 		AC6D567F25AC54A400D221BA /* Chart.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6D567E25AC54A400D221BA /* Chart.swift */; };
 		AC6D569A25ADE57800D221BA /* GrayButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6D569925ADE57800D221BA /* GrayButtonStyle.swift */; };
 		AC6D569F25AEEAE700D221BA /* SessionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6D569E25AEEAE700D221BA /* SessionHeader.swift */; };
@@ -63,6 +64,7 @@
 		AC4EC6C025B6F18A00C1E312 /* EditButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditButton.swift; sourceTree = "<group>"; };
 		AC4EC6C325B6FE0D00C1E312 /* HeatmapSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeatmapSettings.swift; sourceTree = "<group>"; };
 		AC5832D925B196DD008C5DD5 /* Graph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Graph.swift; sourceTree = "<group>"; };
+		AC5EF72B25C83B56003657B1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../GoogleService-Info.plist"; sourceTree = "<group>"; };
 		AC6D567E25AC54A400D221BA /* Chart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chart.swift; sourceTree = "<group>"; };
 		AC6D569925ADE57800D221BA /* GrayButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrayButtonStyle.swift; sourceTree = "<group>"; };
 		AC6D569E25AEEAE700D221BA /* SessionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionHeader.swift; sourceTree = "<group>"; };
@@ -112,7 +114,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AC6D567C25AC540D00D221BA /* Charts in Frameworks */,
+				AC6D567C25AC540D00D221BA /* BuildFile in Frameworks */,
 				F76B6F660F0BD398629EDD83 /* Pods_AirCasting.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -192,6 +194,7 @@
 				ACF77DEE25A7502600BB85B7 /* Extensions */,
 				AC7EB38625A7152000A7F2AF /* Resources */,
 				AC7EB37E25A6FB3D00A7F2AF /* Info.plist */,
+				AC5EF72B25C83B56003657B1 /* GoogleService-Info.plist */,
 				AC7EB37B25A6FB3D00A7F2AF /* Preview Content */,
 			);
 			path = AirCasting;
@@ -283,6 +286,7 @@
 				AC7EB36F25A6FB3A00A7F2AF /* Frameworks */,
 				AC7EB37025A6FB3A00A7F2AF /* Resources */,
 				C3AC27DFF567C636D29031C2 /* [CP] Copy Pods Resources */,
+				CDF508737F6F7BD54E344891 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -290,7 +294,7 @@
 			);
 			name = AirCasting;
 			packageProductDependencies = (
-				AC6D567B25AC540D00D221BA /* Charts */,
+				AC6D567B25AC540D00D221BA /* SwiftPackageProductDependency */,
 			);
 			productName = AirCasting;
 			productReference = AC7EB37225A6FB3A00A7F2AF /* AirCasting.app */;
@@ -320,7 +324,7 @@
 			);
 			mainGroup = AC7EB36925A6FB3A00A7F2AF;
 			packageReferences = (
-				AC6D567A25AC540D00D221BA /* XCRemoteSwiftPackageReference "Charts" */,
+				AC6D567A25AC540D00D221BA /* RemoteSwiftPackageReference */,
 			);
 			productRefGroup = AC7EB37325A6FB3A00A7F2AF /* Products */;
 			projectDirPath = "";
@@ -355,6 +359,7 @@
 				AC7EB3B225A7152000A7F2AF /* Muli-LightItalic.ttf in Resources */,
 				AC7EB3A825A7152000A7F2AF /* Muli-ExtraBoldItalic.ttf in Resources */,
 				AC7EB37A25A6FB3D00A7F2AF /* Assets.xcassets in Resources */,
+				AC5EF72C25C83B56003657B1 /* GoogleService-Info.plist in Resources */,
 				AC7EB3B325A7152000A7F2AF /* Moderat-Trial-Black.otf in Resources */,
 				AC7EB3A525A7152000A7F2AF /* Muli-MediumItalic.ttf in Resources */,
 				AC7EB39F25A7152000A7F2AF /* Muli-ExtraLight.ttf in Resources */,
@@ -401,6 +406,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AirCasting/Pods-AirCasting-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		CDF508737F6F7BD54E344891 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-AirCasting/Pods-AirCasting-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-AirCasting/Pods-AirCasting-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AirCasting/Pods-AirCasting-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -624,7 +646,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		AC6D567A25AC540D00D221BA /* XCRemoteSwiftPackageReference "Charts" */ = {
+		AC6D567A25AC540D00D221BA /* RemoteSwiftPackageReference */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/danielgindi/Charts";
 			requirement = {
@@ -635,9 +657,9 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		AC6D567B25AC540D00D221BA /* Charts */ = {
+		AC6D567B25AC540D00D221BA /* SwiftPackageProductDependency */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = AC6D567A25AC540D00D221BA /* XCRemoteSwiftPackageReference "Charts" */;
+			package = AC6D567A25AC540D00D221BA /* RemoteSwiftPackageReference */;
 			productName = Charts;
 		};
 /* End XCSwiftPackageProductDependency section */

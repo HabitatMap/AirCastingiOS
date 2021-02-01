@@ -6,18 +6,22 @@
 //
 
 import SwiftUI
+import Firebase
 
 @main
 struct AirCastingApp: App {
     
     
     var body: some Scene {
-            WindowGroup {
-                NavigationView {
-//                    GraphView()
-//                    Dashboard()
-                    SessionCell()
-
+        WindowGroup {
+            NavigationView {
+                // GraphView()
+                // Dashboard()
+                SessionCell()
+                
+            }
+            .onAppear {
+                FirebaseApp.configure()
             }
         }
     }

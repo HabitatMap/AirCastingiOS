@@ -9,4 +9,7 @@ target 'AirCasting' do
   pod 'GoogleMaps', '4.1.0'
   pod 'GooglePlaces', '4.1.0'
 
+# add the Firebase pod for Google Analytics
+pod 'Firebase/Analytics'
+
 end
