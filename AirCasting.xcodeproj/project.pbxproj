@@ -11,10 +11,10 @@
 		AC4EC6C125B6F18A00C1E312 /* EditButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC4EC6C025B6F18A00C1E312 /* EditButton.swift */; };
 		AC4EC6C425B6FE0D00C1E312 /* HeatmapSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC4EC6C325B6FE0D00C1E312 /* HeatmapSettings.swift */; };
 		AC5832DA25B196DD008C5DD5 /* Graph.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC5832D925B196DD008C5DD5 /* Graph.swift */; };
-		AC5EF76125C84888003657B1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = AC5EF76025C84888003657B1 /* GoogleService-Info.plist */; };
 		AC5EF71D25C8178B003657B1 /* EmptyDashboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC5EF71C25C8178B003657B1 /* EmptyDashboard.swift */; };
 		AC5EF72125C81882003657B1 /* Dashboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC5EF72025C81882003657B1 /* Dashboard.swift */; };
 		AC5EF72425C81992003657B1 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC5EF72325C81992003657B1 /* Session.swift */; };
+		AC5EF76125C84888003657B1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = AC5EF76025C84888003657B1 /* GoogleService-Info.plist */; };
 		AC6D567C25AC540D00D221BA /* Charts in Frameworks */ = {isa = PBXBuildFile; productRef = AC6D567B25AC540D00D221BA /* Charts */; };
 		AC6D567F25AC54A400D221BA /* Chart.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6D567E25AC54A400D221BA /* Chart.swift */; };
 		AC6D569A25ADE57800D221BA /* GrayButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6D569925ADE57800D221BA /* GrayButtonStyle.swift */; };
@@ -67,10 +67,10 @@
 		AC4EC6C025B6F18A00C1E312 /* EditButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditButton.swift; sourceTree = "<group>"; };
 		AC4EC6C325B6FE0D00C1E312 /* HeatmapSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeatmapSettings.swift; sourceTree = "<group>"; };
 		AC5832D925B196DD008C5DD5 /* Graph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Graph.swift; sourceTree = "<group>"; };
-		AC5EF76025C84888003657B1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
 		AC5EF71C25C8178B003657B1 /* EmptyDashboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyDashboard.swift; sourceTree = "<group>"; };
 		AC5EF72025C81882003657B1 /* Dashboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dashboard.swift; sourceTree = "<group>"; };
 		AC5EF72325C81992003657B1 /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
+		AC5EF76025C84888003657B1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
 		AC6D567E25AC54A400D221BA /* Chart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chart.swift; sourceTree = "<group>"; };
 		AC6D569925ADE57800D221BA /* GrayButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrayButtonStyle.swift; sourceTree = "<group>"; };
 		AC6D569E25AEEAE700D221BA /* SessionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionHeader.swift; sourceTree = "<group>"; };
@@ -617,6 +617,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"AirCasting/Preview Content\"";
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
@@ -641,6 +642,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"AirCasting/Preview Content\"";
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
