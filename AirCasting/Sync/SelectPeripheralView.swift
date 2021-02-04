@@ -14,24 +14,34 @@ struct SelectPeripheralView: View {
                                       "AirBeeam 2 :475834593",
                                       "AirBeam 3 :45897028547",
                                       "iPhone 11"]
-    
+    @State private var selection: String? = nil
     
     var body: some View {
-        VStack {
+        VStack(spacing: 30) {
+            ProgressView(value: 0.375)
             titileLabel
+
             LazyVStack(alignment: .leading, spacing: 25) {
                 Text("AirBeams")
                 ForEach(availableDevices, id: \.self) { (availableDevice) in
-                    HStack {
-                        // TO DO: Add logic for selecting device.
-                        CheckBox(isSelected: false)
-                        showDevice(name: availableDevice)
+                    Button(action: {
+                        selection = availableDevice   
+                    }) {
+                        HStack {
+                            CheckBox(isSelected: selection == availableDevice)
+                            showDevice(name: availableDevice)
+                        }
                     }
                 }
                 Text("Other devices")
             }
+            .listStyle(PlainListStyle())
+            .listItemTint(Color.red)
+            
             .font(Font.moderate(size: 18, weight: .regular))
             .foregroundColor(.aircastingDarkGray)
+            Spacer()
+            connectButton
         }
         .padding()
     }
@@ -48,6 +58,13 @@ struct SelectPeripheralView: View {
             Text(name)
                 .font(Font.muli(size: 16, weight: .medium))
                 .foregroundColor(.aircastingGray)
+    }
+    
+    var connectButton: some View {
+        Button("Connect") {
+            print("Connect with selected device")
+        }
+        .buttonStyle(BlueButtonStyle())
     }
 }
 

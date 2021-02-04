@@ -10,6 +10,7 @@ import SwiftUI
 struct TurnOnBluetoothView: View {
     var body: some View {
         VStack(spacing: 50) {
+            ProgressView(value: 0.125)
             VStack(alignment: .leading, spacing: 15) {
                 titleLabel
                 messageLabel

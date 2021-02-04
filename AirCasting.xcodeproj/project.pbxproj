@@ -151,7 +151,6 @@
 				AC3203CA25CA991C00A68520 /* TurnOnBluetoothView.swift */,
 				AC1DAD4425C9858C009AC4D1 /* SelectPeripheralView.swift */,
 				AC1DAD4825C987B3009AC4D1 /* BluetoothManager.swift */,
-				AC32040325CC067D00A68520 /* CheckBox.swift */,
 			);
 			path = Sync;
 			sourceTree = "<group>";
@@ -163,6 +162,15 @@
 				AC5EF71C25C8178B003657B1 /* EmptyDashboardView.swift */,
 			);
 			path = Dashboard;
+			sourceTree = "<group>";
+		};
+		AC32040625CC122900A68520 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				AC32040325CC067D00A68520 /* CheckBox.swift */,
+				AC4EC6C025B6F18A00C1E312 /* EditButtonView.swift */,
+			);
+			path = Utils;
 			sourceTree = "<group>";
 		};
 		AC6D569825ADE55B00D221BA /* ButtonStyles */ = {
@@ -189,7 +197,6 @@
 				AC5EF72325C81992003657B1 /* Session.swift */,
 				ACF77DFA25A8888700BB85B7 /* SessionCellView.swift */,
 				AC6D569E25AEEAE700D221BA /* SessionHeaderView.swift */,
-				AC4EC6C025B6F18A00C1E312 /* EditButtonView.swift */,
 				AC6D567E25AC54A400D221BA /* ChartView.swift */,
 				AC4EC6C325B6FE0D00C1E312 /* HeatmapSettingsView.swift */,
 				AC6D56A425AF211200D221BA /* MultiSliderView.swift */,
@@ -226,6 +233,7 @@
 				AC6D56A825B0837500D221BA /* Session */,
 				AC6D56A725B0833F00D221BA /* Graph */,
 				AC8D6C6825C049C200ED74D1 /* Map */,
+				AC32040625CC122900A68520 /* Utils */,
 				AC6D569825ADE55B00D221BA /* ButtonStyles */,
 				AC7EB37925A6FB3D00A7F2AF /* Assets.xcassets */,
 				ACF77DEE25A7502600BB85B7 /* Extensions */,
