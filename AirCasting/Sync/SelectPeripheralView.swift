@@ -9,14 +9,25 @@ import SwiftUI
 
 struct SelectPeripheralView: View {
     
+    var bluetoothManager = BluetoothManager()
     let availableDevices: [String] = ["AirBeam 1",
                                       "AirBeeam 2",
                                       "AirBeam 3"]
     
+    
     var body: some View {
-        List(availableDevices, id: \.self) { device in
-            showDevice(name: device)
+        VStack {
+            List(availableDevices, id: \.self) { device in
+                showDevice(name: device)
+            }
+            Button("Start scanning") {
+                bluetoothManager.startScanning()
+            }
         }
+    }
+    
+    var titileLabel: some View {
+        Text("Choose the evice you'd like to record with")
     }
     
     func showDevice(name: String) -> some View {

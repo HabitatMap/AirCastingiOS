@@ -20,13 +20,21 @@ struct MainTabBarView: View {
     
     // Tab Bar views
     private var dashboardTab: some View {
-        Dashboard()
+        NavigationView {
+            
+            Dashboard()
+                .tabItem {
+                    Image(systemName: "house")
+                }
+        }
     }
     private var createSessionTab: some View {
-        Color.aircastingGray
-            .tabItem {
-                Image(systemName: "plus")
-            }
+        NavigationView {
+            TurnOnBluetoothView()
+        }
+        .tabItem {
+            Image(systemName: "plus")
+        }
     }
     private var settingsTab: some View {
         Color.aircastingGray
@@ -36,9 +44,9 @@ struct MainTabBarView: View {
     }
     
     
-
     
-
+    
+    
 }
 
 struct ContentView_Previews: PreviewProvider {

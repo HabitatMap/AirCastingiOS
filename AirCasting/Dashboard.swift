@@ -14,27 +14,23 @@ struct Dashboard: View {
                                Session(name: "Mistrzejowice")]
     
     var body: some View {
-        NavigationView {
-            VStack {
-                sectionPicker
-                
-                ScrollView(.vertical) {
-                    LazyVStack(spacing: 20) {
-                        ForEach(sessions) { (session) in
-                            SessionCell()
-                        }
+        VStack {
+            sectionPicker
+            
+            ScrollView(.vertical) {
+                LazyVStack(spacing: 20) {
+                    ForEach(sessions) { (session) in
+                        SessionCell()
                     }
-                    .padding()
                 }
-                .frame(maxWidth: .infinity)
-                .background(Color.aircastingGray.opacity(0.05))
+                .padding()
             }
-            .navigationBarTitle("Dashboard")
+            .frame(maxWidth: .infinity)
+            .background(Color.aircastingGray.opacity(0.05))
         }
-        .tabItem {
-            Image(systemName: "house")
-        }
+        .navigationBarTitle("Dashboard")
     }
+    
     
     var sectionPicker: some View {
         Picker(selection: .constant(1), label: Text("Picker"), content: {

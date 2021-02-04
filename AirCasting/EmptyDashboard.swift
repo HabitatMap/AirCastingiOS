@@ -33,6 +33,7 @@ struct EmptyDashboard: View {
                     Text("Record new session")
                         .bold()
                 })
+                .frame(maxWidth: 250)
                 .buttonStyle(BlueButtonStyle())
                 
                 Button(action: {}, label: {
