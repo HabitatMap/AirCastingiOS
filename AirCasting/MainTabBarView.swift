@@ -22,7 +22,7 @@ struct MainTabBarView: View {
     private var dashboardTab: some View {
         NavigationView {
             
-            Dashboard()
+            DashboardView()
                 .tabItem {
                     Image(systemName: "house")
                 }

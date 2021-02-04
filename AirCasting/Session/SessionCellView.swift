@@ -8,7 +8,7 @@
 import SwiftUI
 import CoreLocation
 
-struct SessionCell: View {
+struct SessionCellView: View {
     
     @State private var isCollapsed = true
     // TO DO: Change key name
@@ -19,7 +19,7 @@ struct SessionCell: View {
     var body: some View {
         
         VStack(alignment: .leading, spacing: 13) {
-            SessionHeader(action:  {
+            SessionHeaderView(action:  {
                 withAnimation {
                     isCollapsed = !isCollapsed
                 }
@@ -52,7 +52,7 @@ struct SessionCell: View {
     }
     
     var pollutionChart: some View {
-        Chart()
+        ChartView()
             .frame(height: 200)
     }
     var graphButton: some View {
@@ -78,7 +78,7 @@ struct SessionCell: View {
 
 struct SessionCell_Previews: PreviewProvider {
     static var previews: some View {
-        SessionCell()
+        SessionCellView()
             .padding()
             .previewLayout(.sizeThatFits)
     }

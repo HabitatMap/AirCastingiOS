@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct EmptyDashboard: View {
+struct EmptyDashboardView: View {
     var body: some View {
         emptyState
     }
@@ -50,6 +50,6 @@ struct EmptyDashboard: View {
 
 struct EmptyDashboard_Previews: PreviewProvider {
     static var previews: some View {
-        EmptyDashboard()
+        EmptyDashboardView()
     }
 }

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct MultiSlider: View {
+struct MultiSliderView: View {
     
     @Binding var values: [Float]
     
@@ -96,6 +96,6 @@ struct MultiSlider: View {
 
 struct MultiSlider_Previews: PreviewProvider {
     static var previews: some View {
-        MultiSlider(values: .constant([0,5,10,13,20]))
+        MultiSliderView(values: .constant([0,5,10,13,20]))
     }
 }

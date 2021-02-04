@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct EditButton: View {
+struct EditButtonView: View {
     var body: some View {
         dots
     }
@@ -28,6 +28,6 @@ struct EditButton: View {
 
 struct EditButton_Previews: PreviewProvider {
     static var previews: some View {
-        EditButton()
+        EditButtonView()
     }
 }

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct HeatmapSettings: View {
+struct HeatmapSettingsView: View {
     
     @State private var minValue = ""
     @State private var lowValue = ""
@@ -130,6 +130,6 @@ struct HeatmapSettings: View {
 
 struct HeatmapSettings_Previews: PreviewProvider {
     static var previews: some View {
-        HeatmapSettings(changedValues: .constant([0, 20, 30, 40, 50]))
+        HeatmapSettingsView(changedValues: .constant([0, 20, 30, 40, 50]))
     }
 }

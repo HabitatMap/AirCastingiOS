@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct StatisticsContainer: View {
+struct StatisticsContainerView: View {
     var body: some View {
         HStack {
             avgLabel
@@ -77,6 +77,6 @@ struct StatisticsContainer: View {
 
 struct CalculatedMeasurements_Previews: PreviewProvider {
     static var previews: some View {
-        StatisticsContainer()
+        StatisticsContainerView()
     }
 }

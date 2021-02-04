@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct Dashboard: View {
+struct DashboardView: View {
     
     let sessions: [Session] = [Session(name: "Podgórze"),
                                Session(name: "Krowodrza Górka"),
@@ -46,6 +46,6 @@ struct Dashboard: View {
 
 struct Dashboard_Previews: PreviewProvider {
     static var previews: some View {
-        Dashboard()
+        DashboardView()
     }
 }

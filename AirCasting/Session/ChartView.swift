@@ -68,7 +68,7 @@ class UI_PollutionChart: UIView {
     }
 }
 
-struct Chart: UIViewRepresentable {
+struct ChartView: UIViewRepresentable {
     
     typealias UIViewType = UI_PollutionChart
     
@@ -82,7 +82,7 @@ struct Chart: UIViewRepresentable {
 
 struct MeasurementChart_Previews: PreviewProvider {
     static var previews: some View {
-        Chart()
+        ChartView()
             .frame(width: 300, height: 250, alignment: .center)
     }
 }
