@@ -22,4 +22,7 @@ extension UIColor {
     static var aircastingRed: UIColor {
         return UIColor(Color("ChartRed"))
     }
+    static var aircastingDarkGray: UIColor {
+        return UIColor(Color("DarkGray"))
+    }
 }

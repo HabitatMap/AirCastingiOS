@@ -13,8 +13,8 @@ struct BlueButtonStyle: ButtonStyle {
         configuration
             .label
             .foregroundColor(.white)
+            .frame(maxWidth: .infinity)
             .padding(.vertical, 12)
-            .padding(.horizontal, 40)
             .background(Color.accentColor)
             .cornerRadius(5)
             .padding(-3)

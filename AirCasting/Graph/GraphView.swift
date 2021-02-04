@@ -13,20 +13,19 @@ struct GraphView: View {
 
     var body: some View {
         VStack(alignment: .trailing) {
-            SessionHeader(action: {}, isExpandButtonNeeded: false)
+            SessionHeaderView(action: {}, isExpandButtonNeeded: false)
                 .padding()
             
             ZStack(alignment: .topLeading) {
                 Graph(values: values)
-//                    .frame(height: 200)
-                StatisticsContainer()
+                StatisticsContainerView()
             }
-            NavigationLink(destination: HeatmapSettings(changedValues: $values)) {
+            NavigationLink(destination: HeatmapSettingsView(changedValues: $values)) {
                 EditButton()
             }
             .padding()
             
-            MultiSlider(values: $values)
+            MultiSliderView(values: $values)
                 .padding()
                 // Fixes labels covered by tabbar
                 .padding(.bottom)

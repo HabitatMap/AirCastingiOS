@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct EmptyDashboard: View {
+struct EmptyDashboardView: View {
     var body: some View {
         emptyState
     }
@@ -33,6 +33,7 @@ struct EmptyDashboard: View {
                     Text("Record new session")
                         .bold()
                 })
+                .frame(maxWidth: 250)
                 .buttonStyle(BlueButtonStyle())
                 
                 Button(action: {}, label: {
@@ -49,6 +50,6 @@ struct EmptyDashboard: View {
 
 struct EmptyDashboard_Previews: PreviewProvider {
     static var previews: some View {
-        EmptyDashboard()
+        EmptyDashboardView()
     }
 }

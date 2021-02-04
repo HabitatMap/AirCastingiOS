@@ -7,21 +7,24 @@
 
 import SwiftUI
 
-struct Dashboard: View {
+struct DashboardView: View {
     
-    let sessions: [Session] = [Session(name: "Podgórze"),
-                               Session(name: "Krowodrza Górka"),
-                               Session(name: "Mistrzejowice")]
-    
+    let sessions: [Session] = []
+//        [Session(name: "Podgórze"),
+//                               Session(name: "Krowodrza Górka"),
+//                               Session(name: "Mistrzejowice")]
+//
     var body: some View {
-        NavigationView {
-            VStack {
-                sectionPicker
-                
+        VStack {
+            sectionPicker
+            
+            if sessions.isEmpty {
+                EmptyDashboardView()
+            } else {
                 ScrollView(.vertical) {
                     LazyVStack(spacing: 20) {
                         ForEach(sessions) { (session) in
-                            SessionCell()
+                            SessionCellView()
                         }
                     }
                     .padding()
@@ -29,12 +32,10 @@ struct Dashboard: View {
                 .frame(maxWidth: .infinity)
                 .background(Color.aircastingGray.opacity(0.05))
             }
-            .navigationBarTitle("Dashboard")
         }
-        .tabItem {
-            Image(systemName: "house")
-        }
+        .navigationBarTitle("Dashboard")
     }
+    
     
     var sectionPicker: some View {
         Picker(selection: .constant(1), label: Text("Picker"), content: {
@@ -50,6 +51,6 @@ struct Dashboard: View {
 
 struct Dashboard_Previews: PreviewProvider {
     static var previews: some View {
-        Dashboard()
+        DashboardView()
     }
 }

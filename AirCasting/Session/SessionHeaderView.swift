@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SessionHeader: View {
+struct SessionHeaderView: View {
     
     let action: () -> Void
     let isExpandButtonNeeded: Bool
@@ -82,5 +82,5 @@ struct SessionHeader: View {
 
 struct SessionHeader_Previews: PreviewProvider {
     static var previews: some View {
-        SessionHeader(action: {}, isExpandButtonNeeded: true)    }
+        SessionHeaderView(action: {}, isExpandButtonNeeded: true)    }
 }

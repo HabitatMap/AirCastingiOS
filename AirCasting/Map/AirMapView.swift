@@ -16,15 +16,15 @@ struct AirMapView: View {
     
     var body: some View {
         VStack(alignment: .trailing, spacing: 20) {
-            SessionHeader(action: {}, isExpandButtonNeeded: false)
+            SessionHeaderView(action: {}, isExpandButtonNeeded: false)
             ZStack(alignment: .topLeading) {
                 GoogleMapView(pathPoints: pathPoints, values: values)
-                StatisticsContainer()
+                StatisticsContainerView()
             }
-            NavigationLink(destination: HeatmapSettings(changedValues: $values)) {
+            NavigationLink(destination: HeatmapSettingsView(changedValues: $values)) {
                 EditButton()
             }
-            MultiSlider(values: $values)
+            MultiSliderView(values: $values)
                 // Fixes labels covered by tabbar
                 .padding(.bottom)
         }

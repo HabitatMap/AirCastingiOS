@@ -30,5 +30,8 @@ extension Color {
     static var buttonGray: Color {
         return Color("ButtonGray")
     }
+    static var aircastingDarkGray: Color {
+        return Color("DarkGray")
+    }
 }
 
