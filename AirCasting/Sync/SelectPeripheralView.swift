@@ -25,7 +25,7 @@ struct SelectPeripheralView: View {
                 Text("AirBeams")
                 ForEach(availableDevices, id: \.self) { (availableDevice) in
                     Button(action: {
-                        selection = availableDevice   
+                        selection = availableDevice
                     }) {
                         HStack {
                             CheckBox(isSelected: selection == availableDevice)
@@ -37,7 +37,6 @@ struct SelectPeripheralView: View {
             }
             .listStyle(PlainListStyle())
             .listItemTint(Color.red)
-            
             .font(Font.moderate(size: 18, weight: .regular))
             .foregroundColor(.aircastingDarkGray)
             Spacer()
@@ -61,8 +60,8 @@ struct SelectPeripheralView: View {
     }
     
     var connectButton: some View {
-        Button("Connect") {
-            print("Connect with selected device")
+        NavigationLink(destination: ConnectingABView()) {
+            Text("Connect")
         }
         .buttonStyle(BlueButtonStyle())
     }

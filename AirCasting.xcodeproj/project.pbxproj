@@ -11,6 +11,8 @@
 		AC1DAD4925C987B3009AC4D1 /* BluetoothManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC1DAD4825C987B3009AC4D1 /* BluetoothManager.swift */; };
 		AC3203CB25CA991C00A68520 /* TurnOnBluetoothView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC3203CA25CA991C00A68520 /* TurnOnBluetoothView.swift */; };
 		AC32040425CC067D00A68520 /* CheckBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC32040325CC067D00A68520 /* CheckBox.swift */; };
+		AC32041C25CC46EF00A68520 /* PowerABView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC32041B25CC46EF00A68520 /* PowerABView.swift */; };
+		AC32041F25CC485E00A68520 /* ConnectingABView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC32041E25CC485E00A68520 /* ConnectingABView.swift */; };
 		AC4EC6BC25B5ABB700C1E312 /* StatisticsContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC4EC6BB25B5ABB700C1E312 /* StatisticsContainerView.swift */; };
 		AC4EC6C125B6F18A00C1E312 /* EditButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC4EC6C025B6F18A00C1E312 /* EditButtonView.swift */; };
 		AC4EC6C425B6FE0D00C1E312 /* HeatmapSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC4EC6C325B6FE0D00C1E312 /* HeatmapSettingsView.swift */; };
@@ -71,6 +73,8 @@
 		AC1DAD4825C987B3009AC4D1 /* BluetoothManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothManager.swift; sourceTree = "<group>"; };
 		AC3203CA25CA991C00A68520 /* TurnOnBluetoothView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurnOnBluetoothView.swift; sourceTree = "<group>"; };
 		AC32040325CC067D00A68520 /* CheckBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckBox.swift; sourceTree = "<group>"; };
+		AC32041B25CC46EF00A68520 /* PowerABView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PowerABView.swift; sourceTree = "<group>"; };
+		AC32041E25CC485E00A68520 /* ConnectingABView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectingABView.swift; sourceTree = "<group>"; };
 		AC4EC6BB25B5ABB700C1E312 /* StatisticsContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsContainerView.swift; sourceTree = "<group>"; };
 		AC4EC6C025B6F18A00C1E312 /* EditButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditButtonView.swift; sourceTree = "<group>"; };
 		AC4EC6C325B6FE0D00C1E312 /* HeatmapSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeatmapSettingsView.swift; sourceTree = "<group>"; };
@@ -149,7 +153,9 @@
 			isa = PBXGroup;
 			children = (
 				AC3203CA25CA991C00A68520 /* TurnOnBluetoothView.swift */,
+				AC32041B25CC46EF00A68520 /* PowerABView.swift */,
 				AC1DAD4425C9858C009AC4D1 /* SelectPeripheralView.swift */,
+				AC32041E25CC485E00A68520 /* ConnectingABView.swift */,
 				AC1DAD4825C987B3009AC4D1 /* BluetoothManager.swift */,
 			);
 			path = Sync;
@@ -502,6 +508,7 @@
 				AC93B8FE25C02E0B003D0A0D /* GoogleMapView.swift in Sources */,
 				AC6D569A25ADE57800D221BA /* GrayButtonStyle.swift in Sources */,
 				ACF77DF825A866E700BB85B7 /* BlueButtonStyle.swift in Sources */,
+				AC32041F25CC485E00A68520 /* ConnectingABView.swift in Sources */,
 				AC3203CB25CA991C00A68520 /* TurnOnBluetoothView.swift in Sources */,
 				AC7EB37825A6FB3A00A7F2AF /* MainTabBarView.swift in Sources */,
 				AC5832DA25B196DD008C5DD5 /* Graph.swift in Sources */,
@@ -512,6 +519,7 @@
 				ACFC708925C1A36A00D609D9 /* UIColor.swift in Sources */,
 				AC93B8DA25BEDC46003D0A0D /* Array.swift in Sources */,
 				AC5EF72425C81992003657B1 /* Session.swift in Sources */,
+				AC32041C25CC46EF00A68520 /* PowerABView.swift in Sources */,
 				AC5EF72125C81882003657B1 /* DashboardView.swift in Sources */,
 				AC6D569F25AEEAE700D221BA /* SessionHeaderView.swift in Sources */,
 				AC32040425CC067D00A68520 /* CheckBox.swift in Sources */,

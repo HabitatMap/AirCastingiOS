@@ -1,16 +1,16 @@
 //
-//  TurnOnBluetoothView.swift
+//  PowerABView.swift
 //  AirCasting
 //
-//  Created by Lunar on 03/02/2021.
+//  Created by Lunar on 04/02/2021.
 //
 
 import SwiftUI
 
-struct TurnOnBluetoothView: View {
+struct PowerABView: View {
     var body: some View {
         VStack(spacing: 50) {
-            ProgressView(value: 0.125)
+            ProgressView(value: 0.25)
             VStack(alignment: .leading, spacing: 15) {
                 titleLabel
                 messageLabel
@@ -23,33 +23,28 @@ struct TurnOnBluetoothView: View {
     
     
     var titleLabel: some View {
-        Text("Turn on Bluetooth")
+        Text("Power on your AirBeam")
             .font(Font.moderate(size: 25,
                                 weight: .bold))
             .foregroundColor(.accentColor)
     }
     var messageLabel: some View {
-        Text("Turn on Bluetooth to enable your phone to connect to the AirBeam")
+        Text("If using AirBeam 2, wait for the conncection indicator to change from red to green before continuing.")
             .font(Font.moderate(size: 18,
                                 weight: .regular))
             .foregroundColor(.aircastingGray)
-            .lineSpacing(/*@START_MENU_TOKEN@*/10.0/*@END_MENU_TOKEN@*/)
 
     }
     var continueButton: some View {
-        // To do: start scanning when clicked continue
-//                        bluetoothManager.startScanning()
-        NavigationLink(destination: PowerABView()) {
+        NavigationLink(destination: SelectPeripheralView()) {
             Text("Continue")
                 .frame(maxWidth: .infinity)
         }
     }
 }
 
-struct TurnOnBluetoothView_Previews: PreviewProvider {
+struct PowerABView_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationView {
-            TurnOnBluetoothView()
-        }
+        PowerABView()
     }
 }
