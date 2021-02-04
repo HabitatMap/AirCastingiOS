@@ -35,6 +35,8 @@ struct TurnOnBluetoothView: View {
 
     }
     var continueButton: some View {
+        // To do: start scanning when clicked continue
+//                        bluetoothManager.startScanning()
         NavigationLink(destination: SelectPeripheralView()) {
             Text("Continue")
                 .frame(maxWidth: .infinity)

@@ -22,13 +22,14 @@ struct MainTabBarView: View {
     private var dashboardTab: some View {
         NavigationView {
             DashboardView()
-                .tabItem {
-                    Image(systemName: "house")
-                }
+        }
+        .tabItem {
+            Image(systemName: "house")
         }
     }
     private var createSessionTab: some View {
         NavigationView {
+            // TO DO: Change starting view
             TurnOnBluetoothView()
         }
         .tabItem {
@@ -41,11 +42,6 @@ struct MainTabBarView: View {
                 Image(systemName: "gearshape")
             }
     }
-    
-    
-    
-    
-    
 }
 
 struct ContentView_Previews: PreviewProvider {

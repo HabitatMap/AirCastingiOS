@@ -9,24 +9,29 @@ import SwiftUI
 
 struct DashboardView: View {
     
-    let sessions: [Session] = [Session(name: "Podgórze"),
-                               Session(name: "Krowodrza Górka"),
-                               Session(name: "Mistrzejowice")]
-    
+    let sessions: [Session] = []
+//        [Session(name: "Podgórze"),
+//                               Session(name: "Krowodrza Górka"),
+//                               Session(name: "Mistrzejowice")]
+//
     var body: some View {
         VStack {
             sectionPicker
             
-            ScrollView(.vertical) {
-                LazyVStack(spacing: 20) {
-                    ForEach(sessions) { (session) in
-                        SessionCellView()
+            if sessions.isEmpty {
+                EmptyDashboardView()
+            } else {
+                ScrollView(.vertical) {
+                    LazyVStack(spacing: 20) {
+                        ForEach(sessions) { (session) in
+                            SessionCellView()
+                        }
                     }
+                    .padding()
                 }
-                .padding()
+                .frame(maxWidth: .infinity)
+                .background(Color.aircastingGray.opacity(0.05))
             }
-            .frame(maxWidth: .infinity)
-            .background(Color.aircastingGray.opacity(0.05))
         }
         .navigationBarTitle("Dashboard")
     }
