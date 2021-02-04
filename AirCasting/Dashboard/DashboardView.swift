@@ -20,7 +20,7 @@ struct DashboardView: View {
             ScrollView(.vertical) {
                 LazyVStack(spacing: 20) {
                     ForEach(sessions) { (session) in
-                        SessionCell()
+                        SessionCellView()
                     }
                 }
                 .padding()
