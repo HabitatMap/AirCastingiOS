@@ -33,5 +33,8 @@ extension Color {
     static var aircastingDarkGray: Color {
         return Color("DarkGray")
     }
+    static var aircastingBackground: Color {
+        return Color("aircastingBackground")
+    }
 }
 
