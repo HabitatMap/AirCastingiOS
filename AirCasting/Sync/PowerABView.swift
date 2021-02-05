@@ -11,6 +11,7 @@ struct PowerABView: View {
     var body: some View {
         VStack(spacing: 50) {
             ProgressView(value: 0.25)
+            Image("2-power")
             VStack(alignment: .leading, spacing: 15) {
                 titleLabel
                 messageLabel

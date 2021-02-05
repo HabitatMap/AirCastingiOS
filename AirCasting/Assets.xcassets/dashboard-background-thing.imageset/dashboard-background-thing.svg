@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="186px" height="187px" viewBox="0 0 186 187" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>icon-aircasting</title>
+    <defs>
+        <polygon id="path-1" points="0.367120879 185.334857 185.396044 185.334857 185.396044 0.367120879 0.367120879 0.367120879"></polygon>
+        <polygon id="path-3" points="0.122553191 144.025014 143.63234 144.025014 143.63234 0.305915493 0.122553191 0.305915493"></polygon>
+        <polygon id="path-5" points="0.551020408 99.122449 99.7959184 99.122449 99.7959184 0.12244898 0.551020408 0.12244898"></polygon>
+    </defs>
+    <g id="Screens" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Onboarding---Step-6" transform="translate(-160.000000, -527.000000)">
+            <g id="icon-aircasting" transform="translate(160.000000, 527.000000)">
+                <g id="Clipped">
+                    <mask id="mask-2" fill="white">
+                        <use xlink:href="#path-1"></use>
+                    </mask>
+                    <g id="Path"></g>
+                    <path d="M185.640791,-1.73903383e-14 C83.6423736,-1.73903383e-14 0.611868132,82.9693187 0.611868132,184.967736 L21.293011,184.967736 C21.293011,94.4112527 95.0231209,20.6811429 185.640791,20.6811429 L185.640791,-1.73903383e-14 Z" id="Path" fill="#E0F0FF" opacity="0.320684524" mask="url(#mask-2)"></path>
+                </g>
+                <g id="Clipped" transform="translate(41.600000, 40.800000)">
+                    <mask id="mask-4" fill="white">
+                        <use xlink:href="#path-3"></use>
+                    </mask>
+                    <g id="Path" opacity="0.320684524"></g>
+                    <path d="M143.63234,0.305915493 C64.5242553,0.305915493 0.122553191,64.7929014 0.122553191,144.025014 L20.7114894,144.025014 C20.7114894,76.1729577 75.8604255,20.9246197 143.63234,20.9246197 L143.63234,0.305915493 Z" id="Path" fill="#E0F0FF" opacity="0.320684524" mask="url(#mask-4)"></path>
+                </g>
+                <g id="Clipped" transform="translate(85.600000, 86.400000)">
+                    <mask id="mask-6" fill="white">
+                        <use xlink:href="#path-5"></use>
+                    </mask>
+                    <g id="Path" opacity="0.320684524"></g>
+                    <path d="M99.7959184,0.12244898 C45.0612245,0.12244898 0.551020408,44.5102041 0.551020408,99.122449 L21.3061224,99.122449 C21.3061224,55.9591837 56.5102041,20.8163265 99.7959184,20.8163265 L99.7959184,0.12244898 Z" id="Path" fill="#E0F0FF" opacity="0.320684524" mask="url(#mask-6)"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
