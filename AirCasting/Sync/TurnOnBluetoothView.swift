@@ -11,6 +11,7 @@ struct TurnOnBluetoothView: View {
     var body: some View {
         VStack(spacing: 50) {
             ProgressView(value: 0.125)
+            Image("1-bluetooth")
             VStack(alignment: .leading, spacing: 15) {
                 titleLabel
                 messageLabel

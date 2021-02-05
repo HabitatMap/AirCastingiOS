@@ -11,6 +11,7 @@ struct ConnectingABView: View {
     var body: some View {
         VStack(spacing: 50) {
             ProgressView(value: 0.5)
+            Image("3-connnect")
             VStack(alignment: .leading, spacing: 15) {
                 titleLabel
                 messageLabel
