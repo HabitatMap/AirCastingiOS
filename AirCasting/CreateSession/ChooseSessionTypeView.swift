@@ -9,21 +9,35 @@ import SwiftUI
 
 struct ChooseSessionTypeView: View {
     var body: some View {
-        VStack(alignment: .leading, spacing: 50) {
+        VStack(spacing: 50) {
             VStack(alignment: .leading, spacing: 10) {
                 titleLabel
                 messageLabel
             }
-            VStack(alignment: .leading, spacing: 15) {
-                recordNewLabel
-                
-                HStack(spacing: 60) {
-                    fixedSessionButton
-                    mobileSessionLabel
+            .background(Color.white)
+            .padding(.horizontal)
+            
+            VStack {
+                VStack(alignment: .leading, spacing: 15) {
+                    HStack {
+                        recordNewLabel
+                        Spacer()
+                        moreInfo
+                    }
+                    HStack(spacing: 60) {
+                        fixedSessionButton
+                        mobileSessionLabel
+                    }
                 }
+                Spacer()
             }
+            .padding()
+            .background(
+                Color.aircastingBackground.opacity(0.25)
+                    .ignoresSafeArea()
+            )
         }
-        .padding()
+        
     }
     var titleLabel: some View {
         Text("Let's begin")
@@ -42,6 +56,16 @@ struct ChooseSessionTypeView: View {
         Text("Record a new session")
             .font(Font.muli(size: 14, weight: .bold))
             .foregroundColor(.aircastingDarkGray)
+    }
+    
+    var moreInfo: some View {
+        Button(action: {
+            print("you'll find out soon enough")
+        }, label: {
+            Text("more info")
+                .font(Font.moderate(size: 14))
+                .foregroundColor(.accentColor)
+        })
     }
     
     var fixedSessionButton: some View {
