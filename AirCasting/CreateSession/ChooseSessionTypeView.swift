@@ -26,7 +26,7 @@ struct ChooseSessionTypeView: View {
                     }
                     HStack(spacing: 60) {
                         fixedSessionButton
-                        mobileSessionLabel
+                        mobileSessionButton
                     }
                 }
                 Spacer()
@@ -75,7 +75,7 @@ struct ChooseSessionTypeView: View {
     }
     
     var mobileSessionButton: some View {
-        NavigationLink(destination: TurnOnBluetoothView()) {
+        NavigationLink(destination: SelectDeviceView()) {
             mobileSessionLabel
         }
     }

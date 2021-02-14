@@ -9,14 +9,19 @@ import SwiftUI
 
 struct SelectDeviceView: View {
     
-    @State private var isSelected = false
+    @State private var selected = 0
+    @State private var isBluetoothLinkActive: Bool = false
+    @State private var isMicLinkActive: Bool = false
     
     var body: some View {
-        VStack(spacing: 50) {
+        VStack(spacing: 30) {
             ProgressView(value: 0.125)
             titleLabel
-            // TO DO: change to button
-            bluetoothLabels
+            bluetoothButton
+            micButton
+            Spacer()
+            chooseButton
+            
         }
         .padding()
     }
@@ -28,6 +33,23 @@ struct SelectDeviceView: View {
             .foregroundColor(.accentColor)
     }
     
+    var bluetoothButton: some View {
+        Button(action: {
+            selected = 1
+        }, label: {
+            bluetoothLabels
+        })
+        .buttonStyle(WhiteButtonStyle(isSelected: selected == 1))
+    }
+    
+    var micButton: some View {
+        Button(action: {
+            selected = 2
+        }, label: {
+            micLabels
+        })
+        .buttonStyle(WhiteButtonStyle(isSelected: selected == 2))
+    }
     
     var bluetoothLabels: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -38,13 +60,9 @@ struct SelectDeviceView: View {
                 .font(Font.muli(size: 14, weight: .regular))
                 .foregroundColor(.aircastingGray)
         }
-        .padding()
-        .frame(maxWidth: .infinity, maxHeight: 80)
-        .background(Color.white)
-        .shadow(color: Color(white: 150/255, opacity: 0.5), radius: 9, x: 0, y: 1)
     }
     
-    var mikeLabels: some View {
+    var micLabels: some View {
         VStack(alignment: .leading, spacing: 6) {
             Text("Phone microphone")
                 .font(Font.muli(size: 16, weight: .bold))
@@ -53,10 +71,34 @@ struct SelectDeviceView: View {
                 .font(Font.muli(size: 14, weight: .regular))
                 .foregroundColor(.aircastingGray)
         }
-        .padding()
-        .frame(maxWidth: .infinity, maxHeight: 80)
-        .background(Color.white)
-        .shadow(color: Color(white: 150/255, opacity: 0.5), radius: 9, x: 0, y: 1)
+    }
+    
+    var chooseButton: some View {
+        Button(action: {
+            if selected == 1 {
+                isBluetoothLinkActive = true
+            } else if selected == 2 {
+                isMicLinkActive = true
+            }
+        }, label: {
+            Text("Choose")
+        })
+        .buttonStyle(BlueButtonStyle())
+        .background( Group {
+            NavigationLink(
+                destination: TurnOnBluetoothView(),
+                isActive: $isBluetoothLinkActive,
+                label: {
+                    EmptyView()
+                })
+            NavigationLink(
+                // TO DO: change destination
+                destination: PowerABView(),
+                isActive: $isMicLinkActive,
+                label: {
+                    EmptyView()
+                })
+        })
     }
 }
 
