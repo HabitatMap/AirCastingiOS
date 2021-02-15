@@ -91,7 +91,7 @@
 		AC7EB37225A6FB3A00A7F2AF /* AirCasting.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AirCasting.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AC7EB37525A6FB3A00A7F2AF /* AirCastingApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirCastingApp.swift; sourceTree = "<group>"; };
 		AC7EB37725A6FB3A00A7F2AF /* MainTabBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarView.swift; sourceTree = "<group>"; };
-		AC7EB37925A6FB3D00A7F2AF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = /Users/lunar/Desktop/AirCastingiOS/AirCasting/Assets.xcassets; sourceTree = "<absolute>"; };
+		AC7EB37925A6FB3D00A7F2AF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = /Users/annaolak/Desktop/projects/AirCastingiOS/AirCasting/Assets.xcassets; sourceTree = "<absolute>"; };
 		AC7EB37C25A6FB3D00A7F2AF /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		AC7EB37E25A6FB3D00A7F2AF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AC7EB38825A7152000A7F2AF /* Moderat-Trial-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Moderat-Trial-Medium.otf"; sourceTree = "<group>"; };
