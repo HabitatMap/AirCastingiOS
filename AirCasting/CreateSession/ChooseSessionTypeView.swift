@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct ChooseSessionTypeView: View {
+    
+    @State private var isInfoPresented: Bool = false
+    
     var body: some View {
         VStack(spacing: 50) {
             VStack(alignment: .leading, spacing: 10) {
@@ -60,11 +63,14 @@ struct ChooseSessionTypeView: View {
     
     var moreInfo: some View {
         Button(action: {
-            print("you'll find out soon enough")
+            isInfoPresented = true
         }, label: {
             Text("more info")
                 .font(Font.moderate(size: 14))
                 .foregroundColor(.accentColor)
+        })
+        .sheet(isPresented: $isInfoPresented, content: {
+            moreInfoText
         })
     }
     
@@ -108,6 +114,20 @@ struct ChooseSessionTypeView: View {
         .frame(maxWidth: 145, maxHeight: 145)
         .background(Color.white)
         .shadow(color: Color(white: 150/255, opacity: 0.5), radius: 9, x: 0, y: 1)
+    }
+    
+    var moreInfoText: some View {
+        VStack(alignment: .leading, spacing: 25) {
+            Text("Session types")
+                .font(Font.moderate(size: 28, weight: .bold))
+                .foregroundColor(.accentColor)
+            Text("If you plan on moving around with the AirBeam3 while recording air quality measurement, configure the AirBeam to record a mobile session. When recording a mobile AirCasting session, measurements are created, timestamped, and geolocated once per second.")
+            Text("If you plan to leave the AirBeam3 indoors or hang it outside then configure it to record a fixed session. When recording fixed AirCasting sessions, measurements are created and timestamped once per minute, and geocoordinates are fixed to a set location.")
+        }
+        .font(Font.muli(size: 16))
+        .lineSpacing(12)
+        .foregroundColor(.aircastingGray)
+        .padding()
     }
 }
 
