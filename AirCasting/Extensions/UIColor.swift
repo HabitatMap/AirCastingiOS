@@ -25,4 +25,7 @@ extension UIColor {
     static var aircastingDarkGray: UIColor {
         return UIColor(Color("DarkGray"))
     }
+    static var aircastingBackground: UIColor {
+        return UIColor(Color("aircastingBackground"))
+    }
 }

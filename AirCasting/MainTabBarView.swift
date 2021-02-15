@@ -30,7 +30,7 @@ struct MainTabBarView: View {
     private var createSessionTab: some View {
         NavigationView {
             // TO DO: Change starting view
-            TurnOnBluetoothView()
+            ChooseSessionTypeView()
         }
         .tabItem {
             Image(systemName: "plus")

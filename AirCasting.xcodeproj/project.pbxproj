@@ -13,6 +13,7 @@
 		AC32040425CC067D00A68520 /* CheckBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC32040325CC067D00A68520 /* CheckBox.swift */; };
 		AC32041C25CC46EF00A68520 /* PowerABView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC32041B25CC46EF00A68520 /* PowerABView.swift */; };
 		AC32041F25CC485E00A68520 /* ConnectingABView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC32041E25CC485E00A68520 /* ConnectingABView.swift */; };
+		AC32043625CD534700A68520 /* ChooseSessionTypeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC32043525CD534700A68520 /* ChooseSessionTypeView.swift */; };
 		AC4EC6BC25B5ABB700C1E312 /* StatisticsContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC4EC6BB25B5ABB700C1E312 /* StatisticsContainerView.swift */; };
 		AC4EC6C125B6F18A00C1E312 /* EditButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC4EC6C025B6F18A00C1E312 /* EditButtonView.swift */; };
 		AC4EC6C425B6FE0D00C1E312 /* HeatmapSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC4EC6C325B6FE0D00C1E312 /* HeatmapSettingsView.swift */; };
@@ -27,6 +28,7 @@
 		AC6D569F25AEEAE700D221BA /* SessionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6D569E25AEEAE700D221BA /* SessionHeaderView.swift */; };
 		AC6D56A225AEF55C00D221BA /* GraphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6D56A125AEF55C00D221BA /* GraphView.swift */; };
 		AC6D56A525AF211200D221BA /* MultiSliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6D56A425AF211200D221BA /* MultiSliderView.swift */; };
+		AC7AB09225D988CD0025492B /* WhiteButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC7AB09125D988CD0025492B /* WhiteButtonStyle.swift */; };
 		AC7EB37625A6FB3A00A7F2AF /* AirCastingApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC7EB37525A6FB3A00A7F2AF /* AirCastingApp.swift */; };
 		AC7EB37825A6FB3A00A7F2AF /* MainTabBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC7EB37725A6FB3A00A7F2AF /* MainTabBarView.swift */; };
 		AC7EB37A25A6FB3D00A7F2AF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB37925A6FB3D00A7F2AF /* Assets.xcassets */; };
@@ -51,6 +53,7 @@
 		AC7EB3B125A7152000A7F2AF /* Muli-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB39B25A7152000A7F2AF /* Muli-Regular.ttf */; };
 		AC7EB3B225A7152000A7F2AF /* Muli-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB39C25A7152000A7F2AF /* Muli-LightItalic.ttf */; };
 		AC7EB3B325A7152000A7F2AF /* Moderat-Trial-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB39D25A7152000A7F2AF /* Moderat-Trial-Black.otf */; };
+		AC86EE6B25D03DC00083F8C0 /* SelectDeviceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC86EE6A25D03DC00083F8C0 /* SelectDeviceView.swift */; };
 		AC8D6C6A25C049E300ED74D1 /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8D6C6925C049E300ED74D1 /* Environment.swift */; };
 		AC8D6C6E25C056B400ED74D1 /* PathPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8D6C6D25C056B400ED74D1 /* PathPoint.swift */; };
 		AC8D6C7225C0574800ED74D1 /* LocationTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8D6C7125C0574800ED74D1 /* LocationTracker.swift */; };
@@ -75,6 +78,7 @@
 		AC32040325CC067D00A68520 /* CheckBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckBox.swift; sourceTree = "<group>"; };
 		AC32041B25CC46EF00A68520 /* PowerABView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PowerABView.swift; sourceTree = "<group>"; };
 		AC32041E25CC485E00A68520 /* ConnectingABView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectingABView.swift; sourceTree = "<group>"; };
+		AC32043525CD534700A68520 /* ChooseSessionTypeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseSessionTypeView.swift; sourceTree = "<group>"; };
 		AC4EC6BB25B5ABB700C1E312 /* StatisticsContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsContainerView.swift; sourceTree = "<group>"; };
 		AC4EC6C025B6F18A00C1E312 /* EditButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditButtonView.swift; sourceTree = "<group>"; };
 		AC4EC6C325B6FE0D00C1E312 /* HeatmapSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeatmapSettingsView.swift; sourceTree = "<group>"; };
@@ -88,6 +92,7 @@
 		AC6D569E25AEEAE700D221BA /* SessionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionHeaderView.swift; sourceTree = "<group>"; };
 		AC6D56A125AEF55C00D221BA /* GraphView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphView.swift; sourceTree = "<group>"; };
 		AC6D56A425AF211200D221BA /* MultiSliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiSliderView.swift; sourceTree = "<group>"; };
+		AC7AB09125D988CD0025492B /* WhiteButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhiteButtonStyle.swift; sourceTree = "<group>"; };
 		AC7EB37225A6FB3A00A7F2AF /* AirCasting.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AirCasting.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AC7EB37525A6FB3A00A7F2AF /* AirCastingApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirCastingApp.swift; sourceTree = "<group>"; };
 		AC7EB37725A6FB3A00A7F2AF /* MainTabBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarView.swift; sourceTree = "<group>"; };
@@ -114,6 +119,7 @@
 		AC7EB39B25A7152000A7F2AF /* Muli-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Muli-Regular.ttf"; sourceTree = "<group>"; };
 		AC7EB39C25A7152000A7F2AF /* Muli-LightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Muli-LightItalic.ttf"; sourceTree = "<group>"; };
 		AC7EB39D25A7152000A7F2AF /* Moderat-Trial-Black.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Moderat-Trial-Black.otf"; sourceTree = "<group>"; };
+		AC86EE6A25D03DC00083F8C0 /* SelectDeviceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectDeviceView.swift; sourceTree = "<group>"; };
 		AC8D6C6925C049E300ED74D1 /* Environment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
 		AC8D6C6D25C056B400ED74D1 /* PathPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathPoint.swift; sourceTree = "<group>"; };
 		AC8D6C7125C0574800ED74D1 /* LocationTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationTracker.swift; sourceTree = "<group>"; };
@@ -179,10 +185,20 @@
 			path = Utils;
 			sourceTree = "<group>";
 		};
+		AC32043425CD52E600A68520 /* CreateSession */ = {
+			isa = PBXGroup;
+			children = (
+				AC32043525CD534700A68520 /* ChooseSessionTypeView.swift */,
+				AC86EE6A25D03DC00083F8C0 /* SelectDeviceView.swift */,
+			);
+			path = CreateSession;
+			sourceTree = "<group>";
+		};
 		AC6D569825ADE55B00D221BA /* ButtonStyles */ = {
 			isa = PBXGroup;
 			children = (
 				ACF77DF725A866E700BB85B7 /* BlueButtonStyle.swift */,
+				AC7AB09125D988CD0025492B /* WhiteButtonStyle.swift */,
 				AC6D569925ADE57800D221BA /* GrayButtonStyle.swift */,
 			);
 			path = ButtonStyles;
@@ -235,6 +251,7 @@
 				AC7EB37525A6FB3A00A7F2AF /* AirCastingApp.swift */,
 				AC7EB37725A6FB3A00A7F2AF /* MainTabBarView.swift */,
 				AC3203CE25CBED9C00A68520 /* Dashboard */,
+				AC32043425CD52E600A68520 /* CreateSession */,
 				AC1DAD4325C98556009AC4D1 /* Sync */,
 				AC6D56A825B0837500D221BA /* Session */,
 				AC6D56A725B0833F00D221BA /* Graph */,
@@ -510,6 +527,7 @@
 				ACF77DF825A866E700BB85B7 /* BlueButtonStyle.swift in Sources */,
 				AC32041F25CC485E00A68520 /* ConnectingABView.swift in Sources */,
 				AC3203CB25CA991C00A68520 /* TurnOnBluetoothView.swift in Sources */,
+				AC32043625CD534700A68520 /* ChooseSessionTypeView.swift in Sources */,
 				AC7EB37825A6FB3A00A7F2AF /* MainTabBarView.swift in Sources */,
 				AC5832DA25B196DD008C5DD5 /* Graph.swift in Sources */,
 				AC93B8E725BEFE4F003D0A0D /* AirMapView.swift in Sources */,
@@ -519,7 +537,9 @@
 				ACFC708925C1A36A00D609D9 /* UIColor.swift in Sources */,
 				AC93B8DA25BEDC46003D0A0D /* Array.swift in Sources */,
 				AC5EF72425C81992003657B1 /* Session.swift in Sources */,
+				AC7AB09225D988CD0025492B /* WhiteButtonStyle.swift in Sources */,
 				AC32041C25CC46EF00A68520 /* PowerABView.swift in Sources */,
+				AC86EE6B25D03DC00083F8C0 /* SelectDeviceView.swift in Sources */,
 				AC5EF72125C81882003657B1 /* DashboardView.swift in Sources */,
 				AC6D569F25AEEAE700D221BA /* SessionHeaderView.swift in Sources */,
 				AC32040425CC067D00A68520 /* CheckBox.swift in Sources */,
