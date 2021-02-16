@@ -14,6 +14,7 @@ struct AirCastingApp: App {
     var body: some Scene {
         WindowGroup {
             MainTabBarView()
+//            SelectPeripheralView()
 //            TurnOnBluetoothView()
                 .onAppear {
                     FirebaseApp.configure()

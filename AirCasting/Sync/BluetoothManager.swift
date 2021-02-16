@@ -8,9 +8,21 @@
 import Foundation
 import CoreBluetooth
 
-class BluetoothManager: NSObject {
+class BluetoothManager: NSObject, ObservableObject {
     
     var centralManager = CBCentralManager()
+    @Published var devices: [CBPeripheral] = []
+    
+    var airbeams: [CBPeripheral] {
+        devices.filter { (device) -> Bool in
+            device.name?.contains("AirBeam") ?? false
+        }
+    }
+    var others: [CBPeripheral] {
+        devices.filter { (device) -> Bool in
+            !(device.name?.contains("AirBeam") ?? false)
+        }
+    }
     
     override init() {
         super.init()
@@ -19,8 +31,8 @@ class BluetoothManager: NSObject {
     
     func startScanning() {
         //AirBeam 3 UUID
-        let service = CBUUID(string: "0000ffdd-0000-1000-8000-00805f9b34fb")
-        centralManager.scanForPeripherals(withServices: [service],
+        //let service = CBUUID(string: "0000ffdd-0000-1000-8000-00805f9b34fb")
+        centralManager.scanForPeripherals(withServices: nil,
                                           options: nil)
     }
 }
@@ -42,12 +54,18 @@ extension BluetoothManager: CBCentralManagerDelegate {
           print("central.state is .poweredOff")
         case .poweredOn:
           print("central.state is .poweredOn")
+            startScanning()
         @unknown default:
             fatalError()
         }
     }
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
-        print("NAME: \(peripheral.name), ID: \(peripheral.identifier)")
+        if !devices.contains(peripheral) {
+            if peripheral.name != nil {
+                devices.append(peripheral)
+
+            }
+        }
     }
 
 }

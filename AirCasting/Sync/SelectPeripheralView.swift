@@ -6,34 +6,44 @@
 //
 
 import SwiftUI
+import CoreBluetooth
 
 struct SelectPeripheralView: View {
     
-    var bluetoothManager = BluetoothManager()
-    let availableDevices: [String] = ["AirBeam 1 :1209483437",
-                                      "AirBeeam 2 :475834593",
-                                      "AirBeam 3 :45897028547",
-                                      "iPhone 11"]
+    @ObservedObject var bluetoothManager = BluetoothManager()
     @State private var selection: String? = nil
     
     var body: some View {
         VStack(spacing: 30) {
             ProgressView(value: 0.375)
             titileLabel
-
+            
             LazyVStack(alignment: .leading, spacing: 25) {
                 Text("AirBeams")
-                ForEach(availableDevices, id: \.self) { (availableDevice) in
+                
+                ForEach(bluetoothManager.airbeams, id: \.self) { (availableDevice) in
                     Button(action: {
-                        selection = availableDevice
+                        selection = availableDevice.name
                     }) {
                         HStack {
-                            CheckBox(isSelected: selection == availableDevice)
-                            showDevice(name: availableDevice)
+                            CheckBox(isSelected: selection == availableDevice.name)
+                            showDevice(name: availableDevice.name ?? "")
                         }
                     }
                 }
+                
                 Text("Other devices")
+                
+                ForEach(bluetoothManager.others, id: \.self) { (availableDevice) in
+                    Button(action: {
+                        selection = availableDevice.name
+                    }) {
+                        HStack {
+                            CheckBox(isSelected: selection == availableDevice.name)
+                            showDevice(name: availableDevice.name ?? "")
+                        }
+                    }
+                }
             }
             .listStyle(PlainListStyle())
             .listItemTint(Color.red)
