@@ -67,5 +67,9 @@ extension BluetoothManager: CBCentralManagerDelegate {
             }
         }
     }
+    
+    func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
+        print("Connected to the \(String(describing: peripheral.name))")
+    }
 
 }

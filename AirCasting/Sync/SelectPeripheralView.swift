@@ -11,7 +11,7 @@ import CoreBluetooth
 struct SelectPeripheralView: View {
     
     @ObservedObject var bluetoothManager = BluetoothManager()
-    @State private var selection: String? = nil
+    @State private var selection: CBPeripheral? = nil
     
     var body: some View {
         VStack(spacing: 30) {
@@ -38,10 +38,10 @@ struct SelectPeripheralView: View {
     func displayDeviceButton(devices: [CBPeripheral]) -> some View {
         ForEach(devices, id: \.self) { (availableDevice) in
             Button(action: {
-                selection = availableDevice.name
+                selection = availableDevice
             }) {
                 HStack {
-                    CheckBox(isSelected: selection == availableDevice.name)
+                    CheckBox(isSelected: selection == availableDevice)
                     showDevice(name: availableDevice.name ?? "")
                 }
             }
@@ -63,7 +63,16 @@ struct SelectPeripheralView: View {
     }
     
     var connectButton: some View {
-        NavigationLink(destination: ConnectingABView()) {
+        var destination: AnyView
+
+        if let selection = selection {
+            destination = AnyView(ConnectingABView(bluetoothManager: bluetoothManager,
+                                               selecedPeripheral: selection))
+        } else {
+            destination = AnyView(EmptyView())
+        }
+        
+        return NavigationLink(destination: destination) {
             Text("Connect")
         }
         .buttonStyle(BlueButtonStyle())

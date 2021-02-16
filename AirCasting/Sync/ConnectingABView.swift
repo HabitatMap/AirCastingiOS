@@ -6,8 +6,13 @@
 //
 
 import SwiftUI
+import CoreBluetooth
 
 struct ConnectingABView: View {
+    
+    var bluetoothManager: BluetoothManager
+    var selecedPeripheral: CBPeripheral
+
     var body: some View {
         VStack(spacing: 50) {
             ProgressView(value: 0.5)
@@ -18,8 +23,12 @@ struct ConnectingABView: View {
             }
         }
         .padding()
+        .onAppear(perform: {
+            bluetoothManager.centralManager.connect(selecedPeripheral,
+                                                    options: nil)
+        })
     }
-    
+     
     var titleLabel: some View {
         Text("Connecting")
             .font(Font.moderate(size: 25,
@@ -34,8 +43,8 @@ struct ConnectingABView: View {
 
     }
 }
-struct ConnectingABView_Previews: PreviewProvider {
-    static var previews: some View {
-        ConnectingABView()
-    }
-}
+//struct ConnectingABView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ConnectingABView(bluetoothManager: BluetoothManager(), selectedDevice: CBPeripheral)
+//    }
+//}
