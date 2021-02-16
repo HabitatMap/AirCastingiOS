@@ -20,30 +20,10 @@ struct SelectPeripheralView: View {
             
             LazyVStack(alignment: .leading, spacing: 25) {
                 Text("AirBeams")
-                
-                ForEach(bluetoothManager.airbeams, id: \.self) { (availableDevice) in
-                    Button(action: {
-                        selection = availableDevice.name
-                    }) {
-                        HStack {
-                            CheckBox(isSelected: selection == availableDevice.name)
-                            showDevice(name: availableDevice.name ?? "")
-                        }
-                    }
-                }
-                
+                displayDeviceButton(devices: bluetoothManager.airbeams)
+
                 Text("Other devices")
-                
-                ForEach(bluetoothManager.others, id: \.self) { (availableDevice) in
-                    Button(action: {
-                        selection = availableDevice.name
-                    }) {
-                        HStack {
-                            CheckBox(isSelected: selection == availableDevice.name)
-                            showDevice(name: availableDevice.name ?? "")
-                        }
-                    }
-                }
+                displayDeviceButton(devices: bluetoothManager.otherDevices)
             }
             .listStyle(PlainListStyle())
             .listItemTint(Color.red)
@@ -53,6 +33,19 @@ struct SelectPeripheralView: View {
             connectButton
         }
         .padding()
+    }
+    
+    func displayDeviceButton(devices: [CBPeripheral]) -> some View {
+        ForEach(devices, id: \.self) { (availableDevice) in
+            Button(action: {
+                selection = availableDevice.name
+            }) {
+                HStack {
+                    CheckBox(isSelected: selection == availableDevice.name)
+                    showDevice(name: availableDevice.name ?? "")
+                }
+            }
+        }
     }
     
     var titileLabel: some View {

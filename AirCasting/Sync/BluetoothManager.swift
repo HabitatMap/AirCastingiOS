@@ -18,7 +18,7 @@ class BluetoothManager: NSObject, ObservableObject {
             device.name?.contains("AirBeam") ?? false
         }
     }
-    var others: [CBPeripheral] {
+    var otherDevices: [CBPeripheral] {
         devices.filter { (device) -> Bool in
             !(device.name?.contains("AirBeam") ?? false)
         }
