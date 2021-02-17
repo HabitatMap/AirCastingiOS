@@ -60,7 +60,7 @@
 		AC93B8DA25BEDC46003D0A0D /* Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC93B8D925BEDC46003D0A0D /* Array.swift */; };
 		AC93B8E725BEFE4F003D0A0D /* AirMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC93B8E625BEFE4F003D0A0D /* AirMapView.swift */; };
 		AC93B8FE25C02E0B003D0A0D /* GoogleMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC93B8FD25C02E0B003D0A0D /* GoogleMapView.swift */; };
-		AC960C7825DD39F500EC95DD /* AirbeamConnectedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC960C7725DD39F500EC95DD /* AirbeamConnectedView.swift */; };
+		AC960C7825DD39F500EC95DD /* ABConnectedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC960C7725DD39F500EC95DD /* ABConnectedView.swift */; };
 		ACF77DF025A750C200BB85B7 /* Font.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACF77DEF25A750C200BB85B7 /* Font.swift */; };
 		ACF77DF425A750E000BB85B7 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACF77DF325A750E000BB85B7 /* Color.swift */; };
 		ACF77DF825A866E700BB85B7 /* BlueButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACF77DF725A866E700BB85B7 /* BlueButtonStyle.swift */; };
@@ -127,7 +127,7 @@
 		AC93B8D925BEDC46003D0A0D /* Array.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Array.swift; sourceTree = "<group>"; };
 		AC93B8E625BEFE4F003D0A0D /* AirMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirMapView.swift; sourceTree = "<group>"; };
 		AC93B8FD25C02E0B003D0A0D /* GoogleMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleMapView.swift; sourceTree = "<group>"; };
-		AC960C7725DD39F500EC95DD /* AirbeamConnectedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirbeamConnectedView.swift; sourceTree = "<group>"; };
+		AC960C7725DD39F500EC95DD /* ABConnectedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ABConnectedView.swift; sourceTree = "<group>"; };
 		ACF77DEF25A750C200BB85B7 /* Font.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Font.swift; sourceTree = "<group>"; };
 		ACF77DF325A750E000BB85B7 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
 		ACF77DF725A866E700BB85B7 /* BlueButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlueButtonStyle.swift; sourceTree = "<group>"; };
@@ -160,11 +160,9 @@
 		AC1DAD4325C98556009AC4D1 /* Sync */ = {
 			isa = PBXGroup;
 			children = (
-				AC3203CA25CA991C00A68520 /* TurnOnBluetoothView.swift */,
-				AC32041B25CC46EF00A68520 /* PowerABView.swift */,
 				AC1DAD4425C9858C009AC4D1 /* SelectPeripheralView.swift */,
 				AC32041E25CC485E00A68520 /* ConnectingABView.swift */,
-				AC960C7725DD39F500EC95DD /* AirbeamConnectedView.swift */,
+				AC960C7725DD39F500EC95DD /* ABConnectedView.swift */,
 				AC1DAD4825C987B3009AC4D1 /* BluetoothManager.swift */,
 			);
 			path = Sync;
@@ -193,6 +191,8 @@
 			children = (
 				AC32043525CD534700A68520 /* ChooseSessionTypeView.swift */,
 				AC86EE6A25D03DC00083F8C0 /* SelectDeviceView.swift */,
+				AC3203CA25CA991C00A68520 /* TurnOnBluetoothView.swift */,
+				AC32041B25CC46EF00A68520 /* PowerABView.swift */,
 			);
 			path = CreateSession;
 			sourceTree = "<group>";
@@ -532,7 +532,7 @@
 				AC3203CB25CA991C00A68520 /* TurnOnBluetoothView.swift in Sources */,
 				AC32043625CD534700A68520 /* ChooseSessionTypeView.swift in Sources */,
 				AC7EB37825A6FB3A00A7F2AF /* MainTabBarView.swift in Sources */,
-				AC960C7825DD39F500EC95DD /* AirbeamConnectedView.swift in Sources */,
+				AC960C7825DD39F500EC95DD /* ABConnectedView.swift in Sources */,
 				AC5832DA25B196DD008C5DD5 /* Graph.swift in Sources */,
 				AC93B8E725BEFE4F003D0A0D /* AirMapView.swift in Sources */,
 				AC5EF71D25C8178B003657B1 /* EmptyDashboardView.swift in Sources */,

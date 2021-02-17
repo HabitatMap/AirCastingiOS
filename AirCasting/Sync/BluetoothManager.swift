@@ -68,12 +68,9 @@ extension BluetoothManager: CBCentralManagerDelegate {
             }
         }
     }
-    
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
-        
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "DeviceConnected"),
                                         object: nil)
-        print("Connected to the \(String(describing: peripheral.name))")
     }
 
 }

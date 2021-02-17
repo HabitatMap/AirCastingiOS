@@ -24,14 +24,12 @@ struct ConnectingABView: View {
             }
             .background(
                 NavigationLink(
-                    destination: AirbeamConnectedView(),
+                    destination: ABConnectedView(),
                     isActive: $isDeviceConnected,
                     label: {
                         EmptyView()
-                    }
-                )
-            )
-        }
+                    })
+            )}
         .padding()
         .onAppear(perform: {
             bluetoothManager.centralManager.connect(selecedPeripheral,
@@ -43,8 +41,6 @@ struct ConnectingABView: View {
             }
         })
     }
-     
-    
     
     var titleLabel: some View {
         Text("Connecting")
@@ -52,12 +48,12 @@ struct ConnectingABView: View {
                                 weight: .bold))
             .foregroundColor(.accentColor)
     }
+    
     var messageLabel: some View {
         Text("This should take less than 10 seconds.")
             .font(Font.moderate(size: 18,
                                 weight: .regular))
             .foregroundColor(.aircastingGray)
-
     }
 }
 //struct ConnectingABView_Previews: PreviewProvider {

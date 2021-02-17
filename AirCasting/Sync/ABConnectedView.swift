@@ -1,54 +1,50 @@
 //
-//  TurnOnBluetoothView.swift
+//  AirbeamConnectedView.swift
 //  AirCasting
 //
-//  Created by Lunar on 03/02/2021.
+//  Created by Lunar on 17/02/2021.
 //
 
 import SwiftUI
 
-struct TurnOnBluetoothView: View {
+struct ABConnectedView: View {
     var body: some View {
-        VStack(spacing: 50) {
-            ProgressView(value: 0.125)
-            Image("1-bluetooth")
+        VStack(spacing: 40) {
+            ProgressView(value: 0.625)
+            Image("4-connected")
             VStack(alignment: .leading, spacing: 15) {
                 titleLabel
                 messageLabel
             }
             continueButton
-                .buttonStyle(BlueButtonStyle())
         }
         .padding()
     }
-    
-    
     var titleLabel: some View {
-        Text("Turn on Bluetooth")
+        Text("AirBeam connected")
             .font(Font.moderate(size: 25,
                                 weight: .bold))
             .foregroundColor(.accentColor)
     }
     var messageLabel: some View {
-        Text("Turn on Bluetooth to enable your phone to connect to the AirBeam")
+        Text("Your AirBeam is connected to your phone and ready to take some measurements.")
             .font(Font.moderate(size: 18,
                                 weight: .regular))
             .foregroundColor(.aircastingGray)
-            .lineSpacing(/*@START_MENU_TOKEN@*/10.0/*@END_MENU_TOKEN@*/)
-
     }
     var continueButton: some View {
-        NavigationLink(destination: PowerABView()) {
+        Button(action: {
+            print("Someting will happen, soon.")
+        },
+               label: {
             Text("Continue")
-                .frame(maxWidth: .infinity)
-        }
+        })
+        .buttonStyle(BlueButtonStyle())
     }
 }
 
-struct TurnOnBluetoothView_Previews: PreviewProvider {
+struct AirbeamConnectedView_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationView {
-            TurnOnBluetoothView()
-        }
+        ABConnectedView()
     }
 }
