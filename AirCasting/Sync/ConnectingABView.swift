@@ -27,6 +27,9 @@ struct ConnectingABView: View {
             bluetoothManager.centralManager.connect(selecedPeripheral,
                                                     options: nil)
         })
+        .onReceive(NotificationCenter.default.publisher(for: Notification.Name(rawValue: "DeviceConnected")), perform: { _ in
+            print("Notified!!!!!!!!!")
+        })
     }
      
     var titleLabel: some View {

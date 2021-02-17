@@ -59,6 +59,7 @@ extension BluetoothManager: CBCentralManagerDelegate {
             fatalError()
         }
     }
+    
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
         if !devices.contains(peripheral) {
             if peripheral.name != nil {
@@ -69,6 +70,9 @@ extension BluetoothManager: CBCentralManagerDelegate {
     }
     
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
+        
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "DeviceConnected"),
+                                        object: nil)
         print("Connected to the \(String(describing: peripheral.name))")
     }
 
