@@ -12,6 +12,7 @@ struct ConnectingABView: View {
     
     var bluetoothManager: BluetoothManager
     var selecedPeripheral: CBPeripheral
+    @State private var isDeviceConnected: Bool = false
 
     var body: some View {
         VStack(spacing: 50) {
@@ -21,6 +22,15 @@ struct ConnectingABView: View {
                 titleLabel
                 messageLabel
             }
+            .background(
+                NavigationLink(
+                    destination: AirbeamConnectedView(),
+                    isActive: $isDeviceConnected,
+                    label: {
+                        EmptyView()
+                    }
+                )
+            )
         }
         .padding()
         .onAppear(perform: {
@@ -28,10 +38,14 @@ struct ConnectingABView: View {
                                                     options: nil)
         })
         .onReceive(NotificationCenter.default.publisher(for: Notification.Name(rawValue: "DeviceConnected")), perform: { _ in
-            print("Notified!!!!!!!!!")
+            if selecedPeripheral.state == .connected {
+                isDeviceConnected = true
+            }
         })
     }
      
+    
+    
     var titleLabel: some View {
         Text("Connecting")
             .font(Font.moderate(size: 25,
