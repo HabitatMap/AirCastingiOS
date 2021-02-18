@@ -12,6 +12,7 @@ struct SelectPeripheralView: View {
     
     @ObservedObject var bluetoothManager = BluetoothManager()
     @State private var selection: CBPeripheral? = nil
+    @State var observedObject: NSKeyValueObservation?
     
     var body: some View {
         VStack(spacing: 30) {
@@ -19,10 +20,26 @@ struct SelectPeripheralView: View {
             titileLabel
             
             LazyVStack(alignment: .leading, spacing: 25) {
-                Text("AirBeams")
+                
+                HStack(spacing: 8) {
+                    Text("AirBeams")
+                    if bluetoothManager.isScanning {
+                        loader
+                    } else {
+                        loader.hidden()
+                    }
+            
+                }
                 displayDeviceButton(devices: bluetoothManager.airbeams)
 
-                Text("Other devices")
+                HStack(spacing: 8) {
+                    Text("Other devices")
+                    if bluetoothManager.isScanning {
+                        loader
+                    } else {
+                        loader.hidden()
+                    }
+                }
                 displayDeviceButton(devices: bluetoothManager.otherDevices)
             }
             .listStyle(PlainListStyle())
@@ -33,6 +50,15 @@ struct SelectPeripheralView: View {
             connectButton
         }
         .padding()
+        .onAppear(perform: {
+            isScanningFinished()
+        })
+    }
+    
+    func isScanningFinished() {
+        observedObject = bluetoothManager.observe(\BluetoothManager.isScanning) { BluetoothManager, change in
+//            BluetoothManager.isScanning
+        }
     }
     
     func displayDeviceButton(devices: [CBPeripheral]) -> some View {
@@ -40,7 +66,7 @@ struct SelectPeripheralView: View {
             Button(action: {
                 selection = availableDevice
             }) {
-                HStack {
+                HStack(spacing: 20) {
                     CheckBox(isSelected: selection == availableDevice)
                     showDevice(name: availableDevice.name ?? "")
                 }
@@ -60,6 +86,11 @@ struct SelectPeripheralView: View {
             Text(name)
                 .font(Font.muli(size: 16, weight: .medium))
                 .foregroundColor(.aircastingGray)
+    }
+    
+    var loader: some View {
+        ProgressView()
+            .progressViewStyle(CircularProgressViewStyle(tint: Color.accentColor))
     }
     
     var connectButton: some View {

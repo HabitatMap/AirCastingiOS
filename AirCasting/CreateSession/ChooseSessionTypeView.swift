@@ -40,7 +40,7 @@ struct ChooseSessionTypeView: View {
                     .ignoresSafeArea()
             )
         }
-        
+        .navigationBarTitleDisplayMode(.inline)
     }
     var titleLabel: some View {
         Text("Let's begin")
