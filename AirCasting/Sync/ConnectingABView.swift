@@ -17,7 +17,15 @@ struct ConnectingABView: View {
     var body: some View {
         VStack(spacing: 50) {
             ProgressView(value: 0.5)
-            Image("3-connnect")
+            ZStack(alignment: Alignment(horizontal: .trailing, vertical: .bottom), content: {
+                Image("airbeam")
+                    .resizable()
+                    .frame(width: 300, height: 400)
+                loader
+                    .padding()
+                    .padding(.vertical)
+            })
+            
             VStack(alignment: .leading, spacing: 15) {
                 titleLabel
                 messageLabel
@@ -54,6 +62,17 @@ struct ConnectingABView: View {
             .font(Font.moderate(size: 18,
                                 weight: .regular))
             .foregroundColor(.aircastingGray)
+    }
+    
+    var loader: some View {
+        ZStack {
+            Color.accentColor
+                .frame(width: 70, height: 70)
+                .clipShape(Circle())
+            ProgressView()
+                .progressViewStyle(CircularProgressViewStyle(tint: Color.white))
+                .scaleEffect(2)
+        }
     }
 }
 //struct ConnectingABView_Previews: PreviewProvider {

@@ -22,22 +22,19 @@ struct SelectPeripheralView: View {
             LazyVStack(alignment: .leading, spacing: 25) {
                 
                 HStack(spacing: 8) {
+                    
                     Text("AirBeams")
                     if bluetoothManager.isScanning {
                         loader
-                    } else {
-                        loader.hidden()
                     }
-            
                 }
                 displayDeviceButton(devices: bluetoothManager.airbeams)
 
                 HStack(spacing: 8) {
+                    
                     Text("Other devices")
                     if bluetoothManager.isScanning {
                         loader
-                    } else {
-                        loader.hidden()
                     }
                 }
                 displayDeviceButton(devices: bluetoothManager.otherDevices)
@@ -46,19 +43,21 @@ struct SelectPeripheralView: View {
             .listItemTint(Color.red)
             .font(Font.moderate(size: 18, weight: .regular))
             .foregroundColor(.aircastingDarkGray)
+            
             Spacer()
-            connectButton
+        
+            if !bluetoothManager.isScanning {
+                refreshButton
+                    .frame(alignment: .trailing)
+            }
+
+            if selection != nil {
+                connectButton.disabled(false)
+            } else {
+                connectButton.disabled(true)
+            }
         }
         .padding()
-        .onAppear(perform: {
-            isScanningFinished()
-        })
-    }
-    
-    func isScanningFinished() {
-        observedObject = bluetoothManager.observe(\BluetoothManager.isScanning) { BluetoothManager, change in
-//            BluetoothManager.isScanning
-        }
     }
     
     func displayDeviceButton(devices: [CBPeripheral]) -> some View {
@@ -91,6 +90,14 @@ struct SelectPeripheralView: View {
     var loader: some View {
         ProgressView()
             .progressViewStyle(CircularProgressViewStyle(tint: Color.accentColor))
+    }
+    
+    var refreshButton: some View {
+        Button(action: {
+            bluetoothManager.startScanning()
+        }, label: {
+            Text("Don't see a device? Refresh scanning.")
+        })
     }
     
     var connectButton: some View {

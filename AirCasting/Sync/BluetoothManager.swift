@@ -12,7 +12,7 @@ class BluetoothManager: NSObject, ObservableObject {
     
     var centralManager = CBCentralManager()
     @Published var devices: [CBPeripheral] = []
-    @objc dynamic var isScanning: Bool = true
+    @Published var isScanning: Bool = true
     var observed: NSKeyValueObservation?
     
     var airbeams: [CBPeripheral] {
@@ -30,6 +30,10 @@ class BluetoothManager: NSObject, ObservableObject {
         super.init()
         centralManager.delegate = self
         isScanning = centralManager.isScanning
+        
+        observed = centralManager.observe(\.isScanning) { [weak self] _, change in
+            self?.isScanning = self?.centralManager.isScanning ?? false
+        }
     }
     
     func startScanning() {
@@ -37,7 +41,10 @@ class BluetoothManager: NSObject, ObservableObject {
         //let service = CBUUID(string: "0000ffdd-0000-1000-8000-00805f9b34fb")
         centralManager.scanForPeripherals(withServices: nil,
                                           options: nil)
-        isScanning = true
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(30)) {
+            self.centralManager.stopScan()
+        }
     }
 }
 
@@ -68,27 +75,15 @@ extension BluetoothManager: CBCentralManagerDelegate {
         if !devices.contains(peripheral) {
             if peripheral.name != nil {
                 devices.append(peripheral)
-                
             }
         }
-        
-            if devices.count == 1 {
-                self.centralManager.stopScan()
-                isScanning = false
-
-                DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(3)) {
-                    self.devices = []
-                    self.startScanning()
-                }
-            }
-
-        
-
     }
     
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "DeviceConnected"),
                                         object: nil)
+        
+        // Here's code for getting data from AB.
         //        peripheral.delegate = self
     }
     
