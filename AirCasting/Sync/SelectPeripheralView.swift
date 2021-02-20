@@ -12,7 +12,6 @@ struct SelectPeripheralView: View {
     
     @ObservedObject var bluetoothManager = BluetoothManager()
     @State private var selection: CBPeripheral? = nil
-    @State var observedObject: NSKeyValueObservation?
     
     var body: some View {
         VStack(spacing: 30) {
