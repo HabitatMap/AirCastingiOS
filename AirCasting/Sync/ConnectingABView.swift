@@ -6,18 +6,48 @@
 //
 
 import SwiftUI
+import CoreBluetooth
 
 struct ConnectingABView: View {
+    
+    var bluetoothManager: BluetoothManager
+    var selecedPeripheral: CBPeripheral
+    @State private var isDeviceConnected: Bool = false
+
     var body: some View {
         VStack(spacing: 50) {
             ProgressView(value: 0.5)
-            Image("3-connnect")
+            ZStack(alignment: Alignment(horizontal: .trailing, vertical: .bottom), content: {
+                Image("airbeam")
+                    .resizable()
+                    .frame(width: 300, height: 400)
+                loader
+                    .padding()
+                    .padding(.vertical)
+            })
+            
             VStack(alignment: .leading, spacing: 15) {
                 titleLabel
                 messageLabel
             }
-        }
+            .background(
+                NavigationLink(
+                    destination: ABConnectedView(),
+                    isActive: $isDeviceConnected,
+                    label: {
+                        EmptyView()
+                    })
+            )}
         .padding()
+        .onAppear(perform: {
+            bluetoothManager.centralManager.connect(selecedPeripheral,
+                                                    options: nil)
+        })
+        .onReceive(NotificationCenter.default.publisher(for: Notification.Name(rawValue: "DeviceConnected")), perform: { _ in
+            if selecedPeripheral.state == .connected {
+                isDeviceConnected = true
+            }
+        })
     }
     
     var titleLabel: some View {
@@ -26,16 +56,27 @@ struct ConnectingABView: View {
                                 weight: .bold))
             .foregroundColor(.accentColor)
     }
+    
     var messageLabel: some View {
         Text("This should take less than 10 seconds.")
             .font(Font.moderate(size: 18,
                                 weight: .regular))
             .foregroundColor(.aircastingGray)
-
+    }
+    
+    var loader: some View {
+        ZStack {
+            Color.accentColor
+                .frame(width: 70, height: 70)
+                .clipShape(Circle())
+            ProgressView()
+                .progressViewStyle(CircularProgressViewStyle(tint: Color.white))
+                .scaleEffect(2)
+        }
     }
 }
-struct ConnectingABView_Previews: PreviewProvider {
-    static var previews: some View {
-        ConnectingABView()
-    }
-}
+//struct ConnectingABView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ConnectingABView(bluetoothManager: BluetoothManager(), selectedDevice: CBPeripheral)
+//    }
+//}

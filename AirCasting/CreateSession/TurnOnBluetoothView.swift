@@ -34,12 +34,9 @@ struct TurnOnBluetoothView: View {
             .font(Font.moderate(size: 18,
                                 weight: .regular))
             .foregroundColor(.aircastingGray)
-            .lineSpacing(/*@START_MENU_TOKEN@*/10.0/*@END_MENU_TOKEN@*/)
-
+            .lineSpacing(10.0)
     }
     var continueButton: some View {
-        // To do: start scanning when clicked continue
-//                        bluetoothManager.startScanning()
         NavigationLink(destination: PowerABView()) {
             Text("Continue")
                 .frame(maxWidth: .infinity)

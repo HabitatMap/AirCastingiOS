@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "airbeam.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
