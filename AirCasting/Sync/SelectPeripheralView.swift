@@ -6,43 +6,70 @@
 //
 
 import SwiftUI
+import CoreBluetooth
 
 struct SelectPeripheralView: View {
     
-    var bluetoothManager = BluetoothManager()
-    let availableDevices: [String] = ["AirBeam 1 :1209483437",
-                                      "AirBeeam 2 :475834593",
-                                      "AirBeam 3 :45897028547",
-                                      "iPhone 11"]
-    @State private var selection: String? = nil
+    @ObservedObject var bluetoothManager = BluetoothManager()
+    @State private var selection: CBPeripheral? = nil
     
     var body: some View {
         VStack(spacing: 30) {
             ProgressView(value: 0.375)
             titileLabel
-
+            
             LazyVStack(alignment: .leading, spacing: 25) {
-                Text("AirBeams")
-                ForEach(availableDevices, id: \.self) { (availableDevice) in
-                    Button(action: {
-                        selection = availableDevice
-                    }) {
-                        HStack {
-                            CheckBox(isSelected: selection == availableDevice)
-                            showDevice(name: availableDevice)
-                        }
+                
+                HStack(spacing: 8) {
+                    
+                    Text("AirBeams")
+                    if bluetoothManager.isScanning {
+                        loader
                     }
                 }
-                Text("Other devices")
+                displayDeviceButton(devices: bluetoothManager.airbeams)
+
+                HStack(spacing: 8) {
+                    
+                    Text("Other devices")
+                    if bluetoothManager.isScanning {
+                        loader
+                    }
+                }
+                displayDeviceButton(devices: bluetoothManager.otherDevices)
             }
             .listStyle(PlainListStyle())
             .listItemTint(Color.red)
             .font(Font.moderate(size: 18, weight: .regular))
             .foregroundColor(.aircastingDarkGray)
+            
             Spacer()
-            connectButton
+        
+            if !bluetoothManager.isScanning {
+                refreshButton
+                    .frame(alignment: .trailing)
+            }
+
+            if selection != nil {
+                connectButton.disabled(false)
+            } else {
+                connectButton.disabled(true)
+            }
         }
         .padding()
+    }
+    
+    func displayDeviceButton(devices: [CBPeripheral]) -> some View {
+        ForEach(devices, id: \.self) { (availableDevice) in
+            Button(action: {
+                selection = availableDevice
+            }) {
+                HStack(spacing: 20) {
+                    CheckBox(isSelected: selection == availableDevice)
+                    showDevice(name: availableDevice.name ?? "")
+                }
+            }
+        }
     }
     
     var titileLabel: some View {
@@ -59,8 +86,30 @@ struct SelectPeripheralView: View {
                 .foregroundColor(.aircastingGray)
     }
     
+    var loader: some View {
+        ProgressView()
+            .progressViewStyle(CircularProgressViewStyle(tint: Color.accentColor))
+    }
+    
+    var refreshButton: some View {
+        Button(action: {
+            bluetoothManager.startScanning()
+        }, label: {
+            Text("Don't see a device? Refresh scanning.")
+        })
+    }
+    
     var connectButton: some View {
-        NavigationLink(destination: ConnectingABView()) {
+        var destination: AnyView
+
+        if let selection = selection {
+            destination = AnyView(ConnectingABView(bluetoothManager: bluetoothManager,
+                                               selecedPeripheral: selection))
+        } else {
+            destination = AnyView(EmptyView())
+        }
+        
+        return NavigationLink(destination: destination) {
             Text("Connect")
         }
         .buttonStyle(BlueButtonStyle())
