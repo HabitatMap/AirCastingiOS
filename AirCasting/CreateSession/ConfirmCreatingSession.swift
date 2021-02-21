@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CoreLocation
 
 struct ConfirmCreatingSession: View {
     var sessionType = "mobile"
@@ -29,8 +30,14 @@ struct ConfirmCreatingSession: View {
                 .foregroundColor(Color.aircastingGray)
                 .multilineTextAlignment(.leading)
                 .lineSpacing(9.0)
-            
+                        
             Spacer()
+            Button(action: {}, label: {
+                Text("Start recording")
+                    .bold()
+            })
+//            .frame(maxWidth: 250)
+            .buttonStyle(BlueButtonStyle())
         }
         .padding()
     }
