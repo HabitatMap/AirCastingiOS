@@ -14,10 +14,15 @@ struct CreateAccountView: View {
 
     
     var body: some View {
-        VStack {
+        VStack(spacing: 50) {
             titleLabel
-            
+            VStack(spacing: 20) {
+                usernameTextfield
+                passwordTextfield
+                confirmPasswordTextfield
+            }
         }
+        .padding()
     }
     
     var titleLabel: some View {
@@ -32,9 +37,23 @@ struct CreateAccountView: View {
         }
     }
     
-//    var username: some View {
+    var usernameTextfield: some View {
+        createTextfield(placeholder: "Username",
+                        binding: $username)
+    }
+    var passwordTextfield: some View {
+        createTextfield(placeholder: "Password",
+                        binding: $password)
+    }
+    var confirmPasswordTextfield: some View {
+        createTextfield(placeholder: "Repeat password",
+                        binding: $password)
+    }
+
+//    var signinButton: some View {
+//
 //    }
-//    
+    
 }
 
 struct CreateAccountView_Previews: PreviewProvider {
