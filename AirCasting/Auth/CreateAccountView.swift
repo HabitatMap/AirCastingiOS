@@ -15,16 +15,22 @@ struct CreateAccountView: View {
     @State private var task: Any?
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 50) {
-            titleLabel
-            VStack(spacing: 20) {
-                emailTextfield
-                usernameTextfield
-                passwordTextfield
+        NavigationView {
+            VStack(spacing: 50) {
+                titleLabel
+                VStack(spacing: 20) {
+                    emailTextfield
+                    usernameTextfield
+                    passwordTextfield
+                }
+                VStack(spacing: 25) {
+                    createAccountButton
+                    signinButton
+                }
             }
-            createAccount
+            .padding()
+            .navigationBarHidden(true)
         }
-        .padding()
     }
     
     var titleLabel: some View {
@@ -55,7 +61,7 @@ struct CreateAccountView: View {
             .border(Color.aircastingGray.opacity(0.1))
     }
     
-    var createAccount: some View {
+    var createAccountButton: some View {
         Button("Continue") {
             let userInfo = AuthorizationAPI.UserInput(email: email,
                                                       username: username,
@@ -78,6 +84,23 @@ struct CreateAccountView: View {
         .buttonStyle(BlueButtonStyle())
     }
     
+    var signinButton: some View {
+        NavigationLink(
+            destination: SignInView(),
+            label: {
+                signingButtonText
+            })
+    }
+    
+    var signingButtonText: some View {
+        Text("Already have an account? ")
+            .font(Font.muli(size: 16))
+            .foregroundColor(.aircastingGray)
+            
+            + Text("Sign in")
+            .font(Font.moderate(size: 16, weight: .bold))
+            .foregroundColor(.accentColor)
+    }
 }
 
 struct CreateAccountView_Previews: PreviewProvider {
