@@ -30,6 +30,7 @@ struct ConfirmCreatingSession: View {
                 .foregroundColor(Color.aircastingGray)
                 .multilineTextAlignment(.leading)
                 .lineSpacing(9.0)
+            GoogleMapView(pathPoints: [], values: [])
                         
             Spacer()
             Button(action: {}, label: {
