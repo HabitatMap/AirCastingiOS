@@ -8,7 +8,7 @@
 import SwiftUI
 import CoreLocation
 
-struct ConfirmCreatingSession: View {
+struct ConfirmCreatingSessionView: View {
     var sessionType = "mobile"
     var sessionName = "Ania's microphone session"
     
@@ -41,6 +41,6 @@ struct ConfirmCreatingSession: View {
 
 struct ConfirmCreatingSession_Previews: PreviewProvider {
     static var previews: some View {
-        ConfirmCreatingSession()
+        ConfirmCreatingSessionView()
     }
 }
