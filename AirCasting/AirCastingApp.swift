@@ -10,12 +10,11 @@ import Firebase
 
 @main
 struct AirCastingApp: App {
-    
-    let api = AuthorizationAPI()
-    
+        
     var body: some Scene {
         WindowGroup {
-            MainTabBarView()
+//            MainTabBarView()
+            CreateAccountView()
 //            SelectPeripheralView()
 //            TurnOnBluetoothView()
                 .onAppear {

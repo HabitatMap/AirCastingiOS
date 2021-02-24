@@ -9,18 +9,20 @@ import SwiftUI
 
 struct CreateAccountView: View {
     
+    @State private var email: String = ""
     @State private var username: String = ""
     @State private var password: String = ""
-
+    @State private var task: Any?
     
     var body: some View {
-        VStack(spacing: 50) {
+        VStack(alignment: .leading, spacing: 50) {
             titleLabel
             VStack(spacing: 20) {
+                emailTextfield
                 usernameTextfield
                 passwordTextfield
-                confirmPasswordTextfield
             }
+            createAccount
         }
         .padding()
     }
@@ -37,22 +39,44 @@ struct CreateAccountView: View {
         }
     }
     
+    var emailTextfield: some View {
+        createTextfield(placeholder: "Email",
+                        binding: $email)
+    }
     var usernameTextfield: some View {
         createTextfield(placeholder: "Username",
                         binding: $username)
     }
     var passwordTextfield: some View {
-        createTextfield(placeholder: "Password",
-                        binding: $password)
+        SecureField("Password", text: $password)
+            .padding()
+            .frame(height: 50)
+            .background(Color.aircastingGray.opacity(0.05))
+            .border(Color.aircastingGray.opacity(0.1))
     }
-    var confirmPasswordTextfield: some View {
-        createTextfield(placeholder: "Repeat password",
-                        binding: $password)
+    
+    var createAccount: some View {
+        Button("Continue") {
+            let userInfo = AuthorizationAPI.UserInput(email: email,
+                                                      username: username,
+                                                      password: password,
+                                                      send_emails: false)
+            let userInput = AuthorizationAPI.CreateAccountInput(user: userInfo)
+            task = AuthorizationAPI.createAccount(input: userInput)
+                .sink { (completion) in
+                    switch completion {
+                    case .finished:
+                        print("Success")
+                    case .failure(let error):
+                        print("ERROR: \(error)")
+                    }
+                } receiveValue: { (output) in
+                    print(output)
+                }
+            
+        }
+        .buttonStyle(BlueButtonStyle())
     }
-
-//    var signinButton: some View {
-//
-//    }
     
 }
 
