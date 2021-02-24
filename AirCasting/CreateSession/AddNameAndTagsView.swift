@@ -12,19 +12,32 @@ struct AddNameAndTagsView: View {
     @State var sessionTags = ""
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 50) {
-            ProgressView(value: 0.75)
-            titleLabel()
-            createTextfield(placeholder: "Session name", binding: $sessionName)
-            createTextfield(placeholder: "Tags", binding: $sessionTags)
-            Spacer()
-            Button(action: {}, label: {
-                Text("Continue")
-                    .bold()
-            })
-            .buttonStyle(BlueButtonStyle())
+        NavigationView {
+            VStack(alignment: .leading, spacing: 50) {
+                ProgressView(value: 0.75)
+                titleLabel
+                createTextfield(placeholder: "Session name", binding: $sessionName)
+                createTextfield(placeholder: "Tags", binding: $sessionTags)
+                Spacer()
+                continueButton
+                    .buttonStyle(BlueButtonStyle())
+            }
+            .padding()
+            
         }
-        .padding()
+    }
+    
+    var continueButton: some View {
+        NavigationLink(destination: ConfirmCreatingSessionView()) {
+            Text("Continue")
+                .frame(maxWidth: .infinity)
+        }
+    }
+    
+    var titleLabel: some View {
+        Text("New session details")
+            .font(Font.moderate(size: 24, weight: .bold))
+            .foregroundColor(.darkBlue)
     }
 }
 
@@ -43,12 +56,3 @@ func createTextfield(placeholder: String, binding: Binding<String> ) -> some Vie
     .border(Color.aircastingGray.opacity(0.1))
 }
 
-
-
-struct titleLabel: View {
-    var body: some View {
-        Text("New session details")
-            .font(Font.moderate(size: 24, weight: .bold))
-            .foregroundColor(.darkBlue)
-    }
-}
