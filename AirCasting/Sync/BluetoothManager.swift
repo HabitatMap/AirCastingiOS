@@ -84,27 +84,37 @@ extension BluetoothManager: CBCentralManagerDelegate {
                                         object: nil)
         
         // Here's code for getting data from AB.
-        //        peripheral.delegate = self
+        peripheral.delegate = self
+        peripheral.discoverServices(nil)
     }
     
 }
 
-//extension BluetoothManager: CBPeripheralDelegate {
-//
-//    func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
-//        if let services = peripheral.services {
-//            peripheral.discoverCharacteristics(nil, for: services[0])
-//        }
-//    }
-//
-//    func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
-//        if let characteristics = service.characteristics {
-//            peripheral.readValue(for: characteristics[0])
-//        }
-//    }
-//
-//    func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
-//        characteristic.value
-//    }
-//
-//}
+extension BluetoothManager: CBPeripheralDelegate {
+
+    func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
+        if let services = peripheral.services {
+            for service in services {
+                peripheral.discoverCharacteristics(nil, for: service)
+                print("didDiscoverServices !! \(peripheral.discoverCharacteristics(nil, for: service))")
+            }
+
+        }
+    }
+
+    func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
+        if let characteristics = service.characteristics {
+            for characteristic in characteristics {
+                peripheral.readValue(for: characteristic)
+        
+                print("didDiscoverCharacteristicsFor !! \(peripheral.readValue(for: characteristic))")
+            }
+        }
+    }
+
+    func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
+        characteristic.value
+        print("didUpdateValueFor !! \(characteristic.value)")
+
+    }
+}
