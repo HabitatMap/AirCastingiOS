@@ -13,8 +13,7 @@ struct AirCastingApp: App {
         
     var body: some Scene {
         WindowGroup {
-//            MainTabBarView()
-            CreateAccountView()
+            MainTabBarView()
 //            SelectPeripheralView()
 //            TurnOnBluetoothView()
                 .onAppear {

@@ -63,11 +63,11 @@ struct CreateAccountView: View {
     
     var createAccountButton: some View {
         Button("Continue") {
-            let userInfo = AuthorizationAPI.UserInput(email: email,
+            let userInfo = AuthorizationAPI.SignupUserInput(email: email,
                                                       username: username,
                                                       password: password,
                                                       send_emails: false)
-            let userInput = AuthorizationAPI.CreateAccountInput(user: userInfo)
+            let userInput = AuthorizationAPI.SignupAPIInput(user: userInfo)
             task = AuthorizationAPI.createAccount(input: userInput)
                 .sink { (completion) in
                     switch completion {
