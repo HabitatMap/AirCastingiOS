@@ -15,6 +15,13 @@ class BluetoothManager: NSObject, ObservableObject {
     @Published var isScanning: Bool = true
     var observed: NSKeyValueObservation?
     
+    private var MEASUREMENTS_CHARACTERISTIC_UUIDS: [CBUUID] = [
+        CBUUID(string:"0000ffe1-0000-1000-8000-00805f9b34fb"),    // Temperature
+        CBUUID(string:"0000ffe3-0000-1000-8000-00805f9b34fb"),    // Humidity
+        CBUUID(string:"0000ffe4-0000-1000-8000-00805f9b34fb"),    // PM1
+        CBUUID(string:"0000ffe5-0000-1000-8000-00805f9b34fb"),    // PM2.5
+        CBUUID(string:"0000ffe6-0000-1000-8000-00805f9b34fb")]   // PM10
+    
     var airbeams: [CBPeripheral] {
         devices.filter { (device) -> Bool in
             device.name?.contains("AirBeam") ?? false
@@ -109,23 +116,51 @@ extension BluetoothManager: CBPeripheralDelegate {
     func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
         if let characteristics = service.characteristics {
             for characteristic in characteristics {
+                
                 peripheral.readValue(for: characteristic)
-        
+                for char in MEASUREMENTS_CHARACTERISTIC_UUIDS {
+                    if char == characteristic.uuid {
+                        peripheral.setNotifyValue(true, for: characteristic)
+                    }
+                }
                 print("didDiscoverCharacteristicsFor: \(peripheral.readValue(for: characteristic))")
             }
         }
+        
     }
 
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
         characteristic.value
-        
-        print("didUpdateValueFor: \(String(data: characteristic.value!, encoding: .utf8))")
+        let parsedMeasurement = parseData(data: characteristic.value!)
+        print("\(parsedMeasurement)")
     }
     
-    func parseData(data: Data) -> [String] {
+    func parseData(data: Data) -> Measurement? {
         let string = String(data: data, encoding: .utf8)
         let components = string?.components(separatedBy: ";")
         
-        return components ?? []
+        guard let values = components,
+              let measuredValue = Double(values[0]),
+              let thresholdVeryLow = Int(values[7]),
+              let thresholdLow = Int(values[8]),
+              let thresholdMedium = Int(values[9]),
+              let thresholdHigh = Int(values[10]),
+              let thresholdVeryHigh = Int(values[11])
+        else  {
+            return nil
+        }
+        let newMeasurement = Measurement(measuredValue: measuredValue,
+                                          packageName: values[1],
+                                          sensorName: values[2],
+                                          measurementType: values[3],
+                                          measurementShortType: values[4],
+                                          unitName: values[5],
+                                          unitSymbol: values[6],
+                                          thresholdVeryLow: thresholdVeryLow,
+                                          thresholdLow: thresholdLow,
+                                          thresholdMedium: thresholdMedium,
+                                          thresholdHigh: thresholdHigh,
+                                          thresholdVeryHigh: thresholdVeryHigh)
+        return newMeasurement
     }
 }
