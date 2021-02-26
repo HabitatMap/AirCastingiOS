@@ -44,8 +44,12 @@ struct ConnectingABView: View {
                                                     options: nil)
         })
         .onReceive(NotificationCenter.default.publisher(for: Notification.Name(rawValue: "DeviceConnected")), perform: { _ in
-            if selecedPeripheral.state == .connected {
-                isDeviceConnected = true
+            // App is pushing the next view before this view is fully loaded. It resulted with showing next view and going back to this one.
+            // The async enables app to load this view and then push the next one.
+            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
+                if selecedPeripheral.state == .connected {
+                    isDeviceConnected = true
+                }
             }
         })
     }
