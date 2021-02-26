@@ -9,10 +9,10 @@ import SwiftUI
 
 struct DashboardView: View {
     
-//    let sessions: [Session] = []
-    let sessions: [Session] = [Session(name: "Podgórze"),
-                               Session(name: "Krowodrza Górka"),
-                               Session(name: "Mistrzejowice")]
+    let sessions: [Session] = []
+//    let sessions: [Session] = [Session(name: "Podgórze"),
+//                               Session(name: "Krowodrza Górka"),
+//                               Session(name: "Mistrzejowice")]
 
     var body: some View {
         VStack {

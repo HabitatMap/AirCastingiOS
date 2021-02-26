@@ -88,6 +88,10 @@ extension BluetoothManager: CBCentralManagerDelegate {
         peripheral.discoverServices(nil)
     }
     
+    func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
+        print("Disconnected.")
+    }
+    
 }
 
 extension BluetoothManager: CBPeripheralDelegate {
@@ -96,7 +100,7 @@ extension BluetoothManager: CBPeripheralDelegate {
         if let services = peripheral.services {
             for service in services {
                 peripheral.discoverCharacteristics(nil, for: service)
-                print("didDiscoverServices !! \(peripheral.discoverCharacteristics(nil, for: service))")
+                print("didDiscoverServices \(peripheral.discoverCharacteristics(nil, for: service))")
             }
 
         }
@@ -107,14 +111,21 @@ extension BluetoothManager: CBPeripheralDelegate {
             for characteristic in characteristics {
                 peripheral.readValue(for: characteristic)
         
-                print("didDiscoverCharacteristicsFor !! \(peripheral.readValue(for: characteristic))")
+                print("didDiscoverCharacteristicsFor: \(peripheral.readValue(for: characteristic))")
             }
         }
     }
 
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
         characteristic.value
-        print("didUpdateValueFor !! \(characteristic.value)")
-
+        
+        print("didUpdateValueFor: \(String(data: characteristic.value!, encoding: .utf8))")
+    }
+    
+    func parseData(data: Data) -> [String] {
+        let string = String(data: data, encoding: .utf8)
+        let components = string?.components(separatedBy: ";")
+        
+        return components ?? []
     }
 }

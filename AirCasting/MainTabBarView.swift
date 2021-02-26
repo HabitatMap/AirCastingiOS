@@ -21,8 +21,7 @@ struct MainTabBarView: View {
     // Tab Bar views
     private var dashboardTab: some View {
         NavigationView {
-//            DashboardView()
-            EmptyDashboardView()
+            DashboardView()
         }
         .tabItem {
             Image(systemName: "house")
