@@ -126,6 +126,10 @@ extension BluetoothManager: CBPeripheralDelegate {
                 print("didDiscoverCharacteristicsFor: \(peripheral.readValue(for: characteristic))")
             }
         }
+    }
+    
+    func sendHexCode() {
+         var configurationCharacteristicUUIS = CBUUID(string: "0000ffde-0000-1000-8000-00805f9b34fb")
         
     }
 
