@@ -16,15 +16,15 @@ struct ABConnectedView: View {
                 titleLabel
                 messageLabel
             }
-            Button("Mobile") {
-//                BluetoothManager
-            }
-            Button("Fixed Wifi") {
-                <#code#>
-            }
-            Button("Fixed Cellular") {
-                <#code#>
-            }
+//            Button("Mobile") {
+////                BluetoothManager
+//            }
+//            Button("Fixed Wifi") {
+//                <#code#>
+//            }
+//            Button("Fixed Cellular") {
+//                <#code#>
+//            }
             continueButton
         }
         .padding()

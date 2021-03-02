@@ -136,7 +136,7 @@ extension BluetoothManager: CBPeripheralDelegate {
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
         characteristic.value
         let parsedMeasurement = parseData(data: characteristic.value!)
-        print("\(parsedMeasurement)")
+        print("\(String(describing: parsedMeasurement))")
     }
     
     func parseData(data: Data) -> Measurement? {
