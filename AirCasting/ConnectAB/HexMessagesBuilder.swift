@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct HexMessegasBuilder {
+struct HexMessagesBuilder {
     
     struct TimeZoneHelper {
         func getTimezoneOffsetInHours() -> Int {
@@ -30,9 +30,12 @@ struct HexMessegasBuilder {
     private var SYNC_CODE = UInt8(0x08)
     private var CLEAR_SDCARD_CODE = UInt8(0x0a)
 
-    lazy var bluetoothConfigurationMessage = Data([BEGIN_MESSAGE_CODE, BLUETOOTH_STREAMING_METHOD, END_MESSAGE_CODE])
-    lazy var cellularconfigurationCode = Data([BEGIN_MESSAGE_CODE, CELLULAR_CODE, END_MESSAGE_CODE])
-    
+    var bluetoothConfigurationMessage: Data {
+        Data([BEGIN_MESSAGE_CODE, BLUETOOTH_STREAMING_METHOD, END_MESSAGE_CODE])
+    }
+    var cellularconfigurationCode: Data {
+        Data([BEGIN_MESSAGE_CODE, CELLULAR_CODE, END_MESSAGE_CODE])
+    }
     
     func uuidMessage(uuid: String) -> Data {
         return buildMessage(messageString: uuid, configurationCode: UUID_CODE)
@@ -46,7 +49,7 @@ struct HexMessegasBuilder {
         return buildMessage(messageString: encodedCredentials, configurationCode: AUTH_TOKEN_CODE)
     }
     
-    func locationManager(lat: Double, lng: Double) -> Data {
+    func locationMessage(lat: Double, lng: Double) -> Data {
         let latLngString = "\(lat),\(lng)"
         return buildMessage(messageString: latLngString, configurationCode: LAT_LNG_CODE)
     }

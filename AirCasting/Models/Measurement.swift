@@ -21,3 +21,11 @@ struct Measurement {
     var thresholdHigh: Int
     var thresholdVeryHigh: Int
 }
+
+enum Level {
+    case extremelyLow
+    case low
+    case medium
+    case high
+    case veryhigh
+}
