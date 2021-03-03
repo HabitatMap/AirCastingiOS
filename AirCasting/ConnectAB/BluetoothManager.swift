@@ -98,7 +98,6 @@ extension BluetoothManager: CBCentralManagerDelegate {
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
         print("Disconnected.")
     }
-    
 }
 
 extension BluetoothManager: CBPeripheralDelegate {
@@ -109,7 +108,6 @@ extension BluetoothManager: CBPeripheralDelegate {
                 peripheral.discoverCharacteristics(nil, for: service)
                 print("didDiscoverServices \(peripheral.discoverCharacteristics(nil, for: service))")
             }
-
         }
     }
 
@@ -123,24 +121,26 @@ extension BluetoothManager: CBPeripheralDelegate {
                         peripheral.setNotifyValue(true, for: characteristic)
                     }
                 }
-                print("didDiscoverCharacteristicsFor: \(peripheral.readValue(for: characteristic))")
+                print("didDiscoverCharacteristicsFor: \(characteristic)")
             }
         }
     }
     
     func sendHexCode() {
-         var configurationCharacteristicUUIS = CBUUID(string: "0000ffde-0000-1000-8000-00805f9b34fb")
+         var configurationCharacteristicUUID = CBUUID(string: "0000ffde-0000-1000-8000-00805f9b34fb")
         
     }
 
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
-        characteristic.value
-        let parsedMeasurement = parseData(data: characteristic.value!)
-        print("\(String(describing: parsedMeasurement))")
+        if MEASUREMENTS_CHARACTERISTIC_UUIDS.contains(characteristic.uuid) {
+            let parsedMeasurement = parseData(data: characteristic.value!)
+            print("\(String(describing: parsedMeasurement))")
+        }
     }
     
     func parseData(data: Data) -> Measurement? {
         let string = String(data: data, encoding: .utf8)
+        print("RAW: \(string)")
         let components = string?.components(separatedBy: ";")
         
         guard let values = components,

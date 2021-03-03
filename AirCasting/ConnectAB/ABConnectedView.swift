@@ -8,6 +8,10 @@
 import SwiftUI
 
 struct ABConnectedView: View {
+    
+    @EnvironmentObject var bluetoothManager: BluetoothManager
+    @EnvironmentObject var context: AirbeamSetupContext
+
     var body: some View {
         VStack(spacing: 40) {
             ProgressView(value: 0.625)
@@ -16,9 +20,13 @@ struct ABConnectedView: View {
                 titleLabel
                 messageLabel
             }
-//            Button("Mobile") {
-////                BluetoothManager
-//            }
+            Button("Mobile") {
+                let testSession = Session(name: "Teścik")
+                let configurator = AirBeam3Configurator(peripheral: context.peripheral!)
+                configurator.configure(session: testSession,
+                                       wifiSSID: nil,
+                                       wifiPassword: nil)
+            }
 //            Button("Fixed Wifi") {
 //                <#code#>
 //            }

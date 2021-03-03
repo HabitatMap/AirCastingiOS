@@ -26,9 +26,9 @@ struct HexMessagesBuilder {
     private var UUID_CODE = UInt8(0x04)
     private var AUTH_TOKEN_CODE = UInt8(0x05)
     private var LAT_LNG_CODE = UInt8(0x06)
-    private var CURRENT_TIME_CODE = UInt8(0x07)
-    private var SYNC_CODE = UInt8(0x08)
-    private var CLEAR_SDCARD_CODE = UInt8(0x0a)
+    private var CURRENT_TIME_CODE = UInt8(0x08)
+    private var SYNC_CODE = UInt8(0x09)
+//    private var CLEAR_SDCARD_CODE = UInt8(0x0a)
 
     var bluetoothConfigurationMessage: Data {
         Data([BEGIN_MESSAGE_CODE, BLUETOOTH_STREAMING_METHOD, END_MESSAGE_CODE])

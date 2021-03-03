@@ -10,8 +10,9 @@ import CoreBluetooth
 
 struct SelectPeripheralView: View {
     
-    @ObservedObject var bluetoothManager = BluetoothManager()
     @State private var selection: CBPeripheral? = nil
+    @EnvironmentObject var bluetoothManager: BluetoothManager
+    @EnvironmentObject var context: AirbeamSetupContext
     
     var body: some View {
         VStack(spacing: 30) {
@@ -63,6 +64,7 @@ struct SelectPeripheralView: View {
         ForEach(devices, id: \.self) { (availableDevice) in
             Button(action: {
                 selection = availableDevice
+                context.peripheral = availableDevice
             }) {
                 HStack(spacing: 20) {
                     CheckBox(isSelected: selection == availableDevice)
@@ -101,7 +103,6 @@ struct SelectPeripheralView: View {
     
     var connectButton: some View {
         var destination: AnyView
-
         if let selection = selection {
             destination = AnyView(ConnectingABView(bluetoothManager: bluetoothManager,
                                                selecedPeripheral: selection))

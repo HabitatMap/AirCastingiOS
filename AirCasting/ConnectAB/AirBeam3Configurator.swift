@@ -11,12 +11,11 @@ import CoreLocation
 
 struct AirBeam3Configurator {
 
-    let peripheral: CBPeripheral
-    let bluetoothManager: BluetoothManager
+    var peripheral: CBPeripheral
     var hexMessageBuilder = HexMessagesBuilder()
     
     // have notifications about new measurements
-    private var MEASUREMENTS_CHARACTERISTIC_UUIDS: [CBUUID] = [
+    private let MEASUREMENTS_CHARACTERISTIC_UUIDS: [CBUUID] = [
         CBUUID(string:"0000ffe1-0000-1000-8000-00805f9b34fb"),    // Temperature
         CBUUID(string:"0000ffe3-0000-1000-8000-00805f9b34fb"),    // Humidity
         CBUUID(string:"0000ffe4-0000-1000-8000-00805f9b34fb"),    // PM1
@@ -24,24 +23,34 @@ struct AirBeam3Configurator {
         CBUUID(string:"0000ffe6-0000-1000-8000-00805f9b34fb")]    // PM10
     
     // used for sending hex codes to the AirBeam
-    private var CONFIGURATION_CHARACTERISTIC_UUID =  CBUUID(string:"0000ffde-0000-1000-8000-00805f9b34fb")
-    // has notifications about measurements count in particular csv file on SD card
-    private var DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID = CBUUID(string:"0000ffde-0000-1000-8000-00805f9b34fb")
-    // has notifications for reading measurements stored in csv files on SD card
-    private var DOWNLOAD_FROM_SD_CARD_CHARACTERISTIC_UUID = CBUUID(string:"0000ffdf-0000-1000-8000-00805f9b34fb")
-    // service id
-    private var SERVICE_UUID = CBUUID(string:"0000ffdd-0000-1000-8000-00805f9b34fb")
+    private let CONFIGURATION_CHARACTERISTIC_UUID =  CBUUID(string:"0000ffde-0000-1000-8000-00805f9b34fb")
     
-    var MAX_MTU = 517
+    // has notifications about measurements count in particular csv file on SD card
+    private let DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID = CBUUID(string:"0000ffde-0000-1000-8000-00805f9b34fb")
+    
+    // has notifications for reading measurements stored in csv files on SD card
+    private let DOWNLOAD_FROM_SD_CARD_CHARACTERISTIC_UUID = CBUUID(string:"0000ffdf-0000-1000-8000-00805f9b34fb")
+    
+    // service id
+    private let SERVICE_UUID = CBUUID(string:"0000ffdd-0000-1000-8000-00805f9b34fb")
     
     private func configureMobileSession(dateString: String) {
         let location = CLLocationCoordinate2D(latitude: 200.0, longitude: 200.0)
         
+        print("1")
         sendLocationConfiguration(location: location)
-        sendCurrentTimeConfiguration(date: dateString)
-            mobileModeRequest()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
+            print("2")
+            sendCurrentTimeConfiguration(date: dateString)
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
+                print("3")
+                mobileModeRequest()
+            }
+        }
+        
     }
-
     
     func configure(session: Session, wifiSSID: String?, wifiPassword: String?) {
         // TO DO: get location from Session, change the date
