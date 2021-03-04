@@ -10,10 +10,10 @@ import SwiftUI
 struct DashboardView: View {
     
     let sessions: [Session] = []
-//        [Session(name: "Podgórze"),
+//    let sessions: [Session] = [Session(name: "Podgórze"),
 //                               Session(name: "Krowodrza Górka"),
 //                               Session(name: "Mistrzejowice")]
-//
+
     var body: some View {
         VStack {
             sectionPicker

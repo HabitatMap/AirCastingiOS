@@ -10,14 +10,15 @@ import Firebase
 
 @main
 struct AirCastingApp: App {
+    @ObservedObject var bluetoothManager = BluetoothManager()
     
     var body: some Scene {
         WindowGroup {
             MainTabBarView()
-//            TurnOnBluetoothView()
                 .onAppear {
                     FirebaseApp.configure()
                 }
+                .environmentObject(bluetoothManager)
         }
     }
 }

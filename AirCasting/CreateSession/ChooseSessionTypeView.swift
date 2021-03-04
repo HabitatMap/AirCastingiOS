@@ -6,6 +6,13 @@
 //
 
 import SwiftUI
+import CoreBluetooth
+
+class AirbeamSetupContext: ObservableObject {
+    var peripheral: CBPeripheral?
+    var wifiName: String?
+    var wifiPass: String?
+}
 
 struct ChooseSessionTypeView: View {
     
@@ -40,6 +47,7 @@ struct ChooseSessionTypeView: View {
                     .ignoresSafeArea()
             )
         }
+        .navigationBarTitleDisplayMode(.inline)
         
     }
     var titleLabel: some View {
