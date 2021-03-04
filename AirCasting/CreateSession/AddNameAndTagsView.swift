@@ -44,13 +44,3 @@ struct AddNameAndTagsView_Previews: PreviewProvider {
         AddNameAndTagsView()
     }
 }
-
-func createTextfield(placeholder: String, binding: Binding<String> ) -> some View {
-  TextField(placeholder,
-       text: binding)
-    .padding()
-    .frame(height: 50)
-    .background(Color.aircastingGray.opacity(0.05))
-    .border(Color.aircastingGray.opacity(0.1))
-}
-
