@@ -68,6 +68,7 @@ struct CreateAccountView: View {
                                                       password: password,
                                                       send_emails: false)
             let userInput = AuthorizationAPI.SignupAPIInput(user: userInfo)
+            
             task = AuthorizationAPI.createAccount(input: userInput)
                 .sink { (completion) in
                     switch completion {

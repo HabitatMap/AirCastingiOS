@@ -58,6 +58,9 @@
 		AC8CFF4125E5095600FB2918 /* Textfield.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8CFF4025E5095600FB2918 /* Textfield.swift */; };
 		AC8CFF4525E510CB00FB2918 /* AuthorizationAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8CFF4425E510CB00FB2918 /* AuthorizationAPI.swift */; };
 		AC8CFF5C25E6866100FB2918 /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8CFF5B25E6866100FB2918 /* SignInView.swift */; };
+		AC8CFF7225E7DA2D00FB2918 /* Measurement.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8CFF7125E7DA2D00FB2918 /* Measurement.swift */; };
+		AC8CFF7725ECF8B100FB2918 /* HexMessagesBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8CFF7625ECF8B100FB2918 /* HexMessagesBuilder.swift */; };
+		AC8CFF7E25EE5F9200FB2918 /* AirBeam3Configurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8CFF7D25EE5F9200FB2918 /* AirBeam3Configurator.swift */; };
 		AC8D6C6A25C049E300ED74D1 /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8D6C6925C049E300ED74D1 /* Environment.swift */; };
 		AC8D6C6E25C056B400ED74D1 /* PathPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8D6C6D25C056B400ED74D1 /* PathPoint.swift */; };
 		AC8D6C7225C0574800ED74D1 /* LocationTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8D6C7125C0574800ED74D1 /* LocationTracker.swift */; };
@@ -129,6 +132,9 @@
 		AC8CFF4025E5095600FB2918 /* Textfield.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Textfield.swift; sourceTree = "<group>"; };
 		AC8CFF4425E510CB00FB2918 /* AuthorizationAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationAPI.swift; sourceTree = "<group>"; };
 		AC8CFF5B25E6866100FB2918 /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
+		AC8CFF7125E7DA2D00FB2918 /* Measurement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Measurement.swift; sourceTree = "<group>"; };
+		AC8CFF7625ECF8B100FB2918 /* HexMessagesBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexMessagesBuilder.swift; sourceTree = "<group>"; };
+		AC8CFF7D25EE5F9200FB2918 /* AirBeam3Configurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirBeam3Configurator.swift; sourceTree = "<group>"; };
 		AC8D6C6925C049E300ED74D1 /* Environment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
 		AC8D6C6D25C056B400ED74D1 /* PathPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathPoint.swift; sourceTree = "<group>"; };
 		AC8D6C7125C0574800ED74D1 /* LocationTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationTracker.swift; sourceTree = "<group>"; };
@@ -165,15 +171,17 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
-		AC1DAD4325C98556009AC4D1 /* Sync */ = {
+		AC1DAD4325C98556009AC4D1 /* ConnectAB */ = {
 			isa = PBXGroup;
 			children = (
 				AC1DAD4425C9858C009AC4D1 /* SelectPeripheralView.swift */,
 				AC32041E25CC485E00A68520 /* ConnectingABView.swift */,
 				AC960C7725DD39F500EC95DD /* ABConnectedView.swift */,
 				AC1DAD4825C987B3009AC4D1 /* BluetoothManager.swift */,
+				AC8CFF7D25EE5F9200FB2918 /* AirBeam3Configurator.swift */,
+				AC8CFF7625ECF8B100FB2918 /* HexMessagesBuilder.swift */,
 			);
-			path = Sync;
+			path = ConnectAB;
 			sourceTree = "<group>";
 		};
 		AC3203CE25CBED9C00A68520 /* Dashboard */ = {
@@ -228,7 +236,6 @@
 		AC6D56A825B0837500D221BA /* Session */ = {
 			isa = PBXGroup;
 			children = (
-				AC5EF72325C81992003657B1 /* Session.swift */,
 				ACF77DFA25A8888700BB85B7 /* SessionCellView.swift */,
 				AC6D569E25AEEAE700D221BA /* SessionHeaderView.swift */,
 				AC6D567E25AC54A400D221BA /* ChartView.swift */,
@@ -266,10 +273,11 @@
 				AC8CFF4325E5108100FB2918 /* Networking */,
 				AC3203CE25CBED9C00A68520 /* Dashboard */,
 				AC32043425CD52E600A68520 /* CreateSession */,
-				AC1DAD4325C98556009AC4D1 /* Sync */,
+				AC1DAD4325C98556009AC4D1 /* ConnectAB */,
 				AC6D56A825B0837500D221BA /* Session */,
 				AC6D56A725B0833F00D221BA /* Graph */,
 				AC8D6C6825C049C200ED74D1 /* Map */,
+				AC8CFF7025E7D94C00FB2918 /* Models */,
 				AC32040625CC122900A68520 /* Utils */,
 				AC6D569825ADE55B00D221BA /* ButtonStyles */,
 				AC7EB37925A6FB3D00A7F2AF /* Assets.xcassets */,
@@ -340,6 +348,15 @@
 				AC8CFF4425E510CB00FB2918 /* AuthorizationAPI.swift */,
 			);
 			path = Networking;
+			sourceTree = "<group>";
+		};
+		AC8CFF7025E7D94C00FB2918 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				AC5EF72325C81992003657B1 /* Session.swift */,
+				AC8CFF7125E7DA2D00FB2918 /* Measurement.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		AC8D6C6825C049C200ED74D1 /* Map */ = {
@@ -568,6 +585,7 @@
 				AC8CFF5C25E6866100FB2918 /* SignInView.swift in Sources */,
 				ACF77DFB25A8888700BB85B7 /* SessionCellView.swift in Sources */,
 				ACFC708925C1A36A00D609D9 /* UIColor.swift in Sources */,
+				AC8CFF7225E7DA2D00FB2918 /* Measurement.swift in Sources */,
 				AC93B8DA25BEDC46003D0A0D /* Array.swift in Sources */,
 				AC5EF72425C81992003657B1 /* Session.swift in Sources */,
 				AC7AB09225D988CD0025492B /* WhiteButtonStyle.swift in Sources */,
@@ -578,6 +596,8 @@
 				AC32040425CC067D00A68520 /* CheckBox.swift in Sources */,
 				AC8D6C6E25C056B400ED74D1 /* PathPoint.swift in Sources */,
 				AC6D56A525AF211200D221BA /* MultiSliderView.swift in Sources */,
+				AC8CFF7E25EE5F9200FB2918 /* AirBeam3Configurator.swift in Sources */,
+				AC8CFF7725ECF8B100FB2918 /* HexMessagesBuilder.swift in Sources */,
 				AC6D56A225AEF55C00D221BA /* GraphView.swift in Sources */,
 				AC1DAD4525C9858C009AC4D1 /* SelectPeripheralView.swift in Sources */,
 				ACF77DF425A750E000BB85B7 /* Color.swift in Sources */,
