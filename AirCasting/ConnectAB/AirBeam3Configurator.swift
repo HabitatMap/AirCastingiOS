@@ -34,30 +34,54 @@ struct AirBeam3Configurator {
     // service id
     private let SERVICE_UUID = CBUUID(string:"0000ffdd-0000-1000-8000-00805f9b34fb")
     
-    private func configureMobileSession(dateString: String) {
-        let location = CLLocationCoordinate2D(latitude: 200.0, longitude: 200.0)
-        
-        print("1")
-        sendLocationConfiguration(location: location)
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
-            print("2")
-            sendCurrentTimeConfiguration(date: dateString)
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
-                print("3")
-                mobileModeRequest()
-            }
-        }
-        
-    }
-    
     func configure(session: Session, wifiSSID: String?, wifiPassword: String?) {
         // TO DO: get location from Session, change the date
         let date = "19/12/19-02:40:00"
-        configureMobileSession(dateString: date)
+        
+        // TO DO: pick session type depending on object's session type
+        
+        // MOBILE
+//        configureMobileSession(dateString: date)
+        
+        //FIXED
+        configureFixedWifiSession(dateString: date,
+                                  wifiSSID: wifiSSID,
+                                  wifiPassword: wifiPassword)
     }
     
+    private func configureMobileSession(dateString: String) {
+        // TO DO: Add location
+        let location = CLLocationCoordinate2D(latitude: 200.0, longitude: 200.0)
+        
+        sendLocationConfiguration(location: location)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
+            sendCurrentTimeConfiguration(date: dateString)
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
+                mobileModeRequest()
+            }
+        }
+    }
+    
+    private func configureFixedWifiSession(dateString: String, wifiSSID: String?, wifiPassword: String?) {
+        // TO DO: Add location
+        let location = CLLocationCoordinate2D(latitude: 200.0, longitude: 200.0)
+        guard let wifiSSID = wifiSSID,
+              let wifiPassword = wifiPassword else {
+            return
+        }
+        sendLocationConfiguration(location: location)
+        print("1")
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
+        sendCurrentTimeConfiguration(date: dateString)
+            print("2")
+            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
+                sendWifiConfiguration(wifiSSID: wifiSSID, wifiPassword: wifiPassword)
+                print("3")
+            }
+        }
+    }
     
     // MARK: Commands
     
@@ -75,7 +99,12 @@ struct AirBeam3Configurator {
     private func mobileModeRequest() {
         let message = hexMessageBuilder.bluetoothConfigurationMessage
         sendConfigMessage(data: message)
-        
+    }
+    
+    private func sendWifiConfiguration(wifiSSID: String, wifiPassword: String) {
+        let message = hexMessageBuilder.wifiConfigurationMessage(wifiSSID: wifiSSID,
+                                                                 wifiPassword: wifiPassword)
+        sendConfigMessage(data: message)
     }
     
     // MARK: Utils
