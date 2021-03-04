@@ -18,7 +18,7 @@ struct ConfirmCreatingSessionView: View {
                 .font(Font.moderate(size: 24, weight: .bold))
                 .foregroundColor(.darkBlue)
                 
-            VStack(spacing: 15) {
+            VStack(alignment: .leading, spacing: 15) {
                 Text("Your \(sessionType) session \(sessionName) is ready to start gathering data.")
                 Text("Move to your starting location, confirm your location is accurate on the map, then press the start recording button below.")
             }

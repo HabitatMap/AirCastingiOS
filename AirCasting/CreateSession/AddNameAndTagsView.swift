@@ -12,7 +12,6 @@ struct AddNameAndTagsView: View {
     @State var sessionTags = ""
     
     var body: some View {
-        NavigationView {
             VStack(alignment: .leading, spacing: 50) {
                 ProgressView(value: 0.75)
                 titleLabel
@@ -24,11 +23,10 @@ struct AddNameAndTagsView: View {
             }
             .padding()
             
-        }
     }
     
     var continueButton: some View {
-        NavigationLink(destination: ConfirmCreatingSessionView()) {
+        NavigationLink(destination: ConfirmCreatingSessionView(sessionType: "Mobile", sessionName: sessionName)) {
             Text("Continue")
                 .frame(maxWidth: .infinity)
         }
