@@ -11,6 +11,7 @@ import Firebase
 @main
 struct AirCastingApp: App {
     @ObservedObject var bluetoothManager = BluetoothManager()
+    let persistenceController = PersistenceController.shared
     
     var body: some Scene {
         WindowGroup {
@@ -19,6 +20,7 @@ struct AirCastingApp: App {
                     FirebaseApp.configure()
                 }
                 .environmentObject(bluetoothManager)
+                .environment(\.managedObjectContext, persistenceController.container.viewContext)
         }
     }
 }
