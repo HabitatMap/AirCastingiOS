@@ -93,7 +93,7 @@ struct SelectDeviceView: View {
                 })
             NavigationLink(
                 // TO DO: change destination
-                destination: PowerABView(),
+                destination: AddNameAndTagsView(),
                 isActive: $isMicLinkActive,
                 label: {
                     EmptyView()
