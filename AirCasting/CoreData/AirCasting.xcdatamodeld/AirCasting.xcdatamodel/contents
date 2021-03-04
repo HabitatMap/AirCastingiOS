@@ -7,7 +7,6 @@
         <attribute name="value" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
     </entity>
     <entity name="MeasurementStream" representedClassName="MeasurementStream" syncable="YES" codeGenerationType="class">
-        <attribute name="deleted" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="measurementShortType" optional="YES" attributeType="String"/>
         <attribute name="measurementType" optional="YES" attributeType="String"/>
         <attribute name="sensorName" optional="YES" attributeType="String"/>
@@ -30,7 +29,6 @@
     </entity>
     <entity name="Session" representedClassName="Session" syncable="YES" codeGenerationType="class">
         <attribute name="contribute" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
-        <attribute name="deleted" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="deviceId" optional="YES" attributeType="String"/>
         <attribute name="deviceType" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="endTime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
@@ -50,8 +48,8 @@
     </entity>
     <elements>
         <element name="Measurement" positionX="-63" positionY="-18" width="128" height="89"/>
-        <element name="MeasurementStream" positionX="-63.7001953125" positionY="128.3192749023438" width="128" height="209"/>
+        <element name="MeasurementStream" positionX="-63.7001953125" positionY="128.3192749023438" width="128" height="194"/>
         <element name="SensorThreshold" positionX="81" positionY="171" width="128" height="119"/>
-        <element name="Session" positionX="166.41845703125" positionY="3.91326904296875" width="128" height="299"/>
+        <element name="Session" positionX="166.41845703125" positionY="3.91326904296875" width="128" height="284"/>
     </elements>
 </model>

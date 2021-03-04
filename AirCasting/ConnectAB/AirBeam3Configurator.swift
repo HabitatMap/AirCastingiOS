@@ -34,7 +34,7 @@ struct AirBeam3Configurator {
     // service id
     private let SERVICE_UUID = CBUUID(string:"0000ffdd-0000-1000-8000-00805f9b34fb")
     
-    func configure(session: Session, wifiSSID: String?, wifiPassword: String?) {
+    func configure(session: OldSession, wifiSSID: String?, wifiPassword: String?) {
         // TO DO: get location from Session, change the date
         let date = "19/12/19-02:40:00"
         
