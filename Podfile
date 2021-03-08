@@ -6,6 +6,7 @@ target 'AirCasting' do
   use_frameworks!
 
   # Pods for AirCasting
+  pod 'GzipSwift'
   pod 'GoogleMaps', '4.1.0'
   pod 'GooglePlaces', '4.1.0'
 

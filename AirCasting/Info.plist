@@ -70,6 +70,8 @@
 	<string>AirCasting uses Bluetooth to connect with AirBeam.</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
 		<key>NSExceptionDomains</key>
 		<dict>
 			<key>aircasting.org</key>
