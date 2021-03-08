@@ -286,9 +286,9 @@
 		AC7EB37425A6FB3A00A7F2AF /* AirCasting */ = {
 			isa = PBXGroup;
 			children = (
-				338C30E025F1042000E0305C /* CoreData */,
 				AC7EB37525A6FB3A00A7F2AF /* AirCastingApp.swift */,
 				AC7EB37725A6FB3A00A7F2AF /* MainTabBarView.swift */,
+				338C30E025F1042000E0305C /* CoreData */,
 				AC8CFF3425E502C700FB2918 /* Auth */,
 				AC8CFF4325E5108100FB2918 /* Networking */,
 				AC3203CE25CBED9C00A68520 /* Dashboard */,

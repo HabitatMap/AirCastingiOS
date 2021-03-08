@@ -6,7 +6,7 @@
         <attribute name="time" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="value" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
     </entity>
-    <entity name="MeasurementStream" representedClassName="MeasurementStream" syncable="YES" codeGenerationType="class">
+    <entity name="MeasurementStream" representedClassName=".MeasurementStream" syncable="YES" codeGenerationType="class">
         <attribute name="measurementShortType" optional="YES" attributeType="String"/>
         <attribute name="measurementType" optional="YES" attributeType="String"/>
         <attribute name="sensorName" optional="YES" attributeType="String"/>
@@ -19,7 +19,7 @@
         <attribute name="unitName" optional="YES" attributeType="String"/>
         <attribute name="unitSymbol" optional="YES" attributeType="String"/>
     </entity>
-    <entity name="SensorThreshold" representedClassName="SensorThreshold" syncable="YES" codeGenerationType="class">
+    <entity name="SensorThreshold" representedClassName=".SensorThreshold" syncable="YES" codeGenerationType="class">
         <attribute name="sensorName" optional="YES" attributeType="String"/>
         <attribute name="thresholdHigh" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="thresholdLow" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
@@ -27,7 +27,7 @@
         <attribute name="thresholdVeryHigh" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="thresholdVeryLow" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
     </entity>
-    <entity name="Session" representedClassName="Session" syncable="YES" codeGenerationType="class">
+    <entity name="Session" representedClassName=".Session" syncable="YES" codeGenerationType="class">
         <attribute name="contribute" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="deviceId" optional="YES" attributeType="String"/>
         <attribute name="deviceType" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
@@ -49,7 +49,7 @@
     <elements>
         <element name="Measurement" positionX="-63" positionY="-18" width="128" height="89"/>
         <element name="MeasurementStream" positionX="-63.7001953125" positionY="128.3192749023438" width="128" height="194"/>
-        <element name="SensorThreshold" positionX="81" positionY="171" width="128" height="119"/>
-        <element name="Session" positionX="166.41845703125" positionY="3.91326904296875" width="128" height="284"/>
+        <element name="SensorThreshold" positionX="388.8433837890625" positionY="56.29141235351562" width="128" height="119"/>
+        <element name="Session" positionX="166.41845703125" positionY="3.91326904296875" width="165.6036376953125" height="284"/>
     </elements>
 </model>
