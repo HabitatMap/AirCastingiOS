@@ -190,17 +190,14 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
-		AC1DAD4325C98556009AC4D1 /* ConnectAB */ = {
+		AC1DAD4325C98556009AC4D1 /* BLE */ = {
 			isa = PBXGroup;
 			children = (
-				AC1DAD4425C9858C009AC4D1 /* SelectPeripheralView.swift */,
-				AC32041E25CC485E00A68520 /* ConnectingABView.swift */,
-				AC960C7725DD39F500EC95DD /* ABConnectedView.swift */,
 				AC1DAD4825C987B3009AC4D1 /* BluetoothManager.swift */,
 				AC8CFF7D25EE5F9200FB2918 /* AirBeam3Configurator.swift */,
 				AC8CFF7625ECF8B100FB2918 /* HexMessagesBuilder.swift */,
 			);
-			path = ConnectAB;
+			path = BLE;
 			sourceTree = "<group>";
 		};
 		AC3203CE25CBED9C00A68520 /* Dashboard */ = {
@@ -229,6 +226,9 @@
 				AC86EE6A25D03DC00083F8C0 /* SelectDeviceView.swift */,
 				AC3203CA25CA991C00A68520 /* TurnOnBluetoothView.swift */,
 				AC32041B25CC46EF00A68520 /* PowerABView.swift */,
+				AC1DAD4425C9858C009AC4D1 /* SelectPeripheralView.swift */,
+				AC32041E25CC485E00A68520 /* ConnectingABView.swift */,
+				AC960C7725DD39F500EC95DD /* ABConnectedView.swift */,
 				3362B4EC25E69987008D61BA /* AddNameAndTagsView.swift */,
 				331EA80925E32094009DEFDB /* ConfirmCreatingSessionView.swift */,
 			);
@@ -295,7 +295,7 @@
 				AC8CFF4325E5108100FB2918 /* Networking */,
 				AC3203CE25CBED9C00A68520 /* Dashboard */,
 				AC32043425CD52E600A68520 /* CreateSession */,
-				AC1DAD4325C98556009AC4D1 /* ConnectAB */,
+				AC1DAD4325C98556009AC4D1 /* BLE */,
 				AC6D56A825B0837500D221BA /* Session */,
 				AC6D56A725B0833F00D221BA /* Graph */,
 				AC8D6C6825C049C200ED74D1 /* Map */,

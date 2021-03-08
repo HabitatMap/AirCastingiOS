@@ -11,6 +11,8 @@ import Gzip
 
 class CreateSessionApi {
     
+    let userDefaults = UserDefaults.standard
+    
     struct MeasurementParams: Codable {
         var longitude: Double?
         var latitude: Double?
@@ -18,7 +20,6 @@ class CreateSessionApi {
         var time: Date
         var value: Double?
     }
-
     
     struct MeasurementStreamParams: Codable {
         var deleted: Bool
@@ -35,7 +36,6 @@ class CreateSessionApi {
         var threshold_very_low: Int?
         var measurements: [MeasurementParams]
     }
-
     
     struct SessionParams: Codable {
     
@@ -92,18 +92,16 @@ class CreateSessionApi {
         let gzippedData = try! inputJSONData.gzipped()
         let sessionBase64String = gzippedData.base64EncodedString()
         
-//        let wtf = try! encoder.encode(input.session)
-//        let wtfStr = String(data: wtf, encoding: .utf8)
-        
         let apiInput = APIInput(session: sessionBase64String,
                                 compression: input.compression)
 
         let apiPostData = try? encoder.encode(apiInput)
         request.httpBody = apiPostData
         
-        
-        let val = "f5YX-oHsKVdxozzB3YNf:X".data(using: .utf8)!.base64EncodedString()
-        request.setValue("Basic \(val)", forHTTPHeaderField: "Authorization")
+        guard let authToken = userDefaults.string(forKey: "auth_token") else { return }
+
+        let auth = "\(authToken):X".data(using: .utf8)!.base64EncodedString()
+        request.setValue("Basic \(auth)", forHTTPHeaderField: "Authorization")
         
         return URLSession.shared.dataTaskPublisher(for: request)
             .tryMap { (data, response) in

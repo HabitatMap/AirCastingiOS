@@ -22,7 +22,6 @@ struct TurnOnBluetoothView: View {
         .padding()
     }
     
-    
     var titleLabel: some View {
         Text("Turn on Bluetooth")
             .font(Font.moderate(size: 25,

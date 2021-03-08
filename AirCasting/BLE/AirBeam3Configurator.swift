@@ -13,6 +13,7 @@ struct AirBeam3Configurator {
 
     var peripheral: CBPeripheral
     var hexMessageBuilder = HexMessagesBuilder()
+    let userDefaults = UserDefaults.standard
     
     // have notifications about new measurements
     private let MEASUREMENTS_CHARACTERISTIC_UUIDS: [CBUUID] = [
@@ -66,24 +67,21 @@ struct AirBeam3Configurator {
     
     // To configure fixed session we need to send authMessage first
     // We're generating unique String for session UUID and sending it to the AB
-
-//    func generateUUID() -> UUID {
-    //        let randomString = "\(arc4random())"
-    //
-    //    }
     
     private func configureFixedWifiSession(dateString: String, wifiSSID: String?, wifiPassword: String?) {
         // TO DO: Add location
         let location = CLLocationCoordinate2D(latitude: 200.0, longitude: 200.0)
+        
+        guard let auth = userDefaults.string(forKey: "auth_token") else { return }
+        
         guard let wifiSSID = wifiSSID,
-              let wifiPassword = wifiPassword else {
-            return
-        }
+              let wifiPassword = wifiPassword
+        else { return }
+        
         sendUUIDRequest(uuid: "fcb242f0-fdba-4c9b-943e-51adff1aebac")
         print("1")
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
-            //sendAuthToken(authToken: "f5YX-oHsKVdxozzB3YNf")
-            sendAuthToken(authToken: "mvFm-GCwMGSZQwvp82uy")
+            sendAuthToken(authToken: auth)
             
             print("2")
         }
