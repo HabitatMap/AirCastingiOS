@@ -66,35 +66,38 @@ struct AirBeam3Configurator {
     }
     
     // To configure fixed session we need to send authMessage first
-    // We're generating unique String for session UUID and sending it to the AB
+    // We're generating unique String for session UUID and sending it with users auth token to the AB
     
     private func configureFixedWifiSession(dateString: String, wifiSSID: String?, wifiPassword: String?) {
-        // TO DO: Add location
-        let location = CLLocationCoordinate2D(latitude: 200.0, longitude: 200.0)
         
         guard let auth = userDefaults.string(forKey: "auth_token") else { return }
-        
-        guard let wifiSSID = wifiSSID,
-              let wifiPassword = wifiPassword
-        else { return }
         
         sendUUIDRequest(uuid: "fcb242f0-fdba-4c9b-943e-51adff1aebac")
         print("1")
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
             sendAuthToken(authToken: auth)
-            
             print("2")
         }
+    }
+    
+    func sendFixedWifiInitialData(location: CLLocationCoordinate2D, dateString: String) {
+        // TO DO: Add location
+        var  temporaryLocation = CLLocationCoordinate2D(latitude: 200.0, longitude: 200.0)
+        
+        guard let wifiSSID = wifiSSID,
+              let wifiPassword = wifiPassword
+        else { return }
+        
+        sendLocationConfiguration(location: temporaryLocation)
+        print("3")
+        
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
-            sendLocationConfiguration(location: location)
-            print("3")
+            sendCurrentTimeConfiguration(date: dateString)
+            print("4")
+            
             DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
-                sendCurrentTimeConfiguration(date: dateString)
-                print("4")
-                DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
-                    sendWifiConfiguration(wifiSSID: wifiSSID, wifiPassword: wifiPassword)
-                    print("5")
-                }
+                sendWifiConfiguration(wifiSSID: wifiSSID, wifiPassword: wifiPassword)
+                print("5")
             }
         }
     }
