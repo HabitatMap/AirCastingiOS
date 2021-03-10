@@ -12,7 +12,7 @@ struct SelectPeripheralView: View {
     
     @State private var selection: CBPeripheral? = nil
     @EnvironmentObject var bluetoothManager: BluetoothManager
-    @EnvironmentObject var context: AirbeamSetupContext
+    @EnvironmentObject var context: CreateSessionContext
     
     var body: some View {
         VStack(spacing: 30) {

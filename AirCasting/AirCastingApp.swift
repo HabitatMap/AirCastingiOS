@@ -10,9 +10,8 @@ import Firebase
 
 @main
 struct AirCastingApp: App {
-    @ObservedObject var bluetoothManager = BluetoothManager()
+
     let persistenceController = PersistenceController.shared
-    
     let userDefaults = UserDefaults.standard
     @ObservedObject var bluetoothManager = BluetoothManager()
     @State var test: Any?

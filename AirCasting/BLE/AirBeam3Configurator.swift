@@ -35,25 +35,25 @@ struct AirBeam3Configurator {
     // service id
     private let SERVICE_UUID = CBUUID(string:"0000ffdd-0000-1000-8000-00805f9b34fb")
     
+    
     func configure(session: OldSession, wifiSSID: String?, wifiPassword: String?) {
         // TO DO: get location from Session, change the date
         let date = "19/12/19-02:40:00"
+        let location = CLLocationCoordinate2D(latitude: 200.0, longitude: 200.0)
         
         // TO DO: pick session type depending on object's session type
         
         // MOBILE
-//        configureMobileSession(dateString: date)
+        configureMobileSession(dateString: date, location: location)
         
         //FIXED
-        configureFixedWifiSession(dateString: date,
+        configureFixedWifiSession(location: location,
+                                  dateString: date,
                                   wifiSSID: wifiSSID,
                                   wifiPassword: wifiPassword)
     }
     
-    private func configureMobileSession(dateString: String) {
-        // TO DO: Add location
-        let location = CLLocationCoordinate2D(latitude: 200.0, longitude: 200.0)
-        
+    private func configureMobileSession(dateString: String, location: CLLocationCoordinate2D) {
         sendLocationConfiguration(location: location)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
@@ -68,7 +68,7 @@ struct AirBeam3Configurator {
     // To configure fixed session we need to send authMessage first
     // We're generating unique String for session UUID and sending it with users auth token to the AB
     
-    private func configureFixedWifiSession(dateString: String, wifiSSID: String?, wifiPassword: String?) {
+    private func configureFixed() {
         
         guard let auth = userDefaults.string(forKey: "auth_token") else { return }
         
@@ -80,9 +80,9 @@ struct AirBeam3Configurator {
         }
     }
     
-    func sendFixedWifiInitialData(location: CLLocationCoordinate2D, dateString: String) {
+    private func configureFixedWifiSession(location: CLLocationCoordinate2D, dateString: String, wifiSSID: String?, wifiPassword: String?) {
         // TO DO: Add location
-        var  temporaryLocation = CLLocationCoordinate2D(latitude: 200.0, longitude: 200.0)
+        let  temporaryLocation = CLLocationCoordinate2D(latitude: 200.0, longitude: 200.0)
         
         guard let wifiSSID = wifiSSID,
               let wifiPassword = wifiPassword
