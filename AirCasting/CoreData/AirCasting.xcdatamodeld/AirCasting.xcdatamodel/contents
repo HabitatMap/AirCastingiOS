@@ -8,6 +8,7 @@
         <relationship name="measurementStream" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MeasurementStream" inverseName="measurements" inverseEntity="MeasurementStream"/>
     </entity>
     <entity name="MeasurementStream" representedClassName=".MeasurementStream" syncable="YES" codeGenerationType="class">
+        <attribute name="gotDeleted" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="measurementShortType" optional="YES" attributeType="String"/>
         <attribute name="measurementType" optional="YES" attributeType="String"/>
         <attribute name="sensorName" optional="YES" attributeType="String"/>
@@ -23,7 +24,7 @@
         <relationship name="session" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Session" inverseName="measurementStreams" inverseEntity="Session"/>
     </entity>
     <entity name="SensorThreshold" representedClassName=".SensorThreshold" syncable="YES" codeGenerationType="class">
-        <attribute name="sensorName" optional="YES" attributeType="String"/>
+        <attribute name="sensorName" attributeType="String"/>
         <attribute name="thresholdHigh" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="thresholdLow" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="thresholdMedium" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
@@ -32,10 +33,11 @@
     </entity>
     <entity name="Session" representedClassName=".Session" syncable="YES" codeGenerationType="class">
         <attribute name="contribute" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
-        <attribute name="deviceId" optional="YES" attributeType="String"/>
+        <attribute name="deviceId" attributeType="String"/>
         <attribute name="deviceType" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="endTime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="followedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="gotDeleted" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="isIndoor" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="locationless" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
@@ -52,8 +54,8 @@
     </entity>
     <elements>
         <element name="Measurement" positionX="-63" positionY="-18" width="128" height="118"/>
-        <element name="MeasurementStream" positionX="-63.7001953125" positionY="128.3192749023438" width="128" height="238"/>
-        <element name="SensorThreshold" positionX="388.8433837890625" positionY="56.29141235351562" width="128" height="119"/>
-        <element name="Session" positionX="146.2360229492188" positionY="-4.297317504882812" width="165.6036376953125" height="313"/>
+        <element name="MeasurementStream" positionX="-63.7001953125" positionY="128.3192749023438" width="128" height="253"/>
+        <element name="SensorThreshold" positionX="388.8433837890625" positionY="56.29141235351562" width="128" height="133"/>
+        <element name="Session" positionX="146.2360229492188" positionY="-4.297317504882812" width="165.6036376953125" height="328"/>
     </elements>
 </model>
