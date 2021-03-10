@@ -5,6 +5,7 @@
         <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="time" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="value" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <relationship name="measurementStream" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MeasurementStream" inverseName="measurements" inverseEntity="MeasurementStream"/>
     </entity>
     <entity name="MeasurementStream" representedClassName=".MeasurementStream" syncable="YES" codeGenerationType="class">
         <attribute name="measurementShortType" optional="YES" attributeType="String"/>
@@ -18,6 +19,8 @@
         <attribute name="thresholdVeryLow" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="unitName" optional="YES" attributeType="String"/>
         <attribute name="unitSymbol" optional="YES" attributeType="String"/>
+        <relationship name="measurements" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Measurement" inverseName="measurementStream" inverseEntity="Measurement"/>
+        <relationship name="session" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Session" inverseName="measurementStreams" inverseEntity="Session"/>
     </entity>
     <entity name="SensorThreshold" representedClassName=".SensorThreshold" syncable="YES" codeGenerationType="class">
         <attribute name="sensorName" optional="YES" attributeType="String"/>
@@ -45,11 +48,12 @@
         <attribute name="urlLocation" optional="YES" attributeType="String"/>
         <attribute name="uuid" optional="YES" attributeType="String"/>
         <attribute name="version" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="measurementStreams" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="MeasurementStream" inverseName="session" inverseEntity="MeasurementStream"/>
     </entity>
     <elements>
-        <element name="Measurement" positionX="-63" positionY="-18" width="128" height="89"/>
-        <element name="MeasurementStream" positionX="-63.7001953125" positionY="128.3192749023438" width="128" height="194"/>
+        <element name="Measurement" positionX="-63" positionY="-18" width="128" height="118"/>
+        <element name="MeasurementStream" positionX="-63.7001953125" positionY="128.3192749023438" width="128" height="238"/>
         <element name="SensorThreshold" positionX="388.8433837890625" positionY="56.29141235351562" width="128" height="119"/>
-        <element name="Session" positionX="166.41845703125" positionY="3.91326904296875" width="165.6036376953125" height="284"/>
+        <element name="Session" positionX="146.2360229492188" positionY="-4.297317504882812" width="165.6036376953125" height="313"/>
     </elements>
 </model>
