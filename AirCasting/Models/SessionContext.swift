@@ -9,6 +9,8 @@ import Foundation
 import CoreBluetooth
 
 class CreateSessionContext: ObservableObject {
+    var name: String?
+    var tags: String?
     var sessionUUID: String?
     var sessionType: SessionType?
     var peripheral: CBPeripheral?

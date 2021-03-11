@@ -13,7 +13,6 @@ struct ChooseSessionTypeView: View {
     @State private var isInfoPresented: Bool = false
     @Environment(\.managedObjectContext) var context
     @StateObject var sessionContext = CreateSessionContext()
-//    @State private var session: Session?
     @State private var isFixedNavigationLinkActive = false
     @State private var isMobileNavigationLinkActive = false
     
