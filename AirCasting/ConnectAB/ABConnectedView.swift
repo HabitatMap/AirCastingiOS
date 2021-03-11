@@ -22,7 +22,7 @@ struct ABConnectedView: View {
                 messageLabel
             }
             Button("Fixed Wifi") {
-                let testFixedSession = Session(name: "FixedWifi")
+                let testFixedSession = OldSession(name: "FixedWifi")
                 configurator.configure(session: testFixedSession,
                                        wifiSSID: "toya88804693",
                                        wifiPassword: "07078914")

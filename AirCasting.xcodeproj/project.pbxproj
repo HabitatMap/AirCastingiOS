@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		331EA80A25E32094009DEFDB /* ConfirmCreatingSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331EA80925E32094009DEFDB /* ConfirmCreatingSessionView.swift */; };
 		3362B4ED25E69987008D61BA /* AddNameAndTagsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3362B4EC25E69987008D61BA /* AddNameAndTagsView.swift */; };
+		338C30E225F1044B00E0305C /* Persistance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 338C30E125F1044B00E0305C /* Persistance.swift */; };
+		338C30E825F10BFE00E0305C /* AirCasting.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 338C30E625F10BFE00E0305C /* AirCasting.xcdatamodeld */; };
 		AC1DAD4525C9858C009AC4D1 /* SelectPeripheralView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC1DAD4425C9858C009AC4D1 /* SelectPeripheralView.swift */; };
 		AC1DAD4925C987B3009AC4D1 /* BluetoothManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC1DAD4825C987B3009AC4D1 /* BluetoothManager.swift */; };
 		AC3203CB25CA991C00A68520 /* TurnOnBluetoothView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC3203CA25CA991C00A68520 /* TurnOnBluetoothView.swift */; };
@@ -22,7 +24,7 @@
 		AC5832DA25B196DD008C5DD5 /* Graph.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC5832D925B196DD008C5DD5 /* Graph.swift */; };
 		AC5EF71D25C8178B003657B1 /* EmptyDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC5EF71C25C8178B003657B1 /* EmptyDashboardView.swift */; };
 		AC5EF72125C81882003657B1 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC5EF72025C81882003657B1 /* DashboardView.swift */; };
-		AC5EF72425C81992003657B1 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC5EF72325C81992003657B1 /* Session.swift */; };
+		AC5EF72425C81992003657B1 /* OldSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC5EF72325C81992003657B1 /* OldSession.swift */; };
 		AC5EF76125C84888003657B1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = AC5EF76025C84888003657B1 /* GoogleService-Info.plist */; };
 		AC6D567C25AC540D00D221BA /* Charts in Frameworks */ = {isa = PBXBuildFile; productRef = AC6D567B25AC540D00D221BA /* Charts */; };
 		AC6D567F25AC54A400D221BA /* ChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6D567E25AC54A400D221BA /* ChartView.swift */; };
@@ -60,7 +62,7 @@
 		AC8CFF4125E5095600FB2918 /* Textfield.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8CFF4025E5095600FB2918 /* Textfield.swift */; };
 		AC8CFF4525E510CB00FB2918 /* AuthorizationAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8CFF4425E510CB00FB2918 /* AuthorizationAPI.swift */; };
 		AC8CFF5C25E6866100FB2918 /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8CFF5B25E6866100FB2918 /* SignInView.swift */; };
-		AC8CFF7225E7DA2D00FB2918 /* Measurement.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8CFF7125E7DA2D00FB2918 /* Measurement.swift */; };
+		AC8CFF7225E7DA2D00FB2918 /* ABMeasurementStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8CFF7125E7DA2D00FB2918 /* ABMeasurementStream.swift */; };
 		AC8CFF7725ECF8B100FB2918 /* HexMessagesBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8CFF7625ECF8B100FB2918 /* HexMessagesBuilder.swift */; };
 		AC8CFF7E25EE5F9200FB2918 /* AirBeam3Configurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8CFF7D25EE5F9200FB2918 /* AirBeam3Configurator.swift */; };
 		AC8D6C6A25C049E300ED74D1 /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8D6C6925C049E300ED74D1 /* Environment.swift */; };
@@ -82,6 +84,8 @@
 		278FFE79104B8F74B61CE3A2 /* Pods-AirCasting.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AirCasting.release.xcconfig"; path = "Target Support Files/Pods-AirCasting/Pods-AirCasting.release.xcconfig"; sourceTree = "<group>"; };
 		331EA80925E32094009DEFDB /* ConfirmCreatingSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmCreatingSessionView.swift; sourceTree = "<group>"; };
 		3362B4EC25E69987008D61BA /* AddNameAndTagsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNameAndTagsView.swift; sourceTree = "<group>"; };
+		338C30E125F1044B00E0305C /* Persistance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistance.swift; sourceTree = "<group>"; };
+		338C30E725F10BFE00E0305C /* AirCasting.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AirCasting.xcdatamodel; sourceTree = "<group>"; };
 		80BDC4331283D7705B8C8952 /* Pods-AirCasting.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AirCasting.debug.xcconfig"; path = "Target Support Files/Pods-AirCasting/Pods-AirCasting.debug.xcconfig"; sourceTree = "<group>"; };
 		8E819223F8D800D3B8ED8F56 /* Pods_AirCasting.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AirCasting.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AC1DAD4425C9858C009AC4D1 /* SelectPeripheralView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectPeripheralView.swift; sourceTree = "<group>"; };
@@ -97,7 +101,7 @@
 		AC5832D925B196DD008C5DD5 /* Graph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Graph.swift; sourceTree = "<group>"; };
 		AC5EF71C25C8178B003657B1 /* EmptyDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyDashboardView.swift; sourceTree = "<group>"; };
 		AC5EF72025C81882003657B1 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
-		AC5EF72325C81992003657B1 /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
+		AC5EF72325C81992003657B1 /* OldSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OldSession.swift; sourceTree = "<group>"; };
 		AC5EF76025C84888003657B1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
 		AC6D567E25AC54A400D221BA /* ChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartView.swift; sourceTree = "<group>"; };
 		AC6D569925ADE57800D221BA /* GrayButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrayButtonStyle.swift; sourceTree = "<group>"; };
@@ -136,7 +140,7 @@
 		AC8CFF4025E5095600FB2918 /* Textfield.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Textfield.swift; sourceTree = "<group>"; };
 		AC8CFF4425E510CB00FB2918 /* AuthorizationAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationAPI.swift; sourceTree = "<group>"; };
 		AC8CFF5B25E6866100FB2918 /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
-		AC8CFF7125E7DA2D00FB2918 /* Measurement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Measurement.swift; sourceTree = "<group>"; };
+		AC8CFF7125E7DA2D00FB2918 /* ABMeasurementStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ABMeasurementStream.swift; sourceTree = "<group>"; };
 		AC8CFF7625ECF8B100FB2918 /* HexMessagesBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexMessagesBuilder.swift; sourceTree = "<group>"; };
 		AC8CFF7D25EE5F9200FB2918 /* AirBeam3Configurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirBeam3Configurator.swift; sourceTree = "<group>"; };
 		AC8D6C6925C049E300ED74D1 /* Environment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
@@ -166,6 +170,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		338C30E025F1042000E0305C /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				338C30E125F1044B00E0305C /* Persistance.swift */,
+				338C30E625F10BFE00E0305C /* AirCasting.xcdatamodeld */,
+			);
+			path = CoreData;
+			sourceTree = "<group>";
+		};
 		A39CC233FB1B8C6B1C3FF94A /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -275,6 +288,7 @@
 			children = (
 				AC7EB37525A6FB3A00A7F2AF /* AirCastingApp.swift */,
 				AC7EB37725A6FB3A00A7F2AF /* MainTabBarView.swift */,
+				338C30E025F1042000E0305C /* CoreData */,
 				AC8CFF3425E502C700FB2918 /* Auth */,
 				AC8CFF4325E5108100FB2918 /* Networking */,
 				AC3203CE25CBED9C00A68520 /* Dashboard */,
@@ -359,8 +373,8 @@
 		AC8CFF7025E7D94C00FB2918 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				AC5EF72325C81992003657B1 /* Session.swift */,
-				AC8CFF7125E7DA2D00FB2918 /* Measurement.swift */,
+				AC5EF72325C81992003657B1 /* OldSession.swift */,
+				AC8CFF7125E7DA2D00FB2918 /* ABMeasurementStream.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -592,9 +606,9 @@
 				AC8CFF5C25E6866100FB2918 /* SignInView.swift in Sources */,
 				ACF77DFB25A8888700BB85B7 /* SessionCellView.swift in Sources */,
 				ACFC708925C1A36A00D609D9 /* UIColor.swift in Sources */,
-				AC8CFF7225E7DA2D00FB2918 /* Measurement.swift in Sources */,
+				AC8CFF7225E7DA2D00FB2918 /* ABMeasurementStream.swift in Sources */,
 				AC93B8DA25BEDC46003D0A0D /* Array.swift in Sources */,
-				AC5EF72425C81992003657B1 /* Session.swift in Sources */,
+				AC5EF72425C81992003657B1 /* OldSession.swift in Sources */,
 				AC7AB09225D988CD0025492B /* WhiteButtonStyle.swift in Sources */,
 				AC32041C25CC46EF00A68520 /* PowerABView.swift in Sources */,
 				AC86EE6B25D03DC00083F8C0 /* SelectDeviceView.swift in Sources */,
@@ -605,6 +619,7 @@
 				AC6D56A525AF211200D221BA /* MultiSliderView.swift in Sources */,
 				AC8CFF7E25EE5F9200FB2918 /* AirBeam3Configurator.swift in Sources */,
 				AC8CFF7725ECF8B100FB2918 /* HexMessagesBuilder.swift in Sources */,
+				338C30E225F1044B00E0305C /* Persistance.swift in Sources */,
 				AC6D56A225AEF55C00D221BA /* GraphView.swift in Sources */,
 				AC1DAD4525C9858C009AC4D1 /* SelectPeripheralView.swift in Sources */,
 				ACF77DF425A750E000BB85B7 /* Color.swift in Sources */,
@@ -612,6 +627,7 @@
 				AC6D567F25AC54A400D221BA /* ChartView.swift in Sources */,
 				AC4EC6BC25B5ABB700C1E312 /* StatisticsContainerView.swift in Sources */,
 				AC8CFF3625E502DD00FB2918 /* CreateAccountView.swift in Sources */,
+				338C30E825F10BFE00E0305C /* AirCasting.xcdatamodeld in Sources */,
 				AC8D6C6A25C049E300ED74D1 /* Environment.swift in Sources */,
 				AC8D6C7225C0574800ED74D1 /* LocationTracker.swift in Sources */,
 				AC4EC6C425B6FE0D00C1E312 /* HeatmapSettingsView.swift in Sources */,
@@ -835,6 +851,19 @@
 			productName = Charts;
 		};
 /* End XCSwiftPackageProductDependency section */
+
+/* Begin XCVersionGroup section */
+		338C30E625F10BFE00E0305C /* AirCasting.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				338C30E725F10BFE00E0305C /* AirCasting.xcdatamodel */,
+			);
+			currentVersion = 338C30E725F10BFE00E0305C /* AirCasting.xcdatamodel */;
+			path = AirCasting.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = AC7EB36A25A6FB3A00A7F2AF /* Project object */;
 }

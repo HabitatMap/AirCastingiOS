@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Measurement {
+struct ABMeasurementStream {
     var measuredValue: Double
     var packageName: String
     var sensorName: String

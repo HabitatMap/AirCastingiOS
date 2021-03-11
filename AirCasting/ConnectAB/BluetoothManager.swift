@@ -138,7 +138,7 @@ extension BluetoothManager: CBPeripheralDelegate {
         }
     }
     
-    func parseData(data: Data) -> Measurement? {
+    func parseData(data: Data) -> ABMeasurementStream? {
         let string = String(data: data, encoding: .utf8)
         print("RAW: \(string)")
         let components = string?.components(separatedBy: ";")
@@ -153,7 +153,7 @@ extension BluetoothManager: CBPeripheralDelegate {
         else  {
             return nil
         }
-        let newMeasurement = Measurement(measuredValue: measuredValue,
+        let newMeasurement = ABMeasurementStream(measuredValue: measuredValue,
                                           packageName: values[1],
                                           sensorName: values[2],
                                           measurementType: values[3],

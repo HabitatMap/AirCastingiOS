@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Session: Identifiable {
+struct OldSession: Identifiable {
     var id: String {
         name
     }
