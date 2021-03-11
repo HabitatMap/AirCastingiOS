@@ -12,6 +12,7 @@ struct ConfirmCreatingSessionView: View {
     
     @EnvironmentObject private var sessionContext: CreateSessionContext
     @State private var didStartRecordingSession = false
+    var sessionType: String
     var sessionName: String
     
     var body: some View {
@@ -21,7 +22,13 @@ struct ConfirmCreatingSessionView: View {
                 .foregroundColor(.darkBlue)
                 
             VStack(alignment: .leading, spacing: 15) {
-                Text("Your \(showSessionType()) session \(sessionName) is ready to start gathering data.")
+                Text("Your ")
+                    + Text(sessionType)
+                        .foregroundColor(.accentColor)
+                    + Text(" session ")
+                    + Text(sessionName)
+                        .foregroundColor(.accentColor)
+                    + Text(" is ready to start gathering data.")
                 Text("Move to your starting location, confirm your location is accurate on the map, then press the start recording button below.")
             }
             .font(Font.muli(size: 16))
@@ -50,6 +57,6 @@ struct ConfirmCreatingSessionView: View {
 
 struct ConfirmCreatingSession_Previews: PreviewProvider {
     static var previews: some View {
-        ConfirmCreatingSessionView(sessionName: "tests")
+        ConfirmCreatingSessionView(sessionType: "mobile", sessionName: "Ania's microphone session")
     }
 }
