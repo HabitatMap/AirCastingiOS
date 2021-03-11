@@ -9,7 +9,6 @@ import SwiftUI
 
 struct MainTabBarView: View {
 
-    @StateObject var sessionContext = CreateSessionContext()
     
     var body: some View {
         TabView {
@@ -33,7 +32,6 @@ struct MainTabBarView: View {
             // TO DO: Change starting view
             ChooseSessionTypeView()
         }
-        .environmentObject(sessionContext)
         .tabItem {
             Image(systemName: "plus")
         }

@@ -36,21 +36,26 @@ struct AirBeam3Configurator {
     private let SERVICE_UUID = CBUUID(string:"0000ffdd-0000-1000-8000-00805f9b34fb")
     
     
-    func configure(session: OldSession, wifiSSID: String?, wifiPassword: String?) {
+    func configure(session: Session, wifiSSID: String?, wifiPassword: String?) {
         // TO DO: get location from Session, change the date
         let date = "19/12/19-02:40:00"
         let location = CLLocationCoordinate2D(latitude: 200.0, longitude: 200.0)
         
         // TO DO: pick session type depending on object's session type
         
-        // MOBILE
-        configureMobileSession(dateString: date, location: location)
-        
-        //FIXED
-        configureFixedWifiSession(location: location,
-                                  dateString: date,
-                                  wifiSSID: wifiSSID,
-                                  wifiPassword: wifiPassword)
+        if session.type == SessionType.MOBILE.rawValue {
+            configureMobileSession(dateString: date, location: location)
+        } else {
+            // Fixed WiFi
+            if let uuid = session.uuid {
+                configureFixed(uuid: uuid)
+            }
+            configureFixedWifiSession(location: location,
+                                      dateString: date,
+                                      wifiSSID: wifiSSID,
+                                      wifiPassword: wifiPassword)
+        }
+       
     }
     
     private func configureMobileSession(dateString: String, location: CLLocationCoordinate2D) {
@@ -68,11 +73,11 @@ struct AirBeam3Configurator {
     // To configure fixed session we need to send authMessage first
     // We're generating unique String for session UUID and sending it with users auth token to the AB
     
-    private func configureFixed() {
+    private func configureFixed(uuid: String) {
         
         guard let auth = userDefaults.string(forKey: "auth_token") else { return }
         
-        sendUUIDRequest(uuid: "fcb242f0-fdba-4c9b-943e-51adff1aebac")
+        sendUUIDRequest(uuid: uuid)
         print("1")
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
             sendAuthToken(authToken: auth)

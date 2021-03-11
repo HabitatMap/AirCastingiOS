@@ -12,7 +12,8 @@ struct ChooseSessionTypeView: View {
     
     @State private var isInfoPresented: Bool = false
     @Environment(\.managedObjectContext) var context
-    @State private var session: Session?
+    @StateObject var sessionContext = CreateSessionContext()
+//    @State private var session: Session?
     @State private var isFixedNavigationLinkActive = false
     @State private var isMobileNavigationLinkActive = false
     
@@ -46,6 +47,7 @@ struct ChooseSessionTypeView: View {
             )
         }
         .navigationBarTitleDisplayMode(.inline)
+        .environmentObject(sessionContext)
     }
     var titleLabel: some View {
         Text("Let's begin")
@@ -151,16 +153,12 @@ struct ChooseSessionTypeView: View {
     }
     
     private func createNewSession(isSessionFixed: Bool) {
-        print("session created")
-        let session = Session(context: context)
-        session.uuid = UUID().uuidString
-        session.status = Int16(SessionStatus.NEW.rawValue)
+        sessionContext.sessionUUID = UUID().uuidString
         if isSessionFixed {
-            session.type = Int16(SessionType.FIXED.rawValue)
+            sessionContext.sessionType = SessionType.FIXED
         } else {
-            session.type = Int16(SessionType.MOBILE.rawValue)
+            sessionContext.sessionType = SessionType.MOBILE
         }
-        self.session = session
     }
 }
 

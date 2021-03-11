@@ -9,6 +9,8 @@ import SwiftUI
 import CoreLocation
 
 struct ConfirmCreatingSessionView: View {
+    
+    @EnvironmentObject var sessionContext: CreateSessionContext
     var sessionType = "mobile"
     var sessionName = "Ania's microphone session"
     
@@ -29,7 +31,9 @@ struct ConfirmCreatingSessionView: View {
             
             GoogleMapView(pathPoints: [], values: [])
                         
-            Button(action: {}, label: {
+            Button(action: {
+                sessionContext.setupAB()
+            }, label: {
                 Text("Start recording")
                     .bold()
             })

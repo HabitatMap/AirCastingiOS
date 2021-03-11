@@ -9,7 +9,19 @@ import Foundation
 import CoreBluetooth
 
 class CreateSessionContext: ObservableObject {
+    var sessionUUID: String?
+    var sessionType: SessionType?
     var peripheral: CBPeripheral?
+    var session: Session?
+    var deviceType: DeviceType?
+    
+    func setupAB() {
+        guard let peripheral = peripheral,
+              let session = session else { return }
+        AirBeam3Configurator(peripheral: peripheral).configure(session: session,
+                                                               wifiSSID: "",
+                                                               wifiPassword: "")
+    }
 }
 
 enum SessionType: Int {
@@ -27,4 +39,9 @@ enum SessionStatus: Int {
 enum StreamingMethod: Int {
     case CELLULAR = 0
     case WIFI = 1
+}
+
+enum DeviceType: Int {
+    case MIC = 0
+    case AIRBEAM3 = 1
 }
