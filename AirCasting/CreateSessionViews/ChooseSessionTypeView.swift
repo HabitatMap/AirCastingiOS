@@ -152,16 +152,15 @@ struct ChooseSessionTypeView: View {
     
     private func createNewSession(isSessionFixed: Bool) {
         print("session created")
-        //        let session = Session(context: context)
-        //        session.uuid = UUID().uuidString
-        //        session.status = -1
-        //        if isSessionFixed {
-        //            session.type = 1
-        //        } else {
-        //            session.type = 0
-        //        }
-        //        self.session = session
-        //    }
+        let session = Session(context: context)
+        session.uuid = UUID().uuidString
+        session.status = Int16(SessionStatus.NEW.rawValue)
+        if isSessionFixed {
+            session.type = Int16(SessionType.FIXED.rawValue)
+        } else {
+            session.type = Int16(SessionType.MOBILE.rawValue)
+        }
+        self.session = session
     }
 }
 

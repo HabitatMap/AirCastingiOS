@@ -12,12 +12,12 @@ class CreateSessionContext: ObservableObject {
     var peripheral: CBPeripheral?
 }
 
-enum Type: Int {
+enum SessionType: Int {
     case MOBILE = 0
     case FIXED = 1
 }
 
-enum Status: Int {
+enum SessionStatus: Int {
     case NEW = -1
     case RECORDING = 0
     case FINISHED = 1
