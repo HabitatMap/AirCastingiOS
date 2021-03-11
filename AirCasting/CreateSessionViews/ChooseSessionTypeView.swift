@@ -47,6 +47,9 @@ struct ChooseSessionTypeView: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .environmentObject(sessionContext)
+        .onAppear {
+            sessionContext.managedObjectContext = context
+        }
     }
     var titleLabel: some View {
         Text("Let's begin")

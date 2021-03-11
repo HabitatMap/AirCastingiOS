@@ -40,22 +40,25 @@ struct AirBeam3Configurator {
         // TO DO: get location from Session, change the date
         let date = "19/12/19-02:40:00"
         let location = CLLocationCoordinate2D(latitude: 200.0, longitude: 200.0)
-        
         // TO DO: pick session type depending on object's session type
+        
+        guard let uuid = session.uuid else { return }
         
         if session.type == SessionType.MOBILE.rawValue {
             configureMobileSession(dateString: date, location: location)
         } else {
             // Fixed WiFi
-            if let uuid = session.uuid {
-                configureFixed(uuid: uuid)
+            guard let wifiSSID = wifiSSID,
+                  let wifiPassword = wifiPassword
+            else { return }
+            
+                configureFixed(uuid: uuid) {
+                    configureFixedWifiSession(location: location,
+                                              dateString: date,
+                                              wifiSSID: wifiSSID,
+                                              wifiPassword: wifiPassword)
+                }
             }
-            configureFixedWifiSession(location: location,
-                                      dateString: date,
-                                      wifiSSID: wifiSSID,
-                                      wifiPassword: wifiPassword)
-        }
-       
     }
     
     private func configureMobileSession(dateString: String, location: CLLocationCoordinate2D) {
@@ -73,34 +76,33 @@ struct AirBeam3Configurator {
     // To configure fixed session we need to send authMessage first
     // We're generating unique String for session UUID and sending it with users auth token to the AB
     
-    private func configureFixed(uuid: String) {
+    private func configureFixed(uuid: String, completion: @escaping () -> Void) {
         
         guard let auth = userDefaults.string(forKey: "auth_token") else { return }
         
         sendUUIDRequest(uuid: uuid)
         print("1")
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
             sendAuthToken(authToken: auth)
             print("2")
+            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
+                completion()
+            }
         }
     }
     
-    private func configureFixedWifiSession(location: CLLocationCoordinate2D, dateString: String, wifiSSID: String?, wifiPassword: String?) {
+    private func configureFixedWifiSession(location: CLLocationCoordinate2D, dateString: String, wifiSSID: String, wifiPassword: String) {
         // TO DO: Add location
         let  temporaryLocation = CLLocationCoordinate2D(latitude: 200.0, longitude: 200.0)
-        
-        guard let wifiSSID = wifiSSID,
-              let wifiPassword = wifiPassword
-        else { return }
-        
+                
         sendLocationConfiguration(location: temporaryLocation)
         print("3")
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
             sendCurrentTimeConfiguration(date: dateString)
             print("4")
             
-            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
                 sendWifiConfiguration(wifiSSID: wifiSSID, wifiPassword: wifiPassword)
                 print("5")
             }

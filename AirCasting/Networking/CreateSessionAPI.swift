@@ -38,14 +38,8 @@ class CreateSessionApi {
     }
     
     struct SessionParams: Codable {
-    
-        enum SessionType: String, Codable {
-            case mobile = "MobileSession"
-            case fixed = "FixedSession"
-        }
-        
         var uuid: String
-        var type: SessionType
+        var type: String // SessionType.toString()
         var title: String
         var tag_list: String
         var start_time: Date
@@ -127,7 +121,7 @@ extension CreateSessionApi.Input {
     static var mock: CreateSessionApi.Input {
         
         let session = CreateSessionApi.SessionParams(uuid: UUID().uuidString,
-                                                     type: .fixed,
+                                                     type: SessionType.FIXED.toString(),
                                                      title: "Test-1",
                                                      tag_list: "",
                                                      start_time: Date(),

@@ -28,8 +28,8 @@ struct AddNameAndTagsView: View {
     
     var continueButton: some View {
         Button(action: {
-            sessionContext.name = sessionName
-            sessionContext.tags = sessionTags
+            sessionContext.sessionName = sessionName
+            sessionContext.sessionTags = sessionTags
             isConfirmCreatingSessionActive = true
         }, label: {
             Text("Continue")
