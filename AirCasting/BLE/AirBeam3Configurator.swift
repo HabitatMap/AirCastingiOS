@@ -67,17 +67,14 @@ struct AirBeam3Configurator {
                                    location: CLLocationCoordinate2D,
                                    dateString: String,
                                    wifiSSID: String, wifiPassword: String) {
-        // TO DO: Add location and date
-        let mockedLocation = CLLocationCoordinate2D(latitude: 200.0, longitude: 200.0)
-        let temporaryMockedDate = "19/12/19-02:40:00"
 
         configureFixed(uuid: uuid)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
-            sendLocationConfiguration(location: mockedLocation)
+            sendLocationConfiguration(location: location)
             
             DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
-                sendCurrentTimeConfiguration(date: temporaryMockedDate)
+                sendCurrentTimeConfiguration(date: dateString)
                 
                 DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
                     sendWifiConfiguration(wifiSSID: wifiSSID, wifiPassword: wifiPassword)

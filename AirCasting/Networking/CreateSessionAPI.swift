@@ -77,7 +77,6 @@ class CreateSessionApi {
         
         
         let encoder = JSONEncoder()
-//        encoder.dateEncodingStrategy = .iso8601
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
         encoder.dateEncodingStrategy = .formatted(formatter)
@@ -110,10 +109,6 @@ class CreateSessionApi {
             }
             .eraseToAnyPublisher()
     }
-//    @GET("/api/realtime/sync_measurements.json")
-//        fun downloadFixedMeasurements(@Query("uuid") uuid: String, @Query("last_measurement_sync") last_measurement_sync: String): Call<SessionWithMeasurementsResponse>
-//
-    
 }
 
 extension CreateSessionApi.Input {

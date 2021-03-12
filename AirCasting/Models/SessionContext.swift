@@ -26,7 +26,7 @@ class CreateSessionContext: ObservableObject {
               let sessionType = sessionType,
               let deviceType = deviceType else { return }
         
-        // Save data to app'd database
+        // Save data to app's database
         let session = Session(context: managedObjectContext)
         session.uuid = sessionUUID
         session.name = sessionName
@@ -35,21 +35,25 @@ class CreateSessionContext: ObservableObject {
         session.deviceType = Int16(deviceType.rawValue)
         session.startTime = Date()
         
-        // TO DO: Add location and date
+        // TO DO: Replace mocked location and date
         let temporaryMockedDate = "19/12/19-02:40:00"
         let mockedLocation = CLLocationCoordinate2D(latitude: 200.0, longitude: 200.0)
         
         if session.type == SessionType.FIXED.rawValue {
             // if session is fixed: create an empty session on server,
-            // send AB auth data to connect to web session and data needed to start recording
+            // then send AB auth data to connect to web session and data needed to start recording
+            
+            guard let uuid = session.uuid,
+                  let name = session.name,
+                  let startTime = session.startTime else { return }
             
             // TO DO : change mocked data (contribute, is_indoor, notes, locaation, end_time)
-            let params = CreateSessionApi.SessionParams(uuid: session.uuid!,
+            let params = CreateSessionApi.SessionParams(uuid: uuid,
                                                         type: SessionType(rawValue: session.type)!.toString(),
-                                                        title: session.name!,
+                                                        title: name,
                                                         tag_list: session.tags ?? "",
-                                                        start_time: session.startTime!,
-                                                        end_time: session.startTime!,
+                                                        start_time: startTime,
+                                                        end_time: startTime,
                                                         contribute: false,
                                                         is_indoor: false,
                                                         notes: [],
