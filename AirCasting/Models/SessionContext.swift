@@ -26,6 +26,7 @@ class CreateSessionContext: ObservableObject {
               let sessionType = sessionType,
               let deviceType = deviceType else { return }
         
+        // Save data to app'd database
         let session = Session(context: managedObjectContext)
         session.uuid = sessionUUID
         session.name = sessionName
@@ -34,41 +35,51 @@ class CreateSessionContext: ObservableObject {
         session.deviceType = Int16(deviceType.rawValue)
         session.startTime = Date()
         
-        // Create empty session object on backend
-        // TO DO : change mocked data (contribute, is_indoor, notes, locaation, end_time)
+        // TO DO: Add location and date
+        let temporaryMockedDate = "19/12/19-02:40:00"
+        let mockedLocation = CLLocationCoordinate2D(latitude: 200.0, longitude: 200.0)
         
-        let params = CreateSessionApi.SessionParams(uuid: session.uuid!,
-                                                    type: SessionType(rawValue: session.type)!.toString(),
-                                                    title: session.name!,
-                                                    tag_list: session.tags ?? "",
-                                                    start_time: session.startTime!,
-                                                    end_time: session.startTime!,
-                                                    contribute: false,
-                                                    is_indoor: false,
-                                                    notes: [],
-                                                    version: 0,
-                                                    streams: [:],
-                                                    latitude: 200.0,
-                                                    longitude: 200.0)
         if session.type == SessionType.FIXED.rawValue {
+            // if session is fixed: create an empty session on server,
+            // send AB auth data to connect to web session and data needed to start recording
+            
+            // TO DO : change mocked data (contribute, is_indoor, notes, locaation, end_time)
+            let params = CreateSessionApi.SessionParams(uuid: session.uuid!,
+                                                        type: SessionType(rawValue: session.type)!.toString(),
+                                                        title: session.name!,
+                                                        tag_list: session.tags ?? "",
+                                                        start_time: session.startTime!,
+                                                        end_time: session.startTime!,
+                                                        contribute: false,
+                                                        is_indoor: false,
+                                                        notes: [],
+                                                        version: 0,
+                                                        streams: [:],
+                                                        latitude: 200.0,
+                                                        longitude: 200.0)
             syncSink = CreateSessionApi()
                 .createEmptyFixedWifiSession(input: .init(session: params,
                                                           compression: true))
                 .sink { (completion) in
                     
                 } receiveValue: { [weak self] (output) in
-                    guard let peripheral = self?.peripheral else { return }
-                    AirBeam3Configurator(peripheral: peripheral).configure(session: session,
-                                                                           wifiSSID: "toya88804693",
-                                                                           wifiPassword: "07078914")
+                    guard let peripheral = self?.peripheral,
+                          let uuid = session.uuid else { return }
+                    
                     // TO DO: Chanage mocked data for WiFi
+                    AirBeam3Configurator(peripheral: peripheral).configureFixedWifiSession(uuid: uuid,
+                                                                                           location: mockedLocation,
+                                                                                           dateString: temporaryMockedDate,
+                                                                                           wifiSSID: "toya88804693",
+                                                                                           wifiPassword: "07078914")
                 }
         } else {
+            // if session is mobile: send AB data needed to start recording
             guard let peripheral = self.peripheral else { return }
-            AirBeam3Configurator(peripheral: peripheral).configure(session: session,
-                                                                   wifiSSID: "toya88804693",
-                                                                   wifiPassword: "07078914")
+            AirBeam3Configurator(peripheral: peripheral).configureMobileSession(dateString: temporaryMockedDate,
+                                                                                location: mockedLocation)
         }
+        // TO DO: change else to else if, add fixed cellular and mic
     }
 }
 

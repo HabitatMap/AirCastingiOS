@@ -23,7 +23,6 @@ struct AddNameAndTagsView: View {
             continueButton
         }
         .padding()
-        
     }
     
     var continueButton: some View {

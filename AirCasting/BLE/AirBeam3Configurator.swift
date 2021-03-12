@@ -35,38 +35,13 @@ struct AirBeam3Configurator {
     // service id
     private let SERVICE_UUID = CBUUID(string:"0000ffdd-0000-1000-8000-00805f9b34fb")
     
-    
-    func configure(session: Session, wifiSSID: String?, wifiPassword: String?) {
-        // TO DO: get location from Session, change the date
-        let date = "19/12/19-02:40:00"
-        let location = CLLocationCoordinate2D(latitude: 200.0, longitude: 200.0)
-        // TO DO: pick session type depending on object's session type
+    func configureMobileSession(dateString: String, location: CLLocationCoordinate2D) {
         
-        guard let uuid = session.uuid else { return }
-        
-        if session.type == SessionType.MOBILE.rawValue {
-            configureMobileSession(dateString: date, location: location)
-        } else {
-            // Fixed WiFi
-            guard let wifiSSID = wifiSSID,
-                  let wifiPassword = wifiPassword
-            else { return }
-            
-                configureFixed(uuid: uuid) {
-                    configureFixedWifiSession(location: location,
-                                              dateString: date,
-                                              wifiSSID: wifiSSID,
-                                              wifiPassword: wifiPassword)
-                }
-            }
-    }
-    
-    private func configureMobileSession(dateString: String, location: CLLocationCoordinate2D) {
         sendLocationConfiguration(location: location)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
             sendCurrentTimeConfiguration(date: dateString)
-            
+
             DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
                 sendMobileModeRequest()
             }
@@ -75,36 +50,38 @@ struct AirBeam3Configurator {
     
     // To configure fixed session we need to send authMessage first
     // We're generating unique String for session UUID and sending it with users auth token to the AB
-    
-    private func configureFixed(uuid: String, completion: @escaping () -> Void) {
-        
+    private func configureFixed(uuid: String) {
         guard let auth = userDefaults.string(forKey: "auth_token") else { return }
-        
+
         sendUUIDRequest(uuid: uuid)
         print("1")
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
             sendAuthToken(authToken: auth)
             print("2")
             DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
-                completion()
             }
         }
     }
     
-    private func configureFixedWifiSession(location: CLLocationCoordinate2D, dateString: String, wifiSSID: String, wifiPassword: String) {
-        // TO DO: Add location
-        let  temporaryLocation = CLLocationCoordinate2D(latitude: 200.0, longitude: 200.0)
-                
-        sendLocationConfiguration(location: temporaryLocation)
-        print("3")
+    func configureFixedWifiSession(uuid: String,
+                                   location: CLLocationCoordinate2D,
+                                   dateString: String,
+                                   wifiSSID: String, wifiPassword: String) {
+        // TO DO: Add location and date
+        let mockedLocation = CLLocationCoordinate2D(latitude: 200.0, longitude: 200.0)
+        let temporaryMockedDate = "19/12/19-02:40:00"
+
+        configureFixed(uuid: uuid)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
-            sendCurrentTimeConfiguration(date: dateString)
-            print("4")
+            sendLocationConfiguration(location: mockedLocation)
             
             DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
-                sendWifiConfiguration(wifiSSID: wifiSSID, wifiPassword: wifiPassword)
-                print("5")
+                sendCurrentTimeConfiguration(date: temporaryMockedDate)
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
+                    sendWifiConfiguration(wifiSSID: wifiSSID, wifiPassword: wifiPassword)
+                }
             }
         }
     }
