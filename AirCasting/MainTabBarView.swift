@@ -28,10 +28,8 @@ struct MainTabBarView: View {
         }
     }
     private var createSessionTab: some View {
-        NavigationView {
-            // TO DO: Change starting view
-            ChooseSessionTypeView()
-        }
+        // TO DO: Change starting view
+        ChooseSessionTypeView()
         .tabItem {
             Image(systemName: "plus")
         }

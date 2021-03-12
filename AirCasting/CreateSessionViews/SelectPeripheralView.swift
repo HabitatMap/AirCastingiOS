@@ -63,6 +63,7 @@ struct SelectPeripheralView: View {
         ForEach(devices, id: \.self) { (availableDevice) in
             Button(action: {
                 selection = availableDevice
+                
                 sessionContext.peripheral = availableDevice
             }) {
                 HStack(spacing: 20) {

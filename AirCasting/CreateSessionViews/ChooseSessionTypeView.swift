@@ -17,39 +17,41 @@ struct ChooseSessionTypeView: View {
     @State private var isMobileNavigationLinkActive = false
     
     var body: some View {
-        VStack(spacing: 50) {
-            VStack(alignment: .leading, spacing: 10) {
-                titleLabel
-                messageLabel
-            }
-            .background(Color.white)
-            .padding(.horizontal)
-            
-            VStack {
-                VStack(alignment: .leading, spacing: 15) {
-                    HStack {
-                        recordNewLabel
-                        Spacer()
-                        moreInfo
-                    }
-                    HStack(spacing: 60) {
-                        fixedSessionButton
-                        mobileSessionButton
-                    }
+        NavigationView {
+            VStack(spacing: 50) {
+                VStack(alignment: .leading, spacing: 10) {
+                    titleLabel
+                    messageLabel
                 }
-                Spacer()
+                .background(Color.white)
+                .padding(.horizontal)
+                
+                VStack {
+                    VStack(alignment: .leading, spacing: 15) {
+                        HStack {
+                            recordNewLabel
+                            Spacer()
+                            moreInfo
+                        }
+                        HStack(spacing: 60) {
+                            fixedSessionButton
+                            mobileSessionButton
+                        }
+                    }
+                    Spacer()
+                }
+                .padding()
+                .background(
+                    Color.aircastingBackground.opacity(0.25)
+                        .ignoresSafeArea()
+                )
             }
-            .padding()
-            .background(
-                Color.aircastingBackground.opacity(0.25)
-                    .ignoresSafeArea()
-            )
+            .navigationBarTitleDisplayMode(.inline)
+            .onAppear {
+                sessionContext.managedObjectContext = context
+            }
         }
-        .navigationBarTitleDisplayMode(.inline)
         .environmentObject(sessionContext)
-        .onAppear {
-            sessionContext.managedObjectContext = context
-        }
     }
     var titleLabel: some View {
         Text("Let's begin")
@@ -101,7 +103,7 @@ struct ChooseSessionTypeView: View {
             createNewSession(isSessionFixed: false)
             isMobileNavigationLinkActive = true
         }) {
-            fixedSessionLabel
+            mobileSessionLabel
         }
         .background(
             NavigationLink(destination: SelectDeviceView(),

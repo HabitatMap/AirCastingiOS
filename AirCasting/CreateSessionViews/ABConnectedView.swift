@@ -36,13 +36,12 @@ struct ABConnectedView: View {
             .foregroundColor(.aircastingGray)
     }
     var continueButton: some View {
-        Button(action: {
-            print("Someting will happen, soon.")
-        },
-               label: {
-            Text("Continue")
-        })
-        .buttonStyle(BlueButtonStyle())
+        NavigationLink(
+            destination: AddNameAndTagsView(),
+            label: {
+                Text("Continue")
+            })
+            .buttonStyle(BlueButtonStyle())
     }
 }
 

@@ -15,6 +15,8 @@ class CreateSessionContext: ObservableObject {
     var sessionUUID: String?
     var sessionType: SessionType?
     var peripheral: CBPeripheral?
+    var wifiSSID: String?
+    var wifiPassword: String?
     //var session: Session?
     var deviceType: DeviceType?
     
