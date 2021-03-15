@@ -17,11 +17,25 @@ class CreateSessionContext: ObservableObject {
     var peripheral: CBPeripheral?
     var wifiSSID: String?
     var wifiPassword: String?
+    var startingLocation: CLLocationCoordinate2D?
     //var session: Session?
     var deviceType: DeviceType?
     
     var managedObjectContext: NSManagedObjectContext?
     private var syncSink: Any?
+    
+    private var locationProvider: LocationProvider?
+    private var locationSink: Any?
+    
+    func obtainCurrentLocation() {
+        locationProvider = LocationProvider()
+        locationProvider?.requestLocation()
+        
+        locationSink = locationProvider?.$currentLocation
+            .sink(receiveValue: { [weak self] (location) in
+                self?.startingLocation = location?.coordinate
+            })
+    }
     
     func setupAB() {
         guard let managedObjectContext = managedObjectContext,

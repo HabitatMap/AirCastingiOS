@@ -74,6 +74,8 @@
 		AC93B8FE25C02E0B003D0A0D /* GoogleMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC93B8FD25C02E0B003D0A0D /* GoogleMapView.swift */; };
 		AC960C7825DD39F500EC95DD /* ABConnectedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC960C7725DD39F500EC95DD /* ABConnectedView.swift */; };
 		ACD01F4025F8C1F800B8F65F /* SessionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACD01F3F25F8C1F800B8F65F /* SessionContext.swift */; };
+		ACD01F7325FF574A00B8F65F /* WifiPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACD01F7225FF574A00B8F65F /* WifiPopupView.swift */; };
+		ACD01F7625FF61CE00B8F65F /* LocationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACD01F7525FF61CE00B8F65F /* LocationProvider.swift */; };
 		ACF77DF025A750C200BB85B7 /* Font.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACF77DEF25A750C200BB85B7 /* Font.swift */; };
 		ACF77DF425A750E000BB85B7 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACF77DF325A750E000BB85B7 /* Color.swift */; };
 		ACF77DF825A866E700BB85B7 /* BlueButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACF77DF725A866E700BB85B7 /* BlueButtonStyle.swift */; };
@@ -154,6 +156,9 @@
 		AC93B8FD25C02E0B003D0A0D /* GoogleMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleMapView.swift; sourceTree = "<group>"; };
 		AC960C7725DD39F500EC95DD /* ABConnectedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ABConnectedView.swift; sourceTree = "<group>"; };
 		ACD01F3F25F8C1F800B8F65F /* SessionContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionContext.swift; sourceTree = "<group>"; };
+		ACD01F6C25FF4C8C00B8F65F /* AirCasting.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AirCasting.entitlements; sourceTree = "<group>"; };
+		ACD01F7225FF574A00B8F65F /* WifiPopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WifiPopupView.swift; sourceTree = "<group>"; };
+		ACD01F7525FF61CE00B8F65F /* LocationProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationProvider.swift; sourceTree = "<group>"; };
 		ACF77DEF25A750C200BB85B7 /* Font.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Font.swift; sourceTree = "<group>"; };
 		ACF77DF325A750E000BB85B7 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
 		ACF77DF725A866E700BB85B7 /* BlueButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlueButtonStyle.swift; sourceTree = "<group>"; };
@@ -214,6 +219,7 @@
 		AC32040625CC122900A68520 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				ACD01F7525FF61CE00B8F65F /* LocationProvider.swift */,
 				AC32040325CC067D00A68520 /* CheckBox.swift */,
 				AC4EC6C025B6F18A00C1E312 /* EditButtonView.swift */,
 				AC8CFF4025E5095600FB2918 /* Textfield.swift */,
@@ -232,6 +238,7 @@
 				AC32041E25CC485E00A68520 /* ConnectingABView.swift */,
 				AC960C7725DD39F500EC95DD /* ABConnectedView.swift */,
 				3362B4EC25E69987008D61BA /* AddNameAndTagsView.swift */,
+				ACD01F7225FF574A00B8F65F /* WifiPopupView.swift */,
 				331EA80925E32094009DEFDB /* ConfirmCreatingSessionView.swift */,
 			);
 			path = CreateSessionViews;
@@ -290,6 +297,7 @@
 		AC7EB37425A6FB3A00A7F2AF /* AirCasting */ = {
 			isa = PBXGroup;
 			children = (
+				ACD01F6C25FF4C8C00B8F65F /* AirCasting.entitlements */,
 				AC7EB37525A6FB3A00A7F2AF /* AirCastingApp.swift */,
 				AC7EB37725A6FB3A00A7F2AF /* MainTabBarView.swift */,
 				338C30E025F1042000E0305C /* CoreData */,
@@ -615,6 +623,7 @@
 				AC8CFF7225E7DA2D00FB2918 /* ABMeasurementStream.swift in Sources */,
 				AC93B8DA25BEDC46003D0A0D /* Array.swift in Sources */,
 				AC5EF72425C81992003657B1 /* OldSession.swift in Sources */,
+				ACD01F7625FF61CE00B8F65F /* LocationProvider.swift in Sources */,
 				AC7AB09225D988CD0025492B /* WhiteButtonStyle.swift in Sources */,
 				AC32041C25CC46EF00A68520 /* PowerABView.swift in Sources */,
 				AC86EE6B25D03DC00083F8C0 /* SelectDeviceView.swift in Sources */,
@@ -644,6 +653,7 @@
 				AC7EB37625A6FB3A00A7F2AF /* AirCastingApp.swift in Sources */,
 				331EA80A25E32094009DEFDB /* ConfirmCreatingSessionView.swift in Sources */,
 				ACF77DF025A750C200BB85B7 /* Font.swift in Sources */,
+				ACD01F7325FF574A00B8F65F /* WifiPopupView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -772,6 +782,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 3;
@@ -798,6 +809,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 3;

@@ -6,16 +6,17 @@
 //
 
 import SwiftUI
+import CoreLocation
 
 struct AddNameAndTagsView: View {
     @State var sessionName: String = ""
     @State var sessionTags: String = ""
     @State var isIndoor = true
     @State var isWiFi = false
+    @State var isWifiPopupPresented = false
     @State var wifiPassword: String = ""
     @State var wifiSSID: String = ""
     @State private var isConfirmCreatingSessionActive: Bool = false
-    @State private var isWifiNameDisplayed: Bool = false
     @EnvironmentObject private var sessionContext: CreateSessionContext
 
     var body: some View {
@@ -39,7 +40,12 @@ struct AddNameAndTagsView: View {
         Button(action: {
             sessionContext.sessionName = sessionName
             sessionContext.sessionTags = sessionTags
+            getAndSaveStartingLocation()
             isConfirmCreatingSessionActive = true
+//            if wifiSSID != "" {
+//                sessionContext.wifiSSID = wifiSSID
+//            }
+//            sessionContext.wifiPassword = wifiPassword
         }, label: {
             Text("Continue")
                 .frame(maxWidth: .infinity)
@@ -86,45 +92,22 @@ struct AddNameAndTagsView: View {
                 Text("Wi-Fi").tag(true)
             }
             .pickerStyle(SegmentedPickerStyle())
+            .onChange(of: isWiFi) { (_) in
+                isWifiPopupPresented = isWiFi
+            }
         }
-        .sheet(isPresented: $isWiFi) {
-            wifiPopup
+        .sheet(isPresented: $isWifiPopupPresented) {
+            WifiPopupView(wifiPassword: $wifiPassword, wifiSSID: $wifiSSID)
         }
     }
-
-    var wifiPopup: some View {
-        VStack(alignment: .leading, spacing: 30){
-            if isWifiNameDisplayed {
-                Text("Provide name and password for the Wi-Fi network")
-                    .font(Font.muli(size: 18, weight: .heavy))
-                    .foregroundColor(.darkBlue)
-                
-                createTextfield(placeholder: "Wi-Fi name", binding: $wifiSSID)
-            } else {
-                Text("Provide password for \(wifiSSID) network")
-                    .font(Font.muli(size: 18, weight: .heavy))
-                    .foregroundColor(.darkBlue)
-            }
-            createTextfield(placeholder: "Password", binding: $wifiPassword)
-
-            Button("I'd like to connect with different Wi-Fi network.") {
-                isWifiNameDisplayed = true
-            }
-            Button("Connect") {
-                if wifiSSID != "" {
-                    sessionContext.wifiSSID = wifiSSID
-                }
-                sessionContext.wifiPassword = wifiPassword
-                
-                //dismiss popup
-            } .buttonStyle(BlueButtonStyle())
-            
-            Button("Cancel") {
-                // dismiss popup
-            }
-            Spacer()
+    
+    func getAndSaveStartingLocation() {
+        let fakeLocation = CLLocationCoordinate2D(latitude: 200.0, longitude: 200.0)
+        if isIndoor {
+            sessionContext.startingLocation = fakeLocation
+        } else {
+            sessionContext.obtainCurrentLocation()
         }
-        .padding()
     }
 }
 
