@@ -8,47 +8,50 @@
 import SwiftUI
 import CoreBluetooth
 
-class AirbeamSetupContext: ObservableObject {
-    var peripheral: CBPeripheral?
-    var wifiName: String?
-    var wifiPass: String?
-}
-
 struct ChooseSessionTypeView: View {
     
     @State private var isInfoPresented: Bool = false
+    @Environment(\.managedObjectContext) var context
+    @StateObject var sessionContext = CreateSessionContext()
+    @State private var isFixedNavigationLinkActive = false
+    @State private var isMobileNavigationLinkActive = false
     
     var body: some View {
-        VStack(spacing: 50) {
-            VStack(alignment: .leading, spacing: 10) {
-                titleLabel
-                messageLabel
-            }
-            .background(Color.white)
-            .padding(.horizontal)
-            
-            VStack {
-                VStack(alignment: .leading, spacing: 15) {
-                    HStack {
-                        recordNewLabel
-                        Spacer()
-                        moreInfo
-                    }
-                    HStack(spacing: 60) {
-                        fixedSessionButton
-                        mobileSessionButton
-                    }
+        NavigationView {
+            VStack(spacing: 50) {
+                VStack(alignment: .leading, spacing: 10) {
+                    titleLabel
+                    messageLabel
                 }
-                Spacer()
+                .background(Color.white)
+                .padding(.horizontal)
+                
+                VStack {
+                    VStack(alignment: .leading, spacing: 15) {
+                        HStack {
+                            recordNewLabel
+                            Spacer()
+                            moreInfo
+                        }
+                        HStack(spacing: 60) {
+                            fixedSessionButton
+                            mobileSessionButton
+                        }
+                    }
+                    Spacer()
+                }
+                .padding()
+                .background(
+                    Color.aircastingBackground.opacity(0.25)
+                        .ignoresSafeArea()
+                )
             }
-            .padding()
-            .background(
-                Color.aircastingBackground.opacity(0.25)
-                    .ignoresSafeArea()
-            )
+            .navigationBarTitleDisplayMode(.inline)
+            .onAppear {
+                sessionContext.managedObjectContext = context
+            }
         }
-        .navigationBarTitleDisplayMode(.inline)
-        
+        .environmentObject(sessionContext)
     }
     var titleLabel: some View {
         Text("Let's begin")
@@ -62,7 +65,6 @@ struct ChooseSessionTypeView: View {
                                 weight: .regular))
             .foregroundColor(.aircastingGray)
     }
-    
     var recordNewLabel: some View {
         Text("Record a new session")
             .font(Font.muli(size: 14, weight: .bold))
@@ -83,15 +85,31 @@ struct ChooseSessionTypeView: View {
     }
     
     var fixedSessionButton: some View {
-        NavigationLink(destination: TurnOnBluetoothView()) {
+        Button(action: {
+            createNewSession(isSessionFixed: true)
+            isFixedNavigationLinkActive = true
+        }) {
             fixedSessionLabel
         }
+        .background(
+            NavigationLink(destination: TurnOnBluetoothView(),
+                           isActive: $isFixedNavigationLinkActive) {
+                EmptyView()
+            })
     }
     
     var mobileSessionButton: some View {
-        NavigationLink(destination: SelectDeviceView()) {
+        Button(action: {
+            createNewSession(isSessionFixed: false)
+            isMobileNavigationLinkActive = true
+        }) {
             mobileSessionLabel
         }
+        .background(
+            NavigationLink(destination: SelectDeviceView(),
+                           isActive: $isMobileNavigationLinkActive) {
+                EmptyView()
+            })
     }
     
     var fixedSessionLabel: some View {
@@ -136,6 +154,15 @@ struct ChooseSessionTypeView: View {
         .lineSpacing(12)
         .foregroundColor(.aircastingGray)
         .padding()
+    }
+    
+    private func createNewSession(isSessionFixed: Bool) {
+        sessionContext.sessionUUID = UUID().uuidString
+        if isSessionFixed {
+            sessionContext.sessionType = SessionType.FIXED
+        } else {
+            sessionContext.sessionType = SessionType.MOBILE
+        }
     }
 }
 

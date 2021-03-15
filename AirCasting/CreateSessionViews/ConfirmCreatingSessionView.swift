@@ -9,8 +9,9 @@ import SwiftUI
 import CoreLocation
 
 struct ConfirmCreatingSessionView: View {
-    var sessionType = "mobile"
-    var sessionName = "Ania's microphone session"
+    
+    @EnvironmentObject private var sessionContext: CreateSessionContext
+    var sessionName: String
     
     var body: some View {
         VStack(alignment: .leading, spacing: 50) {
@@ -19,7 +20,7 @@ struct ConfirmCreatingSessionView: View {
                 .foregroundColor(.darkBlue)
                 
             VStack(alignment: .leading, spacing: 15) {
-                Text("Your \(sessionType) session \(sessionName) is ready to start gathering data.")
+                Text("Your \(showSessionType()) session \(sessionName) is ready to start gathering data.")
                 Text("Move to your starting location, confirm your location is accurate on the map, then press the start recording button below.")
             }
             .font(Font.muli(size: 16))
@@ -27,9 +28,11 @@ struct ConfirmCreatingSessionView: View {
             .multilineTextAlignment(.leading)
             .lineSpacing(9.0)
             
-            GoogleMapView(pathPoints: [], values: [])
+            GoogleMapView(pathPoints: [], values: [], isMyLocationEnabled: true)
                         
-            Button(action: {}, label: {
+            Button(action: {
+                sessionContext.setupAB()
+            }, label: {
                 Text("Start recording")
                     .bold()
             })
@@ -37,10 +40,14 @@ struct ConfirmCreatingSessionView: View {
         }
         .padding()
     }
+    
+    func showSessionType() -> String {
+        return sessionContext.sessionType == SessionType.MOBILE ? "mobile" : "fixed"
+    }
 }
 
 struct ConfirmCreatingSession_Previews: PreviewProvider {
     static var previews: some View {
-        ConfirmCreatingSessionView()
+        ConfirmCreatingSessionView(sessionName: "tests")
     }
 }

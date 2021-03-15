@@ -13,6 +13,7 @@ struct AirBeam3Configurator {
 
     var peripheral: CBPeripheral
     var hexMessageBuilder = HexMessagesBuilder()
+    let userDefaults = UserDefaults.standard
     
     // have notifications about new measurements
     private let MEASUREMENTS_CHARACTERISTIC_UUIDS: [CBUUID] = [
@@ -34,56 +35,65 @@ struct AirBeam3Configurator {
     // service id
     private let SERVICE_UUID = CBUUID(string:"0000ffdd-0000-1000-8000-00805f9b34fb")
     
-    func configure(session: OldSession, wifiSSID: String?, wifiPassword: String?) {
-        // TO DO: get location from Session, change the date
-        let date = "19/12/19-02:40:00"
-        
-        // TO DO: pick session type depending on object's session type
-        
-        // MOBILE
-//        configureMobileSession(dateString: date)
-        
-        //FIXED
-        configureFixedWifiSession(dateString: date,
-                                  wifiSSID: wifiSSID,
-                                  wifiPassword: wifiPassword)
-    }
-    
-    private func configureMobileSession(dateString: String) {
-        // TO DO: Add location
-        let location = CLLocationCoordinate2D(latitude: 200.0, longitude: 200.0)
+    func configureMobileSession(dateString: String, location: CLLocationCoordinate2D) {
         
         sendLocationConfiguration(location: location)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
             sendCurrentTimeConfiguration(date: dateString)
-            
+
             DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
-                mobileModeRequest()
+                sendMobileModeRequest()
             }
         }
     }
     
-    private func configureFixedWifiSession(dateString: String, wifiSSID: String?, wifiPassword: String?) {
-        // TO DO: Add location
-        let location = CLLocationCoordinate2D(latitude: 200.0, longitude: 200.0)
-        guard let wifiSSID = wifiSSID,
-              let wifiPassword = wifiPassword else {
-            return
-        }
-        sendLocationConfiguration(location: location)
+    // To configure fixed session we need to send authMessage first
+    // We're generating unique String for session UUID and sending it with users auth token to the AB
+    private func configureFixed(uuid: String) {
+        guard let auth = userDefaults.string(forKey: "auth_token") else { return }
+
+        sendUUIDRequest(uuid: uuid)
         print("1")
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
-        sendCurrentTimeConfiguration(date: dateString)
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
+            sendAuthToken(authToken: auth)
             print("2")
-            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
-                sendWifiConfiguration(wifiSSID: wifiSSID, wifiPassword: wifiPassword)
-                print("3")
+            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
+            }
+        }
+    }
+    
+    func configureFixedWifiSession(uuid: String,
+                                   location: CLLocationCoordinate2D,
+                                   dateString: String,
+                                   wifiSSID: String, wifiPassword: String) {
+
+        configureFixed(uuid: uuid)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
+            sendLocationConfiguration(location: location)
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
+                sendCurrentTimeConfiguration(date: dateString)
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
+                    sendWifiConfiguration(wifiSSID: wifiSSID, wifiPassword: wifiPassword)
+                }
             }
         }
     }
     
     // MARK: Commands
+    
+    private func sendUUIDRequest(uuid: String) {
+        let message = hexMessageBuilder.uuidMessage(uuid: uuid)
+        sendConfigMessage(data: message)
+    }
+    
+    private func sendAuthToken(authToken: String) {
+        let message = hexMessageBuilder.authTokenMessage(authToken: authToken)
+        sendConfigMessage(data: message!)
+    }
     
     private func sendLocationConfiguration(location: CLLocationCoordinate2D) {
         let message = hexMessageBuilder.locationMessage(lat: location.latitude,
@@ -96,7 +106,7 @@ struct AirBeam3Configurator {
         sendConfigMessage(data: message)
     }
     
-    private func mobileModeRequest() {
+    private func sendMobileModeRequest() {
         let message = hexMessageBuilder.bluetoothConfigurationMessage
         sendConfigMessage(data: message)
     }

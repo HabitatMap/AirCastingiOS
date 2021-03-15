@@ -12,6 +12,7 @@ struct SelectDeviceView: View {
     @State private var selected = 0
     @State private var isBluetoothLinkActive: Bool = false
     @State private var isMicLinkActive: Bool = false
+    @EnvironmentObject private var sessionContext: CreateSessionContext
     
     var body: some View {
         VStack(spacing: 30) {
@@ -36,19 +37,22 @@ struct SelectDeviceView: View {
     var bluetoothButton: some View {
         Button(action: {
             selected = 1
+            // it doesn't have to be airbeam, it can be any device, but it doesn't influence anything, it's just needed for views flow
+            sessionContext.deviceType = DeviceType.AIRBEAM3
         }, label: {
             bluetoothLabels
         })
-        .buttonStyle(WhiteButtonStyle(isSelected: selected == 1))
+        .buttonStyle(WhiteSelectingButtonStyle(isSelected: selected == 1))
     }
     
     var micButton: some View {
         Button(action: {
             selected = 2
+            sessionContext.deviceType = DeviceType.MIC
         }, label: {
             micLabels
         })
-        .buttonStyle(WhiteButtonStyle(isSelected: selected == 2))
+        .buttonStyle(WhiteSelectingButtonStyle(isSelected: selected == 2))
     }
     
     var bluetoothLabels: some View {

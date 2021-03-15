@@ -12,7 +12,7 @@ struct SelectPeripheralView: View {
     
     @State private var selection: CBPeripheral? = nil
     @EnvironmentObject var bluetoothManager: BluetoothManager
-    @EnvironmentObject var context: AirbeamSetupContext
+    @EnvironmentObject var sessionContext: CreateSessionContext
     
     var body: some View {
         VStack(spacing: 30) {
@@ -31,7 +31,6 @@ struct SelectPeripheralView: View {
                 displayDeviceButton(devices: bluetoothManager.airbeams)
 
                 HStack(spacing: 8) {
-                    
                     Text("Other devices")
                     if bluetoothManager.isScanning {
                         loader
@@ -64,7 +63,8 @@ struct SelectPeripheralView: View {
         ForEach(devices, id: \.self) { (availableDevice) in
             Button(action: {
                 selection = availableDevice
-                context.peripheral = availableDevice
+                
+                sessionContext.peripheral = availableDevice
             }) {
                 HStack(spacing: 20) {
                     CheckBox(isSelected: selection == availableDevice)

@@ -8,9 +8,8 @@
 import SwiftUI
 
 struct MainTabBarView: View {
-    
-    @StateObject private var context: AirbeamSetupContext = AirbeamSetupContext()
 
+    
     var body: some View {
         TabView {
             dashboardTab
@@ -18,7 +17,6 @@ struct MainTabBarView: View {
             settingsTab
         }
     }
-    
     
     // Tab Bar views
     private var dashboardTab: some View {
@@ -30,11 +28,8 @@ struct MainTabBarView: View {
         }
     }
     private var createSessionTab: some View {
-        NavigationView {
-            // TO DO: Change starting view
-            ChooseSessionTypeView()
-        }
-        .environmentObject(context)
+        // TO DO: Change starting view
+        ChooseSessionTypeView()
         .tabItem {
             Image(systemName: "plus")
         }

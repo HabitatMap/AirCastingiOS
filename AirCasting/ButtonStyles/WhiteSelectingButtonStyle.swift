@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct WhiteButtonStyle: ButtonStyle {
+struct WhiteSelectingButtonStyle: ButtonStyle {
     
     var isSelected: Bool
     
@@ -22,9 +22,10 @@ struct WhiteButtonStyle: ButtonStyle {
     }
 }
 
+
 struct WhiteButtonStyle_Previews: PreviewProvider {
     static var previews: some View {
         Button("click") {}
-            .buttonStyle( WhiteButtonStyle(isSelected: false))
+            .buttonStyle( WhiteSelectingButtonStyle(isSelected: false))
     }
 }
