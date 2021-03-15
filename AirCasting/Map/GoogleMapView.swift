@@ -16,6 +16,7 @@ struct GoogleMapView: UIViewRepresentable {
 
     let pathPoints: [PathPoint]
     let values: [Float]
+    var isMyLocationEnabled: Bool = false
     
     func makeUIView(context: Context) -> GMSMapView {
         GMSServices.provideAPIKey(GOOGLE_MAP_KEY)
@@ -28,6 +29,14 @@ struct GoogleMapView: UIViewRepresentable {
                            height: 300)
         let mapView = GMSMapView.map(withFrame: frame,
                                      camera: startingPoint)
+        
+        mapView.isMyLocationEnabled = isMyLocationEnabled
+        
+        context.coordinator.myLocationSink = mapView.publisher(for: \.myLocation)
+            .sink { [weak mapView] (location) in
+                guard let coordinate = location?.coordinate else { return }
+                mapView?.animate(toLocation: coordinate)
+            }
         return mapView
     }
     
@@ -94,7 +103,8 @@ struct GoogleMapView: UIViewRepresentable {
     }
     
     class Coordinator {
-        var didSetInitLocation: Bool = false
+        var didSetInitLocation: Bool = false   
+        var myLocationSink: Any?
     }
     
     func makeCoordinator() -> Coordinator {

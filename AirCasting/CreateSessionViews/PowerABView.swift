@@ -9,10 +9,10 @@ import SwiftUI
 
 struct PowerABView: View {
     var body: some View {
-        VStack(spacing: 50) {
+        VStack(spacing: 45) {
             ProgressView(value: 0.25)
             Image("2-power")
-            VStack(alignment: .leading, spacing: 15) {
+            VStack(alignment: .leading, spacing: 13) {
                 titleLabel
                 messageLabel
             }

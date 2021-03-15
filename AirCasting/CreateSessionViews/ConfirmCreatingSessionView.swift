@@ -11,7 +11,6 @@ import CoreLocation
 struct ConfirmCreatingSessionView: View {
     
     @EnvironmentObject private var sessionContext: CreateSessionContext
-    var sessionType: String = ""
     var sessionName: String
     
     var body: some View {
@@ -29,7 +28,7 @@ struct ConfirmCreatingSessionView: View {
             .multilineTextAlignment(.leading)
             .lineSpacing(9.0)
             
-            GoogleMapView(pathPoints: [], values: [])
+            GoogleMapView(pathPoints: [], values: [], isMyLocationEnabled: true)
                         
             Button(action: {
                 sessionContext.setupAB()
@@ -49,6 +48,6 @@ struct ConfirmCreatingSessionView: View {
 
 struct ConfirmCreatingSession_Previews: PreviewProvider {
     static var previews: some View {
-        ConfirmCreatingSessionView(sessionType: "mobile", sessionName: "tests")
+        ConfirmCreatingSessionView(sessionName: "tests")
     }
 }
