@@ -42,7 +42,7 @@ struct SelectDeviceView: View {
         }, label: {
             bluetoothLabels
         })
-        .buttonStyle(WhiteButtonStyle(isSelected: selected == 1))
+        .buttonStyle(WhiteSelectingButtonStyle(isSelected: selected == 1))
     }
     
     var micButton: some View {
@@ -52,7 +52,7 @@ struct SelectDeviceView: View {
         }, label: {
             micLabels
         })
-        .buttonStyle(WhiteButtonStyle(isSelected: selected == 2))
+        .buttonStyle(WhiteSelectingButtonStyle(isSelected: selected == 2))
     }
     
     var bluetoothLabels: some View {

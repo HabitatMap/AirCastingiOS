@@ -29,14 +29,16 @@ struct WifiPopupView: View {
                 createTextfield(placeholder: "Password", binding: $wifiPassword)
                 connectToDifferentWifi
             }
-            Button("Connect") {
-                presentationMode.wrappedValue.dismiss()
-            } .buttonStyle(BlueButtonStyle())
-            
-            Button("Cancel") {
-                wifiPassword = ""
-                wifiSSID = ""
-                presentationMode.wrappedValue.dismiss()
+            VStack(spacing: 10) {
+                Button("Connect") {
+                    presentationMode.wrappedValue.dismiss()
+                } .buttonStyle(BlueButtonStyle())
+                
+                Button("Cancel") {
+                    wifiPassword = ""
+                    wifiSSID = ""
+                    presentationMode.wrappedValue.dismiss()
+                }.buttonStyle(BlueTextButtonStyle())
             }
             Spacer()
         }
@@ -53,13 +55,13 @@ struct WifiPopupView: View {
     }
     
     var provideNameAndPasswordTitle: some View {
-        Text("Provide password for \(currentNetworkSSID ?? "NIMO") network")
+        Text("Provide password for \(currentNetworkSSID ?? "your") network")
             .font(Font.muli(size: 18, weight: .heavy))
             .foregroundColor(.darkBlue)
     }
     
     var connectToDifferentWifi: some View {
-        Button("I'd like to connect with different Wi-Fi network.") {
+        Button("I'd like to connect with a different Wi-Fi network.") {
             isWifiNameDisplayed = true
         }
     }

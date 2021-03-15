@@ -42,10 +42,10 @@ struct AddNameAndTagsView: View {
             sessionContext.sessionTags = sessionTags
             getAndSaveStartingLocation()
             isConfirmCreatingSessionActive = true
-//            if wifiSSID != "" {
-//                sessionContext.wifiSSID = wifiSSID
-//            }
-//            sessionContext.wifiPassword = wifiPassword
+            if wifiSSID != "" && wifiPassword != "" {
+                sessionContext.wifiSSID = wifiSSID
+                sessionContext.wifiPassword = wifiPassword
+            }
         }, label: {
             Text("Continue")
                 .frame(maxWidth: .infinity)
@@ -109,6 +109,7 @@ struct AddNameAndTagsView: View {
             sessionContext.obtainCurrentLocation()
         }
     }
+
 }
 
 struct AddNameAndTagsView_Previews: PreviewProvider {
