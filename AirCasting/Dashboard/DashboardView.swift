@@ -36,7 +36,6 @@ struct DashboardView: View {
         .navigationBarTitle("Dashboard")
     }
     
-    
     var sectionPicker: some View {
         Picker(selection: .constant(1), label: Text("Picker"), content: {
             Text("Following").tag(1)

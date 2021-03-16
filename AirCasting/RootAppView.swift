@@ -15,12 +15,11 @@ struct RootAppView: View {
     @AppStorage(UserDefaults.AUTH_TOKEN_KEY) var authToken: String?
     var isLoggedIn: Bool { authToken != nil }
     
-    
     var body: some View {
-        NavigationView {
-            if isLoggedIn {
-                mainAppView
-            } else {
+        if isLoggedIn {
+            mainAppView
+        } else {
+            NavigationView {
                 SignInView()
             }
         }
@@ -29,7 +28,9 @@ struct RootAppView: View {
     var mainAppView: some View {
         MainTabBarView()
             .onAppear {
-                FirebaseApp.configure()
+                if FirebaseApp.app() == nil {
+                    FirebaseApp.configure()
+                }
             }
             .environmentObject(bluetoothManager)
             .environment(\.managedObjectContext, persistenceController.container.viewContext)

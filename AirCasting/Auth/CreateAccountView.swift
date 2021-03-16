@@ -13,7 +13,6 @@ struct CreateAccountView: View {
     @State private var username: String = ""
     @State private var password: String = ""
     @State private var task: Any?
-    @State private var isAccountCreated = false
     
     var body: some View {
             VStack(spacing: 50) {
@@ -75,7 +74,6 @@ struct CreateAccountView: View {
                     switch completion {
                     case .finished:
                         print("Success")
-                        isAccountCreated = true
                     case .failure(let error):
                         print("ERROR: \(error)")
                     }
@@ -85,14 +83,6 @@ struct CreateAccountView: View {
             
         }
         .buttonStyle(BlueButtonStyle())
-        .background( Group {
-            NavigationLink(
-                destination: RootAppView(),
-                isActive: $isAccountCreated,
-                label: {
-                    EmptyView()
-                })
-        })
     }
     
     var signinButton: some View {

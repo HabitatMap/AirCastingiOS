@@ -12,7 +12,6 @@ struct SignInView: View {
     @State private var username: String = ""
     @State private var password: String = ""
     @State private var task: Any?
-    @State private var isUserLoggedIn = false
     
     var body: some View {
             VStack(spacing: 40) {
@@ -68,14 +67,6 @@ struct SignInView: View {
                 }
         }
         .buttonStyle(BlueButtonStyle())
-        .background( Group {
-            NavigationLink(
-                destination: RootAppView(),
-                isActive: $isUserLoggedIn,
-                label: {
-                    EmptyView()
-                })
-        })
     }
     
     var signupButton: some View {
