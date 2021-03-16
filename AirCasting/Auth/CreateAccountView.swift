@@ -13,13 +13,14 @@ struct CreateAccountView: View {
     @State private var username: String = ""
     @State private var password: String = ""
     @State private var task: Any?
+    @State private var isAccountCreated = false
     
     var body: some View {
-        NavigationView {
             VStack(spacing: 50) {
                 titleLabel
                 VStack(spacing: 20) {
                     emailTextfield
+                        .keyboardType(.emailAddress)
                     usernameTextfield
                     passwordTextfield
                 }
@@ -30,7 +31,6 @@ struct CreateAccountView: View {
             }
             .padding()
             .navigationBarHidden(true)
-        }
     }
     
     var titleLabel: some View {
@@ -39,7 +39,7 @@ struct CreateAccountView: View {
                 .font(Font.moderate(size: 32,
                                     weight: .bold))
                 .foregroundColor(.accentColor)
-            Text("to record and map your envitonment")
+            Text("to record and map your environment")
                 .font(Font.muli(size: 16))
                 .foregroundColor(.aircastingGray)
         }
@@ -49,6 +49,7 @@ struct CreateAccountView: View {
         createTextfield(placeholder: "Email",
                         binding: $email)
     }
+    
     var usernameTextfield: some View {
         createTextfield(placeholder: "Username",
                         binding: $username)
@@ -74,15 +75,24 @@ struct CreateAccountView: View {
                     switch completion {
                     case .finished:
                         print("Success")
+                        isAccountCreated = true
                     case .failure(let error):
                         print("ERROR: \(error)")
                     }
                 } receiveValue: { (output) in
-                    print(output)
+                    UserDefaults.authToken = output.authentication_token
                 }
             
         }
         .buttonStyle(BlueButtonStyle())
+        .background( Group {
+            NavigationLink(
+                destination: RootAppView(),
+                isActive: $isAccountCreated,
+                label: {
+                    EmptyView()
+                })
+        })
     }
     
     var signinButton: some View {

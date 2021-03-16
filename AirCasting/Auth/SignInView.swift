@@ -12,6 +12,7 @@ struct SignInView: View {
     @State private var username: String = ""
     @State private var password: String = ""
     @State private var task: Any?
+    @State private var isUserLoggedIn = false
     
     var body: some View {
             VStack(spacing: 40) {
@@ -62,16 +63,24 @@ struct SignInView: View {
                         print("ERROR: \(error)")
                     }
                 } receiveValue: { (output) in
+                    UserDefaults.authToken = output.authentication_token
                     print(output)
                 }
-            
         }
         .buttonStyle(BlueButtonStyle())
+        .background( Group {
+            NavigationLink(
+                destination: RootAppView(),
+                isActive: $isUserLoggedIn,
+                label: {
+                    EmptyView()
+                })
+        })
     }
     
     var signupButton: some View {
         NavigationLink(
-            destination: SignInView(),
+            destination: CreateAccountView(),
             label: {
                 signupButtonText
             })
