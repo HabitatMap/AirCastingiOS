@@ -10,7 +10,18 @@ import CoreBluetooth
 
 class BluetoothManager: NSObject, ObservableObject {
     
-    var centralManager = CBCentralManager()
+    lazy var centralManager: CBCentralManager = {
+        let centralManager = CBCentralManager()
+        
+        centralManager.delegate = self
+        isScanning = centralManager.isScanning
+
+        observed = centralManager.observe(\.isScanning) { [weak self] _, change in
+            self?.isScanning = self?.centralManager.isScanning ?? false
+        }
+        
+        return centralManager
+    }()
     @Published var devices: [CBPeripheral] = []
     @Published var isScanning: Bool = true
     var observed: NSKeyValueObservation?
@@ -30,16 +41,6 @@ class BluetoothManager: NSObject, ObservableObject {
     var otherDevices: [CBPeripheral] {
         devices.filter { (device) -> Bool in
             !(device.name?.contains("AirBeam") ?? false)
-        }
-    }
-    
-    override init() {
-        super.init()
-        centralManager.delegate = self
-        isScanning = centralManager.isScanning
-        
-        observed = centralManager.observe(\.isScanning) { [weak self] _, change in
-            self?.isScanning = self?.centralManager.isScanning ?? false
         }
     }
     

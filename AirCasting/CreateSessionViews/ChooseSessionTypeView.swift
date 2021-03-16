@@ -15,6 +15,7 @@ struct ChooseSessionTypeView: View {
     @StateObject var sessionContext = CreateSessionContext()
     @State private var isFixedNavigationLinkActive = false
     @State private var isMobileNavigationLinkActive = false
+    @EnvironmentObject var bluetoothManager: BluetoothManager
     
     var body: some View {
         NavigationView {
@@ -92,10 +93,21 @@ struct ChooseSessionTypeView: View {
             fixedSessionLabel
         }
         .background(
-            NavigationLink(destination: TurnOnBluetoothView(),
-                           isActive: $isFixedNavigationLinkActive) {
-                EmptyView()
-            })
+            Group {
+                if CBCentralManager.authorization == .allowedAlways &&
+                    bluetoothManager.centralManager.state == .poweredOn {
+                    NavigationLink(destination: PowerABView(),
+                                   isActive: $isFixedNavigationLinkActive) {
+                        EmptyView()
+                    }
+                } else {
+                    NavigationLink(destination: TurnOnBluetoothView(),
+                                   isActive: $isFixedNavigationLinkActive) {
+                        EmptyView()
+                    }
+                }
+            }
+        )
     }
     
     var mobileSessionButton: some View {

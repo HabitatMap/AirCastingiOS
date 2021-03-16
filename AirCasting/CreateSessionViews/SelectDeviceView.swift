@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CoreBluetooth
 
 struct SelectDeviceView: View {
     
@@ -13,6 +14,7 @@ struct SelectDeviceView: View {
     @State private var isBluetoothLinkActive: Bool = false
     @State private var isMicLinkActive: Bool = false
     @EnvironmentObject private var sessionContext: CreateSessionContext
+    @EnvironmentObject var bluetoothManager: BluetoothManager
     
     var body: some View {
         VStack(spacing: 30) {
@@ -89,6 +91,21 @@ struct SelectDeviceView: View {
         })
         .buttonStyle(BlueButtonStyle())
         .background( Group {
+                Group {
+                    if CBCentralManager.authorization == .allowedAlways &&
+                        bluetoothManager.centralManager.state == .poweredOn {
+                        NavigationLink(destination: PowerABView(),
+                                       isActive: $isBluetoothLinkActive) {
+                            EmptyView()
+                        }
+                    } else {
+                        NavigationLink(destination: TurnOnBluetoothView(),
+                                       isActive: $isBluetoothLinkActive) {
+                            EmptyView()
+                        }
+                    }
+                }
+        
             NavigationLink(
                 destination: TurnOnBluetoothView(),
                 isActive: $isBluetoothLinkActive,
