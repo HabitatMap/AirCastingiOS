@@ -86,9 +86,9 @@ struct SelectDeviceView: View {
             if selected == 1 {
                 if CBCentralManager.authorization == .allowedAlways &&
                     bluetoothManager.centralManager.state == .poweredOn {
-                    isTurnOnBluetoothLinkActive = true
-                } else {
                     isPowerABLinkActive = true
+                } else {
+                    isTurnOnBluetoothLinkActive = true
                 }
             } else if selected == 2 {
                 isMicLinkActive = true

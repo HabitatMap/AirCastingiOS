@@ -52,6 +52,9 @@ struct ChooseSessionTypeView: View {
             .navigationBarTitleDisplayMode(.inline)
             .onAppear {
                 sessionContext.managedObjectContext = context
+                if CBCentralManager.authorization == .allowedAlways {
+                    _ = bluetoothManager.centralManager
+                }
             }
             .onChange(of: bluetoothManager.centralManagerState) { (state) in
                 if didTapFixedSession {

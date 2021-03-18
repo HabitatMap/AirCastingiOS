@@ -6,8 +6,13 @@
 //
 
 import SwiftUI
+import CoreBluetooth
 
 struct TurnOnBluetoothView: View {
+    
+    @State private var isPowerABLinkActive = false
+    @EnvironmentObject var bluetoothManager: BluetoothManager
+    
     var body: some View {
         VStack(spacing: 50) {
             ProgressView(value: 0.125)
@@ -35,10 +40,46 @@ struct TurnOnBluetoothView: View {
             .foregroundColor(.aircastingGray)
             .lineSpacing(10.0)
     }
+    
     var continueButton: some View {
-        NavigationLink(destination: PowerABView()) {
+        Button(action: {
+            if CBCentralManager.authorization != .allowedAlways {
+                goToBluetoothAuthSettings()
+            } else {
+                if bluetoothManager.centralManager.state != .poweredOn {
+                    goToBluetoothSettings()
+                } else {
+                    isPowerABLinkActive = true
+                }
+            }
+        }, label: {
             Text("Continue")
-                .frame(maxWidth: .infinity)
+        })
+        .frame(maxWidth: .infinity)
+        .buttonStyle(BlueButtonStyle())
+        .background(
+            NavigationLink(
+                destination: PowerABView(),
+                isActive: $isPowerABLinkActive,
+                label: {
+                    EmptyView()
+                })
+        )}
+    
+    func goToBluetoothSettings() {
+        if let url = URL(string: "App-prefs:root=Bluetooth") {
+            let app = UIApplication.shared
+            if app.canOpenURL(url) {
+                app.open(url, options: [:], completionHandler: nil)
+            }
+        }
+    }
+    func goToBluetoothAuthSettings() {
+        if let url = URL(string: UIApplication.openSettingsURLString) {
+            let app = UIApplication.shared
+            if app.canOpenURL(url) {
+                app.open(url, options: [:], completionHandler: nil)
+            }
         }
     }
 }
