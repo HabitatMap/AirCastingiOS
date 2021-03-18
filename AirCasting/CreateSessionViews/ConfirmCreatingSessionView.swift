@@ -14,7 +14,7 @@ struct ConfirmCreatingSessionView: View {
     var sessionName: String
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 50) {
+        VStack(alignment: .leading, spacing: 40) {
             Text("Are you ready?")
                 .font(Font.moderate(size: 24, weight: .bold))
                 .foregroundColor(.darkBlue)
