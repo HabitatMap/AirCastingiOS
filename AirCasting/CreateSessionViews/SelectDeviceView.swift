@@ -11,7 +11,8 @@ import CoreBluetooth
 struct SelectDeviceView: View {
     
     @State private var selected = 0
-    @State private var isBluetoothLinkActive: Bool = false
+    @State private var isTurnOnBluetoothLinkActive: Bool = false
+    @State private var isPowerABLinkActive: Bool = false
     @State private var isMicLinkActive: Bool = false
     @EnvironmentObject private var sessionContext: CreateSessionContext
     @EnvironmentObject var bluetoothManager: BluetoothManager
@@ -41,6 +42,7 @@ struct SelectDeviceView: View {
             selected = 1
             // it doesn't have to be airbeam, it can be any device, but it doesn't influence anything, it's just needed for views flow
             sessionContext.deviceType = DeviceType.AIRBEAM3
+            _ = bluetoothManager.centralManager
         }, label: {
             bluetoothLabels
         })
@@ -82,7 +84,12 @@ struct SelectDeviceView: View {
     var chooseButton: some View {
         Button(action: {
             if selected == 1 {
-                isBluetoothLinkActive = true
+                if CBCentralManager.authorization == .allowedAlways &&
+                    bluetoothManager.centralManager.state == .poweredOn {
+                    isTurnOnBluetoothLinkActive = true
+                } else {
+                    isPowerABLinkActive = true
+                }
             } else if selected == 2 {
                 isMicLinkActive = true
             }
@@ -91,24 +98,15 @@ struct SelectDeviceView: View {
         })
         .buttonStyle(BlueButtonStyle())
         .background( Group {
-                Group {
-                    if CBCentralManager.authorization == .allowedAlways &&
-                        bluetoothManager.centralManager.state == .poweredOn {
-                        NavigationLink(destination: PowerABView(),
-                                       isActive: $isBluetoothLinkActive) {
-                            EmptyView()
-                        }
-                    } else {
-                        NavigationLink(destination: TurnOnBluetoothView(),
-                                       isActive: $isBluetoothLinkActive) {
-                            EmptyView()
-                        }
-                    }
-                }
-        
+            NavigationLink(
+                destination: PowerABView(),
+                isActive: $isPowerABLinkActive,
+                label: {
+                    EmptyView()
+                })
             NavigationLink(
                 destination: TurnOnBluetoothView(),
-                isActive: $isBluetoothLinkActive,
+                isActive: $isTurnOnBluetoothLinkActive,
                 label: {
                     EmptyView()
                 })

@@ -12,18 +12,17 @@ class BluetoothManager: NSObject, ObservableObject {
     
     lazy var centralManager: CBCentralManager = {
         let centralManager = CBCentralManager()
-        
         centralManager.delegate = self
         isScanning = centralManager.isScanning
-
         observed = centralManager.observe(\.isScanning) { [weak self] _, change in
             self?.isScanning = self?.centralManager.isScanning ?? false
         }
-        
         return centralManager
     }()
+    
     @Published var devices: [CBPeripheral] = []
     @Published var isScanning: Bool = true
+    @Published var centralManagerState: CBManagerState = .unknown
     var observed: NSKeyValueObservation?
     
     private var MEASUREMENTS_CHARACTERISTIC_UUIDS: [CBUUID] = [
@@ -57,8 +56,9 @@ class BluetoothManager: NSObject, ObservableObject {
 }
 
 extension BluetoothManager: CBCentralManagerDelegate {
-    
+        
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
+        centralManagerState = central.state
         
         switch central.state {
         case .unknown:

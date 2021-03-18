@@ -19,6 +19,7 @@
 		AC32041C25CC46EF00A68520 /* PowerABView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC32041B25CC46EF00A68520 /* PowerABView.swift */; };
 		AC32041F25CC485E00A68520 /* ConnectingABView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC32041E25CC485E00A68520 /* ConnectingABView.swift */; };
 		AC32043625CD534700A68520 /* ChooseSessionTypeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC32043525CD534700A68520 /* ChooseSessionTypeView.swift */; };
+		AC489B5C2603614E00CEEC48 /* MoreInfoPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC489B5B2603614E00CEEC48 /* MoreInfoPopupView.swift */; };
 		AC4EC6BC25B5ABB700C1E312 /* StatisticsContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC4EC6BB25B5ABB700C1E312 /* StatisticsContainerView.swift */; };
 		AC4EC6C125B6F18A00C1E312 /* EditButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC4EC6C025B6F18A00C1E312 /* EditButtonView.swift */; };
 		AC4EC6C425B6FE0D00C1E312 /* HeatmapSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC4EC6C325B6FE0D00C1E312 /* HeatmapSettingsView.swift */; };
@@ -104,6 +105,7 @@
 		AC32041B25CC46EF00A68520 /* PowerABView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PowerABView.swift; sourceTree = "<group>"; };
 		AC32041E25CC485E00A68520 /* ConnectingABView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectingABView.swift; sourceTree = "<group>"; };
 		AC32043525CD534700A68520 /* ChooseSessionTypeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseSessionTypeView.swift; sourceTree = "<group>"; };
+		AC489B5B2603614E00CEEC48 /* MoreInfoPopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoreInfoPopupView.swift; sourceTree = "<group>"; };
 		AC4EC6BB25B5ABB700C1E312 /* StatisticsContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsContainerView.swift; sourceTree = "<group>"; };
 		AC4EC6C025B6F18A00C1E312 /* EditButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditButtonView.swift; sourceTree = "<group>"; };
 		AC4EC6C325B6FE0D00C1E312 /* HeatmapSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeatmapSettingsView.swift; sourceTree = "<group>"; };
@@ -240,6 +242,7 @@
 			isa = PBXGroup;
 			children = (
 				AC32043525CD534700A68520 /* ChooseSessionTypeView.swift */,
+				AC489B5B2603614E00CEEC48 /* MoreInfoPopupView.swift */,
 				AC86EE6A25D03DC00083F8C0 /* SelectDeviceView.swift */,
 				AC3203CA25CA991C00A68520 /* TurnOnBluetoothView.swift */,
 				AC32041B25CC46EF00A68520 /* PowerABView.swift */,
@@ -633,6 +636,7 @@
 				AC32043625CD534700A68520 /* ChooseSessionTypeView.swift in Sources */,
 				AC7EB37825A6FB3A00A7F2AF /* MainTabBarView.swift in Sources */,
 				AC960C7825DD39F500EC95DD /* ABConnectedView.swift in Sources */,
+				AC489B5C2603614E00CEEC48 /* MoreInfoPopupView.swift in Sources */,
 				AC5832DA25B196DD008C5DD5 /* Graph.swift in Sources */,
 				AC93B8E725BEFE4F003D0A0D /* AirMapView.swift in Sources */,
 				3362B4ED25E69987008D61BA /* AddNameAndTagsView.swift in Sources */,

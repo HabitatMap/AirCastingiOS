@@ -132,5 +132,4 @@ extension CreateSessionApi.Input {
         let input = CreateSessionApi.Input(session: session, compression: true)
         return input
     }
-    
 }
