@@ -317,7 +317,7 @@
 				338C30E025F1042000E0305C /* CoreData */,
 				AC1DAD4325C98556009AC4D1 /* ABConnector */,
 				AC8CFF4325E5108100FB2918 /* Networking */,
-				AC8CFF3425E502C700FB2918 /* Auth */,
+				AC8CFF3425E502C700FB2918 /* AuthViews */,
 				ACD32A4D2600A8CC00818946 /* Settings */,
 				AC3203CE25CBED9C00A68520 /* Dashboard */,
 				AC32043425CD52E600A68520 /* CreateSessionViews */,
@@ -380,13 +380,13 @@
 			path = Fonts;
 			sourceTree = "<group>";
 		};
-		AC8CFF3425E502C700FB2918 /* Auth */ = {
+		AC8CFF3425E502C700FB2918 /* AuthViews */ = {
 			isa = PBXGroup;
 			children = (
 				AC8CFF3525E502DD00FB2918 /* CreateAccountView.swift */,
 				AC8CFF5B25E6866100FB2918 /* SignInView.swift */,
 			);
-			path = Auth;
+			path = AuthViews;
 			sourceTree = "<group>";
 		};
 		AC8CFF4325E5108100FB2918 /* Networking */ = {
