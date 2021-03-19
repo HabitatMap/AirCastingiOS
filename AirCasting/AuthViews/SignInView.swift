@@ -14,17 +14,29 @@ struct SignInView: View {
     @State private var task: Any?
     
     var body: some View {
-            VStack(spacing: 40) {
-                titleLabel
-                VStack(spacing: 20) {
-                    usernameTextfield
-                    passwordTextfield
+        GeometryReader { geometry in
+            ScrollView {
+                VStack(spacing: 40) {
+                    titleLabel
+                    VStack(spacing: 20) {
+                        usernameTextfield
+                        passwordTextfield
+                    }
+                    signinButton
+                    signupButton
                 }
-                signinButton
-                signupButton
+                .padding()
+                .navigationBarHidden(true)
+                .frame(maxWidth: .infinity, minHeight: geometry.size.height)
             }
-            .padding()
-            .navigationBarHidden(true)
+        }
+        .simultaneousGesture(
+
+    DragGesture(minimumDistance: 2, coordinateSpace: .global)
+        .onChanged({ (_) in
+            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+        })
+)
     }
     
     var titleLabel: some View {

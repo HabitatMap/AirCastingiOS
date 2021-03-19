@@ -22,39 +22,51 @@ struct CreateAccountView: View {
     
     
     var body: some View {
-        VStack(spacing: 50) {
-            titleLabel
-            VStack(spacing: 20) {
-                
-                VStack(alignment: .leading, spacing: 5) {
-                    emailTextfield
-                        .keyboardType(.emailAddress)
-                    if !isEmailCorrect {
-                        errorMessage(text: AuthErrors.incorrectEmail.localizedDescription)
+        GeometryReader { geometry in
+            ScrollView {
+                VStack(spacing: 50) {
+                    titleLabel
+                    VStack(spacing: 20) {
+                        
+                        VStack(alignment: .leading, spacing: 5) {
+                            emailTextfield
+                                .keyboardType(.emailAddress)
+                            if !isEmailCorrect {
+                                errorMessage(text: AuthErrors.incorrectEmail.localizedDescription)
+                            }
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 5) {
+                            usernameTextfield
+                            if isUsernameBlank {
+                                errorMessage(text: AuthErrors.emptyTextfield.localizedDescription)
+                            }
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 5) {
+                            passwordTextfield
+                            if !isPasswordCorrect {
+                                errorMessage(text: AuthErrors.passwordTooShort.localizedDescription)
+                            }
+                        }
+                    }
+                    VStack(spacing: 25) {
+                        createAccountButton
+                        signinButton
                     }
                 }
-                
-                VStack(alignment: .leading, spacing: 5) {
-                    usernameTextfield
-                    if isUsernameBlank {
-                        errorMessage(text: AuthErrors.emptyTextfield.localizedDescription)
-                    }
-                }
-                
-                VStack(alignment: .leading, spacing: 5) {
-                    passwordTextfield
-                    if !isPasswordCorrect {
-                        errorMessage(text: AuthErrors.passwordTooShort.localizedDescription)
-                    }
-                }
-            }
-            VStack(spacing: 25) {
-                createAccountButton
-                signinButton
+                .padding()
+                .navigationBarHidden(true)
+                .frame(maxWidth: .infinity, minHeight: geometry.size.height)
             }
         }
-        .padding()
-        .navigationBarHidden(true)
+        .simultaneousGesture(
+
+    DragGesture(minimumDistance: 2, coordinateSpace: .global)
+        .onChanged({ (_) in
+            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+        })
+)
     }
     
     var titleLabel: some View {
