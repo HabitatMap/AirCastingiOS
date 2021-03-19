@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Firebase
 
 struct MainTabBarView: View {
 
@@ -35,7 +36,7 @@ struct MainTabBarView: View {
         }
     }
     private var settingsTab: some View {
-        Color.aircastingGray
+        SettingsView()
             .tabItem {
                 Image(systemName: "gearshape")
             }

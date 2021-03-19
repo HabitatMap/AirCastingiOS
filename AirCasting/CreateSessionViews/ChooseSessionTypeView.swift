@@ -13,8 +13,11 @@ struct ChooseSessionTypeView: View {
     @State private var isInfoPresented: Bool = false
     @Environment(\.managedObjectContext) var context
     @StateObject var sessionContext = CreateSessionContext()
-    @State private var isFixedNavigationLinkActive = false
-    @State private var isMobileNavigationLinkActive = false
+    @State private var isTurnBluetoothOnLinkActive = false
+    @State private var isPowerABLinkActive = false
+    @State private var isMobileLinkActive = false
+    @State private var didTapFixedSession = false
+    @EnvironmentObject var bluetoothManager: BluetoothManager
     
     var body: some View {
         NavigationView {
@@ -49,6 +52,15 @@ struct ChooseSessionTypeView: View {
             .navigationBarTitleDisplayMode(.inline)
             .onAppear {
                 sessionContext.managedObjectContext = context
+                if CBCentralManager.authorization == .allowedAlways {
+                    _ = bluetoothManager.centralManager
+                }
+            }
+            .onChange(of: bluetoothManager.centralManagerState) { (state) in
+                if didTapFixedSession {
+                    goToNextFixedSessionStep()
+                    didTapFixedSession = false
+                }
             }
         }
         .environmentObject(sessionContext)
@@ -80,34 +92,59 @@ struct ChooseSessionTypeView: View {
                 .foregroundColor(.accentColor)
         })
         .sheet(isPresented: $isInfoPresented, content: {
-            moreInfoText
+            MoreInfoPopupView()
         })
+    }
+    
+    func goToNextFixedSessionStep() {
+        createNewSession(isSessionFixed: true)
+        
+        // This will trigger system bluetooth authorization alert
+        if CBCentralManager.authorization == .notDetermined {
+            _ = bluetoothManager.centralManager
+            didTapFixedSession = true
+        } else if CBCentralManager.authorization == .allowedAlways,
+           bluetoothManager.centralManager.state == .poweredOn {
+            isPowerABLinkActive = true
+        } else {
+            isTurnBluetoothOnLinkActive = true
+        }
     }
     
     var fixedSessionButton: some View {
         Button(action: {
-            createNewSession(isSessionFixed: true)
-            isFixedNavigationLinkActive = true
+            goToNextFixedSessionStep()
         }) {
             fixedSessionLabel
         }
         .background(
-            NavigationLink(destination: TurnOnBluetoothView(),
-                           isActive: $isFixedNavigationLinkActive) {
-                EmptyView()
-            })
+            Group {
+                NavigationLink(
+                    destination: PowerABView(),
+                    isActive: $isPowerABLinkActive,
+                    label: {
+                        EmptyView()
+                    })
+                NavigationLink(
+                    destination: TurnOnBluetoothView(),
+                    isActive: $isTurnBluetoothOnLinkActive,
+                    label: {
+                        EmptyView()
+                    })
+            }
+        )
     }
     
     var mobileSessionButton: some View {
         Button(action: {
             createNewSession(isSessionFixed: false)
-            isMobileNavigationLinkActive = true
+            isMobileLinkActive = true
         }) {
             mobileSessionLabel
         }
         .background(
             NavigationLink(destination: SelectDeviceView(),
-                           isActive: $isMobileNavigationLinkActive) {
+                           isActive: $isMobileLinkActive) {
                 EmptyView()
             })
     }
@@ -140,20 +177,6 @@ struct ChooseSessionTypeView: View {
         .frame(maxWidth: 145, maxHeight: 145)
         .background(Color.white)
         .shadow(color: Color(white: 150/255, opacity: 0.5), radius: 9, x: 0, y: 1)
-    }
-    
-    var moreInfoText: some View {
-        VStack(alignment: .leading, spacing: 25) {
-            Text("Session types")
-                .font(Font.moderate(size: 28, weight: .bold))
-                .foregroundColor(.accentColor)
-            Text("If you plan on moving around with the AirBeam3 while recording air quality measurement, configure the AirBeam to record a mobile session. When recording a mobile AirCasting session, measurements are created, timestamped, and geolocated once per second.")
-            Text("If you plan to leave the AirBeam3 indoors or hang it outside then configure it to record a fixed session. When recording fixed AirCasting sessions, measurements are created and timestamped once per minute, and geocoordinates are fixed to a set location.")
-        }
-        .font(Font.muli(size: 16))
-        .lineSpacing(12)
-        .foregroundColor(.aircastingGray)
-        .padding()
     }
     
     private func createNewSession(isSessionFixed: Bool) {

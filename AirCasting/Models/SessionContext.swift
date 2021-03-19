@@ -53,6 +53,8 @@ class CreateSessionContext: ObservableObject {
         session.longitude = startingLocation.longitude
         session.latitude = startingLocation.latitude
         
+        // TO DO: Save context to database
+        
         // TO DO: Replace mocked location and date
         let temporaryMockedDate = "19/12/19-02:40:00"
         

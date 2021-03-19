@@ -18,22 +18,37 @@ struct AddNameAndTagsView: View {
     @State var wifiSSID: String = ""
     @State private var isConfirmCreatingSessionActive: Bool = false
     @EnvironmentObject private var sessionContext: CreateSessionContext
-
+    
     var body: some View {
-        VStack(spacing: 100) {
-            VStack(alignment: .leading, spacing: 30) {
-                ProgressView(value: 0.75)
-                titleLabel
-                VStack(spacing: 20) {
-                    createTextfield(placeholder: "Session name", binding: $sessionName)
-                    createTextfield(placeholder: "Tags", binding: $sessionTags)
+        GeometryReader { geometry in
+            ScrollView(.vertical) {
+                VStack {
+                    VStack(alignment: .leading, spacing: 30) {
+                        ProgressView(value: 0.75)
+                        titleLabel
+                        VStack(spacing: 20) {
+                            createTextfield(placeholder: "Session name", binding: $sessionName)
+                            createTextfield(placeholder: "Tags", binding: $sessionTags)
+                        }
+                        if sessionContext.sessionType == SessionType.FIXED {
+                            placementPicker
+                            transmissionTypePicker
+                        }
+                    }
+                    Spacer()
+                    continueButton
                 }
-                placementPicker
-                transmissionTypePicker
+                .padding()
+                .frame(maxWidth: .infinity, minHeight: geometry.size.height, alignment: .top)
             }
-            continueButton
         }
-        .padding()
+        //        .simultaneousGesture(
+        //
+//            DragGesture(minimumDistance: 2, coordinateSpace: .global)
+//                .onChanged({ (_) in
+//                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+//                })
+//        )
     }
     
     var continueButton: some View {

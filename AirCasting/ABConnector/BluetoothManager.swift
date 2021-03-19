@@ -10,9 +10,19 @@ import CoreBluetooth
 
 class BluetoothManager: NSObject, ObservableObject {
     
-    var centralManager = CBCentralManager()
+    lazy var centralManager: CBCentralManager = {
+        let centralManager = CBCentralManager()
+        centralManager.delegate = self
+        isScanning = centralManager.isScanning
+        observed = centralManager.observe(\.isScanning) { [weak self] _, change in
+            self?.isScanning = self?.centralManager.isScanning ?? false
+        }
+        return centralManager
+    }()
+    
     @Published var devices: [CBPeripheral] = []
     @Published var isScanning: Bool = true
+    @Published var centralManagerState: CBManagerState = .unknown
     var observed: NSKeyValueObservation?
     
     private var MEASUREMENTS_CHARACTERISTIC_UUIDS: [CBUUID] = [
@@ -33,16 +43,6 @@ class BluetoothManager: NSObject, ObservableObject {
         }
     }
     
-    override init() {
-        super.init()
-        centralManager.delegate = self
-        isScanning = centralManager.isScanning
-        
-        observed = centralManager.observe(\.isScanning) { [weak self] _, change in
-            self?.isScanning = self?.centralManager.isScanning ?? false
-        }
-    }
-    
     func startScanning() {
         //AirBeam 3 UUID
         //let service = CBUUID(string: "0000ffdd-0000-1000-8000-00805f9b34fb")
@@ -56,8 +56,9 @@ class BluetoothManager: NSObject, ObservableObject {
 }
 
 extension BluetoothManager: CBCentralManagerDelegate {
-    
+        
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
+        centralManagerState = central.state
         
         switch central.state {
         case .unknown:

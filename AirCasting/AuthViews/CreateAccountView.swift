@@ -1,27 +1,32 @@
 //
-//  SignInView.swift
+//  CreateAccountView.swift
 //  AirCasting
 //
-//  Created by Lunar on 24/02/2021.
+//  Created by Lunar on 23/02/2021.
 //
 
 import SwiftUI
 
-struct SignInView: View {
+struct CreateAccountView: View {
     
+    @State private var email: String = ""
     @State private var username: String = ""
     @State private var password: String = ""
     @State private var task: Any?
     
     var body: some View {
-            VStack(spacing: 40) {
+            VStack(spacing: 50) {
                 titleLabel
                 VStack(spacing: 20) {
+                    emailTextfield
+                        .keyboardType(.emailAddress)
                     usernameTextfield
                     passwordTextfield
                 }
-                signinButton
-                signupButton
+                VStack(spacing: 25) {
+                    createAccountButton
+                    signinButton
+                }
             }
             .padding()
             .navigationBarHidden(true)
@@ -29,7 +34,7 @@ struct SignInView: View {
     
     var titleLabel: some View {
         VStack(alignment: .leading, spacing: 15) {
-            Text("Sign in")
+            Text("Create account")
                 .font(Font.moderate(size: 32,
                                     weight: .bold))
                 .foregroundColor(.accentColor)
@@ -39,9 +44,16 @@ struct SignInView: View {
         }
     }
     
+    var emailTextfield: some View {
+        createTextfield(placeholder: "Email",
+                        binding: $email)
+            .autocapitalization(.none)
+    }
+    
     var usernameTextfield: some View {
         createTextfield(placeholder: "Username",
                         binding: $username)
+            .autocapitalization(.none)
     }
     var passwordTextfield: some View {
         SecureField("Password", text: $password)
@@ -50,10 +62,16 @@ struct SignInView: View {
             .background(Color.aircastingGray.opacity(0.05))
             .border(Color.aircastingGray.opacity(0.1))
     }
-    var signinButton: some View {
-        Button("Sign in") {
-            task = AuthorizationAPI.signIn(input: AuthorizationAPI.SigninUserInput(username: username,
-                                                                            password: password))
+    
+    var createAccountButton: some View {
+        Button("Continue") {
+            let userInfo = AuthorizationAPI.SignupUserInput(email: email,
+                                                      username: username,
+                                                      password: password,
+                                                      send_emails: false)
+            let userInput = AuthorizationAPI.SignupAPIInput(user: userInfo)
+            
+            task = AuthorizationAPI.createAccount(input: userInput)
                 .sink { (completion) in
                     switch completion {
                     case .finished:
@@ -62,34 +80,34 @@ struct SignInView: View {
                         print("ERROR: \(error)")
                     }
                 } receiveValue: { (output) in
-                    print(output)
+                    UserDefaults.authToken = output.authentication_token
                 }
             
         }
         .buttonStyle(BlueButtonStyle())
     }
     
-    var signupButton: some View {
+    var signinButton: some View {
         NavigationLink(
             destination: SignInView(),
             label: {
-                signupButtonText
+                signingButtonText
             })
     }
     
-    var signupButtonText: some View {
-        Text("First time here? ")
+    var signingButtonText: some View {
+        Text("Already have an account? ")
             .font(Font.muli(size: 16))
             .foregroundColor(.aircastingGray)
             
-            + Text("Create an account")
+            + Text("Sign in")
             .font(Font.moderate(size: 16, weight: .bold))
             .foregroundColor(.accentColor)
     }
 }
 
-struct SignInView_Previews: PreviewProvider {
+struct CreateAccountView_Previews: PreviewProvider {
     static var previews: some View {
-        SignInView()
+        CreateAccountView()
     }
 }

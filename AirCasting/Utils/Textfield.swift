@@ -14,4 +14,5 @@ func createTextfield(placeholder: String, binding: Binding<String> ) -> some Vie
         .frame(height: 50)
         .background(Color.aircastingGray.opacity(0.05))
         .border(Color.aircastingGray.opacity(0.1))
+        
 }
