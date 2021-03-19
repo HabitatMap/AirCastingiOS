@@ -15,48 +15,53 @@ struct SelectPeripheralView: View {
     @EnvironmentObject var sessionContext: CreateSessionContext
     
     var body: some View {
-        VStack(spacing: 30) {
-            ProgressView(value: 0.375)
-            titileLabel
-            
-            LazyVStack(alignment: .leading, spacing: 25) {
-                
-                HStack(spacing: 8) {
+        GeometryReader { geometry in
+            ScrollView {
+                VStack(spacing: 30) {
+                    ProgressView(value: 0.375)
+                    titileLabel
                     
-                    Text("AirBeams")
-                    if bluetoothManager.isScanning {
-                        loader
+                    LazyVStack(alignment: .leading, spacing: 25) {
+                        
+                        HStack(spacing: 8) {
+                            Text("AirBeams")
+                            if bluetoothManager.isScanning {
+                                loader
+                            }
+                        }
+                        displayDeviceButton(devices: bluetoothManager.airbeams)
+                        
+                        HStack(spacing: 8) {
+                            Text("Other devices")
+                            if bluetoothManager.isScanning {
+                                loader
+                            }
+                        }
+                        displayDeviceButton(devices: bluetoothManager.otherDevices)
+                    }
+                    .listStyle(PlainListStyle())
+                    .listItemTint(Color.red)
+                    .font(Font.moderate(size: 18, weight: .regular))
+                    .foregroundColor(.aircastingDarkGray)
+                    
+                    Spacer()
+                    
+                    if !bluetoothManager.isScanning {
+                        refreshButton
+                            .frame(alignment: .trailing)
+                    }
+                    
+                    if selection != nil {
+                        connectButton.disabled(false)
+                    } else {
+                        connectButton.disabled(true)
                     }
                 }
-                displayDeviceButton(devices: bluetoothManager.airbeams)
-
-                HStack(spacing: 8) {
-                    Text("Other devices")
-                    if bluetoothManager.isScanning {
-                        loader
-                    }
-                }
-                displayDeviceButton(devices: bluetoothManager.otherDevices)
-            }
-            .listStyle(PlainListStyle())
-            .listItemTint(Color.red)
-            .font(Font.moderate(size: 18, weight: .regular))
-            .foregroundColor(.aircastingDarkGray)
-            
-            Spacer()
-        
-            if !bluetoothManager.isScanning {
-                refreshButton
-                    .frame(alignment: .trailing)
-            }
-
-            if selection != nil {
-                connectButton.disabled(false)
-            } else {
-                connectButton.disabled(true)
+                .padding()
+                .frame(maxWidth: .infinity, minHeight: geometry.size.height, alignment: .top)
             }
         }
-        .padding()
+        
     }
     
     func displayDeviceButton(devices: [CBPeripheral]) -> some View {
