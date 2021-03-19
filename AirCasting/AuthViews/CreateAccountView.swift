@@ -13,23 +13,48 @@ struct CreateAccountView: View {
     @State private var username: String = ""
     @State private var password: String = ""
     @State private var task: Any?
+
+    @State private var isPasswordCorrect = true
+    @State private var isEmailCorrect = true
+    @State private var isEmailBlank = false
+    @State private var isUsernameBlank = false
+    @State private var isPasswordBlank = false
+    
     
     var body: some View {
-            VStack(spacing: 50) {
-                titleLabel
-                VStack(spacing: 20) {
+        VStack(spacing: 50) {
+            titleLabel
+            VStack(spacing: 20) {
+                
+                VStack(alignment: .leading, spacing: 5) {
                     emailTextfield
                         .keyboardType(.emailAddress)
-                    usernameTextfield
-                    passwordTextfield
+                    if !isEmailCorrect {
+                        errorMessage(text: AuthErrors.incorrectEmail.localizedDescription)
+                    }
                 }
-                VStack(spacing: 25) {
-                    createAccountButton
-                    signinButton
+                
+                VStack(alignment: .leading, spacing: 5) {
+                    usernameTextfield
+                    if isUsernameBlank {
+                        errorMessage(text: AuthErrors.emptyTextfield.localizedDescription)
+                    }
+                }
+                
+                VStack(alignment: .leading, spacing: 5) {
+                    passwordTextfield
+                    if !isPasswordCorrect {
+                        errorMessage(text: AuthErrors.passwordTooShort.localizedDescription)
+                    }
                 }
             }
-            .padding()
-            .navigationBarHidden(true)
+            VStack(spacing: 25) {
+                createAccountButton
+                signinButton
+            }
+        }
+        .padding()
+        .navigationBarHidden(true)
     }
     
     var titleLabel: some View {
@@ -65,24 +90,27 @@ struct CreateAccountView: View {
     
     var createAccountButton: some View {
         Button("Continue") {
-            let userInfo = AuthorizationAPI.SignupUserInput(email: email,
-                                                      username: username,
-                                                      password: password,
-                                                      send_emails: false)
-            let userInput = AuthorizationAPI.SignupAPIInput(user: userInfo)
+            checkIfUserInputIsCorrect()
             
-            task = AuthorizationAPI.createAccount(input: userInput)
-                .sink { (completion) in
-                    switch completion {
-                    case .finished:
-                        print("Success")
-                    case .failure(let error):
-                        print("ERROR: \(error)")
+            if isPasswordCorrect && isEmailCorrect && !isUsernameBlank {
+                let userInfo = AuthorizationAPI.SignupUserInput(email: email,
+                                                                username: username,
+                                                                password: password,
+                                                                send_emails: false)
+                let userInput = AuthorizationAPI.SignupAPIInput(user: userInfo)
+                
+                task = AuthorizationAPI.createAccount(input: userInput)
+                    .sink { (completion) in
+                        switch completion {
+                        case .finished:
+                            print("Success")
+                        case .failure(let error):
+                            print("ERROR: \(error)")
+                        }
+                    } receiveValue: { (output) in
+                        UserDefaults.authToken = output.authentication_token
                     }
-                } receiveValue: { (output) in
-                    UserDefaults.authToken = output.authentication_token
-                }
-            
+            }
         }
         .buttonStyle(BlueButtonStyle())
     }
@@ -103,6 +131,11 @@ struct CreateAccountView: View {
             + Text("Sign in")
             .font(Font.moderate(size: 16, weight: .bold))
             .foregroundColor(.accentColor)
+    }
+    func checkIfUserInputIsCorrect() {
+        isPasswordCorrect = checkIsPasswordValid(password: password)
+        isEmailCorrect = checkIsEmailValid(email: email)
+        isUsernameBlank = checkIfBlank(text: username)
     }
 }
 
