@@ -17,6 +17,7 @@ struct CreateAccountView: View {
     @State private var isPasswordCorrect = true
     @State private var isEmailCorrect = true
     @State private var isUsernameBlank = false
+    @State private var noInternetConnection = false
     
     var body: some View {
         GeometryReader { geometry in
@@ -55,6 +56,11 @@ struct CreateAccountView: View {
                 .padding()
                 .navigationBarHidden(true)
                 .frame(maxWidth: .infinity, minHeight: geometry.size.height)
+                .alert(isPresented: $noInternetConnection) { () -> Alert in
+                    Alert(title: Text("Sign up error"),
+                          message: Text("Please, check your internet connection and try again."),
+                          dismissButton: .default(Text("Ok")))
+                }
             }
         }
         .simultaneousGesture(
@@ -114,6 +120,8 @@ struct CreateAccountView: View {
                         case .finished:
                             print("Success")
                         case .failure(let error):
+                            // To do: handle error for "there's account for this mail"
+                            noInternetConnection = true
                             print("ERROR: \(error)")
                         }
                     } receiveValue: { (output) in
