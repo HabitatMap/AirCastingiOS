@@ -17,6 +17,7 @@ class CreateSessionContext: ObservableObject {
     var peripheral: CBPeripheral?
     var wifiSSID: String?
     var wifiPassword: String?
+    var isIndoor: Bool?
     var startingLocation: CLLocationCoordinate2D?
     var deviceType: DeviceType?
     

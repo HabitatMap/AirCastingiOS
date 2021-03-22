@@ -55,6 +55,9 @@ struct AddNameAndTagsView: View {
         Button(action: {
             sessionContext.sessionName = sessionName
             sessionContext.sessionTags = sessionTags
+            if sessionContext.sessionType == SessionType.FIXED {
+                sessionContext.isIndoor = isIndoor
+            }
             getAndSaveStartingLocation()
             isConfirmCreatingSessionActive = true
             if wifiSSID != "" && wifiPassword != "" {

@@ -90,16 +90,7 @@ class CreateSessionApi {
 
         let apiPostData = try? encoder.encode(apiInput)
         request.httpBody = apiPostData
-        
-        guard let authToken = userDefaults.string(forKey: "auth_token") else {
-            let failPublisher = Fail(outputType: Output.self,
-                                     failure: NSError(domain: "", code: 0, userInfo: nil) as Error)
-                .eraseToAnyPublisher()
-            return failPublisher
-        }
-
-        let auth = "\(authToken):X".data(using: .utf8)!.base64EncodedString()
-        request.setValue("Basic \(auth)", forHTTPHeaderField: "Authorization")
+        request.signWithToken()
         
         return URLSession.shared.dataTaskPublisher(for: request)
             .tryMap { (data, response) in
