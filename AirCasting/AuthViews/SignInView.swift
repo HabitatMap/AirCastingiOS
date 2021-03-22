@@ -12,6 +12,9 @@ struct SignInView: View {
     @State private var username: String = ""
     @State private var password: String = ""
     @State private var task: Any?
+    @State private var wrongInputError = false
+    @State private var isUsernameBlank = false
+    @State private var isPasswordBlank = false
     
     var body: some View {
         GeometryReader { geometry in
@@ -19,8 +22,19 @@ struct SignInView: View {
                 VStack(spacing: 40) {
                     titleLabel
                     VStack(spacing: 20) {
-                        usernameTextfield
-                        passwordTextfield
+                        VStack(alignment: .leading, spacing: 5) {
+                            usernameTextfield
+                            if isUsernameBlank {
+                                errorMessage(text: AuthErrors.emptyTextfield.localizedDescription)
+                            }
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 5) {
+                            passwordTextfield
+                            if isPasswordBlank {
+                                errorMessage(text: AuthErrors.emptyTextfield.localizedDescription)
+                            }
+                        }
                     }
                     signinButton
                     signupButton
@@ -28,6 +42,11 @@ struct SignInView: View {
                 .padding()
                 .navigationBarHidden(true)
                 .frame(maxWidth: .infinity, minHeight: geometry.size.height)
+                .alert(isPresented: $wrongInputError) { () -> Alert in
+                    Alert(title: Text("Sign in error"),
+                          message: Text("Please, check if your email and password are correct and try again."),
+                          dismissButton: .default(Text("Ok")))
+                }
             }
         }
         .simultaneousGesture(
@@ -65,19 +84,24 @@ struct SignInView: View {
     }
     var signinButton: some View {
         Button("Sign in") {
-            task = AuthorizationAPI.signIn(input: AuthorizationAPI.SigninUserInput(username: username,
-                                                                            password: password))
-                .sink { (completion) in
-                    switch completion {
-                    case .finished:
-                        print("Success")
-                    case .failure(let error):
-                        print("ERROR: \(error)")
+            checkInput()
+            if !isPasswordBlank && !isUsernameBlank {
+                task = AuthorizationAPI.signIn(input: AuthorizationAPI.SigninUserInput(username: username,
+                                                                                       password: password))
+                    .sink { (completion) in
+                        switch completion {
+                        case .finished:
+                            print("Success")
+                        case .failure(let error):
+                            wrongInputError = true
+                            print("ERROR: \(error.localizedDescription)")
+                        }
+                    } receiveValue: { (output) in
+                        UserDefaults.authToken = output.authentication_token
+                        print(output)
                     }
-                } receiveValue: { (output) in
-                    UserDefaults.authToken = output.authentication_token
-                    print(output)
-                }
+            }
+            
         }
         .buttonStyle(BlueButtonStyle())
     }
@@ -98,6 +122,11 @@ struct SignInView: View {
             + Text("Create an account")
             .font(Font.moderate(size: 16, weight: .bold))
             .foregroundColor(.accentColor)
+    }
+    
+    func checkInput() {
+        isPasswordBlank = checkIfBlank(text: password)
+        isUsernameBlank = checkIfBlank(text: username)
     }
 }
 

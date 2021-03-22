@@ -16,10 +16,7 @@ struct CreateAccountView: View {
 
     @State private var isPasswordCorrect = true
     @State private var isEmailCorrect = true
-    @State private var isEmailBlank = false
     @State private var isUsernameBlank = false
-    @State private var isPasswordBlank = false
-    
     
     var body: some View {
         GeometryReader { geometry in

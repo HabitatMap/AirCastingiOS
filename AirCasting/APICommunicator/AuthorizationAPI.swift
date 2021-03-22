@@ -67,7 +67,6 @@ class AuthorizationAPI {
         return URLSession.shared.dataTaskPublisher(for: request)
             .tryMap { (data, response) in
                 let decoder = JSONDecoder()
-                print("a")
                 let userOutput = try decoder.decode(SigninUserOutput.self, from: data)
                 return userOutput
             }
