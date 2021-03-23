@@ -11,6 +11,7 @@ struct SessionHeaderView: View {
     
     let action: () -> Void
     let isExpandButtonNeeded: Bool
+    let session: Session
     
     var body: some View {
         VStack(alignment: .leading, spacing: 13){
@@ -30,7 +31,7 @@ struct SessionHeaderView: View {
     var nameLabelAndExpandButton: some View {
         VStack(alignment: .leading, spacing: 5) {
             HStack {
-                Text("Neighborhood check")
+                Text(session.name ?? "")
                     .font(Font.moderate(size: 18, weight: .bold))
                 Spacer()
                 if isExpandButtonNeeded {
@@ -82,5 +83,9 @@ struct SessionHeaderView: View {
 
 struct SessionHeader_Previews: PreviewProvider {
     static var previews: some View {
-        SessionHeaderView(action: {}, isExpandButtonNeeded: true)    }
+        SessionHeaderView(action: {},
+                          isExpandButtonNeeded: true,
+                          session: Session.mock)
+    }
 }
+

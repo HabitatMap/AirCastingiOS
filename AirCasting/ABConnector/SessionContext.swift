@@ -19,8 +19,8 @@ class CreateSessionContext: ObservableObject {
     var wifiPassword: String?
     var isIndoor: Bool?
     var startingLocation: CLLocationCoordinate2D?
-    var deviceType: DeviceType?
-    
+    var deviceType: DeviceType? = DeviceType.AIRBEAM3
+
     var managedObjectContext: NSManagedObjectContext?
     private var syncSink: Any?
     
