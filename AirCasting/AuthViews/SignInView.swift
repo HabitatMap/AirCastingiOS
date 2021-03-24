@@ -7,12 +7,16 @@
 
 import SwiftUI
 
+extension NSError: Identifiable {
+    
+}
+
 struct SignInView: View {
     
     @State private var username: String = ""
     @State private var password: String = ""
     @State private var task: Any?
-    @State private var wrongInputError = false
+    @State private var presentedError: NSError?
     @State private var isUsernameBlank = false
     @State private var isPasswordBlank = false
     
@@ -42,9 +46,9 @@ struct SignInView: View {
                 .padding()
                 .navigationBarHidden(true)
                 .frame(maxWidth: .infinity, minHeight: geometry.size.height)
-                .alert(isPresented: $wrongInputError) { () -> Alert in
+                .alert(item: $presentedError) { error in
                     Alert(title: Text("Sign in error"),
-                          message: Text("Please, check if your email and password are correct and try again."),
+                          message: Text(error.localizedDescription),
                           dismissButton: .default(Text("Ok")))
                 }
             }
@@ -93,7 +97,7 @@ struct SignInView: View {
                         case .finished:
                             print("Success")
                         case .failure(let error):
-                            wrongInputError = true
+                            presentedError = error as NSError
                             print("ERROR: \(error.localizedDescription)")
                         }
                     } receiveValue: { (output) in
