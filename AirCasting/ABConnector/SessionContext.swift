@@ -117,6 +117,14 @@ enum SessionType: Int16 {
         case .FIXED: return "FixedSession"
         }
     }
+    
+    static func from(string: String) -> SessionType? {
+        switch string {
+        case "MobileSession": return .MOBILE
+        case "FixedSession": return .FIXED
+        default: return nil
+        }
+    }
 }
 
 enum SessionStatus: Int {

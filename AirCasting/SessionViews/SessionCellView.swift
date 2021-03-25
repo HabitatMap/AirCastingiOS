@@ -15,10 +15,7 @@ struct SessionCellView: View {
     @AppStorage("values") var values: [Float] = [0, 70, 120, 170, 200]
     @StateObject var provider = LocationTracker()
     let session: Session
-    var mesurmentStreaamTimer = Timer.publish(every: 60.0,
-                                              on: .current,
-                                              in: .common).autoconnect()
-    
+        
     var body: some View {
         
         VStack(alignment: .leading, spacing: 13) {

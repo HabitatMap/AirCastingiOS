@@ -10,7 +10,6 @@ import Combine
 
 class FixedSession {
     
-    
     struct FixedMeasurementOutput: Codable {
         var type: String
         var uuid: String
@@ -18,24 +17,24 @@ class FixedSession {
         var tag_list: String
         var start_time: String
         var end_time: String
-        var deleted: Bool
+        var deleted: Bool?
         var version: Int
-        var streams: [StreamOutput]
+        var streams: [String : StreamOutput]
     }
     
     struct StreamOutput: Codable {
         let sensor_name: String
         let sensor_package_name: String
-        let unit_name: String
         let measurement_type: String
         let measurement_short_type: String
+        let unit_name: String
         let unit_symbol: String
         let threshold_very_low: Int
         let threshold_low: Int
         let threshold_medium: Int
         let threshold_high: Int
         let threshold_very_high: Int
-        let deleted: Bool
+        let deleted: Bool?
         var measurements: [MeasurementOutput]
     }
     
@@ -50,8 +49,18 @@ class FixedSession {
         let measured_value: Int
     }
     
-    static func getFixedMeasurement() -> AnyPublisher<FixedMeasurementOutput, Error> {
-        let url = URL(string: "http://aircasting.org/api/realtime/sync_measurements.json")!
+    static func getFixedMeasurement(uuid: UUID, lastSync: Date) -> AnyPublisher<FixedMeasurementOutput, Error> {
+        
+        // Build URL with query
+        var components = URLComponents(string: "http://aircasting.org/api/realtime/sync_measurements.json")!
+        let syncDateStr = ISO8601DateFormatter().string(from: lastSync)
+        components.queryItems = [
+            URLQueryItem(name: "uuid", value: uuid.uuidString),
+            URLQueryItem(name: "last_measurement_sync", value: syncDateStr)
+        ]
+        let url = components.url!
+
+        // Build URLRequest
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         request.allHTTPHeaderFields?["Content-Type"] = "application/json"
@@ -73,9 +82,11 @@ class FixedSession {
 extension URLRequest {
     
     mutating func signWithToken() {
-        guard let authToken = UserDefaults.authToken else { return }
-        let auth = "\(authToken):X".data(using: .utf8)!.base64EncodedString()
-        setValue("Basic \(auth)", forHTTPHeaderField: "Authorization")
+        // TODO:
+//        guard let authToken = UserDefaults.authToken else { return }
+//        let auth = "\(authToken):X".data(using: .utf8)!.base64EncodedString()
+//        setValue("Basic \(auth)", forHTTPHeaderField: "Authorization")
+        setValue("Basic bXZGbS1HQ3dNR1NaUXd2cDgydXk=:X", forHTTPHeaderField: "Authorization")
     }
     
 }
