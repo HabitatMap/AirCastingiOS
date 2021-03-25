@@ -7,9 +7,7 @@
 
 import SwiftUI
 
-extension NSError: Identifiable {
-    
-}
+extension NSError: Identifiable {}
 
 struct SignInView: View {
     
@@ -47,19 +45,7 @@ struct SignInView: View {
                 .navigationBarHidden(true)
                 .frame(maxWidth: .infinity, minHeight: geometry.size.height)
                 .alert(item: $presentedError) { error in
-                    if error.localizedDescription == "The data couldn’t be read because it is missing." {
-                        return Alert(title: Text("Sign in error"),
-                                     message: Text("The username or password is incorrect. Please, try again. "),
-                                     dismissButton: .default(Text("Ok")))
-                    } else if error.localizedDescription == "A data connection is not currently allowed." {
-                        return Alert(title: Text("No Internet Connection"),
-                                     message: Text("Please, make sure your device is connected to the internet."),
-                                     dismissButton: .default(Text("Ok")))
-                    } else {
-                        return Alert(title: Text("Sign in error"),
-                                     message: Text(error.localizedDescription),
-                                     dismissButton: .default(Text("Ok")))
-                    }
+                    displayErrorAlert(error: error, errorTitle: "Login Error")
                 }
             }
         }
@@ -108,14 +94,12 @@ struct SignInView: View {
                             print("Success")
                         case .failure(let error):
                             presentedError = error as NSError
-                            print("ERROR: \(error.localizedDescription)")
                         }
                     } receiveValue: { (output) in
                         UserDefaults.authToken = output.authentication_token
                         print(output)
                     }
             }
-            
         }
         .buttonStyle(BlueButtonStyle())
     }

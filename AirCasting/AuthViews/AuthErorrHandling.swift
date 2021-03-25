@@ -43,3 +43,21 @@ func errorMessage(text: String) -> some View {
         .font(Font.moderate(size: 10))
         .foregroundColor(.aircastingRed)
 }
+
+func displayErrorAlert(error: NSError, errorTitle: String) -> Alert {
+    if error.localizedDescription == "The data couldn’t be read because it is missing." {
+            return Alert(title: Text("\(errorTitle)"),
+                         message: Text("The username or password is incorrect. Please, try again. "),
+                         dismissButton: .default(Text("Ok")))
+
+    } else if error.localizedDescription == "A data connection is not currently allowed." {
+        return Alert(title: Text("No Internet Connection"),
+                     message: Text("Please, make sure your device is connected to the internet."),
+                     dismissButton: .default(Text("Ok")))
+    } else {
+        return Alert(title: Text("Sign in error"),
+                     message: Text(error.localizedDescription),
+                     dismissButton: .default(Text("Ok")))
+    }
+}
+

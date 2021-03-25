@@ -17,8 +17,8 @@ struct CreateAccountView: View {
     @State private var isPasswordCorrect = true
     @State private var isEmailCorrect = true
     @State private var isUsernameBlank = false
-    @State private var noInternetConnection = false
-    
+    @State private var presentedError: NSError?
+
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
@@ -56,10 +56,8 @@ struct CreateAccountView: View {
                 .padding()
                 .navigationBarHidden(true)
                 .frame(maxWidth: .infinity, minHeight: geometry.size.height)
-                .alert(isPresented: $noInternetConnection) { () -> Alert in
-                    Alert(title: Text("Sign up error"),
-                          message: Text("Please, check your internet connection and try again."),
-                          dismissButton: .default(Text("Ok")))
+                .alert(item: $presentedError) { error in
+                    displayErrorAlert(error: error, errorTitle: "Cannot create account")
                 }
             }
         }
@@ -120,8 +118,7 @@ struct CreateAccountView: View {
                         case .finished:
                             print("Success")
                         case .failure(let error):
-                            // To do: handle error for "there's account for this mail"
-                            noInternetConnection = true
+                            presentedError = error as NSError
                             print("ERROR: \(error)")
                         }
                     } receiveValue: { (output) in
