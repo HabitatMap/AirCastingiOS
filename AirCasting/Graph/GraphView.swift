@@ -13,6 +13,7 @@ struct GraphView: View {
 
     var body: some View {
         VStack(alignment: .trailing) {
+            // TODO: Pass real session
             SessionHeaderView(action: {}, isExpandButtonNeeded: false)
                 .padding()
             

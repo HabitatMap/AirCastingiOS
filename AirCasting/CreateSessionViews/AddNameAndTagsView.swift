@@ -42,13 +42,13 @@ struct AddNameAndTagsView: View {
                 .frame(maxWidth: .infinity, minHeight: geometry.size.height, alignment: .top)
             }
         }
-        //        .simultaneousGesture(
-        //
-//            DragGesture(minimumDistance: 2, coordinateSpace: .global)
-//                .onChanged({ (_) in
-//                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-//                })
-//        )
+                .simultaneousGesture(
+        
+            DragGesture(minimumDistance: 2, coordinateSpace: .global)
+                .onChanged({ (_) in
+                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                })
+        )
     }
     
     var continueButton: some View {
