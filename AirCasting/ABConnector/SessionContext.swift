@@ -142,4 +142,12 @@ enum StreamingMethod: Int {
 enum DeviceType: Int {
     case MIC = 0
     case AIRBEAM3 = 1
+    
+    func toString() -> String {
+        switch self {
+        case .MIC: return "Device's Microphone"
+        case .AIRBEAM3: return "AirBeam 3"
+        default: return ""
+        }
+    }
 }

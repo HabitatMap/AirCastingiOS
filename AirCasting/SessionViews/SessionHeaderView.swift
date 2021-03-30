@@ -37,6 +37,7 @@ struct SessionHeaderView: View {
     }
     
     var nameLabelAndExpandButton: some View {
+        
         VStack(alignment: .leading, spacing: 5) {
             HStack {
                 Text(session.name ?? "")
@@ -51,7 +52,8 @@ struct SessionHeaderView: View {
                     }
                 }
             }
-            Text("session type, device type")
+            
+            Text("\(showSessionType()), \(session.deviceTypeEnum.toString())")
                 .font(Font.moderate(size: 13, weight: .regular))
         }
         .foregroundColor(.darkBlue)
@@ -110,7 +112,6 @@ struct SessionHeaderView: View {
         let f: Double
         let h: Double
     }
-    
     func extractLatestMeasurements() -> LatestMeasurements? {
         let pm1Value = session.pm1Stream?.latestValue ?? 0
         let pm25Value = session.pm2Stream?.latestValue ?? 0
@@ -128,6 +129,13 @@ struct SessionHeaderView: View {
             return nil
         }
     }
+    func showSessionType() -> String {
+        if session.type == SessionType.FIXED.rawValue {
+            return "Fixed"
+        } else {
+            return "Mobile"
+        }
+    }
     
 }
 
@@ -141,3 +149,11 @@ struct SessionHeader_Previews: PreviewProvider {
 
 
 
+
+extension Session {
+    
+    var deviceTypeEnum: DeviceType {
+        DeviceType(rawValue: Int(deviceType))!
+    }
+    
+}
