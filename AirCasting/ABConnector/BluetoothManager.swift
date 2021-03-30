@@ -98,7 +98,7 @@ extension BluetoothManager: CBCentralManagerDelegate {
     }
     
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
-        print("Disconnected: \(error?.localizedDescription)")
+        print("Disconnected: \(String(describing: error?.localizedDescription))")
     }
 }
 
@@ -129,8 +129,7 @@ extension BluetoothManager: CBPeripheralDelegate {
     }
     
     func sendHexCode() {
-         var configurationCharacteristicUUID = CBUUID(string: "0000ffde-0000-1000-8000-00805f9b34fb")
-        
+        _ = CBUUID(string: "0000ffde-0000-1000-8000-00805f9b34fb")
     }
 
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
@@ -142,7 +141,7 @@ extension BluetoothManager: CBPeripheralDelegate {
     
     func parseData(data: Data) -> ABMeasurementStream? {
         let string = String(data: data, encoding: .utf8)
-        print("RAW: \(string)")
+        print("RAW: \(String(describing: string))")
         let components = string?.components(separatedBy: ";")
         
         guard let values = components,

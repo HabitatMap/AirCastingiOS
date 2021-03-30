@@ -53,8 +53,8 @@
         <relationship name="measurementStreams" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="MeasurementStream" inverseName="session" inverseEntity="MeasurementStream"/>
     </entity>
     <elements>
-        <element name="Measurement" positionX="-63" positionY="-18" width="128" height="118"/>
-        <element name="MeasurementStream" positionX="-63.7001953125" positionY="128.3192749023438" width="128" height="253"/>
+        <element name="Measurement" positionX="-63" positionY="-18" width="128" height="104"/>
+        <element name="MeasurementStream" positionX="-63.7001953125" positionY="128.3192749023438" width="128" height="239"/>
         <element name="SensorThreshold" positionX="388.8433837890625" positionY="56.29141235351562" width="128" height="133"/>
         <element name="Session" positionX="146.2360229492188" positionY="-4.297317504882812" width="165.6036376953125" height="314"/>
     </elements>

@@ -8,7 +8,7 @@
 import Foundation
 import CoreData
 
-class DownloadMeasurementsService {
+class DownloadMeasurementsService: ObservableObject {
     
     var timer = Timer.publish(every: 60, on: .current, in: .common).autoconnect()
     var timerSink: Any?
@@ -50,6 +50,7 @@ class DownloadMeasurementsService {
                 self.updateSessionsParams(session: session, output: fixedMeasurementOutput)
                 
                 try! self.context.save()
+                print("Yay! UPDATED SESSION! :D ")
             }
     }
     

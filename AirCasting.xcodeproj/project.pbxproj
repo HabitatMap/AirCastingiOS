@@ -26,6 +26,8 @@
 		AC4EC6BC25B5ABB700C1E312 /* StatisticsContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC4EC6BB25B5ABB700C1E312 /* StatisticsContainerView.swift */; };
 		AC4EC6C125B6F18A00C1E312 /* EditButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC4EC6C025B6F18A00C1E312 /* EditButtonView.swift */; };
 		AC4EC6C425B6FE0D00C1E312 /* HeatmapSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC4EC6C325B6FE0D00C1E312 /* HeatmapSettingsView.swift */; };
+		AC524A6F261329330061AD45 /* SessionExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC524A6E261329330061AD45 /* SessionExtension.swift */; };
+		AC524A7626133A370061AD45 /* MeaurementStreamExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC524A7526133A370061AD45 /* MeaurementStreamExtension.swift */; };
 		AC5832DA25B196DD008C5DD5 /* Graph.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC5832D925B196DD008C5DD5 /* Graph.swift */; };
 		AC5EF71D25C8178B003657B1 /* EmptyDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC5EF71C25C8178B003657B1 /* EmptyDashboardView.swift */; };
 		AC5EF72125C81882003657B1 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC5EF72025C81882003657B1 /* DashboardView.swift */; };
@@ -115,6 +117,8 @@
 		AC4EC6BB25B5ABB700C1E312 /* StatisticsContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsContainerView.swift; sourceTree = "<group>"; };
 		AC4EC6C025B6F18A00C1E312 /* EditButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditButtonView.swift; sourceTree = "<group>"; };
 		AC4EC6C325B6FE0D00C1E312 /* HeatmapSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeatmapSettingsView.swift; sourceTree = "<group>"; };
+		AC524A6E261329330061AD45 /* SessionExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionExtension.swift; sourceTree = "<group>"; };
+		AC524A7526133A370061AD45 /* MeaurementStreamExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeaurementStreamExtension.swift; sourceTree = "<group>"; };
 		AC5832D925B196DD008C5DD5 /* Graph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Graph.swift; sourceTree = "<group>"; };
 		AC5EF71C25C8178B003657B1 /* EmptyDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyDashboardView.swift; sourceTree = "<group>"; };
 		AC5EF72025C81882003657B1 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
@@ -236,6 +240,7 @@
 		AC32040625CC122900A68520 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				AC6D569825ADE55B00D221BA /* ButtonStyles */,
 				ACD01F7525FF61CE00B8F65F /* LocationProvider.swift */,
 				AC32040325CC067D00A68520 /* CheckBox.swift */,
 				AC4EC6C025B6F18A00C1E312 /* EditButtonView.swift */,
@@ -334,7 +339,6 @@
 				AC8D6C6825C049C200ED74D1 /* Map */,
 				AC8CFF7025E7D94C00FB2918 /* Models */,
 				AC32040625CC122900A68520 /* Utils */,
-				AC6D569825ADE55B00D221BA /* ButtonStyles */,
 				AC7EB37925A6FB3D00A7F2AF /* Assets.xcassets */,
 				ACF77DEE25A7502600BB85B7 /* Extensions */,
 				AC7EB38625A7152000A7F2AF /* Resources */,
@@ -412,6 +416,8 @@
 			isa = PBXGroup;
 			children = (
 				AC049F8A2608DCB000398197 /* Session+Mock.swift */,
+				AC524A6E261329330061AD45 /* SessionExtension.swift */,
+				AC524A7526133A370061AD45 /* MeaurementStreamExtension.swift */,
 				AC8CFF7125E7DA2D00FB2918 /* ABMeasurementStream.swift */,
 			);
 			path = Models;
@@ -662,6 +668,7 @@
 				AC5EF71D25C8178B003657B1 /* EmptyDashboardView.swift in Sources */,
 				AC1DAD4925C987B3009AC4D1 /* BluetoothManager.swift in Sources */,
 				AC8CFF5C25E6866100FB2918 /* SignInView.swift in Sources */,
+				AC524A6F261329330061AD45 /* SessionExtension.swift in Sources */,
 				ACF77DFB25A8888700BB85B7 /* SessionCellView.swift in Sources */,
 				ACFC708925C1A36A00D609D9 /* UIColor.swift in Sources */,
 				AC8CFF7225E7DA2D00FB2918 /* ABMeasurementStream.swift in Sources */,
@@ -677,6 +684,7 @@
 				AC32040425CC067D00A68520 /* CheckBox.swift in Sources */,
 				AC8D6C6E25C056B400ED74D1 /* PathPoint.swift in Sources */,
 				AC6D56A525AF211200D221BA /* MultiSliderView.swift in Sources */,
+				AC524A7626133A370061AD45 /* MeaurementStreamExtension.swift in Sources */,
 				AC8CFF7E25EE5F9200FB2918 /* AirBeam3Configurator.swift in Sources */,
 				AC8CFF7725ECF8B100FB2918 /* HexMessagesBuilder.swift in Sources */,
 				338C30E225F1044B00E0305C /* Persistance.swift in Sources */,
