@@ -119,18 +119,18 @@ struct ChooseSessionTypeView: View {
         }
         .background(
             Group {
-                NavigationLink(
-                    destination: PowerABView(),
-                    isActive: $isPowerABLinkActive,
-                    label: {
-                        EmptyView()
-                    })
-                NavigationLink(
-                    destination: TurnOnBluetoothView(),
-                    isActive: $isTurnBluetoothOnLinkActive,
-                    label: {
-                        EmptyView()
-                    })
+                EmptyView()
+                    .fullScreenCover(isPresented: $isPowerABLinkActive) {
+                        CreatingSessionFlowRootView {
+                            PowerABView()
+                        }
+                    }
+                EmptyView()
+                    .fullScreenCover(isPresented: $isTurnBluetoothOnLinkActive) {
+                        CreatingSessionFlowRootView {
+                            TurnOnBluetoothView()
+                        }
+                    }
             }
         )
     }
@@ -143,10 +143,12 @@ struct ChooseSessionTypeView: View {
             mobileSessionLabel
         }
         .background(
-            NavigationLink(destination: SelectDeviceView(),
-                           isActive: $isMobileLinkActive) {
-                EmptyView()
-            })
+            EmptyView()
+                .fullScreenCover(isPresented: $isMobileLinkActive) {
+                    CreatingSessionFlowRootView {
+                        SelectDeviceView()
+                    }
+                })
     }
     
     var fixedSessionLabel: some View {

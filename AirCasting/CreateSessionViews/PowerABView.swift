@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct PowerABView: View {
+    
     var body: some View {
         VStack(spacing: 45) {
             ProgressView(value: 0.25)
@@ -20,8 +21,8 @@ struct PowerABView: View {
                 .buttonStyle(BlueButtonStyle())
         }
         .padding()
+        
     }
-    
     
     var titleLabel: some View {
         Text("Power on your AirBeam")

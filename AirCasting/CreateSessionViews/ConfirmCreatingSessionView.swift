@@ -11,6 +11,7 @@ import CoreLocation
 struct ConfirmCreatingSessionView: View {
     
     @EnvironmentObject private var sessionContext: CreateSessionContext
+    @State private var didStartRecordingSession = false
     var sessionName: String
     
     var body: some View {
@@ -32,11 +33,17 @@ struct ConfirmCreatingSessionView: View {
                         
             Button(action: {
                 sessionContext.setupAB()
+                didStartRecordingSession = true
             }, label: {
                 Text("Start recording")
                     .bold()
             })
             .buttonStyle(BlueButtonStyle())
+            .background(
+                NavigationLink(destination: ChooseSessionTypeView(),
+                               isActive: $didStartRecordingSession) {
+                    EmptyView()
+                })
         }
         .padding()
     }

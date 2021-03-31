@@ -30,6 +30,7 @@ struct SessionHeaderView: View {
         let end = session.endTime ?? Date()
         
         let formatter = DateIntervalFormatter()
+        
         formatter.timeStyle = .short
         formatter.dateStyle = .medium
         let string = DateIntervalFormatter().string(from: start, to: end)
@@ -52,7 +53,6 @@ struct SessionHeaderView: View {
                     }
                 }
             }
-            
             Text("\(showSessionType()), \(session.deviceTypeEnum.toString())")
                 .font(Font.moderate(size: 13, weight: .regular))
         }
