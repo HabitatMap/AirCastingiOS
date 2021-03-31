@@ -17,6 +17,31 @@ class MicrophoneManager: ObservableObject {
     
     private let LEVEL_THRESHOLD: Float = -10.0
     
+    func startRecording() {
+        switch AVAudioSession.sharedInstance().recordPermission {
+        case AVAudioSessionRecordPermission.granted:
+            print("Permission granted")
+            record()
+        case AVAudioSessionRecordPermission.denied:
+            //TODO: Direct user to settings
+            print("Pemission denied")
+        case AVAudioSessionRecordPermission.undetermined:
+            print("Request permission here")
+            AVAudioSession.sharedInstance().requestRecordPermission({ (granted) in
+                if (granted) {
+                    print("Permission granted")
+                    self.record()
+                  }
+                  else {
+                    //TODO: Direct user to settings
+                    print("Pemission denied")
+                  }
+            })
+        @unknown default:
+            //TODO: throw exception
+            print("Unknown permission")
+        }
+    }
     
     func record() {
         
@@ -58,5 +83,9 @@ class MicrophoneManager: ObservableObject {
             
             print(level)
         }
+    
+    func stopRecording() {
+        levelTimer.invalidate()
+    }
     
 }

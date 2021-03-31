@@ -8,6 +8,7 @@
 import Foundation
 import CoreBluetooth
 import CoreData
+import AVFoundation
 
 class CreateSessionContext: ObservableObject {
     var sessionName: String?
@@ -104,6 +105,29 @@ class CreateSessionContext: ObservableObject {
         }
         // TO DO: change else to else if to add fixed cellular and mic
     }
+    
+    func startMicrophoneSession(microphoneManager: MicrophoneManager){
+        guard let managedObjectContext = managedObjectContext,
+              let sessionType = sessionType,
+              let deviceType = deviceType,
+              let startingLocation = startingLocation else { return }
+        
+        // Save data to app's database
+        let session = Session(context: managedObjectContext)
+        session.uuid = sessionUUID
+        session.name = sessionName
+        session.tags = sessionTags
+        session.type = Int16(sessionType.rawValue)
+        session.deviceType = Int16(deviceType.rawValue)
+        session.startTime = Date()
+        session.longitude = startingLocation.longitude
+        session.latitude = startingLocation.latitude
+        
+        print(session)
+        
+        microphoneManager.startRecording()
+    }
+    
 }
 
 enum SessionType: Int16 {

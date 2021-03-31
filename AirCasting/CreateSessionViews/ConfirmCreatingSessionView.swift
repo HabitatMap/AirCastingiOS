@@ -12,11 +12,11 @@ struct ConfirmCreatingSessionView: View {
     
     @EnvironmentObject private var sessionContext: CreateSessionContext
     @State private var didStartRecordingSession = false
-
+    @EnvironmentObject private var microphoneManager: MicrophoneManager
     var sessionName: String
-    
-    var microphoneManager = MicrophoneManager()
-    
+    var sessionType: String {
+        sessionContext.sessionType == SessionType.MOBILE ? "mobile" : "fixed"
+    }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 40) {
@@ -26,7 +26,7 @@ struct ConfirmCreatingSessionView: View {
                 
             VStack(alignment: .leading, spacing: 15) {
                 Text("Your ")
-                    + Text(showSessionType())
+                    + Text(sessionType)
                         .foregroundColor(.accentColor)
                     + Text(" session ")
                     + Text(sessionName)
@@ -42,9 +42,11 @@ struct ConfirmCreatingSessionView: View {
             GoogleMapView(pathPoints: [], values: [], isMyLocationEnabled: true)
                         
             Button(action: {
-                sessionContext.setupAB()
-                didStartRecordingSession = true
-                microphoneManager.record()
+                if (sessionContext.deviceType == DeviceType.MIC) {
+                    sessionContext.startMicrophoneSession(microphoneManager: microphoneManager)
+                } else {
+                    sessionContext.setupAB()
+                }
             }, label: {
                 Text("Start recording")
                     .bold()
@@ -52,10 +54,6 @@ struct ConfirmCreatingSessionView: View {
             .buttonStyle(BlueButtonStyle())
         }
         .padding()
-    }
-    
-    func showSessionType() -> String {
-        return sessionContext.sessionType == SessionType.MOBILE ? "mobile" : "fixed"
     }
 }
 
