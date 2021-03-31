@@ -12,7 +12,7 @@ struct ConfirmCreatingSessionView: View {
     
     @EnvironmentObject private var sessionContext: CreateSessionContext
     @State private var didStartRecordingSession = false
-    var sessionType: String
+
     var sessionName: String
     
     var microphoneManager = MicrophoneManager()
@@ -26,7 +26,7 @@ struct ConfirmCreatingSessionView: View {
                 
             VStack(alignment: .leading, spacing: 15) {
                 Text("Your ")
-                    + Text(sessionType)
+                    + Text(showSessionType())
                         .foregroundColor(.accentColor)
                     + Text(" session ")
                     + Text(sessionName)
@@ -61,6 +61,6 @@ struct ConfirmCreatingSessionView: View {
 
 struct ConfirmCreatingSession_Previews: PreviewProvider {
     static var previews: some View {
-        ConfirmCreatingSessionView(sessionType: "mobile", sessionName: "Ania's microphone session")
+        ConfirmCreatingSessionView(sessionName: "Ania's microphone session")
     }
 }
