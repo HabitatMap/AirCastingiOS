@@ -15,6 +15,9 @@ struct ConfirmCreatingSessionView: View {
     var sessionType: String
     var sessionName: String
     
+    var microphoneManager = MicrophoneManager()
+    
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 40) {
             Text("Are you ready?")
@@ -41,6 +44,7 @@ struct ConfirmCreatingSessionView: View {
             Button(action: {
                 sessionContext.setupAB()
                 didStartRecordingSession = true
+                microphoneManager.record()
             }, label: {
                 Text("Start recording")
                     .bold()
