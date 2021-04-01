@@ -125,7 +125,7 @@ class CreateSessionContext: ObservableObject {
         
         print(session)
         
-        microphoneManager.startRecording()
+        microphoneManager.startRecording(session: session)
     }
     
 }
