@@ -11,12 +11,13 @@ import CoreAudio
 
 class MicrophoneManager: ObservableObject {
     var measurements: [Float] = []
+    //    var measurementStream: MeasurementStream
     
     private var recorder: AVAudioRecorder!
     private var levelTimer = Timer()
     
     private let LEVEL_THRESHOLD: Float = -10.0
-
+    
     
     func startRecording() {
         
@@ -29,16 +30,14 @@ class MicrophoneManager: ObservableObject {
                 }
             }
         }
-        
-        let url = NSURL.fileURL(withPath: "dev/null")
+
+        let url = URL(fileURLWithPath: "/dev/null", isDirectory: true)
         
         let recordSettings: [String: Any] = [
-            AVFormatIDKey:              kAudioFormatAppleIMA4,
-            AVSampleRateKey:            44100.0,
-            AVNumberOfChannelsKey:      2,
-            AVEncoderBitRateKey:        12800,
-            AVLinearPCMBitDepthKey:     16,
-            AVEncoderAudioQualityKey:   AVAudioQuality.max.rawValue
+            AVFormatIDKey: NSNumber(value: kAudioFormatAppleLossless),
+            AVSampleRateKey: 44100.0,
+            AVNumberOfChannelsKey: 1,
+            AVEncoderAudioQualityKey: AVAudioQuality.min.rawValue
         ]
         
 //        let audioSession = AVAudioSession.sharedInstance()
@@ -51,7 +50,6 @@ class MicrophoneManager: ObservableObject {
             return
         }
         
-        recorder.prepareToRecord()
         recorder.isMeteringEnabled = true
         recorder.record()
         
