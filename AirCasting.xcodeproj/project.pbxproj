@@ -29,6 +29,7 @@
 		AC524A6F261329330061AD45 /* SessionExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC524A6E261329330061AD45 /* SessionExtension.swift */; };
 		AC524A7626133A370061AD45 /* MeaurementStreamExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC524A7526133A370061AD45 /* MeaurementStreamExtension.swift */; };
 		AC524A892614733D0061AD45 /* CreatingSessionFlowRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC524A882614733D0061AD45 /* CreatingSessionFlowRootView.swift */; };
+		AC524A8E2615C8270061AD45 /* UpdateSessionParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC524A8D2615C8270061AD45 /* UpdateSessionParams.swift */; };
 		AC5832DA25B196DD008C5DD5 /* Graph.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC5832D925B196DD008C5DD5 /* Graph.swift */; };
 		AC5EF71D25C8178B003657B1 /* EmptyDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC5EF71C25C8178B003657B1 /* EmptyDashboardView.swift */; };
 		AC5EF72125C81882003657B1 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC5EF72025C81882003657B1 /* DashboardView.swift */; };
@@ -121,6 +122,7 @@
 		AC524A6E261329330061AD45 /* SessionExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionExtension.swift; sourceTree = "<group>"; };
 		AC524A7526133A370061AD45 /* MeaurementStreamExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeaurementStreamExtension.swift; sourceTree = "<group>"; };
 		AC524A882614733D0061AD45 /* CreatingSessionFlowRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatingSessionFlowRootView.swift; sourceTree = "<group>"; };
+		AC524A8D2615C8270061AD45 /* UpdateSessionParams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateSessionParams.swift; sourceTree = "<group>"; };
 		AC5832D925B196DD008C5DD5 /* Graph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Graph.swift; sourceTree = "<group>"; };
 		AC5EF71C25C8178B003657B1 /* EmptyDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyDashboardView.swift; sourceTree = "<group>"; };
 		AC5EF72025C81882003657B1 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
@@ -461,6 +463,7 @@
 			isa = PBXGroup;
 			children = (
 				ACF7C05E260CC9FF007C24AE /* DownloadMeasurmentsService.swift */,
+				AC524A8D2615C8270061AD45 /* UpdateSessionParams.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -712,6 +715,7 @@
 				ACD01F922600A3C800B8F65F /* RootAppView.swift in Sources */,
 				331EA80A25E32094009DEFDB /* ConfirmCreatingSessionView.swift in Sources */,
 				AC049F872608B74C00398197 /* FixedSession.swift in Sources */,
+				AC524A8E2615C8270061AD45 /* UpdateSessionParams.swift in Sources */,
 				ACF77DF025A750C200BB85B7 /* Font.swift in Sources */,
 				ACD01F7325FF574A00B8F65F /* WifiPopupView.swift in Sources */,
 			);

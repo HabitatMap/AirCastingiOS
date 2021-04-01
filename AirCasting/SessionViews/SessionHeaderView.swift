@@ -6,12 +6,15 @@
 //
 
 import SwiftUI
+import CoreData
 
 struct SessionHeaderView: View {
     
     let action: () -> Void
     let isExpandButtonNeeded: Bool
-    let session: Session
+    @ObservedObject var session: Session
+    
+//    @FetchRequest(fetchRequest: NSFetchRequest<Session>(entityName: "s")) var ses
     
     var body: some View {
         VStack(alignment: .leading, spacing: 13){
@@ -21,6 +24,7 @@ struct SessionHeaderView: View {
         }
         .font(Font.moderate(size: 13, weight: .regular))
         .foregroundColor(.aircastingGray)
+        
     }
     
     var dateAndTime: some View {
@@ -119,6 +123,7 @@ struct SessionHeaderView: View {
         let fValue = session.FStream?.latestValue ?? 0
         let hValue = session.HStream?.latestValue ?? 0
         
+        //TODO: change logic here (session status)
         if pm1Value != 0 || pm25Value != 0 || pm10Value != 0 || fValue != 0 || hValue != 0 {
             return LatestMeasurements(pm1: pm1Value,
                                       pm25: pm25Value,
