@@ -11,7 +11,7 @@ struct DashboardView: View {
     
     @FetchRequest<Session>(sortDescriptors: [NSSortDescriptor(key: "startTime",
                                                               ascending: false)]) var sessions
-    
+
     var body: some View {
         VStack {
             sectionPicker
