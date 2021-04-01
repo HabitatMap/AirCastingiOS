@@ -16,35 +16,19 @@ class MicrophoneManager: ObservableObject {
     private var levelTimer = Timer()
     
     private let LEVEL_THRESHOLD: Float = -10.0
+
     
     func startRecording() {
-        switch AVAudioSession.sharedInstance().recordPermission {
-        case AVAudioSessionRecordPermission.granted:
-            print("Permission granted")
-            record()
-        case AVAudioSessionRecordPermission.denied:
-            //TODO: Direct user to settings
-            print("Pemission denied")
-        case AVAudioSessionRecordPermission.undetermined:
-            print("Request permission here")
-            AVAudioSession.sharedInstance().requestRecordPermission({ (granted) in
-                if (granted) {
-                    print("Permission granted")
-                    self.record()
-                  }
-                  else {
-                    //TODO: Direct user to settings
-                    print("Pemission denied")
-                  }
-            })
-        @unknown default:
-            //TODO: throw exception
-            print("Unknown permission")
-        }
-    }
-    
-    func record() {
         
+        let audioSession = AVAudioSession.sharedInstance()
+        if audioSession.recordPermission != .granted {
+            audioSession.requestRecordPermission { (isGranted) in
+                if !isGranted {
+                    // TODO: pop-up that informs user that we need access to mic with ability do go back to homescreen
+                    fatalError("You must allow audio recording for this demo to work")
+                }
+            }
+        }
         
         let url = NSURL.fileURL(withPath: "dev/null")
         
