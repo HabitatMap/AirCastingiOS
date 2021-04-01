@@ -11,7 +11,7 @@ extension Session {
     
     var pm1Stream: MeasurementStream? {
         let matach = measurementStreams?.first(where: { (stream) -> Bool in
-            (stream as? MeasurementStream)?.measurementShortType == "PM1"
+            (stream as? MeasurementStream)?.sensorName?.contains("PM1") ?? false
         })
         let pm1Stream = matach as? MeasurementStream
         return pm1Stream
@@ -19,14 +19,14 @@ extension Session {
     
     var pm2Stream: MeasurementStream? {
         let matach = measurementStreams?.first(where: { (stream) -> Bool in
-            (stream as? MeasurementStream)?.measurementShortType == "PM2.5"
+            (stream as? MeasurementStream)?.sensorName?.contains("PM2.5") ?? false
         })
         let pm2Stream = matach as? MeasurementStream
         return pm2Stream
     }
     var pm10Stream: MeasurementStream? {
         let matach = measurementStreams?.first(where: { (stream) -> Bool in
-            (stream as? MeasurementStream)?.measurementShortType == "PM10"
+            (stream as? MeasurementStream)?.sensorName?.contains("PM10") ?? false
         })
         let pm10Stream = matach as? MeasurementStream
         return pm10Stream
@@ -40,7 +40,7 @@ extension Session {
     }
     var HStream: MeasurementStream? {
         let matach = measurementStreams?.first(where: { (stream) -> Bool in
-            (stream as? MeasurementStream)?.measurementShortType == "H"
+            (stream as? MeasurementStream)?.measurementShortType == "RH"
         })
         let HStream = matach as? MeasurementStream
         return HStream

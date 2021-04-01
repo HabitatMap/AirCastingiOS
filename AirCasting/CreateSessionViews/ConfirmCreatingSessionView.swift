@@ -39,11 +39,6 @@ struct ConfirmCreatingSessionView: View {
                     .bold()
             })
             .buttonStyle(BlueButtonStyle())
-            .background(
-                NavigationLink(destination: ChooseSessionTypeView(),
-                               isActive: $didStartRecordingSession) {
-                    EmptyView()
-                })
         }
         .padding()
     }

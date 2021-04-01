@@ -10,7 +10,7 @@ import CoreData
 
 class DownloadMeasurementsService: ObservableObject {
     
-    var timer = Timer.publish(every: 60, on: .current, in: .common).autoconnect()
+    var timer = Timer.publish(every: 15, on: .current, in: .common).autoconnect()
     var timerSink: Any?
     private var sink: Any?
     var context: NSManagedObjectContext {
@@ -23,8 +23,7 @@ class DownloadMeasurementsService: ObservableObject {
         }
     }
     
-    private func update() {
-        let uuid = UUID(uuidString: "fcb242f0-fdba-4c9b-943e-51adff1aebac")!
+    private func updateForSession(uuid: UUID) {
         let syncDate = Date().addingTimeInterval(-8000)
         sink = FixedSession
             .getFixedMeasurement(uuid: uuid,
@@ -40,17 +39,21 @@ class DownloadMeasurementsService: ObservableObject {
                 guard let self = self else { return }
                 
                 // Fetch session by id from Core Data
-                let fetchRequest = NSFetchRequest<Session>(entityName: "Session")
-                fetchRequest.predicate = NSPredicate(format: "uuid == %@", uuid.uuidString.lowercased())
-                let results = try! self.context.fetch(fetchRequest)
-                guard let session = results.first else {
-                    return
-                }
-                                
+                let session: Session = self.context.newOrExisting(uuid: fixedMeasurementOutput.uuid)
                 UpdateSessionParamsService().updateSessionsParams(session: session, output: fixedMeasurementOutput)
                 
                 try! self.context.save()
-                print("Yay! UPDATED SESSION! :D ")
             }
+    }
+    
+    func update() {
+        let request = NSFetchRequest<Session>(entityName: "Session")
+        guard let fetchedResult = try? context.fetch(request) else {return}
+        
+        for session in fetchedResult {
+            print("!!!!!!!! getting measaurement for \(session.uuid!)")
+            guard let uuid = UUID(uuidString: session.uuid!) else {continue}
+            updateForSession(uuid: uuid)
+        }
     }
 }

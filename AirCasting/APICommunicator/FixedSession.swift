@@ -11,6 +11,7 @@ import Combine
 class FixedSession {
     
     struct FixedMeasurementOutput: Codable {
+        let id: Int
         var type: String
         var uuid: String
         var title: String
@@ -23,6 +24,7 @@ class FixedSession {
     }
     
     struct StreamOutput: Codable {
+        let id: Int
         let sensor_name: String
         let sensor_package_name: String
         let measurement_type: String
@@ -40,20 +42,20 @@ class FixedSession {
     
     struct MeasurementOutput: Codable {
         let id: Int
-        let values: Int
-        let latitude: Int
-        let longitude: Int
+        let value: Float
+        let latitude: Float
+        let longitude: Float
         let time: String
         let stream_id: Int
-        let miliseconds: Int
-        let measured_value: Int
+        let milliseconds: Int
+        let measured_value: Float
     }
     
     static func getFixedMeasurement(uuid: UUID, lastSync: Date) -> AnyPublisher<FixedMeasurementOutput, Error> {
         
         // Build URL with query
         var components = URLComponents(string: "http://aircasting.org/api/realtime/sync_measurements.json")!
-        let syncDateStr = ISO8601DateFormatter().string(from: lastSync)
+        let syncDateStr = ISO8601DateFormatter.defaultLong.string(from: lastSync)
         components.queryItems = [
             URLQueryItem(name: "uuid", value: uuid.uuidString),
             URLQueryItem(name: "last_measurement_sync", value: syncDateStr)
@@ -73,20 +75,16 @@ class FixedSession {
                 let decoder = JSONDecoder()
                 let fixedSessionOutput = try decoder.decode(FixedMeasurementOutput.self, from: data)
                 return fixedSessionOutput
-                // TODO: parse and save to core data
             }
+            .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
     }
 }
 
-extension URLRequest {
-    
+extension URLRequest { 
     mutating func signWithToken() {
-        // TODO:
-//        guard let authToken = UserDefaults.authToken else { return }
-//        let auth = "\(authToken):X".data(using: .utf8)!.base64EncodedString()
-//        setValue("Basic \(auth)", forHTTPHeaderField: "Authorization")
-        setValue("Basic bXZGbS1HQ3dNR1NaUXd2cDgydXk=:X", forHTTPHeaderField: "Authorization")
+        guard let authToken = UserDefaults.authToken else { return }
+        let auth = "\(authToken):X".data(using: .utf8)!.base64EncodedString()
+        setValue("Basic \(auth)", forHTTPHeaderField: "Authorization")
     }
-    
 }

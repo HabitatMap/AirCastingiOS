@@ -14,7 +14,6 @@ struct WifiPopupView: View {
     
     @State private var isWifiNameDisplayed: Bool = false
     @Environment(\.presentationMode) private var presentationMode
-    @State var currentNetworkSSID: String?
     @Binding var wifiPassword: String
     @Binding var wifiSSID: String
 
@@ -44,7 +43,7 @@ struct WifiPopupView: View {
         }
         .padding()
         .onAppear {
-            currentNetworkSSID = getWiFiSsid()
+            wifiSSID = getWiFiSsid() ?? ""
         }
     }
     
@@ -55,7 +54,7 @@ struct WifiPopupView: View {
     }
     
     var provideNameAndPasswordTitle: some View {
-        Text("Provide password for \(currentNetworkSSID ?? "your") network")
+        Text("Provide password for \(wifiSSID ?? "your") network")
             .font(Font.muli(size: 18, weight: .heavy))
             .foregroundColor(.darkBlue)
     }

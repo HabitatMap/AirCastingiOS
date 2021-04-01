@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17709" systemVersion="20D64" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <entity name="Measurement" representedClassName=".Measurement" syncable="YES" codeGenerationType="class">
+    <entity name="Measurement" representedClassName="Measurement" syncable="YES" codeGenerationType="class">
+        <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="time" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="value" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <relationship name="measurementStream" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MeasurementStream" inverseName="measurements" inverseEntity="MeasurementStream"/>
     </entity>
-    <entity name="MeasurementStream" representedClassName=".MeasurementStream" syncable="YES" codeGenerationType="class">
+    <entity name="MeasurementStream" representedClassName="MeasurementStream" syncable="YES">
         <attribute name="gotDeleted" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="measurementShortType" optional="YES" attributeType="String"/>
         <attribute name="measurementType" optional="YES" attributeType="String"/>
         <attribute name="sensorName" optional="YES" attributeType="String"/>
@@ -23,7 +25,7 @@
         <relationship name="measurements" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Measurement" inverseName="measurementStream" inverseEntity="Measurement"/>
         <relationship name="session" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Session" inverseName="measurementStreams" inverseEntity="Session"/>
     </entity>
-    <entity name="SensorThreshold" representedClassName=".SensorThreshold" syncable="YES" codeGenerationType="class">
+    <entity name="SensorThreshold" representedClassName="SensorThreshold" syncable="YES" codeGenerationType="class">
         <attribute name="sensorName" attributeType="String"/>
         <attribute name="thresholdHigh" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="thresholdLow" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
@@ -31,13 +33,14 @@
         <attribute name="thresholdVeryHigh" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="thresholdVeryLow" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
     </entity>
-    <entity name="Session" representedClassName=".Session" syncable="YES" codeGenerationType="class">
+    <entity name="Session" representedClassName="Session" syncable="YES">
         <attribute name="contribute" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="deviceId" optional="YES" attributeType="String"/>
         <attribute name="deviceType" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="endTime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="followedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="gotDeleted" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="isIndoor" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="locationless" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
@@ -53,9 +56,9 @@
         <relationship name="measurementStreams" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="MeasurementStream" inverseName="session" inverseEntity="MeasurementStream"/>
     </entity>
     <elements>
-        <element name="Measurement" positionX="-63" positionY="-18" width="128" height="104"/>
-        <element name="MeasurementStream" positionX="-63.7001953125" positionY="128.3192749023438" width="128" height="239"/>
-        <element name="SensorThreshold" positionX="388.8433837890625" positionY="56.29141235351562" width="128" height="133"/>
-        <element name="Session" positionX="146.2360229492188" positionY="-4.297317504882812" width="165.6036376953125" height="314"/>
+        <element name="Measurement" positionX="-63" positionY="-18" width="128" height="119"/>
+        <element name="MeasurementStream" positionX="-63.7001953125" positionY="128.3192749023438" width="128" height="254"/>
+        <element name="SensorThreshold" positionX="388.8433837890625" positionY="56.29141235351562" width="128" height="119"/>
+        <element name="Session" positionX="146.2360229492188" positionY="-4.297317504882812" width="165.6036376953125" height="329"/>
     </elements>
 </model>

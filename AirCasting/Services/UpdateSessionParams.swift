@@ -15,7 +15,9 @@ class UpdateSessionParamsService {
     }
     
     func updateSessionsParams(session: Session, output: FixedSession.FixedMeasurementOutput) {
-        let dateFormatter = ISO8601DateFormatter()
+        let dateFormatter = ISO8601DateFormatter.defaultLong
+    
+        session.id = Int64(output.id)
         session.uuid = output.uuid
         session.type = SessionType.from(string: output.type)?.rawValue ?? -1
     
@@ -26,7 +28,8 @@ class UpdateSessionParamsService {
         session.version = Int16(output.version)
     
         for (_, streamOutput) in output.streams {
-            let stream = MeasurementStream(context: self.context)
+            let stream: MeasurementStream = self.context.newOrExisting(id: streamOutput.id)
+            
             stream.sensorName = streamOutput.sensor_name
             stream.sensorPackageName = streamOutput.sensor_package_name
             stream.measurementType = streamOutput.measurement_type
@@ -50,11 +53,13 @@ class UpdateSessionParamsService {
             //                            thresholds.thresholdVeryHigh = Int32(streamOutput.threshold_very_high)
     
             for measurement in streamOutput.measurements {
-                let newMeasaurement = Measurement(context: self.context)
+                let newMeasaurement: Measurement = self.context.newOrExisting(id: measurement.id)
+                
                 newMeasaurement.value = Double(measurement.measured_value)
                 newMeasaurement.latitude = Double(measurement.latitude)
                 newMeasaurement.longitude = Double(measurement.longitude)
                 newMeasaurement.time = dateFormatter.date(from: measurement.time)
+                newMeasaurement.measurementStream = stream
             }
             session.addToMeasurementStreams(stream)
         }

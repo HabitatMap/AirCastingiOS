@@ -44,8 +44,7 @@ class CreateSessionContext: ObservableObject {
               let startingLocation = startingLocation else { return }
         
         // Save data to app's database
-        let session = Session(context: managedObjectContext)
-        session.uuid = sessionUUID
+        let session: Session = managedObjectContext.newOrExisting(uuid: sessionUUID!)
         session.name = sessionName
         session.tags = sessionTags
         session.type = Int16(sessionType.rawValue)
@@ -54,7 +53,7 @@ class CreateSessionContext: ObservableObject {
         session.longitude = startingLocation.longitude
         session.latitude = startingLocation.latitude
         
-        // TO DO: Save context to database
+        try! managedObjectContext.save()
         
         // TO DO: Replace mocked location and date
         let temporaryMockedDate = "19/12/19-02:40:00"
@@ -87,6 +86,7 @@ class CreateSessionContext: ObservableObject {
                 .sink { (completion) in
                     
                 } receiveValue: { [weak self] (output) in
+                    print("Enlo.")
                     guard let peripheral = self?.peripheral,
                           let uuid = session.uuid,
                           let ssid = self?.wifiSSID,

@@ -13,9 +13,7 @@ struct SessionHeaderView: View {
     let action: () -> Void
     let isExpandButtonNeeded: Bool
     @ObservedObject var session: Session
-    
-//    @FetchRequest(fetchRequest: NSFetchRequest<Session>(entityName: "s")) var ses
-    
+        
     var body: some View {
         VStack(alignment: .leading, spacing: 13){
             dateAndTime
@@ -70,7 +68,7 @@ struct SessionHeaderView: View {
     var measurements: some View {
         Group {
             if let measurements = extractLatestMeasurements() {
-                VStack {
+                VStack(alignment: .leading, spacing: 5) {
                     measurementsTitle
                     HStack {
                         Group {
@@ -141,7 +139,6 @@ struct SessionHeaderView: View {
             return "Mobile"
         }
     }
-    
 }
 
 struct SessionHeader_Previews: PreviewProvider {
@@ -152,11 +149,7 @@ struct SessionHeader_Previews: PreviewProvider {
     }
 }
 
-
-
-
 extension Session {
-    
     var deviceTypeEnum: DeviceType {
         DeviceType(rawValue: Int(deviceType))!
     }

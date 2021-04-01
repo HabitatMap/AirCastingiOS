@@ -123,7 +123,6 @@ extension BluetoothManager: CBPeripheralDelegate {
                         peripheral.setNotifyValue(true, for: characteristic)
                     }
                 }
-                print("didDiscoverCharacteristicsFor: \(characteristic)")
             }
         }
     }
@@ -135,13 +134,11 @@ extension BluetoothManager: CBPeripheralDelegate {
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
         if MEASUREMENTS_CHARACTERISTIC_UUIDS.contains(characteristic.uuid) {
             let parsedMeasurement = parseData(data: characteristic.value!)
-            print("\(String(describing: parsedMeasurement))")
         }
     }
     
     func parseData(data: Data) -> ABMeasurementStream? {
         let string = String(data: data, encoding: .utf8)
-        print("RAW: \(String(describing: string))")
         let components = string?.components(separatedBy: ";")
         
         guard let values = components,

@@ -30,6 +30,12 @@
 		AC524A7626133A370061AD45 /* MeaurementStreamExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC524A7526133A370061AD45 /* MeaurementStreamExtension.swift */; };
 		AC524A892614733D0061AD45 /* CreatingSessionFlowRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC524A882614733D0061AD45 /* CreatingSessionFlowRootView.swift */; };
 		AC524A8E2615C8270061AD45 /* UpdateSessionParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC524A8D2615C8270061AD45 /* UpdateSessionParams.swift */; };
+		AC524A942615D8620061AD45 /* Session+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC524A902615D8620061AD45 /* Session+CoreDataClass.swift */; };
+		AC524A952615D8620061AD45 /* Session+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC524A912615D8620061AD45 /* Session+CoreDataProperties.swift */; };
+		AC524A962615D8620061AD45 /* MeasurementStream+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC524A922615D8620061AD45 /* MeasurementStream+CoreDataClass.swift */; };
+		AC524A972615D8620061AD45 /* MeasurementStream+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC524A932615D8620061AD45 /* MeasurementStream+CoreDataProperties.swift */; };
+		AC524A9A2615E3600061AD45 /* NSManagedObjectContext+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC524A992615E3600061AD45 /* NSManagedObjectContext+Utils.swift */; };
+		AC524AAC2616003C0061AD45 /* DateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC524AAB2616003C0061AD45 /* DateFormatter.swift */; };
 		AC5832DA25B196DD008C5DD5 /* Graph.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC5832D925B196DD008C5DD5 /* Graph.swift */; };
 		AC5EF71D25C8178B003657B1 /* EmptyDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC5EF71C25C8178B003657B1 /* EmptyDashboardView.swift */; };
 		AC5EF72125C81882003657B1 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC5EF72025C81882003657B1 /* DashboardView.swift */; };
@@ -123,6 +129,12 @@
 		AC524A7526133A370061AD45 /* MeaurementStreamExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeaurementStreamExtension.swift; sourceTree = "<group>"; };
 		AC524A882614733D0061AD45 /* CreatingSessionFlowRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatingSessionFlowRootView.swift; sourceTree = "<group>"; };
 		AC524A8D2615C8270061AD45 /* UpdateSessionParams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateSessionParams.swift; sourceTree = "<group>"; };
+		AC524A902615D8620061AD45 /* Session+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Session+CoreDataClass.swift"; sourceTree = "<group>"; };
+		AC524A912615D8620061AD45 /* Session+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Session+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		AC524A922615D8620061AD45 /* MeasurementStream+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MeasurementStream+CoreDataClass.swift"; sourceTree = "<group>"; };
+		AC524A932615D8620061AD45 /* MeasurementStream+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MeasurementStream+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		AC524A992615E3600061AD45 /* NSManagedObjectContext+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObjectContext+Utils.swift"; sourceTree = "<group>"; };
+		AC524AAB2616003C0061AD45 /* DateFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormatter.swift; sourceTree = "<group>"; };
 		AC5832D925B196DD008C5DD5 /* Graph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Graph.swift; sourceTree = "<group>"; };
 		AC5EF71C25C8178B003657B1 /* EmptyDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyDashboardView.swift; sourceTree = "<group>"; };
 		AC5EF72025C81882003657B1 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
@@ -206,7 +218,12 @@
 		338C30E025F1042000E0305C /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
+				AC524A902615D8620061AD45 /* Session+CoreDataClass.swift */,
+				AC524A912615D8620061AD45 /* Session+CoreDataProperties.swift */,
+				AC524A922615D8620061AD45 /* MeasurementStream+CoreDataClass.swift */,
+				AC524A932615D8620061AD45 /* MeasurementStream+CoreDataProperties.swift */,
 				338C30E125F1044B00E0305C /* Persistance.swift */,
+				AC524A992615E3600061AD45 /* NSManagedObjectContext+Utils.swift */,
 				338C30E625F10BFE00E0305C /* AirCasting.xcdatamodeld */,
 			);
 			path = CoreData;
@@ -451,6 +468,7 @@
 		ACF77DEE25A7502600BB85B7 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				AC524AAB2616003C0061AD45 /* DateFormatter.swift */,
 				AC93B8D925BEDC46003D0A0D /* Array.swift */,
 				ACF77DEF25A750C200BB85B7 /* Font.swift */,
 				ACFC708825C1A36A00D609D9 /* UIColor.swift */,
@@ -660,6 +678,7 @@
 				AC6D569A25ADE57800D221BA /* GrayButtonStyle.swift in Sources */,
 				AC049F7F2604B7AF00398197 /* AuthErorrHandling.swift in Sources */,
 				ACF77DF825A866E700BB85B7 /* BlueButtonStyle.swift in Sources */,
+				AC524A962615D8620061AD45 /* MeasurementStream+CoreDataClass.swift in Sources */,
 				AC32041F25CC485E00A68520 /* ConnectingABView.swift in Sources */,
 				ACD32A4F2600A8DD00818946 /* SettingsView.swift in Sources */,
 				AC3203CB25CA991C00A68520 /* TurnOnBluetoothView.swift in Sources */,
@@ -679,6 +698,7 @@
 				ACF77DFB25A8888700BB85B7 /* SessionCellView.swift in Sources */,
 				ACFC708925C1A36A00D609D9 /* UIColor.swift in Sources */,
 				AC8CFF7225E7DA2D00FB2918 /* ABMeasurementStream.swift in Sources */,
+				AC524AAC2616003C0061AD45 /* DateFormatter.swift in Sources */,
 				AC93B8DA25BEDC46003D0A0D /* Array.swift in Sources */,
 				ACD01F7625FF61CE00B8F65F /* LocationProvider.swift in Sources */,
 				AC7AB09225D988CD0025492B /* WhiteSelectingButtonStyle.swift in Sources */,
@@ -693,6 +713,7 @@
 				AC6D56A525AF211200D221BA /* MultiSliderView.swift in Sources */,
 				AC524A7626133A370061AD45 /* MeaurementStreamExtension.swift in Sources */,
 				AC8CFF7E25EE5F9200FB2918 /* AirBeam3Configurator.swift in Sources */,
+				AC524A972615D8620061AD45 /* MeasurementStream+CoreDataProperties.swift in Sources */,
 				AC8CFF7725ECF8B100FB2918 /* HexMessagesBuilder.swift in Sources */,
 				338C30E225F1044B00E0305C /* Persistance.swift in Sources */,
 				AC6D56A225AEF55C00D221BA /* GraphView.swift in Sources */,
@@ -700,13 +721,16 @@
 				ACF77DF425A750E000BB85B7 /* Color.swift in Sources */,
 				AC4EC6C125B6F18A00C1E312 /* EditButtonView.swift in Sources */,
 				AC049F8B2608DCB000398197 /* Session+Mock.swift in Sources */,
+				AC524A9A2615E3600061AD45 /* NSManagedObjectContext+Utils.swift in Sources */,
 				AC6D567F25AC54A400D221BA /* ChartView.swift in Sources */,
 				ACD01F952600A54400B8F65F /* UserDefaults+Preferences.swift in Sources */,
 				AC4EC6BC25B5ABB700C1E312 /* StatisticsContainerView.swift in Sources */,
+				AC524A942615D8620061AD45 /* Session+CoreDataClass.swift in Sources */,
 				AC8CFF3625E502DD00FB2918 /* CreateAccountView.swift in Sources */,
 				338C30E825F10BFE00E0305C /* AirCasting.xcdatamodeld in Sources */,
 				AC8D6C6A25C049E300ED74D1 /* Environment.swift in Sources */,
 				ACD01F4025F8C1F800B8F65F /* SessionContext.swift in Sources */,
+				AC524A952615D8620061AD45 /* Session+CoreDataProperties.swift in Sources */,
 				AC8D6C7225C0574800ED74D1 /* LocationTracker.swift in Sources */,
 				AC4EC6C425B6FE0D00C1E312 /* HeatmapSettingsView.swift in Sources */,
 				AC8CFF4525E510CB00FB2918 /* AuthorizationAPI.swift in Sources */,
