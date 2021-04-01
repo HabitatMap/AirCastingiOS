@@ -9,6 +9,7 @@ import SwiftUI
 import CoreLocation
 
 struct ConfirmCreatingSessionView: View {
+    @State var isActive : Bool = false
     
     @EnvironmentObject private var sessionContext: CreateSessionContext
     @State private var didStartRecordingSession = false
@@ -47,10 +48,19 @@ struct ConfirmCreatingSessionView: View {
                 } else {
                     sessionContext.setupAB()
                 }
+                self.isActive = true
             }, label: {
                 Text("Start recording")
                     .bold()
             })
+            .background(
+                NavigationLink(
+                    destination: DashboardView(),
+                    isActive: self.$isActive,
+                    label: {
+                        EmptyView()
+                    })
+            )
             .buttonStyle(BlueButtonStyle())
         }
         .padding()
