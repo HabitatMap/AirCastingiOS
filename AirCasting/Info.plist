@@ -41,6 +41,8 @@
 	<string>AirCasting uses location to show pollution level on the map.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>AirCasting uses location to show pollution level on the map.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>AirCasting uses microphone to measure noise level while session is recording.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Moderat-Trial-Black.otf</string>
@@ -71,6 +73,10 @@
 	</dict>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+	</array>
 	<key>UILaunchScreen</key>
 	<dict/>
 	<key>UIRequiredDeviceCapabilities</key>
@@ -90,7 +96,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>AirCasting uses microphone to measure noise level while session is recording.</string>
 </dict>
 </plist>
