@@ -12,14 +12,15 @@ import SystemConfiguration.CaptiveNetwork
 
 struct WifiPopupView: View {
     
-    @State private var isWifiNameDisplayed: Bool = false
+    @State private var isSSIDTextfieldDisplayed: Bool = false
     @Environment(\.presentationMode) private var presentationMode
     @Binding var wifiPassword: String
     @Binding var wifiSSID: String
+    @State private var didGetWifiSSID: Bool = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 30){
-            if isWifiNameDisplayed {
+            if isSSIDTextfieldDisplayed || !didGetWifiSSID || wifiSSID.isEmpty {
                 providePasswordTitle
                 createTextfield(placeholder: "Wi-Fi name", binding: $wifiSSID)
                 createTextfield(placeholder: "Password", binding: $wifiPassword)
@@ -43,7 +44,9 @@ struct WifiPopupView: View {
         }
         .padding()
         .onAppear {
-            wifiSSID = getWiFiSsid() ?? ""
+            if let ssid = getWiFiSsid() {
+                wifiSSID = ssid
+            }
         }
     }
     
@@ -61,7 +64,7 @@ struct WifiPopupView: View {
     
     var connectToDifferentWifi: some View {
         Button("I'd like to connect with a different Wi-Fi network.") {
-            isWifiNameDisplayed = true
+            isSSIDTextfieldDisplayed = true
         }
     }
     
@@ -71,10 +74,12 @@ struct WifiPopupView: View {
             for interface in interfaces {
                 if let interfaceInfo = CNCopyCurrentNetworkInfo(interface as! CFString) as NSDictionary? {
                     ssid = interfaceInfo[kCNNetworkInfoKeySSID as String] as? String
+                    didGetWifiSSID = false
                     break
                 }
             }
         }
+        didGetWifiSSID = true
         return ssid
     }
 }
