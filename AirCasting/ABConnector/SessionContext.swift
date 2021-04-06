@@ -86,7 +86,6 @@ class CreateSessionContext: ObservableObject {
                 .sink { (completion) in
                     
                 } receiveValue: { [weak self] (output) in
-                    print("Enlo.")
                     guard let peripheral = self?.peripheral,
                           let uuid = session.uuid,
                           let ssid = self?.wifiSSID,

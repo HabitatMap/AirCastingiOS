@@ -57,7 +57,7 @@ struct WifiPopupView: View {
     }
     
     var provideNameAndPasswordTitle: some View {
-        Text("Provide password for \(wifiSSID ?? "your") network")
+        Text("Provide password for \(wifiSSID) network")
             .font(Font.muli(size: 18, weight: .heavy))
             .foregroundColor(.darkBlue)
     }
