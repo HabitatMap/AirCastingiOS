@@ -43,7 +43,8 @@ class CreateSessionContext: ObservableObject {
               let startingLocation = startingLocation else { return }
         
         // Save data to app's database
-        let session: Session = managedObjectContext.createNew(uuid: sessionUUID!)
+//        let session: Session = managedObjectContext.createNew(uuid: sessionUUID!)
+        let session: Session = managedObjectContext.newOrExisting(uuid: sessionUUID!)
         session.name = sessionName
         session.tags = sessionTags
         session.type = Int16(sessionType.rawValue)

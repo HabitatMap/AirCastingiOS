@@ -25,7 +25,7 @@ class DownloadMeasurementsService: ObservableObject {
     
     private func updateForSession(uuid: UUID) {
         //TODO: change last sync
-        let syncDate = Date().addingTimeInterval(-8000)
+        let syncDate = Date().addingTimeInterval(-100)
         sink = FixedSession
             .getFixedMeasurement(uuid: uuid,
                                  lastSync: syncDate)
