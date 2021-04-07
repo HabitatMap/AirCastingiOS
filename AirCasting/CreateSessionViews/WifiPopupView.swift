@@ -16,11 +16,10 @@ struct WifiPopupView: View {
     @Environment(\.presentationMode) private var presentationMode
     @Binding var wifiPassword: String
     @Binding var wifiSSID: String
-    @State private var didGetWifiSSID: Bool = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 30){
-            if isSSIDTextfieldDisplayed || !didGetWifiSSID || wifiSSID.isEmpty {
+            if isSSIDTextfieldDisplayed || wifiSSID.isEmpty {
                 providePasswordTitle
                 createTextfield(placeholder: "Wi-Fi name", binding: $wifiSSID)
                 createTextfield(placeholder: "Password", binding: $wifiPassword)
@@ -67,19 +66,18 @@ struct WifiPopupView: View {
             isSSIDTextfieldDisplayed = true
         }
     }
-    
+
     func getWiFiSsid() -> String? {
         var ssid: String?
+        
         if let interfaces = CNCopySupportedInterfaces() as NSArray? {
             for interface in interfaces {
                 if let interfaceInfo = CNCopyCurrentNetworkInfo(interface as! CFString) as NSDictionary? {
                     ssid = interfaceInfo[kCNNetworkInfoKeySSID as String] as? String
-                    didGetWifiSSID = false
                     break
                 }
             }
         }
-        didGetWifiSSID = true
         return ssid
     }
 }

@@ -10,7 +10,7 @@ import CoreData
 
 class DownloadMeasurementsService: ObservableObject {
     
-    var timer = Timer.publish(every: 15, on: .current, in: .common).autoconnect()
+    var timer = Timer.publish(every: 60, on: .current, in: .common).autoconnect()
     var timerSink: Any?
     private var sink: Any?
     var context: NSManagedObjectContext {
@@ -24,6 +24,7 @@ class DownloadMeasurementsService: ObservableObject {
     }
     
     private func updateForSession(uuid: UUID) {
+        //TODO: change last sync
         let syncDate = Date().addingTimeInterval(-8000)
         sink = FixedSession
             .getFixedMeasurement(uuid: uuid,
@@ -51,7 +52,6 @@ class DownloadMeasurementsService: ObservableObject {
         guard let fetchedResult = try? context.fetch(request) else {return}
         
         for session in fetchedResult {
-            print("!!!!!!!! getting measaurement for \(session.uuid!)")
             guard let uuid = UUID(uuidString: session.uuid!) else {continue}
             updateForSession(uuid: uuid)
         }

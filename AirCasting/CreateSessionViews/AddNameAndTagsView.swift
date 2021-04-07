@@ -18,6 +18,8 @@ struct AddNameAndTagsView: View {
     @State var wifiSSID: String = ""
     @State private var isConfirmCreatingSessionActive: Bool = false
     @EnvironmentObject private var sessionContext: CreateSessionContext
+    // Location tracker is needed to get wifi SSID (more info CNCopyCurrentNetworkInfo documentation.
+    @StateObject private var locationTracker = LocationTracker()
     
     var body: some View {
         GeometryReader { geometry in

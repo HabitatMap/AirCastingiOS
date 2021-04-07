@@ -40,4 +40,10 @@ extension NSManagedObjectContext {
         new.setValue(uuid, forKey: "uuid")
         return new
     }
+    
+    func createNew<T: NSManagedObject>(uuid: String) -> T  {
+        let new: T = T(context: self)
+        new.setValue(uuid, forKey: "uuid")
+        return new
+    }
 }
