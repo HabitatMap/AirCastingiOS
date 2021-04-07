@@ -14,8 +14,8 @@ struct SessionCellView: View {
     // TO DO: Change key name
     @AppStorage("values") var values: [Float] = [0, 70, 120, 170, 200]
     @StateObject var provider = LocationTracker()
-
-    
+    let session: Session
+        
     var body: some View {
         
         VStack(alignment: .leading, spacing: 13) {
@@ -23,7 +23,7 @@ struct SessionCellView: View {
                 withAnimation {
                     isCollapsed = !isCollapsed
                 }
-            }, isExpandButtonNeeded: true)
+            }, isExpandButtonNeeded: true, session: session)
             
             
             if !isCollapsed {
@@ -41,6 +41,7 @@ struct SessionCellView: View {
                 .shadow(color: Color(red: 205/255, green: 209/255, blue: 214/255, opacity: 0.36), radius: 9, x: 0, y: 1)
         )
     }
+        
     
     var pathPoints: [PathPoint] {
         let allLocationPoints = provider.allLocations
@@ -78,7 +79,7 @@ struct SessionCellView: View {
 
 struct SessionCell_Previews: PreviewProvider {
     static var previews: some View {
-        SessionCellView()
+        SessionCellView(session: Session.mock)
             .padding()
             .previewLayout(.sizeThatFits)
     }

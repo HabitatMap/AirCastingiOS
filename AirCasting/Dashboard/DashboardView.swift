@@ -9,11 +9,9 @@ import SwiftUI
 
 struct DashboardView: View {
     
-    let sessions: [OldSession] = []
-//    let sessions: [Session] = [Session(name: "Podgórze"),
-//                               Session(name: "Krowodrza Górka"),
-//                               Session(name: "Mistrzejowice")]
-
+    @FetchRequest<Session>(sortDescriptors: [NSSortDescriptor(key: "startTime",
+                                                              ascending: false)]) var sessions
+    
     var body: some View {
         VStack {
             sectionPicker
@@ -24,7 +22,7 @@ struct DashboardView: View {
                 ScrollView(.vertical) {
                     LazyVStack(spacing: 20) {
                         ForEach(sessions) { (session) in
-                            SessionCellView()
+                            SessionCellView(session: session)
                         }
                     }
                     .padding()

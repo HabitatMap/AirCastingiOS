@@ -13,7 +13,7 @@ struct RootAppView: View {
     let persistenceController = PersistenceController.shared
     @ObservedObject var bluetoothManager = BluetoothManager()
     @AppStorage(UserDefaults.AUTH_TOKEN_KEY) var authToken: String?
-    var isLoggedIn: Bool { authToken != nil }
+    var isLoggedIn: Bool { authToken != nil }    
     
     var body: some View {
         if isLoggedIn {

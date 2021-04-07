@@ -17,9 +17,10 @@ class CreateSessionContext: ObservableObject {
     var peripheral: CBPeripheral?
     var wifiSSID: String?
     var wifiPassword: String?
+    var isIndoor: Bool?
     var startingLocation: CLLocationCoordinate2D?
-    var deviceType: DeviceType?
-    
+    var deviceType: DeviceType = DeviceType.AIRBEAM3
+
     var managedObjectContext: NSManagedObjectContext?
     private var syncSink: Any?
     
@@ -39,12 +40,11 @@ class CreateSessionContext: ObservableObject {
     func setupAB() {
         guard let managedObjectContext = managedObjectContext,
               let sessionType = sessionType,
-              let deviceType = deviceType,
               let startingLocation = startingLocation else { return }
         
         // Save data to app's database
-        let session = Session(context: managedObjectContext)
-        session.uuid = sessionUUID
+//        let session: Session = managedObjectContext.createNew(uuid: sessionUUID!)
+        let session: Session = managedObjectContext.newOrExisting(uuid: sessionUUID!)
         session.name = sessionName
         session.tags = sessionTags
         session.type = Int16(sessionType.rawValue)
@@ -53,7 +53,7 @@ class CreateSessionContext: ObservableObject {
         session.longitude = startingLocation.longitude
         session.latitude = startingLocation.latitude
         
-        // TO DO: Save context to database
+        try! managedObjectContext.save()
         
         // TO DO: Replace mocked location and date
         let temporaryMockedDate = "19/12/19-02:40:00"
@@ -116,6 +116,14 @@ enum SessionType: Int16 {
         case .FIXED: return "FixedSession"
         }
     }
+    
+    static func from(string: String) -> SessionType? {
+        switch string {
+        case "MobileSession": return .MOBILE
+        case "FixedSession": return .FIXED
+        default: return nil
+        }
+    }
 }
 
 enum SessionStatus: Int {
@@ -133,4 +141,12 @@ enum StreamingMethod: Int {
 enum DeviceType: Int {
     case MIC = 0
     case AIRBEAM3 = 1
+    
+    func toString() -> String {
+        switch self {
+        case .MIC: return "Device's Microphone"
+        case .AIRBEAM3: return "AirBeam 3"
+        default: return ""
+        }
+    }
 }

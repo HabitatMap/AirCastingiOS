@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AirCasting.ipa</key>
+	<array>
+		<dict>
+			<key>architectures</key>
+			<array>
+				<string>arm64</string>
+			</array>
+			<key>certificate</key>
+			<dict>
+				<key>SHA1</key>
+				<string>731B6BD093C342BF1EC1B6414B63C7FDA7673A91</string>
+				<key>dateExpires</key>
+				<string>01/02/2022</string>
+				<key>type</key>
+				<string>Apple Distribution</string>
+			</dict>
+			<key>embeddedBinaries</key>
+			<array>
+				<dict>
+					<key>architectures</key>
+					<array>
+						<string>arm64</string>
+					</array>
+					<key>certificate</key>
+					<dict>
+						<key>SHA1</key>
+						<string>731B6BD093C342BF1EC1B6414B63C7FDA7673A91</string>
+						<key>dateExpires</key>
+						<string>01/02/2022</string>
+						<key>type</key>
+						<string>Apple Distribution</string>
+					</dict>
+					<key>name</key>
+					<string>FBLPromises.framework</string>
+					<key>team</key>
+					<dict>
+						<key>id</key>
+						<string>LXAGXH6CF6</string>
+						<key>name</key>
+						<string>HabitatMap, Inc.</string>
+					</dict>
+				</dict>
+				<dict>
+					<key>architectures</key>
+					<array>
+						<string>arm64</string>
+					</array>
+					<key>certificate</key>
+					<dict>
+						<key>SHA1</key>
+						<string>731B6BD093C342BF1EC1B6414B63C7FDA7673A91</string>
+						<key>dateExpires</key>
+						<string>01/02/2022</string>
+						<key>type</key>
+						<string>Apple Distribution</string>
+					</dict>
+					<key>name</key>
+					<string>FirebaseCore.framework</string>
+					<key>team</key>
+					<dict>
+						<key>id</key>
+						<string>LXAGXH6CF6</string>
+						<key>name</key>
+						<string>HabitatMap, Inc.</string>
+					</dict>
+				</dict>
+				<dict>
+					<key>architectures</key>
+					<array>
+						<string>arm64</string>
+					</array>
+					<key>certificate</key>
+					<dict>
+						<key>SHA1</key>
+						<string>731B6BD093C342BF1EC1B6414B63C7FDA7673A91</string>
+						<key>dateExpires</key>
+						<string>01/02/2022</string>
+						<key>type</key>
+						<string>Apple Distribution</string>
+					</dict>
+					<key>name</key>
+					<string>FirebaseCoreDiagnostics.framework</string>
+					<key>team</key>
+					<dict>
+						<key>id</key>
+						<string>LXAGXH6CF6</string>
+						<key>name</key>
+						<string>HabitatMap, Inc.</string>
+					</dict>
+				</dict>
+				<dict>
+					<key>architectures</key>
+					<array>
+						<string>arm64</string>
+					</array>
+					<key>certificate</key>
+					<dict>
+						<key>SHA1</key>
+						<string>731B6BD093C342BF1EC1B6414B63C7FDA7673A91</string>
+						<key>dateExpires</key>
+						<string>01/02/2022</string>
+						<key>type</key>
+						<string>Apple Distribution</string>
+					</dict>
+					<key>name</key>
+					<string>FirebaseCrashlytics.framework</string>
+					<key>team</key>
+					<dict>
+						<key>id</key>
+						<string>LXAGXH6CF6</string>
+						<key>name</key>
+						<string>HabitatMap, Inc.</string>
+					</dict>
+				</dict>
+				<dict>
+					<key>architectures</key>
+					<array>
+						<string>arm64</string>
+					</array>
+					<key>certificate</key>
+					<dict>
+						<key>SHA1</key>
+						<string>731B6BD093C342BF1EC1B6414B63C7FDA7673A91</string>
+						<key>dateExpires</key>
+						<string>01/02/2022</string>
+						<key>type</key>
+						<string>Apple Distribution</string>
+					</dict>
+					<key>name</key>
+					<string>FirebaseInstallations.framework</string>
+					<key>team</key>
+					<dict>
+						<key>id</key>
+						<string>LXAGXH6CF6</string>
+						<key>name</key>
+						<string>HabitatMap, Inc.</string>
+					</dict>
+				</dict>
+				<dict>
+					<key>architectures</key>
+					<array>
+						<string>arm64</string>
+					</array>
+					<key>certificate</key>
+					<dict>
+						<key>SHA1</key>
+						<string>731B6BD093C342BF1EC1B6414B63C7FDA7673A91</string>
+						<key>dateExpires</key>
+						<string>01/02/2022</string>
+						<key>type</key>
+						<string>Apple Distribution</string>
+					</dict>
+					<key>name</key>
+					<string>GoogleDataTransport.framework</string>
+					<key>team</key>
+					<dict>
+						<key>id</key>
+						<string>LXAGXH6CF6</string>
+						<key>name</key>
+						<string>HabitatMap, Inc.</string>
+					</dict>
+				</dict>
+				<dict>
+					<key>architectures</key>
+					<array>
+						<string>arm64</string>
+					</array>
+					<key>certificate</key>
+					<dict>
+						<key>SHA1</key>
+						<string>731B6BD093C342BF1EC1B6414B63C7FDA7673A91</string>
+						<key>dateExpires</key>
+						<string>01/02/2022</string>
+						<key>type</key>
+						<string>Apple Distribution</string>
+					</dict>
+					<key>name</key>
+					<string>GoogleUtilities.framework</string>
+					<key>team</key>
+					<dict>
+						<key>id</key>
+						<string>LXAGXH6CF6</string>
+						<key>name</key>
+						<string>HabitatMap, Inc.</string>
+					</dict>
+				</dict>
+				<dict>
+					<key>architectures</key>
+					<array>
+						<string>arm64</string>
+					</array>
+					<key>certificate</key>
+					<dict>
+						<key>SHA1</key>
+						<string>731B6BD093C342BF1EC1B6414B63C7FDA7673A91</string>
+						<key>dateExpires</key>
+						<string>01/02/2022</string>
+						<key>type</key>
+						<string>Apple Distribution</string>
+					</dict>
+					<key>name</key>
+					<string>Gzip.framework</string>
+					<key>team</key>
+					<dict>
+						<key>id</key>
+						<string>LXAGXH6CF6</string>
+						<key>name</key>
+						<string>HabitatMap, Inc.</string>
+					</dict>
+				</dict>
+				<dict>
+					<key>architectures</key>
+					<array>
+						<string>arm64</string>
+					</array>
+					<key>certificate</key>
+					<dict>
+						<key>SHA1</key>
+						<string>731B6BD093C342BF1EC1B6414B63C7FDA7673A91</string>
+						<key>dateExpires</key>
+						<string>01/02/2022</string>
+						<key>type</key>
+						<string>Apple Distribution</string>
+					</dict>
+					<key>name</key>
+					<string>nanopb.framework</string>
+					<key>team</key>
+					<dict>
+						<key>id</key>
+						<string>LXAGXH6CF6</string>
+						<key>name</key>
+						<string>HabitatMap, Inc.</string>
+					</dict>
+				</dict>
+			</array>
+			<key>entitlements</key>
+			<dict>
+				<key>application-identifier</key>
+				<string>LXAGXH6CF6.org.habitatmap.AirCasting</string>
+				<key>com.apple.developer.networking.wifi-info</key>
+				<true/>
+				<key>com.apple.developer.team-identifier</key>
+				<string>LXAGXH6CF6</string>
+				<key>get-task-allow</key>
+				<false/>
+			</dict>
+			<key>name</key>
+			<string>AirCasting.app</string>
+			<key>profile</key>
+			<dict>
+				<key>UUID</key>
+				<string>5015d112-6dd9-47fe-aec1-51eab4fe029f</string>
+				<key>name</key>
+				<string>Ad Hoc Profile</string>
+			</dict>
+			<key>team</key>
+			<dict>
+				<key>id</key>
+				<string>LXAGXH6CF6</string>
+				<key>name</key>
+				<string>HabitatMap, Inc.</string>
+			</dict>
+		</dict>
+	</array>
+</dict>
+</plist>

@@ -38,6 +38,5 @@ class LocationTracker: NSObject, ObservableObject, CLLocationManagerDelegate {
         
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         allLocations.append(contentsOf: locations)
-        print("\(locations)")
     }
 }

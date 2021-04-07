@@ -12,15 +12,14 @@ import SystemConfiguration.CaptiveNetwork
 
 struct WifiPopupView: View {
     
-    @State private var isWifiNameDisplayed: Bool = false
+    @State private var isSSIDTextfieldDisplayed: Bool = false
     @Environment(\.presentationMode) private var presentationMode
-    @State var currentNetworkSSID: String?
     @Binding var wifiPassword: String
     @Binding var wifiSSID: String
 
     var body: some View {
         VStack(alignment: .leading, spacing: 30){
-            if isWifiNameDisplayed {
+            if isSSIDTextfieldDisplayed || wifiSSID.isEmpty {
                 providePasswordTitle
                 createTextfield(placeholder: "Wi-Fi name", binding: $wifiSSID)
                 createTextfield(placeholder: "Password", binding: $wifiPassword)
@@ -44,7 +43,9 @@ struct WifiPopupView: View {
         }
         .padding()
         .onAppear {
-            currentNetworkSSID = getWiFiSsid()
+            if let ssid = getWiFiSsid() {
+                wifiSSID = ssid
+            }
         }
     }
     
@@ -55,19 +56,20 @@ struct WifiPopupView: View {
     }
     
     var provideNameAndPasswordTitle: some View {
-        Text("Provide password for \(currentNetworkSSID ?? "your") network")
+        Text("Provide password for \(wifiSSID) network")
             .font(Font.muli(size: 18, weight: .heavy))
             .foregroundColor(.darkBlue)
     }
     
     var connectToDifferentWifi: some View {
         Button("I'd like to connect with a different Wi-Fi network.") {
-            isWifiNameDisplayed = true
+            isSSIDTextfieldDisplayed = true
         }
     }
-    
+
     func getWiFiSsid() -> String? {
         var ssid: String?
+        
         if let interfaces = CNCopySupportedInterfaces() as NSArray? {
             for interface in interfaces {
                 if let interfaceInfo = CNCopyCurrentNetworkInfo(interface as! CFString) as NSDictionary? {

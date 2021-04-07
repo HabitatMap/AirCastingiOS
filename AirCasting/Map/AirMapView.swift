@@ -16,7 +16,10 @@ struct AirMapView: View {
     
     var body: some View {
         VStack(alignment: .trailing, spacing: 20) {
-            SessionHeaderView(action: {}, isExpandButtonNeeded: false)
+            SessionHeaderView(action: {},
+                              isExpandButtonNeeded: false,
+                              // TODO: replace mocked session
+                              session: Session.mock)
             ZStack(alignment: .topLeading) {
                 GoogleMapView(pathPoints: pathPoints, values: values)
                 StatisticsContainerView()

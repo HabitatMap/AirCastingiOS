@@ -10,12 +10,16 @@ import Firebase
 
 struct MainTabBarView: View {
 
+    @StateObject var downloadFixedMeasurementService = DownloadMeasurementsService()
     
     var body: some View {
         TabView {
             dashboardTab
             createSessionTab
             settingsTab
+        }
+        .onAppear {
+            downloadFixedMeasurementService.start()
         }
     }
     

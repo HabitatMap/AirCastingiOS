@@ -54,12 +54,8 @@ struct AirBeam3Configurator {
         guard let auth = userDefaults.string(forKey: "auth_token") else { return }
 
         sendUUIDRequest(uuid: uuid)
-        print("1")
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
             sendAuthToken(authToken: auth)
-            print("2")
-            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
-            }
         }
     }
     
@@ -72,10 +68,8 @@ struct AirBeam3Configurator {
         
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
             sendLocationConfiguration(location: location)
-            
             DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
                 sendCurrentTimeConfiguration(date: dateString)
-                
                 DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
                     sendWifiConfiguration(wifiSSID: wifiSSID, wifiPassword: wifiPassword)
                 }

@@ -38,7 +38,7 @@ class UI_PollutionChart: UIView {
         let formatter = NumberFormatter()
         formatter.maximumFractionDigits = 0
         data.setValueFormatter(DefaultValueFormatter(formatter: formatter))
-        data.setValueFont(UIFont(name: "Muli Regular", size: 12)!)
+        data.setValueFont(UIFont(name: "Muli-Regular", size: 12)!)
         data.setValueTextColor(UIColor(.aircastingGray))
         
         //remove border lines and legend

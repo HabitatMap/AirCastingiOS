@@ -13,8 +13,10 @@ struct GraphView: View {
 
     var body: some View {
         VStack(alignment: .trailing) {
-            // TODO: Pass real session
-            SessionHeaderView(action: {}, isExpandButtonNeeded: false)
+            SessionHeaderView(action: {},
+                              isExpandButtonNeeded: false,
+                              // TODO: replace mocked session
+                              session: Session.mock)
                 .padding()
             
             ZStack(alignment: .topLeading) {
