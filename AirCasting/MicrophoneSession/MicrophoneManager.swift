@@ -22,11 +22,12 @@ class MicrophoneManager: ObservableObject {
     private var recorder: AVAudioRecorder!
     private var levelTimer = Timer()
     
-    private let LEVEL_THRESHOLD: Float = -10.0
+    private var locationProvider = LocationProvider()
     
     func startRecording(session: Session) {
         self.session = session
         createDBStream()
+        locationProvider.requestLocation()
         
         let audioSession = AVAudioSession.sharedInstance()
         if audioSession.recordPermission != .granted {
@@ -61,18 +62,18 @@ class MicrophoneManager: ObservableObject {
         recorder.record()
         
         levelTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(getMeasurement), userInfo: nil, repeats: true)
-        
-        print("recording")
     }
     
     @objc func getMeasurement() {
         recorder.updateMeters()
         
         let level = recorder.averagePower(forChannel: 0)
+        let startingLocation = obtainCurrentLocation()
         
         let measurement = Measurement(context: self.context)
-        measurement.latitude = 200
-        measurement.longitude = 200
+        
+        measurement.latitude = startingLocation.latitude
+        measurement.longitude = startingLocation.longitude
         measurement.value = Double(level)
         measurement.time = Date()
         
@@ -114,6 +115,10 @@ class MicrophoneManager: ObservableObject {
             
             session.addToMeasurementStreams(measurementStream!)
         }
+    }
+
+    func obtainCurrentLocation() -> CLLocationCoordinate2D {
+        return locationProvider.currentLocation?.coordinate ?? CLLocationCoordinate2D(latitude: 200.0, longitude: 200.0)
     }
     
 }
