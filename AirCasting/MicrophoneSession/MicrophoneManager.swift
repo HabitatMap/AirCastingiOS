@@ -14,8 +14,6 @@ class MicrophoneManager: ObservableObject {
     var context: NSManagedObjectContext {
         PersistenceController.shared.container.viewContext
     }
-    
-    var measurements: [Float] = []
     var session: Session?
     var measurementStream: MeasurementStream?
     
@@ -25,11 +23,9 @@ class MicrophoneManager: ObservableObject {
     private var locationProvider = LocationProvider()
     
     func startRecording(session: Session) {
-        self.session = session
-        createDBStream()
-        locationProvider.requestLocation()
-        
         let audioSession = AVAudioSession.sharedInstance()
+        
+        //Check microphone permisson
         if audioSession.recordPermission != .granted {
             audioSession.requestRecordPermission { (isGranted) in
                 if !isGranted {
@@ -38,6 +34,10 @@ class MicrophoneManager: ObservableObject {
                 }
             }
         }
+        
+        self.session = session
+        createDBStream()
+        locationProvider.requestLocation()
         
         let url = URL(fileURLWithPath: "/dev/null", isDirectory: true)
         
@@ -48,10 +48,9 @@ class MicrophoneManager: ObservableObject {
             AVEncoderAudioQualityKey: AVAudioQuality.min.rawValue
         ]
         
-//        let audioSession = AVAudioSession.sharedInstance()
         do {
-//            try audioSession.setCategory(AVAudioSession.Category.playAndRecord)
-//            try audioSession.setActive(true)
+            try audioSession.setCategory(AVAudioSession.Category.playAndRecord)
+            try audioSession.setActive(true)
             try recorder = AVAudioRecorder(url:url, settings: recordSettings)
             
         } catch {
@@ -81,6 +80,8 @@ class MicrophoneManager: ObservableObject {
         session?.status = 0
         
         measurementStream?.addToMeasurements(measurement)
+        
+        print(measurement)
         
         do {
             try context.save()
