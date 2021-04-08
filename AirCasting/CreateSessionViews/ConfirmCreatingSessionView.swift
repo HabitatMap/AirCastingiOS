@@ -55,6 +55,7 @@ struct ConfirmCreatingSessionView: View {
             })
             .background(
                 NavigationLink(
+                    //TODO: we need to dismiss creating session views and go back to root
                     destination: DashboardView(),
                     isActive: self.$isActive,
                     label: {
