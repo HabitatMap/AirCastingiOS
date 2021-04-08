@@ -20,7 +20,7 @@ class CreateSessionContext: ObservableObject {
     var wifiPassword: String?
     var isIndoor: Bool?
     var startingLocation: CLLocationCoordinate2D?
-    var deviceType: DeviceType = DeviceType.AIRBEAM3
+    var deviceType: DeviceType?
 
     var managedObjectContext: NSManagedObjectContext?
     private var syncSink: Any?
@@ -41,6 +41,7 @@ class CreateSessionContext: ObservableObject {
     func setupAB() {
         guard let managedObjectContext = managedObjectContext,
               let sessionType = sessionType,
+              let deviceType = deviceType,
               let startingLocation = startingLocation else { return }
         
         // Save data to app's database
