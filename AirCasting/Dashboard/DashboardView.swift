@@ -21,7 +21,7 @@ struct DashboardView: View {
             } else {
                 ScrollView(.vertical) {
                     LazyVStack(spacing: 20) {
-                        ForEach(sessions) { (session) in
+                        ForEach(sessions, id: \.uuid) { (session) in
                             SessionCellView(session: session)
                         }
                     }
