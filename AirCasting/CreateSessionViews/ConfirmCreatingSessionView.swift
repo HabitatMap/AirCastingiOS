@@ -9,10 +9,15 @@ import SwiftUI
 import CoreLocation
 
 struct ConfirmCreatingSessionView: View {
+    @State var isActive : Bool = false
     
     @EnvironmentObject private var sessionContext: CreateSessionContext
     @State private var didStartRecordingSession = false
+    @EnvironmentObject private var microphoneManager: MicrophoneManager
     var sessionName: String
+    var sessionType: String {
+        sessionContext.sessionType == SessionType.MOBILE ? "mobile" : "fixed"
+    }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 40) {
@@ -21,7 +26,13 @@ struct ConfirmCreatingSessionView: View {
                 .foregroundColor(.darkBlue)
                 
             VStack(alignment: .leading, spacing: 15) {
-                Text("Your \(showSessionType()) session \(sessionName) is ready to start gathering data.")
+                Text("Your ")
+                    + Text(sessionType)
+                        .foregroundColor(.accentColor)
+                    + Text(" session ")
+                    + Text(sessionName)
+                        .foregroundColor(.accentColor)
+                    + Text(" is ready to start gathering data.")
                 Text("Move to your starting location, confirm your location is accurate on the map, then press the start recording button below.")
             }
             .font(Font.muli(size: 16))
@@ -32,24 +43,33 @@ struct ConfirmCreatingSessionView: View {
             GoogleMapView(pathPoints: [], values: [], isMyLocationEnabled: true)
                         
             Button(action: {
-                sessionContext.setupAB()
-                didStartRecordingSession = true
+                if (sessionContext.deviceType == DeviceType.MIC) {
+                    sessionContext.startMicrophoneSession(microphoneManager: microphoneManager)
+                } else {
+                    sessionContext.setupAB()
+                }
+                self.isActive = true
             }, label: {
                 Text("Start recording")
                     .bold()
             })
+            .background(
+                NavigationLink(
+                    //TODO: we need to dismiss creating session views and go back to root
+                    destination: DashboardView(),
+                    isActive: self.$isActive,
+                    label: {
+                        EmptyView()
+                    })
+            )
             .buttonStyle(BlueButtonStyle())
         }
         .padding()
-    }
-    
-    func showSessionType() -> String {
-        return sessionContext.sessionType == SessionType.MOBILE ? "mobile" : "fixed"
     }
 }
 
 struct ConfirmCreatingSession_Previews: PreviewProvider {
     static var previews: some View {
-        ConfirmCreatingSessionView(sessionName: "tests")
+        ConfirmCreatingSessionView(sessionName: "Ania's microphone session")
     }
 }

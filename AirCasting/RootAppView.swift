@@ -12,6 +12,7 @@ struct RootAppView: View {
     
     let persistenceController = PersistenceController.shared
     @ObservedObject var bluetoothManager = BluetoothManager()
+    @ObservedObject var microphoneManager = MicrophoneManager()
     @AppStorage(UserDefaults.AUTH_TOKEN_KEY) var authToken: String?
     var isLoggedIn: Bool { authToken != nil }    
     
@@ -33,6 +34,7 @@ struct RootAppView: View {
                 }
             }
             .environmentObject(bluetoothManager)
+            .environmentObject(microphoneManager)
             .environment(\.managedObjectContext, persistenceController.container.viewContext)
     }
 }

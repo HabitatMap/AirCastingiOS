@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		331EA80A25E32094009DEFDB /* ConfirmCreatingSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331EA80925E32094009DEFDB /* ConfirmCreatingSessionView.swift */; };
+		332F521425FA38430047236D /* MicrophoneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332F521325FA38430047236D /* MicrophoneManager.swift */; };
 		3362B4ED25E69987008D61BA /* AddNameAndTagsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3362B4EC25E69987008D61BA /* AddNameAndTagsView.swift */; };
 		338C30E225F1044B00E0305C /* Persistance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 338C30E125F1044B00E0305C /* Persistance.swift */; };
 		338C30E825F10BFE00E0305C /* AirCasting.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 338C30E625F10BFE00E0305C /* AirCasting.xcdatamodeld */; };
@@ -105,6 +106,7 @@
 /* Begin PBXFileReference section */
 		278FFE79104B8F74B61CE3A2 /* Pods-AirCasting.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AirCasting.release.xcconfig"; path = "Target Support Files/Pods-AirCasting/Pods-AirCasting.release.xcconfig"; sourceTree = "<group>"; };
 		331EA80925E32094009DEFDB /* ConfirmCreatingSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmCreatingSessionView.swift; sourceTree = "<group>"; };
+		332F521325FA38430047236D /* MicrophoneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrophoneManager.swift; sourceTree = "<group>"; };
 		3362B4EC25E69987008D61BA /* AddNameAndTagsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNameAndTagsView.swift; sourceTree = "<group>"; };
 		338C30E125F1044B00E0305C /* Persistance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistance.swift; sourceTree = "<group>"; };
 		338C30E725F10BFE00E0305C /* AirCasting.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AirCasting.xcdatamodel; sourceTree = "<group>"; };
@@ -215,6 +217,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		332F521825FA38B90047236D /* MicrophoneSession */ = {
+			isa = PBXGroup;
+			children = (
+				332F521325FA38430047236D /* MicrophoneManager.swift */,
+			);
+			path = MicrophoneSession;
+			sourceTree = "<group>";
+		};
 		338C30E025F1042000E0305C /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
@@ -356,6 +366,10 @@
 				AC3203CE25CBED9C00A68520 /* Dashboard */,
 				AC32043425CD52E600A68520 /* CreateSessionViews */,
 				AC6D56A825B0837500D221BA /* SessionViews */,
+				AC32043425CD52E600A68520 /* CreateSession */,
+				AC1DAD4325C98556009AC4D1 /* ConnectAB */,
+				332F521825FA38B90047236D /* MicrophoneSession */,
+				AC6D56A825B0837500D221BA /* Session */,
 				AC6D56A725B0833F00D221BA /* Graph */,
 				AC8D6C6825C049C200ED74D1 /* Map */,
 				AC8CFF7025E7D94C00FB2918 /* Models */,
@@ -734,6 +748,7 @@
 				AC8D6C7225C0574800ED74D1 /* LocationTracker.swift in Sources */,
 				AC4EC6C425B6FE0D00C1E312 /* HeatmapSettingsView.swift in Sources */,
 				AC8CFF4525E510CB00FB2918 /* AuthorizationAPI.swift in Sources */,
+				332F521425FA38430047236D /* MicrophoneManager.swift in Sources */,
 				AC8CFF4125E5095600FB2918 /* Textfield.swift in Sources */,
 				AC7EB37625A6FB3A00A7F2AF /* AirCastingApp.swift in Sources */,
 				ACD01F922600A3C800B8F65F /* RootAppView.swift in Sources */,
