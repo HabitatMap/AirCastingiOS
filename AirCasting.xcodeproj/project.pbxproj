@@ -241,7 +241,6 @@
 		AC1DAD4325C98556009AC4D1 /* ABConnector */ = {
 			isa = PBXGroup;
 			children = (
-				ACD01F3F25F8C1F800B8F65F /* SessionContext.swift */,
 				AC1DAD4825C987B3009AC4D1 /* BluetoothManager.swift */,
 				AC8CFF7D25EE5F9200FB2918 /* AirBeam3Configurator.swift */,
 				AC8CFF7625ECF8B100FB2918 /* HexMessagesBuilder.swift */,
@@ -437,6 +436,7 @@
 		AC8CFF7025E7D94C00FB2918 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				ACD01F3F25F8C1F800B8F65F /* SessionContext.swift */,
 				AC049F8A2608DCB000398197 /* Session+Mock.swift */,
 				AC524A6E261329330061AD45 /* SessionExtension.swift */,
 				AC524A7526133A370061AD45 /* MeaurementStreamExtension.swift */,
