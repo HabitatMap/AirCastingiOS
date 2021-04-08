@@ -13,13 +13,18 @@ struct SessionHeaderView: View {
     let action: () -> Void
     let isExpandButtonNeeded: Bool
     @ObservedObject var session: Session
+    @EnvironmentObject private var microphoneManager: MicrophoneManager
     
     var body: some View {
         VStack(alignment: .leading, spacing: 13){
             dateAndTime
             nameLabelAndExpandButton
             if (session.deviceType == DeviceType.MIC.rawValue) {
-                measurementsMic
+                HStack {
+                    measurementsMic
+                    Spacer()
+                    stopRecordingButton //This is a temporary solution
+                }
             } else {
                 measurementsAB
             }
@@ -102,6 +107,15 @@ struct SessionHeaderView: View {
             measurementsTitle
             singleMeasurement(name: "db", value: lastMicMeasurement())
         }
+    }
+    
+    var stopRecordingButton: some View {
+        Button(action: {
+            microphoneManager.stopRecording()
+        }, label: {
+            Text("Stop recording")
+                .foregroundColor(.blue)
+        })
     }
     
     func singleMeasurement(name: String, value: Int) -> some View {
