@@ -18,7 +18,7 @@ class MicrophoneManager: ObservableObject {
     var measurementStream: MeasurementStream?
     
     //This variable is used to block recording more than one microphone session at a time
-    var isRecording = false
+    private(set) var isRecording = false
     
     private var recorder: AVAudioRecorder!
     private var levelTimer = Timer()
