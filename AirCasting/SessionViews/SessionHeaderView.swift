@@ -13,12 +13,23 @@ struct SessionHeaderView: View {
     let action: () -> Void
     let isExpandButtonNeeded: Bool
     @ObservedObject var session: Session
-        
+    @EnvironmentObject private var microphoneManager: MicrophoneManager
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 13){
             dateAndTime
             nameLabelAndExpandButton
-            measurements
+            if (session.deviceType == DeviceType.MIC.rawValue) {
+                HStack {
+                    measurementsMic
+                    Spacer()
+                    if microphoneManager.isRecording {
+                        stopRecordingButton //This is a temporary solution
+                    }
+                }
+            } else {
+                measurementsAB
+            }
         }
         .font(Font.moderate(size: 13, weight: .regular))
         .foregroundColor(.aircastingGray)
@@ -64,8 +75,8 @@ struct SessionHeaderView: View {
     var measurementsTitle: some View {
         Text("Most recent measurement:")
     }
-        
-    var measurements: some View {
+    
+    var measurementsAB: some View {
         Group {
             if let measurements = extractLatestMeasurements() {
                 VStack(alignment: .leading, spacing: 5) {
@@ -91,6 +102,22 @@ struct SessionHeaderView: View {
                 .foregroundColor(.darkBlue)
             }
         }
+    }
+    
+    var measurementsMic: some View {
+        VStack(alignment: .leading, spacing: 5) {
+            measurementsTitle
+            singleMeasurement(name: "db", value: lastMicMeasurement())
+        }
+    }
+    
+    var stopRecordingButton: some View {
+        Button(action: {
+            microphoneManager.stopRecording()
+        }, label: {
+            Text("Stop recording")
+                .foregroundColor(.blue)
+        })
     }
     
     func singleMeasurement(name: String, value: Int) -> some View {
@@ -132,6 +159,11 @@ struct SessionHeaderView: View {
             return nil
         }
     }
+    
+    func lastMicMeasurement() -> Int {
+        return Int(session.dbStream?.latestValue ?? 0)
+    }
+    
     func showSessionType() -> String {
         if session.type == SessionType.FIXED.rawValue {
             return "Fixed"

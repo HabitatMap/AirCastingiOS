@@ -17,19 +17,24 @@ class MicrophoneManager: ObservableObject {
     var session: Session?
     var measurementStream: MeasurementStream?
     
+    //This variable is used to block recording more than one microphone session at a time
+    var isRecording = false
+    
     private var recorder: AVAudioRecorder!
     private var levelTimer = Timer()
     
     private var locationProvider = LocationProvider()
     
     func startRecording(session: Session) {
+        if isRecording { return }
+        
         let audioSession = AVAudioSession.sharedInstance()
         
         //Check microphone permisson
         if audioSession.recordPermission != .granted {
             audioSession.requestRecordPermission { (isGranted) in
                 if !isGranted {
-                    // TODO: pop-up that informs user that we need access to mic with ability do go back to homescreen
+                    //TODO: pop-up that informs user that we need access to mic with ability do go back to homescreen
                     fatalError("You must allow audio recording for this demo to work")
                 }
             }
@@ -59,6 +64,7 @@ class MicrophoneManager: ObservableObject {
         
         recorder.isMeteringEnabled = true
         recorder.record()
+        isRecording = true
         
         levelTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(getMeasurement), userInfo: nil, repeats: true)
     }
@@ -81,8 +87,6 @@ class MicrophoneManager: ObservableObject {
         
         measurementStream?.addToMeasurements(measurement)
         
-        print(measurement)
-        
         do {
             try context.save()
         } catch {
@@ -92,6 +96,7 @@ class MicrophoneManager: ObservableObject {
     
     func stopRecording() {
         levelTimer.invalidate()
+        isRecording = false
     }
     
     private

@@ -16,6 +16,7 @@ struct SelectDeviceView: View {
     @State private var isMicLinkActive: Bool = false
     @EnvironmentObject private var sessionContext: CreateSessionContext
     @EnvironmentObject var bluetoothManager: BluetoothManager
+    @EnvironmentObject private var microphoneManager: MicrophoneManager
     
     var body: some View {
         VStack(spacing: 30) {
@@ -57,6 +58,7 @@ struct SelectDeviceView: View {
             micLabels
         })
         .buttonStyle(WhiteSelectingButtonStyle(isSelected: selected == 2))
+        .disabled(microphoneManager.isRecording)
     }
     
     var bluetoothLabels: some View {

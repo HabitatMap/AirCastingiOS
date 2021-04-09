@@ -45,4 +45,11 @@ extension Session {
         let HStream = matach as? MeasurementStream
         return HStream
     }
+    var dbStream: MeasurementStream? {
+        let matach = measurementStreams?.first(where: { (stream) -> Bool in
+            (stream as? MeasurementStream)?.measurementShortType == "db"
+        })
+        let dbStream = matach as? MeasurementStream
+        return dbStream
+    }
 }
