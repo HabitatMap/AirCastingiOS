@@ -87,8 +87,6 @@ class MicrophoneManager: ObservableObject {
         
         measurementStream?.addToMeasurements(measurement)
         
-        print(measurement)
-        
         do {
             try context.save()
         } catch {

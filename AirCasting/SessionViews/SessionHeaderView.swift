@@ -23,7 +23,9 @@ struct SessionHeaderView: View {
                 HStack {
                     measurementsMic
                     Spacer()
-                    stopRecordingButton //This is a temporary solution
+                    if microphoneManager.isRecording {
+                        stopRecordingButton //This is a temporary solution
+                    }
                 }
             } else {
                 measurementsAB

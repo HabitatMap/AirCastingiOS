@@ -124,8 +124,6 @@ class CreateSessionContext: ObservableObject {
         session.longitude = startingLocation.longitude
         session.latitude = startingLocation.latitude
         
-        print(session)
-        
         microphoneManager.startRecording(session: session)
     }
     
