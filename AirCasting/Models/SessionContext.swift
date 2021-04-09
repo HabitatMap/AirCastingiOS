@@ -20,7 +20,7 @@ class CreateSessionContext: ObservableObject {
     var wifiPassword: String?
     var isIndoor: Bool?
     var startingLocation: CLLocationCoordinate2D?
-    var deviceType: DeviceType?
+    var deviceType: DeviceType = DeviceType.AIRBEAM3 // It is set here temporarily to fix bug with fixed sessions
 
     var managedObjectContext: NSManagedObjectContext?
     private var syncSink: Any?
@@ -41,7 +41,7 @@ class CreateSessionContext: ObservableObject {
     func setupAB() {
         guard let managedObjectContext = managedObjectContext,
               let sessionType = sessionType,
-              let deviceType = deviceType,
+//              let deviceType = deviceType,
               let startingLocation = startingLocation else { return }
         
         // Save data to app's database
@@ -110,7 +110,7 @@ class CreateSessionContext: ObservableObject {
     func startMicrophoneSession(microphoneManager: MicrophoneManager){
         guard let managedObjectContext = managedObjectContext,
               let sessionType = sessionType,
-              let deviceType = deviceType,
+//              let deviceType = deviceType,
               let startingLocation = startingLocation else { return }
         
         // Save data to app's database
