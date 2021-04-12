@@ -9,17 +9,21 @@ import Foundation
 import CoreData
 
 class DownloadMeasurementsService: ObservableObject {
-    
+
     var timer = Timer.publish(every: 60, on: .current, in: .common).autoconnect()
     var timerSink: Any?
     private var sink: Any?
     var context: NSManagedObjectContext {
         PersistenceController.shared.container.viewContext
     }
-    
+
     func start() {
-        timerSink = timer.sink { [weak self] (_) in
-            self?.update()
+        timerSink = timer.sink { [weak self] timer in
+            do {
+                try self?.update()
+            } catch {
+                assertionFailure("Failed to call update at \(timer) \(error)")
+            }
         }
     }
     
@@ -32,28 +36,30 @@ class DownloadMeasurementsService: ObservableObject {
             .sink { (completion) in
                 switch completion {
                 case .finished:
-                    print("sucess")
+                    break
                 case .failure(let error):
-                    print("ERROR: \(error)")
+                    Log.warning("Failed to fetch measurements for uuid '\(uuid)' \(error)")
                 }
-            } receiveValue: { [weak self] (fixedMeasurementOutput) in
-                guard let self = self else { return }
-                
-                // Fetch session by id from Core Data
-                let session: Session = self.context.newOrExisting(uuid: fixedMeasurementOutput.uuid)
+            } receiveValue: { fixedMeasurementOutput in
+                #warning("TODO: Use different context ")
+                let context = PersistenceController.shared.container.viewContext
+                let session: Session = context.newOrExisting(uuid: fixedMeasurementOutput.uuid)
                 UpdateSessionParamsService().updateSessionsParams(session: session, output: fixedMeasurementOutput)
-                
-                try! self.context.save()
+                do {
+                    try context.save()
+                    Log.info("Successfully fetched fixed measurements")
+                } catch {
+                    assertionFailure("Failed to save context \(error)")
+                }
             }
     }
     
-    func update() {
+    func update() throws {
         let request = NSFetchRequest<Session>(entityName: "Session")
-        guard let fetchedResult = try? context.fetch(request) else {return}
-        
+        let fetchedResult = try context.fetch(request)
         for session in fetchedResult {
-            guard let uuid = UUID(uuidString: session.uuid!) else {continue}
-            updateForSession(uuid: uuid)
+            #warning("TODO: change session.uuid type to UUID type")
+            updateForSession(uuid: UUID(uuidString: session.uuid!)!)
         }
     }
 }
