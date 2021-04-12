@@ -1,0 +1,102 @@
+{
+  "id": 1692523,
+  "created_at": "2020-09-14T11:19:23.000Z",
+  "updated_at": "2020-09-14T11:23:45.000Z",
+  "user_id": 5350,
+  "uuid": "51dd1e15-0af6-4810-bacd-11e061ac9d1d",
+  "url_token": "39m6g",
+  "title": "hetmafixab",
+  "contribute": true,
+  "data_type": null,
+  "instrument": null,
+  "start_time": "2020-09-14T13:19:26.000Z",
+  "end_time": "2020-09-14T13:23:38.000Z",
+  "measurements_count": null,
+  "start_time_local": "2020-09-14T13:19:26.000Z",
+  "end_time_local": "2020-09-14T13:23:38.000Z",
+  "is_indoor": false,
+  "latitude": 0.0,
+  "longitude": 0.0,
+  "last_measurement_at": "2020-09-14T11:23:45.000Z",
+  "version": 0,
+  "tag_list": "",
+  "streams": {
+    "AirBeam2-F": {
+      "id": 2015180,
+      "sensor_name": "AirBeam2-F",
+      "unit_name": "fahrenheit",
+      "measurement_type": "Temperature",
+      "measurement_short_type": "F",
+      "unit_symbol": "F",
+      "threshold_very_low": 15,
+      "threshold_low": 45,
+      "threshold_medium": 75,
+      "threshold_high": 105,
+      "threshold_very_high": 135,
+      "session_id": 1692523,
+      "sensor_package_name": "Airbeam2-0018961070D6",
+      "measurements_count": 5,
+      "min_latitude": 200.0,
+      "max_latitude": 200.0,
+      "min_longitude": 200.0,
+      "max_longitude": 200.0,
+      "average_value": null,
+      "start_longitude": null,
+      "start_latitude": null,
+      "size": 5,
+      "measurements": [
+        {
+          "id": 1991037271,
+          "value": 88.0,
+          "latitude": 200.0,
+          "longitude": 200.0,
+          "time": "2020-09-14T13:19:38.000Z",
+          "stream_id": 2015180,
+          "milliseconds": 0,
+          "measured_value": 88.0
+        },
+        {
+          "id": 1991037396,
+          "value": 89.0,
+          "latitude": 200.0,
+          "longitude": 200.0,
+          "time": "2020-09-14T13:20:38.000Z",
+          "stream_id": 2015180,
+          "milliseconds": 0,
+          "measured_value": 89.0
+        },
+        {
+          "id": 1991037522,
+          "value": 90.0,
+          "latitude": 200.0,
+          "longitude": 200.0,
+          "time": "2020-09-14T13:21:38.000Z",
+          "stream_id": 2015180,
+          "milliseconds": 0,
+          "measured_value": 90.0
+        },
+        {
+          "id": 1991037648,
+          "value": 91.0,
+          "latitude": 200.0,
+          "longitude": 200.0,
+          "time": "2020-09-14T13:22:38.000Z",
+          "stream_id": 2015180,
+          "milliseconds": 0,
+          "measured_value": 91.0
+        },
+        {
+          "id": 1991037774,
+          "value": 91.0,
+          "latitude": 200.0,
+          "longitude": 200.0,
+          "time": "2020-09-14T13:23:38.000Z",
+          "stream_id": 2015180,
+          "milliseconds": 0,
+          "measured_value": 91.0
+        }
+      ]
+    }
+  },
+  "type": "FixedSession"
+}

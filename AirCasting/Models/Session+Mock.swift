@@ -7,6 +7,7 @@
 
 import Foundation
 
+#if DEBUG
 extension Session {
     
     static var mock: Session {
@@ -16,3 +17,5 @@ extension Session {
     }
     
 }
+
+#endif

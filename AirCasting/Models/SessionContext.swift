@@ -70,7 +70,7 @@ class CreateSessionContext: ObservableObject {
             
             // TO DO : change mocked data (contribute, is_indoor, notes, locaation, end_time)
             let params = CreateSessionApi.SessionParams(uuid: uuid,
-                                                        type: SessionType(rawValue: session.type)!.toString(),
+                                                        type: session.type.description,
                                                         title: name,
                                                         tag_list: session.tags ?? "",
                                                         start_time: startTime,
@@ -104,7 +104,7 @@ class CreateSessionContext: ObservableObject {
             AirBeam3Configurator(peripheral: peripheral).configureMobileSession(dateString: temporaryMockedDate,
                                                                                 location: startingLocation)
         }
-        // TO DO: change else to else if to add fixed cellular and mic
+        #warning("TODO: change else to else if to add fixed cellular and mic")
     }
     
     func startMicrophoneSession(microphoneManager: MicrophoneManager){
@@ -129,22 +129,34 @@ class CreateSessionContext: ObservableObject {
     
 }
 
-enum SessionType: Int16 {
-    case MOBILE = 0
-    case FIXED = 1
+enum SessionType: CustomStringConvertible, Hashable, Decodable {
+    init(from decoder: Decoder) throws {
+        let singleValue = try decoder.singleValueContainer()
+        let rawValue = try singleValue.decode(String.self)
+        switch rawValue {
+        case "MobileSession": self = .MOBILE
+        case "FixedSession": self = .FIXED
+        default: self = .unknown(rawValue)
+        }
+    }
+
+    case MOBILE
+    case FIXED
+    case unknown(String)
     
-    func toString() -> String {
+    var description: String {
         switch self {
         case .MOBILE: return "MobileSession"
         case .FIXED: return "FixedSession"
+        case .unknown(let rawValue): return rawValue
         }
     }
-    
-    static func from(string: String) -> SessionType? {
-        switch string {
-        case "MobileSession": return .MOBILE
-        case "FixedSession": return .FIXED
-        default: return nil
+
+    var rawValue: Int16 {
+        switch self {
+        case .MOBILE: return 0
+        case .FIXED: return 1
+        case .unknown: return -1
         }
     }
 }
@@ -161,15 +173,14 @@ enum StreamingMethod: Int {
     case WIFI = 1
 }
 
-enum DeviceType: Int {
+enum DeviceType: Int, CustomStringConvertible {
     case MIC = 0
     case AIRBEAM3 = 1
     
-    func toString() -> String {
+    var description: String {
         switch self {
         case .MIC: return "Device's Microphone"
         case .AIRBEAM3: return "AirBeam 3"
-        default: return ""
         }
     }
 }

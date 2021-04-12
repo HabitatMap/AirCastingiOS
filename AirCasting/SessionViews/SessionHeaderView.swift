@@ -66,7 +66,7 @@ struct SessionHeaderView: View {
                     }
                 }
             }
-            Text("\(showSessionType()), \(session.deviceTypeEnum.toString())")
+            Text("\(showSessionType()), \(session.deviceTypeEnum.description)")
                 .font(Font.moderate(size: 13, weight: .regular))
         }
         .foregroundColor(.darkBlue)

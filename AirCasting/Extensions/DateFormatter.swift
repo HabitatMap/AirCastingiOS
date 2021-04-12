@@ -10,9 +10,9 @@ import Foundation
 
 extension ISO8601DateFormatter {
     
-    static var defaultLong: ISO8601DateFormatter {
+    static let defaultLong: ISO8601DateFormatter = {
         let dateFormatter = ISO8601DateFormatter()
         dateFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
         return dateFormatter
-    }
+    }()
 }
