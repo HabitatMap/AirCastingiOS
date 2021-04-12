@@ -13,6 +13,12 @@
 		338C30E225F1044B00E0305C /* Persistance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 338C30E125F1044B00E0305C /* Persistance.swift */; };
 		338C30E825F10BFE00E0305C /* AirCasting.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 338C30E625F10BFE00E0305C /* AirCasting.xcdatamodeld */; };
 		4F858F5E2624B4980059271A /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F858F5D2624B4980059271A /* Log.swift */; };
+		4F858F4C2624A82B0059271A /* SampleFixedSession.json in Resources */ = {isa = PBXBuildFile; fileRef = 4F858F4B2624A82B0059271A /* SampleFixedSession.json */; };
+		4FB39E092621B55D00E5E564 /* FixedSessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FB39E082621B55D00E5E564 /* FixedSessionTests.swift */; };
+		4FB39E0F2621B5C100E5E564 /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = 4FB39E0E2621B5C100E5E564 /* Podfile */; };
+		4FB39E362621B77D00E5E564 /* APIClientMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FB39E352621B77D00E5E564 /* APIClientMock.swift */; };
+		4FB39E3A2621BE7F00E5E564 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FB39E392621BE7F00E5E564 /* APIClient.swift */; };
+		4FB39E402622252700E5E564 /* XCTestCase+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FB39E3F2622252700E5E564 /* XCTestCase+Extensions.swift */; };
 		AC049F7F2604B7AF00398197 /* AuthErorrHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC049F7E2604B7AF00398197 /* AuthErorrHandling.swift */; };
 		AC049F872608B74C00398197 /* FixedSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC049F862608B74C00398197 /* FixedSession.swift */; };
 		AC049F8B2608DCB000398197 /* Session+Mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC049F8A2608DCB000398197 /* Session+Mock.swift */; };
@@ -101,10 +107,22 @@
 		ACF77DFB25A8888700BB85B7 /* SessionCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACF77DFA25A8888700BB85B7 /* SessionCellView.swift */; };
 		ACF7C05F260CC9FF007C24AE /* DownloadMeasurmentsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACF7C05E260CC9FF007C24AE /* DownloadMeasurmentsService.swift */; };
 		ACFC708925C1A36A00D609D9 /* UIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACFC708825C1A36A00D609D9 /* UIColor.swift */; };
+		EE969E7E1981C41852FB7745 /* Pods_AirCastingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A54057326D27D23E9906704 /* Pods_AirCastingTests.framework */; };
 		F76B6F660F0BD398629EDD83 /* Pods_AirCasting.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E819223F8D800D3B8ED8F56 /* Pods_AirCasting.framework */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		4FB39E012621B53C00E5E564 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AC7EB36A25A6FB3A00A7F2AF /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AC7EB37125A6FB3A00A7F2AF;
+			remoteInfo = AirCasting;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		08139B8AACC5B29DDED2C953 /* Pods-AirCastingTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AirCastingTests.release.xcconfig"; path = "Target Support Files/Pods-AirCastingTests/Pods-AirCastingTests.release.xcconfig"; sourceTree = "<group>"; };
 		278FFE79104B8F74B61CE3A2 /* Pods-AirCasting.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AirCasting.release.xcconfig"; path = "Target Support Files/Pods-AirCasting/Pods-AirCasting.release.xcconfig"; sourceTree = "<group>"; };
 		331EA80925E32094009DEFDB /* ConfirmCreatingSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmCreatingSessionView.swift; sourceTree = "<group>"; };
 		332F521325FA38430047236D /* MicrophoneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrophoneManager.swift; sourceTree = "<group>"; };
@@ -112,6 +130,16 @@
 		338C30E125F1044B00E0305C /* Persistance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistance.swift; sourceTree = "<group>"; };
 		338C30E725F10BFE00E0305C /* AirCasting.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AirCasting.xcdatamodel; sourceTree = "<group>"; };
 		4F858F5D2624B4980059271A /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
+		3A54057326D27D23E9906704 /* Pods_AirCastingTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AirCastingTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4327910762891E7B1AE9102E /* Pods-AirCastingTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AirCastingTests.debug.xcconfig"; path = "Target Support Files/Pods-AirCastingTests/Pods-AirCastingTests.debug.xcconfig"; sourceTree = "<group>"; };
+		4F858F4B2624A82B0059271A /* SampleFixedSession.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = SampleFixedSession.json; sourceTree = "<group>"; };
+		4FB39DFC2621B53C00E5E564 /* AirCastingTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AirCastingTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4FB39E002621B53C00E5E564 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4FB39E082621B55D00E5E564 /* FixedSessionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FixedSessionTests.swift; sourceTree = "<group>"; };
+		4FB39E0E2621B5C100E5E564 /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; };
+		4FB39E352621B77D00E5E564 /* APIClientMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClientMock.swift; sourceTree = "<group>"; };
+		4FB39E392621BE7F00E5E564 /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
+		4FB39E3F2622252700E5E564 /* XCTestCase+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+Extensions.swift"; sourceTree = "<group>"; };
 		80BDC4331283D7705B8C8952 /* Pods-AirCasting.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AirCasting.debug.xcconfig"; path = "Target Support Files/Pods-AirCasting/Pods-AirCasting.debug.xcconfig"; sourceTree = "<group>"; };
 		8E819223F8D800D3B8ED8F56 /* Pods_AirCasting.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AirCasting.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AC049F7E2604B7AF00398197 /* AuthErorrHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthErorrHandling.swift; sourceTree = "<group>"; };
@@ -207,6 +235,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		4FB39DF92621B53C00E5E564 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EE969E7E1981C41852FB7745 /* Pods_AirCastingTests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AC7EB36F25A6FB3A00A7F2AF /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -241,11 +277,33 @@
 			path = CoreData;
 			sourceTree = "<group>";
 		};
+		4F858F4A2624A8120059271A /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				4F858F4B2624A82B0059271A /* SampleFixedSession.json */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		4FB39DFD2621B53C00E5E564 /* AirCastingTests */ = {
+			isa = PBXGroup;
+			children = (
+				4F858F4A2624A8120059271A /* Resources */,
+				4FB39E002621B53C00E5E564 /* Info.plist */,
+				4FB39E082621B55D00E5E564 /* FixedSessionTests.swift */,
+				4FB39E352621B77D00E5E564 /* APIClientMock.swift */,
+				4FB39E3F2622252700E5E564 /* XCTestCase+Extensions.swift */,
+			);
+			path = AirCastingTests;
+			sourceTree = "<group>";
+		};
 		A39CC233FB1B8C6B1C3FF94A /* Pods */ = {
 			isa = PBXGroup;
 			children = (
 				80BDC4331283D7705B8C8952 /* Pods-AirCasting.debug.xcconfig */,
 				278FFE79104B8F74B61CE3A2 /* Pods-AirCasting.release.xcconfig */,
+				4327910762891E7B1AE9102E /* Pods-AirCastingTests.debug.xcconfig */,
+				08139B8AACC5B29DDED2C953 /* Pods-AirCastingTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -337,7 +395,9 @@
 		AC7EB36925A6FB3A00A7F2AF = {
 			isa = PBXGroup;
 			children = (
+				4FB39E0E2621B5C100E5E564 /* Podfile */,
 				AC7EB37425A6FB3A00A7F2AF /* AirCasting */,
+				4FB39DFD2621B53C00E5E564 /* AirCastingTests */,
 				AC7EB37325A6FB3A00A7F2AF /* Products */,
 				A39CC233FB1B8C6B1C3FF94A /* Pods */,
 				CABAD6F2460034AEFF66A5C1 /* Frameworks */,
@@ -348,6 +408,7 @@
 			isa = PBXGroup;
 			children = (
 				AC7EB37225A6FB3A00A7F2AF /* AirCasting.app */,
+				4FB39DFC2621B53C00E5E564 /* AirCastingTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -443,6 +504,7 @@
 				AC8CFF4425E510CB00FB2918 /* AuthorizationAPI.swift */,
 				AC1471A225F23AE40062A53F /* CreateSessionAPI.swift */,
 				AC049F862608B74C00398197 /* FixedSession.swift */,
+				4FB39E392621BE7F00E5E564 /* APIClient.swift */,
 			);
 			path = APICommunicator;
 			sourceTree = "<group>";
@@ -504,6 +566,7 @@
 			isa = PBXGroup;
 			children = (
 				8E819223F8D800D3B8ED8F56 /* Pods_AirCasting.framework */,
+				3A54057326D27D23E9906704 /* Pods_AirCastingTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -511,6 +574,25 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		4FB39DFB2621B53C00E5E564 /* AirCastingTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4FB39E052621B53C00E5E564 /* Build configuration list for PBXNativeTarget "AirCastingTests" */;
+			buildPhases = (
+				50B7B66A7654FC8269753001 /* [CP] Check Pods Manifest.lock */,
+				4FB39DF82621B53C00E5E564 /* Sources */,
+				4FB39DF92621B53C00E5E564 /* Frameworks */,
+				4FB39DFA2621B53C00E5E564 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4FB39E022621B53C00E5E564 /* PBXTargetDependency */,
+			);
+			name = AirCastingTests;
+			productName = AirCastingTests;
+			productReference = 4FB39DFC2621B53C00E5E564 /* AirCastingTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		AC7EB37125A6FB3A00A7F2AF /* AirCasting */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = AC7EB38125A6FB3D00A7F2AF /* Build configuration list for PBXNativeTarget "AirCasting" */;
@@ -541,9 +623,13 @@
 		AC7EB36A25A6FB3A00A7F2AF /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1220;
+				LastSwiftUpdateCheck = 1240;
 				LastUpgradeCheck = 1220;
 				TargetAttributes = {
+					4FB39DFB2621B53C00E5E564 = {
+						CreatedOnToolsVersion = 12.4;
+						TestTargetID = AC7EB37125A6FB3A00A7F2AF;
+					};
 					AC7EB37125A6FB3A00A7F2AF = {
 						CreatedOnToolsVersion = 12.2;
 					};
@@ -566,11 +652,21 @@
 			projectRoot = "";
 			targets = (
 				AC7EB37125A6FB3A00A7F2AF /* AirCasting */,
+				4FB39DFB2621B53C00E5E564 /* AirCastingTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		4FB39DFA2621B53C00E5E564 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4F858F4C2624A82B0059271A /* SampleFixedSession.json in Resources */,
+				4FB39E0F2621B5C100E5E564 /* Podfile in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AC7EB37025A6FB3A00A7F2AF /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -604,6 +700,28 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		50B7B66A7654FC8269753001 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-AirCastingTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 		AC5EF74B25C83F0E003657B1 /* Firebase Crashlytics */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
@@ -623,7 +741,8 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"${PODS_ROOT}/FirebaseCrashlytics/run\"\n";
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nif [ \"${CONFIGURATION}\" == \"Release\" ] \nthen\n    echo \"FirebaseCrashlytics\"\n    \"${PODS_ROOT}/FirebaseCrashlytics/run\"\nelse\n    echo \"Will run FirebaseCrashlytics in release mode\"\nfi\n";
+			showEnvVarsInLog = 0;
 		};
 		BA797DF3793837CC1AFA2CA9 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -684,6 +803,16 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		4FB39DF82621B53C00E5E564 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4FB39E362621B77D00E5E564 /* APIClientMock.swift in Sources */,
+				4FB39E402622252700E5E564 /* XCTestCase+Extensions.swift in Sources */,
+				4FB39E092621B55D00E5E564 /* FixedSessionTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AC7EB36E25A6FB3A00A7F2AF /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -739,6 +868,7 @@
 				AC524A9A2615E3600061AD45 /* NSManagedObjectContext+Utils.swift in Sources */,
 				AC6D567F25AC54A400D221BA /* ChartView.swift in Sources */,
 				ACD01F952600A54400B8F65F /* UserDefaults+Preferences.swift in Sources */,
+				4FB39E3A2621BE7F00E5E564 /* APIClient.swift in Sources */,
 				AC4EC6BC25B5ABB700C1E312 /* StatisticsContainerView.swift in Sources */,
 				AC524A942615D8620061AD45 /* Session+CoreDataClass.swift in Sources */,
 				AC8CFF3625E502DD00FB2918 /* CreateAccountView.swift in Sources */,
@@ -763,7 +893,59 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		4FB39E022621B53C00E5E564 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AC7EB37125A6FB3A00A7F2AF /* AirCasting */;
+			targetProxy = 4FB39E012621B53C00E5E564 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		4FB39E032621B53C00E5E564 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4327910762891E7B1AE9102E /* Pods-AirCastingTests.debug.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = LXAGXH6CF6;
+				INFOPLIST_FILE = AirCastingTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = org.habitatmap.AirCastingTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AirCasting.app/AirCasting";
+			};
+			name = Debug;
+		};
+		4FB39E042621B53C00E5E564 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 08139B8AACC5B29DDED2C953 /* Pods-AirCastingTests.release.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = LXAGXH6CF6;
+				INFOPLIST_FILE = AirCastingTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = org.habitatmap.AirCastingTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AirCasting.app/AirCasting";
+			};
+			name = Release;
+		};
 		AC7EB37F25A6FB3D00A7F2AF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -937,6 +1119,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		4FB39E052621B53C00E5E564 /* Build configuration list for PBXNativeTarget "AirCastingTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4FB39E032621B53C00E5E564 /* Debug */,
+				4FB39E042621B53C00E5E564 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		AC7EB36D25A6FB3A00A7F2AF /* Build configuration list for PBXProject "AirCasting" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

@@ -41,25 +41,31 @@ class DownloadMeasurementsService: ObservableObject {
                     Log.warning("Failed to fetch measurements for uuid '\(uuid)' \(error)")
                 }
             } receiveValue: { fixedMeasurementOutput in
-                #warning("TODO: Use different context ")
-                let context = PersistenceController.shared.container.viewContext
-                let session: Session = context.newOrExisting(uuid: fixedMeasurementOutput.uuid)
-                UpdateSessionParamsService().updateSessionsParams(session: session, output: fixedMeasurementOutput)
-                do {
-                    try context.save()
-                    Log.info("Successfully fetched fixed measurements")
-                } catch {
-                    assertionFailure("Failed to save context \(error)")
+                DispatchQueue.main.async {
+                    #warning("TODO: Use different context ")
+                    // Fetch session by id from Core Data
+                    let context = PersistenceController.shared.container.viewContext
+                    let session: Session = context.newOrExisting(uuid: fixedMeasurementOutput.uuid.uuidString)
+                    UpdateSessionParamsService().updateSessionsParams(session: session, output: fixedMeasurementOutput)
+                    do {
+                        try context.save()
+                        Log.info("Successfully fetched fixed measurements")
+                    } catch {
+                        assertionFailure("Failed to save context \(error)")
+                    }
                 }
             }
     }
     
     func update() throws {
-        let request = NSFetchRequest<Session>(entityName: "Session")
+        let request: NSFetchRequest<Session> = Session.fetchRequest()
         let fetchedResult = try context.fetch(request)
         for session in fetchedResult {
-            #warning("TODO: change session.uuid type to UUID type")
-            updateForSession(uuid: UUID(uuidString: session.uuid!)!)
+            if let uuid = session.uuid.flatMap(UUID.init(uuidString:)) {
+                updateForSession(uuid: uuid)
+            } else {
+                Log.error("trying to refresh session without uuid \(session)")
+            }
         }
     }
 }

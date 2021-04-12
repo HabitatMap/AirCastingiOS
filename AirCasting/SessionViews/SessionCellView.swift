@@ -82,5 +82,6 @@ struct SessionCell_Previews: PreviewProvider {
         SessionCellView(session: Session.mock)
             .padding()
             .previewLayout(.sizeThatFits)
+            .environmentObject(MicrophoneManager())
     }
 }

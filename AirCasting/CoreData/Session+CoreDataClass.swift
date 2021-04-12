@@ -11,7 +11,6 @@ import CoreData
 
 @objc(Session)
 public class Session: NSManagedObject {
-
     //
 //    public override func willChangeValue(forKey key: String) {
 //        super.willChangeValue(forKey: key)

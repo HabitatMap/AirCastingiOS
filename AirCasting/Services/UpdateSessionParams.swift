@@ -15,17 +15,15 @@ class UpdateSessionParamsService {
     }
     
     func updateSessionsParams(session: Session, output: FixedSession.FixedMeasurementOutput) {
-        let dateFormatter = ISO8601DateFormatter.defaultLong
-    
-        session.id = Int64(output.id)
-        session.uuid = output.uuid
-        session.type = SessionType.from(string: output.type)?.rawValue ?? -1
+        session.id = output.id
+        session.uuid = output.uuid.uuidString
+        session.type = output.type.rawValue
     
         session.name = output.title
         session.tags  = output.tag_list
-        session.startTime  = dateFormatter.date(from: output.start_time)
-        session.endTime  = dateFormatter.date(from: output.end_time)
-        session.version = Int16(output.version)
+        session.startTime = output.start_time
+        session.endTime = output.end_time
+        session.version = output.version
     
         for (_, streamOutput) in output.streams {
             let stream: MeasurementStream = self.context.newOrExisting(id: streamOutput.id)
@@ -36,11 +34,11 @@ class UpdateSessionParamsService {
             stream.measurementShortType = streamOutput.measurement_short_type
             stream.unitName = streamOutput.unit_name
             stream.unitSymbol = streamOutput.unit_symbol
-            stream.thresholdVeryLow = Int32(streamOutput.threshold_very_low)
-            stream.thresholdLow = Int32(streamOutput.threshold_low)
-            stream.thresholdMedium = Int32(streamOutput.threshold_medium)
-            stream.thresholdHigh = Int32(streamOutput.threshold_high)
-            stream.thresholdVeryHigh = Int32(streamOutput.threshold_very_high)
+            stream.thresholdVeryLow = streamOutput.threshold_very_low
+            stream.thresholdLow = streamOutput.threshold_low
+            stream.thresholdMedium = streamOutput.threshold_medium
+            stream.thresholdHigh = streamOutput.threshold_high
+            stream.thresholdVeryHigh = streamOutput.threshold_very_high
             stream.gotDeleted = streamOutput.deleted ?? false
     
             //                            // Save starting thresholds
@@ -55,10 +53,10 @@ class UpdateSessionParamsService {
             for measurement in streamOutput.measurements {
                 let newMeasaurement: Measurement = self.context.newOrExisting(id: measurement.id)
                 
-                newMeasaurement.value = Double(measurement.measured_value)
-                newMeasaurement.latitude = Double(measurement.latitude)
-                newMeasaurement.longitude = Double(measurement.longitude)
-                newMeasaurement.time = dateFormatter.date(from: measurement.time)
+                newMeasaurement.value = measurement.measured_value
+                newMeasaurement.latitude = measurement.latitude
+                newMeasaurement.longitude = measurement.longitude
+                newMeasaurement.time = measurement.time
                 newMeasaurement.measurementStream = stream
             }
             session.addToMeasurementStreams(stream)

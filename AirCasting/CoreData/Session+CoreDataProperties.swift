@@ -32,6 +32,7 @@ extension Session {
     @NSManaged public var tags: String?
     @NSManaged public var type: Int16
     @NSManaged public var urlLocation: String?
+    #warning("TODO: change session.uuid type to UUID type")
     @NSManaged public var uuid: String?
     @NSManaged public var version: Int16
     @NSManaged public var id: Int64

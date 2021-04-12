@@ -102,12 +102,13 @@ class CreateSessionApi {
     }
 }
 
+#if DEBUG
 extension CreateSessionApi.Input {
     
     static var mock: CreateSessionApi.Input {
         
         let session = CreateSessionApi.SessionParams(uuid: UUID().uuidString,
-                                                     type: SessionType.FIXED.toString(),
+                                                     type: SessionType.FIXED.description,
                                                      title: "Test-1",
                                                      tag_list: "",
                                                      start_time: Date(),
@@ -124,3 +125,5 @@ extension CreateSessionApi.Input {
         return input
     }
 }
+
+#endif
