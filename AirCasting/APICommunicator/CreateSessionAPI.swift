@@ -102,7 +102,6 @@ class CreateSessionApi {
     }
 }
 
-#if DEBUG
 extension CreateSessionApi.Input {
     
     static var mock: CreateSessionApi.Input {
@@ -125,5 +124,3 @@ extension CreateSessionApi.Input {
         return input
     }
 }
-
-#endif

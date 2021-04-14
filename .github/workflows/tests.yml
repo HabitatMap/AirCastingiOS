@@ -74,6 +74,11 @@ jobs:
         uses: devbotsxyz/xcode-select@v1
         with:
           version: "12.4"
+      - uses: actions/cache@v2
+        with:
+          path: Pods
+          key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
+          restore-keys: ${{ runner.os }}-pods-
       - name: Install Dependencies
         run: |
           pod install --repo-update
