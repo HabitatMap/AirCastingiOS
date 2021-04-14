@@ -1,0 +1,87 @@
+name: Testing
+on: [push]
+jobs:
+  test:
+    name: Test iOS app
+    runs-on: macOS-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Create Environment.swift
+        run: |
+          SECURE_DATA_FILE="AirCasting/Map/Environment.swift"
+          SECRET=${{ secrets.GOOGLE_MAP_KEY }}
+          if [ ! -f "$SECURE_DATA_FILE" ]; then
+            echo "Creating Environment.swift file"
+            {
+            echo ''
+            echo 'import Foundation'
+            echo "let GOOGLE_MAP_KEY = \"${SECRET}\""
+            echo ''
+            } >> $SECURE_DATA_FILE
+          fi
+      - name: Create GoogleService-Info.plist
+        run: |
+          SECURE_DATA_FILE="GoogleService-Info.plist"
+
+          SECRET_GCM_SENDER_ID=${{ secrets.GCM_SENDER_ID }}
+          SECRET_REVERSED_CLIENT_ID=${{ secrets.GOOGLLE_REVERSED_CLIENT_ID }}
+          SECRET_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
+          SECRET_API_KEY=${{ secrets.GOOGLE_API_KEY }}
+          SECRET_GOOGLE_APP_ID=${{ secrets.GOOGLE_APP_ID }}
+
+          if [ ! -f "$SECURE_DATA_FILE" ]; then
+              echo "warning: Creating $SECURE_DATA_FILE file"
+              {
+              echo '<?xml version="1.0" encoding="UTF-8"?>'
+              echo '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">'
+              echo '<plist version="1.0">'
+              echo '<dict>'
+              echo '	<key>CLIENT_ID</key>'
+              echo "	<string>$SECRET_CLIENT_ID</string>"
+              echo '	<key>REVERSED_CLIENT_ID</key>'
+              echo "	<string>$SECRET_REVERSED_CLIENT_ID</string>"
+              echo '	<key>API_KEY</key>'
+              echo "	<string>$SECRET_API_KEY</string>"
+              echo '	<key>GCM_SENDER_ID</key>'
+              echo "	<string>$SECRET_GCM_SENDER_ID</string>"
+              echo '	<key>PLIST_VERSION</key>'
+              echo '	<string>1</string>'
+              echo '	<key>BUNDLE_ID</key>'
+              echo '	<string>org.habitatmap.AirCasting</string>'
+              echo '	<key>PROJECT_ID</key>'
+              echo '	<string>ios-aircasting-app</string>'
+              echo '	<key>STORAGE_BUCKET</key>'
+              echo '	<string>ios-aircasting-app.appspot.com</string>'
+              echo '	<key>IS_ADS_ENABLED</key>'
+              echo '	<false/>'
+              echo '	<key>IS_ANALYTICS_ENABLED</key>'
+              echo '	<false/>'
+              echo '	<key>IS_APPINVITE_ENABLED</key>'
+              echo '	<true/>'
+              echo '	<key>IS_GCM_ENABLED</key>'
+              echo '	<true/>'
+              echo '	<key>IS_SIGNIN_ENABLED</key>'
+              echo '	<true/>'
+              echo '	<key>GOOGLE_APP_ID</key>'
+              echo "	<string>$SECRET_GOOGLE_APP_ID</string>"
+              echo '</dict>'
+              echo '</plist>'
+              echo ''
+              } >> $SECURE_DATA_FILE
+          fi
+      - name: XCode select
+        uses: devbotsxyz/xcode-select@v1
+        with:
+          version: "12.4"
+      - name: Install Dependencies
+        run: |
+          pod install --repo-update
+        shell: bash
+      - name: Testing iOS app
+        uses: devbotsxyz/xcode-test@v1.1.0
+        with:
+          workspace: AirCasting.xcworkspace
+          scheme: AirCasting
+          configuration: Debug
+          destination: 'platform=iOS Simulator,name=iPhone 11'
