@@ -111,6 +111,9 @@ jobs:
         run: |
           pod install --repo-update
         shell: bash
+      - uses: yanamura/ios-bump-version@v1
+        with:
+          build-number: ${{github.run_number}}
       - name: Build archive
         run: |
           xcodebuild -sdk iphoneos -workspace AirCasting.xcworkspace \
@@ -130,3 +133,53 @@ jobs:
         with:
           name: ipa
           path: DerivedData/ipa
+  deploy:
+    name: Deploy
+    needs: export-ipa
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@master
+      - name: Download Artifact
+        uses: actions/download-artifact@master
+        with:
+          name: ipa
+          path: DerivedData/ipa
+      - name: Create .firebaserc
+        run: |
+          SECURE_DATA_FILE=".firebaserc"
+          PROJECT_ID=${{ secrets.FIREBASE_PROJECT_ID }}
+          if [ ! -f "$SECURE_DATA_FILE" ]; then
+            echo "Creating .firebaserc file"
+            {
+            echo '{'
+            echo '   "projects": {'
+            echo '      "default": "ios-aircasting-app"'
+            echo '  }'
+            echo '}'
+            } >> $SECURE_DATA_FILE
+          fi
+      - name: Create firebase.json
+        run: |
+          SECURE_DATA_FILE="firebase.json"
+          if [ ! -f "$SECURE_DATA_FILE" ]; then
+            echo "Creating firebase.json file"
+            {
+            echo '{'
+            echo '"hosting": {'
+            echo '  "public": "DerivedData/ipa",'
+            echo '  "ignore": ['
+            echo '      "firebase.json",'
+            echo '      "**/.*",'
+            echo '      "**/node_modules/**"'
+            echo '   ]'
+            echo '  }'
+            echo '}'
+            } >> $SECURE_DATA_FILE
+          fi
+      - name: Deploy to Firebase
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only hosting --message \"${{ github.event.head_commit.message }}\"
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
