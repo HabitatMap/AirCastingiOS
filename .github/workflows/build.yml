@@ -1,0 +1,132 @@
+name: Testing
+on: [push]
+jobs:
+  export-ipa:
+    name: Export iOS app
+    runs-on: macOS-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Install the Apple certificate and provisioning profile
+        env:
+          BUILD_CERTIFICATE_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
+          P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
+          BUILD_PROVISION_PROFILE_BASE64: ${{ secrets.BUILD_PROVISION_PROFILE_BASE64 }}
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+        run: |
+          # create variables
+          CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
+          PP_PATH=$RUNNER_TEMP/build_pp.mobileprovision
+          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+
+          # import certificate and provisioning profile from secrets
+          echo -n "$BUILD_CERTIFICATE_BASE64" | base64 --decode --output $CERTIFICATE_PATH
+          echo -n "$BUILD_PROVISION_PROFILE_BASE64" | base64 --decode --output $PP_PATH
+
+          # create temporary keychain
+          security create-keychain -p $KEYCHAIN_PASSWORD $KEYCHAIN_PATH
+          security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
+          security unlock-keychain -p $KEYCHAIN_PASSWORD $KEYCHAIN_PATH
+
+          # import certificate to keychain
+          security import $CERTIFICATE_PATH -P $P12_PASSWORD -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+          security list-keychain -d user -s $KEYCHAIN_PATH
+
+          # apply provisioning profile
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
+      - name: Create Environment.swift
+        run: |
+          SECURE_DATA_FILE="AirCasting/Map/Environment.swift"
+          SECRET=${{ secrets.GOOGLE_MAP_KEY }}
+          if [ ! -f "$SECURE_DATA_FILE" ]; then
+            echo "Creating Environment.swift file"
+            {
+            echo ''
+            echo 'import Foundation'
+            echo "let GOOGLE_MAP_KEY = \"${SECRET}\""
+            echo ''
+            } >> $SECURE_DATA_FILE
+          fi
+      - name: Create GoogleService-Info.plist
+        run: |
+          SECURE_DATA_FILE="GoogleService-Info.plist"
+
+          SECRET_GCM_SENDER_ID=${{ secrets.GCM_SENDER_ID }}
+          SECRET_REVERSED_CLIENT_ID=${{ secrets.GOOGLLE_REVERSED_CLIENT_ID }}
+          SECRET_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
+          SECRET_API_KEY=${{ secrets.GOOGLE_API_KEY }}
+          SECRET_GOOGLE_APP_ID=${{ secrets.GOOGLE_APP_ID }}
+
+          if [ ! -f "$SECURE_DATA_FILE" ]; then
+              echo "warning: Creating $SECURE_DATA_FILE file"
+              {
+              echo '<?xml version="1.0" encoding="UTF-8"?>'
+              echo '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">'
+              echo '<plist version="1.0">'
+              echo '<dict>'
+              echo '	<key>CLIENT_ID</key>'
+              echo "	<string>$SECRET_CLIENT_ID</string>"
+              echo '	<key>REVERSED_CLIENT_ID</key>'
+              echo "	<string>$SECRET_REVERSED_CLIENT_ID</string>"
+              echo '	<key>API_KEY</key>'
+              echo "	<string>$SECRET_API_KEY</string>"
+              echo '	<key>GCM_SENDER_ID</key>'
+              echo "	<string>$SECRET_GCM_SENDER_ID</string>"
+              echo '	<key>PLIST_VERSION</key>'
+              echo '	<string>1</string>'
+              echo '	<key>BUNDLE_ID</key>'
+              echo '	<string>org.habitatmap.AirCasting</string>'
+              echo '	<key>PROJECT_ID</key>'
+              echo '	<string>ios-aircasting-app</string>'
+              echo '	<key>STORAGE_BUCKET</key>'
+              echo '	<string>ios-aircasting-app.appspot.com</string>'
+              echo '	<key>IS_ADS_ENABLED</key>'
+              echo '	<false/>'
+              echo '	<key>IS_ANALYTICS_ENABLED</key>'
+              echo '	<false/>'
+              echo '	<key>IS_APPINVITE_ENABLED</key>'
+              echo '	<true/>'
+              echo '	<key>IS_GCM_ENABLED</key>'
+              echo '	<true/>'
+              echo '	<key>IS_SIGNIN_ENABLED</key>'
+              echo '	<true/>'
+              echo '	<key>GOOGLE_APP_ID</key>'
+              echo "	<string>$SECRET_GOOGLE_APP_ID</string>"
+              echo '</dict>'
+              echo '</plist>'
+              echo ''
+              } >> $SECURE_DATA_FILE
+          fi
+      - name: XCode select
+        uses: devbotsxyz/xcode-select@v1
+        with:
+          version: "12.4"
+      - uses: actions/cache@v2
+        with:
+          path: Pods
+          key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
+          restore-keys: ${{ runner.os }}-pods-
+      - name: Install Dependencies
+        run: |
+          pod install --repo-update
+        shell: bash
+      - name: Build archive
+        run: |
+          xcodebuild -sdk iphoneos -workspace AirCasting.xcworkspace \
+            -configuration Release -scheme AirCasting \
+            -derivedDataPath DerivedData \
+            -archivePath DerivedData/Archive/AirCasting \
+            archive
+      - name: Export Archive
+        run: |
+          xcodebuild -exportArchive \
+            -allowProvisioningUpdates \
+            -archivePath DerivedData/Archive/AirCasting.xcarchive \
+            -exportOptionsPlist .github/provisioning/App-Store.plist \
+            -exportPath DerivedData/ipa
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: ipa
+          path: DerivedData/ipa

@@ -12,8 +12,8 @@
 		3362B4ED25E69987008D61BA /* AddNameAndTagsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3362B4EC25E69987008D61BA /* AddNameAndTagsView.swift */; };
 		338C30E225F1044B00E0305C /* Persistance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 338C30E125F1044B00E0305C /* Persistance.swift */; };
 		338C30E825F10BFE00E0305C /* AirCasting.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 338C30E625F10BFE00E0305C /* AirCasting.xcdatamodeld */; };
-		4F858F5E2624B4980059271A /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F858F5D2624B4980059271A /* Log.swift */; };
 		4F858F4C2624A82B0059271A /* SampleFixedSession.json in Resources */ = {isa = PBXBuildFile; fileRef = 4F858F4B2624A82B0059271A /* SampleFixedSession.json */; };
+		4F858F5E2624B4980059271A /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F858F5D2624B4980059271A /* Log.swift */; };
 		4FB39E092621B55D00E5E564 /* FixedSessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FB39E082621B55D00E5E564 /* FixedSessionTests.swift */; };
 		4FB39E0F2621B5C100E5E564 /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = 4FB39E0E2621B5C100E5E564 /* Podfile */; };
 		4FB39E362621B77D00E5E564 /* APIClientMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FB39E352621B77D00E5E564 /* APIClientMock.swift */; };
@@ -129,10 +129,10 @@
 		3362B4EC25E69987008D61BA /* AddNameAndTagsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNameAndTagsView.swift; sourceTree = "<group>"; };
 		338C30E125F1044B00E0305C /* Persistance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistance.swift; sourceTree = "<group>"; };
 		338C30E725F10BFE00E0305C /* AirCasting.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AirCasting.xcdatamodel; sourceTree = "<group>"; };
-		4F858F5D2624B4980059271A /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		3A54057326D27D23E9906704 /* Pods_AirCastingTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AirCastingTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4327910762891E7B1AE9102E /* Pods-AirCastingTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AirCastingTests.debug.xcconfig"; path = "Target Support Files/Pods-AirCastingTests/Pods-AirCastingTests.debug.xcconfig"; sourceTree = "<group>"; };
 		4F858F4B2624A82B0059271A /* SampleFixedSession.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = SampleFixedSession.json; sourceTree = "<group>"; };
+		4F858F5D2624B4980059271A /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		4FB39DFC2621B53C00E5E564 /* AirCastingTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AirCastingTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4FB39E002621B53C00E5E564 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4FB39E082621B55D00E5E564 /* FixedSessionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FixedSessionTests.swift; sourceTree = "<group>"; };
@@ -1096,8 +1096,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_ASSET_PATHS = "\"AirCasting/Preview Content\"";
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
@@ -1110,7 +1110,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.habitatmap.AirCasting;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = "AirCasting Ad hoc distribution";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
