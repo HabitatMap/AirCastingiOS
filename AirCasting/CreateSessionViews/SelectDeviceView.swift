@@ -93,7 +93,19 @@ struct SelectDeviceView: View {
                     isTurnOnBluetoothLinkActive = true
                 }
             } else if selected == 2 {
-                isMicLinkActive = true
+                if microphoneManager.recordPermissionGranted() {
+                    isMicLinkActive = true
+                } else {
+                    microphoneManager.requestRecordPermission { (isGranted) in
+                        DispatchQueue.main.async {
+                            if isGranted {
+                                isMicLinkActive = true
+                            } else {
+                                SettingsManager.goToAuthSettings()
+                            }
+                        }
+                    }
+                }
             }
         }, label: {
             Text("Choose")
@@ -113,7 +125,6 @@ struct SelectDeviceView: View {
                     EmptyView()
                 })
             NavigationLink(
-                // TO DO: change destination
                 destination: AddNameAndTagsView(),
                 isActive: $isMicLinkActive,
                 label: {

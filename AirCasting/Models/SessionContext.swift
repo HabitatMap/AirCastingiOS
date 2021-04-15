@@ -129,7 +129,11 @@ class CreateSessionContext: ObservableObject {
         session.longitude = startingLocation.longitude
         session.latitude = startingLocation.latitude
         
-        microphoneManager.startRecording(session: session)
+        do {
+            try microphoneManager.startRecording(session: session)
+        } catch {
+            assertionFailure("Can't start recording microphone session: \(error)")
+        }
     }
     
 }
