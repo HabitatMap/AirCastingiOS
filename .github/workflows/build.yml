@@ -1,5 +1,8 @@
 name: Testing
-on: [push]
+on:
+  push:
+    branches:
+      - main
 jobs:
   export-ipa:
     name: Export iOS app
@@ -145,41 +148,10 @@ jobs:
         with:
           name: ipa
           path: DerivedData/ipa
-      - name: Create .firebaserc
-        run: |
-          SECURE_DATA_FILE=".firebaserc"
-          PROJECT_ID=${{ secrets.FIREBASE_PROJECT_ID }}
-          if [ ! -f "$SECURE_DATA_FILE" ]; then
-            echo "Creating .firebaserc file"
-            {
-            echo '{'
-            echo '   "projects": {'
-            echo '      "default": "ios-aircasting-app"'
-            echo '  }'
-            echo '}'
-            } >> $SECURE_DATA_FILE
-          fi
-      - name: Create firebase.json
-        run: |
-          SECURE_DATA_FILE="firebase.json"
-          if [ ! -f "$SECURE_DATA_FILE" ]; then
-            echo "Creating firebase.json file"
-            {
-            echo '{'
-            echo '"hosting": {'
-            echo '  "public": "DerivedData/ipa",'
-            echo '  "ignore": ['
-            echo '      "firebase.json",'
-            echo '      "**/.*",'
-            echo '      "**/node_modules/**"'
-            echo '   ]'
-            echo '  }'
-            echo '}'
-            } >> $SECURE_DATA_FILE
-          fi
-      - name: Deploy to Firebase
-        uses: w9jds/firebase-action@master
+      - name: Firebase App Distribution Action
+        uses: hasretsariyer/firebase-app-distribution-github-action@v1.0
         with:
-          args: deploy --only hosting --message \"${{ github.event.head_commit.message }}\"
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          app_id: ${{ secrets.FIREBASE_APP_ID }}
+          firebase_token: ${{ secrets.FIREBASE_TOKEN }}
+          tester_groups: testers
+          app_file: DerivedData/ipa/AirCasting.ipa
