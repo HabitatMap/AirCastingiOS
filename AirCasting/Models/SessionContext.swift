@@ -11,9 +11,11 @@ import CoreData
 import AVFoundation
 
 class CreateSessionContext: ObservableObject {
+    private let createSessionService: CreateSessionAPIService
+    private let managedObjectContext: NSManagedObjectContext
     var sessionName: String?
     var sessionTags: String?
-    var sessionUUID: String?
+    var sessionUUID: SessionUUID?
     var sessionType: SessionType?
     var peripheral: CBPeripheral?
     var wifiSSID: String?
@@ -22,7 +24,12 @@ class CreateSessionContext: ObservableObject {
     var startingLocation: CLLocationCoordinate2D?
     var deviceType: DeviceType = DeviceType.AIRBEAM3 // It is set here temporarily to fix bug with fixed sessions
 
-    var managedObjectContext: NSManagedObjectContext?
+
+    init(createSessionService: CreateSessionAPIService, managedObjectContext: NSManagedObjectContext) {
+        self.createSessionService = createSessionService
+        self.managedObjectContext = managedObjectContext
+    }
+
     private var syncSink: Any?
     
     private var locationProvider: LocationProvider?
@@ -39,18 +46,17 @@ class CreateSessionContext: ObservableObject {
     }
     
     func setupAB() {
-        guard let managedObjectContext = managedObjectContext,
-              let sessionType = sessionType,
-//              let deviceType = deviceType,
+        guard let sessionType = sessionType,
+              let sessionUUID = sessionUUID,
               let startingLocation = startingLocation else { return }
         
         // Save data to app's database
 //        let session: Session = managedObjectContext.createNew(uuid: sessionUUID!)
-        let session: Session = managedObjectContext.newOrExisting(uuid: sessionUUID!)
+        let session: Session = try! managedObjectContext.newOrExisting(uuid: sessionUUID)
         session.name = sessionName
         session.tags = sessionTags
-        session.type = Int16(sessionType.rawValue)
-        session.deviceType = Int16(deviceType.rawValue)
+        session.type = sessionType
+        session.deviceType = deviceType
         session.startTime = Date()
         session.longitude = startingLocation.longitude
         session.latitude = startingLocation.latitude
@@ -60,7 +66,7 @@ class CreateSessionContext: ObservableObject {
         // TO DO: Replace mocked location and date
         let temporaryMockedDate = "19/12/19-02:40:00"
         
-        if session.type == SessionType.FIXED.rawValue {
+        if session.type == SessionType.FIXED {
             // if session is fixed: create an empty session on server,
             // then send AB auth data to connect to web session and data needed to start recording
             
@@ -70,7 +76,7 @@ class CreateSessionContext: ObservableObject {
             
             // TO DO : change mocked data (contribute, is_indoor, notes, locaation, end_time)
             let params = CreateSessionApi.SessionParams(uuid: uuid,
-                                                        type: session.type.description,
+                                                        type: session.type,
                                                         title: name,
                                                         tag_list: session.tags ?? "",
                                                         start_time: startTime,
@@ -82,7 +88,7 @@ class CreateSessionContext: ObservableObject {
                                                         streams: [:],
                                                         latitude: startingLocation.latitude,
                                                         longitude: startingLocation.longitude)
-            syncSink = CreateSessionApi()
+            syncSink = createSessionService
                 .createEmptyFixedWifiSession(input: .init(session: params,
                                                           compression: true))
                 .sink { (completion) in
@@ -108,8 +114,7 @@ class CreateSessionContext: ObservableObject {
     }
     
     func startMicrophoneSession(microphoneManager: MicrophoneManager){
-        guard let managedObjectContext = managedObjectContext,
-              let sessionType = sessionType,
+        guard let sessionType = sessionType,
 //              let deviceType = deviceType,
               let startingLocation = startingLocation else { return }
         
@@ -118,8 +123,8 @@ class CreateSessionContext: ObservableObject {
         session.uuid = sessionUUID
         session.name = sessionName
         session.tags = sessionTags
-        session.type = Int16(sessionType.rawValue)
-        session.deviceType = Int16(deviceType.rawValue)
+        session.type = sessionType
+        session.deviceType = deviceType
         session.startTime = Date()
         session.longitude = startingLocation.longitude
         session.latitude = startingLocation.latitude
@@ -129,8 +134,12 @@ class CreateSessionContext: ObservableObject {
     
 }
 
-enum SessionType: CustomStringConvertible, Hashable, Decodable {
-    init(from decoder: Decoder) throws {
+public enum SessionType: CustomStringConvertible, Hashable, Codable {
+    case MOBILE
+    case FIXED
+    case unknown(String)
+
+    public init(from decoder: Decoder) throws {
         let singleValue = try decoder.singleValueContainer()
         let rawValue = try singleValue.decode(String.self)
         switch rawValue {
@@ -140,28 +149,21 @@ enum SessionType: CustomStringConvertible, Hashable, Decodable {
         }
     }
 
-    case MOBILE
-    case FIXED
-    case unknown(String)
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(description)
+    }
     
-    var description: String {
+    public var description: String {
         switch self {
         case .MOBILE: return "MobileSession"
         case .FIXED: return "FixedSession"
         case .unknown(let rawValue): return rawValue
         }
     }
-
-    var rawValue: Int16 {
-        switch self {
-        case .MOBILE: return 0
-        case .FIXED: return 1
-        case .unknown: return -1
-        }
-    }
 }
 
-enum SessionStatus: Int {
+public enum SessionStatus: Int {
     case NEW = -1
     case RECORDING = 0
     case FINISHED = 1
@@ -173,11 +175,11 @@ enum StreamingMethod: Int {
     case WIFI = 1
 }
 
-enum DeviceType: Int, CustomStringConvertible {
+public enum DeviceType: Int, CustomStringConvertible {
     case MIC = 0
     case AIRBEAM3 = 1
     
-    var description: String {
+    public var description: String {
         switch self {
         case .MIC: return "Device's Microphone"
         case .AIRBEAM3: return "AirBeam 3"

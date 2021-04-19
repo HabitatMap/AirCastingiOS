@@ -11,25 +11,25 @@ protocol APIClient {
     func fetchPublisher(for request: URLRequest) -> APIPublisher
 }
 
+extension APIClient {
+    func fetchPublisher(with request: @autoclosure () throws -> URLRequest) -> APIPublisher {
+        do {
+            return fetchPublisher(for: try request())
+        } catch {
+            let publisher = PassthroughSubject<(data: Data, response: URLResponse), URLError>()
+            publisher.send(completion: .failure(URLError(.userAuthenticationRequired, userInfo: [NSUnderlyingErrorKey: error])))
+            return publisher.eraseToAnyPublisher()
+        }
+    }
+}
+
 extension URLSession: APIClient {
     func fetchPublisher(for request: URLRequest) -> APIPublisher {
         dataTaskPublisher(for: request).eraseToAnyPublisher()
     }
 }
 
-struct MissingTokenError: Swift.Error {}
-
-extension URLRequest {
-    #warning("throws error? Maybe better to have an access manager object")
-    mutating func signWithToken() {
-        try? trySigningWithToken()
-    }
-
-    mutating func trySigningWithToken() throws {
-        guard let authToken = UserDefaults.authToken else {
-            throw MissingTokenError()
-        }
-        let auth = "\(authToken):X".data(using: .utf8)!.base64EncodedString()
-        setValue("Basic \(auth)", forHTTPHeaderField: "Authorization")
-    }
+protocol RequestAuthorisationService {
+    @discardableResult
+    func authorise(request: inout URLRequest) throws -> URLRequest
 }

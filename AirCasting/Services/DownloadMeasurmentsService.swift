@@ -7,32 +7,52 @@
 
 import Foundation
 import CoreData
+import Combine
 
-class DownloadMeasurementsService: ObservableObject {
+protocol MeasurementUpdatingService {
+    func start() throws
+}
 
-    var timer = Timer.publish(every: 60, on: .current, in: .common).autoconnect()
-    var timerSink: Any?
-    private var sink: Any?
-    var context: NSManagedObjectContext {
+final class DownloadMeasurementsService: MeasurementUpdatingService {
+    private let authorisationService: RequestAuthorisationService
+    private lazy var fixedSessionService = FixedSessionAPIService(authorisationService: authorisationService)
+    private var timerSink: Cancellable?
+    private var sink: Cancellable?
+    private var context: NSManagedObjectContext {
         PersistenceController.shared.container.viewContext
     }
+    init(authorisationService: RequestAuthorisationService) {
+        self.authorisationService = authorisationService
+    }
 
-    func start() {
-        timerSink = timer.sink { [weak self] timer in
+    func start() throws {
+        try update()
+        timerSink = Timer.publish(every: 60, on: .current, in: .common).autoconnect().sink { [weak self] tick in
             do {
+                Log.info("Triggering scheduled measurement update")
                 try self?.update()
             } catch {
-                assertionFailure("Failed to call update at \(timer) \(error)")
+                assertionFailure("Failed to call update at \(tick) \(error)")
+            }
+        }
+    }
+
+    private func update() throws {
+        let request: NSFetchRequest<Session> = Session.fetchRequest()
+        let fetchedResult = try context.fetch(request)
+        for session in fetchedResult {
+            if let uuid = session.uuid {
+                updateForSession(uuid: uuid)
+            } else {
+                Log.error("trying to refresh session without uuid \(session)")
             }
         }
     }
     
-    private func updateForSession(uuid: UUID) {
-        //TODO: change last sync
+    private func updateForSession(uuid: SessionUUID) {
+        #warning("TODO: change last sync")
         let syncDate = Date().addingTimeInterval(-100)
-        sink = FixedSession
-            .getFixedMeasurement(uuid: uuid,
-                                 lastSync: syncDate)
+        sink = fixedSessionService.getFixedMeasurement(uuid: uuid, lastSync: syncDate)
             .sink { (completion) in
                 switch completion {
                 case .finished:
@@ -45,9 +65,9 @@ class DownloadMeasurementsService: ObservableObject {
                     #warning("TODO: Use different context ")
                     // Fetch session by id from Core Data
                     let context = PersistenceController.shared.container.viewContext
-                    let session: Session = context.newOrExisting(uuid: fixedMeasurementOutput.uuid.uuidString)
-                    UpdateSessionParamsService().updateSessionsParams(session: session, output: fixedMeasurementOutput)
                     do {
+                        let session: Session = try context.newOrExisting(uuid: fixedMeasurementOutput.uuid)
+                        try UpdateSessionParamsService().updateSessionsParams(session: session, output: fixedMeasurementOutput)
                         try context.save()
                         Log.info("Successfully fetched fixed measurements")
                     } catch {
@@ -55,17 +75,5 @@ class DownloadMeasurementsService: ObservableObject {
                     }
                 }
             }
-    }
-    
-    func update() throws {
-        let request: NSFetchRequest<Session> = Session.fetchRequest()
-        let fetchedResult = try context.fetch(request)
-        for session in fetchedResult {
-            if let uuid = session.uuid.flatMap(UUID.init(uuidString:)) {
-                updateForSession(uuid: uuid)
-            } else {
-                Log.error("trying to refresh session without uuid \(session)")
-            }
-        }
     }
 }

@@ -8,25 +8,26 @@
 import Foundation
 import CoreData
 
-class UpdateSessionParamsService {
-    
-    var context: NSManagedObjectContext {
-        PersistenceController.shared.container.viewContext
+final class UpdateSessionParamsService {
+    enum Error: Swift.Error {
+        case missingContext(FixedSession.FixedMeasurementOutput)
     }
-    
-    func updateSessionsParams(session: Session, output: FixedSession.FixedMeasurementOutput) {
+    func updateSessionsParams(session: Session, output: FixedSession.FixedMeasurementOutput) throws {
         session.id = output.id
-        session.uuid = output.uuid.uuidString
-        session.type = output.type.rawValue
+        session.uuid = output.uuid
+        session.type = output.type
     
         session.name = output.title
         session.tags  = output.tag_list
         session.startTime = output.start_time
         session.endTime = output.end_time
         session.version = output.version
-    
-        for (_, streamOutput) in output.streams {
-            let stream: MeasurementStream = self.context.newOrExisting(id: streamOutput.id)
+        guard let context = session.managedObjectContext else {
+            throw Error.missingContext(output)
+        }
+        #warning("TODO: Rethink to remove old measurements and streams")
+        try output.streams.values.forEach { streamOutput in
+            let stream: MeasurementStream = try context.newOrExisting(id: streamOutput.id)
             
             stream.sensorName = streamOutput.sensor_name
             stream.sensorPackageName = streamOutput.sensor_package_name
@@ -50,14 +51,14 @@ class UpdateSessionParamsService {
             //                            thresholds.thresholdHigh = Int32(streamOutput.threshold_high)
             //                            thresholds.thresholdVeryHigh = Int32(streamOutput.threshold_very_high)
     
-            for measurement in streamOutput.measurements {
-                let newMeasaurement: Measurement = self.context.newOrExisting(id: measurement.id)
+            try streamOutput.measurements.forEach { measurement in
+                let newMeasurement: Measurement = try context.newOrExisting(id: measurement.id)
                 
-                newMeasaurement.value = measurement.measured_value
-                newMeasaurement.latitude = measurement.latitude
-                newMeasaurement.longitude = measurement.longitude
-                newMeasaurement.time = measurement.time
-                newMeasaurement.measurementStream = stream
+                newMeasurement.value = measurement.measured_value
+                newMeasurement.latitude = measurement.latitude
+                newMeasurement.longitude = measurement.longitude
+                newMeasurement.time = measurement.time
+                newMeasurement.measurementStream = stream
             }
             session.addToMeasurementStreams(stream)
         }

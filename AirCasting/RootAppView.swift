@@ -6,41 +6,37 @@
 //
 
 import SwiftUI
-import Firebase
 
 struct RootAppView: View {
     
     let persistenceController = PersistenceController.shared
+    @ObservedObject var userAuthenticationSession = UserAuthenticationSession()
     @ObservedObject var bluetoothManager = BluetoothManager()
     @ObservedObject var microphoneManager = MicrophoneManager()
-    @AppStorage(UserDefaults.AUTH_TOKEN_KEY) var authToken: String?
-    var isLoggedIn: Bool { authToken != nil }    
     
     var body: some View {
-        if isLoggedIn {
+        if userAuthenticationSession.isLoggedIn {
             mainAppView
         } else {
             NavigationView {
-                SignInView()
+                SignInView(userAuthenticationSession: userAuthenticationSession).environmentObject(userAuthenticationSession)
             }
         }
     }
     
     var mainAppView: some View {
-        MainTabBarView()
-            .onAppear {
-                if FirebaseApp.app() == nil {
-                    FirebaseApp.configure()
-                }
-            }
+        MainTabBarView(measurementUpdatingService: DownloadMeasurementsService(authorisationService: userAuthenticationSession))
             .environmentObject(bluetoothManager)
             .environmentObject(microphoneManager)
+            .environmentObject(userAuthenticationSession)
             .environment(\.managedObjectContext, persistenceController.container.viewContext)
     }
 }
 
+#if DEBUG
 struct RootAppView_Previews: PreviewProvider {
     static var previews: some View {
         RootAppView()
     }
 }
+#endif
