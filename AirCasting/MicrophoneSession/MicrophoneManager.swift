@@ -83,7 +83,7 @@ class MicrophoneManager: ObservableObject {
         measurement.time = Date()
         
         session?.endTime = measurement.time
-        session?.status = 0
+        session?.status = .RECORDING
         
         measurementStream?.addToMeasurements(measurement)
         

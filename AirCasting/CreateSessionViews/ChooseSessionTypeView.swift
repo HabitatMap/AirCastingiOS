@@ -9,15 +9,14 @@ import SwiftUI
 import CoreBluetooth
 
 struct ChooseSessionTypeView: View {
-    
     @State private var isInfoPresented: Bool = false
-    @Environment(\.managedObjectContext) var context
-    @StateObject var sessionContext = CreateSessionContext()
+    @StateObject var sessionContext: CreateSessionContext
     @State private var isTurnBluetoothOnLinkActive = false
     @State private var isPowerABLinkActive = false
     @State private var isMobileLinkActive = false
     @State private var didTapFixedSession = false
     @EnvironmentObject var bluetoothManager: BluetoothManager
+    @Environment(\.managedObjectContext) var managedObjectContext
     
     var body: some View {
         NavigationView {
@@ -51,7 +50,6 @@ struct ChooseSessionTypeView: View {
             }
             .navigationBarTitleDisplayMode(.inline)
             .onAppear {
-                sessionContext.managedObjectContext = context
                 if CBCentralManager.authorization == .allowedAlways {
                     _ = bluetoothManager.centralManager
                 }
@@ -182,7 +180,7 @@ struct ChooseSessionTypeView: View {
     }
     
     private func createNewSession(isSessionFixed: Bool) {
-        sessionContext.sessionUUID = UUID().uuidString
+        sessionContext.sessionUUID = UUID()
         if isSessionFixed {
             sessionContext.sessionType = SessionType.FIXED
         } else {
@@ -191,8 +189,10 @@ struct ChooseSessionTypeView: View {
     }
 }
 
+#if DEBUG
 struct CreateSessionView_Previews: PreviewProvider {
     static var previews: some View {
-        ChooseSessionTypeView()
+        ChooseSessionTypeView(sessionContext: CreateSessionContext(createSessionService: CreateSessionAPIService(authorisationService: UserAuthenticationSession()), managedObjectContext: PersistenceController.shared.container.viewContext))
     }
 }
+#endif

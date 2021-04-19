@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct CreateAccountView: View {
-    
+    let userAuthenticationSession: UserAuthenticationSession
+
     @State private var email: String = ""
     @State private var username: String = ""
     @State private var password: String = ""
@@ -115,14 +116,19 @@ struct CreateAccountView: View {
                 task = AuthorizationAPI.createAccount(input: userInput)
                     .sink { (completion) in
                         switch completion {
-                        case .finished:
-                            print("Success")
+                        case .finished: break
                         case .failure(let error):
                             presentedError = error as NSError
-                            print("ERROR: \(error)")
+                            Log.warning("Failed to create account \(error)")
                         }
                     } receiveValue: { (output) in
-                        UserDefaults.authToken = output.authentication_token
+                        Log.info("Successfully created account")
+                        do {
+                            try userAuthenticationSession.authorise(with: output.authentication_token)
+                        } catch {
+                            Log.error("Failed to store credentials \(error)")
+                            presentedError = error as NSError
+                        }
                     }
             }
         }
@@ -131,7 +137,7 @@ struct CreateAccountView: View {
     
     var signinButton: some View {
         NavigationLink(
-            destination: SignInView(),
+            destination: SignInView(userAuthenticationSession: userAuthenticationSession),
             label: {
                 signingButtonText
             })
@@ -153,8 +159,10 @@ struct CreateAccountView: View {
     }
 }
 
+#if DEBUG
 struct CreateAccountView_Previews: PreviewProvider {
     static var previews: some View {
-        CreateAccountView()
+        CreateAccountView(userAuthenticationSession: UserAuthenticationSession())
     }
 }
+#endif

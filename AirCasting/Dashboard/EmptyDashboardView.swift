@@ -48,8 +48,10 @@ struct EmptyDashboardView: View {
     }
 }
 
+#if DEBUG
 struct EmptyDashboard_Previews: PreviewProvider {
     static var previews: some View {
         EmptyDashboardView()
     }
 }
+#endif

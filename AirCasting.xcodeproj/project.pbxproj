@@ -12,6 +12,9 @@
 		3362B4ED25E69987008D61BA /* AddNameAndTagsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3362B4EC25E69987008D61BA /* AddNameAndTagsView.swift */; };
 		338C30E225F1044B00E0305C /* Persistance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 338C30E125F1044B00E0305C /* Persistance.swift */; };
 		338C30E825F10BFE00E0305C /* AirCasting.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 338C30E625F10BFE00E0305C /* AirCasting.xcdatamodeld */; };
+		4F5D3F6F262C862E003AD82E /* KeychainStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5D3F6E262C862E003AD82E /* KeychainStorage.swift */; };
+		4F5D3F73262C91C6003AD82E /* UserAuthenticationSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5D3F72262C91C6003AD82E /* UserAuthenticationSession.swift */; };
+		4F5D3F7F262D735A003AD82E /* CreateSessionAPIServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5D3F7E262D735A003AD82E /* CreateSessionAPIServiceTests.swift */; };
 		4F858F4C2624A82B0059271A /* SampleFixedSession.json in Resources */ = {isa = PBXBuildFile; fileRef = 4F858F4B2624A82B0059271A /* SampleFixedSession.json */; };
 		4F858F5E2624B4980059271A /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F858F5D2624B4980059271A /* Log.swift */; };
 		4FB39E092621B55D00E5E564 /* FixedSessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FB39E082621B55D00E5E564 /* FixedSessionTests.swift */; };
@@ -19,6 +22,7 @@
 		4FB39E362621B77D00E5E564 /* APIClientMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FB39E352621B77D00E5E564 /* APIClientMock.swift */; };
 		4FB39E3A2621BE7F00E5E564 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FB39E392621BE7F00E5E564 /* APIClient.swift */; };
 		4FB39E402622252700E5E564 /* XCTestCase+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FB39E3F2622252700E5E564 /* XCTestCase+Extensions.swift */; };
+		4FEEAED3262C53C20024AB7E /* UpdateSessionParamsServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FEEAED2262C53C20024AB7E /* UpdateSessionParamsServiceTests.swift */; };
 		AC049F7F2604B7AF00398197 /* AuthErorrHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC049F7E2604B7AF00398197 /* AuthErorrHandling.swift */; };
 		AC049F872608B74C00398197 /* FixedSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC049F862608B74C00398197 /* FixedSession.swift */; };
 		AC049F8B2608DCB000398197 /* Session+Mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC049F8A2608DCB000398197 /* Session+Mock.swift */; };
@@ -38,8 +42,7 @@
 		AC524A7626133A370061AD45 /* MeaurementStreamExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC524A7526133A370061AD45 /* MeaurementStreamExtension.swift */; };
 		AC524A892614733D0061AD45 /* CreatingSessionFlowRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC524A882614733D0061AD45 /* CreatingSessionFlowRootView.swift */; };
 		AC524A8E2615C8270061AD45 /* UpdateSessionParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC524A8D2615C8270061AD45 /* UpdateSessionParams.swift */; };
-		AC524A942615D8620061AD45 /* Session+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC524A902615D8620061AD45 /* Session+CoreDataClass.swift */; };
-		AC524A952615D8620061AD45 /* Session+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC524A912615D8620061AD45 /* Session+CoreDataProperties.swift */; };
+		AC524A942615D8620061AD45 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC524A902615D8620061AD45 /* Session.swift */; };
 		AC524A962615D8620061AD45 /* MeasurementStream+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC524A922615D8620061AD45 /* MeasurementStream+CoreDataClass.swift */; };
 		AC524A972615D8620061AD45 /* MeasurementStream+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC524A932615D8620061AD45 /* MeasurementStream+CoreDataProperties.swift */; };
 		AC524A9A2615E3600061AD45 /* NSManagedObjectContext+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC524A992615E3600061AD45 /* NSManagedObjectContext+Utils.swift */; };
@@ -131,6 +134,9 @@
 		338C30E725F10BFE00E0305C /* AirCasting.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AirCasting.xcdatamodel; sourceTree = "<group>"; };
 		3A54057326D27D23E9906704 /* Pods_AirCastingTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AirCastingTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4327910762891E7B1AE9102E /* Pods-AirCastingTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AirCastingTests.debug.xcconfig"; path = "Target Support Files/Pods-AirCastingTests/Pods-AirCastingTests.debug.xcconfig"; sourceTree = "<group>"; };
+		4F5D3F6E262C862E003AD82E /* KeychainStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainStorage.swift; sourceTree = "<group>"; };
+		4F5D3F72262C91C6003AD82E /* UserAuthenticationSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAuthenticationSession.swift; sourceTree = "<group>"; };
+		4F5D3F7E262D735A003AD82E /* CreateSessionAPIServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSessionAPIServiceTests.swift; sourceTree = "<group>"; };
 		4F858F4B2624A82B0059271A /* SampleFixedSession.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = SampleFixedSession.json; sourceTree = "<group>"; };
 		4F858F5D2624B4980059271A /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		4FB39DFC2621B53C00E5E564 /* AirCastingTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AirCastingTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -140,6 +146,7 @@
 		4FB39E352621B77D00E5E564 /* APIClientMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClientMock.swift; sourceTree = "<group>"; };
 		4FB39E392621BE7F00E5E564 /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
 		4FB39E3F2622252700E5E564 /* XCTestCase+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+Extensions.swift"; sourceTree = "<group>"; };
+		4FEEAED2262C53C20024AB7E /* UpdateSessionParamsServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateSessionParamsServiceTests.swift; sourceTree = "<group>"; };
 		80BDC4331283D7705B8C8952 /* Pods-AirCasting.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AirCasting.debug.xcconfig"; path = "Target Support Files/Pods-AirCasting/Pods-AirCasting.debug.xcconfig"; sourceTree = "<group>"; };
 		8E819223F8D800D3B8ED8F56 /* Pods_AirCasting.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AirCasting.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AC049F7E2604B7AF00398197 /* AuthErorrHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthErorrHandling.swift; sourceTree = "<group>"; };
@@ -161,8 +168,7 @@
 		AC524A7526133A370061AD45 /* MeaurementStreamExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeaurementStreamExtension.swift; sourceTree = "<group>"; };
 		AC524A882614733D0061AD45 /* CreatingSessionFlowRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatingSessionFlowRootView.swift; sourceTree = "<group>"; };
 		AC524A8D2615C8270061AD45 /* UpdateSessionParams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateSessionParams.swift; sourceTree = "<group>"; };
-		AC524A902615D8620061AD45 /* Session+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Session+CoreDataClass.swift"; sourceTree = "<group>"; };
-		AC524A912615D8620061AD45 /* Session+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Session+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		AC524A902615D8620061AD45 /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
 		AC524A922615D8620061AD45 /* MeasurementStream+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MeasurementStream+CoreDataClass.swift"; sourceTree = "<group>"; };
 		AC524A932615D8620061AD45 /* MeasurementStream+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MeasurementStream+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		AC524A992615E3600061AD45 /* NSManagedObjectContext+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObjectContext+Utils.swift"; sourceTree = "<group>"; };
@@ -266,8 +272,7 @@
 		338C30E025F1042000E0305C /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
-				AC524A902615D8620061AD45 /* Session+CoreDataClass.swift */,
-				AC524A912615D8620061AD45 /* Session+CoreDataProperties.swift */,
+				AC524A902615D8620061AD45 /* Session.swift */,
 				AC524A922615D8620061AD45 /* MeasurementStream+CoreDataClass.swift */,
 				AC524A932615D8620061AD45 /* MeasurementStream+CoreDataProperties.swift */,
 				338C30E125F1044B00E0305C /* Persistance.swift */,
@@ -288,13 +293,39 @@
 		4FB39DFD2621B53C00E5E564 /* AirCastingTests */ = {
 			isa = PBXGroup;
 			children = (
+				4FEEAEDA262C53DC0024AB7E /* Mocks */,
+				4FEEAED9262C53D20024AB7E /* Model */,
+				4FEEAED8262C53C80024AB7E /* API */,
 				4F858F4A2624A8120059271A /* Resources */,
 				4FB39E002621B53C00E5E564 /* Info.plist */,
-				4FB39E082621B55D00E5E564 /* FixedSessionTests.swift */,
-				4FB39E352621B77D00E5E564 /* APIClientMock.swift */,
 				4FB39E3F2622252700E5E564 /* XCTestCase+Extensions.swift */,
 			);
 			path = AirCastingTests;
+			sourceTree = "<group>";
+		};
+		4FEEAED8262C53C80024AB7E /* API */ = {
+			isa = PBXGroup;
+			children = (
+				4FB39E082621B55D00E5E564 /* FixedSessionTests.swift */,
+				4F5D3F7E262D735A003AD82E /* CreateSessionAPIServiceTests.swift */,
+			);
+			path = API;
+			sourceTree = "<group>";
+		};
+		4FEEAED9262C53D20024AB7E /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				4FEEAED2262C53C20024AB7E /* UpdateSessionParamsServiceTests.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		4FEEAEDA262C53DC0024AB7E /* Mocks */ = {
+			isa = PBXGroup;
+			children = (
+				4FB39E352621B77D00E5E564 /* APIClientMock.swift */,
+			);
+			path = Mocks;
 			sourceTree = "<group>";
 		};
 		A39CC233FB1B8C6B1C3FF94A /* Pods */ = {
@@ -491,6 +522,8 @@
 		AC8CFF3425E502C700FB2918 /* AuthViews */ = {
 			isa = PBXGroup;
 			children = (
+				4F5D3F72262C91C6003AD82E /* UserAuthenticationSession.swift */,
+				4F5D3F6E262C862E003AD82E /* KeychainStorage.swift */,
 				AC8CFF3525E502DD00FB2918 /* CreateAccountView.swift */,
 				AC8CFF5B25E6866100FB2918 /* SignInView.swift */,
 				AC049F7E2604B7AF00398197 /* AuthErorrHandling.swift */,
@@ -809,7 +842,9 @@
 			files = (
 				4FB39E362621B77D00E5E564 /* APIClientMock.swift in Sources */,
 				4FB39E402622252700E5E564 /* XCTestCase+Extensions.swift in Sources */,
+				4F5D3F7F262D735A003AD82E /* CreateSessionAPIServiceTests.swift in Sources */,
 				4FB39E092621B55D00E5E564 /* FixedSessionTests.swift in Sources */,
+				4FEEAED3262C53C20024AB7E /* UpdateSessionParamsServiceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -834,6 +869,7 @@
 				AC5832DA25B196DD008C5DD5 /* Graph.swift in Sources */,
 				AC93B8E725BEFE4F003D0A0D /* AirMapView.swift in Sources */,
 				3362B4ED25E69987008D61BA /* AddNameAndTagsView.swift in Sources */,
+				4F5D3F6F262C862E003AD82E /* KeychainStorage.swift in Sources */,
 				AC5EF71D25C8178B003657B1 /* EmptyDashboardView.swift in Sources */,
 				AC1DAD4925C987B3009AC4D1 /* BluetoothManager.swift in Sources */,
 				AC8CFF5C25E6866100FB2918 /* SignInView.swift in Sources */,
@@ -851,6 +887,7 @@
 				ACD01F7B25FF6C3300B8F65F /* BlueTextButtonStyle.swift in Sources */,
 				AC1471A325F23AE40062A53F /* CreateSessionAPI.swift in Sources */,
 				AC5EF72125C81882003657B1 /* DashboardView.swift in Sources */,
+				4F5D3F73262C91C6003AD82E /* UserAuthenticationSession.swift in Sources */,
 				AC6D569F25AEEAE700D221BA /* SessionHeaderView.swift in Sources */,
 				AC32040425CC067D00A68520 /* CheckBox.swift in Sources */,
 				AC8D6C6E25C056B400ED74D1 /* PathPoint.swift in Sources */,
@@ -870,12 +907,11 @@
 				ACD01F952600A54400B8F65F /* UserDefaults+Preferences.swift in Sources */,
 				4FB39E3A2621BE7F00E5E564 /* APIClient.swift in Sources */,
 				AC4EC6BC25B5ABB700C1E312 /* StatisticsContainerView.swift in Sources */,
-				AC524A942615D8620061AD45 /* Session+CoreDataClass.swift in Sources */,
+				AC524A942615D8620061AD45 /* Session.swift in Sources */,
 				AC8CFF3625E502DD00FB2918 /* CreateAccountView.swift in Sources */,
 				338C30E825F10BFE00E0305C /* AirCasting.xcdatamodeld in Sources */,
 				AC8D6C6A25C049E300ED74D1 /* Environment.swift in Sources */,
 				ACD01F4025F8C1F800B8F65F /* SessionContext.swift in Sources */,
-				AC524A952615D8620061AD45 /* Session+CoreDataProperties.swift in Sources */,
 				AC8D6C7225C0574800ED74D1 /* LocationTracker.swift in Sources */,
 				AC4EC6C425B6FE0D00C1E312 /* HeatmapSettingsView.swift in Sources */,
 				AC8CFF4525E510CB00FB2918 /* AuthorizationAPI.swift in Sources */,

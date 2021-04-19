@@ -6,12 +6,13 @@
 //
 
 import SwiftUI
+import CoreData
 import Firebase
 
 struct MainTabBarView: View {
-
-    @StateObject var downloadFixedMeasurementService = DownloadMeasurementsService()
-    
+    let measurementUpdatingService: MeasurementUpdatingService
+    @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
+    @Environment(\.managedObjectContext) var managedObjectContext
     var body: some View {
         TabView {
             dashboardTab
@@ -19,7 +20,7 @@ struct MainTabBarView: View {
             settingsTab
         }
         .onAppear {
-            downloadFixedMeasurementService.start()
+            try! measurementUpdatingService.start()
         }
     }
     
@@ -32,9 +33,10 @@ struct MainTabBarView: View {
             Image(systemName: "house")
         }
     }
+
+    #warning("TODO: Change starting view")
     private var createSessionTab: some View {
-        // TO DO: Change starting view
-        ChooseSessionTypeView()
+        ChooseSessionTypeView(sessionContext: CreateSessionContext(createSessionService: CreateSessionAPIService(authorisationService: userAuthenticationSession), managedObjectContext: managedObjectContext))
         .tabItem {
             Image(systemName: "plus")
         }
@@ -47,8 +49,16 @@ struct MainTabBarView: View {
     }
 }
 
+#if DEBUG
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        MainTabBarView()
+        MainTabBarView(measurementUpdatingService: MeasurementUpdatingServiceMock())
+            .environmentObject(UserAuthenticationSession())
+            .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
+    }
+
+    private class MeasurementUpdatingServiceMock: MeasurementUpdatingService {
+        func start() throws {}
     }
 }
+#endif

@@ -7,20 +7,6 @@
 
 import Foundation
 
-
-extension UserDefaults {
-
-    static var AUTH_TOKEN_KEY = "auth_token"
-    
-    @UserDefault(key: AUTH_TOKEN_KEY, defaultValue: nil)
-    static var authToken: String?
-        
-}
-
-
-
-
-
 @propertyWrapper
 struct UserDefault<Value> {
     let key: String

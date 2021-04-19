@@ -14,7 +14,7 @@ class FixedSession {
         typealias ID = Int64
         let id: ID
         let type: SessionType
-        let uuid: UUID
+        let uuid: SessionUUID
         let title: String
         let tag_list: String
         let start_time: Date
@@ -25,7 +25,8 @@ class FixedSession {
     }
     
     struct StreamOutput: Decodable, Hashable, Identifiable {
-        let id: Int
+        typealias ID = Int64
+        let id: ID
         let sensor_name: String
         let sensor_package_name: String
         let measurement_type: String
@@ -42,7 +43,8 @@ class FixedSession {
     }
     
     struct MeasurementOutput: Decodable, Hashable, Identifiable {
-        let id: Int
+        typealias ID = Int64
+        let id: ID
         let value: Float
         let latitude: CLLocationDegrees
         let longitude: CLLocationDegrees
@@ -51,16 +53,12 @@ class FixedSession {
         let milliseconds: Double
         let measured_value: Double
     }
-
-    #warning("Static API calls?")
-    static func getFixedMeasurement(uuid: UUID, lastSync: Date) -> AnyPublisher<FixedMeasurementOutput, Error> {
-        FixedSessionService().getFixedMeasurement(uuid: uuid, lastSync: lastSync)
-    }
 }
 
-final class FixedSessionService {
+final class FixedSessionAPIService {
     let apiClient: APIClient
     let responseValidator: HTTPResponseValidator
+    let authorisationService: RequestAuthorisationService
     private lazy var decoder: JSONDecoder = {
         $0.dateDecodingStrategy = .custom({
             let container = try $0.singleValueContainer()
@@ -73,12 +71,13 @@ final class FixedSessionService {
         return $0
     }(JSONDecoder())
 
-    init(apiClient: APIClient = URLSession.shared, responseValidator: HTTPResponseValidator = DefaultHTTPResponseValidator()) {
+    init(authorisationService: RequestAuthorisationService, apiClient: APIClient = URLSession.shared, responseValidator: HTTPResponseValidator = DefaultHTTPResponseValidator()) {
+        self.authorisationService = authorisationService
         self.apiClient = apiClient
         self.responseValidator = responseValidator
     }
 
-    func getFixedMeasurement(uuid: UUID, lastSync: Date) -> AnyPublisher<FixedSession.FixedMeasurementOutput, Error> {
+    func getFixedMeasurement(uuid: SessionUUID, lastSync: Date) -> AnyPublisher<FixedSession.FixedMeasurementOutput, Error> {
         // Build URL with query
         var components = URLComponents(string: "http://aircasting.org/api/realtime/sync_measurements.json")!
         let syncDateStr = ISO8601DateFormatter.defaultLong.string(from: lastSync)
@@ -93,9 +92,7 @@ final class FixedSessionService {
         request.httpMethod = "GET"
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         request.addValue("application/json", forHTTPHeaderField: "Accept")
-        request.signWithToken()
-
-        return apiClient.fetchPublisher(for: request)
+        return apiClient.fetchPublisher(with: try authorisationService.authorise(request: &request))
             .tryMap { [decoder, responseValidator] (data, response) -> FixedSession.FixedMeasurementOutput in
                 try responseValidator.validate(response: response, data: data)
                 return try decoder.decode(FixedSession.FixedMeasurementOutput.self, from: data)

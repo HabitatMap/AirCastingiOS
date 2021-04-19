@@ -50,7 +50,7 @@ struct AirBeam3Configurator {
     
     // To configure fixed session we need to send authMessage first
     // We're generating unique String for session UUID and sending it with users auth token to the AB
-    private func configureFixed(uuid: String) {
+    private func configureFixed(uuid: SessionUUID) {
         guard let auth = userDefaults.string(forKey: "auth_token") else { return }
 
         sendUUIDRequest(uuid: uuid)
@@ -59,7 +59,7 @@ struct AirBeam3Configurator {
         }
     }
     
-    func configureFixedWifiSession(uuid: String,
+    func configureFixedWifiSession(uuid: SessionUUID,
                                    location: CLLocationCoordinate2D,
                                    dateString: String,
                                    wifiSSID: String, wifiPassword: String) {
@@ -79,7 +79,7 @@ struct AirBeam3Configurator {
     
     // MARK: Commands
     
-    private func sendUUIDRequest(uuid: String) {
+    private func sendUUIDRequest(uuid: SessionUUID) {
         let message = hexMessageBuilder.uuidMessage(uuid: uuid)
         sendConfigMessage(data: message)
     }

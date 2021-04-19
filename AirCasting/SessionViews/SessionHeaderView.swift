@@ -19,7 +19,7 @@ struct SessionHeaderView: View {
         VStack(alignment: .leading, spacing: 13){
             dateAndTime
             nameLabelAndExpandButton
-            if (session.deviceType == DeviceType.MIC.rawValue) {
+            if session.deviceType == .MIC {
                 HStack {
                     measurementsMic
                     Spacer()
@@ -66,7 +66,7 @@ struct SessionHeaderView: View {
                     }
                 }
             }
-            Text("\(showSessionType()), \(session.deviceTypeEnum.description)")
+            Text("\(session.type.description), \(session.deviceType?.description ?? "")")
                 .font(Font.moderate(size: 13, weight: .regular))
         }
         .foregroundColor(.darkBlue)
@@ -163,14 +163,6 @@ struct SessionHeaderView: View {
     func lastMicMeasurement() -> Int {
         return Int(session.dbStream?.latestValue ?? 0)
     }
-    
-    func showSessionType() -> String {
-        if session.type == SessionType.FIXED.rawValue {
-            return "Fixed"
-        } else {
-            return "Mobile"
-        }
-    }
 }
 
 struct SessionHeader_Previews: PreviewProvider {
@@ -179,11 +171,4 @@ struct SessionHeader_Previews: PreviewProvider {
                           isExpandButtonNeeded: true,
                           session: Session.mock)
     }
-}
-
-extension Session {
-    var deviceTypeEnum: DeviceType {
-        DeviceType(rawValue: Int(deviceType))!
-    }
-    
 }

@@ -9,13 +9,17 @@ import SwiftUI
 import Foundation
 
 struct SettingsView: View {
-    let userDefaults = UserDefaults.standard
+    @EnvironmentObject private var userAuthenticationSession: UserAuthenticationSession
 
     var body: some View {
         VStack {
             Spacer()
             Button {
-                userDefaults.removeObject(forKey: UserDefaults.AUTH_TOKEN_KEY)
+                do {
+                    try userAuthenticationSession.deauthorize()
+                } catch {
+                    assertionFailure("Failed to deauthorize \(error)")
+                }
             } label: {
                 Text("Log out")
             }.buttonStyle(BlueButtonStyle())
@@ -26,8 +30,10 @@ struct SettingsView: View {
     }
 }
 
+#if DEBUG
 struct LogoutView_Previews: PreviewProvider {
     static var previews: some View {
         SettingsView()
     }
 }
+#endif

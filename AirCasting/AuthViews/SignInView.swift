@@ -10,7 +10,7 @@ import SwiftUI
 extension NSError: Identifiable {}
 
 struct SignInView: View {
-    
+    let userAuthenticationSession: UserAuthenticationSession
     @State private var username: String = ""
     @State private var password: String = ""
     @State private var task: Any?
@@ -91,13 +91,21 @@ struct SignInView: View {
                     .sink { (completion) in
                         switch completion {
                         case .finished:
-                            print("Success")
+                            break
                         case .failure(let error):
+                            Log.warning("Failed to login \(error)")
                             presentedError = error as NSError
                         }
                     } receiveValue: { (output) in
-                        UserDefaults.authToken = output.authentication_token
-                        print(output)
+                        DispatchQueue.main.async {
+                            do {
+                                try userAuthenticationSession.authorise(with: output.authentication_token)
+                                Log.info("Successfully logged in")
+                            } catch {
+                                assertionFailure("Failed to store credentials \(error)")
+                                presentedError = error as NSError
+                            }
+                        }
                     }
             }
         }
@@ -106,7 +114,7 @@ struct SignInView: View {
     
     var signupButton: some View {
         NavigationLink(
-            destination: CreateAccountView(),
+            destination: CreateAccountView(userAuthenticationSession: userAuthenticationSession),
             label: {
                 signupButtonText
             })
@@ -128,8 +136,10 @@ struct SignInView: View {
     }
 }
 
+#if DEBUG
 struct SignInView_Previews: PreviewProvider {
     static var previews: some View {
-        SignInView()
+        SignInView(userAuthenticationSession: UserAuthenticationSession())
     }
 }
+#endif

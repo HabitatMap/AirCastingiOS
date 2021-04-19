@@ -6,10 +6,16 @@
 //
 
 import SwiftUI
-
+import Firebase
 @main
 struct AirCastingApp: App {
-    
+
+    init() {
+        #if !DEBUG
+        FirebaseApp.configure()
+        #endif
+    }
+
     var body: some Scene {
         WindowGroup {
             RootAppView()
