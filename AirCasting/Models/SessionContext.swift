@@ -76,7 +76,7 @@ class CreateSessionContext: ObservableObject {
             
             // TO DO : change mocked data (contribute, is_indoor, notes, locaation, end_time)
             let params = CreateSessionApi.SessionParams(uuid: uuid,
-                                                        type: session.type,
+                                                        type: .FIXED,
                                                         title: name,
                                                         tag_list: session.tags ?? "",
                                                         start_time: startTime,
@@ -153,12 +153,12 @@ public enum SessionType: CustomStringConvertible, Hashable, Codable {
         var container = encoder.singleValueContainer()
         try container.encode(description)
     }
-    
+
     public var description: String {
         switch self {
-        case .MOBILE: return "MobileSession"
-        case .FIXED: return "FixedSession"
-        case .unknown(let rawValue): return rawValue
+        case .MOBILE: return NSLocalizedString("Mobile", comment: "Mobile user readable localized description")
+        case .FIXED: return NSLocalizedString("Fixed", comment: "Fixed user readable localized description")
+        case .unknown: return NSLocalizedString("Other", comment: "Unknown user readable localized description")
         }
     }
 }

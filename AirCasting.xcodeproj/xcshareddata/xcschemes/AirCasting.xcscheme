@@ -38,9 +38,6 @@
                ReferencedContainer = "container:AirCasting.xcodeproj">
             </BuildableReference>
             <SkippedTests>
-               <Test
-                  Identifier = "FixedSessionTests/test()">
-               </Test>
             </SkippedTests>
          </TestableReference>
       </Testables>

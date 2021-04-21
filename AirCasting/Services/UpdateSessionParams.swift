@@ -13,7 +13,6 @@ final class UpdateSessionParamsService {
         case missingContext(FixedSession.FixedMeasurementOutput)
     }
     func updateSessionsParams(session: Session, output: FixedSession.FixedMeasurementOutput) throws {
-        session.id = output.id
         session.uuid = output.uuid
         session.type = output.type
     

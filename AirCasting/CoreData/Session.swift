@@ -8,7 +8,28 @@
 import Foundation
 import CoreData
 
-public typealias SessionUUID = UUID
+public struct SessionUUID: Codable, RawRepresentable, Hashable, CustomStringConvertible {
+    public let rawValue: String
+
+    public init() {
+        rawValue = UUID().uuidString
+    }
+
+    public init?(uuidString: String) {
+        if UUID(uuidString: uuidString) == nil {
+            return nil
+        }
+        rawValue = uuidString
+    }
+
+    public init?(rawValue: String) {
+        self.rawValue = rawValue
+    }
+
+    public var description: String {
+        rawValue
+    }
+}
 
 @objc(Session)
 public class Session: NSManagedObject, Identifiable {
@@ -32,7 +53,6 @@ public class Session: NSManagedObject, Identifiable {
 
     @NSManaged public var urlLocation: String?
     @NSManaged public var version: Int16
-    @NSManaged public var id: Int64
     @NSManaged public var measurementStreams: NSSet?
 
     public var status: SessionStatus? {
@@ -40,9 +60,9 @@ public class Session: NSManagedObject, Identifiable {
         set { setValue(newValue?.rawValue, forKey: "status") }
     }
 
-    public var uuid: SessionUUID! {
-        get { (value(forKey: "uuid") as? String).flatMap(SessionUUID.init(uuidString:)) }
-        set { setValue(newValue?.uuidString, forKey: "uuid") }
+    public var uuid: SessionUUID? {
+        get { (value(forKey: "uuid") as? String).flatMap(SessionUUID.init(rawValue:)) }
+        set { setValue(newValue?.rawValue, forKey: "uuid") }
     }
 
     public var deviceType: DeviceType? {
@@ -50,9 +70,17 @@ public class Session: NSManagedObject, Identifiable {
         set { setValue(newValue?.rawValue, forKey: "deviceType") }
     }
 
-    public var type: SessionType! {
+    public var type: SessionType? {
         get { SessionType(rawValue: value(forKey: "type") as! Int16) }
         set { setValue(newValue?.rawValue, forKey: "type") }
+    }
+
+
+}
+
+extension NSFetchRequest where ResultType == Session {
+    public func typePredicate(_ type: SessionType) -> NSPredicate {
+        NSPredicate(format: "type == \(type.rawValue)")
     }
 }
 
