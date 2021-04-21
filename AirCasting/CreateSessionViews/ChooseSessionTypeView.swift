@@ -9,6 +9,8 @@ import SwiftUI
 import CoreBluetooth
 
 struct ChooseSessionTypeView: View {
+    @State var isActive : Bool = false
+
     @State private var isInfoPresented: Bool = false
     @StateObject var sessionContext: CreateSessionContext
     @State private var isTurnBluetoothOnLinkActive = false
@@ -17,7 +19,7 @@ struct ChooseSessionTypeView: View {
     @State private var didTapFixedSession = false
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @Environment(\.managedObjectContext) var managedObjectContext
-    
+
     var body: some View {
         NavigationView {
             VStack(spacing: 50) {
@@ -27,7 +29,7 @@ struct ChooseSessionTypeView: View {
                 }
                 .background(Color.white)
                 .padding(.horizontal)
-                
+
                 VStack {
                     VStack(alignment: .leading, spacing: 15) {
                         HStack {
@@ -80,7 +82,7 @@ struct ChooseSessionTypeView: View {
             .font(Font.muli(size: 14, weight: .bold))
             .foregroundColor(.aircastingDarkGray)
     }
-    
+
     var moreInfo: some View {
         Button(action: {
             isInfoPresented = true
@@ -93,10 +95,10 @@ struct ChooseSessionTypeView: View {
             MoreInfoPopupView()
         })
     }
-    
+
     func goToNextFixedSessionStep() {
         createNewSession(isSessionFixed: true)
-        
+
         // This will trigger system bluetooth authorization alert
         if CBCentralManager.authorization == .notDetermined {
             _ = bluetoothManager.centralManager
@@ -108,7 +110,7 @@ struct ChooseSessionTypeView: View {
             isTurnBluetoothOnLinkActive = true
         }
     }
-    
+
     var fixedSessionButton: some View {
         Button(action: {
             goToNextFixedSessionStep()
@@ -132,7 +134,7 @@ struct ChooseSessionTypeView: View {
             }
         )
     }
-    
+
     var mobileSessionButton: some View {
         Button(action: {
             createNewSession(isSessionFixed: false)
@@ -148,7 +150,7 @@ struct ChooseSessionTypeView: View {
                     }
                 })
     }
-    
+
     var fixedSessionLabel: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("Fixed session")
@@ -163,7 +165,7 @@ struct ChooseSessionTypeView: View {
         .background(Color.white)
         .shadow(color: Color(white: 150/255, opacity: 0.5), radius: 9, x: 0, y: 1)
     }
-    
+
     var mobileSessionLabel: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("Mobile session")
@@ -178,7 +180,7 @@ struct ChooseSessionTypeView: View {
         .background(Color.white)
         .shadow(color: Color(white: 150/255, opacity: 0.5), radius: 9, x: 0, y: 1)
     }
-    
+
     private func createNewSession(isSessionFixed: Bool) {
         sessionContext.sessionUUID = SessionUUID()
         if isSessionFixed {
