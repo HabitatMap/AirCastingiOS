@@ -11,8 +11,6 @@ import CoreLocation
 
 class FixedSession {
     struct FixedMeasurementOutput: Decodable, Hashable {
-        typealias ID = Int64
-        let id: ID
         let type: SessionType
         let uuid: SessionUUID
         let title: String
@@ -82,7 +80,7 @@ final class FixedSessionAPIService {
         var components = URLComponents(string: "http://aircasting.org/api/realtime/sync_measurements.json")!
         let syncDateStr = ISO8601DateFormatter.defaultLong.string(from: lastSync)
         components.queryItems = [
-            URLQueryItem(name: "uuid", value: uuid.uuidString),
+            URLQueryItem(name: "uuid", value: uuid.rawValue),
             URLQueryItem(name: "last_measurement_sync", value: syncDateStr)
         ]
         let url = components.url!

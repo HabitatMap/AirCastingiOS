@@ -38,7 +38,7 @@ struct HexMessagesBuilder {
     }
     
     func uuidMessage(uuid: SessionUUID) -> Data {
-        return buildMessage(messageString: uuid.uuidString, configurationCode: UUID_CODE)
+        return buildMessage(messageString: uuid.rawValue, configurationCode: UUID_CODE)
     }
     
     func authTokenMessage(authToken: String) -> Data? {

@@ -26,10 +26,10 @@ extension NSManagedObjectContext {
         return new
     }
     
-    func newOrExisting<T: NSManagedObject>(uuid: UUID) throws -> T  {
+    func newOrExisting<T: NSManagedObject>(uuid: SessionUUID) throws -> T  {
         let className = NSStringFromClass(T.classForCoder())
         let fetchRequest = NSFetchRequest<T>(entityName: className)
-        fetchRequest.predicate = NSPredicate(format: "uuid == %@", uuid.uuidString)
+        fetchRequest.predicate = NSPredicate(format: "uuid == %@", uuid.rawValue)
         
         let results = try self.fetch(fetchRequest)
         if let existing  = results.first {

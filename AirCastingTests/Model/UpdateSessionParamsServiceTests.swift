@@ -8,7 +8,6 @@ import CoreData
 
 final class UpdateSessionParamsServiceTests: XCTestCase {
     private static let sampleOutput = FixedSession.FixedMeasurementOutput(
-        id: 1692523,
         type: .FIXED,
         uuid: SessionUUID(uuidString: "51dd1e15-0af6-4810-bacd-11e061ac9d1d")!,
         title: "hetmafixab",
@@ -103,7 +102,6 @@ final class UpdateSessionParamsServiceTests: XCTestCase {
         let sampleOutput = Self.sampleOutput
         try tested.updateSessionsParams(session: session, output: sampleOutput)
 
-        XCTAssertEqual(session.id, sampleOutput.id)
         XCTAssertEqual(session.type, sampleOutput.type)
         XCTAssertEqual(session.uuid, sampleOutput.uuid)
         XCTAssertEqual(session.name, sampleOutput.title)

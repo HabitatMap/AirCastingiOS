@@ -180,7 +180,7 @@ struct ChooseSessionTypeView: View {
     }
     
     private func createNewSession(isSessionFixed: Bool) {
-        sessionContext.sessionUUID = UUID()
+        sessionContext.sessionUUID = SessionUUID()
         if isSessionFixed {
             sessionContext.sessionType = SessionType.FIXED
         } else {
