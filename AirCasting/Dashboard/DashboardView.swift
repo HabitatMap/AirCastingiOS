@@ -8,30 +8,38 @@
 import SwiftUI
 
 struct DashboardView: View {
+    @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
+    @Environment(\.managedObjectContext) var managedObjectContext
     
     @FetchRequest<Session>(sortDescriptors: [NSSortDescriptor(key: "startTime",
                                                               ascending: false)]) var sessions
-
+    
+    @State var isActive : Bool = false
+    
     var body: some View {
-        VStack {
-            sectionPicker
-            
-            if sessions.isEmpty {
-                EmptyDashboardView()
-            } else {
-                ScrollView(.vertical) {
-                    LazyVStack(spacing: 20) {
-                        ForEach(sessions, id: \.uuid) { (session) in
-                            SessionCellView(session: session)
+        NavigationView {
+            VStack {
+                sectionPicker
+                
+                if sessions.isEmpty {
+                    EmptyDashboardView()
+                } else {
+                    ScrollView(.vertical) {
+                        LazyVStack(spacing: 20) {
+                            ForEach(sessions, id: \.uuid) { (session) in
+                                SessionCellView(session: session)
+                            }
                         }
+                        .padding()
                     }
-                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.aircastingGray.opacity(0.05))
                 }
-                .frame(maxWidth: .infinity)
-                .background(Color.aircastingGray.opacity(0.05))
+                
+                bottomNavigation
             }
+            .navigationBarTitle("Dashboard")
         }
-        .navigationBarTitle("Dashboard")
     }
     
     var sectionPicker: some View {
@@ -43,6 +51,38 @@ struct DashboardView: View {
         })
         .pickerStyle(SegmentedPickerStyle())
         .padding()
+    }
+    
+    var bottomNavigation: some View {
+        ZStack{
+            Color(.white)
+                .frame(height: 80)
+                .offset(x: 0, y: 30)
+            HStack {
+                Spacer()
+                Image(systemName: "house")
+                    .foregroundColor(.accentColor)
+                Spacer()
+                NavigationLink(
+                    destination: ChooseSessionTypeView(sessionContext: CreateSessionContext(createSessionService: CreateSessionAPIService(authorisationService: userAuthenticationSession), managedObjectContext: managedObjectContext)),
+                    label: {
+                        Image(systemName: "plus")
+                            .renderingMode(.original)
+                            .opacity(0.5)
+                    })
+                Spacer()
+                NavigationLink(
+                    destination: SettingsView(),
+                    label: {
+                        Image(systemName: "gearshape")
+                            .renderingMode(.original)
+                            .opacity(0.5)
+                    })
+                Spacer()
+            }
+            .padding(.top, 30)
+        }
+        .shadow(color: Color(red: 0, green: 0, blue: 0, opacity: 0.1), radius: 20)
     }
 }
 

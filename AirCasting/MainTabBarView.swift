@@ -14,11 +14,7 @@ struct MainTabBarView: View {
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     @Environment(\.managedObjectContext) var managedObjectContext
     var body: some View {
-        TabView {
-            dashboardTab
-            createSessionTab
-            settingsTab
-        }
+        DashboardView()
         .onAppear {
             try! measurementUpdatingService.start()
         }
