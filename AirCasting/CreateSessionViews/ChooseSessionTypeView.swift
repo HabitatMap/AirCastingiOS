@@ -17,6 +17,7 @@ struct ChooseSessionTypeView: View {
     @State private var didTapFixedSession = false
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @Environment(\.managedObjectContext) var managedObjectContext
+    @Environment(\.presentationMode) var presentationMode
     
     var body: some View {
         VStack(spacing: 50) {
@@ -47,7 +48,8 @@ struct ChooseSessionTypeView: View {
                     .ignoresSafeArea()
             )
         }
-        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
+        .navigationBarItems(leading: BackButton(presentationMode: presentationMode))
         .onAppear {
             if CBCentralManager.authorization == .allowedAlways {
                 _ = bluetoothManager.centralManager

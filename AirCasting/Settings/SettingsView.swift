@@ -10,6 +10,7 @@ import Foundation
 
 struct SettingsView: View {
     @EnvironmentObject private var userAuthenticationSession: UserAuthenticationSession
+    @Environment(\.presentationMode) var presentationMode
 
     var body: some View {
         VStack {
@@ -27,6 +28,8 @@ struct SettingsView: View {
             Spacer()
         }
         .padding()
+        .navigationBarBackButtonHidden(true)
+        .navigationBarItems(leading: BackButton(presentationMode: presentationMode))
     }
 }
 

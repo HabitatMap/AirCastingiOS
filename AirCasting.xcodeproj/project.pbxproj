@@ -13,6 +13,7 @@
 		3362B4ED25E69987008D61BA /* AddNameAndTagsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3362B4EC25E69987008D61BA /* AddNameAndTagsView.swift */; };
 		338C30E225F1044B00E0305C /* Persistance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 338C30E125F1044B00E0305C /* Persistance.swift */; };
 		338C30E825F10BFE00E0305C /* AirCasting.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 338C30E625F10BFE00E0305C /* AirCasting.xcdatamodeld */; };
+		33B889B8263348CC0066BB77 /* BackButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33B889B7263348CC0066BB77 /* BackButton.swift */; };
 		4F5D3F6F262C862E003AD82E /* KeychainStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5D3F6E262C862E003AD82E /* KeychainStorage.swift */; };
 		4F5D3F73262C91C6003AD82E /* UserAuthenticationSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5D3F72262C91C6003AD82E /* UserAuthenticationSession.swift */; };
 		4F5D3F7F262D735A003AD82E /* CreateSessionAPIServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5D3F7E262D735A003AD82E /* CreateSessionAPIServiceTests.swift */; };
@@ -134,6 +135,7 @@
 		3362B4EC25E69987008D61BA /* AddNameAndTagsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNameAndTagsView.swift; sourceTree = "<group>"; };
 		338C30E125F1044B00E0305C /* Persistance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistance.swift; sourceTree = "<group>"; };
 		338C30E725F10BFE00E0305C /* AirCasting.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AirCasting.xcdatamodel; sourceTree = "<group>"; };
+		33B889B7263348CC0066BB77 /* BackButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackButton.swift; sourceTree = "<group>"; };
 		3A54057326D27D23E9906704 /* Pods_AirCastingTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AirCastingTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4327910762891E7B1AE9102E /* Pods-AirCastingTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AirCastingTests.debug.xcconfig"; path = "Target Support Files/Pods-AirCastingTests/Pods-AirCastingTests.debug.xcconfig"; sourceTree = "<group>"; };
 		4F5D3F6E262C862E003AD82E /* KeychainStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainStorage.swift; sourceTree = "<group>"; };
@@ -369,6 +371,7 @@
 				AC4EC6C025B6F18A00C1E312 /* EditButtonView.swift */,
 				AC8CFF4025E5095600FB2918 /* Textfield.swift */,
 				ACD01F942600A54400B8F65F /* UserDefaults+Preferences.swift */,
+				33B889B7263348CC0066BB77 /* BackButton.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -921,6 +924,7 @@
 				AC8CFF4525E510CB00FB2918 /* AuthorizationAPI.swift in Sources */,
 				332F521425FA38430047236D /* MicrophoneManager.swift in Sources */,
 				AC8CFF4125E5095600FB2918 /* Textfield.swift in Sources */,
+				33B889B8263348CC0066BB77 /* BackButton.swift in Sources */,
 				AC7EB37625A6FB3A00A7F2AF /* AirCastingApp.swift in Sources */,
 				ACD01F922600A3C800B8F65F /* RootAppView.swift in Sources */,
 				331EA80A25E32094009DEFDB /* ConfirmCreatingSessionView.swift in Sources */,
