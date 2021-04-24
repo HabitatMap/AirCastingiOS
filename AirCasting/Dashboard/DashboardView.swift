@@ -55,9 +55,8 @@ struct DashboardView: View {
     
     var bottomNavigation: some View {
         ZStack{
-            Color(.white)
-                .frame(height: 80)
-                .offset(x: 0, y: 30)
+//            Color(.white)
+//                .frame(height: 40)
             HStack {
                 Spacer()
                 Image(systemName: "house")
@@ -82,9 +81,9 @@ struct DashboardView: View {
                     })
                 Spacer()
             }
-            .padding(.top, 30)
+            .padding(.top, 20)
         }
-        .shadow(color: Color(red: 0, green: 0, blue: 0, opacity: 0.1), radius: 20)
+//        .shadow(color: Color(red: 0, green: 0, blue: 0, opacity: 0.1), radius: 20)
     }
 }
 
