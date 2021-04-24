@@ -17,7 +17,7 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
     private let authorisationService: RequestAuthorisationService
     private lazy var fixedSessionService = FixedSessionAPIService(authorisationService: authorisationService)
     private var timerSink: Cancellable?
-    private var sink: Cancellable?
+    private var lastFetchCancellableTask: Cancellable?
     private var context: NSManagedObjectContext {
         PersistenceController.shared.container.viewContext
     }
@@ -53,28 +53,25 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
     private func updateForSession(uuid: SessionUUID) {
         #warning("TODO: change last sync")
         let syncDate = Date().addingTimeInterval(-100)
-        sink = fixedSessionService.getFixedMeasurement(uuid: uuid, lastSync: syncDate)
-            .sink { (completion) in
-                switch completion {
-                case .finished:
-                    break
-                case .failure(let error):
-                    Log.warning("Failed to fetch measurements for uuid '\(uuid)' \(error)")
-                }
-            } receiveValue: { fixedMeasurementOutput in
-                DispatchQueue.main.async {
+        lastFetchCancellableTask = fixedSessionService.getFixedMeasurement(uuid: uuid, lastSync: syncDate, completion: { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let response):
                     #warning("TODO: Use different context ")
                     // Fetch session by id from Core Data
                     let context = PersistenceController.shared.container.viewContext
                     do {
-                        let session: Session = try context.newOrExisting(uuid: fixedMeasurementOutput.uuid)
-                        try UpdateSessionParamsService().updateSessionsParams(session: session, output: fixedMeasurementOutput)
+                        let session: Session = try context.newOrExisting(uuid: response.uuid)
+                        try UpdateSessionParamsService().updateSessionsParams(session: session, output: response)
                         try context.save()
                         Log.info("Successfully fetched fixed measurements")
                     } catch {
                         assertionFailure("Failed to save context \(error)")
                     }
+                case .failure(let error):
+                    Log.warning("Failed to fetch measurements for uuid '\(uuid)' \(error)")
                 }
             }
+        })
     }
 }

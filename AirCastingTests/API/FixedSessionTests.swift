@@ -35,9 +35,12 @@ final class FixedSessionTests: XCTestCase {
     func testTimeout() throws {
         apiClientMock.failing(with: URLError(.timedOut))
 
-        let result = try awaitPublisherResult(tested.getFixedMeasurement(uuid: SessionUUID(), lastSync: Date()))
+        var result: Result<FixedSession.FixedMeasurementOutput, Error>?
+        tested.getFixedMeasurement(uuid: SessionUUID(), lastSync: Date()) {
+            result = $0
+        }
 
-        switch result {
+        switch try XCTUnwrap(result) {
         case .success(let response):
             XCTFail("Should fail but returned success type \(response)")
         case .failure(URLError.timedOut):
@@ -49,12 +52,14 @@ final class FixedSessionTests: XCTestCase {
 
     func testRequestCreation() throws {
         var receivedRequest: URLRequest?
-        apiClientMock.fetchPublisherStub = {
-            receivedRequest = $0
-            return .failure(URLError(.timedOut))
+        apiClientMock.requestTaskStub = { request, completion in
+            receivedRequest = request
+            completion(.failure(URLError(.timedOut)), request)
         }
 
-        _ = tested.getFixedMeasurement(uuid: SessionUUID(uuidString: "DCEAE4A1-DD48-44D7-A0C1-C5525F81C6B2")!, lastSync: Date(timeIntervalSinceReferenceDate: 1991037271))
+        tested.getFixedMeasurement(uuid: SessionUUID(uuidString: "DCEAE4A1-DD48-44D7-A0C1-C5525F81C6B2")!,
+                                   lastSync: Date(timeIntervalSinceReferenceDate: 1991037271),
+                                   completion: { _ in })
 
         let request = try XCTUnwrap(receivedRequest)
         XCTAssertEqual(request.url, URL(string:"http://aircasting.org/api/realtime/sync_measurements.json?uuid=DCEAE4A1-DD48-44D7-A0C1-C5525F81C6B2&last_measurement_sync=2064-02-04T09:54:31.000Z")!)
@@ -63,19 +68,20 @@ final class FixedSessionTests: XCTestCase {
     }
 
     func testRequestCreationFailedWhenAuthorizationFails() throws {
-        struct MockError: Swift.Error {}
-
         authorisationServiceMock.authoriseStub = { _ in
-            throw MockError()
+            throw URLError(.userAuthenticationRequired)
         }
 
-        let result = try awaitPublisherResult(tested.getFixedMeasurement(uuid: SessionUUID(), lastSync: Date()))
+        var result: Result<FixedSession.FixedMeasurementOutput, Error>?
+        tested.getFixedMeasurement(uuid: SessionUUID(), lastSync: Date()) {
+            result = $0
+        }
 
-        switch result {
+        switch try XCTUnwrap(result) {
         case .success(let response):
             XCTFail("Should fail but returned success type \(response)")
         case .failure(URLError.userAuthenticationRequired):
-            print("Retuned valid error \(result)")
+            print("Retuned valid error \(String(describing: result))")
         case .failure(let error):
             XCTFail("Failed with a unexpected error type \(error)")
         }
@@ -85,13 +91,16 @@ final class FixedSessionTests: XCTestCase {
         let response = HTTPURLResponse(url: URL(string: "http://test.com")!, statusCode: 500, httpVersion: nil, headerFields: nil)!
         apiClientMock.returning((data: Data(#"{ "error": "some invalid message" }"#.utf8), response: response))
 
-        let result = try awaitPublisherResult(tested.getFixedMeasurement(uuid: SessionUUID(), lastSync: Date()))
+        var result: Result<FixedSession.FixedMeasurementOutput, Error>?
+        tested.getFixedMeasurement(uuid: SessionUUID(), lastSync: Date()) {
+            result = $0
+        }
 
-        switch result {
+        switch try XCTUnwrap(result) {
         case .success(let response):
             XCTFail("Should fail but returned success type \(response)")
         case .failure(URLError.badServerResponse):
-            print("Retuned valid error \(result)")
+            print("Retuned valid error \(String(describing: result))")
         case .failure(let error):
             XCTFail("Failed with a unexpected error type \(error)")
         }
@@ -102,7 +111,12 @@ final class FixedSessionTests: XCTestCase {
         let data = try Data(contentsOf: url)
         apiClientMock.returning((data: data, response: .success()))
 
-        let response = try awaitPublisherResult(tested.getFixedMeasurement(uuid: SessionUUID(), lastSync: Date())).get()
+        var result: Result<FixedSession.FixedMeasurementOutput, Error>?
+        tested.getFixedMeasurement(uuid: SessionUUID(), lastSync: Date()) {
+            result = $0
+        }
+
+        let response =  try XCTUnwrap(result).get()
 
         let expectedResponse = FixedSession.FixedMeasurementOutput(
             type: .FIXED,
