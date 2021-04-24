@@ -9,6 +9,8 @@ import SwiftUI
 import CoreLocation
 
 struct ConfirmCreatingSessionView: View {
+    @Binding var dashboardIsActive : Bool
+    
     @State var isActive : Bool = false
     
     @EnvironmentObject private var sessionContext: CreateSessionContext
@@ -48,28 +50,19 @@ struct ConfirmCreatingSessionView: View {
                 } else {
                     sessionContext.setupAB()
                 }
-                self.isActive = true
+                self.dashboardIsActive = false
             }, label: {
                 Text("Start recording")
                     .bold()
             })
-            .background(
-                NavigationLink(
-                    //TODO: we need to dismiss creating session views and go back to root
-                    destination: DashboardView(),
-                    isActive: self.$isActive,
-                    label: {
-                        EmptyView()
-                    })
-            )
             .buttonStyle(BlueButtonStyle())
         }
         .padding()
     }
 }
 
-struct ConfirmCreatingSession_Previews: PreviewProvider {
-    static var previews: some View {
-        ConfirmCreatingSessionView(sessionName: "Ania's microphone session")
-    }
-}
+//struct ConfirmCreatingSession_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ConfirmCreatingSessionView(sessionName: "Ania's microphone session")
+//    }
+//}

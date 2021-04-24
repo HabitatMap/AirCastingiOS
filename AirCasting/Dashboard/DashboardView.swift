@@ -14,7 +14,7 @@ struct DashboardView: View {
     @FetchRequest<Session>(sortDescriptors: [NSSortDescriptor(key: "startTime",
                                                               ascending: false)]) var sessions
     
-    @State var isActive : Bool = false
+    @State var isDashboardActive : Bool = false
     
     var body: some View {
         NavigationView {
@@ -64,12 +64,14 @@ struct DashboardView: View {
                     .foregroundColor(.accentColor)
                 Spacer()
                 NavigationLink(
-                    destination: ChooseSessionTypeView(sessionContext: CreateSessionContext(createSessionService: CreateSessionAPIService(authorisationService: userAuthenticationSession), managedObjectContext: managedObjectContext)),
+                    destination: ChooseSessionTypeView(sessionContext: CreateSessionContext(createSessionService: CreateSessionAPIService(authorisationService: userAuthenticationSession), managedObjectContext: managedObjectContext), dashboardIsActive: self.$isDashboardActive),
+                    isActive: self.$isDashboardActive,
                     label: {
                         Image(systemName: "plus")
                             .renderingMode(.original)
                             .opacity(0.5)
                     })
+                    .isDetailLink(false)
                 Spacer()
                 NavigationLink(
                     destination: SettingsView(),

@@ -19,6 +19,8 @@ struct ChooseSessionTypeView: View {
     @Environment(\.managedObjectContext) var managedObjectContext
     @Environment(\.presentationMode) var presentationMode
     
+    @Binding var dashboardIsActive : Bool
+    
     var body: some View {
         VStack(spacing: 50) {
             VStack(alignment: .leading, spacing: 10) {
@@ -61,8 +63,9 @@ struct ChooseSessionTypeView: View {
                 didTapFixedSession = false
             }
         }
-        .environmentObject(sessionContext)
+//        .environmentObject(sessionContext)
     }
+    
     var titleLabel: some View {
         Text("Let's begin")
             .font(Font.moderate(size: 32,
@@ -117,18 +120,18 @@ struct ChooseSessionTypeView: View {
         }
         .background(
             Group {
-                EmptyView()
-                    .fullScreenCover(isPresented: $isPowerABLinkActive) {
-                        CreatingSessionFlowRootView {
-                            PowerABView()
-                        }
-                    }
-                EmptyView()
-                    .fullScreenCover(isPresented: $isTurnBluetoothOnLinkActive) {
-                        CreatingSessionFlowRootView {
-                            TurnOnBluetoothView()
-                        }
-                    }
+                NavigationLink(
+                    destination: PowerABView(dashboardIsActive: $dashboardIsActive),
+                    isActive: $isPowerABLinkActive,
+                    label: {
+                        EmptyView()
+                    })
+                NavigationLink(
+                    destination: TurnOnBluetoothView(dashboardIsActive: $dashboardIsActive),
+                    isActive: $isTurnBluetoothOnLinkActive,
+                    label: {
+                        EmptyView()
+                    })
             }
         )
     }
@@ -141,12 +144,13 @@ struct ChooseSessionTypeView: View {
             mobileSessionLabel
         }
         .background(
-            EmptyView()
-                .fullScreenCover(isPresented: $isMobileLinkActive) {
-                    CreatingSessionFlowRootView {
-                        SelectDeviceView()
-                    }
+            NavigationLink(
+                destination: SelectDeviceView(dashboardIsActive: $dashboardIsActive),
+                isActive: $isMobileLinkActive,
+                label: {
+                    EmptyView()
                 })
+        )
     }
     
     var fixedSessionLabel: some View {
@@ -190,9 +194,9 @@ struct ChooseSessionTypeView: View {
 }
 
 #if DEBUG
-struct ChooseSessionTypeView_Previews: PreviewProvider {
-    static var previews: some View {
-        ChooseSessionTypeView(sessionContext: CreateSessionContext(createSessionService: CreateSessionAPIService(authorisationService: UserAuthenticationSession()), managedObjectContext: PersistenceController.shared.container.viewContext))
-    }
-}
+//struct ChooseSessionTypeView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ChooseSessionTypeView(sessionContext: CreateSessionContext(createSessionService: CreateSessionAPIService(authorisationService: UserAuthenticationSession()), managedObjectContext: PersistenceController.shared.container.viewContext))
+//    }
+//}
 #endif

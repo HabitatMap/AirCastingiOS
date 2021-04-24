@@ -14,6 +14,8 @@ struct SelectPeripheralView: View {
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @EnvironmentObject var sessionContext: CreateSessionContext
     
+    @Binding var dashboardIsActive : Bool
+    
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
@@ -110,7 +112,7 @@ struct SelectPeripheralView: View {
         var destination: AnyView
         if let selection = selection {
             destination = AnyView(ConnectingABView(bluetoothManager: bluetoothManager,
-                                               selecedPeripheral: selection))
+                                                   selecedPeripheral: selection, dashboardIsActive: $dashboardIsActive))
         } else {
             destination = AnyView(EmptyView())
         }
@@ -122,8 +124,8 @@ struct SelectPeripheralView: View {
     }
 }
 
-struct SelectPeripheralView_Previews: PreviewProvider {
-    static var previews: some View {
-        SelectPeripheralView()
-    }
-}
+//struct SelectPeripheralView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        SelectPeripheralView()
+//    }
+//}

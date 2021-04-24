@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct PowerABView: View {
+    @Binding var dashboardIsActive : Bool
     
     var body: some View {
         VStack(spacing: 45) {
@@ -38,15 +39,15 @@ struct PowerABView: View {
 
     }
     var continueButton: some View {
-        NavigationLink(destination: SelectPeripheralView()) {
+        NavigationLink(destination: SelectPeripheralView(dashboardIsActive: $dashboardIsActive)) {
             Text("Continue")
                 .frame(maxWidth: .infinity)
         }
     }
 }
-
-struct PowerABView_Previews: PreviewProvider {
-    static var previews: some View {
-        PowerABView()
-    }
-}
+//
+//struct PowerABView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        PowerABView()
+//    }
+//}

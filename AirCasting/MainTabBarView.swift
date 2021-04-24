@@ -19,30 +19,6 @@ struct MainTabBarView: View {
             try! measurementUpdatingService.start()
         }
     }
-    
-    // Tab Bar views
-    private var dashboardTab: some View {
-        NavigationView {
-            DashboardView()
-        }
-        .tabItem {
-            Image(systemName: "house")
-        }
-    }
-
-    #warning("TODO: Change starting view")
-    private var createSessionTab: some View {
-        ChooseSessionTypeView(sessionContext: CreateSessionContext(createSessionService: CreateSessionAPIService(authorisationService: userAuthenticationSession), managedObjectContext: managedObjectContext))
-        .tabItem {
-            Image(systemName: "plus")
-        }
-    }
-    private var settingsTab: some View {
-        SettingsView()
-            .tabItem {
-                Image(systemName: "gearshape")
-            }
-    }
 }
 
 #if DEBUG

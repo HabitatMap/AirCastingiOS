@@ -13,6 +13,8 @@ struct ConnectingABView: View {
     var bluetoothManager: BluetoothManager
     var selecedPeripheral: CBPeripheral
     @State private var isDeviceConnected: Bool = false
+    
+    @Binding var dashboardIsActive : Bool
 
     var body: some View {
         VStack(spacing: 50) {
@@ -32,7 +34,7 @@ struct ConnectingABView: View {
             }
             .background(
                 NavigationLink(
-                    destination: ABConnectedView(),
+                    destination: ABConnectedView(dashboardIsActive: $dashboardIsActive),
                     isActive: $isDeviceConnected,
                     label: {
                         EmptyView()

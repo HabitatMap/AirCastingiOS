@@ -10,6 +10,8 @@ import SwiftUI
 struct ABConnectedView: View {
     
     @EnvironmentObject var bluetoothManager: BluetoothManager
+    
+    @Binding var dashboardIsActive : Bool
 
     var body: some View {
         VStack(spacing: 40) {
@@ -37,7 +39,7 @@ struct ABConnectedView: View {
     }
     var continueButton: some View {
         NavigationLink(
-            destination: AddNameAndTagsView(),
+            destination: AddNameAndTagsView(dashboardIsActive: $dashboardIsActive),
             label: {
                 Text("Continue")
             })
@@ -45,8 +47,8 @@ struct ABConnectedView: View {
     }
 }
 
-struct AirbeamConnectedView_Previews: PreviewProvider {
-    static var previews: some View {
-        ABConnectedView()
-    }
-}
+//struct AirbeamConnectedView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ABConnectedView()
+//    }
+//}

@@ -13,6 +13,8 @@ struct TurnOnBluetoothView: View {
     @State private var isPowerABLinkActive = false
     @EnvironmentObject var bluetoothManager: BluetoothManager
     
+    @Binding var dashboardIsActive : Bool
+    
     var body: some View {
         VStack(spacing: 50) {
             ProgressView(value: 0.125)
@@ -59,12 +61,13 @@ struct TurnOnBluetoothView: View {
         .buttonStyle(BlueButtonStyle())
         .background(
             NavigationLink(
-                destination: PowerABView(),
+                destination: PowerABView(dashboardIsActive: $dashboardIsActive),
                 isActive: $isPowerABLinkActive,
                 label: {
                     EmptyView()
                 })
-        )}
+        )
+    }
     
     func goToBluetoothSettings() {
         if let url = URL(string: "App-prefs:root=Bluetooth") {
@@ -84,10 +87,10 @@ struct TurnOnBluetoothView: View {
     }
 }
 
-struct TurnOnBluetoothView_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationView {
-            TurnOnBluetoothView()
-        }
-    }
-}
+//struct TurnOnBluetoothView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        NavigationView {
+//            TurnOnBluetoothView()
+//        }
+//    }
+//}

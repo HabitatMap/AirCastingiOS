@@ -21,6 +21,8 @@ struct AddNameAndTagsView: View {
     // Location tracker is needed to get wifi SSID (more info CNCopyCurrentNetworkInfo documentation.
     @StateObject private var locationTracker = LocationTracker()
     
+    @Binding var dashboardIsActive : Bool
+    
     var body: some View {
         GeometryReader { geometry in
             ScrollView(.vertical) {
@@ -73,7 +75,7 @@ struct AddNameAndTagsView: View {
         .buttonStyle(BlueButtonStyle())
         .background( Group {
             NavigationLink(
-                destination: ConfirmCreatingSessionView(sessionName: sessionName),
+                destination: ConfirmCreatingSessionView(dashboardIsActive: $dashboardIsActive, sessionName: sessionName),
                 isActive: $isConfirmCreatingSessionActive,
                 label: {
                     EmptyView()
@@ -132,8 +134,8 @@ struct AddNameAndTagsView: View {
 
 }
 
-struct AddNameAndTagsView_Previews: PreviewProvider {
-    static var previews: some View {
-        AddNameAndTagsView()
-    }
-}
+//struct AddNameAndTagsView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        AddNameAndTagsView()
+//    }
+//}

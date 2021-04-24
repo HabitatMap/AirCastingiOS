@@ -18,6 +18,8 @@ struct SelectDeviceView: View {
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @EnvironmentObject private var microphoneManager: MicrophoneManager
     
+    @Binding var dashboardIsActive : Bool
+    
     var body: some View {
         VStack(spacing: 30) {
             ProgressView(value: 0.125)
@@ -101,20 +103,19 @@ struct SelectDeviceView: View {
         .buttonStyle(BlueButtonStyle())
         .background( Group {
             NavigationLink(
-                destination: PowerABView(),
+                destination: PowerABView(dashboardIsActive: $dashboardIsActive),
                 isActive: $isPowerABLinkActive,
                 label: {
                     EmptyView()
                 })
             NavigationLink(
-                destination: TurnOnBluetoothView(),
+                destination: TurnOnBluetoothView(dashboardIsActive: $dashboardIsActive),
                 isActive: $isTurnOnBluetoothLinkActive,
                 label: {
                     EmptyView()
                 })
             NavigationLink(
-                // TO DO: change destination
-                destination: AddNameAndTagsView(),
+                destination: AddNameAndTagsView(dashboardIsActive: $dashboardIsActive),
                 isActive: $isMicLinkActive,
                 label: {
                     EmptyView()
@@ -123,8 +124,8 @@ struct SelectDeviceView: View {
     }
 }
 
-struct SelectDeviceView_Previews: PreviewProvider {
-    static var previews: some View {
-        SelectDeviceView()
-    }
-}
+//struct SelectDeviceView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        SelectDeviceView()
+//    }
+//}
