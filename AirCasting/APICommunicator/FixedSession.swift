@@ -75,7 +75,8 @@ final class FixedSessionAPIService {
         self.responseValidator = responseValidator
     }
 
-    func getFixedMeasurement(uuid: SessionUUID, lastSync: Date) -> AnyPublisher<FixedSession.FixedMeasurementOutput, Error> {
+    @discardableResult
+    func getFixedMeasurement(uuid: SessionUUID, lastSync: Date, completion: @escaping (Result<FixedSession.FixedMeasurementOutput, Error>) -> Void) -> Cancellable {
         // Build URL with query
         var components = URLComponents(string: "http://aircasting.org/api/realtime/sync_measurements.json")!
         let syncDateStr = ISO8601DateFormatter.defaultLong.string(from: lastSync)
@@ -90,30 +91,18 @@ final class FixedSessionAPIService {
         request.httpMethod = "GET"
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         request.addValue("application/json", forHTTPHeaderField: "Accept")
-        return apiClient.fetchPublisher(with: try authorisationService.authorise(request: &request))
-            .tryMap { [decoder, responseValidator] (data, response) -> FixedSession.FixedMeasurementOutput in
-                try responseValidator.validate(response: response, data: data)
-                return try decoder.decode(FixedSession.FixedMeasurementOutput.self, from: data)
-            }.eraseToAnyPublisher()
+        do {
+            try authorisationService.authorise(request: &request)
+            return apiClient.requestTask(for: request) { [responseValidator, decoder] result, _ in
+                completion(result.tryMap({
+                    try responseValidator.validate(response: $0.response, data: $0.data)
+                    return try decoder.decode(FixedSession.FixedMeasurementOutput.self, from: $0.data)
+                }))
+            }
+        } catch {
+            completion(.failure(error))
+            return EmptyCancellable()
+        }
     }
 }
 
-final class DefaultHTTPResponseValidator: HTTPResponseValidator {
-    func validate(response: URLResponse, data: Data) throws {
-        guard let httpResponse = response as? HTTPURLResponse else {
-            throw URLError(.badServerResponse, userInfo: ["data": data, "response": response])
-        }
-        switch httpResponse.statusCode {
-        case 200..<300:
-            return
-            // TODO: throw proper error
-        default:
-            throw URLError(.badServerResponse, userInfo: ["data": data, "response": response])
-        }
-
-    }
-}
-
-protocol HTTPResponseValidator {
-    func validate(response: URLResponse, data: Data) throws
-}
