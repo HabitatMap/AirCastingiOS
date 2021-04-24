@@ -17,11 +17,12 @@ struct AddNameAndTagsView: View {
     @State var wifiPassword: String = ""
     @State var wifiSSID: String = ""
     @State private var isConfirmCreatingSessionActive: Bool = false
-    @EnvironmentObject private var sessionContext: CreateSessionContext
+
     // Location tracker is needed to get wifi SSID (more info CNCopyCurrentNetworkInfo documentation.
     @StateObject private var locationTracker = LocationTracker()
     
     @Binding var dashboardIsActive : Bool
+    @StateObject var sessionContext: CreateSessionContext
     
     var body: some View {
         GeometryReader { geometry in
@@ -75,7 +76,7 @@ struct AddNameAndTagsView: View {
         .buttonStyle(BlueButtonStyle())
         .background( Group {
             NavigationLink(
-                destination: ConfirmCreatingSessionView(dashboardIsActive: $dashboardIsActive, sessionName: sessionName),
+                destination: ConfirmCreatingSessionView(dashboardIsActive: $dashboardIsActive, sessionContext: sessionContext, sessionName: sessionName),
                 isActive: $isConfirmCreatingSessionActive,
                 label: {
                     EmptyView()

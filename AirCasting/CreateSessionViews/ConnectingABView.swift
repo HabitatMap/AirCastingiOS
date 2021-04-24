@@ -15,6 +15,7 @@ struct ConnectingABView: View {
     @State private var isDeviceConnected: Bool = false
     
     @Binding var dashboardIsActive : Bool
+    @StateObject var sessionContext: CreateSessionContext
 
     var body: some View {
         VStack(spacing: 50) {
@@ -34,7 +35,7 @@ struct ConnectingABView: View {
             }
             .background(
                 NavigationLink(
-                    destination: ABConnectedView(dashboardIsActive: $dashboardIsActive),
+                    destination: ABConnectedView(dashboardIsActive: $dashboardIsActive, sessionContext: sessionContext),
                     isActive: $isDeviceConnected,
                     label: {
                         EmptyView()

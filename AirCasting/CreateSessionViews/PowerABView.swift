@@ -9,6 +9,7 @@ import SwiftUI
 
 struct PowerABView: View {
     @Binding var dashboardIsActive : Bool
+    @StateObject var sessionContext: CreateSessionContext
     
     var body: some View {
         VStack(spacing: 45) {
@@ -39,7 +40,7 @@ struct PowerABView: View {
 
     }
     var continueButton: some View {
-        NavigationLink(destination: SelectPeripheralView(dashboardIsActive: $dashboardIsActive)) {
+        NavigationLink(destination: SelectPeripheralView(dashboardIsActive: $dashboardIsActive, sessionContext: sessionContext)) {
             Text("Continue")
                 .frame(maxWidth: .infinity)
         }

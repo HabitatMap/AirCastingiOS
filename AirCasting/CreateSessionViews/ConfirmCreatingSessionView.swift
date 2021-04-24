@@ -10,10 +10,10 @@ import CoreLocation
 
 struct ConfirmCreatingSessionView: View {
     @Binding var dashboardIsActive : Bool
+    @StateObject var sessionContext: CreateSessionContext
     
     @State var isActive : Bool = false
     
-    @EnvironmentObject private var sessionContext: CreateSessionContext
     @State private var didStartRecordingSession = false
     @EnvironmentObject private var microphoneManager: MicrophoneManager
     var sessionName: String

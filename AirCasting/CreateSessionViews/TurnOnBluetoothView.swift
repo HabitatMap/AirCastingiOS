@@ -14,6 +14,7 @@ struct TurnOnBluetoothView: View {
     @EnvironmentObject var bluetoothManager: BluetoothManager
     
     @Binding var dashboardIsActive : Bool
+    @StateObject var sessionContext: CreateSessionContext
     
     var body: some View {
         VStack(spacing: 50) {
@@ -61,7 +62,7 @@ struct TurnOnBluetoothView: View {
         .buttonStyle(BlueButtonStyle())
         .background(
             NavigationLink(
-                destination: PowerABView(dashboardIsActive: $dashboardIsActive),
+                destination: PowerABView(dashboardIsActive: $dashboardIsActive, sessionContext: sessionContext),
                 isActive: $isPowerABLinkActive,
                 label: {
                     EmptyView()

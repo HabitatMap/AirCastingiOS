@@ -12,9 +12,9 @@ struct SelectPeripheralView: View {
     
     @State private var selection: CBPeripheral? = nil
     @EnvironmentObject var bluetoothManager: BluetoothManager
-    @EnvironmentObject var sessionContext: CreateSessionContext
     
     @Binding var dashboardIsActive : Bool
+    @StateObject var sessionContext: CreateSessionContext
     
     var body: some View {
         GeometryReader { geometry in
@@ -112,7 +112,7 @@ struct SelectPeripheralView: View {
         var destination: AnyView
         if let selection = selection {
             destination = AnyView(ConnectingABView(bluetoothManager: bluetoothManager,
-                                                   selecedPeripheral: selection, dashboardIsActive: $dashboardIsActive))
+                                                   selecedPeripheral: selection, dashboardIsActive: $dashboardIsActive, sessionContext: sessionContext))
         } else {
             destination = AnyView(EmptyView())
         }

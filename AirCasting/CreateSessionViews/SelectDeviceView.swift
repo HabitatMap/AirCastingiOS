@@ -14,11 +14,11 @@ struct SelectDeviceView: View {
     @State private var isTurnOnBluetoothLinkActive: Bool = false
     @State private var isPowerABLinkActive: Bool = false
     @State private var isMicLinkActive: Bool = false
-    @EnvironmentObject private var sessionContext: CreateSessionContext
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @EnvironmentObject private var microphoneManager: MicrophoneManager
     
     @Binding var dashboardIsActive : Bool
+    @StateObject var sessionContext: CreateSessionContext
     
     var body: some View {
         VStack(spacing: 30) {
@@ -103,19 +103,19 @@ struct SelectDeviceView: View {
         .buttonStyle(BlueButtonStyle())
         .background( Group {
             NavigationLink(
-                destination: PowerABView(dashboardIsActive: $dashboardIsActive),
+                destination: PowerABView(dashboardIsActive: $dashboardIsActive, sessionContext: sessionContext),
                 isActive: $isPowerABLinkActive,
                 label: {
                     EmptyView()
                 })
             NavigationLink(
-                destination: TurnOnBluetoothView(dashboardIsActive: $dashboardIsActive),
+                destination: TurnOnBluetoothView(dashboardIsActive: $dashboardIsActive, sessionContext: sessionContext),
                 isActive: $isTurnOnBluetoothLinkActive,
                 label: {
                     EmptyView()
                 })
             NavigationLink(
-                destination: AddNameAndTagsView(dashboardIsActive: $dashboardIsActive),
+                destination: AddNameAndTagsView(dashboardIsActive: $dashboardIsActive, sessionContext: sessionContext),
                 isActive: $isMicLinkActive,
                 label: {
                     EmptyView()

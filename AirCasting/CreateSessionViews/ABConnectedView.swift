@@ -12,6 +12,7 @@ struct ABConnectedView: View {
     @EnvironmentObject var bluetoothManager: BluetoothManager
     
     @Binding var dashboardIsActive : Bool
+    @StateObject var sessionContext: CreateSessionContext
 
     var body: some View {
         VStack(spacing: 40) {
@@ -39,7 +40,7 @@ struct ABConnectedView: View {
     }
     var continueButton: some View {
         NavigationLink(
-            destination: AddNameAndTagsView(dashboardIsActive: $dashboardIsActive),
+            destination: AddNameAndTagsView(dashboardIsActive: $dashboardIsActive, sessionContext: sessionContext),
             label: {
                 Text("Continue")
             })

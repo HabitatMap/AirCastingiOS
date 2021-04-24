@@ -63,7 +63,6 @@ struct ChooseSessionTypeView: View {
                 didTapFixedSession = false
             }
         }
-//        .environmentObject(sessionContext)
     }
     
     var titleLabel: some View {
@@ -121,13 +120,13 @@ struct ChooseSessionTypeView: View {
         .background(
             Group {
                 NavigationLink(
-                    destination: PowerABView(dashboardIsActive: $dashboardIsActive),
+                    destination: PowerABView(dashboardIsActive: $dashboardIsActive, sessionContext: sessionContext),
                     isActive: $isPowerABLinkActive,
                     label: {
                         EmptyView()
                     })
                 NavigationLink(
-                    destination: TurnOnBluetoothView(dashboardIsActive: $dashboardIsActive),
+                    destination: TurnOnBluetoothView(dashboardIsActive: $dashboardIsActive, sessionContext: sessionContext),
                     isActive: $isTurnBluetoothOnLinkActive,
                     label: {
                         EmptyView()
@@ -145,7 +144,7 @@ struct ChooseSessionTypeView: View {
         }
         .background(
             NavigationLink(
-                destination: SelectDeviceView(dashboardIsActive: $dashboardIsActive),
+                destination: SelectDeviceView(dashboardIsActive: $dashboardIsActive, sessionContext: sessionContext),
                 isActive: $isMobileLinkActive,
                 label: {
                     EmptyView()
