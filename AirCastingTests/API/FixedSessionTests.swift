@@ -119,7 +119,7 @@ final class FixedSessionTests: XCTestCase {
         let response =  try XCTUnwrap(result).get()
 
         let expectedResponse = FixedSession.FixedMeasurementOutput(
-            type: .FIXED,
+            type: .fixed,
             uuid: SessionUUID(uuidString: "51dd1e15-0af6-4810-bacd-11e061ac9d1d")!,
             title: "hetmafixab",
             tag_list: "",

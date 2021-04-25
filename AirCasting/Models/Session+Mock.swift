@@ -11,6 +11,8 @@ extension Session {
     
     static var mock: Session {
         let session = Session(context: PersistenceController.shared.container.viewContext)
+        session.uuid = SessionUUID()
+        session.type = .mobile
         // ...
         return session
     }

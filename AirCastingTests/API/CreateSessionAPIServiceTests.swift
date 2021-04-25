@@ -118,7 +118,7 @@ extension CreateSessionApi.Input {
             streams["\($0)"] = CreateSessionApi.MeasurementStreamParams.mock()
         }
         return CreateSessionApi.Input(session: CreateSessionApi.SessionParams(uuid: SessionUUID(),
-                                                                       type: [SessionType.FIXED, .MOBILE].randomElement()!,
+                                                                       type: [SessionType.fixed, .mobile].randomElement()!,
                                                                        title: UUID().uuidString,
                                                                        tag_list: UUID().uuidString,
                                                                        start_time: Date(),

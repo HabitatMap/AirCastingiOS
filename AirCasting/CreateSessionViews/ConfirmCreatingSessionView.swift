@@ -19,9 +19,7 @@ struct ConfirmCreatingSessionView: View {
     @Binding var creatingSessionFlowContinues : Bool
     
     var sessionName: String
-    var sessionType: String {
-        sessionContext.sessionType == SessionType.MOBILE ? "mobile" : "fixed"
-    }
+    private var sessionType: String { (sessionContext.sessionType ?? .fixed).description.lowercased() }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 40) {

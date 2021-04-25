@@ -39,7 +39,7 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
 
     private func update() throws {
         let request: NSFetchRequest<Session> = Session.fetchRequest()
-        request.predicate = request.typePredicate(.FIXED)
+        request.predicate = request.typePredicate(.fixed)
         let fetchedResult = try context.fetch(request)
         for session in fetchedResult {
             if let uuid = session.uuid {

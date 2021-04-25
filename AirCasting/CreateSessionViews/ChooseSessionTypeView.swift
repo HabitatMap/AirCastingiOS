@@ -181,9 +181,9 @@ struct ChooseSessionTypeView: View {
     private func createNewSession(isSessionFixed: Bool) {
         sessionContext.sessionUUID = SessionUUID()
         if isSessionFixed {
-            sessionContext.sessionType = SessionType.FIXED
+            sessionContext.sessionType = SessionType.fixed
         } else {
-            sessionContext.sessionType = SessionType.MOBILE
+            sessionContext.sessionType = SessionType.mobile
         }
     }
 }

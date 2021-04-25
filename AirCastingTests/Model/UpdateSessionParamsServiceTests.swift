@@ -8,7 +8,7 @@ import CoreData
 
 final class UpdateSessionParamsServiceTests: XCTestCase {
     private static let sampleOutput = FixedSession.FixedMeasurementOutput(
-        type: .FIXED,
+        type: .fixed,
         uuid: SessionUUID(uuidString: "51dd1e15-0af6-4810-bacd-11e061ac9d1d")!,
         title: "hetmafixab",
         tag_list: "",
