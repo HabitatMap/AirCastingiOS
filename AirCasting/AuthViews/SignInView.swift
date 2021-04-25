@@ -11,10 +11,11 @@ extension NSError: Identifiable {}
 
 struct SignInView: View {
     let userAuthenticationSession: UserAuthenticationSession
+    private let authorizationAPIService = AuthorizationAPIService()
     @State private var username: String = ""
     @State private var password: String = ""
-    @State private var task: Any?
-    @State private var presentedError: NSError?
+    @State private var task: Cancellable?
+    @State private var presentedError: AuthorizationError?
     @State private var isUsernameBlank = false
     @State private var isPasswordBlank = false
     
@@ -45,7 +46,7 @@ struct SignInView: View {
                 .navigationBarHidden(true)
                 .frame(maxWidth: .infinity, minHeight: geometry.size.height)
                 .alert(item: $presentedError) { error in
-                    displayErrorAlert(error: error, errorTitle: "Login Error")
+                    displayErrorAlert(error: error)
                 }
             }
         }
@@ -57,7 +58,9 @@ struct SignInView: View {
         })
 )
     }
-    
+}
+
+private extension SignInView {
     var titleLabel: some View {
         VStack(alignment: .leading, spacing: 15) {
             Text("Sign in")
@@ -73,12 +76,14 @@ struct SignInView: View {
     var usernameTextfield: some View {
         createTextfield(placeholder: "Profile name",
                         binding: $username)
+            .disableAutocorrection(true)
             .autocapitalization(.none)
     }
     var passwordTextfield: some View {
         SecureField("Password", text: $password)
             .padding()
             .frame(height: 50)
+            .disableAutocorrection(true)
             .background(Color.aircastingGray.opacity(0.05))
             .border(Color.aircastingGray.opacity(0.1))
     }
@@ -86,27 +91,23 @@ struct SignInView: View {
         Button("Sign in") {
             checkInput()
             if !isPasswordBlank && !isUsernameBlank {
-                task = AuthorizationAPI.signIn(input: AuthorizationAPI.SigninUserInput(username: username,
-                                                                                       password: password))
-                    .sink { (completion) in
-                        switch completion {
-                        case .finished:
-                            break
-                        case .failure(let error):
-                            Log.warning("Failed to login \(error)")
-                            presentedError = error as NSError
-                        }
-                    } receiveValue: { (output) in
-                        DispatchQueue.main.async {
+                task = authorizationAPIService.signIn(input: AuthorizationAPI.SigninUserInput(username: username, password: password)) { result in
+                    DispatchQueue.main.async {
+                        switch result {
+                        case .success(let output):
                             do {
                                 try userAuthenticationSession.authorise(with: output.authentication_token)
                                 Log.info("Successfully logged in")
                             } catch {
                                 assertionFailure("Failed to store credentials \(error)")
-                                presentedError = error as NSError
+                                presentedError = .other(error)
                             }
+                        case .failure(let error):
+                            Log.warning("Failed to login \(error)")
+                            presentedError = error
                         }
                     }
+                }
             }
         }
         .buttonStyle(BlueButtonStyle())
@@ -133,6 +134,25 @@ struct SignInView: View {
     func checkInput() {
         isPasswordBlank = checkIfBlank(text: password)
         isUsernameBlank = checkIfBlank(text: username)
+    }
+
+    func displayErrorAlert(error: AuthorizationError) -> Alert {
+        let title = NSLocalizedString("Login Error", comment: "Login Error alert title")
+        switch error {
+        case .emailTaken, .invalidCredentials, .usernameTaken:
+            return Alert(title: Text(title),
+                         message: Text("The profile name or password is incorrect. Please, try again. "),
+                         dismissButton: .default(Text("Ok")))
+
+        case .noConnection:
+            return Alert(title: Text("No Internet Connection"),
+                         message: Text("Please, make sure your device is connected to the internet."),
+                         dismissButton: .default(Text("Ok")))
+        case .other, .timeout:
+            return Alert(title: Text(title),
+                         message: Text(error.localizedDescription),
+                         dismissButton: .default(Text("Ok")))
+        }
     }
 }
 

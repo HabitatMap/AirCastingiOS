@@ -9,16 +9,16 @@ import SwiftUI
 
 struct CreateAccountView: View {
     let userAuthenticationSession: UserAuthenticationSession
+    private let authorizationAPIService = AuthorizationAPIService()
 
     @State private var email: String = ""
     @State private var username: String = ""
     @State private var password: String = ""
-    @State private var task: Any?
 
     @State private var isPasswordCorrect = true
     @State private var isEmailCorrect = true
     @State private var isUsernameBlank = false
-    @State private var presentedError: NSError?
+    @State private var presentedError: AuthorizationError?
 
     var body: some View {
         GeometryReader { geometry in
@@ -58,7 +58,7 @@ struct CreateAccountView: View {
                 .navigationBarHidden(true)
                 .frame(maxWidth: .infinity, minHeight: geometry.size.height)
                 .alert(item: $presentedError) { error in
-                    displayErrorAlert(error: error, errorTitle: "Cannot create account")
+                    displayErrorAlert(error: error)
                 }
             }
         }
@@ -68,9 +68,11 @@ struct CreateAccountView: View {
         .onChanged({ (_) in
             UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
         })
-)
+        )
     }
-    
+}
+
+private extension CreateAccountView {
     var titleLabel: some View {
         VStack(alignment: .leading, spacing: 15) {
             Text("Create account")
@@ -97,6 +99,8 @@ struct CreateAccountView: View {
     var passwordTextfield: some View {
         SecureField("Password", text: $password)
             .padding()
+            .autocapitalization(.none)
+            .disableAutocorrection(true)
             .frame(height: 50)
             .background(Color.aircastingGray.opacity(0.05))
             .border(Color.aircastingGray.opacity(0.1))
@@ -107,29 +111,28 @@ struct CreateAccountView: View {
             checkIfUserInputIsCorrect()
             
             if isPasswordCorrect && isEmailCorrect && !isUsernameBlank {
-                let userInfo = AuthorizationAPI.SignupUserInput(email: email,
+                #warning("Show progress and lock ui to prevent multiple api calls")
+                let userInput = AuthorizationAPI.SignupUserInput(email: email,
                                                                 username: username,
                                                                 password: password,
                                                                 send_emails: false)
-                let userInput = AuthorizationAPI.SignupAPIInput(user: userInfo)
-                
-                task = AuthorizationAPI.createAccount(input: userInput)
-                    .sink { (completion) in
-                        switch completion {
-                        case .finished: break
+                authorizationAPIService.createAccount(input: userInput) { result in
+                    DispatchQueue.main.async {
+                        switch result {
                         case .failure(let error):
-                            presentedError = error as NSError
+                            presentedError = error
                             Log.warning("Failed to create account \(error)")
-                        }
-                    } receiveValue: { (output) in
-                        Log.info("Successfully created account")
-                        do {
-                            try userAuthenticationSession.authorise(with: output.authentication_token)
-                        } catch {
-                            Log.error("Failed to store credentials \(error)")
-                            presentedError = error as NSError
+                        case .success(let output):
+                            Log.info("Successfully created account")
+                            do {
+                                try userAuthenticationSession.authorise(with: output.authentication_token)
+                            } catch {
+                                Log.error("Failed to store credentials \(error)")
+                                presentedError = .other(error)
+                            }
                         }
                     }
+                }
             }
         }
         .buttonStyle(BlueButtonStyle())
@@ -152,10 +155,30 @@ struct CreateAccountView: View {
             .font(Font.moderate(size: 16, weight: .bold))
             .foregroundColor(.accentColor)
     }
+
     func checkIfUserInputIsCorrect() {
         isPasswordCorrect = checkIsPasswordValid(password: password)
         isEmailCorrect = checkIsEmailValid(email: email)
         isUsernameBlank = checkIfBlank(text: username)
+    }
+
+    func displayErrorAlert(error: AuthorizationError) -> Alert {
+        let title = NSLocalizedString("Cannot create account", comment: "Cannot create account alert title")
+        switch error {
+        case .emailTaken, .invalidCredentials, .usernameTaken:
+            return Alert(title: Text(title),
+                         message: Text("The profile name or password is incorrect. Please, try again. "),
+                         dismissButton: .default(Text("Ok")))
+
+        case .noConnection:
+            return Alert(title: Text("No Internet Connection"),
+                         message: Text("Please, make sure your device is connected to the internet."),
+                         dismissButton: .default(Text("Ok")))
+        case .other, .timeout:
+            return Alert(title: Text(title),
+                         message: Text(error.localizedDescription),
+                         dismissButton: .default(Text("Ok")))
+        }
     }
 }
 
