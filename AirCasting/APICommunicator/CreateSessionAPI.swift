@@ -12,45 +12,45 @@ import CoreLocation
 
 class CreateSessionApi {
     struct MeasurementParams: Encodable {
-        var longitude: CLLocationDegrees?
-        var latitude: CLLocationDegrees?
-        var milliseconds: Int
-        var time: Date
-        var value: Double?
+        let longitude: CLLocationDegrees?
+        let latitude: CLLocationDegrees?
+        let milliseconds: Int
+        let time: Date
+        let value: Double?
     }
     
     struct MeasurementStreamParams: Encodable {
-        var deleted: Bool
-        var sensor_package_name: String
-        var sensor_name: String?
-        var measurement_type: String?
-        var measurement_short_type: String?
-        var unit_name: String?
-        var unit_symbol: String?
-        var threshold_very_high: Int?
-        var threshold_high: Int?
-        var threshold_medium: Int?
-        var threshold_low: Int?
-        var threshold_very_low: Int?
-        var measurements: [MeasurementParams]
+        let deleted: Bool
+        let sensor_package_name: String
+        let sensor_name: String?
+        let measurement_type: String?
+        let measurement_short_type: String?
+        let unit_name: String?
+        let unit_symbol: String?
+        let threshold_very_high: Int?
+        let threshold_high: Int?
+        let threshold_medium: Int?
+        let threshold_low: Int?
+        let threshold_very_low: Int?
+        let measurements: [MeasurementParams]
     }
     
     struct SessionParams: Encodable {
-        var uuid: SessionUUID
-        var type: SessionType
-        var title: String
-        var tag_list: String
-        var start_time: Date
-        var end_time: Date
-        var contribute: Bool
-        var is_indoor: Bool
+        let uuid: SessionUUID
+        let type: SessionType
+        let title: String
+        let tag_list: String
+        let start_time: Date
+        let end_time: Date
+        let contribute: Bool
+        let is_indoor: Bool
         #warning("TODO: handle after adding notes")
-        var notes: [String]
-        var version: Int
-        var streams: [String : MeasurementStreamParams]
+        let notes: [String]
+        let version: Int
+        let streams: [String : MeasurementStreamParams]
 
-        var latitude: CLLocationDegrees?
-        var longitude: CLLocationDegrees?
+        let latitude: CLLocationDegrees?
+        let longitude: CLLocationDegrees?
     }
         
     struct Output: Decodable, Hashable {
@@ -59,7 +59,7 @@ class CreateSessionApi {
     
     struct Input: Encodable {
         let session: SessionParams
-        var compression: Bool = true
+        let compression: Bool
     }
 }
 
