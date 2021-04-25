@@ -60,9 +60,9 @@ public class Session: NSManagedObject, Identifiable {
         set { setValue(newValue?.rawValue, forKey: "status") }
     }
 
-    public var uuid: SessionUUID? {
-        get { (value(forKey: "uuid") as? String).flatMap(SessionUUID.init(rawValue:)) }
-        set { setValue(newValue?.rawValue, forKey: "uuid") }
+    public var uuid: SessionUUID! {
+        get { SessionUUID(rawValue: value(forKey: "uuid") as! String) }
+        set { setValue(newValue.rawValue, forKey: "uuid") }
     }
 
     public var deviceType: DeviceType? {
@@ -70,36 +70,15 @@ public class Session: NSManagedObject, Identifiable {
         set { setValue(newValue?.rawValue, forKey: "deviceType") }
     }
 
-    public var type: SessionType? {
-        get { SessionType(rawValue: value(forKey: "type") as! Int16) }
-        set { setValue(newValue?.rawValue, forKey: "type") }
+    public var type: SessionType! {
+        get { SessionType(rawValue:(value(forKey: "type") as! String)) }
+        set { setValue(newValue.rawValue, forKey: "type") }
     }
-
-
 }
 
 extension NSFetchRequest where ResultType == Session {
     public func typePredicate(_ type: SessionType) -> NSPredicate {
-        NSPredicate(format: "type == \(type.rawValue)")
-    }
-}
-
-extension SessionType {
-    @available(*, deprecated, message: "Only temporary for database. Database underling storage change needed")
-    fileprivate var rawValue: Int16 {
-        switch self {
-        case .MOBILE: return 0
-        case .FIXED: return 1
-        case .unknown: return -1
-        }
-    }
-    @available(*, deprecated, message: "Only temporary for database. Database underling storage change needed")
-    fileprivate init(rawValue: Int16) {
-        switch rawValue {
-        case 0: self = .MOBILE
-        case 1: self = .FIXED
-        default: self = .unknown("")
-        }
+        NSPredicate(format: "type == \"\(type.rawValue)\"")
     }
 }
 // MARK: Generated accessors for measurementStreams

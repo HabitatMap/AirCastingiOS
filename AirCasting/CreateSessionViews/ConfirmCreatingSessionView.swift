@@ -15,9 +15,7 @@ struct ConfirmCreatingSessionView: View {
     @State private var didStartRecordingSession = false
     @EnvironmentObject private var microphoneManager: MicrophoneManager
     var sessionName: String
-    var sessionType: String {
-        sessionContext.sessionType == SessionType.MOBILE ? "mobile" : "fixed"
-    }
+    private var sessionType: String { (sessionContext.sessionType ?? .fixed).description.lowercased() }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 40) {

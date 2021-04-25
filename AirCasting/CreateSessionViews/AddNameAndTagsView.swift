@@ -32,7 +32,7 @@ struct AddNameAndTagsView: View {
                             createTextfield(placeholder: "Session name", binding: $sessionName)
                             createTextfield(placeholder: "Tags", binding: $sessionTags)
                         }
-                        if sessionContext.sessionType == SessionType.FIXED {
+                        if sessionContext.sessionType == SessionType.fixed {
                             placementPicker
                             transmissionTypePicker
                         }
@@ -57,7 +57,7 @@ struct AddNameAndTagsView: View {
         Button(action: {
             sessionContext.sessionName = sessionName
             sessionContext.sessionTags = sessionTags
-            if sessionContext.sessionType == SessionType.FIXED {
+            if sessionContext.sessionType == SessionType.fixed {
                 sessionContext.isIndoor = isIndoor
             }
             getAndSaveStartingLocation()

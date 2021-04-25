@@ -51,7 +51,6 @@ class CreateSessionContext: ObservableObject {
               let startingLocation = startingLocation else { return }
         
         // Save data to app's database
-//        let session: Session = managedObjectContext.createNew(uuid: sessionUUID!)
         let session: Session = try! managedObjectContext.newOrExisting(uuid: sessionUUID)
         session.name = sessionName
         session.tags = sessionTags
@@ -66,7 +65,7 @@ class CreateSessionContext: ObservableObject {
         // TO DO: Replace mocked location and date
         let temporaryMockedDate = "19/12/19-02:40:00"
         
-        if session.type == SessionType.FIXED {
+        if session.type == SessionType.fixed {
             // if session is fixed: create an empty session on server,
             // then send AB auth data to connect to web session and data needed to start recording
             
@@ -76,7 +75,7 @@ class CreateSessionContext: ObservableObject {
             
             // TO DO : change mocked data (contribute, is_indoor, notes, locaation, end_time)
             let params = CreateSessionApi.SessionParams(uuid: uuid,
-                                                        type: .FIXED,
+                                                        type: .fixed,
                                                         title: name,
                                                         tag_list: session.tags ?? "",
                                                         start_time: startTime,
@@ -138,19 +137,15 @@ class CreateSessionContext: ObservableObject {
     
 }
 
-public enum SessionType: CustomStringConvertible, Hashable, Codable {
-    case MOBILE
-    case FIXED
+public enum SessionType: RawRepresentable, CustomStringConvertible, Hashable, Codable {
+    case mobile
+    case fixed
     case unknown(String)
 
     public init(from decoder: Decoder) throws {
         let singleValue = try decoder.singleValueContainer()
         let rawValue = try singleValue.decode(String.self)
-        switch rawValue {
-        case "MobileSession": self = .MOBILE
-        case "FixedSession": self = .FIXED
-        default: self = .unknown(rawValue)
-        }
+        self.init(rawValue: rawValue)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -158,10 +153,26 @@ public enum SessionType: CustomStringConvertible, Hashable, Codable {
         try container.encode(description)
     }
 
+    public var rawValue: String {
+        switch self {
+        case .mobile: return "MobileSession"
+        case .fixed: return "FixedSession"
+        case .unknown(let rawValue): return rawValue
+        }
+    }
+
+    public init(rawValue: String) {
+        switch rawValue {
+        case "MobileSession": self = .mobile
+        case "FixedSession": self = .fixed
+        default: self = .unknown(rawValue)
+        }
+    }
+
     public var description: String {
         switch self {
-        case .MOBILE: return NSLocalizedString("Mobile", comment: "Mobile user readable localized description")
-        case .FIXED: return NSLocalizedString("Fixed", comment: "Fixed user readable localized description")
+        case .mobile: return NSLocalizedString("Mobile", comment: "Mobile user readable localized description")
+        case .fixed: return NSLocalizedString("Fixed", comment: "Fixed user readable localized description")
         case .unknown: return NSLocalizedString("Other", comment: "Unknown user readable localized description")
         }
     }

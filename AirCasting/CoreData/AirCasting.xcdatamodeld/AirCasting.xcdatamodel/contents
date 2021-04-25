@@ -22,7 +22,7 @@
         <attribute name="thresholdVeryLow" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="unitName" optional="YES" attributeType="String"/>
         <attribute name="unitSymbol" optional="YES" attributeType="String"/>
-        <relationship name="measurements" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Measurement" inverseName="measurementStream" inverseEntity="Measurement"/>
+        <relationship name="measurements" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Measurement" inverseName="measurementStream" inverseEntity="Measurement"/>
         <relationship name="session" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Session" inverseName="measurementStreams" inverseEntity="Session"/>
     </entity>
     <entity name="SensorThreshold" representedClassName="SensorThreshold" syncable="YES" codeGenerationType="class">
@@ -48,15 +48,15 @@
         <attribute name="startTime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="status" optional="YES" attributeType="Integer 16" defaultValueString="-1" usesScalarValueType="YES"/>
         <attribute name="tags" optional="YES" attributeType="String"/>
-        <attribute name="type" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="type" attributeType="String"/>
         <attribute name="urlLocation" optional="YES" attributeType="String"/>
-        <attribute name="uuid" optional="YES" attributeType="String"/>
+        <attribute name="uuid" attributeType="String"/>
         <attribute name="version" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="measurementStreams" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="MeasurementStream" inverseName="session" inverseEntity="MeasurementStream"/>
     </entity>
     <elements>
         <element name="Measurement" positionX="-63" positionY="-18" width="128" height="118"/>
-        <element name="MeasurementStream" positionX="-63.7001953125" positionY="128.3192749023438" width="128" height="253"/>
+        <element name="MeasurementStream" positionX="-63.7001953125" positionY="128.3192749023438" width="128" height="254"/>
         <element name="SensorThreshold" positionX="388.8433837890625" positionY="56.29141235351562" width="128" height="133"/>
         <element name="Session" positionX="146.2360229492188" positionY="-4.297317504882812" width="165.6036376953125" height="314"/>
     </elements>
