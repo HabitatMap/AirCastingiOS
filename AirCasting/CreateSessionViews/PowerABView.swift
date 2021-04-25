@@ -46,9 +46,9 @@ struct PowerABView: View {
         }
     }
 }
-//
-//struct PowerABView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        PowerABView()
-//    }
-//}
+
+struct PowerABView_Previews: PreviewProvider {
+    static var previews: some View {
+        PowerABView(dashboardIsActive: .constant(true), sessionContext: CreateSessionContext(createSessionService: CreateSessionAPIService(authorisationService: UserAuthenticationSession()), managedObjectContext: PersistenceController.shared.container.viewContext))
+    }
+}

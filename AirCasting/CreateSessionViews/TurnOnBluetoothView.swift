@@ -88,10 +88,11 @@ struct TurnOnBluetoothView: View {
     }
 }
 
-//struct TurnOnBluetoothView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        NavigationView {
-//            TurnOnBluetoothView()
-//        }
-//    }
-//}
+struct TurnOnBluetoothView_Previews: PreviewProvider {
+    static var previews: some View {
+        NavigationView {
+            TurnOnBluetoothView(dashboardIsActive: .constant(true), sessionContext: CreateSessionContext(createSessionService: CreateSessionAPIService(authorisationService: UserAuthenticationSession()), managedObjectContext: PersistenceController.shared.container.viewContext))
+        }
+    }
+}
+

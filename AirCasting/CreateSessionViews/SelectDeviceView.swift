@@ -124,8 +124,8 @@ struct SelectDeviceView: View {
     }
 }
 
-//struct SelectDeviceView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        SelectDeviceView()
-//    }
-//}
+struct SelectDeviceView_Previews: PreviewProvider {
+    static var previews: some View {
+        SelectDeviceView(dashboardIsActive: .constant(true), sessionContext: CreateSessionContext(createSessionService: CreateSessionAPIService(authorisationService: UserAuthenticationSession()), managedObjectContext: PersistenceController.shared.container.viewContext))
+    }
+}

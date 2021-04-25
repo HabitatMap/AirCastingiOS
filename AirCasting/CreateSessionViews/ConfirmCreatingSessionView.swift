@@ -61,8 +61,8 @@ struct ConfirmCreatingSessionView: View {
     }
 }
 
-//struct ConfirmCreatingSession_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ConfirmCreatingSessionView(sessionName: "Ania's microphone session")
-//    }
-//}
+struct ConfirmCreatingSession_Previews: PreviewProvider {
+    static var previews: some View {
+        ConfirmCreatingSessionView(dashboardIsActive: .constant(true), sessionContext: CreateSessionContext(createSessionService: CreateSessionAPIService(authorisationService: UserAuthenticationSession()), managedObjectContext: PersistenceController.shared.container.viewContext), sessionName: "Ania's microphone session")
+    }
+}

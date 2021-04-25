@@ -124,8 +124,8 @@ struct SelectPeripheralView: View {
     }
 }
 
-//struct SelectPeripheralView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        SelectPeripheralView()
-//    }
-//}
+struct SelectPeripheralView_Previews: PreviewProvider {
+    static var previews: some View {
+        SelectPeripheralView(dashboardIsActive: .constant(true), sessionContext: CreateSessionContext(createSessionService: CreateSessionAPIService(authorisationService: UserAuthenticationSession()), managedObjectContext: PersistenceController.shared.container.viewContext))
+    }
+}

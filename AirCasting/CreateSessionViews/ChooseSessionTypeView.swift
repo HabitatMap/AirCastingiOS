@@ -193,9 +193,9 @@ struct ChooseSessionTypeView: View {
 }
 
 #if DEBUG
-//struct ChooseSessionTypeView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ChooseSessionTypeView(sessionContext: CreateSessionContext(createSessionService: CreateSessionAPIService(authorisationService: UserAuthenticationSession()), managedObjectContext: PersistenceController.shared.container.viewContext))
-//    }
-//}
+struct ChooseSessionTypeView_Previews: PreviewProvider {
+    static var previews: some View {
+        ChooseSessionTypeView(sessionContext: CreateSessionContext(createSessionService: CreateSessionAPIService(authorisationService: UserAuthenticationSession()), managedObjectContext: PersistenceController.shared.container.viewContext), dashboardIsActive: .constant(true))
+    }
+}
 #endif

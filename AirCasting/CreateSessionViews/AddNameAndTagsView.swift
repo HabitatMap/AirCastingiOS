@@ -135,8 +135,8 @@ struct AddNameAndTagsView: View {
 
 }
 
-//struct AddNameAndTagsView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        AddNameAndTagsView()
-//    }
-//}
+struct AddNameAndTagsView_Previews: PreviewProvider {
+    static var previews: some View {
+        AddNameAndTagsView(dashboardIsActive: .constant(true), sessionContext: CreateSessionContext(createSessionService: CreateSessionAPIService(authorisationService: UserAuthenticationSession()), managedObjectContext: PersistenceController.shared.container.viewContext))
+    }
+}

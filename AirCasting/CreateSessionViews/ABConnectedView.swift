@@ -48,8 +48,8 @@ struct ABConnectedView: View {
     }
 }
 
-//struct AirbeamConnectedView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ABConnectedView()
-//    }
-//}
+struct AirbeamConnectedView_Previews: PreviewProvider {
+    static var previews: some View {
+        ABConnectedView(dashboardIsActive: .constant(true), sessionContext: CreateSessionContext(createSessionService: CreateSessionAPIService(authorisationService: UserAuthenticationSession()), managedObjectContext: PersistenceController.shared.container.viewContext))
+    }
+}
