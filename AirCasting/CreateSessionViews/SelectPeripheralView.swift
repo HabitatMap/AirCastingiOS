@@ -12,6 +12,7 @@ struct SelectPeripheralView: View {
     
     @State private var selection: CBPeripheral? = nil
     @EnvironmentObject var bluetoothManager: BluetoothManager
+    @Environment(\.presentationMode) var presentationMode
     
     @Binding var dashboardIsActive : Bool
     @StateObject var sessionContext: CreateSessionContext
@@ -63,7 +64,8 @@ struct SelectPeripheralView: View {
                 .frame(maxWidth: .infinity, minHeight: geometry.size.height, alignment: .top)
             }
         }
-        
+        .navigationBarBackButtonHidden(true)
+        .navigationBarItems(leading: BackButton(presentationMode: presentationMode))
     }
     
     func displayDeviceButton(devices: [CBPeripheral]) -> some View {

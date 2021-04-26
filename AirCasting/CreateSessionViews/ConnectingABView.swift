@@ -13,6 +13,7 @@ struct ConnectingABView: View {
     var bluetoothManager: BluetoothManager
     var selecedPeripheral: CBPeripheral
     @State private var isDeviceConnected: Bool = false
+    @Environment(\.presentationMode) var presentationMode
     
     @Binding var dashboardIsActive : Bool
     @StateObject var sessionContext: CreateSessionContext
@@ -42,6 +43,8 @@ struct ConnectingABView: View {
                     })
             )}
         .padding()
+        .navigationBarBackButtonHidden(true)
+        .navigationBarItems(leading: BackButton(presentationMode: presentationMode))
         .onAppear(perform: {
             bluetoothManager.centralManager.connect(selecedPeripheral,
                                                     options: nil)

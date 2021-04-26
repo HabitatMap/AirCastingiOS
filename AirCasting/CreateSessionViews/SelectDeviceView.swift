@@ -16,6 +16,7 @@ struct SelectDeviceView: View {
     @State private var isMicLinkActive: Bool = false
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @EnvironmentObject private var microphoneManager: MicrophoneManager
+    @Environment(\.presentationMode) var presentationMode
     
     @Binding var dashboardIsActive : Bool
     @StateObject var sessionContext: CreateSessionContext
@@ -31,6 +32,8 @@ struct SelectDeviceView: View {
             
         }
         .padding()
+        .navigationBarBackButtonHidden(true)
+        .navigationBarItems(leading: BackButton(presentationMode: presentationMode))
     }
     
     var titleLabel: some View {

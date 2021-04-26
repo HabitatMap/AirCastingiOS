@@ -13,6 +13,7 @@ struct ABConnectedView: View {
     
     @Binding var dashboardIsActive : Bool
     @StateObject var sessionContext: CreateSessionContext
+    @Environment(\.presentationMode) var presentationMode
 
     var body: some View {
         VStack(spacing: 40) {
@@ -25,6 +26,8 @@ struct ABConnectedView: View {
             continueButton
         }
         .padding()
+        .navigationBarBackButtonHidden(true)
+        .navigationBarItems(leading: BackButton(presentationMode: presentationMode))
     }
     var titleLabel: some View {
         Text("AirBeam connected")

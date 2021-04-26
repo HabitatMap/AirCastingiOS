@@ -11,6 +11,7 @@ import CoreLocation
 struct ConfirmCreatingSessionView: View {
     @Binding var dashboardIsActive : Bool
     @StateObject var sessionContext: CreateSessionContext
+    @Environment(\.presentationMode) var presentationMode
     
     @State var isActive : Bool = false
     
@@ -58,6 +59,8 @@ struct ConfirmCreatingSessionView: View {
             .buttonStyle(BlueButtonStyle())
         }
         .padding()
+        .navigationBarBackButtonHidden(true)
+        .navigationBarItems(leading: BackButton(presentationMode: presentationMode))
     }
 }
 

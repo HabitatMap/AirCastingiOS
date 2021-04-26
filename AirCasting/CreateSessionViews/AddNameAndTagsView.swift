@@ -17,6 +17,7 @@ struct AddNameAndTagsView: View {
     @State var wifiPassword: String = ""
     @State var wifiSSID: String = ""
     @State private var isConfirmCreatingSessionActive: Bool = false
+    @Environment(\.presentationMode) var presentationMode
 
     // Location tracker is needed to get wifi SSID (more info CNCopyCurrentNetworkInfo documentation.
     @StateObject private var locationTracker = LocationTracker()
@@ -54,6 +55,8 @@ struct AddNameAndTagsView: View {
                     UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                 })
         )
+        .navigationBarBackButtonHidden(true)
+        .navigationBarItems(leading: BackButton(presentationMode: presentationMode))
     }
     
     var continueButton: some View {

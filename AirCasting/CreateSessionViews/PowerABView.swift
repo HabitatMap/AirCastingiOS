@@ -10,6 +10,7 @@ import SwiftUI
 struct PowerABView: View {
     @Binding var dashboardIsActive : Bool
     @StateObject var sessionContext: CreateSessionContext
+    @Environment(\.presentationMode) var presentationMode
     
     var body: some View {
         VStack(spacing: 45) {
@@ -23,7 +24,8 @@ struct PowerABView: View {
                 .buttonStyle(BlueButtonStyle())
         }
         .padding()
-        
+        .navigationBarBackButtonHidden(true)
+        .navigationBarItems(leading: BackButton(presentationMode: presentationMode))
     }
     
     var titleLabel: some View {

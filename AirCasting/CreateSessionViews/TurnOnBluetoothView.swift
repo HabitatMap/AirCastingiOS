@@ -12,6 +12,7 @@ struct TurnOnBluetoothView: View {
     
     @State private var isPowerABLinkActive = false
     @EnvironmentObject var bluetoothManager: BluetoothManager
+    @Environment(\.presentationMode) var presentationMode
     
     @Binding var dashboardIsActive : Bool
     @StateObject var sessionContext: CreateSessionContext
@@ -28,6 +29,8 @@ struct TurnOnBluetoothView: View {
                 .buttonStyle(BlueButtonStyle())
         }
         .padding()
+        .navigationBarBackButtonHidden(true)
+        .navigationBarItems(leading: BackButton(presentationMode: presentationMode))
     }
     
     var titleLabel: some View {
