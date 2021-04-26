@@ -13,8 +13,11 @@ struct MainTabBarView: View {
     let measurementUpdatingService: MeasurementUpdatingService
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     @Environment(\.managedObjectContext) var managedObjectContext
+    
+    @StateObject var tabSelection: TabBarSelection = TabBarSelection()
+    
     var body: some View {
-        TabView {
+        TabView(selection: $tabSelection.selection) {
             dashboardTab
             createSessionTab
             settingsTab
@@ -22,6 +25,7 @@ struct MainTabBarView: View {
         .onAppear {
             try! measurementUpdatingService.start()
         }
+        .environmentObject(tabSelection)
     }
     
     // Tab Bar views
@@ -32,20 +36,33 @@ struct MainTabBarView: View {
         .tabItem {
             Image(systemName: "house")
         }
+        .tag(TabBarSelection.Tab.dashboard)
     }
-
+    
     #warning("TODO: Change starting view")
     private var createSessionTab: some View {
         ChooseSessionTypeView(sessionContext: CreateSessionContext(createSessionService: CreateSessionAPIService(authorisationService: userAuthenticationSession), managedObjectContext: managedObjectContext))
-        .tabItem {
-            Image(systemName: "plus")
-        }
+            .tabItem {
+                Image(systemName: "plus")
+            }
+            .tag(TabBarSelection.Tab.createSession)
     }
     private var settingsTab: some View {
         SettingsView()
             .tabItem {
                 Image(systemName: "gearshape")
             }
+            .tag(TabBarSelection.Tab.settings)
+    }
+}
+
+class TabBarSelection: ObservableObject {
+    @Published var selection = Tab.dashboard
+    
+    enum Tab {
+        case dashboard
+        case createSession
+        case settings
     }
 }
 
@@ -56,7 +73,7 @@ struct ContentView_Previews: PreviewProvider {
             .environmentObject(UserAuthenticationSession())
             .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
     }
-
+    
     private class MeasurementUpdatingServiceMock: MeasurementUpdatingService {
         func start() throws {}
     }

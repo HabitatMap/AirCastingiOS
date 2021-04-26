@@ -14,6 +14,10 @@ struct ConfirmCreatingSessionView: View {
     @EnvironmentObject private var sessionContext: CreateSessionContext
     @State private var didStartRecordingSession = false
     @EnvironmentObject private var microphoneManager: MicrophoneManager
+    @EnvironmentObject private var tabSelection: TabBarSelection
+    
+    @Binding var creatingSessionFlowContinues : Bool
+    
     var sessionName: String
     var sessionType: String {
         sessionContext.sessionType == SessionType.MOBILE ? "mobile" : "fixed"
@@ -48,20 +52,12 @@ struct ConfirmCreatingSessionView: View {
                 } else {
                     sessionContext.setupAB()
                 }
-                self.isActive = true
+                self.creatingSessionFlowContinues = false
+                tabSelection.selection = TabBarSelection.Tab.dashboard
             }, label: {
                 Text("Start recording")
                     .bold()
             })
-            .background(
-                NavigationLink(
-                    //TODO: we need to dismiss creating session views and go back to root
-                    destination: DashboardView(),
-                    isActive: self.$isActive,
-                    label: {
-                        EmptyView()
-                    })
-            )
             .buttonStyle(BlueButtonStyle())
         }
         .padding()
@@ -70,6 +66,6 @@ struct ConfirmCreatingSessionView: View {
 
 struct ConfirmCreatingSession_Previews: PreviewProvider {
     static var previews: some View {
-        ConfirmCreatingSessionView(sessionName: "Ania's microphone session")
+        ConfirmCreatingSessionView(creatingSessionFlowContinues: .constant(true), sessionName: "Ania's microphone session")
     }
 }

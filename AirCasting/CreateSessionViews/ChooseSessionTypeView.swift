@@ -48,7 +48,6 @@ struct ChooseSessionTypeView: View {
                         .ignoresSafeArea()
                 )
             }
-            .navigationBarTitleDisplayMode(.inline)
             .onAppear {
                 if CBCentralManager.authorization == .allowedAlways {
                     _ = bluetoothManager.centralManager
@@ -120,13 +119,13 @@ struct ChooseSessionTypeView: View {
                 EmptyView()
                     .fullScreenCover(isPresented: $isPowerABLinkActive) {
                         CreatingSessionFlowRootView {
-                            PowerABView()
+                            PowerABView(creatingSessionFlowContinues: $isPowerABLinkActive)
                         }
                     }
                 EmptyView()
                     .fullScreenCover(isPresented: $isTurnBluetoothOnLinkActive) {
                         CreatingSessionFlowRootView {
-                            TurnOnBluetoothView()
+                            TurnOnBluetoothView(creatingSessionFlowContinues: $isTurnBluetoothOnLinkActive)
                         }
                     }
             }
@@ -144,7 +143,7 @@ struct ChooseSessionTypeView: View {
             EmptyView()
                 .fullScreenCover(isPresented: $isMobileLinkActive) {
                     CreatingSessionFlowRootView {
-                        SelectDeviceView()
+                        SelectDeviceView(creatingSessionFlowContinues: $isMobileLinkActive)
                     }
                 })
     }
