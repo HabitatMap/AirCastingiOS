@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct PowerABView: View {
+    @Binding var creatingSessionFlowContinues : Bool
+    @EnvironmentObject private var sessionContext: CreateSessionContext
     
     var body: some View {
         VStack(spacing: 45) {
@@ -21,7 +23,9 @@ struct PowerABView: View {
                 .buttonStyle(BlueButtonStyle())
         }
         .padding()
-        
+        .onAppear(perform: {
+            sessionContext.deviceType = .AIRBEAM3
+        })
     }
     
     var titleLabel: some View {
@@ -38,7 +42,7 @@ struct PowerABView: View {
 
     }
     var continueButton: some View {
-        NavigationLink(destination: SelectPeripheralView()) {
+        NavigationLink(destination: SelectPeripheralView(creatingSessionFlowContinues: $creatingSessionFlowContinues)) {
             Text("Continue")
                 .frame(maxWidth: .infinity)
         }
@@ -47,6 +51,6 @@ struct PowerABView: View {
 
 struct PowerABView_Previews: PreviewProvider {
     static var previews: some View {
-        PowerABView()
+        PowerABView(creatingSessionFlowContinues: .constant(true))
     }
 }

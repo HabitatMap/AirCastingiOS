@@ -37,7 +37,7 @@ extension NSManagedObjectContext {
         }
         
         let new: T = T(context: self)
-        new.setValue(uuid, forKey: "uuid")
+        new.setValue(uuid.rawValue, forKey: "uuid")
         return new
     }
 }

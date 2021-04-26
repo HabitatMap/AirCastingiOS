@@ -13,6 +13,8 @@ struct TurnOnBluetoothView: View {
     @State private var isPowerABLinkActive = false
     @EnvironmentObject var bluetoothManager: BluetoothManager
     
+    @Binding var creatingSessionFlowContinues : Bool
+    
     var body: some View {
         VStack(spacing: 50) {
             ProgressView(value: 0.125)
@@ -59,7 +61,7 @@ struct TurnOnBluetoothView: View {
         .buttonStyle(BlueButtonStyle())
         .background(
             NavigationLink(
-                destination: PowerABView(),
+                destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues),
                 isActive: $isPowerABLinkActive,
                 label: {
                     EmptyView()
@@ -87,7 +89,7 @@ struct TurnOnBluetoothView: View {
 struct TurnOnBluetoothView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            TurnOnBluetoothView()
+            TurnOnBluetoothView(creatingSessionFlowContinues: .constant(true))
         }
     }
 }

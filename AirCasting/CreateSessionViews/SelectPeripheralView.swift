@@ -14,6 +14,8 @@ struct SelectPeripheralView: View {
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @EnvironmentObject var sessionContext: CreateSessionContext
     
+    @Binding var creatingSessionFlowContinues : Bool
+    
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
@@ -88,9 +90,9 @@ struct SelectPeripheralView: View {
     }
     
     func showDevice(name: String) -> some View {
-            Text(name)
-                .font(Font.muli(size: 16, weight: .medium))
-                .foregroundColor(.aircastingGray)
+        Text(name)
+            .font(Font.muli(size: 16, weight: .medium))
+            .foregroundColor(.aircastingGray)
     }
     
     var loader: some View {
@@ -110,7 +112,8 @@ struct SelectPeripheralView: View {
         var destination: AnyView
         if let selection = selection {
             destination = AnyView(ConnectingABView(bluetoothManager: bluetoothManager,
-                                               selecedPeripheral: selection))
+                                                   selecedPeripheral: selection,
+                                                   creatingSessionFlowContinues: $creatingSessionFlowContinues))
         } else {
             destination = AnyView(EmptyView())
         }
@@ -124,6 +127,6 @@ struct SelectPeripheralView: View {
 
 struct SelectPeripheralView_Previews: PreviewProvider {
     static var previews: some View {
-        SelectPeripheralView()
+        SelectPeripheralView( creatingSessionFlowContinues: .constant(true))
     }
 }
