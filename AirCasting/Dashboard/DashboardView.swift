@@ -39,6 +39,7 @@ struct DashboardView: View {
                 bottomNavigation
             }
             .navigationBarTitle("Dashboard")
+            .edgesIgnoringSafeArea(.bottom)
         }
     }
     
@@ -55,12 +56,13 @@ struct DashboardView: View {
     
     var bottomNavigation: some View {
         ZStack{
-//            Color(.white)
-//                .frame(height: 40)
+            Color(.white)
+                .frame(height: 75)
             HStack {
                 Spacer()
                 Image(systemName: "house")
                     .foregroundColor(.accentColor)
+                    .font(.system(size: 20))
                 Spacer()
                 NavigationLink(
                     destination: ChooseSessionTypeView(sessionContext: CreateSessionContext(createSessionService: CreateSessionAPIService(authorisationService: userAuthenticationSession), managedObjectContext: managedObjectContext), dashboardIsActive: self.$isDashboardActive),
@@ -69,6 +71,7 @@ struct DashboardView: View {
                         Image(systemName: "plus")
                             .renderingMode(.original)
                             .opacity(0.5)
+                            .font(.system(size: 20))
                     })
                     .isDetailLink(false)
                 Spacer()
@@ -78,12 +81,13 @@ struct DashboardView: View {
                         Image(systemName: "gearshape")
                             .renderingMode(.original)
                             .opacity(0.5)
+                            .font(.system(size: 20))
                     })
                 Spacer()
             }
-            .padding(.top, 20)
+            .padding(.bottom, 10)
         }
-//        .shadow(color: Color(red: 0, green: 0, blue: 0, opacity: 0.1), radius: 20)
+        .shadow(color: Color(red: 0, green: 0, blue: 0, opacity: 0.2), radius: 20)
     }
 }
 
