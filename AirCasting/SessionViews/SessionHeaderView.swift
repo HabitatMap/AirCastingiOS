@@ -23,8 +23,9 @@ struct SessionHeaderView: View {
                 HStack {
                     measurementsMic
                     Spacer()
-                    if microphoneManager.isRecording {
-                        stopRecordingButton //This is a temporary solution
+                    //This is a temporary solution for stopping mic session recording until we implement proper session edition menu
+                    if microphoneManager.isRecording && session.status == .RECORDING {
+                        stopRecordingButton
                     }
                 }
             } else {
@@ -33,7 +34,6 @@ struct SessionHeaderView: View {
         }
         .font(Font.moderate(size: 13, weight: .regular))
         .foregroundColor(.aircastingGray)
-        
     }
     
     var dateAndTime: some View {
@@ -113,7 +113,7 @@ struct SessionHeaderView: View {
     
     var stopRecordingButton: some View {
         Button(action: {
-            microphoneManager.stopRecording()
+            try! microphoneManager.stopRecording()
         }, label: {
             Text("Stop recording")
                 .foregroundColor(.blue)
