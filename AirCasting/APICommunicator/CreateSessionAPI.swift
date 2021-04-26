@@ -98,7 +98,8 @@ final class CreateSessionAPIService {
         self.responseValidator = responseValidator
     }
 
-    func createEmptyFixedWifiSession(input: CreateSessionApi.Input) -> AnyPublisher<CreateSessionApi.Output, Error> {
+    @discardableResult
+    func createEmptyFixedWifiSession(input: CreateSessionApi.Input, completion: @escaping (Result<CreateSessionApi.Output, Error>) -> Void) -> Cancellable {
         let url = URL(string: "http://aircasting.org/api/realtime/sessions.json")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -115,10 +116,17 @@ final class CreateSessionAPIService {
         let apiPostData = try! encoder.encode(apiInput)
         request.httpBody = apiPostData
 
-        return apiClient.fetchPublisher(with: try authorisationService.authorise(request: &request))
-            .tryMap { [decoder, responseValidator] (data, response) -> CreateSessionApi.Output in
-                try responseValidator.validate(response: response, data: data)
-                return try decoder.decode(CreateSessionApi.Output.self, from: data)
-            }.eraseToAnyPublisher()
+        do {
+            try authorisationService.authorise(request: &request)
+            return apiClient.requestTask(for: request) { [responseValidator, decoder] result, _ in
+                completion(result.tryMap({
+                    try responseValidator.validate(response: $0.response, data: $0.data)
+                    return try decoder.decode(CreateSessionApi.Output.self, from: $0.data)
+                }))
+            }
+        } catch {
+            completion(.failure(error))
+            return EmptyCancellable()
+        }
     }
 }
