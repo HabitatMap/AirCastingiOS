@@ -12,30 +12,10 @@ struct EmptyCancellable: Cancellable {
 }
 
 protocol APIClient {
-    typealias APIPublisher = AnyPublisher<(data: Data, response: URLResponse), URLError>
-
-    func fetchPublisher(for request: URLRequest) -> APIPublisher
-
     func requestTask(for request: URLRequest, completion: @escaping (Result<(data: Data, response: HTTPURLResponse), Error>, URLRequest) -> Void) -> Cancellable
 }
 
-extension APIClient {
-    func fetchPublisher(with request: @autoclosure () throws -> URLRequest) -> APIPublisher {
-        do {
-            return fetchPublisher(for: try request())
-        } catch {
-            let publisher = PassthroughSubject<(data: Data, response: URLResponse), URLError>()
-            publisher.send(completion: .failure(URLError(.userAuthenticationRequired, userInfo: [NSUnderlyingErrorKey: error])))
-            return publisher.eraseToAnyPublisher()
-        }
-    }
-}
-
 extension URLSession: APIClient {
-    func fetchPublisher(for request: URLRequest) -> APIPublisher {
-        dataTaskPublisher(for: request).eraseToAnyPublisher()
-    }
-
     func requestTask(for request: URLRequest, completion: @escaping (Result<(data: Data, response: HTTPURLResponse), Error>, URLRequest) -> Void) -> Cancellable {
         let task = dataTask(with: request) { data, response, error in
             guard let urlResponse = response as? HTTPURLResponse,

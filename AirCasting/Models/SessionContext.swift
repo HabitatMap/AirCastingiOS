@@ -72,7 +72,10 @@ class CreateSessionContext: ObservableObject {
             
             guard let uuid = session.uuid,
                   let name = session.name,
-                  let startTime = session.startTime else { return }
+                  let startTime = session.startTime else {
+                #warning("Silent death")
+                return
+            }
             
             // TO DO : change mocked data (contribute, is_indoor, notes, locaation, end_time)
             let params = CreateSessionApi.SessionParams(uuid: uuid,
@@ -88,22 +91,29 @@ class CreateSessionContext: ObservableObject {
                                                         streams: [:],
                                                         latitude: startingLocation.latitude,
                                                         longitude: startingLocation.longitude)
-            syncSink = createSessionService
-                .createEmptyFixedWifiSession(input: .init(session: params,
-                                                          compression: true))
-                .sink { (completion) in
-                    
-                } receiveValue: { [weak self] (output) in
-                    guard let peripheral = self?.peripheral,
-                          let uuid = session.uuid,
-                          let ssid = self?.wifiSSID,
-                          let password = self?.wifiPassword else { return }
-                    AirBeam3Configurator(peripheral: peripheral).configureFixedWifiSession(uuid: uuid,
-                                                                                           location: startingLocation,
-                                                                                           dateString: temporaryMockedDate,
-                                                                                           wifiSSID: ssid,
-                                                                                           wifiPassword: password)
-                }
+            createSessionService.createEmptyFixedWifiSession(input: .init(session: params,
+                                                                          compression: true),
+                                                             completion: { [weak self] result in
+                                                                DispatchQueue.main.async {
+                                                                    switch result {
+                                                                    case .success(let output):
+                                                                        guard let peripheral = self?.peripheral,
+                                                                              let ssid = self?.wifiSSID,
+                                                                              let password = self?.wifiPassword else {
+                                                                            #warning("Silent death")
+                                                                            return
+                                                                        }
+                                                                        AirBeam3Configurator(peripheral: peripheral).configureFixedWifiSession(uuid: uuid,
+                                                                                                                                               location: startingLocation,
+                                                                                                                                               dateString: temporaryMockedDate,
+                                                                                                                                               wifiSSID: ssid,
+                                                                                                                                               wifiPassword: password)
+                                                                    case .failure(let error):
+                                                                        Log.warning("Failed to create fixed Wifi session \(error)")
+                                                                        #warning("TODO: Show error")
+                                                                    }
+                                                                }
+                                                             })
         } else {
             // if session is mobile: send AB data needed to start recording
             guard let peripheral = self.peripheral else { return }

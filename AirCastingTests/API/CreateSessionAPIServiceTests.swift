@@ -21,9 +21,12 @@ final class CreateSessionAPIServiceTests: XCTestCase {
     func testTimeout() throws {
         apiClientMock.failing(with: URLError(.timedOut))
 
-        let result = try awaitPublisherResult(tested.createEmptyFixedWifiSession(input: sampleInput))
+        var result: Result<CreateSessionApi.Output, Error>?
+        tested.createEmptyFixedWifiSession(input: sampleInput) {
+            result = $0
+        }
 
-        switch result {
+        switch try XCTUnwrap(result) {
         case .success(let response):
             XCTFail("Should fail but returned success type \(response)")
         case .failure(URLError.timedOut):
@@ -39,11 +42,11 @@ final class CreateSessionAPIServiceTests: XCTestCase {
             let compression: Bool
         }
         var receivedRequest: URLRequest?
-        apiClientMock.fetchPublisherStub = {
-            receivedRequest = $0
-            return .failure(URLError(.timedOut))
+        apiClientMock.requestTaskStub = { request, completion in
+            receivedRequest = request
+            completion(.failure(URLError(.timedOut)), request)
         }
-        _ = tested.createEmptyFixedWifiSession(input: sampleInput)
+        tested.createEmptyFixedWifiSession(input: sampleInput) { _ in }
 
         let request = try XCTUnwrap(receivedRequest)
         XCTAssertEqual(request.url, URL(string:"http://aircasting.org/api/realtime/sessions.json")!)
@@ -70,13 +73,16 @@ final class CreateSessionAPIServiceTests: XCTestCase {
             throw MockError()
         }
 
-        let result = try awaitPublisherResult(tested.createEmptyFixedWifiSession(input: sampleInput))
+        var result: Result<CreateSessionApi.Output, Error>?
+        tested.createEmptyFixedWifiSession(input: sampleInput) {
+            result = $0
+        }
 
-        switch result {
+        switch try XCTUnwrap(result) {
         case .success(let response):
             XCTFail("Should fail but returned success type \(response)")
-        case .failure(URLError.userAuthenticationRequired):
-            print("Retuned valid error \(result)")
+        case .failure(let error) where error is MockError:
+            print("Retuned valid error \(String(describing: result))")
         case .failure(let error):
             XCTFail("Failed with a unexpected error type \(error)")
         }
@@ -86,13 +92,16 @@ final class CreateSessionAPIServiceTests: XCTestCase {
         let response = HTTPURLResponse(url: URL(string: "http://test.com")!, statusCode: 500, httpVersion: nil, headerFields: nil)!
         apiClientMock.returning((data: Data(#"{ "error": "some invalid message" }"#.utf8), response: response))
 
-        let result = try awaitPublisherResult(tested.createEmptyFixedWifiSession(input: sampleInput))
+        var result: Result<CreateSessionApi.Output, Error>?
+        tested.createEmptyFixedWifiSession(input: sampleInput) {
+            result = $0
+        }
 
-        switch result {
+        switch try XCTUnwrap(result) {
         case .success(let response):
             XCTFail("Should fail but returned success type \(response)")
         case .failure(URLError.badServerResponse):
-            print("Retuned valid error \(result)")
+            print("Retuned valid error \(String(describing: result))")
         case .failure(let error):
             XCTFail("Failed with a unexpected error type \(error)")
         }
@@ -103,10 +112,13 @@ final class CreateSessionAPIServiceTests: XCTestCase {
         let data = Data("{\"location\": \"\(location)\"}".utf8)
         apiClientMock.returning((data: data, response: .success()))
 
-        let response = try awaitPublisherResult(tested.createEmptyFixedWifiSession(input: sampleInput)).get()
+        var result: Result<CreateSessionApi.Output, Error>?
+        tested.createEmptyFixedWifiSession(input: sampleInput) {
+            result = $0
+        }
 
         let expectedResponse = CreateSessionApi.Output(location: location)
-        XCTAssertEqual(expectedResponse, response)
+        XCTAssertEqual(expectedResponse, try XCTUnwrap(result).get())
     }
 }
 
@@ -129,7 +141,8 @@ extension CreateSessionApi.Input {
                                                                        version: .random(in: -999...999),
                                                                        streams: streams,
                                                                        latitude: .random(in: -90...90),
-                                                                       longitude: .random(in: -180...180)))
+                                                                       longitude: .random(in: -180...180)),
+                                      compression: true)
     }
 }
 
