@@ -90,7 +90,7 @@ struct CreateAccountView: View {
     }
     
     var usernameTextfield: some View {
-        createTextfield(placeholder: "Username",
+        createTextfield(placeholder: "Profile name",
                         binding: $username)
             .autocapitalization(.none)
     }

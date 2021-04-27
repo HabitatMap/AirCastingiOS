@@ -47,7 +47,7 @@ func errorMessage(text: String) -> some View {
 func displayErrorAlert(error: NSError, errorTitle: String) -> Alert {
     if error.localizedDescription == "The data couldn’t be read because it is missing." {
             return Alert(title: Text("\(errorTitle)"),
-                         message: Text("The username or password is incorrect. Please, try again. "),
+                         message: Text("The profile name or password is incorrect. Please, try again. "),
                          dismissButton: .default(Text("Ok")))
 
     } else if error.localizedDescription == "A data connection is not currently allowed." {
