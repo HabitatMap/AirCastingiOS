@@ -12,7 +12,7 @@ struct SessionCellView: View {
     
     @State private var isCollapsed = true
     // TO DO: Change key name
-    @AppStorage("values") var values: [Float] = [0, 70, 120, 170, 200]
+    @AppStorage("values") var thresholds: [Float] = [0, 70, 120, 170, 200]
     @StateObject var provider = LocationTracker()
     let session: Session
         
@@ -57,13 +57,13 @@ struct SessionCellView: View {
             .frame(height: 200)
     }
     var graphButton: some View {
-        NavigationLink(destination: GraphView(values: $values)) {
+        NavigationLink(destination: GraphView(thresholds: $thresholds)) {
             Text("graph")
         }
     }
     
     var mapButton: some View {
-        NavigationLink(destination: AirMapView(values: $values,
+        NavigationLink(destination: AirMapView(thresholds: $thresholds,
                                                pathPoints: pathPoints)) {
             Text("map")
         }

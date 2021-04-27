@@ -15,7 +15,7 @@ struct GoogleMapView: UIViewRepresentable {
     typealias UIViewType = GMSMapView
 
     let pathPoints: [PathPoint]
-    let values: [Float]
+    let thresholds: [Float]
     var isMyLocationEnabled: Bool = false
     
     func makeUIView(context: Context) -> GMSMapView {
@@ -78,10 +78,10 @@ struct GoogleMapView: UIViewRepresentable {
                                                               zoom: 17)
             return newCameraPosition
         } else {
-            let appleParkPostion = GMSCameraPosition.camera(withLatitude: 37.35,
+            let appleParkPosition = GMSCameraPosition.camera(withLatitude: 37.35,
                                                             longitude: -122.05,
                                                             zoom: 17)
-            return appleParkPostion
+            return appleParkPosition
         }
     }
 
@@ -89,13 +89,13 @@ struct GoogleMapView: UIViewRepresentable {
         let measurement = point.measurement
         
         switch measurement {
-        case values[0]..<values[1]:
+        case thresholds[0]..<thresholds[1]:
             return UIColor.aircastingGreen
-        case values[1]..<values[2]:
+        case thresholds[1]..<thresholds[2]:
             return UIColor.aircastingYellow
-        case values[2]..<values[3]:
+        case thresholds[2]..<thresholds[3]:
             return UIColor.aircastingOrange
-        case values[3]...values[4]:
+        case thresholds[3]...thresholds[4]:
             return UIColor.aircastingRed
         default:
             return UIColor.white
@@ -124,7 +124,7 @@ struct GoogleMapView_Previews: PreviewProvider {
                                    PathPoint(location: CLLocationCoordinate2D(latitude: 40.93,
                                                                               longitude: -73.83),
                                              measurement: 30)],
-                      values: [0, 25, 50, 75, 100])
+                      thresholds: [0, 25, 50, 75, 100])
             .padding()
     }
 }

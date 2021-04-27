@@ -9,7 +9,7 @@ import SwiftUI
 
 struct GraphView: View {
     
-    @Binding var values: [Float]
+    @Binding var thresholds: [Float]
 
     var body: some View {
         VStack(alignment: .trailing) {
@@ -20,15 +20,15 @@ struct GraphView: View {
                 .padding()
             
             ZStack(alignment: .topLeading) {
-                Graph(values: values)
+                Graph(thresholds: thresholds)
                 StatisticsContainerView()
             }
-            NavigationLink(destination: HeatmapSettingsView(changedValues: $values)) {
+            NavigationLink(destination: HeatmapSettingsView(changedThresholdValues: $thresholds)) {
                 EditButton()
             }
             .padding()
             
-            MultiSliderView(values: $values)
+            MultiSliderView(thresholds: $thresholds)
                 .padding()
                 // Fixes labels covered by tabbar
                 .padding(.bottom)
@@ -40,6 +40,6 @@ struct GraphView: View {
 
 struct GraphView_Previews: PreviewProvider {
     static var previews: some View {
-        GraphView(values: .constant([0,1,2,3]))
+        GraphView(thresholds: .constant([0,1,2,3]))
     }
 }

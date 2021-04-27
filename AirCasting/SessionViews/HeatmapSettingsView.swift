@@ -9,12 +9,12 @@ import SwiftUI
 
 struct HeatmapSettingsView: View {
     
-    @State private var minValue = ""
-    @State private var lowValue = ""
-    @State private var mediumValue = ""
-    @State private var highValue = ""
-    @State private var maxValue = ""
-    @Binding var changedValues: [Float]
+    @State private var thresholdVeryLow = ""
+    @State private var thresholdLow = ""
+    @State private var thresholdMedium = ""
+    @State private var thresholdHigh = ""
+    @State private var thresholdVeryHigh = ""
+    @Binding var changedThresholdValues: [Float]
     @Environment(\.presentationMode) var presentationMode
 
     var body: some View {
@@ -22,7 +22,6 @@ struct HeatmapSettingsView: View {
             VStack(alignment: .leading, spacing: 16) {
                 Text("Heatmap settings")
                     .foregroundColor(.darkBlue)
-                    //heavy = extra bold?
                     .font(Font.muli(size: 24, weight: .heavy))
                 Text("Values beyond Min and Max will not be displayed.")
                     .foregroundColor(.aircastingGray)
@@ -31,11 +30,11 @@ struct HeatmapSettingsView: View {
             .padding()
             
             Section {
-                maxTextfield
+                veryHighTextfield
                 highTextfield
                 mediumTextfield
                 lowTextfield
-                minTextfield
+                veryLowTextfield
             }
             
             VStack {
@@ -57,23 +56,23 @@ struct HeatmapSettingsView: View {
             .buttonStyle(BorderlessButtonStyle())
         }
         .onAppear {
-            minValue = "\(Int(changedValues[0]))"
-            lowValue = "\(Int(changedValues[1]))"
-            mediumValue = "\(Int(changedValues[2]))"
-            highValue = "\(Int(changedValues[3]))"
-            maxValue = "\(Int(changedValues[4]))"
+            thresholdVeryLow = "\(Int(changedThresholdValues[0]))"
+            thresholdLow = "\(Int(changedThresholdValues[1]))"
+            thresholdMedium = "\(Int(changedThresholdValues[2]))"
+            thresholdHigh = "\(Int(changedThresholdValues[3]))"
+            thresholdVeryHigh = "\(Int(changedThresholdValues[4]))"
         }
     }
     
     func saveChanges() {
-        let stringValues = [maxValue, highValue, mediumValue, lowValue, minValue]
-        var newValues: [Float] = []
-        for value in stringValues {
+        let stringThresholdValues = [thresholdVeryHigh, thresholdHigh, thresholdMedium, thresholdLow, thresholdVeryLow]
+        var newThresholdValues: [Float] = []
+        for value in stringThresholdValues {
             let convertedValue = convertToFloat(value: value)
-            newValues.append(convertedValue)
+            newThresholdValues.append(convertedValue)
         }
-        let sortedValues = newValues.sorted { $0 < $1 }
-        changedValues = sortedValues
+        let sortedThresholdValues = newThresholdValues.sorted { $0 < $1 }
+        changedThresholdValues = sortedThresholdValues
     }
     
     func convertToFloat(value: String) -> Float {
@@ -87,42 +86,42 @@ struct HeatmapSettingsView: View {
             .foregroundColor(.aircastingGray)
     }
     
-    func showValuesTextfield(value: Binding<String>) -> some View {
+    func showThresholdTextfield(value: Binding<String>) -> some View {
         TextField("0", text: value)
             .font(Font.muli(size: 14))
             .foregroundColor(.aircastingGray)
             .multilineTextAlignment(.trailing)
     }
     
-    var maxTextfield: some View {
+    var veryHighTextfield: some View {
         HStack {
             showDescriptionLabel(text: "Max")
-            showValuesTextfield(value: $maxValue)
+            showThresholdTextfield(value: $thresholdVeryHigh)
         }
     }
     var highTextfield: some View {
         HStack {
             showDescriptionLabel(text: "High")
-            showValuesTextfield(value: $highValue)
+            showThresholdTextfield(value: $thresholdHigh)
         }
     }
     var mediumTextfield: some View {
         HStack {
             showDescriptionLabel(text: "Medium")
-            showValuesTextfield(value: $mediumValue)
+            showThresholdTextfield(value: $thresholdMedium)
         }
     }
     
     var lowTextfield: some View {
         HStack {
             showDescriptionLabel(text: "Low")
-            showValuesTextfield(value: $lowValue)
+            showThresholdTextfield(value: $thresholdLow)
         }
     }
-    var minTextfield: some View {
+    var veryLowTextfield: some View {
         HStack {
             showDescriptionLabel(text: "Min")
-            showValuesTextfield(value: $minValue)
+            showThresholdTextfield(value: $thresholdVeryLow)
         }
     }
 
@@ -130,6 +129,6 @@ struct HeatmapSettingsView: View {
 
 struct HeatmapSettings_Previews: PreviewProvider {
     static var previews: some View {
-        HeatmapSettingsView(changedValues: .constant([0, 20, 30, 40, 50]))
+        HeatmapSettingsView(changedThresholdValues: .constant([0, 20, 30, 40, 50]))
     }
 }
