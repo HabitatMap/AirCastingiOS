@@ -45,6 +45,7 @@ class MicrophoneManager: ObservableObject {
         
         self.session = session
         createDBStream(for: session)
+        saveInitialMicThreshold()
         locationProvider.requestLocation()
         
         let url = URL(fileURLWithPath: "/dev/null", isDirectory: true)
@@ -146,6 +147,18 @@ private extension MicrophoneManager {
         measurementStream = stream
         
         session.addToMeasurementStreams(measurementStream!)
+    }
+    
+    func saveInitialMicThreshold() {
+        let existing: SensorThreshold? = try? context.existingObject(sensorName: "Phone Microphone-dB")
+        if existing == nil {
+            let thresholds: SensorThreshold = try! context.createObject(sensorName: "Phone Microphone-dB")
+            thresholds.thresholdVeryLow = 20
+            thresholds.thresholdLow = 60
+            thresholds.thresholdMedium = 70
+            thresholds.thresholdHigh = 80
+            thresholds.thresholdVeryHigh = 100
+        }
     }
     
     func obtainCurrentLocation() -> CLLocationCoordinate2D {

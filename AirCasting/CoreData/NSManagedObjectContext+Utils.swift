@@ -40,4 +40,26 @@ extension NSManagedObjectContext {
         new.setValue(uuid.rawValue, forKey: "uuid")
         return new
     }
+    
+
+}
+
+
+extension NSManagedObjectContext {
+
+    func existingObject<T: SensorThreshold>(sensorName: String) throws -> T?  {
+        let className = NSStringFromClass(T.classForCoder())
+        let fetchRequest = NSFetchRequest<T>(entityName: className)
+        fetchRequest.predicate = NSPredicate(format: "sensorName == %@", sensorName)
+        let results = try self.fetch(fetchRequest)
+        return results.first
+    }
+    
+    func createObject<T: SensorThreshold>(sensorName: String) throws -> T  {
+        
+        let new: T = T(context: self)
+        new.setValue(sensorName, forKey: "sensorName")
+        return new
+    }
+    
 }
