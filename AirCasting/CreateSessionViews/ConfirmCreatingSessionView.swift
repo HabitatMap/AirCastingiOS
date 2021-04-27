@@ -42,7 +42,7 @@ struct ConfirmCreatingSessionView: View {
             .multilineTextAlignment(.leading)
             .lineSpacing(9.0)
             
-            GoogleMapView(pathPoints: [], values: [], isMyLocationEnabled: true)
+            GoogleMapView(pathPoints: [], thresholds: [], isMyLocationEnabled: true)
                         
             Button(action: {
                 if (sessionContext.deviceType == DeviceType.MIC) {

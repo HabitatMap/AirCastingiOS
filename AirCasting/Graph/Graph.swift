@@ -72,7 +72,7 @@ class UI_PollutionGraph: UIView {
     }
     
     func updateWith(values: [Float]) {
-        (lineChartView.leftYAxisRenderer as! MultiColorGridRenderer).values = values
+        (lineChartView.leftYAxisRenderer as! MultiColorGridRenderer).thresholds = values
         
         //min & max yaxis values
         lineChartView.leftAxis.axisMinimum = Double(values.first ?? 0)
@@ -91,7 +91,7 @@ class UI_PollutionGraph: UIView {
 
 class MultiColorGridRenderer: YAxisRenderer {
     
-    var values: [Float] = []
+    var thresholds: [Float] = []
    
     var colors = [UIColor(red: 182/255, green: 227/255, blue: 172/255, alpha: 1),
                   UIColor(red: 254/255, green: 239/255, blue: 195/255, alpha: 1),
@@ -100,13 +100,13 @@ class MultiColorGridRenderer: YAxisRenderer {
     ]
     
     override func renderGridLines(context: CGContext) {
-        let colorValues = Array(values.dropFirst())
-        let maxValue = CGFloat(values.last ?? 200)
-        let minValue = CGFloat(values[0])
-        for index in colorValues.indices.reversed() {
-            let value = CGFloat(colorValues[index])
+        let colorThresholds = Array(thresholds.dropFirst())
+        let thresholdVeryHigh = CGFloat(thresholds.last ?? 200)
+        let thresholdVeryLow = CGFloat(thresholds[0])
+        for index in colorThresholds.indices.reversed() {
+            let thresholdValue = CGFloat(colorThresholds[index])
             let yMax = gridClippingRect.maxY
-            let height = (value - minValue) * yMax / (maxValue - minValue)
+            let height = (thresholdValue - thresholdVeryLow) * yMax / (thresholdVeryHigh - thresholdVeryLow)
             let y = yMax - height
             
             context.setFillColor(colors[index].cgColor)
@@ -121,19 +121,19 @@ class MultiColorGridRenderer: YAxisRenderer {
 struct Graph: UIViewRepresentable {
     typealias UIViewType = UI_PollutionGraph
     
-    let values: [Float]
+    let thresholds: [Float]
     
     func makeUIView(context: Context) -> UI_PollutionGraph {
         UI_PollutionGraph()
     }
     
     func updateUIView(_ uiView: UI_PollutionGraph, context: Context) {
-        uiView.updateWith(values: values)
+        uiView.updateWith(values: thresholds)
     }
 }
 
 struct PollutionGraph_Previews: PreviewProvider {
     static var previews: some View {
-        Graph(values: [30, 60, 70, 170, 200])
+        Graph(thresholds: [30, 60, 70, 170, 200])
     }
 }
