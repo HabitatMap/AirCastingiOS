@@ -62,7 +62,7 @@ class CreateSessionContext: ObservableObject {
         
         try! managedObjectContext.save()
         
-        // TO DO: Replace mocked location and date
+        #warning("TODO: Replace mocked location and date")
         let temporaryMockedDate = "19/12/19-02:40:00"
         
         if session.type == SessionType.fixed {
@@ -76,7 +76,7 @@ class CreateSessionContext: ObservableObject {
                 return
             }
             
-            // TO DO : change mocked data (contribute, is_indoor, notes, locaation, end_time)
+            #warning("TODO: change mocked data (contribute, is_indoor, notes, locaation, end_time)")
             let params = CreateSessionApi.SessionParams(uuid: uuid,
                                                         type: .fixed,
                                                         title: name,

@@ -26,7 +26,7 @@ class UI_PollutionGraph: UIView {
         ])
         
         // Data
-        //TO DO: replace mocked data with data from AirBeam
+        #warning("TODO: Replace mocked data with data from AirBeam")
         let entries = [ChartDataEntry(x: 1, y: 1),
                        ChartDataEntry(x: 2, y: 3),
                        ChartDataEntry(x: 3, y: 15),

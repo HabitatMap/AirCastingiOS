@@ -11,8 +11,7 @@ import CoreLocation
 struct SessionCellView: View {
     
     @State private var isCollapsed = true
-    // TO DO: Change key name
-    @AppStorage("values") var thresholds: [Float] = [0, 70, 120, 170, 200]
+    @AppStorage("thresholds") var thresholds: [Float] = [0, 70, 120, 170, 200]
     @StateObject var provider = LocationTracker()
     let session: Session
         

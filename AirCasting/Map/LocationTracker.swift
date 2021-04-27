@@ -27,7 +27,7 @@ class LocationTracker: NSObject, ObservableObject, CLLocationManagerDelegate {
         switch manager.authorizationStatus {
         case .authorizedAlways, .authorizedWhenInUse:
             locationManager.startUpdatingLocation()
-            // TO DO: handle denied state.
+            #warning("TODO: Handle denied state.")
         case .denied: break
         case .notDetermined: break
         case .restricted: break
