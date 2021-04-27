@@ -10,8 +10,8 @@ import Foundation
 extension Session {
     
     static var mock: Session {
-        let session = Session(context: PersistenceController.shared.container.viewContext)
-        session.uuid = SessionUUID()
+        let context = PersistenceController.shared.container.viewContext
+        let session: Session = try! context.newOrExisting(uuid: SessionUUID(rawValue: "mock")!)
         session.type = .mobile
         // ...
         return session

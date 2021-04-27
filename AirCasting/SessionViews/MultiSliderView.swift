@@ -11,19 +11,19 @@ struct MultiSliderView: View {
     
     @Binding var values: [Float]
     
-    private var buttonValues: [Float] {
+    private var threshldButtonValues: [Float] {
         get {
             let v =  Array(values.dropFirst())
             return  Array(v.dropLast())
         }
         nonmutating set {
-            values = [minValue] + newValue + [maxValue]
+            values = [thresholdVeryLow] + newValue + [thresholdVeryHigh]
         }
     }
-    var maxValue: Float {
+    var thresholdVeryHigh: Float {
         values.last ?? 200
     }
-    var minValue: Float {
+    var thresholdVeryLow: Float {
         values.first ?? 0
     }
     var colors: [Color] = [Color.aircastingGreen, Color.aircastingYellow, Color.aircastingOrange, Color.aircastingRed]
@@ -34,18 +34,18 @@ struct MultiSliderView: View {
             
             ZStack {
                 colors.last
-                ForEach(buttonValues.indices.reversed(), id: \.self) { index in
+                ForEach(threshldButtonValues.indices.reversed(), id: \.self) { index in
                     colors[index]
-                        .frame(width: CGFloat(buttonValues[index]) * frameWidth / CGFloat(maxValue))
-                        .position(x: CGFloat(buttonValues[index]) * frameWidth / CGFloat(maxValue) / 2,
+                        .frame(width: CGFloat(threshldButtonValues[index]) * frameWidth / CGFloat(thresholdVeryHigh))
+                        .position(x: CGFloat(threshldButtonValues[index]) * frameWidth / CGFloat(thresholdVeryHigh) / 2,
                                   y:  geometry.frame(in: .local).size.height / 2)
                 }
                 
-                ForEach(buttonValues.indices, id: \.self) { index in
-                    let value = buttonValues[index]
+                ForEach(threshldButtonValues.indices, id: \.self) { index in
+                    let value = threshldButtonValues[index]
                     
                     sliderButton
-                        .position(x: CGFloat(value) * frameWidth / CGFloat(maxValue),
+                        .position(x: CGFloat(value) * frameWidth / CGFloat(thresholdVeryHigh),
                                   y: geometry.frame(in: .local).size.height / 2)
                         .gesture(dragGesture(index: index, geometry: geometry))
                 }
@@ -67,15 +67,15 @@ struct MultiSliderView: View {
         DragGesture(minimumDistance: 0, coordinateSpace: .named("MultiSliderSpace"))
             .onChanged { (dragValue) in
                 let newX = dragValue.location.x
-                var newValue = Float(newX * CGFloat(maxValue) / geometry.frame(in: .local).size.width)
+                var newValue = Float(newX * CGFloat(thresholdVeryHigh) / geometry.frame(in: .local).size.width)
                                 
-                let previousValue = index > 0 ? buttonValues[index-1] : minValue
-                let nextValue = index == buttonValues.count-1 ? maxValue : buttonValues[index+1]
+                let previousValue = index > 0 ? threshldButtonValues[index-1] : thresholdVeryLow
+                let nextValue = index == threshldButtonValues.count-1 ? thresholdVeryHigh : threshldButtonValues[index+1]
                 
                 newValue = min(nextValue,  newValue)
                 newValue = max(previousValue, newValue)
 
-                buttonValues.replaceSubrange(index...index, with: [Float(newValue)])
+                threshldButtonValues.replaceSubrange(index...index, with: [Float(newValue)])
             }
     }
     
@@ -85,7 +85,7 @@ struct MultiSliderView: View {
         return ForEach(values.indices, id: \.self) { index in
             let ints = Int(values[index])
             Text("\(ints)")
-                .position(x: CGFloat(values[index]) * frameWidth / CGFloat(maxValue),
+                .position(x: CGFloat(values[index]) * frameWidth / CGFloat(thresholdVeryHigh),
                           y: y)
                 .foregroundColor(.aircastingGray)
                 .font(Font.muli(size: 12))
