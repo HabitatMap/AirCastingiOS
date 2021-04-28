@@ -150,14 +150,15 @@ private extension MicrophoneManager {
     }
     
     func saveInitialMicThreshold() {
-        let existing: SensorThreshold? = try? context.existingObject(sensorName: "Phone Microphone-dB")
+        let existing: SensorThreshold? = try? context.existingObject(sensorName: "db")
         if existing == nil {
-            let thresholds: SensorThreshold = try! context.createObject(sensorName: "Phone Microphone-dB")
-            thresholds.thresholdVeryLow = 20
-            thresholds.thresholdLow = 60
-            thresholds.thresholdMedium = 70
-            thresholds.thresholdHigh = 80
-            thresholds.thresholdVeryHigh = 100
+            let thresholds: SensorThreshold = try! context.createObject(sensorName: "db")
+            #warning("TODO: change thresholds values from dbFS to db")
+            thresholds.thresholdVeryLow = -100
+            thresholds.thresholdLow = -40
+            thresholds.thresholdMedium = -30
+            thresholds.thresholdHigh = -20
+            thresholds.thresholdVeryHigh = 0
         }
     }
     

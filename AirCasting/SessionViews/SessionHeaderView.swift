@@ -14,6 +14,7 @@ struct SessionHeaderView: View {
     let isExpandButtonNeeded: Bool
     @ObservedObject var session: Session
     @EnvironmentObject private var microphoneManager: MicrophoneManager
+    @FetchRequest<SensorThreshold>(sortDescriptors: [.init(key: "sensorName", ascending: true)]) var thresholds
     
     var body: some View {
         VStack(alignment: .leading, spacing: 13){
@@ -83,11 +84,11 @@ struct SessionHeaderView: View {
                     measurementsTitle
                     HStack {
                         Group {
-                            singleMeasurement(name: "PM1", value: Int(measurements.pm1))
-                            singleMeasurement(name: "PM2", value: Int(measurements.pm25))
-                            singleMeasurement(name: "PM10", value: Int(measurements.pm10))
-                            singleMeasurement(name: "F", value: Int(measurements.f))
-                            singleMeasurement(name: "RH", value: Int(measurements.h))
+                            singleMeasurement(name: "PM1", value: measurements.pm1)
+                            singleMeasurement(name: "PM2", value: measurements.pm25)
+                            singleMeasurement(name: "PM10", value: measurements.pm10)
+                            singleMeasurement(name: "F", value: measurements.f)
+                            singleMeasurement(name: "RH", value: measurements.h)
                         }
                         .frame(maxWidth: .infinity)
                     }
@@ -102,6 +103,10 @@ struct SessionHeaderView: View {
                 .foregroundColor(.darkBlue)
             }
         }
+    }
+    
+    func thresholdFor(name: String) -> SensorThreshold? {
+        thresholds.first { $0.sensorName == name }
     }
     
     var measurementsMic: some View {
@@ -120,15 +125,14 @@ struct SessionHeaderView: View {
         })
     }
     
-    func singleMeasurement(name: String, value: Int) -> some View {
+    func singleMeasurement(name: String, value: Double) -> some View {
         VStack(spacing: 3) {
             Text(name)
                 .font(Font.system(size: 13))
             HStack(spacing: 3){
-                Color.green
-                    .clipShape(Circle())
-                    .frame(width: 5, height: 5)
-                Text("\(value)")
+                MeasurementDotView(value: value,
+                                   thresholds: thresholdFor(name: name))
+                Text("\(Int(value))")
                     .font(Font.moderate(size: 14, weight: .regular))
             }
         }
@@ -160,8 +164,8 @@ struct SessionHeaderView: View {
         }
     }
     
-    func lastMicMeasurement() -> Int {
-        return Int(session.dbStream?.latestValue ?? 0)
+    func lastMicMeasurement() -> Double {
+        return session.dbStream?.latestValue ?? 0
     }
 }
 
