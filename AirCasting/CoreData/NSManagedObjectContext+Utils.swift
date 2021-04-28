@@ -56,7 +56,6 @@ extension NSManagedObjectContext {
     }
     
     func createObject<T: SensorThreshold>(sensorName: String) throws -> T  {
-        
         let new: T = T(context: self)
         new.setValue(sensorName, forKey: "sensorName")
         return new
