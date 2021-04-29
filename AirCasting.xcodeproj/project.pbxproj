@@ -65,6 +65,7 @@
 		AC6D569F25AEEAE700D221BA /* SessionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6D569E25AEEAE700D221BA /* SessionHeaderView.swift */; };
 		AC6D56A225AEF55C00D221BA /* GraphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6D56A125AEF55C00D221BA /* GraphView.swift */; };
 		AC6D56A525AF211200D221BA /* MultiSliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6D56A425AF211200D221BA /* MultiSliderView.swift */; };
+		AC797FE7263C2C1600970254 /* SensorThreshold.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC797FE6263C2C1600970254 /* SensorThreshold.swift */; };
 		AC7AB09225D988CD0025492B /* WhiteSelectingButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC7AB09125D988CD0025492B /* WhiteSelectingButtonStyle.swift */; };
 		AC7EB37625A6FB3A00A7F2AF /* AirCastingApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC7EB37525A6FB3A00A7F2AF /* AirCastingApp.swift */; };
 		AC7EB37825A6FB3A00A7F2AF /* MainTabBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC7EB37725A6FB3A00A7F2AF /* MainTabBarView.swift */; };
@@ -110,6 +111,7 @@
 		AC9F526E2652A360003CF61F /* AirSectionPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9F526B2652A360003CF61F /* AirSectionPickerView.swift */; };
 		ACC536E026395C0900327267 /* MeasurementDotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACC536DF26395C0900327267 /* MeasurementDotView.swift */; };
 		ACC8838C265284AA00C5DB70 /* CoreDataHook.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACC8838B265284AA00C5DB70 /* CoreDataHook.swift */; };
+		ACC883882645784400C5DB70 /* GraphErorrHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACC883872645784400C5DB70 /* GraphErorrHandling.swift */; };
 		ACD01F4025F8C1F800B8F65F /* SessionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACD01F3F25F8C1F800B8F65F /* SessionContext.swift */; };
 		ACD01F7325FF574A00B8F65F /* WifiPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACD01F7225FF574A00B8F65F /* WifiPopupView.swift */; };
 		ACD01F7625FF61CE00B8F65F /* LocationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACD01F7525FF61CE00B8F65F /* LocationProvider.swift */; };
@@ -203,6 +205,7 @@
 		AC6D569E25AEEAE700D221BA /* SessionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionHeaderView.swift; sourceTree = "<group>"; };
 		AC6D56A125AEF55C00D221BA /* GraphView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphView.swift; sourceTree = "<group>"; };
 		AC6D56A425AF211200D221BA /* MultiSliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiSliderView.swift; sourceTree = "<group>"; };
+		AC797FE6263C2C1600970254 /* SensorThreshold.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorThreshold.swift; sourceTree = "<group>"; };
 		AC7AB09125D988CD0025492B /* WhiteSelectingButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhiteSelectingButtonStyle.swift; sourceTree = "<group>"; };
 		AC7EB37225A6FB3A00A7F2AF /* AirCasting.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AirCasting.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AC7EB37525A6FB3A00A7F2AF /* AirCastingApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirCastingApp.swift; sourceTree = "<group>"; };
@@ -250,6 +253,7 @@
 		AC9F526B2652A360003CF61F /* AirSectionPickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AirSectionPickerView.swift; sourceTree = "<group>"; };
 		ACC536DF26395C0900327267 /* MeasurementDotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementDotView.swift; sourceTree = "<group>"; };
 		ACC8838B265284AA00C5DB70 /* CoreDataHook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataHook.swift; sourceTree = "<group>"; };
+		ACC883872645784400C5DB70 /* GraphErorrHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphErorrHandling.swift; sourceTree = "<group>"; };
 		ACD01F3F25F8C1F800B8F65F /* SessionContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionContext.swift; sourceTree = "<group>"; };
 		ACD01F6C25FF4C8C00B8F65F /* AirCasting.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AirCasting.entitlements; sourceTree = "<group>"; };
 		ACD01F7225FF574A00B8F65F /* WifiPopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WifiPopupView.swift; sourceTree = "<group>"; };
@@ -432,6 +436,7 @@
 			children = (
 				AC6D56A125AEF55C00D221BA /* GraphView.swift */,
 				AC5832D925B196DD008C5DD5 /* Graph.swift */,
+				ACC883872645784400C5DB70 /* GraphErorrHandling.swift */,
 			);
 			path = Graph;
 			sourceTree = "<group>";
@@ -616,6 +621,7 @@
 		ACF77DEE25A7502600BB85B7 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				AC797FE6263C2C1600970254 /* SensorThreshold.swift */,
 				AC524AAB2616003C0061AD45 /* DateFormatter.swift */,
 				AC93B8D925BEDC46003D0A0D /* Array.swift */,
 				ACF77DEF25A750C200BB85B7 /* Font.swift */,
@@ -938,6 +944,8 @@
 				ACD01F7B25FF6C3300B8F65F /* BlueTextButtonStyle.swift in Sources */,
 				4F15548B263C44AF00FF3208 /* Session.swift in Sources */,
 				AC1471A325F23AE40062A53F /* CreateSessionAPI.swift in Sources */,
+				ACC883882645784400C5DB70 /* GraphErorrHandling.swift in Sources */,
+				AC5EF72125C81882003657B1 /* DashboardView.swift in Sources */,
 				4F5D3F73262C91C6003AD82E /* UserAuthenticationSession.swift in Sources */,
 				AC6D569F25AEEAE700D221BA /* SessionHeaderView.swift in Sources */,
 				AC32040425CC067D00A68520 /* CheckBox.swift in Sources */,
@@ -973,6 +981,7 @@
 				331EA80A25E32094009DEFDB /* ConfirmCreatingSessionView.swift in Sources */,
 				AC049F872608B74C00398197 /* FixedSession.swift in Sources */,
 				AC524A8E2615C8270061AD45 /* UpdateSessionParams.swift in Sources */,
+				AC797FE7263C2C1600970254 /* SensorThreshold.swift in Sources */,
 				ACF77DF025A750C200BB85B7 /* Font.swift in Sources */,
 				4F15548F263C819C00FF3208 /* MeasurementEntity.swift in Sources */,
 				ACD01F7325FF574A00B8F65F /* WifiPopupView.swift in Sources */,
@@ -1184,7 +1193,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_ASSET_PATHS = "\"AirCasting/Preview Content\"";
@@ -1198,7 +1207,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.habitatmap.AirCasting;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "AirCasting Ad hoc distribution";
+				PROVISIONING_PROFILE_SPECIFIER = "Michael Heimbinder";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

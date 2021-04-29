@@ -61,9 +61,7 @@ struct ConfirmCreatingSessionView: View {
             .foregroundColor(Color.aircastingGray)
             .multilineTextAlignment(.leading)
             .lineSpacing(9.0)
-
-            GoogleMapView(pathPoints: [], thresholds: [], isMyLocationEnabled: true)
-
+            GoogleMapView(pathPoints: [], isMyLocationEnabled: true)
             Button(action: {
                 isActive = true
                 sessionCreator.createSession(sessionContext) { result in

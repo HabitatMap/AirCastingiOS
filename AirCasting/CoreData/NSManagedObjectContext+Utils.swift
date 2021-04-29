@@ -73,5 +73,9 @@ extension NSManagedObjectContext {
         new.setValue(sensorName, forKey: "sensorName")
         return new
     }
+
+    func newOrExisting<T: SensorThreshold>(sensorName: String) throws -> T  {
+        try existingObject(sensorName: sensorName) ?? createObject(sensorName: sensorName)
+    }
     
 }

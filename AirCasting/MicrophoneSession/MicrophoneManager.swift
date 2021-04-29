@@ -106,6 +106,7 @@ private extension MicrophoneManager {
         }
     }
     
+
     func createMeasurementStream(for session: Session) throws -> MeasurementStreamLocalID {
         let stream = MeasurementStream(id: nil,
                                        sensorName: "Phone Microphone-dB",
@@ -141,3 +142,4 @@ private extension MicrophoneManager {
         case permissionNotGranted
     }
 }
+
