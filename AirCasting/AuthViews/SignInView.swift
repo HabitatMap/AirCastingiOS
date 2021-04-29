@@ -141,12 +141,12 @@ private extension SignInView {
         switch error {
         case .emailTaken, .invalidCredentials, .usernameTaken:
             return Alert(title: Text(title),
-                         message: Text("The profile name or password is incorrect. Please, try again. "),
+                         message: Text("The profile name or password is incorrect. Please try again. "),
                          dismissButton: .default(Text("Ok")))
 
         case .noConnection:
             return Alert(title: Text("No Internet Connection"),
-                         message: Text("Please, make sure your device is connected to the internet."),
+                         message: Text("Please make sure your device is connected to the internet."),
                          dismissButton: .default(Text("Ok")))
         case .other, .timeout:
             return Alert(title: Text(title),

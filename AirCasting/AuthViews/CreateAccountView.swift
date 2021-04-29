@@ -167,7 +167,7 @@ private extension CreateAccountView {
         switch error {
         case .emailTaken, .invalidCredentials, .usernameTaken:
             return Alert(title: Text(title),
-                         message: Text("The profile name or password is incorrect. Please, try again. "),
+                         message: Text("Email or profile name is already in use. Please try again."),
                          dismissButton: .default(Text("Ok")))
 
         case .noConnection:
