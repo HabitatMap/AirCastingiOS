@@ -109,6 +109,8 @@ private extension CreateAccountView {
     var createAccountButton: some View {
         Button("Continue") {
             checkIfUserInputIsCorrect()
+            // Hiding keyboard prevents from double displaying alert
+            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
             
             if isPasswordCorrect && isEmailCorrect && !isUsernameBlank {
                 #warning("Show progress and lock ui to prevent multiple api calls")
@@ -120,7 +122,7 @@ private extension CreateAccountView {
                     DispatchQueue.main.async {
                         switch result {
                         case .failure(let error):
-                            presentedError = error
+                                presentedError = error
                             Log.warning("Failed to create account \(error)")
                         case .success(let output):
                             Log.info("Successfully created account")
