@@ -11,10 +11,10 @@ import Charts
 class UI_PollutionGraph: UIView {
     
     let lineChartView = LineChartView()
+    var renderer: MultiColorGridRenderer?
     
     init() {
         super.init(frame: .zero)
-        
         self.addSubview(lineChartView)
                 
         lineChartView.translatesAutoresizingMaskIntoConstraints = false
@@ -66,13 +66,16 @@ class UI_PollutionGraph: UIView {
         dataSet.mode = .linear
         dataSet.lineWidth = 4
         
-        lineChartView.leftYAxisRenderer = MultiColorGridRenderer(viewPortHandler: lineChartView.viewPortHandler,
-                                                                 yAxis: lineChartView.leftAxis,
-                                                                 transformer: lineChartView.getTransformer(forAxis: .left))
+        renderer = MultiColorGridRenderer(viewPortHandler: lineChartView.viewPortHandler,
+                                            yAxis: lineChartView.leftAxis,
+                                            transformer: lineChartView.getTransformer(forAxis: .left))
+        guard let renderer = renderer else { return }
+        lineChartView.leftYAxisRenderer = renderer
     }
     
     func updateWith(values: [Float]) {
-        (lineChartView.leftYAxisRenderer as! MultiColorGridRenderer).thresholds = values
+        guard let renderer = renderer else { return }
+        renderer.thresholds = values
         
         //min & max yaxis values
         lineChartView.leftAxis.axisMinimum = Double(values.first ?? 0)
