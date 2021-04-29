@@ -24,7 +24,7 @@ struct GraphView: View {
                 StatisticsContainerView()
             }
             NavigationLink(destination: HeatmapSettingsView(changedThresholdValues: $thresholds)) {
-                EditButton()
+                EditButtonView()
             }
             .padding()
             
