@@ -52,7 +52,7 @@ enum AuthorizationError: Error, LocalizedError, Identifiable {
         case .noConnection:
             return NSLocalizedString("Please, make sure your device is connected to the internet.", comment: "connection failure login message failure")
         case .usernameTaken, .emailTaken, .invalidCredentials:
-            return NSLocalizedString("The username or password is incorrect. Please, try again.", comment: "connection failure login message failure")
+            return NSLocalizedString("Email or profile name is already in use. Please try again.", comment: "connection failure login message failure")
         }
     }
     
