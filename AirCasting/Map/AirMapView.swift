@@ -27,7 +27,8 @@ struct AirMapView: View {
             NavigationLink(destination: HeatmapSettingsView(changedThresholdValues: $thresholds)) {
                 EditButtonView()
             }
-            MultiSliderView(thresholds: $thresholds)
+            ThresholdsSliderView(threshold: .mock)
+            //MultiSliderView(thresholds: $thresholds)
                 // Fixes labels covered by tabbar
                 .padding(.bottom)
         }

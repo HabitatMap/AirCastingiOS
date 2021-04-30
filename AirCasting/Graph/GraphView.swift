@@ -28,7 +28,8 @@ struct GraphView: View {
             }
             .padding()
             
-            MultiSliderView(thresholds: $thresholds)
+            ThresholdsSliderView(threshold: .mock)
+            //MultiSliderView(thresholds: $thresholds)
                 .padding()
                 // Fixes labels covered by tabbar
                 .padding(.bottom)

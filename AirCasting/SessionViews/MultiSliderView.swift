@@ -7,6 +7,34 @@
 
 import SwiftUI
 
+struct ThresholdsSliderView: View {
+    
+    @ObservedObject var threshold: SensorThreshold
+    
+    var rawThresholdsBinding: Binding<[Float]> {
+        Binding<[Float]> {
+            [
+                Float(threshold.thresholdVeryLow),
+                Float(threshold.thresholdLow),
+                Float(threshold.thresholdMedium),
+                Float(threshold.thresholdHigh),
+                Float(threshold.thresholdVeryHigh)
+            ]
+        } set: { newThresholds in
+            guard newThresholds.count >= 5 else { return }
+            threshold.thresholdVeryLow = Int32(newThresholds[0])
+            threshold.thresholdLow = Int32(newThresholds[1])
+            threshold.thresholdMedium = Int32(newThresholds[2])
+            threshold.thresholdHigh = Int32(newThresholds[3])
+            threshold.thresholdVeryHigh = Int32(newThresholds[4])
+        }
+    }
+    
+    var body: some View {
+        MultiSliderView(thresholds: rawThresholdsBinding)
+    }
+}
+
 struct MultiSliderView: View {
     
     @Binding var thresholds: [Float]
@@ -26,6 +54,7 @@ struct MultiSliderView: View {
     var thresholdVeryLow: Float {
         thresholds.first ?? 0
     }
+    
     var colors: [Color] = [Color.aircastingGreen, Color.aircastingYellow, Color.aircastingOrange, Color.aircastingRed]
         
     var body: some View {
@@ -96,6 +125,29 @@ struct MultiSliderView: View {
 
 struct MultiSlider_Previews: PreviewProvider {
     static var previews: some View {
-        MultiSliderView(thresholds: .constant([0,5,10,13,20]))
+        ThresholdsSliderView(threshold: .mock)
     }
+}
+
+
+extension SensorThreshold {
+    
+    static var mock: SensorThreshold {
+        let context = PersistenceController.shared.container.viewContext
+        
+        if let existing = try! context.existingObject(sensorName: "mock-threshold") {
+            return existing
+        }
+        
+        let threshold: SensorThreshold = try! context.newOrExisting(sensorName: "mock-threshold")
+
+        threshold.thresholdVeryLow = 0
+        threshold.thresholdLow = 10
+        threshold.thresholdMedium = 20
+        threshold.thresholdHigh = 30
+        threshold.thresholdVeryHigh = 40
+        
+        return threshold
+    }
+    
 }
