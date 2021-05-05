@@ -9,10 +9,11 @@ import SwiftUI
 import Charts
 
 class UI_PollutionChart: UIView {
+    let lineChartView = LineChartView()
+    
     init() {
         super.init(frame: .zero)
         
-        let lineChartView = LineChartView()
         self.addSubview(lineChartView)
         
         lineChartView.translatesAutoresizingMaskIntoConstraints = false
@@ -23,44 +24,31 @@ class UI_PollutionChart: UIView {
             lineChartView.bottomAnchor.constraint(equalTo: self.bottomAnchor)
         ])
         
-        // Data
-        #warning("TODO: Replace mocked data with data from AirBeam")
-        let entries = [ChartDataEntry(x: 1, y: 3),
-                       ChartDataEntry(x: 2, y: 2),
-                       ChartDataEntry(x: 3, y: 1),
-                       ChartDataEntry(x: 4, y: 4)]
-        
-        let dataSet = LineChartDataSet(entries: entries)
-        let data = LineChartData(dataSet: dataSet)
-        lineChartView.data = data
-        
-        //format data labels
-        let formatter = NumberFormatter()
-        formatter.maximumFractionDigits = 0
-        data.setValueFormatter(DefaultValueFormatter(formatter: formatter))
-        data.setValueFont(UIFont(name: "Muli-Regular", size: 12)!)
-        data.setValueTextColor(UIColor(.aircastingGray))
-        
         //remove border lines and legend
-        lineChartView.xAxis.enabled = false
+        lineChartView.xAxis.enabled = true
         lineChartView.xAxis.drawLabelsEnabled = false
+        lineChartView.xAxis.labelPosition = .bottom
         lineChartView.xAxis.drawGridLinesEnabled = false
+        lineChartView.xAxis.axisMinimum = 0
+        lineChartView.xAxis.axisMaximum = 9
         
         lineChartView.leftAxis.drawLabelsEnabled = false
         lineChartView.leftAxis.drawAxisLineEnabled = false
         lineChartView.leftAxis.gridColor = UIColor(.aircastingGray).withAlphaComponent(0.4)
         
         lineChartView.rightAxis.enabled = false
-        lineChartView.rightAxis.drawLabelsEnabled = false
-        lineChartView.rightAxis.drawAxisLineEnabled = false
         
         lineChartView.legend.enabled = false
         
-        //dots colors
-        dataSet.circleHoleColor = UIColor(.aircastingGreen)
-        dataSet.setCircleColors(UIColor(.aircastingGreen).withAlphaComponent(0.5))
-        //line color
-        dataSet.setColor(UIColor(.aircastingGray).withAlphaComponent(0.7))
+        #warning("The text is not appearing and I don't know why")
+        lineChartView.noDataText = "Wait for the averages to appear"
+        lineChartView.noDataTextColor = .red
+        lineChartView.noDataTextAlignment = .center
+        
+        //disable zooming
+        lineChartView.setScaleEnabled(false)
+        
+        
     }
     
     required init?(coder: NSCoder) {
@@ -70,6 +58,10 @@ class UI_PollutionChart: UIView {
 
 struct ChartView: UIViewRepresentable {
     
+    @ObservedObject var stream: MeasurementStreamEntity
+    var thresholds: SensorThreshold
+    var dateFormatter = DateFormatter()
+    
     typealias UIViewType = UI_PollutionChart
     
     func makeUIView(context: Context) -> UI_PollutionChart {
@@ -77,12 +69,62 @@ struct ChartView: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: UI_PollutionChart, context: Context) {
+        let chartCreator = ChartEntriesCreator(stream: stream)
+        var entriesForDrawing = chartCreator.generateEntries()
+        entriesForDrawing.sort { (e1, e2) -> Bool in
+            e1.x < e2.x
+        }
+        
+        let dataSet = LineChartDataSet(entries: entriesForDrawing)
+        let data = LineChartData(dataSet: dataSet)
+        uiView.lineChartView.data = data
+        
+        //format data labels
+        formatData(data: data)
+        
+        //format line and dots
+        formatDataSet(dataSet: dataSet)
+    }
+    
+    func formatData(data: LineChartData) {
+        let formatter = NumberFormatter()
+        formatter.maximumFractionDigits = 0
+        data.setValueFormatter(DefaultValueFormatter(formatter: formatter))
+        data.setValueFont(UIFont(name: "Muli-Regular", size: 12)!)
+        data.setValueTextColor(UIColor(.aircastingGray))
+    }
+    
+    func formatDataSet(dataSet: LineChartDataSet) {
+        //dots colors
+        dataSet.circleColors = generateColorsSet(for: dataSet.entries)
+        dataSet.drawCircleHoleEnabled = false
+        dataSet.circleRadius = 6
+        
+        //line color
+        dataSet.setColor(UIColor(.aircastingGray).withAlphaComponent(0.7))
+    }
+    
+    func generateColorsSet(for entries: [ChartDataEntry]) -> [UIColor] {
+        var colors: [UIColor] = []
+        for entry in entries {
+            switch Int32(entry.y) {
+            case thresholds.thresholdVeryLow..<thresholds.thresholdLow:
+                colors.append(UIColor.aircastingGreen.withAlphaComponent(0.5))
+            case thresholds.thresholdLow..<thresholds.thresholdMedium:
+                colors.append(UIColor.aircastingYellow.withAlphaComponent(0.5))
+            case thresholds.thresholdMedium..<thresholds.thresholdHigh:
+                colors.append(UIColor.aircastingOrange.withAlphaComponent(0.5))
+            default:
+                colors.append(UIColor.aircastingRed.withAlphaComponent(0.5))
+            }
+        }
+        return colors
     }
 }
 
-struct MeasurementChart_Previews: PreviewProvider {
-    static var previews: some View {
-        ChartView()
-            .frame(width: 300, height: 250, alignment: .center)
-    }
-}
+//struct MeasurementChart_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ChartView()
+//            .frame(width: 300, height: 250, alignment: .center)
+//    }
+//}

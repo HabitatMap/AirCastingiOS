@@ -23,4 +23,17 @@ extension MeasurementStreamEntity {
     var latestValue: Double? {
         latestMeasurementEntity?.value
     }
+    
+    var lastMeasurementTime: Date? {
+        return latestMeasurementEntity?.time
+    }
+    
+    func getMeasurementsFromTimeRange(_ intervalStart: Date, _ intervalEnd: Date)  -> [MeasurementEntity] {
+        guard let all = measurements?.array as? [MeasurementEntity] else { return [] }
+        
+        let measurements = all.filter { (m) -> Bool in
+            m.time! > intervalStart && m.time! <= intervalEnd
+        }
+        return measurements
+    }
 }
