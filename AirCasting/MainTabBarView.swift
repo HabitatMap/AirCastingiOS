@@ -22,7 +22,7 @@ struct MainTabBarView: View {
             settingsTab
         }
         .onAppear {
-            try! measurementUpdatingService.start()
+//            try! measurementUpdatingService.start()
         }
         .environmentObject(tabSelection)
     }
