@@ -9,27 +9,33 @@ import SwiftUI
 
 struct GraphView: View {
     
-    @Binding var thresholds: [Float]
+    var thresholds: [SensorThreshold]
 
     var body: some View {
         VStack(alignment: .trailing) {
             SessionHeaderView(action: {},
                               isExpandButtonNeeded: false,
                               // TODO: replace mocked session
-                              session: Session.mock)
+                              session: Session.mock,
+                              thresholds: [.mock])
                 .padding()
             
             ZStack(alignment: .topLeading) {
-                Graph(thresholds: thresholds)
+                Graph(thresholds: thresholds[0])
                 StatisticsContainerView()
             }
-            NavigationLink(destination: HeatmapSettingsView(changedThresholdValues: $thresholds)) {
-                EditButtonView()
-            }
-            .padding()
             
-            ThresholdsSliderView(threshold: .mock)
-            //MultiSliderView(thresholds: $thresholds)
+            ObservedObjectWrapper(object: thresholds[0]) { threshold in
+                NavigationLink(destination: HeatmapSettingsView(changedThresholdValues: thresholds[0].rawThresholdsBinding)) {
+                    EditButtonView()
+                }
+                .padding()
+            }
+            
+            
+            
+            ThresholdsSliderView(threshold: thresholds[0])
+            //ThresholdsSliderView(thresholds: $thresholds)
                 .padding()
                 // Fixes labels covered by tabbar
                 .padding(.bottom)
@@ -41,6 +47,17 @@ struct GraphView: View {
 
 struct GraphView_Previews: PreviewProvider {
     static var previews: some View {
-        GraphView(thresholds: .constant([0,1,2,3]))
+        GraphView(thresholds: [.mock])
     }
+}
+
+struct ObservedObjectWrapper<T: ObservableObject, Content: View>: View {
+    
+    @ObservedObject var object: T
+    let content: (T) -> Content
+    
+    var body: some View {
+        content(object)
+    }
+    
 }

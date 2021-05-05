@@ -158,7 +158,7 @@ private extension MicrophoneManager {
             thresholds.thresholdLow = -40
             thresholds.thresholdMedium = -30
             thresholds.thresholdHigh = -20
-            thresholds.thresholdVeryHigh = 0
+            thresholds.thresholdVeryHigh = 10
         }
     }
     

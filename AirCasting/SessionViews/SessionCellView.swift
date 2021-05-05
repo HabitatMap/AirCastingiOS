@@ -7,14 +7,15 @@
 
 import SwiftUI
 import CoreLocation
+import CoreData
 
 struct SessionCellView: View {
     
     @State private var isCollapsed = true
-    @AppStorage("thresholds") var thresholds: [Float] = [0, 70, 120, 170, 200]
     @StateObject var provider = LocationTracker()
     let session: Session
-        
+    @FetchRequest<SensorThreshold>(sortDescriptors: [.init(key: "sensorName", ascending: true)]) var thresholds
+    
     var body: some View {
         
         VStack(alignment: .leading, spacing: 13) {
@@ -22,7 +23,9 @@ struct SessionCellView: View {
                 withAnimation {
                     isCollapsed = !isCollapsed
                 }
-            }, isExpandButtonNeeded: true, session: session)
+            }, isExpandButtonNeeded: true,
+            session: session,
+            thresholds: Array(thresholds))
             
             
             if !isCollapsed {
@@ -56,16 +59,24 @@ struct SessionCellView: View {
             .frame(height: 200)
     }
     var graphButton: some View {
-        NavigationLink(destination: GraphView(thresholds: $thresholds)) {
+//        NavigationLink(destination: GraphView(thresholds: .constant([]))) {
+//            Text("graph")
+//        }
+        
+        NavigationLink(destination: GraphView(thresholds: Array(thresholds))) {
             Text("graph")
         }
     }
     
     var mapButton: some View {
-        NavigationLink(destination: AirMapView(thresholds: $thresholds,
+        NavigationLink(destination: AirMapView(thresholds: .constant([]),
                                                pathPoints: pathPoints)) {
             Text("map")
         }
+//        NavigationLink(destination: AirMapView(thresholds: $thresholds,
+//                                               pathPoints: pathPoints)) {
+//            Text("map")
+//        }
     }
     var buttons: some View {
         HStack(spacing: 20){

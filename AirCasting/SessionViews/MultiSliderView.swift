@@ -11,27 +11,8 @@ struct ThresholdsSliderView: View {
     
     @ObservedObject var threshold: SensorThreshold
     
-    var rawThresholdsBinding: Binding<[Float]> {
-        Binding<[Float]> {
-            [
-                Float(threshold.thresholdVeryLow),
-                Float(threshold.thresholdLow),
-                Float(threshold.thresholdMedium),
-                Float(threshold.thresholdHigh),
-                Float(threshold.thresholdVeryHigh)
-            ]
-        } set: { newThresholds in
-            guard newThresholds.count >= 5 else { return }
-            threshold.thresholdVeryLow = Int32(newThresholds[0])
-            threshold.thresholdLow = Int32(newThresholds[1])
-            threshold.thresholdMedium = Int32(newThresholds[2])
-            threshold.thresholdHigh = Int32(newThresholds[3])
-            threshold.thresholdVeryHigh = Int32(newThresholds[4])
-        }
-    }
-    
     var body: some View {
-        MultiSliderView(thresholds: rawThresholdsBinding)
+        MultiSliderView(thresholds: threshold.rawThresholdsBinding)
     }
 }
 
@@ -54,27 +35,24 @@ struct MultiSliderView: View {
     var thresholdVeryLow: Float {
         thresholds.first ?? 0
     }
-    
+        
     var colors: [Color] = [Color.aircastingGreen, Color.aircastingYellow, Color.aircastingOrange, Color.aircastingRed]
         
     var body: some View {
         GeometryReader { geometry in
-            let frameWidth = geometry.frame(in: .local).size.width
-            
             ZStack {
                 colors.last
                 ForEach(thresholdButtonValues.indices.reversed(), id: \.self) { index in
                     colors[index]
-                        .frame(width: CGFloat(thresholdButtonValues[index]) * frameWidth / CGFloat(thresholdVeryHigh))
-                        .position(x: CGFloat(thresholdButtonValues[index]) * frameWidth / CGFloat(thresholdVeryHigh) / 2,
+                    // TODO: handle situation when thresholdVeryHigh = 0
+                        .frame(width: xFor(value: thresholdButtonValues[index], geometry: geometry))
+                        .position(x: xFor(value: thresholdButtonValues[index], geometry: geometry) / 2,
                                   y:  geometry.frame(in: .local).size.height / 2)
                 }
                 
                 ForEach(thresholdButtonValues.indices, id: \.self) { index in
-                    let value = thresholdButtonValues[index]
-                    
                     sliderButton
-                        .position(x: CGFloat(value) * frameWidth / CGFloat(thresholdVeryHigh),
+                        .position(x: xFor(value: thresholdButtonValues[index], geometry: geometry),
                                   y: geometry.frame(in: .local).size.height / 2)
                         .gesture(dragGesture(index: index, geometry: geometry))
                 }
@@ -83,6 +61,11 @@ struct MultiSliderView: View {
                 .coordinateSpace(name: "MultiSliderSpace")
         }
         .frame(height: 5)
+    }
+    
+    func xFor(value: Float, geometry: GeometryProxy) -> CGFloat {
+        let frameWidth = geometry.frame(in: .local).size.width
+        return CGFloat(value - thresholdVeryLow) / CGFloat(thresholdVeryHigh - thresholdVeryLow) * frameWidth
     }
     
     var sliderButton: some View {
@@ -96,8 +79,8 @@ struct MultiSliderView: View {
         DragGesture(minimumDistance: 0, coordinateSpace: .named("MultiSliderSpace"))
             .onChanged { (dragValue) in
                 let newX = dragValue.location.x
-                var newValue = Float(newX * CGFloat(thresholdVeryHigh) / geometry.frame(in: .local).size.width)
-                                
+                let frameWidth = Float(geometry.frame(in: .local).size.width)
+                var newValue = Float(newX) * (thresholdVeryHigh - thresholdVeryLow) / frameWidth + thresholdVeryLow
                 let previousValue = index > 0 ? thresholdButtonValues[index-1] : thresholdVeryLow
                 let nextValue = index == thresholdButtonValues.count-1 ? thresholdVeryHigh : thresholdButtonValues[index+1]
                 
@@ -114,7 +97,7 @@ struct MultiSliderView: View {
         return ForEach(thresholds.indices, id: \.self) { index in
             let ints = Int(thresholds[index])
             Text("\(ints)")
-                .position(x: CGFloat(thresholds[index]) * frameWidth / CGFloat(thresholdVeryHigh),
+                .position(x: xFor(value: thresholds[index], geometry: geometry),
                           y: y)
                 .foregroundColor(.aircastingGray)
                 .font(Font.muli(size: 12))
@@ -130,24 +113,3 @@ struct MultiSlider_Previews: PreviewProvider {
 }
 
 
-extension SensorThreshold {
-    
-    static var mock: SensorThreshold {
-        let context = PersistenceController.shared.container.viewContext
-        
-        if let existing = try! context.existingObject(sensorName: "mock-threshold") {
-            return existing
-        }
-        
-        let threshold: SensorThreshold = try! context.newOrExisting(sensorName: "mock-threshold")
-
-        threshold.thresholdVeryLow = 0
-        threshold.thresholdLow = 10
-        threshold.thresholdMedium = 20
-        threshold.thresholdHigh = 30
-        threshold.thresholdVeryHigh = 40
-        
-        return threshold
-    }
-    
-}

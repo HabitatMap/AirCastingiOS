@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import CoreData
 
 struct SessionHeaderView: View {
     
@@ -14,8 +13,8 @@ struct SessionHeaderView: View {
     let isExpandButtonNeeded: Bool
     @ObservedObject var session: Session
     @EnvironmentObject private var microphoneManager: MicrophoneManager
-    @FetchRequest<SensorThreshold>(sortDescriptors: [.init(key: "sensorName", ascending: true)]) var thresholds
-    
+    var thresholds: [SensorThreshold]
+
     var body: some View {
         VStack(alignment: .leading, spacing: 13){
             dateAndTime
@@ -173,6 +172,7 @@ struct SessionHeader_Previews: PreviewProvider {
     static var previews: some View {
         SessionHeaderView(action: {},
                           isExpandButtonNeeded: true,
-                          session: Session.mock)
+                          session: Session.mock,
+                          thresholds: [.mock])
     }
 }
