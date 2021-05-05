@@ -8,14 +8,16 @@
 import SwiftUI
 import CoreLocation
 import CoreData
+import Charts
+
 
 struct SessionCellView: View {
     
     @State private var isCollapsed = true
     
-    let session: SessionEntity
+    @ObservedObject var session: SessionEntity
     let thresholds: [SensorThreshold]
-
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 13) {
             SessionHeaderView(action:  {
@@ -27,7 +29,9 @@ struct SessionCellView: View {
             thresholds: Array(thresholds))
             if !isCollapsed {
                 VStack(alignment: .trailing, spacing: 40) {
-                    pollutionChart
+                    if let stream = session.dbStream {
+                        pollutionChart(stream: stream)
+                    }
                     buttons
                 }
             }
@@ -43,10 +47,6 @@ struct SessionCellView: View {
 }
 
 private extension SessionCellView {
-    var pollutionChart: some View {
-        ChartView()
-            .frame(height: 200)
-    }
     var graphButton: some View {
         NavigationLink(destination: GraphView(session: session, thresholds: Array(thresholds))) {
             Text("graph")
@@ -58,12 +58,28 @@ private extension SessionCellView {
             Text("map")
         }
     }
+    
+    func pollutionChart(stream: MeasurementStreamEntity) -> some View {
+        ChartView(stream: stream, thresholds: thresholds[0])
+            .frame(height: 200)
+    }
+    
     var buttons: some View {
         HStack(spacing: 20){
             mapButton
             graphButton
         }
         .buttonStyle(GrayButtonStyle())
+    }
+}
+
+extension Color {
+    static var random: Color {
+        return Color(
+            red: .random(in: 0...1),
+            green: .random(in: 0...1),
+            blue: .random(in: 0...1)
+        )
     }
 }
 
