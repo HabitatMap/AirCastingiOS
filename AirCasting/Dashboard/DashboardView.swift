@@ -6,16 +6,22 @@
 //
 
 import SwiftUI
+import CoreData
 
 struct DashboardView: View {
+    @State private var selectedSection = SelectedSection.mobileActive
+    @Environment(\.managedObjectContext) var context
+    @StateObject private var coreDataHook = CoreDataHook()
     
-    @FetchRequest<SessionEntity>(sortDescriptors: [NSSortDescriptor(key: "startTime",
-                                                              ascending: false)]) var sessions
+    var sessions: [SessionEntity] {
+        coreDataHook.sessions
+    }
 
     var body: some View {
         VStack {
-            sectionPicker
             
+            AirSectionPickerView(selection: $selectedSection)
+
             if sessions.isEmpty {
                 EmptyDashboardView()
             } else {
@@ -31,18 +37,15 @@ struct DashboardView: View {
                 .background(Color.aircastingGray.opacity(0.05))
             }
         }
-        .navigationBarTitle("Dashboard")
-    }
-    
-    var sectionPicker: some View {
-        Picker(selection: .constant(1), label: Text("Picker"), content: {
-            Text("Following").tag(1)
-            Text("Active").tag(2)
-            Text("Dormant").tag(3)
-            Text("Fixed").tag(4)
-        })
-        .pickerStyle(SegmentedPickerStyle())
-        .padding()
+        .navigationBarTitle(NSLocalizedString("Dashboard", comment: ""))
+        .onChange(of: selectedSection) { selectedSection in
+            do {
+                coreDataHook.context = context
+                try coreDataHook.setup(selectedSection: selectedSection)
+            } catch {
+                Log.error("Trying to fetch sessions. Error: \(error)")
+            }
+        }
     }
 }
 

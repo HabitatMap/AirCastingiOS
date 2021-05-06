@@ -34,12 +34,12 @@
 		4FB39E402622252700E5E564 /* XCTestCase+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FB39E3F2622252700E5E564 /* XCTestCase+Extensions.swift */; };
 		4FD2CA4726406F2C007E932E /* Diff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FD2CA4626406F2C007E932E /* Diff.swift */; };
 		4FEEAED3262C53C20024AB7E /* UpdateSessionParamsServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FEEAED2262C53C20024AB7E /* UpdateSessionParamsServiceTests.swift */; };
+		4FF60BE926550077001618BE /* SelectPeripheralView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC1DAD4425C9858C009AC4D1 /* SelectPeripheralView.swift */; };
+		4FF60BEA265500C4001618BE /* BluetoothManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC1DAD4825C987B3009AC4D1 /* BluetoothManager.swift */; };
 		AC049F7F2604B7AF00398197 /* AuthErorrHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC049F7E2604B7AF00398197 /* AuthErorrHandling.swift */; };
 		AC049F872608B74C00398197 /* FixedSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC049F862608B74C00398197 /* FixedSession.swift */; };
 		AC049F8B2608DCB000398197 /* Session+Mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC049F8A2608DCB000398197 /* Session+Mock.swift */; };
 		AC1471A325F23AE40062A53F /* CreateSessionAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC1471A225F23AE40062A53F /* CreateSessionAPI.swift */; };
-		AC1DAD4525C9858C009AC4D1 /* SelectPeripheralView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC1DAD4425C9858C009AC4D1 /* SelectPeripheralView.swift */; };
-		AC1DAD4925C987B3009AC4D1 /* BluetoothManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC1DAD4825C987B3009AC4D1 /* BluetoothManager.swift */; };
 		AC3203CB25CA991C00A68520 /* TurnOnBluetoothView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC3203CA25CA991C00A68520 /* TurnOnBluetoothView.swift */; };
 		AC32040425CC067D00A68520 /* CheckBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC32040325CC067D00A68520 /* CheckBox.swift */; };
 		AC32041C25CC46EF00A68520 /* PowerABView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC32041B25CC46EF00A68520 /* PowerABView.swift */; };
@@ -58,8 +58,6 @@
 		AC524A9A2615E3600061AD45 /* NSManagedObjectContext+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC524A992615E3600061AD45 /* NSManagedObjectContext+Utils.swift */; };
 		AC524AAC2616003C0061AD45 /* DateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC524AAB2616003C0061AD45 /* DateFormatter.swift */; };
 		AC5832DA25B196DD008C5DD5 /* Graph.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC5832D925B196DD008C5DD5 /* Graph.swift */; };
-		AC5EF71D25C8178B003657B1 /* EmptyDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC5EF71C25C8178B003657B1 /* EmptyDashboardView.swift */; };
-		AC5EF72125C81882003657B1 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC5EF72025C81882003657B1 /* DashboardView.swift */; };
 		AC5EF76125C84888003657B1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = AC5EF76025C84888003657B1 /* GoogleService-Info.plist */; };
 		AC6D567C25AC540D00D221BA /* Charts in Frameworks */ = {isa = PBXBuildFile; productRef = AC6D567B25AC540D00D221BA /* Charts */; };
 		AC6D567F25AC54A400D221BA /* ChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6D567E25AC54A400D221BA /* ChartView.swift */; };
@@ -107,7 +105,11 @@
 		AC93B8E725BEFE4F003D0A0D /* AirMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC93B8E625BEFE4F003D0A0D /* AirMapView.swift */; };
 		AC93B8FE25C02E0B003D0A0D /* GoogleMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC93B8FD25C02E0B003D0A0D /* GoogleMapView.swift */; };
 		AC960C7825DD39F500EC95DD /* ABConnectedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC960C7725DD39F500EC95DD /* ABConnectedView.swift */; };
+		AC9F526C2652A360003CF61F /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9F52692652A360003CF61F /* DashboardView.swift */; };
+		AC9F526D2652A360003CF61F /* EmptyDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9F526A2652A360003CF61F /* EmptyDashboardView.swift */; };
+		AC9F526E2652A360003CF61F /* AirSectionPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9F526B2652A360003CF61F /* AirSectionPickerView.swift */; };
 		ACC536E026395C0900327267 /* MeasurementDotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACC536DF26395C0900327267 /* MeasurementDotView.swift */; };
+		ACC8838C265284AA00C5DB70 /* CoreDataHook.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACC8838B265284AA00C5DB70 /* CoreDataHook.swift */; };
 		ACD01F4025F8C1F800B8F65F /* SessionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACD01F3F25F8C1F800B8F65F /* SessionContext.swift */; };
 		ACD01F7325FF574A00B8F65F /* WifiPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACD01F7225FF574A00B8F65F /* WifiPopupView.swift */; };
 		ACD01F7625FF61CE00B8F65F /* LocationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACD01F7525FF61CE00B8F65F /* LocationProvider.swift */; };
@@ -195,8 +197,6 @@
 		AC524A992615E3600061AD45 /* NSManagedObjectContext+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObjectContext+Utils.swift"; sourceTree = "<group>"; };
 		AC524AAB2616003C0061AD45 /* DateFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormatter.swift; sourceTree = "<group>"; };
 		AC5832D925B196DD008C5DD5 /* Graph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Graph.swift; sourceTree = "<group>"; };
-		AC5EF71C25C8178B003657B1 /* EmptyDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyDashboardView.swift; sourceTree = "<group>"; };
-		AC5EF72025C81882003657B1 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
 		AC5EF76025C84888003657B1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
 		AC6D567E25AC54A400D221BA /* ChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartView.swift; sourceTree = "<group>"; };
 		AC6D569925ADE57800D221BA /* GrayButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrayButtonStyle.swift; sourceTree = "<group>"; };
@@ -245,7 +245,11 @@
 		AC93B8E625BEFE4F003D0A0D /* AirMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirMapView.swift; sourceTree = "<group>"; };
 		AC93B8FD25C02E0B003D0A0D /* GoogleMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleMapView.swift; sourceTree = "<group>"; };
 		AC960C7725DD39F500EC95DD /* ABConnectedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ABConnectedView.swift; sourceTree = "<group>"; };
+		AC9F52692652A360003CF61F /* DashboardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
+		AC9F526A2652A360003CF61F /* EmptyDashboardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmptyDashboardView.swift; sourceTree = "<group>"; };
+		AC9F526B2652A360003CF61F /* AirSectionPickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AirSectionPickerView.swift; sourceTree = "<group>"; };
 		ACC536DF26395C0900327267 /* MeasurementDotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementDotView.swift; sourceTree = "<group>"; };
+		ACC8838B265284AA00C5DB70 /* CoreDataHook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataHook.swift; sourceTree = "<group>"; };
 		ACD01F3F25F8C1F800B8F65F /* SessionContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionContext.swift; sourceTree = "<group>"; };
 		ACD01F6C25FF4C8C00B8F65F /* AirCasting.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AirCasting.entitlements; sourceTree = "<group>"; };
 		ACD01F7225FF574A00B8F65F /* WifiPopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WifiPopupView.swift; sourceTree = "<group>"; };
@@ -301,6 +305,7 @@
 				AC524A922615D8620061AD45 /* MeasurementStreamEntity.swift */,
 				338C30E125F1044B00E0305C /* PersistenceController.swift */,
 				AC524A992615E3600061AD45 /* NSManagedObjectContext+Utils.swift */,
+				ACC8838B265284AA00C5DB70 /* CoreDataHook.swift */,
 				338C30E625F10BFE00E0305C /* AirCasting.xcdatamodeld */,
 				4F1D57D826454E3700F250AC /* MeasurementStream.swift */,
 				4F2D84EA2647DBE0003D9ED5 /* MeasurementStreamStorage.swift */,
@@ -374,15 +379,6 @@
 				AC8CFF7625ECF8B100FB2918 /* HexMessagesBuilder.swift */,
 			);
 			path = ABConnector;
-			sourceTree = "<group>";
-		};
-		AC3203CE25CBED9C00A68520 /* Dashboard */ = {
-			isa = PBXGroup;
-			children = (
-				AC5EF72025C81882003657B1 /* DashboardView.swift */,
-				AC5EF71C25C8178B003657B1 /* EmptyDashboardView.swift */,
-			);
-			path = Dashboard;
 			sourceTree = "<group>";
 		};
 		AC32040625CC122900A68520 /* Utils */ = {
@@ -483,12 +479,12 @@
 				AC7EB37525A6FB3A00A7F2AF /* AirCastingApp.swift */,
 				ACD01F912600A3C800B8F65F /* RootAppView.swift */,
 				AC7EB37725A6FB3A00A7F2AF /* MainTabBarView.swift */,
+				AC9F52682652A360003CF61F /* Dashboard */,
 				ACF7C05D260CC9DB007C24AE /* Services */,
 				338C30E025F1042000E0305C /* CoreData */,
 				AC8CFF4325E5108100FB2918 /* APICommunicator */,
 				AC8CFF3425E502C700FB2918 /* AuthViews */,
 				ACD32A4D2600A8CC00818946 /* Settings */,
-				AC3203CE25CBED9C00A68520 /* Dashboard */,
 				AC32043425CD52E600A68520 /* CreateSessionViews */,
 				AC1DAD4325C98556009AC4D1 /* ABConnector */,
 				332F521825FA38B90047236D /* MicrophoneSession */,
@@ -597,6 +593,16 @@
 				AC8D6C6925C049E300ED74D1 /* Environment.swift */,
 			);
 			path = Map;
+			sourceTree = "<group>";
+		};
+		AC9F52682652A360003CF61F /* Dashboard */ = {
+			isa = PBXGroup;
+			children = (
+				AC9F52692652A360003CF61F /* DashboardView.swift */,
+				AC9F526A2652A360003CF61F /* EmptyDashboardView.swift */,
+				AC9F526B2652A360003CF61F /* AirSectionPickerView.swift */,
+			);
+			path = Dashboard;
 			sourceTree = "<group>";
 		};
 		ACD32A4D2600A8CC00818946 /* Settings */ = {
@@ -891,11 +897,15 @@
 				AC049F7F2604B7AF00398197 /* AuthErorrHandling.swift in Sources */,
 				ACF77DF825A866E700BB85B7 /* BlueButtonStyle.swift in Sources */,
 				AC524A962615D8620061AD45 /* MeasurementStreamEntity.swift in Sources */,
+				4FF60BE926550077001618BE /* SelectPeripheralView.swift in Sources */,
 				AC32041F25CC485E00A68520 /* ConnectingABView.swift in Sources */,
 				ACD32A4F2600A8DD00818946 /* SettingsView.swift in Sources */,
+				AC9F526C2652A360003CF61F /* DashboardView.swift in Sources */,
 				AC3203CB25CA991C00A68520 /* TurnOnBluetoothView.swift in Sources */,
+				4FF60BEA265500C4001618BE /* BluetoothManager.swift in Sources */,
 				AC32043625CD534700A68520 /* ChooseSessionTypeView.swift in Sources */,
 				ACF7C05F260CC9FF007C24AE /* DownloadMeasurmentsService.swift in Sources */,
+				AC9F526E2652A360003CF61F /* AirSectionPickerView.swift in Sources */,
 				AC7EB37825A6FB3A00A7F2AF /* MainTabBarView.swift in Sources */,
 				AC960C7825DD39F500EC95DD /* ABConnectedView.swift in Sources */,
 				AC489B5C2603614E00CEEC48 /* MoreInfoPopupView.swift in Sources */,
@@ -908,9 +918,8 @@
 				4F5D3F6F262C862E003AD82E /* KeychainStorage.swift in Sources */,
 				4F945EEE2649F3F5008A5B22 /* SessionCreator.swift in Sources */,
 				4F945EF02649F455008A5B22 /* AirBeamSessionCreator.swift in Sources */,
-				AC5EF71D25C8178B003657B1 /* EmptyDashboardView.swift in Sources */,
-				AC1DAD4925C987B3009AC4D1 /* BluetoothManager.swift in Sources */,
 				4F2D84EB2647DBE0003D9ED5 /* MeasurementStreamStorage.swift in Sources */,
+				ACC8838C265284AA00C5DB70 /* CoreDataHook.swift in Sources */,
 				AC8CFF5C25E6866100FB2918 /* SignInView.swift in Sources */,
 				AC524A6F261329330061AD45 /* SessionExtension.swift in Sources */,
 				ACF77DFB25A8888700BB85B7 /* SessionCellView.swift in Sources */,
@@ -929,7 +938,6 @@
 				ACD01F7B25FF6C3300B8F65F /* BlueTextButtonStyle.swift in Sources */,
 				4F15548B263C44AF00FF3208 /* Session.swift in Sources */,
 				AC1471A325F23AE40062A53F /* CreateSessionAPI.swift in Sources */,
-				AC5EF72125C81882003657B1 /* DashboardView.swift in Sources */,
 				4F5D3F73262C91C6003AD82E /* UserAuthenticationSession.swift in Sources */,
 				AC6D569F25AEEAE700D221BA /* SessionHeaderView.swift in Sources */,
 				AC32040425CC067D00A68520 /* CheckBox.swift in Sources */,
@@ -941,7 +949,6 @@
 				338C30E225F1044B00E0305C /* PersistenceController.swift in Sources */,
 				4F1D57D926454E3700F250AC /* MeasurementStream.swift in Sources */,
 				AC6D56A225AEF55C00D221BA /* GraphView.swift in Sources */,
-				AC1DAD4525C9858C009AC4D1 /* SelectPeripheralView.swift in Sources */,
 				ACF77DF425A750E000BB85B7 /* Color.swift in Sources */,
 				AC4EC6C125B6F18A00C1E312 /* EditButtonView.swift in Sources */,
 				AC049F8B2608DCB000398197 /* Session+Mock.swift in Sources */,
@@ -949,6 +956,7 @@
 				AC6D567F25AC54A400D221BA /* ChartView.swift in Sources */,
 				ACD01F952600A54400B8F65F /* UserDefaults+Preferences.swift in Sources */,
 				4FB39E3A2621BE7F00E5E564 /* APIClient.swift in Sources */,
+				AC9F526D2652A360003CF61F /* EmptyDashboardView.swift in Sources */,
 				AC4EC6BC25B5ABB700C1E312 /* StatisticsContainerView.swift in Sources */,
 				AC524A942615D8620061AD45 /* SessionEntity.swift in Sources */,
 				AC8CFF3625E502DD00FB2918 /* CreateAccountView.swift in Sources */,
