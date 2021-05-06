@@ -11,10 +11,12 @@ struct DashboardView: View {
     
     @FetchRequest<Session>(sortDescriptors: [NSSortDescriptor(key: "startTime",
                                                               ascending: false)]) var sessions
-
+    @State private var selectedView = SelectedSection.following
+    
     var body: some View {
         VStack {
-            sectionPicker
+            
+            AirSectionPickerView(selection: $selectedView)
             
             if sessions.isEmpty {
                 EmptyDashboardView()
@@ -32,17 +34,6 @@ struct DashboardView: View {
             }
         }
         .navigationBarTitle("Dashboard")
-    }
-    
-    var sectionPicker: some View {
-        Picker(selection: .constant(1), label: Text("Picker"), content: {
-            Text("Following").tag(1)
-            Text("Active").tag(2)
-            Text("Dormant").tag(3)
-            Text("Fixed").tag(4)
-        })
-        .pickerStyle(SegmentedPickerStyle())
-        .padding()
     }
 }
 
