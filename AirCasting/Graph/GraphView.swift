@@ -31,11 +31,8 @@ struct GraphView: View {
                 }
                 .padding()
             }
-            
-            
-            
+
             ThresholdsSliderView(threshold: thresholds[0])
-            //ThresholdsSliderView(thresholds: $thresholds)
                 .padding()
                 // Fixes labels covered by tabbar
                 .padding(.bottom)

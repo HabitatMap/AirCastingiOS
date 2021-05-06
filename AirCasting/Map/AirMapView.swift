@@ -11,7 +11,7 @@ import Foundation
 
 struct AirMapView: View {
     
-    @Binding var thresholds: [Float]
+    var thresholds: [SensorThreshold]
     let pathPoints: [PathPoint]
     
     var body: some View {
@@ -22,14 +22,13 @@ struct AirMapView: View {
                               session: Session.mock,
                               thresholds: [.mock])
             ZStack(alignment: .topLeading) {
-                GoogleMapView(pathPoints: pathPoints, thresholds: thresholds)
+                GoogleMapView(pathPoints: pathPoints, thresholds: thresholds[0].rawThresholdsBinding.wrappedValue)
                 StatisticsContainerView()
             }
-            NavigationLink(destination: HeatmapSettingsView(changedThresholdValues: $thresholds)) {
+            NavigationLink(destination: HeatmapSettingsView(changedThresholdValues: thresholds[0].rawThresholdsBinding)) {
                 EditButtonView()
             }
-            ThresholdsSliderView(threshold: .mock)
-            //MultiSliderView(thresholds: $thresholds)
+            ThresholdsSliderView(threshold: thresholds[0])
                 // Fixes labels covered by tabbar
                 .padding(.bottom)
         }
@@ -40,7 +39,7 @@ struct AirMapView: View {
 
 struct Map_Previews: PreviewProvider {
     static var previews: some View {
-        AirMapView(thresholds: .constant([0,1,2,3,10]),
+        AirMapView(thresholds: [SensorThreshold.mock],
                    pathPoints: [PathPoint(location: CLLocationCoordinate2D(latitude: 40.73,
                                                                            longitude: -73.93),
                    measurement: 10),

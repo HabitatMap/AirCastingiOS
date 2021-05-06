@@ -49,7 +49,7 @@ struct SessionCellView: View {
         let allLocationPoints = provider.allLocations
         let points = allLocationPoints.map { (location) in
             PathPoint(location: location.coordinate,
-                      measurement: Float(arc4random() % 200))
+                      measurement: Float(-10))
         }
         return points
     }
@@ -59,24 +59,16 @@ struct SessionCellView: View {
             .frame(height: 200)
     }
     var graphButton: some View {
-//        NavigationLink(destination: GraphView(thresholds: .constant([]))) {
-//            Text("graph")
-//        }
-        
         NavigationLink(destination: GraphView(thresholds: Array(thresholds))) {
             Text("graph")
         }
     }
     
     var mapButton: some View {
-        NavigationLink(destination: AirMapView(thresholds: .constant([]),
+        NavigationLink(destination: AirMapView(thresholds: Array(thresholds),
                                                pathPoints: pathPoints)) {
             Text("map")
         }
-//        NavigationLink(destination: AirMapView(thresholds: $thresholds,
-//                                               pathPoints: pathPoints)) {
-//            Text("map")
-//        }
     }
     var buttons: some View {
         HStack(spacing: 20){
