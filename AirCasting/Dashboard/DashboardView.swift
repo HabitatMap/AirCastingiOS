@@ -11,7 +11,7 @@ struct DashboardView: View {
     
     @FetchRequest<Session>(sortDescriptors: [NSSortDescriptor(key: "startTime",
                                                               ascending: false)]) var sessions
-    @State private var selectedView = SelectedSection.following
+    @State private var selectedView = SelectedSection.mobileActive
     
     var body: some View {
         VStack {
@@ -35,6 +35,23 @@ struct DashboardView: View {
         }
         .navigationBarTitle("Dashboard")
     }
+    
+    func displaySessions(sessions: [Session]) -> [Session] {
+        switch selectedView {
+        case SelectedSection.following:
+            #warning("TODO: return followed sessions after adding follow funcionality")
+            return []
+        case SelectedSection.mobileActive:
+            return []
+        case SelectedSection.mobileDormant:
+            return []
+        case SelectedSection.fixed:
+            return []
+        default:
+            return []
+        }
+    }
+    
 }
 
 #if DEBUG
