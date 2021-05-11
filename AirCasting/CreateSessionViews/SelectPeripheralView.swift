@@ -125,8 +125,10 @@ struct SelectPeripheralView: View {
     }
 }
 
+#if DEBUG
 struct SelectPeripheralView_Previews: PreviewProvider {
     static var previews: some View {
         SelectPeripheralView( creatingSessionFlowContinues: .constant(true))
     }
 }
+#endif
