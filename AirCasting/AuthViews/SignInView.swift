@@ -10,6 +10,8 @@ import SwiftUI
 extension NSError: Identifiable {}
 
 struct SignInView: View {
+    @State var isActive: Bool = false
+
     let userAuthenticationSession: UserAuthenticationSession
     private let authorizationAPIService = AuthorizationAPIService()
     @State private var username: String = ""
@@ -18,8 +20,16 @@ struct SignInView: View {
     @State private var presentedError: AuthorizationError?
     @State private var isUsernameBlank = false
     @State private var isPasswordBlank = false
-    
+
     var body: some View {
+        LoadingView(isShowing: $isActive) {
+            contentView
+        }
+    }
+}
+
+private extension SignInView {
+    private var contentView: some View {
         GeometryReader { geometry in
             ScrollView {
                 VStack(spacing: 40) {
@@ -51,16 +61,12 @@ struct SignInView: View {
             }
         }
         .simultaneousGesture(
-
     DragGesture(minimumDistance: 2, coordinateSpace: .global)
         .onChanged({ (_) in
             UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-        })
-)
+        }))
     }
-}
 
-private extension SignInView {
     var titleLabel: some View {
         VStack(alignment: .leading, spacing: 15) {
             Text("Sign in")
@@ -91,6 +97,8 @@ private extension SignInView {
         Button("Sign in") {
             checkInput()
             if !isPasswordBlank && !isUsernameBlank {
+                isActive = true
+
                 task = authorizationAPIService.signIn(input: AuthorizationAPI.SigninUserInput(username: username, password: password)) { result in
                     DispatchQueue.main.async {
                         switch result {
@@ -106,6 +114,7 @@ private extension SignInView {
                             Log.warning("Failed to login \(error)")
                             presentedError = error
                         }
+                        isActive = false
                     }
                 }
             }
@@ -159,7 +168,7 @@ private extension SignInView {
 #if DEBUG
 struct SignInView_Previews: PreviewProvider {
     static var previews: some View {
-        SignInView(userAuthenticationSession: UserAuthenticationSession())
+        SignInView(isActive: true, userAuthenticationSession: UserAuthenticationSession())
     }
 }
 #endif
