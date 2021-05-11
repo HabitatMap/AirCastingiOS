@@ -8,11 +8,11 @@
 import SwiftUI
 
 struct RootAppView: View {
-    
-    let persistenceController = PersistenceController.shared
     @ObservedObject var userAuthenticationSession = UserAuthenticationSession()
-    @ObservedObject var bluetoothManager = BluetoothManager()
-    @ObservedObject var microphoneManager = MicrophoneManager()
+
+    let persistenceController = PersistenceController.shared
+    let bluetoothManager = BluetoothManager()
+    let microphoneManager = MicrophoneManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared))
     
     var body: some View {
         if userAuthenticationSession.isLoggedIn {
@@ -25,11 +25,14 @@ struct RootAppView: View {
     }
     
     var mainAppView: some View {
-        MainTabBarView(measurementUpdatingService: DownloadMeasurementsService(authorisationService: userAuthenticationSession))
+        MainTabBarView(measurementUpdatingService: DownloadMeasurementsService(
+                        authorisationService: userAuthenticationSession,
+                        persistenceController: persistenceController))
             .environmentObject(bluetoothManager)
             .environmentObject(microphoneManager)
             .environmentObject(userAuthenticationSession)
-            .environment(\.managedObjectContext, persistenceController.container.viewContext)
+            .environmentObject(persistenceController)
+            .environment(\.managedObjectContext, persistenceController.viewContext)
     }
 }
 

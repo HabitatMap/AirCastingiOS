@@ -49,8 +49,8 @@ class BluetoothManager: NSObject, ObservableObject {
         centralManager.scanForPeripherals(withServices: nil,
                                           options: nil)
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(30)) {
-            self.centralManager.stopScan()
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(30)) { [centralManager] in
+            centralManager.stopScan()
         }
     }
 }
@@ -128,6 +128,7 @@ extension BluetoothManager: CBPeripheralDelegate {
     }
     
     func sendHexCode() {
+        #warning("TODO: Send it")
         _ = CBUUID(string: "0000ffde-0000-1000-8000-00805f9b34fb")
     }
 
@@ -140,7 +141,7 @@ extension BluetoothManager: CBPeripheralDelegate {
     func parseData(data: Data) -> ABMeasurementStream? {
         let string = String(data: data, encoding: .utf8)
         let components = string?.components(separatedBy: ";")
-        
+        #warning("TODO: Check if values contains 11 elements and throw appropriate error")
         guard let values = components,
               let measuredValue = Double(values[0]),
               let thresholdVeryLow = Int(values[7]),

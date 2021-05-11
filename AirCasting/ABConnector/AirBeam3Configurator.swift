@@ -10,10 +10,23 @@ import CoreBluetooth
 import CoreLocation
 
 struct AirBeam3Configurator {
+    enum AirBeam3ConfiguratorError: Swift.Error {
+        case missingAuthenticationToken
+    }
+    let userAuthenticationSession: UserAuthenticationSession
+    let peripheral: CBPeripheral
 
-    var peripheral: CBPeripheral
-    var hexMessageBuilder = HexMessagesBuilder()
-    let userDefaults = UserDefaults.standard
+    init(userAuthenticationSession: UserAuthenticationSession, peripheral: CBPeripheral) {
+        self.userAuthenticationSession = userAuthenticationSession
+        self.peripheral = peripheral
+    }
+    
+    private let hexMessageBuilder = HexMessagesBuilder()
+    private let dateFormatter: DateFormatter = {
+        $0.dateFormat = "dd/MM/YY-hh:mm:ss"
+        $0.locale = Locale(identifier: "en_US_POSIX")
+        return $0
+    }(DateFormatter())
     
     // have notifications about new measurements
     private let MEASUREMENTS_CHARACTERISTIC_UUIDS: [CBUUID] = [
@@ -35,36 +48,25 @@ struct AirBeam3Configurator {
     // service id
     private let SERVICE_UUID = CBUUID(string:"0000ffdd-0000-1000-8000-00805f9b34fb")
     
-    func configureMobileSession(dateString: String, location: CLLocationCoordinate2D) {
-        
+    func configureMobileSession(date: Date, location: CLLocationCoordinate2D) {
+        let dateString = dateFormatter.string(from: date)
         sendLocationConfiguration(location: location)
-        
+
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
             sendCurrentTimeConfiguration(date: dateString)
-
             DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
                 sendMobileModeRequest()
             }
         }
     }
-    
-    // To configure fixed session we need to send authMessage first
-    // We're generating unique String for session UUID and sending it with users auth token to the AB
-    private func configureFixed(uuid: SessionUUID) {
-        guard let auth = userDefaults.string(forKey: "auth_token") else { return }
 
-        sendUUIDRequest(uuid: uuid)
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
-            sendAuthToken(authToken: auth)
-        }
-    }
-    
     func configureFixedWifiSession(uuid: SessionUUID,
                                    location: CLLocationCoordinate2D,
-                                   dateString: String,
-                                   wifiSSID: String, wifiPassword: String) {
-
-        configureFixed(uuid: uuid)
+                                   date: Date,
+                                   wifiSSID: String,
+                                   wifiPassword: String) throws {
+        let dateString = dateFormatter.string(from: date)
+        try configureFixed(uuid: uuid)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
             sendLocationConfiguration(location: location)
@@ -76,7 +78,20 @@ struct AirBeam3Configurator {
             }
         }
     }
-    
+}
+
+private extension AirBeam3Configurator {
+    // To configure fixed session we need to send authMessage first
+    // We're generating unique String for session UUID and sending it with users auth token to the AB
+    func configureFixed(uuid: SessionUUID) throws {
+        guard let token = userAuthenticationSession.token else {
+            throw AirBeam3ConfiguratorError.missingAuthenticationToken
+        }
+        sendUUIDRequest(uuid: uuid)
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
+            sendAuthToken(authToken: token)
+        }
+    }
     // MARK: Commands
     
     private func sendUUIDRequest(uuid: SessionUUID) {
@@ -116,6 +131,7 @@ struct AirBeam3Configurator {
     func sendConfigMessage(data: Data) {
         guard let characteristic = getCharacteristic(serviceID: SERVICE_UUID,
                                                      charID: CONFIGURATION_CHARACTERISTIC_UUID) else {
+            assertionFailure("Unable to get characteristic from \(peripheral)")
             return
         }
         peripheral.writeValue(data,
