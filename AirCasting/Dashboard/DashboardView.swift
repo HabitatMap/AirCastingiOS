@@ -9,7 +9,7 @@ import SwiftUI
 
 struct DashboardView: View {
     
-    @FetchRequest<Session>(sortDescriptors: [NSSortDescriptor(key: "startTime",
+    @FetchRequest<SessionEntity>(sortDescriptors: [NSSortDescriptor(key: "startTime",
                                                               ascending: false)]) var sessions
 
     var body: some View {

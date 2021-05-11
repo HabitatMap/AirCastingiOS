@@ -7,16 +7,17 @@
 
 import CoreData
 
-struct PersistenceController {
+class PersistenceController: ObservableObject {
     static let shared = PersistenceController()
 
-    let container: NSPersistentContainer
+    private let container: NSPersistentContainer
 
     init(inMemory: Bool = false) {
         container = NSPersistentContainer(name: "AirCasting")
         if inMemory {
             container.persistentStoreDescriptions.first!.url = URL(fileURLWithPath: "/dev/null")
         }
+
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error as NSError? {
                 // Replace this implementation with code to handle the error appropriately.
@@ -33,5 +34,39 @@ struct PersistenceController {
                 fatalError("Unresolved error \(error), \(error.userInfo)")
             }
         })
+        container.viewContext.automaticallyMergesChangesFromParent = true
+        createInitialMicThreshold(in: viewContext)
+
+    }
+
+    var viewContext: NSManagedObjectContext {
+        container.viewContext
+    }
+
+    func newBackgroundContext() -> NSManagedObjectContext {
+        container.newBackgroundContext()
+    }
+
+    func editContext() -> NSManagedObjectContext {
+        container.newBackgroundContext()
+    }
+
+    func performBackgroundTask(_ block: @escaping (NSManagedObjectContext) -> Void) {
+        container.performBackgroundTask(block)
+    }
+
+    #warning("Think if we need this in the database at all")
+    private func createInitialMicThreshold(in context: NSManagedObjectContext) {
+        let existing: SensorThreshold? = try? context.existingObject(sensorName: "db")
+        if existing == nil {
+            let thresholds: SensorThreshold = try! context.createObject(sensorName: "db")
+            #warning("TODO: change thresholds values from dbFS to db")
+            thresholds.thresholdVeryLow = -100
+            thresholds.thresholdLow = -40
+            thresholds.thresholdMedium = -30
+            thresholds.thresholdHigh = -20
+            thresholds.thresholdVeryHigh = 0
+            try! context.save()
+        }
     }
 }

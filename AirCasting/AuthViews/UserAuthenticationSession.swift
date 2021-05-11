@@ -8,7 +8,7 @@ final class UserAuthenticationSession: ObservableObject {
     private let keychainStorage = KeychainStorage(service: Bundle.main.bundleIdentifier!)
 
     @Published private(set) var isLoggedIn: Bool = false
-    private var token: String? {
+    private(set) var token: String? {
         didSet {
             isLoggedIn = token != nil
         }
