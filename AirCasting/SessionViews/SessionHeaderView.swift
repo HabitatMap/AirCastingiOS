@@ -168,6 +168,7 @@ struct SessionHeaderView: View {
     }
 }
 
+#if DEBUG
 struct SessionHeader_Previews: PreviewProvider {
     static var previews: some View {
         SessionHeaderView(action: {},
@@ -176,3 +177,4 @@ struct SessionHeader_Previews: PreviewProvider {
                           thresholds: [.mock])
     }
 }
+#endif

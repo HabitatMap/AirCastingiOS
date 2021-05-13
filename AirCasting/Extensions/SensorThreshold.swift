@@ -26,8 +26,8 @@ extension SensorThreshold {
     }
 }
 
+#if DEBUG
 extension SensorThreshold {
-    // mocked SensorThreshold is used for previews (& temporarily some views)
     static var mock: SensorThreshold {
         let context = PersistenceController.shared.container.viewContext
         
@@ -46,3 +46,4 @@ extension SensorThreshold {
         return threshold
     }
 }
+#endif

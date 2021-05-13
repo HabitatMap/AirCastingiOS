@@ -73,16 +73,15 @@ class UI_PollutionGraph: UIView {
         lineChartView.leftYAxisRenderer = renderer
     }
     
-    func updateWith(thresholdValues: [Float]) {
-        guard let renderer = renderer else { return }
+    func updateWith(thresholdValues: [Float]) throws {
+        guard let renderer = renderer else {
+            throw GraphError.rendererError
+        }
         renderer.thresholds = thresholdValues
         
-        //min & max yaxis values
         lineChartView.leftAxis.axisMinimum = Double(thresholdValues.first ?? 0)
         lineChartView.leftAxis.axisMaximum = Double(thresholdValues.last ?? 200)
-        print("\(lineChartView.leftAxis.axisMinimum) - \(lineChartView.leftAxis.axisMaximum)")
         
-        // Needed to redraw the chart
         lineChartView.data = lineChartView.data
         lineChartView.setNeedsDisplay()
     }
@@ -132,12 +131,14 @@ struct Graph: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: UI_PollutionGraph, context: Context) {
-        uiView.updateWith(thresholdValues: thresholds.rawThresholdsBinding.wrappedValue)
+       try? uiView.updateWith(thresholdValues: thresholds.rawThresholdsBinding.wrappedValue)
     }
 }
 
+#if DEBUG
 struct PollutionGraph_Previews: PreviewProvider {
     static var previews: some View {
         Graph(thresholds: .mock)
     }
 }
+#endif

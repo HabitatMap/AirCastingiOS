@@ -44,6 +44,9 @@ struct SessionCellView: View {
         )
     }
         
+}
+
+private extension SessionCellView {
     
     var pathPoints: [PathPoint] {
         let allLocationPoints = provider.allLocations
@@ -79,6 +82,7 @@ struct SessionCellView: View {
     }
 }
 
+#if DEBUG
 struct SessionCell_Previews: PreviewProvider {
     static var previews: some View {
         SessionCellView(session: Session.mock)
@@ -87,3 +91,4 @@ struct SessionCell_Previews: PreviewProvider {
             .environmentObject(MicrophoneManager())
     }
 }
+#endif

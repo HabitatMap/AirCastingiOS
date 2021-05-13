@@ -15,7 +15,7 @@ struct GoogleMapView: UIViewRepresentable {
     typealias UIViewType = GMSMapView
 
     let pathPoints: [PathPoint]
-    var thresholds: [Float] = []
+    private(set) var thresholds: [Float] = []
     var isMyLocationEnabled: Bool = false
     
     func makeUIView(context: Context) -> GMSMapView {
@@ -120,6 +120,7 @@ struct GoogleMapView: UIViewRepresentable {
     
 }
 
+#if DEBUG
 struct GoogleMapView_Previews: PreviewProvider {
     static var previews: some View {
         GoogleMapView(pathPoints: [PathPoint(location: CLLocationCoordinate2D(latitude: 40.73,
@@ -135,4 +136,4 @@ struct GoogleMapView_Previews: PreviewProvider {
             .padding()
     }
 }
-
+#endif

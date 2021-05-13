@@ -102,6 +102,7 @@
 		AC93B8FE25C02E0B003D0A0D /* GoogleMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC93B8FD25C02E0B003D0A0D /* GoogleMapView.swift */; };
 		AC960C7825DD39F500EC95DD /* ABConnectedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC960C7725DD39F500EC95DD /* ABConnectedView.swift */; };
 		ACC536E026395C0900327267 /* MeasurementDotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACC536DF26395C0900327267 /* MeasurementDotView.swift */; };
+		ACC883882645784400C5DB70 /* GraphErorrHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACC883872645784400C5DB70 /* GraphErorrHandling.swift */; };
 		ACD01F4025F8C1F800B8F65F /* SessionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACD01F3F25F8C1F800B8F65F /* SessionContext.swift */; };
 		ACD01F7325FF574A00B8F65F /* WifiPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACD01F7225FF574A00B8F65F /* WifiPopupView.swift */; };
 		ACD01F7625FF61CE00B8F65F /* LocationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACD01F7525FF61CE00B8F65F /* LocationProvider.swift */; };
@@ -234,6 +235,7 @@
 		AC93B8FD25C02E0B003D0A0D /* GoogleMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleMapView.swift; sourceTree = "<group>"; };
 		AC960C7725DD39F500EC95DD /* ABConnectedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ABConnectedView.swift; sourceTree = "<group>"; };
 		ACC536DF26395C0900327267 /* MeasurementDotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementDotView.swift; sourceTree = "<group>"; };
+		ACC883872645784400C5DB70 /* GraphErorrHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphErorrHandling.swift; sourceTree = "<group>"; };
 		ACD01F3F25F8C1F800B8F65F /* SessionContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionContext.swift; sourceTree = "<group>"; };
 		ACD01F6C25FF4C8C00B8F65F /* AirCasting.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AirCasting.entitlements; sourceTree = "<group>"; };
 		ACD01F7225FF574A00B8F65F /* WifiPopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WifiPopupView.swift; sourceTree = "<group>"; };
@@ -419,6 +421,7 @@
 			children = (
 				AC6D56A125AEF55C00D221BA /* GraphView.swift */,
 				AC5832D925B196DD008C5DD5 /* Graph.swift */,
+				ACC883872645784400C5DB70 /* GraphErorrHandling.swift */,
 			);
 			path = Graph;
 			sourceTree = "<group>";
@@ -905,6 +908,7 @@
 				AC86EE6B25D03DC00083F8C0 /* SelectDeviceView.swift in Sources */,
 				ACD01F7B25FF6C3300B8F65F /* BlueTextButtonStyle.swift in Sources */,
 				AC1471A325F23AE40062A53F /* CreateSessionAPI.swift in Sources */,
+				ACC883882645784400C5DB70 /* GraphErorrHandling.swift in Sources */,
 				AC5EF72125C81882003657B1 /* DashboardView.swift in Sources */,
 				4F5D3F73262C91C6003AD82E /* UserAuthenticationSession.swift in Sources */,
 				AC6D569F25AEEAE700D221BA /* SessionHeaderView.swift in Sources */,

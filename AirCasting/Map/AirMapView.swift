@@ -37,6 +37,7 @@ struct AirMapView: View {
     }
 }
 
+#if DEBUG
 struct Map_Previews: PreviewProvider {
     static var previews: some View {
         AirMapView(thresholds: [SensorThreshold.mock],
@@ -51,3 +52,4 @@ struct Map_Previews: PreviewProvider {
                    measurement: 80)])
     }
 }
+#endif
