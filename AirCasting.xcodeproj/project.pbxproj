@@ -363,10 +363,12 @@
 		AC3203CE25CBED9C00A68520 /* Dashboard */ = {
 			isa = PBXGroup;
 			children = (
+				ACC88385264403C800C5DB70 /* AirSectionPickerView.swift */,
 				AC5EF72025C81882003657B1 /* DashboardView.swift */,
 				AC5EF71C25C8178B003657B1 /* EmptyDashboardView.swift */,
 			);
-			path = Dashboard;
+			name = Dashboard;
+			path = ../Dashboard;
 			sourceTree = "<group>";
 		};
 		AC32040625CC122900A68520 /* Utils */ = {
@@ -375,7 +377,6 @@
 				4F945EF3264B2813008A5B22 /* ActivityIndicator.swift */,
 				AC6D569825ADE55B00D221BA /* ButtonStyles */,
 				ACD01F7525FF61CE00B8F65F /* LocationProvider.swift */,
-				ACC88385264403C800C5DB70 /* AirSectionPickerView.swift */,
 				AC32040325CC067D00A68520 /* CheckBox.swift */,
 				AC4EC6C025B6F18A00C1E312 /* EditButtonView.swift */,
 				AC8CFF4025E5095600FB2918 /* Textfield.swift */,
@@ -1152,7 +1153,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_ASSET_PATHS = "\"AirCasting/Preview Content\"";
@@ -1166,7 +1167,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.habitatmap.AirCasting;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "AirCasting Ad hoc distribution";
+				PROVISIONING_PROFILE_SPECIFIER = "Michael Heimbinder";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

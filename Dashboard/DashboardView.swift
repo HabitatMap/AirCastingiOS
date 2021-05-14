@@ -6,18 +6,21 @@
 //
 
 import SwiftUI
+import CoreData
 
 struct DashboardView: View {
     
-    @FetchRequest<Session>(sortDescriptors: [NSSortDescriptor(key: "startTime",
-                                                              ascending: false)]) var sessions
     @State private var selectedView = SelectedSection.mobileActive
+    @Environment(\.managedObjectContext) var context
+    var sessions: [Session] {
+        sessionFor(section: selectedView)
+    }
     
     var body: some View {
         VStack {
             
             AirSectionPickerView(selection: $selectedView)
-            
+
             if sessions.isEmpty {
                 EmptyDashboardView()
             } else {
@@ -36,22 +39,23 @@ struct DashboardView: View {
         .navigationBarTitle("Dashboard")
     }
     
-    func displaySessions(sessions: [Session]) -> [Session] {
-        switch selectedView {
-        case SelectedSection.following:
-            #warning("TODO: return followed sessions after adding follow funcionality")
-            return []
-        case SelectedSection.mobileActive:
-            return []
-        case SelectedSection.mobileDormant:
-            return []
-        case SelectedSection.fixed:
-            return []
-        default:
-            return []
+    func sessionFor(section: SelectedSection) -> [Session] {
+        let request = NSFetchRequest<Session>(entityName: "Session")
+        
+        switch section {
+        case .fixed:
+            request.predicate = NSPredicate(format: "type == %@", SessionType.fixed.rawValue)
+        case .mobileActive:
+            request.predicate = NSPredicate(format: "type == %@ AND status == %li", SessionType.mobile.rawValue, SessionStatus.RECORDING.rawValue)
+        case .mobileDormant:
+            request.predicate = NSPredicate(format: "type == %@ AND status == %li", SessionType.mobile.rawValue, SessionStatus.FINISHED.rawValue)
+        case .following:
+            request.predicate = NSPredicate(format: "followedAt != NULL")
+        default: break
         }
+        let results = try! context.fetch(request)
+        return results
     }
-    
 }
 
 #if DEBUG
