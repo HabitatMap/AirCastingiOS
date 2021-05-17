@@ -12,8 +12,10 @@ struct DashboardView: View {
     
     @State private var selectedView = SelectedSection.mobileActive
     @Environment(\.managedObjectContext) var context
+    @StateObject private var coreDataHook = CoreDataHook()
+    
     var sessions: [Session] {
-        sessionFor(section: selectedView)
+        coreDataHook.sessions
     }
     
     var body: some View {
@@ -37,25 +39,28 @@ struct DashboardView: View {
             }
         }
         .navigationBarTitle("Dashboard")
+        .onChange(of: selectedView) { selectedSection in
+            
+            let request = NSFetchRequest<Session>(entityName: "Session")
+            
+            switch selectedSection {
+            case .fixed:
+                request.predicate = NSPredicate(format: "type == %@", SessionType.fixed.rawValue)
+            case .mobileActive:
+                request.predicate = NSPredicate(format: "type == %@ AND status == %li", SessionType.mobile.rawValue, SessionStatus.RECORDING.rawValue)
+            case .mobileDormant:
+                request.predicate = NSPredicate(format: "type == %@ AND status == %li", SessionType.mobile.rawValue, SessionStatus.FINISHED.rawValue)
+            case .following:
+                request.predicate = NSPredicate(format: "followedAt != NULL")
+            }
+            request.sortDescriptors = [NSSortDescriptor(key: "startTime", ascending: true)]
+            coreDataHook.context = context
+            coreDataHook.fetchRequest = request
+            
+        }
     }
     
-    func sessionFor(section: SelectedSection) -> [Session] {
-        let request = NSFetchRequest<Session>(entityName: "Session")
-        
-        switch section {
-        case .fixed:
-            request.predicate = NSPredicate(format: "type == %@", SessionType.fixed.rawValue)
-        case .mobileActive:
-            request.predicate = NSPredicate(format: "type == %@ AND status == %li", SessionType.mobile.rawValue, SessionStatus.RECORDING.rawValue)
-        case .mobileDormant:
-            request.predicate = NSPredicate(format: "type == %@ AND status == %li", SessionType.mobile.rawValue, SessionStatus.FINISHED.rawValue)
-        case .following:
-            request.predicate = NSPredicate(format: "followedAt != NULL")
-        default: break
-        }
-        let results = try! context.fetch(request)
-        return results
-    }
+
 }
 
 #if DEBUG
