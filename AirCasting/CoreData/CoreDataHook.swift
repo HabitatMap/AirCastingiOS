@@ -12,22 +12,23 @@ final class CoreDataHook: NSObject, ObservableObject {
     
     func setup(selectedSection: SelectedSection) throws {
         
-        let request = NSFetchRequest<Session>(entityName: "Session")
+        let predicate: NSPredicate
         
         switch selectedSection {
         case .fixed:
-            request.predicate = NSPredicate(format: "type == %@", SessionType.fixed.rawValue)
+            predicate = NSPredicate(format: "type == %@", SessionType.fixed.rawValue)
         case .mobileActive:
-            request.predicate = NSPredicate(format: "type == %@ AND status == %li", SessionType.mobile.rawValue, SessionStatus.RECORDING.rawValue)
+            predicate = NSPredicate(format: "type == %@ AND status == %li", SessionType.mobile.rawValue, SessionStatus.RECORDING.rawValue)
         case .mobileDormant:
-            request.predicate = NSPredicate(format: "type == %@ AND status == %li", SessionType.mobile.rawValue, SessionStatus.FINISHED.rawValue)
+            predicate = NSPredicate(format: "type == %@ AND status == %li", SessionType.mobile.rawValue, SessionStatus.FINISHED.rawValue)
         case .following:
-            request.predicate = NSPredicate(format: "followedAt != NULL")
+            predicate = NSPredicate(format: "followedAt != NULL")
         }
         
-        request.sortDescriptors = [NSSortDescriptor(key: "startTime", ascending: true)]
-        
         if fetchedResultsController == nil {
+            let request = NSFetchRequest<Session>(entityName: "Session")
+            request.sortDescriptors = [NSSortDescriptor(key: "startTime", ascending: true)]
+            request.predicate = predicate
             fetchedResultsController = NSFetchedResultsController<Session>(fetchRequest: request,
                                                                            managedObjectContext: context,
                                                                            sectionNameKeyPath: nil,
@@ -35,7 +36,7 @@ final class CoreDataHook: NSObject, ObservableObject {
             fetchedResultsController.delegate = self
         }
         
-        fetchedResultsController.fetchRequest.predicate = request.predicate
+        fetchedResultsController.fetchRequest.predicate = predicate
         try fetchedResultsController.performFetch()
         
         sessions = fetchedResultsController.fetchedObjects ?? []
