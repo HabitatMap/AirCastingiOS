@@ -7,9 +7,10 @@ import CoreData
 final class CoreDataHook: NSObject, ObservableObject {
     
     @Published var sessions: [Session] = []
-    private var fetchedResultsController: NSFetchedResultsController<Session>?
+    var context: NSManagedObjectContext!
+    private var fetchedResultsController: NSFetchedResultsController<Session>!
     
-    func setup(selectedSection: SelectedSection, context: NSManagedObjectContext) throws {
+    func setup(selectedSection: SelectedSection) throws {
         
         let request = NSFetchRequest<Session>(entityName: "Session")
         
@@ -23,17 +24,20 @@ final class CoreDataHook: NSObject, ObservableObject {
         case .following:
             request.predicate = NSPredicate(format: "followedAt != NULL")
         }
+        
         request.sortDescriptors = [NSSortDescriptor(key: "startTime", ascending: true)]
         
-        fetchedResultsController = NSFetchedResultsController<Session>(fetchRequest: request,
-                                                                       managedObjectContext: context,
-                                                                       sectionNameKeyPath: nil,
-                                                                       cacheName: nil)
-        guard let fetchedResultsController = fetchedResultsController else {
-            throw FetchError.fetchedResultsControllerIsNil
+        if fetchedResultsController == nil {
+            fetchedResultsController = NSFetchedResultsController<Session>(fetchRequest: request,
+                                                                           managedObjectContext: context,
+                                                                           sectionNameKeyPath: nil,
+                                                                           cacheName: nil)
+            fetchedResultsController.delegate = self
         }
+        
+        fetchedResultsController.fetchRequest.predicate = request.predicate
         try fetchedResultsController.performFetch()
-        fetchedResultsController.delegate = self
+        
         sessions = fetchedResultsController.fetchedObjects ?? []
     }
 }
@@ -41,9 +45,6 @@ final class CoreDataHook: NSObject, ObservableObject {
 extension CoreDataHook: NSFetchedResultsControllerDelegate {
     
     private func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) throws {
-        guard let fetchedResultsController = fetchedResultsController else {
-            throw FetchError.fetchedResultsControllerIsNil
-        }
         sessions = fetchedResultsController.fetchedObjects ?? []
     }
 }
