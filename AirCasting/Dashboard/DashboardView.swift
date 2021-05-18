@@ -41,7 +41,7 @@ struct DashboardView: View {
         .navigationBarTitle(NSLocalizedString("Dashboard", comment: ""))
         .onChange(of: selectedSection) { selectedSection in
             do {
-                try setup(selectedSection: selectedSection,
+                try coreDataHook.setup(selectedSection: selectedSection,
                           context: context)
             } catch {
                 Log.error("Trying to fetch sessions. Error: \(error)")
