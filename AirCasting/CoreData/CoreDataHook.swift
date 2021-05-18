@@ -4,28 +4,23 @@
 import Foundation
 import CoreData
 
-class CoreDataHook: NSObject, ObservableObject {
+final class CoreDataHook: NSObject, ObservableObject {
     
     @Published var sessions: [Session] = []
-    var context: NSManagedObjectContext!
+    private var fetchedResultsController: NSFetchedResultsController<Session>?
     
-    var fetchRequest: NSFetchRequest<Session>! {
-        didSet {
-            do {
-                try setup()
-            } catch {
-                Log.error("Trying to fetch sessions. Error: \(error)")
-            }
-        }
-    }
-    
-    private var fetchedResultsController: NSFetchedResultsController<Session>!
-    
-    func setup() throws {
+    func setup(fetchRequest: NSFetchRequest<Session>, context: NSManagedObjectContext) throws {
+        
+        
+        
+        
         fetchedResultsController = NSFetchedResultsController<Session>(fetchRequest: fetchRequest,
                                                                        managedObjectContext: context,
                                                                        sectionNameKeyPath: nil,
                                                                        cacheName: nil)
+        guard let fetchedResultsController = fetchedResultsController else {
+            throw FetchError.fetchedResultsControllerIsNil
+        }
         try fetchedResultsController.performFetch()
         fetchedResultsController.delegate = self
         sessions = fetchedResultsController.fetchedObjects ?? []
@@ -34,7 +29,14 @@ class CoreDataHook: NSObject, ObservableObject {
 
 extension CoreDataHook: NSFetchedResultsControllerDelegate {
     
-    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+    private func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) throws {
+        guard let fetchedResultsController = fetchedResultsController else {
+            throw FetchError.fetchedResultsControllerIsNil
+        }
         sessions = fetchedResultsController.fetchedObjects ?? []
     }
+}
+
+enum FetchError: Error {
+    case fetchedResultsControllerIsNil
 }

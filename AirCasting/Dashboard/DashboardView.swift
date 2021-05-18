@@ -10,7 +10,7 @@ import CoreData
 
 struct DashboardView: View {
     
-    @State private var selectedView = SelectedSection.mobileActive
+    @State private var selectedSection = SelectedSection.mobileActive
     @Environment(\.managedObjectContext) var context
     @StateObject private var coreDataHook = CoreDataHook()
     
@@ -21,7 +21,7 @@ struct DashboardView: View {
     var body: some View {
         VStack {
             
-            AirSectionPickerView(selection: $selectedView)
+            AirSectionPickerView(selection: $selectedSection)
 
             if sessions.isEmpty {
                 EmptyDashboardView()
@@ -38,8 +38,8 @@ struct DashboardView: View {
                 .background(Color.aircastingGray.opacity(0.05))
             }
         }
-        .navigationBarTitle("Dashboard")
-        .onChange(of: selectedView) { selectedSection in
+        .navigationBarTitle(NSLocalizedString("Dashboard", comment: ""))
+        .onChange(of: selectedSection) { selectedSection in
             
             let request = NSFetchRequest<Session>(entityName: "Session")
             
@@ -54,13 +54,14 @@ struct DashboardView: View {
                 request.predicate = NSPredicate(format: "followedAt != NULL")
             }
             request.sortDescriptors = [NSSortDescriptor(key: "startTime", ascending: true)]
-            coreDataHook.context = context
-            coreDataHook.fetchRequest = request
-            
+            do {
+                try coreDataHook.setup(fetchRequest: request,
+                                   context: context)
+            } catch {
+                Log.error("Trying to fetch sessions. Error: \(error)")
+            }
         }
     }
-    
-
 }
 
 #if DEBUG

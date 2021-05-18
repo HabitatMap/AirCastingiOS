@@ -11,7 +11,7 @@ struct AirSectionPickerView: View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack {
                 ForEach(SelectedSection.allCases, id: \.self) { section in
-                    Button(section.rawValue) {
+                    Button(section.localizedString) {
                         withAnimation(.easeInOut(duration: 0.1)) {
                             selection = section
                         }
@@ -32,11 +32,16 @@ struct AirSectionPickerView_Previews: PreviewProvider {
     }
 }
 
+
 enum SelectedSection: String, CaseIterable {
     case following = "Following"
     case mobileActive = "Mobile active"
     case mobileDormant = "Mobile dormant"
     case fixed = "Fixed"
+    
+    var localizedString: String {
+        NSLocalizedString(rawValue, comment: "")
+    }
 }
 
 struct PickerButtonStyle: ButtonStyle {
