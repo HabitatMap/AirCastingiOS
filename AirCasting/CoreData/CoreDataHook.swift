@@ -45,7 +45,7 @@ final class CoreDataHook: NSObject, ObservableObject {
 
 extension CoreDataHook: NSFetchedResultsControllerDelegate {
     
-    private func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) throws {
+    internal func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         sessions = fetchedResultsController.fetchedObjects ?? []
     }
 }
