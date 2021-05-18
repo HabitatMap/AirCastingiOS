@@ -154,11 +154,12 @@ private extension MicrophoneManager {
         if existing == nil {
             let thresholds: SensorThreshold = try! context.createObject(sensorName: "db")
             #warning("TODO: change thresholds values from dbFS to db")
-            thresholds.thresholdVeryLow = -100
-            thresholds.thresholdLow = -40
-            thresholds.thresholdMedium = -30
-            thresholds.thresholdHigh = -20
-            thresholds.thresholdVeryHigh = 10
+            let defaults = DefaultMicThresholdsValues()
+            thresholds.thresholdVeryLow = defaults.thresholdVeryLow
+            thresholds.thresholdLow = defaults.thresholdLow
+            thresholds.thresholdMedium = defaults.thresholdMedium
+            thresholds.thresholdHigh = defaults.thresholdHigh
+            thresholds.thresholdVeryHigh = defaults.thresholdVeryHigh
         }
     }
     
@@ -181,4 +182,12 @@ private extension MicrophoneManager {
         case sessionNotSet
         case permissionNotGranted
     }
+}
+
+struct DefaultMicThresholdsValues {
+    let thresholdVeryLow: Int32 = -100
+    let thresholdLow: Int32 = -40
+    let thresholdMedium: Int32 = -30
+    let thresholdHigh: Int32 = -20
+    let thresholdVeryHigh: Int32 = 10
 }

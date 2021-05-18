@@ -22,7 +22,8 @@ struct AirMapView: View {
                               session: Session.mock,
                               thresholds: [.mock])
             ZStack(alignment: .topLeading) {
-                GoogleMapView(pathPoints: pathPoints, thresholds: thresholds[0].rawThresholdsBinding.wrappedValue)
+                GoogleMapView(pathPoints: pathPoints,
+                              thresholds: thresholds[0])
                 StatisticsContainerView()
             }
             NavigationLink(destination: HeatmapSettingsView(changedThresholdValues: thresholds[0].rawThresholdsBinding)) {

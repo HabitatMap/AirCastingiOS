@@ -13,9 +13,8 @@ import GooglePlaces
 
 struct GoogleMapView: UIViewRepresentable {
     typealias UIViewType = GMSMapView
-
     let pathPoints: [PathPoint]
-    private(set) var thresholds: [Float] = []
+    private(set) var thresholds: SensorThreshold?
     var isMyLocationEnabled: Bool = false
     
     func makeUIView(context: Context) -> GMSMapView {
@@ -86,14 +85,14 @@ struct GoogleMapView: UIViewRepresentable {
     }
 
     func colorPolyline(point: PathPoint) -> UIColor {
-        let measurement = point.measurement
-        guard thresholds.count >= 5 else { return UIColor.white }
+        let measurement = Int32(point.measurement)
+        guard let thresholds = thresholds else { return .white }
         
-        let veryLow = Float(thresholds[0])
-        let low = Float(thresholds[1])
-        let medium = Float(thresholds[2])
-        let high = Float(thresholds[3])
-        let veryHigh = Float(thresholds[4])
+        let veryLow = thresholds.thresholdVeryLow
+        let low = thresholds.thresholdLow
+        let medium = thresholds.thresholdMedium
+        let high = thresholds.thresholdHigh
+        let veryHigh = thresholds.thresholdVeryHigh
         
         switch measurement {
         case veryLow ..< low:
@@ -117,7 +116,6 @@ struct GoogleMapView: UIViewRepresentable {
     func makeCoordinator() -> Coordinator {
         Coordinator()
     }
-    
 }
 
 #if DEBUG
@@ -132,7 +130,7 @@ struct GoogleMapView_Previews: PreviewProvider {
                                    PathPoint(location: CLLocationCoordinate2D(latitude: 40.93,
                                                                               longitude: -73.83),
                                              measurement: 30)],
-                      thresholds: SensorThreshold.mock.rawThresholdsBinding.wrappedValue)
+                      thresholds: SensorThreshold.mock)
             .padding()
     }
 }
