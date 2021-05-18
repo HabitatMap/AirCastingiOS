@@ -40,23 +40,9 @@ struct DashboardView: View {
         }
         .navigationBarTitle(NSLocalizedString("Dashboard", comment: ""))
         .onChange(of: selectedSection) { selectedSection in
-            
-            let request = NSFetchRequest<Session>(entityName: "Session")
-            
-            switch selectedSection {
-            case .fixed:
-                request.predicate = NSPredicate(format: "type == %@", SessionType.fixed.rawValue)
-            case .mobileActive:
-                request.predicate = NSPredicate(format: "type == %@ AND status == %li", SessionType.mobile.rawValue, SessionStatus.RECORDING.rawValue)
-            case .mobileDormant:
-                request.predicate = NSPredicate(format: "type == %@ AND status == %li", SessionType.mobile.rawValue, SessionStatus.FINISHED.rawValue)
-            case .following:
-                request.predicate = NSPredicate(format: "followedAt != NULL")
-            }
-            request.sortDescriptors = [NSSortDescriptor(key: "startTime", ascending: true)]
             do {
-                try coreDataHook.setup(fetchRequest: request,
-                                   context: context)
+                try setup(selectedSection: selectedSection,
+                          context: context)
             } catch {
                 Log.error("Trying to fetch sessions. Error: \(error)")
             }
