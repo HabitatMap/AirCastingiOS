@@ -16,16 +16,16 @@ extension Color {
         return Color("DarkBlue")
     }
     static var aircastingGreen: Color {
-        return Color("ChartGreen")
+        return Color("AircastingGreen")
     }
     static var aircastingYellow: Color {
-        return Color("ChartYellow")
+        return Color("AircastingYellow")
     }
     static var aircastingOrange: Color {
-        return Color("ChartOrange")
+        return Color("AircastingOrange")
     }
     static var aircastingRed: Color {
-        return Color("ChartRed")
+        return Color("AircastingRed")
     }
     static var buttonGray: Color {
         return Color("ButtonGray")

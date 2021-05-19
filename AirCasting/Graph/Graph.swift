@@ -95,11 +95,10 @@ class MultiColorGridRenderer: YAxisRenderer {
     
     var thresholds: [Float] = []
    
-    var colors = [UIColor(red: 182/255, green: 227/255, blue: 172/255, alpha: 1),
-                  UIColor(red: 254/255, green: 239/255, blue: 195/255, alpha: 1),
-                  UIColor(red: 254/255, green: 222/255, blue: 188/255, alpha: 1),
-                  UIColor(red: 249/255, green: 193/255, blue: 192/255, alpha: 1)
-    ]
+    var colors = [UIColor.graphGreen,
+                  UIColor.graphYellow,
+                  UIColor.graphOrange,
+                  UIColor.graphRed]
     
     override func renderGridLines(context: CGContext) {
         let colorThresholds = Array(thresholds.dropFirst())

@@ -4,6 +4,19 @@
    <FileRef
       location = "group:AirCasting.xcodeproj">
    </FileRef>
+   <Group
+      location = "group:AirCasting/../Dashboard"
+      name = "Dashboard">
+      <FileRef
+         location = "group:Dashboard/AirSectionPickerView.swift">
+      </FileRef>
+      <FileRef
+         location = "group:Dashboard/DashboardView.swift">
+      </FileRef>
+      <FileRef
+         location = "group:Dashboard/EmptyDashboardView.swift">
+      </FileRef>
+   </Group>
    <FileRef
       location = "group:Pods/Pods.xcodeproj">
    </FileRef>
