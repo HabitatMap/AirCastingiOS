@@ -9,15 +9,20 @@ import Foundation
 import CoreLocation
 import Combine
 
-class LocationProvider: NSObject, CLLocationManagerDelegate {
+final class LocationProvider: NSObject, CLLocationManagerDelegate {
+    private let locationManager: CLLocationManager
+    @Published private(set) var currentLocation: CLLocation?
 
-    private let locationManager = CLLocationManager()
-    @Published var currentLocation: CLLocation?
-    
+    init(locationManager: CLLocationManager = .init()) {
+        self.locationManager = locationManager
+        self.currentLocation = locationManager.location
+    }
+
     func requestLocation()  {
         locationManager.delegate = self
         locationManager.requestWhenInUseAuthorization()
         locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+        #warning("should startUpdatingLocation be called with requestWhenInUseAuthorization")
         locationManager.startUpdatingLocation()
     }
     

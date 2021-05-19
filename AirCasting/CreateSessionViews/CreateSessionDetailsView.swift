@@ -8,7 +8,8 @@
 import SwiftUI
 import CoreLocation
 
-struct AddNameAndTagsView: View {
+struct CreateSessionDetailsView: View {
+    let sessionCreator: SessionCreator
     @State var sessionName: String = ""
     @State var sessionTags: String = ""
     @State var isIndoor = true
@@ -54,7 +55,9 @@ struct AddNameAndTagsView: View {
                 })
         )
     }
-    
+}
+
+private extension CreateSessionDetailsView {
     var continueButton: some View {
         Button(action: {
             sessionContext.sessionName = sessionName
@@ -64,6 +67,7 @@ struct AddNameAndTagsView: View {
             }
             getAndSaveStartingLocation()
             isConfirmCreatingSessionActive = true
+            #warning("TODO: handle wifi empty password")
             if wifiSSID != "" && wifiPassword != "" {
                 sessionContext.wifiSSID = wifiSSID
                 sessionContext.wifiPassword = wifiPassword
@@ -75,7 +79,9 @@ struct AddNameAndTagsView: View {
         .buttonStyle(BlueButtonStyle())
         .background( Group {
             NavigationLink(
-                destination: ConfirmCreatingSessionView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sessionName: sessionName),
+                destination: ConfirmCreatingSessionView(sessionCreator: sessionCreator,
+                                                        creatingSessionFlowContinues: $creatingSessionFlowContinues,
+                                                        sessionName: sessionName),
                 isActive: $isConfirmCreatingSessionActive,
                 label: {
                     EmptyView()
@@ -131,11 +137,21 @@ struct AddNameAndTagsView: View {
             sessionContext.obtainCurrentLocation()
         }
     }
-
 }
 
+#if DEBUG
 struct AddNameAndTagsView_Previews: PreviewProvider {
+    private static var fixedSessionContext: CreateSessionContext = {
+        $0.sessionType = .fixed
+        return $0
+    }(CreateSessionContext())
+
     static var previews: some View {
-        AddNameAndTagsView(creatingSessionFlowContinues: .constant(true))
+        CreateSessionDetailsView(sessionCreator: PreviewSessionCreator(), creatingSessionFlowContinues: .constant(true))
+            .environmentObject(CreateSessionContext())
+
+        CreateSessionDetailsView(sessionCreator: PreviewSessionCreator(), creatingSessionFlowContinues: .constant(true))
+            .environmentObject(fixedSessionContext)
     }
 }
+#endif

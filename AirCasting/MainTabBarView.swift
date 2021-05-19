@@ -12,10 +12,8 @@ import Firebase
 struct MainTabBarView: View {
     let measurementUpdatingService: MeasurementUpdatingService
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
-    @Environment(\.managedObjectContext) var managedObjectContext
-    
     @StateObject var tabSelection: TabBarSelection = TabBarSelection()
-    
+
     var body: some View {
         TabView(selection: $tabSelection.selection) {
             dashboardTab
@@ -41,7 +39,7 @@ struct MainTabBarView: View {
     
     #warning("TODO: Change starting view")
     private var createSessionTab: some View {
-        ChooseSessionTypeView(sessionContext: CreateSessionContext(createSessionService: CreateSessionAPIService(authorisationService: userAuthenticationSession), managedObjectContext: managedObjectContext))
+        ChooseSessionTypeView(sessionContext: CreateSessionContext())
             .tabItem {
                 Image(systemName: "plus")
             }
@@ -68,10 +66,14 @@ class TabBarSelection: ObservableObject {
 
 #if DEBUG
 struct ContentView_Previews: PreviewProvider {
+    private static let persistenceController = PersistenceController(inMemory: true)
+
     static var previews: some View {
         MainTabBarView(measurementUpdatingService: MeasurementUpdatingServiceMock())
             .environmentObject(UserAuthenticationSession())
-            .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
+            .environmentObject(BluetoothManager())
+            .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
+            .environment(\.managedObjectContext, persistenceController.viewContext)
     }
     
     private class MeasurementUpdatingServiceMock: MeasurementUpdatingService {

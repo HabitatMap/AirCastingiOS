@@ -9,7 +9,20 @@ import Foundation
 import CoreData
 
 extension NSManagedObjectContext {
-    
+    func existingSession(uuid: SessionUUID) throws -> SessionEntity  {
+        struct MissingSessionEntityError: Swift.Error {
+            let uuid: SessionUUID
+        }
+        let fetchRequest: NSFetchRequest<SessionEntity> = SessionEntity.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "uuid == %@", uuid.rawValue)
+
+        let results = try self.fetch(fetchRequest)
+        if let existing  = results.first {
+            return existing
+        }
+        throw MissingSessionEntityError(uuid: uuid)
+    }
+
     // Checks if session/stream/measurement exists, if not, creates a new one
     func newOrExisting<T: NSManagedObject & Identifiable>(id: T.ID) throws -> T  {
         let className = NSStringFromClass(T.classForCoder())

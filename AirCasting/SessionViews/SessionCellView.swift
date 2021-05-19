@@ -13,7 +13,7 @@ struct SessionCellView: View {
     @State private var isCollapsed = true
     @AppStorage("thresholds") var thresholds: [Float] = [0, 70, 120, 170, 200]
     @StateObject var provider = LocationTracker()
-    let session: Session
+    let session: SessionEntity
         
     var body: some View {
         
@@ -40,8 +40,9 @@ struct SessionCellView: View {
                 .shadow(color: Color(red: 205/255, green: 209/255, blue: 214/255, opacity: 0.36), radius: 9, x: 0, y: 1)
         )
     }
-        
-    
+}
+
+private extension SessionCellView {
     var pathPoints: [PathPoint] {
         let allLocationPoints = provider.allLocations
         let points = allLocationPoints.map { (location) in
@@ -76,11 +77,13 @@ struct SessionCellView: View {
     }
 }
 
+#if DEBUG
 struct SessionCell_Previews: PreviewProvider {
     static var previews: some View {
-        SessionCellView(session: Session.mock)
+        SessionCellView(session: SessionEntity.mock)
             .padding()
             .previewLayout(.sizeThatFits)
-            .environmentObject(MicrophoneManager())
+            .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
     }
 }
+#endif

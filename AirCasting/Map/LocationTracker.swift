@@ -11,15 +11,18 @@ import CoreLocation
 
 class LocationTracker: NSObject, ObservableObject, CLLocationManagerDelegate {
     
-    private let locationManager = CLLocationManager()
+    private lazy var locationManager: CLLocationManager = {
+        $0.desiredAccuracy = kCLLocationAccuracyBest
+        $0.delegate = self
+        return $0
+    }(CLLocationManager())
 
     @Published var allLocations: [CLLocation] = []
     
     override init() {
         super.init()
-        self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        self.locationManager.requestAlwaysAuthorization()
-        self.locationManager.delegate = self
+        locationManager.requestAlwaysAuthorization()
+        allLocations = locationManager.location.flatMap { [$0] } ?? []
         //self.locationManager.startUpdatingLocation()
     }
     
