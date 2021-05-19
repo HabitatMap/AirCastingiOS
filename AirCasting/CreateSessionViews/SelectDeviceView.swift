@@ -127,7 +127,7 @@ struct SelectDeviceView: View {
                     EmptyView()
                 })
             NavigationLink(
-                destination: AddNameAndTagsView(creatingSessionFlowContinues: $creatingSessionFlowContinues),
+                destination: CreateSessionDetailsView(sessionCreator: MicrophoneSessionCreator(microphoneManager: microphoneManager), creatingSessionFlowContinues: $creatingSessionFlowContinues),
                 isActive: $isMicLinkActive,
                 label: {
                     EmptyView()
@@ -136,8 +136,10 @@ struct SelectDeviceView: View {
     }
 }
 
+#if DEBUG
 struct SelectDeviceView_Previews: PreviewProvider {
     static var previews: some View {
         SelectDeviceView(creatingSessionFlowContinues: .constant(true))
     }
 }
+#endif

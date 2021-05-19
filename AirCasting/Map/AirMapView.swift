@@ -19,8 +19,9 @@ struct AirMapView: View {
             SessionHeaderView(action: {},
                               isExpandButtonNeeded: false,
                               // TODO: replace mocked session
-                              session: Session.mock,
+                              session: SessionEntity.mock,
                               thresholds: [.mock])
+            
             ZStack(alignment: .topLeading) {
                 GoogleMapView(pathPoints: pathPoints,
                               thresholds: thresholds[0])

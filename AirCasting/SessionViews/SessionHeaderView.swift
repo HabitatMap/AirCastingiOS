@@ -11,7 +11,7 @@ struct SessionHeaderView: View {
     
     let action: () -> Void
     let isExpandButtonNeeded: Bool
-    @ObservedObject var session: Session
+    @ObservedObject var session: SessionEntity
     @EnvironmentObject private var microphoneManager: MicrophoneManager
     var thresholds: [SensorThreshold]
 
@@ -24,7 +24,7 @@ struct SessionHeaderView: View {
                     measurementsMic
                     Spacer()
                     //This is a temporary solution for stopping mic session recording until we implement proper session edition menu
-                    if microphoneManager.isRecording && session.status == .RECORDING {
+                    if microphoneManager.session?.uuid == session.uuid, microphoneManager.isRecording && session.status == .RECORDING {
                         stopRecordingButton
                     }
                 }
@@ -173,8 +173,9 @@ struct SessionHeader_Previews: PreviewProvider {
     static var previews: some View {
         SessionHeaderView(action: {},
                           isExpandButtonNeeded: true,
-                          session: Session.mock,
+                          session: SessionEntity.mock,
                           thresholds: [.mock])
+            .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
     }
 }
 #endif

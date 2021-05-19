@@ -16,7 +16,7 @@ struct GraphView: View {
             SessionHeaderView(action: {},
                               isExpandButtonNeeded: false,
                               // TODO: replace mocked session
-                              session: Session.mock,
+                              session: SessionEntity.mock,
                               thresholds: [.mock])
                 .padding()
             

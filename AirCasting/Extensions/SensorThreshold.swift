@@ -29,7 +29,7 @@ extension SensorThreshold {
 #if DEBUG
 extension SensorThreshold {
     static var mock: SensorThreshold {
-        let context = PersistenceController.shared.container.viewContext
+        let context = PersistenceController.shared.viewContext
         
         if let existing = try! context.existingObject(sensorName: "mock-threshold") {
             return existing

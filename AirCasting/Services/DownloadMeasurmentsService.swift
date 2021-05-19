@@ -15,14 +15,14 @@ protocol MeasurementUpdatingService {
 
 final class DownloadMeasurementsService: MeasurementUpdatingService {
     private let authorisationService: RequestAuthorisationService
+    private let persistenceController: PersistenceController
     private lazy var fixedSessionService = FixedSessionAPIService(authorisationService: authorisationService)
     private var timerSink: Cancellable?
     private var lastFetchCancellableTask: Cancellable?
-    private var context: NSManagedObjectContext {
-        PersistenceController.shared.container.viewContext
-    }
-    init(authorisationService: RequestAuthorisationService) {
+
+    init(authorisationService: RequestAuthorisationService, persistenceController: PersistenceController) {
         self.authorisationService = authorisationService
+        self.persistenceController = persistenceController
     }
 
     func start() throws {
@@ -38,8 +38,9 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
     }
 
     private func update() throws {
-        let request: NSFetchRequest<Session> = Session.fetchRequest()
+        let request: NSFetchRequest<SessionEntity> = SessionEntity.fetchRequest()
         request.predicate = request.typePredicate(.fixed)
+        let context = persistenceController.viewContext
         let fetchedResult = try context.fetch(request)
         for session in fetchedResult {
             if let uuid = session.uuid {
@@ -53,15 +54,13 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
     private func updateForSession(uuid: SessionUUID) {
         #warning("TODO: change last sync")
         let syncDate = Date().addingTimeInterval(-100)
-        lastFetchCancellableTask = fixedSessionService.getFixedMeasurement(uuid: uuid, lastSync: syncDate, completion: { result in
+        lastFetchCancellableTask = fixedSessionService.getFixedMeasurement(uuid: uuid, lastSync: syncDate, completion: { [persistenceController] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let response):
-                    #warning("TODO: Use different context ")
-                    // Fetch session by id from Core Data
-                    let context = PersistenceController.shared.container.viewContext
+                    let context = persistenceController.editContext()
                     do {
-                        let session: Session = try context.newOrExisting(uuid: response.uuid)
+                        let session: SessionEntity = try context.newOrExisting(uuid: response.uuid)
                         try UpdateSessionParamsService().updateSessionsParams(session: session, output: response)
                         try context.save()
                         Log.info("Successfully fetched fixed measurements")
