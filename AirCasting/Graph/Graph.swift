@@ -44,8 +44,8 @@ class UI_PollutionGraph: UIView {
         lineChartView.legend.enabled = false
         
         renderer = MultiColorGridRenderer(viewPortHandler: lineChartView.viewPortHandler,
-                                            yAxis: lineChartView.leftAxis,
-                                            transformer: lineChartView.getTransformer(forAxis: .left))
+                                          yAxis: lineChartView.leftAxis,
+                                          transformer: lineChartView.getTransformer(forAxis: .left))
         guard let renderer = renderer else { return }
         lineChartView.leftYAxisRenderer = renderer
     }
@@ -123,16 +123,14 @@ struct Graph: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: UI_PollutionGraph, context: Context) {
-       try? uiView.updateWith(thresholdValues: thresholds.rawThresholdsBinding.wrappedValue)
+        try? uiView.updateWith(thresholdValues: thresholds.rawThresholdsBinding.wrappedValue)
         
-        var x: Double = 0
         let entries = stream.measurements?.compactMap({ item -> ChartDataEntry? in
             guard let measurement = item as? MeasurementEntity else {
                 return nil
             }
-            let chartDataEntry = ChartDataEntry(x: x, y: measurement.value)
-            #warning("To fix --> X axis = measaurement time")
-            x += 1
+            let timeInterval = Double(measurement.time.timeIntervalSince1970)
+            let chartDataEntry = ChartDataEntry(x: timeInterval, y: measurement.value)
             return chartDataEntry
         }) ?? []
         uiView.updateWith(entries: entries)
