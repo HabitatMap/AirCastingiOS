@@ -11,21 +11,33 @@ import SwiftUI
 
 extension UIColor {
     static var aircastingGreen: UIColor {
-        return UIColor(Color("ChartGreen"))
+        return UIColor(Color("AircastingGreen"))
     }
     static var aircastingYellow: UIColor {
-        return UIColor(Color("ChartYellow"))
+        return UIColor(Color("AircastingYellow"))
     }
     static var aircastingOrange: UIColor {
-        return UIColor(Color("ChartOrange"))
+        return UIColor(Color("AircastingOrange"))
     }
     static var aircastingRed: UIColor {
-        return UIColor(Color("ChartRed"))
+        return UIColor(Color("AircastingRed"))
     }
     static var aircastingDarkGray: UIColor {
         return UIColor(Color("DarkGray"))
     }
     static var aircastingBackground: UIColor {
         return UIColor(Color("aircastingBackground"))
+    }
+    static var graphGreen: UIColor {
+        return UIColor(Color("GraphGreen"))
+    }
+    static var graphYellow: UIColor {
+        return UIColor(Color("GraphYellow"))
+    }
+    static var graphOrange: UIColor {
+        return UIColor(Color("GraphOrange"))
+    }
+    static var graphRed: UIColor {
+        return UIColor(Color("GraphRed"))
     }
 }
