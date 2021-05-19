@@ -48,7 +48,7 @@ private extension SessionCellView {
             .frame(height: 200)
     }
     var graphButton: some View {
-        NavigationLink(destination: GraphView(thresholds: Array(thresholds), session: session)) {
+        NavigationLink(destination: GraphView(session: session, thresholds: Array(thresholds))) {
             Text("graph")
         }
     }

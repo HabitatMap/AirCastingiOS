@@ -24,24 +24,7 @@ class UI_PollutionGraph: UIView {
             lineChartView.topAnchor.constraint(equalTo: self.topAnchor),
             lineChartView.bottomAnchor.constraint(equalTo: self.bottomAnchor)
         ])
-        
-        // Data
-        #warning("TODO: Replace mocked data with data from AirBeam")
-        let entries = [ChartDataEntry(x: 1, y: 1),
-                       ChartDataEntry(x: 2, y: 3),
-                       ChartDataEntry(x: 3, y: 15),
-                       ChartDataEntry(x: 4, y: 6),
-                       ChartDataEntry(x: 5, y: 170),
-                       ChartDataEntry(x: 6, y: 200),
-                       ChartDataEntry(x: 7, y: 150)]
-        
-        let dataSet = LineChartDataSet(entries: entries)
-        let data = LineChartData(dataSet: dataSet)
-        lineChartView.data = data
-        
-        //format data labels
-        data.setDrawValues(false)
-        
+
         //set edges
         lineChartView.minOffset = 0.0
         
@@ -59,12 +42,6 @@ class UI_PollutionGraph: UIView {
         lineChartView.rightAxis.drawAxisLineEnabled = false
         
         lineChartView.legend.enabled = false
-        
-        // Line styling
-        dataSet.drawCirclesEnabled = false
-        dataSet.setColor(UIColor(.white))
-        dataSet.mode = .linear
-        dataSet.lineWidth = 4
         
         renderer = MultiColorGridRenderer(viewPortHandler: lineChartView.viewPortHandler,
                                             yAxis: lineChartView.leftAxis,
@@ -85,7 +62,22 @@ class UI_PollutionGraph: UIView {
         lineChartView.data = lineChartView.data
         lineChartView.setNeedsDisplay()
     }
-    
+   
+    func updateWith(entries: [ChartDataEntry]) {
+        let dataSet = LineChartDataSet(entries: entries)
+        let data = LineChartData(dataSet: dataSet)
+        lineChartView.data = data
+        
+        //format data labels
+        data.setDrawValues(false)
+        
+        // Line styling
+        dataSet.drawCirclesEnabled = false
+        dataSet.setColor(UIColor(.white))
+        dataSet.mode = .linear
+        dataSet.lineWidth = 4
+    }
+   
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -123,6 +115,7 @@ class MultiColorGridRenderer: YAxisRenderer {
 struct Graph: UIViewRepresentable {
     typealias UIViewType = UI_PollutionGraph
     
+    @ObservedObject var stream: MeasurementStreamEntity
     @ObservedObject var thresholds: SensorThreshold
     
     func makeUIView(context: Context) -> UI_PollutionGraph {
@@ -131,13 +124,25 @@ struct Graph: UIViewRepresentable {
     
     func updateUIView(_ uiView: UI_PollutionGraph, context: Context) {
        try? uiView.updateWith(thresholdValues: thresholds.rawThresholdsBinding.wrappedValue)
+        
+        var x: Double = 0
+        let entries = stream.measurements?.compactMap({ item -> ChartDataEntry? in
+            guard let measurement = item as? MeasurementEntity else {
+                return nil
+            }
+            let chartDataEntry = ChartDataEntry(x: x, y: measurement.value)
+            #warning("To fix --> X axis = measaurement time")
+            x += 1
+            return chartDataEntry
+        }) ?? []
+        uiView.updateWith(entries: entries)
     }
 }
 
 #if DEBUG
 struct PollutionGraph_Previews: PreviewProvider {
     static var previews: some View {
-        Graph(thresholds: .mock)
+        Graph(stream: .mock, thresholds: .mock)
     }
 }
 #endif

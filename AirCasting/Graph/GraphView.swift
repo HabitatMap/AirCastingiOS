@@ -9,8 +9,8 @@ import SwiftUI
 
 struct GraphView: View {
     
-    var thresholds: [SensorThreshold]
-    @StateObject var session: SessionEntity
+    let session: SessionEntity
+    let thresholds: [SensorThreshold]
     
     var body: some View {
         VStack(alignment: .trailing) {
@@ -20,7 +20,8 @@ struct GraphView: View {
                               thresholds: thresholds).padding()
             
             ZStack(alignment: .topLeading) {
-                Graph(thresholds: thresholds[0])
+                #warning("Replace dbStream with currently selected")
+                Graph(stream: session.dbStream!, thresholds: thresholds[0])
                 StatisticsContainerView()
             }
             
@@ -42,7 +43,7 @@ struct GraphView: View {
 #if DEBUG
 struct GraphView_Previews: PreviewProvider {
     static var previews: some View {
-        GraphView(thresholds: [.mock], session: .mock)
+        GraphView(session: .mock, thresholds: [.mock])
     }
 }
 #endif
