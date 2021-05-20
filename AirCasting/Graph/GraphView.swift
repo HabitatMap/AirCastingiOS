@@ -10,14 +10,14 @@ import SwiftUI
 struct GraphView: View {
     
     var thresholds: [SensorThreshold]
+    @StateObject var session: SessionEntity
     
     var body: some View {
         VStack(alignment: .trailing) {
             SessionHeaderView(action: {},
                               isExpandButtonNeeded: false,
-                              // TODO: replace mocked session
-                              session: SessionEntity.mock,
-                              thresholds: [.mock]).padding()
+                              session: session,
+                              thresholds: thresholds).padding()
             
             ZStack(alignment: .topLeading) {
                 Graph(thresholds: thresholds[0])
@@ -42,7 +42,7 @@ struct GraphView: View {
 #if DEBUG
 struct GraphView_Previews: PreviewProvider {
     static var previews: some View {
-        GraphView(thresholds: [.mock])
+        GraphView(thresholds: [.mock], session: .mock)
     }
 }
 #endif

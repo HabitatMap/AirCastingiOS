@@ -7,7 +7,7 @@ import AVFoundation
 import CoreAudio
 import CoreLocation
 
-final class MicrophoneManager: ObservableObject {
+final class MicrophoneManager: NSObject, ObservableObject {
     static private let recordSettings: [String: Any] = [
         AVFormatIDKey: NSNumber(value: kAudioFormatAppleLossless),
         AVSampleRateKey: 44100.0,
@@ -16,7 +16,6 @@ final class MicrophoneManager: ObservableObject {
     ]
 
     private let measurementStreamStorage: MeasurementStreamStorage
-    private let notificationCenter: NotificationCenter
     private var measurementStreamLocalID: MeasurementStreamLocalID?
 
     //This variable is used to block recording more than one microphone session at a time
@@ -27,9 +26,9 @@ final class MicrophoneManager: ObservableObject {
     private(set) var session: Session?
     private lazy var locationProvider = LocationProvider()
 
-    init(measurementStreamStorage: MeasurementStreamStorage, notificationCenter: NotificationCenter = .default) {
+    init(measurementStreamStorage: MeasurementStreamStorage) {
         self.measurementStreamStorage = measurementStreamStorage
-        self.notificationCenter = notificationCenter
+        super.init()
     }
 
     func startRecording(session: Session) throws {
@@ -41,12 +40,12 @@ final class MicrophoneManager: ObservableObject {
             throw MicrophoneSessionError.permissionNotGranted
         }
         self.session = session
-        addInterruptionsObserver()
 
         try audioSession.setCategory(AVAudioSession.Category.playAndRecord)
         try audioSession.setActive(true)
-        try recorder = AVAudioRecorder.init(url: URL(fileURLWithPath: "/dev/null", isDirectory: true), settings: MicrophoneManager.recordSettings)
+        try recorder = AVAudioRecorder(url: URL(fileURLWithPath: "/dev/null", isDirectory: true), settings: MicrophoneManager.recordSettings)
         recorder.isMeteringEnabled = true
+        recorder.delegate = self
         measurementStreamLocalID = try createMeasurementStream(for: session)
         locationProvider.requestLocation()
         isRecording = true
@@ -57,7 +56,6 @@ final class MicrophoneManager: ObservableObject {
     
     func stopRecording() throws {
         levelTimer?.invalidate()
-        removeInterruptionsObserver()
         isRecording = false
         recorder.stop()
         recorder = nil
@@ -77,35 +75,37 @@ final class MicrophoneManager: ObservableObject {
     }
 }
 
+extension MicrophoneManager: AVAudioRecorderDelegate {
+    func audioRecorderBeginInterruption(_ recorder: AVAudioRecorder) {
+        Log.warning("audio recorder interruption began")
+        levelTimer?.invalidate()
+        try! measurementStreamStorage.updateSessionStatus(.DISCONNETCED, for: session!.uuid)
+    }
+
+    func audioRecorderEndInterruption(_ recorder: AVAudioRecorder, withOptions flags: Int) {
+        Log.info("audio recorder end interruption")
+        if !recorder.isRecording {
+            recorder.record()
+        }
+        levelTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(timerTick), userInfo: nil, repeats: true)
+    }
+
+    func audioRecorderEncodeErrorDidOccur(_ recorder: AVAudioRecorder, error: Error?) {
+        assertionFailure("audio recorder encode error did occur \(String(describing: error))")
+    }
+}
 private extension MicrophoneManager {
     func sampleMeasurement() throws {
         recorder.updateMeters()
         let value = Double(recorder.averagePower(forChannel: 0))
-        try measurementStreamStorage.addMeasurementValue(value, at: obtainCurrentLocation(), toStreamWithID: measurementStreamLocalID!)
+        let location = obtainCurrentLocation()
+        Log.debug("New mic measurement \(value) at \(String(describing: location))")
+        try measurementStreamStorage.addMeasurementValue(value, at: location, toStreamWithID: measurementStreamLocalID!)
     }
 
     @objc func timerTick() {
         try! sampleMeasurement()
     }
-    
-    @objc func handleInterruption(notification: Notification) {
-        let typeValue = notification.userInfo![AVAudioSessionInterruptionTypeKey] as! UInt
-        let type = AVAudioSession.InterruptionType(rawValue: typeValue)!
-        
-        switch type {
-        case .ended:
-            if !recorder.isRecording {
-                recorder.record()
-            }
-            levelTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(timerTick), userInfo: nil, repeats: true)
-        case .began:
-            fallthrough
-        @unknown default:
-            levelTimer?.invalidate()
-            try! measurementStreamStorage.updateSessionStatus(.DISCONNETCED, for: session!.uuid)
-        }
-    }
-    
 
     func createMeasurementStream(for session: Session) throws -> MeasurementStreamLocalID {
         let stream = MeasurementStream(id: nil,
@@ -125,17 +125,6 @@ private extension MicrophoneManager {
     
     func obtainCurrentLocation() -> CLLocationCoordinate2D? {
         locationProvider.currentLocation?.coordinate
-    }
-    
-    func addInterruptionsObserver() {
-        notificationCenter.addObserver(self,
-                                       selector: #selector(handleInterruption),
-                                       name: AVAudioSession.interruptionNotification,
-                                       object: audioSession)
-    }
-    
-    func removeInterruptionsObserver() {
-        notificationCenter.removeObserver(self, name: AVAudioSession.interruptionNotification, object: audioSession)
     }
     
     enum MicrophoneSessionError: Error {

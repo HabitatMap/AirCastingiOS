@@ -36,7 +36,7 @@ class PersistenceController: ObservableObject {
         })
         container.viewContext.automaticallyMergesChangesFromParent = true
         createInitialMicThreshold(in: viewContext)
-
+        finishMobileSessions()
     }
 
     var viewContext: NSManagedObjectContext {
@@ -77,5 +77,22 @@ class PersistenceController: ObservableObject {
         let thresholdMedium: Int32 = -30
         let thresholdHigh: Int32 = -20
         let thresholdVeryHigh: Int32 = 10
+    }
+
+    private func finishMobileSessions() {
+        container.performBackgroundTask { context in
+            let request: NSFetchRequest<SessionEntity> = SessionEntity.fetchRequest()
+            request.predicate = NSPredicate(format: "type == %@ && status IN %@", SessionType.mobile.rawValue, [SessionStatus.RECORDING, .DISCONNETCED, .NEW].map(\.rawValue))
+            let sessions = try! context.fetch(request)
+            if sessions.isEmpty {
+                return
+            }
+            #warning("Should we sync unfinished mobile sessions ?")
+            Log.info("Finishing sessions \( sessions.map({ "\(String(describing: $0.uuid)): \(String(describing: $0.status)) \(String(describing: $0.type))"}) )")
+            sessions.forEach {
+                $0.status = .FINISHED
+            }
+            try! context.save()
+        }
     }
 }

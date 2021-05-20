@@ -42,6 +42,10 @@ public class MeasurementStreamEntity: NSManagedObject, Identifiable {
         set { setValue(newValue, forKey: "id")}
     }
 
+    public var allMeasurements: [MeasurementEntity]? {
+        measurements?.array as? [MeasurementEntity]
+    }
+
     public var localID: MeasurementStreamLocalID {
         MeasurementStreamLocalID(id: objectID)
     }

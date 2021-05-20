@@ -12,12 +12,11 @@ import CoreData
 struct SessionCellView: View {
     
     @State private var isCollapsed = true
-    @StateObject var provider = LocationTracker()
+    
     let session: SessionEntity
-    @FetchRequest<SensorThreshold>(sortDescriptors: [.init(key: "sensorName", ascending: true)]) var thresholds
+    let thresholds: [SensorThreshold]
 
     var body: some View {
-        
         VStack(alignment: .leading, spacing: 13) {
             SessionHeaderView(action:  {
                 withAnimation {
@@ -26,8 +25,6 @@ struct SessionCellView: View {
             }, isExpandButtonNeeded: true,
             session: session,
             thresholds: Array(thresholds))
-            
-            
             if !isCollapsed {
                 VStack(alignment: .trailing, spacing: 40) {
                     pollutionChart
@@ -46,28 +43,18 @@ struct SessionCellView: View {
 }
 
 private extension SessionCellView {
-    var pathPoints: [PathPoint] {
-        let allLocationPoints = provider.allLocations
-        let points = allLocationPoints.map { (location) in
-            PathPoint(location: location.coordinate,
-                      measurement: Float(-10))
-        }
-        return points
-    }
-    
     var pollutionChart: some View {
         ChartView()
             .frame(height: 200)
     }
     var graphButton: some View {
-        NavigationLink(destination: GraphView(thresholds: Array(thresholds))) {
+        NavigationLink(destination: GraphView(thresholds: Array(thresholds), session: session)) {
             Text("graph")
         }
     }
     
     var mapButton: some View {
-        NavigationLink(destination: AirMapView(thresholds: Array(thresholds),
-                                               pathPoints: pathPoints)) {
+        NavigationLink(destination: AirMapView(thresholds: Array(thresholds), session: session)) {
             Text("map")
         }
     }
@@ -83,7 +70,7 @@ private extension SessionCellView {
 #if DEBUG
 struct SessionCell_Previews: PreviewProvider {
     static var previews: some View {
-        SessionCellView(session: SessionEntity.mock)
+        SessionCellView(session: SessionEntity.mock, thresholds: [.mock, .mock])
             .padding()
             .previewLayout(.sizeThatFits)
             .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))

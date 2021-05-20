@@ -24,7 +24,7 @@ struct SessionHeaderView: View {
                     measurementsMic
                     Spacer()
                     //This is a temporary solution for stopping mic session recording until we implement proper session edition menu
-                    if microphoneManager.session?.uuid == session.uuid, microphoneManager.isRecording && session.status == .RECORDING {
+                    if microphoneManager.session?.uuid == session.uuid, microphoneManager.isRecording && (session.status == .RECORDING || session.status == .DISCONNETCED) {
                         stopRecordingButton
                     }
                 }
@@ -35,7 +35,9 @@ struct SessionHeaderView: View {
         .font(Font.moderate(size: 13, weight: .regular))
         .foregroundColor(.aircastingGray)
     }
-    
+}
+
+private extension SessionHeaderView {
     var dateAndTime: some View {
         guard let start = session.startTime else {
             return Text("")
@@ -83,11 +85,11 @@ struct SessionHeaderView: View {
                     measurementsTitle
                     HStack {
                         Group {
-                            singleMeasurement(name: "PM1", value: measurements.pm1)
-                            singleMeasurement(name: "PM2", value: measurements.pm25)
-                            singleMeasurement(name: "PM10", value: measurements.pm10)
-                            singleMeasurement(name: "F", value: measurements.f)
-                            singleMeasurement(name: "RH", value: measurements.h)
+                            singleMeasurement(streamName: "PM1", value: measurements.pm1)
+                            singleMeasurement(streamName: "PM2", value: measurements.pm25)
+                            singleMeasurement(streamName: "PM10", value: measurements.pm10)
+                            singleMeasurement(streamName: "F", value: measurements.f)
+                            singleMeasurement(streamName: "RH", value: measurements.h)
                         }
                         .frame(maxWidth: .infinity)
                     }
@@ -96,7 +98,7 @@ struct SessionHeaderView: View {
                 VStack(alignment: .leading, spacing: 3) {
                     Text("Your AirBeam is gathering data.")
                         .font(Font.moderate(size: 14))
-                    Text("Measaurements will appear in 3 minutes.")
+                    Text("Measurements will appear in 3 minutes.")
                         .font(Font.moderate(size: 12))
                 }
                 .foregroundColor(.darkBlue)
@@ -111,7 +113,7 @@ struct SessionHeaderView: View {
     var measurementsMic: some View {
         VStack(alignment: .leading, spacing: 5) {
             measurementsTitle
-            singleMeasurement(name: "db", value: lastMicMeasurement())
+            singleMeasurement(streamName: "db", value: lastMicMeasurement())
         }
     }
     
@@ -124,13 +126,13 @@ struct SessionHeaderView: View {
         })
     }
     
-    func singleMeasurement(name: String, value: Double) -> some View {
+    func singleMeasurement(streamName: String, value: Double) -> some View {
         VStack(spacing: 3) {
-            Text(name)
+            Text(streamName)
                 .font(Font.system(size: 13))
             HStack(spacing: 3){
                 MeasurementDotView(value: value,
-                                   thresholds: thresholdFor(name: name))
+                                   thresholds: thresholdFor(name: streamName))
                 Text("\(Int(value))")
                     .font(Font.moderate(size: 14, weight: .regular))
             }
@@ -151,7 +153,7 @@ struct SessionHeaderView: View {
         let fValue = session.FStream?.latestValue ?? 0
         let hValue = session.HStream?.latestValue ?? 0
         
-        //TODO: change logic here (session status)
+        #warning("TODO: change logic here (session status)")
         if pm1Value != 0 || pm25Value != 0 || pm10Value != 0 || fValue != 0 || hValue != 0 {
             return LatestMeasurements(pm1: pm1Value,
                                       pm25: pm25Value,

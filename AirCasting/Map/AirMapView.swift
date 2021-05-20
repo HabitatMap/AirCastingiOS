@@ -8,18 +8,37 @@
 import SwiftUI
 import CoreLocation
 import Foundation
+import CoreData
 
 struct AirMapView: View {
-    
     var thresholds: [SensorThreshold]
-    let pathPoints: [PathPoint]
-    
+    @ObservedObject var session: SessionEntity
+
+    private var measurementStream: MeasurementStreamEntity? {
+        if session.type == .mobile && session.deviceType == .MIC {
+            return session.dbStream
+        } else {
+            #warning("Select proper measurementStream")
+            return session.measurementStreams?.firstObject as? MeasurementStreamEntity
+        }
+    }
+
+    private var pathPoints: [PathPoint] {
+        measurementStream?.allMeasurements?.compactMap {
+            if let location = $0.location {
+                return PathPoint(location: location, measurement: $0.value)
+            } else {
+                #warning("TODO: Do something with no location points")
+                return nil
+            }
+       } ?? []
+    }
+
     var body: some View {
         VStack(alignment: .trailing, spacing: 20) {
             SessionHeaderView(action: {},
                               isExpandButtonNeeded: false,
-                              // TODO: replace mocked session
-                              session: SessionEntity.mock,
+                              session: session,
                               thresholds: [.mock])
             ZStack(alignment: .topLeading) {
                 GoogleMapView(pathPoints: pathPoints,
@@ -41,16 +60,7 @@ struct AirMapView: View {
 #if DEBUG
 struct Map_Previews: PreviewProvider {
     static var previews: some View {
-        AirMapView(thresholds: [SensorThreshold.mock],
-                   pathPoints: [PathPoint(location: CLLocationCoordinate2D(latitude: 40.73,
-                                                                           longitude: -73.93),
-                   measurement: 10),
-                   PathPoint(location: CLLocationCoordinate2D(latitude: 40.83,
-                                                              longitude: -73.93),
-                   measurement: 50),
-                   PathPoint(location: CLLocationCoordinate2D(latitude: 40.93,
-                                                              longitude: -73.83),
-                   measurement: 80)])
+        AirMapView(thresholds: [SensorThreshold.mock], session: .mock)
     }
 }
 #endif
