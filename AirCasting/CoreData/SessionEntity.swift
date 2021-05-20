@@ -9,6 +9,10 @@ import Foundation
 import CoreData
 import struct CoreLocation.CLLocationCoordinate2D
 
+public struct SessionEntityLocalID {
+    let id: NSManagedObjectID
+}
+
 @objc(SessionEntity)
 public class SessionEntity: NSManagedObject, Identifiable {
     @nonobjc public class func fetchRequest() -> NSFetchRequest<SessionEntity> {
@@ -34,6 +38,10 @@ public class SessionEntity: NSManagedObject, Identifiable {
     
     /// Of type MeasurementStreamEntity
     @NSManaged public var measurementStreams: NSOrderedSet?
+
+    public var localID: SessionEntityLocalID {
+        SessionEntityLocalID(id: objectID)
+    }
 
     public var location: CLLocationCoordinate2D? {
         get {

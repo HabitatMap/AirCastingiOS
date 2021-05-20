@@ -10,25 +10,25 @@ import CoreData
 
 struct DashboardView: View {
     @State private var selectedSection = SelectedSection.mobileActive
-    @Environment(\.managedObjectContext) var context
-    @StateObject private var coreDataHook = CoreDataHook()
-    
-    var sessions: [SessionEntity] {
+    @StateObject var coreDataHook: CoreDataHook
+    @FetchRequest<SensorThreshold>(sortDescriptors: [.init(key: "sensorName", ascending: true)]) var thresholds
+
+    private var sessions: [SessionEntity] {
         coreDataHook.sessions
     }
 
     var body: some View {
         VStack {
-            
             AirSectionPickerView(selection: $selectedSection)
 
             if sessions.isEmpty {
                 EmptyDashboardView()
             } else {
+                let thresholds = Array(thresholds)
                 ScrollView(.vertical) {
                     LazyVStack(spacing: 20) {
                         ForEach(sessions, id: \.uuid) { (session) in
-                            SessionCellView(session: session)
+                            SessionCellView(session: session, thresholds: thresholds)
                         }
                     }
                     .padding()
@@ -39,12 +39,10 @@ struct DashboardView: View {
         }
         .navigationBarTitle(NSLocalizedString("Dashboard", comment: ""))
         .onChange(of: selectedSection) { selectedSection in
-            do {
-                coreDataHook.context = context
-                try coreDataHook.setup(selectedSection: selectedSection)
-            } catch {
-                Log.error("Trying to fetch sessions. Error: \(error)")
-            }
+            try! coreDataHook.setup(selectedSection: selectedSection)
+        }
+        .onAppear {
+            try! coreDataHook.setup(selectedSection: selectedSection)
         }
     }
 }
@@ -52,7 +50,7 @@ struct DashboardView: View {
 #if DEBUG
 struct Dashboard_Previews: PreviewProvider {
     static var previews: some View {
-        DashboardView()
+        DashboardView(coreDataHook: CoreDataHook(context: PersistenceController(inMemory: true).viewContext))
     }
 }
 #endif

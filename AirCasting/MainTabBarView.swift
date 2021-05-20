@@ -12,6 +12,7 @@ import Firebase
 struct MainTabBarView: View {
     let measurementUpdatingService: MeasurementUpdatingService
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
+    @EnvironmentObject var persistenceController: PersistenceController
     @StateObject var tabSelection: TabBarSelection = TabBarSelection()
 
     var body: some View {
@@ -25,11 +26,14 @@ struct MainTabBarView: View {
         }
         .environmentObject(tabSelection)
     }
+}
+
+private extension MainTabBarView {
     
     // Tab Bar views
     private var dashboardTab: some View {
         NavigationView {
-            DashboardView()
+            DashboardView(coreDataHook: CoreDataHook(context: persistenceController.viewContext))
         }
         .tabItem {
             Image(systemName: "house")

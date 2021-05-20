@@ -6,9 +6,9 @@
 //
 
 import Foundation
-import GoogleMaps
+import CoreLocation
 
 struct PathPoint {
-    var location: CLLocationCoordinate2D
-    var measurement: Float
+    let location: CLLocationCoordinate2D
+    let measurement: Double
 }
