@@ -39,7 +39,7 @@ struct AirMapView: View {
             SessionHeaderView(action: {},
                               isExpandButtonNeeded: false,
                               session: session,
-                              thresholds: [.mock])
+                              thresholds: thresholds)
             ZStack(alignment: .topLeading) {
                 GoogleMapView(pathPoints: pathPoints,
                               thresholds: thresholds[0])

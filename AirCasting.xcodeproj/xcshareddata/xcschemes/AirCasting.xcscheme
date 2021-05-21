@@ -37,8 +37,6 @@
                BlueprintName = "AirCastingTests"
                ReferencedContainer = "container:AirCasting.xcodeproj">
             </BuildableReference>
-            <SkippedTests>
-            </SkippedTests>
          </TestableReference>
       </Testables>
    </TestAction>
