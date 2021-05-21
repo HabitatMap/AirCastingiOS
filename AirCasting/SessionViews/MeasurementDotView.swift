@@ -33,8 +33,10 @@ struct MeasurementDotView: View {
     }
 }
 
+#if DEBUG
 struct MeasurementDotView_Previews: PreviewProvider {
     static var previews: some View {
         MeasurementDotView(value: 15.0, thresholds: SensorThreshold())
     }
 }
+#endif

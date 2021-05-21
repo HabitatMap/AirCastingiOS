@@ -1,12 +1,50 @@
-//
-//  Session+CoreDataClass.swift
-//  AirCasting
-//
-//  Created by Lunar on 01/04/2021.
+// Created by Lunar on 30/04/2021.
 //
 
 import Foundation
-import CoreData
+import CoreLocation
+
+public struct Session {
+    let uuid: SessionUUID
+    let type: SessionType
+    let name: String?
+    let deviceType: DeviceType?
+    let location: CLLocationCoordinate2D?
+    let startTime: Date?
+
+    let contribute: Bool
+    let deviceId: String?
+    let endTime: Date?
+    let followedAt: Date?
+    let gotDeleted: Bool
+    let isIndoor: Bool
+    let tags: String?
+    let urlLocation: String?
+    let version: Int16
+    let measurementStreams: [Any]?
+    let status: SessionStatus?
+
+    init(uuid: SessionUUID, type: SessionType, name: String?, deviceType: DeviceType?, location: CLLocationCoordinate2D?, startTime: Date?,
+         contribute: Bool = true, deviceId: String? = nil, endTime: Date? = nil, followedAt: Date? = nil, gotDeleted: Bool = false, isIndoor: Bool = false, tags: String? = nil, urlLocation: String? = nil, version: Int16 = 0, measurementStreams: [Any]? = nil, status: SessionStatus? = nil) {
+        self.uuid = uuid
+        self.type = type
+        self.name = name
+        self.deviceType = deviceType
+        self.location = location
+        self.startTime = startTime
+        self.contribute = contribute
+        self.deviceId = deviceId
+        self.endTime = endTime
+        self.followedAt = followedAt
+        self.gotDeleted = gotDeleted
+        self.isIndoor = isIndoor
+        self.tags = tags
+        self.urlLocation = urlLocation
+        self.version = version
+        self.measurementStreams = measurementStreams
+        self.status = status
+    }
+}
 
 public struct SessionUUID: Codable, RawRepresentable, Hashable, CustomStringConvertible {
     public let rawValue: String
@@ -31,69 +69,67 @@ public struct SessionUUID: Codable, RawRepresentable, Hashable, CustomStringConv
     }
 }
 
-@objc(Session)
-public class Session: NSManagedObject, Identifiable {
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<Session> {
-        return NSFetchRequest<Session>(entityName: "Session")
+public enum SessionType: RawRepresentable, CustomStringConvertible, Hashable, Codable {
+    case mobile
+    case fixed
+    case unknown(String)
+
+    public init(from decoder: Decoder) throws {
+        let singleValue = try decoder.singleValueContainer()
+        let rawValue = try singleValue.decode(String.self)
+        self.init(rawValue: rawValue)
     }
 
-    @NSManaged public var contribute: Bool
-    @NSManaged public var deviceId: String?
-
-    @NSManaged public var endTime: Date?
-    @NSManaged public var followedAt: Date?
-    @NSManaged public var gotDeleted: Bool
-    @NSManaged public var isIndoor: Bool
-    @NSManaged public var latitude: Double
-    @NSManaged public var locationless: Bool
-    @NSManaged public var longitude: Double
-    @NSManaged public var name: String?
-    @NSManaged public var startTime: Date?
-    @NSManaged public var tags: String?
-
-    @NSManaged public var urlLocation: String?
-    @NSManaged public var version: Int16
-    @NSManaged public var measurementStreams: NSSet?
-
-    public var status: SessionStatus? {
-        get { (value(forKey: "status") as? Int).flatMap(SessionStatus.init(rawValue:)) }
-        set { setValue(newValue?.rawValue, forKey: "status") }
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(rawValue)
     }
 
-    public var uuid: SessionUUID! {
-        get { SessionUUID(rawValue: value(forKey: "uuid") as! String) }
-        set { setValue(newValue.rawValue, forKey: "uuid") }
+    public var rawValue: String {
+        switch self {
+        case .mobile: return "MobileSession"
+        case .fixed: return "FixedSession"
+        case .unknown(let rawValue): return rawValue
+        }
     }
 
-    public var deviceType: DeviceType? {
-        get { (value(forKey: "deviceType") as? Int).flatMap(DeviceType.init(rawValue:)) }
-        set { setValue(newValue?.rawValue, forKey: "deviceType") }
+    public init(rawValue: String) {
+        switch rawValue {
+        case "MobileSession": self = .mobile
+        case "FixedSession": self = .fixed
+        default: self = .unknown(rawValue)
+        }
     }
 
-    public var type: SessionType! {
-        get { SessionType(rawValue:(value(forKey: "type") as! String)) }
-        set { setValue(newValue.rawValue, forKey: "type") }
+    public var description: String {
+        switch self {
+        case .mobile: return NSLocalizedString("Mobile", comment: "Mobile session readable localized description")
+        case .fixed: return NSLocalizedString("Fixed", comment: "Fixed session readable localized description")
+        case .unknown: return NSLocalizedString("Other", comment: "Unknown session readable localized description")
+        }
     }
 }
 
-extension NSFetchRequest where ResultType == Session {
-    public func typePredicate(_ type: SessionType) -> NSPredicate {
-        NSPredicate(format: "type == \"\(type.rawValue)\"")
-    }
+public enum SessionStatus: Int {
+    case NEW = -1
+    case RECORDING = 0
+    case FINISHED = 1
+    case DISCONNETCED = 2
 }
-// MARK: Generated accessors for measurementStreams
-extension Session {
 
-    @objc(addMeasurementStreamsObject:)
-    @NSManaged public func addToMeasurementStreams(_ value: MeasurementStream)
+enum StreamingMethod: Int {
+    case CELLULAR = 0
+    case WIFI = 1
+}
 
-    @objc(removeMeasurementStreamsObject:)
-    @NSManaged public func removeFromMeasurementStreams(_ value: MeasurementStream)
+public enum DeviceType: Int, CustomStringConvertible {
+    case MIC = 0
+    case AIRBEAM3 = 1
 
-    @objc(addMeasurementStreams:)
-    @NSManaged public func addToMeasurementStreams(_ values: NSSet)
-
-    @objc(removeMeasurementStreams:)
-    @NSManaged public func removeFromMeasurementStreams(_ values: NSSet)
-
+    public var description: String {
+        switch self {
+        case .MIC: return "Device's Microphone"
+        case .AIRBEAM3: return "AirBeam 3"
+        }
+    }
 }

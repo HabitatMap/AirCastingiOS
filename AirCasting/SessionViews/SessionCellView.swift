@@ -7,24 +7,24 @@
 
 import SwiftUI
 import CoreLocation
+import CoreData
 
 struct SessionCellView: View {
     
     @State private var isCollapsed = true
-    @AppStorage("thresholds") var thresholds: [Float] = [0, 70, 120, 170, 200]
-    @StateObject var provider = LocationTracker()
-    let session: Session
-        
+    
+    let session: SessionEntity
+    let thresholds: [SensorThreshold]
+
     var body: some View {
-        
         VStack(alignment: .leading, spacing: 13) {
             SessionHeaderView(action:  {
                 withAnimation {
                     isCollapsed = !isCollapsed
                 }
-            }, isExpandButtonNeeded: true, session: session)
-            
-            
+            }, isExpandButtonNeeded: true,
+            session: session,
+            thresholds: Array(thresholds))
             if !isCollapsed {
                 VStack(alignment: .trailing, spacing: 40) {
                     pollutionChart
@@ -40,30 +40,21 @@ struct SessionCellView: View {
                 .shadow(color: Color(red: 205/255, green: 209/255, blue: 214/255, opacity: 0.36), radius: 9, x: 0, y: 1)
         )
     }
-        
-    
-    var pathPoints: [PathPoint] {
-        let allLocationPoints = provider.allLocations
-        let points = allLocationPoints.map { (location) in
-            PathPoint(location: location.coordinate,
-                      measurement: Float(arc4random() % 200))
-        }
-        return points
-    }
-    
+}
+
+private extension SessionCellView {
     var pollutionChart: some View {
         ChartView()
             .frame(height: 200)
     }
     var graphButton: some View {
-        NavigationLink(destination: GraphView(thresholds: $thresholds)) {
+        NavigationLink(destination: GraphView(thresholds: Array(thresholds), session: session)) {
             Text("graph")
         }
     }
     
     var mapButton: some View {
-        NavigationLink(destination: AirMapView(thresholds: $thresholds,
-                                               pathPoints: pathPoints)) {
+        NavigationLink(destination: AirMapView(thresholds: Array(thresholds), session: session)) {
             Text("map")
         }
     }
@@ -76,11 +67,13 @@ struct SessionCellView: View {
     }
 }
 
+#if DEBUG
 struct SessionCell_Previews: PreviewProvider {
     static var previews: some View {
-        SessionCellView(session: Session.mock)
+        SessionCellView(session: SessionEntity.mock, thresholds: [.mock, .mock])
             .padding()
             .previewLayout(.sizeThatFits)
-            .environmentObject(MicrophoneManager())
+            .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
     }
 }
+#endif

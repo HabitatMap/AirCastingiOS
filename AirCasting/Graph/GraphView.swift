@@ -9,26 +9,27 @@ import SwiftUI
 
 struct GraphView: View {
     
-    @Binding var thresholds: [Float]
-
+    var thresholds: [SensorThreshold]
+    @StateObject var session: SessionEntity
+    
     var body: some View {
         VStack(alignment: .trailing) {
             SessionHeaderView(action: {},
                               isExpandButtonNeeded: false,
-                              // TODO: replace mocked session
-                              session: Session.mock)
-                .padding()
+                              session: session,
+                              thresholds: thresholds).padding()
             
             ZStack(alignment: .topLeading) {
-                Graph(thresholds: thresholds)
+                Graph(thresholds: thresholds[0])
                 StatisticsContainerView()
             }
-            NavigationLink(destination: HeatmapSettingsView(changedThresholdValues: $thresholds)) {
-                EditButton()
+            
+            NavigationLink(destination: HeatmapSettingsView(changedThresholdValues: thresholds[0].rawThresholdsBinding)) {
+                EditButtonView()
             }
             .padding()
             
-            MultiSliderView(thresholds: $thresholds)
+            ThresholdsSliderView(threshold: thresholds[0])
                 .padding()
                 // Fixes labels covered by tabbar
                 .padding(.bottom)
@@ -38,8 +39,10 @@ struct GraphView: View {
     }
 }
 
+#if DEBUG
 struct GraphView_Previews: PreviewProvider {
     static var previews: some View {
-        GraphView(thresholds: .constant([0,1,2,3]))
+        GraphView(thresholds: [.mock], session: .mock)
     }
 }
+#endif

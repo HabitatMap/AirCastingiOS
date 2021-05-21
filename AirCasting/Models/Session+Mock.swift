@@ -7,14 +7,16 @@
 
 import Foundation
 
-extension Session {
+#if DEBUG
+extension SessionEntity {
     
-    static var mock: Session {
-        let context = PersistenceController.shared.container.viewContext
-        let session: Session = try! context.newOrExisting(uuid: SessionUUID(rawValue: "mock")!)
+    static var mock: SessionEntity {
+        let context = PersistenceController.shared.viewContext
+        let session: SessionEntity = try! context.newOrExisting(uuid: SessionUUID(rawValue: "mock")!)
         session.type = .mobile
         // ...
         return session
     }
-    
 }
+
+#endif

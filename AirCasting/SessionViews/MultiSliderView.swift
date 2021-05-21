@@ -7,6 +7,15 @@
 
 import SwiftUI
 
+struct ThresholdsSliderView: View {
+    
+    @ObservedObject var threshold: SensorThreshold
+    
+    var body: some View {
+        MultiSliderView(thresholds: threshold.rawThresholdsBinding)
+    }
+}
+
 struct MultiSliderView: View {
     
     @Binding var thresholds: [Float]
@@ -26,26 +35,24 @@ struct MultiSliderView: View {
     var thresholdVeryLow: Float {
         thresholds.first ?? 0
     }
+        
     var colors: [Color] = [Color.aircastingGreen, Color.aircastingYellow, Color.aircastingOrange, Color.aircastingRed]
         
     var body: some View {
         GeometryReader { geometry in
-            let frameWidth = geometry.frame(in: .local).size.width
-            
             ZStack {
                 colors.last
+                #warning("TODO: handle situation when thresholdVeryHigh = 0")
                 ForEach(thresholdButtonValues.indices.reversed(), id: \.self) { index in
                     colors[index]
-                        .frame(width: CGFloat(thresholdButtonValues[index]) * frameWidth / CGFloat(thresholdVeryHigh))
-                        .position(x: CGFloat(thresholdButtonValues[index]) * frameWidth / CGFloat(thresholdVeryHigh) / 2,
+                        .frame(width: calculateXAxisSize(thresholdValue: thresholdButtonValues[index], geometry: geometry))
+                        .position(x: calculateXAxisSize(thresholdValue: thresholdButtonValues[index], geometry: geometry) / 2,
                                   y:  geometry.frame(in: .local).size.height / 2)
                 }
                 
                 ForEach(thresholdButtonValues.indices, id: \.self) { index in
-                    let value = thresholdButtonValues[index]
-                    
                     sliderButton
-                        .position(x: CGFloat(value) * frameWidth / CGFloat(thresholdVeryHigh),
+                        .position(x: calculateXAxisSize(thresholdValue: thresholdButtonValues[index], geometry: geometry),
                                   y: geometry.frame(in: .local).size.height / 2)
                         .gesture(dragGesture(index: index, geometry: geometry))
                 }
@@ -54,6 +61,11 @@ struct MultiSliderView: View {
                 .coordinateSpace(name: "MultiSliderSpace")
         }
         .frame(height: 5)
+    }
+    
+    func calculateXAxisSize(thresholdValue: Float, geometry: GeometryProxy) -> CGFloat {
+        let frameWidth = geometry.frame(in: .local).size.width
+        return CGFloat(thresholdValue - thresholdVeryLow) / CGFloat(thresholdVeryHigh - thresholdVeryLow) * frameWidth
     }
     
     var sliderButton: some View {
@@ -67,8 +79,8 @@ struct MultiSliderView: View {
         DragGesture(minimumDistance: 0, coordinateSpace: .named("MultiSliderSpace"))
             .onChanged { (dragValue) in
                 let newX = dragValue.location.x
-                var newValue = Float(newX * CGFloat(thresholdVeryHigh) / geometry.frame(in: .local).size.width)
-                                
+                let frameWidth = Float(geometry.frame(in: .local).size.width)
+                var newValue = Float(newX) * (thresholdVeryHigh - thresholdVeryLow) / frameWidth + thresholdVeryLow
                 let previousValue = index > 0 ? thresholdButtonValues[index-1] : thresholdVeryLow
                 let nextValue = index == thresholdButtonValues.count-1 ? thresholdVeryHigh : thresholdButtonValues[index+1]
                 
@@ -85,7 +97,7 @@ struct MultiSliderView: View {
         return ForEach(thresholds.indices, id: \.self) { index in
             let ints = Int(thresholds[index])
             Text("\(ints)")
-                .position(x: CGFloat(thresholds[index]) * frameWidth / CGFloat(thresholdVeryHigh),
+                .position(x: calculateXAxisSize(thresholdValue: thresholds[index], geometry: geometry),
                           y: y)
                 .foregroundColor(.aircastingGray)
                 .font(Font.muli(size: 12))
@@ -94,8 +106,11 @@ struct MultiSliderView: View {
     }
 }
 
+#if DEBUG
 struct MultiSlider_Previews: PreviewProvider {
     static var previews: some View {
-        MultiSliderView(thresholds: .constant([0,5,10,13,20]))
+        ThresholdsSliderView(threshold: .mock)
     }
 }
+#endif
+

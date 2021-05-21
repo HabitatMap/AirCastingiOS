@@ -10,12 +10,13 @@ import CoreData
 
 final class UpdateSessionParamsService {
     enum Error: Swift.Error {
-        case missingContext(FixedSession.FixedMeasurementOutput)
+        case missingContext(Any)
     }
-    func updateSessionsParams(session: Session, output: FixedSession.FixedMeasurementOutput) throws {
+
+    func updateSessionsParams(session: SessionEntity, output: FixedSession.FixedMeasurementOutput) throws {
+        #warning("TODO: set only values that have changed to avoid core data notifications and context changes")
         session.uuid = output.uuid
         session.type = output.type
-    
         session.name = output.title
         session.tags  = output.tag_list
         session.startTime = output.start_time
@@ -24,45 +25,108 @@ final class UpdateSessionParamsService {
         guard let context = session.managedObjectContext else {
             throw Error.missingContext(output)
         }
-        #warning("TODO: Rethink to remove old measurements and streams")
-        try output.streams.values.forEach { streamOutput in
-            let stream: MeasurementStream = try context.newOrExisting(id: streamOutput.id)
-            
-            stream.sensorName = streamOutput.sensor_name
-            stream.sensorPackageName = streamOutput.sensor_package_name
-            stream.measurementType = streamOutput.measurement_type
-            stream.measurementShortType = streamOutput.measurement_short_type
-            stream.unitName = streamOutput.unit_name
-            stream.unitSymbol = streamOutput.unit_symbol
-            stream.thresholdVeryLow = streamOutput.threshold_very_low
-            stream.thresholdLow = streamOutput.threshold_low
-            stream.thresholdMedium = streamOutput.threshold_medium
-            stream.thresholdHigh = streamOutput.threshold_high
-            stream.thresholdVeryHigh = streamOutput.threshold_very_high
-            stream.gotDeleted = streamOutput.deleted ?? false
-    
-            //                            // Save starting thresholds
-            //                            let thresholds = SensorThreshold(context: context)
-            //                            thresholds.sensorName = streamOutput.sensor_name
-            //                            thresholds.thresholdVeryLow = Int32(streamOutput.threshold_very_low)
-            //                            thresholds.thresholdLow = Int32(streamOutput.threshold_low)
-            //                            thresholds.thresholdMedium = Int32(streamOutput.threshold_medium)
-            //                            thresholds.thresholdHigh = Int32(streamOutput.threshold_high)
-            //                            thresholds.thresholdVeryHigh = Int32(streamOutput.threshold_very_high)
-    
-            try streamOutput.measurements.forEach { measurement in
-                let newMeasurement: Measurement = try context.newOrExisting(id: measurement.id)
-                
-                newMeasurement.value = measurement.measured_value
-                newMeasurement.latitude = measurement.latitude
-                newMeasurement.longitude = measurement.longitude
-                newMeasurement.time = measurement.time
-                newMeasurement.measurementStream = stream
+        let oldStreams = session.measurementStreams?.array as? [MeasurementStreamEntity] ?? []
+        let streamDiff = diff(oldStreams, Array(output.streams.values)) {
+            if let id = $0.id {
+                return id == $1.id
+            } else {
+                return false
             }
-            session.addToMeasurementStreams(stream)
         }
-    
+
+        try streamDiff.inserted.forEach {
+            let stream = MeasurementStreamEntity(context: context)
+            try fillStream(stream, with: $0)
+            stream.session = session
+        }
+        #warning("TODO: Think what to do with un-synced not existing measurement streams")
+//        streamDiff.removed.forEach(context.delete)
+        streamDiff.common.forEach { oldStream, streamOutput in
+            oldStream.sensorName = streamOutput.sensor_name
+            oldStream.sensorPackageName = streamOutput.sensor_package_name
+            oldStream.measurementType = streamOutput.measurement_type
+            oldStream.measurementShortType = streamOutput.measurement_short_type
+            oldStream.unitName = streamOutput.unit_name
+            oldStream.unitSymbol = streamOutput.unit_symbol
+            oldStream.thresholdVeryLow = streamOutput.threshold_very_low
+            oldStream.thresholdLow = streamOutput.threshold_low
+            oldStream.thresholdMedium = streamOutput.threshold_medium
+            oldStream.thresholdHigh = streamOutput.threshold_high
+            oldStream.thresholdVeryHigh = streamOutput.threshold_very_high
+            oldStream.gotDeleted = streamOutput.deleted ?? false
+
+            let oldMeasurements = oldStream.measurements?.array as? [MeasurementEntity] ?? []
+            let measurementDiff = diff(oldMeasurements, streamOutput.measurements) {
+                if let id = $0.id {
+                    return id == $1.id
+                } else {
+                    return $0.time == $1.time && $0.value == $1.measured_value
+                }
+            }
+            measurementDiff.inserted.forEach {
+                let newMeasurement = MeasurementEntity(context: context)
+                fillMeasurement(newMeasurement, with: $0)
+                newMeasurement.measurementStream = oldStream
+            }
+            #warning("TODO: Think what to do with un-synced not existing measurements")
+//            measurementDiff.removed.forEach(context.delete)
+            measurementDiff.common.forEach { oldMeasurement, measurementOutput in
+                oldMeasurement.value = measurementOutput.measured_value
+                oldMeasurement.location = CLLocationCoordinate2D(latitude: measurementOutput.latitude, longitude: measurementOutput.longitude)
+                oldMeasurement.time = measurementOutput.time
+            }
+        }
+    }
+
+    func updateSessionsParams(_ entity: SessionEntity, session: Session) {
+        entity.uuid = session.uuid
+        entity.type = session.type
+        entity.name = session.name
+        entity.deviceType = session.deviceType
+        entity.location = session.location
+        entity.startTime = session.startTime
+        entity.contribute = session.contribute
+        entity.deviceId = session.deviceId
+        entity.endTime = session.endTime
+        entity.followedAt = session.followedAt
+        entity.gotDeleted = session.gotDeleted
+        entity.isIndoor = session.isIndoor
+        entity.tags = session.tags
+        entity.urlLocation = session.urlLocation
+        entity.version = session.version
+        entity.status = session.status
     }
 }
 
+private extension UpdateSessionParamsService {
+    func fillMeasurement(_ entity: MeasurementEntity, with measurement: FixedSession.MeasurementOutput) {
+        entity.value = measurement.measured_value
+        entity.location = CLLocationCoordinate2D(latitude: measurement.latitude, longitude: measurement.longitude)
+        entity.time = measurement.time
+        entity.id = measurement.id
+    }
 
+    func fillStream(_ entity: MeasurementStreamEntity, with streamOutput: FixedSession.StreamOutput) throws {
+        entity.id = streamOutput.id
+        entity.sensorName = streamOutput.sensor_name
+        entity.sensorPackageName = streamOutput.sensor_package_name
+        entity.measurementType = streamOutput.measurement_type
+        entity.measurementShortType = streamOutput.measurement_short_type
+        entity.unitName = streamOutput.unit_name
+        entity.unitSymbol = streamOutput.unit_symbol
+        entity.thresholdVeryLow = streamOutput.threshold_very_low
+        entity.thresholdLow = streamOutput.threshold_low
+        entity.thresholdMedium = streamOutput.threshold_medium
+        entity.thresholdHigh = streamOutput.threshold_high
+        entity.thresholdVeryHigh = streamOutput.threshold_very_high
+        entity.gotDeleted = streamOutput.deleted ?? false
+        guard let context = entity.managedObjectContext else {
+            throw Error.missingContext(entity)
+        }
+        streamOutput.measurements.forEach {
+            let newMeasurement = MeasurementEntity(context: context)
+            fillMeasurement(newMeasurement, with: $0)
+            newMeasurement.measurementStream = entity
+        }
+    }
+}

@@ -49,8 +49,10 @@ struct PowerABView: View {
     }
 }
 
+#if DEBUG
 struct PowerABView_Previews: PreviewProvider {
     static var previews: some View {
         PowerABView(creatingSessionFlowContinues: .constant(true))
     }
 }
+#endif

@@ -7,49 +7,49 @@
 
 import Foundation
 
-extension Session {
+extension SessionEntity {
     
-    var pm1Stream: MeasurementStream? {
+    var pm1Stream: MeasurementStreamEntity? {
         let matach = measurementStreams?.first(where: { (stream) -> Bool in
-            (stream as? MeasurementStream)?.sensorName?.contains("PM1") ?? false
+            (stream as? MeasurementStreamEntity)?.sensorName?.contains("PM1") ?? false
         })
-        let pm1Stream = matach as? MeasurementStream
+        let pm1Stream = matach as? MeasurementStreamEntity
         return pm1Stream
     }
     
-    var pm2Stream: MeasurementStream? {
+    var pm2Stream: MeasurementStreamEntity? {
         let matach = measurementStreams?.first(where: { (stream) -> Bool in
-            (stream as? MeasurementStream)?.sensorName?.contains("PM2.5") ?? false
+            (stream as? MeasurementStreamEntity)?.sensorName?.contains("PM2.5") ?? false
         })
-        let pm2Stream = matach as? MeasurementStream
+        let pm2Stream = matach as? MeasurementStreamEntity
         return pm2Stream
     }
-    var pm10Stream: MeasurementStream? {
+    var pm10Stream: MeasurementStreamEntity? {
         let matach = measurementStreams?.first(where: { (stream) -> Bool in
-            (stream as? MeasurementStream)?.sensorName?.contains("PM10") ?? false
+            (stream as? MeasurementStreamEntity)?.sensorName?.contains("PM10") ?? false
         })
-        let pm10Stream = matach as? MeasurementStream
+        let pm10Stream = matach as? MeasurementStreamEntity
         return pm10Stream
     }
-    var FStream: MeasurementStream? {
+    var FStream: MeasurementStreamEntity? {
         let matach = measurementStreams?.first(where: { (stream) -> Bool in
-            (stream as? MeasurementStream)?.measurementShortType == "F"
+            (stream as? MeasurementStreamEntity)?.measurementShortType == "F"
         })
-        let FStream = matach as? MeasurementStream
+        let FStream = matach as? MeasurementStreamEntity
         return FStream
     }
-    var HStream: MeasurementStream? {
+    var HStream: MeasurementStreamEntity? {
         let matach = measurementStreams?.first(where: { (stream) -> Bool in
-            (stream as? MeasurementStream)?.measurementShortType == "RH"
+            (stream as? MeasurementStreamEntity)?.measurementShortType == "RH"
         })
-        let HStream = matach as? MeasurementStream
+        let HStream = matach as? MeasurementStreamEntity
         return HStream
     }
-    var dbStream: MeasurementStream? {
+    var dbStream: MeasurementStreamEntity? {
         let matach = measurementStreams?.first(where: { (stream) -> Bool in
-            (stream as? MeasurementStream)?.measurementShortType == "db"
+            (stream as? MeasurementStreamEntity)?.measurementShortType == "db"
         })
-        let dbStream = matach as? MeasurementStream
+        let dbStream = matach as? MeasurementStreamEntity
         return dbStream
     }
 }

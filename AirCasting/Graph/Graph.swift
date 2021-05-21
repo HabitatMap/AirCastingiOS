@@ -73,16 +73,15 @@ class UI_PollutionGraph: UIView {
         lineChartView.leftYAxisRenderer = renderer
     }
     
-    func updateWith(values: [Float]) {
-        guard let renderer = renderer else { return }
-        renderer.thresholds = values
+    func updateWith(thresholdValues: [Float]) throws {
+        guard let renderer = renderer else {
+            throw GraphError.rendererError
+        }
+        renderer.thresholds = thresholdValues
         
-        //min & max yaxis values
-        lineChartView.leftAxis.axisMinimum = Double(values.first ?? 0)
-        lineChartView.leftAxis.axisMaximum = Double(values.last ?? 200)
-        print("\(lineChartView.leftAxis.axisMinimum) - \(lineChartView.leftAxis.axisMaximum)")
+        lineChartView.leftAxis.axisMinimum = Double(thresholdValues.first ?? 0)
+        lineChartView.leftAxis.axisMaximum = Double(thresholdValues.last ?? 200)
         
-        // Needed to redraw the chart
         lineChartView.data = lineChartView.data
         lineChartView.setNeedsDisplay()
     }
@@ -125,19 +124,21 @@ class MultiColorGridRenderer: YAxisRenderer {
 struct Graph: UIViewRepresentable {
     typealias UIViewType = UI_PollutionGraph
     
-    let thresholds: [Float]
+    @ObservedObject var thresholds: SensorThreshold
     
     func makeUIView(context: Context) -> UI_PollutionGraph {
         UI_PollutionGraph()
     }
     
     func updateUIView(_ uiView: UI_PollutionGraph, context: Context) {
-        uiView.updateWith(values: thresholds)
+       try? uiView.updateWith(thresholdValues: thresholds.rawThresholdsBinding.wrappedValue)
     }
 }
 
+#if DEBUG
 struct PollutionGraph_Previews: PreviewProvider {
     static var previews: some View {
-        Graph(thresholds: [30, 60, 70, 170, 200])
+        Graph(thresholds: .mock)
     }
 }
+#endif

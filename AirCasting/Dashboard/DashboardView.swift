@@ -6,23 +6,29 @@
 //
 
 import SwiftUI
+import CoreData
 
 struct DashboardView: View {
-    
-    @FetchRequest<Session>(sortDescriptors: [NSSortDescriptor(key: "startTime",
-                                                              ascending: false)]) var sessions
+    @State private var selectedSection = SelectedSection.mobileActive
+    @StateObject var coreDataHook: CoreDataHook
+    @FetchRequest<SensorThreshold>(sortDescriptors: [.init(key: "sensorName", ascending: true)]) var thresholds
+
+    private var sessions: [SessionEntity] {
+        coreDataHook.sessions
+    }
 
     var body: some View {
         VStack {
-            sectionPicker
-            
+            AirSectionPickerView(selection: $selectedSection)
+
             if sessions.isEmpty {
                 EmptyDashboardView()
             } else {
+                let thresholds = Array(thresholds)
                 ScrollView(.vertical) {
                     LazyVStack(spacing: 20) {
                         ForEach(sessions, id: \.uuid) { (session) in
-                            SessionCellView(session: session)
+                            SessionCellView(session: session, thresholds: thresholds)
                         }
                     }
                     .padding()
@@ -31,25 +37,20 @@ struct DashboardView: View {
                 .background(Color.aircastingGray.opacity(0.05))
             }
         }
-        .navigationBarTitle("Dashboard")
-    }
-    
-    var sectionPicker: some View {
-        Picker(selection: .constant(1), label: Text("Picker"), content: {
-            Text("Following").tag(1)
-            Text("Active").tag(2)
-            Text("Dormant").tag(3)
-            Text("Fixed").tag(4)
-        })
-        .pickerStyle(SegmentedPickerStyle())
-        .padding()
+        .navigationBarTitle(NSLocalizedString("Dashboard", comment: ""))
+        .onChange(of: selectedSection) { selectedSection in
+            try! coreDataHook.setup(selectedSection: selectedSection)
+        }
+        .onAppear {
+            try! coreDataHook.setup(selectedSection: selectedSection)
+        }
     }
 }
 
 #if DEBUG
 struct Dashboard_Previews: PreviewProvider {
     static var previews: some View {
-        DashboardView()
+        DashboardView(coreDataHook: CoreDataHook(context: PersistenceController(inMemory: true).viewContext))
     }
 }
 #endif

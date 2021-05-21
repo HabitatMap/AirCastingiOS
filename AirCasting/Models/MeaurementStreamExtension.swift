@@ -8,16 +8,19 @@
 import Foundation
 
 
-extension MeasurementStream {
-    
-    var latestValue: Double? {
-        guard let all = measurements?.allObjects as? [Measurement] else { return nil }
-        
+extension MeasurementStreamEntity {
+    var latestMeasurementEntity: MeasurementEntity? {
+        guard let all = measurements?.array as? [MeasurementEntity] else { return nil }
+
         let sorted = all.sorted { (a, b) -> Bool in
             guard let atime = a.time,
                   let btime = b.time else { return false }
-           return atime < btime
+            return atime < btime
         }
-        return sorted.last?.value
+        return sorted.last
+    }
+    
+    var latestValue: Double? {
+        latestMeasurementEntity?.value
     }
 }

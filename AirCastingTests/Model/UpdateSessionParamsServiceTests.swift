@@ -97,8 +97,8 @@ final class UpdateSessionParamsServiceTests: XCTestCase {
         super.tearDown()
     }
 
-    func testMapping() throws {
-        let session = Session(context: databaseContext)
+    func testUpdateEmptySession() throws {
+        let session = SessionEntity(context: databaseContext)
         let sampleOutput = Self.sampleOutput
         try tested.updateSessionsParams(session: session, output: sampleOutput)
 
@@ -110,7 +110,7 @@ final class UpdateSessionParamsServiceTests: XCTestCase {
         XCTAssertEqual(session.endTime, sampleOutput.end_time)
         XCTAssertEqual(session.gotDeleted, sampleOutput.deleted ?? false)
         XCTAssertEqual(session.version, sampleOutput.version)
-        let measurementStream = try XCTUnwrap(session.measurementStreams?.allObjects as? [MeasurementStream]).sorted { $0.id < $1.id }
+        let measurementStream = try XCTUnwrap(session.measurementStreams?.array as? [MeasurementStreamEntity])
 
         XCTAssertEqual(measurementStream.count, sampleOutput.streams.count)
         let modelMeasurementStream = sampleOutput.streams.values.sorted { $0.id < $1.id }
@@ -130,13 +130,103 @@ final class UpdateSessionParamsServiceTests: XCTestCase {
             XCTAssertEqual(databaseMeasurementStream.unitSymbol, modelMeasurementStream.unit_symbol)
             XCTAssertEqual(databaseMeasurementStream.id, modelMeasurementStream.id)
 
-            let measurements = try XCTUnwrap(databaseMeasurementStream.measurements?.allObjects as? [AirCasting.Measurement]).sorted { $0.id < $1.id }
+            let measurements = try XCTUnwrap(databaseMeasurementStream.measurements?.array as? [AirCasting.MeasurementEntity])
             XCTAssertEqual(measurements.count, modelMeasurementStream.measurements.count)
-            zip(measurements, modelMeasurementStream.measurements.sorted(by: { $0.id < $1.id })).forEach { databaseMeasurement, modelMeasurement in
+            try zip(measurements, modelMeasurementStream.measurements).forEach { databaseMeasurement, modelMeasurement in
                 XCTAssertEqual(databaseMeasurement.id, modelMeasurement.id)
                 XCTAssertEqual(databaseMeasurement.value, modelMeasurement.measured_value)
-                XCTAssertEqual(databaseMeasurement.latitude, modelMeasurement.latitude)
-                XCTAssertEqual(databaseMeasurement.longitude, modelMeasurement.longitude)
+                XCTAssertEqual(try XCTUnwrap(databaseMeasurement.location).latitude, modelMeasurement.latitude, accuracy: 0.01)
+                XCTAssertEqual(try XCTUnwrap(databaseMeasurement.location).longitude, modelMeasurement.longitude, accuracy: 0.01)
+                XCTAssertEqual(databaseMeasurement.time, modelMeasurement.time)
+            }
+        }
+    }
+
+    func testUpdateExistingSession() throws {
+        let session = SessionEntity(context: databaseContext)
+        session.type = .mobile
+        session.uuid = SessionUUID()
+        session.name = "hetmafixabdsfsdfdsfs"
+        session.tags = ""
+        session.startTime = Date(timeIntervalSinceReferenceDate: 23443)
+        session.endTime = Date(timeIntervalSinceReferenceDate: 2344323)
+        session.gotDeleted = false
+        session.version = 32
+
+        let stream = MeasurementStreamEntity(context: databaseContext)
+        stream.id = 2344
+        stream.gotDeleted = true
+        stream.measurementShortType = UUID().uuidString
+        stream.measurementType = UUID().uuidString
+        stream.sensorName = UUID().uuidString
+        stream.sensorPackageName = UUID().uuidString
+        stream.thresholdHigh = .random(in: -9999...999)
+        stream.thresholdLow = .random(in: -9999...999)
+        stream.thresholdMedium = .random(in: -9999...999)
+        stream.thresholdVeryHigh = .random(in: -9999...999)
+        stream.thresholdVeryLow = .random(in: -9999...999)
+        stream.unitName = UUID().uuidString
+        stream.unitSymbol = UUID().uuidString
+        stream.id = .random(in: -9999...999)
+        stream.session = session
+
+        let measurement = MeasurementEntity(context: databaseContext)
+        measurement.id = .random(in: -9999...999)
+        measurement.time = Date(timeIntervalSinceReferenceDate: 23443223)
+        measurement.value = .random(in: -9999...999)
+        measurement.measurementStream = stream
+
+        try databaseContext.save()
+
+        let sampleOutput = Self.sampleOutput
+        try tested.updateSessionsParams(session: session, output: sampleOutput)
+
+        try databaseContext.save()
+
+        XCTAssertEqual(session.type, sampleOutput.type)
+        XCTAssertEqual(session.uuid, sampleOutput.uuid)
+        XCTAssertEqual(session.name, sampleOutput.title)
+        XCTAssertEqual(session.tags, sampleOutput.tag_list)
+        XCTAssertEqual(session.startTime, sampleOutput.start_time)
+        XCTAssertEqual(session.endTime, sampleOutput.end_time)
+        XCTAssertEqual(session.gotDeleted, sampleOutput.deleted ?? false)
+        XCTAssertEqual(session.version, sampleOutput.version)
+        let measurementStream = try XCTUnwrap(session.measurementStreams?.array as? [MeasurementStreamEntity])
+
+        let measurementStreamFetchRequest: NSFetchRequest<MeasurementStreamEntity> = MeasurementStreamEntity.fetchRequest()
+        XCTAssertEqual(measurementStream.count, try databaseContext.count(for: measurementStreamFetchRequest))
+
+        let modelMeasurementStream = Array(sampleOutput.streams.values)
+
+        let diffMeasurementStream = diff(measurementStream, modelMeasurementStream, with: { $0.id! == $1.id })
+        if !diffMeasurementStream.removed.isEmpty {
+            print("⚠️ Old measurements still are stored \(diffMeasurementStream.removed)")
+        }
+
+        try zip(measurementStream.sorted(by: { $0.id > $1.id }), diffMeasurementStream.common.map(\.1).sorted(by: { $0.id > $1.id })).forEach { databaseMeasurementStream, modelMeasurementStream in
+
+            XCTAssertEqual(databaseMeasurementStream.gotDeleted, modelMeasurementStream.deleted ?? false)
+            XCTAssertEqual(databaseMeasurementStream.measurementShortType, modelMeasurementStream.measurement_short_type)
+            XCTAssertEqual(databaseMeasurementStream.measurementType, modelMeasurementStream.measurement_type)
+            XCTAssertEqual(databaseMeasurementStream.sensorName, modelMeasurementStream.sensor_name)
+            XCTAssertEqual(databaseMeasurementStream.sensorPackageName, modelMeasurementStream.sensor_package_name)
+            XCTAssertEqual(databaseMeasurementStream.thresholdHigh, modelMeasurementStream.threshold_high)
+            XCTAssertEqual(databaseMeasurementStream.thresholdLow, modelMeasurementStream.threshold_low)
+            XCTAssertEqual(databaseMeasurementStream.thresholdMedium, modelMeasurementStream.threshold_medium)
+            XCTAssertEqual(databaseMeasurementStream.thresholdVeryHigh, modelMeasurementStream.threshold_very_high)
+            XCTAssertEqual(databaseMeasurementStream.thresholdVeryLow, modelMeasurementStream.threshold_very_low)
+            XCTAssertEqual(databaseMeasurementStream.unitName, modelMeasurementStream.unit_name)
+            XCTAssertEqual(databaseMeasurementStream.unitSymbol, modelMeasurementStream.unit_symbol)
+            XCTAssertEqual(databaseMeasurementStream.id, modelMeasurementStream.id)
+
+            let measurements = try XCTUnwrap(databaseMeasurementStream.measurements?.array as? [AirCasting.MeasurementEntity])
+
+            XCTAssertEqual(measurements.count, modelMeasurementStream.measurements.count)
+            try zip(measurements, modelMeasurementStream.measurements).forEach { databaseMeasurement, modelMeasurement in
+                XCTAssertEqual(databaseMeasurement.id, modelMeasurement.id)
+                XCTAssertEqual(databaseMeasurement.value, modelMeasurement.measured_value)
+                XCTAssertEqual(try XCTUnwrap(databaseMeasurement.location).latitude, modelMeasurement.latitude, accuracy: 0.01)
+                XCTAssertEqual(try XCTUnwrap(databaseMeasurement.location).longitude, modelMeasurement.longitude, accuracy: 0.01)
                 XCTAssertEqual(databaseMeasurement.time, modelMeasurement.time)
             }
         }

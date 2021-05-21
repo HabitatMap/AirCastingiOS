@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct ABConnectedView: View {
-    
+    @EnvironmentObject var persistenceController: PersistenceController
     @EnvironmentObject var bluetoothManager: BluetoothManager
-    
+    @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     @Binding var creatingSessionFlowContinues : Bool
 
     var body: some View {
@@ -25,6 +25,9 @@ struct ABConnectedView: View {
         }
         .padding()
     }
+}
+
+private extension ABConnectedView {
     var titleLabel: some View {
         Text("AirBeam connected")
             .font(Font.moderate(size: 25,
@@ -39,7 +42,12 @@ struct ABConnectedView: View {
     }
     var continueButton: some View {
         NavigationLink(
-            destination: AddNameAndTagsView(creatingSessionFlowContinues: $creatingSessionFlowContinues),
+            destination: CreateSessionDetailsView(
+                sessionCreator: AirBeamSessionCreator(
+                    measurementStreamStorage: CoreDataMeasurementStreamStorage(
+                        persistenceController: persistenceController),
+                    userAuthenticationSession: userAuthenticationSession),
+                creatingSessionFlowContinues: $creatingSessionFlowContinues),
             label: {
                 Text("Continue")
             })
@@ -47,8 +55,13 @@ struct ABConnectedView: View {
     }
 }
 
+#if DEBUG
 struct AirbeamConnectedView_Previews: PreviewProvider {
     static var previews: some View {
         ABConnectedView(creatingSessionFlowContinues: .constant(true))
+            .environmentObject(PersistenceController())
+            .environmentObject(UserAuthenticationSession())
+            .environmentObject(BluetoothManager())
     }
 }
+#endif
