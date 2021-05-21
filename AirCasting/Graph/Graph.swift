@@ -29,10 +29,10 @@ class UI_PollutionGraph: UIView {
         lineChartView.minOffset = 0.0
         
         //remove border lines and legend
-        lineChartView.xAxis.enabled = false
+//        lineChartView.xAxis.enabled = false
         lineChartView.xAxis.drawLabelsEnabled = false
-        lineChartView.xAxis.drawGridLinesEnabled = false
-        
+//        lineChartView.xAxis.drawGridLinesEnabled = false
+                
         lineChartView.leftAxis.drawLabelsEnabled = false
         lineChartView.leftAxis.drawAxisLineEnabled = false
         lineChartView.leftAxis.drawGridLinesEnabled = true
@@ -42,6 +42,13 @@ class UI_PollutionGraph: UIView {
         lineChartView.rightAxis.drawAxisLineEnabled = false
         
         lineChartView.legend.enabled = false
+        lineChartView.scaleYEnabled = false
+        
+        lineChartView.xAxis.drawLabelsEnabled = true
+        lineChartView.xAxis.labelCount = 2
+        lineChartView.xAxisRenderer = TimeAxisRenderer(viewPortHandler: lineChartView.viewPortHandler, xAxis: lineChartView.xAxis,
+                                                       transformer: lineChartView.getTransformer(forAxis: .left))
+        
         
         renderer = MultiColorGridRenderer(viewPortHandler: lineChartView.viewPortHandler,
                                           yAxis: lineChartView.leftAxis,
@@ -81,6 +88,43 @@ class UI_PollutionGraph: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+}
+
+class TimeAxisRenderer: XAxisRenderer {
+    
+    override func drawLabels(context: CGContext, pos: CGFloat, anchor: CGPoint) {
+        print(pos)
+        print(anchor)
+        
+        let minPxX = viewPortHandler.contentLeft
+        let maxPxX = viewPortHandler.contentRight
+        
+        let minX = transformer!.valueForTouchPoint(.init(x: minPxX, y: 0)).x
+        let maxX = transformer!.valueForTouchPoint(.init(x: maxPxX, y: 0)).x
+        
+        let leftLabel = self.axis?.valueFormatter?.stringForValue(Double(minX), axis: self.axis!) ?? ""
+        
+        drawLabel(context: context,
+                  formattedLabel: leftLabel,
+                  x: minPxX,
+                  y: 0,
+                  attributes: [:],
+                  constrainedToSize: .zero,
+                  anchor: .zero,
+                  angleRadians: 0)
+        
+        let rightLabel = self.axis?.valueFormatter?.stringForValue(Double(maxX), axis: self.axis!) ?? "Test"
+        
+        drawLabel(context: context,
+                  formattedLabel: rightLabel,
+                  x: maxPxX,
+                  y: 0,
+                  attributes: [:],
+                  constrainedToSize: .zero,
+                  anchor: .zero,
+                  angleRadians: 0)
+    }
+    
 }
 
 class MultiColorGridRenderer: YAxisRenderer {
@@ -123,6 +167,7 @@ struct Graph: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: UI_PollutionGraph, context: Context) {
+        
         try? uiView.updateWith(thresholdValues: thresholds.rawThresholdsBinding.wrappedValue)
         
         let entries = stream.measurements?.compactMap({ item -> ChartDataEntry? in
@@ -130,11 +175,14 @@ struct Graph: UIViewRepresentable {
                 return nil
             }
             let timeInterval = Double(measurement.time.timeIntervalSince1970)
+            
+            
             let chartDataEntry = ChartDataEntry(x: timeInterval, y: measurement.value)
             return chartDataEntry
         }) ?? []
         uiView.updateWith(entries: entries)
     }
+
 }
 
 #if DEBUG
