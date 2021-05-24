@@ -16,7 +16,11 @@ class UI_PollutionGraph: UIView {
     init() {
         super.init(frame: .zero)
         self.addSubview(lineChartView)
-                
+        setupGraph()
+    }
+    
+    func setupGraph() {
+        
         lineChartView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             lineChartView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
@@ -24,15 +28,15 @@ class UI_PollutionGraph: UIView {
             lineChartView.topAnchor.constraint(equalTo: self.topAnchor),
             lineChartView.bottomAnchor.constraint(equalTo: self.bottomAnchor)
         ])
-
         //set edges
         lineChartView.minOffset = 0.0
         
         //remove border lines and legend
+               
 //        lineChartView.xAxis.enabled = false
         lineChartView.xAxis.drawLabelsEnabled = false
 //        lineChartView.xAxis.drawGridLinesEnabled = false
-                
+        
         lineChartView.leftAxis.drawLabelsEnabled = false
         lineChartView.leftAxis.drawAxisLineEnabled = false
         lineChartView.leftAxis.drawGridLinesEnabled = true
@@ -69,7 +73,7 @@ class UI_PollutionGraph: UIView {
         lineChartView.data = lineChartView.data
         lineChartView.setNeedsDisplay()
     }
-   
+    
     func updateWith(entries: [ChartDataEntry]) {
         let dataSet = LineChartDataSet(entries: entries)
         let data = LineChartData(dataSet: dataSet)
@@ -84,7 +88,7 @@ class UI_PollutionGraph: UIView {
         dataSet.mode = .linear
         dataSet.lineWidth = 4
     }
-   
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -93,16 +97,17 @@ class UI_PollutionGraph: UIView {
 class TimeAxisRenderer: XAxisRenderer {
     
     override func drawLabels(context: CGContext, pos: CGFloat, anchor: CGPoint) {
-        print(pos)
-        print(anchor)
-        
         let minPxX = viewPortHandler.contentLeft
         let maxPxX = viewPortHandler.contentRight
         
         let minX = transformer!.valueForTouchPoint(.init(x: minPxX, y: 0)).x
         let maxX = transformer!.valueForTouchPoint(.init(x: maxPxX, y: 0)).x
         
-        let leftLabel = self.axis?.valueFormatter?.stringForValue(Double(minX), axis: self.axis!) ?? ""
+        let dateFormatter = DateFormatter()
+        dateFormatter.timeStyle = .short
+        
+        let startingDate = Date(timeIntervalSince1970: TimeInterval(minX))
+        let leftLabel = dateFormatter.string(from: startingDate)
         
         drawLabel(context: context,
                   formattedLabel: leftLabel,
@@ -113,11 +118,12 @@ class TimeAxisRenderer: XAxisRenderer {
                   anchor: .zero,
                   angleRadians: 0)
         
-        let rightLabel = self.axis?.valueFormatter?.stringForValue(Double(maxX), axis: self.axis!) ?? "Test"
+        let endDate = Date(timeIntervalSince1970: TimeInterval(maxX))
+        let rightLabel = dateFormatter.string(from: endDate)
         
         drawLabel(context: context,
                   formattedLabel: rightLabel,
-                  x: maxPxX,
+                  x: maxPxX - 50,
                   y: 0,
                   attributes: [:],
                   constrainedToSize: .zero,
@@ -130,7 +136,7 @@ class TimeAxisRenderer: XAxisRenderer {
 class MultiColorGridRenderer: YAxisRenderer {
     
     var thresholds: [Float] = []
-   
+    
     var colors = [UIColor.graphGreen,
                   UIColor.graphYellow,
                   UIColor.graphOrange,
@@ -174,15 +180,15 @@ struct Graph: UIViewRepresentable {
             guard let measurement = item as? MeasurementEntity else {
                 return nil
             }
-            let timeInterval = Double(measurement.time.timeIntervalSince1970)
             
+            let timeInterval = Double(measurement.time.timeIntervalSince1970)
             
             let chartDataEntry = ChartDataEntry(x: timeInterval, y: measurement.value)
             return chartDataEntry
         }) ?? []
         uiView.updateWith(entries: entries)
     }
-
+    
 }
 
 #if DEBUG
