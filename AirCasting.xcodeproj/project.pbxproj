@@ -110,8 +110,8 @@
 		AC9F526D2652A360003CF61F /* EmptyDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9F526A2652A360003CF61F /* EmptyDashboardView.swift */; };
 		AC9F526E2652A360003CF61F /* AirSectionPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9F526B2652A360003CF61F /* AirSectionPickerView.swift */; };
 		ACC536E026395C0900327267 /* MeasurementDotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACC536DF26395C0900327267 /* MeasurementDotView.swift */; };
-		ACC8838C265284AA00C5DB70 /* CoreDataHook.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACC8838B265284AA00C5DB70 /* CoreDataHook.swift */; };
 		ACC883882645784400C5DB70 /* GraphErorrHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACC883872645784400C5DB70 /* GraphErorrHandling.swift */; };
+		ACC8838C265284AA00C5DB70 /* CoreDataHook.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACC8838B265284AA00C5DB70 /* CoreDataHook.swift */; };
 		ACD01F4025F8C1F800B8F65F /* SessionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACD01F3F25F8C1F800B8F65F /* SessionContext.swift */; };
 		ACD01F7325FF574A00B8F65F /* WifiPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACD01F7225FF574A00B8F65F /* WifiPopupView.swift */; };
 		ACD01F7625FF61CE00B8F65F /* LocationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACD01F7525FF61CE00B8F65F /* LocationProvider.swift */; };
@@ -252,8 +252,8 @@
 		AC9F526A2652A360003CF61F /* EmptyDashboardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmptyDashboardView.swift; sourceTree = "<group>"; };
 		AC9F526B2652A360003CF61F /* AirSectionPickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AirSectionPickerView.swift; sourceTree = "<group>"; };
 		ACC536DF26395C0900327267 /* MeasurementDotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementDotView.swift; sourceTree = "<group>"; };
-		ACC8838B265284AA00C5DB70 /* CoreDataHook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataHook.swift; sourceTree = "<group>"; };
 		ACC883872645784400C5DB70 /* GraphErorrHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphErorrHandling.swift; sourceTree = "<group>"; };
+		ACC8838B265284AA00C5DB70 /* CoreDataHook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataHook.swift; sourceTree = "<group>"; };
 		ACD01F3F25F8C1F800B8F65F /* SessionContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionContext.swift; sourceTree = "<group>"; };
 		ACD01F6C25FF4C8C00B8F65F /* AirCasting.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AirCasting.entitlements; sourceTree = "<group>"; };
 		ACD01F7225FF574A00B8F65F /* WifiPopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WifiPopupView.swift; sourceTree = "<group>"; };
@@ -945,7 +945,6 @@
 				4F15548B263C44AF00FF3208 /* Session.swift in Sources */,
 				AC1471A325F23AE40062A53F /* CreateSessionAPI.swift in Sources */,
 				ACC883882645784400C5DB70 /* GraphErorrHandling.swift in Sources */,
-				AC5EF72125C81882003657B1 /* DashboardView.swift in Sources */,
 				4F5D3F73262C91C6003AD82E /* UserAuthenticationSession.swift in Sources */,
 				AC6D569F25AEEAE700D221BA /* SessionHeaderView.swift in Sources */,
 				AC32040425CC067D00A68520 /* CheckBox.swift in Sources */,
