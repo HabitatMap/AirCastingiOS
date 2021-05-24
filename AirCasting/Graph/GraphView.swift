@@ -28,7 +28,8 @@ struct GraphView: View {
             NavigationLink(destination: HeatmapSettingsView(changedThresholdValues: thresholds[0].rawThresholdsBinding)) {
                 EditButtonView()
             }
-            .padding()
+            .padding(.horizontal)
+            .padding(.top)
             
             ThresholdsSliderView(threshold: thresholds[0])
                 .padding()

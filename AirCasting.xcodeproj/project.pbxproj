@@ -119,6 +119,7 @@
 		ACD01F922600A3C800B8F65F /* RootAppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACD01F912600A3C800B8F65F /* RootAppView.swift */; };
 		ACD01F952600A54400B8F65F /* UserDefaults+Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACD01F942600A54400B8F65F /* UserDefaults+Preferences.swift */; };
 		ACD32A4F2600A8DD00818946 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACD32A4E2600A8DD00818946 /* SettingsView.swift */; };
+		ACDF82FC265BBDE200A4D04A /* UIFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACDF82FB265BBDE200A4D04A /* UIFont.swift */; };
 		ACF77DF025A750C200BB85B7 /* Font.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACF77DEF25A750C200BB85B7 /* Font.swift */; };
 		ACF77DF425A750E000BB85B7 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACF77DF325A750E000BB85B7 /* Color.swift */; };
 		ACF77DF825A866E700BB85B7 /* BlueButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACF77DF725A866E700BB85B7 /* BlueButtonStyle.swift */; };
@@ -262,6 +263,7 @@
 		ACD01F912600A3C800B8F65F /* RootAppView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootAppView.swift; sourceTree = "<group>"; };
 		ACD01F942600A54400B8F65F /* UserDefaults+Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Preferences.swift"; sourceTree = "<group>"; };
 		ACD32A4E2600A8DD00818946 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		ACDF82FB265BBDE200A4D04A /* UIFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIFont.swift; sourceTree = "<group>"; };
 		ACF77DEF25A750C200BB85B7 /* Font.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Font.swift; sourceTree = "<group>"; };
 		ACF77DF325A750E000BB85B7 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
 		ACF77DF725A866E700BB85B7 /* BlueButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlueButtonStyle.swift; sourceTree = "<group>"; };
@@ -625,6 +627,7 @@
 				AC524AAB2616003C0061AD45 /* DateFormatter.swift */,
 				AC93B8D925BEDC46003D0A0D /* Array.swift */,
 				ACF77DEF25A750C200BB85B7 /* Font.swift */,
+				ACDF82FB265BBDE200A4D04A /* UIFont.swift */,
 				ACFC708825C1A36A00D609D9 /* UIColor.swift */,
 				ACF77DF325A750E000BB85B7 /* Color.swift */,
 			);
@@ -981,6 +984,7 @@
 				AC049F872608B74C00398197 /* FixedSession.swift in Sources */,
 				AC524A8E2615C8270061AD45 /* UpdateSessionParams.swift in Sources */,
 				AC797FE7263C2C1600970254 /* SensorThreshold.swift in Sources */,
+				ACDF82FC265BBDE200A4D04A /* UIFont.swift in Sources */,
 				ACF77DF025A750C200BB85B7 /* Font.swift in Sources */,
 				4F15548F263C819C00FF3208 /* MeasurementEntity.swift in Sources */,
 				ACD01F7325FF574A00B8F65F /* WifiPopupView.swift in Sources */,
