@@ -91,6 +91,7 @@
 		AC7EB3B125A7152000A7F2AF /* Muli-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB39B25A7152000A7F2AF /* Muli-Regular.ttf */; };
 		AC7EB3B225A7152000A7F2AF /* Muli-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB39C25A7152000A7F2AF /* Muli-LightItalic.ttf */; };
 		AC7EB3B325A7152000A7F2AF /* Moderat-Trial-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB39D25A7152000A7F2AF /* Moderat-Trial-Black.otf */; };
+		AC8431D0265E6143004DC890 /* RemoveOldMeasurementsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8431CF265E6143004DC890 /* RemoveOldMeasurementsService.swift */; };
 		AC86EE6B25D03DC00083F8C0 /* SelectDeviceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC86EE6A25D03DC00083F8C0 /* SelectDeviceView.swift */; };
 		AC8CFF3625E502DD00FB2918 /* CreateAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8CFF3525E502DD00FB2918 /* CreateAccountView.swift */; };
 		AC8CFF4125E5095600FB2918 /* Textfield.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8CFF4025E5095600FB2918 /* Textfield.swift */; };
@@ -234,6 +235,7 @@
 		AC7EB39B25A7152000A7F2AF /* Muli-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Muli-Regular.ttf"; sourceTree = "<group>"; };
 		AC7EB39C25A7152000A7F2AF /* Muli-LightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Muli-LightItalic.ttf"; sourceTree = "<group>"; };
 		AC7EB39D25A7152000A7F2AF /* Moderat-Trial-Black.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Moderat-Trial-Black.otf"; sourceTree = "<group>"; };
+		AC8431CF265E6143004DC890 /* RemoveOldMeasurementsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoveOldMeasurementsService.swift; sourceTree = "<group>"; };
 		AC86EE6A25D03DC00083F8C0 /* SelectDeviceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectDeviceView.swift; sourceTree = "<group>"; };
 		AC8CFF3525E502DD00FB2918 /* CreateAccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateAccountView.swift; sourceTree = "<group>"; };
 		AC8CFF4025E5095600FB2918 /* Textfield.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Textfield.swift; sourceTree = "<group>"; };
@@ -639,6 +641,7 @@
 			children = (
 				ACF7C05E260CC9FF007C24AE /* DownloadMeasurmentsService.swift */,
 				AC524A8D2615C8270061AD45 /* UpdateSessionParams.swift */,
+				AC8431CF265E6143004DC890 /* RemoveOldMeasurementsService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -913,6 +916,7 @@
 				AC3203CB25CA991C00A68520 /* TurnOnBluetoothView.swift in Sources */,
 				4FF60BEA265500C4001618BE /* BluetoothManager.swift in Sources */,
 				AC32043625CD534700A68520 /* ChooseSessionTypeView.swift in Sources */,
+				AC8431D0265E6143004DC890 /* RemoveOldMeasurementsService.swift in Sources */,
 				ACF7C05F260CC9FF007C24AE /* DownloadMeasurmentsService.swift in Sources */,
 				AC9F526E2652A360003CF61F /* AirSectionPickerView.swift in Sources */,
 				AC7EB37825A6FB3A00A7F2AF /* MainTabBarView.swift in Sources */,
