@@ -16,10 +16,10 @@ class UI_PollutionGraph: UIView {
     init() {
         super.init(frame: .zero)
         self.addSubview(lineChartView)
-        setupGraph()
+        try? setupGraph()
     }
     
-    func setupGraph() {
+    func setupGraph() throws {
         
         lineChartView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -57,7 +57,9 @@ class UI_PollutionGraph: UIView {
         renderer = MultiColorGridRenderer(viewPortHandler: lineChartView.viewPortHandler,
                                           yAxis: lineChartView.leftAxis,
                                           transformer: lineChartView.getTransformer(forAxis: .left))
-        guard let renderer = renderer else { return }
+        guard let renderer = renderer else {
+            throw GraphError.rendererError
+        }
         lineChartView.leftYAxisRenderer = renderer
     }
     
