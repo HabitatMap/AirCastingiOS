@@ -61,7 +61,7 @@ class UI_PollutionGraph: UIView {
         lineChartView.leftYAxisRenderer = renderer
     }
     
-    func updateWith(thresholdValues: [Float]) throws {
+    func updateWithThreshold(thresholdValues: [Float]) throws {
         guard let renderer = renderer else {
             throw GraphError.rendererError
         }
@@ -75,7 +75,7 @@ class UI_PollutionGraph: UIView {
         lineChartView.setNeedsDisplay()
     }
     
-    func updateWith(entries: [ChartDataEntry]) {
+    func updateWithEntries(entries: [ChartDataEntry]) {
         let dataSet = LineChartDataSet(entries: entries)
         let data = LineChartData(dataSet: dataSet)
         lineChartView.data = data
@@ -97,6 +97,8 @@ class UI_PollutionGraph: UIView {
 
 class TimeAxisRenderer: XAxisRenderer {
     
+    lazy var dateFormatter = DateFormatter()
+    
     override func drawLabels(context: CGContext, pos: CGFloat, anchor: CGPoint) {
         let minPxX = viewPortHandler.contentLeft
         let maxPxX = viewPortHandler.contentRight
@@ -105,7 +107,6 @@ class TimeAxisRenderer: XAxisRenderer {
         let minX = transformer!.valueForTouchPoint(.init(x: minPxX, y: 0)).x
         let maxX = transformer!.valueForTouchPoint(.init(x: maxPxX, y: 0)).x
         
-        let dateFormatter = DateFormatter()
         dateFormatter.timeStyle = .short
         
         let startingTime = Date(timeIntervalSince1970: TimeInterval(minX))
@@ -174,24 +175,19 @@ struct Graph: UIViewRepresentable {
     func makeUIView(context: Context) -> UI_PollutionGraph {
         UI_PollutionGraph()
     }
-    
+
     func updateUIView(_ uiView: UI_PollutionGraph, context: Context) {
+
+        try? uiView.updateWithThreshold(thresholdValues: thresholds.rawThresholdsBinding.wrappedValue)
         
-        try? uiView.updateWith(thresholdValues: thresholds.rawThresholdsBinding.wrappedValue)
-        
-        let entries = stream.measurements?.compactMap({ item -> ChartDataEntry? in
-            guard let measurement = item as? MeasurementEntity else {
-                return nil
-            }
-            
+        let entries = stream.allMeasurements?.compactMap({ measurement -> ChartDataEntry? in
             let timeInterval = Double(measurement.time.timeIntervalSince1970)
-            
             let chartDataEntry = ChartDataEntry(x: timeInterval, y: measurement.value)
             return chartDataEntry
         }) ?? []
-        uiView.updateWith(entries: entries)
+        
+        uiView.updateWithEntries(entries: entries)
     }
-    
 }
 
 #if DEBUG
