@@ -67,6 +67,10 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
                     } catch {
                         assertionFailure("Failed to save context \(error)")
                     }
+                    PersistenceController.shared.performBackgroundTask { bgContext in
+                        RemoveOldMeasurementsService().removeOldestMeasurements(context: bgContext,
+                                                                                uuid: uuid)
+                    }
                 case .failure(let error):
                     Log.warning("Failed to fetch measurements for uuid '\(uuid)' \(error)")
                 }
