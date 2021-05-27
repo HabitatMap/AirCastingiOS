@@ -13,6 +13,7 @@ struct MainTabBarView: View {
     let measurementUpdatingService: MeasurementUpdatingService
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     @EnvironmentObject var persistenceController: PersistenceController
+    @EnvironmentObject var microphoneManager: MicrophoneManager
     @StateObject var tabSelection: TabBarSelection = TabBarSelection()
 
     var body: some View {
@@ -50,7 +51,10 @@ private extension MainTabBarView {
             .tag(TabBarSelection.Tab.createSession)
     }
     private var settingsTab: some View {
-        SettingsView()
+        SettingsView(logoutController: DefaultLogoutController(
+                        userAuthenticationSession: userAuthenticationSession,
+                        sessionStorage: SessionStorage(persistenceController: persistenceController),
+                        microphoneManager: microphoneManager))
             .tabItem {
                 Image(systemName: "gearshape")
             }

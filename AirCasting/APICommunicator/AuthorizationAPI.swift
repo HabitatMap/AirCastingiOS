@@ -86,6 +86,8 @@ final class AuthorizationAPIService {
         var request = URLRequest(url: url)
         request.httpBody = try! encoder.encode(SignupAPIInput(user: input))
         request.httpMethod = "POST"
+        request.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
+        request.httpShouldHandleCookies = false
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         request.addValue("application/json", forHTTPHeaderField: "Accept")
         return apiClient.requestTask(for: request) { [responseHandler, decoder] result, _ in
@@ -108,6 +110,8 @@ final class AuthorizationAPIService {
         request.httpMethod = "GET"
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         request.addValue("application/json", forHTTPHeaderField: "Accept")
+        request.httpShouldHandleCookies = false
+        request.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
 
         let base64input = Data("\(input.username):\(input.password)".utf8).base64EncodedString()
         request.addValue("Basic \(base64input)", forHTTPHeaderField: "Authorization")
