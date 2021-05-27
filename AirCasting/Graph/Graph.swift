@@ -12,10 +12,12 @@ class UI_PollutionGraph: UIView {
     
     let lineChartView = LineChartView()
     var renderer: MultiColorGridRenderer?
+    var didMoveOrScaleGraph = false
     
     init() {
         super.init(frame: .zero)
         self.addSubview(lineChartView)
+        lineChartView.delegate = self
         try? setupGraph()
     }
     
@@ -48,7 +50,7 @@ class UI_PollutionGraph: UIView {
         lineChartView.xAxis.drawLabelsEnabled = true
         lineChartView.xAxis.labelCount = 2
         lineChartView.extraBottomOffset = 25
-        
+                
         lineChartView.xAxisRenderer = TimeAxisRenderer(viewPortHandler: lineChartView.viewPortHandler,
                                                        xAxis: lineChartView.xAxis,
                                                        transformer: lineChartView.getTransformer(forAxis: .left))
@@ -90,10 +92,34 @@ class UI_PollutionGraph: UIView {
         dataSet.setColor(UIColor(.white))
         dataSet.mode = .linear
         dataSet.lineWidth = 4
+        
+        if !didMoveOrScaleGraph {
+            zoomoutToThirtyMinutes(dataSet: dataSet)
+        }
+    }
+    
+    func zoomoutToThirtyMinutes(dataSet: LineChartDataSet) {
+        let thirtyMinutesMeasurementCount = 60 * 30
+        lineChartView.setVisibleXRangeMaximum(Double(thirtyMinutesMeasurementCount))
+        lineChartView.moveViewToX(dataSet.xMax)
+        //enable zoom out
+        lineChartView.setVisibleXRangeMaximum(dataSet.xMax)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+}
+
+extension UI_PollutionGraph: ChartViewDelegate {
+    
+    // Callbacks when the chart is scaled / zoomed via pinch zoom gesture.
+    @objc func chartScaled(_ chartView: ChartViewBase, scaleX: CGFloat, scaleY: CGFloat) {
+        didMoveOrScaleGraph = true
+    }
+    // Callbacks when the chart is moved / translated via drag gesture.
+    @objc func chartTranslated(_ chartView: ChartViewBase, dX: CGFloat, dY: CGFloat) {
+        didMoveOrScaleGraph = true
     }
 }
 
