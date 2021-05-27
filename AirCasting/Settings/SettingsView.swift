@@ -9,14 +9,14 @@ import SwiftUI
 import Foundation
 
 struct SettingsView: View {
-    @EnvironmentObject private var userAuthenticationSession: UserAuthenticationSession
+    let logoutController: LogoutController
 
     var body: some View {
         VStack {
             Spacer()
             Button {
                 do {
-                    try userAuthenticationSession.deauthorize()
+                    try logoutController.logout()
                 } catch {
                     assertionFailure("Failed to deauthorize \(error)")
                 }
@@ -33,7 +33,7 @@ struct SettingsView: View {
 #if DEBUG
 struct LogoutView_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsView()
+        SettingsView(logoutController: FakeLogoutController())
     }
 }
 #endif

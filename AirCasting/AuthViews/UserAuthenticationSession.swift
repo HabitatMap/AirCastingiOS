@@ -29,8 +29,8 @@ final class UserAuthenticationSession: ObservableObject {
     }
 
     func deauthorize() throws {
-        self.token = nil
         try keychainStorage.removeValue(forKey: Self.authenticationTokenKey)
+        self.token = nil
     }
 }
 
@@ -47,3 +47,45 @@ extension UserAuthenticationSession: RequestAuthorisationService {
         return request
     }
 }
+
+protocol LogoutController {
+    func logout() throws
+}
+
+final class DefaultLogoutController: LogoutController {
+    let userAuthenticationSession: UserAuthenticationSession
+    let sessionStorage: SessionStorage
+    let microphoneManager: MicrophoneManager
+
+    init(userAuthenticationSession: UserAuthenticationSession, sessionStorage: SessionStorage, microphoneManager: MicrophoneManager) {
+        self.userAuthenticationSession = userAuthenticationSession
+        self.sessionStorage = sessionStorage
+        self.microphoneManager = microphoneManager
+    }
+
+    func logout() throws {
+        Log.info("Logging out. Cancelling all pending requests")
+        URLSession.shared.getAllTasks { tasks in
+            tasks.forEach { $0.cancel() }
+        }
+        if microphoneManager.isRecording {
+            Log.info("Canceling recording session")
+            try? microphoneManager.stopRecording()
+        }
+        Log.info("Clearing user credentials")
+        try userAuthenticationSession.deauthorize()
+        do {
+            try sessionStorage.clearAllSessionSilently()
+        } catch {
+            assertionFailure("Failed to clear sessions \(error)")
+        }
+    }
+}
+
+#if DEBUG
+final class FakeLogoutController: LogoutController {
+    func logout() throws {
+        fatalError("Should not be called. Only for preview")
+    }
+}
+#endif
