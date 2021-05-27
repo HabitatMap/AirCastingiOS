@@ -25,22 +25,6 @@ class UI_PollutionChart: UIView {
             lineChartView.bottomAnchor.constraint(equalTo: self.bottomAnchor)
         ])
         
-//        var entriesForDrawing = entries
-//        entriesForDrawing.sort { (e1, e2) -> Bool in
-//            e1.x < e2.x
-//        }
-//
-//        let dataSet = LineChartDataSet(entries: entriesForDrawing)
-//        let data = LineChartData(dataSet: dataSet)
-//        lineChartView.data = data
-//
-//        //format data labels
-//        let formatter = NumberFormatter()
-//        formatter.maximumFractionDigits = 0
-//        data.setValueFormatter(DefaultValueFormatter(formatter: formatter))
-//        data.setValueFont(UIFont(name: "Muli-Regular", size: 12)!)
-//        data.setValueTextColor(UIColor(.aircastingGray))
-        
         //remove border lines and legend
         lineChartView.xAxis.enabled = false
         lineChartView.xAxis.drawLabelsEnabled = false
@@ -51,25 +35,13 @@ class UI_PollutionChart: UIView {
         lineChartView.leftAxis.drawLabelsEnabled = false
         lineChartView.leftAxis.drawAxisLineEnabled = false
         lineChartView.leftAxis.gridColor = UIColor(.aircastingGray).withAlphaComponent(0.4)
-        #warning("this doesn't work so change it")
-        lineChartView.leftAxis.spaceMax = 1.5
-        lineChartView.leftAxis.spaceMin = 15
         
         lineChartView.rightAxis.enabled = false
-//        lineChartView.rightAxis.drawLabelsEnabled = false
-//        lineChartView.rightAxis.drawAxisLineEnabled = false
         
         lineChartView.legend.enabled = false
         
         //disable zooming
         lineChartView.setScaleEnabled(false)
-        
-        
-//        //dots colors
-//        dataSet.circleHoleColor = UIColor(.aircastingGreen)
-//        dataSet.setCircleColors(UIColor(.aircastingGreen).withAlphaComponent(0.5))
-//        //line color
-//        dataSet.setColor(UIColor(.aircastingGray).withAlphaComponent(0.7))
     }
     
     required init?(coder: NSCoder) {
@@ -79,16 +51,7 @@ class UI_PollutionChart: UIView {
 
 struct ChartView: UIViewRepresentable {
     
-//    @ObservedObject var measurementStream: MeasurementStreamEntity
-//    @ObservedObject var session: SessionEntity
-//    @ObservedObject var thresholds: SensorThreshold
-    
-    var entries: [ChartDataEntry] = [
-                        ChartDataEntry(x: 0, y: 4),
-                        ChartDataEntry(x: 1, y: 0),
-                        ChartDataEntry(x: 2, y: 5),
-                        ChartDataEntry(x: 3, y: 1)
-            ]
+    var entries: [ChartDataEntry] = []
     var thresholds: SensorThreshold
     
     typealias UIViewType = UI_PollutionChart
