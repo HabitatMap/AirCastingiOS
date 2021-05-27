@@ -124,10 +124,29 @@ struct ChartView: UIViewRepresentable {
     
     func formatDataSet(dataSet: LineChartDataSet) {
         //dots colors
-        dataSet.circleHoleColor = UIColor(.aircastingGreen)
-        dataSet.setCircleColors(UIColor(.aircastingGreen).withAlphaComponent(0.5))
+        dataSet.circleColors = generateColorsSet(for: dataSet.entries)
+        dataSet.drawCircleHoleEnabled = false
+        dataSet.circleRadius = 6
+        
         //line color
         dataSet.setColor(UIColor(.aircastingGray).withAlphaComponent(0.7))
+    }
+    
+    func generateColorsSet(for entries: [ChartDataEntry]) -> [UIColor] {
+        var colors: [UIColor] = []
+        for entry in entries {
+            switch Int32(entry.y) {
+            case thresholds.thresholdVeryLow..<thresholds.thresholdLow:
+                colors.append(UIColor.aircastingGreen.withAlphaComponent(0.5))
+            case thresholds.thresholdLow..<thresholds.thresholdMedium:
+                colors.append(UIColor.aircastingYellow.withAlphaComponent(0.5))
+            case thresholds.thresholdMedium..<thresholds.thresholdHigh:
+                colors.append(UIColor.aircastingOrange.withAlphaComponent(0.5))
+            default:
+                colors.append(UIColor.aircastingRed.withAlphaComponent(0.5))
+            }
+        }
+        return colors
     }
 }
 
