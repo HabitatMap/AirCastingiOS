@@ -16,7 +16,7 @@ struct SessionCellView: View {
 
     @State private var isCollapsed = true
 
-    let session: SessionEntity
+    @ObservedObject var session: SessionEntity
     let thresholds: [SensorThreshold]
 
 
@@ -31,7 +31,7 @@ struct SessionCellView: View {
             thresholds: Array(thresholds))
             if !isCollapsed {
                 VStack(alignment: .trailing, spacing: 40) {
-                    drawPollutionChart(stream: session.dbStream!)
+                    ChartCreator(session: session, stream: session.dbStream!, thresholds: thresholds[0])
                     buttons
                 }
             }
@@ -40,18 +40,13 @@ struct SessionCellView: View {
         .foregroundColor(.aircastingGray)
         .padding()
         .background(
-            Color.random
-//            Color.white
+            Color.white
                 .shadow(color: Color(red: 205/255, green: 209/255, blue: 214/255, opacity: 0.36), radius: 9, x: 0, y: 1)
         )
     }
 }
 
 private extension SessionCellView {
-    var pollutionChart: some View {
-        ChartView()
-            .frame(height: 200)
-    }
     var graphButton: some View {
         NavigationLink(destination: GraphView(thresholds: Array(thresholds), session: session)) {
             Text("graph")
@@ -69,14 +64,6 @@ private extension SessionCellView {
             graphButton
         }
         .buttonStyle(GrayButtonStyle())
-    }
-
-    func drawPollutionChart(stream: MeasurementStreamEntity) -> some View {
-        print("draw pollution stream was called for \(stream.session.name!)")
-        let entries =  ChartEntriesCreator(session: session, stream: stream).generateEntries()
-        return ChartView(entries: entries)
-            .frame(height: 200)
-            .background(Color.random)
     }
 }
 

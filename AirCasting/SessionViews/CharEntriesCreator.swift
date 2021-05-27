@@ -6,7 +6,7 @@ import Charts
 
 class ChartEntriesCreator {
 //    var entries: [String: [Float]] = [:]
-    var entries: [ChartDataEntry] = []
+//    var entries: [ChartDataEntry] = []
     var session: SessionEntity
     var stream: MeasurementStreamEntity
     var timeUnit: Double = 60 // FOR MOBILE, ADD FOR FIXED
@@ -20,6 +20,8 @@ class ChartEntriesCreator {
         guard let lastMeasurementTime = stream.lastMeasurementTime else {
             return []
         }
+        
+        var entries: [ChartDataEntry] = []
         
         let sessionStartTime = session.startTime!
         

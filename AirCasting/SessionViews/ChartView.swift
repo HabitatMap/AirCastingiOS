@@ -89,7 +89,7 @@ struct ChartView: UIViewRepresentable {
                         ChartDataEntry(x: 2, y: 5),
                         ChartDataEntry(x: 3, y: 1)
             ]
-    
+    var thresholds: SensorThreshold
     
     typealias UIViewType = UI_PollutionChart
     
@@ -131,9 +131,9 @@ struct ChartView: UIViewRepresentable {
     }
 }
 
-struct MeasurementChart_Previews: PreviewProvider {
-    static var previews: some View {
-        ChartView()
-            .frame(width: 300, height: 250, alignment: .center)
-    }
-}
+//struct MeasurementChart_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ChartView()
+//            .frame(width: 300, height: 250, alignment: .center)
+//    }
+//}
