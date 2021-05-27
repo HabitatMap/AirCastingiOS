@@ -5,14 +5,12 @@ import Foundation
 import Charts
 
 class ChartEntriesCreator {
-//    var entries: [String: [Float]] = [:]
-//    var entries: [ChartDataEntry] = []
-    var session: SessionEntity
+//    var session: SessionEntity
     var stream: MeasurementStreamEntity
-    var timeUnit: Double = 60 // FOR MOBILE, ADD FOR FIXED
+    lazy var timeUnit: Double = stream.session.type == .mobile ? 60 : 60*60 // FOR MOBILE, ADD FOR FIXED
     
-    init(session: SessionEntity, stream: MeasurementStreamEntity) {
-        self.session = session
+    init(stream: MeasurementStreamEntity) {
+//        self.session = session
         self.stream = stream
     }
     
@@ -22,18 +20,17 @@ class ChartEntriesCreator {
         }
         
         var entries: [ChartDataEntry] = []
-        
-        let sessionStartTime = session.startTime!
-        
+        let sessionStartTime = stream.session.startTime!
         let secondsFromFullMinute = Int(lastMeasurementTime.timeIntervalSince(sessionStartTime)) % Int(timeUnit)
-        
         var intervalEnd = lastMeasurementTime - Double(secondsFromFullMinute)
-        
         var intervalStart = intervalEnd - timeUnit
         
         for i in (0...8).reversed() {
             if (intervalStart < sessionStartTime) { break }
-            entries.append(ChartDataEntry(x: Double(i), y: averagedValue(intervalStart, intervalEnd)))
+            let average = averagedValue(intervalStart, intervalEnd)
+            if let average = average {
+                entries.append(ChartDataEntry(x: Double(i), y: average))
+            }
             intervalEnd = intervalStart
             intervalStart = intervalEnd - timeUnit
         }
@@ -41,13 +38,9 @@ class ChartEntriesCreator {
         return entries
     }
     
-    func averagedValue(_ intervalStart: Date, _ intervalEnd: Date) -> Double {
+    func averagedValue(_ intervalStart: Date, _ intervalEnd: Date) -> Double? {
         let measurements = stream.getMeasurementsFromTimeRange(intervalStart, intervalEnd)
         let values = measurements.map { $0.value}
-        let sum = values.reduce(0, +)
-        #warning("We should handle the situation when there are no measurements in a given minute, eg. because of the interruption. Not sure if it should be 0")
-        let average = values.isEmpty ? 0 : sum/Double(values.count)
-        print("average: \(average)")
-        return average
+        return values.isEmpty ? nil : round(values.reduce(0, +)/Double(values.count))
     }
 }

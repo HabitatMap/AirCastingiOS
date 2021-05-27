@@ -13,13 +13,12 @@ import Charts
 
 
 struct SessionCellView: View {
-
+    
     @State private var isCollapsed = true
-
+    
     @ObservedObject var session: SessionEntity
     let thresholds: [SensorThreshold]
-
-
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 13) {
             SessionHeaderView(action:  {
@@ -31,7 +30,9 @@ struct SessionCellView: View {
             thresholds: Array(thresholds))
             if !isCollapsed {
                 VStack(alignment: .trailing, spacing: 40) {
-                    ChartCreator(session: session, stream: session.dbStream!, thresholds: thresholds[0])
+                    if let stream = session.dbStream {
+                        pollutionChart(stream: stream)
+                    }
                     buttons
                 }
             }
@@ -52,12 +53,18 @@ private extension SessionCellView {
             Text("graph")
         }
     }
-
+    
     var mapButton: some View {
         NavigationLink(destination: AirMapView(thresholds: Array(thresholds), session: session)) {
             Text("map")
         }
     }
+    
+    func pollutionChart(stream: MeasurementStreamEntity) -> some View {
+        ChartView(stream: stream, thresholds: thresholds[0])
+            .frame(height: 200)
+    }
+    
     var buttons: some View {
         HStack(spacing: 20){
             mapButton

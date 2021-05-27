@@ -14,7 +14,6 @@ class UI_PollutionChart: UIView {
     init() {
         super.init(frame: .zero)
         
-//        let lineChartView = LineChartView()
         self.addSubview(lineChartView)
         
         lineChartView.translatesAutoresizingMaskIntoConstraints = false
@@ -40,6 +39,11 @@ class UI_PollutionChart: UIView {
         
         lineChartView.legend.enabled = false
         
+        #warning("The text is not appearing and I don't know why")
+        lineChartView.noDataText = "Wait for the averages to appear"
+        lineChartView.noDataTextColor = .red
+        lineChartView.noDataTextAlignment = .center
+        
         //disable zooming
         lineChartView.setScaleEnabled(false)
     }
@@ -51,7 +55,7 @@ class UI_PollutionChart: UIView {
 
 struct ChartView: UIViewRepresentable {
     
-    var entries: [ChartDataEntry] = []
+    @ObservedObject var stream: MeasurementStreamEntity
     var thresholds: SensorThreshold
     
     typealias UIViewType = UI_PollutionChart
@@ -61,7 +65,7 @@ struct ChartView: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: UI_PollutionChart, context: Context) {
-        var entriesForDrawing = entries
+        var entriesForDrawing = ChartEntriesCreator(stream: stream).generateEntries()
         entriesForDrawing.sort { (e1, e2) -> Bool in
             e1.x < e2.x
         }
