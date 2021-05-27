@@ -21,7 +21,9 @@ struct GraphView: View {
             
             ZStack(alignment: .topLeading) {
                 #warning("Replace dbStream with currently selected")
-                Graph(stream: session.dbStream!, thresholds: thresholds[0])
+                Graph(stream: session.dbStream!,
+                      thresholds: thresholds[0],
+                      isSessionMobile: session.type == .mobile)
                 StatisticsContainerView()
             }
             

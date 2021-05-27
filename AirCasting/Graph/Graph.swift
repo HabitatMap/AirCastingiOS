@@ -69,7 +69,6 @@ class UI_PollutionGraph: UIView {
         guard let renderer = renderer else {
             throw GraphError.rendererError
         }
-        
         renderer.thresholds = thresholdValues
         
         lineChartView.leftAxis.axisMinimum = Double(thresholdValues.first ?? 0)
@@ -79,7 +78,7 @@ class UI_PollutionGraph: UIView {
         lineChartView.setNeedsDisplay()
     }
     
-    func updateWithEntries(entries: [ChartDataEntry]) {
+    func updateWithEntries(entries: [ChartDataEntry], isSessionMobile: Bool) {
         let dataSet = LineChartDataSet(entries: entries)
         let data = LineChartData(dataSet: dataSet)
         lineChartView.data = data
@@ -93,7 +92,7 @@ class UI_PollutionGraph: UIView {
         dataSet.mode = .linear
         dataSet.lineWidth = 4
         
-        if !didMoveOrScaleGraph {
+        if !didMoveOrScaleGraph && isSessionMobile {
             zoomoutToThirtyMinutes(dataSet: dataSet)
         }
     }
@@ -199,6 +198,7 @@ struct Graph: UIViewRepresentable {
     
     @ObservedObject var stream: MeasurementStreamEntity
     @ObservedObject var thresholds: SensorThreshold
+    var isSessionMobile: Bool
     
     func makeUIView(context: Context) -> UI_PollutionGraph {
         UI_PollutionGraph()
@@ -213,15 +213,14 @@ struct Graph: UIViewRepresentable {
             let chartDataEntry = ChartDataEntry(x: timeInterval, y: measurement.value)
             return chartDataEntry
         }) ?? []
-        
-        uiView.updateWithEntries(entries: entries)
+        uiView.updateWithEntries(entries: entries, isSessionMobile: isSessionMobile)
     }
 }
 
 #if DEBUG
 struct PollutionGraph_Previews: PreviewProvider {
     static var previews: some View {
-        Graph(stream: .mock, thresholds: .mock)
+        Graph(stream: .mock, thresholds: .mock, isSessionMobile: true)
     }
 }
 #endif
