@@ -14,7 +14,7 @@ struct SessionCellView: View {
     
     @State private var isCollapsed = true
     
-    var session: SessionEntity
+    let session: SessionEntity
     let thresholds: [SensorThreshold]
 
     var body: some View {
@@ -28,6 +28,7 @@ struct SessionCellView: View {
             thresholds: Array(thresholds))
             if !isCollapsed {
                 VStack(alignment: .trailing, spacing: 40) {
+                    #warning("The stream should be chosen based on users selection")
                     if let stream = session.dbStream {
                         pollutionChart(stream: stream)
                     }
