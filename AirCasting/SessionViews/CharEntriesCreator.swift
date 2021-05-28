@@ -5,21 +5,22 @@ import Foundation
 import Charts
 
 class ChartEntriesCreator {
-//    var session: SessionEntity
+    var entries: [ChartDataEntry] = []
     var stream: MeasurementStreamEntity
     lazy var timeUnit: Double = stream.session.type == .mobile ? 60 : 60*60 // FOR MOBILE, ADD FOR FIXED
+    lazy var lastMeasurementTime = {
+        self.stream.lastMeasurementTime
+    }
     
     init(stream: MeasurementStreamEntity) {
-//        self.session = session
         self.stream = stream
     }
     
     func generateEntries() -> [ChartDataEntry] {
-        guard let lastMeasurementTime = stream.lastMeasurementTime else {
+        guard let lastMeasurementTime = lastMeasurementTime() else {
             return []
         }
         
-        var entries: [ChartDataEntry] = []
         let sessionStartTime = stream.session.startTime!
         let secondsFromFullMinute = Int(lastMeasurementTime.timeIntervalSince(sessionStartTime)) % Int(timeUnit)
         var intervalEnd = lastMeasurementTime - Double(secondsFromFullMinute)
@@ -38,7 +39,22 @@ class ChartEntriesCreator {
         return entries
     }
     
-    func averagedValue(_ intervalStart: Date, _ intervalEnd: Date) -> Double? {
+    #warning("Those methods don't account for those seconds from full minute")
+    func startTime() -> Date {
+        guard let lastMeasurementTime = lastMeasurementTime() else {
+            return stream.session.startTime!
+        }
+        return lastMeasurementTime - timeUnit * Double(entries.count)
+    }
+    
+    func endTime() -> Date {
+        guard let lastMeasurementTime = stream.lastMeasurementTime else {
+            return stream.session.startTime!
+        }
+        return lastMeasurementTime
+    }
+    
+    private func averagedValue(_ intervalStart: Date, _ intervalEnd: Date) -> Double? {
         let measurements = stream.getMeasurementsFromTimeRange(intervalStart, intervalEnd)
         let values = measurements.map { $0.value}
         return values.isEmpty ? nil : round(values.reduce(0, +)/Double(values.count))

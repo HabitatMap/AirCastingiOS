@@ -25,11 +25,13 @@ class UI_PollutionChart: UIView {
         ])
         
         //remove border lines and legend
-        lineChartView.xAxis.enabled = false
-        lineChartView.xAxis.drawLabelsEnabled = false
+        lineChartView.xAxis.enabled = true
+        lineChartView.xAxis.drawLabelsEnabled = true
         lineChartView.xAxis.drawGridLinesEnabled = false
         lineChartView.xAxis.axisMinimum = 0
         lineChartView.xAxis.axisMaximum = 9
+        lineChartView.xAxis.labelPosition = .bottom
+        lineChartView.xAxis.setLabelCount(2, force: true)
         
         lineChartView.leftAxis.drawLabelsEnabled = false
         lineChartView.leftAxis.drawAxisLineEnabled = false
@@ -46,6 +48,8 @@ class UI_PollutionChart: UIView {
         
         //disable zooming
         lineChartView.setScaleEnabled(false)
+        
+        
     }
     
     required init?(coder: NSCoder) {
@@ -57,6 +61,7 @@ struct ChartView: UIViewRepresentable {
     
     @ObservedObject var stream: MeasurementStreamEntity
     var thresholds: SensorThreshold
+    var dateFormatter = DateFormatter()
     
     typealias UIViewType = UI_PollutionChart
     
@@ -65,7 +70,8 @@ struct ChartView: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: UI_PollutionChart, context: Context) {
-        var entriesForDrawing = ChartEntriesCreator(stream: stream).generateEntries()
+        let chartCreator = ChartEntriesCreator(stream: stream)
+        var entriesForDrawing = chartCreator.generateEntries()
         entriesForDrawing.sort { (e1, e2) -> Bool in
             e1.x < e2.x
         }
@@ -73,6 +79,24 @@ struct ChartView: UIViewRepresentable {
         let dataSet = LineChartDataSet(entries: entriesForDrawing)
         let data = LineChartData(dataSet: dataSet)
         uiView.lineChartView.data = data
+        
+        
+        let endTime = chartCreator.endTime()
+        
+        let startTime = chartCreator.startTime()
+        
+        dateFormatter.timeStyle = .short
+        
+        let startLabel = dateFormatter.string(from: startTime)
+        let endLabel = dateFormatter.string(from: endTime)
+        
+        print(startLabel)
+        print(endLabel)
+        
+        let xLabels = [startLabel]
+        uiView.lineChartView.xAxis.valueFormatter = IndexAxisValueFormatter(values: xLabels)
+//        uiView.lineChartView.xAxis.granularity = 1
+        
         
         //format data labels
         formatData(data: data)
