@@ -39,21 +39,6 @@ class ChartEntriesCreator {
         return entries
     }
     
-    #warning("Those methods don't account for those seconds from full minute")
-    func startTime() -> Date {
-        guard let lastMeasurementTime = lastMeasurementTime() else {
-            return stream.session.startTime!
-        }
-        return lastMeasurementTime - timeUnit * Double(entries.count)
-    }
-    
-    func endTime() -> Date {
-        guard let lastMeasurementTime = stream.lastMeasurementTime else {
-            return stream.session.startTime!
-        }
-        return lastMeasurementTime
-    }
-    
     private func averagedValue(_ intervalStart: Date, _ intervalEnd: Date) -> Double? {
         let measurements = stream.getMeasurementsFromTimeRange(intervalStart, intervalEnd)
         let values = measurements.map { $0.value}

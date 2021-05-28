@@ -30,8 +30,6 @@ class UI_PollutionChart: UIView {
         lineChartView.xAxis.drawGridLinesEnabled = false
         lineChartView.xAxis.axisMinimum = 0
         lineChartView.xAxis.axisMaximum = 9
-        lineChartView.xAxis.labelPosition = .bottom
-        lineChartView.xAxis.setLabelCount(2, force: true)
         
         lineChartView.leftAxis.drawLabelsEnabled = false
         lineChartView.leftAxis.drawAxisLineEnabled = false
@@ -79,24 +77,6 @@ struct ChartView: UIViewRepresentable {
         let dataSet = LineChartDataSet(entries: entriesForDrawing)
         let data = LineChartData(dataSet: dataSet)
         uiView.lineChartView.data = data
-        
-        
-        let endTime = chartCreator.endTime()
-        
-        let startTime = chartCreator.startTime()
-        
-        dateFormatter.timeStyle = .short
-        
-        let startLabel = dateFormatter.string(from: startTime)
-        let endLabel = dateFormatter.string(from: endTime)
-        
-        print(startLabel)
-        print(endLabel)
-        
-        let xLabels = [startLabel]
-        uiView.lineChartView.xAxis.valueFormatter = IndexAxisValueFormatter(values: xLabels)
-//        uiView.lineChartView.xAxis.granularity = 1
-        
         
         //format data labels
         formatData(data: data)
