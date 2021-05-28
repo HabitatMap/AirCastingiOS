@@ -10,14 +10,13 @@ import CoreLocation
 import CoreData
 import Charts
 
-
 struct SessionCellView: View {
     
     @State private var isCollapsed = true
     
-    @ObservedObject var session: SessionEntity
+    var session: SessionEntity
     let thresholds: [SensorThreshold]
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 13) {
             SessionHeaderView(action:  {
@@ -70,16 +69,6 @@ private extension SessionCellView {
             graphButton
         }
         .buttonStyle(GrayButtonStyle())
-    }
-}
-
-extension Color {
-    static var random: Color {
-        return Color(
-            red: .random(in: 0...1),
-            green: .random(in: 0...1),
-            blue: .random(in: 0...1)
-        )
     }
 }
 
