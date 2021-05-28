@@ -23,7 +23,7 @@ struct GraphView: View {
                 #warning("Replace dbStream with currently selected")
                 Graph(stream: session.dbStream!,
                       thresholds: thresholds[0],
-                      isSessionMobile: session.type == .mobile)
+                      isAutozoomEnabled: session.type == .mobile)
                 StatisticsContainerView()
             }
             
