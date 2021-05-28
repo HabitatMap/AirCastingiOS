@@ -60,7 +60,6 @@ struct ChartView: UIViewRepresentable {
     
     @ObservedObject var stream: MeasurementStreamEntity
     var thresholds: SensorThreshold
-    var dateFormatter = DateFormatter()
     
     typealias UIViewType = UI_PollutionChart
     
@@ -122,9 +121,9 @@ struct ChartView: UIViewRepresentable {
     }
 }
 
-//struct MeasurementChart_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ChartView()
-//            .frame(width: 300, height: 250, alignment: .center)
-//    }
-//}
+struct MeasurementChart_Previews: PreviewProvider {
+    static var previews: some View {
+        ChartView(stream: .mock, thresholds: .mock)
+            .frame(width: 300, height: 250, alignment: .center)
+    }
+}
