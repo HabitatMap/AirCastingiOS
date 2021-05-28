@@ -19,7 +19,10 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
     private lazy var fixedSessionService = FixedSessionAPIService(authorisationService: authorisationService)
     private var timerSink: Cancellable?
     private var lastFetchCancellableTask: Cancellable?
-
+    private lazy var removeOldService: RemoveOldMeasurementsService = {
+        RemoveOldMeasurementsService()
+    }()
+    
     init(authorisationService: RequestAuthorisationService, persistenceController: PersistenceController) {
         self.authorisationService = authorisationService
         self.persistenceController = persistenceController
@@ -67,9 +70,13 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
                     } catch {
                         assertionFailure("Failed to save context \(error)")
                     }
-                    PersistenceController.shared.performBackgroundTask { bgContext in
-                        RemoveOldMeasurementsService().removeOldestMeasurements(context: bgContext,
+                    persistenceController.performBackgroundTask { [weak self] bgContext in
+                        do {
+                            try self?.removeOldService.removeOldestMeasurements(in: bgContext,
                                                                                 uuid: uuid)
+                        } catch {
+                            Log.error("Failed to remove old measaurements from fixed session \(error)")
+                        }
                     }
                 case .failure(let error):
                     Log.warning("Failed to fetch measurements for uuid '\(uuid)' \(error)")

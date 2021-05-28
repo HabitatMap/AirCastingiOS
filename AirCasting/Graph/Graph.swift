@@ -8,7 +8,7 @@
 import SwiftUI
 import Charts
 
-class UI_PollutionGraph: UIView {
+class AirCastingGraph: UIView {
     
     let lineChartView = LineChartView()
     var renderer: MultiColorGridRenderer?
@@ -21,7 +21,7 @@ class UI_PollutionGraph: UIView {
         try? setupGraph()
     }
     
-    func setupGraph() throws {
+    private func setupGraph() throws {
         
         lineChartView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -65,6 +65,14 @@ class UI_PollutionGraph: UIView {
         lineChartView.leftYAxisRenderer = renderer
     }
     
+    private func zoomoutToThirtyMinutes(dataSet: LineChartDataSet) {
+        let thirtyMinutesMeasurementCount = 60 * 30
+        lineChartView.setVisibleXRangeMaximum(Double(thirtyMinutesMeasurementCount))
+        lineChartView.moveViewToX(dataSet.xMax)
+        //enable zoom out
+        lineChartView.setVisibleXRangeMaximum(dataSet.xMax)
+    }
+    
     func updateWithThreshold(thresholdValues: [Float]) throws {
         guard let renderer = renderer else {
             throw GraphError.rendererError
@@ -78,7 +86,7 @@ class UI_PollutionGraph: UIView {
         lineChartView.setNeedsDisplay()
     }
     
-    func updateWithEntries(entries: [ChartDataEntry], isSessionMobile: Bool) {
+    func updateWithEntries(entries: [ChartDataEntry], isAutozoomEnabled: Bool) {
         let dataSet = LineChartDataSet(entries: entries)
         let data = LineChartData(dataSet: dataSet)
         lineChartView.data = data
@@ -92,17 +100,9 @@ class UI_PollutionGraph: UIView {
         dataSet.mode = .linear
         dataSet.lineWidth = 4
         
-        if !didMoveOrScaleGraph && isSessionMobile {
+        if !didMoveOrScaleGraph && isAutozoomEnabled {
             zoomoutToThirtyMinutes(dataSet: dataSet)
         }
-    }
-    
-    func zoomoutToThirtyMinutes(dataSet: LineChartDataSet) {
-        let thirtyMinutesMeasurementCount = 60 * 30
-        lineChartView.setVisibleXRangeMaximum(Double(thirtyMinutesMeasurementCount))
-        lineChartView.moveViewToX(dataSet.xMax)
-        //enable zoom out
-        lineChartView.setVisibleXRangeMaximum(dataSet.xMax)
     }
     
     required init?(coder: NSCoder) {
@@ -110,7 +110,7 @@ class UI_PollutionGraph: UIView {
     }
 }
 
-extension UI_PollutionGraph: ChartViewDelegate {
+extension AirCastingGraph: ChartViewDelegate {
     
     // Callbacks when the chart is scaled / zoomed via pinch zoom gesture.
     @objc func chartScaled(_ chartView: ChartViewBase, scaleX: CGFloat, scaleY: CGFloat) {
@@ -194,17 +194,17 @@ class MultiColorGridRenderer: YAxisRenderer {
 }
 
 struct Graph: UIViewRepresentable {
-    typealias UIViewType = UI_PollutionGraph
+    typealias UIViewType = AirCastingGraph
     
     @ObservedObject var stream: MeasurementStreamEntity
     @ObservedObject var thresholds: SensorThreshold
-    var isSessionMobile: Bool
+    var isAutozoomEnabled: Bool
     
-    func makeUIView(context: Context) -> UI_PollutionGraph {
-        UI_PollutionGraph()
+    func makeUIView(context: Context) -> AirCastingGraph {
+        AirCastingGraph()
     }
 
-    func updateUIView(_ uiView: UI_PollutionGraph, context: Context) {
+    func updateUIView(_ uiView: AirCastingGraph, context: Context) {
 
         try? uiView.updateWithThreshold(thresholdValues: thresholds.rawThresholdsBinding.wrappedValue)
         
@@ -213,14 +213,14 @@ struct Graph: UIViewRepresentable {
             let chartDataEntry = ChartDataEntry(x: timeInterval, y: measurement.value)
             return chartDataEntry
         }) ?? []
-        uiView.updateWithEntries(entries: entries, isSessionMobile: isSessionMobile)
+        uiView.updateWithEntries(entries: entries, isAutozoomEnabled: isAutozoomEnabled)
     }
 }
 
 #if DEBUG
-struct PollutionGraph_Previews: PreviewProvider {
+struct AirCastingGraph_Previews: PreviewProvider {
     static var previews: some View {
-        Graph(stream: .mock, thresholds: .mock, isSessionMobile: true)
+        Graph(stream: .mock, thresholds: .mock, isAutozoomEnabled: true)
     }
 }
 #endif
