@@ -26,7 +26,8 @@ class UI_PollutionChart: UIView {
         
         //remove border lines and legend
         lineChartView.xAxis.enabled = true
-        lineChartView.xAxis.drawLabelsEnabled = true
+        lineChartView.xAxis.drawLabelsEnabled = false
+        lineChartView.xAxis.labelPosition = .bottom
         lineChartView.xAxis.drawGridLinesEnabled = false
         lineChartView.xAxis.axisMinimum = 0
         lineChartView.xAxis.axisMaximum = 9
