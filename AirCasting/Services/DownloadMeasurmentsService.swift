@@ -19,9 +19,7 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
     private lazy var fixedSessionService = FixedSessionAPIService(authorisationService: authorisationService)
     private var timerSink: Cancellable?
     private var lastFetchCancellableTask: Cancellable?
-    private lazy var removeOldService: RemoveOldMeasurementsService = {
-        RemoveOldMeasurementsService()
-    }()
+    private lazy var removeOldService: RemoveOldMeasurementsService = RemoveOldMeasurementsService()
     
     init(authorisationService: RequestAuthorisationService, persistenceController: PersistenceController) {
         self.authorisationService = authorisationService
@@ -57,7 +55,7 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
     private func updateForSession(uuid: SessionUUID) {
         #warning("TODO: change last sync")
         let syncDate = Date().addingTimeInterval(-100)
-        lastFetchCancellableTask = fixedSessionService.getFixedMeasurement(uuid: uuid, lastSync: syncDate, completion: { [persistenceController] result in
+        lastFetchCancellableTask = fixedSessionService.getFixedMeasurement(uuid: uuid, lastSync: syncDate, completion: { [removeOldService, persistenceController] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let response):
@@ -70,10 +68,10 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
                     } catch {
                         assertionFailure("Failed to save context \(error)")
                     }
-                    persistenceController.performBackgroundTask { [weak self] bgContext in
+                    persistenceController.performBackgroundTask { bgContext in
                         do {
-                            try self?.removeOldService.removeOldestMeasurements(in: bgContext,
-                                                                                uuid: uuid)
+                            try removeOldService.removeOldestMeasurements(in: bgContext,
+                                                                          uuid: uuid)
                         } catch {
                             Log.error("Failed to remove old measaurements from fixed session \(error)")
                         }
