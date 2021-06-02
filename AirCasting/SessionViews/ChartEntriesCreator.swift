@@ -4,7 +4,7 @@
 import Foundation
 import Charts
 
-class ChartEntriesCreator {
+final class ChartEntriesCreator {
     var entries: [ChartDataEntry] = []
     var stream: MeasurementStreamEntity
     lazy var timeUnit: Double = stream.session.type == .mobile ? 60 : 60*60

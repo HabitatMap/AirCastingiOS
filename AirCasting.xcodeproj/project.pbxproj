@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		331EA80A25E32094009DEFDB /* ConfirmCreatingSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331EA80925E32094009DEFDB /* ConfirmCreatingSessionView.swift */; };
-		3326BD562642E71E00DE8E6D /* CharEntriesCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3326BD552642E71E00DE8E6D /* CharEntriesCreator.swift */; };
+		3326BD562642E71E00DE8E6D /* ChartEntriesCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3326BD552642E71E00DE8E6D /* ChartEntriesCreator.swift */; };
 		332F521425FA38430047236D /* MicrophoneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332F521325FA38430047236D /* MicrophoneManager.swift */; };
 		3346F1F626318C1600BA4695 /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3346F1F526318C1600BA4695 /* SettingsManager.swift */; };
 		3362B4ED25E69987008D61BA /* CreateSessionDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3362B4EC25E69987008D61BA /* CreateSessionDetailsView.swift */; };
@@ -145,7 +145,7 @@
 		08139B8AACC5B29DDED2C953 /* Pods-AirCastingTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AirCastingTests.release.xcconfig"; path = "Target Support Files/Pods-AirCastingTests/Pods-AirCastingTests.release.xcconfig"; sourceTree = "<group>"; };
 		278FFE79104B8F74B61CE3A2 /* Pods-AirCasting.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AirCasting.release.xcconfig"; path = "Target Support Files/Pods-AirCasting/Pods-AirCasting.release.xcconfig"; sourceTree = "<group>"; };
 		331EA80925E32094009DEFDB /* ConfirmCreatingSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmCreatingSessionView.swift; sourceTree = "<group>"; };
-		3326BD552642E71E00DE8E6D /* CharEntriesCreator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharEntriesCreator.swift; sourceTree = "<group>"; };
+		3326BD552642E71E00DE8E6D /* ChartEntriesCreator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartEntriesCreator.swift; sourceTree = "<group>"; };
 		332F521325FA38430047236D /* MicrophoneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrophoneManager.swift; sourceTree = "<group>"; };
 		3346F1F526318C1600BA4695 /* SettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
 		3362B4EC25E69987008D61BA /* CreateSessionDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSessionDetailsView.swift; sourceTree = "<group>"; };
@@ -295,6 +295,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3328F11E266786C600B72D61 /* Chart */ = {
+			isa = PBXGroup;
+			children = (
+				AC6D567E25AC54A400D221BA /* ChartView.swift */,
+				3326BD552642E71E00DE8E6D /* ChartEntriesCreator.swift */,
+			);
+			name = Chart;
+			sourceTree = "<group>";
+		};
 		332F521825FA38B90047236D /* MicrophoneSession */ = {
 			isa = PBXGroup;
 			children = (
@@ -451,11 +460,10 @@
 				ACF77DFA25A8888700BB85B7 /* SessionCellView.swift */,
 				AC6D569E25AEEAE700D221BA /* SessionHeaderView.swift */,
 				ACC536DF26395C0900327267 /* MeasurementDotView.swift */,
-				AC6D567E25AC54A400D221BA /* ChartView.swift */,
 				AC4EC6C325B6FE0D00C1E312 /* HeatmapSettingsView.swift */,
 				AC6D56A425AF211200D221BA /* MultiSliderView.swift */,
 				AC4EC6BB25B5ABB700C1E312 /* StatisticsContainerView.swift */,
-				3326BD552642E71E00DE8E6D /* CharEntriesCreator.swift */,
+				3328F11E266786C600B72D61 /* Chart */,
 			);
 			path = SessionViews;
 			sourceTree = "<group>";
@@ -945,7 +953,7 @@
 				ACD01F7625FF61CE00B8F65F /* LocationProvider.swift in Sources */,
 				3346F1F626318C1600BA4695 /* SettingsManager.swift in Sources */,
 				AC7AB09225D988CD0025492B /* WhiteSelectingButtonStyle.swift in Sources */,
-				3326BD562642E71E00DE8E6D /* CharEntriesCreator.swift in Sources */,
+				3326BD562642E71E00DE8E6D /* ChartEntriesCreator.swift in Sources */,
 				AC32041C25CC46EF00A68520 /* PowerABView.swift in Sources */,
 				AC86EE6B25D03DC00083F8C0 /* SelectDeviceView.swift in Sources */,
 				ACD01F7B25FF6C3300B8F65F /* BlueTextButtonStyle.swift in Sources */,
