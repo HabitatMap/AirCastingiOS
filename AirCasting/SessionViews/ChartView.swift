@@ -25,13 +25,15 @@ class UI_PollutionChart: UIView {
         ])
         
         //remove border lines and legend
-        lineChartView.xAxis.enabled = true
+        lineChartView.xAxis.enabled = false
         lineChartView.xAxis.drawLabelsEnabled = false
         lineChartView.xAxis.labelPosition = .bottom
         lineChartView.xAxis.drawGridLinesEnabled = false
+        
+        // we are setting the values for x axis so that there is always a space for 9 averages and they are always starting at the right edge
         lineChartView.xAxis.axisMinimum = 0
         lineChartView.xAxis.axisMaximum = 9
-        
+
         lineChartView.leftAxis.drawLabelsEnabled = false
         lineChartView.leftAxis.drawAxisLineEnabled = false
         lineChartView.leftAxis.gridColor = UIColor(.aircastingGray).withAlphaComponent(0.4)
@@ -40,9 +42,7 @@ class UI_PollutionChart: UIView {
         
         lineChartView.legend.enabled = false
         
-        #warning("The text is not appearing and I don't know why")
-        lineChartView.noDataText = "Wait for the averages to appear"
-        lineChartView.noDataTextColor = .red
+        lineChartView.noDataText = "Waiting for the first average value"
         lineChartView.noDataTextAlignment = .center
         
         //disable zooming
@@ -69,12 +69,17 @@ struct ChartView: UIViewRepresentable {
     
     func updateUIView(_ uiView: UI_PollutionChart, context: Context) {
         let chartCreator = ChartEntriesCreator(stream: stream)
-        var entriesForDrawing = chartCreator.generateEntries()
-        entriesForDrawing.sort { (e1, e2) -> Bool in
-            e1.x < e2.x
+        var entries = chartCreator.generateEntries()
+        
+        if entries.isEmpty {
+            return()
+        } else {
+            entries.sort { (e1, e2) -> Bool in
+                e1.x < e2.x
+            }
         }
         
-        let dataSet = LineChartDataSet(entries: entriesForDrawing)
+        let dataSet = LineChartDataSet(entries: entries)
         let data = LineChartData(dataSet: dataSet)
         uiView.lineChartView.data = data
         
@@ -85,25 +90,25 @@ struct ChartView: UIViewRepresentable {
         formatDataSet(dataSet: dataSet)
     }
     
-    func formatData(data: LineChartData) {
+    private func formatData(data: LineChartData) {
         let formatter = NumberFormatter()
         formatter.maximumFractionDigits = 0
         data.setValueFormatter(DefaultValueFormatter(formatter: formatter))
-        data.setValueFont(UIFont(name: "Muli-Regular", size: 12)!)
-        data.setValueTextColor(UIColor(.aircastingGray))
+        data.setValueFont(UIFont.muli(size: 12))
+        data.setValueTextColor(UIColor.aircastingGray)
     }
     
-    func formatDataSet(dataSet: LineChartDataSet) {
+    private func formatDataSet(dataSet: LineChartDataSet) {
         //dots colors
         dataSet.circleColors = generateColorsSet(for: dataSet.entries)
         dataSet.drawCircleHoleEnabled = false
         dataSet.circleRadius = 6
         
         //line color
-        dataSet.setColor(UIColor(.aircastingGray).withAlphaComponent(0.7))
+        dataSet.setColor(UIColor.aircastingGray.withAlphaComponent(0.7))
     }
     
-    func generateColorsSet(for entries: [ChartDataEntry]) -> [UIColor] {
+    private func generateColorsSet(for entries: [ChartDataEntry]) -> [UIColor] {
         var colors: [UIColor] = []
         for entry in entries {
             switch Int32(entry.y) {
@@ -121,9 +126,11 @@ struct ChartView: UIViewRepresentable {
     }
 }
 
+#if DEBUG
 struct MeasurementChart_Previews: PreviewProvider {
     static var previews: some View {
         ChartView(stream: .mock, thresholds: .mock)
             .frame(width: 300, height: 250, alignment: .center)
     }
 }
+#endif
