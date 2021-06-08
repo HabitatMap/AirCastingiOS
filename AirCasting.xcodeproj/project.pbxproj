@@ -44,6 +44,7 @@
 		AC049F8B2608DCB000398197 /* Session+Mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC049F8A2608DCB000398197 /* Session+Mock.swift */; };
 		AC08A662266E2AEC0081697C /* MeasurementsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC08A661266E2AEC0081697C /* MeasurementsView.swift */; };
 		AC1471A325F23AE40062A53F /* CreateSessionAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC1471A225F23AE40062A53F /* CreateSessionAPI.swift */; };
+		AC14A8D9266F74A200A6AD2B /* AirBorderedButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC14A8D8266F74A200A6AD2B /* AirBorderedButtonStyle.swift */; };
 		AC3203CB25CA991C00A68520 /* TurnOnBluetoothView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC3203CA25CA991C00A68520 /* TurnOnBluetoothView.swift */; };
 		AC32040425CC067D00A68520 /* CheckBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC32040325CC067D00A68520 /* CheckBox.swift */; };
 		AC32041C25CC46EF00A68520 /* PowerABView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC32041B25CC46EF00A68520 /* PowerABView.swift */; };
@@ -189,6 +190,7 @@
 		AC049F8A2608DCB000398197 /* Session+Mock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Session+Mock.swift"; sourceTree = "<group>"; };
 		AC08A661266E2AEC0081697C /* MeasurementsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementsView.swift; sourceTree = "<group>"; };
 		AC1471A225F23AE40062A53F /* CreateSessionAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSessionAPI.swift; sourceTree = "<group>"; };
+		AC14A8D8266F74A200A6AD2B /* AirBorderedButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirBorderedButtonStyle.swift; sourceTree = "<group>"; };
 		AC1DAD4425C9858C009AC4D1 /* SelectPeripheralView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectPeripheralView.swift; sourceTree = "<group>"; };
 		AC1DAD4825C987B3009AC4D1 /* BluetoothManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothManager.swift; sourceTree = "<group>"; };
 		AC3203CA25CA991C00A68520 /* TurnOnBluetoothView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurnOnBluetoothView.swift; sourceTree = "<group>"; };
@@ -446,6 +448,7 @@
 		AC6D569825ADE55B00D221BA /* ButtonStyles */ = {
 			isa = PBXGroup;
 			children = (
+				AC14A8D8266F74A200A6AD2B /* AirBorderedButtonStyle.swift */,
 				ACF77DF725A866E700BB85B7 /* BlueButtonStyle.swift */,
 				ACD01F7A25FF6C3300B8F65F /* BlueTextButtonStyle.swift */,
 				AC7AB09125D988CD0025492B /* WhiteSelectingButtonStyle.swift */,
@@ -948,6 +951,7 @@
 				4FD2CA4726406F2C007E932E /* Diff.swift in Sources */,
 				AC5832DA25B196DD008C5DD5 /* Graph.swift in Sources */,
 				AC93B8E725BEFE4F003D0A0D /* AirMapView.swift in Sources */,
+				AC14A8D9266F74A200A6AD2B /* AirBorderedButtonStyle.swift in Sources */,
 				4F945EF4264B2813008A5B22 /* ActivityIndicator.swift in Sources */,
 				3362B4ED25E69987008D61BA /* CreateSessionDetailsView.swift in Sources */,
 				AC08A662266E2AEC0081697C /* MeasurementsView.swift in Sources */,
