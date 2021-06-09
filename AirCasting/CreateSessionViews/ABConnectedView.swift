@@ -12,6 +12,7 @@ struct ABConnectedView: View {
     @EnvironmentObject var persistenceController: PersistenceController
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
+    @EnvironmentObject var sessionContext: CreateSessionContext
     @Binding var creatingSessionFlowContinues : Bool
 
     var body: some View {
@@ -42,12 +43,21 @@ private extension ABConnectedView {
             .foregroundColor(.aircastingGray)
     }
     var continueButton: some View {
-        NavigationLink(
+        var sessionCreator: SessionCreator
+        if sessionContext.sessionType == .mobile {
+            sessionCreator = MobilePeripheralSessionCreator(
+                mobilePeripheralSessionManager: bluetoothManager.mobilePeripheralSessionManager, measurementStreamStorage: CoreDataMeasurementStreamStorage(
+                    persistenceController: persistenceController),
+                userAuthenticationSession: userAuthenticationSession)
+        } else {
+            sessionCreator = AirBeamSessionCreator(
+                measurementStreamStorage: CoreDataMeasurementStreamStorage(
+                    persistenceController: persistenceController),
+                userAuthenticationSession: userAuthenticationSession)
+        }
+        return NavigationLink(
             destination: CreateSessionDetailsView(
-                sessionCreator: AirBeamSessionCreator(
-                    measurementStreamStorage: CoreDataMeasurementStreamStorage(
-                        persistenceController: persistenceController),
-                    userAuthenticationSession: userAuthenticationSession),
+                sessionCreator: sessionCreator,
                 creatingSessionFlowContinues: $creatingSessionFlowContinues),
             label: {
                 Text("Continue")

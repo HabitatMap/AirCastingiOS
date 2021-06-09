@@ -6,9 +6,9 @@ import CoreBluetooth
 
 class MobileSession {
     var peripheral: CBPeripheral
-    var session: SessionEntity
+    var session: Session
     
-    init(peripheral: CBPeripheral, session: SessionEntity) {
+    init(peripheral: CBPeripheral, session: Session) {
         self.peripheral = peripheral
         self.session = session
     }
