@@ -106,6 +106,7 @@ extension BluetoothManager: CBCentralManagerDelegate {
     
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
         print("Disconnected: \(String(describing: error?.localizedDescription))")
+        mobilePeripheralSessionManager.finishSession(for: peripheral)
     }
 }
 
