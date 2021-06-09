@@ -25,6 +25,8 @@ class BluetoothManager: NSObject, ObservableObject {
     @Published var centralManagerState: CBManagerState = .unknown
     var observed: NSKeyValueObservation?
     
+    let mobilePeripheralSessionManager = MobilePeripheralSessionManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared))
+    
     private var MEASUREMENTS_CHARACTERISTIC_UUIDS: [CBUUID] = [
         CBUUID(string:"0000ffe1-0000-1000-8000-00805f9b34fb"),    // Temperature
         CBUUID(string:"0000ffe3-0000-1000-8000-00805f9b34fb"),    // Humidity
@@ -53,6 +55,11 @@ class BluetoothManager: NSObject, ObservableObject {
             centralManager.stopScan()
         }
     }
+}
+
+struct PeripheralMeasurement {
+    var peripheral: CBPeripheral
+    var measurementStream: ABMeasurementStream
 }
 
 extension BluetoothManager: CBCentralManagerDelegate {
@@ -134,7 +141,10 @@ extension BluetoothManager: CBPeripheralDelegate {
 
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
         if MEASUREMENTS_CHARACTERISTIC_UUIDS.contains(characteristic.uuid) {
-            let parsedMeasurement = parseData(data: characteristic.value!)
+            if let parsedMeasurement = parseData(data: characteristic.value!) {
+                mobilePeripheralSessionManager.handlePeripheralMeasurement(PeripheralMeasurement(peripheral: peripheral, measurementStream: parsedMeasurement))
+                
+            }
         }
     }
     
