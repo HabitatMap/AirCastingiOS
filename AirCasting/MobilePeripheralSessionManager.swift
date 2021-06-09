@@ -4,14 +4,6 @@
 import Foundation
 import CoreBluetooth
 
-struct StreamsIDs {
-    var pm1StreamID: MeasurementStreamLocalID?
-    var pm2StreamID: MeasurementStreamLocalID?
-    var pm10StreamID: MeasurementStreamLocalID?
-    var fStreamID: MeasurementStreamLocalID?
-    var rhStreamID: MeasurementStreamLocalID?
-}
-
 class MobilePeripheralSessionManager {
     private let measurementStreamStorage: MeasurementStreamStorage
     private lazy var locationProvider = LocationProvider()
@@ -25,7 +17,7 @@ class MobilePeripheralSessionManager {
     
     func startRecording(session: Session, peripheral: CBPeripheral) throws {
         try measurementStreamStorage.createSession(session)
-        try measurementStreamStorage.updateSessionStatus(.RECORDING, for: session.uuid)
+        try measurementStreamStorage.updateSessionStatus(.NEW, for: session.uuid)
         activeMobileSession = MobileSession(peripheral: peripheral, session: session)
     }
     
@@ -41,7 +33,6 @@ class MobilePeripheralSessionManager {
     func finishSession(for peripheral: CBPeripheral) {
         if activeMobileSession?.peripheral == peripheral {
             let session = activeMobileSession!.session
-            print("DISCONNECTING SESSION")
             
             try! measurementStreamStorage.updateSessionStatus(.FINISHED, for: session.uuid)
             activeMobileSession = nil

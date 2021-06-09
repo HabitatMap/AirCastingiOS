@@ -15,7 +15,6 @@ struct MainTabBarView: View {
     @EnvironmentObject var persistenceController: PersistenceController
     @EnvironmentObject var microphoneManager: MicrophoneManager
     @StateObject var tabSelection: TabBarSelection = TabBarSelection()
-    @EnvironmentObject var bluetoothManager: BluetoothManager
 
     var body: some View {
         TabView(selection: $tabSelection.selection) {
