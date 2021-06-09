@@ -50,7 +50,7 @@ private extension ABConnectedView {
                     persistenceController: persistenceController),
                 userAuthenticationSession: userAuthenticationSession)
         } else {
-            sessionCreator = AirBeamSessionCreator(
+            sessionCreator = AirBeamFixedSessionCreator(
                 measurementStreamStorage: CoreDataMeasurementStreamStorage(
                     persistenceController: persistenceController),
                 userAuthenticationSession: userAuthenticationSession)
