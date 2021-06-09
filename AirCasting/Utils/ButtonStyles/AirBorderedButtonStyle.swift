@@ -12,10 +12,9 @@ struct AirBorderedButtonStyle: ButtonStyle {
         configuration
             .label
             .foregroundColor(.aircastingDarkGray)
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 12)
+            .padding(.vertical, 4)
+            .padding(.horizontal, 7)
             .background(isSelected ? (RoundedRectangle(cornerRadius: 10).strokeBorder(thresholdColor)) : (RoundedRectangle(cornerRadius: 10).strokeBorder(.clear)))
-//            .padding(-3)
     }
 }
 
