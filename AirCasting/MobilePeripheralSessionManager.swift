@@ -30,21 +30,11 @@ class MobilePeripheralSessionManager {
     }
     
     func handlePeripheralMeasurement(_ measurement: PeripheralMeasurement) {
-        print(measurement.measurementStream)
         if activeMobileSession == nil {
             return
         }
         if activeMobileSession?.peripheral == measurement.peripheral {
             try! updateStreams(stream: measurement.measurementStream)
-        }
-    }
-    
-    func disconnectPeripheral(_ peripheral: CBPeripheral) {
-        if activeMobileSession?.peripheral == peripheral {
-            let session = activeMobileSession!.session
-            print("DISCONNECTING SESSION")
-            
-            try! measurementStreamStorage.updateSessionStatus(.DISCONNETCED, for: session.uuid)
         }
     }
     
