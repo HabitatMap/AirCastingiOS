@@ -11,13 +11,15 @@ struct GraphView: View {
     
     let session: SessionEntity
     let thresholds: [SensorThreshold]
+    @Binding var selectedStream: String
     
     var body: some View {
         VStack(alignment: .trailing) {
             SessionHeaderView(action: {},
                               isExpandButtonNeeded: false,
                               session: session,
-                              thresholds: thresholds).padding()
+                              thresholds: thresholds,
+                              selectedStream: $selectedStream).padding()
             
             ZStack(alignment: .topLeading) {
                 #warning("Replace dbStream with currently selected")
@@ -46,7 +48,8 @@ struct GraphView: View {
 #if DEBUG
 struct GraphView_Previews: PreviewProvider {
     static var previews: some View {
-        GraphView(session: .mock, thresholds: [.mock])
+        #warning("Change selected stream")
+        GraphView(session: .mock, thresholds: [.mock], selectedStream: .constant("db"))
     }
 }
 #endif

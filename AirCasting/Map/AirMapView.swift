@@ -13,6 +13,7 @@ import CoreData
 struct AirMapView: View {
     var thresholds: [SensorThreshold]
     @ObservedObject var session: SessionEntity
+    @Binding var selectedStream: String
 
     private var measurementStream: MeasurementStreamEntity? {
         if session.type == .mobile && session.deviceType == .MIC {
@@ -39,7 +40,8 @@ struct AirMapView: View {
             SessionHeaderView(action: {},
                               isExpandButtonNeeded: false,
                               session: session,
-                              thresholds: thresholds)
+                              thresholds: thresholds,
+                              selectedStream: $selectedStream)
             ZStack(alignment: .topLeading) {
                 GoogleMapView(pathPoints: pathPoints,
                               thresholds: thresholds[0])
@@ -60,7 +62,8 @@ struct AirMapView: View {
 #if DEBUG
 struct Map_Previews: PreviewProvider {
     static var previews: some View {
-        AirMapView(thresholds: [SensorThreshold.mock], session: .mock)
+        #warning("Change selected stream")
+        AirMapView(thresholds: [SensorThreshold.mock], session: .mock, selectedStream: .constant("db"))
     }
 }
 #endif
