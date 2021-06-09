@@ -7,6 +7,7 @@ struct ABMeasurementsView: View {
     
     @ObservedObject var session: SessionEntity
     var thresholds: [SensorThreshold]
+    @Binding var selectedStream: String
     
     var body: some View {
         if let measurements = extractLatestMeasurements() {
@@ -16,19 +17,24 @@ struct ABMeasurementsView: View {
                     Group {
                         SingleMeasurementView(streamName: "PM1",
                                               value: measurements.pm1,
-                                              thresholds: thresholds)
+                                              thresholds: thresholds,
+                                              selectedStream: _selectedStream)
                         SingleMeasurementView(streamName: "PM2",
                                               value: measurements.pm25,
-                                              thresholds: thresholds)
+                                              thresholds: thresholds,
+                                              selectedStream: _selectedStream)
                         SingleMeasurementView(streamName: "PM10",
                                               value: measurements.pm10,
-                                              thresholds: thresholds)
+                                              thresholds: thresholds,
+                                              selectedStream: _selectedStream)
                         SingleMeasurementView(streamName: "F",
                                               value: measurements.f,
-                                              thresholds: thresholds)
+                                              thresholds: thresholds,
+                                              selectedStream: _selectedStream)
                         SingleMeasurementView(streamName: "RH",
                                               value: measurements.h,
-                                              thresholds: thresholds)
+                                              thresholds: thresholds,
+                                              selectedStream: _selectedStream)
                     }
                     .frame(maxWidth: .infinity)
                 }
@@ -77,20 +83,28 @@ struct SingleMeasurementView: View {
     let streamName: String
     let value: Double
     var thresholds: [SensorThreshold]
+    @Binding var selectedStream: String
     
     var body: some View {
         VStack(spacing: 3) {
             
             Text(streamName)
                 .font(Font.system(size: 13))
-            HStack(spacing: 3){
-                MeasurementDotView(value: value,
-                                   thresholds: thresholdFor(name: streamName))
-                Text("\(Int(value))")
-                    .font(Font.moderate(size: 14, weight: .regular))
-            }
+            Button(action: {
+                selectedStream = streamName
+            }, label: {
+                HStack(spacing: 3){
+                    MeasurementDotView(value: value,
+                                       thresholds: thresholdFor(name: streamName))
+                    Text("\(Int(value))")
+                        .font(Font.moderate(size: 14, weight: .regular))
+                }
+            })
+            .buttonStyle(AirBorderedButtonStyle(isSelected: selectedStream == streamName,
+                                                thresholdColor: Color.green))
         }
     }
+    
     
     func thresholdFor(name: String) -> SensorThreshold? {
         thresholds.first { $0.sensorName == name }

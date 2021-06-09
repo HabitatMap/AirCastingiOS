@@ -13,6 +13,7 @@ import Charts
 struct SessionCellView: View {
     
     @State private var isCollapsed = true
+    @State private var selectedStream: String = ""
     
     let session: SessionEntity
     let thresholds: [SensorThreshold]
@@ -25,7 +26,8 @@ struct SessionCellView: View {
                 }
             }, isExpandButtonNeeded: true,
             session: session,
-            thresholds: Array(thresholds))
+            thresholds: Array(thresholds),
+            selectedStream: $selectedStream)
             if !isCollapsed {
                 VStack(alignment: .trailing, spacing: 40) {
                     #warning("The stream should be chosen based on users selection")
@@ -34,6 +36,11 @@ struct SessionCellView: View {
                     }
                     buttons
                 }
+            }
+        }
+        .onAppear{
+            if let streamName = session.pm1Stream?.sensorName{
+                selectedStream = streamName
             }
         }
         .font(Font.moderate(size: 13, weight: .regular))
@@ -48,13 +55,17 @@ struct SessionCellView: View {
 
 private extension SessionCellView {
     var graphButton: some View {
-        NavigationLink(destination: GraphView(session: session, thresholds: Array(thresholds))) {
+        NavigationLink(destination: GraphView(session: session,
+                                              thresholds: Array(thresholds),
+                                              selectedStream: $selectedStream)) {
             Text("graph")
         }
     }
     
     var mapButton: some View {
-        NavigationLink(destination: AirMapView(thresholds: Array(thresholds), session: session)) {
+        NavigationLink(destination: AirMapView(thresholds: Array(thresholds),
+                                               session: session,
+                                               selectedStream: $selectedStream)) {
             Text("map")
         }
     }

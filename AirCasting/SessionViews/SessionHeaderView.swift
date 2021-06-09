@@ -14,6 +14,7 @@ struct SessionHeaderView: View {
     @ObservedObject var session: SessionEntity
     @EnvironmentObject private var microphoneManager: MicrophoneManager
     var thresholds: [SensorThreshold]
+    @Binding var selectedStream: String
 
     var body: some View {
         VStack(alignment: .leading, spacing: 13){
@@ -30,7 +31,8 @@ struct SessionHeaderView: View {
                 }
             } else {
                 ABMeasurementsView(session: session,
-                                   thresholds: thresholds)
+                                   thresholds: thresholds,
+                                   selectedStream: _selectedStream)
             }
         }
         .font(Font.moderate(size: 13, weight: .regular))
@@ -80,7 +82,8 @@ private extension SessionHeaderView {
             Text("Most recent measurement:")
             SingleMeasurementView(streamName: "db",
                                   value: lastMicMeasurement(),
-                                  thresholds: thresholds)
+                                  thresholds: thresholds,
+                                  selectedStream: .constant("db"))
         }
     }
     
@@ -101,10 +104,12 @@ private extension SessionHeaderView {
 #if DEBUG
 struct SessionHeader_Previews: PreviewProvider {
     static var previews: some View {
+        #warning("Change selected stream")
         SessionHeaderView(action: {},
                           isExpandButtonNeeded: true,
                           session: SessionEntity.mock,
-                          thresholds: [.mock])
+                          thresholds: [.mock],
+                          selectedStream: .constant("db"))
         .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
     }
 }
