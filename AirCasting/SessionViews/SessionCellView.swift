@@ -30,16 +30,15 @@ struct SessionCellView: View {
             selectedStream: $selectedStream)
             if !isCollapsed {
                 VStack(alignment: .trailing, spacing: 40) {
-                    #warning("The stream should be chosen based on users selection")
-                    if let streams = session.measurementStreams {
-                        pollutionChart(stream: streams[0] as! MeasurementStreamEntity)
+                    if let selectedStream = session.streamWith(sensorName: selectedStream) {
+                        pollutionChart(stream: selectedStream)
                     }
                     buttons
                 }
             }
         }
         .onAppear{
-            if let streamName = session.pm1Stream?.sensorName{
+            if let streamName = session.allStreams?[0].sensorName{
                 selectedStream = streamName
             }
         }

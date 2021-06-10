@@ -14,25 +14,19 @@ struct AirMapView: View {
     var thresholds: [SensorThreshold]
     @ObservedObject var session: SessionEntity
     @Binding var selectedStream: String
-
-    private var measurementStream: MeasurementStreamEntity? {
-        if session.type == .mobile && session.deviceType == .MIC {
-            return session.dbStream
-        } else {
-            #warning("Select proper measurementStream")
-            return session.measurementStreams?.firstObject as? MeasurementStreamEntity
-        }
-    }
-
+    
     private var pathPoints: [PathPoint] {
-        measurementStream?.allMeasurements?.compactMap {
-            if let location = $0.location {
-                return PathPoint(location: location, measurement: $0.value)
-            } else {
-                #warning("TODO: Do something with no location points")
-                return nil
-            }
-       } ?? []
+        if let measurementStream = session.streamWith(sensorName: selectedStream) {
+            return measurementStream.allMeasurements?.compactMap {
+                if let location = $0.location {
+                    return PathPoint(location: location, measurement: $0.value)
+                } else {
+                    #warning("TODO: Do something with no location points")
+                    return nil
+                }
+            } ?? []
+        }
+        return []
     }
 
     var body: some View {

@@ -22,10 +22,11 @@ struct GraphView: View {
                               selectedStream: $selectedStream).padding()
             
             ZStack(alignment: .topLeading) {
-                #warning("Replace dbStream with currently selected")
-                Graph(stream: session.dbStream!,
-                      thresholds: thresholds[0],
-                      isAutozoomEnabled: session.type == .mobile)
+                if let selectedStream = session.streamWith(sensorName: selectedStream) {
+                    Graph(stream: selectedStream,
+                          thresholds: thresholds[0],
+                          isAutozoomEnabled: session.type == .mobile)
+                }
                 StatisticsContainerView()
             }
             
