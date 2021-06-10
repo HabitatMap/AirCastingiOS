@@ -76,6 +76,17 @@ public class SessionEntity: NSManagedObject, Identifiable {
         get { SessionType(rawValue:(value(forKey: "type") as! String)) }
         set { setValue(newValue.rawValue, forKey: "type") }
     }
+    
+    public var allStreams: [MeasurementStreamEntity]? {
+        measurementStreams?.array as? [MeasurementStreamEntity]
+    }
+    
+    func streamWith(sensorName: String) -> MeasurementStreamEntity? {
+        return self.allStreams?.first { stream in
+            stream.sensorName == sensorName
+        }
+    }
+    
 }
 
 extension NSFetchRequest where ResultType == SessionEntity {
