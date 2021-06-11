@@ -10,33 +10,33 @@ import SwiftUI
 struct GraphView: View {
     
     let session: SessionEntity
-    let thresholds: [SensorThreshold]
-    @Binding var selectedStream: String
+    let threshold: SensorThreshold
+    @Binding var selectedStream: MeasurementStreamEntity?
     
     var body: some View {
         VStack(alignment: .trailing) {
             SessionHeaderView(action: {},
                               isExpandButtonNeeded: false,
                               session: session,
-                              thresholds: thresholds,
+                              threshold: threshold,
                               selectedStream: $selectedStream).padding()
             
             ZStack(alignment: .topLeading) {
-                if let selectedStream = session.streamWith(sensorName: selectedStream) {
+                if let selectedStream = selectedStream {
                     Graph(stream: selectedStream,
-                          thresholds: thresholds[0],
+                          thresholds: threshold,
                           isAutozoomEnabled: session.type == .mobile)
                 }
                 StatisticsContainerView()
             }
             
-            NavigationLink(destination: HeatmapSettingsView(changedThresholdValues: thresholds[0].rawThresholdsBinding)) {
+            NavigationLink(destination: HeatmapSettingsView(changedThresholdValues: threshold.rawThresholdsBinding)) {
                 EditButtonView()
             }
             .padding(.horizontal)
             .padding(.top)
             
-            ThresholdsSliderView(threshold: thresholds[0])
+            ThresholdsSliderView(threshold: threshold)
                 .padding()
                 // Fixes labels covered by tabbar
                 .padding(.bottom)
@@ -50,7 +50,7 @@ struct GraphView: View {
 struct GraphView_Previews: PreviewProvider {
     static var previews: some View {
         #warning("Change selected stream")
-        GraphView(session: .mock, thresholds: [.mock], selectedStream: .constant("db"))
+        GraphView(session: .mock, threshold: .mock, selectedStream: .constant(nil))
     }
 }
 #endif

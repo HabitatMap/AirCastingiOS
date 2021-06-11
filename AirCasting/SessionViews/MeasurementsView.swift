@@ -6,35 +6,35 @@ import SwiftUI
 struct ABMeasurementsView: View {
     
     @ObservedObject var session: SessionEntity
-    var thresholds: [SensorThreshold]
-    @Binding var selectedStream: String
+    var threshold: SensorThreshold
+    @Binding var selectedStream: MeasurementStreamEntity?
+    
+    private var streamsToShow: [MeasurementStreamEntity] {
+        let allStreams = [session.pm1Stream,
+                          session.pm2Stream,
+                          session.pm10Stream,
+                          session.FStream,
+                          session.HStream]
+        
+        let toShow = allStreams.compactMap { $0 }
+        return toShow
+    }
+    private var hasAnyMeasurements: Bool {
+        streamsToShow.filter { $0.latestValue != nil }.count > 0
+    }
     
     var body: some View {
-        if let measurements = extractLatestMeasurements() {
+        if hasAnyMeasurements {
             VStack(alignment: .leading, spacing: 5) {
-                Text("Most recent measurement:")
+                Text("Most recefnt measurement:")
                 HStack {
                     Group {
-                        SingleMeasurementView(streamName: "PM1",
-                                              value: measurements.pm1,
-                                              thresholds: thresholds,
-                                              selectedStream: _selectedStream)
-                        SingleMeasurementView(streamName: "PM2",
-                                              value: measurements.pm25,
-                                              thresholds: thresholds,
-                                              selectedStream: _selectedStream)
-                        SingleMeasurementView(streamName: "PM10",
-                                              value: measurements.pm10,
-                                              thresholds: thresholds,
-                                              selectedStream: _selectedStream)
-                        SingleMeasurementView(streamName: "F",
-                                              value: measurements.f,
-                                              thresholds: thresholds,
-                                              selectedStream: _selectedStream)
-                        SingleMeasurementView(streamName: "RH",
-                                              value: measurements.h,
-                                              thresholds: thresholds,
-                                              selectedStream: _selectedStream)
+                        ForEach(streamsToShow) { stream in
+                            SingleMeasurementView(stream: stream,
+                                                  value: stream.latestValue ?? 0,
+                                                  threshold: threshold,
+                                                  selectedStream: _selectedStream)
+                        }
                     }
                     .frame(maxWidth: .infinity)
                 }
@@ -49,66 +49,45 @@ struct ABMeasurementsView: View {
             .foregroundColor(.darkBlue)
         }
     }
-    
-    struct LatestMeasurements {
-        let pm1: Double
-        let pm25: Double
-        let pm10: Double
-        let f: Double
-        let h: Double
-    }
-    
-    func extractLatestMeasurements() -> LatestMeasurements? {
-        let pm1Value = session.pm1Stream?.latestValue ?? 0
-        let pm25Value = session.pm2Stream?.latestValue ?? 0
-        let pm10Value = session.pm10Stream?.latestValue ?? 0
-        let fValue = session.FStream?.latestValue ?? 0
-        let hValue = session.HStream?.latestValue ?? 0
-        
-        #warning("TODO: change logic here (session status)")
-        if pm1Value != 0 || pm25Value != 0 || pm10Value != 0 || fValue != 0 || hValue != 0 {
-            return LatestMeasurements(pm1: pm1Value,
-                                      pm25: pm25Value,
-                                      pm10: pm10Value,
-                                      f: fValue,
-                                      h: hValue)
-        } else  {
-            return nil
-        }
-    }
+
 }
 
 struct SingleMeasurementView: View {
     
-    let streamName: String
+    let stream: MeasurementStreamEntity
     let value: Double
-    var thresholds: [SensorThreshold]
-    @Binding var selectedStream: String
+    var threshold: SensorThreshold
+    @Binding var selectedStream: MeasurementStreamEntity?
     
     var body: some View {
         VStack(spacing: 3) {
-            
-            Text(streamName)
+            #warning("Handle optional stream name")
+            Text(showStreamName())
                 .font(Font.system(size: 13))
+            
             Button(action: {
-                selectedStream = streamName
+                selectedStream = stream
             }, label: {
                 HStack(spacing: 3){
                     MeasurementDotView(value: value,
-                                       thresholds: thresholdFor(name: streamName))
+                                       thresholds: threshold)
                     Text("\(Int(value))")
                         .font(Font.moderate(size: 14, weight: .regular))
                 }
             })
-            .buttonStyle(AirBorderedButtonStyle(isSelected: selectedStream == streamName,
-                                                thresholdColor: colorBorder(stream: selectedStream)))
+            .buttonStyle(AirBorderedButtonStyle(isSelected: selectedStream == stream,
+                                                thresholdColor: colorBorder(stream: stream)))
         }
     }
     
-    func colorBorder(stream: String) -> Color {
-        guard let threshold = thresholdFor(name: streamName) else {
-            return .white
-        }
+    func showStreamName() -> String {
+        guard let streamName = stream.sensorName else {return ""}
+        return streamName
+            .drop { $0 != "-" }
+            .replacingOccurrences(of: "-", with: "")
+    }
+    
+    func colorBorder(stream: MeasurementStreamEntity) -> Color {
         switch Int32(value) {
         case threshold.thresholdVeryLow..<threshold.thresholdLow:
             return .aircastingGreen
@@ -121,10 +100,5 @@ struct SingleMeasurementView: View {
         default:
             return .white
         }
-    }
-    
-    
-    func thresholdFor(name: String) -> SensorThreshold? {
-        thresholds.first { $0.sensorName == name }
     }
 }
