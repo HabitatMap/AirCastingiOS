@@ -16,17 +16,11 @@ struct AirMapView: View {
     @Binding var selectedStream: MeasurementStreamEntity?
     
     private var pathPoints: [PathPoint] {
-        if let measurementStream = selectedStream {
-            return measurementStream.allMeasurements?.compactMap {
-                if let location = $0.location {
-                    return PathPoint(location: location, measurement: $0.value)
-                } else {
-                    #warning("TODO: Do something with no location points")
-                    return nil
-                }
-            } ?? []
-        }
-        return []
+        return selectedStream?.allMeasurements?.compactMap {
+            #warning("TODO: Do something with no location points")
+            guard let location = $0.location else { return nil }
+            return PathPoint(location: location, measurement: $0.value)
+        } ?? []
     }
 
     var body: some View {
