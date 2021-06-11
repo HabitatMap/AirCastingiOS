@@ -11,12 +11,12 @@ import Foundation
 import CoreData
 
 struct AirMapView: View {
-    var thresholds: [SensorThreshold]
+    var threshold: SensorThreshold
     @ObservedObject var session: SessionEntity
-    @Binding var selectedStream: String
+    @Binding var selectedStream: MeasurementStreamEntity?
     
     private var pathPoints: [PathPoint] {
-        if let measurementStream = session.streamWith(sensorName: selectedStream) {
+        if let measurementStream = selectedStream {
             return measurementStream.allMeasurements?.compactMap {
                 if let location = $0.location {
                     return PathPoint(location: location, measurement: $0.value)
@@ -34,17 +34,17 @@ struct AirMapView: View {
             SessionHeaderView(action: {},
                               isExpandButtonNeeded: false,
                               session: session,
-                              thresholds: thresholds,
+                              threshold: threshold,
                               selectedStream: $selectedStream)
             ZStack(alignment: .topLeading) {
                 GoogleMapView(pathPoints: pathPoints,
-                              thresholds: thresholds[0])
+                              thresholds: threshold)
                 StatisticsContainerView()
             }
-            NavigationLink(destination: HeatmapSettingsView(changedThresholdValues: thresholds[0].rawThresholdsBinding)) {
+            NavigationLink(destination: HeatmapSettingsView(changedThresholdValues: threshold.rawThresholdsBinding)) {
                 EditButtonView()
             }
-            ThresholdsSliderView(threshold: thresholds[0])
+            ThresholdsSliderView(threshold: threshold)
                 // Fixes labels covered by tabbar
                 .padding(.bottom)
         }
@@ -56,8 +56,7 @@ struct AirMapView: View {
 #if DEBUG
 struct Map_Previews: PreviewProvider {
     static var previews: some View {
-        #warning("Change selected stream")
-        AirMapView(thresholds: [SensorThreshold.mock], session: .mock, selectedStream: .constant("db"))
+        AirMapView(threshold: .mock, session: .mock, selectedStream: .constant(nil))
     }
 }
 #endif

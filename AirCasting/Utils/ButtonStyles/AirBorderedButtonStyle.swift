@@ -11,10 +11,11 @@ struct AirBorderedButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration
             .label
+            .font(Font.moderate(size: 16))
             .foregroundColor(.aircastingDarkGray)
             .padding(.vertical, 4)
-            .padding(.horizontal, 7)
-            .background(isSelected ? (RoundedRectangle(cornerRadius: 10).strokeBorder(thresholdColor)) : (RoundedRectangle(cornerRadius: 10).strokeBorder(.clear)))
+            .padding(.horizontal, 9)
+            .background(isSelected ? (RoundedRectangle(cornerRadius: 8).strokeBorder(thresholdColor)) : (RoundedRectangle(cornerRadius: 10).strokeBorder(.clear)))
     }
 }
 

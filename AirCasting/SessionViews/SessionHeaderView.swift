@@ -13,8 +13,8 @@ struct SessionHeaderView: View {
     let isExpandButtonNeeded: Bool
     @ObservedObject var session: SessionEntity
     @EnvironmentObject private var microphoneManager: MicrophoneManager
-    var thresholds: [SensorThreshold]
-    @Binding var selectedStream: String
+    var threshold: SensorThreshold
+    @Binding var selectedStream: MeasurementStreamEntity?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 13){
@@ -31,7 +31,7 @@ struct SessionHeaderView: View {
                 }
             } else {
                 ABMeasurementsView(session: session,
-                                   thresholds: thresholds,
+                                   threshold: threshold,
                                    selectedStream: _selectedStream)
             }
         }
@@ -80,10 +80,12 @@ private extension SessionHeaderView {
     var measurementsMic: some View {
         VStack(alignment: .leading, spacing: 5) {
             Text("Most recent measurement:")
-            SingleMeasurementView(streamName: "db",
-                                  value: lastMicMeasurement(),
-                                  thresholds: thresholds,
-                                  selectedStream: .constant("db"))
+            if let dbStream = session.dbStream {
+                SingleMeasurementView(stream: dbStream,
+                                      value: lastMicMeasurement(),
+                                      threshold: threshold,
+                                      selectedStream: .constant(dbStream))
+            }
         }
     }
     
@@ -104,12 +106,11 @@ private extension SessionHeaderView {
 #if DEBUG
 struct SessionHeader_Previews: PreviewProvider {
     static var previews: some View {
-        #warning("Change selected stream")
         SessionHeaderView(action: {},
                           isExpandButtonNeeded: true,
                           session: SessionEntity.mock,
-                          thresholds: [.mock],
-                          selectedStream: .constant("db"))
+                          threshold: .mock,
+                          selectedStream: .constant(nil))
         .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
     }
 }

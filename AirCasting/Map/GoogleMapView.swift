@@ -130,7 +130,7 @@ struct GoogleMapView_Previews: PreviewProvider {
                                    PathPoint(location: CLLocationCoordinate2D(latitude: 40.93,
                                                                               longitude: -73.83),
                                              measurement: 30)],
-                      thresholds: SensorThreshold.mock)
+                      thresholds: .mock)
             .padding()
     }
 }

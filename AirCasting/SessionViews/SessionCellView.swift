@@ -13,24 +13,28 @@ import Charts
 struct SessionCellView: View {
     
     @State private var isCollapsed = true
-    @State private var selectedStream: String = ""
+    @State private var selectedStream: MeasurementStreamEntity?
     
     let session: SessionEntity
     let thresholds: [SensorThreshold]
-
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 13) {
-            SessionHeaderView(action:  {
-                withAnimation {
-                    isCollapsed = !isCollapsed
-                }
-            }, isExpandButtonNeeded: true,
-            session: session,
-            thresholds: Array(thresholds),
-            selectedStream: $selectedStream)
+            if let threshold = thresholdFor(selectedStream: selectedStream) {
+                SessionHeaderView(
+                    action:  {
+                        withAnimation {
+                            isCollapsed = !isCollapsed
+                        }
+                    }, isExpandButtonNeeded: true,
+                    session: session,
+                    threshold: threshold,
+                    selectedStream: $selectedStream)
+            }
+            
             if !isCollapsed {
                 VStack(alignment: .trailing, spacing: 40) {
-                    if let selectedStream = session.streamWith(sensorName: selectedStream) {
+                    if let selectedStream = selectedStream {
                         pollutionChart(stream: selectedStream)
                     }
                     buttons
@@ -38,9 +42,7 @@ struct SessionCellView: View {
             }
         }
         .onAppear{
-            if let streamName = session.allStreams?[0].sensorName{
-                selectedStream = streamName
-            }
+            selectedStream = session.allStreams?.first
         }
         .font(Font.moderate(size: 13, weight: .regular))
         .foregroundColor(.aircastingGray)
@@ -53,25 +55,39 @@ struct SessionCellView: View {
 }
 
 private extension SessionCellView {
+    
     var graphButton: some View {
-        NavigationLink(destination: GraphView(session: session,
-                                              thresholds: Array(thresholds),
-                                              selectedStream: $selectedStream)) {
-            Text("graph")
+        Group {
+            if let threshold = thresholdFor(selectedStream: selectedStream) {
+                NavigationLink(destination: GraphView(session: session,
+                                                      threshold: threshold,
+                                                      selectedStream: $selectedStream)) {
+                    Text("graph")
+                }
+            }
         }
     }
     
     var mapButton: some View {
-        NavigationLink(destination: AirMapView(thresholds: Array(thresholds),
-                                               session: session,
-                                               selectedStream: $selectedStream)) {
-            Text("map")
+        Group {
+            if let threshold = thresholdFor(selectedStream: selectedStream) {
+                NavigationLink(destination: AirMapView(threshold: threshold,
+                                                       session: session,
+                                                       selectedStream: $selectedStream)) {
+                    Text("map")
+                }
+            }
         }
     }
     
     func pollutionChart(stream: MeasurementStreamEntity) -> some View {
-        ChartView(stream: stream, thresholds: thresholds[0])
-            .frame(height: 200)
+        Group {
+            if let threshold = thresholdFor(selectedStream: selectedStream) {
+                ChartView(stream: stream,
+                          thresholds: threshold)
+                    .frame(height: 200)
+            }
+        }
     }
     
     var buttons: some View {
@@ -81,11 +97,22 @@ private extension SessionCellView {
         }
         .buttonStyle(GrayButtonStyle())
     }
+    
+    func thresholdFor(selectedStream: MeasurementStreamEntity?) -> SensorThreshold? {
+        thresholds.first { threshold in
+            let streamName = selectedStream?.sensorName?
+                .drop { $0 != "-" }
+                .replacingOccurrences(of: "-", with: "")
+                .lowercased()
+            return threshold.sensorName?.lowercased() == streamName
+        }
+    }
 }
 
 #if DEBUG
 struct SessionCell_Previews: PreviewProvider {
     static var previews: some View {
+        EmptyView()
         SessionCellView(session: SessionEntity.mock, thresholds: [.mock, .mock])
             .padding()
             .previewLayout(.sizeThatFits)
