@@ -4,7 +4,6 @@
 import SwiftUI
 
 struct ABMeasurementsView: View {
-    
     @ObservedObject var session: SessionEntity
     var threshold: SensorThreshold
     @Binding var selectedStream: MeasurementStreamEntity?
@@ -20,7 +19,7 @@ struct ABMeasurementsView: View {
         return toShow
     }
     private var hasAnyMeasurements: Bool {
-        streamsToShow.filter { $0.latestValue != nil }.count > 0
+        streamsToShow.contains { $0.latestValue != nil }
     }
     
     var body: some View {
@@ -49,11 +48,9 @@ struct ABMeasurementsView: View {
             .foregroundColor(.darkBlue)
         }
     }
-
 }
 
 struct SingleMeasurementView: View {
-    
     let stream: MeasurementStreamEntity
     let value: Double
     var threshold: SensorThreshold
@@ -68,7 +65,7 @@ struct SingleMeasurementView: View {
             Button(action: {
                 selectedStream = stream
             }, label: {
-                HStack(spacing: 3){
+                HStack(spacing: 3) {
                     MeasurementDotView(value: value,
                                        thresholds: threshold)
                     Text("\(Int(value))")
@@ -81,7 +78,7 @@ struct SingleMeasurementView: View {
     }
     
     func showStreamName() -> String {
-        guard let streamName = stream.sensorName else {return ""}
+        guard let streamName = stream.sensorName else { return "" }
         return streamName
             .drop { $0 != "-" }
             .replacingOccurrences(of: "-", with: "")
