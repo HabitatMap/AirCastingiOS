@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct RootAppView: View {
-    @ObservedObject var userAuthenticationSession = UserAuthenticationSession()
+    @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
+    let sessionSynchronizer: SessionSynchronizer
 
     let persistenceController = PersistenceController.shared
     let bluetoothManager = BluetoothManager()
@@ -27,7 +28,8 @@ struct RootAppView: View {
     var mainAppView: some View {
         MainTabBarView(measurementUpdatingService: DownloadMeasurementsService(
                         authorisationService: userAuthenticationSession,
-                        persistenceController: persistenceController))
+                        persistenceController: persistenceController),
+                       sessionSynchronizer: sessionSynchronizer)
             .environmentObject(bluetoothManager)
             .environmentObject(microphoneManager)
             .environmentObject(userAuthenticationSession)
@@ -39,7 +41,7 @@ struct RootAppView: View {
 #if DEBUG
 struct RootAppView_Previews: PreviewProvider {
     static var previews: some View {
-        RootAppView()
+        RootAppView(sessionSynchronizer: DummySessionSynchronizer())
     }
 }
 #endif

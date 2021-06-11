@@ -56,28 +56,36 @@ final class DefaultLogoutController: LogoutController {
     let userAuthenticationSession: UserAuthenticationSession
     let sessionStorage: SessionStorage
     let microphoneManager: MicrophoneManager
+    let sessionSynchronizer: SessionSynchronizer
 
-    init(userAuthenticationSession: UserAuthenticationSession, sessionStorage: SessionStorage, microphoneManager: MicrophoneManager) {
+    init(userAuthenticationSession: UserAuthenticationSession,
+         sessionStorage: SessionStorage,
+         microphoneManager: MicrophoneManager,
+         sessionSynchronizer: SessionSynchronizer) {
         self.userAuthenticationSession = userAuthenticationSession
         self.sessionStorage = sessionStorage
         self.microphoneManager = microphoneManager
+        self.sessionSynchronizer = sessionSynchronizer
     }
 
     func logout() throws {
-        Log.info("Logging out. Cancelling all pending requests")
+        Log.info("[LOGOUT] Stopping any ongoing sync process")
+        sessionSynchronizer.stopSynchronization()
+        
+        Log.info("[LOGOUT] Cancelling all pending requests")
         URLSession.shared.getAllTasks { tasks in
             tasks.forEach { $0.cancel() }
         }
         if microphoneManager.isRecording {
-            Log.info("Canceling recording session")
+            Log.info("[LOGOUT] Canceling recording session")
             try? microphoneManager.stopRecording()
         }
-        Log.info("Clearing user credentials")
+        Log.info("[LOGOUT] Clearing user credentials")
         try userAuthenticationSession.deauthorize()
         do {
             try sessionStorage.clearAllSessionSilently()
         } catch {
-            assertionFailure("Failed to clear sessions \(error)")
+            assertionFailure("[LOGOUT] Failed to clear sessions \(error)")
         }
     }
 }

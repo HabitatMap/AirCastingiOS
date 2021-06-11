@@ -60,10 +60,6 @@ enum AuthorizationError: Error, LocalizedError, Identifiable {
 }
 
 final class AuthorizationAPIService {
-    private struct APIInput: Codable {
-        let session: String
-        let compression: Bool
-    }
 
     private struct SignupAPIInput: Encodable, Hashable {
         let user: AuthorizationAPI.SignupUserInput

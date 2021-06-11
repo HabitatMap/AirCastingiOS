@@ -14,6 +14,7 @@ struct MainTabBarView: View {
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     @EnvironmentObject var persistenceController: PersistenceController
     @EnvironmentObject var microphoneManager: MicrophoneManager
+    let sessionSynchronizer: SessionSynchronizer
     @StateObject var tabSelection: TabBarSelection = TabBarSelection()
 
     var body: some View {
@@ -54,7 +55,8 @@ private extension MainTabBarView {
         SettingsView(logoutController: DefaultLogoutController(
                         userAuthenticationSession: userAuthenticationSession,
                         sessionStorage: SessionStorage(persistenceController: persistenceController),
-                        microphoneManager: microphoneManager))
+                        microphoneManager: microphoneManager,
+                        sessionSynchronizer: sessionSynchronizer))
             .tabItem {
                 Image(systemName: "gearshape")
             }
@@ -77,7 +79,8 @@ struct ContentView_Previews: PreviewProvider {
     private static let persistenceController = PersistenceController(inMemory: true)
 
     static var previews: some View {
-        MainTabBarView(measurementUpdatingService: MeasurementUpdatingServiceMock())
+        MainTabBarView(measurementUpdatingService: MeasurementUpdatingServiceMock(),
+                       sessionSynchronizer: DummySessionSynchronizer())
             .environmentObject(UserAuthenticationSession())
             .environmentObject(BluetoothManager())
             .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
