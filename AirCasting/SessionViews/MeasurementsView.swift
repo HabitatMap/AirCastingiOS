@@ -18,34 +18,36 @@ struct ABMeasurementsView: View {
         let toShow = allStreams.compactMap { $0 }
         return toShow
     }
-    private var hasAnyMeasurements: Bool {
-        streamsToShow.contains { $0.latestValue != nil }
-    }
     
     var body: some View {
-        if hasAnyMeasurements {
-            VStack(alignment: .leading, spacing: 5) {
-                Text("Most recefnt measurement:")
-                HStack {
-                    Group {
-                        ForEach(streamsToShow) { stream in
-                            SingleMeasurementView(stream: stream,
-                                                  value: stream.latestValue ?? 0,
-                                                  threshold: threshold,
-                                                  selectedStream: _selectedStream)
+        let streams = streamsToShow
+        let hasAnyMeasurements = streams.filter { $0.latestValue != nil }.count > 0
+        
+        return Group {
+            if hasAnyMeasurements {
+                VStack(alignment: .leading, spacing: 5) {
+                    Text("Most recefnt measurement:")
+                    HStack {
+                        Group {
+                            ForEach(streams) { stream in
+                                SingleMeasurementView(stream: stream,
+                                                      value: stream.latestValue ?? 0,
+                                                      threshold: threshold,
+                                                      selectedStream: _selectedStream)
+                            }
                         }
+                        .frame(maxWidth: .infinity)
                     }
-                    .frame(maxWidth: .infinity)
                 }
+            } else {
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("Your AirBeam is gathering data.")
+                        .font(Font.moderate(size: 14))
+                    Text("Measurements will appear in 3 minutes.")
+                        .font(Font.moderate(size: 12))
+                }
+                .foregroundColor(.darkBlue)
             }
-        } else {
-            VStack(alignment: .leading, spacing: 3) {
-                Text("Your AirBeam is gathering data.")
-                    .font(Font.moderate(size: 14))
-                Text("Measurements will appear in 3 minutes.")
-                    .font(Font.moderate(size: 12))
-            }
-            .foregroundColor(.darkBlue)
         }
     }
 }
