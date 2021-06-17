@@ -146,9 +146,12 @@ extension BluetoothManager: CBPeripheralDelegate {
 
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
         if MEASUREMENTS_CHARACTERISTIC_UUIDS.contains(characteristic.uuid) {
-            if let parsedMeasurement = parseData(data: characteristic.value!) {
+            guard let value = characteristic.value else {
+                Log.warning("AirBeam sent measurement without value")
+                return
+            }
+            if let parsedMeasurement = parseData(data: value) {
                 mobilePeripheralSessionManager.handlePeripheralMeasurement(PeripheralMeasurement(peripheral: peripheral, measurementStream: parsedMeasurement))
-                
             }
         }
     }
