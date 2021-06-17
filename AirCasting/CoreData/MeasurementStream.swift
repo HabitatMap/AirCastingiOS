@@ -5,7 +5,7 @@ import Foundation
 
 struct MeasurementStream: Hashable {
     let id: MeasurementStreamID?
-    let sensorName: String?
+    let sensorName: SensorName?
     let sensorPackageName: String?
     let measurementType: String?
     let measurementShortType: String?

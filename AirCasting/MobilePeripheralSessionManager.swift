@@ -10,7 +10,7 @@ class MobilePeripheralSessionManager {
     
     private var activeMobileSession: MobileSession?
     
-    private var streamsIDs: [String: MeasurementStreamLocalID] = [:]
+    private var streamsIDs: [SensorName: MeasurementStreamLocalID] = [:]
     
     init(measurementStreamStorage: MeasurementStreamStorage) {
         self.measurementStreamStorage = measurementStreamStorage
