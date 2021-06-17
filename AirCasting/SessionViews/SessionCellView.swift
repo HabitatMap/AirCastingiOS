@@ -9,6 +9,7 @@ import SwiftUI
 import CoreLocation
 import CoreData
 import Charts
+import AirCastingStyling
 
 struct SessionCellView: View {
     

@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Foundation
+import AirCastingStyling
 
 struct SettingsView: View {
     let logoutController: LogoutController

@@ -8,7 +8,7 @@
 import SwiftUI
 import Foundation
 import SystemConfiguration.CaptiveNetwork
-
+import AirCastingStyling
 
 struct WifiPopupView: View {
     
