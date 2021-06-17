@@ -10,6 +10,7 @@ import Foundation
 import CoreData
 
 public typealias MeasurementStreamID = Int64
+public typealias SensorName = String
 
 public struct MeasurementStreamLocalID {
     let id: NSManagedObjectID
