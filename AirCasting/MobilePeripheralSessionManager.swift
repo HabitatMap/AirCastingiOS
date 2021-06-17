@@ -8,8 +8,9 @@ class MobilePeripheralSessionManager {
     private let measurementStreamStorage: MeasurementStreamStorage
     private lazy var locationProvider = LocationProvider()
     
-    var activeMobileSession: MobileSession?
-    var streamsIDs: [String: MeasurementStreamLocalID] = [:]
+    private var activeMobileSession: MobileSession?
+    
+    private var streamsIDs: [String: MeasurementStreamLocalID] = [:]
     
     init(measurementStreamStorage: MeasurementStreamStorage) {
         self.measurementStreamStorage = measurementStreamStorage
