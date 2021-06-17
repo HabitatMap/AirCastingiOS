@@ -28,7 +28,7 @@ class MobilePeripheralSessionManager {
         }
         if activeMobileSession?.peripheral == measurement.peripheral {
             do {
-                try updateStreams(stream: measurement.measurementStream) } catch {
+                try updateStreams(stream: measurement.measurementStream, sessionUUID: activeMobileSession!.session.uuid) } catch {
                     Log.error("Unable to save measurement from airbeam to database because of an error: \(error)")
                 }
         }
@@ -47,16 +47,16 @@ class MobilePeripheralSessionManager {
         }
     }
     
-    private func updateStreams(stream: ABMeasurementStream) throws {
+    private func updateStreams(stream: ABMeasurementStream, sessionUUID: SessionUUID) throws {
         let  location = locationProvider.currentLocation?.coordinate
         
         guard let id = streamsIDs[stream.sensorName] else {
-            return try createSessionStream(stream)
+            return try createSessionStream(stream, sessionUUID)
         }
         try measurementStreamStorage.addMeasurementValue(stream.measuredValue, at: location, toStreamWithID: id)
     }
     
-    private func createSessionStream(_ stream: ABMeasurementStream) throws {
+    private func createSessionStream(_ stream: ABMeasurementStream, _ sessionUUID: SessionUUID) throws {
         let location = locationProvider.currentLocation?.coordinate
         
         let sessionStream = MeasurementStream(id: nil,
@@ -71,7 +71,7 @@ class MobilePeripheralSessionManager {
                                               thresholdMedium: Int32(stream.thresholdMedium),
                                               thresholdLow: Int32(stream.thresholdLow),
                                               thresholdVeryLow: Int32(stream.thresholdVeryLow))
-        streamsIDs[stream.sensorName] = try measurementStreamStorage.createMeasurementStream(sessionStream, for: activeMobileSession!.session.uuid)
+        streamsIDs[stream.sensorName] = try measurementStreamStorage.createMeasurementStream(sessionStream, for: sessionUUID)
         try measurementStreamStorage.addMeasurementValue(stream.measuredValue, at: location, toStreamWithID: streamsIDs[stream.sensorName]!)
     }
 }
