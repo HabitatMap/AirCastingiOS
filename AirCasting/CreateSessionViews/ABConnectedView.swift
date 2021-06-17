@@ -71,7 +71,7 @@ struct AirbeamConnectedView_Previews: PreviewProvider {
         ABConnectedView(creatingSessionFlowContinues: .constant(true))
             .environmentObject(PersistenceController())
             .environmentObject(UserAuthenticationSession())
-            .environmentObject(BluetoothManager())
+            .environmentObject(BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: PreviewMeasurementStreamStorage())))
     }
 }
 #endif

@@ -25,7 +25,7 @@ class BluetoothManager: NSObject, ObservableObject {
     @Published var centralManagerState: CBManagerState = .unknown
     var observed: NSKeyValueObservation?
     
-    let mobilePeripheralSessionManager = MobilePeripheralSessionManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared))
+    let mobilePeripheralSessionManager: MobilePeripheralSessionManager
     
     private var MEASUREMENTS_CHARACTERISTIC_UUIDS: [CBUUID] = [
         CBUUID(string:"0000ffe1-0000-1000-8000-00805f9b34fb"),    // Temperature
@@ -54,6 +54,10 @@ class BluetoothManager: NSObject, ObservableObject {
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(30)) { [centralManager] in
             centralManager.stopScan()
         }
+    }
+    
+    init(mobilePeripheralSessionManager: MobilePeripheralSessionManager) {
+        self.mobilePeripheralSessionManager = mobilePeripheralSessionManager
     }
 }
 

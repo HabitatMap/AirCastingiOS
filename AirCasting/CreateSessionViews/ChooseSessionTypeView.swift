@@ -192,7 +192,7 @@ struct CreateSessionView_Previews: PreviewProvider {
     static var previews: some View {
         ChooseSessionTypeView(
             sessionContext: CreateSessionContext())
-                .environmentObject(BluetoothManager())
+                .environmentObject(BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: PreviewMeasurementStreamStorage())))
     }
 }
 #endif

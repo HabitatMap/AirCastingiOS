@@ -79,7 +79,7 @@ struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         MainTabBarView(measurementUpdatingService: MeasurementUpdatingServiceMock())
             .environmentObject(UserAuthenticationSession())
-            .environmentObject(BluetoothManager())
+            .environmentObject(BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: PreviewMeasurementStreamStorage())))
             .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
             .environment(\.managedObjectContext, persistenceController.viewContext)
     }
