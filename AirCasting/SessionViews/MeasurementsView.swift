@@ -2,6 +2,7 @@
 //
 
 import SwiftUI
+import AirCastingStyling
 
 struct ABMeasurementsView: View {
     @ObservedObject var session: SessionEntity
@@ -74,7 +75,7 @@ struct SingleMeasurementView: View {
                         .font(Font.moderate(size: 14, weight: .regular))
                 }
             })
-            .buttonStyle(AirBorderedButtonStyle(isSelected: selectedStream == stream,
+            .buttonStyle(AirCastingStyling.BorderedButtonStyle(isSelected: selectedStream == stream,
                                                 thresholdColor: colorBorder(stream: stream)))
         }
     }

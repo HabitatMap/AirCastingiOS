@@ -19,10 +19,11 @@ struct GrayButtonStyle: ButtonStyle {
             .padding(-3)
     }
 }
-
+#if DEBUG
 struct GrayButtonStyle_Previews: PreviewProvider {
     static var previews: some View {
         Button("click") {}
             .buttonStyle(GrayButtonStyle())
     }
 }
+#endif

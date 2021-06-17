@@ -18,10 +18,11 @@ struct BlueTextButtonStyle: ButtonStyle {
             .padding(.vertical, 12)
     }
 }
-
+#if DEBUG
 struct BlueTextButtonStyle_Previews: PreviewProvider {
     static var previews: some View {
         Button("BlueTextButtonStyle") {}
             .buttonStyle(BlueTextButtonStyle())
     }
 }
+#endif

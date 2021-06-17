@@ -82,7 +82,7 @@ public class SessionEntity: NSManagedObject, Identifiable {
     }
     
     func streamWith(sensorName: String) -> MeasurementStreamEntity? {
-        return self.allStreams?.first { stream in
+       allStreams?.first { stream in
             stream.sensorName == sensorName
         }
     }
