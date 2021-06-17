@@ -27,7 +27,10 @@ class MobilePeripheralSessionManager {
             return
         }
         if activeMobileSession?.peripheral == measurement.peripheral {
-            updateStreams(stream: measurement.measurementStream)
+            do {
+                try updateStreams(stream: measurement.measurementStream) } catch {
+                    Log.error("Unable to save measurement from airbeam to database because of an error: \(error)")
+                }
         }
     }
     
@@ -35,27 +38,26 @@ class MobilePeripheralSessionManager {
         if activeMobileSession?.peripheral == peripheral {
             let session = activeMobileSession!.session
             
-            try! measurementStreamStorage.updateSessionStatus(.FINISHED, for: session.uuid)
+            do {
+                try measurementStreamStorage.updateSessionStatus(.FINISHED, for: session.uuid) } catch {
+                    Log.error("Unable to change session status to finished because of an error: \(error)")
+                }
             activeMobileSession = nil
             locationProvider.stopUpdatingLocation()
         }
     }
     
-    private func updateStreams(stream: ABMeasurementStream) {
+    private func updateStreams(stream: ABMeasurementStream) throws {
         let  location = locationProvider.currentLocation?.coordinate
         
-        do {
-            if let id = streamsIDs[stream.sensorName] {
-                try measurementStreamStorage.addMeasurementValue(stream.measuredValue, at: location, toStreamWithID: id)
-            } else {
-                try createSessionStream(stream)
-            } } catch {
-                Log.error("Unable to save measurement from airbeam to database because of an error: \(error)")
-            }
+        guard let id = streamsIDs[stream.sensorName] else {
+            return try createSessionStream(stream)
+        }
+        try measurementStreamStorage.addMeasurementValue(stream.measuredValue, at: location, toStreamWithID: id)
     }
     
     private func createSessionStream(_ stream: ABMeasurementStream) throws {
-        let  location = locationProvider.currentLocation?.coordinate
+        let location = locationProvider.currentLocation?.coordinate
         
         let sessionStream = MeasurementStream(id: nil,
                                               sensorName: stream.sensorName,
