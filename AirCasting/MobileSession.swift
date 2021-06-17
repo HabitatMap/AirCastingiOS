@@ -4,12 +4,7 @@
 import Foundation
 import CoreBluetooth
 
-class MobileSession {
-    var peripheral: CBPeripheral
-    var session: Session
-    
-    init(peripheral: CBPeripheral, session: Session) {
-        self.peripheral = peripheral
-        self.session = session
-    }
+struct MobileSession {
+    let peripheral: CBPeripheral
+    let session: Session
 }
