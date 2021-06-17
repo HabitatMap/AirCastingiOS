@@ -80,7 +80,8 @@ final class MobilePeripheralSessionCreator: SessionCreator {
                               deviceType: sessionContext.deviceType,
                               location: startingLocation,
                               startTime: Date(),
-                              tags: sessionContext.sessionTags)
+                              tags: sessionContext.sessionTags,
+                              status: .NEW)
 
         do {
             guard let peripheral = sessionContext.peripheral else {

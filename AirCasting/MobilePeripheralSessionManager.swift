@@ -18,7 +18,6 @@ class MobilePeripheralSessionManager {
     
     func startRecording(session: Session, peripheral: CBPeripheral) throws {
         try measurementStreamStorage.createSession(session)
-        try measurementStreamStorage.updateSessionStatus(.NEW, for: session.uuid)
         locationProvider.requestLocation()
         activeMobileSession = MobileSession(peripheral: peripheral, session: session)
     }
