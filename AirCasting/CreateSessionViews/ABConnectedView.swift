@@ -43,7 +43,7 @@ private extension ABConnectedView {
             .foregroundColor(.aircastingGray)
     }
     var continueButton: some View {
-        var sessionCreator: SessionCreator
+        let sessionCreator: SessionCreator
         if sessionContext.sessionType == .mobile {
             sessionCreator = MobilePeripheralSessionCreator(
                 mobilePeripheralSessionManager: bluetoothManager.mobilePeripheralSessionManager, measurementStreamStorage: CoreDataMeasurementStreamStorage(
