@@ -1,0 +1,38 @@
+//
+//  File.swift
+//  
+//
+//  Created by Lunar on 17/06/2021.
+//
+
+import SwiftUI
+
+extension Color {
+    public static var aircastingGray: Color {
+        return Color("AircastingGray700")
+    }
+    public static var darkBlue: Color {
+        return Color("DarkBlue")
+    }
+    public static var aircastingGreen: Color {
+        return Color("AircastingGreen")
+    }
+    public static var aircastingYellow: Color {
+        return Color("AircastingYellow")
+    }
+    public static var aircastingOrange: Color {
+        return Color("AircastingOrange")
+    }
+    public static var aircastingRed: Color {
+        return Color("AircastingRed")
+    }
+    public static var buttonGray: Color {
+        return Color("ButtonGray")
+    }
+    public static var aircastingDarkGray: Color {
+        return Color("DarkGray")
+    }
+    public static var aircastingBackground: Color {
+        return Color("aircastingBackground")
+    }
+}
