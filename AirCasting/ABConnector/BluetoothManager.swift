@@ -62,8 +62,8 @@ class BluetoothManager: NSObject, ObservableObject {
 }
 
 struct PeripheralMeasurement {
-    var peripheral: CBPeripheral
-    var measurementStream: ABMeasurementStream
+    let peripheral: CBPeripheral
+    let measurementStream: ABMeasurementStream
 }
 
 extension BluetoothManager: CBCentralManagerDelegate {
