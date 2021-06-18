@@ -50,6 +50,8 @@
 		AC32041F25CC485E00A68520 /* ConnectingABView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC32041E25CC485E00A68520 /* ConnectingABView.swift */; };
 		AC32043625CD534700A68520 /* ChooseSessionTypeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC32043525CD534700A68520 /* ChooseSessionTypeView.swift */; };
 		AC489B5C2603614E00CEEC48 /* MoreInfoPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC489B5B2603614E00CEEC48 /* MoreInfoPopupView.swift */; };
+		AC4A6A6A267CB3890001F639 /* AirCastingGraph.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC4A6A69267CB3890001F639 /* AirCastingGraph.swift */; };
+		AC4A6A6C267CB3D40001F639 /* GraphRenderers.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC4A6A6B267CB3D40001F639 /* GraphRenderers.swift */; };
 		AC4EC6BC25B5ABB700C1E312 /* StatisticsContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC4EC6BB25B5ABB700C1E312 /* StatisticsContainerView.swift */; };
 		AC4EC6C125B6F18A00C1E312 /* EditButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC4EC6C025B6F18A00C1E312 /* EditButtonView.swift */; };
 		AC4EC6C425B6FE0D00C1E312 /* HeatmapSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC4EC6C325B6FE0D00C1E312 /* HeatmapSettingsView.swift */; };
@@ -192,6 +194,8 @@
 		AC32041E25CC485E00A68520 /* ConnectingABView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectingABView.swift; sourceTree = "<group>"; };
 		AC32043525CD534700A68520 /* ChooseSessionTypeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseSessionTypeView.swift; sourceTree = "<group>"; };
 		AC489B5B2603614E00CEEC48 /* MoreInfoPopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoreInfoPopupView.swift; sourceTree = "<group>"; };
+		AC4A6A69267CB3890001F639 /* AirCastingGraph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirCastingGraph.swift; sourceTree = "<group>"; };
+		AC4A6A6B267CB3D40001F639 /* GraphRenderers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphRenderers.swift; sourceTree = "<group>"; };
 		AC4EC6BB25B5ABB700C1E312 /* StatisticsContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsContainerView.swift; sourceTree = "<group>"; };
 		AC4EC6C025B6F18A00C1E312 /* EditButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditButtonView.swift; sourceTree = "<group>"; };
 		AC4EC6C325B6FE0D00C1E312 /* HeatmapSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeatmapSettingsView.swift; sourceTree = "<group>"; };
@@ -438,6 +442,8 @@
 			children = (
 				AC6D56A125AEF55C00D221BA /* GraphView.swift */,
 				AC5832D925B196DD008C5DD5 /* Graph.swift */,
+				AC4A6A69267CB3890001F639 /* AirCastingGraph.swift */,
+				AC4A6A6B267CB3D40001F639 /* GraphRenderers.swift */,
 				ACC883872645784400C5DB70 /* GraphErorrHandling.swift */,
 			);
 			path = Graph;
@@ -932,6 +938,7 @@
 				4F8CDBD2265F8DAC00976B25 /* Assertions.swift in Sources */,
 				4FD2CA4726406F2C007E932E /* Diff.swift in Sources */,
 				AC5832DA25B196DD008C5DD5 /* Graph.swift in Sources */,
+				AC4A6A6A267CB3890001F639 /* AirCastingGraph.swift in Sources */,
 				AC93B8E725BEFE4F003D0A0D /* AirMapView.swift in Sources */,
 				4F945EF4264B2813008A5B22 /* ActivityIndicator.swift in Sources */,
 				3362B4ED25E69987008D61BA /* CreateSessionDetailsView.swift in Sources */,
@@ -989,6 +996,7 @@
 				332F521425FA38430047236D /* MicrophoneManager.swift in Sources */,
 				AC8CFF4125E5095600FB2918 /* Textfield.swift in Sources */,
 				AC7EB37625A6FB3A00A7F2AF /* AirCastingApp.swift in Sources */,
+				AC4A6A6C267CB3D40001F639 /* GraphRenderers.swift in Sources */,
 				ACD01F922600A3C800B8F65F /* RootAppView.swift in Sources */,
 				331EA80A25E32094009DEFDB /* ConfirmCreatingSessionView.swift in Sources */,
 				AC049F872608B74C00398197 /* FixedSession.swift in Sources */,
