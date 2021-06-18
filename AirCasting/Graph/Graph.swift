@@ -7,6 +7,20 @@
 
 import SwiftUI
 import Charts
+import SwiftSimplify
+
+extension ChartDataEntry: Point2DRepresentable {
+    public var xValue: Float {
+        Float(self.x)
+    }
+    
+    public var yValue: Float {
+        Float(self.y)
+    }
+    public var cgPoint: CGPoint {
+        .init(x: CGFloat(xValue), y: CGFloat(yValue))
+    }
+}
 
 struct Graph: UIViewRepresentable {
     typealias UIViewType = AirCastingGraph
@@ -14,13 +28,14 @@ struct Graph: UIViewRepresentable {
     @ObservedObject var stream: MeasurementStreamEntity
     @ObservedObject var thresholds: SensorThreshold
     var isAutozoomEnabled: Bool
+    let simplifiedGraphEntryThreshold = 1000
     
     func makeUIView(context: Context) -> AirCastingGraph {
         AirCastingGraph()
     }
-
+    
     func updateUIView(_ uiView: AirCastingGraph, context: Context) {
-
+        
         try? uiView.updateWithThreshold(thresholdValues: thresholds.rawThresholdsBinding.wrappedValue)
         
         let entries = stream.allMeasurements?.compactMap({ measurement -> ChartDataEntry? in
@@ -28,10 +43,21 @@ struct Graph: UIViewRepresentable {
             let chartDataEntry = ChartDataEntry(x: timeInterval, y: measurement.value)
             return chartDataEntry
         }) ?? []
-        uiView.updateWithEntries(entries: entries, isAutozoomEnabled: isAutozoomEnabled)
-        
         let allLimitLines = getLimitLines()
-        uiView.limitLines = allLimitLines
+        uiView.limitLines = allLimitLines        
+        simplifyGraphline(entries: entries, uiView: uiView)
+    }
+    
+    private func simplifyGraphline(entries: [ChartDataEntry], uiView: AirCastingGraph) {
+        if entries.count > simplifiedGraphEntryThreshold {
+            let simplifiedPoints = SwiftSimplify.simplify(entries,
+                                                          tolerance: 0.000000001,
+                                                          highestQuality: true)
+            uiView.updateWithEntries(entries: simplifiedPoints, isAutozoomEnabled: isAutozoomEnabled)
+            print("Simplified \(entries.count) to \(simplifiedPoints.count)")
+        } else {
+            uiView.updateWithEntries(entries: entries, isAutozoomEnabled: isAutozoomEnabled)
+        }
     }
     
     func getMidnightsPoints(startingDate: Date) -> [Double] {
