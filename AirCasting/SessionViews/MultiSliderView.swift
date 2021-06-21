@@ -92,7 +92,6 @@ struct MultiSliderView: View {
     }
     
     func labels(geometry: GeometryProxy) -> some View {
-        let frameWidth = geometry.frame(in: .local).size.width
         let y = geometry.frame(in: .local).size.height / 2
         return ForEach(thresholds.indices, id: \.self) { index in
             let ints = Int(thresholds[index])
