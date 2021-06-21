@@ -130,6 +130,8 @@
 		ACF77DFB25A8888700BB85B7 /* SessionCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACF77DFA25A8888700BB85B7 /* SessionCellView.swift */; };
 		ACF7C05F260CC9FF007C24AE /* DownloadMeasurmentsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACF7C05E260CC9FF007C24AE /* DownloadMeasurmentsService.swift */; };
 		ACFC708925C1A36A00D609D9 /* UIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACFC708825C1A36A00D609D9 /* UIColor.swift */; };
+		DD1C99C1267CBFCB00B786C4 /* MyAccountViewSingOut.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD1C99C0267CBFCB00B786C4 /* MyAccountViewSingOut.swift */; };
+		DD2181EF267BBCBC0010EC2E /* MyAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD2181EE267BBCBC0010EC2E /* MyAccountView.swift */; };
 		EE969E7E1981C41852FB7745 /* Pods_AirCastingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A54057326D27D23E9906704 /* Pods_AirCastingTests.framework */; };
 		F76B6F660F0BD398629EDD83 /* Pods_AirCasting.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E819223F8D800D3B8ED8F56 /* Pods_AirCasting.framework */; };
 /* End PBXBuildFile section */
@@ -278,6 +280,8 @@
 		ACF77DFA25A8888700BB85B7 /* SessionCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionCellView.swift; sourceTree = "<group>"; };
 		ACF7C05E260CC9FF007C24AE /* DownloadMeasurmentsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadMeasurmentsService.swift; sourceTree = "<group>"; };
 		ACFC708825C1A36A00D609D9 /* UIColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColor.swift; sourceTree = "<group>"; };
+		DD1C99C0267CBFCB00B786C4 /* MyAccountViewSingOut.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyAccountViewSingOut.swift; sourceTree = "<group>"; };
+		DD2181EE267BBCBC0010EC2E /* MyAccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyAccountView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -635,6 +639,8 @@
 			isa = PBXGroup;
 			children = (
 				ACD32A4E2600A8DD00818946 /* SettingsView.swift */,
+				DD2181EE267BBCBC0010EC2E /* MyAccountView.swift */,
+				DD1C99C0267CBFCB00B786C4 /* MyAccountViewSingOut.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -953,6 +959,7 @@
 				4F2D84EB2647DBE0003D9ED5 /* MeasurementStreamStorage.swift in Sources */,
 				ACC8838C265284AA00C5DB70 /* CoreDataHook.swift in Sources */,
 				AC8CFF5C25E6866100FB2918 /* SignInView.swift in Sources */,
+				DD2181EF267BBCBC0010EC2E /* MyAccountView.swift in Sources */,
 				AC524A6F261329330061AD45 /* SessionExtension.swift in Sources */,
 				ACF77DFB25A8888700BB85B7 /* SessionCellView.swift in Sources */,
 				4F3CDF222652B58100596CD3 /* Measurement.swift in Sources */,
@@ -1011,6 +1018,7 @@
 				ACDF82FC265BBDE200A4D04A /* UIFont.swift in Sources */,
 				ACF77DF025A750C200BB85B7 /* Font.swift in Sources */,
 				4F15548F263C819C00FF3208 /* MeasurementEntity.swift in Sources */,
+				DD1C99C1267CBFCB00B786C4 /* MyAccountViewSingOut.swift in Sources */,
 				ACD01F7325FF574A00B8F65F /* WifiPopupView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
