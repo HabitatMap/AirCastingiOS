@@ -51,7 +51,7 @@ struct SettingsView: View {
                             }
                         }
                     }.sheet(isPresented: $showModal, content: {
-                        FullScreenModalView()
+                        BackendSettingsModalView()
                     })
                 }
                 
@@ -73,7 +73,7 @@ struct SettingsView: View {
     }
     
     
-   private struct FullScreenModalView: View {
+   private struct BackendSettingsModalView: View {
         @Environment(\.presentationMode) var presentationMode
         @State var url: String = ""
         @State var port: String = ""
