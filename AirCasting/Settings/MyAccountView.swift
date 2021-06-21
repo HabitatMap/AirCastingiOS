@@ -7,7 +7,7 @@ struct MyAccountView: View {
     var body: some View {
         ZStack {
             VStack(alignment: .leading) {
-                
+                #warning("Logic here needs to be finished - handle log in")
                 Text("You aren’t currently logged in")
                     .foregroundColor(.aircastingGray)
                     .padding()

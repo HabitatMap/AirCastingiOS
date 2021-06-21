@@ -7,7 +7,7 @@ struct MyAccountViewSingOut: View {
     var body: some View {
         ZStack {
             VStack(alignment: .leading) {
-                
+                #warning("Logic needs to be finished - handle name displayed")
                 Text("You are currently logged in as jan.krzempek@lunarlogic.io")
                     .foregroundColor(.aircastingGray)
                     .padding()
