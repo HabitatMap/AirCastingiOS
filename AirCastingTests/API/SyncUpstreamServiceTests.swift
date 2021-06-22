@@ -9,7 +9,7 @@ class SyncUpstreamServiceTests: XCTestCase {
     let client = APIClientMock()
     let auth = RequestAuthorizationServiceMock()
     let responseValidator = HTTPResponseValidatorMock()
-    lazy var service = AirCastingSessionUploadService(client: client, authorization: auth, responseValidator: responseValidator)
+    lazy var service = SessionUploadService(client: client, authorization: auth, responseValidator: responseValidator)
     private var cancellables: [AnyCancellable] = []
     
     func test_callsEndponitCorrectly() {

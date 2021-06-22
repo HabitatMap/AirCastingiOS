@@ -34,8 +34,16 @@ class SessionSynchronizationController: SessionSynchronizer {
     
     func triggerSynchronization(completion: (() -> Void)?) {
         lock.lock(); defer { lock.unlock() }
-        setupGateBinding(onFinished: completion)
-        gate.send()
+        if syncInProgress { return }
+        syncInProgress = true
+        
+        startSynchronization()
+            .sink(receiveCompletion: { _ in
+                Log.info("[SYNC] Ending synchronization")
+                completion?()
+                self.syncInProgress = false
+            }, receiveValue: { _ in })
+            .store(in: &cancellables)
     }
     
     func stopSynchronization() {
@@ -45,23 +53,10 @@ class SessionSynchronizationController: SessionSynchronizer {
         cancellables = []
     }
     
-    private func setupGateBinding(onFinished: (() -> Void)?) {
-        gate
-            .filter { !self.syncInProgress }
-            .flatMap { self.startSynchronization() }
-            .sink(receiveCompletion: { _ in
-                Log.info("[SYNC] Ending synchronization")
-                onFinished?()
-                self.syncInProgress = false
-            }, receiveValue: { _ in })
-            .store(in: &cancellables)
-    }
-    
     private func startSynchronization() -> AnyPublisher<Void, Error> {
         Log.info("[SYNC] Starting synchronization")
-        // Let's give ourselves a favor and place that warning here 🔥
+        // Let's make ourselves a favor and place that warning here 🔥
         if Thread.isMainThread { Log.warning("[SYNC] Synchronization started on main thread, reconsider") }
-        syncInProgress = true
         return store
             .getLocalSessionList()
             .logError(message: "[SYNC] Couldn't fetch local sessions")

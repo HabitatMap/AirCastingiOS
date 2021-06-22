@@ -67,7 +67,6 @@ final class SessionSynchronizationService: SessionSynchronizationContextProvidab
         }
         
         return subject
-            .print()
             .handleEvents(receiveSubscription: { _ in }, receiveCancel: { requestCancellable.cancel() })
             .eraseToAnyPublisher()
     }

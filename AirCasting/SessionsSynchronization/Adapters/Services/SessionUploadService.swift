@@ -5,7 +5,7 @@ import Foundation
 import Combine
 import CoreLocation
 
-final class AirCastingSessionUploadService: SessionUpstream {
+final class SessionUploadService: SessionUpstream {
     private let client: APIClient
     private let authorization: RequestAuthorisationService
     private let responseValidator: HTTPResponseValidator

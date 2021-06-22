@@ -63,18 +63,15 @@ class SyncContextServiceTests: XCTestCase {
                 let request = self.client.callHistory.first!
                 let json = try! JSONSerialization.jsonObject(with: request.httpBody!, options: .allowFragments) as! [String : Any]
                 guard let metadataJsonString = json["data"] as? String else {
-                    XCTFail("Unexpected data format!")
-                    return
+                    XCTFail("Unexpected data format!"); return
                 }
                 let metadataJson = try! JSONSerialization.jsonObject(with: metadataJsonString.data(using: .utf8)!, options: .allowFragments) as! [[String : Any]]
                 XCTAssertEqual(metadataJson.count, 2)
                 guard let first = metadataJson.first(where: { $0["uuid"] as? String == "FIRST" }) else {
-                    XCTFail("Unexpected data format!")
-                    return
+                    XCTFail("Unexpected data format!"); return
                 }
                 guard let second = metadataJson.first(where: { $0["uuid"] as? String == "SECOND" }) else {
-                    XCTFail("Unexpected data format!")
-                    return
+                    XCTFail("Unexpected data format!"); return
                 }
                 XCTAssertEqual(first["deleted"] as? Bool, true)
                 XCTAssertEqual(first["version"] as? Int, 1)

@@ -8,6 +8,7 @@ import Combine
 // should consider abstrating it away and injecting (don't think this will
 // be the case tho)
 import class UIKit.UIApplication
+import struct UIKit.UIBackgroundTaskIdentifier
 
 /// A  _Proxy_ object wrapping any instance of  a `SessionSynchronizationController` and dispatching its work to a passed `Scheduler`. It also wraps it into a background task.
 ///
@@ -18,6 +19,7 @@ class ScheduledSessionSynchronizerProxy<S: Scheduler>: SessionSynchronizer {
     private let scheduler: S
     private let controller: SessionSynchronizer
     private var cancellables: [AnyCancellable] = []
+    private var backgroundTaskIdentifier: UIBackgroundTaskIdentifier?
     
     init(controller: SessionSynchronizer, scheduler: S) {
         self.controller = controller
@@ -26,13 +28,23 @@ class ScheduledSessionSynchronizerProxy<S: Scheduler>: SessionSynchronizer {
     
     func triggerSynchronization(completion: (() -> Void)?) {
         scheduler.schedule { [weak self] in
-            
-            self?.controller.triggerSynchronization(completion: completion)
+            guard let self = self else { return }
+            self.backgroundTaskIdentifier = UIApplication.shared.beginBackgroundTask(withName: "Session synchronization") {
+                self.controller.stopSynchronization()
+            }
+            self.controller.triggerSynchronization { [ weak self] in
+                if let identifier  = self?.backgroundTaskIdentifier {
+                    UIApplication.shared.endBackgroundTask(identifier)
+                }
+            }
         }
     }
     
     func stopSynchronization() {
         scheduler.schedule { [weak self] in
+            if let identifier  = self?.backgroundTaskIdentifier {
+                UIApplication.shared.endBackgroundTask(identifier)
+            }
             self?.controller.stopSynchronization()
         }
     }
