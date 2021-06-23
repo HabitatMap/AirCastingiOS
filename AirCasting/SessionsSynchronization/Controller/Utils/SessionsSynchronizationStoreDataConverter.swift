@@ -45,27 +45,17 @@ struct SynchronizationDataConterter {
         return .init(uuid: session.uuid,
                      type: session.sessionType,
                      title: session.name,
+                     // TODO: Notes implementation in the future would require this to be synced
+                     notes: [],
                      tagList: session.tags ?? "",
                      startTime: session.startTime,
                      endTime: session.endTime,
                      contribute: session.contribute,
                      isIndoor: session.isIndoor,
                      version: session.version,
-                     streams: session.measurementStreams.reduce([:], { dict, stream in
-                        [stream.sensorName : .init(id: stream.id,
-                                                   sensorName: stream.sensorName,
-                                                   sensorPackageName: stream.sensorPackageName,
-                                                   unitName: stream.unitName,
-                                                   measurementType: stream.measurementType,
-                                                   measurementShortType: stream.measurementShortType,
-                                                   unitSymbol: stream.unitSymbol,
-                                                   thresholdVeryLow: stream.thresholdVeryLow,
-                                                   thresholdLow: stream.thresholdLow,
-                                                   thresholdMedium: stream.thresholdMedium,
-                                                   thresholdHigh: stream.thresholdHigh,
-                                                   thresholdVeryHigh: stream.thresholdVeryHigh,
-                                                   deleted: false)]
-                     }),
+                     // NOTE: This is not being sent from Android app too and any attempt to put data here
+                     // is causing a 500 Server Error, so it's probably how it should work.
+                     streams: [:],
                      latitude: session.latitude,
                      longitude: session.longitude,
                      deleted: session.gotDeleted)

@@ -3,6 +3,7 @@
 
 import Foundation
 import Combine
+import Gzip
 import CoreLocation
 
 final class SessionUploadService: SessionUpstream {
@@ -14,13 +15,15 @@ final class SessionUploadService: SessionUpstream {
         let encoder = JSONEncoder()
         encoder.keyEncodingStrategy = .convertToSnakeCase
         let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
         encoder.dateEncodingStrategy = .formatted(formatter)
+        encoder.outputFormatting = [.withoutEscapingSlashes]
         return encoder
     }()
     
     private struct APICallData: Encodable {
         let session: String
+        let compression: Bool
     }
     
     init(client: APIClient, authorization: RequestAuthorisationService, responseValidator: HTTPResponseValidator) {
@@ -43,11 +46,12 @@ final class SessionUploadService: SessionUpstream {
                 // where `session` field is a *string* containing a JSON.
                 //
                 // 🤷‍♂️
-                let bodyData = try encoder.encode(session)
-                guard let bodyString = String(data: bodyData, encoding: .utf8) else {
-                    throw BodyEncodingError.dataCannotBeStringified
-                }
-                request.httpBody = try encoder.encode(APICallData(session: bodyString))
+                let sessionData = try encoder.encode(session)
+                let gzippedSessionData = try sessionData.gzipped()
+                let sessionBase64String = gzippedSessionData.base64EncodedString(options: [.lineLength76Characters, .endLineWithLineFeed])
+                let apiCallData = APICallData(session: sessionBase64String, compression: true)
+                let apiCallBody = try encoder.encode(apiCallData)
+                request.httpBody = apiCallBody
                 try authorization.authorise(request: &request)
             } catch {
                 promise(.failure(error))

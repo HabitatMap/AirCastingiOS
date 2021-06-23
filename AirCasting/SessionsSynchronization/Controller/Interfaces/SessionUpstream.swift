@@ -22,6 +22,7 @@ extension SessionsSynchronization {
         let uuid: SessionUUID
         let type: String
         let title: String
+        let notes: [String]
         let tagList: String
         let startTime: Date
         let endTime: Date?
