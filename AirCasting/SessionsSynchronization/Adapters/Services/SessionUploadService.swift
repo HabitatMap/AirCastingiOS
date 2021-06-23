@@ -15,8 +15,7 @@ final class SessionUploadService: SessionUpstream {
         let encoder = JSONEncoder()
         encoder.keyEncodingStrategy = .convertToSnakeCase
         let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
-        formatter.timeZone = .init(identifier: "UTC")
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
         encoder.dateEncodingStrategy = .formatted(formatter)
         encoder.outputFormatting = [.withoutEscapingSlashes]
         return encoder
