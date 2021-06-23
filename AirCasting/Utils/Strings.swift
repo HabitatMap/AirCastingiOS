@@ -23,6 +23,7 @@ struct Strings {
     
     struct MyAccountSettings {
         static let title: String = "My account"
+        static let logStatus: String = "You aren’t currently logged in"
         static let notLogged: String = "You aren’t currently logged in"
         static let createAccount: String = "Create an account"
         static let logIn: String = "Log In"

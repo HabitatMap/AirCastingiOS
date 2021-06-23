@@ -19,7 +19,7 @@ struct MyAccountView: View {
 }
 
 private var loggedOutInformationLabel: some View {
-    Text("You aren’t currently logged in")
+    Text(Strings.MyAccountSettings.logStatus)
         .foregroundColor(.aircastingGray)
         .padding()
 }

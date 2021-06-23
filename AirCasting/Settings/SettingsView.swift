@@ -30,7 +30,7 @@ struct SettingsView: View {
                         Spacer()
                         crowdMapDescription
                     }
-                    showModalButton
+                    navigateToBackendSettingsButton
                 }
                 
                 Section() {
@@ -67,7 +67,7 @@ struct SettingsView: View {
             .fontWeight(.light)
     }
     
-    private var showModalButton: some View {
+    private var navigateToBackendSettingsButton: some View {
         Button(action: {
             showModal.toggle()
         }) {
