@@ -20,7 +20,6 @@ protocol SessionSynchronizationStore {
     @discardableResult
     func removeSessions(with: [SessionUUID]) -> Future<Void, Error>
     
-    
     func readSession(with: SessionUUID) -> Future<SessionsSynchronization.SessionStoreSessionData, Error>
 }
 
