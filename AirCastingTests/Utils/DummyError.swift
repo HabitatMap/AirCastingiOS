@@ -3,8 +3,9 @@
 
 import Foundation
 
-struct DummyError: Error, Equatable {
+struct DummyError: Error, Equatable, LocalizedError {
     let errorData: String
+    var errorDescription: String? { errorData }
     
     init(errorData: String = .default) {
         self.errorData = errorData

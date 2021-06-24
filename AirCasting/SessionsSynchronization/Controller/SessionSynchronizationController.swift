@@ -37,19 +37,21 @@ class SessionSynchronizationController: SessionSynchronizer {
         if syncInProgress { return }
         syncInProgress = true
         
+        let onFinish = {
+            Log.info("[SYNC] Ending synchronization")
+            completion?()
+            self.syncInProgress = false
+        }
+        
         startSynchronization()
-            .sink(receiveCompletion: { _ in
-                Log.info("[SYNC] Ending synchronization")
-                completion?()
-                self.syncInProgress = false
-            }, receiveValue: { _ in })
+            .handleEvents(receiveCancel: onFinish)
+            .sink(receiveCompletion: { _ in onFinish() }, receiveValue: { _ in })
             .store(in: &cancellables)
     }
     
     func stopSynchronization() {
         lock.lock(); defer { lock.unlock() }
         Log.info("[SYNC] Forced stopping synchronization")
-        syncInProgress = false
         cancellables = []
     }
     
@@ -126,8 +128,9 @@ class SessionSynchronizationController: SessionSynchronizer {
             .flatMap { uploadData in
                 self.upstream
                     .upload(session: uploadData)
-                    .logError(message: "[SYNC] Uploading session failed")
+                    .logErrorAndComplete(message: "[SYNC] Uploading session failed")
             }
+            .setFailureType(to: Error.self)
             .eraseToAnyPublisher()
     }
     

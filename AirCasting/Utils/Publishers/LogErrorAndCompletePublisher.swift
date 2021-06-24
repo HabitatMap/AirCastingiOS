@@ -9,7 +9,7 @@ extension Publisher {
     ///   - message: A message that will prefix the `error.localizedDescription` printout.
     ///   - logFunc: Optional custom logging function.
     /// - Returns: A publisher that matches the upstream `Output` and has a `Failure` set to `Never`.
-    func logErrorAndComplete(message: String = "", logFunc: @escaping (String) -> Void = { Log.info($0) }) -> Publishers.LogErrorAndComplete<Self> {
+    func logErrorAndComplete(message: String = "", logFunc: @escaping (String) -> Void = { Log.error($0) }) -> Publishers.LogErrorAndComplete<Self> {
         .init(upstream: self, logMessage: message, logFunc: logFunc)
     }
 }

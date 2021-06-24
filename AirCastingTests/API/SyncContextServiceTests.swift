@@ -148,10 +148,6 @@ extension Array where Element == SessionsSynchronization.Metadata {
 }
 
 class RequestAuthorizationServiceMock: RequestAuthorisationService {
-    struct DummyError: Error {
-        
-    }
-    
     var stubError: Error? = nil
     
     func authorise(request: inout URLRequest) throws -> URLRequest {

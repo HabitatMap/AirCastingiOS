@@ -3,6 +3,7 @@
 
 import XCTest
 import Combine
+import Gzip
 @testable import AirCasting
 
 class SyncUpstreamServiceTests: XCTestCase {
@@ -38,14 +39,31 @@ class SyncUpstreamServiceTests: XCTestCase {
                 XCTAssertEqual(self.client.callHistory.count, 1)
                 let request = self.client.callHistory.first!
                 let json = try! JSONSerialization.jsonObject(with: request.httpBody!, options: .allowFragments) as! [String : Any]
-                guard let sessionJsonString = json["session"] as? String else {
+                guard let gzippedBase64SessionJsonString = json["session"] as? String else {
                     XCTFail("Unexpected data format!")
                     return
                 }
-                let sessionJson = try! JSONSerialization.jsonObject(with: sessionJsonString.data(using: .utf8)!, options: .allowFragments) as! [String : Any]
+                guard let sessionJsonData = Data(base64Encoded: gzippedBase64SessionJsonString, options: .ignoreUnknownCharacters) else {
+                    XCTFail("Session data is not Base64!")
+                    return
+                }
+                guard sessionJsonData.isGzipped else {
+                    XCTFail("Session data is not gzipped!")
+                    return
+                }
+                guard let unzippedSessionJsonDatasessionJsonData = try? sessionJsonData.gunzipped() else {
+                    XCTFail("Couldn't unzip session data!")
+                    return
+                }
+                
+                guard let sessionJson = try? JSONSerialization
+                        .jsonObject(with: unzippedSessionJsonDatasessionJsonData, options: .allowFragments) as? [String : Any] else {
+                    XCTFail("Couldnt read JSON object from unzipped session data!")
+                    return
+                }
                 XCTAssertEqual(sessionJson["uuid"] as? String, "654321")
                 // Note this also tests snake_case conversion:
-                XCTAssertEqual(sessionJson["start_time"] as? String, "0001-01-01T01:24:00.000Z")
+                XCTAssertEqual(sessionJson["start_time"] as? String, "0001-01-01T01:24:00")
                 XCTAssertEqual(sessionJson["contribute"] as? Bool, false)
                 XCTAssertEqual(sessionJson["version"] as? Int, 1)
                 let streams = sessionJson["streams"] as! [String : Any]
@@ -101,6 +119,7 @@ extension SessionsSynchronization.SessionUpstreamData {
         .init(uuid: uuid,
               type: "Type",
               title: "Title",
+              notes: [],
               tagList: "",
               startTime: .distantPast,
               endTime: .distantFuture,

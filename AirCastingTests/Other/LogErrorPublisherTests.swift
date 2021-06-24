@@ -6,10 +6,6 @@ import Combine
 @testable import AirCasting
 
 class LogErrorPublisherTests: XCTestCase {
-    private struct DummyError: Error, LocalizedError {
-        var errorDescription: String?
-    }
-    
     private var cancellables: [AnyCancellable] = []
     
     func testLogsError() {
@@ -22,7 +18,7 @@ class LogErrorPublisherTests: XCTestCase {
         array
             .publisher
             .tryFilter {
-                if $0 == 4 { throw DummyError(errorDescription: "TEST ERROR") }
+                if $0 == 4 { throw DummyError(errorData: "TEST ERROR") }
                 return true
             }
             .logError(message: "Test prefix", logFunc: { errorPrinted = $0 })
@@ -40,10 +36,6 @@ class LogErrorPublisherTests: XCTestCase {
 }
 
 class LogErrorAndContinuePublisherTests: XCTestCase {
-    private struct DummyError: Error, LocalizedError {
-        var errorDescription: String?
-    }
-    
     private var cancellables: [AnyCancellable] = []
     
     func testLogsError() {
@@ -57,7 +49,7 @@ class LogErrorAndContinuePublisherTests: XCTestCase {
         array
             .publisher
             .tryFilter {
-                if $0 == 4 { throw DummyError(errorDescription: "TEST ERROR") }
+                if $0 == 4 { throw DummyError(errorData: "TEST ERROR") }
                 return true
             }
             .logErrorAndComplete(message: "Test prefix", logFunc: { errorPrinted = $0 })

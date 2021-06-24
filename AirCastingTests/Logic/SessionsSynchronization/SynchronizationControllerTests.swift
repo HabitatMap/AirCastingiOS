@@ -87,22 +87,8 @@ class SynchronizationControllerTests: XCTestCase {
         XCTAssertEqual(upload.longitude!, 51.0, accuracy: 0.1)
         XCTAssertEqual(upload.latitude!, 51.0, accuracy: 0.1)
         XCTAssertEqual(upload.type, SessionType.mobile.rawValue)
-        XCTAssertEqual(upload.streams.count, 1)
-        XCTAssertNotNil(upload.streams["Phone Microphone"])
-        let stream = upload.streams["Phone Microphone"]!
-        XCTAssertEqual(stream.id, 54321)
-        XCTAssertEqual(stream.deleted, false)
-        XCTAssertEqual(stream.measurementShortType, "dB")
-        XCTAssertEqual(stream.measurementType, "Sound Level")
-        XCTAssertEqual(stream.sensorName, "Phone Microphone")
-        XCTAssertEqual(stream.sensorPackageName, "Builtin")
-        XCTAssertEqual(stream.thresholdHigh, 80)
-        XCTAssertEqual(stream.thresholdLow, 60)
-        XCTAssertEqual(stream.thresholdMedium, 70)
-        XCTAssertEqual(stream.thresholdVeryHigh, 100)
-        XCTAssertEqual(stream.thresholdVeryLow, 20)
-        XCTAssertEqual(stream.unitName, "decibels")
-        XCTAssertEqual(stream.unitSymbol, "dB")
+        // See implementation file for notes on that:
+        XCTAssertEqual(upload.streams, [:])
     }
     
     func test_whenSyncContextReceived_withSessionsToRemove_asksStoreToRemove() {
@@ -110,25 +96,6 @@ class SynchronizationControllerTests: XCTestCase {
         setupWithSessionsToDelete(sessionsToDelete)
         let removedSessions = spyStoreRemove()
         XCTAssertTrue(removedSessions ~~ sessionsToDelete)
-    }
-    
-    func test_cancelling_causesDownloadsToHalt() {
-        setupWithPassthruDownloads(downloadUUIDs: .init(creating: .random, times: 100))
-        let exp = expectation(description: "Will download only until cancelled")
-        exp.isInverted = true
-        exp.assertForOverFulfill = false
-        var sub: AnyCancellable?
-        sub = downloadService.$recordedHistory.sink {
-            guard $0.count > 0 else { return }
-            let count = $0.count
-            if count == 34 { self.controller.stopSynchronization() }
-            if count == 100 { exp.fulfill() }
-        }
-        controller.triggerSynchronization()
-        // Test setup is synchronous so it can be that low:
-        wait(for: [exp], timeout: 0.05)
-        sub?.cancel()
-        sub = nil
     }
     
     // MARK: - Error handling
