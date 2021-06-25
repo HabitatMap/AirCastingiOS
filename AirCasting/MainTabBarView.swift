@@ -5,16 +5,16 @@
 //  Created by Lunar on 07/01/2021.
 //
 
-import SwiftUI
 import CoreData
 import Firebase
+import SwiftUI
 
 struct MainTabBarView: View {
     let measurementUpdatingService: MeasurementUpdatingService
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     @EnvironmentObject var persistenceController: PersistenceController
     @EnvironmentObject var microphoneManager: MicrophoneManager
-    @StateObject var tabSelection: TabBarSelection = TabBarSelection()
+    @StateObject var tabSelection = TabBarSelection()
 
     var body: some View {
         TabView(selection: $tabSelection.selection) {
@@ -30,7 +30,6 @@ struct MainTabBarView: View {
 }
 
 private extension MainTabBarView {
-    
     // Tab Bar views
     private var dashboardTab: some View {
         NavigationView {
@@ -41,7 +40,7 @@ private extension MainTabBarView {
         }
         .tag(TabBarSelection.Tab.dashboard)
     }
-    
+
     #warning("TODO: Change starting view")
     private var createSessionTab: some View {
         ChooseSessionTypeView(sessionContext: CreateSessionContext())
@@ -50,11 +49,12 @@ private extension MainTabBarView {
             }
             .tag(TabBarSelection.Tab.createSession)
     }
+
     private var settingsTab: some View {
         SettingsView(logoutController: DefaultLogoutController(
-                        userAuthenticationSession: userAuthenticationSession,
-                        sessionStorage: SessionStorage(persistenceController: persistenceController),
-                        microphoneManager: microphoneManager))
+            userAuthenticationSession: userAuthenticationSession,
+            sessionStorage: SessionStorage(persistenceController: persistenceController),
+            microphoneManager: microphoneManager))
             .tabItem {
                 Image(systemName: "gearshape")
             }
@@ -64,7 +64,7 @@ private extension MainTabBarView {
 
 class TabBarSelection: ObservableObject {
     @Published var selection = Tab.dashboard
-    
+
     enum Tab {
         case dashboard
         case createSession
@@ -83,7 +83,7 @@ struct ContentView_Previews: PreviewProvider {
             .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
             .environment(\.managedObjectContext, persistenceController.viewContext)
     }
-    
+
     private class MeasurementUpdatingServiceMock: MeasurementUpdatingService {
         func start() throws {}
     }
