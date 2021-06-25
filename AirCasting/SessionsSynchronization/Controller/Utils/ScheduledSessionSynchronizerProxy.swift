@@ -15,7 +15,7 @@ import struct UIKit.UIBackgroundTaskIdentifier
 /// Note: For more information about the _Proxy_ pattern please read:
 /// - The _Gang of Four_ book
 /// - https://refactoring.guru/design-patterns/proxy
-class ScheduledSessionSynchronizerProxy<S: Scheduler>: SessionSynchronizer {
+final class ScheduledSessionSynchronizerProxy<S: Scheduler>: SessionSynchronizer {
     private let scheduler: S
     private let controller: SessionSynchronizer
     private var cancellables: [AnyCancellable] = []

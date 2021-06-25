@@ -6,13 +6,12 @@ import Combine
 import CoreLocation
 
 
-class SessionSynchronizationController: SessionSynchronizer {
-    private let gate = PassthroughSubject<Void, Never>()
-    
+final class SessionSynchronizationController: SessionSynchronizer {
     private let synchronizationContextProvider: SessionSynchronizationContextProvidable
     private let downstream: SessionDownstream
     private let upstream: SessionUpstream
     private let store: SessionSynchronizationStore
+    private let dataConverter = SynchronizationDataConterter()
     
     // Progress tracking for filtering requests while already syncing
     // (can this be somehow moved to a custom operator or something?)
@@ -91,9 +90,9 @@ class SessionSynchronizationController: SessionSynchronizer {
     private func processDownloads(context: SessionsSynchronization.SynchronizationContext) -> AnyPublisher<Void, Error> {
         context.needToBeDownloaded
             .publisher
-            .flatMap { self.downloadSingleSession(uuid: $0) }
+            .flatMap(self.downloadSingleSession(uuid:))
             .collect()
-            .flatMap { self.saveSessions(downloadedSessions: $0) }
+            .flatMap(self.saveSessions(downloadedSessions:))
             .eraseToAnyPublisher()
     }
     
@@ -105,7 +104,7 @@ class SessionSynchronizationController: SessionSynchronizer {
     }
     
     private func saveSessions(downloadedSessions: [SessionsSynchronization.SessionDownstreamData]) -> AnyPublisher<Void, Error> {
-        let dataStoreEntries = downloadedSessions.map(SynchronizationDataConterter.convertDownloadToSession(_:))
+        let dataStoreEntries = downloadedSessions.map(dataConverter.convertDownloadToSession(_:))
         Log.verbose("[SYNC] Adding \(downloadedSessions.count) sessions to store")
         return store
             .addSessions(with: dataStoreEntries)
@@ -123,7 +122,7 @@ class SessionSynchronizationController: SessionSynchronizer {
                     .logErrorAndComplete(message: "[SYNC] Error reading session")
             }
             .map(
-                SynchronizationDataConterter.convertSessionToUploadData(_:)
+                dataConverter.convertSessionToUploadData(_:)
             )
             .flatMap { uploadData in
                 self.upstream

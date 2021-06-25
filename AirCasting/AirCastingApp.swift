@@ -15,6 +15,7 @@ struct AirCastingApp: App {
     private let authorization: UserAuthenticationSession
     private let syncScheduler: SynchronizationScheduler
     private let sessionSynchronizer: SessionSynchronizer
+    private let persistenceController = PersistenceController.shared
     private let appBecameActive = PassthroughSubject<Void, Never>()
     private var cancellables: [AnyCancellable] = []
 
@@ -26,7 +27,7 @@ struct AirCastingApp: App {
         let synchronizationContextProvider = SessionSynchronizationService(client: URLSession.shared, authorization: authorization, responseValidator: DefaultHTTPResponseValidator())
         let downloadService = SessionDownloadService(client: URLSession.shared, authorization: authorization, responseValidator: DefaultHTTPResponseValidator())
         let uploadService = SessionUploadService(client: URLSession.shared, authorization: authorization, responseValidator: DefaultHTTPResponseValidator())
-        let syncStore = SessionSynchronizationDatabase(database: PersistenceController.shared)
+        let syncStore = SessionSynchronizationDatabase(database: persistenceController)
         
         let unscheduledSyncController = SessionSynchronizationController(synchronizationContextProvider: synchronizationContextProvider,
                                                                          downstream: downloadService,
@@ -37,13 +38,13 @@ struct AirCastingApp: App {
         
         syncScheduler = .init(synchronizer: sessionSynchronizer,
                               appBecameActive: appBecameActive.eraseToAnyPublisher(),
-                              periodicTimeInterval: 60,
+                              periodicTimeInterval: 300,
                               authorization: authorization)
     }
 
     var body: some Scene {
         WindowGroup {
-            RootAppView(sessionSynchronizer: sessionSynchronizer)
+            RootAppView(sessionSynchronizer: sessionSynchronizer, persistenceController: persistenceController)
                 .environmentObject(authorization)
         }.onChange(of: scenePhase) { newScenePhase in
             switch newScenePhase {
@@ -60,7 +61,7 @@ struct AirCastingApp: App {
     }
 }
 
-class SynchronizationScheduler {
+final class SynchronizationScheduler {
     private var cancellables: [AnyCancellable] = []
     
     init(synchronizer: SessionSynchronizer,

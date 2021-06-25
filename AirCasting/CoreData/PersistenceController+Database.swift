@@ -15,7 +15,7 @@ extension PersistenceController: SessionsFetchable {
             }
             do {
                 let fetchedEntities = try context.fetch(request)
-                let databaseObjects = fetchedEntities.map({Database.Session(coreDataEntity: $0)})
+                let databaseObjects = fetchedEntities.map(Database.Session.init(coreDataEntity:))
                 completion(.success(databaseObjects))
             } catch {
                 completion(.failure(error))
@@ -44,7 +44,7 @@ extension PersistenceController: SessionInsertable {
                 sessionEntity.isIndoor = $0.isIndoor
                 sessionEntity.tags = $0.tags
                 sessionEntity.urlLocation = $0.urlLocation
-                sessionEntity.version = Int16($0.version)
+                sessionEntity.version = Int16($0.version ?? 0)
                 sessionEntity.status = $0.status
                 $0.measurementStreams?.forEach {
                     let streamEntity = MeasurementStreamEntity(context: context)
@@ -110,7 +110,7 @@ extension Database.Session {
                   isIndoor: coreDataEntity.isIndoor,
                   tags: coreDataEntity.tags,
                   urlLocation: coreDataEntity.urlLocation,
-                  version: coreDataEntity.version,
+                  version: Int(coreDataEntity.version),
                   measurementStreams: (coreDataEntity.measurementStreams?.array as? [MeasurementStreamEntity])?.map(Database.MeasurementStream.init(coreDataEntity:)),
                   status: coreDataEntity.status)
     }
@@ -125,17 +125,10 @@ extension Database.MeasurementStream {
                   measurementShortType: coreDataEntity.measurementShortType,
                   unitName: coreDataEntity.unitName,
                   unitSymbol: coreDataEntity.unitSymbol,
-                  thresholdVeryHigh: coreDataEntity.thresholdVeryHigh,
-                  thresholdHigh: coreDataEntity.thresholdHigh,
-                  thresholdMedium: coreDataEntity.thresholdMedium,
-                  thresholdLow: coreDataEntity.thresholdLow,
-                  thresholdVeryLow: coreDataEntity.thresholdVeryLow)
-    }
-}
-
-extension URL {
-    init?(string: String?) {
-        guard let string = string else { return nil }
-        self.init(string: string)
+                  thresholdVeryHigh: Int(coreDataEntity.thresholdVeryHigh),
+                  thresholdHigh: Int(coreDataEntity.thresholdHigh),
+                  thresholdMedium: Int(coreDataEntity.thresholdMedium),
+                  thresholdLow: Int(coreDataEntity.thresholdLow),
+                  thresholdVeryLow: Int(coreDataEntity.thresholdVeryLow))
     }
 }

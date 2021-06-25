@@ -2,8 +2,8 @@ import Foundation
 
 extension Database {
     public struct Measurement {
-        public let id: Int
-        public let sensorName: String
+        public let id: MeasurementID
+        public let sensorName: SensorName
         public let sensorPackageName: String
         public let unitName: String
         public let measurementType: String
@@ -16,10 +16,9 @@ extension Database {
         public let thresholdVeryHigh: Int
         public let isDeleted: Bool
         
-        #warning("Make this private as soon as we move PersistenceController into here")
         public init(
-            id: Int,
-            sensorName: String,
+            id: MeasurementID,
+            sensorName: SensorName,
             sensorPackageName: String,
             unitName: String,
             measurementType: String,

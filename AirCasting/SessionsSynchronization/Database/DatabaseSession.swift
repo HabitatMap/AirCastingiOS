@@ -20,13 +20,12 @@ extension Database {
         public let isIndoor: Bool
         public let tags: String?
         public let urlLocation: String?
-        public let version: Int16
+        public let version: Int?
         public let measurementStreams: [MeasurementStream]?
         public let status: SessionStatus?
 
-        #warning("Make this private as soon as we move all core data logic to this module")
         public init(uuid: SessionUUID, type: SessionType, name: String?, deviceType: DeviceType?, location: CLLocationCoordinate2D?, startTime: Date?,
-             contribute: Bool = true, deviceId: String? = nil, endTime: Date? = nil, followedAt: Date? = nil, gotDeleted: Bool = false, isIndoor: Bool = false, tags: String? = nil, urlLocation: String? = nil, version: Int16 = 0, measurementStreams: [MeasurementStream]? = nil, status: SessionStatus? = nil) {
+             contribute: Bool = true, deviceId: String? = nil, endTime: Date? = nil, followedAt: Date? = nil, gotDeleted: Bool = false, isIndoor: Bool = false, tags: String? = nil, urlLocation: String? = nil, version: Int? = nil, measurementStreams: [MeasurementStream]? = nil, status: SessionStatus? = nil) {
             self.uuid = uuid
             self.type = type
             self.name = name

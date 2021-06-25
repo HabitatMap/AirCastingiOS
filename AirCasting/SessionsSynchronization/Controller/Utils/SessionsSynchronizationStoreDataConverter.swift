@@ -5,10 +5,7 @@ import Foundation
 
 /// Provides conversion functions between various sessions sync data structures
 struct SynchronizationDataConterter {
-    @available(*, unavailable, message: "This struct is not meant to be instantiated. It only provides static functions")
-    private init() { }
-    
-    static func convertDownloadToSession(_ download: SessionsSynchronization.SessionDownstreamData) -> SessionsSynchronization.SessionStoreSessionData {
+    func convertDownloadToSession(_ download: SessionsSynchronization.SessionDownstreamData) -> SessionsSynchronization.SessionStoreSessionData {
         let measurements = download.streams.values.map { stream in
             SessionsSynchronization.SessionStoreMeasurementStreamData(
                 id: MeasurementStreamID(stream.id),
@@ -41,7 +38,7 @@ struct SynchronizationDataConterter {
                      measurementStreams: measurements)
     }
     
-    static func convertSessionToUploadData(_ session: SessionsSynchronization.SessionStoreSessionData) -> SessionsSynchronization.SessionUpstreamData {
+    func convertSessionToUploadData(_ session: SessionsSynchronization.SessionStoreSessionData) -> SessionsSynchronization.SessionUpstreamData {
         return .init(uuid: session.uuid,
                      type: session.sessionType,
                      title: session.name,
@@ -59,5 +56,41 @@ struct SynchronizationDataConterter {
                      latitude: session.latitude,
                      longitude: session.longitude,
                      deleted: session.gotDeleted)
+    }
+    
+    func convertDatabaseSessionToMetadata(_ entity: Database.Session) -> SessionsSynchronization.Metadata {
+        .init(uuid: entity.uuid, deleted: entity.gotDeleted, version: entity.version)
+    }
+    
+    func convertDatabaseSessionToSessionStoreData(_ entity: Database.Session) -> SessionsSynchronization.SessionStoreSessionData {
+        let measurements = entity.measurementStreams?.map { stream -> SessionsSynchronization.SessionStoreMeasurementStreamData in
+            // TODO: Are those force unwraps safe here?
+            return SessionsSynchronization.SessionStoreMeasurementStreamData(id: stream.id!,
+                                                                             measurementShortType: stream.measurementShortType!,
+                                                                             measurementType: stream.measurementType!,
+                                                                             sensorName: stream.sensorName!,
+                                                                             sensorPackageName: stream.sensorPackageName!,
+                                                                             thresholdHigh: Int(stream.thresholdHigh),
+                                                                             thresholdLow: Int(stream.thresholdLow),
+                                                                             thresholdMedium: Int(stream.thresholdMedium),
+                                                                             thresholdVeryHigh: Int(stream.thresholdVeryHigh),
+                                                                             thresholdVeryLow: Int(stream.thresholdVeryLow),
+                                                                             unitName: stream.unitName!,
+                                                                             unitSymbol: stream.unitSymbol!)
+        }
+        return SessionsSynchronization.SessionStoreSessionData(uuid: entity.uuid,
+                                                               contribute: entity.contribute,
+                                                               endTime: entity.endTime,
+                                                               gotDeleted: entity.gotDeleted,
+                                                               isIndoor: entity.isIndoor,
+                                                               name: entity.name!,
+                                                               startTime: entity.startTime!,
+                                                               tags: entity.tags,
+                                                               urlLocation: entity.urlLocation,
+                                                               version: entity.version,
+                                                               longitude: entity.location?.longitude,
+                                                               latitude: entity.location?.latitude,
+                                                               sessionType: entity.type.rawValue,
+                                                               measurementStreams: measurements ?? [])
     }
 }

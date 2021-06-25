@@ -6,16 +6,21 @@ import Combine
 import CoreLocation
 @testable import AirCasting
 
-class SynchronizationControllerTests: XCTestCase {
-    var cancellables: [AnyCancellable] = []
+final class SynchronizationControllerTests: XCTestCase {
+    private var cancellables: [AnyCancellable] = []
     var remoteContextProvider = SynchronizationContextProviderMock()
     var downloadService = DownloadServiceMock()
     var uploadService = UploadServiceMock()
     var store = SessionStoreMock()
     lazy var controller = SessionSynchronizationController(synchronizationContextProvider: remoteContextProvider,
-                                                           downstream: downloadService,
-                                                           upstream: uploadService,
-                                                           store: store)
+                                                                   downstream: downloadService,
+                                                                   upstream: uploadService,
+                                                                   store: store)
+    
+    override func tearDown() {
+        super.tearDown()
+        cancellables = []
+    }
     
     // MARK: - Success path tests
     
@@ -25,7 +30,7 @@ class SynchronizationControllerTests: XCTestCase {
         store.localSessionsToReturn = .success(stubbedlocalData)
         
         let localSessionsReceived = spySyncContextRequest()
-        XCTAssertTrue(localSessionsReceived ~~ stubbedlocalData)
+        assertContainsSameElements(localSessionsReceived, stubbedlocalData)
     }
     
     func test_whenSyncContextReceived_downloadsNewSessions() {
@@ -33,7 +38,7 @@ class SynchronizationControllerTests: XCTestCase {
         setupWithPassthruDownloads(downloadUUIDs: newSessionUUIDs)
         
         let requests = spyDownloadRequest(count: 10)
-        XCTAssertTrue(requests ~~ newSessionUUIDs)
+        assertContainsSameElements(requests, newSessionUUIDs)
     }
     
     func test_whenNewSessionsAreDownloaded_savesThemToDataStore() {
@@ -41,7 +46,7 @@ class SynchronizationControllerTests: XCTestCase {
         setupWithPassthruDownloads(downloadUUIDs: newSessionUUIDs)
         
         let writtenSessions = spyStoreSaves()
-        XCTAssertTrue(writtenSessions.uuids ~~ newSessionUUIDs)
+        assertContainsSameElements(writtenSessions.uuids, newSessionUUIDs)
     }
     
     func test_whenNewSessionsAreDownloaded_theyAreBeingCorrectlyTranslatedToStoreWriteSessions() {
@@ -63,13 +68,13 @@ class SynchronizationControllerTests: XCTestCase {
         let uploadUUIDs = [SessionUUID](creating: .random, times: 10)
         setupWithPassthruUploads(uploadUUIDs: uploadUUIDs)
         _ = spyUploadRequest(count: 10)
-        XCTAssertTrue(store.recordedHistory.allReads ~~ uploadUUIDs.map { SessionStoreMock.HistoryItem.readSession($0) })
+        assertContainsSameElements(store.recordedHistory.allReads, uploadUUIDs.map { SessionStoreMock.HistoryItem.readSession($0) })
     }
     
     func test_whenSyncContextReceived_withSessionsToUpload_sendsCorrectDataToService() {
         setupWithStubbingStoreReads([.mock(uuid: "1"), .mock(uuid: "2")])
         let uploads = spyUploadRequest(count: 2)
-        XCTAssertTrue(uploads.map { $0.uuid } ~~ ["1", "2"])
+        assertContainsSameElements(uploads.map { $0.uuid }, ["1", "2"])
     }
     
     func test_whenSyncContextReceived_withSessionsToUpload_translatesSessionsFromStoreDataToUploadData() {
@@ -95,7 +100,7 @@ class SynchronizationControllerTests: XCTestCase {
         let sessionsToDelete = [SessionUUID](creating: .random, times: 10)
         setupWithSessionsToDelete(sessionsToDelete)
         let removedSessions = spyStoreRemove()
-        XCTAssertTrue(removedSessions ~~ sessionsToDelete)
+        assertContainsSameElements(removedSessions, sessionsToDelete)
     }
     
     // MARK: - Error handling

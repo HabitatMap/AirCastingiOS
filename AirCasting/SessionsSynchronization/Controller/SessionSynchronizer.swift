@@ -22,10 +22,7 @@ extension SessionSynchronizer {
 // MARK: Namespacing struct
 
 /// Namespace for session synchronization data objects
-struct SessionsSynchronization {
-    @available(*, unavailable, message: "This struct is not meant to be instantiated. It only provides a namespace (can remove after modularization)")
-    private init() { }
-}
+enum SessionsSynchronization { }
 
 #if DEBUG
 struct DummySessionSynchronizer: SessionSynchronizer {

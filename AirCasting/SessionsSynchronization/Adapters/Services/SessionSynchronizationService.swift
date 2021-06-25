@@ -28,6 +28,20 @@ final class SessionSynchronizationService: SessionSynchronizationContextProvidab
         // Otherwise we'd have to implement ReplySubject as Combine doesn't provide us with one. I think
         // we can safely assume that APIClient won't be synchronous.
         let subject = PassthroughSubject<SessionsSynchronization.SynchronizationContext, Error>()
+        let requestCancellable = getSynchronizationContext(localSessions: localSessions) { result in
+            switch result {
+            case .success(let data): subject.send(data); subject.send(completion: .finished)
+            case .failure(let error): subject.send(completion: .failure(error))
+            }
+        }
+        
+        return subject
+            .handleEvents(receiveSubscription: { _ in }, receiveCancel: { requestCancellable.cancel() })
+            .eraseToAnyPublisher()
+    }
+    
+    private func getSynchronizationContext(localSessions: [SessionsSynchronization.Metadata],
+                                           completion: @escaping (Result<SessionsSynchronization.SynchronizationContext, Error>) -> Void) -> Cancellable {
         let url = URL(string: "http://aircasting.org/api/user/sessions/sync_with_versioning.json")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -44,30 +58,26 @@ final class SessionSynchronizationService: SessionSynchronizationContextProvidab
             // 🤷‍♂️
             let bodyData = try encoder.encode(localSessions)
             guard let bodyString = String(data: bodyData, encoding: .utf8) else {
-                throw BodyEncodingError.dataCannotBeStringified
+                throw BodyEncodingError.dataCannotBeStringified(data: bodyData)
             }
             request.httpBody = try encoder.encode(APICallData(data: bodyString))
             try authorization.authorise(request: &request)
         } catch {
-            subject.send(completion: .failure(error))
+            completion(.failure(error))
+            return EmptyCancellable()
         }
         
-        let requestCancellable = client.requestTask(for: request) { [responseValidator, decoder] result, request in
+        return client.requestTask(for: request) { [responseValidator, decoder] result, request in
             let validatedResult = result.tryMap { data, response -> SessionsSynchronization.SynchronizationContext in
                 try responseValidator.validate(response: response, data: data)
                 return try decoder.decode(SessionsSynchronization.SynchronizationContext.self, from: data)
             }
             switch validatedResult {
             case .success(let context):
-                subject.send(context)
-                subject.send(completion: .finished)
+                completion(.success(context))
             case .failure(let error):
-                subject.send(completion: .failure(error))
+                completion(.failure(error))
             }
         }
-        
-        return subject
-            .handleEvents(receiveSubscription: { _ in }, receiveCancel: { requestCancellable.cancel() })
-            .eraseToAnyPublisher()
     }
 }

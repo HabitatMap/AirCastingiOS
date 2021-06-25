@@ -5,8 +5,8 @@ import XCTest
 import Combine
 @testable import AirCasting
 
-class SyncContextServiceTests: XCTestCase {
-    let validContextResponseData: Data =
+final class SyncContextServiceTests: XCTestCase {
+    private let validContextResponseData: Data =
         """
         {
             "download": ["UUID-TO-DOWNLOAD1", "UUID-TO-DOWNLOAD2"],
@@ -14,101 +14,78 @@ class SyncContextServiceTests: XCTestCase {
             "deleted": ["UUID-TO-DELETE1", "UUID-TO-DELETE2"],
         }
         """.data(using: .utf8)!
-    let client = APIClientMock()
-    let auth = RequestAuthorizationServiceMock()
-    let responseValidator = HTTPResponseValidatorMock()
-    lazy var service = SessionSynchronizationService(client: client, authorization: auth, responseValidator: responseValidator)
+    private let client = APIClientMock()
+    private let auth = RequestAuthorizationServiceMock()
+    private let responseValidator = HTTPResponseValidatorMock()
+    private lazy var service = SessionSynchronizationService(client: client, authorization: auth, responseValidator: responseValidator)
     private var cancellables: [AnyCancellable] = []
     
-    func test_callsEndponitCorrectly() {
-        setupWithCorrectDataReturned()
-        let exp = expectation(description: "Will call correct endpoint")
-        service
-            .getSynchronizationContext(localSessions: .random)
-            .sink(receiveCompletion: { _ in }, receiveValue: { _ in
-                XCTAssertEqual(self.client.callHistory.count, 1)
-                let request = self.client.callHistory.first!
-                XCTAssertEqual(request.url?.absoluteString, "http://aircasting.org/api/user/sessions/sync_with_versioning.json")
-                XCTAssertEqual(request.httpMethod, "POST")
-                XCTAssertEqual(request.allHTTPHeaderFields?["Accept"], "application/json")
-                XCTAssertEqual(request.allHTTPHeaderFields?["Content-Type"], "application/json")
-                exp.fulfill()
-            })
-            .store(in: &cancellables)
-        wait(for: [exp], timeout: 0.2)
+    override func tearDown() {
+        super.tearDown()
+        cancellables = []
     }
     
-    func test_parsesDataCorrectly() {
+    func test_callsEndponitCorrectly() throws {
         setupWithCorrectDataReturned()
-        let exp = expectation(description: "Will parse data")
-        service
-            .getSynchronizationContext(localSessions: .random)
-            .sink(receiveCompletion: { _ in }, receiveValue: { context in
-                XCTAssertTrue(context.needToBeDownloaded ~~ ["UUID-TO-DOWNLOAD1", "UUID-TO-DOWNLOAD2"])
-                XCTAssertTrue(context.needToBeUploaded ~~ ["UUID-TO-UPLOAD1", "UUID-TO-UPLOAD2"])
-                XCTAssertTrue(context.removed ~~ ["UUID-TO-DELETE1", "UUID-TO-DELETE2"])
-                exp.fulfill()
-            })
-            .store(in: &cancellables)
-        wait(for: [exp], timeout: 0.2)
+        
+        try awaitPublisher(service.getSynchronizationContext(localSessions: .random))
+        
+        XCTAssertEqual(self.client.callHistory.count, 1)
+        let request = self.client.callHistory.first!
+        XCTAssertEqual(request.url?.absoluteString, "http://aircasting.org/api/user/sessions/sync_with_versioning.json")
+        XCTAssertEqual(request.httpMethod, "POST")
+        XCTAssertEqual(request.allHTTPHeaderFields?["Accept"], "application/json")
+        XCTAssertEqual(request.allHTTPHeaderFields?["Content-Type"], "application/json")
     }
     
-    func test_sendsCorrectJsonInBody() {
+    func test_parsesDataCorrectly() throws {
         setupWithCorrectDataReturned()
-        let exp = expectation(description: "Sends correct JSON body")
-        service
-            .getSynchronizationContext(localSessions: [.init(uuid: "FIRST", deleted: true, version: 1), .init(uuid: "SECOND", deleted: false, version: nil)])
-            .sink(receiveCompletion: { _ in }, receiveValue: { _ in
-                XCTAssertEqual(self.client.callHistory.count, 1)
-                let request = self.client.callHistory.first!
-                let json = try! JSONSerialization.jsonObject(with: request.httpBody!, options: .allowFragments) as! [String : Any]
-                guard let metadataJsonString = json["data"] as? String else {
-                    XCTFail("Unexpected data format!"); return
-                }
-                let metadataJson = try! JSONSerialization.jsonObject(with: metadataJsonString.data(using: .utf8)!, options: .allowFragments) as! [[String : Any]]
-                XCTAssertEqual(metadataJson.count, 2)
-                guard let first = metadataJson.first(where: { $0["uuid"] as? String == "FIRST" }) else {
-                    XCTFail("Unexpected data format!"); return
-                }
-                guard let second = metadataJson.first(where: { $0["uuid"] as? String == "SECOND" }) else {
-                    XCTFail("Unexpected data format!"); return
-                }
-                XCTAssertEqual(first["deleted"] as? Bool, true)
-                XCTAssertEqual(first["version"] as? Int, 1)
-                XCTAssertEqual(second["deleted"] as? Bool, false)
-                XCTAssertNil(second["version"])
-                exp.fulfill()
-            })
-            .store(in: &cancellables)
-        wait(for: [exp], timeout: 0.2)
+        
+        let context = try awaitPublisher(service.getSynchronizationContext(localSessions: .random))
+        
+        assertContainsSameElements(context.needToBeDownloaded, ["UUID-TO-DOWNLOAD1", "UUID-TO-DOWNLOAD2"])
+        assertContainsSameElements(context.needToBeUploaded, ["UUID-TO-UPLOAD1", "UUID-TO-UPLOAD2"])
+        assertContainsSameElements(context.removed, ["UUID-TO-DELETE1", "UUID-TO-DELETE2"])
+    }
+    
+    func test_sendsCorrectJsonInBody() throws {
+        setupWithCorrectDataReturned()
+        
+        let context: [SessionsSynchronization.Metadata] = [.init(uuid: "FIRST", deleted: true, version: 1), .init(uuid: "SECOND", deleted: false, version: nil)]
+        try awaitPublisher(service.getSynchronizationContext(localSessions: context))
+        
+        XCTAssertEqual(self.client.callHistory.count, 1)
+        let request = self.client.callHistory.first!
+        let json = try! JSONSerialization.jsonObject(with: request.httpBody!, options: .allowFragments) as! [String : Any]
+        guard let metadataJsonString = json["data"] as? String else {
+            XCTFail("Unexpected data format!"); return
+        }
+        let metadataJson = try! JSONSerialization.jsonObject(with: metadataJsonString.data(using: .utf8)!, options: .allowFragments) as! [[String : Any]]
+        XCTAssertEqual(metadataJson.count, 2)
+        guard let first = metadataJson.first(where: { $0["uuid"] as? String == "FIRST" }) else {
+            XCTFail("Unexpected data format!"); return
+        }
+        guard let second = metadataJson.first(where: { $0["uuid"] as? String == "SECOND" }) else {
+            XCTFail("Unexpected data format!"); return
+        }
+        XCTAssertEqual(first["deleted"] as? Bool, true)
+        XCTAssertEqual(first["version"] as? Int, 1)
+        XCTAssertEqual(second["deleted"] as? Bool, false)
+        XCTAssertNil(second["version"])
     }
     
     // MARK: - Error handling
     
     func test_whenServerReturnsError_finishesWithError() {
-        setupWithAPICallError(DummyError(errorData: "some_error"))
-        let exp = expectation(description: "Will finish with error")
-        service
-            .getSynchronizationContext(localSessions: .random)
-            .sink(receiveCompletion: { result in
-                defer { exp.fulfill() }
-                guard case .failure = result else { XCTFail("Expected to fail!"); return }
-            }, receiveValue: { _ in })
-            .store(in: &cancellables)
-        wait(for: [exp], timeout: 0.2)
+        setupWithAPICallError(DummyError())
+        
+        XCTAssertThrowsError(try awaitPublisher(service.getSynchronizationContext(localSessions: .random)))
     }
     
     func test_whenServerReturnsMalformedData_finishesWithError() {
         setupWithMalformedData()
-        let exp = expectation(description: "Will finish with error")
-        service
-            .getSynchronizationContext(localSessions: .random)
-            .sink(receiveCompletion: { result in
-                defer { exp.fulfill() }
-                guard case .failure = result else { XCTFail("Expected to fail!"); return }
-            }, receiveValue: { _ in })
-            .store(in: &cancellables)
-        wait(for: [exp], timeout: 0.2)
+        
+        XCTAssertThrowsError(try awaitPublisher(service.getSynchronizationContext(localSessions: .random)))
     }
     
     // MARK: - Fixture setup

@@ -9,8 +9,12 @@ extension Publisher {
     ///   - message: A message that will prefix the `error.localizedDescription` printout.
     ///   - logFunc: Optional custom logging function.
     /// - Returns: A publisher that matches the upstream `Output` and has a `Failure` set to `Never`.
-    func logErrorAndComplete(message: String = "", logFunc: @escaping (String) -> Void = { Log.error($0) }) -> Publishers.LogErrorAndComplete<Self> {
-        .init(upstream: self, logMessage: message, logFunc: logFunc)
+    func logErrorAndComplete(message: String = "",
+                             file: String = #file,
+                             function: String = #function,
+                             line: Int = #line,
+                             logFunc: @escaping Publishers.Logging.LogFunc = { Log.error($0, file: $1, function: $2, line: $3) }) -> Publishers.LogErrorAndComplete<Self> {
+        .init(upstream: self, logMessage: message, file: file, function: function, line: line, logFunc: logFunc)
     }
 }
 
@@ -21,18 +25,29 @@ extension Publishers {
         
         private let upstream: Upstream
         private let logMessage: String
-        private let logFunc: (String) -> Void
+        private let file: String
+        private let function: String
+        private let line: Int
+        private let logFunc: Publishers.Logging.LogFunc
         
-        init(upstream: Upstream, logMessage: String, logFunc: @escaping (String) -> Void) {
+        init(upstream: Upstream,
+             logMessage: String,
+             file: String,
+             function: String,
+             line: Int,
+             logFunc: @escaping Publishers.Logging.LogFunc) {
             self.upstream = upstream
             self.logMessage = logMessage
+            self.file = file
+            self.function = function
+            self.line = line
             self.logFunc = logFunc
         }
         
         func receive<S: Subscriber>(subscriber: S) where S.Input == Upstream.Output, S.Failure == Never {
             self.upstream
                 .catch { error -> Empty<S.Input, Never> in
-                    logFunc("\(logMessage): \(error.localizedDescription)")
+                    logFunc("\(logMessage): \(error.localizedDescription)", file, function, line)
                     return Empty()
                 }
                 .subscribe(subscriber)

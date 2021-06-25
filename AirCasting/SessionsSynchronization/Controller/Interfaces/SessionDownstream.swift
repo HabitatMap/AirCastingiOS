@@ -40,7 +40,7 @@ extension SessionsSynchronization {
 
     struct MeasurementStreamDownstreamData: Equatable, Codable {
         let id: MeasurementStreamID
-        let sensorName: String
+        let sensorName: SensorName
         let sensorPackageName: String
         let unitName: String
         let measurementType: String

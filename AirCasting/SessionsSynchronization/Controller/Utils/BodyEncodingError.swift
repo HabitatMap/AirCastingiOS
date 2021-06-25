@@ -5,5 +5,5 @@ import Foundation
 
 /// A common `Error` type for session synchronization service adapters
 enum BodyEncodingError: Error {
-    case dataCannotBeStringified
+    case dataCannotBeStringified(data: Data)
 }

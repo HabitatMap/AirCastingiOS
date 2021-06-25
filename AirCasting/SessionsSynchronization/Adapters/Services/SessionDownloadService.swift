@@ -29,6 +29,21 @@ final class SessionDownloadService: SessionDownstream {
         // Otherwise we'd have to implement ReplySubject as Combine doesn't provide us with one. I think
         // we can safely assume that APIClient won't be synchronous.
         let subject = PassthroughSubject<SessionsSynchronization.SessionDownstreamData, Error>()
+        let requestCancellable = download(session: session) { result in
+            switch result {
+            case .success(let data): subject.send(data); subject.send(completion: .finished)
+            case .failure(let error): subject.send(completion: .failure(error))
+            }
+        }
+        
+        return subject
+            .handleEvents(receiveCancel: {
+                requestCancellable.cancel()
+            })
+            .eraseToAnyPublisher()
+    }
+    
+    private func download(session: SessionUUID, completion: @escaping (Result<SessionsSynchronization.SessionDownstreamData, Error>) -> Void) -> Cancellable {
         var urlComponents = URLComponents(string: "http://aircasting.org/api/user/sessions/empty.json")!
         urlComponents.queryItems = [
             URLQueryItem(name: "uuid", value: session.rawValue)
@@ -40,29 +55,23 @@ final class SessionDownloadService: SessionDownstream {
         do {
             try authorization.authorise(request: &request)
         } catch {
-            subject.send(completion: .failure(error))
+            completion(.failure(error))
+            return EmptyCancellable()
         }
         
-        let requestCancellable = client.requestTask(for: request) { [responseValidator, decoder] result, request in
+        return client.requestTask(for: request) { [responseValidator, decoder] result, request in
             switch result {
             case .success(let response):
                 do {
                     try responseValidator.validate(response: response.response, data: response.data)
                     let sessionData = try decoder.decode(SessionsSynchronization.SessionDownstreamData.self, from: response.data)
-                    subject.send(sessionData)
-                    subject.send(completion: .finished)
+                    completion(.success(sessionData))
                 } catch {
-                    subject.send(completion: .failure(error))
+                    completion(.failure(error))
                 }
             case .failure(let error):
-                subject.send(completion: .failure(error))
+                completion(.failure(error))
             }
         }
-        
-        return subject
-            .handleEvents(receiveCancel: {
-                requestCancellable.cancel()
-            })
-            .eraseToAnyPublisher()
     }
 }

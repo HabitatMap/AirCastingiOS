@@ -6,30 +6,30 @@ import Foundation
 extension Database {
     public struct MeasurementStream: Hashable {
         public let id: MeasurementStreamID?
-        public let sensorName: String?
+        public let sensorName: SensorName?
         public let sensorPackageName: String?
         public let measurementType: String?
         public let measurementShortType: String?
         public let unitName: String?
         public let unitSymbol: String?
-        public let thresholdVeryHigh: Int32
-        public let thresholdHigh: Int32
-        public let thresholdMedium: Int32
-        public let thresholdLow: Int32
-        public let thresholdVeryLow: Int32
+        public let thresholdVeryHigh: Int
+        public let thresholdHigh: Int
+        public let thresholdMedium: Int
+        public let thresholdLow: Int
+        public let thresholdVeryLow: Int
         
         public init(id: MeasurementStreamID?,
-                    sensorName: String?,
+                    sensorName: SensorName?,
                     sensorPackageName: String?,
                     measurementType: String?,
                     measurementShortType: String?,
                     unitName: String?,
                     unitSymbol: String?,
-                    thresholdVeryHigh: Int32,
-                    thresholdHigh: Int32,
-                    thresholdMedium: Int32,
-                    thresholdLow: Int32,
-                    thresholdVeryLow: Int32) {
+                    thresholdVeryHigh: Int,
+                    thresholdHigh: Int,
+                    thresholdMedium: Int,
+                    thresholdLow: Int,
+                    thresholdVeryLow: Int) {
             self.id = id
             self.sensorName = sensorName
             self.sensorPackageName = sensorPackageName

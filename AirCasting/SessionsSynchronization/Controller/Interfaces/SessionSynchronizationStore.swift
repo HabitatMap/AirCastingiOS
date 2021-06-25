@@ -53,7 +53,7 @@ extension SessionsSynchronization {
         let id: MeasurementStreamID
         let measurementShortType: String
         let measurementType: String
-        let sensorName: String
+        let sensorName: SensorName
         let sensorPackageName: String
         let thresholdHigh: Int
         let thresholdLow: Int

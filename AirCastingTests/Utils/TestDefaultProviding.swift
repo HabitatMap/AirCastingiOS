@@ -24,7 +24,7 @@ extension Int: TestDefaultProviding {
 }
 
 extension URL: TestDefaultProviding {
-    static var `default`: URL { URL(string: "https://www.google.com/")! }
+    static var `default`: URL { URL(string: "https://www.google.com/")!  }
 }
 
 extension Optional: TestDefaultProviding where Wrapped: TestDefaultProviding {

@@ -18,8 +18,12 @@ extension Publisher {
     ///    .logVerbose("Data received!")
     ///    .sink()
     ///~~~
-    func logVerbose(message: StringLiteralType, _ logFunc: @escaping (_ stringToLog: String) -> Void = { Log.verbose($0) }) -> Publishers.LogEvent<Self> {
-        .init(upstream: self, logMessageClosure: { _ in message }, logFunc: logFunc)
+    func logVerbose(message: StringLiteralType,
+                    file: String = #file,
+                    function: String = #function,
+                    line: Int = #line,
+                    logFunc: @escaping Publishers.Logging.LogFunc = { Log.verbose($0, file: $1, function: $2, line: $3) }) -> Publishers.LogEvent<Self> {
+        .init(upstream: self, logMessageClosure: { _ in message }, file: file, function: function, line: line, logFunc: logFunc)
     }
     
     /// Logs a string to `verbose` output
@@ -38,8 +42,12 @@ extension Publisher {
     ///    .logVerbose("Received \($0.count) values!")
     ///    .sink()
     ///~~~
-    func logVerbose(_ messageClosure: @escaping (_ output: Output) -> String, _ logFunc: @escaping (_ stringToLog: String) -> Void = { Log.verbose($0) }) -> Publishers.LogEvent<Self> {
-        .init(upstream: self, logMessageClosure: messageClosure, logFunc: logFunc)
+    func logVerbose(_ messageClosure: @escaping (_ output: Output) -> String,
+                    file: String = #file,
+                    function: String = #function,
+                    line: Int = #line,
+                    _ logFunc: @escaping Publishers.Logging.LogFunc = { Log.verbose($0, file: $1, function: $2, line: $3) }) -> Publishers.LogEvent<Self> {
+        .init(upstream: self, logMessageClosure: messageClosure, file: file, function: function, line: line, logFunc: logFunc)
     }
 }
 
@@ -49,18 +57,29 @@ extension Publishers {
         typealias Failure = Upstream.Failure
         
         private let upstream: Upstream
-        private let logFunc: (String) -> Void
+        private let logFunc: Publishers.Logging.LogFunc
+        private let file: String
+        private let function: String
+        private let line: Int
         private let logMessageClosure: (Output) -> String
         
-        init(upstream: Upstream, logMessageClosure: @escaping (Output) -> String, logFunc: @escaping (String) -> Void) {
+        init(upstream: Upstream,
+             logMessageClosure: @escaping (Output) -> String,
+             file: String,
+             function: String,
+             line: Int,
+             logFunc: @escaping Publishers.Logging.LogFunc) {
             self.upstream = upstream
             self.logMessageClosure = logMessageClosure
+            self.file = file
+            self.function = function
+            self.line = line
             self.logFunc = logFunc
         }
         
         func receive<S: Subscriber>(subscriber: S) where S.Failure == Upstream.Failure, S.Input == Upstream.Output {
             upstream.handleEvents(receiveOutput: {
-                logFunc("\(logMessageClosure($0))")
+                logFunc("\(logMessageClosure($0))", file, function, line)
             })
             .subscribe(subscriber)
         }

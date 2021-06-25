@@ -6,90 +6,77 @@ import Combine
 import Gzip
 @testable import AirCasting
 
-class SyncUpstreamServiceTests: XCTestCase {
+final class SyncUpstreamServiceTests: XCTestCase {
     let client = APIClientMock()
     let auth = RequestAuthorizationServiceMock()
     let responseValidator = HTTPResponseValidatorMock()
     lazy var service = SessionUploadService(client: client, authorization: auth, responseValidator: responseValidator)
     private var cancellables: [AnyCancellable] = []
     
-    func test_callsEndponitCorrectly() {
-        setupWithCorrectDataReturned()
-        let exp = expectation(description: "Will call correct endpoint")
-        service
-            .upload(session: .mock())
-            .sink(receiveCompletion: { _ in }, receiveValue: { _ in
-                XCTAssertEqual(self.client.callHistory.count, 1)
-                let request = self.client.callHistory.first!
-                XCTAssertEqual(request.url?.absoluteString, "http://aircasting.org/api/sessions")
-                XCTAssertEqual(request.httpMethod, "POST")
-                XCTAssertEqual(request.allHTTPHeaderFields?["Content-Type"], "application/json")
-                exp.fulfill()
-            })
-            .store(in: &cancellables)
-        wait(for: [exp], timeout: 0.1)
+    override func tearDown() {
+        super.tearDown()
+        cancellables = []
     }
     
-    func test_sendsCorrectJsonInBody() {
+    func test_callsEndponitCorrectly() throws {
         setupWithCorrectDataReturned()
-        let exp = expectation(description: "Will call correct endpoint")
-        service
-            .upload(session: .mock())
-            .sink(receiveCompletion: { _ in }, receiveValue: { _ in
-                XCTAssertEqual(self.client.callHistory.count, 1)
-                let request = self.client.callHistory.first!
-                let json = try! JSONSerialization.jsonObject(with: request.httpBody!, options: .allowFragments) as! [String : Any]
-                guard let gzippedBase64SessionJsonString = json["session"] as? String else {
-                    XCTFail("Unexpected data format!")
-                    return
-                }
-                guard let sessionJsonData = Data(base64Encoded: gzippedBase64SessionJsonString, options: .ignoreUnknownCharacters) else {
-                    XCTFail("Session data is not Base64!")
-                    return
-                }
-                guard sessionJsonData.isGzipped else {
-                    XCTFail("Session data is not gzipped!")
-                    return
-                }
-                guard let unzippedSessionJsonDatasessionJsonData = try? sessionJsonData.gunzipped() else {
-                    XCTFail("Couldn't unzip session data!")
-                    return
-                }
-                
-                guard let sessionJson = try? JSONSerialization
-                        .jsonObject(with: unzippedSessionJsonDatasessionJsonData, options: .allowFragments) as? [String : Any] else {
-                    XCTFail("Couldnt read JSON object from unzipped session data!")
-                    return
-                }
-                XCTAssertEqual(sessionJson["uuid"] as? String, "654321")
-                // Note this also tests snake_case conversion:
-                XCTAssertEqual(sessionJson["start_time"] as? String, "0001-01-01T01:24:00")
-                XCTAssertEqual(sessionJson["contribute"] as? Bool, false)
-                XCTAssertEqual(sessionJson["version"] as? Int, 1)
-                let streams = sessionJson["streams"] as! [String : Any]
-                XCTAssertEqual(streams.count, 1)
-                let firstStream = streams["A sensor"] as! [String : Any]
-                XCTAssertEqual(firstStream["id"] as! Int, 123456)
-                exp.fulfill()
-            })
-            .store(in: &cancellables)
-        wait(for: [exp], timeout: 0.1)
+        
+        try awaitPublisher(service.upload(session: .mock()))
+        
+        XCTAssertEqual(self.client.callHistory.count, 1)
+        let request = self.client.callHistory.first!
+        XCTAssertEqual(request.url?.absoluteString, "http://aircasting.org/api/sessions")
+        XCTAssertEqual(request.httpMethod, "POST")
+        XCTAssertEqual(request.allHTTPHeaderFields?["Content-Type"], "application/json")
+    }
+    
+    func test_sendsCorrectJsonInBody() throws {
+        setupWithCorrectDataReturned()
+        
+        try awaitPublisher(service.upload(session: .mock()))
+        
+        XCTAssertEqual(self.client.callHistory.count, 1)
+        let request = self.client.callHistory.first!
+        let json = try! JSONSerialization.jsonObject(with: request.httpBody!, options: .allowFragments) as! [String : Any]
+        guard let gzippedBase64SessionJsonString = json["session"] as? String else {
+            XCTFail("Unexpected data format!")
+            return
+        }
+        guard let sessionJsonData = Data(base64Encoded: gzippedBase64SessionJsonString, options: .ignoreUnknownCharacters) else {
+            XCTFail("Session data is not Base64!")
+            return
+        }
+        guard sessionJsonData.isGzipped else {
+            XCTFail("Session data is not gzipped!")
+            return
+        }
+        guard let unzippedSessionJsonDatasessionJsonData = try? sessionJsonData.gunzipped() else {
+            XCTFail("Couldn't unzip session data!")
+            return
+        }
+        
+        guard let sessionJson = try? JSONSerialization
+                .jsonObject(with: unzippedSessionJsonDatasessionJsonData, options: .allowFragments) as? [String : Any] else {
+            XCTFail("Couldnt read JSON object from unzipped session data!")
+            return
+        }
+        XCTAssertEqual(sessionJson["uuid"] as? String, "654321")
+        // Note this also tests snake_case conversion:
+        XCTAssertEqual(sessionJson["start_time"] as? String, "0001-01-01T01:24:00")
+        XCTAssertEqual(sessionJson["contribute"] as? Bool, false)
+        XCTAssertEqual(sessionJson["version"] as? Int, 1)
+        let streams = sessionJson["streams"] as! [String : Any]
+        XCTAssertEqual(streams.count, 1)
+        let firstStream = streams["A sensor"] as! [String : Any]
+        XCTAssertEqual(firstStream["id"] as! Int, 123456)
     }
     
     // MARK: - Error handling
     
     func test_whenServerReturnsError_itErrorsToo() {
         setupWithAPICallError(DummyError())
-        let exp = expectation(description: "It fails")
-        service
-            .upload(session: .mock())
-            .sink(receiveCompletion: {
-                guard case .failure = $0 else { return }
-                exp.fulfill()
-            }, receiveValue: {
-                XCTFail("Unexpected value received: \($0)")
-            }).store(in: &cancellables)
-        wait(for: [exp], timeout: 0.1)
+        
+        XCTAssertThrowsError(try awaitPublisher(service.upload(session: .mock())))
     }
     
     // MARK: - Fixture setup

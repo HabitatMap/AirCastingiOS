@@ -139,10 +139,14 @@
 		B32D08A4267A4957006C97ED /* LogErrorAndCompletePublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32D08A3267A4957006C97ED /* LogErrorAndCompletePublisher.swift */; };
 		B32D08AD267A6437006C97ED /* LogEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32D08AC267A6437006C97ED /* LogEvent.swift */; };
 		B32D08AF267A6D13006C97ED /* ErasingToVoidPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32D08AE267A6D13006C97ED /* ErasingToVoidPublisher.swift */; };
+		B33DB56E2685FB2400ED1344 /* LocalizedErrorStub.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33DB56D2685FB2400ED1344 /* LocalizedErrorStub.swift */; };
+		B33DB5702685FCFB00ED1344 /* SynchronizationTestMocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33DB56F2685FCFB00ED1344 /* SynchronizationTestMocks.swift */; };
+		B33DB5722686013400ED1344 /* XCTestCase+AwaitPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33DB5712686013400ED1344 /* XCTestCase+AwaitPublisher.swift */; };
+		B33DB5742686120600ED1344 /* XCTestCase+AssertContainsSameElements.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33DB5732686120600ED1344 /* XCTestCase+AssertContainsSameElements.swift */; };
+		B33DB5762686161300ED1344 /* SensorName.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33DB5752686161300ED1344 /* SensorName.swift */; };
 		B371415B26726A930057BF60 /* SynchronizationControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37141582672117D0057BF60 /* SynchronizationControllerTests.swift */; };
 		B376DD23268091B80083FD2F /* BodyEncodingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B376DD22268091B80083FD2F /* BodyEncodingError.swift */; };
 		B376DD25268096E20083FD2F /* SessionSynchronizationDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B376DD24268096E20083FD2F /* SessionSynchronizationDatabase.swift */; };
-		B3E26A012676D96E001A8E4C /* CLLocationUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E26A002676D96E001A8E4C /* CLLocationUtils.swift */; };
 		B3E26A032676D9AA001A8E4C /* ArrayUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E26A022676D9AA001A8E4C /* ArrayUtils.swift */; };
 		B3E26A062676DA23001A8E4C /* ArrayExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E26A052676DA23001A8E4C /* ArrayExtensionsTests.swift */; };
 		B3E26A092676DA55001A8E4C /* TestDefaultProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E26A082676DA55001A8E4C /* TestDefaultProviding.swift */; };
@@ -321,10 +325,14 @@
 		B32D08A3267A4957006C97ED /* LogErrorAndCompletePublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogErrorAndCompletePublisher.swift; sourceTree = "<group>"; };
 		B32D08AC267A6437006C97ED /* LogEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogEvent.swift; sourceTree = "<group>"; };
 		B32D08AE267A6D13006C97ED /* ErasingToVoidPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErasingToVoidPublisher.swift; sourceTree = "<group>"; };
+		B33DB56D2685FB2400ED1344 /* LocalizedErrorStub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizedErrorStub.swift; sourceTree = "<group>"; };
+		B33DB56F2685FCFB00ED1344 /* SynchronizationTestMocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynchronizationTestMocks.swift; sourceTree = "<group>"; };
+		B33DB5712686013400ED1344 /* XCTestCase+AwaitPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+AwaitPublisher.swift"; sourceTree = "<group>"; };
+		B33DB5732686120600ED1344 /* XCTestCase+AssertContainsSameElements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+AssertContainsSameElements.swift"; sourceTree = "<group>"; };
+		B33DB5752686161300ED1344 /* SensorName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorName.swift; sourceTree = "<group>"; };
 		B37141582672117D0057BF60 /* SynchronizationControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynchronizationControllerTests.swift; sourceTree = "<group>"; };
 		B376DD22268091B80083FD2F /* BodyEncodingError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyEncodingError.swift; sourceTree = "<group>"; };
 		B376DD24268096E20083FD2F /* SessionSynchronizationDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionSynchronizationDatabase.swift; sourceTree = "<group>"; };
-		B3E26A002676D96E001A8E4C /* CLLocationUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLLocationUtils.swift; sourceTree = "<group>"; };
 		B3E26A022676D9AA001A8E4C /* ArrayUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayUtils.swift; sourceTree = "<group>"; };
 		B3E26A052676DA23001A8E4C /* ArrayExtensionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayExtensionsTests.swift; sourceTree = "<group>"; };
 		B3E26A082676DA55001A8E4C /* TestDefaultProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestDefaultProviding.swift; sourceTree = "<group>"; };
@@ -494,7 +502,6 @@
 				3346F1F526318C1600BA4695 /* SettingsManager.swift */,
 				4FD2CA4626406F2C007E932E /* Diff.swift */,
 				4F8CDBD1265F8DAC00976B25 /* Assertions.swift */,
-				B3E26A002676D96E001A8E4C /* CLLocationUtils.swift */,
 				B3E26A022676D9AA001A8E4C /* ArrayUtils.swift */,
 			);
 			path = Utils;
@@ -685,6 +692,7 @@
 				AC524A6E261329330061AD45 /* SessionExtension.swift */,
 				AC524A7526133A370061AD45 /* MeaurementStreamExtension.swift */,
 				AC8CFF7125E7DA2D00FB2918 /* ABMeasurementStream.swift */,
+				B33DB5752686161300ED1344 /* SensorName.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -786,6 +794,9 @@
 			children = (
 				B3E26A082676DA55001A8E4C /* TestDefaultProviding.swift */,
 				B31B7ECA267E4DF6002DAC18 /* DummyError.swift */,
+				B33DB56D2685FB2400ED1344 /* LocalizedErrorStub.swift */,
+				B33DB5712686013400ED1344 /* XCTestCase+AwaitPublisher.swift */,
+				B33DB5732686120600ED1344 /* XCTestCase+AssertContainsSameElements.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -804,6 +815,7 @@
 				B37141582672117D0057BF60 /* SynchronizationControllerTests.swift */,
 				B3E26A2926780D96001A8E4C /* SynchronizationControllerTestHelpers.swift */,
 				B3E26A0C2676DAD2001A8E4C /* SynchronizationTestDoubles.swift */,
+				B33DB56F2685FCFB00ED1344 /* SynchronizationTestMocks.swift */,
 			);
 			path = SessionsSynchronization;
 			sourceTree = "<group>";
@@ -1119,12 +1131,16 @@
 				4FB39E362621B77D00E5E564 /* APIClientMock.swift in Sources */,
 				B3E26A092676DA55001A8E4C /* TestDefaultProviding.swift in Sources */,
 				4FB39E402622252700E5E564 /* XCTestCase+Extensions.swift in Sources */,
+				B33DB5742686120600ED1344 /* XCTestCase+AssertContainsSameElements.swift in Sources */,
 				4FA83EEF26342D84003E2BF2 /* AuthorizationAPIServiceTests.swift in Sources */,
 				4F5D3F7F262D735A003AD82E /* CreateSessionAPIServiceTests.swift in Sources */,
 				B371415B26726A930057BF60 /* SynchronizationControllerTests.swift in Sources */,
 				4FB39E092621B55D00E5E564 /* FixedSessionTests.swift in Sources */,
+				B33DB5702685FCFB00ED1344 /* SynchronizationTestMocks.swift in Sources */,
 				B3E26A2A26780D96001A8E4C /* SynchronizationControllerTestHelpers.swift in Sources */,
 				4FEEAED3262C53C20024AB7E /* UpdateSessionParamsServiceTests.swift in Sources */,
+				B33DB56E2685FB2400ED1344 /* LocalizedErrorStub.swift in Sources */,
+				B33DB5722686013400ED1344 /* XCTestCase+AwaitPublisher.swift in Sources */,
 				B31B7EC9267E2024002DAC18 /* SyncContextServiceTests.swift in Sources */,
 				B31B7ECF267E83F6002DAC18 /* SyncUpstreamServiceTests.swift in Sources */,
 				B3E26A062676DA23001A8E4C /* ArrayExtensionsTests.swift in Sources */,
@@ -1144,6 +1160,7 @@
 				AC049F7F2604B7AF00398197 /* AuthErorrHandling.swift in Sources */,
 				ACF77DF825A866E700BB85B7 /* BlueButtonStyle.swift in Sources */,
 				B3FD77C4267C94AF00E97CC2 /* SessionSynchronizationService.swift in Sources */,
+				B33DB5762686161300ED1344 /* SensorName.swift in Sources */,
 				B3FD77B7267C94AF00E97CC2 /* DatabaseMeasurement.swift in Sources */,
 				AC524A962615D8620061AD45 /* MeasurementStreamEntity.swift in Sources */,
 				B32D08A2267A4949006C97ED /* LogErrorPublisher.swift in Sources */,
@@ -1189,7 +1206,6 @@
 				AC93B8DA25BEDC46003D0A0D /* Array.swift in Sources */,
 				ACD01F7625FF61CE00B8F65F /* LocationProvider.swift in Sources */,
 				3346F1F626318C1600BA4695 /* SettingsManager.swift in Sources */,
-				B3E26A012676D96E001A8E4C /* CLLocationUtils.swift in Sources */,
 				AC7AB09225D988CD0025492B /* WhiteSelectingButtonStyle.swift in Sources */,
 				3326BD562642E71E00DE8E6D /* ChartEntriesCreator.swift in Sources */,
 				B3FD77BB267C94AF00E97CC2 /* SessionsSynchronizationStoreDataConverter.swift in Sources */,

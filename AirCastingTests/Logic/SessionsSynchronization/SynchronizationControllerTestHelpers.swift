@@ -11,7 +11,7 @@ extension SynchronizationControllerTests {
     
     func setupWithStubbingDownload(_ download: SessionsSynchronization.SessionDownstreamData) {
         let newSessionsUuids = [SessionUUID(rawValue: UUID().uuidString)!]
-        let context = SessionsSynchronization.SynchronizationContext(needToBeDownloaded: newSessionsUuids, needToBeUploaded: .empty, removed: .empty)
+        let context = SessionsSynchronization.SynchronizationContext(needToBeDownloaded: newSessionsUuids, needToBeUploaded: [], removed: [])
         remoteContextProvider.toReturn = .success(context)
 
         downloadService.toReturn = .success(download)
@@ -20,7 +20,7 @@ extension SynchronizationControllerTests {
     func setupWithStubbingStoreReads(_ stored: [SessionsSynchronization.SessionStoreSessionData]) {
         self.store.readSessionToReturn = stored[0]
         let uuidsToFetch = [SessionUUID?](creating: SessionUUID(rawValue: UUID().uuidString), times: stored.count).compactMap { $0 }
-        let context = SessionsSynchronization.SynchronizationContext(needToBeDownloaded: .empty, needToBeUploaded: uuidsToFetch, removed: .empty)
+        let context = SessionsSynchronization.SynchronizationContext(needToBeDownloaded: [], needToBeUploaded: uuidsToFetch, removed: [])
         remoteContextProvider.toReturn = .success(context)
         var sub: AnyCancellable?
         sub = store.$recordedHistory.map { history in
@@ -36,17 +36,17 @@ extension SynchronizationControllerTests {
     }
     
     func setupWithPassthruDownloads(downloadUUIDs: [SessionUUID]) {
-        let context = SessionsSynchronization.SynchronizationContext(needToBeDownloaded: downloadUUIDs, needToBeUploaded: .empty, removed: .empty)
+        let context = SessionsSynchronization.SynchronizationContext(needToBeDownloaded: downloadUUIDs, needToBeUploaded: [], removed: [])
         remoteContextProvider.toReturn = .success(context)
     }
     
     func setupWithPassthruUploads(uploadUUIDs: [SessionUUID]) {
-        let context = SessionsSynchronization.SynchronizationContext(needToBeDownloaded: .empty, needToBeUploaded: uploadUUIDs, removed: .empty)
+        let context = SessionsSynchronization.SynchronizationContext(needToBeDownloaded: [], needToBeUploaded: uploadUUIDs, removed: [])
         remoteContextProvider.toReturn = .success(context)
     }
     
     func setupWithSessionsToDelete(_ UUIDsToRemove: [SessionUUID]) {
-        let context = SessionsSynchronization.SynchronizationContext(needToBeDownloaded: .empty, needToBeUploaded: .empty, removed: UUIDsToRemove)
+        let context = SessionsSynchronization.SynchronizationContext(needToBeDownloaded: [], needToBeUploaded: [], removed: UUIDsToRemove)
         remoteContextProvider.toReturn = .success(context)
     }
     

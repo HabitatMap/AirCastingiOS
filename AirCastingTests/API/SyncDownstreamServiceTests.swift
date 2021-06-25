@@ -5,99 +5,80 @@ import XCTest
 import Combine
 @testable import AirCasting
 
-class SyncDownstreamServiceTests: XCTestCase {
-    let client = APIClientMock()
-    let auth = RequestAuthorizationServiceMock()
-    let responseValidator = HTTPResponseValidatorMock()
-    lazy var service = SessionDownloadService(client: client, authorization: auth, responseValidator: responseValidator)
+final class SyncDownstreamServiceTests: XCTestCase {
+    private let client = APIClientMock()
+    private let auth = RequestAuthorizationServiceMock()
+    private let responseValidator = HTTPResponseValidatorMock()
+    private lazy var service = SessionDownloadService(client: client, authorization: auth, responseValidator: responseValidator)
     private var cancellables: [AnyCancellable] = []
     
-    func test_callsEndponitCorrectly() {
-        setupWithCorrectDataReturned()
-        let exp = expectation(description: "Will call correct endpoint")
-        let sessionUUID = SessionUUID.default
-        service
-            .download(session: sessionUUID)
-            .sink(receiveCompletion: { _ in }, receiveValue: { _ in
-                XCTAssertEqual(self.client.callHistory.count, 1)
-                let request = self.client.callHistory.first!
-                XCTAssertEqual(request.url?.absoluteString, "http://aircasting.org/api/user/sessions/empty.json?uuid=\(sessionUUID.rawValue)")
-                XCTAssertEqual(request.httpMethod, "GET")
-                XCTAssertEqual(request.allHTTPHeaderFields?["Accept"], "application/json")
-                exp.fulfill()
-            })
-            .store(in: &cancellables)
-        wait(for: [exp], timeout: 0.1)
+    override func tearDown() {
+        super.tearDown()
+        cancellables = []
     }
     
-    func test_parsesDataCorrectly() {
+    func test_callsEndponitCorrectly() throws {
         setupWithCorrectDataReturned()
-        let exp = expectation(description: "Will parse data")
-        service
-            .download(session: .random)
-            .sink(receiveCompletion: { _ in }, receiveValue: { session in
-                XCTAssertEqual(session.id, 1704532)
-                XCTAssertEqual(session.createdAt.timeIntervalSinceReferenceDate, 632226953)
-                XCTAssertEqual(session.updatedAt.timeIntervalSinceReferenceDate, 632226953)
-                XCTAssertEqual(session.userId, 5350)
-                XCTAssertEqual(session.uuid, "aef5aac4-3a9e-43ac-b5ba-18e001d65162")
-                XCTAssertEqual(session.urlToken, "2vtaf")
-                XCTAssertEqual(session.title, "bxhxhd")
-                XCTAssertEqual(session.contribute, true)
-                XCTAssertEqual(session.startTime.timeIntervalSinceReferenceDate, 632230153)
-                XCTAssertEqual(session.endTime?.timeIntervalSinceReferenceDate, 632230269)
-                XCTAssertEqual(session.isIndoor, false)
-                XCTAssertEqual(session.latitude!, 50.0443153, accuracy: 0.00001)
-                XCTAssertEqual(session.longitude!, 19.9611183, accuracy: 0.00001)
-                XCTAssertEqual(session.version, 0)
-                XCTAssertEqual(session.tagList, "")
-                XCTAssertEqual(session.type, "MobileSession")
-                XCTAssertEqual(session.location?.absoluteString, "http://aircasting.habitatmap.org/s/2vtaf")
-                XCTAssertEqual(session.streams.count, 1)
-                XCTAssertEqual(session.streams["Phone Microphone-dB"]?.id, 2054733)
-                XCTAssertEqual(session.streams["Phone Microphone-dB"]?.sensorName, "Phone Microphone-dB")
-                XCTAssertEqual(session.streams["Phone Microphone-dB"]?.sensorPackageName, "Builtin")
-                XCTAssertEqual(session.streams["Phone Microphone-dB"]?.unitName, "decibels")
-                XCTAssertEqual(session.streams["Phone Microphone-dB"]?.measurementType, "Sound Level")
-                XCTAssertEqual(session.streams["Phone Microphone-dB"]?.measurementShortType, "dB")
-                XCTAssertEqual(session.streams["Phone Microphone-dB"]?.unitSymbol, "dB")
-                XCTAssertEqual(session.streams["Phone Microphone-dB"]?.thresholdVeryLow, 20)
-                XCTAssertEqual(session.streams["Phone Microphone-dB"]?.thresholdLow, 60)
-                XCTAssertEqual(session.streams["Phone Microphone-dB"]?.thresholdMedium, 70)
-                XCTAssertEqual(session.streams["Phone Microphone-dB"]?.thresholdHigh, 80)
-                XCTAssertEqual(session.streams["Phone Microphone-dB"]?.thresholdVeryHigh, 100)
-                exp.fulfill()
-            })
-            .store(in: &cancellables)
-        wait(for: [exp], timeout: 0.1)
+        
+        let sessionUUID = SessionUUID.default
+        try awaitPublisher(service.download(session: sessionUUID))
+        
+        XCTAssertEqual(self.client.callHistory.count, 1)
+        let request = self.client.callHistory.first!
+        XCTAssertEqual(request.url?.absoluteString, "http://aircasting.org/api/user/sessions/empty.json?uuid=\(sessionUUID.rawValue)")
+        XCTAssertEqual(request.httpMethod, "GET")
+        XCTAssertEqual(request.allHTTPHeaderFields?["Accept"], "application/json")
+    }
+    
+    func test_parsesDataCorrectly() throws {
+        setupWithCorrectDataReturned()
+        
+        let session = try awaitPublisher(service.download(session: .random))
+        
+        XCTAssertEqual(session.id, 1704532)
+        XCTAssertEqual(session.createdAt.timeIntervalSinceReferenceDate, 632226953)
+        XCTAssertEqual(session.updatedAt.timeIntervalSinceReferenceDate, 632226953)
+        XCTAssertEqual(session.userId, 5350)
+        XCTAssertEqual(session.uuid, "aef5aac4-3a9e-43ac-b5ba-18e001d65162")
+        XCTAssertEqual(session.urlToken, "2vtaf")
+        XCTAssertEqual(session.title, "bxhxhd")
+        XCTAssertEqual(session.contribute, true)
+        XCTAssertEqual(session.startTime.timeIntervalSinceReferenceDate, 632230153)
+        XCTAssertEqual(session.endTime?.timeIntervalSinceReferenceDate, 632230269)
+        XCTAssertEqual(session.isIndoor, false)
+        XCTAssertEqual(session.latitude!, 50.0443153, accuracy: 0.00001)
+        XCTAssertEqual(session.longitude!, 19.9611183, accuracy: 0.00001)
+        XCTAssertEqual(session.version, 0)
+        XCTAssertEqual(session.tagList, "")
+        XCTAssertEqual(session.type, "MobileSession")
+        XCTAssertEqual(session.location?.absoluteString, "http://aircasting.habitatmap.org/s/2vtaf")
+        XCTAssertEqual(session.streams.count, 1)
+        XCTAssertEqual(session.streams["Phone Microphone-dB"]?.id, 2054733)
+        XCTAssertEqual(session.streams["Phone Microphone-dB"]?.sensorName, "Phone Microphone-dB")
+        XCTAssertEqual(session.streams["Phone Microphone-dB"]?.sensorPackageName, "Builtin")
+        XCTAssertEqual(session.streams["Phone Microphone-dB"]?.unitName, "decibels")
+        XCTAssertEqual(session.streams["Phone Microphone-dB"]?.measurementType, "Sound Level")
+        XCTAssertEqual(session.streams["Phone Microphone-dB"]?.measurementShortType, "dB")
+        XCTAssertEqual(session.streams["Phone Microphone-dB"]?.unitSymbol, "dB")
+        XCTAssertEqual(session.streams["Phone Microphone-dB"]?.thresholdVeryLow, 20)
+        XCTAssertEqual(session.streams["Phone Microphone-dB"]?.thresholdLow, 60)
+        XCTAssertEqual(session.streams["Phone Microphone-dB"]?.thresholdMedium, 70)
+        XCTAssertEqual(session.streams["Phone Microphone-dB"]?.thresholdHigh, 80)
+        XCTAssertEqual(session.streams["Phone Microphone-dB"]?.thresholdVeryHigh, 100)
     }
     
     // MARK: - Error handling
     
     func test_whenServerReturnsError_finishesWithError() {
-        setupWithAPICallError(DummyError(errorData: "some_error"))
-        let exp = expectation(description: "Will finish with error")
-        service
-            .download(session: .random)
-            .sink(receiveCompletion: { result in
-                defer { exp.fulfill() }
-                guard case .failure = result else { XCTFail("Expected to fail!"); return }
-            }, receiveValue: { _ in })
-            .store(in: &cancellables)
-        wait(for: [exp], timeout: 0.1)
+        setupWithAPICallError(DummyError())
+        
+        XCTAssertThrowsError(try awaitPublisher(service.download(session: .random)))
     }
     
     func test_whenServerReturnsMalformedData_finishesWithError() {
         setupWithMalformedData()
-        let exp = expectation(description: "Will finish with error")
-        service
-            .download(session: .random)
-            .sink(receiveCompletion: { result in
-                defer { exp.fulfill() }
-                guard case .failure = result else { XCTFail("Expected to fail!"); return }
-            }, receiveValue: { _ in })
-            .store(in: &cancellables)
-        wait(for: [exp], timeout: 0.1)
+        
+        XCTAssertThrowsError(try awaitPublisher(service.download(session: .random)))
     }
     
     // MARK: - Fixture setup

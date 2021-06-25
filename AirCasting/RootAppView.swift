@@ -10,8 +10,7 @@ import SwiftUI
 struct RootAppView: View {
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     let sessionSynchronizer: SessionSynchronizer
-
-    let persistenceController = PersistenceController.shared
+    let persistenceController: PersistenceController
     let bluetoothManager = BluetoothManager()
     let microphoneManager = MicrophoneManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared))
     
@@ -41,7 +40,7 @@ struct RootAppView: View {
 #if DEBUG
 struct RootAppView_Previews: PreviewProvider {
     static var previews: some View {
-        RootAppView(sessionSynchronizer: DummySessionSynchronizer())
+        RootAppView(sessionSynchronizer: DummySessionSynchronizer(), persistenceController: .shared)
     }
 }
 #endif
