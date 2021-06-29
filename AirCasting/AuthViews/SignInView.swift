@@ -11,17 +11,25 @@ import AirCastingStyling
 extension NSError: Identifiable {}
 
 struct SignInView: View {
-    @State var isActive: Bool = false
-
+    
+    @State var isActive: Bool
+    let baseURL: BaseURLProvider
     let userAuthenticationSession: UserAuthenticationSession
-    private let authorizationAPIService = AuthorizationAPIService()
+    private let authorizationAPIService: AuthorizationAPIService
     @State private var username: String = ""
     @State private var password: String = ""
-    @State private var task: Cancellable?
-    @State private var presentedError: AuthorizationError?
+    @State private var task: Cancellable? = nil
+    @State private var presentedError: AuthorizationError? = nil
     @State private var isUsernameBlank = false
     @State private var isPasswordBlank = false
-
+    
+    init(active: Bool = false, userSession: UserAuthenticationSession, urlProvider: BaseURLProvider) {
+        self.baseURL = urlProvider
+        _isActive = State(initialValue: active)
+        self.userAuthenticationSession = userSession
+        self.authorizationAPIService = AuthorizationAPIService(baseUrl: baseURL)
+    }
+    
     var body: some View {
         LoadingView(isShowing: $isActive) {
             contentView
@@ -62,12 +70,12 @@ private extension SignInView {
             }
         }
         .simultaneousGesture(
-    DragGesture(minimumDistance: 2, coordinateSpace: .global)
-        .onChanged({ (_) in
-            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-        }))
+            DragGesture(minimumDistance: 2, coordinateSpace: .global)
+                .onChanged({ (_) in
+                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                }))
     }
-
+    
     var titleLabel: some View {
         VStack(alignment: .leading, spacing: 15) {
             Text("Sign in")
@@ -99,7 +107,7 @@ private extension SignInView {
             checkInput()
             if !isPasswordBlank && !isUsernameBlank {
                 isActive = true
-
+                
                 task = authorizationAPIService.signIn(input: AuthorizationAPI.SigninUserInput(username: username, password: password)) { result in
                     DispatchQueue.main.async {
                         switch result {
@@ -125,7 +133,7 @@ private extension SignInView {
     
     var signupButton: some View {
         NavigationLink(
-            destination: CreateAccountView(userAuthenticationSession: userAuthenticationSession),
+            destination: CreateAccountView(userSession: userAuthenticationSession, baseURL: baseURL),
             label: {
                 signupButtonText
             })
@@ -145,7 +153,7 @@ private extension SignInView {
         isPasswordBlank = checkIfBlank(text: password)
         isUsernameBlank = checkIfBlank(text: username)
     }
-
+    
     func displayErrorAlert(error: AuthorizationError) -> Alert {
         let title = NSLocalizedString("Login Error", comment: "Login Error alert title")
         switch error {
@@ -153,7 +161,7 @@ private extension SignInView {
             return Alert(title: Text(title),
                          message: Text("The profile name or password is incorrect. Please try again. "),
                          dismissButton: .default(Text("Ok")))
-
+            
         case .noConnection:
             return Alert(title: Text("No Internet Connection"),
                          message: Text("Please make sure your device is connected to the internet."),
@@ -169,7 +177,7 @@ private extension SignInView {
 #if DEBUG
 struct SignInView_Previews: PreviewProvider {
     static var previews: some View {
-        SignInView(isActive: true, userAuthenticationSession: UserAuthenticationSession())
+        SignInView(active: true, userSession: UserAuthenticationSession(), urlProvider: DummyURLProvider())
     }
 }
 #endif

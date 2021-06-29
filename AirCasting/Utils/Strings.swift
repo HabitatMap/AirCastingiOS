@@ -17,7 +17,7 @@ struct Strings {
     
     struct BackendSettings {
         static let backendSettings: String = "Backend settings"
-        static let Ok: String = "Ok"
+        static let Ok: String = "OK"
         static let Cancel: String = "Cancel"
     }
     
@@ -31,7 +31,7 @@ struct Strings {
     
     struct SignOutSettings {
         static let title: String = "My account"
-        static let Logged: String = "You are currently logged in as jan.krzempek@lunarlogic.io"
+        static let logged: String = "You are currently logged in as "
         static let signOut: String = "Sign Out"
     }
 }

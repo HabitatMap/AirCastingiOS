@@ -13,13 +13,14 @@ struct RootAppView: View {
     let persistenceController = PersistenceController.shared
     let bluetoothManager = BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared)))
     let microphoneManager = MicrophoneManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared))
+    let urlProvider = UserDefaultsBaseURLProvider()
     
     var body: some View {
         if userAuthenticationSession.isLoggedIn {
             mainAppView
         } else {
             NavigationView {
-                SignInView(userAuthenticationSession: userAuthenticationSession).environmentObject(userAuthenticationSession)
+                SignInView(userSession: userAuthenticationSession, urlProvider: urlProvider).environmentObject(userAuthenticationSession)
             }
         }
     }
@@ -27,7 +28,8 @@ struct RootAppView: View {
     var mainAppView: some View {
         MainTabBarView(measurementUpdatingService: DownloadMeasurementsService(
                         authorisationService: userAuthenticationSession,
-                        persistenceController: persistenceController))
+                        persistenceController: persistenceController,
+                        baseUrl: urlProvider), urlProvider: urlProvider)
             .environmentObject(bluetoothManager)
             .environmentObject(microphoneManager)
             .environmentObject(userAuthenticationSession)

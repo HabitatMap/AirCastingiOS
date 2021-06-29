@@ -2,8 +2,11 @@
 //
 
 import SwiftUI
+import AirCastingStyling
 
 struct MyAccountViewSignOut: View {
+    let logoutController: LogoutController
+    
     var body: some View {
         ZStack {
             VStack(alignment: .leading) {
@@ -17,31 +20,38 @@ struct MyAccountViewSignOut: View {
     }
 }
 
-private var logInLabel: some View {
-    Text(Strings.SignOutSettings.Logged)
-        .foregroundColor(.aircastingGray)
-        .padding()
-}
-
-private var signOutButton: some View {
-    Button(action: {
-    }) {
-        Group {
-            HStack {
-                Text(Strings.SignOutSettings.signOut)
-                Spacer()
-                Image(systemName: "chevron.right")
+private extension MyAccountViewSignOut {
+    var logInLabel: some View {
+        Text(Strings.SignOutSettings.logged + "name")
+            .foregroundColor(.aircastingGray)
+            .padding()
+    }
+    
+    var signOutButton: some View {
+        Button(action: {
+            do {
+                try logoutController.logout()
+            } catch {
+                assertionFailure("Failed to deauthorize \(error)")
             }
-            .padding(.horizontal)
-        }
-    } .buttonStyle(BlueButtonStyle())
-    .padding()
+        }) {
+            Group {
+                HStack {
+                    Text(Strings.SignOutSettings.signOut)
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                }
+                .padding(.horizontal)
+            }
+        }.buttonStyle(BlueButtonStyle())
+        .padding()
+    }
 }
 
 #if DEBUG
 struct MyAccountViewSingOut_Previews: PreviewProvider {
     static var previews: some View {
-        MyAccountViewSignOut()
+        MyAccountViewSignOut(logoutController: FakeLogoutController())
     }
 }
 #endif

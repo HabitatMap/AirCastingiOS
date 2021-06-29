@@ -11,6 +11,7 @@ import Firebase
 
 struct MainTabBarView: View {
     let measurementUpdatingService: MeasurementUpdatingService
+    let urlProvider: BaseURLProvider
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     @EnvironmentObject var persistenceController: PersistenceController
     @EnvironmentObject var microphoneManager: MicrophoneManager
@@ -44,14 +45,14 @@ private extension MainTabBarView {
     
     #warning("TODO: Change starting view")
     private var createSessionTab: some View {
-        ChooseSessionTypeView(sessionContext: CreateSessionContext())
+        ChooseSessionTypeView(sessionContext: CreateSessionContext(), urlProvider: urlProvider)
             .tabItem {
                 Image(systemName: "plus")
             }
             .tag(TabBarSelection.Tab.createSession)
     }
     private var settingsTab: some View {
-        SettingsView(logoutController: DefaultLogoutController(
+        SettingsView(urlProvider: UserDefaultsBaseURLProvider(), logoutController: DefaultLogoutController(
                         userAuthenticationSession: userAuthenticationSession,
                         sessionStorage: SessionStorage(persistenceController: persistenceController),
                         microphoneManager: microphoneManager))
@@ -77,7 +78,7 @@ struct ContentView_Previews: PreviewProvider {
     private static let persistenceController = PersistenceController(inMemory: true)
 
     static var previews: some View {
-        MainTabBarView(measurementUpdatingService: MeasurementUpdatingServiceMock())
+        MainTabBarView(measurementUpdatingService: MeasurementUpdatingServiceMock(), urlProvider: DummyURLProvider())
             .environmentObject(UserAuthenticationSession())
             .environmentObject(BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: PreviewMeasurementStreamStorage())))
             .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))

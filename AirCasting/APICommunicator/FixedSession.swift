@@ -54,6 +54,7 @@ class FixedSession {
 }
 
 final class FixedSessionAPIService {
+    let urlProvider: BaseURLProvider
     let apiClient: APIClient
     let responseValidator: HTTPResponseValidator
     let authorisationService: RequestAuthorisationService
@@ -69,25 +70,27 @@ final class FixedSessionAPIService {
         return $0
     }(JSONDecoder())
 
-    init(authorisationService: RequestAuthorisationService, apiClient: APIClient = URLSession.shared, responseValidator: HTTPResponseValidator = DefaultHTTPResponseValidator()) {
+    init(authorisationService: RequestAuthorisationService, apiClient: APIClient = URLSession.shared, responseValidator: HTTPResponseValidator = DefaultHTTPResponseValidator(), baseUrl: BaseURLProvider) {
         self.authorisationService = authorisationService
         self.apiClient = apiClient
         self.responseValidator = responseValidator
+        self.urlProvider = baseUrl
     }
 
     @discardableResult
     func getFixedMeasurement(uuid: SessionUUID, lastSync: Date, completion: @escaping (Result<FixedSession.FixedMeasurementOutput, Error>) -> Void) -> Cancellable {
         // Build URL with query
-        var components = URLComponents(string: "http://aircasting.org/api/realtime/sync_measurements.json")!
+        let url = urlProvider.baseAppURL.appendingPathComponent("realtime/sync_measurements.json")
+        var components = URLComponents(url: url, resolvingAgainstBaseURL: false)!
         let syncDateStr = ISO8601DateFormatter.defaultLong.string(from: lastSync)
         components.queryItems = [
             URLQueryItem(name: "uuid", value: uuid.rawValue),
             URLQueryItem(name: "last_measurement_sync", value: syncDateStr)
         ]
-        let url = components.url!
+        let urlWithParams = components.url!
 
         // Build URLRequest
-        var request = URLRequest(url: url)
+        var request = URLRequest(url: urlWithParams)
         request.httpMethod = "GET"
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         request.addValue("application/json", forHTTPHeaderField: "Accept")

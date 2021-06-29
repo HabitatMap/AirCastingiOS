@@ -10,17 +10,23 @@ import AirCastingStyling
 
 
 struct CreateAccountView: View {
-    let userAuthenticationSession: UserAuthenticationSession
-    private let authorizationAPIService = AuthorizationAPIService()
+    private let userAuthenticationSession: UserAuthenticationSession
+    private let authorizationAPIService: AuthorizationAPIService
+    private let baseURL: BaseURLProvider
 
     @State private var email: String = ""
     @State private var username: String = ""
     @State private var password: String = ""
-
     @State private var isPasswordCorrect = true
     @State private var isEmailCorrect = true
     @State private var isUsernameBlank = false
     @State private var presentedError: AuthorizationError?
+    
+    init(userSession: UserAuthenticationSession, baseURL: BaseURLProvider) {
+        userAuthenticationSession = userSession
+        authorizationAPIService = AuthorizationAPIService(baseUrl: baseURL)
+        self.baseURL = baseURL
+    }
 
     var body: some View {
         GeometryReader { geometry in
@@ -144,7 +150,7 @@ private extension CreateAccountView {
     
     var signinButton: some View {
         NavigationLink(
-            destination: SignInView(userAuthenticationSession: userAuthenticationSession),
+            destination: SignInView(userSession: userAuthenticationSession, urlProvider: baseURL),
             label: {
                 signingButtonText
             })
@@ -189,7 +195,7 @@ private extension CreateAccountView {
 #if DEBUG
 struct CreateAccountView_Previews: PreviewProvider {
     static var previews: some View {
-        CreateAccountView(userAuthenticationSession: UserAuthenticationSession())
+        CreateAccountView(userSession: UserAuthenticationSession(), baseURL: DummyURLProvider())
     }
 }
 #endif

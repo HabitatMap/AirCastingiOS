@@ -68,17 +68,18 @@ final class AuthorizationAPIService {
     private struct SignupAPIInput: Encodable, Hashable {
         let user: AuthorizationAPI.SignupUserInput
     }
-
+    
     let apiClient: APIClient
     let responseHandler: AuthorizationHTTPResponseHandler
-    let url = URL(string: "http://aircasting.org/api/user.json")!
+    let url: URL
 
     private lazy var decoder: JSONDecoder = JSONDecoder()
     private lazy var encoder = JSONEncoder()
 
-    init(apiClient: APIClient = URLSession.shared, responseHandler: AuthorizationHTTPResponseHandler = .init()) {
+    init(apiClient: APIClient = URLSession.shared, responseHandler: AuthorizationHTTPResponseHandler = .init(), baseUrl: BaseURLProvider) {
         self.apiClient = apiClient
         self.responseHandler = responseHandler
+        self.url = baseUrl.authorizationURL.appendingPathComponent("user.json")
     }
 
     @discardableResult

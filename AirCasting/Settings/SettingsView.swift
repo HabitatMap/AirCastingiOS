@@ -6,11 +6,10 @@
 //
 
 import SwiftUI
-import Foundation
 import AirCastingStyling
 
 struct SettingsView: View {
-    
+    let urlProvider: BaseURLProvider
     let logoutController: LogoutController
     @State private var isToggle: Bool = false
     @State private var showModal = false
@@ -21,7 +20,6 @@ struct SettingsView: View {
                 Section() {
                     signOutLink
                 }
-                
                 Section() {
                     VStack(alignment: .leading) {
                         HStack(spacing: 5) {
@@ -33,12 +31,6 @@ struct SettingsView: View {
                     }
                     navigateToBackendSettingsButton
                 }
-                
-                Section() {
-                    helpLink
-                    hardwareLink
-                    aboutLink
-                }
             }
             .listStyle(GroupedListStyle())
             .navigationBarTitle(Strings.Settings.title)
@@ -46,7 +38,7 @@ struct SettingsView: View {
     }
     
     private var signOutLink: some View {
-        NavigationLink(destination: MyAccountViewSignOut()) {
+        NavigationLink(destination: MyAccountViewSignOut(logoutController: logoutController)) {
             Text(Strings.Settings.myAccount)
         }
     }
@@ -82,71 +74,15 @@ struct SettingsView: View {
                 }
             }
         }.sheet(isPresented: $showModal, content: {
-            BackendSettingsModalView()
+            BackendSettingsView(urlProvider: urlProvider)
         })
-    }
-    
-    private var helpLink: some View {
-        NavigationLink(destination: Text(Strings.Settings.settingsHelp)) {
-            Text(Strings.Settings.settingsHelp)
-        }
-    }
-    
-    private var hardwareLink: some View {
-        NavigationLink(destination: Text(Strings.Settings.hardwareDevelopers)) {
-            Text(Strings.Settings.hardwareDevelopers)
-        }
-    }
-    
-    private var aboutLink: some View {
-        NavigationLink(destination: Text(Strings.Settings.about)) {
-            Text(Strings.Settings.about)
-        }
-    }
-    
-    
-    private struct BackendSettingsModalView: View {
-        
-        @Environment(\.presentationMode) var presentationMode
-        @State var url: String = ""
-        @State var port: String = ""
-        
-        var body: some View {
-            VStack(alignment: .leading) {
-                title
-                Spacer()
-                createTextfield(placeholder: "Enter url", binding: $url)
-                createTextfield(placeholder: "Enter port", binding: $port)
-                Spacer()
-                oKButton
-                cancelButton
-            }
-            .padding()
-        }
-        
-        private var title: some View {
-            Text(Strings.BackendSettings.backendSettings)
-                .font(.title2)
-        }
-        
-        private var oKButton: some View {
-            Button(Strings.BackendSettings.Ok) {
-                presentationMode.wrappedValue.dismiss()
-            }.buttonStyle(BlueButtonStyle())
-        }
-        
-        private var cancelButton: some View {
-            Button(Strings.BackendSettings.Cancel) {
-                presentationMode.wrappedValue.dismiss()
-            }.buttonStyle(BlueTextButtonStyle())
-        }
     }
 }
 
 #if DEBUG
 struct LogoutView_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsView(logoutController: FakeLogoutController())
+        SettingsView(urlProvider: DummyURLProvider(), logoutController: FakeLogoutController())
     }
 }
 #endif

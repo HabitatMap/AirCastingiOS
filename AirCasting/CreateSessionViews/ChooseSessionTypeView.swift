@@ -16,6 +16,7 @@ struct ChooseSessionTypeView: View {
     @State private var isMobileLinkActive = false
     @State private var didTapFixedSession = false
     @EnvironmentObject var bluetoothManager: BluetoothManager
+    let urlProvider: BaseURLProvider
     
     var body: some View {
         NavigationView {
@@ -118,13 +119,13 @@ struct ChooseSessionTypeView: View {
                 EmptyView()
                     .fullScreenCover(isPresented: $isPowerABLinkActive) {
                         CreatingSessionFlowRootView {
-                            PowerABView(creatingSessionFlowContinues: $isPowerABLinkActive)
+                            PowerABView(creatingSessionFlowContinues: $isPowerABLinkActive, urlProvider: urlProvider)
                         }
                     }
                 EmptyView()
                     .fullScreenCover(isPresented: $isTurnBluetoothOnLinkActive) {
                         CreatingSessionFlowRootView {
-                            TurnOnBluetoothView(creatingSessionFlowContinues: $isTurnBluetoothOnLinkActive)
+                            TurnOnBluetoothView(creatingSessionFlowContinues: $isTurnBluetoothOnLinkActive, urlProvider: urlProvider)
                         }
                     }
             }
@@ -142,7 +143,7 @@ struct ChooseSessionTypeView: View {
             EmptyView()
                 .fullScreenCover(isPresented: $isMobileLinkActive) {
                     CreatingSessionFlowRootView {
-                        SelectDeviceView(creatingSessionFlowContinues: $isMobileLinkActive)
+                        SelectDeviceView(creatingSessionFlowContinues: $isMobileLinkActive, urlProvider: urlProvider)
                     }
                 })
     }
@@ -191,7 +192,7 @@ struct ChooseSessionTypeView: View {
 struct CreateSessionView_Previews: PreviewProvider {
     static var previews: some View {
         ChooseSessionTypeView(
-            sessionContext: CreateSessionContext())
+            sessionContext: CreateSessionContext(), urlProvider: DummyURLProvider())
                 .environmentObject(BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: PreviewMeasurementStreamStorage())))
     }
 }

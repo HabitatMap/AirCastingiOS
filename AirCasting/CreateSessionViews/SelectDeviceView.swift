@@ -21,6 +21,8 @@ struct SelectDeviceView: View {
     
     @Binding var creatingSessionFlowContinues : Bool
     
+    let urlProvider: BaseURLProvider
+    
     var body: some View {
         VStack(spacing: 30) {
             ProgressView(value: 0.125)
@@ -116,13 +118,13 @@ struct SelectDeviceView: View {
         .buttonStyle(BlueButtonStyle())
         .background( Group {
             NavigationLink(
-                destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues),
+                destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider),
                 isActive: $isPowerABLinkActive,
                 label: {
                     EmptyView()
                 })
             NavigationLink(
-                destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues),
+                destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider),
                 isActive: $isTurnOnBluetoothLinkActive,
                 label: {
                     EmptyView()
@@ -140,7 +142,7 @@ struct SelectDeviceView: View {
 #if DEBUG
 struct SelectDeviceView_Previews: PreviewProvider {
     static var previews: some View {
-        SelectDeviceView(creatingSessionFlowContinues: .constant(true))
+        SelectDeviceView(creatingSessionFlowContinues: .constant(true), urlProvider: DummyURLProvider())
     }
 }
 #endif
