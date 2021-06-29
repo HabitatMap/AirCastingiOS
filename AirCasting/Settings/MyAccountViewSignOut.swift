@@ -26,6 +26,7 @@ private extension MyAccountViewSignOut {
     var logInLabel: some View {
         Text(Strings.SignOutSettings.Logged)
             .foregroundColor(.aircastingGray)
+            .font(Font.muli(size: 13))
             .padding()
     }
     
