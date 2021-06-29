@@ -2,8 +2,12 @@
 //
 
 import SwiftUI
+import AirCastingStyling
 
 struct MyAccountViewSignOut: View {
+    @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
+    @EnvironmentObject var persistenceController: PersistenceController
+    @EnvironmentObject var microphoneManager: MicrophoneManager
     var body: some View {
         ZStack {
             VStack(alignment: .leading) {
@@ -17,25 +21,33 @@ struct MyAccountViewSignOut: View {
     }
 }
 
-private var logInLabel: some View {
-    Text(Strings.SignOutSettings.Logged)
-        .foregroundColor(.aircastingGray)
-        .padding()
-}
-
-private var signOutButton: some View {
-    Button(action: {
-    }) {
-        Group {
-            HStack {
-                Text(Strings.SignOutSettings.signOut)
-                Spacer()
-                Image(systemName: "chevron.right")
+private extension MyAccountViewSignOut {
+    
+    var logInLabel: some View {
+        Text(Strings.SignOutSettings.Logged)
+            .foregroundColor(.aircastingGray)
+            .padding()
+    }
+    
+    var signOutButton: some View {
+        Button(action: {
+            do {
+                try DefaultLogoutController(userAuthenticationSession: userAuthenticationSession, sessionStorage: SessionStorage(persistenceController: persistenceController), microphoneManager: microphoneManager).logout()
+            } catch {
+                assertionFailure("Failed to deauthorize \(error)")
             }
-            .padding(.horizontal)
-        }
-    } .buttonStyle(BlueButtonStyle())
-    .padding()
+        }) {
+            Group {
+                HStack {
+                    Text(Strings.SignOutSettings.signOut)
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                }
+                .padding(.horizontal)
+            }
+        } .buttonStyle(BlueButtonStyle())
+        .padding()
+    }
 }
 
 #if DEBUG

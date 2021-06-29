@@ -2,6 +2,7 @@
 //
 
 import SwiftUI
+import AirCastingStyling
 
 struct PrivacyOnboarding: View {
     var completion: () -> Void

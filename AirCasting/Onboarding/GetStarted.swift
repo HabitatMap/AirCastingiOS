@@ -2,6 +2,7 @@
 //
 
 import SwiftUI
+import AirCastingStyling
 
 struct GetStarted: View {
     var completion: () -> Void
