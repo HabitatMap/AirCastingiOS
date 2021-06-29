@@ -94,7 +94,7 @@ private extension SessionHeaderView {
             try! microphoneManager.stopRecording()
         }, label: {
             Text("Stop recording")
-                .foregroundColor(.blue)
+                .foregroundColor(.accentColor)
         })
     }
         

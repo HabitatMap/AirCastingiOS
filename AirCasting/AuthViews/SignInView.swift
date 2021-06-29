@@ -12,7 +12,6 @@ extension NSError: Identifiable {}
 
 struct SignInView: View {
     @State var isActive: Bool = false
-
     let userAuthenticationSession: UserAuthenticationSession
     private let authorizationAPIService = AuthorizationAPIService()
     @State private var username: String = ""
@@ -34,6 +33,7 @@ private extension SignInView {
         GeometryReader { geometry in
             ScrollView {
                 VStack(spacing: 40) {
+                    progressBar
                     titleLabel
                     VStack(spacing: 20) {
                         VStack(alignment: .leading, spacing: 5) {
@@ -52,6 +52,7 @@ private extension SignInView {
                     }
                     signinButton
                     signupButton
+                    Spacer()
                 }
                 .padding()
                 .navigationBarHidden(true)
@@ -66,6 +67,11 @@ private extension SignInView {
         .onChanged({ (_) in
             UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
         }))
+    }
+    
+    private var progressBar: some View {
+        ProgressView(value: 0.825)
+            .accentColor(.accentColor)
     }
 
     var titleLabel: some View {
