@@ -1,18 +1,14 @@
-//
-//  BlueTextButtonStyle.swift
-//  AirCasting
-//
-//  Created by Lunar on 15/03/2021.
+// Created by Lunar on 09/06/2021.
 //
 
 import SwiftUI
 
-struct BlueTextButtonStyle: ButtonStyle {
+struct GreenTextButtonStyle: ButtonStyle {
     
     func makeBody(configuration: Configuration) -> some View {
         configuration
             .label
-            .foregroundColor(.accentColor)
+            .foregroundColor(.aircastingMint)
             .font(Font.moderate(size: 16, weight: .bold))
             .frame(maxWidth: .infinity)
             .cornerRadius(5)
@@ -20,10 +16,11 @@ struct BlueTextButtonStyle: ButtonStyle {
     }
 }
 #if DEBUG
-struct BlueTextButtonStyle_Previews: PreviewProvider {
+struct GreenTextButtonStyle_Previews: PreviewProvider {
     static var previews: some View {
         Button("BlueTextButtonStyle") {}
             .buttonStyle(BlueTextButtonStyle())
     }
 }
 #endif
+

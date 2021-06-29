@@ -131,6 +131,12 @@
 		ACF77DFB25A8888700BB85B7 /* SessionCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACF77DFA25A8888700BB85B7 /* SessionCellView.swift */; };
 		ACF7C05F260CC9FF007C24AE /* DownloadMeasurmentsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACF7C05E260CC9FF007C24AE /* DownloadMeasurmentsService.swift */; };
 		ACFC708925C1A36A00D609D9 /* UIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACFC708825C1A36A00D609D9 /* UIColor.swift */; };
+		DD430B002670BC6F00F1BF2E /* GetStarted.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD430AFF2670BC6F00F1BF2E /* GetStarted.swift */; };
+		DD430B022670F3B300F1BF2E /* NearAirDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD430B012670F3B300F1BF2E /* NearAirDescription.swift */; };
+		DD430B042670FA9600F1BF2E /* AirBeamOnboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD430B032670FA9600F1BF2E /* AirBeamOnboarding.swift */; };
+		DD430B062670FCC000F1BF2E /* GreenButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD430B052670FCC000F1BF2E /* GreenButtonStyle.swift */; };
+		DD430B082670FE6100F1BF2E /* GreenTextButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD430B072670FE6100F1BF2E /* GreenTextButtonStyle.swift */; };
+		DD430B0C26710E0600F1BF2E /* PrivacyOnboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD430B0B26710E0600F1BF2E /* PrivacyOnboarding.swift */; };
 		DD1C99C1267CBFCB00B786C4 /* MyAccountViewSignOut.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD1C99C0267CBFCB00B786C4 /* MyAccountViewSignOut.swift */; };
 		DD2181EF267BBCBC0010EC2E /* MyAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD2181EE267BBCBC0010EC2E /* MyAccountView.swift */; };
 		DDF7599A268332E900D906BA /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF75999268332E900D906BA /* Strings.swift */; };
@@ -282,6 +288,12 @@
 		ACF77DFA25A8888700BB85B7 /* SessionCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionCellView.swift; sourceTree = "<group>"; };
 		ACF7C05E260CC9FF007C24AE /* DownloadMeasurmentsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadMeasurmentsService.swift; sourceTree = "<group>"; };
 		ACFC708825C1A36A00D609D9 /* UIColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColor.swift; sourceTree = "<group>"; };
+		DD430AFF2670BC6F00F1BF2E /* GetStarted.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetStarted.swift; sourceTree = "<group>"; };
+		DD430B012670F3B300F1BF2E /* NearAirDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearAirDescription.swift; sourceTree = "<group>"; };
+		DD430B032670FA9600F1BF2E /* AirBeamOnboarding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirBeamOnboarding.swift; sourceTree = "<group>"; };
+		DD430B052670FCC000F1BF2E /* GreenButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GreenButtonStyle.swift; sourceTree = "<group>"; };
+		DD430B072670FE6100F1BF2E /* GreenTextButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GreenTextButtonStyle.swift; sourceTree = "<group>"; };
+		DD430B0B26710E0600F1BF2E /* PrivacyOnboarding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyOnboarding.swift; sourceTree = "<group>"; };
 		DD1C99C0267CBFCB00B786C4 /* MyAccountViewSignOut.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyAccountViewSignOut.swift; sourceTree = "<group>"; };
 		DD2181EE267BBCBC0010EC2E /* MyAccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyAccountView.swift; sourceTree = "<group>"; };
 		DDF75999268332E900D906BA /* Strings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Strings.swift; sourceTree = "<group>"; };
@@ -459,6 +471,19 @@
 			path = CreateSessionViews;
 			sourceTree = "<group>";
 		};
+		AC6D569825ADE55B00D221BA /* ButtonStyles */ = {
+			isa = PBXGroup;
+			children = (
+				ACF77DF725A866E700BB85B7 /* BlueButtonStyle.swift */,
+				ACD01F7A25FF6C3300B8F65F /* BlueTextButtonStyle.swift */,
+				AC7AB09125D988CD0025492B /* WhiteSelectingButtonStyle.swift */,
+				AC6D569925ADE57800D221BA /* GrayButtonStyle.swift */,
+				DD430B052670FCC000F1BF2E /* GreenButtonStyle.swift */,
+				DD430B072670FE6100F1BF2E /* GreenTextButtonStyle.swift */,
+			);
+			path = ButtonStyles;
+			sourceTree = "<group>";
+		};
 		AC6D56A725B0833F00D221BA /* Graph */ = {
 			isa = PBXGroup;
 			children = (
@@ -524,6 +549,7 @@
 				AC7EB37525A6FB3A00A7F2AF /* AirCastingApp.swift */,
 				ACD01F912600A3C800B8F65F /* RootAppView.swift */,
 				AC7EB37725A6FB3A00A7F2AF /* MainTabBarView.swift */,
+				DD430AFE2670BB3000F1BF2E /* Onboarding */,
 				AC9F52682652A360003CF61F /* Dashboard */,
 				ACF7C05D260CC9DB007C24AE /* Services */,
 				338C30E025F1042000E0305C /* CoreData */,
@@ -690,6 +716,17 @@
 				3A54057326D27D23E9906704 /* Pods_AirCastingTests.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		DD430AFE2670BB3000F1BF2E /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				DD430AFF2670BC6F00F1BF2E /* GetStarted.swift */,
+				DD430B012670F3B300F1BF2E /* NearAirDescription.swift */,
+				DD430B032670FA9600F1BF2E /* AirBeamOnboarding.swift */,
+				DD430B0B26710E0600F1BF2E /* PrivacyOnboarding.swift */,
+			);
+			path = Onboarding;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -946,6 +983,8 @@
 			files = (
 				AC93B8FE25C02E0B003D0A0D /* GoogleMapView.swift in Sources */,
 				AC049F7F2604B7AF00398197 /* AuthErorrHandling.swift in Sources */,
+				DD430B022670F3B300F1BF2E /* NearAirDescription.swift in Sources */,
+				ACF77DF825A866E700BB85B7 /* BlueButtonStyle.swift in Sources */,
 				AC524A962615D8620061AD45 /* MeasurementStreamEntity.swift in Sources */,
 				4FF60BE926550077001618BE /* SelectPeripheralView.swift in Sources */,
 				AC32041F25CC485E00A68520 /* ConnectingABView.swift in Sources */,
@@ -953,6 +992,7 @@
 				4F8CDBD4265F8EE000976B25 /* SessionStorage.swift in Sources */,
 				AC9F526C2652A360003CF61F /* DashboardView.swift in Sources */,
 				AC3203CB25CA991C00A68520 /* TurnOnBluetoothView.swift in Sources */,
+				DD430B0C26710E0600F1BF2E /* PrivacyOnboarding.swift in Sources */,
 				4FF60BEA265500C4001618BE /* BluetoothManager.swift in Sources */,
 				AC32043625CD534700A68520 /* ChooseSessionTypeView.swift in Sources */,
 				AC8431D0265E6143004DC890 /* RemoveOldMeasurementsService.swift in Sources */,
@@ -983,6 +1023,7 @@
 				4F3CDF222652B58100596CD3 /* Measurement.swift in Sources */,
 				ACC536E026395C0900327267 /* MeasurementDotView.swift in Sources */,
 				4F858F5E2624B4980059271A /* Log.swift in Sources */,
+				DD430B062670FCC000F1BF2E /* GreenButtonStyle.swift in Sources */,
 				ACFC708925C1A36A00D609D9 /* UIColor.swift in Sources */,
 				AC8CFF7225E7DA2D00FB2918 /* ABMeasurementStream.swift in Sources */,
 				AC524AAC2616003C0061AD45 /* DateFormatter.swift in Sources */,
@@ -1002,6 +1043,7 @@
 				AC8D6C6E25C056B400ED74D1 /* PathPoint.swift in Sources */,
 				AC6D56A525AF211200D221BA /* MultiSliderView.swift in Sources */,
 				AC524A7626133A370061AD45 /* MeaurementStreamExtension.swift in Sources */,
+				DD430B042670FA9600F1BF2E /* AirBeamOnboarding.swift in Sources */,
 				AC8CFF7E25EE5F9200FB2918 /* AirBeam3Configurator.swift in Sources */,
 				AC8CFF7725ECF8B100FB2918 /* HexMessagesBuilder.swift in Sources */,
 				338C30E225F1044B00E0305C /* PersistenceController.swift in Sources */,
@@ -1019,6 +1061,7 @@
 				AC524A942615D8620061AD45 /* SessionEntity.swift in Sources */,
 				AC8CFF3625E502DD00FB2918 /* CreateAccountView.swift in Sources */,
 				338C30E825F10BFE00E0305C /* AirCasting.xcdatamodeld in Sources */,
+				DD430B002670BC6F00F1BF2E /* GetStarted.swift in Sources */,
 				AC8D6C6A25C049E300ED74D1 /* Environment.swift in Sources */,
 				ACD01F4025F8C1F800B8F65F /* SessionContext.swift in Sources */,
 				AC8D6C7225C0574800ED74D1 /* LocationTracker.swift in Sources */,
@@ -1030,6 +1073,7 @@
 				AC4A6A6C267CB3D40001F639 /* GraphRenderers.swift in Sources */,
 				ACD01F922600A3C800B8F65F /* RootAppView.swift in Sources */,
 				331EA80A25E32094009DEFDB /* ConfirmCreatingSessionView.swift in Sources */,
+				DD430B082670FE6100F1BF2E /* GreenTextButtonStyle.swift in Sources */,
 				AC049F872608B74C00398197 /* FixedSession.swift in Sources */,
 				AC524A8E2615C8270061AD45 /* UpdateSessionParams.swift in Sources */,
 				AC797FE7263C2C1600970254 /* SensorThreshold.swift in Sources */,

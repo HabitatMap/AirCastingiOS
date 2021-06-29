@@ -26,9 +26,13 @@ struct CreateAccountView: View {
         GeometryReader { geometry in
             ScrollView {
                 VStack(spacing: 50) {
+                    if ((UserDefaults.standard.value(forKey: "onBoardingKey") != nil) == true) {
+                        progressBar.hidden()
+                    } else {
+                        progressBar
+                    }
                     titleLabel
                     VStack(spacing: 20) {
-                        
                         VStack(alignment: .leading, spacing: 5) {
                             emailTextfield
                                 .keyboardType(.emailAddress)
@@ -55,6 +59,7 @@ struct CreateAccountView: View {
                         createAccountButton
                         signinButton
                     }
+                    Spacer()
                 }
                 .padding()
                 .navigationBarHidden(true)
@@ -75,6 +80,12 @@ struct CreateAccountView: View {
 }
 
 private extension CreateAccountView {
+    
+    var progressBar: some View {
+        ProgressView(value: 0.825)
+            .accentColor(Color.accentColor)
+    }
+    
     var titleLabel: some View {
         VStack(alignment: .leading, spacing: 15) {
             Text("Create account")

@@ -36,5 +36,9 @@ extension Color {
     static var aircastingBackground: Color {
         return Color("aircastingBackground")
     }
+    static var aircastingMint: Color {
+        return Color("OnboardingMint")
+    }
+    static let shadowColor = Color(white: 150/255, opacity: 0.5)
 }
 
