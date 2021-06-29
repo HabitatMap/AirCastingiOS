@@ -6,7 +6,7 @@ import AirCastingStyling
 
 struct BackendSettingsView: View {
     
-    let backendURLBuilder = BackendURLBuilder()
+    let backendURLBuilder = BackendURLValidator()
     
     @Environment(\.presentationMode) var presentationMode
     @State var urlProvider: BaseURLProvider

@@ -7,7 +7,7 @@
 
 import Foundation
 
-class BackendURLBuilder {
+class BackendURLValidator {
     enum ValidationError: Error {
         case invalidURL
         case invalidPort
