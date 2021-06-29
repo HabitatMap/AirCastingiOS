@@ -31,7 +31,7 @@ struct Strings {
     
     struct SignOutSettings {
         static let title: String = "My account"
-        static let Logged: String = "You are currently logged in as jan.krzempek@lunarlogic.io"
+        static let Logged: String = "You are currently logged in as admin@admin.com"
         static let signOut: String = "Sign Out"
     }
 }
