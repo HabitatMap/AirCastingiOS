@@ -14,11 +14,11 @@ struct CreatingSessionFlowRootView<Content: View>: View {
     @Environment(\.presentationMode) var presentationMode
     
     var body: some View {
-        NavigationView {
+//        NavigationView {
             content()
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationBarItems(leading: backButton)
-        }
+//        }
     }
     
     var backButton: some View {
