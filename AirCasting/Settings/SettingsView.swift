@@ -18,7 +18,7 @@ struct SettingsView: View {
     
     var body: some View {
         NavigationView {
-            List {
+            Form {
                 Section() {
                     signOutLink
                 }
