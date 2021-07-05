@@ -138,7 +138,7 @@ private extension SignInView {
     var forgotPassword: some View {
         Button("Forgot password?") {
             presentingModal = true
-        }.sheet(isPresented: $presentingModal) { ModalView(presentedAsModal: self.$presentingModal) }
+        }.sheet(isPresented: $presentingModal) { ForgotPasswordView(presentedAsModal: self.$presentingModal) }
             .buttonStyle(BlueTextButtonStyle())
     }
     
@@ -184,7 +184,7 @@ private extension SignInView {
         }
     }
     
-    struct ModalView: View {
+    struct ForgotPasswordView: View {
         @Environment(\.presentationMode) var presentationMode
         @Binding var presentedAsModal: Bool
         @State private var showingAlert = false
@@ -193,7 +193,7 @@ private extension SignInView {
         var body: some View {
             VStack(alignment: .leading, spacing: 30) {
                 title
-                createTextfield(placeholder: "enter email", binding: $email)
+                createTextfield(placeholder: "email or username", binding: $email)
                 description
                 sendButton
             }.padding()
@@ -201,29 +201,30 @@ private extension SignInView {
         
         private var title: some View {
             Text("Forgot Password")
-                .font(.title)
+                .font(Font.moderate(size: 32, weight: .bold))
                 .foregroundColor(.accentColor)
         }
         
         private var description: some View {
             Text("You will get en email with details after 'send new' button pressed")
-                .font(.footnote)
+                .font(Font.muli(size: 16))
+                .foregroundColor(.aircastingGray)
         }
         
         var sendButton: some View {
             Button("Send new") {
-                APIcalls().forgotPassword(login: email) { value in
+                APICommunication().forgotPassword(login: email) { value in
                     switch value {
-                    case 201:
-                        popUpMessage = "Done, email sent!"
+                    case 200, 201:
+                        popUpMessage = "Email was sent. Please check your inbox for the details."
                     default:
-                        popUpMessage = "Something went wrong, try again"
+                        popUpMessage = "Something went wrong, please try again"
                     }
                     showingAlert = true
                 }
             }.alert(isPresented: $showingAlert) {
                 Alert(
-                    title: Text("Important message"),
+                    title: Text("Email response"),
                     message: Text(popUpMessage),
                     dismissButton: Alert.Button.default(Text("OK"), action: {
                         presentationMode.wrappedValue.dismiss()

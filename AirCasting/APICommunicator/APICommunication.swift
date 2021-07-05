@@ -3,7 +3,7 @@
 
 import Foundation
 
-final class APIcalls {
+final class APICommunication {
     func forgotPassword(login: String, completion: @escaping (Int) -> Void) {
         let params = ["user": ["login": login]]
 
@@ -11,7 +11,6 @@ final class APIcalls {
         request.httpMethod = "POST"
         request.httpBody = try? JSONSerialization.data(withJSONObject: params, options: [])
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        var returnCode = 404
         let session = URLSession.shared
         let task = session.dataTask(with: request, completionHandler: { _, response, _ -> Void in
 
@@ -21,12 +20,11 @@ final class APIcalls {
             }
             switch httpResponse.statusCode {
             case 200, 201:
-                returnCode = 201
                 print("Success")
             default:
                 print("POST request got response \(httpResponse.statusCode)")
             }
-            completion(returnCode)
+            completion(httpResponse.statusCode)
         })
         task.resume()
     }
