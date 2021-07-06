@@ -20,6 +20,7 @@ struct MyAccountView: View {
     }
 }
 
+
 private var loggedOutInformationLabel: some View {
     Text(Strings.MyAccountSettings.logStatus)
         .foregroundColor(.aircastingGray)
