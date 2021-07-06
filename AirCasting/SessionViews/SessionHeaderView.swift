@@ -8,24 +8,31 @@
 import SwiftUI
 
 struct SessionHeaderView: View {
-    
     let action: () -> Void
     let isExpandButtonNeeded: Bool
     @ObservedObject var session: SessionEntity
     @EnvironmentObject private var microphoneManager: MicrophoneManager
     var threshold: SensorThreshold
     @Binding var selectedStream: MeasurementStreamEntity?
-
+    
+    @State private var showModal = false
+    
     var body: some View {
-        VStack(alignment: .leading, spacing: 13){
-            dateAndTime
+        VStack(alignment: .leading, spacing: 13) {
+            HStack {
+                dateAndTime
+                Spacer()
+                actionsMenu
+            }.sheet(isPresented: $showModal, content: {
+                ShareViewModal()
+            })
             nameLabelAndExpandButton
             if session.deviceType == .MIC {
                 HStack {
                     measurementsMic
                     Spacer()
-                    //This is a temporary solution for stopping mic session recording until we implement proper session edition menu
-                    if microphoneManager.session?.uuid == session.uuid, microphoneManager.isRecording && (session.status == .RECORDING || session.status == .DISCONNETCED) {
+                    // This is a temporary solution for stopping mic session recording until we implement proper session edition menu
+                    if microphoneManager.session?.uuid == session.uuid, microphoneManager.isRecording, session.status == .RECORDING || session.status == .DISCONNETCED {
                         stopRecordingButton
                     }
                 }
@@ -56,7 +63,6 @@ private extension SessionHeaderView {
     }
     
     var nameLabelAndExpandButton: some View {
-        
         VStack(alignment: .leading, spacing: 5) {
             HStack {
                 Text(session.name ?? "")
@@ -97,7 +103,37 @@ private extension SessionHeaderView {
                 .foregroundColor(.accentColor)
         })
     }
-        
+    
+    var actionsMenu: some View {
+        Menu {
+            Button {
+                // action here
+            } label: {
+                Label("Resume recording", systemImage: "repeat")
+            }
+            
+            Button {
+                // action here
+            } label: {
+                Label("Edit session", systemImage: "pencil")
+            }
+            
+            Button {
+                showModal.toggle()
+            } label: {
+                Label("Share session", systemImage: "square.and.arrow.up")
+            }
+            
+            Button {
+                // action here
+            } label: {
+                Label("Delete session", systemImage: "xmark.circle")
+            }
+        } label: {
+            EditButtonView()
+        }
+    }
+    
     func lastMicMeasurement() -> Double {
         return session.dbStream?.latestValue ?? 0
     }
@@ -111,7 +147,7 @@ struct SessionHeader_Previews: PreviewProvider {
                           session: SessionEntity.mock,
                           threshold: .mock,
                           selectedStream: .constant(nil))
-        .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
+            .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
     }
 }
 #endif
