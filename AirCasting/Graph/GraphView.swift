@@ -50,10 +50,12 @@ struct GraphView: View {
 }
 
 #if DEBUG
-//struct GraphView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        GraphView(session: .mock, thresholds: [.mock])
-//            .environmentObject(PersistenceController())
-//    }
-//}
+struct GraphView_Previews: PreviewProvider {
+    static var previews: some View {
+        GraphView(measurementStream: .mock,
+                  thresholds: [.mock],
+                  statsContainerViewModel: StatisticsContainerViewModel(statsInput: MeasurementsStatisticsInputMock(), unit: "dB"),
+                  graphStatsDataSource: GraphStatsDataSource(stream: .mock))
+    }
+}
 #endif

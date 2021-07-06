@@ -65,9 +65,9 @@ struct StatisticsContainerView: View {
 }
 
 #if DEBUG
-//struct CalculatedMeasurements_Previews: PreviewProvider {
-//    static var previews: some View {
-//        StatisticsContainerView()
-//    }
-//}
+struct CalculatedMeasurements_Previews: PreviewProvider {
+    static var previews: some View {
+        StatisticsContainerView(statsContainerViewModel: StatisticsContainerViewModel(statsInput: MeasurementsStatisticsInputMock(), unit: "dB"))
+    }
+}
 #endif

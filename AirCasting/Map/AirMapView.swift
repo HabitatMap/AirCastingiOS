@@ -65,9 +65,16 @@ struct AirMapView: View {
 }
 
 #if DEBUG
-//struct Map_Previews: PreviewProvider {
-//    static var previews: some View {
-//        AirMapView(thresholds: [SensorThreshold.mock], session: .mock)
-//    }
-//}
+struct Map_Previews: PreviewProvider {
+    static var previews: some View {
+        AirMapView(thresholds: [SensorThreshold.mock],
+                   statsContainerViewModel: StatisticsContainerViewModel(statsInput: MeasurementsStatisticsInputMock(), unit: "dB"),
+                   mapStatsDataSource: MapStatsDataSource(stream: .mock),
+                   session: .mock)
+    }
+}
+
+struct MeasurementsStatisticsInputMock: MeasurementsStatisticsInput {
+    func visibleDataChanged() { }
+}
 #endif
