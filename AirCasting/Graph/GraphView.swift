@@ -8,9 +8,12 @@
 import SwiftUI
 
 struct GraphView: View {
-    
-    let session: SessionEntity
+    let measurementStream: MeasurementStreamEntity
     let thresholds: [SensorThreshold]
+    let statsContainerViewModel: StatisticsContainerViewModel
+    let graphStatsDataSource: GraphStatsDataSource
+    
+    private var session: SessionEntity { measurementStream.session }
     
     var body: some View {
         VStack(alignment: .trailing) {
@@ -23,8 +26,11 @@ struct GraphView: View {
                 #warning("Replace dbStream with currently selected")
                 Graph(stream: session.dbStream!,
                       thresholds: thresholds[0],
-                      isAutozoomEnabled: session.type == .mobile)
-                StatisticsContainerView()
+                      isAutozoomEnabled: session.type == .mobile).onDateRangeChange { startDate, endDate in
+                        graphStatsDataSource.dateRange = startDate...endDate
+                        statsContainerViewModel.adjustForNewData()
+                      }
+                StatisticsContainerView(statsContainerViewModel: statsContainerViewModel)
             }
             
             NavigationLink(destination: HeatmapSettingsView(changedThresholdValues: thresholds[0].rawThresholdsBinding)) {
@@ -44,9 +50,10 @@ struct GraphView: View {
 }
 
 #if DEBUG
-struct GraphView_Previews: PreviewProvider {
-    static var previews: some View {
-        GraphView(session: .mock, thresholds: [.mock])
-    }
-}
+//struct GraphView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        GraphView(session: .mock, thresholds: [.mock])
+//            .environmentObject(PersistenceController())
+//    }
+//}
 #endif

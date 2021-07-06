@@ -12,6 +12,8 @@ extension Database {
     }
 }
 
+// MARK: - Sessions handling
+
 protocol SessionsFetchable {
     func fetchSessions(constrained: Database.Constraint, completion: @escaping (Result<[Database.Session], Error>) -> Void)
 }
@@ -22,4 +24,10 @@ protocol SessionRemovable {
 
 protocol SessionInsertable {
     func insertSessions(_ sessions: [Database.Session], completion: ((Error?) -> Void)?)
+}
+
+// MARK: - Measurements handling
+
+protocol MeasurementsFetchable {
+    func fetchMeasurements(constrained: Database.Constraint, completion: @escaping (Result<[Database.Measurement], Error>) -> Void)
 }

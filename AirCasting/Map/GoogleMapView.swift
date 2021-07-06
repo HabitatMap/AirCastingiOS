@@ -15,7 +15,15 @@ struct GoogleMapView: UIViewRepresentable {
     typealias UIViewType = GMSMapView
     let pathPoints: [PathPoint]
     private(set) var thresholds: SensorThreshold?
-    var isMyLocationEnabled: Bool = false
+    var isMyLocationEnabled: Bool
+    private let delegateRelay = GoogleMapViewDelegate()
+    private var onPositionChange: (([PathPoint]) -> ())? = nil
+    
+    init(pathPoints: [PathPoint], thresholds: SensorThreshold? = nil, isMyLocationEnabled: Bool = false) {
+        self.pathPoints = pathPoints
+        self.thresholds = thresholds
+        self.isMyLocationEnabled = isMyLocationEnabled
+    }
     
     func makeUIView(context: Context) -> GMSMapView {
         GMSServices.provideAPIKey(GOOGLE_MAP_KEY)
@@ -29,6 +37,9 @@ struct GoogleMapView: UIViewRepresentable {
         let mapView = GMSMapView.map(withFrame: frame,
                                      camera: startingPoint)
         
+        mapView.delegate = delegateRelay
+        delegateRelay.onPosistionChange = positionChanged
+        
         mapView.isMyLocationEnabled = isMyLocationEnabled
         
         context.coordinator.myLocationSink = mapView.publisher(for: \.myLocation)
@@ -37,6 +48,21 @@ struct GoogleMapView: UIViewRepresentable {
                 mapView?.animate(toLocation: coordinate)
             }
         return mapView
+    }
+    
+    /// Adds an action for when the map viewport is changed.
+    /// - Parameter action: an action block that takes an array of currently visible `PathPoint`s.
+    func onPositionChange(action: @escaping (_ visiblePoints: [PathPoint]) -> ()) -> Self {
+        var newSelf = self
+        newSelf.onPositionChange = action
+        return newSelf
+    }
+    
+    private func positionChanged(for mapView: GMSMapView) {
+        let visibleRegion = mapView.projection.visibleRegion()
+        let bounds = GMSCoordinateBounds(region: visibleRegion)
+        let visiblePathPoints = pathPoints.filter { bounds.contains($0.location) }
+        onPositionChange?(visiblePathPoints)
     }
     
     func updateUIView(_ uiView: GMSMapView, context: Context) {
@@ -116,6 +142,16 @@ struct GoogleMapView: UIViewRepresentable {
     func makeCoordinator() -> Coordinator {
         Coordinator()
     }
+    
+    @objc
+    /// A relay for google map delegate which requires an `NSObjectProtocol` conformance.
+    private class GoogleMapViewDelegate: NSObject, GMSMapViewDelegate {
+        var onPosistionChange: ((GMSMapView) -> ())?
+        
+        func mapView(_ mapView: GMSMapView, didChange position: GMSCameraPosition) {
+            onPosistionChange?(mapView)
+        }
+    }
 }
 
 #if DEBUG
@@ -123,12 +159,15 @@ struct GoogleMapView_Previews: PreviewProvider {
     static var previews: some View {
         GoogleMapView(pathPoints: [PathPoint(location: CLLocationCoordinate2D(latitude: 40.73,
                                                                               longitude: -73.93),
+                                             measurementTime: .distantPast,
                                              measurement: 30),
                                    PathPoint(location: CLLocationCoordinate2D(latitude: 40.83,
                                                                               longitude: -73.93),
+                                             measurementTime: .distantPast,
                                              measurement: 30),
                                    PathPoint(location: CLLocationCoordinate2D(latitude: 40.93,
                                                                               longitude: -73.83),
+                                             measurementTime: .distantPast,
                                              measurement: 30)],
                       thresholds: SensorThreshold.mock)
             .padding()

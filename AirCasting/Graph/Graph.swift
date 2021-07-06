@@ -9,12 +9,14 @@ import SwiftUI
 import Charts
 
 class AirCastingGraph: UIView {
-    
+    typealias DateRange = (start: Date, end: Date)
     let lineChartView = LineChartView()
     var renderer: MultiColorGridRenderer?
     var didMoveOrScaleGraph = false
+    private let onDateRangeChange: ((DateRange) -> Void)?
     
-    init() {
+    init(onDateRangeChange: ((DateRange) -> Void)?) {
+        self.onDateRangeChange = onDateRangeChange
         super.init(frame: .zero)
         self.addSubview(lineChartView)
         lineChartView.delegate = self
@@ -103,21 +105,42 @@ class AirCastingGraph: UIView {
         if !didMoveOrScaleGraph && isAutozoomEnabled {
             zoomoutToThirtyMinutes(dataSet: dataSet)
         }
+        callDateRangeChangeObserver()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    private func callDateRangeChangeObserver() {
+        let dateRange = getCurrentDateRange()
+        onDateRangeChange?(dateRange)
+    }
+    
+    private func getCurrentDateRange() -> (start: Date, end: Date) {
+        let startDate = Date(timeIntervalSince1970: lineChartView.lowestVisibleX)
+        let endDate = Date(timeIntervalSince1970: lineChartView.highestVisibleX)
+        // Workaround for a weird quirk with Chart - when first called
+        // `startDate` is sane, but `endDate` is 1970, so we need a special
+        // case to reverse it.
+        guard startDate < endDate else {
+            return (start: endDate, end: startDate)
+        }
+        return (start: startDate, end: endDate)
+    }
+    
 }
 
 extension AirCastingGraph: ChartViewDelegate {
     
     // Callbacks when the chart is scaled / zoomed via pinch zoom gesture.
     @objc func chartScaled(_ chartView: ChartViewBase, scaleX: CGFloat, scaleY: CGFloat) {
+        callDateRangeChangeObserver()
         didMoveOrScaleGraph = true
     }
     // Callbacks when the chart is moved / translated via drag gesture.
     @objc func chartTranslated(_ chartView: ChartViewBase, dX: CGFloat, dY: CGFloat) {
+        callDateRangeChangeObserver()
         didMoveOrScaleGraph = true
     }
 }
@@ -195,13 +218,30 @@ class MultiColorGridRenderer: YAxisRenderer {
 
 struct Graph: UIViewRepresentable {
     typealias UIViewType = AirCastingGraph
+    typealias OnChange = (_ start: Date, _ end: Date) -> Void
     
     @ObservedObject var stream: MeasurementStreamEntity
     @ObservedObject var thresholds: SensorThreshold
+    private var action: OnChange?
+    
     var isAutozoomEnabled: Bool
     
+    init(stream: MeasurementStreamEntity, thresholds: SensorThreshold, isAutozoomEnabled: Bool) {
+        self.stream = stream
+        self.thresholds = thresholds
+        self.isAutozoomEnabled = isAutozoomEnabled
+    }
+    
+    func onDateRangeChange(perform action: @escaping OnChange) -> Self {
+        var newGraph = self
+        newGraph.action = action
+        return newGraph
+    }
+    
     func makeUIView(context: Context) -> AirCastingGraph {
-        AirCastingGraph()
+        AirCastingGraph(onDateRangeChange: { newRange in
+            action?(newRange.start, newRange.end)
+        })
     }
 
     func updateUIView(_ uiView: AirCastingGraph, context: Context) {

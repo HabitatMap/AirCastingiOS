@@ -27,6 +27,7 @@ struct MainTabBarView: View {
             try! measurementUpdatingService.start()
         }
         .environmentObject(tabSelection)
+        .environmentObject(persistenceController)
     }
 }
 
@@ -84,6 +85,7 @@ struct ContentView_Previews: PreviewProvider {
             .environmentObject(UserAuthenticationSession())
             .environmentObject(BluetoothManager())
             .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
+            .environmentObject(PersistenceController())
             .environment(\.managedObjectContext, persistenceController.viewContext)
     }
     

@@ -130,6 +130,24 @@
 		ACF77DFB25A8888700BB85B7 /* SessionCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACF77DFA25A8888700BB85B7 /* SessionCellView.swift */; };
 		ACF7C05F260CC9FF007C24AE /* DownloadMeasurmentsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACF7C05E260CC9FF007C24AE /* DownloadMeasurmentsService.swift */; };
 		ACFC708925C1A36A00D609D9 /* UIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACFC708825C1A36A00D609D9 /* UIColor.swift */; };
+		B30BABFB2693509D00AE0476 /* StandardStatisticsCalculatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30BABFA2693509D00AE0476 /* StandardStatisticsCalculatorTests.swift */; };
+		B30BABFD2693532700AE0476 /* MeasurementsStatisticsControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30BABFC2693532700AE0476 /* MeasurementsStatisticsControllerTests.swift */; };
+		B30BABFF26935C2B00AE0476 /* TimeInterval+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30BABFE26935C2B00AE0476 /* TimeInterval+Helpers.swift */; };
+		B30BAC022694A89100AE0476 /* StatisticsContainerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30BAC012694A89100AE0476 /* StatisticsContainerViewModel.swift */; };
+		B30BAC042694A8B400AE0476 /* MapStatsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30BAC032694A8B400AE0476 /* MapStatsDataSource.swift */; };
+		B30BAC062694A99300AE0476 /* GraphStatsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30BAC052694A99300AE0476 /* GraphStatsDataSource.swift */; };
+		B30BAC0B2694A9CB00AE0476 /* StandardStatisticsCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30BAC0A2694A9CB00AE0476 /* StandardStatisticsCalculator.swift */; };
+		B30BAC0F2694AA0900AE0476 /* SwapableMeasurementsStatsOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30BAC0E2694AA0900AE0476 /* SwapableMeasurementsStatsOutput.swift */; };
+		B30BAC132694AA3200AE0476 /* MeasurementsStatisticsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30BAC122694AA3200AE0476 /* MeasurementsStatisticsController.swift */; };
+		B30BAC152694AA7200AE0476 /* MeasurementsStatisticsInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30BAC142694AA7200AE0476 /* MeasurementsStatisticsInput.swift */; };
+		B30BAC172694AA8000AE0476 /* MeasurementsStatisticsOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30BAC162694AA8000AE0476 /* MeasurementsStatisticsOutput.swift */; };
+		B30BAC192694AA8E00AE0476 /* StatisticsCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30BAC182694AA8E00AE0476 /* StatisticsCalculator.swift */; };
+		B30BAC1B2694AA9C00AE0476 /* MeasurementsStatisticsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30BAC1A2694AA9C00AE0476 /* MeasurementsStatisticsDataSource.swift */; };
+		B30BAC1D2694AABC00AE0476 /* MeasurementStatisticsTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30BAC1C2694AABC00AE0476 /* MeasurementStatisticsTypes.swift */; };
+		B30BAC1F2694AE9E00AE0476 /* MapStatsDataSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30BAC1E2694AE9E00AE0476 /* MapStatsDataSourceTests.swift */; };
+		B30BAC212694AEAA00AE0476 /* GraphStatsDataSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30BAC202694AEAA00AE0476 /* GraphStatsDataSourceTests.swift */; };
+		B30BAC232694B3DA00AE0476 /* XCTest+Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30BAC222694B3DA00AE0476 /* XCTest+Persistence.swift */; };
+		B30BAC252694B5D900AE0476 /* TestStreamGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30BAC242694B5D900AE0476 /* TestStreamGenerator.swift */; };
 		B31B7EC9267E2024002DAC18 /* SyncContextServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31B7EC8267E2024002DAC18 /* SyncContextServiceTests.swift */; };
 		B31B7ECB267E4DF6002DAC18 /* DummyError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31B7ECA267E4DF6002DAC18 /* DummyError.swift */; };
 		B31B7ECD267E500B002DAC18 /* SyncDownstreamServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31B7ECC267E500B002DAC18 /* SyncDownstreamServiceTests.swift */; };
@@ -316,6 +334,24 @@
 		ACF77DFA25A8888700BB85B7 /* SessionCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionCellView.swift; sourceTree = "<group>"; };
 		ACF7C05E260CC9FF007C24AE /* DownloadMeasurmentsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadMeasurmentsService.swift; sourceTree = "<group>"; };
 		ACFC708825C1A36A00D609D9 /* UIColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColor.swift; sourceTree = "<group>"; };
+		B30BABFA2693509D00AE0476 /* StandardStatisticsCalculatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandardStatisticsCalculatorTests.swift; sourceTree = "<group>"; };
+		B30BABFC2693532700AE0476 /* MeasurementsStatisticsControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementsStatisticsControllerTests.swift; sourceTree = "<group>"; };
+		B30BABFE26935C2B00AE0476 /* TimeInterval+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TimeInterval+Helpers.swift"; sourceTree = "<group>"; };
+		B30BAC012694A89100AE0476 /* StatisticsContainerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsContainerViewModel.swift; sourceTree = "<group>"; };
+		B30BAC032694A8B400AE0476 /* MapStatsDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapStatsDataSource.swift; sourceTree = "<group>"; };
+		B30BAC052694A99300AE0476 /* GraphStatsDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphStatsDataSource.swift; sourceTree = "<group>"; };
+		B30BAC0A2694A9CB00AE0476 /* StandardStatisticsCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandardStatisticsCalculator.swift; sourceTree = "<group>"; };
+		B30BAC0E2694AA0900AE0476 /* SwapableMeasurementsStatsOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwapableMeasurementsStatsOutput.swift; sourceTree = "<group>"; };
+		B30BAC122694AA3200AE0476 /* MeasurementsStatisticsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementsStatisticsController.swift; sourceTree = "<group>"; };
+		B30BAC142694AA7200AE0476 /* MeasurementsStatisticsInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementsStatisticsInput.swift; sourceTree = "<group>"; };
+		B30BAC162694AA8000AE0476 /* MeasurementsStatisticsOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementsStatisticsOutput.swift; sourceTree = "<group>"; };
+		B30BAC182694AA8E00AE0476 /* StatisticsCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsCalculator.swift; sourceTree = "<group>"; };
+		B30BAC1A2694AA9C00AE0476 /* MeasurementsStatisticsDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementsStatisticsDataSource.swift; sourceTree = "<group>"; };
+		B30BAC1C2694AABC00AE0476 /* MeasurementStatisticsTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementStatisticsTypes.swift; sourceTree = "<group>"; };
+		B30BAC1E2694AE9E00AE0476 /* MapStatsDataSourceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapStatsDataSourceTests.swift; sourceTree = "<group>"; };
+		B30BAC202694AEAA00AE0476 /* GraphStatsDataSourceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphStatsDataSourceTests.swift; sourceTree = "<group>"; };
+		B30BAC222694B3DA00AE0476 /* XCTest+Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTest+Persistence.swift"; sourceTree = "<group>"; };
+		B30BAC242694B5D900AE0476 /* TestStreamGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestStreamGenerator.swift; sourceTree = "<group>"; };
 		B31B7EC8267E2024002DAC18 /* SyncContextServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncContextServiceTests.swift; sourceTree = "<group>"; };
 		B31B7ECA267E4DF6002DAC18 /* DummyError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DummyError.swift; sourceTree = "<group>"; };
 		B31B7ECC267E500B002DAC18 /* SyncDownstreamServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncDownstreamServiceTests.swift; sourceTree = "<group>"; };
@@ -540,6 +576,7 @@
 		AC6D56A725B0833F00D221BA /* Graph */ = {
 			isa = PBXGroup;
 			children = (
+				B30BAC002694A88800AE0476 /* StatisticsContainer */,
 				AC6D56A125AEF55C00D221BA /* GraphView.swift */,
 				AC5832D925B196DD008C5DD5 /* Graph.swift */,
 				ACC883872645784400C5DB70 /* GraphErorrHandling.swift */,
@@ -751,6 +788,76 @@
 			path = Services;
 			sourceTree = "<group>";
 		};
+		B30BABF92693507800AE0476 /* Statistics */ = {
+			isa = PBXGroup;
+			children = (
+				B30BABFA2693509D00AE0476 /* StandardStatisticsCalculatorTests.swift */,
+				B30BABFC2693532700AE0476 /* MeasurementsStatisticsControllerTests.swift */,
+				B30BAC1E2694AE9E00AE0476 /* MapStatsDataSourceTests.swift */,
+				B30BAC202694AEAA00AE0476 /* GraphStatsDataSourceTests.swift */,
+				B30BAC242694B5D900AE0476 /* TestStreamGenerator.swift */,
+			);
+			path = Statistics;
+			sourceTree = "<group>";
+		};
+		B30BAC002694A88800AE0476 /* StatisticsContainer */ = {
+			isa = PBXGroup;
+			children = (
+				B30BAC072694A9A600AE0476 /* Controller */,
+				B30BAC082694A9AE00AE0476 /* Adapters */,
+				B30BAC092694A9B400AE0476 /* ViewModel */,
+			);
+			path = StatisticsContainer;
+			sourceTree = "<group>";
+		};
+		B30BAC072694A9A600AE0476 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				B30BAC122694AA3200AE0476 /* MeasurementsStatisticsController.swift */,
+				B30BAC0C2694A9F500AE0476 /* Interfaces */,
+				B30BAC0D2694A9FD00AE0476 /* Utils */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		B30BAC082694A9AE00AE0476 /* Adapters */ = {
+			isa = PBXGroup;
+			children = (
+				B30BAC032694A8B400AE0476 /* MapStatsDataSource.swift */,
+				B30BAC052694A99300AE0476 /* GraphStatsDataSource.swift */,
+				B30BAC0A2694A9CB00AE0476 /* StandardStatisticsCalculator.swift */,
+			);
+			path = Adapters;
+			sourceTree = "<group>";
+		};
+		B30BAC092694A9B400AE0476 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				B30BAC012694A89100AE0476 /* StatisticsContainerViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		B30BAC0C2694A9F500AE0476 /* Interfaces */ = {
+			isa = PBXGroup;
+			children = (
+				B30BAC142694AA7200AE0476 /* MeasurementsStatisticsInput.swift */,
+				B30BAC162694AA8000AE0476 /* MeasurementsStatisticsOutput.swift */,
+				B30BAC182694AA8E00AE0476 /* StatisticsCalculator.swift */,
+				B30BAC1A2694AA9C00AE0476 /* MeasurementsStatisticsDataSource.swift */,
+				B30BAC1C2694AABC00AE0476 /* MeasurementStatisticsTypes.swift */,
+			);
+			path = Interfaces;
+			sourceTree = "<group>";
+		};
+		B30BAC0D2694A9FD00AE0476 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				B30BAC0E2694AA0900AE0476 /* SwapableMeasurementsStatsOutput.swift */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
 		B32D08A0267A493C006C97ED /* Publishers */ = {
 			isa = PBXGroup;
 			children = (
@@ -797,6 +904,8 @@
 				B33DB56D2685FB2400ED1344 /* LocalizedErrorStub.swift */,
 				B33DB5712686013400ED1344 /* XCTestCase+AwaitPublisher.swift */,
 				B33DB5732686120600ED1344 /* XCTestCase+AssertContainsSameElements.swift */,
+				B30BABFE26935C2B00AE0476 /* TimeInterval+Helpers.swift */,
+				B30BAC222694B3DA00AE0476 /* XCTest+Persistence.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -804,6 +913,7 @@
 		B3E26A0A2676DAB0001A8E4C /* Logic */ = {
 			isa = PBXGroup;
 			children = (
+				B30BABF92693507800AE0476 /* Statistics */,
 				B3E26A0B2676DABA001A8E4C /* SessionsSynchronization */,
 			);
 			path = Logic;
@@ -1130,23 +1240,30 @@
 				B32D089D267A3232006C97ED /* LogErrorPublisherTests.swift in Sources */,
 				4FB39E362621B77D00E5E564 /* APIClientMock.swift in Sources */,
 				B3E26A092676DA55001A8E4C /* TestDefaultProviding.swift in Sources */,
+				B30BAC1F2694AE9E00AE0476 /* MapStatsDataSourceTests.swift in Sources */,
 				4FB39E402622252700E5E564 /* XCTestCase+Extensions.swift in Sources */,
 				B33DB5742686120600ED1344 /* XCTestCase+AssertContainsSameElements.swift in Sources */,
 				4FA83EEF26342D84003E2BF2 /* AuthorizationAPIServiceTests.swift in Sources */,
 				4F5D3F7F262D735A003AD82E /* CreateSessionAPIServiceTests.swift in Sources */,
 				B371415B26726A930057BF60 /* SynchronizationControllerTests.swift in Sources */,
 				4FB39E092621B55D00E5E564 /* FixedSessionTests.swift in Sources */,
+				B30BAC232694B3DA00AE0476 /* XCTest+Persistence.swift in Sources */,
 				B33DB5702685FCFB00ED1344 /* SynchronizationTestMocks.swift in Sources */,
 				B3E26A2A26780D96001A8E4C /* SynchronizationControllerTestHelpers.swift in Sources */,
+				B30BAC212694AEAA00AE0476 /* GraphStatsDataSourceTests.swift in Sources */,
 				4FEEAED3262C53C20024AB7E /* UpdateSessionParamsServiceTests.swift in Sources */,
+				B30BABFD2693532700AE0476 /* MeasurementsStatisticsControllerTests.swift in Sources */,
 				B33DB56E2685FB2400ED1344 /* LocalizedErrorStub.swift in Sources */,
+				B30BABFF26935C2B00AE0476 /* TimeInterval+Helpers.swift in Sources */,
 				B33DB5722686013400ED1344 /* XCTestCase+AwaitPublisher.swift in Sources */,
+				B30BAC252694B5D900AE0476 /* TestStreamGenerator.swift in Sources */,
 				B31B7EC9267E2024002DAC18 /* SyncContextServiceTests.swift in Sources */,
 				B31B7ECF267E83F6002DAC18 /* SyncUpstreamServiceTests.swift in Sources */,
 				B3E26A062676DA23001A8E4C /* ArrayExtensionsTests.swift in Sources */,
 				B3E26A0D2676DAD2001A8E4C /* SynchronizationTestDoubles.swift in Sources */,
 				B31B7ECB267E4DF6002DAC18 /* DummyError.swift in Sources */,
 				B31B7ECD267E500B002DAC18 /* SyncDownstreamServiceTests.swift in Sources */,
+				B30BABFB2693509D00AE0476 /* StandardStatisticsCalculatorTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1155,7 +1272,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				AC93B8FE25C02E0B003D0A0D /* GoogleMapView.swift in Sources */,
+				B30BAC042694A8B400AE0476 /* MapStatsDataSource.swift in Sources */,
+				B30BAC1D2694AABC00AE0476 /* MeasurementStatisticsTypes.swift in Sources */,
 				B32D08AF267A6D13006C97ED /* ErasingToVoidPublisher.swift in Sources */,
+				B30BAC022694A89100AE0476 /* StatisticsContainerViewModel.swift in Sources */,
 				AC6D569A25ADE57800D221BA /* GrayButtonStyle.swift in Sources */,
 				AC049F7F2604B7AF00398197 /* AuthErorrHandling.swift in Sources */,
 				ACF77DF825A866E700BB85B7 /* BlueButtonStyle.swift in Sources */,
@@ -1175,6 +1295,7 @@
 				B3FD77B6267C94AF00E97CC2 /* DatabaseSession.swift in Sources */,
 				AC32043625CD534700A68520 /* ChooseSessionTypeView.swift in Sources */,
 				AC8431D0265E6143004DC890 /* RemoveOldMeasurementsService.swift in Sources */,
+				B30BAC152694AA7200AE0476 /* MeasurementsStatisticsInput.swift in Sources */,
 				ACF7C05F260CC9FF007C24AE /* DownloadMeasurmentsService.swift in Sources */,
 				AC9F526E2652A360003CF61F /* AirSectionPickerView.swift in Sources */,
 				AC7EB37825A6FB3A00A7F2AF /* MainTabBarView.swift in Sources */,
@@ -1191,6 +1312,7 @@
 				4F5D3F6F262C862E003AD82E /* KeychainStorage.swift in Sources */,
 				4F945EEE2649F3F5008A5B22 /* SessionCreator.swift in Sources */,
 				4F945EF02649F455008A5B22 /* AirBeamSessionCreator.swift in Sources */,
+				B30BAC132694AA3200AE0476 /* MeasurementsStatisticsController.swift in Sources */,
 				4F2D84EB2647DBE0003D9ED5 /* MeasurementStreamStorage.swift in Sources */,
 				ACC8838C265284AA00C5DB70 /* CoreDataHook.swift in Sources */,
 				AC8CFF5C25E6866100FB2918 /* SignInView.swift in Sources */,
@@ -1222,6 +1344,8 @@
 				AC6D569F25AEEAE700D221BA /* SessionHeaderView.swift in Sources */,
 				AC32040425CC067D00A68520 /* CheckBox.swift in Sources */,
 				AC8D6C6E25C056B400ED74D1 /* PathPoint.swift in Sources */,
+				B30BAC172694AA8000AE0476 /* MeasurementsStatisticsOutput.swift in Sources */,
+				B30BAC192694AA8E00AE0476 /* StatisticsCalculator.swift in Sources */,
 				B376DD25268096E20083FD2F /* SessionSynchronizationDatabase.swift in Sources */,
 				AC6D56A525AF211200D221BA /* MultiSliderView.swift in Sources */,
 				AC524A7626133A370061AD45 /* MeaurementStreamExtension.swift in Sources */,
@@ -1248,7 +1372,9 @@
 				AC8CFF3625E502DD00FB2918 /* CreateAccountView.swift in Sources */,
 				338C30E825F10BFE00E0305C /* AirCasting.xcdatamodeld in Sources */,
 				B3FD77BA267C94AF00E97CC2 /* SessionSynchronizer.swift in Sources */,
+				B30BAC062694A99300AE0476 /* GraphStatsDataSource.swift in Sources */,
 				AC8D6C6A25C049E300ED74D1 /* Environment.swift in Sources */,
+				B30BAC0F2694AA0900AE0476 /* SwapableMeasurementsStatsOutput.swift in Sources */,
 				ACD01F4025F8C1F800B8F65F /* SessionContext.swift in Sources */,
 				AC8D6C7225C0574800ED74D1 /* LocationTracker.swift in Sources */,
 				AC4EC6C425B6FE0D00C1E312 /* HeatmapSettingsView.swift in Sources */,
@@ -1261,6 +1387,8 @@
 				ACD01F922600A3C800B8F65F /* RootAppView.swift in Sources */,
 				331EA80A25E32094009DEFDB /* ConfirmCreatingSessionView.swift in Sources */,
 				AC049F872608B74C00398197 /* FixedSession.swift in Sources */,
+				B30BAC1B2694AA9C00AE0476 /* MeasurementsStatisticsDataSource.swift in Sources */,
+				B30BAC0B2694A9CB00AE0476 /* StandardStatisticsCalculator.swift in Sources */,
 				B3FD77BD267C94AF00E97CC2 /* SessionSynchronizationController.swift in Sources */,
 				AC524A8E2615C8270061AD45 /* UpdateSessionParams.swift in Sources */,
 				AC797FE7263C2C1600970254 /* SensorThreshold.swift in Sources */,

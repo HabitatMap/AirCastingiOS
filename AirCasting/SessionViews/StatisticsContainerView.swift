@@ -8,11 +8,20 @@
 import SwiftUI
 
 struct StatisticsContainerView: View {
+    @ObservedObject var statsContainerViewModel: StatisticsContainerViewModel
+    
     var body: some View {
         HStack {
-            avgLabel
-            nowLabel
-            peakLabel
+            ForEach(statsContainerViewModel.stats) { stat in
+                VStack(spacing: 7) {
+                    Text(stat.title)
+                    if stat.presentationStyle == .distinct {
+                        nowParameter(value: stat.value)
+                    } else if stat.presentationStyle == .standard {
+                        parameter(value: stat.value)
+                    }
+                }
+            }
         }
         .font(Font.muli(size: 12))
         .foregroundColor(.aircastingGray)
@@ -22,28 +31,7 @@ struct StatisticsContainerView: View {
         .padding()
     }
     
-    var avgLabel: some View {
-        VStack(spacing: 7) {
-            Text("Avg PM2.5")
-            parameter
-        }
-    }
-    
-    var peakLabel: some View {
-        VStack(spacing: 7) {
-            Text("Peak PM2.5")
-            parameter
-        }
-    }
-    
-    var nowLabel: some View {
-        VStack(spacing: 7) {
-            Text("Now PM2.5")
-            nowParameter
-        }
-    }
-    
-    var parameter: some View {
+    func parameter(value: String) -> some View {
         ZStack {
             Color.aircastingGreen
                 .opacity(0.32)
@@ -53,11 +41,12 @@ struct StatisticsContainerView: View {
                 Color.aircastingGreen
                     .clipShape(Circle())
                     .frame(width: 6, height: 6)
-                Text("23")
+                Text(value)
             }
         }
     }
-    var nowParameter: some View {
+    
+    func nowParameter(value: String) -> some View {
         ZStack {
             Color.aircastingGreen
                 .opacity(0.32)
@@ -67,7 +56,7 @@ struct StatisticsContainerView: View {
                 Color.aircastingGreen
                     .clipShape(Circle())
                     .frame(width: 8, height: 8)
-                Text("2")
+                Text(value)
             }
             .font(Font.muli(size: 19))
         }
@@ -75,8 +64,10 @@ struct StatisticsContainerView: View {
     
 }
 
-struct CalculatedMeasurements_Previews: PreviewProvider {
-    static var previews: some View {
-        StatisticsContainerView()
-    }
-}
+#if DEBUG
+//struct CalculatedMeasurements_Previews: PreviewProvider {
+//    static var previews: some View {
+//        StatisticsContainerView()
+//    }
+//}
+#endif

@@ -13,6 +13,7 @@ import Charts
 struct SessionCellView: View {
     
     @State private var isCollapsed = true
+    @EnvironmentObject var persistenceController: PersistenceController
     
     let session: SessionEntity
     let thresholds: [SensorThreshold]
@@ -48,13 +49,13 @@ struct SessionCellView: View {
 
 private extension SessionCellView {
     var graphButton: some View {
-        NavigationLink(destination: GraphView(session: session, thresholds: Array(thresholds))) {
+        NavigationLink(destination: graph) {
             Text("graph")
         }
     }
     
     var mapButton: some View {
-        NavigationLink(destination: AirMapView(thresholds: Array(thresholds), session: session)) {
+        NavigationLink(destination: map) {
             Text("map")
         }
     }
@@ -71,6 +72,32 @@ private extension SessionCellView {
         }
         .buttonStyle(GrayButtonStyle())
     }
+    
+    var map: AirMapView {
+        let dataSource = MapStatsDataSource(stream: session.dbStream!)
+        let viewModel = createStatsContainerViewModel(dataSource: dataSource)
+        let map = AirMapView(thresholds: thresholds, statsContainerViewModel: viewModel, mapStatsDataSource: dataSource, session: session)
+        return map
+    }
+    
+    var graph: GraphView {
+        let dataSource = GraphStatsDataSource(stream: session.dbStream!)
+        let viewModel = createStatsContainerViewModel(dataSource: dataSource)
+        let graph = GraphView(measurementStream: session.dbStream!, thresholds: thresholds, statsContainerViewModel: viewModel, graphStatsDataSource: dataSource)
+        return graph
+    }
+    
+    private func createStatsContainerViewModel(dataSource: MeasurementsStatisticsDataSource) -> StatisticsContainerViewModel {
+        let output = SwapableMeasurementsStatsOutput()
+        let controller = MeasurementsStatisticsController(output: output,
+                                                          dataSource: dataSource,
+                                                          calculator: StandardStatisticsCalculator(),
+                                                          desiredStats: MeasurementStatistics.Statistic.allCases)
+        #warning("Change dbStream to selected stream")
+        let viewModel = StatisticsContainerViewModel(statsInput: controller, unit: session.dbStream!.measurementShortType ?? "N/A")
+        output.output = viewModel
+        return viewModel
+    }
 }
 
 #if DEBUG
@@ -80,6 +107,7 @@ struct SessionCell_Previews: PreviewProvider {
             .padding()
             .previewLayout(.sizeThatFits)
             .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
+            .environmentObject(PersistenceController())
     }
 }
 #endif

@@ -10,5 +10,6 @@ import CoreLocation
 
 struct PathPoint {
     let location: CLLocationCoordinate2D
+    let measurementTime: Date
     let measurement: Double
 }

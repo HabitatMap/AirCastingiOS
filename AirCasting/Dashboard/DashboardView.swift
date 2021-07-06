@@ -11,6 +11,7 @@ import CoreData
 struct DashboardView: View {
     @State private var selectedSection = SelectedSection.mobileActive
     @StateObject var coreDataHook: CoreDataHook
+    @EnvironmentObject var persistenceController: PersistenceController
     @FetchRequest<SensorThreshold>(sortDescriptors: [.init(key: "sensorName", ascending: true)]) var thresholds
 
     private var sessions: [SessionEntity] {
@@ -37,6 +38,7 @@ struct DashboardView: View {
                 .background(Color.aircastingGray.opacity(0.05))
             }
         }
+        .environmentObject(persistenceController)
         .navigationBarTitle(NSLocalizedString("Dashboard", comment: ""))
         .onChange(of: selectedSection) { selectedSection in
             try! coreDataHook.setup(selectedSection: selectedSection)
@@ -51,6 +53,7 @@ struct DashboardView: View {
 struct Dashboard_Previews: PreviewProvider {
     static var previews: some View {
         DashboardView(coreDataHook: CoreDataHook(context: PersistenceController(inMemory: true).viewContext))
+            .environmentObject(PersistenceController())
     }
 }
 #endif

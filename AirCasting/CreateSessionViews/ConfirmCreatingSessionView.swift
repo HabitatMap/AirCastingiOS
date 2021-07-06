@@ -43,46 +43,57 @@ struct ConfirmCreatingSessionView: View {
     
     private var contentView: some View {
         VStack(alignment: .leading, spacing: 40) {
-            Text("Are you ready?")
-                .font(Font.moderate(size: 24, weight: .bold))
-                .foregroundColor(.darkBlue)
-
-            VStack(alignment: .leading, spacing: 15) {
-                Text("Your ")
-                    + Text(sessionType)
-                    .foregroundColor(.accentColor)
-                    + Text(" session ")
-                    + Text(sessionName)
-                    .foregroundColor(.accentColor)
-                    + Text(" is ready to start gathering data.")
-                Text("Move to your starting location, confirm your location is accurate on the map, then press the start recording button below.")
-            }
-            .font(Font.muli(size: 16))
-            .foregroundColor(Color.aircastingGray)
-            .multilineTextAlignment(.leading)
-            .lineSpacing(9.0)
+            areYouReady
+            confirmInfo
             GoogleMapView(pathPoints: [], isMyLocationEnabled: true)
-            Button(action: {
-                isActive = true
-                sessionCreator.createSession(sessionContext) { result in
-                    DispatchQueue.main.async {
-                        switch result {
-                        case .success:
-                            self.creatingSessionFlowContinues = false
-                            tabSelection.selection = TabBarSelection.Tab.dashboard
-                        case .failure(let error):
-                            self.error = error as NSError
-                            Log.warning("Failed to create session \(error)")
-                        }
-                        isActive = false
-                    }
-                }
-            }, label: {
-                Text("Start recording")
-                    .bold()
-            })
-            .buttonStyle(BlueButtonStyle())
+            confirmButton
         }.padding()
+    }
+    
+    private var areYouReady: some View {
+        Text("Are you ready?")
+            .font(Font.moderate(size: 24, weight: .bold))
+            .foregroundColor(.darkBlue)
+    }
+    
+    private var confirmInfo: some View {
+        VStack(alignment: .leading, spacing: 15) {
+            Text("Your ")
+                + Text(sessionType)
+                .foregroundColor(.accentColor)
+                + Text(" session ")
+                + Text(sessionName)
+                .foregroundColor(.accentColor)
+                + Text(" is ready to start gathering data.")
+            Text("Move to your starting location, confirm your location is accurate on the map, then press the start recording button below.")
+        }
+        .font(Font.muli(size: 16))
+        .foregroundColor(Color.aircastingGray)
+        .multilineTextAlignment(.leading)
+        .lineSpacing(9.0)
+    }
+    
+    private var confirmButton: some View {
+        Button(action: {
+            isActive = true
+            sessionCreator.createSession(sessionContext) { result in
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success:
+                        self.creatingSessionFlowContinues = false
+                        tabSelection.selection = TabBarSelection.Tab.dashboard
+                    case .failure(let error):
+                        self.error = error as NSError
+                        Log.warning("Failed to create session \(error)")
+                    }
+                    isActive = false
+                }
+            }
+        }, label: {
+            Text("Start recording")
+                .bold()
+        })
+        .buttonStyle(BlueButtonStyle())
     }
 }
 
