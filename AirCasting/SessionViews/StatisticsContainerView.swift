@@ -35,31 +35,38 @@ struct StatisticsContainerView<ViewModelType>: View where ViewModelType: Statist
         ZStack {
             Color.aircastingGreen
                 .opacity(0.32)
-                .frame(width: 54, height: 27, alignment: .center)
                 .cornerRadius(7.5)
-            HStack(spacing: 16) {
+            HStack {
                 Color.aircastingGreen
                     .clipShape(Circle())
                     .frame(width: 6, height: 6)
+                    .padding(.leading, 3)
+                Spacer()
                 Text(value)
+                    .padding(.trailing, 3)
+                    .font(Font.muli(size: 12))
+                    .minimumScaleFactor(0.1)
             }
-        }
+        }.frame(width: 54, height: 27, alignment: .center)
     }
     
     private func distinctParameter(value: String) -> some View {
         ZStack {
             Color.aircastingGreen
                 .opacity(0.32)
-                .frame(width: 68, height: 33, alignment: .center)
                 .cornerRadius(7.5)
-            HStack(spacing: 16) {
+            HStack {
                 Color.aircastingGreen
                     .clipShape(Circle())
                     .frame(width: 8, height: 8)
+                    .padding(.leading, 5)
+                Spacer()
                 Text(value)
+                    .padding(.trailing, 5)
+                    .font(Font.muli(size: 19))
+                    .minimumScaleFactor(0.1)
             }
-            .font(Font.muli(size: 19))
-        }
+        }.frame(width: 68, height: 33, alignment: .center)
     }
     
 }
