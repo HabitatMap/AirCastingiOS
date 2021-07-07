@@ -73,14 +73,14 @@ private extension SessionCellView {
         .buttonStyle(GrayButtonStyle())
     }
     
-    var map: AirMapView {
+    var map: some View {
         let dataSource = MapStatsDataSource(stream: session.dbStream!)
         let viewModel = createStatsContainerViewModel(dataSource: dataSource)
         let map = AirMapView(thresholds: thresholds, statsContainerViewModel: viewModel, mapStatsDataSource: dataSource, session: session)
         return map
     }
     
-    var graph: GraphView {
+    var graph: some View {
         let dataSource = GraphStatsDataSource(stream: session.dbStream!)
         let viewModel = createStatsContainerViewModel(dataSource: dataSource)
         let graph = GraphView(measurementStream: session.dbStream!, thresholds: thresholds, statsContainerViewModel: viewModel, graphStatsDataSource: dataSource)

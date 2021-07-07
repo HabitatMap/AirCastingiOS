@@ -3,19 +3,7 @@
 
 import Foundation
 
-final class StatisticsContainerViewModel: ObservableObject, MeasurementsStatisticsOutput {
-    enum PresentationStyle {
-        case standard
-        case distinct
-    }
-    
-    struct SingleStatViewModel: Identifiable {
-        let id: Int
-        let title: String
-        let value: String
-        let presentationStyle: PresentationStyle
-    }
-    
+final class StatisticsContainerViewModel: StatisticsContainerViewModelable, MeasurementsStatisticsOutput {
     private let statsInput: MeasurementsStatisticsInput
     private let unit: String
     
@@ -55,7 +43,7 @@ final class StatisticsContainerViewModel: ObservableObject, MeasurementsStatisti
         }
     }
     
-    private func getPresentationStyle(for stat: MeasurementStatistics.Statistic) -> PresentationStyle {
+    private func getPresentationStyle(for stat: MeasurementStatistics.Statistic) -> SingleStatViewModel.PresentationStyle {
         switch stat {
         case .average, .high: return .standard
         case .latest: return .distinct

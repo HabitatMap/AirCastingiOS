@@ -7,10 +7,10 @@
 
 import SwiftUI
 
-struct GraphView: View {
+struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsContainerViewModelable {
     let measurementStream: MeasurementStreamEntity
     let thresholds: [SensorThreshold]
-    let statsContainerViewModel: StatisticsContainerViewModel
+    let statsContainerViewModel: StatsViewModelType
     let graphStatsDataSource: GraphStatsDataSource
     
     private var session: SessionEntity { measurementStream.session }
@@ -54,7 +54,7 @@ struct GraphView_Previews: PreviewProvider {
     static var previews: some View {
         GraphView(measurementStream: .mock,
                   thresholds: [.mock],
-                  statsContainerViewModel: StatisticsContainerViewModel(statsInput: MeasurementsStatisticsInputMock(), unit: "dB"),
+                  statsContainerViewModel: FakeStatsViewModel(),
                   graphStatsDataSource: GraphStatsDataSource(stream: .mock))
     }
 }

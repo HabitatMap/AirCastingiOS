@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-struct StatisticsContainerView: View {
-    @ObservedObject var statsContainerViewModel: StatisticsContainerViewModel
+struct StatisticsContainerView<ViewModelType>: View where ViewModelType: StatisticsContainerViewModelable {
+    @ObservedObject var statsContainerViewModel: ViewModelType
     
     var body: some View {
         HStack {
@@ -16,9 +16,9 @@ struct StatisticsContainerView: View {
                 VStack(spacing: 7) {
                     Text(stat.title)
                     if stat.presentationStyle == .distinct {
-                        nowParameter(value: stat.value)
+                        distinctParameter(value: stat.value)
                     } else if stat.presentationStyle == .standard {
-                        parameter(value: stat.value)
+                        standardParameter(value: stat.value)
                     }
                 }
             }
@@ -31,7 +31,7 @@ struct StatisticsContainerView: View {
         .padding()
     }
     
-    func parameter(value: String) -> some View {
+    private func standardParameter(value: String) -> some View {
         ZStack {
             Color.aircastingGreen
                 .opacity(0.32)
@@ -46,7 +46,7 @@ struct StatisticsContainerView: View {
         }
     }
     
-    func nowParameter(value: String) -> some View {
+    private func distinctParameter(value: String) -> some View {
         ZStack {
             Color.aircastingGreen
                 .opacity(0.32)
@@ -67,7 +67,17 @@ struct StatisticsContainerView: View {
 #if DEBUG
 struct CalculatedMeasurements_Previews: PreviewProvider {
     static var previews: some View {
-        StatisticsContainerView(statsContainerViewModel: StatisticsContainerViewModel(statsInput: MeasurementsStatisticsInputMock(), unit: "dB"))
+        StatisticsContainerView(statsContainerViewModel: FakeStatsViewModel())
     }
+}
+
+class FakeStatsViewModel: StatisticsContainerViewModelable {
+    @Published var stats: [SingleStatViewModel] = [
+        .init(id: 0, title: "Low dB", value: "-40.0", presentationStyle: .standard),
+        .init(id: 1, title: "Now dB", value: "-10.2", presentationStyle: .distinct),
+        .init(id: 2, title: "Peak dB", value: "12.5", presentationStyle: .standard),
+    ]
+    
+    func adjustForNewData() { }
 }
 #endif
