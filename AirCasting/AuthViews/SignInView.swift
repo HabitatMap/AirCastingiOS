@@ -11,7 +11,6 @@ import AirCastingStyling
 extension NSError: Identifiable {}
 
 struct SignInView: View {
-    
     @State var isActive: Bool
     let baseURL: BaseURLProvider
     let userAuthenticationSession: UserAuthenticationSession
@@ -42,6 +41,7 @@ private extension SignInView {
         GeometryReader { geometry in
             ScrollView {
                 VStack(spacing: 40) {
+                    progressBar
                     titleLabel
                     VStack(spacing: 20) {
                         VStack(alignment: .leading, spacing: 5) {
@@ -60,6 +60,7 @@ private extension SignInView {
                     }
                     signinButton
                     signupButton
+                    Spacer()
                 }
                 .padding()
                 .navigationBarHidden(true)
@@ -76,6 +77,10 @@ private extension SignInView {
                 }))
     }
     
+    private var progressBar: some View {
+        ProgressView(value: 0.825)
+            .accentColor(.accentColor)
+    }
     var titleLabel: some View {
         VStack(alignment: .leading, spacing: 15) {
             Text("Sign in")

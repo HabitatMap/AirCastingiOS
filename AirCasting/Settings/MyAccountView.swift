@@ -1,6 +1,7 @@
 // Created by Lunar on 17/06/2021.
 //
 
+import AirCastingStyling
 import SwiftUI
 import AirCastingStyling
 
@@ -19,6 +20,7 @@ struct MyAccountView: View {
     }
 }
 
+
 private var loggedOutInformationLabel: some View {
     Text(Strings.MyAccountSettings.logStatus)
         .foregroundColor(.aircastingGray)
@@ -26,8 +28,7 @@ private var loggedOutInformationLabel: some View {
 }
 
 private var createAccountButton: some View {
-    Button(action: {
-    }) {
+    Button(action: {}) {
         Group {
             HStack {
                 Text(Strings.MyAccountSettings.createAccount)
@@ -42,8 +43,7 @@ private var createAccountButton: some View {
 }
 
 private var logInButton: some View {
-    Button(action: {
-    }) {
+    Button(action: {}) {
         Group {
             HStack {
                 Text(Strings.MyAccountSettings.logIn)

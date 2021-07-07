@@ -31,7 +31,13 @@ struct Strings {
     
     struct SignOutSettings {
         static let title: String = "My account"
-        static let logged: String = "You are currently logged in as "
+        static let Logged: String = "You are currently logged in as admin@admin.com"
         static let signOut: String = "Sign Out"
+    }
+    
+    struct sessionShare {
+        static let title: String = "Share session"
+        static let description: String = "Select a stream to share"
+        static let emailDescription: String = "Or email a CSV file with your session data"
     }
 }

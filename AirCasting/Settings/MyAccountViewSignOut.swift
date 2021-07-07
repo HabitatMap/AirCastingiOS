@@ -6,7 +6,9 @@ import AirCastingStyling
 
 struct MyAccountViewSignOut: View {
     let logoutController: LogoutController
-    
+    @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
+    @EnvironmentObject var persistenceController: PersistenceController
+    @EnvironmentObject var microphoneManager: MicrophoneManager
     var body: some View {
         ZStack {
             VStack(alignment: .leading) {
@@ -22,8 +24,9 @@ struct MyAccountViewSignOut: View {
 
 private extension MyAccountViewSignOut {
     var logInLabel: some View {
-        Text(Strings.SignOutSettings.logged + "name")
+        Text(Strings.SignOutSettings.Logged)
             .foregroundColor(.aircastingGray)
+            .font(Font.muli(size: 13))
             .padding()
     }
     

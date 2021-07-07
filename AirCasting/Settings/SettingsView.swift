@@ -14,9 +14,10 @@ struct SettingsView: View {
     @State private var isToggle: Bool = false
     @State private var showModal = false
     
+    
     var body: some View {
         NavigationView {
-            List {
+            Form {
                 Section() {
                     signOutLink
                 }
