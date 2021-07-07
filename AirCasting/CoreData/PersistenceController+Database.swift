@@ -132,28 +132,3 @@ extension Database.MeasurementStream {
                   thresholdVeryLow: Int(coreDataEntity.thresholdVeryLow))
     }
 }
-
-extension PersistenceController: MeasurementsFetchable {
-    func fetchMeasurements(constrained: Database.Constraint, completion: @escaping (Result<[Database.Measurement], Error>) -> Void) {
-        let context = self.newBackgroundContext()
-        context.perform {
-            let request: NSFetchRequest<MeasurementEntity> = MeasurementEntity.fetchRequest()
-            if case .predicate(let predicate) = constrained {
-                request.predicate = predicate
-            }
-            do {
-                let fetchedEntities = try context.fetch(request)
-                let databaseObjects = fetchedEntities.map(Database.Measurement.init(coreDataEntity:))
-                completion(.success(databaseObjects))
-            } catch {
-                completion(.failure(error))
-            }
-        }
-    }
-}
-
-extension Database.Measurement {
-    init(coreDataEntity: MeasurementEntity) {
-        self.init(time: coreDataEntity.time, value: coreDataEntity.value, location: coreDataEntity.location)
-    }
-}
