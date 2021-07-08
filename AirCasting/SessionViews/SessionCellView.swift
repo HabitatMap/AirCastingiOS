@@ -27,7 +27,7 @@ struct SessionCellView: View {
                         withAnimation {
                             isCollapsed = !isCollapsed
                         }
-                    }, isExpandButtonNeeded: true,
+                    }, items: [], isExpandButtonNeeded: true,
                     session: session,
                     threshold: threshold,
                     selectedStream: $selectedStream)

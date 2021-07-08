@@ -9,12 +9,12 @@ import SwiftUI
 
 struct SessionHeaderView: View {
     let action: () -> Void
+    @State var items: [Any]
     let isExpandButtonNeeded: Bool
     @ObservedObject var session: SessionEntity
     @EnvironmentObject private var microphoneManager: MicrophoneManager
     var threshold: SensorThreshold
     @Binding var selectedStream: MeasurementStreamEntity?
-    
     @State private var showModal = false
     
     var body: some View {
@@ -24,7 +24,7 @@ struct SessionHeaderView: View {
                 Spacer()
                 actionsMenu
             }.sheet(isPresented: $showModal, content: {
-                ShareViewModal()
+                ShareViewModal(showModal: $showModal, items: items)
             })
             nameLabelAndExpandButton
             if session.deviceType == .MIC {
@@ -142,7 +142,7 @@ private extension SessionHeaderView {
 #if DEBUG
 struct SessionHeader_Previews: PreviewProvider {
     static var previews: some View {
-        SessionHeaderView(action: {},
+        SessionHeaderView(action: {}, items: [],
                           isExpandButtonNeeded: true,
                           session: SessionEntity.mock,
                           threshold: .mock,

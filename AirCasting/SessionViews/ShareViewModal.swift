@@ -2,11 +2,17 @@
 //
 
 import AirCastingStyling
+import MessageUI
 import SwiftUI
 
 struct ShareViewModal: View {
-    @Environment(\.presentationMode) var presentationMode
+    @Binding var showModal: Bool
     @State var email: String = ""
+    @State var items: [Any]
+    @State var sheet = false
+    @State var isShowingMailView = false
+    @State var showingAlert = false
+    @State var mailSendingResult: Result<MFMailComposeResult, Error>? = nil
     
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -23,8 +29,10 @@ struct ShareViewModal: View {
                 oKButton
                 cancelButton
             }
-        }
-        .padding()
+        }.sheet(isPresented: $sheet, content: {
+            ActivityViewController(itemsToShare: ["www.google.com"])
+        })
+            .padding()
     }
     
     private var title: some View {
@@ -49,26 +57,35 @@ struct ShareViewModal: View {
     
     private var shareButton: some View {
         Button("Share link") {
-            presentationMode.wrappedValue.dismiss()
+            sheet.toggle()
         }.buttonStyle(BlueButtonStyle())
-        .padding(.bottom)
+            .padding(.bottom)
     }
     
     private var descriptionMail: some View {
         Text(Strings.sessionShare.emailDescription)
-            .font(.subheadline)
+            .font(Font.muli(size: 12))
             .foregroundColor(.aircastingGray)
     }
     
     private var oKButton: some View {
         Button("Share file") {
-            presentationMode.wrappedValue.dismiss()
+            if MFMailComposeViewController.canSendMail() {
+                isShowingMailView.toggle()
+            } else {
+                showingAlert = !isShowingMailView
+                print("no email app")
+            }
         }.buttonStyle(BlueButtonStyle())
+            .sheet(isPresented: $isShowingMailView) { MailView(isShowing: $isShowingMailView, result: $mailSendingResult) }
+            .alert(isPresented: $showingAlert) {
+                Alert(title: Text("No Email app"), message: Text("Please, install Apple Email app"), dismissButton: .default(Text("Got it!")))
+            }
     }
     
     private var cancelButton: some View {
         Button(Strings.BackendSettings.Cancel) {
-            presentationMode.wrappedValue.dismiss()
+            showModal.toggle()
         }.buttonStyle(BlueTextButtonStyle())
     }
 }
