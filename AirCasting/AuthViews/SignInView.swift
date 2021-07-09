@@ -11,6 +11,9 @@ import AirCastingStyling
 extension NSError: Identifiable {}
 
 struct SignInView: View {
+    @EnvironmentObject var lifeTimeEventsProvider: LifetimeEventsProvider
+    
+    var completion: () -> Void
     @State var isActive: Bool = false
     let userAuthenticationSession: UserAuthenticationSession
     private let authorizationAPIService = AuthorizationAPIService()
@@ -33,7 +36,11 @@ private extension SignInView {
         GeometryReader { geometry in
             ScrollView {
                 VStack(spacing: 40) {
-                    progressBar
+                    if lifeTimeEventsProvider.hasEverLoggedIn {
+                        progressBar.hidden()
+                    } else {
+                        progressBar
+                    }
                     titleLabel
                     VStack(spacing: 20) {
                         VStack(alignment: .leading, spacing: 5) {
@@ -112,6 +119,7 @@ private extension SignInView {
                         case .success(let output):
                             do {
                                 try userAuthenticationSession.authorise(with: output.authentication_token)
+                                completion()
                                 Log.info("Successfully logged in")
                             } catch {
                                 assertionFailure("Failed to store credentials \(error)")
@@ -131,7 +139,7 @@ private extension SignInView {
     
     var signupButton: some View {
         NavigationLink(
-            destination: CreateAccountView(userAuthenticationSession: userAuthenticationSession),
+            destination: CreateAccountView(completion: completion, userAuthenticationSession: userAuthenticationSession).environmentObject(lifeTimeEventsProvider),
             label: {
                 signupButtonText
             })
@@ -175,7 +183,7 @@ private extension SignInView {
 #if DEBUG
 struct SignInView_Previews: PreviewProvider {
     static var previews: some View {
-        SignInView(isActive: true, userAuthenticationSession: UserAuthenticationSession())
+        SignInView(completion: {}, isActive: true, userAuthenticationSession: UserAuthenticationSession()).environmentObject(LifetimeEventsProvider())
     }
 }
 #endif

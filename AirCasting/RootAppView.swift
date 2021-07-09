@@ -9,7 +9,7 @@ import SwiftUI
 
 struct RootAppView: View {
     @ObservedObject var userAuthenticationSession = UserAuthenticationSession()
-    @AppStorage("onBoardingKey", store: UserDefaults.standard) var passedOnboarding: Bool = false
+    @ObservedObject var lifeTimeEventsProvider = LifetimeEventsProvider()
 
     let persistenceController = PersistenceController.shared
     let bluetoothManager = BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared)))
@@ -18,13 +18,13 @@ struct RootAppView: View {
     var body: some View {
         if userAuthenticationSession.isLoggedIn {
             mainAppView
-        } else if !userAuthenticationSession.isLoggedIn && passedOnboarding  {
+        } else if !userAuthenticationSession.isLoggedIn && lifeTimeEventsProvider.hasEverPassedOnBoarding {
             NavigationView {
-                CreateAccountView(userAuthenticationSession: userAuthenticationSession)
+                CreateAccountView(completion: { self.lifeTimeEventsProvider.hasEverLoggedIn = true }, userAuthenticationSession: userAuthenticationSession).environmentObject(lifeTimeEventsProvider)
             }
         } else {
             GetStarted(completion: {
-                passedOnboarding = true
+                self.lifeTimeEventsProvider.hasEverPassedOnBoarding = true
             })
         }
     }

@@ -10,6 +10,9 @@ import AirCastingStyling
 
 
 struct CreateAccountView: View {
+    
+    @EnvironmentObject var lifeTimeEventsProvider: LifetimeEventsProvider
+    var completion: () -> Void
     let userAuthenticationSession: UserAuthenticationSession
     private let authorizationAPIService = AuthorizationAPIService()
 
@@ -26,7 +29,7 @@ struct CreateAccountView: View {
         GeometryReader { geometry in
             ScrollView {
                 VStack(spacing: 50) {
-                    if ((UserDefaults.standard.value(forKey: "onBoardingKey") != nil) == true) {
+                    if lifeTimeEventsProvider.hasEverLoggedIn {
                         progressBar.hidden()
                     } else {
                         progressBar
@@ -138,6 +141,7 @@ private extension CreateAccountView {
                                 presentedError = error
                             Log.warning("Failed to create account \(error)")
                         case .success(let output):
+                            completion()
                             Log.info("Successfully created account")
                             do {
                                 try userAuthenticationSession.authorise(with: output.authentication_token)
@@ -155,7 +159,7 @@ private extension CreateAccountView {
     
     var signinButton: some View {
         NavigationLink(
-            destination: SignInView(userAuthenticationSession: userAuthenticationSession),
+            destination: SignInView(completion: completion, userAuthenticationSession: userAuthenticationSession).environmentObject(lifeTimeEventsProvider),
             label: {
                 signingButtonText
             })
@@ -200,7 +204,7 @@ private extension CreateAccountView {
 #if DEBUG
 struct CreateAccountView_Previews: PreviewProvider {
     static var previews: some View {
-        CreateAccountView(userAuthenticationSession: UserAuthenticationSession())
+        CreateAccountView(completion: {}, userAuthenticationSession: UserAuthenticationSession()).environmentObject(LifetimeEventsProvider())
     }
 }
 #endif
