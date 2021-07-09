@@ -14,8 +14,9 @@ struct SessionHeaderView: View {
     @EnvironmentObject private var microphoneManager: MicrophoneManager
     var threshold: SensorThreshold
     @Binding var selectedStream: MeasurementStreamEntity?
-    
+    @State private var showingAlert = false
     @State private var showModal = false
+    @State private var showModalEdit = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 13) {
@@ -113,7 +114,16 @@ private extension SessionHeaderView {
             }
             
             Button {
-                // action here
+                NetworkChecker.shared.monitorNetwork() { result in
+                    switch result {
+                        case NetworkSates.connected:
+                            print(NetworkSates.connected.rawValue)
+                            showModalEdit.toggle()
+                        case NetworkSates.disconnected:
+                            print(NetworkSates.disconnected.rawValue)
+                            showingAlert.toggle()
+                    }
+                }
             } label: {
                 Label("Edit session", systemImage: "pencil")
             }
@@ -131,7 +141,12 @@ private extension SessionHeaderView {
             }
         } label: {
             EditButtonView()
+        }.alert(isPresented: $showingAlert) {
+            Alert(title: Text("No internet connection"),
+                  message: Text("You need to have internet connection to edit session data"),
+                  dismissButton: .default(Text("Got it!")))
         }
+        .sheet(isPresented: $showModalEdit) { EditViewModal(showModalEdit: $showModalEdit) }
     }
     
     func lastMicMeasurement() -> Double {

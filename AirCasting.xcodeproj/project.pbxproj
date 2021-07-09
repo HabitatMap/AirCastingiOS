@@ -140,6 +140,9 @@
 		DD430B082670FE6100F1BF2E /* GreenTextButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD430B072670FE6100F1BF2E /* GreenTextButtonStyle.swift */; };
 		DD430B0C26710E0600F1BF2E /* PrivacyOnboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD430B0B26710E0600F1BF2E /* PrivacyOnboarding.swift */; };
 		DD8C3810268A0E9400901FDF /* ShareViewModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8C380F268A0E9400901FDF /* ShareViewModal.swift */; };
+		DDEE3A44269736270098CCA9 /* NetworkChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDEE3A43269736270098CCA9 /* NetworkChecker.swift */; };
+		DDEE3A46269746790098CCA9 /* NetworkStates.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDEE3A45269746790098CCA9 /* NetworkStates.swift */; };
+		DDEE3A48269747250098CCA9 /* EditViewModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDEE3A47269747250098CCA9 /* EditViewModal.swift */; };
 		DDF7599A268332E900D906BA /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF75999268332E900D906BA /* Strings.swift */; };
 		EE969E7E1981C41852FB7745 /* Pods_AirCastingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A54057326D27D23E9906704 /* Pods_AirCastingTests.framework */; };
 		F76B6F660F0BD398629EDD83 /* Pods_AirCasting.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E819223F8D800D3B8ED8F56 /* Pods_AirCasting.framework */; };
@@ -298,6 +301,9 @@
 		DD430B072670FE6100F1BF2E /* GreenTextButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GreenTextButtonStyle.swift; sourceTree = "<group>"; };
 		DD430B0B26710E0600F1BF2E /* PrivacyOnboarding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyOnboarding.swift; sourceTree = "<group>"; };
 		DD8C380F268A0E9400901FDF /* ShareViewModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewModal.swift; sourceTree = "<group>"; };
+		DDEE3A43269736270098CCA9 /* NetworkChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkChecker.swift; sourceTree = "<group>"; };
+		DDEE3A45269746790098CCA9 /* NetworkStates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkStates.swift; sourceTree = "<group>"; };
+		DDEE3A47269747250098CCA9 /* EditViewModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditViewModal.swift; sourceTree = "<group>"; };
 		DDF75999268332E900D906BA /* Strings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Strings.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -450,6 +456,8 @@
 				4FD2CA4626406F2C007E932E /* Diff.swift */,
 				4F8CDBD1265F8DAC00976B25 /* Assertions.swift */,
 				DDF75999268332E900D906BA /* Strings.swift */,
+				DDEE3A43269736270098CCA9 /* NetworkChecker.swift */,
+				DDEE3A45269746790098CCA9 /* NetworkStates.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -490,12 +498,12 @@
 			children = (
 				ACF77DFA25A8888700BB85B7 /* SessionCellView.swift */,
 				AC6D569E25AEEAE700D221BA /* SessionHeaderView.swift */,
-				DD8C380F268A0E9400901FDF /* ShareViewModal.swift */,
 				AC08A661266E2AEC0081697C /* MeasurementsView.swift */,
 				ACC536DF26395C0900327267 /* MeasurementDotView.swift */,
 				AC4EC6C325B6FE0D00C1E312 /* HeatmapSettingsView.swift */,
 				AC6D56A425AF211200D221BA /* MultiSliderView.swift */,
 				AC4EC6BB25B5ABB700C1E312 /* StatisticsContainerView.swift */,
+				DDEE3A492697473C0098CCA9 /* EditSessionButton */,
 				3328F11E266786C600B72D61 /* Chart */,
 			);
 			path = SessionViews;
@@ -727,6 +735,15 @@
 				DD430B0B26710E0600F1BF2E /* PrivacyOnboarding.swift */,
 			);
 			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		DDEE3A492697473C0098CCA9 /* EditSessionButton */ = {
+			isa = PBXGroup;
+			children = (
+				DD8C380F268A0E9400901FDF /* ShareViewModal.swift */,
+				DDEE3A47269747250098CCA9 /* EditViewModal.swift */,
+			);
+			name = EditSessionButton;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1005,6 +1022,7 @@
 				4FD2CA4726406F2C007E932E /* Diff.swift in Sources */,
 				AC5832DA25B196DD008C5DD5 /* Graph.swift in Sources */,
 				AC4A6A6A267CB3890001F639 /* AirCastingGraph.swift in Sources */,
+				DDEE3A46269746790098CCA9 /* NetworkStates.swift in Sources */,
 				AC93B8E725BEFE4F003D0A0D /* AirMapView.swift in Sources */,
 				4F945EF4264B2813008A5B22 /* ActivityIndicator.swift in Sources */,
 				3362B4ED25E69987008D61BA /* CreateSessionDetailsView.swift in Sources */,
@@ -1040,6 +1058,7 @@
 				AC6D569F25AEEAE700D221BA /* SessionHeaderView.swift in Sources */,
 				AC32040425CC067D00A68520 /* CheckBox.swift in Sources */,
 				AC8D6C6E25C056B400ED74D1 /* PathPoint.swift in Sources */,
+				DDEE3A44269736270098CCA9 /* NetworkChecker.swift in Sources */,
 				AC6D56A525AF211200D221BA /* MultiSliderView.swift in Sources */,
 				AC524A7626133A370061AD45 /* MeaurementStreamExtension.swift in Sources */,
 				DD430B042670FA9600F1BF2E /* AirBeamOnboarding.swift in Sources */,
@@ -1058,6 +1077,7 @@
 				AC9F526D2652A360003CF61F /* EmptyDashboardView.swift in Sources */,
 				AC4EC6BC25B5ABB700C1E312 /* StatisticsContainerView.swift in Sources */,
 				AC524A942615D8620061AD45 /* SessionEntity.swift in Sources */,
+				DDEE3A48269747250098CCA9 /* EditViewModal.swift in Sources */,
 				AC8CFF3625E502DD00FB2918 /* CreateAccountView.swift in Sources */,
 				338C30E825F10BFE00E0305C /* AirCasting.xcdatamodeld in Sources */,
 				DD430B002670BC6F00F1BF2E /* GetStarted.swift in Sources */,
