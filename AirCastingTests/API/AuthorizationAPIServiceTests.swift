@@ -6,7 +6,7 @@ import XCTest
 
 final class SignInAuthorizationAPIServiceTests: XCTestCase {
     private lazy var apiClientMock: APIClientMock! = APIClientMock()
-    private lazy var tested: AuthorizationAPIService! = AuthorizationAPIService(apiClient: apiClientMock)
+    private lazy var tested: AuthorizationAPIService! = AuthorizationAPIService(apiClient: apiClientMock, baseUrl: DummyURLProvider())
 
     override func tearDown() {
         apiClientMock = nil
@@ -102,7 +102,7 @@ final class SignInAuthorizationAPIServiceTests: XCTestCase {
 
 final class CreateAccountAuthorizationAPIServiceTests: XCTestCase {
     private lazy var apiClientMock: APIClientMock! = APIClientMock()
-    private lazy var tested: AuthorizationAPIService! = AuthorizationAPIService(apiClient: apiClientMock)
+    private lazy var tested: AuthorizationAPIService! = AuthorizationAPIService(apiClient: apiClientMock, baseUrl: DummyURLProvider())
     private lazy var input: AuthorizationAPI.SignupUserInput! = AuthorizationAPI.SignupUserInput(
         email: UUID().uuidString + "@do.com",
         username: UUID().uuidString,

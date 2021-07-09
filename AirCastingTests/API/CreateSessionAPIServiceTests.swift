@@ -7,7 +7,7 @@ import XCTest
 final class CreateSessionAPIServiceTests: XCTestCase {
     private lazy var apiClientMock: APIClientMock! = APIClientMock()
     private lazy var authorisationServiceMock: AuthorisationServiceMock! = AuthorisationServiceMock()
-    private lazy var tested: CreateSessionAPIService! = CreateSessionAPIService(authorisationService: authorisationServiceMock, apiClient: apiClientMock)
+    private lazy var tested: CreateSessionAPIService! = CreateSessionAPIService(authorisationService: authorisationServiceMock, apiClient: apiClientMock, baseUrlProvider: DummyURLProvider())
 
     private lazy var sampleInput = CreateSessionApi.Input.mock()
 

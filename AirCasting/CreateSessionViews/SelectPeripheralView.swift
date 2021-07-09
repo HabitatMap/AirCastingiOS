@@ -17,6 +17,8 @@ struct SelectPeripheralView: View {
     
     @Binding var creatingSessionFlowContinues : Bool
     
+    let urlProvider: BaseURLProvider
+    
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
@@ -113,7 +115,7 @@ struct SelectPeripheralView: View {
         var destination: AnyView
         if let selection = selection {
             destination = AnyView(ConnectingABView(bluetoothManager: bluetoothManager,
-                                                   selecedPeripheral: selection,
+                                                   selectedPeripheral: selection, baseURL: urlProvider,
                                                    creatingSessionFlowContinues: $creatingSessionFlowContinues))
         } else {
             destination = AnyView(EmptyView())
@@ -129,7 +131,7 @@ struct SelectPeripheralView: View {
 #if DEBUG
 struct SelectPeripheralView_Previews: PreviewProvider {
     static var previews: some View {
-        SelectPeripheralView( creatingSessionFlowContinues: .constant(true))
+        SelectPeripheralView( creatingSessionFlowContinues: .constant(true), urlProvider: DummyURLProvider())
     }
 }
 #endif

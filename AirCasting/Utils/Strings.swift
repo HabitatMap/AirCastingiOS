@@ -17,7 +17,7 @@ struct Strings {
     
     struct BackendSettings {
         static let backendSettings: String = "Backend settings"
-        static let Ok: String = "Ok"
+        static let Ok: String = "OK"
         static let Cancel: String = "Cancel"
     }
     
