@@ -22,7 +22,9 @@ struct SessionHeaderView: View {
             HStack {
                 dateAndTime
                 Spacer()
-                actionsMenu
+                ZStack {
+                    actionsMenu
+                }
             }.sheet(isPresented: $showModal, content: {
                 ShareViewModal()
             })
@@ -130,7 +132,12 @@ private extension SessionHeaderView {
                 Label("Delete session", systemImage: "xmark.circle")
             }
         } label: {
-            EditButtonView()
+            ZStack(alignment: .trailing) {
+                EditButtonView()
+                Rectangle()
+                    .frame(width: 30, height: 20, alignment: .trailing)
+                    .opacity(0.0001)
+            }
         }
     }
     
