@@ -15,7 +15,8 @@ struct SessionHeaderView: View {
     var threshold: SensorThreshold
     @Binding var selectedStream: MeasurementStreamEntity?
     
-    @State private var showModal = false
+    @State private var shareModal = false
+    @State private var deleteModal = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 13) {
@@ -23,8 +24,11 @@ struct SessionHeaderView: View {
                 dateAndTime
                 Spacer()
                 actionsMenu
-            }.sheet(isPresented: $showModal, content: {
+            }.sheet(isPresented: $shareModal, content: {
                 ShareViewModal()
+            })
+            .sheet(isPresented: $deleteModal, content: {
+                DeleteViewModal(deleteModal: $deleteModal)
             })
             nameLabelAndExpandButton
             if session.deviceType == .MIC {
@@ -119,13 +123,13 @@ private extension SessionHeaderView {
             }
             
             Button {
-                showModal.toggle()
+                shareModal.toggle()
             } label: {
                 Label("Share session", systemImage: "square.and.arrow.up")
             }
             
             Button {
-                // action here
+                deleteModal.toggle()
             } label: {
                 Label("Delete session", systemImage: "xmark.circle")
             }
