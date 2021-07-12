@@ -16,6 +16,12 @@ struct DashboardView: View {
     private var sessions: [SessionEntity] {
         coreDataHook.sessions
     }
+    
+    init(coreDataHook: CoreDataHook) {
+        let navBarAppearance = UINavigationBar.appearance()
+        navBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(Color.darkBlue)]
+        _coreDataHook = StateObject(wrappedValue: coreDataHook)
+    }
 
     var body: some View {
         VStack {

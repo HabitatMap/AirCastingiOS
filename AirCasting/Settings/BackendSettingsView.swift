@@ -14,6 +14,7 @@ struct BackendSettingsView: View {
     @State private var portText: String = ""
     @State private var url: URL?
     @State private var buttonEnabled: Bool = false
+
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -36,7 +37,8 @@ struct BackendSettingsView: View {
     
     private var title: some View {
         Text(Strings.BackendSettings.backendSettings)
-            .font(.title2)
+            .foregroundColor(.darkBlue)
+            .font(Font.muli(size: 24, weight: .semibold))
     }
     
     private var oKButton: some View {
