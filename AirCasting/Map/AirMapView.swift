@@ -25,7 +25,7 @@ struct AirMapView: View {
 
     var body: some View {
         VStack(alignment: .trailing, spacing: 20) {
-            SessionHeaderView(action: {}, items: [],
+            SessionHeaderView(action: {},
                               isExpandButtonNeeded: false,
                               session: session,
                               threshold: threshold,

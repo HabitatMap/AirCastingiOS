@@ -15,7 +15,7 @@ struct GraphView: View {
     
     var body: some View {
         VStack(alignment: .trailing) {
-            SessionHeaderView(action: {}, items: [],
+            SessionHeaderView(action: {},
                               isExpandButtonNeeded: false,
                               session: session,
                               threshold: threshold,

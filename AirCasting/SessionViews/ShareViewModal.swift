@@ -8,7 +8,7 @@ import SwiftUI
 struct ShareViewModal: View {
     @Binding var showModal: Bool
     @State var email: String = ""
-    @State var items: [Any]
+    @State var itemsForSharing: [String] = ["www.google.com"]
     @State var sheet = false
     @State var isShowingMailView = false
     @State var showingAlert = false
@@ -30,20 +30,19 @@ struct ShareViewModal: View {
                 cancelButton
             }
         }.sheet(isPresented: $sheet, content: {
-            ActivityViewController(itemsToShare: ["www.google.com"])
-        })
-            .padding()
+            ActivityViewController(itemsToShare: itemsForSharing)
+        }).padding()
     }
     
     private var title: some View {
-        Text(Strings.sessionShare.title)
+        Text(Strings.SessionShare.title)
             .font(Font.moderate(size: 32, weight: .bold))
             .foregroundColor(.accentColor)
             .bold()
     }
     
     private var description: some View {
-        Text(Strings.sessionShare.description)
+        Text(Strings.SessionShare.description)
             .font(Font.muli(size: 16))
             .foregroundColor(.aircastingGray)
     }
@@ -51,35 +50,35 @@ struct ShareViewModal: View {
     private var checkBox: some View {
         HStack {
             CheckBox(isSelected: true)
-            Text("dB")
+            Text(Strings.SessionShare.checkboxDescription)
         }.padding(.bottom)
     }
     
     private var shareButton: some View {
-        Button("Share link") {
+        Button(Strings.SessionShare.shareLinkButton) {
             sheet.toggle()
         }.buttonStyle(BlueButtonStyle())
-            .padding(.bottom)
+        .padding(.bottom)
     }
     
     private var descriptionMail: some View {
-        Text(Strings.sessionShare.emailDescription)
+        Text(Strings.SessionShare.emailDescription)
             .font(Font.muli(size: 12))
             .foregroundColor(.aircastingGray)
     }
     
     private var oKButton: some View {
-        Button("Share file") {
+        Button(Strings.SessionShare.shareFileButton) {
             if MFMailComposeViewController.canSendMail() {
                 isShowingMailView.toggle()
             } else {
                 showingAlert = !isShowingMailView
-                print("no email app")
+                Log.info("Not showing mail view (cannot send email from this device")
             }
         }.buttonStyle(BlueButtonStyle())
             .sheet(isPresented: $isShowingMailView) { MailView(isShowing: $isShowingMailView, result: $mailSendingResult) }
             .alert(isPresented: $showingAlert) {
-                Alert(title: Text("No Email app"), message: Text("Please, install Apple Email app"), dismissButton: .default(Text("Got it!")))
+                Alert(title: Text(Strings.SessionShare.alertTitle), message: Text(Strings.SessionShare.alertDescription), dismissButton: .default(Text(Strings.SessionShare.alertButton)))
             }
     }
     
