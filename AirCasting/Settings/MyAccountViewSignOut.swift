@@ -24,7 +24,7 @@ struct MyAccountViewSignOut: View {
 
 private extension MyAccountViewSignOut {
     var logInLabel: some View {
-        Text(Strings.SignOutSettings.Logged)
+        Text(Strings.SignOutSettings.Logged + "\(KeychainStorage(service:  Bundle.main.bundleIdentifier!).getUsername())")
             .foregroundColor(.aircastingGray)
             .font(Font.muli(size: 13))
             .padding()

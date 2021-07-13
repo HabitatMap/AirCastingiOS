@@ -9,10 +9,10 @@ final class KeychainStorage {
         case invalidTypeData(Data)
         case unhandledError(status: OSStatus)
     }
-
+    
     let service: String
     let accessGroup: String?
-
+    
     /// - SeeAlso: kSecAttrAccessGroup
     /// - Parameters:
     ///   - service: The name of the keychain service. By default it would be the Bundle ID of the App - kSecAttrService
@@ -21,7 +21,7 @@ final class KeychainStorage {
         self.service = service
         self.accessGroup = accessGroup
     }
-
+    
     public func data(forKey key: String) throws -> Data? {
         let query = makeRetrieveQuery(for: key)
         var queryResult: AnyObject?
@@ -40,11 +40,11 @@ final class KeychainStorage {
             throw KeychainStorageError.unhandledError(status: status)
         }
     }
-
+    
     public func setString(_ value: String, forKey key: String) throws {
         try setValue(value: Data(value.utf8), forKey: key)
     }
-
+    
     public func setValue(value: Data, forKey key: String) throws {
         if (try data(forKey: key)) != nil {
             try update(for: key, value: value)
@@ -52,7 +52,7 @@ final class KeychainStorage {
             try create(for: key, value: value)
         }
     }
-
+    
     public func removeValue(forKey: String) throws {
         let query = makeQuery(for: forKey)
         let status = SecItemDelete(query as CFDictionary)
@@ -60,7 +60,7 @@ final class KeychainStorage {
             throw KeychainStorageError.unhandledError(status: status)
         }
     }
-
+    
     public func string(forKey key: String) throws -> String? {
         guard let data: Data = try data(forKey: key) else {
             return nil
@@ -70,7 +70,20 @@ final class KeychainStorage {
         }
         return string
     }
-
+    
+    public func getUsername() -> String {
+        if let value = try! (KeychainStorage(service: service).data(forKey: "UserProfileKey")) {
+            do {
+                let json = try JSONSerialization.jsonObject(with: value, options: []) as? [String : Any]
+                return json?["email"] as! String
+            } catch {
+                return "[error fetching]"
+            }
+        } else {
+            return "[error fetching]"
+        }
+    }
+    
     private func update(for key: String, value: Data) throws {
         let attributesToUpdate: [CFString: AnyObject] = [kSecValueData: value as AnyObject]
         let status = SecItemUpdate(makeQuery(for: key) as CFDictionary, attributesToUpdate as CFDictionary)
@@ -78,7 +91,7 @@ final class KeychainStorage {
             throw KeychainStorageError.unhandledError(status: status)
         }
     }
-
+    
     private func create(for key: String, value: Data) throws {
         var newItem = makeQuery(for: key)
         newItem[kSecValueData] = value as AnyObject?
@@ -87,7 +100,7 @@ final class KeychainStorage {
             throw KeychainStorageError.unhandledError(status: status)
         }
     }
-
+    
     private func makeRetrieveQuery(for key: String) -> [CFString: AnyObject] {
         var query = makeQuery(for: key)
         query[kSecMatchLimit] = kSecMatchLimitOne
@@ -95,7 +108,7 @@ final class KeychainStorage {
         query[kSecReturnData] = kCFBooleanTrue
         return query
     }
-
+    
     private func makeQuery(for key: String) -> [CFString: AnyObject] {
         var query: [CFString: AnyObject] = [
             kSecClass: kSecClassGenericPassword,
