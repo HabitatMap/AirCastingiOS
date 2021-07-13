@@ -10,6 +10,7 @@ import SwiftUI
 struct SessionHeaderView: View {
     let action: () -> Void
     let isExpandButtonNeeded: Bool
+    let networkChecker: NetworkStatusChecking
     @ObservedObject var session: SessionEntity
     @EnvironmentObject private var microphoneManager: MicrophoneManager
     var threshold: SensorThreshold
@@ -114,15 +115,8 @@ private extension SessionHeaderView {
             }
             
             Button {
-                NetworkChecker.shared.monitorNetwork() { result in
-                    switch result {
-                        case NetworkSates.connected:
-                            print(NetworkSates.connected.rawValue)
-                            showModalEdit.toggle()
-                        case NetworkSates.disconnected:
-                            print(NetworkSates.disconnected.rawValue)
-                            showingAlert.toggle()
-                    }
+                DispatchQueue.global(qos: .background).async {
+                    networkChecker.monitorNetwork()
                 }
             } label: {
                 Label("Edit session", systemImage: "pencil")
@@ -158,7 +152,7 @@ private extension SessionHeaderView {
 struct SessionHeader_Previews: PreviewProvider {
     static var previews: some View {
         SessionHeaderView(action: {},
-                          isExpandButtonNeeded: true,
+                          isExpandButtonNeeded: true, networkChecker: NetworkChecker(),
                           session: SessionEntity.mock,
                           threshold: .mock,
                           selectedStream: .constant(nil))

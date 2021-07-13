@@ -15,15 +15,15 @@ struct EditViewModal: View {
             Spacer()
             titleLabel
                 .padding(.bottom, 20)
-            createTextfield(placeholder: "Session name", binding: $sessionName)
-            createTextfield(placeholder: "Tags", binding: $sessionTags)
+            createTextfield(placeholder: Strings.EditSession.namePlaceholder, binding: $sessionName)
+            createTextfield(placeholder: Strings.EditSession.tagPlaceholder, binding: $sessionTags)
             Spacer()
             continueButton
         }.padding()
     }
     
     var titleLabel: some View {
-        Text("Edit session details")
+        Text(Strings.EditSession.title)
             .font(Font.moderate(size: 24, weight: .bold))
             .foregroundColor(.darkBlue)
     }
@@ -32,11 +32,10 @@ struct EditViewModal: View {
         Button(action: {
             showModalEdit.toggle()
         }, label: {
-            Text("Accept")
+            Text(Strings.EditSession.buttonAccept)
                 .font(Font.moderate(size: 16, weight: .semibold))
-        })
-            .buttonStyle(BlueButtonStyle())
-            .padding(.top, 20)
+        }).buttonStyle(BlueButtonStyle())
+        .padding(.top, 20)
     }
 }
 

@@ -40,4 +40,11 @@ struct Strings {
         static let description: String = "Select a stream to share"
         static let emailDescription: String = "Or email a CSV file with your session data"
     }
+    
+    struct EditSession {
+        static let title: String = "Edit session details"
+        static let namePlaceholder: String = "Session name"
+        static let tagPlaceholder: String = "Select a stream to share"
+        static let buttonAccept: String = "Accept"
+    }
 }
