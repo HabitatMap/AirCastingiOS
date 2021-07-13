@@ -61,7 +61,6 @@ struct SingleMeasurementView: View {
     
     var body: some View {
         VStack(spacing: 3) {
-            #warning("Handle optional stream name")
             Text(showStreamName())
                 .font(Font.system(size: 13))
             

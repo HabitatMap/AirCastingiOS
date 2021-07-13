@@ -49,7 +49,7 @@ struct GraphView: View {
 #if DEBUG
 struct GraphView_Previews: PreviewProvider {
     static var previews: some View {
-        #warning("Change selected stream")
+        //Change selected stream
         GraphView(session: .mock, threshold: .mock, selectedStream: .constant(nil))
     }
 }
