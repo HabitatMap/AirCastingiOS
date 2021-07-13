@@ -4,7 +4,7 @@
 import AirCastingStyling
 import SwiftUI
 
-struct ShareViewModal: View {
+struct ShareView: View {
     @Environment(\.presentationMode) var presentationMode
     @State var email: String = ""
     

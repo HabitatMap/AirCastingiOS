@@ -14,7 +14,7 @@ struct DeleteViewModal: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
-           title
+            title
             description
             chooseStream
             continueButton

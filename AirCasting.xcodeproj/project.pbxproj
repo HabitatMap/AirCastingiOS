@@ -131,7 +131,7 @@
 		ACF77DFB25A8888700BB85B7 /* SessionCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACF77DFA25A8888700BB85B7 /* SessionCellView.swift */; };
 		ACF7C05F260CC9FF007C24AE /* DownloadMeasurmentsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACF7C05E260CC9FF007C24AE /* DownloadMeasurmentsService.swift */; };
 		ACFC708925C1A36A00D609D9 /* UIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACFC708825C1A36A00D609D9 /* UIColor.swift */; };
-		DD009D662698844A009F0443 /* DeleteViewModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD009D652698844A009F0443 /* DeleteViewModal.swift */; };
+		DD009D662698844A009F0443 /* DeleteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD009D652698844A009F0443 /* DeleteView.swift */; };
 		DD1C99C1267CBFCB00B786C4 /* MyAccountViewSignOut.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD1C99C0267CBFCB00B786C4 /* MyAccountViewSignOut.swift */; };
 		DD2181EF267BBCBC0010EC2E /* MyAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD2181EE267BBCBC0010EC2E /* MyAccountView.swift */; };
 		DD2E8BE92685E12000439F8B /* URLValidationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD2E8BE82685E12000439F8B /* URLValidationTests.swift */; };
@@ -142,10 +142,11 @@
 		DD430B062670FCC000F1BF2E /* GreenButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD430B052670FCC000F1BF2E /* GreenButtonStyle.swift */; };
 		DD430B082670FE6100F1BF2E /* GreenTextButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD430B072670FE6100F1BF2E /* GreenTextButtonStyle.swift */; };
 		DD430B0C26710E0600F1BF2E /* PrivacyOnboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD430B0B26710E0600F1BF2E /* PrivacyOnboarding.swift */; };
+		DD831844269DA46200CD39DF /* StreamsType.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD831843269DA46200CD39DF /* StreamsType.swift */; };
 		DD8C38092689A34E00901FDF /* UserDefaultsBaseURLProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8C38082689A34E00901FDF /* UserDefaultsBaseURLProvider.swift */; };
 		DD8C380C2689A3DA00901FDF /* BaseURLProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8C380B2689A3DA00901FDF /* BaseURLProvider.swift */; };
 		DD8C380E2689A55A00901FDF /* BackendSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8C380D2689A55A00901FDF /* BackendSettingsView.swift */; };
-		DD8C3810268A0E9400901FDF /* ShareViewModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8C380F268A0E9400901FDF /* ShareViewModal.swift */; };
+		DD8C3810268A0E9400901FDF /* ShareView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8C380F268A0E9400901FDF /* ShareView.swift */; };
 		DDF7599A268332E900D906BA /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF75999268332E900D906BA /* Strings.swift */; };
 		EE969E7E1981C41852FB7745 /* Pods_AirCastingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A54057326D27D23E9906704 /* Pods_AirCastingTests.framework */; };
 		F76B6F660F0BD398629EDD83 /* Pods_AirCasting.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E819223F8D800D3B8ED8F56 /* Pods_AirCasting.framework */; };
@@ -295,7 +296,7 @@
 		ACF77DFA25A8888700BB85B7 /* SessionCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionCellView.swift; sourceTree = "<group>"; };
 		ACF7C05E260CC9FF007C24AE /* DownloadMeasurmentsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadMeasurmentsService.swift; sourceTree = "<group>"; };
 		ACFC708825C1A36A00D609D9 /* UIColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColor.swift; sourceTree = "<group>"; };
-		DD009D652698844A009F0443 /* DeleteViewModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteViewModal.swift; sourceTree = "<group>"; };
+		DD009D652698844A009F0443 /* DeleteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteView.swift; sourceTree = "<group>"; };
 		DD1C99C0267CBFCB00B786C4 /* MyAccountViewSignOut.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyAccountViewSignOut.swift; sourceTree = "<group>"; };
 		DD2181EE267BBCBC0010EC2E /* MyAccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyAccountView.swift; sourceTree = "<group>"; };
 		DD2E8BE82685E12000439F8B /* URLValidationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLValidationTests.swift; sourceTree = "<group>"; };
@@ -306,10 +307,11 @@
 		DD430B052670FCC000F1BF2E /* GreenButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GreenButtonStyle.swift; sourceTree = "<group>"; };
 		DD430B072670FE6100F1BF2E /* GreenTextButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GreenTextButtonStyle.swift; sourceTree = "<group>"; };
 		DD430B0B26710E0600F1BF2E /* PrivacyOnboarding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyOnboarding.swift; sourceTree = "<group>"; };
+		DD831843269DA46200CD39DF /* StreamsType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamsType.swift; sourceTree = "<group>"; };
 		DD8C38082689A34E00901FDF /* UserDefaultsBaseURLProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsBaseURLProvider.swift; sourceTree = "<group>"; };
 		DD8C380B2689A3DA00901FDF /* BaseURLProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseURLProvider.swift; sourceTree = "<group>"; };
 		DD8C380D2689A55A00901FDF /* BackendSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendSettingsView.swift; sourceTree = "<group>"; };
-		DD8C380F268A0E9400901FDF /* ShareViewModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewModal.swift; sourceTree = "<group>"; };
+		DD8C380F268A0E9400901FDF /* ShareView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareView.swift; sourceTree = "<group>"; };
 		DDF75999268332E900D906BA /* Strings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Strings.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -503,8 +505,8 @@
 			children = (
 				ACF77DFA25A8888700BB85B7 /* SessionCellView.swift */,
 				AC6D569E25AEEAE700D221BA /* SessionHeaderView.swift */,
-				DD8C380F268A0E9400901FDF /* ShareViewModal.swift */,
-				DD009D652698844A009F0443 /* DeleteViewModal.swift */,
+				DD8C380F268A0E9400901FDF /* ShareView.swift */,
+				DD009D652698844A009F0443 /* DeleteView.swift */,
 				AC08A661266E2AEC0081697C /* MeasurementsView.swift */,
 				ACC536DF26395C0900327267 /* MeasurementDotView.swift */,
 				AC4EC6C325B6FE0D00C1E312 /* HeatmapSettingsView.swift */,
@@ -650,6 +652,7 @@
 		AC8CFF7025E7D94C00FB2918 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				DD831843269DA46200CD39DF /* StreamsType.swift */,
 				4F945EED2649F3F5008A5B22 /* SessionCreator.swift */,
 				4F945EEF2649F455008A5B22 /* AirBeamFixedSessionCreator.swift */,
 				ACD01F3F25F8C1F800B8F65F /* SessionContext.swift */,
@@ -1067,6 +1070,7 @@
 				ACD01F7625FF61CE00B8F65F /* LocationProvider.swift in Sources */,
 				3346F1F626318C1600BA4695 /* SettingsManager.swift in Sources */,
 				3326BD562642E71E00DE8E6D /* ChartEntriesCreator.swift in Sources */,
+				DD831844269DA46200CD39DF /* StreamsType.swift in Sources */,
 				AC32041C25CC46EF00A68520 /* PowerABView.swift in Sources */,
 				33BA336A266E4D1000899343 /* MobileSession.swift in Sources */,
 				AC86EE6B25D03DC00083F8C0 /* SelectDeviceView.swift in Sources */,
@@ -1097,7 +1101,7 @@
 				AC524A942615D8620061AD45 /* SessionEntity.swift in Sources */,
 				AC8CFF3625E502DD00FB2918 /* CreateAccountView.swift in Sources */,
 				338C30E825F10BFE00E0305C /* AirCasting.xcdatamodeld in Sources */,
-				DD009D662698844A009F0443 /* DeleteViewModal.swift in Sources */,
+				DD009D662698844A009F0443 /* DeleteView.swift in Sources */,
 				DD430B002670BC6F00F1BF2E /* GetStarted.swift in Sources */,
 				AC8D6C6A25C049E300ED74D1 /* Environment.swift in Sources */,
 				ACD01F4025F8C1F800B8F65F /* SessionContext.swift in Sources */,
@@ -1112,7 +1116,7 @@
 				ACD01F922600A3C800B8F65F /* RootAppView.swift in Sources */,
 				331EA80A25E32094009DEFDB /* ConfirmCreatingSessionView.swift in Sources */,
 				DD430B082670FE6100F1BF2E /* GreenTextButtonStyle.swift in Sources */,
-				DD8C3810268A0E9400901FDF /* ShareViewModal.swift in Sources */,
+				DD8C3810268A0E9400901FDF /* ShareView.swift in Sources */,
 				AC049F872608B74C00398197 /* FixedSession.swift in Sources */,
 				AC524A8E2615C8270061AD45 /* UpdateSessionParams.swift in Sources */,
 				AC797FE7263C2C1600970254 /* SensorThreshold.swift in Sources */,

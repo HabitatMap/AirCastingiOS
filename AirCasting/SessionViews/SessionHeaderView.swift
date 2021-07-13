@@ -25,10 +25,10 @@ struct SessionHeaderView: View {
                 Spacer()
                 actionsMenu
             }.sheet(isPresented: $shareModal, content: {
-                ShareViewModal()
+                ShareView()
             })
             .sheet(isPresented: $deleteModal, content: {
-                DeleteViewModal(deleteModal: $deleteModal)
+                DeleteView(deleteModal: $deleteModal)
             })
             nameLabelAndExpandButton
             if session.deviceType == .MIC {
