@@ -3,7 +3,7 @@
 
 import Foundation
 
-class LifetimeEventsProvider: ObservableObject {
+class UserDefaultProtocol: ObservableObject {
     private let userDefaults: UserDefaults
     
     var hasEverLoggedIn: Bool {

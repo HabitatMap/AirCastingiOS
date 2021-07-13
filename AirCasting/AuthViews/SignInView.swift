@@ -183,7 +183,7 @@ private extension SignInView {
 #if DEBUG
 struct SignInView_Previews: PreviewProvider {
     static var previews: some View {
-        SignInView(completion: {}, isActive: true, userAuthenticationSession: UserAuthenticationSession()).environmentObject(LifetimeEventsProvider())
+        SignInView(completion: {}, isActive: true, userAuthenticationSession: UserAuthenticationSession()).environmentObject(UserDefaultProtocol())
     }
 }
 #endif

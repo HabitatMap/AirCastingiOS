@@ -204,7 +204,7 @@ private extension CreateAccountView {
 #if DEBUG
 struct CreateAccountView_Previews: PreviewProvider {
     static var previews: some View {
-        CreateAccountView(completion: {}, userAuthenticationSession: UserAuthenticationSession()).environmentObject(LifetimeEventsProvider())
+        CreateAccountView(completion: {}, userAuthenticationSession: UserAuthenticationSession()).environmentObject(UserDefaultProtocol())
     }
 }
 #endif
