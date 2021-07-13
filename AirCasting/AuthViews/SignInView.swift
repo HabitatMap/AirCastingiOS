@@ -213,7 +213,7 @@ private extension SignInView {
         
         var sendButton: some View {
             Button("Send new") {
-                APICommunication().forgotPassword(login: email) { value in
+                ForgotPasswordAPI().forgotPassword(login: email) { value in
                     switch value {
                     case 200, 201:
                         popUpMessage = "Email was sent. Please check your inbox for the details."
