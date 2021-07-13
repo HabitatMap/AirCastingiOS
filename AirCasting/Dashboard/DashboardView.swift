@@ -28,7 +28,7 @@ struct DashboardView: View {
                 ScrollView(.vertical) {
                     LazyVStack(spacing: 20) {
                         ForEach(sessions, id: \.uuid) { (session) in
-                            SessionCellView(session: session, thresholds: thresholds)
+                            SessionCartView(session: session, thresholds: thresholds)
                         }
                     }
                     .padding()

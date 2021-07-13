@@ -27,9 +27,11 @@ struct AirMapView: View {
         VStack(alignment: .trailing, spacing: 20) {
             SessionHeaderView(action: {},
                               isExpandButtonNeeded: false,
-                              session: session,
-                              threshold: threshold,
-                              selectedStream: $selectedStream)
+                              session: session)
+            StreamsView(selectedStream: $selectedStream,
+                        session: session,
+                        threshold: threshold,
+                        measurementPresentationStyle: .showValues)
             ZStack(alignment: .topLeading) {
                 GoogleMapView(pathPoints: pathPoints,
                               thresholds: threshold)
