@@ -4,10 +4,16 @@
 import SwiftUI
 import AirCastingStyling
 
+enum MeasurementPresentationStyle {
+    case showValues
+    case hideValues
+}
+
 struct ABMeasurementsView: View {
     @ObservedObject var session: SessionEntity
     var threshold: SensorThreshold
     @Binding var selectedStream: MeasurementStreamEntity?
+    let measurementPresentationStyle: MeasurementPresentationStyle
     
     private var streamsToShow: [MeasurementStreamEntity] {
         let allStreams = [session.pm1Stream,
@@ -27,14 +33,18 @@ struct ABMeasurementsView: View {
         return Group {
             if hasAnyMeasurements {
                 VStack(alignment: .leading, spacing: 5) {
-                    Text("Most recefnt measurement:")
+                    Text("Most recent measurement:")
+                        .font(Font.moderate(size: 12))
+                        .padding(.bottom, 3)
+                        .padding(.horizontal)
                     HStack {
                         Group {
-                            ForEach(streams) { stream in
-                                SingleMeasurementView(stream: stream,
-                                                      value: stream.latestValue ?? 0,
+                            ForEach(streams, id : \.self) {
+                                SingleMeasurementView(stream: $0,
+                                                      value: $0.latestValue ?? 0,
                                                       threshold: threshold,
-                                                      selectedStream: _selectedStream)
+                                                      selectedStream: _selectedStream,
+                                                      measurementPresentationStyle: measurementPresentationStyle)
                             }
                         }
                         .frame(maxWidth: .infinity)
@@ -42,9 +52,9 @@ struct ABMeasurementsView: View {
                 }
             } else {
                 VStack(alignment: .leading, spacing: 3) {
-                    Text("Your AirBeam is gathering data.")
+                    Text(Strings.LoadingSession.title)
                         .font(Font.moderate(size: 14))
-                    Text("Measurements will appear in 3 minutes.")
+                    Text(Strings.LoadingSession.description)
                         .font(Font.moderate(size: 12))
                 }
                 .foregroundColor(.darkBlue)
@@ -58,24 +68,28 @@ struct SingleMeasurementView: View {
     let value: Double
     var threshold: SensorThreshold
     @Binding var selectedStream: MeasurementStreamEntity?
+    let measurementPresentationStyle: MeasurementPresentationStyle
     
     var body: some View {
+        
         VStack(spacing: 3) {
             Text(showStreamName())
                 .font(Font.system(size: 13))
             
-            Button(action: {
-                selectedStream = stream
-            }, label: {
-                HStack(spacing: 3) {
-                    MeasurementDotView(value: value,
-                                       thresholds: threshold)
-                    Text("\(Int(value))")
-                        .font(Font.moderate(size: 14, weight: .regular))
-                }
-            })
-            .buttonStyle(AirCastingStyling.BorderedButtonStyle(isSelected: selectedStream == stream,
-                                                thresholdColor: colorBorder(stream: stream)))
+            if measurementPresentationStyle == .showValues {
+                Button(action: {
+                    selectedStream = stream
+                }, label: {
+                    HStack(spacing: 3) {
+                        MeasurementDotView(value: value,
+                                           thresholds: threshold)
+                        Text("\(Int(value))")
+                            .font(Font.moderate(size: 14, weight: .regular))
+                    }
+                })
+                .buttonStyle(AirCastingStyling.BorderedButtonStyle(isSelected: selectedStream == stream,
+                                                                   thresholdColor: colorBorder(stream: stream)))
+            }
         }
     }
     

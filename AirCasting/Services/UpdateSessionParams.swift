@@ -40,7 +40,7 @@ final class UpdateSessionParamsService {
             stream.session = session
         }
 //        streamDiff.removed.forEach(context.delete)
-        streamDiff.common.forEach { oldStream, streamOutput in
+        try streamDiff.common.forEach { oldStream, streamOutput in
             oldStream.sensorName = streamOutput.sensor_name
             oldStream.sensorPackageName = streamOutput.sensor_package_name
             oldStream.measurementType = streamOutput.measurement_type
@@ -53,7 +53,17 @@ final class UpdateSessionParamsService {
             oldStream.thresholdHigh = streamOutput.threshold_high
             oldStream.thresholdVeryHigh = streamOutput.threshold_very_high
             oldStream.gotDeleted = streamOutput.deleted ?? false
-
+            
+            let existingThreshold: SensorThreshold? = try context.existingObject(sensorName: streamOutput.sensor_name)
+            if existingThreshold == nil {
+                let threshold: SensorThreshold = try context.newOrExisting(sensorName: streamOutput.sensor_name)
+                threshold.thresholdVeryLow = streamOutput.threshold_very_low
+                threshold.thresholdLow = streamOutput.threshold_low
+                threshold.thresholdMedium = streamOutput.threshold_medium
+                threshold.thresholdHigh = streamOutput.threshold_high
+                threshold.thresholdVeryHigh = streamOutput.threshold_very_high
+            }
+            
             let oldMeasurements = oldStream.measurements?.array as? [MeasurementEntity] ?? []
             let measurementDiff = diff(oldMeasurements, streamOutput.measurements) {
                 if let id = $0.id {
