@@ -18,7 +18,7 @@ final class SignInAuthorizationAPIServiceTests: XCTestCase {
         apiClientMock.failing(with: URLError(.timedOut))
 
         let input = AuthorizationAPI.SigninUserInput(username: UUID().uuidString, password: UUID().uuidString)
-        var result: Result<AuthorizationAPI.SigninUserOutput, AuthorizationError>?
+        var result: Result<AuthorizationAPI.UserProfile, AuthorizationError>?
         tested.signIn(input: input) {
             result = $0
         }
@@ -60,7 +60,7 @@ final class SignInAuthorizationAPIServiceTests: XCTestCase {
         apiClientMock.returning((data: Data(#"{ "error": "some invalid message" }"#.utf8), response: response))
 
         let input = AuthorizationAPI.SigninUserInput(username: UUID().uuidString, password: UUID().uuidString)
-        var result: Result<AuthorizationAPI.SigninUserOutput, AuthorizationError>?
+        var result: Result<AuthorizationAPI.UserProfile, AuthorizationError>?
         tested.signIn(input: input) {
             result = $0
         }
@@ -88,14 +88,14 @@ final class SignInAuthorizationAPIServiceTests: XCTestCase {
         apiClientMock.returning((data: data, response: .success()))
 
         let input = AuthorizationAPI.SigninUserInput(username: UUID().uuidString, password: UUID().uuidString)
-        var result: Result<AuthorizationAPI.SigninUserOutput, AuthorizationError>?
+        var result: Result<AuthorizationAPI.UserProfile, AuthorizationError>?
         tested.signIn(input: input) {
             result = $0
         }
 
         let response =  try XCTUnwrap(result).get()
 
-        let expectedResponse = AuthorizationAPI.SigninUserOutput(authentication_token: "rwerwewt34543534534543")
+        let expectedResponse = AuthorizationAPI.UserProfile(id: 235235, authentication_token: "rwerwewt34543534534543", username: "john doe", email: "john@doe.pl")
         XCTAssertEqual(expectedResponse, response)
     }
 }
@@ -119,7 +119,7 @@ final class CreateAccountAuthorizationAPIServiceTests: XCTestCase {
     func testTimeout() throws {
         apiClientMock.failing(with: URLError(.timedOut))
 
-        var result: Result<AuthorizationAPI.SignupAPIOutput, AuthorizationError>?
+        var result: Result<AuthorizationAPI.UserProfile, AuthorizationError>?
         tested.createAccount(input: input) {
             result = $0
         }
@@ -161,7 +161,7 @@ final class CreateAccountAuthorizationAPIServiceTests: XCTestCase {
         let response = HTTPURLResponse(url: URL(string: "http://test.com")!, statusCode: 500, httpVersion: nil, headerFields: nil)!
         apiClientMock.returning((data: Data(#"{ "error": "some invalid message" }"#.utf8), response: response))
 
-        var result: Result<AuthorizationAPI.SignupAPIOutput, AuthorizationError>?
+        var result: Result<AuthorizationAPI.UserProfile, AuthorizationError>?
         tested.createAccount(input: input) {
             result = $0
         }
@@ -189,14 +189,14 @@ final class CreateAccountAuthorizationAPIServiceTests: XCTestCase {
             """.utf8)
         apiClientMock.returning((data: data, response: .success()))
 
-        var result: Result<AuthorizationAPI.SignupAPIOutput, AuthorizationError>?
+        var result: Result<AuthorizationAPI.UserProfile, AuthorizationError>?
         tested.createAccount(input: input) {
             result = $0
         }
 
         let response = try XCTUnwrap(result).get()
 
-        let expectedResponse = AuthorizationAPI.SignupAPIOutput(id: 3424523, authentication_token: "wer3r3434344334r")
+        let expectedResponse = AuthorizationAPI.UserProfile(id: 3424523, authentication_token: "wer3r3434344334r", username: "John doe", email: "m+1@m.pl")
         XCTAssertEqual(expectedResponse, response)
     }
 
@@ -204,7 +204,7 @@ final class CreateAccountAuthorizationAPIServiceTests: XCTestCase {
         let response = HTTPURLResponse(url: URL(string: "http://test.com")!, statusCode: 422, httpVersion: nil, headerFields: nil)!
         apiClientMock.returning((data: Data(#"{"username": ["has already been taken"] }"#.utf8), response: response))
 
-        var result: Result<AuthorizationAPI.SignupAPIOutput, AuthorizationError>?
+        var result: Result<AuthorizationAPI.UserProfile, AuthorizationError>?
         tested.createAccount(input: input) {
             result = $0
         }
@@ -223,7 +223,7 @@ final class CreateAccountAuthorizationAPIServiceTests: XCTestCase {
         let response = HTTPURLResponse(url: URL(string: "http://test.com")!, statusCode: 422, httpVersion: nil, headerFields: nil)!
         apiClientMock.returning((data: Data(#"{"email": ["has already been taken"] }"#.utf8), response: response))
 
-        var result: Result<AuthorizationAPI.SignupAPIOutput, AuthorizationError>?
+        var result: Result<AuthorizationAPI.UserProfile, AuthorizationError>?
         tested.createAccount(input: input) {
             result = $0
         }
@@ -242,7 +242,7 @@ final class CreateAccountAuthorizationAPIServiceTests: XCTestCase {
         let response = HTTPURLResponse(url: URL(string: "http://test.com")!, statusCode: 422, httpVersion: nil, headerFields: nil)!
         apiClientMock.returning((data: Data(#"{"email": ["has already been taken"], "username": ["has already been taken"] }"#.utf8), response: response))
 
-        var result: Result<AuthorizationAPI.SignupAPIOutput, AuthorizationError>?
+        var result: Result<AuthorizationAPI.UserProfile, AuthorizationError>?
         tested.createAccount(input: input) {
             result = $0
         }

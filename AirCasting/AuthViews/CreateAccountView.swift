@@ -146,7 +146,8 @@ private extension CreateAccountView {
                         case .success(let output):
                             Log.info("Successfully created account")
                             do {
-                                try userAuthenticationSession.authorise(with: output.authentication_token)
+                                let user = User(id: output.id, username: output.username, token: output.authentication_token, email: output.email)
+                                try userAuthenticationSession.authorise(user)
                             } catch {
                                 Log.error("Failed to store credentials \(error)")
                                 presentedError = .other(error)

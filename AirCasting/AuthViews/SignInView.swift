@@ -118,7 +118,8 @@ private extension SignInView {
                         switch result {
                         case .success(let output):
                             do {
-                                try userAuthenticationSession.authorise(with: output.authentication_token)
+                                let user = User(id: output.id, username: output.username, token: output.authentication_token, email: output.email)
+                                try userAuthenticationSession.authorise(user)
                                 Log.info("Successfully logged in")
                             } catch {
                                 assertionFailure("Failed to store credentials \(error)")
