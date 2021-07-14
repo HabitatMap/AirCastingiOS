@@ -148,6 +148,7 @@
 		DD8C380C2689A3DA00901FDF /* BaseURLProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8C380B2689A3DA00901FDF /* BaseURLProvider.swift */; };
 		DD8C380E2689A55A00901FDF /* BackendSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8C380D2689A55A00901FDF /* BackendSettingsView.swift */; };
 		DD8C3810268A0E9400901FDF /* ShareViewModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8C380F268A0E9400901FDF /* ShareViewModal.swift */; };
+		DDF62601269C779800F23489 /* UIApplication+AppInfo.swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF62600269C779800F23489 /* UIApplication+AppInfo.swift.swift */; };
 		DDF7599A268332E900D906BA /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF75999268332E900D906BA /* Strings.swift */; };
 		EE969E7E1981C41852FB7745 /* Pods_AirCastingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A54057326D27D23E9906704 /* Pods_AirCastingTests.framework */; };
 		F76B6F660F0BD398629EDD83 /* Pods_AirCasting.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E819223F8D800D3B8ED8F56 /* Pods_AirCasting.framework */; };
@@ -314,6 +315,7 @@
 		DD8C380B2689A3DA00901FDF /* BaseURLProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseURLProvider.swift; sourceTree = "<group>"; };
 		DD8C380D2689A55A00901FDF /* BackendSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendSettingsView.swift; sourceTree = "<group>"; };
 		DD8C380F268A0E9400901FDF /* ShareViewModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewModal.swift; sourceTree = "<group>"; };
+		DDF62600269C779800F23489 /* UIApplication+AppInfo.swift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+AppInfo.swift.swift"; sourceTree = "<group>"; };
 		DDF75999268332E900D906BA /* Strings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Strings.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -467,6 +469,7 @@
 				4FD2CA4626406F2C007E932E /* Diff.swift */,
 				4F8CDBD1265F8DAC00976B25 /* Assertions.swift */,
 				DDF75999268332E900D906BA /* Strings.swift */,
+				DDF62600269C779800F23489 /* UIApplication+AppInfo.swift.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1108,6 +1111,7 @@
 				DD430B002670BC6F00F1BF2E /* GetStarted.swift in Sources */,
 				AC8D6C6A25C049E300ED74D1 /* Environment.swift in Sources */,
 				ACD01F4025F8C1F800B8F65F /* SessionContext.swift in Sources */,
+				DDF62601269C779800F23489 /* UIApplication+AppInfo.swift.swift in Sources */,
 				AC8D6C7225C0574800ED74D1 /* LocationTracker.swift in Sources */,
 				DD8C380C2689A3DA00901FDF /* BaseURLProvider.swift in Sources */,
 				AC4EC6C425B6FE0D00C1E312 /* HeatmapSettingsView.swift in Sources */,

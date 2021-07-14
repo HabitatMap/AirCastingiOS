@@ -38,6 +38,10 @@ struct SettingsView: View {
                     }
                     navigateToBackendSettingsButton
                 }
+                Section() {
+                    Text("AirCasting App v. ") + Text("\(UIApplication.appVersion!)") +
+                        Text(" build: ") + Text("\(UIApplication.buildVersion!)")
+                }.foregroundColor(.aircastingGray)
             }
             .listStyle(GroupedListStyle())
             .navigationBarTitle(Strings.Settings.title)
