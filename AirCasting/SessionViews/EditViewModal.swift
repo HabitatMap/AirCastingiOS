@@ -19,6 +19,7 @@ struct EditViewModal: View {
             createTextfield(placeholder: Strings.EditSession.tagPlaceholder, binding: $sessionTags)
             Spacer()
             continueButton
+            cancelButton
         }.padding()
     }
     
@@ -36,6 +37,12 @@ struct EditViewModal: View {
                 .font(Font.moderate(size: 16, weight: .semibold))
         }).buttonStyle(BlueButtonStyle())
         .padding(.top, 20)
+    }
+    
+    private var cancelButton: some View {
+        Button(Strings.BackendSettings.Cancel) {
+            showModalEdit.toggle()
+        }.buttonStyle(BlueTextButtonStyle())
     }
 }
 

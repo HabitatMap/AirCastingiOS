@@ -10,7 +10,7 @@ import SwiftUI
 struct SessionHeaderView: View {
     let action: () -> Void
     let isExpandButtonNeeded: Bool
-    let networkChecker: NetworkStatusChecking
+    let networkChecker = NetworkChecker()
     @ObservedObject var session: SessionEntity
     @EnvironmentObject private var microphoneManager: MicrophoneManager
     var threshold: SensorThreshold
@@ -152,7 +152,7 @@ private extension SessionHeaderView {
 struct SessionHeader_Previews: PreviewProvider {
     static var previews: some View {
         SessionHeaderView(action: {},
-                          isExpandButtonNeeded: true, networkChecker: NetworkChecker(),
+                          isExpandButtonNeeded: true,
                           session: SessionEntity.mock,
                           threshold: .mock,
                           selectedStream: .constant(nil))
