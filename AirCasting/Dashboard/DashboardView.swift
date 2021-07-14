@@ -20,7 +20,6 @@ struct DashboardView: View {
     var body: some View {
         VStack {
             AirSectionPickerView(selection: self.$selectedSection.selectedSection)
-
             if sessions.isEmpty {
                 EmptyDashboardView()
             } else {

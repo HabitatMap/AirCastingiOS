@@ -45,7 +45,6 @@ private extension MainTabBarView {
         .tag(TabBarSelection.Tab.dashboard)
     }
 
-    #warning("TODO: Change starting view")
     private var createSessionTab: some View {
         ChooseSessionTypeView(sessionContext: CreateSessionContext(), urlProvider: urlProvider)
             .tabItem {
