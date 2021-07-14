@@ -22,9 +22,7 @@ struct SessionHeaderView: View {
             HStack {
                 dateAndTime
                 Spacer()
-                ZStack {
-                    actionsMenu
-                }
+                actionsMenu
             }.sheet(isPresented: $showModal, content: {
                 ShareViewModal()
             })
