@@ -40,4 +40,9 @@ struct Strings {
         static let description: String = "Select a stream to share"
         static let emailDescription: String = "Or email a CSV file with your session data"
     }
+    
+    struct LoadingSession {
+        static let title: String = "Your AirBeam is gathering data."
+        static let description: String = "Your AirBeam is gathering data."
+    }
 }

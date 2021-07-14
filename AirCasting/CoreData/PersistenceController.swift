@@ -55,12 +55,10 @@ class PersistenceController: ObservableObject {
         container.performBackgroundTask(block)
     }
 
-    #warning("Think if we need this in the database at all")
     private func createInitialMicThreshold(in context: NSManagedObjectContext) {
         let existing: SensorThreshold? = try? context.existingObject(sensorName: "db")
         if existing == nil {
             let thresholds: SensorThreshold = try! context.createObject(sensorName: "db")
-            #warning("TODO: change thresholds values from dbFS to db")
             let defaults = DefaultMicThresholdsValues()
             thresholds.thresholdVeryLow = defaults.thresholdVeryLow
             thresholds.thresholdLow = defaults.thresholdLow
@@ -87,7 +85,6 @@ class PersistenceController: ObservableObject {
             if sessions.isEmpty {
                 return
             }
-            #warning("Should we sync unfinished mobile sessions ?")
             Log.info("Finishing sessions \( sessions.map({ "\(String(describing: $0.uuid)): \(String(describing: $0.status)) \(String(describing: $0.type))"}) )")
             sessions.forEach {
                 $0.status = .FINISHED

@@ -16,6 +16,8 @@ struct MainTabBarView: View {
     @EnvironmentObject var persistenceController: PersistenceController
     @EnvironmentObject var microphoneManager: MicrophoneManager
     @StateObject var tabSelection = TabBarSelection()
+    @StateObject var selectedSection = SelectSection()
+    
 
     var body: some View {
         TabView(selection: $tabSelection.selection) {
@@ -27,6 +29,7 @@ struct MainTabBarView: View {
             try! measurementUpdatingService.start()
         }
         .environmentObject(tabSelection)
+        .environmentObject(selectedSection)
     }
 }
 
@@ -42,7 +45,6 @@ private extension MainTabBarView {
         .tag(TabBarSelection.Tab.dashboard)
     }
 
-    #warning("TODO: Change starting view")
     private var createSessionTab: some View {
         ChooseSessionTypeView(sessionContext: CreateSessionContext(), urlProvider: urlProvider)
             .tabItem {
@@ -71,6 +73,10 @@ class TabBarSelection: ObservableObject {
         case createSession
         case settings
     }
+}
+
+class SelectSection: ObservableObject {
+    @Published var selectedSection = SelectedSection.mobileActive
 }
 
 #if DEBUG

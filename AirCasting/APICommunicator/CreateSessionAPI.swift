@@ -44,7 +44,6 @@ class CreateSessionApi {
         let end_time: Date
         let contribute: Bool
         let is_indoor: Bool
-        #warning("TODO: handle after adding notes")
         let notes: [String]
         let version: Int
         let streams: [String : MeasurementStreamParams]

@@ -14,6 +14,12 @@ struct SettingsView: View {
     @State private var isToggle: Bool = false
     @State private var showModal = false
     
+    init(urlProvider: BaseURLProvider, logoutController: LogoutController) {
+        let navBarAppearance = UINavigationBar.appearance()
+        navBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(Color.darkBlue)]
+        self.urlProvider = urlProvider
+        self.logoutController = logoutController
+    }
     
     var body: some View {
         NavigationView {
@@ -45,11 +51,14 @@ struct SettingsView: View {
     private var signOutLink: some View {
         NavigationLink(destination: MyAccountViewSignOut(logoutController: logoutController)) {
             Text(Strings.Settings.myAccount)
+                .font(Font.muli(size: 16, weight: .bold))
         }
     }
     
     private var crowdMapTitle: some View {
         Text(Strings.Settings.crowdMap)
+            .font(Font.muli(size: 16, weight: .bold))
+            .padding(.bottom, 14)
     }
     
     private var crowdMapSwitch: some View {
@@ -62,7 +71,8 @@ struct SettingsView: View {
     
     private var crowdMapDescription: some View {
         Text(Strings.Settings.crowdMapDescription)
-            .fontWeight(.light)
+            .font(Font.muli(size: 16, weight: .regular))
+            .foregroundColor(.aircastingGray)
     }
     
     private var navigateToBackendSettingsButton: some View {
@@ -72,6 +82,7 @@ struct SettingsView: View {
             Group {
                 HStack {
                     Text(Strings.Settings.backendSettings)
+                        .font(Font.muli(size: 16, weight: .bold))
                         .accentColor(.black)
                     Spacer()
                     Image(systemName: "control")
