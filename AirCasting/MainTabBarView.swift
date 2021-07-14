@@ -77,7 +77,7 @@ class TabBarSelection: ObservableObject {
 }
 
 class SelectSection: ObservableObject {
-    @Published var selectedSection = SelectedSection.mobileDormant
+    @Published var selectedSection = SelectedSection.mobileActive
 }
 
 #if DEBUG
