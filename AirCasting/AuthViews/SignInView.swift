@@ -11,6 +11,10 @@ import AirCastingStyling
 extension NSError: Identifiable {}
 
 struct SignInView: View {
+    
+    @EnvironmentObject var lifeTimeEventsProvider: UserDefaultProtocol
+    var completion: () -> Void
+    
     @State var isActive: Bool
     let baseURL: BaseURLProvider
     let userAuthenticationSession: UserAuthenticationSession
@@ -22,11 +26,12 @@ struct SignInView: View {
     @State private var isUsernameBlank = false
     @State private var isPasswordBlank = false
     
-    init(active: Bool = false, userSession: UserAuthenticationSession, urlProvider: BaseURLProvider) {
+    init(completion: @escaping () -> Void, active: Bool = false, userSession: UserAuthenticationSession, urlProvider: BaseURLProvider) {
         self.baseURL = urlProvider
         _isActive = State(initialValue: active)
         self.userAuthenticationSession = userSession
         self.authorizationAPIService = AuthorizationAPIService(baseUrl: baseURL)
+        self.completion = completion
     }
     
     var body: some View {
@@ -41,7 +46,11 @@ private extension SignInView {
         GeometryReader { geometry in
             ScrollView {
                 VStack(spacing: 40) {
-                    progressBar
+                    if lifeTimeEventsProvider.hasEverLoggedIn {
+                        progressBar.hidden()
+                    } else {
+                        progressBar
+                    }
                     titleLabel
                     VStack(spacing: 20) {
                         VStack(alignment: .leading, spacing: 5) {
@@ -120,6 +129,7 @@ private extension SignInView {
                             do {
                                 let user = User(id: output.id, username: output.username, token: output.authentication_token, email: output.email)
                                 try userAuthenticationSession.authorise(user)
+                                completion()
                                 Log.info("Successfully logged in")
                             } catch {
                                 assertionFailure("Failed to store credentials \(error)")
@@ -139,7 +149,7 @@ private extension SignInView {
     
     var signupButton: some View {
         NavigationLink(
-            destination: CreateAccountView(userSession: userAuthenticationSession, baseURL: baseURL),
+            destination: CreateAccountView(completion: completion, userSession: userAuthenticationSession, baseURL: baseURL).environmentObject(lifeTimeEventsProvider),
             label: {
                 signupButtonText
             })
@@ -183,7 +193,7 @@ private extension SignInView {
 #if DEBUG
 struct SignInView_Previews: PreviewProvider {
     static var previews: some View {
-        SignInView(active: true, userSession: UserAuthenticationSession(), urlProvider: DummyURLProvider())
+        SignInView(completion: {}, active: true, userSession: UserAuthenticationSession(), urlProvider: DummyURLProvider()).environmentObject(UserDefaultProtocol())
     }
 }
 #endif
