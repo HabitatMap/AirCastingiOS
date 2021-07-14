@@ -8,6 +8,7 @@ import MessageUI
 struct MailView: UIViewControllerRepresentable {
     @Binding var isShowing: Bool
     @Binding var result: Result<MFMailComposeResult, Error>?
+    
     class Coordinator: NSObject, MFMailComposeViewControllerDelegate {
         @Binding var isShowing: Bool
         @Binding var result: Result<MFMailComposeResult, Error>?

@@ -9,7 +9,7 @@ struct ShareViewModal: View {
     @Binding var showModal: Bool
     @State var email: String = ""
     @State var itemsForSharing: [String] = ["www.google.com"]
-    @State var sheet = false
+    @State var showSheet = false
     @State var isShowingMailView = false
     @State var showingAlert = false
     @State var mailSendingResult: Result<MFMailComposeResult, Error>? = nil
@@ -29,7 +29,7 @@ struct ShareViewModal: View {
                 oKButton
                 cancelButton
             }
-        }.sheet(isPresented: $sheet, content: {
+        }.sheet(isPresented: $showSheet, content: {
             ActivityViewController(itemsToShare: itemsForSharing)
         }).padding()
     }
@@ -38,7 +38,6 @@ struct ShareViewModal: View {
         Text(Strings.SessionShare.title)
             .font(Font.moderate(size: 32, weight: .bold))
             .foregroundColor(.accentColor)
-            .bold()
     }
     
     private var description: some View {
@@ -56,7 +55,7 @@ struct ShareViewModal: View {
     
     private var shareButton: some View {
         Button(Strings.SessionShare.shareLinkButton) {
-            sheet.toggle()
+            showSheet.toggle()
         }.buttonStyle(BlueButtonStyle())
         .padding(.bottom)
     }
