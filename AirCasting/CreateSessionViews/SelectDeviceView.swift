@@ -11,6 +11,7 @@ import AirCastingStyling
 
 struct SelectDeviceView: View {
     
+    @State private var canContinue = false
     @State private var selected = 0
     @State private var isTurnOnBluetoothLinkActive: Bool = false
     @State private var isPowerABLinkActive: Bool = false
@@ -18,8 +19,9 @@ struct SelectDeviceView: View {
     @EnvironmentObject private var sessionContext: CreateSessionContext
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @EnvironmentObject private var microphoneManager: MicrophoneManager
-    
+    @StateObject private var locationTracker = LocationTracker()
     @Binding var creatingSessionFlowContinues : Bool
+    @State private var showAlert = false
     
     let urlProvider: BaseURLProvider
     
@@ -32,8 +34,16 @@ struct SelectDeviceView: View {
             Spacer()
             chooseButton
             
-        }
+        }.alert(isPresented: $showAlert, content: {
+            Alert(title: Text("Location alert"), message: Text("Please go to settings and allow location first!"), dismissButton: .default(Text("OK")))
+        })
         .padding()
+        .onAppear {
+            locationTracker.requestAuthorisation()
+        }
+        .onChange(of: locationTracker.locationGranted.bool) { newValue in
+            showAlert = !newValue
+        }
     }
     
     var titleLabel: some View {
@@ -115,6 +125,7 @@ struct SelectDeviceView: View {
         }, label: {
             Text("Choose")
         })
+        .disabled(!locationTracker.locationGranted.bool)
         .buttonStyle(BlueButtonStyle())
         .background( Group {
             NavigationLink(

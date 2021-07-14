@@ -9,6 +9,8 @@ import SwiftUI
 import AirCastingStyling
 
 struct PowerABView: View {
+    @State private var showAlert = false
+    @StateObject private var locationTracker = LocationTracker()
     @Binding var creatingSessionFlowContinues : Bool
     @EnvironmentObject private var sessionContext: CreateSessionContext
     let urlProvider: BaseURLProvider
@@ -23,11 +25,17 @@ struct PowerABView: View {
             }
             continueButton
                 .buttonStyle(BlueButtonStyle())
-        }
+        }.alert(isPresented: $showAlert, content: {
+            Alert(title: Text("Location alert"), message: Text("Please go to settings and allow location first!"), dismissButton: .default(Text("OK")))
+        })
         .padding()
         .onAppear(perform: {
+            locationTracker.requestAuthorisation()
             sessionContext.deviceType = .AIRBEAM3
         })
+        .onChange(of: locationTracker.locationGranted.bool) { newValue in
+            showAlert = !newValue
+        }
     }
     
     var titleLabel: some View {
@@ -47,7 +55,7 @@ struct PowerABView: View {
         NavigationLink(destination: SelectPeripheralView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider)) {
             Text("Continue")
                 .frame(maxWidth: .infinity)
-        }
+        }.disabled(!locationTracker.locationGranted.bool)
     }
 }
 
