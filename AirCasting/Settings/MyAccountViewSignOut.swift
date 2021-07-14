@@ -9,6 +9,7 @@ struct MyAccountViewSignOut: View {
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     @EnvironmentObject var persistenceController: PersistenceController
     @EnvironmentObject var microphoneManager: MicrophoneManager
+    
     var body: some View {
         ZStack {
             VStack(alignment: .leading) {
