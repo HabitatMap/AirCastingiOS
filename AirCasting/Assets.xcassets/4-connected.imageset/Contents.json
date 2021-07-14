@@ -1,15 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "4-connected.pdf",
+      "filename" : "Group5.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "Group5@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "filename" : "Group5@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
