@@ -138,8 +138,14 @@ private extension SignInView {
     var forgotPassword: some View {
         Button("Forgot password?") {
             presentingModal = true
-        }.sheet(isPresented: $presentingModal) { ForgotPasswordView(presentedAsModal: self.$presentingModal) }
-            .buttonStyle(BlueTextButtonStyle())
+        }.sheet(isPresented: $presentingModal) {
+            let service = EmailResetPasswordService(apiClient: URLSession.shared, validator: DefaultHTTPResponseValidator())
+            let controller = EmailForgotPasswordController(resetPasswordService: service)
+            let scheduledController = ScheduledForgotPasswordControllerProxy(controller: controller, queue: .main)
+            let vm = DefaultForgotPasswordViewModel(controller: scheduledController)
+            ForgotPasswordView(viewModel: vm)
+        }
+        .buttonStyle(BlueTextButtonStyle())
     }
     
     var signupButton: some View {
@@ -181,56 +187,6 @@ private extension SignInView {
             return Alert(title: Text(title),
                          message: Text(error.localizedDescription),
                          dismissButton: .default(Text("Ok")))
-        }
-    }
-    
-    struct ForgotPasswordView: View {
-        @Environment(\.presentationMode) var presentationMode
-        @Binding var presentedAsModal: Bool
-        @State private var showingAlert = false
-        @State private var email = ""
-        @State private var popUpMessage = ""
-        var body: some View {
-            VStack(alignment: .leading, spacing: 30) {
-                title
-                createTextfield(placeholder: "email or username", binding: $email)
-                description
-                sendButton
-            }.padding()
-        }
-        
-        private var title: some View {
-            Text("Forgot Password")
-                .font(Font.moderate(size: 32, weight: .bold))
-                .foregroundColor(.accentColor)
-        }
-        
-        private var description: some View {
-            Text("You will get en email with details after 'send new' button pressed")
-                .font(Font.muli(size: 16))
-                .foregroundColor(.aircastingGray)
-        }
-        
-        var sendButton: some View {
-            Button("Send new") {
-                ForgotPasswordAPI().forgotPassword(login: email) { value in
-                    switch value {
-                    case 200, 201:
-                        popUpMessage = "Email was sent. Please check your inbox for the details."
-                    default:
-                        popUpMessage = "Something went wrong, please try again"
-                    }
-                    showingAlert = true
-                }
-            }.alert(isPresented: $showingAlert) {
-                Alert(
-                    title: Text("Email response"),
-                    message: Text(popUpMessage),
-                    dismissButton: Alert.Button.default(Text("OK"), action: {
-                        presentationMode.wrappedValue.dismiss()
-                    }))
-            }
-            .buttonStyle(BlueButtonStyle())
         }
     }
 }
