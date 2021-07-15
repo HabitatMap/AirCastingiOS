@@ -21,10 +21,11 @@ struct BlueButtonStyle: ButtonStyle {
             .shadow(color: Color(white: 150/255, opacity: 0.5), radius: 9, x: 0, y: 1)
     }
 }
-
+#if DEBUG
 struct AirButtonStyle_Previews: PreviewProvider {
     static var previews: some View {
         Button("AitButtonStyle") {}
             .buttonStyle(BlueButtonStyle())
     }
 }
+#endif

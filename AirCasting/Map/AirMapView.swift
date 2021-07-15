@@ -11,44 +11,36 @@ import Foundation
 import CoreData
 
 struct AirMapView: View {
-    var thresholds: [SensorThreshold]
+    var threshold: SensorThreshold
     @ObservedObject var session: SessionEntity
-
-    private var measurementStream: MeasurementStreamEntity? {
-        if session.type == .mobile && session.deviceType == .MIC {
-            return session.dbStream
-        } else {
-            #warning("Select proper measurementStream")
-            return session.measurementStreams?.firstObject as? MeasurementStreamEntity
-        }
-    }
-
+    @Binding var selectedStream: MeasurementStreamEntity?
+    
     private var pathPoints: [PathPoint] {
-        measurementStream?.allMeasurements?.compactMap {
-            if let location = $0.location {
-                return PathPoint(location: location, measurement: $0.value)
-            } else {
-                #warning("TODO: Do something with no location points")
-                return nil
-            }
-       } ?? []
+        return selectedStream?.allMeasurements?.compactMap {
+            #warning("TODO: Do something with no location points")
+            guard let location = $0.location else { return nil }
+            return PathPoint(location: location, measurement: $0.value)
+        } ?? []
     }
 
     var body: some View {
         VStack(alignment: .trailing, spacing: 20) {
             SessionHeaderView(action: {},
                               isExpandButtonNeeded: false,
-                              session: session,
-                              thresholds: thresholds)
+                              session: session)
+            StreamsView(selectedStream: $selectedStream,
+                        session: session,
+                        threshold: threshold,
+                        measurementPresentationStyle: .showValues)
             ZStack(alignment: .topLeading) {
                 GoogleMapView(pathPoints: pathPoints,
-                              thresholds: thresholds[0])
+                              thresholds: threshold)
                 StatisticsContainerView()
             }
-            NavigationLink(destination: HeatmapSettingsView(changedThresholdValues: thresholds[0].rawThresholdsBinding)) {
+            NavigationLink(destination: HeatmapSettingsView(changedThresholdValues: threshold.rawThresholdsBinding)) {
                 EditButtonView()
             }
-            ThresholdsSliderView(threshold: thresholds[0])
+            ThresholdsSliderView(threshold: threshold)
                 // Fixes labels covered by tabbar
                 .padding(.bottom)
         }
@@ -60,7 +52,7 @@ struct AirMapView: View {
 #if DEBUG
 struct Map_Previews: PreviewProvider {
     static var previews: some View {
-        AirMapView(thresholds: [SensorThreshold.mock], session: .mock)
+        AirMapView(threshold: .mock, session: .mock, selectedStream: .constant(nil))
     }
 }
 #endif

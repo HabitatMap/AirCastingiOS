@@ -15,13 +15,15 @@ struct BlueTextButtonStyle: ButtonStyle {
             .foregroundColor(.accentColor)
             .font(Font.moderate(size: 16, weight: .bold))
             .frame(maxWidth: .infinity)
+            .cornerRadius(5)
             .padding(.vertical, 12)
     }
 }
-
+#if DEBUG
 struct BlueTextButtonStyle_Previews: PreviewProvider {
     static var previews: some View {
         Button("BlueTextButtonStyle") {}
             .buttonStyle(BlueTextButtonStyle())
     }
 }
+#endif

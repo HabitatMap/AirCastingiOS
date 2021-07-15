@@ -6,34 +6,99 @@
 //
 
 import SwiftUI
-import Foundation
+import AirCastingStyling
 
 struct SettingsView: View {
+    let urlProvider: BaseURLProvider
     let logoutController: LogoutController
-
+    @State private var isToggle: Bool = false
+    @State private var showModal = false
+    
+    init(urlProvider: BaseURLProvider, logoutController: LogoutController) {
+        let navBarAppearance = UINavigationBar.appearance()
+        navBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(Color.darkBlue)]
+        self.urlProvider = urlProvider
+        self.logoutController = logoutController
+    }
+    
     var body: some View {
-        VStack {
-            Spacer()
-            Button {
-                do {
-                    try logoutController.logout()
-                } catch {
-                    assertionFailure("Failed to deauthorize \(error)")
+        NavigationView {
+            Form {
+                Section() {
+                    signOutLink
                 }
-            } label: {
-                Text("Log out")
-            }.buttonStyle(BlueButtonStyle())
-            
-            Spacer()
+                Section() {
+                    VStack(alignment: .leading) {
+                        HStack(spacing: 5) {
+                            crowdMapTitle
+                            crowdMapSwitch
+                        }
+                        Spacer()
+                        crowdMapDescription
+                    }
+                    navigateToBackendSettingsButton
+                }
+                Section() {
+                    Text("AirCasting App v. ") + Text("\(UIApplication.appVersion!)") +
+                        Text(" build: ") + Text("\(UIApplication.buildVersion!)")
+                }.foregroundColor(.aircastingGray)
+            }
+            .listStyle(GroupedListStyle())
+            .navigationBarTitle(Strings.Settings.title)
         }
-        .padding()
+    }
+    
+    private var signOutLink: some View {
+        NavigationLink(destination: MyAccountViewSignOut(logoutController: logoutController)) {
+            Text(Strings.Settings.myAccount)
+                .font(Font.muli(size: 16, weight: .bold))
+        }
+    }
+    
+    private var crowdMapTitle: some View {
+        Text(Strings.Settings.crowdMap)
+            .font(Font.muli(size: 16, weight: .bold))
+            .padding(.bottom, 14)
+    }
+    
+    private var crowdMapSwitch: some View {
+        Toggle(isOn: $isToggle){
+            Text("Switch")
+                .font(.title)
+                .foregroundColor(Color.white)
+        }.toggleStyle(SwitchToggleStyle(tint: .accentColor))
+    }
+    
+    private var crowdMapDescription: some View {
+        Text(Strings.Settings.crowdMapDescription)
+            .font(Font.muli(size: 16, weight: .regular))
+            .foregroundColor(.aircastingGray)
+    }
+    
+    private var navigateToBackendSettingsButton: some View {
+        Button(action: {
+            showModal.toggle()
+        }) {
+            Group {
+                HStack {
+                    Text(Strings.Settings.backendSettings)
+                        .font(Font.muli(size: 16, weight: .bold))
+                        .accentColor(.black)
+                    Spacer()
+                    Image(systemName: "control")
+                        .accentColor(.gray).opacity(0.6)
+                }
+            }
+        }.sheet(isPresented: $showModal, content: {
+            BackendSettingsView(urlProvider: urlProvider)
+        })
     }
 }
 
 #if DEBUG
 struct LogoutView_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsView(logoutController: FakeLogoutController())
+        SettingsView(urlProvider: DummyURLProvider(), logoutController: FakeLogoutController())
     }
 }
 #endif

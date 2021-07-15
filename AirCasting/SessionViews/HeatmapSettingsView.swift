@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AirCastingStyling
 
 struct HeatmapSettingsView: View {
     

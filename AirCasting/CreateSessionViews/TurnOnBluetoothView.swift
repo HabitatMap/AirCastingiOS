@@ -7,6 +7,7 @@
 
 import SwiftUI
 import CoreBluetooth
+import AirCastingStyling
 
 struct TurnOnBluetoothView: View {
     
@@ -14,6 +15,8 @@ struct TurnOnBluetoothView: View {
     @EnvironmentObject var bluetoothManager: BluetoothManager
     
     @Binding var creatingSessionFlowContinues : Bool
+    
+    let urlProvider: BaseURLProvider
     
     var body: some View {
         VStack(spacing: 50) {
@@ -61,7 +64,7 @@ struct TurnOnBluetoothView: View {
         .buttonStyle(BlueButtonStyle())
         .background(
             NavigationLink(
-                destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues),
+                destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider),
                 isActive: $isPowerABLinkActive,
                 label: {
                     EmptyView()
@@ -86,10 +89,12 @@ struct TurnOnBluetoothView: View {
     }
 }
 
+#if DEBUG
 struct TurnOnBluetoothView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            TurnOnBluetoothView(creatingSessionFlowContinues: .constant(true))
+            TurnOnBluetoothView(creatingSessionFlowContinues: .constant(true), urlProvider: DummyURLProvider())
         }
     }
 }
+#endif

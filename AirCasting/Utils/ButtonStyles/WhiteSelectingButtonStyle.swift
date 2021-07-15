@@ -22,10 +22,11 @@ struct WhiteSelectingButtonStyle: ButtonStyle {
     }
 }
 
-
+#if DEBUG
 struct WhiteButtonStyle_Previews: PreviewProvider {
     static var previews: some View {
         Button("click") {}
             .buttonStyle( WhiteSelectingButtonStyle(isSelected: false))
     }
 }
+#endif

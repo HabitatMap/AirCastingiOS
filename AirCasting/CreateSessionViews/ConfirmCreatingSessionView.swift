@@ -7,6 +7,7 @@
 
 import SwiftUI
 import CoreLocation
+import AirCastingStyling
 
 struct ConfirmCreatingSessionView: View {
     @State private var isActive: Bool = false
@@ -16,7 +17,7 @@ struct ConfirmCreatingSessionView: View {
         }
     }
     @State private var isPresentingAlert: Bool = false
-    
+    @EnvironmentObject var selectedSection: SelectSection
     @EnvironmentObject private var sessionContext: CreateSessionContext
     let sessionCreator: SessionCreator
     @State private var didStartRecordingSession = false
@@ -69,6 +70,11 @@ struct ConfirmCreatingSessionView: View {
                         switch result {
                         case .success:
                             self.creatingSessionFlowContinues = false
+                            if sessionContext.sessionType == .mobile {
+                                selectedSection.selectedSection = SelectedSection.mobileActive
+                            } else {
+                                selectedSection.selectedSection = SelectedSection.fixed
+                            }
                             tabSelection.selection = TabBarSelection.Tab.dashboard
                         case .failure(let error):
                             self.error = error as NSError

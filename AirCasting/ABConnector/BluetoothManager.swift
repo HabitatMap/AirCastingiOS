@@ -25,6 +25,8 @@ class BluetoothManager: NSObject, ObservableObject {
     @Published var centralManagerState: CBManagerState = .unknown
     var observed: NSKeyValueObservation?
     
+    let mobilePeripheralSessionManager: MobilePeripheralSessionManager
+    
     private var MEASUREMENTS_CHARACTERISTIC_UUIDS: [CBUUID] = [
         CBUUID(string:"0000ffe1-0000-1000-8000-00805f9b34fb"),    // Temperature
         CBUUID(string:"0000ffe3-0000-1000-8000-00805f9b34fb"),    // Humidity
@@ -53,6 +55,15 @@ class BluetoothManager: NSObject, ObservableObject {
             centralManager.stopScan()
         }
     }
+    
+    init(mobilePeripheralSessionManager: MobilePeripheralSessionManager) {
+        self.mobilePeripheralSessionManager = mobilePeripheralSessionManager
+    }
+}
+
+struct PeripheralMeasurement {
+    let peripheral: CBPeripheral
+    let measurementStream: ABMeasurementStream
 }
 
 extension BluetoothManager: CBCentralManagerDelegate {
@@ -99,6 +110,7 @@ extension BluetoothManager: CBCentralManagerDelegate {
     
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
         print("Disconnected: \(String(describing: error?.localizedDescription))")
+        mobilePeripheralSessionManager.finishSession(for: peripheral)
     }
 }
 
@@ -134,7 +146,13 @@ extension BluetoothManager: CBPeripheralDelegate {
 
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
         if MEASUREMENTS_CHARACTERISTIC_UUIDS.contains(characteristic.uuid) {
-            let parsedMeasurement = parseData(data: characteristic.value!)
+            guard let value = characteristic.value else {
+                Log.warning("AirBeam sent measurement without value")
+                return
+            }
+            if let parsedMeasurement = parseData(data: value) {
+                mobilePeripheralSessionManager.handlePeripheralMeasurement(PeripheralMeasurement(peripheral: peripheral, measurementStream: parsedMeasurement))
+            }
         }
     }
     

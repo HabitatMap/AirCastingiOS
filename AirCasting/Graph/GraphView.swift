@@ -10,30 +10,34 @@ import SwiftUI
 struct GraphView: View {
     
     let session: SessionEntity
-    let thresholds: [SensorThreshold]
+    let threshold: SensorThreshold
+    @Binding var selectedStream: MeasurementStreamEntity?
     
     var body: some View {
         VStack(alignment: .trailing) {
             SessionHeaderView(action: {},
                               isExpandButtonNeeded: false,
-                              session: session,
-                              thresholds: thresholds).padding()
-            
+                              session: session).padding()
+            StreamsView(selectedStream: $selectedStream,
+                        session: session,
+                        threshold: threshold,
+                        measurementPresentationStyle: .showValues)
             ZStack(alignment: .topLeading) {
-                #warning("Replace dbStream with currently selected")
-                Graph(stream: session.dbStream!,
-                      thresholds: thresholds[0],
-                      isAutozoomEnabled: session.type == .mobile)
+                if let selectedStream = selectedStream {
+                    Graph(stream: selectedStream,
+                          thresholds: threshold,
+                          isAutozoomEnabled: session.type == .mobile)
+                }
                 StatisticsContainerView()
             }
             
-            NavigationLink(destination: HeatmapSettingsView(changedThresholdValues: thresholds[0].rawThresholdsBinding)) {
+            NavigationLink(destination: HeatmapSettingsView(changedThresholdValues: threshold.rawThresholdsBinding)) {
                 EditButtonView()
             }
             .padding(.horizontal)
             .padding(.top)
             
-            ThresholdsSliderView(threshold: thresholds[0])
+            ThresholdsSliderView(threshold: threshold)
                 .padding()
                 // Fixes labels covered by tabbar
                 .padding(.bottom)
@@ -46,7 +50,8 @@ struct GraphView: View {
 #if DEBUG
 struct GraphView_Previews: PreviewProvider {
     static var previews: some View {
-        GraphView(session: .mock, thresholds: [.mock])
+        //Change selected stream
+        GraphView(session: .mock, threshold: .mock, selectedStream: .constant(nil))
     }
 }
 #endif
