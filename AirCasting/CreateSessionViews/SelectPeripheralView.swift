@@ -5,17 +5,17 @@
 //  Created by Lunar on 02/02/2021.
 //
 
-import SwiftUI
-import CoreBluetooth
 import AirCastingStyling
+import CoreBluetooth
+import SwiftUI
 
 struct SelectPeripheralView: View {
-    
+    @State private var showBluetoothAlert = false
     @State private var selection: CBPeripheral? = nil
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @EnvironmentObject var sessionContext: CreateSessionContext
     
-    @Binding var creatingSessionFlowContinues : Bool
+    @Binding var creatingSessionFlowContinues: Bool
     
     let urlProvider: BaseURLProvider
     
@@ -27,7 +27,6 @@ struct SelectPeripheralView: View {
                     titileLabel
                     
                     LazyVStack(alignment: .leading, spacing: 25) {
-                        
                         HStack(spacing: 8) {
                             Text("AirBeams")
                             if bluetoothManager.isScanning {
@@ -61,16 +60,22 @@ struct SelectPeripheralView: View {
                     } else {
                         connectButton.disabled(true)
                     }
-                }
-                .padding()
-                .frame(maxWidth: .infinity, minHeight: geometry.size.height, alignment: .top)
+                }.alert(isPresented: $showBluetoothAlert, content: {
+                    Alert(title: Text("Connection error"), message: Text("Please, choose a different device or try again"), dismissButton: .default(Text("Got it!")))
+                })
+                    .padding()
+                    .frame(maxWidth: .infinity, minHeight: geometry.size.height, alignment: .top)
             }
-        }
-        
+        }.onChange(of: bluetoothManager.isConnected, perform: { value in
+            showBluetoothAlert = !value
+        })
+            .onAppear(perform: {
+                bluetoothManager.isConnected = true
+            })
     }
     
     func displayDeviceButton(devices: [CBPeripheral]) -> some View {
-        ForEach(devices, id: \.self) { (availableDevice) in
+        ForEach(devices, id: \.self) { availableDevice in
             Button(action: {
                 selection = availableDevice
                 
@@ -131,7 +136,7 @@ struct SelectPeripheralView: View {
 #if DEBUG
 struct SelectPeripheralView_Previews: PreviewProvider {
     static var previews: some View {
-        SelectPeripheralView( creatingSessionFlowContinues: .constant(true), urlProvider: DummyURLProvider())
+        SelectPeripheralView(creatingSessionFlowContinues: .constant(true), urlProvider: DummyURLProvider())
     }
 }
 #endif

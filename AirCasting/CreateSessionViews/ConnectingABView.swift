@@ -5,18 +5,18 @@
 //  Created by Lunar on 04/02/2021.
 //
 
-import SwiftUI
 import CoreBluetooth
+import SwiftUI
 
 struct ConnectingABView: View {
-    
+    @Environment(\.presentationMode) var presentationMode
     var bluetoothManager: BluetoothManager
     var selectedPeripheral: CBPeripheral
     let baseURL: BaseURLProvider
     @State private var isDeviceConnected: Bool = false
     
-    @Binding var creatingSessionFlowContinues : Bool
-
+    @Binding var creatingSessionFlowContinues: Bool
+    
     var body: some View {
         VStack(spacing: 50) {
             ProgressView(value: 0.5)
@@ -39,12 +39,21 @@ struct ConnectingABView: View {
                     isActive: $isDeviceConnected,
                     label: {
                         EmptyView()
-                    })
-            )}
+                    }
+                )
+            )
+        }
         .padding()
         .onAppear(perform: {
             bluetoothManager.centralManager.connect(selectedPeripheral,
                                                     options: nil)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
+                if selectedPeripheral.state == .connecting {
+                    Log.info("Connecting to bluetooth device failed")
+                    bluetoothManager.centralManager.cancelPeripheralConnection(selectedPeripheral)
+                    presentationMode.wrappedValue.dismiss()
+                }
+            }
         })
         .onReceive(NotificationCenter.default.publisher(for: Notification.Name(rawValue: "DeviceConnected")), perform: { _ in
             /* App is pushing the next view before this view is fully loaded. It resulted with showing next view and going back to this one.
@@ -82,8 +91,9 @@ struct ConnectingABView: View {
         }
     }
 }
-//struct ConnectingABView_Previews: PreviewProvider {
+
+// struct ConnectingABView_Previews: PreviewProvider {
 //    static var previews: some View {
 //        ConnectingABView(bluetoothManager: BluetoothManager(), selectedDevice: CBPeripheral)
 //    }
-//}
+// }
