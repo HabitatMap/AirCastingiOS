@@ -22,6 +22,7 @@ extension MeasurementStreamStorage {
 final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
     enum Error: Swift.Error {
         case missingMeasurementStream
+        case missingSensorName
     }
     private let persistenceController: PersistenceController
     private lazy var updateSessionParamsService = UpdateSessionParamsService()
@@ -76,6 +77,19 @@ final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
         newStream.gotDeleted = false
 
         session.addToMeasurementStreams(newStream)
+        
+        guard let sensorName = stream.sensorName else {
+            throw Error.missingSensorName
+        } 
+        let existingThreshold: SensorThreshold? = try context.existingObject(sensorName: sensorName)
+        if existingThreshold == nil {
+            let threshold: SensorThreshold = try context.newOrExisting(sensorName: sensorName)
+            threshold.thresholdVeryLow = stream.thresholdVeryLow
+            threshold.thresholdLow = stream.thresholdLow
+            threshold.thresholdMedium = stream.thresholdMedium
+            threshold.thresholdHigh = stream.thresholdHigh
+            threshold.thresholdVeryHigh = stream.thresholdVeryHigh
+        }
         try context.save()
         return newStream.localID
     }

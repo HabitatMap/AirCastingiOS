@@ -17,7 +17,7 @@ struct Strings {
     
     struct BackendSettings {
         static let backendSettings: String = "Backend settings"
-        static let Ok: String = "Ok"
+        static let Ok: String = "OK"
         static let Cancel: String = "Cancel"
     }
     
@@ -39,5 +39,10 @@ struct Strings {
         static let title: String = "Share session"
         static let description: String = "Select a stream to share"
         static let emailDescription: String = "Or email a CSV file with your session data"
+    }
+    
+    struct LoadingSession {
+        static let title: String = "Your AirBeam is gathering data."
+        static let description: String = "Your AirBeam is gathering data."
     }
 }

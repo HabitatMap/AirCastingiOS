@@ -62,7 +62,6 @@ class MultiColorGridRenderer: YAxisRenderer {
         for index in colorThresholds.indices.reversed() {
             let thresholdValue = CGFloat(colorThresholds[index])
             let yMax = gridClippingRect.maxY
-            #warning("TODO: handle the situation when (thresholdVeryHigh - thresholdVeryLow) == 0")
             let height = (thresholdValue - thresholdVeryLow) * yMax / (thresholdVeryHigh - thresholdVeryLow)
             let y = yMax - height
             

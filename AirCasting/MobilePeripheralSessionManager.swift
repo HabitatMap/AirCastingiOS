@@ -71,6 +71,7 @@ class MobilePeripheralSessionManager {
                                               thresholdMedium: Int32(stream.thresholdMedium),
                                               thresholdLow: Int32(stream.thresholdLow),
                                               thresholdVeryLow: Int32(stream.thresholdVeryLow))
+        
         streamsIDs[stream.sensorName] = try measurementStreamStorage.createMeasurementStream(sessionStream, for: sessionUUID)
         try measurementStreamStorage.addMeasurementValue(stream.measuredValue, at: location, toStreamWithID: streamsIDs[stream.sensorName]!)
     }
