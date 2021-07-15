@@ -79,14 +79,6 @@ struct TurnOnBluetoothView: View {
             }
         }
     }
-    func goToBluetoothAuthSettings() {
-        if let url = URL(string: UIApplication.openSettingsURLString) {
-            let app = UIApplication.shared
-            if app.canOpenURL(url) {
-                app.open(url, options: [:], completionHandler: nil)
-            }
-        }
-    }
 }
 
 #if DEBUG

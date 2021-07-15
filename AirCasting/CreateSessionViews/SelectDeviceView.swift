@@ -34,9 +34,16 @@ struct SelectDeviceView: View {
             Spacer()
             chooseButton
             
-        }.alert(isPresented: $showAlert, content: {
-            Alert(title: Text("Location alert"), message: Text("Please go to settings and allow location first!"), dismissButton: .default(Text("OK")))
-        })
+        }.alert(isPresented: $showAlert) {
+            Alert(
+                title: Text("Location alert"),
+                message: Text("Please go to settings and allow location first."),
+                primaryButton: .cancel(Text("OK")) { },
+                secondaryButton: .default(Text("Settings"), action: {
+                    goToLocationAuthSettings()
+                })
+            )
+        }
         .padding()
         .onAppear {
             locationTracker.requestAuthorisation()
