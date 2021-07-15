@@ -61,7 +61,7 @@ struct SelectPeripheralView: View {
                         connectButton.disabled(true)
                     }
                 }.alert(isPresented: $showBluetoothAlert, content: {
-                    Alert(title: Text("Connection error"), message: Text("Please, choose a different device or try again"), dismissButton: .default(Text("Got it!")))
+                    Alert(title: Text("Connection error"), message: Text("Bluetooth connection failed. Please toggle the power on your device and try again."), dismissButton: .default(Text("Got it!")))
                 })
                     .padding()
                     .frame(maxWidth: .infinity, minHeight: geometry.size.height, alignment: .top)
