@@ -8,11 +8,13 @@
 import SwiftUI
 
 struct RootAppView: View {
-    @ObservedObject var userAuthenticationSession = UserAuthenticationSession()
-    @ObservedObject var lifeTimeEventsProvider = UserDefaultProtocol()
-
-    let persistenceController = PersistenceController.shared
+    
+    @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
+    let sessionSynchronizer: SessionSynchronizer
+    let persistenceController: PersistenceController
     let bluetoothManager = BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared)))
+    @ObservedObject var lifeTimeEventsProvider = UserDefaultProtocol()
+    
     let microphoneManager = MicrophoneManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared))
     let urlProvider = UserDefaultsBaseURLProvider()
     var body: some View {
@@ -33,7 +35,9 @@ struct RootAppView: View {
         MainTabBarView(measurementUpdatingService: DownloadMeasurementsService(
                         authorisationService: userAuthenticationSession,
                         persistenceController: persistenceController,
-                        baseUrl: urlProvider), urlProvider: urlProvider)
+                        baseUrl: urlProvider),
+                       urlProvider: urlProvider,
+                       sessionSynchronizer: sessionSynchronizer)
             .environmentObject(bluetoothManager)
             .environmentObject(microphoneManager)
             .environmentObject(userAuthenticationSession)
@@ -45,7 +49,7 @@ struct RootAppView: View {
 #if DEBUG
 struct RootAppView_Previews: PreviewProvider {
     static var previews: some View {
-        RootAppView()
+        RootAppView(sessionSynchronizer: DummySessionSynchronizer(), persistenceController: .shared)
     }
 }
 #endif
