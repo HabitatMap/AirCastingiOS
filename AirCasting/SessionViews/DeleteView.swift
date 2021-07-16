@@ -4,13 +4,9 @@
 import SwiftUI
 import AirCastingStyling
 
-struct DeleteView: View {
+struct DeleteView<VM: DeleteSessionViewModel>: View {
+    @ObservedObject var viewModel: VM
     @Binding var deleteModal: Bool
-    @State private var allStreams = true
-    @State private var PM1 = false
-    @State private var PM25 = false
-    @State private var RH = false
-    @State private var F = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -36,25 +32,13 @@ struct DeleteView: View {
     
     private var chooseStream: some View {
         VStack(alignment: .leading) {
-            HStack {
-                CheckBox(isSelected: allStreams)
-                Text("All from the session")
-            }
-            HStack {
-                CheckBox(isSelected: PM1)
-                Text("PM1")
-            }
-            HStack {
-                CheckBox(isSelected: PM25)
-                Text("PM2.5")
-            }
-            HStack {
-                CheckBox(isSelected: RH)
-                Text("RH")
-            }
-            HStack {
-                CheckBox(isSelected: F)
-                Text("F")
+            ForEach(viewModel.options, id: \.id) { option in
+                HStack {
+                    CheckBox(isSelected: option.isSelected).onTapGesture {
+                        viewModel.didSelect(option: option)
+                    }
+                    Text(option.title)
+                }
             }
         }.padding()
     }
@@ -79,10 +63,17 @@ struct DeleteView: View {
     }
 }
 
+extension View {
+    func Print(_ vars: Any...) -> some View {
+        for v in vars { print(v) }
+        return EmptyView()
+    }
+}
+
 #if DEBUG
 struct DeleteViewModal_Previews: PreviewProvider {
     static var previews: some View {
-        DeleteView(deleteModal: .constant(false))
+        DeleteView(viewModel: DefaultDeleteSessionViewModel(), deleteModal: .constant(false))
     }
 }
 #endif

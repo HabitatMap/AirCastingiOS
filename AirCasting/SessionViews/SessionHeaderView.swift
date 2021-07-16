@@ -28,7 +28,7 @@ struct SessionHeaderView: View {
                 ShareView()
             })
             .sheet(isPresented: $deleteModal, content: {
-                DeleteView(deleteModal: $deleteModal)
+                DeleteView(viewModel: DefaultDeleteSessionViewModel(), deleteModal: $deleteModal)
             })
             nameLabelAndExpandButton
             if session.deviceType == .MIC {

@@ -11,7 +11,7 @@ struct CheckBox: View {
     var body: some View {
         checkbox
     }
-    @State var isSelected: Bool
+    var isSelected: Bool
     
     var checkbox: some View {
         ZStack {
@@ -25,8 +25,6 @@ struct CheckBox: View {
                 .frame(width: 12, height: 12)
                 .clipShape(Circle())
                 .opacity(isSelected ? 1.0 : 0.0)
-        }.onTapGesture {
-            isSelected.toggle()
         }
     }
 }

@@ -3,17 +3,22 @@
 
 import Foundation
 
-class DeleteSessionViewModel: ObservableObject {
-    
-    private let sessionEntity: SessionEntity
-    
-    struct Stream {
-        let title: String
+struct DeleteSessionOptionViewModel {
+    let id: Int
+    let title: String
+    var isSelected: Bool
+    let isEnabled: Bool
+    mutating func toggleSelection() {
+        isSelected.toggle()
     }
-    
-    var streams: [Stream] {
-        willSet {
-            objectWillChange.send()
-        }
+    mutating func changeSelection(newSelected: Bool) {
+        isSelected = newSelected
     }
+}
+
+protocol DeleteSessionViewModel: ObservableObject {
+    var options: [DeleteSessionOptionViewModel] { get }
+    var deleteEnabled: Bool { get }
+    func didSelect(option: DeleteSessionOptionViewModel)
+    func deleteSelected()
 }
