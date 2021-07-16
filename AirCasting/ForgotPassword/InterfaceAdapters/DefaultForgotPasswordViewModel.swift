@@ -4,16 +4,16 @@
 import Foundation
 
 final class DefaultForgotPasswordViewModel: ForgotPasswordViewModel {
-    let title = "Forgot Password"
-    let description = "You will get en email with details after 'send new' button pressed"
-    let actionTitle = "Send new"
-    let emailInputTitle = "email or username"
+    let title = Strings.ForgotPassword.title
+    let description = Strings.ForgotPassword.description
+    let actionTitle = Strings.ForgotPassword.actionTitle
+    let emailInputTitle = Strings.ForgotPassword.emailInputTitle
     
     var alert: ForgotPasswordAlertViewModel? = nil { willSet { objectWillChange.send() } }
     
     var onChangeAlertVisibility: ((Bool) -> Void)?
     
-    private var email: String = ""
+    var email: String = ""
     private let controller: ForgotPasswordController
     
     init(controller: ForgotPasswordController) {

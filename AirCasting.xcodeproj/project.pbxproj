@@ -396,13 +396,13 @@
 		4FB39DFD2621B53C00E5E564 /* AirCastingTests */ = {
 			isa = PBXGroup;
 			children = (
+				DDBC992726A1914000B0662E /* ForgotPasswordTests */,
 				4FEEAEDA262C53DC0024AB7E /* Mocks */,
 				4FEEAED9262C53D20024AB7E /* Model */,
 				4FEEAED8262C53C80024AB7E /* API */,
 				4F858F4A2624A8120059271A /* Resources */,
 				4FB39E002621B53C00E5E564 /* Info.plist */,
 				4FB39E3F2622252700E5E564 /* XCTestCase+Extensions.swift */,
-				DDBC992526A1652A00B0662E /* ForgotPasswordTest.swift */,
 			);
 			path = AirCastingTests;
 			sourceTree = "<group>";
@@ -791,6 +791,14 @@
 				DD430B0B26710E0600F1BF2E /* PrivacyOnboarding.swift */,
 			);
 			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		DDBC992726A1914000B0662E /* ForgotPasswordTests */ = {
+			isa = PBXGroup;
+			children = (
+				DDBC992526A1652A00B0662E /* ForgotPasswordTest.swift */,
+			);
+			path = ForgotPasswordTests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

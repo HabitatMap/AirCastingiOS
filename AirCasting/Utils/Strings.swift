@@ -34,4 +34,11 @@ struct Strings {
         static let Logged: String = "You are currently logged in as admin@admin.com"
         static let signOut: String = "Sign Out"
     }
+
+    struct ForgotPassword {
+        static let title = "Forgot Password"
+        static let description = "You will get en email with details after 'send new' button pressed"
+        static let actionTitle = "Send new"
+        static let emailInputTitle = "email or username"
+    }
 }

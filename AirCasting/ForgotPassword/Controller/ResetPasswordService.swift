@@ -10,3 +10,9 @@ enum ResetPasswordServiceError: Error {
 protocol ResetPasswordService {
     func resetPassword(login: String, completion: @escaping (Result<Void, ResetPasswordServiceError>) -> Void)
 }
+
+class MockResetPasswordService: ResetPasswordService {
+    func resetPassword(login: String, completion: @escaping (Result<Void, ResetPasswordServiceError>) -> Void) {
+        completion(.success(()))
+    }
+}
