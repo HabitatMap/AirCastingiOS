@@ -147,6 +147,7 @@
 		DD430B062670FCC000F1BF2E /* GreenButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD430B052670FCC000F1BF2E /* GreenButtonStyle.swift */; };
 		DD430B082670FE6100F1BF2E /* GreenTextButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD430B072670FE6100F1BF2E /* GreenTextButtonStyle.swift */; };
 		DD430B0C26710E0600F1BF2E /* PrivacyOnboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD430B0B26710E0600F1BF2E /* PrivacyOnboarding.swift */; };
+		DDBC992626A1652A00B0662E /* ForgotPasswordTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBC992526A1652A00B0662E /* ForgotPasswordTest.swift */; };
 		DDF7599A268332E900D906BA /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF75999268332E900D906BA /* Strings.swift */; };
 		EE969E7E1981C41852FB7745 /* Pods_AirCastingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A54057326D27D23E9906704 /* Pods_AirCastingTests.framework */; };
 		F76B6F660F0BD398629EDD83 /* Pods_AirCasting.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E819223F8D800D3B8ED8F56 /* Pods_AirCasting.framework */; };
@@ -312,6 +313,7 @@
 		DD430B052670FCC000F1BF2E /* GreenButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GreenButtonStyle.swift; sourceTree = "<group>"; };
 		DD430B072670FE6100F1BF2E /* GreenTextButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GreenTextButtonStyle.swift; sourceTree = "<group>"; };
 		DD430B0B26710E0600F1BF2E /* PrivacyOnboarding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyOnboarding.swift; sourceTree = "<group>"; };
+		DDBC992526A1652A00B0662E /* ForgotPasswordTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordTest.swift; sourceTree = "<group>"; };
 		DDF75999268332E900D906BA /* Strings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Strings.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -400,6 +402,7 @@
 				4F858F4A2624A8120059271A /* Resources */,
 				4FB39E002621B53C00E5E564 /* Info.plist */,
 				4FB39E3F2622252700E5E564 /* XCTestCase+Extensions.swift */,
+				DDBC992526A1652A00B0662E /* ForgotPasswordTest.swift */,
 			);
 			path = AirCastingTests;
 			sourceTree = "<group>";
@@ -1031,6 +1034,7 @@
 			files = (
 				4FB39E362621B77D00E5E564 /* APIClientMock.swift in Sources */,
 				4FB39E402622252700E5E564 /* XCTestCase+Extensions.swift in Sources */,
+				DDBC992626A1652A00B0662E /* ForgotPasswordTest.swift in Sources */,
 				4FA83EEF26342D84003E2BF2 /* AuthorizationAPIServiceTests.swift in Sources */,
 				4F5D3F7F262D735A003AD82E /* CreateSessionAPIServiceTests.swift in Sources */,
 				4FB39E092621B55D00E5E564 /* FixedSessionTests.swift in Sources */,
