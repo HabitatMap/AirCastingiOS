@@ -35,4 +35,10 @@ extension Color {
     public static var aircastingBackground: Color {
         return Color("aircastingBackground")
     }
+    public static var aircastingMint: Color {
+        return Color("AircastingMint")
+    }
+    public static var shadow: Color {
+        return Color(white: 150/255, opacity: 0.5)
+    }
 }

@@ -15,6 +15,7 @@ struct BlueTextButtonStyle: ButtonStyle {
             .foregroundColor(.accentColor)
             .font(Font.moderate(size: 16, weight: .bold))
             .frame(maxWidth: .infinity)
+            .cornerRadius(5)
             .padding(.vertical, 12)
     }
 }

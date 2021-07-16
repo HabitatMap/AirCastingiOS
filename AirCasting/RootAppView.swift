@@ -8,26 +8,36 @@
 import SwiftUI
 
 struct RootAppView: View {
-    @ObservedObject var userAuthenticationSession = UserAuthenticationSession()
-
-    let persistenceController = PersistenceController.shared
-    let bluetoothManager = BluetoothManager()
-    let microphoneManager = MicrophoneManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared))
     
+    @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
+    let sessionSynchronizer: SessionSynchronizer
+    let persistenceController: PersistenceController
+    let bluetoothManager = BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared)))
+    @ObservedObject var lifeTimeEventsProvider = UserDefaultProtocol()
+    
+    let microphoneManager = MicrophoneManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared))
+    let urlProvider = UserDefaultsBaseURLProvider()
     var body: some View {
         if userAuthenticationSession.isLoggedIn {
             mainAppView
-        } else {
+        } else if !userAuthenticationSession.isLoggedIn && lifeTimeEventsProvider.hasEverPassedOnBoarding {
             NavigationView {
-                SignInView(userAuthenticationSession: userAuthenticationSession).environmentObject(userAuthenticationSession)
+                CreateAccountView(completion: { self.lifeTimeEventsProvider.hasEverLoggedIn = true }, userSession: userAuthenticationSession, baseURL: urlProvider).environmentObject(lifeTimeEventsProvider)
             }
+        } else {
+            GetStarted(completion: {
+                self.lifeTimeEventsProvider.hasEverPassedOnBoarding = true
+            })
         }
     }
-    
+
     var mainAppView: some View {
         MainTabBarView(measurementUpdatingService: DownloadMeasurementsService(
                         authorisationService: userAuthenticationSession,
-                        persistenceController: persistenceController))
+                        persistenceController: persistenceController,
+                        baseUrl: urlProvider),
+                       urlProvider: urlProvider,
+                       sessionSynchronizer: sessionSynchronizer)
             .environmentObject(bluetoothManager)
             .environmentObject(microphoneManager)
             .environmentObject(userAuthenticationSession)
@@ -39,7 +49,7 @@ struct RootAppView: View {
 #if DEBUG
 struct RootAppView_Previews: PreviewProvider {
     static var previews: some View {
-        RootAppView()
+        RootAppView(sessionSynchronizer: DummySessionSynchronizer(), persistenceController: .shared)
     }
 }
 #endif
