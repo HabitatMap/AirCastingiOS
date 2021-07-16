@@ -4,7 +4,7 @@
 import SwiftUI
 import AirCastingStyling
 
-struct DeleteViewModal: View {
+struct DeleteView: View {
     @Binding var deleteModal: Bool
     @State private var allStreams = true
     @State private var PM1 = false
@@ -79,8 +79,10 @@ struct DeleteViewModal: View {
     }
 }
 
+#if DEBUG
 struct DeleteViewModal_Previews: PreviewProvider {
     static var previews: some View {
-        DeleteViewModal(deleteModal: .constant(false))
+        DeleteView(deleteModal: .constant(false))
     }
 }
+#endif
