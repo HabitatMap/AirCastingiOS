@@ -15,7 +15,7 @@ struct PowerABView: View {
     @EnvironmentObject private var sessionContext: CreateSessionContext
     let urlProvider: BaseURLProvider
     private var continueButtonEnabled: Bool {
-        return !locationTracker.locationGranted.isAllowed
+        locationTracker.locationGranted == .granted
     }
     
     var body: some View {
@@ -44,8 +44,8 @@ struct PowerABView: View {
             locationTracker.requestAuthorisation()
             sessionContext.deviceType = .AIRBEAM3
         })
-        .onChange(of: locationTracker.locationGranted.isAllowed) { newValue in
-            showAlert = !newValue
+        .onChange(of: locationTracker.locationGranted) { newValue in
+            showAlert = (newValue == .denied)
         }
     }
     

@@ -23,7 +23,7 @@ struct SelectDeviceView: View {
     @Binding var creatingSessionFlowContinues : Bool
     @State private var showAlert = false
     private var continueButtonEnabled: Bool {
-        return !locationTracker.locationGranted.isAllowed
+        locationTracker.locationGranted == .granted
     }
     
     let urlProvider: BaseURLProvider
@@ -51,8 +51,8 @@ struct SelectDeviceView: View {
         .onAppear {
             locationTracker.requestAuthorisation()
         }
-        .onChange(of: locationTracker.locationGranted.isAllowed) { newValue in
-            showAlert = !newValue
+        .onChange(of: locationTracker.locationGranted) { newValue in
+            showAlert = (newValue == .denied)
         }
     }
     
