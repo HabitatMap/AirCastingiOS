@@ -6,7 +6,7 @@ import AirCastingStyling
 
 struct DeleteViewModal: View {
     @Binding var deleteModal: Bool
-    @State private var allMeasurements = true
+    @State private var allStreams = true
     @State private var PM1 = false
     @State private var PM25 = false
     @State private var RH = false
@@ -23,13 +23,13 @@ struct DeleteViewModal: View {
     }
     
     private var title: some View {
-        Text("Delete this session")
+        Text(Strings.deleteSession.title)
             .font(Font.moderate(size: 24, weight: .bold))
             .foregroundColor(.darkBlue)
     }
     
     private var description: some View {
-        Text("Which stream would you like to delete?")
+        Text(Strings.deleteSession.description)
             .font(Font.muli(size: 16))
             .foregroundColor(.aircastingGray)
     }
@@ -37,7 +37,7 @@ struct DeleteViewModal: View {
     private var chooseStream: some View {
         VStack(alignment: .leading) {
             HStack {
-                CheckBox(isSelected: allMeasurements)
+                CheckBox(isSelected: allStreams)
                 Text("All from the session")
             }
             HStack {
@@ -63,7 +63,7 @@ struct DeleteViewModal: View {
         Button {
             deleteModal.toggle()
         } label: {
-            Text("Delete streams")
+            Text(Strings.deleteSession.continueButton)
                 .bold()
         }
         .buttonStyle(BlueButtonStyle())
@@ -73,7 +73,7 @@ struct DeleteViewModal: View {
         Button {
             deleteModal.toggle()
         } label: {
-            Text("Cancel")
+            Text(Strings.deleteSession.cancelButton)
         }
         .buttonStyle(BlueTextButtonStyle())
     }
