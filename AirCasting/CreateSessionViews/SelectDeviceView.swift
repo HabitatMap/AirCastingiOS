@@ -22,6 +22,9 @@ struct SelectDeviceView: View {
     @StateObject private var locationTracker = LocationTracker()
     @Binding var creatingSessionFlowContinues : Bool
     @State private var showAlert = false
+    private var continueButtonEnabled: Bool {
+        return !locationTracker.locationGranted.isAllowed
+    }
     
     let urlProvider: BaseURLProvider
     
@@ -48,7 +51,7 @@ struct SelectDeviceView: View {
         .onAppear {
             locationTracker.requestAuthorisation()
         }
-        .onChange(of: locationTracker.locationGranted.bool) { newValue in
+        .onChange(of: locationTracker.locationGranted.isAllowed) { newValue in
             showAlert = !newValue
         }
     }
@@ -132,7 +135,7 @@ struct SelectDeviceView: View {
         }, label: {
             Text("Choose")
         })
-        .disabled(!locationTracker.locationGranted.bool)
+        .disabled(continueButtonEnabled)
         .buttonStyle(BlueButtonStyle())
         .background( Group {
             NavigationLink(

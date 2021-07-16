@@ -7,7 +7,7 @@ enum LocationSates {
     case granted
     case denied
     
-    var bool: Bool {
+    var isAllowed: Bool {
         switch self {
         case .granted: return true
         case .denied: return false

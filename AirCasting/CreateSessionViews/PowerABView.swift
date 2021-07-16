@@ -14,6 +14,9 @@ struct PowerABView: View {
     @Binding var creatingSessionFlowContinues : Bool
     @EnvironmentObject private var sessionContext: CreateSessionContext
     let urlProvider: BaseURLProvider
+    private var continueButtonEnabled: Bool {
+        return !locationTracker.locationGranted.isAllowed
+    }
     
     var body: some View {
         VStack(spacing: 45) {
@@ -41,7 +44,7 @@ struct PowerABView: View {
             locationTracker.requestAuthorisation()
             sessionContext.deviceType = .AIRBEAM3
         })
-        .onChange(of: locationTracker.locationGranted.bool) { newValue in
+        .onChange(of: locationTracker.locationGranted.isAllowed) { newValue in
             showAlert = !newValue
         }
     }
@@ -63,7 +66,7 @@ struct PowerABView: View {
         NavigationLink(destination: SelectPeripheralView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider)) {
             Text("Continue")
                 .frame(maxWidth: .infinity)
-        }.disabled(!locationTracker.locationGranted.bool)
+        }.disabled(continueButtonEnabled)
     }
 }
 
