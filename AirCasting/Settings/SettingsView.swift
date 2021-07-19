@@ -13,6 +13,7 @@ struct SettingsView: View {
     let logoutController: LogoutController
     @State private var isToggle: Bool = false
     @State private var showModal = false
+    @EnvironmentObject var userSettings: UserSettings
     
     init(urlProvider: BaseURLProvider, logoutController: LogoutController) {
         let navBarAppearance = UINavigationBar.appearance()
@@ -35,6 +36,8 @@ struct SettingsView: View {
                         }
                         Spacer()
                         crowdMapDescription
+                    }.onChange(of: isToggle) { value in
+                        userSettings.contributingToCrowdMap = value
                     }
                     navigateToBackendSettingsButton
                 }

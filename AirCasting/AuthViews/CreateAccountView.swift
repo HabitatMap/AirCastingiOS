@@ -11,7 +11,7 @@ import AirCastingStyling
 
 struct CreateAccountView: View {
     
-    @EnvironmentObject var lifeTimeEventsProvider: UserDefaultProtocol
+    @EnvironmentObject var lifeTimeEventsProvider: LifeTimeEventsProvider
     var completion: () -> Void
     
     private let userAuthenticationSession: UserAuthenticationSession
@@ -213,7 +213,7 @@ private extension CreateAccountView {
 #if DEBUG
 struct CreateAccountView_Previews: PreviewProvider {
     static var previews: some View {
-        CreateAccountView(completion: {}, userSession: UserAuthenticationSession(), baseURL: DummyURLProvider()).environmentObject(UserDefaultProtocol())
+        CreateAccountView(completion: {}, userSession: UserAuthenticationSession(), baseURL: DummyURLProvider()).environmentObject(LifeTimeEventsProvider())
     }
 }
 #endif
