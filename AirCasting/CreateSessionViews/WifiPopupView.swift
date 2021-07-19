@@ -16,16 +16,20 @@ struct WifiPopupView: View {
     @Environment(\.presentationMode) private var presentationMode
     @Binding var wifiPassword: String
     @Binding var wifiSSID: String
-
+    @State var wifiSSIDWasEmptyAtStart: Bool = true
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 30){
-            if isSSIDTextfieldDisplayed || wifiSSID.isEmpty {
+            if isSSIDTextfieldDisplayed {
                 providePasswordTitle
                 createTextfield(placeholder: "Wi-Fi name", binding: $wifiSSID)
-                createTextfield(placeholder: "Password", binding: $wifiPassword)
             } else {
                 provideNameAndPasswordTitle
-                createTextfield(placeholder: "Password", binding: $wifiPassword)
+            }
+            createTextfield(placeholder: "Password", binding: $wifiPassword).onTapGesture {
+                isSSIDTextfieldDisplayed = false
+            }
+            if !isSSIDTextfieldDisplayed {
                 connectToDifferentWifi
             }
             VStack(spacing: 10) {
@@ -45,6 +49,9 @@ struct WifiPopupView: View {
         .onAppear {
             if let ssid = getWiFiSsid() {
                 wifiSSID = ssid
+            }
+            if wifiSSID.isEmpty {
+                isSSIDTextfieldDisplayed = true
             }
         }
     }
@@ -66,7 +73,7 @@ struct WifiPopupView: View {
             isSSIDTextfieldDisplayed = true
         }
     }
-
+    
     func getWiFiSsid() -> String? {
         var ssid: String?
         
