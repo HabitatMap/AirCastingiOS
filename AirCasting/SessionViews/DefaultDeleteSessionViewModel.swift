@@ -4,6 +4,21 @@
 import Foundation
 
 class DefaultDeleteSessionViewModel: DeleteSessionViewModel {
+    
+    func isNotMicrophoneToggle() {
+        isMicrophone = false
+    }
+    
+    func isMicrophoneToggle() {
+        isMicrophone = true
+    }
+    
+    var isMicrophone: Bool = false {
+        willSet {
+            objectWillChange.send()
+        }
+    }
+    
     var deleteEnabled: Bool = false {
         willSet {
             objectWillChange.send()
@@ -40,10 +55,10 @@ class DefaultDeleteSessionViewModel: DeleteSessionViewModel {
     
     init() {
         #warning("TODO: When implementing please provide real data")
-        options = [.init(id: 0, title: "All", isSelected: false, isEnabled: false),
-                   .init(id: 1, title: "PM1", isSelected: false, isEnabled: false),
-                   .init(id: 2, title: "PM2.5", isSelected: false, isEnabled: false),
-                   .init(id: 3, title: "RH", isSelected: false, isEnabled: false),
-                   .init(id: 4, title: "F", isSelected: false, isEnabled: false)]
+        options =  !isMicrophone ? [.init(id: 0, title: "All", isSelected: false, isEnabled: false),
+                                    .init(id: 1, title: "PM1", isSelected: false, isEnabled: false),
+                                    .init(id: 2, title: "PM2.5", isSelected: false, isEnabled: false),
+                                    .init(id: 3, title: "RH", isSelected: false, isEnabled: false),
+                                    .init(id: 4, title: "F", isSelected: false, isEnabled: false)] : [.init(id: 0, title: "All", isSelected: false, isEnabled: false)]
     }
 }

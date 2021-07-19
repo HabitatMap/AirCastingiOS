@@ -8,6 +8,7 @@ struct DeleteSessionOptionViewModel {
     let title: String
     var isSelected: Bool
     let isEnabled: Bool
+    
     mutating func toggleSelection() {
         isSelected.toggle()
     }
@@ -17,8 +18,11 @@ struct DeleteSessionOptionViewModel {
 }
 
 protocol DeleteSessionViewModel: ObservableObject {
+    var isMicrophone: Bool { get }
     var options: [DeleteSessionOptionViewModel] { get }
     var deleteEnabled: Bool { get }
     func didSelect(option: DeleteSessionOptionViewModel)
     func deleteSelected()
+    func isNotMicrophoneToggle()
+    func isMicrophoneToggle()
 }

@@ -15,7 +15,11 @@ struct DeleteView<VM: DeleteSessionViewModel>: View {
             chooseStream
             continueButton
             cancelButton
-        }.padding()
+        }.onAppear(perform: {
+            #warning("When implementing logic here we will differ what type of session it is")
+//            sessionContext.sessionType == .mobile ? viewModel.isMicrophoneToggle() : viewModel.isNotMicrophoneToggle()
+        })
+        .padding()
     }
     
     private var title: some View {
