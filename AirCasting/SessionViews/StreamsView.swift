@@ -10,6 +10,7 @@ struct StreamsView: View {
     var threshold: SensorThreshold
     @EnvironmentObject private var microphoneManager: MicrophoneManager
     let measurementPresentationStyle: MeasurementPresentationStyle
+    
 
     var body: some View {
         if session.deviceType == .MIC {
@@ -17,7 +18,7 @@ struct StreamsView: View {
                 measurementsMic
                 Spacer()
                 //This is a temporary solution for stopping mic session recording until we implement proper session edition menu
-                if microphoneManager.session?.uuid == session.uuid, microphoneManager.isRecording && (session.status == .RECORDING || session.status == .DISCONNETCED) {
+                if microphoneManager.session?.uuid == session.uuid, microphoneManager.isRecording && (session.status == .RECORDING || session.status == .DISCONNECTED) {
                     stopRecordingButton
                 }
             }

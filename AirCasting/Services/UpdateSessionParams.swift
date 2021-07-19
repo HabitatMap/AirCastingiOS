@@ -54,16 +54,52 @@ final class UpdateSessionParamsService {
             oldStream.thresholdVeryHigh = streamOutput.threshold_very_high
             oldStream.gotDeleted = streamOutput.deleted ?? false
             
-            let existingThreshold: SensorThreshold? = try context.existingObject(sensorName: streamOutput.sensor_name)
-            if existingThreshold == nil {
-                let threshold: SensorThreshold = try context.newOrExisting(sensorName: streamOutput.sensor_name)
-                threshold.thresholdVeryLow = streamOutput.threshold_very_low
-                threshold.thresholdLow = streamOutput.threshold_low
-                threshold.thresholdMedium = streamOutput.threshold_medium
-                threshold.thresholdHigh = streamOutput.threshold_high
-                threshold.thresholdVeryHigh = streamOutput.threshold_very_high
-            }
+//            let existingThreshold: SensorThreshold? = try context.existingObject(sensorName: "AirBeam3-PM10")
+//            if existingThreshold == nil {
+//                let threshold: SensorThreshold = try context.newOrExisting(sensorName: streamOutput.sensor_name)
+//                threshold.thresholdVeryLow = streamOutput.threshold_very_low
+//                threshold.thresholdLow = streamOutput.threshold_low
+//                threshold.thresholdMedium = streamOutput.threshold_medium
+//                threshold.thresholdHigh = streamOutput.threshold_high
+//                threshold.thresholdVeryHigh = streamOutput.threshold_very_high
+//            }
+            #warning("MOCKED")
+            let thresholdPM10: SensorThreshold = try context.newOrExisting(sensorName: "AirBeam3-PM10")
+            thresholdPM10.thresholdVeryLow = 100
+            thresholdPM10.thresholdLow = 80
+            thresholdPM10.thresholdMedium = 60
+            thresholdPM10.thresholdHigh = 20
+            thresholdPM10.thresholdVeryHigh = 10
+
+            let thresholdF: SensorThreshold = try context.newOrExisting(sensorName: "AirBeam3-F")
+            thresholdF.thresholdVeryLow = 100
+            thresholdF.thresholdLow = 80
+            thresholdF.thresholdMedium = 60
+            thresholdF.thresholdHigh = 20
+            thresholdF.thresholdVeryHigh = 10
             
+            let thresholdRH: SensorThreshold = try context.newOrExisting(sensorName: "AirBeam3-RH")
+            thresholdRH.thresholdVeryLow = 100
+            thresholdRH.thresholdLow = 80
+            thresholdRH.thresholdMedium = 60
+            thresholdRH.thresholdHigh = 20
+            thresholdRH.thresholdVeryHigh = 10
+            
+            let thresholdPM1: SensorThreshold = try context.newOrExisting(sensorName: "AirBeam3-PM1")
+            thresholdPM1.thresholdVeryLow = 100
+            thresholdPM1.thresholdLow = 80
+            thresholdPM1.thresholdMedium = 60
+            thresholdPM1.thresholdHigh = 20
+            thresholdPM1.thresholdVeryHigh = 10
+            
+            let thresholdPM2: SensorThreshold = try context.newOrExisting(sensorName: "AirBeam3-PM2.5")
+            thresholdPM2.thresholdVeryLow = 100
+            thresholdPM2.thresholdLow = 80
+            thresholdPM2.thresholdMedium = 60
+            thresholdPM2.thresholdHigh = 20
+            thresholdPM2.thresholdVeryHigh = 10
+            
+
             let oldMeasurements = oldStream.measurements?.array as? [MeasurementEntity] ?? []
             let measurementDiff = diff(oldMeasurements, streamOutput.measurements) {
                 if let id = $0.id {

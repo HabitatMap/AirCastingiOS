@@ -118,7 +118,7 @@ public enum SessionStatus: Int {
     case NEW = -1
     case RECORDING = 0
     case FINISHED = 1
-    case DISCONNETCED = 2
+    case DISCONNECTED = 2
 }
 
 enum StreamingMethod: Int {

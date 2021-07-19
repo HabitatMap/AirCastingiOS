@@ -12,13 +12,11 @@ import Charts
 import AirCastingStyling
 
 struct SessionCartView: View {
-    
     @State private var isCollapsed = true
     @State private var selectedStream: MeasurementStreamEntity?
-    
     @ObservedObject var session: SessionEntity
     let thresholds: [SensorThreshold]
-
+    
     var shouldShowValues: MeasurementPresentationStyle {
         let isFixed = session.type == .fixed
         let isDormant = session.type == .mobile && session.status == .FINISHED
@@ -34,25 +32,26 @@ struct SessionCartView: View {
         VStack(alignment: .leading, spacing: 13) {
             
             header
+            #warning("MOCKED - should show values :shouldShowValues")
+            #warning("MOCKED - thresholds")
+            //            if let threshold = thresholdFor(selectedStream: selectedStream) {
+            StreamsView(selectedStream: $selectedStream,
+                        session: session,
+                        threshold: thresholds[0],
+                        measurementPresentationStyle: .showValues)
             
-            if let threshold = thresholdFor(selectedStream: selectedStream) {
-                StreamsView(selectedStream: $selectedStream,
-                            session: session,
-                            threshold: threshold,
-                            measurementPresentationStyle: shouldShowValues)
-                
-                VStack(alignment: .trailing, spacing: 40) {
-                    if let selectedStream = selectedStream, showChart {
-                        pollutionChart(stream: selectedStream,
-                                       threshold: threshold)
-                    }
-                    if !isCollapsed {
-                        displayButtons(threshold: threshold)
-                    }
+            VStack(alignment: .trailing, spacing: 40) {
+                if let selectedStream = selectedStream, showChart {
+                    pollutionChart(stream: selectedStream,
+                                   threshold: thresholds[0])
                 }
-            } else {
-                SessionLoadingView()
+                if !isCollapsed {
+                    displayButtons(threshold: thresholds[0])
+                }
             }
+            //            } else {
+            //                SessionLoadingView()
+            //            }
         }
         .onChange(of: session.allStreams) { _ in
             selectedStream = session.allStreams?.first
@@ -98,6 +97,19 @@ private extension SessionCartView {
         }
     }
     
+    var followButton: some View {
+        Button("follow") {
+            print("Follow")
+          
+        }.buttonStyle(FollowButtonStyle())
+    }
+    
+    var unFollowButton: some View {
+        Button("unfollow") {
+            print("Unfollow")
+        }.buttonStyle(UnFollowButtonStyle())
+    }
+    
     func pollutionChart(stream: MeasurementStreamEntity, threshold: SensorThreshold) -> some View {
         Group {
             ChartView(stream: stream,
@@ -107,7 +119,11 @@ private extension SessionCartView {
     }
     
     func displayButtons(threshold: SensorThreshold) -> some View {
-        HStack(spacing: 20){
+        HStack(spacing: 20) {
+            if session.type == .fixed {
+                followButton
+            }
+            Spacer()
             mapButton(threshold: threshold)
             graphButton(threshold: threshold)
         }
@@ -124,14 +140,14 @@ private extension SessionCartView {
     }
 }
 
-#if DEBUG
-struct SessionCell_Previews: PreviewProvider {
-    static var previews: some View {
-        EmptyView()
-        SessionCartView(session: SessionEntity.mock, thresholds: [.mock, .mock])
-            .padding()
-            .previewLayout(.sizeThatFits)
-            .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
-    }
-}
-#endif
+//#if DEBUG
+//struct SessionCell_Previews: PreviewProvider {
+//    static var previews: some View {
+//        EmptyView()
+//        SessionCartView(session: SessionEntity.mock, thresholds: [.mock, .mock])
+//            .padding()
+//            .previewLayout(.sizeThatFits)
+//            .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
+//    }
+//}
+//#endif
