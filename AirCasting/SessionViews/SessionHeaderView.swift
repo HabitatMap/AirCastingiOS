@@ -7,7 +7,12 @@
 
 import SwiftUI
 
-struct SessionHeaderView: View {
+struct SessionHeaderView: View, checkNetwork {
+    
+    func monitorNetwork() {
+        networkChecker.monitorNetwork()
+    }
+    
     let action: () -> Void
     let isExpandButtonNeeded: Bool
     let networkChecker = NetworkChecker(connectionAvailable: false)
@@ -116,8 +121,7 @@ private extension SessionHeaderView {
             
             Button {
                 DispatchQueue.global(qos: .background).async {
-                    networkChecker.monitorNetwork()
-                    print(networkChecker.connectionAvailable)
+                   monitorNetwork()
                 }
             } label: {
                 Label("Edit session", systemImage: "pencil")
