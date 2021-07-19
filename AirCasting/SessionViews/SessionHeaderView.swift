@@ -10,7 +10,7 @@ import SwiftUI
 struct SessionHeaderView: View {
     let action: () -> Void
     let isExpandButtonNeeded: Bool
-    let networkChecker = NetworkChecker()
+    let networkChecker = NetworkChecker(connectionAvailable: false)
     @ObservedObject var session: SessionEntity
     @EnvironmentObject private var microphoneManager: MicrophoneManager
     var threshold: SensorThreshold
@@ -117,6 +117,7 @@ private extension SessionHeaderView {
             Button {
                 DispatchQueue.global(qos: .background).async {
                     networkChecker.monitorNetwork()
+                    print(networkChecker.connectionAvailable)
                 }
             } label: {
                 Label("Edit session", systemImage: "pencil")
