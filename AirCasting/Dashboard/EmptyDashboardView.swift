@@ -18,11 +18,11 @@ struct EmptyDashboardView: View {
         VStack(spacing: 45) {
             Spacer()
             VStack(spacing: 14) {
-                Text("Ready to get started?")
+                Text(Strings.EmptyOnboarding.title)
                     .font(Font.moderate(size: 24, weight: .bold))
                     .foregroundColor(Color.darkBlue)
 
-                Text("Record a new session to monitor your health & environment.")
+                Text(Strings.EmptyOnboarding.description)
                     .font(Font.muli(size: 16))
                     .foregroundColor(Color.aircastingGray)
                     .multilineTextAlignment(.center)
@@ -33,7 +33,7 @@ struct EmptyDashboardView: View {
                 Button(action: {
                     tabSelection.selection = .createSession
                 }, label: {
-                    Text("Record new session")
+                    Text(Strings.EmptyOnboarding.newSession)
                         .bold()
                 })
                     .frame(maxWidth: 250)
