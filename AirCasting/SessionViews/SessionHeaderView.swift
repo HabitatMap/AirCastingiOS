@@ -54,7 +54,7 @@ private extension SessionHeaderView {
                     Button(action: {
                         action()
                     }) {
-                        Image("expandButtonIcon")
+                        Image(systemName: "chevron.down")
                             .renderingMode(.original)
                     }
                 }
