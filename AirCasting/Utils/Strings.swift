@@ -45,4 +45,15 @@ struct Strings {
         static let title: String = "Your AirBeam is gathering data."
         static let description: String = "Your AirBeam is gathering data."
     }
+    
+    struct WifiPopupView {
+        static let wifiPlaceholder: String = "Wi-Fi name"
+        static let passwordPlaceholder: String = "Password"
+        static let connectButton: String = "Connect"
+        static let cancelButton: String = "Cancel"
+        static let passwordTitle: String = "Provide name and password for the Wi-Fi network"
+        static let nameAndPasswordTitle_1: String = "Provide password for"
+        static let nameAndPasswordTitle_2: String = "network"
+        static let differentNetwork: String = "I'd like to connect with a different Wi-Fi network."
+    }
 }

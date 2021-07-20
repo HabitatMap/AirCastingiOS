@@ -22,22 +22,22 @@ struct WifiPopupView: View {
         VStack(alignment: .leading, spacing: 30){
             if isSSIDTextfieldDisplayed {
                 providePasswordTitle
-                createTextfield(placeholder: "Wi-Fi name", binding: $wifiSSID)
+                createTextfield(placeholder: Strings.WifiPopupView.wifiPlaceholder, binding: $wifiSSID)
             } else {
                 provideNameAndPasswordTitle
             }
-            createTextfield(placeholder: "Password", binding: $wifiPassword).onTapGesture {
+            createTextfield(placeholder: Strings.WifiPopupView.passwordPlaceholder, binding: $wifiPassword).onTapGesture {
                 isSSIDTextfieldDisplayed = false
             }
             if !isSSIDTextfieldDisplayed {
                 connectToDifferentWifi
             }
             VStack(spacing: 10) {
-                Button("Connect") {
+                Button(Strings.WifiPopupView.connectButton) {
                     presentationMode.wrappedValue.dismiss()
                 } .buttonStyle(BlueButtonStyle())
                 
-                Button("Cancel") {
+                Button(Strings.WifiPopupView.cancelButton) {
                     wifiPassword = ""
                     wifiSSID = ""
                     presentationMode.wrappedValue.dismiss()
@@ -57,19 +57,21 @@ struct WifiPopupView: View {
     }
     
     var providePasswordTitle: some View {
-        Text("Provide name and password for the Wi-Fi network")
+        Text(Strings.WifiPopupView.passwordTitle)
             .font(Font.muli(size: 18, weight: .heavy))
             .foregroundColor(.darkBlue)
     }
     
     var provideNameAndPasswordTitle: some View {
-        Text("Provide password for \(wifiSSID) network")
+        Text(Strings.WifiPopupView.nameAndPasswordTitle_1) +
+            Text(wifiSSID) +
+            Text(Strings.WifiPopupView.nameAndPasswordTitle_2)
             .font(Font.muli(size: 18, weight: .heavy))
             .foregroundColor(.darkBlue)
     }
     
     var connectToDifferentWifi: some View {
-        Button("I'd like to connect with a different Wi-Fi network.") {
+        Button(Strings.WifiPopupView.differentNetwork) {
             isSSIDTextfieldDisplayed = true
         }
     }
