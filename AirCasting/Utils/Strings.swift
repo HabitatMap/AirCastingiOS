@@ -51,7 +51,18 @@ struct Strings {
         static let title: String = "Your AirBeam is gathering data."
         static let description: String = "Your AirBeam is gathering data."
     }
-    
+
+    struct WifiPopupView {
+        static let wifiPlaceholder: String = "Wi-Fi name"
+        static let passwordPlaceholder: String = "Password"
+        static let connectButton: String = "Connect"
+        static let cancelButton: String = "Cancel"
+        static let passwordTitle: String = "Provide name and password for the Wi-Fi network"
+        static let nameAndPasswordTitle_1: String = "Provide password for"
+        static let nameAndPasswordTitle_2: String = "network"
+        static let differentNetwork: String = "I'd like to connect with a different Wi-Fi network."
+    }
+
     struct OnboardingGetStarted {
         static let description: String = "record and map measurements from health and environmental monitoring devices"
         static let getStarted: String = "Get started"
@@ -93,7 +104,8 @@ struct Strings {
             
             This privacy policy sets out the rules for HabitatMap’s processing of your data, including personal data, in relation to your use of the AirCasting mobile application.
             """
-      
+    }
+
     struct EmptyOnboarding {
         static let title: String = "Ready to get started?"
         static let description: String = "Record a new session to monitor your health & environment."
