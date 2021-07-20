@@ -9,6 +9,8 @@ struct ShareViewModal: View {
     @Binding var showModal: Bool
     @State var email: String = ""
     @State var itemsForSharing: [String] = ["www.google.com"]
+    #warning("Implement working share sheet")
+    //To be sure that share sheet is working for now we are using "www.google.com" and then we will place some data there when making a logic to this
     @State var showSheet = false
     @State var isShowingMailView = false
     @State var showingAlert = false
@@ -45,7 +47,8 @@ struct ShareViewModal: View {
             .font(Font.muli(size: 16))
             .foregroundColor(.aircastingGray)
     }
-    
+    #warning("This checkbox should be taken from the current streams available.")
+    // It will be implemented on another branch and should be taken and implemented then here as well
     private var checkBox: some View {
         HStack {
             CheckBox(isSelected: true)
