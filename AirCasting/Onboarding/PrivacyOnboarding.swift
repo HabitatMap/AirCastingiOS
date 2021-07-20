@@ -40,9 +40,9 @@ struct PrivacyOnboarding: View {
                 Spacer()
             }
         }
-
+        
         private var sheetTitle: some View {
-            Text("Our privacy policy")
+            Text(Strings.OnboardingPrivacySheet.title)
                 .font(Font.moderate(size: 28, weight: .bold))
                 .foregroundColor(.accentColor)
                 .multilineTextAlignment(.leading)
@@ -50,11 +50,7 @@ struct PrivacyOnboarding: View {
         }
         
         private var sheetDescription: some View {
-            Text("""
-            HabitatMap is an environmental technology non-profit building open-source, free, and low-cost environmental monitoring and data visualization solutions, like the AirBeam and the AirCasting platform. Our tools empower organizations and citizen scientists to measure pollution and advocate for equitable solutions to environmental health issues. We focus on low-income communities and communities of color living with disproportionate environmental burdens.
-            
-            HabitatMap will never collect any personally identifiable information about you through the AirCasting app or website unless you have provided it to us voluntarily, nor will we use any information gleaned from your Android device to market to you or pass your information to any third party. Both the AirCasting Android app and the AirCasting and HabitatMap websites are compliant with the EU General Data Protection Regulation.
-            """)
+            Text(Strings.OnboardingPrivacySheet.description)
                 .font(Font.muli(size: 14))
                 .lineSpacing(10.0)
                 .padding()
@@ -71,7 +67,7 @@ private extension PrivacyOnboarding {
     }
     
     private var titleText: some View {
-        Text("Your privacy")
+        Text(Strings.OnboardingPrivacy.title)
             .font(Font.moderate(size: 32, weight: .bold))
             .foregroundColor(.accentColor)
             .multilineTextAlignment(.leading)
@@ -79,7 +75,7 @@ private extension PrivacyOnboarding {
     }
     
     private var descriptionText: some View {
-        Text("Have a look at how we store and protect Your data and accept our privacy policy and terms of service before continuing.")
+        Text(Strings.OnboardingPrivacy.description)
             .font(Font.muli(size: 16))
             .foregroundColor(.aircastingGray)
             .lineSpacing(10.0)
@@ -90,21 +86,21 @@ private extension PrivacyOnboarding {
         Button(action: {
             completion()
         }, label: {
-            Text("Accept")
+            Text(Strings.OnboardingPrivacy.continueButton)
                 .font(Font.moderate(size: 16, weight: .semibold))
         })
-            .buttonStyle(BlueButtonStyle())
-            .padding(.top, 20)
+        .buttonStyle(BlueButtonStyle())
+        .padding(.top, 20)
     }
     
     private var learnMoreButton: some View {
         Button(action: {
             presentingModal = true
         }, label: {
-            Text("Learn More")
+            Text(Strings.OnboardingPrivacy.sheetButton)
         })
-            .buttonStyle(BlueTextButtonStyle())
-            .sheet(isPresented: $presentingModal) { ModalView(presentedAsModal: self.$presentingModal) }
+        .buttonStyle(BlueTextButtonStyle())
+        .sheet(isPresented: $presentingModal) { ModalView(presentedAsModal: self.$presentingModal) }
     }
 }
 
