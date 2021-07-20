@@ -102,7 +102,7 @@ struct ChooseSessionTypeView: View {
             _ = bluetoothManager.centralManager
             didTapFixedSession = true
         } else if CBCentralManager.authorization == .allowedAlways,
-                  bluetoothManager.centralManager.state == .poweredOn {
+            bluetoothManager.centralManager.state == .poweredOn {
             isPowerABLinkActive = true
         } else {
             isTurnBluetoothOnLinkActive = true
