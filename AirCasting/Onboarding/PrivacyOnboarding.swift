@@ -40,7 +40,7 @@ struct PrivacyOnboarding: View {
                 Spacer()
             }
         }
-
+        
         private var sheetTitle: some View {
             Text("Our privacy policy")
                 .font(Font.moderate(size: 28, weight: .bold))
@@ -51,9 +51,9 @@ struct PrivacyOnboarding: View {
         
         private var sheetDescription: some View {
             Text("""
-            HabitatMap is an environmental technology non-profit building open-source, free, and low-cost environmental monitoring and data visualization solutions, like the AirBeam and the AirCasting platform. Our tools empower organizations and citizen scientists to measure pollution and advocate for equitable solutions to environmental health issues. We focus on low-income communities and communities of color living with disproportionate environmental burdens.
+            HabitatMap protects the personal data of AirCasting mobile application users, and fulfills conditions deriving from the law, especially from the Regulation (EU) 2016/679 of the European Parliament and of the Council of 27 April 2016 on the protection of natural persons with regard to the processing of personal data and on the free movement of such data, and repealing Directive 95/46/EC (GDPR). HabitatMap protects the security of the data of AirCasting app users using appropriate technical, logistical, administrative, and physical protection measures. AirCasting ensures that its employees and contractors are given training in protection of personal data.
             
-            HabitatMap will never collect any personally identifiable information about you through the AirCasting app or website unless you have provided it to us voluntarily, nor will we use any information gleaned from your Android device to market to you or pass your information to any third party. Both the AirCasting Android app and the AirCasting and HabitatMap websites are compliant with the EU General Data Protection Regulation.
+            This privacy policy sets out the rules for HabitatMap’s processing of your data, including personal data, in relation to your use of the AirCasting mobile application.
             """)
                 .font(Font.muli(size: 14))
                 .lineSpacing(10.0)
@@ -93,8 +93,8 @@ private extension PrivacyOnboarding {
             Text("Accept")
                 .font(Font.moderate(size: 16, weight: .semibold))
         })
-            .buttonStyle(BlueButtonStyle())
-            .padding(.top, 20)
+        .buttonStyle(BlueButtonStyle())
+        .padding(.top, 20)
     }
     
     private var learnMoreButton: some View {
@@ -103,8 +103,8 @@ private extension PrivacyOnboarding {
         }, label: {
             Text("Learn More")
         })
-            .buttonStyle(BlueTextButtonStyle())
-            .sheet(isPresented: $presentingModal) { ModalView(presentedAsModal: self.$presentingModal) }
+        .buttonStyle(BlueTextButtonStyle())
+        .sheet(isPresented: $presentingModal) { ModalView(presentedAsModal: self.$presentingModal) }
     }
 }
 

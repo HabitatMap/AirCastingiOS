@@ -24,7 +24,7 @@ private extension GetStarted {
             .resizable()
             .scaledToFit()
     }
-
+    
     var logoImage: some View {
         Image("AirCastingLogo")
             .resizable()
@@ -32,7 +32,7 @@ private extension GetStarted {
             .frame(maxWidth: 180)
             .padding()
     }
-
+    
     var descriptionText: some View {
         Text("record and map measurements from health and environmental monitoring devices")
             .padding(.horizontal, 18)
@@ -41,10 +41,10 @@ private extension GetStarted {
             .foregroundColor(.aircastingGray)
             .multilineTextAlignment(.center)
     }
-
+    
     var startButton: some View {
         NavigationLink(
-            destination: NearAirDescription(completion: completion),
+            destination: AirBeamOnboarding(completion: completion),
             label: {
                 Text("Get started")
                     .frame(maxWidth:.infinity)
@@ -52,11 +52,11 @@ private extension GetStarted {
                     .navigationBarHidden(true)
             }
         ).buttonStyle(BlueTextButtonStyle())
-            .background(
-                RoundedRectangle(cornerRadius: 5)
-                    .stroke(lineWidth: 0.1)
-                    .accentColor(Color.aircastingGray)
-            )
+        .background(
+            RoundedRectangle(cornerRadius: 5)
+                .stroke(lineWidth: 0.1)
+                .accentColor(Color.aircastingGray)
+        )
         .padding()
     }
 }
