@@ -34,7 +34,7 @@ private extension GetStarted {
     }
     
     var descriptionText: some View {
-        Text("record and map measurements from health and environmental monitoring devices")
+        Text(Strings.OnboardingGetStarted.description)
             .padding(.horizontal, 18)
             .font(Font.muli(size: 18))
             .lineSpacing(10.0)
@@ -46,7 +46,7 @@ private extension GetStarted {
         NavigationLink(
             destination: AirBeamOnboarding(completion: completion),
             label: {
-                Text("Get started")
+                Text(Strings.OnboardingGetStarted.getStarted)
                     .frame(maxWidth:.infinity)
                     .navigationBarTitle("")
                     .navigationBarHidden(true)

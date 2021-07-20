@@ -42,7 +42,7 @@ struct PrivacyOnboarding: View {
         }
         
         private var sheetTitle: some View {
-            Text("Our privacy policy")
+            Text(Strings.OnboardingPrivacySheet.title)
                 .font(Font.moderate(size: 28, weight: .bold))
                 .foregroundColor(.accentColor)
                 .multilineTextAlignment(.leading)
@@ -50,11 +50,7 @@ struct PrivacyOnboarding: View {
         }
         
         private var sheetDescription: some View {
-            Text("""
-            HabitatMap protects the personal data of AirCasting mobile application users, and fulfills conditions deriving from the law, especially from the Regulation (EU) 2016/679 of the European Parliament and of the Council of 27 April 2016 on the protection of natural persons with regard to the processing of personal data and on the free movement of such data, and repealing Directive 95/46/EC (GDPR). HabitatMap protects the security of the data of AirCasting app users using appropriate technical, logistical, administrative, and physical protection measures. AirCasting ensures that its employees and contractors are given training in protection of personal data.
-            
-            This privacy policy sets out the rules for HabitatMap’s processing of your data, including personal data, in relation to your use of the AirCasting mobile application.
-            """)
+            Text(Strings.OnboardingPrivacySheet.description)
                 .font(Font.muli(size: 14))
                 .lineSpacing(10.0)
                 .padding()
@@ -71,7 +67,7 @@ private extension PrivacyOnboarding {
     }
     
     private var titleText: some View {
-        Text("Your privacy")
+        Text(Strings.OnboardingPrivacy.title)
             .font(Font.moderate(size: 32, weight: .bold))
             .foregroundColor(.accentColor)
             .multilineTextAlignment(.leading)
@@ -79,7 +75,7 @@ private extension PrivacyOnboarding {
     }
     
     private var descriptionText: some View {
-        Text("Have a look at how we store and protect Your data and accept our privacy policy and terms of service before continuing.")
+        Text(Strings.OnboardingPrivacy.description)
             .font(Font.muli(size: 16))
             .foregroundColor(.aircastingGray)
             .lineSpacing(10.0)
@@ -90,7 +86,7 @@ private extension PrivacyOnboarding {
         Button(action: {
             completion()
         }, label: {
-            Text("Accept")
+            Text(Strings.OnboardingPrivacy.continueButton)
                 .font(Font.moderate(size: 16, weight: .semibold))
         })
         .buttonStyle(BlueButtonStyle())
@@ -101,7 +97,7 @@ private extension PrivacyOnboarding {
         Button(action: {
             presentingModal = true
         }, label: {
-            Text("Learn More")
+            Text(Strings.OnboardingPrivacy.sheetButton)
         })
         .buttonStyle(BlueTextButtonStyle())
         .sheet(isPresented: $presentingModal) { ModalView(presentedAsModal: self.$presentingModal) }
