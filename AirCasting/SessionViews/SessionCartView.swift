@@ -36,6 +36,7 @@ struct SessionCartView: View {
             header
             
             if let threshold = thresholdFor(selectedStream: selectedStream) {
+
                 StreamsView(selectedStream: $selectedStream,
                             session: session,
                             threshold: threshold,

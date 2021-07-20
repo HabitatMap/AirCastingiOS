@@ -20,7 +20,7 @@ struct SessionHeaderView: View {
                 Spacer()
                 actionsMenu
             }.sheet(isPresented: $showModal, content: {
-                ShareViewModal()
+                ShareViewModal(showModal: $showModal)
             })
             nameLabelAndExpandButton
         }
