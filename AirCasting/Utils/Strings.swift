@@ -31,14 +31,20 @@ struct Strings {
     
     struct SignOutSettings {
         static let title: String = "My account"
-        static let Logged: String = "You are currently logged in as admin@admin.com"
+        static let Logged: String = "You are currently logged in as "
         static let signOut: String = "Sign Out"
     }
     
-    struct sessionShare {
+    struct SessionShare {
         static let title: String = "Share session"
         static let description: String = "Select a stream to share"
         static let emailDescription: String = "Or email a CSV file with your session data"
+        static let alertTitle: String = "No Email app"
+        static let alertDescription: String = "Please, install Apple Email app"
+        static let alertButton: String = "Got it!"
+        static let shareLinkButton: String = "Share link"
+        static let shareFileButton: String = "Share file"
+        static let checkboxDescription: String = "dB"
     }
     
     struct LoadingSession {
@@ -46,6 +52,7 @@ struct Strings {
         static let description: String = "Your AirBeam is gathering data."
     }
     
+
     struct WifiPopupView {
         static let wifiPlaceholder: String = "Wi-Fi name"
         static let passwordPlaceholder: String = "Password"
@@ -55,5 +62,10 @@ struct Strings {
         static let nameAndPasswordTitle_1: String = "Provide password for"
         static let nameAndPasswordTitle_2: String = "network"
         static let differentNetwork: String = "I'd like to connect with a different Wi-Fi network."
+    }
+    struct EmptyOnboarding {
+        static let title: String = "Ready to get started?"
+        static let description: String = "Record a new session to monitor your health & environment."
+        static let newSession: String = "Record new session"
     }
 }
