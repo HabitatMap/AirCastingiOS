@@ -45,7 +45,7 @@ class BackendURLValidator {
         return host
     }
     
-    private func getPortNumber(from port: String) throws -> Int? {
+    func getPortNumber(from port: String) throws -> Int? {
         if port.count == 0 { return nil }
         guard let portNumber = Int(port) else {
             throw ValidationError.invalidPort
@@ -56,7 +56,7 @@ class BackendURLValidator {
     private func appendURLWithSchemeIfNotPresent(url: String) -> String {
         var newUrl = url
         if !url.hasPrefix("http") {
-            newUrl = "http://"+url
+            newUrl = "http://" + url
         }
         return newUrl
     }

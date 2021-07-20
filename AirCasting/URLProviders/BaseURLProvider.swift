@@ -5,6 +5,8 @@ import Foundation
 
 protocol BaseURLProvider {
     var baseAppURL: URL { get set }
+    var baseAppURLwithoutPort: URL { get set }
+    var baseAppPort: URL { get set }
     var authorizationURL: URL { get }
 }
 
@@ -16,6 +18,8 @@ extension BaseURLProvider {
 
 #if DEBUG
 struct DummyURLProvider: BaseURLProvider {
+    var baseAppURLwithoutPort: URL = URL(string: "http://aircasting.org/api")!
+    var baseAppPort: URL = URL(string: "80")!
     var baseAppURL: URL = URL(string: "http://aircasting.org/api")!
 }
 #endif

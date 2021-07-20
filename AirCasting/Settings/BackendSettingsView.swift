@@ -13,20 +13,22 @@ struct BackendSettingsView: View {
     @State private var pathText: String = ""
     @State private var portText: String = ""
     @State private var url: URL?
+    @State private var urlWithoutPort: URL?
+    @State private var port: URL?
     @State private var buttonEnabled: Bool = false
-
+    
     
     var body: some View {
         VStack(alignment: .leading) {
             title
             Spacer()
-            createTextfield(placeholder: "Enter url", binding: $pathText)
+            createTextfield(placeholder: "current url: \(urlProvider.baseAppURLwithoutPort)", binding: $pathText)
                 .onChange(of: pathText) { _ in
-                   updateURL()
+                    updateURL()
                 }
-            createTextfield(placeholder: "Enter port", binding: $portText)
+            createTextfield(placeholder: "current port: \(urlProvider.baseAppPort)", binding: $portText)
                 .onChange(of: portText) { _ in
-                 updateURL()
+                    updateURL()
                 }
             Spacer()
             oKButton
@@ -44,6 +46,8 @@ struct BackendSettingsView: View {
     private var oKButton: some View {
         Button {
             urlProvider.baseAppURL = url ?? URL(string: "http://aircasting.org/api")!
+            urlProvider.baseAppURLwithoutPort = urlWithoutPort ?? URL(string: "http://aircasting.org/api")!
+            urlProvider.baseAppPort = port ?? URL(string: "80")!
             presentationMode.wrappedValue.dismiss()
         } label: {
             Text(Strings.BackendSettings.Ok)
@@ -60,9 +64,11 @@ struct BackendSettingsView: View {
     private func updateURL() {
         do {
             try url = backendURLBuilder.createURL(url: pathText, port: portText)
+            urlWithoutPort = URL(string: pathText)
+            port = URL(string: portText)
             buttonEnabled = true
         } catch {
-           buttonEnabled = false
+            buttonEnabled = false
         }
     }
 }

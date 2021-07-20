@@ -12,6 +12,25 @@ class UserDefaultsBaseURLProvider: BaseURLProvider {
             userDefaults.url(forKey: "baseURL") ?? URL(string: "http://aircasting.org/api")!
         }
     }
+    
+    var baseAppURLwithoutPort: URL {
+        set {
+            userDefaults.set(newValue, forKey: "baseURLwithoutPort")
+        }
+        get {
+            userDefaults.url(forKey: "baseURLwithoutPort") ?? URL(string: "http://aircasting.org/api")!
+        }
+    }
+    
+    var baseAppPort: URL {
+        set {
+            userDefaults.set(newValue, forKey: "basePort")
+        }
+        get {
+            userDefaults.url(forKey: "basePort") ?? URL(string: "80")!
+        }
+    }
+    
     private let userDefaults: UserDefaults
     init(userDefaults: UserDefaults = .standard) {
         self.userDefaults = userDefaults
