@@ -51,4 +51,10 @@ struct Strings {
         static let title: String = "Your AirBeam is gathering data."
         static let description: String = "Your AirBeam is gathering data."
     }
+    
+    struct EmptyOnboarding {
+        static let title: String = "Ready to get started?"
+        static let description: String = "Record a new session to monitor your health & environment."
+        static let newSession: String = "Record new session"
+    }
 }
