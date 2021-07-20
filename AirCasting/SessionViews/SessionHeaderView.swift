@@ -20,7 +20,7 @@ struct SessionHeaderView: View {
                 Spacer()
                 actionsMenu
             }.sheet(isPresented: $showModal, content: {
-                ShareViewModal()
+                ShareViewModal(showModal: $showModal)
             })
             nameLabelAndExpandButton
         }
@@ -54,7 +54,7 @@ private extension SessionHeaderView {
                     Button(action: {
                         action()
                     }) {
-                        Image("expandButtonIcon")
+                        Image(systemName: "chevron.down")
                             .renderingMode(.original)
                     }
                 }
