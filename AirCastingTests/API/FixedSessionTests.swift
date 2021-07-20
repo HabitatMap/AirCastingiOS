@@ -23,7 +23,7 @@ final class AuthorisationServiceMock: RequestAuthorisationService {
 final class FixedSessionTests: XCTestCase {
     private lazy var apiClientMock: APIClientMock! = APIClientMock()
     private lazy var authorisationServiceMock: AuthorisationServiceMock! = AuthorisationServiceMock()
-    private lazy var tested: FixedSessionAPIService! = FixedSessionAPIService(authorisationService: authorisationServiceMock, apiClient: apiClientMock)
+    private lazy var tested: FixedSessionAPIService! = FixedSessionAPIService(authorisationService: authorisationServiceMock, apiClient: apiClientMock, baseUrl: DummyURLProvider())
 
     override func tearDown() {
         self.apiClientMock = nil

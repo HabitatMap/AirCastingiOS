@@ -17,10 +17,11 @@ struct GraphView: View {
         VStack(alignment: .trailing) {
             SessionHeaderView(action: {},
                               isExpandButtonNeeded: false,
-                              session: session,
-                              threshold: threshold,
-                              selectedStream: $selectedStream).padding()
-            
+                              session: session).padding()
+            StreamsView(selectedStream: $selectedStream,
+                        session: session,
+                        threshold: threshold,
+                        measurementPresentationStyle: .showValues)
             ZStack(alignment: .topLeading) {
                 if let selectedStream = selectedStream {
                     Graph(stream: selectedStream,
@@ -49,7 +50,7 @@ struct GraphView: View {
 #if DEBUG
 struct GraphView_Previews: PreviewProvider {
     static var previews: some View {
-        #warning("Change selected stream")
+        //Change selected stream
         GraphView(session: .mock, threshold: .mock, selectedStream: .constant(nil))
     }
 }

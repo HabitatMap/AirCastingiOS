@@ -11,7 +11,8 @@ import CoreBluetooth
 struct ConnectingABView: View {
     
     var bluetoothManager: BluetoothManager
-    var selecedPeripheral: CBPeripheral
+    var selectedPeripheral: CBPeripheral
+    let baseURL: BaseURLProvider
     @State private var isDeviceConnected: Bool = false
     
     @Binding var creatingSessionFlowContinues : Bool
@@ -34,7 +35,7 @@ struct ConnectingABView: View {
             }
             .background(
                 NavigationLink(
-                    destination: ABConnectedView(creatingSessionFlowContinues: $creatingSessionFlowContinues),
+                    destination: ABConnectedView(creatingSessionFlowContinues: $creatingSessionFlowContinues, baseURL: baseURL),
                     isActive: $isDeviceConnected,
                     label: {
                         EmptyView()
@@ -42,14 +43,14 @@ struct ConnectingABView: View {
             )}
         .padding()
         .onAppear(perform: {
-            bluetoothManager.centralManager.connect(selecedPeripheral,
+            bluetoothManager.centralManager.connect(selectedPeripheral,
                                                     options: nil)
         })
         .onReceive(NotificationCenter.default.publisher(for: Notification.Name(rawValue: "DeviceConnected")), perform: { _ in
             /* App is pushing the next view before this view is fully loaded. It resulted with showing next view and going back to this one.
              The async enables app to load this view and then push the next one. */
             DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
-                if selecedPeripheral.state == .connected {
+                if selectedPeripheral.state == .connected {
                     isDeviceConnected = true
                 }
             }

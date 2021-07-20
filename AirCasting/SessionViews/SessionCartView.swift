@@ -11,39 +11,54 @@ import CoreData
 import Charts
 import AirCastingStyling
 
-struct SessionCellView: View {
+struct SessionCartView: View {
     
     @State private var isCollapsed = true
     @State private var selectedStream: MeasurementStreamEntity?
     
-    let session: SessionEntity
+    @ObservedObject var session: SessionEntity
     let thresholds: [SensorThreshold]
+
+    var shouldShowValues: MeasurementPresentationStyle {
+        let isFixed = session.type == .fixed
+        let isDormant = session.type == .mobile && session.status == .FINISHED
+        let shouldShow = isCollapsed && (isFixed || isDormant)
+        
+        return shouldShow ? .hideValues : .showValues
+    }
+    var showChart: Bool {
+        !isCollapsed && session.type == .mobile && session.status == .RECORDING
+    }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 13) {
+            
+            header
+            
             if let threshold = thresholdFor(selectedStream: selectedStream) {
-                SessionHeaderView(
-                    action:  {
-                        withAnimation {
-                            isCollapsed = !isCollapsed
-                        }
-                    },isExpandButtonNeeded: true,
-                    session: session,
-                    threshold: threshold,
-                    selectedStream: $selectedStream)
+
+                StreamsView(selectedStream: $selectedStream,
+                            session: session,
+                            threshold: threshold,
+                            measurementPresentationStyle: shouldShowValues)
                 
-                if !isCollapsed {
-                    VStack(alignment: .trailing, spacing: 40) {
-                        if let selectedStream = selectedStream {
-                            pollutionChart(stream: selectedStream,
-                                           threshold: threshold)
-                        }
+                VStack(alignment: .trailing, spacing: 40) {
+                    if let selectedStream = selectedStream, showChart {
+                        pollutionChart(stream: selectedStream,
+                                       threshold: threshold)
+                    }
+                    if !isCollapsed {
                         displayButtons(threshold: threshold)
                     }
                 }
+            } else {
+                SessionLoadingView()
             }
         }
-        .onAppear {
+        .onChange(of: session.allStreams) { _ in
+            selectedStream = session.allStreams?.first
+        }
+        .onAppear() {
             selectedStream = session.allStreams?.first
         }
         .font(Font.moderate(size: 13, weight: .regular))
@@ -56,7 +71,17 @@ struct SessionCellView: View {
     }
 }
 
-private extension SessionCellView {
+private extension SessionCartView {
+    
+    var header: some View {
+        SessionHeaderView(
+            action: {
+                withAnimation {
+                    isCollapsed.toggle()
+                }
+            }, isExpandButtonNeeded: true,
+            session: session)
+    }
     
     func graphButton(threshold: SensorThreshold) -> some View {
         NavigationLink(destination: GraphView(session: session,
@@ -91,13 +116,12 @@ private extension SessionCellView {
     }
     
     func thresholdFor(selectedStream: MeasurementStreamEntity?) -> SensorThreshold? {
-        thresholds.first { threshold in
+        let match = thresholds.first { threshold in
             let streamName = selectedStream?.sensorName?
-                .drop { $0 != "-" }
-                .replacingOccurrences(of: "-", with: "")
                 .lowercased()
             return threshold.sensorName?.lowercased() == streamName
         }
+        return match
     }
 }
 
@@ -105,7 +129,7 @@ private extension SessionCellView {
 struct SessionCell_Previews: PreviewProvider {
     static var previews: some View {
         EmptyView()
-        SessionCellView(session: SessionEntity.mock, thresholds: [.mock, .mock])
+        SessionCartView(session: SessionEntity.mock, thresholds: [.mock, .mock])
             .padding()
             .previewLayout(.sizeThatFits)
             .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
