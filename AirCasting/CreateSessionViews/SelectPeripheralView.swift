@@ -63,15 +63,15 @@ struct SelectPeripheralView: View {
                 }.alert(isPresented: $showBluetoothAlert, content: {
                     Alert(title: Text("Connection error"), message: Text("Bluetooth connection failed. Please toggle the power on your device and try again."), dismissButton: .default(Text("Got it!")))
                 })
-                    .padding()
-                    .frame(maxWidth: .infinity, minHeight: geometry.size.height, alignment: .top)
+                .padding()
+                .frame(maxWidth: .infinity, minHeight: geometry.size.height, alignment: .top)
             }
         }.onChange(of: bluetoothManager.isConnected, perform: { value in
             showBluetoothAlert = !value
         })
-            .onAppear(perform: {
-                bluetoothManager.isConnected = true
-            })
+        .onAppear(perform: {
+            bluetoothManager.isConnected = true
+        })
     }
     
     func displayDeviceButton(devices: [CBPeripheral]) -> some View {
