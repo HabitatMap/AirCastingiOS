@@ -97,7 +97,7 @@ struct ChooseSessionTypeView: View {
     func goToNextFixedSessionStep() {
         createNewSession(isSessionFixed: true)
         
-        // This will trigger system bluetooth authorization alert
+        // This will trigger system bluetooth authorisation alert
         if CBCentralManager.authorization == .notDetermined {
             _ = bluetoothManager.centralManager
             didTapFixedSession = true
