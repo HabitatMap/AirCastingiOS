@@ -11,7 +11,7 @@ import AirCastingStyling
 struct SettingsView: View {
     let urlProvider: BaseURLProvider
     let logoutController: LogoutController
-    @State private var isToggle: Bool = false
+    @State private var isToggle: Bool = true
     @State private var showModal = false
     @EnvironmentObject var userSettings: UserSettings
     
