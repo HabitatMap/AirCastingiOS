@@ -135,7 +135,7 @@ struct SelectDeviceView: View {
         }, label: {
             Text("Choose")
         })
-        .disabled(continueButtonEnabled)
+        .disabled(!continueButtonEnabled)
         .buttonStyle(BlueButtonStyle())
         .background( Group {
             NavigationLink(

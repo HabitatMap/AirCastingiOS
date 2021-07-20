@@ -66,7 +66,7 @@ struct PowerABView: View {
         NavigationLink(destination: SelectPeripheralView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider)) {
             Text("Continue")
                 .frame(maxWidth: .infinity)
-        }.disabled(continueButtonEnabled)
+        }.disabled(!continueButtonEnabled)
     }
 }
 
