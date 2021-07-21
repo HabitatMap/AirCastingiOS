@@ -1,8 +1,8 @@
 // Created by Lunar on 09/07/2021.
 //
 
-import SwiftUI
 import AirCastingStyling
+import SwiftUI
 
 struct DeleteView<VM: DeleteSessionViewModel>: View {
     @ObservedObject var viewModel: VM
