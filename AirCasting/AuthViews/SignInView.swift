@@ -89,8 +89,7 @@ private extension SignInView {
             DragGesture(minimumDistance: 2, coordinateSpace: .global)
                 .onChanged { _ in
                     UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-                }))
-        
+                })
     }
     
     var progressBar: some View {
