@@ -44,7 +44,6 @@ class CreateSessionApi {
         let end_time: Date
         let contribute: Bool
         let is_indoor: Bool
-        #warning("TODO: handle after adding notes")
         let notes: [String]
         let version: Int
         let streams: [String : MeasurementStreamParams]
@@ -68,7 +67,8 @@ final class CreateSessionAPIService {
         let session: String
         let compression: Bool
     }
-
+    
+    let urlProvider: BaseURLProvider
     let apiClient: APIClient
     let responseValidator: HTTPResponseValidator
     let authorisationService: RequestAuthorisationService
@@ -92,15 +92,16 @@ final class CreateSessionAPIService {
         return $0
     }(JSONEncoder())
 
-    init(authorisationService: RequestAuthorisationService, apiClient: APIClient = URLSession.shared, responseValidator: HTTPResponseValidator = DefaultHTTPResponseValidator()) {
+    init(authorisationService: RequestAuthorisationService, apiClient: APIClient = URLSession.shared, responseValidator: HTTPResponseValidator = DefaultHTTPResponseValidator(), baseUrlProvider: BaseURLProvider) {
         self.authorisationService = authorisationService
         self.apiClient = apiClient
         self.responseValidator = responseValidator
+        self.urlProvider = baseUrlProvider
     }
 
     @discardableResult
     func createEmptyFixedWifiSession(input: CreateSessionApi.Input, completion: @escaping (Result<CreateSessionApi.Output, Error>) -> Void) -> Cancellable {
-        let url = URL(string: "http://aircasting.org/api/realtime/sessions.json")!
+        let url = urlProvider.baseAppURL.appendingPathComponent("realtime/sessions.json")
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")

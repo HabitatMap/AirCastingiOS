@@ -12,9 +12,9 @@ final class AirBeamFixedSessionCreator: SessionCreator {
     let measurementStreamStorage: MeasurementStreamStorage
     private let createSessionService: CreateSessionAPIService
     
-    convenience init(measurementStreamStorage: MeasurementStreamStorage, userAuthenticationSession: UserAuthenticationSession) {
+    convenience init(measurementStreamStorage: MeasurementStreamStorage, userAuthenticationSession: UserAuthenticationSession, baseUrl: BaseURLProvider) {
         self.init(measurementStreamStorage: measurementStreamStorage,
-                  createSessionService: CreateSessionAPIService(authorisationService: userAuthenticationSession),
+                  createSessionService: CreateSessionAPIService(authorisationService: userAuthenticationSession, baseUrlProvider: baseUrl),
                   userAuthenticationSession: userAuthenticationSession)
     }
     

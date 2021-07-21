@@ -16,14 +16,15 @@ protocol MeasurementUpdatingService {
 final class DownloadMeasurementsService: MeasurementUpdatingService {
     private let authorisationService: RequestAuthorisationService
     private let persistenceController: PersistenceController
-    private lazy var fixedSessionService = FixedSessionAPIService(authorisationService: authorisationService)
+    private let fixedSessionService: FixedSessionAPIService
     private var timerSink: Cancellable?
     private var lastFetchCancellableTask: Cancellable?
     private lazy var removeOldService: RemoveOldMeasurementsService = RemoveOldMeasurementsService()
     
-    init(authorisationService: RequestAuthorisationService, persistenceController: PersistenceController) {
+    init(authorisationService: RequestAuthorisationService, persistenceController: PersistenceController, baseUrl: BaseURLProvider) {
         self.authorisationService = authorisationService
         self.persistenceController = persistenceController
+        self.fixedSessionService = FixedSessionAPIService(authorisationService: authorisationService, baseUrl: baseUrl)
     }
 
     func start() throws {

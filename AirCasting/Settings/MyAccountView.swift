@@ -9,7 +9,6 @@ struct MyAccountView: View {
     var body: some View {
         ZStack {
             VStack(alignment: .leading) {
-                #warning("Logic here needs to be finished - handle log in")
                 loggedOutInformationLabel
                 createAccountButton
                 logInButton
@@ -19,6 +18,7 @@ struct MyAccountView: View {
         .navigationTitle(Strings.MyAccountSettings.title)
     }
 }
+
 
 private var loggedOutInformationLabel: some View {
     Text(Strings.MyAccountSettings.logStatus)

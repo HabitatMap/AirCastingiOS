@@ -5,9 +5,11 @@ import SwiftUI
 import AirCastingStyling
 
 struct MyAccountViewSignOut: View {
+    let logoutController: LogoutController
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     @EnvironmentObject var persistenceController: PersistenceController
     @EnvironmentObject var microphoneManager: MicrophoneManager
+    
     var body: some View {
         ZStack {
             VStack(alignment: .leading) {
@@ -22,18 +24,17 @@ struct MyAccountViewSignOut: View {
 }
 
 private extension MyAccountViewSignOut {
-    
     var logInLabel: some View {
-        Text(Strings.SignOutSettings.Logged)
+        Text(Strings.SignOutSettings.Logged + "\(KeychainStorage(service:  Bundle.main.bundleIdentifier!).getUsername())")
             .foregroundColor(.aircastingGray)
-            .font(Font.muli(size: 13))
+            .font(Font.muli(size: 16))
             .padding()
     }
     
     var signOutButton: some View {
         Button(action: {
             do {
-                try DefaultLogoutController(userAuthenticationSession: userAuthenticationSession, sessionStorage: SessionStorage(persistenceController: persistenceController), microphoneManager: microphoneManager).logout()
+                try logoutController.logout()
             } catch {
                 assertionFailure("Failed to deauthorize \(error)")
             }
@@ -46,7 +47,7 @@ private extension MyAccountViewSignOut {
                 }
                 .padding(.horizontal)
             }
-        } .buttonStyle(BlueButtonStyle())
+        }.buttonStyle(BlueButtonStyle())
         .padding()
     }
 }
@@ -54,7 +55,7 @@ private extension MyAccountViewSignOut {
 #if DEBUG
 struct MyAccountViewSingOut_Previews: PreviewProvider {
     static var previews: some View {
-        MyAccountViewSignOut()
+        MyAccountViewSignOut(logoutController: FakeLogoutController())
     }
 }
 #endif

@@ -11,16 +11,31 @@ import SwiftUI
 extension NSError: Identifiable {}
 
 struct SignInView: View {
+    
     @State var presentingModal = false
-    @State var isActive: Bool = false
+    @EnvironmentObject var lifeTimeEventsProvider: LifeTimeEventsProvider
+    var completion: () -> Void
+    
+    @State var isActive: Bool
+    let baseURL: BaseURLProvider
+    
     let userAuthenticationSession: UserAuthenticationSession
-    private let authorizationAPIService = AuthorizationAPIService()
+    private let authorizationAPIService: AuthorizationAPIService
     @State private var username: String = ""
     @State private var password: String = ""
-    @State private var task: Cancellable?
-    @State private var presentedError: AuthorizationError?
+    @State private var task: Cancellable? = nil
+    @State private var presentedError: AuthorizationError? = nil
     @State private var isUsernameBlank = false
     @State private var isPasswordBlank = false
+    
+    
+    init(completion: @escaping () -> Void, active: Bool = false, userSession: UserAuthenticationSession, urlProvider: BaseURLProvider) {
+        self.baseURL = urlProvider
+        _isActive = State(initialValue: active)
+        self.userAuthenticationSession = userSession
+        self.authorizationAPIService = AuthorizationAPIService(baseUrl: baseURL)
+        self.completion = completion
+    }
     
     var body: some View {
         LoadingView(isShowing: $isActive) {
@@ -34,7 +49,11 @@ private extension SignInView {
         GeometryReader { geometry in
             ScrollView {
                 VStack(spacing: 40) {
-                    progressBar
+                    if lifeTimeEventsProvider.hasEverLoggedIn {
+                        progressBar.hidden()
+                    } else {
+                        progressBar
+                    }
                     titleLabel
                     VStack(spacing: 20) {
                         VStack(alignment: .leading, spacing: 5) {
@@ -70,14 +89,15 @@ private extension SignInView {
             DragGesture(minimumDistance: 2, coordinateSpace: .global)
                 .onChanged { _ in
                     UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-                })
+                }))
+        
     }
     
     var progressBar: some View {
         ProgressView(value: 0.825)
             .accentColor(.accentColor)
     }
-    
+
     var titleLabel: some View {
         VStack(alignment: .leading, spacing: 15) {
             Text(Strings.SignInView.title_1)
@@ -96,7 +116,7 @@ private extension SignInView {
             .disableAutocorrection(true)
             .autocapitalization(.none)
     }
-
+    
     var passwordTextfield: some View {
         SecureField(Strings.SignInView.passwordField, text: $password)
             .padding()
@@ -105,7 +125,7 @@ private extension SignInView {
             .background(Color.aircastingGray.opacity(0.05))
             .border(Color.aircastingGray.opacity(0.1))
     }
-
+    
     var signinButton: some View {
         Button(Strings.SignInView.signInButton) {
             checkInput()
@@ -117,7 +137,9 @@ private extension SignInView {
                         switch result {
                         case .success(let output):
                             do {
-                                try userAuthenticationSession.authorise(with: output.authentication_token)
+                                let user = User(id: output.id, username: output.username, token: output.authentication_token, email: output.email)
+                                try userAuthenticationSession.authorise(user)
+                                completion()
                                 Log.info("Successfully logged in")
                             } catch {
                                 assertionFailure("Failed to store credentials \(error)")
@@ -150,7 +172,7 @@ private extension SignInView {
     
     var signupButton: some View {
         NavigationLink(
-            destination: CreateAccountView(userAuthenticationSession: userAuthenticationSession),
+            destination: CreateAccountView(completion: completion, userSession: userAuthenticationSession, baseURL: baseURL).environmentObject(lifeTimeEventsProvider),
             label: {
                 signupButtonText
             })
@@ -194,7 +216,7 @@ private extension SignInView {
 #if DEBUG
 struct SignInView_Previews: PreviewProvider {
     static var previews: some View {
-        SignInView(isActive: true, userAuthenticationSession: UserAuthenticationSession())
+        SignInView(completion: {}, active: true, userSession: UserAuthenticationSession(), urlProvider: DummyURLProvider()).environmentObject(LifeTimeEventsProvider())
     }
 }
 #endif

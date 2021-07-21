@@ -7,9 +7,12 @@ import Combine
 @testable import AirCasting
 
 final class APIClientMock: APIClient {
-    var requestTaskStub: ((_ request: URLRequest, _ completion: (Result<(data: Data, response: HTTPURLResponse), Error>, URLRequest) -> Void) -> Void)!
+    var callHistory: [URLRequest] = []
+    
+    var requestTaskStub: ((_ request: URLRequest, _ completion: @escaping (Result<(data: Data, response: HTTPURLResponse), Error>, URLRequest) -> Void) -> Void)!
 
     func requestTask(for request: URLRequest, completion: @escaping (Result<(data: Data, response: HTTPURLResponse), Error>, URLRequest) -> Void) -> Cancellable {
+        callHistory.append(request)
         requestTaskStub(request, completion)
         return EmptyCancellable()
     }

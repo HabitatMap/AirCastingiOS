@@ -14,6 +14,7 @@ struct ABConnectedView: View {
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     @EnvironmentObject var sessionContext: CreateSessionContext
     @Binding var creatingSessionFlowContinues : Bool
+    let baseURL: BaseURLProvider
 
     var body: some View {
         VStack(spacing: 40) {
@@ -53,7 +54,7 @@ private extension ABConnectedView {
             sessionCreator = AirBeamFixedSessionCreator(
                 measurementStreamStorage: CoreDataMeasurementStreamStorage(
                     persistenceController: persistenceController),
-                userAuthenticationSession: userAuthenticationSession)
+                userAuthenticationSession: userAuthenticationSession, baseUrl: baseURL)
         }
         return NavigationLink(
             destination: CreateSessionDetailsView(
@@ -69,7 +70,7 @@ private extension ABConnectedView {
 #if DEBUG
 struct AirbeamConnectedView_Previews: PreviewProvider {
     static var previews: some View {
-        ABConnectedView(creatingSessionFlowContinues: .constant(true))
+        ABConnectedView(creatingSessionFlowContinues: .constant(true), baseURL: DummyURLProvider())
             .environmentObject(PersistenceController())
             .environmentObject(UserAuthenticationSession())
             .environmentObject(BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: PreviewMeasurementStreamStorage())))

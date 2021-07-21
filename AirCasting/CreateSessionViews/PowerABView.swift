@@ -11,6 +11,7 @@ import AirCastingStyling
 struct PowerABView: View {
     @Binding var creatingSessionFlowContinues : Bool
     @EnvironmentObject private var sessionContext: CreateSessionContext
+    let urlProvider: BaseURLProvider
     
     var body: some View {
         VStack(spacing: 45) {
@@ -43,7 +44,7 @@ struct PowerABView: View {
 
     }
     var continueButton: some View {
-        NavigationLink(destination: SelectPeripheralView(creatingSessionFlowContinues: $creatingSessionFlowContinues)) {
+        NavigationLink(destination: SelectPeripheralView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider)) {
             Text("Continue")
                 .frame(maxWidth: .infinity)
         }
@@ -53,7 +54,7 @@ struct PowerABView: View {
 #if DEBUG
 struct PowerABView_Previews: PreviewProvider {
     static var previews: some View {
-        PowerABView(creatingSessionFlowContinues: .constant(true))
+        PowerABView(creatingSessionFlowContinues: .constant(true), urlProvider: DummyURLProvider())
     }
 }
 #endif

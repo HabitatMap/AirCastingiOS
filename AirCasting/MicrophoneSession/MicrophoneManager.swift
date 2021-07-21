@@ -94,6 +94,7 @@ extension MicrophoneManager: AVAudioRecorderDelegate {
         assertionFailure("audio recorder encode error did occur \(String(describing: error))")
     }
 }
+
 private extension MicrophoneManager {
     func sampleMeasurement() throws {
         recorder.updateMeters()
