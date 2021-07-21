@@ -11,8 +11,8 @@ struct ForgotPasswordAlertViewModel {
 
 protocol ForgotPasswordViewModel: ObservableObject {
     var title: String { get }
-    var description: String { get }
     var actionTitle: String { get }
+    var cancelTitle: String { get }
     var emailInputTitle: String { get }
     var alert: ForgotPasswordAlertViewModel? { get set }
     

@@ -5,8 +5,8 @@ import Foundation
 
 final class DefaultForgotPasswordViewModel: ForgotPasswordViewModel {
     let title = Strings.ForgotPassword.title
-    let description = Strings.ForgotPassword.description
     let actionTitle = Strings.ForgotPassword.actionTitle
+    let cancelTitle = Strings.ForgotPassword.cancelTitle
     let emailInputTitle = Strings.ForgotPassword.emailInputTitle
     
     var alert: ForgotPasswordAlertViewModel? = nil { willSet { objectWillChange.send() } }

@@ -37,11 +37,11 @@ struct Strings {
     
     enum ForgotPassword {
         static let title = "Forgot Password"
-        static let description = "You will get en email with details after 'send new' button pressed"
-        static let actionTitle = "Send new"
+        static let actionTitle = "OK"
+        static let cancelTitle = "Cancel"
         static let emailInputTitle = "email or username"
         static let newPasswordSuccessMessage = "Email was sent. Please check your inbox for the details."
-        static let newPasswordSuccessTitle = "Email was sent. Please check your inbox for the details."
+        static let newPasswordSuccessTitle = "Email response"
         static let newPasswordFailureMessage = "Something went wrong, please try again"
         static let newPasswordFailureTitle = "Email response"
         static let alertAction = "OK"
