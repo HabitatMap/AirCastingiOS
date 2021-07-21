@@ -11,8 +11,6 @@ final class DefaultForgotPasswordViewModel: ForgotPasswordViewModel {
     
     var alert: ForgotPasswordAlertViewModel? = nil { willSet { objectWillChange.send() } }
     
-    var onChangeAlertVisibility: ((Bool) -> Void)?
-    
     var email: String = ""
     private let controller: ForgotPasswordController
     
