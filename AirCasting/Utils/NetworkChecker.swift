@@ -4,18 +4,13 @@
 import Foundation
 import Network
 
-protocol checkNetwork {
+protocol CheckNetwork {
     func monitorNetwork()
 }
 
-final class NetworkChecker: checkNetwork {
-    @Published var connectionAvailable: Bool
-    static let shared = NetworkChecker(connectionAvailable: false)
+final class NetworkChecker: CheckNetwork {
+    @Published var connectionAvailable: Bool = false
     let monitor = NWPathMonitor()
-    
-    init(connectionAvailable: Bool) {
-        self.connectionAvailable = connectionAvailable
-    }
     
     func monitorNetwork() {
         monitor.pathUpdateHandler = { path in
@@ -34,7 +29,7 @@ final class NetworkChecker: checkNetwork {
     }
 }
 
-final class DummyNetworkChecker: checkNetwork {
+final class DummyNetworkChecker: CheckNetwork {
     func monitorNetwork() {
         Log.info("Current devise has an network connection")
         print("Current devise has an network connection")
