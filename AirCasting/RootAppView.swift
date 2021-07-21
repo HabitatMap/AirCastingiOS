@@ -13,7 +13,8 @@ struct RootAppView: View {
     let sessionSynchronizer: SessionSynchronizer
     let persistenceController: PersistenceController
     let bluetoothManager = BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared)))
-    @ObservedObject var lifeTimeEventsProvider = UserDefaultProtocol()
+    @ObservedObject var lifeTimeEventsProvider = LifeTimeEventsProvider()
+    @ObservedObject var userSettings = UserSettings()
     
     let microphoneManager = MicrophoneManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared))
     let urlProvider = UserDefaultsBaseURLProvider()
@@ -42,6 +43,8 @@ struct RootAppView: View {
             .environmentObject(microphoneManager)
             .environmentObject(userAuthenticationSession)
             .environmentObject(persistenceController)
+            .environmentObject(lifeTimeEventsProvider)
+            .environmentObject(userSettings)
             .environment(\.managedObjectContext, persistenceController.viewContext)
     }
 }

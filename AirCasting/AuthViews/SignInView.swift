@@ -12,7 +12,7 @@ extension NSError: Identifiable {}
 
 struct SignInView: View {
     
-    @EnvironmentObject var lifeTimeEventsProvider: UserDefaultProtocol
+    @EnvironmentObject var lifeTimeEventsProvider: LifeTimeEventsProvider
     var completion: () -> Void
     
     @State var isActive: Bool
@@ -193,7 +193,7 @@ private extension SignInView {
 #if DEBUG
 struct SignInView_Previews: PreviewProvider {
     static var previews: some View {
-        SignInView(completion: {}, active: true, userSession: UserAuthenticationSession(), urlProvider: DummyURLProvider()).environmentObject(UserDefaultProtocol())
+        SignInView(completion: {}, active: true, userSession: UserAuthenticationSession(), urlProvider: DummyURLProvider()).environmentObject(LifeTimeEventsProvider())
     }
 }
 #endif
