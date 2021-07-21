@@ -9,7 +9,7 @@ var locationAlert: Alert {
         message: Text(Strings.SelectDeviceView.alertMessage),
         primaryButton: .cancel(Text(Strings.SelectDeviceView.alertConfirmation)) { },
         secondaryButton: .default(Text(Strings.SelectDeviceView.alertSettings), action: {
-            goToLocationAuthSettings()
+            SettingsRedirection().goToLocationAuthSettings()
         })
     )
 }

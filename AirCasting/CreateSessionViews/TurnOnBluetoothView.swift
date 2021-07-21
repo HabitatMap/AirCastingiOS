@@ -13,7 +13,7 @@ struct TurnOnBluetoothView: View {
     
     @State private var isPowerABLinkActive = false
     @EnvironmentObject var bluetoothManager: BluetoothManager
-    
+    @EnvironmentObject var settingsRedirection: SettingsRedirection
     @Binding var creatingSessionFlowContinues : Bool
     
     let urlProvider: BaseURLProvider
@@ -49,7 +49,7 @@ struct TurnOnBluetoothView: View {
     var continueButton: some View {
         Button(action: {
             if CBCentralManager.authorization != .allowedAlways {
-                goToBluetoothAuthSettings()
+                settingsRedirection.goToBluetoothAuthSettings()
             } else {
                 if bluetoothManager.centralManager.state != .poweredOn {
                     goToBluetoothSettings()

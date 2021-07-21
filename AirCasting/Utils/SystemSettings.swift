@@ -9,7 +9,7 @@ protocol SettingsRedirectionProtocol {
     func goToBluetoothAuthSettings()
 }
 
-final class SettingsRedirection: SettingsRedirectionProtocol {
+final class SettingsRedirection: SettingsRedirectionProtocol, ObservableObject {
     
     func goToLocationAuthSettings() {
         if let url = URL(string: UIApplication.openSettingsURLString) {
