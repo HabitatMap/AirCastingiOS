@@ -5,18 +5,20 @@
 //  Created by Lunar on 24/02/2021.
 //
 
-import SwiftUI
 import AirCastingStyling
+import SwiftUI
 
 extension NSError: Identifiable {}
 
 struct SignInView: View {
     
+    @State var presentingModal = false
     @EnvironmentObject var lifeTimeEventsProvider: LifeTimeEventsProvider
     var completion: () -> Void
     
     @State var isActive: Bool
     let baseURL: BaseURLProvider
+    
     let userAuthenticationSession: UserAuthenticationSession
     private let authorizationAPIService: AuthorizationAPIService
     @State private var username: String = ""
@@ -25,6 +27,7 @@ struct SignInView: View {
     @State private var presentedError: AuthorizationError? = nil
     @State private var isUsernameBlank = false
     @State private var isPasswordBlank = false
+    
     
     init(completion: @escaping () -> Void, active: Bool = false, userSession: UserAuthenticationSession, urlProvider: BaseURLProvider) {
         self.baseURL = urlProvider
@@ -67,8 +70,11 @@ private extension SignInView {
                             }
                         }
                     }
-                    signinButton
-                    signupButton
+                    VStack(spacing: 10) {
+                        signinButton
+                        forgotPassword
+                        signupButton
+                    }
                     Spacer()
                 }
                 .padding()
@@ -81,45 +87,48 @@ private extension SignInView {
         }
         .simultaneousGesture(
             DragGesture(minimumDistance: 2, coordinateSpace: .global)
-                .onChanged({ (_) in
+                .onChanged { _ in
                     UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-                }))
+                })
     }
     
-    private var progressBar: some View {
+    var progressBar: some View {
         ProgressView(value: 0.825)
             .accentColor(.accentColor)
     }
+
     var titleLabel: some View {
         VStack(alignment: .leading, spacing: 15) {
-            Text("Sign in")
+            Text(Strings.SignInView.title_1)
                 .font(Font.moderate(size: 32,
                                     weight: .bold))
                 .foregroundColor(.accentColor)
-            Text("to record and map your environment")
+            Text(Strings.SignInView.title_2)
                 .font(Font.muli(size: 16))
                 .foregroundColor(.aircastingGray)
         }
     }
     
     var usernameTextfield: some View {
-        createTextfield(placeholder: "Profile name",
+        createTextfield(placeholder: Strings.SignInView.usernameField,
                         binding: $username)
             .disableAutocorrection(true)
             .autocapitalization(.none)
     }
+    
     var passwordTextfield: some View {
-        SecureField("Password", text: $password)
+        SecureField(Strings.SignInView.passwordField, text: $password)
             .padding()
             .frame(height: 50)
             .disableAutocorrection(true)
             .background(Color.aircastingGray.opacity(0.05))
             .border(Color.aircastingGray.opacity(0.1))
     }
+    
     var signinButton: some View {
-        Button("Sign in") {
+        Button(Strings.SignInView.signInButton) {
             checkInput()
-            if !isPasswordBlank && !isUsernameBlank {
+            if !isPasswordBlank, !isUsernameBlank {
                 isActive = true
                 
                 task = authorizationAPIService.signIn(input: AuthorizationAPI.SigninUserInput(username: username, password: password)) { result in
@@ -147,6 +156,19 @@ private extension SignInView {
         .buttonStyle(BlueButtonStyle())
     }
     
+    var forgotPassword: some View {
+        Button(Strings.SignInView.forgotPasswordButton) {
+            presentingModal = true
+        }.sheet(isPresented: $presentingModal) {
+            let service = EmailResetPasswordService(apiClient: URLSession.shared, validator: DefaultHTTPResponseValidator())
+            let controller = EmailForgotPasswordController(resetPasswordService: service)
+            let scheduledController = ScheduledForgotPasswordControllerProxy(controller: controller, queue: .main)
+            let vm = DefaultForgotPasswordViewModel(controller: scheduledController)
+            ForgotPasswordView(viewModel: vm)
+        }
+        .buttonStyle(BlueTextButtonStyle())
+    }
+    
     var signupButton: some View {
         NavigationLink(
             destination: CreateAccountView(completion: completion, userSession: userAuthenticationSession, baseURL: baseURL).environmentObject(lifeTimeEventsProvider),
@@ -156,11 +178,11 @@ private extension SignInView {
     }
     
     var signupButtonText: some View {
-        Text("First time here? ")
+        Text(Strings.SignInView.signUpButton_1)
             .font(Font.muli(size: 16))
             .foregroundColor(.aircastingGray)
             
-            + Text("Create an account")
+            + Text(Strings.SignInView.signUpButton_2)
             .font(Font.moderate(size: 16, weight: .bold))
             .foregroundColor(.accentColor)
     }
@@ -171,21 +193,21 @@ private extension SignInView {
     }
     
     func displayErrorAlert(error: AuthorizationError) -> Alert {
-        let title = NSLocalizedString("Login Error", comment: "Login Error alert title")
+        let title = NSLocalizedString(Strings.SignInView.alertTitle, comment: Strings.SignInView.alertComment)
         switch error {
         case .emailTaken, .invalidCredentials, .usernameTaken:
             return Alert(title: Text(title),
-                         message: Text("The profile name or password is incorrect. Please try again. "),
-                         dismissButton: .default(Text("Ok")))
+                         message: Text(Strings.SignInView.InvalidCredentialText),
+                         dismissButton: .default(Text(Strings.SignInView.dismissButton)))
             
         case .noConnection:
-            return Alert(title: Text("No Internet Connection"),
-                         message: Text("Please make sure your device is connected to the internet."),
-                         dismissButton: .default(Text("Ok")))
+            return Alert(title: Text(Strings.SignInView.noConnectionTitle),
+                         message: Text(Strings.SignInView.noConnectionText),
+                         dismissButton: .default(Text(Strings.SignInView.dismissButton)))
         case .other, .timeout:
             return Alert(title: Text(title),
                          message: Text(error.localizedDescription),
-                         dismissButton: .default(Text("Ok")))
+                         dismissButton: .default(Text(Strings.SignInView.dismissButton)))
         }
     }
 }
