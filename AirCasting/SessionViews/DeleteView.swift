@@ -23,13 +23,13 @@ struct DeleteView<VM: DeleteSessionViewModel>: View {
     }
     
     private var title: some View {
-        Text(Strings.deleteSession.title)
+        Text(Strings.DeleteSession.title)
             .font(Font.moderate(size: 24, weight: .bold))
             .foregroundColor(.darkBlue)
     }
     
     private var description: some View {
-        Text(Strings.deleteSession.description)
+        Text(Strings.DeleteSession.description)
             .font(Font.muli(size: 16))
             .foregroundColor(.aircastingGray)
     }
@@ -51,7 +51,7 @@ struct DeleteView<VM: DeleteSessionViewModel>: View {
         Button {
             deleteModal.toggle()
         } label: {
-            Text(Strings.deleteSession.continueButton)
+            Text(Strings.DeleteSession.continueButton)
                 .bold()
         }
         .buttonStyle(BlueButtonStyle())
@@ -61,16 +61,9 @@ struct DeleteView<VM: DeleteSessionViewModel>: View {
         Button {
             deleteModal.toggle()
         } label: {
-            Text(Strings.deleteSession.cancelButton)
+            Text(Strings.DeleteSession.cancelButton)
         }
         .buttonStyle(BlueTextButtonStyle())
-    }
-}
-
-extension View {
-    func Print(_ vars: Any...) -> some View {
-        for v in vars { print(v) }
-        return EmptyView()
     }
 }
 

@@ -142,13 +142,13 @@
 		DD430B062670FCC000F1BF2E /* GreenButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD430B052670FCC000F1BF2E /* GreenButtonStyle.swift */; };
 		DD430B082670FE6100F1BF2E /* GreenTextButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD430B072670FE6100F1BF2E /* GreenTextButtonStyle.swift */; };
 		DD430B0C26710E0600F1BF2E /* PrivacyOnboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD430B0B26710E0600F1BF2E /* PrivacyOnboarding.swift */; };
-		DD831844269DA46200CD39DF /* StreamsType.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD831843269DA46200CD39DF /* StreamsType.swift */; };
 		DD8C38092689A34E00901FDF /* UserDefaultsBaseURLProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8C38082689A34E00901FDF /* UserDefaultsBaseURLProvider.swift */; };
 		DD8C380C2689A3DA00901FDF /* BaseURLProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8C380B2689A3DA00901FDF /* BaseURLProvider.swift */; };
 		DD8C380E2689A55A00901FDF /* BackendSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8C380D2689A55A00901FDF /* BackendSettingsView.swift */; };
 		DD8C3810268A0E9400901FDF /* ShareView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8C380F268A0E9400901FDF /* ShareView.swift */; };
 		DDCE5D3826A1FE2D0033C211 /* DeleteSessionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCE5D3726A1FE2D0033C211 /* DeleteSessionViewModel.swift */; };
 		DDCE5D3A26A213620033C211 /* DefaultDeleteSessionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCE5D3926A213620033C211 /* DefaultDeleteSessionViewModel.swift */; };
+		DDD24D8426A7FCE300D4A327 /* View+Print.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDD24D8326A7FCE300D4A327 /* View+Print.swift */; };
 		DDF7599A268332E900D906BA /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF75999268332E900D906BA /* Strings.swift */; };
 		EE969E7E1981C41852FB7745 /* Pods_AirCastingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A54057326D27D23E9906704 /* Pods_AirCastingTests.framework */; };
 		F76B6F660F0BD398629EDD83 /* Pods_AirCasting.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E819223F8D800D3B8ED8F56 /* Pods_AirCasting.framework */; };
@@ -309,13 +309,13 @@
 		DD430B052670FCC000F1BF2E /* GreenButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GreenButtonStyle.swift; sourceTree = "<group>"; };
 		DD430B072670FE6100F1BF2E /* GreenTextButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GreenTextButtonStyle.swift; sourceTree = "<group>"; };
 		DD430B0B26710E0600F1BF2E /* PrivacyOnboarding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyOnboarding.swift; sourceTree = "<group>"; };
-		DD831843269DA46200CD39DF /* StreamsType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamsType.swift; sourceTree = "<group>"; };
 		DD8C38082689A34E00901FDF /* UserDefaultsBaseURLProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsBaseURLProvider.swift; sourceTree = "<group>"; };
 		DD8C380B2689A3DA00901FDF /* BaseURLProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseURLProvider.swift; sourceTree = "<group>"; };
 		DD8C380D2689A55A00901FDF /* BackendSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendSettingsView.swift; sourceTree = "<group>"; };
 		DD8C380F268A0E9400901FDF /* ShareView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareView.swift; sourceTree = "<group>"; };
 		DDCE5D3726A1FE2D0033C211 /* DeleteSessionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteSessionViewModel.swift; sourceTree = "<group>"; };
 		DDCE5D3926A213620033C211 /* DefaultDeleteSessionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultDeleteSessionViewModel.swift; sourceTree = "<group>"; };
+		DDD24D8326A7FCE300D4A327 /* View+Print.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Print.swift"; sourceTree = "<group>"; };
 		DDF75999268332E900D906BA /* Strings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Strings.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -469,6 +469,7 @@
 				4FD2CA4626406F2C007E932E /* Diff.swift */,
 				4F8CDBD1265F8DAC00976B25 /* Assertions.swift */,
 				DDF75999268332E900D906BA /* Strings.swift */,
+				DDD24D8326A7FCE300D4A327 /* View+Print.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -658,7 +659,6 @@
 		AC8CFF7025E7D94C00FB2918 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				DD831843269DA46200CD39DF /* StreamsType.swift */,
 				4F945EED2649F3F5008A5B22 /* SessionCreator.swift */,
 				4F945EEF2649F455008A5B22 /* AirBeamFixedSessionCreator.swift */,
 				ACD01F3F25F8C1F800B8F65F /* SessionContext.swift */,
@@ -1071,6 +1071,7 @@
 				4F858F5E2624B4980059271A /* Log.swift in Sources */,
 				DD430B062670FCC000F1BF2E /* GreenButtonStyle.swift in Sources */,
 				ACFC708925C1A36A00D609D9 /* UIColor.swift in Sources */,
+				DDD24D8426A7FCE300D4A327 /* View+Print.swift in Sources */,
 				AC8CFF7225E7DA2D00FB2918 /* ABMeasurementStream.swift in Sources */,
 				AC524AAC2616003C0061AD45 /* DateFormatter.swift in Sources */,
 				AC93B8DA25BEDC46003D0A0D /* Array.swift in Sources */,
@@ -1078,7 +1079,6 @@
 				3346F1F626318C1600BA4695 /* SettingsManager.swift in Sources */,
 				3326BD562642E71E00DE8E6D /* ChartEntriesCreator.swift in Sources */,
 				DDCE5D3826A1FE2D0033C211 /* DeleteSessionViewModel.swift in Sources */,
-				DD831844269DA46200CD39DF /* StreamsType.swift in Sources */,
 				AC32041C25CC46EF00A68520 /* PowerABView.swift in Sources */,
 				33BA336A266E4D1000899343 /* MobileSession.swift in Sources */,
 				AC86EE6B25D03DC00083F8C0 /* SelectDeviceView.swift in Sources */,

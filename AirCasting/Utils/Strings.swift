@@ -35,13 +35,13 @@ struct Strings {
         static let signOut: String = "Sign Out"
     }
     
-    struct sessionShare {
+    struct SessionShare {
         static let title: String = "Share session"
         static let description: String = "Select a stream to share"
         static let emailDescription: String = "Or email a CSV file with your session data"
     }
     
-    struct deleteSession {
+    struct DeleteSession {
         static let title: String = "Delete this session"
         static let description: String = "Which stream would you like to delete?"
         static let continueButton: String = "Delete streams"
