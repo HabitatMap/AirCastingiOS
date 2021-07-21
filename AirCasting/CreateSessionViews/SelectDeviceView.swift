@@ -38,14 +38,7 @@ struct SelectDeviceView: View {
             chooseButton
             
         }.alert(isPresented: $showAlert) {
-            Alert(
-                title: Text("Location alert"),
-                message: Text("Please go to settings and allow location first."),
-                primaryButton: .cancel(Text("OK")) { },
-                secondaryButton: .default(Text("Settings"), action: {
-                    goToLocationAuthSettings()
-                })
-            )
+            locationAlert
         }
         .padding()
         .onAppear {
@@ -57,7 +50,7 @@ struct SelectDeviceView: View {
     }
     
     var titleLabel: some View {
-        Text("What device are you using to record this session?")
+        Text(Strings.SelectDeviceView.title)
             .font(Font.moderate(size: 25,
                                 weight: .bold))
             .foregroundColor(.accentColor)
@@ -88,10 +81,10 @@ struct SelectDeviceView: View {
     
     var bluetoothLabels: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text("Bluetooth device")
+            Text(Strings.SelectDeviceView.bluetoothLabel_1)
                 .font(Font.muli(size: 16, weight: .bold))
                 .foregroundColor(.accentColor)
-            Text("for example AirBeam")
+            Text(Strings.SelectDeviceView.bluetoothLabel_2)
                 .font(Font.muli(size: 14, weight: .regular))
                 .foregroundColor(.aircastingGray)
         }
@@ -99,10 +92,10 @@ struct SelectDeviceView: View {
     
     var micLabels: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text("Phone microphone")
+            Text(Strings.SelectDeviceView.micLabel_1)
                 .font(Font.muli(size: 16, weight: .bold))
                 .foregroundColor(.accentColor)
-            Text("to measure sound level")
+            Text(Strings.SelectDeviceView.micLabel_2)
                 .font(Font.muli(size: 14, weight: .regular))
                 .foregroundColor(.aircastingGray)
         }
@@ -133,7 +126,7 @@ struct SelectDeviceView: View {
                 }
             }
         }, label: {
-            Text("Choose")
+            Text(Strings.SelectDeviceView.chooseButton)
         })
         .disabled(!continueButtonEnabled)
         .buttonStyle(BlueButtonStyle())

@@ -4,7 +4,7 @@
 import Foundation
 
 struct Strings {
-    struct Settings {
+    enum Settings {
         static let title: String = "Settings"
         static let myAccount: String = "My Account"
         static let crowdMap: String = "Contribute to CrowdMap"
@@ -15,13 +15,13 @@ struct Strings {
         static let about: String = "About AirCasting"
     }
     
-    struct BackendSettings {
+    enum BackendSettings {
         static let backendSettings: String = "Backend settings"
         static let Ok: String = "OK"
         static let Cancel: String = "Cancel"
     }
     
-    struct MyAccountSettings {
+    enum MyAccountSettings {
         static let title: String = "My account"
         static let logStatus: String = "You aren’t currently logged in"
         static let notLogged: String = "You aren’t currently logged in"
@@ -29,15 +29,38 @@ struct Strings {
         static let logIn: String = "Log In"
     }
     
-    struct SignOutSettings {
+    enum SignOutSettings {
         static let title: String = "My account"
         static let Logged: String = "You are currently logged in as admin@admin.com"
         static let signOut: String = "Sign Out"
     }
     
-    struct sessionShare {
+    enum sessionShare {
         static let title: String = "Share session"
         static let description: String = "Select a stream to share"
         static let emailDescription: String = "Or email a CSV file with your session data"
+    }
+    
+    enum PowerABView {
+        static let alertTitle: String = "Location alert"
+        static let alertMessage: String = "Please go to settings and allow location first."
+        static let alertConfirmation: String = "OK"
+        static let alertSettings: String = "Settings"
+        static let title: String = "Power on your AirBeam"
+        static let messageText: String = "If using AirBeam 2, wait for the conncection indicator to change from red to green before continuing."
+        static let continueButton: String = "Continue"
+    }
+    
+    enum SelectDeviceView {
+        static let alertTitle: String = "Location alert"
+        static let alertMessage: String = "Please go to settings and allow location first."
+        static let alertConfirmation: String = "OK"
+        static let alertSettings: String = "Settings"
+        static let title: String = "What device are you using to record this session?"
+        static let bluetoothLabel_1: String = "Bluetooth device"
+        static let bluetoothLabel_2: String = "for example AirBeam"
+        static let micLabel_1: String = "Phone microphone"
+        static let micLabel_2: String = "to measure sound level"
+        static let chooseButton: String = "Choose"
     }
 }

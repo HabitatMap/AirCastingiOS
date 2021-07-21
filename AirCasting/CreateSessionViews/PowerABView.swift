@@ -5,19 +5,19 @@
 //  Created by Lunar on 04/02/2021.
 //
 
-import SwiftUI
 import AirCastingStyling
+import SwiftUI
 
 struct PowerABView: View {
     @State private var showAlert = false
     @StateObject private var locationTracker = LocationTracker()
-    @Binding var creatingSessionFlowContinues : Bool
+    @Binding var creatingSessionFlowContinues: Bool
     @EnvironmentObject private var sessionContext: CreateSessionContext
     let urlProvider: BaseURLProvider
     private var continueButtonEnabled: Bool {
         locationTracker.locationGranted == .granted
     }
-    
+
     var body: some View {
         VStack(spacing: 45) {
             ProgressView(value: 0.25)
@@ -29,16 +29,9 @@ struct PowerABView: View {
             continueButton
                 .buttonStyle(BlueButtonStyle())
         }.alert(isPresented: $showAlert) {
-            Alert(
-                title: Text("Location alert"),
-                message: Text("Please go to settings and allow location first."),
-                primaryButton: .cancel(Text("OK")) { },
-                secondaryButton: .default(Text("Settings"), action: {
-                    goToLocationAuthSettings()
-                })
-            )
+           locationAlert
         }
-            
+
         .padding()
         .onAppear(perform: {
             locationTracker.requestAuthorisation()
@@ -48,23 +41,24 @@ struct PowerABView: View {
             showAlert = (newValue == .denied)
         }
     }
-    
+
     var titleLabel: some View {
-        Text("Power on your AirBeam")
+        Text(Strings.PowerABView.title)
             .font(Font.moderate(size: 25,
                                 weight: .bold))
             .foregroundColor(.accentColor)
     }
+
     var messageLabel: some View {
-        Text("If using AirBeam 2, wait for the conncection indicator to change from red to green before continuing.")
+        Text(Strings.PowerABView.messageText)
             .font(Font.moderate(size: 18,
                                 weight: .regular))
             .foregroundColor(.aircastingGray)
-
     }
+
     var continueButton: some View {
         NavigationLink(destination: SelectPeripheralView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider)) {
-            Text("Continue")
+            Text(Strings.PowerABView.continueButton)
                 .frame(maxWidth: .infinity)
         }.disabled(!continueButtonEnabled)
     }

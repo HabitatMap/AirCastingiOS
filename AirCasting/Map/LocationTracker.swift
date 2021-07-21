@@ -24,7 +24,7 @@ class LocationTracker: NSObject, ObservableObject, CLLocationManagerDelegate {
         allLocations = locationManager.location.flatMap { [$0] } ?? []
     }
     
-    internal func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         switch manager.authorizationStatus {
         case .authorizedAlways, .authorizedWhenInUse:
             locationManager.startUpdatingLocation()
