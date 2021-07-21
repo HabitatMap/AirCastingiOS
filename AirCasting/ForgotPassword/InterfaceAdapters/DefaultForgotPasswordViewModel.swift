@@ -11,7 +11,7 @@ final class DefaultForgotPasswordViewModel: ForgotPasswordViewModel {
     
     var alert: ForgotPasswordAlertViewModel? = nil { willSet { objectWillChange.send() } }
     
-    var email: String = ""
+    private var email: String = ""
     private let controller: ForgotPasswordController
     
     init(controller: ForgotPasswordController) {
@@ -27,9 +27,9 @@ final class DefaultForgotPasswordViewModel: ForgotPasswordViewModel {
             guard let self = self else { return }
             switch result {
             case .success:
-                self.alert = .init(message: "Email was sent. Please check your inbox for the details.", title: "Email response", actionTitle: "OK")
+                self.alert = .init(message: Strings.ForgotPassword.newPasswordSuccessMessage, title: Strings.ForgotPassword.newPasswordSuccessTitle, actionTitle: Strings.ForgotPassword.alertAction)
             case .failure:
-                self.alert = .init(message: "Something went wrong, please try again", title: "Email response", actionTitle: "OK")
+                self.alert = .init(message: Strings.ForgotPassword.newPasswordFailureMessage, title: Strings.ForgotPassword.newPasswordFailureTitle, actionTitle: Strings.ForgotPassword.alertAction)
             }
         }
     }
