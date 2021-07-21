@@ -9,8 +9,14 @@ import CoreBluetooth
 import SwiftUI
 
 struct ConnectingABView: View {
+    
     @Environment(\.presentationMode) var presentationMode
     var bluetoothManager: BluetoothManager
+    var VM: ConnectingABViewModel {
+        get {
+            return ConnectingABViewModel(bluetoothManager: bluetoothManager)
+        }
+    }
     var selectedPeripheral: CBPeripheral
     let baseURL: BaseURLProvider
     @State private var isDeviceConnected: Bool = false
@@ -45,14 +51,8 @@ struct ConnectingABView: View {
         }
         .padding()
         .onAppear(perform: {
-            bluetoothManager.centralManager.connect(selectedPeripheral,
-                                                    options: nil)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
-                if selectedPeripheral.state == .connecting {
-                    Log.info("Connecting to bluetooth device failed")
-                    bluetoothManager.centralManager.cancelPeripheralConnection(selectedPeripheral)
-                    presentationMode.wrappedValue.dismiss()
-                }
+            VM.performConnectingWithin10Second(peripheral: selectedPeripheral) {
+                presentationMode.wrappedValue.dismiss()
             }
         })
         .onReceive(NotificationCenter.default.publisher(for: Notification.Name(rawValue: "DeviceConnected")), perform: { _ in

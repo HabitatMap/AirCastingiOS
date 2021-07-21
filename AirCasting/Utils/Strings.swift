@@ -45,4 +45,15 @@ struct Strings {
         static let title: String = "Your AirBeam is gathering data."
         static let description: String = "Your AirBeam is gathering data."
     }
+    
+    struct SelectPeripheralView {
+        static let airBeamsText: String = "AirBeams"
+        static let otherText: String = "Other devices"
+        static let alertTitle: String = "Connection error"
+        static let alertMessage: String = "Bluetooth connection failed. Please toggle the power on your device and try again."
+        static let alertAccept: String = "Got it!"
+        static let titleLabel: String = "Choose the device you'd like to record with"
+        static let refreshButton: String = "Don't see a device? Refresh scanning."
+        static let connectText: String = "Connect"
+    }
 }

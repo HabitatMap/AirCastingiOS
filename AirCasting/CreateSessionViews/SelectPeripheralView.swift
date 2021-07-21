@@ -24,11 +24,11 @@ struct SelectPeripheralView: View {
             ScrollView {
                 VStack(spacing: 30) {
                     ProgressView(value: 0.375)
-                    titileLabel
+                    titleLabel
                     
                     LazyVStack(alignment: .leading, spacing: 25) {
                         HStack(spacing: 8) {
-                            Text("AirBeams")
+                            Text(Strings.SelectPeripheralView.airBeamsText)
                             if bluetoothManager.isScanning {
                                 loader
                             }
@@ -36,7 +36,7 @@ struct SelectPeripheralView: View {
                         displayDeviceButton(devices: bluetoothManager.airbeams)
                         
                         HStack(spacing: 8) {
-                            Text("Other devices")
+                            Text(Strings.SelectPeripheralView.otherText)
                             if bluetoothManager.isScanning {
                                 loader
                             }
@@ -61,7 +61,7 @@ struct SelectPeripheralView: View {
                         connectButton.disabled(true)
                     }
                 }.alert(isPresented: $showBluetoothAlert, content: {
-                    Alert(title: Text("Connection error"), message: Text("Bluetooth connection failed. Please toggle the power on your device and try again."), dismissButton: .default(Text("Got it!")))
+                    Alert(title: Text(Strings.SelectPeripheralView.alertTitle), message: Text(Strings.SelectPeripheralView.alertMessage), dismissButton: .default(Text(Strings.SelectPeripheralView.alertAccept)))
                 })
                 .padding()
                 .frame(maxWidth: .infinity, minHeight: geometry.size.height, alignment: .top)
@@ -89,8 +89,8 @@ struct SelectPeripheralView: View {
         }
     }
     
-    var titileLabel: some View {
-        Text("Choose the device you'd like to record with")
+    var titleLabel: some View {
+        Text(Strings.SelectPeripheralView.titleLabel)
             .font(Font.moderate(size: 25, weight: .bold))
             .foregroundColor(.accentColor)
             .multilineTextAlignment(.leading)
@@ -112,7 +112,7 @@ struct SelectPeripheralView: View {
         Button(action: {
             bluetoothManager.startScanning()
         }, label: {
-            Text("Don't see a device? Refresh scanning.")
+            Text(Strings.SelectPeripheralView.refreshButton)
         })
     }
     
@@ -127,7 +127,7 @@ struct SelectPeripheralView: View {
         }
         
         return NavigationLink(destination: destination) {
-            Text("Connect")
+            Text(Strings.SelectPeripheralView.connectText)
         }
         .buttonStyle(BlueButtonStyle())
     }
