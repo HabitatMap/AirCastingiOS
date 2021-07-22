@@ -15,7 +15,9 @@ struct MainTabBarView: View {
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     @EnvironmentObject var persistenceController: PersistenceController
     @EnvironmentObject var microphoneManager: MicrophoneManager
-    @StateObject var tabSelection = TabBarSelection()
+    let sessionSynchronizer: SessionSynchronizer
+    @StateObject var tabSelection: TabBarSelection = TabBarSelection()
+    @StateObject var selectedSection = SelectSection()
 
     var body: some View {
         TabView(selection: $tabSelection.selection) {
@@ -27,6 +29,7 @@ struct MainTabBarView: View {
             try! measurementUpdatingService.start()
         }
         .environmentObject(tabSelection)
+        .environmentObject(selectedSection)
     }
 }
 
@@ -42,7 +45,6 @@ private extension MainTabBarView {
         .tag(TabBarSelection.Tab.dashboard)
     }
 
-    #warning("TODO: Change starting view")
     private var createSessionTab: some View {
         ChooseSessionTypeView(sessionContext: CreateSessionContext(), urlProvider: urlProvider)
             .tabItem {
@@ -55,7 +57,8 @@ private extension MainTabBarView {
         SettingsView(urlProvider: UserDefaultsBaseURLProvider(), logoutController: DefaultLogoutController(
                         userAuthenticationSession: userAuthenticationSession,
                         sessionStorage: SessionStorage(persistenceController: persistenceController),
-                        microphoneManager: microphoneManager))
+                        microphoneManager: microphoneManager,
+                        sessionSynchronizer: sessionSynchronizer))
             .tabItem {
                 Image(systemName: "gearshape")
             }
@@ -73,12 +76,16 @@ class TabBarSelection: ObservableObject {
     }
 }
 
+class SelectSection: ObservableObject {
+    @Published var selectedSection = SelectedSection.mobileActive
+}
+
 #if DEBUG
 struct ContentView_Previews: PreviewProvider {
     private static let persistenceController = PersistenceController(inMemory: true)
 
     static var previews: some View {
-        MainTabBarView(measurementUpdatingService: MeasurementUpdatingServiceMock(), urlProvider: DummyURLProvider())
+        MainTabBarView(measurementUpdatingService: MeasurementUpdatingServiceMock(), urlProvider: DummyURLProvider(), sessionSynchronizer: DummySessionSynchronizer())
             .environmentObject(UserAuthenticationSession())
             .environmentObject(BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: PreviewMeasurementStreamStorage())))
             .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))

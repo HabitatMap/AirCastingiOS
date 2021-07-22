@@ -94,6 +94,7 @@ extension MicrophoneManager: AVAudioRecorderDelegate {
         assertionFailure("audio recorder encode error did occur \(String(describing: error))")
     }
 }
+
 private extension MicrophoneManager {
     func sampleMeasurement() throws {
         recorder.updateMeters()
@@ -119,7 +120,8 @@ private extension MicrophoneManager {
                                        thresholdHigh: 80,
                                        thresholdMedium: 70,
                                        thresholdLow: 60,
-                                       thresholdVeryLow: 20)
+                                       thresholdVeryLow: -100)
+        #warning("TODO: Change thresholdVeryLow to 20")
         return try measurementStreamStorage.createSessionAndMeasurementStream(session, stream)
     }
     

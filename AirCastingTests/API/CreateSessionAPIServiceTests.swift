@@ -37,7 +37,7 @@ final class CreateSessionAPIServiceTests: XCTestCase {
     }
 
     func testRequestCreation() throws {
-        struct APIInput: Codable {
+        struct APIInput: Codable, Equatable {
             let session: String
             let compression: Bool
         }
@@ -49,6 +49,7 @@ final class CreateSessionAPIServiceTests: XCTestCase {
         tested.createEmptyFixedWifiSession(input: sampleInput) { _ in }
 
         let request = try XCTUnwrap(receivedRequest)
+        let httpBody = try XCTUnwrap(request.httpBody)
         XCTAssertEqual(request.url, URL(string:"http://aircasting.org/api/realtime/sessions.json")!)
         XCTAssertEqual(request.httpMethod, "POST")
         XCTAssertEqual(request.allHTTPHeaderFields, ["Accept": "application/json", "Content-Type": "application/json"])
@@ -63,7 +64,7 @@ final class CreateSessionAPIServiceTests: XCTestCase {
         let sessionBase64String = gzippedData.base64EncodedString()
 
         let apiInput = APIInput(session: sessionBase64String, compression: sampleInput.compression)
-        XCTAssertEqual(receivedRequest?.httpBody, try encoder.encode(apiInput))
+        XCTAssertEqual(try JSONDecoder().decode(APIInput.self, from: httpBody), apiInput)
     }
 
     func testRequestCreationFailedWhenAuthorizationFails() throws {

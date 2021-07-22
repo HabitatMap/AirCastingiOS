@@ -42,7 +42,6 @@ struct MultiSliderView: View {
         GeometryReader { geometry in
             ZStack {
                 colors.last
-                #warning("TODO: handle situation when thresholdVeryHigh = 0")
                 ForEach(thresholdButtonValues.indices.reversed(), id: \.self) { index in
                     colors[index]
                         .frame(width: calculateXAxisSize(thresholdValue: thresholdButtonValues[index], geometry: geometry))
@@ -92,7 +91,6 @@ struct MultiSliderView: View {
     }
     
     func labels(geometry: GeometryProxy) -> some View {
-        let frameWidth = geometry.frame(in: .local).size.width
         let y = geometry.frame(in: .local).size.height / 2
         return ForEach(thresholds.indices, id: \.self) { index in
             let ints = Int(thresholds[index])

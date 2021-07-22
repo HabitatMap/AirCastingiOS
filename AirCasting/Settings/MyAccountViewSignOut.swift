@@ -9,6 +9,7 @@ struct MyAccountViewSignOut: View {
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     @EnvironmentObject var persistenceController: PersistenceController
     @EnvironmentObject var microphoneManager: MicrophoneManager
+    
     var body: some View {
         ZStack {
             VStack(alignment: .leading) {
@@ -24,9 +25,9 @@ struct MyAccountViewSignOut: View {
 
 private extension MyAccountViewSignOut {
     var logInLabel: some View {
-        Text(Strings.SignOutSettings.Logged)
+        Text(Strings.SignOutSettings.Logged + "\(KeychainStorage(service:  Bundle.main.bundleIdentifier!).getUsername())")
             .foregroundColor(.aircastingGray)
-            .font(Font.muli(size: 13))
+            .font(Font.muli(size: 16))
             .padding()
     }
     

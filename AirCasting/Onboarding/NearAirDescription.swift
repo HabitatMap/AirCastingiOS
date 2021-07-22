@@ -36,7 +36,7 @@ private extension NearAirDescription {
     }
     
     private var titleText: some View {
-        Text("How’s the air \nnear you?")
+        Text(Strings.OnboardingNearAir.title)
             .font(Font.moderate(size: 32, weight: .bold))
             .foregroundColor(.accentColor)
             .multilineTextAlignment(.leading)
@@ -44,7 +44,7 @@ private extension NearAirDescription {
     }
     
     private var descriptionText: some View {
-        Text("Find and follow a fixed air quality monitor near you and know how clean or polluted your air is right now.")
+        Text(Strings.OnboardingNearAir.description)
             .font(Font.muli(size: 16))
             .foregroundColor(.aircastingGray)
             .multilineTextAlignment(.leading)
@@ -56,7 +56,7 @@ private extension NearAirDescription {
         NavigationLink(
             destination: AirBeamOnboarding(completion: completion),
             label: {
-                Text("Continue")
+                Text(Strings.OnboardingNearAir.continueButton)
                     .font(Font.moderate(size: 16, weight: .semibold))
             }
         )

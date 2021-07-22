@@ -33,22 +33,22 @@ struct AirBeamOnboarding: View {
         }
         
         private var sheetTitle: some View {
-            Text("How AirBeam works?")
+            Text(Strings.OnboardingAirBeamSheet.sheetTitle)
                 .font(Font.moderate(size: 28, weight: .bold))
                 .foregroundColor(.aircastingMint)
         }
         
         private var sheetDescription: some View {
             VStack {
-                Text("In")
-                    + Text(" mobile ")
+                Text(Strings.OnboardingAirBeamSheet.sheetDescription_1)
+                    + Text(Strings.OnboardingAirBeamSheet.sheetDescription_2)
                     .foregroundColor(.aircastingMint)
                     .fontWeight(.bold)
-                    + Text("mode, the AirBeam captures personal exposures.\n\n\nIn")
-                    + Text(" fixed ")
+                    + Text(Strings.OnboardingAirBeamSheet.sheetDescription_3)
+                    + Text(Strings.OnboardingAirBeamSheet.sheetDescription_4)
                     .foregroundColor(.aircastingMint)
                     .fontWeight(.bold)
-                    + Text("mode, it can be installed indoors or outdoors to keep tabs on pollution levels in your home, office, backyard, or neighborhood 24/7.")
+                    + Text(Strings.OnboardingAirBeamSheet.sheetDescription_5)
             }
             .font(Font.muli(size: 16))
             .lineSpacing(10.0)
@@ -72,7 +72,7 @@ private extension AirBeamOnboarding {
     }
     
     private var titleText: some View {
-        Text("Measure and map \nyour exposure \nto air pollution")
+        Text(Strings.OnboardingAirBeam.title)
             .font(Font.moderate(size: 32, weight: .bold))
             .foregroundColor(.aircastingMint)
             .multilineTextAlignment(.leading)
@@ -83,7 +83,7 @@ private extension AirBeamOnboarding {
         Button(action: {
             showingHalfModal = true
         }, label: {
-            Text("Learn More")
+            Text(Strings.OnboardingAirBeam.sheetButton)
                 .navigationBarTitle("")
                 .navigationBarHidden(true)
                 .font(Font.moderate(size: 16, weight: .semibold))
@@ -93,7 +93,7 @@ private extension AirBeamOnboarding {
     }
     
     private var descriptionText: some View {
-        Text("Connect AirBeam to measure air quality humidity, and temperature.")
+        Text(Strings.OnboardingAirBeam.description)
             .font(Font.muli(size: 16))
             .foregroundColor(.aircastingGray)
             .lineSpacing(10.0)
@@ -105,7 +105,7 @@ private extension AirBeamOnboarding {
         NavigationLink(
             destination: PrivacyOnboarding(completion: completion),
             label: {
-                Text("Continue")
+                Text(Strings.OnboardingAirBeam.continueButton)
                     .font(Font.moderate(size: 16, weight: .semibold))
             }
         )
