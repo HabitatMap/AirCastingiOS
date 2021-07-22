@@ -3,7 +3,7 @@
 
 import Foundation
 
-enum LocationSates {
+enum LocationState {
     case granted
     case denied
 }

@@ -63,4 +63,10 @@ struct Strings {
         static let micLabel_2: String = "to measure sound level"
         static let chooseButton: String = "Choose"
     }
+    
+    enum TurnOnBluetoothView {
+        static let title: String = "Turn on Bluetooth"
+        static let messageText: String = "Turn on Bluetooth to enable your phone to connect to the AirBeam"
+        static let continueButton: String = "Continue"
+    }
 }

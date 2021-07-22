@@ -4,12 +4,12 @@
 import Foundation
 import SwiftUI
 
-protocol SettingsRedirectionProtocol {
+protocol SettingsRedirection {
     func goToLocationAuthSettings()
     func goToBluetoothAuthSettings()
 }
 
-final class SettingsRedirection: SettingsRedirectionProtocol, ObservableObject {
+final class DefaultSettingsRedirection: SettingsRedirection {
     
     func goToLocationAuthSettings() {
         if let url = URL(string: UIApplication.openSettingsURLString) {
@@ -28,5 +28,4 @@ final class SettingsRedirection: SettingsRedirectionProtocol, ObservableObject {
             }
         }
     }
-    
 }

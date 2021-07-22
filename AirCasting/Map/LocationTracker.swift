@@ -16,7 +16,7 @@ class LocationTracker: NSObject, ObservableObject, CLLocationManagerDelegate {
         return $0
     }(CLLocationManager())
     
-    @Published var locationGranted = LocationSates.granted
+    @Published var locationGranted = LocationState.granted
     @Published var allLocations: [CLLocation] = []
     
     func requestAuthorisation() {

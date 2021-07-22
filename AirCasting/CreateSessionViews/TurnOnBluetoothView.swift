@@ -5,16 +5,32 @@
 //  Created by Lunar on 03/02/2021.
 //
 
-import SwiftUI
-import CoreBluetooth
 import AirCastingStyling
+import CoreBluetooth
+import SwiftUI
 
-struct TurnOnBluetoothView: View {
+struct TurnOnBluetoothView: View, SettingsRedirection {
+    func goToLocationAuthSettings() {
+        if let url = URL(string: UIApplication.openSettingsURLString) {
+            let app = UIApplication.shared
+            if app.canOpenURL(url) {
+                app.open(url, options: [:], completionHandler: nil)
+            }
+        }
+    }
+    
+    func goToBluetoothAuthSettings() {
+        if let url = URL(string: UIApplication.openSettingsURLString) {
+            let app = UIApplication.shared
+            if app.canOpenURL(url) {
+                app.open(url, options: [:], completionHandler: nil)
+            }
+        }
+    }
     
     @State private var isPowerABLinkActive = false
     @EnvironmentObject var bluetoothManager: BluetoothManager
-    @EnvironmentObject var settingsRedirection: SettingsRedirection
-    @Binding var creatingSessionFlowContinues : Bool
+    @Binding var creatingSessionFlowContinues: Bool
     
     let urlProvider: BaseURLProvider
     
@@ -33,13 +49,14 @@ struct TurnOnBluetoothView: View {
     }
     
     var titleLabel: some View {
-        Text("Turn on Bluetooth")
+        Text(Strings.TurnOnBluetoothView.title)
             .font(Font.moderate(size: 25,
                                 weight: .bold))
             .foregroundColor(.accentColor)
     }
+
     var messageLabel: some View {
-        Text("Turn on Bluetooth to enable your phone to connect to the AirBeam")
+        Text(Strings.TurnOnBluetoothView.messageText)
             .font(Font.moderate(size: 18,
                                 weight: .regular))
             .foregroundColor(.aircastingGray)
@@ -49,7 +66,7 @@ struct TurnOnBluetoothView: View {
     var continueButton: some View {
         Button(action: {
             if CBCentralManager.authorization != .allowedAlways {
-                settingsRedirection.goToBluetoothAuthSettings()
+                goToBluetoothAuthSettings()
             } else {
                 if bluetoothManager.centralManager.state != .poweredOn {
                     goToBluetoothSettings()
@@ -58,18 +75,20 @@ struct TurnOnBluetoothView: View {
                 }
             }
         }, label: {
-            Text("Continue")
+            Text(Strings.TurnOnBluetoothView.continueButton)
         })
-        .frame(maxWidth: .infinity)
-        .buttonStyle(BlueButtonStyle())
-        .background(
-            NavigationLink(
-                destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider),
-                isActive: $isPowerABLinkActive,
-                label: {
-                    EmptyView()
-                })
-        )}
+            .frame(maxWidth: .infinity)
+            .buttonStyle(BlueButtonStyle())
+            .background(
+                NavigationLink(
+                    destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider),
+                    isActive: $isPowerABLinkActive,
+                    label: {
+                        EmptyView()
+                    }
+                )
+            )
+    }
     
     func goToBluetoothSettings() {
         if let url = URL(string: "App-prefs:root=Bluetooth") {

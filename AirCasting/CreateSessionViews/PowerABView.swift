@@ -29,7 +29,7 @@ struct PowerABView: View {
             continueButton
                 .buttonStyle(BlueButtonStyle())
         }.alert(isPresented: $showAlert) {
-           locationAlert
+            Alert.locationAlert
         }
 
         .padding()

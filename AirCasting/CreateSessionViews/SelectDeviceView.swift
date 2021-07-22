@@ -38,7 +38,7 @@ struct SelectDeviceView: View {
             chooseButton
             
         }.alert(isPresented: $showAlert) {
-            locationAlert
+            Alert.locationAlert
         }
         .padding()
         .onAppear {
