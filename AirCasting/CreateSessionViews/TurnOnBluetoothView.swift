@@ -9,9 +9,10 @@ import AirCastingStyling
 import CoreBluetooth
 import SwiftUI
 
-struct TurnOnBluetoothView: View, SettingsRedirection {
+struct TurnOnBluetoothView: View {
    
     @State private var isPowerABLinkActive = false
+    @EnvironmentObject var settingsRedirection: DefaultSettingsRedirection
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @Binding var creatingSessionFlowContinues: Bool
     
@@ -49,10 +50,10 @@ struct TurnOnBluetoothView: View, SettingsRedirection {
     var continueButton: some View {
         Button(action: {
             if CBCentralManager.authorization != .allowedAlways {
-                goToBluetoothAuthSettings()
+                settingsRedirection.goToBluetoothAuthSettings()
             } else {
                 if bluetoothManager.centralManager.state != .poweredOn {
-                    goToBluetoothAuthSettings()
+                    settingsRedirection.goToBluetoothAuthSettings()
                 } else {
                     isPowerABLinkActive = true
                 }

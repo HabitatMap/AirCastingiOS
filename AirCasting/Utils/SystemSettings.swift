@@ -29,4 +29,4 @@ extension SettingsRedirection {
     }
 }
 
-final class DefaultSettingsRedirection: SettingsRedirection { }
+final class DefaultSettingsRedirection: SettingsRedirection, ObservableObject { }
