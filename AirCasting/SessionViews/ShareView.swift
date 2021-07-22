@@ -5,7 +5,8 @@ import AirCastingStyling
 import MessageUI
 import SwiftUI
 
-struct ShareViewModal: View {
+
+struct ShareView: View {
     @Binding var showModal: Bool
     @State var email: String = ""
     @State var itemsForSharing: [String] = ["www.google.com"]

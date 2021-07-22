@@ -35,6 +35,7 @@ struct Strings {
         static let signOut: String = "Sign Out"
     }
     
+
     enum sessionShare {
     }
     
@@ -171,5 +172,12 @@ struct Strings {
         static let title: String = "Turn on Bluetooth"
         static let messageText: String = "Turn on Bluetooth to enable your phone to connect to the AirBeam"
         static let continueButton: String = "Continue"
+    }
+    
+    struct DeleteSession {
+        static let title: String = "Delete this session"
+        static let description: String = "Which stream would you like to delete?"
+        static let continueButton: String = "Delete streams"
+        static let cancelButton: String = "Cancel"
     }
 }

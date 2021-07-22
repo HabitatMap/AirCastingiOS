@@ -11,6 +11,10 @@ struct SessionHeaderView: View {
     let action: () -> Void
     let isExpandButtonNeeded: Bool
     @ObservedObject var session: SessionEntity
+    @EnvironmentObject private var microphoneManager: MicrophoneManager
+    
+    @State private var shareModal = false
+    @State private var deleteModal = false
     @State private var showModal = false
     
     var body: some View {
@@ -19,8 +23,11 @@ struct SessionHeaderView: View {
                 dateAndTime
                 Spacer()
                 actionsMenu
-            }.sheet(isPresented: $showModal, content: {
-                ShareViewModal(showModal: $showModal)
+            }.sheet(isPresented: $shareModal, content: {
+                ShareView(showModal: $showModal)
+            })
+            .sheet(isPresented: $deleteModal, content: {
+                DeleteView(viewModel: DefaultDeleteSessionViewModel(), deleteModal: $deleteModal)
             })
             nameLabelAndExpandButton
         }
@@ -80,13 +87,13 @@ private extension SessionHeaderView {
             }
             
             Button {
-                showModal.toggle()
+                shareModal.toggle()
             } label: {
                 Label("Share session", systemImage: "square.and.arrow.up")
             }
             
             Button {
-                // action here
+                deleteModal.toggle()
             } label: {
                 Label("Delete session", systemImage: "xmark.circle")
             }

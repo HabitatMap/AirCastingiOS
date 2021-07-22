@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct RootAppView: View {
-    
+
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     let sessionSynchronizer: SessionSynchronizer
     let persistenceController: PersistenceController
