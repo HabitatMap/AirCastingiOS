@@ -24,6 +24,12 @@ extension MeasurementStreamEntity {
         latestMeasurementEntity?.value
     }
     
+    var averageValue: Double {
+        guard let allMeasurements = allMeasurements, !allMeasurements.isEmpty else { return 0 }
+        let summed = allMeasurements.map(\.value).reduce(0, +)
+        return summed / Double(allMeasurements.count)
+    }
+    
     var lastMeasurementTime: Date? {
         return latestMeasurementEntity?.time
     }

@@ -20,10 +20,7 @@ struct SessionCartView: View {
     let thresholds: [SensorThreshold]
 
     var shouldShowValues: MeasurementPresentationStyle {
-        let isFixed = session.type == .fixed
-        let isDormant = session.type == .mobile && session.status == .FINISHED
-        let shouldShow = isCollapsed && (isFixed || isDormant)
-        
+        let shouldShow = isCollapsed && (session.isFixed || session.isDormant)
         return shouldShow ? .hideValues : .showValues
     }
     var showChart: Bool {
