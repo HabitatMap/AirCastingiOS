@@ -141,7 +141,6 @@
 		DD430B0C26710E0600F1BF2E /* PrivacyOnboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD430B0B26710E0600F1BF2E /* PrivacyOnboarding.swift */; };
 		DD8C3810268A0E9400901FDF /* ShareViewModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8C380F268A0E9400901FDF /* ShareViewModal.swift */; };
 		DDEE3A44269736270098CCA9 /* NetworkChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDEE3A43269736270098CCA9 /* NetworkChecker.swift */; };
-		DDEE3A46269746790098CCA9 /* NetworkStates.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDEE3A45269746790098CCA9 /* NetworkStates.swift */; };
 		DDEE3A48269747250098CCA9 /* EditViewModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDEE3A47269747250098CCA9 /* EditViewModal.swift */; };
 		DDF7599A268332E900D906BA /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF75999268332E900D906BA /* Strings.swift */; };
 		EE969E7E1981C41852FB7745 /* Pods_AirCastingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A54057326D27D23E9906704 /* Pods_AirCastingTests.framework */; };
@@ -302,7 +301,6 @@
 		DD430B0B26710E0600F1BF2E /* PrivacyOnboarding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyOnboarding.swift; sourceTree = "<group>"; };
 		DD8C380F268A0E9400901FDF /* ShareViewModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewModal.swift; sourceTree = "<group>"; };
 		DDEE3A43269736270098CCA9 /* NetworkChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkChecker.swift; sourceTree = "<group>"; };
-		DDEE3A45269746790098CCA9 /* NetworkStates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkStates.swift; sourceTree = "<group>"; };
 		DDEE3A47269747250098CCA9 /* EditViewModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditViewModal.swift; sourceTree = "<group>"; };
 		DDF75999268332E900D906BA /* Strings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Strings.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -457,7 +455,6 @@
 				4F8CDBD1265F8DAC00976B25 /* Assertions.swift */,
 				DDF75999268332E900D906BA /* Strings.swift */,
 				DDEE3A43269736270098CCA9 /* NetworkChecker.swift */,
-				DDEE3A45269746790098CCA9 /* NetworkStates.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1022,7 +1019,6 @@
 				4FD2CA4726406F2C007E932E /* Diff.swift in Sources */,
 				AC5832DA25B196DD008C5DD5 /* Graph.swift in Sources */,
 				AC4A6A6A267CB3890001F639 /* AirCastingGraph.swift in Sources */,
-				DDEE3A46269746790098CCA9 /* NetworkStates.swift in Sources */,
 				AC93B8E725BEFE4F003D0A0D /* AirMapView.swift in Sources */,
 				4F945EF4264B2813008A5B22 /* ActivityIndicator.swift in Sources */,
 				3362B4ED25E69987008D61BA /* CreateSessionDetailsView.swift in Sources */,

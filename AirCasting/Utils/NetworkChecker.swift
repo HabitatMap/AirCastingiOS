@@ -4,23 +4,29 @@
 import Foundation
 import Network
 
-protocol CheckNetwork {
+protocol NetworkStatusPresenter {
+    var connectionAvailable: Bool { get }
     func monitorNetwork()
 }
 
-final class NetworkChecker: CheckNetwork {
-    @Published var connectionAvailable: Bool = false
-    let monitor = NWPathMonitor()
-    
+final class NetworkChecker: NetworkStatusPresenter, ObservableObject {
+    var connectionAvailable: Bool
+    private let monitor = NWPathMonitor()
+
+    init(connectionAvailable: Bool) {
+        self.connectionAvailable = connectionAvailable
+        monitorNetwork()
+    }
+
     func monitorNetwork() {
         monitor.pathUpdateHandler = { path in
             if path.status == .satisfied {
-                Log.info("Current devise has an network connection")
-                print("Current devise has an network connection")
+                Log.info("Current devise has a network connection")
+                print(Strings.NetworkChecker.satisfiedPathText)
                 self.connectionAvailable = true
             } else {
                 Log.info("Current devise does not have an network connection")
-                print("Current devise DOES NOT have an network connection")
+                print(Strings.NetworkChecker.failurePathText)
                 self.connectionAvailable = false
             }
         }
@@ -29,9 +35,15 @@ final class NetworkChecker: CheckNetwork {
     }
 }
 
-final class DummyNetworkChecker: CheckNetwork {
+final class DummyNetworkChecker: NetworkStatusPresenter {
+    var connectionAvailable: Bool
+
+    init(connectionAvailable: Bool) {
+        self.connectionAvailable = connectionAvailable
+    }
+
     func monitorNetwork() {
         Log.info("Current devise has an network connection")
-        print("Current devise has an network connection")
+        print(Strings.NetworkChecker.satisfiedPathText)
     }
 }

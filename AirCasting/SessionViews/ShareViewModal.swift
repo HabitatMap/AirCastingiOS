@@ -28,14 +28,14 @@ struct ShareViewModal: View {
     }
     
     private var title: some View {
-        Text(Strings.sessionShare.title)
+        Text(Strings.SessionShare.title)
             .font(Font.moderate(size: 32, weight: .bold))
             .foregroundColor(.accentColor)
             .bold()
     }
     
     private var description: some View {
-        Text(Strings.sessionShare.description)
+        Text(Strings.SessionShare.description)
             .font(Font.muli(size: 16))
             .foregroundColor(.aircastingGray)
     }
@@ -55,7 +55,7 @@ struct ShareViewModal: View {
     }
     
     private var descriptionMail: some View {
-        Text(Strings.sessionShare.emailDescription)
+        Text(Strings.SessionShare.emailDescription)
             .font(.subheadline)
             .foregroundColor(.aircastingGray)
     }

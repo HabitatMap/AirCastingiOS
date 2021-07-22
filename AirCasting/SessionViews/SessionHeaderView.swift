@@ -8,10 +8,9 @@
 import SwiftUI
 
 struct SessionHeaderView: View {
-
     let action: () -> Void
     let isExpandButtonNeeded: Bool
-    let networkChecker = NetworkChecker()
+    @EnvironmentObject var networkChecker: NetworkChecker
     @ObservedObject var session: SessionEntity
     @EnvironmentObject private var microphoneManager: MicrophoneManager
     var threshold: SensorThreshold
@@ -88,7 +87,7 @@ private extension SessionHeaderView {
     
     var measurementsMic: some View {
         VStack(alignment: .leading, spacing: 5) {
-            Text("Most recent measurement:")
+            Text(Strings.SessionHeaderView.measurementsMicText)
             if let dbStream = session.dbStream {
                 SingleMeasurementView(stream: dbStream,
                                       value: lastMicMeasurement(),
@@ -102,7 +101,7 @@ private extension SessionHeaderView {
         Button(action: {
             try! microphoneManager.stopRecording()
         }, label: {
-            Text("Stop recording")
+            Text(Strings.SessionHeaderView.stopButton)
                 .foregroundColor(.accentColor)
         })
     }
@@ -112,35 +111,35 @@ private extension SessionHeaderView {
             Button {
                 // action here
             } label: {
-                Label("Resume recording", systemImage: "repeat")
+                Label(Strings.SessionHeaderView.resumeButton, systemImage: "repeat")
             }
             
             Button {
-                DispatchQueue.global(qos: .background).async {
-                    networkChecker.monitorNetwork()
+                DispatchQueue.main.async {
+                    print(" \(networkChecker.connectionAvailable) NETWORK")
                     networkChecker.connectionAvailable ? showModalEdit.toggle() : showingAlert.toggle()
                 }
             } label: {
-                Label("Edit session", systemImage: "pencil")
+                Label(Strings.SessionHeaderView.editButton, systemImage: "pencil")
             }
             
             Button {
                 showModal.toggle()
             } label: {
-                Label("Share session", systemImage: "square.and.arrow.up")
+                Label(Strings.SessionHeaderView.shareButton, systemImage: "square.and.arrow.up")
             }
             
             Button {
                 // action here
             } label: {
-                Label("Delete session", systemImage: "xmark.circle")
+                Label(Strings.SessionHeaderView.deleteButton, systemImage: "xmark.circle")
             }
         } label: {
             EditButtonView()
         }.alert(isPresented: $showingAlert) {
-            Alert(title: Text("No internet connection"),
-                  message: Text("You need to have internet connection to edit session data"),
-                  dismissButton: .default(Text("Got it!")))
+            Alert(title: Text(Strings.SessionHeaderView.alertTitle),
+                  message: Text(Strings.SessionHeaderView.alertMessage),
+                  dismissButton: .default(Text(Strings.SessionHeaderView.confirmAlert)))
         }
         .sheet(isPresented: $showModalEdit) { EditViewModal(showModalEdit: $showModalEdit) }
     }

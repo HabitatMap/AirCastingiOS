@@ -10,7 +10,7 @@ import SwiftUI
 struct RootAppView: View {
     @ObservedObject var userAuthenticationSession = UserAuthenticationSession()
     @AppStorage("onBoardingKey", store: UserDefaults.standard) var passedOnboarding: Bool = false
-
+    let networkChecker = NetworkChecker(connectionAvailable: false)
     let persistenceController = PersistenceController.shared
     let bluetoothManager = BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared)))
     let microphoneManager = MicrophoneManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared))
@@ -37,6 +37,7 @@ struct RootAppView: View {
             .environmentObject(microphoneManager)
             .environmentObject(userAuthenticationSession)
             .environmentObject(persistenceController)
+            .environmentObject(networkChecker)
             .environment(\.managedObjectContext, persistenceController.viewContext)
     }
 }
