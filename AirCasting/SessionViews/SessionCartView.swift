@@ -30,7 +30,7 @@ struct SessionCartView: View {
         !isCollapsed && session.type == .mobile && session.status == .RECORDING
     }
     var hasStreams: Bool {
-        return session.allStreams != nil || session.allStreams != []
+        session.allStreams != nil || session.allStreams != []
     }
     
     var body: some View {
