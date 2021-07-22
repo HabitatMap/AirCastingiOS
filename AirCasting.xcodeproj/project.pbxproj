@@ -46,6 +46,7 @@
 		AC049F8B2608DCB000398197 /* Session+Mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC049F8A2608DCB000398197 /* Session+Mock.swift */; };
 		AC08A662266E2AEC0081697C /* ABMeasurementsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC08A661266E2AEC0081697C /* ABMeasurementsView.swift */; };
 		AC1471A325F23AE40062A53F /* CreateSessionAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC1471A225F23AE40062A53F /* CreateSessionAPI.swift */; };
+		AC158E0B26A199F9006C61D3 /* Array+SensorThreshold.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC158E0A26A199F9006C61D3 /* Array+SensorThreshold.swift */; };
 		AC194B0D2684BAB40048E2C8 /* SessionLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC194B0C2684BAB40048E2C8 /* SessionLoadingView.swift */; };
 		AC3203CB25CA991C00A68520 /* TurnOnBluetoothView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC3203CA25CA991C00A68520 /* TurnOnBluetoothView.swift */; };
 		AC32040425CC067D00A68520 /* CheckBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC32040325CC067D00A68520 /* CheckBox.swift */; };
@@ -263,6 +264,7 @@
 		AC049F8A2608DCB000398197 /* Session+Mock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Session+Mock.swift"; sourceTree = "<group>"; };
 		AC08A661266E2AEC0081697C /* ABMeasurementsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ABMeasurementsView.swift; sourceTree = "<group>"; };
 		AC1471A225F23AE40062A53F /* CreateSessionAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSessionAPI.swift; sourceTree = "<group>"; };
+		AC158E0A26A199F9006C61D3 /* Array+SensorThreshold.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+SensorThreshold.swift"; sourceTree = "<group>"; };
 		AC194B0C2684BAB40048E2C8 /* SessionLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionLoadingView.swift; sourceTree = "<group>"; };
 		AC1DAD4425C9858C009AC4D1 /* SelectPeripheralView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectPeripheralView.swift; sourceTree = "<group>"; };
 		AC1DAD4825C987B3009AC4D1 /* BluetoothManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothManager.swift; sourceTree = "<group>"; };
@@ -833,6 +835,7 @@
 		ACF77DEE25A7502600BB85B7 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				AC158E0A26A199F9006C61D3 /* Array+SensorThreshold.swift */,
 				AC797FE6263C2C1600970254 /* SensorThreshold.swift */,
 				AC524AAB2616003C0061AD45 /* DateFormatter.swift */,
 				AC93B8D925BEDC46003D0A0D /* Array.swift */,
@@ -1411,6 +1414,7 @@
 				AC489B5C2603614E00CEEC48 /* MoreInfoPopupView.swift in Sources */,
 				DDD24D9526A8569400D4A327 /* EmailForgotPasswordController.swift in Sources */,
 				AC524A892614733D0061AD45 /* CreatingSessionFlowRootView.swift in Sources */,
+				AC158E0B26A199F9006C61D3 /* Array+SensorThreshold.swift in Sources */,
 				4F8CDBD2265F8DAC00976B25 /* Assertions.swift in Sources */,
 				B3FD77C6267C94AF00E97CC2 /* SessionUploadService.swift in Sources */,
 				AC194B0D2684BAB40048E2C8 /* SessionLoadingView.swift in Sources */,

@@ -7,7 +7,7 @@ struct StreamsView: View {
     
     @Binding var selectedStream: MeasurementStreamEntity?
     @ObservedObject var session: SessionEntity
-    var threshold: SensorThreshold
+    var thresholds: [SensorThreshold]
     @EnvironmentObject private var microphoneManager: MicrophoneManager
     let measurementPresentationStyle: MeasurementPresentationStyle
 
@@ -23,7 +23,7 @@ struct StreamsView: View {
             }
         } else {
             ABMeasurementsView(session: session,
-                               threshold: threshold,
+                               thresholds: thresholds,
                                selectedStream: _selectedStream,
                                measurementPresentationStyle: measurementPresentationStyle)
         }
@@ -36,14 +36,17 @@ struct StreamsView: View {
                 .padding(.bottom, 3)
                 .padding(.horizontal)
             if let dbStream = session.dbStream {
-                SingleMeasurementView(stream: dbStream,
-                                      value: lastMicMeasurement(),
-                                      threshold: threshold,
-                                      selectedStream: .constant(dbStream),
-                                      measurementPresentationStyle: measurementPresentationStyle)
+                if let threshold = thresholds.threshold(for: dbStream) {
+                    SingleMeasurementView(stream: dbStream,
+                                          value: lastMicMeasurement(),
+                                          threshold: threshold,
+                                          selectedStream: .constant(dbStream),
+                                          measurementPresentationStyle: measurementPresentationStyle)
+                }
             }
         }
     }
+
     var stopRecordingButton: some View {
         Button(action: {
             try! microphoneManager.stopRecording()
@@ -64,7 +67,7 @@ struct StreamsWithMeasurementView_Previews: PreviewProvider {
     static var previews: some View {
         StreamsView(selectedStream: .constant(nil),
                     session: .mock,
-                    threshold: .mock,
+                    thresholds: [.mock],
                     measurementPresentationStyle: .showValues)
     }
 }
