@@ -4,12 +4,11 @@
 import CoreBluetooth
 import Foundation
 
-protocol ConnectingABProtocol {
-    var bluetoothManager: BluetoothManager { get }
+protocol AirBeamConnector {
     func performConnectingWithin10Second(peripheral: CBPeripheral, completion: @escaping () -> Void)
 }
 
-class ConnectingABViewModel: ConnectingABProtocol {
+class ConnectingABViewModel: AirBeamConnector {
     var bluetoothManager: BluetoothManager
     
     init(bluetoothManager: BluetoothManager) {
