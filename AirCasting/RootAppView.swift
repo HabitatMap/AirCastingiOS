@@ -9,6 +9,7 @@ import SwiftUI
 
 struct RootAppView: View {
 
+    let networkChecker = NetworkChecker(connectionAvailable: false)
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     let sessionSynchronizer: SessionSynchronizer
     let persistenceController: PersistenceController
@@ -43,6 +44,7 @@ struct RootAppView: View {
             .environmentObject(microphoneManager)
             .environmentObject(userAuthenticationSession)
             .environmentObject(persistenceController)
+            .environmentObject(networkChecker)
             .environmentObject(lifeTimeEventsProvider)
             .environmentObject(userSettings)
             .environment(\.managedObjectContext, persistenceController.viewContext)
