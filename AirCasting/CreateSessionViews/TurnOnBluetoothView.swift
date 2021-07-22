@@ -10,24 +10,7 @@ import CoreBluetooth
 import SwiftUI
 
 struct TurnOnBluetoothView: View, SettingsRedirection {
-    func goToLocationAuthSettings() {
-        if let url = URL(string: UIApplication.openSettingsURLString) {
-            let app = UIApplication.shared
-            if app.canOpenURL(url) {
-                app.open(url, options: [:], completionHandler: nil)
-            }
-        }
-    }
-    
-    func goToBluetoothAuthSettings() {
-        if let url = URL(string: UIApplication.openSettingsURLString) {
-            let app = UIApplication.shared
-            if app.canOpenURL(url) {
-                app.open(url, options: [:], completionHandler: nil)
-            }
-        }
-    }
-    
+   
     @State private var isPowerABLinkActive = false
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @Binding var creatingSessionFlowContinues: Bool
@@ -69,7 +52,7 @@ struct TurnOnBluetoothView: View, SettingsRedirection {
                 goToBluetoothAuthSettings()
             } else {
                 if bluetoothManager.centralManager.state != .poweredOn {
-                    goToBluetoothSettings()
+                    goToBluetoothAuthSettings()
                 } else {
                     isPowerABLinkActive = true
                 }

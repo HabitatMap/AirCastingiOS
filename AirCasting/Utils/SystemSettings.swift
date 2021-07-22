@@ -9,8 +9,7 @@ protocol SettingsRedirection {
     func goToBluetoothAuthSettings()
 }
 
-final class DefaultSettingsRedirection: SettingsRedirection {
-    
+extension SettingsRedirection {
     func goToLocationAuthSettings() {
         if let url = URL(string: UIApplication.openSettingsURLString) {
             let app = UIApplication.shared
@@ -29,3 +28,5 @@ final class DefaultSettingsRedirection: SettingsRedirection {
         }
     }
 }
+
+final class DefaultSettingsRedirection: SettingsRedirection { }
