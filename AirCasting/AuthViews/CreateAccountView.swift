@@ -10,6 +10,10 @@ import AirCastingStyling
 
 
 struct CreateAccountView: View {
+    
+    @EnvironmentObject var lifeTimeEventsProvider: LifeTimeEventsProvider
+    var completion: () -> Void
+    
     private let userAuthenticationSession: UserAuthenticationSession
     private let authorizationAPIService: AuthorizationAPIService
     private let baseURL: BaseURLProvider
@@ -22,17 +26,18 @@ struct CreateAccountView: View {
     @State private var isUsernameBlank = false
     @State private var presentedError: AuthorizationError?
     
-    init(userSession: UserAuthenticationSession, baseURL: BaseURLProvider) {
+    init(completion: @escaping () -> Void, userSession: UserAuthenticationSession, baseURL: BaseURLProvider) {
         userAuthenticationSession = userSession
         authorizationAPIService = AuthorizationAPIService(baseUrl: baseURL)
         self.baseURL = baseURL
+        self.completion = completion
     }
 
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
                 VStack(spacing: 50) {
-                    if ((UserDefaults.standard.value(forKey: "onBoardingKey") != nil) == true) {
+                    if lifeTimeEventsProvider.hasEverLoggedIn {
                         progressBar.hidden()
                     } else {
                         progressBar
@@ -144,6 +149,7 @@ private extension CreateAccountView {
                                 presentedError = error
                             Log.warning("Failed to create account \(error)")
                         case .success(let output):
+                            completion()
                             Log.info("Successfully created account")
                             do {
                                 let user = User(id: output.id, username: output.username, token: output.authentication_token, email: output.email)
@@ -162,7 +168,7 @@ private extension CreateAccountView {
     
     var signinButton: some View {
         NavigationLink(
-            destination: SignInView(userSession: userAuthenticationSession, urlProvider: baseURL),
+            destination: SignInView(completion: completion, userSession: userAuthenticationSession, urlProvider: baseURL).environmentObject(lifeTimeEventsProvider),
             label: {
                 signingButtonText
             })
@@ -207,7 +213,7 @@ private extension CreateAccountView {
 #if DEBUG
 struct CreateAccountView_Previews: PreviewProvider {
     static var previews: some View {
-        CreateAccountView(userSession: UserAuthenticationSession(), baseURL: DummyURLProvider())
+        CreateAccountView(completion: {}, userSession: UserAuthenticationSession(), baseURL: DummyURLProvider()).environmentObject(LifeTimeEventsProvider())
     }
 }
 #endif

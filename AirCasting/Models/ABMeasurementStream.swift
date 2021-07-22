@@ -10,7 +10,7 @@ import Foundation
 struct ABMeasurementStream {
     var measuredValue: Double
     var packageName: String
-    var sensorName: String
+    var sensorName: SensorName
     var measurementType: String
     var measurementShortType: String
     var unitName: String

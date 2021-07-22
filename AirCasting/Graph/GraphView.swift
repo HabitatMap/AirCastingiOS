@@ -17,10 +17,11 @@ struct GraphView: View {
         VStack(alignment: .trailing) {
             SessionHeaderView(action: {},
                               isExpandButtonNeeded: false,
-                              session: session,
-                              threshold: threshold,
-                              selectedStream: $selectedStream).padding()
-            
+                              session: session).padding()
+            StreamsView(selectedStream: $selectedStream,
+                        session: session,
+                        threshold: threshold,
+                        measurementPresentationStyle: .showValues)
             ZStack(alignment: .topLeading) {
                 if let selectedStream = selectedStream {
                     Graph(stream: selectedStream,

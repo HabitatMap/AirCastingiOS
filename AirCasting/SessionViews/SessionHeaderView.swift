@@ -11,10 +11,6 @@ struct SessionHeaderView: View {
     let action: () -> Void
     let isExpandButtonNeeded: Bool
     @ObservedObject var session: SessionEntity
-    @EnvironmentObject private var microphoneManager: MicrophoneManager
-    var threshold: SensorThreshold
-    @Binding var selectedStream: MeasurementStreamEntity?
-    
     @State private var showModal = false
     
     var body: some View {
@@ -24,23 +20,9 @@ struct SessionHeaderView: View {
                 Spacer()
                 actionsMenu
             }.sheet(isPresented: $showModal, content: {
-                ShareViewModal()
+                ShareViewModal(showModal: $showModal)
             })
             nameLabelAndExpandButton
-            if session.deviceType == .MIC {
-                HStack {
-                    measurementsMic
-                    Spacer()
-                    // This is a temporary solution for stopping mic session recording until we implement proper session edition menu
-                    if microphoneManager.session?.uuid == session.uuid, microphoneManager.isRecording, session.status == .RECORDING || session.status == .DISCONNETCED {
-                        stopRecordingButton
-                    }
-                }
-            } else {
-                ABMeasurementsView(session: session,
-                                   threshold: threshold,
-                                   selectedStream: _selectedStream)
-            }
         }
         .font(Font.moderate(size: 13, weight: .regular))
         .foregroundColor(.aircastingGray)
@@ -72,7 +54,7 @@ private extension SessionHeaderView {
                     Button(action: {
                         action()
                     }) {
-                        Image("expandButtonIcon")
+                        Image(systemName: "chevron.down")
                             .renderingMode(.original)
                     }
                 }
@@ -82,28 +64,7 @@ private extension SessionHeaderView {
         }
         .foregroundColor(.darkBlue)
     }
-    
-    var measurementsMic: some View {
-        VStack(alignment: .leading, spacing: 5) {
-            Text("Most recent measurement:")
-            if let dbStream = session.dbStream {
-                SingleMeasurementView(stream: dbStream,
-                                      value: lastMicMeasurement(),
-                                      threshold: threshold,
-                                      selectedStream: .constant(dbStream))
-            }
-        }
-    }
-    
-    var stopRecordingButton: some View {
-        Button(action: {
-            try! microphoneManager.stopRecording()
-        }, label: {
-            Text("Stop recording")
-                .foregroundColor(.accentColor)
-        })
-    }
-    
+
     var actionsMenu: some View {
         Menu {
             Button {
@@ -130,13 +91,15 @@ private extension SessionHeaderView {
                 Label("Delete session", systemImage: "xmark.circle")
             }
         } label: {
-            EditButtonView()
+            ZStack(alignment: .trailing) {
+                EditButtonView()
+                Rectangle()
+                    .frame(width: 30, height: 20, alignment: .trailing)
+                    .opacity(0.0001)
+            }
         }
     }
     
-    func lastMicMeasurement() -> Double {
-        return session.dbStream?.latestValue ?? 0
-    }
 }
 
 #if DEBUG
@@ -144,9 +107,7 @@ struct SessionHeader_Previews: PreviewProvider {
     static var previews: some View {
         SessionHeaderView(action: {},
                           isExpandButtonNeeded: true,
-                          session: SessionEntity.mock,
-                          threshold: .mock,
-                          selectedStream: .constant(nil))
+                          session: SessionEntity.mock)
             .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
     }
 }

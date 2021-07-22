@@ -16,6 +16,7 @@ struct ChooseSessionTypeView: View {
     @State private var isMobileLinkActive = false
     @State private var didTapFixedSession = false
     @EnvironmentObject var bluetoothManager: BluetoothManager
+    @EnvironmentObject var userSettings: UserSettings
     let urlProvider: BaseURLProvider
     
     var body: some View {
@@ -96,12 +97,12 @@ struct ChooseSessionTypeView: View {
     func goToNextFixedSessionStep() {
         createNewSession(isSessionFixed: true)
         
-        // This will trigger system bluetooth authorization alert
+        // This will trigger system bluetooth authorisation alert
         if CBCentralManager.authorization == .notDetermined {
             _ = bluetoothManager.centralManager
             didTapFixedSession = true
         } else if CBCentralManager.authorization == .allowedAlways,
-           bluetoothManager.centralManager.state == .poweredOn {
+            bluetoothManager.centralManager.state == .poweredOn {
             isPowerABLinkActive = true
         } else {
             isTurnBluetoothOnLinkActive = true
@@ -181,8 +182,10 @@ struct ChooseSessionTypeView: View {
     private func createNewSession(isSessionFixed: Bool) {
         sessionContext.sessionUUID = SessionUUID()
         if isSessionFixed {
+            sessionContext.contribute = true
             sessionContext.sessionType = SessionType.fixed
         } else {
+            sessionContext.contribute = userSettings.contributingToCrowdMap
             sessionContext.sessionType = SessionType.mobile
         }
     }
@@ -193,7 +196,7 @@ struct CreateSessionView_Previews: PreviewProvider {
     static var previews: some View {
         ChooseSessionTypeView(
             sessionContext: CreateSessionContext(), urlProvider: DummyURLProvider())
-                .environmentObject(BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: PreviewMeasurementStreamStorage())))
+            .environmentObject(BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: PreviewMeasurementStreamStorage())))
     }
 }
 #endif
