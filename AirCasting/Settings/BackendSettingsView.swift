@@ -14,7 +14,7 @@ struct BackendSettingsView: View {
     @State private var portText: String = ""
     @State private var url: URL?
     @State private var urlWithoutPort: URL?
-    @State private var port: URL?
+    @State private var port: Int?
     @State private var buttonEnabled: Bool = false
     
     
@@ -22,11 +22,11 @@ struct BackendSettingsView: View {
         VStack(alignment: .leading) {
             title
             Spacer()
-            createTextfield(placeholder: "current url: \(urlProvider.baseAppURLwithoutPort)", binding: $pathText)
+            createTextfield(placeholder: "current url: \(urlWithoutPort)", binding: $pathText)
                 .onChange(of: pathText) { _ in
                     updateURL()
                 }
-            createTextfield(placeholder: "current port: \(urlProvider.baseAppPort)", binding: $portText)
+            createTextfield(placeholder: "current port: \(port)", binding: $portText)
                 .onChange(of: portText) { _ in
                     updateURL()
                 }
@@ -46,8 +46,7 @@ struct BackendSettingsView: View {
     private var oKButton: some View {
         Button {
             urlProvider.baseAppURL = url ?? URL(string: "http://aircasting.org/api")!
-            urlProvider.baseAppURLwithoutPort = urlWithoutPort ?? URL(string: "http://aircasting.org/api")!
-            urlProvider.baseAppPort = port ?? URL(string: "80")!
+            splitURL()
             presentationMode.wrappedValue.dismiss()
         } label: {
             Text(Strings.BackendSettings.Ok)
@@ -64,11 +63,16 @@ struct BackendSettingsView: View {
     private func updateURL() {
         do {
             try url = backendURLBuilder.createURL(url: pathText, port: portText)
-            urlWithoutPort = URL(string: pathText)
-            port = URL(string: portText)
             buttonEnabled = true
         } catch {
             buttonEnabled = false
         }
+    }
+    
+    private func splitURL() {
+        let url =  urlProvider.baseAppURL
+        let components = URLComponents(url: url, resolvingAgainstBaseURL: false)!
+        urlWithoutPort = components.url!
+        port = components.port ?? 80
     }
 }
