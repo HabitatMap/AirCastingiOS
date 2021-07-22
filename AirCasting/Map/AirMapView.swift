@@ -11,7 +11,7 @@ import Foundation
 import CoreData
 
 struct AirMapView: View {
-    var threshold: SensorThreshold
+    var thresholds: [SensorThreshold]
     @ObservedObject var session: SessionEntity
     @Binding var selectedStream: MeasurementStreamEntity?
     
@@ -27,20 +27,24 @@ struct AirMapView: View {
         VStack(alignment: .trailing, spacing: 20) {
             SessionHeaderView(action: {},
                               isExpandButtonNeeded: false,
-                              session: session,
-                              threshold: threshold,
-                              selectedStream: $selectedStream)
+                              session: session)
+            StreamsView(selectedStream: $selectedStream,
+                        session: session,
+                        thresholds: thresholds,
+                        measurementPresentationStyle: .showValues)
+            if let threshold = thresholds.threshold(for: selectedStream) {
             ZStack(alignment: .topLeading) {
                 GoogleMapView(pathPoints: pathPoints,
-                              thresholds: threshold)
+                              threshold: threshold)
                 StatisticsContainerView()
             }
-            NavigationLink(destination: HeatmapSettingsView(changedThresholdValues: threshold.rawThresholdsBinding)) {
-                EditButtonView()
+                NavigationLink(destination: HeatmapSettingsView(changedThresholdValues: threshold.rawThresholdsBinding)) {
+                    EditButtonView()
+                }
+                ThresholdsSliderView(threshold: threshold)
+                    // Fixes labels covered by tabbar
+                    .padding(.bottom)
             }
-            ThresholdsSliderView(threshold: threshold)
-                // Fixes labels covered by tabbar
-                .padding(.bottom)
         }
         .navigationBarTitleDisplayMode(.inline)
         .padding()
@@ -50,7 +54,7 @@ struct AirMapView: View {
 #if DEBUG
 struct Map_Previews: PreviewProvider {
     static var previews: some View {
-        AirMapView(threshold: .mock, session: .mock, selectedStream: .constant(nil))
+        AirMapView(thresholds: [.mock], session: .mock, selectedStream: .constant(nil))
     }
 }
 #endif

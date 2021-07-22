@@ -46,11 +46,15 @@ public struct Session {
     }
 }
 
-public struct SessionUUID: Codable, RawRepresentable, Hashable, CustomStringConvertible {
+public struct SessionUUID: Codable, RawRepresentable, Hashable, CustomStringConvertible, ExpressibleByStringLiteral {
     public let rawValue: String
 
     public init() {
         rawValue = UUID().uuidString
+    }
+    
+    public init(stringLiteral value: StringLiteralType) {
+        rawValue = value
     }
 
     public init?(uuidString: String) {

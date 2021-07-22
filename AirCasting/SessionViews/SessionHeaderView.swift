@@ -13,9 +13,9 @@ struct SessionHeaderView: View {
     @EnvironmentObject var networkChecker: NetworkChecker
     @ObservedObject var session: SessionEntity
     @EnvironmentObject private var microphoneManager: MicrophoneManager
-    var threshold: SensorThreshold
-    @Binding var selectedStream: MeasurementStreamEntity?
     @State private var showingAlert = false
+    @State private var shareModal = false
+    @State private var deleteModal = false
     @State private var showModal = false
     @State private var showModalEdit = false
     
@@ -25,24 +25,13 @@ struct SessionHeaderView: View {
                 dateAndTime
                 Spacer()
                 actionsMenu
-            }.sheet(isPresented: $showModal, content: {
-                ShareViewModal()
+            }.sheet(isPresented: $shareModal, content: {
+                ShareView(showModal: $showModal)
+            })
+            .sheet(isPresented: $deleteModal, content: {
+                DeleteView(viewModel: DefaultDeleteSessionViewModel(), deleteModal: $deleteModal)
             })
             nameLabelAndExpandButton
-            if session.deviceType == .MIC {
-                HStack {
-                    measurementsMic
-                    Spacer()
-                    // This is a temporary solution for stopping mic session recording until we implement proper session edition menu
-                    if microphoneManager.session?.uuid == session.uuid, microphoneManager.isRecording, session.status == .RECORDING || session.status == .DISCONNETCED {
-                        stopRecordingButton
-                    }
-                }
-            } else {
-                ABMeasurementsView(session: session,
-                                   threshold: threshold,
-                                   selectedStream: _selectedStream)
-            }
         }
         .font(Font.moderate(size: 13, weight: .regular))
         .foregroundColor(.aircastingGray)
@@ -74,7 +63,7 @@ private extension SessionHeaderView {
                     Button(action: {
                         action()
                     }) {
-                        Image("expandButtonIcon")
+                        Image(systemName: "chevron.down")
                             .renderingMode(.original)
                     }
                 }
@@ -84,28 +73,7 @@ private extension SessionHeaderView {
         }
         .foregroundColor(.darkBlue)
     }
-    
-    var measurementsMic: some View {
-        VStack(alignment: .leading, spacing: 5) {
-            Text(Strings.SessionHeaderView.measurementsMicText)
-            if let dbStream = session.dbStream {
-                SingleMeasurementView(stream: dbStream,
-                                      value: lastMicMeasurement(),
-                                      threshold: threshold,
-                                      selectedStream: .constant(dbStream))
-            }
-        }
-    }
-    
-    var stopRecordingButton: some View {
-        Button(action: {
-            try! microphoneManager.stopRecording()
-        }, label: {
-            Text(Strings.SessionHeaderView.stopButton)
-                .foregroundColor(.accentColor)
-        })
-    }
-    
+
     var actionsMenu: some View {
         Menu {
             Button {
@@ -124,18 +92,23 @@ private extension SessionHeaderView {
             }
             
             Button {
-                showModal.toggle()
+                shareModal.toggle()
             } label: {
                 Label(Strings.SessionHeaderView.shareButton, systemImage: "square.and.arrow.up")
             }
             
             Button {
-                // action here
+                deleteModal.toggle()
             } label: {
                 Label(Strings.SessionHeaderView.deleteButton, systemImage: "xmark.circle")
             }
         } label: {
-            EditButtonView()
+            ZStack(alignment: .trailing) {
+                EditButtonView()
+                Rectangle()
+                    .frame(width: 30, height: 20, alignment: .trailing)
+                    .opacity(0.0001)
+            }
         }.alert(isPresented: $showingAlert) {
             Alert(title: Text(Strings.SessionHeaderView.alertTitle),
                   message: Text(Strings.SessionHeaderView.alertMessage),
@@ -144,9 +117,6 @@ private extension SessionHeaderView {
         .sheet(isPresented: $showModalEdit) { EditViewModal(showModalEdit: $showModalEdit) }
     }
     
-    func lastMicMeasurement() -> Double {
-        return session.dbStream?.latestValue ?? 0
-    }
 }
 
 #if DEBUG
@@ -154,9 +124,7 @@ struct SessionHeader_Previews: PreviewProvider {
     static var previews: some View {
         SessionHeaderView(action: {},
                           isExpandButtonNeeded: true,
-                          session: SessionEntity.mock,
-                          threshold: .mock,
-                          selectedStream: .constant(nil))
+                          session: SessionEntity.mock)
             .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
     }
 }
