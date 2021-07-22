@@ -25,9 +25,7 @@
              userDefaults.bool(forKey: "onBoardingKey")
          }
      }
-
      init(userDefaults: UserDefaults = .standard) {
          self.userDefaults = userDefaults
      }
-
  }
