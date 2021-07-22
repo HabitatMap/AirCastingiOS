@@ -19,7 +19,6 @@ struct DeleteSessionOptionViewModel {
 }
 
 protocol DeleteSessionViewModel: ObservableObject {
-    #warning("Abstract microphone sessions away")
     var options: [DeleteSessionOptionViewModel] { get }
     var deleteEnabled: Bool { get }
     func didSelect(option: DeleteSessionOptionViewModel)
