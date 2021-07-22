@@ -6,7 +6,6 @@ import Network
 
 protocol NetworkStatusPresenter {
     var connectionAvailable: Bool { get }
-    func monitorNetwork()
 }
 
 final class NetworkChecker: NetworkStatusPresenter, ObservableObject {
@@ -18,7 +17,7 @@ final class NetworkChecker: NetworkStatusPresenter, ObservableObject {
         monitorNetwork()
     }
 
-    func monitorNetwork() {
+    private func monitorNetwork() {
         monitor.pathUpdateHandler = { path in
             if path.status == .satisfied {
                 Log.info("Current devise has a network connection")
@@ -40,10 +39,5 @@ final class DummyNetworkChecker: NetworkStatusPresenter {
 
     init(connectionAvailable: Bool) {
         self.connectionAvailable = connectionAvailable
-    }
-
-    func monitorNetwork() {
-        Log.info("Current devise has an network connection")
-        print(Strings.NetworkChecker.satisfiedPathText)
     }
 }

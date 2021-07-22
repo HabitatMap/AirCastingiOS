@@ -45,9 +45,10 @@ struct EditViewModal: View {
         }.buttonStyle(BlueTextButtonStyle())
     }
 }
-
+#if DEBUG
 struct EditViewModal_Previews: PreviewProvider {
     static var previews: some View {
         EditViewModal(showModalEdit: .constant(false))
     }
 }
+#endif
