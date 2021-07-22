@@ -1,11 +1,10 @@
 // Created by Lunar on 28/06/2021.
 //
 
-import SwiftUI
 import AirCastingStyling
+import SwiftUI
 
 struct BackendSettingsView: View {
-    
     let backendURLBuilder = BackendURLValidator()
     
     @Environment(\.presentationMode) var presentationMode
@@ -13,20 +12,27 @@ struct BackendSettingsView: View {
     @State private var pathText: String = ""
     @State private var portText: String = ""
     @State private var url: URL?
-    @State private var urlWithoutPort: URL?
-    @State private var port: Int?
+    private var urlWithoutPort: String? {
+        let components = URLComponents(url: urlProvider.baseAppURL, resolvingAgainstBaseURL: false)!
+        return components.host
+    }
+
+    private var port: Int? {
+        let components = URLComponents(url: urlProvider.baseAppURL, resolvingAgainstBaseURL: false)!
+        return components.port
+    }
+
     @State private var buttonEnabled: Bool = false
-    
     
     var body: some View {
         VStack(alignment: .leading) {
             title
             Spacer()
-            createTextfield(placeholder: "current url: \(urlWithoutPort)", binding: $pathText)
+            createTextfield(placeholder: "current url: \(urlWithoutPort!)", binding: $pathText)
                 .onChange(of: pathText) { _ in
                     updateURL()
                 }
-            createTextfield(placeholder: "current port: \(port)", binding: $portText)
+            createTextfield(placeholder: "current port: \(port ?? 80)", binding: $portText)
                 .onChange(of: portText) { _ in
                     updateURL()
                 }
@@ -46,12 +52,11 @@ struct BackendSettingsView: View {
     private var oKButton: some View {
         Button {
             urlProvider.baseAppURL = url ?? URL(string: "http://aircasting.org/api")!
-            splitURL()
             presentationMode.wrappedValue.dismiss()
         } label: {
             Text(Strings.BackendSettings.Ok)
         }.buttonStyle(BlueButtonStyle())
-        .disabled(!buttonEnabled)
+            .disabled(!buttonEnabled)
     }
     
     private var cancelButton: some View {
@@ -67,12 +72,5 @@ struct BackendSettingsView: View {
         } catch {
             buttonEnabled = false
         }
-    }
-    
-    private func splitURL() {
-        let url =  urlProvider.baseAppURL
-        let components = URLComponents(url: url, resolvingAgainstBaseURL: false)!
-        urlWithoutPort = components.url!
-        port = components.port ?? 80
     }
 }
