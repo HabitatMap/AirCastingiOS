@@ -75,6 +75,7 @@ public struct SessionUUID: Codable, RawRepresentable, Hashable, CustomStringConv
 
 public enum SessionType: RawRepresentable, CustomStringConvertible, Hashable, Codable {
     case mobile
+    case following
     case fixed
     case unknown(String)
 
@@ -92,6 +93,7 @@ public enum SessionType: RawRepresentable, CustomStringConvertible, Hashable, Co
     public var rawValue: String {
         switch self {
         case .mobile: return "MobileSession"
+        case .following: return "FollowingSession"
         case .fixed: return "FixedSession"
         case .unknown(let rawValue): return rawValue
         }
@@ -100,6 +102,7 @@ public enum SessionType: RawRepresentable, CustomStringConvertible, Hashable, Co
     public init(rawValue: String) {
         switch rawValue {
         case "MobileSession": self = .mobile
+        case "FollowingSession": self = .following
         case "FixedSession": self = .fixed
         default: self = .unknown(rawValue)
         }
@@ -108,6 +111,7 @@ public enum SessionType: RawRepresentable, CustomStringConvertible, Hashable, Co
     public var description: String {
         switch self {
         case .mobile: return NSLocalizedString("Mobile", comment: "Mobile session readable localized description")
+        case .following: return NSLocalizedString("Following", comment: "Following session readable localized description")
         case .fixed: return NSLocalizedString("Fixed", comment: "Fixed session readable localized description")
         case .unknown: return NSLocalizedString("Other", comment: "Unknown session readable localized description")
         }
@@ -119,6 +123,11 @@ public enum SessionStatus: Int {
     case RECORDING = 0
     case FINISHED = 1
     case DISCONNECTED = 2
+}
+
+enum SessionFollowing: Int {
+    case following = 1
+    case notFollowing = 0
 }
 
 enum StreamingMethod: Int {

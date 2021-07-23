@@ -12,8 +12,10 @@ import Charts
 import AirCastingStyling
 
 struct SessionCartView: View {
+    @State private var isFollowing = false
     @State private var isCollapsed = true
     @State private var selectedStream: MeasurementStreamEntity?
+    @EnvironmentObject var persistenceController: PersistenceController
     @ObservedObject var session: SessionEntity
     let thresholds: [SensorThreshold]
     
@@ -56,7 +58,18 @@ struct SessionCartView: View {
         .onChange(of: session.allStreams) { _ in
             selectedStream = session.allStreams?.first
         }
+        .onChange(of: isFollowing) { value in
+            let measurementStreamStorage = CoreDataMeasurementStreamStorage(persistenceController: persistenceController)
+            if isFollowing {
+                try! measurementStreamStorage.updateSessionIfFollowing(SessionFollowing.following, for: session.uuid)
+            } else {
+                try! measurementStreamStorage.updateSessionIfFollowing(SessionFollowing.notFollowing, for: session.uuid)
+            }
+        }
         .onAppear() {
+            if session.followedAt != nil {
+                isFollowing = true
+            }
             selectedStream = session.allStreams?.first
         }
         .font(Font.moderate(size: 13, weight: .regular))
@@ -100,13 +113,14 @@ private extension SessionCartView {
     var followButton: some View {
         Button("follow") {
             print("Follow")
-          
+            isFollowing.toggle()
         }.buttonStyle(FollowButtonStyle())
     }
     
     var unFollowButton: some View {
         Button("unfollow") {
             print("Unfollow")
+            isFollowing.toggle()
         }.buttonStyle(UnFollowButtonStyle())
     }
     
@@ -120,7 +134,9 @@ private extension SessionCartView {
     
     func displayButtons(threshold: SensorThreshold) -> some View {
         HStack(spacing: 20) {
-            if session.type == .fixed {
+            if isFollowing && !(session.type == .mobile) {
+                unFollowButton
+            } else if session.type == .fixed || session.type == .following && !isFollowing {
                 followButton
             }
             Spacer()
