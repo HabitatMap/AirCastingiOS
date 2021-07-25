@@ -122,9 +122,9 @@ class AirCastingGraph: UIView {
         let endDate = Date(timeIntervalSince1970: lineChartView.highestVisibleX)
         // Workaround for a weird quirk with Chart - when first called
         // `startDate` is sane, but `endDate` is 1970, so we need a special
-        // case to reverse it.
+        // case to fix that.
         guard startDate < endDate else {
-            return (start: endDate, end: startDate)
+            return (start: startDate, end: .distantFuture)
         }
         return (start: startDate, end: endDate)
     }

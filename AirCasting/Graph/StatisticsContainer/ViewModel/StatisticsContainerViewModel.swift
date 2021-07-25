@@ -15,7 +15,7 @@ final class StatisticsContainerViewModel: StatisticsContainerViewModelable, Meas
     @Published var stats: [SingleStatViewModel] = []
     
     func adjustForNewData() {
-        statsInput.visibleDataChanged()
+        statsInput.computeStatistics()
     }
     
     func statisticsDidChange(to newStats: [MeasurementStatistics.StatisticItem]) {

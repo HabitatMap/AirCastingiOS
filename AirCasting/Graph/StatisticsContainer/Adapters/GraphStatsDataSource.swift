@@ -21,7 +21,7 @@ class GraphStatsDataSource: MeasurementsStatisticsDataSource {
     var visibleMeasurements: [MeasurementStatistics.Measurement] {
         let filtered = allMeasurements.filter { dateRange.contains($0.measurementTime) }
         // In case there are no visible data items let's fallback to showing data for all of them.
-        guard filtered.count > 0 else { return allMeasurements}
+        guard filtered.count > 0 else { return allMeasurements }
         return filtered
     }
 }

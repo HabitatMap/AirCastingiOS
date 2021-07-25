@@ -75,6 +75,6 @@ struct Map_Previews: PreviewProvider {
 }
 
 struct MeasurementsStatisticsInputMock: MeasurementsStatisticsInput {
-    func visibleDataChanged() { }
+    func computeStatistics() { }
 }
 #endif

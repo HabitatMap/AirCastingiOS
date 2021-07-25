@@ -8,12 +8,13 @@ class MeasurementsStatisticsControllerTests: XCTestCase {
     let outputSpy = OutputSpy()
     let dataSourceMock = DataSourceMock()
     let calculatorMock = CalculatorMock()
+    let timerMock = ScheduledTimerSettableMock()
     
     func test_whenVisibleDataChanges_calculatesOnlyDesiredStats() {
         let desiredStats: [MeasurementStatistics.Statistic] = [.average, .high]
         let controller = controller(for: desiredStats)
         
-        controller.visibleDataChanged()
+        controller.computeStatistics()
         
         XCTAssertEqual(calculatorMock.history.count, 2)
         let calculatedStats = calculatorMock.history.map { $0.statistic }
@@ -29,7 +30,7 @@ class MeasurementsStatisticsControllerTests: XCTestCase {
             .average: calculatedAvg, .high: calculatedHigh, .latest: calculatedLatest
         ]
         
-        controller.visibleDataChanged()
+        controller.computeStatistics()
         
         XCTAssertEqual(calculatorMock.history.count, 3)
         XCTAssertEqual(outputSpy.history.count, 1)
@@ -45,7 +46,7 @@ class MeasurementsStatisticsControllerTests: XCTestCase {
     func test_whenVisibleDataChanges_andCalculatingLatestValue_itPassessAllMeasurementsToCalculator() {
         let controller = controller(for: [.latest])
         
-        controller.visibleDataChanged()
+        controller.computeStatistics()
         
         XCTAssertEqual(calculatorMock.history.count, 1)
         XCTAssertEqual(calculatorMock.history.first!.measurements, dataSourceMock.allMeasurements)
@@ -54,7 +55,7 @@ class MeasurementsStatisticsControllerTests: XCTestCase {
     func test_whenVisibleDataChanges_andCalculatingHighestValue_itPassessOnlyVisibleMeasurementsToCalculator() {
         let controller = controller(for: [.high])
         
-        controller.visibleDataChanged()
+        controller.computeStatistics()
         
         XCTAssertEqual(calculatorMock.history.count, 1)
         XCTAssertEqual(calculatorMock.history.first!.measurements, dataSourceMock.visibleMeasurements)
@@ -63,10 +64,23 @@ class MeasurementsStatisticsControllerTests: XCTestCase {
     func test_whenDateRangeChanges_andCalculatingAverageValue_itPassessOnlyVisibleMeasurementsToCalculator() {
         let controller = controller(for: [.average])
         
-        controller.visibleDataChanged()
+        controller.computeStatistics()
         
         XCTAssertEqual(calculatorMock.history.count, 1)
         XCTAssertEqual(calculatorMock.history.first!.measurements, dataSourceMock.visibleMeasurements)
+    }
+    
+    func test_timerSetup_sets1SecondIntervals() {
+        let _ = controller()
+        XCTAssertEqual(timerMock.latestTimer!, 1.0, accuracy: 0.001)
+    }
+    
+    func test_whenTimerFires_itRefreshesData() {
+        let controller = controller()
+        controller.computeStatistics()
+        XCTAssertEqual(outputSpy.history.count, 1)
+        timerMock.fireTimer()
+        XCTAssertEqual(outputSpy.history.count, 2)
     }
     
     // MARK: - Private helpers
@@ -75,6 +89,7 @@ class MeasurementsStatisticsControllerTests: XCTestCase {
         MeasurementsStatisticsController(output: outputSpy,
                                          dataSource: dataSourceMock,
                                          calculator: calculatorMock,
+                                         scheduledTimer: timerMock,
                                          desiredStats: stats)
     }
     

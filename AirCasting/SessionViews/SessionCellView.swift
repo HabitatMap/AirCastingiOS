@@ -92,6 +92,7 @@ private extension SessionCellView {
         let controller = MeasurementsStatisticsController(output: output,
                                                           dataSource: dataSource,
                                                           calculator: StandardStatisticsCalculator(),
+                                                          scheduledTimer: ScheduledTimerSetter(),
                                                           desiredStats: MeasurementStatistics.Statistic.allCases)
         #warning("Change dbStream to selected stream")
         let viewModel = StatisticsContainerViewModel(statsInput: controller, unit: session.dbStream!.measurementShortType ?? "N/A")

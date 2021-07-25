@@ -4,5 +4,5 @@
 import Foundation
 
 protocol MeasurementsStatisticsInput {
-    func visibleDataChanged()
+    func computeStatistics()
 }
