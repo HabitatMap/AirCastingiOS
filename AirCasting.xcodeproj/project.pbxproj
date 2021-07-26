@@ -165,6 +165,8 @@
 		B3F1447826AE4337006A4612 /* FilterErrorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3F1447726AE4337006A4612 /* FilterErrorTests.swift */; };
 		B3F1447A26AE436A006A4612 /* FilterErrorPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3F1447926AE436A006A4612 /* FilterErrorPublisher.swift */; };
 		B3F1447C26AE437E006A4612 /* OnErrorPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3F1447B26AE437E006A4612 /* OnErrorPublisher.swift */; };
+		B3F1448026AE4CA0006A4612 /* OfflineAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3F1447F26AE4CA0006A4612 /* OfflineAlert.swift */; };
+		B3F1448226AE4CD9006A4612 /* OfflineMessageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3F1448126AE4CD9006A4612 /* OfflineMessageViewModel.swift */; };
 		B3FD77B6267C94AF00E97CC2 /* DatabaseSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3FD77A1267C94AF00E97CC2 /* DatabaseSession.swift */; };
 		B3FD77B7267C94AF00E97CC2 /* DatabaseMeasurement.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3FD77A2267C94AF00E97CC2 /* DatabaseMeasurement.swift */; };
 		B3FD77B8267C94AF00E97CC2 /* Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3FD77A3267C94AF00E97CC2 /* Database.swift */; };
@@ -396,6 +398,8 @@
 		B3F1447726AE4337006A4612 /* FilterErrorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterErrorTests.swift; sourceTree = "<group>"; };
 		B3F1447926AE436A006A4612 /* FilterErrorPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterErrorPublisher.swift; sourceTree = "<group>"; };
 		B3F1447B26AE437E006A4612 /* OnErrorPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnErrorPublisher.swift; sourceTree = "<group>"; };
+		B3F1447F26AE4CA0006A4612 /* OfflineAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineAlert.swift; sourceTree = "<group>"; };
+		B3F1448126AE4CD9006A4612 /* OfflineMessageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineMessageViewModel.swift; sourceTree = "<group>"; };
 		B3FD77A1267C94AF00E97CC2 /* DatabaseSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseSession.swift; sourceTree = "<group>"; };
 		B3FD77A2267C94AF00E97CC2 /* DatabaseMeasurement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseMeasurement.swift; sourceTree = "<group>"; };
 		B3FD77A3267C94AF00E97CC2 /* Database.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Database.swift; sourceTree = "<group>"; };
@@ -597,6 +601,7 @@
 			isa = PBXGroup;
 			children = (
 				DDD24D8726A8374600D4A327 /* LocationAlert.swift */,
+				B3F1447F26AE4CA0006A4612 /* OfflineAlert.swift */,
 				B32D08A0267A493C006C97ED /* Publishers */,
 				4F945EF3264B2813008A5B22 /* ActivityIndicator.swift */,
 				ACD01F7525FF61CE00B8F65F /* LocationProvider.swift */,
@@ -713,6 +718,7 @@
 				ACD01F6C25FF4C8C00B8F65F /* AirCasting.entitlements */,
 				AC7EB37525A6FB3A00A7F2AF /* AirCastingApp.swift */,
 				ACD01F912600A3C800B8F65F /* RootAppView.swift */,
+				B3F1448126AE4CD9006A4612 /* OfflineMessageViewModel.swift */,
 				AC7EB37725A6FB3A00A7F2AF /* MainTabBarView.swift */,
 				DD430AFE2670BB3000F1BF2E /* Onboarding */,
 				AC9F52682652A360003CF61F /* Dashboard */,
@@ -1442,11 +1448,13 @@
 				DDD24D9526A8569400D4A327 /* EmailForgotPasswordController.swift in Sources */,
 				AC524A892614733D0061AD45 /* CreatingSessionFlowRootView.swift in Sources */,
 				AC158E0B26A199F9006C61D3 /* Array+SensorThreshold.swift in Sources */,
+				B3F1448026AE4CA0006A4612 /* OfflineAlert.swift in Sources */,
 				4F8CDBD2265F8DAC00976B25 /* Assertions.swift in Sources */,
 				B3FD77C6267C94AF00E97CC2 /* SessionUploadService.swift in Sources */,
 				AC194B0D2684BAB40048E2C8 /* SessionLoadingView.swift in Sources */,
 				4FD2CA4726406F2C007E932E /* Diff.swift in Sources */,
 				DD8C38092689A34E00901FDF /* UserDefaultsBaseURLProvider.swift in Sources */,
+				B3F1448226AE4CD9006A4612 /* OfflineMessageViewModel.swift in Sources */,
 				AC5832DA25B196DD008C5DD5 /* Graph.swift in Sources */,
 				AC4A6A6A267CB3890001F639 /* AirCastingGraph.swift in Sources */,
 				AC93B8E725BEFE4F003D0A0D /* AirMapView.swift in Sources */,

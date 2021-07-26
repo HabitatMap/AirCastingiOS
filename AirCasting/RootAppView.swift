@@ -11,7 +11,7 @@ struct RootAppView: View {
 
     let networkChecker = NetworkChecker(connectionAvailable: false)
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
-    let sessionSynchronizer: SessionSynchronizer
+    var sessionSynchronizer: SessionSynchronizer
     let persistenceController: PersistenceController
     let bluetoothManager = BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared)))
     @ObservedObject var lifeTimeEventsProvider = LifeTimeEventsProvider()
@@ -19,6 +19,7 @@ struct RootAppView: View {
     
     let microphoneManager = MicrophoneManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared))
     let urlProvider = UserDefaultsBaseURLProvider()
+    
     var body: some View {
         if userAuthenticationSession.isLoggedIn {
             mainAppView
