@@ -100,8 +100,25 @@ extension SynchronizationControllerTests {
     
     // MARK: Failure scenario simulations
     
-    func simulateDownloadFailure(totalDownloads: Int, errorousDownloadIndex: Int) {
-        setupWithPassthruDownloads(downloadUUIDs: .init(creating: .random, times: totalDownloads))
+    func simulateWriteFailure(uuidsToDownload: [SessionUUID]) {
+        setupWithPassthruDownloads(downloadUUIDs: uuidsToDownload)
+        let exp = expectation(description: "Will fail write")
+        exp.assertForOverFulfill = false
+        var sub: AnyCancellable?
+        store.writeErrorToReturn = DummyError()
+        sub = store.$recordedHistory.sink {
+            if $0.allWrites.count == 1 { exp.fulfill() }
+        }
+        controller.triggerSynchronization()
+        wait(for: [exp], timeout: 1.0)
+        sub?.cancel()
+        sub = nil
+    }
+    
+    func simulateDownloadFailure(totalDownloads: Int, errorousDownloadIndex: Int, errorousUUID: SessionUUID? = nil, error: Error = DummyError()) {
+        var uuids: [SessionUUID] = .init(creating: .random, times: totalDownloads)
+        if let uuidToReplace = errorousUUID { uuids[errorousDownloadIndex-1] = uuidToReplace }
+        setupWithPassthruDownloads(downloadUUIDs: uuids)
         let exp = expectation(description: "Will fail \(errorousDownloadIndex)th download")
         exp.assertForOverFulfill = false
         var sub: AnyCancellable?
@@ -109,7 +126,7 @@ extension SynchronizationControllerTests {
             guard $0.count > 0 else { return }
             let count = $0.count
             if count == errorousDownloadIndex {
-                self.downloadService.toReturn = .failure(DummyError())
+                self.downloadService.toReturn = .failure(error)
             } else {
                 self.downloadService.toReturn = .success(.mock(uuid: $0.last!))
             }
@@ -121,8 +138,32 @@ extension SynchronizationControllerTests {
         sub = nil
     }
     
-    func simulateReadFailure(totalUploads: Int, errorousReadIndex: Int) {
-        setupWithPassthruUploads(uploadUUIDs: .init(creating: .random, times: totalUploads))
+    func simulateBreakingDownloadFailure(firstDownload: Int, error: Error) {
+        let uuids: [SessionUUID] = .init(creating: .random, times: firstDownload+1)
+        setupWithPassthruDownloads(downloadUUIDs: uuids)
+        let exp = expectation(description: "Will fail \(firstDownload+1)th download")
+        exp.assertForOverFulfill = false
+        var sub: AnyCancellable?
+        sub = downloadService.$recordedHistory.sink {
+            guard $0.count > 0 else { return }
+            let count = $0.count
+            if count == firstDownload {
+                self.downloadService.toReturn = .failure(error)
+                exp.fulfill()
+            } else {
+                self.downloadService.toReturn = .success(.mock(uuid: $0.last!))
+            }
+        }
+        controller.triggerSynchronization()
+        wait(for: [exp], timeout: 1.0)
+        sub?.cancel()
+        sub = nil
+    }
+    
+    func simulateReadFailure(totalUploads: Int, errorousReadIndex: Int, errorousUUID: SessionUUID? = nil) {
+        var uuids: [SessionUUID] = .init(creating: .random, times: totalUploads)
+        if let uuidToReplace = errorousUUID { uuids[errorousReadIndex-1] = uuidToReplace }
+        setupWithPassthruUploads(uploadUUIDs: uuids)
         let exp = expectation(description: "Will fail \(errorousReadIndex)th read")
         exp.assertForOverFulfill = false
         var sub: AnyCancellable?
@@ -133,6 +174,29 @@ extension SynchronizationControllerTests {
                 self.store.readErrorToReturn = DummyError()
             } else {
                 self.store.readErrorToReturn = nil
+            }
+            if count == totalUploads { exp.fulfill() }
+        }
+        controller.triggerSynchronization()
+        wait(for: [exp], timeout: 1.0)
+        sub?.cancel()
+        sub = nil
+    }
+    
+    func simulateUploadFailure(totalUploads: Int, errorousUploadIndex: Int, errorousUUID: SessionUUID? = nil) {
+        var uuids: [SessionUUID] = .init(creating: .random, times: totalUploads)
+        if let uuidToReplace = errorousUUID { uuids[errorousUploadIndex-1] = uuidToReplace }
+        setupWithPassthruUploads(uploadUUIDs: uuids)
+        let exp = expectation(description: "Will fail \(totalUploads)th upload")
+        exp.assertForOverFulfill = false
+        var sub: AnyCancellable?
+        sub = uploadService.$recordedHistory.sink {
+            guard $0.count > 0 else { return }
+            let count = $0.count
+            if count == errorousUploadIndex {
+                self.uploadService.toReturn = .failure(DummyError())
+            } else {
+                self.uploadService.toReturn = .success(())
             }
             if count == totalUploads { exp.fulfill() }
         }
