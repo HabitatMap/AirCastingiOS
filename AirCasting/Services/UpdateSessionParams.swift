@@ -54,7 +54,7 @@ final class UpdateSessionParamsService {
             oldStream.thresholdVeryHigh = streamOutput.threshold_very_high
             oldStream.gotDeleted = streamOutput.deleted ?? false
             
-            let existingThreshold: SensorThreshold? = try context.existingObject(sensorName: "AirBeam3-PM10")
+            let existingThreshold: SensorThreshold? = try context.existingObject(sensorName: streamOutput.sensor_name)
             if existingThreshold == nil {
                 let threshold: SensorThreshold = try context.newOrExisting(sensorName: streamOutput.sensor_name)
                 threshold.thresholdVeryLow = streamOutput.threshold_very_low

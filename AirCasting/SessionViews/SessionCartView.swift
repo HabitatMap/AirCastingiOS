@@ -34,24 +34,24 @@ struct SessionCartView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 13) {
             header
-            //            if let threshold = thresholdFor(selectedStream: selectedStream) {
-            StreamsView(selectedStream: $selectedStream,
-                        session: session,
-                        threshold: thresholds[0],
-                        measurementPresentationStyle: shouldShowValues)
+            if let threshold = thresholdFor(selectedStream: selectedStream) {
+                StreamsView(selectedStream: $selectedStream,
+                            session: session,
+                            threshold: threshold,
+                            measurementPresentationStyle: shouldShowValues)
             
-            VStack(alignment: .trailing, spacing: 40) {
-                if let selectedStream = selectedStream, showChart {
-                    pollutionChart(stream: selectedStream,
-                                   threshold: thresholds[0])
+                VStack(alignment: .trailing, spacing: 40) {
+                    if let selectedStream = selectedStream, showChart {
+                        pollutionChart(stream: selectedStream,
+                                       threshold: threshold)
+                    }
+                    if !isCollapsed {
+                        displayButtons(threshold: threshold)
+                    }
                 }
-                if !isCollapsed {
-                    displayButtons(threshold: thresholds[0])
-                }
+            } else {
+                SessionLoadingView()
             }
-            //            } else {
-            //                SessionLoadingView()
-            //            }
         }
         .onChange(of: session.allStreams) { _ in
             selectedStream = session.allStreams?.first
@@ -68,6 +68,9 @@ struct SessionCartView: View {
             if session.followedAt != nil {
                 isFollowing = true
             }
+        }
+        .onAppear {
+            selectedStream = session.allStreams?.first
         }
         .font(Font.moderate(size: 13, weight: .regular))
         .foregroundColor(.aircastingGray)
@@ -129,9 +132,9 @@ private extension SessionCartView {
     
     func displayButtons(threshold: SensorThreshold) -> some View {
         HStack(spacing: 20) {
-            if isFollowing && !(session.type == .mobile) {
+            if isFollowing {
                 unFollowButton
-            } else if session.type == .fixed || session.type == .following && !isFollowing {
+            } else if session.type == .fixed, !isFollowing {
                 followButton
             }
             Spacer()
