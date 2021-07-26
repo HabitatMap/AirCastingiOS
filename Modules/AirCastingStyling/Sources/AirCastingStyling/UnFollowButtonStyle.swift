@@ -5,8 +5,6 @@
 //  Created by Lunar on 19/07/2021.
 //
 
-import Foundation
-
 import SwiftUI
 
 public struct UnFollowButtonStyle: ButtonStyle {

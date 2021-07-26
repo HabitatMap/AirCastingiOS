@@ -33,7 +33,7 @@ final class AirBeamFixedSessionCreator: SessionCreator {
         }
         // Save data to app's database
         let session = Session(uuid: sessionUUID,
-                              type: .following,
+                              type: sessionType,
                               name: sessionContext.sessionName,
                               deviceType: sessionContext.deviceType,
                               location: sessionContext.startingLocation,

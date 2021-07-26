@@ -175,7 +175,6 @@
 		DD2181EF267BBCBC0010EC2E /* MyAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD2181EE267BBCBC0010EC2E /* MyAccountView.swift */; };
 		DD2E8BE92685E12000439F8B /* URLValidationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD2E8BE82685E12000439F8B /* URLValidationTests.swift */; };
 		DD2E8BEB2685E13600439F8B /* BackendURLValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD2E8BEA2685E13600439F8B /* BackendURLValidator.swift */; };
-		DD34FFFA26AACFFD00E05831 /* UpdateFollowing.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD34FFF926AACFFD00E05831 /* UpdateFollowing.swift */; };
 		DD430B002670BC6F00F1BF2E /* GetStarted.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD430AFF2670BC6F00F1BF2E /* GetStarted.swift */; };
 		DD430B022670F3B300F1BF2E /* NearAirDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD430B012670F3B300F1BF2E /* NearAirDescription.swift */; };
 		DD430B042670FA9600F1BF2E /* AirBeamOnboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD430B032670FA9600F1BF2E /* AirBeamOnboarding.swift */; };
@@ -381,7 +380,6 @@
 		DD2181EE267BBCBC0010EC2E /* MyAccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyAccountView.swift; sourceTree = "<group>"; };
 		DD2E8BE82685E12000439F8B /* URLValidationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLValidationTests.swift; sourceTree = "<group>"; };
 		DD2E8BEA2685E13600439F8B /* BackendURLValidator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackendURLValidator.swift; sourceTree = "<group>"; };
-		DD34FFF926AACFFD00E05831 /* UpdateFollowing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateFollowing.swift; sourceTree = "<group>"; };
 		DD430AFF2670BC6F00F1BF2E /* GetStarted.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetStarted.swift; sourceTree = "<group>"; };
 		DD430B012670F3B300F1BF2E /* NearAirDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearAirDescription.swift; sourceTree = "<group>"; };
 		DD430B032670FA9600F1BF2E /* AirBeamOnboarding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirBeamOnboarding.swift; sourceTree = "<group>"; };
@@ -595,7 +593,6 @@
 		AC6D56A825B0837500D221BA /* SessionViews */ = {
 			isa = PBXGroup;
 			children = (
-				DD34FFF926AACFFD00E05831 /* UpdateFollowing.swift */,
 				ACF77DFA25A8888700BB85B7 /* SessionCartView.swift */,
 				AC6D569E25AEEAE700D221BA /* SessionHeaderView.swift */,
 				DD8C380F268A0E9400901FDF /* ShareViewModal.swift */,
@@ -1312,7 +1309,6 @@
 				AC8CFF5C25E6866100FB2918 /* SignInView.swift in Sources */,
 				DD2181EF267BBCBC0010EC2E /* MyAccountView.swift in Sources */,
 				AC524A6F261329330061AD45 /* SessionExtension.swift in Sources */,
-				DD34FFFA26AACFFD00E05831 /* UpdateFollowing.swift in Sources */,
 				ACF77DFB25A8888700BB85B7 /* SessionCartView.swift in Sources */,
 				4F3CDF222652B58100596CD3 /* Measurement.swift in Sources */,
 				ACC536E026395C0900327267 /* MeasurementDotView.swift in Sources */,

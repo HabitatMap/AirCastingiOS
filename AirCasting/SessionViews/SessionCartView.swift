@@ -5,11 +5,11 @@
 //  Created by Lunar on 08/01/2021.
 //
 
-import SwiftUI
-import CoreLocation
-import CoreData
-import Charts
 import AirCastingStyling
+import Charts
+import CoreData
+import CoreLocation
+import SwiftUI
 
 struct SessionCartView: View {
     @State private var isFollowing = false
@@ -26,13 +26,13 @@ struct SessionCartView: View {
         
         return shouldShow ? .hideValues : .showValues
     }
+
     var showChart: Bool {
         !isCollapsed && session.type == .mobile && session.status == .RECORDING
     }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 13) {
-            
             header
             #warning("MOCKED - should show values :shouldShowValues")
             #warning("MOCKED - thresholds")
@@ -58,7 +58,7 @@ struct SessionCartView: View {
         .onChange(of: session.allStreams) { _ in
             selectedStream = session.allStreams?.first
         }
-        .onChange(of: isFollowing) { value in
+        .onChange(of: isFollowing) { _ in
             let measurementStreamStorage = CoreDataMeasurementStreamStorage(persistenceController: persistenceController)
             if isFollowing {
                 try! measurementStreamStorage.updateSessionIfFollowing(SessionFollowing.following, for: session.uuid)
@@ -66,11 +66,10 @@ struct SessionCartView: View {
                 try! measurementStreamStorage.updateSessionIfFollowing(SessionFollowing.notFollowing, for: session.uuid)
             }
         }
-        .onAppear() {
+        .onAppear {
             if session.followedAt != nil {
                 isFollowing = true
             }
-            selectedStream = session.allStreams?.first
         }
         .font(Font.moderate(size: 13, weight: .regular))
         .foregroundColor(.aircastingGray)
@@ -83,7 +82,6 @@ struct SessionCartView: View {
 }
 
 private extension SessionCartView {
-    
     var header: some View {
         SessionHeaderView(
             action: {
@@ -91,7 +89,8 @@ private extension SessionCartView {
                     isCollapsed.toggle()
                 }
             }, isExpandButtonNeeded: true,
-            session: session)
+            session: session
+        )
     }
     
     func graphButton(threshold: SensorThreshold) -> some View {
@@ -112,14 +111,12 @@ private extension SessionCartView {
     
     var followButton: some View {
         Button("follow") {
-            print("Follow")
             isFollowing.toggle()
         }.buttonStyle(FollowButtonStyle())
     }
     
     var unFollowButton: some View {
         Button("unfollow") {
-            print("Unfollow")
             isFollowing.toggle()
         }.buttonStyle(UnFollowButtonStyle())
     }
@@ -156,8 +153,8 @@ private extension SessionCartView {
     }
 }
 
-//#if DEBUG
-//struct SessionCell_Previews: PreviewProvider {
+// #if DEBUG
+// struct SessionCell_Previews: PreviewProvider {
 //    static var previews: some View {
 //        EmptyView()
 //        SessionCartView(session: SessionEntity.mock, thresholds: [.mock, .mock])
@@ -165,5 +162,5 @@ private extension SessionCartView {
 //            .previewLayout(.sizeThatFits)
 //            .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
 //    }
-//}
-//#endif
+// }
+// #endif
