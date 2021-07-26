@@ -71,6 +71,9 @@ struct SessionCartView: View {
                 isFollowing = true
             }
         }
+        .onAppear {
+            selectedStream = session.allStreams?.first
+        }
         .font(Font.moderate(size: 13, weight: .regular))
         .foregroundColor(.aircastingGray)
         .padding()
@@ -131,9 +134,9 @@ private extension SessionCartView {
     
     func displayButtons(threshold: SensorThreshold) -> some View {
         HStack(spacing: 20) {
-            if isFollowing && !(session.type == .mobile) {
+            if isFollowing {
                 unFollowButton
-            } else if session.type == .fixed || session.type == .following && !isFollowing {
+            } else if session.type == .fixed, !isFollowing {
                 followButton
             }
             Spacer()
