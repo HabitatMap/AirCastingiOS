@@ -131,8 +131,7 @@ private extension AirBeam3Configurator {
     func sendConfigMessage(data: Data) {
         guard let characteristic = getCharacteristic(serviceID: SERVICE_UUID,
                                                      charID: CONFIGURATION_CHARACTERISTIC_UUID) else {
-//            assertionFailure("Unable to get characteristic from \(peripheral)")
-            #warning("MOCKED")
+            assertionFailure("Unable to get characteristic from \(peripheral)")
             return
         }
         peripheral.writeValue(data,

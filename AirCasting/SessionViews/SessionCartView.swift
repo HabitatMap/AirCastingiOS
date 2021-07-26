@@ -34,13 +34,11 @@ struct SessionCartView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 13) {
             header
-            #warning("MOCKED - should show values :shouldShowValues")
-            #warning("MOCKED - thresholds")
             //            if let threshold = thresholdFor(selectedStream: selectedStream) {
             StreamsView(selectedStream: $selectedStream,
                         session: session,
                         threshold: thresholds[0],
-                        measurementPresentationStyle: .showValues)
+                        measurementPresentationStyle: shouldShowValues)
             
             VStack(alignment: .trailing, spacing: 40) {
                 if let selectedStream = selectedStream, showChart {
