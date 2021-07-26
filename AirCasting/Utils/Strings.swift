@@ -124,7 +124,7 @@ struct Strings {
     
     struct OnboardingPrivacy {
         static let title: String = "Your privacy"
-        static let description: String = "Have a look at how we store and protect Your data and accept our privacy policy and terms of service before continuing."
+        static let description: String = "Review our commitment to preserving your privacy and accept our privacy policy."
         static let continueButton: String = "Accept"
         static let sheetButton: String = "Learn More"
     }
