@@ -17,7 +17,7 @@ struct ChooseSessionTypeView: View {
     @State private var isMobileLinkActive = false
     @State private var didTapFixedSession = false
     @EnvironmentObject var bluetoothManager: BluetoothManager
-    @StateObject private var locationTracker = LocationTracker()
+    @EnvironmentObject private var locationTracker: LocationTracker
     @EnvironmentObject var userRedirectionSettings: DefaultSettingsRedirection
     @EnvironmentObject var userSettings: UserSettings
     let urlProvider: BaseURLProvider

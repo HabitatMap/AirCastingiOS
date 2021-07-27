@@ -10,14 +10,25 @@ import CoreLocation
 
 class LocationTracker: NSObject, ObservableObject, CLLocationManagerDelegate {
     
-    private lazy var locationManager: CLLocationManager = {
-        $0.desiredAccuracy = kCLLocationAccuracyBest
-        $0.delegate = self
-        return $0
-    }(CLLocationManager())
+    let locationManager: CLLocationManager
+    @Published var locationGranted: LocationState
+    @Published var allLocations: [CLLocation]
     
-    @Published var locationGranted = LocationState.denied
-    @Published var allLocations: [CLLocation] = []
+    init(locationManager: CLLocationManager, locationGranted: LocationState, allLocations: [CLLocation]) {
+        self.locationManager = locationManager
+        self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        self.locationManager.delegate = (locationManager as! CLLocationManagerDelegate)
+        self.locationManager.delegate = self
+        switch locationManager.authorizationStatus {
+            case .authorizedAlways, .authorizedWhenInUse: self.locationGranted = .granted
+            case .denied:  self.locationGranted = .denied
+            case .notDetermined: self.locationGranted = .denied
+            case .restricted: self.locationGranted = .denied
+            @unknown default:
+                fatalError()
+        }
+        self.allLocations = []
+    }
     
     func requestAuthorisation() {
         locationManager.requestAlwaysAuthorization()
