@@ -13,7 +13,7 @@ struct TurnOnLocationView: View {
     @EnvironmentObject var settingsRedirection: DefaultSettingsRedirection
     @Binding var creatingSessionFlowContinues: Bool
     @EnvironmentObject var bluetoothManager: BluetoothManager
-    @StateObject private var locationTracker = LocationTracker()
+    @EnvironmentObject private var locationTracker: LocationTracker
     @StateObject var sessionContext: CreateSessionContext
     private var continueButtonEnabled: Bool {
         locationTracker.locationGranted == .granted
@@ -63,7 +63,6 @@ struct TurnOnLocationView: View {
         }
         .onChange(of: locationTracker.locationGranted) { newValue in
             showAlert = (newValue == .denied)
-            locationTracker.locationGranted = newValue
         }
     }
     

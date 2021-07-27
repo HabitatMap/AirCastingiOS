@@ -83,6 +83,11 @@ struct ChooseSessionTypeView: View {
                         }
                 }
             )
+            .onAppear {
+                if locationTracker.locationGranted == .granted {
+                    Print("GRANTED")
+                }
+            }
             .onChange(of: bluetoothManager.centralManagerState) { (state) in
                 if didTapFixedSession {
                     goToNextFixedSessionStep()

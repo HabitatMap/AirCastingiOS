@@ -62,6 +62,11 @@ struct SelectPeripheralView: View {
                         connectButton.disabled(true)
                     }
                 }
+                .onAppear {
+                    if CBCentralManager.authorization == .allowedAlways {
+                        _ = bluetoothManager.centralManager
+                    }
+                }
                 .padding()
                 .frame(maxWidth: .infinity, minHeight: geometry.size.height, alignment: .top)
             }
