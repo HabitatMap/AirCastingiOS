@@ -83,7 +83,25 @@ struct Strings {
         static let title: String = "Your AirBeam is gathering data."
         static let description: String = "Your AirBeam is gathering data."
     }
-
+    
+    struct SessionCart {
+        static let measurementsTitle: String = "Most recent measurement:"
+        static let dormantMeasurementsTitle: String = "Avg value:"
+        static let stopRecordingButton: String = "Stop recording"
+        static let heatmapSettingsTitle: String = "Heatmap settings"
+        static let heatmapSettingsdescription: String = "Values beyond Min and Max will not be displayed."
+        static let saveChangesButton: String = "Save changes"
+        static let resetChangesButton: String = "Reset to default"
+    }
+    
+    struct Thresholds {
+        static let veryHigh: String = "Max"
+        static let high: String = "High"
+        static let medium: String = "Medium"
+        static let low: String = "Low"
+        static let veryLow: String = "Min"
+    }
+    
     struct WifiPopupView {
         static let wifiPlaceholder: String = "Wi-Fi name"
         static let passwordPlaceholder: String = "Password"

@@ -33,7 +33,7 @@ struct ABMeasurementsView: View {
         return Group {
             if hasAnyMeasurements {
                 VStack(alignment: .leading, spacing: 5) {
-                    Text(session.isDormant ? "Avg value:" : "Most recent measurement:")
+                    Text(session.isDormant ? Strings.SessionCart.dormantMeasurementsTitle : Strings.SessionCart.measurementsTitle)
                         .font(Font.moderate(size: 12))
                         .padding(.bottom, 3)
                         .padding(.horizontal)
