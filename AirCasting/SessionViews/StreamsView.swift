@@ -31,7 +31,7 @@ struct StreamsView: View {
     
     var measurementsMic: some View {
         VStack(alignment: .leading, spacing: 5) {
-            Text("Most recent measurement:")
+            Text(Strings.SessionCart.measurementsTitle)
                 .font(Font.moderate(size: 12))
                 .padding(.bottom, 3)
                 .padding(.horizontal)
@@ -51,7 +51,7 @@ struct StreamsView: View {
         Button(action: {
             try! microphoneManager.stopRecording()
         }, label: {
-            Text("Stop recording")
+            Text(Strings.SessionCart.stopRecordingButton)
                 .foregroundColor(.blue)
         })
     }
