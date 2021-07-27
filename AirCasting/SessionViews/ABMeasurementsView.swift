@@ -39,12 +39,14 @@ struct ABMeasurementsView: View {
                         .padding(.horizontal)
                     HStack {
                         Group {
-                            ForEach(streams, id : \.self) {
-                                SingleMeasurementView(stream: $0,
-                                                      value: session.isDormant ? $0.averageValue : ($0.latestValue ?? 0),
-                                                      threshold: threshold,
-                                                      selectedStream: _selectedStream,
-                                                      measurementPresentationStyle: measurementPresentationStyle)
+                            ForEach(streams, id : \.self) { stream in
+                                if let threshold = thresholds.threshold(for: stream) {
+                                    SingleMeasurementView(stream: stream,
+                                                          value: stream.latestValue ?? 0,
+                                                          threshold: threshold,
+                                                          selectedStream: _selectedStream,
+                                                          measurementPresentationStyle: measurementPresentationStyle)
+                                }
                             }
                         }
                         .frame(maxWidth: .infinity)
