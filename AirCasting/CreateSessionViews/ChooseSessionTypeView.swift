@@ -17,10 +17,13 @@ struct ChooseSessionTypeView: View {
     @State private var isMobileLinkActive = false
     @State private var didTapFixedSession = false
     @EnvironmentObject var bluetoothManager: BluetoothManager
-    @EnvironmentObject private var locationTracker: LocationTracker
+    @StateObject private var locationTracker = LocationTracker()
     @EnvironmentObject var userRedirectionSettings: DefaultSettingsRedirection
     @EnvironmentObject var userSettings: UserSettings
     let urlProvider: BaseURLProvider
+    private var continueButtonEnabled: Bool {
+        locationTracker.locationGranted == .granted
+    }
     
     var body: some View {
         NavigationView {
@@ -127,7 +130,7 @@ struct ChooseSessionTypeView: View {
     var fixedSessionButton: some View {
         Button(action: {
             goToNextFixedSessionStep()
-            if locationTracker.locationGranted == .denied {
+            if !continueButtonEnabled {
                 isTurnLocationOnLinkActive = true
             } else {
                 if CBCentralManager.authorization == .notDetermined {
@@ -144,7 +147,7 @@ struct ChooseSessionTypeView: View {
     var mobileSessionButton: some View {
         Button(action: {
             createNewSession(isSessionFixed: false)
-            if locationTracker.locationGranted == .denied {
+            if !continueButtonEnabled {
                 isTurnLocationOnLinkActive = true
             } else {
                 isMobileLinkActive = true

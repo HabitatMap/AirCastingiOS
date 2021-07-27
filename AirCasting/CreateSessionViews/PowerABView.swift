@@ -27,7 +27,6 @@ struct PowerABView: View {
         }.alert(isPresented: $showAlert) {
             Alert.locationAlert
         }
-
         .padding()
         .onAppear(perform: {
             sessionContext.deviceType = .AIRBEAM3

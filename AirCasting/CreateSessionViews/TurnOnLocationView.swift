@@ -13,7 +13,7 @@ struct TurnOnLocationView: View {
     @EnvironmentObject var settingsRedirection: DefaultSettingsRedirection
     @Binding var creatingSessionFlowContinues: Bool
     @EnvironmentObject var bluetoothManager: BluetoothManager
-    @EnvironmentObject private var locationTracker: LocationTracker
+    @StateObject private var locationTracker = LocationTracker()
     @StateObject var sessionContext: CreateSessionContext
     private var continueButtonEnabled: Bool {
         locationTracker.locationGranted == .granted
