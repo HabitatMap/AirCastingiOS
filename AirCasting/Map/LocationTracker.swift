@@ -18,7 +18,6 @@ class LocationTracker: NSObject, ObservableObject, CLLocationManagerDelegate {
         self.locationManager = locationManager
         self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
         self.locationManager.delegate = (locationManager as! CLLocationManagerDelegate)
-        self.locationManager.delegate = self
         switch locationManager.authorizationStatus {
             case .authorizedAlways, .authorizedWhenInUse: self.locationGranted = .granted
             case .denied:  self.locationGranted = .denied
@@ -28,6 +27,8 @@ class LocationTracker: NSObject, ObservableObject, CLLocationManagerDelegate {
                 fatalError()
         }
         self.allLocations = []
+        super.init()
+        self.locationManager.delegate = self
     }
     
     func requestAuthorisation() {
