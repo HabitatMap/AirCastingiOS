@@ -13,7 +13,7 @@ struct TurnOnLocationView: View {
     @EnvironmentObject var settingsRedirection: DefaultSettingsRedirection
     @Binding var creatingSessionFlowContinues: Bool
     @EnvironmentObject var bluetoothManager: BluetoothManager
-    @StateObject private var locationTracker = LocationTracker()
+    @EnvironmentObject private var locationTracker: LocationTracker
     @StateObject var sessionContext: CreateSessionContext
     private var continueButtonEnabled: Bool {
         locationTracker.locationGranted == .granted
@@ -31,6 +31,9 @@ struct TurnOnLocationView: View {
             }
             continueButton
                 .buttonStyle(BlueButtonStyle())
+        }
+        .alert(isPresented: $showAlert) {
+            Alert.locationAlert
         }
         .background(
             Group {
@@ -60,6 +63,7 @@ struct TurnOnLocationView: View {
         }
         .onChange(of: locationTracker.locationGranted) { newValue in
             showAlert = (newValue == .denied)
+            locationTracker.locationGranted = newValue
         }
     }
     
@@ -80,18 +84,19 @@ struct TurnOnLocationView: View {
     
     var continueButton: some View {
         Button(action: {
-            if locationTracker.locationGranted == .denied {
-                settingsRedirection.goToLocationAuthSettings()
-            } else {
                 if sessionContext.sessionType == .mobile {
                     isMobileLinkActive = true
                 } else {
-                    isTurnBluetoothOnLinkActive = true
+                    if CBCentralManager.authorization == .notDetermined {
+                        isTurnBluetoothOnLinkActive = true
+                    } else {
+                        isPowerABLinkActive = true
+                    }
                 }
-            }
         }, label: {
             Text(Strings.TurnOnBluetoothView.continueButton)
         })
+        .disabled(!continueButtonEnabled)
         .frame(maxWidth: .infinity)
         .buttonStyle(BlueButtonStyle())
     }

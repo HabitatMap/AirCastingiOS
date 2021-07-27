@@ -22,7 +22,7 @@ struct CreateSessionDetailsView: View {
     @State private var showingAlert = false
     @EnvironmentObject private var sessionContext: CreateSessionContext
     // Location tracker is needed to get wifi SSID (more info CNCopyCurrentNetworkInfo documentation.
-    @StateObject private var locationTracker = LocationTracker()
+    @EnvironmentObject private var locationTracker: LocationTracker
 
     @Binding var creatingSessionFlowContinues: Bool
 

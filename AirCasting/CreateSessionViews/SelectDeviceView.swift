@@ -19,7 +19,7 @@ struct SelectDeviceView: View {
     @EnvironmentObject private var sessionContext: CreateSessionContext
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @EnvironmentObject private var microphoneManager: MicrophoneManager
-    @StateObject private var locationTracker = LocationTracker()
+    @EnvironmentObject private var locationTracker: LocationTracker
     @Binding var creatingSessionFlowContinues : Bool
     @State private var showAlert = false
     

@@ -17,7 +17,7 @@ struct ChooseSessionTypeView: View {
     @State private var isMobileLinkActive = false
     @State private var didTapFixedSession = false
     @EnvironmentObject var bluetoothManager: BluetoothManager
-    @StateObject private var locationTracker = LocationTracker()
+    @EnvironmentObject private var locationTracker: LocationTracker
     @EnvironmentObject var userRedirectionSettings: DefaultSettingsRedirection
     @EnvironmentObject var userSettings: UserSettings
     let urlProvider: BaseURLProvider
@@ -122,20 +122,20 @@ struct ChooseSessionTypeView: View {
     
     func goToNextFixedSessionStep() {
         createNewSession(isSessionFixed: true)
-        if locationTracker.locationGranted == .denied {
-            isTurnLocationOnLinkActive = true
-        } else {
-            if CBCentralManager.authorization == .notDetermined {
-                isTurnBluetoothOnLinkActive = true
-            } else {
-                isPowerABLinkActive = true
-            }
-        }
     }
     
     var fixedSessionButton: some View {
         Button(action: {
             goToNextFixedSessionStep()
+            if locationTracker.locationGranted == .denied {
+                isTurnLocationOnLinkActive = true
+            } else {
+                if CBCentralManager.authorization == .notDetermined {
+                    isTurnBluetoothOnLinkActive = true
+                } else {
+                    isPowerABLinkActive = true
+                }
+            }
         }) {
             fixedSessionLabel
         }
