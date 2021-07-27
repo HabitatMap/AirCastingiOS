@@ -12,10 +12,12 @@ struct ChooseSessionTypeView: View {
     @State private var isInfoPresented: Bool = false
     @StateObject var sessionContext: CreateSessionContext
     @State private var isTurnBluetoothOnLinkActive = false
+    @State private var isTurnLocationOnLinkActive = false
     @State private var isPowerABLinkActive = false
     @State private var isMobileLinkActive = false
     @State private var didTapFixedSession = false
     @EnvironmentObject var bluetoothManager: BluetoothManager
+    @StateObject private var locationTracker = LocationTracker()
     @EnvironmentObject var userSettings: UserSettings
     let urlProvider: BaseURLProvider
     
@@ -96,16 +98,19 @@ struct ChooseSessionTypeView: View {
     
     func goToNextFixedSessionStep() {
         createNewSession(isSessionFixed: true)
-        
-        // This will trigger system bluetooth authorisation alert
-        if CBCentralManager.authorization == .notDetermined {
-            _ = bluetoothManager.centralManager
-            didTapFixedSession = true
-        } else if CBCentralManager.authorization == .allowedAlways,
-            bluetoothManager.centralManager.state == .poweredOn {
-            isPowerABLinkActive = true
+        if locationTracker.locationGranted != .granted {
+            isTurnLocationOnLinkActive = true
         } else {
-            isTurnBluetoothOnLinkActive = true
+            // This will trigger system bluetooth authorisation alert
+            if CBCentralManager.authorization == .notDetermined {
+                _ = bluetoothManager.centralManager
+                didTapFixedSession = true
+            } else if CBCentralManager.authorization == .allowedAlways,
+                bluetoothManager.centralManager.state == .poweredOn {
+                isPowerABLinkActive = true
+            } else {
+                isTurnBluetoothOnLinkActive = true
+            }
         }
     }
     
@@ -126,7 +131,7 @@ struct ChooseSessionTypeView: View {
                 EmptyView()
                     .fullScreenCover(isPresented: $isTurnBluetoothOnLinkActive) {
                         CreatingSessionFlowRootView {
-                            TurnOnBluetoothView(creatingSessionFlowContinues: $isTurnBluetoothOnLinkActive, urlProvider: urlProvider)
+                            TurnOnLocationView(creatingSessionFlowContinues: $isTurnBluetoothOnLinkActive, urlProvider: urlProvider)
                         }
                     }
             }
@@ -141,12 +146,21 @@ struct ChooseSessionTypeView: View {
             mobileSessionLabel
         }
         .background(
+            Group {
             EmptyView()
                 .fullScreenCover(isPresented: $isMobileLinkActive) {
                     CreatingSessionFlowRootView {
                         SelectDeviceView(creatingSessionFlowContinues: $isMobileLinkActive, urlProvider: urlProvider)
                     }
-                })
+                }
+                EmptyView()
+                    .fullScreenCover(isPresented: $isTurnBluetoothOnLinkActive) {
+                        CreatingSessionFlowRootView {
+                            TurnOnLocationView(creatingSessionFlowContinues: $isTurnBluetoothOnLinkActive, urlProvider: urlProvider)
+                        }
+                    }
+            }
+        )
     }
     
     var fixedSessionLabel: some View {

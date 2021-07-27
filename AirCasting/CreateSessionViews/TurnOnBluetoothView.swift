@@ -49,15 +49,16 @@ struct TurnOnBluetoothView: View {
     
     var continueButton: some View {
         Button(action: {
-            if CBCentralManager.authorization != .allowedAlways {
-                settingsRedirection.goToBluetoothAuthSettings()
-            } else {
-                if bluetoothManager.centralManager.state != .poweredOn {
-                    settingsRedirection.goToBluetoothAuthSettings()
-                } else {
-                    isPowerABLinkActive = true
-                }
-            }
+            _ = bluetoothManager.centralManager
+//            if CBCentralManager.authorization != .allowedAlways {
+//                settingsRedirection.goToBluetoothAuthSettings()
+//            } else {
+//                if bluetoothManager.centralManager.state != .poweredOn {
+//                    settingsRedirection.goToBluetoothAuthSettings()
+//                } else {
+//                    isPowerABLinkActive = true
+//                }
+//            }
         }, label: {
             Text(Strings.TurnOnBluetoothView.continueButton)
         })
@@ -72,15 +73,6 @@ struct TurnOnBluetoothView: View {
                     }
                 )
             )
-    }
-    
-    func goToBluetoothSettings() {
-        if let url = URL(string: "App-prefs:root=Bluetooth") {
-            let app = UIApplication.shared
-            if app.canOpenURL(url) {
-                app.open(url, options: [:], completionHandler: nil)
-            }
-        }
     }
 }
 

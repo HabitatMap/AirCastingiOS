@@ -11,6 +11,7 @@ struct RootAppView: View {
 
     let networkChecker = NetworkChecker(connectionAvailable: false)
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
+    @ObservedObject var userRedirectionSettings = DefaultSettingsRedirection()
     let sessionSynchronizer: SessionSynchronizer
     let persistenceController: PersistenceController
     let bluetoothManager = BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared)))
@@ -47,6 +48,7 @@ struct RootAppView: View {
             .environmentObject(networkChecker)
             .environmentObject(lifeTimeEventsProvider)
             .environmentObject(userSettings)
+            .environmentObject(userRedirectionSettings)
             .environment(\.managedObjectContext, persistenceController.viewContext)
     }
 }
