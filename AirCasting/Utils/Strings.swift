@@ -34,6 +34,9 @@ struct Strings {
         static let Logged: String = "You are currently logged in as "
         static let signOut: String = "Sign Out"
     }
+
+    enum sessionShare {
+    }
     
     enum ForgotPassword {
         static let title = "Forgot Password"
@@ -63,6 +66,7 @@ struct Strings {
         static let noConnectionTitle = "No Internet Connection"
         static let noConnectionText = "Please make sure your device is connected to the internet."
     }
+
     struct SessionShare {
         static let title: String = "Share session"
         static let description: String = "Select a stream to share"
@@ -120,7 +124,7 @@ struct Strings {
     
     struct OnboardingPrivacy {
         static let title: String = "Your privacy"
-        static let description: String = "Have a look at how we store and protect Your data and accept our privacy policy and terms of service before continuing."
+        static let description: String = "Review our commitment to preserving your privacy and accept our privacy policy."
         static let continueButton: String = "Accept"
         static let sheetButton: String = "Learn More"
     }
@@ -138,5 +142,64 @@ struct Strings {
         static let title: String = "Ready to get started?"
         static let description: String = "Record a new session to monitor your health & environment."
         static let newSession: String = "Record new session"
+    }
+enum PowerABView {
+        static let alertTitle: String = "Location alert"
+        static let alertMessage: String = "Please go to settings and allow location first."
+        static let alertConfirmation: String = "OK"
+        static let alertSettings: String = "Settings"
+        static let title: String = "Power on your AirBeam"
+        static let messageText: String = "If using AirBeam 2, wait for the conncection indicator to change from red to green before continuing."
+        static let continueButton: String = "Continue"
+    }
+    
+    enum SelectDeviceView {
+        static let alertTitle: String = "Location alert"
+        static let alertMessage: String = "Please go to settings and allow location first."
+        static let alertConfirmation: String = "OK"
+        static let alertSettings: String = "Settings"
+        static let title: String = "What device are you using to record this session?"
+        static let bluetoothLabel_1: String = "Bluetooth device"
+        static let bluetoothLabel_2: String = "for example AirBeam"
+        static let micLabel_1: String = "Phone microphone"
+        static let micLabel_2: String = "to measure sound level"
+        static let chooseButton: String = "Choose"
+    }
+    
+    enum TurnOnBluetoothView {
+        static let title: String = "Turn on Bluetooth"
+        static let messageText: String = "Turn on Bluetooth to enable your phone to connect to the AirBeam"
+        static let continueButton: String = "Continue"
+    }
+    
+    struct DeleteSession {
+        static let title: String = "Delete this session"
+        static let description: String = "Which stream would you like to delete?"
+        static let continueButton: String = "Delete streams"
+        static let cancelButton: String = "Cancel"
+    }
+    
+    struct EditSession {
+        static let title: String = "Edit session details"
+        static let namePlaceholder: String = "Session name"
+        static let tagPlaceholder: String = "Select a stream to share"
+        static let buttonAccept: String = "Accept"
+    }
+    
+    struct SessionHeaderView {
+        static let measurementsMicText: String = "Most recent measurement:"
+        static let stopButton: String = "Stop recording"
+        static let resumeButton: String = "Resume recording"
+        static let editButton: String = "Edit recording"
+        static let shareButton: String = "Share session"
+        static let deleteButton: String = "Delete session"
+        static let alertTitle: String = "No internet connection"
+        static let alertMessage: String = "You need to have internet connection to edit session data"
+        static let confirmAlert: String = "Got it!"
+    }
+    
+    struct NetworkChecker {
+        static let satisfiedPathText: String = "Current devise has an network connection"
+        static let failurePathText: String = "Current devise DOES NOT have an network connection"
     }
 }

@@ -29,26 +29,26 @@ struct SessionCartView: View {
     var showChart: Bool {
         !isCollapsed && session.type == .mobile && session.status == .RECORDING
     }
+    var hasStreams: Bool {
+        session.allStreams != nil || session.allStreams != []
+    }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 13) {
             
             header
-            
-            if let threshold = thresholdFor(selectedStream: selectedStream) {
-
+            if hasStreams {
                 StreamsView(selectedStream: $selectedStream,
                             session: session,
-                            threshold: threshold,
+                            thresholds: thresholds,
                             measurementPresentationStyle: shouldShowValues)
                 
                 VStack(alignment: .trailing, spacing: 40) {
-                    if let selectedStream = selectedStream, showChart {
-                        pollutionChart(stream: selectedStream,
-                                       threshold: threshold)
+                    if showChart {
+                        pollutionChart(thresholds: thresholds)
                     }
                     if !isCollapsed {
-                        displayButtons(threshold: threshold)
+                        displayButtons(thresholds: thresholds)
                     }
                 }
             } else {
@@ -83,45 +83,38 @@ private extension SessionCartView {
             session: session)
     }
     
-    func graphButton(threshold: SensorThreshold) -> some View {
+    func graphButton(thresholds: [SensorThreshold]) -> some View {
         NavigationLink(destination: GraphView(session: session,
-                                              threshold: threshold,
+                                              thresholds: thresholds,
                                               selectedStream: $selectedStream)) {
             Text("graph")
         }
     }
     
-    func mapButton(threshold: SensorThreshold) -> some View {
-        NavigationLink(destination: AirMapView(threshold: threshold,
+    func mapButton(thresholds: [SensorThreshold]) -> some View {
+        NavigationLink(destination: AirMapView(thresholds: thresholds,
                                                session: session,
                                                selectedStream: $selectedStream)) {
             Text("map")
         }
     }
     
-    func pollutionChart(stream: MeasurementStreamEntity, threshold: SensorThreshold) -> some View {
+    func pollutionChart(thresholds: [SensorThreshold]) -> some View {
         Group {
-            ChartView(stream: stream,
-                      thresholds: threshold)
-                .frame(height: 200)
+            if let selectedStream = selectedStream {
+                ChartView(stream: selectedStream,
+                          thresholds: thresholds)
+                    .frame(height: 200)
+            }
         }
     }
     
-    func displayButtons(threshold: SensorThreshold) -> some View {
-        HStack(spacing: 20){
-            mapButton(threshold: threshold)
-            graphButton(threshold: threshold)
+    func displayButtons(thresholds: [SensorThreshold]) -> some View {
+        HStack(spacing: 20) {
+            mapButton(thresholds: thresholds)
+            graphButton(thresholds: thresholds)
         }
         .buttonStyle(GrayButtonStyle())
-    }
-    
-    func thresholdFor(selectedStream: MeasurementStreamEntity?) -> SensorThreshold? {
-        let match = thresholds.first { threshold in
-            let streamName = selectedStream?.sensorName?
-                .lowercased()
-            return threshold.sensorName?.lowercased() == streamName
-        }
-        return match
     }
 }
 

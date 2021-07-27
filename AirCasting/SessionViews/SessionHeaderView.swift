@@ -10,8 +10,14 @@ import SwiftUI
 struct SessionHeaderView: View {
     let action: () -> Void
     let isExpandButtonNeeded: Bool
+    @EnvironmentObject var networkChecker: NetworkChecker
     @ObservedObject var session: SessionEntity
+    @EnvironmentObject private var microphoneManager: MicrophoneManager
+    @State private var showingAlert = false
+    @State private var shareModal = false
+    @State private var deleteModal = false
     @State private var showModal = false
+    @State private var showModalEdit = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 13) {
@@ -19,8 +25,11 @@ struct SessionHeaderView: View {
                 dateAndTime
                 Spacer()
                 actionsMenu
-            }.sheet(isPresented: $showModal, content: {
-                ShareViewModal(showModal: $showModal)
+            }.sheet(isPresented: $shareModal, content: {
+                ShareView(showModal: $showModal)
+            })
+            .sheet(isPresented: $deleteModal, content: {
+                DeleteView(viewModel: DefaultDeleteSessionViewModel(), deleteModal: $deleteModal)
             })
             nameLabelAndExpandButton
         }
@@ -70,25 +79,28 @@ private extension SessionHeaderView {
             Button {
                 // action here
             } label: {
-                Label("Resume recording", systemImage: "repeat")
+                Label(Strings.SessionHeaderView.resumeButton, systemImage: "repeat")
             }
             
             Button {
-                // action here
+                DispatchQueue.main.async {
+                    print(" \(networkChecker.connectionAvailable) NETWORK")
+                    networkChecker.connectionAvailable ? showModalEdit.toggle() : showingAlert.toggle()
+                }
             } label: {
-                Label("Edit session", systemImage: "pencil")
+                Label(Strings.SessionHeaderView.editButton, systemImage: "pencil")
             }
             
             Button {
-                showModal.toggle()
+                shareModal.toggle()
             } label: {
-                Label("Share session", systemImage: "square.and.arrow.up")
+                Label(Strings.SessionHeaderView.shareButton, systemImage: "square.and.arrow.up")
             }
             
             Button {
-                // action here
+                deleteModal.toggle()
             } label: {
-                Label("Delete session", systemImage: "xmark.circle")
+                Label(Strings.SessionHeaderView.deleteButton, systemImage: "xmark.circle")
             }
         } label: {
             ZStack(alignment: .trailing) {
@@ -97,7 +109,12 @@ private extension SessionHeaderView {
                     .frame(width: 30, height: 20, alignment: .trailing)
                     .opacity(0.0001)
             }
+        }.alert(isPresented: $showingAlert) {
+            Alert(title: Text(Strings.SessionHeaderView.alertTitle),
+                  message: Text(Strings.SessionHeaderView.alertMessage),
+                  dismissButton: .default(Text(Strings.SessionHeaderView.confirmAlert)))
         }
+        .sheet(isPresented: $showModalEdit) { EditViewModal(showModalEdit: $showModalEdit) }
     }
     
 }

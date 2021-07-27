@@ -10,7 +10,7 @@ import SwiftUI
 struct GraphView: View {
     
     let session: SessionEntity
-    let threshold: SensorThreshold
+    let thresholds: [SensorThreshold]
     @Binding var selectedStream: MeasurementStreamEntity?
     
     var body: some View {
@@ -20,27 +20,28 @@ struct GraphView: View {
                               session: session).padding()
             StreamsView(selectedStream: $selectedStream,
                         session: session,
-                        threshold: threshold,
+                        thresholds: thresholds,
                         measurementPresentationStyle: .showValues)
-            ZStack(alignment: .topLeading) {
-                if let selectedStream = selectedStream {
-                    Graph(stream: selectedStream,
-                          thresholds: threshold,
-                          isAutozoomEnabled: session.type == .mobile)
+            if let threshold = thresholds.threshold(for: selectedStream) {
+                ZStack(alignment: .topLeading) {
+                    if let selectedStream = selectedStream {
+                        Graph(stream: selectedStream,
+                              thresholds: threshold,
+                              isAutozoomEnabled: session.type == .mobile)
+                    }
+                    StatisticsContainerView()
                 }
-                StatisticsContainerView()
+                NavigationLink(destination: HeatmapSettingsView(changedThresholdValues: threshold.rawThresholdsBinding)) {
+                    EditButtonView()
+                }
+                .padding(.horizontal)
+                .padding(.top)
+                
+                ThresholdsSliderView(threshold: threshold)
+                    .padding()
+                    // Fixes labels covered by tabbar
+                    .padding(.bottom)
             }
-            
-            NavigationLink(destination: HeatmapSettingsView(changedThresholdValues: threshold.rawThresholdsBinding)) {
-                EditButtonView()
-            }
-            .padding(.horizontal)
-            .padding(.top)
-            
-            ThresholdsSliderView(threshold: threshold)
-                .padding()
-                // Fixes labels covered by tabbar
-                .padding(.bottom)
             Spacer()
         }
         .navigationBarTitleDisplayMode(.inline)
@@ -51,7 +52,7 @@ struct GraphView: View {
 struct GraphView_Previews: PreviewProvider {
     static var previews: some View {
         //Change selected stream
-        GraphView(session: .mock, threshold: .mock, selectedStream: .constant(nil))
+        GraphView(session: .mock, thresholds: [.mock], selectedStream: .constant(nil))
     }
 }
 #endif
