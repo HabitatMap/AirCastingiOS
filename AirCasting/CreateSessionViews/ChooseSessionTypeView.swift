@@ -51,6 +51,34 @@ struct ChooseSessionTypeView: View {
                         .ignoresSafeArea()
                 )
             }
+            .background(
+                Group {
+                    EmptyView()
+                        .fullScreenCover(isPresented: $isPowerABLinkActive) {
+                            CreatingSessionFlowRootView {
+                                PowerABView(creatingSessionFlowContinues: $isPowerABLinkActive, urlProvider: urlProvider)
+                            }
+                        }
+                    EmptyView()
+                        .fullScreenCover(isPresented: $isTurnLocationOnLinkActive) {
+                            CreatingSessionFlowRootView {
+                                TurnOnLocationView(creatingSessionFlowContinues: $isTurnLocationOnLinkActive, sessionContext: sessionContext, urlProvider: urlProvider)
+                            }
+                        }
+                    EmptyView()
+                        .fullScreenCover(isPresented: $isTurnBluetoothOnLinkActive) {
+                            CreatingSessionFlowRootView {
+                                TurnOnBluetoothView(creatingSessionFlowContinues: $isTurnBluetoothOnLinkActive, urlProvider: urlProvider)
+                            }
+                        }
+                    EmptyView()
+                        .fullScreenCover(isPresented: $isMobileLinkActive) {
+                            CreatingSessionFlowRootView {
+                                SelectDeviceView(creatingSessionFlowContinues: $isMobileLinkActive, urlProvider: urlProvider)
+                            }
+                        }
+                }
+            )
             .onAppear {
                 if CBCentralManager.authorization == .allowedAlways {
                     _ = bluetoothManager.centralManager
@@ -103,10 +131,9 @@ struct ChooseSessionTypeView: View {
         } else {
             // This will trigger system bluetooth authorisation alert
             if CBCentralManager.authorization == .notDetermined {
-                _ = bluetoothManager.centralManager
                 didTapFixedSession = true
             } else if CBCentralManager.authorization == .allowedAlways,
-                bluetoothManager.centralManager.state == .poweredOn {
+                      bluetoothManager.centralManager.state == .poweredOn {
                 isPowerABLinkActive = true
             } else {
                 isTurnBluetoothOnLinkActive = true
@@ -120,47 +147,16 @@ struct ChooseSessionTypeView: View {
         }) {
             fixedSessionLabel
         }
-        .background(
-            Group {
-                EmptyView()
-                    .fullScreenCover(isPresented: $isPowerABLinkActive) {
-                        CreatingSessionFlowRootView {
-                            PowerABView(creatingSessionFlowContinues: $isPowerABLinkActive, urlProvider: urlProvider)
-                        }
-                    }
-                EmptyView()
-                    .fullScreenCover(isPresented: $isTurnBluetoothOnLinkActive) {
-                        CreatingSessionFlowRootView {
-                            TurnOnLocationView(creatingSessionFlowContinues: $isTurnBluetoothOnLinkActive, urlProvider: urlProvider)
-                        }
-                    }
-            }
-        )
     }
     
     var mobileSessionButton: some View {
         Button(action: {
             createNewSession(isSessionFixed: false)
-            isMobileLinkActive = true
+            //            isMobileLinkActive = true
+            isTurnLocationOnLinkActive = true
         }) {
             mobileSessionLabel
         }
-        .background(
-            Group {
-            EmptyView()
-                .fullScreenCover(isPresented: $isMobileLinkActive) {
-                    CreatingSessionFlowRootView {
-                        SelectDeviceView(creatingSessionFlowContinues: $isMobileLinkActive, urlProvider: urlProvider)
-                    }
-                }
-                EmptyView()
-                    .fullScreenCover(isPresented: $isTurnBluetoothOnLinkActive) {
-                        CreatingSessionFlowRootView {
-                            TurnOnLocationView(creatingSessionFlowContinues: $isTurnBluetoothOnLinkActive, urlProvider: urlProvider)
-                        }
-                    }
-            }
-        )
     }
     
     var fixedSessionLabel: some View {

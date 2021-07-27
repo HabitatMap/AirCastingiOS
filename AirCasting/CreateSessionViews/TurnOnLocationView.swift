@@ -8,10 +8,12 @@ import CoreBluetooth
 struct TurnOnLocationView: View {
     @State private var isPowerABLinkActive = false
     @State private var isTurnBluetoothOnLinkActive = false
+    @State private var isMobileLinkActive = false
     @EnvironmentObject var settingsRedirection: DefaultSettingsRedirection
     @Binding var creatingSessionFlowContinues: Bool
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @StateObject private var locationTracker = LocationTracker()
+    @StateObject var sessionContext: CreateSessionContext
     
     let urlProvider: BaseURLProvider
     
@@ -26,6 +28,28 @@ struct TurnOnLocationView: View {
             continueButton
                 .buttonStyle(BlueButtonStyle())
         }
+        .background(
+            Group {
+                NavigationLink(
+                    destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider),
+                    isActive: $isPowerABLinkActive,
+                    label: {
+                        EmptyView()
+                    })
+                NavigationLink(
+                    destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider),
+                    isActive: $isTurnBluetoothOnLinkActive,
+                    label: {
+                        EmptyView()
+                    })
+                NavigationLink(
+                    destination: SelectDeviceView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider),
+                    isActive: $isMobileLinkActive,
+                    label: {
+                        EmptyView()
+                    })
+            }
+        )
         .padding()
     }
     
@@ -46,8 +70,12 @@ struct TurnOnLocationView: View {
     
     var continueButton: some View {
         Button(action: {
-            isTurnBluetoothOnLinkActive = true
-            isPowerABLinkActive = false
+            if sessionContext.sessionType == .mobile {
+                isMobileLinkActive = true
+            } else {
+                locationTracker.requestAuthorisation()
+                isTurnBluetoothOnLinkActive = true
+            }
             //            locationTracker.requestAuthorisation()
             //            if bluetoothManager.centralManager.state == .unauthorized {
             //                settingsRedirection.goToBluetoothAuthSettings()
@@ -59,34 +87,11 @@ struct TurnOnLocationView: View {
         })
         .frame(maxWidth: .infinity)
         .buttonStyle(BlueButtonStyle())
-        .background(
-            Group {
-                NavigationLink(
-                    destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider),
-                    isActive: $isPowerABLinkActive,
-                    label: {
-                        EmptyView()
-                    })
-                //                        NavigationLink(
-                //                            destination: SelectDeviceView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider),
-                //                            isActive: $isPowerABLinkActive,
-                //                            label: {
-                //                                EmptyView()
-                //                            })
-                NavigationLink(
-                    destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider),
-                    isActive: $isTurnBluetoothOnLinkActive,
-                    label: {
-                        EmptyView()
-                    })
-            }
-        )
-
     }
 }
 
 struct TurnOnLocationView_Previews: PreviewProvider {
     static var previews: some View {
-        TurnOnLocationView(creatingSessionFlowContinues: .constant(true), urlProvider: DummyURLProvider())
+        TurnOnLocationView(creatingSessionFlowContinues: .constant(true), sessionContext: CreateSessionContext(), urlProvider: DummyURLProvider())
     }
 }

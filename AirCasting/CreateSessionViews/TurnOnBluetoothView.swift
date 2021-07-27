@@ -29,6 +29,15 @@ struct TurnOnBluetoothView: View {
             continueButton
                 .buttonStyle(BlueButtonStyle())
         }
+        .background(
+            NavigationLink(
+                destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider),
+                isActive: $isPowerABLinkActive,
+                label: {
+                    EmptyView()
+                }
+            )
+        )
         .padding()
     }
     
@@ -49,7 +58,8 @@ struct TurnOnBluetoothView: View {
     
     var continueButton: some View {
         Button(action: {
-            _ = bluetoothManager.centralManager
+            _ = CBCentralManager()
+//            isPowerABLinkActive = true
 //            if CBCentralManager.authorization != .allowedAlways {
 //                settingsRedirection.goToBluetoothAuthSettings()
 //            } else {
@@ -64,15 +74,6 @@ struct TurnOnBluetoothView: View {
         })
             .frame(maxWidth: .infinity)
             .buttonStyle(BlueButtonStyle())
-            .background(
-                NavigationLink(
-                    destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider),
-                    isActive: $isPowerABLinkActive,
-                    label: {
-                        EmptyView()
-                    }
-                )
-            )
     }
 }
 
