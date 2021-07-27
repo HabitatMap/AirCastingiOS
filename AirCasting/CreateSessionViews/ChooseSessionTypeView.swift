@@ -18,6 +18,7 @@ struct ChooseSessionTypeView: View {
     @State private var didTapFixedSession = false
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @StateObject private var locationTracker = LocationTracker()
+    @EnvironmentObject var userRedirectionSettings: DefaultSettingsRedirection
     @EnvironmentObject var userSettings: UserSettings
     let urlProvider: BaseURLProvider
     
@@ -68,7 +69,7 @@ struct ChooseSessionTypeView: View {
                     EmptyView()
                         .fullScreenCover(isPresented: $isTurnBluetoothOnLinkActive) {
                             CreatingSessionFlowRootView {
-                                TurnOnBluetoothView(creatingSessionFlowContinues: $isTurnBluetoothOnLinkActive, urlProvider: urlProvider)
+                                TurnOnBluetoothView(creatingSessionFlowContinues: $isTurnBluetoothOnLinkActive, sessionContext: sessionContext, urlProvider: urlProvider)
                             }
                         }
                     EmptyView()
@@ -79,11 +80,6 @@ struct ChooseSessionTypeView: View {
                         }
                 }
             )
-            .onAppear {
-                if CBCentralManager.authorization == .allowedAlways {
-                    _ = bluetoothManager.centralManager
-                }
-            }
             .onChange(of: bluetoothManager.centralManagerState) { (state) in
                 if didTapFixedSession {
                     goToNextFixedSessionStep()
@@ -126,17 +122,13 @@ struct ChooseSessionTypeView: View {
     
     func goToNextFixedSessionStep() {
         createNewSession(isSessionFixed: true)
-        if locationTracker.locationGranted != .granted {
+        if locationTracker.locationGranted == .denied {
             isTurnLocationOnLinkActive = true
         } else {
-            // This will trigger system bluetooth authorisation alert
             if CBCentralManager.authorization == .notDetermined {
-                didTapFixedSession = true
-            } else if CBCentralManager.authorization == .allowedAlways,
-                      bluetoothManager.centralManager.state == .poweredOn {
-                isPowerABLinkActive = true
-            } else {
                 isTurnBluetoothOnLinkActive = true
+            } else {
+                isPowerABLinkActive = true
             }
         }
     }
@@ -152,8 +144,11 @@ struct ChooseSessionTypeView: View {
     var mobileSessionButton: some View {
         Button(action: {
             createNewSession(isSessionFixed: false)
-            //            isMobileLinkActive = true
-            isTurnLocationOnLinkActive = true
+            if locationTracker.locationGranted == .denied {
+                isTurnLocationOnLinkActive = true
+            } else {
+                isMobileLinkActive = true
+            }
         }) {
             mobileSessionLabel
         }

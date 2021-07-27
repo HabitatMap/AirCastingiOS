@@ -16,7 +16,7 @@ class LocationTracker: NSObject, ObservableObject, CLLocationManagerDelegate {
         return $0
     }(CLLocationManager())
     
-    @Published var locationGranted = LocationState.granted
+    @Published var locationGranted = LocationState.denied
     @Published var allLocations: [CLLocation] = []
     
     func requestAuthorisation() {
@@ -30,8 +30,8 @@ class LocationTracker: NSObject, ObservableObject, CLLocationManagerDelegate {
             locationManager.startUpdatingLocation()
             locationGranted = .granted
         case .denied:  locationGranted = .denied
-        case .notDetermined: break
-        case .restricted: break
+        case .notDetermined: locationGranted = .denied
+        case .restricted: locationGranted = .denied
         @unknown default:
             fatalError()
         }

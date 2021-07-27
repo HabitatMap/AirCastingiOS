@@ -7,6 +7,7 @@ import CoreBluetooth
 
 struct TurnOnLocationView: View {
     @State private var isPowerABLinkActive = false
+    @State private var showAlert = false
     @State private var isTurnBluetoothOnLinkActive = false
     @State private var isMobileLinkActive = false
     @EnvironmentObject var settingsRedirection: DefaultSettingsRedirection
@@ -14,6 +15,9 @@ struct TurnOnLocationView: View {
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @StateObject private var locationTracker = LocationTracker()
     @StateObject var sessionContext: CreateSessionContext
+    private var continueButtonEnabled: Bool {
+        locationTracker.locationGranted == .granted
+    }
     
     let urlProvider: BaseURLProvider
     
@@ -37,7 +41,7 @@ struct TurnOnLocationView: View {
                         EmptyView()
                     })
                 NavigationLink(
-                    destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider),
+                    destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sessionContext: sessionContext, urlProvider: urlProvider),
                     isActive: $isTurnBluetoothOnLinkActive,
                     label: {
                         EmptyView()
@@ -51,6 +55,12 @@ struct TurnOnLocationView: View {
             }
         )
         .padding()
+        .onAppear {
+            locationTracker.requestAuthorisation()
+        }
+        .onChange(of: locationTracker.locationGranted) { newValue in
+            showAlert = (newValue == .denied)
+        }
     }
     
     var titleLabel: some View {
@@ -70,18 +80,15 @@ struct TurnOnLocationView: View {
     
     var continueButton: some View {
         Button(action: {
-            if sessionContext.sessionType == .mobile {
-                isMobileLinkActive = true
+            if locationTracker.locationGranted == .denied {
+                settingsRedirection.goToLocationAuthSettings()
             } else {
-                locationTracker.requestAuthorisation()
-                isTurnBluetoothOnLinkActive = true
+                if sessionContext.sessionType == .mobile {
+                    isMobileLinkActive = true
+                } else {
+                    isTurnBluetoothOnLinkActive = true
+                }
             }
-            //            locationTracker.requestAuthorisation()
-            //            if bluetoothManager.centralManager.state == .unauthorized {
-            //                settingsRedirection.goToBluetoothAuthSettings()
-            //            } else {
-            //                isTurnBluetoothOnLinkActive = true
-            //            }
         }, label: {
             Text(Strings.TurnOnBluetoothView.continueButton)
         })

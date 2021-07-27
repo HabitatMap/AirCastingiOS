@@ -10,13 +10,9 @@ import SwiftUI
 
 struct PowerABView: View {
     @State private var showAlert = false
-    @StateObject private var locationTracker = LocationTracker()
     @Binding var creatingSessionFlowContinues: Bool
     @EnvironmentObject private var sessionContext: CreateSessionContext
     let urlProvider: BaseURLProvider
-    private var continueButtonEnabled: Bool {
-        locationTracker.locationGranted == .granted
-    }
 
     var body: some View {
         VStack(spacing: 45) {
@@ -34,12 +30,8 @@ struct PowerABView: View {
 
         .padding()
         .onAppear(perform: {
-            locationTracker.requestAuthorisation()
             sessionContext.deviceType = .AIRBEAM3
         })
-        .onChange(of: locationTracker.locationGranted) { newValue in
-            showAlert = (newValue == .denied)
-        }
     }
 
     var titleLabel: some View {
@@ -60,7 +52,7 @@ struct PowerABView: View {
         NavigationLink(destination: SelectPeripheralView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider)) {
             Text(Strings.PowerABView.continueButton)
                 .frame(maxWidth: .infinity)
-        }.disabled(!continueButtonEnabled)
+        }
     }
 }
 
