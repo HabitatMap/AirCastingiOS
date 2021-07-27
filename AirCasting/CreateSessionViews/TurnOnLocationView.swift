@@ -60,7 +60,7 @@ struct TurnOnLocationView: View {
         .frame(maxWidth: .infinity)
         .buttonStyle(BlueButtonStyle())
         .background(
-            ZStack {
+            Group {
                 NavigationLink(
                     destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider),
                     isActive: $isPowerABLinkActive,
@@ -81,7 +81,7 @@ struct TurnOnLocationView: View {
                     })
             }
         )
-        .background(NavigationLink(destination: EmptyView(), label: { EmptyView() }))
+
     }
 }
 
