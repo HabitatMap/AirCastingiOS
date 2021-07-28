@@ -8,6 +8,7 @@ struct BackendSettingsView: View {
     let backendURLBuilder = BackendURLValidator()
     
     @Environment(\.presentationMode) var presentationMode
+    let logoutController: LogoutController
     @State var urlProvider: BaseURLProvider
     @State private var pathText: String = ""
     @State private var portText: String = ""
@@ -53,6 +54,7 @@ struct BackendSettingsView: View {
         Button {
             urlProvider.baseAppURL = url ?? URL(string: "http://aircasting.org/api")!
             presentationMode.wrappedValue.dismiss()
+            try! logoutController.logout()
         } label: {
             Text(Strings.BackendSettings.Ok)
         }.buttonStyle(BlueButtonStyle())
