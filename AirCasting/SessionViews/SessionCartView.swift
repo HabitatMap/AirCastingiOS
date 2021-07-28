@@ -154,14 +154,14 @@ private extension SessionCartView {
     }
 }
 
-// #if DEBUG
-// struct SessionCell_Previews: PreviewProvider {
-//    static var previews: some View {
-//        EmptyView()
-//        SessionCartView(session: SessionEntity.mock, thresholds: [.mock, .mock])
-//            .padding()
-//            .previewLayout(.sizeThatFits)
-//            .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
-//    }
-// }
-// #endif
+ #if DEBUG
+ struct SessionCell_Previews: PreviewProvider {
+    static var previews: some View {
+        EmptyView()
+        SessionCartView(session: SessionEntity.mock, thresholds: [.mock, .mock])
+            .padding()
+            .previewLayout(.sizeThatFits)
+            .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
+    }
+ }
+ #endif

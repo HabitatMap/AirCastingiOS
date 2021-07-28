@@ -104,17 +104,17 @@ final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
     
     func updateSessionIfFollowing(_ sessionFollowing: SessionFollowing, for sessionUUID: SessionUUID) throws {
         let context = persistenceController.editContext()
-        let sessionEntity = try context.existingSession(uuid: sessionUUID)
-        let copySession = sessionEntity
-        if sessionFollowing.rawValue == 1 {
-            sessionEntity.followedAt = Date()
-            sessionEntity.type = .following
-            copySession.type = .fixed
-        } else {
-            sessionEntity.followedAt = nil
-            sessionEntity.type = .fixed
-        }
-        try context.save()
+            let sessionEntity = try context.existingSession(uuid: sessionUUID)
+            let copySession = sessionEntity
+            if sessionFollowing.rawValue == 1 {
+                sessionEntity.followedAt = Date()
+                sessionEntity.type = .following
+                copySession.type = .fixed
+            } else {
+                sessionEntity.followedAt = nil
+                sessionEntity.type = .fixed
+            }
+            try context.save()
     }
 
     func createSession(_ session: Session) throws {
@@ -128,9 +128,7 @@ final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
 #if DEBUG
 /// Only to be used for swiftui previews
 final class PreviewMeasurementStreamStorage: MeasurementStreamStorage {
-    func updateSessionIfFollowing(_ sessionStatus: SessionFollowing, for sessionUUID: SessionUUID) throws {
-        print("Nothing happened")
-    }
+    func updateSessionIfFollowing(_ sessionStatus: SessionFollowing, for sessionUUID: SessionUUID) throws { }
 
     func addMeasurement(_ measurement: Measurement, toStreamWithID id: MeasurementStreamLocalID) throws {
         print("Nothing happened for \(measurement)")
