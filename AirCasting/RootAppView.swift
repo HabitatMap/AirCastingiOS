@@ -18,9 +18,9 @@ struct RootAppView: View {
     let bluetoothManager = BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared)))
     @ObservedObject var lifeTimeEventsProvider = LifeTimeEventsProvider()
     @ObservedObject var userSettings = UserSettings()
-    @ObservedObject var locationTracker = LocationTracker(locationManager: CLLocationManager(), locationGranted: LocationState.granted, allLocations: [])
+    @ObservedObject var locationTracker = LocationTracker(locationManager: CLLocationManager())
     
-    let microphoneManager = MicrophoneManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared))
+    @ObservedObject var microphoneManager = MicrophoneManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared))
     let urlProvider = UserDefaultsBaseURLProvider()
     var body: some View {
         if userAuthenticationSession.isLoggedIn {
@@ -44,12 +44,13 @@ struct RootAppView: View {
                        urlProvider: urlProvider,
                        sessionSynchronizer: sessionSynchronizer)
             .environmentObject(bluetoothManager)
-            .environmentObject(microphoneManager)
             .environmentObject(userAuthenticationSession)
             .environmentObject(persistenceController)
             .environmentObject(networkChecker)
             .environmentObject(lifeTimeEventsProvider)
             .environmentObject(userSettings)
+            .environmentObject(locationTracker)
+            .environmentObject(microphoneManager)
             .environmentObject(userRedirectionSettings)
             .environment(\.managedObjectContext, persistenceController.viewContext)
     }

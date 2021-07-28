@@ -10,7 +10,6 @@ import CoreBluetooth
 import SwiftUI
 
 struct TurnOnBluetoothView: View {
-    @EnvironmentObject private var microphoneManager: MicrophoneManager
     @State private var isMicLinkActive: Bool = false
     @State private var isPowerABLinkActive = false
     @EnvironmentObject var settingsRedirection: DefaultSettingsRedirection

@@ -1,9 +1,9 @@
 // Created by Lunar on 27/07/2021.
 //
 
-import SwiftUI
 import AirCastingStyling
 import CoreBluetooth
+import SwiftUI
 
 struct TurnOnLocationView: View {
     @State private var isPowerABLinkActive = false
@@ -13,11 +13,8 @@ struct TurnOnLocationView: View {
     @EnvironmentObject var settingsRedirection: DefaultSettingsRedirection
     @Binding var creatingSessionFlowContinues: Bool
     @EnvironmentObject var bluetoothManager: BluetoothManager
-    @StateObject private var locationTracker = LocationTracker()
+    @EnvironmentObject private var locationTracker: LocationTracker
     @StateObject var sessionContext: CreateSessionContext
-    private var continueButtonEnabled: Bool {
-        locationTracker.locationGranted == .granted
-    }
     
     let urlProvider: BaseURLProvider
     
@@ -60,6 +57,9 @@ struct TurnOnLocationView: View {
         .padding()
         .onAppear {
             locationTracker.requestAuthorisation()
+            if locationTracker.locationGranted == .denied {
+                showAlert = true
+            }
         }
         .onChange(of: locationTracker.locationGranted) { newValue in
             showAlert = (newValue == .denied)
@@ -67,14 +67,14 @@ struct TurnOnLocationView: View {
     }
     
     var titleLabel: some View {
-        Text("LOCATION")
+        Text(Strings.TurnOnLocationView.title)
             .font(Font.moderate(size: 25,
                                 weight: .bold))
             .foregroundColor(.accentColor)
     }
     
     var messageLabel: some View {
-        Text(Strings.TurnOnBluetoothView.messageText)
+        Text(Strings.TurnOnLocationView.messageText)
             .font(Font.moderate(size: 18,
                                 weight: .regular))
             .foregroundColor(.aircastingGray)
@@ -83,21 +83,21 @@ struct TurnOnLocationView: View {
     
     var continueButton: some View {
         Button(action: {
-                if sessionContext.sessionType == .mobile {
-                    isMobileLinkActive = true
+            if sessionContext.sessionType == .mobile {
+                isMobileLinkActive = true
+            } else {
+                if CBCentralManager.authorization == .notDetermined {
+                    isTurnBluetoothOnLinkActive = true
                 } else {
-                    if CBCentralManager.authorization == .notDetermined {
-                        isTurnBluetoothOnLinkActive = true
-                    } else {
-                        isPowerABLinkActive = true
-                    }
+                    isPowerABLinkActive = true
                 }
+            }
         }, label: {
-            Text(Strings.TurnOnBluetoothView.continueButton)
+            Text(Strings.TurnOnLocationView.continueButton)
         })
-        .disabled(!continueButtonEnabled)
-        .frame(maxWidth: .infinity)
-        .buttonStyle(BlueButtonStyle())
+        .disabled(locationTracker.locationGranted != .granted)
+            .frame(maxWidth: .infinity)
+            .buttonStyle(BlueButtonStyle())
     }
 }
 

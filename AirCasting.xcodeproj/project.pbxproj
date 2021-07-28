@@ -590,8 +590,8 @@
 		AC32040625CC122900A68520 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				DDD24D8726A8374600D4A327 /* LocationAlert.swift */,
 				B32D08A0267A493C006C97ED /* Publishers */,
+				DDD24D8726A8374600D4A327 /* LocationAlert.swift */,
 				4F945EF3264B2813008A5B22 /* ActivityIndicator.swift */,
 				ACD01F7525FF61CE00B8F65F /* LocationProvider.swift */,
 				AC32040325CC067D00A68520 /* CheckBox.swift */,

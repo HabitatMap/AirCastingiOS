@@ -21,9 +21,6 @@ struct ChooseSessionTypeView: View {
     @EnvironmentObject var userRedirectionSettings: DefaultSettingsRedirection
     @EnvironmentObject var userSettings: UserSettings
     let urlProvider: BaseURLProvider
-    private var continueButtonEnabled: Bool {
-        locationTracker.locationGranted == .granted
-    }
     
     var body: some View {
         NavigationView {
@@ -83,11 +80,6 @@ struct ChooseSessionTypeView: View {
                         }
                 }
             )
-            .onAppear {
-                if locationTracker.locationGranted == .granted {
-                    Print("GRANTED")
-                }
-            }
             .onChange(of: bluetoothManager.centralManagerState) { (state) in
                 if didTapFixedSession {
                     goToNextFixedSessionStep()
@@ -98,19 +90,19 @@ struct ChooseSessionTypeView: View {
         .environmentObject(sessionContext)
     }
     var titleLabel: some View {
-        Text("Let's begin")
+        Text(Strings.ChooseSessionTypeView.title)
             .font(Font.moderate(size: 32,
                                 weight: .bold))
             .foregroundColor(.accentColor)
     }
     var messageLabel: some View {
-        Text("How would you like to add your session?")
+        Text(Strings.ChooseSessionTypeView.message)
             .font(Font.moderate(size: 18,
                                 weight: .regular))
             .foregroundColor(.aircastingGray)
     }
     var recordNewLabel: some View {
-        Text("Record a new session")
+        Text(Strings.ChooseSessionTypeView.recordNew)
             .font(Font.muli(size: 14, weight: .bold))
             .foregroundColor(.aircastingDarkGray)
     }
@@ -119,7 +111,7 @@ struct ChooseSessionTypeView: View {
         Button(action: {
             isInfoPresented = true
         }, label: {
-            Text("more info")
+            Text(Strings.ChooseSessionTypeView.moreInfo)
                 .font(Font.moderate(size: 14))
                 .foregroundColor(.accentColor)
         })
@@ -135,7 +127,7 @@ struct ChooseSessionTypeView: View {
     var fixedSessionButton: some View {
         Button(action: {
             goToNextFixedSessionStep()
-            if !continueButtonEnabled {
+            if locationTracker.locationGranted == .denied {
                 isTurnLocationOnLinkActive = true
             } else {
                 if CBCentralManager.authorization == .notDetermined {
@@ -152,7 +144,7 @@ struct ChooseSessionTypeView: View {
     var mobileSessionButton: some View {
         Button(action: {
             createNewSession(isSessionFixed: false)
-            if !continueButtonEnabled {
+            if locationTracker.locationGranted == .denied {
                 isTurnLocationOnLinkActive = true
             } else {
                 isMobileLinkActive = true
@@ -164,10 +156,10 @@ struct ChooseSessionTypeView: View {
     
     var fixedSessionLabel: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("Fixed session")
+            Text(Strings.ChooseSessionTypeView.fixedLabel_1)
                 .font(Font.muli(size: 16, weight: .bold))
                 .foregroundColor(.accentColor)
-            Text("for measuring in one place")
+            Text(Strings.ChooseSessionTypeView.fixedLabel_2)
                 .font(Font.muli(size: 14, weight: .regular))
                 .foregroundColor(.aircastingGray)
         }
@@ -179,10 +171,10 @@ struct ChooseSessionTypeView: View {
     
     var mobileSessionLabel: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("Mobile session")
+            Text(Strings.ChooseSessionTypeView.mobileLabel_1)
                 .font(Font.muli(size: 16, weight: .bold))
                 .foregroundColor(.accentColor)
-            Text("for moving around")
+            Text(Strings.ChooseSessionTypeView.mobileLabel_2)
                 .font(Font.muli(size: 14, weight: .regular))
                 .foregroundColor(.aircastingGray)
         }

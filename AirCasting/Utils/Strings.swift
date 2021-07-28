@@ -35,8 +35,7 @@ struct Strings {
         static let signOut: String = "Sign Out"
     }
 
-    enum sessionShare {
-    }
+    enum sessionShare {}
     
     enum ForgotPassword {
         static let title = "Forgot Password"
@@ -67,7 +66,7 @@ struct Strings {
         static let noConnectionText = "Please make sure your device is connected to the internet."
     }
     
-    struct SessionShare {
+    enum SessionShare {
         static let title: String = "Share session"
         static let description: String = "Select a stream to share"
         static let emailDescription: String = "Or email a CSV file with your session data"
@@ -79,12 +78,12 @@ struct Strings {
         static let checkboxDescription: String = "dB"
     }
     
-    struct LoadingSession {
+    enum LoadingSession {
         static let title: String = "Your AirBeam is gathering data."
         static let description: String = "Your AirBeam is gathering data."
     }
 
-    struct WifiPopupView {
+    enum WifiPopupView {
         static let wifiPlaceholder: String = "Wi-Fi name"
         static let passwordPlaceholder: String = "Password"
         static let connectButton: String = "Connect"
@@ -95,25 +94,25 @@ struct Strings {
         static let differentNetwork: String = "I'd like to connect with a different Wi-Fi network."
     }
 
-    struct OnboardingGetStarted {
+    enum OnboardingGetStarted {
         static let description: String = "record and map measurements from health and environmental monitoring devices"
         static let getStarted: String = "Get started"
     }
     
-    struct OnboardingNearAir {
+    enum OnboardingNearAir {
         static let title: String = "How’s the air \nnear you?"
         static let description: String = "Find and follow a fixed air quality monitor near you and know how clean or polluted your air is right now."
         static let continueButton: String = "How’s the air \nnear you?"
     }
     
-    struct OnboardingAirBeam {
+    enum OnboardingAirBeam {
         static let title: String = "Measure and map \nyour exposure \nto air pollution"
         static let description: String = "Connect AirBeam to measure air quality humidity, and temperature."
         static let continueButton: String = "Continue"
         static let sheetButton: String = "Learn More"
     }
     
-    struct OnboardingAirBeamSheet {
+    enum OnboardingAirBeamSheet {
         static let sheetTitle: String = "How AirBeam works?"
         static let sheetDescription_1: String = "Your AirBeam is gathering data."
         static let sheetDescription_2: String = " mobile "
@@ -122,23 +121,23 @@ struct Strings {
         static let sheetDescription_5: String = "mode, it can be installed indoors or outdoors to keep tabs on pollution levels in your home, office, backyard, or neighborhood 24/7."
     }
     
-    struct OnboardingPrivacy {
+    enum OnboardingPrivacy {
         static let title: String = "Your privacy"
         static let description: String = "Have a look at how we store and protect Your data and accept our privacy policy and terms of service before continuing."
         static let continueButton: String = "Accept"
         static let sheetButton: String = "Learn More"
     }
     
-    struct OnboardingPrivacySheet {
+    enum OnboardingPrivacySheet {
         static let title: String = "Our privacy policy"
         static let description: String = """
-            HabitatMap protects the personal data of AirCasting mobile application users, and fulfills conditions deriving from the law, especially from the Regulation (EU) 2016/679 of the European Parliament and of the Council of 27 April 2016 on the protection of natural persons with regard to the processing of personal data and on the free movement of such data, and repealing Directive 95/46/EC (GDPR). HabitatMap protects the security of the data of AirCasting app users using appropriate technical, logistical, administrative, and physical protection measures. AirCasting ensures that its employees and contractors are given training in protection of personal data.
+        HabitatMap protects the personal data of AirCasting mobile application users, and fulfills conditions deriving from the law, especially from the Regulation (EU) 2016/679 of the European Parliament and of the Council of 27 April 2016 on the protection of natural persons with regard to the processing of personal data and on the free movement of such data, and repealing Directive 95/46/EC (GDPR). HabitatMap protects the security of the data of AirCasting app users using appropriate technical, logistical, administrative, and physical protection measures. AirCasting ensures that its employees and contractors are given training in protection of personal data.
             
-            This privacy policy sets out the rules for HabitatMap’s processing of your data, including personal data, in relation to your use of the AirCasting mobile application.
-            """
+        This privacy policy sets out the rules for HabitatMap’s processing of your data, including personal data, in relation to your use of the AirCasting mobile application.
+        """
     }
 
-    struct EmptyOnboarding {
+    enum EmptyOnboarding {
         static let title: String = "Ready to get started?"
         static let description: String = "Record a new session to monitor your health & environment."
         static let newSession: String = "Record new session"
@@ -173,21 +172,27 @@ struct Strings {
         static let continueButton: String = "Continue"
     }
     
-    struct DeleteSession {
+    enum TurnOnLocationView {
+        static let title: String = "Turn on location services"
+        static let messageText: String = "To map your measurements, turn on location services."
+        static let continueButton: String = "Turn on"
+    }
+    
+    enum DeleteSession {
         static let title: String = "Delete this session"
         static let description: String = "Which stream would you like to delete?"
         static let continueButton: String = "Delete streams"
         static let cancelButton: String = "Cancel"
     }
     
-    struct EditSession {
+    enum EditSession {
         static let title: String = "Edit session details"
         static let namePlaceholder: String = "Session name"
         static let tagPlaceholder: String = "Select a stream to share"
         static let buttonAccept: String = "Accept"
     }
     
-    struct SessionHeaderView {
+    enum SessionHeaderView {
         static let measurementsMicText: String = "Most recent measurement:"
         static let stopButton: String = "Stop recording"
         static let resumeButton: String = "Resume recording"
@@ -199,8 +204,71 @@ struct Strings {
         static let confirmAlert: String = "Got it!"
     }
     
-    struct NetworkChecker {
+    enum NetworkChecker {
         static let satisfiedPathText: String = "Current devise has an network connection"
         static let failurePathText: String = "Current devise DOES NOT have an network connection"
+    }
+    
+    enum ChooseSessionTypeView {
+        static let title: String = "Let's begin"
+        static let message: String = "How would you like to add your session?"
+        static let recordNew: String = "Record a new session"
+        static let moreInfo: String = "more info"
+        static let fixedLabel_1: String = "Fixed session"
+        static let fixedLabel_2: String = "for measuring in one place"
+        static let mobileLabel_1: String = "Mobile session"
+        static let mobileLabel_2: String = "for moving around"
+    }
+    
+    enum MoreInfoPopupView {
+        static let text_1: String = "Session types"
+        static let text_2: String = "If you plan on moving around with the AirBeam3 while recording air quality measurement, configure the AirBeam to record a mobile session. When recording a mobile AirCasting session, measurements are created, timestamped, and geolocated once per second."
+        static let text_3: String = "If you plan to leave the AirBeam3 indoors or hang it outside then configure it to record a fixed session. When recording fixed AirCasting sessions, measurements are created and timestamped once per minute, and geocoordinates are fixed to a set location."
+    }
+    
+    enum SelectPeripheralView {
+        static let airBeams: String = "AirBeams"
+        static let otherDevices: String = "Other devices"
+        static let title: String = "Choose the device you'd like to record with"
+        static let refresh: String = "Don't see a device? Refresh scanning."
+        static let connect: String = "Connect"
+    }
+    
+    enum ConnectingABView {
+        static let title: String = "Connecting"
+        static let message: String = "This should take less than 10 seconds."
+        static let connect: String = "Connect"
+    }
+    
+    enum ABConnectedView {
+        static let title: String = "AirBeam connected"
+        static let message: String = "Your AirBeam is connected to your phone and ready to take some measurements."
+        static let continueButton: String = "Continue"
+    }
+    
+    enum CreateSessionDetailsView {
+        static let wifiAlertTitle: String = "Wi-Fi credentials are empty "
+        static let wifiAlertMessage: String = "Do you want to pop up Wi-Fi screen?"
+        static let primaryWifiButton: String = "Show Wi-fi screen"
+        static let cancelButton: String = "Cancel"
+        static let continueButton: String = "Continue"
+        static let title: String = "New session details"
+        static let placementPicker_1: String = "Continue"
+        static let placementPicker_2: String = "Continue"
+        static let placementPicker_3: String = "Continue"
+        static let transmissionPicker: String = "Data transmission:"
+        static let callularText: String = "Cellular"
+        static let wifiText: String = "Wi-Fi"
+    }
+    
+    enum ConfirmCreatingSessionView {
+        static let connectWithAlertText: String = "Failure"
+        static let gotItButton: String = "Got it!"
+        static let connectView_1: String = "Are you ready?"
+        static let connectView_2: String = "Your "
+        static let connectView_3: String = " session "
+        static let connectView_4: String = " is ready to start gathering data."
+        static let connectView_5: String = "Move to your starting location, confirm your location is accurate on the map, then press the start recording button below."
+        static let startRecording: String = "Start recording"
     }
 }

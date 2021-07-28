@@ -14,10 +14,9 @@ class LocationTracker: NSObject, ObservableObject, CLLocationManagerDelegate {
     @Published var locationGranted: LocationState
     @Published var allLocations: [CLLocation]
     
-    init(locationManager: CLLocationManager, locationGranted: LocationState, allLocations: [CLLocation]) {
+    init(locationManager: CLLocationManager) {
         self.locationManager = locationManager
         self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        self.locationManager.delegate = (locationManager as! CLLocationManagerDelegate)
         switch locationManager.authorizationStatus {
             case .authorizedAlways, .authorizedWhenInUse: self.locationGranted = .granted
             case .denied:  self.locationGranted = .denied
