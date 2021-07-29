@@ -7,6 +7,10 @@
 
 import SwiftUI
 
+class Dependancies {
+    
+}
+
 struct RootAppView: View {
     @ObservedObject var userAuthenticationSession = UserAuthenticationSession()
     @ObservedObject var lifeTimeEventsProvider = UserDefaultProtocol()
@@ -15,6 +19,7 @@ struct RootAppView: View {
     let bluetoothManager = BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared)))
     let microphoneManager = MicrophoneManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared))
     let urlProvider = UserDefaultsBaseURLProvider()
+    var airBeamConnectionController = DefaultAirBeamConnectionController(connectingAirBeamServices: ConnectingAirBeamServicesBluetooth(bluetoothConnector: bluetoothManager))
     var body: some View {
         if userAuthenticationSession.isLoggedIn {
             mainAppView
@@ -38,6 +43,7 @@ struct RootAppView: View {
             .environmentObject(microphoneManager)
             .environmentObject(userAuthenticationSession)
             .environmentObject(persistenceController)
+            .environmentObject(airBeamConnectionController)
             .environment(\.managedObjectContext, persistenceController.viewContext)
     }
 }

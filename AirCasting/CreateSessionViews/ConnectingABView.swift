@@ -12,10 +12,9 @@ struct ConnectingABView: View {
     
     @Environment(\.presentationMode) var presentationMode
     var bluetoothManager: BluetoothManager
-//    var VM: ConnectingABViewModel
+    let viewModel: ConnectingABViewModel
     var selectedPeripheral: CBPeripheral
     let baseURL: BaseURLProvider
-    @State private var isDeviceConnected: Bool = false
     
     @Binding var creatingSessionFlowContinues: Bool
     
@@ -38,7 +37,7 @@ struct ConnectingABView: View {
             .background(
                 NavigationLink(
                     destination: ABConnectedView(creatingSessionFlowContinues: $creatingSessionFlowContinues, baseURL: baseURL),
-                    isActive: $isDeviceConnected,
+                    isActive: viewModel.$isDeviceConnected,
                     label: {
                         EmptyView()
                     }
@@ -46,19 +45,11 @@ struct ConnectingABView: View {
             )
         }
         .padding()
-        .onAppear(perform: {
-//            VM.performConnectingWithin10Second(peripheral: selectedPeripheral, completion: {
-//                presentationMode.wrappedValue.dismiss()
-//            })
+        .onChange(of: viewModel.shouldDismiss, perform: { value in
+            presentationMode.wrappedValue.dismiss()
         })
-        .onReceive(NotificationCenter.default.publisher(for: Notification.Name(rawValue: "DeviceConnected")), perform: { _ in
-            /* App is pushing the next view before this view is fully loaded. It resulted with showing next view and going back to this one.
-             The async enables app to load this view and then push the next one. */
-            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
-                if selectedPeripheral.state == .connected {
-                    isDeviceConnected = true
-                }
-            }
+        .onAppear(perform: {
+            viewModel.connectToAirBeam(peripheral: selectedPeripheral)
         })
     }
     

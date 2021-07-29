@@ -120,7 +120,7 @@ struct SelectPeripheralView: View {
         var destination: AnyView
         if let selection = selection {
             destination = AnyView(ConnectingABView(bluetoothManager: bluetoothManager,
-                                                   selectedPeripheral: selection, baseURL: urlProvider,
+                                                   selectedPeripheral: selection, viewModel: ConnectingABViewModel(airBeamConnectionController: <#T##AirBeamConnectionController#>), baseURL: urlProvider,
                                                    creatingSessionFlowContinues: $creatingSessionFlowContinues))
         } else {
             destination = AnyView(EmptyView())
