@@ -11,6 +11,8 @@ protocol SessionSynchronizer {
     func triggerSynchronization(completion: (() -> Void)?)
     /// Stops any ongoing synchronization
     func stopSynchronization()
+    /// A plugin point for anyone interested in generated errors
+    var errorStream: SessionSynchronizerErrorStream? { get set }
 }
 
 extension SessionSynchronizer {
@@ -26,6 +28,7 @@ enum SessionsSynchronization { }
 
 #if DEBUG
 struct DummySessionSynchronizer: SessionSynchronizer {
+    var errorStream: SessionSynchronizerErrorStream?
     func triggerSynchronization(completion: (() -> Void)?) { completion?() }
     func stopSynchronization() { }
 }

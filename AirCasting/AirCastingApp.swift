@@ -14,9 +14,10 @@ struct AirCastingApp: App {
     @Environment(\.scenePhase) var scenePhase
     private let authorization: UserAuthenticationSession
     private let syncScheduler: SynchronizationScheduler
-    private let sessionSynchronizer: SessionSynchronizer
+    private var sessionSynchronizer: SessionSynchronizer
     private let persistenceController = PersistenceController.shared
     private let appBecameActive = PassthroughSubject<Void, Never>()
+    @ObservedObject private var offlineMessageViewModel: OfflineMessageViewModel
     private var cancellables: [AnyCancellable] = []
 
     init() {
@@ -40,12 +41,16 @@ struct AirCastingApp: App {
                               appBecameActive: appBecameActive.eraseToAnyPublisher(),
                               periodicTimeInterval: 300,
                               authorization: authorization)
+        
+        offlineMessageViewModel = .init()
+        sessionSynchronizer.errorStream = offlineMessageViewModel
     }
 
     var body: some Scene {
         WindowGroup {
             RootAppView(sessionSynchronizer: sessionSynchronizer, persistenceController: persistenceController)
                 .environmentObject(authorization)
+                .alert(isPresented: $offlineMessageViewModel.showOfflineMessage, content: { Alert.offlineAlert })
         }.onChange(of: scenePhase) { newScenePhase in
             switch newScenePhase {
             case .active:

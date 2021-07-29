@@ -12,10 +12,16 @@ final class SynchronizationControllerTests: XCTestCase {
     var downloadService = DownloadServiceMock()
     var uploadService = UploadServiceMock()
     var store = SessionStoreMock()
+    var errorStream = SessionSynchronizerErrorStreamSpy()
     lazy var controller = SessionSynchronizationController(synchronizationContextProvider: remoteContextProvider,
                                                                    downstream: downloadService,
                                                                    upstream: uploadService,
                                                                    store: store)
+    
+    override func setUp() {
+        super.setUp()
+        controller.errorStream = errorStream
+    }
     
     override func tearDown() {
         super.tearDown()
@@ -120,12 +126,67 @@ final class SynchronizationControllerTests: XCTestCase {
     }
     
     func test_whenAnyDownloadFails_itSavesTheRestToDataStore() {
-        simulateDownloadFailure(totalDownloads: 10, errorousDownloadIndex: 4)
+        let failureUUID: SessionUUID = .random
+        simulateDownloadFailure(totalDownloads: 10, errorousDownloadIndex: 4, errorousUUID: failureUUID)
         XCTAssertEqual(store.recordedHistory.allWrittenUUIDs.count, 9)
     }
     
     func test_whenAnyStoreReadFails_itUploadsTheRestAnyway() {
-        simulateReadFailure(totalUploads: 10, errorousReadIndex: 7)
+        let failureUUID: SessionUUID = .random
+        simulateReadFailure(totalUploads: 10, errorousReadIndex: 7, errorousUUID: failureUUID)
         XCTAssertEqual(uploadService.recordedHistory.count, 9)
+    }
+    
+    // MARK: - Error stream
+    
+    func test_whenErrorFetchingLocalData_itProducesCorrectErrorStreamEntry() {
+        store.localSessionsToReturn = .failure(DummyError())
+        controller.triggerSynchronization()
+        XCTAssertEqual(errorStream.allErrors, [.cannotFetchLocalData])
+    }
+    
+    func test_whenErrorFetchingSyncContext_itProducesCorrectErrorStreamEntry() {
+        remoteContextProvider.toReturn = .failure(DummyError())
+        controller.triggerSynchronization()
+        XCTAssertEqual(errorStream.allErrors, [.cannotFetchSyncContext])
+    }
+    
+    func test_whenAnyDownloadFails_itProducesCorrectErrorStreamEntry() {
+        let failureUUID: SessionUUID = .random
+        simulateDownloadFailure(totalDownloads: 10, errorousDownloadIndex: 4, errorousUUID: failureUUID)
+        XCTAssertEqual(errorStream.allErrors, [.downloadFailed(failureUUID)])
+    }
+    
+    func test_whenAnyStoreReadFails_itProducesCorrectErrorStreamEntry() {
+        let failureUUID: SessionUUID = .random
+        simulateReadFailure(totalUploads: 10, errorousReadIndex: 7, errorousUUID: failureUUID)
+        XCTAssertEqual(errorStream.allErrors, [.storeReadFailure(failureUUID)])
+    }
+    
+    func test_whenUploadFails_itProducesCorrectErrorStreamEntry() {
+        let failureUUID: SessionUUID = .random
+        simulateUploadFailure(totalUploads: 10, errorousUploadIndex: 4, errorousUUID: failureUUID)
+        XCTAssertEqual(errorStream.allErrors, [.uploadFailure(failureUUID)])
+    }
+    
+    func test_whenStoreWriteFails_itProducesCorrectErrorStreamEntry() {
+        let failureUUIDs = [SessionUUID].init(creating: .random, times: 10)
+        simulateWriteFailure(uuidsToDownload: failureUUIDs)
+        XCTAssertEqual(errorStream.allErrors.count, 1)
+        switch errorStream.allErrors[0] {
+        case .storeWriteFailure(let uuids): assertContainsSameElements(uuids, failureUUIDs)
+        default: XCTFail("Unexpected error!")
+        }
+    }
+    
+    func test_whenErrorFetchingSyncContext_andNoInternet_itProducesCorrectErrorStreamEntry() {
+        remoteContextProvider.toReturn = .failure(URLError(.notConnectedToInternet))
+        controller.triggerSynchronization()
+        XCTAssertEqual(errorStream.allErrors, [.noConnection])
+    }
+    
+    func test_whenDownloadingSessions_andNoInternet_itProducesCorrectErrorStreamEntry() {
+        simulateBreakingDownloadFailure(firstDownload: 87, error: URLError(.notConnectedToInternet))
+        XCTAssertEqual(errorStream.allErrors, [.noConnection])
     }
 }
