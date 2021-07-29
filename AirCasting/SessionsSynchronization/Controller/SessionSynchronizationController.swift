@@ -5,8 +5,10 @@ import Foundation
 import Combine
 import CoreLocation
 
-
 final class SessionSynchronizationController: SessionSynchronizer {
+    /// A plugin point for error handlers
+    var errorStream: SessionSynchronizerErrorStream?
+    
     private let synchronizationContextProvider: SessionSynchronizationContextProvidable
     private let downstream: SessionDownstream
     private let upstream: SessionUpstream
@@ -44,7 +46,14 @@ final class SessionSynchronizationController: SessionSynchronizer {
         
         startSynchronization()
             .handleEvents(receiveCancel: onFinish)
-            .sink(receiveCompletion: { _ in onFinish() }, receiveValue: { _ in })
+            .sink(receiveCompletion: { [weak self] result in
+                defer { onFinish() }
+                guard let self = self else { return }
+                if case .failure(let error) = result {
+                    let syncError = self.translateError(streamError: error)
+                    self.errorStream?.handleSyncError(syncError)
+                }
+            }, receiveValue: { _ in })
             .store(in: &cancellables)
     }
     
@@ -54,17 +63,30 @@ final class SessionSynchronizationController: SessionSynchronizer {
         cancellables = []
     }
     
+    private func translateError(streamError: Error) -> SessionSynchronizerError {
+        if let urlError = streamError as? URLError, urlError.code == URLError.Code.notConnectedToInternet {
+            return .noConnection
+        }
+        if let syncError = streamError as? SessionSynchronizerError {
+            return syncError
+        }
+        return .unknown
+    }
+    
     private func startSynchronization() -> AnyPublisher<Void, Error> {
         Log.info("[SYNC] Starting synchronization")
         // Let's make ourselves a favor and place that warning here 🔥
         if Thread.isMainThread { Log.warning("[SYNC] Synchronization started on main thread, reconsider") }
         return store
             .getLocalSessionList()
+            .mapError({ _ in SessionSynchronizerError.cannotFetchLocalData })
             .logError(message: "[SYNC] Couldn't fetch local sessions")
             .flatMap {
                 self.getSynchronizationContext(localSessions: $0)
+                    .onError({ _ in self.errorStream?.handleSyncError(.cannotFetchSyncContext) })
+                    .filterError(self.isConnectionError(_:))
+                    .logError(message: "[SYNC] Couldn't retrieve sync context")
             }
-            .logError(message: "[SYNC] Couldn't retrieve sync context")
             .flatMap { context in
                 Publishers.MergeMany (
                     // Should this be extracted to separate strategy objects?
@@ -96,19 +118,22 @@ final class SessionSynchronizationController: SessionSynchronizer {
             .eraseToAnyPublisher()
     }
     
-    private func downloadSingleSession(uuid: SessionUUID) -> AnyPublisher<SessionsSynchronization.SessionDownstreamData, Never> {
+    private func downloadSingleSession(uuid: SessionUUID) -> AnyPublisher<SessionsSynchronization.SessionDownstreamData, Error> {
         downstream
             .download(session: uuid)
-            .logErrorAndComplete(message: "[SYNC] Error downloading session")
+            .onError({ _ in self.errorStream?.handleSyncError(.downloadFailed(uuid)) })
+            .filterError(self.isConnectionError(_:))
+            .logError(message: "[SYNC] Error downloading session")
             .eraseToAnyPublisher()
     }
     
-    private func saveSessions(downloadedSessions: [SessionsSynchronization.SessionDownstreamData]) -> AnyPublisher<Void, Error> {
+    private func saveSessions(downloadedSessions: [SessionsSynchronization.SessionDownstreamData]) -> AnyPublisher<Void, Never> {
         let dataStoreEntries = downloadedSessions.map(dataConverter.convertDownloadToSession(_:))
         Log.verbose("[SYNC] Adding \(downloadedSessions.count) sessions to store")
         return store
             .addSessions(with: dataStoreEntries)
-            .logError(message: "[SYNC] Error adding session to store")
+            .onError({ _ in self.errorStream?.handleSyncError(.storeWriteFailure(dataStoreEntries.map(\.uuid))) })
+            .logErrorAndComplete(message: "[SYNC] Error adding session to store")
             .eraseToAnyPublisher()
     }
     
@@ -119,6 +144,7 @@ final class SessionSynchronizationController: SessionSynchronizer {
             .flatMap { uuid in
                 self.store
                     .readSession(with: uuid)
+                    .onError({ _ in self.errorStream?.handleSyncError(.storeReadFailure(uuid)) })
                     .logErrorAndComplete(message: "[SYNC] Error reading session")
             }
             .map(
@@ -127,17 +153,25 @@ final class SessionSynchronizationController: SessionSynchronizer {
             .flatMap { uploadData in
                 self.upstream
                     .upload(session: uploadData)
-                    .logErrorAndComplete(message: "[SYNC] Uploading session failed")
+                    .onError({ _ in self.errorStream?.handleSyncError(.uploadFailure(uploadData.uuid)) })
+                    .filterError(self.isConnectionError(_:))
+                    .logError(message: "[SYNC] Uploading session failed")
             }
-            .setFailureType(to: Error.self)
             .eraseToAnyPublisher()
     }
     
     private func processRemoves(context: SessionsSynchronization.SynchronizationContext) -> AnyPublisher<Void, Error> {
         Just(context.removed)
             .logVerbose { "[SYNC] Removing \($0.count) sessions" }
-            .flatMap { self.store.removeSessions(with: $0) }
+            .flatMap { uuids in
+                self.store.removeSessions(with: uuids)
+                    .onError({ _ in self.errorStream?.handleSyncError(.storeDeleteFailure(uuids)) })
+            }
             .logError(message: "[SYNC] Couldn't remove sessions")
             .eraseToAnyPublisher()
+    }
+    
+    private func isConnectionError(_ error: Error) -> Bool {
+        (error as? URLError)?.code == .notConnectedToInternet
     }
 }

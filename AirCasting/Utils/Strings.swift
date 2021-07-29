@@ -184,6 +184,12 @@ enum PowerABView {
         static let chooseButton: String = "Choose"
     }
     
+    enum OfflineAlert {
+        static let title = "Device is offline"
+        static let message = "Could not finish session synchronization"
+        static let dismissTitle = "Ok"
+    }
+    
     enum TurnOnBluetoothView {
         static let title: String = "Turn on Bluetooth"
         static let messageText: String = "Turn on Bluetooth to enable your phone to connect to the AirBeam"

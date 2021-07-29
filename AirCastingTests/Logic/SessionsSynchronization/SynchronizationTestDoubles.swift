@@ -98,3 +98,11 @@ class SessionStoreMock: SessionSynchronizationStore {
         }
     }
 }
+
+class SessionSynchronizerErrorStreamSpy: SessionSynchronizerErrorStream {
+    var allErrors: [SessionSynchronizerError] = []
+    
+    func handleSyncError(_ error: SessionSynchronizerError) {
+        allErrors.append(error)
+    }
+}

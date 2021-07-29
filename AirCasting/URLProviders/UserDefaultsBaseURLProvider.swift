@@ -12,6 +12,7 @@ class UserDefaultsBaseURLProvider: BaseURLProvider {
             userDefaults.url(forKey: "baseURL") ?? URL(string: "http://aircasting.org/api")!
         }
     }
+    
     private let userDefaults: UserDefaults
     init(userDefaults: UserDefaults = .standard) {
         self.userDefaults = userDefaults

@@ -16,8 +16,13 @@ import struct UIKit.UIBackgroundTaskIdentifier
 /// - The _Gang of Four_ book
 /// - https://refactoring.guru/design-patterns/proxy
 final class ScheduledSessionSynchronizerProxy<S: Scheduler>: SessionSynchronizer {
+    var errorStream: SessionSynchronizerErrorStream? {
+        set { controller.errorStream = newValue }
+        get { controller.errorStream }
+    }
+    
     private let scheduler: S
-    private let controller: SessionSynchronizer
+    private var controller: SessionSynchronizer
     private var cancellables: [AnyCancellable] = []
     private var backgroundTaskIdentifier: UIBackgroundTaskIdentifier?
     

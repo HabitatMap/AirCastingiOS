@@ -161,6 +161,12 @@
 		B3EBB10A26A06D11002BD81F /* EmailResetPasswordService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EBB10926A06D11002BD81F /* EmailResetPasswordService.swift */; };
 		B3EBB10C26A06D2D002BD81F /* DefaultForgotPasswordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EBB10B26A06D2D002BD81F /* DefaultForgotPasswordViewModel.swift */; };
 		B3EBB11126A06DCF002BD81F /* ForgotPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EBB11026A06DCF002BD81F /* ForgotPasswordView.swift */; };
+		B3F1447626AE0BD4006A4612 /* SessionSynchronizerErrorStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3F1447526AE0BD4006A4612 /* SessionSynchronizerErrorStream.swift */; };
+		B3F1447826AE4337006A4612 /* FilterErrorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3F1447726AE4337006A4612 /* FilterErrorTests.swift */; };
+		B3F1447A26AE436A006A4612 /* FilterErrorPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3F1447926AE436A006A4612 /* FilterErrorPublisher.swift */; };
+		B3F1447C26AE437E006A4612 /* OnErrorPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3F1447B26AE437E006A4612 /* OnErrorPublisher.swift */; };
+		B3F1448026AE4CA0006A4612 /* OfflineAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3F1447F26AE4CA0006A4612 /* OfflineAlert.swift */; };
+		B3F1448226AE4CD9006A4612 /* OfflineMessageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3F1448126AE4CD9006A4612 /* OfflineMessageViewModel.swift */; };
 		B3FD77B6267C94AF00E97CC2 /* DatabaseSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3FD77A1267C94AF00E97CC2 /* DatabaseSession.swift */; };
 		B3FD77B7267C94AF00E97CC2 /* DatabaseMeasurement.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3FD77A2267C94AF00E97CC2 /* DatabaseMeasurement.swift */; };
 		B3FD77B8267C94AF00E97CC2 /* Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3FD77A3267C94AF00E97CC2 /* Database.swift */; };
@@ -215,6 +221,8 @@
 		DDD24D9526A8569400D4A327 /* EmailForgotPasswordController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDD24D9226A8569300D4A327 /* EmailForgotPasswordController.swift */; };
 		DDD24D9626A8569400D4A327 /* ResetPasswordService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDD24D9326A8569300D4A327 /* ResetPasswordService.swift */; };
 		DDD24D9726A8569400D4A327 /* ForgotPasswordController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDD24D9426A8569400D4A327 /* ForgotPasswordController.swift */; };
+		DDEE3A44269736270098CCA9 /* NetworkChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDEE3A43269736270098CCA9 /* NetworkChecker.swift */; };
+		DDEE3A48269747250098CCA9 /* EditViewModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDEE3A47269747250098CCA9 /* EditViewModal.swift */; };
 		DDEE3A4B26979D4C0098CCA9 /* SharePage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDEE3A4A26979D4C0098CCA9 /* SharePage.swift */; };
 		DDF62601269C779800F23489 /* UIApplication+AppInfo.swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF62600269C779800F23489 /* UIApplication+AppInfo.swift.swift */; };
 		DDF7599A268332E900D906BA /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF75999268332E900D906BA /* Strings.swift */; };
@@ -396,6 +404,12 @@
 		B3EBB10926A06D11002BD81F /* EmailResetPasswordService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailResetPasswordService.swift; sourceTree = "<group>"; };
 		B3EBB10B26A06D2D002BD81F /* DefaultForgotPasswordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultForgotPasswordViewModel.swift; sourceTree = "<group>"; };
 		B3EBB11026A06DCF002BD81F /* ForgotPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordView.swift; sourceTree = "<group>"; };
+		B3F1447526AE0BD4006A4612 /* SessionSynchronizerErrorStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionSynchronizerErrorStream.swift; sourceTree = "<group>"; };
+		B3F1447726AE4337006A4612 /* FilterErrorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterErrorTests.swift; sourceTree = "<group>"; };
+		B3F1447926AE436A006A4612 /* FilterErrorPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterErrorPublisher.swift; sourceTree = "<group>"; };
+		B3F1447B26AE437E006A4612 /* OnErrorPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnErrorPublisher.swift; sourceTree = "<group>"; };
+		B3F1447F26AE4CA0006A4612 /* OfflineAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineAlert.swift; sourceTree = "<group>"; };
+		B3F1448126AE4CD9006A4612 /* OfflineMessageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineMessageViewModel.swift; sourceTree = "<group>"; };
 		B3FD77A1267C94AF00E97CC2 /* DatabaseSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseSession.swift; sourceTree = "<group>"; };
 		B3FD77A2267C94AF00E97CC2 /* DatabaseMeasurement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseMeasurement.swift; sourceTree = "<group>"; };
 		B3FD77A3267C94AF00E97CC2 /* Database.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Database.swift; sourceTree = "<group>"; };
@@ -439,6 +453,7 @@
 		DD8C38082689A34E00901FDF /* UserDefaultsBaseURLProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsBaseURLProvider.swift; sourceTree = "<group>"; };
 		DD8C380B2689A3DA00901FDF /* BaseURLProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseURLProvider.swift; sourceTree = "<group>"; };
 		DD8C380D2689A55A00901FDF /* BackendSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendSettingsView.swift; sourceTree = "<group>"; };
+		DD8C380F268A0E9400901FDF /* ShareViewModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewModal.swift; sourceTree = "<group>"; };
 		DDBC156326A0799300982526 /* SystemSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemSettings.swift; sourceTree = "<group>"; };
 		DDBC992526A1652A00B0662E /* ForgotPasswordTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordTest.swift; sourceTree = "<group>"; };
 		DDCE5D3526A1F79F0033C211 /* UserSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettings.swift; sourceTree = "<group>"; };
@@ -450,6 +465,8 @@
 		DDD24D9226A8569300D4A327 /* EmailForgotPasswordController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmailForgotPasswordController.swift; sourceTree = "<group>"; };
 		DDD24D9326A8569300D4A327 /* ResetPasswordService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResetPasswordService.swift; sourceTree = "<group>"; };
 		DDD24D9426A8569400D4A327 /* ForgotPasswordController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForgotPasswordController.swift; sourceTree = "<group>"; };
+		DDEE3A43269736270098CCA9 /* NetworkChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkChecker.swift; sourceTree = "<group>"; };
+		DDEE3A47269747250098CCA9 /* EditViewModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditViewModal.swift; sourceTree = "<group>"; };
 		DDEE3A4A26979D4C0098CCA9 /* SharePage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharePage.swift; sourceTree = "<group>"; };
 		DDF62600269C779800F23489 /* UIApplication+AppInfo.swift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+AppInfo.swift.swift"; sourceTree = "<group>"; };
 		DDF75999268332E900D906BA /* Strings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Strings.swift; sourceTree = "<group>"; };
@@ -604,6 +621,7 @@
 			isa = PBXGroup;
 			children = (
 				DDD24D8726A8374600D4A327 /* LocationAlert.swift */,
+				B3F1447F26AE4CA0006A4612 /* OfflineAlert.swift */,
 				B32D08A0267A493C006C97ED /* Publishers */,
 				4F945EF3264B2813008A5B22 /* ActivityIndicator.swift */,
 				ACD01F7525FF61CE00B8F65F /* LocationProvider.swift */,
@@ -662,7 +680,6 @@
 			children = (
 				ACF77DFA25A8888700BB85B7 /* SessionCartView.swift */,
 				AC6D569E25AEEAE700D221BA /* SessionHeaderView.swift */,
-				AC08A661266E2AEC0081697C /* MeasurementsView.swift */,
 				DD009D652698844A009F0443 /* DeleteView.swift */,
 				DD72DC4126A99D5000325FE5 /* ShareView.swift */,
 				DDCE5D3726A1FE2D0033C211 /* DeleteSessionViewModel.swift */,
@@ -721,6 +738,7 @@
 				ACD01F6C25FF4C8C00B8F65F /* AirCasting.entitlements */,
 				AC7EB37525A6FB3A00A7F2AF /* AirCastingApp.swift */,
 				ACD01F912600A3C800B8F65F /* RootAppView.swift */,
+				B3F1448126AE4CD9006A4612 /* OfflineMessageViewModel.swift */,
 				AC7EB37725A6FB3A00A7F2AF /* MainTabBarView.swift */,
 				DD430AFE2670BB3000F1BF2E /* Onboarding */,
 				AC9F52682652A360003CF61F /* Dashboard */,
@@ -897,6 +915,8 @@
 				B32D08A3267A4957006C97ED /* LogErrorAndCompletePublisher.swift */,
 				B32D08AC267A6437006C97ED /* LogEvent.swift */,
 				B32D08AE267A6D13006C97ED /* ErasingToVoidPublisher.swift */,
+				B3F1447926AE436A006A4612 /* FilterErrorPublisher.swift */,
+				B3F1447B26AE437E006A4612 /* OnErrorPublisher.swift */,
 			);
 			path = Publishers;
 			sourceTree = "<group>";
@@ -924,6 +944,7 @@
 			children = (
 				B3E26A052676DA23001A8E4C /* ArrayExtensionsTests.swift */,
 				B32D089C267A3232006C97ED /* LogErrorPublisherTests.swift */,
+				B3F1447726AE4337006A4612 /* FilterErrorTests.swift */,
 			);
 			path = Other;
 			sourceTree = "<group>";
@@ -1045,6 +1066,7 @@
 				B3FD77AD267C94AF00E97CC2 /* SessionDownstream.swift */,
 				B3FD77AF267C94AF00E97CC2 /* SessionUpstream.swift */,
 				B3FD77B0267C94AF00E97CC2 /* SessionSynchronizationContextProvidable.swift */,
+				B3F1447526AE0BD4006A4612 /* SessionSynchronizerErrorStream.swift */,
 			);
 			path = Interfaces;
 			sourceTree = "<group>";
@@ -1095,15 +1117,6 @@
 			path = Onboarding;
 			sourceTree = "<group>";
 		};
-		DDEE3A492697473C0098CCA9 /* EditSessionButton */ = {
-			isa = PBXGroup;
-			children = (
-				DD8C380F268A0E9400901FDF /* ShareViewModal.swift */,
-				DDEE3A47269747250098CCA9 /* EditViewModal.swift */,
-			);
-			name = EditSessionButton;
-            sourceTree = "<group>";
-        };
 		DD700CEE26959D340048A17D /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
@@ -1137,6 +1150,15 @@
 				DDD24D9326A8569300D4A327 /* ResetPasswordService.swift */,
 			);
 			path = Controller;
+			sourceTree = "<group>";
+		};
+		DDEE3A492697473C0098CCA9 /* EditSessionButton */ = {
+			isa = PBXGroup;
+			children = (
+				DD8C380F268A0E9400901FDF /* ShareViewModal.swift */,
+				DDEE3A47269747250098CCA9 /* EditViewModal.swift */,
+			);
+			name = EditSessionButton;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1382,6 +1404,7 @@
 				DD2E8BE92685E12000439F8B /* URLValidationTests.swift in Sources */,
 				4FB39E362621B77D00E5E564 /* APIClientMock.swift in Sources */,
 				B3E26A092676DA55001A8E4C /* TestDefaultProviding.swift in Sources */,
+				B3F1447826AE4337006A4612 /* FilterErrorTests.swift in Sources */,
 				4FB39E402622252700E5E564 /* XCTestCase+Extensions.swift in Sources */,
 				DDBC992626A1652A00B0662E /* ForgotPasswordTest.swift in Sources */,
 				B33DB5742686120600ED1344 /* XCTestCase+AssertContainsSameElements.swift in Sources */,
@@ -1408,10 +1431,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				AC93B8FE25C02E0B003D0A0D /* GoogleMapView.swift in Sources */,
+				B3F1447A26AE436A006A4612 /* FilterErrorPublisher.swift in Sources */,
 				B32D08AF267A6D13006C97ED /* ErasingToVoidPublisher.swift in Sources */,
 				AC049F7F2604B7AF00398197 /* AuthErorrHandling.swift in Sources */,
 				B3FD77C4267C94AF00E97CC2 /* SessionSynchronizationService.swift in Sources */,
 				B33DB5762686161300ED1344 /* SensorName.swift in Sources */,
+				B3F1447C26AE437E006A4612 /* OnErrorPublisher.swift in Sources */,
 				B3FD77B7267C94AF00E97CC2 /* DatabaseMeasurement.swift in Sources */,
 				AC524A962615D8620061AD45 /* MeasurementStreamEntity.swift in Sources */,
 				B32D08A2267A4949006C97ED /* LogErrorPublisher.swift in Sources */,
@@ -1434,6 +1459,7 @@
 				B3FD77B6267C94AF00E97CC2 /* DatabaseSession.swift in Sources */,
 				AC32043625CD534700A68520 /* ChooseSessionTypeView.swift in Sources */,
 				AC8431D0265E6143004DC890 /* RemoveOldMeasurementsService.swift in Sources */,
+				B3F1447626AE0BD4006A4612 /* SessionSynchronizerErrorStream.swift in Sources */,
 				ACF7C05F260CC9FF007C24AE /* DownloadMeasurmentsService.swift in Sources */,
 				AC9F526E2652A360003CF61F /* AirSectionPickerView.swift in Sources */,
 				AC7EB37825A6FB3A00A7F2AF /* MainTabBarView.swift in Sources */,
@@ -1442,11 +1468,13 @@
 				DDD24D9526A8569400D4A327 /* EmailForgotPasswordController.swift in Sources */,
 				AC524A892614733D0061AD45 /* CreatingSessionFlowRootView.swift in Sources */,
 				AC158E0B26A199F9006C61D3 /* Array+SensorThreshold.swift in Sources */,
+				B3F1448026AE4CA0006A4612 /* OfflineAlert.swift in Sources */,
 				4F8CDBD2265F8DAC00976B25 /* Assertions.swift in Sources */,
 				B3FD77C6267C94AF00E97CC2 /* SessionUploadService.swift in Sources */,
 				AC194B0D2684BAB40048E2C8 /* SessionLoadingView.swift in Sources */,
 				4FD2CA4726406F2C007E932E /* Diff.swift in Sources */,
 				DD8C38092689A34E00901FDF /* UserDefaultsBaseURLProvider.swift in Sources */,
+				B3F1448226AE4CD9006A4612 /* OfflineMessageViewModel.swift in Sources */,
 				AC5832DA25B196DD008C5DD5 /* Graph.swift in Sources */,
 				AC4A6A6A267CB3890001F639 /* AirCastingGraph.swift in Sources */,
 				AC93B8E725BEFE4F003D0A0D /* AirMapView.swift in Sources */,
