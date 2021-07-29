@@ -4,7 +4,6 @@
 import Foundation
 
 protocol SessionCartFollowing {
-    var measurementStreamStorage: MeasurementStreamStorage { get }
     func makeFollowing(for session: SessionEntity)
     func makeNotFollowing(for session: SessionEntity)
 }

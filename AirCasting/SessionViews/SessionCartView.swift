@@ -57,11 +57,7 @@ struct SessionCartView: View {
             selectedStream = session.allStreams?.first
         }
         .onChange(of: isFollowing) { _ in
-            if isFollowing {
-                sessionCartViewModel.makeFollowing(for: session)
-            } else {
-                sessionCartViewModel.makeNotFollowing(for: session)
-            }
+            sessionCartViewModel.toggleFollowing(for: session)
         }
         .onAppear {
             if session.followedAt != nil {
