@@ -87,7 +87,6 @@ struct Strings {
     struct SessionCart {
         static let measurementsTitle: String = "Most recent measurement:"
         static let dormantMeasurementsTitle: String = "Avg value:"
-        static let stopRecordingButton: String = "Stop recording"
         static let heatmapSettingsTitle: String = "Heatmap settings"
         static let heatmapSettingsdescription: String = "Values beyond Min and Max will not be displayed."
         static let saveChangesButton: String = "Save changes"
@@ -215,6 +214,7 @@ struct Strings {
         static let alertTitle: String = "No internet connection"
         static let alertMessage: String = "You need to have internet connection to edit session data"
         static let confirmAlert: String = "Got it!"
+        static let stopRecordingButton: String = "Finish recording session"
     }
     
     struct NetworkChecker {

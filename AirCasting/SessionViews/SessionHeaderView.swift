@@ -24,7 +24,11 @@ struct SessionHeaderView: View {
             HStack {
                 dateAndTime
                 Spacer()
-                actionsMenu
+                if session.type == .fixed {
+                    actionsMenuFixed
+                } else if !session.isDormant {
+                    actionsMenuMobile
+                }
             }.sheet(isPresented: $shareModal, content: {
                 ShareView(showModal: $showModal)
             })
@@ -73,8 +77,30 @@ private extension SessionHeaderView {
         }
         .foregroundColor(.darkBlue)
     }
-
-    var actionsMenu: some View {
+    
+    var actionsMenuMobile: some View {
+        Menu {
+            Button {
+                try! microphoneManager.stopRecording()
+            } label: {
+                Label(Strings.SessionHeaderView.stopRecordingButton, systemImage: "stop.circle")
+            }
+        } label: {
+            ZStack(alignment: .trailing) {
+                EditButtonView()
+                Rectangle()
+                    .frame(width: 30, height: 20, alignment: .trailing)
+                    .opacity(0.0001)
+            }
+        }.alert(isPresented: $showingAlert) {
+            Alert(title: Text(Strings.SessionHeaderView.alertTitle),
+                  message: Text(Strings.SessionHeaderView.alertMessage),
+                  dismissButton: .default(Text(Strings.SessionHeaderView.confirmAlert)))
+        }
+        .sheet(isPresented: $showModalEdit) { EditViewModal(showModalEdit: $showModalEdit) }
+    }
+    
+    var actionsMenuFixed: some View {
         Menu {
             Button {
                 // action here
