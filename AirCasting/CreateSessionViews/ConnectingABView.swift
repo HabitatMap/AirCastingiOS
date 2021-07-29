@@ -12,7 +12,7 @@ struct ConnectingABView: View {
     
     @Environment(\.presentationMode) var presentationMode
     var bluetoothManager: BluetoothManager
-    var VM: DefaultAirBeamConnector
+//    var VM: ConnectingABViewModel
     var selectedPeripheral: CBPeripheral
     let baseURL: BaseURLProvider
     @State private var isDeviceConnected: Bool = false
@@ -47,9 +47,9 @@ struct ConnectingABView: View {
         }
         .padding()
         .onAppear(perform: {
-            VM.performConnectionWithin10Second(peripheral: selectedPeripheral, completion: {
-                presentationMode.wrappedValue.dismiss()
-            })
+//            VM.performConnectingWithin10Second(peripheral: selectedPeripheral, completion: {
+//                presentationMode.wrappedValue.dismiss()
+//            })
         })
         .onReceive(NotificationCenter.default.publisher(for: Notification.Name(rawValue: "DeviceConnected")), perform: { _ in
             /* App is pushing the next view before this view is fully loaded. It resulted with showing next view and going back to this one.

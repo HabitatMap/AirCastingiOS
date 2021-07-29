@@ -4,41 +4,50 @@
 import CoreBluetooth
 import Foundation
 
-protocol AirBeamConnector {
-    func performConnectionWithin10Second(peripheral: CBPeripheral, completion: @escaping () -> Void)
-}
-
 protocol BluetoothConnector {
-    func connectWithDevice(peripheral: CBPeripheral)
-    func cancelConnectionWithDevice(peripheral: CBPeripheral)
-}
-
-class DefaultBluetoothConnector {
-    var bluetoothManager: BluetoothManager
     
-    init(bluetoothManager: BluetoothManager) {
-        self.bluetoothManager = bluetoothManager
+}
+
+class BluetoothABConnection: ConnectingAirBeamService {
+    let bluetoothConnector: BluetoothConnector
+
+    init(bluetoothConnector: BluetoothConnector) {
+        self.bluetoothConnector = bluetoothConnector
     }
 }
 
-class BluetoothAirBeamConnection: DefaultBluetoothConnector, BluetoothConnector {
-    func connectWithDevice(peripheral: CBPeripheral) {
-        bluetoothManager.centralManager.connect(peripheral, options: nil)
+// connectingABServices
+protocol ConnectingAirBeamService {
+    
+}
+
+class ABConnector: AirBeamConnector {
+    let connectingABServices: ConnectingAirBeamService
+    func performConnectingWithin10Second(peripheral: CBPeripheral, completion: @escaping () -> Void) {
+//        bluetoothManager.centralManager.connect(peripheral, options: nil)
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 10) { [self] in
+//            if peripheral.state == .connecting {
+//                Log.info("Connecting to bluetooth device failed")
+//                self.bluetoothManager.centralManager.cancelPeripheralConnection(peripheral)
+//                completion()
+//            }
+//        }
     }
-    func cancelConnectionWithDevice(peripheral: CBPeripheral) {
-        bluetoothManager.centralManager.cancelPeripheralConnection(peripheral)
+    
+    init(connectingABServices: ConnectingAirBeamService) {
+        self.connectingABServices = connectingABServices
     }
 }
 
-class DefaultAirBeamConnector: BluetoothAirBeamConnection, AirBeamConnector {
-    func performConnectionWithin10Second(peripheral: CBPeripheral, completion: @escaping () -> Void) {
-      connectWithDevice(peripheral: peripheral)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 10) { [self] in
-            if peripheral.state == .connecting {
-                Log.info("Connecting to bluetooth device failed")
-                cancelConnectionWithDevice(peripheral: peripheral)
-                completion()
-            }
-        }
+// connectingABProtocol
+protocol AirBeamConnector {
+    func performConnectingWithin10Second(peripheral: CBPeripheral, completion: @escaping () -> Void)
+}
+
+
+// NOT FOR NOW
+class ConnectingABViewModel: AirBeamConnector {
+    func performConnectingWithin10Second(peripheral: CBPeripheral, completion: @escaping () -> Void) {
+        completion()
     }
 }

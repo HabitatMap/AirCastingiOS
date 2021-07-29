@@ -8,7 +8,7 @@
 import Foundation
 import CoreBluetooth
 
-class BluetoothManager: NSObject, ObservableObject {
+class BluetoothManager: NSObject, ObservableObject, BluetoothConnector {
     
     lazy var centralManager: CBCentralManager = {
         let centralManager = CBCentralManager()
