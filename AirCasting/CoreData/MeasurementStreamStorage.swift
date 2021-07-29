@@ -1,9 +1,9 @@
 // Created by Lunar on 09/05/2021.
 //
 
-import Foundation
-import CoreLocation
 import CoreData
+import CoreLocation
+import Foundation
 
 protocol MeasurementStreamStorage {
     func addMeasurement(_ measurement: Measurement, toStreamWithID id: MeasurementStreamLocalID) throws
@@ -25,6 +25,7 @@ final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
         case missingMeasurementStream
         case missingSensorName
     }
+
     private let persistenceController: PersistenceController
     private lazy var updateSessionParamsService = UpdateSessionParamsService()
 
@@ -78,10 +79,10 @@ final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
         newStream.gotDeleted = false
 
         session.addToMeasurementStreams(newStream)
-        
+
         guard let sensorName = stream.sensorName else {
             throw Error.missingSensorName
-        } 
+        }
         let existingThreshold: SensorThreshold? = try context.existingObject(sensorName: sensorName)
         if existingThreshold == nil {
             let threshold: SensorThreshold = try context.newOrExisting(sensorName: sensorName)
@@ -101,20 +102,26 @@ final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
         sessionEntity.status = sessionStatus
         try context.save()
     }
-    
+
     func updateSessionIfFollowing(_ sessionFollowing: SessionFollowing, for sessionUUID: SessionUUID) throws {
         let context = persistenceController.editContext()
-            let sessionEntity = try context.existingSession(uuid: sessionUUID)
-            let copySession = sessionEntity
-            if sessionFollowing.rawValue == 1 {
-                sessionEntity.followedAt = Date()
-                sessionEntity.type = .following
-                copySession.type = .fixed
-            } else {
-                sessionEntity.followedAt = nil
-                sessionEntity.type = .fixed
+        let sessionEntity = try context.existingSession(uuid: sessionUUID)
+        let copySession = sessionEntity
+        if sessionFollowing.rawValue == 1 {
+            sessionEntity.followedAt = Date()
+            sessionEntity.type = .following
+            copySession.type = .fixed
+        } else {
+            sessionEntity.followedAt = nil
+            sessionEntity.type = .fixed
+        }
+        context.performAndWait {
+            do {
+                try context.save()
+            } catch {
+                Log.info("Error when saving changes in session")
             }
-            try context.save()
+        }
     }
 
     func createSession(_ session: Session) throws {
@@ -128,7 +135,7 @@ final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
 #if DEBUG
 /// Only to be used for swiftui previews
 final class PreviewMeasurementStreamStorage: MeasurementStreamStorage {
-    func updateSessionIfFollowing(_ sessionStatus: SessionFollowing, for sessionUUID: SessionUUID) throws { }
+    func updateSessionIfFollowing(_ sessionStatus: SessionFollowing, for sessionUUID: SessionUUID) throws {}
 
     func addMeasurement(_ measurement: Measurement, toStreamWithID id: MeasurementStreamLocalID) throws {
         print("Nothing happened for \(measurement)")
