@@ -98,10 +98,11 @@ extension MicrophoneManager: AVAudioRecorderDelegate {
 private extension MicrophoneManager {
     func sampleMeasurement() throws {
         recorder.updateMeters()
-        let value = Double(recorder.averagePower(forChannel: 0))
+        let power = recorder.averagePower(forChannel: 0)
+        let decibels = Double(power + 90.0)
         let location = obtainCurrentLocation()
-        Log.debug("New mic measurement \(value) at \(String(describing: location))")
-        try measurementStreamStorage.addMeasurementValue(value, at: location, toStreamWithID: measurementStreamLocalID!)
+        Log.debug("New mic measurement \(decibels) at \(String(describing: location))")
+        try measurementStreamStorage.addMeasurementValue(decibels, at: location, toStreamWithID: measurementStreamLocalID!)
     }
 
     @objc func timerTick() {
