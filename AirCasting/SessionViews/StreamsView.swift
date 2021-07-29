@@ -30,7 +30,7 @@ struct StreamsView: View {
             Text(Strings.SessionCart.measurementsTitle)
                 .font(Font.moderate(size: 12))
                 .padding(.bottom, 3)
-                .padding(.horizontal)
+//                .padding(.horizontal)
             if let dbStream = session.dbStream {
                 if let threshold = thresholds.threshold(for: dbStream) {
                     SingleMeasurementView(stream: dbStream,
