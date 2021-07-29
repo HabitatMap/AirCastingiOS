@@ -15,8 +15,8 @@ struct SessionCartView: View {
     @State private var isFollowing = false
     @State private var isCollapsed = true
     @State private var selectedStream: MeasurementStreamEntity?
-    @EnvironmentObject var persistenceController: PersistenceController
     @ObservedObject var session: SessionEntity
+    @EnvironmentObject var sessionCartViewModel: SessionCartViewModel
     let thresholds: [SensorThreshold]
     
     var shouldShowValues: MeasurementPresentationStyle {
@@ -57,11 +57,10 @@ struct SessionCartView: View {
             selectedStream = session.allStreams?.first
         }
         .onChange(of: isFollowing) { _ in
-            let measurementStreamStorage = CoreDataMeasurementStreamStorage(persistenceController: persistenceController)
             if isFollowing {
-                try! measurementStreamStorage.updateSessionIfFollowing(SessionFollowing.following, for: session.uuid)
+                sessionCartViewModel.makeFollowing(for: session)
             } else {
-                try! measurementStreamStorage.updateSessionIfFollowing(SessionFollowing.notFollowing, for: session.uuid)
+                sessionCartViewModel.makeNotFollowing(for: session)
             }
         }
         .onAppear {
