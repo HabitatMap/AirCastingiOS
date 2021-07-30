@@ -14,6 +14,7 @@ struct SessionHeaderView: View {
     @ObservedObject var session: SessionEntity
     @EnvironmentObject private var microphoneManager: MicrophoneManager
     @State private var showingAlert = false
+    @State private var showingFinishAlert = false
     @State private var shareModal = false
     @State private var deleteModal = false
     @State private var showModal = false
@@ -32,9 +33,9 @@ struct SessionHeaderView: View {
             }.sheet(isPresented: $shareModal, content: {
                 ShareView(showModal: $showModal)
             })
-            .sheet(isPresented: $deleteModal, content: {
-                DeleteView(viewModel: DefaultDeleteSessionViewModel(), deleteModal: $deleteModal)
-            })
+                .sheet(isPresented: $deleteModal, content: {
+                    DeleteView(viewModel: DefaultDeleteSessionViewModel(), deleteModal: $deleteModal)
+                })
             nameLabelAndExpandButton
         }
         .font(Font.moderate(size: 13, weight: .regular))
@@ -81,7 +82,7 @@ private extension SessionHeaderView {
     var actionsMenuMobile: some View {
         Menu {
             Button {
-                try! microphoneManager.stopRecording()
+                showingFinishAlert = true
             } label: {
                 Label(Strings.SessionHeaderView.stopRecordingButton, systemImage: "stop.circle")
             }
@@ -92,12 +93,19 @@ private extension SessionHeaderView {
                     .frame(width: 30, height: 20, alignment: .trailing)
                     .opacity(0.0001)
             }
-        }.alert(isPresented: $showingAlert) {
-            Alert(title: Text(Strings.SessionHeaderView.alertTitle),
-                  message: Text(Strings.SessionHeaderView.alertMessage),
-                  dismissButton: .default(Text(Strings.SessionHeaderView.confirmAlert)))
+        }.alert(isPresented: $showingFinishAlert) {
+            Alert(title: Text(Strings.SessionHeaderView.finishAlertTitle) +
+                Text(session.name ?? "this session")
+                +
+                Text("?"),
+                  message: Text(Strings.SessionHeaderView.finishAlertMessage_1) +
+                    Text(Strings.SessionHeaderView.finishAlertMessage_2) +
+                Text(Strings.SessionHeaderView.finishAlertMessage_3),
+                  primaryButton: .default(Text(Strings.SessionHeaderView.finishAlertButton), action: {
+                    try! microphoneManager.stopRecording()
+                }),
+                secondaryButton: .cancel())
         }
-        .sheet(isPresented: $showModalEdit) { EditViewModal(showModalEdit: $showModalEdit) }
     }
     
     var actionsMenuFixed: some View {
@@ -142,7 +150,6 @@ private extension SessionHeaderView {
         }
         .sheet(isPresented: $showModalEdit) { EditViewModal(showModalEdit: $showModalEdit) }
     }
-    
 }
 
 #if DEBUG

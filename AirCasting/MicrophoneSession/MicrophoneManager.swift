@@ -60,6 +60,7 @@ final class MicrophoneManager: NSObject, ObservableObject {
         recorder.stop()
         recorder = nil
         try? measurementStreamStorage.updateSessionStatus(.FINISHED, for: session!.uuid)
+        try? measurementStreamStorage.updateSessionEndTime(for: session!.uuid)
     }
 
     deinit {

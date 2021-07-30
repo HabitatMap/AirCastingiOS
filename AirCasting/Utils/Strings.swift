@@ -215,6 +215,11 @@ struct Strings {
         static let alertMessage: String = "You need to have internet connection to edit session data"
         static let confirmAlert: String = "Got it!"
         static let stopRecordingButton: String = "Finish recording session"
+        static let finishAlertTitle: String = "Finish recording "
+        static let finishAlertMessage_1: String = "The session will be moved to "
+        static let finishAlertMessage_2: String = "Mobile Dormant"
+        static let finishAlertMessage_3: String = " tab and you won't be able to add new measurement to it."
+        static let finishAlertButton: String = "Finish recording"
     }
     
     struct NetworkChecker {
