@@ -77,12 +77,6 @@ private extension SessionHeaderView {
     var actionsMenu: some View {
         Menu {
             Button {
-                // action here
-            } label: {
-                Label(Strings.SessionHeaderView.resumeButton, systemImage: "repeat")
-            }
-            
-            Button {
                 DispatchQueue.main.async {
                     print(" \(networkChecker.connectionAvailable) NETWORK")
                     networkChecker.connectionAvailable ? showModalEdit.toggle() : showingAlert.toggle()

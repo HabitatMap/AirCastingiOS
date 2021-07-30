@@ -214,7 +214,6 @@ struct Strings {
     struct SessionHeaderView {
         static let measurementsMicText: String = "Most recent measurement:"
         static let stopButton: String = "Stop recording"
-        static let resumeButton: String = "Resume recording"
         static let editButton: String = "Edit recording"
         static let shareButton: String = "Share session"
         static let deleteButton: String = "Delete session"
