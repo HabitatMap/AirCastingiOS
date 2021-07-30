@@ -36,7 +36,9 @@ struct PrivacyOnboarding: View {
                     }
                 }
                 sheetTitle
-                sheetDescription
+                ScrollView {
+                    sheetDescription
+                }
                 Spacer()
             }
         }
