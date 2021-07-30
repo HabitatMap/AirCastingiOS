@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+
 struct RootAppView: View {
 
     let networkChecker = NetworkChecker(connectionAvailable: false)
@@ -16,8 +17,8 @@ struct RootAppView: View {
     let bluetoothManager = BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared)))
     @ObservedObject var lifeTimeEventsProvider = LifeTimeEventsProvider()
     @ObservedObject var userSettings = UserSettings()
+    @EnvironmentObject var microphoneManager: MicrophoneManager
     
-    let microphoneManager = MicrophoneManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared))
     let urlProvider = UserDefaultsBaseURLProvider()
     var body: some View {
         if userAuthenticationSession.isLoggedIn {

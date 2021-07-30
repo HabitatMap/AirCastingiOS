@@ -158,7 +158,7 @@ struct SessionHeader_Previews: PreviewProvider {
         SessionHeaderView(action: {},
                           isExpandButtonNeeded: true,
                           session: SessionEntity.mock)
-            .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
+            .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionSynchronizer: DummySessionSynchronizer()))
     }
 }
 #endif

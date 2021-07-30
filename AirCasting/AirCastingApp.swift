@@ -15,6 +15,7 @@ struct AirCastingApp: App {
     private let authorization: UserAuthenticationSession
     private let syncScheduler: SynchronizationScheduler
     private let sessionSynchronizer: SessionSynchronizer
+    private let microphoneMenager: MicrophoneManager
     private let persistenceController = PersistenceController.shared
     private let appBecameActive = PassthroughSubject<Void, Never>()
     private var cancellables: [AnyCancellable] = []
@@ -35,7 +36,7 @@ struct AirCastingApp: App {
                                                                          store: syncStore)
         sessionSynchronizer = ScheduledSessionSynchronizerProxy(controller: unscheduledSyncController,
                                                                 scheduler: DispatchQueue.global())
-        
+        microphoneMenager = MicrophoneManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared), sessionSynchronizer: sessionSynchronizer)
         syncScheduler = .init(synchronizer: sessionSynchronizer,
                               appBecameActive: appBecameActive.eraseToAnyPublisher(),
                               periodicTimeInterval: 300,
@@ -46,6 +47,7 @@ struct AirCastingApp: App {
         WindowGroup {
             RootAppView(sessionSynchronizer: sessionSynchronizer, persistenceController: persistenceController)
                 .environmentObject(authorization)
+                .environmentObject(microphoneMenager)
         }.onChange(of: scenePhase) { newScenePhase in
             switch newScenePhase {
             case .active:
