@@ -60,9 +60,7 @@ struct SessionCartView: View {
             sessionCartViewModel.toggleFollowing(for: session)
         }
         .onAppear {
-            if session.followedAt != nil {
-                isFollowing = true
-            }
+            isFollowing = session.followedAt != nil
         }
         .onAppear {
             selectedStream = session.allStreams?.first
@@ -93,7 +91,7 @@ private extension SessionCartView {
         NavigationLink(destination: GraphView(session: session,
                                               threshold: threshold,
                                               selectedStream: $selectedStream)) {
-            Text("graph")
+            Text(Strings.SessionCartView.graph)
         }
     }
     
@@ -101,18 +99,18 @@ private extension SessionCartView {
         NavigationLink(destination: AirMapView(threshold: threshold,
                                                session: session,
                                                selectedStream: $selectedStream)) {
-            Text("map")
+            Text(Strings.SessionCartView.map)
         }
     }
     
     var followButton: some View {
-        Button("follow") {
+        Button(Strings.SessionCartView.follow) {
             isFollowing.toggle()
         }.buttonStyle(FollowButtonStyle())
     }
     
     var unFollowButton: some View {
-        Button("unfollow") {
+        Button(Strings.SessionCartView.unfollow) {
             isFollowing.toggle()
         }.buttonStyle(UnFollowButtonStyle())
     }
