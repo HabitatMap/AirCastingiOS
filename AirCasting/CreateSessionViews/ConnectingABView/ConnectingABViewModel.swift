@@ -1,7 +1,7 @@
 // Created by Lunar on 21/07/2021.
 //
 
-import SwiftUI
+import Foundation
 import CoreBluetooth
 
 class ConnectingABViewModel: ObservableObject {
