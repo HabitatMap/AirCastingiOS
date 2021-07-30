@@ -216,6 +216,8 @@ struct Strings {
         static let confirmAlert: String = "Got it!"
         static let stopRecordingButton: String = "Finish recording session"
         static let finishAlertTitle: String = "Finish recording "
+        static let finishAlertTitle_2: String = "this session"
+        static let finishAlertTitle_3: String = "?"
         static let finishAlertMessage_1: String = "The session will be moved to "
         static let finishAlertMessage_2: String = "Mobile Dormant"
         static let finishAlertMessage_3: String = " tab and you won't be able to add new measurement to it."

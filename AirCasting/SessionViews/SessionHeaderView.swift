@@ -95,9 +95,9 @@ private extension SessionHeaderView {
             }
         }.alert(isPresented: $showingFinishAlert) {
             Alert(title: Text(Strings.SessionHeaderView.finishAlertTitle) +
-                Text(session.name ?? "this session")
+                Text(session.name ?? Strings.SessionHeaderView.finishAlertTitle_2)
                 +
-                Text("?"),
+                Text(Strings.SessionHeaderView.finishAlertTitle_3),
                   message: Text(Strings.SessionHeaderView.finishAlertMessage_1) +
                     Text(Strings.SessionHeaderView.finishAlertMessage_2) +
                 Text(Strings.SessionHeaderView.finishAlertMessage_3),

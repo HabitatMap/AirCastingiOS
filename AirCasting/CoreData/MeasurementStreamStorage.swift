@@ -104,10 +104,10 @@ final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
     
     func updateSessionEndTime(for sessionUUID: SessionUUID) throws {
         let context = persistenceController.editContext()
-        let sessionEntity = try context.existingSession(uuid: sessionUUID)
-        sessionEntity.endTime = Date()
         context.performAndWait {
             do {
+                let sessionEntity = try context.existingSession(uuid: sessionUUID)
+                sessionEntity.endTime = Date()
                 try context.save()
             } catch {
                 Log.info("Error when changing end Date in session")
