@@ -54,7 +54,11 @@ struct BackendSettingsView: View {
         Button {
             urlProvider.baseAppURL = url ?? URL(string: "http://aircasting.org/api")!
             presentationMode.wrappedValue.dismiss()
-            try! logoutController.logout()
+            do {
+                try logoutController.logout()
+            } catch {
+                Log.info("Error when loging out")
+            }
         } label: {
             Text(Strings.BackendSettings.Ok)
         }.buttonStyle(BlueButtonStyle())
