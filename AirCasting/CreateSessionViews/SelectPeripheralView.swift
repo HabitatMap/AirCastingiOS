@@ -70,9 +70,6 @@ struct SelectPeripheralView: View {
         }.onChange(of: bluetoothManager.isConnected, perform: { value in
             showBluetoothAlert = !value
         })
-        .onAppear(perform: {
-            bluetoothManager.isConnected = true
-        })
     }
     
     func displayDeviceButton(devices: [CBPeripheral]) -> some View {

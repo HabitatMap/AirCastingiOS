@@ -4,10 +4,8 @@
 import Foundation
 import CoreBluetooth
 
-enum AirBeamServicesConnectionResult {
-    case success
-    case timeout
-    case deviceBusy
+protocol AirBeamConnectionController {
+    func connectToAirBeam(peripheral: CBPeripheral, completion: @escaping (Bool) -> Void)
 }
 
 class DefaultAirBeamConnectionController: AirBeamConnectionController, ObservableObject {
@@ -26,8 +24,4 @@ class DefaultAirBeamConnectionController: AirBeamConnectionController, Observabl
     init(connectingAirBeamServices: ConnectingAirBeamServices) {
         self.connectingAirBeamServices = connectingAirBeamServices
     }
-}
-
-protocol AirBeamConnectionController {
-    func connectToAirBeam(peripheral: CBPeripheral, completion: @escaping (Bool) -> Void)
 }

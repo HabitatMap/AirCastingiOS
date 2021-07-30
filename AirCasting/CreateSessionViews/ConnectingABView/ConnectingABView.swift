@@ -81,6 +81,6 @@ struct ConnectingABView: View {
 
 // struct ConnectingABView_Previews: PreviewProvider {
 //    static var previews: some View {
-//        ConnectingABView(bluetoothManager: BluetoothManager(), selectedDevice: CBPeripheral)
+//
 //    }
 // }
