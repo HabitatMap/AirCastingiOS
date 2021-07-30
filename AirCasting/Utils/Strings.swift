@@ -168,7 +168,7 @@ struct Strings {
         static let alertConfirmation: String = "OK"
         static let alertSettings: String = "Settings"
         static let title: String = "Power on your AirBeam"
-        static let messageText: String = "If using AirBeam 2, wait for the conncection indicator to change from red to green before continuing."
+        static let messageText: String = "Wait for the conncection indicator to change from red to green before continuing."
         static let continueButton: String = "Continue"
     }
     
