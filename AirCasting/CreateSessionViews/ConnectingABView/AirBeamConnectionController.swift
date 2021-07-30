@@ -1,0 +1,33 @@
+// Created by Lunar on 30/07/2021.
+//
+
+import Foundation
+import CoreBluetooth
+
+enum AirBeamServicesConnectionResult {
+    case success
+    case timeout
+    case deviceBusy
+}
+
+class DefaultAirBeamConnectionController: AirBeamConnectionController, ObservableObject {
+    let connectingAirBeamServices: ConnectingAirBeamServices
+    func connectToAirBeam(peripheral: CBPeripheral, completion: @escaping (Bool) -> Void) {
+        connectingAirBeamServices.connect(to: peripheral, timeout: 10) { result in
+            switch result {
+            case .success:
+                completion(true)
+            case .deviceBusy, .timeout:
+                completion(false)
+            }
+        }
+    }
+    
+    init(connectingAirBeamServices: ConnectingAirBeamServices) {
+        self.connectingAirBeamServices = connectingAirBeamServices
+    }
+}
+
+protocol AirBeamConnectionController {
+    func connectToAirBeam(peripheral: CBPeripheral, completion: @escaping (Bool) -> Void)
+}

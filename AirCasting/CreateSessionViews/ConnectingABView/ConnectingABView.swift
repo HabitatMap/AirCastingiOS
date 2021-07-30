@@ -12,7 +12,7 @@ struct ConnectingABView: View {
     
     @Environment(\.presentationMode) var presentationMode
     var bluetoothManager: BluetoothManager
-    let viewModel: ConnectingABViewModel
+    @ObservedObject var viewModel: ConnectingABViewModel
     var selectedPeripheral: CBPeripheral
     let baseURL: BaseURLProvider
     
@@ -37,7 +37,7 @@ struct ConnectingABView: View {
             .background(
                 NavigationLink(
                     destination: ABConnectedView(creatingSessionFlowContinues: $creatingSessionFlowContinues, baseURL: baseURL),
-                    isActive: viewModel.$isDeviceConnected,
+                    isActive: $viewModel.isDeviceConnected,
                     label: {
                         EmptyView()
                     }

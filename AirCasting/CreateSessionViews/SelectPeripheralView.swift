@@ -14,6 +14,7 @@ struct SelectPeripheralView: View {
     @State private var selection: CBPeripheral? = nil
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @EnvironmentObject var sessionContext: CreateSessionContext
+    @EnvironmentObject var viewmodel: DefaultAirBeamConnectionController
     
     @Binding var creatingSessionFlowContinues: Bool
     
@@ -120,7 +121,7 @@ struct SelectPeripheralView: View {
         var destination: AnyView
         if let selection = selection {
             destination = AnyView(ConnectingABView(bluetoothManager: bluetoothManager,
-                                                   selectedPeripheral: selection, viewModel: ConnectingABViewModel(airBeamConnectionController: <#T##AirBeamConnectionController#>), baseURL: urlProvider,
+                                                   viewModel: ConnectingABViewModel(airBeamConnectionController: viewmodel), selectedPeripheral: selection, baseURL: urlProvider,
                                                    creatingSessionFlowContinues: $creatingSessionFlowContinues))
         } else {
             destination = AnyView(EmptyView())

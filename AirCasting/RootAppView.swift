@@ -8,10 +8,6 @@
 import SwiftUI
 
 class Dependancies {
-    
-}
-
-struct RootAppView: View {
     @ObservedObject var userAuthenticationSession = UserAuthenticationSession()
     @ObservedObject var lifeTimeEventsProvider = UserDefaultProtocol()
 
@@ -19,32 +15,36 @@ struct RootAppView: View {
     let bluetoothManager = BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared)))
     let microphoneManager = MicrophoneManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared))
     let urlProvider = UserDefaultsBaseURLProvider()
-    var airBeamConnectionController = DefaultAirBeamConnectionController(connectingAirBeamServices: ConnectingAirBeamServicesBluetooth(bluetoothConnector: bluetoothManager))
+    lazy var airBeamConnectionController = DefaultAirBeamConnectionController(connectingAirBeamServices: ConnectingAirBeamServicesBluetooth(bluetoothConnector: bluetoothManager))
+}
+
+struct RootAppView: View {
+    let dependancies = Dependancies()
     var body: some View {
-        if userAuthenticationSession.isLoggedIn {
+        if dependancies.userAuthenticationSession.isLoggedIn {
             mainAppView
-        } else if !userAuthenticationSession.isLoggedIn && lifeTimeEventsProvider.hasEverPassedOnBoarding {
+        } else if !dependancies.userAuthenticationSession.isLoggedIn && dependancies.lifeTimeEventsProvider.hasEverPassedOnBoarding {
             NavigationView {
-                CreateAccountView(completion: { self.lifeTimeEventsProvider.hasEverLoggedIn = true }, userSession: userAuthenticationSession, baseURL: urlProvider).environmentObject(lifeTimeEventsProvider)
+                CreateAccountView(completion: { self.dependancies.lifeTimeEventsProvider.hasEverLoggedIn = true }, userSession: dependancies.userAuthenticationSession, baseURL: dependancies.urlProvider).environmentObject(dependancies.lifeTimeEventsProvider)
             }
         } else {
             GetStarted(completion: {
-                self.lifeTimeEventsProvider.hasEverPassedOnBoarding = true
+                self.dependancies.lifeTimeEventsProvider.hasEverPassedOnBoarding = true
             })
         }
     }
 
     var mainAppView: some View {
         MainTabBarView(measurementUpdatingService: DownloadMeasurementsService(
-                        authorisationService: userAuthenticationSession,
-                        persistenceController: persistenceController,
-                        baseUrl: urlProvider), urlProvider: urlProvider)
-            .environmentObject(bluetoothManager)
-            .environmentObject(microphoneManager)
-            .environmentObject(userAuthenticationSession)
-            .environmentObject(persistenceController)
-            .environmentObject(airBeamConnectionController)
-            .environment(\.managedObjectContext, persistenceController.viewContext)
+                        authorisationService: dependancies.userAuthenticationSession,
+                        persistenceController: dependancies.persistenceController,
+                        baseUrl: dependancies.urlProvider), urlProvider: dependancies.urlProvider)
+            .environmentObject(dependancies.bluetoothManager)
+            .environmentObject(dependancies.microphoneManager)
+            .environmentObject(dependancies.userAuthenticationSession)
+            .environmentObject(dependancies.persistenceController)
+            .environmentObject(dependancies.airBeamConnectionController)
+            .environment(\.managedObjectContext, dependancies.persistenceController.viewContext)
     }
 }
 
