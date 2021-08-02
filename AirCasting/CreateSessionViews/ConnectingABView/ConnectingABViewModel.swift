@@ -15,12 +15,8 @@ class ConnectingABViewModel: ObservableObject {
     
     func connectToAirBeam(peripheral: CBPeripheral) {
         self.airBeamConnectionController.connectToAirBeam(peripheral: peripheral) { success in
-            if success {
-                self.isDeviceConnected = true
-            } else {
-                self.isDeviceConnected = false
-                self.shouldDismiss = true
-            }
+            self.isDeviceConnected = success
+            self.shouldDismiss = !success
         }
     }
 }

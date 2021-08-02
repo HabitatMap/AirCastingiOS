@@ -25,3 +25,11 @@ class DefaultAirBeamConnectionController: AirBeamConnectionController, Observabl
         self.connectingAirBeamServices = connectingAirBeamServices
     }
 }
+
+#if DEBUG
+struct DummyAirBeamConnectionController: AirBeamConnectionController {
+    func connectToAirBeam(peripheral: CBPeripheral, completion: @escaping (Bool) -> Void) {
+        completion(true)
+    }
+}
+#endif

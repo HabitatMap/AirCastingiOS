@@ -11,9 +11,8 @@ import SwiftUI
 struct ConnectingABView: View {
     
     @Environment(\.presentationMode) var presentationMode
-    var bluetoothManager: BluetoothManager
     @ObservedObject var viewModel: ConnectingABViewModel
-    var selectedPeripheral: CBPeripheral
+    @State var selectedPeripheral: CBPeripheral? = nil
     let baseURL: BaseURLProvider
     
     @Binding var creatingSessionFlowContinues: Bool
@@ -49,7 +48,7 @@ struct ConnectingABView: View {
             presentationMode.wrappedValue.dismiss()
         })
         .onAppear(perform: {
-            viewModel.connectToAirBeam(peripheral: selectedPeripheral)
+            viewModel.connectToAirBeam(peripheral: selectedPeripheral!)
         })
     }
     
@@ -79,8 +78,10 @@ struct ConnectingABView: View {
     }
 }
 
-// struct ConnectingABView_Previews: PreviewProvider {
-//    static var previews: some View {
-//
-//    }
-// }
+#if DEBUG
+struct ConnectingABView_Previews: PreviewProvider {
+    static var previews: some View {
+        ConnectingABView(viewModel: ConnectingABViewModel(airBeamConnectionController: DummyAirBeamConnectionController()), baseURL: DummyURLProvider(), creatingSessionFlowContinues: .constant(true))
+    }
+ }
+#endif
