@@ -32,6 +32,9 @@ class ConnectingAirBeamServicesBluetooth: ConnectingAirBeamServices {
                 self.bluetoothConnector.cancelPeripheralConnection(for: peripheral)
                 completion(.timeout)
             }
+            if peripheral.state == .connected {
+                completion(.success)
+            }
         }
     }
 }
