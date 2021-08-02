@@ -40,9 +40,7 @@ class LocationTracker: NSObject, ObservableObject, CLLocationManagerDelegate {
         case .authorizedAlways, .authorizedWhenInUse:
             locationManager.startUpdatingLocation()
             locationGranted = .granted
-        case .denied:  locationGranted = .denied
-        case .notDetermined: locationGranted = .denied
-        case .restricted: locationGranted = .denied
+        case .denied, .notDetermined, .restricted:  locationGranted = .denied
         @unknown default:
             fatalError()
         }

@@ -179,6 +179,8 @@
 		B3FD77C8267C997800E97CC2 /* PersistenceController+Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3FD77C7267C997800E97CC2 /* PersistenceController+Database.swift */; };
 		DD009D662698844A009F0443 /* DeleteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD009D652698844A009F0443 /* DeleteView.swift */; };
 		DD1C99C1267CBFCB00B786C4 /* MyAccountViewSignOut.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD1C99C0267CBFCB00B786C4 /* MyAccountViewSignOut.swift */; };
+		DD1EEB8B26B7C2F100AFC5C1 /* TurnOnLocationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD1EEB8A26B7C2F100AFC5C1 /* TurnOnLocationViewModel.swift */; };
+		DD1EEB8E26B7C39000AFC5C1 /* ChooseSessionTypeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD1EEB8D26B7C39000AFC5C1 /* ChooseSessionTypeViewModel.swift */; };
 		DD2181EF267BBCBC0010EC2E /* MyAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD2181EE267BBCBC0010EC2E /* MyAccountView.swift */; };
 		DD2E8BE92685E12000439F8B /* URLValidationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD2E8BE82685E12000439F8B /* URLValidationTests.swift */; };
 		DD2E8BEB2685E13600439F8B /* BackendURLValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD2E8BEA2685E13600439F8B /* BackendURLValidator.swift */; };
@@ -407,6 +409,8 @@
 		B3FD77C7267C997800E97CC2 /* PersistenceController+Database.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PersistenceController+Database.swift"; sourceTree = "<group>"; };
 		DD009D652698844A009F0443 /* DeleteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteView.swift; sourceTree = "<group>"; };
 		DD1C99C0267CBFCB00B786C4 /* MyAccountViewSignOut.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyAccountViewSignOut.swift; sourceTree = "<group>"; };
+		DD1EEB8A26B7C2F100AFC5C1 /* TurnOnLocationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurnOnLocationViewModel.swift; sourceTree = "<group>"; };
+		DD1EEB8D26B7C39000AFC5C1 /* ChooseSessionTypeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseSessionTypeViewModel.swift; sourceTree = "<group>"; };
 		DD2181EE267BBCBC0010EC2E /* MyAccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyAccountView.swift; sourceTree = "<group>"; };
 		DD2E8BE82685E12000439F8B /* URLValidationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLValidationTests.swift; sourceTree = "<group>"; };
 		DD2E8BEA2685E13600439F8B /* BackendURLValidator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackendURLValidator.swift; sourceTree = "<group>"; };
@@ -616,10 +620,10 @@
 		AC32043425CD52E600A68520 /* CreateSessionViews */ = {
 			isa = PBXGroup;
 			children = (
-				AC32043525CD534700A68520 /* ChooseSessionTypeView.swift */,
+				DD1EEB8C26B7C37300AFC5C1 /* ChooseSessionType */,
+				DD1EEB8926B7C2D800AFC5C1 /* TurnOnLocation */,
 				AC489B5B2603614E00CEEC48 /* MoreInfoPopupView.swift */,
 				AC86EE6A25D03DC00083F8C0 /* SelectDeviceView.swift */,
-				DD9EBB4D26AFDD2100D51804 /* TurnOnLocationView.swift */,
 				AC3203CA25CA991C00A68520 /* TurnOnBluetoothView.swift */,
 				AC32041B25CC46EF00A68520 /* PowerABView.swift */,
 				AC524A882614733D0061AD45 /* CreatingSessionFlowRootView.swift */,
@@ -1063,6 +1067,24 @@
 			name = "Recovered References";
 			sourceTree = "<group>";
 		};
+		DD1EEB8926B7C2D800AFC5C1 /* TurnOnLocation */ = {
+			isa = PBXGroup;
+			children = (
+				DD9EBB4D26AFDD2100D51804 /* TurnOnLocationView.swift */,
+				DD1EEB8A26B7C2F100AFC5C1 /* TurnOnLocationViewModel.swift */,
+			);
+			path = TurnOnLocation;
+			sourceTree = "<group>";
+		};
+		DD1EEB8C26B7C37300AFC5C1 /* ChooseSessionType */ = {
+			isa = PBXGroup;
+			children = (
+				AC32043525CD534700A68520 /* ChooseSessionTypeView.swift */,
+				DD1EEB8D26B7C39000AFC5C1 /* ChooseSessionTypeViewModel.swift */,
+			);
+			path = ChooseSessionType;
+			sourceTree = "<group>";
+		};
 		DD2E8BE72685E0F500439F8B /* Settings */ = {
 			isa = PBXGroup;
 			children = (
@@ -1504,6 +1526,7 @@
 				AC6D56A225AEF55C00D221BA /* GraphView.swift in Sources */,
 				AC4EC6C125B6F18A00C1E312 /* EditButtonView.swift in Sources */,
 				AC049F8B2608DCB000398197 /* Session+Mock.swift in Sources */,
+				DD1EEB8B26B7C2F100AFC5C1 /* TurnOnLocationViewModel.swift in Sources */,
 				DDF7599A268332E900D906BA /* Strings.swift in Sources */,
 				AC524A9A2615E3600061AD45 /* NSManagedObjectContext+Utils.swift in Sources */,
 				B3EBB10C26A06D2D002BD81F /* DefaultForgotPasswordViewModel.swift in Sources */,
@@ -1549,6 +1572,7 @@
 				B3E26A032676D9AA001A8E4C /* ArrayUtils.swift in Sources */,
 				ACDF82FC265BBDE200A4D04A /* UIFont.swift in Sources */,
 				DD8C380E2689A55A00901FDF /* BackendSettingsView.swift in Sources */,
+				DD1EEB8E26B7C39000AFC5C1 /* ChooseSessionTypeViewModel.swift in Sources */,
 				4F15548F263C819C00FF3208 /* MeasurementEntity.swift in Sources */,
 				DD1C99C1267CBFCB00B786C4 /* MyAccountViewSignOut.swift in Sources */,
 				ACD01F7325FF574A00B8F65F /* WifiPopupView.swift in Sources */,

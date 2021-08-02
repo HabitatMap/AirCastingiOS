@@ -22,6 +22,7 @@ struct ChooseSessionTypeView: View {
     @EnvironmentObject var userSettings: UserSettings
     let urlProvider: BaseURLProvider
     
+    
     var body: some View {
         NavigationView {
             VStack(spacing: 50) {
@@ -196,12 +197,12 @@ struct ChooseSessionTypeView: View {
     }
 }
 
-#if DEBUG
-struct CreateSessionView_Previews: PreviewProvider {
-    static var previews: some View {
-        ChooseSessionTypeView(
-            sessionContext: CreateSessionContext(), urlProvider: DummyURLProvider())
-            .environmentObject(BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: PreviewMeasurementStreamStorage())))
-    }
-}
-#endif
+//#if DEBUG
+//struct CreateSessionView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ChooseSessionTypeView(
+//            sessionContext: CreateSessionContext(), urlProvider: DummyURLProvider())
+//            .environmentObject(BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: PreviewMeasurementStreamStorage())))
+//    }
+//}
+//#endif

@@ -10,12 +10,12 @@ struct TurnOnLocationView: View {
     @State private var showAlert = false
     @State private var isTurnBluetoothOnLinkActive = false
     @State private var isMobileLinkActive = false
-    @EnvironmentObject var settingsRedirection: DefaultSettingsRedirection
     @Binding var creatingSessionFlowContinues: Bool
+    
+    @EnvironmentObject var settingsRedirection: DefaultSettingsRedirection
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @EnvironmentObject private var locationTracker: LocationTracker
     @StateObject var sessionContext: CreateSessionContext
-    
     let urlProvider: BaseURLProvider
     
     var body: some View {
@@ -34,24 +34,9 @@ struct TurnOnLocationView: View {
         }
         .background(
             Group {
-                NavigationLink(
-                    destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider),
-                    isActive: $isPowerABLinkActive,
-                    label: {
-                        EmptyView()
-                    })
-                NavigationLink(
-                    destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sessionContext: sessionContext, urlProvider: urlProvider),
-                    isActive: $isTurnBluetoothOnLinkActive,
-                    label: {
-                        EmptyView()
-                    })
-                NavigationLink(
-                    destination: SelectDeviceView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider),
-                    isActive: $isMobileLinkActive,
-                    label: {
-                        EmptyView()
-                    })
+                proceedToPowerABView
+                proceedToBluetoothView
+                proceedToSelectDeviceView
             }
         )
         .padding()
@@ -98,6 +83,31 @@ struct TurnOnLocationView: View {
         .disabled(locationTracker.locationGranted != .granted)
             .frame(maxWidth: .infinity)
             .buttonStyle(BlueButtonStyle())
+    }
+    
+    var proceedToPowerABView: some View {
+        NavigationLink(
+            destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider),
+            isActive: $isPowerABLinkActive,
+            label: {
+                EmptyView()
+            })
+    }
+    var proceedToBluetoothView: some View {
+        NavigationLink(
+            destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sessionContext: sessionContext, urlProvider: urlProvider),
+            isActive: $isTurnBluetoothOnLinkActive,
+            label: {
+                EmptyView()
+            })
+    }
+    var proceedToSelectDeviceView: some View {
+        NavigationLink(
+            destination: SelectDeviceView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider),
+            isActive: $isMobileLinkActive,
+            label: {
+                EmptyView()
+            })
     }
 }
 
