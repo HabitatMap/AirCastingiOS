@@ -168,9 +168,11 @@ struct Strings {
     }
 
     struct EmptyOnboarding {
-        static let title: String = "Start recording a mobile session"
-        static let description: String = "If you plan on moving around while recording measurements."
+        static let title: String = "Start recording a \nmobile session"
+        static let description: String = "If you plan on moving around \nwhile recording measurements."
         static let newSession: String = "Record mobile session"
+        static let airBeamDescriptionText: String = "Did you know?"
+        static let airBeamDescriptionDescription: String = "AirBeam3 is weather resistant. To \nkeep tabs on your outdoor air quality \n24/7, hang one outside your home and \nrecord a fixed session."
     }
     
     enum PowerABView {
