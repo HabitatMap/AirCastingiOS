@@ -12,7 +12,6 @@ struct DashboardView: View {
     @StateObject var coreDataHook: CoreDataHook
     @FetchRequest<SensorThreshold>(sortDescriptors: [.init(key: "sensorName", ascending: true)]) var thresholds
     @EnvironmentObject var selectedSection: SelectSection
-    var sessionCartFollowing: SessionCartFollowing
 
     private var sessions: [SessionEntity] {
         coreDataHook.sessions
@@ -41,7 +40,7 @@ struct DashboardView: View {
                 ScrollView(.vertical) {
                     LazyVStack(spacing: 20) {
                         ForEach(sessions, id: \.uuid) { session in
-                            SessionCartView(session: session, sessionCartFollowing: <#SessionCartFollowing#>, thresholds: thresholds)
+                            SessionCartView(session: session, thresholds: thresholds)
                         }
                     }
                     .padding()

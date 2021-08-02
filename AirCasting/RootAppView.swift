@@ -14,7 +14,7 @@ struct RootAppView: View {
     let persistenceController: PersistenceController
     let bluetoothManager = BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared)))
     @ObservedObject var lifeTimeEventsProvider = UserDefaultProtocol()
-    @ObservedObject var sessionCartViewModel = SessionCartViewModel(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared))
+    @ObservedObject var sessionCartViewModel = SessionCartViewModel(sessionCartFollowing: DefaultSessionCartFollowing(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared)))
     
     let microphoneManager = MicrophoneManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared))
     let urlProvider = UserDefaultsBaseURLProvider()
@@ -51,7 +51,7 @@ struct RootAppView: View {
 #if DEBUG
 struct RootAppView_Previews: PreviewProvider {
     static var previews: some View {
-        RootAppView(sessionSynchronizer: DummySessionSynchronizer(), persistenceController: .shared)
+        RootAppView(sessionSynchronizer: DummySessionSynchronizer(), persistenceController: PersistenceController(inMemory: true))
     }
 }
 #endif

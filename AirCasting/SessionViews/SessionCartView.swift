@@ -12,7 +12,6 @@ import CoreLocation
 import SwiftUI
 
 struct SessionCartView: View {
-    @State private var isFollowing = false
     @State private var isCollapsed = true
     @State private var selectedStream: MeasurementStreamEntity?
     @ObservedObject var session: SessionEntity
@@ -56,11 +55,11 @@ struct SessionCartView: View {
         .onChange(of: session.allStreams) { _ in
             selectedStream = session.allStreams?.first
         }
-        .onChange(of: isFollowing) { _ in
+        .onChange(of: sessionCartViewModel.isFollowing) { _ in
             sessionCartViewModel.toggleFollowing(for: session)
         }
         .onAppear {
-            isFollowing = session.followedAt != nil
+            sessionCartViewModel.isFollowing = session.followedAt != nil
         }
         .onAppear {
             selectedStream = session.allStreams?.first
@@ -105,13 +104,13 @@ private extension SessionCartView {
     
     var followButton: some View {
         Button(Strings.SessionCartView.follow) {
-            isFollowing.toggle()
+            sessionCartViewModel.isFollowing.toggle()
         }.buttonStyle(FollowButtonStyle())
     }
     
     var unFollowButton: some View {
         Button(Strings.SessionCartView.unfollow) {
-            isFollowing.toggle()
+            sessionCartViewModel.isFollowing.toggle()
         }.buttonStyle(UnFollowButtonStyle())
     }
     
@@ -125,10 +124,10 @@ private extension SessionCartView {
     
     func displayButtons(threshold: SensorThreshold) -> some View {
         HStack(spacing: 20) {
-            if isFollowing {
-                unFollowButton
-            } else if session.type == .fixed, !isFollowing {
+            if sessionCartViewModel.isFollowing {
                 followButton
+            } else {
+                unFollowButton
             }
             Spacer()
             mapButton(threshold: threshold)
