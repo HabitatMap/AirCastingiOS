@@ -81,11 +81,7 @@ private extension SessionHeaderView {
     
     var actionsMenuMobile: some View {
         Menu {
-            Button {
-                showingFinishAlert = true
-            } label: {
-                Label(Strings.SessionHeaderView.stopRecordingButton, systemImage: "stop.circle")
-            }
+            actionsMenuMobileStopButton
         } label: {
             ZStack(alignment: .trailing) {
                 EditButtonView()
@@ -98,44 +94,30 @@ private extension SessionHeaderView {
                 Text(session.name ?? Strings.SessionHeaderView.finishAlertTitle_2)
                 +
                 Text(Strings.SessionHeaderView.finishAlertTitle_3),
-                  message: Text(Strings.SessionHeaderView.finishAlertMessage_1) +
+                message: Text(Strings.SessionHeaderView.finishAlertMessage_1) +
                     Text(Strings.SessionHeaderView.finishAlertMessage_2) +
-                Text(Strings.SessionHeaderView.finishAlertMessage_3),
-                  primaryButton: .default(Text(Strings.SessionHeaderView.finishAlertButton), action: {
+                    Text(Strings.SessionHeaderView.finishAlertMessage_3),
+                primaryButton: .default(Text(Strings.SessionHeaderView.finishAlertButton), action: {
                     try! microphoneManager.stopRecording()
                 }),
                 secondaryButton: .cancel())
         }
     }
     
+    var actionsMenuMobileStopButton: some View {
+        Button {
+            showingFinishAlert = true
+        } label: {
+            Label(Strings.SessionHeaderView.stopRecordingButton, systemImage: "stop.circle")
+        }
+    }
+    
     var actionsMenuFixed: some View {
         Menu {
-            Button {
-                // action here
-            } label: {
-                Label(Strings.SessionHeaderView.resumeButton, systemImage: "repeat")
-            }
-            
-            Button {
-                DispatchQueue.main.async {
-                    print(" \(networkChecker.connectionAvailable) NETWORK")
-                    networkChecker.connectionAvailable ? showModalEdit.toggle() : showingAlert.toggle()
-                }
-            } label: {
-                Label(Strings.SessionHeaderView.editButton, systemImage: "pencil")
-            }
-            
-            Button {
-                shareModal.toggle()
-            } label: {
-                Label(Strings.SessionHeaderView.shareButton, systemImage: "square.and.arrow.up")
-            }
-            
-            Button {
-                deleteModal.toggle()
-            } label: {
-                Label(Strings.SessionHeaderView.deleteButton, systemImage: "xmark.circle")
-            }
+            actionsMenuFixedRepeatButton
+            actionsMenuFixedEditButton
+            actionsMenuFixedShareButton
+            actionsMenuFixedDeleteButton
         } label: {
             ZStack(alignment: .trailing) {
                 EditButtonView()
@@ -149,6 +131,41 @@ private extension SessionHeaderView {
                   dismissButton: .default(Text(Strings.SessionHeaderView.confirmAlert)))
         }
         .sheet(isPresented: $showModalEdit) { EditViewModal(showModalEdit: $showModalEdit) }
+    }
+    
+    var actionsMenuFixedRepeatButton: some View {
+        Button {
+            // action here
+        } label: {
+            Label(Strings.SessionHeaderView.resumeButton, systemImage: "repeat")
+        }
+    }
+    
+    var actionsMenuFixedEditButton: some View {
+        Button {
+            DispatchQueue.main.async {
+                print(" \(networkChecker.connectionAvailable) NETWORK")
+                networkChecker.connectionAvailable ? showModalEdit.toggle() : showingAlert.toggle()
+            }
+        } label: {
+            Label(Strings.SessionHeaderView.editButton, systemImage: "pencil")
+        }
+    }
+    
+    var actionsMenuFixedShareButton: some View {
+        Button {
+            shareModal.toggle()
+        } label: {
+            Label(Strings.SessionHeaderView.shareButton, systemImage: "square.and.arrow.up")
+        }
+    }
+
+    var actionsMenuFixedDeleteButton: some View {
+        Button {
+            deleteModal.toggle()
+        } label: {
+            Label(Strings.SessionHeaderView.deleteButton, systemImage: "xmark.circle")
+        }
     }
 }
 
