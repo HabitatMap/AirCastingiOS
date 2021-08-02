@@ -106,14 +106,10 @@ final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
     func updateSessionIfFollowing(_ sessionFollowing: SessionFollowing, for sessionUUID: SessionUUID) throws {
         let context = persistenceController.editContext()
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
-        let copySession = sessionEntity
         if sessionFollowing.rawValue == 1 {
             sessionEntity.followedAt = Date()
-            sessionEntity.type = .following
-            copySession.type = .fixed
         } else {
             sessionEntity.followedAt = nil
-            sessionEntity.type = .fixed
         }
         context.performAndWait {
             do {
