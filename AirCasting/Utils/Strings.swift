@@ -168,9 +168,9 @@ struct Strings {
     }
 
     struct EmptyOnboarding {
-        static let title: String = "Ready to get started?"
-        static let description: String = "Record a new session to monitor your health & environment."
-        static let newSession: String = "Record new session"
+        static let title: String = "Start recording a mobile session"
+        static let description: String = "If you plan on moving around while recording measurements."
+        static let newSession: String = "Record mobile session"
     }
     
     enum PowerABView {
