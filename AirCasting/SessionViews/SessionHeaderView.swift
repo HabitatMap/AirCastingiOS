@@ -98,7 +98,11 @@ private extension SessionHeaderView {
                     Text(Strings.SessionHeaderView.finishAlertMessage_2) +
                     Text(Strings.SessionHeaderView.finishAlertMessage_3),
                 primaryButton: .default(Text(Strings.SessionHeaderView.finishAlertButton), action: {
-                    try! microphoneManager.stopRecording()
+                    do {
+                        try microphoneManager.stopRecording()
+                    } catch {
+                        Log.info("error when stpoing mic session - \(error)")
+                    }
                 }),
                 secondaryButton: .cancel())
         }
