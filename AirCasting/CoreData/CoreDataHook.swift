@@ -36,7 +36,7 @@ final class CoreDataHook: NSObject, ObservableObject {
         case .mobileDormant:
             predicate = NSPredicate(format: "type == %@ AND status == %li", SessionType.mobile.rawValue, SessionStatus.FINISHED.rawValue)
         case .following:
-            predicate = NSPredicate(format: "followedAt != NULL", SessionType.following.rawValue)
+            predicate = NSPredicate(format: "followedAt != NULL")
         }
         fetchedResultsController.fetchRequest.predicate = predicate
         try fetchedResultsController.performFetch()
