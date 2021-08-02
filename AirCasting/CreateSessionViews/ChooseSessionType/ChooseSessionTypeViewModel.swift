@@ -6,11 +6,12 @@ import Foundation
 
 enum ProceedToView {
     case AB
-    case Location
-    case Bluetooth
+    case location
+    case bluetooth
+    case mobile
 }
 
-class ChooseSessionTypeViewModel: ObservableObject {
+class ChooseSessionTypeViewModel {
     var locationTracker: LocationTracker
     var bluetoothManager: BluetoothManager
 
@@ -19,15 +20,23 @@ class ChooseSessionTypeViewModel: ObservableObject {
         self.bluetoothManager = bluetoothManager
     }
 
-    func proceedingFixSession() -> ProceedToView {
+    func fixSessionNextStep() -> ProceedToView {
         if locationTracker.locationGranted == .denied {
-            return .Location
+            return .location
         } else {
             if CBCentralManager.authorization == .notDetermined {
-                return .Bluetooth
+                return .bluetooth
             } else {
                 return .AB
             }
+        }
+    }
+    
+    func mobileSessionNextStep() -> ProceedToView {
+        if locationTracker.locationGranted == .denied {
+            return .location
+        } else {
+            return .mobile
         }
     }
 }

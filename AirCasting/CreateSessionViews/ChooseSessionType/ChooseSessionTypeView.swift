@@ -21,7 +21,7 @@ struct ChooseSessionTypeView: View {
     @EnvironmentObject var userRedirectionSettings: DefaultSettingsRedirection
     @EnvironmentObject var userSettings: UserSettings
     let urlProvider: BaseURLProvider
-    
+    var viewModel: ChooseSessionTypeViewModel
     
     var body: some View {
         NavigationView {
@@ -128,14 +128,11 @@ struct ChooseSessionTypeView: View {
     var fixedSessionButton: some View {
         Button(action: {
             goToNextFixedSessionStep()
-            if locationTracker.locationGranted == .denied {
-                isTurnLocationOnLinkActive = true
-            } else {
-                if CBCentralManager.authorization == .notDetermined {
-                    isTurnBluetoothOnLinkActive = true
-                } else {
-                    isPowerABLinkActive = true
-                }
+            switch viewModel.fixSessionNextStep() {
+            case .AB: isPowerABLinkActive = true
+            case .location: isTurnLocationOnLinkActive = true
+            case .bluetooth: isTurnBluetoothOnLinkActive = true
+            default: return
             }
         }) {
             fixedSessionLabel
@@ -145,10 +142,10 @@ struct ChooseSessionTypeView: View {
     var mobileSessionButton: some View {
         Button(action: {
             createNewSession(isSessionFixed: false)
-            if locationTracker.locationGranted == .denied {
-                isTurnLocationOnLinkActive = true
-            } else {
-                isMobileLinkActive = true
+            switch viewModel.mobileSessionNextStep() {
+            case .location: isTurnLocationOnLinkActive = true
+            case .mobile: isMobileLinkActive = true
+            default: return
             }
         }) {
             mobileSessionLabel

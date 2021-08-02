@@ -18,7 +18,7 @@ struct MainTabBarView: View {
     let sessionSynchronizer: SessionSynchronizer
     @StateObject var tabSelection: TabBarSelection = TabBarSelection()
     @StateObject var selectedSection = SelectSection()
-
+    
     var body: some View {
         TabView(selection: $tabSelection.selection) {
             dashboardTab
