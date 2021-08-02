@@ -20,6 +20,7 @@ class BluetoothManager: NSObject, ObservableObject {
         return centralManager
     }()
     
+    @Published var isConnected = true
     @Published var devices: [CBPeripheral] = []
     @Published var isScanning: Bool = true
     @Published var centralManagerState: CBManagerState = .unknown
@@ -100,16 +101,16 @@ extension BluetoothManager: CBCentralManagerDelegate {
     }
     
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "DeviceConnected"),
-                                        object: nil)
-        
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "DeviceConnected"), object: nil)
         // Here's code for getting data from AB.
+        isConnected = true
         peripheral.delegate = self
         peripheral.discoverServices(nil)
     }
     
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
         print("Disconnected: \(String(describing: error?.localizedDescription))")
+        isConnected = false
         mobilePeripheralSessionManager.finishSession(for: peripheral)
     }
 }

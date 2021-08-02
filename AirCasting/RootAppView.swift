@@ -7,47 +7,49 @@
 
 import SwiftUI
 
-struct RootAppView: View {
-
-    let networkChecker = NetworkChecker(connectionAvailable: false)
-    @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
-    var sessionSynchronizer: SessionSynchronizer
-    let persistenceController: PersistenceController
-    let bluetoothManager = BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared)))
+class Dependancies {
+    @ObservedObject var userAuthenticationSession = UserAuthenticationSession()
     @ObservedObject var lifeTimeEventsProvider = LifeTimeEventsProvider()
     @ObservedObject var userSettings = UserSettings()
-    
+    let networkChecker = NetworkChecker(connectionAvailable: false)
+    let bluetoothManager = BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared)))
     let microphoneManager = MicrophoneManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared))
     let urlProvider = UserDefaultsBaseURLProvider()
-    
+    lazy var airBeamConnectionController = DefaultAirBeamConnectionController(connectingAirBeamServices: ConnectingAirBeamServicesBluetooth(bluetoothConnector: bluetoothManager))
+}
+
+struct RootAppView: View {
+    let dependancies = Dependancies()
+    var sessionSynchronizer: SessionSynchronizer
+    let persistenceController: PersistenceController
+    @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     var body: some View {
-        if userAuthenticationSession.isLoggedIn {
+        if dependancies.userAuthenticationSession.isLoggedIn {
             mainAppView
-        } else if !userAuthenticationSession.isLoggedIn && lifeTimeEventsProvider.hasEverPassedOnBoarding {
+        } else if !dependancies.userAuthenticationSession.isLoggedIn && dependancies.lifeTimeEventsProvider.hasEverPassedOnBoarding {
             NavigationView {
-                CreateAccountView(completion: { self.lifeTimeEventsProvider.hasEverLoggedIn = true }, userSession: userAuthenticationSession, baseURL: urlProvider).environmentObject(lifeTimeEventsProvider)
+                CreateAccountView(completion: { self.dependancies.lifeTimeEventsProvider.hasEverLoggedIn = true }, userSession: dependancies.userAuthenticationSession, baseURL: dependancies.urlProvider).environmentObject(dependancies.lifeTimeEventsProvider)
             }
         } else {
             GetStarted(completion: {
-                self.lifeTimeEventsProvider.hasEverPassedOnBoarding = true
+                self.dependancies.lifeTimeEventsProvider.hasEverPassedOnBoarding = true
             })
         }
     }
 
     var mainAppView: some View {
         MainTabBarView(measurementUpdatingService: DownloadMeasurementsService(
-                        authorisationService: userAuthenticationSession,
+                        authorisationService: dependancies.userAuthenticationSession,
                         persistenceController: persistenceController,
-                        baseUrl: urlProvider),
-                       urlProvider: urlProvider,
-                       sessionSynchronizer: sessionSynchronizer)
-            .environmentObject(bluetoothManager)
-            .environmentObject(microphoneManager)
+                        baseUrl: dependancies.urlProvider), urlProvider: dependancies.urlProvider, sessionSynchronizer: sessionSynchronizer)
+            .environmentObject(dependancies.bluetoothManager)
+            .environmentObject(dependancies.microphoneManager)
             .environmentObject(userAuthenticationSession)
             .environmentObject(persistenceController)
-            .environmentObject(networkChecker)
-            .environmentObject(lifeTimeEventsProvider)
-            .environmentObject(userSettings)
+            .environmentObject(dependancies.networkChecker)
+            .environmentObject(dependancies.lifeTimeEventsProvider)
+            .environmentObject(dependancies.userSettings)
+            .environmentObject(dependancies.airBeamConnectionController)
             .environment(\.managedObjectContext, persistenceController.viewContext)
     }
 }
