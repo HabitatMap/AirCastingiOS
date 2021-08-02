@@ -13,6 +13,7 @@ struct BackendSettingsView: View {
     @State private var pathText: String = ""
     @State private var portText: String = ""
     @State private var url: URL?
+    @State private var alertPresented = false
     private var urlWithoutPort: String? {
         let components = URLComponents(url: urlProvider.baseAppURL, resolvingAgainstBaseURL: false)!
         return components.host
@@ -40,7 +41,9 @@ struct BackendSettingsView: View {
             Spacer()
             oKButton
             cancelButton
-        }
+        }.alert(isPresented: $alertPresented, content: {
+            Alert(title: Text(Strings.BackendSettings.alertTitle), message: Text(Strings.BackendSettings.alertMessage),  dismissButton: .default(Text(Strings.BackendSettings.Ok)))
+        })
         .padding()
     }
     
@@ -57,7 +60,8 @@ struct BackendSettingsView: View {
             do {
                 try logoutController.logout()
             } catch {
-                Log.info("Error when loging out")
+                alertPresented = true
+                Log.info("Error when logging out - \(error)")
             }
         } label: {
             Text(Strings.BackendSettings.Ok)

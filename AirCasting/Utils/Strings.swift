@@ -19,6 +19,8 @@ struct Strings {
         static let backendSettings: String = "Backend settings"
         static let Ok: String = "OK"
         static let Cancel: String = "Cancel"
+        static let alertTitle: String = "Logout Alert"
+        static let alertMessage: String = "Something went wrong, when logging out."
     }
     
     enum MyAccountSettings {
