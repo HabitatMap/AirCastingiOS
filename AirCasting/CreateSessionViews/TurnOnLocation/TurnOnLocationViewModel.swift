@@ -3,10 +3,15 @@
 
 import Foundation
 
-class TurnOnLocationViewModel {
+protocol TurnOnLocationRequirements {
+    var locationTracker: LocationTracker { get }
+    var sessionContext: CreateSessionContext { get }
+}
+
+class TurnOnLocationViewModel: TurnOnLocationRequirements {
     
-    private var locationTracker: LocationTracker
-    private var sessionContext: CreateSessionContext
+    var locationTracker: LocationTracker
+    var sessionContext: CreateSessionContext
     
     var shouldShowAlert: Bool {
         return locationTracker.locationGranted == .denied
@@ -35,7 +40,6 @@ class TurnOnLocationViewModel {
 }
 
 #if DEBUG
-class DummyTurnOnLocationViewModel: TurnOnLocationViewModel {
-    
+struct DummyTurnOnLocationViewModel {
 }
 #endif

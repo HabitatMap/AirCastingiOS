@@ -109,7 +109,7 @@ struct TurnOnLocationView: View {
 //#if DEBUG
 //struct TurnOnLocationView_Previews: PreviewProvider {
 //    static var previews: some View {
-//        TurnOnLocationView(creatingSessionFlowContinues: .constant(true), urlProvider: DummyURLProvider(), VM: DummyTurnOnLocationViewModel())
+//        TurnOnLocationView(creatingSessionFlowContinues: .constant(true), urlProvider: DummyURLProvider(), VM: TurnOnLocationRequirements)
 //    }
 //}
 //#endif
