@@ -237,4 +237,16 @@ struct Strings {
         static let satisfiedPathText: String = "Current devise has an network connection"
         static let failurePathText: String = "Current devise DOES NOT have an network connection"
     }
+    
+    struct ConfirmCreatingSessionView {
+        static let alertTitle: String = "Failure"
+        static let alertMessage: String = "Failed to create session"
+        static let alertOK: String = "Got it!"
+        static let contentViewTitle: String = "Are you ready?"
+        static let contentViewText_1: String = "Your "
+        static let contentViewText_2: String = " session "
+        static let contentViewText_3: String = " is ready to start gathering data."
+        static let contentViewText_4: String = "Hang your AirBeam in a secure position, then press the start recording button below."
+        
+    }
 }
