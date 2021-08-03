@@ -42,6 +42,7 @@ struct EmptyDashboardView: View {
             }
             Spacer()
             airBeamDescription
+                .frame(minWidth: 250, idealWidth: .infinity, maxWidth: .infinity, minHeight: 110, idealHeight: 110, maxHeight: 110, alignment: .center)
                 .padding(.bottom)
         }
         .padding()
@@ -54,7 +55,6 @@ private extension EmptyDashboardView {
         ZStack {
             Rectangle()
                 .fill(Color(red: 251/255, green: 253/255, blue: 255/255))
-                .frame(width: .infinity, height: 110, alignment: .center)
                 .cornerRadius(5)
                 .shadow(color: Color(white: 150/255, opacity: 0.5), radius: 7, x: 0, y: 1)
             HStack {
@@ -64,12 +64,12 @@ private extension EmptyDashboardView {
                     .scaledToFill()
                 VStack(alignment: .leading) {
                     Text(Strings.EmptyOnboarding.airBeamDescriptionText)
-                    .font(Font.muli(size: 16, weight: .semibold))
-                    .foregroundColor(.aircastingGray)
-                    .lineSpacing(15)
+                        .font(Font.muli(size: 16, weight: .semibold))
+                        .foregroundColor(.aircastingGray)
+                        .lineSpacing(15)
                     Text(Strings.EmptyOnboarding.airBeamDescriptionDescription)
-                    .font(Font.muli(size: 14))
-                    .foregroundColor(.aircastingGray)
+                        .font(Font.muli(size: 14))
+                        .foregroundColor(.aircastingGray)
                 }
             }
         }
