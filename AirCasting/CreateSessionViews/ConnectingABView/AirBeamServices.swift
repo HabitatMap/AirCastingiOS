@@ -1,8 +1,8 @@
 // Created by Lunar on 30/07/2021.
 //
 
-import CoreBluetooth
 import Foundation
+import CoreBluetooth
 
 enum AirBeamServicesConnectionResult {
     case success
