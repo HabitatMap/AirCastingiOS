@@ -23,6 +23,10 @@ class ConnectingAirBeamServicesBluetooth: ConnectingAirBeamServices {
         self.bluetoothConnector = bluetoothConnector
     }
     
+    deinit {
+      NotificationCenter.default.removeObserver(self, name:  NSNotification.Name("DeviceConnected"), object: nil)
+    }
+    
     func connect(to peripheral: CBPeripheral, timeout: TimeInterval, completion: @escaping (AirBeamServicesConnectionResult) -> Void) {
         guard !connectionInProgress else { completion(.deviceBusy); return }
         bluetoothConnector.connect(to: peripheral)
@@ -32,10 +36,10 @@ class ConnectingAirBeamServicesBluetooth: ConnectingAirBeamServices {
                 self.bluetoothConnector.cancelPeripheralConnection(for: peripheral)
                 completion(.timeout)
             }
-        var token = NotificationCenter.default.addObserver(forName: Notification.Name(rawValue: "DeviceConnected"), object: nil, queue: nil) { _ in
-            completion(.success)
-            NotificationCenter.default.removeObserver(token)
         }
+        
+        NotificationCenter.default.addObserver(forName: Notification.Name(rawValue: "DeviceConnected"), object: nil, queue: nil) { _ in
+            completion(.success)
         }
     }
 }

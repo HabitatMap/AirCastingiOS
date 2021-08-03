@@ -12,7 +12,7 @@ class Dependancies {
     @ObservedObject var lifeTimeEventsProvider = LifeTimeEventsProvider()
     @ObservedObject var userSettings = UserSettings()
     let networkChecker = NetworkChecker(connectionAvailable: false)
-    let bluetoothManager = BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared)))
+    @ObservedObject var bluetoothManager = BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared)))
     let microphoneManager = MicrophoneManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared))
     let urlProvider = UserDefaultsBaseURLProvider()
     lazy var airBeamConnectionController = DefaultAirBeamConnectionController(connectingAirBeamServices: ConnectingAirBeamServicesBluetooth(bluetoothConnector: bluetoothManager))

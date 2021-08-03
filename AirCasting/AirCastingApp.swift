@@ -8,7 +8,6 @@
 import SwiftUI
 import Firebase
 import Combine
-
 @main
 struct AirCastingApp: App {
     @Environment(\.scenePhase) var scenePhase

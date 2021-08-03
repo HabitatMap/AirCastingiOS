@@ -11,10 +11,10 @@ import SwiftUI
 struct ConnectingABView: View {
     
     @Environment(\.presentationMode) var presentationMode
-    @ObservedObject var viewModel: ConnectingABViewModel
+    @StateObject var viewModel: ConnectingABViewModel
     @State var selectedPeripheral: CBPeripheral? = nil
     let baseURL: BaseURLProvider
-    
+    @State var proceedForward = false
     @Binding var creatingSessionFlowContinues: Bool
     
     var body: some View {
