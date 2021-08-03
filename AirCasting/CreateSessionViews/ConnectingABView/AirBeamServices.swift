@@ -32,10 +32,10 @@ class ConnectingAirBeamServicesBluetooth: ConnectingAirBeamServices {
                 self.bluetoothConnector.cancelPeripheralConnection(for: peripheral)
                 completion(.timeout)
             }
-        }
         var token = NotificationCenter.default.addObserver(forName: Notification.Name(rawValue: "DeviceConnected"), object: nil, queue: nil) { _ in
             completion(.success)
             NotificationCenter.default.removeObserver(token)
+        }
         }
     }
 }

@@ -20,7 +20,6 @@ class DefaultAirBeamConnectionController: AirBeamConnectionController, Observabl
             }
         }
     }
-    
     init(connectingAirBeamServices: ConnectingAirBeamServices) {
         self.connectingAirBeamServices = connectingAirBeamServices
     }
