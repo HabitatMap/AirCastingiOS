@@ -18,6 +18,8 @@ struct MainTabBarView: View {
     let sessionSynchronizer: SessionSynchronizer
     @StateObject var tabSelection: TabBarSelection = TabBarSelection()
     @StateObject var selectedSection = SelectSection()
+    @EnvironmentObject var bluetoothManager: BluetoothManager
+    @EnvironmentObject private var locationTracker: LocationTracker
     
     var body: some View {
         TabView(selection: $tabSelection.selection) {
@@ -46,7 +48,7 @@ private extension MainTabBarView {
     }
 
     private var createSessionTab: some View {
-        ChooseSessionTypeView(sessionContext: CreateSessionContext(), urlProvider: urlProvider)
+        ChooseSessionTypeView(sessionContext: CreateSessionContext(), urlProvider: urlProvider, viewModel: ChooseSessionTypeViewModel(locationTracker: locationTracker, bluetoothManager: bluetoothManager))
             .tabItem {
                 Image(systemName: "plus")
             }

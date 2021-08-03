@@ -64,7 +64,7 @@ struct ChooseSessionTypeView: View {
                     EmptyView()
                         .fullScreenCover(isPresented: $isTurnLocationOnLinkActive) {
                             CreatingSessionFlowRootView {
-                                TurnOnLocationView(creatingSessionFlowContinues: $isTurnLocationOnLinkActive, sessionContext: sessionContext, urlProvider: urlProvider)
+                                TurnOnLocationView(creatingSessionFlowContinues: $isTurnLocationOnLinkActive, urlProvider: urlProvider, VM: TurnOnLocationViewModel(locationTracker: locationTracker, sessionContext: sessionContext))
                             }
                         }
                     EmptyView()

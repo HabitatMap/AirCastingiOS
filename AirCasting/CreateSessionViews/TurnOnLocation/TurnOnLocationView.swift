@@ -6,17 +6,14 @@ import CoreBluetooth
 import SwiftUI
 
 struct TurnOnLocationView: View {
+    
     @State private var isPowerABLinkActive = false
     @State private var showAlert = false
     @State private var isTurnBluetoothOnLinkActive = false
     @State private var isMobileLinkActive = false
     @Binding var creatingSessionFlowContinues: Bool
-    
-    @EnvironmentObject var settingsRedirection: DefaultSettingsRedirection
-    @EnvironmentObject var bluetoothManager: BluetoothManager
-    @EnvironmentObject private var locationTracker: LocationTracker
-    @StateObject var sessionContext: CreateSessionContext
     let urlProvider: BaseURLProvider
+    let VM: TurnOnLocationViewModel
     
     var body: some View {
         VStack(spacing: 50) {
@@ -41,34 +38,32 @@ struct TurnOnLocationView: View {
         )
         .padding()
         .onAppear {
-            locationTracker.requestAuthorisation()
-            if locationTracker.locationGranted == .denied {
+            VM.requestLocation()
+            if VM.shouldShowAlert {
                 showAlert = true
             }
         }
-        .onChange(of: locationTracker.locationGranted) { newValue in
-            showAlert = (newValue == .denied)
+        .onChange(of: VM.shouldShowAlert) { newValue in
+            showAlert = (newValue == true)
         }
     }
     
     var titleLabel: some View {
         Text(Strings.TurnOnLocationView.title)
-            .font(Font.moderate(size: 25,
-                                weight: .bold))
+            .font(Font.moderate(size: 25, weight: .bold))
             .foregroundColor(.accentColor)
     }
     
     var messageLabel: some View {
         Text(Strings.TurnOnLocationView.messageText)
-            .font(Font.moderate(size: 18,
-                                weight: .regular))
+            .font(Font.moderate(size: 18, weight: .regular))
             .foregroundColor(.aircastingGray)
             .lineSpacing(10.0)
     }
     
     var continueButton: some View {
         Button(action: {
-            if sessionContext.sessionType == .mobile {
+            if VM.mobileSessionContext {
                 isMobileLinkActive = true
             } else {
                 if CBCentralManager.authorization == .notDetermined {
@@ -80,7 +75,7 @@ struct TurnOnLocationView: View {
         }, label: {
             Text(Strings.TurnOnLocationView.continueButton)
         })
-        .disabled(locationTracker.locationGranted != .granted)
+        .disabled(VM.disableButton)
             .frame(maxWidth: .infinity)
             .buttonStyle(BlueButtonStyle())
     }
@@ -95,7 +90,7 @@ struct TurnOnLocationView: View {
     }
     var proceedToBluetoothView: some View {
         NavigationLink(
-            destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sessionContext: sessionContext, urlProvider: urlProvider),
+            destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sessionContext: VM.getSessionContext, urlProvider: urlProvider),
             isActive: $isTurnBluetoothOnLinkActive,
             label: {
                 EmptyView()
@@ -111,8 +106,10 @@ struct TurnOnLocationView: View {
     }
 }
 
-struct TurnOnLocationView_Previews: PreviewProvider {
-    static var previews: some View {
-        TurnOnLocationView(creatingSessionFlowContinues: .constant(true), sessionContext: CreateSessionContext(), urlProvider: DummyURLProvider())
-    }
-}
+//#if DEBUG
+//struct TurnOnLocationView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        TurnOnLocationView(creatingSessionFlowContinues: .constant(true), urlProvider: DummyURLProvider(), VM: DummyTurnOnLocationViewModel())
+//    }
+//}
+//#endif
