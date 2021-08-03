@@ -1,8 +1,8 @@
 // Created by Lunar on 30/07/2021.
 //
 
-import Foundation
 import CoreBluetooth
+import Foundation
 
 enum AirBeamServicesConnectionResult {
     case success
@@ -15,18 +15,14 @@ protocol ConnectingAirBeamServices {
 }
 
 class ConnectingAirBeamServicesBluetooth: ConnectingAirBeamServices {
-    
     private var connectionInProgress = false
     private let bluetoothConnector: BluetoothConnector
-    
+    private var connectionToken: AnyObject?
+
     init(bluetoothConnector: BluetoothConnector) {
         self.bluetoothConnector = bluetoothConnector
     }
-    
-    deinit {
-      NotificationCenter.default.removeObserver(self, name:  NSNotification.Name("DeviceConnected"), object: nil)
-    }
-    
+
     func connect(to peripheral: CBPeripheral, timeout: TimeInterval, completion: @escaping (AirBeamServicesConnectionResult) -> Void) {
         guard !connectionInProgress else { completion(.deviceBusy); return }
         bluetoothConnector.connect(to: peripheral)
@@ -37,9 +33,10 @@ class ConnectingAirBeamServicesBluetooth: ConnectingAirBeamServices {
                 completion(.timeout)
             }
         }
-        
-        NotificationCenter.default.addObserver(forName: Notification.Name(rawValue: "DeviceConnected"), object: nil, queue: nil) { _ in
+        connectionToken = NotificationCenter.default.addObserver(forName: Notification.Name(rawValue: "DeviceConnected"), object: nil, queue: nil) { [connectionToken] _ in
             completion(.success)
+            guard let token = connectionToken else { return }
+            NotificationCenter.default.removeObserver(token)
         }
     }
 }
