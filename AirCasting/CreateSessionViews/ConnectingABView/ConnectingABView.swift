@@ -11,7 +11,7 @@ import SwiftUI
 struct ConnectingABView: View {
     
     @Environment(\.presentationMode) var presentationMode
-    @StateObject var viewModel: ConnectingABViewModel
+    @ObservedObject var viewModel: ConnectingABViewModel
     @State var selectedPeripheral: CBPeripheral? = nil
     let baseURL: BaseURLProvider
     @State var proceedForward = false
