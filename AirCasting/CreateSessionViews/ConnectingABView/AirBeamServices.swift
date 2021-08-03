@@ -33,10 +33,9 @@ class ConnectingAirBeamServicesBluetooth: ConnectingAirBeamServices {
                 completion(.timeout)
             }
         }
-        connectionToken = NotificationCenter.default.addObserver(forName: Notification.Name(rawValue: "DeviceConnected"), object: nil, queue: nil) { [connectionToken] _ in
+        connectionToken = NotificationCenter.default.addObserver(forName: Notification.Name(rawValue: "DeviceConnected"), object: nil, queue: nil) { _ in
             completion(.success)
-            guard let token = connectionToken else { return }
-            NotificationCenter.default.removeObserver(token)
+            NotificationCenter.default.removeObserver(self.connectionToken as Any)
         }
     }
 }

@@ -14,7 +14,6 @@ struct ConnectingABView: View {
     @ObservedObject var viewModel: ConnectingABViewModel
     @State var selectedPeripheral: CBPeripheral? = nil
     let baseURL: BaseURLProvider
-    @State var proceedForward = false
     @Binding var creatingSessionFlowContinues: Bool
     
     var body: some View {
