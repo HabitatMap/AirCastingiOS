@@ -11,30 +11,41 @@ enum AirBeamServicesConnectionResult {
 }
 
 protocol ConnectingAirBeamServices {
+    var isAirbeamConnected: Bool { get }
+    var connectionInProgress: Bool { get }
     func connect(to peripheral: CBPeripheral, timeout: TimeInterval, completion: @escaping (AirBeamServicesConnectionResult) -> Void)
 }
 
 class ConnectingAirBeamServicesBluetooth: ConnectingAirBeamServices {
-    private var connectionInProgress = false
+    private(set) var connectionInProgress = false
     private let bluetoothConnector: BluetoothConnector
     private var connectionToken: AnyObject?
+    
+    var isAirbeamConnected: Bool {
+        bluetoothConnector.isDeviceConnected
+    }
 
     init(bluetoothConnector: BluetoothConnector) {
         self.bluetoothConnector = bluetoothConnector
     }
 
     func connect(to peripheral: CBPeripheral, timeout: TimeInterval, completion: @escaping (AirBeamServicesConnectionResult) -> Void) {
-        guard !connectionInProgress else { completion(.deviceBusy); return }
+        Log.info("Starting Airbeam connection")
+        guard !connectionInProgress else {
+            completion(.deviceBusy); return
+        }
         bluetoothConnector.connect(to: peripheral)
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(Int(timeout))) {
             if peripheral.state == .connecting {
                 Log.info("Airbeam connection failed")
                 self.bluetoothConnector.cancelPeripheralConnection(for: peripheral)
+                self.connectionInProgress = false
                 completion(.timeout)
             }
         }
         connectionToken = NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: "DeviceConnected"), object: nil, queue: nil) { _ in
             Log.info("Airebeam connected successfully")
+            self.connectionInProgress = false
             completion(.success)
             NotificationCenter.default.removeObserver(self.connectionToken as Any)
         }

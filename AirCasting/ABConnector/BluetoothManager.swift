@@ -20,7 +20,7 @@ class BluetoothManager: NSObject, ObservableObject {
         return centralManager
     }()
     
-    @Published var isConnected = true
+    @Published var isConnected = false
     @Published var devices: [CBPeripheral] = []
     @Published var isScanning: Bool = true {
         didSet {

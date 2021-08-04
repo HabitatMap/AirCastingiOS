@@ -11,6 +11,7 @@ class ConnectingABViewModel: ObservableObject {
     
     init(airBeamConnectionController: AirBeamConnectionController) {
         self.airBeamConnectionController = airBeamConnectionController
+        self.isDeviceConnected = airBeamConnectionController.connectionState == .connected
     }
     
     func connectToAirBeam(peripheral: CBPeripheral) {
