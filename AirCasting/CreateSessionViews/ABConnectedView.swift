@@ -6,12 +6,15 @@
 //
 
 import SwiftUI
+import AirCastingStyling
 
 struct ABConnectedView: View {
     @EnvironmentObject var persistenceController: PersistenceController
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
+    @EnvironmentObject var sessionContext: CreateSessionContext
     @Binding var creatingSessionFlowContinues : Bool
+    let baseURL: BaseURLProvider
 
     var body: some View {
         VStack(spacing: 40) {
@@ -41,12 +44,21 @@ private extension ABConnectedView {
             .foregroundColor(.aircastingGray)
     }
     var continueButton: some View {
-        NavigationLink(
+        let sessionCreator: SessionCreator
+        if sessionContext.sessionType == .mobile {
+            sessionCreator = MobilePeripheralSessionCreator(
+                mobilePeripheralSessionManager: bluetoothManager.mobilePeripheralSessionManager, measurementStreamStorage: CoreDataMeasurementStreamStorage(
+                    persistenceController: persistenceController),
+                userAuthenticationSession: userAuthenticationSession)
+        } else {
+            sessionCreator = AirBeamFixedSessionCreator(
+                measurementStreamStorage: CoreDataMeasurementStreamStorage(
+                    persistenceController: persistenceController),
+                userAuthenticationSession: userAuthenticationSession, baseUrl: baseURL)
+        }
+        return NavigationLink(
             destination: CreateSessionDetailsView(
-                sessionCreator: AirBeamSessionCreator(
-                    measurementStreamStorage: CoreDataMeasurementStreamStorage(
-                        persistenceController: persistenceController),
-                    userAuthenticationSession: userAuthenticationSession),
+                sessionCreator: sessionCreator,
                 creatingSessionFlowContinues: $creatingSessionFlowContinues),
             label: {
                 Text("Continue")
@@ -58,10 +70,10 @@ private extension ABConnectedView {
 #if DEBUG
 struct AirbeamConnectedView_Previews: PreviewProvider {
     static var previews: some View {
-        ABConnectedView(creatingSessionFlowContinues: .constant(true))
+        ABConnectedView(creatingSessionFlowContinues: .constant(true), baseURL: DummyURLProvider())
             .environmentObject(PersistenceController())
             .environmentObject(UserAuthenticationSession())
-            .environmentObject(BluetoothManager())
+            .environmentObject(BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: PreviewMeasurementStreamStorage())))
     }
 }
 #endif

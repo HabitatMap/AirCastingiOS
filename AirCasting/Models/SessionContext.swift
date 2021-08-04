@@ -20,7 +20,8 @@ final class CreateSessionContext: ObservableObject {
     var wifiPassword: String?
     var isIndoor: Bool?
     var startingLocation: CLLocationCoordinate2D?
-    var deviceType: DeviceType = DeviceType.AIRBEAM3 // It is set here temporarily to fix bug with fixed sessions
+    var deviceType: DeviceType?
+    var contribute: Bool?
 
     private var syncSink: Any?
     

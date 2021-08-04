@@ -59,8 +59,8 @@ class UI_PollutionChart: UIView {
 struct ChartView: UIViewRepresentable {
     
     @ObservedObject var stream: MeasurementStreamEntity
-    var thresholds: SensorThreshold
-    
+    var thresholds: [SensorThreshold]
+
     typealias UIViewType = UI_PollutionChart
     
     func makeUIView(context: Context) -> UI_PollutionChart {
@@ -110,13 +110,14 @@ struct ChartView: UIViewRepresentable {
     
     private func generateColorsSet(for entries: [ChartDataEntry]) -> [UIColor] {
         var colors: [UIColor] = []
+        guard let threshold = thresholds.threshold(for: stream) else { return [.aircastingGray] }
         for entry in entries {
             switch Int32(entry.y) {
-            case thresholds.thresholdVeryLow..<thresholds.thresholdLow:
+            case threshold.thresholdVeryLow..<threshold.thresholdLow:
                 colors.append(UIColor.aircastingGreen.withAlphaComponent(0.5))
-            case thresholds.thresholdLow..<thresholds.thresholdMedium:
+            case threshold.thresholdLow..<threshold.thresholdMedium:
                 colors.append(UIColor.aircastingYellow.withAlphaComponent(0.5))
-            case thresholds.thresholdMedium..<thresholds.thresholdHigh:
+            case threshold.thresholdMedium..<threshold.thresholdHigh:
                 colors.append(UIColor.aircastingOrange.withAlphaComponent(0.5))
             default:
                 colors.append(UIColor.aircastingRed.withAlphaComponent(0.5))
@@ -129,7 +130,7 @@ struct ChartView: UIViewRepresentable {
 #if DEBUG
 struct MeasurementChart_Previews: PreviewProvider {
     static var previews: some View {
-        ChartView(stream: .mock, thresholds: .mock)
+        ChartView(stream: .mock, thresholds: [.mock])
             .frame(width: 300, height: 250, alignment: .center)
     }
 }

@@ -7,6 +7,7 @@
 
 import SwiftUI
 import CoreLocation
+import AirCastingStyling
 
 struct ConfirmCreatingSessionView: View {
     @State private var isActive: Bool = false
@@ -16,7 +17,7 @@ struct ConfirmCreatingSessionView: View {
         }
     }
     @State private var isPresentingAlert: Bool = false
-    
+    @EnvironmentObject var selectedSection: SelectSection
     @EnvironmentObject private var sessionContext: CreateSessionContext
     let sessionCreator: SessionCreator
     @State private var didStartRecordingSession = false
@@ -35,7 +36,7 @@ struct ConfirmCreatingSessionView: View {
 
     private var contentViewWithAlert: some View {
         contentView.alert(isPresented: $isPresentingAlert) {
-            Alert(title: Text("Failure"), message: Text(error?.localizedDescription ?? "Failed to create session"), dismissButton: .default(Text("Got it!"), action: {
+            Alert(title: Text(Strings.ConfirmCreatingSessionView.alertTitle), message: Text(error?.localizedDescription ?? Strings.ConfirmCreatingSessionView.alertMessage), dismissButton: .default(Text(Strings.ConfirmCreatingSessionView.alertOK), action: {
                 error = nil
             }))
         }
@@ -43,6 +44,7 @@ struct ConfirmCreatingSessionView: View {
     
     private var contentView: some View {
         VStack(alignment: .leading, spacing: 40) {
+            ProgressView(value: 0.90)
             areYouReady
             confirmInfo
             GoogleMapView(pathPoints: [], isMyLocationEnabled: true)

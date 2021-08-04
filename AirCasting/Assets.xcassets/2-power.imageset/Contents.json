@@ -1,15 +1,16 @@
 {
   "images" : [
     {
-      "filename" : "2-power.pdf",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "Group4@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "filename" : "Group4@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

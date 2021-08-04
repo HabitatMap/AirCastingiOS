@@ -14,14 +14,14 @@ import GooglePlaces
 struct GoogleMapView: UIViewRepresentable {
     typealias UIViewType = GMSMapView
     let pathPoints: [PathPoint]
-    private(set) var thresholds: SensorThreshold?
-    var isMyLocationEnabled: Bool
+    private(set) var threshold: SensorThreshold?
+    var isMyLocationEnabled: Bool = false
     private let delegateRelay = GoogleMapViewDelegate()
     private var onPositionChange: (([PathPoint]) -> ())? = nil
     
-    init(pathPoints: [PathPoint], thresholds: SensorThreshold? = nil, isMyLocationEnabled: Bool = false) {
+    init(pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false) {
         self.pathPoints = pathPoints
-        self.thresholds = thresholds
+        self.threshold = threshold
         self.isMyLocationEnabled = isMyLocationEnabled
     }
     
@@ -112,7 +112,7 @@ struct GoogleMapView: UIViewRepresentable {
 
     func colorPolyline(point: PathPoint) -> UIColor {
         let measurement = Int32(point.measurement)
-        guard let thresholds = thresholds else { return .white }
+        guard let thresholds = threshold else { return .white }
         
         let veryLow = thresholds.thresholdVeryLow
         let low = thresholds.thresholdLow
@@ -169,7 +169,7 @@ struct GoogleMapView_Previews: PreviewProvider {
                                                                               longitude: -73.83),
                                              measurementTime: .distantPast,
                                              measurement: 30)],
-                      thresholds: SensorThreshold.mock)
+                      threshold: .mock)
             .padding()
     }
 }

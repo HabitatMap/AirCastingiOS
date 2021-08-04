@@ -7,32 +7,49 @@
 
 import SwiftUI
 
-struct RootAppView: View {
-    @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
-    let sessionSynchronizer: SessionSynchronizer
-    let persistenceController: PersistenceController
-    let bluetoothManager = BluetoothManager()
+class Dependancies {
+    @ObservedObject var userAuthenticationSession = UserAuthenticationSession()
+    @ObservedObject var lifeTimeEventsProvider = LifeTimeEventsProvider()
+    @ObservedObject var userSettings = UserSettings()
+    let networkChecker = NetworkChecker(connectionAvailable: false)
+    let bluetoothManager = BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared)))
     let microphoneManager = MicrophoneManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared))
-    
+    let urlProvider = UserDefaultsBaseURLProvider()
+    lazy var airBeamConnectionController = DefaultAirBeamConnectionController(connectingAirBeamServices: ConnectingAirBeamServicesBluetooth(bluetoothConnector: bluetoothManager))
+}
+
+struct RootAppView: View {
+    let dependancies = Dependancies()
+    var sessionSynchronizer: SessionSynchronizer
+    let persistenceController: PersistenceController
+    @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     var body: some View {
-        if userAuthenticationSession.isLoggedIn {
+        if dependancies.userAuthenticationSession.isLoggedIn {
             mainAppView
-        } else {
+        } else if !dependancies.userAuthenticationSession.isLoggedIn && dependancies.lifeTimeEventsProvider.hasEverPassedOnBoarding {
             NavigationView {
-                SignInView(userAuthenticationSession: userAuthenticationSession).environmentObject(userAuthenticationSession)
+                CreateAccountView(completion: { self.dependancies.lifeTimeEventsProvider.hasEverLoggedIn = true }, userSession: dependancies.userAuthenticationSession, baseURL: dependancies.urlProvider).environmentObject(dependancies.lifeTimeEventsProvider)
             }
+        } else {
+            GetStarted(completion: {
+                self.dependancies.lifeTimeEventsProvider.hasEverPassedOnBoarding = true
+            })
         }
     }
-    
+
     var mainAppView: some View {
         MainTabBarView(measurementUpdatingService: DownloadMeasurementsService(
-                        authorisationService: userAuthenticationSession,
-                        persistenceController: persistenceController),
-                       sessionSynchronizer: sessionSynchronizer)
-            .environmentObject(bluetoothManager)
-            .environmentObject(microphoneManager)
+                        authorisationService: dependancies.userAuthenticationSession,
+                        persistenceController: persistenceController,
+                        baseUrl: dependancies.urlProvider), urlProvider: dependancies.urlProvider, sessionSynchronizer: sessionSynchronizer)
+            .environmentObject(dependancies.bluetoothManager)
+            .environmentObject(dependancies.microphoneManager)
             .environmentObject(userAuthenticationSession)
             .environmentObject(persistenceController)
+            .environmentObject(dependancies.networkChecker)
+            .environmentObject(dependancies.lifeTimeEventsProvider)
+            .environmentObject(dependancies.userSettings)
+            .environmentObject(dependancies.airBeamConnectionController)
             .environment(\.managedObjectContext, persistenceController.viewContext)
     }
 }

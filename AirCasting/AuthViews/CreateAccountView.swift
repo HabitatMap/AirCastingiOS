@@ -6,27 +6,44 @@
 //
 
 import SwiftUI
+import AirCastingStyling
+
 
 struct CreateAccountView: View {
-    let userAuthenticationSession: UserAuthenticationSession
-    private let authorizationAPIService = AuthorizationAPIService()
+    
+    @EnvironmentObject var lifeTimeEventsProvider: LifeTimeEventsProvider
+    var completion: () -> Void
+    
+    private let userAuthenticationSession: UserAuthenticationSession
+    private let authorizationAPIService: AuthorizationAPIService
+    private let baseURL: BaseURLProvider
 
     @State private var email: String = ""
     @State private var username: String = ""
     @State private var password: String = ""
-
     @State private var isPasswordCorrect = true
     @State private var isEmailCorrect = true
     @State private var isUsernameBlank = false
     @State private var presentedError: AuthorizationError?
+    
+    init(completion: @escaping () -> Void, userSession: UserAuthenticationSession, baseURL: BaseURLProvider) {
+        userAuthenticationSession = userSession
+        authorizationAPIService = AuthorizationAPIService(baseUrl: baseURL)
+        self.baseURL = baseURL
+        self.completion = completion
+    }
 
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
                 VStack(spacing: 50) {
+                    if lifeTimeEventsProvider.hasEverLoggedIn {
+                        progressBar.hidden()
+                    } else {
+                        progressBar
+                    }
                     titleLabel
                     VStack(spacing: 20) {
-                        
                         VStack(alignment: .leading, spacing: 5) {
                             emailTextfield
                                 .keyboardType(.emailAddress)
@@ -53,6 +70,7 @@ struct CreateAccountView: View {
                         createAccountButton
                         signinButton
                     }
+                    Spacer()
                 }
                 .padding()
                 .navigationBarHidden(true)
@@ -73,6 +91,12 @@ struct CreateAccountView: View {
 }
 
 private extension CreateAccountView {
+    
+    var progressBar: some View {
+        ProgressView(value: 0.825)
+            .accentColor(Color.accentColor)
+    }
+    
     var titleLabel: some View {
         VStack(alignment: .leading, spacing: 15) {
             Text("Create account")
@@ -125,9 +149,11 @@ private extension CreateAccountView {
                                 presentedError = error
                             Log.warning("Failed to create account \(error)")
                         case .success(let output):
+                            completion()
                             Log.info("Successfully created account")
                             do {
-                                try userAuthenticationSession.authorise(with: output.authentication_token)
+                                let user = User(id: output.id, username: output.username, token: output.authentication_token, email: output.email)
+                                try userAuthenticationSession.authorise(user)
                             } catch {
                                 Log.error("Failed to store credentials \(error)")
                                 presentedError = .other(error)
@@ -142,7 +168,7 @@ private extension CreateAccountView {
     
     var signinButton: some View {
         NavigationLink(
-            destination: SignInView(userAuthenticationSession: userAuthenticationSession),
+            destination: SignInView(completion: completion, userSession: userAuthenticationSession, urlProvider: baseURL).environmentObject(lifeTimeEventsProvider),
             label: {
                 signingButtonText
             })
@@ -187,7 +213,7 @@ private extension CreateAccountView {
 #if DEBUG
 struct CreateAccountView_Previews: PreviewProvider {
     static var previews: some View {
-        CreateAccountView(userAuthenticationSession: UserAuthenticationSession())
+        CreateAccountView(completion: {}, userSession: UserAuthenticationSession(), baseURL: DummyURLProvider()).environmentObject(LifeTimeEventsProvider())
     }
 }
 #endif

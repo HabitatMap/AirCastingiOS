@@ -8,10 +8,18 @@
 import Foundation
 
 extension SessionEntity {
+    var isMobile: Bool { type == .mobile }
+    var isDormant: Bool {
+        type == .mobile && status == .FINISHED
+    }
+    var isFixed: Bool { type == .fixed }
+}
+
+extension SessionEntity {
     
     var pm1Stream: MeasurementStreamEntity? {
         let matach = measurementStreams?.first(where: { (stream) -> Bool in
-            (stream as? MeasurementStreamEntity)?.sensorName?.contains("PM1") ?? false
+            (stream as? MeasurementStreamEntity)?.sensorName == "AirBeam3-PM1"
         })
         let pm1Stream = matach as? MeasurementStreamEntity
         return pm1Stream

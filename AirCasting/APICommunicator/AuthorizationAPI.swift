@@ -16,18 +16,16 @@ class AuthorizationAPI {
         let send_emails: Bool
     }
     
-    struct SignupAPIOutput: Decodable, Hashable {
-        let id: Int
-        let authentication_token: String
-    }
-    
     struct SigninUserInput: Decodable, Hashable {
         let username: String
         let password: String
     }
-    
-    struct SigninUserOutput: Decodable, Hashable {
+
+    struct UserProfile: Decodable, Hashable {
+        let id: Int
         let authentication_token: String
+        let username: String
+        let email: String
     }
 }
 
@@ -64,21 +62,22 @@ final class AuthorizationAPIService {
     private struct SignupAPIInput: Encodable, Hashable {
         let user: AuthorizationAPI.SignupUserInput
     }
-
+    
     let apiClient: APIClient
     let responseHandler: AuthorizationHTTPResponseHandler
-    let url = URL(string: "http://aircasting.org/api/user.json")!
+    let url: URL
 
     private lazy var decoder: JSONDecoder = JSONDecoder()
     private lazy var encoder = JSONEncoder()
 
-    init(apiClient: APIClient = URLSession.shared, responseHandler: AuthorizationHTTPResponseHandler = .init()) {
+    init(apiClient: APIClient = URLSession.shared, responseHandler: AuthorizationHTTPResponseHandler = .init(), baseUrl: BaseURLProvider) {
         self.apiClient = apiClient
         self.responseHandler = responseHandler
+        self.url = baseUrl.authorizationURL.appendingPathComponent("user.json")
     }
 
     @discardableResult
-    func createAccount(input: AuthorizationAPI.SignupUserInput, completion: @escaping (Result<AuthorizationAPI.SignupAPIOutput, AuthorizationError>) -> Void) -> Cancellable{
+    func createAccount(input: AuthorizationAPI.SignupUserInput, completion: @escaping (Result<AuthorizationAPI.UserProfile, AuthorizationError>) -> Void) -> Cancellable{
         var request = URLRequest(url: url)
         request.httpBody = try! encoder.encode(SignupAPIInput(user: input))
         request.httpMethod = "POST"
@@ -90,7 +89,7 @@ final class AuthorizationAPIService {
             switch responseHandler.handle(result) {
             case .success(let response):
                 do {
-                    completion(.success(try decoder.decode(AuthorizationAPI.SignupAPIOutput.self, from: response.data)))
+                    completion(.success(try decoder.decode(AuthorizationAPI.UserProfile.self, from: response.data)))
                 } catch {
                     completion(.failure(.other(error)))
                 }
@@ -101,7 +100,7 @@ final class AuthorizationAPIService {
     }
 
     @discardableResult
-    func signIn(input: AuthorizationAPI.SigninUserInput, completion: @escaping (Result<AuthorizationAPI.SigninUserOutput, AuthorizationError>) -> Void) -> Cancellable{
+    func signIn(input: AuthorizationAPI.SigninUserInput, completion: @escaping (Result<AuthorizationAPI.UserProfile, AuthorizationError>) -> Void) -> Cancellable{
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -115,7 +114,7 @@ final class AuthorizationAPIService {
             switch responseHandler.handle(result) {
             case .success(let response):
                 do {
-                    completion(.success(try decoder.decode(AuthorizationAPI.SigninUserOutput.self, from: response.data)))
+                    completion(.success(try decoder.decode(AuthorizationAPI.UserProfile.self, from: response.data)))
                 } catch {
                     completion(.failure(.other(error)))
                 }

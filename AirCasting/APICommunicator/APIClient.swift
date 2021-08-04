@@ -48,6 +48,10 @@ protocol RequestAuthorisationService {
     func authorise(request: inout URLRequest) throws -> URLRequest
 }
 
+protocol HTTPResponseValidator {
+    func validate(response: URLResponse, data: Data) throws
+}
+
 final class DefaultHTTPResponseValidator: HTTPResponseValidator {
     func validate(response: URLResponse, data: Data) throws {
         guard let httpResponse = response as? HTTPURLResponse else {
@@ -61,10 +65,6 @@ final class DefaultHTTPResponseValidator: HTTPResponseValidator {
             throw URLError(.badServerResponse, userInfo: ["data": data, "response": response])
         }
     }
-}
-
-protocol HTTPResponseValidator {
-    func validate(response: URLResponse, data: Data) throws
 }
 
 extension Result {

@@ -8,41 +8,45 @@
 import SwiftUI
 
 struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsContainerViewModelable {
-    let measurementStream: MeasurementStreamEntity
+    let session: SessionEntity
     let thresholds: [SensorThreshold]
+    @Binding var selectedStream: MeasurementStreamEntity?
+
     let statsContainerViewModel: StatsViewModelType
     let graphStatsDataSource: GraphStatsDataSource
-    
-    private var session: SessionEntity { measurementStream.session }
     
     var body: some View {
         VStack(alignment: .trailing) {
             SessionHeaderView(action: {},
                               isExpandButtonNeeded: false,
-                              session: session,
-                              thresholds: thresholds).padding()
-            
-            ZStack(alignment: .topLeading) {
-                #warning("Replace dbStream with currently selected")
-                Graph(stream: session.dbStream!,
-                      thresholds: thresholds[0],
-                      isAutozoomEnabled: session.type == .mobile).onDateRangeChange { startDate, endDate in
-                        graphStatsDataSource.dateRange = startDate...endDate
-                        statsContainerViewModel.adjustForNewData()
-                      }
-                StatisticsContainerView(statsContainerViewModel: statsContainerViewModel)
+                              session: session).padding()
+            StreamsView(selectedStream: $selectedStream,
+                        session: session,
+                        thresholds: thresholds,
+                        measurementPresentationStyle: .showValues)
+            if let threshold = thresholds.threshold(for: selectedStream) {
+                ZStack(alignment: .topLeading) {
+                    if let selectedStream = selectedStream {
+                        Graph(stream: selectedStream,
+                              thresholds: threshold,
+                              isAutozoomEnabled: session.type == .mobile).onDateRangeChange { startDate, endDate in
+                                graphStatsDataSource.dateRange = startDate...endDate
+                                statsContainerViewModel.adjustForNewData()
+                              }
+                    }
+                    StatisticsContainerView(statsContainerViewModel: statsContainerViewModel)
+                }
+                NavigationLink(destination: HeatmapSettingsView(changedThresholdValues: threshold.rawThresholdsBinding)) {
+                    EditButtonView()
+                }
+                .padding(.horizontal)
+                .padding(.top)
+                
+                ThresholdsSliderView(threshold: threshold)
+                    .padding()
+                    // Fixes labels covered by tabbar
+                    .padding(.bottom)
             }
-            
-            NavigationLink(destination: HeatmapSettingsView(changedThresholdValues: thresholds[0].rawThresholdsBinding)) {
-                EditButtonView()
-            }
-            .padding(.horizontal)
-            .padding(.top)
-            
-            ThresholdsSliderView(threshold: thresholds[0])
-                .padding()
-                // Fixes labels covered by tabbar
-                .padding(.bottom)
             Spacer()
         }
         .navigationBarTitleDisplayMode(.inline)
@@ -52,8 +56,9 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
 #if DEBUG
 struct GraphView_Previews: PreviewProvider {
     static var previews: some View {
-        GraphView(measurementStream: .mock,
+        GraphView(session: .mock,
                   thresholds: [.mock],
+                  selectedStream: .constant(nil),
                   statsContainerViewModel: FakeStatsViewModel(),
                   graphStatsDataSource: GraphStatsDataSource(stream: .mock))
     }

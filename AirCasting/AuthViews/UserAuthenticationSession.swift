@@ -3,34 +3,59 @@
 
 import Foundation
 
+struct User: Hashable {
+    let id: Int
+    let username: String
+    let token: String
+    let email: String
+}
+
 final class UserAuthenticationSession: ObservableObject {
-    private static let authenticationTokenKey = "AuthenticationToken"
+
+    private static let userProfileKey = "UserProfileKey"
     private let keychainStorage = KeychainStorage(service: Bundle.main.bundleIdentifier!)
 
     @Published private(set) var isLoggedIn: Bool = false
-    private(set) var token: String? {
+    
+    var token: String? { user?.token }
+
+    private(set) var user: User? {
         didSet {
-            isLoggedIn = token != nil
+            isLoggedIn = user != nil
         }
     }
 
     init() {
         do {
-            token = try keychainStorage.string(forKey: Self.authenticationTokenKey)
-            isLoggedIn = token != nil
+            if let data = try keychainStorage.data(forKey: Self.userProfileKey) {
+                let codableUser = try JSONDecoder().decode(CodableUser.self, from: data)
+                user = User(id: codableUser.id, username: codableUser.username, token: codableUser.token, email: codableUser.email)
+                isLoggedIn = true
+            } else {
+                isLoggedIn = false
+            }
         } catch {
             assertionFailure("Failed to fetch token \(error)")
         }
     }
 
-    func authorise(with token: String) throws {
-        try keychainStorage.setString(token, forKey: Self.authenticationTokenKey)
-        self.token = token
+    func authorise(_ user: User) throws {
+        let jsonEncoder = JSONEncoder()
+        let codableUser = CodableUser(id: user.id, username: user.username, token: user.token, email: user.email)
+        try keychainStorage.setValue(value: try jsonEncoder.encode(codableUser), forKey: Self.userProfileKey)
+        self.user = user
     }
 
     func deauthorize() throws {
-        try keychainStorage.removeValue(forKey: Self.authenticationTokenKey)
-        self.token = nil
+        try keychainStorage.removeValue(forKey: Self.userProfileKey)
+        self.user = nil
+    }
+
+    private struct CodableUser: Codable {
+        let id: Int
+        let username: String
+        let token: String
+        let email: String
     }
 }
 
