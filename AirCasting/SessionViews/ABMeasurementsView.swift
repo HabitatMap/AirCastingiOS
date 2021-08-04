@@ -16,14 +16,7 @@ struct ABMeasurementsView: View {
     let measurementPresentationStyle: MeasurementPresentationStyle
     
     private var streamsToShow: [MeasurementStreamEntity] {
-        let allStreams = [session.pm1Stream,
-                          session.pm2Stream,
-                          session.pm10Stream,
-                          session.FStream,
-                          session.HStream]
-        
-        let toShow = allStreams.compactMap { $0 }
-        return toShow
+        session.allStreams ?? []
     }
     
     var body: some View {
