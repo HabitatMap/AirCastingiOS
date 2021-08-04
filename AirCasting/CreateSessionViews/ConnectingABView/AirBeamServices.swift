@@ -18,7 +18,8 @@ class ConnectingAirBeamServicesBluetooth: ConnectingAirBeamServices {
     
     private(set) var connectionInProgress = false
     private let bluetoothConnector: BluetoothConnector
-
+    private var connectionToken: AnyObject?
+    
     init(bluetoothConnector: BluetoothConnector) {
         self.bluetoothConnector = bluetoothConnector
     }
@@ -36,9 +37,10 @@ class ConnectingAirBeamServicesBluetooth: ConnectingAirBeamServices {
                 completion(.timeout)
             }
         }
-        var token = NotificationCenter.default.addObserver(forName: Notification.Name(rawValue: "DeviceConnected"), object: nil, queue: nil) { _ in
+        connectionToken = NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: "DeviceConnected"), object: nil, queue: nil) { _ in
+            Log.info("Airebeam connected successfully")
+            self.connectionInProgress = false
             completion(.success)
-            NotificationCenter.default.removeObserver(token)
         }
     }
 }
