@@ -95,7 +95,7 @@ private extension SessionCartView {
     
     func mapButton(thresholds: [SensorThreshold]) -> some View {
         #warning("Move to dynamic here!")
-        let dataSource = MapStatsDataSource(stream: session.dbStream!)
+        let dataSource = MapStatsDataSource(stream: selectedStream!)
         let viewModel = createStatsContainerViewModel(dataSource: dataSource)
         return NavigationLink(destination: AirMapView(thresholds: thresholds,
                                                       statsContainerViewModel: viewModel,
