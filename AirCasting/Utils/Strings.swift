@@ -239,6 +239,7 @@ struct Strings {
     }
     
     struct ConfirmCreatingSessionView {
+        static let actionTitle: String = "Start recording"
         static let alertTitle: String = "Failure"
         static let alertMessage: String = "Failed to create session"
         static let alertOK: String = "Got it!"

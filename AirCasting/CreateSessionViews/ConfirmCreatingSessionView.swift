@@ -53,21 +53,21 @@ struct ConfirmCreatingSessionView: View {
     }
     
     private var areYouReady: some View {
-        Text("Are you ready?")
+        Text(Strings.ConfirmCreatingSessionView.contentViewTitle)
             .font(Font.moderate(size: 24, weight: .bold))
             .foregroundColor(.darkBlue)
     }
     
     private var confirmInfo: some View {
         VStack(alignment: .leading, spacing: 15) {
-            Text("Your ")
+            Text(Strings.ConfirmCreatingSessionView.contentViewText_1)
                 + Text(sessionType)
                 .foregroundColor(.accentColor)
-                + Text(" session ")
+                + Text(Strings.ConfirmCreatingSessionView.contentViewText_2)
                 + Text(sessionName)
                 .foregroundColor(.accentColor)
-                + Text(" is ready to start gathering data.")
-            Text("Move to your starting location, confirm your location is accurate on the map, then press the start recording button below.")
+                + Text(Strings.ConfirmCreatingSessionView.contentViewText_3)
+            Text(Strings.ConfirmCreatingSessionView.contentViewText_4)
         }
         .font(Font.muli(size: 16))
         .foregroundColor(Color.aircastingGray)
@@ -92,7 +92,7 @@ struct ConfirmCreatingSessionView: View {
                 }
             }
         }, label: {
-            Text("Start recording")
+            Text(Strings.ConfirmCreatingSessionView.actionTitle)
                 .bold()
         })
         .buttonStyle(BlueButtonStyle())
