@@ -25,7 +25,9 @@ struct RootAppView: View {
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     var body: some View {
         if dependancies.userAuthenticationSession.isLoggedIn {
-            mainAppView
+            mainAppView.onAppear {
+                prepareFakeShit(cd: persistenceController)
+            }
         } else if !dependancies.userAuthenticationSession.isLoggedIn && dependancies.lifeTimeEventsProvider.hasEverPassedOnBoarding {
             NavigationView {
                 CreateAccountView(completion: { self.dependancies.lifeTimeEventsProvider.hasEverLoggedIn = true }, userSession: dependancies.userAuthenticationSession, baseURL: dependancies.urlProvider).environmentObject(dependancies.lifeTimeEventsProvider)

@@ -54,3 +54,55 @@ final class ScheduledSessionSynchronizerProxy<S: Scheduler>: SessionSynchronizer
         }
     }
 }
+
+import CoreLocation
+
+func prepareFakeShit(cd: PersistenceController) {
+    let session = SessionEntity(context: cd.viewContext)
+    session.contribute = false
+    session.gotDeleted = false
+    session.isIndoor = false
+    session.locationless = false
+    session.name = "FAKE"
+    session.deviceType = .AIRBEAM3
+    session.startTime = Date()
+    session.tags = ""
+    session.version = 1
+    session.type = .fixed
+    session.uuid = .init(rawValue: UUID().uuidString)
+    for i in 0..<5 {
+        let m = MeasurementStreamEntity(context: cd.viewContext)
+        m.gotDeleted = false
+        m.measurementShortType = "A\(i)"
+        m.measurementType = "M\(i)"
+        m.sensorName = "AirBeam 3"
+        m.sensorPackageName = "IDK"
+        m.thresholdVeryLow = 0
+        m.thresholdLow = 20
+        m.thresholdMedium = 40
+        m.thresholdHigh = 60
+        m.thresholdVeryHigh = 70
+        m.unitName = "NIT"
+        m.unitSymbol = "M"
+        for j in 0..<10 {
+            let meas = MeasurementEntity(context: cd.viewContext)
+            meas.location = CLLocationCoordinate2D(latitude: 50, longitude: 50)
+            meas.time = Date(timeIntervalSinceNow: Double(j))
+            meas.value = Double((i * 10)+j)
+            m.addToMeasurements(meas)
+        }
+        session.addToMeasurementStreams(m)
+    }
+    
+    for stream in session.allStreams ?? [] {
+        let threshold: SensorThreshold = try! cd.viewContext.newOrExisting(sensorName: stream.sensorName ?? "asdasd")
+        threshold.thresholdVeryLow = stream.thresholdVeryLow
+        threshold.thresholdLow = stream.thresholdLow
+        threshold.thresholdMedium = stream.thresholdMedium
+        threshold.thresholdHigh = stream.thresholdHigh
+        threshold.thresholdVeryHigh = stream.thresholdVeryHigh
+    }
+    
+    
+    try! cd.viewContext.save()
+}

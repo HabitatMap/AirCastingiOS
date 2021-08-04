@@ -74,31 +74,31 @@ final class SynchronizationScheduler {
          periodicTimeInterval: TimeInterval,
          authorization: UserAuthenticationSession) {
         
-        appBecameActive
-            .filter { authorization.isLoggedIn }
-            .sink {
-                synchronizer.triggerSynchronization()
-            }
-            .store(in: &cancellables)
-        
-        Timer.publish(every: periodicTimeInterval, on: .current, in: .default)
-            .autoconnect()
-            .eraseToVoid()
-            .filter { authorization.isLoggedIn }
-            .sink {
-                synchronizer.triggerSynchronization()
-            }
-            .store(in: &cancellables)
-        
-        authorization
-            .$isLoggedIn
-            .removeDuplicates()
-            .filter { $0 }
-            .eraseToVoid()
-            .sink {
-                synchronizer.triggerSynchronization()
-            }
-            .store(in: &cancellables)
+//        appBecameActive
+//            .filter { authorization.isLoggedIn }
+//            .sink {
+//                synchronizer.triggerSynchronization()
+//            }
+//            .store(in: &cancellables)
+//        
+//        Timer.publish(every: periodicTimeInterval, on: .current, in: .default)
+//            .autoconnect()
+//            .eraseToVoid()
+//            .filter { authorization.isLoggedIn }
+//            .sink {
+//                synchronizer.triggerSynchronization()
+//            }
+//            .store(in: &cancellables)
+//        
+//        authorization
+//            .$isLoggedIn
+//            .removeDuplicates()
+//            .filter { $0 }
+//            .eraseToVoid()
+//            .sink {
+//                synchronizer.triggerSynchronization()
+//            }
+//            .store(in: &cancellables)
         
     }
 }
