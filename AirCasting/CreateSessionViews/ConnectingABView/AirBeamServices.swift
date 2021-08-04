@@ -28,12 +28,13 @@ class ConnectingAirBeamServicesBluetooth: ConnectingAirBeamServices {
         bluetoothConnector.connect(to: peripheral)
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(Int(timeout))) {
             if peripheral.state == .connecting {
-                Log.info("Connecting to bluetooth device failed")
+                Log.info("Airbeam connection failed")
                 self.bluetoothConnector.cancelPeripheralConnection(for: peripheral)
                 completion(.timeout)
             }
         }
-        connectionToken = NotificationCenter.default.addObserver(forName: Notification.Name(rawValue: "DeviceConnected"), object: nil, queue: nil) { _ in
+        connectionToken = NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: "DeviceConnected"), object: nil, queue: nil) { _ in
+            Log.info("Airebeam connected successfully")
             completion(.success)
             NotificationCenter.default.removeObserver(self.connectionToken as Any)
         }
