@@ -9,10 +9,10 @@ import XCTest
 @testable import AirCasting
 
 class URLBuilderTests: XCTestCase {
-    private let builder = BackendURLBuilder()
+    private let builder = BackendURLValidator()
     static private let validURL = "https://superstronka.com/"
     static private let validPort = "23"
-    private typealias ErrorType = BackendURLBuilder.ValidationError
+    private typealias ErrorType = BackendURLValidator.ValidationError
     
     // MARK: - URL Validation
     

@@ -21,7 +21,6 @@ class ForgotPasswordViewModelTest: XCTestCase {
     
     func test_varsConformsToStringsStruct() {
         XCTAssertEqual(defaultForgotPasswordViewModel.title, Strings.ForgotPassword.title)
-        XCTAssertEqual(defaultForgotPasswordViewModel.description, Strings.ForgotPassword.description)
         XCTAssertEqual(defaultForgotPasswordViewModel.actionTitle, Strings.ForgotPassword.actionTitle)
         XCTAssertEqual(defaultForgotPasswordViewModel.emailInputTitle, Strings.ForgotPassword.emailInputTitle)
     }
