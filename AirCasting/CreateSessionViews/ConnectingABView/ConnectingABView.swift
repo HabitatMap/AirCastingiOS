@@ -11,8 +11,8 @@ import SwiftUI
 struct ConnectingABView: View {
     
     @Environment(\.presentationMode) var presentationMode
-    @StateObject var viewModel: ConnectingABViewModel
-    @State var selectedPeripheral: CBPeripheral? = nil
+    @ObservedObject var viewModel: ConnectingABViewModel
+    var selectedPeripheral: CBPeripheral
     @State var shouldContinueToNextScreen: Bool = false
     let baseURL: BaseURLProvider
     @Binding var creatingSessionFlowContinues: Bool
@@ -36,7 +36,7 @@ struct ConnectingABView: View {
             .background(
                 NavigationLink(
                     destination: ABConnectedView(creatingSessionFlowContinues: $creatingSessionFlowContinues, baseURL: baseURL),
-                    isActive: $shouldContinueToNextScreen,
+                    isActive: $viewModel.isDeviceConnected,
                     label: {
                         EmptyView()
                     }
@@ -46,12 +46,9 @@ struct ConnectingABView: View {
         .padding()
         .onChange(of: viewModel.shouldDismiss, perform: { value in
             presentationMode.wrappedValue.dismiss()
-        }).onReceive(viewModel.$isDeviceConnected, perform: { isConnected in
-            guard isConnected else { return }
-            shouldContinueToNextScreen = true
         })
         .onAppear(perform: {
-            viewModel.connectToAirBeam(peripheral: selectedPeripheral!)
+            viewModel.connectToAirBeam(peripheral: selectedPeripheral)
         })
     }
     
@@ -81,10 +78,10 @@ struct ConnectingABView: View {
     }
 }
 
-#if DEBUG
-struct ConnectingABView_Previews: PreviewProvider {
-    static var previews: some View {
-        ConnectingABView(viewModel: ConnectingABViewModel(airBeamConnectionController: DummyAirBeamConnectionController()), baseURL: DummyURLProvider(), creatingSessionFlowContinues: .constant(true))
-    }
- }
-#endif
+//#if DEBUG
+//struct ConnectingABView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ConnectingABView(viewModel: ConnectingABViewModel(airBeamConnectionController: DummyAirBeamConnectionController()), baseURL: DummyURLProvider(), creatingSessionFlowContinues: .constant(true))
+//    }
+// }
+//#endif

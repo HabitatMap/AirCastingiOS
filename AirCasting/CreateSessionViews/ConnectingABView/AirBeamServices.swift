@@ -11,19 +11,13 @@ enum AirBeamServicesConnectionResult {
 }
 
 protocol ConnectingAirBeamServices {
-    var isAirbeamConnected: Bool { get }
-    var connectionInProgress: Bool { get }
     func connect(to peripheral: CBPeripheral, timeout: TimeInterval, completion: @escaping (AirBeamServicesConnectionResult) -> Void)
 }
 
 class ConnectingAirBeamServicesBluetooth: ConnectingAirBeamServices {
+    
     private(set) var connectionInProgress = false
     private let bluetoothConnector: BluetoothConnector
-    private var connectionToken: AnyObject?
-    
-    var isAirbeamConnected: Bool {
-        bluetoothConnector.isDeviceConnected
-    }
 
     init(bluetoothConnector: BluetoothConnector) {
         self.bluetoothConnector = bluetoothConnector
@@ -39,15 +33,12 @@ class ConnectingAirBeamServicesBluetooth: ConnectingAirBeamServices {
             if peripheral.state == .connecting {
                 Log.info("Airbeam connection failed")
                 self.bluetoothConnector.cancelPeripheralConnection(for: peripheral)
-                self.connectionInProgress = false
                 completion(.timeout)
             }
         }
-        connectionToken = NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: "DeviceConnected"), object: nil, queue: nil) { _ in
-            Log.info("Airebeam connected successfully")
-            self.connectionInProgress = false
+        var token = NotificationCenter.default.addObserver(forName: Notification.Name(rawValue: "DeviceConnected"), object: nil, queue: nil) { _ in
             completion(.success)
-            NotificationCenter.default.removeObserver(self.connectionToken as Any)
+            NotificationCenter.default.removeObserver(token)
         }
     }
 }

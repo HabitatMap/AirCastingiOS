@@ -20,13 +20,9 @@ class BluetoothManager: NSObject, ObservableObject {
         return centralManager
     }()
     
-    @Published var isConnected = false
+    @Published var isConnected = true
     @Published var devices: [CBPeripheral] = []
-    @Published var isScanning: Bool = true {
-        didSet {
-            Log.debug("Scanning \(isScanning ? "started" : "stopped")")
-        }
-    }
+    @Published var isScanning: Bool = true
     @Published var centralManagerState: CBManagerState = .unknown
     var observed: NSKeyValueObservation?
     
@@ -53,12 +49,10 @@ class BluetoothManager: NSObject, ObservableObject {
     func startScanning() {
         //AirBeam 3 UUID
         //let service = CBUUID(string: "0000ffdd-0000-1000-8000-00805f9b34fb")
-        Log.debug("Starting scanning...")
         centralManager.scanForPeripherals(withServices: nil,
                                           options: nil)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(30)) { [centralManager] in
-            Log.debug("Stopping scanning...")
             centralManager.stopScan()
         }
     }
@@ -99,18 +93,14 @@ extension BluetoothManager: CBCentralManagerDelegate {
     }
     
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
-        guard !devices.contains(peripheral) else {
-            return
+        if !devices.contains(peripheral) {
+            if peripheral.name != nil {
+                devices.append(peripheral)
+            }
         }
-        guard let name = peripheral.name else {
-            return
-        }
-        Log.debug("Device \(name) discovered")
-        devices.append(peripheral)
     }
     
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
-        Log.debug("Device \(peripheral.name ?? "N/A") connected")
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "DeviceConnected"), object: nil)
         // Here's code for getting data from AB.
         isConnected = true
@@ -119,7 +109,7 @@ extension BluetoothManager: CBCentralManagerDelegate {
     }
     
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
-        Log.debug("Device \(peripheral.name ?? "N/A") disconnected \(error?.localizedDescription ?? "without an error")")
+        print("Disconnected: \(String(describing: error?.localizedDescription))")
         isConnected = false
         mobilePeripheralSessionManager.finishSession(for: peripheral)
     }
