@@ -84,6 +84,17 @@ struct Strings {
         static let description: String = "Your AirBeam is gathering data."
     }
     
+    struct SelectPeripheralView {
+        static let airBeamsText: String = "AirBeams"
+        static let otherText: String = "Other devices"
+        static let alertTitle: String = "Connection error"
+        static let alertMessage: String = "Bluetooth connection failed. Please toggle the power on your device and try again."
+        static let alertAccept: String = "Got it!"
+        static let titleLabel: String = "Choose the device you'd like to record with"
+        static let refreshButton: String = "Don't see a device? Refresh scanning."
+        static let connectText: String = "Connect"
+    }
+    
     struct SessionCart {
         static let measurementsTitle: String = "Most recent measurement:"
         static let dormantMeasurementsTitle: String = "Avg value:"
@@ -156,9 +167,11 @@ struct Strings {
     }
 
     struct EmptyOnboarding {
-        static let title: String = "Ready to get started?"
-        static let description: String = "Record a new session to monitor your health & environment."
-        static let newSession: String = "Record new session"
+        static let title: String = "Start recording a \nmobile session"
+        static let description: String = "If you plan on moving around \nwhile recording measurements."
+        static let newSession: String = "Record mobile session"
+        static let airBeamDescriptionText: String = "Did you know?"
+        static let airBeamDescriptionDescription: String = "AirBeam3 is weather resistant. To \nkeep tabs on your outdoor air quality \n24/7, hang one outside your home and \nrecord a fixed session."
     }
     
     enum PowerABView {
@@ -167,7 +180,7 @@ struct Strings {
         static let alertConfirmation: String = "OK"
         static let alertSettings: String = "Settings"
         static let title: String = "Power on your AirBeam"
-        static let messageText: String = "If using AirBeam 2, wait for the conncection indicator to change from red to green before continuing."
+        static let messageText: String = "Wait for the conncection indicator to change from red to green before continuing."
         static let continueButton: String = "Continue"
     }
     
@@ -182,6 +195,12 @@ struct Strings {
         static let micLabel_1: String = "Phone microphone"
         static let micLabel_2: String = "to measure sound level"
         static let chooseButton: String = "Choose"
+    }
+    
+    enum OfflineAlert {
+        static let title = "Device is offline"
+        static let message = "Could not finish session synchronization"
+        static let dismissTitle = "Ok"
     }
     
     enum TurnOnBluetoothView {
@@ -207,7 +226,6 @@ struct Strings {
     struct SessionHeaderView {
         static let measurementsMicText: String = "Most recent measurement:"
         static let stopButton: String = "Stop recording"
-        static let resumeButton: String = "Resume recording"
         static let editButton: String = "Edit recording"
         static let shareButton: String = "Share session"
         static let deleteButton: String = "Delete session"
@@ -227,5 +245,17 @@ struct Strings {
     struct NetworkChecker {
         static let satisfiedPathText: String = "Current devise has an network connection"
         static let failurePathText: String = "Current devise DOES NOT have an network connection"
+    }
+    
+    struct ConfirmCreatingSessionView {
+        static let alertTitle: String = "Failure"
+        static let alertMessage: String = "Failed to create session"
+        static let alertOK: String = "Got it!"
+        static let contentViewTitle: String = "Are you ready?"
+        static let contentViewText_1: String = "Your "
+        static let contentViewText_2: String = " session "
+        static let contentViewText_3: String = " is ready to start gathering data."
+        static let contentViewText_4: String = "Hang your AirBeam in a secure position, then press the start recording button below."
+        
     }
 }

@@ -141,7 +141,7 @@ private extension SessionHeaderView {
         Button {
             // action here
         } label: {
-            Label(Strings.SessionHeaderView.resumeButton, systemImage: "repeat")
+            Label("resume", systemImage: "repeat")
         }
     }
     
