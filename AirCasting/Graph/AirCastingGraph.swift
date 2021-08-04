@@ -5,11 +5,10 @@ import SwiftUI
 import Charts
 
 class AirCastingGraph: UIView {
-    typealias DateRange = (start: Date, end: Date)
     let lineChartView = LineChartView()
     var renderer: MultiColorGridRenderer?
     var didMoveOrScaleGraph = false
-    private let onDateRangeChange: ((DateRange) -> Void)?
+    private let onDateRangeChange: ((ClosedRange<Date>) -> Void)?
     var limitLines: [ChartLimitLine] = [] {
         didSet {
             guard oldValue != limitLines else { return }
@@ -17,7 +16,7 @@ class AirCastingGraph: UIView {
         }
     }
     
-    init(onDateRangeChange: ((DateRange) -> Void)?) {
+    init(onDateRangeChange: ((ClosedRange<Date>) -> Void)?) {
         self.onDateRangeChange = onDateRangeChange
         super.init(frame: .zero)
         self.addSubview(lineChartView)
@@ -118,16 +117,16 @@ class AirCastingGraph: UIView {
         onDateRangeChange?(dateRange)
     }
     
-    private func getCurrentDateRange() -> (start: Date, end: Date) {
+    private func getCurrentDateRange() -> ClosedRange<Date> {
         let startDate = Date(timeIntervalSince1970: lineChartView.lowestVisibleX)
         let endDate = Date(timeIntervalSince1970: lineChartView.highestVisibleX)
         // Workaround for a weird quirk with Chart - when first called
         // `startDate` is sane, but `endDate` is 1970, so we need a special
         // case to fix that.
         guard startDate < endDate else {
-            return (start: startDate, end: .distantFuture)
+            return startDate...(.distantFuture)
         }
-        return (start: startDate, end: endDate)
+        return startDate...endDate
     }
     
     private func updateMidnightLines(with limitLines: [ChartLimitLine]) {

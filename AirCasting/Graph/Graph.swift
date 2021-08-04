@@ -25,7 +25,7 @@ extension ChartDataEntry: Point2DRepresentable {
 
 struct Graph: UIViewRepresentable {
     typealias UIViewType = AirCastingGraph
-    typealias OnChange = (_ start: Date, _ end: Date) -> Void
+    typealias OnChange = (ClosedRange<Date>) -> Void
     
     @ObservedObject var stream: MeasurementStreamEntity
     @ObservedObject var thresholds: SensorThreshold
@@ -48,7 +48,7 @@ struct Graph: UIViewRepresentable {
     
     func makeUIView(context: Context) -> AirCastingGraph {
         AirCastingGraph(onDateRangeChange: { newRange in
-            action?(newRange.start, newRange.end)
+            action?(newRange)
         })
     }
     

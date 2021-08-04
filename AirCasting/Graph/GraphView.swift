@@ -29,8 +29,8 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                     if let selectedStream = selectedStream {
                         Graph(stream: selectedStream,
                               thresholds: threshold,
-                              isAutozoomEnabled: session.type == .mobile).onDateRangeChange { startDate, endDate in
-                                graphStatsDataSource.dateRange = startDate...endDate
+                              isAutozoomEnabled: session.type == .mobile).onDateRangeChange { range in
+                                graphStatsDataSource.dateRange = range
                                 statsContainerViewModel.adjustForNewData()
                               }
                     }

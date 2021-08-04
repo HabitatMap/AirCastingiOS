@@ -10,7 +10,6 @@ import SwiftUI
 
 struct DashboardView: View {
     @StateObject var coreDataHook: CoreDataHook
-    @EnvironmentObject var persistenceController: PersistenceController
     @FetchRequest<SensorThreshold>(sortDescriptors: [.init(key: "sensorName", ascending: true)]) var thresholds
     @EnvironmentObject var selectedSection: SelectSection
 
@@ -50,7 +49,6 @@ struct DashboardView: View {
                 .background(Color.aircastingGray.opacity(0.05))
             }
         }
-        .environmentObject(persistenceController)
         .navigationBarTitle(NSLocalizedString("Dashboard", comment: ""))
         .onChange(of: selectedSection.selectedSection) { selectedSection in
             self.selectedSection.selectedSection = selectedSection

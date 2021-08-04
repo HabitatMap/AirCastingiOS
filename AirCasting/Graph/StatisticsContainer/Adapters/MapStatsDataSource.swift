@@ -14,9 +14,7 @@ class MapStatsDataSource: MeasurementsStatisticsDataSource {
     }
     
     var allMeasurements: [MeasurementStatistics.Measurement] {
-        stream.allMeasurements?.map {
-            return MeasurementStatistics.Measurement(measurementTime: $0.time, value: $0.value)
-        } ?? []
+        stream.allMeasurements?.getStatistics() ?? []
     }
     
     var visibleMeasurements: [MeasurementStatistics.Measurement] {

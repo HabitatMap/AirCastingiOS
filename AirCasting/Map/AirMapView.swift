@@ -15,7 +15,6 @@ struct AirMapView: View {
     let statsContainerViewModel: StatisticsContainerViewModel
     let mapStatsDataSource: MapStatsDataSource
     @ObservedObject var session: SessionEntity
-    @EnvironmentObject var persistenceController: PersistenceController
 
     @Binding var selectedStream: MeasurementStreamEntity?
     
