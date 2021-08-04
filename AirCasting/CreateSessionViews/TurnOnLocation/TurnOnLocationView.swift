@@ -2,8 +2,6 @@
 //
 
 import AirCastingStyling
-import CoreBluetooth
-import CoreLocation
 import SwiftUI
 
 struct TurnOnLocationView: View {
@@ -38,12 +36,12 @@ struct TurnOnLocationView: View {
         )
         .padding()
         .onAppear {
-            VM.requestLocation()
-            if VM.shouldShowAlert {
+            VM.locationHandler.requestLocation()
+            if VM.locationHandler.shouldShowAlert {
                 showAlert = true
             }
         }
-        .onChange(of: VM.shouldShowAlert) { newValue in
+        .onChange(of: VM.locationHandler.shouldShowAlert) { newValue in
             showAlert = (newValue == true)
         }
     }
@@ -66,7 +64,7 @@ struct TurnOnLocationView: View {
             if VM.mobileSessionContext {
                 isMobileLinkActive = true
             } else {
-                if CBCentralManager.authorization == .notDetermined {
+                if VM.bluetoothHandler.isBluetoothDenied() {
                     isTurnBluetoothOnLinkActive = true
                 } else {
                     isPowerABLinkActive = true
@@ -75,7 +73,7 @@ struct TurnOnLocationView: View {
         }, label: {
             Text(Strings.TurnOnLocationView.continueButton)
         })
-        .disabled(VM.disableButton)
+        .disabled(VM.locationHandler.disableButton)
             .frame(maxWidth: .infinity)
             .buttonStyle(BlueButtonStyle())
     }
@@ -109,7 +107,7 @@ struct TurnOnLocationView: View {
 #if DEBUG
 struct TurnOnLocationView_Previews: PreviewProvider {
     static var previews: some View {
-        TurnOnLocationView(creatingSessionFlowContinues: .constant(true), VM: TurnOnLocationViewModel(locationTracker: LocationTracker(locationManager: CLLocationManager()), sessionContext: CreateSessionContext(), urlProvider: DummyURLProvider()))
+        TurnOnLocationView(creatingSessionFlowContinues: .constant(true), VM: TurnOnLocationViewModel(locationHandler: DummyDefaultLocationHandler(), bluetoothHandler: DummyDefaultBluetoothHandler(), sessionContext: CreateSessionContext(), urlProvider: DummyURLProvider()))
     }
 }
 #endif

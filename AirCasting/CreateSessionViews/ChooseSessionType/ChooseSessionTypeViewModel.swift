@@ -12,11 +12,10 @@ enum ProceedToView {
 
 class ChooseSessionTypeViewModel {
     
-    var locationHandler: LocationHandler
-    var bluetoothHandler: BluetoothHandler
-    
-    var userSettings: UserSettings
-    var sessionContext: CreateSessionContext
+    let locationHandler: LocationHandler
+    let bluetoothHandler: BluetoothHandler
+    let userSettings: UserSettings
+    let sessionContext: CreateSessionContext
     let urlProvider: BaseURLProvider
 
     init(locationHandler: LocationHandler, bluetoothHandler: BluetoothHandler, userSettings: UserSettings, sessionContext: CreateSessionContext, urlProvider: BaseURLProvider) {

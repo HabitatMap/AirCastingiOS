@@ -57,7 +57,7 @@ struct ChooseSessionTypeView: View {
                     EmptyView()
                         .fullScreenCover(isPresented: $isTurnLocationOnLinkActive) {
                             CreatingSessionFlowRootView {
-                                TurnOnLocationView(creatingSessionFlowContinues: $isTurnLocationOnLinkActive, VM: TurnOnLocationViewModel(locationTracker: viewModel.locationHandler.locationTracker, sessionContext: viewModel.sessionContext, urlProvider: viewModel.urlProvider))
+                                TurnOnLocationView(creatingSessionFlowContinues: $isTurnLocationOnLinkActive, VM: TurnOnLocationViewModel(locationHandler: DefaultLocationHandler(locationTracker: viewModel.locationHandler.locationTracker), bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: viewModel.bluetoothHandler.bluetoothManager), sessionContext: viewModel.sessionContext, urlProvider: viewModel.urlProvider))
                             }
                         }
                     EmptyView()

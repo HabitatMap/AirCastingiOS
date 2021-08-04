@@ -624,6 +624,7 @@
 		AC32043425CD52E600A68520 /* CreateSessionViews */ = {
 			isa = PBXGroup;
 			children = (
+				DD55C39126BAACF40069838F /* Handlers */,
 				DD1EEB8C26B7C37300AFC5C1 /* ChooseSessionType */,
 				DD1EEB8926B7C2D800AFC5C1 /* TurnOnLocation */,
 				AC489B5B2603614E00CEEC48 /* MoreInfoPopupView.swift */,
@@ -1085,8 +1086,6 @@
 			children = (
 				AC32043525CD534700A68520 /* ChooseSessionTypeView.swift */,
 				DD1EEB8D26B7C39000AFC5C1 /* ChooseSessionTypeViewModel.swift */,
-				DD55C38D26BAA7330069838F /* LocationHandler.swift */,
-				DD55C38F26BAA73F0069838F /* BluetoothHandler.swift */,
 			);
 			path = ChooseSessionType;
 			sourceTree = "<group>";
@@ -1108,6 +1107,15 @@
 				DD430B0B26710E0600F1BF2E /* PrivacyOnboarding.swift */,
 			);
 			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		DD55C39126BAACF40069838F /* Handlers */ = {
+			isa = PBXGroup;
+			children = (
+				DD55C38D26BAA7330069838F /* LocationHandler.swift */,
+				DD55C38F26BAA73F0069838F /* BluetoothHandler.swift */,
+			);
+			path = Handlers;
 			sourceTree = "<group>";
 		};
 		DD700CEE26959D340048A17D /* Helpers */ = {

@@ -5,17 +5,10 @@ import Foundation
 
 class TurnOnLocationViewModel {
     
-    var locationTracker: LocationTracker
-    var sessionContext: CreateSessionContext
+    let locationHandler: LocationHandler
+    let bluetoothHandler: BluetoothHandler
+    let sessionContext: CreateSessionContext
     let urlProvider: BaseURLProvider
-    
-    var shouldShowAlert: Bool {
-        return locationTracker.locationGranted == .denied
-    }
-    
-    var disableButton: Bool {
-        return locationTracker.locationGranted == .denied
-    }
     
     var mobileSessionContext: Bool {
         return sessionContext.sessionType == .mobile
@@ -25,13 +18,10 @@ class TurnOnLocationViewModel {
         return sessionContext
     }
     
-    init(locationTracker: LocationTracker, sessionContext: CreateSessionContext, urlProvider: BaseURLProvider) {
-        self.locationTracker = locationTracker
+    init(locationHandler: LocationHandler, bluetoothHandler: BluetoothHandler, sessionContext: CreateSessionContext, urlProvider: BaseURLProvider) {
+        self.locationHandler = locationHandler
+        self.bluetoothHandler = bluetoothHandler
         self.sessionContext = sessionContext
         self.urlProvider = urlProvider
-    }
-    
-    func requestLocation() {
-        locationTracker.requestAuthorisation()
     }
 }
