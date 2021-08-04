@@ -1,7 +1,6 @@
 // Created by Lunar on 02/08/2021.
 //
 
-import CoreBluetooth
 import Foundation
 
 enum ProceedToView {
@@ -12,19 +11,27 @@ enum ProceedToView {
 }
 
 class ChooseSessionTypeViewModel {
-    var locationTracker: LocationTracker
-    var bluetoothManager: BluetoothManager
+    
+    var locationHandler: LocationHandler
+    var bluetoothHandler: BluetoothHandler
+    
+    var userSettings: UserSettings
+    var sessionContext: CreateSessionContext
+    let urlProvider: BaseURLProvider
 
-    init(locationTracker: LocationTracker, bluetoothManager: BluetoothManager) {
-        self.locationTracker = locationTracker
-        self.bluetoothManager = bluetoothManager
+    init(locationHandler: LocationHandler, bluetoothHandler: BluetoothHandler, userSettings: UserSettings, sessionContext: CreateSessionContext, urlProvider: BaseURLProvider) {
+        self.locationHandler = locationHandler
+        self.bluetoothHandler = bluetoothHandler
+        self.userSettings = userSettings
+        self.sessionContext = sessionContext
+        self.urlProvider = urlProvider
     }
 
     func fixSessionNextStep() -> ProceedToView {
-        if locationTracker.locationGranted == .denied {
+        if locationHandler.isLocationDenied() {
             return .location
         } else {
-            if CBCentralManager.authorization == .notDetermined {
+            if bluetoothHandler.isBluetoothDenied() {
                 return .bluetooth
             } else {
                 return .AB
@@ -33,10 +40,21 @@ class ChooseSessionTypeViewModel {
     }
     
     func mobileSessionNextStep() -> ProceedToView {
-        if locationTracker.locationGranted == .denied {
+        if locationHandler.isLocationDenied() {
             return .location
         } else {
             return .mobile
+        }
+    }
+    
+    func createNewSession(isSessionFixed: Bool) {
+        sessionContext.sessionUUID = SessionUUID()
+        if isSessionFixed {
+            sessionContext.contribute = true
+            sessionContext.sessionType = SessionType.fixed
+        } else {
+            sessionContext.contribute = userSettings.contributingToCrowdMap
+            sessionContext.sessionType = SessionType.mobile
         }
     }
 }

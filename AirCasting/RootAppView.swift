@@ -42,7 +42,7 @@ struct RootAppView: View {
                         persistenceController: persistenceController,
                         baseUrl: urlProvider),
                        urlProvider: urlProvider,
-                       sessionSynchronizer: sessionSynchronizer)
+                       sessionSynchronizer: sessionSynchronizer, sessionContext: CreateSessionContext())
             .environmentObject(bluetoothManager)
             .environmentObject(userAuthenticationSession)
             .environmentObject(persistenceController)

@@ -3,6 +3,7 @@
 
 import AirCastingStyling
 import CoreBluetooth
+import CoreLocation
 import SwiftUI
 
 struct TurnOnLocationView: View {
@@ -12,7 +13,6 @@ struct TurnOnLocationView: View {
     @State private var isTurnBluetoothOnLinkActive = false
     @State private var isMobileLinkActive = false
     @Binding var creatingSessionFlowContinues: Bool
-    let urlProvider: BaseURLProvider
     let VM: TurnOnLocationViewModel
     
     var body: some View {
@@ -82,7 +82,7 @@ struct TurnOnLocationView: View {
     
     var proceedToPowerABView: some View {
         NavigationLink(
-            destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider),
+            destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: VM.urlProvider),
             isActive: $isPowerABLinkActive,
             label: {
                 EmptyView()
@@ -90,7 +90,7 @@ struct TurnOnLocationView: View {
     }
     var proceedToBluetoothView: some View {
         NavigationLink(
-            destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sessionContext: VM.getSessionContext, urlProvider: urlProvider),
+            destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sessionContext: VM.getSessionContext, urlProvider: VM.urlProvider),
             isActive: $isTurnBluetoothOnLinkActive,
             label: {
                 EmptyView()
@@ -98,7 +98,7 @@ struct TurnOnLocationView: View {
     }
     var proceedToSelectDeviceView: some View {
         NavigationLink(
-            destination: SelectDeviceView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider),
+            destination: SelectDeviceView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: VM.urlProvider),
             isActive: $isMobileLinkActive,
             label: {
                 EmptyView()
@@ -106,10 +106,10 @@ struct TurnOnLocationView: View {
     }
 }
 
-//#if DEBUG
-//struct TurnOnLocationView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        TurnOnLocationView(creatingSessionFlowContinues: .constant(true), urlProvider: DummyURLProvider(), VM: TurnOnLocationRequirements)
-//    }
-//}
-//#endif
+#if DEBUG
+struct TurnOnLocationView_Previews: PreviewProvider {
+    static var previews: some View {
+        TurnOnLocationView(creatingSessionFlowContinues: .constant(true), VM: TurnOnLocationViewModel(locationTracker: LocationTracker(locationManager: CLLocationManager()), sessionContext: CreateSessionContext(), urlProvider: DummyURLProvider()))
+    }
+}
+#endif

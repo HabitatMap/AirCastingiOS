@@ -3,15 +3,11 @@
 
 import Foundation
 
-protocol TurnOnLocationRequirements {
-    var locationTracker: LocationTracker { get }
-    var sessionContext: CreateSessionContext { get }
-}
-
-class TurnOnLocationViewModel: TurnOnLocationRequirements {
+class TurnOnLocationViewModel {
     
     var locationTracker: LocationTracker
     var sessionContext: CreateSessionContext
+    let urlProvider: BaseURLProvider
     
     var shouldShowAlert: Bool {
         return locationTracker.locationGranted == .denied
@@ -29,17 +25,13 @@ class TurnOnLocationViewModel: TurnOnLocationRequirements {
         return sessionContext
     }
     
-    init(locationTracker: LocationTracker, sessionContext: CreateSessionContext) {
+    init(locationTracker: LocationTracker, sessionContext: CreateSessionContext, urlProvider: BaseURLProvider) {
         self.locationTracker = locationTracker
         self.sessionContext = sessionContext
+        self.urlProvider = urlProvider
     }
     
     func requestLocation() {
         locationTracker.requestAuthorisation()
     }
 }
-
-#if DEBUG
-struct DummyTurnOnLocationViewModel {
-}
-#endif

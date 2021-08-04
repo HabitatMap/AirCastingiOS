@@ -15,9 +15,11 @@ struct MainTabBarView: View {
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     @EnvironmentObject var persistenceController: PersistenceController
     @EnvironmentObject var microphoneManager: MicrophoneManager
+    @EnvironmentObject var userSettings: UserSettings
     let sessionSynchronizer: SessionSynchronizer
     @StateObject var tabSelection: TabBarSelection = TabBarSelection()
     @StateObject var selectedSection = SelectSection()
+    @StateObject var sessionContext: CreateSessionContext
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @EnvironmentObject private var locationTracker: LocationTracker
     
@@ -48,7 +50,7 @@ private extension MainTabBarView {
     }
 
     private var createSessionTab: some View {
-        ChooseSessionTypeView(sessionContext: CreateSessionContext(), urlProvider: urlProvider, viewModel: ChooseSessionTypeViewModel(locationTracker: locationTracker, bluetoothManager: bluetoothManager))
+        ChooseSessionTypeView(viewModel: ChooseSessionTypeViewModel(locationHandler: DefaultLocationHandler(locationTracker: locationTracker), bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: bluetoothManager), userSettings: userSettings, sessionContext: sessionContext, urlProvider: urlProvider))
             .tabItem {
                 Image(systemName: "plus")
             }
@@ -87,7 +89,7 @@ struct ContentView_Previews: PreviewProvider {
     private static let persistenceController = PersistenceController(inMemory: true)
 
     static var previews: some View {
-        MainTabBarView(measurementUpdatingService: MeasurementUpdatingServiceMock(), urlProvider: DummyURLProvider(), sessionSynchronizer: DummySessionSynchronizer())
+        MainTabBarView(measurementUpdatingService: MeasurementUpdatingServiceMock(), urlProvider: DummyURLProvider(), sessionSynchronizer: DummySessionSynchronizer(), sessionContext: CreateSessionContext())
             .environmentObject(UserAuthenticationSession())
             .environmentObject(BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: PreviewMeasurementStreamStorage())))
             .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
