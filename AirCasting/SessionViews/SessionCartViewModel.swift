@@ -13,13 +13,13 @@ class SessionCartViewModel: ObservableObject {
     
     func toggleFollowing(for session: SessionEntity) {
         session.followedAt != nil ? sessionCartFollowing.makeFollowing(for: session) : sessionCartFollowing.makeNotFollowing(for: session)
-        switch showFollowingButton(for: session) {
+        switch determineCurrentState(for: session) {
             case true: isFollowing = true
             case false: isFollowing = false
         }
     }
     
-    func showFollowingButton(for session: SessionEntity) -> Bool {
+    private func determineCurrentState(for session: SessionEntity) -> Bool {
         if session.followedAt == nil && session.type == .fixed {
             return false
         } else if session.followedAt != nil {
@@ -38,10 +38,10 @@ class DefaultSessionCartFollowing: SessionCartFollowing {
     }
     
     func makeFollowing(for session: SessionEntity) {
-        try? measurementStreamStorage.updateSessionIfFollowing(SessionFollowing.following, for: session.uuid)
+        try? measurementStreamStorage.updateSessionFollowing(SessionFollowing.following, for: session.uuid)
     }
     
     func makeNotFollowing(for session: SessionEntity) {
-        try? measurementStreamStorage.updateSessionIfFollowing(SessionFollowing.notFollowing, for: session.uuid)
+        try? measurementStreamStorage.updateSessionFollowing(SessionFollowing.notFollowing, for: session.uuid)
     }
 }

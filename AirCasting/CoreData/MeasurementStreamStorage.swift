@@ -11,7 +11,7 @@ protocol MeasurementStreamStorage {
     func createSession(_ session: Session) throws
     func createSessionAndMeasurementStream(_ session: Session, _ stream: MeasurementStream) throws -> MeasurementStreamLocalID
     func updateSessionStatus(_ sessionStatus: SessionStatus, for sessionUUID: SessionUUID) throws
-    func updateSessionIfFollowing(_ sessionStatus: SessionFollowing, for sessionUUID: SessionUUID) throws
+    func updateSessionFollowing(_ sessionStatus: SessionFollowing, for sessionUUID: SessionUUID) throws
 }
 
 extension MeasurementStreamStorage {
@@ -103,16 +103,16 @@ final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
         try context.save()
     }
 
-    func updateSessionIfFollowing(_ sessionFollowing: SessionFollowing, for sessionUUID: SessionUUID) throws {
+    func updateSessionFollowing(_ sessionFollowing: SessionFollowing, for sessionUUID: SessionUUID) throws {
         let context = persistenceController.editContext()
-        let sessionEntity = try context.existingSession(uuid: sessionUUID)
-        if sessionFollowing.rawValue == 1 {
-            sessionEntity.followedAt = Date()
-        } else {
-            sessionEntity.followedAt = nil
-        }
         context.performAndWait {
             do {
+                let sessionEntity = try context.existingSession(uuid: sessionUUID)
+                if sessionFollowing.rawValue == 1 {
+                    sessionEntity.followedAt = Date()
+                } else {
+                    sessionEntity.followedAt = nil
+                }
                 try context.save()
             } catch {
                 Log.info("Error when saving changes in session")
@@ -131,7 +131,7 @@ final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
 #if DEBUG
 /// Only to be used for swiftui previews
 final class PreviewMeasurementStreamStorage: MeasurementStreamStorage {
-    func updateSessionIfFollowing(_ sessionStatus: SessionFollowing, for sessionUUID: SessionUUID) throws {}
+    func updateSessionFollowing(_ sessionStatus: SessionFollowing, for sessionUUID: SessionUUID) throws {}
 
     func addMeasurement(_ measurement: Measurement, toStreamWithID id: MeasurementStreamLocalID) throws {
         print("Nothing happened for \(measurement)")
