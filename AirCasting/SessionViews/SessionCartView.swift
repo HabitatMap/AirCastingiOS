@@ -75,10 +75,12 @@ struct SessionCartView: View {
 
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
-        request.allHTTPHeaderFields = [
-            "uuid": uuid.rawValue,
-            "stream_measurements": "true"
-        ]
+//        request.allHTTPHeaderFields = [
+//            "uuid": uuid.rawValue,
+//            "stream_measurements": "true"
+//        ]
+        request.addValue(uuid.rawValue, forHTTPHeaderField: "uuid")
+        request.addValue("true", forHTTPHeaderField: "stream_measurements")
         let task = URLSession.shared.dataTask(with: url) { data, response, error in
             if let data = data {
                 print(response)
