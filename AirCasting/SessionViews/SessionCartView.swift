@@ -57,6 +57,9 @@ struct SessionCartView: View {
         }
         .onAppear() {
             selectedStream = session.allStreams?.first
+            if session.type == .mobile && session.status == .FINISHED {
+                getDATA(uuid: session.uuid)
+            }
         }
         .font(Font.moderate(size: 13, weight: .regular))
         .foregroundColor(.aircastingGray)
@@ -65,6 +68,27 @@ struct SessionCartView: View {
             Color.white
                 .shadow(color: Color(red: 205/255, green: 209/255, blue: 214/255, opacity: 0.36), radius: 9, x: 0, y: 1)
         )
+    }
+    
+    func getDATA(uuid: SessionUUID) {
+        let url = URL(string: "http://aircasting.org/api/user/sessions/empty.json")!
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.allHTTPHeaderFields = [
+            "uuid": uuid.rawValue,
+            "stream_measurements": "true"
+        ]
+        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+            if let data = data {
+                print(response)
+                let str = String(decoding: data, as: UTF8.self)
+                print(str)
+            } else if let error = error {
+                print("HTTP Request Failed \(error)")
+            }
+        }
+        task.resume()
     }
 }
 

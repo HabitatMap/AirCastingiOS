@@ -71,13 +71,19 @@ struct SingleMeasurementView: View {
     var threshold: SensorThreshold
     @Binding var selectedStream: MeasurementStreamEntity?
     let measurementPresentationStyle: MeasurementPresentationStyle
+    @State var showingIndicator = true
     
     var body: some View {
         
         VStack(spacing: 3) {
             Text(showStreamName())
                 .font(Font.system(size: 13))
-            
+            if showingIndicator {
+            if measurementPresentationStyle == .showValues {
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle())
+            }
+            } else {
             if measurementPresentationStyle == .showValues {
                 Button(action: {
                     selectedStream = stream
@@ -92,6 +98,17 @@ struct SingleMeasurementView: View {
                 .buttonStyle(AirCastingStyling.BorderedButtonStyle(isSelected: selectedStream == stream,
                                                                    thresholdColor: colorBorder(stream: stream)))
             }
+            }
+        }.onAppear {
+            deleay()
+        }
+    }
+    
+    func deleay() {
+        #warning("FOR MOCKING - deleted it needs to be")
+        // This is only for mocking now
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+            showingIndicator = false
         }
     }
     
