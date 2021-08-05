@@ -7,6 +7,7 @@
 
 import CoreData
 import Firebase
+import CoreBluetooth
 import SwiftUI
 
 struct MainTabBarView: View {
@@ -50,7 +51,7 @@ private extension MainTabBarView {
     }
 
     private var createSessionTab: some View {
-        ChooseSessionTypeView(viewModel: ChooseSessionTypeViewModel(locationHandler: DefaultLocationHandler(locationTracker: locationTracker), bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: bluetoothManager), userSettings: userSettings, sessionContext: sessionContext, urlProvider: urlProvider))
+        ChooseSessionTypeView(viewModel: ChooseSessionTypeViewModel(locationHandler: DefaultLocationHandler(locationTracker: locationTracker), bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: bluetoothManager), userSettings: userSettings, sessionContext: sessionContext, urlProvider: urlProvider, bluetoothManager: bluetoothManager, bluetoothManagerState: bluetoothManager.centralManagerState, locationTracker: locationTracker))
             .tabItem {
                 Image(systemName: "plus")
             }

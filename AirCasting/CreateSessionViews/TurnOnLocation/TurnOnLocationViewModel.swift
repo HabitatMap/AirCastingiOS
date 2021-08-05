@@ -5,12 +5,24 @@ import Foundation
 
 class TurnOnLocationViewModel {
     
-    let locationHandler: LocationHandler
-    let bluetoothHandler: BluetoothHandler
-    let sessionContext: CreateSessionContext
-    let urlProvider: BaseURLProvider
+    private let locationHandler: LocationHandler
+    private let bluetoothHandler: BluetoothHandler
+    private let sessionContext: CreateSessionContext
+    private let urlProvider: BaseURLProvider
     
-    var mobileSessionContext: Bool {
+    var passURLProvider: BaseURLProvider {
+        return urlProvider
+    }
+    
+    var shouldShowAlert: Bool {
+        return locationHandler.isLocationDenied()
+    }
+    
+    var disableButton: Bool {
+        return locationHandler.isLocationDenied()
+    }
+    
+    var isMobileSession: Bool {
         return sessionContext.sessionType == .mobile
     }
     
@@ -23,5 +35,13 @@ class TurnOnLocationViewModel {
         self.bluetoothHandler = bluetoothHandler
         self.sessionContext = sessionContext
         self.urlProvider = urlProvider
+    }
+    
+    func requestLocation() {
+        locationHandler.requestLocation()
+    }
+    
+    func checkIfBluetoothDenied() -> Bool {
+       return bluetoothHandler.isBluetoothDenied()
     }
 }

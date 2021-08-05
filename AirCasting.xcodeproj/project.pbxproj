@@ -192,7 +192,7 @@
 		DD430B0C26710E0600F1BF2E /* PrivacyOnboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD430B0B26710E0600F1BF2E /* PrivacyOnboarding.swift */; };
 		DD55C38E26BAA7330069838F /* LocationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD55C38D26BAA7330069838F /* LocationHandler.swift */; };
 		DD55C39026BAA73F0069838F /* BluetoothHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD55C38F26BAA73F0069838F /* BluetoothHandler.swift */; };
-		DD55C39326BAAE3E0069838F /* ChooseSessionTypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD55C39226BAAE3E0069838F /* ChooseSessionTypeTests.swift */; };
+		DD55C39326BAAE3E0069838F /* ChooseSessionTypeViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD55C39226BAAE3E0069838F /* ChooseSessionTypeViewModelTests.swift */; };
 		DD700CF22695CE9C0048A17D /* MailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD700CF12695CE9C0048A17D /* MailView.swift */; };
 		DD72DC4226A99D5000325FE5 /* ShareView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD72DC4126A99D5000325FE5 /* ShareView.swift */; };
 		DD839E15269F33A6006A8625 /* LocationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD839E14269F33A6006A8625 /* LocationState.swift */; };
@@ -425,7 +425,7 @@
 		DD430B0B26710E0600F1BF2E /* PrivacyOnboarding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyOnboarding.swift; sourceTree = "<group>"; };
 		DD55C38D26BAA7330069838F /* LocationHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationHandler.swift; sourceTree = "<group>"; };
 		DD55C38F26BAA73F0069838F /* BluetoothHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothHandler.swift; sourceTree = "<group>"; };
-		DD55C39226BAAE3E0069838F /* ChooseSessionTypeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseSessionTypeTests.swift; sourceTree = "<group>"; };
+		DD55C39226BAAE3E0069838F /* ChooseSessionTypeViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseSessionTypeViewModelTests.swift; sourceTree = "<group>"; };
 		DD700CF12695CE9C0048A17D /* MailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailView.swift; sourceTree = "<group>"; };
 		DD72DC4126A99D5000325FE5 /* ShareView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareView.swift; sourceTree = "<group>"; };
 		DD839E14269F33A6006A8625 /* LocationState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationState.swift; sourceTree = "<group>"; };
@@ -1124,7 +1124,7 @@
 		DD55C39426BAAE420069838F /* ChooseSessionType */ = {
 			isa = PBXGroup;
 			children = (
-				DD55C39226BAAE3E0069838F /* ChooseSessionTypeTests.swift */,
+				DD55C39226BAAE3E0069838F /* ChooseSessionTypeViewModelTests.swift */,
 			);
 			path = ChooseSessionType;
 			sourceTree = "<group>";
@@ -1419,7 +1419,7 @@
 				4FB39E402622252700E5E564 /* XCTestCase+Extensions.swift in Sources */,
 				DDBC992626A1652A00B0662E /* ForgotPasswordTest.swift in Sources */,
 				B33DB5742686120600ED1344 /* XCTestCase+AssertContainsSameElements.swift in Sources */,
-				DD55C39326BAAE3E0069838F /* ChooseSessionTypeTests.swift in Sources */,
+				DD55C39326BAAE3E0069838F /* ChooseSessionTypeViewModelTests.swift in Sources */,
 				4FA83EEF26342D84003E2BF2 /* AuthorizationAPIServiceTests.swift in Sources */,
 				4F5D3F7F262D735A003AD82E /* CreateSessionAPIServiceTests.swift in Sources */,
 				B371415B26726A930057BF60 /* SynchronizationControllerTests.swift in Sources */,

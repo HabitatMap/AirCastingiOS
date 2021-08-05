@@ -19,9 +19,7 @@ class LocationTracker: NSObject, ObservableObject, CLLocationManagerDelegate {
         self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
         switch locationManager.authorizationStatus {
             case .authorizedAlways, .authorizedWhenInUse: self.locationGranted = .granted
-            case .denied:  self.locationGranted = .denied
-            case .notDetermined: self.locationGranted = .denied
-            case .restricted: self.locationGranted = .denied
+            case .denied, .notDetermined, .restricted:  self.locationGranted = .denied
             @unknown default:
                 fatalError()
         }
@@ -50,3 +48,11 @@ class LocationTracker: NSObject, ObservableObject, CLLocationManagerDelegate {
         allLocations.append(contentsOf: locations)
     }
 }
+
+#if DEBUG
+class DummyLocationTrakcer: LocationTracker {
+    init() {
+        super.init(locationManager: CLLocationManager())
+    }
+}
+#endif

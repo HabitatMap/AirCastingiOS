@@ -5,7 +5,7 @@ import XCTest
 @testable import AirCasting
 import CoreLocation
 
-class ChooseSessionTypeTests: XCTestCase {
+class ChooseSessionTypeViewModelTests: XCTestCase {
 
     private var defaultSessionTypeViewModel: ChooseSessionTypeViewModel!
     
@@ -14,15 +14,15 @@ class ChooseSessionTypeTests: XCTestCase {
     }
     
     func test_fixSessionNextStep() {
-        if defaultSessionTypeViewModel.locationHandler.locationTracker.locationGranted == .denied {
-            XCTAssertEqual(defaultSessionTypeViewModel.fixSessionNextStep(), .location)
+        if defaultSessionTypeViewModel.passLocationHandler.locationTracker.locationGranted == .denied {
+            XCTAssertEqual(defaultSessionTypeViewModel.fixedSessionNextStep(), .location)
         } else {
-            XCTAssertNotNil(defaultSessionTypeViewModel.fixSessionNextStep())
+            XCTAssertNotNil(defaultSessionTypeViewModel.fixedSessionNextStep())
         }
     }
     
     func test_mobileSessionNextStep() {
-        if defaultSessionTypeViewModel.locationHandler.locationTracker.locationGranted == .denied {
+        if defaultSessionTypeViewModel.passLocationHandler.locationTracker.locationGranted == .denied {
             XCTAssertEqual(defaultSessionTypeViewModel.mobileSessionNextStep(), .location)
         } else {
             XCTAssertEqual(defaultSessionTypeViewModel.mobileSessionNextStep(), .mobile)
@@ -31,13 +31,13 @@ class ChooseSessionTypeTests: XCTestCase {
     
     func test_createdFixSessionIsFixed() {
         defaultSessionTypeViewModel.createNewSession(isSessionFixed: true)
-        XCTAssertEqual(defaultSessionTypeViewModel.sessionContext.sessionType, .fixed)
-        XCTAssertEqual(defaultSessionTypeViewModel.sessionContext.contribute, true)
+        XCTAssertEqual(defaultSessionTypeViewModel.passSessionContext.sessionType, .fixed)
+        XCTAssertEqual(defaultSessionTypeViewModel.passSessionContext.contribute, true)
     }
     
     func test_createdNotAFixSessionIsNotFixed() {
         defaultSessionTypeViewModel.createNewSession(isSessionFixed: false)
-        XCTAssertEqual(defaultSessionTypeViewModel.sessionContext.sessionType, .mobile)
-        XCTAssertEqual(defaultSessionTypeViewModel.sessionContext.contribute, defaultSessionTypeViewModel.userSettings.contributingToCrowdMap)
+        XCTAssertEqual(defaultSessionTypeViewModel.passSessionContext.sessionType, .mobile)
+        XCTAssertEqual(defaultSessionTypeViewModel.passSessionContext.contribute, defaultSessionTypeViewModel.passUserSettings.contributingToCrowdMap)
     }
 }

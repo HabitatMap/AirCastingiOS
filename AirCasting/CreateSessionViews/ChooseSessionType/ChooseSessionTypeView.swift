@@ -51,37 +51,36 @@ struct ChooseSessionTypeView: View {
                     EmptyView()
                         .fullScreenCover(isPresented: $isPowerABLinkActive) {
                             CreatingSessionFlowRootView {
-                                PowerABView(creatingSessionFlowContinues: $isPowerABLinkActive, urlProvider: viewModel.urlProvider)
+                                PowerABView(creatingSessionFlowContinues: $isPowerABLinkActive, urlProvider: viewModel.passURLProvider)
                             }
                         }
                     EmptyView()
                         .fullScreenCover(isPresented: $isTurnLocationOnLinkActive) {
                             CreatingSessionFlowRootView {
-                                TurnOnLocationView(creatingSessionFlowContinues: $isTurnLocationOnLinkActive, VM: TurnOnLocationViewModel(locationHandler: DefaultLocationHandler(locationTracker: viewModel.locationHandler.locationTracker), bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: viewModel.bluetoothHandler.bluetoothManager), sessionContext: viewModel.sessionContext, urlProvider: viewModel.urlProvider))
+                                TurnOnLocationView(creatingSessionFlowContinues: $isTurnLocationOnLinkActive, viewModel: TurnOnLocationViewModel(locationHandler: DefaultLocationHandler(locationTracker: viewModel.passLocationTracker), bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: viewModel.passBluetoothManager), sessionContext: viewModel.passSessionContext, urlProvider: viewModel.passURLProvider))
                             }
                         }
                     EmptyView()
                         .fullScreenCover(isPresented: $isTurnBluetoothOnLinkActive) {
                             CreatingSessionFlowRootView {
-                                TurnOnBluetoothView(creatingSessionFlowContinues: $isTurnBluetoothOnLinkActive, sessionContext: viewModel.sessionContext, urlProvider: viewModel.urlProvider)
+                                TurnOnBluetoothView(creatingSessionFlowContinues: $isTurnBluetoothOnLinkActive, sessionContext: viewModel.passSessionContext, urlProvider: viewModel.passURLProvider)
                             }
                         }
                     EmptyView()
                         .fullScreenCover(isPresented: $isMobileLinkActive) {
                             CreatingSessionFlowRootView {
-                                SelectDeviceView(creatingSessionFlowContinues: $isMobileLinkActive, urlProvider: viewModel.urlProvider)
+                                SelectDeviceView(creatingSessionFlowContinues: $isMobileLinkActive, urlProvider: viewModel.passURLProvider)
                             }
                         }
                 }
             )
-            .onChange(of: viewModel.bluetoothHandler.bluetoothManagerState) { _ in
+            .onChange(of: viewModel.passBluetoothManager.centralManagerState) { _ in
                 if didTapFixedSession {
-                    goToNextFixedSessionStep()
                     didTapFixedSession = false
                 }
             }
         }
-        .environmentObject(viewModel.sessionContext)
+        .environmentObject(viewModel.passSessionContext)
     }
 
     var titleLabel: some View {
@@ -117,15 +116,11 @@ struct ChooseSessionTypeView: View {
             })
     }
     
-    func goToNextFixedSessionStep() {
-        viewModel.createNewSession(isSessionFixed: true)
-    }
-    
     var fixedSessionButton: some View {
         Button(action: {
-            goToNextFixedSessionStep()
-            switch viewModel.fixSessionNextStep() {
-            case .AB: isPowerABLinkActive = true
+            viewModel.createNewSession(isSessionFixed: true)
+            switch viewModel.fixedSessionNextStep() {
+            case .airBeam: isPowerABLinkActive = true
             case .location: isTurnLocationOnLinkActive = true
             case .bluetooth: isTurnBluetoothOnLinkActive = true
             default: return
@@ -179,10 +174,11 @@ struct ChooseSessionTypeView: View {
     }
 }
 
+
 #if DEBUG
 struct CreateSessionView_Previews: PreviewProvider {
     static var previews: some View {
-        ChooseSessionTypeView(viewModel: ChooseSessionTypeViewModel(locationHandler: DummyDefaultLocationHandler(), bluetoothHandler: DummyDefaultBluetoothHandler(), userSettings: UserSettings(), sessionContext: CreateSessionContext(), urlProvider: DummyURLProvider()))
+        ChooseSessionTypeView(viewModel: ChooseSessionTypeViewModel(locationHandler: DummyDefaultLocationHandler(), bluetoothHandler: DummyDefaultBluetoothHandler(), userSettings: UserSettings(), sessionContext: CreateSessionContext(), urlProvider: DummyURLProvider(), bluetoothManager: BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: PreviewMeasurementStreamStorage())), bluetoothManagerState: BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: PreviewMeasurementStreamStorage())).centralManagerState, locationTracker: DummyLocationTrakcer()))
             .environmentObject(BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: PreviewMeasurementStreamStorage())))
     }
 }

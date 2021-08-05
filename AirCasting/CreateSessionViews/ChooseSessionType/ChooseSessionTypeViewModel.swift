@@ -2,9 +2,10 @@
 //
 
 import Foundation
+import CoreBluetooth
 
 enum ProceedToView {
-    case AB
+    case airBeam
     case location
     case bluetooth
     case mobile
@@ -12,38 +13,62 @@ enum ProceedToView {
 
 class ChooseSessionTypeViewModel {
     
-    let locationHandler: LocationHandler
-    let bluetoothHandler: BluetoothHandler
-    let userSettings: UserSettings
-    let sessionContext: CreateSessionContext
-    let urlProvider: BaseURLProvider
+    private let locationHandler: LocationHandler
+    private let bluetoothHandler: BluetoothHandler
+    private let userSettings: UserSettings
+    private let sessionContext: CreateSessionContext
+    private let urlProvider: BaseURLProvider
+    private var bluetoothManager: BluetoothManager
+    private var bluetoothManagerState: CBManagerState
+    private var locationTracker: LocationTracker
+    
+    var passURLProvider: BaseURLProvider {
+        return urlProvider
+    }
+    
+    var passLocationHandler: LocationHandler {
+        return locationHandler
+    }
+    
+    var passBluetoothHandler: BluetoothHandler {
+        return bluetoothHandler
+    }
+    
+    var passSessionContext: CreateSessionContext {
+        return sessionContext
+    }
+    
+    var passUserSettings: UserSettings {
+        return userSettings
+    }
+    
+    var passBluetoothManager: BluetoothManager {
+        return bluetoothManager
+    }
+    
+    var passLocationTracker: LocationTracker {
+        return locationTracker
+    }
 
-    init(locationHandler: LocationHandler, bluetoothHandler: BluetoothHandler, userSettings: UserSettings, sessionContext: CreateSessionContext, urlProvider: BaseURLProvider) {
+    init(locationHandler: LocationHandler, bluetoothHandler: BluetoothHandler, userSettings: UserSettings, sessionContext: CreateSessionContext, urlProvider: BaseURLProvider, bluetoothManager: BluetoothManager, bluetoothManagerState: CBManagerState, locationTracker: LocationTracker) {
         self.locationHandler = locationHandler
         self.bluetoothHandler = bluetoothHandler
         self.userSettings = userSettings
         self.sessionContext = sessionContext
         self.urlProvider = urlProvider
+        self.bluetoothManager = bluetoothManager
+        self.bluetoothManagerState = bluetoothManagerState
+        self.locationTracker = locationTracker
     }
 
-    func fixSessionNextStep() -> ProceedToView {
-        if locationHandler.isLocationDenied() {
-            return .location
-        } else {
-            if bluetoothHandler.isBluetoothDenied() {
-                return .bluetooth
-            } else {
-                return .AB
-            }
-        }
+    func fixedSessionNextStep() -> ProceedToView {
+        guard !locationHandler.isLocationDenied() else { return .location }
+        guard !bluetoothHandler.isBluetoothDenied() else { return .bluetooth }
+        return .airBeam
     }
     
     func mobileSessionNextStep() -> ProceedToView {
-        if locationHandler.isLocationDenied() {
-            return .location
-        } else {
-            return .mobile
-        }
+        locationHandler.isLocationDenied() ? .location : .mobile
     }
     
     func createNewSession(isSessionFixed: Bool) {

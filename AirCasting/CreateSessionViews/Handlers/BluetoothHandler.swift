@@ -5,8 +5,6 @@ import Foundation
 import CoreBluetooth
 
 protocol BluetoothHandler {
-    var bluetoothManager: BluetoothManager { get }
-    var bluetoothManagerState: CBManagerState { get }
     func isBluetoothDenied() -> Bool
 }
 

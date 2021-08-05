@@ -11,7 +11,7 @@ struct TurnOnLocationView: View {
     @State private var isTurnBluetoothOnLinkActive = false
     @State private var isMobileLinkActive = false
     @Binding var creatingSessionFlowContinues: Bool
-    let VM: TurnOnLocationViewModel
+    let viewModel: TurnOnLocationViewModel
     
     var body: some View {
         VStack(spacing: 50) {
@@ -36,12 +36,12 @@ struct TurnOnLocationView: View {
         )
         .padding()
         .onAppear {
-            VM.locationHandler.requestLocation()
-            if VM.locationHandler.shouldShowAlert {
+            viewModel.requestLocation()
+            if viewModel.shouldShowAlert {
                 showAlert = true
             }
         }
-        .onChange(of: VM.locationHandler.shouldShowAlert) { newValue in
+        .onChange(of: viewModel.shouldShowAlert) { newValue in
             showAlert = (newValue == true)
         }
     }
@@ -61,10 +61,10 @@ struct TurnOnLocationView: View {
     
     var continueButton: some View {
         Button(action: {
-            if VM.mobileSessionContext {
+            if viewModel.isMobileSession {
                 isMobileLinkActive = true
             } else {
-                if VM.bluetoothHandler.isBluetoothDenied() {
+                if viewModel.checkIfBluetoothDenied() {
                     isTurnBluetoothOnLinkActive = true
                 } else {
                     isPowerABLinkActive = true
@@ -73,14 +73,14 @@ struct TurnOnLocationView: View {
         }, label: {
             Text(Strings.TurnOnLocationView.continueButton)
         })
-        .disabled(VM.locationHandler.disableButton)
+        .disabled(viewModel.disableButton)
             .frame(maxWidth: .infinity)
             .buttonStyle(BlueButtonStyle())
     }
     
     var proceedToPowerABView: some View {
         NavigationLink(
-            destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: VM.urlProvider),
+            destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: viewModel.passURLProvider),
             isActive: $isPowerABLinkActive,
             label: {
                 EmptyView()
@@ -88,7 +88,7 @@ struct TurnOnLocationView: View {
     }
     var proceedToBluetoothView: some View {
         NavigationLink(
-            destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sessionContext: VM.getSessionContext, urlProvider: VM.urlProvider),
+            destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sessionContext: viewModel.getSessionContext, urlProvider: viewModel.passURLProvider),
             isActive: $isTurnBluetoothOnLinkActive,
             label: {
                 EmptyView()
@@ -96,7 +96,7 @@ struct TurnOnLocationView: View {
     }
     var proceedToSelectDeviceView: some View {
         NavigationLink(
-            destination: SelectDeviceView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: VM.urlProvider),
+            destination: SelectDeviceView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: viewModel.passURLProvider),
             isActive: $isMobileLinkActive,
             label: {
                 EmptyView()
@@ -107,7 +107,7 @@ struct TurnOnLocationView: View {
 #if DEBUG
 struct TurnOnLocationView_Previews: PreviewProvider {
     static var previews: some View {
-        TurnOnLocationView(creatingSessionFlowContinues: .constant(true), VM: TurnOnLocationViewModel(locationHandler: DummyDefaultLocationHandler(), bluetoothHandler: DummyDefaultBluetoothHandler(), sessionContext: CreateSessionContext(), urlProvider: DummyURLProvider()))
+        TurnOnLocationView(creatingSessionFlowContinues: .constant(true), viewModel: TurnOnLocationViewModel(locationHandler: DummyDefaultLocationHandler(), bluetoothHandler: DummyDefaultBluetoothHandler(), sessionContext: CreateSessionContext(), urlProvider: DummyURLProvider()))
     }
 }
 #endif
