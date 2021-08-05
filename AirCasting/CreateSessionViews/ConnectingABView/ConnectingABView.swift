@@ -14,7 +14,8 @@ struct ConnectingABView<VM: AirbeamConnectionViewModel>: View {
     @StateObject var viewModel: VM
     let baseURL: BaseURLProvider
     @Binding var creatingSessionFlowContinues: Bool
-    @State var showNextScreen: Bool = false
+    @State private var showNextScreen: Bool = false
+    @State private var presentAlert: Bool = false
     
     var body: some View {
         VStack(spacing: 50) {
@@ -46,8 +47,15 @@ struct ConnectingABView<VM: AirbeamConnectionViewModel>: View {
             showNextScreen = isConnected
         })
         .onReceive(viewModel.shouldDismiss, perform: { dismiss in
-            guard dismiss == true else { return }
-            presentationMode.wrappedValue.dismiss()
+            presentAlert = dismiss
+            
+        })
+        .alert(isPresented: $presentAlert, content: {
+            Alert(title: Text(Strings.AirBeamConnection.connectionTimeoutTitle),
+                  message: Text(Strings.AirBeamConnection.connectionTimeoutDescription),
+                  dismissButton: .default(Text(Strings.AirBeamConnection.connectionTimeoutActionTitle), action: {
+                presentationMode.wrappedValue.dismiss()
+            }))
         })
         .onAppear(perform: {
             /* App is pushing the next view before this view is fully loaded. It resulted with showing next view and going back to this one.

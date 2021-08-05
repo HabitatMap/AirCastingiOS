@@ -237,4 +237,10 @@ struct Strings {
         static let satisfiedPathText: String = "Current devise has an network connection"
         static let failurePathText: String = "Current devise DOES NOT have an network connection"
     }
+    
+    struct AirBeamConnection {
+        static let connectionTimeoutTitle: String = "Error"
+        static let connectionTimeoutDescription: String = "Couldn't connect to your airbeam"
+        static let connectionTimeoutActionTitle: String = "Ok"
+    }
 }
