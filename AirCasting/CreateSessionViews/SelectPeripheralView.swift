@@ -16,6 +16,8 @@ struct SelectPeripheralView: View {
     @EnvironmentObject var sessionContext: CreateSessionContext
     @EnvironmentObject var connectionController: DefaultAirBeamConnectionController
     
+    
+    @State var shouldContinueToNextScreen: Bool = false
     @Binding var creatingSessionFlowContinues: Bool
     
     let urlProvider: BaseURLProvider
@@ -67,8 +69,8 @@ struct SelectPeripheralView: View {
                 .padding()
                 .frame(maxWidth: .infinity, minHeight: geometry.size.height, alignment: .top)
             }
-        }.onChange(of: bluetoothManager.isConnected, perform: { value in
-            showBluetoothAlert = !value
+        }.onChange(of: shouldContinueToNextScreen, perform: { value in
+            showBluetoothAlert = value
         })
     }
     
@@ -117,7 +119,7 @@ struct SelectPeripheralView: View {
     var connectButton: some View {
         var destination: AnyView
         if let selection = selection {
-            destination = AnyView(ConnectingABView(viewModel: ConnectingABViewModel(airBeamConnectionController: connectionController), selectedPeripheral: selection, baseURL: urlProvider, creatingSessionFlowContinues: $creatingSessionFlowContinues))
+            destination = AnyView(ConnectingABView(viewModel: ConnectingABViewModel(airBeamConnectionController: connectionController), selectedPeripheral: selection, shouldContinueToNextScreen: $shouldContinueToNextScreen, baseURL: urlProvider, creatingSessionFlowContinues: $creatingSessionFlowContinues))
         } else {
             destination = AnyView(EmptyView())
         }

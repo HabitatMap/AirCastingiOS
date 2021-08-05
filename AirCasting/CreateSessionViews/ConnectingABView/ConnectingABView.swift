@@ -11,9 +11,9 @@ import SwiftUI
 struct ConnectingABView: View {
     
     @Environment(\.presentationMode) var presentationMode
-    @ObservedObject var viewModel: ConnectingABViewModel
+    @StateObject var viewModel: ConnectingABViewModel
     var selectedPeripheral: CBPeripheral
-    @State var shouldContinueToNextScreen: Bool = false
+    @Binding var shouldContinueToNextScreen: Bool
     let baseURL: BaseURLProvider
     @Binding var creatingSessionFlowContinues: Bool
     
@@ -33,19 +33,27 @@ struct ConnectingABView: View {
                 titleLabel
                 messageLabel
             }
-            .background(
-                NavigationLink(
-                    destination: ABConnectedView(creatingSessionFlowContinues: $creatingSessionFlowContinues, baseURL: baseURL),
-                    isActive: $viewModel.isDeviceConnected,
-                    label: {
-                        EmptyView()
-                    }
-                )
+        }.background(
+            Group(content: {
+            NavigationLink(destination: EmptyView()) {
+                EmptyView()
+            }
+            NavigationLink(
+                destination: ABConnectedView(creatingSessionFlowContinues: $creatingSessionFlowContinues, baseURL: baseURL),
+                isActive: $viewModel.isDeviceConnected,
+                label: {
+                    EmptyView()
+                }
             )
-        }
+            })
+        )
         .padding()
         .onChange(of: viewModel.shouldDismiss, perform: { value in
+            shouldContinueToNextScreen = true
             presentationMode.wrappedValue.dismiss()
+        })
+        .onChange(of: viewModel.isDeviceConnected, perform: { m in
+            Print("current isDeviceConnected_____ \(m)")
         })
         .onAppear(perform: {
             viewModel.connectToAirBeam(peripheral: selectedPeripheral)
