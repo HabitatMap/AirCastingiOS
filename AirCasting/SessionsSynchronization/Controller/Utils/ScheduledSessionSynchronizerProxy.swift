@@ -57,52 +57,103 @@ final class ScheduledSessionSynchronizerProxy<S: Scheduler>: SessionSynchronizer
 
 import CoreLocation
 
-func prepareFakeShit(cd: PersistenceController) {
-    let session = SessionEntity(context: cd.viewContext)
-    session.contribute = false
-    session.gotDeleted = false
-    session.isIndoor = false
-    session.locationless = false
-    session.name = "FAKE"
-    session.deviceType = .AIRBEAM3
-    session.startTime = Date()
-    session.tags = ""
-    session.version = 1
-    session.type = .fixed
-    session.uuid = .init(rawValue: UUID().uuidString)
-    for i in 0..<5 {
-        let m = MeasurementStreamEntity(context: cd.viewContext)
-        m.gotDeleted = false
-        m.measurementShortType = "A\(i)"
-        m.measurementType = "M\(i)"
-        m.sensorName = "AirBeam 3"
-        m.sensorPackageName = "IDK"
-        m.thresholdVeryLow = 0
-        m.thresholdLow = 20
-        m.thresholdMedium = 40
-        m.thresholdHigh = 60
-        m.thresholdVeryHigh = 70
-        m.unitName = "NIT"
-        m.unitSymbol = "M"
-        for j in 0..<10 {
-            let meas = MeasurementEntity(context: cd.viewContext)
-            meas.location = CLLocationCoordinate2D(latitude: 50, longitude: 50)
-            meas.time = Date(timeIntervalSinceNow: Double(j))
-            meas.value = Double((i * 10)+j)
-            m.addToMeasurements(meas)
+
+
+class FakeSessionCreator {
+    static let minPossibleMeasurement = 0
+    static let maxPossibleMeasurement = 70
+    
+    static var timer: Timer?
+    
+    static func createFakeSession(persistenceController: PersistenceController) {
+        let context = persistenceController.viewContext
+        assert(Thread.isMainThread, "This class will only work when ivoked from the main thread because I'm lazy")
+        let session = SessionEntity(context: context)
+        session.contribute = false
+        session.gotDeleted = false
+        session.isIndoor = false
+        session.locationless = false
+        session.name = "FAKE"
+        session.deviceType = .AIRBEAM3
+        session.startTime = Date()
+        session.tags = ""
+        session.version = 1
+        session.type = .fixed
+        session.uuid = .init(rawValue: UUID().uuidString)
+        addMeasurementStreams(to: session)
+        for i in 0..<10 {
+            appendMeasurement(to: session, date: Date().addingTimeInterval(Double(-i)))
         }
-        session.addToMeasurementStreams(m)
+        prepareThresholds(session: session)
+        
+        timer = .scheduledTimer(withTimeInterval: 1.0, repeats: true, block: { _ in
+            appendMeasurement(to: session, date: nil)
+        })
+        
+        try! context.save()
     }
     
-    for stream in session.allStreams ?? [] {
-        let threshold: SensorThreshold = try! cd.viewContext.newOrExisting(sensorName: stream.sensorName ?? "asdasd")
-        threshold.thresholdVeryLow = stream.thresholdVeryLow
-        threshold.thresholdLow = stream.thresholdLow
-        threshold.thresholdMedium = stream.thresholdMedium
-        threshold.thresholdHigh = stream.thresholdHigh
-        threshold.thresholdVeryHigh = stream.thresholdVeryHigh
+    private static func prepareThresholds(session: SessionEntity) {
+        for stream in session.allStreams ?? [] {
+            let threshold: SensorThreshold = try! session.managedObjectContext!.newOrExisting(sensorName: stream.sensorName!)
+            threshold.thresholdVeryLow = stream.thresholdVeryLow
+            threshold.thresholdLow = stream.thresholdLow
+            threshold.thresholdMedium = stream.thresholdMedium
+            threshold.thresholdHigh = stream.thresholdHigh
+            threshold.thresholdVeryHigh = stream.thresholdVeryHigh
+        }
     }
     
+    private static func addMeasurementStreams(to session: SessionEntity) {
+        let context = session.managedObjectContext!
+        
+        for i in 0..<5 {
+            let m = MeasurementStreamEntity(context: context)
+            m.gotDeleted = false
+            m.id = MeasurementID(i)
+            m.measurementShortType = "A\(i)"
+            m.measurementType = "M\(i)"
+            m.sensorName = "AirBeam 3"
+            m.sensorPackageName = "IDK"
+            m.thresholdVeryLow = Int32(minPossibleMeasurement)
+            m.thresholdLow = 20
+            m.thresholdMedium = 40
+            m.thresholdHigh = 60
+            m.thresholdVeryHigh = Int32(maxPossibleMeasurement)
+            m.unitName = "NIT"
+            m.unitSymbol = "M"
+            session.addToMeasurementStreams(m)
+        }
+    }
     
-    try! cd.viewContext.save()
+    static func appendMeasurement(to session: SessionEntity, date: Date?) {
+        let context = session.managedObjectContext!
+        for stream in session.allStreams ?? [] {
+            let minLong = 19.890; let maxLong = 19.968
+            let maxLat = 50.073; let minLat = 50.036
+            let measurement = MeasurementEntity(context: context)
+            let prevLocation = session.allStreams?.first?.allMeasurements?.last?.location
+            measurement.location = CLLocationCoordinate2D(latitude: .random(in: minLat...maxLat), longitude: .random(in: minLong...maxLong)).normalize(against: prevLocation)
+            measurement.time = date ?? Date()
+            measurement.value = .random(in: Double(minPossibleMeasurement)...Double(maxPossibleMeasurement))
+            stream.addToMeasurements(measurement)
+            print("[FAKER] Added measurement to \(stream.sensorName): loc: \(measurement.location), val: \(measurement.value), time: \(measurement.time)")
+        }
+        
+    }
+}
+
+extension CLLocationCoordinate2D {
+    // coordinates are not flat euclidian, but let's roll with that
+    func normalize(against origin: CLLocationCoordinate2D?, step: Double = 0.001) -> CLLocationCoordinate2D {
+        guard let origin = origin else { return self }
+        let x = self.longitude - origin.longitude
+        let y = self.latitude - origin.latitude
+        
+        let length = sqrt(x*x + y*y)
+        let normX = x/length
+        let normY = y/length
+        
+        return CLLocationCoordinate2D(latitude: origin.latitude + normX * step, longitude: origin.longitude + normY * step)
+    }
 }

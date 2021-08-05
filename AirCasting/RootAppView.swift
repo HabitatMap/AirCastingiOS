@@ -26,7 +26,7 @@ struct RootAppView: View {
     var body: some View {
         if dependancies.userAuthenticationSession.isLoggedIn {
             mainAppView.onAppear {
-                prepareFakeShit(cd: persistenceController)
+                FakeSessionCreator.createFakeSession(persistenceController: persistenceController)
             }
         } else if !dependancies.userAuthenticationSession.isLoggedIn && dependancies.lifeTimeEventsProvider.hasEverPassedOnBoarding {
             NavigationView {
