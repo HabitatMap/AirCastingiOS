@@ -145,7 +145,7 @@ struct SessionCell_Previews: PreviewProvider {
         SessionCartView(session: SessionEntity.mock, thresholds: [.mock, .mock])
             .padding()
             .previewLayout(.sizeThatFits)
-            .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
+            .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionSynchronizer: DummySessionSynchronizer()))
     }
 }
 #endif

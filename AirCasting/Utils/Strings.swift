@@ -98,7 +98,6 @@ struct Strings {
     struct SessionCart {
         static let measurementsTitle: String = "Most recent measurement:"
         static let dormantMeasurementsTitle: String = "Avg value:"
-        static let stopRecordingButton: String = "Stop recording"
         static let heatmapSettingsTitle: String = "Heatmap settings"
         static let heatmapSettingsdescription: String = "Values beyond Min and Max will not be displayed."
         static let saveChangesButton: String = "Save changes"
@@ -168,9 +167,11 @@ struct Strings {
     }
 
     struct EmptyOnboarding {
-        static let title: String = "Ready to get started?"
-        static let description: String = "Record a new session to monitor your health & environment."
-        static let newSession: String = "Record new session"
+        static let title: String = "Start recording a \nmobile session"
+        static let description: String = "If you plan on moving around \nwhile recording measurements."
+        static let newSession: String = "Record mobile session"
+        static let airBeamDescriptionText: String = "Did you know?"
+        static let airBeamDescriptionDescription: String = "AirBeam3 is weather resistant. To \nkeep tabs on your outdoor air quality \n24/7, hang one outside your home and \nrecord a fixed session."
     }
     
     enum PowerABView {
@@ -231,6 +232,14 @@ struct Strings {
         static let alertTitle: String = "No internet connection"
         static let alertMessage: String = "You need to have internet connection to edit session data"
         static let confirmAlert: String = "Got it!"
+        static let stopRecordingButton: String = "Finish recording session"
+        static let finishAlertTitle: String = "Finish recording "
+        static let finishAlertTitle_2: String = "this session"
+        static let finishAlertTitle_3: String = "?"
+        static let finishAlertMessage_1: String = "The session will be moved to "
+        static let finishAlertMessage_2: String = "Mobile Dormant"
+        static let finishAlertMessage_3: String = " tab and you won't be able to add new measurement to it."
+        static let finishAlertButton: String = "Finish recording"
     }
     
     struct NetworkChecker {

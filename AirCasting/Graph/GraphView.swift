@@ -23,7 +23,7 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
             StreamsView(selectedStream: $selectedStream,
                         session: session,
                         thresholds: thresholds,
-                        measurementPresentationStyle: .showValues)
+                        measurementPresentationStyle: .showValues).padding(.horizontal)
             if let threshold = thresholds.threshold(for: selectedStream) {
                 ZStack(alignment: .topLeading) {
                     if let selectedStream = selectedStream {
