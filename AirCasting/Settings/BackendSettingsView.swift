@@ -8,10 +8,12 @@ struct BackendSettingsView: View {
     let backendURLBuilder = BackendURLValidator()
     
     @Environment(\.presentationMode) var presentationMode
+    let logoutController: LogoutController
     @State var urlProvider: BaseURLProvider
     @State private var pathText: String = ""
     @State private var portText: String = ""
     @State private var url: URL?
+    @State private var alertPresented = false
     private var urlWithoutPort: String? {
         let components = URLComponents(url: urlProvider.baseAppURL, resolvingAgainstBaseURL: false)!
         return components.host
@@ -39,7 +41,9 @@ struct BackendSettingsView: View {
             Spacer()
             oKButton
             cancelButton
-        }
+        }.alert(isPresented: $alertPresented, content: {
+            Alert(title: Text(Strings.BackendSettings.alertTitle), message: Text(Strings.BackendSettings.alertMessage),  dismissButton: .default(Text(Strings.BackendSettings.Ok)))
+        })
         .padding()
     }
     
@@ -53,6 +57,12 @@ struct BackendSettingsView: View {
         Button {
             urlProvider.baseAppURL = url ?? URL(string: "http://aircasting.org/api")!
             presentationMode.wrappedValue.dismiss()
+            do {
+                try logoutController.logout()
+            } catch {
+                alertPresented = true
+                Log.info("Error when logging out - \(error)")
+            }
         } label: {
             Text(Strings.BackendSettings.Ok)
         }.buttonStyle(BlueButtonStyle())
