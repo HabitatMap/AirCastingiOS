@@ -239,8 +239,8 @@ struct Strings {
     }
     
     struct AirBeamConnection {
-        static let connectionTimeoutTitle: String = "Error"
-        static let connectionTimeoutDescription: String = "Couldn't connect to your airbeam"
-        static let connectionTimeoutActionTitle: String = "Ok"
+        static let connectionTimeoutTitle: String = "Connection error"
+        static let connectionTimeoutDescription: String = "Bluetooth connection failed. Please toggle the power on your device and try again."
+        static let connectionTimeoutActionTitle: String = "Got it!"
     }
 }
