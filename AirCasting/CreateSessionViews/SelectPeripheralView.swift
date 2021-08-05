@@ -119,7 +119,8 @@ struct SelectPeripheralView: View {
     var connectButton: some View {
         var destination: AnyView
         if let selection = selection {
-            destination = AnyView(ConnectingABView(viewModel: ConnectingABViewModel(airBeamConnectionController: connectionController), selectedPeripheral: selection, shouldContinueToNextScreen: $shouldContinueToNextScreen, baseURL: urlProvider, creatingSessionFlowContinues: $creatingSessionFlowContinues))
+            let viewModel = AirbeamConnectionViewModelDefault(airBeamConnectionController: connectionController, peripheral: selection)
+            destination = AnyView(ConnectingABView(viewModel: viewModel, baseURL: urlProvider, creatingSessionFlowContinues: $creatingSessionFlowContinues))
         } else {
             destination = AnyView(EmptyView())
         }
