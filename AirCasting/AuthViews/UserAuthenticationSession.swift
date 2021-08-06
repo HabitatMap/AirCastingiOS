@@ -96,7 +96,7 @@ final class DefaultLogoutController: LogoutController {
     func logout() throws {
         Log.info("[LOGOUT] Stopping any ongoing sync process")
         sessionSynchronizer.stopSynchronization()
-        
+
         Log.info("[LOGOUT] Cancelling all pending requests")
         URLSession.shared.getAllTasks { tasks in
             tasks.forEach { $0.cancel() }

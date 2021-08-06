@@ -5,13 +5,6 @@ import Foundation
 
 protocol BaseURLProvider {
     var baseAppURL: URL { get set }
-    var authorizationURL: URL { get }
-}
-
-extension BaseURLProvider {
-    var authorizationURL: URL {
-        URL(string: "http://aircasting.org/api")!
-    }
 }
 
 #if DEBUG

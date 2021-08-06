@@ -16,10 +16,6 @@ struct StreamsView: View {
             HStack {
                 measurementsMic
                 Spacer()
-                //This is a temporary solution for stopping mic session recording until we implement proper session edition menu
-                if microphoneManager.session?.uuid == session.uuid, microphoneManager.isRecording && (session.status == .RECORDING || session.status == .DISCONNETCED) {
-                    stopRecordingButton
-                }
             }
         } else {
             ABMeasurementsView(session: session,
@@ -34,7 +30,6 @@ struct StreamsView: View {
             Text(Strings.SessionCart.measurementsTitle)
                 .font(Font.moderate(size: 12))
                 .padding(.bottom, 3)
-                .padding(.horizontal)
             if let dbStream = session.dbStream {
                 if let threshold = thresholds.threshold(for: dbStream) {
                     SingleMeasurementView(stream: dbStream,
@@ -45,15 +40,6 @@ struct StreamsView: View {
                 }
             }
         }
-    }
-
-    var stopRecordingButton: some View {
-        Button(action: {
-            try! microphoneManager.stopRecording()
-        }, label: {
-            Text(Strings.SessionCart.stopRecordingButton)
-                .foregroundColor(.blue)
-        })
     }
     
     func lastMicMeasurement() -> Double {

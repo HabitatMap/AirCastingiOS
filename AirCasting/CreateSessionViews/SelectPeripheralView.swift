@@ -5,17 +5,18 @@
 //  Created by Lunar on 02/02/2021.
 //
 
-import SwiftUI
-import CoreBluetooth
 import AirCastingStyling
+import CoreBluetooth
+import SwiftUI
 
 struct SelectPeripheralView: View {
-    
     @State private var selection: CBPeripheral? = nil
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @EnvironmentObject var sessionContext: CreateSessionContext
+    @EnvironmentObject var connectionController: DefaultAirBeamConnectionController
     
-    @Binding var creatingSessionFlowContinues : Bool
+    @State var shouldContinueToNextScreen: Bool = false
+    @Binding var creatingSessionFlowContinues: Bool
     
     let urlProvider: BaseURLProvider
     
@@ -24,12 +25,11 @@ struct SelectPeripheralView: View {
             ScrollView {
                 VStack(spacing: 30) {
                     ProgressView(value: 0.375)
-                    titileLabel
+                    titleLabel
                     
                     LazyVStack(alignment: .leading, spacing: 25) {
-                        
                         HStack(spacing: 8) {
-                            Text("AirBeams")
+                            Text(Strings.SelectPeripheralView.airBeamsText)
                             if bluetoothManager.isScanning {
                                 loader
                             }
@@ -37,7 +37,7 @@ struct SelectPeripheralView: View {
                         displayDeviceButton(devices: bluetoothManager.airbeams)
                         
                         HStack(spacing: 8) {
-                            Text("Other devices")
+                            Text(Strings.SelectPeripheralView.otherText)
                             if bluetoothManager.isScanning {
                                 loader
                             }
@@ -66,11 +66,10 @@ struct SelectPeripheralView: View {
                 .frame(maxWidth: .infinity, minHeight: geometry.size.height, alignment: .top)
             }
         }
-        
     }
     
     func displayDeviceButton(devices: [CBPeripheral]) -> some View {
-        ForEach(devices, id: \.self) { (availableDevice) in
+        ForEach(devices, id: \.self) { availableDevice in
             Button(action: {
                 selection = availableDevice
                 
@@ -84,8 +83,8 @@ struct SelectPeripheralView: View {
         }
     }
     
-    var titileLabel: some View {
-        Text("Choose the device you'd like to record with")
+    var titleLabel: some View {
+        Text(Strings.SelectPeripheralView.titleLabel)
             .font(Font.moderate(size: 25, weight: .bold))
             .foregroundColor(.accentColor)
             .multilineTextAlignment(.leading)
@@ -107,22 +106,21 @@ struct SelectPeripheralView: View {
         Button(action: {
             bluetoothManager.startScanning()
         }, label: {
-            Text("Don't see a device? Refresh scanning.")
+            Text(Strings.SelectPeripheralView.refreshButton)
         })
     }
     
     var connectButton: some View {
         var destination: AnyView
         if let selection = selection {
-            destination = AnyView(ConnectingABView(bluetoothManager: bluetoothManager,
-                                                   selectedPeripheral: selection, baseURL: urlProvider,
-                                                   creatingSessionFlowContinues: $creatingSessionFlowContinues))
+            let viewModel = AirbeamConnectionViewModelDefault(airBeamConnectionController: connectionController, peripheral: selection)
+            destination = AnyView(ConnectingABView(viewModel: viewModel, baseURL: urlProvider, creatingSessionFlowContinues: $creatingSessionFlowContinues))
         } else {
             destination = AnyView(EmptyView())
         }
         
         return NavigationLink(destination: destination) {
-            Text("Connect")
+            Text(Strings.SelectPeripheralView.connectText)
         }
         .buttonStyle(BlueButtonStyle())
     }
@@ -131,7 +129,7 @@ struct SelectPeripheralView: View {
 #if DEBUG
 struct SelectPeripheralView_Previews: PreviewProvider {
     static var previews: some View {
-        SelectPeripheralView( creatingSessionFlowContinues: .constant(true), urlProvider: DummyURLProvider())
+        SelectPeripheralView(creatingSessionFlowContinues: .constant(true), urlProvider: DummyURLProvider())
     }
 }
 #endif

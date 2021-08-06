@@ -93,7 +93,7 @@ struct SettingsView: View {
                 }
             }
         }.sheet(isPresented: $showModal, content: {
-            BackendSettingsView(urlProvider: urlProvider)
+            BackendSettingsView(logoutController: logoutController, urlProvider: urlProvider)
         })
     }
 }

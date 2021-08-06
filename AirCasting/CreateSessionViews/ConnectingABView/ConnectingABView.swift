@@ -5,18 +5,18 @@
 //  Created by Lunar on 04/02/2021.
 //
 
-import SwiftUI
 import CoreBluetooth
+import SwiftUI
 
-struct ConnectingABView: View {
+struct ConnectingABView<VM: AirbeamConnectionViewModel>: View {
     
-    var bluetoothManager: BluetoothManager
-    var selectedPeripheral: CBPeripheral
+    @Environment(\.presentationMode) var presentationMode
+    @StateObject var viewModel: VM
     let baseURL: BaseURLProvider
-    @State private var isDeviceConnected: Bool = false
+    @Binding var creatingSessionFlowContinues: Bool
+    @State private var showNextScreen: Bool = false
+    @State private var presentAlert: Bool = false
     
-    @Binding var creatingSessionFlowContinues : Bool
-
     var body: some View {
         VStack(spacing: 50) {
             ProgressView(value: 0.5)
@@ -33,26 +33,35 @@ struct ConnectingABView: View {
                 titleLabel
                 messageLabel
             }
-            .background(
-                NavigationLink(
-                    destination: ABConnectedView(creatingSessionFlowContinues: $creatingSessionFlowContinues, baseURL: baseURL),
-                    isActive: $isDeviceConnected,
-                    label: {
-                        EmptyView()
-                    })
-            )}
+        }.background(
+            NavigationLink(
+                destination: ABConnectedView(creatingSessionFlowContinues: $creatingSessionFlowContinues, baseURL: baseURL),
+                isActive: $showNextScreen,
+                label: {
+                    EmptyView()
+                }
+            )
+        )
         .padding()
-        .onAppear(perform: {
-            bluetoothManager.centralManager.connect(selectedPeripheral,
-                                                    options: nil)
+        .onReceive(viewModel.isDeviceConnected, perform: { isConnected in
+            showNextScreen = isConnected
         })
-        .onReceive(NotificationCenter.default.publisher(for: Notification.Name(rawValue: "DeviceConnected")), perform: { _ in
+        .onReceive(viewModel.shouldDismiss, perform: { dismiss in
+            presentAlert = dismiss
+            
+        })
+        .alert(isPresented: $presentAlert, content: {
+            Alert(title: Text(Strings.AirBeamConnection.connectionTimeoutTitle),
+                  message: Text(Strings.AirBeamConnection.connectionTimeoutDescription),
+                  dismissButton: .default(Text(Strings.AirBeamConnection.connectionTimeoutActionTitle), action: {
+                presentationMode.wrappedValue.dismiss()
+            }))
+        })
+        .onAppear(perform: {
             /* App is pushing the next view before this view is fully loaded. It resulted with showing next view and going back to this one.
              The async enables app to load this view and then push the next one. */
             DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
-                if selectedPeripheral.state == .connected {
-                    isDeviceConnected = true
-                }
+                viewModel.connectToAirBeam()
             }
         })
     }
@@ -82,8 +91,11 @@ struct ConnectingABView: View {
         }
     }
 }
-//struct ConnectingABView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ConnectingABView(bluetoothManager: BluetoothManager(), selectedDevice: CBPeripheral)
-//    }
-//}
+
+#if DEBUG
+struct ConnectingABView_Previews: PreviewProvider {
+    static var previews: some View {
+        ConnectingABView(viewModel: NeverConnectingAirbeamConnectionViewModel(), baseURL: DummyURLProvider(), creatingSessionFlowContinues: .constant(true))
+    }
+ }
+#endif
