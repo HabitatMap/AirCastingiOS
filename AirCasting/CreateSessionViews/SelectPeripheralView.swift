@@ -10,12 +10,10 @@ import CoreBluetooth
 import SwiftUI
 
 struct SelectPeripheralView: View {
-    @State private var showBluetoothAlert = false
     @State private var selection: CBPeripheral? = nil
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @EnvironmentObject var sessionContext: CreateSessionContext
     @EnvironmentObject var connectionController: DefaultAirBeamConnectionController
-    
     
     @State var shouldContinueToNextScreen: Bool = false
     @Binding var creatingSessionFlowContinues: Bool
@@ -63,15 +61,11 @@ struct SelectPeripheralView: View {
                     } else {
                         connectButton.disabled(true)
                     }
-                }.alert(isPresented: $showBluetoothAlert, content: {
-                    Alert(title: Text(Strings.SelectPeripheralView.alertTitle), message: Text(Strings.SelectPeripheralView.alertMessage), dismissButton: .default(Text(Strings.SelectPeripheralView.alertAccept)))
-                })
+                }
                 .padding()
                 .frame(maxWidth: .infinity, minHeight: geometry.size.height, alignment: .top)
             }
-        }.onChange(of: shouldContinueToNextScreen, perform: { value in
-            showBluetoothAlert = value
-        })
+        }
     }
     
     func displayDeviceButton(devices: [CBPeripheral]) -> some View {
