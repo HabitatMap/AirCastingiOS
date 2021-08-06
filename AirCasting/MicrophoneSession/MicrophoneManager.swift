@@ -25,9 +25,11 @@ final class MicrophoneManager: NSObject, ObservableObject {
     private var levelTimer: Timer?
     private(set) var session: Session?
     private lazy var locationProvider = LocationProvider()
+    let sessionSynchronizer: SessionSynchronizer
 
-    init(measurementStreamStorage: MeasurementStreamStorage) {
+    init(measurementStreamStorage: MeasurementStreamStorage, sessionSynchronizer: SessionSynchronizer) {
         self.measurementStreamStorage = measurementStreamStorage
+        self.sessionSynchronizer = sessionSynchronizer
         super.init()
     }
 
@@ -60,6 +62,8 @@ final class MicrophoneManager: NSObject, ObservableObject {
         recorder.stop()
         recorder = nil
         try? measurementStreamStorage.updateSessionStatus(.FINISHED, for: session!.uuid)
+        try? measurementStreamStorage.updateSessionEndTime(for: session!.uuid)
+        sessionSynchronizer.triggerSynchronization()
     }
 
     deinit {

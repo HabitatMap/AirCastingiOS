@@ -19,8 +19,10 @@ struct EmptyDashboardView: View {
             Spacer()
             VStack(spacing: 14) {
                 Text(Strings.EmptyOnboarding.title)
+                    .multilineTextAlignment(.center)
                     .font(Font.moderate(size: 24, weight: .bold))
                     .foregroundColor(Color.darkBlue)
+                    .minimumScaleFactor(0.1)
 
                 Text(Strings.EmptyOnboarding.description)
                     .font(Font.muli(size: 16))
@@ -40,9 +42,38 @@ struct EmptyDashboardView: View {
                     .buttonStyle(BlueButtonStyle())
             }
             Spacer()
+            airBeamDescription
+                .frame(minWidth: 250, idealWidth: .infinity, maxWidth: .infinity, minHeight: 110, idealHeight: 110, maxHeight: 110, alignment: .center)
+                .padding(.bottom)
         }
         .padding()
         .background(Color(red: 251/255, green: 253/255, blue: 255/255))
+    }
+}
+
+private extension EmptyDashboardView {
+    private var airBeamDescription: some View {
+        ZStack {
+            Rectangle()
+                .fill(Color(red: 251/255, green: 253/255, blue: 255/255))
+                .cornerRadius(5)
+                .shadow(color: Color(white: 150/255, opacity: 0.5), radius: 7, x: 0, y: 1)
+            HStack {
+                Image("airbeam")
+                    .resizable()
+                    .frame(width: 60, height: 80, alignment: .center)
+                    .scaledToFill()
+                VStack(alignment: .leading) {
+                    Text(Strings.EmptyOnboarding.airBeamDescriptionText)
+                        .font(Font.muli(size: 16, weight: .semibold))
+                        .foregroundColor(.aircastingGray)
+                        .lineSpacing(15)
+                    Text(Strings.EmptyOnboarding.airBeamDescriptionDescription)
+                        .font(Font.muli(size: 14))
+                        .foregroundColor(.aircastingGray)
+                }
+            }
+        }
     }
 }
 

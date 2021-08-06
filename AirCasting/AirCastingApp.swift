@@ -13,6 +13,7 @@ struct AirCastingApp: App {
     @Environment(\.scenePhase) var scenePhase
     private let authorization: UserAuthenticationSession
     private let syncScheduler: SynchronizationScheduler
+    private let microphoneManager: MicrophoneManager
     private var sessionSynchronizer: SessionSynchronizer
     private let persistenceController = PersistenceController.shared
     private let appBecameActive = PassthroughSubject<Void, Never>()
@@ -35,7 +36,7 @@ struct AirCastingApp: App {
                                                                          store: syncStore)
         sessionSynchronizer = ScheduledSessionSynchronizerProxy(controller: unscheduledSyncController,
                                                                 scheduler: DispatchQueue.global())
-        
+        microphoneManager = MicrophoneManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared), sessionSynchronizer: sessionSynchronizer)
         syncScheduler = .init(synchronizer: sessionSynchronizer,
                               appBecameActive: appBecameActive.eraseToAnyPublisher(),
                               periodicTimeInterval: 300,
@@ -49,6 +50,7 @@ struct AirCastingApp: App {
         WindowGroup {
             RootAppView(sessionSynchronizer: sessionSynchronizer, persistenceController: persistenceController)
                 .environmentObject(authorization)
+                .environmentObject(microphoneManager)
                 .alert(isPresented: $offlineMessageViewModel.showOfflineMessage, content: { Alert.offlineAlert })
         }.onChange(of: scenePhase) { newScenePhase in
             switch newScenePhase {
