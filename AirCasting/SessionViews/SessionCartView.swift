@@ -15,7 +15,7 @@ struct SessionCartView: View {
     @State private var isCollapsed = true
     @State private var selectedStream: MeasurementStreamEntity?
     @ObservedObject var session: SessionEntity
-    @EnvironmentObject var sessionCartViewModel: SessionCartViewModel
+    let sessionCartViewModel: SessionCartViewModel
     let thresholds: [SensorThreshold]
     
     var shouldShowValues: MeasurementPresentationStyle {
@@ -54,12 +54,6 @@ struct SessionCartView: View {
         }
         .onChange(of: session.allStreams) { _ in
             selectedStream = session.allStreams?.first
-        }
-        .onChange(of: sessionCartViewModel.isFollowing) { _ in
-            sessionCartViewModel.toggleFollowing(for: session)
-        }
-        .onAppear {
-            sessionCartViewModel.isFollowing = session.followedAt != nil
         }
         .onAppear {
             selectedStream = session.allStreams?.first
@@ -104,13 +98,13 @@ private extension SessionCartView {
     
     var followButton: some View {
         Button(Strings.SessionCartView.follow) {
-            sessionCartViewModel.isFollowing.toggle()
+            sessionCartViewModel.toggleFollowing()
         }.buttonStyle(FollowButtonStyle())
     }
     
     var unFollowButton: some View {
         Button(Strings.SessionCartView.unfollow) {
-            sessionCartViewModel.isFollowing.toggle()
+            sessionCartViewModel.toggleFollowing()
         }.buttonStyle(UnFollowButtonStyle())
     }
     
@@ -125,9 +119,9 @@ private extension SessionCartView {
     func displayButtons(threshold: SensorThreshold) -> some View {
         HStack(spacing: 20) {
             if sessionCartViewModel.isFollowing {
-                followButton
-            } else {
                 unFollowButton
+            } else {
+                followButton
             }
             Spacer()
             mapButton(threshold: threshold)
@@ -150,7 +144,9 @@ private extension SessionCartView {
  struct SessionCell_Previews: PreviewProvider {
     static var previews: some View {
         EmptyView()
-        SessionCartView(session: SessionEntity.mock, thresholds: [.mock, .mock])
+        SessionCartView(session: SessionEntity.mock,
+                        sessionCartViewModel: SessionCartViewModel(followingSetter: MockSessionFollowingSettable()),
+                        thresholds: [.mock, .mock])
             .padding()
             .previewLayout(.sizeThatFits)
             .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))

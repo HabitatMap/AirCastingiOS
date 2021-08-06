@@ -11,7 +11,7 @@ protocol MeasurementStreamStorage {
     func createSession(_ session: Session) throws
     func createSessionAndMeasurementStream(_ session: Session, _ stream: MeasurementStream) throws -> MeasurementStreamLocalID
     func updateSessionStatus(_ sessionStatus: SessionStatus, for sessionUUID: SessionUUID) throws
-    func updateSessionFollowing(_ sessionStatus: SessionFollowing, for sessionUUID: SessionUUID) throws
+    func updateSessionFollowing(_ sessionStatus: SessionFollowing, for sessionUUID: SessionUUID)
 }
 
 extension MeasurementStreamStorage {
@@ -103,7 +103,7 @@ final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
         try context.save()
     }
 
-    func updateSessionFollowing(_ sessionFollowing: SessionFollowing, for sessionUUID: SessionUUID) throws {
+    func updateSessionFollowing(_ sessionFollowing: SessionFollowing, for sessionUUID: SessionUUID) {
         let context = persistenceController.editContext()
         context.performAndWait {
             do {
@@ -131,7 +131,7 @@ final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
 #if DEBUG
 /// Only to be used for swiftui previews
 final class PreviewMeasurementStreamStorage: MeasurementStreamStorage {
-    func updateSessionFollowing(_ sessionStatus: SessionFollowing, for sessionUUID: SessionUUID) throws {}
+    func updateSessionFollowing(_ sessionStatus: SessionFollowing, for sessionUUID: SessionUUID) {}
 
     func addMeasurement(_ measurement: Measurement, toStreamWithID id: MeasurementStreamLocalID) throws {
         print("Nothing happened for \(measurement)")
