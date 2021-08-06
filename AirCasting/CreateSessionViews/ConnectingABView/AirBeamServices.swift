@@ -16,22 +16,31 @@ protocol ConnectingAirBeamServices {
 
 class ConnectingAirBeamServicesBluetooth: ConnectingAirBeamServices {
     
-    private var connectionInProgress = false
+    private(set) var connectionInProgress = false
     private let bluetoothConnector: BluetoothConnector
+    private var connectionToken: AnyObject?
     
     init(bluetoothConnector: BluetoothConnector) {
         self.bluetoothConnector = bluetoothConnector
     }
-    
+
     func connect(to peripheral: CBPeripheral, timeout: TimeInterval, completion: @escaping (AirBeamServicesConnectionResult) -> Void) {
-        guard !connectionInProgress else { completion(.deviceBusy); return }
+        Log.info("Starting Airbeam connection")
+        guard !connectionInProgress else {
+            completion(.deviceBusy); return
+        }
         bluetoothConnector.connect(to: peripheral)
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(Int(timeout))) {
             if peripheral.state == .connecting {
-                Log.info("Connecting to bluetooth device failed")
+                Log.info("Airbeam connection failed")
                 self.bluetoothConnector.cancelPeripheralConnection(for: peripheral)
                 completion(.timeout)
             }
+        }
+        connectionToken = NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: "DeviceConnected"), object: nil, queue: nil) { _ in
+            Log.info("Airebeam connected successfully")
+            self.connectionInProgress = false
+            completion(.success)
         }
     }
 }
