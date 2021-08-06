@@ -22,6 +22,7 @@ struct EmptyDashboardView: View {
                     .multilineTextAlignment(.center)
                     .font(Font.moderate(size: 24, weight: .bold))
                     .foregroundColor(Color.darkBlue)
+                    .minimumScaleFactor(0.1)
 
                 Text(Strings.EmptyOnboarding.description)
                     .font(Font.muli(size: 16))

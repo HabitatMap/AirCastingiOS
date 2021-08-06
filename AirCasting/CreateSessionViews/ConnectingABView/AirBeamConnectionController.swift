@@ -10,12 +10,15 @@ protocol AirBeamConnectionController {
 
 class DefaultAirBeamConnectionController: AirBeamConnectionController, ObservableObject {
     let connectingAirBeamServices: ConnectingAirBeamServices
+    
     func connectToAirBeam(peripheral: CBPeripheral, completion: @escaping (Bool) -> Void) {
         connectingAirBeamServices.connect(to: peripheral, timeout: 10) { result in
             switch result {
             case .success:
                 completion(true)
-            case .deviceBusy, .timeout:
+            case .deviceBusy:
+                completion(false)
+            case .timeout:
                 completion(false)
             }
         }

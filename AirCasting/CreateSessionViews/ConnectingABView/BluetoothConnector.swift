@@ -10,6 +10,7 @@ protocol BluetoothConnector {
 }
 
 extension BluetoothManager: BluetoothConnector {
+    
     func connect(to peripheral: CBPeripheral) {
         self.centralManager.connect(peripheral, options: nil)
     }
