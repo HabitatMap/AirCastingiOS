@@ -59,10 +59,9 @@ private extension EmptyDashboardView {
                 .cornerRadius(5)
                 .shadow(color: Color(white: 150/255, opacity: 0.5), radius: 7, x: 0, y: 1)
             HStack {
-                Image("airbeam")
+                Image("handairBeam")
                     .resizable()
-                    .frame(width: 60, height: 80, alignment: .center)
-                    .scaledToFill()
+                    .aspectRatio(contentMode: .fit)
                 VStack(alignment: .leading) {
                     Text(Strings.EmptyOnboarding.airBeamDescriptionText)
                         .font(Font.muli(size: 16, weight: .semibold))

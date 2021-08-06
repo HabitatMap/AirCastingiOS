@@ -21,9 +21,9 @@ struct ConnectingABView: View {
         VStack(spacing: 50) {
             ProgressView(value: 0.5)
             ZStack(alignment: Alignment(horizontal: .trailing, vertical: .bottom), content: {
-                Image("airbeam")
+                Image("airbeam3")
                     .resizable()
-                    .frame(width: 300, height: 400)
+                    .aspectRatio(contentMode: .fit)
                 loader
                     .padding()
                     .padding(.vertical)
