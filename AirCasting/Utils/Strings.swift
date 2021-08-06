@@ -249,7 +249,7 @@ struct Strings {
         static let failurePathText: String = "Current devise DOES NOT have an network connection"
     }
     
-    struct AirBeamConnection {
+    struct AirBeamConnector {
         static let connectionTimeoutTitle: String = "Connection error"
         static let connectionTimeoutDescription: String = "Bluetooth connection failed. Please toggle the power on your device and try again."
         static let connectionTimeoutActionTitle: String = "Got it!"

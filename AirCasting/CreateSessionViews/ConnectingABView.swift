@@ -51,9 +51,9 @@ struct ConnectingABView<VM: AirbeamConnectionViewModel>: View {
             
         })
         .alert(isPresented: $presentAlert, content: {
-            Alert(title: Text(Strings.AirBeamConnection.connectionTimeoutTitle),
-                  message: Text(Strings.AirBeamConnection.connectionTimeoutDescription),
-                  dismissButton: .default(Text(Strings.AirBeamConnection.connectionTimeoutActionTitle), action: {
+            Alert(title: Text(Strings.AirBeamConnector.connectionTimeoutTitle),
+                  message: Text(Strings.AirBeamConnector.connectionTimeoutDescription),
+                  dismissButton: .default(Text(Strings.AirBeamConnector.connectionTimeoutActionTitle), action: {
                 presentationMode.wrappedValue.dismiss()
             }))
         })
