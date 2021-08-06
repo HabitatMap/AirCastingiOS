@@ -36,7 +36,7 @@
 		</dict>
 	</dict>
 	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>We need Bluetooth to connect with AirBeam, it&apos;s impossible to collect the data without it. </string>
+	<string>We need Bluetooth to connect with AirBeam, it's impossible to collect the data without it. </string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>AirCasting uses location to show pollution level on the map.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>

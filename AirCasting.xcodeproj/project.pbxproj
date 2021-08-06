@@ -203,14 +203,13 @@
 		DD8C38092689A34E00901FDF /* UserDefaultsBaseURLProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8C38082689A34E00901FDF /* UserDefaultsBaseURLProvider.swift */; };
 		DD8C380C2689A3DA00901FDF /* BaseURLProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8C380B2689A3DA00901FDF /* BaseURLProvider.swift */; };
 		DD8C380E2689A55A00901FDF /* BackendSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8C380D2689A55A00901FDF /* BackendSettingsView.swift */; };
-		DD8C3810268A0E9400901FDF /* ShareViewModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8C380F268A0E9400901FDF /* ShareViewModal.swift */; };
-		DDD24D8626A8295F00D4A327 /* ConnectingABViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDD24D8526A8295F00D4A327 /* ConnectingABViewModel.swift */; };
 		DDBC156426A0799300982526 /* SystemSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBC156326A0799300982526 /* SystemSettings.swift */; };
 		DDBC992626A1652A00B0662E /* ForgotPasswordTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBC992526A1652A00B0662E /* ForgotPasswordTest.swift */; };
 		DDCE5D3626A1F79F0033C211 /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCE5D3526A1F79F0033C211 /* UserSettings.swift */; };
 		DDCE5D3826A1FE2D0033C211 /* DeleteSessionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCE5D3726A1FE2D0033C211 /* DeleteSessionViewModel.swift */; };
 		DDCE5D3A26A213620033C211 /* DefaultDeleteSessionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCE5D3926A213620033C211 /* DefaultDeleteSessionViewModel.swift */; };
 		DDD24D8426A7FCE300D4A327 /* View+Print.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDD24D8326A7FCE300D4A327 /* View+Print.swift */; };
+		DDD24D8626A8295F00D4A327 /* ConnectingABViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDD24D8526A8295F00D4A327 /* ConnectingABViewModel.swift */; };
 		DDD24D8826A8374600D4A327 /* LocationAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDD24D8726A8374600D4A327 /* LocationAlert.swift */; };
 		DDD24D8E26A847CF00D4A327 /* LifeTimeEventsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDD24D8D26A847CF00D4A327 /* LifeTimeEventsProvider.swift */; };
 		DDD24D9526A8569400D4A327 /* EmailForgotPasswordController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDD24D9226A8569300D4A327 /* EmailForgotPasswordController.swift */; };
@@ -442,13 +441,13 @@
 		DD8C380B2689A3DA00901FDF /* BaseURLProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseURLProvider.swift; sourceTree = "<group>"; };
 		DD8C380D2689A55A00901FDF /* BackendSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendSettingsView.swift; sourceTree = "<group>"; };
 		DD8C380F268A0E9400901FDF /* ShareViewModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewModal.swift; sourceTree = "<group>"; };
-		DDD24D8526A8295F00D4A327 /* ConnectingABViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectingABViewModel.swift; sourceTree = "<group>"; };
 		DDBC156326A0799300982526 /* SystemSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemSettings.swift; sourceTree = "<group>"; };
 		DDBC992526A1652A00B0662E /* ForgotPasswordTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordTest.swift; sourceTree = "<group>"; };
 		DDCE5D3526A1F79F0033C211 /* UserSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettings.swift; sourceTree = "<group>"; };
 		DDCE5D3726A1FE2D0033C211 /* DeleteSessionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteSessionViewModel.swift; sourceTree = "<group>"; };
 		DDCE5D3926A213620033C211 /* DefaultDeleteSessionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultDeleteSessionViewModel.swift; sourceTree = "<group>"; };
 		DDD24D8326A7FCE300D4A327 /* View+Print.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Print.swift"; sourceTree = "<group>"; };
+		DDD24D8526A8295F00D4A327 /* ConnectingABViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectingABViewModel.swift; sourceTree = "<group>"; };
 		DDD24D8726A8374600D4A327 /* LocationAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationAlert.swift; sourceTree = "<group>"; };
 		DDD24D8D26A847CF00D4A327 /* LifeTimeEventsProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LifeTimeEventsProvider.swift; sourceTree = "<group>"; };
 		DDD24D9226A8569300D4A327 /* EmailForgotPasswordController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmailForgotPasswordController.swift; sourceTree = "<group>"; };
@@ -1780,7 +1779,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_ASSET_PATHS = "\"AirCasting/Preview Content\"";
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
@@ -1807,7 +1806,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_ASSET_PATHS = "\"AirCasting/Preview Content\"";
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
