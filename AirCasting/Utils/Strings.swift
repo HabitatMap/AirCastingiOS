@@ -249,6 +249,12 @@ struct Strings {
         static let failurePathText: String = "Current devise DOES NOT have an network connection"
     }
     
+    struct AirBeamConnection {
+        static let connectionTimeoutTitle: String = "Connection error"
+        static let connectionTimeoutDescription: String = "Bluetooth connection failed. Please toggle the power on your device and try again."
+        static let connectionTimeoutActionTitle: String = "Got it!"
+    }
+    
     struct ConfirmCreatingSessionView {
         static let alertTitle: String = "Failure"
         static let alertMessage: String = "Failed to create session"
@@ -258,6 +264,5 @@ struct Strings {
         static let contentViewText_2: String = " session "
         static let contentViewText_3: String = " is ready to start gathering data."
         static let contentViewText_4: String = "Hang your AirBeam in a secure position, then press the start recording button below."
-        
     }
 }

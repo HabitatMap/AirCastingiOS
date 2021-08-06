@@ -10,12 +10,12 @@ import CoreBluetooth
 import SwiftUI
 
 struct SelectPeripheralView: View {
-    @State private var showBluetoothAlert = false
     @State private var selection: CBPeripheral? = nil
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @EnvironmentObject var sessionContext: CreateSessionContext
-    @EnvironmentObject var viewmodel: DefaultAirBeamConnectionController
+    @EnvironmentObject var connectionController: DefaultAirBeamConnectionController
     
+    @State var shouldContinueToNextScreen: Bool = false
     @Binding var creatingSessionFlowContinues: Bool
     
     let urlProvider: BaseURLProvider
@@ -61,15 +61,11 @@ struct SelectPeripheralView: View {
                     } else {
                         connectButton.disabled(true)
                     }
-                }.alert(isPresented: $showBluetoothAlert, content: {
-                    Alert(title: Text(Strings.SelectPeripheralView.alertTitle), message: Text(Strings.SelectPeripheralView.alertMessage), dismissButton: .default(Text(Strings.SelectPeripheralView.alertAccept)))
-                })
+                }
                 .padding()
                 .frame(maxWidth: .infinity, minHeight: geometry.size.height, alignment: .top)
             }
-        }.onChange(of: bluetoothManager.isConnected, perform: { value in
-            showBluetoothAlert = !value
-        })
+        }
     }
     
     func displayDeviceButton(devices: [CBPeripheral]) -> some View {
@@ -117,7 +113,8 @@ struct SelectPeripheralView: View {
     var connectButton: some View {
         var destination: AnyView
         if let selection = selection {
-            destination = AnyView(ConnectingABView(viewModel: ConnectingABViewModel(airBeamConnectionController: viewmodel), selectedPeripheral: selection, baseURL: urlProvider, creatingSessionFlowContinues: $creatingSessionFlowContinues))
+            let viewModel = AirbeamConnectionViewModelDefault(airBeamConnectionController: connectionController, peripheral: selection)
+            destination = AnyView(ConnectingABView(viewModel: viewModel, baseURL: urlProvider, creatingSessionFlowContinues: $creatingSessionFlowContinues))
         } else {
             destination = AnyView(EmptyView())
         }
