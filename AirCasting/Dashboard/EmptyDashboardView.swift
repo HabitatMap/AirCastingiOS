@@ -19,15 +19,14 @@ struct EmptyDashboardView: View {
             Spacer()
             VStack(spacing: 14) {
                 Text(Strings.EmptyOnboarding.title)
-                    .multilineTextAlignment(.center)
+//                    .multilineTextAlignment(.center)
                     .font(Font.moderate(size: 24, weight: .bold))
                     .foregroundColor(Color.darkBlue)
-                    .minimumScaleFactor(0.1)
 
                 Text(Strings.EmptyOnboarding.description)
                     .font(Font.muli(size: 16))
                     .foregroundColor(Color.aircastingGray)
-                    .multilineTextAlignment(.center)
+//                    .multilineTextAlignment(.center)
                     .lineSpacing(9.0)
                     .padding(.horizontal, 45)
             }
