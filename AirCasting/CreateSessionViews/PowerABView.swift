@@ -24,8 +24,7 @@ struct PowerABView: View {
             Image("2-power")
             VStack(alignment: .leading, spacing: 13) {
                 titleLabel
-                messageLabel
-            }
+            }.padding(.bottom, 20)
             continueButton
                 .buttonStyle(BlueButtonStyle())
         }.alert(isPresented: $showAlert) {
@@ -49,6 +48,7 @@ struct PowerABView: View {
             .foregroundColor(.accentColor)
     }
 
+    //stays here for maybe future needs
     var messageLabel: some View {
         Text(Strings.PowerABView.messageText)
             .font(Font.moderate(size: 18,
