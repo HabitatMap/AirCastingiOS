@@ -38,6 +38,7 @@ final class AirBeamFixedSessionCreator: SessionCreator {
                               deviceType: sessionContext.deviceType,
                               location: sessionContext.startingLocation,
                               startTime: Date(),
+                              followedAt: Date(),
                               tags: sessionContext.sessionTags)
         
         // if session is fixed: create an empty session on server,

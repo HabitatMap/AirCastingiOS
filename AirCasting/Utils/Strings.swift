@@ -86,6 +86,13 @@ struct Strings {
         static let description: String = "Your AirBeam is gathering data."
     }
     
+    struct SessionCartView {
+        static let map: String = "map"
+        static let graph: String = "graph"
+        static let follow: String = "follow"
+        static let unfollow: String = "unfollow"
+    }
+    
     struct SelectPeripheralView {
         static let airBeamsText: String = "AirBeams"
         static let otherText: String = "Other devices"

@@ -203,6 +203,10 @@
 		DD8C38092689A34E00901FDF /* UserDefaultsBaseURLProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8C38082689A34E00901FDF /* UserDefaultsBaseURLProvider.swift */; };
 		DD8C380C2689A3DA00901FDF /* BaseURLProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8C380B2689A3DA00901FDF /* BaseURLProvider.swift */; };
 		DD8C380E2689A55A00901FDF /* BackendSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8C380D2689A55A00901FDF /* BackendSettingsView.swift */; };
+		DD8C3810268A0E9400901FDF /* ShareViewModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8C380F268A0E9400901FDF /* ShareViewModal.swift */; };
+		DDF12AE826B2ADF400D067C7 /* SessionCartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF12AE726B2ADF400D067C7 /* SessionCartViewModel.swift */; };
+		DDF12AEB26B2B76C00D067C7 /* SessionCartFollowing.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF12AEA26B2B76C00D067C7 /* SessionCartFollowing.swift */; };
+		DDF12AEE26B2B87F00D067C7 /* SessionCartViewModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF12AED26B2B87F00D067C7 /* SessionCartViewModelTest.swift */; };
 		DDBC156426A0799300982526 /* SystemSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBC156326A0799300982526 /* SystemSettings.swift */; };
 		DDBC992626A1652A00B0662E /* ForgotPasswordTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBC992526A1652A00B0662E /* ForgotPasswordTest.swift */; };
 		DDCE5D3626A1F79F0033C211 /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCE5D3526A1F79F0033C211 /* UserSettings.swift */; };
@@ -441,6 +445,9 @@
 		DD8C380B2689A3DA00901FDF /* BaseURLProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseURLProvider.swift; sourceTree = "<group>"; };
 		DD8C380D2689A55A00901FDF /* BackendSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendSettingsView.swift; sourceTree = "<group>"; };
 		DD8C380F268A0E9400901FDF /* ShareViewModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewModal.swift; sourceTree = "<group>"; };
+		DDF12AE726B2ADF400D067C7 /* SessionCartViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionCartViewModel.swift; sourceTree = "<group>"; };
+		DDF12AEA26B2B76C00D067C7 /* SessionCartFollowing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionCartFollowing.swift; sourceTree = "<group>"; };
+		DDF12AED26B2B87F00D067C7 /* SessionCartViewModelTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionCartViewModelTest.swift; sourceTree = "<group>"; };
 		DDBC156326A0799300982526 /* SystemSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemSettings.swift; sourceTree = "<group>"; };
 		DDBC992526A1652A00B0662E /* ForgotPasswordTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordTest.swift; sourceTree = "<group>"; };
 		DDCE5D3526A1F79F0033C211 /* UserSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettings.swift; sourceTree = "<group>"; };
@@ -670,7 +677,7 @@
 		AC6D56A825B0837500D221BA /* SessionViews */ = {
 			isa = PBXGroup;
 			children = (
-				ACF77DFA25A8888700BB85B7 /* SessionCartView.swift */,
+				DDF12AE926B2ADFD00D067C7 /* SessionCartView */,
 				AC6D569E25AEEAE700D221BA /* SessionHeaderView.swift */,
 				DD009D652698844A009F0443 /* DeleteView.swift */,
 				DD72DC4126A99D5000325FE5 /* ShareView.swift */,
@@ -956,6 +963,7 @@
 		B3E26A0A2676DAB0001A8E4C /* Logic */ = {
 			isa = PBXGroup;
 			children = (
+				DDF12AEC26B2B7E300D067C7 /* SessionCartTests */,
 				B3E26A0B2676DABA001A8E4C /* SessionsSynchronization */,
 			);
 			path = Logic;
@@ -1126,6 +1134,24 @@
 			path = URLProviders;
 			sourceTree = "<group>";
 		};
+		DDF12AE926B2ADFD00D067C7 /* SessionCartView */ = {
+			isa = PBXGroup;
+			children = (
+				ACF77DFA25A8888700BB85B7 /* SessionCartView.swift */,
+				DDF12AE726B2ADF400D067C7 /* SessionCartViewModel.swift */,
+				DDF12AEA26B2B76C00D067C7 /* SessionCartFollowing.swift */,
+			);
+			name = SessionCartView;
+			sourceTree = "<group>";
+		};
+		DDF12AEC26B2B7E300D067C7 /* SessionCartTests */ = {
+			isa = PBXGroup;
+			children = (
+				DDF12AED26B2B87F00D067C7 /* SessionCartViewModelTest.swift */,
+			);
+			path = SessionCartTests;
+            sourceTree = "<group>";
+        };
 		DDBC992726A1914000B0662E /* ForgotPasswordTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -1415,6 +1441,7 @@
 				B3E26A0D2676DAD2001A8E4C /* SynchronizationTestDoubles.swift in Sources */,
 				B31B7ECB267E4DF6002DAC18 /* DummyError.swift in Sources */,
 				B31B7ECD267E500B002DAC18 /* SyncDownstreamServiceTests.swift in Sources */,
+				DDF12AEE26B2B87F00D067C7 /* SessionCartViewModelTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1466,6 +1493,7 @@
 				AC194B0D2684BAB40048E2C8 /* SessionLoadingView.swift in Sources */,
 				4FD2CA4726406F2C007E932E /* Diff.swift in Sources */,
 				DD8C38092689A34E00901FDF /* UserDefaultsBaseURLProvider.swift in Sources */,
+				DDF12AEB26B2B76C00D067C7 /* SessionCartFollowing.swift in Sources */,
 				B3F1448226AE4CD9006A4612 /* OfflineMessageViewModel.swift in Sources */,
 				AC5832DA25B196DD008C5DD5 /* Graph.swift in Sources */,
 				AC4A6A6A267CB3890001F639 /* AirCastingGraph.swift in Sources */,
@@ -1504,6 +1532,7 @@
 				AC93B8DA25BEDC46003D0A0D /* Array.swift in Sources */,
 				DDEE3A4B26979D4C0098CCA9 /* SharePage.swift in Sources */,
 				ACD01F7625FF61CE00B8F65F /* LocationProvider.swift in Sources */,
+				DDF12AE826B2ADF400D067C7 /* SessionCartViewModel.swift in Sources */,
 				3346F1F626318C1600BA4695 /* SettingsManager.swift in Sources */,
 				3326BD562642E71E00DE8E6D /* ChartEntriesCreator.swift in Sources */,
 				DDCE5D3826A1FE2D0033C211 /* DeleteSessionViewModel.swift in Sources */,
