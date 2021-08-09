@@ -598,6 +598,10 @@
 		AC1DAD4325C98556009AC4D1 /* ABConnector */ = {
 			isa = PBXGroup;
 			children = (
+				DDD24D8526A8295F00D4A327 /* ConnectingABViewModel.swift */,
+				DD28047A26B3D7730060F55E /* BluetoothConnector.swift */,
+				DD28047626B3D6E70060F55E /* AirBeamServices.swift */,
+				DD28047826B3D7370060F55E /* AirBeamConnectionController.swift */,
 				AC1DAD4825C987B3009AC4D1 /* BluetoothManager.swift */,
 				AC8CFF7D25EE5F9200FB2918 /* AirBeam3Configurator.swift */,
 				AC8CFF7625ECF8B100FB2918 /* HexMessagesBuilder.swift */,
@@ -642,7 +646,7 @@
 				AC32041B25CC46EF00A68520 /* PowerABView.swift */,
 				AC524A882614733D0061AD45 /* CreatingSessionFlowRootView.swift */,
 				AC1DAD4425C9858C009AC4D1 /* SelectPeripheralView.swift */,
-				DD28047526B3D6BB0060F55E /* ConnectingABView */,
+				AC32041E25CC485E00A68520 /* ConnectingABView.swift */,
 				AC960C7725DD39F500EC95DD /* ABConnectedView.swift */,
 				3362B4EC25E69987008D61BA /* CreateSessionDetailsView.swift */,
 				ACD01F7225FF574A00B8F65F /* WifiPopupView.swift */,
@@ -1084,18 +1088,6 @@
 				DD430B072670FE6100F1BF2E /* GreenTextButtonStyle.swift */,
 			);
 			name = "Recovered References";
-			sourceTree = "<group>";
-		};
-		DD28047526B3D6BB0060F55E /* ConnectingABView */ = {
-			isa = PBXGroup;
-			children = (
-				AC32041E25CC485E00A68520 /* ConnectingABView.swift */,
-				DDD24D8526A8295F00D4A327 /* ConnectingABViewModel.swift */,
-				DD28047626B3D6E70060F55E /* AirBeamServices.swift */,
-				DD28047826B3D7370060F55E /* AirBeamConnectionController.swift */,
-				DD28047A26B3D7730060F55E /* BluetoothConnector.swift */,
-			);
-			path = ConnectingABView;
 			sourceTree = "<group>";
 		};
 		DD2E8BE72685E0F500439F8B /* Settings */ = {
