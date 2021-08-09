@@ -16,31 +16,36 @@ struct EmptyDashboardView: View {
 
     private var emptyState: some View {
         VStack(spacing: 45) {
-            Spacer()
-            VStack(spacing: 14) {
-                Text(Strings.EmptyOnboarding.title)
-//                    .multilineTextAlignment(.center)
-                    .font(Font.moderate(size: 24, weight: .bold))
-                    .foregroundColor(Color.darkBlue)
+            VStack {
+                Spacer()
+                VStack(spacing: 14) {
+                    Text(Strings.EmptyOnboarding.title)
+                        .multilineTextAlignment(.center)
+                        .font(Font.moderate(size: 24, weight: .bold))
+                        .foregroundColor(Color.darkBlue)
+                        .minimumScaleFactor(0.1)
+                        .fixedSize(horizontal: false, vertical: true)
 
-                Text(Strings.EmptyOnboarding.description)
-                    .font(Font.muli(size: 16))
-                    .foregroundColor(Color.aircastingGray)
-//                    .multilineTextAlignment(.center)
-                    .lineSpacing(9.0)
-                    .padding(.horizontal, 45)
+                    Text(Strings.EmptyOnboarding.description)
+                        .font(Font.muli(size: 16))
+                        .foregroundColor(Color.aircastingGray)
+                        .multilineTextAlignment(.center)
+                        .lineSpacing(9.0)
+                        .padding(.horizontal, 45)
+                        .fixedSize(horizontal: false, vertical: true)
+                }.padding(.bottom, 30)
+                VStack(spacing: 20) {
+                    Button(action: {
+                        tabSelection.selection = .createSession
+                    }, label: {
+                        Text(Strings.EmptyOnboarding.newSession)
+                            .bold()
+                    })
+                        .frame(maxWidth: 250)
+                        .buttonStyle(BlueButtonStyle())
+                }
+                Spacer()
             }
-            VStack(spacing: 20) {
-                Button(action: {
-                    tabSelection.selection = .createSession
-                }, label: {
-                    Text(Strings.EmptyOnboarding.newSession)
-                        .bold()
-                })
-                    .frame(maxWidth: 250)
-                    .buttonStyle(BlueButtonStyle())
-            }
-            Spacer()
             airBeamDescription
                 .frame(minWidth: 250, idealWidth: .infinity, maxWidth: .infinity, minHeight: 110, idealHeight: 110, maxHeight: 110, alignment: .center)
                 .padding(.bottom)
