@@ -18,11 +18,13 @@ struct EmptyDashboardView: View {
         VStack(spacing: 45) {
             Spacer()
             VStack(spacing: 14) {
-                Text("Ready to get started?")
+                Text(Strings.EmptyOnboarding.title)
+                    .multilineTextAlignment(.center)
                     .font(Font.moderate(size: 24, weight: .bold))
                     .foregroundColor(Color.darkBlue)
+                    .minimumScaleFactor(0.1)
 
-                Text("Explore & follow existing AirCasting sessions or use your own device to record a new session and monitor your health & environment.")
+                Text(Strings.EmptyOnboarding.description)
                     .font(Font.muli(size: 16))
                     .foregroundColor(Color.aircastingGray)
                     .multilineTextAlignment(.center)
@@ -33,16 +35,45 @@ struct EmptyDashboardView: View {
                 Button(action: {
                     tabSelection.selection = .createSession
                 }, label: {
-                    Text("Record new session")
+                    Text(Strings.EmptyOnboarding.newSession)
                         .bold()
                 })
                     .frame(maxWidth: 250)
                     .buttonStyle(BlueButtonStyle())
             }
             Spacer()
+            airBeamDescription
+                .frame(minWidth: 250, idealWidth: .infinity, maxWidth: .infinity, minHeight: 110, idealHeight: 110, maxHeight: 110, alignment: .center)
+                .padding(.bottom)
         }
         .padding()
         .background(Color(red: 251/255, green: 253/255, blue: 255/255))
+    }
+}
+
+private extension EmptyDashboardView {
+    private var airBeamDescription: some View {
+        ZStack {
+            Rectangle()
+                .fill(Color(red: 251/255, green: 253/255, blue: 255/255))
+                .cornerRadius(5)
+                .shadow(color: Color(white: 150/255, opacity: 0.5), radius: 7, x: 0, y: 1)
+            HStack {
+                Image("airbeam")
+                    .resizable()
+                    .frame(width: 60, height: 80, alignment: .center)
+                    .scaledToFill()
+                VStack(alignment: .leading) {
+                    Text(Strings.EmptyOnboarding.airBeamDescriptionText)
+                        .font(Font.muli(size: 16, weight: .semibold))
+                        .foregroundColor(.aircastingGray)
+                        .lineSpacing(15)
+                    Text(Strings.EmptyOnboarding.airBeamDescriptionDescription)
+                        .font(Font.muli(size: 14))
+                        .foregroundColor(.aircastingGray)
+                }
+            }
+        }
     }
 }
 

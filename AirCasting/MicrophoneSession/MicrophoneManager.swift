@@ -25,9 +25,11 @@ final class MicrophoneManager: NSObject, ObservableObject {
     private var levelTimer: Timer?
     private(set) var session: Session?
     private lazy var locationProvider = LocationProvider()
+    let sessionSynchronizer: SessionSynchronizer
 
-    init(measurementStreamStorage: MeasurementStreamStorage) {
+    init(measurementStreamStorage: MeasurementStreamStorage, sessionSynchronizer: SessionSynchronizer) {
         self.measurementStreamStorage = measurementStreamStorage
+        self.sessionSynchronizer = sessionSynchronizer
         super.init()
     }
 
@@ -60,6 +62,7 @@ final class MicrophoneManager: NSObject, ObservableObject {
         recorder.stop()
         recorder = nil
         try? measurementStreamStorage.updateSessionStatus(.FINISHED, for: session!.uuid)
+        sessionSynchronizer.triggerSynchronization()
     }
 
     deinit {
@@ -98,10 +101,11 @@ extension MicrophoneManager: AVAudioRecorderDelegate {
 private extension MicrophoneManager {
     func sampleMeasurement() throws {
         recorder.updateMeters()
-        let value = Double(recorder.averagePower(forChannel: 0))
+        let power = recorder.averagePower(forChannel: 0)
+        let decibels = Double(power + 90.0)
         let location = obtainCurrentLocation()
-        Log.debug("New mic measurement \(value) at \(String(describing: location))")
-        try measurementStreamStorage.addMeasurementValue(value, at: location, toStreamWithID: measurementStreamLocalID!)
+        Log.debug("New mic measurement \(decibels) at \(String(describing: location))")
+        try measurementStreamStorage.addMeasurementValue(decibels, at: location, toStreamWithID: measurementStreamLocalID!)
     }
 
     @objc func timerTick() {
@@ -120,7 +124,8 @@ private extension MicrophoneManager {
                                        thresholdHigh: 80,
                                        thresholdMedium: 70,
                                        thresholdLow: 60,
-                                       thresholdVeryLow: 20)
+                                       thresholdVeryLow: -100)
+        #warning("TODO: Change thresholdVeryLow to 20")
         return try measurementStreamStorage.createSessionAndMeasurementStream(session, stream)
     }
     

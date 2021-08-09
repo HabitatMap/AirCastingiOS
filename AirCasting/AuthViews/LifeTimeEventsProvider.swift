@@ -3,7 +3,7 @@
 
  import Foundation
 
- class UserDefaultProtocol: ObservableObject {
+ class LifeTimeEventsProvider: ObservableObject {
      private let userDefaults: UserDefaults
 
      var hasEverLoggedIn: Bool {
@@ -25,9 +25,7 @@
              userDefaults.bool(forKey: "onBoardingKey")
          }
      }
-
      init(userDefaults: UserDefaults = .standard) {
          self.userDefaults = userDefaults
      }
-
  }

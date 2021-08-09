@@ -21,6 +21,7 @@ final class CreateSessionContext: ObservableObject {
     var isIndoor: Bool?
     var startingLocation: CLLocationCoordinate2D?
     var deviceType: DeviceType?
+    var contribute: Bool?
 
     private var syncSink: Any?
     

@@ -73,7 +73,7 @@ final class AuthorizationAPIService {
     init(apiClient: APIClient = URLSession.shared, responseHandler: AuthorizationHTTPResponseHandler = .init(), baseUrl: BaseURLProvider) {
         self.apiClient = apiClient
         self.responseHandler = responseHandler
-        self.url = baseUrl.authorizationURL.appendingPathComponent("user.json")
+        self.url = baseUrl.baseAppURL.appendingPathComponent("user.json")
     }
 
     @discardableResult

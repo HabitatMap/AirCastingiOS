@@ -21,10 +21,10 @@ struct HeatmapSettingsView: View {
     var body: some View {
         Form {
             VStack(alignment: .leading, spacing: 16) {
-                Text("Heatmap settings")
+                Text(Strings.SessionCart.heatmapSettingsTitle)
                     .foregroundColor(.darkBlue)
                     .font(Font.muli(size: 24, weight: .heavy))
-                Text("Values beyond Min and Max will not be displayed.")
+                Text(Strings.SessionCart.heatmapSettingsdescription)
                     .foregroundColor(.aircastingGray)
                     .font(Font.moderate(size: 16, weight: .regular))
             }
@@ -44,12 +44,12 @@ struct HeatmapSettingsView: View {
                     presentationMode.wrappedValue.dismiss()
                 })
                 {
-                    Text("Save changes")
+                    Text(Strings.SessionCart.saveChangesButton)
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(BlueButtonStyle())
                 
-                Button("Reset to default", action: {
+                Button(Strings.SessionCart.resetChangesButton, action: {
                     presentationMode.wrappedValue.dismiss()
                 })
                 .frame(minHeight: 35)
@@ -96,32 +96,32 @@ struct HeatmapSettingsView: View {
     
     var veryHighTextfield: some View {
         HStack {
-            showDescriptionLabel(text: "Max")
+            showDescriptionLabel(text: Strings.Thresholds.veryHigh)
             showThresholdTextfield(value: $thresholdVeryHigh)
         }
     }
     var highTextfield: some View {
         HStack {
-            showDescriptionLabel(text: "High")
+            showDescriptionLabel(text: Strings.Thresholds.high)
             showThresholdTextfield(value: $thresholdHigh)
         }
     }
     var mediumTextfield: some View {
         HStack {
-            showDescriptionLabel(text: "Medium")
+            showDescriptionLabel(text: Strings.Thresholds.medium)
             showThresholdTextfield(value: $thresholdMedium)
         }
     }
     
     var lowTextfield: some View {
         HStack {
-            showDescriptionLabel(text: "Low")
+            showDescriptionLabel(text: Strings.Thresholds.low)
             showThresholdTextfield(value: $thresholdLow)
         }
     }
     var veryLowTextfield: some View {
         HStack {
-            showDescriptionLabel(text: "Min")
+            showDescriptionLabel(text: Strings.Thresholds.veryLow)
             showThresholdTextfield(value: $thresholdVeryLow)
         }
     }

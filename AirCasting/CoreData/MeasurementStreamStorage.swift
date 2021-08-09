@@ -102,6 +102,19 @@ final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
         sessionEntity.status = sessionStatus
         try context.save()
     }
+    
+    func updateSessionEndTime(for sessionUUID: SessionUUID) throws {
+        let context = persistenceController.editContext()
+        context.performAndWait {
+            do {
+                let sessionEntity = try context.existingSession(uuid: sessionUUID)
+                sessionEntity.endTime = Date()
+                try context.save()
+            } catch {
+                Log.info("Error when changing end Date in session")
+            }
+        }
+    }
 
     func updateSessionFollowing(_ sessionFollowing: SessionFollowing, for sessionUUID: SessionUUID) {
         let context = persistenceController.editContext()
@@ -132,7 +145,7 @@ final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
 /// Only to be used for swiftui previews
 final class PreviewMeasurementStreamStorage: MeasurementStreamStorage {
     func updateSessionFollowing(_ sessionStatus: SessionFollowing, for sessionUUID: SessionUUID) {}
-
+    
     func addMeasurement(_ measurement: Measurement, toStreamWithID id: MeasurementStreamLocalID) throws {
         print("Nothing happened for \(measurement)")
     }

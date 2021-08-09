@@ -10,18 +10,32 @@ import SwiftUI
 struct SessionHeaderView: View {
     let action: () -> Void
     let isExpandButtonNeeded: Bool
+    @EnvironmentObject var networkChecker: NetworkChecker
     @ObservedObject var session: SessionEntity
+    @EnvironmentObject private var microphoneManager: MicrophoneManager
+    @State private var showingAlert = false
+    @State private var showingFinishAlert = false
+    @State private var shareModal = false
+    @State private var deleteModal = false
     @State private var showModal = false
+    @State private var showModalEdit = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 13) {
             HStack {
                 dateAndTime
                 Spacer()
-                actionsMenu
-            }.sheet(isPresented: $showModal, content: {
-                ShareViewModal()
+                if session.type == .fixed {
+                    actionsMenuFixed
+                } else if !session.isDormant {
+                    actionsMenuMobile
+                }
+            }.sheet(isPresented: $shareModal, content: {
+                ShareView(showModal: $showModal)
             })
+                .sheet(isPresented: $deleteModal, content: {
+                    DeleteView(viewModel: DefaultDeleteSessionViewModel(), deleteModal: $deleteModal)
+                })
             nameLabelAndExpandButton
         }
         .font(Font.moderate(size: 13, weight: .regular))
@@ -54,7 +68,7 @@ private extension SessionHeaderView {
                     Button(action: {
                         action()
                     }) {
-                        Image("expandButtonIcon")
+                        Image(systemName: "chevron.down")
                             .renderingMode(.original)
                     }
                 }
@@ -64,32 +78,10 @@ private extension SessionHeaderView {
         }
         .foregroundColor(.darkBlue)
     }
-
-    var actionsMenu: some View {
+    
+    var actionsMenuMobile: some View {
         Menu {
-            Button {
-                // action here
-            } label: {
-                Label("Resume recording", systemImage: "repeat")
-            }
-            
-            Button {
-                // action here
-            } label: {
-                Label("Edit session", systemImage: "pencil")
-            }
-            
-            Button {
-                showModal.toggle()
-            } label: {
-                Label("Share session", systemImage: "square.and.arrow.up")
-            }
-            
-            Button {
-                // action here
-            } label: {
-                Label("Delete session", systemImage: "xmark.circle")
-            }
+            actionsMenuMobileStopButton
         } label: {
             ZStack(alignment: .trailing) {
                 EditButtonView()
@@ -97,9 +89,88 @@ private extension SessionHeaderView {
                     .frame(width: 30, height: 20, alignment: .trailing)
                     .opacity(0.0001)
             }
+        }.alert(isPresented: $showingFinishAlert) {
+            Alert(title: Text(Strings.SessionHeaderView.finishAlertTitle) +
+                Text(session.name ?? Strings.SessionHeaderView.finishAlertTitle_2)
+                +
+                Text(Strings.SessionHeaderView.finishAlertTitle_3),
+                message: Text(Strings.SessionHeaderView.finishAlertMessage_1) +
+                    Text(Strings.SessionHeaderView.finishAlertMessage_2) +
+                    Text(Strings.SessionHeaderView.finishAlertMessage_3),
+                primaryButton: .default(Text(Strings.SessionHeaderView.finishAlertButton), action: {
+                    do {
+                        try microphoneManager.stopRecording()
+                    } catch {
+                        Log.info("error when stpoing mic session - \(error)")
+                    }
+                }),
+                secondaryButton: .cancel())
         }
     }
     
+    var actionsMenuMobileStopButton: some View {
+        Button {
+            showingFinishAlert = true
+        } label: {
+            Label(Strings.SessionHeaderView.stopRecordingButton, systemImage: "stop.circle")
+        }
+    }
+    
+    var actionsMenuFixed: some View {
+        Menu {
+            actionsMenuFixedRepeatButton
+            actionsMenuFixedEditButton
+            actionsMenuFixedShareButton
+            actionsMenuFixedDeleteButton
+        } label: {
+            ZStack(alignment: .trailing) {
+                EditButtonView()
+                Rectangle()
+                    .frame(width: 30, height: 20, alignment: .trailing)
+                    .opacity(0.0001)
+            }
+        }.alert(isPresented: $showingAlert) {
+            Alert(title: Text(Strings.SessionHeaderView.alertTitle),
+                  message: Text(Strings.SessionHeaderView.alertMessage),
+                  dismissButton: .default(Text(Strings.SessionHeaderView.confirmAlert)))
+        }
+        .sheet(isPresented: $showModalEdit) { EditViewModal(showModalEdit: $showModalEdit) }
+    }
+    
+    var actionsMenuFixedRepeatButton: some View {
+        Button {
+            // action here
+        } label: {
+            Label("resume", systemImage: "repeat")
+        }
+    }
+    
+    var actionsMenuFixedEditButton: some View {
+        Button {
+            DispatchQueue.main.async {
+                print(" \(networkChecker.connectionAvailable) NETWORK")
+                networkChecker.connectionAvailable ? showModalEdit.toggle() : showingAlert.toggle()
+            }
+        } label: {
+            Label(Strings.SessionHeaderView.editButton, systemImage: "pencil")
+        }
+    }
+    
+    var actionsMenuFixedShareButton: some View {
+        Button {
+            shareModal.toggle()
+        } label: {
+            Label(Strings.SessionHeaderView.shareButton, systemImage: "square.and.arrow.up")
+        }
+    }
+
+    var actionsMenuFixedDeleteButton: some View {
+        Button {
+            deleteModal.toggle()
+        } label: {
+            Label(Strings.SessionHeaderView.deleteButton, systemImage: "xmark.circle")
+        }
+    }
 }
 
 #if DEBUG
@@ -108,7 +179,7 @@ struct SessionHeader_Previews: PreviewProvider {
         SessionHeaderView(action: {},
                           isExpandButtonNeeded: true,
                           session: SessionEntity.mock)
-            .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
+            .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionSynchronizer: DummySessionSynchronizer()))
     }
 }
 #endif

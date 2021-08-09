@@ -8,15 +8,23 @@ struct AirSectionPickerView: View {
     @Binding var selection: SelectedSection
     
     var body: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack {
-                ForEach(SelectedSection.allCases, id: \.self) { section in
-                    Button(section.localizedString) {
-                        withAnimation(.easeInOut(duration: 0.1)) {
-                            selection = section
+        ScrollViewReader { scrollReader in
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack {
+                    ForEach(SelectedSection.allCases, id: \.self) { section in
+                        Button(section.localizedString) {
+                            withAnimation(.easeInOut(duration: 0.1)) {
+                                if section == .mobileDormant {
+                                    scrollReader.scrollTo(SelectedSection.fixed)
+                                } else if section == .mobileActive {
+                                    scrollReader.scrollTo(SelectedSection.following)
+                                }
+                                selection = section
+                            }
                         }
+                        .buttonStyle(PickerButtonStyle(isSelected: section == selection))
+                        .id(section)
                     }
-                    .buttonStyle(PickerButtonStyle(isSelected: section == selection))
                 }
             }
         }

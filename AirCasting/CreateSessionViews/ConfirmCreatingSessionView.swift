@@ -36,7 +36,7 @@ struct ConfirmCreatingSessionView: View {
 
     private var contentViewWithAlert: some View {
         contentView.alert(isPresented: $isPresentingAlert) {
-            Alert(title: Text("Failure"), message: Text(error?.localizedDescription ?? "Failed to create session"), dismissButton: .default(Text("Got it!"), action: {
+            Alert(title: Text(Strings.ConfirmCreatingSessionView.alertTitle), message: Text(error?.localizedDescription ?? Strings.ConfirmCreatingSessionView.alertMessage), dismissButton: .default(Text(Strings.ConfirmCreatingSessionView.alertOK), action: {
                 error = nil
             }))
         }
@@ -44,19 +44,20 @@ struct ConfirmCreatingSessionView: View {
     
     private var contentView: some View {
         VStack(alignment: .leading, spacing: 40) {
-            Text("Are you ready?")
+            ProgressView(value: 0.90)
+            Text(Strings.ConfirmCreatingSessionView.contentViewTitle)
                 .font(Font.moderate(size: 24, weight: .bold))
                 .foregroundColor(.darkBlue)
 
             VStack(alignment: .leading, spacing: 15) {
-                Text("Your ")
+                Text(Strings.ConfirmCreatingSessionView.contentViewText_1)
                     + Text(sessionType)
                     .foregroundColor(.accentColor)
-                    + Text(" session ")
+                    + Text(Strings.ConfirmCreatingSessionView.contentViewText_2)
                     + Text(sessionName)
                     .foregroundColor(.accentColor)
-                    + Text(" is ready to start gathering data.")
-                Text("Move to your starting location, confirm your location is accurate on the map, then press the start recording button below.")
+                    + Text(Strings.ConfirmCreatingSessionView.contentViewText_3)
+                Text(Strings.ConfirmCreatingSessionView.contentViewText_4)
             }
             .font(Font.muli(size: 16))
             .foregroundColor(Color.aircastingGray)

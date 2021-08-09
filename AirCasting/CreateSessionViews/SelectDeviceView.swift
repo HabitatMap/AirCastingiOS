@@ -11,6 +11,7 @@ import AirCastingStyling
 
 struct SelectDeviceView: View {
     
+    @State private var canContinue = false
     @State private var selected = 0
     @State private var isTurnOnBluetoothLinkActive: Bool = false
     @State private var isPowerABLinkActive: Bool = false
@@ -18,8 +19,12 @@ struct SelectDeviceView: View {
     @EnvironmentObject private var sessionContext: CreateSessionContext
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @EnvironmentObject private var microphoneManager: MicrophoneManager
-    
+    @StateObject private var locationTracker = LocationTracker()
     @Binding var creatingSessionFlowContinues : Bool
+    @State private var showAlert = false
+    private var continueButtonEnabled: Bool {
+        locationTracker.locationGranted == .granted
+    }
     
     let urlProvider: BaseURLProvider
     
@@ -32,12 +37,20 @@ struct SelectDeviceView: View {
             Spacer()
             chooseButton
             
+        }.alert(isPresented: $showAlert) {
+            Alert.locationAlert
         }
         .padding()
+        .onAppear {
+            locationTracker.requestAuthorisation()
+        }
+        .onChange(of: locationTracker.locationGranted) { newValue in
+            showAlert = (newValue == .denied)
+        }
     }
     
     var titleLabel: some View {
-        Text("What device are you using to record this session?")
+        Text(Strings.SelectDeviceView.title)
             .font(Font.moderate(size: 25,
                                 weight: .bold))
             .foregroundColor(.accentColor)
@@ -68,10 +81,10 @@ struct SelectDeviceView: View {
     
     var bluetoothLabels: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text("Bluetooth device")
+            Text(Strings.SelectDeviceView.bluetoothLabel_1)
                 .font(Font.muli(size: 16, weight: .bold))
                 .foregroundColor(.accentColor)
-            Text("for example AirBeam")
+            Text(Strings.SelectDeviceView.bluetoothLabel_2)
                 .font(Font.muli(size: 14, weight: .regular))
                 .foregroundColor(.aircastingGray)
         }
@@ -79,10 +92,10 @@ struct SelectDeviceView: View {
     
     var micLabels: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text("Phone microphone")
+            Text(Strings.SelectDeviceView.micLabel_1)
                 .font(Font.muli(size: 16, weight: .bold))
                 .foregroundColor(.accentColor)
-            Text("to measure sound level")
+            Text(Strings.SelectDeviceView.micLabel_2)
                 .font(Font.muli(size: 14, weight: .regular))
                 .foregroundColor(.aircastingGray)
         }
@@ -113,8 +126,9 @@ struct SelectDeviceView: View {
                 }
             }
         }, label: {
-            Text("Choose")
+            Text(Strings.SelectDeviceView.chooseButton)
         })
+        .disabled(!continueButtonEnabled)
         .buttonStyle(BlueButtonStyle())
         .background( Group {
             NavigationLink(
