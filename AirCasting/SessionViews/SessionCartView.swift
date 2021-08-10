@@ -119,9 +119,9 @@ private extension SessionCartView {
     
     func displayButtons(thresholds: [SensorThreshold]) -> some View {
         HStack(spacing: 20) {
-            if sessionCartViewModel.isFollowing {
+            if sessionCartViewModel.isFollowing && session.type == .fixed {
                 unFollowButton
-            } else {
+            } else if session.type == .fixed {
                 followButton
             }
             Spacer()
