@@ -88,7 +88,7 @@ struct SynchronizationDataConterter {
     
     func convertDatabaseMeasuremnetsToUploadData(_ measurements: [SessionsSynchronization.SessionStoreMeasurementData]) -> [SessionsSynchronization.MeasurementUpstreamData] {
         measurements.map {
-            SessionsSynchronization.MeasurementUpstreamData(value: $0.value, miliseconds:$0.time.miliseconds, latitude: $0.latitude, longitude: $0.longitude, time: $0.time)
+            SessionsSynchronization.MeasurementUpstreamData(value: $0.value, milliseconds:$0.time.milliseconds, latitude: $0.latitude, longitude: $0.longitude, time: $0.time)
         }
     }
     

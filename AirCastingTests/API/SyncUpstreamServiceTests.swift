@@ -86,7 +86,7 @@ final class SyncUpstreamServiceTests: XCTestCase {
         XCTAssertEqual(measuremnets.first?["longitude"] as! Double, 50.12, accuracy: 0.001)
         XCTAssertEqual(measuremnets.first?["time"] as? String, "2001-01-01T01:02:30.000Z")
         XCTAssertEqual(measuremnets.first?["latitude"] as! Double, 51.01, accuracy: 0.001)
-        XCTAssertEqual(measuremnets.first?["miliseconds"] as? Int, 87)
+        XCTAssertEqual(measuremnets.first?["milliseconds"] as? Int, 87)
     }
     
     // MARK: - Error handling
@@ -154,6 +154,6 @@ extension SessionsSynchronization.SessionUpstreamData {
 
 extension SessionsSynchronization.MeasurementUpstreamData {
     static func mock() -> Self {
-        .init(value: 12.00, miliseconds: 87, latitude: 51.01, longitude: 50.12, time: Date(timeIntervalSinceReferenceDate: 150))
+        .init(value: 12.00, milliseconds: 87, latitude: 51.01, longitude: 50.12, time: Date(timeIntervalSinceReferenceDate: 150))
     }
 }

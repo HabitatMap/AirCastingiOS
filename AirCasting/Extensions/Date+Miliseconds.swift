@@ -10,7 +10,7 @@ extension Date {
         return f
     }()
     
-    var miliseconds: Int {
+    var milliseconds: Int {
         Int(Date.msFormatter.string(from: self).dropFirst())!
     }
 }

@@ -52,7 +52,7 @@ extension SessionsSynchronization {
     
     struct MeasurementUpstreamData: Equatable, Codable {
         let value: Double
-        let miliseconds: Int
+        let milliseconds: Int
         let latitude: Double?
         let longitude: Double?
         let time: Date
