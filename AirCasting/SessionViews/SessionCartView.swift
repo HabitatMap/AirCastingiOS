@@ -125,7 +125,9 @@ private extension SessionCartView {
                 followButton
             }
             Spacer()
-            mapButton(thresholds: thresholds)
+            if !session.isIndoor && session.type != .fixed {
+                mapButton(thresholds: thresholds)
+            }
             graphButton(thresholds: thresholds)
         }
         .buttonStyle(GrayButtonStyle())
