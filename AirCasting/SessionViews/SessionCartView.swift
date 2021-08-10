@@ -119,6 +119,12 @@ private extension SessionCartView {
     
     func displayButtons(thresholds: [SensorThreshold]) -> some View {
         HStack(spacing: 20) {
+            if sessionCartViewModel.isFollowing {
+                unFollowButton
+            } else {
+                followButton
+            }
+            Spacer()
             mapButton(thresholds: thresholds)
             graphButton(thresholds: thresholds)
         }
