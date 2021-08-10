@@ -8,14 +8,14 @@
 import CoreBluetooth
 import SwiftUI
 
-struct ConnectingABView: View {
+struct ConnectingABView<VM: AirbeamConnectionViewModel>: View {
     
     @Environment(\.presentationMode) var presentationMode
-    @ObservedObject var viewModel: ConnectingABViewModel
-    @State var selectedPeripheral: CBPeripheral? = nil
+    @StateObject var viewModel: VM
     let baseURL: BaseURLProvider
-    
     @Binding var creatingSessionFlowContinues: Bool
+    @State private var showNextScreen: Bool = false
+    @State private var presentAlert: Bool = false
     
     var body: some View {
         VStack(spacing: 50) {
@@ -33,22 +33,36 @@ struct ConnectingABView: View {
                 titleLabel
                 messageLabel
             }
-            .background(
-                NavigationLink(
-                    destination: ABConnectedView(creatingSessionFlowContinues: $creatingSessionFlowContinues, baseURL: baseURL),
-                    isActive: $viewModel.isDeviceConnected,
-                    label: {
-                        EmptyView()
-                    }
-                )
+        }.background(
+            NavigationLink(
+                destination: ABConnectedView(creatingSessionFlowContinues: $creatingSessionFlowContinues, baseURL: baseURL),
+                isActive: $showNextScreen,
+                label: {
+                    EmptyView()
+                }
             )
-        }
+        )
         .padding()
-        .onChange(of: viewModel.shouldDismiss, perform: { value in
-            presentationMode.wrappedValue.dismiss()
+        .onReceive(viewModel.isDeviceConnected, perform: { isConnected in
+            showNextScreen = isConnected
+        })
+        .onReceive(viewModel.shouldDismiss, perform: { dismiss in
+            presentAlert = dismiss
+            
+        })
+        .alert(isPresented: $presentAlert, content: {
+            Alert(title: Text(Strings.AirBeamConnector.connectionTimeoutTitle),
+                  message: Text(Strings.AirBeamConnector.connectionTimeoutDescription),
+                  dismissButton: .default(Text(Strings.AirBeamConnector.connectionTimeoutActionTitle), action: {
+                presentationMode.wrappedValue.dismiss()
+            }))
         })
         .onAppear(perform: {
-            viewModel.connectToAirBeam(peripheral: selectedPeripheral!)
+            /* App is pushing the next view before this view is fully loaded. It resulted with showing next view and going back to this one.
+             The async enables app to load this view and then push the next one. */
+            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
+                viewModel.connectToAirBeam()
+            }
         })
     }
     
@@ -81,7 +95,7 @@ struct ConnectingABView: View {
 #if DEBUG
 struct ConnectingABView_Previews: PreviewProvider {
     static var previews: some View {
-        ConnectingABView(viewModel: ConnectingABViewModel(airBeamConnectionController: DummyAirBeamConnectionController()), baseURL: DummyURLProvider(), creatingSessionFlowContinues: .constant(true))
+        ConnectingABView(viewModel: NeverConnectingAirbeamConnectionViewModel(), baseURL: DummyURLProvider(), creatingSessionFlowContinues: .constant(true))
     }
  }
 #endif

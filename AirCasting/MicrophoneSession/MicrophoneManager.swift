@@ -62,7 +62,6 @@ final class MicrophoneManager: NSObject, ObservableObject {
         recorder.stop()
         recorder = nil
         try? measurementStreamStorage.updateSessionStatus(.FINISHED, for: session!.uuid)
-        try? measurementStreamStorage.updateSessionEndTime(for: session!.uuid)
         sessionSynchronizer.triggerSynchronization()
     }
 
@@ -83,7 +82,7 @@ extension MicrophoneManager: AVAudioRecorderDelegate {
     func audioRecorderBeginInterruption(_ recorder: AVAudioRecorder) {
         Log.warning("audio recorder interruption began")
         levelTimer?.invalidate()
-        try! measurementStreamStorage.updateSessionStatus(.DISCONNETCED, for: session!.uuid)
+        try! measurementStreamStorage.updateSessionStatus(.DISCONNECTED, for: session!.uuid)
     }
 
     func audioRecorderEndInterruption(_ recorder: AVAudioRecorder, withOptions flags: Int) {
