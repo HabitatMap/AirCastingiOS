@@ -12,15 +12,17 @@ struct DashboardView: View {
     @StateObject var coreDataHook: CoreDataHook
     @FetchRequest<SensorThreshold>(sortDescriptors: [.init(key: "sensorName", ascending: true)]) var thresholds
     @EnvironmentObject var selectedSection: SelectSection
+    let measurementStreamStorage: MeasurementStreamStorage
 
     private var sessions: [SessionEntity] {
         coreDataHook.sessions
     }
     
-    init(coreDataHook: CoreDataHook) {
+    init(coreDataHook: CoreDataHook, measurementStreamStorage: MeasurementStreamStorage) {
         let navBarAppearance = UINavigationBar.appearance()
         navBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(Color.darkBlue)]
         _coreDataHook = StateObject(wrappedValue: coreDataHook)
+        self.measurementStreamStorage = measurementStreamStorage
     }
 
     var body: some View {
@@ -40,7 +42,9 @@ struct DashboardView: View {
                 ScrollView(.vertical) {
                     LazyVStack(spacing: 20) {
                         ForEach(sessions, id: \.uuid) { session in
-                            SessionCartView(session: session, thresholds: thresholds)
+                            let followingSetter = MeasurementStreamStorageFollowingSettable(session: session, measurementStreamStorage: measurementStreamStorage)
+                            let viewModel = SessionCartViewModel(followingSetter: followingSetter)
+                            SessionCartView(session: session, sessionCartViewModel: viewModel, thresholds: thresholds)
                         }
                     }
                     .padding()
@@ -73,7 +77,7 @@ struct PreventCollapseView: View {
 #if DEBUG
 struct Dashboard_Previews: PreviewProvider {
     static var previews: some View {
-        DashboardView(coreDataHook: CoreDataHook(context: PersistenceController(inMemory: true).viewContext))
+        DashboardView(coreDataHook: CoreDataHook(context: PersistenceController(inMemory: true).viewContext), measurementStreamStorage: PreviewMeasurementStreamStorage())
     }
 }
 #endif

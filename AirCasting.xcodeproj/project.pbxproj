@@ -228,6 +228,9 @@
 		DDEE3A44269736270098CCA9 /* NetworkChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDEE3A43269736270098CCA9 /* NetworkChecker.swift */; };
 		DDEE3A48269747250098CCA9 /* EditViewModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDEE3A47269747250098CCA9 /* EditViewModal.swift */; };
 		DDEE3A4B26979D4C0098CCA9 /* SharePage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDEE3A4A26979D4C0098CCA9 /* SharePage.swift */; };
+		DDF12AE826B2ADF400D067C7 /* SessionCartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF12AE726B2ADF400D067C7 /* SessionCartViewModel.swift */; };
+		DDF12AEB26B2B76C00D067C7 /* SessionCartFollowing.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF12AEA26B2B76C00D067C7 /* SessionCartFollowing.swift */; };
+		DDF12AEE26B2B87F00D067C7 /* SessionCartViewModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF12AED26B2B87F00D067C7 /* SessionCartViewModelTest.swift */; };
 		DDF62601269C779800F23489 /* UIApplication+AppInfo.swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF62600269C779800F23489 /* UIApplication+AppInfo.swift.swift */; };
 		DDF7599A268332E900D906BA /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF75999268332E900D906BA /* Strings.swift */; };
 		EE969E7E1981C41852FB7745 /* Pods_AirCastingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A54057326D27D23E9906704 /* Pods_AirCastingTests.framework */; };
@@ -476,6 +479,9 @@
 		DDEE3A43269736270098CCA9 /* NetworkChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkChecker.swift; sourceTree = "<group>"; };
 		DDEE3A47269747250098CCA9 /* EditViewModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditViewModal.swift; sourceTree = "<group>"; };
 		DDEE3A4A26979D4C0098CCA9 /* SharePage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharePage.swift; sourceTree = "<group>"; };
+		DDF12AE726B2ADF400D067C7 /* SessionCartViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionCartViewModel.swift; sourceTree = "<group>"; };
+		DDF12AEA26B2B76C00D067C7 /* SessionCartFollowing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionCartFollowing.swift; sourceTree = "<group>"; };
+		DDF12AED26B2B87F00D067C7 /* SessionCartViewModelTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionCartViewModelTest.swift; sourceTree = "<group>"; };
 		DDF62600269C779800F23489 /* UIApplication+AppInfo.swift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+AppInfo.swift.swift"; sourceTree = "<group>"; };
 		DDF75999268332E900D906BA /* Strings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Strings.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -618,6 +624,10 @@
 		AC1DAD4325C98556009AC4D1 /* ABConnector */ = {
 			isa = PBXGroup;
 			children = (
+				DDD24D8526A8295F00D4A327 /* ConnectingABViewModel.swift */,
+				DD28047A26B3D7730060F55E /* BluetoothConnector.swift */,
+				DD28047626B3D6E70060F55E /* AirBeamServices.swift */,
+				DD28047826B3D7370060F55E /* AirBeamConnectionController.swift */,
 				AC1DAD4825C987B3009AC4D1 /* BluetoothManager.swift */,
 				AC8CFF7D25EE5F9200FB2918 /* AirBeam3Configurator.swift */,
 				AC8CFF7625ECF8B100FB2918 /* HexMessagesBuilder.swift */,
@@ -686,7 +696,7 @@
 		AC6D56A825B0837500D221BA /* SessionViews */ = {
 			isa = PBXGroup;
 			children = (
-				ACF77DFA25A8888700BB85B7 /* SessionCartView.swift */,
+				DDF12AE926B2ADFD00D067C7 /* SessionCartView */,
 				AC6D569E25AEEAE700D221BA /* SessionHeaderView.swift */,
 				DD009D652698844A009F0443 /* DeleteView.swift */,
 				DD72DC4126A99D5000325FE5 /* ShareView.swift */,
@@ -972,6 +982,7 @@
 		B3E26A0A2676DAB0001A8E4C /* Logic */ = {
 			isa = PBXGroup;
 			children = (
+				DDF12AEC26B2B7E300D067C7 /* SessionCartTests */,
 				B3E26A0B2676DABA001A8E4C /* SessionsSynchronization */,
 			);
 			path = Logic;
@@ -1179,6 +1190,24 @@
 				DDEE3A47269747250098CCA9 /* EditViewModal.swift */,
 			);
 			name = EditSessionButton;
+			sourceTree = "<group>";
+		};
+		DDF12AE926B2ADFD00D067C7 /* SessionCartView */ = {
+			isa = PBXGroup;
+			children = (
+				ACF77DFA25A8888700BB85B7 /* SessionCartView.swift */,
+				DDF12AE726B2ADF400D067C7 /* SessionCartViewModel.swift */,
+				DDF12AEA26B2B76C00D067C7 /* SessionCartFollowing.swift */,
+			);
+			name = SessionCartView;
+			sourceTree = "<group>";
+		};
+		DDF12AEC26B2B7E300D067C7 /* SessionCartTests */ = {
+			isa = PBXGroup;
+			children = (
+				DDF12AED26B2B87F00D067C7 /* SessionCartViewModelTest.swift */,
+			);
+			path = SessionCartTests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1443,6 +1472,7 @@
 				B3E26A0D2676DAD2001A8E4C /* SynchronizationTestDoubles.swift in Sources */,
 				B31B7ECB267E4DF6002DAC18 /* DummyError.swift in Sources */,
 				B31B7ECD267E500B002DAC18 /* SyncDownstreamServiceTests.swift in Sources */,
+				DDF12AEE26B2B87F00D067C7 /* SessionCartViewModelTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1494,6 +1524,7 @@
 				AC194B0D2684BAB40048E2C8 /* SessionLoadingView.swift in Sources */,
 				4FD2CA4726406F2C007E932E /* Diff.swift in Sources */,
 				DD8C38092689A34E00901FDF /* UserDefaultsBaseURLProvider.swift in Sources */,
+				DDF12AEB26B2B76C00D067C7 /* SessionCartFollowing.swift in Sources */,
 				B3F1448226AE4CD9006A4612 /* OfflineMessageViewModel.swift in Sources */,
 				AC5832DA25B196DD008C5DD5 /* Graph.swift in Sources */,
 				AC4A6A6A267CB3890001F639 /* AirCastingGraph.swift in Sources */,
@@ -1534,6 +1565,7 @@
 				AC93B8DA25BEDC46003D0A0D /* Array.swift in Sources */,
 				DDEE3A4B26979D4C0098CCA9 /* SharePage.swift in Sources */,
 				ACD01F7625FF61CE00B8F65F /* LocationProvider.swift in Sources */,
+				DDF12AE826B2ADF400D067C7 /* SessionCartViewModel.swift in Sources */,
 				3346F1F626318C1600BA4695 /* SettingsManager.swift in Sources */,
 				3326BD562642E71E00DE8E6D /* ChartEntriesCreator.swift in Sources */,
 				DDCE5D3826A1FE2D0033C211 /* DeleteSessionViewModel.swift in Sources */,
@@ -1801,7 +1833,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 17;
+				CURRENT_PROJECT_VERSION = 18;
 				DEVELOPMENT_ASSET_PATHS = "\"AirCasting/Preview Content\"";
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
@@ -1828,7 +1860,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 17;
+				CURRENT_PROJECT_VERSION = 18;
 				DEVELOPMENT_ASSET_PATHS = "\"AirCasting/Preview Content\"";
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;

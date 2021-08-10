@@ -74,7 +74,7 @@ struct ConfirmCreatingSessionView: View {
                             if sessionContext.sessionType == .mobile {
                                 selectedSection.selectedSection = SelectedSection.mobileActive
                             } else {
-                                selectedSection.selectedSection = SelectedSection.fixed
+                                selectedSection.selectedSection = SelectedSection.following
                             }
                             tabSelection.selection = TabBarSelection.Tab.dashboard
                         case .failure(let error):

@@ -10,6 +10,7 @@ struct StreamsView: View {
     var thresholds: [SensorThreshold]
     @EnvironmentObject private var microphoneManager: MicrophoneManager
     let measurementPresentationStyle: MeasurementPresentationStyle
+    
 
     var body: some View {
         if session.deviceType == .MIC {

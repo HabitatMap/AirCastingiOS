@@ -16,6 +16,7 @@ class Dependancies {
 
 struct RootAppView: View {
     var dependancies = Dependancies()
+    private let measurementStreamStorage: MeasurementStreamStorage = CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared)
     @ObservedObject var lifeTimeEventsProvider = LifeTimeEventsProvider()
     @ObservedObject var userSettings = UserSettings()
     var sessionSynchronizer: SessionSynchronizer
@@ -36,25 +37,25 @@ struct RootAppView: View {
     }
 
     var mainAppView: some View {
-        MainTabBarView(measurementUpdatingService: DownloadMeasurementsService(
-                        authorisationService: userAuthenticationSession,
-                        persistenceController: persistenceController,
-                        baseUrl: dependancies.urlProvider), urlProvider: dependancies.urlProvider, sessionSynchronizer: sessionSynchronizer)
-            .environmentObject(dependancies.bluetoothManager)
-            .environmentObject(userAuthenticationSession)
-            .environmentObject(persistenceController)
-            .environmentObject(dependancies.networkChecker)
-            .environmentObject(lifeTimeEventsProvider)
-            .environmentObject(userSettings)
-            .environmentObject(dependancies.airBeamConnectionController)
-            .environment(\.managedObjectContext, persistenceController.viewContext)
-    }
+            MainTabBarView(measurementUpdatingService: DownloadMeasurementsService(
+                            authorisationService: userAuthenticationSession,
+                            persistenceController: persistenceController,
+                            baseUrl: dependancies.urlProvider), urlProvider: dependancies.urlProvider, measurementStreamStorage: measurementStreamStorage, sessionSynchronizer: sessionSynchronizer)
+                .environmentObject(dependancies.bluetoothManager)
+                .environmentObject(userAuthenticationSession)
+                .environmentObject(persistenceController)
+                .environmentObject(dependancies.networkChecker)
+                .environmentObject(lifeTimeEventsProvider)
+                .environmentObject(userSettings)
+                .environmentObject(dependancies.airBeamConnectionController)
+                .environment(\.managedObjectContext, persistenceController.viewContext)
+        }
 }
 
 #if DEBUG
 struct RootAppView_Previews: PreviewProvider {
     static var previews: some View {
-        RootAppView(sessionSynchronizer: DummySessionSynchronizer(), persistenceController: .shared)
+        RootAppView(sessionSynchronizer: DummySessionSynchronizer(), persistenceController: PersistenceController(inMemory: true))
     }
 }
 #endif

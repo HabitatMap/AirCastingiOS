@@ -63,7 +63,7 @@ final class UpdateSessionParamsService {
                 threshold.thresholdHigh = streamOutput.threshold_high
                 threshold.thresholdVeryHigh = streamOutput.threshold_very_high
             }
-            
+
             let oldMeasurements = oldStream.measurements?.array as? [MeasurementEntity] ?? []
             let measurementDiff = diff(oldMeasurements, streamOutput.measurements) {
                 if let id = $0.id {
