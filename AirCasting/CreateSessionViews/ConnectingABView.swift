@@ -23,7 +23,7 @@ struct ConnectingABView<VM: AirbeamConnectionViewModel>: View {
             ZStack(alignment: Alignment(horizontal: .trailing, vertical: .bottom), content: {
                 Image("airbeam")
                     .resizable()
-                    .frame(width: 300, height: 400)
+                    .aspectRatio(contentMode: .fit)
                 loader
                     .padding()
                     .padding(.vertical)
