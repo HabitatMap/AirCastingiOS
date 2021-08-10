@@ -58,8 +58,17 @@ extension SessionsSynchronization.SessionStoreSessionData {
                                                                                thresholdVeryHigh: 100,
                                                                                thresholdVeryLow: 20,
                                                                                unitName: "decibels",
-                                                                               unitSymbol: "dB")
-              ])
+                                                                               unitSymbol: "dB",
+                                                                               deleted: false,
+                                                                               measurements: [
+                                                                                .init(id: 1234,
+                                                                                      time: Date(timeIntervalSinceReferenceDate: 150),
+                                                                                      value: 12.02,
+                                                                                      latitude: 51.04,
+                                                                                      longitude: 50.12)
+                                                                               ])
+              ],
+              deleted: false)
     }
 }
 

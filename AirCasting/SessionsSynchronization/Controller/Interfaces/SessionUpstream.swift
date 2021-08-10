@@ -35,7 +35,6 @@ extension SessionsSynchronization {
     }
     
     struct MeasurementStreamUpstreamData: Equatable, Codable {
-        let id: MeasurementStreamID
         let sensorName: SensorName
         let sensorPackageName: String
         let unitName: String
@@ -48,5 +47,26 @@ extension SessionsSynchronization {
         let thresholdHigh: Int
         let thresholdVeryHigh: Int
         let deleted: Bool
+        let measurements: [MeasurementUpstreamData]
+    }
+    
+    struct MeasurementUpstreamData: Equatable, Codable {
+        let value: Double
+        let miliseconds: Int
+        let latitude: Double?
+        let longitude: Double?
+        let time: Date
+    }
+}
+
+extension Date {
+    static let msFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.dateFormat = "SSS"
+        return f
+    }()
+    
+    var miliseconds: Int {
+        Int(Date.msFormatter.string(from: self).dropFirst())!
     }
 }

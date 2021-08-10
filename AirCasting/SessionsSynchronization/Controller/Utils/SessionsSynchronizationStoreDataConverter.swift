@@ -19,7 +19,10 @@ struct SynchronizationDataConterter {
                 thresholdVeryHigh: stream.thresholdVeryHigh,
                 thresholdVeryLow: stream.thresholdVeryLow,
                 unitName: stream.unitName,
-                unitSymbol: stream.unitSymbol
+                unitSymbol: stream.unitSymbol,
+                deleted: false,
+                // Backend will not send us measurements, need to sync downstream other way:
+                measurements: []
             )
          }
         return .init(uuid: download.uuid,
@@ -35,7 +38,8 @@ struct SynchronizationDataConterter {
                      longitude: download.longitude,
                      latitude: download.latitude,
                      sessionType: download.type,
-                     measurementStreams: measurements)
+                     measurementStreams: measurements,
+                     deleted: false)
     }
     
     func convertSessionToUploadData(_ session: SessionsSynchronization.SessionStoreSessionData) -> SessionsSynchronization.SessionUpstreamData {
@@ -52,7 +56,7 @@ struct SynchronizationDataConterter {
                      version: session.version,
                      // NOTE: This is not being sent from Android app too and any attempt to put data here
                      // is causing a 500 Server Error, so it's probably how it should work.
-                     streams: [:],
+                     streams: convertDatabaseStreamsToUploadData(session),
                      latitude: session.latitude,
                      longitude: session.longitude,
                      deleted: session.gotDeleted)
@@ -60,6 +64,32 @@ struct SynchronizationDataConterter {
     
     func convertDatabaseSessionToMetadata(_ entity: Database.Session) -> SessionsSynchronization.Metadata {
         .init(uuid: entity.uuid, deleted: entity.gotDeleted, version: entity.version)
+    }
+    
+    func convertDatabaseStreamsToUploadData(_ entity: SessionsSynchronization.SessionStoreSessionData) -> [SensorName : SessionsSynchronization.MeasurementStreamUpstreamData] {
+        var result = [SensorName : SessionsSynchronization.MeasurementStreamUpstreamData]()
+        entity.measurementStreams.forEach {
+            result[$0.sensorName] = SessionsSynchronization.MeasurementStreamUpstreamData(sensorName: $0.sensorName,
+                                                                                       sensorPackageName: $0.sensorPackageName,
+                                                                                       unitName: $0.unitName,
+                                                                                       measurementType: $0.measurementType,
+                                                                                       measurementShortType: $0.measurementShortType,
+                                                                                       unitSymbol: $0.unitSymbol,
+                                                                                       thresholdVeryLow: $0.thresholdVeryLow,
+                                                                                       thresholdLow: $0.thresholdLow,
+                                                                                       thresholdMedium: $0.thresholdMedium,
+                                                                                       thresholdHigh: $0.thresholdHigh,
+                                                                                       thresholdVeryHigh: $0.thresholdVeryHigh,
+                                                                                       deleted: $0.deleted,
+                                                                                       measurements: convertDatabaseMeasuremnetsToUploadData($0.measurements))
+        }
+        return result
+    }
+    
+    func convertDatabaseMeasuremnetsToUploadData(_ measurements: [SessionsSynchronization.SessionStoreMeasurementData]) -> [SessionsSynchronization.MeasurementUpstreamData] {
+        measurements.map {
+            SessionsSynchronization.MeasurementUpstreamData(value: $0.value, miliseconds:$0.time.miliseconds, latitude: $0.latitude, longitude: $0.longitude, time: $0.time)
+        }
     }
     
     func convertDatabaseSessionToSessionStoreData(_ entity: Database.Session) -> SessionsSynchronization.SessionStoreSessionData {
@@ -76,7 +106,15 @@ struct SynchronizationDataConterter {
                                                                              thresholdVeryHigh: Int(stream.thresholdVeryHigh),
                                                                              thresholdVeryLow: Int(stream.thresholdVeryLow),
                                                                              unitName: stream.unitName!,
-                                                                             unitSymbol: stream.unitSymbol!)
+                                                                             unitSymbol: stream.unitSymbol!,
+                                                                             deleted: stream.deleted,
+                                                                             measurements: stream.measurements.map {
+                                                                                SessionsSynchronization.SessionStoreMeasurementData(id: $0.id,
+                                                                                                                                    time: $0.time,
+                                                                                                                                    value: $0.value,
+                                                                                                                                    latitude: $0.latitude,
+                                                                                                                                    longitude: $0.longitude)
+                                                                             })
         }
         return SessionsSynchronization.SessionStoreSessionData(uuid: entity.uuid,
                                                                contribute: entity.contribute,
@@ -91,6 +129,7 @@ struct SynchronizationDataConterter {
                                                                longitude: entity.location?.longitude,
                                                                latitude: entity.location?.latitude,
                                                                sessionType: entity.type.rawValue,
-                                                               measurementStreams: measurements ?? [])
+                                                               measurementStreams: measurements ?? [],
+                                                               deleted: entity.gotDeleted)
     }
 }
