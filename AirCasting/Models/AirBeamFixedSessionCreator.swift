@@ -47,21 +47,23 @@ final class AirBeamFixedSessionCreator: SessionCreator {
               let startTime = session.startTime,
               let peripheral = sessionContext.peripheral,
               let wifiSSID = sessionContext.wifiSSID,
-              let wifiPassword = sessionContext.wifiPassword else {
+              let wifiPassword = sessionContext.wifiPassword,
+              let contribute = sessionContext.contribute,
+              let isIndoor = sessionContext.isIndoor else {
             assertionFailure("invalidCreateSessionContext \(sessionContext)")
             completion(.failure(AirBeamSessionCreatorError.invalidCreateSessionContext(sessionContext)))
             return
         }
         
-        #warning("TODO: change mocked data (contribute, is_indoor, notes, locaation, end_time)")
+        #warning("TODO: change mocked data (contribute ✅, is_indoor ✅, notes, locaation, end_time)")
         let params = CreateSessionApi.SessionParams(uuid: sessionUUID,
                                                     type: .fixed,
                                                     title: name,
                                                     tag_list: session.tags ?? "",
                                                     start_time: startTime,
                                                     end_time: startTime,
-                                                    contribute: false,
-                                                    is_indoor: false,
+                                                    contribute: contribute,
+                                                    is_indoor: isIndoor,
                                                     notes: [],
                                                     version: 0,
                                                     streams: [:],
