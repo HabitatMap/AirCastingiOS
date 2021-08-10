@@ -119,7 +119,7 @@ private extension SessionCartView {
     
     func displayButtons(thresholds: [SensorThreshold]) -> some View {
         HStack(spacing: 20) {
-            if session.isIndoor && session.type == .fixed {
+            if !session.isIndoor && session.type != .fixed {
                 mapButton(thresholds: thresholds)
             }
             graphButton(thresholds: thresholds)
