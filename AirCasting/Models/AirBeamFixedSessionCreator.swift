@@ -55,7 +55,7 @@ final class AirBeamFixedSessionCreator: SessionCreator {
             return
         }
         
-        #warning("TODO: change mocked data (contribute ✅, is_indoor ✅, notes, locaation, end_time)")
+        #warning("TODO: change mocked data (contribute ✅, is_indoor ✅, notes (not yet), location, end_time)")
         let params = CreateSessionApi.SessionParams(uuid: sessionUUID,
                                                     type: .fixed,
                                                     title: name,
