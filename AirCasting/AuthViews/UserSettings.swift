@@ -6,17 +6,15 @@ import Foundation
 class UserSettings: ObservableObject {
     private let userDefaults: UserDefaults
     
-    var contributingToCrowdMap: Bool {
-        set {
-            objectWillChange.send()
-            userDefaults.setValue(newValue, forKey: "crowdMap")
-        }
-        get {
-            userDefaults.bool(forKey: "crowdMap")
+    @Published var contributingToCrowdMap: Bool {
+        didSet {
+            Log.info("Changed crowdmap contribution setting to \(contributingToCrowdMap ? "ON" : "OFF")")
+            userDefaults.setValue(contributingToCrowdMap, forKey: "crowdMap")
         }
     }
     
     init(userDefaults: UserDefaults = .standard) {
+        self.contributingToCrowdMap = userDefaults.bool(forKey: "crowdMap")
         self.userDefaults = userDefaults
     }
 }
