@@ -22,15 +22,16 @@ struct PowerABView: View {
         VStack(spacing: 45) {
             ProgressView(value: 0.25)
             Image("2-power")
-            VStack(alignment: .leading, spacing: 13) {
+            HStack() {
                 titleLabel
-            }.padding(.bottom, 20)
+                Spacer()
+            }
             continueButton
                 .buttonStyle(BlueButtonStyle())
-        }.alert(isPresented: $showAlert) {
+        }
+        .alert(isPresented: $showAlert) {
             Alert.locationAlert
         }
-
         .padding()
         .onAppear(perform: {
             locationTracker.requestAuthorisation()
