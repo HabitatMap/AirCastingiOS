@@ -41,25 +41,6 @@ struct RootAppView: View {
     }
 
     var mainAppView: some View {
-//<<<<<<< HEAD
-//        MainTabBarView(measurementUpdatingService: DownloadMeasurementsService(
-//                        authorisationService: userAuthenticationSession,
-//                        persistenceController: persistenceController,
-//                        baseUrl: urlProvider),
-//                       urlProvider: urlProvider,
-//                       sessionSynchronizer: sessionSynchronizer, sessionContext: CreateSessionContext())
-//            .environmentObject(bluetoothManager)
-//            .environmentObject(userAuthenticationSession)
-//            .environmentObject(persistenceController)
-//            .environmentObject(networkChecker)
-//            .environmentObject(lifeTimeEventsProvider)
-//            .environmentObject(userSettings)
-//            .environmentObject(locationTracker)
-//            .environmentObject(microphoneManager)
-//            .environmentObject(userRedirectionSettings)
-//            .environment(\.managedObjectContext, persistenceController.viewContext)
-//    }
-//=======
             MainTabBarView(measurementUpdatingService: DownloadMeasurementsService(
                             authorisationService: userAuthenticationSession,
                             persistenceController: persistenceController,
