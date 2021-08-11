@@ -13,6 +13,7 @@ class LocationTracker: NSObject, ObservableObject, CLLocationManagerDelegate {
     let locationManager: CLLocationManager
     @Published var locationGranted: LocationState
     @Published var allLocations: [CLLocation]
+    @Published var googleLocation: [PathPoint] = [PathPoint(location: CLLocationCoordinate2D(latitude: 50.0, longitude: 18.0), measurement: 20.0)]
     
     init(locationManager: CLLocationManager) {
         self.locationManager = locationManager

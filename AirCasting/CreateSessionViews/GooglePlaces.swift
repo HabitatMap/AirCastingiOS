@@ -12,10 +12,10 @@ struct PlacePicker: UIViewControllerRepresentable {
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
     }
-    
+
+    @EnvironmentObject var tracker: LocationTracker
     @Environment(\.presentationMode) var presentationMode
     @Binding var address: String
-    @Binding var coordinates: CLLocationCoordinate2D
 
     func makeUIViewController(context: UIViewControllerRepresentableContext<PlacePicker>) -> GMSAutocompleteViewController {
         GMSPlacesClient.provideAPIKey(GOOGLE_PLACES_KEY)
@@ -23,11 +23,12 @@ struct PlacePicker: UIViewControllerRepresentable {
         autocompleteController.delegate = context.coordinator
 
         let fields: GMSPlaceField = GMSPlaceField(rawValue: UInt(GMSPlaceField.name.rawValue) |
-                                                    UInt(GMSPlaceField.placeID.rawValue))
+                                                    UInt(GMSPlaceField.coordinate.rawValue))
         autocompleteController.placeFields = fields
 
         let filter = GMSAutocompleteFilter()
         filter.type = .address
+        filter.type = .geocode
         autocompleteController.autocompleteFilter = filter
         return autocompleteController
     }
@@ -44,11 +45,10 @@ struct PlacePicker: UIViewControllerRepresentable {
         }
 
         func viewController(_ viewController: GMSAutocompleteViewController, didAutocompleteWith place: GMSPlace) {
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [self] in
                 print(place.description.description as Any)
                 self.parent.address =  place.name!
-                self.parent.coordinates = place.coordinate
-                print("COORDINATES: \(place.coordinate)")
+                parent.tracker.googleLocation = [PathPoint(location: place.coordinate, measurement: 20.0)]
                 self.parent.presentationMode.wrappedValue.dismiss()
             }
         }

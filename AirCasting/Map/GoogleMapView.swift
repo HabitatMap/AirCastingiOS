@@ -12,8 +12,9 @@ import GoogleMaps
 import GooglePlaces
 
 struct GoogleMapView: UIViewRepresentable {
+    @EnvironmentObject var tracker: LocationTracker
     typealias UIViewType = GMSMapView
-    let pathPoints: [PathPoint]
+    @State var pathPoints: [PathPoint]
     private(set) var threshold: SensorThreshold?
     var isMyLocationEnabled: Bool = false
     
@@ -21,7 +22,7 @@ struct GoogleMapView: UIViewRepresentable {
         GMSServices.provideAPIKey(GOOGLE_MAP_KEY)
         GMSPlacesClient.provideAPIKey(GOOGLE_PLACES_KEY)
         
-        let startingPoint = setStartingPoint(points: pathPoints)
+        let startingPoint = setStartingPoint(points: tracker.googleLocation)
         
         let frame = CGRect(x: 0, y: 0,
                            width: 300,
@@ -41,7 +42,7 @@ struct GoogleMapView: UIViewRepresentable {
         return mapView
     }
     
-    func updateUIView(_ uiView: GMSMapView, context: Context) {
+    func updateUIView(_ uiView: GMSMapView, context: Self.Context) {
         // Drawing the path
         let path = GMSMutablePath()
         for point in pathPoints {
@@ -56,6 +57,11 @@ struct GoogleMapView: UIViewRepresentable {
                                 segments: 1)
         }
         
+        
+        let updatedCameraPosition = setStartingPoint(points: tracker.googleLocation)
+        DispatchQueue.main.async {
+            uiView.camera = updatedCameraPosition
+        }
         // Update starting point
         if !context.coordinator.didSetInitLocation && !pathPoints.isEmpty {
             let updatedCameraPosition = setStartingPoint(points: pathPoints)

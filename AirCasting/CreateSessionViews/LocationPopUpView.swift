@@ -6,10 +6,11 @@ import AirCastingStyling
 import CoreLocation
 
 struct LocationPopUpView: View {
-    
+    @EnvironmentObject var tracker: LocationTracker
     @State private var text = ""
     @State private var location = ""
-    @State private var coordi: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 50.0, longitude: 19.0)
+    @State private var lan: Double = 50.0
+    @State private var long: Double = 19.0
     @State var isLocationPopupPresented = false
     @Binding var creatingSessionFlowContinues: Bool
     var body: some View {
@@ -21,7 +22,7 @@ struct LocationPopUpView: View {
                     isLocationPopupPresented.toggle()
                 }
             ZStack {
-                GoogleMapView(pathPoints: [PathPoint(location: coordi, measurement: 20.0)])
+                mapGoogle
                 dot
             }
             Button(action: {
@@ -30,10 +31,15 @@ struct LocationPopUpView: View {
                     .bold()
             })
             .buttonStyle(BlueButtonStyle())
-        } .sheet(isPresented: $isLocationPopupPresented) {
-            PlacePicker(address: $location, coordinates: $coordi)
+        }
+        .sheet(isPresented: $isLocationPopupPresented) {
+            PlacePicker(address: $location)
         }
         .padding()
+    }
+    
+    var mapGoogle: some View {
+        GoogleMapView(pathPoints: tracker.googleLocation)
     }
     
     var dot: some View {
@@ -49,8 +55,8 @@ struct LocationPopUpView: View {
     }
 }
 
-struct LocationPopUpView_Previews: PreviewProvider {
-    static var previews: some View {
-        LocationPopUpView(creatingSessionFlowContinues: .constant(true))
-    }
-}
+//struct LocationPopUpView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        LocationPopUpView(self)
+//    }
+//}
