@@ -8,11 +8,10 @@
 import SwiftUI
 
 struct CreatingSessionFlowRootView<Content: View>: View {
-    
     let content: () -> Content
-    
+
     @Environment(\.presentationMode) var presentationMode
-    
+
     var body: some View {
         NavigationView {
             content()
@@ -20,7 +19,7 @@ struct CreatingSessionFlowRootView<Content: View>: View {
                 .navigationBarItems(leading: backButton)
         }
     }
-    
+
     var backButton: some View {
         Button(action: {
             presentationMode.wrappedValue.dismiss()

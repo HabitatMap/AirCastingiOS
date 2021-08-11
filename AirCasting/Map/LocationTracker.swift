@@ -10,14 +10,23 @@ import CoreLocation
 
 class LocationTracker: NSObject, ObservableObject, CLLocationManagerDelegate {
     
-    private lazy var locationManager: CLLocationManager = {
-        $0.desiredAccuracy = kCLLocationAccuracyBest
-        $0.delegate = self
-        return $0
-    }(CLLocationManager())
+    let locationManager: CLLocationManager
+    @Published var locationGranted: LocationState
+    @Published var allLocations: [CLLocation]
     
-    @Published var locationGranted = LocationState.granted
-    @Published var allLocations: [CLLocation] = []
+    init(locationManager: CLLocationManager) {
+        self.locationManager = locationManager
+        self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        switch locationManager.authorizationStatus {
+            case .authorizedAlways, .authorizedWhenInUse: self.locationGranted = .granted
+            case .denied, .notDetermined, .restricted:  self.locationGranted = .denied
+            @unknown default:
+                fatalError()
+        }
+        self.allLocations = []
+        super.init()
+        self.locationManager.delegate = self
+    }
     
     func requestAuthorisation() {
         locationManager.requestAlwaysAuthorization()
@@ -29,9 +38,7 @@ class LocationTracker: NSObject, ObservableObject, CLLocationManagerDelegate {
         case .authorizedAlways, .authorizedWhenInUse:
             locationManager.startUpdatingLocation()
             locationGranted = .granted
-        case .denied:  locationGranted = .denied
-        case .notDetermined: break
-        case .restricted: break
+        case .denied, .notDetermined, .restricted:  locationGranted = .denied
         @unknown default:
             fatalError()
         }
@@ -41,3 +48,11 @@ class LocationTracker: NSObject, ObservableObject, CLLocationManagerDelegate {
         allLocations.append(contentsOf: locations)
     }
 }
+
+#if DEBUG
+class DummyLocationTrakcer: LocationTracker {
+    init() {
+        super.init(locationManager: CLLocationManager())
+    }
+}
+#endif

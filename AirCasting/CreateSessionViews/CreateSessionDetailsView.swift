@@ -5,9 +5,9 @@
 //  Created by Anna Olak on 24/02/2021.
 //
 
+import AirCastingStyling
 import CoreLocation
 import SwiftUI
-import AirCastingStyling
 
 struct CreateSessionDetailsView: View {
     let sessionCreator: SessionCreator
@@ -22,7 +22,7 @@ struct CreateSessionDetailsView: View {
     @State private var showingAlert = false
     @EnvironmentObject private var sessionContext: CreateSessionContext
     // Location tracker is needed to get wifi SSID (more info CNCopyCurrentNetworkInfo documentation.
-    @StateObject private var locationTracker = LocationTracker()
+    @EnvironmentObject private var locationTracker: LocationTracker
 
     @Binding var creatingSessionFlowContinues: Bool
 
@@ -76,46 +76,46 @@ private extension CreateSessionDetailsView {
                 showingAlert = true
             }
         }, label: {
-            Text("Continue")
+            Text(Strings.CreateSessionDetailsView.continueButton)
                 .frame(maxWidth: .infinity)
         })
             .buttonStyle(BlueButtonStyle())
             .alert(isPresented: $showingAlert, content: {
-                Alert(title: Text("Wi-Fi credentials are empty "),
-                      message: Text("Do you want to pop up Wi-Fi screen?"),
-                      primaryButton: .default(Text("Show Wi-fi screen")) {
+                Alert(title: Text(Strings.CreateSessionDetailsView.wifiAlertTitle),
+                      message: Text(Strings.CreateSessionDetailsView.wifiAlertMessage),
+                      primaryButton: .default(Text(Strings.CreateSessionDetailsView.primaryWifiButton)) {
                           isWifiPopupPresented = true
                       },
-                      secondaryButton: .default(Text("Cancel")))
+                      secondaryButton: .default(Text(Strings.CreateSessionDetailsView.cancelButton)))
             })
             .background(Group {
-                    NavigationLink(
-                        destination: ConfirmCreatingSessionView(sessionCreator: sessionCreator,
-                                                                creatingSessionFlowContinues: $creatingSessionFlowContinues,
-                                                                sessionName: sessionName),
-                        isActive: $isConfirmCreatingSessionActive,
-                        label: {
-                            EmptyView()
-                        }
-                    )
+                NavigationLink(
+                    destination: ConfirmCreatingSessionView(sessionCreator: sessionCreator,
+                                                            creatingSessionFlowContinues: $creatingSessionFlowContinues,
+                                                            sessionName: sessionName),
+                    isActive: $isConfirmCreatingSessionActive,
+                    label: {
+                        EmptyView()
+                    }
+                )
             })
     }
 
     var titleLabel: some View {
-        Text("New session details")
+        Text(Strings.CreateSessionDetailsView.title)
             .font(Font.moderate(size: 24, weight: .bold))
             .foregroundColor(.darkBlue)
     }
 
     var placementPicker: some View {
         VStack(alignment: .leading, spacing: 15) {
-            Text("Where will you place your AirBeam?")
+            Text(Strings.CreateSessionDetailsView.placementPicker_1)
                 .font(Font.moderate(size: 16, weight: .bold))
                 .foregroundColor(.aircastingDarkGray)
             Picker(selection: $isIndoor,
                    label: Text("")) {
-                Text("Indoor").tag(true)
-                Text("Outdoor").tag(false)
+                Text(Strings.CreateSessionDetailsView.placementPicker_2).tag(true)
+                Text(Strings.CreateSessionDetailsView.placementPicker_3).tag(false)
             }
             .pickerStyle(SegmentedPickerStyle())
         }
@@ -123,13 +123,13 @@ private extension CreateSessionDetailsView {
 
     var transmissionTypePicker: some View {
         VStack(alignment: .leading, spacing: 15) {
-            Text("Data transmission:")
+            Text(Strings.CreateSessionDetailsView.transmissionPicker)
                 .font(Font.moderate(size: 16, weight: .bold))
                 .foregroundColor(.aircastingDarkGray)
             Picker(selection: $isWiFi,
                    label: Text("")) {
-                Text("Cellular").tag(false)
-                Text("Wi-Fi").tag(true)
+                Text(Strings.CreateSessionDetailsView.callularText).tag(false)
+                Text(Strings.CreateSessionDetailsView.wifiText).tag(true)
             }
             .pickerStyle(SegmentedPickerStyle())
             .onChange(of: isWiFi) { _ in
