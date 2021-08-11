@@ -5,15 +5,15 @@
 //  Created by Lunar on 17/02/2021.
 //
 
-import SwiftUI
 import AirCastingStyling
+import SwiftUI
 
 struct ABConnectedView: View {
     @EnvironmentObject var persistenceController: PersistenceController
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     @EnvironmentObject var sessionContext: CreateSessionContext
-    @Binding var creatingSessionFlowContinues : Bool
+    @Binding var creatingSessionFlowContinues: Bool
     let baseURL: BaseURLProvider
 
     var body: some View {
@@ -32,17 +32,19 @@ struct ABConnectedView: View {
 
 private extension ABConnectedView {
     var titleLabel: some View {
-        Text("AirBeam connected")
+        Text(Strings.ABConnectedView.title)
             .font(Font.moderate(size: 25,
                                 weight: .bold))
             .foregroundColor(.accentColor)
     }
+
     var messageLabel: some View {
-        Text("Your AirBeam is connected to your phone and ready to take some measurements.")
+        Text(Strings.ABConnectedView.message)
             .font(Font.moderate(size: 18,
                                 weight: .regular))
             .foregroundColor(.aircastingGray)
     }
+
     var continueButton: some View {
         let sessionCreator: SessionCreator
         if sessionContext.sessionType == .mobile {
@@ -61,7 +63,7 @@ private extension ABConnectedView {
                 sessionCreator: sessionCreator,
                 creatingSessionFlowContinues: $creatingSessionFlowContinues),
             label: {
-                Text("Continue")
+                Text(Strings.ABConnectedView.continueButton)
             })
             .buttonStyle(BlueButtonStyle())
     }

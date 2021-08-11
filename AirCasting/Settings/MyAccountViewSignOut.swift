@@ -8,7 +8,6 @@ struct MyAccountViewSignOut: View {
     let logoutController: LogoutController
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     @EnvironmentObject var persistenceController: PersistenceController
-    @EnvironmentObject var microphoneManager: MicrophoneManager
     
     var body: some View {
         ZStack {
