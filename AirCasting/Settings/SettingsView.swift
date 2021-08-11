@@ -74,7 +74,7 @@ struct SettingsView: View {
     }
     
     private var crowdMapSwitch: some View {
-        Toggle(isOn: $userSettings.contributingToCrowdMap){
+        Toggle(isOn: $userSettings.contributingToCrowdMap) {
             Text("Switch")
                 .font(.title)
                 .foregroundColor(Color.white)
