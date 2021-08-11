@@ -143,7 +143,7 @@ private extension CreateSessionDetailsView {
 
     func getAndSaveStartingLocation() {
         let fakeLocation = CLLocationCoordinate2D(latitude: 200.0, longitude: 200.0)
-        if isIndoor {
+        if isIndoor && sessionContext.sessionType == .fixed {
             sessionContext.startingLocation = fakeLocation
         } else {
             sessionContext.obtainCurrentLocation()

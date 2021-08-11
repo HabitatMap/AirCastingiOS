@@ -114,7 +114,7 @@ private extension MicrophoneManager {
 
     func createMeasurementStream(for session: Session) throws -> MeasurementStreamLocalID {
         let stream = MeasurementStream(id: nil,
-                                       sensorName: "Phone Microphone-dB",
+                                       sensorName: "Phone Microphone",
                                        sensorPackageName: "Builtin",
                                        measurementType: "Sound Level",
                                        measurementShortType: "db",
