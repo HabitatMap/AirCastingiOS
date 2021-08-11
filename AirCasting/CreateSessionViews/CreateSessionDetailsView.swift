@@ -16,6 +16,7 @@ struct CreateSessionDetailsView: View {
     @State var isIndoor = true
     @State var isWiFi = false
     @State var isWifiPopupPresented = false
+    @State var isLocationPopupPresented = false
     @State var wifiPassword: String = ""
     @State var wifiSSID: String = ""
     @State private var isConfirmCreatingSessionActive: Bool = false
@@ -48,6 +49,13 @@ struct CreateSessionDetailsView: View {
                 .padding()
                 .frame(maxWidth: .infinity, minHeight: geometry.size.height, alignment: .top)
             }
+        }.onChange(of: isIndoor, perform: { value in
+            if value == false {
+                isLocationPopupPresented = true
+            }
+        })
+        .sheet(isPresented: $isLocationPopupPresented) {
+            LocationPopUpView()
         }
         .simultaneousGesture(
             DragGesture(minimumDistance: 2, coordinateSpace: .global)

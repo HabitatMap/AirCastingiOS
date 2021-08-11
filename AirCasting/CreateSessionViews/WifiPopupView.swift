@@ -6,7 +6,6 @@
 //
 
 import AirCastingStyling
-import Foundation
 import SwiftUI
 import SystemConfiguration.CaptiveNetwork
 

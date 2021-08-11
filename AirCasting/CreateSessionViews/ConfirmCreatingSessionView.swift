@@ -49,8 +49,12 @@ struct ConfirmCreatingSessionView: View {
             + Text(Strings.ConfirmCreatingSessionView.contentViewText_2)
             + Text(sessionName)
             .foregroundColor(.accentColor)
-            + Text(Strings.ConfirmCreatingSessionView.contentViewText_3)
-//            + Text(Strings.ConfirmCreatingSessionView.contentViewText_4)
+            + text
+    }
+    
+    private var text: Text {
+        Text(Strings.ConfirmCreatingSessionView.contentViewText_3)
+        + Text(Strings.ConfirmCreatingSessionView.contentViewText_4)
     }
 
     private var contentView: some View {
