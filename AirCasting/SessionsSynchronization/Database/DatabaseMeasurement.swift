@@ -1,49 +1,25 @@
 import Foundation
 
 extension Database {
-    public struct Measurement {
+    public struct Measurement: Hashable {
         public let id: MeasurementID
-        public let sensorName: SensorName
-        public let sensorPackageName: String
-        public let unitName: String
-        public let measurementType: String
-        public let measurementShortType: String
-        public let unitSymbol: String
-        public let thresholdVeryLow: Int
-        public let thresholdLow: Int
-        public let thresholdMedium: Int
-        public let thresholdHigh: Int
-        public let thresholdVeryHigh: Int
-        public let isDeleted: Bool
+        public let time: Date
+        public let value: Double
+        public let latitude: Double?
+        public let longitude: Double?
         
         public init(
             id: MeasurementID,
-            sensorName: SensorName,
-            sensorPackageName: String,
-            unitName: String,
-            measurementType: String,
-            measurementShortType: String,
-            unitSymbol: String,
-            thresholdVeryLow: Int,
-            thresholdLow: Int,
-            thresholdMedium: Int,
-            thresholdHigh: Int,
-            thresholdVeryHigh: Int,
-            isDeleted: Bool
+            time: Date,
+            value: Double,
+            latitude: Double?,
+            longitude: Double?
         ) {
             self.id = id
-            self.sensorName = sensorName
-            self.sensorPackageName = sensorPackageName
-            self.unitName = unitName
-            self.measurementType = measurementType
-            self.measurementShortType = measurementShortType
-            self.unitSymbol = unitSymbol
-            self.thresholdVeryLow = thresholdVeryLow
-            self.thresholdLow = thresholdLow
-            self.thresholdMedium = thresholdMedium
-            self.thresholdHigh = thresholdHigh
-            self.thresholdVeryHigh = thresholdVeryHigh
-            self.isDeleted = isDeleted
+            self.time = time
+            self.value = value
+            self.latitude = latitude
+            self.longitude = longitude
         }
     }
 }
