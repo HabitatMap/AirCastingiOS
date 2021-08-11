@@ -15,11 +15,13 @@ struct CreateSessionDetailsView: View {
     @State var sessionTags: String = ""
     @State var isIndoor = true
     @State var isWiFi = false
+    @State var adress = ""
     @State var isWifiPopupPresented = false
     @State var isLocationPopupPresented = false
     @State var wifiPassword: String = ""
     @State var wifiSSID: String = ""
     @State private var isConfirmCreatingSessionActive: Bool = false
+    @State private var isLocationSessionDeatilsActive: Bool = false
     @State private var showingAlert = false
     @EnvironmentObject private var sessionContext: CreateSessionContext
     // Location tracker is needed to get wifi SSID (more info CNCopyCurrentNetworkInfo documentation.
@@ -51,12 +53,9 @@ struct CreateSessionDetailsView: View {
             }
         }.onChange(of: isIndoor, perform: { value in
             if value == false {
-                isLocationPopupPresented = true
+                isLocationSessionDeatilsActive = true
             }
         })
-        .sheet(isPresented: $isLocationPopupPresented) {
-            LocationPopUpView()
-        }
         .simultaneousGesture(
             DragGesture(minimumDistance: 2, coordinateSpace: .global)
                 .onChanged { _ in
@@ -75,7 +74,11 @@ private extension CreateSessionDetailsView {
                 sessionContext.isIndoor = isIndoor
             }
             getAndSaveStartingLocation()
-            isConfirmCreatingSessionActive = true
+            if isIndoor {
+                isConfirmCreatingSessionActive = true
+            } else {
+               isLocationSessionDeatilsActive = true
+            }
             if !wifiSSID.isEmpty, !wifiPassword.isEmpty {
                 sessionContext.wifiSSID = wifiSSID
                 sessionContext.wifiPassword = wifiPassword
@@ -102,6 +105,13 @@ private extension CreateSessionDetailsView {
                                                             creatingSessionFlowContinues: $creatingSessionFlowContinues,
                                                             sessionName: sessionName),
                     isActive: $isConfirmCreatingSessionActive,
+                    label: {
+                        EmptyView()
+                    }
+                )
+                NavigationLink(
+                    destination: LocationPopUpView(creatingSessionFlowContinues: $creatingSessionFlowContinues),
+                    isActive: $isLocationSessionDeatilsActive,
                     label: {
                         EmptyView()
                     }

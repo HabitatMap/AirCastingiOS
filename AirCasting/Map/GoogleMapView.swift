@@ -19,7 +19,7 @@ struct GoogleMapView: UIViewRepresentable {
     
     func makeUIView(context: Context) -> GMSMapView {
         GMSServices.provideAPIKey(GOOGLE_MAP_KEY)
-        GMSPlacesClient.provideAPIKey(GOOGLE_MAP_KEY)
+        GMSPlacesClient.provideAPIKey(GOOGLE_PLACES_KEY)
         
         let startingPoint = setStartingPoint(points: pathPoints)
         
@@ -28,6 +28,8 @@ struct GoogleMapView: UIViewRepresentable {
                            height: 300)
         let mapView = GMSMapView.map(withFrame: frame,
                                      camera: startingPoint)
+        
+        print("CENTER MAP: \(mapView.projection.coordinate(for: mapView.center))")
         
         mapView.isMyLocationEnabled = isMyLocationEnabled
         
@@ -40,7 +42,6 @@ struct GoogleMapView: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: GMSMapView, context: Context) {
-        
         // Drawing the path
         let path = GMSMutablePath()
         for point in pathPoints {
