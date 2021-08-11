@@ -31,7 +31,7 @@ final class CoreDataHook: NSObject, ObservableObject {
         case .mobileActive:
             predicate = NSPredicate(format: "type == %@ AND (status == %li || status == %li || status == %li)", SessionType.mobile.rawValue,
                                     SessionStatus.RECORDING.rawValue,
-                                    SessionStatus.DISCONNETCED.rawValue,
+                                    SessionStatus.DISCONNECTED.rawValue,
                                     SessionStatus.NEW.rawValue)
         case .mobileDormant:
             predicate = NSPredicate(format: "type == %@ AND status == %li", SessionType.mobile.rawValue, SessionStatus.FINISHED.rawValue)

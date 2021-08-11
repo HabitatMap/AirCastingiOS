@@ -13,7 +13,8 @@ struct SelectPeripheralView: View {
     @State private var selection: CBPeripheral? = nil
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @EnvironmentObject var sessionContext: CreateSessionContext
-    
+    @EnvironmentObject var connectionController: DefaultAirBeamConnectionController
+    @State var shouldContinueToNextScreen: Bool = false
     @Binding var creatingSessionFlowContinues: Bool
     
     let urlProvider: BaseURLProvider
@@ -23,11 +24,11 @@ struct SelectPeripheralView: View {
             ScrollView {
                 VStack(spacing: 30) {
                     ProgressView(value: 0.375)
-                    titileLabel
+                    titleLabel
                     
                     LazyVStack(alignment: .leading, spacing: 25) {
                         HStack(spacing: 8) {
-                            Text(Strings.SelectPeripheralView.airBeams)
+                            Text(Strings.SelectPeripheralView.airBeamsText)
                             if bluetoothManager.isScanning {
                                 loader
                             }
@@ -35,7 +36,7 @@ struct SelectPeripheralView: View {
                         displayDeviceButton(devices: bluetoothManager.airbeams)
                         
                         HStack(spacing: 8) {
-                            Text(Strings.SelectPeripheralView.otherDevices)
+                            Text(Strings.SelectPeripheralView.otherText)
                             if bluetoothManager.isScanning {
                                 loader
                             }
@@ -87,8 +88,8 @@ struct SelectPeripheralView: View {
         }
     }
     
-    var titileLabel: some View {
-        Text(Strings.SelectPeripheralView.title)
+    var titleLabel: some View {
+        Text(Strings.SelectPeripheralView.titleLabel)
             .font(Font.moderate(size: 25, weight: .bold))
             .foregroundColor(.accentColor)
             .multilineTextAlignment(.leading)
@@ -110,22 +111,21 @@ struct SelectPeripheralView: View {
         Button(action: {
             bluetoothManager.startScanning()
         }, label: {
-            Text(Strings.SelectPeripheralView.refresh)
+            Text(Strings.SelectPeripheralView.refreshButton)
         })
     }
     
     var connectButton: some View {
         var destination: AnyView
         if let selection = selection {
-            destination = AnyView(ConnectingABView(bluetoothManager: bluetoothManager,
-                                                   selectedPeripheral: selection, baseURL: urlProvider,
-                                                   creatingSessionFlowContinues: $creatingSessionFlowContinues))
+            let viewModel = AirbeamConnectionViewModelDefault(airBeamConnectionController: connectionController, peripheral: selection)
+            destination = AnyView(ConnectingABView(viewModel: viewModel, baseURL: urlProvider, creatingSessionFlowContinues: $creatingSessionFlowContinues))
         } else {
             destination = AnyView(EmptyView())
         }
         
         return NavigationLink(destination: destination) {
-            Text(Strings.SelectPeripheralView.connect)
+            Text(Strings.SelectPeripheralView.connectText)
         }
         .buttonStyle(BlueButtonStyle())
     }

@@ -18,13 +18,14 @@ struct PowerABView: View {
         VStack(spacing: 45) {
             ProgressView(value: 0.25)
             Image("2-power")
-            VStack(alignment: .leading, spacing: 13) {
+            HStack() {
                 titleLabel
-                messageLabel
+                Spacer()
             }
             continueButton
                 .buttonStyle(BlueButtonStyle())
-        }.alert(isPresented: $showAlert) {
+        }
+        .alert(isPresented: $showAlert) {
             Alert.locationAlert
         }
         .padding()
@@ -40,6 +41,7 @@ struct PowerABView: View {
             .foregroundColor(.accentColor)
     }
 
+    //stays here for maybe future needs
     var messageLabel: some View {
         Text(Strings.PowerABView.messageText)
             .font(Font.moderate(size: 18,

@@ -21,7 +21,7 @@ struct GraphView: View {
             StreamsView(selectedStream: $selectedStream,
                         session: session,
                         thresholds: thresholds,
-                        measurementPresentationStyle: .showValues)
+                        measurementPresentationStyle: .showValues).padding(.horizontal)
             if let threshold = thresholds.threshold(for: selectedStream) {
                 ZStack(alignment: .topLeading) {
                     if let selectedStream = selectedStream {

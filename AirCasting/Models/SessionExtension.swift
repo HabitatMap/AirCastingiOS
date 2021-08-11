@@ -8,6 +8,14 @@
 import Foundation
 
 extension SessionEntity {
+    var isMobile: Bool { type == .mobile }
+    var isDormant: Bool {
+        type == .mobile && status == .FINISHED
+    }
+    var isFixed: Bool { type == .fixed }
+}
+
+extension SessionEntity {
     
     var pm1Stream: MeasurementStreamEntity? {
         let matach = measurementStreams?.first(where: { (stream) -> Bool in

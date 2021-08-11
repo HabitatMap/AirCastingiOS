@@ -37,27 +37,31 @@ struct ConfirmCreatingSessionView: View {
 
     private var contentViewWithAlert: some View {
         contentView.alert(isPresented: $isPresentingAlert) {
-            Alert(title: Text(Strings.ConfirmCreatingSessionView.connectWithAlertText), message: Text(error?.localizedDescription ?? "Failed to create session"), dismissButton: .default(Text(Strings.ConfirmCreatingSessionView.gotItButton), action: {
-                error = nil
+            Alert(title: Text(Strings.ConfirmCreatingSessionView.alertTitle), message: Text(error?.localizedDescription ?? Strings.ConfirmCreatingSessionView.alertMessage), dismissButton: .default(Text(Strings.ConfirmCreatingSessionView.alertOK), action: {                error = nil
             }))
         }
+    }
+    
+    private var someText: some View {
+        Text(Strings.ConfirmCreatingSessionView.contentViewText_1)
+            + Text(sessionType)
+            .foregroundColor(.accentColor)
+            + Text(Strings.ConfirmCreatingSessionView.contentViewText_2)
+            + Text(sessionName)
+            .foregroundColor(.accentColor)
+            + Text(Strings.ConfirmCreatingSessionView.contentViewText_3)
+//            + Text(Strings.ConfirmCreatingSessionView.contentViewText_4)
     }
 
     private var contentView: some View {
         VStack(alignment: .leading, spacing: 40) {
-            Text(Strings.ConfirmCreatingSessionView.connectView_1)
+            ProgressView(value: 0.90)
+            Text(Strings.ConfirmCreatingSessionView.contentViewTitle)
                 .font(Font.moderate(size: 24, weight: .bold))
                 .foregroundColor(.darkBlue)
 
             VStack(alignment: .leading, spacing: 15) {
-                Text(Strings.ConfirmCreatingSessionView.connectView_2)
-                    + Text(sessionType)
-                    .foregroundColor(.accentColor)
-                    + Text(Strings.ConfirmCreatingSessionView.connectView_3)
-                    + Text(sessionName)
-                    .foregroundColor(.accentColor)
-                    + Text(Strings.ConfirmCreatingSessionView.connectView_4)
-                Text(Strings.ConfirmCreatingSessionView.connectView_5)
+               someText
             }
             .font(Font.muli(size: 16))
             .foregroundColor(Color.aircastingGray)
@@ -74,7 +78,7 @@ struct ConfirmCreatingSessionView: View {
                             if sessionContext.sessionType == .mobile {
                                 selectedSection.selectedSection = SelectedSection.mobileActive
                             } else {
-                                selectedSection.selectedSection = SelectedSection.fixed
+                                selectedSection.selectedSection = SelectedSection.following
                             }
                             tabSelection.selection = TabBarSelection.Tab.dashboard
                         case .failure(let error):
@@ -88,7 +92,7 @@ struct ConfirmCreatingSessionView: View {
                 Text(Strings.ConfirmCreatingSessionView.startRecording)
                     .bold()
             })
-                .buttonStyle(BlueButtonStyle())
+            .buttonStyle(BlueButtonStyle())
         }.padding()
     }
 }

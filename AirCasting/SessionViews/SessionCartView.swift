@@ -5,27 +5,24 @@
 //  Created by Lunar on 08/01/2021.
 //
 
-import SwiftUI
-import CoreLocation
-import CoreData
-import Charts
 import AirCastingStyling
+import Charts
+import CoreData
+import CoreLocation
+import SwiftUI
 
 struct SessionCartView: View {
-    
     @State private var isCollapsed = true
     @State private var selectedStream: MeasurementStreamEntity?
-    
     @ObservedObject var session: SessionEntity
+    let sessionCartViewModel: SessionCartViewModel
     let thresholds: [SensorThreshold]
-
+    
     var shouldShowValues: MeasurementPresentationStyle {
-        let isFixed = session.type == .fixed
-        let isDormant = session.type == .mobile && session.status == .FINISHED
-        let shouldShow = isCollapsed && (isFixed || isDormant)
-        
+        let shouldShow = isCollapsed && (session.isFixed || session.isDormant)
         return shouldShow ? .hideValues : .showValues
     }
+
     var showChart: Bool {
         !isCollapsed && session.type == .mobile && session.status == .RECORDING
     }
@@ -35,14 +32,13 @@ struct SessionCartView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 13) {
-            
             header
             if hasStreams {
                 StreamsView(selectedStream: $selectedStream,
                             session: session,
                             thresholds: thresholds,
                             measurementPresentationStyle: shouldShowValues)
-                
+            
                 VStack(alignment: .trailing, spacing: 40) {
                     if showChart {
                         pollutionChart(thresholds: thresholds)
@@ -58,7 +54,7 @@ struct SessionCartView: View {
         .onChange(of: session.allStreams) { _ in
             selectedStream = session.allStreams?.first
         }
-        .onAppear() {
+        .onAppear {
             selectedStream = session.allStreams?.first
         }
         .font(Font.moderate(size: 13, weight: .regular))
@@ -72,7 +68,6 @@ struct SessionCartView: View {
 }
 
 private extension SessionCartView {
-    
     var header: some View {
         SessionHeaderView(
             action: {
@@ -80,14 +75,15 @@ private extension SessionCartView {
                     isCollapsed.toggle()
                 }
             }, isExpandButtonNeeded: true,
-            session: session)
+            session: session
+        )
     }
     
     func graphButton(thresholds: [SensorThreshold]) -> some View {
         NavigationLink(destination: GraphView(session: session,
                                               thresholds: thresholds,
                                               selectedStream: $selectedStream)) {
-            Text("graph")
+            Text(Strings.SessionCartView.graph)
         }
     }
     
@@ -95,8 +91,20 @@ private extension SessionCartView {
         NavigationLink(destination: AirMapView(thresholds: thresholds,
                                                session: session,
                                                selectedStream: $selectedStream)) {
-            Text("map")
+            Text(Strings.SessionCartView.map)
         }
+    }
+    
+    var followButton: some View {
+        Button(Strings.SessionCartView.follow) {
+            sessionCartViewModel.toggleFollowing()
+        }.buttonStyle(FollowButtonStyle())
+    }
+    
+    var unFollowButton: some View {
+        Button(Strings.SessionCartView.unfollow) {
+            sessionCartViewModel.toggleFollowing()
+        }.buttonStyle(UnFollowButtonStyle())
     }
     
     func pollutionChart(thresholds: [SensorThreshold]) -> some View {
@@ -111,21 +119,31 @@ private extension SessionCartView {
     
     func displayButtons(thresholds: [SensorThreshold]) -> some View {
         HStack(spacing: 20) {
-            mapButton(thresholds: thresholds)
+            if sessionCartViewModel.isFollowing && session.type == .fixed {
+                unFollowButton
+            } else if session.type == .fixed {
+                followButton
+            }
+            Spacer()
+            if !session.isIndoor && session.type != .fixed {
+                mapButton(thresholds: thresholds)
+            }
             graphButton(thresholds: thresholds)
         }
         .buttonStyle(GrayButtonStyle())
     }
 }
 
-#if DEBUG
-struct SessionCell_Previews: PreviewProvider {
+ #if DEBUG
+ struct SessionCell_Previews: PreviewProvider {
     static var previews: some View {
         EmptyView()
-        SessionCartView(session: SessionEntity.mock, thresholds: [.mock, .mock])
+        SessionCartView(session: SessionEntity.mock,
+                                sessionCartViewModel: SessionCartViewModel(followingSetter: MockSessionFollowingSettable()),
+                                thresholds: [.mock, .mock])
             .padding()
             .previewLayout(.sizeThatFits)
-            .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
+            .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionSynchronizer: DummySessionSynchronizer()))
     }
-}
-#endif
+ }
+ #endif
