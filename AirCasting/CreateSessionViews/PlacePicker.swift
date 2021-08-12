@@ -1,11 +1,8 @@
 // Created by Lunar on 11/08/2021.
 //
 
-import Foundation
-import UIKit
 import SwiftUI
 import GooglePlaces
-
 
 struct PlacePicker: UIViewControllerRepresentable {
     @EnvironmentObject var tracker: LocationTracker
