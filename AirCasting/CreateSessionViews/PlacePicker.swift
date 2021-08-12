@@ -8,22 +8,17 @@ import GooglePlaces
 
 
 struct PlacePicker: UIViewControllerRepresentable {
-
-    func makeCoordinator() -> Coordinator {
-        Coordinator(self)
-    }
-
     @EnvironmentObject var tracker: LocationTracker
     @Environment(\.presentationMode) var presentationMode
     @Binding var address: String
 
     func makeUIViewController(context: UIViewControllerRepresentableContext<PlacePicker>) -> GMSAutocompleteViewController {
         GMSPlacesClient.provideAPIKey(GOOGLE_PLACES_KEY)
+        
         let autocompleteController = GMSAutocompleteViewController()
         autocompleteController.delegate = context.coordinator
 
-        let fields: GMSPlaceField = GMSPlaceField(rawValue: UInt(GMSPlaceField.name.rawValue) |
-                                                    UInt(GMSPlaceField.coordinate.rawValue))
+        let fields: GMSPlaceField = GMSPlaceField(rawValue: UInt(GMSPlaceField.name.rawValue) | UInt(GMSPlaceField.coordinate.rawValue))
         autocompleteController.placeFields = fields
 
         let filter = GMSAutocompleteFilter()
@@ -32,9 +27,12 @@ struct PlacePicker: UIViewControllerRepresentable {
         autocompleteController.autocompleteFilter = filter
         return autocompleteController
     }
-
-    func updateUIViewController(_ uiViewController: GMSAutocompleteViewController, context: UIViewControllerRepresentableContext<PlacePicker>) {
+    
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
     }
+    
+    func updateUIViewController(_ uiViewController: GMSAutocompleteViewController, context: UIViewControllerRepresentableContext<PlacePicker>) { }
 
     class Coordinator: NSObject, UINavigationControllerDelegate, GMSAutocompleteViewControllerDelegate {
 
@@ -54,7 +52,7 @@ struct PlacePicker: UIViewControllerRepresentable {
         }
 
         func viewController(_ viewController: GMSAutocompleteViewController, didFailAutocompleteWithError error: Error) {
-            print("Error: ", error.localizedDescription)
+            Log.info("Error when fetching location place: \(error.localizedDescription)")
         }
 
         func wasCancelled(_ viewController: GMSAutocompleteViewController) {

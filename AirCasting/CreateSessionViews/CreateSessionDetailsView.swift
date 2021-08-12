@@ -21,7 +21,7 @@ struct CreateSessionDetailsView: View {
     @State var wifiPassword: String = ""
     @State var wifiSSID: String = ""
     @State private var isConfirmCreatingSessionActive: Bool = false
-    @State private var isLocationSessionDeatilsActive: Bool = false
+    @State private var isLocationSessionDetailsActive: Bool = false
     @State private var showingAlert = false
     @EnvironmentObject private var sessionContext: CreateSessionContext
     // Location tracker is needed to get wifi SSID (more info CNCopyCurrentNetworkInfo documentation.
@@ -73,7 +73,7 @@ private extension CreateSessionDetailsView {
             if isIndoor {
                 isConfirmCreatingSessionActive = true
             } else {
-               isLocationSessionDeatilsActive = true
+               isLocationSessionDetailsActive = true
             }
             if !wifiSSID.isEmpty, !wifiPassword.isEmpty {
                 sessionContext.wifiSSID = wifiSSID
@@ -106,8 +106,8 @@ private extension CreateSessionDetailsView {
                     }
                 )
                 NavigationLink(
-                    destination: LocationPopUpView(sessionCreator: sessionCreator, creatingSessionFlowContinues: $creatingSessionFlowContinues),
-                    isActive: $isLocationSessionDeatilsActive,
+                    destination: ChooseCustomLocationView(sessionCreator: sessionCreator, creatingSessionFlowContinues: $creatingSessionFlowContinues, sessionName: $sessionName),
+                    isActive: $isLocationSessionDetailsActive,
                     label: {
                         EmptyView()
                     }
@@ -142,7 +142,7 @@ private extension CreateSessionDetailsView {
                 .foregroundColor(.aircastingDarkGray)
             Picker(selection: $isWiFi,
                    label: Text("")) {
-                Text(Strings.CreateSessionDetailsView.callularText).tag(false)
+                Text(Strings.CreateSessionDetailsView.cellularText).tag(false)
                 Text(Strings.CreateSessionDetailsView.wifiText).tag(true)
             }
             .pickerStyle(SegmentedPickerStyle())
@@ -159,8 +159,12 @@ private extension CreateSessionDetailsView {
         let fakeLocation = CLLocationCoordinate2D(latitude: 200.0, longitude: 200.0)
         if isIndoor {
             sessionContext.startingLocation = fakeLocation
+            locationTracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: 200.0, longitude: 200.0), measurement: 20.0)]
         } else {
-            sessionContext.obtainCurrentLocation()
+            let lat = (locationTracker.locationManager.location?.coordinate.latitude)!
+            let lon = (locationTracker.locationManager.location?.coordinate.longitude)!
+            locationTracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: lat, longitude: lon), measurement: 20.0)]
+            sessionContext.obtainCurrentLocation(lat: lat, log: lon)
         }
     }
 }

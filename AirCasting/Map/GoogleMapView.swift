@@ -14,7 +14,6 @@ import GooglePlaces
 struct GoogleMapView: UIViewRepresentable {
     @EnvironmentObject var tracker: LocationTracker
     typealias UIViewType = GMSMapView
-    @State var pathPoints: [PathPoint]
     private(set) var threshold: SensorThreshold?
     var isMyLocationEnabled: Bool = false
     
@@ -24,13 +23,10 @@ struct GoogleMapView: UIViewRepresentable {
         
         let startingPoint = setStartingPoint(points: tracker.googleLocation)
         
-        let frame = CGRect(x: 0, y: 0,
-                           width: 300,
-                           height: 300)
-        let mapView = GMSMapView.map(withFrame: frame,
+        let mapView = GMSMapView.map(withFrame: .zero,
                                      camera: startingPoint)
-        
-        print("CENTER MAP: \(mapView.projection.coordinate(for: mapView.center))")
+
+        mapView.delegate = context.coordinator
 
         mapView.isMyLocationEnabled = isMyLocationEnabled
         
@@ -45,13 +41,13 @@ struct GoogleMapView: UIViewRepresentable {
     func updateUIView(_ uiView: GMSMapView, context: Self.Context) {
         // Drawing the path
         let path = GMSMutablePath()
-        for point in pathPoints {
+        for point in tracker.googleLocation {
             let coordinate = point.location
             path.add(coordinate)
         }
         let polyline = GMSPolyline(path: path)
         
-        let spans = pathPoints.map { point -> GMSStyleSpan in
+        let spans = tracker.googleLocation.map { point -> GMSStyleSpan in
             let color = colorPolyline(point: point)
             return GMSStyleSpan(style: GMSStrokeStyle.solidColor(color),
                                 segments: 1)
@@ -63,8 +59,8 @@ struct GoogleMapView: UIViewRepresentable {
             uiView.camera = updatedCameraPosition
         }
         // Update starting point
-        if !context.coordinator.didSetInitLocation && !pathPoints.isEmpty {
-            let updatedCameraPosition = setStartingPoint(points: pathPoints)
+        if !context.coordinator.didSetInitLocation && !tracker.googleLocation.isEmpty {
+            let updatedCameraPosition = setStartingPoint(points: tracker.googleLocation)
             DispatchQueue.main.async {
                 uiView.camera = updatedCameraPosition
             }
@@ -115,29 +111,34 @@ struct GoogleMapView: UIViewRepresentable {
         }
     }
     
-    class Coordinator {
+    class Coordinator: NSObject, UINavigationControllerDelegate, GMSMapViewDelegate {
+
+        var parent: GoogleMapView!
+        
+        init(_ parent: GoogleMapView) {
+            self.parent = parent
+        }
+        
+        func mapView(_ mapView: GMSMapView, didChange position: GMSCameraPosition) {
+            print("Changing Coordinates to: \(mapView.projection.coordinate(for: mapView.center))")
+            let lat = mapView.projection.coordinate(for: mapView.center).latitude
+            let len = mapView.projection.coordinate(for: mapView.center).longitude
+            parent.tracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: lat, longitude: len), measurement: 20.0)]
+        }
+
         var didSetInitLocation: Bool = false   
         var myLocationSink: Any?
     }
     
     func makeCoordinator() -> Coordinator {
-        Coordinator()
+        Coordinator(self)
     }
 }
 
 #if DEBUG
 struct GoogleMapView_Previews: PreviewProvider {
     static var previews: some View {
-        GoogleMapView(pathPoints: [PathPoint(location: CLLocationCoordinate2D(latitude: 40.73,
-                                                                              longitude: -73.93),
-                                             measurement: 30),
-                                   PathPoint(location: CLLocationCoordinate2D(latitude: 40.83,
-                                                                              longitude: -73.93),
-                                             measurement: 30),
-                                   PathPoint(location: CLLocationCoordinate2D(latitude: 40.93,
-                                                                              longitude: -73.83),
-                                             measurement: 30)],
-                      threshold: .mock)
+        GoogleMapView()
             .padding()
     }
 }

@@ -1,24 +1,22 @@
 // Created by Lunar on 11/08/2021.
 //
 
-import SwiftUI
 import AirCastingStyling
-import CoreLocation
+import SwiftUI
 
-struct LocationPopUpView: View {
+struct ChooseCustomLocationView: View {
     let sessionCreator: SessionCreator
-    @State var sessionName: String = ""
     @State private var isConfirmCreatingSessionActive: Bool = false
-    @State private var text = ""
     @State private var location = ""
-    @State private var lan: Double = 50.0
-    @State private var long: Double = 19.0
     @State var isLocationPopupPresented = false
     @Binding var creatingSessionFlowContinues: Bool
+    @Binding var sessionName: String
+
     var body: some View {
-        VStack() {
+        VStack(spacing: 40) {
+            ProgressView(value: 0.85)
             titleLabel
-            createTextfield(placeholder: "Session location", binding: $location)
+            createTextfield(placeholder: Strings.ChooseCustomLocationView.sessionLocation, binding: $location)
                 .disabled(true)
                 .onTapGesture {
                     isLocationPopupPresented.toggle()
@@ -30,7 +28,7 @@ struct LocationPopUpView: View {
             Button(action: {
                 isConfirmCreatingSessionActive.toggle()
             }, label: {
-                Text(Strings.ConfirmCreatingSessionView.startRecording)
+                Text(Strings.ChooseCustomLocationView.continueButton)
                     .bold()
             }).background(
                 NavigationLink(
@@ -42,33 +40,35 @@ struct LocationPopUpView: View {
                         EmptyView()
                     }
                 ))
-            .buttonStyle(BlueButtonStyle())
+                .buttonStyle(BlueButtonStyle())
         }
         .sheet(isPresented: $isLocationPopupPresented) {
             PlacePicker(address: $location)
         }
         .padding()
     }
-    
+
     var mapGoogle: some View {
-        GoogleMapView(pathPoints: [], isMyLocationEnabled: true)
+        GoogleMapView()
     }
-    
+
     var dot: some View {
         Capsule()
-            .fill(Color.blue)
+            .fill(Color.accentColor)
             .frame(width: 15, height: 15)
     }
-    
+
     var titleLabel: some View {
-        Text("Search the adress and ajust the marker to indicate an exact placement of Your AirBeam")
+        Text(Strings.ChooseCustomLocationView.titleLabel)
             .font(Font.moderate(size: 24, weight: .bold))
             .foregroundColor(.darkBlue)
     }
 }
 
-//struct LocationPopUpView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        LocationPopUpView(self)
-//    }
-//}
+#if DEBUG
+struct LocationPopUpView_Previews: PreviewProvider {
+    static var previews: some View {
+        ChooseCustomLocationView(sessionCreator: PreviewSessionCreator(), creatingSessionFlowContinues: .constant(true), sessionName: .constant("true"))
+    }
+}
+#endif

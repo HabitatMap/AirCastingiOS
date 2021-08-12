@@ -34,8 +34,7 @@ struct AirMapView: View {
                         measurementPresentationStyle: .showValues)
             if let threshold = thresholds.threshold(for: selectedStream) {
             ZStack(alignment: .topLeading) {
-                GoogleMapView(pathPoints: pathPoints,
-                              threshold: threshold)
+                GoogleMapView(threshold: threshold)
                 StatisticsContainerView()
             }
                 NavigationLink(destination: HeatmapSettingsView(changedThresholdValues: threshold.rawThresholdsBinding)) {
