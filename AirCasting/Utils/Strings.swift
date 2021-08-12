@@ -395,14 +395,6 @@ struct Strings {
         static let text_3: String = "If you plan to leave the AirBeam3 indoors or hang it outside then configure it to record a fixed session. When recording fixed AirCasting sessions, measurements are created and timestamped once per minute, and geocoordinates are fixed to a set location."
     }
     
-//    enum SelectPeripheralView {
-//        static let airBeams: String = "AirBeams"
-//        static let otherDevices: String = "Other devices"
-//        static let title: String = "Choose the device you'd like to record with"
-//        static let refresh: String = "Don't see a device? Refresh scanning."
-//        static let connect: String = "Connect"
-//    }
-    
     enum ConnectingABView {
         static let title: String = "Connecting"
         static let message: String = "This should take less than 10 seconds."
@@ -422,24 +414,13 @@ struct Strings {
         static let cancelButton: String = "Cancel"
         static let continueButton: String = "Continue"
         static let title: String = "New session details"
-        static let placementPicker_1: String = "Continue"
-        static let placementPicker_2: String = "Continue"
-        static let placementPicker_3: String = "Continue"
+        static let placementPicker_1: String = "Where will you place your AirBeam?"
+        static let placementPicker_2: String = "Indoor"
+        static let placementPicker_3: String = "Outdoor"
         static let transmissionPicker: String = "Data transmission:"
         static let callularText: String = "Cellular"
         static let wifiText: String = "Wi-Fi"
     }
-    
-//    enum ConfirmCreatingSessionView {
-//        static let connectWithAlertText: String = "Failure"
-//        static let gotItButton: String = "Got it!"
-//        static let connectView_1: String = "Are you ready?"
-//        static let connectView_2: String = "Your "
-//        static let connectView_3: String = " session "
-//        static let connectView_4: String = " is ready to start gathering data."
-//        static let connectView_5: String = "Move to your starting location, confirm your location is accurate on the map, then press the start recording button below."
-//        static let startRecording: String = "Start recording"
-//    }
         
     struct AirBeamConnector {
         static let connectionTimeoutTitle: String = "Connection error"
@@ -456,6 +437,7 @@ struct Strings {
         static let contentViewText_2: String = " session "
         static let contentViewText_3: String = " is ready to start gathering data."
         static let contentViewText_4: String = "Hang your AirBeam in a secure position, then press the start recording button below."
+        static let contentViewTextBottomPart: String = ConfirmCreatingSessionView.contentViewText_3 + ConfirmCreatingSessionView.contentViewText_4
         static let startRecording: String = "Start recording"
     }
 }

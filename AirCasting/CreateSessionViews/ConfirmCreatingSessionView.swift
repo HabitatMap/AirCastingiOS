@@ -42,15 +42,14 @@ struct ConfirmCreatingSessionView: View {
         }
     }
     
-    private var someText: some View {
+    private var descriptionText: some View {
         Text(Strings.ConfirmCreatingSessionView.contentViewText_1)
             + Text(sessionType)
             .foregroundColor(.accentColor)
             + Text(Strings.ConfirmCreatingSessionView.contentViewText_2)
             + Text(sessionName)
             .foregroundColor(.accentColor)
-            + Text(Strings.ConfirmCreatingSessionView.contentViewText_3)
-//            + Text(Strings.ConfirmCreatingSessionView.contentViewText_4)
+            + Text(Strings.ConfirmCreatingSessionView.contentViewTextBottomPart)
     }
 
     private var contentView: some View {
@@ -59,9 +58,8 @@ struct ConfirmCreatingSessionView: View {
             Text(Strings.ConfirmCreatingSessionView.contentViewTitle)
                 .font(Font.moderate(size: 24, weight: .bold))
                 .foregroundColor(.darkBlue)
-
             VStack(alignment: .leading, spacing: 15) {
-               someText
+                descriptionText
             }
             .font(Font.muli(size: 16))
             .foregroundColor(Color.aircastingGray)
