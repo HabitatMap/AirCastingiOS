@@ -31,7 +31,7 @@ struct GoogleMapView: UIViewRepresentable {
                                      camera: startingPoint)
         
         print("CENTER MAP: \(mapView.projection.coordinate(for: mapView.center))")
-        
+
         mapView.isMyLocationEnabled = isMyLocationEnabled
         
         context.coordinator.myLocationSink = mapView.publisher(for: \.myLocation)

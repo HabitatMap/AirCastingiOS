@@ -6,7 +6,9 @@ import AirCastingStyling
 import CoreLocation
 
 struct LocationPopUpView: View {
-    @EnvironmentObject var tracker: LocationTracker
+    let sessionCreator: SessionCreator
+    @State var sessionName: String = ""
+    @State private var isConfirmCreatingSessionActive: Bool = false
     @State private var text = ""
     @State private var location = ""
     @State private var lan: Double = 50.0
@@ -26,10 +28,20 @@ struct LocationPopUpView: View {
                 dot
             }
             Button(action: {
+                isConfirmCreatingSessionActive.toggle()
             }, label: {
                 Text(Strings.ConfirmCreatingSessionView.startRecording)
                     .bold()
-            })
+            }).background(
+                NavigationLink(
+                    destination: ConfirmCreatingSessionView(sessionCreator: sessionCreator,
+                                                            creatingSessionFlowContinues: $creatingSessionFlowContinues,
+                                                            sessionName: sessionName),
+                    isActive: $isConfirmCreatingSessionActive,
+                    label: {
+                        EmptyView()
+                    }
+                ))
             .buttonStyle(BlueButtonStyle())
         }
         .sheet(isPresented: $isLocationPopupPresented) {
@@ -39,13 +51,13 @@ struct LocationPopUpView: View {
     }
     
     var mapGoogle: some View {
-        GoogleMapView(pathPoints: tracker.googleLocation)
+        GoogleMapView(pathPoints: [], isMyLocationEnabled: true)
     }
     
     var dot: some View {
         Capsule()
             .fill(Color.blue)
-            .frame(width: 10, height: 10)
+            .frame(width: 15, height: 15)
     }
     
     var titleLabel: some View {

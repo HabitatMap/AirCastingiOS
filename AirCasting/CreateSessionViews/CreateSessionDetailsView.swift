@@ -51,11 +51,7 @@ struct CreateSessionDetailsView: View {
                 .padding()
                 .frame(maxWidth: .infinity, minHeight: geometry.size.height, alignment: .top)
             }
-        }.onChange(of: isIndoor, perform: { value in
-            if value == false {
-                isLocationSessionDeatilsActive = true
-            }
-        })
+        }
         .simultaneousGesture(
             DragGesture(minimumDistance: 2, coordinateSpace: .global)
                 .onChanged { _ in
@@ -110,7 +106,7 @@ private extension CreateSessionDetailsView {
                     }
                 )
                 NavigationLink(
-                    destination: LocationPopUpView(creatingSessionFlowContinues: $creatingSessionFlowContinues),
+                    destination: LocationPopUpView(sessionCreator: sessionCreator, creatingSessionFlowContinues: $creatingSessionFlowContinues),
                     isActive: $isLocationSessionDeatilsActive,
                     label: {
                         EmptyView()
