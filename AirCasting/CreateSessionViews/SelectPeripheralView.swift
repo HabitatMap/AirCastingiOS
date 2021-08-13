@@ -14,7 +14,6 @@ struct SelectPeripheralView: View {
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @EnvironmentObject var sessionContext: CreateSessionContext
     @EnvironmentObject var connectionController: DefaultAirBeamConnectionController
-    
     @State var shouldContinueToNextScreen: Bool = false
     @Binding var creatingSessionFlowContinues: Bool
     
@@ -60,6 +59,12 @@ struct SelectPeripheralView: View {
                         connectButton.disabled(false)
                     } else {
                         connectButton.disabled(true)
+                    }
+                }
+                .onAppear {
+                    if CBCentralManager.authorization == .allowedAlways {
+                        // it triggers the bluetooth searching on the appearing time
+                        _ = bluetoothManager.centralManager
                     }
                 }
                 .padding()

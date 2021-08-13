@@ -17,6 +17,8 @@ extension Database {
         public let thresholdMedium: Int
         public let thresholdLow: Int
         public let thresholdVeryLow: Int
+        public let measurements: [Measurement]
+        public let deleted: Bool
         
         public init(id: MeasurementStreamID?,
                     sensorName: SensorName?,
@@ -29,7 +31,9 @@ extension Database {
                     thresholdHigh: Int,
                     thresholdMedium: Int,
                     thresholdLow: Int,
-                    thresholdVeryLow: Int) {
+                    thresholdVeryLow: Int,
+                    measurements: [Measurement],
+                    deleted: Bool) {
             self.id = id
             self.sensorName = sensorName
             self.sensorPackageName = sensorPackageName
@@ -42,6 +46,8 @@ extension Database {
             self.thresholdMedium = thresholdMedium
             self.thresholdLow = thresholdLow
             self.thresholdVeryLow = thresholdVeryLow
+            self.measurements = measurements
+            self.deleted = deleted
         }
     }
 }

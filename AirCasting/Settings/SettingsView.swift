@@ -11,7 +11,6 @@ import AirCastingStyling
 struct SettingsView: View {
     let urlProvider: BaseURLProvider
     let logoutController: LogoutController
-    @State private var isToggle: Bool = true
     @State private var showModal = false
     @EnvironmentObject var userSettings: UserSettings
     
@@ -25,30 +24,40 @@ struct SettingsView: View {
     var body: some View {
         NavigationView {
             Form {
-                Section() {
-                    signOutLink
-                }
-                Section() {
-                    VStack(alignment: .leading) {
-                        HStack(spacing: 5) {
-                            crowdMapTitle
-                            crowdMapSwitch
-                        }
-                        Spacer()
-                        crowdMapDescription
-                    }.onChange(of: isToggle) { value in
-                        userSettings.contributingToCrowdMap = value
-                    }
-                    navigateToBackendSettingsButton
-                }
-                Section() {
-                    Text("AirCasting App v. ") + Text("\(UIApplication.appVersion!)") +
-                        Text(" build: ") + Text("\(UIApplication.buildVersion!)")
-                }.foregroundColor(.aircastingGray)
+                signOutSection
+                settingsSection
+                appInfoSection
             }
             .listStyle(GroupedListStyle())
             .navigationBarTitle(Strings.Settings.title)
         }
+    }
+    
+    private var signOutSection: some View {
+        Section() {
+            signOutLink
+        }
+    }
+    
+    private var settingsSection: some View {
+        Section() {
+            VStack(alignment: .leading) {
+                HStack(spacing: 5) {
+                    crowdMapTitle
+                    crowdMapSwitch
+                }
+                Spacer()
+                crowdMapDescription
+            }
+            navigateToBackendSettingsButton
+        }
+    }
+    
+    private var appInfoSection: some View {
+        Section() {
+            Text("AirCasting App v. ") + Text("\(UIApplication.appVersion!)") +
+                Text(" build: ") + Text("\(UIApplication.buildVersion!)")
+        }.foregroundColor(.aircastingGray)
     }
     
     private var signOutLink: some View {
@@ -65,7 +74,7 @@ struct SettingsView: View {
     }
     
     private var crowdMapSwitch: some View {
-        Toggle(isOn: $isToggle){
+        Toggle(isOn: $userSettings.contributingToCrowdMap) {
             Text("Switch")
                 .font(.title)
                 .foregroundColor(Color.white)

@@ -5,9 +5,9 @@
 //  Created by Anna Olak on 22/02/2021.
 //
 
-import SwiftUI
-import CoreLocation
 import AirCastingStyling
+import CoreLocation
+import SwiftUI
 
 struct ConfirmCreatingSessionView: View {
     @State private var isActive: Bool = false
@@ -16,18 +16,19 @@ struct ConfirmCreatingSessionView: View {
             isPresentingAlert = error != nil
         }
     }
+
     @State private var isPresentingAlert: Bool = false
     @EnvironmentObject var selectedSection: SelectSection
     @EnvironmentObject private var sessionContext: CreateSessionContext
     let sessionCreator: SessionCreator
     @State private var didStartRecordingSession = false
     @EnvironmentObject private var tabSelection: TabBarSelection
-    
-    @Binding var creatingSessionFlowContinues : Bool
-    
+
+    @Binding var creatingSessionFlowContinues: Bool
+
     var sessionName: String
     private var sessionType: String { (sessionContext.sessionType ?? .fixed).description.lowercased() }
-    
+
     var body: some View {
         LoadingView(isShowing: $isActive) {
             contentViewWithAlert
@@ -36,28 +37,29 @@ struct ConfirmCreatingSessionView: View {
 
     private var contentViewWithAlert: some View {
         contentView.alert(isPresented: $isPresentingAlert) {
-            Alert(title: Text(Strings.ConfirmCreatingSessionView.alertTitle), message: Text(error?.localizedDescription ?? Strings.ConfirmCreatingSessionView.alertMessage), dismissButton: .default(Text(Strings.ConfirmCreatingSessionView.alertOK), action: {
-                error = nil
+            Alert(title: Text(Strings.ConfirmCreatingSessionView.alertTitle), message: Text(error?.localizedDescription ?? Strings.ConfirmCreatingSessionView.alertMessage), dismissButton: .default(Text(Strings.ConfirmCreatingSessionView.alertOK), action: {                error = nil
             }))
         }
     }
     
+    private var descriptionText: some View {
+        Text(Strings.ConfirmCreatingSessionView.contentViewText_1)
+            + Text(sessionType)
+            .foregroundColor(.accentColor)
+            + Text(Strings.ConfirmCreatingSessionView.contentViewText_2)
+            + Text(sessionName)
+            .foregroundColor(.accentColor)
+            + Text(Strings.ConfirmCreatingSessionView.contentViewTextBottomPart)
+    }
+
     private var contentView: some View {
         VStack(alignment: .leading, spacing: 40) {
             ProgressView(value: 0.90)
             Text(Strings.ConfirmCreatingSessionView.contentViewTitle)
                 .font(Font.moderate(size: 24, weight: .bold))
                 .foregroundColor(.darkBlue)
-
             VStack(alignment: .leading, spacing: 15) {
-                Text(Strings.ConfirmCreatingSessionView.contentViewText_1)
-                    + Text(sessionType)
-                    .foregroundColor(.accentColor)
-                    + Text(Strings.ConfirmCreatingSessionView.contentViewText_2)
-                    + Text(sessionName)
-                    .foregroundColor(.accentColor)
-                    + Text(Strings.ConfirmCreatingSessionView.contentViewText_3)
-                Text(Strings.ConfirmCreatingSessionView.contentViewText_4)
+                descriptionText
             }
             .font(Font.muli(size: 16))
             .foregroundColor(Color.aircastingGray)
@@ -85,7 +87,7 @@ struct ConfirmCreatingSessionView: View {
                     }
                 }
             }, label: {
-                Text("Start recording")
+                Text(Strings.ConfirmCreatingSessionView.startRecording)
                     .bold()
             })
             .buttonStyle(BlueButtonStyle())

@@ -5,13 +5,12 @@
 //  Created by Lunar on 15/03/2021.
 //
 
-import SwiftUI
-import Foundation
-import SystemConfiguration.CaptiveNetwork
 import AirCastingStyling
+import Foundation
+import SwiftUI
+import SystemConfiguration.CaptiveNetwork
 
 struct WifiPopupView: View {
-    
     @State private var isSSIDTextfieldDisplayed: Bool = false
     @Environment(\.presentationMode) private var presentationMode
     @Binding var wifiPassword: String
@@ -19,7 +18,7 @@ struct WifiPopupView: View {
     @State var wifiSSIDWasEmptyAtStart: Bool = true
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 30){
+        VStack(alignment: .leading, spacing: 30) {
             if isSSIDTextfieldDisplayed {
                 providePasswordTitle
                 createTextfield(placeholder: Strings.WifiPopupView.wifiPlaceholder, binding: $wifiSSID)
@@ -35,7 +34,7 @@ struct WifiPopupView: View {
             VStack(spacing: 10) {
                 Button(Strings.WifiPopupView.connectButton) {
                     presentationMode.wrappedValue.dismiss()
-                } .buttonStyle(BlueButtonStyle())
+                }.buttonStyle(BlueButtonStyle())
                 
                 Button(Strings.WifiPopupView.cancelButton) {
                     wifiPassword = ""

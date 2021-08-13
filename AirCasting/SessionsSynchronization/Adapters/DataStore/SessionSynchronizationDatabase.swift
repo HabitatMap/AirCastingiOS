@@ -53,7 +53,11 @@ final class SessionSynchronizationDatabase: SessionSynchronizationStore {
                                                    thresholdHigh: $0.thresholdHigh,
                                                    thresholdMedium: $0.thresholdMedium,
                                                    thresholdLow: $0.thresholdLow,
-                                                   thresholdVeryLow: $0.thresholdVeryLow)
+                                                   thresholdVeryLow: $0.thresholdVeryLow,
+                                                   measurements: $0.measurements.map {
+                                                    .init(id: $0.id, time: $0.time, value: $0.value, latitude: $0.latitude, longitude: $0.longitude)
+                                                   },
+                                                   deleted: $0.deleted)
                     }
                     let location: CLLocationCoordinate2D? = {
                         guard let latitude = sessionData.latitude,
