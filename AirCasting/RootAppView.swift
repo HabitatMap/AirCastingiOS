@@ -26,6 +26,8 @@ struct RootAppView: View {
     var sessionSynchronizer: SessionSynchronizer
     let persistenceController: PersistenceController
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
+    @EnvironmentObject var microphoneManager: MicrophoneManager
+    
     var body: some View {
         if userAuthenticationSession.isLoggedIn {
             mainAppView
@@ -41,21 +43,24 @@ struct RootAppView: View {
     }
 
     var mainAppView: some View {
-            MainTabBarView(measurementUpdatingService: DownloadMeasurementsService(
-                            authorisationService: userAuthenticationSession,
-                            persistenceController: persistenceController,
-                            baseUrl: dependancies.urlProvider), urlProvider: dependancies.urlProvider, measurementStreamStorage: measurementStreamStorage, sessionSynchronizer: sessionSynchronizer, sessionContext: CreateSessionContext())
-                .environmentObject(dependancies.bluetoothManager)
-                .environmentObject(userAuthenticationSession)
-                .environmentObject(persistenceController)
-                .environmentObject(dependancies.networkChecker)
-                .environmentObject(lifeTimeEventsProvider)
-                .environmentObject(userSettings)
-                .environmentObject(locationTracker)
-                .environmentObject(userRedirectionSettings)
-                .environmentObject(dependancies.airBeamConnectionController)
-                .environment(\.managedObjectContext, persistenceController.viewContext)
-        }
+        let sessionStoppableFactory = SessionStoppableFactoryDefault(microphoneManager: microphoneManager,
+                                                                     measurementStreamStorage: measurementStreamStorage,
+                                                                     synchronizer: sessionSynchronizer)
+        return MainTabBarView(measurementUpdatingService: DownloadMeasurementsService(
+                                authorisationService: userAuthenticationSession,
+                                persistenceController: persistenceController,
+                                baseUrl: dependancies.urlProvider), urlProvider: dependancies.urlProvider, measurementStreamStorage: measurementStreamStorage, sessionStoppableFactory: sessionStoppableFactory, sessionSynchronizer: sessionSynchronizer, sessionContext: CreateSessionContext())
+            .environmentObject(dependancies.bluetoothManager)
+            .environmentObject(userAuthenticationSession)
+            .environmentObject(persistenceController)
+            .environmentObject(dependancies.networkChecker)
+            .environmentObject(lifeTimeEventsProvider)
+            .environmentObject(userSettings)
+            .environmentObject(locationTracker)
+            .environmentObject(userRedirectionSettings)
+            .environmentObject(dependancies.airBeamConnectionController)
+            .environment(\.managedObjectContext, persistenceController.viewContext)
+    }
 }
 
 #if DEBUG
