@@ -46,10 +46,17 @@ struct RootAppView: View {
         let sessionStoppableFactory = SessionStoppableFactoryDefault(microphoneManager: microphoneManager,
                                                                      measurementStreamStorage: measurementStreamStorage,
                                                                      synchronizer: sessionSynchronizer)
-        return MainTabBarView(measurementUpdatingService: DownloadMeasurementsService(
-                                authorisationService: userAuthenticationSession,
-                                persistenceController: persistenceController,
-                                baseUrl: dependancies.urlProvider), urlProvider: dependancies.urlProvider, measurementStreamStorage: measurementStreamStorage, sessionStoppableFactory: sessionStoppableFactory, sessionSynchronizer: sessionSynchronizer, sessionContext: CreateSessionContext())
+        let downloadMeasurementsService = DownloadMeasurementsService(
+            authorisationService: userAuthenticationSession,
+            persistenceController: persistenceController,
+            baseUrl: dependancies.urlProvider)
+        
+        return MainTabBarView(measurementUpdatingService: downloadMeasurementsService,
+                              urlProvider: dependancies.urlProvider,
+                              measurementStreamStorage: measurementStreamStorage,
+                              sessionStoppableFactory: sessionStoppableFactory,
+                              sessionSynchronizer: sessionSynchronizer,
+                              sessionContext: CreateSessionContext())
             .environmentObject(dependancies.bluetoothManager)
             .environmentObject(userAuthenticationSession)
             .environmentObject(persistenceController)
