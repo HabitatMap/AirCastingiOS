@@ -633,7 +633,6 @@
 		AC32040625CC122900A68520 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				DDD24D8726A8374600D4A327 /* LocationAlert.swift */,
 				B3F1447F26AE4CA0006A4612 /* OfflineAlert.swift */,
 				B32D08A0267A493C006C97ED /* Publishers */,
 				DDD24D8726A8374600D4A327 /* LocationAlert.swift */,
@@ -1860,7 +1859,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 18;
+				CURRENT_PROJECT_VERSION = 19;
 				DEVELOPMENT_ASSET_PATHS = "\"AirCasting/Preview Content\"";
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
@@ -1887,7 +1886,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 18;
+				CURRENT_PROJECT_VERSION = 19;
 				DEVELOPMENT_ASSET_PATHS = "\"AirCasting/Preview Content\"";
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
