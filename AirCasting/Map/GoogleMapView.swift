@@ -14,6 +14,7 @@ import GooglePlaces
 struct GoogleMapView: UIViewRepresentable {
     @EnvironmentObject var tracker: LocationTracker
     typealias UIViewType = GMSMapView
+    let pathPoints: [PathPoint]
     private(set) var threshold: SensorThreshold?
     var isMyLocationEnabled: Bool = false
     
@@ -21,7 +22,7 @@ struct GoogleMapView: UIViewRepresentable {
         GMSServices.provideAPIKey(GOOGLE_MAP_KEY)
         GMSPlacesClient.provideAPIKey(GOOGLE_PLACES_KEY)
         
-        let startingPoint = setStartingPoint(points: tracker.googleLocation)
+        let startingPoint = setStartingPoint(points: pathPoints)
         
         let mapView = GMSMapView.map(withFrame: .zero,
                                      camera: startingPoint)
@@ -38,29 +39,28 @@ struct GoogleMapView: UIViewRepresentable {
         return mapView
     }
     
-    func updateUIView(_ uiView: GMSMapView, context: Self.Context) {
+    func updateUIView(_ uiView: GMSMapView, context: Context) {
         // Drawing the path
         let path = GMSMutablePath()
-        for point in tracker.googleLocation {
+        for point in pathPoints {
             let coordinate = point.location
             path.add(coordinate)
         }
         let polyline = GMSPolyline(path: path)
         
-        let spans = tracker.googleLocation.map { point -> GMSStyleSpan in
+        let spans = pathPoints.map { point -> GMSStyleSpan in
             let color = colorPolyline(point: point)
             return GMSStyleSpan(style: GMSStrokeStyle.solidColor(color),
                                 segments: 1)
         }
         
-        
-        let updatedCameraPosition = setStartingPoint(points: tracker.googleLocation)
+        let updatedCameraPosition = setStartingPoint(points: pathPoints)
         DispatchQueue.main.async {
             uiView.camera = updatedCameraPosition
         }
         // Update starting point
-        if !context.coordinator.didSetInitLocation && !tracker.googleLocation.isEmpty {
-            let updatedCameraPosition = setStartingPoint(points: tracker.googleLocation)
+        if !context.coordinator.didSetInitLocation && !pathPoints.isEmpty {
+            let updatedCameraPosition = setStartingPoint(points: pathPoints)
             DispatchQueue.main.async {
                 uiView.camera = updatedCameraPosition
             }
@@ -72,7 +72,7 @@ struct GoogleMapView: UIViewRepresentable {
     }
     
     func setStartingPoint(points: [PathPoint]) -> GMSCameraPosition {
-        if let lastPoint = points.last {
+        if let lastPoint = tracker.googleLocation.last {
             let long = lastPoint.location.longitude
             let lat = lastPoint.location.latitude
             let newCameraPosition =  GMSCameraPosition.camera(withLatitude: lat,
@@ -138,8 +138,17 @@ struct GoogleMapView: UIViewRepresentable {
 #if DEBUG
 struct GoogleMapView_Previews: PreviewProvider {
     static var previews: some View {
-        GoogleMapView()
-            .padding()
+        GoogleMapView(pathPoints: [PathPoint(location: CLLocationCoordinate2D(latitude: 40.73,
+                                                                                    longitude: -73.93),
+                                                   measurement: 30),
+                                         PathPoint(location: CLLocationCoordinate2D(latitude: 40.83,
+                                                                                    longitude: -73.93),
+                                                   measurement: 30),
+                                         PathPoint(location: CLLocationCoordinate2D(latitude: 40.93,
+                                                                                    longitude: -73.83),
+                                                   measurement: 30)],
+                            threshold: .mock)
+                  .padding()
     }
 }
 #endif

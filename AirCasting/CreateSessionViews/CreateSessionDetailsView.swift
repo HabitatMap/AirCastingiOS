@@ -50,7 +50,26 @@ struct CreateSessionDetailsView: View {
                 }
                 .padding()
                 .frame(maxWidth: .infinity, minHeight: geometry.size.height, alignment: .top)
-            }
+            }.background(Group {
+                NavigationLink(
+                    destination: ChooseCustomLocationView(sessionCreator: sessionCreator, creatingSessionFlowContinues: $creatingSessionFlowContinues, sessionName: $sessionName),
+                    isActive: $isLocationSessionDetailsActive,
+                    label: {
+                        EmptyView()
+                    }
+                )
+                NavigationLink("", destination: EmptyView())
+                NavigationLink(
+                    destination: ConfirmCreatingSessionView(sessionCreator: sessionCreator,
+                                                            creatingSessionFlowContinues: $creatingSessionFlowContinues,
+                                                            sessionName: sessionName),
+                    isActive: $isConfirmCreatingSessionActive,
+                    label: {
+                        EmptyView()
+                    }
+                )
+
+            })
         }
         .simultaneousGesture(
             DragGesture(minimumDistance: 2, coordinateSpace: .global)
@@ -73,7 +92,7 @@ private extension CreateSessionDetailsView {
             if isIndoor {
                 isConfirmCreatingSessionActive = true
             } else {
-               isLocationSessionDetailsActive = true
+                isLocationSessionDetailsActive = true
             }
             if !wifiSSID.isEmpty, !wifiPassword.isEmpty {
                 sessionContext.wifiSSID = wifiSSID
@@ -94,24 +113,6 @@ private extension CreateSessionDetailsView {
                           isWifiPopupPresented = true
                       },
                       secondaryButton: .default(Text(Strings.CreateSessionDetailsView.cancelButton)))
-            })
-            .background(Group {
-                NavigationLink(
-                    destination: ConfirmCreatingSessionView(sessionCreator: sessionCreator,
-                                                            creatingSessionFlowContinues: $creatingSessionFlowContinues,
-                                                            sessionName: sessionName),
-                    isActive: $isConfirmCreatingSessionActive,
-                    label: {
-                        EmptyView()
-                    }
-                )
-                NavigationLink(
-                    destination: ChooseCustomLocationView(sessionCreator: sessionCreator, creatingSessionFlowContinues: $creatingSessionFlowContinues, sessionName: $sessionName),
-                    isActive: $isLocationSessionDetailsActive,
-                    label: {
-                        EmptyView()
-                    }
-                )
             })
     }
 
@@ -157,9 +158,16 @@ private extension CreateSessionDetailsView {
 
     func getAndSaveStartingLocation() {
         let fakeLocation = CLLocationCoordinate2D(latitude: 200.0, longitude: 200.0)
-        if isIndoor {
-            sessionContext.startingLocation = fakeLocation
-            locationTracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: 200.0, longitude: 200.0), measurement: 20.0)]
+        if sessionContext.sessionType == .fixed {
+            if isIndoor {
+                sessionContext.startingLocation = fakeLocation
+                locationTracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: 200.0, longitude: 200.0), measurement: 20.0)]
+            } else {
+                let lat = (locationTracker.locationManager.location?.coordinate.latitude)!
+                let lon = (locationTracker.locationManager.location?.coordinate.longitude)!
+                locationTracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: lat, longitude: lon), measurement: 20.0)]
+                sessionContext.obtainCurrentLocation(lat: lat, log: lon)
+            }
         } else {
             let lat = (locationTracker.locationManager.location?.coordinate.latitude)!
             let lon = (locationTracker.locationManager.location?.coordinate.longitude)!

@@ -79,8 +79,12 @@ struct ConfirmCreatingSessionView: View {
             .multilineTextAlignment(.leading)
             .lineSpacing(9.0)
             ZStack {
-                GoogleMapView()
-                dot
+                if sessionContext.sessionType == .mobile {
+                    GoogleMapView(pathPoints: [], isMyLocationEnabled: true)
+                } else {
+                    GoogleMapView(pathPoints: [])
+                    dot
+                }
             }
             Button(action: {
                 isActive = true
@@ -108,11 +112,7 @@ struct ConfirmCreatingSessionView: View {
                     .bold()
             })
                 .buttonStyle(BlueButtonStyle())
-        }.onAppear(perform: {
-            let lat = locationTracker.googleLocation[0].location.latitude
-            let lon = locationTracker.googleLocation[0].location.longitude
-            sessionContext.obtainCurrentLocation(lat: lat, log: lon)
-        })
+        }
             .padding()
     }
 }

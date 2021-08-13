@@ -49,7 +49,7 @@ struct ChooseCustomLocationView: View {
     }
 
     var mapGoogle: some View {
-        GoogleMapView()
+        GoogleMapView(pathPoints: [])
     }
 
     var dot: some View {

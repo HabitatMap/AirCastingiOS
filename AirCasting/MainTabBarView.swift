@@ -14,6 +14,7 @@ struct MainTabBarView: View {
     let measurementUpdatingService: MeasurementUpdatingService
     let urlProvider: BaseURLProvider
     let measurementStreamStorage: MeasurementStreamStorage
+    @State var dashboardImage: String = "bluehome"
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     @EnvironmentObject var persistenceController: PersistenceController
     @EnvironmentObject var microphoneManager: MicrophoneManager
@@ -34,6 +35,13 @@ struct MainTabBarView: View {
         .onAppear {
             try! measurementUpdatingService.start()
         }
+        .onChange(of: tabSelection.selection, perform: { _ in
+            if tabSelection.selection == .dashboard {
+                dashboardImage = "bluehome"
+            } else {
+                dashboardImage = "home"
+            }
+        })
         .environmentObject(tabSelection)
         .environmentObject(selectedSection)
     }
@@ -46,7 +54,7 @@ private extension MainTabBarView {
             DashboardView(coreDataHook: CoreDataHook(context: persistenceController.viewContext), measurementStreamStorage: measurementStreamStorage)
         }
         .tabItem {
-            Image(systemName: "house")
+            Image(dashboardImage)
         }
         .tag(TabBarSelection.Tab.dashboard)
     }
