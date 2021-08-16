@@ -53,13 +53,19 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
         }
     }
     
-    private func updateForSession(uuid: SessionUUID) {
-        #warning("TODO: change last sync")
-        let syncDate = Date().addingTimeInterval(-100)
+    private func updateForSession(uuid: SessionUUID) {        
+        let session = try? persistenceController.viewContext.existingSession(uuid: uuid)
+        let lastMeasurementTime = session?.allStreams?
+            .compactMap { $0.lastMeasurementTime }
+            .sorted()
+            .last
+        let syncDate = calculateLastSync(sessionEndTime: session?.endTime, lastMeasurementTime: lastMeasurementTime)
+        
         lastFetchCancellableTask = fixedSessionService.getFixedMeasurement(uuid: uuid, lastSync: syncDate, completion: { [removeOldService, persistenceController] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let response):
+                    print("From sync date: \(syncDate)")
                     let context = persistenceController.editContext()
                     do {
                         let session: SessionEntity = try context.newOrExisting(uuid: response.uuid)
@@ -82,5 +88,23 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
                 }
             }
         })
+    }
+    
+    private func calculateLastSync(sessionEndTime: Date?, lastMeasurementTime: Date?) -> Date {
+        let measurementTimeframe: Double = 24 * 60 * 60 // 24 hours in seconds
+        
+        guard let sessionEndTime = sessionEndTime else { return Date() }
+        let sessionEndTimeSeconds = sessionEndTime.timeIntervalSince1970
+
+        let last24hours = Date(timeIntervalSince1970: (sessionEndTimeSeconds - measurementTimeframe))
+        
+        guard let lastMeasurementTime = lastMeasurementTime else { return last24hours }
+        let lastMeasurementSeconds = lastMeasurementTime.timeIntervalSince1970
+        
+        if (sessionEndTimeSeconds - lastMeasurementSeconds) <  measurementTimeframe {
+            return lastMeasurementTime
+        } else {
+            return last24hours
+        }
     }
 }
