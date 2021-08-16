@@ -32,9 +32,5 @@ final class CreateSessionContext: ObservableObject {
         locationProvider = LocationProvider()
         locationProvider?.requestLocation()
         startingLocation = CLLocationCoordinate2D(latitude: lat, longitude: log)
-//        locationSink = locationProvider?.$currentLocation
-//            .sink(receiveValue: { [weak self] (location) in
-//                self?.startingLocation = location?.coordinate
-//            })
     }
 }

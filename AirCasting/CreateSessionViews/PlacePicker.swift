@@ -19,7 +19,6 @@ struct PlacePicker: UIViewControllerRepresentable {
         autocompleteController.placeFields = fields
 
         let filter = GMSAutocompleteFilter()
-        filter.type = .address
         filter.type = .geocode
         autocompleteController.autocompleteFilter = filter
         return autocompleteController

@@ -25,23 +25,9 @@ struct ChooseCustomLocationView: View {
                 mapGoogle
                 dot
             }
-            Button(action: {
-                isConfirmCreatingSessionActive.toggle()
-            }, label: {
-                Text(Strings.ChooseCustomLocationView.continueButton)
-                    .bold()
-            }).background(
-                NavigationLink(
-                    destination: ConfirmCreatingSessionView(sessionCreator: sessionCreator,
-                                                            creatingSessionFlowContinues: $creatingSessionFlowContinues,
-                                                            sessionName: sessionName),
-                    isActive: $isConfirmCreatingSessionActive,
-                    label: {
-                        EmptyView()
-                    }
-                ))
-                .buttonStyle(BlueButtonStyle())
+            confirmButton
         }
+        .background(confirmCreatingSessionLink)
         .sheet(isPresented: $isLocationPopupPresented) {
             PlacePicker(address: $location)
         }
@@ -62,6 +48,27 @@ struct ChooseCustomLocationView: View {
         Text(Strings.ChooseCustomLocationView.titleLabel)
             .font(Font.moderate(size: 24, weight: .bold))
             .foregroundColor(.darkBlue)
+    }
+    
+    var confirmButton: some View {
+        Button(action: {
+            isConfirmCreatingSessionActive.toggle()
+        }, label: {
+            Text(Strings.ChooseCustomLocationView.continueButton)
+                .bold()
+        }).buttonStyle(BlueButtonStyle())
+    }
+    
+    var confirmCreatingSessionLink: some View {
+        NavigationLink(
+            destination: ConfirmCreatingSessionView(sessionCreator: sessionCreator,
+                                                    creatingSessionFlowContinues: $creatingSessionFlowContinues,
+                                                    sessionName: sessionName),
+            isActive: $isConfirmCreatingSessionActive,
+            label: {
+                EmptyView()
+            }
+        )
     }
 }
 

@@ -89,11 +89,8 @@ private extension CreateSessionDetailsView {
                 sessionContext.isIndoor = isIndoor
             }
             getAndSaveStartingLocation()
-            if isIndoor {
-                isConfirmCreatingSessionActive = true
-            } else {
-                isLocationSessionDetailsActive = true
-            }
+            isConfirmCreatingSessionActive = isIndoor
+            isLocationSessionDetailsActive = !isIndoor
             if !wifiSSID.isEmpty, !wifiPassword.isEmpty {
                 sessionContext.wifiSSID = wifiSSID
                 sessionContext.wifiPassword = wifiPassword
@@ -163,14 +160,14 @@ private extension CreateSessionDetailsView {
                 sessionContext.startingLocation = fakeLocation
                 locationTracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: 200.0, longitude: 200.0), measurement: 20.0)]
             } else {
-                let lat = (locationTracker.locationManager.location?.coordinate.latitude)!
-                let lon = (locationTracker.locationManager.location?.coordinate.longitude)!
+                guard let lat = (locationTracker.locationManager.location?.coordinate.latitude),
+                      let lon = (locationTracker.locationManager.location?.coordinate.longitude) else { return }
                 locationTracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: lat, longitude: lon), measurement: 20.0)]
                 sessionContext.obtainCurrentLocation(lat: lat, log: lon)
             }
         } else {
-            let lat = (locationTracker.locationManager.location?.coordinate.latitude)!
-            let lon = (locationTracker.locationManager.location?.coordinate.longitude)!
+            guard let lat = (locationTracker.locationManager.location?.coordinate.latitude),
+                  let lon = (locationTracker.locationManager.location?.coordinate.longitude) else { return }
             locationTracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: lat, longitude: lon), measurement: 20.0)]
             sessionContext.obtainCurrentLocation(lat: lat, log: lon)
         }

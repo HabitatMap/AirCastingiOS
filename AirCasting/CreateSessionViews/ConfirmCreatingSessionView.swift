@@ -50,10 +50,10 @@ struct ConfirmCreatingSessionView: View {
             + Text(Strings.ConfirmCreatingSessionView.contentViewText_2)
             + Text(sessionName)
             .foregroundColor(.accentColor)
-            + text
+            + contentViewText_Ending
     }
 
-    private var text: Text {
+    private var contentViewText_Ending: Text {
         Text(Strings.ConfirmCreatingSessionView.contentViewText_3)
             + Text(Strings.ConfirmCreatingSessionView.contentViewText_4)
     }
