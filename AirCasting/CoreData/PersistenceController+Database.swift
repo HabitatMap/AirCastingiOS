@@ -48,6 +48,7 @@ extension PersistenceController: SessionInsertable {
                 sessionEntity.status = $0.status
                 $0.measurementStreams?.forEach {
                     let streamEntity = MeasurementStreamEntity(context: context)
+                    streamEntity.id = $0.id
                     streamEntity.measurementShortType = $0.measurementShortType
                     streamEntity.measurementType = $0.measurementType
                     streamEntity.sensorName = $0.sensorName
