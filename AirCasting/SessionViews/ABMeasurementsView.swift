@@ -53,11 +53,16 @@ struct ABMeasurementsView: View {
                     }
                 }
             } else {
-                VStack(alignment: .leading, spacing: 3) {
-                    Text(Strings.LoadingSession.title)
-                        .font(Font.moderate(size: 14))
-                    Text(Strings.LoadingSession.description)
-                        .font(Font.moderate(size: 12))
+                HStack {
+                    Image("ABLoading")
+                        .resizable()
+                        .frame(width: 60, height: 60)
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text(Strings.LoadingSession.title)
+                            .font(Font.moderate(size: 14))
+                        Text(Strings.LoadingSession.description)
+                            .font(Font.moderate(size: 12))
+                    }
                 }
                 .foregroundColor(.darkBlue)
             }
