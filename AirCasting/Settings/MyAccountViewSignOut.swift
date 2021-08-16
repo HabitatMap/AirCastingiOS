@@ -8,7 +8,7 @@ struct MyAccountViewSignOut: View {
     let logoutController: LogoutController
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     @EnvironmentObject var persistenceController: PersistenceController
-    
+
     var body: some View {
         ZStack {
             VStack(alignment: .leading) {
@@ -32,11 +32,12 @@ private extension MyAccountViewSignOut {
     
     var signOutButton: some View {
         Button(action: {
-            do {
-                try logoutController.logout()
-            } catch {
-                assertionFailure("Failed to deauthorize \(error)")
-            }
+            fatalError("CRASHLYTICS TEST")
+//            do {
+//                try logoutController.logout()
+//            } catch {
+//                assertionFailure("Failed to deauthorize \(error)")
+//            }
         }) {
             Group {
                 HStack {

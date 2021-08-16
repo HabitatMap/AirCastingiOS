@@ -21,9 +21,9 @@ struct AirCastingApp: App {
     private var cancellables: [AnyCancellable] = []
 
     init() {
-        #if !DEBUG
+//        #if !DEBUG
         FirebaseApp.configure()
-        #endif
+//        #endif
         self.authorization = UserAuthenticationSession()
         let synchronizationContextProvider = SessionSynchronizationService(client: URLSession.shared, authorization: authorization, responseValidator: DefaultHTTPResponseValidator())
         let downloadService = SessionDownloadService(client: URLSession.shared, authorization: authorization, responseValidator: DefaultHTTPResponseValidator())
