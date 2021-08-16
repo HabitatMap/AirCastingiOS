@@ -10,6 +10,8 @@ import SwiftUI
 
 struct EmptyDashboardView: View {
     @EnvironmentObject private var tabSelection: TabBarSelection
+    @EnvironmentObject var selectedSection: SelectSection
+    var settings: BaseURLProvider
     var body: some View {
         emptyState
     }
@@ -17,6 +19,10 @@ struct EmptyDashboardView: View {
     private var emptyState: some View {
         VStack(spacing: 45) {
             VStack {
+                if (selectedSection.selectedSection == .mobileDormant || selectedSection.selectedSection == .fixed) && settings.sessionSynced == false {
+                    ProgressView("Fetching...")
+                        .progressViewStyle(CircularProgressViewStyle())
+                }
                 Spacer()
                 VStack(spacing: 14) {
                     Text(Strings.EmptyOnboarding.title)
@@ -83,7 +89,7 @@ private extension EmptyDashboardView {
 #if DEBUG
 struct EmptyDashboard_Previews: PreviewProvider {
     static var previews: some View {
-        EmptyDashboardView()
+        EmptyDashboardView(settings: DummyURLProvider())
     }
 }
 #endif

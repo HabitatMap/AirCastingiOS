@@ -13,6 +13,7 @@ final class SessionSynchronizationController: SessionSynchronizer {
     private let downstream: SessionDownstream
     private let upstream: SessionUpstream
     private let store: SessionSynchronizationStore
+    private var settings: BaseURLProvider
     private let dataConverter = SynchronizationDataConterter()
     
     // Progress tracking for filtering requests while already syncing
@@ -26,11 +27,13 @@ final class SessionSynchronizationController: SessionSynchronizer {
     init(synchronizationContextProvider: SessionSynchronizationContextProvidable,
          downstream: SessionDownstream,
          upstream: SessionUpstream,
-         store: SessionSynchronizationStore) {
+         store: SessionSynchronizationStore,
+         settings: BaseURLProvider) {
         self.synchronizationContextProvider = synchronizationContextProvider
         self.downstream = downstream
         self.upstream = upstream
         self.store = store
+        self.settings = settings
     }
     
     func triggerSynchronization(completion: (() -> Void)?) {
@@ -40,6 +43,7 @@ final class SessionSynchronizationController: SessionSynchronizer {
         
         let onFinish = {
             Log.info("[SYNC] Ending synchronization")
+            self.settings.sessionSynced = true
             completion?()
             self.syncInProgress = false
         }
@@ -75,6 +79,7 @@ final class SessionSynchronizationController: SessionSynchronizer {
     
     private func startSynchronization() -> AnyPublisher<Void, Error> {
         Log.info("[SYNC] Starting synchronization")
+        self.settings.sessionSynced = false
         // Let's make ourselves a favor and place that warning here 🔥
         if Thread.isMainThread { Log.warning("[SYNC] Synchronization started on main thread, reconsider") }
         return store

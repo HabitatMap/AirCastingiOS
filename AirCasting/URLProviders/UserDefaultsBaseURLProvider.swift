@@ -3,13 +3,22 @@
 
 import Foundation
 
-class UserDefaultsBaseURLProvider: BaseURLProvider {
+class UserDefaultsBaseURLProvider: BaseURLProvider, ObservableObject {
     var baseAppURL: URL {
         set {
             userDefaults.set(newValue, forKey: "baseURL")
         }
         get {
             userDefaults.url(forKey: "baseURL") ?? URL(string: "http://aircasting.org/api")!
+        }
+    }
+    
+    var sessionSynced: Bool {
+        set {
+            userDefaults.set(newValue, forKey: "sessionSynchronization")
+        }
+        get {
+            userDefaults.bool(forKey: "sessionSynchronization")
         }
     }
     

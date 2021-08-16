@@ -13,6 +13,7 @@ struct DashboardView: View {
     @FetchRequest<SensorThreshold>(sortDescriptors: [.init(key: "sensorName", ascending: true)]) var thresholds
     @EnvironmentObject var selectedSection: SelectSection
     let measurementStreamStorage: MeasurementStreamStorage
+    @EnvironmentObject var lifeTimeEventsProvider: LifeTimeEventsProvider
 
     private var sessions: [SessionEntity] {
         coreDataHook.sessions
@@ -36,7 +37,7 @@ struct DashboardView: View {
             AirSectionPickerView(selection: self.$selectedSection.selectedSection)
 
             if sessions.isEmpty {
-                EmptyDashboardView()
+                EmptyDashboardView(settings: UserDefaultsBaseURLProvider())
             } else {
                 let thresholds = Array(self.thresholds)
                 ScrollView(.vertical) {

@@ -33,7 +33,7 @@ struct AirCastingApp: App {
         let unscheduledSyncController = SessionSynchronizationController(synchronizationContextProvider: synchronizationContextProvider,
                                                                          downstream: downloadService,
                                                                          upstream: uploadService,
-                                                                         store: syncStore)
+                                                                         store: syncStore, settings: UserDefaultsBaseURLProvider())
         sessionSynchronizer = ScheduledSessionSynchronizerProxy(controller: unscheduledSyncController,
                                                                 scheduler: DispatchQueue.global())
         microphoneManager = MicrophoneManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared), sessionSynchronizer: sessionSynchronizer)
