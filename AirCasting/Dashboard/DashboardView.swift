@@ -13,7 +13,6 @@ struct DashboardView: View {
     @FetchRequest<SensorThreshold>(sortDescriptors: [.init(key: "sensorName", ascending: true)]) var thresholds
     @EnvironmentObject var selectedSection: SelectSection
     let measurementStreamStorage: MeasurementStreamStorage
-    @EnvironmentObject var lifeTimeEventsProvider: LifeTimeEventsProvider
 
     private var sessions: [SessionEntity] {
         coreDataHook.sessions

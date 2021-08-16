@@ -63,7 +63,7 @@ public class SessionEntity: NSManagedObject, Identifiable {
     }
 
     public var uuid: SessionUUID! {
-        get { SessionUUID(rawValue: value(forKey: "uuid") as? String ?? "000") }
+        get { SessionUUID(rawValue: value(forKey: "uuid") as! String) }
         set { setValue(newValue.rawValue, forKey: "uuid") }
     }
 
