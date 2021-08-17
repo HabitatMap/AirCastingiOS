@@ -8,18 +8,21 @@
 import SwiftUI
 import Firebase
 import Combine
+
 @main
 struct AirCastingApp: App {
     @Environment(\.scenePhase) var scenePhase
     private let authorization: UserAuthenticationSession
     private let syncScheduler: SynchronizationScheduler
     private let microphoneManager: MicrophoneManager
+    private let appState: AppState
     private var sessionSynchronizer: SessionSynchronizer
     private let persistenceController = PersistenceController.shared
     private let appBecameActive = PassthroughSubject<Void, Never>()
     @ObservedObject private var offlineMessageViewModel: OfflineMessageViewModel
     private var cancellables: [AnyCancellable] = []
-
+//    let appState = AppState()
+    
     init() {
 //        #if !DEBUG
         FirebaseApp.configure()
@@ -41,7 +44,7 @@ struct AirCastingApp: App {
                               appBecameActive: appBecameActive.eraseToAnyPublisher(),
                               periodicTimeInterval: 300,
                               authorization: authorization)
-        
+        appState = AppState(microphoneManager: microphoneManager)
         offlineMessageViewModel = .init()
         sessionSynchronizer.errorStream = offlineMessageViewModel
     }
@@ -51,6 +54,7 @@ struct AirCastingApp: App {
             RootAppView(sessionSynchronizer: sessionSynchronizer, persistenceController: persistenceController)
                 .environmentObject(authorization)
                 .environmentObject(microphoneManager)
+                .environmentObject(appState)
                 .alert(isPresented: $offlineMessageViewModel.showOfflineMessage, content: { Alert.offlineAlert })
         }.onChange(of: scenePhase) { newScenePhase in
             switch newScenePhase {
