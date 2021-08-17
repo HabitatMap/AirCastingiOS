@@ -82,7 +82,7 @@ struct Strings {
     
     enum LoadingSession {
         static let title: String = "Your AirBeam is gathering data."
-        static let description: String = "Your AirBeam is gathering data."
+        static let description: String = "Measurements will appear in 3 minutes."
     }
     
     struct SessionCartView {

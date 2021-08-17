@@ -25,7 +25,7 @@ private extension GetStarted {
         Image("Bitmap")
             .resizable()
             .edgesIgnoringSafeArea(.top)
-            .scaledToFit()
+            .scaledToFill()
     }
     
     var logoImage: some View {
