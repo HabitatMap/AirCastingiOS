@@ -65,7 +65,6 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let response):
-                    print("From sync date: \(syncDate)")
                     let context = persistenceController.editContext()
                     do {
                         let session: SessionEntity = try context.newOrExisting(uuid: response.uuid)
@@ -101,10 +100,6 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
         guard let lastMeasurementTime = lastMeasurementTime else { return last24hours }
         let lastMeasurementSeconds = lastMeasurementTime.timeIntervalSince1970
         
-        if (sessionEndTimeSeconds - lastMeasurementSeconds) <  measurementTimeframe {
-            return lastMeasurementTime
-        } else {
-            return last24hours
-        }
+        return ((sessionEndTimeSeconds - lastMeasurementSeconds) < measurementTimeframe) ? lastMeasurementTime : last24hours
     }
 }
