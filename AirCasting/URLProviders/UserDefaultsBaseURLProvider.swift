@@ -13,6 +13,15 @@ class UserDefaultsBaseURLProvider: BaseURLProvider {
         }
     }
     
+    var didAppEnterBackground: Bool {
+        set {
+            userDefaults.set(newValue, forKey: "Background")
+        }
+        get {
+            userDefaults.bool(forKey: "Background")
+        }
+    }
+    
     private let userDefaults: UserDefaults
     init(userDefaults: UserDefaults = .standard) {
         self.userDefaults = userDefaults

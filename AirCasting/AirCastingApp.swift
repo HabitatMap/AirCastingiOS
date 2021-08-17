@@ -42,7 +42,7 @@ struct AirCastingApp: App {
                               appBecameActive: appBecameActive.eraseToAnyPublisher(),
                               periodicTimeInterval: 300,
                               authorization: authorization)
-        appStates = AppStates(microphoneManager: microphoneManager)
+        appStates = AppStates(microphoneManager: microphoneManager, urlProvider: UserDefaultsBaseURLProvider())
         offlineMessageViewModel = .init()
         sessionSynchronizer.errorStream = offlineMessageViewModel
     }
