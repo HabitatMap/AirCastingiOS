@@ -58,6 +58,11 @@ class BluetoothManager: NSObject, ObservableObject {
     
     init(mobilePeripheralSessionManager: MobilePeripheralSessionManager) {
         self.mobilePeripheralSessionManager = mobilePeripheralSessionManager
+        super.init()
+        if CBCentralManager.authorization == .allowedAlways {
+            // To avoid the .unknown state of centralManager when bluetooth is poweredOn
+            let _ = centralManager
+        }
     }
 }
 

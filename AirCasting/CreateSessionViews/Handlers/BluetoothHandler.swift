@@ -21,7 +21,7 @@ class DefaultBluetoothHandler: BluetoothHandler {
     }
     
     func isBluetoothDenied() -> Bool {
-        CBCentralManager.authorization != .allowedAlways ? true : false
+        CBCentralManager.authorization == .denied || CBCentralManager.authorization == .notDetermined || bluetoothManager.centralManager.state != .poweredOn  ? true : false
     }
 }
 

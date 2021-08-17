@@ -113,10 +113,10 @@ struct SelectDeviceView: View {
     var chooseButton: some View {
         Button(action: {
             if selected == 1 {
-                if CBCentralManager.authorization != .allowedAlways {
-                    isTurnOnBluetoothLinkActive = true
-                } else {
+                if CBCentralManager.authorization != .denied && bluetoothManager.centralManagerState == .poweredOn {
                     isPowerABLinkActive = true
+                } else {
+                    isTurnOnBluetoothLinkActive = true
                 }
             } else if selected == 2 {
                 if microphoneManager.recordPermissionGranted() {
