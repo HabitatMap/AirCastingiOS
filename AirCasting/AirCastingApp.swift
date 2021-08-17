@@ -14,6 +14,7 @@ struct AirCastingApp: App {
     private let authorization: UserAuthenticationSession
     private let syncScheduler: SynchronizationScheduler
     private let microphoneManager: MicrophoneManager
+    private let appStates: AppStates
     private var sessionSynchronizer: SessionSynchronizer
     private let persistenceController = PersistenceController.shared
     private let appBecameActive = PassthroughSubject<Void, Never>()
@@ -41,7 +42,7 @@ struct AirCastingApp: App {
                               appBecameActive: appBecameActive.eraseToAnyPublisher(),
                               periodicTimeInterval: 300,
                               authorization: authorization)
-        
+        appStates = AppStates(microphoneManager: microphoneManager)
         offlineMessageViewModel = .init()
         sessionSynchronizer.errorStream = offlineMessageViewModel
     }
