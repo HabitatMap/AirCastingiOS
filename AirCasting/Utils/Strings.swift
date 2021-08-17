@@ -297,6 +297,7 @@ struct Strings {
         static let newSession: String = "Record mobile session"
         static let airBeamDescriptionText: String = "Did you know?"
         static let airBeamDescriptionDescription: String = "AirBeam3 is weather resistant. To \nkeep tabs on your outdoor air quality \n24/7, hang one outside your home and \nrecord a fixed session."
+        static let fetchingText: String = "Fetching..."
     }
     
     enum PowerABView {

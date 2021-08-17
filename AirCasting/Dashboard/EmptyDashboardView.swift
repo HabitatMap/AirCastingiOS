@@ -19,8 +19,8 @@ struct EmptyDashboardView: View {
     private var emptyState: some View {
         VStack(spacing: 45) {
             VStack {
-                if (selectedSection.selectedSection == .mobileDormant || selectedSection.selectedSection == .fixed) && settings.sessionSynced == false {
-                    ProgressView("Fetching...")
+                if shouldSessionFetch() {
+                    ProgressView(Strings.EmptyOnboarding.fetchingText)
                         .progressViewStyle(CircularProgressViewStyle())
                 }
                 Spacer()
@@ -59,8 +59,11 @@ struct EmptyDashboardView: View {
         .padding()
         .background(Color(red: 251/255, green: 253/255, blue: 255/255))
     }
+    
+    func shouldSessionFetch() -> Bool {
+        return (selectedSection.selectedSection == .mobileDormant || selectedSection.selectedSection == .fixed) && settings.sessionSynced == false
+    }
 }
-
 private extension EmptyDashboardView {
     private var airBeamDescription: some View {
         ZStack {

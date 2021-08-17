@@ -12,15 +12,15 @@ class UserDefaultsBaseURLProvider: BaseURLProvider {
             userDefaults.url(forKey: "baseURL") ?? URL(string: "http://aircasting.org/api")!
         }
     }
-    
-    var sessionSynced: Bool {
-        set {
-            userDefaults.set(newValue, forKey: "sessionSynchronization")
-        }
-        get {
-            userDefaults.bool(forKey: "sessionSynchronization")
-        }
-    }
+//
+//    var sessionSynced: Bool {
+//        set {
+//            userDefaults.set(newValue, forKey: "sessionSynchronization")
+//        }
+//        get {
+//            userDefaults.bool(forKey: "sessionSynchronization")
+//        }
+//    }
     
     private let userDefaults: UserDefaults
     init(userDefaults: UserDefaults = .standard) {
