@@ -49,7 +49,7 @@ struct RootAppView: View {
         .environmentObject(urlProvider)
         .environment(\.managedObjectContext, persistenceController.viewContext)
         .onAppear {
-            airBeamConnectionController =  DefaultAirBeamConnectionController(connectingAirBeamServices: ConnectingAirBeamServicesBluetooth(bluetoothConnector: bluetoothManager))
+            airBeamConnectionController = DefaultAirBeamConnectionController(connectingAirBeamServices: ConnectingAirBeamServicesBluetooth(bluetoothConnector: bluetoothManager))
         }
     }
     
