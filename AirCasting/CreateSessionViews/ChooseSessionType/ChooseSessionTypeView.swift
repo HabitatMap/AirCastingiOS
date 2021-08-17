@@ -79,7 +79,7 @@ struct ChooseSessionTypeView: View {
                     didTapFixedSession = false
                 }
             }
-        }
+        }.accentColor(.accentColor)
         .environmentObject(viewModel.passSessionContext)
     }
 

@@ -60,7 +60,8 @@ private extension SessionHeaderView {
         formatter.timeStyle = .short
         formatter.dateStyle = .medium
         let string = DateIntervalFormatter().string(from: start, to: end)
-        return Text(string)
+        let replaced = string.replacingOccurrences(of: "—", with: "-")
+        return Text(replaced)
     }
     
     var nameLabelAndExpandButton: some View {
@@ -175,6 +176,14 @@ private extension SessionHeaderView {
         } label: {
             Label(Strings.SessionHeaderView.deleteButton, systemImage: "xmark.circle")
         }
+    }
+}
+
+extension Date {
+   func getFormattedDate(format: String) -> String {
+        let dateformat = DateFormatter()
+        dateformat.dateFormat = format
+        return dateformat.string(from: self)
     }
 }
 
