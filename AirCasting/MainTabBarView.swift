@@ -47,6 +47,7 @@ private extension MainTabBarView {
         }
         .tabItem {
             Image(systemName: "house")
+                .foregroundColor(.black)
         }
         .tag(TabBarSelection.Tab.dashboard)
     }
@@ -55,6 +56,7 @@ private extension MainTabBarView {
         ChooseSessionTypeView(viewModel: ChooseSessionTypeViewModel(locationHandler: DefaultLocationHandler(locationTracker: locationTracker), bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: bluetoothManager), userSettings: userSettings, sessionContext: sessionContext, urlProvider: urlProvider, bluetoothManager: bluetoothManager, bluetoothManagerState: bluetoothManager.centralManagerState, locationTracker: locationTracker))
             .tabItem {
                 Image(systemName: "plus")
+                    .foregroundColor(.yellow)
             }
             .tag(TabBarSelection.Tab.createSession)
     }
@@ -67,6 +69,7 @@ private extension MainTabBarView {
                         sessionSynchronizer: sessionSynchronizer))
             .tabItem {
                 Image(systemName: "gearshape")
+                    .foregroundColor(.black)
             }
             .tag(TabBarSelection.Tab.settings)
     }
