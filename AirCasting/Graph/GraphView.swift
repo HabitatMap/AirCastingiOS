@@ -17,7 +17,7 @@ struct GraphView: View {
     var body: some View {
         VStack(alignment: .trailing) {
             SessionHeaderView(action: {},
-                              isExpandButtonNeeded: false,
+                              isExpandButtonNeeded: false, isCollapsed: Binding.constant(false),
                               session: session,
                               sessionStopperFactory: sessionStoppableFactory).padding()
             StreamsView(selectedStream: $selectedStream,

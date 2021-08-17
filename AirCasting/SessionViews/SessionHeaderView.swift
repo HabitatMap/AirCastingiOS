@@ -10,6 +10,8 @@ import SwiftUI
 struct SessionHeaderView: View {
     let action: () -> Void
     let isExpandButtonNeeded: Bool
+    @Binding var isCollapsed: Bool
+    @State var chevronIndicator = "chevron.down"
     @EnvironmentObject var networkChecker: NetworkChecker
     @ObservedObject var session: SessionEntity
     @State private var showingAlert = false
@@ -37,7 +39,9 @@ struct SessionHeaderView: View {
                     DeleteView(viewModel: DefaultDeleteSessionViewModel(), deleteModal: $deleteModal)
                 })
             nameLabelAndExpandButton
-        }
+        }.onChange(of: isCollapsed, perform: { value in
+            isCollapsed ? (chevronIndicator = "chevron.down") :  (chevronIndicator = "chevron.up")
+        })
         .font(Font.moderate(size: 13, weight: .regular))
         .foregroundColor(.aircastingGray)
     }
@@ -68,7 +72,7 @@ private extension SessionHeaderView {
                     Button(action: {
                         action()
                     }) {
-                        Image(systemName: "chevron.down")
+                        Image(systemName: chevronIndicator)
                             .renderingMode(.original)
                     }
                 }
@@ -177,7 +181,7 @@ private extension SessionHeaderView {
 struct SessionHeader_Previews: PreviewProvider {
     static var previews: some View {
         SessionHeaderView(action: {},
-                          isExpandButtonNeeded: true,
+                          isExpandButtonNeeded: true, isCollapsed: .constant(true),
                           session: SessionEntity.mock,
                           sessionStopperFactory: SessionStoppableFactoryDummy())
             .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))

@@ -39,7 +39,7 @@ struct SessionCartView: View {
                             session: session,
                             thresholds: thresholds,
                             measurementPresentationStyle: shouldShowValues)
-            
+
                 VStack(alignment: .trailing, spacing: 40) {
                     if showChart {
                         pollutionChart(thresholds: thresholds)
@@ -76,6 +76,7 @@ private extension SessionCartView {
                     isCollapsed.toggle()
                 }
             }, isExpandButtonNeeded: true,
+            isCollapsed: $isCollapsed,
             session: session,
             sessionStopperFactory: sessionStoppableFactory
         )

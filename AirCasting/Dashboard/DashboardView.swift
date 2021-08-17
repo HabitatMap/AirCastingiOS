@@ -40,19 +40,20 @@ struct DashboardView: View {
             if sessions.isEmpty {
                 EmptyDashboardView()
             } else {
-                let thresholds = Array(self.thresholds)
-                ScrollView(.vertical) {
-                    LazyVStack(spacing: 20) {
-                        ForEach(sessions, id: \.uuid) { session in
-                            let followingSetter = MeasurementStreamStorageFollowingSettable(session: session, measurementStreamStorage: measurementStreamStorage)
-                            let viewModel = SessionCartViewModel(followingSetter: followingSetter)
-                            SessionCartView(session: session, sessionCartViewModel: viewModel, thresholds: thresholds, sessionStoppableFactory: sessionStoppableFactory)
-                        }
+                ZStack(alignment: .bottomTrailing) {
+                    Image("dashboard-background-thing")
+                    let thresholds = Array(self.thresholds)
+                    ScrollView(.vertical) {
+                        LazyVStack(spacing: 20) {
+                            ForEach(sessions, id: \.uuid) { session in
+                                let followingSetter = MeasurementStreamStorageFollowingSettable(session: session, measurementStreamStorage: measurementStreamStorage)
+                                let viewModel = SessionCartViewModel(followingSetter: followingSetter)
+                                SessionCartView(session: session, sessionCartViewModel: viewModel, thresholds: thresholds, sessionStoppableFactory: sessionStoppableFactory)
+                            }                        }
                     }
-                    .padding()
-                }
-                .frame(maxWidth: .infinity)
-                .background(Color.aircastingGray.opacity(0.05))
+                }.padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.aircastingGray.opacity(0.05))
             }
         }
         .navigationBarTitle(NSLocalizedString("Dashboard", comment: ""))

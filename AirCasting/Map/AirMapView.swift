@@ -27,7 +27,7 @@ struct AirMapView: View {
     var body: some View {
         VStack(alignment: .trailing, spacing: 20) {
             SessionHeaderView(action: {},
-                              isExpandButtonNeeded: false,
+                              isExpandButtonNeeded: false, isCollapsed: Binding.constant(false),
                               session: session,
                               sessionStopperFactory: sessionStoppableFactory)
             StreamsView(selectedStream: $selectedStream,
