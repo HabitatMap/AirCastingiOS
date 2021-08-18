@@ -159,16 +159,19 @@ private extension CreateSessionDetailsView {
             if isIndoor {
                 sessionContext.startingLocation = fakeLocation
                 locationTracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: 200.0, longitude: 200.0), measurement: 20.0)]
+                // measurement: 20.0 was designed just to be 'something'. Is should be handle somehow, but for now we are leaving this like it is.
             } else {
                 guard let lat = (locationTracker.locationManager.location?.coordinate.latitude),
                       let lon = (locationTracker.locationManager.location?.coordinate.longitude) else { return }
                 locationTracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: lat, longitude: lon), measurement: 20.0)]
+                // measurement: 20.0 was designed just to be 'something'. Is should be handle somehow, but for now we are leaving this like it is.
                 sessionContext.obtainCurrentLocation(lat: lat, log: lon)
             }
         } else {
             guard let lat = (locationTracker.locationManager.location?.coordinate.latitude),
                   let lon = (locationTracker.locationManager.location?.coordinate.longitude) else { return }
             locationTracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: lat, longitude: lon), measurement: 20.0)]
+            // measurement: 20.0 was designed just to be 'something'. Is should be handle somehow, but for now we are leaving this like it is.
             sessionContext.obtainCurrentLocation(lat: lat, log: lon)
         }
     }

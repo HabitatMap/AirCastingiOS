@@ -25,6 +25,7 @@ class LocationTracker: NSObject, ObservableObject, CLLocationManagerDelegate {
             case .denied, .notDetermined, .restricted:
                 self.locationGranted = .denied
                 googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: 37.35, longitude: -122.05), measurement: 20.0)]
+        // measurement: 20.0 was designed just to be 'something'. Is should be handle somehow, but for now we are leaving this like it is.
             @unknown default:
                 fatalError()
         }

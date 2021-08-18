@@ -16,26 +16,6 @@ class UserSettings: ObservableObject {
         }
     }
     
-    var lat: Double {
-        set {
-            objectWillChange.send()
-            userDefaults.setValue(newValue, forKey: "lat")
-        }
-        get {
-            userDefaults.double(forKey: "lat")
-        }
-    }
-    
-    var lon: Double {
-        set {
-            objectWillChange.send()
-            userDefaults.setValue(newValue, forKey: "lon")
-        }
-        get {
-            userDefaults.double(forKey: "lon")
-        }
-    }
-    
     init(userDefaults: UserDefaults = .standard) {
         self.userDefaults = userDefaults
     }
