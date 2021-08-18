@@ -4,7 +4,7 @@
 import Foundation
 
 /// Provides conversion functions between various sessions sync data structures
-struct SynchronizationDataContainer {
+struct SynchronizationDataConverter {
     func convertDownloadToSession(_ download: SessionsSynchronization.SessionDownstreamData) -> SessionsSynchronization.SessionStoreSessionData {
         let measurements = download.streams.values.map { stream in
             SessionsSynchronization.SessionStoreMeasurementStreamData(

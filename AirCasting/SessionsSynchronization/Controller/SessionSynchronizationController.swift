@@ -16,7 +16,7 @@ final class SessionSynchronizationController: SessionSynchronizer {
     private let downstream: SessionDownstream
     private let upstream: SessionUpstream
     private let store: SessionSynchronizationStore
-    private let dataConverter = SynchronizationDataContainer()
+    private let dataConverter = SynchronizationDataConverter()
     
     // Progress tracking for filtering requests while already syncing
     // (can this be somehow moved to a custom operator or something?)
