@@ -5,6 +5,8 @@ import Foundation
 import Combine
 import CoreLocation
 
+public var isSyncing = false
+
 final class SessionSynchronizationController: SessionSynchronizer {
     
     /// A plugin point for error handlers
@@ -38,11 +40,13 @@ final class SessionSynchronizationController: SessionSynchronizer {
         lock.lock(); defer { lock.unlock() }
         if syncInProgress { return }
         syncInProgress = true
+        isSyncing = true
         
         let onFinish = {
             Log.info("[SYNC] Ending synchronization")
             completion?()
             self.syncInProgress = false
+            isSyncing = false
         }
         
         startSynchronization()

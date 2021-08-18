@@ -18,20 +18,3 @@ class UserDefaultsBaseURLProvider: BaseURLProvider {
         self.userDefaults = userDefaults
     }
 }
-
-class UserDefaultsSynchronizationState: isSessionSynchronizing {
-    
-        var syncIsInProgress: Bool {
-            set {
-                userDefaults.set(newValue, forKey: "sessionSynchronization")
-            }
-            get {
-                userDefaults.bool(forKey: "sessionSynchronization")
-            }
-        }
-    
-    private let userDefaults: UserDefaults
-    init(userDefaults: UserDefaults = .standard) {
-        self.userDefaults = userDefaults
-    }
-}

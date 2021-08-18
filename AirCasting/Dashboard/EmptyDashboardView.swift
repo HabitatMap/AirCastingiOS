@@ -15,8 +15,7 @@ struct EmptyDashboardView: View {
         emptyState
     }
     var shouldSessionFetch: Bool {
-//        (selectedSection.selectedSection == .mobileDormant || selectedSection.selectedSection == .fixed) &&
-        true
+        (selectedSection.selectedSection == .mobileDormant || selectedSection.selectedSection == .fixed) && isSyncing
     }
 
     private var emptyState: some View {
