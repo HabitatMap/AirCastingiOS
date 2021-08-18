@@ -63,12 +63,16 @@ struct MainAppView: View {
     @EnvironmentObject var persistenceController: PersistenceController
     @EnvironmentObject var urlProvider: UserDefaultsBaseURLProvider
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
+    @EnvironmentObject var microphoneManager: MicrophoneManager
     
     var body: some View {
+        let sessionStoppableFactory = SessionStoppableFactoryDefault(microphoneManager: microphoneManager,
+                                                                     measurementStreamStorage: measurementStreamStorage,
+                                                                     synchronizer: sessionSynchronizer)
         MainTabBarView(measurementUpdatingService: DownloadMeasurementsService(
                         authorisationService: userAuthenticationSession,
                         persistenceController: persistenceController,
-                        baseUrl: urlProvider), urlProvider: urlProvider, measurementStreamStorage: measurementStreamStorage, sessionSynchronizer: sessionSynchronizer, sessionContext: CreateSessionContext())
+                        baseUrl: urlProvider), urlProvider: urlProvider, measurementStreamStorage: measurementStreamStorage, sessionStoppableFactory: sessionStoppableFactory, sessionSynchronizer: sessionSynchronizer, sessionContext: CreateSessionContext())
             .environmentObject(airBeamConnectionController)
     }
 }

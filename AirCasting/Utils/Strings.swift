@@ -126,8 +126,8 @@ struct Strings {
         static let connectButton: String = "Connect"
         static let cancelButton: String = "Cancel"
         static let passwordTitle: String = "Provide name and password for the Wi-Fi network"
-        static let nameAndPasswordTitle_1: String = "Provide password for"
-        static let nameAndPasswordTitle_2: String = "network"
+        static let nameAndPasswordTitle_1: String = "Provide password for "
+        static let nameAndPasswordTitle_2: String = " network"
         static let differentNetwork: String = "I'd like to connect with a different Wi-Fi network."
     }
 
@@ -435,9 +435,9 @@ enum PowerABView {
         static let contentViewTitle: String = "Are you ready?"
         static let contentViewText_1: String = "Your "
         static let contentViewText_2: String = " session "
-        static let contentViewText_3: String = " is ready to start gathering data."
+        static let contentViewText_3: String = " is ready to start gathering data.\n\n"
         static let contentViewText_4: String = "Hang your AirBeam in a secure position, then press the start recording button below."
-        static let contentViewTextBottomPart: String = ConfirmCreatingSessionView.contentViewText_3 + ConfirmCreatingSessionView.contentViewText_4
+        static let contentViewText_4Mobile: String = "Move to your starting location, confirm your location is accurate on the map, then press the start recording button below"
         static let startRecording: String = "Start recording"
     }
 }

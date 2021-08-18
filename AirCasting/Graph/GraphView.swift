@@ -12,12 +12,14 @@ struct GraphView: View {
     let session: SessionEntity
     let thresholds: [SensorThreshold]
     @Binding var selectedStream: MeasurementStreamEntity?
+    let sessionStoppableFactory: SessionStoppableFactory
     
     var body: some View {
         VStack(alignment: .trailing) {
             SessionHeaderView(action: {},
                               isExpandButtonNeeded: false, isCollapsed: Binding.constant(false),
-                              session: session).padding()
+                              session: session,
+                              sessionStopperFactory: sessionStoppableFactory).padding()
             StreamsView(selectedStream: $selectedStream,
                         session: session,
                         thresholds: thresholds,
@@ -52,7 +54,7 @@ struct GraphView: View {
 struct GraphView_Previews: PreviewProvider {
     static var previews: some View {
         //Change selected stream
-        GraphView(session: .mock, thresholds: [.mock], selectedStream: .constant(nil))
+        GraphView(session: .mock, thresholds: [.mock], selectedStream: .constant(nil), sessionStoppableFactory: SessionStoppableFactoryDummy())
     }
 }
 #endif

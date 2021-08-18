@@ -4,7 +4,7 @@
 //
 //  Created by Lunar on 13/01/2021.
 //
-
+import AirCastingStyling
 import SwiftUI
 
 struct SessionHeaderView: View {
@@ -14,18 +14,19 @@ struct SessionHeaderView: View {
     @State var chevronIndicator = "chevron.down"
     @EnvironmentObject var networkChecker: NetworkChecker
     @ObservedObject var session: SessionEntity
-    @EnvironmentObject private var microphoneManager: MicrophoneManager
     @State private var showingAlert = false
     @State private var showingFinishAlert = false
     @State private var shareModal = false
     @State private var deleteModal = false
     @State private var showModal = false
     @State private var showModalEdit = false
+    let sessionStopperFactory: SessionStoppableFactory
     
     var body: some View {
         VStack(alignment: .leading, spacing: 13) {
             HStack {
                 dateAndTime
+                    .foregroundColor(Color.aircastingTimeGray)
                 Spacer()
                 if session.type == .fixed {
                     actionsMenuFixed
@@ -59,7 +60,8 @@ private extension SessionHeaderView {
         formatter.timeStyle = .short
         formatter.dateStyle = .medium
         let string = DateIntervalFormatter().string(from: start, to: end)
-        return Text(string)
+        let replaced = string.replacingOccurrences(of: "—", with: "-")
+        return Text(replaced)
     }
     
     var nameLabelAndExpandButton: some View {
@@ -103,9 +105,9 @@ private extension SessionHeaderView {
                     Text(Strings.SessionHeaderView.finishAlertMessage_3),
                 primaryButton: .default(Text(Strings.SessionHeaderView.finishAlertButton), action: {
                     do {
-                        try microphoneManager.stopRecording()
+                        try sessionStopperFactory.getSessionStopper(for: session).stopSession()
                     } catch {
-                        Log.info("error when stpoing mic session - \(error)")
+                        Log.info("error when stpoing session - \(error)")
                     }
                 }),
                 secondaryButton: .cancel())
@@ -182,8 +184,9 @@ struct SessionHeader_Previews: PreviewProvider {
     static var previews: some View {
         SessionHeaderView(action: {},
                           isExpandButtonNeeded: true, isCollapsed: .constant(true),
-                          session: SessionEntity.mock)
-            .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionSynchronizer: DummySessionSynchronizer()))
+                          session: SessionEntity.mock,
+                          sessionStopperFactory: SessionStoppableFactoryDummy())
+                .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
     }
 }
 #endif
