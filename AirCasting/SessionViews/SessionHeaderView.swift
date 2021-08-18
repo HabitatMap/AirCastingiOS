@@ -14,13 +14,13 @@ struct SessionHeaderView: View {
     @State var chevronIndicator = "chevron.down"
     @EnvironmentObject var networkChecker: NetworkChecker
     @ObservedObject var session: SessionEntity
-    @EnvironmentObject private var microphoneManager: MicrophoneManager
     @State private var showingAlert = false
     @State private var showingFinishAlert = false
     @State private var shareModal = false
     @State private var deleteModal = false
     @State private var showModal = false
     @State private var showModalEdit = false
+    let sessionStopperFactory: SessionStoppableFactory
     
     var body: some View {
         VStack(alignment: .leading, spacing: 13) {
@@ -105,9 +105,9 @@ private extension SessionHeaderView {
                     Text(Strings.SessionHeaderView.finishAlertMessage_3),
                 primaryButton: .default(Text(Strings.SessionHeaderView.finishAlertButton), action: {
                     do {
-                        try microphoneManager.stopRecording()
+                        try sessionStopperFactory.getSessionStopper(for: session).stopSession()
                     } catch {
-                        Log.info("error when stpoing mic session - \(error)")
+                        Log.info("error when stpoing session - \(error)")
                     }
                 }),
                 secondaryButton: .cancel())
@@ -184,8 +184,9 @@ struct SessionHeader_Previews: PreviewProvider {
     static var previews: some View {
         SessionHeaderView(action: {},
                           isExpandButtonNeeded: true, isCollapsed: .constant(true),
-                          session: SessionEntity.mock)
-            .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionSynchronizer: DummySessionSynchronizer()))
+                          session: SessionEntity.mock,
+                          sessionStopperFactory: SessionStoppableFactoryDummy())
+            .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
     }
 }
 #endif

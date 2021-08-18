@@ -17,6 +17,7 @@ struct SessionCartView: View {
     @ObservedObject var session: SessionEntity
     let sessionCartViewModel: SessionCartViewModel
     let thresholds: [SensorThreshold]
+    let sessionStoppableFactory: SessionStoppableFactory
     
     var shouldShowValues: MeasurementPresentationStyle {
         let shouldShow = isCollapsed && (session.isFixed || session.isDormant)
@@ -76,14 +77,16 @@ private extension SessionCartView {
                 }
             }, isExpandButtonNeeded: true,
             isCollapsed: $isCollapsed,
-            session: session
+            session: session,
+            sessionStopperFactory: sessionStoppableFactory
         )
     }
     
     func graphButton(thresholds: [SensorThreshold]) -> some View {
         NavigationLink(destination: GraphView(session: session,
                                               thresholds: thresholds,
-                                              selectedStream: $selectedStream)) {
+                                              selectedStream: $selectedStream,
+                                              sessionStoppableFactory: sessionStoppableFactory)) {
             Text(Strings.SessionCartView.graph)
                 .font(Font.muli(size: 13, weight: .semibold))
                 .padding(.horizontal, 8)
@@ -93,7 +96,8 @@ private extension SessionCartView {
     func mapButton(thresholds: [SensorThreshold]) -> some View {
         NavigationLink(destination: AirMapView(thresholds: thresholds,
                                                session: session,
-                                               selectedStream: $selectedStream)) {
+                                               selectedStream: $selectedStream,
+                                               sessionStoppableFactory: sessionStoppableFactory)) {
             Text(Strings.SessionCartView.map)
                 .font(Font.muli(size: 13, weight: .semibold))
                 .padding(.horizontal, 8)
@@ -145,10 +149,10 @@ private extension SessionCartView {
         EmptyView()
         SessionCartView(session: SessionEntity.mock,
                                 sessionCartViewModel: SessionCartViewModel(followingSetter: MockSessionFollowingSettable()),
-                                thresholds: [.mock, .mock])
+                                thresholds: [.mock, .mock], sessionStoppableFactory: SessionStoppableFactoryDummy())
             .padding()
             .previewLayout(.sizeThatFits)
-            .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionSynchronizer: DummySessionSynchronizer()))
+            .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
     }
  }
  #endif
