@@ -85,6 +85,8 @@ private extension SessionCartView {
                                               thresholds: thresholds,
                                               selectedStream: $selectedStream)) {
             Text(Strings.SessionCartView.graph)
+                .font(Font.muli(size: 13, weight: .semibold))
+                .padding(.horizontal, 8)
         }
     }
     
@@ -93,6 +95,8 @@ private extension SessionCartView {
                                                session: session,
                                                selectedStream: $selectedStream)) {
             Text(Strings.SessionCartView.map)
+                .font(Font.muli(size: 13, weight: .semibold))
+                .padding(.horizontal, 8)
         }
     }
     
