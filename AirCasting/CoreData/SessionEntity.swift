@@ -77,6 +77,28 @@ public class SessionEntity: NSManagedObject, Identifiable {
         set { setValue(newValue.rawValue, forKey: "type") }
     }
     
+    public var sortedStreams: [MeasurementStreamEntity]? {
+        let defaultSortedABStreams = [pm1Stream,
+                                      pm2Stream,
+                                      pm10Stream,
+                                      FStream,
+                                      HStream].compactMap { $0 }
+        
+        return allStreams?.sorted(by: { a, b in
+            let aIdx = defaultSortedABStreams.firstIndex(of: a)
+            let bIdx = defaultSortedABStreams.firstIndex(of: b)
+            
+            // If 'A' stream is unknown, B should be first.
+            guard let aIdx = aIdx else { return false }
+            // If 'B' stream is unknown, A should be first.
+            guard let bIdx = bIdx else { return true }
+            
+            // If 'A' and 'B' streams are known,
+            // preserve order of 'defaultSortedABStrams'
+            return aIdx < bIdx
+        }) ?? []
+    }
+    
     public var allStreams: [MeasurementStreamEntity]? {
         measurementStreams?.array as? [MeasurementStreamEntity]
     }

@@ -14,6 +14,8 @@ import SwiftUI
 struct SessionCartView: View {
     @State private var isCollapsed = true
     @State private var selectedStream: MeasurementStreamEntity?
+    @State private var isMapButtonActive = false
+    @State private var isGraphButtonActive = false
     @ObservedObject var session: SessionEntity
     let sessionCartViewModel: SessionCartViewModel
     let thresholds: [SensorThreshold]
@@ -52,19 +54,31 @@ struct SessionCartView: View {
                 SessionLoadingView()
             }
         }
-        .onChange(of: session.allStreams) { _ in
-            selectedStream = session.allStreams?.first
+        .onChange(of: session.sortedStreams) { newValue in
+            selectDefaultStreamIfNeeded(streams: newValue ?? [])
         }
         .onAppear {
-            selectedStream = session.allStreams?.first
+            selectDefaultStreamIfNeeded(streams: session.sortedStreams ?? [])
         }
         .font(Font.moderate(size: 13, weight: .regular))
         .foregroundColor(.aircastingGray)
         .padding()
         .background(
-            Color.white
-                .shadow(color: Color(red: 205/255, green: 209/255, blue: 214/255, opacity: 0.36), radius: 9, x: 0, y: 1)
+            Group {
+                Color.white
+                    .shadow(color: Color(red: 205/255, green: 209/255, blue: 214/255, opacity: 0.36), radius: 9, x: 0, y: 1)
+                mapNavigationLink
+                graphNavigationLink
+                // SwiftUI bug: two navigation links don't work properly
+                NavigationLink(destination: EmptyView(), label: {EmptyView()})
+            }
         )
+    }
+    
+    private func selectDefaultStreamIfNeeded(streams: [MeasurementStreamEntity]) {
+        if selectedStream == nil {
+            selectedStream = streams.first
+        }
     }
 }
 
@@ -82,22 +96,18 @@ private extension SessionCartView {
         )
     }
     
-    func graphButton(thresholds: [SensorThreshold]) -> some View {
-        NavigationLink(destination: GraphView(session: session,
-                                              thresholds: thresholds,
-                                              selectedStream: $selectedStream,
-                                              sessionStoppableFactory: sessionStoppableFactory)) {
-            Text(Strings.SessionCartView.graph)
-                .font(Font.muli(size: 13, weight: .semibold))
-                .padding(.horizontal, 8)
+    var graphButton: some View {
+        Button {
+            isMapButtonActive = true
+        } label: {
+            Text(Strings.SessionCartView.map)
         }
     }
     
-    func mapButton(thresholds: [SensorThreshold]) -> some View {
-        NavigationLink(destination: AirMapView(thresholds: thresholds,
-                                               session: session,
-                                               selectedStream: $selectedStream,
-                                               sessionStoppableFactory: sessionStoppableFactory)) {
+    var mapButton: some View {
+        Button {
+            isMapButtonActive = true
+        } label: {
             Text(Strings.SessionCartView.map)
                 .font(Font.muli(size: 13, weight: .semibold))
                 .padding(.horizontal, 8)
@@ -114,6 +124,29 @@ private extension SessionCartView {
         Button(Strings.SessionCartView.unfollow) {
             sessionCartViewModel.toggleFollowing()
         }.buttonStyle(UnFollowButtonStyle())
+    }
+    
+    var mapNavigationLink: some View {
+        NavigationLink( destination: AirMapView(thresholds: thresholds,
+                                                session: session,
+                                                selectedStream: $selectedStream,
+                                                sessionStoppableFactory: sessionStoppableFactory),
+                        isActive: $isMapButtonActive,
+                        label: {
+                            EmptyView()
+                        })
+    }
+    
+    var graphNavigationLink: some View {
+        NavigationLink(
+            destination: GraphView(session: session,
+                                   thresholds: thresholds,
+                                   selectedStream: $selectedStream,
+                                   sessionStoppableFactory: sessionStoppableFactory),
+            isActive: $isGraphButtonActive,
+            label: {
+                EmptyView()
+            })
     }
     
     func pollutionChart(thresholds: [SensorThreshold]) -> some View {
@@ -135,9 +168,9 @@ private extension SessionCartView {
             }
             Spacer()
             if !session.isIndoor {
-                mapButton(thresholds: thresholds)
+                mapButton
             }
-            graphButton(thresholds: thresholds)
+            graphButton
         }
         .buttonStyle(GrayButtonStyle())
     }
