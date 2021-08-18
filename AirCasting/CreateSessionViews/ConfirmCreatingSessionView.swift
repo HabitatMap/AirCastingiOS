@@ -42,14 +42,24 @@ struct ConfirmCreatingSessionView: View {
         }
     }
     
-    private var descriptionText: some View {
+    private var defaultDescriptionText: Text {
         Text(Strings.ConfirmCreatingSessionView.contentViewText_1)
             + Text(sessionType)
             .foregroundColor(.accentColor)
             + Text(Strings.ConfirmCreatingSessionView.contentViewText_2)
             + Text(sessionName)
             .foregroundColor(.accentColor)
-            + Text(Strings.ConfirmCreatingSessionView.contentViewTextBottomPart)
+            + Text(Strings.ConfirmCreatingSessionView.contentViewText_3)
+    }
+    
+    private var descriptionTextFixed: some View {
+            defaultDescriptionText
+                + Text((sessionContext.isIndoor!) ? "" : Strings.ConfirmCreatingSessionView.contentViewText_4)
+    }
+    
+    private var descriptionTextMobile: some View {
+            defaultDescriptionText
+                + Text(Strings.ConfirmCreatingSessionView.contentViewText_4Mobile)
     }
 
     private var contentView: some View {
@@ -59,13 +69,19 @@ struct ConfirmCreatingSessionView: View {
                 .font(Font.moderate(size: 24, weight: .bold))
                 .foregroundColor(.darkBlue)
             VStack(alignment: .leading, spacing: 15) {
-                descriptionText
+                if sessionContext.sessionType == .fixed {
+                    descriptionTextFixed
+                } else {
+                    descriptionTextMobile
+                }
             }
             .font(Font.muli(size: 16))
             .foregroundColor(Color.aircastingGray)
             .multilineTextAlignment(.leading)
             .lineSpacing(9.0)
-            GoogleMapView(pathPoints: [], isMyLocationEnabled: true)
+            if !sessionContext.isIndoor! {
+                GoogleMapView(pathPoints: [], isMyLocationEnabled: true)
+            }
             Button(action: {
                 isActive = true
                 sessionCreator.createSession(sessionContext) { result in

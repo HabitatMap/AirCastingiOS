@@ -435,9 +435,9 @@ struct Strings {
         static let contentViewTitle: String = "Are you ready?"
         static let contentViewText_1: String = "Your "
         static let contentViewText_2: String = " session "
-        static let contentViewText_3: String = " is ready to start gathering data."
+        static let contentViewText_3: String = " is ready to start gathering data.\n\n"
         static let contentViewText_4: String = "Hang your AirBeam in a secure position, then press the start recording button below."
-        static let contentViewTextBottomPart: String = ConfirmCreatingSessionView.contentViewText_3 + ConfirmCreatingSessionView.contentViewText_4
+        static let contentViewText_4Mobile: String = "Move to your starting location, confirm your location is accurate on the map, then press the start recording button below"
         static let startRecording: String = "Start recording"
     }
 }
