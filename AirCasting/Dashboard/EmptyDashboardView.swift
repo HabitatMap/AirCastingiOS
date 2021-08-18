@@ -11,15 +11,18 @@ import SwiftUI
 struct EmptyDashboardView: View {
     @EnvironmentObject private var tabSelection: TabBarSelection
     @EnvironmentObject var selectedSection: SelectSection
-    var settings: BaseURLProvider
     var body: some View {
         emptyState
+    }
+    var shouldSessionFetch: Bool {
+//        (selectedSection.selectedSection == .mobileDormant || selectedSection.selectedSection == .fixed) &&
+        true
     }
 
     private var emptyState: some View {
         VStack(spacing: 45) {
             VStack {
-                if shouldSessionFetch() {
+                if shouldSessionFetch {
                     ProgressView(Strings.EmptyOnboarding.fetchingText)
                         .progressViewStyle(CircularProgressViewStyle())
                 }
@@ -59,10 +62,6 @@ struct EmptyDashboardView: View {
         .padding()
         .background(Color(red: 251/255, green: 253/255, blue: 255/255))
     }
-    
-    func shouldSessionFetch() -> Bool {
-        return (selectedSection.selectedSection == .mobileDormant || selectedSection.selectedSection == .fixed) && settings.sessionSynced == false
-    }
 }
 private extension EmptyDashboardView {
     private var airBeamDescription: some View {
@@ -92,7 +91,7 @@ private extension EmptyDashboardView {
 #if DEBUG
 struct EmptyDashboard_Previews: PreviewProvider {
     static var previews: some View {
-        EmptyDashboardView(settings: DummyURLProvider())
+        EmptyDashboardView()
     }
 }
 #endif

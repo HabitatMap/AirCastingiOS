@@ -18,7 +18,7 @@ final class SessionSynchronizationDatabase: SessionSynchronizationStore {
     }
     
     private let database: DatabaseType
-    private let dataConverter = SynchronizationDataConterter()
+    private let dataConverter = SynchronizationDataContainer()
     
     init(database: DatabaseType) {
         self.database = database

@@ -36,7 +36,7 @@ struct DashboardView: View {
             AirSectionPickerView(selection: self.$selectedSection.selectedSection)
 
             if sessions.isEmpty {
-                EmptyDashboardView(settings: UserDefaultsBaseURLProvider())
+                EmptyDashboardView()
             } else {
                 let thresholds = Array(self.thresholds)
                 ScrollView(.vertical) {
