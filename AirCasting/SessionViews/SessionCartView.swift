@@ -88,6 +88,8 @@ private extension SessionCartView {
                                               selectedStream: $selectedStream,
                                               sessionStoppableFactory: sessionStoppableFactory)) {
             Text(Strings.SessionCartView.graph)
+                .font(Font.muli(size: 13, weight: .semibold))
+                .padding(.horizontal, 8)
         }
     }
     
@@ -97,6 +99,8 @@ private extension SessionCartView {
                                                selectedStream: $selectedStream,
                                                sessionStoppableFactory: sessionStoppableFactory)) {
             Text(Strings.SessionCartView.map)
+                .font(Font.muli(size: 13, weight: .semibold))
+                .padding(.horizontal, 8)
         }
     }
     
@@ -130,7 +134,7 @@ private extension SessionCartView {
                 followButton
             }
             Spacer()
-            if !session.isIndoor && session.type != .fixed {
+            if !session.isIndoor {
                 mapButton(thresholds: thresholds)
             }
             graphButton(thresholds: thresholds)

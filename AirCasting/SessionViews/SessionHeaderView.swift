@@ -4,7 +4,7 @@
 //
 //  Created by Lunar on 13/01/2021.
 //
-
+import AirCastingStyling
 import SwiftUI
 
 struct SessionHeaderView: View {
@@ -26,6 +26,7 @@ struct SessionHeaderView: View {
         VStack(alignment: .leading, spacing: 13) {
             HStack {
                 dateAndTime
+                    .foregroundColor(Color.aircastingTimeGray)
                 Spacer()
                 if session.type == .fixed {
                     actionsMenuFixed
@@ -59,7 +60,8 @@ private extension SessionHeaderView {
         formatter.timeStyle = .short
         formatter.dateStyle = .medium
         let string = DateIntervalFormatter().string(from: start, to: end)
-        return Text(string)
+        let replaced = string.replacingOccurrences(of: "—", with: "-")
+        return Text(replaced)
     }
     
     var nameLabelAndExpandButton: some View {
