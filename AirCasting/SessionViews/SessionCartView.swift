@@ -126,7 +126,7 @@ private extension SessionCartView {
                 followButton
             }
             Spacer()
-            if !session.isIndoor && session.type != .fixed {
+            if !session.isIndoor {
                 mapButton(thresholds: thresholds)
             }
             graphButton(thresholds: thresholds)
