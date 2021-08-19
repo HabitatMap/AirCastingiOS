@@ -98,7 +98,7 @@ private extension SessionCartView {
     
     var graphButton: some View {
         Button {
-            isMapButtonActive = true
+            isGraphButtonActive = true
         } label: {
             Text(Strings.SessionCartView.map)
                 .font(Font.muli(size: 13, weight: .semibold))
