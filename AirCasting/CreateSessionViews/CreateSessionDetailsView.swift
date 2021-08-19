@@ -164,6 +164,7 @@ private extension CreateSessionDetailsView {
                 guard let lat = (locationTracker.locationManager.location?.coordinate.latitude),
                       let lon = (locationTracker.locationManager.location?.coordinate.longitude) else { return }
                 locationTracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: lat, longitude: lon), measurement: 20.0)]
+                #warning("Do something with exposed googleLocation")
                 // measurement: 20.0 was designed just to be 'something'. Is should be handle somehow, but for now we are leaving this like it is.
                 sessionContext.obtainCurrentLocation(lat: lat, log: lon)
             }
