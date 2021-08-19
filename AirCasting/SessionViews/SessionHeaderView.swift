@@ -92,7 +92,7 @@ private extension SessionHeaderView {
             ZStack(alignment: .trailing) {
                 EditButtonView()
                 Rectangle()
-                    .frame(width: 30, height: 20, alignment: .trailing)
+                    .frame(width: 35, height: 25, alignment: .trailing)
                     .opacity(0.0001)
             }
         }.alert(isPresented: $showingFinishAlert) {
@@ -132,7 +132,7 @@ private extension SessionHeaderView {
             ZStack(alignment: .trailing) {
                 EditButtonView()
                 Rectangle()
-                    .frame(width: 30, height: 20, alignment: .trailing)
+                    .frame(width: 35, height: 25, alignment: .trailing)
                     .opacity(0.0001)
             }
         }.alert(isPresented: $showingAlert) {
