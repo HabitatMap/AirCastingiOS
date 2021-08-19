@@ -45,19 +45,28 @@ struct ABMeasurementsView: View {
                         .frame(maxWidth: .infinity)
                     }
                 }
-            } else {
-                HStack {
-                    Image("ABLoading")
-                        .resizable()
-                        .frame(width: 60, height: 60)
-                    VStack(alignment: .leading, spacing: 3) {
-                        Text(Strings.LoadingSession.title)
-                            .font(Font.moderate(size: 14))
-                        Text(Strings.LoadingSession.description)
-                            .font(Font.moderate(size: 12))
-                    }
+            } else if session.type == .fixed {
+               SessionLoadingView()
+            } else if session.allStreams?.count == 1 {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Parameters:")
+                    Text("dB")
                 }
-                .foregroundColor(.darkBlue)
+            } else {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Parameters:")
+                    HStack(alignment: .center) {
+                        Text("F")
+                        Spacer()
+                        Text("PM1")
+                        Spacer()
+                        Text("PM2.5")
+                        Spacer()
+                        Text("PM10")
+                        Spacer()
+                        Text("RH")
+                    }.padding(.horizontal)
+                }
             }
         }
     }
