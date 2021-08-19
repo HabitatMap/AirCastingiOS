@@ -65,7 +65,7 @@ struct WifiPopupView: View {
         Text(Strings.WifiPopupView.nameAndPasswordTitle_1) +
             Text(wifiSSID) +
             Text(Strings.WifiPopupView.nameAndPasswordTitle_2)
-            .font(Font.muli(size: 18, weight: .heavy))
+            .font(Font.muli(size: 18))
             .foregroundColor(.darkBlue)
     }
     
