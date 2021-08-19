@@ -45,27 +45,25 @@ struct ABMeasurementsView: View {
                         .frame(maxWidth: .infinity)
                     }
                 }
-            } else if session.type == .fixed {
-               SessionLoadingView()
-            } else if session.allStreams?.count == 1 {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Parameters:")
-                    Text("dB")
-                }
             } else {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Parameters:")
-                    HStack(alignment: .center) {
-                        Text("F")
-                        Spacer()
-                        Text("PM1")
-                        Spacer()
-                        Text("PM2.5")
-                        Spacer()
-                        Text("PM10")
-                        Spacer()
-                        Text("RH")
-                    }.padding(.horizontal)
+                if session.followedAt != nil {
+                    SessionLoadingView()
+                } else {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Parameters:")
+                        HStack {
+                            Group {
+                                ForEach(streams, id : \.self) { stream in
+                                    SingleMeasurementView(stream: stream,
+                                                          value: nil,
+                                                          threshold: nil,
+                                                          selectedStream: .constant(nil),
+                                                          measurementPresentationStyle: .hideValues)
+                                }
+                            }
+                            .frame(maxWidth: .infinity)
+                        }
+                    }
                 }
             }
         }
@@ -74,8 +72,8 @@ struct ABMeasurementsView: View {
 
 struct SingleMeasurementView: View {
     let stream: MeasurementStreamEntity
-    let value: Double
-    var threshold: SensorThreshold
+    let value: Double?
+    var threshold: SensorThreshold?
     @Binding var selectedStream: MeasurementStreamEntity?
     let measurementPresentationStyle: MeasurementPresentationStyle
     
@@ -84,16 +82,19 @@ struct SingleMeasurementView: View {
         VStack(spacing: 3) {
             Text(showStreamName())
                 .font(Font.system(size: 13))
-            
             if measurementPresentationStyle == .showValues {
                 Button(action: {
                     selectedStream = stream
                 }, label: {
-                    HStack(spacing: 3) {
-                        MeasurementDotView(value: value,
-                                           thresholds: threshold)
-                        Text("\(Int(value))")
-                            .font(Font.moderate(size: 14, weight: .regular))
+                    if let value = value,
+                       let threshold = threshold {
+                        HStack(spacing: 3) {
+                            MeasurementDotView(value: value,
+                                               thresholds: threshold)
+                            Text("\(Int(value))")
+                                .font(Font.moderate(size: 14, weight: .regular))
+                        }
+                        
                     }
                 })
                 .buttonStyle(AirCastingStyling.BorderedButtonStyle(isSelected: selectedStream == stream,
@@ -110,6 +111,8 @@ struct SingleMeasurementView: View {
     }
     
     func colorBorder(stream: MeasurementStreamEntity) -> Color {
+        guard let value = value else { return .white }
+        guard let threshold = threshold else { return .white }
         switch Int32(value) {
         case threshold.thresholdVeryLow..<threshold.thresholdLow:
             return .aircastingGreen
