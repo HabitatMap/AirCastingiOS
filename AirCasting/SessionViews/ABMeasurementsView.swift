@@ -105,9 +105,13 @@ struct SingleMeasurementView: View {
     
     func showStreamName() -> String {
         guard let streamName = stream.sensorName else { return "" }
-        return streamName
-            .drop { $0 != "-" }
-            .replacingOccurrences(of: "-", with: "")
+        if streamName == "Phone Microphone" {
+              return "db"
+        } else {
+            return streamName
+                .drop { $0 != "-" }
+                .replacingOccurrences(of: "-", with: "")
+        }
     }
     
     func colorBorder(stream: MeasurementStreamEntity) -> Color {
