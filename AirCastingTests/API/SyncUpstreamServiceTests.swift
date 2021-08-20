@@ -62,13 +62,31 @@ final class SyncUpstreamServiceTests: XCTestCase {
         }
         XCTAssertEqual(sessionJson["uuid"] as? String, "654321")
         // Note this also tests snake_case conversion:
-        XCTAssertEqual(sessionJson["start_time"] as? String, "0001-01-01T01:24:00")
+        XCTAssertEqual(sessionJson["start_time"] as? String, "0001-01-01T01:24:00.000Z")
         XCTAssertEqual(sessionJson["contribute"] as? Bool, false)
         XCTAssertEqual(sessionJson["version"] as? Int, 1)
         let streams = sessionJson["streams"] as! [String : Any]
         XCTAssertEqual(streams.count, 1)
-        let firstStream = streams["A sensor"] as! [String : Any]
-        XCTAssertEqual(firstStream["id"] as! Int, 123456)
+        let sensorStream = streams["A sensor"] as! [String : Any]
+        XCTAssertEqual(sensorStream["unit_name"] as? String, "Unit")
+        XCTAssertEqual(sensorStream["threshold_very_low"] as? Int, 10)
+        XCTAssertEqual(sensorStream["threshold_very_high"] as? Int, 50)
+        XCTAssertEqual(sensorStream["unit_symbol"] as? String, "UnitSymbol")
+        XCTAssertEqual(sensorStream["measurement_short_type"] as? String, "ShortType")
+        XCTAssertEqual(sensorStream["threshold_medium"] as? Int, 30)
+        XCTAssertEqual(sensorStream["deleted"] as? Bool, false)
+        XCTAssertEqual(sensorStream["threshold_high"] as? Int, 40)
+        XCTAssertEqual(sensorStream["threshold_low"] as? Int, 20)
+        XCTAssertEqual(sensorStream["measurement_type"] as? String, "Type")
+        XCTAssertEqual(sensorStream["sensor_name"] as? String, "A sensor")
+        XCTAssertEqual(sensorStream["sensor_package_name"] as? String, "Package")
+        let measuremnets = sensorStream["measurements"] as! [[String : Any]]
+        XCTAssertEqual(measuremnets.count, 1)
+        XCTAssertEqual(measuremnets.first?["value"] as! Double, 12.0, accuracy: 0.001)
+        XCTAssertEqual(measuremnets.first?["longitude"] as! Double, 50.12, accuracy: 0.001)
+        XCTAssertEqual(measuremnets.first?["time"] as? String, "2001-01-01T01:02:30.000Z")
+        XCTAssertEqual(measuremnets.first?["latitude"] as! Double, 51.01, accuracy: 0.001)
+        XCTAssertEqual(measuremnets.first?["milliseconds"] as? Int, 87)
     }
     
     // MARK: - Error handling
@@ -113,8 +131,7 @@ extension SessionsSynchronization.SessionUpstreamData {
               contribute: false,
               isIndoor: false,
               version: 1,
-              streams: ["A sensor": .init(id: 123456,
-                                          sensorName: "A sensor",
+              streams: ["A sensor": .init(sensorName: "A sensor",
                                           sensorPackageName: "Package",
                                           unitName: "Unit",
                                           measurementType: "Type",
@@ -125,9 +142,18 @@ extension SessionsSynchronization.SessionUpstreamData {
                                           thresholdMedium: 30,
                                           thresholdHigh: 40,
                                           thresholdVeryHigh: 50,
-                                          deleted: false)],
+                                          deleted: false,
+                                          measurements: [
+                                            .mock()
+                                          ])],
               latitude: 50.0,
               longitude: 50.0,
               deleted: false)
+    }
+}
+
+extension SessionsSynchronization.MeasurementUpstreamData {
+    static func mock() -> Self {
+        .init(value: 12.00, milliseconds: 87, latitude: 51.01, longitude: 50.12, time: Date(timeIntervalSinceReferenceDate: 150))
     }
 }

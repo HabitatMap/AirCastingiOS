@@ -42,8 +42,7 @@ struct ConfirmCreatingSessionView: View {
             }))
         }
     }
-
-    private var someText: some View {
+    private var defaultDescriptionText: Text {
         Text(Strings.ConfirmCreatingSessionView.contentViewText_1)
             + Text(sessionType)
             .foregroundColor(.accentColor)
@@ -63,6 +62,16 @@ struct ConfirmCreatingSessionView: View {
             .fill(Color.accentColor)
             .frame(width: 15, height: 15)
     }
+    
+    private var descriptionTextFixed: some View {
+            defaultDescriptionText
+                + Text((sessionContext.isIndoor!) ? "" : Strings.ConfirmCreatingSessionView.contentViewText_4)
+    }
+    
+    private var descriptionTextMobile: some View {
+            defaultDescriptionText
+                + Text(Strings.ConfirmCreatingSessionView.contentViewText_4Mobile)
+    }
 
     private var contentView: some View {
         VStack(alignment: .leading, spacing: 40) {
@@ -70,9 +79,12 @@ struct ConfirmCreatingSessionView: View {
             Text(Strings.ConfirmCreatingSessionView.contentViewTitle)
                 .font(Font.moderate(size: 24, weight: .bold))
                 .foregroundColor(.darkBlue)
-
             VStack(alignment: .leading, spacing: 15) {
-                someText
+                if sessionContext.sessionType == .fixed {
+                    descriptionTextFixed
+                } else {
+                    descriptionTextMobile
+                }
             }
             .font(Font.muli(size: 16))
             .foregroundColor(Color.aircastingGray)

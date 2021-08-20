@@ -8,73 +8,73 @@
 import SwiftUI
 import CoreLocation
 
-class Dependancies {
-    let networkChecker = NetworkChecker(connectionAvailable: false)
-    let bluetoothManager = BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared)))
-    let urlProvider = UserDefaultsBaseURLProvider()
-    lazy var airBeamConnectionController = DefaultAirBeamConnectionController(connectingAirBeamServices: ConnectingAirBeamServicesBluetooth(bluetoothConnector: bluetoothManager))
-}
-
 struct RootAppView: View {
-    var dependancies = Dependancies()
-    private let measurementStreamStorage: MeasurementStreamStorage = CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared)
-    @ObservedObject var lifeTimeEventsProvider = LifeTimeEventsProvider()
-    @ObservedObject var userSettings = UserSettings()
-    @ObservedObject var locationTracker = LocationTracker(locationManager: CLLocationManager())
-    @ObservedObject var userRedirectionSettings = DefaultSettingsRedirection()
-    let urlProvider = UserDefaultsBaseURLProvider()
+    
+    @State private var airBeamConnectionController: DefaultAirBeamConnectionController?
+    @StateObject private var bluetoothManager = BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared)))
+    @StateObject private var lifeTimeEventsProvider = LifeTimeEventsProvider()
+    @StateObject private var userSettings = UserSettings()
+    @StateObject private var locationTracker = LocationTracker(locationManager: CLLocationManager())
+    @StateObject private var userRedirectionSettings = DefaultSettingsRedirection()
+    @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     var sessionSynchronizer: SessionSynchronizer
     let persistenceController: PersistenceController
-    @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
+    let urlProvider = UserDefaultsBaseURLProvider()
+    let networkChecker = NetworkChecker(connectionAvailable: false)
+    
     var body: some View {
-        if userAuthenticationSession.isLoggedIn {
-            mainAppView
-        } else if !userAuthenticationSession.isLoggedIn && lifeTimeEventsProvider.hasEverPassedOnBoarding {
-            NavigationView {
-                CreateAccountView(completion: { self.lifeTimeEventsProvider.hasEverLoggedIn = true }, userSession: userAuthenticationSession, baseURL: dependancies.urlProvider).environmentObject(lifeTimeEventsProvider)
+        ZStack {
+            if userAuthenticationSession.isLoggedIn,
+               let airBeamConnectionController = airBeamConnectionController {
+                MainAppView(airBeamConnectionController: airBeamConnectionController,
+                            sessionSynchronizer: sessionSynchronizer)
+            } else if !userAuthenticationSession.isLoggedIn && lifeTimeEventsProvider.hasEverPassedOnBoarding {
+                NavigationView {
+                    CreateAccountView(completion: { self.lifeTimeEventsProvider.hasEverLoggedIn = true }, userSession: userAuthenticationSession, baseURL: urlProvider).environmentObject(lifeTimeEventsProvider)
+                }
+            } else {
+                GetStarted(completion: {
+                    self.lifeTimeEventsProvider.hasEverPassedOnBoarding = true
+                })
             }
-        } else {
-            GetStarted(completion: {
-                self.lifeTimeEventsProvider.hasEverPassedOnBoarding = true
-            })
+        }
+        .environmentObject(bluetoothManager)
+        .environmentObject(userAuthenticationSession)
+        .environmentObject(persistenceController)
+        .environmentObject(networkChecker)
+        .environmentObject(lifeTimeEventsProvider)
+        .environmentObject(userSettings)
+        .environmentObject(locationTracker)
+        .environmentObject(userRedirectionSettings)
+        .environmentObject(urlProvider)
+        .environment(\.managedObjectContext, persistenceController.viewContext)
+        .onAppear {
+            airBeamConnectionController = DefaultAirBeamConnectionController(connectingAirBeamServices: ConnectingAirBeamServicesBluetooth(bluetoothConnector: bluetoothManager))
         }
     }
+    
+}
 
-    var mainAppView: some View {
-//<<<<<<< HEAD
-//        MainTabBarView(measurementUpdatingService: DownloadMeasurementsService(
-//                        authorisationService: userAuthenticationSession,
-//                        persistenceController: persistenceController,
-//                        baseUrl: urlProvider),
-//                       urlProvider: urlProvider,
-//                       sessionSynchronizer: sessionSynchronizer, sessionContext: CreateSessionContext())
-//            .environmentObject(bluetoothManager)
-//            .environmentObject(userAuthenticationSession)
-//            .environmentObject(persistenceController)
-//            .environmentObject(networkChecker)
-//            .environmentObject(lifeTimeEventsProvider)
-//            .environmentObject(userSettings)
-//            .environmentObject(locationTracker)
-//            .environmentObject(microphoneManager)
-//            .environmentObject(userRedirectionSettings)
-//            .environment(\.managedObjectContext, persistenceController.viewContext)
-//    }
-//=======
-            MainTabBarView(measurementUpdatingService: DownloadMeasurementsService(
-                            authorisationService: userAuthenticationSession,
-                            persistenceController: persistenceController,
-                            baseUrl: dependancies.urlProvider), urlProvider: dependancies.urlProvider, measurementStreamStorage: measurementStreamStorage, sessionSynchronizer: sessionSynchronizer, sessionContext: CreateSessionContext())
-                .environmentObject(dependancies.bluetoothManager)
-                .environmentObject(userAuthenticationSession)
-                .environmentObject(persistenceController)
-                .environmentObject(dependancies.networkChecker)
-                .environmentObject(lifeTimeEventsProvider)
-                .environmentObject(userSettings)
-                .environmentObject(locationTracker)
-                .environmentObject(userRedirectionSettings)
-                .environmentObject(dependancies.airBeamConnectionController)
-                .environment(\.managedObjectContext, persistenceController.viewContext)
-        }
+struct MainAppView: View {
+    
+    let airBeamConnectionController: DefaultAirBeamConnectionController
+    let sessionSynchronizer: SessionSynchronizer
+    private let measurementStreamStorage: MeasurementStreamStorage = CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared)
+    @EnvironmentObject var persistenceController: PersistenceController
+    @EnvironmentObject var urlProvider: UserDefaultsBaseURLProvider
+    @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
+    @EnvironmentObject var microphoneManager: MicrophoneManager
+    
+    var body: some View {
+        let sessionStoppableFactory = SessionStoppableFactoryDefault(microphoneManager: microphoneManager,
+                                                                     measurementStreamStorage: measurementStreamStorage,
+                                                                     synchronizer: sessionSynchronizer)
+        MainTabBarView(measurementUpdatingService: DownloadMeasurementsService(
+                        authorisationService: userAuthenticationSession,
+                        persistenceController: persistenceController,
+                        baseUrl: urlProvider), urlProvider: urlProvider, measurementStreamStorage: measurementStreamStorage, sessionStoppableFactory: sessionStoppableFactory, sessionSynchronizer: sessionSynchronizer, sessionContext: CreateSessionContext())
+            .environmentObject(airBeamConnectionController)
+    }
 }
 
 #if DEBUG

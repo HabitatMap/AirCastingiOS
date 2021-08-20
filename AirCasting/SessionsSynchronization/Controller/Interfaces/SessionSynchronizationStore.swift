@@ -47,6 +47,7 @@ extension SessionsSynchronization {
         let latitude: Double?
         let sessionType: String
         let measurementStreams: [SessionStoreMeasurementStreamData]
+        let deleted: Bool
     }
     
     struct SessionStoreMeasurementStreamData: Equatable {
@@ -62,5 +63,15 @@ extension SessionsSynchronization {
         let thresholdVeryLow: Int
         let unitName: String
         let unitSymbol: String
+        let deleted: Bool
+        let measurements: [SessionStoreMeasurementData]
+    }
+    
+    struct SessionStoreMeasurementData: Equatable {
+        let id: MeasurementID
+        let time: Date
+        let value: Double
+        let latitude: Double?
+        let longitude: Double?
     }
 }

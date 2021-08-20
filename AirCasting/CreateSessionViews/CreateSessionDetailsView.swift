@@ -87,6 +87,8 @@ private extension CreateSessionDetailsView {
             sessionContext.sessionTags = sessionTags
             if sessionContext.sessionType == SessionType.fixed {
                 sessionContext.isIndoor = isIndoor
+            } else {
+                sessionContext.isIndoor = false
             }
             getAndSaveStartingLocation()
             isConfirmCreatingSessionActive = isIndoor

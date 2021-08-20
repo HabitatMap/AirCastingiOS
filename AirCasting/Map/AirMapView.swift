@@ -14,6 +14,7 @@ struct AirMapView: View {
     var thresholds: [SensorThreshold]
     @ObservedObject var session: SessionEntity
     @Binding var selectedStream: MeasurementStreamEntity?
+    let sessionStoppableFactory: SessionStoppableFactory
     
     private var pathPoints: [PathPoint] {
         return selectedStream?.allMeasurements?.compactMap {
@@ -26,8 +27,9 @@ struct AirMapView: View {
     var body: some View {
         VStack(alignment: .trailing, spacing: 20) {
             SessionHeaderView(action: {},
-                              isExpandButtonNeeded: false,
-                              session: session)
+                              isExpandButtonNeeded: false, isCollapsed: Binding.constant(false),
+                              session: session,
+                              sessionStopperFactory: sessionStoppableFactory)
             StreamsView(selectedStream: $selectedStream,
                         session: session,
                         thresholds: thresholds,
@@ -53,7 +55,10 @@ struct AirMapView: View {
 #if DEBUG
 struct Map_Previews: PreviewProvider {
     static var previews: some View {
-        AirMapView(thresholds: [.mock], session: .mock, selectedStream: .constant(nil))
+        AirMapView(thresholds: [.mock],
+                   session: .mock,
+                   selectedStream: .constant(nil),
+                   sessionStoppableFactory: SessionStoppableFactoryDummy())
     }
 }
 #endif

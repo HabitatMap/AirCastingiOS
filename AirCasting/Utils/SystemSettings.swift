@@ -6,7 +6,7 @@ import SwiftUI
 
 protocol SettingsRedirection {
     func goToLocationAuthSettings()
-    func goToBluetoothAuthSettings()
+    func goToAppsBluetoothAuthSettings()
 }
 
 extension SettingsRedirection {
@@ -19,8 +19,17 @@ extension SettingsRedirection {
         }
     }
     
-    func goToBluetoothAuthSettings() {
+    func goToAppsBluetoothAuthSettings() {
         if let url = URL(string: UIApplication.openSettingsURLString) {
+            let app = UIApplication.shared
+            if app.canOpenURL(url) {
+                app.open(url, options: [:], completionHandler: nil)
+            }
+        }
+    }
+    
+    func goToBluetoothAuthSettings() {
+        if let url = URL(string: "App-prefs:root=Bluetooth") {
             let app = UIApplication.shared
             if app.canOpenURL(url) {
                 app.open(url, options: [:], completionHandler: nil)

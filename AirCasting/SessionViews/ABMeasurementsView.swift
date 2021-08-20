@@ -16,14 +16,7 @@ struct ABMeasurementsView: View {
     let measurementPresentationStyle: MeasurementPresentationStyle
     
     private var streamsToShow: [MeasurementStreamEntity] {
-        let allStreams = [session.pm1Stream,
-                          session.pm2Stream,
-                          session.pm10Stream,
-                          session.FStream,
-                          session.HStream]
-        
-        let toShow = allStreams.compactMap { $0 }
-        return toShow
+        return session.sortedStreams ?? []
     }
     
     var body: some View {
@@ -53,11 +46,16 @@ struct ABMeasurementsView: View {
                     }
                 }
             } else {
-                VStack(alignment: .leading, spacing: 3) {
-                    Text(Strings.LoadingSession.title)
-                        .font(Font.moderate(size: 14))
-                    Text(Strings.LoadingSession.description)
-                        .font(Font.moderate(size: 12))
+                HStack {
+                    Image("ABLoading")
+                        .resizable()
+                        .frame(width: 60, height: 60)
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text(Strings.LoadingSession.title)
+                            .font(Font.moderate(size: 14))
+                        Text(Strings.LoadingSession.description)
+                            .font(Font.moderate(size: 12))
+                    }
                 }
                 .foregroundColor(.darkBlue)
             }
