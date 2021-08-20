@@ -100,7 +100,7 @@ private extension SessionCartView {
         Button {
             isGraphButtonActive = true
         } label: {
-            Text(Strings.SessionCartView.map)
+            Text(Strings.SessionCartView.graph)
                 .font(Font.muli(size: 13, weight: .semibold))
                 .padding(.horizontal, 8)
         }
@@ -110,7 +110,7 @@ private extension SessionCartView {
         Button {
             isMapButtonActive = true
         } label: {
-            Text(Strings.SessionCartView.graph)
+            Text(Strings.SessionCartView.map)
                 .font(Font.muli(size: 13, weight: .semibold))
                 .padding(.horizontal, 8)
         }
