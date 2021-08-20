@@ -41,8 +41,8 @@ struct ABMeasurementsView: View {
                                                           measurementPresentationStyle: measurementPresentationStyle)
                                 }
                             }
-                        }
-                        .frame(maxWidth: .infinity)
+                        }.padding(.horizontal, 8)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }
             } else {
@@ -60,8 +60,8 @@ struct ABMeasurementsView: View {
                                                           selectedStream: .constant(nil),
                                                           measurementPresentationStyle: .hideValues)
                                 }
-                            }
-                            .frame(maxWidth: .infinity)
+                            }.padding(.horizontal, 8)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                         }
                     }
                 }
