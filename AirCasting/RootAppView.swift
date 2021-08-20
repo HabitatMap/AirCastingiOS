@@ -17,7 +17,7 @@ struct RootAppView: View {
     @StateObject private var bluetoothManager = BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared)))
     @StateObject private var lifeTimeEventsProvider = LifeTimeEventsProvider()
     @StateObject private var userSettings = UserSettings()
-    @StateObject private var locationTracker = LocationTracker(locationManager: CLLocationManager())
+    private let locationTracker = LocationTracker(locationManager: CLLocationManager())
     @StateObject private var userRedirectionSettings = DefaultSettingsRedirection()
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     @EnvironmentObject var microphoneManager: MicrophoneManager
@@ -37,7 +37,8 @@ struct RootAppView: View {
                             sessionSynchronizer: sessionSynchronizer,
                             sessionStoppableFactory: sessionStoppableFactory,
                             downloadService: downloadService,
-                            measurementStreamStorage: measurementStreamStorage)
+                            measurementStreamStorage: measurementStreamStorage,
+                            locationTracker: locationTracker)
             } else if !userAuthenticationSession.isLoggedIn && lifeTimeEventsProvider.hasEverPassedOnBoarding {
                 NavigationView {
                     CreateAccountView(completion: { self.lifeTimeEventsProvider.hasEverLoggedIn = true }, userSession: userAuthenticationSession, baseURL: urlProvider).environmentObject(lifeTimeEventsProvider)
@@ -54,7 +55,6 @@ struct RootAppView: View {
         .environmentObject(networkChecker)
         .environmentObject(lifeTimeEventsProvider)
         .environmentObject(userSettings)
-        .environmentObject(locationTracker)
         .environmentObject(userRedirectionSettings)
         .environmentObject(urlProvider)
         .environment(\.managedObjectContext, persistenceController.viewContext)
@@ -80,6 +80,7 @@ struct MainAppView: View {
     let sessionStoppableFactory: SessionStoppableFactoryDefault
     let downloadService: DownloadMeasurementsService
     let measurementStreamStorage: MeasurementStreamStorage
+    let locationTracker: LocationTracker
     
     @EnvironmentObject private var persistenceController: PersistenceController
     @EnvironmentObject private var urlProvider: UserDefaultsBaseURLProvider
@@ -92,7 +93,8 @@ struct MainAppView: View {
                        measurementStreamStorage: measurementStreamStorage,
                        sessionStoppableFactory: sessionStoppableFactory,
                        sessionSynchronizer: sessionSynchronizer,
-                       sessionContext: CreateSessionContext())
+                       sessionContext: CreateSessionContext(),
+                       locationTracker: locationTracker)
             .environmentObject(airBeamConnectionController)
     }
 }

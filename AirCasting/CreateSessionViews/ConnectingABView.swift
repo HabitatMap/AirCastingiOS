@@ -16,6 +16,7 @@ struct ConnectingABView<VM: AirbeamConnectionViewModel>: View {
     @Binding var creatingSessionFlowContinues: Bool
     @State private var showNextScreen: Bool = false
     @State private var presentAlert: Bool = false
+    let tracker: LocationTracker
     
     var body: some View {
         VStack(spacing: 50) {
@@ -35,7 +36,7 @@ struct ConnectingABView<VM: AirbeamConnectionViewModel>: View {
             }
         }.background(
             NavigationLink(
-                destination: ABConnectedView(creatingSessionFlowContinues: $creatingSessionFlowContinues, baseURL: baseURL),
+                destination: ABConnectedView(locationTracker: tracker, creatingSessionFlowContinues: $creatingSessionFlowContinues, baseURL: baseURL),
                 isActive: $showNextScreen,
                 label: {
                     EmptyView()
@@ -95,7 +96,7 @@ struct ConnectingABView<VM: AirbeamConnectionViewModel>: View {
 #if DEBUG
 struct ConnectingABView_Previews: PreviewProvider {
     static var previews: some View {
-        ConnectingABView(viewModel: NeverConnectingAirbeamConnectionViewModel(), baseURL: DummyURLProvider(), creatingSessionFlowContinues: .constant(true))
+        ConnectingABView(viewModel: NeverConnectingAirbeamConnectionViewModel(), baseURL: DummyURLProvider(), creatingSessionFlowContinues: .constant(true), tracker: DummyLocationTrakcer())
     }
  }
 #endif

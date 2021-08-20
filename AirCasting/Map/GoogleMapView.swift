@@ -12,7 +12,7 @@ import GoogleMaps
 import GooglePlaces
 
 struct GoogleMapView: UIViewRepresentable {
-    @EnvironmentObject var tracker: LocationTracker
+    let tracker: LocationTracker
     typealias UIViewType = GMSMapView
     let pathPoints: [PathPoint]
     private(set) var threshold: SensorThreshold?
@@ -20,7 +20,8 @@ struct GoogleMapView: UIViewRepresentable {
     private let delegateRelay = GoogleMapViewDelegate()
     private var onPositionChange: (([PathPoint]) -> ())? = nil
     
-    init(pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false) {
+    init(tracker: LocationTracker, pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false) {
+        self.tracker = tracker
         self.pathPoints = pathPoints
         self.threshold = threshold
         self.isMyLocationEnabled = isMyLocationEnabled
@@ -172,7 +173,7 @@ struct GoogleMapView: UIViewRepresentable {
 #if DEBUG
 struct GoogleMapView_Previews: PreviewProvider {
     static var previews: some View {
-        GoogleMapView(pathPoints: [PathPoint(location: CLLocationCoordinate2D(latitude: 40.73,
+        GoogleMapView(tracker: DummyLocationTrakcer(), pathPoints: [PathPoint(location: CLLocationCoordinate2D(latitude: 40.73,
                                                                               longitude: -73.93),
                                              measurementTime: .distantPast,
                                              measurement: 30),

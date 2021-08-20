@@ -25,7 +25,7 @@ struct CreateSessionDetailsView: View {
     @State private var showingAlert = false
     @EnvironmentObject private var sessionContext: CreateSessionContext
     // Location tracker is needed to get wifi SSID (more info CNCopyCurrentNetworkInfo documentation.
-    @EnvironmentObject private var locationTracker: LocationTracker
+    let locationTracker: LocationTracker
 
     @Binding var creatingSessionFlowContinues: Bool
 
@@ -52,7 +52,7 @@ struct CreateSessionDetailsView: View {
                 .frame(maxWidth: .infinity, minHeight: geometry.size.height, alignment: .top)
             }.background(Group {
                 NavigationLink(
-                    destination: ChooseCustomLocationView(sessionCreator: sessionCreator, creatingSessionFlowContinues: $creatingSessionFlowContinues, sessionName: $sessionName),
+                    destination: ChooseCustomLocationView(sessionCreator: sessionCreator, tracker: locationTracker, creatingSessionFlowContinues: $creatingSessionFlowContinues, sessionName: $sessionName),
                     isActive: $isLocationSessionDetailsActive,
                     label: {
                         EmptyView()
@@ -61,6 +61,7 @@ struct CreateSessionDetailsView: View {
                 NavigationLink("", destination: EmptyView())
                 NavigationLink(
                     destination: ConfirmCreatingSessionView(sessionCreator: sessionCreator,
+                                                            locationTracker: locationTracker,
                                                             creatingSessionFlowContinues: $creatingSessionFlowContinues,
                                                             sessionName: sessionName),
                     isActive: $isConfirmCreatingSessionActive,
@@ -188,10 +189,10 @@ struct AddNameAndTagsView_Previews: PreviewProvider {
     }(CreateSessionContext())
 
     static var previews: some View {
-        CreateSessionDetailsView(sessionCreator: PreviewSessionCreator(), creatingSessionFlowContinues: .constant(true))
+        CreateSessionDetailsView(sessionCreator: PreviewSessionCreator(), locationTracker: DummyLocationTrakcer(), creatingSessionFlowContinues: .constant(true))
             .environmentObject(CreateSessionContext())
 
-        CreateSessionDetailsView(sessionCreator: PreviewSessionCreator(), creatingSessionFlowContinues: .constant(true))
+        CreateSessionDetailsView(sessionCreator: PreviewSessionCreator(), locationTracker: DummyLocationTrakcer(), creatingSessionFlowContinues: .constant(true))
             .environmentObject(fixedSessionContext)
     }
 }

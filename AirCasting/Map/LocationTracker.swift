@@ -8,7 +8,7 @@
 import Foundation
 import CoreLocation
 
-class LocationTracker: NSObject, ObservableObject, CLLocationManagerDelegate {
+class LocationTracker: NSObject, CLLocationManagerDelegate {
     
     let locationManager: CLLocationManager
     @Published var locationGranted: LocationState

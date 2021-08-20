@@ -5,7 +5,7 @@ import SwiftUI
 import GooglePlaces
 
 struct PlacePicker: UIViewControllerRepresentable {
-    @EnvironmentObject var tracker: LocationTracker
+    let tracker: LocationTracker
     @Environment(\.presentationMode) var presentationMode
     @Binding var address: String
 

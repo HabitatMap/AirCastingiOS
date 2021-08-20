@@ -13,12 +13,8 @@ class GraphStatsDataSource: MeasurementsStatisticsDataSource {
     
     var dateRange: ClosedRange<Date> = Date.distantPast...Date.distantFuture
     
-    init(stream: MeasurementStreamEntity?) {
-        self.stream = stream
-    }
-    
     var allMeasurements: [MeasurementStatistics.Measurement] {
-        stream?.allMeasurements?.getStatistics() ?? []
+        return stream?.allMeasurements?.getStatistics() ?? []
     }
     
     var visibleMeasurements: [MeasurementStatistics.Measurement] {

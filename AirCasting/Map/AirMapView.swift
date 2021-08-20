@@ -18,6 +18,7 @@ struct AirMapView: View {
 
     @Binding var selectedStream: MeasurementStreamEntity?
     let sessionStoppableFactory: SessionStoppableFactory
+    let locationTracker: LocationTracker
     
     private var pathPoints: [PathPoint] {
         return selectedStream?.allMeasurements?.compactMap {
@@ -39,11 +40,12 @@ struct AirMapView: View {
                         measurementPresentationStyle: .showValues)
             if let threshold = thresholds.threshold(for: selectedStream) {
                 ZStack(alignment: .topLeading) {
-                    GoogleMapView(pathPoints: pathPoints,
+                    GoogleMapView(tracker: locationTracker,
+                                  pathPoints: pathPoints,
                                   threshold: threshold)
-                        .onPositionChange { visiblePoints in
-                            mapStatsDataSource.visiblePathPoints = visiblePoints
-                            statsContainerViewModel.adjustForNewData()
+                        .onPositionChange { [weak mapStatsDataSource, weak statsContainerViewModel] visiblePoints in
+                            mapStatsDataSource?.visiblePathPoints = visiblePoints
+                            statsContainerViewModel?.adjustForNewData()
                         }
                     StatisticsContainerView(statsContainerViewModel: statsContainerViewModel)
                 }
@@ -64,11 +66,12 @@ struct AirMapView: View {
 struct Map_Previews: PreviewProvider {
     static var previews: some View {
         AirMapView(thresholds: [SensorThreshold.mock],
-                   statsContainerViewModel: StatisticsContainerViewModel(statsInput: MeasurementsStatisticsInputMock(), unit: "dB"),
-                   mapStatsDataSource: MapStatsDataSource(stream: .mock),
+                   statsContainerViewModel: StatisticsContainerViewModel(statsInput: MeasurementsStatisticsInputMock()),
+                   mapStatsDataSource: MapStatsDataSource(),
                    session: .mock,
                    selectedStream: .constant(nil),
-                   sessionStoppableFactory: SessionStoppableFactoryDummy())
+                   sessionStoppableFactory: SessionStoppableFactoryDummy(),
+                   locationTracker: DummyLocationTrakcer())
     }
 }
 

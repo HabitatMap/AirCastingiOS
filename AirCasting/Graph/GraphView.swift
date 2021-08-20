@@ -30,9 +30,9 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                     if let selectedStream = selectedStream {
                         Graph(stream: selectedStream,
                               thresholds: threshold,
-                              isAutozoomEnabled: session.type == .mobile).onDateRangeChange { range in
-                                graphStatsDataSource.dateRange = range
-                                statsContainerViewModel.adjustForNewData()
+                              isAutozoomEnabled: session.type == .mobile).onDateRangeChange { [weak graphStatsDataSource, weak statsContainerViewModel] range in
+                                graphStatsDataSource?.dateRange = range
+                                statsContainerViewModel?.adjustForNewData()
                               }
                     }
                     StatisticsContainerView(statsContainerViewModel: statsContainerViewModel)
@@ -61,7 +61,7 @@ struct GraphView_Previews: PreviewProvider {
                   thresholds: [.mock],
                   selectedStream: .constant(nil),
                   statsContainerViewModel: FakeStatsViewModel(),
-                  graphStatsDataSource: GraphStatsDataSource(stream: .mock),
+                  graphStatsDataSource: GraphStatsDataSource(),
                   sessionStoppableFactory: SessionStoppableFactoryDummy())
     }
 }

@@ -10,7 +10,7 @@ import CoreBluetooth
 import AirCastingStyling
 
 struct SelectDeviceView: View {
-    
+    let locationTracker: LocationTracker
     @State private var canContinue = false
     @State private var selected = 0
     @State private var isTurnOnBluetoothLinkActive: Bool = false
@@ -19,7 +19,6 @@ struct SelectDeviceView: View {
     @EnvironmentObject private var sessionContext: CreateSessionContext
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @EnvironmentObject private var microphoneManager: MicrophoneManager
-    @EnvironmentObject private var locationTracker: LocationTracker
     @Binding var creatingSessionFlowContinues : Bool
     @State private var showAlert = false
     
@@ -40,19 +39,19 @@ struct SelectDeviceView: View {
         .padding()
         .background( Group {
             NavigationLink(
-                destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider),
+                destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider, locationTracker: locationTracker),
                 isActive: $isPowerABLinkActive,
                 label: {
                     EmptyView()
                 })
             NavigationLink(
-                destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sessionContext: sessionContext, urlProvider: urlProvider),
+                destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sessionContext: sessionContext, urlProvider: urlProvider, locationTracker: locationTracker),
                 isActive: $isTurnOnBluetoothLinkActive,
                 label: {
                     EmptyView()
                 })
             NavigationLink(
-                destination: CreateSessionDetailsView(sessionCreator: MicrophoneSessionCreator(microphoneManager: microphoneManager), creatingSessionFlowContinues: $creatingSessionFlowContinues),
+                destination: CreateSessionDetailsView(sessionCreator: MicrophoneSessionCreator(microphoneManager: microphoneManager), locationTracker: locationTracker, creatingSessionFlowContinues: $creatingSessionFlowContinues),
                 isActive: $isMicLinkActive,
                 label: {
                     EmptyView()
@@ -143,7 +142,7 @@ struct SelectDeviceView: View {
 #if DEBUG
 struct SelectDeviceView_Previews: PreviewProvider {
     static var previews: some View {
-        SelectDeviceView(creatingSessionFlowContinues: .constant(true), urlProvider: DummyURLProvider())
+        SelectDeviceView(locationTracker: DummyLocationTrakcer(), creatingSessionFlowContinues: .constant(true), urlProvider: DummyURLProvider())
     }
 }
 #endif

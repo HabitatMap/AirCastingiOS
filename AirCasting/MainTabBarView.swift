@@ -24,9 +24,9 @@ struct MainTabBarView: View {
     let sessionSynchronizer: SessionSynchronizer
     @StateObject var tabSelection: TabBarSelection = TabBarSelection()
     @StateObject var selectedSection = SelectSection()
-    @StateObject var sessionContext: CreateSessionContext
+    var sessionContext: CreateSessionContext
     @EnvironmentObject var bluetoothManager: BluetoothManager
-    @EnvironmentObject private var locationTracker: LocationTracker
+    let locationTracker: LocationTracker
     
     var body: some View {
         TabView(selection: $tabSelection.selection) {
@@ -54,7 +54,7 @@ private extension MainTabBarView {
     // Tab Bar views
     private var dashboardTab: some View {
         NavigationView {
-            DashboardView(coreDataHook: CoreDataHook(context: persistenceController.viewContext), measurementStreamStorage: measurementStreamStorage, sessionStoppableFactory: sessionStoppableFactory)
+            DashboardView(coreDataHook: CoreDataHook(context: persistenceController.viewContext), measurementStreamStorage: measurementStreamStorage, sessionStoppableFactory: sessionStoppableFactory, locationTracker: locationTracker)
         }
         .tabItem {
             Image(dashboardImage)
@@ -63,7 +63,7 @@ private extension MainTabBarView {
     }
 
     private var createSessionTab: some View {
-        ChooseSessionTypeView(viewModel: ChooseSessionTypeViewModel(locationHandler: DefaultLocationHandler(locationTracker: locationTracker), bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: bluetoothManager), userSettings: userSettings, sessionContext: sessionContext, urlProvider: urlProvider, bluetoothManager: bluetoothManager, bluetoothManagerState: bluetoothManager.centralManagerState, locationTracker: locationTracker))
+        ChooseSessionTypeView(viewModel: ChooseSessionTypeViewModel(locationHandler: DefaultLocationHandler(locationTracker: locationTracker), bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: bluetoothManager), userSettings: userSettings, sessionContext: sessionContext, urlProvider: urlProvider, bluetoothManager: bluetoothManager, bluetoothManagerState: bluetoothManager.centralManagerState, locationTracker: locationTracker), locationTracker: locationTracker)
             .tabItem {
                 Image(systemName: "plus")
             }
@@ -102,7 +102,7 @@ struct ContentView_Previews: PreviewProvider {
     private static let persistenceController = PersistenceController(inMemory: true)
 
     static var previews: some View {
-        MainTabBarView(measurementUpdatingService: MeasurementUpdatingServiceMock(), urlProvider: DummyURLProvider(), measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionStoppableFactory: SessionStoppableFactoryDummy(), sessionSynchronizer: DummySessionSynchronizer(), sessionContext: CreateSessionContext())
+        MainTabBarView(measurementUpdatingService: MeasurementUpdatingServiceMock(), urlProvider: DummyURLProvider(), measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionStoppableFactory: SessionStoppableFactoryDummy(), sessionSynchronizer: DummySessionSynchronizer(), sessionContext: CreateSessionContext(), locationTracker: DummyLocationTrakcer())
             .environmentObject(UserAuthenticationSession())
             .environmentObject(BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: PreviewMeasurementStreamStorage())))
             .environmentObject(PersistenceController())

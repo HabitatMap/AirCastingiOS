@@ -4,7 +4,7 @@
 import Foundation
 
 class MapStatsDataSource: MeasurementsStatisticsDataSource {
-    var stream: MeasurementStreamEntity? {
+    var stream: MeasurementStreamEntity? = nil {
         didSet {
             onForceReload?()
         }
@@ -14,8 +14,7 @@ class MapStatsDataSource: MeasurementsStatisticsDataSource {
     
     var visiblePathPoints: [PathPoint]
     
-    init(stream: MeasurementStreamEntity?) {
-        self.stream = stream
+    init() {
         self.visiblePathPoints = []
     }
     

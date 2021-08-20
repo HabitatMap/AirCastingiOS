@@ -12,6 +12,7 @@ struct TurnOnLocationView: View {
     @State private var isMobileLinkActive = false
     @Binding var creatingSessionFlowContinues: Bool
     let viewModel: TurnOnLocationViewModel
+    let locationTracker: LocationTracker
     
     var body: some View {
         VStack(spacing: 50) {
@@ -80,7 +81,7 @@ struct TurnOnLocationView: View {
     
     var proceedToPowerABView: some View {
         NavigationLink(
-            destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: viewModel.passURLProvider),
+            destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: viewModel.passURLProvider, locationTracker: locationTracker),
             isActive: $isPowerABLinkActive,
             label: {
                 EmptyView()
@@ -88,7 +89,7 @@ struct TurnOnLocationView: View {
     }
     var proceedToBluetoothView: some View {
         NavigationLink(
-            destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sessionContext: viewModel.getSessionContext, urlProvider: viewModel.passURLProvider),
+            destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sessionContext: viewModel.getSessionContext, urlProvider: viewModel.passURLProvider, locationTracker: locationTracker),
             isActive: $isTurnBluetoothOnLinkActive,
             label: {
                 EmptyView()
@@ -96,7 +97,7 @@ struct TurnOnLocationView: View {
     }
     var proceedToSelectDeviceView: some View {
         NavigationLink(
-            destination: SelectDeviceView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: viewModel.passURLProvider),
+            destination: SelectDeviceView(locationTracker: locationTracker, creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: viewModel.passURLProvider),
             isActive: $isMobileLinkActive,
             label: {
                 EmptyView()
@@ -107,7 +108,7 @@ struct TurnOnLocationView: View {
 #if DEBUG
 struct TurnOnLocationView_Previews: PreviewProvider {
     static var previews: some View {
-        TurnOnLocationView(creatingSessionFlowContinues: .constant(true), viewModel: TurnOnLocationViewModel(locationHandler: DummyDefaultLocationHandler(), bluetoothHandler: DummyDefaultBluetoothHandler(), sessionContext: CreateSessionContext(), urlProvider: DummyURLProvider()))
+        TurnOnLocationView(creatingSessionFlowContinues: .constant(true), viewModel: TurnOnLocationViewModel(locationHandler: DummyDefaultLocationHandler(), bluetoothHandler: DummyDefaultBluetoothHandler(), sessionContext: CreateSessionContext(), urlProvider: DummyURLProvider()), locationTracker: DummyLocationTrakcer())
     }
 }
 #endif

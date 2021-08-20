@@ -5,11 +5,11 @@ import Foundation
 
 final class StatisticsContainerViewModel: StatisticsContainerViewModelable, MeasurementsStatisticsOutput {
     private let statsInput: MeasurementsStatisticsInput
-    private let unit: String
+    var unit: String?
     
-    init(statsInput: MeasurementsStatisticsInput, unit: String) {
+    init(statsInput: MeasurementsStatisticsInput) {
         self.statsInput = statsInput
-        self.unit = unit
+        statsInput.computeStatistics()
     }
     
     @Published var stats: [SingleStatViewModel] = []
@@ -37,9 +37,9 @@ final class StatisticsContainerViewModel: StatisticsContainerViewModelable, Meas
     
     private func getUILabel(for stat: MeasurementStatistics.Statistic) -> String {
         switch stat {
-        case .average: return "Avg \(unit)"
-        case .high: return "Peak \(unit)"
-        case .latest: return "Now \(unit)"
+        case .average: return "Avg \(unit ?? "")"
+        case .high: return "Peak \(unit ?? "")"
+        case .latest: return "Now \(unit ?? "")"
         }
     }
     

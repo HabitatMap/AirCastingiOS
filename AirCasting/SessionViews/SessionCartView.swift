@@ -20,6 +20,27 @@ struct SessionCartView: View {
     let sessionCartViewModel: SessionCartViewModel
     let thresholds: [SensorThreshold]
     let sessionStoppableFactory: SessionStoppableFactory
+    private let locationTracker: LocationTracker
+    private let mapStatsDataSource: MapStatsDataSource
+    private let mapStatsViewModel: StatisticsContainerViewModel
+    private let graphStatsDataSource: GraphStatsDataSource
+    private let graphStatsViewModel: StatisticsContainerViewModel
+    
+    init(session: SessionEntity,
+         sessionCartViewModel: SessionCartViewModel,
+         thresholds: [SensorThreshold],
+         sessionStoppableFactory: SessionStoppableFactory,
+         locationTracker: LocationTracker) {
+        self.session = session
+        self.sessionCartViewModel = sessionCartViewModel
+        self.thresholds = thresholds
+        self.sessionStoppableFactory = sessionStoppableFactory
+        self.locationTracker = locationTracker
+        self.mapStatsDataSource = MapStatsDataSource()
+        self.mapStatsViewModel = SessionCartView.createStatsContainerViewModel(dataSource: mapStatsDataSource)
+        self.graphStatsDataSource = GraphStatsDataSource()
+        self.graphStatsViewModel = SessionCartView.createStatsContainerViewModel(dataSource: graphStatsDataSource)
+    }
     
     var shouldShowValues: MeasurementPresentationStyle {
         let shouldShow = isCollapsed && (session.isFixed || session.isDormant)
@@ -57,6 +78,12 @@ struct SessionCartView: View {
         .onChange(of: session.sortedStreams) { newValue in
             selectDefaultStreamIfNeeded(streams: newValue ?? [])
         }
+        .onChange(of: selectedStream, perform: { [weak graphStatsViewModel, weak mapStatsViewModel, weak graphStatsDataSource, weak mapStatsDataSource] newStream in
+            graphStatsViewModel?.unit = newStream?.unitSymbol
+            mapStatsViewModel?.unit = newStream?.unitSymbol
+            graphStatsDataSource?.stream = newStream
+            mapStatsDataSource?.stream = newStream
+        })
         .onAppear {
             selectDefaultStreamIfNeeded(streams: session.sortedStreams ?? [])
         }
@@ -129,34 +156,27 @@ private extension SessionCartView {
     }
     
     var mapNavigationLink: some View {
-        #warning("Move to dynamic here!")
-        let dataSource = MapStatsDataSource(stream: selectedStream)
-        let viewModel = createStatsContainerViewModel(dataSource: dataSource)
         let mapView = AirMapView(thresholds: thresholds,
-                                 statsContainerViewModel: viewModel,
-                                 mapStatsDataSource: dataSource,
+                                 statsContainerViewModel: mapStatsViewModel,
+                                 mapStatsDataSource: mapStatsDataSource,
                                  session: session,
                                  selectedStream: $selectedStream,
-                                 sessionStoppableFactory: sessionStoppableFactory)
+                                 sessionStoppableFactory: sessionStoppableFactory,
+                                 locationTracker: locationTracker)
         
         return NavigationLink(destination: mapView,
                               isActive: $isMapButtonActive,
                               label: {
                                 EmptyView()
-                              }).onChange(of: selectedStream, perform: { [weak dataSource] newStream in
-                                dataSource?.stream = newStream
                               })
     }
     
     var graphNavigationLink: some View {
-        #warning("Move to dynamic here!")
-        let dataSource = GraphStatsDataSource(stream: selectedStream)
-        let viewModel = createStatsContainerViewModel(dataSource: dataSource)
         let graphView = GraphView(session: session,
                                   thresholds: thresholds,
                                   selectedStream: $selectedStream,
-                                  statsContainerViewModel: viewModel,
-                                  graphStatsDataSource: dataSource,
+                                  statsContainerViewModel: graphStatsViewModel,
+                                  graphStatsDataSource: graphStatsDataSource,
                                   sessionStoppableFactory: sessionStoppableFactory)
         return NavigationLink(destination: graphView,
                               isActive: $isGraphButtonActive,
@@ -191,16 +211,13 @@ private extension SessionCartView {
         .buttonStyle(GrayButtonStyle())
     }
     
-    private func createStatsContainerViewModel(dataSource: MeasurementsStatisticsDataSource) -> StatisticsContainerViewModel {
-        let output = SwapableMeasurementsStatsOutput()
-        let controller = MeasurementsStatisticsController(output: output,
-                                                          dataSource: dataSource,
+    private static func createStatsContainerViewModel(dataSource: MeasurementsStatisticsDataSource) -> StatisticsContainerViewModel {
+        let controller = MeasurementsStatisticsController(dataSource: dataSource,
                                                           calculator: StandardStatisticsCalculator(),
                                                           scheduledTimer: ScheduledTimerSetter(),
                                                           desiredStats: MeasurementStatistics.Statistic.allCases)
-        #warning("Move to dynamic here")
-        let viewModel = StatisticsContainerViewModel(statsInput: controller, unit: selectedStream?.measurementShortType ?? "N/A")
-        output.output = viewModel
+        let viewModel = StatisticsContainerViewModel(statsInput: controller)
+        controller.output = viewModel
         return viewModel
     }
 }
@@ -211,7 +228,7 @@ private extension SessionCartView {
         EmptyView()
         SessionCartView(session: SessionEntity.mock,
                                 sessionCartViewModel: SessionCartViewModel(followingSetter: MockSessionFollowingSettable()),
-                                thresholds: [.mock, .mock], sessionStoppableFactory: SessionStoppableFactoryDummy())
+                                thresholds: [.mock, .mock], sessionStoppableFactory: SessionStoppableFactoryDummy(), locationTracker: DummyLocationTrakcer())
             .padding()
             .previewLayout(.sizeThatFits)
             .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))

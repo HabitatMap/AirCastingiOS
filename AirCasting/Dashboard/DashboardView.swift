@@ -9,22 +9,25 @@ import CoreData
 import SwiftUI
 
 struct DashboardView: View {
+    #warning("This hook fires too often - on any stream measurement added/changed. Should only fire when list changes.")
     @StateObject var coreDataHook: CoreDataHook
     @FetchRequest<SensorThreshold>(sortDescriptors: [.init(key: "sensorName", ascending: true)]) var thresholds
     @EnvironmentObject var selectedSection: SelectSection
     let measurementStreamStorage: MeasurementStreamStorage
     let sessionStoppableFactory: SessionStoppableFactory
+    private let locationTracker: LocationTracker
 
     private var sessions: [SessionEntity] {
         coreDataHook.sessions
     }
     
-    init(coreDataHook: CoreDataHook, measurementStreamStorage: MeasurementStreamStorage, sessionStoppableFactory: SessionStoppableFactory) {
+    init(coreDataHook: CoreDataHook, measurementStreamStorage: MeasurementStreamStorage, sessionStoppableFactory: SessionStoppableFactory, locationTracker: LocationTracker) {
         let navBarAppearance = UINavigationBar.appearance()
         navBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(Color.darkBlue)]
         _coreDataHook = StateObject(wrappedValue: coreDataHook)
         self.measurementStreamStorage = measurementStreamStorage
         self.sessionStoppableFactory = sessionStoppableFactory
+        self.locationTracker = locationTracker
     }
 
     var body: some View {
@@ -48,7 +51,7 @@ struct DashboardView: View {
                             ForEach(sessions, id: \.uuid) { session in
                                 let followingSetter = MeasurementStreamStorageFollowingSettable(session: session, measurementStreamStorage: measurementStreamStorage)
                                 let viewModel = SessionCartViewModel(followingSetter: followingSetter)
-                                SessionCartView(session: session, sessionCartViewModel: viewModel, thresholds: thresholds, sessionStoppableFactory: sessionStoppableFactory)
+                                SessionCartView(session: session, sessionCartViewModel: viewModel, thresholds: thresholds, sessionStoppableFactory: sessionStoppableFactory, locationTracker: locationTracker)
                             }                        }
                     }
                 }.padding()
@@ -80,12 +83,7 @@ struct PreventCollapseView: View {
 #if DEBUG
 struct Dashboard_Previews: PreviewProvider {
     static var previews: some View {
-//<<<<<<< HEAD
-//        DashboardView(coreDataHook: CoreDataHook(context: PersistenceController(inMemory: true).viewContext))
-//            .environmentObject(PersistenceController())
-//=======
-        DashboardView(coreDataHook: CoreDataHook(context: PersistenceController(inMemory: true).viewContext), measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionStoppableFactory: SessionStoppableFactoryDummy())
-//>>>>>>> origin/develop
+        DashboardView(coreDataHook: CoreDataHook(context: PersistenceController(inMemory: true).viewContext), measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionStoppableFactory: SessionStoppableFactoryDummy(), locationTracker: DummyLocationTrakcer())
     }
 }
 #endif

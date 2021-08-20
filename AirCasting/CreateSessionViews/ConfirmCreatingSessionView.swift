@@ -20,8 +20,8 @@ struct ConfirmCreatingSessionView: View {
     @State private var isPresentingAlert: Bool = false
     @EnvironmentObject var selectedSection: SelectSection
     @EnvironmentObject private var sessionContext: CreateSessionContext
-    @EnvironmentObject private var locationTracker: LocationTracker
     let sessionCreator: SessionCreator
+    let locationTracker: LocationTracker
     @State private var didStartRecordingSession = false
     @EnvironmentObject private var tabSelection: TabBarSelection
 
@@ -92,9 +92,9 @@ struct ConfirmCreatingSessionView: View {
             .lineSpacing(9.0)
             ZStack {
                 if sessionContext.sessionType == .mobile {
-                    GoogleMapView(pathPoints: [], isMyLocationEnabled: true)
+                    GoogleMapView(tracker: locationTracker, pathPoints: [], isMyLocationEnabled: true)
                 } else {
-                    GoogleMapView(pathPoints: [])
+                    GoogleMapView(tracker: locationTracker, pathPoints: [])
                     dot
                 }
             }
@@ -134,6 +134,7 @@ struct ConfirmCreatingSessionView: View {
 struct ConfirmCreatingSession_Previews: PreviewProvider {
     static var previews: some View {
         ConfirmCreatingSessionView(sessionCreator: PreviewSessionCreator(),
+                                   locationTracker: DummyLocationTrakcer(),
                                    creatingSessionFlowContinues: .constant(true),
                                    sessionName: "Ania's microphone session")
             .environmentObject(CreateSessionContext())

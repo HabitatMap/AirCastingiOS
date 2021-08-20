@@ -3,6 +3,6 @@
 
 import Foundation
 
-protocol MeasurementsStatisticsOutput {
+protocol MeasurementsStatisticsOutput: AnyObject {
     func statisticsDidChange(to: [MeasurementStatistics.StatisticItem])
 }
