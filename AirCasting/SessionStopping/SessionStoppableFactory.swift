@@ -12,11 +12,13 @@ final class SessionStoppableFactoryDefault: SessionStoppableFactory {
     private let microphoneManager: MicrophoneManager
     private let measurementStreamStorage: MeasurementStreamStorage
     private let synchronizer: SessionSynchronizer
+    private let bluetoothManager: BluetoothManager
     
-    init(microphoneManager: MicrophoneManager, measurementStreamStorage: MeasurementStreamStorage, synchronizer: SessionSynchronizer) {
+    init(microphoneManager: MicrophoneManager, measurementStreamStorage: MeasurementStreamStorage, synchronizer: SessionSynchronizer, bluetoothManager: BluetoothManager) {
         self.microphoneManager = microphoneManager
         self.measurementStreamStorage = measurementStreamStorage
         self.synchronizer = synchronizer
+        self.bluetoothManager = bluetoothManager
     }
     
     func getSessionStopper(for session: SessionEntity) -> SessionStoppable {
@@ -29,8 +31,8 @@ final class SessionStoppableFactoryDefault: SessionStoppableFactory {
         case .MIC: return MicrophoneSessionStopper(uuid: session.uuid,
                                                    microphoneManager: microphoneManager,
                                                    measurementStreamStorage: measurementStreamStorage)
-        case .AIRBEAM3: return StandardSesssionStopper(uuid: session.uuid, measurementStreamStorage: measurementStreamStorage)
-        case .none: return StandardSesssionStopper(uuid: session.uuid, measurementStreamStorage: measurementStreamStorage)
+        case .AIRBEAM3: return StandardSesssionStopper(uuid: session.uuid, measurementStreamStorage: measurementStreamStorage, bluetoothManager: bluetoothManager)
+        case .none: return StandardSesssionStopper(uuid: session.uuid, measurementStreamStorage: measurementStreamStorage, bluetoothManager: bluetoothManager)
         }
     }
 }

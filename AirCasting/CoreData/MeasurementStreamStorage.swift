@@ -11,7 +11,9 @@ protocol MeasurementStreamStorage {
     func createSession(_ session: Session) throws
     func createSessionAndMeasurementStream(_ session: Session, _ stream: MeasurementStream) throws -> MeasurementStreamLocalID
     func updateSessionStatus(_ sessionStatus: SessionStatus, for sessionUUID: SessionUUID) throws
+    func updateSessionEndtime(_ endTime: Date, for sessionUUID: SessionUUID) throws
     func updateSessionFollowing(_ sessionStatus: SessionFollowing, for sessionUUID: SessionUUID)
+    func existingMeasurementStream(_ sessionUUID: SessionUUID, name: String) throws -> MeasurementStreamLocalID?
 }
 
 extension MeasurementStreamStorage {
@@ -62,7 +64,14 @@ final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
         updateSessionParamsService.updateSessionsParams(sessionEntity, session: session)
         return try createMeasurementStream(for: sessionEntity, context: context, stream)
     }
-
+    
+    func existingMeasurementStream(_ sessionUUID: SessionUUID, name: String) throws -> MeasurementStreamLocalID? {
+        let context = persistenceController.editContext()
+        let session = try context.existingSession(uuid: sessionUUID)
+        let stream = session.streamWith(sensorName: name)
+        return stream?.localID
+    }
+    
     private func createMeasurementStream(for session: SessionEntity, context: NSManagedObjectContext, _ stream: MeasurementStream) throws -> MeasurementStreamLocalID {
         let newStream = MeasurementStreamEntity(context: context)
         newStream.sensorName = stream.sensorName
@@ -102,7 +111,14 @@ final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
         sessionEntity.status = sessionStatus
         try context.save()
     }
-
+    
+    func updateSessionEndtime(_ endTime: Date, for sessionUUID: SessionUUID) throws {
+        let context = persistenceController.editContext()
+        let sessionEntity = try context.existingSession(uuid: sessionUUID)
+        sessionEntity.endTime = endTime
+        try context.save()
+    }
+    
     func updateSessionFollowing(_ sessionFollowing: SessionFollowing, for sessionUUID: SessionUUID) {
         let context = persistenceController.editContext()
         context.performAndWait {
@@ -131,6 +147,10 @@ final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
 #if DEBUG
 /// Only to be used for swiftui previews
 final class PreviewMeasurementStreamStorage: MeasurementStreamStorage {
+    func updateSessionEndtime(_ endTime: Date, for sessionUUID: SessionUUID) throws {
+        print("Faking updating sessioon end time happened: \(endTime) for session \(sessionUUID)")
+    }
+    
     func updateSessionFollowing(_ sessionStatus: SessionFollowing, for sessionUUID: SessionUUID) {}
     
     func addMeasurement(_ measurement: Measurement, toStreamWithID id: MeasurementStreamLocalID) throws {
@@ -142,6 +162,10 @@ final class PreviewMeasurementStreamStorage: MeasurementStreamStorage {
     }
 
     func createSessionAndMeasurementStream(_ session: Session, _ stream: MeasurementStream) throws -> MeasurementStreamLocalID {
+        fatalError()
+    }
+    
+    func existingMeasurementStream(_ sessionUUID: SessionUUID, name: String) throws -> MeasurementStreamLocalID? {
         fatalError()
     }
 
