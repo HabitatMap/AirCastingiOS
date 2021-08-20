@@ -15,10 +15,13 @@ struct CreateSessionDetailsView: View {
     @State var sessionTags: String = ""
     @State var isIndoor = true
     @State var isWiFi = false
+    @State var adress = ""
     @State var isWifiPopupPresented = false
+    @State var isLocationPopupPresented = false
     @State var wifiPassword: String = ""
     @State var wifiSSID: String = ""
     @State private var isConfirmCreatingSessionActive: Bool = false
+    @State private var isLocationSessionDetailsActive: Bool = false
     @State private var showingAlert = false
     @EnvironmentObject private var sessionContext: CreateSessionContext
     // Location tracker is needed to get wifi SSID (more info CNCopyCurrentNetworkInfo documentation.
@@ -47,7 +50,26 @@ struct CreateSessionDetailsView: View {
                 }
                 .padding()
                 .frame(maxWidth: .infinity, minHeight: geometry.size.height, alignment: .top)
-            }
+            }.background(Group {
+                NavigationLink(
+                    destination: ChooseCustomLocationView(sessionCreator: sessionCreator, creatingSessionFlowContinues: $creatingSessionFlowContinues, sessionName: $sessionName),
+                    isActive: $isLocationSessionDetailsActive,
+                    label: {
+                        EmptyView()
+                    }
+                )
+                NavigationLink("", destination: EmptyView())
+                NavigationLink(
+                    destination: ConfirmCreatingSessionView(sessionCreator: sessionCreator,
+                                                            creatingSessionFlowContinues: $creatingSessionFlowContinues,
+                                                            sessionName: sessionName),
+                    isActive: $isConfirmCreatingSessionActive,
+                    label: {
+                        EmptyView()
+                    }
+                )
+
+            })
         }
         .simultaneousGesture(
             DragGesture(minimumDistance: 2, coordinateSpace: .global)
@@ -69,7 +91,8 @@ private extension CreateSessionDetailsView {
                 sessionContext.isIndoor = false
             }
             getAndSaveStartingLocation()
-            isConfirmCreatingSessionActive = true
+            isConfirmCreatingSessionActive = isIndoor
+            isLocationSessionDetailsActive = !isIndoor
             if !wifiSSID.isEmpty, !wifiPassword.isEmpty {
                 sessionContext.wifiSSID = wifiSSID
                 sessionContext.wifiPassword = wifiPassword
@@ -89,17 +112,6 @@ private extension CreateSessionDetailsView {
                           isWifiPopupPresented = true
                       },
                       secondaryButton: .default(Text(Strings.CreateSessionDetailsView.cancelButton)))
-            })
-            .background(Group {
-                NavigationLink(
-                    destination: ConfirmCreatingSessionView(sessionCreator: sessionCreator,
-                                                            creatingSessionFlowContinues: $creatingSessionFlowContinues,
-                                                            sessionName: sessionName),
-                    isActive: $isConfirmCreatingSessionActive,
-                    label: {
-                        EmptyView()
-                    }
-                )
             })
     }
 
@@ -130,7 +142,7 @@ private extension CreateSessionDetailsView {
                 .foregroundColor(.aircastingDarkGray)
             Picker(selection: $isWiFi,
                    label: Text("")) {
-                Text(Strings.CreateSessionDetailsView.callularText).tag(false)
+                Text(Strings.CreateSessionDetailsView.cellularText).tag(false)
                 Text(Strings.CreateSessionDetailsView.wifiText).tag(true)
             }
             .pickerStyle(SegmentedPickerStyle())
@@ -145,10 +157,25 @@ private extension CreateSessionDetailsView {
 
     func getAndSaveStartingLocation() {
         let fakeLocation = CLLocationCoordinate2D(latitude: 200.0, longitude: 200.0)
-        if isIndoor && sessionContext.sessionType == .fixed {
-            sessionContext.startingLocation = fakeLocation
+        if sessionContext.sessionType == .fixed {
+            if isIndoor {
+                sessionContext.startingLocation = fakeLocation
+                locationTracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: 200.0, longitude: 200.0), measurement: 20.0)]
+                // measurement: 20.0 was designed just to be 'something'. Is should be handle somehow, but for now we are leaving this like it is.
+            } else {
+                guard let lat = (locationTracker.locationManager.location?.coordinate.latitude),
+                      let lon = (locationTracker.locationManager.location?.coordinate.longitude) else { return }
+                locationTracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: lat, longitude: lon), measurement: 20.0)]
+                #warning("Do something with exposed googleLocation")
+                // measurement: 20.0 was designed just to be 'something'. Is should be handle somehow, but for now we are leaving this like it is.
+                sessionContext.obtainCurrentLocation(lat: lat, log: lon)
+            }
         } else {
-            sessionContext.obtainCurrentLocation()
+            guard let lat = (locationTracker.locationManager.location?.coordinate.latitude),
+                  let lon = (locationTracker.locationManager.location?.coordinate.longitude) else { return }
+            locationTracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: lat, longitude: lon), measurement: 20.0)]
+            // measurement: 20.0 was designed just to be 'something'. Is should be handle somehow, but for now we are leaving this like it is.
+            sessionContext.obtainCurrentLocation(lat: lat, log: lon)
         }
     }
 }

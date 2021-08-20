@@ -13,13 +13,19 @@ class LocationTracker: NSObject, ObservableObject, CLLocationManagerDelegate {
     let locationManager: CLLocationManager
     @Published var locationGranted: LocationState
     @Published var allLocations: [CLLocation]
+    @Published var googleLocation: [PathPoint]
     
     init(locationManager: CLLocationManager) {
         self.locationManager = locationManager
         self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
         switch locationManager.authorizationStatus {
-            case .authorizedAlways, .authorizedWhenInUse: self.locationGranted = .granted
-            case .denied, .notDetermined, .restricted:  self.locationGranted = .denied
+            case .authorizedAlways, .authorizedWhenInUse:
+                self.locationGranted = .granted
+                googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: (locationManager.location?.coordinate.latitude)!, longitude: (locationManager.location?.coordinate.longitude)!), measurement: 20)]
+            case .denied, .notDetermined, .restricted:
+                self.locationGranted = .denied
+                googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: 37.35, longitude: -122.05), measurement: 20.0)]
+        // measurement: 20.0 was designed just to be 'something'. Is should be handle somehow, but for now we are leaving this like it is.
             @unknown default:
                 fatalError()
         }
