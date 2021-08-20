@@ -28,10 +28,7 @@ struct SessionHeaderView: View {
                 dateAndTime
                     .foregroundColor(Color.aircastingTimeGray)
                 Spacer()
-                if session.type == .fixed {
-                    actionsMenuFixed
-                        .disabled(true)
-                } else if !session.isDormant {
+                if session.isActive {
                     actionsMenuMobile
                 }
             }.sheet(isPresented: $shareModal, content: {
