@@ -15,8 +15,7 @@ struct SessionHeaderView: View {
     @EnvironmentObject var networkChecker: NetworkChecker
     @ObservedObject var session: SessionEntity
     @State private var showingAlert = false
-    @State private var showingFinishAlertMobile = false
-    @State private var showingFinishAlertFixed = false
+    @State private var showingFinishAlert = false
     @State private var shareModal = false
     @State private var deleteModal = false
     @State private var showModal = false
@@ -31,6 +30,7 @@ struct SessionHeaderView: View {
                 Spacer()
                 if session.type == .fixed {
                     actionsMenuFixed
+                        .disabled(true)
                 } else if !session.isDormant {
                     actionsMenuMobile
                 }
@@ -96,7 +96,7 @@ private extension SessionHeaderView {
                     .frame(width: 35, height: 25, alignment: .trailing)
                     .opacity(0.0001)
             }
-        }.alert(isPresented: $showingFinishAlertMobile) {
+        }.alert(isPresented: $showingFinishAlert) {
             Alert(title: Text(Strings.SessionHeaderView.finishAlertTitle) +
                 Text(session.name ?? Strings.SessionHeaderView.finishAlertTitle_2)
                 +
@@ -117,7 +117,7 @@ private extension SessionHeaderView {
     
     var actionsMenuMobileStopButton: some View {
         Button {
-            showingFinishAlertMobile = true
+            showingFinishAlert = true
         } label: {
             Label(Strings.SessionHeaderView.stopRecordingButton, systemImage: "stop.circle")
         }
@@ -125,7 +125,10 @@ private extension SessionHeaderView {
     
     var actionsMenuFixed: some View {
         Menu {
-            actionsMenuFixedStopButton
+            actionsMenuFixedRepeatButton
+            actionsMenuFixedEditButton
+            actionsMenuFixedShareButton
+            actionsMenuFixedDeleteButton
         } label: {
             ZStack(alignment: .trailing) {
                 EditButtonView()
@@ -133,28 +136,12 @@ private extension SessionHeaderView {
                     .frame(width: 35, height: 25, alignment: .trailing)
                     .opacity(0.0001)
             }
-        }.alert(isPresented: $showingFinishAlertFixed) {
-            Alert(title: Text(Strings.SessionHeaderView.finishAlertTitle) +
-                Text(session.name ?? Strings.SessionHeaderView.finishAlertTitle_2)
-                +
-                Text(Strings.SessionHeaderView.finishAlertTitle_3),
-                message: Text(Strings.SessionHeaderView.finishAlertMessage_1) +
-                    Text(Strings.SessionHeaderView.finishAlertMessage_2) +
-                    Text(Strings.SessionHeaderView.finishAlertMessage_3),
-                primaryButton: .default(Text(Strings.SessionHeaderView.finishAlertButton), action: {
-                    #warning("Add action to stop session")
-                    // action to stop fixed session
-                }),
-                secondaryButton: .cancel())
+        }.alert(isPresented: $showingAlert) {
+            Alert(title: Text(Strings.SessionHeaderView.alertTitle),
+                  message: Text(Strings.SessionHeaderView.alertMessage),
+                  dismissButton: .default(Text(Strings.SessionHeaderView.confirmAlert)))
         }
-    }
-    
-    var actionsMenuFixedStopButton: some View {
-        Button {
-            showingFinishAlertFixed = true
-        } label: {
-            Label(Strings.SessionHeaderView.stopRecordingButton, systemImage: "stop.circle")
-        }
+        .sheet(isPresented: $showModalEdit) { EditViewModal(showModalEdit: $showModalEdit) }
     }
     
     var actionsMenuFixedRepeatButton: some View {
