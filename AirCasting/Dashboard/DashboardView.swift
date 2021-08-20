@@ -12,15 +12,19 @@ struct DashboardView: View {
     @StateObject var coreDataHook: CoreDataHook
     @FetchRequest<SensorThreshold>(sortDescriptors: [.init(key: "sensorName", ascending: true)]) var thresholds
     @EnvironmentObject var selectedSection: SelectSection
+    let measurementStreamStorage: MeasurementStreamStorage
+    let sessionStoppableFactory: SessionStoppableFactory
 
     private var sessions: [SessionEntity] {
         coreDataHook.sessions
     }
     
-    init(coreDataHook: CoreDataHook) {
+    init(coreDataHook: CoreDataHook, measurementStreamStorage: MeasurementStreamStorage, sessionStoppableFactory: SessionStoppableFactory) {
         let navBarAppearance = UINavigationBar.appearance()
         navBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(Color.darkBlue)]
         _coreDataHook = StateObject(wrappedValue: coreDataHook)
+        self.measurementStreamStorage = measurementStreamStorage
+        self.sessionStoppableFactory = sessionStoppableFactory
     }
 
     var body: some View {
@@ -36,17 +40,20 @@ struct DashboardView: View {
             if sessions.isEmpty {
                 EmptyDashboardView()
             } else {
-                let thresholds = Array(self.thresholds)
-                ScrollView(.vertical) {
-                    LazyVStack(spacing: 20) {
-                        ForEach(sessions, id: \.uuid) { session in
-                            SessionCartView(session: session, thresholds: thresholds)
-                        }
+                ZStack(alignment: .bottomTrailing) {
+                    Image("dashboard-background-thing")
+                    let thresholds = Array(self.thresholds)
+                    ScrollView(.vertical) {
+                        LazyVStack(spacing: 20) {
+                            ForEach(sessions, id: \.uuid) { session in
+                                let followingSetter = MeasurementStreamStorageFollowingSettable(session: session, measurementStreamStorage: measurementStreamStorage)
+                                let viewModel = SessionCartViewModel(followingSetter: followingSetter)
+                                SessionCartView(session: session, sessionCartViewModel: viewModel, thresholds: thresholds, sessionStoppableFactory: sessionStoppableFactory)
+                            }                        }
                     }
-                    .padding()
-                }
-                .frame(maxWidth: .infinity)
-                .background(Color.aircastingGray.opacity(0.05))
+                }.padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.aircastingGray.opacity(0.05))
             }
         }
         .navigationBarTitle(NSLocalizedString("Dashboard", comment: ""))
@@ -73,8 +80,12 @@ struct PreventCollapseView: View {
 #if DEBUG
 struct Dashboard_Previews: PreviewProvider {
     static var previews: some View {
-        DashboardView(coreDataHook: CoreDataHook(context: PersistenceController(inMemory: true).viewContext))
-            .environmentObject(PersistenceController())
+//<<<<<<< HEAD
+//        DashboardView(coreDataHook: CoreDataHook(context: PersistenceController(inMemory: true).viewContext))
+//            .environmentObject(PersistenceController())
+//=======
+        DashboardView(coreDataHook: CoreDataHook(context: PersistenceController(inMemory: true).viewContext), measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionStoppableFactory: SessionStoppableFactoryDummy())
+//>>>>>>> origin/develop
     }
 }
 #endif

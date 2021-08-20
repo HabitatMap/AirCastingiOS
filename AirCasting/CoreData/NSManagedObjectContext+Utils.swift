@@ -61,6 +61,7 @@ extension NSManagedObjectContext {
 extension NSManagedObjectContext {
 
     func existingObject<T: SensorThreshold>(sensorName: String) throws -> T?  {
+        #warning("We do not check streams ids, sensor name are not enough to differentiate streams")
         let className = NSStringFromClass(T.classForCoder())
         let fetchRequest = NSFetchRequest<T>(entityName: className)
         fetchRequest.predicate = NSPredicate(format: "sensorName == %@", sensorName)

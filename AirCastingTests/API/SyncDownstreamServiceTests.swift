@@ -53,18 +53,18 @@ final class SyncDownstreamServiceTests: XCTestCase {
         XCTAssertEqual(session.type, "MobileSession")
         XCTAssertEqual(session.location?.absoluteString, "http://aircasting.habitatmap.org/s/2vtaf")
         XCTAssertEqual(session.streams.count, 1)
-        XCTAssertEqual(session.streams["Phone Microphone-dB"]?.id, 2054733)
-        XCTAssertEqual(session.streams["Phone Microphone-dB"]?.sensorName, "Phone Microphone-dB")
-        XCTAssertEqual(session.streams["Phone Microphone-dB"]?.sensorPackageName, "Builtin")
-        XCTAssertEqual(session.streams["Phone Microphone-dB"]?.unitName, "decibels")
-        XCTAssertEqual(session.streams["Phone Microphone-dB"]?.measurementType, "Sound Level")
-        XCTAssertEqual(session.streams["Phone Microphone-dB"]?.measurementShortType, "dB")
-        XCTAssertEqual(session.streams["Phone Microphone-dB"]?.unitSymbol, "dB")
-        XCTAssertEqual(session.streams["Phone Microphone-dB"]?.thresholdVeryLow, 20)
-        XCTAssertEqual(session.streams["Phone Microphone-dB"]?.thresholdLow, 60)
-        XCTAssertEqual(session.streams["Phone Microphone-dB"]?.thresholdMedium, 70)
-        XCTAssertEqual(session.streams["Phone Microphone-dB"]?.thresholdHigh, 80)
-        XCTAssertEqual(session.streams["Phone Microphone-dB"]?.thresholdVeryHigh, 100)
+        XCTAssertEqual(session.streams["Phone Microphone"]?.id, 2054733)
+        XCTAssertEqual(session.streams["Phone Microphone"]?.sensorName, "Phone Microphone")
+        XCTAssertEqual(session.streams["Phone Microphone"]?.sensorPackageName, "Builtin")
+        XCTAssertEqual(session.streams["Phone Microphone"]?.unitName, "decibels")
+        XCTAssertEqual(session.streams["Phone Microphone"]?.measurementType, "Sound Level")
+        XCTAssertEqual(session.streams["Phone Microphone"]?.measurementShortType, "dB")
+        XCTAssertEqual(session.streams["Phone Microphone"]?.unitSymbol, "dB")
+        XCTAssertEqual(session.streams["Phone Microphone"]?.thresholdVeryLow, 20)
+        XCTAssertEqual(session.streams["Phone Microphone"]?.thresholdLow, 60)
+        XCTAssertEqual(session.streams["Phone Microphone"]?.thresholdMedium, 70)
+        XCTAssertEqual(session.streams["Phone Microphone"]?.thresholdHigh, 80)
+        XCTAssertEqual(session.streams["Phone Microphone"]?.thresholdVeryHigh, 100)
     }
     
     // MARK: - Error handling
@@ -139,9 +139,9 @@ final class SyncDownstreamServiceTests: XCTestCase {
             "version": 0,
             "tag_list": "",
             "streams": {
-                "Phone Microphone-dB": {
+                "Phone Microphone": {
                     "id": 2054733,
-                    "sensor_name": "Phone Microphone-dB",
+                    "sensor_name": "Phone Microphone",
                     "unit_name": "decibels",
                     "measurement_type": "Sound Level",
                     "measurement_short_type": "dB",

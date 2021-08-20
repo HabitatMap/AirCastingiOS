@@ -23,6 +23,7 @@ class BluetoothManager: NSObject, ObservableObject {
     @Published var devices: [CBPeripheral] = []
     @Published var isScanning: Bool = true
     @Published var centralManagerState: CBManagerState = .unknown
+    @Published var connectedPeripheral: CBPeripheral?
     var observed: NSKeyValueObservation?
     
     let mobilePeripheralSessionManager: MobilePeripheralSessionManager
@@ -58,6 +59,11 @@ class BluetoothManager: NSObject, ObservableObject {
     
     init(mobilePeripheralSessionManager: MobilePeripheralSessionManager) {
         self.mobilePeripheralSessionManager = mobilePeripheralSessionManager
+        super.init()
+        if CBCentralManager.authorization == .allowedAlways {
+            // To avoid the .unknown state of centralManager when bluetooth is poweredOn
+            let _ = centralManager
+        }
     }
 }
 
@@ -104,11 +110,14 @@ extension BluetoothManager: CBCentralManagerDelegate {
         // Here's code for getting data from AB.
         peripheral.discoverServices(nil)
         peripheral.delegate = self
+        connectedPeripheral = peripheral
     }
     
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
         print("Disconnected: \(String(describing: error?.localizedDescription))")
-        mobilePeripheralSessionManager.finishSession(for: peripheral)
+        connectedPeripheral = nil
+        mobilePeripheralSessionManager.finishSession(for: peripheral,
+                                                     centralManger: centralManager)
     }
 }
 
@@ -152,6 +161,10 @@ extension BluetoothManager: CBPeripheralDelegate {
                 mobilePeripheralSessionManager.handlePeripheralMeasurement(PeripheralMeasurement(peripheral: peripheral, measurementStream: parsedMeasurement))
             }
         }
+    }
+    
+    func disconnectAirBeam() {
+        mobilePeripheralSessionManager.finishActiveSession(centralManger: centralManager)
     }
     
     func parseData(data: Data) -> ABMeasurementStream? {

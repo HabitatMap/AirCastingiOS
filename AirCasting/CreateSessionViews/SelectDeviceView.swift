@@ -19,12 +19,9 @@ struct SelectDeviceView: View {
     @EnvironmentObject private var sessionContext: CreateSessionContext
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @EnvironmentObject private var microphoneManager: MicrophoneManager
-    @StateObject private var locationTracker = LocationTracker()
+    @EnvironmentObject private var locationTracker: LocationTracker
     @Binding var creatingSessionFlowContinues : Bool
     @State private var showAlert = false
-    private var continueButtonEnabled: Bool {
-        locationTracker.locationGranted == .granted
-    }
     
     let urlProvider: BaseURLProvider
     
@@ -41,12 +38,26 @@ struct SelectDeviceView: View {
             Alert.locationAlert
         }
         .padding()
-        .onAppear {
-            locationTracker.requestAuthorisation()
-        }
-        .onChange(of: locationTracker.locationGranted) { newValue in
-            showAlert = (newValue == .denied)
-        }
+        .background( Group {
+            NavigationLink(
+                destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider),
+                isActive: $isPowerABLinkActive,
+                label: {
+                    EmptyView()
+                })
+            NavigationLink(
+                destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sessionContext: sessionContext, urlProvider: urlProvider),
+                isActive: $isTurnOnBluetoothLinkActive,
+                label: {
+                    EmptyView()
+                })
+            NavigationLink(
+                destination: CreateSessionDetailsView(sessionCreator: MicrophoneSessionCreator(microphoneManager: microphoneManager), creatingSessionFlowContinues: $creatingSessionFlowContinues),
+                isActive: $isMicLinkActive,
+                label: {
+                    EmptyView()
+                })
+        })
     }
     
     var titleLabel: some View {
@@ -61,7 +72,6 @@ struct SelectDeviceView: View {
             selected = 1
             // it doesn't have to be airbeam, it can be any device, but it doesn't influence anything, it's just needed for views flow
             sessionContext.deviceType = DeviceType.AIRBEAM3
-            _ = bluetoothManager.centralManager
         }, label: {
             bluetoothLabels
         })
@@ -76,7 +86,6 @@ struct SelectDeviceView: View {
             micLabels
         })
         .buttonStyle(WhiteSelectingButtonStyle(isSelected: selected == 2))
-        .disabled(microphoneManager.isRecording)
     }
     
     var bluetoothLabels: some View {
@@ -104,8 +113,7 @@ struct SelectDeviceView: View {
     var chooseButton: some View {
         Button(action: {
             if selected == 1 {
-                if CBCentralManager.authorization == .allowedAlways &&
-                    bluetoothManager.centralManager.state == .poweredOn {
+                if CBCentralManager.authorization != .denied && bluetoothManager.centralManagerState == .poweredOn {
                     isPowerABLinkActive = true
                 } else {
                     isTurnOnBluetoothLinkActive = true
@@ -128,28 +136,7 @@ struct SelectDeviceView: View {
         }, label: {
             Text(Strings.SelectDeviceView.chooseButton)
         })
-        .disabled(!continueButtonEnabled)
         .buttonStyle(BlueButtonStyle())
-        .background( Group {
-            NavigationLink(
-                destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider),
-                isActive: $isPowerABLinkActive,
-                label: {
-                    EmptyView()
-                })
-            NavigationLink(
-                destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider),
-                isActive: $isTurnOnBluetoothLinkActive,
-                label: {
-                    EmptyView()
-                })
-            NavigationLink(
-                destination: CreateSessionDetailsView(sessionCreator: MicrophoneSessionCreator(microphoneManager: microphoneManager), creatingSessionFlowContinues: $creatingSessionFlowContinues),
-                isActive: $isMicLinkActive,
-                label: {
-                    EmptyView()
-                })
-        })
     }
 }
 

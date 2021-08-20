@@ -25,11 +25,9 @@ final class MicrophoneManager: NSObject, ObservableObject {
     private var levelTimer: Timer?
     private(set) var session: Session?
     private lazy var locationProvider = LocationProvider()
-    let sessionSynchronizer: SessionSynchronizer
 
-    init(measurementStreamStorage: MeasurementStreamStorage, sessionSynchronizer: SessionSynchronizer) {
+    init(measurementStreamStorage: MeasurementStreamStorage) {
         self.measurementStreamStorage = measurementStreamStorage
-        self.sessionSynchronizer = sessionSynchronizer
         super.init()
     }
 
@@ -61,9 +59,6 @@ final class MicrophoneManager: NSObject, ObservableObject {
         isRecording = false
         recorder.stop()
         recorder = nil
-        try? measurementStreamStorage.updateSessionStatus(.FINISHED, for: session!.uuid)
-        try? measurementStreamStorage.updateSessionEndTime(for: session!.uuid)
-        sessionSynchronizer.triggerSynchronization()
     }
 
     deinit {
@@ -83,7 +78,7 @@ extension MicrophoneManager: AVAudioRecorderDelegate {
     func audioRecorderBeginInterruption(_ recorder: AVAudioRecorder) {
         Log.warning("audio recorder interruption began")
         levelTimer?.invalidate()
-        try! measurementStreamStorage.updateSessionStatus(.DISCONNETCED, for: session!.uuid)
+        try! measurementStreamStorage.updateSessionStatus(.DISCONNECTED, for: session!.uuid)
     }
 
     func audioRecorderEndInterruption(_ recorder: AVAudioRecorder, withOptions flags: Int) {
@@ -115,7 +110,7 @@ private extension MicrophoneManager {
 
     func createMeasurementStream(for session: Session) throws -> MeasurementStreamLocalID {
         let stream = MeasurementStream(id: nil,
-                                       sensorName: "Phone Microphone-dB",
+                                       sensorName: Constants.SensorName.microphone,
                                        sensorPackageName: "Builtin",
                                        measurementType: "Sound Level",
                                        measurementShortType: "db",

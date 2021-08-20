@@ -4,17 +4,23 @@
 import Foundation
 
 class MapStatsDataSource: MeasurementsStatisticsDataSource {
-    let stream: MeasurementStreamEntity
+    var stream: MeasurementStreamEntity? {
+        didSet {
+            onForceReload?()
+        }
+    }
+    
+    var onForceReload: (() -> Void)?
     
     var visiblePathPoints: [PathPoint]
     
-    init(stream: MeasurementStreamEntity) {
+    init(stream: MeasurementStreamEntity?) {
         self.stream = stream
         self.visiblePathPoints = []
     }
     
     var allMeasurements: [MeasurementStatistics.Measurement] {
-        stream.allMeasurements?.getStatistics() ?? []
+        stream?.allMeasurements?.getStatistics() ?? []
     }
     
     var visibleMeasurements: [MeasurementStatistics.Measurement] {

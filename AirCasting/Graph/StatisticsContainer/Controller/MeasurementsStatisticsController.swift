@@ -37,3 +37,39 @@ class MeasurementsStatisticsController: MeasurementsStatisticsInput {
         }
     }
 }
+
+//class BindableMeasurementStatisticsDataSource: MeasurementsStatisticsDataSource {
+//    var selectedStream: MeasurementStreamEntity? {
+//        didSet {
+//            guard let selectedStream = selectedStream else {
+//                underlyingDataSource = nil
+//                return
+//            }
+//            underlyingDataSource = {
+//                switch dataSourceType {
+//                case .map: return MapStatsDataSource(stream: selectedStream)
+//                case .graph: return GraphStatsDataSource(stream: selectedStream)
+//                }
+//            }()
+//        }
+//    }
+//    
+//    enum DataSourceType {
+//        case map, graph
+//    }
+//    
+//    private var dataSourceType: DataSourceType
+//    private var underlyingDataSource: MeasurementsStatisticsDataSource?
+//    
+//    init(type: DataSourceType) {
+//        self.dataSourceType = type
+//    }
+//    
+//    var allMeasurements: [MeasurementStatistics.Measurement] {
+//        underlyingDataSource?.allMeasurements ?? []
+//    }
+//    
+//    var visibleMeasurements: [MeasurementStatistics.Measurement] {
+//        underlyingDataSource?.visibleMeasurements ?? []
+//    }
+//}

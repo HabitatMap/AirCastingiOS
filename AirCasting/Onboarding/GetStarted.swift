@@ -10,9 +10,11 @@ struct GetStarted: View {
         NavigationView {
             VStack {
                 mainImage
+                Spacer()
                 logoImage
                 descriptionText
                 startButton
+                Spacer()
             }
         }
     }
@@ -22,7 +24,8 @@ private extension GetStarted {
     var mainImage: some View {
         Image("Bitmap")
             .resizable()
-            .scaledToFit()
+            .edgesIgnoringSafeArea(.top)
+            .scaledToFill()
     }
     
     var logoImage: some View {

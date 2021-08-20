@@ -38,6 +38,9 @@ extension Color {
     public static var aircastingMint: Color {
         return Color("AircastingMint")
     }
+    public static var aircastingTimeGray: Color {
+        return Color("AirCastingTime")
+    }
     public static var shadow: Color {
         return Color(white: 150/255, opacity: 0.5)
     }

@@ -5,13 +5,11 @@
 //  Created by Lunar on 15/03/2021.
 //
 
-import SwiftUI
-import Foundation
-import SystemConfiguration.CaptiveNetwork
 import AirCastingStyling
+import SwiftUI
+import SystemConfiguration.CaptiveNetwork
 
 struct WifiPopupView: View {
-    
     @State private var isSSIDTextfieldDisplayed: Bool = false
     @Environment(\.presentationMode) private var presentationMode
     @Binding var wifiPassword: String
@@ -19,12 +17,14 @@ struct WifiPopupView: View {
     @State var wifiSSIDWasEmptyAtStart: Bool = true
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 30){
+        VStack(alignment: .leading, spacing: 30) {
             if isSSIDTextfieldDisplayed {
                 providePasswordTitle
                 createTextfield(placeholder: Strings.WifiPopupView.wifiPlaceholder, binding: $wifiSSID)
             } else {
                 provideNameAndPasswordTitle
+                    .font(Font.muli(size: 18, weight: .heavy))
+                    .foregroundColor(.darkBlue)
             }
             createTextfield(placeholder: Strings.WifiPopupView.passwordPlaceholder, binding: $wifiPassword).onTapGesture {
                 isSSIDTextfieldDisplayed = false
@@ -35,7 +35,7 @@ struct WifiPopupView: View {
             VStack(spacing: 10) {
                 Button(Strings.WifiPopupView.connectButton) {
                     presentationMode.wrappedValue.dismiss()
-                } .buttonStyle(BlueButtonStyle())
+                }.buttonStyle(BlueButtonStyle())
                 
                 Button(Strings.WifiPopupView.cancelButton) {
                     wifiPassword = ""
@@ -66,8 +66,6 @@ struct WifiPopupView: View {
         Text(Strings.WifiPopupView.nameAndPasswordTitle_1) +
             Text(wifiSSID) +
             Text(Strings.WifiPopupView.nameAndPasswordTitle_2)
-            .font(Font.muli(size: 18, weight: .heavy))
-            .foregroundColor(.darkBlue)
     }
     
     var connectToDifferentWifi: some View {

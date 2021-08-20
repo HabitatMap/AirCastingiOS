@@ -7,18 +7,27 @@
 
 import CoreData
 import Firebase
+import CoreBluetooth
 import SwiftUI
 
 struct MainTabBarView: View {
     let measurementUpdatingService: MeasurementUpdatingService
     let urlProvider: BaseURLProvider
+    let measurementStreamStorage: MeasurementStreamStorage
+    @State var dashboardImage: String = "bluehome"
+    let sessionStoppableFactory: SessionStoppableFactory
+
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     @EnvironmentObject var persistenceController: PersistenceController
     @EnvironmentObject var microphoneManager: MicrophoneManager
+    @EnvironmentObject var userSettings: UserSettings
     let sessionSynchronizer: SessionSynchronizer
     @StateObject var tabSelection: TabBarSelection = TabBarSelection()
     @StateObject var selectedSection = SelectSection()
-
+    @StateObject var sessionContext: CreateSessionContext
+    @EnvironmentObject var bluetoothManager: BluetoothManager
+    @EnvironmentObject private var locationTracker: LocationTracker
+    
     var body: some View {
         TabView(selection: $tabSelection.selection) {
             dashboardTab
@@ -28,6 +37,13 @@ struct MainTabBarView: View {
         .onAppear {
             try! measurementUpdatingService.start()
         }
+        .onChange(of: tabSelection.selection, perform: { _ in
+            if tabSelection.selection == .dashboard {
+                dashboardImage = "bluehome"
+            } else {
+                dashboardImage = "home"
+            }
+        })
         .environmentObject(tabSelection)
         .environmentObject(persistenceController)
         .environmentObject(selectedSection)
@@ -38,16 +54,16 @@ private extension MainTabBarView {
     // Tab Bar views
     private var dashboardTab: some View {
         NavigationView {
-            DashboardView(coreDataHook: CoreDataHook(context: persistenceController.viewContext))
+            DashboardView(coreDataHook: CoreDataHook(context: persistenceController.viewContext), measurementStreamStorage: measurementStreamStorage, sessionStoppableFactory: sessionStoppableFactory)
         }
         .tabItem {
-            Image(systemName: "house")
+            Image(dashboardImage)
         }
         .tag(TabBarSelection.Tab.dashboard)
     }
 
     private var createSessionTab: some View {
-        ChooseSessionTypeView(sessionContext: CreateSessionContext(), urlProvider: urlProvider)
+        ChooseSessionTypeView(viewModel: ChooseSessionTypeViewModel(locationHandler: DefaultLocationHandler(locationTracker: locationTracker), bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: bluetoothManager), userSettings: userSettings, sessionContext: sessionContext, urlProvider: urlProvider, bluetoothManager: bluetoothManager, bluetoothManagerState: bluetoothManager.centralManagerState, locationTracker: locationTracker))
             .tabItem {
                 Image(systemName: "plus")
             }
@@ -86,11 +102,11 @@ struct ContentView_Previews: PreviewProvider {
     private static let persistenceController = PersistenceController(inMemory: true)
 
     static var previews: some View {
-        MainTabBarView(measurementUpdatingService: MeasurementUpdatingServiceMock(), urlProvider: DummyURLProvider(), sessionSynchronizer: DummySessionSynchronizer())
+        MainTabBarView(measurementUpdatingService: MeasurementUpdatingServiceMock(), urlProvider: DummyURLProvider(), measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionStoppableFactory: SessionStoppableFactoryDummy(), sessionSynchronizer: DummySessionSynchronizer(), sessionContext: CreateSessionContext())
             .environmentObject(UserAuthenticationSession())
             .environmentObject(BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: PreviewMeasurementStreamStorage())))
-            .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionSynchronizer: DummySessionSynchronizer()))
             .environmentObject(PersistenceController())
+            .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
             .environment(\.managedObjectContext, persistenceController.viewContext)
     }
 

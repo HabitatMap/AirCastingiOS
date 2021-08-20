@@ -3,7 +3,7 @@
 
 import Foundation
 
-class UserDefaultsBaseURLProvider: BaseURLProvider {
+class UserDefaultsBaseURLProvider: BaseURLProvider, ObservableObject {
     var baseAppURL: URL {
         set {
             userDefaults.set(newValue, forKey: "baseURL")

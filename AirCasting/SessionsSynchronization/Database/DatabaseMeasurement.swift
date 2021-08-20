@@ -2,19 +2,25 @@ import Foundation
 import CoreLocation
 
 extension Database {
-    public struct Measurement {
-        let time: Date
-        let value: Double
-        let location: CLLocationCoordinate2D?
+    public struct Measurement: Hashable {
+        public let id: MeasurementID
+        public let time: Date
+        public let value: Double
+        public let latitude: Double?
+        public let longitude: Double?
         
         public init(
+            id: MeasurementID,
             time: Date,
             value: Double,
-            location: CLLocationCoordinate2D?
+            latitude: Double?,
+            longitude: Double?
         ) {
+            self.id = id
             self.time = time
             self.value = value
-            self.location = location
+            self.latitude = latitude
+            self.longitude = longitude
         }
     }
 }

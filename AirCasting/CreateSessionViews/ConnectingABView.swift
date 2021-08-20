@@ -23,7 +23,7 @@ struct ConnectingABView<VM: AirbeamConnectionViewModel>: View {
             ZStack(alignment: Alignment(horizontal: .trailing, vertical: .bottom), content: {
                 Image("airbeam")
                     .resizable()
-                    .frame(width: 300, height: 400)
+                    .aspectRatio(contentMode: .fit)
                 loader
                     .padding()
                     .padding(.vertical)
@@ -51,9 +51,9 @@ struct ConnectingABView<VM: AirbeamConnectionViewModel>: View {
             
         })
         .alert(isPresented: $presentAlert, content: {
-            Alert(title: Text(Strings.AirBeamConnection.connectionTimeoutTitle),
-                  message: Text(Strings.AirBeamConnection.connectionTimeoutDescription),
-                  dismissButton: .default(Text(Strings.AirBeamConnection.connectionTimeoutActionTitle), action: {
+            Alert(title: Text(Strings.AirBeamConnector.connectionTimeoutTitle),
+                  message: Text(Strings.AirBeamConnector.connectionTimeoutDescription),
+                  dismissButton: .default(Text(Strings.AirBeamConnector.connectionTimeoutActionTitle), action: {
                 presentationMode.wrappedValue.dismiss()
             }))
         })
@@ -67,14 +67,14 @@ struct ConnectingABView<VM: AirbeamConnectionViewModel>: View {
     }
     
     var titleLabel: some View {
-        Text("Connecting")
+        Text(Strings.ConnectingABView.title)
             .font(Font.moderate(size: 25,
                                 weight: .bold))
             .foregroundColor(.accentColor)
     }
     
     var messageLabel: some View {
-        Text("This should take less than 10 seconds.")
+        Text(Strings.ConnectingABView.message)
             .font(Font.moderate(size: 18,
                                 weight: .regular))
             .foregroundColor(.aircastingGray)

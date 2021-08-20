@@ -4,16 +4,21 @@
 import Foundation
 
 class GraphStatsDataSource: MeasurementsStatisticsDataSource {
-    let stream: MeasurementStreamEntity
+    var stream: MeasurementStreamEntity? {
+        didSet {
+            onForceReload?()
+        }
+    }
+    var onForceReload: (() -> Void)?
     
     var dateRange: ClosedRange<Date> = Date.distantPast...Date.distantFuture
     
-    init(stream: MeasurementStreamEntity) {
+    init(stream: MeasurementStreamEntity?) {
         self.stream = stream
     }
     
     var allMeasurements: [MeasurementStatistics.Measurement] {
-        stream.allMeasurements?.getStatistics() ?? []
+        stream?.allMeasurements?.getStatistics() ?? []
     }
     
     var visibleMeasurements: [MeasurementStatistics.Measurement] {

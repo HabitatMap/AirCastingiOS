@@ -10,36 +10,28 @@ import SwiftUI
 
 struct PowerABView: View {
     @State private var showAlert = false
-    @StateObject private var locationTracker = LocationTracker()
     @Binding var creatingSessionFlowContinues: Bool
     @EnvironmentObject private var sessionContext: CreateSessionContext
     let urlProvider: BaseURLProvider
-    private var continueButtonEnabled: Bool {
-        locationTracker.locationGranted == .granted
-    }
 
     var body: some View {
         VStack(spacing: 45) {
             ProgressView(value: 0.25)
             Image("2-power")
-            VStack(alignment: .leading, spacing: 13) {
+            HStack() {
                 titleLabel
-                messageLabel
+                Spacer()
             }
             continueButton
                 .buttonStyle(BlueButtonStyle())
-        }.alert(isPresented: $showAlert) {
+        }
+        .alert(isPresented: $showAlert) {
             Alert.locationAlert
         }
-
         .padding()
         .onAppear(perform: {
-            locationTracker.requestAuthorisation()
             sessionContext.deviceType = .AIRBEAM3
         })
-        .onChange(of: locationTracker.locationGranted) { newValue in
-            showAlert = (newValue == .denied)
-        }
     }
 
     var titleLabel: some View {
@@ -49,6 +41,7 @@ struct PowerABView: View {
             .foregroundColor(.accentColor)
     }
 
+    //stays here for maybe future needs
     var messageLabel: some View {
         Text(Strings.PowerABView.messageText)
             .font(Font.moderate(size: 18,
@@ -60,7 +53,7 @@ struct PowerABView: View {
         NavigationLink(destination: SelectPeripheralView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider)) {
             Text(Strings.PowerABView.continueButton)
                 .frame(maxWidth: .infinity)
-        }.disabled(!continueButtonEnabled)
+        }
     }
 }
 
