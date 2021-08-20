@@ -132,9 +132,3 @@ extension SessionEntity {
     @NSManaged public func removeFromMeasurementStreams(_ values: NSSet)
 
 }
-
-extension SessionEntity {
-       var isActive: Bool {
-           type == .mobile && status == .RECORDING
-       }
-}
