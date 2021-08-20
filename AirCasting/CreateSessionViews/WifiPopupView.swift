@@ -6,7 +6,6 @@
 //
 
 import AirCastingStyling
-import Foundation
 import SwiftUI
 import SystemConfiguration.CaptiveNetwork
 
@@ -24,6 +23,8 @@ struct WifiPopupView: View {
                 createTextfield(placeholder: Strings.WifiPopupView.wifiPlaceholder, binding: $wifiSSID)
             } else {
                 provideNameAndPasswordTitle
+                    .font(Font.muli(size: 18, weight: .heavy))
+                    .foregroundColor(.darkBlue)
             }
             createTextfield(placeholder: Strings.WifiPopupView.passwordPlaceholder, binding: $wifiPassword).onTapGesture {
                 isSSIDTextfieldDisplayed = false
@@ -65,8 +66,6 @@ struct WifiPopupView: View {
         Text(Strings.WifiPopupView.nameAndPasswordTitle_1) +
             Text(wifiSSID) +
             Text(Strings.WifiPopupView.nameAndPasswordTitle_2)
-            .font(Font.muli(size: 18, weight: .heavy))
-            .foregroundColor(.darkBlue)
     }
     
     var connectToDifferentWifi: some View {

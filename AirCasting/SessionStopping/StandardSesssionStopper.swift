@@ -6,14 +6,16 @@ import Foundation
 class StandardSesssionStopper: SessionStoppable {
     private let uuid: SessionUUID
     private let measurementStreamStorage: MeasurementStreamStorage
+    private let bluetoothManager: BluetoothManager
     
-    init(uuid: SessionUUID, measurementStreamStorage: MeasurementStreamStorage) {
+    init(uuid: SessionUUID, measurementStreamStorage: MeasurementStreamStorage, bluetoothManager: BluetoothManager) {
         self.uuid = uuid
         self.measurementStreamStorage = measurementStreamStorage
+        self.bluetoothManager = bluetoothManager
     }
     
-    func stopSession() throws {
+    func stopSession() {
         Log.verbose("Stopping session with uuid \(uuid.rawValue) using standard session stopper")
-        try measurementStreamStorage.updateSessionStatus(.FINISHED, for: uuid)
+        bluetoothManager.disconnectAirBeam()
     }
 }

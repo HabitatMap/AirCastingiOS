@@ -11,12 +11,17 @@ import CoreLocation
 struct RootAppView: View {
     
     @State private var airBeamConnectionController: DefaultAirBeamConnectionController?
+    @State private var measurementStreamStorage: MeasurementStreamStorage = CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared)
+    @State private var sessionStoppableFactory: SessionStoppableFactoryDefault?
+    @State private var downloadService: DownloadMeasurementsService?
     @StateObject private var bluetoothManager = BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared)))
     @StateObject private var lifeTimeEventsProvider = LifeTimeEventsProvider()
     @StateObject private var userSettings = UserSettings()
     @StateObject private var locationTracker = LocationTracker(locationManager: CLLocationManager())
     @StateObject private var userRedirectionSettings = DefaultSettingsRedirection()
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
+    @EnvironmentObject var microphoneManager: MicrophoneManager
+    
     var sessionSynchronizer: SessionSynchronizer
     let persistenceController: PersistenceController
     let urlProvider = UserDefaultsBaseURLProvider()
@@ -25,9 +30,14 @@ struct RootAppView: View {
     var body: some View {
         ZStack {
             if userAuthenticationSession.isLoggedIn,
-               let airBeamConnectionController = airBeamConnectionController {
+               let airBeamConnectionController = airBeamConnectionController,
+               let sessionStoppableFactory = sessionStoppableFactory,
+               let downloadService = downloadService {
                 MainAppView(airBeamConnectionController: airBeamConnectionController,
-                            sessionSynchronizer: sessionSynchronizer)
+                            sessionSynchronizer: sessionSynchronizer,
+                            sessionStoppableFactory: sessionStoppableFactory,
+                            downloadService: downloadService,
+                            measurementStreamStorage: measurementStreamStorage)
             } else if !userAuthenticationSession.isLoggedIn && lifeTimeEventsProvider.hasEverPassedOnBoarding {
                 NavigationView {
                     CreateAccountView(completion: { self.lifeTimeEventsProvider.hasEverLoggedIn = true }, userSession: userAuthenticationSession, baseURL: urlProvider).environmentObject(lifeTimeEventsProvider)
@@ -50,6 +60,14 @@ struct RootAppView: View {
         .environment(\.managedObjectContext, persistenceController.viewContext)
         .onAppear {
             airBeamConnectionController = DefaultAirBeamConnectionController(connectingAirBeamServices: ConnectingAirBeamServicesBluetooth(bluetoothConnector: bluetoothManager))
+            
+            sessionStoppableFactory = SessionStoppableFactoryDefault(microphoneManager: microphoneManager,
+                                                                         measurementStreamStorage: measurementStreamStorage,
+                                                                         synchronizer: sessionSynchronizer,
+                                                                         bluetoothManager: bluetoothManager)
+            downloadService = DownloadMeasurementsService(authorisationService: userAuthenticationSession,
+                                                          persistenceController: persistenceController,
+                                                          baseUrl: urlProvider)
         }
     }
     
@@ -59,20 +77,22 @@ struct MainAppView: View {
     
     let airBeamConnectionController: DefaultAirBeamConnectionController
     let sessionSynchronizer: SessionSynchronizer
-    private let measurementStreamStorage: MeasurementStreamStorage = CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared)
-    @EnvironmentObject var persistenceController: PersistenceController
-    @EnvironmentObject var urlProvider: UserDefaultsBaseURLProvider
-    @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
-    @EnvironmentObject var microphoneManager: MicrophoneManager
+    let sessionStoppableFactory: SessionStoppableFactoryDefault
+    let downloadService: DownloadMeasurementsService
+    let measurementStreamStorage: MeasurementStreamStorage
+    
+    @EnvironmentObject private var persistenceController: PersistenceController
+    @EnvironmentObject private var urlProvider: UserDefaultsBaseURLProvider
+    @EnvironmentObject private var userAuthenticationSession: UserAuthenticationSession
+    @EnvironmentObject private var bluetoothManager: BluetoothManager
     
     var body: some View {
-        let sessionStoppableFactory = SessionStoppableFactoryDefault(microphoneManager: microphoneManager,
-                                                                     measurementStreamStorage: measurementStreamStorage,
-                                                                     synchronizer: sessionSynchronizer)
-        MainTabBarView(measurementUpdatingService: DownloadMeasurementsService(
-                        authorisationService: userAuthenticationSession,
-                        persistenceController: persistenceController,
-                        baseUrl: urlProvider), urlProvider: urlProvider, measurementStreamStorage: measurementStreamStorage, sessionStoppableFactory: sessionStoppableFactory, sessionSynchronizer: sessionSynchronizer, sessionContext: CreateSessionContext())
+        MainTabBarView(measurementUpdatingService: downloadService,
+                       urlProvider: urlProvider,
+                       measurementStreamStorage: measurementStreamStorage,
+                       sessionStoppableFactory: sessionStoppableFactory,
+                       sessionSynchronizer: sessionSynchronizer,
+                       sessionContext: CreateSessionContext())
             .environmentObject(airBeamConnectionController)
     }
 }
