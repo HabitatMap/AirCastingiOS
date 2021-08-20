@@ -105,7 +105,7 @@ struct SingleMeasurementView: View {
     
     func showStreamName() -> String {
         guard let streamName = stream.sensorName else { return "" }
-        if streamName == "Phone Microphone" {
+        if streamName == Strings.SensorsData.microphone {
               return "db"
         } else {
             return streamName

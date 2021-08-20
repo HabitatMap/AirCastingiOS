@@ -440,4 +440,8 @@ struct Strings {
         static let contentViewText_4Mobile: String = "Move to your starting location, confirm your location is accurate on the map, then press the start recording button below"
         static let startRecording: String = "Start recording"
     }
+    
+    struct SensorsData {
+        static let microphone: String = "Phone Microphone"
+    }
 }
