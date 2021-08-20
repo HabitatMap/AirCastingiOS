@@ -110,6 +110,7 @@ struct Strings {
         static let heatmapSettingsdescription: String = "Values beyond Min and Max will not be displayed."
         static let saveChangesButton: String = "Save changes"
         static let resetChangesButton: String = "Reset to default"
+        static let parametersText: String = "Parameters:"
     }
     
     enum Thresholds {
