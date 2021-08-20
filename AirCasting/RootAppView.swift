@@ -64,11 +64,13 @@ struct MainAppView: View {
     @EnvironmentObject var urlProvider: UserDefaultsBaseURLProvider
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     @EnvironmentObject var microphoneManager: MicrophoneManager
+    @EnvironmentObject var bluetoothManager: BluetoothManager
     
     var body: some View {
         let sessionStoppableFactory = SessionStoppableFactoryDefault(microphoneManager: microphoneManager,
                                                                      measurementStreamStorage: measurementStreamStorage,
-                                                                     synchronizer: sessionSynchronizer)
+                                                                     synchronizer: sessionSynchronizer,
+                                                                     bluetoothManager: bluetoothManager)
         MainTabBarView(measurementUpdatingService: DownloadMeasurementsService(
                         authorisationService: userAuthenticationSession,
                         persistenceController: persistenceController,
