@@ -50,7 +50,7 @@ struct ABMeasurementsView: View {
                     SessionLoadingView()
                 } else {
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Parameters:")
+                        Text(Strings.SessionCart.parametersText)
                         HStack {
                             Group {
                                 ForEach(streams, id : \.self) { stream in
