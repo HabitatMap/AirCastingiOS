@@ -4,7 +4,6 @@
 import Foundation
 
 class MeasurementsStatisticsController: MeasurementsStatisticsInput {
-    private let uuid = UUID().uuidString
     weak var output: MeasurementsStatisticsOutput?
     private let dataSource: MeasurementsStatisticsDataSource
     private let calculator: StatisticsCalculator
