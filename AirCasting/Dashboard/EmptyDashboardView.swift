@@ -11,11 +11,12 @@ import SwiftUI
 struct EmptyDashboardView: View {
     @EnvironmentObject private var tabSelection: TabBarSelection
     @EnvironmentObject var selectedSection: SelectSection
+    @EnvironmentObject var sessionSynchronizationController: SessionSynchronizationController
     var body: some View {
         emptyState
     }
     var shouldSessionFetch: Bool {
-        (selectedSection.selectedSection == .mobileDormant || selectedSection.selectedSection == .fixed) && isSyncing
+        (selectedSection.selectedSection == .mobileDormant || selectedSection.selectedSection == .fixed) && sessionSynchronizationController.syncInProgress
     }
 
     private var emptyState: some View {
