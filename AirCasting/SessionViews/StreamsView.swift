@@ -6,6 +6,7 @@ import SwiftUI
 struct StreamsView: View {
     
     @Binding var selectedStream: MeasurementStreamEntity?
+    @Binding var isCollapsed: Bool
     @ObservedObject var session: SessionEntity
     var thresholds: [SensorThreshold]
     @EnvironmentObject private var microphoneManager: MicrophoneManager
@@ -20,6 +21,7 @@ struct StreamsView: View {
             }
         } else {
             ABMeasurementsView(session: session,
+                               isCollapsed: $isCollapsed,
                                thresholds: thresholds,
                                selectedStream: _selectedStream,
                                measurementPresentationStyle: measurementPresentationStyle)
@@ -28,9 +30,21 @@ struct StreamsView: View {
     
     var measurementsMic: some View {
         VStack(alignment: .leading, spacing: 5) {
-            Text(Strings.SessionCart.measurementsTitle)
-                .font(Font.moderate(size: 12))
-                .padding(.bottom, 3)
+            if !session.isDormant {
+                Text(Strings.SessionCart.measurementsTitle)
+                    .font(Font.moderate(size: 12))
+                    .padding(.bottom, 3)
+            } else {
+                if isCollapsed {
+                    Text(Strings.SessionCart.parametersText)
+                        .font(Font.moderate(size: 12))
+                        .padding(.bottom, 3)
+                } else {
+                    Text(Strings.SessionCart.dormantMeasurementsTitle)
+                        .font(Font.moderate(size: 12))
+                        .padding(.bottom, 3)
+                }
+            }
             if let dbStream = session.dbStream {
                 if let threshold = thresholds.threshold(for: dbStream) {
                     SingleMeasurementView(stream: dbStream,
@@ -53,6 +67,7 @@ struct StreamsView: View {
 struct StreamsWithMeasurementView_Previews: PreviewProvider {
     static var previews: some View {
         StreamsView(selectedStream: .constant(nil),
+                    isCollapsed: .constant(true),
                     session: .mock,
                     thresholds: [.mock],
                     measurementPresentationStyle: .showValues)
