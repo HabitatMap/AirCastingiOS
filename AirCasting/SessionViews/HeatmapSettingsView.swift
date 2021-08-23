@@ -50,6 +50,12 @@ struct HeatmapSettingsView: View {
                 .buttonStyle(BlueButtonStyle())
                 
                 Button(Strings.SessionCart.resetChangesButton, action: {
+                    thresholdVeryLow = Constants.Threshold.thresholdVeryLow
+                    thresholdLow = Constants.Threshold.thresholdLow
+                    thresholdMedium = Constants.Threshold.thresholdMedium
+                    thresholdHigh = Constants.Threshold.thresholdHigh
+                    thresholdVeryHigh = Constants.Threshold.thresholdVeryHigh
+                    saveChanges()
                     presentationMode.wrappedValue.dismiss()
                 })
                 .frame(minHeight: 35)
