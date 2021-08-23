@@ -49,12 +49,7 @@ struct ConfirmCreatingSessionView: View {
             + Text(Strings.ConfirmCreatingSessionView.contentViewText_2)
             + Text(sessionName)
             .foregroundColor(.accentColor)
-            + contentViewText_Ending
-    }
-
-    private var contentViewText_Ending: Text {
-        Text(Strings.ConfirmCreatingSessionView.contentViewText_3)
-            + Text(Strings.ConfirmCreatingSessionView.contentViewText_4)
+            + Text(Strings.ConfirmCreatingSessionView.contentViewText_3)
     }
 
     var dot: some View {
@@ -93,7 +88,7 @@ struct ConfirmCreatingSessionView: View {
             ZStack {
                 if sessionContext.sessionType == .mobile {
                     GoogleMapView(pathPoints: [], isMyLocationEnabled: true)
-                } else {
+                } else if !sessionContext.isIndoor! {
                     GoogleMapView(pathPoints: [])
                     dot
                 }
