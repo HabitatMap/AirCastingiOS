@@ -14,7 +14,7 @@ struct CreateSessionDetailsView: View {
     @State var sessionName: String = ""
     @State var sessionTags: String = ""
     @State var isIndoor = true
-    @State var isWiFi = false
+    @State var isWiFi = true
     @State var adress = ""
     @State var isWifiPopupPresented = false
     @State var isLocationPopupPresented = false
@@ -142,8 +142,8 @@ private extension CreateSessionDetailsView {
                 .foregroundColor(.aircastingDarkGray)
             Picker(selection: $isWiFi,
                    label: Text("")) {
-                Text(Strings.CreateSessionDetailsView.cellularText).tag(false)
                 Text(Strings.CreateSessionDetailsView.wifiText).tag(true)
+                Text(Strings.CreateSessionDetailsView.cellularText).tag(false)
             }
             .pickerStyle(SegmentedPickerStyle())
             .onChange(of: isWiFi) { _ in
