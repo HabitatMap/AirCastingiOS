@@ -21,6 +21,7 @@ struct GraphView: View {
                               session: session,
                               sessionStopperFactory: sessionStoppableFactory).padding()
             StreamsView(selectedStream: $selectedStream,
+                        isCollapsed: Binding.constant(true),
                         session: session,
                         thresholds: thresholds,
                         measurementPresentationStyle: .showValues).padding(.horizontal)

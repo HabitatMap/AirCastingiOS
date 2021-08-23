@@ -31,6 +31,7 @@ struct AirMapView: View {
                               session: session,
                               sessionStopperFactory: sessionStoppableFactory)
             StreamsView(selectedStream: $selectedStream,
+                        isCollapsed: Binding.constant(true),
                         session: session,
                         thresholds: thresholds,
                         measurementPresentationStyle: .showValues)

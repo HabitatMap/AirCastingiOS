@@ -38,6 +38,7 @@ struct SessionCartView: View {
             header
             if hasStreams {
                 StreamsView(selectedStream: $selectedStream,
+                            isCollapsed: $isCollapsed,
                             session: session,
                             thresholds: thresholds,
                             measurementPresentationStyle: shouldShowValues)
