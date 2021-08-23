@@ -104,13 +104,14 @@ struct Strings {
     }
     
     enum SessionCart {
-        static let measurementsTitle: String = "Most recent measurement:"
+        static let measurementsTitle: String = "Last second measurement:"
         static let dormantMeasurementsTitle: String = "Avg value:"
         static let heatmapSettingsTitle: String = "Heatmap settings"
         static let heatmapSettingsdescription: String = "Values beyond Min and Max will not be displayed."
         static let saveChangesButton: String = "Save changes"
         static let resetChangesButton: String = "Reset to default"
         static let parametersText: String = "Parameters:"
+        static let lastMinuteMeasurement: String = "Last minute measurement"
     }
     
     enum Thresholds {

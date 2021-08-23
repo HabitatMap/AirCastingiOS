@@ -11,7 +11,9 @@ enum MeasurementPresentationStyle {
 
 struct ABMeasurementsView: View {
     @ObservedObject var session: SessionEntity
+    @Binding var isCollapsed: Bool
     var thresholds: [SensorThreshold]
+    @EnvironmentObject var selectedSection: SelectSection
     @Binding var selectedStream: MeasurementStreamEntity?
     let measurementPresentationStyle: MeasurementPresentationStyle
     
@@ -26,10 +28,37 @@ struct ABMeasurementsView: View {
         return Group {
             if hasAnyMeasurements {
                 VStack(alignment: .leading, spacing: 5) {
-                    Text(session.isDormant ? Strings.SessionCart.dormantMeasurementsTitle : Strings.SessionCart.measurementsTitle)
-                        .font(Font.moderate(size: 12))
-                        .padding(.bottom, 3)
-                        .padding(.horizontal)
+                    if session.type == .mobile {
+                        if !session.isDormant {
+                            Text(Strings.SessionCart.measurementsTitle)
+                                .font(Font.moderate(size: 12))
+                                .padding(.bottom, 3)
+                        } else {
+                            if isCollapsed {
+                                Text(Strings.SessionCart.parametersText)
+                                    .font(Font.moderate(size: 12))
+                                    .padding(.bottom, 3)
+                            } else {
+                                Text(Strings.SessionCart.dormantMeasurementsTitle)
+                                    .font(Font.moderate(size: 12))
+                                    .padding(.bottom, 3)
+                            }
+                        }
+                    } else if selectedSection.selectedSection == .fixed {
+                        if isCollapsed {
+                            Text(Strings.SessionCart.parametersText)
+                                .font(Font.moderate(size: 12))
+                                .padding(.bottom, 3)
+                        } else {
+                            Text(Strings.SessionCart.lastMinuteMeasurement)
+                                .font(Font.moderate(size: 12))
+                                .padding(.bottom, 3)
+                        }
+                    } else {
+                            Text(Strings.SessionCart.lastMinuteMeasurement)
+                                .font(Font.moderate(size: 12))
+                                .padding(.bottom, 3)
+                    }
                     HStack {
                         Group {
                             ForEach(streams, id : \.self) { stream in
