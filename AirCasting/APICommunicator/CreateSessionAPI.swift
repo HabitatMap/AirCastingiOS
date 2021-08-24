@@ -109,7 +109,7 @@ final class CreateSessionAPIService {
 
         let inputJSONData = try! encoder.encode(input.session)
         let gzippedData = try! inputJSONData.gzipped()
-        let sessionBase64String = gzippedData.base64EncodedString()
+        let sessionBase64String = gzippedData.base64EncodedString(options: [.lineLength76Characters, .endLineWithLineFeed])
 
         let apiInput = APIInput(session: sessionBase64String,
                                 compression: input.compression)
