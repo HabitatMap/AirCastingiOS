@@ -88,7 +88,7 @@ struct ConfirmCreatingSessionView: View {
             ZStack {
                 if sessionContext.sessionType == .mobile {
                     GoogleMapView(pathPoints: [], isMyLocationEnabled: true)
-                } else if !sessionContext.isIndoor! {
+                } else if !(sessionContext.isIndoor ?? false) {
                     GoogleMapView(pathPoints: [])
                     dot
                 }
