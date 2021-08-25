@@ -124,6 +124,7 @@ struct GoogleMapView: UIViewRepresentable {
             let lat = mapView.projection.coordinate(for: mapView.center).latitude
             let len = mapView.projection.coordinate(for: mapView.center).longitude
             parent.tracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: lat, longitude: len), measurement: 20.0)]
+            #warning("Do something with hard coded measurement")
         }
 
         var didSetInitLocation: Bool = false   
