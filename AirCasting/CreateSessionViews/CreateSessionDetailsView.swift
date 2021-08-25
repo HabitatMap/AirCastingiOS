@@ -87,32 +87,33 @@ private extension CreateSessionDetailsView {
             sessionContext.sessionTags = sessionTags
             if sessionContext.sessionType == SessionType.fixed {
                 sessionContext.isIndoor = isIndoor
+                if !wifiSSID.isEmpty, !wifiPassword.isEmpty {
+                    sessionContext.wifiSSID = wifiSSID
+                    sessionContext.wifiPassword = wifiPassword
+                } else if isWiFi, wifiSSID.isEmpty, wifiPassword.isEmpty {
+                    isConfirmCreatingSessionActive = false
+                    showingAlert = true
+                }
             } else {
                 sessionContext.isIndoor = false
             }
             getAndSaveStartingLocation()
             isConfirmCreatingSessionActive = isIndoor
             isLocationSessionDetailsActive = !isIndoor
-            if !wifiSSID.isEmpty, !wifiPassword.isEmpty {
-                sessionContext.wifiSSID = wifiSSID
-                sessionContext.wifiPassword = wifiPassword
-            } else if isWiFi, wifiSSID.isEmpty, wifiPassword.isEmpty {
-                isConfirmCreatingSessionActive = false
-                showingAlert = true
-            }
+            
         }, label: {
             Text(Strings.CreateSessionDetailsView.continueButton)
                 .frame(maxWidth: .infinity)
         })
-            .buttonStyle(BlueButtonStyle())
-            .alert(isPresented: $showingAlert, content: {
-                Alert(title: Text(Strings.CreateSessionDetailsView.wifiAlertTitle),
-                      message: Text(Strings.CreateSessionDetailsView.wifiAlertMessage),
-                      primaryButton: .default(Text(Strings.CreateSessionDetailsView.primaryWifiButton)) {
-                          isWifiPopupPresented = true
-                      },
-                      secondaryButton: .default(Text(Strings.CreateSessionDetailsView.cancelButton)))
-            })
+        .buttonStyle(BlueButtonStyle())
+        .alert(isPresented: $showingAlert, content: {
+            Alert(title: Text(Strings.CreateSessionDetailsView.wifiAlertTitle),
+                  message: Text(Strings.CreateSessionDetailsView.wifiAlertMessage),
+                  primaryButton: .default(Text(Strings.CreateSessionDetailsView.primaryWifiButton)) {
+                    isWifiPopupPresented = true
+                  },
+                  secondaryButton: .default(Text(Strings.CreateSessionDetailsView.cancelButton)))
+        })
     }
 
     var titleLabel: some View {
