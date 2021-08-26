@@ -107,27 +107,16 @@ struct SingleMeasurementView: View {
     let measurementPresentationStyle: MeasurementPresentationStyle
     
     var body: some View {
-        
         VStack(spacing: 3) {
             Text(showStreamName())
                 .font(Font.system(size: 13))
-            if measurementPresentationStyle == .showValues {
-                Button(action: {
-                    selectedStream = stream
-                }, label: {
-                    if let value = value,
-                       let threshold = threshold {
-                        HStack(spacing: 3) {
-                            MeasurementDotView(value: value,
-                                               thresholds: threshold)
-                            Text("\(Int(value))")
-                                .font(Font.moderate(size: 14, weight: .regular))
-                        }
-                        
-                    }
-                })
-                .buttonStyle(AirCastingStyling.BorderedButtonStyle(isSelected: selectedStream == stream,
-                                                                   thresholdColor: colorBorder(stream: stream)))
+            if measurementPresentationStyle == .showValues,
+               let value = value,
+               let threshold = threshold {
+                _SingleMeasurementButton(stream: stream,
+                                         value: value,
+                                         selectedStream: $selectedStream,
+                                         threshold: threshold)
             }
         }
     }
@@ -135,28 +124,52 @@ struct SingleMeasurementView: View {
     func showStreamName() -> String {
         guard let streamName = stream.sensorName else { return "" }
         if streamName == Constants.SensorName.microphone {
-              return "db"
+            return "db"
         } else {
             return streamName
                 .drop { $0 != "-" }
                 .replacingOccurrences(of: "-", with: "")
         }
     }
-    
-    func colorBorder(stream: MeasurementStreamEntity) -> Color {
-        guard let value = value else { return .white }
-        guard let threshold = threshold else { return .white }
-        switch Int32(value) {
-        case threshold.thresholdVeryLow..<threshold.thresholdLow:
-            return .aircastingGreen
-        case threshold.thresholdLow..<threshold.thresholdMedium:
-            return .aircastingYellow
-        case threshold.thresholdMedium..<threshold.thresholdHigh:
-            return .aircastingOrange
-        case threshold.thresholdHigh..<threshold.thresholdVeryHigh:
-            return .aircastingRed
-        default:
-            return .white
+
+    struct _SingleMeasurementButton: View {
+        let stream: MeasurementStreamEntity
+        let value: Double
+        @Binding var selectedStream: MeasurementStreamEntity?
+        @ObservedObject var threshold: SensorThreshold
+        
+        var body: some View {
+            Button(action: {
+                selectedStream = stream
+            }, label: {
+                HStack(spacing: 3) {
+                    MeasurementDotView(value: value,
+                                       thresholds: threshold)
+                    Text("\(Int(value))")
+                        .font(Font.moderate(size: 14, weight: .regular))
+                }
+            })
+            .buttonStyle(AirCastingStyling.BorderedButtonStyle(isSelected: selectedStream == stream,
+                                                               thresholdColor: colorBorder(stream: stream)))
         }
+        
+        func colorBorder(stream: MeasurementStreamEntity) -> Color {
+            switch Int32(value) {
+            case threshold.thresholdVeryLow..<threshold.thresholdLow:
+                return .aircastingGreen
+            case threshold.thresholdLow..<threshold.thresholdMedium:
+                return .aircastingYellow
+            case threshold.thresholdMedium..<threshold.thresholdHigh:
+                return .aircastingOrange
+            case threshold.thresholdHigh..<threshold.thresholdVeryHigh:
+                return .aircastingRed
+            default:
+                return .white
+            }
+        }
+        
     }
+
+    
 }
+
