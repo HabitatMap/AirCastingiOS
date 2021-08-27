@@ -10,15 +10,25 @@ import SwiftUI
 
 struct EmptyDashboardView: View {
     @EnvironmentObject private var tabSelection: TabBarSelection
+    @EnvironmentObject var selectedSection: SelectSection
+    @EnvironmentObject var sessionSynchronizationController: SessionSynchronizationController
     var body: some View {
         emptyState
+    }
+    var shouldSessionFetch: Bool {
+        (selectedSection.selectedSection == .mobileDormant || selectedSection.selectedSection == .fixed) && sessionSynchronizationController.syncInProgress
     }
 
     private var emptyState: some View {
         ZStack(alignment: .bottomTrailing) {
             Image("dashboard-background-thing")
+            
             VStack(spacing: 45) {
                 VStack {
+                    if shouldSessionFetch {
+                        ProgressView(Strings.EmptyOnboarding.fetchingText)
+                            .progressViewStyle(CircularProgressViewStyle())
+                    }
                     Spacer()
                     VStack(spacing: 14) {
                         Text(Strings.EmptyOnboarding.title)
@@ -27,7 +37,7 @@ struct EmptyDashboardView: View {
                             .foregroundColor(Color.darkBlue)
                             .minimumScaleFactor(0.1)
                             .fixedSize(horizontal: false, vertical: true)
-
+                        
                         Text(Strings.EmptyOnboarding.description)
                             .font(Font.muli(size: 16))
                             .foregroundColor(Color.aircastingGray)
@@ -35,17 +45,17 @@ struct EmptyDashboardView: View {
                             .lineSpacing(9.0)
                             .padding(.horizontal, 45)
                             .fixedSize(horizontal: false, vertical: true)
-                    }.padding(.bottom, 30)
-                    VStack(spacing: 20) {
-                        Button(action: {
-                            tabSelection.selection = .createSession
-                        }, label: {
-                            Text(Strings.EmptyOnboarding.newSession)
-                                .bold()
-                        })
-                            .frame(maxWidth: 250)
-                            .buttonStyle(BlueButtonStyle())
                     }
+                    .padding(.bottom, 30)
+                    
+                    Button(action: {
+                        tabSelection.selection = .createSession
+                    }, label: {
+                        Text(Strings.EmptyOnboarding.newSession)
+                            .bold()
+                    })
+                    .frame(maxWidth: 250)
+                    .buttonStyle(BlueButtonStyle())
                     Spacer()
                 }
                 airBeamDescription
@@ -57,7 +67,6 @@ struct EmptyDashboardView: View {
         .background(Color(red: 251/255, green: 253/255, blue: 255/255))
     }
 }
-
 private extension EmptyDashboardView {
     private var airBeamDescription: some View {
         ZStack {
