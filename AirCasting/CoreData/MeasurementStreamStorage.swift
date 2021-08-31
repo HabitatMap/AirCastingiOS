@@ -147,6 +147,7 @@ final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
 #if DEBUG
 /// Only to be used for swiftui previews
 final class PreviewMeasurementStreamStorage: MeasurementStreamStorage {
+
     func updateSessionEndtime(_ endTime: Date, for sessionUUID: SessionUUID) throws {
         print("Faking updating sessioon end time happened: \(endTime) for session \(sessionUUID)")
     }
