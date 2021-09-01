@@ -100,7 +100,6 @@ private extension CreateSessionDetailsView {
             getAndSaveStartingLocation()
             isConfirmCreatingSessionActive = isIndoor
             isLocationSessionDetailsActive = !isIndoor
-            
         }, label: {
             Text(Strings.CreateSessionDetailsView.continueButton)
                 .frame(maxWidth: .infinity)

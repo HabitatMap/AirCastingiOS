@@ -15,6 +15,7 @@ struct AirMapView: View {
     @ObservedObject var session: SessionEntity
     @Binding var selectedStream: MeasurementStreamEntity?
     let sessionStoppableFactory: SessionStoppableFactory
+    let measurementStreamStorage: MeasurementStreamStorage
     
     private var pathPoints: [PathPoint] {
         return selectedStream?.allMeasurements?.compactMap {
@@ -30,11 +31,13 @@ struct AirMapView: View {
                               isExpandButtonNeeded: false, isCollapsed: Binding.constant(false),
                               session: session,
                               sessionStopperFactory: sessionStoppableFactory)
-            StreamsView(selectedStream: $selectedStream,
-                        isCollapsed: Binding.constant(true),
-                        session: session,
-                        thresholds: thresholds,
-                        measurementPresentationStyle: .showValues)
+            ABMeasurementsView(session: session,
+                               isCollapsed: Binding.constant(false),
+                               selectedStream: $selectedStream,
+                               thresholds: thresholds,
+                               measurementPresentationStyle: .showValues,
+                               measurementStreamStorage: measurementStreamStorage)
+
             if let threshold = thresholds.threshold(for: selectedStream) {
             ZStack(alignment: .topLeading) {
                 GoogleMapView(pathPoints: pathPoints, threshold: threshold)
@@ -59,7 +62,7 @@ struct Map_Previews: PreviewProvider {
         AirMapView(thresholds: [.mock],
                    session: .mock,
                    selectedStream: .constant(nil),
-                   sessionStoppableFactory: SessionStoppableFactoryDummy())
+                   sessionStoppableFactory: SessionStoppableFactoryDummy(), measurementStreamStorage: PreviewMeasurementStreamStorage())
     }
 }
 #endif

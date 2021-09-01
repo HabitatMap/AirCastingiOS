@@ -9,13 +9,10 @@ import Foundation
 
 extension SessionEntity {
     var isMobile: Bool { type == .mobile }
-    var isActive: Bool {
-        type == .mobile && status == .RECORDING
-    }
-    var isDormant: Bool {
-        type == .mobile && status == .FINISHED
-    }
+    var isActive: Bool { type == .mobile && status == .RECORDING }
+    var isDormant: Bool { type == .mobile && status == .FINISHED }
     var isFixed: Bool { type == .fixed }
+    var isFollowed: Bool { followedAt != nil }
 }
 
 extension SessionEntity {

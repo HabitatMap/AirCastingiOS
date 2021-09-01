@@ -120,8 +120,7 @@ private extension MicrophoneManager {
                                        thresholdHigh: 80,
                                        thresholdMedium: 70,
                                        thresholdLow: 60,
-                                       thresholdVeryLow: -100)
-        #warning("TODO: Change thresholdVeryLow to 20")
+                                       thresholdVeryLow: 20)
         return try measurementStreamStorage.createSessionAndMeasurementStream(session, stream)
     }
     
