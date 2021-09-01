@@ -74,4 +74,41 @@ final class SessionDownloadService: SessionDownstream {
             }
         }
     }
+    
+    func downloadSessionWithMeasurement(uuid: SessionUUID, completion: @escaping (Result<SessionsSynchronization.SessionDownstreamData, Error>) -> Void) -> Cancellable {
+        var urlComponents = URLComponents(string: "http://aircasting.org/api/user/sessions/empty.json")!
+        urlComponents.queryItems = [
+            URLQueryItem(name: "uuid", value: uuid.rawValue),
+            URLQueryItem(name: "stream_measurements", value: "true")
+        ]
+        let url = urlComponents.url!
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.addValue("application/json", forHTTPHeaderField: "Accept")
+        
+        do {
+            try authorization.authorise(request: &request)
+        } catch {
+            completion(.failure(error))
+            return EmptyCancellable()
+        }
+        
+        return client.requestTask(for: request) { [responseValidator, decoder] result, request in
+            switch result {
+            case .success(let response):
+                do {
+                    try responseValidator.validate(response: response.response, data: response.data)
+                    let sessionData = try decoder.decode(SessionsSynchronization.SessionDownstreamData.self, from: response.data)
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
+                    completion(.success(sessionData))
+                                         }
+                } catch {
+                    completion(.failure(error))
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
 }

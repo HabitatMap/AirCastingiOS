@@ -13,6 +13,7 @@ struct GraphView: View {
     let thresholds: [SensorThreshold]
     @Binding var selectedStream: MeasurementStreamEntity?
     let sessionStoppableFactory: SessionStoppableFactory
+    let measurementStreamStorage: MeasurementStreamStorage
     
     var body: some View {
         VStack(alignment: .trailing) {
@@ -20,11 +21,14 @@ struct GraphView: View {
                               isExpandButtonNeeded: false, isCollapsed: Binding.constant(false),
                               session: session,
                               sessionStopperFactory: sessionStoppableFactory).padding()
-            StreamsView(selectedStream: $selectedStream,
-                        isCollapsed: Binding.constant(true),
-                        session: session,
-                        thresholds: thresholds,
-                        measurementPresentationStyle: .showValues).padding(.horizontal)
+
+            ABMeasurementsView(session: session,
+                               isCollapsed: Binding.constant(false),
+                               selectedStream: $selectedStream,
+                               thresholds: thresholds,
+                               measurementPresentationStyle: .showValues,
+                               measurementStreamStorage: measurementStreamStorage)
+                .padding(.horizontal)
             if let threshold = thresholds.threshold(for: selectedStream) {
                 ZStack(alignment: .topLeading) {
                     if let selectedStream = selectedStream {
@@ -55,7 +59,11 @@ struct GraphView: View {
 struct GraphView_Previews: PreviewProvider {
     static var previews: some View {
         //Change selected stream
-        GraphView(session: .mock, thresholds: [.mock], selectedStream: .constant(nil), sessionStoppableFactory: SessionStoppableFactoryDummy())
+        GraphView(session: .mock,
+                  thresholds: [.mock],
+                  selectedStream: .constant(nil),
+                  sessionStoppableFactory: SessionStoppableFactoryDummy(),
+                  measurementStreamStorage: PreviewMeasurementStreamStorage() as! MeasurementStreamStorage)
     }
 }
 #endif

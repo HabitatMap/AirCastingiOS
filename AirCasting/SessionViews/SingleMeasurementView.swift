@@ -1,4 +1,4 @@
-// Created by Lunar on 30/08/2021.
+// Created by Lunar on 31/08/2021.
 //
 
 import SwiftUI
@@ -22,6 +22,7 @@ struct SingleMeasurementView: View {
                                          value: value,
                                          selectedStream: $selectedStream,
                                          threshold: threshold)
+                
             }
         }
     }
@@ -29,14 +30,14 @@ struct SingleMeasurementView: View {
     func showStreamName() -> String {
         guard let streamName = stream.sensorName else { return "" }
         if streamName == Constants.SensorName.microphone {
-            return "db"
+            return "dB"
         } else {
             return streamName
                 .drop { $0 != "-" }
                 .replacingOccurrences(of: "-", with: "")
         }
     }
-
+    
     struct _SingleMeasurementButton: View {
         let stream: MeasurementStreamEntity
         let value: Double
@@ -72,6 +73,5 @@ struct SingleMeasurementView: View {
                 return .white
             }
         }
-        
     }
 }

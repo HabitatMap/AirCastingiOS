@@ -51,5 +51,14 @@ extension SessionsSynchronization {
         let thresholdMedium: Int
         let thresholdHigh: Int
         let thresholdVeryHigh: Int
+        let size: Int
+        let measurements: [MeasurementData]?
+    }
+    
+    struct MeasurementData: Equatable, Codable {
+        let value: Double
+        let latitude: Double?
+        let longitude: Double?
+        let time: Date
     }
 }

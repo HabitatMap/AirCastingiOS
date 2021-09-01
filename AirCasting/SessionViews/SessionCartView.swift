@@ -8,7 +8,6 @@
 import AirCastingStyling
 import Charts
 import CoreData
-import CoreLocation
 import SwiftUI
 
 struct SessionCartView: View {
@@ -20,7 +19,7 @@ struct SessionCartView: View {
     let sessionCartViewModel: SessionCartViewModel
     let thresholds: [SensorThreshold]
     let sessionStoppableFactory: SessionStoppableFactory
-    
+    let measurementStreamStorage: MeasurementStreamStorage
     var shouldShowValues: MeasurementPresentationStyle {
         let shouldShow = isCollapsed && (session.isFixed || session.isDormant)
         return shouldShow ? .hideValues : .showValues
@@ -37,11 +36,12 @@ struct SessionCartView: View {
         VStack(alignment: .leading, spacing: 13) {
             header
             if hasStreams {
-                StreamsView(selectedStream: $selectedStream,
-                            isCollapsed: $isCollapsed,
-                            session: session,
-                            thresholds: thresholds,
-                            measurementPresentationStyle: shouldShowValues)
+                ABMeasurementsView(session: session,
+                                   isCollapsed: $isCollapsed,
+                                   selectedStream: $selectedStream,
+                                   thresholds: thresholds,
+                                   measurementPresentationStyle: shouldShowValues,
+                                   measurementStreamStorage: measurementStreamStorage)
 
                 VStack(alignment: .trailing, spacing: 40) {
                     if showChart {
@@ -55,11 +55,11 @@ struct SessionCartView: View {
                 SessionLoadingView()
             }
         }
-        .onChange(of: session.sortedStreams) { newValue in
-            selectDefaultStreamIfNeeded(streams: newValue ?? [])
-        }
         .onAppear {
             selectDefaultStreamIfNeeded(streams: session.sortedStreams ?? [])
+        }
+        .onChange(of: session.sortedStreams) { newValue in
+            selectDefaultStreamIfNeeded(streams: newValue ?? [])
         }
         .font(Font.moderate(size: 13, weight: .regular))
         .foregroundColor(.aircastingGray)
@@ -133,7 +133,8 @@ private extension SessionCartView {
         NavigationLink( destination: AirMapView(thresholds: thresholds,
                                                 session: session,
                                                 selectedStream: $selectedStream,
-                                                sessionStoppableFactory: sessionStoppableFactory),
+                                                sessionStoppableFactory: sessionStoppableFactory,
+                                                measurementStreamStorage: measurementStreamStorage),
                         isActive: $isMapButtonActive,
                         label: {
                             EmptyView()
@@ -145,7 +146,8 @@ private extension SessionCartView {
             destination: GraphView(session: session,
                                    thresholds: thresholds,
                                    selectedStream: $selectedStream,
-                                   sessionStoppableFactory: sessionStoppableFactory),
+                                   sessionStoppableFactory: sessionStoppableFactory,
+                                   measurementStreamStorage: measurementStreamStorage),
             isActive: $isGraphButtonActive,
             label: {
                 EmptyView()
@@ -179,16 +181,16 @@ private extension SessionCartView {
     }
 }
 
- #if DEBUG
- struct SessionCell_Previews: PreviewProvider {
-    static var previews: some View {
-        EmptyView()
-        SessionCartView(session: SessionEntity.mock,
-                                sessionCartViewModel: SessionCartViewModel(followingSetter: MockSessionFollowingSettable()),
-                                thresholds: [.mock, .mock], sessionStoppableFactory: SessionStoppableFactoryDummy())
-            .padding()
-            .previewLayout(.sizeThatFits)
-            .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
-    }
- }
- #endif
+// #if DEBUG
+// struct SessionCell_Previews: PreviewProvider {
+//    static var previews: some View {
+//        EmptyView()
+//        SessionCartView(session: SessionEntity.mock,
+//                                sessionCartViewModel: SessionCartViewModel(followingSetter: MockSessionFollowingSettable()),
+//                                thresholds: [.mock, .mock], sessionStoppableFactory: SessionStoppableFactoryDummy())
+//            .padding()
+//            .previewLayout(.sizeThatFits)
+//            .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
+//    }
+// }
+// #endif
