@@ -306,8 +306,7 @@ struct Strings {
         static let description: String = "Record a new session\n to monitor your health &\n environment"
         static let newSession: String = "Record new session"
     }
-    
-    enum PowerABView {
+enum PowerABView {
         static let alertTitle: String = "Location alert"
         static let alertMessage: String = "Please go to settings and allow location first."
         static let alertConfirmation: String = "OK"
