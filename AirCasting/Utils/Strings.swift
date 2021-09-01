@@ -293,7 +293,7 @@ struct Strings {
  """
     }
 
-    enum EmptyOnboarding {
+    enum EmptyDashboardMobile {
         static let title: String = "Start recording a \nmobile session"
         static let description: String = "If you plan on moving around \nwhile recording measurements."
         static let newSession: String = "Record mobile session"
@@ -301,7 +301,13 @@ struct Strings {
         static let airBeamDescriptionDescription: String = "AirBeam3 is weather resistant. To \nkeep tabs on your outdoor air quality \n24/7, hang one outside your home and \nrecord a fixed session."
     }
     
-enum PowerABView {
+    enum EmptyDashboardFixed {
+        static let title: String = "Ready to get\n started?"
+        static let description: String = "Record a new session\n to monitor your health &\n environment"
+        static let newSession: String = "Record new session"
+    }
+    
+    enum PowerABView {
         static let alertTitle: String = "Location alert"
         static let alertMessage: String = "Please go to settings and allow location first."
         static let alertConfirmation: String = "OK"

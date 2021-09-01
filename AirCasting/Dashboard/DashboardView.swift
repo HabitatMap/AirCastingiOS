@@ -37,7 +37,11 @@ struct DashboardView: View {
             AirSectionPickerView(selection: self.$selectedSection.selectedSection)
 
             if sessions.isEmpty {
-                EmptyDashboardView()
+                if selectedSection.selectedSection == .mobileActive || selectedSection.selectedSection == .mobileDormant {
+                    EmptyMobileDashboardViewMobile()
+                } else {
+                    EmptyFixedDashboardView()
+                }
             } else {
                 ZStack(alignment: .bottomTrailing) {
                     Image("dashboard-background-thing")
