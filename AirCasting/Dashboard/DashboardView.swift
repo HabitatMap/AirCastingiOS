@@ -51,7 +51,11 @@ struct DashboardView: View {
                             ForEach(sessions, id: \.uuid) { session in
                                 let followingSetter = MeasurementStreamStorageFollowingSettable(session: session, measurementStreamStorage: measurementStreamStorage)
                                 let viewModel = SessionCartViewModel(followingSetter: followingSetter)
-                                SessionCartView(session: session, sessionCartViewModel: viewModel, thresholds: thresholds, sessionStoppableFactory: sessionStoppableFactory)
+                                SessionCartView(session: session,
+                                                sessionCartViewModel: viewModel,
+                                                thresholds: thresholds,
+                                                sessionStoppableFactory: sessionStoppableFactory,
+                                                measurementStreamStorage: measurementStreamStorage)
                             }
                         }
                     }

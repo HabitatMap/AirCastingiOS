@@ -50,9 +50,12 @@ struct CreateSessionDetailsView: View {
                 }
                 .padding()
                 .frame(maxWidth: .infinity, minHeight: geometry.size.height, alignment: .top)
-            }.background(Group {
+            }
+            .background(Group {
                 NavigationLink(
-                    destination: ChooseCustomLocationView(sessionCreator: sessionCreator, creatingSessionFlowContinues: $creatingSessionFlowContinues, sessionName: $sessionName),
+                    destination: ChooseCustomLocationView(sessionCreator: sessionCreator,
+                                                          creatingSessionFlowContinues: $creatingSessionFlowContinues,
+                                                          sessionName: $sessionName),
                     isActive: $isLocationSessionDetailsActive,
                     label: {
                         EmptyView()
@@ -60,8 +63,8 @@ struct CreateSessionDetailsView: View {
                 )
                 NavigationLink("", destination: EmptyView())
                 NavigationLink(
-                    destination: ConfirmCreatingSessionView(sessionCreator: sessionCreator,
-                                                            creatingSessionFlowContinues: $creatingSessionFlowContinues,
+                    destination: ConfirmCreatingSessionView(creatingSessionFlowContinues: $creatingSessionFlowContinues,
+                                                            sessionCreator: sessionCreator,
                                                             sessionName: sessionName),
                     isActive: $isConfirmCreatingSessionActive,
                     label: {
@@ -85,22 +88,24 @@ private extension CreateSessionDetailsView {
         Button(action: {
             sessionContext.sessionName = sessionName
             sessionContext.sessionTags = sessionTags
+            
             if sessionContext.sessionType == SessionType.fixed {
                 sessionContext.isIndoor = isIndoor
-                if !wifiSSID.isEmpty, !wifiPassword.isEmpty {
+                if isWiFi, !(wifiSSID.isEmpty && wifiPassword.isEmpty) {
                     sessionContext.wifiSSID = wifiSSID
                     sessionContext.wifiPassword = wifiPassword
                 } else if isWiFi, wifiSSID.isEmpty, wifiPassword.isEmpty {
                     isConfirmCreatingSessionActive = false
                     showingAlert = true
+                    return
                 }
+                isConfirmCreatingSessionActive = isIndoor
+                isLocationSessionDetailsActive = !isIndoor
             } else {
                 sessionContext.isIndoor = false
             }
             getAndSaveStartingLocation()
-            isConfirmCreatingSessionActive = isIndoor
-            isLocationSessionDetailsActive = !isIndoor
-            
+
         }, label: {
             Text(Strings.CreateSessionDetailsView.continueButton)
                 .frame(maxWidth: .infinity)

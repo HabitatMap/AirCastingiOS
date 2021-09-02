@@ -61,8 +61,8 @@ struct ChooseCustomLocationView: View {
     
     var confirmCreatingSessionLink: some View {
         NavigationLink(
-            destination: ConfirmCreatingSessionView(sessionCreator: sessionCreator,
-                                                    creatingSessionFlowContinues: $creatingSessionFlowContinues,
+            destination: ConfirmCreatingSessionView(creatingSessionFlowContinues: $creatingSessionFlowContinues,
+                                                    sessionCreator: sessionCreator,
                                                     sessionName: sessionName),
             isActive: $isConfirmCreatingSessionActive,
             label: {
