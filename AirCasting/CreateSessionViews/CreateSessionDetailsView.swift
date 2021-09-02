@@ -103,6 +103,7 @@ private extension CreateSessionDetailsView {
                 isLocationSessionDetailsActive = !isIndoor
             } else {
                 sessionContext.isIndoor = false
+                isConfirmCreatingSessionActive = true
             }
             getAndSaveStartingLocation()
 
