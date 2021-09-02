@@ -16,17 +16,14 @@ struct ConfirmCreatingSessionView: View {
             isPresentingAlert = error != nil
         }
     }
-
     @State private var isPresentingAlert: Bool = false
+    @State private var didStartRecordingSession = false
     @EnvironmentObject var selectedSection: SelectSection
     @EnvironmentObject private var sessionContext: CreateSessionContext
     @EnvironmentObject private var locationTracker: LocationTracker
-    let sessionCreator: SessionCreator
-    @State private var didStartRecordingSession = false
     @EnvironmentObject private var tabSelection: TabBarSelection
-
     @Binding var creatingSessionFlowContinues: Bool
-
+    let sessionCreator: SessionCreator
     var sessionName: String
     private var sessionType: String { (sessionContext.sessionType ?? .fixed).description.lowercased() }
 
@@ -38,7 +35,9 @@ struct ConfirmCreatingSessionView: View {
 
     private var contentViewWithAlert: some View {
         contentView.alert(isPresented: $isPresentingAlert) {
-            Alert(title: Text(Strings.ConfirmCreatingSessionView.alertTitle), message: Text(error?.localizedDescription ?? Strings.ConfirmCreatingSessionView.alertMessage), dismissButton: .default(Text(Strings.ConfirmCreatingSessionView.alertOK), action: { error = nil
+            Alert(title: Text(Strings.ConfirmCreatingSessionView.alertTitle),
+                  message: Text(error?.localizedDescription ?? Strings.ConfirmCreatingSessionView.alertMessage),
+                  dismissButton: .default(Text(Strings.ConfirmCreatingSessionView.alertOK), action: { error = nil
             }))
         }
     }
@@ -132,8 +131,8 @@ struct ConfirmCreatingSessionView: View {
 #if DEBUG
 struct ConfirmCreatingSession_Previews: PreviewProvider {
     static var previews: some View {
-        ConfirmCreatingSessionView(sessionCreator: PreviewSessionCreator(),
-                                   creatingSessionFlowContinues: .constant(true),
+        ConfirmCreatingSessionView(creatingSessionFlowContinues: .constant(true),
+                                   sessionCreator: PreviewSessionCreator(),
                                    sessionName: "Ania's microphone session")
             .environmentObject(CreateSessionContext())
             .previewDevice(PreviewDevice(rawValue: "iPhone 12 mini"))
