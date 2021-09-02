@@ -161,21 +161,19 @@ private extension CreateSessionDetailsView {
         if sessionContext.sessionType == .fixed {
             if isIndoor {
                 sessionContext.startingLocation = fakeLocation
-                locationTracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: 200.0, longitude: 200.0), measurement: 20.0)]
-                // measurement: 20.0 was designed just to be 'something'. Is should be handle somehow, but for now we are leaving this like it is.
+                locationTracker.googleLocation = [PathPoint.fakePathPoint]
             } else {
                 guard let lat = (locationTracker.locationManager.location?.coordinate.latitude),
                       let lon = (locationTracker.locationManager.location?.coordinate.longitude) else { return }
-                locationTracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: lat, longitude: lon), measurement: 20.0)]
+                locationTracker.googleLocation = [PathPoint.fakePathPoint]
                 #warning("Do something with exposed googleLocation")
-                // measurement: 20.0 was designed just to be 'something'. Is should be handle somehow, but for now we are leaving this like it is.
                 sessionContext.obtainCurrentLocation(lat: lat, log: lon)
             }
         } else {
             guard let lat = (locationTracker.locationManager.location?.coordinate.latitude),
                   let lon = (locationTracker.locationManager.location?.coordinate.longitude) else { return }
             locationTracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: lat, longitude: lon), measurement: 20.0)]
-            // measurement: 20.0 was designed just to be 'something'. Is should be handle somehow, but for now we are leaving this like it is.
+            #warning("Do something with hard coded measurement")
             sessionContext.obtainCurrentLocation(lat: lat, log: lon)
         }
     }

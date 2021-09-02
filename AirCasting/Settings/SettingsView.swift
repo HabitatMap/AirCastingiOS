@@ -70,14 +70,11 @@ struct SettingsView: View {
     private var crowdMapTitle: some View {
         Text(Strings.Settings.crowdMap)
             .font(Font.muli(size: 16, weight: .bold))
-            .padding(.bottom, 14)
+            .multilineTextAlignment(.leading)
     }
     
     private var crowdMapSwitch: some View {
         Toggle(isOn: $userSettings.contributingToCrowdMap) {
-            Text("Switch")
-                .font(.title)
-                .foregroundColor(Color.white)
         }.toggleStyle(SwitchToggleStyle(tint: .accentColor))
     }
     
