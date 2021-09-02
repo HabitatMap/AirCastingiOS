@@ -102,6 +102,7 @@ private extension CreateSessionDetailsView {
                 isConfirmCreatingSessionActive = isIndoor
                 isLocationSessionDetailsActive = !isIndoor
             } else {
+                
                 sessionContext.isIndoor = false
                 isConfirmCreatingSessionActive = true
             }
