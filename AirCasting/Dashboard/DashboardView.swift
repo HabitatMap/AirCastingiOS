@@ -18,7 +18,6 @@ struct DashboardView: View {
     private var sessions: [SessionEntity] {
         coreDataHook.sessions
     }
-    
     init(coreDataHook: CoreDataHook, measurementStreamStorage: MeasurementStreamStorage, sessionStoppableFactory: SessionStoppableFactory) {
         let navBarAppearance = UINavigationBar.appearance()
         navBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(Color.darkBlue)]
@@ -57,7 +56,8 @@ struct DashboardView: View {
                                                 thresholds: thresholds,
                                                 sessionStoppableFactory: sessionStoppableFactory,
                                                 measurementStreamStorage: measurementStreamStorage)
-                            }                        }
+                            }
+                        }
                     }
                 }.padding()
                     .frame(maxWidth: .infinity)

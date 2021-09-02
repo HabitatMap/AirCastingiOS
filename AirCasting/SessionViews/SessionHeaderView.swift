@@ -184,7 +184,7 @@ struct SessionHeader_Previews: PreviewProvider {
                           isExpandButtonNeeded: true, isCollapsed: .constant(true),
                           session: SessionEntity.mock,
                           sessionStopperFactory: SessionStoppableFactoryDummy())
-            .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
+                .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
     }
 }
 #endif
