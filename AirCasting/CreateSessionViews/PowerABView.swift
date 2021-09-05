@@ -13,7 +13,6 @@ struct PowerABView: View {
     @Binding var creatingSessionFlowContinues: Bool
     @EnvironmentObject private var sessionContext: CreateSessionContext
     let urlProvider: BaseURLProvider
-    let locationTracker: LocationTracker
 
     var body: some View {
         VStack(spacing: 45) {
@@ -51,7 +50,7 @@ struct PowerABView: View {
     }
 
     var continueButton: some View {
-        NavigationLink(destination: SelectPeripheralView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider, locationTracker: locationTracker)) {
+        NavigationLink(destination: SelectPeripheralView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider)) {
             Text(Strings.PowerABView.continueButton)
                 .frame(maxWidth: .infinity)
         }
@@ -61,7 +60,7 @@ struct PowerABView: View {
 #if DEBUG
 struct PowerABView_Previews: PreviewProvider {
     static var previews: some View {
-        PowerABView(creatingSessionFlowContinues: .constant(true), urlProvider: DummyURLProvider(), locationTracker: DummyLocationTrakcer())
+        PowerABView(creatingSessionFlowContinues: .constant(true), urlProvider: DummyURLProvider())
     }
 }
 #endif

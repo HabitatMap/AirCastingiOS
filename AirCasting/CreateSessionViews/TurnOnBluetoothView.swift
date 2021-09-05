@@ -18,7 +18,6 @@ struct TurnOnBluetoothView: View {
     @StateObject var sessionContext: CreateSessionContext
     
     let urlProvider: BaseURLProvider
-    let locationTracker: LocationTracker
     
     var body: some View {
         VStack(spacing: 50) {
@@ -33,7 +32,7 @@ struct TurnOnBluetoothView: View {
         }
         .background(
             NavigationLink(
-                destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider, locationTracker: locationTracker),
+                destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider),
                 isActive: $isPowerABLinkActive,
                 label: {
                     EmptyView()
@@ -84,7 +83,7 @@ struct TurnOnBluetoothView: View {
 struct TurnOnBluetoothView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            TurnOnBluetoothView(creatingSessionFlowContinues: .constant(true), sessionContext: CreateSessionContext(), urlProvider: DummyURLProvider(), locationTracker: DummyLocationTrakcer())
+            TurnOnBluetoothView(creatingSessionFlowContinues: .constant(true), sessionContext: CreateSessionContext(), urlProvider: DummyURLProvider())
         }
     }
 }

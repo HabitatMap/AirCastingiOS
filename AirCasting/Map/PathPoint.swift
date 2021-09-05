@@ -13,3 +13,7 @@ struct PathPoint {
     let measurementTime: Date
     let measurement: Double
 }
+
+extension PathPoint {
+    static var fakePathPoint = PathPoint(location: CLLocationCoordinate2D(latitude: 200.0, longitude: 200.0), measurementTime: Date(), measurement: 20.0)
+}

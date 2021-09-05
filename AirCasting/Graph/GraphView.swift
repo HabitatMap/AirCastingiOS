@@ -14,6 +14,7 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
     @StateObject var statsContainerViewModel: StatsViewModelType
     let graphStatsDataSource: GraphStatsDataSource
     let sessionStoppableFactory: SessionStoppableFactory
+    let measurementStreamStorage: MeasurementStreamStorage
     
     var body: some View {
         VStack(alignment: .trailing) {
@@ -21,10 +22,14 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                               isExpandButtonNeeded: false, isCollapsed: Binding.constant(false),
                               session: session,
                               sessionStopperFactory: sessionStoppableFactory).padding()
-            StreamsView(selectedStream: $selectedStream,
-                        session: session,
-                        thresholds: thresholds,
-                        measurementPresentationStyle: .showValues).padding(.horizontal)
+
+            ABMeasurementsView(session: session,
+                               isCollapsed: Binding.constant(false),
+                               selectedStream: $selectedStream,
+                               thresholds: thresholds,
+                               measurementPresentationStyle: .showValues,
+                               measurementStreamStorage: measurementStreamStorage)
+                .padding(.horizontal)
             if let threshold = thresholds.threshold(for: selectedStream) {
                 ZStack(alignment: .topLeading) {
                     if let selectedStream = selectedStream {
@@ -62,7 +67,8 @@ struct GraphView_Previews: PreviewProvider {
                   selectedStream: .constant(nil),
                   statsContainerViewModel: FakeStatsViewModel(),
                   graphStatsDataSource: GraphStatsDataSource(),
-                  sessionStoppableFactory: SessionStoppableFactoryDummy())
+                  sessionStoppableFactory: SessionStoppableFactoryDummy(),
+                  measurementStreamStorage: PreviewMeasurementStreamStorage())
     }
 }
 #endif

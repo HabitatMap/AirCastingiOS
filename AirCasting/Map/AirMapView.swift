@@ -18,7 +18,7 @@ struct AirMapView: View {
 
     @Binding var selectedStream: MeasurementStreamEntity?
     let sessionStoppableFactory: SessionStoppableFactory
-    let locationTracker: LocationTracker
+    let measurementStreamStorage: MeasurementStreamStorage
     
     private var pathPoints: [PathPoint] {
         return selectedStream?.allMeasurements?.compactMap {
@@ -34,14 +34,16 @@ struct AirMapView: View {
                               isExpandButtonNeeded: false, isCollapsed: Binding.constant(false),
                               session: session,
                               sessionStopperFactory: sessionStoppableFactory)
-            StreamsView(selectedStream: $selectedStream,
-                        session: session,
-                        thresholds: thresholds,
-                        measurementPresentationStyle: .showValues)
+            ABMeasurementsView(session: session,
+                               isCollapsed: Binding.constant(false),
+                               selectedStream: $selectedStream,
+                               thresholds: thresholds,
+                               measurementPresentationStyle: .showValues,
+                               measurementStreamStorage: measurementStreamStorage)
+
             if let threshold = thresholds.threshold(for: selectedStream) {
                 ZStack(alignment: .topLeading) {
-                    GoogleMapView(tracker: locationTracker,
-                                  pathPoints: pathPoints,
+                    GoogleMapView(pathPoints: pathPoints,
                                   threshold: threshold)
                         .onPositionChange { [weak mapStatsDataSource, weak statsContainerViewModel] visiblePoints in
                             mapStatsDataSource?.visiblePathPoints = visiblePoints
@@ -71,7 +73,7 @@ struct Map_Previews: PreviewProvider {
                    session: .mock,
                    selectedStream: .constant(nil),
                    sessionStoppableFactory: SessionStoppableFactoryDummy(),
-                   locationTracker: DummyLocationTrakcer())
+                   measurementStreamStorage: PreviewMeasurementStreamStorage())
     }
 }
 

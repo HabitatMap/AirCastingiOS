@@ -6,7 +6,6 @@ import SwiftUI
 
 struct ChooseCustomLocationView: View {
     let sessionCreator: SessionCreator
-    let tracker: LocationTracker
     @State private var isConfirmCreatingSessionActive: Bool = false
     @State private var location = ""
     @State var isLocationPopupPresented = false
@@ -30,13 +29,13 @@ struct ChooseCustomLocationView: View {
         }
         .background(confirmCreatingSessionLink)
         .sheet(isPresented: $isLocationPopupPresented) {
-            PlacePicker(tracker: tracker, address: $location)
+            PlacePicker(address: $location)
         }
         .padding()
     }
 
     var mapGoogle: some View {
-        GoogleMapView(tracker: tracker, pathPoints: [])
+        GoogleMapView(pathPoints: [])
     }
 
     var dot: some View {
@@ -62,9 +61,8 @@ struct ChooseCustomLocationView: View {
     
     var confirmCreatingSessionLink: some View {
         NavigationLink(
-            destination: ConfirmCreatingSessionView(sessionCreator: sessionCreator,
-                                                    locationTracker: tracker,
-                                                    creatingSessionFlowContinues: $creatingSessionFlowContinues,
+            destination: ConfirmCreatingSessionView(creatingSessionFlowContinues: $creatingSessionFlowContinues,
+                                                    sessionCreator: sessionCreator,
                                                     sessionName: sessionName),
             isActive: $isConfirmCreatingSessionActive,
             label: {
@@ -77,7 +75,7 @@ struct ChooseCustomLocationView: View {
 #if DEBUG
 struct LocationPopUpView_Previews: PreviewProvider {
     static var previews: some View {
-        ChooseCustomLocationView(sessionCreator: PreviewSessionCreator(), tracker: DummyLocationTrakcer(), creatingSessionFlowContinues: .constant(true), sessionName: .constant("true"))
+        ChooseCustomLocationView(sessionCreator: PreviewSessionCreator(), creatingSessionFlowContinues: .constant(true), sessionName: .constant("true"))
     }
 }
 #endif

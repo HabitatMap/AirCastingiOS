@@ -77,7 +77,7 @@ private extension SessionHeaderView {
                     }
                 }
             }
-            Text("\(session.type?.description ?? SessionType.unknown("").description), \(session.deviceType?.description ?? "")")
+            Text("\(session.type?.description ?? SessionType.unknown("").description): \(session.deviceType?.description ?? "")")
                 .font(Font.moderate(size: 13, weight: .regular))
         }
         .foregroundColor(.darkBlue)

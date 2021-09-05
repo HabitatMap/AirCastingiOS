@@ -18,7 +18,6 @@ struct SelectPeripheralView: View {
     @Binding var creatingSessionFlowContinues: Bool
     
     let urlProvider: BaseURLProvider
-    let locationTracker: LocationTracker
     
     var body: some View {
         GeometryReader { geometry in
@@ -120,7 +119,7 @@ struct SelectPeripheralView: View {
         var destination: AnyView
         if let selection = selection {
             let viewModel = AirbeamConnectionViewModelDefault(airBeamConnectionController: connectionController, peripheral: selection)
-            destination = AnyView(ConnectingABView(viewModel: viewModel, baseURL: urlProvider, creatingSessionFlowContinues: $creatingSessionFlowContinues, tracker: locationTracker))
+            destination = AnyView(ConnectingABView(viewModel: viewModel, baseURL: urlProvider, creatingSessionFlowContinues: $creatingSessionFlowContinues))
         } else {
             destination = AnyView(EmptyView())
         }
@@ -135,7 +134,7 @@ struct SelectPeripheralView: View {
 #if DEBUG
 struct SelectPeripheralView_Previews: PreviewProvider {
     static var previews: some View {
-        SelectPeripheralView(creatingSessionFlowContinues: .constant(true), urlProvider: DummyURLProvider(), locationTracker: DummyLocationTrakcer())
+        SelectPeripheralView(creatingSessionFlowContinues: .constant(true), urlProvider: DummyURLProvider())
     }
 }
 #endif

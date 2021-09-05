@@ -15,19 +15,17 @@ struct DashboardView: View {
     @EnvironmentObject var selectedSection: SelectSection
     let measurementStreamStorage: MeasurementStreamStorage
     let sessionStoppableFactory: SessionStoppableFactory
-    private let locationTracker: LocationTracker
 
     private var sessions: [SessionEntity] {
         coreDataHook.sessions
     }
     
-    init(coreDataHook: CoreDataHook, measurementStreamStorage: MeasurementStreamStorage, sessionStoppableFactory: SessionStoppableFactory, locationTracker: LocationTracker) {
+    init(coreDataHook: CoreDataHook, measurementStreamStorage: MeasurementStreamStorage, sessionStoppableFactory: SessionStoppableFactory) {
         let navBarAppearance = UINavigationBar.appearance()
         navBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(Color.darkBlue)]
         _coreDataHook = StateObject(wrappedValue: coreDataHook)
         self.measurementStreamStorage = measurementStreamStorage
         self.sessionStoppableFactory = sessionStoppableFactory
-        self.locationTracker = locationTracker
     }
 
     var body: some View {
@@ -41,7 +39,11 @@ struct DashboardView: View {
             AirSectionPickerView(selection: self.$selectedSection.selectedSection)
 
             if sessions.isEmpty {
-                EmptyDashboardView()
+                if selectedSection.selectedSection == .mobileActive || selectedSection.selectedSection == .mobileDormant {
+                    EmptyMobileDashboardViewMobile()
+                } else {
+                    EmptyFixedDashboardView()
+                }
             } else {
                 ZStack(alignment: .bottomTrailing) {
                     Image("dashboard-background-thing")
@@ -51,7 +53,11 @@ struct DashboardView: View {
                             ForEach(sessions, id: \.uuid) { session in
                                 let followingSetter = MeasurementStreamStorageFollowingSettable(session: session, measurementStreamStorage: measurementStreamStorage)
                                 let viewModel = SessionCartViewModel(followingSetter: followingSetter)
-                                SessionCartView(session: session, sessionCartViewModel: viewModel, thresholds: thresholds, sessionStoppableFactory: sessionStoppableFactory, locationTracker: locationTracker)
+                                SessionCartView(session: session,
+                                                sessionCartViewModel: viewModel,
+                                                thresholds: thresholds,
+                                                sessionStoppableFactory: sessionStoppableFactory,
+                                                measurementStreamStorage: measurementStreamStorage)
                             }                        }
                     }
                 }.padding()
@@ -83,7 +89,7 @@ struct PreventCollapseView: View {
 #if DEBUG
 struct Dashboard_Previews: PreviewProvider {
     static var previews: some View {
-        DashboardView(coreDataHook: CoreDataHook(context: PersistenceController(inMemory: true).viewContext), measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionStoppableFactory: SessionStoppableFactoryDummy(), locationTracker: DummyLocationTrakcer())
+        DashboardView(coreDataHook: CoreDataHook(context: PersistenceController(inMemory: true).viewContext), measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionStoppableFactory: SessionStoppableFactoryDummy())
     }
 }
 #endif

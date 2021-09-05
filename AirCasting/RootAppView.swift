@@ -37,8 +37,7 @@ struct RootAppView: View {
                             sessionSynchronizer: sessionSynchronizer,
                             sessionStoppableFactory: sessionStoppableFactory,
                             downloadService: downloadService,
-                            measurementStreamStorage: measurementStreamStorage,
-                            locationTracker: locationTracker)
+                            measurementStreamStorage: measurementStreamStorage)
             } else if !userAuthenticationSession.isLoggedIn && lifeTimeEventsProvider.hasEverPassedOnBoarding {
                 NavigationView {
                     CreateAccountView(completion: { self.lifeTimeEventsProvider.hasEverLoggedIn = true }, userSession: userAuthenticationSession, baseURL: urlProvider).environmentObject(lifeTimeEventsProvider)
@@ -55,6 +54,7 @@ struct RootAppView: View {
         .environmentObject(networkChecker)
         .environmentObject(lifeTimeEventsProvider)
         .environmentObject(userSettings)
+        .environmentObject(locationTracker)
         .environmentObject(userRedirectionSettings)
         .environmentObject(urlProvider)
         .environment(\.managedObjectContext, persistenceController.viewContext)
@@ -80,7 +80,6 @@ struct MainAppView: View {
     let sessionStoppableFactory: SessionStoppableFactoryDefault
     let downloadService: DownloadMeasurementsService
     let measurementStreamStorage: MeasurementStreamStorage
-    let locationTracker: LocationTracker
     
     @EnvironmentObject private var persistenceController: PersistenceController
     @EnvironmentObject private var urlProvider: UserDefaultsBaseURLProvider
@@ -93,8 +92,7 @@ struct MainAppView: View {
                        measurementStreamStorage: measurementStreamStorage,
                        sessionStoppableFactory: sessionStoppableFactory,
                        sessionSynchronizer: sessionSynchronizer,
-                       sessionContext: CreateSessionContext(),
-                       locationTracker: locationTracker)
+                       sessionContext: CreateSessionContext())
             .environmentObject(airBeamConnectionController)
     }
 }

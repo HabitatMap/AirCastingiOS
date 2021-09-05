@@ -8,12 +8,12 @@
 import Foundation
 import CoreLocation
 
-class LocationTracker: NSObject, CLLocationManagerDelegate {
+class LocationTracker: NSObject, ObservableObject, CLLocationManagerDelegate {
     
     let locationManager: CLLocationManager
     @Published var locationGranted: LocationState
     @Published var allLocations: [CLLocation]
-    @Published var googleLocation: [PathPoint] // Why is this PathPoint and not CLLocation?
+    @Published var googleLocation: [PathPoint]
     
     init(locationManager: CLLocationManager) {
         self.locationManager = locationManager
@@ -21,14 +21,15 @@ class LocationTracker: NSObject, CLLocationManagerDelegate {
         switch locationManager.authorizationStatus {
             case .authorizedAlways, .authorizedWhenInUse:
                 self.locationGranted = .granted
-                googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: (locationManager.location?.coordinate.latitude)!,
-                                                                             longitude: (locationManager.location?.coordinate.longitude)!),
-                                            measurementTime: Date(),
-                                            measurement: 20)]
+                if locationManager.location?.coordinate.latitude != nil && locationManager.location?.coordinate.longitude != nil {
+                    googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: (locationManager.location?.coordinate.latitude)!, longitude: (locationManager.location?.coordinate.longitude)!), measurementTime: Date(), measurement: 20)]
+                } else {
+                    googleLocation = [PathPoint.fakePathPoint]
+                }
             case .denied, .notDetermined, .restricted:
                 self.locationGranted = .denied
                 googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: 37.35, longitude: -122.05), measurementTime: Date(), measurement: 20.0)]
-        // measurement: 20.0 was designed just to be 'something'. Is should be handle somehow, but for now we are leaving this like it is.
+                #warning("Do something with hard coded measurement")
             @unknown default:
                 fatalError()
         }

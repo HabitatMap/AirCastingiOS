@@ -12,7 +12,7 @@ import GoogleMaps
 import GooglePlaces
 
 struct GoogleMapView: UIViewRepresentable {
-    let tracker: LocationTracker
+    @EnvironmentObject var tracker: LocationTracker
     typealias UIViewType = GMSMapView
     let pathPoints: [PathPoint]
     private(set) var threshold: SensorThreshold?
@@ -20,8 +20,7 @@ struct GoogleMapView: UIViewRepresentable {
     private let delegateRelay = GoogleMapViewDelegate()
     private var onPositionChange: (([PathPoint]) -> ())? = nil
     
-    init(tracker: LocationTracker, pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false) {
-        self.tracker = tracker
+    init(pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false) {
         self.pathPoints = pathPoints
         self.threshold = threshold
         self.isMyLocationEnabled = isMyLocationEnabled
@@ -146,9 +145,8 @@ struct GoogleMapView: UIViewRepresentable {
             print("Changing Coordinates to: \(mapView.projection.coordinate(for: mapView.center))")
             let lat = mapView.projection.coordinate(for: mapView.center).latitude
             let len = mapView.projection.coordinate(for: mapView.center).longitude
-            parent.tracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: lat, longitude: len),
-                                                       measurementTime: Date(),
-                                                       measurement: 20.0)]
+            parent.tracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: lat, longitude: len), measurementTime: Date(), measurement: 20.0)]
+            #warning("Do something with hard coded measurement")
         }
 
         var didSetInitLocation: Bool = false   
@@ -173,7 +171,7 @@ struct GoogleMapView: UIViewRepresentable {
 #if DEBUG
 struct GoogleMapView_Previews: PreviewProvider {
     static var previews: some View {
-        GoogleMapView(tracker: DummyLocationTrakcer(), pathPoints: [PathPoint(location: CLLocationCoordinate2D(latitude: 40.73,
+        GoogleMapView(pathPoints: [PathPoint(location: CLLocationCoordinate2D(latitude: 40.73,
                                                                               longitude: -73.93),
                                              measurementTime: .distantPast,
                                              measurement: 30),

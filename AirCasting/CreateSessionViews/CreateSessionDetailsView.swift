@@ -14,7 +14,7 @@ struct CreateSessionDetailsView: View {
     @State var sessionName: String = ""
     @State var sessionTags: String = ""
     @State var isIndoor = true
-    @State var isWiFi = false
+    @State var isWiFi = true
     @State var adress = ""
     @State var isWifiPopupPresented = false
     @State var isLocationPopupPresented = false
@@ -25,7 +25,7 @@ struct CreateSessionDetailsView: View {
     @State private var showingAlert = false
     @EnvironmentObject private var sessionContext: CreateSessionContext
     // Location tracker is needed to get wifi SSID (more info CNCopyCurrentNetworkInfo documentation.
-    let locationTracker: LocationTracker
+    @EnvironmentObject private var locationTracker: LocationTracker
 
     @Binding var creatingSessionFlowContinues: Bool
 
@@ -50,9 +50,12 @@ struct CreateSessionDetailsView: View {
                 }
                 .padding()
                 .frame(maxWidth: .infinity, minHeight: geometry.size.height, alignment: .top)
-            }.background(Group {
+            }
+            .background(Group {
                 NavigationLink(
-                    destination: ChooseCustomLocationView(sessionCreator: sessionCreator, tracker: locationTracker, creatingSessionFlowContinues: $creatingSessionFlowContinues, sessionName: $sessionName),
+                    destination: ChooseCustomLocationView(sessionCreator: sessionCreator,
+                                                          creatingSessionFlowContinues: $creatingSessionFlowContinues,
+                                                          sessionName: $sessionName),
                     isActive: $isLocationSessionDetailsActive,
                     label: {
                         EmptyView()
@@ -60,9 +63,8 @@ struct CreateSessionDetailsView: View {
                 )
                 NavigationLink("", destination: EmptyView())
                 NavigationLink(
-                    destination: ConfirmCreatingSessionView(sessionCreator: sessionCreator,
-                                                            locationTracker: locationTracker,
-                                                            creatingSessionFlowContinues: $creatingSessionFlowContinues,
+                    destination: ConfirmCreatingSessionView(creatingSessionFlowContinues: $creatingSessionFlowContinues,
+                                                            sessionCreator: sessionCreator,
                                                             sessionName: sessionName),
                     isActive: $isConfirmCreatingSessionActive,
                     label: {
@@ -86,34 +88,39 @@ private extension CreateSessionDetailsView {
         Button(action: {
             sessionContext.sessionName = sessionName
             sessionContext.sessionTags = sessionTags
+            
             if sessionContext.sessionType == SessionType.fixed {
                 sessionContext.isIndoor = isIndoor
+                if isWiFi, !(wifiSSID.isEmpty && wifiPassword.isEmpty) {
+                    sessionContext.wifiSSID = wifiSSID
+                    sessionContext.wifiPassword = wifiPassword
+                } else if isWiFi, wifiSSID.isEmpty, wifiPassword.isEmpty {
+                    isConfirmCreatingSessionActive = false
+                    showingAlert = true
+                    return
+                }
+                isConfirmCreatingSessionActive = isIndoor
+                isLocationSessionDetailsActive = !isIndoor
             } else {
+                
                 sessionContext.isIndoor = false
+                isConfirmCreatingSessionActive = true
             }
             getAndSaveStartingLocation()
-            isConfirmCreatingSessionActive = isIndoor
-            isLocationSessionDetailsActive = !isIndoor
-            if !wifiSSID.isEmpty, !wifiPassword.isEmpty {
-                sessionContext.wifiSSID = wifiSSID
-                sessionContext.wifiPassword = wifiPassword
-            } else if isWiFi, wifiSSID.isEmpty, wifiPassword.isEmpty {
-                isConfirmCreatingSessionActive = false
-                showingAlert = true
-            }
+
         }, label: {
             Text(Strings.CreateSessionDetailsView.continueButton)
                 .frame(maxWidth: .infinity)
         })
-            .buttonStyle(BlueButtonStyle())
-            .alert(isPresented: $showingAlert, content: {
-                Alert(title: Text(Strings.CreateSessionDetailsView.wifiAlertTitle),
-                      message: Text(Strings.CreateSessionDetailsView.wifiAlertMessage),
-                      primaryButton: .default(Text(Strings.CreateSessionDetailsView.primaryWifiButton)) {
-                          isWifiPopupPresented = true
-                      },
-                      secondaryButton: .default(Text(Strings.CreateSessionDetailsView.cancelButton)))
-            })
+        .buttonStyle(BlueButtonStyle())
+        .alert(isPresented: $showingAlert, content: {
+            Alert(title: Text(Strings.CreateSessionDetailsView.wifiAlertTitle),
+                  message: Text(Strings.CreateSessionDetailsView.wifiAlertMessage),
+                  primaryButton: .default(Text(Strings.CreateSessionDetailsView.primaryWifiButton)) {
+                    isWifiPopupPresented = true
+                  },
+                  secondaryButton: .default(Text(Strings.CreateSessionDetailsView.cancelButton)))
+        })
     }
 
     var titleLabel: some View {
@@ -143,8 +150,8 @@ private extension CreateSessionDetailsView {
                 .foregroundColor(.aircastingDarkGray)
             Picker(selection: $isWiFi,
                    label: Text("")) {
-                Text(Strings.CreateSessionDetailsView.cellularText).tag(false)
                 Text(Strings.CreateSessionDetailsView.wifiText).tag(true)
+                Text(Strings.CreateSessionDetailsView.cellularText).tag(false)
             }
             .pickerStyle(SegmentedPickerStyle())
             .onChange(of: isWiFi) { _ in
@@ -161,21 +168,19 @@ private extension CreateSessionDetailsView {
         if sessionContext.sessionType == .fixed {
             if isIndoor {
                 sessionContext.startingLocation = fakeLocation
-                locationTracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: 200.0, longitude: 200.0), measurementTime: Date(), measurement: 20.0)]
-                // measurement: 20.0 was designed just to be 'something'. Is should be handle somehow, but for now we are leaving this like it is.
+                locationTracker.googleLocation = [PathPoint.fakePathPoint]
             } else {
                 guard let lat = (locationTracker.locationManager.location?.coordinate.latitude),
                       let lon = (locationTracker.locationManager.location?.coordinate.longitude) else { return }
-                locationTracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: lat, longitude: lon), measurementTime: Date(), measurement: 20.0)]
+                locationTracker.googleLocation = [PathPoint.fakePathPoint]
                 #warning("Do something with exposed googleLocation")
-                // measurement: 20.0 was designed just to be 'something'. Is should be handle somehow, but for now we are leaving this like it is.
                 sessionContext.obtainCurrentLocation(lat: lat, log: lon)
             }
         } else {
             guard let lat = (locationTracker.locationManager.location?.coordinate.latitude),
                   let lon = (locationTracker.locationManager.location?.coordinate.longitude) else { return }
             locationTracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: lat, longitude: lon), measurementTime: Date(), measurement: 20.0)]
-            // measurement: 20.0 was designed just to be 'something'. Is should be handle somehow, but for now we are leaving this like it is.
+            #warning("Do something with hard coded measurement")
             sessionContext.obtainCurrentLocation(lat: lat, log: lon)
         }
     }
@@ -189,10 +194,10 @@ struct AddNameAndTagsView_Previews: PreviewProvider {
     }(CreateSessionContext())
 
     static var previews: some View {
-        CreateSessionDetailsView(sessionCreator: PreviewSessionCreator(), locationTracker: DummyLocationTrakcer(), creatingSessionFlowContinues: .constant(true))
+        CreateSessionDetailsView(sessionCreator: PreviewSessionCreator(), creatingSessionFlowContinues: .constant(true))
             .environmentObject(CreateSessionContext())
 
-        CreateSessionDetailsView(sessionCreator: PreviewSessionCreator(), locationTracker: DummyLocationTrakcer(), creatingSessionFlowContinues: .constant(true))
+        CreateSessionDetailsView(sessionCreator: PreviewSessionCreator(), creatingSessionFlowContinues: .constant(true))
             .environmentObject(fixedSessionContext)
     }
 }

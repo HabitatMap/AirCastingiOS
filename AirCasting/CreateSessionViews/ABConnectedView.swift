@@ -9,7 +9,6 @@ import AirCastingStyling
 import SwiftUI
 
 struct ABConnectedView: View {
-    let locationTracker: LocationTracker
     @EnvironmentObject var persistenceController: PersistenceController
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
@@ -62,7 +61,6 @@ private extension ABConnectedView {
         return NavigationLink(
             destination: CreateSessionDetailsView(
                 sessionCreator: sessionCreator,
-                locationTracker: locationTracker,
                 creatingSessionFlowContinues: $creatingSessionFlowContinues),
             label: {
                 Text(Strings.ABConnectedView.continueButton)
@@ -74,7 +72,7 @@ private extension ABConnectedView {
 #if DEBUG
 struct AirbeamConnectedView_Previews: PreviewProvider {
     static var previews: some View {
-        ABConnectedView(locationTracker: DummyLocationTrakcer(), creatingSessionFlowContinues: .constant(true), baseURL: DummyURLProvider())
+        ABConnectedView(creatingSessionFlowContinues: .constant(true), baseURL: DummyURLProvider())
             .environmentObject(PersistenceController())
             .environmentObject(UserAuthenticationSession())
             .environmentObject(BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: PreviewMeasurementStreamStorage())))

@@ -104,13 +104,14 @@ struct Strings {
     }
     
     enum SessionCart {
-        static let measurementsTitle: String = "Most recent measurement:"
+        static let measurementsTitle: String = "Last second measurement:"
         static let dormantMeasurementsTitle: String = "Avg value:"
         static let heatmapSettingsTitle: String = "Heatmap settings"
         static let heatmapSettingsdescription: String = "Values beyond Min and Max will not be displayed."
         static let saveChangesButton: String = "Save changes"
         static let resetChangesButton: String = "Reset to default"
         static let parametersText: String = "Parameters:"
+        static let lastMinuteMeasurement: String = "Last minute measurement"
     }
     
     enum Thresholds {
@@ -292,12 +293,18 @@ struct Strings {
  """
     }
 
-    enum EmptyOnboarding {
+    enum EmptyDashboardMobile {
         static let title: String = "Start recording a \nmobile session"
         static let description: String = "If you plan on moving around \nwhile recording measurements."
         static let newSession: String = "Record mobile session"
         static let airBeamDescriptionText: String = "Did you know?"
         static let airBeamDescriptionDescription: String = "AirBeam3 is weather resistant. To \nkeep tabs on your outdoor air quality \n24/7, hang one outside your home and \nrecord a fixed session."
+    }
+    
+    enum EmptyDashboardFixed {
+        static let title: String = "Ready to get\n started?"
+        static let description: String = "Record a new session\n to monitor your health &\n environment"
+        static let newSession: String = "Record new session"
     }
     
     enum PowerABView {

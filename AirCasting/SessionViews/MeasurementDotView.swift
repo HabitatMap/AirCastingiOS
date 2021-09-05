@@ -6,7 +6,7 @@ import SwiftUI
 struct MeasurementDotView: View {
     
     let value: Double
-    let thresholds: SensorThreshold?
+    @ObservedObject var thresholds: SensorThreshold
     
     var body: some View {
         color
@@ -15,9 +15,6 @@ struct MeasurementDotView: View {
     }
     
     var color: Color {
-        guard let thresholds = thresholds else {
-            return Color.aircastingGray
-        }
         switch Int32(value) {
         case thresholds.thresholdVeryLow ..< thresholds.thresholdLow:
             return Color.aircastingGreen

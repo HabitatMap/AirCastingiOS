@@ -116,9 +116,8 @@
 		AC93B8E725BEFE4F003D0A0D /* AirMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC93B8E625BEFE4F003D0A0D /* AirMapView.swift */; };
 		AC93B8FE25C02E0B003D0A0D /* GoogleMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC93B8FD25C02E0B003D0A0D /* GoogleMapView.swift */; };
 		AC960C7825DD39F500EC95DD /* ABConnectedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC960C7725DD39F500EC95DD /* ABConnectedView.swift */; };
-		AC9C6999268B27760050924F /* StreamsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9C6998268B27760050924F /* StreamsView.swift */; };
 		AC9F526C2652A360003CF61F /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9F52692652A360003CF61F /* DashboardView.swift */; };
-		AC9F526D2652A360003CF61F /* EmptyDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9F526A2652A360003CF61F /* EmptyDashboardView.swift */; };
+		AC9F526D2652A360003CF61F /* EmptyMobileDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9F526A2652A360003CF61F /* EmptyMobileDashboardView.swift */; };
 		AC9F526E2652A360003CF61F /* AirSectionPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9F526B2652A360003CF61F /* AirSectionPickerView.swift */; };
 		ACC536E026395C0900327267 /* MeasurementDotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACC536DF26395C0900327267 /* MeasurementDotView.swift */; };
 		ACC883882645784400C5DB70 /* GraphErorrHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACC883872645784400C5DB70 /* GraphErorrHandling.swift */; };
@@ -129,6 +128,8 @@
 		ACD01F922600A3C800B8F65F /* RootAppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACD01F912600A3C800B8F65F /* RootAppView.swift */; };
 		ACD01F952600A54400B8F65F /* UserDefaults+Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACD01F942600A54400B8F65F /* UserDefaults+Preferences.swift */; };
 		ACD32A4F2600A8DD00818946 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACD32A4E2600A8DD00818946 /* SettingsView.swift */; };
+		ACDF803826D62EB500584F55 /* EmptyDashboardButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACDF803726D62EB500584F55 /* EmptyDashboardButtonView.swift */; };
+		ACDF803A26DCD75500584F55 /* SingleMeasurementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACDF803926DCD75500584F55 /* SingleMeasurementView.swift */; };
 		ACDF82FC265BBDE200A4D04A /* UIFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACDF82FB265BBDE200A4D04A /* UIFont.swift */; };
 		ACF600BE2678D7F4005DD97C /* SwiftSimplify in Frameworks */ = {isa = PBXBuildFile; productRef = ACF600BD2678D7F4005DD97C /* SwiftSimplify */; };
 		ACF77DFB25A8888700BB85B7 /* SessionCartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACF77DFA25A8888700BB85B7 /* SessionCartView.swift */; };
@@ -250,6 +251,7 @@
 		DDD24D9526A8569400D4A327 /* EmailForgotPasswordController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDD24D9226A8569300D4A327 /* EmailForgotPasswordController.swift */; };
 		DDD24D9626A8569400D4A327 /* ResetPasswordService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDD24D9326A8569300D4A327 /* ResetPasswordService.swift */; };
 		DDD24D9726A8569400D4A327 /* ForgotPasswordController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDD24D9426A8569400D4A327 /* ForgotPasswordController.swift */; };
+		DDDBD48826D3BEC000EAA0A1 /* EmptyFixedDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDBD48726D3BEC000EAA0A1 /* EmptyFixedDashboardView.swift */; };
 		DDEE3A44269736270098CCA9 /* NetworkChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDEE3A43269736270098CCA9 /* NetworkChecker.swift */; };
 		DDEE3A48269747250098CCA9 /* EditViewModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDEE3A47269747250098CCA9 /* EditViewModal.swift */; };
 		DDEE3A4B26979D4C0098CCA9 /* SharePage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDEE3A4A26979D4C0098CCA9 /* SharePage.swift */; };
@@ -391,9 +393,8 @@
 		AC93B8E625BEFE4F003D0A0D /* AirMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirMapView.swift; sourceTree = "<group>"; };
 		AC93B8FD25C02E0B003D0A0D /* GoogleMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleMapView.swift; sourceTree = "<group>"; };
 		AC960C7725DD39F500EC95DD /* ABConnectedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ABConnectedView.swift; sourceTree = "<group>"; };
-		AC9C6998268B27760050924F /* StreamsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamsView.swift; sourceTree = "<group>"; };
 		AC9F52692652A360003CF61F /* DashboardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
-		AC9F526A2652A360003CF61F /* EmptyDashboardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmptyDashboardView.swift; sourceTree = "<group>"; };
+		AC9F526A2652A360003CF61F /* EmptyMobileDashboardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmptyMobileDashboardView.swift; sourceTree = "<group>"; };
 		AC9F526B2652A360003CF61F /* AirSectionPickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AirSectionPickerView.swift; sourceTree = "<group>"; };
 		ACC536DF26395C0900327267 /* MeasurementDotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementDotView.swift; sourceTree = "<group>"; };
 		ACC883872645784400C5DB70 /* GraphErorrHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphErorrHandling.swift; sourceTree = "<group>"; };
@@ -405,6 +406,8 @@
 		ACD01F912600A3C800B8F65F /* RootAppView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootAppView.swift; sourceTree = "<group>"; };
 		ACD01F942600A54400B8F65F /* UserDefaults+Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Preferences.swift"; sourceTree = "<group>"; };
 		ACD32A4E2600A8DD00818946 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		ACDF803726D62EB500584F55 /* EmptyDashboardButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyDashboardButtonView.swift; sourceTree = "<group>"; };
+		ACDF803926DCD75500584F55 /* SingleMeasurementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleMeasurementView.swift; sourceTree = "<group>"; };
 		ACDF82FB265BBDE200A4D04A /* UIFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIFont.swift; sourceTree = "<group>"; };
 		ACF77DFA25A8888700BB85B7 /* SessionCartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionCartView.swift; sourceTree = "<group>"; };
 		ACF7C05E260CC9FF007C24AE /* DownloadMeasurmentsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadMeasurmentsService.swift; sourceTree = "<group>"; };
@@ -526,6 +529,7 @@
 		DDD24D9226A8569300D4A327 /* EmailForgotPasswordController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmailForgotPasswordController.swift; sourceTree = "<group>"; };
 		DDD24D9326A8569300D4A327 /* ResetPasswordService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResetPasswordService.swift; sourceTree = "<group>"; };
 		DDD24D9426A8569400D4A327 /* ForgotPasswordController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForgotPasswordController.swift; sourceTree = "<group>"; };
+		DDDBD48726D3BEC000EAA0A1 /* EmptyFixedDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyFixedDashboardView.swift; sourceTree = "<group>"; };
 		DDEE3A43269736270098CCA9 /* NetworkChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkChecker.swift; sourceTree = "<group>"; };
 		DDEE3A47269747250098CCA9 /* EditViewModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditViewModal.swift; sourceTree = "<group>"; };
 		DDEE3A4A26979D4C0098CCA9 /* SharePage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharePage.swift; sourceTree = "<group>"; };
@@ -760,8 +764,8 @@
 				DDCE5D3726A1FE2D0033C211 /* DeleteSessionViewModel.swift */,
 				DDCE5D3926A213620033C211 /* DefaultDeleteSessionViewModel.swift */,
 				AC194B0C2684BAB40048E2C8 /* SessionLoadingView.swift */,
-				AC9C6998268B27760050924F /* StreamsView.swift */,
 				AC08A661266E2AEC0081697C /* ABMeasurementsView.swift */,
+				ACDF803926DCD75500584F55 /* SingleMeasurementView.swift */,
 				ACC536DF26395C0900327267 /* MeasurementDotView.swift */,
 				AC4EC6C325B6FE0D00C1E312 /* HeatmapSettingsView.swift */,
 				AC6D56A425AF211200D221BA /* MultiSliderView.swift */,
@@ -943,8 +947,10 @@
 			isa = PBXGroup;
 			children = (
 				AC9F52692652A360003CF61F /* DashboardView.swift */,
-				AC9F526A2652A360003CF61F /* EmptyDashboardView.swift */,
+				AC9F526A2652A360003CF61F /* EmptyMobileDashboardView.swift */,
+				DDDBD48726D3BEC000EAA0A1 /* EmptyFixedDashboardView.swift */,
 				AC9F526B2652A360003CF61F /* AirSectionPickerView.swift */,
+				ACDF803726D62EB500584F55 /* EmptyDashboardButtonView.swift */,
 			);
 			path = Dashboard;
 			sourceTree = "<group>";
@@ -1663,6 +1669,7 @@
 				B3F1447C26AE437E006A4612 /* OnErrorPublisher.swift in Sources */,
 				B3FD77B7267C94AF00E97CC2 /* DatabaseMeasurement.swift in Sources */,
 				AC524A962615D8620061AD45 /* MeasurementStreamEntity.swift in Sources */,
+				ACDF803A26DCD75500584F55 /* SingleMeasurementView.swift in Sources */,
 				B32D08A2267A4949006C97ED /* LogErrorPublisher.swift in Sources */,
 				AC049F7F2604B7AF00398197 /* AuthErorrHandling.swift in Sources */,
 				DD430B022670F3B300F1BF2E /* NearAirDescription.swift in Sources */,
@@ -1706,6 +1713,7 @@
 				AC5832DA25B196DD008C5DD5 /* Graph.swift in Sources */,
 				AC4A6A6A267CB3890001F639 /* AirCastingGraph.swift in Sources */,
 				AC93B8E725BEFE4F003D0A0D /* AirMapView.swift in Sources */,
+				ACDF803826D62EB500584F55 /* EmptyDashboardButtonView.swift in Sources */,
 				4F945EF4264B2813008A5B22 /* ActivityIndicator.swift in Sources */,
 				3362B4ED25E69987008D61BA /* CreateSessionDetailsView.swift in Sources */,
 				AC08A662266E2AEC0081697C /* ABMeasurementsView.swift in Sources */,
@@ -1796,7 +1804,8 @@
 				B3FD77BE267C94AF00E97CC2 /* SessionSynchronizationStore.swift in Sources */,
 				ACD01F952600A54400B8F65F /* UserDefaults+Preferences.swift in Sources */,
 				4FB39E3A2621BE7F00E5E564 /* APIClient.swift in Sources */,
-				AC9F526D2652A360003CF61F /* EmptyDashboardView.swift in Sources */,
+				AC9F526D2652A360003CF61F /* EmptyMobileDashboardView.swift in Sources */,
+				DDDBD48826D3BEC000EAA0A1 /* EmptyFixedDashboardView.swift in Sources */,
 				B3FD77C1267C94AF00E97CC2 /* SessionUpstream.swift in Sources */,
 				AC4EC6BC25B5ABB700C1E312 /* StatisticsContainerView.swift in Sources */,
 				B3FD77B8267C94AF00E97CC2 /* Database.swift in Sources */,
@@ -1822,7 +1831,6 @@
 				AC8CFF4125E5095600FB2918 /* Textfield.swift in Sources */,
 				B3FD77C3267C94AF00E97CC2 /* SessionDownloadService.swift in Sources */,
 				AC7EB37625A6FB3A00A7F2AF /* AirCastingApp.swift in Sources */,
-				AC9C6999268B27760050924F /* StreamsView.swift in Sources */,
 				AC4A6A6C267CB3D40001F639 /* GraphRenderers.swift in Sources */,
 				ACD01F922600A3C800B8F65F /* RootAppView.swift in Sources */,
 				DD28047B26B3D7730060F55E /* BluetoothConnector.swift in Sources */,
@@ -2029,7 +2037,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 22;
+				CURRENT_PROJECT_VERSION = 25;
 				DEVELOPMENT_ASSET_PATHS = "\"AirCasting/Preview Content\"";
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
@@ -2056,7 +2064,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 22;
+				CURRENT_PROJECT_VERSION = 25;
 				DEVELOPMENT_ASSET_PATHS = "\"AirCasting/Preview Content\"";
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;

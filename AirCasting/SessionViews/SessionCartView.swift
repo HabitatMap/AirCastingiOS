@@ -8,7 +8,6 @@
 import AirCastingStyling
 import Charts
 import CoreData
-import CoreLocation
 import SwiftUI
 
 struct SessionCartView: View {
@@ -20,7 +19,8 @@ struct SessionCartView: View {
     let sessionCartViewModel: SessionCartViewModel
     let thresholds: [SensorThreshold]
     let sessionStoppableFactory: SessionStoppableFactory
-    private let locationTracker: LocationTracker
+    let measurementStreamStorage: MeasurementStreamStorage
+    
     @StateObject private var mapStatsDataSource: MapStatsDataSource
     @StateObject private var mapStatsViewModel: StatisticsContainerViewModel
     @StateObject private var graphStatsDataSource: GraphStatsDataSource
@@ -30,12 +30,12 @@ struct SessionCartView: View {
          sessionCartViewModel: SessionCartViewModel,
          thresholds: [SensorThreshold],
          sessionStoppableFactory: SessionStoppableFactory,
-         locationTracker: LocationTracker) {
+         measurementStreamStorage: MeasurementStreamStorage) {
         self.session = session
         self.sessionCartViewModel = sessionCartViewModel
         self.thresholds = thresholds
         self.sessionStoppableFactory = sessionStoppableFactory
-        self.locationTracker = locationTracker
+        self.measurementStreamStorage = measurementStreamStorage
         let mapDataSource = MapStatsDataSource()
         self._mapStatsDataSource = .init(wrappedValue: mapDataSource)
         self._mapStatsViewModel = .init(wrappedValue: SessionCartView.createStatsContainerViewModel(dataSource: mapDataSource))
@@ -43,7 +43,7 @@ struct SessionCartView: View {
         self._graphStatsDataSource = .init(wrappedValue: graphDataSource)
         self._graphStatsViewModel = .init(wrappedValue: SessionCartView.createStatsContainerViewModel(dataSource: graphDataSource))
     }
-    
+
     var shouldShowValues: MeasurementPresentationStyle {
         let shouldShow = isCollapsed && (session.isFixed || session.isDormant)
         return shouldShow ? .hideValues : .showValues
@@ -60,10 +60,12 @@ struct SessionCartView: View {
         VStack(alignment: .leading, spacing: 13) {
             header
             if hasStreams {
-                StreamsView(selectedStream: $selectedStream,
-                            session: session,
-                            thresholds: thresholds,
-                            measurementPresentationStyle: shouldShowValues)
+                ABMeasurementsView(session: session,
+                                   isCollapsed: $isCollapsed,
+                                   selectedStream: $selectedStream,
+                                   thresholds: thresholds,
+                                   measurementPresentationStyle: shouldShowValues,
+                                   measurementStreamStorage: measurementStreamStorage)
 
                 VStack(alignment: .trailing, spacing: 40) {
                     if showChart {
@@ -88,6 +90,9 @@ struct SessionCartView: View {
         })
         .onAppear {
             selectDefaultStreamIfNeeded(streams: session.sortedStreams ?? [])
+        }
+        .onChange(of: session.sortedStreams) { newValue in
+            selectDefaultStreamIfNeeded(streams: newValue ?? [])
         }
         .font(Font.moderate(size: 13, weight: .regular))
         .foregroundColor(.aircastingGray)
@@ -164,7 +169,7 @@ private extension SessionCartView {
                                  session: session,
                                  selectedStream: $selectedStream,
                                  sessionStoppableFactory: sessionStoppableFactory,
-                                 locationTracker: locationTracker)
+                                 measurementStreamStorage: measurementStreamStorage)
         
         return NavigationLink(destination: mapView,
                               isActive: $isMapButtonActive,
@@ -179,7 +184,8 @@ private extension SessionCartView {
                                   selectedStream: $selectedStream,
                                   statsContainerViewModel: graphStatsViewModel,
                                   graphStatsDataSource: graphStatsDataSource,
-                                  sessionStoppableFactory: sessionStoppableFactory)
+                                  sessionStoppableFactory: sessionStoppableFactory,
+                                  measurementStreamStorage: measurementStreamStorage)
         return NavigationLink(destination: graphView,
                               isActive: $isGraphButtonActive,
                               label: {
@@ -224,16 +230,16 @@ private extension SessionCartView {
     }
 }
 
- #if DEBUG
- struct SessionCell_Previews: PreviewProvider {
-    static var previews: some View {
-        EmptyView()
-        SessionCartView(session: SessionEntity.mock,
-                                sessionCartViewModel: SessionCartViewModel(followingSetter: MockSessionFollowingSettable()),
-                                thresholds: [.mock, .mock], sessionStoppableFactory: SessionStoppableFactoryDummy(), locationTracker: DummyLocationTrakcer())
-            .padding()
-            .previewLayout(.sizeThatFits)
-            .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
-    }
- }
- #endif
+// #if DEBUG
+// struct SessionCell_Previews: PreviewProvider {
+//    static var previews: some View {
+//        EmptyView()
+//        SessionCartView(session: SessionEntity.mock,
+//                                sessionCartViewModel: SessionCartViewModel(followingSetter: MockSessionFollowingSettable()),
+//                                thresholds: [.mock, .mock], sessionStoppableFactory: SessionStoppableFactoryDummy())
+//            .padding()
+//            .previewLayout(.sizeThatFits)
+//            .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
+//    }
+// }
+// #endif
