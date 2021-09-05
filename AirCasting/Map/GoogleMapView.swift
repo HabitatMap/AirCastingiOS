@@ -17,7 +17,6 @@ struct GoogleMapView: UIViewRepresentable {
     let pathPoints: [PathPoint]
     private(set) var threshold: SensorThreshold?
     var isMyLocationEnabled: Bool = false
-    private let delegateRelay = GoogleMapViewDelegate()
     private var onPositionChange: (([PathPoint]) -> ())? = nil
     
     init(pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false) {
@@ -147,6 +146,7 @@ struct GoogleMapView: UIViewRepresentable {
             let len = mapView.projection.coordinate(for: mapView.center).longitude
             parent.tracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: lat, longitude: len), measurementTime: Date(), measurement: 20.0)]
             #warning("Do something with hard coded measurement")
+            parent.positionChanged(for: mapView)
         }
 
         var didSetInitLocation: Bool = false   
@@ -155,16 +155,6 @@ struct GoogleMapView: UIViewRepresentable {
     
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
-    }
-    
-    @objc
-    /// A relay for google map delegate which requires an `NSObjectProtocol` conformance.
-    private class GoogleMapViewDelegate: NSObject, GMSMapViewDelegate {
-        var onPosistionChange: ((GMSMapView) -> ())?
-        
-        func mapView(_ mapView: GMSMapView, didChange position: GMSCameraPosition) {
-            onPosistionChange?(mapView)
-        }
     }
 }
 
