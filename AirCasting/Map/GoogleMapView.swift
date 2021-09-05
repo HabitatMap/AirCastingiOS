@@ -53,13 +53,6 @@ struct GoogleMapView: UIViewRepresentable {
         return newSelf
     }
     
-    private func positionChanged(for mapView: GMSMapView) {
-        let visibleRegion = mapView.projection.visibleRegion()
-        let bounds = GMSCoordinateBounds(region: visibleRegion)
-        let visiblePathPoints = pathPoints.filter { bounds.contains($0.location) }
-        onPositionChange?(visiblePathPoints)
-    }
-    
     func updateUIView(_ uiView: GMSMapView, context: Context) {
         // Drawing the path
         let path = GMSMutablePath()
@@ -146,7 +139,14 @@ struct GoogleMapView: UIViewRepresentable {
             let len = mapView.projection.coordinate(for: mapView.center).longitude
             parent.tracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: lat, longitude: len), measurementTime: Date(), measurement: 20.0)]
             #warning("Do something with hard coded measurement")
-            parent.positionChanged(for: mapView)
+            positionChanged(for: mapView)
+        }
+        
+        private func positionChanged(for mapView: GMSMapView) {
+            let visibleRegion = mapView.projection.visibleRegion()
+            let bounds = GMSCoordinateBounds(region: visibleRegion)
+            let visiblePathPoints = parent.pathPoints.filter { bounds.contains($0.location) }
+            parent.onPositionChange?(visiblePathPoints)
         }
 
         var didSetInitLocation: Bool = false   
