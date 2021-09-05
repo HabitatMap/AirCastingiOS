@@ -117,7 +117,6 @@ struct ConfirmCreatingSessionView: View {
                         }
                         isActive = false
                     }
-                    isActive = false
                 }
             }, label: {
                 Text(Strings.ConfirmCreatingSessionView.startRecording)
