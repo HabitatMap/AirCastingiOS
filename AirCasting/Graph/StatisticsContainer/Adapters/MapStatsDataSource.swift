@@ -3,7 +3,7 @@
 
 import Foundation
 
-class MapStatsDataSource: MeasurementsStatisticsDataSource {
+class MapStatsDataSource: MeasurementsStatisticsDataSource, ObservableObject {
     var stream: MeasurementStreamEntity? = nil {
         didSet {
             onForceReload?()

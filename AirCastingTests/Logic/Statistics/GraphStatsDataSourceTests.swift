@@ -31,8 +31,25 @@ class GraphStatsDataSourceTests: XCTestCase {
         assertContainsSameElements(dataSource.visibleMeasurements.map { $0.measurementTime }, stream.allMeasurements!.dropFirst(50).map { $0.time })
     }
     
+    func test_whenStreamIsChanged_itForcesAReload() {
+        let dataSource = createDataSource()
+        var forceReloadCalledTimes = 0
+        dataSource.onForceReload = { forceReloadCalledTimes += 1 }
+        let newStream = TestStreamGenerator.createStream(numberOfMeasurements: 5)
+        dataSource.stream = newStream
+        XCTAssertEqual(forceReloadCalledTimes, 1)
+    }
+    
+    func test_whenStreamIsChanged_itReturnsNewDataCorrectly() {
+        let dataSource = createDataSource()
+        let newStream = TestStreamGenerator.createStream(numberOfMeasurements: 5)
+        dataSource.stream = newStream
+        assertContainsSameElements(dataSource.visibleMeasurements.map(\.value), newStream.allMeasurements!.map(\.value))
+    }
+    
     private func createDataSource() -> GraphStatsDataSource {
-        let dataSource = GraphStatsDataSource(stream: stream)
+        let dataSource = GraphStatsDataSource()
+        dataSource.stream = stream
         return dataSource
     }
 }

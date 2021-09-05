@@ -5,7 +5,7 @@ import Foundation
 
 class MeasurementsStatisticsController: MeasurementsStatisticsInput {
     weak var output: MeasurementsStatisticsOutput?
-    private let dataSource: MeasurementsStatisticsDataSource
+    private var dataSource: MeasurementsStatisticsDataSource
     private let calculator: StatisticsCalculator
     private let scheduledTimer: ScheduledTimerSettable
     private let desiredStats: [MeasurementStatistics.Statistic]
@@ -22,6 +22,9 @@ class MeasurementsStatisticsController: MeasurementsStatisticsInput {
         timerCancellable = scheduledTimer.setupRepeatingTimer(for: 1.0, block: { [weak self] in
             self?.computeStatistics()
         })
+        self.dataSource.onForceReload = { [weak self] in
+            self?.computeStatistics()
+        }
     }
     
     func computeStatistics() {

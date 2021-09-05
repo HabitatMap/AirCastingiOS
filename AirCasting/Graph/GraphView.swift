@@ -11,7 +11,7 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
     let session: SessionEntity
     let thresholds: [SensorThreshold]
     @Binding var selectedStream: MeasurementStreamEntity?
-    let statsContainerViewModel: StatsViewModelType
+    @StateObject var statsContainerViewModel: StatsViewModelType
     let graphStatsDataSource: GraphStatsDataSource
     let sessionStoppableFactory: SessionStoppableFactory
     

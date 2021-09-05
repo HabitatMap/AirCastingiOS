@@ -83,14 +83,23 @@ class MeasurementsStatisticsControllerTests: XCTestCase {
         XCTAssertEqual(outputSpy.history.count, 2)
     }
     
+    func test_whenDataSourceRequestsForceRefresh_itRefreshesData() {
+        let controller = controller()
+        controller.computeStatistics()
+        XCTAssertEqual(outputSpy.history.count, 1)
+        dataSourceMock.onForceReload?()
+        XCTAssertEqual(outputSpy.history.count, 2)
+    }
+    
     // MARK: - Private helpers
     
     private func controller(for stats: [MeasurementStatistics.Statistic] = MeasurementStatistics.Statistic.allCases) -> MeasurementsStatisticsController {
-        MeasurementsStatisticsController(output: outputSpy,
-                                         dataSource: dataSourceMock,
-                                         calculator: calculatorMock,
-                                         scheduledTimer: timerMock,
-                                         desiredStats: stats)
+        let controller = MeasurementsStatisticsController(dataSource: dataSourceMock,
+                                                          calculator: calculatorMock,
+                                                          scheduledTimer: timerMock,
+                                                          desiredStats: stats)
+        controller.output = outputSpy
+        return controller
     }
     
     // MARK: - Doubles
@@ -108,6 +117,8 @@ class MeasurementsStatisticsControllerTests: XCTestCase {
     }
 
     final class DataSourceMock: MeasurementsStatisticsDataSource {
+        var onForceReload: (() -> Void)?
+        
         var allMeasurements: [MeasurementStatistics.Measurement] = .init(creating: .random(), times: 25)
         
         var visibleMeasurements: [MeasurementStatistics.Measurement] {

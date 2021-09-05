@@ -34,8 +34,25 @@ class MapStatsDataSourceTests: XCTestCase {
         assertContainsSameElements(dataSource.visibleMeasurements.map { $0.measurementTime }, [Date(timeIntervalSinceReferenceDate: 0), Date(timeIntervalSinceReferenceDate: 10)])
     }
     
+    func test_whenStreamIsChanged_itForcesAReload() {
+        let dataSource = createDataSource()
+        var forceReloadCalledTimes = 0
+        dataSource.onForceReload = { forceReloadCalledTimes += 1 }
+        let newStream = TestStreamGenerator.createStream(numberOfMeasurements: 5)
+        dataSource.stream = newStream
+        XCTAssertEqual(forceReloadCalledTimes, 1)
+    }
+    
+    func test_whenStreamIsChanged_itReturnsNewDataCorrectly() {
+        let dataSource = createDataSource()
+        let newStream = TestStreamGenerator.createStream(numberOfMeasurements: 5)
+        dataSource.stream = newStream
+        XCTAssertEqual(dataSource.visibleMeasurements.count, newStream.allMeasurements?.count)
+    }
+    
     private func createDataSource() -> MapStatsDataSource {
-        let dataSource = MapStatsDataSource(stream: stream)
+        let dataSource = MapStatsDataSource()
+        dataSource.stream = stream
         return dataSource
     }
 }

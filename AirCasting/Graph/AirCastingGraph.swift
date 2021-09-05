@@ -8,6 +8,7 @@ class AirCastingGraph: UIView {
     let lineChartView = LineChartView()
     var renderer: MultiColorGridRenderer?
     var didMoveOrScaleGraph = false
+    private var previousDateRange: ClosedRange<Date>? = nil
     private let onDateRangeChange: ((ClosedRange<Date>) -> Void)?
     var limitLines: [ChartLimitLine] = [] {
         didSet {
@@ -114,6 +115,8 @@ class AirCastingGraph: UIView {
     
     private func callDateRangeChangeObserver() {
         let dateRange = getCurrentDateRange()
+        guard previousDateRange != dateRange else { return }
+        previousDateRange = dateRange
         onDateRangeChange?(dateRange)
     }
     

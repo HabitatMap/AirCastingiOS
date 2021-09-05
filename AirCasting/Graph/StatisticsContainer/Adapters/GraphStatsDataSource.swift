@@ -3,7 +3,7 @@
 
 import Foundation
 
-class GraphStatsDataSource: MeasurementsStatisticsDataSource {
+class GraphStatsDataSource: MeasurementsStatisticsDataSource, ObservableObject {
     var stream: MeasurementStreamEntity? {
         didSet {
             onForceReload?()

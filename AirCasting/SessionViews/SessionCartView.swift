@@ -21,10 +21,10 @@ struct SessionCartView: View {
     let thresholds: [SensorThreshold]
     let sessionStoppableFactory: SessionStoppableFactory
     private let locationTracker: LocationTracker
-    private let mapStatsDataSource: MapStatsDataSource
-    private let mapStatsViewModel: StatisticsContainerViewModel
-    private let graphStatsDataSource: GraphStatsDataSource
-    private let graphStatsViewModel: StatisticsContainerViewModel
+    @StateObject private var mapStatsDataSource: MapStatsDataSource
+    @StateObject private var mapStatsViewModel: StatisticsContainerViewModel
+    @StateObject private var graphStatsDataSource: GraphStatsDataSource
+    @StateObject private var graphStatsViewModel: StatisticsContainerViewModel
     
     init(session: SessionEntity,
          sessionCartViewModel: SessionCartViewModel,
@@ -36,10 +36,12 @@ struct SessionCartView: View {
         self.thresholds = thresholds
         self.sessionStoppableFactory = sessionStoppableFactory
         self.locationTracker = locationTracker
-        self.mapStatsDataSource = MapStatsDataSource()
-        self.mapStatsViewModel = SessionCartView.createStatsContainerViewModel(dataSource: mapStatsDataSource)
-        self.graphStatsDataSource = GraphStatsDataSource()
-        self.graphStatsViewModel = SessionCartView.createStatsContainerViewModel(dataSource: graphStatsDataSource)
+        let mapDataSource = MapStatsDataSource()
+        self._mapStatsDataSource = .init(wrappedValue: mapDataSource)
+        self._mapStatsViewModel = .init(wrappedValue: SessionCartView.createStatsContainerViewModel(dataSource: mapDataSource))
+        let graphDataSource = GraphStatsDataSource()
+        self._graphStatsDataSource = .init(wrappedValue: graphDataSource)
+        self._graphStatsViewModel = .init(wrappedValue: SessionCartView.createStatsContainerViewModel(dataSource: graphDataSource))
     }
     
     var shouldShowValues: MeasurementPresentationStyle {

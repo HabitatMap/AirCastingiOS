@@ -12,7 +12,7 @@ import CoreData
 
 struct AirMapView: View {
     var thresholds: [SensorThreshold]
-    let statsContainerViewModel: StatisticsContainerViewModel
+    @StateObject var statsContainerViewModel: StatisticsContainerViewModel
     let mapStatsDataSource: MapStatsDataSource
     @ObservedObject var session: SessionEntity
 
