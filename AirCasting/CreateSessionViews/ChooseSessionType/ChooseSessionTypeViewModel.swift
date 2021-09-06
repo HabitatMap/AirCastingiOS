@@ -13,14 +13,13 @@ enum ProceedToView {
 
 class ChooseSessionTypeViewModel {
     
-    private let locationHandler: LocationHandler
+    let locationHandler: LocationHandler
     private let bluetoothHandler: BluetoothHandler
     private let userSettings: UserSettings
     private let sessionContext: CreateSessionContext
     private let urlProvider: BaseURLProvider
     private var bluetoothManager: BluetoothManager
     private var bluetoothManagerState: CBManagerState
-    private var locationTracker: LocationTracker
     
     var passURLProvider: BaseURLProvider {
         return urlProvider
@@ -45,12 +44,8 @@ class ChooseSessionTypeViewModel {
     var passBluetoothManager: BluetoothManager {
         return bluetoothManager
     }
-    
-    var passLocationTracker: LocationTracker {
-        return locationTracker
-    }
 
-    init(locationHandler: LocationHandler, bluetoothHandler: BluetoothHandler, userSettings: UserSettings, sessionContext: CreateSessionContext, urlProvider: BaseURLProvider, bluetoothManager: BluetoothManager, bluetoothManagerState: CBManagerState, locationTracker: LocationTracker) {
+    init(locationHandler: LocationHandler, bluetoothHandler: BluetoothHandler, userSettings: UserSettings, sessionContext: CreateSessionContext, urlProvider: BaseURLProvider, bluetoothManager: BluetoothManager, bluetoothManagerState: CBManagerState) {
         self.locationHandler = locationHandler
         self.bluetoothHandler = bluetoothHandler
         self.userSettings = userSettings
@@ -58,7 +53,6 @@ class ChooseSessionTypeViewModel {
         self.urlProvider = urlProvider
         self.bluetoothManager = bluetoothManager
         self.bluetoothManagerState = bluetoothManagerState
-        self.locationTracker = locationTracker
     }
 
     func fixedSessionNextStep() -> ProceedToView {

@@ -7,12 +7,21 @@
 
 import SwiftUI
 
-struct StatisticsContainerView: View {
+struct StatisticsContainerView<ViewModelType>: View where ViewModelType: StatisticsContainerViewModelable {
+    @ObservedObject var statsContainerViewModel: ViewModelType
+    
     var body: some View {
         HStack {
-            avgLabel
-            nowLabel
-            peakLabel
+            ForEach(statsContainerViewModel.stats) { stat in
+                VStack(spacing: 7) {
+                    Text(stat.title)
+                    if stat.presentationStyle == .distinct {
+                        distinctParameter(value: stat.value)
+                    } else if stat.presentationStyle == .standard {
+                        standardParameter(value: stat.value)
+                    }
+                }
+            }
         }
         .font(Font.muli(size: 12))
         .foregroundColor(.aircastingGray)
@@ -22,61 +31,60 @@ struct StatisticsContainerView: View {
         .padding()
     }
     
-    var avgLabel: some View {
-        VStack(spacing: 7) {
-            Text("Avg PM2.5")
-            parameter
-        }
-    }
-    
-    var peakLabel: some View {
-        VStack(spacing: 7) {
-            Text("Peak PM2.5")
-            parameter
-        }
-    }
-    
-    var nowLabel: some View {
-        VStack(spacing: 7) {
-            Text("Now PM2.5")
-            nowParameter
-        }
-    }
-    
-    var parameter: some View {
+    private func standardParameter(value: String) -> some View {
         ZStack {
             Color.aircastingGreen
                 .opacity(0.32)
-                .frame(width: 54, height: 27, alignment: .center)
                 .cornerRadius(7.5)
-            HStack(spacing: 16) {
+            HStack {
                 Color.aircastingGreen
                     .clipShape(Circle())
                     .frame(width: 6, height: 6)
-                Text("23")
+                    .padding(.leading, 3)
+                Spacer()
+                Text(value)
+                    .padding(.trailing, 3)
+                    .font(Font.muli(size: 12))
+                    .minimumScaleFactor(0.1)
             }
-        }
+        }.frame(width: 54, height: 27, alignment: .center)
     }
-    var nowParameter: some View {
+    
+    private func distinctParameter(value: String) -> some View {
         ZStack {
             Color.aircastingGreen
                 .opacity(0.32)
-                .frame(width: 68, height: 33, alignment: .center)
                 .cornerRadius(7.5)
-            HStack(spacing: 16) {
+            HStack {
                 Color.aircastingGreen
                     .clipShape(Circle())
                     .frame(width: 8, height: 8)
-                Text("2")
+                    .padding(.leading, 5)
+                Spacer()
+                Text(value)
+                    .padding(.trailing, 5)
+                    .font(Font.muli(size: 19))
+                    .minimumScaleFactor(0.1)
             }
-            .font(Font.muli(size: 19))
-        }
+        }.frame(width: 68, height: 33, alignment: .center)
     }
     
 }
 
+#if DEBUG
 struct CalculatedMeasurements_Previews: PreviewProvider {
     static var previews: some View {
-        StatisticsContainerView()
+        StatisticsContainerView(statsContainerViewModel: FakeStatsViewModel())
     }
 }
+
+class FakeStatsViewModel: StatisticsContainerViewModelable {
+    @Published var stats: [SingleStatViewModel] = [
+        .init(id: 0, title: "Low dB", value: "-40.0", presentationStyle: .standard),
+        .init(id: 1, title: "Now dB", value: "-10.2", presentationStyle: .distinct),
+        .init(id: 2, title: "Peak dB", value: "12.5", presentationStyle: .standard),
+    ]
+    
+    func adjustForNewData() { }
+}
+#endif

@@ -5,10 +5,11 @@ import SwiftUI
 import Charts
 
 class AirCastingGraph: UIView {
-    
     let lineChartView = LineChartView()
     var renderer: MultiColorGridRenderer?
     var didMoveOrScaleGraph = false
+    private var previousDateRange: ClosedRange<Date>? = nil
+    private let onDateRangeChange: ((ClosedRange<Date>) -> Void)?
     var limitLines: [ChartLimitLine] = [] {
         didSet {
             guard oldValue != limitLines else { return }
@@ -16,7 +17,8 @@ class AirCastingGraph: UIView {
         }
     }
     
-    init() {
+    init(onDateRangeChange: ((ClosedRange<Date>) -> Void)?) {
+        self.onDateRangeChange = onDateRangeChange
         super.init(frame: .zero)
         self.addSubview(lineChartView)
         lineChartView.delegate = self
@@ -108,6 +110,27 @@ class AirCastingGraph: UIView {
         if !didMoveOrScaleGraph && isAutozoomEnabled {
             zoomoutToThirtyMinutes(dataSet: dataSet)
         }
+        callDateRangeChangeObserver()
+    }
+    
+    private func callDateRangeChangeObserver() {
+        let dateRange = getCurrentDateRange()
+        guard previousDateRange != dateRange else { return }
+        previousDateRange = dateRange
+        onDateRangeChange?(dateRange)
+    }
+    
+    private func getCurrentDateRange() -> ClosedRange<Date> {
+        let startDate = Date(timeIntervalSince1970: lineChartView.lowestVisibleX)
+        let endDate = Date(timeIntervalSince1970: lineChartView.highestVisibleX)
+        #warning("Please check if this is still the case")
+        // Workaround for a weird quirk with Chart - when first called
+        // `startDate` is sane, but `endDate` is 1970, so we need a special
+        // case to fix that.
+        guard startDate < endDate else {
+            return startDate...(.distantFuture)
+        }
+        return startDate...endDate
     }
     
     private func updateMidnightLines(with limitLines: [ChartLimitLine]) {
@@ -126,10 +149,12 @@ extension AirCastingGraph: ChartViewDelegate {
     
     // Callbacks when the chart is scaled / zoomed via pinch zoom gesture.
     @objc func chartScaled(_ chartView: ChartViewBase, scaleX: CGFloat, scaleY: CGFloat) {
+        callDateRangeChangeObserver()
         didMoveOrScaleGraph = true
     }
     // Callbacks when the chart is moved / translated via drag gesture.
     @objc func chartTranslated(_ chartView: ChartViewBase, dX: CGFloat, dY: CGFloat) {
+        callDateRangeChangeObserver()
         didMoveOrScaleGraph = true
     }
 }

@@ -99,6 +99,7 @@ final class SynchronizationControllerTests: XCTestCase {
         XCTAssertEqual(upload.latitude!, 51.0, accuracy: 0.1)
         XCTAssertEqual(upload.type, SessionType.mobile.rawValue)
         // See implementation file for notes on that:
+        #warning("Fix me - this is functional now!")
         XCTAssertEqual(upload.streams, [:])
     }
     

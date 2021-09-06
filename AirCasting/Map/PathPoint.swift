@@ -10,9 +10,10 @@ import CoreLocation
 
 struct PathPoint {
     let location: CLLocationCoordinate2D
+    let measurementTime: Date
     let measurement: Double
 }
 
 extension PathPoint {
-    static var fakePathPoint = PathPoint(location: CLLocationCoordinate2D(latitude: 200.0, longitude: 200.0), measurement: 20.0)
+    static var fakePathPoint = PathPoint(location: CLLocationCoordinate2D(latitude: 200.0, longitude: 200.0), measurementTime: Date(), measurement: 20.0)
 }
