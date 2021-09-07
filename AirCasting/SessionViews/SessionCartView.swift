@@ -16,6 +16,7 @@ struct SessionCartView: View {
     @State private var isMapButtonActive = false
     @State private var isGraphButtonActive = false
     @ObservedObject var session: SessionEntity
+    @EnvironmentObject var selectedSection: SelectSection
     let sessionCartViewModel: SessionCartViewModel
     let thresholds: [SensorThreshold]
     let sessionStoppableFactory: SessionStoppableFactory
@@ -45,12 +46,13 @@ struct SessionCartView: View {
     }
 
     var shouldShowValues: MeasurementPresentationStyle {
-        let shouldShow = isCollapsed && (session.isFixed || session.isDormant)
+        // We need to specify selectedSection to show values for fixed session only in following tab
+        let shouldShow = isCollapsed && ( (session.isFixed && selectedSection.selectedSection == SelectedSection.fixed) || session.isDormant)
         return shouldShow ? .hideValues : .showValues
     }
 
     var showChart: Bool {
-        !isCollapsed && session.type == .mobile && session.status == .RECORDING
+        (!isCollapsed && session.isMobile && session.isActive) || (!isCollapsed && session.isFixed && selectedSection.selectedSection == SelectedSection.following)
     }
     var hasStreams: Bool {
         session.allStreams != nil || session.allStreams != []
