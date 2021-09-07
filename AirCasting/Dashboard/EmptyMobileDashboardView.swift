@@ -23,7 +23,7 @@ struct EmptyMobileDashboardViewMobile: View {
                 VStack {
                     Spacer()
                     emptyMobileDashboardText
-                    EmptyDashboardButtonView()
+                    EmptyDashboardButtonView(isFixed: false)
                     Spacer()
                 }
                 airBeamDescription

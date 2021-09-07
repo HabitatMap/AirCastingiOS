@@ -17,7 +17,7 @@ struct EmptyFixedDashboardView: View {
                 Spacer()
                 VStack(spacing: 20) {
                     emptyFixedDashboardText
-                    EmptyDashboardButtonView()
+                    EmptyDashboardButtonView(isFixed: true)
                 }
                 // Additional padding to put the text at similar height
                 // as in mobile empty dashboard

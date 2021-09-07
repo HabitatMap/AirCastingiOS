@@ -6,20 +6,19 @@ import AirCastingStyling
 
 struct EmptyDashboardButtonView: View {
     @EnvironmentObject private var tabSelection: TabBarSelection
-
+    var isFixed: Bool
     var body: some View {
         Button(action: {
             tabSelection.selection = .createSession
         }, label: {
-            Text(Strings.EmptyDashboardMobile.newSession)
-                .bold()
+            if isFixed {
+                Text(Strings.EmptyDashboardMobile.buttonFixed)
+                    .bold()
+            } else {
+                Text(Strings.EmptyDashboardMobile.buttonMobile)
+                    .bold()
+            }
         })
         .frame(maxWidth: 250)
         .buttonStyle(BlueButtonStyle())    }
-}
-
-struct DashboardButtonView_Previews: PreviewProvider {
-    static var previews: some View {
-        EmptyDashboardButtonView()
-    }
 }
