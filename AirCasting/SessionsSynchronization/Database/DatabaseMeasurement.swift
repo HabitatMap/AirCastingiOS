@@ -1,4 +1,5 @@
 import Foundation
+import CoreLocation
 
 extension Database {
     public struct Measurement: Hashable {

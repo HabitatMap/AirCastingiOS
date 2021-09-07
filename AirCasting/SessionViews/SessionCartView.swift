@@ -16,17 +16,43 @@ struct SessionCartView: View {
     @State private var isMapButtonActive = false
     @State private var isGraphButtonActive = false
     @ObservedObject var session: SessionEntity
+    @EnvironmentObject var selectedSection: SelectSection
     let sessionCartViewModel: SessionCartViewModel
     let thresholds: [SensorThreshold]
     let sessionStoppableFactory: SessionStoppableFactory
     let measurementStreamStorage: MeasurementStreamStorage
+    
+    @StateObject private var mapStatsDataSource: MapStatsDataSource
+    @StateObject private var mapStatsViewModel: StatisticsContainerViewModel
+    @StateObject private var graphStatsDataSource: GraphStatsDataSource
+    @StateObject private var graphStatsViewModel: StatisticsContainerViewModel
+    
+    init(session: SessionEntity,
+         sessionCartViewModel: SessionCartViewModel,
+         thresholds: [SensorThreshold],
+         sessionStoppableFactory: SessionStoppableFactory,
+         measurementStreamStorage: MeasurementStreamStorage) {
+        self.session = session
+        self.sessionCartViewModel = sessionCartViewModel
+        self.thresholds = thresholds
+        self.sessionStoppableFactory = sessionStoppableFactory
+        self.measurementStreamStorage = measurementStreamStorage
+        let mapDataSource = MapStatsDataSource()
+        self._mapStatsDataSource = .init(wrappedValue: mapDataSource)
+        self._mapStatsViewModel = .init(wrappedValue: SessionCartView.createStatsContainerViewModel(dataSource: mapDataSource))
+        let graphDataSource = GraphStatsDataSource()
+        self._graphStatsDataSource = .init(wrappedValue: graphDataSource)
+        self._graphStatsViewModel = .init(wrappedValue: SessionCartView.createStatsContainerViewModel(dataSource: graphDataSource))
+    }
+
     var shouldShowValues: MeasurementPresentationStyle {
-        let shouldShow = isCollapsed && (session.isFixed || session.isDormant)
+        // We need to specify selectedSection to show values for fixed session only in following tab
+        let shouldShow = isCollapsed && ( (session.isFixed && selectedSection.selectedSection == SelectedSection.fixed) || session.isDormant)
         return shouldShow ? .hideValues : .showValues
     }
 
     var showChart: Bool {
-        !isCollapsed && session.type == .mobile && session.status == .RECORDING
+        (!isCollapsed && session.isMobile && session.isActive) || (!isCollapsed && session.isFixed && selectedSection.selectedSection == SelectedSection.following)
     }
     var hasStreams: Bool {
         session.allStreams != nil || session.allStreams != []
@@ -55,6 +81,15 @@ struct SessionCartView: View {
                 SessionLoadingView()
             }
         }
+        .onChange(of: session.sortedStreams) { newValue in
+            selectDefaultStreamIfNeeded(streams: newValue ?? [])
+        }
+        .onChange(of: selectedStream, perform: { [weak graphStatsViewModel, weak mapStatsViewModel, weak graphStatsDataSource, weak mapStatsDataSource] newStream in
+            graphStatsViewModel?.unit = newStream?.unitSymbol
+            mapStatsViewModel?.unit = newStream?.unitSymbol
+            graphStatsDataSource?.stream = newStream
+            mapStatsDataSource?.stream = newStream
+        })
         .onAppear {
             selectDefaultStreamIfNeeded(streams: session.sortedStreams ?? [])
         }
@@ -130,28 +165,34 @@ private extension SessionCartView {
     }
     
     var mapNavigationLink: some View {
-        NavigationLink( destination: AirMapView(thresholds: thresholds,
-                                                session: session,
-                                                selectedStream: $selectedStream,
-                                                sessionStoppableFactory: sessionStoppableFactory,
-                                                measurementStreamStorage: measurementStreamStorage),
-                        isActive: $isMapButtonActive,
-                        label: {
-                            EmptyView()
-                        })
+        let mapView = AirMapView(thresholds: thresholds,
+                                 statsContainerViewModel: mapStatsViewModel,
+                                 mapStatsDataSource: mapStatsDataSource,
+                                 session: session,
+                                 selectedStream: $selectedStream,
+                                 sessionStoppableFactory: sessionStoppableFactory,
+                                 measurementStreamStorage: measurementStreamStorage)
+        
+        return NavigationLink(destination: mapView,
+                              isActive: $isMapButtonActive,
+                              label: {
+                                EmptyView()
+                              })
     }
     
     var graphNavigationLink: some View {
-        NavigationLink(
-            destination: GraphView(session: session,
-                                   thresholds: thresholds,
-                                   selectedStream: $selectedStream,
-                                   sessionStoppableFactory: sessionStoppableFactory,
-                                   measurementStreamStorage: measurementStreamStorage),
-            isActive: $isGraphButtonActive,
-            label: {
-                EmptyView()
-            })
+        let graphView = GraphView(session: session,
+                                  thresholds: thresholds,
+                                  selectedStream: $selectedStream,
+                                  statsContainerViewModel: graphStatsViewModel,
+                                  graphStatsDataSource: graphStatsDataSource,
+                                  sessionStoppableFactory: sessionStoppableFactory,
+                                  measurementStreamStorage: measurementStreamStorage)
+        return NavigationLink(destination: graphView,
+                              isActive: $isGraphButtonActive,
+                              label: {
+                                EmptyView()
+                              })
     }
     
     func pollutionChart(thresholds: [SensorThreshold]) -> some View {
@@ -178,6 +219,16 @@ private extension SessionCartView {
             graphButton
         }
         .buttonStyle(GrayButtonStyle())
+    }
+    
+    private static func createStatsContainerViewModel(dataSource: MeasurementsStatisticsDataSource) -> StatisticsContainerViewModel {
+        let controller = MeasurementsStatisticsController(dataSource: dataSource,
+                                                          calculator: StandardStatisticsCalculator(),
+                                                          scheduledTimer: ScheduledTimerSetter(),
+                                                          desiredStats: MeasurementStatistics.Statistic.allCases)
+        let viewModel = StatisticsContainerViewModel(statsInput: controller)
+        controller.output = viewModel
+        return viewModel
     }
 }
 

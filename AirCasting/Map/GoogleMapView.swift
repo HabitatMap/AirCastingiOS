@@ -17,6 +17,13 @@ struct GoogleMapView: UIViewRepresentable {
     let pathPoints: [PathPoint]
     private(set) var threshold: SensorThreshold?
     var isMyLocationEnabled: Bool = false
+    private var onPositionChange: (([PathPoint]) -> ())? = nil
+    
+    init(pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false) {
+        self.pathPoints = pathPoints
+        self.threshold = threshold
+        self.isMyLocationEnabled = isMyLocationEnabled
+    }
     
     func makeUIView(context: Context) -> GMSMapView {
         GMSServices.provideAPIKey(GOOGLE_MAP_KEY)
@@ -28,7 +35,6 @@ struct GoogleMapView: UIViewRepresentable {
                                      camera: startingPoint)
 
         mapView.delegate = context.coordinator
-
         mapView.isMyLocationEnabled = isMyLocationEnabled
         
         context.coordinator.myLocationSink = mapView.publisher(for: \.myLocation)
@@ -37,6 +43,14 @@ struct GoogleMapView: UIViewRepresentable {
                 mapView?.animate(toLocation: coordinate)
             }
         return mapView
+    }
+    
+    /// Adds an action for when the map viewport is changed.
+    /// - Parameter action: an action block that takes an array of currently visible `PathPoint`s.
+    func onPositionChange(action: @escaping (_ visiblePoints: [PathPoint]) -> ()) -> Self {
+        var newSelf = self
+        newSelf.onPositionChange = action
+        return newSelf
     }
     
     func updateUIView(_ uiView: GMSMapView, context: Context) {
@@ -123,8 +137,16 @@ struct GoogleMapView: UIViewRepresentable {
             print("Changing Coordinates to: \(mapView.projection.coordinate(for: mapView.center))")
             let lat = mapView.projection.coordinate(for: mapView.center).latitude
             let len = mapView.projection.coordinate(for: mapView.center).longitude
-            parent.tracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: lat, longitude: len), measurement: 20.0)]
+            parent.tracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: lat, longitude: len), measurementTime: Date(), measurement: 20.0)]
             #warning("Do something with hard coded measurement")
+            positionChanged(for: mapView)
+        }
+        
+        private func positionChanged(for mapView: GMSMapView) {
+            let visibleRegion = mapView.projection.visibleRegion()
+            let bounds = GMSCoordinateBounds(region: visibleRegion)
+            let visiblePathPoints = parent.pathPoints.filter { bounds.contains($0.location) }
+            parent.onPositionChange?(visiblePathPoints)
         }
 
         var didSetInitLocation: Bool = false   
@@ -140,16 +162,19 @@ struct GoogleMapView: UIViewRepresentable {
 struct GoogleMapView_Previews: PreviewProvider {
     static var previews: some View {
         GoogleMapView(pathPoints: [PathPoint(location: CLLocationCoordinate2D(latitude: 40.73,
-                                                                                    longitude: -73.93),
-                                                   measurement: 30),
-                                         PathPoint(location: CLLocationCoordinate2D(latitude: 40.83,
-                                                                                    longitude: -73.93),
-                                                   measurement: 30),
-                                         PathPoint(location: CLLocationCoordinate2D(latitude: 40.93,
-                                                                                    longitude: -73.83),
-                                                   measurement: 30)],
-                            threshold: .mock)
-                  .padding()
+                                                                              longitude: -73.93),
+                                             measurementTime: .distantPast,
+                                             measurement: 30),
+                                   PathPoint(location: CLLocationCoordinate2D(latitude: 40.83,
+                                                                              longitude: -73.93),
+                                             measurementTime: .distantPast,
+                                             measurement: 30),
+                                   PathPoint(location: CLLocationCoordinate2D(latitude: 40.93,
+                                                                              longitude: -73.83),
+                                             measurementTime: .distantPast,
+                                             measurement: 30)],
+                      threshold: .mock)
+            .padding()
     }
 }
 #endif

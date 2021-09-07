@@ -12,7 +12,10 @@ import CoreData
 
 struct AirMapView: View {
     var thresholds: [SensorThreshold]
+    @StateObject var statsContainerViewModel: StatisticsContainerViewModel
+    @StateObject var mapStatsDataSource: MapStatsDataSource
     @ObservedObject var session: SessionEntity
+
     @Binding var selectedStream: MeasurementStreamEntity?
     let sessionStoppableFactory: SessionStoppableFactory
     let measurementStreamStorage: MeasurementStreamStorage
@@ -21,7 +24,7 @@ struct AirMapView: View {
         return selectedStream?.allMeasurements?.compactMap {
             #warning("TODO: Do something with no location points")
             guard let location = $0.location else { return nil }
-            return PathPoint(location: location, measurement: $0.value)
+            return PathPoint(location: location, measurementTime: $0.time, measurement: $0.value)
         } ?? []
     }
 
@@ -39,10 +42,15 @@ struct AirMapView: View {
                                measurementStreamStorage: measurementStreamStorage)
 
             if let threshold = thresholds.threshold(for: selectedStream) {
-            ZStack(alignment: .topLeading) {
-                GoogleMapView(pathPoints: pathPoints, threshold: threshold)
-                StatisticsContainerView()
-            }
+                ZStack(alignment: .topLeading) {
+                    GoogleMapView(pathPoints: pathPoints,
+                                  threshold: threshold)
+                        .onPositionChange { [weak mapStatsDataSource, weak statsContainerViewModel] visiblePoints in
+                            mapStatsDataSource?.visiblePathPoints = visiblePoints
+                            statsContainerViewModel?.adjustForNewData()
+                        }
+                    StatisticsContainerView(statsContainerViewModel: statsContainerViewModel)
+                }
                 NavigationLink(destination: HeatmapSettingsView(changedThresholdValues: threshold.rawThresholdsBinding)) {
                     EditButtonView()
                 }
@@ -59,10 +67,17 @@ struct AirMapView: View {
 #if DEBUG
 struct Map_Previews: PreviewProvider {
     static var previews: some View {
-        AirMapView(thresholds: [.mock],
+        AirMapView(thresholds: [SensorThreshold.mock],
+                   statsContainerViewModel: StatisticsContainerViewModel(statsInput: MeasurementsStatisticsInputMock()),
+                   mapStatsDataSource: MapStatsDataSource(),
                    session: .mock,
                    selectedStream: .constant(nil),
-                   sessionStoppableFactory: SessionStoppableFactoryDummy(), measurementStreamStorage: PreviewMeasurementStreamStorage())
+                   sessionStoppableFactory: SessionStoppableFactoryDummy(),
+                   measurementStreamStorage: PreviewMeasurementStreamStorage())
     }
+}
+
+struct MeasurementsStatisticsInputMock: MeasurementsStatisticsInput {
+    func computeStatistics() { }
 }
 #endif

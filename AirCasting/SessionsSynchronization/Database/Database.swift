@@ -12,6 +12,8 @@ extension Database {
     }
 }
 
+// MARK: - Sessions handling
+
 protocol SessionsFetchable {
     func fetchSessions(constrained: Database.Constraint, completion: @escaping (Result<[Database.Session], Error>) -> Void)
 }

@@ -102,6 +102,7 @@ private extension CreateSessionDetailsView {
                 isConfirmCreatingSessionActive = isIndoor
                 isLocationSessionDetailsActive = !isIndoor
             } else {
+                
                 sessionContext.isIndoor = false
                 isConfirmCreatingSessionActive = true
             }
@@ -178,7 +179,7 @@ private extension CreateSessionDetailsView {
         } else {
             guard let lat = (locationTracker.locationManager.location?.coordinate.latitude),
                   let lon = (locationTracker.locationManager.location?.coordinate.longitude) else { return }
-            locationTracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: lat, longitude: lon), measurement: 20.0)]
+            locationTracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: lat, longitude: lon), measurementTime: Date(), measurement: 20.0)]
             #warning("Do something with hard coded measurement")
             sessionContext.obtainCurrentLocation(lat: lat, log: lon)
         }

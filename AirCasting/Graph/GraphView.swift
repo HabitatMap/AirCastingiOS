@@ -7,11 +7,12 @@
 
 import SwiftUI
 
-struct GraphView: View {
-    
+struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsContainerViewModelable {
     let session: SessionEntity
     let thresholds: [SensorThreshold]
     @Binding var selectedStream: MeasurementStreamEntity?
+    @StateObject var statsContainerViewModel: StatsViewModelType
+    let graphStatsDataSource: GraphStatsDataSource
     let sessionStoppableFactory: SessionStoppableFactory
     let measurementStreamStorage: MeasurementStreamStorage
     
@@ -34,9 +35,12 @@ struct GraphView: View {
                     if let selectedStream = selectedStream {
                         Graph(stream: selectedStream,
                               thresholds: threshold,
-                              isAutozoomEnabled: session.type == .mobile)
+                              isAutozoomEnabled: session.type == .mobile).onDateRangeChange { [weak graphStatsDataSource, weak statsContainerViewModel] range in
+                                graphStatsDataSource?.dateRange = range
+                                statsContainerViewModel?.adjustForNewData()
+                              }
                     }
-                    StatisticsContainerView()
+                    StatisticsContainerView(statsContainerViewModel: statsContainerViewModel)
                 }
                 NavigationLink(destination: HeatmapSettingsView(changedThresholdValues: threshold.rawThresholdsBinding)) {
                     EditButtonView()
@@ -58,12 +62,13 @@ struct GraphView: View {
 #if DEBUG
 struct GraphView_Previews: PreviewProvider {
     static var previews: some View {
-        //Change selected stream
         GraphView(session: .mock,
                   thresholds: [.mock],
                   selectedStream: .constant(nil),
+                  statsContainerViewModel: FakeStatsViewModel(),
+                  graphStatsDataSource: GraphStatsDataSource(),
                   sessionStoppableFactory: SessionStoppableFactoryDummy(),
-                  measurementStreamStorage: PreviewMeasurementStreamStorage() as! MeasurementStreamStorage)
+                  measurementStreamStorage: PreviewMeasurementStreamStorage())
     }
 }
 #endif
