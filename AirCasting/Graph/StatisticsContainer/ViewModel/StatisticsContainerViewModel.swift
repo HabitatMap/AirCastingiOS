@@ -5,7 +5,6 @@ import Foundation
 
 final class StatisticsContainerViewModel: StatisticsContainerViewModelable, MeasurementsStatisticsOutput {
     private let statsInput: MeasurementsStatisticsInput
-    var unit: String?
     
     init(statsInput: MeasurementsStatisticsInput) {
         self.statsInput = statsInput
@@ -37,9 +36,9 @@ final class StatisticsContainerViewModel: StatisticsContainerViewModelable, Meas
     
     private func getUILabel(for stat: MeasurementStatistics.Statistic) -> String {
         switch stat {
-        case .average: return "Avg \(unit ?? "")"
-        case .high: return "Peak \(unit ?? "")"
-        case .latest: return "Now \(unit ?? "")"
+        case .average: return "Avg"
+        case .high: return "Peak"
+        case .latest: return "Now"
         }
     }
     
