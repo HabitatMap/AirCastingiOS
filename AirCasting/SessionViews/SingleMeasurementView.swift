@@ -53,6 +53,7 @@ struct SingleMeasurementView: View {
                                        thresholds: threshold)
                     Text("\(Int(value))")
                         .font(Font.moderate(size: 14, weight: .regular))
+                        .scaledToFill()
                 }
             })
             .buttonStyle(AirCastingStyling.BorderedButtonStyle(isSelected: selectedStream == stream,
