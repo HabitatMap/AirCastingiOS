@@ -84,9 +84,7 @@ struct SessionCartView: View {
         .onChange(of: session.sortedStreams) { newValue in
             selectDefaultStreamIfNeeded(streams: newValue ?? [])
         }
-        .onChange(of: selectedStream, perform: { [weak graphStatsViewModel, weak mapStatsViewModel, weak graphStatsDataSource, weak mapStatsDataSource] newStream in
-            graphStatsViewModel?.unit = newStream?.unitSymbol
-            mapStatsViewModel?.unit = newStream?.unitSymbol
+        .onChange(of: selectedStream, perform: { [weak graphStatsDataSource, weak mapStatsDataSource] newStream in
             graphStatsDataSource?.stream = newStream
             mapStatsDataSource?.stream = newStream
         })

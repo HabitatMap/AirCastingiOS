@@ -5,7 +5,6 @@
 //  Created by Lunar on 26/01/2021.
 //
 
-import Foundation
 import UIKit
 import SwiftUI
 import GoogleMaps
@@ -60,43 +59,51 @@ struct GoogleMapView: UIViewRepresentable {
             let coordinate = point.location
             path.add(coordinate)
         }
-        let polyline = GMSPolyline(path: path)
-        
+        let polyline = context.coordinator.polyline
         let spans = pathPoints.map { point -> GMSStyleSpan in
             let color = colorPolyline(point: point)
             return GMSStyleSpan(style: GMSStrokeStyle.solidColor(color),
                                 segments: 1)
         }
-        
-        let updatedCameraPosition = setStartingPoint(points: pathPoints)
-        DispatchQueue.main.async {
-            uiView.camera = updatedCameraPosition
-        }
-        // Update starting point
-        if !context.coordinator.didSetInitLocation && !pathPoints.isEmpty {
-            let updatedCameraPosition = setStartingPoint(points: pathPoints)
-            DispatchQueue.main.async {
-                uiView.camera = updatedCameraPosition
-            }
-            context.coordinator.didSetInitLocation = true
-        }
+
+        polyline.path = path
         polyline.spans = spans
-        polyline.strokeWidth = 6
+        polyline.strokeWidth = CGFloat(Constants.Polyline.width)
         polyline.map = uiView
+        
+        // Update camera's starting point
+        if context.coordinator.shouldAutoTrack {
+            DispatchQueue.main.async {
+                uiView.moveCamera(cameraUpdate)
+            }
+        }
+    }
+    
+    var cameraUpdate: GMSCameraUpdate {
+        guard !pathPoints.isEmpty else {
+            let location = tracker.googleLocation.last?.location ?? CLLocationCoordinate2D(latitude: 0, longitude: 0)
+            return GMSCameraUpdate.setTarget(location)
+        }
+        let initialBounds = GMSCoordinateBounds()
+        let pathPointsBoundingBox = pathPoints.reduce(initialBounds) { bounds, point in
+            bounds.includingCoordinate(point.location)
+        }
+        return GMSCameraUpdate.fit(pathPointsBoundingBox, withPadding: 1.0)
     }
     
     func setStartingPoint(points: [PathPoint]) -> GMSCameraPosition {
         if let lastPoint = tracker.googleLocation.last {
             let long = lastPoint.location.longitude
             let lat = lastPoint.location.latitude
+            
             let newCameraPosition =  GMSCameraPosition.camera(withLatitude: lat,
                                                               longitude: long,
-                                                              zoom: 17)
+                                                              zoom: 18)
             return newCameraPosition
         } else {
             let appleParkPosition = GMSCameraPosition.camera(withLatitude: 37.35,
                                                             longitude: -122.05,
-                                                            zoom: 17)
+                                                            zoom: 18)
             return appleParkPosition
         }
     }
@@ -128,18 +135,20 @@ struct GoogleMapView: UIViewRepresentable {
     class Coordinator: NSObject, UINavigationControllerDelegate, GMSMapViewDelegate {
 
         var parent: GoogleMapView!
+        let polyline = GMSPolyline()
         
         init(_ parent: GoogleMapView) {
             self.parent = parent
         }
         
         func mapView(_ mapView: GMSMapView, didChange position: GMSCameraPosition) {
-            print("Changing Coordinates to: \(mapView.projection.coordinate(for: mapView.center))")
             let lat = mapView.projection.coordinate(for: mapView.center).latitude
             let len = mapView.projection.coordinate(for: mapView.center).longitude
             parent.tracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: lat, longitude: len), measurementTime: Date(), measurement: 20.0)]
             #warning("Do something with hard coded measurement")
             positionChanged(for: mapView)
+            
+            shouldAutoTrack = false
         }
         
         private func positionChanged(for mapView: GMSMapView) {
@@ -149,7 +158,7 @@ struct GoogleMapView: UIViewRepresentable {
             parent.onPositionChange?(visiblePathPoints)
         }
 
-        var didSetInitLocation: Bool = false   
+        var shouldAutoTrack: Bool = true
         var myLocationSink: Any?
     }
     

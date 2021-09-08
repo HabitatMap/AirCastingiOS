@@ -106,7 +106,6 @@ private extension CreateSessionDetailsView {
                 sessionContext.isIndoor = false
                 isConfirmCreatingSessionActive = true
             }
-            getAndSaveStartingLocation()
 
         }, label: {
             Text(Strings.CreateSessionDetailsView.continueButton)
@@ -160,28 +159,6 @@ private extension CreateSessionDetailsView {
         }
         .sheet(isPresented: $isWifiPopupPresented) {
             WifiPopupView(wifiPassword: $wifiPassword, wifiSSID: $wifiSSID)
-        }
-    }
-
-    func getAndSaveStartingLocation() {
-        let fakeLocation = CLLocationCoordinate2D(latitude: 200.0, longitude: 200.0)
-        if sessionContext.sessionType == .fixed {
-            if isIndoor {
-                sessionContext.startingLocation = fakeLocation
-                locationTracker.googleLocation = [PathPoint.fakePathPoint]
-            } else {
-                guard let lat = (locationTracker.locationManager.location?.coordinate.latitude),
-                      let lon = (locationTracker.locationManager.location?.coordinate.longitude) else { return }
-                locationTracker.googleLocation = [PathPoint.fakePathPoint]
-                #warning("Do something with exposed googleLocation")
-                sessionContext.obtainCurrentLocation(lat: lat, log: lon)
-            }
-        } else {
-            guard let lat = (locationTracker.locationManager.location?.coordinate.latitude),
-                  let lon = (locationTracker.locationManager.location?.coordinate.longitude) else { return }
-            locationTracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: lat, longitude: lon), measurementTime: Date(), measurement: 20.0)]
-            #warning("Do something with hard coded measurement")
-            sessionContext.obtainCurrentLocation(lat: lat, log: lon)
         }
     }
 }
