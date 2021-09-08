@@ -42,7 +42,7 @@ struct PlacePicker: UIViewControllerRepresentable {
             DispatchQueue.main.async { [self] in
                 print(place.description.description as Any)
                 self.parent.address =  place.name!
-                parent.tracker.googleLocation = [PathPoint.fakePathPoint]
+                parent.tracker.googleLocation = [PathPoint(location: place.coordinate, measurementTime: Date(), measurement: 20.0)]
                 self.parent.presentationMode.wrappedValue.dismiss()
             }
         }
