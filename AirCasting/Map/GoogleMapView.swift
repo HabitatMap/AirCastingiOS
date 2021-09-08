@@ -69,7 +69,7 @@ struct GoogleMapView: UIViewRepresentable {
 
         polyline.path = path
         polyline.spans = spans
-        polyline.strokeWidth = 10
+        polyline.strokeWidth = CGFloat(Constants.Polyline.width)
         polyline.map = uiView
         
         // Update camera's starting point

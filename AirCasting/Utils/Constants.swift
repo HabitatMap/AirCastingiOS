@@ -7,4 +7,8 @@ struct Constants {
     enum SensorName {
         static let microphone = "Phone Microphone"
     }
+    
+    enum Polyline {
+        static let width = 10
+    }
 }
