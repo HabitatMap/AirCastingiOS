@@ -48,12 +48,7 @@ struct ConfirmCreatingSessionView: View {
             + Text(Strings.ConfirmCreatingSessionView.contentViewText_2)
             + Text(sessionName)
             .foregroundColor(.accentColor)
-            + contentViewText_Ending
-    }
-
-    private var contentViewText_Ending: Text {
-        Text(Strings.ConfirmCreatingSessionView.contentViewText_3)
-            + Text(Strings.ConfirmCreatingSessionView.contentViewText_4)
+            + Text(Strings.ConfirmCreatingSessionView.contentViewText_3)
     }
 
     var dot: some View {
@@ -87,7 +82,6 @@ struct ConfirmCreatingSessionView: View {
             }
             .font(Font.muli(size: 16))
             .foregroundColor(Color.aircastingGray)
-            .multilineTextAlignment(.leading)
             .lineSpacing(9.0)
             ZStack {
                 if sessionContext.sessionType == .mobile {
