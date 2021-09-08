@@ -9,6 +9,6 @@ struct Constants {
     }
     
     enum Polyline {
-        static let width = 10
+        static let width = 15
     }
 }

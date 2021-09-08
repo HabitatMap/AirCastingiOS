@@ -74,7 +74,6 @@ struct GoogleMapView: UIViewRepresentable {
         
         // Update camera's starting point
         if context.coordinator.shouldAutoTrack {
-            let updatedCameraPosition = setStartingPoint(points: pathPoints)
             DispatchQueue.main.async {
                 uiView.moveCamera(cameraUpdate)
             }
@@ -86,27 +85,10 @@ struct GoogleMapView: UIViewRepresentable {
             let location = tracker.googleLocation.last?.location ?? CLLocationCoordinate2D(latitude: 0, longitude: 0)
             return GMSCameraUpdate.setTarget(location)
         }
-        
-        var north = -90.0
-        var south = 90.0
-        var east = -180.0
-        var west = 180.0
-        
-        pathPoints
-            .forEach { point in
-                let latitude = point.location.latitude
-                let longitude = point.location.longitude
-                
-                north = max(north, latitude)
-                south = min(south, latitude)
-                east = max(east, longitude)
-                west = min(west, longitude)
-            }
-        
-        let southWest = CLLocationCoordinate2D(latitude: south, longitude: west)
-        let northEast = CLLocationCoordinate2D(latitude: north, longitude: east)
-        
-        let pathPointsBoundingBox = GMSCoordinateBounds(coordinate: southWest, coordinate: northEast)
+        let initialBounds = GMSCoordinateBounds()
+        let pathPointsBoundingBox = pathPoints.reduce(initialBounds) { bounds, point in
+            bounds.includingCoordinate(point.location)
+        }
         return GMSCameraUpdate.fit(pathPointsBoundingBox, withPadding: 1.0)
     }
     
