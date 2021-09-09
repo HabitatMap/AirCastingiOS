@@ -58,8 +58,9 @@ struct ABMeasurementsView: View {
                 if session.isFollowed {
                     SessionLoadingView()
                 } else if session.isDormant {
-                    VStack {
+                    VStack(alignment: .leading, spacing: 8) {
                         measurementsTitle
+                        streamNames
                         if !isCollapsed && showLoadingIndicator {
                             ProgressView()
                                 .progressViewStyle(CircularProgressViewStyle())
@@ -68,18 +69,7 @@ struct ABMeasurementsView: View {
                 } else {
                     VStack(alignment: .leading, spacing: 8) {
                         Text(Strings.SessionCart.parametersText)
-                        HStack {
-                            Group {
-                                ForEach(streams, id : \.self) { stream in
-                                    SingleMeasurementView(stream: stream,
-                                                          value: nil,
-                                                          threshold: nil,
-                                                          selectedStream: .constant(nil),
-                                                          measurementPresentationStyle: .hideValues)
-                                }
-                            }.padding(.horizontal, 8)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                        }
+                        streamNames
                     }
                 }
             }
@@ -120,6 +110,21 @@ struct ABMeasurementsView: View {
                 }
             }
         })
+    }
+    
+    private var streamNames: some View {
+        return HStack {
+            Group {
+                ForEach(streamsToShow, id : \.self) { stream in
+                    SingleMeasurementView(stream: stream,
+                                          value: nil,
+                                          threshold: nil,
+                                          selectedStream: .constant(nil),
+                                          measurementPresentationStyle: .hideValues)
+                }
+            }.padding(.horizontal, 8)
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
     }
 }
 
