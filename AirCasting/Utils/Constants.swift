@@ -8,7 +8,10 @@ struct Constants {
         static let microphone = "Phone Microphone"
     }
     
-    enum Polyline {
-        static let width = 15
+    enum Map {
+        static let polylineWidth = 5
+        static let dotRadius = 10
+        static let dotWidth = 20
+        static let dotHeight = 20
     }
 }
