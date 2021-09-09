@@ -60,7 +60,7 @@ struct ABMeasurementsView: View {
                 } else if session.isDormant {
                     VStack(alignment: .leading, spacing: 8) {
                         measurementsTitle
-                        allCellMeasurementsTitle
+                        streamNames
                         if !isCollapsed && showLoadingIndicator {
                             ProgressView()
                                 .progressViewStyle(CircularProgressViewStyle())
@@ -69,7 +69,7 @@ struct ABMeasurementsView: View {
                 } else {
                     VStack(alignment: .leading, spacing: 8) {
                         Text(Strings.SessionCart.parametersText)
-                        allCellMeasurementsTitle
+                        streamNames
                     }
                 }
             }
@@ -112,7 +112,7 @@ struct ABMeasurementsView: View {
         })
     }
     
-    private var allCellMeasurementsTitle: some View {
+    private var streamNames: some View {
         return HStack {
             Group {
                 ForEach(streamsToShow, id : \.self) { stream in
