@@ -53,6 +53,7 @@ private extension SessionHeaderView {
         formatter.timeStyle = .short
         formatter.dateStyle = .medium
         var date = ""
+        var additionalDate = ""
         
             guard let start = session.startTime else { return Text("") }
             let end = session.endTime ?? Date()
@@ -64,7 +65,14 @@ private extension SessionHeaderView {
         } else {
             if string.contains("–") {
                 let time = string.components(separatedBy: "–")
-                let endTime12 = time.last?.trimmingCharacters(in: .whitespaces)
+                var timeLast = time.last
+                // some of the dates on fixed session are different we need to handle that 'out of nowhere (few days sessions)' case
+                if ((time.last?.contains("/")) != nil) {
+                    additionalDate = (time.last?.components(separatedBy: ",").first)!
+                    timeLast = time.last?.components(separatedBy: ",").last
+                }
+                
+                let endTime12 = timeLast!.trimmingCharacters(in: .whitespaces)
             
                 let last = time.first!
                 let time2 = last.components(separatedBy: ",")
@@ -72,10 +80,13 @@ private extension SessionHeaderView {
                 var startTime12 = time2.last?.trimmingCharacters(in: .whitespaces)
                 
                 if !(startTime12!.contains("PM") || startTime12!.contains("AM")) {
-                    (endTime12?.contains("PM"))! ? startTime12?.append(" PM") : startTime12?.append(" AM")
+                    (endTime12.contains("PM")) ? startTime12?.append(" PM") : startTime12?.append(" AM")
                 }
-
-                date.append(", \(timeConversion24(time12: startTime12!))-\(timeConversion24(time12: endTime12!))")
+                if additionalDate == "" {
+                    date.append(", \(timeConversion24(time12: startTime12!))-\(timeConversion24(time12: endTime12))")
+                } else {
+                    date.append(", \(timeConversion24(time12: startTime12!))-\(additionalDate), \(timeConversion24(time12: endTime12))")
+                }
             } else {
                 let time2 = string.components(separatedBy: ",")
                 date = time2.first!
