@@ -53,9 +53,14 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
         }
     }
     
-    private func updateForSession(uuid: SessionUUID) {
-        #warning("TODO: change last sync")
-        let syncDate = Date().addingTimeInterval(-100)
+    private func updateForSession(uuid: SessionUUID) {        
+        let session = try? persistenceController.viewContext.existingSession(uuid: uuid)
+        let lastMeasurementTime = session?.allStreams?
+            .compactMap(\.lastMeasurementTime)
+            .sorted()
+            .last
+        let syncDate = SyncHelper().calculateLastSync(sessionEndTime: session?.endTime, lastMeasurementTime: lastMeasurementTime)
+        
         lastFetchCancellableTask = fixedSessionService.getFixedMeasurement(uuid: uuid, lastSync: syncDate, completion: { [removeOldService, persistenceController] result in
             DispatchQueue.main.async {
                 switch result {
@@ -82,5 +87,22 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
                 }
             }
         })
+    }
+}
+
+class SyncHelper {
+    
+    func calculateLastSync(sessionEndTime: Date?, lastMeasurementTime: Date?) -> Date {
+        let measurementTimeframe: Double = 24 * 60 * 60 // 24 hours in seconds
+        
+        guard let sessionEndTime = sessionEndTime else { return Date() }
+        let sessionEndTimeSeconds = sessionEndTime.timeIntervalSince1970
+        
+        let last24hours = Date(timeIntervalSince1970: (sessionEndTimeSeconds - measurementTimeframe))
+        
+        guard let lastMeasurementTime = lastMeasurementTime else { return last24hours }
+        let lastMeasurementSeconds = lastMeasurementTime.timeIntervalSince1970
+        
+        return ((sessionEndTimeSeconds - lastMeasurementSeconds) < measurementTimeframe) ? lastMeasurementTime : last24hours
     }
 }

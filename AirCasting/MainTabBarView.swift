@@ -14,6 +14,9 @@ struct MainTabBarView: View {
     let measurementUpdatingService: MeasurementUpdatingService
     let urlProvider: BaseURLProvider
     let measurementStreamStorage: MeasurementStreamStorage
+    @State var dashboardImage: String = "bluehome"
+    let sessionStoppableFactory: SessionStoppableFactory
+
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     @EnvironmentObject var persistenceController: PersistenceController
     @EnvironmentObject var microphoneManager: MicrophoneManager
@@ -24,6 +27,7 @@ struct MainTabBarView: View {
     @StateObject var sessionContext: CreateSessionContext
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @EnvironmentObject private var locationTracker: LocationTracker
+    var defaultSessionSynchronizer: DefaultSessionSynchronizer
     
     var body: some View {
         TabView(selection: $tabSelection.selection) {
@@ -34,6 +38,13 @@ struct MainTabBarView: View {
         .onAppear {
             try! measurementUpdatingService.start()
         }
+        .onChange(of: tabSelection.selection, perform: { _ in
+            if tabSelection.selection == .dashboard {
+                dashboardImage = "bluehome"
+            } else {
+                dashboardImage = "home"
+            }
+        })
         .environmentObject(tabSelection)
         .environmentObject(selectedSection)
     }
@@ -43,10 +54,10 @@ private extension MainTabBarView {
     // Tab Bar views
     private var dashboardTab: some View {
         NavigationView {
-            DashboardView(coreDataHook: CoreDataHook(context: persistenceController.viewContext), measurementStreamStorage: measurementStreamStorage)
+            DashboardView(coreDataHook: CoreDataHook(context: persistenceController.viewContext), measurementStreamStorage: measurementStreamStorage, sessionStoppableFactory: sessionStoppableFactory, defaultSessionSynchronizer: defaultSessionSynchronizer)
         }
         .tabItem {
-            Image(systemName: "house")
+            Image(dashboardImage)
         }
         .tag(TabBarSelection.Tab.dashboard)
     }
@@ -91,10 +102,10 @@ struct ContentView_Previews: PreviewProvider {
     private static let persistenceController = PersistenceController(inMemory: true)
 
     static var previews: some View {
-        MainTabBarView(measurementUpdatingService: MeasurementUpdatingServiceMock(), urlProvider: DummyURLProvider(), measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionSynchronizer: DummySessionSynchronizer(), sessionContext: CreateSessionContext())
+        MainTabBarView(measurementUpdatingService: MeasurementUpdatingServiceMock(), urlProvider: DummyURLProvider(), measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionStoppableFactory: SessionStoppableFactoryDummy(), sessionSynchronizer: DummySessionSynchronizer(), sessionContext: CreateSessionContext(), defaultSessionSynchronizer: SessionSynchronizationViewModel())
             .environmentObject(UserAuthenticationSession())
             .environmentObject(BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: PreviewMeasurementStreamStorage())))
-            .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionSynchronizer: DummySessionSynchronizer()))
+            .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
             .environment(\.managedObjectContext, persistenceController.viewContext)
     }
 

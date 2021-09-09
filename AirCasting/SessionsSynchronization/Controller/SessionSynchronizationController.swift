@@ -5,8 +5,7 @@ import Foundation
 import Combine
 import CoreLocation
 
-
-final class SessionSynchronizationController: SessionSynchronizer, ObservableObject {
+final class SessionSynchronizationController: SessionSynchronizer {
     
     /// A plugin point for error handlers
     var errorStream: SessionSynchronizerErrorStream?
@@ -16,10 +15,11 @@ final class SessionSynchronizationController: SessionSynchronizer, ObservableObj
     private let upstream: SessionUpstream
     private let store: SessionSynchronizationStore
     private let dataConverter = SynchronizationDataConverter()
+    private let viewModel: SessionSynchronizationViewModel
     
     // Progress tracking for filtering requests while already syncing
     // (can this be somehow moved to a custom operator or something?)
-    @Published var syncInProgress: Bool = false
+//    var syncInProgress: Bool = false
     // Simple lock is sufficient here, no need for GCD
     private let lock = NSRecursiveLock()
     
@@ -28,26 +28,23 @@ final class SessionSynchronizationController: SessionSynchronizer, ObservableObj
     init(synchronizationContextProvider: SessionSynchronizationContextProvidable,
          downstream: SessionDownstream,
          upstream: SessionUpstream,
-         store: SessionSynchronizationStore) {
+         store: SessionSynchronizationStore,
+         viewModel: SessionSynchronizationViewModel) {
         self.synchronizationContextProvider = synchronizationContextProvider
         self.downstream = downstream
         self.upstream = upstream
         self.store = store
+        self.viewModel = viewModel
     }
     
     func triggerSynchronization(completion: (() -> Void)?) {
         lock.lock(); defer { lock.unlock() }
-        if syncInProgress { return }
-        DispatchQueue.main.async {
-            self.syncInProgress = true
-        }
+        viewModel.toggleSyncState()
         
         let onFinish = {
             Log.info("[SYNC] Ending synchronization")
             completion?()
-            DispatchQueue.main.async {
-                self.syncInProgress = false
-            }
+            self.viewModel.finishSync()
         }
         
         startSynchronization()

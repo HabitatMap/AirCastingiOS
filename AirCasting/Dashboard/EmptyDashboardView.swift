@@ -11,58 +11,63 @@ import SwiftUI
 struct EmptyDashboardView: View {
     @EnvironmentObject private var tabSelection: TabBarSelection
     @EnvironmentObject var selectedSection: SelectSection
-    @EnvironmentObject var sessionSynchronizationController: SessionSynchronizationController
+    var defaultSessionSynchronizer: DefaultSessionSynchronizer
     var body: some View {
         emptyState
     }
     var shouldSessionFetch: Bool {
-        (selectedSection.selectedSection == .mobileDormant || selectedSection.selectedSection == .fixed) && sessionSynchronizationController.syncInProgress
+        (selectedSection.selectedSection == .mobileDormant || selectedSection.selectedSection == .fixed) && defaultSessionSynchronizer.syncInProgress
     }
 
     private var emptyState: some View {
-        VStack(spacing: 45) {
-            VStack {
-                if shouldSessionFetch {
-                    ProgressView(Strings.EmptyOnboarding.fetchingText)
-                        .progressViewStyle(CircularProgressViewStyle())
-                }
-                Spacer()
-                VStack(spacing: 14) {
-                    Text(Strings.EmptyOnboarding.title)
-                        .multilineTextAlignment(.center)
-                        .font(Font.moderate(size: 24, weight: .bold))
-                        .foregroundColor(Color.darkBlue)
-                        .minimumScaleFactor(0.1)
-                        .fixedSize(horizontal: false, vertical: true)
 
-                    Text(Strings.EmptyOnboarding.description)
-                        .font(Font.muli(size: 16))
-                        .foregroundColor(Color.aircastingGray)
-                        .multilineTextAlignment(.center)
-                        .lineSpacing(9.0)
-                        .padding(.horizontal, 45)
-                        .fixedSize(horizontal: false, vertical: true)
-                }.padding(.bottom, 30)
-                VStack(spacing: 20) {
+        ZStack(alignment: .bottomTrailing) {
+            Image("dashboard-background-thing")
+            
+            VStack(spacing: 45) {
+                VStack {
+                    if shouldSessionFetch {
+                        ProgressView(Strings.EmptyOnboarding.fetchingText)
+                            .progressViewStyle(CircularProgressViewStyle())
+                    }
+                    Spacer()
+                    VStack(spacing: 14) {
+                        Text(Strings.EmptyOnboarding.title)
+                            .multilineTextAlignment(.center)
+                            .font(Font.moderate(size: 24, weight: .bold))
+                            .foregroundColor(Color.darkBlue)
+                            .minimumScaleFactor(0.1)
+                            .fixedSize(horizontal: false, vertical: true)
+                        
+                        Text(Strings.EmptyOnboarding.description)
+                            .font(Font.muli(size: 16))
+                            .foregroundColor(Color.aircastingGray)
+                            .multilineTextAlignment(.center)
+                            .lineSpacing(9.0)
+                            .padding(.horizontal, 45)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    .padding(.bottom, 30)
                     Button(action: {
                         tabSelection.selection = .createSession
                     }, label: {
                         Text(Strings.EmptyOnboarding.newSession)
                             .bold()
                     })
-                        .frame(maxWidth: 250)
-                        .buttonStyle(BlueButtonStyle())
+                    .frame(maxWidth: 250)
+                    .buttonStyle(BlueButtonStyle())
+                    Spacer()
                 }
-                Spacer()
+                airBeamDescription
+                    .frame(minWidth: 250, idealWidth: .infinity, maxWidth: .infinity, minHeight: 110, idealHeight: 110, maxHeight: 110, alignment: .center)
+                    .padding(.bottom)
             }
-            airBeamDescription
-                .frame(minWidth: 250, idealWidth: .infinity, maxWidth: .infinity, minHeight: 110, idealHeight: 110, maxHeight: 110, alignment: .center)
-                .padding(.bottom)
         }
         .padding()
         .background(Color(red: 251/255, green: 253/255, blue: 255/255))
     }
 }
+
 private extension EmptyDashboardView {
     private var airBeamDescription: some View {
         ZStack {
@@ -91,7 +96,7 @@ private extension EmptyDashboardView {
 #if DEBUG
 struct EmptyDashboard_Previews: PreviewProvider {
     static var previews: some View {
-        EmptyDashboardView()
+        EmptyDashboardView(defaultSessionSynchronizer: SessionSynchronizationViewModel())
     }
 }
 #endif

@@ -86,7 +86,6 @@ struct SelectDeviceView: View {
             micLabels
         })
         .buttonStyle(WhiteSelectingButtonStyle(isSelected: selected == 2))
-        .disabled(microphoneManager.isRecording)
     }
     
     var bluetoothLabels: some View {
@@ -114,7 +113,7 @@ struct SelectDeviceView: View {
     var chooseButton: some View {
         Button(action: {
             if selected == 1 {
-                if CBCentralManager.authorization != .denied {
+                if CBCentralManager.authorization != .denied && bluetoothManager.centralManagerState == .poweredOn {
                     isPowerABLinkActive = true
                 } else {
                     isTurnOnBluetoothLinkActive = true

@@ -20,6 +20,7 @@ struct ConfirmCreatingSessionView: View {
     @State private var isPresentingAlert: Bool = false
     @EnvironmentObject var selectedSection: SelectSection
     @EnvironmentObject private var sessionContext: CreateSessionContext
+    @EnvironmentObject private var locationTracker: LocationTracker
     let sessionCreator: SessionCreator
     @State private var didStartRecordingSession = false
     @EnvironmentObject private var tabSelection: TabBarSelection
@@ -37,38 +38,65 @@ struct ConfirmCreatingSessionView: View {
 
     private var contentViewWithAlert: some View {
         contentView.alert(isPresented: $isPresentingAlert) {
-            Alert(title: Text(Strings.ConfirmCreatingSessionView.alertTitle), message: Text(error?.localizedDescription ?? Strings.ConfirmCreatingSessionView.alertMessage), dismissButton: .default(Text(Strings.ConfirmCreatingSessionView.alertOK), action: {                error = nil
+            Alert(title: Text(Strings.ConfirmCreatingSessionView.alertTitle), message: Text(error?.localizedDescription ?? Strings.ConfirmCreatingSessionView.alertMessage), dismissButton: .default(Text(Strings.ConfirmCreatingSessionView.alertOK), action: { error = nil
             }))
         }
     }
-    
-    private var descriptionText: some View {
+    private var defaultDescriptionText: Text {
         Text(Strings.ConfirmCreatingSessionView.contentViewText_1)
             + Text(sessionType)
             .foregroundColor(.accentColor)
             + Text(Strings.ConfirmCreatingSessionView.contentViewText_2)
             + Text(sessionName)
             .foregroundColor(.accentColor)
-            + Text(Strings.ConfirmCreatingSessionView.contentViewTextBottomPart)
+            + Text(Strings.ConfirmCreatingSessionView.contentViewText_3)
+    }
+
+    var dot: some View {
+        Capsule()
+            .fill(Color.accentColor)
+            .frame(width: 15, height: 15)
+    }
+    
+    private var descriptionTextFixed: some View {
+            defaultDescriptionText
+                + Text((sessionContext.isIndoor!) ? "" : Strings.ConfirmCreatingSessionView.contentViewText_4)
+    }
+    
+    private var descriptionTextMobile: some View {
+            defaultDescriptionText
+                + Text(Strings.ConfirmCreatingSessionView.contentViewText_4Mobile)
     }
 
     private var contentView: some View {
         VStack(alignment: .leading, spacing: 40) {
-            ProgressView(value: 0.90)
+            ProgressView(value: 0.95)
             Text(Strings.ConfirmCreatingSessionView.contentViewTitle)
                 .font(Font.moderate(size: 24, weight: .bold))
                 .foregroundColor(.darkBlue)
             VStack(alignment: .leading, spacing: 15) {
-                descriptionText
+                if sessionContext.sessionType == .fixed {
+                    descriptionTextFixed
+                } else {
+                    descriptionTextMobile
+                }
             }
             .font(Font.muli(size: 16))
             .foregroundColor(Color.aircastingGray)
             .multilineTextAlignment(.leading)
             .lineSpacing(9.0)
-            GoogleMapView(pathPoints: [], isMyLocationEnabled: true)
+            ZStack {
+                if sessionContext.sessionType == .mobile {
+                    GoogleMapView(pathPoints: [], isMyLocationEnabled: true)
+                } else if !(sessionContext.isIndoor ?? false) {
+                    GoogleMapView(pathPoints: [])
+                    dot
+                }
+            }
             Button(action: {
                 isActive = true
                 sessionCreator.createSession(sessionContext) { result in
+
                     DispatchQueue.main.async {
                         switch result {
                         case .success:
@@ -90,8 +118,9 @@ struct ConfirmCreatingSessionView: View {
                 Text(Strings.ConfirmCreatingSessionView.startRecording)
                     .bold()
             })
-            .buttonStyle(BlueButtonStyle())
-        }.padding()
+                .buttonStyle(BlueButtonStyle())
+        }
+            .padding()
     }
 }
 

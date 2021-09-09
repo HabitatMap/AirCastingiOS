@@ -25,11 +25,9 @@ final class MicrophoneManager: NSObject, ObservableObject {
     private var levelTimer: Timer?
     private(set) var session: Session?
     private lazy var locationProvider = LocationProvider()
-    let sessionSynchronizer: SessionSynchronizer
 
-    init(measurementStreamStorage: MeasurementStreamStorage, sessionSynchronizer: SessionSynchronizer) {
+    init(measurementStreamStorage: MeasurementStreamStorage) {
         self.measurementStreamStorage = measurementStreamStorage
-        self.sessionSynchronizer = sessionSynchronizer
         super.init()
     }
 
@@ -61,8 +59,6 @@ final class MicrophoneManager: NSObject, ObservableObject {
         isRecording = false
         recorder.stop()
         recorder = nil
-        try? measurementStreamStorage.updateSessionStatus(.FINISHED, for: session!.uuid)
-        sessionSynchronizer.triggerSynchronization()
     }
 
     deinit {
@@ -114,7 +110,7 @@ private extension MicrophoneManager {
 
     func createMeasurementStream(for session: Session) throws -> MeasurementStreamLocalID {
         let stream = MeasurementStream(id: nil,
-                                       sensorName: "Phone Microphone",
+                                       sensorName: Constants.SensorName.microphone,
                                        sensorPackageName: "Builtin",
                                        measurementType: "Sound Level",
                                        measurementShortType: "db",

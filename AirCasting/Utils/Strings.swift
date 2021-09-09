@@ -82,7 +82,7 @@ struct Strings {
     
     enum LoadingSession {
         static let title: String = "Your AirBeam is gathering data."
-        static let description: String = "Your AirBeam is gathering data."
+        static let description: String = "Measurements will appear in 3 minutes."
     }
     
     struct SessionCartView {
@@ -92,7 +92,7 @@ struct Strings {
         static let unfollow: String = "unfollow"
     }
     
-    struct SelectPeripheralView {
+    enum SelectPeripheralView {
         static let airBeamsText: String = "AirBeams"
         static let otherText: String = "Other devices"
         static let alertTitle: String = "Connection error"
@@ -103,16 +103,18 @@ struct Strings {
         static let connectText: String = "Connect"
     }
     
-    struct SessionCart {
-        static let measurementsTitle: String = "Most recent measurement:"
+    enum SessionCart {
+        static let measurementsTitle: String = "Last second measurement:"
         static let dormantMeasurementsTitle: String = "Avg value:"
         static let heatmapSettingsTitle: String = "Heatmap settings"
         static let heatmapSettingsdescription: String = "Values beyond Min and Max will not be displayed."
         static let saveChangesButton: String = "Save changes"
         static let resetChangesButton: String = "Reset to default"
+        static let parametersText: String = "Parameters:"
+        static let lastMinuteMeasurement: String = "Last minute measurement"
     }
     
-    struct Thresholds {
+    enum Thresholds {
         static let veryHigh: String = "Max"
         static let high: String = "High"
         static let medium: String = "Medium"
@@ -120,14 +122,14 @@ struct Strings {
         static let veryLow: String = "Min"
     }
     
-    struct WifiPopupView {
+    enum WifiPopupView {
         static let wifiPlaceholder: String = "Wi-Fi name"
         static let passwordPlaceholder: String = "Password"
         static let connectButton: String = "Connect"
         static let cancelButton: String = "Cancel"
         static let passwordTitle: String = "Provide name and password for the Wi-Fi network"
-        static let nameAndPasswordTitle_1: String = "Provide password for"
-        static let nameAndPasswordTitle_2: String = "network"
+        static let nameAndPasswordTitle_1: String = "Provide password for "
+        static let nameAndPasswordTitle_2: String = " network"
         static let differentNetwork: String = "I'd like to connect with a different Wi-Fi network."
     }
 
@@ -291,7 +293,7 @@ struct Strings {
  """
     }
 
-    struct EmptyOnboarding {
+    enum EmptyOnboarding {
         static let title: String = "Start recording a \nmobile session"
         static let description: String = "If you plan on moving around \nwhile recording measurements."
         static let newSession: String = "Record mobile session"
@@ -419,26 +421,32 @@ struct Strings {
         static let placementPicker_2: String = "Indoor"
         static let placementPicker_3: String = "Outdoor"
         static let transmissionPicker: String = "Data transmission:"
-        static let callularText: String = "Cellular"
+        static let cellularText: String = "Cellular"
         static let wifiText: String = "Wi-Fi"
     }
         
-    struct AirBeamConnector {
+    enum AirBeamConnector {
         static let connectionTimeoutTitle: String = "Connection error"
         static let connectionTimeoutDescription: String = "Bluetooth connection failed. Please toggle the power on your device and try again."
         static let connectionTimeoutActionTitle: String = "Got it!"
     }
     
-    struct ConfirmCreatingSessionView {
+    enum ConfirmCreatingSessionView {
         static let alertTitle: String = "Failure"
         static let alertMessage: String = "Failed to create session"
         static let alertOK: String = "Got it!"
         static let contentViewTitle: String = "Are you ready?"
         static let contentViewText_1: String = "Your "
         static let contentViewText_2: String = " session "
-        static let contentViewText_3: String = " is ready to start gathering data."
+        static let contentViewText_3: String = " is ready to start gathering data.\n\n"
         static let contentViewText_4: String = "Hang your AirBeam in a secure position, then press the start recording button below."
-        static let contentViewTextBottomPart: String = ConfirmCreatingSessionView.contentViewText_3 + ConfirmCreatingSessionView.contentViewText_4
+        static let contentViewText_4Mobile: String = "Move to your starting location, confirm your location is accurate on the map, then press the start recording button below"
         static let startRecording: String = "Start recording"
+    }
+    
+    enum ChooseCustomLocationView {
+        static let sessionLocation: String = "Session location"
+        static let titleLabel: String = "Search the address and adjust the marker to indicate an exact placement of Your AirBeam"
+        static let continueButton: String = "Continue"
     }
 }

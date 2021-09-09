@@ -34,14 +34,22 @@ class MobilePeripheralSessionManager {
         }
     }
     
-    func finishSession(for peripheral: CBPeripheral) {
+    func finishActiveSession(centralManger: CBCentralManager) {
+        guard let activePeripheral = activeMobileSession?.peripheral else { return }
+        finishSession(for: activePeripheral, centralManger: centralManger)
+    }
+    
+    func finishSession(for peripheral: CBPeripheral, centralManger: CBCentralManager) {
         if activeMobileSession?.peripheral == peripheral {
             let session = activeMobileSession!.session
             
             do {
-                try measurementStreamStorage.updateSessionStatus(.FINISHED, for: session.uuid) } catch {
-                    Log.error("Unable to change session status to finished because of an error: \(error)")
-                }
+                try measurementStreamStorage.updateSessionStatus(.FINISHED, for: session.uuid)
+                try measurementStreamStorage.updateSessionEndtime(Date(), for: session.uuid)
+            } catch {
+                Log.error("Unable to change session status to finished because of an error: \(error)")
+            }
+            centralManger.cancelPeripheralConnection(activeMobileSession!.peripheral)
             activeMobileSession = nil
             locationProvider.stopUpdatingLocation()
         }
@@ -49,10 +57,11 @@ class MobilePeripheralSessionManager {
     
     private func updateStreams(stream: ABMeasurementStream, sessionUUID: SessionUUID) throws {
         let  location = locationProvider.currentLocation?.coordinate
-        
-        guard let id = streamsIDs[stream.sensorName] else {
+        let existingStreamID = try? measurementStreamStorage.existingMeasurementStream(sessionUUID, name: stream.sensorName)
+        guard let id = existingStreamID else {
             return try createSessionStream(stream, sessionUUID)
         }
+        
         try measurementStreamStorage.addMeasurementValue(stream.measuredValue, at: location, toStreamWithID: id)
     }
     
