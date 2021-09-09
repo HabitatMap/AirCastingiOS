@@ -55,20 +55,31 @@ struct GoogleMapView: UIViewRepresentable {
     func updateUIView(_ uiView: GMSMapView, context: Context) {
         // Drawing the path
         let path = GMSMutablePath()
+        let dot = context.coordinator.dot
+        
         for point in pathPoints {
             let coordinate = point.location
             path.add(coordinate)
+            
+            dot.position = coordinate
+            dot.iconView = UIView()
+            dot.iconView?.frame = CGRect(x: 0, y: 0,
+                                         width: Constants.Map.dotWidth,
+                                         height: Constants.Map.dotHeight)
+            dot.iconView?.layer.cornerRadius = CGFloat(Constants.Map.dotRadius)
+            dot.iconView?.backgroundColor = color(point: point)
+            dot.map = uiView
         }
         let polyline = context.coordinator.polyline
         let spans = pathPoints.map { point -> GMSStyleSpan in
-            let color = colorPolyline(point: point)
+            let color = color(point: point)
             return GMSStyleSpan(style: GMSStrokeStyle.solidColor(color),
                                 segments: 1)
         }
 
         polyline.path = path
         polyline.spans = spans
-        polyline.strokeWidth = CGFloat(Constants.Polyline.width)
+        polyline.strokeWidth = CGFloat(Constants.Map.polylineWidth)
         polyline.map = uiView
         
         // Update camera's starting point
@@ -108,7 +119,7 @@ struct GoogleMapView: UIViewRepresentable {
         }
     }
 
-    func colorPolyline(point: PathPoint) -> UIColor {
+    func color(point: PathPoint) -> UIColor {
         let measurement = Int32(point.measurement)
         guard let thresholds = threshold else { return .white }
         
@@ -136,6 +147,7 @@ struct GoogleMapView: UIViewRepresentable {
 
         var parent: GoogleMapView!
         let polyline = GMSPolyline()
+        let dot = GMSMarker()
         
         init(_ parent: GoogleMapView) {
             self.parent = parent
