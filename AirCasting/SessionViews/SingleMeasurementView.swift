@@ -22,6 +22,7 @@ struct SingleMeasurementView: View {
                                          value: value,
                                          selectedStream: $selectedStream,
                                          threshold: threshold)
+                    .scaledToFill()
                 
             }
         }
@@ -53,7 +54,7 @@ struct SingleMeasurementView: View {
                                        thresholds: threshold)
                     Text("\(Int(value))")
                         .font(Font.moderate(size: 14, weight: .regular))
-                        .scaledToFill()
+//                        .scaledToFill()
                 }
             })
             .buttonStyle(AirCastingStyling.BorderedButtonStyle(isSelected: selectedStream == stream,
