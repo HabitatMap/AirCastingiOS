@@ -34,9 +34,9 @@ struct SessionHeaderView: View {
             }.sheet(isPresented: $shareModal, content: {
                 ShareView(showModal: $showModal)
             })
-                .sheet(isPresented: $deleteModal, content: {
-                    DeleteView(viewModel: DefaultDeleteSessionViewModel(), deleteModal: $deleteModal)
-                })
+            .sheet(isPresented: $deleteModal, content: {
+                DeleteView(viewModel: DefaultDeleteSessionViewModel(), deleteModal: $deleteModal)
+            })
             nameLabelAndExpandButton
         }.onChange(of: isCollapsed, perform: { value in
             isCollapsed ? (chevronIndicator = "chevron.down") :  (chevronIndicator = "chevron.up")
@@ -48,18 +48,43 @@ struct SessionHeaderView: View {
 
 private extension SessionHeaderView {
     var dateAndTime: some View {
-        guard let start = session.startTime else {
-            return Text("")
-        }
-        let end = session.endTime ?? Date()
         
         let formatter = DateIntervalFormatter()
-        
         formatter.timeStyle = .short
         formatter.dateStyle = .medium
-        let string = DateIntervalFormatter().string(from: start, to: end)
-        let replaced = string.replacingOccurrences(of: "—", with: "-")
-        return Text(replaced)
+        var date = ""
+        
+            guard let start = session.startTime else { return Text("") }
+            let end = session.endTime ?? Date()
+            let string = DateIntervalFormatter().string(from: start, to: end)
+        
+        if is24Hour() {
+            let replaced = string.replacingOccurrences(of: "—", with: "-")
+            return Text(replaced)
+        } else {
+            if string.contains("–") {
+                let time = string.components(separatedBy: "–")
+                let endTime12 = time.last?.trimmingCharacters(in: .whitespaces)
+            
+                let last = time.first!
+                let time2 = last.components(separatedBy: ",")
+                date = time2.first!
+                var startTime12 = time2.last?.trimmingCharacters(in: .whitespaces)
+                
+                if !(startTime12!.contains("PM") || startTime12!.contains("AM")) {
+                    (endTime12?.contains("PM"))! ? startTime12?.append(" PM") : startTime12?.append(" AM")
+                }
+
+                date.append(", \(timeConversion24(time12: startTime12!))-\(timeConversion24(time12: endTime12!))")
+            } else {
+                let time2 = string.components(separatedBy: ",")
+                date = time2.first!
+                let startTime12 = time2.last?.trimmingCharacters(in: .whitespaces)
+                
+                date.append(", \(timeConversion24(time12: startTime12!))")
+            }
+            return Text(date)
+        }
     }
     
     var nameLabelAndExpandButton: some View {
@@ -95,20 +120,20 @@ private extension SessionHeaderView {
             }
         }.alert(isPresented: $showingFinishAlert) {
             Alert(title: Text(Strings.SessionHeaderView.finishAlertTitle) +
-                Text(session.name ?? Strings.SessionHeaderView.finishAlertTitle_2)
-                +
-                Text(Strings.SessionHeaderView.finishAlertTitle_3),
-                message: Text(Strings.SessionHeaderView.finishAlertMessage_1) +
+                    Text(session.name ?? Strings.SessionHeaderView.finishAlertTitle_2)
+                    +
+                    Text(Strings.SessionHeaderView.finishAlertTitle_3),
+                  message: Text(Strings.SessionHeaderView.finishAlertMessage_1) +
                     Text(Strings.SessionHeaderView.finishAlertMessage_2) +
                     Text(Strings.SessionHeaderView.finishAlertMessage_3),
-                primaryButton: .default(Text(Strings.SessionHeaderView.finishAlertButton), action: {
+                  primaryButton: .default(Text(Strings.SessionHeaderView.finishAlertButton), action: {
                     do {
                         try sessionStopperFactory.getSessionStopper(for: session).stopSession()
                     } catch {
                         Log.info("error when stpoing session - \(error)")
                     }
-                }),
-                secondaryButton: .cancel())
+                  }),
+                  secondaryButton: .cancel())
         }
     }
     
@@ -167,7 +192,7 @@ private extension SessionHeaderView {
             Label(Strings.SessionHeaderView.shareButton, systemImage: "square.and.arrow.up")
         }
     }
-
+    
     var actionsMenuFixedDeleteButton: some View {
         Button {
             deleteModal.toggle()
