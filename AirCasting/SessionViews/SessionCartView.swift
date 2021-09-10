@@ -194,11 +194,31 @@ private extension SessionCartView {
     }
     
     func pollutionChart(thresholds: [SensorThreshold]) -> some View {
-        Group {
-            if let selectedStream = selectedStream {
-                ChartView(stream: selectedStream,
-                          thresholds: thresholds)
-                    .frame(height: 200)
+        
+        let start = session.startTime
+        let end = session.endTime ?? Date()
+        
+        let dateFormatter : DateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "HH:mm"
+        let startTime = dateFormatter.string(from: start!)
+        let endTime = dateFormatter.string(from: end)
+        
+        return VStack() {
+            Group {
+                if let selectedStream = selectedStream {
+                    ChartView(stream: selectedStream,
+                              thresholds: thresholds)
+                        .frame(height: 120)
+                        .disabled(true)
+                    HStack() {
+                            Text(startTime)
+                            Spacer()
+                        Text("\(Strings.SessionCartView.avgSession) \(selectedStream.measurementShortType ?? "")")
+                            Spacer()
+                            Text(endTime)
+                    }.foregroundColor(.aircastingGray)
+                    .font(Font.muli(size: 13, weight: .semibold))
+                }
             }
         }
     }
@@ -230,16 +250,16 @@ private extension SessionCartView {
     }
 }
 
-// #if DEBUG
-// struct SessionCell_Previews: PreviewProvider {
-//    static var previews: some View {
-//        EmptyView()
-//        SessionCartView(session: SessionEntity.mock,
-//                                sessionCartViewModel: SessionCartViewModel(followingSetter: MockSessionFollowingSettable()),
-//                                thresholds: [.mock, .mock], sessionStoppableFactory: SessionStoppableFactoryDummy())
-//            .padding()
-//            .previewLayout(.sizeThatFits)
-//            .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
-//    }
-// }
-// #endif
+ #if DEBUG
+ struct SessionCell_Previews: PreviewProvider {
+    static var previews: some View {
+        EmptyView()
+        SessionCartView(session: SessionEntity.mock,
+                                sessionCartViewModel: SessionCartViewModel(followingSetter: MockSessionFollowingSettable()),
+                                thresholds: [.mock, .mock], sessionStoppableFactory: SessionStoppableFactoryDummy(), measurementStreamStorage: MeasurementStreamStorage.self as! MeasurementStreamStorage)
+            .padding()
+            .previewLayout(.sizeThatFits)
+            .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
+    }
+ }
+ #endif
