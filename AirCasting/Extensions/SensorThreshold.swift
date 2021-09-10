@@ -26,6 +26,23 @@ extension SensorThreshold {
     }
 }
 
+extension SensorThreshold {
+    func colorFor(value: Int32) -> Color {
+        switch value {
+        case thresholdVeryLow..<thresholdLow:
+            return .aircastingGreen
+        case thresholdLow..<thresholdMedium:
+            return .aircastingYellow
+        case thresholdMedium..<thresholdHigh:
+            return .aircastingOrange
+        case thresholdHigh..<thresholdVeryHigh:
+            return .aircastingRed
+        default:
+            return .white
+        }
+    }
+}
+
 #if DEBUG
 extension SensorThreshold {
     static var mock: SensorThreshold {
