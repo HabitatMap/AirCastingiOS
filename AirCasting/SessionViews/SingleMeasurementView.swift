@@ -15,6 +15,7 @@ struct SingleMeasurementView: View {
         VStack(spacing: 3) {
             Text(showStreamName())
                 .font(Font.system(size: 13))
+                .padding(.leading, 10)
                 .scaledToFill()
             if measurementPresentationStyle == .showValues,
                let value = value,
