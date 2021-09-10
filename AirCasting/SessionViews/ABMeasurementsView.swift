@@ -51,7 +51,7 @@ struct ABMeasurementsView: View {
                             }
                         }
                         .padding(.horizontal, 8)
-                        .frame(maxWidth: .infinity, alignment: .center)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }
             } else {
