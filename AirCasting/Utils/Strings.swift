@@ -67,7 +67,7 @@ struct Strings {
         static let noConnectionTitle = "No Internet Connection"
         static let noConnectionText = "Please make sure your device is connected to the internet."
     }
-    
+  
     enum SessionShare {
         static let title: String = "Share session"
         static let description: String = "Select a stream to share"
