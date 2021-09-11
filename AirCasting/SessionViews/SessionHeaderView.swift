@@ -54,10 +54,11 @@ private extension SessionHeaderView {
         let end = session.endTime ?? Date()
         
         let formatter = DateIntervalFormatter()
-        
+        formatter.timeZone = TimeZone(abbreviation: "UTC")
         formatter.timeStyle = .short
         formatter.dateStyle = .medium
-        let string = DateIntervalFormatter().string(from: start, to: end)
+        
+        let string = formatter.string(from: start, to: end)
         let replaced = string.replacingOccurrences(of: "—", with: "-")
         return Text(replaced)
     }

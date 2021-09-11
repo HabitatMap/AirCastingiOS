@@ -78,10 +78,10 @@ public class SessionEntity: NSManagedObject, Identifiable {
     }
     
     public var sortedStreams: [MeasurementStreamEntity]? {
-        let defaultSortedABStreams = [pm1Stream,
+        let defaultSortedABStreams = [FStream,
+                                      pm1Stream,
                                       pm2Stream,
                                       pm10Stream,
-                                      FStream,
                                       HStream].compactMap { $0 }
         
         return allStreams?.sorted(by: { a, b in
