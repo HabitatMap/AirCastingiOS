@@ -71,6 +71,7 @@ private extension SessionHeaderView {
             //  |   ___   |  -- | You, do something |
             //  |_________|     |-------------------|
             // so the idea at leat for now is this below
+            #warning("Fix - do it better")
             if session.type?.description == "Fixed" {
                 Text("\(session.type?.description ?? SessionType.unknown("").description): AirBeam3")
                     .font(Font.moderate(size: 13, weight: .regular))
