@@ -15,6 +15,8 @@ struct SingleMeasurementView: View {
         VStack(spacing: 3) {
             Text(showStreamName())
                 .font(Font.system(size: 13))
+                .padding(.leading, 10)
+                .scaledToFill()
             if measurementPresentationStyle == .showValues,
                let value = value,
                let threshold = threshold {
@@ -22,7 +24,6 @@ struct SingleMeasurementView: View {
                                          value: value,
                                          selectedStream: $selectedStream,
                                          threshold: threshold)
-                
             }
         }
     }
@@ -53,6 +54,7 @@ struct SingleMeasurementView: View {
                                        thresholds: threshold)
                     Text("\(Int(value))")
                         .font(Font.moderate(size: 14, weight: .regular))
+                        .scaledToFill()
                 }
             })
             .buttonStyle(AirCastingStyling.BorderedButtonStyle(isSelected: selectedStream == stream,
