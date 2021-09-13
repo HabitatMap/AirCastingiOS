@@ -174,13 +174,17 @@ private extension SessionHeaderView {
         
         guard let start = session.startTime else { return Text("") }
         let end = session.endTime ?? Date()
+ 
         let string = DateIntervalFormatter().string(from: start, to: end)
         // Purpose of this is to use 24h format all the time (no matter system settings)
         if TimeConverter.is24Hour() {
             // We are checking if user system settings is set to be 24h format
                 // if so, no additional change is needed
             let replacedString = string.replacingOccurrences(of: "—", with: "-")
-            return Text(replacedString)
+            let dateComponents = replacedString.components(separatedBy: ",")
+            fullDate = swapDaysAndMonths(date: dateComponents.first!)
+            fullDate.append(", \(dateComponents.last!)")
+            return Text(fullDate)
         } else {
             if string.contains("–") {
                 // containing "-" mean that the session has start and end date
@@ -209,10 +213,13 @@ private extension SessionHeaderView {
                 if endDate == "" {
                     // the case where only one date is handled (one day session)
                     // needed format then ---> 17/08/2021, 17:59-18:16
+                    fullDate = swapDaysAndMonths(date: fullDate)
                     fullDate.append(", \(TimeConverter.timeConversion24(time12: startTime12!))-\(TimeConverter.timeConversion24(time12: endTime12))")
                 } else {
                     // the case where session is recorder at least through two days
                     // needed format then ---> 17/08/2021, 17:59-10/09/2021, 5:16
+                    fullDate = swapDaysAndMonths(date: fullDate)
+                    endDate = swapDaysAndMonths(date: endDate)
                     fullDate.append(", \(TimeConverter.timeConversion24(time12: startTime12!))-\(endDate), \(TimeConverter.timeConversion24(time12: endTime12))")
                 }
             } else {
@@ -221,10 +228,26 @@ private extension SessionHeaderView {
                 let time2 = string.components(separatedBy: ",")
                 fullDate = time2.first!
                 let startTime12 = time2.last?.trimmingCharacters(in: .whitespaces)
+                fullDate = swapDaysAndMonths(date: fullDate)
                 fullDate.append(", \(TimeConverter.timeConversion24(time12: startTime12!))")
             }
             return Text(fullDate)
         }
+    }
+    
+    func swapDaysAndMonths(date: String) -> String {
+        var components = date.components(separatedBy: "/")
+        let days = components.first
+        components[0] = components[1]
+        components[1] = days!
+        var fullDate = ""
+        for component in components {
+            fullDate.append(component)
+            if component != components.last {
+                fullDate.append("/")
+            }
+        }
+        return fullDate
     }
 }
 
