@@ -15,7 +15,7 @@ struct ABMeasurementsView: View {
     @ObservedObject var session: SessionEntity
     @Binding var isCollapsed: Bool
     @Binding var selectedStream: MeasurementStreamEntity?
-    @State private var showLoadingIndicator = true
+    @Binding var showLoadingIndicator: Bool
     var thresholds: [SensorThreshold]
     let measurementPresentationStyle: MeasurementPresentationStyle
     let sessionDownloader = SessionDownloadService(client: URLSession.shared,
@@ -77,7 +77,7 @@ struct ABMeasurementsView: View {
         .onChange(of: isCollapsed, perform: { _ in
             if isCollapsed == false && !hasAnyMeasurements {
                 showLoadingIndicator = true
-                sessionDownloader.downloadSessionWithMeasurement(uuid: session.uuid) { result in
+                sessionDownloader.downloadSessionWithMeasurement(uuid: session.uuid) { _ in
                     switch result {
                     case .success(let data):
                         let dataBaseStreams = data.streams.values.map { value in

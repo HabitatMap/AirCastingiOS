@@ -15,6 +15,7 @@ struct AirMapView: View {
     @StateObject var statsContainerViewModel: StatisticsContainerViewModel
     @StateObject var mapStatsDataSource: MapStatsDataSource
     @ObservedObject var session: SessionEntity
+    @Binding var showLoadingIndicator: Bool
 
     @Binding var selectedStream: MeasurementStreamEntity?
     let sessionStoppableFactory: SessionStoppableFactory
@@ -37,26 +38,31 @@ struct AirMapView: View {
             ABMeasurementsView(session: session,
                                isCollapsed: Binding.constant(false),
                                selectedStream: $selectedStream,
+                               showLoadingIndicator: $showLoadingIndicator,
                                thresholds: thresholds,
                                measurementPresentationStyle: .showValues,
                                measurementStreamStorage: measurementStreamStorage)
-
+            
             if let threshold = thresholds.threshold(for: selectedStream) {
-                ZStack(alignment: .topLeading) {
-                    GoogleMapView(pathPoints: pathPoints,
-                                  threshold: threshold)
-                        .onPositionChange { [weak mapStatsDataSource, weak statsContainerViewModel] visiblePoints in
-                            mapStatsDataSource?.visiblePathPoints = visiblePoints
-                            statsContainerViewModel?.adjustForNewData()
-                        }
-                    StatisticsContainerView(statsContainerViewModel: statsContainerViewModel)
+                if !showLoadingIndicator {
+                    ZStack(alignment: .topLeading) {
+                        GoogleMapView(pathPoints: pathPoints,
+                                      threshold: threshold)
+                            .onPositionChange { [weak mapStatsDataSource, weak statsContainerViewModel] visiblePoints in
+                                mapStatsDataSource?.visiblePathPoints = visiblePoints
+                                statsContainerViewModel?.adjustForNewData()
+                            }
+                        StatisticsContainerView(statsContainerViewModel: statsContainerViewModel)
+                    }
+                    NavigationLink(destination: HeatmapSettingsView(changedThresholdValues: threshold.rawThresholdsBinding)) {
+                        EditButtonView()
+                    }
+                    ThresholdsSliderView(threshold: threshold)
+                        // Fixes labels covered by tabbar
+                        .padding(.bottom)
+                } else {
+                    Spacer()
                 }
-                NavigationLink(destination: HeatmapSettingsView(changedThresholdValues: threshold.rawThresholdsBinding)) {
-                    EditButtonView()
-                }
-                ThresholdsSliderView(threshold: threshold)
-                    // Fixes labels covered by tabbar
-                    .padding(.bottom)
             }
         }
         .navigationBarTitleDisplayMode(.inline)
@@ -71,6 +77,7 @@ struct Map_Previews: PreviewProvider {
                    statsContainerViewModel: StatisticsContainerViewModel(statsInput: MeasurementsStatisticsInputMock()),
                    mapStatsDataSource: MapStatsDataSource(),
                    session: .mock,
+                   showLoadingIndicator: .constant(true),
                    selectedStream: .constant(nil),
                    sessionStoppableFactory: SessionStoppableFactoryDummy(),
                    measurementStreamStorage: PreviewMeasurementStreamStorage())

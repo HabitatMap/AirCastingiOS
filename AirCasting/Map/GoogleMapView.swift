@@ -60,16 +60,20 @@ struct GoogleMapView: UIViewRepresentable {
         for point in pathPoints {
             let coordinate = point.location
             path.add(coordinate)
-            
+
             dot.position = coordinate
+            dot.map = uiView
+        }
+        
+        if let first = pathPoints.first {
             dot.iconView = UIView()
             dot.iconView?.frame = CGRect(x: 0, y: 0,
                                          width: Constants.Map.dotWidth,
                                          height: Constants.Map.dotHeight)
             dot.iconView?.layer.cornerRadius = CGFloat(Constants.Map.dotRadius)
-            dot.iconView?.backgroundColor = color(point: point)
-            dot.map = uiView
+            dot.iconView?.backgroundColor = color(point: first)
         }
+        
         let polyline = context.coordinator.polyline
         let spans = pathPoints.map { point -> GMSStyleSpan in
             let color = color(point: point)
@@ -81,8 +85,8 @@ struct GoogleMapView: UIViewRepresentable {
         polyline.spans = spans
         polyline.strokeWidth = CGFloat(Constants.Map.polylineWidth)
         polyline.map = uiView
-        
-        // Update camera's starting point
+
+//        // Update camera's starting point
         if context.coordinator.shouldAutoTrack {
             DispatchQueue.main.async {
                 uiView.moveCamera(cameraUpdate)
@@ -162,7 +166,7 @@ struct GoogleMapView: UIViewRepresentable {
             
             shouldAutoTrack = false
         }
-        
+
         private func positionChanged(for mapView: GMSMapView) {
             let visibleRegion = mapView.projection.visibleRegion()
             let bounds = GMSCoordinateBounds(region: visibleRegion)
