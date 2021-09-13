@@ -10,7 +10,11 @@ struct User: Hashable {
     let email: String
 }
 
-final class UserAuthenticationSession: ObservableObject {
+protocol Deauthorizable {
+    func deauthorize() throws
+}
+
+final class UserAuthenticationSession: Deauthorizable, ObservableObject {
 
     private static let userProfileKey = "UserProfileKey"
     private let keychainStorage = KeychainStorage(service: Bundle.main.bundleIdentifier!)

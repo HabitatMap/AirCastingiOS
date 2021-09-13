@@ -15,11 +15,12 @@ struct RootAppView: View {
     @State private var sessionStoppableFactory: SessionStoppableFactoryDefault?
     @State private var downloadService: DownloadMeasurementsService?
     @StateObject private var bluetoothManager = BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared)))
-    @StateObject private var lifeTimeEventsProvider = LifeTimeEventsProvider()
+    
     @StateObject private var userSettings = UserSettings()
     @StateObject private var userRedirectionSettings = DefaultSettingsRedirection()
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     @EnvironmentObject var microphoneManager: MicrophoneManager
+    @EnvironmentObject var lifeTimeEventsProvider: LifeTimeEventsProvider
     
     let locationTracker = LocationTracker(locationManager: CLLocationManager())
     var sessionSynchronizer: SessionSynchronizer
@@ -53,7 +54,6 @@ struct RootAppView: View {
         .environmentObject(userAuthenticationSession)
         .environmentObject(persistenceController)
         .environmentObject(networkChecker)
-        .environmentObject(lifeTimeEventsProvider)
         .environmentObject(userSettings)
         .environmentObject(locationTracker)
         .environmentObject(userRedirectionSettings)
