@@ -195,12 +195,12 @@ private extension SessionCartView {
     
     func pollutionChart(thresholds: [SensorThreshold]) -> some View {
         
-        let start = session.startTime
+        let start = session.startTime ?? Date()
         let end = session.endTime ?? Date()
         
         let dateFormatter : DateFormatter = DateFormatter()
         dateFormatter.dateFormat = "HH:mm"
-        let startTime = dateFormatter.string(from: start!)
+        let startTime = dateFormatter.string(from: start)
         let endTime = dateFormatter.string(from: end)
         
         return VStack() {
