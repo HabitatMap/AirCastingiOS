@@ -34,9 +34,9 @@ struct SessionHeaderView: View {
             }.sheet(isPresented: $shareModal, content: {
                 ShareView(showModal: $showModal)
             })
-                .sheet(isPresented: $deleteModal, content: {
-                    DeleteView(viewModel: DefaultDeleteSessionViewModel(), deleteModal: $deleteModal)
-                })
+            .sheet(isPresented: $deleteModal, content: {
+                DeleteView(viewModel: DefaultDeleteSessionViewModel(), deleteModal: $deleteModal)
+            })
             nameLabelAndExpandButton
         }.onChange(of: isCollapsed, perform: { value in
             isCollapsed ? (chevronIndicator = "chevron.down") :  (chevronIndicator = "chevron.up")
@@ -48,19 +48,7 @@ struct SessionHeaderView: View {
 
 private extension SessionHeaderView {
     var dateAndTime: some View {
-        guard let start = session.startTime else {
-            return Text("")
-        }
-        let end = session.endTime ?? Date()
-        
-        let formatter = DateIntervalFormatter()
-        formatter.timeZone = TimeZone(abbreviation: "UTC")
-        formatter.timeStyle = .short
-        formatter.dateStyle = .medium
-        
-        let string = formatter.string(from: start, to: end)
-        let replaced = string.replacingOccurrences(of: "—", with: "-")
-        return Text(replaced)
+        adaptTimeAndDate()
     }
     
     var nameLabelAndExpandButton: some View {
@@ -96,20 +84,20 @@ private extension SessionHeaderView {
             }
         }.alert(isPresented: $showingFinishAlert) {
             Alert(title: Text(Strings.SessionHeaderView.finishAlertTitle) +
-                Text(session.name ?? Strings.SessionHeaderView.finishAlertTitle_2)
-                +
-                Text(Strings.SessionHeaderView.finishAlertTitle_3),
-                message: Text(Strings.SessionHeaderView.finishAlertMessage_1) +
+                    Text(session.name ?? Strings.SessionHeaderView.finishAlertTitle_2)
+                    +
+                    Text(Strings.SessionHeaderView.finishAlertTitle_3),
+                  message: Text(Strings.SessionHeaderView.finishAlertMessage_1) +
                     Text(Strings.SessionHeaderView.finishAlertMessage_2) +
                     Text(Strings.SessionHeaderView.finishAlertMessage_3),
-                primaryButton: .default(Text(Strings.SessionHeaderView.finishAlertButton), action: {
+                  primaryButton: .default(Text(Strings.SessionHeaderView.finishAlertButton), action: {
                     do {
                         try sessionStopperFactory.getSessionStopper(for: session).stopSession()
                     } catch {
                         Log.info("error when stpoing session - \(error)")
                     }
-                }),
-                secondaryButton: .cancel())
+                  }),
+                  secondaryButton: .cancel())
         }
     }
     
@@ -168,12 +156,74 @@ private extension SessionHeaderView {
             Label(Strings.SessionHeaderView.shareButton, systemImage: "square.and.arrow.up")
         }
     }
-
+    
     var actionsMenuFixedDeleteButton: some View {
         Button {
             deleteModal.toggle()
         } label: {
             Label(Strings.SessionHeaderView.deleteButton, systemImage: "xmark.circle")
+        }
+    }
+    
+    func adaptTimeAndDate() -> Text {
+        let formatter = DateIntervalFormatter()
+        formatter.timeStyle = .short
+        formatter.dateStyle = .medium
+        var fullDate = ""
+        var endDate = ""
+        
+        guard let start = session.startTime else { return Text("") }
+        let end = session.endTime ?? Date()
+        let string = DateIntervalFormatter().string(from: start, to: end)
+        // Purpose of this is to use 24h format all the time (no matter system settings)
+        if TimeConverter.is24Hour() {
+            // We are checking if user system settings is set to be 24h format
+                // if so, no additional change is needed
+            let replacedString = string.replacingOccurrences(of: "—", with: "-")
+            return Text(replacedString)
+        } else {
+            if string.contains("–") {
+                // containing "-" mean that the session has start and end date
+                let time = string.components(separatedBy: "–")
+                var timeLast = time.last
+                if (timeLast!.contains("/")) {
+                    // some of the sessions are being recorded for few days which results in big date format
+                    // ---> 17/08/2021, 17:59-10/09/2021, 5:16
+                    endDate = (time.last?.components(separatedBy: ",").first)!
+                    timeLast = time.last?.components(separatedBy: ",").last
+                }
+                
+                let endTime12 = timeLast!.trimmingCharacters(in: .whitespaces)
+            
+                let last = time.first!
+                let time2 = last.components(separatedBy: ",")
+                fullDate = time2.first!
+                var startTime12 = time2.last?.trimmingCharacters(in: .whitespaces)
+                
+                if !(startTime12!.contains("PM") || startTime12!.contains("AM")) {
+                    // to convert .AM || .PM time, we need to ensure that is has always the right ending
+                    // when session is short, sometimes it results in time formatting like this -> 18:00-19:00 PM
+                    // the purpose is to add .PM to the 18:00 in this example
+                    (endTime12.contains("PM")) ? startTime12?.append(" PM") : startTime12?.append(" AM")
+                }
+                if endDate == "" {
+                    // the case where only one date is handled (one day session)
+                    // needed format then ---> 17/08/2021, 17:59-18:16
+                    fullDate.append(", \(TimeConverter.timeConversion24(time12: startTime12!))-\(TimeConverter.timeConversion24(time12: endTime12))")
+                } else {
+                    // the case where session is recorder at least through two days
+                    // needed format then ---> 17/08/2021, 17:59-10/09/2021, 5:16
+                    fullDate.append(", \(TimeConverter.timeConversion24(time12: startTime12!))-\(endDate), \(TimeConverter.timeConversion24(time12: endTime12))")
+                }
+            } else {
+                // the case where session has only date and start time
+                // needed format then ---> 17/08/2021, 5:16
+                let time2 = string.components(separatedBy: ",")
+                fullDate = time2.first!
+                let startTime12 = time2.last?.trimmingCharacters(in: .whitespaces)
+                fullDate.append(", \(TimeConverter.timeConversion24(time12: startTime12!))")
+            }
+            return Text(fullDate)
         }
     }
 }
