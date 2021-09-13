@@ -32,10 +32,8 @@ struct GoogleMapView: UIViewRepresentable {
         
         let mapView = GMSMapView.map(withFrame: .zero,
                                      camera: startingPoint)
-
         mapView.delegate = context.coordinator
         mapView.isMyLocationEnabled = isMyLocationEnabled
-        
         context.coordinator.myLocationSink = mapView.publisher(for: \.myLocation)
             .sink { [weak mapView] (location) in
                 guard let coordinate = location?.coordinate else { return }
@@ -86,10 +84,15 @@ struct GoogleMapView: UIViewRepresentable {
         polyline.strokeWidth = CGFloat(Constants.Map.polylineWidth)
         polyline.map = uiView
 
-//        // Update camera's starting point
+        // Update camera's starting point
         if context.coordinator.shouldAutoTrack {
             DispatchQueue.main.async {
                 uiView.moveCamera(cameraUpdate)
+                if uiView.camera.zoom > 16 {
+                    // The zoom is set automatically somehow which results sometimes in 'too close' map
+                    // This helps us to fix it and still manage to fit into the 'bigger picture' if needed because of the long session
+                    uiView.animate(toZoom: 16)
+                }
             }
         }
     }
@@ -113,12 +116,12 @@ struct GoogleMapView: UIViewRepresentable {
             
             let newCameraPosition =  GMSCameraPosition.camera(withLatitude: lat,
                                                               longitude: long,
-                                                              zoom: 18)
+                                                              zoom: 16)
             return newCameraPosition
         } else {
             let appleParkPosition = GMSCameraPosition.camera(withLatitude: 37.35,
                                                             longitude: -122.05,
-                                                            zoom: 18)
+                                                            zoom: 16)
             return appleParkPosition
         }
     }
