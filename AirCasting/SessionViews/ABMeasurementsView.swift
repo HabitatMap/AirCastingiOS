@@ -77,7 +77,7 @@ struct ABMeasurementsView: View {
         .onChange(of: isCollapsed, perform: { _ in
             if isCollapsed == false && !hasAnyMeasurements {
                 showLoadingIndicator = true
-                sessionDownloader.downloadSessionWithMeasurement(uuid: session.uuid) { _ in
+                sessionDownloader.downloadSessionWithMeasurement(uuid: session.uuid) { result in
                     switch result {
                     case .success(let data):
                         let dataBaseStreams = data.streams.values.map { value in
