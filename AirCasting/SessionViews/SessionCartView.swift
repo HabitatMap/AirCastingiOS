@@ -15,6 +15,7 @@ struct SessionCartView: View {
     @State private var selectedStream: MeasurementStreamEntity?
     @State private var isMapButtonActive = false
     @State private var isGraphButtonActive = false
+    @State private var showLoadingIndicator = false
     @ObservedObject var session: SessionEntity
     @EnvironmentObject var selectedSection: SelectSection
     let sessionCartViewModel: SessionCartViewModel
@@ -62,13 +63,7 @@ struct SessionCartView: View {
         VStack(alignment: .leading, spacing: 13) {
             header
             if hasStreams {
-                ABMeasurementsView(session: session,
-                                   isCollapsed: $isCollapsed,
-                                   selectedStream: $selectedStream,
-                                   thresholds: thresholds,
-                                   measurementPresentationStyle: shouldShowValues,
-                                   measurementStreamStorage: measurementStreamStorage)
-
+                Measurements
                 VStack(alignment: .trailing, spacing: 40) {
                     if showChart {
                         pollutionChart(thresholds: thresholds)
@@ -130,6 +125,16 @@ private extension SessionCartView {
         )
     }
     
+    var Measurements: some View {
+        ABMeasurementsView(session: session,
+                           isCollapsed: $isCollapsed,
+                           selectedStream: $selectedStream,
+                           showLoadingIndicator: $showLoadingIndicator,
+                           thresholds: thresholds,
+                           measurementPresentationStyle: shouldShowValues,
+                           measurementStreamStorage: measurementStreamStorage)
+    }
+    
     var graphButton: some View {
         Button {
             isGraphButtonActive = true
@@ -167,6 +172,7 @@ private extension SessionCartView {
                                  statsContainerViewModel: mapStatsViewModel,
                                  mapStatsDataSource: mapStatsDataSource,
                                  session: session,
+                                 showLoadingIndicator: $showLoadingIndicator,
                                  selectedStream: $selectedStream,
                                  sessionStoppableFactory: sessionStoppableFactory,
                                  measurementStreamStorage: measurementStreamStorage)
@@ -194,11 +200,31 @@ private extension SessionCartView {
     }
     
     func pollutionChart(thresholds: [SensorThreshold]) -> some View {
-        Group {
-            if let selectedStream = selectedStream {
-                ChartView(stream: selectedStream,
-                          thresholds: thresholds)
-                    .frame(height: 200)
+        
+        let start = session.startTime ?? Date()
+        let end = session.endTime ?? Date()
+        
+        let dateFormatter : DateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "HH:mm"
+        let startTime = dateFormatter.string(from: start)
+        let endTime = dateFormatter.string(from: end)
+        
+        return VStack() {
+            Group {
+                if let selectedStream = selectedStream {
+                    ChartView(stream: selectedStream,
+                              thresholds: thresholds)
+                        .frame(height: 120)
+                        .disabled(true)
+                    HStack() {
+                            Text(startTime)
+                            Spacer()
+                        Text("\(Strings.SessionCartView.avgSession) \(selectedStream.measurementShortType ?? "")")
+                            Spacer()
+                            Text(endTime)
+                    }.foregroundColor(.aircastingGray)
+                    .font(Font.muli(size: 13, weight: .semibold))
+                }
             }
         }
     }
@@ -230,16 +256,16 @@ private extension SessionCartView {
     }
 }
 
-// #if DEBUG
-// struct SessionCell_Previews: PreviewProvider {
-//    static var previews: some View {
-//        EmptyView()
-//        SessionCartView(session: SessionEntity.mock,
-//                                sessionCartViewModel: SessionCartViewModel(followingSetter: MockSessionFollowingSettable()),
-//                                thresholds: [.mock, .mock], sessionStoppableFactory: SessionStoppableFactoryDummy())
-//            .padding()
-//            .previewLayout(.sizeThatFits)
-//            .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
-//    }
-// }
-// #endif
+ #if DEBUG
+ struct SessionCell_Previews: PreviewProvider {
+    static var previews: some View {
+        EmptyView()
+        SessionCartView(session: SessionEntity.mock,
+                                sessionCartViewModel: SessionCartViewModel(followingSetter: MockSessionFollowingSettable()),
+                                thresholds: [.mock, .mock], sessionStoppableFactory: SessionStoppableFactoryDummy(), measurementStreamStorage: MeasurementStreamStorage.self as! MeasurementStreamStorage)
+            .padding()
+            .previewLayout(.sizeThatFits)
+            .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
+    }
+ }
+ #endif

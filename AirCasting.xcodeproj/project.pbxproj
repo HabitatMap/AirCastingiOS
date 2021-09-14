@@ -220,6 +220,7 @@
 		DD28047B26B3D7730060F55E /* BluetoothConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD28047A26B3D7730060F55E /* BluetoothConnector.swift */; };
 		DD2E8BE92685E12000439F8B /* URLValidationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD2E8BE82685E12000439F8B /* URLValidationTests.swift */; };
 		DD2E8BEB2685E13600439F8B /* BackendURLValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD2E8BEA2685E13600439F8B /* BackendURLValidator.swift */; };
+		DD3C99F426EA280800B42A46 /* TimeConversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD3C99F326EA280800B42A46 /* TimeConversion.swift */; };
 		DD430B002670BC6F00F1BF2E /* GetStarted.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD430AFF2670BC6F00F1BF2E /* GetStarted.swift */; };
 		DD430B022670F3B300F1BF2E /* NearAirDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD430B012670F3B300F1BF2E /* NearAirDescription.swift */; };
 		DD430B042670FA9600F1BF2E /* AirBeamOnboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD430B032670FA9600F1BF2E /* AirBeamOnboarding.swift */; };
@@ -506,6 +507,7 @@
 		DD28047A26B3D7730060F55E /* BluetoothConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothConnector.swift; sourceTree = "<group>"; };
 		DD2E8BE82685E12000439F8B /* URLValidationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLValidationTests.swift; sourceTree = "<group>"; };
 		DD2E8BEA2685E13600439F8B /* BackendURLValidator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackendURLValidator.swift; sourceTree = "<group>"; };
+		DD3C99F326EA280800B42A46 /* TimeConversion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeConversion.swift; sourceTree = "<group>"; };
 		DD430AFF2670BC6F00F1BF2E /* GetStarted.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetStarted.swift; sourceTree = "<group>"; };
 		DD430B012670F3B300F1BF2E /* NearAirDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearAirDescription.swift; sourceTree = "<group>"; };
 		DD430B032670FA9600F1BF2E /* AirBeamOnboarding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirBeamOnboarding.swift; sourceTree = "<group>"; };
@@ -731,6 +733,7 @@
 				DDBC156326A0799300982526 /* SystemSettings.swift */,
 				DDEE3A4A26979D4C0098CCA9 /* SharePage.swift */,
 				DDF62600269C779800F23489 /* UIApplication+AppInfo.swift.swift */,
+				DD3C99F326EA280800B42A46 /* TimeConversion.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1711,6 +1714,7 @@
 				AC32043625CD534700A68520 /* ChooseSessionTypeView.swift in Sources */,
 				AC8431D0265E6143004DC890 /* RemoveOldMeasurementsService.swift in Sources */,
 				B30BAC152694AA7200AE0476 /* MeasurementsStatisticsInput.swift in Sources */,
+				DD3C99F426EA280800B42A46 /* TimeConversion.swift in Sources */,
 				B3F1447626AE0BD4006A4612 /* SessionSynchronizerErrorStream.swift in Sources */,
 				ACF7C05F260CC9FF007C24AE /* DownloadMeasurmentsService.swift in Sources */,
 				AC9F526E2652A360003CF61F /* AirSectionPickerView.swift in Sources */,
@@ -2059,7 +2063,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 29;
+				CURRENT_PROJECT_VERSION = 30;
 				DEVELOPMENT_ASSET_PATHS = "\"AirCasting/Preview Content\"";
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
@@ -2086,7 +2090,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 29;
+				CURRENT_PROJECT_VERSION = 30;
 				DEVELOPMENT_ASSET_PATHS = "\"AirCasting/Preview Content\"";
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;

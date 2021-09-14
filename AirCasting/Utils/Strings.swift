@@ -90,6 +90,7 @@ struct Strings {
         static let graph: String = "graph"
         static let follow: String = "follow"
         static let unfollow: String = "unfollow"
+        static let avgSession: String = "1 hr avg -"
     }
     
     enum SelectPeripheralView {
@@ -380,6 +381,8 @@ struct Strings {
         static let finishAlertMessage_2: String = "Mobile Dormant"
         static let finishAlertMessage_3: String = " tab and you won't be able to add new measurement to it."
         static let finishAlertButton: String = "Finish recording"
+        static let airBeam3: String = "AirBeam3"
+        static let mic: String = "Phone Mic"
     }
     
     enum NetworkChecker {

@@ -32,10 +32,8 @@ struct GoogleMapView: UIViewRepresentable {
         
         let mapView = GMSMapView.map(withFrame: .zero,
                                      camera: startingPoint)
-
         mapView.delegate = context.coordinator
         mapView.isMyLocationEnabled = isMyLocationEnabled
-        
         context.coordinator.myLocationSink = mapView.publisher(for: \.myLocation)
             .sink { [weak mapView] (location) in
                 guard let coordinate = location?.coordinate else { return }
@@ -53,42 +51,19 @@ struct GoogleMapView: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: GMSMapView, context: Context) {
-        // Drawing the path
-        let path = GMSMutablePath()
-        let dot = context.coordinator.dot
-        
-        for point in pathPoints {
-            let coordinate = point.location
-            path.add(coordinate)
-            
-            dot.position = coordinate
-            dot.iconView = UIView()
-            dot.iconView?.frame = CGRect(x: 0, y: 0,
-                                         width: Constants.Map.dotWidth,
-                                         height: Constants.Map.dotHeight)
-            dot.iconView?.layer.cornerRadius = CGFloat(Constants.Map.dotRadius)
-            dot.iconView?.backgroundColor = color(point: point)
-            dot.map = uiView
-        }
-        let polyline = context.coordinator.polyline
-        let spans = pathPoints.map { point -> GMSStyleSpan in
-            let color = color(point: point)
-            return GMSStyleSpan(style: GMSStrokeStyle.solidColor(color),
-                                segments: 1)
-        }
+       polylineDrawing(uiView, context: context)
 
-        polyline.path = path
-        polyline.spans = spans
-        polyline.strokeWidth = CGFloat(Constants.Map.polylineWidth)
-        polyline.map = uiView
-        
         // Update camera's starting point
-        if context.coordinator.shouldAutoTrack {
+        guard context.coordinator.shouldAutoTrack else { return }
             DispatchQueue.main.async {
                 uiView.moveCamera(cameraUpdate)
+                if uiView.camera.zoom > 16 {
+                    // The zoom is set automatically somehow which results sometimes in 'too close' map
+                    // This helps us to fix it and still manage to fit into the 'bigger picture' if needed because of the long session
+                    uiView.animate(toZoom: 16)
+                }
             }
         }
-    }
     
     var cameraUpdate: GMSCameraUpdate {
         guard !pathPoints.isEmpty else {
@@ -109,12 +84,12 @@ struct GoogleMapView: UIViewRepresentable {
             
             let newCameraPosition =  GMSCameraPosition.camera(withLatitude: lat,
                                                               longitude: long,
-                                                              zoom: 18)
+                                                              zoom: 16)
             return newCameraPosition
         } else {
             let appleParkPosition = GMSCameraPosition.camera(withLatitude: 37.35,
                                                             longitude: -122.05,
-                                                            zoom: 18)
+                                                            zoom: 16)
             return appleParkPosition
         }
     }
@@ -143,6 +118,41 @@ struct GoogleMapView: UIViewRepresentable {
         }
     }
     
+    func polylineDrawing(_ uiView: GMSMapView, context: Context) {
+        // Drawing the path
+        let path = GMSMutablePath()
+        let dot = context.coordinator.dot
+        
+        for point in pathPoints {
+            let coordinate = point.location
+            path.add(coordinate)
+
+            dot.position = coordinate
+            dot.map = uiView
+        }
+        
+        if let first = pathPoints.first {
+            dot.iconView = UIView()
+            dot.iconView?.frame = CGRect(x: 0, y: 0,
+                                         width: Constants.Map.dotWidth,
+                                         height: Constants.Map.dotHeight)
+            dot.iconView?.layer.cornerRadius = CGFloat(Constants.Map.dotRadius)
+            dot.iconView?.backgroundColor = color(point: first)
+        }
+        
+        let polyline = context.coordinator.polyline
+        let spans = pathPoints.map { point -> GMSStyleSpan in
+        let color = color(point: point)
+        return GMSStyleSpan(style: GMSStrokeStyle.solidColor(color),
+                                segments: 1)
+        }
+
+        polyline.path = path
+        polyline.spans = spans
+        polyline.strokeWidth = CGFloat(Constants.Map.polylineWidth)
+        polyline.map = uiView
+    }
+    
     class Coordinator: NSObject, UINavigationControllerDelegate, GMSMapViewDelegate {
 
         var parent: GoogleMapView!
@@ -162,7 +172,7 @@ struct GoogleMapView: UIViewRepresentable {
             
             shouldAutoTrack = false
         }
-        
+
         private func positionChanged(for mapView: GMSMapView) {
             let visibleRegion = mapView.projection.visibleRegion()
             let bounds = GMSCoordinateBounds(region: visibleRegion)

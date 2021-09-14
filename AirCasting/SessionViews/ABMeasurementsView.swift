@@ -15,7 +15,7 @@ struct ABMeasurementsView: View {
     @ObservedObject var session: SessionEntity
     @Binding var isCollapsed: Bool
     @Binding var selectedStream: MeasurementStreamEntity?
-    @State private var showLoadingIndicator = true
+    @Binding var showLoadingIndicator: Bool
     var thresholds: [SensorThreshold]
     let measurementPresentationStyle: MeasurementPresentationStyle
     let sessionDownloader = SessionDownloadService(client: URLSession.shared,
