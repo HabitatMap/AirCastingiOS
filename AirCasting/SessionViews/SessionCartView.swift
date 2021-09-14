@@ -63,7 +63,7 @@ struct SessionCartView: View {
         VStack(alignment: .leading, spacing: 13) {
             header
             if hasStreams {
-                ABView
+                Measurements
                 VStack(alignment: .trailing, spacing: 40) {
                     if showChart {
                         pollutionChart(thresholds: thresholds)
@@ -125,7 +125,7 @@ private extension SessionCartView {
         )
     }
     
-    var ABView: some View {
+    var Measurements: some View {
         ABMeasurementsView(session: session,
                            isCollapsed: $isCollapsed,
                            selectedStream: $selectedStream,

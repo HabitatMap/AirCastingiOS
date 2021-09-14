@@ -51,41 +51,10 @@ struct GoogleMapView: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: GMSMapView, context: Context) {
-        // Drawing the path
-        let path = GMSMutablePath()
-        let dot = context.coordinator.dot
-        
-        for point in pathPoints {
-            let coordinate = point.location
-            path.add(coordinate)
-
-            dot.position = coordinate
-            dot.map = uiView
-        }
-        
-        if let first = pathPoints.first {
-            dot.iconView = UIView()
-            dot.iconView?.frame = CGRect(x: 0, y: 0,
-                                         width: Constants.Map.dotWidth,
-                                         height: Constants.Map.dotHeight)
-            dot.iconView?.layer.cornerRadius = CGFloat(Constants.Map.dotRadius)
-            dot.iconView?.backgroundColor = color(point: first)
-        }
-        
-        let polyline = context.coordinator.polyline
-        let spans = pathPoints.map { point -> GMSStyleSpan in
-            let color = color(point: point)
-            return GMSStyleSpan(style: GMSStrokeStyle.solidColor(color),
-                                segments: 1)
-        }
-
-        polyline.path = path
-        polyline.spans = spans
-        polyline.strokeWidth = CGFloat(Constants.Map.polylineWidth)
-        polyline.map = uiView
+       polylineDrawing(uiView, context: context)
 
         // Update camera's starting point
-        if context.coordinator.shouldAutoTrack {
+        guard context.coordinator.shouldAutoTrack else { return }
             DispatchQueue.main.async {
                 uiView.moveCamera(cameraUpdate)
                 if uiView.camera.zoom > 16 {
@@ -95,7 +64,6 @@ struct GoogleMapView: UIViewRepresentable {
                 }
             }
         }
-    }
     
     var cameraUpdate: GMSCameraUpdate {
         guard !pathPoints.isEmpty else {
@@ -148,6 +116,41 @@ struct GoogleMapView: UIViewRepresentable {
         default:
             return UIColor.white
         }
+    }
+    
+    func polylineDrawing(_ uiView: GMSMapView, context: Context) {
+        // Drawing the path
+        let path = GMSMutablePath()
+        let dot = context.coordinator.dot
+        
+        for point in pathPoints {
+            let coordinate = point.location
+            path.add(coordinate)
+
+            dot.position = coordinate
+            dot.map = uiView
+        }
+        
+        if let first = pathPoints.first {
+            dot.iconView = UIView()
+            dot.iconView?.frame = CGRect(x: 0, y: 0,
+                                         width: Constants.Map.dotWidth,
+                                         height: Constants.Map.dotHeight)
+            dot.iconView?.layer.cornerRadius = CGFloat(Constants.Map.dotRadius)
+            dot.iconView?.backgroundColor = color(point: first)
+        }
+        
+        let polyline = context.coordinator.polyline
+        let spans = pathPoints.map { point -> GMSStyleSpan in
+        let color = color(point: point)
+        return GMSStyleSpan(style: GMSStrokeStyle.solidColor(color),
+                                segments: 1)
+        }
+
+        polyline.path = path
+        polyline.spans = spans
+        polyline.strokeWidth = CGFloat(Constants.Map.polylineWidth)
+        polyline.map = uiView
     }
     
     class Coordinator: NSObject, UINavigationControllerDelegate, GMSMapViewDelegate {
