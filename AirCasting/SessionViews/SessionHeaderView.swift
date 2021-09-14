@@ -72,10 +72,11 @@ private extension SessionHeaderView {
             //  |_________|     |-------------------|
             // so the idea at leat for now is this below
             #warning("Fix - Handle session.deviceType (for now it is always nill)")
-            if session.type?.description == "Fixed" {
+            switch session.type?.description {
+            case "Fixed":
                 Text("\(session.type!.description) : AirBeam3")
                     .font(Font.moderate(size: 13, weight: .regular))
-            } else if session.type?.description == "Mobile" {
+            case "Mobile":
                 if session.allStreams!.count > 1 {
                     Text("\(session.type!.description): AirBeam3")
                         .font(Font.moderate(size: 13, weight: .regular))
@@ -83,7 +84,7 @@ private extension SessionHeaderView {
                     Text("\(session.type!.description): Phone Mic")
                         .font(Font.moderate(size: 13, weight: .regular))
                 }
-            } else {
+            default:
                 Text(session.deviceType?.description ?? "")
                     .font(Font.moderate(size: 13, weight: .regular))
             }
