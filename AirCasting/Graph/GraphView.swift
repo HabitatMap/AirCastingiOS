@@ -26,6 +26,7 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
             ABMeasurementsView(session: session,
                                isCollapsed: Binding.constant(false),
                                selectedStream: $selectedStream,
+                               showLoadingIndicator: Binding.constant(false),
                                thresholds: thresholds,
                                measurementPresentationStyle: .showValues,
                                measurementStreamStorage: measurementStreamStorage)

@@ -15,6 +15,7 @@ struct SessionCartView: View {
     @State private var selectedStream: MeasurementStreamEntity?
     @State private var isMapButtonActive = false
     @State private var isGraphButtonActive = false
+    @State private var showLoadingIndicator = false
     @ObservedObject var session: SessionEntity
     @EnvironmentObject var selectedSection: SelectSection
     let sessionCartViewModel: SessionCartViewModel
@@ -62,13 +63,7 @@ struct SessionCartView: View {
         VStack(alignment: .leading, spacing: 13) {
             header
             if hasStreams {
-                ABMeasurementsView(session: session,
-                                   isCollapsed: $isCollapsed,
-                                   selectedStream: $selectedStream,
-                                   thresholds: thresholds,
-                                   measurementPresentationStyle: shouldShowValues,
-                                   measurementStreamStorage: measurementStreamStorage)
-
+                Measurements
                 VStack(alignment: .trailing, spacing: 40) {
                     if showChart {
                         pollutionChart(thresholds: thresholds)
@@ -130,6 +125,16 @@ private extension SessionCartView {
         )
     }
     
+    var Measurements: some View {
+        ABMeasurementsView(session: session,
+                           isCollapsed: $isCollapsed,
+                           selectedStream: $selectedStream,
+                           showLoadingIndicator: $showLoadingIndicator,
+                           thresholds: thresholds,
+                           measurementPresentationStyle: shouldShowValues,
+                           measurementStreamStorage: measurementStreamStorage)
+    }
+    
     var graphButton: some View {
         Button {
             isGraphButtonActive = true
@@ -167,6 +172,7 @@ private extension SessionCartView {
                                  statsContainerViewModel: mapStatsViewModel,
                                  mapStatsDataSource: mapStatsDataSource,
                                  session: session,
+                                 showLoadingIndicator: $showLoadingIndicator,
                                  selectedStream: $selectedStream,
                                  sessionStoppableFactory: sessionStoppableFactory,
                                  measurementStreamStorage: measurementStreamStorage)
