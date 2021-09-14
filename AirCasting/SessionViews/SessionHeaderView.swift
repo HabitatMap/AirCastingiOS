@@ -66,8 +66,28 @@ private extension SessionHeaderView {
                     }
                 }
             }
-            Text("\(session.type?.description ?? SessionType.unknown("").description): \(session.deviceType?.description ?? "")")
-                .font(Font.moderate(size: 13, weight: .regular))
+            // As long as we get session.deviceType = nil we should handle somehow showing those devices which were used to record
+            // [|(-)   (-)|]    |-------------------|
+            //  |   ___   |  -- | You, do something |
+            //  |_________|     |-------------------|
+            // so the idea at leat for now is this below
+            #warning("Fix - Handle session.deviceType (for now it is always nill)")
+            switch session.type?.description {
+            case "Fixed":
+                Text("\(session.type!.description) : AirBeam3")
+                    .font(Font.moderate(size: 13, weight: .regular))
+            case "Mobile":
+                if session.allStreams!.count > 1 {
+                    Text("\(session.type!.description): AirBeam3")
+                        .font(Font.moderate(size: 13, weight: .regular))
+                } else {
+                    Text("\(session.type!.description): Phone Mic")
+                        .font(Font.moderate(size: 13, weight: .regular))
+                }
+            default:
+                Text(session.deviceType?.description ?? "")
+                    .font(Font.moderate(size: 13, weight: .regular))
+            }
         }
         .foregroundColor(.darkBlue)
     }
