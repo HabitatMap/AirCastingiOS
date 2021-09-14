@@ -71,16 +71,16 @@ private extension SessionHeaderView {
             //  |   ___   |  -- | You, do something |
             //  |_________|     |-------------------|
             // so the idea at leat for now is this below
-            #warning("Fix - do it better")
+            #warning("Fix - Handle session.deviceType (for now it is always nill)")
             if session.type?.description == "Fixed" {
-                Text("\(session.type?.description ?? SessionType.unknown("").description): AirBeam3")
+                Text("\(session.type!.description) : AirBeam3")
                     .font(Font.moderate(size: 13, weight: .regular))
             } else if session.type?.description == "Mobile" {
                 if session.allStreams!.count > 1 {
-                    Text("\(session.type?.description ?? SessionType.unknown("").description): AirBeam3")
+                    Text("\(session.type!.description): AirBeam3")
                         .font(Font.moderate(size: 13, weight: .regular))
                 } else {
-                    Text("\(session.type?.description ?? SessionType.unknown("").description): Phone Mic")
+                    Text("\(session.type!.description): Phone Mic")
                         .font(Font.moderate(size: 13, weight: .regular))
                 }
             } else {
