@@ -14,6 +14,7 @@ struct ChooseSessionTypeView: View {
     @State private var isPowerABLinkActive = false
     @State private var isMobileLinkActive = false
     @State private var didTapFixedSession = false
+    @EnvironmentObject private var tabSelection: TabBarSelection
     var viewModel: ChooseSessionTypeViewModel
     
     var body: some View {
@@ -77,6 +78,11 @@ struct ChooseSessionTypeView: View {
             .onChange(of: viewModel.passBluetoothManager.centralManagerState) { _ in
                 if didTapFixedSession {
                     didTapFixedSession = false
+                }
+            }
+            .onAppear() {
+                if tabSelection.selection == .createSession && tabSelection.mobileProcceding {
+                    isMobileLinkActive = true
                 }
             }
         }

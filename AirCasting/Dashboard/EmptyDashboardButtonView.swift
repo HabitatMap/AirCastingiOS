@@ -9,7 +9,12 @@ struct EmptyDashboardButtonView: View {
     var isFixed: Bool
     var body: some View {
         Button(action: {
-            tabSelection.selection = .createSession
+                if isFixed {
+                    tabSelection.selection = .createSession
+                } else {
+                    tabSelection.selection = .createSession
+                    tabSelection.mobileProcceding = true
+                }
         }, label: {
             if isFixed {
                 Text(Strings.EmptyDashboardMobile.buttonFixed)

@@ -304,8 +304,8 @@ struct Strings {
     }
     
     enum EmptyDashboardFixed {
-        static let title: String = "Ready to get\n started?"
-        static let description: String = "Record a new session\n to monitor your health &\n environment"
+        static let title: String = "Ready to get started?"
+        static let description: String = "Record a new session to monitor\n your health & environment."
         static let newSession: String = "Record new session"
     }
     
