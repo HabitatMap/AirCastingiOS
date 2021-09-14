@@ -24,7 +24,7 @@ struct RootAppView: View {
     
     var sessionSynchronizer: SessionSynchronizer
     let persistenceController: PersistenceController
-    var defaultSessionSynchronizer: DefaultSessionSynchronizer
+    var defaultSessionSynchronizer: SessionSynchronizationViewModel
     let urlProvider = UserDefaultsBaseURLProvider()
     let networkChecker = NetworkChecker(connectionAvailable: false)
     
@@ -81,7 +81,7 @@ struct MainAppView: View {
     let sessionStoppableFactory: SessionStoppableFactoryDefault
     let downloadService: DownloadMeasurementsService
     let measurementStreamStorage: MeasurementStreamStorage
-    var defaultSessionSynchronizer: DefaultSessionSynchronizer
+    var defaultSessionSynchronizer: SessionSynchronizationViewModel
     
     @EnvironmentObject private var persistenceController: PersistenceController
     @EnvironmentObject private var urlProvider: UserDefaultsBaseURLProvider
@@ -102,7 +102,7 @@ struct MainAppView: View {
 #if DEBUG
 struct RootAppView_Previews: PreviewProvider {
     static var previews: some View {
-        RootAppView(sessionSynchronizer: DummySessionSynchronizer(), persistenceController: PersistenceController(inMemory: true), defaultSessionSynchronizer: SessionSynchronizationViewModel())
+        RootAppView(sessionSynchronizer: DummySessionSynchronizer(), persistenceController: PersistenceController(inMemory: true), defaultSessionSynchronizer: DefaultSessionSynchronizationViewModel())
     }
 }
 #endif

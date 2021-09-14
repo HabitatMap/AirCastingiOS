@@ -14,13 +14,13 @@ struct DashboardView: View {
     @EnvironmentObject var selectedSection: SelectSection
     let measurementStreamStorage: MeasurementStreamStorage
     let sessionStoppableFactory: SessionStoppableFactory
-    var defaultSessionSynchronizer: DefaultSessionSynchronizer
+    var defaultSessionSynchronizer: SessionSynchronizationViewModel
 
     private var sessions: [SessionEntity] {
         coreDataHook.sessions
     }
     
-    init(coreDataHook: CoreDataHook, measurementStreamStorage: MeasurementStreamStorage, sessionStoppableFactory: SessionStoppableFactory, defaultSessionSynchronizer: DefaultSessionSynchronizer) {
+    init(coreDataHook: CoreDataHook, measurementStreamStorage: MeasurementStreamStorage, sessionStoppableFactory: SessionStoppableFactory, defaultSessionSynchronizer: SessionSynchronizationViewModel) {
         let navBarAppearance = UINavigationBar.appearance()
         navBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(Color.darkBlue)]
         _coreDataHook = StateObject(wrappedValue: coreDataHook)
@@ -82,7 +82,7 @@ struct PreventCollapseView: View {
 #if DEBUG
 struct Dashboard_Previews: PreviewProvider {
     static var previews: some View {
-        DashboardView(coreDataHook: CoreDataHook(context: PersistenceController(inMemory: true).viewContext), measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionStoppableFactory: SessionStoppableFactoryDummy(), defaultSessionSynchronizer: SessionSynchronizationViewModel())
+        DashboardView(coreDataHook: CoreDataHook(context: PersistenceController(inMemory: true).viewContext), measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionStoppableFactory: SessionStoppableFactoryDummy(), defaultSessionSynchronizer: DefaultSessionSynchronizationViewModel())
     }
 }
 #endif

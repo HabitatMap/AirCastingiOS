@@ -19,7 +19,7 @@ final class SessionSynchronizationController: SessionSynchronizer {
     
     // Progress tracking for filtering requests while already syncing
     // (can this be somehow moved to a custom operator or something?)
-//    var syncInProgress: Bool = false
+    var syncInProgress: Bool = false
     // Simple lock is sufficient here, no need for GCD
     private let lock = NSRecursiveLock()
     
@@ -39,11 +39,18 @@ final class SessionSynchronizationController: SessionSynchronizer {
     
     func triggerSynchronization(completion: (() -> Void)?) {
         lock.lock(); defer { lock.unlock() }
+        if syncInProgress { return }
+        DispatchQueue.main.async {
+            self.syncInProgress = true
+        }
         viewModel.toggleSyncState()
         
         let onFinish = {
             Log.info("[SYNC] Ending synchronization")
             completion?()
+            DispatchQueue.main.async {
+                self.syncInProgress = true
+            }
             self.viewModel.finishSync()
         }
         

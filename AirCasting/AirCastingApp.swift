@@ -15,7 +15,7 @@ struct AirCastingApp: App {
     private let syncScheduler: SynchronizationScheduler
     private let microphoneManager: MicrophoneManager
     private var sessionSynchronizer: SessionSynchronizer
-    private var sessionSynchronizerViewModel: SessionSynchronizationViewModel
+    private var sessionSynchronizerViewModel: DefaultSessionSynchronizationViewModel
     private let persistenceController = PersistenceController.shared
     private let appBecameActive = PassthroughSubject<Void, Never>()
     private let sessionSynchronizationController: SessionSynchronizationController
@@ -31,7 +31,7 @@ struct AirCastingApp: App {
         let downloadService = SessionDownloadService(client: URLSession.shared, authorization: authorization, responseValidator: DefaultHTTPResponseValidator())
         let uploadService = SessionUploadService(client: URLSession.shared, authorization: authorization, responseValidator: DefaultHTTPResponseValidator())
         let syncStore = SessionSynchronizationDatabase(database: persistenceController)
-        sessionSynchronizerViewModel = SessionSynchronizationViewModel()
+        sessionSynchronizerViewModel = DefaultSessionSynchronizationViewModel()
         let unscheduledSyncController = SessionSynchronizationController(synchronizationContextProvider: synchronizationContextProvider,
                                                                          downstream: downloadService,
                                                                          upstream: uploadService,

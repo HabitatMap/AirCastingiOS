@@ -3,11 +3,13 @@
 
 import Foundation
 
-protocol DefaultSessionSynchronizer {
+protocol SessionSynchronizationViewModel {
     var syncInProgress: Bool { get }
+    func toggleSyncState()
+    func finishSync()
 }
 
-class SessionSynchronizationViewModel: DefaultSessionSynchronizer, ObservableObject {
+class DefaultSessionSynchronizationViewModel: SessionSynchronizationViewModel, ObservableObject {
     @Published var syncInProgress: Bool = false
     
     func toggleSyncState() {

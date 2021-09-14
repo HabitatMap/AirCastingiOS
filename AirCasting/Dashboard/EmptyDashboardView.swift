@@ -11,7 +11,7 @@ import SwiftUI
 struct EmptyDashboardView: View {
     @EnvironmentObject private var tabSelection: TabBarSelection
     @EnvironmentObject var selectedSection: SelectSection
-    var defaultSessionSynchronizer: DefaultSessionSynchronizer
+    var defaultSessionSynchronizer: SessionSynchronizationViewModel
     var body: some View {
         emptyState
     }
@@ -96,7 +96,7 @@ private extension EmptyDashboardView {
 #if DEBUG
 struct EmptyDashboard_Previews: PreviewProvider {
     static var previews: some View {
-        EmptyDashboardView(defaultSessionSynchronizer: SessionSynchronizationViewModel())
+        EmptyDashboardView(defaultSessionSynchronizer: DefaultSessionSynchronizationViewModel())
     }
 }
 #endif

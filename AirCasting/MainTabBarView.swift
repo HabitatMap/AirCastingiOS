@@ -27,7 +27,7 @@ struct MainTabBarView: View {
     @StateObject var sessionContext: CreateSessionContext
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @EnvironmentObject private var locationTracker: LocationTracker
-    var defaultSessionSynchronizer: DefaultSessionSynchronizer
+    var defaultSessionSynchronizer: SessionSynchronizationViewModel
     
     var body: some View {
         TabView(selection: $tabSelection.selection) {
@@ -102,7 +102,7 @@ struct ContentView_Previews: PreviewProvider {
     private static let persistenceController = PersistenceController(inMemory: true)
 
     static var previews: some View {
-        MainTabBarView(measurementUpdatingService: MeasurementUpdatingServiceMock(), urlProvider: DummyURLProvider(), measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionStoppableFactory: SessionStoppableFactoryDummy(), sessionSynchronizer: DummySessionSynchronizer(), sessionContext: CreateSessionContext(), defaultSessionSynchronizer: SessionSynchronizationViewModel())
+        MainTabBarView(measurementUpdatingService: MeasurementUpdatingServiceMock(), urlProvider: DummyURLProvider(), measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionStoppableFactory: SessionStoppableFactoryDummy(), sessionSynchronizer: DummySessionSynchronizer(), sessionContext: CreateSessionContext(), defaultSessionSynchronizer: DefaultSessionSynchronizationViewModel())
             .environmentObject(UserAuthenticationSession())
             .environmentObject(BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: PreviewMeasurementStreamStorage())))
             .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
