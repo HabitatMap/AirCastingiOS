@@ -23,4 +23,19 @@ final class TimeConverter {
         let time24 = df.string(from: date!)
         return time24
     }
+    
+    static func swapDaysAndMonths(date: String) -> String {
+        var components = date.components(separatedBy: "/")
+        let days = components.first
+        components[0] = components[1]
+        components[1] = days!
+        var fullDate = ""
+        for component in components {
+            fullDate.append(component)
+            if component != components.last {
+                fullDate.append("/")
+            }
+        }
+        return fullDate
+    }
 }

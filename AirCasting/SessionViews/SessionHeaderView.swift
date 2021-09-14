@@ -177,15 +177,7 @@ private extension SessionHeaderView {
  
         let string = DateIntervalFormatter().string(from: start, to: end)
         // Purpose of this is to use 24h format all the time (no matter system settings)
-        if TimeConverter.is24Hour() {
-            // We are checking if user system settings is set to be 24h format
-                // if so, no additional change is needed
-            let replacedString = string.replacingOccurrences(of: "—", with: "-")
-            let dateComponents = replacedString.components(separatedBy: ",")
-            fullDate = swapDaysAndMonths(date: dateComponents.first!)
-            fullDate.append(", \(dateComponents.last!)")
-            return Text(fullDate)
-        } else {
+        // and to always use format MM/dd/yyyy which is handled by a function
             if string.contains("–") {
                 // containing "-" mean that the session has start and end date
                 let time = string.components(separatedBy: "–")
@@ -204,23 +196,24 @@ private extension SessionHeaderView {
                 fullDate = time2.first!
                 var startTime12 = time2.last?.trimmingCharacters(in: .whitespaces)
                 
-                if !(startTime12!.contains("PM") || startTime12!.contains("AM")) {
+                if !(startTime12!.contains("PM") || startTime12!.contains("AM")) && !TimeConverter.is24Hour() {
                     // to convert .AM || .PM time, we need to ensure that is has always the right ending
                     // when session is short, sometimes it results in time formatting like this -> 18:00-19:00 PM
                     // the purpose is to add .PM to the 18:00 in this example
                     (endTime12.contains("PM")) ? startTime12?.append(" PM") : startTime12?.append(" AM")
                 }
+                
                 if endDate == "" {
                     // the case where only one date is handled (one day session)
                     // needed format then ---> 17/08/2021, 17:59-18:16
-                    fullDate = swapDaysAndMonths(date: fullDate)
-                    fullDate.append(", \(TimeConverter.timeConversion24(time12: startTime12!))-\(TimeConverter.timeConversion24(time12: endTime12))")
+                    fullDate = TimeConverter.swapDaysAndMonths(date: fullDate)
+                    fullDate.append(", \(!TimeConverter.is24Hour() ? TimeConverter.timeConversion24(time12: startTime12!) : startTime12!)-\(!TimeConverter.is24Hour() ? TimeConverter.timeConversion24(time12: endTime12) : endTime12)")
                 } else {
                     // the case where session is recorder at least through two days
                     // needed format then ---> 17/08/2021, 17:59-10/09/2021, 5:16
-                    fullDate = swapDaysAndMonths(date: fullDate)
-                    endDate = swapDaysAndMonths(date: endDate)
-                    fullDate.append(", \(TimeConverter.timeConversion24(time12: startTime12!))-\(endDate), \(TimeConverter.timeConversion24(time12: endTime12))")
+                    fullDate = TimeConverter.swapDaysAndMonths(date: fullDate)
+                    endDate = TimeConverter.swapDaysAndMonths(date: endDate)
+                    fullDate.append(", \(!TimeConverter.is24Hour() ? TimeConverter.timeConversion24(time12: startTime12!) : startTime12!)-\(endDate), \(!TimeConverter.is24Hour() ? TimeConverter.timeConversion24(time12: endTime12) : endTime12)")
                 }
             } else {
                 // the case where session has only date and start time
@@ -228,26 +221,10 @@ private extension SessionHeaderView {
                 let time2 = string.components(separatedBy: ",")
                 fullDate = time2.first!
                 let startTime12 = time2.last?.trimmingCharacters(in: .whitespaces)
-                fullDate = swapDaysAndMonths(date: fullDate)
-                fullDate.append(", \(TimeConverter.timeConversion24(time12: startTime12!))")
+                fullDate = TimeConverter.swapDaysAndMonths(date: fullDate)
+                fullDate.append(", \(!TimeConverter.is24Hour() ? TimeConverter.timeConversion24(time12: startTime12!) : startTime12!)")
             }
             return Text(fullDate)
-        }
-    }
-    
-    func swapDaysAndMonths(date: String) -> String {
-        var components = date.components(separatedBy: "/")
-        let days = components.first
-        components[0] = components[1]
-        components[1] = days!
-        var fullDate = ""
-        for component in components {
-            fullDate.append(component)
-            if component != components.last {
-                fullDate.append("/")
-            }
-        }
-        return fullDate
     }
 }
 
