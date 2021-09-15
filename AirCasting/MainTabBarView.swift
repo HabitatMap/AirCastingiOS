@@ -84,7 +84,7 @@ private extension MainTabBarView {
 
 class TabBarSelection: ObservableObject {
     @Published var selection = Tab.dashboard
-    @Published var mobileProcceding = false
+    @Published var mobileProceeding = false
 
     enum Tab {
         case dashboard

@@ -14,8 +14,8 @@ struct ChooseSessionTypeView: View {
     @State private var isPowerABLinkActive = false
     @State private var isMobileLinkActive = false
     @State private var didTapFixedSession = false
-    @EnvironmentObject private var tabSelection: TabBarSelection
     var viewModel: ChooseSessionTypeViewModel
+    @EnvironmentObject private var tabSelection: TabBarSelection
     
     var body: some View {
         NavigationView {
@@ -80,8 +80,8 @@ struct ChooseSessionTypeView: View {
                     didTapFixedSession = false
                 }
             }
-            .onAppear() {
-                if tabSelection.selection == .createSession && tabSelection.mobileProcceding {
+            .onAppear {
+                if tabSelection.selection == .createSession && tabSelection.mobileProceeding {
                     isMobileLinkActive = true
                 }
             }
