@@ -96,7 +96,7 @@ private extension EmptyDashboardView {
 #if DEBUG
 struct EmptyDashboard_Previews: PreviewProvider {
     static var previews: some View {
-        EmptyDashboardView(defaultSessionSynchronizer: DefaultSessionSynchronizationViewModel())
+        EmptyDashboardView(defaultSessionSynchronizer: DefaultSessionSynchronizationViewModel(sessionSynchronizer: DummySessionSynchronizer()))
     }
 }
 #endif

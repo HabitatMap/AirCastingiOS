@@ -15,7 +15,6 @@ final class SessionSynchronizationController: SessionSynchronizer {
     private let upstream: SessionUpstream
     private let store: SessionSynchronizationStore
     private let dataConverter = SynchronizationDataConverter()
-    private let viewModel: SessionSynchronizationViewModel
     
     // Progress tracking for filtering requests while already syncing
     // (can this be somehow moved to a custom operator or something?)
@@ -28,13 +27,11 @@ final class SessionSynchronizationController: SessionSynchronizer {
     init(synchronizationContextProvider: SessionSynchronizationContextProvidable,
          downstream: SessionDownstream,
          upstream: SessionUpstream,
-         store: SessionSynchronizationStore,
-         viewModel: SessionSynchronizationViewModel) {
+         store: SessionSynchronizationStore) {
         self.synchronizationContextProvider = synchronizationContextProvider
         self.downstream = downstream
         self.upstream = upstream
         self.store = store
-        self.viewModel = viewModel
     }
     
     func triggerSynchronization(completion: (() -> Void)?) {
@@ -43,7 +40,6 @@ final class SessionSynchronizationController: SessionSynchronizer {
         DispatchQueue.main.async {
             self.syncInProgress = true
         }
-        viewModel.toggleSyncState()
         
         let onFinish = {
             Log.info("[SYNC] Ending synchronization")
@@ -51,7 +47,6 @@ final class SessionSynchronizationController: SessionSynchronizer {
             DispatchQueue.main.async {
                 self.syncInProgress = true
             }
-            self.viewModel.finishSync()
         }
         
         startSynchronization()

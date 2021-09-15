@@ -31,11 +31,11 @@ struct AirCastingApp: App {
         let downloadService = SessionDownloadService(client: URLSession.shared, authorization: authorization, responseValidator: DefaultHTTPResponseValidator())
         let uploadService = SessionUploadService(client: URLSession.shared, authorization: authorization, responseValidator: DefaultHTTPResponseValidator())
         let syncStore = SessionSynchronizationDatabase(database: persistenceController)
-        sessionSynchronizerViewModel = DefaultSessionSynchronizationViewModel()
         let unscheduledSyncController = SessionSynchronizationController(synchronizationContextProvider: synchronizationContextProvider,
                                                                          downstream: downloadService,
                                                                          upstream: uploadService,
-                                                                         store: syncStore, viewModel: sessionSynchronizerViewModel)
+                                                                         store: syncStore)
+        sessionSynchronizerViewModel = DefaultSessionSynchronizationViewModel(sessionSynchronizer: unscheduledSyncController)
         sessionSynchronizationController = unscheduledSyncController
         sessionSynchronizer = ScheduledSessionSynchronizerProxy(controller: unscheduledSyncController,
                                                                 scheduler: DispatchQueue.global())

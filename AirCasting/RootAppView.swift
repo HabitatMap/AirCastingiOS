@@ -102,7 +102,7 @@ struct MainAppView: View {
 #if DEBUG
 struct RootAppView_Previews: PreviewProvider {
     static var previews: some View {
-        RootAppView(sessionSynchronizer: DummySessionSynchronizer(), persistenceController: PersistenceController(inMemory: true), defaultSessionSynchronizer: DefaultSessionSynchronizationViewModel())
+        RootAppView(sessionSynchronizer: DummySessionSynchronizer(), persistenceController: PersistenceController(inMemory: true), defaultSessionSynchronizer: DefaultSessionSynchronizationViewModel(syncControllerDecorator: SyncControllerDecorator(syncSessionController: SessionSynchronizationController())))
     }
 }
 #endif

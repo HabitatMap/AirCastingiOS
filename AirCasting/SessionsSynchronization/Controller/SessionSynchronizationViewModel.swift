@@ -5,23 +5,24 @@ import Foundation
 
 protocol SessionSynchronizationViewModel {
     var syncInProgress: Bool { get }
-    func toggleSyncState()
-    func finishSync()
 }
 
 class DefaultSessionSynchronizationViewModel: SessionSynchronizationViewModel, ObservableObject {
-    @Published var syncInProgress: Bool = false
+    let syncControllerDecorator: SyncControllerDecorator
+    @Published public var syncInProgress: Bool
     
-    func toggleSyncState() {
-        if syncInProgress { return }
-        DispatchQueue.main.async {
-            self.syncInProgress = true
-        }
+    init(syncControllerDecorator: SyncControllerDecorator) {
+        self.syncControllerDecorator = syncControllerDecorator
+        self.syncInProgress = syncControllerDecorator.isCurrentlySynchronizing
     }
+}
+
+class SyncControllerDecorator {
+    let syncSessionController: SessionSynchronizationController
+    @Published var isCurrentlySynchronizing: Bool
     
-    func finishSync() {
-        DispatchQueue.main.async {
-            self.syncInProgress = false
-        }
+    init(syncSessionController: SessionSynchronizationController) {
+        self.syncSessionController = syncSessionController
+        self.isCurrentlySynchronizing = syncSessionController.syncInProgress
     }
 }
