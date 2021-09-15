@@ -167,8 +167,6 @@ private extension SessionHeaderView {
     
     func adaptTimeAndDate() -> Text {
         let formatter = DateIntervalFormatter()
-        formatter.dateTemplate = "HH:mm"
-        formatter.locale = Locale(identifier: "en_US")
         formatter.timeStyle = .short
         formatter.dateStyle = .medium
         var fullDate = ""
