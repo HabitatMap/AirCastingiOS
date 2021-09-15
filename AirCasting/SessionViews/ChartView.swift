@@ -97,7 +97,8 @@ struct ChartView: UIViewRepresentable {
         //dots colors
         dataSet.circleColors = generateColorsSet(for: dataSet.entries)
         dataSet.drawCircleHoleEnabled = false
-        dataSet.circleRadius = 6
+        dataSet.circleRadius = 4
+
         
         //line color
         dataSet.setColor(UIColor.aircastingGray.withAlphaComponent(0.7))
