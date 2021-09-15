@@ -219,7 +219,7 @@ private extension SessionCartView {
                     HStack() {
                             Text(startTime)
                             Spacer()
-                        Text("\(Strings.SessionCartView.avgSession) \(selectedStream.measurementShortType ?? "")")
+                        Text("\(Strings.SessionCartView.avgSession) \(selectedStream.unitSymbol ?? "")")
                             Spacer()
                             Text(endTime)
                     }.foregroundColor(.aircastingGray)
