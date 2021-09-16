@@ -24,6 +24,7 @@ struct MainTabBarView: View {
     let sessionSynchronizer: SessionSynchronizer
     @StateObject var tabSelection: TabBarSelection = TabBarSelection()
     @StateObject var selectedSection = SelectSection()
+    @StateObject var emptyDashboardButtonTapped = EmptyDashboardButtonTapped()
     @StateObject var sessionContext: CreateSessionContext
     @EnvironmentObject var bluetoothManager: BluetoothManager
     let locationHandler: LocationHandler
@@ -46,6 +47,7 @@ struct MainTabBarView: View {
         })
         .environmentObject(tabSelection)
         .environmentObject(selectedSection)
+        .environmentObject(emptyDashboardButtonTapped)
     }
 }
 
@@ -84,8 +86,7 @@ private extension MainTabBarView {
 
 class TabBarSelection: ObservableObject {
     @Published var selection = Tab.dashboard
-    @Published var mobileProceeding = false
-
+    
     enum Tab {
         case dashboard
         case createSession
@@ -95,6 +96,10 @@ class TabBarSelection: ObservableObject {
 
 class SelectSection: ObservableObject {
     @Published var selectedSection = SelectedSection.mobileActive
+}
+
+class EmptyDashboardButtonTapped: ObservableObject {
+    @Published var mobileWasTapped = false
 }
 
 #if DEBUG
