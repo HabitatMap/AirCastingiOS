@@ -18,7 +18,7 @@ final class SessionSynchronizationController: SessionSynchronizer {
     
     // Progress tracking for filtering requests while already syncing
     // (can this be somehow moved to a custom operator or something?)
-    var syncInProgress: Bool = false
+    @Published var syncInProgress: Bool = false
     // Simple lock is sufficient here, no need for GCD
     private let lock = NSRecursiveLock()
     

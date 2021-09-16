@@ -15,7 +15,7 @@ struct AirCastingApp: App {
     private let syncScheduler: SynchronizationScheduler
     private let microphoneManager: MicrophoneManager
     private var sessionSynchronizer: SessionSynchronizer
-    private var sessionSynchronizerViewModel: DefaultSessionSynchronizationViewModel
+    @StateObject var sessionSynchronizerViewModel: DefaultSessionSynchronizationViewModel
     private let persistenceController = PersistenceController.shared
     private let appBecameActive = PassthroughSubject<Void, Never>()
     private let sessionSynchronizationController: SessionSynchronizationController
@@ -35,7 +35,7 @@ struct AirCastingApp: App {
                                                                          downstream: downloadService,
                                                                          upstream: uploadService,
                                                                          store: syncStore)
-        sessionSynchronizerViewModel = DefaultSessionSynchronizationViewModel(sessionSynchronizer: unscheduledSyncController)
+        _sessionSynchronizerViewModel = StateObject(wrappedValue: DefaultSessionSynchronizationViewModel(syncSessionController: unscheduledSyncController))
         sessionSynchronizationController = unscheduledSyncController
         sessionSynchronizer = ScheduledSessionSynchronizerProxy(controller: unscheduledSyncController,
                                                                 scheduler: DispatchQueue.global())
@@ -51,7 +51,8 @@ struct AirCastingApp: App {
 
     var body: some Scene {
         WindowGroup {
-            RootAppView(sessionSynchronizer: sessionSynchronizer, persistenceController: persistenceController, defaultSessionSynchronizer: sessionSynchronizerViewModel)
+            RootAppView(sessionSynchronizer: sessionSynchronizer, persistenceController: persistenceController)
+                .environmentObject(sessionSynchronizerViewModel)
                 .environmentObject(authorization)
                 .environmentObject(microphoneManager)
                 .alert(isPresented: $offlineMessageViewModel.showOfflineMessage, content: { Alert.offlineAlert })

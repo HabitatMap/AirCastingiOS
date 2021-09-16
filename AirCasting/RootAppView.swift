@@ -24,7 +24,6 @@ struct RootAppView: View {
     
     var sessionSynchronizer: SessionSynchronizer
     let persistenceController: PersistenceController
-    var defaultSessionSynchronizer: SessionSynchronizationViewModel
     let urlProvider = UserDefaultsBaseURLProvider()
     let networkChecker = NetworkChecker(connectionAvailable: false)
     
@@ -38,7 +37,7 @@ struct RootAppView: View {
                             sessionSynchronizer: sessionSynchronizer,
                             sessionStoppableFactory: sessionStoppableFactory,
                             downloadService: downloadService,
-                            measurementStreamStorage: measurementStreamStorage, defaultSessionSynchronizer: defaultSessionSynchronizer)
+                            measurementStreamStorage: measurementStreamStorage)
             } else if !userAuthenticationSession.isLoggedIn && lifeTimeEventsProvider.hasEverPassedOnBoarding {
                 NavigationView {
                     CreateAccountView(completion: { self.lifeTimeEventsProvider.hasEverLoggedIn = true }, userSession: userAuthenticationSession, baseURL: urlProvider).environmentObject(lifeTimeEventsProvider)
@@ -81,7 +80,6 @@ struct MainAppView: View {
     let sessionStoppableFactory: SessionStoppableFactoryDefault
     let downloadService: DownloadMeasurementsService
     let measurementStreamStorage: MeasurementStreamStorage
-    var defaultSessionSynchronizer: SessionSynchronizationViewModel
     
     @EnvironmentObject private var persistenceController: PersistenceController
     @EnvironmentObject private var urlProvider: UserDefaultsBaseURLProvider
@@ -94,7 +92,7 @@ struct MainAppView: View {
                        measurementStreamStorage: measurementStreamStorage,
                        sessionStoppableFactory: sessionStoppableFactory,
                        sessionSynchronizer: sessionSynchronizer,
-                       sessionContext: CreateSessionContext(), defaultSessionSynchronizer: defaultSessionSynchronizer)
+                       sessionContext: CreateSessionContext())
             .environmentObject(airBeamConnectionController)
     }
 }
@@ -102,7 +100,7 @@ struct MainAppView: View {
 #if DEBUG
 struct RootAppView_Previews: PreviewProvider {
     static var previews: some View {
-        RootAppView(sessionSynchronizer: DummySessionSynchronizer(), persistenceController: PersistenceController(inMemory: true), defaultSessionSynchronizer: DefaultSessionSynchronizationViewModel(syncControllerDecorator: SyncControllerDecorator(syncSessionController: SessionSynchronizationController())))
+        RootAppView(sessionSynchronizer: DummySessionSynchronizer(), persistenceController: PersistenceController(inMemory: true))
     }
 }
 #endif

@@ -11,12 +11,12 @@ import SwiftUI
 struct EmptyDashboardView: View {
     @EnvironmentObject private var tabSelection: TabBarSelection
     @EnvironmentObject var selectedSection: SelectSection
-    var defaultSessionSynchronizer: SessionSynchronizationViewModel
+    @EnvironmentObject var defaultSessionSynchronizerViewModel: DefaultSessionSynchronizationViewModel
     var body: some View {
         emptyState
     }
     var shouldSessionFetch: Bool {
-        (selectedSection.selectedSection == .mobileDormant || selectedSection.selectedSection == .fixed) && defaultSessionSynchronizer.syncInProgress
+        (selectedSection.selectedSection == .mobileDormant || selectedSection.selectedSection == .fixed) && defaultSessionSynchronizerViewModel.syncInProgress
     }
 
     private var emptyState: some View {
@@ -96,7 +96,7 @@ private extension EmptyDashboardView {
 #if DEBUG
 struct EmptyDashboard_Previews: PreviewProvider {
     static var previews: some View {
-        EmptyDashboardView(defaultSessionSynchronizer: DefaultSessionSynchronizationViewModel(sessionSynchronizer: DummySessionSynchronizer()))
+        EmptyDashboardView()
     }
 }
 #endif

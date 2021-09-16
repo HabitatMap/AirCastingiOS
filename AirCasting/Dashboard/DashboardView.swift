@@ -14,19 +14,17 @@ struct DashboardView: View {
     @EnvironmentObject var selectedSection: SelectSection
     let measurementStreamStorage: MeasurementStreamStorage
     let sessionStoppableFactory: SessionStoppableFactory
-    var defaultSessionSynchronizer: SessionSynchronizationViewModel
 
     private var sessions: [SessionEntity] {
         coreDataHook.sessions
     }
     
-    init(coreDataHook: CoreDataHook, measurementStreamStorage: MeasurementStreamStorage, sessionStoppableFactory: SessionStoppableFactory, defaultSessionSynchronizer: SessionSynchronizationViewModel) {
+    init(coreDataHook: CoreDataHook, measurementStreamStorage: MeasurementStreamStorage, sessionStoppableFactory: SessionStoppableFactory) {
         let navBarAppearance = UINavigationBar.appearance()
         navBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(Color.darkBlue)]
         _coreDataHook = StateObject(wrappedValue: coreDataHook)
         self.measurementStreamStorage = measurementStreamStorage
         self.sessionStoppableFactory = sessionStoppableFactory
-        self.defaultSessionSynchronizer = defaultSessionSynchronizer
     }
 
     var body: some View {
@@ -40,7 +38,7 @@ struct DashboardView: View {
             AirSectionPickerView(selection: self.$selectedSection.selectedSection)
 
             if sessions.isEmpty {
-                EmptyDashboardView(defaultSessionSynchronizer: defaultSessionSynchronizer)
+                EmptyDashboardView()
             } else {
                 ZStack(alignment: .bottomTrailing) {
                     Image("dashboard-background-thing")
@@ -82,7 +80,7 @@ struct PreventCollapseView: View {
 #if DEBUG
 struct Dashboard_Previews: PreviewProvider {
     static var previews: some View {
-        DashboardView(coreDataHook: CoreDataHook(context: PersistenceController(inMemory: true).viewContext), measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionStoppableFactory: SessionStoppableFactoryDummy(), defaultSessionSynchronizer: DefaultSessionSynchronizationViewModel(sessionSynchronizer: DummySessionSynchronizer()))
+        DashboardView(coreDataHook: CoreDataHook(context: PersistenceController(inMemory: true).viewContext), measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionStoppableFactory: SessionStoppableFactoryDummy())
     }
 }
 #endif

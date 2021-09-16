@@ -8,12 +8,18 @@ protocol SessionSynchronizationViewModel {
 }
 
 class DefaultSessionSynchronizationViewModel: SessionSynchronizationViewModel, ObservableObject {
+    let syncSessionController: SessionSynchronizationController
     let syncControllerDecorator: SyncControllerDecorator
-    @Published public var syncInProgress: Bool
+    @Published public var syncInProgress: Bool {
+        didSet {
+            syncInProgress = syncSessionController.syncInProgress
+        }
+    }
     
-    init(syncControllerDecorator: SyncControllerDecorator) {
-        self.syncControllerDecorator = syncControllerDecorator
-        self.syncInProgress = syncControllerDecorator.isCurrentlySynchronizing
+    init(syncSessionController: SessionSynchronizationController) {
+        self.syncSessionController = syncSessionController
+        self.syncControllerDecorator = SyncControllerDecorator(syncSessionController: syncSessionController)
+        self.syncInProgress = syncSessionController.syncInProgress
     }
 }
 
