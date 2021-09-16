@@ -79,28 +79,26 @@ private extension SessionHeaderView {
     }
     
     var sensorType: some View {
-        switch session.type.description {
-            case "Fixed":
-                return airBeamText
-            case "Mobile":
-                if session.allStreams!.count == 1 {
-                    return Text("\(session.type!.description): \(Strings.SessionHeaderView.mic)")
+        var sensorNames = [String]()
+        var text = ""
+        for session in session.allStreams! {
+            if var name = session.sensorPackageName {
+                if name.contains(":") {
+                    name = name.components(separatedBy: ":").first!
                 } else {
-                    return airBeamText
+                    name = name.components(separatedBy: "-").first!
                 }
-            default:
-                return Text(session.deviceType?.description ?? "")
+                (name == "Builtin") ? (name = "Phone mic") : (name = name)
+                !sensorNames.contains(name) ? sensorNames.append(name) : nil
+            }
         }
-    }
-    
-    var airBeamText: Text {
-        if session.pm1Stream?.sensorName?.contains(Strings.SessionHeaderView.airBeam1) != nil {
-            return Text("\(session.type!.description) : \(Strings.SessionHeaderView.airBeam1)")
-        } else if session.pm1Stream?.sensorName?.contains(Strings.SessionHeaderView.airBeam2) != nil {
-            return Text("\(session.type!.description) : \(Strings.SessionHeaderView.airBeam2)")
-        } else {
-            return Text("\(session.type!.description) : \(Strings.SessionHeaderView.airBeam3)")
+        for sensor in sensorNames {
+            text.append(sensor)
+            if sensor != sensorNames.last {
+                text.append(", ")
+            }
         }
+        return Text("\(session.type!.description) : \(text)")
     }
     
     var actionsMenuMobile: some View {
