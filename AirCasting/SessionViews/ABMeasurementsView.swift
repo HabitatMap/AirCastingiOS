@@ -57,19 +57,15 @@ struct ABMeasurementsView: View {
             } else {
                 if session.isFollowed {
                     SessionLoadingView()
-                } else if session.isDormant {
+                } else {
                     VStack(alignment: .leading, spacing: 8) {
                         measurementsTitle
+                            .font(Font.moderate(size: 12))
                         streamNames
                         if !isCollapsed && showLoadingIndicator {
                             ProgressView()
                                 .progressViewStyle(CircularProgressViewStyle())
                         }
-                    }
-                } else {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text(Strings.SessionCart.parametersText)
-                        streamNames
                     }
                 }
             }
