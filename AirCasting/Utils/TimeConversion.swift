@@ -14,7 +14,6 @@ final class TimeConverter {
 
     static func timeConversion24(time12: String) -> String {
         let dateAsString = time12
-        df.locale = Locale(identifier: "en_US_POSIX")
         df.dateFormat = "h:mm a"
         
         let date = df.date(from: dateAsString)
