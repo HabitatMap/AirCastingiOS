@@ -188,13 +188,15 @@ private extension SessionHeaderView {
     func adaptTimeAndDate() -> Text {
         let formatter = DateIntervalFormatter()
         formatter.timeStyle = .short
-        formatter.dateStyle = .medium
+        formatter.dateStyle = .short
+        formatter.timeZone = TimeZone.init(identifier: "UTC")
+
         var fullDate = ""
         var endDate = ""
         
         guard let start = session.startTime else { return Text("") }
         let end = session.endTime ?? Date()
-        let string = DateIntervalFormatter().string(from: start, to: end)
+        let string = formatter.string(from: start, to: end)
         // Purpose of this is to use 24h format all the time (no matter system settings)
         if TimeConverter.is24Hour() {
             // We are checking if user system settings is set to be 24h format

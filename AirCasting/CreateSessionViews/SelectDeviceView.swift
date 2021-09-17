@@ -22,6 +22,7 @@ struct SelectDeviceView: View {
     @EnvironmentObject private var locationTracker: LocationTracker
     @Binding var creatingSessionFlowContinues : Bool
     @State private var showAlert = false
+    @EnvironmentObject private var tabSelection: TabBarSelection
     
     let urlProvider: BaseURLProvider
     

@@ -6,6 +6,7 @@ import Combine
 import CoreLocation
 
 final class SessionSynchronizationController: SessionSynchronizer {
+    
     /// A plugin point for error handlers
     var errorStream: SessionSynchronizerErrorStream?
     
@@ -13,11 +14,11 @@ final class SessionSynchronizationController: SessionSynchronizer {
     private let downstream: SessionDownstream
     private let upstream: SessionUpstream
     private let store: SessionSynchronizationStore
-    private let dataConverter = SynchronizationDataConterter()
-    
+    private let dataConverter = SynchronizationDataConverter()
+    private(set) lazy var syncInProgress: AnyPublisher<Bool, Never> = $_syncInProgress.eraseToAnyPublisher()
     // Progress tracking for filtering requests while already syncing
     // (can this be somehow moved to a custom operator or something?)
-    private var syncInProgress: Bool = false
+    @Published private var _syncInProgress: Bool = false
     // Simple lock is sufficient here, no need for GCD
     private let lock = NSRecursiveLock()
     
@@ -35,13 +36,13 @@ final class SessionSynchronizationController: SessionSynchronizer {
     
     func triggerSynchronization(completion: (() -> Void)?) {
         lock.lock(); defer { lock.unlock() }
-        if syncInProgress { return }
-        syncInProgress = true
+        if _syncInProgress { return }
+        _syncInProgress = true
         
         let onFinish = {
             Log.info("[SYNC] Ending synchronization")
             completion?()
-            self.syncInProgress = false
+            self._syncInProgress = false
         }
         
         startSynchronization()
