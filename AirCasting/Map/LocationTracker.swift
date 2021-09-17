@@ -21,7 +21,7 @@ class LocationTracker: NSObject, ObservableObject, CLLocationManagerDelegate {
         switch locationManager.authorizationStatus {
             case .authorizedAlways, .authorizedWhenInUse:
                 self.locationGranted = .granted
-                googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: 200.0, longitude: 200.0), measurement: 20)]
+                googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: (locationManager.location?.coordinate.latitude)!, longitude: (locationManager.location?.coordinate.longitude)!), measurement: 20)]
             case .denied, .notDetermined, .restricted:
                 self.locationGranted = .denied
                 googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: 37.35, longitude: -122.05), measurement: 20.0)]
