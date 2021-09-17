@@ -15,8 +15,10 @@ struct AirCastingApp: App {
     private let syncScheduler: SynchronizationScheduler
     private let microphoneManager: MicrophoneManager
     private var sessionSynchronizer: SessionSynchronizer
+    private var sessionSynchronizerViewModel: DefaultSessionSynchronizationViewModel
     private let persistenceController = PersistenceController.shared
     private let appBecameActive = PassthroughSubject<Void, Never>()
+    private let sessionSynchronizationController: SessionSynchronizationController
     @ObservedObject private var offlineMessageViewModel: OfflineMessageViewModel
     private var cancellables: [AnyCancellable] = []
 
@@ -29,11 +31,12 @@ struct AirCastingApp: App {
         let downloadService = SessionDownloadService(client: URLSession.shared, authorization: authorization, responseValidator: DefaultHTTPResponseValidator())
         let uploadService = SessionUploadService(client: URLSession.shared, authorization: authorization, responseValidator: DefaultHTTPResponseValidator())
         let syncStore = SessionSynchronizationDatabase(database: persistenceController)
-        
         let unscheduledSyncController = SessionSynchronizationController(synchronizationContextProvider: synchronizationContextProvider,
                                                                          downstream: downloadService,
                                                                          upstream: uploadService,
                                                                          store: syncStore)
+        sessionSynchronizerViewModel = DefaultSessionSynchronizationViewModel(syncSessionController: unscheduledSyncController)
+        sessionSynchronizationController = unscheduledSyncController
         sessionSynchronizer = ScheduledSessionSynchronizerProxy(controller: unscheduledSyncController,
                                                                 scheduler: DispatchQueue.global())
         microphoneManager = MicrophoneManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared))
@@ -49,6 +52,7 @@ struct AirCastingApp: App {
     var body: some Scene {
         WindowGroup {
             RootAppView(sessionSynchronizer: sessionSynchronizer, persistenceController: persistenceController)
+                .environmentObject(sessionSynchronizerViewModel)
                 .environmentObject(authorization)
                 .environmentObject(microphoneManager)
                 .alert(isPresented: $offlineMessageViewModel.showOfflineMessage, content: { Alert.offlineAlert })

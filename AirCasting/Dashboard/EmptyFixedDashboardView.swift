@@ -4,6 +4,14 @@ import AirCastingStyling
 import SwiftUI
 
 struct EmptyFixedDashboardView: View {
+    #warning("Please switch to protocol ASAP")
+    @EnvironmentObject var defaultSessionSynchronizerViewModel: DefaultSessionSynchronizationViewModel
+    @EnvironmentObject private var tabSelection: TabBarSelection
+    @EnvironmentObject var selectedSection: SelectSection
+    
+    var shouldSessionFetch: Bool {
+        (selectedSection.selectedSection == .mobileDormant || selectedSection.selectedSection == .fixed) && defaultSessionSynchronizerViewModel.syncInProgress
+    }
     
     var body: some View {
         emptyState
@@ -14,6 +22,10 @@ struct EmptyFixedDashboardView: View {
             Image("dashboard-background-thing")
             
             VStack() {
+                if shouldSessionFetch {
+                    ProgressView(Strings.EmptyDashboardFixed.fetchingText)
+                        .progressViewStyle(CircularProgressViewStyle())
+                }
                 Spacer()
                 VStack(spacing: 20) {
                     emptyFixedDashboardText
