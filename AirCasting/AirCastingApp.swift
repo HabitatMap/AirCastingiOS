@@ -15,7 +15,7 @@ struct AirCastingApp: App {
     private let syncScheduler: SynchronizationScheduler
     private let microphoneManager: MicrophoneManager
     private var sessionSynchronizer: SessionSynchronizer
-    @StateObject var sessionSynchronizerViewModel: DefaultSessionSynchronizationViewModel
+    private var sessionSynchronizerViewModel: DefaultSessionSynchronizationViewModel
     private let persistenceController = PersistenceController.shared
     private let appBecameActive = PassthroughSubject<Void, Never>()
     private let sessionSynchronizationController: SessionSynchronizationController
@@ -35,7 +35,7 @@ struct AirCastingApp: App {
                                                                          downstream: downloadService,
                                                                          upstream: uploadService,
                                                                          store: syncStore)
-        _sessionSynchronizerViewModel = StateObject(wrappedValue: DefaultSessionSynchronizationViewModel(syncSessionController: unscheduledSyncController))
+        sessionSynchronizerViewModel = DefaultSessionSynchronizationViewModel(syncSessionController: unscheduledSyncController)
         sessionSynchronizationController = unscheduledSyncController
         sessionSynchronizer = ScheduledSessionSynchronizerProxy(controller: unscheduledSyncController,
                                                                 scheduler: DispatchQueue.global())

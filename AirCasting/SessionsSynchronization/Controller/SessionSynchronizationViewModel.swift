@@ -2,33 +2,19 @@
 //
 
 import Foundation
+import Combine
 
-protocol SessionSynchronizationViewModel {
+protocol SessionSynchronizationViewModel: ObservableObject {
     var syncInProgress: Bool { get }
 }
 
-class DefaultSessionSynchronizationViewModel: SessionSynchronizationViewModel, ObservableObject {
-    let syncSessionController: SessionSynchronizationController
-    let syncControllerDecorator: SyncControllerDecorator
-    @Published public var syncInProgress: Bool {
-        didSet {
-            syncInProgress = syncSessionController.syncInProgress
-        }
-    }
+class DefaultSessionSynchronizationViewModel: SessionSynchronizationViewModel {
+    @Published public var syncInProgress: Bool = true
+    private var cancellables = [AnyCancellable]()
     
-    init(syncSessionController: SessionSynchronizationController) {
-        self.syncSessionController = syncSessionController
-        self.syncControllerDecorator = SyncControllerDecorator(syncSessionController: syncSessionController)
-        self.syncInProgress = syncSessionController.syncInProgress
-    }
-}
-
-class SyncControllerDecorator {
-    let syncSessionController: SessionSynchronizationController
-    @Published var isCurrentlySynchronizing: Bool
-    
-    init(syncSessionController: SessionSynchronizationController) {
-        self.syncSessionController = syncSessionController
-        self.isCurrentlySynchronizing = syncSessionController.syncInProgress
+    init(syncSessionController: SessionSynchronizer) {
+        syncSessionController.syncInProgress.sink { [weak self] value in
+            self?.syncInProgress = value
+        }.store(in: &cancellables)
     }
 }

@@ -6,6 +6,7 @@ import Combine
 
 /// Defines the interface for objects that provide session list synchronization to the app
 protocol SessionSynchronizer {
+    var syncInProgress: AnyPublisher<Bool, Never> { get }
     /// Triggers a new synchronization pass
     /// - Parameter completion: closure called when sycnhronization finishes
     func triggerSynchronization(completion: (() -> Void)?)
@@ -28,6 +29,7 @@ enum SessionsSynchronization { }
 
 #if DEBUG
 struct DummySessionSynchronizer: SessionSynchronizer {
+    var syncInProgress: AnyPublisher<Bool, Never> = Just(false).eraseToAnyPublisher()
     var errorStream: SessionSynchronizerErrorStream?
     func triggerSynchronization(completion: (() -> Void)?) { completion?() }
     func stopSynchronization() { }

@@ -11,6 +11,7 @@ import SwiftUI
 struct EmptyDashboardView: View {
     @EnvironmentObject private var tabSelection: TabBarSelection
     @EnvironmentObject var selectedSection: SelectSection
+    #warning("Please switch to protocol ASAP")
     @EnvironmentObject var defaultSessionSynchronizerViewModel: DefaultSessionSynchronizationViewModel
     var body: some View {
         emptyState
