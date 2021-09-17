@@ -37,16 +37,12 @@ final class SessionSynchronizationController: SessionSynchronizer {
     func triggerSynchronization(completion: (() -> Void)?) {
         lock.lock(); defer { lock.unlock() }
         if _syncInProgress { return }
-        DispatchQueue.main.async {
-            self._syncInProgress = true
-        }
+        _syncInProgress = true
         
         let onFinish = {
             Log.info("[SYNC] Ending synchronization")
             completion?()
-            DispatchQueue.main.async {
-                self._syncInProgress = true
-            }
+            self._syncInProgress = false
         }
         
         startSynchronization()

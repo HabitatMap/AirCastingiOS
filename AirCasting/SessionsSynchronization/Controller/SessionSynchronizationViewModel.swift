@@ -13,7 +13,7 @@ class DefaultSessionSynchronizationViewModel: SessionSynchronizationViewModel {
     private var cancellables = [AnyCancellable]()
     
     init(syncSessionController: SessionSynchronizer) {
-        syncSessionController.syncInProgress.sink { [weak self] value in
+        syncSessionController.syncInProgress.receive(on: DispatchQueue.main).sink { [weak self] value in
             self?.syncInProgress = value
         }.store(in: &cancellables)
     }
