@@ -13,6 +13,7 @@ final class SessionDownloadService: SessionDownstream {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         let formatter = DateFormatter()
+        formatter.timeZone = TimeZone.init(identifier: "UTC")
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
         decoder.dateDecodingStrategy = .formatted(formatter)
         return decoder
