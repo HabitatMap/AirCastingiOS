@@ -90,6 +90,7 @@ struct Strings {
         static let graph: String = "graph"
         static let follow: String = "follow"
         static let unfollow: String = "unfollow"
+        static let avgSession: String = "1 hr avg -"
     }
     
     enum SelectPeripheralView {
@@ -293,12 +294,20 @@ struct Strings {
  """
     }
 
-    enum EmptyOnboarding {
+    enum EmptyDashboardMobile {
         static let title: String = "Start recording a \nmobile session"
         static let description: String = "If you plan on moving around \nwhile recording measurements."
-        static let newSession: String = "Record mobile session"
+        static let buttonMobile: String = "Record mobile session"
+        static let buttonFixed: String = "Record new session"
         static let airBeamDescriptionText: String = "Did you know?"
         static let airBeamDescriptionDescription: String = "AirBeam3 is weather resistant. To \nkeep tabs on your outdoor air quality \n24/7, hang one outside your home and \nrecord a fixed session."
+        static let fetchingText: String = "Fetching..."
+    }
+    
+    enum EmptyDashboardFixed {
+        static let title: String = "Ready to get started?"
+        static let description: String = "Record a new session to monitor\n your health & environment."
+        static let newSession: String = "Record new session"
         static let fetchingText: String = "Fetching..."
     }
     
@@ -374,6 +383,8 @@ struct Strings {
         static let finishAlertMessage_2: String = "Mobile Dormant"
         static let finishAlertMessage_3: String = " tab and you won't be able to add new measurement to it."
         static let finishAlertButton: String = "Finish recording"
+        static let airBeam3: String = "AirBeam3"
+        static let mic: String = "Phone Mic"
     }
     
     enum NetworkChecker {
@@ -440,7 +451,7 @@ struct Strings {
         static let contentViewText_2: String = " session "
         static let contentViewText_3: String = " is ready to start gathering data.\n\n"
         static let contentViewText_4: String = "Hang your AirBeam in a secure position, then press the start recording button below."
-        static let contentViewText_4Mobile: String = "Move to your starting location, confirm your location is accurate on the map, then press the start recording button below"
+        static let contentViewText_4Mobile: String = "Move to your starting location, confirm your location is accurate on the map, then press the start recording button below."
         static let startRecording: String = "Start recording"
     }
     

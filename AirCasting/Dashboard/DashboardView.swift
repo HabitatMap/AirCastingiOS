@@ -9,6 +9,7 @@ import CoreData
 import SwiftUI
 
 struct DashboardView: View {
+    #warning("This hook fires too often - on any stream measurement added/changed. Should only fire when list changes.")
     @StateObject var coreDataHook: CoreDataHook
     @FetchRequest<SensorThreshold>(sortDescriptors: [.init(key: "sensorName", ascending: true)]) var thresholds
     @EnvironmentObject var selectedSection: SelectSection
@@ -38,7 +39,11 @@ struct DashboardView: View {
             AirSectionPickerView(selection: self.$selectedSection.selectedSection)
 
             if sessions.isEmpty {
-                EmptyDashboardView()
+                if selectedSection.selectedSection == .mobileActive || selectedSection.selectedSection == .mobileDormant {
+                    EmptyMobileDashboardViewMobile()
+                } else {
+                    EmptyFixedDashboardView()
+                }
             } else {
                 ZStack(alignment: .bottomTrailing) {
                     Image("dashboard-background-thing")
@@ -48,7 +53,11 @@ struct DashboardView: View {
                             ForEach(sessions, id: \.uuid) { session in
                                 let followingSetter = MeasurementStreamStorageFollowingSettable(session: session, measurementStreamStorage: measurementStreamStorage)
                                 let viewModel = SessionCartViewModel(followingSetter: followingSetter)
-                                SessionCartView(session: session, sessionCartViewModel: viewModel, thresholds: thresholds, sessionStoppableFactory: sessionStoppableFactory)
+                                SessionCartView(session: session,
+                                                sessionCartViewModel: viewModel,
+                                                thresholds: thresholds,
+                                                sessionStoppableFactory: sessionStoppableFactory,
+                                                measurementStreamStorage: measurementStreamStorage)
                             }                        }
                     }
                 }.padding()

@@ -12,15 +12,20 @@ import CoreData
 
 struct AirMapView: View {
     var thresholds: [SensorThreshold]
+    @StateObject var statsContainerViewModel: StatisticsContainerViewModel
+    @StateObject var mapStatsDataSource: MapStatsDataSource
     @ObservedObject var session: SessionEntity
+    @Binding var showLoadingIndicator: Bool
+
     @Binding var selectedStream: MeasurementStreamEntity?
     let sessionStoppableFactory: SessionStoppableFactory
+    let measurementStreamStorage: MeasurementStreamStorage
     
     private var pathPoints: [PathPoint] {
         return selectedStream?.allMeasurements?.compactMap {
             #warning("TODO: Do something with no location points")
             guard let location = $0.location else { return nil }
-            return PathPoint(location: location, measurement: $0.value)
+            return PathPoint(location: location, measurementTime: $0.time, measurement: $0.value)
         } ?? []
     }
 
@@ -30,22 +35,34 @@ struct AirMapView: View {
                               isExpandButtonNeeded: false, isCollapsed: Binding.constant(false),
                               session: session,
                               sessionStopperFactory: sessionStoppableFactory)
-            StreamsView(selectedStream: $selectedStream,
-                        isCollapsed: Binding.constant(true),
-                        session: session,
-                        thresholds: thresholds,
-                        measurementPresentationStyle: .showValues)
+            ABMeasurementsView(session: session,
+                               isCollapsed: Binding.constant(false),
+                               selectedStream: $selectedStream,
+                               showLoadingIndicator: $showLoadingIndicator,
+                               thresholds: thresholds,
+                               measurementPresentationStyle: .showValues,
+                               measurementStreamStorage: measurementStreamStorage)
+            
             if let threshold = thresholds.threshold(for: selectedStream) {
-            ZStack(alignment: .topLeading) {
-                GoogleMapView(pathPoints: pathPoints, threshold: threshold)
-                StatisticsContainerView()
-            }
-                NavigationLink(destination: HeatmapSettingsView(changedThresholdValues: threshold.rawThresholdsBinding)) {
-                    EditButtonView()
+                if !showLoadingIndicator {
+                    ZStack(alignment: .topLeading) {
+                        GoogleMapView(pathPoints: pathPoints,
+                                      threshold: threshold)
+                            .onPositionChange { [weak mapStatsDataSource, weak statsContainerViewModel] visiblePoints in
+                                mapStatsDataSource?.visiblePathPoints = visiblePoints
+                                statsContainerViewModel?.adjustForNewData()
+                            }
+                        StatisticsContainerView(statsContainerViewModel: statsContainerViewModel)
+                    }
+                    NavigationLink(destination: HeatmapSettingsView(changedThresholdValues: threshold.rawThresholdsBinding)) {
+                        EditButtonView()
+                    }
+                    ThresholdsSliderView(threshold: threshold)
+                        // Fixes labels covered by tabbar
+                        .padding(.bottom)
+                } else {
+                    Spacer()
                 }
-                ThresholdsSliderView(threshold: threshold)
-                    // Fixes labels covered by tabbar
-                    .padding(.bottom)
             }
         }
         .navigationBarTitleDisplayMode(.inline)
@@ -56,10 +73,18 @@ struct AirMapView: View {
 #if DEBUG
 struct Map_Previews: PreviewProvider {
     static var previews: some View {
-        AirMapView(thresholds: [.mock],
+        AirMapView(thresholds: [SensorThreshold.mock],
+                   statsContainerViewModel: StatisticsContainerViewModel(statsInput: MeasurementsStatisticsInputMock()),
+                   mapStatsDataSource: MapStatsDataSource(),
                    session: .mock,
+                   showLoadingIndicator: .constant(true),
                    selectedStream: .constant(nil),
-                   sessionStoppableFactory: SessionStoppableFactoryDummy())
+                   sessionStoppableFactory: SessionStoppableFactoryDummy(),
+                   measurementStreamStorage: PreviewMeasurementStreamStorage())
     }
+}
+
+struct MeasurementsStatisticsInputMock: MeasurementsStatisticsInput {
+    func computeStatistics() { }
 }
 #endif

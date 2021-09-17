@@ -18,15 +18,13 @@ struct ConfirmCreatingSessionView: View {
     }
 
     @State private var isPresentingAlert: Bool = false
+    @State private var didStartRecordingSession = false
     @EnvironmentObject var selectedSection: SelectSection
     @EnvironmentObject private var sessionContext: CreateSessionContext
     @EnvironmentObject private var locationTracker: LocationTracker
-    let sessionCreator: SessionCreator
-    @State private var didStartRecordingSession = false
     @EnvironmentObject private var tabSelection: TabBarSelection
-
     @Binding var creatingSessionFlowContinues: Bool
-
+    let sessionCreator: SessionCreator
     var sessionName: String
     private var sessionType: String { (sessionContext.sessionType ?? .fixed).description.lowercased() }
 
@@ -38,10 +36,13 @@ struct ConfirmCreatingSessionView: View {
 
     private var contentViewWithAlert: some View {
         contentView.alert(isPresented: $isPresentingAlert) {
-            Alert(title: Text(Strings.ConfirmCreatingSessionView.alertTitle), message: Text(error?.localizedDescription ?? Strings.ConfirmCreatingSessionView.alertMessage), dismissButton: .default(Text(Strings.ConfirmCreatingSessionView.alertOK), action: { error = nil
-            }))
+            Alert(title: Text(Strings.ConfirmCreatingSessionView.alertTitle),
+                  message: Text(error?.localizedDescription ?? Strings.ConfirmCreatingSessionView.alertMessage),
+                  dismissButton: .default(Text(Strings.ConfirmCreatingSessionView.alertOK), action: { error = nil
+                  }))
         }
     }
+
     private var defaultDescriptionText: Text {
         Text(Strings.ConfirmCreatingSessionView.contentViewText_1)
             + Text(sessionType)
@@ -57,15 +58,15 @@ struct ConfirmCreatingSessionView: View {
             .fill(Color.accentColor)
             .frame(width: 15, height: 15)
     }
-    
+
     private var descriptionTextFixed: some View {
-            defaultDescriptionText
-                + Text((sessionContext.isIndoor!) ? "" : Strings.ConfirmCreatingSessionView.contentViewText_4)
+        defaultDescriptionText
+            + Text((sessionContext.isIndoor!) ? "" : Strings.ConfirmCreatingSessionView.contentViewText_4)
     }
-    
+
     private var descriptionTextMobile: some View {
-            defaultDescriptionText
-                + Text(Strings.ConfirmCreatingSessionView.contentViewText_4Mobile)
+        defaultDescriptionText
+            + Text(Strings.ConfirmCreatingSessionView.contentViewText_4Mobile)
     }
 
     private var contentView: some View {
@@ -83,17 +84,19 @@ struct ConfirmCreatingSessionView: View {
             }
             .font(Font.muli(size: 16))
             .foregroundColor(Color.aircastingGray)
-            .multilineTextAlignment(.leading)
             .lineSpacing(9.0)
             ZStack {
                 if sessionContext.sessionType == .mobile {
                     GoogleMapView(pathPoints: [], isMyLocationEnabled: true)
                 } else if !(sessionContext.isIndoor ?? false) {
                     GoogleMapView(pathPoints: [])
+                        .disabled(true)
+                    // It needs to be disabled to prevent user interaction (swiping map) because it is only conformation screen
                     dot
                 }
             }
             Button(action: {
+                getAndSaveStartingLocation()
                 isActive = true
                 sessionCreator.createSession(sessionContext) { result in
 
@@ -120,15 +123,34 @@ struct ConfirmCreatingSessionView: View {
             })
                 .buttonStyle(BlueButtonStyle())
         }
-            .padding()
+        .padding()
+    }
+
+    func getAndSaveStartingLocation() {
+        if sessionContext.sessionType == .fixed {
+            if sessionContext.isIndoor! {
+                locationTracker.googleLocation = [PathPoint.fakePathPoint]
+            } else {
+                guard let lat: Double = (locationTracker.googleLocation.last?.location.latitude),
+                      let lon: Double = (locationTracker.googleLocation.last?.location.longitude) else { return }
+                #warning("Do something with exposed googleLocation")
+                sessionContext.obtainCurrentLocation(lat: lat, log: lon)
+            }
+        } else {
+            guard let lat = (locationTracker.locationManager.location?.coordinate.latitude),
+                  let lon = (locationTracker.locationManager.location?.coordinate.longitude) else { return }
+            locationTracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: lat, longitude: lon), measurementTime: Date(), measurement: 20.0)]
+            #warning("Do something with hard coded measurement")
+            sessionContext.obtainCurrentLocation(lat: lat, log: lon)
+        }
     }
 }
 
 #if DEBUG
 struct ConfirmCreatingSession_Previews: PreviewProvider {
     static var previews: some View {
-        ConfirmCreatingSessionView(sessionCreator: PreviewSessionCreator(),
-                                   creatingSessionFlowContinues: .constant(true),
+        ConfirmCreatingSessionView(creatingSessionFlowContinues: .constant(true),
+                                   sessionCreator: PreviewSessionCreator(),
                                    sessionName: "Ania's microphone session")
             .environmentObject(CreateSessionContext())
             .previewDevice(PreviewDevice(rawValue: "iPhone 12 mini"))

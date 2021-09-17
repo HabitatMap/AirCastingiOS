@@ -9,20 +9,19 @@ import Foundation
 
 extension SessionEntity {
     var isMobile: Bool { type == .mobile }
-    var isActive: Bool {
-        type == .mobile && status == .RECORDING
-    }
-    var isDormant: Bool {
-        type == .mobile && status == .FINISHED
-    }
+    var isActive: Bool { type == .mobile && status == .RECORDING }
+    var isDormant: Bool { type == .mobile && status == .FINISHED }
     var isFixed: Bool { type == .fixed }
+    var isFollowed: Bool { followedAt != nil }
 }
 
 extension SessionEntity {
     
     var pm1Stream: MeasurementStreamEntity? {
         let match = measurementStreams?.first(where: { (stream) -> Bool in
-            (stream as? MeasurementStreamEntity)?.sensorName == "AirBeam3-PM1"
+            (stream as? MeasurementStreamEntity)?.sensorName == "AirBeam3-PM1" ||
+                (stream as? MeasurementStreamEntity)?.sensorName == "AirBeam2-PM1" ||
+                    (stream as? MeasurementStreamEntity)?.sensorName == "AirBeam1-PM1"
         })
         let pm1Stream = match as? MeasurementStreamEntity
         return pm1Stream

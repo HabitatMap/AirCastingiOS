@@ -8,7 +8,6 @@
 import AirCastingStyling
 import Charts
 import CoreData
-import CoreLocation
 import SwiftUI
 
 struct SessionCartView: View {
@@ -16,18 +15,45 @@ struct SessionCartView: View {
     @State private var selectedStream: MeasurementStreamEntity?
     @State private var isMapButtonActive = false
     @State private var isGraphButtonActive = false
+    @State private var showLoadingIndicator = false
     @ObservedObject var session: SessionEntity
+    @EnvironmentObject var selectedSection: SelectSection
     let sessionCartViewModel: SessionCartViewModel
     let thresholds: [SensorThreshold]
     let sessionStoppableFactory: SessionStoppableFactory
+    let measurementStreamStorage: MeasurementStreamStorage
     
+    @StateObject private var mapStatsDataSource: MapStatsDataSource
+    @StateObject private var mapStatsViewModel: StatisticsContainerViewModel
+    @StateObject private var graphStatsDataSource: GraphStatsDataSource
+    @StateObject private var graphStatsViewModel: StatisticsContainerViewModel
+    
+    init(session: SessionEntity,
+         sessionCartViewModel: SessionCartViewModel,
+         thresholds: [SensorThreshold],
+         sessionStoppableFactory: SessionStoppableFactory,
+         measurementStreamStorage: MeasurementStreamStorage) {
+        self.session = session
+        self.sessionCartViewModel = sessionCartViewModel
+        self.thresholds = thresholds
+        self.sessionStoppableFactory = sessionStoppableFactory
+        self.measurementStreamStorage = measurementStreamStorage
+        let mapDataSource = MapStatsDataSource()
+        self._mapStatsDataSource = .init(wrappedValue: mapDataSource)
+        self._mapStatsViewModel = .init(wrappedValue: SessionCartView.createStatsContainerViewModel(dataSource: mapDataSource))
+        let graphDataSource = GraphStatsDataSource()
+        self._graphStatsDataSource = .init(wrappedValue: graphDataSource)
+        self._graphStatsViewModel = .init(wrappedValue: SessionCartView.createStatsContainerViewModel(dataSource: graphDataSource))
+    }
+
     var shouldShowValues: MeasurementPresentationStyle {
-        let shouldShow = isCollapsed && (session.isFixed || session.isDormant)
+        // We need to specify selectedSection to show values for fixed session only in following tab
+        let shouldShow = isCollapsed && ( (session.isFixed && selectedSection.selectedSection == SelectedSection.fixed) || session.isDormant)
         return shouldShow ? .hideValues : .showValues
     }
 
     var showChart: Bool {
-        !isCollapsed && session.type == .mobile && session.status == .RECORDING
+        (!isCollapsed && session.isMobile && session.isActive) || (!isCollapsed && session.isFixed && selectedSection.selectedSection == SelectedSection.following)
     }
     var hasStreams: Bool {
         session.allStreams != nil || session.allStreams != []
@@ -37,12 +63,7 @@ struct SessionCartView: View {
         VStack(alignment: .leading, spacing: 13) {
             header
             if hasStreams {
-                StreamsView(selectedStream: $selectedStream,
-                            isCollapsed: $isCollapsed,
-                            session: session,
-                            thresholds: thresholds,
-                            measurementPresentationStyle: shouldShowValues)
-
+                Measurements
                 VStack(alignment: .trailing, spacing: 40) {
                     if showChart {
                         pollutionChart(thresholds: thresholds)
@@ -58,8 +79,15 @@ struct SessionCartView: View {
         .onChange(of: session.sortedStreams) { newValue in
             selectDefaultStreamIfNeeded(streams: newValue ?? [])
         }
+        .onChange(of: selectedStream, perform: { [weak graphStatsDataSource, weak mapStatsDataSource] newStream in
+            graphStatsDataSource?.stream = newStream
+            mapStatsDataSource?.stream = newStream
+        })
         .onAppear {
             selectDefaultStreamIfNeeded(streams: session.sortedStreams ?? [])
+        }
+        .onChange(of: session.sortedStreams) { newValue in
+            selectDefaultStreamIfNeeded(streams: newValue ?? [])
         }
         .font(Font.moderate(size: 13, weight: .regular))
         .foregroundColor(.aircastingGray)
@@ -97,6 +125,16 @@ private extension SessionCartView {
         )
     }
     
+    var Measurements: some View {
+        ABMeasurementsView(session: session,
+                           isCollapsed: $isCollapsed,
+                           selectedStream: $selectedStream,
+                           showLoadingIndicator: $showLoadingIndicator,
+                           thresholds: thresholds,
+                           measurementPresentationStyle: shouldShowValues,
+                           measurementStreamStorage: measurementStreamStorage)
+    }
+    
     var graphButton: some View {
         Button {
             isGraphButtonActive = true
@@ -130,34 +168,63 @@ private extension SessionCartView {
     }
     
     var mapNavigationLink: some View {
-        NavigationLink( destination: AirMapView(thresholds: thresholds,
-                                                session: session,
-                                                selectedStream: $selectedStream,
-                                                sessionStoppableFactory: sessionStoppableFactory),
-                        isActive: $isMapButtonActive,
-                        label: {
-                            EmptyView()
-                        })
+        let mapView = AirMapView(thresholds: thresholds,
+                                 statsContainerViewModel: mapStatsViewModel,
+                                 mapStatsDataSource: mapStatsDataSource,
+                                 session: session,
+                                 showLoadingIndicator: $showLoadingIndicator,
+                                 selectedStream: $selectedStream,
+                                 sessionStoppableFactory: sessionStoppableFactory,
+                                 measurementStreamStorage: measurementStreamStorage)
+        
+        return NavigationLink(destination: mapView,
+                              isActive: $isMapButtonActive,
+                              label: {
+                                EmptyView()
+                              })
     }
     
     var graphNavigationLink: some View {
-        NavigationLink(
-            destination: GraphView(session: session,
-                                   thresholds: thresholds,
-                                   selectedStream: $selectedStream,
-                                   sessionStoppableFactory: sessionStoppableFactory),
-            isActive: $isGraphButtonActive,
-            label: {
-                EmptyView()
-            })
+        let graphView = GraphView(session: session,
+                                  thresholds: thresholds,
+                                  selectedStream: $selectedStream,
+                                  statsContainerViewModel: graphStatsViewModel,
+                                  graphStatsDataSource: graphStatsDataSource,
+                                  sessionStoppableFactory: sessionStoppableFactory,
+                                  measurementStreamStorage: measurementStreamStorage)
+        return NavigationLink(destination: graphView,
+                              isActive: $isGraphButtonActive,
+                              label: {
+                                EmptyView()
+                              })
     }
     
     func pollutionChart(thresholds: [SensorThreshold]) -> some View {
-        Group {
-            if let selectedStream = selectedStream {
-                ChartView(stream: selectedStream,
-                          thresholds: thresholds)
-                    .frame(height: 200)
+        
+        let start = session.startTime ?? Date()
+        let end = session.endTime ?? Date()
+        
+        let dateFormatter : DateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "HH:mm"
+        let startTime = dateFormatter.string(from: start)
+        let endTime = dateFormatter.string(from: end)
+        
+        return VStack() {
+            Group {
+                if let selectedStream = selectedStream {
+                    ChartView(stream: selectedStream,
+                              thresholds: thresholds)
+                        .frame(height: 120)
+                        .disabled(true)
+                    HStack() {
+                            Text(startTime)
+                            Spacer()
+                        Text("\(Strings.SessionCartView.avgSession) \(selectedStream.unitSymbol ?? "")")
+                            Spacer()
+                            Text(endTime)
+                    }.foregroundColor(.aircastingGray)
+                    .font(Font.muli(size: 13, weight: .semibold))
+                }
             }
         }
     }
@@ -177,6 +244,16 @@ private extension SessionCartView {
         }
         .buttonStyle(GrayButtonStyle())
     }
+    
+    private static func createStatsContainerViewModel(dataSource: MeasurementsStatisticsDataSource) -> StatisticsContainerViewModel {
+        let controller = MeasurementsStatisticsController(dataSource: dataSource,
+                                                          calculator: StandardStatisticsCalculator(),
+                                                          scheduledTimer: ScheduledTimerSetter(),
+                                                          desiredStats: MeasurementStatistics.Statistic.allCases)
+        let viewModel = StatisticsContainerViewModel(statsInput: controller)
+        controller.output = viewModel
+        return viewModel
+    }
 }
 
  #if DEBUG
@@ -185,7 +262,7 @@ private extension SessionCartView {
         EmptyView()
         SessionCartView(session: SessionEntity.mock,
                                 sessionCartViewModel: SessionCartViewModel(followingSetter: MockSessionFollowingSettable()),
-                                thresholds: [.mock, .mock], sessionStoppableFactory: SessionStoppableFactoryDummy())
+                                thresholds: [.mock, .mock], sessionStoppableFactory: SessionStoppableFactoryDummy(), measurementStreamStorage: MeasurementStreamStorage.self as! MeasurementStreamStorage)
             .padding()
             .previewLayout(.sizeThatFits)
             .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))

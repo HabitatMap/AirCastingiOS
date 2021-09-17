@@ -7,12 +7,14 @@
 
 import SwiftUI
 
-struct GraphView: View {
-    
+struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsContainerViewModelable {
     let session: SessionEntity
     let thresholds: [SensorThreshold]
     @Binding var selectedStream: MeasurementStreamEntity?
+    @StateObject var statsContainerViewModel: StatsViewModelType
+    let graphStatsDataSource: GraphStatsDataSource
     let sessionStoppableFactory: SessionStoppableFactory
+    let measurementStreamStorage: MeasurementStreamStorage
     
     var body: some View {
         VStack(alignment: .trailing) {
@@ -20,19 +22,26 @@ struct GraphView: View {
                               isExpandButtonNeeded: false, isCollapsed: Binding.constant(false),
                               session: session,
                               sessionStopperFactory: sessionStoppableFactory).padding()
-            StreamsView(selectedStream: $selectedStream,
-                        isCollapsed: Binding.constant(true),
-                        session: session,
-                        thresholds: thresholds,
-                        measurementPresentationStyle: .showValues).padding(.horizontal)
+
+            ABMeasurementsView(session: session,
+                               isCollapsed: Binding.constant(false),
+                               selectedStream: $selectedStream,
+                               showLoadingIndicator: Binding.constant(false),
+                               thresholds: thresholds,
+                               measurementPresentationStyle: .showValues,
+                               measurementStreamStorage: measurementStreamStorage)
+                .padding(.horizontal)
             if let threshold = thresholds.threshold(for: selectedStream) {
                 ZStack(alignment: .topLeading) {
                     if let selectedStream = selectedStream {
                         Graph(stream: selectedStream,
                               thresholds: threshold,
-                              isAutozoomEnabled: session.type == .mobile)
+                              isAutozoomEnabled: session.type == .mobile).onDateRangeChange { [weak graphStatsDataSource, weak statsContainerViewModel] range in
+                                graphStatsDataSource?.dateRange = range
+                                statsContainerViewModel?.adjustForNewData()
+                              }
                     }
-                    StatisticsContainerView()
+                    StatisticsContainerView(statsContainerViewModel: statsContainerViewModel)
                 }
                 NavigationLink(destination: HeatmapSettingsView(changedThresholdValues: threshold.rawThresholdsBinding)) {
                     EditButtonView()
@@ -54,8 +63,13 @@ struct GraphView: View {
 #if DEBUG
 struct GraphView_Previews: PreviewProvider {
     static var previews: some View {
-        //Change selected stream
-        GraphView(session: .mock, thresholds: [.mock], selectedStream: .constant(nil), sessionStoppableFactory: SessionStoppableFactoryDummy())
+        GraphView(session: .mock,
+                  thresholds: [.mock],
+                  selectedStream: .constant(nil),
+                  statsContainerViewModel: FakeStatsViewModel(),
+                  graphStatsDataSource: GraphStatsDataSource(),
+                  sessionStoppableFactory: SessionStoppableFactoryDummy(),
+                  measurementStreamStorage: PreviewMeasurementStreamStorage())
     }
 }
 #endif

@@ -3,6 +3,8 @@
 
 import SwiftUI
 import AirCastingStyling
+import CoreLocation
+import CoreData
 
 enum MeasurementPresentationStyle {
     case showValues
@@ -12,11 +14,16 @@ enum MeasurementPresentationStyle {
 struct ABMeasurementsView: View {
     @ObservedObject var session: SessionEntity
     @Binding var isCollapsed: Bool
-    var thresholds: [SensorThreshold]
-    @EnvironmentObject var selectedSection: SelectSection
     @Binding var selectedStream: MeasurementStreamEntity?
+    @Binding var showLoadingIndicator: Bool
+    var thresholds: [SensorThreshold]
     let measurementPresentationStyle: MeasurementPresentationStyle
-    
+    let sessionDownloader = SessionDownloadService(client: URLSession.shared,
+                                                   authorization: UserAuthenticationSession(),
+                                                   responseValidator: DefaultHTTPResponseValidator())
+    let measurementStreamStorage: MeasurementStreamStorage
+    @EnvironmentObject var selectedSection: SelectSection
+
     private var streamsToShow: [MeasurementStreamEntity] {
         return session.sortedStreams ?? []
     }
@@ -28,37 +35,9 @@ struct ABMeasurementsView: View {
         return Group {
             if hasAnyMeasurements {
                 VStack(alignment: .leading, spacing: 5) {
-                    if session.type == .mobile {
-                        if !session.isDormant {
-                            Text(Strings.SessionCart.measurementsTitle)
-                                .font(Font.moderate(size: 12))
-                                .padding(.bottom, 3)
-                        } else {
-                            if isCollapsed {
-                                Text(Strings.SessionCart.parametersText)
-                                    .font(Font.moderate(size: 12))
-                                    .padding(.bottom, 3)
-                            } else {
-                                Text(Strings.SessionCart.dormantMeasurementsTitle)
-                                    .font(Font.moderate(size: 12))
-                                    .padding(.bottom, 3)
-                            }
-                        }
-                    } else if selectedSection.selectedSection == .fixed {
-                        if isCollapsed {
-                            Text(Strings.SessionCart.parametersText)
-                                .font(Font.moderate(size: 12))
-                                .padding(.bottom, 3)
-                        } else {
-                            Text(Strings.SessionCart.lastMinuteMeasurement)
-                                .font(Font.moderate(size: 12))
-                                .padding(.bottom, 3)
-                        }
-                    } else {
-                            Text(Strings.SessionCart.lastMinuteMeasurement)
-                                .font(Font.moderate(size: 12))
-                                .padding(.bottom, 3)
-                    }
+                    measurementsTitle
+                        .font(Font.moderate(size: 12))
+                        .padding(.bottom, 3)
                     HStack {
                         Group {
                             ForEach(streams, id : \.self) { stream in
@@ -70,93 +49,104 @@ struct ABMeasurementsView: View {
                                                           measurementPresentationStyle: measurementPresentationStyle)
                                 }
                             }
-                        }.padding(.horizontal, 8)
+                        }
+                        .padding(.horizontal, 8)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }
             } else {
-                if session.followedAt != nil {
+                if session.isFollowed {
                     SessionLoadingView()
                 } else {
                     VStack(alignment: .leading, spacing: 8) {
-                        Text(Strings.SessionCart.parametersText)
-                        HStack {
-                            Group {
-                                ForEach(streams, id : \.self) { stream in
-                                    SingleMeasurementView(stream: stream,
-                                                          value: nil,
-                                                          threshold: nil,
-                                                          selectedStream: .constant(nil),
-                                                          measurementPresentationStyle: .hideValues)
-                                }
-                            }.padding(.horizontal, 8)
-                            .frame(maxWidth: .infinity, alignment: .leading)
+                        measurementsTitle
+                            .font(Font.moderate(size: 12))
+                        streamNames
+                        if !isCollapsed && showLoadingIndicator {
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle())
                         }
                     }
                 }
             }
         }
+        .onChange(of: isCollapsed, perform: { _ in
+            if isCollapsed == false && !hasAnyMeasurements {
+                showLoadingIndicator = true
+                sessionDownloader.downloadSessionWithMeasurement(uuid: session.uuid) { result in
+                    switch result {
+                    case .success(let data):
+                        let dataBaseStreams = data.streams.values.map { value in
+                            SynchronizationDataConverter().convertDownloadDataToDatabaseStream(data: value)
+                        }
+                        dataBaseStreams.forEach { stream in
+                            stream.measurements.forEach { measurement in
+                                let location: CLLocationCoordinate2D? = {
+                                    guard let latitude = measurement.latitude,
+                                          let longitude = measurement.longitude else { return CLLocationCoordinate2D(latitude: 200, longitude: 200) }
+                                    return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+                                }()
+                                guard let streamID = try? measurementStreamStorage.existingMeasurementStream(session.uuid, name: stream.sensorName) else {
+                                    Log.info("failed to get existing streamID for synced measurements from session \(String(describing: session.name))")
+                                    return }
+                                try? measurementStreamStorage.addMeasurement(Measurement(time: measurement.time, value: measurement.value, location: location), toStreamWithID: streamID)
+                            }
+                            try? measurementStreamStorage.saveThresholdFor(sensorName: stream.sensorName,
+                                                                           thresholdVeryHigh: Int32(stream.thresholdVeryHigh),
+                                                                           thresholdHigh: Int32(stream.thresholdHigh),
+                                                                           thresholdMedium: Int32(stream.thresholdMedium),
+                                                                           thresholdLow: Int32(stream.thresholdLow),
+                                                                           thresholdVeryLow: Int32(stream.thresholdVeryLow))
+                            
+                        }
+                        showLoadingIndicator = false
+                    case .failure(let error):
+                        Log.info("\(error)")
+                    }
+                }
+            }
+        })
+    }
+    
+    private var streamNames: some View {
+        return HStack {
+            Group {
+                ForEach(streamsToShow, id : \.self) { stream in
+                    SingleMeasurementView(stream: stream,
+                                          value: nil,
+                                          threshold: nil,
+                                          selectedStream: .constant(nil),
+                                          measurementPresentationStyle: .hideValues)
+                }
+            }.padding(.horizontal, 8)
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
     }
 }
 
-struct SingleMeasurementView: View {
-    let stream: MeasurementStreamEntity
-    let value: Double?
-    var threshold: SensorThreshold?
-    @Binding var selectedStream: MeasurementStreamEntity?
-    let measurementPresentationStyle: MeasurementPresentationStyle
-    
-    var body: some View {
-        
-        VStack(spacing: 3) {
-            Text(showStreamName())
-                .font(Font.system(size: 13))
-            if measurementPresentationStyle == .showValues {
-                Button(action: {
-                    selectedStream = stream
-                }, label: {
-                    if let value = value,
-                       let threshold = threshold {
-                        HStack(spacing: 3) {
-                            MeasurementDotView(value: value,
-                                               thresholds: threshold)
-                            Text("\(Int(value))")
-                                .font(Font.moderate(size: 14, weight: .regular))
-                        }
-                        
-                    }
-                })
-                .buttonStyle(AirCastingStyling.BorderedButtonStyle(isSelected: selectedStream == stream,
-                                                                   thresholdColor: colorBorder(stream: stream)))
+extension ABMeasurementsView {
+    var measurementsTitle: some View {
+        if session.deviceType == .MIC {
+            return Text(verbatim: Strings.SessionCart.measurementsTitle)
+        } else
+        if session.isActive {
+            return Text(Strings.SessionCart.measurementsTitle)
+        } else if session.isDormant {
+            if isCollapsed {
+                return Text(Strings.SessionCart.parametersText)
+            } else {
+                return Text(Strings.SessionCart.dormantMeasurementsTitle)
             }
+        } else if session.isFixed && !session.isFollowed {
+            if isCollapsed {
+                return Text(Strings.SessionCart.parametersText)
+            } else {
+                return Text(Strings.SessionCart.lastMinuteMeasurement)
+            }
+        } else if session.isFollowed {
+            return Text(Strings.SessionCart.lastMinuteMeasurement)
         }
-    }
-    
-    func showStreamName() -> String {
-        guard let streamName = stream.sensorName else { return "" }
-        if streamName == Constants.SensorName.microphone {
-              return "db"
-        } else {
-            return streamName
-                .drop { $0 != "-" }
-                .replacingOccurrences(of: "-", with: "")
-        }
-    }
-    
-    func colorBorder(stream: MeasurementStreamEntity) -> Color {
-        guard let value = value else { return .white }
-        guard let threshold = threshold else { return .white }
-        switch Int32(value) {
-        case threshold.thresholdVeryLow..<threshold.thresholdLow:
-            return .aircastingGreen
-        case threshold.thresholdLow..<threshold.thresholdMedium:
-            return .aircastingYellow
-        case threshold.thresholdMedium..<threshold.thresholdHigh:
-            return .aircastingOrange
-        case threshold.thresholdHigh..<threshold.thresholdVeryHigh:
-            return .aircastingRed
-        default:
-            return .white
-        }
+        return Text("")
     }
 }
+

@@ -9,6 +9,7 @@ import SwiftUI
 import Charts
 import SwiftSimplify
 
+
 extension ChartDataEntry: Point2DRepresentable {
     public var xValue: Float {
         Float(self.x)
@@ -24,14 +25,31 @@ extension ChartDataEntry: Point2DRepresentable {
 
 struct Graph: UIViewRepresentable {
     typealias UIViewType = AirCastingGraph
+    typealias OnChange = (ClosedRange<Date>) -> Void
     
     @ObservedObject var stream: MeasurementStreamEntity
     @ObservedObject var thresholds: SensorThreshold
+    private var action: OnChange?
+    
     var isAutozoomEnabled: Bool
     let simplifiedGraphEntryThreshold = 1000
     
+    init(stream: MeasurementStreamEntity, thresholds: SensorThreshold, isAutozoomEnabled: Bool) {
+        self.stream = stream
+        self.thresholds = thresholds
+        self.isAutozoomEnabled = isAutozoomEnabled
+    }
+    
+    func onDateRangeChange(perform action: @escaping OnChange) -> Self {
+        var newGraph = self
+        newGraph.action = action
+        return newGraph
+    }
+    
     func makeUIView(context: Context) -> AirCastingGraph {
-        AirCastingGraph()
+        AirCastingGraph(onDateRangeChange: { newRange in
+            action?(newRange)
+        })
     }
     
     func updateUIView(_ uiView: AirCastingGraph, context: Context) {

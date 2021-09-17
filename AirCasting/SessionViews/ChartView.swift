@@ -23,32 +23,27 @@ class UI_PollutionChart: UIView {
             lineChartView.topAnchor.constraint(equalTo: self.topAnchor),
             lineChartView.bottomAnchor.constraint(equalTo: self.bottomAnchor)
         ])
-        
         //remove border lines and legend
         lineChartView.xAxis.enabled = false
         lineChartView.xAxis.drawLabelsEnabled = false
         lineChartView.xAxis.labelPosition = .bottom
-        lineChartView.xAxis.drawGridLinesEnabled = false
-        
-        // we are setting the values for x axis so that there is always a space for 9 averages and they are always starting at the right edge
+        lineChartView.xAxis.drawGridLinesEnabled = true
+        lineChartView.minOffset = 20
+        // we are setting the values for x axis so that there is always a space for 8 averages and they are always starting at the right edge
         lineChartView.xAxis.axisMinimum = 0
-        lineChartView.xAxis.axisMaximum = 9
-
+        lineChartView.xAxis.axisMaximum = 8
+        lineChartView.leftAxis.gridColor = .aircastingGray.withAlphaComponent(0.2)
         lineChartView.leftAxis.drawLabelsEnabled = false
         lineChartView.leftAxis.drawAxisLineEnabled = false
-        lineChartView.leftAxis.gridColor = UIColor(.aircastingGray).withAlphaComponent(0.4)
         
         lineChartView.rightAxis.enabled = false
         
         lineChartView.legend.enabled = false
-        
         lineChartView.noDataText = "Waiting for the first average value"
         lineChartView.noDataTextAlignment = .center
         
         //disable zooming
         lineChartView.setScaleEnabled(false)
-        
-        
     }
     
     required init?(coder: NSCoder) {
@@ -102,7 +97,8 @@ struct ChartView: UIViewRepresentable {
         //dots colors
         dataSet.circleColors = generateColorsSet(for: dataSet.entries)
         dataSet.drawCircleHoleEnabled = false
-        dataSet.circleRadius = 6
+        dataSet.circleRadius = 4
+
         
         //line color
         dataSet.setColor(UIColor.aircastingGray.withAlphaComponent(0.7))
@@ -114,13 +110,13 @@ struct ChartView: UIViewRepresentable {
         for entry in entries {
             switch Int32(entry.y) {
             case threshold.thresholdVeryLow..<threshold.thresholdLow:
-                colors.append(UIColor.aircastingGreen.withAlphaComponent(0.5))
+                colors.append(UIColor.aircastingGreen)
             case threshold.thresholdLow..<threshold.thresholdMedium:
-                colors.append(UIColor.aircastingYellow.withAlphaComponent(0.5))
+                colors.append(UIColor.aircastingYellow)
             case threshold.thresholdMedium..<threshold.thresholdHigh:
-                colors.append(UIColor.aircastingOrange.withAlphaComponent(0.5))
+                colors.append(UIColor.aircastingOrange)
             default:
-                colors.append(UIColor.aircastingRed.withAlphaComponent(0.5))
+                colors.append(UIColor.aircastingRed)
             }
         }
         return colors

@@ -7,6 +7,7 @@ import Foundation
 
 protocol MeasurementStreamStorage {
     func addMeasurement(_ measurement: Measurement, toStreamWithID id: MeasurementStreamLocalID) throws
+    func saveThresholdFor(sensorName: String, thresholdVeryHigh: Int32, thresholdHigh: Int32, thresholdMedium: Int32, thresholdLow: Int32, thresholdVeryLow: Int32) throws
     func createMeasurementStream(_ stream: MeasurementStream, for sessionUUID: SessionUUID) throws -> MeasurementStreamLocalID
     func createSession(_ session: Session) throws
     func createSessionAndMeasurementStream(_ session: Session, _ stream: MeasurementStream) throws -> MeasurementStreamLocalID
@@ -47,8 +48,26 @@ final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
 
         let session = stream.session
         session?.endTime = newMeasurement.time
-        session?.status = .RECORDING
+        
+        //otherwise dormant session status changes to active when syncing measurements
+        if session?.status != .FINISHED {
+            session?.status = .RECORDING
+        }
 
+        try context.save()
+    }
+    
+    func saveThresholdFor(sensorName: String, thresholdVeryHigh: Int32, thresholdHigh: Int32, thresholdMedium: Int32, thresholdLow: Int32, thresholdVeryLow: Int32) throws {
+        let context = persistenceController.editContext()
+        let existingThreshold: SensorThreshold? = try context.existingObject(sensorName: sensorName)
+        if existingThreshold == nil {
+            let threshold: SensorThreshold = try context.newOrExisting(sensorName: sensorName)
+            threshold.thresholdVeryLow = thresholdVeryLow
+            threshold.thresholdLow = thresholdLow
+            threshold.thresholdMedium = thresholdMedium
+            threshold.thresholdHigh = thresholdHigh
+            threshold.thresholdVeryHigh = thresholdVeryHigh
+        }
         try context.save()
     }
 
@@ -147,6 +166,11 @@ final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
 #if DEBUG
 /// Only to be used for swiftui previews
 final class PreviewMeasurementStreamStorage: MeasurementStreamStorage {
+    
+    func saveThresholdFor(sensorName: String, thresholdVeryHigh: Int32, thresholdHigh: Int32, thresholdMedium: Int32, thresholdLow: Int32, thresholdVeryLow: Int32) throws {
+        print("Faking saving thresholds")
+    }
+    
     func updateSessionEndtime(_ endTime: Date, for sessionUUID: SessionUUID) throws {
         print("Faking updating sessioon end time happened: \(endTime) for session \(sessionUUID)")
     }
