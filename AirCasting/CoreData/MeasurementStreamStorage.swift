@@ -134,7 +134,8 @@ final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
     func updateSessionEndtime(_ endTime: Date, for sessionUUID: SessionUUID) throws {
         let context = persistenceController.editContext()
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
-        sessionEntity.endTime = endTime
+        sessionEntity.endTime = endTime.currentUTCTimeZoneDate
+        sessionEntity.startTime = sessionEntity.startTime?.currentUTCTimeZoneDate
         try context.save()
     }
     
