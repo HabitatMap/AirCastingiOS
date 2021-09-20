@@ -18,13 +18,16 @@ struct ConfirmCreatingSessionView: View {
     }
 
     @State private var isPresentingAlert: Bool = false
-    @State private var didStartRecordingSession = false
     @EnvironmentObject var selectedSection: SelectSection
     @EnvironmentObject private var sessionContext: CreateSessionContext
     @EnvironmentObject private var locationTracker: LocationTracker
     @EnvironmentObject private var tabSelection: TabBarSelection
+    @EnvironmentObject var persistenceController: PersistenceController
+    @EnvironmentObject var bluetoothManager: BluetoothManager
+    @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
+    @EnvironmentObject private var microphoneManager: MicrophoneManager
     @Binding var creatingSessionFlowContinues: Bool
-    let sessionCreator: SessionCreator
+    let baseURL: BaseURLProvider
     var sessionName: String
     private var sessionType: String { (sessionContext.sessionType ?? .fixed).description.lowercased() }
 
@@ -68,62 +71,66 @@ struct ConfirmCreatingSessionView: View {
         defaultDescriptionText
             + Text(Strings.ConfirmCreatingSessionView.contentViewText_4Mobile)
     }
-
-    private var contentView: some View {
-        VStack(alignment: .leading, spacing: 40) {
-            ProgressView(value: 0.95)
-            Text(Strings.ConfirmCreatingSessionView.contentViewTitle)
-                .font(Font.moderate(size: 24, weight: .bold))
-                .foregroundColor(.darkBlue)
-            VStack(alignment: .leading, spacing: 15) {
-                if sessionContext.sessionType == .fixed {
-                    descriptionTextFixed
-                } else {
-                    descriptionTextMobile
-                }
-            }
-            .font(Font.muli(size: 16))
-            .foregroundColor(Color.aircastingGray)
-            .lineSpacing(9.0)
-            ZStack {
-                if sessionContext.sessionType == .mobile {
-                    GoogleMapView(pathPoints: [], isMyLocationEnabled: true)
-                } else if !(sessionContext.isIndoor ?? false) {
-                    GoogleMapView(pathPoints: [])
-                        .disabled(true)
-                    // It needs to be disabled to prevent user interaction (swiping map) because it is only conformation screen
-                    dot
-                }
-            }
-            Button(action: {
-                getAndSaveStartingLocation()
-                isActive = true
-                sessionCreator.createSession(sessionContext) { result in
-
-                    DispatchQueue.main.async {
-                        switch result {
-                        case .success:
-                            self.creatingSessionFlowContinues = false
-                            if sessionContext.sessionType == .mobile {
-                                selectedSection.selectedSection = SelectedSection.mobileActive
-                            } else {
-                                selectedSection.selectedSection = SelectedSection.following
-                            }
-                            tabSelection.selection = TabBarSelection.Tab.dashboard
-                        case .failure(let error):
-                            self.error = error as NSError
-                            Log.warning("Failed to create session \(error)")
-                        }
-                        isActive = false
+    
+    @ViewBuilder private var contentView: some View {
+        
+        if let sessionCreator = setSessioonCreator() {
+            
+            VStack(alignment: .leading, spacing: 40) {
+                ProgressView(value: 0.95)
+                Text(Strings.ConfirmCreatingSessionView.contentViewTitle)
+                    .font(Font.moderate(size: 24, weight: .bold))
+                    .foregroundColor(.darkBlue)
+                VStack(alignment: .leading, spacing: 15) {
+                    if sessionContext.sessionType == .fixed {
+                        descriptionTextFixed
+                    } else {
+                        descriptionTextMobile
                     }
                 }
-            }, label: {
-                Text(Strings.ConfirmCreatingSessionView.startRecording)
-                    .bold()
-            })
+                .font(Font.muli(size: 16))
+                .foregroundColor(Color.aircastingGray)
+                .lineSpacing(9.0)
+                ZStack {
+                    if sessionContext.sessionType == .mobile {
+                        GoogleMapView(pathPoints: [], isMyLocationEnabled: true)
+                    } else if !(sessionContext.isIndoor ?? false) {
+                        GoogleMapView(pathPoints: [])
+                            .disabled(true)
+                        // It needs to be disabled to prevent user interaction (swiping map) because it is only conformation screen
+                        dot
+                    }
+                }
+                Button(action: {
+                    getAndSaveStartingLocation()
+                    isActive = true
+                    sessionCreator.createSession(sessionContext) { result in
+                        
+                        DispatchQueue.main.async {
+                            switch result {
+                            case .success:
+                                self.creatingSessionFlowContinues = false
+                                if sessionContext.sessionType == .mobile {
+                                    selectedSection.selectedSection = SelectedSection.mobileActive
+                                } else {
+                                    selectedSection.selectedSection = SelectedSection.following
+                                }
+                                tabSelection.selection = TabBarSelection.Tab.dashboard
+                            case .failure(let error):
+                                self.error = error as NSError
+                                Log.warning("Failed to create session \(error)")
+                            }
+                            isActive = false
+                        }
+                    }
+                }, label: {
+                    Text(Strings.ConfirmCreatingSessionView.startRecording)
+                        .bold()
+                })
                 .buttonStyle(BlueButtonStyle())
+            }
+            .padding()
         }
-        .padding()
     }
 
     func getAndSaveStartingLocation() {
@@ -144,16 +151,26 @@ struct ConfirmCreatingSessionView: View {
             sessionContext.obtainCurrentLocation(lat: lat, log: lon)
         }
     }
-}
-
-#if DEBUG
-struct ConfirmCreatingSession_Previews: PreviewProvider {
-    static var previews: some View {
-        ConfirmCreatingSessionView(creatingSessionFlowContinues: .constant(true),
-                                   sessionCreator: PreviewSessionCreator(),
-                                   sessionName: "Ania's microphone session")
-            .environmentObject(CreateSessionContext())
-            .previewDevice(PreviewDevice(rawValue: "iPhone 12 mini"))
+    
+    func setSessioonCreator() -> SessionCreator? {
+        let isWifi: Bool = (sessionContext.wifiSSID != nil && sessionContext.wifiSSID != nil)
+        
+        if sessionContext.sessionType == .fixed && isWifi {
+            return AirBeamFixedWifiSessionCreator(
+                measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: persistenceController),
+                userAuthenticationSession: userAuthenticationSession,
+                baseUrl: baseURL)
+        } else if sessionContext.sessionType == .fixed && !isWifi {
+            return AirBeamCellularSessionCreator(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: persistenceController),
+                                                 userAuthenticationSession: userAuthenticationSession,
+                                                 baseUrl: baseURL)
+        } else if sessionContext.sessionType == .mobile && sessionContext.deviceType == .MIC {
+            return MicrophoneSessionCreator(microphoneManager: microphoneManager)
+        } else {
+            return MobilePeripheralSessionCreator(
+                mobilePeripheralSessionManager: bluetoothManager.mobilePeripheralSessionManager, measurementStreamStorage: CoreDataMeasurementStreamStorage(
+                    persistenceController: persistenceController),
+                userAuthenticationSession: userAuthenticationSession)
+        }
     }
 }
-#endif

@@ -72,24 +72,35 @@ private extension SessionHeaderView {
             //  |_________|     |-------------------|
             // so the idea at leat for now is this below
             #warning("Fix - Handle session.deviceType (for now it is always nill)")
-            switch session.type?.description {
-            case "Fixed":
-                Text("\(session.type!.description) : AirBeam3")
-                    .font(Font.moderate(size: 13, weight: .regular))
-            case "Mobile":
-                if session.allStreams!.count > 1 {
-                    Text("\(session.type!.description): AirBeam3")
-                        .font(Font.moderate(size: 13, weight: .regular))
-                } else {
-                    Text("\(session.type!.description): Phone Mic")
-                        .font(Font.moderate(size: 13, weight: .regular))
-                }
-            default:
-                Text(session.deviceType?.description ?? "")
-                    .font(Font.moderate(size: 13, weight: .regular))
-            }
+            sensorType
+                .font(Font.moderate(size: 13, weight: .regular))
         }
         .foregroundColor(.darkBlue)
+    }
+    
+    var sensorType: some View {
+        var stream = [String]()
+        var text = ""
+        
+        session.allStreams!.forEach { session in
+            if var name = session.sensorPackageName {
+                componentsSeparation(name: &name)
+                (name == "Builtin") ? (name = "Phone mic") : (name = name)
+                !stream.contains(name) ? stream.append(name) : nil
+            }
+        }
+        text = stream.joined(separator: ", ")
+        return Text("\(session.type!.description) : \(text)")
+    }
+    
+    func componentsSeparation(name: inout String) {
+        // separation is used to nicely handle the case where sensor could be
+        // AirBeam2-xxxx or AirBeam2:xxx
+        if name.contains(":") {
+            name = name.components(separatedBy: ":").first!
+        } else {
+            name = name.components(separatedBy: "-").first!
+        }
     }
     
     var actionsMenuMobile: some View {
@@ -187,66 +198,14 @@ private extension SessionHeaderView {
     
     func adaptTimeAndDate() -> Text {
         let formatter = DateIntervalFormatter()
-        formatter.timeStyle = .short
-        formatter.dateStyle = .short
-        formatter.timeZone = TimeZone.init(identifier: "UTC")
-
-        var fullDate = ""
-        var endDate = ""
+        formatter.locale = Locale(identifier: "en_US")
+        formatter.dateTemplate = "MM/dd/yyyy HH:mm"
         
         guard let start = session.startTime else { return Text("") }
         let end = session.endTime ?? Date()
+ 
         let string = formatter.string(from: start, to: end)
-        // Purpose of this is to use 24h format all the time (no matter system settings)
-        if TimeConverter.is24Hour() {
-            // We are checking if user system settings is set to be 24h format
-                // if so, no additional change is needed
-            let replacedString = string.replacingOccurrences(of: "—", with: "-")
-            return Text(replacedString)
-        } else {
-            if string.contains("–") {
-                // containing "-" mean that the session has start and end date
-                let time = string.components(separatedBy: "–")
-                var timeLast = time.last
-                if (timeLast!.contains("/")) {
-                    // some of the sessions are being recorded for few days which results in big date format
-                    // ---> 17/08/2021, 17:59-10/09/2021, 5:16
-                    endDate = (time.last?.components(separatedBy: ",").first)!
-                    timeLast = time.last?.components(separatedBy: ",").last
-                }
-                
-                let endTime12 = timeLast!.trimmingCharacters(in: .whitespaces)
-            
-                let last = time.first!
-                let time2 = last.components(separatedBy: ",")
-                fullDate = time2.first!
-                var startTime12 = time2.last?.trimmingCharacters(in: .whitespaces)
-                
-                if !(startTime12!.contains("PM") || startTime12!.contains("AM")) {
-                    // to convert .AM || .PM time, we need to ensure that is has always the right ending
-                    // when session is short, sometimes it results in time formatting like this -> 18:00-19:00 PM
-                    // the purpose is to add .PM to the 18:00 in this example
-                    (endTime12.contains("PM")) ? startTime12?.append(" PM") : startTime12?.append(" AM")
-                }
-                if endDate == "" {
-                    // the case where only one date is handled (one day session)
-                    // needed format then ---> 17/08/2021, 17:59-18:16
-                    fullDate.append(", \(TimeConverter.timeConversion24(time12: startTime12!))-\(TimeConverter.timeConversion24(time12: endTime12))")
-                } else {
-                    // the case where session is recorder at least through two days
-                    // needed format then ---> 17/08/2021, 17:59-10/09/2021, 5:16
-                    fullDate.append(", \(TimeConverter.timeConversion24(time12: startTime12!))-\(endDate), \(TimeConverter.timeConversion24(time12: endTime12))")
-                }
-            } else {
-                // the case where session has only date and start time
-                // needed format then ---> 17/08/2021, 5:16
-                let time2 = string.components(separatedBy: ",")
-                fullDate = time2.first!
-                let startTime12 = time2.last?.trimmingCharacters(in: .whitespaces)
-                fullDate.append(", \(TimeConverter.timeConversion24(time12: startTime12!))")
-            }
-            return Text(fullDate)
-        }
+        return Text(string)
     }
 }
 

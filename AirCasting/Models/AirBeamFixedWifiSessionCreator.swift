@@ -4,7 +4,7 @@
 import Foundation
 import CoreLocation
 
-final class AirBeamFixedSessionCreator: SessionCreator {
+final class AirBeamFixedWifiSessionCreator: SessionCreator {
     enum AirBeamSessionCreatorError: Swift.Error {
         case invalidCreateSessionContext(CreateSessionContext)
     }

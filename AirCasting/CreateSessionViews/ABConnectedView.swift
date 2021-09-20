@@ -9,13 +9,10 @@ import AirCastingStyling
 import SwiftUI
 
 struct ABConnectedView: View {
-    @EnvironmentObject var persistenceController: PersistenceController
-    @EnvironmentObject var bluetoothManager: BluetoothManager
-    @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
-    @EnvironmentObject var sessionContext: CreateSessionContext
+
     @Binding var creatingSessionFlowContinues: Bool
     let baseURL: BaseURLProvider
-
+    
     var body: some View {
         VStack(spacing: 40) {
             ProgressView(value: 0.625)
@@ -46,36 +43,12 @@ private extension ABConnectedView {
     }
 
     var continueButton: some View {
-        let sessionCreator: SessionCreator
-        if sessionContext.sessionType == .mobile {
-            sessionCreator = MobilePeripheralSessionCreator(
-                mobilePeripheralSessionManager: bluetoothManager.mobilePeripheralSessionManager, measurementStreamStorage: CoreDataMeasurementStreamStorage(
-                    persistenceController: persistenceController),
-                userAuthenticationSession: userAuthenticationSession)
-        } else {
-            sessionCreator = AirBeamFixedSessionCreator(
-                measurementStreamStorage: CoreDataMeasurementStreamStorage(
-                    persistenceController: persistenceController),
-                userAuthenticationSession: userAuthenticationSession, baseUrl: baseURL)
-        }
         return NavigationLink(
             destination: CreateSessionDetailsView(
-                sessionCreator: sessionCreator,
-                creatingSessionFlowContinues: $creatingSessionFlowContinues),
+                creatingSessionFlowContinues: $creatingSessionFlowContinues, baseURL: baseURL),
             label: {
                 Text(Strings.ABConnectedView.continueButton)
             })
             .buttonStyle(BlueButtonStyle())
     }
 }
-
-#if DEBUG
-struct AirbeamConnectedView_Previews: PreviewProvider {
-    static var previews: some View {
-        ABConnectedView(creatingSessionFlowContinues: .constant(true), baseURL: DummyURLProvider())
-            .environmentObject(PersistenceController())
-            .environmentObject(UserAuthenticationSession())
-            .environmentObject(BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: PreviewMeasurementStreamStorage())))
-    }
-}
-#endif

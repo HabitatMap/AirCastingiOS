@@ -45,13 +45,13 @@ struct SessionCartView: View {
         self._graphStatsDataSource = .init(wrappedValue: graphDataSource)
         self._graphStatsViewModel = .init(wrappedValue: SessionCartView.createStatsContainerViewModel(dataSource: graphDataSource))
     }
-
+    
     var shouldShowValues: MeasurementPresentationStyle {
         // We need to specify selectedSection to show values for fixed session only in following tab
         let shouldShow = isCollapsed && ( (session.isFixed && selectedSection.selectedSection == SelectedSection.fixed) || session.isDormant)
         return shouldShow ? .hideValues : .showValues
     }
-
+    
     var showChart: Bool {
         (!isCollapsed && session.isMobile && session.isActive) || (!isCollapsed && session.isFixed && selectedSection.selectedSection == SelectedSection.following)
     }
@@ -63,7 +63,7 @@ struct SessionCartView: View {
         VStack(alignment: .leading, spacing: 13) {
             header
             if hasStreams {
-                Measurements
+                measurements               
                 VStack(alignment: .trailing, spacing: 40) {
                     if showChart {
                         pollutionChart(thresholds: thresholds)
@@ -125,17 +125,22 @@ private extension SessionCartView {
         )
     }
     
-    var Measurements: some View {
-        ABMeasurementsView(session: session,
-                           isCollapsed: $isCollapsed,
-                           selectedStream: $selectedStream,
-                           showLoadingIndicator: $showLoadingIndicator,
-                           thresholds: thresholds,
-                           measurementPresentationStyle: shouldShowValues,
-                           measurementStreamStorage: measurementStreamStorage)
+    private var measurements: some View {
+        ABMeasurementsView(viewModelProvider: {
+            DefaultSyncingMeasurementsViewModel(measurementStreamStorage: measurementStreamStorage,
+                                      sessionDownloader: SessionDownloadService(client: URLSession.shared,
+                                                                                authorization: UserAuthenticationSession(),
+                                                                                responseValidator: DefaultHTTPResponseValidator()),
+                                      session: session)
+        },
+        session: session,
+        isCollapsed: $isCollapsed,
+        selectedStream: $selectedStream,
+        thresholds: thresholds,
+        measurementPresentationStyle: shouldShowValues)
     }
     
-    var graphButton: some View {
+    private var graphButton: some View {
         Button {
             isGraphButtonActive = true
         } label: {
@@ -145,7 +150,7 @@ private extension SessionCartView {
         }
     }
     
-    var mapButton: some View {
+    private var mapButton: some View {
         Button {
             isMapButtonActive = true
         } label: {
@@ -155,19 +160,19 @@ private extension SessionCartView {
         }
     }
     
-    var followButton: some View {
+    private var followButton: some View {
         Button(Strings.SessionCartView.follow) {
             sessionCartViewModel.toggleFollowing()
         }.buttonStyle(FollowButtonStyle())
     }
     
-    var unFollowButton: some View {
+    private var unFollowButton: some View {
         Button(Strings.SessionCartView.unfollow) {
             sessionCartViewModel.toggleFollowing()
         }.buttonStyle(UnFollowButtonStyle())
     }
     
-    var mapNavigationLink: some View {
+    private var mapNavigationLink: some View {
         let mapView = AirMapView(thresholds: thresholds,
                                  statsContainerViewModel: mapStatsViewModel,
                                  mapStatsDataSource: mapStatsDataSource,
@@ -184,7 +189,7 @@ private extension SessionCartView {
                               })
     }
     
-    var graphNavigationLink: some View {
+    private var graphNavigationLink: some View {
         let graphView = GraphView(session: session,
                                   thresholds: thresholds,
                                   selectedStream: $selectedStream,
@@ -269,3 +274,4 @@ private extension SessionCartView {
     }
  }
  #endif
+
