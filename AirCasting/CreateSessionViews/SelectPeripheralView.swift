@@ -14,9 +14,7 @@ struct SelectPeripheralView: View {
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @EnvironmentObject var sessionContext: CreateSessionContext
     @EnvironmentObject var connectionController: DefaultAirBeamConnectionController
-    @State var shouldContinueToNextScreen: Bool = false
     @Binding var creatingSessionFlowContinues: Bool
-    
     let urlProvider: BaseURLProvider
     
     var body: some View {

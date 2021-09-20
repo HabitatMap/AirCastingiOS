@@ -10,12 +10,10 @@ import CoreBluetooth
 import SwiftUI
 
 struct TurnOnBluetoothView: View {
-    @State private var isMicLinkActive: Bool = false
     @State private var isPowerABLinkActive = false
     @EnvironmentObject var settingsRedirection: DefaultSettingsRedirection
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @Binding var creatingSessionFlowContinues: Bool
-    @StateObject var sessionContext: CreateSessionContext
     
     let urlProvider: BaseURLProvider
     
@@ -79,12 +77,3 @@ struct TurnOnBluetoothView: View {
     }
 }
 
-#if DEBUG
-struct TurnOnBluetoothView_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationView {
-            TurnOnBluetoothView(creatingSessionFlowContinues: .constant(true), sessionContext: CreateSessionContext(), urlProvider: DummyURLProvider())
-        }
-    }
-}
-#endif

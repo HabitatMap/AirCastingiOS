@@ -14,7 +14,6 @@ struct WifiPopupView: View {
     @Environment(\.presentationMode) private var presentationMode
     @Binding var wifiPassword: String
     @Binding var wifiSSID: String
-    @State var wifiSSIDWasEmptyAtStart: Bool = true
     
     var body: some View {
         VStack(alignment: .leading, spacing: 30) {

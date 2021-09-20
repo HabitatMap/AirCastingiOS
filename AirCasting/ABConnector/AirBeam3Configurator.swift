@@ -78,6 +78,23 @@ struct AirBeam3Configurator {
             }
         }
     }
+    
+    func configureFixedCellularSession(uuid: SessionUUID,
+                                       location: CLLocationCoordinate2D,
+                                       date: Date) throws {
+        let dateString = dateFormatter.string(from: date)
+        try configureFixed(uuid: uuid)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
+            sendLocationConfiguration(location: location)
+            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
+                sendCurrentTimeConfiguration(date: dateString)
+                DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
+                    sendCellularConfiguration()
+                }
+            }
+        }
+    }
 }
 
 private extension AirBeam3Configurator {
@@ -123,6 +140,11 @@ private extension AirBeam3Configurator {
     private func sendWifiConfiguration(wifiSSID: String, wifiPassword: String) {
         let message = hexMessageBuilder.wifiConfigurationMessage(wifiSSID: wifiSSID,
                                                                  wifiPassword: wifiPassword)
+        sendConfigMessage(data: message)
+    }
+    
+    private func sendCellularConfiguration() {
+        let message = hexMessageBuilder.cellularconfigurationCode
         sendConfigMessage(data: message)
     }
     
