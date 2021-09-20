@@ -79,26 +79,28 @@ private extension SessionHeaderView {
     }
     
     var sensorType: some View {
-        var sensorNames = [String]()
+        var stream = [String]()
         var text = ""
-        for session in session.allStreams! {
+        
+        session.allStreams!.forEach { session in
             if var name = session.sensorPackageName {
-                if name.contains(":") {
-                    name = name.components(separatedBy: ":").first!
-                } else {
-                    name = name.components(separatedBy: "-").first!
-                }
+                componentsSeparation(name: &name)
                 (name == "Builtin") ? (name = "Phone mic") : (name = name)
-                !sensorNames.contains(name) ? sensorNames.append(name) : nil
+                !stream.contains(name) ? stream.append(name) : nil
             }
         }
-        for sensor in sensorNames {
-            text.append(sensor)
-            if sensor != sensorNames.last {
-                text.append(", ")
-            }
-        }
+        text = stream.joined(separator: ", ")
         return Text("\(session.type!.description) : \(text)")
+    }
+    
+    func componentsSeparation(name: inout String) {
+        // separation is used to nicely handle the case where sensor could be
+        // AirBeam2-xxxx or AirBeam2:xxx
+        if name.contains(":") {
+            name = name.components(separatedBy: ":").first!
+        } else {
+            name = name.components(separatedBy: "-").first!
+        }
     }
     
     var actionsMenuMobile: some View {
