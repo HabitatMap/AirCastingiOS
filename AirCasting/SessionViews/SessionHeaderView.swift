@@ -66,10 +66,41 @@ private extension SessionHeaderView {
                     }
                 }
             }
-            Text("\(session.type?.description ?? SessionType.unknown("").description): \(session.deviceType?.description ?? "")")
+            // As long as we get session.deviceType = nil we should handle somehow showing those devices which were used to record
+            // [|(-)   (-)|]    |-------------------|
+            //  |   ___   |  -- | You, do something |
+            //  |_________|     |-------------------|
+            // so the idea at leat for now is this below
+            #warning("Fix - Handle session.deviceType (for now it is always nill)")
+            sensorType
                 .font(Font.moderate(size: 13, weight: .regular))
         }
         .foregroundColor(.darkBlue)
+    }
+    
+    var sensorType: some View {
+        var stream = [String]()
+        var text = ""
+        
+        session.allStreams!.forEach { session in
+            if var name = session.sensorPackageName {
+                componentsSeparation(name: &name)
+                (name == "Builtin") ? (name = "Phone mic") : (name = name)
+                !stream.contains(name) ? stream.append(name) : nil
+            }
+        }
+        text = stream.joined(separator: ", ")
+        return Text("\(session.type!.description) : \(text)")
+    }
+    
+    func componentsSeparation(name: inout String) {
+        // separation is used to nicely handle the case where sensor could be
+        // AirBeam2-xxxx or AirBeam2:xxx
+        if name.contains(":") {
+            name = name.components(separatedBy: ":").first!
+        } else {
+            name = name.components(separatedBy: "-").first!
+        }
     }
     
     var actionsMenuMobile: some View {

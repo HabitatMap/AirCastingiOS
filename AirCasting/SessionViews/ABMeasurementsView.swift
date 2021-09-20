@@ -3,27 +3,50 @@
 
 import SwiftUI
 import AirCastingStyling
-import CoreLocation
-import CoreData
 
 enum MeasurementPresentationStyle {
     case showValues
     case hideValues
 }
 
-struct ABMeasurementsView: View {
+struct ABMeasurementsView<VM: SyncingMeasurementsViewModel>: View {
+    var viewModelProvider: () -> VM
     @ObservedObject var session: SessionEntity
     @Binding var isCollapsed: Bool
     @Binding var selectedStream: MeasurementStreamEntity?
-    @State private var showLoadingIndicator = true
     var thresholds: [SensorThreshold]
     let measurementPresentationStyle: MeasurementPresentationStyle
-    let sessionDownloader = SessionDownloadService(client: URLSession.shared,
-                                                   authorization: UserAuthenticationSession(),
-                                                   responseValidator: DefaultHTTPResponseValidator())
-    let measurementStreamStorage: MeasurementStreamStorage
-    @EnvironmentObject var selectedSection: SelectSection
+    @State private var viewModel: VM?
+    
+    var body: some View {
+        ZStack {
+            if let viewModel = viewModel {
+                _ABMeasurementsView(measurementsViewModel: viewModel as! DefaultSyncingMeasurementsViewModel,
+                                    session: session,
+                                    isCollapsed: $isCollapsed,
+                                    selectedStream: $selectedStream,
+                                    thresholds: thresholds,
+                                    measurementPresentationStyle: measurementPresentationStyle)
+            }
+        }
+        .onAppear {
+            viewModel = viewModelProvider()
+        }
+    }
+}
 
+struct _ABMeasurementsView: View {
+    
+    @ObservedObject var measurementsViewModel: DefaultSyncingMeasurementsViewModel
+    @ObservedObject var session: SessionEntity
+    @Binding var isCollapsed: Bool
+    @Binding var selectedStream: MeasurementStreamEntity?
+    
+    var thresholds: [SensorThreshold]
+    let measurementPresentationStyle: MeasurementPresentationStyle
+    
+    @EnvironmentObject var selectedSection: SelectSection
+    
     private var streamsToShow: [MeasurementStreamEntity] {
         return session.sortedStreams ?? []
     }
@@ -57,57 +80,22 @@ struct ABMeasurementsView: View {
             } else {
                 if session.isFollowed {
                     SessionLoadingView()
-                } else if session.isDormant {
+                } else {
                     VStack(alignment: .leading, spacing: 8) {
                         measurementsTitle
+                            .font(Font.moderate(size: 12))
                         streamNames
-                        if !isCollapsed && showLoadingIndicator {
+                        if !isCollapsed && measurementsViewModel.showLoadingIndicator {
                             ProgressView()
                                 .progressViewStyle(CircularProgressViewStyle())
                         }
                     }
-                } else {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text(Strings.SessionCart.parametersText)
-                        streamNames
-                    }
                 }
             }
         }
-        .onChange(of: isCollapsed, perform: { _ in
+        .onChange(of: isCollapsed, perform: { new in
             if isCollapsed == false && !hasAnyMeasurements {
-                showLoadingIndicator = true
-                sessionDownloader.downloadSessionWithMeasurement(uuid: session.uuid) { result in
-                    switch result {
-                    case .success(let data):
-                        let dataBaseStreams = data.streams.values.map { value in
-                            SynchronizationDataConterter().convertDownloadDataToDatabaseStream(data: value)
-                        }
-                        dataBaseStreams.forEach { stream in
-                            stream.measurements.forEach { measurement in
-                                let location: CLLocationCoordinate2D? = {
-                                    guard let latitude = measurement.latitude,
-                                          let longitude = measurement.longitude else { return CLLocationCoordinate2D(latitude: 200, longitude: 200) }
-                                    return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-                                }()
-                                guard let streamID = try? measurementStreamStorage.existingMeasurementStream(session.uuid, name: stream.sensorName) else {
-                                    Log.info("failed to get existing streamID for synced measurements from session \(String(describing: session.name))")
-                                    return }
-                                try? measurementStreamStorage.addMeasurement(Measurement(time: measurement.time, value: measurement.value, location: location), toStreamWithID: streamID)
-                            }
-                            try? measurementStreamStorage.saveThresholdFor(sensorName: stream.sensorName,
-                                                                           thresholdVeryHigh: Int32(stream.thresholdVeryHigh),
-                                                                           thresholdHigh: Int32(stream.thresholdHigh),
-                                                                           thresholdMedium: Int32(stream.thresholdMedium),
-                                                                           thresholdLow: Int32(stream.thresholdLow),
-                                                                           thresholdVeryLow: Int32(stream.thresholdVeryLow))
-                            
-                        }
-                        showLoadingIndicator = false
-                    case .failure(let error):
-                        Log.info("\(error)")
-                    }
-                }
+                measurementsViewModel.syncMeasurements()
             }
         })
     }
@@ -128,12 +116,11 @@ struct ABMeasurementsView: View {
     }
 }
 
-extension ABMeasurementsView {
+extension _ABMeasurementsView {
     var measurementsTitle: some View {
         if session.deviceType == .MIC {
             return Text(verbatim: Strings.SessionCart.measurementsTitle)
-        } else
-        if session.isActive {
+        } else if session.isActive {
             return Text(Strings.SessionCart.measurementsTitle)
         } else if session.isDormant {
             if isCollapsed {
@@ -153,4 +140,3 @@ extension ABMeasurementsView {
         return Text("")
     }
 }
-

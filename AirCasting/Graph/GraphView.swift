@@ -22,13 +22,19 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                               isExpandButtonNeeded: false, isCollapsed: Binding.constant(false),
                               session: session,
                               sessionStopperFactory: sessionStoppableFactory).padding()
-
-            ABMeasurementsView(session: session,
+            
+            ABMeasurementsView(viewModelProvider: {
+                DefaultSyncingMeasurementsViewModel(measurementStreamStorage: measurementStreamStorage,
+                                          sessionDownloader: SessionDownloadService(client: URLSession.shared,
+                                                                                    authorization: UserAuthenticationSession(),
+                                                                                    responseValidator: DefaultHTTPResponseValidator()),
+                                          session: session)
+            },
+                               session: session,
                                isCollapsed: Binding.constant(false),
                                selectedStream: $selectedStream,
                                thresholds: thresholds,
-                               measurementPresentationStyle: .showValues,
-                               measurementStreamStorage: measurementStreamStorage)
+                               measurementPresentationStyle: .showValues)
                 .padding(.horizontal)
             if let threshold = thresholds.threshold(for: selectedStream) {
                 ZStack(alignment: .topLeading) {
@@ -39,8 +45,10 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                                 graphStatsDataSource?.dateRange = range
                                 statsContainerViewModel?.adjustForNewData()
                               }
+                        StatisticsContainerView(statsContainerViewModel: statsContainerViewModel,
+                                                threshold: threshold)
                     }
-                    StatisticsContainerView(statsContainerViewModel: statsContainerViewModel)
+
                 }
                 NavigationLink(destination: HeatmapSettingsView(changedThresholdValues: threshold.rawThresholdsBinding)) {
                     EditButtonView()

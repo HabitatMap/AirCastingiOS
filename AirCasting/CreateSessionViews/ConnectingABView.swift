@@ -17,6 +17,7 @@ struct ConnectingABView<VM: AirbeamConnectionViewModel>: View {
     @State private var showNextScreen: Bool = false
     @State private var presentAlert: Bool = false
     
+    
     var body: some View {
         VStack(spacing: 50) {
             ProgressView(value: 0.5)
@@ -91,11 +92,3 @@ struct ConnectingABView<VM: AirbeamConnectionViewModel>: View {
         }
     }
 }
-
-#if DEBUG
-struct ConnectingABView_Previews: PreviewProvider {
-    static var previews: some View {
-        ConnectingABView(viewModel: NeverConnectingAirbeamConnectionViewModel(), baseURL: DummyURLProvider(), creatingSessionFlowContinues: .constant(true))
-    }
- }
-#endif

@@ -11,7 +11,6 @@ import AirCastingStyling
 
 struct SelectDeviceView: View {
     
-    @State private var canContinue = false
     @State private var selected = 0
     @State private var isTurnOnBluetoothLinkActive: Bool = false
     @State private var isPowerABLinkActive: Bool = false
@@ -19,10 +18,10 @@ struct SelectDeviceView: View {
     @EnvironmentObject private var sessionContext: CreateSessionContext
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @EnvironmentObject private var microphoneManager: MicrophoneManager
-    @EnvironmentObject private var locationTracker: LocationTracker
     @Binding var creatingSessionFlowContinues : Bool
     @State private var showAlert = false
-    
+    @EnvironmentObject private var tabSelection: TabBarSelection
+
     let urlProvider: BaseURLProvider
     
     var body: some View {
@@ -46,13 +45,13 @@ struct SelectDeviceView: View {
                     EmptyView()
                 })
             NavigationLink(
-                destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sessionContext: sessionContext, urlProvider: urlProvider),
+                destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider),
                 isActive: $isTurnOnBluetoothLinkActive,
                 label: {
                     EmptyView()
                 })
             NavigationLink(
-                destination: CreateSessionDetailsView(sessionCreator: MicrophoneSessionCreator(microphoneManager: microphoneManager), creatingSessionFlowContinues: $creatingSessionFlowContinues),
+                destination: CreateSessionDetailsView(creatingSessionFlowContinues: $creatingSessionFlowContinues, baseURL: urlProvider),
                 isActive: $isMicLinkActive,
                 label: {
                     EmptyView()
@@ -139,11 +138,3 @@ struct SelectDeviceView: View {
         .buttonStyle(BlueButtonStyle())
     }
 }
-
-#if DEBUG
-struct SelectDeviceView_Previews: PreviewProvider {
-    static var previews: some View {
-        SelectDeviceView(creatingSessionFlowContinues: .constant(true), urlProvider: DummyURLProvider())
-    }
-}
-#endif

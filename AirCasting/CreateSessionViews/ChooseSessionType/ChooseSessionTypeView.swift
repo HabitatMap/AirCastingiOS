@@ -15,6 +15,12 @@ struct ChooseSessionTypeView: View {
     @State private var isMobileLinkActive = false
     @State private var didTapFixedSession = false
     var viewModel: ChooseSessionTypeViewModel
+    @EnvironmentObject private var tabSelection: TabBarSelection
+    @EnvironmentObject var selectedSection: SelectSection
+    @EnvironmentObject private var emptyDashboardButtonTapped: EmptyDashboardButtonTapped
+    var shouldGoToChooseSessionScreen: Bool {
+        (tabSelection.selection == .createSession && emptyDashboardButtonTapped.mobileWasTapped) ? true : false
+    }
     
     var body: some View {
         NavigationView {
@@ -63,7 +69,7 @@ struct ChooseSessionTypeView: View {
                     EmptyView()
                         .fullScreenCover(isPresented: $isTurnBluetoothOnLinkActive) {
                             CreatingSessionFlowRootView {
-                                TurnOnBluetoothView(creatingSessionFlowContinues: $isTurnBluetoothOnLinkActive, sessionContext: viewModel.passSessionContext, urlProvider: viewModel.passURLProvider)
+                                TurnOnBluetoothView(creatingSessionFlowContinues: $isTurnBluetoothOnLinkActive, urlProvider: viewModel.passURLProvider)
                             }
                         }
                     EmptyView()
@@ -79,6 +85,12 @@ struct ChooseSessionTypeView: View {
                     didTapFixedSession = false
                 }
             }
+            .onAppear() {
+                shouldGoToChooseSessionScreen ? (isMobileLinkActive = true) : (isMobileLinkActive = false)
+            }
+            .onChange(of: tabSelection.selection, perform: { _ in
+                shouldGoToChooseSessionScreen ? (isMobileLinkActive = true) : (isMobileLinkActive = false)
+            })
         }
         .environmentObject(viewModel.passSessionContext)
     }
