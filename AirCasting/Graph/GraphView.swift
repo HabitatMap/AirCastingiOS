@@ -45,8 +45,10 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                                 graphStatsDataSource?.dateRange = range
                                 statsContainerViewModel?.adjustForNewData()
                               }
+                        StatisticsContainerView(statsContainerViewModel: statsContainerViewModel,
+                                                threshold: threshold)
                     }
-                    StatisticsContainerView(statsContainerViewModel: statsContainerViewModel)
+
                 }
                 NavigationLink(destination: HeatmapSettingsView(changedThresholdValues: threshold.rawThresholdsBinding)) {
                     EditButtonView()

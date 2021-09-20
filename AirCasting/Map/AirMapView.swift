@@ -56,7 +56,8 @@ struct AirMapView: View {
                                 mapStatsDataSource?.visiblePathPoints = visiblePoints
                                 statsContainerViewModel?.adjustForNewData()
                             }
-                        StatisticsContainerView(statsContainerViewModel: statsContainerViewModel)
+                    StatisticsContainerView(statsContainerViewModel: statsContainerViewModel,
+                                            threshold: threshold)     
                     }
                     NavigationLink(destination: HeatmapSettingsView(changedThresholdValues: threshold.rawThresholdsBinding)) {
                         EditButtonView()
