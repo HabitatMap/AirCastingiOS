@@ -4,6 +4,7 @@
 import CoreData
 import CoreLocation
 import Foundation
+import Combine
 
 protocol MeasurementStreamStorage {
     func addMeasurement(_ measurement: Measurement, toStreamWithID id: MeasurementStreamLocalID) throws
@@ -15,6 +16,7 @@ protocol MeasurementStreamStorage {
     func updateSessionEndtime(_ endTime: Date, for sessionUUID: SessionUUID) throws
     func updateSessionFollowing(_ sessionStatus: SessionFollowing, for sessionUUID: SessionUUID)
     func existingMeasurementStream(_ sessionUUID: SessionUUID, name: String) throws -> MeasurementStreamLocalID?
+    func save() throws
 }
 
 extension MeasurementStreamStorage {
@@ -31,13 +33,25 @@ final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
 
     private let persistenceController: PersistenceController
     private lazy var updateSessionParamsService = UpdateSessionParamsService()
-
+    private let context: NSManagedObjectContext
+    
     init(persistenceController: PersistenceController) {
         self.persistenceController = persistenceController
+        self.context = persistenceController.editContext()
     }
-
+    
+    func save() throws {
+        context.perform {
+            do {
+                try self.context.save()
+            } catch {
+                Log.info("Couldn't save the context: \(self.context)")
+            }
+        }
+    }
+    
     func addMeasurement(_ measurement: Measurement, toStreamWithID id: MeasurementStreamLocalID) throws {
-        let context = persistenceController.editContext()
+        
         let stream = try context.existingObject(with: id.id) as! MeasurementStreamEntity
 
         let newMeasurement = MeasurementEntity(context: context)
@@ -53,12 +67,9 @@ final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
         if session?.status != .FINISHED {
             session?.status = .RECORDING
         }
-
-        try context.save()
     }
     
     func saveThresholdFor(sensorName: String, thresholdVeryHigh: Int32, thresholdHigh: Int32, thresholdMedium: Int32, thresholdLow: Int32, thresholdVeryLow: Int32) throws {
-        let context = persistenceController.editContext()
         let existingThreshold: SensorThreshold? = try context.existingObject(sensorName: sensorName)
         if existingThreshold == nil {
             let threshold: SensorThreshold = try context.newOrExisting(sensorName: sensorName)
@@ -68,24 +79,20 @@ final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
             threshold.thresholdHigh = thresholdHigh
             threshold.thresholdVeryHigh = thresholdVeryHigh
         }
-        try context.save()
     }
 
     func createMeasurementStream(_ stream: MeasurementStream, for sessionUUID: SessionUUID) throws -> MeasurementStreamLocalID {
-        let context = persistenceController.editContext()
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
         return try createMeasurementStream(for: sessionEntity, context: context, stream)
     }
 
     func createSessionAndMeasurementStream(_ session: Session, _ stream: MeasurementStream) throws -> MeasurementStreamLocalID {
-        let context = persistenceController.editContext()
         let sessionEntity = SessionEntity(context: context)
         updateSessionParamsService.updateSessionsParams(sessionEntity, session: session)
         return try createMeasurementStream(for: sessionEntity, context: context, stream)
     }
     
     func existingMeasurementStream(_ sessionUUID: SessionUUID, name: String) throws -> MeasurementStreamLocalID? {
-        let context = persistenceController.editContext()
         let session = try context.existingSession(uuid: sessionUUID)
         let stream = session.streamWith(sensorName: name)
         return stream?.localID
@@ -125,21 +132,18 @@ final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
     }
 
     func updateSessionStatus(_ sessionStatus: SessionStatus, for sessionUUID: SessionUUID) throws {
-        let context = persistenceController.editContext()
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
         sessionEntity.status = sessionStatus
         try context.save()
     }
     
     func updateSessionEndtime(_ endTime: Date, for sessionUUID: SessionUUID) throws {
-        let context = persistenceController.editContext()
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
         sessionEntity.endTime = endTime
         try context.save()
     }
     
     func updateSessionFollowing(_ sessionFollowing: SessionFollowing, for sessionUUID: SessionUUID) {
-        let context = persistenceController.editContext()
         context.performAndWait {
             do {
                 let sessionEntity = try context.existingSession(uuid: sessionUUID)
@@ -156,7 +160,6 @@ final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
     }
 
     func createSession(_ session: Session) throws {
-        let context = persistenceController.editContext()
         let sessionEntity = SessionEntity(context: context)
         updateSessionParamsService.updateSessionsParams(sessionEntity, session: session)
         try context.save()
@@ -166,6 +169,9 @@ final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
 #if DEBUG
 /// Only to be used for swiftui previews
 final class PreviewMeasurementStreamStorage: MeasurementStreamStorage {
+    func save() throws {
+        print("Faking saving ")
+    }
     
     func saveThresholdFor(sensorName: String, thresholdVeryHigh: Int32, thresholdHigh: Int32, thresholdMedium: Int32, thresholdLow: Int32, thresholdVeryLow: Int32) throws {
         print("Faking saving thresholds")

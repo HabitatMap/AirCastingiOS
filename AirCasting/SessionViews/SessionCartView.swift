@@ -15,6 +15,7 @@ struct SessionCartView: View {
     @State private var selectedStream: MeasurementStreamEntity?
     @State private var isMapButtonActive = false
     @State private var isGraphButtonActive = false
+    @State private var showLoadingIndicator = false
     @ObservedObject var session: SessionEntity
     @EnvironmentObject var selectedSection: SelectSection
     let sessionCartViewModel: SessionCartViewModel
@@ -44,13 +45,13 @@ struct SessionCartView: View {
         self._graphStatsDataSource = .init(wrappedValue: graphDataSource)
         self._graphStatsViewModel = .init(wrappedValue: SessionCartView.createStatsContainerViewModel(dataSource: graphDataSource))
     }
-
+    
     var shouldShowValues: MeasurementPresentationStyle {
         // We need to specify selectedSection to show values for fixed session only in following tab
         let shouldShow = isCollapsed && ( (session.isFixed && selectedSection.selectedSection == SelectedSection.fixed) || session.isDormant)
         return shouldShow ? .hideValues : .showValues
     }
-
+    
     var showChart: Bool {
         (!isCollapsed && session.isMobile && session.isActive) || (!isCollapsed && session.isFixed && selectedSection.selectedSection == SelectedSection.following)
     }
@@ -62,13 +63,7 @@ struct SessionCartView: View {
         VStack(alignment: .leading, spacing: 13) {
             header
             if hasStreams {
-                ABMeasurementsView(session: session,
-                                   isCollapsed: $isCollapsed,
-                                   selectedStream: $selectedStream,
-                                   thresholds: thresholds,
-                                   measurementPresentationStyle: shouldShowValues,
-                                   measurementStreamStorage: measurementStreamStorage)
-
+                measurements               
                 VStack(alignment: .trailing, spacing: 40) {
                     if showChart {
                         pollutionChart(thresholds: thresholds)
@@ -130,7 +125,22 @@ private extension SessionCartView {
         )
     }
     
-    var graphButton: some View {
+    private var measurements: some View {
+        ABMeasurementsView(viewModelProvider: {
+            DefaultSyncingMeasurementsViewModel(measurementStreamStorage: measurementStreamStorage,
+                                      sessionDownloader: SessionDownloadService(client: URLSession.shared,
+                                                                                authorization: UserAuthenticationSession(),
+                                                                                responseValidator: DefaultHTTPResponseValidator()),
+                                      session: session)
+        },
+        session: session,
+        isCollapsed: $isCollapsed,
+        selectedStream: $selectedStream,
+        thresholds: thresholds,
+        measurementPresentationStyle: shouldShowValues)
+    }
+    
+    private var graphButton: some View {
         Button {
             isGraphButtonActive = true
         } label: {
@@ -140,7 +150,7 @@ private extension SessionCartView {
         }
     }
     
-    var mapButton: some View {
+    private var mapButton: some View {
         Button {
             isMapButtonActive = true
         } label: {
@@ -150,23 +160,24 @@ private extension SessionCartView {
         }
     }
     
-    var followButton: some View {
+    private var followButton: some View {
         Button(Strings.SessionCartView.follow) {
             sessionCartViewModel.toggleFollowing()
         }.buttonStyle(FollowButtonStyle())
     }
     
-    var unFollowButton: some View {
+    private var unFollowButton: some View {
         Button(Strings.SessionCartView.unfollow) {
             sessionCartViewModel.toggleFollowing()
         }.buttonStyle(UnFollowButtonStyle())
     }
     
-    var mapNavigationLink: some View {
+    private var mapNavigationLink: some View {
         let mapView = AirMapView(thresholds: thresholds,
                                  statsContainerViewModel: mapStatsViewModel,
                                  mapStatsDataSource: mapStatsDataSource,
                                  session: session,
+                                 showLoadingIndicator: $showLoadingIndicator,
                                  selectedStream: $selectedStream,
                                  sessionStoppableFactory: sessionStoppableFactory,
                                  measurementStreamStorage: measurementStreamStorage)
@@ -178,7 +189,7 @@ private extension SessionCartView {
                               })
     }
     
-    var graphNavigationLink: some View {
+    private var graphNavigationLink: some View {
         let graphView = GraphView(session: session,
                                   thresholds: thresholds,
                                   selectedStream: $selectedStream,
@@ -194,11 +205,31 @@ private extension SessionCartView {
     }
     
     func pollutionChart(thresholds: [SensorThreshold]) -> some View {
-        Group {
-            if let selectedStream = selectedStream {
-                ChartView(stream: selectedStream,
-                          thresholds: thresholds)
-                    .frame(height: 200)
+        
+        let start = session.startTime ?? Date()
+        let end = session.endTime ?? Date()
+        
+        let dateFormatter : DateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "HH:mm"
+        let startTime = dateFormatter.string(from: start)
+        let endTime = dateFormatter.string(from: end)
+        
+        return VStack() {
+            Group {
+                if let selectedStream = selectedStream {
+                    ChartView(stream: selectedStream,
+                              thresholds: thresholds)
+                        .frame(height: 120)
+                        .disabled(true)
+                    HStack() {
+                            Text(startTime)
+                            Spacer()
+                        Text("\(Strings.SessionCartView.avgSession) \(selectedStream.unitSymbol ?? "")")
+                            Spacer()
+                            Text(endTime)
+                    }.foregroundColor(.aircastingGray)
+                    .font(Font.muli(size: 13, weight: .semibold))
+                }
             }
         }
     }
@@ -230,16 +261,17 @@ private extension SessionCartView {
     }
 }
 
-// #if DEBUG
-// struct SessionCell_Previews: PreviewProvider {
-//    static var previews: some View {
-//        EmptyView()
-//        SessionCartView(session: SessionEntity.mock,
-//                                sessionCartViewModel: SessionCartViewModel(followingSetter: MockSessionFollowingSettable()),
-//                                thresholds: [.mock, .mock], sessionStoppableFactory: SessionStoppableFactoryDummy())
-//            .padding()
-//            .previewLayout(.sizeThatFits)
-//            .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
-//    }
-// }
-// #endif
+ #if DEBUG
+ struct SessionCell_Previews: PreviewProvider {
+    static var previews: some View {
+        EmptyView()
+        SessionCartView(session: SessionEntity.mock,
+                                sessionCartViewModel: SessionCartViewModel(followingSetter: MockSessionFollowingSettable()),
+                                thresholds: [.mock, .mock], sessionStoppableFactory: SessionStoppableFactoryDummy(), measurementStreamStorage: MeasurementStreamStorage.self as! MeasurementStreamStorage)
+            .padding()
+            .previewLayout(.sizeThatFits)
+            .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
+    }
+ }
+ #endif
+

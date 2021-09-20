@@ -90,6 +90,7 @@ struct Strings {
         static let graph: String = "graph"
         static let follow: String = "follow"
         static let unfollow: String = "unfollow"
+        static let avgSession: String = "1 hr avg -"
     }
     
     enum SelectPeripheralView {
@@ -300,12 +301,14 @@ struct Strings {
         static let buttonFixed: String = "Record new session"
         static let airBeamDescriptionText: String = "Did you know?"
         static let airBeamDescriptionDescription: String = "AirBeam3 is weather resistant. To \nkeep tabs on your outdoor air quality \n24/7, hang one outside your home and \nrecord a fixed session."
+        static let fetchingText: String = "Fetching..."
     }
     
     enum EmptyDashboardFixed {
-        static let title: String = "Ready to get\n started?"
-        static let description: String = "Record a new session\n to monitor your health &\n environment"
+        static let title: String = "Ready to get started?"
+        static let description: String = "Record a new session to monitor\n your health & environment."
         static let newSession: String = "Record new session"
+        static let fetchingText: String = "Fetching..."
     }
     
     enum PowerABView {
@@ -380,6 +383,8 @@ struct Strings {
         static let finishAlertMessage_2: String = "Mobile Dormant"
         static let finishAlertMessage_3: String = " tab and you won't be able to add new measurement to it."
         static let finishAlertButton: String = "Finish recording"
+        static let airBeam3: String = "AirBeam3"
+        static let mic: String = "Phone Mic"
     }
     
     enum NetworkChecker {

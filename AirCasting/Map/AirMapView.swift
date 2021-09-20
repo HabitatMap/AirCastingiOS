@@ -15,6 +15,7 @@ struct AirMapView: View {
     @StateObject var statsContainerViewModel: StatisticsContainerViewModel
     @StateObject var mapStatsDataSource: MapStatsDataSource
     @ObservedObject var session: SessionEntity
+    @Binding var showLoadingIndicator: Bool
 
     @Binding var selectedStream: MeasurementStreamEntity?
     let sessionStoppableFactory: SessionStoppableFactory
@@ -34,30 +35,39 @@ struct AirMapView: View {
                               isExpandButtonNeeded: false, isCollapsed: Binding.constant(false),
                               session: session,
                               sessionStopperFactory: sessionStoppableFactory)
-            ABMeasurementsView(session: session,
+            ABMeasurementsView(viewModelProvider: { DefaultSyncingMeasurementsViewModel(measurementStreamStorage: measurementStreamStorage,
+                                                                              sessionDownloader: SessionDownloadService(client: URLSession.shared,
+                                                                                                                        authorization: UserAuthenticationSession(),
+                                                                                                                        responseValidator: DefaultHTTPResponseValidator()),
+                                                                              session: session)
+            },
+                               session: session,
                                isCollapsed: Binding.constant(false),
                                selectedStream: $selectedStream,
                                thresholds: thresholds,
-                               measurementPresentationStyle: .showValues,
-                               measurementStreamStorage: measurementStreamStorage)
+                               measurementPresentationStyle: .showValues)
 
             if let threshold = thresholds.threshold(for: selectedStream) {
-                ZStack(alignment: .topLeading) {
-                    GoogleMapView(pathPoints: pathPoints,
-                                  threshold: threshold)
-                        .onPositionChange { [weak mapStatsDataSource, weak statsContainerViewModel] visiblePoints in
-                            mapStatsDataSource?.visiblePathPoints = visiblePoints
-                            statsContainerViewModel?.adjustForNewData()
-                        }
+                if !showLoadingIndicator {
+                    ZStack(alignment: .topLeading) {
+                        GoogleMapView(pathPoints: pathPoints,
+                                      threshold: threshold)
+                            .onPositionChange { [weak mapStatsDataSource, weak statsContainerViewModel] visiblePoints in
+                                mapStatsDataSource?.visiblePathPoints = visiblePoints
+                                statsContainerViewModel?.adjustForNewData()
+                            }
                     StatisticsContainerView(statsContainerViewModel: statsContainerViewModel,
-                                            threshold: threshold)
+                                            threshold: threshold)     
+                    }
+                    NavigationLink(destination: HeatmapSettingsView(changedThresholdValues: threshold.rawThresholdsBinding)) {
+                        EditButtonView()
+                    }
+                    ThresholdsSliderView(threshold: threshold)
+                        // Fixes labels covered by tabbar
+                        .padding(.bottom)
+                } else {
+                    Spacer()
                 }
-                NavigationLink(destination: HeatmapSettingsView(changedThresholdValues: threshold.rawThresholdsBinding)) {
-                    EditButtonView()
-                }
-                ThresholdsSliderView(threshold: threshold)
-                    // Fixes labels covered by tabbar
-                    .padding(.bottom)
             }
         }
         .navigationBarTitleDisplayMode(.inline)
@@ -72,6 +82,7 @@ struct Map_Previews: PreviewProvider {
                    statsContainerViewModel: StatisticsContainerViewModel(statsInput: MeasurementsStatisticsInputMock()),
                    mapStatsDataSource: MapStatsDataSource(),
                    session: .mock,
+                   showLoadingIndicator: .constant(true),
                    selectedStream: .constant(nil),
                    sessionStoppableFactory: SessionStoppableFactoryDummy(),
                    measurementStreamStorage: PreviewMeasurementStreamStorage())
