@@ -10,7 +10,6 @@ import CoreLocation
 import SwiftUI
 
 struct CreateSessionDetailsView: View {
-    let sessionCreator: SessionCreator
     @State var sessionName: String = ""
     @State var sessionTags: String = ""
     @State var isIndoor = true
@@ -25,9 +24,8 @@ struct CreateSessionDetailsView: View {
     @State private var showingAlert = false
     @EnvironmentObject private var sessionContext: CreateSessionContext
     // Location tracker is needed to get wifi SSID (more info CNCopyCurrentNetworkInfo documentation.
-    @EnvironmentObject private var locationTracker: LocationTracker
-
     @Binding var creatingSessionFlowContinues: Bool
+    let baseURL: BaseURLProvider
 
     var body: some View {
         GeometryReader { geometry in
@@ -53,9 +51,8 @@ struct CreateSessionDetailsView: View {
             }
             .background(Group {
                 NavigationLink(
-                    destination: ChooseCustomLocationView(sessionCreator: sessionCreator,
-                                                          creatingSessionFlowContinues: $creatingSessionFlowContinues,
-                                                          sessionName: $sessionName),
+                    destination: ChooseCustomLocationView(creatingSessionFlowContinues: $creatingSessionFlowContinues,
+                                                          sessionName: $sessionName, baseURL: baseURL),
                     isActive: $isLocationSessionDetailsActive,
                     label: {
                         EmptyView()
@@ -64,14 +61,14 @@ struct CreateSessionDetailsView: View {
                 NavigationLink("", destination: EmptyView())
                 NavigationLink(
                     destination: ConfirmCreatingSessionView(creatingSessionFlowContinues: $creatingSessionFlowContinues,
-                                                            sessionCreator: sessionCreator,
+                                                            baseURL: baseURL,
                                                             sessionName: sessionName),
                     isActive: $isConfirmCreatingSessionActive,
                     label: {
                         EmptyView()
                     }
                 )
-
+                
             })
         }
         .simultaneousGesture(
@@ -98,11 +95,14 @@ private extension CreateSessionDetailsView {
                     isConfirmCreatingSessionActive = false
                     showingAlert = true
                     return
+                } else if !isWiFi {
+                    // to be able to check if session is cellular
+                    sessionContext.wifiSSID = nil
+                    sessionContext.wifiPassword = nil
                 }
                 isConfirmCreatingSessionActive = isIndoor
                 isLocationSessionDetailsActive = !isIndoor
             } else {
-                
                 sessionContext.isIndoor = false
                 isConfirmCreatingSessionActive = true
             }
@@ -161,21 +161,6 @@ private extension CreateSessionDetailsView {
             WifiPopupView(wifiPassword: $wifiPassword, wifiSSID: $wifiSSID)
         }
     }
+    
+
 }
-
-#if DEBUG
-struct AddNameAndTagsView_Previews: PreviewProvider {
-    private static var fixedSessionContext: CreateSessionContext = {
-        $0.sessionType = .fixed
-        return $0
-    }(CreateSessionContext())
-
-    static var previews: some View {
-        CreateSessionDetailsView(sessionCreator: PreviewSessionCreator(), creatingSessionFlowContinues: .constant(true))
-            .environmentObject(CreateSessionContext())
-
-        CreateSessionDetailsView(sessionCreator: PreviewSessionCreator(), creatingSessionFlowContinues: .constant(true))
-            .environmentObject(fixedSessionContext)
-    }
-}
-#endif

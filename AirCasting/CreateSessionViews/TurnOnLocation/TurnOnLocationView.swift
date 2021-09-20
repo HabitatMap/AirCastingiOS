@@ -88,7 +88,7 @@ struct TurnOnLocationView: View {
     }
     var proceedToBluetoothView: some View {
         NavigationLink(
-            destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sessionContext: viewModel.getSessionContext, urlProvider: viewModel.passURLProvider),
+            destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: viewModel.passURLProvider),
             isActive: $isTurnBluetoothOnLinkActive,
             label: {
                 EmptyView()
@@ -103,11 +103,3 @@ struct TurnOnLocationView: View {
             })
     }
 }
-
-#if DEBUG
-struct TurnOnLocationView_Previews: PreviewProvider {
-    static var previews: some View {
-        TurnOnLocationView(creatingSessionFlowContinues: .constant(true), viewModel: TurnOnLocationViewModel(locationHandler: DummyDefaultLocationHandler(), bluetoothHandler: DummyDefaultBluetoothHandler(), sessionContext: CreateSessionContext(), urlProvider: DummyURLProvider()))
-    }
-}
-#endif
