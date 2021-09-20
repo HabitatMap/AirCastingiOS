@@ -40,7 +40,7 @@ final class DefaultSyncingMeasurementsViewModel: SyncingMeasurementsViewModel {
             switch result {
             case .success(let data):
                 let dataBaseStreams = data.streams.values.map { value in
-                    SynchronizationDataConterter().convertDownloadDataToDatabaseStream(data: value)
+                    SynchronizationDataConverter().convertDownloadDataToDatabaseStream(data: value)
                 }
                 dataBaseStreams.forEach { stream in
                     stream.measurements.forEach { measurement in
