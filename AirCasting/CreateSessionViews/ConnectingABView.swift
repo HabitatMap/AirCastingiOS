@@ -91,11 +91,3 @@ struct ConnectingABView<VM: AirbeamConnectionViewModel>: View {
         }
     }
 }
-
-#if DEBUG
-struct ConnectingABView_Previews: PreviewProvider {
-    static var previews: some View {
-        ConnectingABView(viewModel: NeverConnectingAirbeamConnectionViewModel(), baseURL: DummyURLProvider(), creatingSessionFlowContinues: .constant(true))
-    }
- }
-#endif

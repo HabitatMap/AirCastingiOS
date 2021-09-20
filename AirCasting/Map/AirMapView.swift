@@ -35,14 +35,18 @@ struct AirMapView: View {
                               isExpandButtonNeeded: false, isCollapsed: Binding.constant(false),
                               session: session,
                               sessionStopperFactory: sessionStoppableFactory)
-            ABMeasurementsView(session: session,
+            ABMeasurementsView(viewModelProvider: { DefaultSyncingMeasurementsViewModel(measurementStreamStorage: measurementStreamStorage,
+                                                                              sessionDownloader: SessionDownloadService(client: URLSession.shared,
+                                                                                                                        authorization: UserAuthenticationSession(),
+                                                                                                                        responseValidator: DefaultHTTPResponseValidator()),
+                                                                              session: session)
+            },
+                               session: session,
                                isCollapsed: Binding.constant(false),
                                selectedStream: $selectedStream,
-                               showLoadingIndicator: $showLoadingIndicator,
                                thresholds: thresholds,
-                               measurementPresentationStyle: .showValues,
-                               measurementStreamStorage: measurementStreamStorage)
-            
+                               measurementPresentationStyle: .showValues)
+
             if let threshold = thresholds.threshold(for: selectedStream) {
                 if !showLoadingIndicator {
                     ZStack(alignment: .topLeading) {
