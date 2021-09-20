@@ -72,24 +72,35 @@ private extension SessionHeaderView {
             //  |_________|     |-------------------|
             // so the idea at leat for now is this below
             #warning("Fix - Handle session.deviceType (for now it is always nill)")
-            switch session.type?.description {
-            case "Fixed":
-                Text("\(session.type!.description) : AirBeam3")
-                    .font(Font.moderate(size: 13, weight: .regular))
-            case "Mobile":
-                if session.allStreams!.count > 1 {
-                    Text("\(session.type!.description): AirBeam3")
-                        .font(Font.moderate(size: 13, weight: .regular))
-                } else {
-                    Text("\(session.type!.description): Phone Mic")
-                        .font(Font.moderate(size: 13, weight: .regular))
-                }
-            default:
-                Text(session.deviceType?.description ?? "")
-                    .font(Font.moderate(size: 13, weight: .regular))
-            }
+            sensorType
+                .font(Font.moderate(size: 13, weight: .regular))
         }
         .foregroundColor(.darkBlue)
+    }
+    
+    var sensorType: some View {
+        var stream = [String]()
+        var text = ""
+        
+        session.allStreams!.forEach { session in
+            if var name = session.sensorPackageName {
+                componentsSeparation(name: &name)
+                (name == "Builtin") ? (name = "Phone mic") : (name = name)
+                !stream.contains(name) ? stream.append(name) : nil
+            }
+        }
+        text = stream.joined(separator: ", ")
+        return Text("\(session.type!.description) : \(text)")
+    }
+    
+    func componentsSeparation(name: inout String) {
+        // separation is used to nicely handle the case where sensor could be
+        // AirBeam2-xxxx or AirBeam2:xxx
+        if name.contains(":") {
+            name = name.components(separatedBy: ":").first!
+        } else {
+            name = name.components(separatedBy: "-").first!
+        }
     }
     
     var actionsMenuMobile: some View {
