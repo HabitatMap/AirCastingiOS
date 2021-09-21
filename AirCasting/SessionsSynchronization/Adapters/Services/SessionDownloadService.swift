@@ -4,7 +4,7 @@
 import Foundation
 import Combine
 
-final class SessionDownloadService: SessionDownstream {
+final class SessionDownloadService: SessionDownstream, MeasurementsDownloadable {
     private let client: APIClient
     private let authorization: RequestAuthorisationService
     private let responseValidator: HTTPResponseValidator

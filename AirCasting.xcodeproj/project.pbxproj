@@ -29,7 +29,7 @@
 		4F8CDBD2265F8DAC00976B25 /* Assertions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8CDBD1265F8DAC00976B25 /* Assertions.swift */; };
 		4F8CDBD4265F8EE000976B25 /* SessionStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8CDBD3265F8EE000976B25 /* SessionStorage.swift */; };
 		4F945EEE2649F3F5008A5B22 /* SessionCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F945EED2649F3F5008A5B22 /* SessionCreator.swift */; };
-		4F945EF02649F455008A5B22 /* AirBeamFixedSessionCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F945EEF2649F455008A5B22 /* AirBeamFixedSessionCreator.swift */; };
+		4F945EF02649F455008A5B22 /* AirBeamFixedWifiSessionCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F945EEF2649F455008A5B22 /* AirBeamFixedWifiSessionCreator.swift */; };
 		4F945EF4264B2813008A5B22 /* ActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F945EF3264B2813008A5B22 /* ActivityIndicator.swift */; };
 		4FA83EEF26342D84003E2BF2 /* AuthorizationAPIServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FA83EEE26342D84003E2BF2 /* AuthorizationAPIServiceTests.swift */; };
 		4FB39E092621B55D00E5E564 /* FixedSessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FB39E082621B55D00E5E564 /* FixedSessionTests.swift */; };
@@ -116,6 +116,9 @@
 		AC93B8E725BEFE4F003D0A0D /* AirMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC93B8E625BEFE4F003D0A0D /* AirMapView.swift */; };
 		AC93B8FE25C02E0B003D0A0D /* GoogleMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC93B8FD25C02E0B003D0A0D /* GoogleMapView.swift */; };
 		AC960C7825DD39F500EC95DD /* ABConnectedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC960C7725DD39F500EC95DD /* ABConnectedView.swift */; };
+		AC9EB64526ECB11B00B1F780 /* DefaultSyncingMeasurementsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9EB64426ECB11B00B1F780 /* DefaultSyncingMeasurementsViewModel.swift */; };
+		AC9EB64726EF4EEB00B1F780 /* AirBeamCellularSessionCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9EB64626EF4EEB00B1F780 /* AirBeamCellularSessionCreator.swift */; };
+		AC9EB64926F1EB8D00B1F780 /* MeasurementsDownloadable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9EB64826F1EB8D00B1F780 /* MeasurementsDownloadable.swift */; };
 		AC9F526C2652A360003CF61F /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9F52692652A360003CF61F /* DashboardView.swift */; };
 		AC9F526D2652A360003CF61F /* EmptyMobileDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9F526A2652A360003CF61F /* EmptyMobileDashboardView.swift */; };
 		AC9F526E2652A360003CF61F /* AirSectionPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9F526B2652A360003CF61F /* AirSectionPickerView.swift */; };
@@ -302,7 +305,7 @@
 		4F8CDBD1265F8DAC00976B25 /* Assertions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assertions.swift; sourceTree = "<group>"; };
 		4F8CDBD3265F8EE000976B25 /* SessionStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionStorage.swift; sourceTree = "<group>"; };
 		4F945EED2649F3F5008A5B22 /* SessionCreator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionCreator.swift; sourceTree = "<group>"; };
-		4F945EEF2649F455008A5B22 /* AirBeamFixedSessionCreator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirBeamFixedSessionCreator.swift; sourceTree = "<group>"; };
+		4F945EEF2649F455008A5B22 /* AirBeamFixedWifiSessionCreator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirBeamFixedWifiSessionCreator.swift; sourceTree = "<group>"; };
 		4F945EF3264B2813008A5B22 /* ActivityIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityIndicator.swift; sourceTree = "<group>"; };
 		4FA83EEE26342D84003E2BF2 /* AuthorizationAPIServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationAPIServiceTests.swift; sourceTree = "<group>"; };
 		4FB39DFC2621B53C00E5E564 /* AirCastingTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AirCastingTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -394,6 +397,9 @@
 		AC93B8E625BEFE4F003D0A0D /* AirMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirMapView.swift; sourceTree = "<group>"; };
 		AC93B8FD25C02E0B003D0A0D /* GoogleMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleMapView.swift; sourceTree = "<group>"; };
 		AC960C7725DD39F500EC95DD /* ABConnectedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ABConnectedView.swift; sourceTree = "<group>"; };
+		AC9EB64426ECB11B00B1F780 /* DefaultSyncingMeasurementsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultSyncingMeasurementsViewModel.swift; sourceTree = "<group>"; };
+		AC9EB64626EF4EEB00B1F780 /* AirBeamCellularSessionCreator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirBeamCellularSessionCreator.swift; sourceTree = "<group>"; };
+		AC9EB64826F1EB8D00B1F780 /* MeasurementsDownloadable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementsDownloadable.swift; sourceTree = "<group>"; };
 		AC9F52692652A360003CF61F /* DashboardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
 		AC9F526A2652A360003CF61F /* EmptyMobileDashboardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmptyMobileDashboardView.swift; sourceTree = "<group>"; };
 		AC9F526B2652A360003CF61F /* AirSectionPickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AirSectionPickerView.swift; sourceTree = "<group>"; };
@@ -763,8 +769,6 @@
 				AC6D569E25AEEAE700D221BA /* SessionHeaderView.swift */,
 				DD009D652698844A009F0443 /* DeleteView.swift */,
 				DD72DC4126A99D5000325FE5 /* ShareView.swift */,
-				DDCE5D3726A1FE2D0033C211 /* DeleteSessionViewModel.swift */,
-				DDCE5D3926A213620033C211 /* DefaultDeleteSessionViewModel.swift */,
 				AC194B0C2684BAB40048E2C8 /* SessionLoadingView.swift */,
 				AC08A661266E2AEC0081697C /* ABMeasurementsView.swift */,
 				ACDF803926DCD75500584F55 /* SingleMeasurementView.swift */,
@@ -772,6 +776,7 @@
 				AC4EC6C325B6FE0D00C1E312 /* HeatmapSettingsView.swift */,
 				AC6D56A425AF211200D221BA /* MultiSliderView.swift */,
 				AC4EC6BB25B5ABB700C1E312 /* StatisticsContainerView.swift */,
+				AC9EB64326ECB0C000B1F780 /* SessionCartViewModel */,
 				DDEE3A492697473C0098CCA9 /* EditSessionButton */,
 				3328F11E266786C600B72D61 /* Chart */,
 			);
@@ -922,7 +927,8 @@
 			isa = PBXGroup;
 			children = (
 				4F945EED2649F3F5008A5B22 /* SessionCreator.swift */,
-				4F945EEF2649F455008A5B22 /* AirBeamFixedSessionCreator.swift */,
+				4F945EEF2649F455008A5B22 /* AirBeamFixedWifiSessionCreator.swift */,
+				AC9EB64626EF4EEB00B1F780 /* AirBeamCellularSessionCreator.swift */,
 				ACD01F3F25F8C1F800B8F65F /* SessionContext.swift */,
 				AC049F8A2608DCB000398197 /* Session+Mock.swift */,
 				AC524A6E261329330061AD45 /* SessionExtension.swift */,
@@ -943,6 +949,17 @@
 				AC8D6C6925C049E300ED74D1 /* Environment.swift */,
 			);
 			path = Map;
+			sourceTree = "<group>";
+		};
+		AC9EB64326ECB0C000B1F780 /* SessionCartViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				DDCE5D3726A1FE2D0033C211 /* DeleteSessionViewModel.swift */,
+				AC9EB64426ECB11B00B1F780 /* DefaultSyncingMeasurementsViewModel.swift */,
+				AC9EB64826F1EB8D00B1F780 /* MeasurementsDownloadable.swift */,
+				DDCE5D3926A213620033C211 /* DefaultDeleteSessionViewModel.swift */,
+			);
+			path = SessionCartViewModel;
 			sourceTree = "<group>";
 		};
 		AC9F52682652A360003CF61F /* Dashboard */ = {
@@ -1652,6 +1669,7 @@
 				AC93B8FE25C02E0B003D0A0D /* GoogleMapView.swift in Sources */,
 				B3F1447426ADF8A7006A4612 /* ScheduledTimer.swift in Sources */,
 				B30BAC042694A8B400AE0476 /* MapStatsDataSource.swift in Sources */,
+				AC9EB64526ECB11B00B1F780 /* DefaultSyncingMeasurementsViewModel.swift in Sources */,
 				B30BAC1D2694AABC00AE0476 /* MeasurementStatisticsTypes.swift in Sources */,
 				B32D08AF267A6D13006C97ED /* ErasingToVoidPublisher.swift in Sources */,
 				B30BAC022694A89100AE0476 /* StatisticsContainerViewModel.swift in Sources */,
@@ -1722,9 +1740,9 @@
 				DDBC156426A0799300982526 /* SystemSettings.swift in Sources */,
 				B3EBB10A26A06D11002BD81F /* EmailResetPasswordService.swift in Sources */,
 				4F945EEE2649F3F5008A5B22 /* SessionCreator.swift in Sources */,
-				4F945EF02649F455008A5B22 /* AirBeamFixedSessionCreator.swift in Sources */,
+				4F945EF02649F455008A5B22 /* AirBeamFixedWifiSessionCreator.swift in Sources */,
 				B30BAC132694AA3200AE0476 /* MeasurementsStatisticsController.swift in Sources */,
-				4F945EF02649F455008A5B22 /* AirBeamFixedSessionCreator.swift in Sources */,
+				4F945EF02649F455008A5B22 /* AirBeamFixedWifiSessionCreator.swift in Sources */,
 				33BA3368266E4BCA00899343 /* MobilePeripheralSessionManager.swift in Sources */,
 				4F2D84EB2647DBE0003D9ED5 /* MeasurementStreamStorage.swift in Sources */,
 				ACC8838C265284AA00C5DB70 /* CoreDataHook.swift in Sources */,
@@ -1802,6 +1820,7 @@
 				4FB39E3A2621BE7F00E5E564 /* APIClient.swift in Sources */,
 				AC9F526D2652A360003CF61F /* EmptyMobileDashboardView.swift in Sources */,
 				DDDBD48826D3BEC000EAA0A1 /* EmptyFixedDashboardView.swift in Sources */,
+				AC9EB64726EF4EEB00B1F780 /* AirBeamCellularSessionCreator.swift in Sources */,
 				B3FD77C1267C94AF00E97CC2 /* SessionUpstream.swift in Sources */,
 				AC4EC6BC25B5ABB700C1E312 /* StatisticsContainerView.swift in Sources */,
 				B3FD77B8267C94AF00E97CC2 /* Database.swift in Sources */,
@@ -1839,6 +1858,7 @@
 				B38E6CCE26C5F81B00C21C45 /* MicrophoneSessionStopper.swift in Sources */,
 				B3EBB10326A05551002BD81F /* ForgotPasswordViewModel.swift in Sources */,
 				B3FD77BD267C94AF00E97CC2 /* SessionSynchronizationController.swift in Sources */,
+				AC9EB64926F1EB8D00B1F780 /* MeasurementsDownloadable.swift in Sources */,
 				AC524A8E2615C8270061AD45 /* UpdateSessionParams.swift in Sources */,
 				AC797FE7263C2C1600970254 /* SensorThreshold.swift in Sources */,
 				B3E26A032676D9AA001A8E4C /* ArrayUtils.swift in Sources */,
@@ -2033,7 +2053,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 31;
+				CURRENT_PROJECT_VERSION = 32;
 				DEVELOPMENT_ASSET_PATHS = "\"AirCasting/Preview Content\"";
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
@@ -2060,7 +2080,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 31;
+				CURRENT_PROJECT_VERSION = 32;
 				DEVELOPMENT_ASSET_PATHS = "\"AirCasting/Preview Content\"";
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;

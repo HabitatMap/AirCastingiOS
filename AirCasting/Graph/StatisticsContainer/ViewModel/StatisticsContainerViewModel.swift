@@ -21,7 +21,7 @@ final class StatisticsContainerViewModel: StatisticsContainerViewModelable, Meas
         stats = newStats.map {
             SingleStatViewModel(id: getIdentifier(for: $0.stat),
                                 title: getUILabel(for: $0.stat),
-                                value: "\(Int($0.value))",
+                                value: $0.value,
                                 presentationStyle: getPresentationStyle(for: $0.stat))
         }
     }

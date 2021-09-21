@@ -67,7 +67,7 @@ struct ChooseSessionTypeView: View {
           
                         .fullScreenCover(isPresented: $isTurnBluetoothOnLinkActive) {
                             CreatingSessionFlowRootView {
-                                TurnOnBluetoothView(creatingSessionFlowContinues: $isTurnBluetoothOnLinkActive, sessionContext: viewModel.passSessionContext, urlProvider: viewModel.passURLProvider)
+                                TurnOnBluetoothView(creatingSessionFlowContinues: $isTurnBluetoothOnLinkActive, urlProvider: viewModel.passURLProvider)
                             }
                         }
 

@@ -384,6 +384,8 @@ struct Strings {
         static let finishAlertMessage_3: String = " tab and you won't be able to add new measurement to it."
         static let finishAlertButton: String = "Finish recording"
         static let airBeam3: String = "AirBeam3"
+        static let airBeam2: String = "AirBeam2"
+        static let airBeam1: String = "AirBeam1"
         static let mic: String = "Phone Mic"
     }
     

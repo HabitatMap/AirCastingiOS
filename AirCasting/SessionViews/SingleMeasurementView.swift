@@ -58,22 +58,8 @@ struct SingleMeasurementView: View {
                 }
             })
             .buttonStyle(AirCastingStyling.BorderedButtonStyle(isSelected: selectedStream == stream,
-                                                               thresholdColor: colorBorder(stream: stream)))
+                                                               thresholdColor: threshold.colorFor(value: Int32(value))))
         }
         
-        func colorBorder(stream: MeasurementStreamEntity) -> Color {
-            switch Int32(value) {
-            case threshold.thresholdVeryLow..<threshold.thresholdLow:
-                return .aircastingGreen
-            case threshold.thresholdLow..<threshold.thresholdMedium:
-                return .aircastingYellow
-            case threshold.thresholdMedium..<threshold.thresholdHigh:
-                return .aircastingOrange
-            case threshold.thresholdHigh..<threshold.thresholdVeryHigh:
-                return .aircastingRed
-            default:
-                return .white
-            }
-        }
     }
 }

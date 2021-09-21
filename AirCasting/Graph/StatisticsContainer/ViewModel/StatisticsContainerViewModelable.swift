@@ -11,7 +11,7 @@ struct SingleStatViewModel: Identifiable {
 
     let id: Int
     let title: String
-    let value: String
+    let value: Double
     let presentationStyle: PresentationStyle
 }
 
