@@ -21,74 +21,147 @@ struct ChooseSessionTypeView: View {
     var shouldGoToChooseSessionScreen: Bool {
         (tabSelection.selection == .createSession && emptyDashboardButtonTapped.mobileWasTapped) ? true : false
     }
-    
-    var body: some View {
-        NavigationView {
-            VStack(spacing: 50) {
-                VStack(alignment: .leading, spacing: 10) {
-                    titleLabel
-                    messageLabel
-                }
-                .background(Color.white)
-                .padding(.horizontal)
-                
-                VStack {
-                    VStack(alignment: .leading, spacing: 15) {
-                        HStack {
-                            recordNewLabel
-                            Spacer()
-                            moreInfo
-                        }
-                        HStack(spacing: 60) {
-                            fixedSessionButton
-                            mobileSessionButton
-                        }
-                    }
-                    Spacer()
-                }
-                .padding()
-                .background(
-                    Color.aircastingBackground.opacity(0.25)
-                        .ignoresSafeArea()
-                )
-            }
-             
-                        .fullScreenCover(isPresented: $isPowerABLinkActive) {
-                            CreatingSessionFlowRootView {
-                                PowerABView(creatingSessionFlowContinues: $isPowerABLinkActive, urlProvider: viewModel.passURLProvider)
-                            }
-                        }
-            
-                        .fullScreenCover(isPresented: $isTurnLocationOnLinkActive) {
-                            CreatingSessionFlowRootView {
-                                TurnOnLocationView(creatingSessionFlowContinues: $isTurnLocationOnLinkActive, viewModel: TurnOnLocationViewModel(locationHandler: viewModel.locationHandler, bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: viewModel.passBluetoothManager), sessionContext: viewModel.passSessionContext, urlProvider: viewModel.passURLProvider))
-                            }
-                        }
-          
-                        .fullScreenCover(isPresented: $isTurnBluetoothOnLinkActive) {
-                            CreatingSessionFlowRootView {
-                                TurnOnBluetoothView(creatingSessionFlowContinues: $isTurnBluetoothOnLinkActive, urlProvider: viewModel.passURLProvider)
-                            }
-                        }
 
-                        .fullScreenCover(isPresented: $isMobileLinkActive) {
-                            CreatingSessionFlowRootView {
-                                SelectDeviceView(creatingSessionFlowContinues: $isMobileLinkActive, urlProvider: viewModel.passURLProvider)
+    var body: some View {
+        if #available(iOS 15, *) {
+            NavigationView {
+                VStack(spacing: 50) {
+                    VStack(alignment: .leading, spacing: 10) {
+                        titleLabel
+                        messageLabel
+                    }
+                    .background(Color.white)
+                    .padding(.horizontal)
+                
+                    VStack {
+                        VStack(alignment: .leading, spacing: 15) {
+                            HStack {
+                                recordNewLabel
+                                Spacer()
+                                moreInfo
+                            }
+                            HStack(spacing: 60) {
+                                fixedSessionButton
+                                mobileSessionButton
                             }
                         }
-            .onChange(of: viewModel.passBluetoothManager.centralManagerState) { _ in
-                if didTapFixedSession {
-                    didTapFixedSession = false
+                        Spacer()
+                    }
+                    .padding()
+                    .background(
+                        Color.aircastingBackground.opacity(0.25)
+                            .ignoresSafeArea()
+                    )
                 }
+             
+                .fullScreenCover(isPresented: $isPowerABLinkActive) {
+                    CreatingSessionFlowRootView {
+                        PowerABView(creatingSessionFlowContinues: $isPowerABLinkActive, urlProvider: viewModel.passURLProvider)
+                    }
+                }
+            
+                .fullScreenCover(isPresented: $isTurnLocationOnLinkActive) {
+                    CreatingSessionFlowRootView {
+                        TurnOnLocationView(creatingSessionFlowContinues: $isTurnLocationOnLinkActive, viewModel: TurnOnLocationViewModel(locationHandler: viewModel.locationHandler, bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: viewModel.passBluetoothManager), sessionContext: viewModel.passSessionContext, urlProvider: viewModel.passURLProvider))
+                    }
+                }
+          
+                .fullScreenCover(isPresented: $isTurnBluetoothOnLinkActive) {
+                    CreatingSessionFlowRootView {
+                        TurnOnBluetoothView(creatingSessionFlowContinues: $isTurnBluetoothOnLinkActive, urlProvider: viewModel.passURLProvider)
+                    }
+                }
+
+                .fullScreenCover(isPresented: $isMobileLinkActive) {
+                    CreatingSessionFlowRootView {
+                        SelectDeviceView(creatingSessionFlowContinues: $isMobileLinkActive, urlProvider: viewModel.passURLProvider)
+                    }
+                }
+                .onChange(of: viewModel.passBluetoothManager.centralManagerState) { _ in
+                    if didTapFixedSession {
+                        didTapFixedSession = false
+                    }
+                }
+                .onAppear {
+                    shouldGoToChooseSessionScreen ? (isMobileLinkActive = true) : (isMobileLinkActive = false)
+                }
+                .onChange(of: tabSelection.selection, perform: { _ in
+                    shouldGoToChooseSessionScreen ? (isMobileLinkActive = true) : (isMobileLinkActive = false)
+                })
             }
-            .onAppear() {
-                shouldGoToChooseSessionScreen ? (isMobileLinkActive = true) : (isMobileLinkActive = false)
+            .environmentObject(viewModel.passSessionContext)
+        } else {
+            NavigationView {
+                VStack(spacing: 50) {
+                    VStack(alignment: .leading, spacing: 10) {
+                        titleLabel
+                        messageLabel
+                    }
+                    .background(Color.white)
+                    .padding(.horizontal)
+                    
+                    VStack {
+                        VStack(alignment: .leading, spacing: 15) {
+                            HStack {
+                                recordNewLabel
+                                Spacer()
+                                moreInfo
+                            }
+                            HStack(spacing: 60) {
+                                fixedSessionButton
+                                mobileSessionButton
+                            }
+                        }
+                        Spacer()
+                    }
+                    .padding()
+                    .background(
+                        Color.aircastingBackground.opacity(0.25)
+                            .ignoresSafeArea()
+                    )
+                }
+                .background(
+                    Group {
+                        EmptyView()
+                            .fullScreenCover(isPresented: $isPowerABLinkActive) {
+                                CreatingSessionFlowRootView {
+                                    PowerABView(creatingSessionFlowContinues: $isPowerABLinkActive, urlProvider: viewModel.passURLProvider)
+                                }
+                            }
+                        EmptyView()
+                            .fullScreenCover(isPresented: $isTurnLocationOnLinkActive) {
+                                CreatingSessionFlowRootView {
+                                    TurnOnLocationView(creatingSessionFlowContinues: $isTurnLocationOnLinkActive, viewModel: TurnOnLocationViewModel(locationHandler: viewModel.locationHandler, bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: viewModel.passBluetoothManager), sessionContext: viewModel.passSessionContext, urlProvider: viewModel.passURLProvider))
+                                }
+                            }
+                        EmptyView()
+                            .fullScreenCover(isPresented: $isTurnBluetoothOnLinkActive) {
+                                CreatingSessionFlowRootView {
+                                    TurnOnBluetoothView(creatingSessionFlowContinues: $isTurnBluetoothOnLinkActive, urlProvider: viewModel.passURLProvider)
+                                }
+                            }
+                        EmptyView()
+                            .fullScreenCover(isPresented: $isMobileLinkActive) {
+                                CreatingSessionFlowRootView {
+                                    SelectDeviceView(creatingSessionFlowContinues: $isMobileLinkActive, urlProvider: viewModel.passURLProvider)
+                                }
+                            }
+                    }
+                )
+                .onChange(of: viewModel.passBluetoothManager.centralManagerState) { _ in
+                    if didTapFixedSession {
+                        didTapFixedSession = false
+                    }
+                }
+                .onAppear {
+                    shouldGoToChooseSessionScreen ? (isMobileLinkActive = true) : (isMobileLinkActive = false)
+                }
+                .onChange(of: tabSelection.selection, perform: { _ in
+                    shouldGoToChooseSessionScreen ? (isMobileLinkActive = true) : (isMobileLinkActive = false)
+                })
             }
-            .onChange(of: tabSelection.selection, perform: { _ in
-                shouldGoToChooseSessionScreen ? (isMobileLinkActive = true) : (isMobileLinkActive = false)
-            })
+            .environmentObject(viewModel.passSessionContext)
         }
-        .environmentObject(viewModel.passSessionContext)
     }
 
     var titleLabel: some View {
@@ -181,7 +254,6 @@ struct ChooseSessionTypeView: View {
         .shadow(color: Color(white: 150/255, opacity: 0.5), radius: 9, x: 0, y: 1)
     }
 }
-
 
 #if DEBUG
 struct CreateSessionView_Previews: PreviewProvider {
