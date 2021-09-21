@@ -9,6 +9,7 @@ import Foundation
 import CoreBluetooth
 import CoreData
 import AVFoundation
+import CoreLocation
 
 final class CreateSessionContext: ObservableObject {
     var sessionName: String?

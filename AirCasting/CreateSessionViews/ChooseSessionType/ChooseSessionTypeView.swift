@@ -52,34 +52,30 @@ struct ChooseSessionTypeView: View {
                         .ignoresSafeArea()
                 )
             }
-            .background(
-                Group {
-                    EmptyView()
+             
                         .fullScreenCover(isPresented: $isPowerABLinkActive) {
                             CreatingSessionFlowRootView {
                                 PowerABView(creatingSessionFlowContinues: $isPowerABLinkActive, urlProvider: viewModel.passURLProvider)
                             }
                         }
-                    EmptyView()
+            
                         .fullScreenCover(isPresented: $isTurnLocationOnLinkActive) {
                             CreatingSessionFlowRootView {
                                 TurnOnLocationView(creatingSessionFlowContinues: $isTurnLocationOnLinkActive, viewModel: TurnOnLocationViewModel(locationHandler: viewModel.locationHandler, bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: viewModel.passBluetoothManager), sessionContext: viewModel.passSessionContext, urlProvider: viewModel.passURLProvider))
                             }
                         }
-                    EmptyView()
+          
                         .fullScreenCover(isPresented: $isTurnBluetoothOnLinkActive) {
                             CreatingSessionFlowRootView {
                                 TurnOnBluetoothView(creatingSessionFlowContinues: $isTurnBluetoothOnLinkActive, sessionContext: viewModel.passSessionContext, urlProvider: viewModel.passURLProvider)
                             }
                         }
-                    EmptyView()
+
                         .fullScreenCover(isPresented: $isMobileLinkActive) {
                             CreatingSessionFlowRootView {
                                 SelectDeviceView(creatingSessionFlowContinues: $isMobileLinkActive, urlProvider: viewModel.passURLProvider)
                             }
                         }
-                }
-            )
             .onChange(of: viewModel.passBluetoothManager.centralManagerState) { _ in
                 if didTapFixedSession {
                     didTapFixedSession = false
