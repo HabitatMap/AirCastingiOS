@@ -6,6 +6,7 @@ import GooglePlaces
 
 struct PlacePicker: UIViewControllerRepresentable {
     @EnvironmentObject var tracker: LocationTracker
+    @Binding var placePickerDismissed: Bool
     @Environment(\.presentationMode) var presentationMode
     @Binding var address: String
 
@@ -43,6 +44,7 @@ struct PlacePicker: UIViewControllerRepresentable {
                 print(place.description.description as Any)
                 self.parent.address =  place.name!
                 parent.tracker.googleLocation = [PathPoint(location: place.coordinate, measurementTime: Date(), measurement: 20.0)]
+                parent.placePickerDismissed = true
                 self.parent.presentationMode.wrappedValue.dismiss()
             }
         }

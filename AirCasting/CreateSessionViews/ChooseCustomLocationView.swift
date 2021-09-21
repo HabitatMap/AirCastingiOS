@@ -7,6 +7,7 @@ import SwiftUI
 struct ChooseCustomLocationView: View {
     @State private var isConfirmCreatingSessionActive: Bool = false
     @State private var location = ""
+    @State var placePickerDismissed: Bool = false
     @State var isLocationPopupPresented = false
     @Binding var creatingSessionFlowContinues: Bool
     @Binding var sessionName: String
@@ -29,13 +30,16 @@ struct ChooseCustomLocationView: View {
         }
         .background(confirmCreatingSessionLink)
         .sheet(isPresented: $isLocationPopupPresented) {
-            PlacePicker(address: $location)
+            PlacePicker(placePickerDismissed: $placePickerDismissed, address: $location)
         }
+        .onChange(of: placePickerDismissed, perform: { value in
+            placePickerDismissed ? (placePickerDismissed = false) : nil
+        })
         .padding()
     }
 
     var mapGoogle: some View {
-        GoogleMapView(pathPoints: [])
+        GoogleMapView(pathPoints: [], placePickerDismissed: $placePickerDismissed)
     }
 
     var dot: some View {
