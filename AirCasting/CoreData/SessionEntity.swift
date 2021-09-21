@@ -8,6 +8,7 @@
 import Foundation
 import CoreData
 import struct CoreLocation.CLLocationCoordinate2D
+import CoreLocation
 
 public struct SessionEntityLocalID {
     let id: NSManagedObjectID

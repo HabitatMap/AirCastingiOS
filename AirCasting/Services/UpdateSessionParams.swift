@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreData
+import CoreLocation
 
 final class UpdateSessionParamsService {
     enum Error: Swift.Error {
