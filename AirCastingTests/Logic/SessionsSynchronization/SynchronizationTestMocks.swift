@@ -109,7 +109,9 @@ extension SessionsSynchronization.MeasurementStreamDownstreamData {
               thresholdLow: 60,
               thresholdMedium: 70,
               thresholdHigh: 80,
-              thresholdVeryHigh: 100)
+              thresholdVeryHigh: 100,
+              size: 9,
+              measurements: [])
     }
 }
 

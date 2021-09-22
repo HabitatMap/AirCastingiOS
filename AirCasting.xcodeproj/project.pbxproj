@@ -190,6 +190,9 @@
 		B3EBB10A26A06D11002BD81F /* EmailResetPasswordService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EBB10926A06D11002BD81F /* EmailResetPasswordService.swift */; };
 		B3EBB10C26A06D2D002BD81F /* DefaultForgotPasswordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EBB10B26A06D2D002BD81F /* DefaultForgotPasswordViewModel.swift */; };
 		B3EBB11126A06DCF002BD81F /* ForgotPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EBB11026A06DCF002BD81F /* ForgotPasswordView.swift */; };
+		B3EFAB1526EFE2D200E88141 /* AppBootstrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EFAB1426EFE2D200E88141 /* AppBootstrap.swift */; };
+		B3EFAB1726EFE2DB00E88141 /* FirstRunInfoProvidable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EFAB1626EFE2DB00E88141 /* FirstRunInfoProvidable.swift */; };
+		B3EFAB1C26EFEA8B00E88141 /* AppBootstrapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EFAB1B26EFEA8B00E88141 /* AppBootstrapTests.swift */; };
 		B3F1447426ADF8A7006A4612 /* ScheduledTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3F1447326ADF8A7006A4612 /* ScheduledTimer.swift */; };
 		B3F1447626AE0BD4006A4612 /* SessionSynchronizerErrorStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3F1447526AE0BD4006A4612 /* SessionSynchronizerErrorStream.swift */; };
 		B3F1447826AE4337006A4612 /* FilterErrorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3F1447726AE4337006A4612 /* FilterErrorTests.swift */; };
@@ -471,6 +474,9 @@
 		B3EBB10926A06D11002BD81F /* EmailResetPasswordService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailResetPasswordService.swift; sourceTree = "<group>"; };
 		B3EBB10B26A06D2D002BD81F /* DefaultForgotPasswordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultForgotPasswordViewModel.swift; sourceTree = "<group>"; };
 		B3EBB11026A06DCF002BD81F /* ForgotPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordView.swift; sourceTree = "<group>"; };
+		B3EFAB1426EFE2D200E88141 /* AppBootstrap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppBootstrap.swift; sourceTree = "<group>"; };
+		B3EFAB1626EFE2DB00E88141 /* FirstRunInfoProvidable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstRunInfoProvidable.swift; sourceTree = "<group>"; };
+		B3EFAB1B26EFEA8B00E88141 /* AppBootstrapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppBootstrapTests.swift; sourceTree = "<group>"; };
 		B3F1447326ADF8A7006A4612 /* ScheduledTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduledTimer.swift; sourceTree = "<group>"; };
 		B3F1447526AE0BD4006A4612 /* SessionSynchronizerErrorStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionSynchronizerErrorStream.swift; sourceTree = "<group>"; };
 		B3F1447726AE4337006A4612 /* FilterErrorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterErrorTests.swift; sourceTree = "<group>"; };
@@ -817,6 +823,7 @@
 		AC7EB37425A6FB3A00A7F2AF /* AirCasting */ = {
 			isa = PBXGroup;
 			children = (
+				B3EFAB1326EFE2C800E88141 /* Bootstrap */,
 				B38E6CC826C5F19400C21C45 /* SessionStopping */,
 				B3EBB0FD26A04BF0002BD81F /* ForgotPassword */,
 				B3FD77A0267C94AF00E97CC2 /* Database */,
@@ -1144,6 +1151,7 @@
 		B3E26A0A2676DAB0001A8E4C /* Logic */ = {
 			isa = PBXGroup;
 			children = (
+				B3EFAB1A26EFEA8100E88141 /* Bootstrap */,
 				B30BABF92693507800AE0476 /* Statistics */,
 				DDF12AEC26B2B7E300D067C7 /* SessionCartTests */,
 				B3E26A0B2676DABA001A8E4C /* SessionsSynchronization */,
@@ -1197,6 +1205,23 @@
 				B3EBB11026A06DCF002BD81F /* ForgotPasswordView.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		B3EFAB1326EFE2C800E88141 /* Bootstrap */ = {
+			isa = PBXGroup;
+			children = (
+				B3EFAB1426EFE2D200E88141 /* AppBootstrap.swift */,
+				B3EFAB1626EFE2DB00E88141 /* FirstRunInfoProvidable.swift */,
+			);
+			path = Bootstrap;
+			sourceTree = "<group>";
+		};
+		B3EFAB1A26EFEA8100E88141 /* Bootstrap */ = {
+			isa = PBXGroup;
+			children = (
+				B3EFAB1B26EFEA8B00E88141 /* AppBootstrapTests.swift */,
+			);
+			path = Bootstrap;
 			sourceTree = "<group>";
 		};
 		B3FD779F267C94AF00E97CC2 /* SessionsSynchronization */ = {
@@ -1632,6 +1657,7 @@
 				DD2E8BE92685E12000439F8B /* URLValidationTests.swift in Sources */,
 				4FB39E362621B77D00E5E564 /* APIClientMock.swift in Sources */,
 				B3E26A092676DA55001A8E4C /* TestDefaultProviding.swift in Sources */,
+				B3EFAB1C26EFEA8B00E88141 /* AppBootstrapTests.swift in Sources */,
 				B30BAC1F2694AE9E00AE0476 /* MapStatsDataSourceTests.swift in Sources */,
 				B3F1447826AE4337006A4612 /* FilterErrorTests.swift in Sources */,
 				4FB39E402622252700E5E564 /* XCTestCase+Extensions.swift in Sources */,
@@ -1842,6 +1868,7 @@
 				B3FD77C8267C997800E97CC2 /* PersistenceController+Database.swift in Sources */,
 				AC8CFF4525E510CB00FB2918 /* AuthorizationAPI.swift in Sources */,
 				DD9EBB4E26AFDD2100D51804 /* TurnOnLocationView.swift in Sources */,
+				B3EFAB1726EFE2DB00E88141 /* FirstRunInfoProvidable.swift in Sources */,
 				332F521425FA38430047236D /* MicrophoneManager.swift in Sources */,
 				AC8CFF4125E5095600FB2918 /* Textfield.swift in Sources */,
 				B3FD77C3267C94AF00E97CC2 /* SessionDownloadService.swift in Sources */,
@@ -1859,6 +1886,7 @@
 				B3EBB10326A05551002BD81F /* ForgotPasswordViewModel.swift in Sources */,
 				B3FD77BD267C94AF00E97CC2 /* SessionSynchronizationController.swift in Sources */,
 				AC9EB64926F1EB8D00B1F780 /* MeasurementsDownloadable.swift in Sources */,
+				B3EFAB1526EFE2D200E88141 /* AppBootstrap.swift in Sources */,
 				AC524A8E2615C8270061AD45 /* UpdateSessionParams.swift in Sources */,
 				AC797FE7263C2C1600970254 /* SensorThreshold.swift in Sources */,
 				B3E26A032676D9AA001A8E4C /* ArrayUtils.swift in Sources */,
