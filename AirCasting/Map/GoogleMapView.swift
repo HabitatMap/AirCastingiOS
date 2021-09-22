@@ -14,7 +14,7 @@ struct GoogleMapView: UIViewRepresentable {
     @EnvironmentObject var tracker: LocationTracker
     @Binding var placePickerDismissed: Bool
     typealias UIViewType = GMSMapView
-    var pathPoints: [PathPoint]
+    let pathPoints: [PathPoint]
     private(set) var threshold: SensorThreshold?
     var isMyLocationEnabled: Bool = false
     private var onPositionChange: (([PathPoint]) -> ())? = nil
@@ -169,8 +169,6 @@ struct GoogleMapView: UIViewRepresentable {
             let lat = mapView.projection.coordinate(for: mapView.center).latitude
             let len = mapView.projection.coordinate(for: mapView.center).longitude
             parent.tracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: lat, longitude: len), measurementTime: Date(), measurement: 20.0)]
-            print("LAT!!! \(lat)")
-            print("LAT!!! \(len)")
             #warning("Do something with hard coded measurement")
             positionChanged(for: mapView)
             
@@ -193,23 +191,24 @@ struct GoogleMapView: UIViewRepresentable {
     }
 }
 
-//#if DEBUG
-//struct GoogleMapView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        GoogleMapView(pathPoints: [PathPoint(location: CLLocationCoordinate2D(latitude: 40.73,
-//                                                                              longitude: -73.93),
-//                                             measurementTime: .distantPast,
-//                                             measurement: 30),
-//                                   PathPoint(location: CLLocationCoordinate2D(latitude: 40.83,
-//                                                                              longitude: -73.93),
-//                                             measurementTime: .distantPast,
-//                                             measurement: 30),
-//                                   PathPoint(location: CLLocationCoordinate2D(latitude: 40.93,
-//                                                                              longitude: -73.83),
-//                                             measurementTime: .distantPast,
-//                                             measurement: 30)],
-//                      threshold: .mock)
-//            .padding()
-//    }
-//}
-//#endif
+#if DEBUG
+struct GoogleMapView_Previews: PreviewProvider {
+    static var previews: some View {
+        GoogleMapView(pathPoints: [PathPoint(location: CLLocationCoordinate2D(latitude: 40.73,
+                                                                              longitude: -73.93),
+                                             measurementTime: .distantPast,
+                                             measurement: 30),
+                                   PathPoint(location: CLLocationCoordinate2D(latitude: 40.83,
+                                                                              longitude: -73.93),
+                                             measurementTime: .distantPast,
+                                             measurement: 30),
+                                   PathPoint(location: CLLocationCoordinate2D(latitude: 40.93,
+                                                                              longitude: -73.83),
+                                             measurementTime: .distantPast,
+                                             measurement: 30)],
+                      threshold: .mock,
+                      placePickerDismissed: .constant(false))
+            .padding()
+    }
+}
+#endif
