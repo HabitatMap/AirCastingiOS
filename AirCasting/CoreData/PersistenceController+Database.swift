@@ -7,7 +7,7 @@ import Combine
 
 extension PersistenceController: SessionsFetchable {
     func fetchSessions(constrained: Database.Constraint, completion: @escaping (Result<[Database.Session], Error>) -> Void) {
-        let context = self.newBackgroundContext()
+        let context = self.editContext()
         context.perform {
             let request: NSFetchRequest<SessionEntity> = SessionEntity.fetchRequest()
             if case .predicate(let predicate) = constrained {
@@ -26,7 +26,7 @@ extension PersistenceController: SessionsFetchable {
 
 extension PersistenceController: SessionInsertable {
     func insertSessions(_ sessions: [Database.Session], completion: ((Error?) -> Void)?) {
-        let context = self.newBackgroundContext()
+        let context = self.editContext()
         context.perform {
             sessions.forEach {
                 let sessionEntity = SessionEntity(context: context)
@@ -77,7 +77,7 @@ extension PersistenceController: SessionInsertable {
 
 extension PersistenceController: SessionRemovable {
     func removeSessions(where constraint: Database.Constraint, completion: ((Error?) -> Void)?) {
-        let context = self.newBackgroundContext()
+        let context = self.editContext()
         context.perform {
             let request: NSFetchRequest<SessionEntity> = SessionEntity.fetchRequest()
             if case .predicate(let predicate) = constraint {

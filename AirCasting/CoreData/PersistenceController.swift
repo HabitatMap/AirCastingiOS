@@ -6,11 +6,28 @@
 //
 
 import CoreData
+import SwiftUI
 
 class PersistenceController: ObservableObject {
     static let shared = PersistenceController()
 
+    var uiSuspended: Bool = false {
+        didSet {
+            Log.info("UI updates \(uiSuspended ? "suspended" : "resumed")")
+            if !uiSuspended { propagateChangesToUI() }
+        }
+    }
+    
+    private(set) lazy var viewContext: NSManagedObjectContext = {
+        let ctx = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
+        ctx.parent = mainContext
+        ctx.automaticallyMergesChangesFromParent = true
+        return ctx
+    }()
+    
     private let container: NSPersistentContainer
+    
+    private lazy var mainContext: NSManagedObjectContext = container.newBackgroundContext()
 
     init(inMemory: Bool = false) {
         container = NSPersistentContainer(name: "AirCasting")
@@ -34,25 +51,52 @@ class PersistenceController: ObservableObject {
                 fatalError("Unresolved error \(error), \(error.userInfo)")
             }
         })
-        container.viewContext.automaticallyMergesChangesFromParent = true
         createInitialMicThreshold(in: viewContext)
         finishMobileSessions()
+        NotificationCenter.default.addObserver(self, selector: #selector(mainContextChanged), name: .NSManagedObjectContextObjectsDidChange, object: self.mainContext)
+        NotificationCenter.default.addObserver(self, selector: #selector(appWillClose), name: UIApplication.willTerminateNotification, object: nil)
     }
-
-    var viewContext: NSManagedObjectContext {
-        container.viewContext
-    }
-
-    func newBackgroundContext() -> NSManagedObjectContext {
-        container.newBackgroundContext()
-    }
-
+    
     func editContext() -> NSManagedObjectContext {
-        container.newBackgroundContext()
+        let ctx = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+        ctx.parent = mainContext
+        return ctx
     }
-
+    
     func performBackgroundTask(_ block: @escaping (NSManagedObjectContext) -> Void) {
-        container.performBackgroundTask(block)
+        let context = editContext()
+        context.perform {
+            do {
+                block(context)
+                try context.save()
+            } catch {
+                Log.error("Couldn't save context! \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    @objc private func mainContextChanged() {
+        Log.info("Main context changed!")
+        guard !uiSuspended else {
+            Log.info("UI suspended, not propagating changes!")
+            return
+        }
+        propagateChangesToUI()
+    }
+    
+    @objc private func appWillClose() {
+        Log.info("Application termination, saving data")
+        saveMainContext()
+    }
+    
+    private func propagateChangesToUI() {
+        saveMainContext()
+    }
+    
+    private func saveMainContext() {
+        mainContext.perform {
+            try! self.mainContext.save()
+        }
     }
 
     private func createInitialMicThreshold(in context: NSManagedObjectContext) {
