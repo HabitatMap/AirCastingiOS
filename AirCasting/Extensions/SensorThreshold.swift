@@ -38,7 +38,7 @@ extension SensorThreshold {
         case thresholdHigh..<thresholdVeryHigh:
             return .aircastingRed
         default:
-            return .white
+            return .aircastingGray
         }
     }
 }
