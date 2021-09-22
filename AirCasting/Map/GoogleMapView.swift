@@ -207,7 +207,7 @@ struct GoogleMapView_Previews: PreviewProvider {
                                              measurementTime: .distantPast,
                                              measurement: 30)],
                       threshold: .mock,
-                      placePickerDismissed: .constant(false))
+                      placePickerPresented: .constant(false))
             .padding()
     }
 }
