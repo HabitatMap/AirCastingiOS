@@ -16,13 +16,11 @@ extension Date {
 
    var currentUTCTimeZoneDate: Date {
         let formatter = DateFormatter()
-        formatter.timeZone = TimeZone.current
-        formatter.amSymbol = "AM"
-        formatter.pmSymbol = "PM"
+       formatter.timeZone = TimeZone.current
         formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         let stringDate = formatter.string(from: self)
         let dateFormatter = DateFormatter()
-        dateFormatter.timeZone = TimeZone(identifier: "UTC")
+       dateFormatter.timeZone = TimeZone.init(abbreviation: "UTC")
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         return dateFormatter.date(from: stringDate)!
     }
