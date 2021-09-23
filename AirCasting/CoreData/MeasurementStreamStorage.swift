@@ -62,7 +62,9 @@ final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
         stream.addToMeasurements(newMeasurement)
 
         let session = stream.session
-        session?.endTime = newMeasurement.time
+//        session?.endTime = newMeasurement.time
+        // This line is going to be disabled as soon as someone says it's important ⁉️
+        // because it is not crashing our timeZone
         
         //otherwise dormant session status changes to active when syncing measurements
         if session?.status != .FINISHED {

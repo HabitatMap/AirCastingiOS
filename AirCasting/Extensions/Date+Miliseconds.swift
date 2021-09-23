@@ -14,13 +14,13 @@ extension Date {
         Int(Date.msFormatter.string(from: self).dropFirst())!
     }
 
-   var currentUTCTimeZoneDate: Date {
+    var currentUTCTimeZoneDate: Date {
         let formatter = DateFormatter()
-       formatter.timeZone = TimeZone.current
+        formatter.timeZone = TimeZone.current
         formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         let stringDate = formatter.string(from: self)
         let dateFormatter = DateFormatter()
-       dateFormatter.timeZone = TimeZone.init(abbreviation: "UTC")
+        dateFormatter.timeZone = TimeZone.init(abbreviation: "UTC")
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         return dateFormatter.date(from: stringDate)!
     }
