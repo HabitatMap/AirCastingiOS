@@ -83,7 +83,11 @@ struct ChooseSessionTypeView: View {
                     }
                 }
                 .onAppear {
-                    shouldGoToChooseSessionScreen ? (isMobileLinkActive = true) : (isMobileLinkActive = false)
+                    if shouldGoToChooseSessionScreen {
+                        handleMobileSessionState()
+                    } else {
+                        isMobileLinkActive = false
+                    }
                 }
                 .onChange(of: tabSelection.selection, perform: { _ in
                     shouldGoToChooseSessionScreen ? (isMobileLinkActive = true) : (isMobileLinkActive = false)
@@ -154,7 +158,11 @@ struct ChooseSessionTypeView: View {
                     }
                 }
                 .onAppear {
-                    shouldGoToChooseSessionScreen ? (isMobileLinkActive = true) : (isMobileLinkActive = false)
+                    if shouldGoToChooseSessionScreen {
+                       handleMobileSessionState()
+                    } else {
+                        isMobileLinkActive = false
+                    }
                 }
                 .onChange(of: tabSelection.selection, perform: { _ in
                     shouldGoToChooseSessionScreen ? (isMobileLinkActive = true) : (isMobileLinkActive = false)
@@ -213,14 +221,18 @@ struct ChooseSessionTypeView: View {
     
     var mobileSessionButton: some View {
         Button(action: {
-            viewModel.createNewSession(isSessionFixed: false)
-            switch viewModel.mobileSessionNextStep() {
-            case .location: isTurnLocationOnLinkActive = true
-            case .mobile: isMobileLinkActive = true
-            default: return
-            }
+            handleMobileSessionState()
         }) {
             mobileSessionLabel
+        }
+    }
+    
+    func handleMobileSessionState() {
+        viewModel.createNewSession(isSessionFixed: false)
+        switch viewModel.mobileSessionNextStep() {
+        case .location: isTurnLocationOnLinkActive = true
+        case .mobile: isMobileLinkActive = true
+        default: return
         }
     }
     
