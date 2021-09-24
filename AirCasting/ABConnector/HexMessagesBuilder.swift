@@ -50,7 +50,8 @@ struct HexMessagesBuilder {
     }
     
     func locationMessage(lat: Double, lng: Double) -> Data {
-        let latLngString = "\(lat),\(lng)"
+        let latLngString = "\(lng),\(lat)"
+        // although You can think it is not right - it is: first lng then lat PLEASE
         return buildMessage(messageString: latLngString, configurationCode: LAT_LNG_CODE)
     }
     

@@ -46,11 +46,19 @@ final class MicrophoneManager: NSObject, ObservableObject {
         try recorder = AVAudioRecorder(url: URL(fileURLWithPath: "/dev/null", isDirectory: true), settings: MicrophoneManager.recordSettings)
         recorder.isMeteringEnabled = true
         recorder.delegate = self
-        measurementStreamLocalID = try createMeasurementStream(for: session)
+        
+        createMeasurementStream(for: session) { result in
+            switch result {
+            case .success(let id):
+                self.measurementStreamLocalID = id
+            case .failure(let error):
+                Log.info("\(error)")
+            }
+        }
         locationProvider.requestLocation()
         isRecording = true
         recorder.record()
-        try sampleMeasurement()
+        sampleMeasurement()
         levelTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(timerTick), userInfo: nil, repeats: true)
     }
     
@@ -78,7 +86,11 @@ extension MicrophoneManager: AVAudioRecorderDelegate {
     func audioRecorderBeginInterruption(_ recorder: AVAudioRecorder) {
         Log.warning("audio recorder interruption began")
         levelTimer?.invalidate()
-        try! measurementStreamStorage.updateSessionStatus(.DISCONNECTED, for: session!.uuid)
+        measurementStreamStorage.accessStorage { storage in
+            do {
+                try! storage.updateSessionStatus(.DISCONNECTED, for: self.session!.uuid)
+            }
+        }
     }
 
     func audioRecorderEndInterruption(_ recorder: AVAudioRecorder, withOptions flags: Int) {
@@ -95,20 +107,27 @@ extension MicrophoneManager: AVAudioRecorderDelegate {
 }
 
 private extension MicrophoneManager {
-    func sampleMeasurement() throws {
+    func sampleMeasurement() {
         recorder.updateMeters()
         let power = recorder.averagePower(forChannel: 0)
         let decibels = Double(power + 90.0)
         let location = obtainCurrentLocation()
-        Log.debug("New mic measurement \(decibels) at \(String(describing: location))")
-        try measurementStreamStorage.addMeasurementValue(decibels, at: location, toStreamWithID: measurementStreamLocalID!)
+        
+        measurementStreamStorage.accessStorage { storage in
+            do {
+                try storage.addMeasurementValue(decibels, at: location, toStreamWithID: self.measurementStreamLocalID!)
+                try storage.save()
+            } catch {
+                Log.info("\(error)")
+            }
+        }
     }
 
     @objc func timerTick() {
-        try! sampleMeasurement()
+        sampleMeasurement()
     }
 
-    func createMeasurementStream(for session: Session) throws -> MeasurementStreamLocalID {
+    func createMeasurementStream(for session: Session, completion: @escaping(Result<MeasurementStreamLocalID, Error>) -> Void) {
         let stream = MeasurementStream(id: nil,
                                        sensorName: Constants.SensorName.microphone,
                                        sensorPackageName: "Builtin",
@@ -121,7 +140,15 @@ private extension MicrophoneManager {
                                        thresholdMedium: 70,
                                        thresholdLow: 60,
                                        thresholdVeryLow: 20)
-        return try measurementStreamStorage.createSessionAndMeasurementStream(session, stream)
+        
+        measurementStreamStorage.accessStorage { storage in
+            do {
+                let id = try storage.createSessionAndMeasurementStream(session, stream)
+                completion(.success(id))
+            } catch {
+                completion(.failure(error))
+            }
+        }
     }
     
     func obtainCurrentLocation() -> CLLocationCoordinate2D? {

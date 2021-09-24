@@ -12,16 +12,18 @@ import GooglePlaces
 
 struct GoogleMapView: UIViewRepresentable {
     @EnvironmentObject var tracker: LocationTracker
+    @Binding var placePickerDismissed: Bool
     typealias UIViewType = GMSMapView
     let pathPoints: [PathPoint]
     private(set) var threshold: SensorThreshold?
     var isMyLocationEnabled: Bool = false
     private var onPositionChange: (([PathPoint]) -> ())? = nil
     
-    init(pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false) {
+    init(pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false, placePickerDismissed: Binding<Bool>) {
         self.pathPoints = pathPoints
         self.threshold = threshold
         self.isMyLocationEnabled = isMyLocationEnabled
+        self._placePickerDismissed = placePickerDismissed
     }
     
     func makeUIView(context: Context) -> GMSMapView {
@@ -51,8 +53,8 @@ struct GoogleMapView: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: GMSMapView, context: Context) {
-       polylineDrawing(uiView, context: context)
-
+        polylineDrawing(uiView, context: context)
+        placePickerDismissed ? uiView.moveCamera(cameraUpdate) : nil
         // Update camera's starting point
         guard context.coordinator.shouldAutoTrack else { return }
             DispatchQueue.main.async {
@@ -204,7 +206,8 @@ struct GoogleMapView_Previews: PreviewProvider {
                                                                               longitude: -73.83),
                                              measurementTime: .distantPast,
                                              measurement: 30)],
-                      threshold: .mock)
+                      threshold: .mock,
+                      placePickerDismissed: .constant(false))
             .padding()
     }
 }

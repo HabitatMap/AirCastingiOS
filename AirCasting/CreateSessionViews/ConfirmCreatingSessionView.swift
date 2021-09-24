@@ -16,66 +16,63 @@ struct ConfirmCreatingSessionView: View {
             isPresentingAlert = error != nil
         }
     }
-
     @State private var isPresentingAlert: Bool = false
     @EnvironmentObject var selectedSection: SelectSection
     @EnvironmentObject private var sessionContext: CreateSessionContext
     @EnvironmentObject private var locationTracker: LocationTracker
     @EnvironmentObject private var tabSelection: TabBarSelection
     @EnvironmentObject var persistenceController: PersistenceController
-    @EnvironmentObject var bluetoothManager: BluetoothManager
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     @EnvironmentObject private var microphoneManager: MicrophoneManager
+    @EnvironmentObject var bluetoothManager: BluetoothManager
     @Binding var creatingSessionFlowContinues: Bool
     let baseURL: BaseURLProvider
     var sessionName: String
     private var sessionType: String { (sessionContext.sessionType ?? .fixed).description.lowercased() }
-
+    
     var body: some View {
         LoadingView(isShowing: $isActive) {
             contentViewWithAlert
         }
     }
-
+    
     private var contentViewWithAlert: some View {
         contentView.alert(isPresented: $isPresentingAlert) {
             Alert(title: Text(Strings.ConfirmCreatingSessionView.alertTitle),
                   message: Text(error?.localizedDescription ?? Strings.ConfirmCreatingSessionView.alertMessage),
                   dismissButton: .default(Text(Strings.ConfirmCreatingSessionView.alertOK), action: { error = nil
-                  }))
+            }))
         }
     }
-
+    
     private var defaultDescriptionText: Text {
         Text(Strings.ConfirmCreatingSessionView.contentViewText_1)
-            + Text(sessionType)
+        + Text(sessionType)
             .foregroundColor(.accentColor)
-            + Text(Strings.ConfirmCreatingSessionView.contentViewText_2)
-            + Text(sessionName)
+        + Text(Strings.ConfirmCreatingSessionView.contentViewText_2)
+        + Text(sessionName)
             .foregroundColor(.accentColor)
-            + Text(Strings.ConfirmCreatingSessionView.contentViewText_3)
+        + Text(Strings.ConfirmCreatingSessionView.contentViewText_3)
     }
-
+    
     var dot: some View {
         Capsule()
             .fill(Color.accentColor)
             .frame(width: 15, height: 15)
     }
-
+    
     private var descriptionTextFixed: some View {
         defaultDescriptionText
-            + Text((sessionContext.isIndoor!) ? "" : Strings.ConfirmCreatingSessionView.contentViewText_4)
+        + Text((sessionContext.isIndoor!) ? "" : Strings.ConfirmCreatingSessionView.contentViewText_4)
     }
-
+    
     private var descriptionTextMobile: some View {
         defaultDescriptionText
-            + Text(Strings.ConfirmCreatingSessionView.contentViewText_4Mobile)
+        + Text(Strings.ConfirmCreatingSessionView.contentViewText_4Mobile)
     }
     
     @ViewBuilder private var contentView: some View {
-        
         if let sessionCreator = setSessioonCreator() {
-            
             VStack(alignment: .leading, spacing: 40) {
                 ProgressView(value: 0.95)
                 Text(Strings.ConfirmCreatingSessionView.contentViewTitle)
@@ -93,9 +90,9 @@ struct ConfirmCreatingSessionView: View {
                 .lineSpacing(9.0)
                 ZStack {
                     if sessionContext.sessionType == .mobile {
-                        GoogleMapView(pathPoints: [], isMyLocationEnabled: true)
+                        GoogleMapView(pathPoints: [], isMyLocationEnabled: true, placePickerDismissed: Binding.constant(false))
                     } else if !(sessionContext.isIndoor ?? false) {
-                        GoogleMapView(pathPoints: [])
+                        GoogleMapView(pathPoints: [], placePickerDismissed: Binding.constant(false))
                             .disabled(true)
                         // It needs to be disabled to prevent user interaction (swiping map) because it is only conformation screen
                         dot
@@ -104,35 +101,41 @@ struct ConfirmCreatingSessionView: View {
                 Button(action: {
                     getAndSaveStartingLocation()
                     isActive = true
-                    sessionCreator.createSession(sessionContext) { result in
-                        
-                        DispatchQueue.main.async {
-                            switch result {
-                            case .success:
-                                self.creatingSessionFlowContinues = false
-                                if sessionContext.sessionType == .mobile {
-                                    selectedSection.selectedSection = SelectedSection.mobileActive
-                                } else {
-                                    selectedSection.selectedSection = SelectedSection.following
-                                }
-                                tabSelection.selection = TabBarSelection.Tab.dashboard
-                            case .failure(let error):
-                                self.error = error as NSError
-                                Log.warning("Failed to create session \(error)")
-                            }
-                            isActive = false
-                        }
-                    }
+                    createSession(sessionCreator: sessionCreator)
                 }, label: {
                     Text(Strings.ConfirmCreatingSessionView.startRecording)
                         .bold()
                 })
-                .buttonStyle(BlueButtonStyle())
+                    .buttonStyle(BlueButtonStyle())
             }
             .padding()
         }
     }
+}
 
+extension ConfirmCreatingSessionView {
+    
+    func createSession(sessionCreator: SessionCreator) {
+        sessionCreator.createSession(sessionContext) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success:
+                    self.creatingSessionFlowContinues = false
+                    if sessionContext.sessionType == .mobile {
+                        selectedSection.selectedSection = SelectedSection.mobileActive
+                    } else {
+                        selectedSection.selectedSection = SelectedSection.following
+                    }
+                    tabSelection.selection = TabBarSelection.Tab.dashboard
+                case .failure(let error):
+                    self.error = error as NSError
+                    Log.warning("Failed to create session \(error)")
+                }
+                isActive = false
+            }
+        }
+    }
+    
     func getAndSaveStartingLocation() {
         if sessionContext.sessionType == .fixed {
             if sessionContext.isIndoor! {
@@ -140,21 +143,19 @@ struct ConfirmCreatingSessionView: View {
             } else {
                 guard let lat: Double = (locationTracker.googleLocation.last?.location.latitude),
                       let lon: Double = (locationTracker.googleLocation.last?.location.longitude) else { return }
-                #warning("Do something with exposed googleLocation")
+#warning("Do something with exposed googleLocation")
                 sessionContext.obtainCurrentLocation(lat: lat, log: lon)
             }
         } else {
             guard let lat = (locationTracker.locationManager.location?.coordinate.latitude),
                   let lon = (locationTracker.locationManager.location?.coordinate.longitude) else { return }
             locationTracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: lat, longitude: lon), measurementTime: Date(), measurement: 20.0)]
-            #warning("Do something with hard coded measurement")
+#warning("Do something with hard coded measurement")
             sessionContext.obtainCurrentLocation(lat: lat, log: lon)
         }
     }
-    
     func setSessioonCreator() -> SessionCreator? {
         let isWifi: Bool = (sessionContext.wifiSSID != nil && sessionContext.wifiSSID != nil)
-        
         if sessionContext.sessionType == .fixed && isWifi {
             return AirBeamFixedWifiSessionCreator(
                 measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: persistenceController),
@@ -166,11 +167,15 @@ struct ConfirmCreatingSessionView: View {
                                                  baseUrl: baseURL)
         } else if sessionContext.sessionType == .mobile && sessionContext.deviceType == .MIC {
             return MicrophoneSessionCreator(microphoneManager: microphoneManager)
-        } else {
+        } else if sessionContext.sessionType == .mobile {
             return MobilePeripheralSessionCreator(
                 mobilePeripheralSessionManager: bluetoothManager.mobilePeripheralSessionManager, measurementStreamStorage: CoreDataMeasurementStreamStorage(
                     persistenceController: persistenceController),
                 userAuthenticationSession: userAuthenticationSession)
+        } else {
+            return nil
+            Log.info("Can't set the session creator storage")
         }
     }
+
 }

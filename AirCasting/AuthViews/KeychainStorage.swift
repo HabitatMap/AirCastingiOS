@@ -95,6 +95,7 @@ final class KeychainStorage {
     private func create(for key: String, value: Data) throws {
         var newItem = makeQuery(for: key)
         newItem[kSecValueData] = value as AnyObject?
+        newItem[kSecAttrAccessible] = kSecAttrAccessibleAfterFirstUnlock
         let status = SecItemAdd(newItem as CFDictionary, nil)
         guard status == noErr else {
             throw KeychainStorageError.unhandledError(status: status)

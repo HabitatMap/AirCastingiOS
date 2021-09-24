@@ -81,7 +81,7 @@ private extension SessionHeaderView {
     var sensorType: some View {
         var stream = [String]()
         var text = ""
-        
+        guard session.allStreams != nil else { return Text("") }
         session.allStreams!.forEach { session in
             if var name = session.sensorPackageName {
                 componentsSeparation(name: &name)
@@ -195,18 +195,21 @@ private extension SessionHeaderView {
             Label(Strings.SessionHeaderView.deleteButton, systemImage: "xmark.circle")
         }
     }
-    
+   
     func adaptTimeAndDate() -> Text {
-        let formatter = DateIntervalFormatter()
-        formatter.locale = Locale(identifier: "en_US")
-        formatter.dateTemplate = "MM/dd/yyyy HH:mm"
-        
-        guard let start = session.startTime else { return Text("") }
-        let end = session.endTime ?? Date()
- 
-        let string = formatter.string(from: start, to: end)
-        return Text(string)
-    }
+            let formatter = DateIntervalFormatter()
+            formatter.locale = Locale(identifier: "en_US")
+        if !(session.isMobile && session.isActive) {
+            formatter.timeZone =  TimeZone.init(abbreviation: "UTC")
+        }
+            formatter.dateTemplate = "MM/dd/yyyy HH:mm"
+            
+            guard let start = session.startTime else { return Text("") }
+            let end = session.endTime ?? Date()
+     
+            let string = formatter.string(from: start, to: end)
+            return Text(string)
+        }
 }
 
 #if DEBUG

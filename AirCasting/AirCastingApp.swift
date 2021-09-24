@@ -11,7 +11,7 @@ import Combine
 @main
 struct AirCastingApp: App {
     @Environment(\.scenePhase) var scenePhase
-    private let authorization: UserAuthenticationSession
+    private let authorization = UserAuthenticationSession()
     private let syncScheduler: SynchronizationScheduler
     private let microphoneManager: MicrophoneManager
     private var sessionSynchronizer: SessionSynchronizer
@@ -20,13 +20,14 @@ struct AirCastingApp: App {
     private let appBecameActive = PassthroughSubject<Void, Never>()
     private let sessionSynchronizationController: SessionSynchronizationController
     @ObservedObject private var offlineMessageViewModel: OfflineMessageViewModel
+    private let lifeTimeEventsProvider = LifeTimeEventsProvider()
     private var cancellables: [AnyCancellable] = []
 
     init() {
         #if !DEBUG
         FirebaseApp.configure()
         #endif
-        self.authorization = UserAuthenticationSession()
+        AppBootstrap(firstRunInfoProvider: lifeTimeEventsProvider, deauthorizable: authorization).bootstrap()
         let synchronizationContextProvider = SessionSynchronizationService(client: URLSession.shared, authorization: authorization, responseValidator: DefaultHTTPResponseValidator())
         let downloadService = SessionDownloadService(client: URLSession.shared, authorization: authorization, responseValidator: DefaultHTTPResponseValidator())
         let uploadService = SessionUploadService(client: URLSession.shared, authorization: authorization, responseValidator: DefaultHTTPResponseValidator())
@@ -40,6 +41,7 @@ struct AirCastingApp: App {
         sessionSynchronizer = ScheduledSessionSynchronizerProxy(controller: unscheduledSyncController,
                                                                 scheduler: DispatchQueue.global())
         microphoneManager = MicrophoneManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared))
+        
         syncScheduler = .init(synchronizer: sessionSynchronizer,
                               appBecameActive: appBecameActive.eraseToAnyPublisher(),
                               periodicTimeInterval: 300,
@@ -55,15 +57,15 @@ struct AirCastingApp: App {
                 .environmentObject(sessionSynchronizerViewModel)
                 .environmentObject(authorization)
                 .environmentObject(microphoneManager)
+                .environmentObject(lifeTimeEventsProvider)
                 .alert(isPresented: $offlineMessageViewModel.showOfflineMessage, content: { Alert.offlineAlert })
         }.onChange(of: scenePhase) { newScenePhase in
             switch newScenePhase {
             case .active:
+                persistenceController.uiSuspended = false
                 appBecameActive.send()
-            case .background:
-                break
-            case .inactive:
-                break
+            case .background, .inactive:
+                persistenceController.uiSuspended = true
             @unknown default:
                 fatalError()
             }

@@ -8,6 +8,7 @@
 import Foundation
 import CoreData
 import struct CoreLocation.CLLocationCoordinate2D
+import CoreLocation
 
 public struct SessionEntityLocalID {
     let id: NSManagedObjectID
@@ -61,9 +62,10 @@ public class SessionEntity: NSManagedObject, Identifiable {
         get { (value(forKey: "status") as? Int).flatMap(SessionStatus.init(rawValue:)) }
         set { setValue(newValue?.rawValue, forKey: "status") }
     }
-
+    #warning("Handle logging out crash")
+    // ! other then giving default value as an empty string ! 🔽
     public var uuid: SessionUUID! {
-        get { SessionUUID(rawValue: value(forKey: "uuid") as! String) }
+        get { SessionUUID(rawValue: value(forKey: "uuid") as? String ?? "") }
         set { setValue(newValue.rawValue, forKey: "uuid") }
     }
 
@@ -71,9 +73,10 @@ public class SessionEntity: NSManagedObject, Identifiable {
         get { (value(forKey: "deviceType") as? Int).flatMap(DeviceType.init(rawValue:)) }
         set { setValue(newValue?.rawValue, forKey: "deviceType") }
     }
-
+    #warning("Handle logging out crash")
+    // ! other then giving default value as an empty string ! 🔽
     public var type: SessionType! {
-        get { SessionType(rawValue:(value(forKey: "type") as! String)) }
+        get { SessionType(rawValue:(value(forKey: "type") as? String ?? "")) }
         set { setValue(newValue.rawValue, forKey: "type") }
     }
     

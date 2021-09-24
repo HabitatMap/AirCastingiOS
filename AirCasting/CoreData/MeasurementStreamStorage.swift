@@ -7,6 +7,10 @@ import Foundation
 import Combine
 
 protocol MeasurementStreamStorage {
+    func accessStorage(_ task: @escaping(HiddenCoreDataMeasurementStreamStorage) -> Void)
+}
+
+protocol MeasurementStreamStorageContextUpdate {
     func addMeasurement(_ measurement: Measurement, toStreamWithID id: MeasurementStreamLocalID) throws
     func saveThresholdFor(sensorName: String, thresholdVeryHigh: Int32, thresholdHigh: Int32, thresholdMedium: Int32, thresholdLow: Int32, thresholdVeryLow: Int32) throws
     func createMeasurementStream(_ stream: MeasurementStream, for sessionUUID: SessionUUID) throws -> MeasurementStreamLocalID
@@ -19,18 +23,43 @@ protocol MeasurementStreamStorage {
     func save() throws
 }
 
-extension MeasurementStreamStorage {
+extension HiddenCoreDataMeasurementStreamStorage {
     func addMeasurementValue(_ value: Double, at location: CLLocationCoordinate2D? = nil, toStreamWithID id: MeasurementStreamLocalID) throws {
         try addMeasurement(Measurement(time: Date(), value: value, location: location), toStreamWithID: id)
+        try save()
     }
 }
 
 final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
+
+    private let persistenceController: PersistenceController
+    private lazy var updateSessionParamsService = UpdateSessionParamsService()
+    private let context: NSManagedObjectContext
+    let hiddenStorage: HiddenCoreDataMeasurementStreamStorage
+    
+    init(persistenceController: PersistenceController) {
+        self.persistenceController = persistenceController
+        self.hiddenStorage = HiddenCoreDataMeasurementStreamStorage(persistenceController: persistenceController)
+        self.context = persistenceController.editContext()
+    }
+    
+    /// All actions performed on CoreDataMeasurementStreamStorage must be performed
+    /// within a block passed to this methood.
+    /// This ensures thread-safety by dispatching all calls to the queue owned by the NSManagedObjectContext.
+    func accessStorage(_ task: @escaping(HiddenCoreDataMeasurementStreamStorage) -> Void) {
+        context.perform {
+            task(self.hiddenStorage)
+            try? self.hiddenStorage.save()
+        }
+    }
+}
+
+final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageContextUpdate {
     enum Error: Swift.Error {
         case missingMeasurementStream
         case missingSensorName
     }
-
+    
     private let persistenceController: PersistenceController
     private lazy var updateSessionParamsService = UpdateSessionParamsService()
     private let context: NSManagedObjectContext
@@ -41,17 +70,10 @@ final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
     }
     
     func save() throws {
-        context.perform {
-            do {
-                try self.context.save()
-            } catch {
-                Log.info("Couldn't save the context: \(self.context)")
-            }
-        }
+        try self.context.save()
     }
-    
+
     func addMeasurement(_ measurement: Measurement, toStreamWithID id: MeasurementStreamLocalID) throws {
-        
         let stream = try context.existingObject(with: id.id) as! MeasurementStreamEntity
 
         let newMeasurement = MeasurementEntity(context: context)
@@ -61,7 +83,9 @@ final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
         stream.addToMeasurements(newMeasurement)
 
         let session = stream.session
-        session?.endTime = newMeasurement.time
+//        session?.endTime = newMeasurement.time
+        // This line is going to be disabled as soon as someone says it's important ⁉️
+        // because it is not crashing our timeZone
         
         //otherwise dormant session status changes to active when syncing measurements
         if session?.status != .FINISHED {
@@ -139,23 +163,22 @@ final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
     
     func updateSessionEndtime(_ endTime: Date, for sessionUUID: SessionUUID) throws {
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
-        sessionEntity.endTime = endTime
+        sessionEntity.endTime = endTime.currentUTCTimeZoneDate
+        sessionEntity.startTime = sessionEntity.startTime?.currentUTCTimeZoneDate
         try context.save()
     }
     
     func updateSessionFollowing(_ sessionFollowing: SessionFollowing, for sessionUUID: SessionUUID) {
-        context.performAndWait {
-            do {
-                let sessionEntity = try context.existingSession(uuid: sessionUUID)
-                if sessionFollowing.rawValue == 1 {
-                    sessionEntity.followedAt = Date()
-                } else {
-                    sessionEntity.followedAt = nil
-                }
-                try context.save()
-            } catch {
-                Log.info("Error when saving changes in session")
+        do {
+            let sessionEntity = try context.existingSession(uuid: sessionUUID)
+            if sessionFollowing == SessionFollowing.following {
+                sessionEntity.followedAt = Date()
+            } else {
+                sessionEntity.followedAt = nil
             }
+            try context.save()
+        } catch {
+            Log.info("Error when saving changes in session")
         }
     }
 
@@ -169,6 +192,10 @@ final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
 #if DEBUG
 /// Only to be used for swiftui previews
 final class PreviewMeasurementStreamStorage: MeasurementStreamStorage {
+    func accessStorage(_ task: @escaping (HiddenCoreDataMeasurementStreamStorage) -> Void) {
+        print("accessing storage")
+    }
+    
     func save() throws {
         print("Faking saving ")
     }

@@ -51,7 +51,7 @@ struct AirMapView: View {
                 if !showLoadingIndicator {
                     ZStack(alignment: .topLeading) {
                         GoogleMapView(pathPoints: pathPoints,
-                                      threshold: threshold)
+                                      threshold: threshold, placePickerDismissed: Binding.constant(false))
                             .onPositionChange { [weak mapStatsDataSource, weak statsContainerViewModel] visiblePoints in
                                 mapStatsDataSource?.visiblePathPoints = visiblePoints
                                 statsContainerViewModel?.adjustForNewData()

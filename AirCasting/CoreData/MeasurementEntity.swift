@@ -3,6 +3,7 @@
 
 import Foundation
 import CoreData
+import CoreLocation
 
 public typealias MeasurementID = Int64
 
