@@ -28,7 +28,6 @@ struct AirCastingApp: App {
         FirebaseApp.configure()
         #endif
         AppBootstrap(firstRunInfoProvider: lifeTimeEventsProvider, deauthorizable: authorization).bootstrap()
-        
         let synchronizationContextProvider = SessionSynchronizationService(client: URLSession.shared, authorization: authorization, responseValidator: DefaultHTTPResponseValidator())
         let downloadService = SessionDownloadService(client: URLSession.shared, authorization: authorization, responseValidator: DefaultHTTPResponseValidator())
         let uploadService = SessionUploadService(client: URLSession.shared, authorization: authorization, responseValidator: DefaultHTTPResponseValidator())
@@ -42,6 +41,7 @@ struct AirCastingApp: App {
         sessionSynchronizer = ScheduledSessionSynchronizerProxy(controller: unscheduledSyncController,
                                                                 scheduler: DispatchQueue.global())
         microphoneManager = MicrophoneManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared))
+        
         syncScheduler = .init(synchronizer: sessionSynchronizer,
                               appBecameActive: appBecameActive.eraseToAnyPublisher(),
                               periodicTimeInterval: 300,
@@ -62,11 +62,10 @@ struct AirCastingApp: App {
         }.onChange(of: scenePhase) { newScenePhase in
             switch newScenePhase {
             case .active:
+                persistenceController.uiSuspended = false
                 appBecameActive.send()
-            case .background:
-                break
-            case .inactive:
-                break
+            case .background, .inactive:
+                persistenceController.uiSuspended = true
             @unknown default:
                 fatalError()
             }
