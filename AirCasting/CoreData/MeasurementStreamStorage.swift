@@ -83,8 +83,10 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         stream.addToMeasurements(newMeasurement)
 
         let session = stream.session
-//        session?.endTime = newMeasurement.time
-        // This line is going to be disabled as soon as someone says it's important ⁉️
+        if session?.type == .fixed {
+            session?.endTime = newMeasurement.time
+        }
+        // This line is going to disable endtime for other then fixed as soon as someone says it's important ⁉️
         // because it is not crashing our timeZone
         
         //otherwise dormant session status changes to active when syncing measurements
