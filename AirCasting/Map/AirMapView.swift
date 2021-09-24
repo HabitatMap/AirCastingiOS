@@ -11,6 +11,9 @@ import Foundation
 import CoreData
 
 struct AirMapView: View {
+    @Environment(\.scenePhase) var scenePhase
+    @Environment(\.presentationMode) var presentationMode
+    
     var thresholds: [SensorThreshold]
     @StateObject var statsContainerViewModel: StatisticsContainerViewModel
     @StateObject var mapStatsDataSource: MapStatsDataSource
@@ -71,6 +74,13 @@ struct AirMapView: View {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
+        .onChange(of: scenePhase) { phase in
+            switch phase {
+            case .background, .inactive: self.presentationMode.wrappedValue.dismiss()
+            case .active: break
+            @unknown default: fatalError()
+            }
+        }
         .padding()
     }
 }
