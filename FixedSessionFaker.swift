@@ -10,10 +10,8 @@ class FixedSessionFaker {
         req.predicate = NSPredicate(format: "name LIKE %@", "Its complicated")
         var session: SessionEntity!
         if let already = try! context.fetch(req).first {
-            print("A")
             session = already
         } else {
-            print("B")
             session = SessionEntity(context: context)
             session.type = .fixed
             session.uuid = SessionUUID()

@@ -64,12 +64,8 @@ struct AirCastingApp: App {
             case .active:
                 persistenceController.uiSuspended = false
                 appBecameActive.send()
-            case .background:
+            case .background, .inactive:
                 persistenceController.uiSuspended = true
-                break
-            case .inactive:
-                persistenceController.uiSuspended = true
-                break
             @unknown default:
                 fatalError()
             }
