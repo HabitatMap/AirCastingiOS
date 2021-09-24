@@ -16,10 +16,18 @@ class MobilePeripheralSessionManager {
         self.measurementStreamStorage = measurementStreamStorage
     }
     
-    func startRecording(session: Session, peripheral: CBPeripheral) throws {
-        try measurementStreamStorage.createSession(session)
-        locationProvider.requestLocation()
-        activeMobileSession = MobileSession(peripheral: peripheral, session: session)
+    func startRecording(session: Session, peripheral: CBPeripheral) {
+        measurementStreamStorage.accessStorage { [weak self] storage in
+            do {
+                try storage.createSession(session)
+                DispatchQueue.main.async {
+                    self?.locationProvider.requestLocation()
+                    self?.activeMobileSession = MobileSession(peripheral: peripheral, session: session)
+                }
+            } catch {
+                Log.info("\(error)")
+            }
+        }
     }
     
     func handlePeripheralMeasurement(_ measurement: PeripheralMeasurement) {
@@ -28,9 +36,10 @@ class MobilePeripheralSessionManager {
         }
         if activeMobileSession?.peripheral == measurement.peripheral {
             do {
-                try updateStreams(stream: measurement.measurementStream, sessionUUID: activeMobileSession!.session.uuid) } catch {
-                    Log.error("Unable to save measurement from airbeam to database because of an error: \(error)")
-                }
+                try updateStreams(stream: measurement.measurementStream, sessionUUID: activeMobileSession!.session.uuid) }
+            catch {
+                Log.error("Unable to save measurement from airbeam to database because of an error: \(error)")
+            }
         }
     }
     
@@ -43,11 +52,13 @@ class MobilePeripheralSessionManager {
         if activeMobileSession?.peripheral == peripheral {
             let session = activeMobileSession!.session
             
-            do {
-                try measurementStreamStorage.updateSessionStatus(.FINISHED, for: session.uuid)
-                try measurementStreamStorage.updateSessionEndtime(Date(), for: session.uuid)
-            } catch {
-                Log.error("Unable to change session status to finished because of an error: \(error)")
+            measurementStreamStorage.accessStorage { storage in
+                do {
+                    try storage.updateSessionStatus(.FINISHED, for: session.uuid)
+                    try storage.updateSessionEndtime(Date(), for: session.uuid)
+                } catch {
+                    Log.error("Unable to change session status to finished because of an error: \(error)")
+                }
             }
             centralManger.cancelPeripheralConnection(activeMobileSession!.peripheral)
             activeMobileSession = nil
@@ -57,12 +68,19 @@ class MobilePeripheralSessionManager {
     
     private func updateStreams(stream: ABMeasurementStream, sessionUUID: SessionUUID) throws {
         let  location = locationProvider.currentLocation?.coordinate
-        let existingStreamID = try? measurementStreamStorage.existingMeasurementStream(sessionUUID, name: stream.sensorName)
-        guard let id = existingStreamID else {
-            return try createSessionStream(stream, sessionUUID)
+                
+        measurementStreamStorage.accessStorage { storage in
+            do {
+                let existingStreamID = try storage.existingMeasurementStream(sessionUUID, name: stream.sensorName)
+                guard let id = existingStreamID else {
+                    return try self.createSessionStream(stream, sessionUUID)
+                }
+                try storage.addMeasurementValue(stream.measuredValue, at: location, toStreamWithID: id)
+                try storage.save()
+            } catch {
+                Log.info("\(error)")
+            }
         }
-        
-        try measurementStreamStorage.addMeasurementValue(stream.measuredValue, at: location, toStreamWithID: id)
     }
     
     private func createSessionStream(_ stream: ABMeasurementStream, _ sessionUUID: SessionUUID) throws {
@@ -81,7 +99,14 @@ class MobilePeripheralSessionManager {
                                               thresholdLow: Int32(stream.thresholdLow),
                                               thresholdVeryLow: Int32(stream.thresholdVeryLow))
         
-        streamsIDs[stream.sensorName] = try measurementStreamStorage.createMeasurementStream(sessionStream, for: sessionUUID)
-        try measurementStreamStorage.addMeasurementValue(stream.measuredValue, at: location, toStreamWithID: streamsIDs[stream.sensorName]!)
+        measurementStreamStorage.accessStorage { [self] storage in
+            do {
+                streamsIDs[stream.sensorName] = try storage.createMeasurementStream(sessionStream, for: sessionUUID)
+                try storage.addMeasurementValue(stream.measuredValue, at: location, toStreamWithID: streamsIDs[stream.sensorName]!)
+                try storage.save()
+            } catch {
+                Log.info("\(error)")
+            }
+        }
     }
 }

@@ -94,7 +94,7 @@ final class MobilePeripheralSessionCreator: SessionCreator {
                                  peripheral: peripheral).configureMobileSession(
                                     date: Date(),
                                     location: sessionContext.startingLocation ?? CLLocationCoordinate2D(latitude: 200, longitude: 200))
-            try mobilePeripheralSessionManager.startRecording(session: session, peripheral: peripheral)
+            mobilePeripheralSessionManager.startRecording(session: session, peripheral: peripheral)
             completion(.success(()))
         } catch {
             assertionFailure("Can't start recording mobile bluetooth session: \(error)")

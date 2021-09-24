@@ -30,7 +30,11 @@ extension SessionFollowing {
              return session.followedAt != nil ? .following : .notFollowing
          }
          set {
-             measurementStreamStorage.updateSessionFollowing(newValue, for: session.uuid)
+             #warning("❌This 'setter' is asynchronous!!!")
+             let id = self.session.uuid!
+             measurementStreamStorage.accessStorage { storage in
+                 storage.updateSessionFollowing(newValue, for: id)
+             }
          }
      }
  }

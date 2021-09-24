@@ -49,19 +49,37 @@ final class DefaultSyncingMeasurementsViewModel: SyncingMeasurementsViewModel {
                                   let longitude = measurement.longitude else { return CLLocationCoordinate2D(latitude: 200, longitude: 200) }
                             return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
                         }()
-                        guard let streamID = try? measurementStreamStorage.existingMeasurementStream(self.session.uuid, name: stream.sensorName) else {
-                            Log.info("failed to get existing streamID for synced measurements from session \(String(describing: self.session.name))")
-                            return }
-                        try? measurementStreamStorage.addMeasurement(Measurement(time: measurement.time, value: measurement.value, location: location), toStreamWithID: streamID)
+                        
+                        let sessionId = self.session.uuid!
+                        let sensorName = stream.sensorName
+                        let sessionName = self.session.name
+                        measurementStreamStorage.accessStorage { storage in
+                            do {
+                                guard let streamID = try storage.existingMeasurementStream(sessionId, name: sensorName) else {
+                                    Log.info("failed to get existing streamID for synced measurements from session \(String(describing: sessionName))")
+                                    return }
+                                try storage.addMeasurementValue(measurement.value,
+                                                                at:  location,
+                                                                toStreamWithID: streamID)
+                            } catch {
+                                Log.info("\(error)")
+                            }
+                        }
                     }
-                    try? measurementStreamStorage.saveThresholdFor(sensorName: stream.sensorName,
-                                                                   thresholdVeryHigh: Int32(stream.thresholdVeryHigh),
-                                                                   thresholdHigh: Int32(stream.thresholdHigh),
-                                                                   thresholdMedium: Int32(stream.thresholdMedium),
-                                                                   thresholdLow: Int32(stream.thresholdLow),
-                                                                   thresholdVeryLow: Int32(stream.thresholdVeryLow))
-                    
-                    try? measurementStreamStorage.save()
+                    measurementStreamStorage.accessStorage { storage in
+                        do {
+                            try storage.saveThresholdFor(sensorName: stream.sensorName,
+                                                         thresholdVeryHigh: Int32(stream.thresholdVeryHigh),
+                                                         thresholdHigh: Int32(stream.thresholdHigh),
+                                                         thresholdMedium: Int32(stream.thresholdMedium),
+                                                         thresholdLow: Int32(stream.thresholdLow),
+                                                         thresholdVeryLow: Int32(stream.thresholdVeryLow))
+                            
+                            try storage.save()
+                        } catch {
+                            Log.info("\(error)")
+                        }
+                    }
                 }
                 
                 DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
