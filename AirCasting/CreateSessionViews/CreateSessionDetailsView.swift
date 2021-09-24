@@ -23,6 +23,7 @@ struct CreateSessionDetailsView: View {
     @State private var isLocationSessionDetailsActive: Bool = false
     @State private var showingAlert = false
     @EnvironmentObject private var sessionContext: CreateSessionContext
+
     // Location tracker is needed to get wifi SSID (more info CNCopyCurrentNetworkInfo documentation.
     @Binding var creatingSessionFlowContinues: Bool
     let baseURL: BaseURLProvider
@@ -49,7 +50,8 @@ struct CreateSessionDetailsView: View {
                 .padding()
                 .frame(maxWidth: .infinity, minHeight: geometry.size.height, alignment: .top)
             }
-            .background(Group {
+            .background(
+                ZStack {
                 NavigationLink(
                     destination: ChooseCustomLocationView(creatingSessionFlowContinues: $creatingSessionFlowContinues,
                                                           sessionName: $sessionName, baseURL: baseURL),
@@ -58,7 +60,6 @@ struct CreateSessionDetailsView: View {
                         EmptyView()
                     }
                 )
-                NavigationLink("", destination: EmptyView())
                 NavigationLink(
                     destination: ConfirmCreatingSessionView(creatingSessionFlowContinues: $creatingSessionFlowContinues,
                                                             baseURL: baseURL,
@@ -81,6 +82,7 @@ struct CreateSessionDetailsView: View {
 }
 
 private extension CreateSessionDetailsView {
+    
     var continueButton: some View {
         Button(action: {
             sessionContext.sessionName = sessionName
@@ -161,6 +163,4 @@ private extension CreateSessionDetailsView {
             WifiPopupView(wifiPassword: $wifiPassword, wifiSSID: $wifiSSID)
         }
     }
-    
-
 }

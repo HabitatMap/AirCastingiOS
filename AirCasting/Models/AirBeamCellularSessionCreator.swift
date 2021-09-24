@@ -70,16 +70,18 @@ final class AirBeamCellularSessionCreator: SessionCreator {
                                                             DispatchQueue.main.async {
                                                                 switch result {
                                                                 case .success(let output):
-                                                                    do {
-                                                                        try measurementStreamStorage.createSession(session)
-                                                                        try AirBeam3Configurator(userAuthenticationSession: userAuthenticationSession,
-                                                                                                 peripheral: peripheral).configureFixedCellularSession(uuid: sessionUUID,
-                                                                                                                                                       location: sessionContext.startingLocation ?? CLLocationCoordinate2D(latitude: 200, longitude: 200),
-                                                                                                                                                       date: Date())
-                                                                        Log.warning("Created fixed cellular session \(output)")
-                                                                        completion(.success(()))
-                                                                    } catch {
-                                                                        completion(.failure(error))
+                                                                    measurementStreamStorage.accessStorage { storage in
+                                                                        do {
+                                                                            try storage.createSession(session)
+                                                                            try AirBeam3Configurator(userAuthenticationSession: userAuthenticationSession,
+                                                                                                     peripheral: peripheral).configureFixedCellularSession(uuid: sessionUUID,
+                                                                                                                                                           location: sessionContext.startingLocation ?? CLLocationCoordinate2D(latitude: 200, longitude: 200),
+                                                                                                                                                           date: Date())
+                                                                            Log.warning("Created fixed cellular session \(output)")
+                                                                            completion(.success(()))
+                                                                        } catch {
+                                                                            completion(.failure(error))
+                                                                        }
                                                                     }
                                                                 case .failure(let error):
                                                                     Log.warning("Failed to create fixed cellular session \(error)")
