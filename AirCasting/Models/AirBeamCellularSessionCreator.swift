@@ -32,7 +32,7 @@ final class AirBeamCellularSessionCreator: SessionCreator {
                               name: sessionContext.sessionName,
                               deviceType: sessionContext.deviceType,
                               location: sessionContext.startingLocation,
-                              startTime: Date(),
+                              startTime: Date().currentUTCTimeZoneDate,
                               followedAt: Date(),
                               tags: sessionContext.sessionTags)
         
