@@ -72,7 +72,6 @@ struct Graph: UIViewRepresentable {
                                                           tolerance: 0.000000001,
                                                           highestQuality: true)
             uiView.updateWithEntries(entries: simplifiedPoints, isAutozoomEnabled: isAutozoomEnabled)
-            print("Simplified \(entries.count) to \(simplifiedPoints.count)")
         } else {
             uiView.updateWithEntries(entries: entries, isAutozoomEnabled: isAutozoomEnabled)
         }

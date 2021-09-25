@@ -11,7 +11,6 @@ import SwiftUI
 struct DashboardView: View {
     #warning("This hook fires too often - on any stream measurement added/changed. Should only fire when list changes.")
     @StateObject var coreDataHook: CoreDataHook
-    @FetchRequest<SensorThreshold>(sortDescriptors: [.init(key: "sensorName", ascending: true)]) var thresholds
     @EnvironmentObject var selectedSection: SelectSection
     let measurementStreamStorage: MeasurementStreamStorage
     let sessionStoppableFactory: SessionStoppableFactory
@@ -45,24 +44,7 @@ struct DashboardView: View {
                     EmptyFixedDashboardView()
                 }
             } else {
-                ZStack(alignment: .bottomTrailing) {
-                    Image("dashboard-background-thing")
-                    let thresholds = Array(self.thresholds)
-                    ScrollView(.vertical) {
-                        LazyVStack(spacing: 20) {
-                            ForEach(sessions, id: \.uuid) { session in
-                                let followingSetter = MeasurementStreamStorageFollowingSettable(session: session, measurementStreamStorage: measurementStreamStorage)
-                                let viewModel = SessionCartViewModel(followingSetter: followingSetter)
-                                SessionCartView(session: session,
-                                                sessionCartViewModel: viewModel,
-                                                thresholds: thresholds,
-                                                sessionStoppableFactory: sessionStoppableFactory,
-                                                measurementStreamStorage: measurementStreamStorage)
-                            }                        }
-                    }
-                }.padding()
-                    .frame(maxWidth: .infinity)
-                    .background(Color.aircastingGray.opacity(0.05))
+                SessionListView(coreDataHook: coreDataHook, measurementStreamStorage: measurementStreamStorage, sessionStoppableFactory: sessionStoppableFactory)
             }
         }
         .navigationBarTitle(NSLocalizedString("Dashboard", comment: ""))
