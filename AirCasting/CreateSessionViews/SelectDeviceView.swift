@@ -20,6 +20,7 @@ struct SelectDeviceView: View {
     @EnvironmentObject private var microphoneManager: MicrophoneManager
     @Binding var creatingSessionFlowContinues : Bool
     @State private var showAlert = false
+    @EnvironmentObject private var emptyDashboardButtonTapped: EmptyDashboardButtonTapped
     @EnvironmentObject private var tabSelection: TabBarSelection
 
     let urlProvider: BaseURLProvider
@@ -57,6 +58,9 @@ struct SelectDeviceView: View {
                     EmptyView()
                 })
         })
+        .onAppear() {
+            emptyDashboardButtonTapped.mobileWasTapped = false
+        }
     }
     
     var titleLabel: some View {
