@@ -50,6 +50,13 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                     }
 
                 }
+//                HStack() {
+//                    startTimeText
+//                    Spacer()
+//                    endTimeText
+//                }
+//                .foregroundColor(.aircastingGray)
+//                .padding(.horizontal, 5)
                 NavigationLink(destination: HeatmapSettingsView(changedThresholdValues: threshold.rawThresholdsBinding)) {
                     EditButtonView()
                 }
@@ -65,6 +72,40 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
         }
         .navigationBarTitleDisplayMode(.inline)
     }
+    
+    var startTimeText: some View {
+        startTime()
+    }
+    
+    var endTimeText: some View {
+        endTime()
+    }
+    
+    func startTime() -> Text {
+            let formatter = DateFormatter()
+            formatter.locale = Locale(identifier: "en_US")
+        if !(session.isMobile && session.isActive) {
+            formatter.timeZone =  TimeZone.init(abbreviation: "UTC")
+        }
+            formatter.dateFormat = "HH:mm"
+            guard let start = session.startTime else { return Text("") }
+     
+            let string = formatter.string(from: start)
+            return Text(string)
+        }
+    
+    func endTime() -> Text {
+            let formatter = DateFormatter()
+            formatter.locale = Locale(identifier: "en_US")
+        if !(session.isMobile && session.isActive) {
+            formatter.timeZone =  TimeZone.init(abbreviation: "UTC")
+        }
+            formatter.dateFormat = "HH:mm"
+            let end = session.endTime ?? Date()
+     
+            let string = formatter.string(from: end)
+            return Text(string)
+        }
 }
 
 #if DEBUG
