@@ -36,37 +36,40 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                                thresholds: thresholds,
                                measurementPresentationStyle: .showValues)
                 .padding(.horizontal)
-            if let threshold = thresholds.threshold(for: selectedStream) {
-                ZStack(alignment: .topLeading) {
-                    if let selectedStream = selectedStream {
-                        Graph(stream: selectedStream,
-                              thresholds: threshold,
-                              isAutozoomEnabled: session.type == .mobile).onDateRangeChange { [weak graphStatsDataSource, weak statsContainerViewModel] range in
-                                graphStatsDataSource?.dateRange = range
-                                statsContainerViewModel?.adjustForNewData()
-                              }
-                        StatisticsContainerView(statsContainerViewModel: statsContainerViewModel,
-                                                threshold: threshold)
-                    }
+           
+            if procceding(session: session) {
+                    if let threshold = thresholds.threshold(for: selectedStream) {
+                        ZStack(alignment: .topLeading) {
+                            if let selectedStream = selectedStream {
+                                Graph(stream: selectedStream,
+                                      thresholds: threshold,
+                                      isAutozoomEnabled: session.type == .mobile).onDateRangeChange { [weak graphStatsDataSource, weak statsContainerViewModel] range in
+                                        graphStatsDataSource?.dateRange = range
+                                        statsContainerViewModel?.adjustForNewData()
+                                      }
+                                StatisticsContainerView(statsContainerViewModel: statsContainerViewModel,
+                                                        threshold: threshold)
+                            }
 
-                }
-//                HStack() {
-//                    startTimeText
-//                    Spacer()
-//                    endTimeText
-//                }
-//                .foregroundColor(.aircastingGray)
-//                .padding(.horizontal, 5)
-                NavigationLink(destination: HeatmapSettingsView(changedThresholdValues: threshold.rawThresholdsBinding)) {
-                    EditButtonView()
-                }
-                .padding(.horizontal)
-                .padding(.top)
-                
-                ThresholdsSliderView(threshold: threshold)
-                    .padding()
-                    // Fixes labels covered by tabbar
-                    .padding(.bottom)
+                        }
+                        HStack() {
+                            startTimeText
+                            Spacer()
+                            endTimeText
+                        }
+                        .foregroundColor(.aircastingGray)
+                        .padding(.horizontal, 5)
+                        NavigationLink(destination: HeatmapSettingsView(changedThresholdValues: threshold.rawThresholdsBinding)) {
+                            EditButtonView()
+                        }
+                        .padding(.horizontal)
+                        .padding(.top)
+                        
+                        ThresholdsSliderView(threshold: threshold)
+                            .padding()
+                            // Fixes labels covered by tabbar
+                            .padding(.bottom)
+                    }
             }
             Spacer()
         }
@@ -79,6 +82,19 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
     
     var endTimeText: some View {
         endTime()
+    }
+    
+    func procceding(session: SessionEntity) -> Bool {
+        var showGraph = false
+        guard session.allStreams != nil else { return false }
+        (session.allStreams!.forEach({ stream in
+            (stream.allMeasurements != []) ? (showGraph = true) : (showGraph = false)
+        }))
+        if showGraph {
+            return true
+        } else {
+            return false
+        }
     }
     
     func startTime() -> Text {
