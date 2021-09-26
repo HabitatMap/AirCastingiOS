@@ -36,7 +36,7 @@ struct MainTabBarView: View {
             settingsTab
         }
         .onAppear {
-            try! measurementUpdatingService.start()
+            measurementUpdatingService.start()
         }
         .onChange(of: tabSelection.selection, perform: { _ in
             if tabSelection.selection == .dashboard {
@@ -115,7 +115,7 @@ struct ContentView_Previews: PreviewProvider {
     }
 
     private class MeasurementUpdatingServiceMock: MeasurementUpdatingService {
-        func start() throws {}
+        func start() {}
     }
 }
 #endif

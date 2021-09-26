@@ -10,7 +10,7 @@ import CoreData
 import Combine
 
 protocol MeasurementUpdatingService {
-    func start() throws
+    func start()
 }
 
 final class DownloadMeasurementsService: MeasurementUpdatingService {
@@ -27,66 +27,80 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
         self.fixedSessionService = FixedSessionAPIService(authorisationService: authorisationService, baseUrl: baseUrl)
     }
 
-    func start() throws {
-        try update()
+    func start() {
+        updateAllSessionsMeasurements()
         timerSink = Timer.publish(every: 60, on: .current, in: .common).autoconnect().sink { [weak self] tick in
-            do {
-                Log.info("Triggering scheduled measurement update")
-                try self?.update()
-            } catch {
-                assertionFailure("Failed to call update at \(tick) \(error)")
-            }
+            Log.info("Triggering scheduled measurement update")
+            self?.updateAllSessionsMeasurements()
         }
     }
 
-    private func update() throws {
-        let request: NSFetchRequest<SessionEntity> = SessionEntity.fetchRequest()
-        request.predicate = request.typePredicate(.fixed)
-        let context = persistenceController.viewContext
-        let fetchedResult = try context.fetch(request)
-        for session in fetchedResult {
-            if let uuid = session.uuid {
-                updateForSession(uuid: uuid)
-            } else {
-                Log.error("trying to refresh session without uuid \(session)")
-            }
-        }
+    #warning("Add locking here so updates won't bump on one another")
+    private func updateAllSessionsMeasurements() {
+        let sessionsData = getAllSessionsData()
+        Log.info("Scheduled measurements update triggered (session count: \(sessionsData.count))")
+        sessionsData.forEach { updateMeasurements(for: $0.uuid, lastSynced: $0.lastSynced) }
     }
     
-    private func updateForSession(uuid: SessionUUID) {        
-        let session = try? persistenceController.viewContext.existingSession(uuid: uuid)
+    private func getAllSessionsData() -> [(uuid: SessionUUID, lastSynced: Date)] {
+        let request: NSFetchRequest<SessionEntity> = SessionEntity.fetchRequest()
+        request.predicate = request.typePredicate(.fixed)
+        let context = persistenceController.editContext()
+        var returnData: [(uuid: SessionUUID, lastSynced: Date)] = []
+        context.performAndWait {
+            do {
+                let sessions = try context.fetch(request)
+                returnData = sessions.map { ($0.uuid, getSyncDate(for: $0)) }
+            } catch {
+                Log.error("Error fetching sessions data: \(error)")
+            }
+        }
+        return returnData
+    }
+    
+    private func getSyncDate(for session: SessionEntity?) -> Date {
         let lastMeasurementTime = session?.allStreams?
             .compactMap(\.lastMeasurementTime)
             .sorted()
             .last
         let syncDate = SyncHelper().calculateLastSync(sessionEndTime: session?.endTime, lastMeasurementTime: lastMeasurementTime)
-        
-        lastFetchCancellableTask = fixedSessionService.getFixedMeasurement(uuid: uuid, lastSync: syncDate, completion: { [removeOldService, persistenceController] result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let response):
-                    let context = persistenceController.editContext()
-                    do {
-                        let session: SessionEntity = try context.newOrExisting(uuid: response.uuid)
-                        try UpdateSessionParamsService().updateSessionsParams(session: session, output: response)
-                        try context.save()
-                        Log.info("Successfully fetched fixed measurements")
-                    } catch {
-                        assertionFailure("Failed to save context \(error)")
-                    }
-                    persistenceController.performBackgroundTask { bgContext in
-                        do {
-                            try removeOldService.removeOldestMeasurements(in: bgContext,
-                                                                          uuid: uuid)
-                        } catch {
-                            Log.error("Failed to remove old measaurements from fixed session \(error)")
-                        }
-                    }
-                case .failure(let error):
-                    Log.warning("Failed to fetch measurements for uuid '\(uuid)' \(error)")
-                }
+        return syncDate
+    }
+    
+    private func updateMeasurements(for sessionUUID: SessionUUID, lastSynced: Date) {
+        lastFetchCancellableTask = fixedSessionService.getFixedMeasurement(uuid: sessionUUID, lastSync: lastSynced) { [weak self] in
+            self?.processServiceResponse($0, for: sessionUUID)
+        }
+    }
+    
+    private func processServiceResponse(_ response: Result<FixedSession.FixedMeasurementOutput, Error>,
+                                        for sessionUUID: SessionUUID) {
+        switch response {
+        case .success(let response):
+            processServiceOutput(response, for: sessionUUID)
+        case .failure(let error):
+            Log.warning("Failed to fetch measurements for uuid '\(sessionUUID)' \(error)")
+        }
+    }
+    
+    private func processServiceOutput(_ output: FixedSession.FixedMeasurementOutput,
+                                      for sessionUUID: SessionUUID) {
+        let context = persistenceController.editContext()
+        context.perform {
+            do {
+                let session: SessionEntity = try context.newOrExisting(uuid: output.uuid)
+                try UpdateSessionParamsService().updateSessionsParams(session: session, output: output)
+                try self.removeOldService.removeOldestMeasurements(in: context,
+                                                              uuid: sessionUUID)
+                try context.save()
+            } catch let error as UpdateSessionParamsService.Error {
+                Log.error("Failed to update session params: \(error)")
+            } catch let error as RemoveOldMeasurementsService.Error {
+                Log.error("Failed to remove old measaurements from fixed session \(error)")
+            } catch {
+                Log.error("Save error: \(error)")
             }
-        })
+        }
     }
 }
 
