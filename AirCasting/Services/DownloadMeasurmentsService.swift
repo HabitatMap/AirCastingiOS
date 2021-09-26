@@ -27,35 +27,35 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
         self.fixedSessionService = FixedSessionAPIService(authorisationService: authorisationService, baseUrl: baseUrl)
     }
 
+    #warning("Add locking here so updates won't bump on one another")
     func start() {
         updateAllSessionsMeasurements()
         timerSink = Timer.publish(every: 60, on: .current, in: .common).autoconnect().sink { [weak self] tick in
-            Log.info("Triggering scheduled measurement update")
             self?.updateAllSessionsMeasurements()
         }
     }
-
-    #warning("Add locking here so updates won't bump on one another")
+    
     private func updateAllSessionsMeasurements() {
-        let sessionsData = getAllSessionsData()
-        Log.info("Scheduled measurements update triggered (session count: \(sessionsData.count))")
-        sessionsData.forEach { updateMeasurements(for: $0.uuid, lastSynced: $0.lastSynced) }
+        getAllSessionsData() { [unowned self] sessionsData in
+            Log.info("Scheduled measurements update triggered (session count: \(sessionsData.count))")
+            sessionsData.forEach { self.updateMeasurements(for: $0.uuid, lastSynced: $0.lastSynced) }
+        }
     }
     
-    private func getAllSessionsData() -> [(uuid: SessionUUID, lastSynced: Date)] {
+    private func getAllSessionsData(completion: @escaping ([(uuid: SessionUUID, lastSynced: Date)]) -> Void) {
         let request: NSFetchRequest<SessionEntity> = SessionEntity.fetchRequest()
         request.predicate = request.typePredicate(.fixed)
         let context = persistenceController.editContext()
         var returnData: [(uuid: SessionUUID, lastSynced: Date)] = []
-        context.performAndWait {
+        context.perform { [unowned self] in
             do {
                 let sessions = try context.fetch(request)
-                returnData = sessions.map { ($0.uuid, getSyncDate(for: $0)) }
+                returnData = sessions.map { ($0.uuid, self.getSyncDate(for: $0)) }
+                completion(returnData)
             } catch {
                 Log.error("Error fetching sessions data: \(error)")
             }
         }
-        return returnData
     }
     
     private func getSyncDate(for session: SessionEntity?) -> Date {
