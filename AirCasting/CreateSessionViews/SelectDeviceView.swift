@@ -59,6 +59,7 @@ struct SelectDeviceView: View {
                 })
         })
         .onAppear() {
+            #warning("Handle that mobileWasTapped is somehow public")
             emptyDashboardButtonTapped.mobileWasTapped = false
         }
     }
