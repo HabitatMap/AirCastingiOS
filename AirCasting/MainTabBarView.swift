@@ -36,7 +36,7 @@ struct MainTabBarView: View {
             settingsTab
         }
         .onAppear {
-            try! measurementUpdatingService.start()
+            measurementUpdatingService.start()
         }
         .onChange(of: tabSelection.selection, perform: { _ in
             if tabSelection.selection == .dashboard {
@@ -56,7 +56,7 @@ private extension MainTabBarView {
     private var dashboardTab: some View {
         NavigationView {
             DashboardView(coreDataHook: CoreDataHook(context: persistenceController.viewContext), measurementStreamStorage: measurementStreamStorage, sessionStoppableFactory: sessionStoppableFactory)
-        }
+        }.navigationViewStyle(StackNavigationViewStyle())
         .tabItem {
             Image(dashboardImage)
         }
@@ -115,7 +115,7 @@ struct ContentView_Previews: PreviewProvider {
     }
 
     private class MeasurementUpdatingServiceMock: MeasurementUpdatingService {
-        func start() throws {}
+        func start() {}
     }
 }
 #endif
