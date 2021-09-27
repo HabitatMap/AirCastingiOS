@@ -61,8 +61,11 @@ struct AirMapView: View {
                                 mapStatsDataSource?.visiblePathPoints = visiblePoints
                                 statsContainerViewModel?.adjustForNewData()
                             }
-                    StatisticsContainerView(statsContainerViewModel: statsContainerViewModel,
-                                            threshold: threshold)     
+                        // Statistics container shouldn't be presented in mobile dormant tab
+                        if !(session.type == .mobile && session.isActive == false) {
+                            StatisticsContainerView(statsContainerViewModel: statsContainerViewModel,
+                                                    threshold: threshold)
+                        }
                     }
                     NavigationLink(destination: HeatmapSettingsView(changedThresholdValues: threshold.rawThresholdsBinding)) {
                         EditButtonView()

@@ -38,7 +38,7 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                                thresholds: thresholds,
                                measurementPresentationStyle: .showValues)
                 .padding(.horizontal)
-           
+            
             if procceding(session: session) {
                     if let threshold = thresholds.threshold(for: selectedStream) {
                         ZStack(alignment: .topLeading) {
@@ -49,10 +49,12 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                                         graphStatsDataSource?.dateRange = range
                                         statsContainerViewModel?.adjustForNewData()
                                       }
-                                StatisticsContainerView(statsContainerViewModel: statsContainerViewModel,
+                                // Statistics container shouldn't be presented in mobile dormant tab
+                                if !(session.type == .mobile && session.isActive == false) {
+                                    StatisticsContainerView(statsContainerViewModel: statsContainerViewModel,
                                                         threshold: threshold)
+                                }
                             }
-
                         }
                         HStack() {
                             startTimeText
