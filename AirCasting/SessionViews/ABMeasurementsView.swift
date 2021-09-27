@@ -16,7 +16,7 @@ struct ABMeasurementsView<VM: SyncingMeasurementsViewModel>: View {
     @Binding var selectedStream: MeasurementStreamEntity?
     var thresholds: [SensorThreshold]
     let measurementPresentationStyle: MeasurementPresentationStyle
-    @State var viewModel: VM?
+    @State private var viewModel: VM?
     
     var body: some View {
         ZStack {
