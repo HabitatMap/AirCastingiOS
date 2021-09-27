@@ -56,7 +56,7 @@ private extension MainTabBarView {
     private var dashboardTab: some View {
         NavigationView {
             DashboardView(coreDataHook: CoreDataHook(context: persistenceController.viewContext), measurementStreamStorage: measurementStreamStorage, sessionStoppableFactory: sessionStoppableFactory)
-        }
+        }.navigationViewStyle(StackNavigationViewStyle())
         .tabItem {
             Image(dashboardImage)
         }
