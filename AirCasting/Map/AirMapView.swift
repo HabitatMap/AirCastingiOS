@@ -35,7 +35,9 @@ struct AirMapView: View {
     var body: some View {
         VStack(alignment: .trailing, spacing: 20) {
             SessionHeaderView(action: {},
-                              isExpandButtonNeeded: false, isCollapsed: Binding.constant(false),
+                              isExpandButtonNeeded: false,
+                              isSensorTypeNeeded: false,
+                              isCollapsed: Binding.constant(false),
                               session: session,
                               sessionStopperFactory: sessionStoppableFactory)
             ABMeasurementsView(viewModelProvider: { DefaultSyncingMeasurementsViewModel(measurementStreamStorage: measurementStreamStorage,

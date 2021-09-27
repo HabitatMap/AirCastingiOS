@@ -10,6 +10,7 @@ import SwiftUI
 struct SessionHeaderView: View {
     let action: () -> Void
     let isExpandButtonNeeded: Bool
+    var isSensorTypeNeeded: Bool = true
     @Binding var isCollapsed: Bool
     @State var chevronIndicator = "chevron.down"
     @EnvironmentObject var networkChecker: NetworkChecker
@@ -72,8 +73,10 @@ private extension SessionHeaderView {
             //  |_________|     |-------------------|
             // so the idea at leat for now is this below
             #warning("Fix - Handle session.deviceType (for now it is always nill)")
-            sensorType
+            if isSensorTypeNeeded {
+                sensorType
                 .font(Font.moderate(size: 13, weight: .regular))
+            }
         }
         .foregroundColor(.darkBlue)
     }

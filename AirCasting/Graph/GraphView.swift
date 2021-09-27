@@ -19,7 +19,9 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
     var body: some View {
         VStack(alignment: .trailing) {
             SessionHeaderView(action: {},
-                              isExpandButtonNeeded: false, isCollapsed: Binding.constant(false),
+                              isExpandButtonNeeded: false,
+                              isSensorTypeNeeded: false,
+                              isCollapsed: Binding.constant(false),
                               session: session,
                               sessionStopperFactory: sessionStoppableFactory).padding()
             
