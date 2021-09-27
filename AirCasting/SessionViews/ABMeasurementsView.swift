@@ -85,9 +85,16 @@ struct _ABMeasurementsView: View {
                         measurementsTitle
                             .font(Font.moderate(size: 12))
                         streamNames
-                        if !isCollapsed && measurementsViewModel.showLoadingIndicator {
-                            ProgressView()
-                                .progressViewStyle(CircularProgressViewStyle())
+                        if session.type == .mobile && session.deviceType == .AIRBEAM3 {
+                            if measurementsViewModel.showLoadingIndicator {
+                                ProgressView()
+                                    .progressViewStyle(CircularProgressViewStyle())
+                            }
+                        } else {
+                            if !isCollapsed && measurementsViewModel.showLoadingIndicator {
+                                ProgressView()
+                                    .progressViewStyle(CircularProgressViewStyle())
+                            }
                         }
                     }
                 }
@@ -118,7 +125,7 @@ struct _ABMeasurementsView: View {
 
 extension _ABMeasurementsView {
     var measurementsTitle: some View {
-        if session.deviceType == .MIC {
+        if session.deviceType == .MIC && session.isActive {
             return Text(verbatim: Strings.SessionCart.measurementsTitle)
         } else if session.isActive {
             return Text(Strings.SessionCart.measurementsTitle)
@@ -136,6 +143,8 @@ extension _ABMeasurementsView {
             }
         } else if session.isFollowed {
             return Text(Strings.SessionCart.lastMinuteMeasurement)
+        } else if session.type == .mobile && session.deviceType == .AIRBEAM3 {
+            return Text(Strings.SessionCart.measurementsTitle)
         }
         return Text("")
     }
