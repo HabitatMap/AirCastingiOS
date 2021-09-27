@@ -85,7 +85,7 @@ struct _ABMeasurementsView: View {
                         measurementsTitle
                             .font(Font.moderate(size: 12))
                         streamNames
-                        if session.type == .mobile {
+                        if session.type == .mobile && session.deviceType == .AIRBEAM3 {
                             if measurementsViewModel.showLoadingIndicator {
                                 ProgressView()
                                     .progressViewStyle(CircularProgressViewStyle())
