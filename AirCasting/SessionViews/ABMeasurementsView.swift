@@ -85,9 +85,16 @@ struct _ABMeasurementsView: View {
                         measurementsTitle
                             .font(Font.moderate(size: 12))
                         streamNames
-                        if !isCollapsed && measurementsViewModel.showLoadingIndicator {
-                            ProgressView()
-                                .progressViewStyle(CircularProgressViewStyle())
+                        if session.type == .mobile {
+                            if measurementsViewModel.showLoadingIndicator {
+                                ProgressView()
+                                    .progressViewStyle(CircularProgressViewStyle())
+                            }
+                        } else {
+                            if !isCollapsed && measurementsViewModel.showLoadingIndicator {
+                                ProgressView()
+                                    .progressViewStyle(CircularProgressViewStyle())
+                            }
                         }
                     }
                 }
