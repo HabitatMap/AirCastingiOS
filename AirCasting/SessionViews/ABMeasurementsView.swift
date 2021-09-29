@@ -66,7 +66,6 @@ struct _ABMeasurementsView: View {
                             ForEach(streams, id : \.self) { stream in
                                 if let threshold = thresholds.threshold(for: stream) {
                                     SingleMeasurementView(stream: stream,
-                                                          value: stream.latestValue ?? 0,
                                                           threshold: threshold,
                                                           selectedStream: _selectedStream,
                                                           measurementPresentationStyle: measurementPresentationStyle)
@@ -112,7 +111,6 @@ struct _ABMeasurementsView: View {
             Group {
                 ForEach(streamsToShow, id : \.self) { stream in
                     SingleMeasurementView(stream: stream,
-                                          value: nil,
                                           threshold: nil,
                                           selectedStream: .constant(nil),
                                           measurementPresentationStyle: .hideValues)
