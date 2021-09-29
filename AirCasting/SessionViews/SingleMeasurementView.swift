@@ -18,7 +18,7 @@ struct SingleMeasurementView: View {
             if measurementPresentationStyle == .showValues,
                let threshold = threshold {
                 _SingleMeasurementButton(stream: stream,
-                                         value: stream.latestValue ?? 0,
+                                         value: session.isDormant ? stream.averageValue : (stream.latestValue ?? 0),
                                          selectedStream: $selectedStream,
                                          threshold: threshold)
             }

@@ -26,7 +26,6 @@ protocol MeasurementStreamStorageContextUpdate {
 extension HiddenCoreDataMeasurementStreamStorage {
     func addMeasurementValue(_ value: Double, at location: CLLocationCoordinate2D? = nil, toStreamWithID id: MeasurementStreamLocalID) throws {
         try addMeasurement(Measurement(time: Date(), value: value, location: location), toStreamWithID: id)
-        try save()
     }
 }
 
