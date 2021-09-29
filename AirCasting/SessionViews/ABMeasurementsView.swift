@@ -68,7 +68,8 @@ struct _ABMeasurementsView: View {
                                     SingleMeasurementView(stream: stream,
                                                           threshold: threshold,
                                                           selectedStream: _selectedStream,
-                                                          measurementPresentationStyle: measurementPresentationStyle)
+                                                          measurementPresentationStyle: measurementPresentationStyle,
+                                                          isDormant: session.isDormant)
                                 }
                             }
                         }
@@ -113,7 +114,8 @@ struct _ABMeasurementsView: View {
                     SingleMeasurementView(stream: stream,
                                           threshold: nil,
                                           selectedStream: .constant(nil),
-                                          measurementPresentationStyle: .hideValues)
+                                          measurementPresentationStyle: .hideValues,
+                                          isDormant: session.isDormant)
                 }
             }.padding(.horizontal, 8)
             .frame(maxWidth: .infinity, alignment: .leading)
