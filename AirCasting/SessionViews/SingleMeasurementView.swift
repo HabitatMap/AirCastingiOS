@@ -5,8 +5,7 @@ import SwiftUI
 import AirCastingStyling
 
 struct SingleMeasurementView: View {
-    let stream: MeasurementStreamEntity
-    let value: Double?
+    @ObservedObject var stream: MeasurementStreamEntity
     var threshold: SensorThreshold?
     @Binding var selectedStream: MeasurementStreamEntity?
     let measurementPresentationStyle: MeasurementPresentationStyle
@@ -17,10 +16,9 @@ struct SingleMeasurementView: View {
                 .font(Font.system(size: 13))
                 .scaledToFill()
             if measurementPresentationStyle == .showValues,
-               let value = value,
                let threshold = threshold {
                 _SingleMeasurementButton(stream: stream,
-                                         value: value,
+                                         value: stream.latestValue ?? 0,
                                          selectedStream: $selectedStream,
                                          threshold: threshold)
             }
