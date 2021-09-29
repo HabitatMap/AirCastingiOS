@@ -116,7 +116,6 @@ private extension MicrophoneManager {
         measurementStreamStorage.accessStorage { storage in
             do {
                 try storage.addMeasurementValue(decibels, at: location, toStreamWithID: self.measurementStreamLocalID!)
-                try storage.save()
             } catch {
                 Log.info("\(error)")
             }

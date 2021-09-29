@@ -42,18 +42,20 @@ final class DefaultSyncingMeasurementsViewModel: SyncingMeasurementsViewModel {
                 let dataBaseStreams = data.streams.values.map { value in
                     SynchronizationDataConverter().convertDownloadDataToDatabaseStream(data: value)
                 }
-                dataBaseStreams.forEach { stream in
-                    stream.measurements.forEach { measurement in
-                        let location: CLLocationCoordinate2D? = {
-                            guard let latitude = measurement.latitude,
-                                  let longitude = measurement.longitude else { return CLLocationCoordinate2D(latitude: 200, longitude: 200) }
-                            return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-                        }()
-                        
-                        let sessionId = self.session.uuid!
-                        let sensorName = stream.sensorName
-                        let sessionName = self.session.name
-                        measurementStreamStorage.accessStorage { storage in
+                
+                let sessionId = self.session.uuid!
+                let sessionName = self.session.name
+                
+                measurementStreamStorage.accessStorage { storage in
+                    
+                    dataBaseStreams.forEach { stream in
+                        stream.measurements.forEach { measurement in
+                            let location: CLLocationCoordinate2D? = {
+                                guard let latitude = measurement.latitude,
+                                      let longitude = measurement.longitude else { return CLLocationCoordinate2D(latitude: 200, longitude: 200) }
+                                return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+                            }()
+                            let sensorName = stream.sensorName
                             do {
                                 guard let streamID = try storage.existingMeasurementStream(sessionId, name: sensorName) else {
                                     Log.info("failed to get existing streamID for synced measurements from session \(String(describing: sessionName))")
@@ -65,8 +67,6 @@ final class DefaultSyncingMeasurementsViewModel: SyncingMeasurementsViewModel {
                                 Log.info("\(error)")
                             }
                         }
-                    }
-                    measurementStreamStorage.accessStorage { storage in
                         do {
                             try storage.saveThresholdFor(sensorName: stream.sensorName,
                                                          thresholdVeryHigh: Int32(stream.thresholdVeryHigh),
@@ -74,18 +74,14 @@ final class DefaultSyncingMeasurementsViewModel: SyncingMeasurementsViewModel {
                                                          thresholdMedium: Int32(stream.thresholdMedium),
                                                          thresholdLow: Int32(stream.thresholdLow),
                                                          thresholdVeryLow: Int32(stream.thresholdVeryLow))
-                            
-                            try storage.save()
                         } catch {
                             Log.info("\(error)")
                         }
                     }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
+                        self.showLoadingIndicator = false
+                    }
                 }
-                
-                DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
-                    self.showLoadingIndicator = false
-                }
-                
             case .failure(let error):
                 Log.info("\(error)")
             }

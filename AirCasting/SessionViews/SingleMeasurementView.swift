@@ -9,6 +9,7 @@ struct SingleMeasurementView: View {
     var threshold: SensorThreshold?
     @Binding var selectedStream: MeasurementStreamEntity?
     let measurementPresentationStyle: MeasurementPresentationStyle
+    let isDormant: Bool
     
     var body: some View {
         VStack(spacing: 3) {
@@ -18,7 +19,7 @@ struct SingleMeasurementView: View {
             if measurementPresentationStyle == .showValues,
                let threshold = threshold {
                 _SingleMeasurementButton(stream: stream,
-                                         value: stream.latestValue ?? 0,
+                                         value: isDormant ? stream.averageValue : (stream.latestValue ?? 0),
                                          selectedStream: $selectedStream,
                                          threshold: threshold)
             }
