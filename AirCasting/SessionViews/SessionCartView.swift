@@ -229,7 +229,7 @@ private extension SessionCartView {
     var startTime: some View {
         let formatter = Constants.dataFormatter
         
-        if !(session.isMobile && session.isActive && session.deviceType == .MIC) {
+        if !(session.isMobile && session.isActive && session.isMIC) {
             formatter.timeZone = TimeZone.init(abbreviation: "UTC")
         }
             
@@ -246,7 +246,7 @@ private extension SessionCartView {
     var endTime: some View {
         let formatter = Constants.dataFormatter
         
-        if !(session.isMobile && session.isActive && session.deviceType == .MIC) {
+        if !(session.isMobile && session.isActive && session.isMIC) {
             formatter.timeZone =  TimeZone.init(abbreviation: "UTC")
         }
             
