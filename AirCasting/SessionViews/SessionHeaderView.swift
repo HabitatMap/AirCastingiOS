@@ -202,14 +202,24 @@ private extension SessionHeaderView {
     func adaptTimeAndDate() -> Text {
             let formatter = DateIntervalFormatter()
             formatter.locale = Locale(identifier: "en_US")
-        if !(session.isMobile && session.isActive) {
+            formatter.dateTemplate = "MM/dd/yyyy HH:mm"
+        
+        if !(session.isMobile && session.isActive && session.deviceType == .MIC) {
             formatter.timeZone =  TimeZone.init(abbreviation: "UTC")
         }
-            formatter.dateTemplate = "MM/dd/yyyy HH:mm"
             
-            guard let start = session.startTime else { return Text("") }
-            let end = session.endTime ?? Date()
+            guard var start = session.startTime else { return Text("") }
+            var end = session.endTime ?? Date()
+        
+        if session.isMobile && session.deviceType == .AIRBEAM3 && session.endTime == nil {
+            end = end.currentUTCTimeZoneDate
+        }
      
+        if session.isFixed && session.measurementStreams == [] {
+            start = start.currentUTCTimeZoneDate
+            end = end.currentUTCTimeZoneDate
+        }
+        
             let string = formatter.string(from: start, to: end)
             return Text(string)
         }
