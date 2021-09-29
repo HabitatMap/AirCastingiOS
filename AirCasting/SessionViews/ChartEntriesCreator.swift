@@ -45,12 +45,3 @@ final class ChartEntriesCreator {
         return values.isEmpty ? nil : round(values.reduce(0, +)/Double(values.count))
     }
 }
-
-extension Date {
-    var roundedToSecond: Date {
-        let date = self
-        let diff = 1000000000 - Calendar.current.component(.nanosecond, from: date)
-        return Calendar.current.date(byAdding: .nanosecond, value: diff, to: date)!
-    }
-}
-
