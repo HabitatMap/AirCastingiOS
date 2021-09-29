@@ -26,7 +26,6 @@ protocol MeasurementStreamStorageContextUpdate {
 extension HiddenCoreDataMeasurementStreamStorage {
     func addMeasurementValue(_ value: Double, at location: CLLocationCoordinate2D? = nil, toStreamWithID id: MeasurementStreamLocalID) throws {
         try addMeasurement(Measurement(time: Date(), value: value, location: location), toStreamWithID: id)
-        try save()
     }
 }
 
@@ -164,7 +163,9 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
     func updateSessionEndtime(_ endTime: Date, for sessionUUID: SessionUUID) throws {
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
         sessionEntity.endTime = endTime.currentUTCTimeZoneDate
-        sessionEntity.startTime = sessionEntity.startTime?.currentUTCTimeZoneDate
+        if !(sessionEntity.isMobile && sessionEntity.deviceType == .AIRBEAM3) {
+            sessionEntity.startTime = sessionEntity.startTime?.currentUTCTimeZoneDate
+        }
         try context.save()
     }
     
