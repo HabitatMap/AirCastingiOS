@@ -16,4 +16,10 @@ extension Date {
         let dateFormatter = DateFormatters.DateExtension.utcTimeZoneDateFormatter
         return dateFormatter.date(from: stringDate)!
     }
+
+    var roundedToSecond: Date {
+        let date = self
+        let diff = 1000000000 - Calendar.current.component(.nanosecond, from: date)
+        return Calendar.current.date(byAdding: .nanosecond, value: diff, to: date)!
+    }
 }
