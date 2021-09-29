@@ -206,14 +206,6 @@ private extension SessionCartView {
     
     func pollutionChart(thresholds: [SensorThreshold]) -> some View {
         
-        let start = session.startTime ?? Date()
-        let end = session.endTime ?? Date()
-        
-        let dateFormatter : DateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "HH:mm"
-        let startTime = dateFormatter.string(from: start)
-        let endTime = dateFormatter.string(from: end)
-        
         return VStack() {
             Group {
                 if let selectedStream = selectedStream {
@@ -222,17 +214,55 @@ private extension SessionCartView {
                         .frame(height: 120)
                         .disabled(true)
                     HStack() {
-                            Text(startTime)
+                            startTime
                             Spacer()
                         Text("\(Strings.SessionCartView.avgSession) \(selectedStream.unitSymbol ?? "")")
                             Spacer()
-                            Text(endTime)
+                            endTime
                     }.foregroundColor(.aircastingGray)
                     .font(Font.muli(size: 13, weight: .semibold))
                 }
             }
         }
     }
+    
+    var startTime: some View {
+        let formatter = Constants.dataFormatter
+        
+        if !(session.isMobile && session.isActive && session.deviceType == .MIC) {
+            formatter.timeZone = TimeZone.init(abbreviation: "UTC")
+        }
+            
+            guard var start = session.startTime else { return Text("") }
+     
+        if session.isFixed && session.measurementStreams == [] {
+            start = start.currentUTCTimeZoneDate
+        }
+        
+        let string = formatter.string(from: start)
+        return Text(string)
+        }
+    
+    var endTime: some View {
+        let formatter = Constants.dataFormatter
+        
+        if !(session.isMobile && session.isActive && session.deviceType == .MIC) {
+            formatter.timeZone =  TimeZone.init(abbreviation: "UTC")
+        }
+            
+            var end = session.endTime ?? Date()
+        
+        if session.isMobile && session.deviceType == .AIRBEAM3 && session.endTime == nil {
+            end = end.currentUTCTimeZoneDate
+        }
+     
+        if session.isFixed && session.measurementStreams == [] {
+            end = end.currentUTCTimeZoneDate
+        }
+        
+        let string = formatter.string(from: end)
+        return Text(string)
+        }
     
     func displayButtons(thresholds: [SensorThreshold]) -> some View {
         HStack(spacing: 20) {

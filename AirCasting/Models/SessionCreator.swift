@@ -81,7 +81,7 @@ final class MobilePeripheralSessionCreator: SessionCreator {
                               name: sessionContext.sessionName,
                               deviceType: sessionContext.deviceType,
                               location: startingLocation,
-                              startTime: Date(),
+                              startTime: Date().currentUTCTimeZoneDate,
                               tags: sessionContext.sessionTags,
                               status: .NEW)
 

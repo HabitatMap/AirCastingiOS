@@ -164,7 +164,9 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
     func updateSessionEndtime(_ endTime: Date, for sessionUUID: SessionUUID) throws {
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
         sessionEntity.endTime = endTime.currentUTCTimeZoneDate
-        sessionEntity.startTime = sessionEntity.startTime?.currentUTCTimeZoneDate
+        if !(sessionEntity.isMobile && sessionEntity.deviceType == .AIRBEAM3) {
+            sessionEntity.startTime = sessionEntity.startTime?.currentUTCTimeZoneDate
+        }
         try context.save()
     }
     
