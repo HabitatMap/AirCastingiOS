@@ -86,8 +86,7 @@ final class CreateSessionAPIService {
     }(JSONDecoder())
 
     private lazy var encoder: JSONEncoder = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        let formatter = DateFormatters.CreateSessionAPIService.encoderDateFormatter
         $0.dateEncodingStrategy = .formatted(formatter)
         return $0
     }(JSONEncoder())
