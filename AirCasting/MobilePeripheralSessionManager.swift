@@ -76,7 +76,6 @@ class MobilePeripheralSessionManager {
                     return try self.createSessionStream(stream, sessionUUID)
                 }
                 try storage.addMeasurementValue(stream.measuredValue, at: location, toStreamWithID: id)
-                try storage.save()
             } catch {
                 Log.info("\(error)")
             }
@@ -103,7 +102,6 @@ class MobilePeripheralSessionManager {
             do {
                 streamsIDs[stream.sensorName] = try storage.createMeasurementStream(sessionStream, for: sessionUUID)
                 try storage.addMeasurementValue(stream.measuredValue, at: location, toStreamWithID: streamsIDs[stream.sensorName]!)
-                try storage.save()
             } catch {
                 Log.info("\(error)")
             }

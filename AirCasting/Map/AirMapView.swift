@@ -11,6 +11,9 @@ import Foundation
 import CoreData
 
 struct AirMapView: View {
+    @Environment(\.scenePhase) var scenePhase
+    @Environment(\.presentationMode) var presentationMode
+    
     var thresholds: [SensorThreshold]
     @StateObject var statsContainerViewModel: StatisticsContainerViewModel
     @StateObject var mapStatsDataSource: MapStatsDataSource
@@ -32,7 +35,9 @@ struct AirMapView: View {
     var body: some View {
         VStack(alignment: .trailing, spacing: 20) {
             SessionHeaderView(action: {},
-                              isExpandButtonNeeded: false, isCollapsed: Binding.constant(false),
+                              isExpandButtonNeeded: false,
+                              isSensorTypeNeeded: false,
+                              isCollapsed: Binding.constant(false),
                               session: session,
                               sessionStopperFactory: sessionStoppableFactory)
             ABMeasurementsView(viewModelProvider: { DefaultSyncingMeasurementsViewModel(measurementStreamStorage: measurementStreamStorage,
@@ -56,8 +61,11 @@ struct AirMapView: View {
                                 mapStatsDataSource?.visiblePathPoints = visiblePoints
                                 statsContainerViewModel?.adjustForNewData()
                             }
-                    StatisticsContainerView(statsContainerViewModel: statsContainerViewModel,
-                                            threshold: threshold)     
+                        // Statistics container shouldn't be presented in mobile dormant tab
+                        if !(session.type == .mobile && session.isActive == false) {
+                            StatisticsContainerView(statsContainerViewModel: statsContainerViewModel,
+                                                    threshold: threshold)
+                        }
                     }
                     NavigationLink(destination: HeatmapSettingsView(changedThresholdValues: threshold.rawThresholdsBinding)) {
                         EditButtonView()
@@ -71,6 +79,13 @@ struct AirMapView: View {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
+        .onChange(of: scenePhase) { phase in
+            switch phase {
+            case .background, .inactive: self.presentationMode.wrappedValue.dismiss()
+            case .active: break
+            @unknown default: fatalError()
+            }
+        }
         .padding()
     }
 }

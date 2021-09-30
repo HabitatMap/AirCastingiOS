@@ -14,4 +14,11 @@ struct Constants {
         static let dotWidth = 20
         static let dotHeight = 20
     }
+    
+    static let dataFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US")
+        formatter.dateFormat = "HH:mm"
+        return formatter
+    }()
 }

@@ -104,7 +104,7 @@ class AirCastingGraph: UIView {
         if !didMoveOrScaleGraph && isAutozoomEnabled {
             zoomoutToThirtyMinutes(dataSet: dataSet)
         }
-        callDateRangeChangeObserver()
+//        callDateRangeChangeObserver()
     }
     
     private func callDateRangeChangeObserver() {
@@ -143,12 +143,12 @@ extension AirCastingGraph: ChartViewDelegate {
     
     // Callbacks when the chart is scaled / zoomed via pinch zoom gesture.
     @objc func chartScaled(_ chartView: ChartViewBase, scaleX: CGFloat, scaleY: CGFloat) {
-        callDateRangeChangeObserver()
+//        callDateRangeChangeObserver()
         didMoveOrScaleGraph = true
     }
     // Callbacks when the chart is moved / translated via drag gesture.
     @objc func chartTranslated(_ chartView: ChartViewBase, dX: CGFloat, dY: CGFloat) {
-        callDateRangeChangeObserver()
+//        callDateRangeChangeObserver()
         didMoveOrScaleGraph = true
     }
 }

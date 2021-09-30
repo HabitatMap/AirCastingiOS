@@ -19,7 +19,9 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
     var body: some View {
         VStack(alignment: .trailing) {
             SessionHeaderView(action: {},
-                              isExpandButtonNeeded: false, isCollapsed: Binding.constant(false),
+                              isExpandButtonNeeded: false,
+                              isSensorTypeNeeded: false,
+                              isCollapsed: Binding.constant(false),
                               session: session,
                               sessionStopperFactory: sessionStoppableFactory).padding()
             
@@ -47,10 +49,12 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                                         graphStatsDataSource?.dateRange = range
                                         statsContainerViewModel?.adjustForNewData()
                                       }
-                                StatisticsContainerView(statsContainerViewModel: statsContainerViewModel,
+                                // Statistics container shouldn't be presented in mobile dormant tab
+                                if !(session.type == .mobile && session.isActive == false) {
+                                    StatisticsContainerView(statsContainerViewModel: statsContainerViewModel,
                                                         threshold: threshold)
+                                }
                             }
-
                         }
                         HStack() {
                             startTimeText
