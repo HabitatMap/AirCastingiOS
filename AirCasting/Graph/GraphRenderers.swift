@@ -6,7 +6,7 @@ import Charts
 
 class TimeAxisRenderer: XAxisRenderer {
     
-    lazy var dateFormatter = DateFormatter()
+    lazy var dateFormatter = DateFormatters.TimeAxisRenderer.shortUSLocaleDateFormatter
     
     override func drawLabels(context: CGContext, pos: CGFloat, anchor: CGPoint) {
         let minPxX = viewPortHandler.contentLeft
@@ -15,8 +15,6 @@ class TimeAxisRenderer: XAxisRenderer {
         
         let minX = transformer!.valueForTouchPoint(.init(x: minPxX, y: 0)).x
         let maxX = transformer!.valueForTouchPoint(.init(x: maxPxX, y: 0)).x
-        
-        dateFormatter.timeStyle = .short
         
         let startingTime = Date(timeIntervalSince1970: TimeInterval(minX))
         let timeLeftLabel = dateFormatter.string(from: startingTime)

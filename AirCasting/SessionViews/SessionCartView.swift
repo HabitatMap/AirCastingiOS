@@ -209,8 +209,7 @@ private extension SessionCartView {
         let start = session.startTime ?? Date()
         let end = session.endTime ?? Date()
         
-        let dateFormatter : DateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "HH:mm"
+        let dateFormatter = DateFormatters.SessionCartView.pollutionChartDateFormatter
         let startTime = dateFormatter.string(from: start)
         let endTime = dateFormatter.string(from: end)
         

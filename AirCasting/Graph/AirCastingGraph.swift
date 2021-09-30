@@ -51,18 +51,12 @@ class AirCastingGraph: UIView {
         lineChartView.legend.enabled = false
         lineChartView.scaleYEnabled = false
         
-        lineChartView.xAxis.drawLabelsEnabled = true
+        lineChartView.xAxis.drawLabelsEnabled = false
         lineChartView.xAxis.labelCount = 2
-        lineChartView.extraBottomOffset = 25
+        lineChartView.extraBottomOffset = 2
         
         lineChartView.highlightPerTapEnabled = false
         lineChartView.highlightPerDragEnabled = false
-        
-        lineChartView.xAxisRenderer = TimeAxisRenderer(viewPortHandler: lineChartView.viewPortHandler,
-                                                       xAxis: lineChartView.xAxis,
-                                                       transformer: lineChartView.getTransformer(forAxis: .left))
-        
-        
         renderer = MultiColorGridRenderer(viewPortHandler: lineChartView.viewPortHandler,
                                           yAxis: lineChartView.leftAxis,
                                           transformer: lineChartView.getTransformer(forAxis: .left))

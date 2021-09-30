@@ -22,11 +22,7 @@ struct AirBeam3Configurator {
     }
     
     private let hexMessageBuilder = HexMessagesBuilder()
-    private let dateFormatter: DateFormatter = {
-        $0.dateFormat = "dd/MM/YY-hh:mm:ss"
-        $0.locale = Locale(identifier: "en_US_POSIX")
-        return $0
-    }(DateFormatter())
+    private let dateFormatter: DateFormatter = DateFormatters.AirBeam3Configurator.usLocaleFullDateDateFormatter
     
     // have notifications about new measurements
     private let MEASUREMENTS_CHARACTERISTIC_UUIDS: [CBUUID] = [
