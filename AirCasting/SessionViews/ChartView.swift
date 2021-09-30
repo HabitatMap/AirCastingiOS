@@ -54,6 +54,8 @@ class UI_PollutionChart: UIView {
 struct ChartView: UIViewRepresentable {
     
     @ObservedObject var stream: MeasurementStreamEntity
+    @ObservedObject var viewModel: ChartViewModel
+    
     var thresholds: [SensorThreshold]
 
     typealias UIViewType = UI_PollutionChart
@@ -63,6 +65,7 @@ struct ChartView: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: UI_PollutionChart, context: Context) {
+        viewModel.updateChart(for: stream)
         let chartCreator = ChartEntriesCreator(stream: stream)
         var entries = chartCreator.generateEntries()
         
@@ -126,7 +129,7 @@ struct ChartView: UIViewRepresentable {
 #if DEBUG
 struct MeasurementChart_Previews: PreviewProvider {
     static var previews: some View {
-        ChartView(stream: .mock, thresholds: [.mock])
+        ChartView(stream: .mock, viewModel: ChartViewModel(), thresholds: [.mock])
             .frame(width: 300, height: 250, alignment: .center)
     }
 }
