@@ -12,6 +12,7 @@
 		332F521425FA38430047236D /* MicrophoneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332F521325FA38430047236D /* MicrophoneManager.swift */; };
 		3346F1F626318C1600BA4695 /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3346F1F526318C1600BA4695 /* SettingsManager.swift */; };
 		3362B4ED25E69987008D61BA /* CreateSessionDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3362B4EC25E69987008D61BA /* CreateSessionDetailsView.swift */; };
+		33769A5C2705B06F007D1EA7 /* ChartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33769A5B2705B06F007D1EA7 /* ChartViewModel.swift */; };
 		338C30E225F1044B00E0305C /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 338C30E125F1044B00E0305C /* PersistenceController.swift */; };
 		338C30E825F10BFE00E0305C /* AirCasting.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 338C30E625F10BFE00E0305C /* AirCasting.xcdatamodeld */; };
 		33BA3368266E4BCA00899343 /* MobilePeripheralSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33BA3367266E4BCA00899343 /* MobilePeripheralSessionManager.swift */; };
@@ -293,6 +294,7 @@
 		332F521325FA38430047236D /* MicrophoneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrophoneManager.swift; sourceTree = "<group>"; };
 		3346F1F526318C1600BA4695 /* SettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
 		3362B4EC25E69987008D61BA /* CreateSessionDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSessionDetailsView.swift; sourceTree = "<group>"; };
+		33769A5B2705B06F007D1EA7 /* ChartViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartViewModel.swift; sourceTree = "<group>"; };
 		338C30E125F1044B00E0305C /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceController.swift; sourceTree = "<group>"; };
 		338C30E725F10BFE00E0305C /* AirCasting.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AirCasting.xcdatamodel; sourceTree = "<group>"; };
 		33BA3367266E4BCA00899343 /* MobilePeripheralSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobilePeripheralSessionManager.swift; sourceTree = "<group>"; };
@@ -590,6 +592,7 @@
 			children = (
 				AC6D567E25AC54A400D221BA /* ChartView.swift */,
 				3326BD552642E71E00DE8E6D /* ChartEntriesCreator.swift */,
+				33769A5B2705B06F007D1EA7 /* ChartViewModel.swift */,
 			);
 			name = Chart;
 			sourceTree = "<group>";
@@ -1783,6 +1786,7 @@
 				4F945EEE2649F3F5008A5B22 /* SessionCreator.swift in Sources */,
 				4F945EF02649F455008A5B22 /* AirBeamFixedWifiSessionCreator.swift in Sources */,
 				B30BAC132694AA3200AE0476 /* MeasurementsStatisticsController.swift in Sources */,
+				33769A5C2705B06F007D1EA7 /* ChartViewModel.swift in Sources */,
 				4F945EF02649F455008A5B22 /* AirBeamFixedWifiSessionCreator.swift in Sources */,
 				33BA3368266E4BCA00899343 /* MobilePeripheralSessionManager.swift in Sources */,
 				4F2D84EB2647DBE0003D9ED5 /* MeasurementStreamStorage.swift in Sources */,
