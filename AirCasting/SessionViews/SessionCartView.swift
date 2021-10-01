@@ -227,7 +227,7 @@ private extension SessionCartView {
     }
     
     var startTime: some View {
-        let formatter = Constants.dataFormatter
+        let formatter = DateFormatters.SessionCartView.pollutionChartDateFormatter
         
         if !(session.isMobile && session.isActive && session.isMIC) {
             formatter.timeZone = TimeZone.init(abbreviation: "UTC")
@@ -244,7 +244,7 @@ private extension SessionCartView {
         }
     
     var endTime: some View {
-        let formatter = Constants.dataFormatter
+        let formatter = DateFormatters.SessionCartView.pollutionChartDateFormatter
         
         if !(session.isMobile && session.isActive && session.isMIC) {
             formatter.timeZone =  TimeZone.init(abbreviation: "UTC")

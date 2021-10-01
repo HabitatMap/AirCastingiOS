@@ -40,14 +40,15 @@ struct ChooseSessionTypeView: View {
                                 Spacer()
                                 moreInfo
                             }
-                            HStack(spacing: 60) {
+                            HStack(spacing: 30) {
                                 fixedSessionButton
                                 mobileSessionButton
                             }
                         }
                         Spacer()
                     }
-                    .padding()
+                    .padding(.vertical)
+                    .padding(.horizontal, 30)
                     .background(
                         Color.aircastingBackground.opacity(0.25)
                             .ignoresSafeArea()
@@ -111,14 +112,15 @@ struct ChooseSessionTypeView: View {
                                 Spacer()
                                 moreInfo
                             }
-                            HStack(spacing: 60) {
+                            HStack(spacing: 30) {
                                 fixedSessionButton
                                 mobileSessionButton
                             }
                         }
                         Spacer()
                     }
-                    .padding()
+                    .padding(.vertical)
+                    .padding(.horizontal, 30)
                     .background(
                         Color.aircastingBackground.opacity(0.25)
                             .ignoresSafeArea()
@@ -244,9 +246,10 @@ struct ChooseSessionTypeView: View {
             Text(Strings.ChooseSessionTypeView.fixedLabel_2)
                 .font(Font.muli(size: 14, weight: .regular))
                 .foregroundColor(.aircastingGray)
+                .multilineTextAlignment(.leading)
         }
         .padding()
-        .frame(maxWidth: 145, maxHeight: 145)
+        .frame(maxWidth: 180, maxHeight: 145)
         .background(Color.white)
         .shadow(color: Color(white: 150/255, opacity: 0.5), radius: 9, x: 0, y: 1)
     }
@@ -259,9 +262,10 @@ struct ChooseSessionTypeView: View {
             Text(Strings.ChooseSessionTypeView.mobileLabel_2)
                 .font(Font.muli(size: 14, weight: .regular))
                 .foregroundColor(.aircastingGray)
+                .multilineTextAlignment(.leading)
         }
         .padding()
-        .frame(maxWidth: 145, maxHeight: 145)
+        .frame(maxWidth: 180, maxHeight: 145)
         .background(Color.white)
         .shadow(color: Color(white: 150/255, opacity: 0.5), radius: 9, x: 0, y: 1)
     }

@@ -57,12 +57,6 @@ class AirCastingGraph: UIView {
         
         lineChartView.highlightPerTapEnabled = false
         lineChartView.highlightPerDragEnabled = false
-        #warning("It will be commented for the possibility of future use then - Think about it please")
-//        lineChartView.xAxisRenderer = TimeAxisRenderer(viewPortHandler: lineChartView.viewPortHandler,
-//                                                       xAxis: lineChartView.xAxis,
-//                                                       transformer: lineChartView.getTransformer(forAxis: .left))
-        
-        
         renderer = MultiColorGridRenderer(viewPortHandler: lineChartView.viewPortHandler,
                                           yAxis: lineChartView.leftAxis,
                                           transformer: lineChartView.getTransformer(forAxis: .left))

@@ -38,8 +38,8 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                                thresholds: thresholds,
                                measurementPresentationStyle: .showValues)
                 .padding(.horizontal)
-            
-            if procceding(session: session) {
+           
+            if isProceeding(session: session) {
                     if let threshold = thresholds.threshold(for: selectedStream) {
                         ZStack(alignment: .topLeading) {
                             if let selectedStream = selectedStream {
@@ -81,51 +81,34 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
     }
     
     var startTimeText: some View {
-        startTime()
+        // Active mobile sessions are being represented in device time, so no UTC reformatting is needed
+        // Other sessions are already in the UTC format
+        let isActiveMobile = session.isMobile && session.isActive
+        let formatter = isActiveMobile ? DateFormatters.GraphView.usLocalTimeDateFormatter : DateFormatters.GraphView.mobileActiveDateFormatter
+        
+        guard let start = session.startTime else { return Text("") }
+        
+        let string = formatter.string(from: start)
+        return Text(string)
     }
     
     var endTimeText: some View {
-        endTime()
+        // Active mobile sessions are being represented in device time, so no UTC reformatting is needed
+        // Other sessions are already in the UTC format
+        let isActiveMobile = session.isMobile && session.isActive
+        let formatter = isActiveMobile ? DateFormatters.GraphView.usLocalTimeDateFormatter : DateFormatters.GraphView.mobileActiveDateFormatter
+        
+        let end = session.endTime ?? Date()
+        
+        let string = formatter.string(from: end)
+        return Text(string)
     }
     
-    func procceding(session: SessionEntity) -> Bool {
-        var showGraph = false
-        guard session.allStreams != nil else { return false }
-        (session.allStreams!.forEach({ stream in
-            (stream.allMeasurements != []) ? (showGraph = true) : (showGraph = false)
-        }))
-        if showGraph {
-            return true
-        } else {
-            return false
-        }
+    func isProceeding(session: SessionEntity) -> Bool {
+        return session.allStreams?.allSatisfy({ stream in
+            !(stream.allMeasurements?.isEmpty ?? true)
+        }) ?? false
     }
-    
-    func startTime() -> Text {
-            let formatter = DateFormatter()
-            formatter.locale = Locale(identifier: "en_US")
-        if !(session.isMobile && session.isActive) {
-            formatter.timeZone =  TimeZone.init(abbreviation: "UTC")
-        }
-            formatter.dateFormat = "HH:mm"
-            guard let start = session.startTime else { return Text("") }
-     
-            let string = formatter.string(from: start)
-            return Text(string)
-        }
-    
-    func endTime() -> Text {
-            let formatter = DateFormatter()
-            formatter.locale = Locale(identifier: "en_US")
-        if !(session.isMobile && session.isActive) {
-            formatter.timeZone =  TimeZone.init(abbreviation: "UTC")
-        }
-            formatter.dateFormat = "HH:mm"
-            let end = session.endTime ?? Date()
-     
-            let string = formatter.string(from: end)
-            return Text(string)
-        }
 }
 
 #if DEBUG
