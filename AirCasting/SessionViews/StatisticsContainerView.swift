@@ -26,10 +26,11 @@ struct StatisticsContainerView<ViewModelType>: View where ViewModelType: Statist
         }
         .font(Font.muli(size: 12))
         .foregroundColor(.aircastingGray)
-        .frame(width: 260, height: 85)
+        .frame(width: 220, height: 80)
         .background(Color.white)
         .cornerRadius(8)
-        .padding()
+        .padding(.leading, 10)
+        .padding(.top, 10)
     }
     
     private func standardParameter(value: Double) -> some View {
@@ -38,15 +39,15 @@ struct StatisticsContainerView<ViewModelType>: View where ViewModelType: Statist
                 .opacity(0.32)
                 .cornerRadius(7.5)
             HStack {
+                Spacer()
                 threshold.colorFor(value: Int32(value))
                     .clipShape(Circle())
                     .frame(width: 6, height: 6)
-                    .padding(.leading, 3)
                 Spacer()
                 Text("\(Int(value))")
-                    .padding(.trailing, 3)
                     .font(Font.muli(size: 12))
                     .minimumScaleFactor(0.1)
+                Spacer()
             }
         }.frame(width: 54, height: 27, alignment: .center)
     }
@@ -57,15 +58,15 @@ struct StatisticsContainerView<ViewModelType>: View where ViewModelType: Statist
                 .opacity(0.32)
                 .cornerRadius(7.5)
             HStack {
+                Spacer()
                 threshold.colorFor(value: Int32(value))
                     .clipShape(Circle())
                     .frame(width: 8, height: 8)
-                    .padding(.leading, 5)
                 Spacer()
                 Text("\(Int(value))")
-                    .padding(.trailing, 5)
                     .font(Font.muli(size: 19))
                     .minimumScaleFactor(0.1)
+                Spacer()
             }
         }.frame(width: 68, height: 33, alignment: .center)
     }
