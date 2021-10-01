@@ -44,7 +44,9 @@ final class ChartViewModel: ObservableObject {
     }
     
     private func generateEntries() {
-        var intervalEnd = Date()
+        guard var intervalEnd = stream.lastMeasurementTime else {
+            return
+        }
         var intervalStart = intervalEnd - timeUnit
         
         var entries = [ChartDataEntry]()
