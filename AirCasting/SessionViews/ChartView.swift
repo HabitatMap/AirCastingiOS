@@ -52,29 +52,30 @@ class UI_PollutionChart: UIView {
 }
 
 struct ChartView: UIViewRepresentable {
-    
-    @ObservedObject var stream: MeasurementStreamEntity
-    @ObservedObject var viewModel: ChartViewModel
-    
-    var thresholds: [SensorThreshold]
+    private let stream: MeasurementStreamEntity
+    private let thresholds: [SensorThreshold]
 
+    @StateObject var chartCreator: ChartViewModel
+    
     typealias UIViewType = UI_PollutionChart
+    
+    init(stream: MeasurementStreamEntity, thresholds: [SensorThreshold]) {
+        self.stream = stream
+        self.thresholds = thresholds
+        self._chartCreator = .init(wrappedValue: ChartViewModel(stream: stream))
+    }
     
     func makeUIView(context: Context) -> UI_PollutionChart {
         UI_PollutionChart()
     }
     
     func updateUIView(_ uiView: UI_PollutionChart, context: Context) {
-        viewModel.updateChart(for: stream)
-        let chartCreator = ChartEntriesCreator(stream: stream)
-        var entries = chartCreator.generateEntries()
+        guard !chartCreator.entries.isEmpty else { return }
         
-        if entries.isEmpty {
-            return()
-        } else {
-            entries.sort { (e1, e2) -> Bool in
-                e1.x < e2.x
-            }
+        var entries = chartCreator.entries
+        
+        entries.sort { (e1, e2) -> Bool in
+            e1.x < e2.x
         }
         
         let dataSet = LineChartDataSet(entries: entries)
@@ -129,7 +130,7 @@ struct ChartView: UIViewRepresentable {
 #if DEBUG
 struct MeasurementChart_Previews: PreviewProvider {
     static var previews: some View {
-        ChartView(stream: .mock, viewModel: ChartViewModel(), thresholds: [.mock])
+        ChartView(stream: .mock, thresholds: [.mock])
             .frame(width: 300, height: 250, alignment: .center)
     }
 }
