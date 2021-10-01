@@ -27,7 +27,7 @@ struct SessionCartView: View {
     @StateObject private var mapStatsViewModel: StatisticsContainerViewModel
     @StateObject private var graphStatsDataSource: GraphStatsDataSource
     @StateObject private var graphStatsViewModel: StatisticsContainerViewModel
-    
+
     init(session: SessionEntity,
          sessionCartViewModel: SessionCartViewModel,
          thresholds: [SensorThreshold],
@@ -207,8 +207,8 @@ private extension SessionCartView {
     func pollutionChart(thresholds: [SensorThreshold]) -> some View {
         
         return VStack() {
-            Group {
-                if let selectedStream = selectedStream {
+            if let selectedStream = selectedStream {
+                Group { 
                     ChartView(stream: selectedStream,
                               thresholds: thresholds)
                         .frame(height: 120)
