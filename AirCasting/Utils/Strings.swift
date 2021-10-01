@@ -402,7 +402,7 @@ struct Strings {
         static let fixedLabel_1: String = "Fixed session"
         static let fixedLabel_2: String = "for measuring in one place"
         static let mobileLabel_1: String = "Mobile session"
-        static let mobileLabel_2: String = "for moving around"
+        static let mobileLabel_2: String = "for moving\naround"
     }
     
     enum MoreInfoPopupView {
