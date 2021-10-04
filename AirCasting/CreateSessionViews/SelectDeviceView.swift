@@ -32,7 +32,6 @@ struct SelectDeviceView: View {
             bluetoothButton
             micButton
             Spacer()
-            chooseButton
             
         }.alert(isPresented: $showAlert) {
             Alert.locationAlert
@@ -59,6 +58,7 @@ struct SelectDeviceView: View {
                 })
         })
         .onAppear() {
+            selected = 0
             #warning("Handle that mobileWasTapped is somehow public")
             emptyDashboardButtonTapped.mobileWasTapped = false
         }
@@ -73,9 +73,14 @@ struct SelectDeviceView: View {
     
     var bluetoothButton: some View {
         Button(action: {
-            selected = 1
             // it doesn't have to be airbeam, it can be any device, but it doesn't influence anything, it's just needed for views flow
             sessionContext.deviceType = DeviceType.AIRBEAM3
+            selected = 1
+            if CBCentralManager.authorization != .denied && bluetoothManager.centralManagerState == .poweredOn {
+                isPowerABLinkActive = true
+            } else {
+                isTurnOnBluetoothLinkActive = true
+            }
         }, label: {
             bluetoothLabels
         })
@@ -84,8 +89,21 @@ struct SelectDeviceView: View {
     
     var micButton: some View {
         Button(action: {
-            selected = 2
             sessionContext.deviceType = DeviceType.MIC
+            selected = 2
+            if microphoneManager.recordPermissionGranted() {
+                isMicLinkActive = true
+            } else {
+                microphoneManager.requestRecordPermission { isGranted in
+                    DispatchQueue.main.async {
+                        if isGranted {
+                            isMicLinkActive = true
+                        } else {
+                            SettingsManager.goToAuthSettings()
+                        }
+                    }
+                }
+            }
         }, label: {
             micLabels
         })
@@ -112,34 +130,5 @@ struct SelectDeviceView: View {
                 .font(Font.muli(size: 14, weight: .regular))
                 .foregroundColor(.aircastingGray)
         }
-    }
-    
-    var chooseButton: some View {
-        Button(action: {
-            if selected == 1 {
-                if CBCentralManager.authorization != .denied && bluetoothManager.centralManagerState == .poweredOn {
-                    isPowerABLinkActive = true
-                } else {
-                    isTurnOnBluetoothLinkActive = true
-                }
-            } else if selected == 2 {
-                if microphoneManager.recordPermissionGranted() {
-                    isMicLinkActive = true
-                } else {
-                    microphoneManager.requestRecordPermission { (isGranted) in
-                        DispatchQueue.main.async {
-                            if isGranted {
-                                isMicLinkActive = true
-                            } else {
-                                SettingsManager.goToAuthSettings()
-                            }
-                        }
-                    }
-                }
-            }
-        }, label: {
-            Text(Strings.SelectDeviceView.chooseButton)
-        })
-        .buttonStyle(BlueButtonStyle())
     }
 }
