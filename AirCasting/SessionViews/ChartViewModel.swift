@@ -10,7 +10,7 @@ final class ChartViewModel: ObservableObject {
     private let stream: MeasurementStreamEntity
 
     private var timeUnit: Double {
-        stream.session.type == .mobile ? 60 : 60*60
+        stream.session.type == .mobile ? 60 : 60 * 60
     }
     
     private var mainTimer: Timer?
@@ -28,10 +28,9 @@ final class ChartViewModel: ObservableObject {
     }
     
     private func startTimers(_ session: SessionEntity) {
-        let sessionStartTime = session.startTime!
-        let secondsUntilFullMinute = timeUnit - Double(Int(Date().timeIntervalSince(sessionStartTime)) % Int(timeUnit))
+        let timeOfNextAverage = timeOfNextAverage()
 
-        firstTimer = Timer.scheduledTimer(withTimeInterval: TimeInterval(secondsUntilFullMinute), repeats: false) { [weak self] timer in
+        firstTimer = Timer.scheduledTimer(withTimeInterval: TimeInterval(timeOfNextAverage), repeats: false) { [weak self] timer in
             self?.generateEntries()
             self?.startMainTimer()
         }
@@ -44,7 +43,10 @@ final class ChartViewModel: ObservableObject {
     }
     
     private func generateEntries() {
-        guard var intervalEnd = stream.lastMeasurementTime else {
+        // Set up begning and end of the interval for the first average
+        //  - for fixed sessions we are taking the last full hour of the session, which has any measurements
+        //  - for mobile we are taking into account full minutes since the session started and we are taking the most recent one
+        guard var intervalEnd = endTime() else {
             return
         }
         var intervalStart = intervalEnd - timeUnit
@@ -64,9 +66,31 @@ final class ChartViewModel: ObservableObject {
         self.entries = entries
     }
     
+    private func endTime() -> Date? {
+        guard let lastMeasurementTime = stream.lastMeasurementTime else { return nil }
+        let sessionStartTime = stream.session.startTime!
+        
+        if stream.session.type == .fixed {
+            return lastMeasurementTime.roundedDownToHour
+        } else {
+            let secondsSinceFullMinuteFromSessionStart = Double(Int(Date().timeIntervalSince(sessionStartTime)) % Int(timeUnit))
+            return lastMeasurementTime - secondsSinceFullMinuteFromSessionStart
+        }
+    }
+    
+    private func timeOfNextAverage() -> Double {
+        let sessionStartTime = stream.session.startTime!
+        
+        if stream.session.type == .fixed {
+            return Date().roundedUpToHour.timeIntervalSince(Date())
+        } else {
+            return timeUnit - Double(Int(Date().timeIntervalSince(sessionStartTime)) % Int(timeUnit))
+        }
+    }
+    
     private func averagedValue(_ intervalStart: Date, _ intervalEnd: Date) -> Double? {
-        let measurements = stream.getMeasurementsFromTimeRange(intervalStart.roundedToSecond, intervalEnd.roundedToSecond)
+        let measurements = stream.getMeasurementsFromTimeRange(intervalStart.roundedDownToSecond, intervalEnd.roundedDownToSecond)
         let values = measurements.map { $0.value}
-        return values.isEmpty ? nil : round(values.reduce(0, +)/Double(values.count))
+        return values.isEmpty ? nil : round(values.reduce(0, +) / Double(values.count))
     }
 }
