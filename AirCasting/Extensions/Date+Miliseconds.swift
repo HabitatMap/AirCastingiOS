@@ -17,9 +17,18 @@ extension Date {
         return dateFormatter.date(from: stringDate)!
     }
 
-    var roundedToSecond: Date {
+    var roundedDownToSecond: Date {
         let date = self
-        let diff = 1000000000 - Calendar.current.component(.nanosecond, from: date)
-        return Calendar.current.date(byAdding: .nanosecond, value: diff, to: date)!
+        return Date(timeIntervalSinceReferenceDate: date.timeIntervalSinceReferenceDate.rounded(.towardZero))
+    }
+
+    var roundedUpToHour: Date {
+        let date = self
+        return Date(timeIntervalSinceReferenceDate: (date.timeIntervalSinceReferenceDate / 3600.0).rounded(.awayFromZero) * 3600.0)
+    }
+    
+    var roundedDownToHour: Date {
+        let date = self
+        return Date(timeIntervalSinceReferenceDate: (date.timeIntervalSinceReferenceDate / 3600.0).rounded(.towardZero) * 3600.0)
     }
 }
