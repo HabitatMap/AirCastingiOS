@@ -62,7 +62,7 @@ struct ChartView: UIViewRepresentable {
     init(stream: MeasurementStreamEntity, thresholds: [SensorThreshold]) {
         self.stream = stream
         self.thresholds = thresholds
-        self._chartCreator = .init(wrappedValue: ChartViewModel(stream: stream))
+        self._chartCreator = .init(wrappedValue: ChartViewModel(stream: stream, numberOfEntries: 9))
     }
     
     func makeUIView(context: Context) -> UI_PollutionChart {
