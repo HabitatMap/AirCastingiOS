@@ -24,9 +24,10 @@ final class ChartViewModel: ObservableObject {
     
     init(stream: MeasurementStreamEntity, numberOfEntries: Int) {
         self.stream = stream
+        self.numberOfEntries = numberOfEntries
         generateEntries()
         startTimers(stream.session)
-        self.numberOfEntries = numberOfEntries
+        
     }
     
     private func startTimers(_ session: SessionEntity) {
