@@ -25,14 +25,18 @@ struct SessionHeaderView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 13) {
-            HStack {
-                dateAndTime
-                    .foregroundColor(Color.aircastingTimeGray)
-                Spacer()
-                if session.isActive {
-                    actionsMenuMobile
+            ZStack {
+                HStack {
+                    dateAndTime
+                        .foregroundColor(Color.aircastingTimeGray)
+                    Spacer()
                 }
-            }.sheet(isPresented: $shareModal, content: {
+                HStack {
+                    Spacer()
+                    session.isActive ? actionsMenuMobile : nil
+                }
+            }
+            .sheet(isPresented: $shareModal, content: {
                 ShareView(showModal: $showModal)
             })
             .sheet(isPresented: $deleteModal, content: {
@@ -113,7 +117,7 @@ private extension SessionHeaderView {
             ZStack(alignment: .trailing) {
                 EditButtonView()
                 Rectangle()
-                    .frame(width: 35, height: 25, alignment: .trailing)
+                    .frame(width: 50, height: 35, alignment: .trailing)
                     .opacity(0.0001)
             }
         }.alert(isPresented: $showingFinishAlert) {
