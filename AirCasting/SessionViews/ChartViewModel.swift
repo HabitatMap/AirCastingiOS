@@ -12,6 +12,7 @@ final class ChartViewModel: ObservableObject {
     private var timeUnit: Double {
         stream.session.type == .mobile ? TimeInterval.minute : TimeInterval.hour
     }
+    let formatter = DateFormatter()
     
     private var mainTimer: Timer?
     private var firstTimer: Timer?
@@ -23,8 +24,10 @@ final class ChartViewModel: ObservableObject {
     }
     
     init(stream: MeasurementStreamEntity, numberOfEntries: Int) {
+        formatter.dateFormat = "HH:mm:ss.SSSS"
         self.stream = stream
         self.numberOfEntries = numberOfEntries
+        print("First generating")
         generateEntries()
         startTimers(stream.session)
         
@@ -32,8 +35,12 @@ final class ChartViewModel: ObservableObject {
     
     private func startTimers(_ session: SessionEntity) {
         let timeOfNextAverage = timeOfNextAverage()
+        print("It's: \(formatter.string(from: Date()))")
+        print("Session start time: \(formatter.string(from: session.startTime!))")
+        print("Next average time: \(timeOfNextAverage)")
 
         firstTimer = Timer.scheduledTimer(withTimeInterval: TimeInterval(timeOfNextAverage), repeats: false) { [weak self] timer in
+            print("Generating second entries")
             self?.generateEntries()
             self?.startMainTimer()
         }
@@ -57,7 +64,7 @@ final class ChartViewModel: ObservableObject {
         var entries = [ChartDataEntry]()
         
         for i in (0..<numberOfEntries).reversed() {
-            if (intervalStart < stream.session.startTime!) { break }
+            if (intervalStart < stream.session.startTime!.roundedDownToSecond) { break }
             let average = averagedValue(intervalStart, intervalEnd)
             if let average = average {
                 entries.append(ChartDataEntry(x: Double(i), y: average))
@@ -65,6 +72,7 @@ final class ChartViewModel: ObservableObject {
             intervalEnd = intervalStart
             intervalStart = intervalEnd - timeUnit
         }
+        print("Interval start: \(formatter.string(from: intervalStart)) session start: \(formatter.string(from: stream.session.startTime!))")
         
         self.entries = entries
     }
@@ -76,7 +84,10 @@ final class ChartViewModel: ObservableObject {
         if stream.session.isFixed {
             return lastMeasurementTime.roundedDownToHour
         } else {
-            let secondsSinceFullMinuteFromSessionStart = Double(Int(Date().timeIntervalSince(sessionStartTime)) % Int(timeUnit))
+            let secondsSinceFullMinuteFromSessionStart = Double(Int(lastMeasurementTime.roundedDownToSecond.timeIntervalSince(sessionStartTime.roundedDownToSecond)) % Int(timeUnit))
+            print("Session start time: \(formatter.string(from: sessionStartTime))")
+            print("Last measurement time: \(formatter.string(from: lastMeasurementTime))")
+            print("It was \(secondsSinceFullMinuteFromSessionStart) seconds between")
             return lastMeasurementTime - secondsSinceFullMinuteFromSessionStart
         }
     }
@@ -87,7 +98,7 @@ final class ChartViewModel: ObservableObject {
         if stream.session.isFixed {
             return Date().roundedUpToHour.timeIntervalSince(Date())
         } else {
-            return timeUnit - Double(Int(Date().timeIntervalSince(sessionStartTime)) % Int(timeUnit))
+            return (timeUnit - Date().timeIntervalSince(sessionStartTime).truncatingRemainder(dividingBy: timeUnit)).rounded(.awayFromZero)
         }
     }
     
