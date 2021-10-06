@@ -14,9 +14,10 @@ struct MainTabBarView: View {
     let measurementUpdatingService: MeasurementUpdatingService
     let urlProvider: BaseURLProvider
     let measurementStreamStorage: MeasurementStreamStorage
-    @State var dashboardImage: String = "bluehome"
+    @State var homeImage: String = HomeIcon.clicked.string
+    @State var settingsImage: String = SettingsIcon.notClicked.string
+    @State var plusImage: String = PlusIcon.notClicked.string
     let sessionStoppableFactory: SessionStoppableFactory
-
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     @EnvironmentObject var persistenceController: PersistenceController
     @EnvironmentObject var microphoneManager: MicrophoneManager
@@ -39,11 +40,10 @@ struct MainTabBarView: View {
             measurementUpdatingService.start()
         }
         .onChange(of: tabSelection.selection, perform: { _ in
-            if tabSelection.selection == .dashboard {
-                dashboardImage = "bluehome"
-            } else {
-                dashboardImage = "home"
-            }
+            tabSelection.selection == .dashboard ? (homeImage = HomeIcon.clicked.string) : (homeImage = HomeIcon.notClicked.string)
+            tabSelection.selection == .settings ? (settingsImage = SettingsIcon.clicked.string) : (settingsImage = SettingsIcon.notClicked.string)
+            tabSelection.selection == .createSession ? (plusImage = PlusIcon.clicked.string) : (plusImage = PlusIcon.notClicked.string)
+            
         })
         .environmentObject(tabSelection)
         .environmentObject(selectedSection)
@@ -58,7 +58,7 @@ private extension MainTabBarView {
             DashboardView(coreDataHook: CoreDataHook(context: persistenceController.viewContext), measurementStreamStorage: measurementStreamStorage, sessionStoppableFactory: sessionStoppableFactory)
         }.navigationViewStyle(StackNavigationViewStyle())
         .tabItem {
-            Image(dashboardImage)
+            Image(homeImage)
         }
         .tag(TabBarSelection.Tab.dashboard)
     }
@@ -66,7 +66,7 @@ private extension MainTabBarView {
     private var createSessionTab: some View {
         ChooseSessionTypeView(viewModel: ChooseSessionTypeViewModel(locationHandler: locationHandler, bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: bluetoothManager), userSettings: userSettings, sessionContext: sessionContext, urlProvider: urlProvider, bluetoothManager: bluetoothManager, bluetoothManagerState: bluetoothManager.centralManagerState))
             .tabItem {
-                Image(systemName: "plus")
+                Image(plusImage)
             }
             .tag(TabBarSelection.Tab.createSession)
     }
@@ -78,12 +78,12 @@ private extension MainTabBarView {
                         microphoneManager: microphoneManager,
                         sessionSynchronizer: sessionSynchronizer))
             .tabItem {
-                Image(systemName: "gearshape")
+                Image(settingsImage)
             }
             .tag(TabBarSelection.Tab.settings)
     }
 }
-
+    
 class TabBarSelection: ObservableObject {
     @Published var selection = Tab.dashboard
     
@@ -119,3 +119,41 @@ struct ContentView_Previews: PreviewProvider {
     }
 }
 #endif
+
+extension MainTabBarView {
+    enum HomeIcon {
+        case clicked
+        case notClicked
+        
+        var string: String {
+            switch self {
+            case .clicked: return Strings.MainTabBarView.homeBlueIcon
+            case .notClicked: return Strings.MainTabBarView.homeIcon
+            }
+        }
+    }
+
+    enum PlusIcon {
+        case clicked
+        case notClicked
+        
+        var string: String {
+            switch self {
+            case .clicked: return Strings.MainTabBarView.plusBlueIcon
+            case .notClicked: return Strings.MainTabBarView.plusIcon
+            }
+        }
+    }
+
+    enum SettingsIcon {
+        case clicked
+        case notClicked
+        
+        var string: String {
+            switch self {
+            case .clicked: return Strings.MainTabBarView.settingsBlueIcon
+            case .notClicked: return Strings.MainTabBarView.settingsIcon
+            }
+        }
+    }
+}
