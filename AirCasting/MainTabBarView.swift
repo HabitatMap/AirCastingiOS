@@ -14,9 +14,9 @@ struct MainTabBarView: View {
     let measurementUpdatingService: MeasurementUpdatingService
     let urlProvider: BaseURLProvider
     let measurementStreamStorage: MeasurementStreamStorage
-    @State var homeImage: String = HomeIcon.clicked.string
-    @State var settingsImage: String = SettingsIcon.notClicked.string
-    @State var plusImage: String = PlusIcon.notClicked.string
+    @State var homeImage: String = HomeIcon.selected.string
+    @State var settingsImage: String = SettingsIcon.unselected.string
+    @State var plusImage: String = PlusIcon.unselected.string
     let sessionStoppableFactory: SessionStoppableFactory
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     @EnvironmentObject var persistenceController: PersistenceController
@@ -40,9 +40,9 @@ struct MainTabBarView: View {
             measurementUpdatingService.start()
         }
         .onChange(of: tabSelection.selection, perform: { _ in
-            tabSelection.selection == .dashboard ? (homeImage = HomeIcon.clicked.string) : (homeImage = HomeIcon.notClicked.string)
-            tabSelection.selection == .settings ? (settingsImage = SettingsIcon.clicked.string) : (settingsImage = SettingsIcon.notClicked.string)
-            tabSelection.selection == .createSession ? (plusImage = PlusIcon.clicked.string) : (plusImage = PlusIcon.notClicked.string)
+            tabSelection.selection == .dashboard ? (homeImage = HomeIcon.selected.string) : (homeImage = HomeIcon.unselected.string)
+            tabSelection.selection == .settings ? (settingsImage = SettingsIcon.selected.string) : (settingsImage = SettingsIcon.unselected.string)
+            tabSelection.selection == .createSession ? (plusImage = PlusIcon.selected.string) : (plusImage = PlusIcon.unselected.string)
             
         })
         .environmentObject(tabSelection)
@@ -122,37 +122,37 @@ struct ContentView_Previews: PreviewProvider {
 
 extension MainTabBarView {
     enum HomeIcon {
-        case clicked
-        case notClicked
+        case selected
+        case unselected
         
         var string: String {
             switch self {
-            case .clicked: return Strings.MainTabBarView.homeBlueIcon
-            case .notClicked: return Strings.MainTabBarView.homeIcon
+            case .selected: return Strings.MainTabBarView.homeBlueIcon
+            case .unselected: return Strings.MainTabBarView.homeIcon
             }
         }
     }
 
     enum PlusIcon {
-        case clicked
-        case notClicked
+        case selected
+        case unselected
         
         var string: String {
             switch self {
-            case .clicked: return Strings.MainTabBarView.plusBlueIcon
-            case .notClicked: return Strings.MainTabBarView.plusIcon
+            case .selected: return Strings.MainTabBarView.plusBlueIcon
+            case .unselected: return Strings.MainTabBarView.plusIcon
             }
         }
     }
 
     enum SettingsIcon {
-        case clicked
-        case notClicked
+        case selected
+        case unselected
         
         var string: String {
             switch self {
-            case .clicked: return Strings.MainTabBarView.settingsBlueIcon
-            case .notClicked: return Strings.MainTabBarView.settingsIcon
+            case .selected: return Strings.MainTabBarView.settingsBlueIcon
+            case .unselected: return Strings.MainTabBarView.settingsIcon
             }
         }
     }
