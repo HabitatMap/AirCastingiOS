@@ -127,6 +127,7 @@ extension ConfirmCreatingSessionView {
                         selectedSection.selectedSection = SelectedSection.following
                     }
                     tabSelection.selection = TabBarSelection.Tab.dashboard
+                    
                 case .failure(let error):
                     self.error = error as NSError
                     Log.warning("Failed to create session \(error)")

@@ -59,6 +59,7 @@
 		AC4EC6BC25B5ABB700C1E312 /* StatisticsContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC4EC6BB25B5ABB700C1E312 /* StatisticsContainerView.swift */; };
 		AC4EC6C125B6F18A00C1E312 /* EditButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC4EC6C025B6F18A00C1E312 /* EditButtonView.swift */; };
 		AC4EC6C425B6FE0D00C1E312 /* HeatmapSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC4EC6C325B6FE0D00C1E312 /* HeatmapSettingsView.swift */; };
+		AC5226C3270C50520048A585 /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = AC5226C2270C50520048A585 /* Algorithms */; };
 		AC524A6F261329330061AD45 /* SessionExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC524A6E261329330061AD45 /* SessionExtension.swift */; };
 		AC524A7626133A370061AD45 /* MeaurementStreamExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC524A7526133A370061AD45 /* MeaurementStreamExtension.swift */; };
 		AC524A892614733D0061AD45 /* CreatingSessionFlowRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC524A882614733D0061AD45 /* CreatingSessionFlowRootView.swift */; };
@@ -247,6 +248,7 @@
 		DD8C380C2689A3DA00901FDF /* BaseURLProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8C380B2689A3DA00901FDF /* BaseURLProvider.swift */; };
 		DD8C380E2689A55A00901FDF /* BackendSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8C380D2689A55A00901FDF /* BackendSettingsView.swift */; };
 		DD9EBB4E26AFDD2100D51804 /* TurnOnLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD9EBB4D26AFDD2100D51804 /* TurnOnLocationView.swift */; };
+		DDB44C252704AF830027176E /* AveragingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB44C242704AF830027176E /* AveragingService.swift */; };
 		DDBC156426A0799300982526 /* SystemSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBC156326A0799300982526 /* SystemSettings.swift */; };
 		DDBC992626A1652A00B0662E /* ForgotPasswordTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBC992526A1652A00B0662E /* ForgotPasswordTest.swift */; };
 		DDCE5D3626A1F79F0033C211 /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCE5D3526A1F79F0033C211 /* UserSettings.swift */; };
@@ -534,6 +536,7 @@
 		DD8C380D2689A55A00901FDF /* BackendSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendSettingsView.swift; sourceTree = "<group>"; };
 		DD8C380F268A0E9400901FDF /* ShareViewModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewModal.swift; sourceTree = "<group>"; };
 		DD9EBB4D26AFDD2100D51804 /* TurnOnLocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurnOnLocationView.swift; sourceTree = "<group>"; };
+		DDB44C242704AF830027176E /* AveragingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AveragingService.swift; sourceTree = "<group>"; };
 		DDBC156326A0799300982526 /* SystemSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemSettings.swift; sourceTree = "<group>"; };
 		DDBC992526A1652A00B0662E /* ForgotPasswordTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordTest.swift; sourceTree = "<group>"; };
 		DDCE5D3526A1F79F0033C211 /* UserSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettings.swift; sourceTree = "<group>"; };
@@ -574,6 +577,7 @@
 				AC6D567C25AC540D00D221BA /* Charts in Frameworks */,
 				ACF600BE2678D7F4005DD97C /* SwiftSimplify in Frameworks */,
 				F76B6F660F0BD398629EDD83 /* Pods_AirCasting.framework in Frameworks */,
+				AC5226C3270C50520048A585 /* Algorithms in Frameworks */,
 				AC787D75267B41990034B222 /* AirCastingStyling in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -733,6 +737,7 @@
 				DDF62600269C779800F23489 /* UIApplication+AppInfo.swift.swift */,
 				DD3C99F326EA280800B42A46 /* TimeConversion.swift */,
 				DDD1F9B02705852400D8E87F /* DataFormatters.swift */,
+				DDB44C242704AF830027176E /* AveragingService.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1463,6 +1468,7 @@
 				AC6D567B25AC540D00D221BA /* Charts */,
 				AC787D74267B41990034B222 /* AirCastingStyling */,
 				ACF600BD2678D7F4005DD97C /* SwiftSimplify */,
+				AC5226C2270C50520048A585 /* Algorithms */,
 			);
 			productName = AirCasting;
 			productReference = AC7EB37225A6FB3A00A7F2AF /* AirCasting.app */;
@@ -1498,6 +1504,7 @@
 			packageReferences = (
 				AC6D567A25AC540D00D221BA /* XCRemoteSwiftPackageReference "Charts" */,
 				ACF600BC2678D7F4005DD97C /* XCRemoteSwiftPackageReference "SwiftSimplify" */,
+				AC5226C1270C50520048A585 /* XCRemoteSwiftPackageReference "swift-algorithms" */,
 			);
 			productRefGroup = AC7EB37325A6FB3A00A7F2AF /* Products */;
 			projectDirPath = "";
@@ -1728,6 +1735,7 @@
 				ACD32A4F2600A8DD00818946 /* SettingsView.swift in Sources */,
 				4F8CDBD4265F8EE000976B25 /* SessionStorage.swift in Sources */,
 				B376DD23268091B80083FD2F /* BodyEncodingError.swift in Sources */,
+				DDB44C252704AF830027176E /* AveragingService.swift in Sources */,
 				AC9F526C2652A360003CF61F /* DashboardView.swift in Sources */,
 				AC3203CB25CA991C00A68520 /* TurnOnBluetoothView.swift in Sources */,
 				DD430B0C26710E0600F1BF2E /* PrivacyOnboarding.swift in Sources */,
@@ -2167,6 +2175,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		AC5226C1270C50520048A585 /* XCRemoteSwiftPackageReference "swift-algorithms" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-algorithms.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
 		AC6D567A25AC540D00D221BA /* XCRemoteSwiftPackageReference "Charts" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/danielgindi/Charts";
@@ -2186,6 +2202,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		AC5226C2270C50520048A585 /* Algorithms */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AC5226C1270C50520048A585 /* XCRemoteSwiftPackageReference "swift-algorithms" */;
+			productName = Algorithms;
+		};
 		AC6D567B25AC540D00D221BA /* Charts */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = AC6D567A25AC540D00D221BA /* XCRemoteSwiftPackageReference "Charts" */;

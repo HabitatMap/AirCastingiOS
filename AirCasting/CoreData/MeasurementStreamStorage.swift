@@ -38,8 +38,8 @@ final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
     
     init(persistenceController: PersistenceController) {
         self.persistenceController = persistenceController
-        self.hiddenStorage = HiddenCoreDataMeasurementStreamStorage(persistenceController: persistenceController)
         self.context = persistenceController.editContext()
+        self.hiddenStorage = HiddenCoreDataMeasurementStreamStorage(context: self.context)
     }
     
     /// All actions performed on CoreDataMeasurementStreamStorage must be performed
@@ -54,18 +54,17 @@ final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
 }
 
 final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageContextUpdate {
+
     enum Error: Swift.Error {
         case missingMeasurementStream
         case missingSensorName
     }
     
-    private let persistenceController: PersistenceController
     private lazy var updateSessionParamsService = UpdateSessionParamsService()
     private let context: NSManagedObjectContext
     
-    init(persistenceController: PersistenceController) {
-        self.persistenceController = persistenceController
-        self.context = persistenceController.editContext()
+    init(context: NSManagedObjectContext) {
+        self.context = context
     }
     
     func save() throws {
@@ -121,6 +120,20 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         return stream?.localID
     }
     
+    func getExistingSessionWith(_ sessionUUID: SessionUUID) throws -> SessionEntity? {
+        let session = try context.existingSession(uuid: sessionUUID)
+        return session
+    }
+    
+    func updateMeasurements(stream: MeasurementStreamEntity, newMeasurements: NSOrderedSet) throws {
+        do {
+            stream.measurements = []
+            stream.measurements = newMeasurements
+        } catch {
+            Log.info("Error when saving changes in session: \(error.localizedDescription) ")
+        }
+    }
+    
     private func createMeasurementStream(for session: SessionEntity, context: NSManagedObjectContext, _ stream: MeasurementStream) throws -> MeasurementStreamLocalID {
         let newStream = MeasurementStreamEntity(context: context)
         newStream.sensorName = stream.sensorName
@@ -150,7 +163,11 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
             threshold.thresholdHigh = stream.thresholdHigh
             threshold.thresholdVeryHigh = stream.thresholdVeryHigh
         }
+        // Save here is important so that NSManagedObjectID is not temporary.
         try context.save()
+        
+        try context.obtainPermanentIDs(for: [newStream])
+
         return newStream.localID
     }
 
@@ -179,7 +196,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
             }
             try context.save()
         } catch {
-            Log.info("Error when saving changes in session")
+            Log.info("Error when saving changes in session: \(error.localizedDescription) ")
         }
     }
 
@@ -187,6 +204,13 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         let sessionEntity = SessionEntity(context: context)
         updateSessionParamsService.updateSessionsParams(sessionEntity, session: session)
         try context.save()
+    }
+    
+    func observerFor<T>(request: NSFetchRequest<T>) -> NSFetchedResultsController<T> {
+        let frc = NSFetchedResultsController(fetchRequest: request,
+                                             managedObjectContext: context,
+                                             sectionNameKeyPath: nil, cacheName: nil)
+        return frc
     }
 }
 
