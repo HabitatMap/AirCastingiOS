@@ -78,7 +78,11 @@ final class AveragingService: NSObject, ObservableObject {
             
             let frc = storage.observerFor(request: request)
             
-            try! frc.performFetch()
+            do {
+                try frc.performFetch()
+            } catch {
+                Log.info("Couldn't perform a fetch and add observer")
+            }
             frc.delegate = self
             self?.fetchedResultsController = frc
         }
@@ -88,7 +92,7 @@ final class AveragingService: NSObject, ObservableObject {
         if let uuid = sessionEntity.uuid {
             measurementStreamStorage.accessStorage { storage in
                 
-                let session = try? storage.getExistingSessionWith(uuid)
+                let session = try? storage.getExistingSession(with: uuid)
                 
                 session?.allStreams?.forEach { stream in
                     var averagedMeasurements: [MeasurementEntity] = (stream.allMeasurements ?? []).filter {
@@ -133,7 +137,7 @@ final class AveragingService: NSObject, ObservableObject {
             .first()
             .sink { [weak self] _ in
                 self?.measurementStreamStorage.accessStorage { storage in
-                    guard let session = try? storage.getExistingSessionWith(uuid) else { return }
+                    guard let session = try? storage.getExistingSession(with: uuid) else { return }
                     self?.startPeriodicAveraging(session: session)
                 }
             }
