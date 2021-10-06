@@ -60,6 +60,7 @@ class PersistenceController: ObservableObject {
     func editContext() -> NSManagedObjectContext {
         let ctx = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
         ctx.parent = sourceOfTruthContext
+        ctx.automaticallyMergesChangesFromParent = true
         return ctx
     }
     

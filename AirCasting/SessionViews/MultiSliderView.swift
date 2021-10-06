@@ -69,7 +69,7 @@ struct MultiSliderView: View {
     
     var sliderButton: some View {
             Color.white
-                .frame(width: 15, height: 15)
+                .frame(width: 18, height: 25)
                 .clipShape(Circle())
                 .shadow(color: Color(red: 156/255, green: 155/255, blue: 155/255, opacity: 0.5), radius: 9)
     }

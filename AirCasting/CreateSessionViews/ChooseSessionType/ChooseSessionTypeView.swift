@@ -40,7 +40,7 @@ struct ChooseSessionTypeView: View {
                                 Spacer()
                                 moreInfo
                             }
-                            HStack(spacing: 30) {
+                            HStack(spacing: 25) {
                                 fixedSessionButton
                                 mobileSessionButton
                             }
@@ -112,7 +112,7 @@ struct ChooseSessionTypeView: View {
                                 Spacer()
                                 moreInfo
                             }
-                            HStack(spacing: 30) {
+                            HStack(spacing: 25) {
                                 fixedSessionButton
                                 mobileSessionButton
                             }

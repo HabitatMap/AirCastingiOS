@@ -16,6 +16,7 @@ struct AirCastingApp: App {
     private let microphoneManager: MicrophoneManager
     private var sessionSynchronizer: SessionSynchronizer
     private var sessionSynchronizerViewModel: DefaultSessionSynchronizationViewModel
+    private let averagingService: AveragingService
     private let persistenceController = PersistenceController.shared
     private let appBecameActive = PassthroughSubject<Void, Never>()
     private let sessionSynchronizationController: SessionSynchronizationController
@@ -41,11 +42,12 @@ struct AirCastingApp: App {
         sessionSynchronizer = ScheduledSessionSynchronizerProxy(controller: unscheduledSyncController,
                                                                 scheduler: DispatchQueue.global())
         microphoneManager = MicrophoneManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared))
-        
+        averagingService = AveragingService(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared))
         syncScheduler = .init(synchronizer: sessionSynchronizer,
                               appBecameActive: appBecameActive.eraseToAnyPublisher(),
                               periodicTimeInterval: 300,
                               authorization: authorization)
+        
         
         offlineMessageViewModel = .init()
         sessionSynchronizer.errorStream = offlineMessageViewModel
@@ -57,6 +59,7 @@ struct AirCastingApp: App {
                 .environmentObject(sessionSynchronizerViewModel)
                 .environmentObject(authorization)
                 .environmentObject(microphoneManager)
+                .environmentObject(averagingService)
                 .environmentObject(lifeTimeEventsProvider)
                 .alert(isPresented: $offlineMessageViewModel.showOfflineMessage, content: { Alert.offlineAlert })
         }.onChange(of: scenePhase) { newScenePhase in
@@ -109,3 +112,5 @@ final class SynchronizationScheduler {
         
     }
 }
+
+

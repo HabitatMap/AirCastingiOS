@@ -462,4 +462,13 @@ struct Strings {
         static let titleLabel: String = "Search the address and adjust the marker to indicate an exact placement of Your AirBeam"
         static let continueButton: String = "Continue"
     }
+    
+    enum MainTabBarView {
+        static let homeIcon: String = "home"
+        static let homeBlueIcon: String = "bluehome"
+        static let plusIcon: String = "plus"
+        static let plusBlueIcon: String = "blueplus"
+        static let settingsIcon: String = "settings"
+        static let settingsBlueIcon: String = "bluesettings"
+    }
 }

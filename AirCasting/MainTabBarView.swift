@@ -14,9 +14,10 @@ struct MainTabBarView: View {
     let measurementUpdatingService: MeasurementUpdatingService
     let urlProvider: BaseURLProvider
     let measurementStreamStorage: MeasurementStreamStorage
-    @State var dashboardImage: String = "bluehome"
+    @State var homeImage: String = HomeIcon.selected.string
+    @State var settingsImage: String = SettingsIcon.unselected.string
+    @State var plusImage: String = PlusIcon.unselected.string
     let sessionStoppableFactory: SessionStoppableFactory
-
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     @EnvironmentObject var persistenceController: PersistenceController
     @EnvironmentObject var microphoneManager: MicrophoneManager
@@ -39,11 +40,10 @@ struct MainTabBarView: View {
             measurementUpdatingService.start()
         }
         .onChange(of: tabSelection.selection, perform: { _ in
-            if tabSelection.selection == .dashboard {
-                dashboardImage = "bluehome"
-            } else {
-                dashboardImage = "home"
-            }
+            tabSelection.selection == .dashboard ? (homeImage = HomeIcon.selected.string) : (homeImage = HomeIcon.unselected.string)
+            tabSelection.selection == .settings ? (settingsImage = SettingsIcon.selected.string) : (settingsImage = SettingsIcon.unselected.string)
+            tabSelection.selection == .createSession ? (plusImage = PlusIcon.selected.string) : (plusImage = PlusIcon.unselected.string)
+            
         })
         .environmentObject(tabSelection)
         .environmentObject(selectedSection)
@@ -58,7 +58,7 @@ private extension MainTabBarView {
             DashboardView(coreDataHook: CoreDataHook(context: persistenceController.viewContext), measurementStreamStorage: measurementStreamStorage, sessionStoppableFactory: sessionStoppableFactory)
         }.navigationViewStyle(StackNavigationViewStyle())
         .tabItem {
-            Image(dashboardImage)
+            Image(homeImage)
         }
         .tag(TabBarSelection.Tab.dashboard)
     }
@@ -66,7 +66,7 @@ private extension MainTabBarView {
     private var createSessionTab: some View {
         ChooseSessionTypeView(viewModel: ChooseSessionTypeViewModel(locationHandler: locationHandler, bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: bluetoothManager), userSettings: userSettings, sessionContext: sessionContext, urlProvider: urlProvider, bluetoothManager: bluetoothManager, bluetoothManagerState: bluetoothManager.centralManagerState))
             .tabItem {
-                Image(systemName: "plus")
+                Image(plusImage)
             }
             .tag(TabBarSelection.Tab.createSession)
     }
@@ -78,12 +78,12 @@ private extension MainTabBarView {
                         microphoneManager: microphoneManager,
                         sessionSynchronizer: sessionSynchronizer))
             .tabItem {
-                Image(systemName: "gearshape")
+                Image(settingsImage)
             }
             .tag(TabBarSelection.Tab.settings)
     }
 }
-
+    
 class TabBarSelection: ObservableObject {
     @Published var selection = Tab.dashboard
     
@@ -119,3 +119,41 @@ struct ContentView_Previews: PreviewProvider {
     }
 }
 #endif
+
+extension MainTabBarView {
+    enum HomeIcon {
+        case selected
+        case unselected
+        
+        var string: String {
+            switch self {
+            case .selected: return Strings.MainTabBarView.homeBlueIcon
+            case .unselected: return Strings.MainTabBarView.homeIcon
+            }
+        }
+    }
+
+    enum PlusIcon {
+        case selected
+        case unselected
+        
+        var string: String {
+            switch self {
+            case .selected: return Strings.MainTabBarView.plusBlueIcon
+            case .unselected: return Strings.MainTabBarView.plusIcon
+            }
+        }
+    }
+
+    enum SettingsIcon {
+        case selected
+        case unselected
+        
+        var string: String {
+            switch self {
+            case .selected: return Strings.MainTabBarView.settingsBlueIcon
+            case .unselected: return Strings.MainTabBarView.settingsIcon
+            }
+        }
+    }
+}
