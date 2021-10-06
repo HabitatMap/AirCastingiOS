@@ -13,6 +13,8 @@ public class MeasurementEntity: NSManagedObject, Identifiable {
         return NSFetchRequest<MeasurementEntity>(entityName: "MeasurementEntity")
     }
 
+    @NSManaged public var averagingWindow: Int
+    
     public var id: MeasurementID? {
         get { value(forKey: "id") as? MeasurementID }
         set { setValue(newValue, forKey: "id")}
@@ -21,6 +23,7 @@ public class MeasurementEntity: NSManagedObject, Identifiable {
     @NSManaged public var time: Date!
     @NSManaged public var value: Double
     @NSManaged public var measurementStream: MeasurementStreamEntity!
+
 
     public var location: CLLocationCoordinate2D? {
         get {

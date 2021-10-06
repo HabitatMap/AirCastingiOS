@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="18154" systemVersion="20D91" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="19206" systemVersion="20G165" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="MeasurementEntity" representedClassName="MeasurementEntity" syncable="YES">
+        <attribute name="averagingWindow" optional="YES" attributeType="Integer 64" defaultValueString="1" usesScalarValueType="YES"/>
         <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
@@ -55,7 +56,7 @@
         <relationship name="measurementStreams" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="MeasurementStreamEntity" inverseName="session" inverseEntity="MeasurementStreamEntity"/>
     </entity>
     <elements>
-        <element name="MeasurementEntity" positionX="-63" positionY="-18" width="128" height="119"/>
+        <element name="MeasurementEntity" positionX="-63" positionY="-18" width="128" height="134"/>
         <element name="MeasurementStreamEntity" positionX="-63.7001953125" positionY="128.3192749023438" width="128" height="254"/>
         <element name="SensorThreshold" positionX="388.8433837890625" positionY="56.29141235351562" width="128" height="133"/>
         <element name="SessionEntity" positionX="160" positionY="192" width="128" height="314"/>
