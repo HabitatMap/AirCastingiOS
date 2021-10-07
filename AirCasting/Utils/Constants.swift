@@ -15,6 +15,10 @@ struct Constants {
         static let dotHeight = 20
     }
     
+    enum Chart {
+        static let numberOfEntries = 9
+    }
+    
     static let dataFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US")
