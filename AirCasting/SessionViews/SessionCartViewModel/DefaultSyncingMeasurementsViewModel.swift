@@ -23,25 +23,31 @@ final class DefaultSyncingMeasurementsViewModel: SyncingMeasurementsViewModel {
     var session: SessionEntity
     @Published var showLoadingIndicator = true
    
+    let formatter = DateFormatter()
     
     init(measurementStreamStorage: MeasurementStreamStorage?, sessionDownloader: MeasurementsDownloadable, session: SessionEntity) {
         self.sessionDownloader = sessionDownloader
         self.measurementStreamStorage = measurementStreamStorage
         self.session = session
+        formatter.dateFormat = "HH:mm:ss.SSSS"
     }
     
     func syncMeasurements() {
         guard let measurementStreamStorage = measurementStreamStorage else { return }
         showLoadingIndicator = true
         
+        Log.info("## syncMeasurements called \(formatter.string(from: Date()))")
+        
         task = sessionDownloader.downloadSessionWithMeasurement(uuid: session.uuid) { [weak self] result in
             guard let self = self else { return }
             
             switch result {
             case .success(let data):
+                Log.info("## got success result \(self.formatter.string(from: Date()))")
                 let dataBaseStreams = data.streams.values.map { value in
                     SynchronizationDataConverter().convertDownloadDataToDatabaseStream(data: value)
                 }
+                Log.info("## finished converting download data \(self.formatter.string(from: Date()))")
                 
                 let sessionId = self.session.uuid!
                 let sessionName = self.session.name
@@ -49,25 +55,32 @@ final class DefaultSyncingMeasurementsViewModel: SyncingMeasurementsViewModel {
                 measurementStreamStorage.accessStorage { storage in
                     
                     dataBaseStreams.forEach { stream in
-                        stream.measurements.forEach { measurement in
-                            let location: CLLocationCoordinate2D? = {
-                                guard let latitude = measurement.latitude,
-                                      let longitude = measurement.longitude else { return CLLocationCoordinate2D(latitude: 200, longitude: 200) }
-                                return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-                            }()
-                            let sensorName = stream.sensorName
-                            do {
-                                guard let streamID = try storage.existingMeasurementStream(sessionId, name: sensorName) else {
-                                    Log.info("failed to get existing streamID for synced measurements from session \(String(describing: sessionName))")
-                                    return }
-                                try storage.addMeasurementValue(measurement.value,
-                                                                at:  location,
-                                                                toStreamWithID: streamID,
-                                                                on: measurement.time)
-                            } catch {
-                                Log.info("\(error)")
+                        let sensorName = stream.sensorName
+                        do {
+                            let streamID = try storage.existingMeasurementStream(sessionId, name: sensorName)
+                            stream.measurements.forEach { measurement in
+                                let location: CLLocationCoordinate2D? = {
+                                    guard let latitude = measurement.latitude,
+                                          let longitude = measurement.longitude else { return CLLocationCoordinate2D(latitude: 200, longitude: 200) }
+                                    return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+                                }()
+                                do {
+                                    guard let streamID = streamID else {
+                                        return
+                                    }
+                                    try storage.addMeasurementValue(measurement.value,
+                                                                    at:  location,
+                                                                    toStreamWithID: streamID,
+                                                                    on: measurement.time)
+                                } catch {
+                                    Log.info("\(error)")
+                                }
+                                Log.info("## added one measurement \(self.formatter.string(from: Date()))")
                             }
+                        } catch {
+                            Log.info("failed to get existing streamID for synced measurements from session \(String(describing: sessionName))")
                         }
+                        
                         do {
                             try storage.saveThresholdFor(sensorName: stream.sensorName,
                                                          thresholdVeryHigh: Int32(stream.thresholdVeryHigh),
