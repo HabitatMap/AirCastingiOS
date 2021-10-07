@@ -27,6 +27,7 @@ struct SessionCartView: View {
     @StateObject private var mapStatsViewModel: StatisticsContainerViewModel
     @StateObject private var graphStatsDataSource: GraphStatsDataSource
     @StateObject private var graphStatsViewModel: StatisticsContainerViewModel
+    @StateObject private var chartViewModel: ChartViewModel
 
     init(session: SessionEntity,
          sessionCartViewModel: SessionCartViewModel,
@@ -44,6 +45,7 @@ struct SessionCartView: View {
         let graphDataSource = GraphStatsDataSource()
         self._graphStatsDataSource = .init(wrappedValue: graphDataSource)
         self._graphStatsViewModel = .init(wrappedValue: SessionCartView.createStatsContainerViewModel(dataSource: graphDataSource))
+        self._chartViewModel = .init(wrappedValue: ChartViewModel(session: session))
     }
     
     var shouldShowValues: MeasurementPresentationStyle {
@@ -79,9 +81,10 @@ struct SessionCartView: View {
         .onChange(of: session.sortedStreams) { newValue in
             selectDefaultStreamIfNeeded(streams: newValue ?? [])
         }
-        .onChange(of: selectedStream, perform: { [weak graphStatsDataSource, weak mapStatsDataSource] newStream in
+        .onChange(of: selectedStream, perform: { [weak graphStatsDataSource, weak mapStatsDataSource, weak chartViewModel] newStream in
             graphStatsDataSource?.stream = newStream
             mapStatsDataSource?.stream = newStream
+            chartViewModel?.stream = newStream
         })
         .onAppear {
             selectDefaultStreamIfNeeded(streams: session.sortedStreams ?? [])
@@ -209,8 +212,8 @@ private extension SessionCartView {
         return VStack() {
             if let selectedStream = selectedStream {
                 Group { 
-                    ChartView(stream: selectedStream,
-                              thresholds: thresholds)
+                    ChartView(thresholds: thresholds,
+                              viewModel: chartViewModel)
                         .frame(height: 120)
                         .disabled(true)
                     HStack() {
