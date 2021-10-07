@@ -66,10 +66,10 @@ enum DateFormatters {
     }
     
     enum TimeAxisRenderer {
-        static let shortUSLocaleDateFormatter: DateFormatter = {
+        static let shortUTCDateFormatter: DateFormatter = {
             let df = DateFormatter()
+            df.timeZone =  TimeZone.init(abbreviation: "UTC")
             df.timeStyle = .short
-            df.locale = Locale(identifier: "en_US")
             return df
         }()
     }

@@ -51,12 +51,17 @@ class AirCastingGraph: UIView {
         lineChartView.legend.enabled = false
         lineChartView.scaleYEnabled = false
         
-        lineChartView.xAxis.drawLabelsEnabled = false
+        lineChartView.xAxis.drawLabelsEnabled = true
         lineChartView.xAxis.labelCount = 2
-        lineChartView.extraBottomOffset = 2
+        lineChartView.extraBottomOffset = 25
         
         lineChartView.highlightPerTapEnabled = false
         lineChartView.highlightPerDragEnabled = false
+        
+        lineChartView.xAxisRenderer = TimeAxisRenderer(viewPortHandler: lineChartView.viewPortHandler,
+                                                       xAxis: lineChartView.xAxis,
+                                                       transformer: lineChartView.getTransformer(forAxis: .left))
+        
         renderer = MultiColorGridRenderer(viewPortHandler: lineChartView.viewPortHandler,
                                           yAxis: lineChartView.leftAxis,
                                           transformer: lineChartView.getTransformer(forAxis: .left))
@@ -104,7 +109,7 @@ class AirCastingGraph: UIView {
         if !didMoveOrScaleGraph && isAutozoomEnabled {
             zoomoutToThirtyMinutes(dataSet: dataSet)
         }
-//        callDateRangeChangeObserver()
+        callDateRangeChangeObserver()
     }
     
     private func callDateRangeChangeObserver() {
@@ -143,12 +148,12 @@ extension AirCastingGraph: ChartViewDelegate {
     
     // Callbacks when the chart is scaled / zoomed via pinch zoom gesture.
     @objc func chartScaled(_ chartView: ChartViewBase, scaleX: CGFloat, scaleY: CGFloat) {
-//        callDateRangeChangeObserver()
+        callDateRangeChangeObserver()
         didMoveOrScaleGraph = true
     }
     // Callbacks when the chart is moved / translated via drag gesture.
     @objc func chartTranslated(_ chartView: ChartViewBase, dX: CGFloat, dY: CGFloat) {
-//        callDateRangeChangeObserver()
+        callDateRangeChangeObserver()
         didMoveOrScaleGraph = true
     }
 }
