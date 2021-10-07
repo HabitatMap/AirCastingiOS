@@ -58,9 +58,7 @@ final class DefaultSyncingMeasurementsViewModel: SyncingMeasurementsViewModel {
                                     return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
                                 }()
                                 do {
-                                    guard let streamID = streamID else {
-                                        return
-                                    }
+                                    guard let streamID = streamID else { return }
                                     try storage.addMeasurementValue(measurement.value,
                                                                     at:  location,
                                                                     toStreamWithID: streamID,
