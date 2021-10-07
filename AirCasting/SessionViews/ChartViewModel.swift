@@ -17,10 +17,9 @@ final class ChartViewModel: ObservableObject {
     
     private let session: SessionEntity
 
-    private var timeUnit: Double {
-        session.type == .mobile ? TimeInterval.minute : TimeInterval.hour
+    private var timeUnit: TimeInterval {
+        session.isMobile ? .minute : .hour
     }
-    let formatter = DateFormatter()
     
     private var mainTimer: Timer?
     private var firstTimer: Timer?
@@ -32,7 +31,6 @@ final class ChartViewModel: ObservableObject {
     }
     
     init(session: SessionEntity) {
-        formatter.dateFormat = "HH:mm:ss.SSSS"
         self.session = session
         self.chartStartTime = session.endTime
         self.chartEndTime = session.endTime
@@ -111,7 +109,7 @@ final class ChartViewModel: ObservableObject {
     private func averagedValue(_ intervalStart: Date, _ intervalEnd: Date) -> Double? {
         guard stream != nil else { return nil }
         let measurements = stream!.getMeasurementsFromTimeRange(intervalStart.roundedDownToSecond, intervalEnd.roundedDownToSecond)
-        let values = measurements.map { $0.value}
+        let values = measurements.map { $0.value }
         return values.isEmpty ? nil : round(values.reduce(0, +) / Double(values.count))
     }
 }
