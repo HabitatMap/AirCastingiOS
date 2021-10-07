@@ -62,7 +62,8 @@ final class DefaultSyncingMeasurementsViewModel: SyncingMeasurementsViewModel {
                                     return }
                                 try storage.addMeasurementValue(measurement.value,
                                                                 at:  location,
-                                                                toStreamWithID: streamID)
+                                                                toStreamWithID: streamID,
+                                                                on: measurement.time)
                             } catch {
                                 Log.info("\(error)")
                             }
