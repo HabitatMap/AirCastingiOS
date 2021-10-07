@@ -6,6 +6,8 @@ import Charts
 
 final class ChartViewModel: ObservableObject {
     @Published var entries: [ChartDataEntry] = []
+    @Published var chartStartTime: Date?
+    @Published var chartEndTime: Date?
     
     var stream: MeasurementStreamEntity? {
         didSet {
@@ -32,6 +34,8 @@ final class ChartViewModel: ObservableObject {
     init(session: SessionEntity) {
         formatter.dateFormat = "HH:mm:ss.SSSS"
         self.session = session
+        self.chartStartTime = session.endTime
+        self.chartEndTime = session.endTime
         if session.isActive || session.isFollowed {
             startTimers(session)
         }
@@ -62,6 +66,8 @@ final class ChartViewModel: ObservableObject {
             return
         }
         
+        chartEndTime = intervalEnd
+        
         var intervalStart = intervalEnd - timeUnit
         
         var entries = [ChartDataEntry]()
@@ -76,6 +82,7 @@ final class ChartViewModel: ObservableObject {
             intervalStart = intervalEnd - timeUnit
         }
         
+        chartStartTime = intervalStart + timeUnit
         self.entries = entries
     }
     
