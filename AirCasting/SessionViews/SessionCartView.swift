@@ -236,7 +236,7 @@ private extension SessionCartView {
             formatter.timeZone = TimeZone.init(abbreviation: "UTC")
         }
             
-            guard var start = session.startTime else { return Text("") }
+        guard var start = chartViewModel.chartStartTime else { return Text("") }
      
         if session.isFixed && session.measurementStreams == [] {
             start = start.currentUTCTimeZoneDate
@@ -253,7 +253,7 @@ private extension SessionCartView {
             formatter.timeZone =  TimeZone.init(abbreviation: "UTC")
         }
             
-            var end = session.endTime ?? Date()
+        var end = chartViewModel.chartEndTime ?? Date()
         
         if session.isMobile && session.deviceType == .AIRBEAM3 && session.endTime == nil {
             end = end.currentUTCTimeZoneDate
