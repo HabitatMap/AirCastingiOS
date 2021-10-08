@@ -6,7 +6,7 @@ import Charts
 
 class TimeAxisRenderer: XAxisRenderer {
     
-    lazy var dateFormatter = DateFormatters.TimeAxisRenderer.shortUSLocaleDateFormatter
+    lazy var dateFormatter = DateFormatters.TimeAxisRenderer.shortUTCDateFormatter
     
     override func drawLabels(context: CGContext, pos: CGFloat, anchor: CGPoint) {
         let minPxX = viewPortHandler.contentLeft

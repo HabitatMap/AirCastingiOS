@@ -108,13 +108,13 @@ extension BluetoothManager: CBCentralManagerDelegate {
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "DeviceConnected"), object: nil, userInfo: ["uuid" : peripheral.identifier])
         // Here's code for getting data from AB.
-        peripheral.discoverServices(nil)
         peripheral.delegate = self
+        peripheral.discoverServices(nil)
         connectedPeripheral = peripheral
     }
     
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
-        print("Disconnected: \(String(describing: error?.localizedDescription))")
+        Log.info("Disconnected: \(String(describing: error?.localizedDescription))")
         connectedPeripheral = nil
         mobilePeripheralSessionManager.finishSession(for: peripheral,
                                                      centralManger: centralManager)
@@ -127,12 +127,12 @@ extension BluetoothManager: CBPeripheralDelegate {
         if let services = peripheral.services {
             for service in services {
                 peripheral.discoverCharacteristics(nil, for: service)
-                print("didDiscoverServices \(peripheral.discoverCharacteristics(nil, for: service))")
             }
         }
     }
 
     func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
+        
         if let characteristics = service.characteristics {
             for characteristic in characteristics {
                 
@@ -150,16 +150,14 @@ extension BluetoothManager: CBPeripheralDelegate {
         #warning("TODO: Send it")
         _ = CBUUID(string: "0000ffde-0000-1000-8000-00805f9b34fb")
     }
-
+    
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
-        if MEASUREMENTS_CHARACTERISTIC_UUIDS.contains(characteristic.uuid) {
-            guard let value = characteristic.value else {
-                Log.warning("AirBeam sent measurement without value")
-                return
-            }
-            if let parsedMeasurement = parseData(data: value) {
-                mobilePeripheralSessionManager.handlePeripheralMeasurement(PeripheralMeasurement(peripheral: peripheral, measurementStream: parsedMeasurement))
-            }
+        guard let value = characteristic.value else {
+            Log.warning("AirBeam sent measurement without value")
+            return
+        }
+        if let parsedMeasurement = parseData(data: value) {
+            mobilePeripheralSessionManager.handlePeripheralMeasurement(PeripheralMeasurement(peripheral: peripheral, measurementStream: parsedMeasurement))
         }
     }
     

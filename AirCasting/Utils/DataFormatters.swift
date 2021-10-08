@@ -34,7 +34,7 @@ enum DateFormatters {
     enum AirBeam3Configurator {
         static let usLocaleFullDateDateFormatter: DateFormatter = {
             let df = DateFormatter()
-            df.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+            df.dateFormat = "dd/MM/YY-hh:mm:ss"
             df.locale = Locale(identifier: "en_US_POSIX")
             return df
         }()
@@ -66,10 +66,10 @@ enum DateFormatters {
     }
     
     enum TimeAxisRenderer {
-        static let shortUSLocaleDateFormatter: DateFormatter = {
+        static let shortUTCDateFormatter: DateFormatter = {
             let df = DateFormatter()
+            df.timeZone =  TimeZone.init(abbreviation: "UTC")
             df.timeStyle = .short
-            df.locale = Locale(identifier: "en_US")
             return df
         }()
     }

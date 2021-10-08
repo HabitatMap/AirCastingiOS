@@ -56,13 +56,6 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                                 }
                             }
                         }
-                        HStack() {
-                            startTimeText
-                            Spacer()
-                            endTimeText
-                        }
-                        .foregroundColor(.aircastingGray)
-                        .padding(.horizontal, 5)
                         NavigationLink(destination: HeatmapSettingsView(changedThresholdValues: threshold.rawThresholdsBinding)) {
                             EditButtonView()
                         }
