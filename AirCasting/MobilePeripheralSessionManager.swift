@@ -36,8 +36,8 @@ class MobilePeripheralSessionManager {
         }
         if activeMobileSession?.peripheral == measurement.peripheral {
             do {
-                try updateStreams(stream: measurement.measurementStream, sessionUUID: activeMobileSession!.session.uuid) }
-            catch {
+                try updateStreams(stream: measurement.measurementStream, sessionUUID: activeMobileSession!.session.uuid)
+            } catch {
                 Log.error("Unable to save measurement from airbeam to database because of an error: \(error)")
             }
         }
@@ -82,9 +82,7 @@ class MobilePeripheralSessionManager {
         }
     }
     
-    private func createSessionStream(_ stream: ABMeasurementStream, _ sessionUUID: SessionUUID) throws {
-        let location = locationProvider.currentLocation?.coordinate
-        
+    private func createSessionStream(_ stream: ABMeasurementStream, _ sessionUUID: SessionUUID) throws {        
         let sessionStream = MeasurementStream(id: nil,
                                               sensorName: stream.sensorName,
                                               sensorPackageName: stream.packageName,
@@ -101,7 +99,6 @@ class MobilePeripheralSessionManager {
         measurementStreamStorage.accessStorage { [self] storage in
             do {
                 streamsIDs[stream.sensorName] = try storage.createMeasurementStream(sessionStream, for: sessionUUID)
-                try storage.addMeasurementValue(stream.measuredValue, at: location, toStreamWithID: streamsIDs[stream.sensorName]!)
             } catch {
                 Log.info("\(error)")
             }
