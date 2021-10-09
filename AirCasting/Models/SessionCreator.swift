@@ -40,7 +40,7 @@ final class MicrophoneSessionCreator: SessionCreator {
                               name: sessionContext.sessionName,
                               deviceType: sessionContext.deviceType,
                               location: startingLocation,
-                              startTime: Date(),
+                              startTime: Date().currentUTCTimeZoneDate,
                               contribute: contribute)
 
         do {
