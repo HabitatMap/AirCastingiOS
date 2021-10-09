@@ -244,10 +244,6 @@ private extension SessionCartView {
     
     var startTime: some View {
         let formatter = DateFormatters.SessionCartView.pollutionChartDateFormatter
-        
-        if !(session.isMobile && session.isActive && session.isMIC) {
-            formatter.timeZone = TimeZone.init(abbreviation: "UTC")
-        }
             
         guard var start = chartViewModel.chartStartTime else { return Text("") }
      
