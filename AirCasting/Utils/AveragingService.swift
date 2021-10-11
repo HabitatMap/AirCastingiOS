@@ -52,13 +52,6 @@ enum TimeThreshold: Int {
 }
 
 final class AveragingService: NSObject, ObservableObject {
-    // TODO:
-    // 1. calculate average
-    // 2. remove unaveraged measurements
-    // 3. mark measurements as averaged
-    // 4. setup timer for new session
-    // 5. perform averaging of previous measurements after crossing threshold
-    // 5. get proper averaging window (for threshold)
     
     private var sessionEntity: SessionEntity?
     private let measurementStreamStorage: MeasurementStreamStorage
