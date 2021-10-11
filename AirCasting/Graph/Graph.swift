@@ -79,22 +79,25 @@ struct Graph: UIViewRepresentable {
     }
     
     func getMidnightsPoints(startingDate: Date) -> [Double] {
-        let now = Date()
+        let day = Date()
+        // [SMALL HACK] - By adding a day to the current Date we are ensuring
+        // that session which is currently recording will be able to show midnight line
+        let now = Calendar.current.date(byAdding: .day, value: 1, to: day)!
         var midnight = Calendar.current.date(bySettingHour: 0, minute: 0, second: 0, of: now)!
         let components = Calendar.current.dateComponents([.hour, .minute, .second], from: midnight)
         let firstMeasurementDate = startingDate
         var midnightPoints: [Double] = []
         
         while (midnight > firstMeasurementDate) {
-            let previus = Calendar.current.nextDate(after: midnight,
+            let previous = Calendar.current.nextDate(after: midnight,
                                                     matching: components,
                                                     matchingPolicy: Calendar.MatchingPolicy.previousTimePreservingSmallerComponents,
                                                     repeatedTimePolicy: Calendar.RepeatedTimePolicy.first,
                                                     direction: .backward)
-            if let midnightPoint = previus?.timeIntervalSince1970 {
+            if let midnightPoint = previous?.timeIntervalSince1970 {
                 midnightPoints.append(midnightPoint)
             }
-            midnight = previus!
+            midnight = previous!
         }
         return midnightPoints
     }
