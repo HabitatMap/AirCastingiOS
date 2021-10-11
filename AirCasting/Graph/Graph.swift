@@ -82,8 +82,8 @@ struct Graph: UIViewRepresentable {
         let day = Date()
         // [SMALL HACK] - By adding a day to the current Date we are ensuring
         // that session which is currently recording will be able to show midnight line
-        let now = Calendar.current.date(byAdding: .day, value: 1, to: day)!
-        var midnight = Calendar.current.date(bySettingHour: 0, minute: 0, second: 0, of: now)!
+        let nextDay = Calendar.current.date(byAdding: .day, value: 1, to: day)!
+        var midnight = Calendar.current.date(bySettingHour: 0, minute: 0, second: 0, of: nextDay)!
         let components = Calendar.current.dateComponents([.hour, .minute, .second], from: midnight)
         let firstMeasurementDate = startingDate
         var midnightPoints: [Double] = []
@@ -103,7 +103,7 @@ struct Graph: UIViewRepresentable {
     }
     
     func getLimitLines() -> [ChartLimitLine] {
-        let points = getMidnightsPoints(startingDate: stream.allMeasurements?.first?.time ?? Date())
+        let points = getMidnightsPoints(startingDate: stream.allMeasurements?.last?.time ?? Date())
         
         return points.map { point in
             let line = ChartLimitLine(limit: point)
