@@ -8,6 +8,7 @@
 import SwiftUI
 import Charts
 import SwiftSimplify
+import CoreMedia
 
 
 extension ChartDataEntry: Point2DRepresentable {
@@ -53,21 +54,26 @@ struct Graph: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: AirCastingGraph, context: Context) {
-        
         try? uiView.updateWithThreshold(thresholdValues: thresholds.rawThresholdsBinding.wrappedValue)
-        
+  
         let entries = stream.allMeasurements?.compactMap({ measurement -> ChartDataEntry? in
             let timeInterval = Double(measurement.time.timeIntervalSince1970)
             let chartDataEntry = ChartDataEntry(x: timeInterval, y: measurement.value)
             return chartDataEntry
         }) ?? []
         let allLimitLines = getLimitLines()
-        uiView.limitLines = allLimitLines        
+        uiView.limitLines = allLimitLines
         simplifyGraphline(entries: entries, uiView: uiView)
     }
     
     private func simplifyGraphline(entries: [ChartDataEntry], uiView: AirCastingGraph) {
-        if entries.count > simplifiedGraphEntryThreshold {
+        
+        let startTime = uiView.lineChartView.lowestVisibleX
+        let endTime = uiView.lineChartView.highestVisibleX
+        
+        let counter = entries.filter({ $0.x >= startTime && $0.x <= endTime }).count
+        
+        if counter > simplifiedGraphEntryThreshold {
             let simplifiedPoints = SwiftSimplify.simplify(entries,
                                                           tolerance: 0.000000001,
                                                           highestQuality: true)
