@@ -68,13 +68,10 @@ struct Graph: UIViewRepresentable {
     
     private func simplifyGraphline(entries: [ChartDataEntry], uiView: AirCastingGraph) {
         
-        var counter = 0
         let startTime = uiView.lineChartView.lowestVisibleX
         let endTime = uiView.lineChartView.highestVisibleX
         
-        entries.forEach { entry in
-            (entry.x >= startTime && entry.x <= endTime) ? counter += 1 : nil
-        }
+        let counter = entries.filter({ $0.x >= startTime && $0.x <= endTime }).count
         
         if counter > simplifiedGraphEntryThreshold {
             let simplifiedPoints = SwiftSimplify.simplify(entries,

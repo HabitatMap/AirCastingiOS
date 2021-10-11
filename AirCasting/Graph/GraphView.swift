@@ -73,30 +73,6 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
         .navigationBarTitleDisplayMode(.inline)
     }
     
-    var startTimeText: some View {
-        // Active mobile sessions are being represented in device time, so no UTC reformatting is needed
-        // Other sessions are already in the UTC format
-        let isActiveMobile = session.isMobile && session.isActive
-        let formatter = isActiveMobile ? DateFormatters.GraphView.usLocalTimeDateFormatter : DateFormatters.GraphView.mobileActiveDateFormatter
-        
-        guard let start = session.startTime else { return Text("") }
-        
-        let string = formatter.string(from: start)
-        return Text(string)
-    }
-    
-    var endTimeText: some View {
-        // Active mobile sessions are being represented in device time, so no UTC reformatting is needed
-        // Other sessions are already in the UTC format
-        let isActiveMobile = session.isMobile && session.isActive
-        let formatter = isActiveMobile ? DateFormatters.GraphView.usLocalTimeDateFormatter : DateFormatters.GraphView.mobileActiveDateFormatter
-        
-        let end = session.endTime ?? Date()
-        
-        let string = formatter.string(from: end)
-        return Text(string)
-    }
-    
     func isProceeding(session: SessionEntity) -> Bool {
         return session.allStreams?.allSatisfy({ stream in
             !(stream.allMeasurements?.isEmpty ?? true)
