@@ -80,7 +80,7 @@ final class ChartViewModel: ObservableObject {
             intervalStart = intervalEnd - timeUnit
         }
         
-        chartStartTime = intervalStart + timeUnit
+        chartStartTime = intervalEnd + timeUnit
         self.entries = entries
     }
     
