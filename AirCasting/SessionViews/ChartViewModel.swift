@@ -65,6 +65,7 @@ final class ChartViewModel: ObservableObject {
         }
         
         chartEndTime = intervalEnd
+        chartStartTime = intervalEnd
         
         var intervalStart = intervalEnd - timeUnit
         
