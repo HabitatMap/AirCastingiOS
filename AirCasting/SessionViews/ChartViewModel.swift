@@ -76,11 +76,11 @@ final class ChartViewModel: ObservableObject {
             if let average = average {
                 entries.append(ChartDataEntry(x: Double(i), y: average))
             }
+            chartStartTime = intervalEnd
             intervalEnd = intervalStart
             intervalStart = intervalEnd - timeUnit
         }
         
-        chartStartTime = intervalEnd + timeUnit
         self.entries = entries
     }
     
