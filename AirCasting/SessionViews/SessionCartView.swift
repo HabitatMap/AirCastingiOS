@@ -245,11 +245,7 @@ private extension SessionCartView {
     var startTime: some View {
         let formatter = DateFormatters.SessionCartView.pollutionChartDateFormatter
             
-        guard var start = chartViewModel.chartStartTime else { return Text("") }
-     
-        if session.isFixed && session.measurementStreams == [] {
-            start = start.currentUTCTimeZoneDate
-        }
+        guard let start = chartViewModel.chartStartTime else { return Text("") }
         
         let string = formatter.string(from: start)
         return Text(string)
@@ -258,19 +254,7 @@ private extension SessionCartView {
     var endTime: some View {
         let formatter = DateFormatters.SessionCartView.pollutionChartDateFormatter
         
-        if !(session.isMobile && session.isActive && session.isMIC) {
-            formatter.timeZone =  TimeZone.init(abbreviation: "UTC")
-        }
-            
-        guard var end = chartViewModel.chartEndTime else { return Text("") }
-        
-        if session.isMobile && session.deviceType == .AIRBEAM3 && session.endTime == nil {
-            end = end.currentUTCTimeZoneDate
-        }
-     
-        if session.isFixed && session.measurementStreams == [] {
-            end = end.currentUTCTimeZoneDate
-        }
+        let end = chartViewModel.chartEndTime ?? Date().currentUTCTimeZoneDate
         
         let string = formatter.string(from: end)
         return Text(string)

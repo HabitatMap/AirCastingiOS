@@ -209,10 +209,10 @@ private extension SessionHeaderView {
         guard var start = session.startTime else { return Text("") }
         var end = session.endTime ?? Date().currentUTCTimeZoneDate
         
-        if session.isFixed && session.measurementStreams == [] {
-            start = start.currentUTCTimeZoneDate
-            end = end.currentUTCTimeZoneDate
-        }
+//        if session.isFixed && session.measurementStreams == [] {
+//            start = start.currentUTCTimeZoneDate
+//            end = end.currentUTCTimeZoneDate
+//        }
         
             let string = formatter.string(from: start, to: end)
             return Text(string)
