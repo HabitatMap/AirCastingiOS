@@ -225,6 +225,9 @@ private extension SessionCartView {
                     }.foregroundColor(.aircastingGray)
                     .font(Font.muli(size: 13, weight: .semibold))
                 }
+                .onAppear {
+                    chartViewModel.refreshChart()
+                }
             }
         }
     }
