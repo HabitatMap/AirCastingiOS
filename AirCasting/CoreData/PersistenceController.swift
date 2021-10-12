@@ -77,7 +77,6 @@ class PersistenceController: ObservableObject {
     }
     
     @objc private func mainContextChanged() {
-        Log.info("Main context changed!")
         guard !uiSuspended else {
             Log.info("UI suspended, not propagating changes!")
             return
