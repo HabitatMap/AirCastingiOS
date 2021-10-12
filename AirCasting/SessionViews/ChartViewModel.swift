@@ -34,7 +34,7 @@ final class ChartViewModel: ObservableObject {
         self.session = session
         self.chartStartTime = session.endTime
         self.chartEndTime = session.endTime
-        if session.isActive || session.isFollowed {
+        if session.isActive || session.isFollowed || session.status == .NEW {
             startTimers(session)
         }
     }
@@ -53,6 +53,10 @@ final class ChartViewModel: ObservableObject {
         }
     }
     
+    func refreshChart() {
+        generateEntries()
+    }
+    
     private func generateEntries() {
         // Set up begning and end of the interval for the first average
         //  - for fixed sessions we are taking the last full hour of the session, which has any measurements
@@ -65,22 +69,22 @@ final class ChartViewModel: ObservableObject {
         }
         
         chartEndTime = intervalEnd
+        var endOfFirstInterval = intervalEnd
         
         var intervalStart = intervalEnd - timeUnit
         
         var entries = [ChartDataEntry]()
-        
         for i in (0..<numberOfEntries).reversed() {
             if (intervalStart < stream!.session.startTime!.roundedDownToSecond) { break }
             let average = averagedValue(intervalStart, intervalEnd)
             if let average = average {
                 entries.append(ChartDataEntry(x: Double(i), y: average))
             }
+            endOfFirstInterval = intervalEnd
             intervalEnd = intervalStart
             intervalStart = intervalEnd - timeUnit
         }
-        
-        chartStartTime = intervalStart + timeUnit
+        chartStartTime = endOfFirstInterval
         self.entries = entries
     }
     
