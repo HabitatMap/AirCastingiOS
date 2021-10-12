@@ -37,8 +37,8 @@ final class AirBeamFixedWifiSessionCreator: SessionCreator {
                               name: sessionContext.sessionName,
                               deviceType: sessionContext.deviceType,
                               location: sessionContext.startingLocation,
-                              startTime: Date(),
-                              followedAt: Date(),
+                              startTime: Date().currentUTCTimeZoneDate,
+                              followedAt: Date().currentUTCTimeZoneDate,
                               tags: sessionContext.sessionTags)
         
         // if session is fixed: create an empty session on server,

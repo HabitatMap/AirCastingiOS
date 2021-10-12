@@ -8,7 +8,7 @@ enum DateFormatters {
     enum SessionDownloadService {
         static let decoderDateFormatter: DateFormatter = {
             let df = DateFormatter()
-            df.timeZone = TimeZone.init(abbreviation: "UTC")
+            df.timeZone = TimeZone(abbreviation: "UTC")
             df.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
             return df
         }()
@@ -17,7 +17,7 @@ enum DateFormatters {
     enum SessionUploadService {
         static let encoderDateFormatter: DateFormatter = {
             let df = DateFormatter()
-            df.timeZone = TimeZone.init(abbreviation: "UTC")
+            df.timeZone = TimeZone(abbreviation: "UTC")
             df.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
             return df
         }()
@@ -26,6 +26,7 @@ enum DateFormatters {
     enum CreateSessionAPIService {
         static let encoderDateFormatter: DateFormatter = {
             let df = DateFormatter()
+            df.timeZone = TimeZone(abbreviation: "UTC")
             df.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
             return df
         }()
