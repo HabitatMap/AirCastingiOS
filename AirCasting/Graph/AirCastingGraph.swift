@@ -103,7 +103,7 @@ class AirCastingGraph: UIView {
         // Line styling
         dataSet.drawCirclesEnabled = false
         dataSet.setColor(UIColor(.white))
-        dataSet.mode = .linear
+        dataSet.mode = .cubicBezier
         dataSet.lineWidth = 4
         
         if !didMoveOrScaleGraph && isAutozoomEnabled {
