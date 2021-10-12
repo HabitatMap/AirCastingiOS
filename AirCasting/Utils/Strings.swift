@@ -90,7 +90,8 @@ struct Strings {
         static let graph: String = "graph"
         static let follow: String = "follow"
         static let unfollow: String = "unfollow"
-        static let avgSession: String = "1 hr avg -"
+        static let avgSessionH: String = "1 hr avg -"
+        static let avgSessionMin: String = "1 min avg -"
     }
     
     enum SelectPeripheralView {

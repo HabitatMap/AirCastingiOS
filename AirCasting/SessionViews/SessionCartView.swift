@@ -219,7 +219,7 @@ private extension SessionCartView {
                     HStack() {
                             startTime
                             Spacer()
-                        Text("\(Strings.SessionCartView.avgSession) \(selectedStream.unitSymbol ?? "")")
+                            descriptionText(stream: selectedStream)
                             Spacer()
                             endTime
                     }.foregroundColor(.aircastingGray)
@@ -253,7 +253,7 @@ private extension SessionCartView {
             formatter.timeZone =  TimeZone.init(abbreviation: "UTC")
         }
             
-        var end = chartViewModel.chartEndTime ?? Date()
+        guard var end = chartViewModel.chartEndTime else { return Text("") }
         
         if session.isMobile && session.deviceType == .AIRBEAM3 && session.endTime == nil {
             end = end.currentUTCTimeZoneDate
@@ -266,6 +266,10 @@ private extension SessionCartView {
         let string = formatter.string(from: end)
         return Text(string)
         }
+    
+    func descriptionText(stream: MeasurementStreamEntity) -> some View {
+        return Text("\(stream.session.isMobile ? Strings.SessionCartView.avgSessionMin : Strings.SessionCartView.avgSessionH) \(stream.unitSymbol ?? "")")
+    }
     
     func displayButtons(thresholds: [SensorThreshold]) -> some View {
         HStack(spacing: 20) {
