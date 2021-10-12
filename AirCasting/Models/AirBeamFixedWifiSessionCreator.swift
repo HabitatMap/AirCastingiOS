@@ -82,7 +82,7 @@ final class AirBeamFixedWifiSessionCreator: SessionCreator {
                                                                                                      peripheral: peripheral).configureFixedWifiSession(
                                                                                                         uuid: sessionUUID,
                                                                                                         location: sessionContext.startingLocation ?? CLLocationCoordinate2D(latitude: 200, longitude: 200),
-                                                                                                        date: Date(),
+                                                                                                        date: Date().currentUTCTimeZoneDate,
                                                                                                         wifiSSID: wifiSSID,
                                                                                                         wifiPassword: wifiPassword)
                                                                             Log.warning("Created fixed Wifi session \(output)")
