@@ -13,7 +13,11 @@ struct HexMessagesBuilder {
         func getTimezoneOffsetInHours() -> Int {
             let calendar = Calendar.current
             let timeZone = calendar.timeZone
-            let hoursOffset = Int(timeZone.secondsFromGMT() / 3600)
+            var offset = timeZone.secondsFromGMT()
+            if (timeZone.isDaylightSavingTime()) {
+                offset = offset - Int(timeZone.daylightSavingTimeOffset())
+            }
+            let hoursOffset = Int(offset / 3600)
             return hoursOffset
         }
     }
