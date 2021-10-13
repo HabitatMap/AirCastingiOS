@@ -133,13 +133,13 @@ struct GoogleMapView: UIViewRepresentable {
             dot.map = uiView
         }
         
-        if let first = pathPoints.first {
+        if let last = pathPoints.last {
             dot.iconView = UIView()
             dot.iconView?.frame = CGRect(x: 0, y: 0,
                                          width: Constants.Map.dotWidth,
                                          height: Constants.Map.dotHeight)
             dot.iconView?.layer.cornerRadius = CGFloat(Constants.Map.dotRadius)
-            dot.iconView?.backgroundColor = color(point: first)
+            dot.iconView?.backgroundColor = color(point: last)
         }
         
         let polyline = context.coordinator.polyline
