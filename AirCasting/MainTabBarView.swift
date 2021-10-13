@@ -8,6 +8,7 @@
 import CoreData
 import Firebase
 import CoreBluetooth
+
 import SwiftUI
 
 struct MainTabBarView: View {
@@ -22,12 +23,12 @@ struct MainTabBarView: View {
     @EnvironmentObject var persistenceController: PersistenceController
     @EnvironmentObject var microphoneManager: MicrophoneManager
     @EnvironmentObject var userSettings: UserSettings
+    @EnvironmentObject var bluetoothManager: BluetoothManager
     let sessionSynchronizer: SessionSynchronizer
     @StateObject var tabSelection: TabBarSelection = TabBarSelection()
     @StateObject var selectedSection = SelectSection()
     @StateObject var emptyDashboardButtonTapped = EmptyDashboardButtonTapped()
     @StateObject var sessionContext: CreateSessionContext
-    @EnvironmentObject var bluetoothManager: BluetoothManager
     let locationHandler: LocationHandler
     
     var body: some View {
@@ -50,6 +51,7 @@ struct MainTabBarView: View {
         .environmentObject(emptyDashboardButtonTapped)
     }
 }
+
 
 private extension MainTabBarView {
     // Tab Bar views
@@ -102,24 +104,6 @@ class EmptyDashboardButtonTapped: ObservableObject {
     @Published var mobileWasTapped = false
 }
 
-#if DEBUG
-struct ContentView_Previews: PreviewProvider {
-    private static let persistenceController = PersistenceController(inMemory: true)
-
-    static var previews: some View {
-        MainTabBarView(measurementUpdatingService: MeasurementUpdatingServiceMock(), urlProvider: DummyURLProvider(), measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionStoppableFactory: SessionStoppableFactoryDummy(), sessionSynchronizer: DummySessionSynchronizer(), sessionContext: CreateSessionContext(), locationHandler: DummyDefaultLocationHandler())
-            .environmentObject(UserAuthenticationSession())
-            .environmentObject(BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: PreviewMeasurementStreamStorage())))
-            .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
-            .environment(\.managedObjectContext, persistenceController.viewContext)
-    }
-
-    private class MeasurementUpdatingServiceMock: MeasurementUpdatingService {
-        func start() {}
-    }
-}
-#endif
-
 extension MainTabBarView {
     enum HomeIcon {
         case selected
@@ -157,3 +141,34 @@ extension MainTabBarView {
         }
     }
 }
+
+// extension that allows us to centre images in the tabView
+extension UITabBarController {
+    open override func viewWillLayoutSubviews() {
+        let array = self.viewControllers
+        for controller in array! {
+            controller.tabBarItem.imageInsets = UIEdgeInsets(top: 6,
+                                                             left: 0,
+                                                             bottom: -6,
+                                                             right: 0)
+        }
+    }
+}
+
+#if DEBUG
+struct ContentView_Previews: PreviewProvider {
+    private static let persistenceController = PersistenceController(inMemory: true)
+
+    static var previews: some View {
+        MainTabBarView(measurementUpdatingService: MeasurementUpdatingServiceMock(), urlProvider: DummyURLProvider(), measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionStoppableFactory: SessionStoppableFactoryDummy(), sessionSynchronizer: DummySessionSynchronizer(), sessionContext: CreateSessionContext(), locationHandler: DummyDefaultLocationHandler())
+            .environmentObject(UserAuthenticationSession())
+            .environmentObject(BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: PreviewMeasurementStreamStorage())))
+            .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
+            .environment(\.managedObjectContext, persistenceController.viewContext)
+    }
+
+    private class MeasurementUpdatingServiceMock: MeasurementUpdatingService {
+        func start() {}
+    }
+}
+#endif
