@@ -96,24 +96,30 @@ struct SessionCartView: View {
         .foregroundColor(.aircastingGray)
         .padding()
         .background(
-            Group {
-                Color.white
-                    .shadow(color: Color(red: 205/255, green: 209/255, blue: 214/255, opacity: 0.36), radius: 9, x: 0, y: 1)
-                mapNavigationLink
-                // SwiftUI bug: two navigation links don't work properly
-                NavigationLink(destination: EmptyView(), label: {EmptyView()})
-            }
+            Color.white
+                .shadow(color: Color(red: 205/255, green: 209/255, blue: 214/255, opacity: 0.36), radius: 9, x: 0, y: 1)
         )
-        .fullScreenCover(isPresented: $isGraphButtonActive) {
-            GraphView(session: session,
-                      thresholds: thresholds,
-                      selectedStream: $selectedStream,
-                      showGraphView: $isGraphButtonActive,
-                      statsContainerViewModel: graphStatsViewModel,
-                      graphStatsDataSource: graphStatsDataSource,
-                      sessionStoppableFactory: sessionStoppableFactory,
-                      measurementStreamStorage: measurementStreamStorage)
-        }
+        EmptyView()
+            .fullScreenCover(isPresented: $isGraphButtonActive) {
+                GraphView(session: session,
+                          thresholds: thresholds,
+                          selectedStream: $selectedStream,
+                          statsContainerViewModel: graphStatsViewModel,
+                          graphStatsDataSource: graphStatsDataSource,
+                          sessionStoppableFactory: sessionStoppableFactory,
+                          measurementStreamStorage: measurementStreamStorage)
+            }
+        EmptyView()
+            .fullScreenCover(isPresented: $isMapButtonActive) {
+                AirMapView(thresholds: thresholds,
+                           statsContainerViewModel: mapStatsViewModel,
+                           mapStatsDataSource: mapStatsDataSource,
+                           session: session,
+                           showLoadingIndicator: $showLoadingIndicator,
+                           selectedStream: $selectedStream,
+                           sessionStoppableFactory: sessionStoppableFactory,
+                           measurementStreamStorage: measurementStreamStorage)
+            }
     }
     
     private func selectDefaultStreamIfNeeded(streams: [MeasurementStreamEntity]) {
@@ -182,23 +188,6 @@ private extension SessionCartView {
         Button(Strings.SessionCartView.unfollow) {
             sessionCartViewModel.toggleFollowing()
         }.buttonStyle(UnFollowButtonStyle())
-    }
-    
-    private var mapNavigationLink: some View {
-        let mapView = AirMapView(thresholds: thresholds,
-                                 statsContainerViewModel: mapStatsViewModel,
-                                 mapStatsDataSource: mapStatsDataSource,
-                                 session: session,
-                                 showLoadingIndicator: $showLoadingIndicator,
-                                 selectedStream: $selectedStream,
-                                 sessionStoppableFactory: sessionStoppableFactory,
-                                 measurementStreamStorage: measurementStreamStorage)
-        
-        return NavigationLink(destination: mapView,
-                              isActive: $isMapButtonActive,
-                              label: {
-                                EmptyView()
-                              })
     }
     
     func pollutionChart(thresholds: [SensorThreshold]) -> some View {

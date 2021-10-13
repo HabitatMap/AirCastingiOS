@@ -8,10 +8,11 @@
 import SwiftUI
 
 struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsContainerViewModelable {
+    @Environment(\.presentationMode) var presentationMode
+    
     let session: SessionEntity
     let thresholds: [SensorThreshold]
     @Binding var selectedStream: MeasurementStreamEntity?
-    @Binding var showGraphView: Bool
     @StateObject var statsContainerViewModel: StatsViewModelType
     let graphStatsDataSource: GraphStatsDataSource
     let sessionStoppableFactory: SessionStoppableFactory
@@ -26,8 +27,9 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                                   isSensorTypeNeeded: false,
                                   isCollapsed: Binding.constant(false),
                                   session: session,
-                                  sessionStopperFactory: sessionStoppableFactory).padding()
+                                  sessionStopperFactory: sessionStoppableFactory)
             }
+            .padding()
             
             ABMeasurementsView(viewModelProvider: {
                 DefaultSyncingMeasurementsViewModel(measurementStreamStorage: measurementStreamStorage,
@@ -74,7 +76,6 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
             }
             Spacer()
         }
-        .navigationBarTitleDisplayMode(.inline)
     }
     
     func isProceeding(session: SessionEntity) -> Bool {
@@ -85,12 +86,12 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
     
     var backButton: some View {
         Button {
-            showGraphView = false
+            self.presentationMode.wrappedValue.dismiss()
         } label: {
             Image(systemName: "chevron.backward")
                 .foregroundColor(.black)
         }
-        .padding(.leading)
+        .padding()
     }
 }
 
@@ -99,7 +100,7 @@ struct GraphView_Previews: PreviewProvider {
     static var previews: some View {
         GraphView(session: .mock,
                   thresholds: [.mock],
-                  selectedStream: .constant(nil), showGraphView: .constant(true),
+                  selectedStream: .constant(nil),
                   statsContainerViewModel: FakeStatsViewModel(),
                   graphStatsDataSource: GraphStatsDataSource(),
                   sessionStoppableFactory: SessionStoppableFactoryDummy(),
