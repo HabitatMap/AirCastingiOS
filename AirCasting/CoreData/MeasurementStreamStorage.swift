@@ -127,7 +127,6 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
     
     func updateMeasurements(stream: MeasurementStreamEntity, newMeasurements: NSOrderedSet) throws {
         do {
-            stream.measurements = []
             stream.measurements = newMeasurements
         } catch {
             Log.info("Error when saving changes in session: \(error.localizedDescription) ")

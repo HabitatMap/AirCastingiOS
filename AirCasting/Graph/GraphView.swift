@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsContainerViewModelable {
+    @Environment(\.presentationMode) var presentationMode
+    
     let session: SessionEntity
     let thresholds: [SensorThreshold]
     @Binding var selectedStream: MeasurementStreamEntity?
@@ -18,12 +20,16 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
     
     var body: some View {
         VStack(alignment: .trailing) {
-            SessionHeaderView(action: {},
-                              isExpandButtonNeeded: false,
-                              isSensorTypeNeeded: false,
-                              isCollapsed: Binding.constant(false),
-                              session: session,
-                              sessionStopperFactory: sessionStoppableFactory).padding()
+            HStack {
+                backButton
+                SessionHeaderView(action: {},
+                                  isExpandButtonNeeded: false,
+                                  isSensorTypeNeeded: false,
+                                  isCollapsed: Binding.constant(false),
+                                  session: session,
+                                  sessionStopperFactory: sessionStoppableFactory)
+            }
+            .padding()
             
             ABMeasurementsView(viewModelProvider: {
                 DefaultSyncingMeasurementsViewModel(measurementStreamStorage: measurementStreamStorage,
@@ -70,13 +76,22 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
             }
             Spacer()
         }
-        .navigationBarTitleDisplayMode(.inline)
     }
     
     func isProceeding(session: SessionEntity) -> Bool {
         return session.allStreams?.allSatisfy({ stream in
             !(stream.allMeasurements?.isEmpty ?? true)
         }) ?? false
+    }
+    
+    var backButton: some View {
+        Button {
+            self.presentationMode.wrappedValue.dismiss()
+        } label: {
+            Image(systemName: "chevron.backward")
+                .foregroundColor(.black)
+        }
+        .padding()
     }
 }
 

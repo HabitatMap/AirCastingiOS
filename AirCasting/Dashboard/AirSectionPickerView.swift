@@ -62,7 +62,7 @@ struct PickerButtonStyle: ButtonStyle {
             .font(isSelected ? Font.muli(size: 16, weight: .bold) : Font.muli(size: 16, weight: .regular))
             .frame(maxHeight: 30)
             .background(Color.white)
-            .padding(.horizontal)
+            .padding(.horizontal, 10)
             .padding(.top)
     }
 }
