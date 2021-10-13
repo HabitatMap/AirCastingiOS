@@ -11,6 +11,7 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
     let session: SessionEntity
     let thresholds: [SensorThreshold]
     @Binding var selectedStream: MeasurementStreamEntity?
+    @Binding var showGraphView: Bool
     @StateObject var statsContainerViewModel: StatsViewModelType
     let graphStatsDataSource: GraphStatsDataSource
     let sessionStoppableFactory: SessionStoppableFactory
@@ -18,12 +19,15 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
     
     var body: some View {
         VStack(alignment: .trailing) {
-            SessionHeaderView(action: {},
-                              isExpandButtonNeeded: false,
-                              isSensorTypeNeeded: false,
-                              isCollapsed: Binding.constant(false),
-                              session: session,
-                              sessionStopperFactory: sessionStoppableFactory).padding()
+            HStack {
+                backButton
+                SessionHeaderView(action: {},
+                                  isExpandButtonNeeded: false,
+                                  isSensorTypeNeeded: false,
+                                  isCollapsed: Binding.constant(false),
+                                  session: session,
+                                  sessionStopperFactory: sessionStoppableFactory).padding()
+            }
             
             ABMeasurementsView(viewModelProvider: {
                 DefaultSyncingMeasurementsViewModel(measurementStreamStorage: measurementStreamStorage,
@@ -78,6 +82,16 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
             !(stream.allMeasurements?.isEmpty ?? true)
         }) ?? false
     }
+    
+    var backButton: some View {
+        Button {
+            showGraphView = false
+        } label: {
+            Image(systemName: "chevron.backward")
+                .foregroundColor(.black)
+        }
+        .padding(.leading)
+    }
 }
 
 #if DEBUG
@@ -85,7 +99,7 @@ struct GraphView_Previews: PreviewProvider {
     static var previews: some View {
         GraphView(session: .mock,
                   thresholds: [.mock],
-                  selectedStream: .constant(nil),
+                  selectedStream: .constant(nil), showGraphView: .constant(true),
                   statsContainerViewModel: FakeStatsViewModel(),
                   graphStatsDataSource: GraphStatsDataSource(),
                   sessionStoppableFactory: SessionStoppableFactoryDummy(),
