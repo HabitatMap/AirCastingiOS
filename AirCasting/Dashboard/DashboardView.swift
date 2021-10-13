@@ -38,6 +38,7 @@ struct DashboardView: View {
             // Bug report was filled with Apple
             PreventCollapseView()
             AirSectionPickerView(selection: self.$selectedSection.selectedSection)
+                .padding(.leading, 8)
 
             if sessions.isEmpty {
                 if selectedSection.selectedSection == .mobileActive || selectedSection.selectedSection == .mobileDormant {
