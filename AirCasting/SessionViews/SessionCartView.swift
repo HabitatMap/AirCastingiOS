@@ -110,11 +110,11 @@ struct SessionCartView: View {
     }
     
     var sessionCard: some View {
-        VStack(alignment: .leading, spacing: 13) {
+        VStack(alignment: .leading, spacing: 5) {
             header
             if hasStreams {
                 measurements
-                VStack(alignment: .trailing, spacing: 40) {
+                VStack(alignment: .trailing, spacing: 10) {
                     if showChart {
                         pollutionChart(thresholds: thresholds)
                     }
