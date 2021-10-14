@@ -69,6 +69,7 @@ enum DateFormatters {
         static let UTCDateFormatter: DateFormatter = {
             let df = DateFormatter()
             df.dateFormat = "HH:mm"
+            df.locale = Locale(identifier: "en_US")
             df.timeZone = TimeZone(abbreviation: "UTC")
             return df
         }()
