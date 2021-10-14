@@ -60,7 +60,7 @@ private extension SessionHeaderView {
         VStack(alignment: .leading, spacing: 5) {
             HStack {
                 Text(session.name ?? "")
-                    .font(Font.moderate(size: 18, weight: .bold))
+                    .font(Font.moderate(size: 18, weight: .regular))
                 Spacer()
                 if isExpandButtonNeeded {
                     Button(action: {
