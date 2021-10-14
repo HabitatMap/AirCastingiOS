@@ -465,6 +465,7 @@ struct Strings {
     }
     
     enum MainTabBarView {
+        static let dashboardText: String = "Dashboard"
         static let homeIcon: String = "home"
         static let homeBlueIcon: String = "bluehome"
         static let plusIcon: String = "plus"
