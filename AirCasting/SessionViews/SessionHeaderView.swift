@@ -206,13 +206,8 @@ private extension SessionHeaderView {
     func adaptTimeAndDate() -> Text {
         let formatter = DateFormatters.SessionCartView.utcDateIntervalFormatter
         
-        guard var start = session.startTime else { return Text("") }
-        var end = session.endTime ?? Date().currentUTCTimeZoneDate
-        
-//        if session.isFixed && session.measurementStreams == [] {
-//            start = start.currentUTCTimeZoneDate
-//            end = end.currentUTCTimeZoneDate
-//        }
+        guard let start = session.startTime else { return Text("") }
+        let end = session.endTime ?? Date().currentUTCTimeZoneDate
         
             let string = formatter.string(from: start, to: end)
             return Text(string)
