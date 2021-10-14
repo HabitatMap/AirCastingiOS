@@ -14,6 +14,7 @@ struct HexMessagesBuilder {
             let calendar = Calendar.current
             let timeZone = calendar.timeZone
             var offset = timeZone.secondsFromGMT()
+            // We need to send *standard* offset, ignoring DST because AirBeam is calculating DST anyway
             if (timeZone.isDaylightSavingTime()) {
                 offset = offset - Int(timeZone.daylightSavingTimeOffset())
             }
