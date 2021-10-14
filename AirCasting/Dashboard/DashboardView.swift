@@ -17,7 +17,14 @@ struct DashboardView: View {
     
     let measurementStreamStorage: MeasurementStreamStorage
     let sessionStoppableFactory: SessionStoppableFactory
-
+    let imageShadow = UIImage.gradientImageWithBounds(
+        bounds: CGRect(x: 0, y: -5, width: UIScreen.main.bounds.width, height: 5),
+        colors: [
+            UIColor.black.withAlphaComponent(0.1).cgColor,
+            UIColor.clear.cgColor
+        ]
+    )
+    
     private var sessions: [SessionEntity] {
         coreDataHook.sessions
     }
@@ -36,11 +43,10 @@ struct DashboardView: View {
             // As a workaround I`ve put a 1px rectangle between ScrollView and top. It seems to be doing the trick.
             //
             // Bug report was filled with Apple
-                PreventCollapseView()
-                AirSectionPickerView(selection: self.$selectedSection.selectedSection)
-                    .padding(.leading, 8)
-                Color.white.frame(height:CGFloat(5) / UIScreen.main.scale)
-                    .shadow(color: .shadow, radius: 5, x: 0, y: 8)
+            PreventCollapseView()
+            AirSectionPickerView(selection: self.$selectedSection.selectedSection)
+                .padding(.leading, 8)
+            Image(uiImage: imageShadow)
                 
             if sessions.isEmpty {
                 if selectedSection.selectedSection == .mobileActive || selectedSection.selectedSection == .mobileDormant {
@@ -65,9 +71,9 @@ struct DashboardView: View {
                             }
                         }
                     }
-                }.padding()
-                    .frame(maxWidth: .infinity)
-                    .background(Color.aircastingGray.opacity(0.05))
+                }.padding(.horizontal)
+                .frame(maxWidth: .infinity)
+                .background(Color.aircastingGray.opacity(0.05))
             }
         }
         .navigationBarTitle(NSLocalizedString("Dashboard", comment: ""))

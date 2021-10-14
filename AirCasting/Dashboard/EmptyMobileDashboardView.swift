@@ -39,9 +39,9 @@ struct EmptyMobileDashboardViewMobile: View {
                     Spacer()
                 }
                 airBeamDescription
+                    .padding(.horizontal)
             }
         }
-        .padding()
         .background(Color(red: 251/255, green: 253/255, blue: 255/255))
     }
 }

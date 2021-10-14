@@ -39,6 +39,19 @@ struct MainTabBarView: View {
         }
         .onAppear {
             UITabBar.appearance().backgroundColor = .systemBackground
+            let image = UIImage.gradientImageWithBounds(
+                bounds: CGRect(x: 0, y: 0, width: UIScreen.main.scale, height: 5),
+                colors: [
+                    UIColor.clear.cgColor,
+                    UIColor.black.withAlphaComponent(0.1).cgColor
+                ]
+            )
+
+            let appearance = UITabBarAppearance()
+            appearance.backgroundImage = UIImage()
+            appearance.shadowImage = image
+            
+            UITabBar.appearance().standardAppearance = appearance
             measurementUpdatingService.start()
         }
         .onChange(of: tabSelection.selection, perform: { _ in
@@ -59,7 +72,8 @@ private extension MainTabBarView {
     private var dashboardTab: some View {
         NavigationView {
             DashboardView(coreDataHook: CoreDataHook(context: persistenceController.viewContext), measurementStreamStorage: measurementStreamStorage, sessionStoppableFactory: sessionStoppableFactory)
-        }.navigationViewStyle(StackNavigationViewStyle())
+        }
+        .navigationViewStyle(StackNavigationViewStyle())
         .tabItem {
             Image(homeImage)
         }
@@ -173,3 +187,18 @@ struct ContentView_Previews: PreviewProvider {
     }
 }
 #endif
+
+
+extension UIImage {
+    static func gradientImageWithBounds(bounds: CGRect, colors: [CGColor]) -> UIImage {
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.frame = bounds
+        gradientLayer.colors = colors
+        
+        UIGraphicsBeginImageContext(gradientLayer.bounds.size)
+        gradientLayer.render(in: UIGraphicsGetCurrentContext()!)
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return image!
+    }
+}

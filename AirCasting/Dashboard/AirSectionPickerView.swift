@@ -6,24 +6,33 @@ import SwiftUI
 struct AirSectionPickerView: View {
     
     @Binding var selection: SelectedSection
+    let imageShadow = UIImage.gradientImageWithBounds(
+        bounds: CGRect(x: 0, y: -20, width: UIScreen.main.bounds.width, height: 5),
+        colors: [
+            UIColor.black.withAlphaComponent(0.1).cgColor,
+            UIColor.clear.cgColor
+        ]
+    )
     
     var body: some View {
-        ScrollViewReader { scrollReader in
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack {
-                    ForEach(SelectedSection.allCases, id: \.self) { section in
-                        Button(section.localizedString) {
-                            withAnimation(.easeInOut(duration: 0.1)) {
-                                if section == .mobileDormant {
-                                    scrollReader.scrollTo(SelectedSection.fixed)
-                                } else if section == .mobileActive {
-                                    scrollReader.scrollTo(SelectedSection.following)
+        VStack() {
+            ScrollViewReader { scrollReader in
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack {
+                        ForEach(SelectedSection.allCases, id: \.self) { section in
+                            Button(section.localizedString) {
+                                withAnimation(.easeInOut(duration: 0.1)) {
+                                    if section == .mobileDormant {
+                                        scrollReader.scrollTo(SelectedSection.fixed)
+                                    } else if section == .mobileActive {
+                                        scrollReader.scrollTo(SelectedSection.following)
+                                    }
+                                    selection = section
                                 }
-                                selection = section
                             }
+                            .buttonStyle(PickerButtonStyle(isSelected: section == selection))
+                            .id(section)
                         }
-                        .buttonStyle(PickerButtonStyle(isSelected: section == selection))
-                        .id(section)
                     }
                 }
             }
