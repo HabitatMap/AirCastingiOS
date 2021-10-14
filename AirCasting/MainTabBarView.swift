@@ -38,6 +38,7 @@ struct MainTabBarView: View {
             settingsTab
         }
         .onAppear {
+            UITabBar.appearance().backgroundColor = .systemBackground
             measurementUpdatingService.start()
         }
         .onChange(of: tabSelection.selection, perform: { _ in

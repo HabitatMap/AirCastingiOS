@@ -36,10 +36,12 @@ struct DashboardView: View {
             // As a workaround I`ve put a 1px rectangle between ScrollView and top. It seems to be doing the trick.
             //
             // Bug report was filled with Apple
-            PreventCollapseView()
-            AirSectionPickerView(selection: self.$selectedSection.selectedSection)
-                .padding(.leading, 8)
-
+                PreventCollapseView()
+                AirSectionPickerView(selection: self.$selectedSection.selectedSection)
+                    .padding(.leading, 8)
+                Color.white.frame(height:CGFloat(5) / UIScreen.main.scale)
+                    .shadow(color: .shadow, radius: 5, x: 0, y: 8)
+                
             if sessions.isEmpty {
                 if selectedSection.selectedSection == .mobileActive || selectedSection.selectedSection == .mobileDormant {
                     EmptyMobileDashboardViewMobile()
@@ -51,7 +53,7 @@ struct DashboardView: View {
                     Image("dashboard-background-thing")
                     let thresholds = Array(self.thresholds)
                     ScrollView(.vertical) {
-                        LazyVStack(spacing: 20) {
+                        LazyVStack(spacing: 8) {
                             ForEach(sessions, id: \.uuid) { session in
                                 let followingSetter = MeasurementStreamStorageFollowingSettable(session: session, measurementStreamStorage: measurementStreamStorage)
                                 let viewModel = SessionCartViewModel(followingSetter: followingSetter)
