@@ -24,7 +24,7 @@ struct SessionHeaderView: View {
     let sessionStopperFactory: SessionStoppableFactory
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 13) {
+        VStack(alignment: .leading, spacing: 3) {
             ZStack {
                 HStack {
                     dateAndTime
@@ -57,10 +57,10 @@ private extension SessionHeaderView {
     }
     
     var nameLabelAndExpandButton: some View {
-        VStack(alignment: .leading, spacing: 5) {
+        VStack(alignment: .leading, spacing: 3) {
             HStack {
                 Text(session.name ?? "")
-                    .font(Font.moderate(size: 18, weight: .bold))
+                    .font(Font.moderate(size: 18, weight: .regular))
                 Spacer()
                 if isExpandButtonNeeded {
                     Button(action: {
