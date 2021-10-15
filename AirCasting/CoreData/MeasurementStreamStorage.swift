@@ -187,7 +187,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         do {
             let sessionEntity = try context.existingSession(uuid: sessionUUID)
             if sessionFollowing == SessionFollowing.following {
-                sessionEntity.followedAt = Date()
+                sessionEntity.followedAt = Date().currentUTCTimeZoneDate
             } else {
                 sessionEntity.followedAt = nil
             }
