@@ -17,13 +17,6 @@ struct DashboardView: View {
     
     let measurementStreamStorage: MeasurementStreamStorage
     let sessionStoppableFactory: SessionStoppableFactory
-    let imageShadow = UIImage.gradientImageWithBounds(
-        bounds: CGRect(x: 0, y: -5, width: UIScreen.main.bounds.width, height: 5),
-        colors: [
-            UIColor.black.withAlphaComponent(0.1).cgColor,
-            UIColor.clear.cgColor
-        ]
-    )
     
     private var sessions: [SessionEntity] {
         coreDataHook.sessions
@@ -46,7 +39,7 @@ struct DashboardView: View {
             PreventCollapseView()
             AirSectionPickerView(selection: self.$selectedSection.selectedSection)
                 .padding(.leading, 8)
-            Image(uiImage: imageShadow)
+            Image(uiImage: UIImage.AirSectionPickerShadow)
                 
             if sessions.isEmpty {
                 if selectedSection.selectedSection == .mobileActive || selectedSection.selectedSection == .mobileDormant {
@@ -72,8 +65,8 @@ struct DashboardView: View {
                         }
                     }
                 }.padding(.horizontal)
-                .frame(maxWidth: .infinity)
-                .background(Color.aircastingGray.opacity(0.05))
+                    .frame(maxWidth: .infinity)
+                    .background(Color.aircastingGray.opacity(0.05))
             }
         }
         .navigationBarTitle(NSLocalizedString("Dashboard", comment: ""))
