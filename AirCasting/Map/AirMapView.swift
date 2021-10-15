@@ -62,6 +62,7 @@ struct AirMapView: View {
                                       threshold: threshold, placePickerDismissed: Binding.constant(false))
                             .onPositionChange { [weak mapStatsDataSource, weak statsContainerViewModel] visiblePoints in
                                 mapStatsDataSource?.visiblePathPoints = visiblePoints
+                                print(visiblePoints.count)
                                 statsContainerViewModel?.adjustForNewData()
                             }
                         // Statistics container shouldn't be presented in mobile dormant tab
@@ -81,11 +82,12 @@ struct AirMapView: View {
                 }
             }
         }
-//        .onChange(of: selectedStream) { newStream in
-////            mapStatsDataSource.stream = newStream
-//            statsContainerViewModel.adjustForNewData()
-//            print("## Called adjusting data")
-//        }
+        .onChange(of: selectedStream) { newStream in
+//            mapStatsDataSource.stream = newStream
+            mapStatsDataSource.visiblePathPoints = pathPoints
+            statsContainerViewModel.adjustForNewData()
+            print("## Called adjusting data")
+        }
         .onChange(of: scenePhase) { phase in
             switch phase {
             case .background, .inactive: self.presentationMode.wrappedValue.dismiss()
