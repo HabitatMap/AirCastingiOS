@@ -17,7 +17,7 @@ struct AirMapView: View {
     var thresholds: [SensorThreshold]
     @StateObject var statsContainerViewModel: StatisticsContainerViewModel
     @StateObject var mapStatsDataSource: MapStatsDataSource
-    @ObservedObject var session: SessionEntity
+    let session: SessionEntity
     @Binding var showLoadingIndicator: Bool
 
     @Binding var selectedStream: MeasurementStreamEntity?
@@ -81,6 +81,11 @@ struct AirMapView: View {
                 }
             }
         }
+//        .onChange(of: selectedStream) { newStream in
+////            mapStatsDataSource.stream = newStream
+//            statsContainerViewModel.adjustForNewData()
+//            print("## Called adjusting data")
+//        }
         .onChange(of: scenePhase) { phase in
             switch phase {
             case .background, .inactive: self.presentationMode.wrappedValue.dismiss()
