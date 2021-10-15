@@ -95,8 +95,8 @@ final class ChartViewModel: ObservableObject {
         if session.isFixed {
             return lastMeasurementTime.roundedDownToHour
         } else {
-            let secondsSinceFullMinuteFromSessionStart = Date().timeIntervalSince(sessionStartTime).truncatingRemainder(dividingBy: timeUnit)
-            return Date() - secondsSinceFullMinuteFromSessionStart
+            let secondsSinceFullMinuteFromSessionStart = Date().currentUTCTimeZoneDate.timeIntervalSince(sessionStartTime).truncatingRemainder(dividingBy: timeUnit)
+            return Date().currentUTCTimeZoneDate - secondsSinceFullMinuteFromSessionStart
         }
     }
     
