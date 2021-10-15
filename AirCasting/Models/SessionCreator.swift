@@ -92,7 +92,7 @@ final class MobilePeripheralSessionCreator: SessionCreator {
             }
             AirBeam3Configurator(userAuthenticationSession: userAuthenticationSession,
                                  peripheral: peripheral).configureMobileSession(
-                                    date: Date(),
+                                    date: Date().currentUTCTimeZoneDate,
                                     location: sessionContext.startingLocation ?? CLLocationCoordinate2D(latitude: 200, longitude: 200))
             mobilePeripheralSessionManager.startRecording(session: session, peripheral: peripheral)
             completion(.success(()))
