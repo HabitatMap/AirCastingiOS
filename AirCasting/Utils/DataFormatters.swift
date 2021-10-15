@@ -8,7 +8,7 @@ enum DateFormatters {
     enum SessionDownloadService {
         static let decoderDateFormatter: DateFormatter = {
             let df = DateFormatter()
-            df.timeZone = TimeZone.init(abbreviation: "UTC")
+            df.timeZone = TimeZone(abbreviation: "UTC")
             df.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
             return df
         }()
@@ -17,7 +17,7 @@ enum DateFormatters {
     enum SessionUploadService {
         static let encoderDateFormatter: DateFormatter = {
             let df = DateFormatter()
-            df.timeZone = TimeZone.init(abbreviation: "UTC")
+            df.timeZone = TimeZone(abbreviation: "UTC")
             df.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
             return df
         }()
@@ -26,6 +26,7 @@ enum DateFormatters {
     enum CreateSessionAPIService {
         static let encoderDateFormatter: DateFormatter = {
             let df = DateFormatter()
+            df.timeZone = TimeZone(abbreviation: "UTC")
             df.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
             return df
         }()
@@ -44,6 +45,15 @@ enum DateFormatters {
         static let pollutionChartDateFormatter: DateFormatter = {
             let df = DateFormatter()
             df.dateFormat = "HH:mm"
+            df.timeZone = TimeZone(abbreviation: "UTC")
+            return df
+        }()
+        
+        static let utcDateIntervalFormatter: DateIntervalFormatter = {
+            let df = DateIntervalFormatter()
+            df.dateTemplate = "MM/dd/yy HH:mm"
+            df.timeZone = TimeZone(abbreviation: "UTC")
+            df.locale = Locale(identifier: "en_US_POSIX")
             return df
         }()
     }
@@ -56,11 +66,11 @@ enum DateFormatters {
             return df
         }()
         
-        static let mobileActiveDateFormatter: DateFormatter = {
+        static let UTCDateFormatter: DateFormatter = {
             let df = DateFormatter()
             df.dateFormat = "HH:mm"
-            df.timeZone = TimeZone.init(abbreviation: "UTC")
             df.locale = Locale(identifier: "en_US")
+            df.timeZone = TimeZone(abbreviation: "UTC")
             return df
         }()
     }
