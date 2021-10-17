@@ -126,14 +126,14 @@ private extension CreateSessionDetailsView {
 
     var titleLabel: some View {
         Text(Strings.CreateSessionDetailsView.title)
-            .font(Font.moderate(size: 24, weight: .bold))
+            .font(Fonts.CreateSessionDetailedView.title)
             .foregroundColor(.darkBlue)
     }
 
     var placementPicker: some View {
         VStack(alignment: .leading, spacing: 15) {
             Text(Strings.CreateSessionDetailsView.placementPicker_1)
-                .font(Font.moderate(size: 16, weight: .bold))
+                .font(Fonts.CreateSessionDetailedView.placementPicker)
                 .foregroundColor(.aircastingDarkGray)
             Picker(selection: $isIndoor,
                    label: Text("")) {
@@ -147,7 +147,7 @@ private extension CreateSessionDetailsView {
     var transmissionTypePicker: some View {
         VStack(alignment: .leading, spacing: 15) {
             Text(Strings.CreateSessionDetailsView.transmissionPicker)
-                .font(Font.moderate(size: 16, weight: .bold))
+                .font(Fonts.CreateSessionDetailedView.transmissionPicker)
                 .foregroundColor(.aircastingDarkGray)
             Picker(selection: $isWiFi,
                    label: Text("")) {

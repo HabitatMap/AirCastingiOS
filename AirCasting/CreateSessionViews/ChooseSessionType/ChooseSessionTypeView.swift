@@ -176,21 +176,19 @@ struct ChooseSessionTypeView: View {
 
     var titleLabel: some View {
         Text(Strings.ChooseSessionTypeView.title)
-            .font(Font.moderate(size: 32,
-                                weight: .bold))
+            .font(Fonts.ChooseSessionTypeView.title)
             .foregroundColor(.accentColor)
     }
 
     var messageLabel: some View {
         Text(Strings.ChooseSessionTypeView.message)
-            .font(Font.moderate(size: 18,
-                                weight: .regular))
+            .font(Fonts.ChooseSessionTypeView.messageLabel)
             .foregroundColor(.aircastingGray)
     }
 
     var recordNewLabel: some View {
         Text(Strings.ChooseSessionTypeView.recordNew)
-            .font(Font.muli(size: 14, weight: .bold))
+            .font(Fonts.ChooseSessionTypeView.recordNewLabel)
             .foregroundColor(.aircastingDarkGray)
     }
     
@@ -199,7 +197,7 @@ struct ChooseSessionTypeView: View {
             isInfoPresented = true
         }, label: {
             Text(Strings.ChooseSessionTypeView.moreInfo)
-                .font(Font.moderate(size: 14))
+                .font(Fonts.ChooseSessionTypeView.moreInfo)
                 .foregroundColor(.accentColor)
         })
             .sheet(isPresented: $isInfoPresented, content: {
@@ -241,10 +239,10 @@ struct ChooseSessionTypeView: View {
     var fixedSessionLabel: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text(Strings.ChooseSessionTypeView.fixedLabel_1)
-                .font(Font.muli(size: 16, weight: .bold))
+                .font(Fonts.ChooseSessionTypeView.fixedOneLabel)
                 .foregroundColor(.accentColor)
             Text(Strings.ChooseSessionTypeView.fixedLabel_2)
-                .font(Font.muli(size: 14, weight: .regular))
+                .font(Fonts.ChooseSessionTypeView.fixedTwoLabel)
                 .foregroundColor(.aircastingGray)
                 .multilineTextAlignment(.leading)
         }
@@ -257,10 +255,10 @@ struct ChooseSessionTypeView: View {
     var mobileSessionLabel: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text(Strings.ChooseSessionTypeView.mobileLabel_1)
-                .font(Font.muli(size: 16, weight: .bold))
+                .font(Fonts.ChooseSessionTypeView.mobileOneLabel)
                 .foregroundColor(.accentColor)
             Text(Strings.ChooseSessionTypeView.mobileLabel_2)
-                .font(Font.muli(size: 14, weight: .regular))
+                .font(Fonts.ChooseSessionTypeView.mobileTwoLabel)
                 .foregroundColor(.aircastingGray)
                 .multilineTextAlignment(.leading)
         }

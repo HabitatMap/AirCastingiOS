@@ -63,7 +63,7 @@ private extension MainTabBarView {
                     ToolbarItemGroup(placement: .navigationBarLeading) {
                         Text(Strings.MainTabBarView.dashboardText)
                             .foregroundColor(.darkBlue)
-                            .font(Font(UIFont.systemFont(ofSize: 24, weight: .bold)))
+                            .font(Fonts.MainTabBarView.title)
                             .padding(.top)
                     }
                 }

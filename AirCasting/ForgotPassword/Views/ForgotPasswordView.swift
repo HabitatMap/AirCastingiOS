@@ -28,7 +28,7 @@ struct ForgotPasswordView<VM: ForgotPasswordViewModel>: View {
     
     private var title: some View {
         Text(viewModel.title)
-            .font(Font.moderate(size: 32, weight: .bold))
+            .font(Fonts.ForgotPasswordView.title)
             .foregroundColor(.accentColor)
     }
     

@@ -46,7 +46,7 @@ struct SessionHeaderView: View {
         }.onChange(of: isCollapsed, perform: { value in
             isCollapsed ? (chevronIndicator = "chevron.down") :  (chevronIndicator = "chevron.up")
         })
-        .font(Font.moderate(size: 13, weight: .regular))
+            .font(Fonts.SessionHeaderView.vStackFont)
         .foregroundColor(.aircastingGray)
     }
 }
@@ -60,7 +60,7 @@ private extension SessionHeaderView {
         VStack(alignment: .leading, spacing: 3) {
             HStack {
                 Text(session.name ?? "")
-                    .font(Font.moderate(size: 18, weight: .regular))
+                    .font(Fonts.SessionHeaderView.sessionName)
                 Spacer()
                 if isExpandButtonNeeded {
                     Button(action: {
@@ -79,7 +79,7 @@ private extension SessionHeaderView {
             #warning("Fix - Handle session.deviceType (for now it is always nill)")
             if isSensorTypeNeeded {
                 sensorType
-                .font(Font.moderate(size: 13, weight: .regular))
+                    .font(Fonts.SessionHeaderView.sensorType)
             }
         }
         .foregroundColor(.darkBlue)

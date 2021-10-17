@@ -63,13 +63,13 @@ struct SettingsView: View {
     private var signOutLink: some View {
         NavigationLink(destination: MyAccountViewSignOut(logoutController: logoutController)) {
             Text(Strings.Settings.myAccount)
-                .font(Font.muli(size: 16, weight: .bold))
+                .font(Fonts.SettingView.signOut)
         }
     }
     
     private var crowdMapTitle: some View {
         Text(Strings.Settings.crowdMap)
-            .font(Font.muli(size: 16, weight: .bold))
+            .font(Fonts.SettingView.crowdMapTitle)
             .multilineTextAlignment(.leading)
     }
     
@@ -80,7 +80,7 @@ struct SettingsView: View {
     
     private var crowdMapDescription: some View {
         Text(Strings.Settings.crowdMapDescription)
-            .font(Font.muli(size: 16, weight: .regular))
+            .font(Fonts.SettingView.crowdMapDescription)
             .foregroundColor(.aircastingGray)
     }
     
@@ -91,7 +91,7 @@ struct SettingsView: View {
             Group {
                 HStack {
                     Text(Strings.Settings.backendSettings)
-                        .font(Font.muli(size: 16, weight: .bold))
+                        .font(Fonts.SettingView.navigateToBackendButton)
                         .accentColor(.black)
                     Spacer()
                     Image(systemName: "control")

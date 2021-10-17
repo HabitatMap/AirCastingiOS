@@ -66,8 +66,7 @@ struct SelectDeviceView: View {
     
     var titleLabel: some View {
         Text(Strings.SelectDeviceView.title)
-            .font(Font.moderate(size: 25,
-                                weight: .bold))
+            .font(Fonts.SelectDeviceView.title)
             .foregroundColor(.accentColor)
     }
     
@@ -113,10 +112,10 @@ struct SelectDeviceView: View {
     var bluetoothLabels: some View {
         VStack(alignment: .leading, spacing: 6) {
             Text(Strings.SelectDeviceView.bluetoothLabel_1)
-                .font(Font.muli(size: 16, weight: .bold))
+                .font(Fonts.SelectDeviceView.bluetoothOneLabel)
                 .foregroundColor(.accentColor)
             Text(Strings.SelectDeviceView.bluetoothLabel_2)
-                .font(Font.muli(size: 14, weight: .regular))
+                .font(Fonts.SelectDeviceView.bluetoothTwoLabel)
                 .foregroundColor(.aircastingGray)
         }
     }
@@ -124,10 +123,10 @@ struct SelectDeviceView: View {
     var micLabels: some View {
         VStack(alignment: .leading, spacing: 6) {
             Text(Strings.SelectDeviceView.micLabel_1)
-                .font(Font.muli(size: 16, weight: .bold))
+                .font(Fonts.SelectDeviceView.micOneLabel)
                 .foregroundColor(.accentColor)
             Text(Strings.SelectDeviceView.micLabel_2)
-                .font(Font.muli(size: 14, weight: .regular))
+                .font(Fonts.SelectDeviceView.micTwoLabel)
                 .foregroundColor(.aircastingGray)
         }
     }

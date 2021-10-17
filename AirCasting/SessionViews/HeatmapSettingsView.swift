@@ -23,10 +23,10 @@ struct HeatmapSettingsView: View {
             VStack(alignment: .leading, spacing: 16) {
                 Text(Strings.SessionCart.heatmapSettingsTitle)
                     .foregroundColor(.darkBlue)
-                    .font(Font.muli(size: 24, weight: .heavy))
+                    .font(Fonts.HeatmapSettingsView.heatmapTitle)
                 Text(Strings.SessionCart.heatmapSettingsdescription)
                     .foregroundColor(.aircastingGray)
-                    .font(Font.moderate(size: 16, weight: .regular))
+                    .font(Fonts.HeatmapSettingsView.heatmapDescription)
             }
             .padding()
             
@@ -83,13 +83,13 @@ struct HeatmapSettingsView: View {
     
     func showDescriptionLabel(text: String) -> some View {
         Text(text)
-            .font(Font.muli(size: 13))
+            .font(Fonts.HeatmapSettingsView.showDescription)
             .foregroundColor(.aircastingGray)
     }
     
     func showThresholdTextfield(value: Binding<String>) -> some View {
         TextField("0", text: value)
-            .font(Font.muli(size: 14))
+            .font(Fonts.HeatmapSettingsView.showThreshold)
             .foregroundColor(.aircastingGray)
             .multilineTextAlignment(.trailing)
     }

@@ -140,7 +140,7 @@ struct SessionCartView: View {
         .onChange(of: session.sortedStreams) { newValue in
             selectDefaultStreamIfNeeded(streams: newValue ?? [])
         }
-        .font(Font.moderate(size: 13, weight: .regular))
+        .font(Fonts.SessionCartView.sessionCard)
         .foregroundColor(.aircastingGray)
         .padding()
         .background(
@@ -190,7 +190,7 @@ private extension SessionCartView {
             isGraphButtonActive = true
         } label: {
             Text(Strings.SessionCartView.graph)
-                .font(Font.muli(size: 13, weight: .semibold))
+                .font(Fonts.SessionCartView.graphButton)
                 .padding(.horizontal, 8)
         }
     }
@@ -200,7 +200,7 @@ private extension SessionCartView {
             isMapButtonActive = true
         } label: {
             Text(Strings.SessionCartView.map)
-                .font(Font.muli(size: 13, weight: .semibold))
+                .font(Fonts.SessionCartView.mapButton)
                 .padding(.horizontal, 8)
         }
     }
@@ -233,7 +233,7 @@ private extension SessionCartView {
                             Spacer()
                             endTime
                     }.foregroundColor(.aircastingGray)
-                    .font(Font.muli(size: 13, weight: .semibold))
+                        .font(Fonts.SessionCartView.groupFont)
                 }
                 .onAppear {
                     chartViewModel.refreshChart()

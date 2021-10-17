@@ -45,7 +45,7 @@ struct PrivacyOnboarding: View {
         
         private var sheetTitle: some View {
             Text(Strings.OnboardingPrivacySheet.title)
-                .font(Font.moderate(size: 28, weight: .bold))
+                .font(Fonts.PrivacyOnboarding.sheetTitle)
                 .foregroundColor(.accentColor)
                 .multilineTextAlignment(.leading)
                 .padding(.horizontal)
@@ -53,7 +53,7 @@ struct PrivacyOnboarding: View {
         
         private var sheetDescription: some View {
             Text(Strings.OnboardingPrivacySheet.description)
-                .font(Font.muli(size: 14))
+                .font(Fonts.PrivacyOnboarding.sheetDescription)
                 .lineSpacing(10.0)
                 .padding()
                 .foregroundColor(.aircastingGray)
@@ -70,7 +70,7 @@ private extension PrivacyOnboarding {
     
     private var titleText: some View {
         Text(Strings.OnboardingPrivacy.title)
-            .font(Font.moderate(size: 32, weight: .bold))
+            .font(Fonts.PrivacyOnboarding.title)
             .foregroundColor(.accentColor)
             .multilineTextAlignment(.leading)
             .padding(.bottom, 20)
@@ -78,7 +78,7 @@ private extension PrivacyOnboarding {
     
     private var descriptionText: some View {
         Text(Strings.OnboardingPrivacy.description)
-            .font(Font.muli(size: 16))
+            .font(Fonts.PrivacyOnboarding.description)
             .foregroundColor(.aircastingGray)
             .lineSpacing(10.0)
             .multilineTextAlignment(.leading)
@@ -89,7 +89,7 @@ private extension PrivacyOnboarding {
             completion()
         }, label: {
             Text(Strings.OnboardingPrivacy.continueButton)
-                .font(Font.moderate(size: 16, weight: .semibold))
+                .font(Fonts.PrivacyOnboarding.continueButton)
         })
         .buttonStyle(BlueButtonStyle())
         .padding(.top, 20)

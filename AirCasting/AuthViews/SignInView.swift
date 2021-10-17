@@ -100,11 +100,10 @@ private extension SignInView {
     var titleLabel: some View {
         VStack(alignment: .leading, spacing: 15) {
             Text(Strings.SignInView.title_1)
-                .font(Font.moderate(size: 32,
-                                    weight: .bold))
+                .font(Fonts.SignInView.titleOne)
                 .foregroundColor(.accentColor)
             Text(Strings.SignInView.title_2)
-                .font(Font.muli(size: 16))
+                .font(Fonts.SignInView.titleTwo)
                 .foregroundColor(.aircastingGray)
         }
     }
@@ -179,11 +178,11 @@ private extension SignInView {
     
     var signupButtonText: some View {
         Text(Strings.SignInView.signUpButton_1)
-            .font(Font.muli(size: 16))
+            .font(Fonts.SignInView.signupOne)
             .foregroundColor(.aircastingGray)
             
             + Text(Strings.SignInView.signUpButton_2)
-            .font(Font.moderate(size: 16, weight: .bold))
+            .font(Fonts.SignInView.signupTwo)
             .foregroundColor(.accentColor)
     }
     

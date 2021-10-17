@@ -100,11 +100,10 @@ private extension CreateAccountView {
     var titleLabel: some View {
         VStack(alignment: .leading, spacing: 15) {
             Text("Create account")
-                .font(Font.moderate(size: 32,
-                                    weight: .bold))
+                .font(Fonts.CreateAccountView.titleOne)
                 .foregroundColor(.accentColor)
             Text("to record and map your environment")
-                .font(Font.muli(size: 16))
+                .font(Fonts.CreateAccountView.titleTwo)
                 .foregroundColor(.aircastingGray)
         }
     }
@@ -176,11 +175,11 @@ private extension CreateAccountView {
     
     var signingButtonText: some View {
         Text("Already have an account? ")
-            .font(Font.muli(size: 16))
+            .font(Fonts.CreateAccountView.signingOne)
             .foregroundColor(.aircastingGray)
             
             + Text("Sign in")
-            .font(Font.moderate(size: 16, weight: .bold))
+            .font(Fonts.CreateAccountView.signingTwo)
             .foregroundColor(.accentColor)
     }
 

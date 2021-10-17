@@ -47,12 +47,12 @@ private extension EmptyFixedDashboardView {
     private var emptyFixedDashboardText: some View {
         VStack(spacing: 14) {
             Text(Strings.EmptyDashboardFixed.title)
-                .font(Font.moderate(size: 24, weight: .bold))
+                .font(Fonts.EmptyFixedDashboard.emptyTextOne)
                 .foregroundColor(Color.darkBlue)
                 .minimumScaleFactor(0.1)
             
             Text(Strings.EmptyDashboardFixed.description)
-                .font(Font.muli(size: 16))
+                .font(Fonts.EmptyFixedDashboard.emptyTextTwo)
                 .foregroundColor(Color.aircastingGray)
                 .lineSpacing(9.0)
                 .padding(.horizontal, 35)

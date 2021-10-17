@@ -11,10 +11,9 @@ struct SessionLoadingView: View {
                 .frame(width: 60, height: 60)
             VStack(alignment: .leading) {
                 Text(Strings.LoadingSession.title)
-                    .font(Font.moderate(size: 15))
                 Text(Strings.LoadingSession.description)
             }
-            .font(Font.moderate(size: 13))
+            .font(Fonts.SessionLoadingView.vStackFont)
             .lineSpacing(5)
             .foregroundColor(.darkBlue)
         }

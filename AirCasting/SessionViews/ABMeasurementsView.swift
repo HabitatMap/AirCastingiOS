@@ -59,7 +59,7 @@ struct _ABMeasurementsView: View {
             if hasAnyMeasurements {
                 VStack(alignment: .leading, spacing: 5) {
                     measurementsTitle
-                        .font(Font.moderate(size: 12))
+                        .font(Fonts.ABMeasurementsView.title)
                         .padding(.bottom, 3)
                     HStack {
                         Group {
@@ -83,7 +83,7 @@ struct _ABMeasurementsView: View {
                 } else {
                     VStack(alignment: .leading, spacing: 8) {
                         measurementsTitle
-                            .font(Font.moderate(size: 12))
+                            .font(Fonts.ABMeasurementsView.measurementTitle)
                         streamNames
                         if session.type == .mobile && session.deviceType == .AIRBEAM3 {
                             if measurementsViewModel.showLoadingIndicator {
