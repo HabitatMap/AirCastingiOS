@@ -106,7 +106,7 @@ class TabBarSelection: ObservableObject {
 }
 
 class SelectSection: ObservableObject {
-    @Published var selectedSection = SelectedSection.mobileActive
+    @Published var selectedSection = SelectedSection.following
 }
 
 class EmptyDashboardButtonTapped: ObservableObject {
