@@ -18,9 +18,10 @@ extension UIImage {
         let gradientLayer = CAGradientLayer()
         gradientLayer.frame = bounds
         gradientLayer.colors = colors
-        
         UIGraphicsBeginImageContext(gradientLayer.bounds.size)
-        gradientLayer.render(in: UIGraphicsGetCurrentContext()!)
+        if let graphicsCurrentContext = UIGraphicsGetCurrentContext() {
+            gradientLayer.render(in: graphicsCurrentContext)
+        }
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         return image!
