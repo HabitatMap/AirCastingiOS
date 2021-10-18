@@ -89,8 +89,8 @@ struct Graph: UIViewRepresentable {
         // [SMALL HACK] - By adding 2 day's to the lastMeasurement Date we are ensuring
         // that session which is currently recording will be able to show midnight line
         // or on any other session the midnight line will be considered well
-        let nextDay = Calendar.current.date(byAdding: .day, value: 2, to: day)!
-        var midnight = Calendar.current.date(bySettingHour: 0, minute: 0, second: 0, of: nextDay)!
+        let twoDaysAhead = Calendar.current.date(byAdding: .day, value: 2, to: day)!
+        var midnight = Calendar.current.date(bySettingHour: 0, minute: 0, second: 0, of: twoDaysAhead)!
         let components = Calendar.current.dateComponents([.hour, .minute, .second], from: midnight)
         let firstMeasurementDate = startingDate
         var midnightPoints: [Double] = []
