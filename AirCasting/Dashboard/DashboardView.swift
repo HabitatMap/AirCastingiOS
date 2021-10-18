@@ -30,7 +30,7 @@ struct DashboardView: View {
     }
 
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             // It seems that there is a bug in SwiftUI for when a view contains a ScrollView (AirSectionPickerView).
             // When user pops back to this view using navigation the `large` title is displayed incorrectly.
             // As a workaround I`ve put a 1px rectangle between ScrollView and top. It seems to be doing the trick.
@@ -38,8 +38,7 @@ struct DashboardView: View {
             // Bug report was filled with Apple
             PreventCollapseView()
             AirSectionPickerView(selection: self.$selectedSection.selectedSection)
-                .padding(.leading, 8)
-            Image(uiImage: UIImage.AirSectionPickerShadow)
+                .zIndex(2)
                 
             if sessions.isEmpty {
                 if selectedSection.selectedSection == .mobileActive || selectedSection.selectedSection == .mobileDormant {
@@ -64,9 +63,10 @@ struct DashboardView: View {
                             }
                         }
                     }
-                }.padding(.horizontal)
-                    .frame(maxWidth: .infinity)
-                    .background(Color.aircastingGray.opacity(0.05))
+                }
+                .padding(.horizontal)
+                .frame(maxWidth: .infinity)
+                .background(Color.aircastingGray.opacity(0.05))
             }
         }
         .navigationBarTitleDisplayMode(.inline)
