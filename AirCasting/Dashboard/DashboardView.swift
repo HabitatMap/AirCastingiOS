@@ -17,7 +17,7 @@ struct DashboardView: View {
     
     let measurementStreamStorage: MeasurementStreamStorage
     let sessionStoppableFactory: SessionStoppableFactory
-
+    
     private var sessions: [SessionEntity] {
         coreDataHook.sessions
     }
@@ -30,7 +30,7 @@ struct DashboardView: View {
     }
 
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             // It seems that there is a bug in SwiftUI for when a view contains a ScrollView (AirSectionPickerView).
             // When user pops back to this view using navigation the `large` title is displayed incorrectly.
             // As a workaround I`ve put a 1px rectangle between ScrollView and top. It seems to be doing the trick.
@@ -38,8 +38,7 @@ struct DashboardView: View {
             // Bug report was filled with Apple
             PreventCollapseView()
             AirSectionPickerView(selection: self.$selectedSection.selectedSection)
-                .padding(.leading, 8)
-
+                .zIndex(2)
             if sessions.isEmpty {
                 if selectedSection.selectedSection == .mobileActive || selectedSection.selectedSection == .mobileDormant {
                     EmptyMobileDashboardViewMobile()
@@ -51,7 +50,7 @@ struct DashboardView: View {
                     Image("dashboard-background-thing")
                     let thresholds = Array(self.thresholds)
                     ScrollView(.vertical) {
-                        LazyVStack(spacing: 20) {
+                        LazyVStack(spacing: 8) {
                             ForEach(sessions, id: \.uuid) { session in
                                 let followingSetter = MeasurementStreamStorageFollowingSettable(session: session, measurementStreamStorage: measurementStreamStorage)
                                 let viewModel = SessionCartViewModel(followingSetter: followingSetter)
@@ -63,9 +62,10 @@ struct DashboardView: View {
                             }
                         }
                     }
-                }.padding()
-                    .frame(maxWidth: .infinity)
-                    .background(Color.aircastingGray.opacity(0.05))
+                }
+                .padding(.horizontal)
+                .frame(maxWidth: .infinity)
+                .background(Color.aircastingGray.opacity(0.05))
             }
         }
         .navigationBarTitleDisplayMode(.inline)

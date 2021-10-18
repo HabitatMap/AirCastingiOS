@@ -252,6 +252,7 @@
 		DDB44C252704AF830027176E /* AveragingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB44C242704AF830027176E /* AveragingService.swift */; };
 		DDBC156426A0799300982526 /* SystemSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBC156326A0799300982526 /* SystemSettings.swift */; };
 		DDBC992626A1652A00B0662E /* ForgotPasswordTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBC992526A1652A00B0662E /* ForgotPasswordTest.swift */; };
+		DDC5F5882719694800F1F9D8 /* ShadowImages.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDC5F5872719694800F1F9D8 /* ShadowImages.swift */; };
 		DDCE5D3626A1F79F0033C211 /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCE5D3526A1F79F0033C211 /* UserSettings.swift */; };
 		DDCE5D3826A1FE2D0033C211 /* DeleteSessionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCE5D3726A1FE2D0033C211 /* DeleteSessionViewModel.swift */; };
 		DDCE5D3A26A213620033C211 /* DefaultDeleteSessionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCE5D3926A213620033C211 /* DefaultDeleteSessionViewModel.swift */; };
@@ -541,6 +542,7 @@
 		DDB44C242704AF830027176E /* AveragingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AveragingService.swift; sourceTree = "<group>"; };
 		DDBC156326A0799300982526 /* SystemSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemSettings.swift; sourceTree = "<group>"; };
 		DDBC992526A1652A00B0662E /* ForgotPasswordTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordTest.swift; sourceTree = "<group>"; };
+		DDC5F5872719694800F1F9D8 /* ShadowImages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowImages.swift; sourceTree = "<group>"; };
 		DDCE5D3526A1F79F0033C211 /* UserSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettings.swift; sourceTree = "<group>"; };
 		DDCE5D3726A1FE2D0033C211 /* DeleteSessionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteSessionViewModel.swift; sourceTree = "<group>"; };
 		DDCE5D3926A213620033C211 /* DefaultDeleteSessionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultDeleteSessionViewModel.swift; sourceTree = "<group>"; };
@@ -740,6 +742,7 @@
 				DD3C99F326EA280800B42A46 /* TimeConversion.swift */,
 				DDD1F9B02705852400D8E87F /* DataFormatters.swift */,
 				DDB44C242704AF830027176E /* AveragingService.swift */,
+				DDC5F5872719694800F1F9D8 /* ShadowImages.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1734,6 +1737,7 @@
 				AC524A962615D8620061AD45 /* MeasurementStreamEntity.swift in Sources */,
 				ACDF803A26DCD75500584F55 /* SingleMeasurementView.swift in Sources */,
 				B32D08A2267A4949006C97ED /* LogErrorPublisher.swift in Sources */,
+				DDC5F5882719694800F1F9D8 /* ShadowImages.swift in Sources */,
 				AC049F7F2604B7AF00398197 /* AuthErorrHandling.swift in Sources */,
 				DD430B022670F3B300F1BF2E /* NearAirDescription.swift in Sources */,
 				DD72DC4226A99D5000325FE5 /* ShareView.swift in Sources */,

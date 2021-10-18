@@ -38,6 +38,11 @@ struct MainTabBarView: View {
             settingsTab
         }
         .onAppear {
+            UITabBar.appearance().backgroundColor = .systemBackground
+            let appearance = UITabBarAppearance()
+            appearance.backgroundImage = UIImage()
+            appearance.shadowImage = UIImage.mainTabBarShadow
+            UITabBar.appearance().standardAppearance = appearance
             measurementUpdatingService.start()
         }
         .onChange(of: tabSelection.selection, perform: { _ in
@@ -51,7 +56,6 @@ struct MainTabBarView: View {
         .environmentObject(emptyDashboardButtonTapped)
     }
 }
-
 
 private extension MainTabBarView {
     // Tab Bar views
