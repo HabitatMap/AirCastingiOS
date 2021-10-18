@@ -26,8 +26,19 @@ struct AirSectionPickerView: View {
                         .id(section)
                     }
                 }
+                .padding(.leading, 8)
             }
         }
+        .background(
+            ZStack(alignment: .bottom) {
+                Color.green
+                    .frame(height: 3)
+                    .shadow(color: Color.aircastingDarkGray.opacity(0.4),
+                            radius: 6)
+                    .padding(.horizontal, -30)
+                Color.white
+            }
+        )
     }
 }
 

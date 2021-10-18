@@ -35,9 +35,8 @@ struct EmptyFixedDashboardView: View {
                 // as in mobile empty dashboard
                 .padding(.bottom, 100)
                 Spacer()
-            }
+            }.frame(maxWidth: .infinity)
         }
-        .padding()
         .background(Color(red: 251/255, green: 253/255, blue: 255/255))
     }
 }
