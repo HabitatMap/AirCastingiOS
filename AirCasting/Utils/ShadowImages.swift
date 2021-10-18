@@ -6,14 +6,6 @@ import UIKit
 import SwiftUI
 
 extension UIImage {
-    static let AirSectionPickerShadow = UIImage.gradientImageWithBounds(
-        bounds: CGRect(x: 0, y: -5, width: UIScreen.main.bounds.width, height: 5),
-        colors: [
-            UIColor.black.withAlphaComponent(0.1).cgColor,
-            UIColor.clear.cgColor
-        ]
-    )
-    
     static let MainTabBarShadow = UIImage.gradientImageWithBounds(
         bounds: CGRect(x: 0, y: 0, width: UIScreen.main.scale, height: 5),
         colors: [
