@@ -41,7 +41,7 @@ struct MainTabBarView: View {
             UITabBar.appearance().backgroundColor = .systemBackground
             let appearance = UITabBarAppearance()
             appearance.backgroundImage = UIImage()
-            appearance.shadowImage = UIImage.MainTabBarShadow
+            appearance.shadowImage = UIImage.mainTabBarShadow
             UITabBar.appearance().standardAppearance = appearance
             measurementUpdatingService.start()
         }

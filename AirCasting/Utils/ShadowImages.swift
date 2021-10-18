@@ -6,7 +6,7 @@ import UIKit
 import SwiftUI
 
 extension UIImage {
-    static let MainTabBarShadow = UIImage.gradientImageWithBounds(
+    static let mainTabBarShadow = UIImage.gradientImageWithBounds(
         bounds: CGRect(x: 0, y: 0, width: UIScreen.main.scale, height: 5),
         colors: [
             UIColor.clear.cgColor,
