@@ -39,7 +39,6 @@ struct DashboardView: View {
             PreventCollapseView()
             AirSectionPickerView(selection: self.$selectedSection.selectedSection)
                 .zIndex(2)
-                
             if sessions.isEmpty {
                 if selectedSection.selectedSection == .mobileActive || selectedSection.selectedSection == .mobileDormant {
                     EmptyMobileDashboardViewMobile()
