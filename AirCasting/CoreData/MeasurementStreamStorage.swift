@@ -38,7 +38,7 @@ final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
     
     init(persistenceController: PersistenceController) {
         self.persistenceController = persistenceController
-        self.context = persistenceController.editContext()
+        self.context = persistenceController.editContext
         self.hiddenStorage = HiddenCoreDataMeasurementStreamStorage(context: self.context)
     }
     
@@ -126,11 +126,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
     }
     
     func updateMeasurements(stream: MeasurementStreamEntity, newMeasurements: NSOrderedSet) throws {
-        do {
             stream.measurements = newMeasurements
-        } catch {
-            Log.info("Error when saving changes in session: \(error.localizedDescription) ")
-        }
     }
     
     private func createMeasurementStream(for session: SessionEntity, context: NSManagedObjectContext, _ stream: MeasurementStream) throws -> MeasurementStreamLocalID {

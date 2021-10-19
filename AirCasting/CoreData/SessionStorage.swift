@@ -22,8 +22,8 @@ final class SessionStorage: ObservableObject {
     func clearAllSessionSilently() throws {
         let deleteRequest = NSBatchDeleteRequest(fetchRequest: SessionEntity.fetchRequest())
         deleteRequest.resultType = .resultTypeObjectIDs
-        let res = try persistenceController.editContext().execute(deleteRequest)
-        Log.info("Deleted sessions \(res)")
+        let persistentStoreResult = try persistenceController.editContext.execute(deleteRequest)
+        Log.info("Deleted sessions \(persistentStoreResult)")
         persistenceController.viewContext.reset()
     }
 }
