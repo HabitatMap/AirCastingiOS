@@ -106,7 +106,7 @@ final class ChartViewModel: ObservableObject {
         if session.isFixed {
             return Date().roundedUpToHour.timeIntervalSince(Date())
         } else {
-            return timeUnit - Date().timeIntervalSince(sessionStartTime).truncatingRemainder(dividingBy: timeUnit)
+            return timeUnit - Date().currentUTCTimeZoneDate.timeIntervalSince(sessionStartTime).truncatingRemainder(dividingBy: timeUnit)
         }
     }
     
