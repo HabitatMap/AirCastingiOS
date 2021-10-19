@@ -140,6 +140,9 @@ struct SessionCartView: View {
         .onChange(of: session.sortedStreams) { newValue in
             selectDefaultStreamIfNeeded(streams: newValue ?? [])
         }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
+            chartViewModel.refreshChart()
+        }
         .font(Font.moderate(size: 13, weight: .regular))
         .foregroundColor(.aircastingGray)
         .padding()
