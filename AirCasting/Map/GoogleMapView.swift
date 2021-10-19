@@ -48,7 +48,6 @@ struct GoogleMapView: UIViewRepresentable {
     /// - Parameter action: an action block that takes an array of currently visible `PathPoint`s.
     func onPositionChange(action: @escaping (_ visiblePoints: [PathPoint]) -> ()) -> Self {
         var newSelf = self
-        print(pathPoints.last?.measurement)
         newSelf.onPositionChange = action
         return newSelf
     }
@@ -180,7 +179,6 @@ struct GoogleMapView: UIViewRepresentable {
             let visibleRegion = mapView.projection.visibleRegion()
             let bounds = GMSCoordinateBounds(region: visibleRegion)
             let visiblePathPoints = parent.pathPoints.filter { bounds.contains($0.location) }
-            print("In map: \(visiblePathPoints.last?.measurement)")
             parent.onPositionChange?(visiblePathPoints)
         }
 
