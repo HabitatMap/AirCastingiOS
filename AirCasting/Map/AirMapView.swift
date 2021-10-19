@@ -60,11 +60,11 @@ struct AirMapView: View {
                     ZStack(alignment: .topLeading) {
                         GoogleMapView(pathPoints: pathPoints,
                                       threshold: threshold, placePickerDismissed: Binding.constant(false))
-                            .onPositionChange { [weak mapStatsDataSource, weak statsContainerViewModel] visiblePoints in
-                                mapStatsDataSource?.visiblePathPoints = visiblePoints
-                                print(visiblePoints.count)
-                                statsContainerViewModel?.adjustForNewData()
-                            }
+                        // This doesn't work properly and it needs to be fixed, so I'm commenting it out
+//                            .onPositionChange { [weak mapStatsDataSource, weak statsContainerViewModel] visiblePoints in
+//                                mapStatsDataSource?.visiblePathPoints = visiblePoints
+//                                statsContainerViewModel?.adjustForNewData()
+//                            }
                         // Statistics container shouldn't be presented in mobile dormant tab
                         if !(session.type == .mobile && session.isActive == false) {
                             StatisticsContainerView(statsContainerViewModel: statsContainerViewModel,
@@ -83,10 +83,8 @@ struct AirMapView: View {
             }
         }
         .onChange(of: selectedStream) { newStream in
-//            mapStatsDataSource.stream = newStream
             mapStatsDataSource.visiblePathPoints = pathPoints
             statsContainerViewModel.adjustForNewData()
-            print("## Called adjusting data")
         }
         .onChange(of: scenePhase) { phase in
             switch phase {
