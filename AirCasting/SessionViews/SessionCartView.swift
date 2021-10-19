@@ -76,7 +76,7 @@ struct SessionCartView: View {
             .fullScreenCover(isPresented: $isMapButtonActive) {
                 AirMapView(thresholds: thresholds,
                            statsContainerViewModel: mapStatsViewModel,
-                           mapStatsDataSource: mapStatsDataSource,
+//                           mapStatsDataSource: mapStatsDataSource,
                            session: session,
                            showLoadingIndicator: $showLoadingIndicator,
                            selectedStream: $selectedStream,
@@ -99,7 +99,7 @@ struct SessionCartView: View {
             .fullScreenCover(isPresented: $isMapButtonActive) {
                 AirMapView(thresholds: thresholds,
                            statsContainerViewModel: mapStatsViewModel,
-                           mapStatsDataSource: mapStatsDataSource,
+//                           mapStatsDataSource: mapStatsDataSource,
                            session: session,
                            showLoadingIndicator: $showLoadingIndicator,
                            selectedStream: $selectedStream,

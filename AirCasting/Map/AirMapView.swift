@@ -16,7 +16,7 @@ struct AirMapView: View {
     
     var thresholds: [SensorThreshold]
     @StateObject var statsContainerViewModel: StatisticsContainerViewModel
-    @StateObject var mapStatsDataSource: MapStatsDataSource
+//    @StateObject var mapStatsDataSource: MapStatsDataSource
     @ObservedObject var session: SessionEntity
     @Binding var showLoadingIndicator: Bool
 
@@ -83,10 +83,10 @@ struct AirMapView: View {
                 }
             }
         }
-        .onChange(of: selectedStream) { newStream in
-            mapStatsDataSource.visiblePathPoints = pathPoints
-            statsContainerViewModel.adjustForNewData()
-        }
+//        .onChange(of: selectedStream) { newStream in
+//            mapStatsDataSource.visiblePathPoints = pathPoints
+//            statsContainerViewModel.adjustForNewData()
+//        }
         .onChange(of: scenePhase) { phase in
             switch phase {
             case .background, .inactive: self.presentationMode.wrappedValue.dismiss()
@@ -113,7 +113,7 @@ struct Map_Previews: PreviewProvider {
     static var previews: some View {
         AirMapView(thresholds: [SensorThreshold.mock],
                    statsContainerViewModel: StatisticsContainerViewModel(statsInput: MeasurementsStatisticsInputMock()),
-                   mapStatsDataSource: MapStatsDataSource(),
+//                   mapStatsDataSource: MapStatsDataSource(),
                    session: .mock,
                    showLoadingIndicator: .constant(true),
                    selectedStream: .constant(nil),
