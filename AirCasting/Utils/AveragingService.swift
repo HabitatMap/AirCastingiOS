@@ -93,6 +93,7 @@ final class AveragingService: NSObject, ObservableObject {
                 
                 let chunkElementsCount = AveragingWindow.secondThresholdWindow.rawValue / AveragingWindow.firstThresholdWindow.rawValue
                 averagedWithFirstThreshold.chunks(ofCount: chunkElementsCount).forEach { measuremensInChunk in
+                    guard measuremensInChunk.count == chunkElementsCount else { return }
                     let averaged = self.averagedMeasurementFrom(chunk: measuremensInChunk, window: averagingWindow, measurementCount: chunkElementsCount)
                     averagedMeasurements.append(contentsOf: averaged)
                 }
