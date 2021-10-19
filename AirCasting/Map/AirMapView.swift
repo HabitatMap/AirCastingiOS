@@ -16,8 +16,8 @@ struct AirMapView: View {
     
     var thresholds: [SensorThreshold]
     @StateObject var statsContainerViewModel: StatisticsContainerViewModel
-    let mapStatsDataSource: MapStatsDataSource
-    let session: SessionEntity
+    @StateObject var mapStatsDataSource: MapStatsDataSource
+    @ObservedObject var session: SessionEntity
     @Binding var showLoadingIndicator: Bool
 
     @Binding var selectedStream: MeasurementStreamEntity?
