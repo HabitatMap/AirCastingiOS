@@ -29,13 +29,27 @@ struct MainTabBarView: View {
     @StateObject var selectedSection = SelectSection()
     @StateObject var emptyDashboardButtonTapped = EmptyDashboardButtonTapped()
     @StateObject var sessionContext: CreateSessionContext
+    @StateObject var coreDataHook: CoreDataHook
     let locationHandler: LocationHandler
+    
+    private var sessions: [SessionEntity] {
+        coreDataHook.sessions
+    }
     
     var body: some View {
         TabView(selection: $tabSelection.selection) {
             dashboardTab
             createSessionTab
             settingsTab
+        }
+        .onTapGesture {
+            Print("HELOOO")
+            if sessions.contains(where: { $0.isActive }) {
+                selectedSection.selectedSection = .mobileActive
+            } else {
+                selectedSection.selectedSection = .following
+            }
+            try! coreDataHook.setup(selectedSection: selectedSection.selectedSection)
         }
         .onAppear {
             measurementUpdatingService.start()
@@ -57,7 +71,7 @@ private extension MainTabBarView {
     // Tab Bar views
     private var dashboardTab: some View {
         NavigationView {
-            DashboardView(coreDataHook: CoreDataHook(context: persistenceController.viewContext), measurementStreamStorage: measurementStreamStorage, sessionStoppableFactory: sessionStoppableFactory)
+            DashboardView(coreDataHook: coreDataHook, measurementStreamStorage: measurementStreamStorage, sessionStoppableFactory: sessionStoppableFactory)
                 .toolbar {
                 // The toolbar is used to provide left align title in the way android has
                     ToolbarItemGroup(placement: .navigationBarLeading) {
@@ -169,7 +183,7 @@ struct ContentView_Previews: PreviewProvider {
     private static let persistenceController = PersistenceController(inMemory: true)
 
     static var previews: some View {
-        MainTabBarView(measurementUpdatingService: MeasurementUpdatingServiceMock(), urlProvider: DummyURLProvider(), measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionStoppableFactory: SessionStoppableFactoryDummy(), sessionSynchronizer: DummySessionSynchronizer(), sessionContext: CreateSessionContext(), locationHandler: DummyDefaultLocationHandler())
+        MainTabBarView(measurementUpdatingService: MeasurementUpdatingServiceMock(), urlProvider: DummyURLProvider(), measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionStoppableFactory: SessionStoppableFactoryDummy(), sessionSynchronizer: DummySessionSynchronizer(), sessionContext: CreateSessionContext(), coreDataHook: CoreDataHook(context: PersistenceController(inMemory: true).viewContext), locationHandler: DummyDefaultLocationHandler())
             .environmentObject(UserAuthenticationSession())
             .environmentObject(BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: PreviewMeasurementStreamStorage())))
             .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
