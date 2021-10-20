@@ -73,15 +73,6 @@ struct DashboardView: View {
             self.selectedSection.selectedSection = selectedSection
             try! coreDataHook.setup(selectedSection: self.selectedSection.selectedSection)
         }
-        .onAppear {
-            try! coreDataHook.setup(selectedSection: .mobileActive)
-            if sessions.contains(where: { $0.isActive }) {
-                selectedSection.selectedSection = .mobileActive
-            } else {
-                selectedSection.selectedSection = .following
-            }
-            try! coreDataHook.setup(selectedSection: selectedSection.selectedSection)
-        }
     }
 }
 

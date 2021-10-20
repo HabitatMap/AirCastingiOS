@@ -23,9 +23,9 @@ struct MainTabBarView: View {
     @EnvironmentObject var microphoneManager: MicrophoneManager
     @EnvironmentObject var userSettings: UserSettings
     @EnvironmentObject var bluetoothManager: BluetoothManager
-    @EnvironmentObject var selectedSection: SelectSection
     let sessionSynchronizer: SessionSynchronizer
     @StateObject var tabSelection: TabBarSelection = TabBarSelection()
+    @StateObject var selectedSection = SelectSection()
     @StateObject var emptyDashboardButtonTapped = EmptyDashboardButtonTapped()
     @StateObject var sessionContext: CreateSessionContext
     @StateObject var coreDataHook: CoreDataHook
@@ -67,6 +67,7 @@ struct MainTabBarView: View {
             tabSelection.selection == .createSession ? (plusImage = PlusIcon.selected.string) : (plusImage = PlusIcon.unselected.string)
             
         })
+        .environmentObject(selectedSection)
         .environmentObject(tabSelection)
         .environmentObject(emptyDashboardButtonTapped)
     }
