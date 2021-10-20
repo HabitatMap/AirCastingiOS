@@ -134,8 +134,8 @@ struct GoogleMapView: UIViewRepresentable {
         }
         
         if let last = pathPoints.last {
-            let house = UIImage.imageWithColor(color: color(point: last), size: CGSize(width: 24, height: 24))
-            dot.icon = house
+            let mainPoint = UIImage.imageWithColor(color: color(point: last), size: CGSize(width: Constants.Map.dotWidth, height: Constants.Map.dotHeight))
+            dot.icon = mainPoint
         }
         
         let polyline = context.coordinator.polyline
