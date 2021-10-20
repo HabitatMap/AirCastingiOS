@@ -253,6 +253,7 @@
 		DDBC156426A0799300982526 /* SystemSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBC156326A0799300982526 /* SystemSettings.swift */; };
 		DDBC992626A1652A00B0662E /* ForgotPasswordTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBC992526A1652A00B0662E /* ForgotPasswordTest.swift */; };
 		DDC5F5882719694800F1F9D8 /* ShadowImages.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDC5F5872719694800F1F9D8 /* ShadowImages.swift */; };
+		DDCD3570271EB641004969FF /* UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCD356F271EB641004969FF /* UIImage.swift */; };
 		DDCE5D3626A1F79F0033C211 /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCE5D3526A1F79F0033C211 /* UserSettings.swift */; };
 		DDCE5D3826A1FE2D0033C211 /* DeleteSessionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCE5D3726A1FE2D0033C211 /* DeleteSessionViewModel.swift */; };
 		DDCE5D3A26A213620033C211 /* DefaultDeleteSessionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCE5D3926A213620033C211 /* DefaultDeleteSessionViewModel.swift */; };
@@ -543,6 +544,7 @@
 		DDBC156326A0799300982526 /* SystemSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemSettings.swift; sourceTree = "<group>"; };
 		DDBC992526A1652A00B0662E /* ForgotPasswordTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordTest.swift; sourceTree = "<group>"; };
 		DDC5F5872719694800F1F9D8 /* ShadowImages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowImages.swift; sourceTree = "<group>"; };
+		DDCD356F271EB641004969FF /* UIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImage.swift; sourceTree = "<group>"; };
 		DDCE5D3526A1F79F0033C211 /* UserSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettings.swift; sourceTree = "<group>"; };
 		DDCE5D3726A1FE2D0033C211 /* DeleteSessionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteSessionViewModel.swift; sourceTree = "<group>"; };
 		DDCE5D3926A213620033C211 /* DefaultDeleteSessionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultDeleteSessionViewModel.swift; sourceTree = "<group>"; };
@@ -1020,6 +1022,7 @@
 				ACFC708825C1A36A00D609D9 /* UIColor.swift */,
 				B3D4B4B326C2C6A1004322FC /* Date+Miliseconds.swift */,
 				33F22389270C674E00F14909 /* TimeInterval.swift */,
+				DDCD356F271EB641004969FF /* UIImage.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1922,6 +1925,7 @@
 				AC9EB64926F1EB8D00B1F780 /* MeasurementsDownloadable.swift in Sources */,
 				B3EFAB1526EFE2D200E88141 /* AppBootstrap.swift in Sources */,
 				AC524A8E2615C8270061AD45 /* UpdateSessionParams.swift in Sources */,
+				DDCD3570271EB641004969FF /* UIImage.swift in Sources */,
 				AC797FE7263C2C1600970254 /* SensorThreshold.swift in Sources */,
 				B3E26A032676D9AA001A8E4C /* ArrayUtils.swift in Sources */,
 				ACDF82FC265BBDE200A4D04A /* UIFont.swift in Sources */,
