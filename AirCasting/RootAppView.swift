@@ -17,6 +17,7 @@ struct RootAppView: View {
     @StateObject private var bluetoothManager = BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared)))
     
     @StateObject private var userSettings = UserSettings()
+    @StateObject var selectedSection = SelectSection()
     @StateObject private var userRedirectionSettings = DefaultSettingsRedirection()
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     @EnvironmentObject var microphoneManager: MicrophoneManager
@@ -58,6 +59,7 @@ struct RootAppView: View {
         .environmentObject(locationTracker)
         .environmentObject(userRedirectionSettings)
         .environmentObject(urlProvider)
+        .environmentObject(selectedSection)
         .environment(\.managedObjectContext, persistenceController.viewContext)
         .onAppear {
             airBeamConnectionController = DefaultAirBeamConnectionController(connectingAirBeamServices: ConnectingAirBeamServicesBluetooth(bluetoothConnector: bluetoothManager))

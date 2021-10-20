@@ -8,7 +8,7 @@
 import CoreData
 import Firebase
 import CoreBluetooth
-
+import Combine
 import SwiftUI
 
 struct MainTabBarView: View {
@@ -24,9 +24,9 @@ struct MainTabBarView: View {
     @EnvironmentObject var microphoneManager: MicrophoneManager
     @EnvironmentObject var userSettings: UserSettings
     @EnvironmentObject var bluetoothManager: BluetoothManager
+    @EnvironmentObject var selectedSection: SelectSection
     let sessionSynchronizer: SessionSynchronizer
     @StateObject var tabSelection: TabBarSelection = TabBarSelection()
-    @StateObject var selectedSection = SelectSection()
     @StateObject var emptyDashboardButtonTapped = EmptyDashboardButtonTapped()
     @StateObject var sessionContext: CreateSessionContext
     @StateObject var coreDataHook: CoreDataHook
@@ -42,14 +42,15 @@ struct MainTabBarView: View {
             createSessionTab
             settingsTab
         }
-        .onTapGesture {
-            Print("HELOOO")
-            if sessions.contains(where: { $0.isActive }) {
-                selectedSection.selectedSection = .mobileActive
-            } else {
-                selectedSection.selectedSection = .following
-            }
-            try! coreDataHook.setup(selectedSection: selectedSection.selectedSection)
+        .onReceive(Just(tabSelection.selection)) {
+            print($0)
+//                Print(selectedSection.selectedSection)
+//                if sessions.contains(where: { $0.isActive }) {
+           
+//                } else {
+//                    selectedSection.selectedSection = .following
+//                }
+//                try! coreDataHook.setup(selectedSection: selectedSection.selectedSection)
         }
         .onAppear {
             measurementUpdatingService.start()
@@ -61,7 +62,6 @@ struct MainTabBarView: View {
             
         })
         .environmentObject(tabSelection)
-        .environmentObject(selectedSection)
         .environmentObject(emptyDashboardButtonTapped)
     }
 }
