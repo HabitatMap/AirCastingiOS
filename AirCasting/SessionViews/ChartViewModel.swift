@@ -11,6 +11,7 @@ final class ChartViewModel: ObservableObject {
     
     var stream: MeasurementStreamEntity? {
         didSet {
+            guard session.isActive || session.isFollowed || session.status == .NEW else { return }
             generateEntries()
         }
     }
