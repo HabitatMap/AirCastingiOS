@@ -35,6 +35,7 @@ struct GoogleMapView: UIViewRepresentable {
         let mapView = GMSMapView.map(withFrame: .zero,
                                      camera: startingPoint)
         mapView.delegate = context.coordinator
+        mapView.setMinZoom(kGMSMinZoomLevel, maxZoom: 16.0)
         mapView.isMyLocationEnabled = isMyLocationEnabled
         context.coordinator.myLocationSink = mapView.publisher(for: \.myLocation)
             .sink { [weak mapView] (location) in
@@ -57,15 +58,10 @@ struct GoogleMapView: UIViewRepresentable {
         placePickerDismissed ? uiView.moveCamera(cameraUpdate) : nil
         // Update camera's starting point
         guard context.coordinator.shouldAutoTrack else { return }
-            DispatchQueue.main.async {
-                uiView.moveCamera(cameraUpdate)
-                if uiView.camera.zoom > 16 {
-                    // The zoom is set automatically somehow which results sometimes in 'too close' map
-                    // This helps us to fix it and still manage to fit into the 'bigger picture' if needed because of the long session
-                    uiView.animate(toZoom: 16)
-                }
-            }
+        DispatchQueue.main.async {
+            uiView.moveCamera(cameraUpdate)
         }
+    }
     
     var cameraUpdate: GMSCameraUpdate {
         guard !pathPoints.isEmpty else {
