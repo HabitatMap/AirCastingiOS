@@ -16,7 +16,7 @@ struct AirMapView: View {
     
     var thresholds: [SensorThreshold]
     @StateObject var statsContainerViewModel: StatisticsContainerViewModel
-    @StateObject var mapStatsDataSource: MapStatsDataSource
+//    @StateObject var mapStatsDataSource: MapStatsDataSource
     @ObservedObject var session: SessionEntity
     @Binding var showLoadingIndicator: Bool
 
@@ -60,10 +60,12 @@ struct AirMapView: View {
                     ZStack(alignment: .topLeading) {
                         GoogleMapView(pathPoints: pathPoints,
                                       threshold: threshold, placePickerDismissed: Binding.constant(false))
-                            .onPositionChange { [weak mapStatsDataSource, weak statsContainerViewModel] visiblePoints in
-                                mapStatsDataSource?.visiblePathPoints = visiblePoints
-                                statsContainerViewModel?.adjustForNewData()
-                            }
+                        #warning("TODO: Implement calculating stats only for visible path points")
+                        // This doesn't work properly and it needs to be fixed, so I'm commenting it out
+//                            .onPositionChange { [weak mapStatsDataSource, weak statsContainerViewModel] visiblePoints in
+//                                mapStatsDataSource?.visiblePathPoints = visiblePoints
+//                                statsContainerViewModel?.adjustForNewData()
+//                            }
                         // Statistics container shouldn't be presented in mobile dormant tab
                         if !(session.type == .mobile && session.isActive == false) {
                             StatisticsContainerView(statsContainerViewModel: statsContainerViewModel,
@@ -81,6 +83,10 @@ struct AirMapView: View {
                 }
             }
         }
+//        .onChange(of: selectedStream) { newStream in
+//            mapStatsDataSource.visiblePathPoints = pathPoints
+//            statsContainerViewModel.adjustForNewData()
+//        }
         .onChange(of: scenePhase) { phase in
             switch phase {
             case .background, .inactive: self.presentationMode.wrappedValue.dismiss()
@@ -107,7 +113,7 @@ struct Map_Previews: PreviewProvider {
     static var previews: some View {
         AirMapView(thresholds: [SensorThreshold.mock],
                    statsContainerViewModel: StatisticsContainerViewModel(statsInput: MeasurementsStatisticsInputMock()),
-                   mapStatsDataSource: MapStatsDataSource(),
+//                   mapStatsDataSource: MapStatsDataSource(),
                    session: .mock,
                    showLoadingIndicator: .constant(true),
                    selectedStream: .constant(nil),

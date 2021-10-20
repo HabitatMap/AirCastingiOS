@@ -11,7 +11,6 @@ import SwiftUI
 struct EmptyMobileDashboardViewMobile: View {
     #warning("Please switch to protocol ASAP")
     @EnvironmentObject var defaultSessionSynchronizerViewModel: DefaultSessionSynchronizationViewModel
-    @EnvironmentObject private var tabSelection: TabBarSelection
     @EnvironmentObject var selectedSection: SelectSection
     
     var shouldSessionFetch: Bool {

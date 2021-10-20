@@ -95,7 +95,7 @@ struct MainAppView: View {
                        sessionStoppableFactory: sessionStoppableFactory,
                        sessionSynchronizer: sessionSynchronizer,
                        sessionContext: CreateSessionContext(),
-                       locationHandler: locationHandler)
+                       coreDataHook: CoreDataHook(context: persistenceController.viewContext), locationHandler: locationHandler)
             .environmentObject(airBeamConnectionController)
     }
 }

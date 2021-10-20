@@ -73,9 +73,6 @@ struct DashboardView: View {
             self.selectedSection.selectedSection = selectedSection
             try! coreDataHook.setup(selectedSection: self.selectedSection.selectedSection)
         }
-        .onAppear {
-            try! coreDataHook.setup(selectedSection: selectedSection.selectedSection)
-        }
     }
 }
 

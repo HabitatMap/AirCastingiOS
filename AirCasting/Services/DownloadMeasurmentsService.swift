@@ -45,7 +45,7 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
     private func getAllSessionsData(completion: @escaping ([(uuid: SessionUUID, lastSynced: Date)]) -> Void) {
         let request: NSFetchRequest<SessionEntity> = SessionEntity.fetchRequest()
         request.predicate = request.typePredicate(.fixed)
-        let context = persistenceController.editContext()
+        let context = persistenceController.editContext
         var returnData: [(uuid: SessionUUID, lastSynced: Date)] = []
         context.perform { [unowned self] in
             do {
@@ -85,7 +85,7 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
     
     private func processServiceOutput(_ output: FixedSession.FixedMeasurementOutput,
                                       for sessionUUID: SessionUUID) {
-        let context = persistenceController.editContext()
+        let context = persistenceController.editContext
         context.perform {
             do {
                 let session: SessionEntity = try context.newOrExisting(uuid: output.uuid)

@@ -76,7 +76,7 @@ struct SessionCartView: View {
             .fullScreenCover(isPresented: $isMapButtonActive) {
                 AirMapView(thresholds: thresholds,
                            statsContainerViewModel: mapStatsViewModel,
-                           mapStatsDataSource: mapStatsDataSource,
+//                           mapStatsDataSource: mapStatsDataSource,
                            session: session,
                            showLoadingIndicator: $showLoadingIndicator,
                            selectedStream: $selectedStream,
@@ -99,7 +99,7 @@ struct SessionCartView: View {
             .fullScreenCover(isPresented: $isMapButtonActive) {
                 AirMapView(thresholds: thresholds,
                            statsContainerViewModel: mapStatsViewModel,
-                           mapStatsDataSource: mapStatsDataSource,
+//                           mapStatsDataSource: mapStatsDataSource,
                            session: session,
                            showLoadingIndicator: $showLoadingIndicator,
                            selectedStream: $selectedStream,
@@ -137,8 +137,10 @@ struct SessionCartView: View {
         .onAppear {
             selectDefaultStreamIfNeeded(streams: session.sortedStreams ?? [])
         }
-        .onChange(of: session.sortedStreams) { newValue in
-            selectDefaultStreamIfNeeded(streams: newValue ?? [])
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
+            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(50)) {
+                chartViewModel.refreshChart()
+            }
         }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
             chartViewModel.refreshChart()
