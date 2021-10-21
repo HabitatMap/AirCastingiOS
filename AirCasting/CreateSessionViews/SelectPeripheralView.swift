@@ -43,7 +43,7 @@ struct SelectPeripheralView: View {
                     }
                     .listStyle(PlainListStyle())
                     .listItemTint(Color.red)
-                    .font(Fonts.SelectPerehicalView.VFont)
+                    .font(Fonts.regularHeading1)
                     .foregroundColor(.aircastingDarkGray)
                     
                     Spacer()
@@ -88,7 +88,7 @@ struct SelectPeripheralView: View {
     
     var titleLabel: some View {
         Text(Strings.SelectPeripheralView.titleLabel)
-            .font(Fonts.SelectPerehicalView.title)
+            .font(Fonts.boldTitle3)
             .foregroundColor(.accentColor)
             .multilineTextAlignment(.leading)
             .lineSpacing(10.0)
@@ -96,7 +96,7 @@ struct SelectPeripheralView: View {
     
     func showDevice(name: String) -> some View {
         Text(name)
-            .font(Fonts.SelectPerehicalView.showDevice)
+            .font(Fonts.mediumHeading1)
             .foregroundColor(.aircastingGray)
     }
     

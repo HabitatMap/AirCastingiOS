@@ -51,12 +51,12 @@ private extension EmptyMobileDashboardViewMobile {
     private var emptyMobileDashboardText: some View {
         VStack(spacing: 14) {
             Text(Strings.EmptyDashboardMobile.title)
-                .font(Fonts.EmptyMobileDashboard.emptyTextOne)
+                .font(Fonts.boldTitle4)
                 .foregroundColor(Color.darkBlue)
                 .minimumScaleFactor(0.1)
             
             Text(Strings.EmptyDashboardMobile.description)
-                .font(Fonts.EmptyMobileDashboard.emptyTextTwo)
+                .font(Fonts.muliHeading2)
                 .foregroundColor(Color.aircastingGray)
                 .lineSpacing(9.0)
                 .padding(.horizontal, 35)
@@ -78,11 +78,11 @@ private extension EmptyMobileDashboardViewMobile {
                     .aspectRatio(contentMode: .fit)
                 VStack(alignment: .leading) {
                     Text(Strings.EmptyDashboardMobile.airBeamDescriptionText)
-                        .font(Fonts.EmptyMobileDashboard.descriptionOne)
+                        .font(Fonts.semiboldHeading1)
                         .foregroundColor(.aircastingGray)
                         .lineSpacing(15)
                     Text(Strings.EmptyDashboardMobile.airBeamDescriptionDescription)
-                        .font(Fonts.EmptyMobileDashboard.descriptionTwo)
+                        .font(Fonts.muliHeading3)
                         .foregroundColor(.aircastingGray)
                 }
             }

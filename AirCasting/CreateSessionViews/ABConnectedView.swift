@@ -30,13 +30,13 @@ struct ABConnectedView: View {
 private extension ABConnectedView {
     var titleLabel: some View {
         Text(Strings.ABConnectedView.title)
-            .font(Fonts.ABConnectedView.title)
+            .font(Fonts.boldTitle3)
             .foregroundColor(.accentColor)
     }
 
     var messageLabel: some View {
         Text(Strings.ABConnectedView.message)
-            .font(Fonts.ABConnectedView.message)
+            .font(Fonts.regularHeading1)
             .foregroundColor(.aircastingGray)
     }
 

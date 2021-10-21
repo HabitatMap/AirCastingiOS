@@ -176,19 +176,19 @@ struct ChooseSessionTypeView: View {
 
     var titleLabel: some View {
         Text(Strings.ChooseSessionTypeView.title)
-            .font(Fonts.ChooseSessionTypeView.title)
+            .font(Fonts.boldTitle1)
             .foregroundColor(.accentColor)
     }
 
     var messageLabel: some View {
         Text(Strings.ChooseSessionTypeView.message)
-            .font(Fonts.ChooseSessionTypeView.messageLabel)
+            .font(Fonts.regularHeading1)
             .foregroundColor(.aircastingGray)
     }
 
     var recordNewLabel: some View {
         Text(Strings.ChooseSessionTypeView.recordNew)
-            .font(Fonts.ChooseSessionTypeView.recordNewLabel)
+            .font(Fonts.boldHeading3)
             .foregroundColor(.aircastingDarkGray)
     }
     
@@ -197,7 +197,7 @@ struct ChooseSessionTypeView: View {
             isInfoPresented = true
         }, label: {
             Text(Strings.ChooseSessionTypeView.moreInfo)
-                .font(Fonts.ChooseSessionTypeView.moreInfo)
+                .font(Fonts.regularHeading3)
                 .foregroundColor(.accentColor)
         })
             .sheet(isPresented: $isInfoPresented, content: {
@@ -239,10 +239,10 @@ struct ChooseSessionTypeView: View {
     var fixedSessionLabel: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text(Strings.ChooseSessionTypeView.fixedLabel_1)
-                .font(Fonts.ChooseSessionTypeView.fixedOneLabel)
+                .font(Fonts.boldHeading1)
                 .foregroundColor(.accentColor)
             Text(Strings.ChooseSessionTypeView.fixedLabel_2)
-                .font(Fonts.ChooseSessionTypeView.fixedTwoLabel)
+                .font(Fonts.muliHeading3)
                 .foregroundColor(.aircastingGray)
                 .multilineTextAlignment(.leading)
         }
@@ -255,10 +255,10 @@ struct ChooseSessionTypeView: View {
     var mobileSessionLabel: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text(Strings.ChooseSessionTypeView.mobileLabel_1)
-                .font(Fonts.ChooseSessionTypeView.mobileOneLabel)
+                .font(Fonts.boldHeading1)
                 .foregroundColor(.accentColor)
             Text(Strings.ChooseSessionTypeView.mobileLabel_2)
-                .font(Fonts.ChooseSessionTypeView.mobileTwoLabel)
+                .font(Fonts.muliHeading3)
                 .foregroundColor(.aircastingGray)
                 .multilineTextAlignment(.leading)
         }

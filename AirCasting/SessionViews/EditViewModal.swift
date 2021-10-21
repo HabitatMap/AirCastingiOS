@@ -25,7 +25,7 @@ struct EditViewModal: View {
     
     var titleLabel: some View {
         Text(Strings.EditSession.title)
-            .font(Fonts.EditModalView.title)
+            .font(Fonts.boldTitle4)
             .foregroundColor(.darkBlue)
     }
     
@@ -34,7 +34,7 @@ struct EditViewModal: View {
             showModalEdit.toggle()
         }, label: {
             Text(Strings.EditSession.buttonAccept)
-                .font(Fonts.EditModalView.continueButton)
+                .font(Fonts.semiboldHeading1)
         }).buttonStyle(BlueButtonStyle())
         .padding(.top, 20)
     }

@@ -11,12 +11,12 @@ struct MoreInfoPopupView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 25) {
             Text(Strings.MoreInfoPopupView.text_1)
-                .font(Fonts.MoreInfoPopupView.first)
+                .font(Fonts.boldTitle2)
                 .foregroundColor(.accentColor)
             Text(Strings.MoreInfoPopupView.text_2)
             Text(Strings.MoreInfoPopupView.text_3)
         }
-        .font(Fonts.MoreInfoPopupView.second)
+        .font(Fonts.muliHeading2)
         .lineSpacing(12)
         .foregroundColor(.aircastingGray)
         .padding()

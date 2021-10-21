@@ -51,7 +51,7 @@ struct ChooseCustomLocationView: View {
 
     var titleLabel: some View {
         Text(Strings.ChooseCustomLocationView.titleLabel)
-            .font(Fonts.ChooseCustomLocation.title)
+            .font(Fonts.boldTitle4)
             .foregroundColor(.darkBlue)
     }
     

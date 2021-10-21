@@ -24,13 +24,13 @@ struct DeleteView<VM: DeleteSessionViewModel>: View {
     
     private var title: some View {
         Text(Strings.DeleteSession.title)
-            .font(Fonts.DeleteView.title)
+            .font(Fonts.boldTitle4)
             .foregroundColor(.darkBlue)
     }
     
     private var description: some View {
         Text(Strings.DeleteSession.description)
-            .font(Fonts.DeleteView.description)
+            .font(Fonts.muliHeading2)
             .foregroundColor(.aircastingGray)
     }
     

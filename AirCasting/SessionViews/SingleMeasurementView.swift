@@ -14,7 +14,7 @@ struct SingleMeasurementView: View {
     var body: some View {
         VStack(spacing: 3) {
             Text(showStreamName())
-                .font(Fonts.SingleMeasurementView.stremName)
+                .font(Fonts.systemFont1)
                 .scaledToFill()
             if measurementPresentationStyle == .showValues,
                let threshold = threshold {
@@ -51,7 +51,7 @@ struct SingleMeasurementView: View {
                     MeasurementDotView(value: value,
                                        thresholds: threshold)
                     Text("\(Int(value))")
-                        .font(Fonts.SingleMeasurementView.value)
+                        .font(Fonts.regularHeading3)
                         .scaledToFill()
                 }
             })

@@ -24,7 +24,7 @@ struct StatisticsContainerView<ViewModelType>: View where ViewModelType: Statist
                 }
             }
         }
-        .font(Fonts.StatisticsContainerView.body)
+        .font(Fonts.muliHeading5)
         .foregroundColor(.aircastingGray)
         .frame(width: 220, height: 80)
         .background(Color.white)
@@ -45,7 +45,7 @@ struct StatisticsContainerView<ViewModelType>: View where ViewModelType: Statist
                     .frame(width: 6, height: 6)
                 Spacer()
                 Text("\(Int(value))")
-                    .font(Fonts.StatisticsContainerView.value)
+                    .font(Fonts.muliHeading5)
                     .minimumScaleFactor(0.1)
                 Spacer()
             }
@@ -64,7 +64,7 @@ struct StatisticsContainerView<ViewModelType>: View where ViewModelType: Statist
                     .frame(width: 8, height: 8)
                 Spacer()
                 Text("\(Int(value))")
-                    .font(Fonts.StatisticsContainerView.parameterValue)
+                    .font(Fonts.muliHeading1)
                     .minimumScaleFactor(0.1)
                 Spacer()
             }

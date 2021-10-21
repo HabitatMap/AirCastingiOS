@@ -47,13 +47,13 @@ struct TurnOnBluetoothView: View {
     
     var titleLabel: some View {
         Text(Strings.TurnOnBluetoothView.title)
-            .font(Fonts.TurnOnBluetoothView.title)
+            .font(Fonts.boldTitle3)
             .foregroundColor(.accentColor)
     }
     
     var messageLabel: some View {
         Text(Strings.TurnOnBluetoothView.messageText)
-            .font(Fonts.TurnOnBluetoothView.message)
+            .font(Fonts.regularHeading1)
             .foregroundColor(.aircastingGray)
             .lineSpacing(10.0)
     }

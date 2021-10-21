@@ -22,7 +22,7 @@ struct WifiPopupView: View {
                 createTextfield(placeholder: Strings.WifiPopupView.wifiPlaceholder, binding: $wifiSSID)
             } else {
                 provideNameAndPasswordTitle
-                    .font(Fonts.WiFiPopupView.title)
+                    .font(Fonts.heavyTitle2)
                     .foregroundColor(.darkBlue)
             }
             createTextfield(placeholder: Strings.WifiPopupView.passwordPlaceholder, binding: $wifiPassword).onTapGesture {
@@ -57,7 +57,7 @@ struct WifiPopupView: View {
     
     var providePasswordTitle: some View {
         Text(Strings.WifiPopupView.passwordTitle)
-            .font(Fonts.WiFiPopupView.title)
+            .font(Fonts.heavyTitle2)
             .foregroundColor(.darkBlue)
     }
     
