@@ -2,7 +2,6 @@
 //
 
 import SwiftUI
-import Combine
 
 struct AirSectionPickerView: View {
     
@@ -22,8 +21,10 @@ struct AirSectionPickerView: View {
                                 }
                                 selection = section
                             }
-                        }.onChange(of: selection, perform: {
-                            $0 == .following ? scrollReader.scrollTo(SelectedSection.following) : nil
+                        }.onChange(of: selection, perform: { section in
+                            withAnimation(.easeInOut(duration: 0.1)) {
+                                section == .following ? scrollReader.scrollTo(SelectedSection.following) : nil
+                            }
                         })
                         .buttonStyle(PickerButtonStyle(isSelected: section == selection))
                         .id(section)
