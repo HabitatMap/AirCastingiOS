@@ -6,7 +6,6 @@ import SwiftUI
 struct EmptyFixedDashboardView: View {
     #warning("Please switch to protocol ASAP")
     @EnvironmentObject var defaultSessionSynchronizerViewModel: DefaultSessionSynchronizationViewModel
-    @EnvironmentObject private var tabSelection: TabBarSelection
     @EnvironmentObject var selectedSection: SelectSection
     
     var shouldSessionFetch: Bool {
@@ -35,9 +34,8 @@ struct EmptyFixedDashboardView: View {
                 // as in mobile empty dashboard
                 .padding(.bottom, 100)
                 Spacer()
-            }
+            }.frame(maxWidth: .infinity)
         }
-        .padding()
         .background(Color(red: 251/255, green: 253/255, blue: 255/255))
     }
 }

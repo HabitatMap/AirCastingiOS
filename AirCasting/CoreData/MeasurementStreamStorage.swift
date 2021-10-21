@@ -24,7 +24,7 @@ protocol MeasurementStreamStorageContextUpdate {
 }
 
 extension HiddenCoreDataMeasurementStreamStorage {
-    func addMeasurementValue(_ value: Double, at location: CLLocationCoordinate2D? = nil, toStreamWithID id: MeasurementStreamLocalID, on time: Date = Date()) throws {
+    func addMeasurementValue(_ value: Double, at location: CLLocationCoordinate2D? = nil, toStreamWithID id: MeasurementStreamLocalID, on time: Date = Date().currentUTCTimeZoneDate) throws {
         try addMeasurement(Measurement(time: time, value: value, location: location), toStreamWithID: id)
     }
 }
@@ -38,7 +38,7 @@ final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
     
     init(persistenceController: PersistenceController) {
         self.persistenceController = persistenceController
-        self.context = persistenceController.editContext()
+        self.context = persistenceController.editContext
         self.hiddenStorage = HiddenCoreDataMeasurementStreamStorage(context: self.context)
     }
     
@@ -126,11 +126,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
     }
     
     func updateMeasurements(stream: MeasurementStreamEntity, newMeasurements: NSOrderedSet) throws {
-        do {
             stream.measurements = newMeasurements
-        } catch {
-            Log.info("Error when saving changes in session: \(error.localizedDescription) ")
-        }
     }
     
     private func createMeasurementStream(for session: SessionEntity, context: NSManagedObjectContext, _ stream: MeasurementStream) throws -> MeasurementStreamLocalID {
@@ -179,9 +175,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
     func updateSessionEndtime(_ endTime: Date, for sessionUUID: SessionUUID) throws {
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
         sessionEntity.endTime = endTime.currentUTCTimeZoneDate
-        if !(sessionEntity.isMobile && sessionEntity.deviceType == .AIRBEAM3) {
-            sessionEntity.startTime = sessionEntity.startTime?.currentUTCTimeZoneDate
-        }
+
         try context.save()
     }
     
@@ -189,7 +183,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         do {
             let sessionEntity = try context.existingSession(uuid: sessionUUID)
             if sessionFollowing == SessionFollowing.following {
-                sessionEntity.followedAt = Date()
+                sessionEntity.followedAt = Date().currentUTCTimeZoneDate
             } else {
                 sessionEntity.followedAt = nil
             }

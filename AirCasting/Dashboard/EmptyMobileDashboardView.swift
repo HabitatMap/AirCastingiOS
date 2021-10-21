@@ -11,7 +11,6 @@ import SwiftUI
 struct EmptyMobileDashboardViewMobile: View {
     #warning("Please switch to protocol ASAP")
     @EnvironmentObject var defaultSessionSynchronizerViewModel: DefaultSessionSynchronizationViewModel
-    @EnvironmentObject private var tabSelection: TabBarSelection
     @EnvironmentObject var selectedSection: SelectSection
     
     var shouldSessionFetch: Bool {
@@ -39,9 +38,9 @@ struct EmptyMobileDashboardViewMobile: View {
                     Spacer()
                 }
                 airBeamDescription
+                    .padding(.horizontal)
             }
         }
-        .padding()
         .background(Color(red: 251/255, green: 253/255, blue: 255/255))
     }
 }

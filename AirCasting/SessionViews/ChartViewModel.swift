@@ -11,6 +11,7 @@ final class ChartViewModel: ObservableObject {
     
     var stream: MeasurementStreamEntity? {
         didSet {
+            guard session.isActive || session.isFollowed || session.status == .NEW else { return }
             generateEntries()
         }
     }
@@ -95,8 +96,8 @@ final class ChartViewModel: ObservableObject {
         if session.isFixed {
             return lastMeasurementTime.roundedDownToHour
         } else {
-            let secondsSinceFullMinuteFromSessionStart = Date().timeIntervalSince(sessionStartTime).truncatingRemainder(dividingBy: timeUnit)
-            return Date() - secondsSinceFullMinuteFromSessionStart
+            let secondsSinceFullMinuteFromSessionStart = Date().currentUTCTimeZoneDate.timeIntervalSince(sessionStartTime).truncatingRemainder(dividingBy: timeUnit)
+            return Date().currentUTCTimeZoneDate - secondsSinceFullMinuteFromSessionStart
         }
     }
     
@@ -106,7 +107,7 @@ final class ChartViewModel: ObservableObject {
         if session.isFixed {
             return Date().roundedUpToHour.timeIntervalSince(Date())
         } else {
-            return timeUnit - Date().timeIntervalSince(sessionStartTime).truncatingRemainder(dividingBy: timeUnit)
+            return timeUnit - Date().currentUTCTimeZoneDate.timeIntervalSince(sessionStartTime).truncatingRemainder(dividingBy: timeUnit)
         }
     }
     

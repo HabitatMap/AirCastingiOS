@@ -45,7 +45,7 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
     private func getAllSessionsData(completion: @escaping ([(uuid: SessionUUID, lastSynced: Date)]) -> Void) {
         let request: NSFetchRequest<SessionEntity> = SessionEntity.fetchRequest()
         request.predicate = request.typePredicate(.fixed)
-        let context = persistenceController.editContext()
+        let context = persistenceController.editContext
         var returnData: [(uuid: SessionUUID, lastSynced: Date)] = []
         context.perform { [unowned self] in
             do {
@@ -85,7 +85,7 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
     
     private func processServiceOutput(_ output: FixedSession.FixedMeasurementOutput,
                                       for sessionUUID: SessionUUID) {
-        let context = persistenceController.editContext()
+        let context = persistenceController.editContext
         context.perform {
             do {
                 let session: SessionEntity = try context.newOrExisting(uuid: output.uuid)
@@ -109,7 +109,7 @@ class SyncHelper {
     func calculateLastSync(sessionEndTime: Date?, lastMeasurementTime: Date?) -> Date {
         let measurementTimeframe: Double = 24 * 60 * 60 // 24 hours in seconds
         
-        guard let sessionEndTime = sessionEndTime else { return Date() }
+        guard let sessionEndTime = sessionEndTime else { return Date().currentUTCTimeZoneDate }
         let sessionEndTimeSeconds = sessionEndTime.timeIntervalSince1970
         
         let last24hours = Date(timeIntervalSince1970: (sessionEndTimeSeconds - measurementTimeframe))

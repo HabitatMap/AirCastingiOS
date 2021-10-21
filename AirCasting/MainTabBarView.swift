@@ -8,7 +8,6 @@
 import CoreData
 import Firebase
 import CoreBluetooth
-
 import SwiftUI
 
 struct MainTabBarView: View {
@@ -29,15 +28,42 @@ struct MainTabBarView: View {
     @StateObject var selectedSection = SelectSection()
     @StateObject var emptyDashboardButtonTapped = EmptyDashboardButtonTapped()
     @StateObject var sessionContext: CreateSessionContext
+    @StateObject var coreDataHook: CoreDataHook
     let locationHandler: LocationHandler
     
+    private var sessions: [SessionEntity] {
+        coreDataHook.sessions
+    }
+    
     var body: some View {
-        TabView(selection: $tabSelection.selection) {
-            dashboardTab
-            createSessionTab
-            settingsTab
+        ZStack(alignment: .bottomLeading) {
+            TabView(selection: $tabSelection.selection) {
+                dashboardTab
+                createSessionTab
+                settingsTab
+            }
+            Button {
+                tabSelection.selection = .dashboard
+                try! coreDataHook.setup(selectedSection: .mobileActive)
+                if sessions.contains(where: { $0.isActive }) {
+                    selectedSection.selectedSection = .mobileActive
+                } else {
+                    selectedSection.selectedSection = .following
+                }
+                try! coreDataHook.setup(selectedSection: selectedSection.selectedSection)
+            } label: {
+                Rectangle()
+                    .fill(Color.clear)
+                    .frame(width: UIScreen.main.bounds.width / 3, height: 60)
+            }
+            
         }
         .onAppear {
+            UITabBar.appearance().backgroundColor = .systemBackground
+            let appearance = UITabBarAppearance()
+            appearance.backgroundImage = UIImage()
+            appearance.shadowImage = UIImage.mainTabBarShadow
+            UITabBar.appearance().standardAppearance = appearance
             measurementUpdatingService.start()
         }
         .onChange(of: tabSelection.selection, perform: { _ in
@@ -46,20 +72,19 @@ struct MainTabBarView: View {
             tabSelection.selection == .createSession ? (plusImage = PlusIcon.selected.string) : (plusImage = PlusIcon.unselected.string)
             
         })
-        .environmentObject(tabSelection)
         .environmentObject(selectedSection)
+        .environmentObject(tabSelection)
         .environmentObject(emptyDashboardButtonTapped)
     }
 }
-
 
 private extension MainTabBarView {
     // Tab Bar views
     private var dashboardTab: some View {
         NavigationView {
-            DashboardView(coreDataHook: CoreDataHook(context: persistenceController.viewContext), measurementStreamStorage: measurementStreamStorage, sessionStoppableFactory: sessionStoppableFactory)
+            DashboardView(coreDataHook: coreDataHook, measurementStreamStorage: measurementStreamStorage, sessionStoppableFactory: sessionStoppableFactory)
                 .toolbar {
-                // The toolbar is used to provide left align title in the way android has
+                    // The toolbar is used to provide left align title in the way android has
                     ToolbarItemGroup(placement: .navigationBarLeading) {
                         Text(Strings.MainTabBarView.dashboardText)
                             .foregroundColor(.darkBlue)
@@ -68,12 +93,12 @@ private extension MainTabBarView {
                     }
                 }
         }.navigationViewStyle(StackNavigationViewStyle())
-        .tabItem {
-            Image(homeImage)
-        }
-        .tag(TabBarSelection.Tab.dashboard)
+            .tabItem {
+                Image(homeImage)
+            }
+            .tag(TabBarSelection.Tab.dashboard)
     }
-
+    
     private var createSessionTab: some View {
         ChooseSessionTypeView(viewModel: ChooseSessionTypeViewModel(locationHandler: locationHandler, bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: bluetoothManager), userSettings: userSettings, sessionContext: sessionContext, urlProvider: urlProvider, bluetoothManager: bluetoothManager, bluetoothManagerState: bluetoothManager.centralManagerState))
             .tabItem {
@@ -81,20 +106,20 @@ private extension MainTabBarView {
             }
             .tag(TabBarSelection.Tab.createSession)
     }
-
+    
     private var settingsTab: some View {
         SettingsView(urlProvider: UserDefaultsBaseURLProvider(), logoutController: DefaultLogoutController(
-                        userAuthenticationSession: userAuthenticationSession,
-                        sessionStorage: SessionStorage(persistenceController: persistenceController),
-                        microphoneManager: microphoneManager,
-                        sessionSynchronizer: sessionSynchronizer))
+            userAuthenticationSession: userAuthenticationSession,
+            sessionStorage: SessionStorage(persistenceController: persistenceController),
+            microphoneManager: microphoneManager,
+            sessionSynchronizer: sessionSynchronizer))
             .tabItem {
                 Image(settingsImage)
             }
             .tag(TabBarSelection.Tab.settings)
     }
 }
-    
+
 class TabBarSelection: ObservableObject {
     @Published var selection = Tab.dashboard
     
@@ -106,7 +131,7 @@ class TabBarSelection: ObservableObject {
 }
 
 class SelectSection: ObservableObject {
-    @Published var selectedSection = SelectedSection.mobileActive
+    @Published var selectedSection = SelectedSection.following
 }
 
 class EmptyDashboardButtonTapped: ObservableObject {
@@ -125,7 +150,7 @@ extension MainTabBarView {
             }
         }
     }
-
+    
     enum PlusIcon {
         case selected
         case unselected
@@ -137,7 +162,7 @@ extension MainTabBarView {
             }
         }
     }
-
+    
     enum SettingsIcon {
         case selected
         case unselected
@@ -167,15 +192,15 @@ extension UITabBarController {
 #if DEBUG
 struct ContentView_Previews: PreviewProvider {
     private static let persistenceController = PersistenceController(inMemory: true)
-
+    
     static var previews: some View {
-        MainTabBarView(measurementUpdatingService: MeasurementUpdatingServiceMock(), urlProvider: DummyURLProvider(), measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionStoppableFactory: SessionStoppableFactoryDummy(), sessionSynchronizer: DummySessionSynchronizer(), sessionContext: CreateSessionContext(), locationHandler: DummyDefaultLocationHandler())
+        MainTabBarView(measurementUpdatingService: MeasurementUpdatingServiceMock(), urlProvider: DummyURLProvider(), measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionStoppableFactory: SessionStoppableFactoryDummy(), sessionSynchronizer: DummySessionSynchronizer(), sessionContext: CreateSessionContext(), coreDataHook: CoreDataHook(context: PersistenceController(inMemory: true).viewContext), locationHandler: DummyDefaultLocationHandler())
             .environmentObject(UserAuthenticationSession())
             .environmentObject(BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: PreviewMeasurementStreamStorage())))
             .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
             .environment(\.managedObjectContext, persistenceController.viewContext)
     }
-
+    
     private class MeasurementUpdatingServiceMock: MeasurementUpdatingService {
         func start() {}
     }

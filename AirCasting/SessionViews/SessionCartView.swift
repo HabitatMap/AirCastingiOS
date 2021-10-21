@@ -76,7 +76,7 @@ struct SessionCartView: View {
             .fullScreenCover(isPresented: $isMapButtonActive) {
                 AirMapView(thresholds: thresholds,
                            statsContainerViewModel: mapStatsViewModel,
-                           mapStatsDataSource: mapStatsDataSource,
+//                           mapStatsDataSource: mapStatsDataSource,
                            session: session,
                            showLoadingIndicator: $showLoadingIndicator,
                            selectedStream: $selectedStream,
@@ -99,7 +99,7 @@ struct SessionCartView: View {
             .fullScreenCover(isPresented: $isMapButtonActive) {
                 AirMapView(thresholds: thresholds,
                            statsContainerViewModel: mapStatsViewModel,
-                           mapStatsDataSource: mapStatsDataSource,
+//                           mapStatsDataSource: mapStatsDataSource,
                            session: session,
                            showLoadingIndicator: $showLoadingIndicator,
                            selectedStream: $selectedStream,
@@ -137,8 +137,13 @@ struct SessionCartView: View {
         .onAppear {
             selectDefaultStreamIfNeeded(streams: session.sortedStreams ?? [])
         }
-        .onChange(of: session.sortedStreams) { newValue in
-            selectDefaultStreamIfNeeded(streams: newValue ?? [])
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
+            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(50)) {
+                chartViewModel.refreshChart()
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
+            chartViewModel.refreshChart()
         }
         .font(Fonts.regularHeading4)
         .foregroundColor(.aircastingGray)
@@ -244,16 +249,8 @@ private extension SessionCartView {
     
     var startTime: some View {
         let formatter = DateFormatters.SessionCartView.pollutionChartDateFormatter
-        
-        if !(session.isMobile && session.isActive && session.isMIC) {
-            formatter.timeZone = TimeZone.init(abbreviation: "UTC")
-        }
             
-        guard var start = chartViewModel.chartStartTime else { return Text("") }
-     
-        if session.isFixed && session.measurementStreams == [] {
-            start = start.currentUTCTimeZoneDate
-        }
+        guard let start = chartViewModel.chartStartTime else { return Text("") }
         
         let string = formatter.string(from: start)
         return Text(string)
@@ -262,19 +259,7 @@ private extension SessionCartView {
     var endTime: some View {
         let formatter = DateFormatters.SessionCartView.pollutionChartDateFormatter
         
-        if !(session.isMobile && session.isActive && session.isMIC) {
-            formatter.timeZone =  TimeZone.init(abbreviation: "UTC")
-        }
-            
-        guard var end = chartViewModel.chartEndTime else { return Text("") }
-        
-        if session.isMobile && session.deviceType == .AIRBEAM3 && session.endTime == nil {
-            end = end.currentUTCTimeZoneDate
-        }
-     
-        if session.isFixed && session.measurementStreams == [] {
-            end = end.currentUTCTimeZoneDate
-        }
+        let end = chartViewModel.chartEndTime ?? Date().currentUTCTimeZoneDate
         
         let string = formatter.string(from: end)
         return Text(string)
