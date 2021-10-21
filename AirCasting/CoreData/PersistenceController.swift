@@ -132,6 +132,7 @@ class PersistenceController: ObservableObject {
             Log.info("Finishing sessions \( sessions.map({ "\(String(describing: $0.uuid)): \(String(describing: $0.status)) \(String(describing: $0.type))"}) )")
             sessions.forEach {
                 $0.status = .FINISHED
+                $0.endTime = $0.lastMeasurementTime ?? $0.startTime
             }
             try! context.save()
         }
