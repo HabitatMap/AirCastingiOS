@@ -154,12 +154,12 @@ struct Strings {
     }
     
     enum OnboardingAirBeamSheet {
-        static let sheetTitle: String = "How AirBeam works?"
-        static let sheetDescription_1: String = "In"
-        static let sheetDescription_2: String = " mobile "
-        static let sheetDescription_3: String = "mode, the AirBeam captures personal exposures.\nIn"
-        static let sheetDescription_4: String = " fixed "
-        static let sheetDescription_5: String = "mode, it can be installed indoors or outdoors to keep tabs on pollution levels in your home, office, backyard, or neighborhood 24/7."
+        static let sheetTitle: String = "How AirBeam \nworks?"
+        static let sheetDescription_1: String = "In "
+        static let sheetDescription_2: String = "mobile "
+        static let sheetDescription_3: String = "mode, the AirBeam \ncaptures personal exposures.\n\nIn "
+        static let sheetDescription_4: String = "fixed "
+        static let sheetDescription_5: String = "mode, it can be \ninstalled indoors or outdoors to \nkeep tabs on pollution levels in \nyour home, office, backyard, or \nneighborhood 24/7."
     }
     
     enum OnboardingPrivacy {
