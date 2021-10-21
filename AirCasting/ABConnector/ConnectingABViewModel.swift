@@ -19,16 +19,43 @@ class AirbeamConnectionViewModelDefault: AirbeamConnectionViewModel, ObservableO
     
     private let peripheral: CBPeripheral
     private let airBeamConnectionController: AirBeamConnectionController
+    private let userAuthenticationSession: UserAuthenticationSession
+    private let sessionContext: CreateSessionContext
     
-    init(airBeamConnectionController: AirBeamConnectionController, peripheral: CBPeripheral) {
+    init(airBeamConnectionController: AirBeamConnectionController,
+         userAuthenticationSession: UserAuthenticationSession,
+         sessionContext: CreateSessionContext,
+         peripheral: CBPeripheral) {
         self.peripheral = peripheral
         self.airBeamConnectionController = airBeamConnectionController
+        self.userAuthenticationSession = userAuthenticationSession
+        self.sessionContext = sessionContext
     }
     
     func connectToAirBeam() {
         self.airBeamConnectionController.connectToAirBeam(peripheral: peripheral) { success in
             self.isDeviceConnectedValue = success
             self.shouldDismissValue = !success
+            
+            if success {
+                self.configureABToFixed()
+            }
+        }
+    }
+    
+    private func configureABToFixed() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
+            if let sessionUUID = self.sessionContext.sessionUUID,
+               self.sessionContext.sessionType == .fixed {
+                let configurator =
+                AirBeam3Configurator(userAuthenticationSession: self.userAuthenticationSession,
+                                     peripheral: self.peripheral)
+                do {
+                    try configurator.configureFixed(uuid: sessionUUID)
+                } catch {
+                    Log.info("Couldn't configure AB to fixed session with uuid: \(sessionUUID)")
+                }
+            }
         }
     }
 }

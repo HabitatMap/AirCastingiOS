@@ -16,6 +16,7 @@ struct SelectPeripheralView: View {
     @EnvironmentObject var connectionController: DefaultAirBeamConnectionController
     @Binding var creatingSessionFlowContinues: Bool
     let urlProvider: BaseURLProvider
+    @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     
     var body: some View {
         GeometryReader { geometry in
@@ -116,12 +117,14 @@ struct SelectPeripheralView: View {
     var connectButton: some View {
         var destination: AnyView
         if let selection = selection {
-            let viewModel = AirbeamConnectionViewModelDefault(airBeamConnectionController: connectionController, peripheral: selection)
+            let viewModel =
+            AirbeamConnectionViewModelDefault(airBeamConnectionController: connectionController,
+                                              userAuthenticationSession: userAuthenticationSession, sessionContext: sessionContext,
+                                              peripheral: selection)
             destination = AnyView(ConnectingABView(viewModel: viewModel, baseURL: urlProvider, creatingSessionFlowContinues: $creatingSessionFlowContinues))
         } else {
             destination = AnyView(EmptyView())
         }
-        
         return NavigationLink(destination: destination) {
             Text(Strings.SelectPeripheralView.connectText)
         }
