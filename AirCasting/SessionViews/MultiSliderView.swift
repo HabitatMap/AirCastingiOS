@@ -98,7 +98,7 @@ struct MultiSliderView: View {
                 .position(x: calculateXAxisSize(thresholdValue: thresholds[index], geometry: geometry),
                           y: y)
                 .foregroundColor(.aircastingGray)
-                .font(Font.muli(size: 12))
+                .font(Fonts.muliHeading5)
                 .offset(x: 0, y: 20)
         }
     }

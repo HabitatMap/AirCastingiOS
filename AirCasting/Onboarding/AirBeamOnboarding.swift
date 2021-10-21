@@ -38,7 +38,7 @@ struct AirBeamOnboarding: View {
         
         private var sheetTitle: some View {
             Text(Strings.OnboardingAirBeamSheet.sheetTitle)
-                .font(Font.moderate(size: 28, weight: .bold))
+                .font(Fonts.boldTitle2)
                 .foregroundColor(.aircastingMint)
         }
         
@@ -54,7 +54,7 @@ struct AirBeamOnboarding: View {
                     .fontWeight(.bold)
                     + Text(Strings.OnboardingAirBeamSheet.sheetDescription_5)
             }
-            .font(Font.muli(size: 16))
+            .font(Fonts.muliHeading2)
             .lineSpacing(10.0)
             .foregroundColor(.aircastingGray)
         }
@@ -77,7 +77,7 @@ private extension AirBeamOnboarding {
     
     private var titleText: some View {
         Text(Strings.OnboardingAirBeam.title)
-            .font(Font.moderate(size: 32, weight: .bold))
+            .font(Fonts.boldTitle1)
             .foregroundColor(.aircastingMint)
             .multilineTextAlignment(.leading)
             .padding(.bottom, 20)
@@ -90,7 +90,7 @@ private extension AirBeamOnboarding {
             Text(Strings.OnboardingAirBeam.sheetButton)
                 .navigationBarTitle("")
                 .navigationBarHidden(true)
-                .font(Font.moderate(size: 16, weight: .semibold))
+                .font(Fonts.semiboldHeading1)
         })
         .buttonStyle(GreenTextButtonStyle())
         .sheet(isPresented: $showingHalfModal) { ModalPopView(showingHalfModal: self.$showingHalfModal) }
@@ -98,7 +98,7 @@ private extension AirBeamOnboarding {
     
     private var descriptionText: some View {
         Text(Strings.OnboardingAirBeam.description)
-            .font(Font.muli(size: 16))
+            .font(Fonts.muliHeading2)
             .foregroundColor(.aircastingGray)
             .lineSpacing(10.0)
             .multilineTextAlignment(.leading)
@@ -110,7 +110,7 @@ private extension AirBeamOnboarding {
             destination: PrivacyOnboarding(completion: completion),
             label: {
                 Text(Strings.OnboardingAirBeam.continueButton)
-                    .font(Font.moderate(size: 16, weight: .semibold))
+                    .font(Fonts.semiboldHeading1)
             }
         )
         .buttonStyle(GreenButtonStyle())

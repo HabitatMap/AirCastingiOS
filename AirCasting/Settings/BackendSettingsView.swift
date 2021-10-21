@@ -50,7 +50,7 @@ struct BackendSettingsView: View {
     private var title: some View {
         Text(Strings.BackendSettings.backendSettings)
             .foregroundColor(.darkBlue)
-            .font(Font.muli(size: 24, weight: .semibold))
+            .font(Fonts.semiboldTitle1)
     }
     
     private var oKButton: some View {

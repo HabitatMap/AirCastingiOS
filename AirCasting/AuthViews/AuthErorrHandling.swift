@@ -40,6 +40,6 @@ func checkIsEmailValid(email: String) -> Bool {
 }
 func errorMessage(text: String) -> some View {
     Text(text)
-        .font(Font.moderate(size: 10))
+        .font(Fonts.regularHeading5)
         .foregroundColor(.aircastingRed)
 }

@@ -36,16 +36,14 @@ struct PowerABView: View {
 
     var titleLabel: some View {
         Text(Strings.PowerABView.title)
-            .font(Font.moderate(size: 25,
-                                weight: .bold))
+            .font(Fonts.boldTitle3)
             .foregroundColor(.accentColor)
     }
 
     //stays here for maybe future needs
     var messageLabel: some View {
         Text(Strings.PowerABView.messageText)
-            .font(Font.moderate(size: 18,
-                                weight: .regular))
+            .font(Fonts.regularHeading1)
             .foregroundColor(.aircastingGray)
     }
 
