@@ -51,7 +51,7 @@ struct DashboardView: View {
                     let thresholds = Array(self.thresholds)
                     ScrollView(.vertical) {
                         LazyVStack(spacing: 8) {
-                            ForEach(sessions, id: \.uuid) { session in
+                            ForEach(sessions.filter { $0.uuid != "" }, id: \.uuid) { session in
                                 let followingSetter = MeasurementStreamStorageFollowingSettable(session: session, measurementStreamStorage: measurementStreamStorage)
                                 let viewModel = SessionCartViewModel(followingSetter: followingSetter)
                                 SessionCartView(session: session,
