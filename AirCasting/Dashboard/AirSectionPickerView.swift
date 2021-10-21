@@ -14,14 +14,18 @@ struct AirSectionPickerView: View {
                     ForEach(SelectedSection.allCases, id: \.self) { section in
                         Button(section.localizedString) {
                             withAnimation(.easeInOut(duration: 0.1)) {
-                                if section == .mobileDormant {
+                                if section == .mobileDormant || section == .fixed {
                                     scrollReader.scrollTo(SelectedSection.fixed)
                                 } else if section == .mobileActive {
                                     scrollReader.scrollTo(SelectedSection.following)
                                 }
                                 selection = section
                             }
-                        }
+                        }.onChange(of: selection, perform: { section in
+                            withAnimation(.easeInOut(duration: 0.1)) {
+                                section == .following ? scrollReader.scrollTo(SelectedSection.following) : nil
+                            }
+                        })
                         .buttonStyle(PickerButtonStyle(isSelected: section == selection))
                         .id(section)
                     }
