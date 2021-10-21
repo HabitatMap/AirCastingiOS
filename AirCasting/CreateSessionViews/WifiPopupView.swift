@@ -14,7 +14,7 @@ struct WifiPopupView: View {
     @Environment(\.presentationMode) private var presentationMode
     @Binding var wifiPassword: String
     @Binding var wifiSSID: String
-    
+    #warning("FINISHED!!!")
     var body: some View {
         VStack(alignment: .leading, spacing: 30) {
             if isSSIDTextfieldDisplayed {
@@ -22,7 +22,7 @@ struct WifiPopupView: View {
                 createTextfield(placeholder: Strings.WifiPopupView.wifiPlaceholder, binding: $wifiSSID)
             } else {
                 provideNameAndPasswordTitle
-                    .font(Font.muli(size: 18, weight: .heavy))
+                    .font(Fonts.heavyTitle2)
                     .foregroundColor(.darkBlue)
             }
             createTextfield(placeholder: Strings.WifiPopupView.passwordPlaceholder, binding: $wifiPassword).onTapGesture {
@@ -57,7 +57,7 @@ struct WifiPopupView: View {
     
     var providePasswordTitle: some View {
         Text(Strings.WifiPopupView.passwordTitle)
-            .font(Font.muli(size: 18, weight: .heavy))
+            .font(Fonts.heavyTitle2)
             .foregroundColor(.darkBlue)
     }
     

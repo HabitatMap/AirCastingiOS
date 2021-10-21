@@ -39,13 +39,13 @@ struct ShareView: View {
     
     private var title: some View {
         Text(Strings.SessionShare.title)
-            .font(Font.moderate(size: 32, weight: .bold))
+            .font(Fonts.boldTitle1)
             .foregroundColor(.accentColor)
     }
     
     private var description: some View {
         Text(Strings.SessionShare.description)
-            .font(Font.muli(size: 16))
+            .font(Fonts.muliHeading2)
             .foregroundColor(.aircastingGray)
     }
     #warning("This checkbox should be taken from the current streams available.")
@@ -66,7 +66,7 @@ struct ShareView: View {
     
     private var descriptionMail: some View {
         Text(Strings.SessionShare.emailDescription)
-            .font(Font.muli(size: 12))
+            .font(Fonts.muliHeading5)
             .foregroundColor(.aircastingGray)
     }
     

@@ -14,14 +14,18 @@ struct AirSectionPickerView: View {
                     ForEach(SelectedSection.allCases, id: \.self) { section in
                         Button(section.localizedString) {
                             withAnimation(.easeInOut(duration: 0.1)) {
-                                if section == .mobileDormant {
+                                if section == .mobileDormant || section == .fixed {
                                     scrollReader.scrollTo(SelectedSection.fixed)
                                 } else if section == .mobileActive {
                                     scrollReader.scrollTo(SelectedSection.following)
                                 }
                                 selection = section
                             }
-                        }
+                        }.onChange(of: selection, perform: { section in
+                            withAnimation(.easeInOut(duration: 0.1)) {
+                                section == .following ? scrollReader.scrollTo(SelectedSection.following) : nil
+                            }
+                        })
                         .buttonStyle(PickerButtonStyle(isSelected: section == selection))
                         .id(section)
                     }
@@ -70,7 +74,7 @@ struct PickerButtonStyle: ButtonStyle {
         configuration
             .label
             .foregroundColor(isSelected ? Color.accentColor : Color.aircastingGray)
-            .font(isSelected ? Font.muli(size: 16, weight: .bold) : Font.muli(size: 16, weight: .regular))
+            .font(isSelected ? Fonts.boldHeading1 : Fonts.muliHeading2)
             .frame(maxHeight: 30)
             .background(Color.white)
             .padding(.horizontal, 10)

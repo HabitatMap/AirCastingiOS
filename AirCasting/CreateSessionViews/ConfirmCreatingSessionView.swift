@@ -76,7 +76,7 @@ struct ConfirmCreatingSessionView: View {
             VStack(alignment: .leading, spacing: 40) {
                 ProgressView(value: 0.95)
                 Text(Strings.ConfirmCreatingSessionView.contentViewTitle)
-                    .font(Font.moderate(size: 24, weight: .bold))
+                    .font(Fonts.boldTitle4)
                     .foregroundColor(.darkBlue)
                 VStack(alignment: .leading, spacing: 15) {
                     if sessionContext.sessionType == .fixed {
@@ -85,7 +85,7 @@ struct ConfirmCreatingSessionView: View {
                         descriptionTextMobile
                     }
                 }
-                .font(Font.muli(size: 16))
+                .font(Fonts.muliHeading2)
                 .foregroundColor(Color.aircastingGray)
                 .lineSpacing(9.0)
                 ZStack {

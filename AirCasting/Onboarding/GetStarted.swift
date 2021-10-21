@@ -39,7 +39,7 @@ private extension GetStarted {
     var descriptionText: some View {
         Text(Strings.OnboardingGetStarted.description)
             .padding(.horizontal, 18)
-            .font(Font.muli(size: 16))
+            .font(Fonts.muliHeading2)
             .lineSpacing(10.0)
             .foregroundColor(.aircastingGray)
             .multilineTextAlignment(.center)
