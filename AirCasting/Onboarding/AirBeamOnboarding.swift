@@ -28,6 +28,7 @@ struct AirBeamOnboarding: View {
         @Binding var showingHalfModal: Bool
         var body: some View {
             VStack(alignment: .leading) {
+                Spacer()
                 sheetTitle
                     .padding()
                 sheetDescription
