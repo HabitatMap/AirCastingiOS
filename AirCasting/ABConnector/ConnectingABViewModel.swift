@@ -55,6 +55,7 @@ class AirbeamConnectionViewModelDefault: AirbeamConnectionViewModel, ObservableO
             }
         }
     }
+}
 
 class NeverConnectingAirbeamConnectionViewModel: AirbeamConnectionViewModel {
     var shouldDismiss: Published<Bool>.Publisher { $shouldDismissValue }
