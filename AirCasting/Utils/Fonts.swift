@@ -22,6 +22,7 @@ struct Fonts {
     static let muliHeading3: Font = Font.muli(size: 14)
     static let muliHeading4: Font = Font.muli(size: 13)
     static let muliHeading5: Font = Font.muli(size: 12)
+    static let muliHeadingUIFont: UIFont = UIFont.muli(size: 14)
     
     static let boldHeading1: Font = Font.muli(size: 16, weight: .bold)
     static let boldHeading2: Font = Font.moderate(size: 16, weight: .bold)
