@@ -86,7 +86,7 @@ struct ChartView: UIViewRepresentable {
         let formatter = NumberFormatter()
         formatter.maximumFractionDigits = 0
         data.setValueFormatter(DefaultValueFormatter(formatter: formatter))
-        data.setValueFont(UIFont.muli(size: 12))
+        data.setValueFont(Fonts.muliHeadingUIFont2)
         data.setValueTextColor(UIColor.aircastingGray)
     }
     
