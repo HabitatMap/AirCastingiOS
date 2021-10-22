@@ -74,7 +74,7 @@ struct PickerButtonStyle: ButtonStyle {
         configuration
             .label
             .foregroundColor(isSelected ? Color.accentColor : Color.aircastingGray)
-            .font(isSelected ? Fonts.boldHeading1 : Fonts.muliHeading2)
+            .font(Fonts.muliHeading2)
             .frame(maxHeight: 30)
             .background(Color.white)
             .padding(.horizontal, 10)

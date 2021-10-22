@@ -62,7 +62,6 @@ struct AirBeam3Configurator {
                                    wifiSSID: String,
                                    wifiPassword: String) throws {
         let dateString = dateFormatter.string(from: date)
-        try configureFixed(uuid: uuid)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
             sendLocationConfiguration(location: location)
@@ -79,7 +78,6 @@ struct AirBeam3Configurator {
                                        location: CLLocationCoordinate2D,
                                        date: Date) throws {
         let dateString = dateFormatter.string(from: date)
-        try configureFixed(uuid: uuid)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
             sendLocationConfiguration(location: location)
@@ -91,9 +89,7 @@ struct AirBeam3Configurator {
             }
         }
     }
-}
-
-private extension AirBeam3Configurator {
+    
     // To configure fixed session we need to send authMessage first
     // We're generating unique String for session UUID and sending it with users auth token to the AB
     func configureFixed(uuid: SessionUUID) throws {
@@ -105,8 +101,11 @@ private extension AirBeam3Configurator {
             sendAuthToken(authToken: token)
         }
     }
-    // MARK: Commands
+}
+
+private extension AirBeam3Configurator {
     
+    // MARK: Commands
     private func sendUUIDRequest(uuid: SessionUUID) {
         let message = hexMessageBuilder.uuidMessage(uuid: uuid)
         sendConfigMessage(data: message)
