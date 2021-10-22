@@ -37,19 +37,16 @@ class AirbeamConnectionViewModelDefault: AirbeamConnectionViewModel, ObservableO
             self.isDeviceConnectedValue = success
             self.shouldDismissValue = !success
             
-            if success {
-                self.configureABToFixed()
-            }
+            guard success else { return }
+            self.configureABToFixed()
         }
     }
     
     private func configureABToFixed() {
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
-            if let sessionUUID = self.sessionContext.sessionUUID,
-               self.sessionContext.sessionType == .fixed {
-                let configurator =
-                AirBeam3Configurator(userAuthenticationSession: self.userAuthenticationSession,
-                                     peripheral: self.peripheral)
+            if let sessionUUID = self.sessionContext.sessionUUID {
+                let configurator = AirBeam3Configurator(userAuthenticationSession: self.userAuthenticationSession,
+                                                        peripheral: self.peripheral)
                 do {
                     try configurator.configureFixed(uuid: sessionUUID)
                 } catch {
@@ -58,7 +55,6 @@ class AirbeamConnectionViewModelDefault: AirbeamConnectionViewModel, ObservableO
             }
         }
     }
-}
 
 class NeverConnectingAirbeamConnectionViewModel: AirbeamConnectionViewModel {
     var shouldDismiss: Published<Bool>.Publisher { $shouldDismissValue }

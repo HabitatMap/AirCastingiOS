@@ -106,7 +106,6 @@ struct AirBeam3Configurator {
 private extension AirBeam3Configurator {
     
     // MARK: Commands
-    
     private func sendUUIDRequest(uuid: SessionUUID) {
         let message = hexMessageBuilder.uuidMessage(uuid: uuid)
         sendConfigMessage(data: message)
