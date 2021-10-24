@@ -138,7 +138,7 @@ struct SessionCartView: View {
             selectDefaultStreamIfNeeded(streams: session.sortedStreams ?? [])
         }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
-            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(50)) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(150)) {
                 chartViewModel.refreshChart()
             }
         }
