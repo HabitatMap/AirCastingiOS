@@ -15,6 +15,8 @@ struct DashboardView: View {
     @EnvironmentObject var selectedSection: SelectSection
     @EnvironmentObject var averaging: AveragingService
     
+    @State private var dragOffset = CGFloat.zero
+    
     let measurementStreamStorage: MeasurementStreamStorage
     let sessionStoppableFactory: SessionStoppableFactory
     
@@ -39,6 +41,7 @@ struct DashboardView: View {
             PreventCollapseView()
             AirSectionPickerView(selection: self.$selectedSection.selectedSection)
                 .zIndex(2)
+            Group {
             if sessions.isEmpty {
                 if selectedSection.selectedSection == .mobileActive || selectedSection.selectedSection == .mobileDormant {
                     EmptyMobileDashboardViewMobile()
@@ -67,11 +70,61 @@ struct DashboardView: View {
                 .frame(maxWidth: .infinity)
                 .background(Color.aircastingGray.opacity(0.05))
             }
+            }
+            .animation(.linear)
+            .offset(x: dragOffset, y: 0)
         }
         .navigationBarTitleDisplayMode(.inline)
+        .gesture(DragGesture(minimumDistance: 20, coordinateSpace: .local)
+                    .onChanged { gesture in
+            if gesture.translation.width > 40 {
+                dragOffset = 30
+            } else if gesture.translation.width < -40 {
+                dragOffset = -40
+            } else {
+                dragOffset = gesture.translation.width
+            }
+                
+        }
+                    .onEnded({ value in
+            if value.translation.width < 0 {
+                showNextTab()
+            }
+            
+            if value.translation.width > 0 {
+                showPreviousTab()
+            }
+            dragOffset = CGFloat.zero
+        }))
         .onChange(of: selectedSection.selectedSection) { selectedSection in
             self.selectedSection.selectedSection = selectedSection
             try! coreDataHook.setup(selectedSection: self.selectedSection.selectedSection)
+        }
+    }
+    
+    func showPreviousTab() {
+        switch selectedSection.selectedSection {
+        case .following:
+            break
+        case .mobileActive:
+            selectedSection.selectedSection = .following
+        case .mobileDormant:
+            selectedSection.selectedSection = .mobileActive
+        case .fixed:
+            selectedSection.selectedSection = .mobileDormant
+        }
+    }
+    
+    func showNextTab() {
+        switch selectedSection.selectedSection {
+        case .following:
+            selectedSection.selectedSection = .mobileActive
+        case .mobileActive:
+            selectedSection.selectedSection = .mobileDormant
+        case .mobileDormant:
+            selectedSection.selectedSection = .fixed
+        case .fixed:
+            break
         }
     }
 }
