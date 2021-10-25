@@ -17,36 +17,21 @@ struct SessionHeaderView: View {
     @ObservedObject var session: SessionEntity
     @State private var showingAlert = false
     @State private var showingFinishAlert = false
-    @State private var shareModal = false
-    @State private var deleteModal = false
-    @State private var showModal = false
-    @State private var showModalEdit = false
     let sessionStopperFactory: SessionStoppableFactory
     
     var body: some View {
         VStack(alignment: .leading, spacing: 3) {
-            ZStack {
                 HStack {
                     dateAndTime
                         .foregroundColor(Color.aircastingTimeGray)
                     Spacer()
-                }
-                HStack {
-                    Spacer()
                     session.isActive ? actionsMenuMobile : nil
                 }
-            }
-            .sheet(isPresented: $shareModal, content: {
-                ShareView(showModal: $showModal)
-            })
-            .sheet(isPresented: $deleteModal, content: {
-                DeleteView(viewModel: DefaultDeleteSessionViewModel(), deleteModal: $deleteModal)
-            })
             nameLabelAndExpandButton
         }.onChange(of: isCollapsed, perform: { value in
             isCollapsed ? (chevronIndicator = "chevron.down") :  (chevronIndicator = "chevron.up")
         })
-            .font(Fonts.regularHeading4)
+        .font(Fonts.regularHeading4)
         .foregroundColor(.aircastingGray)
     }
 }
@@ -165,7 +150,7 @@ private extension SessionHeaderView {
                   message: Text(Strings.SessionHeaderView.alertMessage),
                   dismissButton: .default(Text(Strings.SessionHeaderView.confirmAlert)))
         }
-        .sheet(isPresented: $showModalEdit) { EditViewModal(showModalEdit: $showModalEdit) }
+        .sheet(isPresented: Binding.constant(false)) { EditViewModal(showModalEdit: Binding.constant(false)) }
     }
     
     var actionsMenuFixedRepeatButton: some View {
@@ -180,7 +165,7 @@ private extension SessionHeaderView {
         Button {
             DispatchQueue.main.async {
                 print(" \(networkChecker.connectionAvailable) NETWORK")
-                networkChecker.connectionAvailable ? showModalEdit.toggle() : showingAlert.toggle()
+                networkChecker.connectionAvailable ? false : false
             }
         } label: {
             Label(Strings.SessionHeaderView.editButton, systemImage: "pencil")
@@ -189,7 +174,7 @@ private extension SessionHeaderView {
     
     var actionsMenuFixedShareButton: some View {
         Button {
-            shareModal.toggle()
+            // action here
         } label: {
             Label(Strings.SessionHeaderView.shareButton, systemImage: "square.and.arrow.up")
         }
@@ -197,7 +182,7 @@ private extension SessionHeaderView {
     
     var actionsMenuFixedDeleteButton: some View {
         Button {
-            deleteModal.toggle()
+            // action here
         } label: {
             Label(Strings.SessionHeaderView.deleteButton, systemImage: "xmark.circle")
         }
@@ -209,8 +194,8 @@ private extension SessionHeaderView {
         guard let start = session.startTime else { return Text("") }
         let end = session.endTime ?? Date().currentUTCTimeZoneDate
         
-            let string = formatter.string(from: start, to: end)
-            return Text(string)
+        let string = formatter.string(from: start, to: end)
+        return Text(string)
         }
 }
 
