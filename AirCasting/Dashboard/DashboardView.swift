@@ -85,8 +85,6 @@ struct DashboardView: View {
             } else {
                 dragOffset = gesture.translation.width
             }
-//            dragOffset = gesture.translation.width
-
         }
                     .onEnded({ value in
             value.translation.width < 0 ? showNextTab() : showPreviousTab()
