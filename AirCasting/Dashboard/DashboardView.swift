@@ -71,27 +71,29 @@ struct DashboardView: View {
                 .background(Color.aircastingGray.opacity(0.05))
             }
             }
-            .animation(.linear)
             .offset(x: dragOffset, y: 0)
+            .animation(.default)
         }
         .navigationBarTitleDisplayMode(.inline)
         .gesture(DragGesture(minimumDistance: 20, coordinateSpace: .local)
                     .onChanged { gesture in
             if gesture.translation.width > 40 {
-                dragOffset = 30
+                dragOffset = 40
             } else if gesture.translation.width < -40 {
                 dragOffset = -40
             } else {
                 dragOffset = gesture.translation.width
             }
-                
+
         }
                     .onEnded({ value in
             if value.translation.width < 0 {
+                dragOffset = 0
                 showNextTab()
             }
             
             if value.translation.width > 0 {
+                dragOffset = 0
                 showPreviousTab()
             }
             dragOffset = CGFloat.zero
@@ -128,6 +130,7 @@ struct DashboardView: View {
         }
     }
 }
+
 
 @available(iOS, deprecated: 15, obsoleted: 15, message: "Please review if this is still needed")
 struct PreventCollapseView: View {
