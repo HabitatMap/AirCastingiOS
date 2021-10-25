@@ -99,7 +99,6 @@ extension SessionsSynchronization.SessionStoreSessionData: TestDefaultProviding 
 extension SessionsSynchronization.MeasurementStreamDownstreamData {
     static func mock() -> Self {
         .init(id: 54321,
-              size: 11,
               sensorName: "Phone Microphone",
               sensorPackageName: "Builtin",
               unitName: "decibels",
@@ -111,7 +110,7 @@ extension SessionsSynchronization.MeasurementStreamDownstreamData {
               thresholdMedium: 70,
               thresholdHigh: 80,
               thresholdVeryHigh: 100,
-              size: 9,
+              size: 11,
               measurements: [])
     }
 }

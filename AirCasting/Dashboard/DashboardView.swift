@@ -15,6 +15,8 @@ struct DashboardView: View {
     @EnvironmentObject var selectedSection: SelectSection
     @EnvironmentObject var averaging: AveragingService
     
+    @State private var dragOffset = CGFloat.zero
+    
     let measurementStreamStorage: MeasurementStreamStorage
     let sessionStoppableFactory: SessionStoppableFactory
     
@@ -39,6 +41,7 @@ struct DashboardView: View {
             PreventCollapseView()
             AirSectionPickerView(selection: self.$selectedSection.selectedSection)
                 .zIndex(2)
+            Group {
             if sessions.isEmpty {
                 if selectedSection.selectedSection == .mobileActive || selectedSection.selectedSection == .mobileDormant {
                     EmptyMobileDashboardViewMobile()
@@ -67,14 +70,59 @@ struct DashboardView: View {
                 .frame(maxWidth: .infinity)
                 .background(Color.aircastingGray.opacity(0.05))
             }
+            }
+            .offset(x: dragOffset, y: 0)
+            .animation(.default)
+            .background(Color(red: 251/255, green: 253/255, blue: 255/255))
         }
         .navigationBarTitleDisplayMode(.inline)
+        .gesture(DragGesture(minimumDistance: 20, coordinateSpace: .local)
+                    .onChanged { gesture in
+            if gesture.translation.width > 60 {
+                dragOffset = 60
+            } else if gesture.translation.width < -60 {
+                dragOffset = -60
+            } else {
+                dragOffset = gesture.translation.width
+            }
+        }
+                    .onEnded({ value in
+            value.translation.width < 0 ? showNextTab() : showPreviousTab()
+            dragOffset = CGFloat.zero
+        }))
         .onChange(of: selectedSection.selectedSection) { selectedSection in
             self.selectedSection.selectedSection = selectedSection
             try! coreDataHook.setup(selectedSection: self.selectedSection.selectedSection)
         }
     }
+    
+    func showPreviousTab() {
+        switch selectedSection.selectedSection {
+        case .following:
+            break
+        case .mobileActive:
+            selectedSection.selectedSection = .following
+        case .mobileDormant:
+            selectedSection.selectedSection = .mobileActive
+        case .fixed:
+            selectedSection.selectedSection = .mobileDormant
+        }
+    }
+    
+    func showNextTab() {
+        switch selectedSection.selectedSection {
+        case .following:
+            selectedSection.selectedSection = .mobileActive
+        case .mobileActive:
+            selectedSection.selectedSection = .mobileDormant
+        case .mobileDormant:
+            selectedSection.selectedSection = .fixed
+        case .fixed:
+            break
+        }
+    }
 }
+
 
 @available(iOS, deprecated: 15, obsoleted: 15, message: "Please review if this is still needed")
 struct PreventCollapseView: View {
