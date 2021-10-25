@@ -34,15 +34,13 @@ struct AirMapView: View {
 
     var body: some View {
         VStack(alignment: .trailing, spacing: 20) {
-            HStack {
-                backButton
                 SessionHeaderView(action: {},
                                   isExpandButtonNeeded: false,
                                   isSensorTypeNeeded: false,
                                   isCollapsed: Binding.constant(false),
                                   session: session,
                                   sessionStopperFactory: sessionStoppableFactory)
-            }
+            
             ABMeasurementsView(viewModelProvider: { DefaultSyncingMeasurementsViewModel(measurementStreamStorage: measurementStreamStorage,
                                                                               sessionDownloader: SessionDownloadService(client: URLSession.shared,
                                                                                                                         authorization: UserAuthenticationSession(),
@@ -83,6 +81,7 @@ struct AirMapView: View {
                 }
             }
         }
+        .navigationBarTitleDisplayMode(.inline)
 //        .onChange(of: selectedStream) { newStream in
 //            mapStatsDataSource.visiblePathPoints = pathPoints
 //            statsContainerViewModel.adjustForNewData()
@@ -93,16 +92,6 @@ struct AirMapView: View {
             case .active: break
             @unknown default: fatalError()
             }
-        }
-        .padding()
-    }
-    
-    var backButton: some View {
-        Button {
-            self.presentationMode.wrappedValue.dismiss()
-        } label: {
-            Image(systemName: "chevron.backward")
-                .foregroundColor(.black)
         }
         .padding()
     }

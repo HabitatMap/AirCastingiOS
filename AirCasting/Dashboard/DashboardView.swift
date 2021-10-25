@@ -75,7 +75,7 @@ struct DashboardView: View {
             .animation(.default)
             .background(Color(red: 251/255, green: 253/255, blue: 255/255))
         }
-        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarTitle(NSLocalizedString(Strings.DashboardView.dashboardText, comment: ""))
         .gesture(DragGesture(minimumDistance: 20, coordinateSpace: .local)
                     .onChanged { gesture in
             if gesture.translation.width > 60 {

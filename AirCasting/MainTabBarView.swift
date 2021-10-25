@@ -83,15 +83,6 @@ private extension MainTabBarView {
     private var dashboardTab: some View {
         NavigationView {
             DashboardView(coreDataHook: coreDataHook, measurementStreamStorage: measurementStreamStorage, sessionStoppableFactory: sessionStoppableFactory)
-                .toolbar {
-                    // The toolbar is used to provide left align title in the way android has
-                    ToolbarItemGroup(placement: .navigationBarLeading) {
-                        Text(Strings.MainTabBarView.dashboardText)
-                            .foregroundColor(.darkBlue)
-                            .font(Fonts.boldTitle5)
-                            .padding(.top)
-                    }
-                }
         }.navigationViewStyle(StackNavigationViewStyle())
             .tabItem {
                 Image(homeImage)
