@@ -73,29 +73,23 @@ struct DashboardView: View {
             }
             .offset(x: dragOffset, y: 0)
             .animation(.default)
+            .background(Color(red: 251/255, green: 253/255, blue: 255/255))
         }
         .navigationBarTitleDisplayMode(.inline)
         .gesture(DragGesture(minimumDistance: 20, coordinateSpace: .local)
                     .onChanged { gesture in
-            if gesture.translation.width > 40 {
-                dragOffset = 40
-            } else if gesture.translation.width < -40 {
-                dragOffset = -40
+            if gesture.translation.width > 60 {
+                dragOffset = 60
+            } else if gesture.translation.width < -60 {
+                dragOffset = -60
             } else {
                 dragOffset = gesture.translation.width
             }
+//            dragOffset = gesture.translation.width
 
         }
                     .onEnded({ value in
-            if value.translation.width < 0 {
-                dragOffset = 0
-                showNextTab()
-            }
-            
-            if value.translation.width > 0 {
-                dragOffset = 0
-                showPreviousTab()
-            }
+            value.translation.width < 0 ? showNextTab() : showPreviousTab()
             dragOffset = CGFloat.zero
         }))
         .onChange(of: selectedSection.selectedSection) { selectedSection in
