@@ -17,12 +17,14 @@ struct GoogleMapView: UIViewRepresentable {
     let pathPoints: [PathPoint]
     private(set) var threshold: SensorThreshold?
     var isMyLocationEnabled: Bool = false
+    var isSessionDormant: Bool = false
     private var onPositionChange: (([PathPoint]) -> ())? = nil
     
-    init(pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false, placePickerDismissed: Binding<Bool>) {
+    init(pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false, placePickerDismissed: Binding<Bool>, isSessionDormant: Bool = false) {
         self.pathPoints = pathPoints
         self.threshold = threshold
         self.isMyLocationEnabled = isMyLocationEnabled
+        self.isSessionDormant = isSessionDormant
         self._placePickerDismissed = placePickerDismissed
     }
     
@@ -36,6 +38,7 @@ struct GoogleMapView: UIViewRepresentable {
                                      camera: startingPoint)
         mapView.delegate = context.coordinator
         mapView.isMyLocationEnabled = isMyLocationEnabled
+        polylineDrawing(mapView, context: context)
         context.coordinator.myLocationSink = mapView.publisher(for: \.myLocation)
             .sink { [weak mapView] (location) in
                 guard let coordinate = location?.coordinate else { return }
@@ -53,7 +56,7 @@ struct GoogleMapView: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: GMSMapView, context: Context) {
-        polylineDrawing(uiView, context: context)
+        !isSessionDormant ? polylineDrawing(uiView, context: context) : nil
         placePickerDismissed ? uiView.moveCamera(cameraUpdate) : nil
         // Update camera's starting point
         guard context.coordinator.shouldAutoTrack else { return }

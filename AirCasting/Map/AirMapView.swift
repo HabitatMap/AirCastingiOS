@@ -59,7 +59,9 @@ struct AirMapView: View {
                 if !showLoadingIndicator {
                     ZStack(alignment: .topLeading) {
                         GoogleMapView(pathPoints: pathPoints,
-                                      threshold: threshold, placePickerDismissed: Binding.constant(false))
+                                      threshold: threshold,
+                                      placePickerDismissed: Binding.constant(false),
+                                      isSessionDormant: session.isDormant == true)
                         #warning("TODO: Implement calculating stats only for visible path points")
                         // This doesn't work properly and it needs to be fixed, so I'm commenting it out
 //                            .onPositionChange { [weak mapStatsDataSource, weak statsContainerViewModel] visiblePoints in
