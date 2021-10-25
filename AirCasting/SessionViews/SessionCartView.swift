@@ -7,7 +7,6 @@
 
 import AirCastingStyling
 import Charts
-import CoreData
 import SwiftUI
 
 struct SessionCartView: View {
@@ -55,8 +54,9 @@ struct SessionCartView: View {
     }
     
     var showChart: Bool {
-        (!isCollapsed && session.isMobile && session.isActive) || (!isCollapsed && session.isFixed && selectedSection.selectedSection == SelectedSection.following)
+        (session.isMobile && session.isActive) || (session.isFixed && selectedSection.selectedSection == SelectedSection.following)
     }
+    
     var hasStreams: Bool {
         session.allStreams != nil || session.allStreams != []
     }
@@ -115,16 +115,17 @@ struct SessionCartView: View {
             if hasStreams {
                 measurements
                 VStack(alignment: .trailing, spacing: 10) {
-                    if showChart {
-                        pollutionChart(thresholds: thresholds)
-                    }
                     if !isCollapsed {
+                        showChart ? pollutionChart(thresholds: thresholds) : nil
                         displayButtons(thresholds: thresholds)
                     }
                 }
             } else {
                 SessionLoadingView()
             }
+        }
+        .onAppear {
+            selectDefaultStreamIfNeeded(streams: session.sortedStreams ?? [])
         }
         .onChange(of: session.sortedStreams) { newValue in
             selectDefaultStreamIfNeeded(streams: newValue ?? [])
@@ -134,9 +135,6 @@ struct SessionCartView: View {
             mapStatsDataSource?.stream = newStream
             chartViewModel?.stream = newStream
         })
-        .onAppear {
-            selectDefaultStreamIfNeeded(streams: session.sortedStreams ?? [])
-        }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
             DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(150)) {
                 chartViewModel.refreshChart()
@@ -223,7 +221,6 @@ private extension SessionCartView {
     }
     
     func pollutionChart(thresholds: [SensorThreshold]) -> some View {
-        
         return VStack() {
             if let selectedStream = selectedStream {
                 Group { 
@@ -277,9 +274,7 @@ private extension SessionCartView {
                 followButton
             }
             Spacer()
-            if !session.isIndoor {
-                mapButton
-            }
+            !session.isIndoor ? mapButton : nil
             graphButton
         }
         .buttonStyle(GrayButtonStyle())
