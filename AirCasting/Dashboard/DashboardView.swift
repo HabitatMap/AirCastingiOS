@@ -40,6 +40,17 @@ struct DashboardView: View {
             // Bug report was filled with Apple
             PreventCollapseView()
             AirSectionPickerView(selection: self.$selectedSection.selectedSection)
+                .padding(.leading)
+                .background(
+                    ZStack(alignment: .bottom) {
+                        Color.green
+                            .frame(height: 3)
+                            .shadow(color: Color.aircastingDarkGray.opacity(0.4),
+                                    radius: 6)
+                            .padding(.horizontal, -30)
+                        Color.white
+                    }
+                )
                 .zIndex(2)
             Group {
             if sessions.isEmpty {
