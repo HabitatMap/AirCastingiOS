@@ -13,7 +13,7 @@ struct AirSectionPickerView: View {
                 HStack {
                     ForEach(SelectedSection.allCases, id: \.self) { section in
                         Button(section.localizedString) {
-                            withAnimation(.easeInOut(duration: 0.1)) {
+                            withAnimation(.easeInOut(duration: 0.2)) {
                                 if section == .mobileDormant || section == .fixed {
                                     scrollReader.scrollTo(SelectedSection.fixed)
                                 } else if section == .mobileActive {
@@ -22,7 +22,7 @@ struct AirSectionPickerView: View {
                                 selection = section
                             }
                         }.onChange(of: selection, perform: { section in
-                            withAnimation(.easeInOut(duration: 0.1)) {
+                            withAnimation(.easeInOut(duration: 0.2)) {
                                 if section == .following {
                                     scrollReader.scrollTo(SelectedSection.following)
                                 } else if section == .fixed {
@@ -34,19 +34,8 @@ struct AirSectionPickerView: View {
                         .id(section)
                     }
                 }
-                .padding(.leading, 8)
             }
         }
-        .background(
-            ZStack(alignment: .bottom) {
-                Color.green
-                    .frame(height: 3)
-                    .shadow(color: Color.aircastingDarkGray.opacity(0.4),
-                            radius: 6)
-                    .padding(.horizontal, -30)
-                Color.white
-            }
-        )
     }
 }
 
@@ -81,7 +70,7 @@ struct PickerButtonStyle: ButtonStyle {
             .font(Fonts.muliHeading2)
             .frame(maxHeight: 30)
             .background(Color.white)
-            .padding(.horizontal, 10)
+            .padding(.trailing, 10)
             .padding(.top)
     }
 }

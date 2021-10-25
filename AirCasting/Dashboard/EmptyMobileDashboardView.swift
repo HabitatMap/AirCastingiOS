@@ -31,6 +31,7 @@ struct EmptyMobileDashboardViewMobile: View {
                     if shouldSessionFetch {
                         ProgressView(Strings.EmptyDashboardFixed.fetchingText)
                             .progressViewStyle(CircularProgressViewStyle())
+                            .padding(.top)
                     }
                     Spacer()
                     emptyMobileDashboardText
