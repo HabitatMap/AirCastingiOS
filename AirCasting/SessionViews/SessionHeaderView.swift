@@ -31,6 +31,9 @@ struct SessionHeaderView: View {
         }.onChange(of: isCollapsed, perform: { value in
             isCollapsed ? (chevronIndicator = "chevron.down") :  (chevronIndicator = "chevron.up")
         })
+        .sheet(isPresented: Binding.constant(false), content: {
+            ShareView(showModal: Binding.constant(false))
+        })
         .font(Fonts.regularHeading4)
         .foregroundColor(.aircastingGray)
     }
