@@ -17,14 +17,12 @@ struct GoogleMapView: UIViewRepresentable {
     let pathPoints: [PathPoint]
     private(set) var threshold: SensorThreshold?
     var isMyLocationEnabled: Bool = false
-    var isSessionDormant: Bool = false
     private var onPositionChange: (([PathPoint]) -> ())? = nil
     
-    init(pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false, placePickerDismissed: Binding<Bool>, isSessionDormant: Bool = false) {
+    init(pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false, placePickerDismissed: Binding<Bool>) {
         self.pathPoints = pathPoints
         self.threshold = threshold
         self.isMyLocationEnabled = isMyLocationEnabled
-        self.isSessionDormant = isSessionDormant
         self._placePickerDismissed = placePickerDismissed
     }
     
@@ -39,6 +37,8 @@ struct GoogleMapView: UIViewRepresentable {
         mapView.delegate = context.coordinator
         mapView.isMyLocationEnabled = isMyLocationEnabled
         polylineDrawing(mapView, context: context)
+        context.coordinator.currentlyDisplayedPathPoints = pathPoints
+        context.coordinator.currentThreshold = ThresholdWitness(sensorThreshold: threshold)
         context.coordinator.myLocationSink = mapView.publisher(for: \.myLocation)
             .sink { [weak mapView] (location) in
                 guard let coordinate = location?.coordinate else { return }
@@ -56,7 +56,14 @@ struct GoogleMapView: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: GMSMapView, context: Context) {
-        !isSessionDormant ? polylineDrawing(uiView, context: context) : nil
+        let thresholdWitness = ThresholdWitness(sensorThreshold: self.threshold)
+        if pathPoints != context.coordinator.currentlyDisplayedPathPoints ||
+            thresholdWitness != context.coordinator.currentThreshold {
+            polylineDrawing(uiView, context: context)
+            print("DRAWING")
+            context.coordinator.currentlyDisplayedPathPoints = pathPoints
+            context.coordinator.currentThreshold = ThresholdWitness(sensorThreshold: threshold)
+        }
         placePickerDismissed ? uiView.moveCamera(cameraUpdate) : nil
         // Update camera's starting point
         guard context.coordinator.shouldAutoTrack else { return }
@@ -159,6 +166,8 @@ struct GoogleMapView: UIViewRepresentable {
         var parent: GoogleMapView!
         let polyline = GMSPolyline()
         let dot = GMSMarker()
+        var currentlyDisplayedPathPoints = [PathPoint]()
+        var currentThreshold: ThresholdWitness?
         
         init(_ parent: GoogleMapView) {
             self.parent = parent
