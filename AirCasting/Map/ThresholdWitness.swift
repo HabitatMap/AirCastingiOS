@@ -2,6 +2,9 @@
 //
 import Foundation
 
+// This struct is needed to provide convenient copy and compare semantics.
+// SensorThreshold is a NSManagedObject subclass so it will not be copied on assignment
+// which is what we need tocompare thresholds between subsequent map renderings
 struct ThresholdWitness: Equatable {
     
     let thresholdHigh: Int32

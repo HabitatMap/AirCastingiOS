@@ -60,7 +60,6 @@ struct GoogleMapView: UIViewRepresentable {
         if pathPoints != context.coordinator.currentlyDisplayedPathPoints ||
             thresholdWitness != context.coordinator.currentThreshold {
             polylineDrawing(uiView, context: context)
-            print("DRAWING")
             context.coordinator.currentlyDisplayedPathPoints = pathPoints
             context.coordinator.currentThreshold = ThresholdWitness(sensorThreshold: threshold)
         }
