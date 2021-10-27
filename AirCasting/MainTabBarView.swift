@@ -72,6 +72,12 @@ struct MainTabBarView: View {
             tabSelection.selection == .createSession ? (plusImage = PlusIcon.selected.string) : (plusImage = PlusIcon.unselected.string)
             
         })
+        .onChange(of: bluetoothManager.mobileSessionReconnected, perform: { _ in
+            if bluetoothManager.mobileSessionReconnected {
+                bluetoothManager.mobilePeripheralSessionManager.configureAB(userAuthenticationSession: userAuthenticationSession)
+                bluetoothManager.mobileSessionReconnected.toggle()
+            }
+        })
         .environmentObject(selectedSection)
         .environmentObject(tabSelection)
         .environmentObject(emptyDashboardButtonTapped)
