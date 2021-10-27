@@ -52,7 +52,6 @@ struct DashboardView: View {
                     }
                 )
                 .zIndex(2)
-            Group {
             if sessions.isEmpty {
                 if selectedSection.selectedSection == .mobileActive || selectedSection.selectedSection == .mobileDormant {
                     EmptyMobileDashboardViewMobile()
@@ -81,10 +80,6 @@ struct DashboardView: View {
                 .frame(maxWidth: .infinity)
                 .background(Color.aircastingGray.opacity(0.05))
             }
-            }
-            .offset(x: dragOffset, y: 0)
-            .animation(.default)
-            .background(Color(red: 251/255, green: 253/255, blue: 255/255))
         }
         .navigationBarTitle(NSLocalizedString(Strings.DashboardView.dashboardText, comment: ""))
         .onChange(of: selectedSection.selectedSection) { selectedSection in
