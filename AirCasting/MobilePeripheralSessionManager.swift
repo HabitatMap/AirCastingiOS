@@ -108,11 +108,10 @@ class MobilePeripheralSessionManager {
     }
     
     func configureAB(userAuthenticationSession: UserAuthenticationSession) {
-        if let peripheral = activeMobileSession?.peripheral {
-            AirBeam3Configurator(userAuthenticationSession: userAuthenticationSession,
-                                 peripheral: peripheral).configureMobileSession(
-                                    date: Date().currentUTCTimeZoneDate,
-                                    location: CLLocationCoordinate2D(latitude: 200, longitude: 200))
-        }
+        guard let peripheral = activeMobileSession?.peripheral else { return }
+        AirBeam3Configurator(userAuthenticationSession: userAuthenticationSession,
+                             peripheral: peripheral).configureMobileSession(
+                                date: Date().currentUTCTimeZoneDate,
+                                location: CLLocationCoordinate2D(latitude: 200, longitude: 200))
     }
 }
