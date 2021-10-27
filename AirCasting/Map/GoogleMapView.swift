@@ -36,6 +36,9 @@ struct GoogleMapView: UIViewRepresentable {
                                      camera: startingPoint)
         mapView.delegate = context.coordinator
         mapView.isMyLocationEnabled = isMyLocationEnabled
+        polylineDrawing(mapView, context: context)
+        context.coordinator.currentlyDisplayedPathPoints = pathPoints
+        context.coordinator.currentThreshold = ThresholdWitness(sensorThreshold: threshold)
         context.coordinator.myLocationSink = mapView.publisher(for: \.myLocation)
             .sink { [weak mapView] (location) in
                 guard let coordinate = location?.coordinate else { return }
@@ -53,7 +56,13 @@ struct GoogleMapView: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: GMSMapView, context: Context) {
-        polylineDrawing(uiView, context: context)
+        let thresholdWitness = ThresholdWitness(sensorThreshold: self.threshold)
+        if pathPoints != context.coordinator.currentlyDisplayedPathPoints ||
+            thresholdWitness != context.coordinator.currentThreshold {
+            polylineDrawing(uiView, context: context)
+            context.coordinator.currentlyDisplayedPathPoints = pathPoints
+            context.coordinator.currentThreshold = ThresholdWitness(sensorThreshold: threshold)
+        }
         placePickerDismissed ? uiView.moveCamera(cameraUpdate) : nil
         // Update camera's starting point
         guard context.coordinator.shouldAutoTrack else { return }
@@ -156,6 +165,8 @@ struct GoogleMapView: UIViewRepresentable {
         var parent: GoogleMapView!
         let polyline = GMSPolyline()
         let dot = GMSMarker()
+        var currentlyDisplayedPathPoints = [PathPoint]()
+        var currentThreshold: ThresholdWitness?
         
         init(_ parent: GoogleMapView) {
             self.parent = parent

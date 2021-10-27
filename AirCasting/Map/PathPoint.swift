@@ -8,7 +8,14 @@
 import Foundation
 import CoreLocation
 
-struct PathPoint {
+struct PathPoint: Equatable {
+    static func == (lhs: PathPoint, rhs: PathPoint) -> Bool {
+        rhs.measurementTime == lhs.measurementTime &&
+        rhs.measurement == lhs.measurement &&
+        rhs.location.latitude == lhs.location.latitude &&
+        rhs.location.longitude == lhs.location.longitude
+    }
+    
     let location: CLLocationCoordinate2D
     let measurementTime: Date
     let measurement: Double
