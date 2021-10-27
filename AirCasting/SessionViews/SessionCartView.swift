@@ -44,7 +44,7 @@ struct SessionCartView: View {
         let graphDataSource = GraphStatsDataSource()
         self._graphStatsDataSource = .init(wrappedValue: graphDataSource)
         self._graphStatsViewModel = .init(wrappedValue: SessionCartView.createStatsContainerViewModel(dataSource: graphDataSource))
-        self._chartViewModel = .init(wrappedValue: ChartViewModel(session: session))
+        self._chartViewModel = .init(wrappedValue: ChartViewModel(session: session, persistence: PersistenceController.shared))
     }
     
     var shouldShowValues: MeasurementPresentationStyle {
@@ -135,14 +135,6 @@ struct SessionCartView: View {
             mapStatsDataSource?.stream = newStream
             chartViewModel?.stream = newStream
         })
-        .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
-            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(150)) {
-                chartViewModel.refreshChart()
-            }
-        }
-        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
-            chartViewModel.refreshChart()
-        }
         .font(Fonts.regularHeading4)
         .foregroundColor(.aircastingGray)
         .padding()
