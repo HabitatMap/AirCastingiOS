@@ -79,7 +79,7 @@ struct DashboardView: View {
                 .background(Color.aircastingGray.opacity(0.05))
             }
         }
-        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarTitle(NSLocalizedString(Strings.DashboardView.dashboardText, comment: ""))
         .onChange(of: selectedSection.selectedSection) { selectedSection in
             self.selectedSection.selectedSection = selectedSection
             try! coreDataHook.setup(selectedSection: self.selectedSection.selectedSection)
