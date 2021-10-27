@@ -24,6 +24,7 @@ struct EmptyFixedDashboardView: View {
                 if shouldSessionFetch {
                     ProgressView(Strings.EmptyDashboardFixed.fetchingText)
                         .progressViewStyle(CircularProgressViewStyle())
+                        .padding(.top)
                 }
                 Spacer()
                 VStack(spacing: 20) {

@@ -84,14 +84,10 @@ struct ChooseSessionTypeView: View {
                     }
                 }
                 .onAppear {
-                    if shouldGoToChooseSessionScreen {
-                        handleMobileSessionState()
-                    } else {
-                        isMobileLinkActive = false
-                    }
+                    shouldGoToChooseSessionScreen ? (handleMobileSessionState()) : (isMobileLinkActive = false)
                 }
                 .onChange(of: tabSelection.selection, perform: { _ in
-                    shouldGoToChooseSessionScreen ? (isMobileLinkActive = true) : (isMobileLinkActive = false)
+                    shouldGoToChooseSessionScreen ? (handleMobileSessionState()) : (isMobileLinkActive = false)
                 })
             }
             .environmentObject(viewModel.passSessionContext)
@@ -160,14 +156,10 @@ struct ChooseSessionTypeView: View {
                     }
                 }
                 .onAppear {
-                    if shouldGoToChooseSessionScreen {
-                       handleMobileSessionState()
-                    } else {
-                        isMobileLinkActive = false
-                    }
+                    shouldGoToChooseSessionScreen ? (handleMobileSessionState()) : (isMobileLinkActive = false)
                 }
                 .onChange(of: tabSelection.selection, perform: { _ in
-                    shouldGoToChooseSessionScreen ? (isMobileLinkActive = true) : (isMobileLinkActive = false)
+                    shouldGoToChooseSessionScreen ? (handleMobileSessionState()) : (isMobileLinkActive = false)
                 })
             }
             .environmentObject(viewModel.passSessionContext)

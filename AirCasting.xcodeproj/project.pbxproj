@@ -194,6 +194,7 @@
 		B3EBB10A26A06D11002BD81F /* EmailResetPasswordService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EBB10926A06D11002BD81F /* EmailResetPasswordService.swift */; };
 		B3EBB10C26A06D2D002BD81F /* DefaultForgotPasswordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EBB10B26A06D2D002BD81F /* DefaultForgotPasswordViewModel.swift */; };
 		B3EBB11126A06DCF002BD81F /* ForgotPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EBB11026A06DCF002BD81F /* ForgotPasswordView.swift */; };
+		B3ED03C32729A8E300513522 /* AirCastingNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3ED03C22729A8E300513522 /* AirCastingNotifications.swift */; };
 		B3EFAB1526EFE2D200E88141 /* AppBootstrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EFAB1426EFE2D200E88141 /* AppBootstrap.swift */; };
 		B3EFAB1726EFE2DB00E88141 /* FirstRunInfoProvidable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EFAB1626EFE2DB00E88141 /* FirstRunInfoProvidable.swift */; };
 		B3EFAB1C26EFEA8B00E88141 /* AppBootstrapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EFAB1B26EFEA8B00E88141 /* AppBootstrapTests.swift */; };
@@ -246,6 +247,7 @@
 		DD839E15269F33A6006A8625 /* LocationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD839E14269F33A6006A8625 /* LocationState.swift */; };
 		DD8A36A426C3CE7900C26725 /* ChooseCustomLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8A36A326C3CE7900C26725 /* ChooseCustomLocationView.swift */; };
 		DD8A36A726C3E76200C26725 /* PlacePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8A36A626C3E76200C26725 /* PlacePicker.swift */; };
+		DD8AFE4F272886D700ED1CED /* ThresholdWitness.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8AFE4E272886D700ED1CED /* ThresholdWitness.swift */; };
 		DD8C38092689A34E00901FDF /* UserDefaultsBaseURLProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8C38082689A34E00901FDF /* UserDefaultsBaseURLProvider.swift */; };
 		DD8C380C2689A3DA00901FDF /* BaseURLProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8C380B2689A3DA00901FDF /* BaseURLProvider.swift */; };
 		DD8C380E2689A55A00901FDF /* BackendSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8C380D2689A55A00901FDF /* BackendSettingsView.swift */; };
@@ -485,6 +487,7 @@
 		B3EBB10926A06D11002BD81F /* EmailResetPasswordService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailResetPasswordService.swift; sourceTree = "<group>"; };
 		B3EBB10B26A06D2D002BD81F /* DefaultForgotPasswordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultForgotPasswordViewModel.swift; sourceTree = "<group>"; };
 		B3EBB11026A06DCF002BD81F /* ForgotPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordView.swift; sourceTree = "<group>"; };
+		B3ED03C22729A8E300513522 /* AirCastingNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirCastingNotifications.swift; sourceTree = "<group>"; };
 		B3EFAB1426EFE2D200E88141 /* AppBootstrap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppBootstrap.swift; sourceTree = "<group>"; };
 		B3EFAB1626EFE2DB00E88141 /* FirstRunInfoProvidable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstRunInfoProvidable.swift; sourceTree = "<group>"; };
 		B3EFAB1B26EFEA8B00E88141 /* AppBootstrapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppBootstrapTests.swift; sourceTree = "<group>"; };
@@ -538,6 +541,7 @@
 		DD839E14269F33A6006A8625 /* LocationState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationState.swift; sourceTree = "<group>"; };
 		DD8A36A326C3CE7900C26725 /* ChooseCustomLocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseCustomLocationView.swift; sourceTree = "<group>"; };
 		DD8A36A626C3E76200C26725 /* PlacePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlacePicker.swift; sourceTree = "<group>"; };
+		DD8AFE4E272886D700ED1CED /* ThresholdWitness.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThresholdWitness.swift; sourceTree = "<group>"; };
 		DD8C38082689A34E00901FDF /* UserDefaultsBaseURLProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsBaseURLProvider.swift; sourceTree = "<group>"; };
 		DD8C380B2689A3DA00901FDF /* BaseURLProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseURLProvider.swift; sourceTree = "<group>"; };
 		DD8C380D2689A55A00901FDF /* BackendSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendSettingsView.swift; sourceTree = "<group>"; };
@@ -750,6 +754,7 @@
 				DDB44C242704AF830027176E /* AveragingService.swift */,
 				DDC5F589271979F100F1F9D8 /* Fonts.swift */,
 				DDC5F5872719694800F1F9D8 /* ShadowImages.swift */,
+				B3ED03C22729A8E300513522 /* AirCastingNotifications.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -977,6 +982,7 @@
 				AC8D6C7125C0574800ED74D1 /* LocationTracker.swift */,
 				AC8D6C6D25C056B400ED74D1 /* PathPoint.swift */,
 				AC8D6C6925C049E300ED74D1 /* Environment.swift */,
+				DD8AFE4E272886D700ED1CED /* ThresholdWitness.swift */,
 			);
 			path = Map;
 			sourceTree = "<group>";
@@ -1741,6 +1747,7 @@
 				AC049F7F2604B7AF00398197 /* AuthErorrHandling.swift in Sources */,
 				B3FD77C4267C94AF00E97CC2 /* SessionSynchronizationService.swift in Sources */,
 				B33DB5762686161300ED1344 /* SensorName.swift in Sources */,
+				DD8AFE4F272886D700ED1CED /* ThresholdWitness.swift in Sources */,
 				B3F1447C26AE437E006A4612 /* OnErrorPublisher.swift in Sources */,
 				B3FD77B7267C94AF00E97CC2 /* DatabaseMeasurement.swift in Sources */,
 				AC524A962615D8620061AD45 /* MeasurementStreamEntity.swift in Sources */,
@@ -1798,6 +1805,7 @@
 				B3EBB10626A06CD7002BD81F /* ScheduledForgotPasswordControllerProxy.swift in Sources */,
 				AC08A662266E2AEC0081697C /* ABMeasurementsView.swift in Sources */,
 				AC08A662266E2AEC0081697C /* ABMeasurementsView.swift in Sources */,
+				B3ED03C32729A8E300513522 /* AirCastingNotifications.swift in Sources */,
 				DDCE5D3A26A213620033C211 /* DefaultDeleteSessionViewModel.swift in Sources */,
 				DD55C38E26BAA7330069838F /* LocationHandler.swift in Sources */,
 				B3EBB10626A06CD7002BD81F /* ScheduledForgotPasswordControllerProxy.swift in Sources */,
@@ -2127,7 +2135,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 49.3;
+				CURRENT_PROJECT_VERSION = 49.4;
 				DEVELOPMENT_ASSET_PATHS = "\"AirCasting/Preview Content\"";
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
@@ -2154,7 +2162,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 49.3;
+				CURRENT_PROJECT_VERSION = 49.4;
 				DEVELOPMENT_ASSET_PATHS = "\"AirCasting/Preview Content\"";
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;

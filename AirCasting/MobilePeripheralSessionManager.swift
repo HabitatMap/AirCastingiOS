@@ -3,6 +3,7 @@
 
 import Foundation
 import CoreBluetooth
+import CoreLocation
 
 class MobilePeripheralSessionManager {
     private let measurementStreamStorage: MeasurementStreamStorage
@@ -34,6 +35,7 @@ class MobilePeripheralSessionManager {
         if activeMobileSession == nil {
             return
         }
+        
         if activeMobileSession?.peripheral == measurement.peripheral {
             do {
                 try updateStreams(stream: measurement.measurementStream, sessionUUID: activeMobileSession!.session.uuid)
@@ -103,5 +105,13 @@ class MobilePeripheralSessionManager {
                 Log.info("\(error)")
             }
         }
+    }
+    
+    func configureAB(userAuthenticationSession: UserAuthenticationSession) {
+        guard let peripheral = activeMobileSession?.peripheral else { return }
+        AirBeam3Configurator(userAuthenticationSession: userAuthenticationSession,
+                             peripheral: peripheral).configureMobileSession(
+                                date: Date().currentUTCTimeZoneDate,
+                                location: CLLocationCoordinate2D(latitude: 200, longitude: 200))
     }
 }

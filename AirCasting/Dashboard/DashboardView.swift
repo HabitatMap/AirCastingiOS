@@ -40,6 +40,17 @@ struct DashboardView: View {
             // Bug report was filled with Apple
             PreventCollapseView()
             AirSectionPickerView(selection: self.$selectedSection.selectedSection)
+                .padding(.leading)
+                .background(
+                    ZStack(alignment: .bottom) {
+                        Color.green
+                            .frame(height: 3)
+                            .shadow(color: Color.aircastingDarkGray.opacity(0.4),
+                                    radius: 6)
+                            .padding(.horizontal, -30)
+                        Color.white
+                    }
+                )
                 .zIndex(2)
             Group {
             if sessions.isEmpty {
@@ -75,21 +86,7 @@ struct DashboardView: View {
             .animation(.default)
             .background(Color(red: 251/255, green: 253/255, blue: 255/255))
         }
-        .navigationBarTitleDisplayMode(.inline)
-        .gesture(DragGesture(minimumDistance: 20, coordinateSpace: .local)
-                    .onChanged { gesture in
-            if gesture.translation.width > 60 {
-                dragOffset = 60
-            } else if gesture.translation.width < -60 {
-                dragOffset = -60
-            } else {
-                dragOffset = gesture.translation.width
-            }
-        }
-                    .onEnded({ value in
-            value.translation.width < 0 ? showNextTab() : showPreviousTab()
-            dragOffset = CGFloat.zero
-        }))
+        .navigationBarTitle(NSLocalizedString(Strings.DashboardView.dashboardText, comment: ""))
         .onChange(of: selectedSection.selectedSection) { selectedSection in
             self.selectedSection.selectedSection = selectedSection
             try! coreDataHook.setup(selectedSection: self.selectedSection.selectedSection)

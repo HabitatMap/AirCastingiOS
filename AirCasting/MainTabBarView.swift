@@ -72,6 +72,12 @@ struct MainTabBarView: View {
             tabSelection.selection == .createSession ? (plusImage = PlusIcon.selected.string) : (plusImage = PlusIcon.unselected.string)
             
         })
+        .onChange(of: bluetoothManager.mobileSessionReconnected, perform: { _ in
+            if bluetoothManager.mobileSessionReconnected {
+                bluetoothManager.mobilePeripheralSessionManager.configureAB(userAuthenticationSession: userAuthenticationSession)
+                bluetoothManager.mobileSessionReconnected.toggle()
+            }
+        })
         .environmentObject(selectedSection)
         .environmentObject(tabSelection)
         .environmentObject(emptyDashboardButtonTapped)
@@ -83,15 +89,6 @@ private extension MainTabBarView {
     private var dashboardTab: some View {
         NavigationView {
             DashboardView(coreDataHook: coreDataHook, measurementStreamStorage: measurementStreamStorage, sessionStoppableFactory: sessionStoppableFactory)
-                .toolbar {
-                    // The toolbar is used to provide left align title in the way android has
-                    ToolbarItemGroup(placement: .navigationBarLeading) {
-                        Text(Strings.MainTabBarView.dashboardText)
-                            .foregroundColor(.darkBlue)
-                            .font(Fonts.boldTitle5)
-                            .padding(.top)
-                    }
-                }
         }.navigationViewStyle(StackNavigationViewStyle())
             .tabItem {
                 Image(homeImage)

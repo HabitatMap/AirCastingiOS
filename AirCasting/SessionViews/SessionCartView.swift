@@ -44,7 +44,7 @@ struct SessionCartView: View {
         let graphDataSource = GraphStatsDataSource()
         self._graphStatsDataSource = .init(wrappedValue: graphDataSource)
         self._graphStatsViewModel = .init(wrappedValue: SessionCartView.createStatsContainerViewModel(dataSource: graphDataSource))
-        self._chartViewModel = .init(wrappedValue: ChartViewModel(session: session))
+        self._chartViewModel = .init(wrappedValue: ChartViewModel(session: session, persistence: PersistenceController.shared))
     }
     
     var shouldShowValues: MeasurementPresentationStyle {
@@ -62,51 +62,7 @@ struct SessionCartView: View {
     }
     
     var body: some View {
-        if #available(iOS 15, *) {
-            sessionCard
-            .fullScreenCover(isPresented: $isGraphButtonActive) {
-                GraphView(session: session,
-                          thresholds: thresholds,
-                          selectedStream: $selectedStream,
-                          statsContainerViewModel: graphStatsViewModel,
-                          graphStatsDataSource: graphStatsDataSource,
-                          sessionStoppableFactory: sessionStoppableFactory,
-                          measurementStreamStorage: measurementStreamStorage)
-            }
-            .fullScreenCover(isPresented: $isMapButtonActive) {
-                AirMapView(thresholds: thresholds,
-                           statsContainerViewModel: mapStatsViewModel,
-//                           mapStatsDataSource: mapStatsDataSource,
-                           session: session,
-                           showLoadingIndicator: $showLoadingIndicator,
-                           selectedStream: $selectedStream,
-                           sessionStoppableFactory: sessionStoppableFactory,
-                           measurementStreamStorage: measurementStreamStorage)
-            }
-        } else {
         sessionCard
-        EmptyView()
-            .fullScreenCover(isPresented: $isGraphButtonActive) {
-                GraphView(session: session,
-                          thresholds: thresholds,
-                          selectedStream: $selectedStream,
-                          statsContainerViewModel: graphStatsViewModel,
-                          graphStatsDataSource: graphStatsDataSource,
-                          sessionStoppableFactory: sessionStoppableFactory,
-                          measurementStreamStorage: measurementStreamStorage)
-            }
-        EmptyView()
-            .fullScreenCover(isPresented: $isMapButtonActive) {
-                AirMapView(thresholds: thresholds,
-                           statsContainerViewModel: mapStatsViewModel,
-//                           mapStatsDataSource: mapStatsDataSource,
-                           session: session,
-                           showLoadingIndicator: $showLoadingIndicator,
-                           selectedStream: $selectedStream,
-                           sessionStoppableFactory: sessionStoppableFactory,
-                           measurementStreamStorage: measurementStreamStorage)
-            }
-        }
     }
     
     var sessionCard: some View {
@@ -135,20 +91,18 @@ struct SessionCartView: View {
             mapStatsDataSource?.stream = newStream
             chartViewModel?.stream = newStream
         })
-        .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
-            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(150)) {
-                chartViewModel.refreshChart()
-            }
-        }
-        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
-            chartViewModel.refreshChart()
-        }
         .font(Fonts.regularHeading4)
         .foregroundColor(.aircastingGray)
         .padding()
         .background(
-            Color.white
-                .shadow(color: Color(red: 205/255, green: 209/255, blue: 214/255, opacity: 0.36), radius: 9, x: 0, y: 1)
+            Group {
+                Color.white
+                    .shadow(color: Color(red: 205/255, green: 209/255, blue: 214/255, opacity: 0.36), radius: 9, x: 0, y: 1)
+                mapNavigationLink
+                graphNavigationLink
+                // SwiftUI bug: two navigation links don't work properly
+                NavigationLink(destination: EmptyView(), label: {EmptyView()})
+            }
         )
     }
     
@@ -289,6 +243,38 @@ private extension SessionCartView {
         controller.output = viewModel
         return viewModel
     }
+    
+    private var mapNavigationLink: some View {
+         let mapView = AirMapView(thresholds: thresholds,
+                                  statsContainerViewModel: mapStatsViewModel,
+//                                  mapStatsDataSource: mapStatsDataSource,
+                                  session: session,
+                                  showLoadingIndicator: $showLoadingIndicator,
+                                  selectedStream: $selectedStream,
+                                  sessionStoppableFactory: sessionStoppableFactory,
+                                  measurementStreamStorage: measurementStreamStorage)
+
+         return NavigationLink(destination: mapView,
+                               isActive: $isMapButtonActive,
+                               label: {
+                                 EmptyView()
+                               })
+     }
+
+     private var graphNavigationLink: some View {
+         let graphView = GraphView(session: session,
+                                   thresholds: thresholds,
+                                   selectedStream: $selectedStream,
+                                   statsContainerViewModel: graphStatsViewModel,
+                                   graphStatsDataSource: graphStatsDataSource,
+                                   sessionStoppableFactory: sessionStoppableFactory,
+                                   measurementStreamStorage: measurementStreamStorage)
+         return NavigationLink(destination: graphView,
+                               isActive: $isGraphButtonActive,
+                               label: {
+                                 EmptyView()
+                               })
+     }
 }
 
  #if DEBUG

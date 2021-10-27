@@ -36,8 +36,6 @@ struct Strings {
         static let Logged: String = "You are currently logged in as "
         static let signOut: String = "Sign Out"
     }
-
-    enum sessionShare {}
     
     enum ForgotPassword {
         static let title = "Forgot Password"
@@ -465,12 +463,15 @@ struct Strings {
     }
     
     enum MainTabBarView {
-        static let dashboardText: String = "Dashboard"
         static let homeIcon: String = "home"
         static let homeBlueIcon: String = "bluehome"
         static let plusIcon: String = "plus"
         static let plusBlueIcon: String = "blueplus"
         static let settingsIcon: String = "settings"
         static let settingsBlueIcon: String = "bluesettings"
+    }
+    
+    enum DashboardView {
+        static let dashboardText: String = "Dashboard"
     }
 }
