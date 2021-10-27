@@ -174,6 +174,7 @@ extension BluetoothManager: CBPeripheralDelegate {
     }
     
     func disconnectAirBeam() {
+        connectedPeripheral = nil
         mobilePeripheralSessionManager.finishActiveSession(centralManger: centralManager)
     }
     
