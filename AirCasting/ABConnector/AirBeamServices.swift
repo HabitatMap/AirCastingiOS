@@ -37,7 +37,7 @@ class ConnectingAirBeamServicesBluetooth: ConnectingAirBeamServices {
                 completion(.timeout)
             }
         }
-        connectionToken = NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: "DeviceConnected"), object: nil, queue: nil) { _ in
+        connectionToken = NotificationCenter.default.addObserver(forName: .deviceConnected, object: nil, queue: nil) { _ in
             Log.info("Airebeam connected successfully")
             self.connectionInProgress = false
             completion(.success)

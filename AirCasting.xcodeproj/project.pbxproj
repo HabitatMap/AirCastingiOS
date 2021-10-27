@@ -194,6 +194,7 @@
 		B3EBB10A26A06D11002BD81F /* EmailResetPasswordService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EBB10926A06D11002BD81F /* EmailResetPasswordService.swift */; };
 		B3EBB10C26A06D2D002BD81F /* DefaultForgotPasswordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EBB10B26A06D2D002BD81F /* DefaultForgotPasswordViewModel.swift */; };
 		B3EBB11126A06DCF002BD81F /* ForgotPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EBB11026A06DCF002BD81F /* ForgotPasswordView.swift */; };
+		B3ED03C32729A8E300513522 /* AirCastingNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3ED03C22729A8E300513522 /* AirCastingNotifications.swift */; };
 		B3EFAB1526EFE2D200E88141 /* AppBootstrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EFAB1426EFE2D200E88141 /* AppBootstrap.swift */; };
 		B3EFAB1726EFE2DB00E88141 /* FirstRunInfoProvidable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EFAB1626EFE2DB00E88141 /* FirstRunInfoProvidable.swift */; };
 		B3EFAB1C26EFEA8B00E88141 /* AppBootstrapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EFAB1B26EFEA8B00E88141 /* AppBootstrapTests.swift */; };
@@ -486,6 +487,7 @@
 		B3EBB10926A06D11002BD81F /* EmailResetPasswordService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailResetPasswordService.swift; sourceTree = "<group>"; };
 		B3EBB10B26A06D2D002BD81F /* DefaultForgotPasswordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultForgotPasswordViewModel.swift; sourceTree = "<group>"; };
 		B3EBB11026A06DCF002BD81F /* ForgotPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordView.swift; sourceTree = "<group>"; };
+		B3ED03C22729A8E300513522 /* AirCastingNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirCastingNotifications.swift; sourceTree = "<group>"; };
 		B3EFAB1426EFE2D200E88141 /* AppBootstrap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppBootstrap.swift; sourceTree = "<group>"; };
 		B3EFAB1626EFE2DB00E88141 /* FirstRunInfoProvidable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstRunInfoProvidable.swift; sourceTree = "<group>"; };
 		B3EFAB1B26EFEA8B00E88141 /* AppBootstrapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppBootstrapTests.swift; sourceTree = "<group>"; };
@@ -752,6 +754,7 @@
 				DDB44C242704AF830027176E /* AveragingService.swift */,
 				DDC5F589271979F100F1F9D8 /* Fonts.swift */,
 				DDC5F5872719694800F1F9D8 /* ShadowImages.swift */,
+				B3ED03C22729A8E300513522 /* AirCastingNotifications.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1802,6 +1805,7 @@
 				B3EBB10626A06CD7002BD81F /* ScheduledForgotPasswordControllerProxy.swift in Sources */,
 				AC08A662266E2AEC0081697C /* ABMeasurementsView.swift in Sources */,
 				AC08A662266E2AEC0081697C /* ABMeasurementsView.swift in Sources */,
+				B3ED03C32729A8E300513522 /* AirCastingNotifications.swift in Sources */,
 				DDCE5D3A26A213620033C211 /* DefaultDeleteSessionViewModel.swift in Sources */,
 				DD55C38E26BAA7330069838F /* LocationHandler.swift in Sources */,
 				B3EBB10626A06CD7002BD81F /* ScheduledForgotPasswordControllerProxy.swift in Sources */,

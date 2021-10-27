@@ -117,20 +117,18 @@ extension BluetoothManager: CBCentralManagerDelegate {
         } else {
             connectedPeripheral = peripheral
         }
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "DeviceConnected"), object: nil, userInfo: ["uuid" : peripheral.identifier])
+        NotificationCenter.default.post(name: .deviceConnected, object: nil, userInfo: [AirCastingNotificationKeys.DeviceConnected.uuid : peripheral.identifier])
     }
     
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
         Log.info("Disconnected: \(String(describing: error?.localizedDescription))")
-        if let peripheral = connectedPeripheral {
-            connect(to: peripheral)
-            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(10)) {
-                if peripheral.state == .connecting {
-                    self.connectedPeripheral = nil
-                    self.mobilePeripheralSessionManager.finishSession(for: peripheral,
-                                                                         centralManger: self.centralManager)
-                }
-            }
+        guard let peripheral = connectedPeripheral else { return }
+        connect(to: peripheral)
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(10)) {
+            guard peripheral.state == .connecting else { return }
+            self.connectedPeripheral = nil
+            self.mobilePeripheralSessionManager.finishSession(for: peripheral,
+                                                                 centralManger: self.centralManager)
         }
     }
 }
