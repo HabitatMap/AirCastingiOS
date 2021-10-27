@@ -38,12 +38,12 @@ class AirbeamConnectionViewModelDefault: AirbeamConnectionViewModel, ObservableO
             self.shouldDismissValue = !success
             
             guard success else { return }
-            self.configureABToFixed()
+            self.configureAB()
         }
     }
     
-    private func configureABToFixed() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
+    private func configureAB() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(4)) {
             if let sessionUUID = self.sessionContext.sessionUUID {
                 let configurator = AirBeam3Configurator(userAuthenticationSession: self.userAuthenticationSession,
                                                         peripheral: self.peripheral)
