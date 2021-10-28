@@ -1,7 +1,6 @@
 // Created by Lunar on 15/10/2021.
 //
 import SwiftUI
-import UIKit
 
 struct Fonts {
     
