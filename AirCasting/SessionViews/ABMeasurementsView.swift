@@ -114,7 +114,8 @@ struct _ABMeasurementsView: View {
                 ForEach(streamsToShow, id : \.self) { stream in
                     SingleMeasurementView(stream: stream,
                                           threshold: nil,
-                                          selectedStream: .constant(nil), isCollapsed: .constant(false),
+                                          selectedStream: .constant(nil),
+                                          isCollapsed: .constant(false),
                                           measurementPresentationStyle: .hideValues,
                                           isDormant: session.isDormant)
                 }

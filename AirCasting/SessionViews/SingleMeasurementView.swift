@@ -18,7 +18,7 @@ struct SingleMeasurementView: View {
                 _SingleMeasurementButton(stream: stream,
                                          value: isDormant ? stream.averageValue : (stream.latestValue ?? 0),
                                          streamName: showStreamName(),
-                                         shouldShow: measurementPresentationStyle == .showValues,
+                                         isSessionCardCollapsed: measurementPresentationStyle == .showValues,
                                          selectedStream: $selectedStream,
                                          isCollapsed: $isCollapsed,
                                          threshold: threshold
@@ -42,7 +42,7 @@ struct SingleMeasurementView: View {
         let stream: MeasurementStreamEntity
         let value: Double
         let streamName: String
-        let shouldShow: Bool
+        let isSessionCardCollapsed: Bool
         @Binding var selectedStream: MeasurementStreamEntity?
         @Binding var isCollapsed: Bool
         @ObservedObject var threshold: SensorThreshold
@@ -58,7 +58,7 @@ struct SingleMeasurementView: View {
                     Text(streamName)
                         .font(Fonts.systemFont1)
                         .scaledToFill()
-                    if shouldShow {
+                    if isSessionCardCollapsed {
                         measurementDotView
                     }
                 }
