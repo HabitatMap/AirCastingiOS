@@ -12,7 +12,6 @@ protocol BluetoothConnector {
 extension BluetoothManager: BluetoothConnector {
     
     func connect(to peripheral: CBPeripheral) {
-        Log.info("Starting Airbeam connection")
         self.centralManager.connect(peripheral, options: nil)
     }
     

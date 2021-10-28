@@ -38,6 +38,7 @@ class ConnectingAirBeamServicesBluetooth: ConnectingAirBeamServices {
             }
         }
         connectionToken = NotificationCenter.default.addObserver(forName: .deviceConnected, object: nil, queue: nil) { _ in
+            Log.info("Airebeam connected successfully")
             self.connectionInProgress = false
             var characteristicsHandle: Any?
             characteristicsHandle = NotificationCenter.default.addObserver(forName: .discoveredCharacteristic, object: nil, queue: .main) { _ in
