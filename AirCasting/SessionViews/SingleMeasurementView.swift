@@ -54,7 +54,7 @@ struct SingleMeasurementView: View {
                 }
                 selectedStream = stream
             }, label: {
-                VStack() {
+                VStack(spacing: 1) {
                     Text(streamName)
                         .font(Fonts.systemFont1)
                         .scaledToFill()

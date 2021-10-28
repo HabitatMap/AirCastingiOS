@@ -72,6 +72,7 @@ struct SessionCartView: View {
                           graphStatsDataSource: graphStatsDataSource,
                           sessionStoppableFactory: sessionStoppableFactory,
                           measurementStreamStorage: measurementStreamStorage)
+                    .foregroundColor(.aircastingDarkGray)
             }
             .fullScreenCover(isPresented: $isMapButtonActive) {
                 AirMapView(thresholds: thresholds,
@@ -82,6 +83,7 @@ struct SessionCartView: View {
                            selectedStream: $selectedStream,
                            sessionStoppableFactory: sessionStoppableFactory,
                            measurementStreamStorage: measurementStreamStorage)
+                    .foregroundColor(.aircastingDarkGray)
             }
         } else {
         sessionCard
@@ -94,6 +96,7 @@ struct SessionCartView: View {
                           graphStatsDataSource: graphStatsDataSource,
                           sessionStoppableFactory: sessionStoppableFactory,
                           measurementStreamStorage: measurementStreamStorage)
+                    .foregroundColor(.aircastingDarkGray)
             }
         EmptyView()
             .fullScreenCover(isPresented: $isMapButtonActive) {
@@ -105,6 +108,7 @@ struct SessionCartView: View {
                            selectedStream: $selectedStream,
                            sessionStoppableFactory: sessionStoppableFactory,
                            measurementStreamStorage: measurementStreamStorage)
+                    .foregroundColor(.aircastingDarkGray)
             }
         }
     }
