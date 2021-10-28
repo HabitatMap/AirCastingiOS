@@ -68,6 +68,7 @@ struct _ABMeasurementsView: View {
                                     SingleMeasurementView(stream: stream,
                                                           threshold: threshold,
                                                           selectedStream: _selectedStream,
+                                                          isCollapsed: $isCollapsed,
                                                           measurementPresentationStyle: measurementPresentationStyle,
                                                           isDormant: session.isDormant)
                                 }
@@ -113,7 +114,7 @@ struct _ABMeasurementsView: View {
                 ForEach(streamsToShow, id : \.self) { stream in
                     SingleMeasurementView(stream: stream,
                                           threshold: nil,
-                                          selectedStream: .constant(nil),
+                                          selectedStream: .constant(nil), isCollapsed: .constant(false),
                                           measurementPresentationStyle: .hideValues,
                                           isDormant: session.isDormant)
                 }

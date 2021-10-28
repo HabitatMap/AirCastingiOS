@@ -8,20 +8,21 @@ struct SingleMeasurementView: View {
     @ObservedObject var stream: MeasurementStreamEntity
     var threshold: SensorThreshold?
     @Binding var selectedStream: MeasurementStreamEntity?
+    @Binding var isCollapsed: Bool
     let measurementPresentationStyle: MeasurementPresentationStyle
     let isDormant: Bool
     
     var body: some View {
         VStack(spacing: 3) {
-            Text(showStreamName())
-                .font(Fonts.systemFont1)
-                .scaledToFill()
-            if measurementPresentationStyle == .showValues,
-               let threshold = threshold {
+            if let threshold = threshold {
                 _SingleMeasurementButton(stream: stream,
                                          value: isDormant ? stream.averageValue : (stream.latestValue ?? 0),
+                                         streamName: showStreamName(),
+                                         shouldShow: measurementPresentationStyle == .showValues,
                                          selectedStream: $selectedStream,
-                                         threshold: threshold)
+                                         isCollapsed: $isCollapsed,
+                                         threshold: threshold
+                )
             }
         }
     }
@@ -40,24 +41,44 @@ struct SingleMeasurementView: View {
     struct _SingleMeasurementButton: View {
         let stream: MeasurementStreamEntity
         let value: Double
+        let streamName: String
+        let shouldShow: Bool
         @Binding var selectedStream: MeasurementStreamEntity?
+        @Binding var isCollapsed: Bool
         @ObservedObject var threshold: SensorThreshold
         
         var body: some View {
             Button(action: {
+                withAnimation {
+                    isCollapsed ? isCollapsed = false : nil
+                }
                 selectedStream = stream
             }, label: {
-                HStack(spacing: 3) {
-                    MeasurementDotView(value: value,
-                                       thresholds: threshold)
-                    Text("\(Int(value))")
-                        .font(Fonts.regularHeading3)
+                VStack() {
+                    Text(streamName)
+                        .font(Fonts.systemFont1)
                         .scaledToFill()
+                    if shouldShow {
+                        measurementDotView
+                    }
                 }
             })
-            .buttonStyle(AirCastingStyling.BorderedButtonStyle(isSelected: selectedStream == stream,
-                                                               thresholdColor: threshold.colorFor(value: Int32(value))))
         }
         
+        var measurementDotView: some View {
+            HStack(spacing: 3) {
+                MeasurementDotView(value: value,
+                                   thresholds: threshold)
+                Text("\(Int(value))")
+                    .font(Fonts.regularHeading3)
+                    .scaledToFill()
+            }
+            .padding(.vertical, 4)
+            .padding(.horizontal, 9)
+            .overlay(
+                RoundedRectangle(cornerRadius: 8)
+                    .strokeBorder((selectedStream == stream) ? threshold.colorFor(value: Int32(value)) : .clear)
+            )
+        }
     }
 }
