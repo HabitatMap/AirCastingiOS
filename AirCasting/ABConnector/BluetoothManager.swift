@@ -155,7 +155,7 @@ extension BluetoothManager: CBPeripheralDelegate {
                 }
             }
         }
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "Discovered characteristics"), object: nil, userInfo: nil)
+        NotificationCenter.default.post(name: .discoveredCharacteristic, object: nil, userInfo: nil)
     }
     
     func sendHexCode() {

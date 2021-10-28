@@ -5,6 +5,7 @@ import Foundation
 
 extension Notification.Name {
     static let deviceConnected = Notification.Name(rawValue: "DeviceConnected")
+    static let discoveredCharacteristic = Notification.Name(rawValue: "DiscoveredCharacteristic")
 }
 
 enum AirCastingNotificationKeys {
