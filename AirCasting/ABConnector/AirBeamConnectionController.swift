@@ -12,7 +12,6 @@ class DefaultAirBeamConnectionController: AirBeamConnectionController, Observabl
     let connectingAirBeamServices: ConnectingAirBeamServices
     
     func connectToAirBeam(peripheral: CBPeripheral, completion: @escaping (Bool) -> Void) {
-        Log.info("## connectToAirBeam")
         connectingAirBeamServices.connect(to: peripheral, timeout: 10) { result in
             switch result {
             case .success:
