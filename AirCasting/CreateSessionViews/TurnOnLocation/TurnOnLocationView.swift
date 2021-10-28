@@ -36,7 +36,7 @@ struct TurnOnLocationView: View {
         )
         .padding()
         .onAppear {
-            viewModel.requestLocation()
+            viewModel.requestLocationAuthorisation()
             if viewModel.shouldShowAlert {
                 showAlert = true
             }

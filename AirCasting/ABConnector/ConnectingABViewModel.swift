@@ -43,15 +43,13 @@ class AirbeamConnectionViewModelDefault: AirbeamConnectionViewModel, ObservableO
     }
     
     private func configureAB() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(4)) {
-            if let sessionUUID = self.sessionContext.sessionUUID {
-                let configurator = AirBeam3Configurator(userAuthenticationSession: self.userAuthenticationSession,
-                                                        peripheral: self.peripheral)
-                do {
-                    try configurator.configureFixed(uuid: sessionUUID)
-                } catch {
-                    Log.info("Couldn't configure AB to fixed session with uuid: \(sessionUUID)")
-                }
+        if let sessionUUID = self.sessionContext.sessionUUID {
+            let configurator = AirBeam3Configurator(userAuthenticationSession: self.userAuthenticationSession,
+                                                    peripheral: self.peripheral)
+            do {
+                try configurator.configureFixed(uuid: sessionUUID)
+            } catch {
+                Log.info("Couldn't configure AB to fixed session with uuid: \(sessionUUID)")
             }
         }
     }

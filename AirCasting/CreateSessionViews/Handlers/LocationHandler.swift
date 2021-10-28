@@ -6,7 +6,7 @@ import CoreLocation
 
 protocol LocationHandler {
     func isLocationDenied() -> Bool
-    func requestLocation()
+    func requestAuthorisation()
 }
 
 class DefaultLocationHandler: LocationHandler {
@@ -20,7 +20,7 @@ class DefaultLocationHandler: LocationHandler {
         locationTracker.locationGranted == .denied ? true : false
     }
     
-    func requestLocation() {
+    func requestAuthorisation() {
         locationTracker.requestAuthorisation()
     }
 }
@@ -34,6 +34,6 @@ class DummyDefaultLocationHandler: LocationHandler {
         locationTracker.locationGranted == .denied ? true : false
     }
     
-    func requestLocation() { }
+    func requestAuthorisation() { }
 }
 #endif
