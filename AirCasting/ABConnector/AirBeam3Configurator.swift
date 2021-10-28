@@ -18,6 +18,7 @@ struct AirBeam3Configurator {
 
     init(userAuthenticationSession: UserAuthenticationSession, peripheral: CBPeripheral) {
         self.userAuthenticationSession = userAuthenticationSession
+        Log.info("## initialised with \(peripheral.name)")
         self.peripheral = peripheral
     }
     
@@ -96,6 +97,7 @@ struct AirBeam3Configurator {
         guard let token = userAuthenticationSession.token else {
             throw AirBeam3ConfiguratorError.missingAuthenticationToken
         }
+        Log.info("##Going to send uuid for peripheral with services \(peripheral.services)")
         sendUUIDRequest(uuid: uuid)
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
             sendAuthToken(authToken: token)
@@ -113,6 +115,7 @@ private extension AirBeam3Configurator {
     
     private func sendAuthToken(authToken: String) {
         let message = hexMessageBuilder.authTokenMessage(authToken: authToken)
+        Log.info("##Going to send auth token for peripheral with services \(peripheral.services)")
         sendConfigMessage(data: message!)
     }
     
@@ -148,7 +151,7 @@ private extension AirBeam3Configurator {
     func sendConfigMessage(data: Data) {
         guard let characteristic = getCharacteristic(serviceID: SERVICE_UUID,
                                                      charID: CONFIGURATION_CHARACTERISTIC_UUID) else {
-            assertionFailure("Unable to get characteristic from \(peripheral)")
+            Log.info("##Unable to get characteristic from \(peripheral)")
             return
         }
         peripheral.writeValue(data,
@@ -160,8 +163,10 @@ private extension AirBeam3Configurator {
         let service = peripheral.services?.first(where: { (service) -> Bool in
             service.uuid == serviceID
         })
+        Log.info("## service: \(service)")
         guard let characteristic = service?.characteristics?.first(where: { (characteristic) -> Bool in
-            characteristic.uuid == charID
+            Log.info("## characteristic: \(characteristic)")
+            return characteristic.uuid == charID
         }) else {
             return nil
         }
