@@ -42,5 +42,5 @@ struct Fonts {
     
     static let systemFont1: Font = Font.system(size: 13)
     
-    static let systemBoldUIFont1: UIFont = UIFont.systemFont(ofSize: 28, weight: .bold)
+    static let navBarSystemFont: UIFont = UIFont.systemFont(ofSize: 28, weight: .bold)
 }
