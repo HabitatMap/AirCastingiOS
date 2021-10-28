@@ -29,9 +29,7 @@ final class CreateSessionContext: ObservableObject {
     private var locationProvider: LocationProvider?
     private var locationSink: Any?
     
-    func obtainCurrentLocation(lat: Double, log: Double) {
-        locationProvider = LocationProvider()
-        locationProvider?.requestLocation()
+    func saveCurrentLocation(lat: Double, log: Double) {
         startingLocation = CLLocationCoordinate2D(latitude: lat, longitude: log)
     }
 }

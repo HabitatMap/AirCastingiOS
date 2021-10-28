@@ -145,14 +145,14 @@ extension ConfirmCreatingSessionView {
                 guard let lat: Double = (locationTracker.googleLocation.last?.location.latitude),
                       let lon: Double = (locationTracker.googleLocation.last?.location.longitude) else { return }
 #warning("Do something with exposed googleLocation")
-                sessionContext.obtainCurrentLocation(lat: lat, log: lon)
+                sessionContext.saveCurrentLocation(lat: lat, log: lon)
             }
         } else {
             guard let lat = (locationTracker.locationManager.location?.coordinate.latitude),
                   let lon = (locationTracker.locationManager.location?.coordinate.longitude) else { return }
             locationTracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: lat, longitude: lon), measurementTime: Date().currentUTCTimeZoneDate, measurement: 20.0)]
 #warning("Do something with hard coded measurement")
-            sessionContext.obtainCurrentLocation(lat: lat, log: lon)
+            sessionContext.saveCurrentLocation(lat: lat, log: lon)
         }
     }
     func setSessioonCreator() -> SessionCreator? {

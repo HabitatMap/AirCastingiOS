@@ -37,8 +37,8 @@ class TurnOnLocationViewModel {
         self.urlProvider = urlProvider
     }
     
-    func requestLocation() {
-        locationHandler.requestLocation()
+    func requestLocationAuthorisation() {
+        locationHandler.requestAuthorisation()
     }
     
     func checkIfBluetoothDenied() -> Bool {
