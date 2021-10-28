@@ -136,6 +136,7 @@ extension BluetoothManager: CBCentralManagerDelegate {
 extension BluetoothManager: CBPeripheralDelegate {
 
     func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
+        Log.info("## DID DISCOVER SERVICES")
         if let services = peripheral.services {
             for service in services {
                 peripheral.discoverCharacteristics(nil, for: service)
@@ -144,6 +145,7 @@ extension BluetoothManager: CBPeripheralDelegate {
     }
 
     func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
+        Log.info("## DID DISCOVER CHARACTERISTICS")
         if let characteristics = service.characteristics {
             for characteristic in characteristics {
                 
@@ -155,6 +157,7 @@ extension BluetoothManager: CBPeripheralDelegate {
                 }
             }
         }
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "Discovered characteristics"), object: nil, userInfo: nil)
     }
     
     func sendHexCode() {
