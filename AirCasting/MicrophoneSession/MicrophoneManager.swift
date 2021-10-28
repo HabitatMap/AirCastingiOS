@@ -95,10 +95,10 @@ extension MicrophoneManager: AVAudioRecorderDelegate {
 
     func audioRecorderEndInterruption(_ recorder: AVAudioRecorder, withOptions flags: Int) {
         Log.info("audio recorder end interruption")
-        if !recorder.isRecording {
-            recorder.record()
-        }
-        levelTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(timerTick), userInfo: nil, repeats: true)
+            if !recorder.isRecording {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) { recorder.record() }
+            }
+            self.levelTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.timerTick), userInfo: nil, repeats: true)
     }
 
     func audioRecorderEncodeErrorDidOccur(_ recorder: AVAudioRecorder, error: Error?) {
@@ -110,7 +110,9 @@ private extension MicrophoneManager {
     func sampleMeasurement() {
         recorder.updateMeters()
         let power = recorder.averagePower(forChannel: 0)
-        let decibels = Double(power + 90.0)
+        var decibels = Double(power + 90.0)
+        (decibels < 0) ? decibels = 0 : nil
+        // 117 lines ensure that we won't get something like -70 etc.
         let location = obtainCurrentLocation()
         
         measurementStreamStorage.accessStorage { storage in
@@ -158,4 +160,3 @@ private extension MicrophoneManager {
         case permissionNotGranted
     }
 }
-
