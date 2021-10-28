@@ -1,7 +1,7 @@
 // Created by Lunar on 30/09/2021.
 //
 
-import Foundation
+import UIKit
 import Charts
 
 final class ChartViewModel: ObservableObject {
@@ -16,6 +16,7 @@ final class ChartViewModel: ObservableObject {
         }
     }
     
+    private let persistence: PersistenceController
     private let session: SessionEntity
 
     private var timeUnit: TimeInterval {
@@ -26,17 +27,21 @@ final class ChartViewModel: ObservableObject {
     private var firstTimer: Timer?
     private let numberOfEntries = Constants.Chart.numberOfEntries
     
+    private var backgroundNotificationHandle: Any?
+    
     deinit {
         mainTimer?.invalidate()
         firstTimer?.invalidate()
     }
     
-    init(session: SessionEntity) {
+    init(session: SessionEntity, persistence: PersistenceController) {
         self.session = session
         self.chartStartTime = session.endTime
         self.chartEndTime = session.endTime
+        self.persistence = persistence
         if session.isActive || session.isFollowed || session.status == .NEW {
             startTimers(session)
+            scheduleBackgroundNotification()
         }
     }
     
@@ -45,6 +50,18 @@ final class ChartViewModel: ObservableObject {
         firstTimer = Timer.scheduledTimer(withTimeInterval: TimeInterval(timeOfNextAverage), repeats: false) { [weak self] timer in
             self?.generateEntries()
             self?.startMainTimer()
+        }
+    }
+    
+    private func scheduleBackgroundNotification() {
+        backgroundNotificationHandle = NotificationCenter.default.addObserver(forName: UIApplication.didEnterBackgroundNotification, object: nil, queue: .main) { [weak self] _ in
+            guard let self = self else { return }
+            var contextHandle: Any?
+            contextHandle = NotificationCenter.default.addObserver(forName: .NSManagedObjectContextObjectsDidChange, object: self.persistence.viewContext, queue: .main) { [weak self] _ in
+                self?.generateEntries()
+                guard let contextHandle = contextHandle else { return }
+                NotificationCenter.default.removeObserver(contextHandle)
+            }
         }
     }
     

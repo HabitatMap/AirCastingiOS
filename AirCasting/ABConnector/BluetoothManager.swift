@@ -24,6 +24,7 @@ class BluetoothManager: NSObject, ObservableObject {
     @Published var isScanning: Bool = true
     @Published var centralManagerState: CBManagerState = .unknown
     @Published var connectedPeripheral: CBPeripheral?
+    @Published var mobileSessionReconnected = false
     var observed: NSKeyValueObservation?
     
     let mobilePeripheralSessionManager: MobilePeripheralSessionManager
@@ -106,18 +107,29 @@ extension BluetoothManager: CBCentralManagerDelegate {
     }
     
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "DeviceConnected"), object: nil, userInfo: ["uuid" : peripheral.identifier])
         // Here's code for getting data from AB.
         peripheral.delegate = self
         peripheral.discoverServices(nil)
-        connectedPeripheral = peripheral
+        if connectedPeripheral == peripheral {
+            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(4)) {
+                self.mobileSessionReconnected = true
+            }
+        } else {
+            connectedPeripheral = peripheral
+        }
+        NotificationCenter.default.post(name: .deviceConnected, object: nil, userInfo: [AirCastingNotificationKeys.DeviceConnected.uuid : peripheral.identifier])
     }
     
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
         Log.info("Disconnected: \(String(describing: error?.localizedDescription))")
-        connectedPeripheral = nil
-        mobilePeripheralSessionManager.finishSession(for: peripheral,
-                                                     centralManger: centralManager)
+        guard let peripheral = connectedPeripheral else { return }
+        connect(to: peripheral)
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(10)) {
+            guard peripheral.state == .connecting else { return }
+            self.connectedPeripheral = nil
+            self.mobilePeripheralSessionManager.finishSession(for: peripheral,
+                                                                 centralManger: self.centralManager)
+        }
     }
 }
 
@@ -132,7 +144,6 @@ extension BluetoothManager: CBPeripheralDelegate {
     }
 
     func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
-        
         if let characteristics = service.characteristics {
             for characteristic in characteristics {
                 
@@ -156,12 +167,14 @@ extension BluetoothManager: CBPeripheralDelegate {
             Log.warning("AirBeam sent measurement without value")
             return
         }
+
         if let parsedMeasurement = parseData(data: value) {
             mobilePeripheralSessionManager.handlePeripheralMeasurement(PeripheralMeasurement(peripheral: peripheral, measurementStream: parsedMeasurement))
         }
     }
     
     func disconnectAirBeam() {
+        connectedPeripheral = nil
         mobilePeripheralSessionManager.finishActiveSession(centralManger: centralManager)
     }
     

@@ -75,7 +75,6 @@ final class MobilePeripheralSessionCreator: SessionCreator {
             completion(.failure(MobilePeripheralSessionCreatorError.invalidCreateSessionContext(sessionContext)))
             return
         }
-
         let session = Session(uuid: sessionUUID,
                               type: sessionType,
                               name: sessionContext.sessionName,
@@ -84,7 +83,6 @@ final class MobilePeripheralSessionCreator: SessionCreator {
                               startTime: Date().currentUTCTimeZoneDate,
                               tags: sessionContext.sessionTags,
                               status: .NEW)
-
         do {
             guard let peripheral = sessionContext.peripheral else {
                 assertionFailure("invalidCreateSessionContext \(sessionContext)")

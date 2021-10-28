@@ -15,6 +15,8 @@ struct DashboardView: View {
     @EnvironmentObject var selectedSection: SelectSection
     @EnvironmentObject var averaging: AveragingService
     
+    @State private var dragOffset = CGFloat.zero
+    
     let measurementStreamStorage: MeasurementStreamStorage
     let sessionStoppableFactory: SessionStoppableFactory
     
@@ -79,10 +81,36 @@ struct DashboardView: View {
                 .background(Color.aircastingGray.opacity(0.05))
             }
         }
-        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarTitle(NSLocalizedString(Strings.DashboardView.dashboardText, comment: ""))
         .onChange(of: selectedSection.selectedSection) { selectedSection in
             self.selectedSection.selectedSection = selectedSection
             try! coreDataHook.setup(selectedSection: self.selectedSection.selectedSection)
+        }
+    }
+    
+    func showPreviousTab() {
+        switch selectedSection.selectedSection {
+        case .following:
+            break
+        case .mobileActive:
+            selectedSection.selectedSection = .following
+        case .mobileDormant:
+            selectedSection.selectedSection = .mobileActive
+        case .fixed:
+            selectedSection.selectedSection = .mobileDormant
+        }
+    }
+    
+    func showNextTab() {
+        switch selectedSection.selectedSection {
+        case .following:
+            selectedSection.selectedSection = .mobileActive
+        case .mobileActive:
+            selectedSection.selectedSection = .mobileDormant
+        case .mobileDormant:
+            selectedSection.selectedSection = .fixed
+        case .fixed:
+            break
         }
     }
 }
