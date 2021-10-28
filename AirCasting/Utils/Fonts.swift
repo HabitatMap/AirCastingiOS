@@ -41,4 +41,6 @@ struct Fonts {
     static let mediumHeading1: Font = Font.muli(size: 16, weight: .medium)
     
     static let systemFont1: Font = Font.system(size: 13)
+    
+    static let navBarSystemFont: UIFont = UIFont.systemFont(ofSize: 28, weight: .bold)
 }
