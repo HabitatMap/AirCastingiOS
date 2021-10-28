@@ -161,7 +161,7 @@ private extension AirBeam3Configurator {
             service.uuid == serviceID
         })
         guard let characteristic = service?.characteristics?.first(where: { (characteristic) -> Bool in
-            return characteristic.uuid == charID
+            characteristic.uuid == charID
         }) else {
             return nil
         }
