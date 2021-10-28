@@ -95,10 +95,10 @@ extension MicrophoneManager: AVAudioRecorderDelegate {
 
     func audioRecorderEndInterruption(_ recorder: AVAudioRecorder, withOptions flags: Int) {
         Log.info("audio recorder end interruption")
-            if !recorder.isRecording {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) { recorder.record() }
-            }
-            self.levelTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.timerTick), userInfo: nil, repeats: true)
+        if !recorder.isRecording {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) { recorder.record() }
+        }
+        self.levelTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.timerTick), userInfo: nil, repeats: true)
     }
 
     func audioRecorderEncodeErrorDidOccur(_ recorder: AVAudioRecorder, error: Error?) {
