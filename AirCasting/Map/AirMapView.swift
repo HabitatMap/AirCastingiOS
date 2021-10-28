@@ -94,7 +94,7 @@ struct AirMapView: View {
             @unknown default: fatalError()
             }
         }
-        .padding()
+        .padding([.bottom, .leading, .trailing])
     }
 }
 

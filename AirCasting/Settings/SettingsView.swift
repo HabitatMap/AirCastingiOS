@@ -16,7 +16,8 @@ struct SettingsView: View {
     
     init(urlProvider: BaseURLProvider, logoutController: LogoutController) {
         let navBarAppearance = UINavigationBar.appearance()
-        navBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(Color.darkBlue)]
+        navBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(Color.darkBlue),
+                                                     .font: UIFont.systemFont(ofSize: 28, weight: .bold)]
         self.urlProvider = urlProvider
         self.logoutController = logoutController
     }

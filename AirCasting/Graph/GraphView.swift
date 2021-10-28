@@ -25,7 +25,7 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                                   isCollapsed: Binding.constant(false),
                                   session: session,
                                   sessionStopperFactory: sessionStoppableFactory)
-                .padding()
+                .padding([.bottom, .leading, .trailing])
             
             ABMeasurementsView(viewModelProvider: {
                 DefaultSyncingMeasurementsViewModel(measurementStreamStorage: measurementStreamStorage,
