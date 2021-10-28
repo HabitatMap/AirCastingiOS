@@ -22,12 +22,10 @@ class ConnectingAirBeamServicesBluetooth: ConnectingAirBeamServices {
     
     init(bluetoothConnector: BluetoothConnector) {
         self.bluetoothConnector = bluetoothConnector
-        Log.info("##Initialised")
     }
 
     func connect(to peripheral: CBPeripheral, timeout: TimeInterval, completion: @escaping (AirBeamServicesConnectionResult) -> Void) {
         Log.info("Starting Airbeam connection")
-        Log.info("##Starting Airbeam connection")
         guard !connectionInProgress else {
             completion(.deviceBusy); return
         }
@@ -40,11 +38,9 @@ class ConnectingAirBeamServicesBluetooth: ConnectingAirBeamServices {
             }
         }
         connectionToken = NotificationCenter.default.addObserver(forName: .deviceConnected, object: nil, queue: nil) { _ in
-            Log.info("##Airebeam connected successfully")
             self.connectionInProgress = false
             var characteristicsHandle: Any?
             characteristicsHandle = NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: "Discovered characteristics"), object: nil, queue: .main) { [weak self] _ in
-                Log.info("##Discovered characteristic")
                 completion(.success)
                 guard let contextHandle = characteristicsHandle else { return }
                 NotificationCenter.default.removeObserver(contextHandle)
