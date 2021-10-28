@@ -12,7 +12,6 @@ class LocationTracker: NSObject, ObservableObject, CLLocationManagerDelegate {
     
     let locationManager: CLLocationManager
     @Published var locationGranted: LocationState
-    @Published var allLocations: [CLLocation]
     @Published var googleLocation: [PathPoint]
     
     init(locationManager: CLLocationManager) {
@@ -36,29 +35,22 @@ class LocationTracker: NSObject, ObservableObject, CLLocationManagerDelegate {
             @unknown default:
                 fatalError()
         }
-        self.allLocations = []
         super.init()
         self.locationManager.delegate = self
     }
     
     func requestAuthorisation() {
         locationManager.requestAlwaysAuthorization()
-        allLocations = locationManager.location.flatMap { [$0] } ?? []
     }
     
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         switch manager.authorizationStatus {
         case .authorizedAlways, .authorizedWhenInUse:
-            locationManager.startUpdatingLocation()
             locationGranted = .granted
         case .denied, .notDetermined, .restricted:  locationGranted = .denied
         @unknown default:
             fatalError()
         }
-    }
-    
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        allLocations.append(contentsOf: locations)
     }
 }
 
