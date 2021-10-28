@@ -1,6 +1,7 @@
 // Created by Lunar on 15/10/2021.
 //
 import SwiftUI
+import UIKit
 
 struct Fonts {
     
@@ -41,4 +42,6 @@ struct Fonts {
     static let mediumHeading1: Font = Font.muli(size: 16, weight: .medium)
     
     static let systemFont1: Font = Font.system(size: 13)
+    
+    static let systemBoldUIFont1: UIFont = UIFont.systemFont(ofSize: 28, weight: .bold)
 }
