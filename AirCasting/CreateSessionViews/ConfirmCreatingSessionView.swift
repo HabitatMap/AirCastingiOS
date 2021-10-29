@@ -141,12 +141,11 @@ extension ConfirmCreatingSessionView {
         if sessionContext.sessionType == .fixed {
             if sessionContext.isIndoor! {
                 locationTracker.googleLocation = [PathPoint.fakePathPoint]
-            } else {
-                guard let lat: Double = (locationTracker.googleLocation.last?.location.latitude),
-                      let lon: Double = (locationTracker.googleLocation.last?.location.longitude) else { return }
-#warning("Do something with exposed googleLocation")
-                sessionContext.saveCurrentLocation(lat: lat, log: lon)
             }
+            guard let lat: Double = (locationTracker.googleLocation.last?.location.latitude),
+                  let lon: Double = (locationTracker.googleLocation.last?.location.longitude) else { return }
+#warning("Do something with exposed googleLocation")
+            sessionContext.saveCurrentLocation(lat: lat, log: lon)
         } else {
             guard let lat = (locationTracker.locationManager.location?.coordinate.latitude),
                   let lon = (locationTracker.locationManager.location?.coordinate.longitude) else { return }
