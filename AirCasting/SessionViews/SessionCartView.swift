@@ -62,55 +62,7 @@ struct SessionCartView: View {
     }
     
     var body: some View {
-        if #available(iOS 15, *) {
-            sessionCard
-            .fullScreenCover(isPresented: $isGraphButtonActive) {
-                GraphView(session: session,
-                          thresholds: thresholds,
-                          selectedStream: $selectedStream,
-                          statsContainerViewModel: graphStatsViewModel,
-                          graphStatsDataSource: graphStatsDataSource,
-                          sessionStoppableFactory: sessionStoppableFactory,
-                          measurementStreamStorage: measurementStreamStorage)
-                    .foregroundColor(.aircastingDarkGray)
-            }
-            .fullScreenCover(isPresented: $isMapButtonActive) {
-                AirMapView(thresholds: thresholds,
-                           statsContainerViewModel: mapStatsViewModel,
-//                           mapStatsDataSource: mapStatsDataSource,
-                           session: session,
-                           showLoadingIndicator: $showLoadingIndicator,
-                           selectedStream: $selectedStream,
-                           sessionStoppableFactory: sessionStoppableFactory,
-                           measurementStreamStorage: measurementStreamStorage)
-                    .foregroundColor(.aircastingDarkGray)
-            }
-        } else {
         sessionCard
-        EmptyView()
-            .fullScreenCover(isPresented: $isGraphButtonActive) {
-                GraphView(session: session,
-                          thresholds: thresholds,
-                          selectedStream: $selectedStream,
-                          statsContainerViewModel: graphStatsViewModel,
-                          graphStatsDataSource: graphStatsDataSource,
-                          sessionStoppableFactory: sessionStoppableFactory,
-                          measurementStreamStorage: measurementStreamStorage)
-                    .foregroundColor(.aircastingDarkGray)
-            }
-        EmptyView()
-            .fullScreenCover(isPresented: $isMapButtonActive) {
-                AirMapView(thresholds: thresholds,
-                           statsContainerViewModel: mapStatsViewModel,
-//                           mapStatsDataSource: mapStatsDataSource,
-                           session: session,
-                           showLoadingIndicator: $showLoadingIndicator,
-                           selectedStream: $selectedStream,
-                           sessionStoppableFactory: sessionStoppableFactory,
-                           measurementStreamStorage: measurementStreamStorage)
-                    .foregroundColor(.aircastingDarkGray)
-            }
-        }
     }
     
     var sessionCard: some View {
@@ -178,16 +130,16 @@ private extension SessionCartView {
     private var measurements: some View {
         ABMeasurementsView(viewModelProvider: {
             DefaultSyncingMeasurementsViewModel(measurementStreamStorage: measurementStreamStorage,
-                                      sessionDownloader: SessionDownloadService(client: URLSession.shared,
-                                                                                authorization: UserAuthenticationSession(),
-                                                                                responseValidator: DefaultHTTPResponseValidator()),
-                                      session: session)
-        },
-        session: session,
-        isCollapsed: $isCollapsed,
-        selectedStream: $selectedStream,
-        thresholds: thresholds,
-        measurementPresentationStyle: shouldShowValues)
+                                                sessionDownloader: SessionDownloadService(client: URLSession.shared,
+                                                authorization: UserAuthenticationSession(),
+                                                responseValidator: DefaultHTTPResponseValidator()),
+                                                session: session)
+                                                },
+                                                session: session,
+                                                isCollapsed: $isCollapsed,
+                                                selectedStream: $selectedStream,
+                                                thresholds: thresholds,
+                                                measurementPresentationStyle: shouldShowValues)
     }
     
     private var graphButton: some View {
@@ -301,6 +253,7 @@ private extension SessionCartView {
                                   selectedStream: $selectedStream,
                                   sessionStoppableFactory: sessionStoppableFactory,
                                   measurementStreamStorage: measurementStreamStorage)
+            .foregroundColor(.aircastingDarkGray)
 
          return NavigationLink(destination: mapView,
                                isActive: $isMapButtonActive,
@@ -317,6 +270,8 @@ private extension SessionCartView {
                                    graphStatsDataSource: graphStatsDataSource,
                                    sessionStoppableFactory: sessionStoppableFactory,
                                    measurementStreamStorage: measurementStreamStorage)
+             .foregroundColor(.aircastingDarkGray)
+         
          return NavigationLink(destination: graphView,
                                isActive: $isGraphButtonActive,
                                label: {

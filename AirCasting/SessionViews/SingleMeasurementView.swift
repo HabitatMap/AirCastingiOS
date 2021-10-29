@@ -11,19 +11,38 @@ struct SingleMeasurementView: View {
     @Binding var isCollapsed: Bool
     let measurementPresentationStyle: MeasurementPresentationStyle
     let isDormant: Bool
+    var value: Double {
+        isDormant ? stream.averageValue : (stream.latestValue ?? 0)
+    }
     
     var body: some View {
         VStack(spacing: 3) {
-            if let threshold = threshold {
-                _SingleMeasurementButton(stream: stream,
-                                         value: isDormant ? stream.averageValue : (stream.latestValue ?? 0),
-                                         streamName: showStreamName(),
-                                         isSessionCardCollapsed: measurementPresentationStyle == .showValues,
-                                         selectedStream: $selectedStream,
-                                         isCollapsed: $isCollapsed,
-                                         threshold: threshold
-                )
-            }
+            Button(action: {
+                withAnimation {
+                    isCollapsed ? isCollapsed = false : nil
+                }
+                selectedStream = stream
+            }, label: {
+                VStack(spacing: 1) {
+                    Text(showStreamName())
+                        .font(Fonts.systemFont1)
+                        .scaledToFill()
+                    if let threshold = threshold, measurementPresentationStyle == .showValues {
+                        HStack(spacing: 3) {
+                            MeasurementDotView(value: value, thresholds: threshold)
+                            Text("\(Int(value))")
+                                .font(Fonts.regularHeading3)
+                                .scaledToFill()
+                        }
+                        .padding(.vertical, 4)
+                        .padding(.horizontal, 9)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8)
+                                .strokeBorder((selectedStream == stream) ? threshold.colorFor(value: Int32(value)) : .clear)
+                        )
+                    }
+                }
+            })
         }
     }
     
@@ -35,50 +54,6 @@ struct SingleMeasurementView: View {
             return streamName
                 .drop { $0 != "-" }
                 .replacingOccurrences(of: "-", with: "")
-        }
-    }
-    
-    struct _SingleMeasurementButton: View {
-        let stream: MeasurementStreamEntity
-        let value: Double
-        let streamName: String
-        let isSessionCardCollapsed: Bool
-        @Binding var selectedStream: MeasurementStreamEntity?
-        @Binding var isCollapsed: Bool
-        @ObservedObject var threshold: SensorThreshold
-        
-        var body: some View {
-            Button(action: {
-                withAnimation {
-                    isCollapsed ? isCollapsed = false : nil
-                }
-                selectedStream = stream
-            }, label: {
-                VStack(spacing: 1) {
-                    Text(streamName)
-                        .font(Fonts.systemFont1)
-                        .scaledToFill()
-                    if isSessionCardCollapsed {
-                        measurementDotView
-                    }
-                }
-            })
-        }
-        
-        var measurementDotView: some View {
-            HStack(spacing: 3) {
-                MeasurementDotView(value: value,
-                                   thresholds: threshold)
-                Text("\(Int(value))")
-                    .font(Fonts.regularHeading3)
-                    .scaledToFill()
-            }
-            .padding(.vertical, 4)
-            .padding(.horizontal, 9)
-            .overlay(
-                RoundedRectangle(cornerRadius: 8)
-                    .strokeBorder((selectedStream == stream) ? threshold.colorFor(value: Int32(value)) : .clear)
-            )
         }
     }
 }
