@@ -92,7 +92,7 @@ struct SettingsView: View {
             Group {
                 HStack {
                     Text(Strings.Settings.backendSettings)
-                        .font(Fonts.muliHeading2)
+                        .font(Fonts.boldHeading1)
                         .accentColor(.black)
                     Spacer()
                     Image(systemName: "control")
