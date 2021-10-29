@@ -125,7 +125,7 @@ struct GoogleMapView: UIViewRepresentable {
         case high ... veryHigh:
             return UIColor.aircastingRed
         default:
-            return UIColor.white
+            return UIColor.aircastingGray
         }
     }
     
