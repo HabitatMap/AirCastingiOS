@@ -96,7 +96,7 @@ extension MicrophoneManager: AVAudioRecorderDelegate {
     func audioRecorderEndInterruption(_ recorder: AVAudioRecorder, withOptions flags: Int) {
         Log.info("audio recorder end interruption")
         if !recorder.isRecording {
-            #warning("5 second added as a "for now" implementation - find beeter way")
+            #warning("5 second added as a [for now] implementation - find beeter way")
             DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) { recorder.record() }
         }
         self.levelTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.timerTick), userInfo: nil, repeats: true)
