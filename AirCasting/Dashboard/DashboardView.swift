@@ -15,8 +15,6 @@ struct DashboardView: View {
     @EnvironmentObject var selectedSection: SelectSection
     @EnvironmentObject var averaging: AveragingService
     
-    @State private var dragOffset = CGFloat.zero
-    
     let measurementStreamStorage: MeasurementStreamStorage
     let sessionStoppableFactory: SessionStoppableFactory
     
