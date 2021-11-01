@@ -12,14 +12,13 @@ import CoreData
 
 struct AirMapView: View {
     @Environment(\.scenePhase) var scenePhase
-    @Environment(\.presentationMode) var presentationMode
     
     var thresholds: [SensorThreshold]
     @StateObject var statsContainerViewModel: StatisticsContainerViewModel
 //    @StateObject var mapStatsDataSource: MapStatsDataSource
     @ObservedObject var session: SessionEntity
     @Binding var showLoadingIndicator: Bool
-
+    @State var isUserInteracting = true
     @Binding var selectedStream: MeasurementStreamEntity?
     let sessionStoppableFactory: SessionStoppableFactory
     let measurementStreamStorage: MeasurementStreamStorage
@@ -58,7 +57,8 @@ struct AirMapView: View {
                     ZStack(alignment: .topLeading) {
                         GoogleMapView(pathPoints: pathPoints,
                                       threshold: threshold,
-                                      placePickerDismissed: Binding.constant(false))
+                                      placePickerDismissed: Binding.constant(false),
+                                      isUserInteracting: $isUserInteracting)
                         #warning("TODO: Implement calculating stats only for visible path points")
                         // This doesn't work properly and it needs to be fixed, so I'm commenting it out
 //                            .onPositionChange { [weak mapStatsDataSource, weak statsContainerViewModel] visiblePoints in
@@ -89,8 +89,8 @@ struct AirMapView: View {
 //        }
         .onChange(of: scenePhase) { phase in
             switch phase {
-            case .background, .inactive: self.presentationMode.wrappedValue.dismiss()
-            case .active: break
+            case .background, .inactive: isUserInteracting = false
+            case .active: isUserInteracting = true
             @unknown default: fatalError()
             }
         }

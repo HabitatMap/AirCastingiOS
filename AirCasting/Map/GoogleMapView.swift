@@ -13,17 +13,19 @@ import GooglePlaces
 struct GoogleMapView: UIViewRepresentable {
     @EnvironmentObject var tracker: LocationTracker
     @Binding var placePickerDismissed: Bool
+    @Binding var isUserInteracting: Bool
     typealias UIViewType = GMSMapView
     let pathPoints: [PathPoint]
     private(set) var threshold: SensorThreshold?
     var isMyLocationEnabled: Bool = false
     private var onPositionChange: (([PathPoint]) -> ())? = nil
     
-    init(pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false, placePickerDismissed: Binding<Bool>) {
+    init(pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false, placePickerDismissed: Binding<Bool>, isUserInteracting: Binding<Bool>) {
         self.pathPoints = pathPoints
         self.threshold = threshold
         self.isMyLocationEnabled = isMyLocationEnabled
         self._placePickerDismissed = placePickerDismissed
+        self._isUserInteracting = isUserInteracting
     }
     
     func makeUIView(context: Context) -> GMSMapView {
@@ -56,22 +58,24 @@ struct GoogleMapView: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: GMSMapView, context: Context) {
-        let thresholdWitness = ThresholdWitness(sensorThreshold: self.threshold)
-        if pathPoints != context.coordinator.currentlyDisplayedPathPoints ||
-            thresholdWitness != context.coordinator.currentThreshold {
-            polylineDrawing(uiView, context: context)
-            context.coordinator.currentlyDisplayedPathPoints = pathPoints
-            context.coordinator.currentThreshold = ThresholdWitness(sensorThreshold: threshold)
-        }
-        placePickerDismissed ? uiView.moveCamera(cameraUpdate) : nil
-        // Update camera's starting point
-        guard context.coordinator.shouldAutoTrack else { return }
-            DispatchQueue.main.async {
-                uiView.moveCamera(cameraUpdate)
-                if uiView.camera.zoom > 16 {
-                    // The zoom is set automatically somehow which results sometimes in 'too close' map
-                    // This helps us to fix it and still manage to fit into the 'bigger picture' if needed because of the long session
-                    uiView.animate(toZoom: 16)
+        if isUserInteracting {
+            let thresholdWitness = ThresholdWitness(sensorThreshold: self.threshold)
+            if pathPoints != context.coordinator.currentlyDisplayedPathPoints ||
+                thresholdWitness != context.coordinator.currentThreshold {
+                polylineDrawing(uiView, context: context)
+                context.coordinator.currentlyDisplayedPathPoints = pathPoints
+                context.coordinator.currentThreshold = ThresholdWitness(sensorThreshold: threshold)
+            }
+            placePickerDismissed ? uiView.moveCamera(cameraUpdate) : nil
+            // Update camera's starting point
+            guard context.coordinator.shouldAutoTrack else { return }
+                DispatchQueue.main.async {
+                    uiView.moveCamera(cameraUpdate)
+                    if uiView.camera.zoom > 16 {
+                        // The zoom is set automatically somehow which results sometimes in 'too close' map
+                        // This helps us to fix it and still manage to fit into the 'bigger picture' if needed because of the long session
+                        uiView.animate(toZoom: 16)
+                    }
                 }
             }
         }
@@ -214,7 +218,8 @@ struct GoogleMapView_Previews: PreviewProvider {
                                              measurementTime: .distantPast,
                                              measurement: 30)],
                       threshold: .mock,
-                      placePickerDismissed: .constant(false))
+                      placePickerDismissed: .constant(false),
+                      isUserInteracting: .constant(true))
             .padding()
     }
 }
