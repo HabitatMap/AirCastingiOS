@@ -114,4 +114,8 @@ class MobilePeripheralSessionManager {
                                 date: Date().currentUTCTimeZoneDate,
                                 location: CLLocationCoordinate2D(latitude: 200, longitude: 200))
     }
+    
+    func activeSessionInProgressWith(_ peripheral: CBPeripheral) -> Bool {
+        activeMobileSession?.peripheral == peripheral
+    }
 }

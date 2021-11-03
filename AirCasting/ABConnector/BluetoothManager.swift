@@ -110,14 +110,14 @@ extension BluetoothManager: CBCentralManagerDelegate {
         // Here's code for getting data from AB.
         peripheral.delegate = self
         peripheral.discoverServices(nil)
-        if connectedPeripheral == peripheral {
+        if mobilePeripheralSessionManager.activeSessionInProgressWith(peripheral) {
             DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(4)) {
                 self.mobileSessionReconnected = true
             }
         } else {
             connectedPeripheral = peripheral
+            NotificationCenter.default.post(name: .deviceConnected, object: nil, userInfo: [AirCastingNotificationKeys.DeviceConnected.uuid : peripheral.identifier])
         }
-        NotificationCenter.default.post(name: .deviceConnected, object: nil, userInfo: [AirCastingNotificationKeys.DeviceConnected.uuid : peripheral.identifier])
     }
     
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
