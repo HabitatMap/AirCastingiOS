@@ -61,9 +61,9 @@ struct Graph: UIViewRepresentable {
             let chartDataEntry = ChartDataEntry(x: timeInterval, y: measurement.value)
             return chartDataEntry
         }) ?? []
+        simplifyGraphline(entries: entries, uiView: uiView)
         let allLimitLines = getLimitLines()
         uiView.limitLines = allLimitLines
-        simplifyGraphline(entries: entries, uiView: uiView)
     }
     
     private func simplifyGraphline(entries: [ChartDataEntry], uiView: AirCastingGraph) {
@@ -71,17 +71,14 @@ struct Graph: UIViewRepresentable {
         let startTime = uiView.lineChartView.lowestVisibleX
         let endTime = uiView.lineChartView.highestVisibleX
         
-        let counter = entries.filter({ $0.x >= startTime && $0.x <= endTime }).count
+        let counter: Int = entries.filter({ $0.x >= startTime && $0.x <= endTime }).count
         
-        if counter > simplifiedGraphEntryThreshold {
-            let simplifiedPoints = SwiftSimplify.simplify(entries,
-                                                          tolerance: 0.000000001,
-                                                          highestQuality: true)
-            uiView.updateWithEntries(entries: simplifiedPoints, isAutozoomEnabled: isAutozoomEnabled)
-            print("Simplified \(entries.count) to \(simplifiedPoints.count)")
-        } else {
-            uiView.updateWithEntries(entries: entries, isAutozoomEnabled: isAutozoomEnabled)
-        }
+        let simplifiedPoints = AirCastingGraphSimplifier.simplify(points: entries,
+                                                             visibleElementsNumber: counter,
+                                                             thresholdLimit: simplifiedGraphEntryThreshold)
+        
+        uiView.updateWithEntries(entries: simplifiedPoints, isAutozoomEnabled: isAutozoomEnabled)
+        print(entries.count != simplifiedPoints.count ? "Simplified \(entries.count) to \(simplifiedPoints.count)" : "Not simplyfing")
     }
     
     func getMidnightsPoints(startingDate: Date, endingDate: Date) -> [Double] {
