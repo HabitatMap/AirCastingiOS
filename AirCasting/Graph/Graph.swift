@@ -34,7 +34,6 @@ struct Graph: UIViewRepresentable {
     
     var isAutozoomEnabled: Bool
     let simplifiedGraphEntryThreshold = 1000
-    let AirCastingSimplyfier = AirCastingGraphSimplifier()
     
     init(stream: MeasurementStreamEntity, thresholds: SensorThreshold, isAutozoomEnabled: Bool) {
         self.stream = stream
@@ -62,9 +61,9 @@ struct Graph: UIViewRepresentable {
             let chartDataEntry = ChartDataEntry(x: timeInterval, y: measurement.value)
             return chartDataEntry
         }) ?? []
+        simplifyGraphline(entries: entries, uiView: uiView)
         let allLimitLines = getLimitLines()
         uiView.limitLines = allLimitLines
-        simplifyGraphline(entries: entries, uiView: uiView)
     }
     
     private func simplifyGraphline(entries: [ChartDataEntry], uiView: AirCastingGraph) {
@@ -74,12 +73,12 @@ struct Graph: UIViewRepresentable {
         
         let counter: Int = entries.filter({ $0.x >= startTime && $0.x <= endTime }).count
         
-        let simplifiedPoints = AirCastingSimplyfier.simplify(points: entries,
+        let simplifiedPoints = AirCastingGraphSimplifier.simplify(points: entries,
                                                              visibleElementsNumber: counter,
                                                              thresholdLimit: simplifiedGraphEntryThreshold)
         
         uiView.updateWithEntries(entries: simplifiedPoints, isAutozoomEnabled: isAutozoomEnabled)
-        print("Simplified \(entries.count) to \(simplifiedPoints.count)")
+        print(entries.count != simplifiedPoints.count ? "Simplified \(entries.count) to \(simplifiedPoints.count)" : "Not simplyfing")
     }
     
     func getMidnightsPoints(startingDate: Date, endingDate: Date) -> [Double] {
