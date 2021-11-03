@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreBluetooth
+import FirebaseCrashlytics
 
 class BluetoothManager: NSObject, ObservableObject {
     
@@ -144,18 +145,17 @@ extension BluetoothManager: CBPeripheralDelegate {
     }
 
     func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
+        var hasSomeCharacteristics = false
         if let characteristics = service.characteristics {
+            Crashlytics.crashlytics().log("BluetoothManager (didDiscoverCharacteristicsFor) - service characteristics\n \(String(describing: service.characteristics))")
             for characteristic in characteristics {
-                
-                peripheral.readValue(for: characteristic)
-                for char in MEASUREMENTS_CHARACTERISTIC_UUIDS {
-                    if char == characteristic.uuid {
-                        peripheral.setNotifyValue(true, for: characteristic)
-                    }
+                if MEASUREMENTS_CHARACTERISTIC_UUIDS.contains(characteristic.uuid) {
+                    peripheral.setNotifyValue(true, for: characteristic)
+                    hasSomeCharacteristics = true
                 }
             }
         }
-        NotificationCenter.default.post(name: .discoveredCharacteristic, object: nil, userInfo: nil)
+        hasSomeCharacteristics ? NotificationCenter.default.post(name: .discoveredCharacteristic, object: nil, userInfo: nil) : nil
     }
     
     func sendHexCode() {

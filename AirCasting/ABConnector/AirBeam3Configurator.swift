@@ -8,6 +8,7 @@
 import Foundation
 import CoreBluetooth
 import CoreLocation
+import FirebaseCrashlytics
 
 struct AirBeam3Configurator {
     enum AirBeam3ConfiguratorError: Swift.Error {
@@ -33,7 +34,7 @@ struct AirBeam3Configurator {
         CBUUID(string:"0000ffe6-0000-1000-8000-00805f9b34fb")]    // PM10
     
     // used for sending hex codes to the AirBeam
-    private let CONFIGURATION_CHARACTERISTIC_UUID =  CBUUID(string:"0000ffde-0000-1000-8000-00805f9b34fb")
+    private let CONFIGURATION_CHARACTERISTIC_UUID = CBUUID(string:"0000ffde-0000-1000-8000-00805f9b34fb")
     
     // has notifications about measurements count in particular csv file on SD card
     private let DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID = CBUUID(string:"0000ffde-0000-1000-8000-00805f9b34fb")
@@ -157,15 +158,16 @@ private extension AirBeam3Configurator {
     }
     
     func getCharacteristic(serviceID: CBUUID, charID: CBUUID) -> CBCharacteristic? {
-        let service = peripheral.services?.first(where: { (service) -> Bool in
-            service.uuid == serviceID
+        Crashlytics.crashlytics().log("AirBeam3Configurator (getCharacteristic) - perehical services\n \(String(describing: peripheral.services))")
+        let service = peripheral.services?.first(where: { data -> Bool in
+            data.uuid == serviceID
         })
-        guard let characteristic = service?.characteristics?.first(where: { (characteristic) -> Bool in
+        Crashlytics.crashlytics().log("AirBeam3Configurator (getCharacteristic) - service characteristics\n \(String(describing: service?.characteristics))")
+        guard let characteristic = service?.characteristics?.first(where: { characteristic -> Bool in
             characteristic.uuid == charID
         }) else {
             return nil
         }
         return characteristic
     }
-    
 }
