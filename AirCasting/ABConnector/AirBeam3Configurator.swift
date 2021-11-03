@@ -158,7 +158,7 @@ private extension AirBeam3Configurator {
     }
     
     func getCharacteristic(serviceID: CBUUID, charID: CBUUID) -> CBCharacteristic? {
-        Crashlytics.crashlytics().log("AirBeam3Configurator (getCharacteristic) - perehical services\n \(String(describing: peripheral.services))")
+        Crashlytics.crashlytics().log("AirBeam3Configurator (getCharacteristic) - peripheral services\n \(String(describing: peripheral.services))")
         let service = peripheral.services?.first(where: { data -> Bool in
             data.uuid == serviceID
         })
