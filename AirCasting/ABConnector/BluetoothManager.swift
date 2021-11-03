@@ -158,11 +158,6 @@ extension BluetoothManager: CBPeripheralDelegate {
         NotificationCenter.default.post(name: .discoveredCharacteristic, object: nil, userInfo: nil)
     }
     
-    func sendHexCode() {
-        #warning("TODO: Send it")
-        _ = CBUUID(string: "0000ffde-0000-1000-8000-00805f9b34fb")
-    }
-    
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
         guard let value = characteristic.value else {
             Log.warning("AirBeam sent measurement without value")
@@ -182,8 +177,8 @@ extension BluetoothManager: CBPeripheralDelegate {
     func parseData(data: Data) -> ABMeasurementStream? {
         let string = String(data: data, encoding: .utf8)
         let components = string?.components(separatedBy: ";")
-        #warning("TODO: Check if values contains 11 elements and throw appropriate error")
         guard let values = components,
+              values.count == 12,
               let measuredValue = Double(values[0]),
               let thresholdVeryLow = Int(values[7]),
               let thresholdLow = Int(values[8]),
@@ -191,6 +186,7 @@ extension BluetoothManager: CBPeripheralDelegate {
               let thresholdHigh = Int(values[10]),
               let thresholdVeryHigh = Int(values[11])
         else  {
+            Log.warning("Device didn't send expected values")
             return nil
         }
         let newMeasurement = ABMeasurementStream(measuredValue: measuredValue,
