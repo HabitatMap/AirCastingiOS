@@ -62,9 +62,6 @@ struct SessionCartView: View {
     }
     
     var body: some View {
-        if #available(iOS 15, *) {
-            let _ = print(Self._printChanges())
-        }
         sessionCard
     }
     
