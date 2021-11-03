@@ -58,7 +58,7 @@ struct GoogleMapView: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: GMSMapView, context: Context) {
-        if isUserInteracting {
+        guard isUserInteracting else { return }
             let thresholdWitness = ThresholdWitness(sensorThreshold: self.threshold)
             if pathPoints != context.coordinator.currentlyDisplayedPathPoints ||
                 thresholdWitness != context.coordinator.currentThreshold {
@@ -77,7 +77,6 @@ struct GoogleMapView: UIViewRepresentable {
                         uiView.animate(toZoom: 16)
                     }
                 }
-            }
         }
     
     var cameraUpdate: GMSCameraUpdate {
