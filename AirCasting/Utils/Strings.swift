@@ -389,8 +389,8 @@ struct Strings {
     }
     
     enum NetworkChecker {
-        static let satisfiedPathText: String = "Current devise has an network connection"
-        static let failurePathText: String = "Current devise DOES NOT have an network connection"
+        static let satisfiedPathText: String = "Current devise has a network connection"
+        static let failurePathText: String = "Current devise DOES NOT have a network connection"
     }
     
     enum ChooseSessionTypeView {
