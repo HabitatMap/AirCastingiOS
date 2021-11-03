@@ -89,14 +89,16 @@ struct MainAppView: View {
     @EnvironmentObject private var bluetoothManager: BluetoothManager
     
     var body: some View {
-        MainTabBarView(measurementUpdatingService: downloadService,
-                       urlProvider: urlProvider,
-                       measurementStreamStorage: measurementStreamStorage,
-                       sessionStoppableFactory: sessionStoppableFactory,
-                       sessionSynchronizer: sessionSynchronizer,
-                       sessionContext: CreateSessionContext(),
-                       coreDataHook: CoreDataHook(context: persistenceController.viewContext), locationHandler: locationHandler)
-            .environmentObject(airBeamConnectionController)
+        LoadingView(isShowing: .constant(true)) {
+            MainTabBarView(measurementUpdatingService: downloadService,
+                           urlProvider: urlProvider,
+                           measurementStreamStorage: measurementStreamStorage,
+                           sessionStoppableFactory: sessionStoppableFactory,
+                           sessionSynchronizer: sessionSynchronizer,
+                           sessionContext: CreateSessionContext(),
+                           coreDataHook: CoreDataHook(context: persistenceController.viewContext), locationHandler: locationHandler)
+                .environmentObject(airBeamConnectionController)
+        }
     }
 }
 

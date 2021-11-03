@@ -12,6 +12,7 @@ struct SettingsView: View {
     let urlProvider: BaseURLProvider
     let logoutController: LogoutController
     @State private var showModal = false
+    @State private var isShowingLoadingScreen = false
     @EnvironmentObject var userSettings: UserSettings
     
     init(urlProvider: BaseURLProvider, logoutController: LogoutController) {
@@ -62,7 +63,7 @@ struct SettingsView: View {
     }
     
     private var signOutLink: some View {
-        NavigationLink(destination: MyAccountViewSignOut(logoutController: logoutController)) {
+        NavigationLink(destination: MyAccountViewSignOut(logoutController: logoutController, isShowingLoadingScreen: $isShowingLoadingScreen)) {
             Text(Strings.Settings.myAccount)
                 .font(Fonts.boldHeading1)
         }

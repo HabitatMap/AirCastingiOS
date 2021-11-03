@@ -2,6 +2,7 @@
 //
 
 import Foundation
+import Combine
 
 struct User: Hashable {
     let id: Int
@@ -98,9 +99,21 @@ final class DefaultLogoutController: LogoutController {
     }
 
     func logout() throws {
-        Log.info("[LOGOUT] Stopping any ongoing sync process")
-        sessionSynchronizer.stopSynchronization()
-
+        if sessionSynchronizer.syncInProgress.value {
+            var subscription: AnyCancellable?
+            subscription = sessionSynchronizer.syncInProgress.receive(on: DispatchQueue.main).sink { [weak self] value in
+                guard value == false else { return }
+                self?.deleteEverything()
+                subscription?.cancel()
+            }
+            return
+        }
+        sessionSynchronizer.triggerSynchronization(completion: {
+            DispatchQueue.main.async { self.deleteEverything() }
+        })
+    }
+    
+    func deleteEverything() {
         Log.info("[LOGOUT] Cancelling all pending requests")
         URLSession.shared.getAllTasks { tasks in
             tasks.forEach { $0.cancel() }
@@ -110,11 +123,11 @@ final class DefaultLogoutController: LogoutController {
             try? microphoneManager.stopRecording()
         }
         Log.info("[LOGOUT] Clearing user credentials")
-        try userAuthenticationSession.deauthorize()
         do {
+            try userAuthenticationSession.deauthorize()
             try sessionStorage.clearAllSessionSilently()
         } catch {
-            assertionFailure("[LOGOUT] Failed to clear sessions \(error)")
+            assertionFailure("[LOGOUT] Failed to log out \(error)")
         }
     }
 }

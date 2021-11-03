@@ -15,10 +15,7 @@ final class SessionSynchronizationController: SessionSynchronizer {
     private let upstream: SessionUpstream
     private let store: SessionSynchronizationStore
     private let dataConverter = SynchronizationDataConverter()
-    private(set) lazy var syncInProgress: AnyPublisher<Bool, Never> = $_syncInProgress.eraseToAnyPublisher()
-    // Progress tracking for filtering requests while already syncing
-    // (can this be somehow moved to a custom operator or something?)
-    @Published private var _syncInProgress: Bool = false
+    private(set) lazy var syncInProgress: CurrentValueSubject<Bool, Never> = .init(false)
     // Simple lock is sufficient here, no need for GCD
     private let lock = NSRecursiveLock()
     
@@ -36,13 +33,13 @@ final class SessionSynchronizationController: SessionSynchronizer {
     
     func triggerSynchronization(completion: (() -> Void)?) {
         lock.lock(); defer { lock.unlock() }
-        if _syncInProgress { return }
-        _syncInProgress = true
+        if syncInProgress.value { return }
+        syncInProgress.value = true
         
         let onFinish = {
             Log.info("[SYNC] Ending synchronization")
             completion?()
-            self._syncInProgress = false
+            self.syncInProgress.value = false
         }
         
         startSynchronization()

@@ -16,7 +16,7 @@ import struct UIKit.UIBackgroundTaskIdentifier
 /// - The _Gang of Four_ book
 /// - https://refactoring.guru/design-patterns/proxy
 final class ScheduledSessionSynchronizerProxy<S: Scheduler>: SessionSynchronizer {
-    lazy var syncInProgress: AnyPublisher<Bool, Never> = self.controller.syncInProgress
+    lazy var syncInProgress: CurrentValueSubject<Bool, Never> = self.controller.syncInProgress
     
     var errorStream: SessionSynchronizerErrorStream? {
         set { controller.errorStream = newValue }
@@ -43,6 +43,7 @@ final class ScheduledSessionSynchronizerProxy<S: Scheduler>: SessionSynchronizer
                 if let identifier  = self?.backgroundTaskIdentifier {
                     UIApplication.shared.endBackgroundTask(identifier)
                 }
+                completion?()
             }
         }
     }
