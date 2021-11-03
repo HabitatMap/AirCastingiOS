@@ -14,14 +14,17 @@ class MeasurementsStatisticsController: MeasurementsStatisticsInput {
     init(dataSource: MeasurementsStatisticsDataSource,
          calculator: StatisticsCalculator,
          scheduledTimer: ScheduledTimerSettable,
-         desiredStats: [MeasurementStatistics.Statistic]) {
+         desiredStats: [MeasurementStatistics.Statistic],
+         computeStatisticsInterval: Double?) {
         self.dataSource = dataSource
         self.calculator = calculator
         self.scheduledTimer = scheduledTimer
         self.desiredStats = desiredStats
-        timerCancellable = scheduledTimer.setupRepeatingTimer(for: 1.0, block: { [weak self] in
-            self?.computeStatistics()
-        })
+        if computeStatisticsInterval != nil {
+            timerCancellable = scheduledTimer.setupRepeatingTimer(for: computeStatisticsInterval!, block: { [weak self] in
+                 self?.computeStatistics()
+            })
+        }
         self.dataSource.onForceReload = { [weak self] in
             self?.computeStatistics()
         }
