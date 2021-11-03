@@ -20,12 +20,10 @@ final class NetworkChecker: NetworkStatusPresenter, ObservableObject {
     private func monitorNetwork() {
         monitor.pathUpdateHandler = { path in
             if path.status == .satisfied {
-                Log.info("Current devise has a network connection")
-                print(Strings.NetworkChecker.satisfiedPathText)
+                Log.info(Strings.NetworkChecker.satisfiedPathText)
                 self.connectionAvailable = true
             } else {
-                Log.info("Current devise does not have an network connection")
-                print(Strings.NetworkChecker.failurePathText)
+                Log.info(Strings.NetworkChecker.failurePathText)
                 self.connectionAvailable = false
             }
         }
