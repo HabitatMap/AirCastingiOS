@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3318891127330B5E00B39CEC /* DormantSessionCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3318891027330B5E00B39CEC /* DormantSessionCardView.swift */; };
 		331EA80A25E32094009DEFDB /* ConfirmCreatingSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331EA80925E32094009DEFDB /* ConfirmCreatingSessionView.swift */; };
 		332F521425FA38430047236D /* MicrophoneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332F521325FA38430047236D /* MicrophoneManager.swift */; };
 		3346F1F626318C1600BA4695 /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3346F1F526318C1600BA4695 /* SettingsManager.swift */; };
@@ -296,6 +297,7 @@
 /* Begin PBXFileReference section */
 		08139B8AACC5B29DDED2C953 /* Pods-AirCastingTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AirCastingTests.release.xcconfig"; path = "Target Support Files/Pods-AirCastingTests/Pods-AirCastingTests.release.xcconfig"; sourceTree = "<group>"; };
 		278FFE79104B8F74B61CE3A2 /* Pods-AirCasting.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AirCasting.release.xcconfig"; path = "Target Support Files/Pods-AirCasting/Pods-AirCasting.release.xcconfig"; sourceTree = "<group>"; };
+		3318891027330B5E00B39CEC /* DormantSessionCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DormantSessionCardView.swift; sourceTree = "<group>"; };
 		331EA80925E32094009DEFDB /* ConfirmCreatingSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmCreatingSessionView.swift; sourceTree = "<group>"; };
 		332F521325FA38430047236D /* MicrophoneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrophoneManager.swift; sourceTree = "<group>"; };
 		3346F1F526318C1600BA4695 /* SettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
@@ -1445,6 +1447,7 @@
 				ACF77DFA25A8888700BB85B7 /* SessionCartView.swift */,
 				DDF12AE726B2ADF400D067C7 /* SessionCartViewModel.swift */,
 				DDF12AEA26B2B76C00D067C7 /* SessionCartFollowing.swift */,
+				3318891027330B5E00B39CEC /* DormantSessionCardView.swift */,
 			);
 			name = SessionCartView;
 			sourceTree = "<group>";
@@ -1862,6 +1865,7 @@
 				B32D08A4267A4957006C97ED /* LogErrorAndCompletePublisher.swift in Sources */,
 				ACC883882645784400C5DB70 /* GraphErorrHandling.swift in Sources */,
 				B3FD77BC267C94AF00E97CC2 /* ScheduledSessionSynchronizerProxy.swift in Sources */,
+				3318891127330B5E00B39CEC /* DormantSessionCardView.swift in Sources */,
 				4F5D3F73262C91C6003AD82E /* UserAuthenticationSession.swift in Sources */,
 				AC6D569F25AEEAE700D221BA /* SessionHeaderView.swift in Sources */,
 				B3AB8BE526BB5EF400AF23CC /* Array+MeasurementStatistics.swift in Sources */,
