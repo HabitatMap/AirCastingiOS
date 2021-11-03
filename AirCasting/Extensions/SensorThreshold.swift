@@ -35,7 +35,7 @@ extension SensorThreshold {
             return .aircastingYellow
         case thresholdMedium..<thresholdHigh:
             return .aircastingOrange
-        case thresholdHigh..<thresholdVeryHigh:
+        case thresholdHigh...thresholdVeryHigh:
             return .aircastingRed
         default:
             return .aircastingGray
