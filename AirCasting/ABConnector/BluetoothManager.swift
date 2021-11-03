@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreBluetooth
+import FirebaseCrashlytics
 
 class BluetoothManager: NSObject, ObservableObject {
     
@@ -110,14 +111,14 @@ extension BluetoothManager: CBCentralManagerDelegate {
         // Here's code for getting data from AB.
         peripheral.delegate = self
         peripheral.discoverServices(nil)
-        if connectedPeripheral == peripheral {
+        if mobilePeripheralSessionManager.activeSessionInProgressWith(peripheral) {
             DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(4)) {
                 self.mobileSessionReconnected = true
             }
         } else {
             connectedPeripheral = peripheral
+            NotificationCenter.default.post(name: .deviceConnected, object: nil, userInfo: [AirCastingNotificationKeys.DeviceConnected.uuid : peripheral.identifier])
         }
-        NotificationCenter.default.post(name: .deviceConnected, object: nil, userInfo: [AirCastingNotificationKeys.DeviceConnected.uuid : peripheral.identifier])
     }
     
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
@@ -144,23 +145,17 @@ extension BluetoothManager: CBPeripheralDelegate {
     }
 
     func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
+        var hasSomeCharacteristics = false
         if let characteristics = service.characteristics {
+            Crashlytics.crashlytics().log("BluetoothManager (didDiscoverCharacteristicsFor) - service characteristics\n \(String(describing: service.characteristics))")
             for characteristic in characteristics {
-                
-                peripheral.readValue(for: characteristic)
-                for char in MEASUREMENTS_CHARACTERISTIC_UUIDS {
-                    if char == characteristic.uuid {
-                        peripheral.setNotifyValue(true, for: characteristic)
-                    }
+                if MEASUREMENTS_CHARACTERISTIC_UUIDS.contains(characteristic.uuid) {
+                    peripheral.setNotifyValue(true, for: characteristic)
+                    hasSomeCharacteristics = true
                 }
             }
         }
-        NotificationCenter.default.post(name: .discoveredCharacteristic, object: nil, userInfo: nil)
-    }
-    
-    func sendHexCode() {
-        #warning("TODO: Send it")
-        _ = CBUUID(string: "0000ffde-0000-1000-8000-00805f9b34fb")
+        hasSomeCharacteristics ? NotificationCenter.default.post(name: .discoveredCharacteristic, object: nil, userInfo: nil) : nil
     }
     
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
@@ -182,8 +177,8 @@ extension BluetoothManager: CBPeripheralDelegate {
     func parseData(data: Data) -> ABMeasurementStream? {
         let string = String(data: data, encoding: .utf8)
         let components = string?.components(separatedBy: ";")
-        #warning("TODO: Check if values contains 11 elements and throw appropriate error")
         guard let values = components,
+              values.count == 12,
               let measuredValue = Double(values[0]),
               let thresholdVeryLow = Int(values[7]),
               let thresholdLow = Int(values[8]),
@@ -191,6 +186,7 @@ extension BluetoothManager: CBPeripheralDelegate {
               let thresholdHigh = Int(values[10]),
               let thresholdVeryHigh = Int(values[11])
         else  {
+            Log.warning("Device didn't send expected values")
             return nil
         }
         let newMeasurement = ABMeasurementStream(measuredValue: measuredValue,

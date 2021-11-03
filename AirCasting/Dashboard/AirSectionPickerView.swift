@@ -23,11 +23,7 @@ struct AirSectionPickerView: View {
                             }
                         }.onChange(of: selection, perform: { section in
                             withAnimation(.easeInOut(duration: 0.2)) {
-                                if section == .following {
-                                    scrollReader.scrollTo(SelectedSection.following)
-                                } else if section == .fixed {
-                                    scrollReader.scrollTo(SelectedSection.fixed)
-                                }
+                                section == .following ? scrollReader.scrollTo(SelectedSection.following) : nil
                             }
                         })
                         .buttonStyle(PickerButtonStyle(isSelected: section == selection))
