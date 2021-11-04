@@ -68,9 +68,8 @@ struct Graph: UIViewRepresentable {
     func updateUIView(_ uiView: AirCastingGraph, context: Context) {
         let thresholdWitness = ThresholdWitness(sensorThreshold: self.thresholds)
         
-        if context.coordinator.currentThreshold != thresholdWitness ||
-            context.coordinator.numberOfMeasurements != stream.allMeasurements?.count {
-            
+        guard context.coordinator.currentThreshold != thresholdWitness ||
+                context.coordinator.numberOfMeasurements != stream.allMeasurements?.count else { return }
             try? uiView.updateWithThreshold(thresholdValues: thresholds.rawThresholdsBinding.wrappedValue)
             let entries = stream.allMeasurements?.compactMap({ measurement -> ChartDataEntry? in
                 let timeInterval = Double(measurement.time.timeIntervalSince1970)
@@ -83,7 +82,6 @@ struct Graph: UIViewRepresentable {
             
             context.coordinator.currentThreshold = ThresholdWitness(sensorThreshold: thresholds)
             context.coordinator.numberOfMeasurements = stream.allMeasurements?.count ?? 0
-        }
     }
     
     private func simplifyGraphline(entries: [ChartDataEntry], uiView: AirCastingGraph) {
