@@ -883,6 +883,7 @@
 				AC6D56A825B0837500D221BA /* SessionViews */,
 				AC6D56A725B0833F00D221BA /* Graph */,
 				AC8D6C6825C049C200ED74D1 /* Map */,
+				DDB448292732EB0800F11340 /* Map&GraphHelpers */,
 				AC8CFF7025E7D94C00FB2918 /* Models */,
 				AC32040625CC122900A68520 /* Utils */,
 				AC7EB37925A6FB3D00A7F2AF /* Assets.xcassets */,
@@ -988,7 +989,6 @@
 				AC8D6C7125C0574800ED74D1 /* LocationTracker.swift */,
 				AC8D6C6D25C056B400ED74D1 /* PathPoint.swift */,
 				AC8D6C6925C049E300ED74D1 /* Environment.swift */,
-				DD8AFE4E272886D700ED1CED /* ThresholdWitness.swift */,
 			);
 			path = Map;
 			sourceTree = "<group>";
@@ -1413,6 +1413,15 @@
 				DD8C38082689A34E00901FDF /* UserDefaultsBaseURLProvider.swift */,
 			);
 			path = URLProviders;
+			sourceTree = "<group>";
+		};
+		DDB448292732EB0800F11340 /* Map&GraphHelpers */ = {
+			isa = PBXGroup;
+			children = (
+				DD8AFE4E272886D700ED1CED /* ThresholdWitness.swift */,
+			);
+			name = "Map&GraphHelpers";
+			path = SessionViews;
 			sourceTree = "<group>";
 		};
 		DDBC992726A1914000B0662E /* ForgotPasswordTests */ = {
