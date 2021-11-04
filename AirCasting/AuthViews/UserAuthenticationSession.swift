@@ -109,7 +109,8 @@ final class DefaultLogoutController: LogoutController {
             }
             return
         }
-        sessionSynchronizer.triggerSynchronization(logout: true, completion: {
+        // For logout we only care about uploading sessions before we remove everything
+        sessionSynchronizer.triggerSynchronization(options: [.upload], completion: {
             DispatchQueue.main.async { self.deleteEverything(); onEnd() }
         })
     }

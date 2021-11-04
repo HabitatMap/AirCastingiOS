@@ -30,8 +30,7 @@ final class SessionSynchronizationController: SessionSynchronizer {
         self.upstream = upstream
         self.store = store
     }
-    
-    func triggerSynchronization(logout: Bool = false, completion: (() -> Void)?) {
+    func triggerSynchronization(options: SessionSynchronizationOptions, completion: (() -> Void)?) {
         lock.lock(); defer { lock.unlock() }
         if syncInProgress.value { return }
         syncInProgress.value = true
@@ -42,7 +41,7 @@ final class SessionSynchronizationController: SessionSynchronizer {
             self.syncInProgress.value = false
         }
         
-        startSynchronization(logout: logout)
+        startSynchronization(options: options)
             .handleEvents(receiveCancel: onFinish)
             .sink(receiveCompletion: { [weak self] result in
                 defer { onFinish() }
@@ -71,7 +70,7 @@ final class SessionSynchronizationController: SessionSynchronizer {
         return .unknown
     }
     
-    private func startSynchronization(logout: Bool) -> AnyPublisher<Void, Error> {
+    private func startSynchronization(options: SessionSynchronizationOptions) -> AnyPublisher<Void, Error> {
         Log.info("[SYNC] Starting synchronization")
         // Let's make ourselves a favor and place that warning here 🔥
         if Thread.isMainThread { Log.warning("[SYNC] Synchronization started on main thread, reconsider") }
@@ -86,25 +85,17 @@ final class SessionSynchronizationController: SessionSynchronizer {
                     .logError(message: "[SYNC] Couldn't retrieve sync context")
             }
             .flatMap { context in
-                self.createPublishers(logout: logout, context: context)
+                Publishers.MergeMany (
+                    // Should this be extracted to separate strategy objects?
+                    //
+                    //                                           I think: no.
+                    options.contains(.download) ? self.processDownloads(context: context) : Empty<Void, Error>().eraseToAnyPublisher(),
+                    options.contains(.upload) ? self.processUploads(context: context) : Empty<Void, Error>().eraseToAnyPublisher(),
+                    options.contains(.remove) ? self.processRemoves(context: context) : Empty<Void, Error>().eraseToAnyPublisher()
+                )
             }
             .eraseToAnyPublisher()
     }
-    
-    private func createPublishers(logout: Bool, context: SessionsSynchronization.SynchronizationContext) -> Publishers.MergeMany<AnyPublisher<(), Error>> {
-            if logout {
-                return Publishers.MergeMany (
-                    self.processUploads(context: context),
-                    self.processRemoves(context: context)
-                )
-            } else {
-                return Publishers.MergeMany (
-                    self.processDownloads(context: context),
-                    self.processUploads(context: context),
-                    self.processRemoves(context: context)
-                )
-            }
-        }
     
     private func getSynchronizationContext(localSessions: [SessionsSynchronization.Metadata]) -> AnyPublisher<SessionsSynchronization.SynchronizationContext, Error> {
         self.synchronizationContextProvider
