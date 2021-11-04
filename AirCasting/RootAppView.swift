@@ -18,6 +18,7 @@ struct RootAppView: View {
     
     @StateObject private var userSettings = UserSettings()
     @StateObject private var userRedirectionSettings = DefaultSettingsRedirection()
+    @StateObject private var userState = UserState()
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     @EnvironmentObject var microphoneManager: MicrophoneManager
     @EnvironmentObject var lifeTimeEventsProvider: LifeTimeEventsProvider
@@ -50,6 +51,7 @@ struct RootAppView: View {
                 })
             }
         }
+        .environmentObject(userState)
         .environmentObject(bluetoothManager)
         .environmentObject(userAuthenticationSession)
         .environmentObject(persistenceController)
@@ -87,9 +89,12 @@ struct MainAppView: View {
     @EnvironmentObject private var urlProvider: UserDefaultsBaseURLProvider
     @EnvironmentObject private var userAuthenticationSession: UserAuthenticationSession
     @EnvironmentObject private var bluetoothManager: BluetoothManager
+    @EnvironmentObject private var user: UserState
+    
+    @State private var isUserLoggingOut: Bool = false
     
     var body: some View {
-        LoadingView(isShowing: .constant(true)) {
+        LoadingView(isShowing: $isUserLoggingOut, activityIndicatorText: Strings.MainTabBarView.loggingOut) {
             MainTabBarView(measurementUpdatingService: downloadService,
                            urlProvider: urlProvider,
                            measurementStreamStorage: measurementStreamStorage,
@@ -97,9 +102,16 @@ struct MainAppView: View {
                            sessionSynchronizer: sessionSynchronizer,
                            sessionContext: CreateSessionContext(),
                            coreDataHook: CoreDataHook(context: persistenceController.viewContext), locationHandler: locationHandler)
+                .onReceive(user.$isLoggingOut, perform: { value in
+                    value ? (isUserLoggingOut = true) : (isUserLoggingOut = false)
+                })
                 .environmentObject(airBeamConnectionController)
         }
     }
+}
+
+class UserState: ObservableObject {
+    @Published var isLoggingOut = false
 }
 
 #if DEBUG

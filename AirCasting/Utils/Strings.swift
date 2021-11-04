@@ -469,6 +469,7 @@ struct Strings {
         static let plusBlueIcon: String = "blueplus"
         static let settingsIcon: String = "settings"
         static let settingsBlueIcon: String = "bluesettings"
+        static let loggingOut: String = "Logging out, please wait..."
     }
     
     enum DashboardView {

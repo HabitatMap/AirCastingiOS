@@ -14,6 +14,7 @@ struct BackendSettingsView: View {
     @State private var portText: String = ""
     @State private var url: URL?
     @State private var alertPresented = false
+    @Binding var isShowingLoadingScreen: Bool
     private var urlWithoutPort: String? {
         let components = URLComponents(url: urlProvider.baseAppURL, resolvingAgainstBaseURL: false)!
         return components.host
@@ -58,7 +59,8 @@ struct BackendSettingsView: View {
             urlProvider.baseAppURL = url ?? URL(string: "http://aircasting.org/api")!
             presentationMode.wrappedValue.dismiss()
             do {
-                try logoutController.logout()
+                isShowingLoadingScreen = true
+                try logoutController.logout(onEnd: { isShowingLoadingScreen = false })
             } catch {
                 alertPresented = true
                 Log.info("Error when logging out - \(error)")

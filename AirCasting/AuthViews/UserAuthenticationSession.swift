@@ -79,7 +79,7 @@ extension UserAuthenticationSession: RequestAuthorisationService {
 }
 
 protocol LogoutController {
-    func logout() throws
+    func logout(onEnd: @escaping () -> Void) throws
 }
 
 final class DefaultLogoutController: LogoutController {
@@ -98,18 +98,19 @@ final class DefaultLogoutController: LogoutController {
         self.sessionSynchronizer = sessionSynchronizer
     }
 
-    func logout() throws {
+    func logout(onEnd: @escaping () -> Void) throws {
         if sessionSynchronizer.syncInProgress.value {
             var subscription: AnyCancellable?
             subscription = sessionSynchronizer.syncInProgress.receive(on: DispatchQueue.main).sink { [weak self] value in
                 guard value == false else { return }
                 self?.deleteEverything()
                 subscription?.cancel()
+                onEnd()
             }
             return
         }
         sessionSynchronizer.triggerSynchronization(completion: {
-            DispatchQueue.main.async { self.deleteEverything() }
+            DispatchQueue.main.async { self.deleteEverything(); onEnd() }
         })
     }
     
@@ -134,7 +135,7 @@ final class DefaultLogoutController: LogoutController {
 
 #if DEBUG
 final class FakeLogoutController: LogoutController {
-    func logout() throws {
+    func logout(onEnd: @escaping () -> Void) throws {
         fatalError("Should not be called. Only for preview")
     }
 }

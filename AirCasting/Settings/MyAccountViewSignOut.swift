@@ -35,7 +35,7 @@ private extension MyAccountViewSignOut {
         Button(action: {
             do {
                 isShowingLoadingScreen = true
-                try logoutController.logout()
+                try logoutController.logout(onEnd: { isShowingLoadingScreen = false })
             } catch {
                 assertionFailure("Failed to deauthorize \(error)")
             }
