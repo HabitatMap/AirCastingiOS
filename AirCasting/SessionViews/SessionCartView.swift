@@ -40,10 +40,10 @@ struct SessionCartView: View {
         self.measurementStreamStorage = measurementStreamStorage
         let mapDataSource = MapStatsDataSource()
         self._mapStatsDataSource = .init(wrappedValue: mapDataSource)
-        self._mapStatsViewModel = .init(wrappedValue: SessionCartView.createStatsContainerViewModel(dataSource: mapDataSource))
+        self._mapStatsViewModel = .init(wrappedValue: SessionCartView.createStatsContainerViewModel(dataSource: mapDataSource, session: session))
         let graphDataSource = GraphStatsDataSource()
         self._graphStatsDataSource = .init(wrappedValue: graphDataSource)
-        self._graphStatsViewModel = .init(wrappedValue: SessionCartView.createStatsContainerViewModel(dataSource: graphDataSource))
+        self._graphStatsViewModel = .init(wrappedValue: SessionCartView.createStatsContainerViewModel(dataSource: graphDataSource, session: session))
         self._chartViewModel = .init(wrappedValue: ChartViewModel(session: session, persistence: PersistenceController.shared))
     }
     
@@ -234,11 +234,20 @@ private extension SessionCartView {
         .buttonStyle(GrayButtonStyle())
     }
     
-    private static func createStatsContainerViewModel(dataSource: MeasurementsStatisticsDataSource) -> StatisticsContainerViewModel {
+    private static func createStatsContainerViewModel(dataSource: MeasurementsStatisticsDataSource, session: SessionEntity) -> StatisticsContainerViewModel {
+        var computeStatisticsInterval: Double? = nil
+        
+        if session.isActive {
+            computeStatisticsInterval = 1
+        } else if session.isFollowed {
+            computeStatisticsInterval = 60
+        }
+        
         let controller = MeasurementsStatisticsController(dataSource: dataSource,
                                                           calculator: StandardStatisticsCalculator(),
                                                           scheduledTimer: ScheduledTimerSetter(),
-                                                          desiredStats: MeasurementStatistics.Statistic.allCases)
+                                                          desiredStats: MeasurementStatistics.Statistic.allCases,
+                                                          computeStatisticsInterval: computeStatisticsInterval)
         let viewModel = StatisticsContainerViewModel(statsInput: controller)
         controller.output = viewModel
         return viewModel
