@@ -123,10 +123,11 @@ extension BluetoothManager: CBCentralManagerDelegate {
     
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
         Log.info("Disconnected: \(String(describing: error?.localizedDescription))")
-        guard let peripheral = connectedPeripheral else { return }
+        guard mobilePeripheralSessionManager.activeSessionInProgressWith(peripheral) else { return }
         connect(to: peripheral)
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(10)) {
-            guard peripheral.state == .connecting else { return }
+            guard peripheral.state != .connected else { return }
+            self.cancelPeripheralConnection(for: peripheral)
             self.connectedPeripheral = nil
             self.mobilePeripheralSessionManager.finishSession(for: peripheral,
                                                                  centralManger: self.centralManager)
