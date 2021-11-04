@@ -9,7 +9,7 @@ protocol SessionSynchronizer {
     var syncInProgress: CurrentValueSubject<Bool, Never> { get }
     /// Triggers a new synchronization pass
     /// - Parameter completion: closure called when sycnhronization finishes
-    func triggerSynchronization(completion: (() -> Void)?)
+    func triggerSynchronization(logout: Bool, completion: (() -> Void)?)
     /// Stops any ongoing synchronization
     func stopSynchronization()
     /// A plugin point for anyone interested in generated errors
@@ -18,7 +18,7 @@ protocol SessionSynchronizer {
 
 extension SessionSynchronizer {
     func triggerSynchronization() {
-        triggerSynchronization(completion: nil)
+        triggerSynchronization(logout: false, completion: nil)
     }
 }
 
@@ -31,7 +31,7 @@ enum SessionsSynchronization { }
 struct DummySessionSynchronizer: SessionSynchronizer {
     var syncInProgress: CurrentValueSubject<Bool, Never> = .init(false)
     var errorStream: SessionSynchronizerErrorStream?
-    func triggerSynchronization(completion: (() -> Void)?) { completion?() }
+    func triggerSynchronization(logout: Bool, completion: (() -> Void)?) { completion?() }
     func stopSynchronization() { }
 }
 #endif
