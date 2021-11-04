@@ -70,6 +70,7 @@ struct Graph: UIViewRepresentable {
         
         guard context.coordinator.currentThreshold != thresholdWitness ||
                 context.coordinator.numberOfMeasurements != stream.allMeasurements?.count else { return }
+        Print("# Updating")
             try? uiView.updateWithThreshold(thresholdValues: thresholds.rawThresholdsBinding.wrappedValue)
             let entries = stream.allMeasurements?.compactMap({ measurement -> ChartDataEntry? in
                 let timeInterval = Double(measurement.time.timeIntervalSince1970)
@@ -89,17 +90,14 @@ struct Graph: UIViewRepresentable {
         let startTime = uiView.lineChartView.lowestVisibleX
         let endTime = uiView.lineChartView.highestVisibleX
         
-        let counter = entries.filter({ $0.x >= startTime && $0.x <= endTime }).count
+        let counter: Int = entries.filter({ $0.x >= startTime && $0.x <= endTime }).count
         
-        if counter > simplifiedGraphEntryThreshold {
-            let simplifiedPoints = SwiftSimplify.simplify(entries,
-                                                          tolerance: 0.000000001,
-                                                          highestQuality: true)
-            uiView.updateWithEntries(entries: simplifiedPoints, isAutozoomEnabled: isAutozoomEnabled)
-            print("Simplified \(entries.count) to \(simplifiedPoints.count)")
-        } else {
-            uiView.updateWithEntries(entries: entries, isAutozoomEnabled: isAutozoomEnabled)
-        }
+        let simplifiedPoints = AirCastingGraphSimplifier.simplify(points: entries,
+                                                             visibleElementsNumber: counter,
+                                                             thresholdLimit: simplifiedGraphEntryThreshold)
+        
+        uiView.updateWithEntries(entries: simplifiedPoints, isAutozoomEnabled: isAutozoomEnabled)
+        print(entries.count != simplifiedPoints.count ? "Simplified \(entries.count) to \(simplifiedPoints.count)" : "Not simplyfing")
     }
     
     func getMidnightsPoints(startingDate: Date, endingDate: Date) -> [Double] {

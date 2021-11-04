@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreBluetooth
+import FirebaseCrashlytics
 
 class BluetoothManager: NSObject, ObservableObject {
     
@@ -110,14 +111,14 @@ extension BluetoothManager: CBCentralManagerDelegate {
         // Here's code for getting data from AB.
         peripheral.delegate = self
         peripheral.discoverServices(nil)
-        if connectedPeripheral == peripheral {
+        if mobilePeripheralSessionManager.activeSessionInProgressWith(peripheral) {
             DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(4)) {
                 self.mobileSessionReconnected = true
             }
         } else {
             connectedPeripheral = peripheral
+            NotificationCenter.default.post(name: .deviceConnected, object: nil, userInfo: [AirCastingNotificationKeys.DeviceConnected.uuid : peripheral.identifier])
         }
-        NotificationCenter.default.post(name: .deviceConnected, object: nil, userInfo: [AirCastingNotificationKeys.DeviceConnected.uuid : peripheral.identifier])
     }
     
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
@@ -144,18 +145,17 @@ extension BluetoothManager: CBPeripheralDelegate {
     }
 
     func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
+        var hasSomeCharacteristics = false
         if let characteristics = service.characteristics {
+            Crashlytics.crashlytics().log("BluetoothManager (didDiscoverCharacteristicsFor) - service characteristics\n \(String(describing: service.characteristics))")
             for characteristic in characteristics {
-                
-                peripheral.readValue(for: characteristic)
-                for char in MEASUREMENTS_CHARACTERISTIC_UUIDS {
-                    if char == characteristic.uuid {
-                        peripheral.setNotifyValue(true, for: characteristic)
-                    }
+                if MEASUREMENTS_CHARACTERISTIC_UUIDS.contains(characteristic.uuid) {
+                    peripheral.setNotifyValue(true, for: characteristic)
+                    hasSomeCharacteristics = true
                 }
             }
         }
-        NotificationCenter.default.post(name: .discoveredCharacteristic, object: nil, userInfo: nil)
+        hasSomeCharacteristics ? NotificationCenter.default.post(name: .discoveredCharacteristic, object: nil, userInfo: nil) : nil
     }
     
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
