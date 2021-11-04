@@ -33,13 +33,13 @@ final class ScheduledSessionSynchronizerProxy<S: Scheduler>: SessionSynchronizer
         self.scheduler = scheduler
     }
     
-    func triggerSynchronization(completion: (() -> Void)?) {
+    func triggerSynchronization(logout: Bool, completion: (() -> Void)?) {
         scheduler.schedule { [weak self] in
             guard let self = self else { return }
             self.backgroundTaskIdentifier = UIApplication.shared.beginBackgroundTask(withName: "Session synchronization") {
                 self.controller.stopSynchronization()
             }
-            self.controller.triggerSynchronization { [ weak self] in
+            self.controller.triggerSynchronization(logout: logout) { [ weak self] in
                 if let identifier  = self?.backgroundTaskIdentifier {
                     UIApplication.shared.endBackgroundTask(identifier)
                 }

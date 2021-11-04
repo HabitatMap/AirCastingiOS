@@ -109,7 +109,7 @@ final class DefaultLogoutController: LogoutController {
             }
             return
         }
-        sessionSynchronizer.triggerSynchronization(completion: {
+        sessionSynchronizer.triggerSynchronization(logout: true, completion: {
             DispatchQueue.main.async { self.deleteEverything(); onEnd() }
         })
     }

@@ -31,7 +31,7 @@ final class SessionSynchronizationController: SessionSynchronizer {
         self.store = store
     }
     
-    func triggerSynchronization(completion: (() -> Void)?) {
+    func triggerSynchronization(logout: Bool = false, completion: (() -> Void)?) {
         lock.lock(); defer { lock.unlock() }
         if syncInProgress.value { return }
         syncInProgress.value = true
@@ -42,7 +42,7 @@ final class SessionSynchronizationController: SessionSynchronizer {
             self.syncInProgress.value = false
         }
         
-        startSynchronization()
+        startSynchronization(logout: logout)
             .handleEvents(receiveCancel: onFinish)
             .sink(receiveCompletion: { [weak self] result in
                 defer { onFinish() }
@@ -71,7 +71,7 @@ final class SessionSynchronizationController: SessionSynchronizer {
         return .unknown
     }
     
-    private func startSynchronization() -> AnyPublisher<Void, Error> {
+    private func startSynchronization(logout: Bool) -> AnyPublisher<Void, Error> {
         Log.info("[SYNC] Starting synchronization")
         // Let's make ourselves a favor and place that warning here 🔥
         if Thread.isMainThread { Log.warning("[SYNC] Synchronization started on main thread, reconsider") }
@@ -86,16 +86,24 @@ final class SessionSynchronizationController: SessionSynchronizer {
                     .logError(message: "[SYNC] Couldn't retrieve sync context")
             }
             .flatMap { context in
-                Publishers.MergeMany (
-                    // Should this be extracted to separate strategy objects?
-                    //
-                    //                                           I think: no.
-                    self.processDownloads(context: context),
-                    self.processUploads(context: context),
-                    self.processRemoves(context: context)
-                )
+                self.createPublishers(logout: logout, context: context)
             }
             .eraseToAnyPublisher()
+    }
+    
+    private func createPublishers(logout: Bool, context: SessionsSynchronization.SynchronizationContext) -> Publishers.MergeMany<AnyPublisher<(), Error>> {
+        if logout {
+            return Publishers.MergeMany (
+                self.processUploads(context: context),
+                self.processRemoves(context: context)
+            )
+        } else {
+            return Publishers.MergeMany (
+                self.processDownloads(context: context),
+                self.processUploads(context: context),
+                self.processRemoves(context: context)
+            )
+        }
     }
     
     private func getSynchronizationContext(localSessions: [SessionsSynchronization.Metadata]) -> AnyPublisher<SessionsSynchronization.SynchronizationContext, Error> {
@@ -109,11 +117,11 @@ final class SessionSynchronizationController: SessionSynchronizer {
     
     private func processDownloads(context: SessionsSynchronization.SynchronizationContext) -> AnyPublisher<Void, Error> {
         context.needToBeDownloaded
-            .publisher
-            .flatMap(self.downloadSingleSession(uuid:))
-            .collect()
-            .flatMap(self.saveSessions(downloadedSessions:))
-            .eraseToAnyPublisher()
+                .publisher
+                .flatMap(self.downloadSingleSession(uuid:))
+                .collect()
+                .flatMap(self.saveSessions(downloadedSessions:))
+                .eraseToAnyPublisher()
     }
     
     private func downloadSingleSession(uuid: SessionUUID) -> AnyPublisher<SessionsSynchronization.SessionDownstreamData, Error> {
