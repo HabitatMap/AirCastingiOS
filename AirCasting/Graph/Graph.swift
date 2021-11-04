@@ -73,12 +73,16 @@ struct Graph: UIViewRepresentable {
         
         let counter: Int = entries.filter({ $0.x >= startTime && $0.x <= endTime }).count
         
-        let simplifiedPoints = AirCastingGraphSimplifier.simplify(points: entries,
-                                                             visibleElementsNumber: counter,
-                                                             thresholdLimit: simplifiedGraphEntryThreshold)
-        
-        uiView.updateWithEntries(entries: simplifiedPoints, isAutozoomEnabled: isAutozoomEnabled)
-        print(entries.count != simplifiedPoints.count ? "Simplified \(entries.count) to \(simplifiedPoints.count)" : "Not simplyfing")
+        if counter > simplifiedGraphEntryThreshold {
+            let simplifiedPoints = AirCastingGraphSimplifier.simplify(points: entries,
+                                                                      visibleElementsNumber: counter,
+                                                                      thresholdLimit: simplifiedGraphEntryThreshold)
+            uiView.updateWithEntries(entries: simplifiedPoints, isAutozoomEnabled: isAutozoomEnabled)
+            print("Simplified \(entries.count) to \(simplifiedPoints.count)")
+        } else {
+            uiView.updateWithEntries(entries: entries, isAutozoomEnabled: isAutozoomEnabled)
+            print("Not simplyfing")
+        }
     }
     
     func getMidnightsPoints(startingDate: Date, endingDate: Date) -> [Double] {

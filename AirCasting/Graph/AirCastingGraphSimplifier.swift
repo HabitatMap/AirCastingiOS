@@ -2,16 +2,15 @@
 //
 
 import Foundation
-import SwiftSimplify
 import Charts
 
 final class AirCastingGraphSimplifier {
     
-    static func simplify<P: Point2DRepresentable>(points: [P], visibleElementsNumber: Int, thresholdLimit: Int) -> [P] {
+    static func simplify(points: [ChartDataEntry], visibleElementsNumber: Int, thresholdLimit: Int) -> [ChartDataEntry] {
         let fillFactor = (1 * Double(thresholdLimit) / Double((visibleElementsNumber) + 1))
         var filled = 0.0
-        var returnedPoints = [P]()
-        var temporaryPoints = [P]()
+        var returnedPoints = [ChartDataEntry]()
+        var temporaryPoints = [ChartDataEntry]()
         
         if fillFactor >= 1 {
             return points
@@ -30,13 +29,13 @@ final class AirCastingGraphSimplifier {
         }
     }
     
-    static func avaragePoints<P: Point2DRepresentable>(using temporaryPoints: [P]) -> P {
+    static func avaragePoints(using temporaryPoints: [ChartDataEntry]) -> ChartDataEntry {
         
-        let sumOfPoints = Float(temporaryPoints.count)
+        let sumOfPoints = Double(temporaryPoints.count)
         
-        let XPoints = temporaryPoints.map( {$0.xValue} ).reduce(0, +)
-        let YPoints = temporaryPoints.map( {$0.yValue} ).reduce(0, +)
+        let XPoints = temporaryPoints.map( {$0.x} ).reduce(0, +)
+        let YPoints = temporaryPoints.map( {$0.y} ).reduce(0, +)
         
-        return ChartDataEntry(x: Double(XPoints/sumOfPoints), y: Double(YPoints/sumOfPoints)) as! P
+        return ChartDataEntry(x: Double(XPoints/sumOfPoints), y: Double(YPoints/sumOfPoints))
     }
 }
