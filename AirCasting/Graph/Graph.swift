@@ -62,24 +62,27 @@ struct Graph: UIViewRepresentable {
         simplifyGraphline(entries: entries, uiView: uiView)
         context.coordinator.numberOfMeasurements = stream.allMeasurements?.count ?? 0
         context.coordinator.currentThreshold = ThresholdWitness(sensorThreshold: thresholds)
+        context.coordinator.currentPointNumber = calculateSeeingPointsNumber(entries: entries, uiView: uiView)
+        context.coordinator.entries = entries
         return uiView
     }
     
     func updateUIView(_ uiView: AirCastingGraph, context: Context) {
         let thresholdWitness = ThresholdWitness(sensorThreshold: self.thresholds)
         
+        let counter: Int = calculateSeeingPointsNumber(entries: context.coordinator.entries!, uiView: uiView)
+        
+        if counter != context.coordinator.currentPointNumber {
+            simplifyGraphline(entries: context.coordinator.entries!, uiView: uiView)
+            context.coordinator.currentPointNumber = counter
+        }
+        
         guard context.coordinator.currentThreshold != thresholdWitness ||
                 context.coordinator.numberOfMeasurements != stream.allMeasurements?.count else { return }
-        Print("# Updating")
+        
             try? uiView.updateWithThreshold(thresholdValues: thresholds.rawThresholdsBinding.wrappedValue)
-            let entries = stream.allMeasurements?.compactMap({ measurement -> ChartDataEntry? in
-                let timeInterval = Double(measurement.time.timeIntervalSince1970)
-                let chartDataEntry = ChartDataEntry(x: timeInterval, y: measurement.value)
-                return chartDataEntry
-            }) ?? []
             let allLimitLines = getLimitLines()
             uiView.limitLines = allLimitLines
-            simplifyGraphline(entries: entries, uiView: uiView)
             
             context.coordinator.currentThreshold = ThresholdWitness(sensorThreshold: thresholds)
             context.coordinator.numberOfMeasurements = stream.allMeasurements?.count ?? 0
@@ -87,21 +90,26 @@ struct Graph: UIViewRepresentable {
     
     private func simplifyGraphline(entries: [ChartDataEntry], uiView: AirCastingGraph) {
         
+        let counter: Int = calculateSeeingPointsNumber(entries: entries, uiView: uiView)
+        
+        guard counter > simplifiedGraphEntryThreshold else {
+            uiView.updateWithEntries(entries: entries, isAutozoomEnabled: isAutozoomEnabled)
+            print("Not Simplified")
+            return
+        }
+        let simplifiedPoints = AirCastingGraphSimplifier.simplify(points: entries,
+                                                                  visibleElementsNumber: counter,
+                                                                  thresholdLimit: simplifiedGraphEntryThreshold)
+        uiView.updateWithEntries(entries: simplifiedPoints, isAutozoomEnabled: isAutozoomEnabled)
+        print("Simplified \(entries.count) to \(simplifiedPoints.count)")
+    }
+    
+    func calculateSeeingPointsNumber(entries: [ChartDataEntry], uiView: AirCastingGraph) -> Int {
         let startTime = uiView.lineChartView.lowestVisibleX
         let endTime = uiView.lineChartView.highestVisibleX
         
         let counter: Int = entries.filter({ $0.x >= startTime && $0.x <= endTime }).count
-        
-        if counter > simplifiedGraphEntryThreshold {
-            let simplifiedPoints = AirCastingGraphSimplifier.simplify(points: entries,
-                                                                      visibleElementsNumber: counter,
-                                                                      thresholdLimit: simplifiedGraphEntryThreshold)
-            uiView.updateWithEntries(entries: simplifiedPoints, isAutozoomEnabled: isAutozoomEnabled)
-            print("Simplified \(entries.count) to \(simplifiedPoints.count)")
-        } else {
-            uiView.updateWithEntries(entries: entries, isAutozoomEnabled: isAutozoomEnabled)
-            print("Not simplyfing")
-        }
+        return counter
     }
     
     func getMidnightsPoints(startingDate: Date, endingDate: Date) -> [Double] {
@@ -148,6 +156,8 @@ struct Graph: UIViewRepresentable {
         var parent: Graph!
         var numberOfMeasurements: Int?
         var currentThreshold: ThresholdWitness?
+        var currentPointNumber: Int?
+        var entries: [ChartDataEntry]?
         
         init(_ parent: Graph) {
             self.parent = parent
