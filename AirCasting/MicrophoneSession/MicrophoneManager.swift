@@ -6,6 +6,7 @@ import Foundation
 import AVFoundation
 import CoreAudio
 import CoreLocation
+import UIKit
 
 final class MicrophoneManager: NSObject, ObservableObject {
     static private let recordSettings: [String: Any] = [
@@ -19,33 +20,37 @@ final class MicrophoneManager: NSObject, ObservableObject {
     private var measurementStreamLocalID: MeasurementStreamLocalID?
 
     //This variable is used to block recording more than one microphone session at a time
-    private(set) var isRecording = false
-    private var recorder: AVAudioRecorder!
+    private(set) var isRecording = false {
+        didSet { isRecording ? interruptionHandler.resume() : interruptionHandler.pause() }
+    }
+    private var recorder: AVAudioRecorder?
     private lazy var audioSession = AVAudioSession.sharedInstance()
     private var levelTimer: Timer?
     private(set) var session: Session?
     private lazy var locationProvider = LocationProvider()
+    private var interruptionHandler: AVSessionInterruptionHandler!
 
     init(measurementStreamStorage: MeasurementStreamStorage) {
         self.measurementStreamStorage = measurementStreamStorage
         super.init()
+        self.interruptionHandler = .init(observer: self, audioSession: audioSession)
+        do {
+            try recorder = AVAudioRecorder(url: URL(fileURLWithPath: "/dev/null", isDirectory: true), settings: MicrophoneManager.recordSettings)
+        } catch {
+            Log.error("Could not create AVAudioRecorder: \(error.localizedDescription)")
+        }
     }
 
     func startRecording(session: Session) throws {
-        if isRecording {
-            return
-        }
+        guard !isRecording, let recorder = recorder else { return }
         
         if audioSession.recordPermission != .granted {
             throw MicrophoneSessionError.permissionNotGranted
         }
         self.session = session
-
-        try audioSession.setCategory(AVAudioSession.Category.playAndRecord)
+        try setupAudioSession()
         try audioSession.setActive(true)
-        try recorder = AVAudioRecorder(url: URL(fileURLWithPath: "/dev/null", isDirectory: true), settings: MicrophoneManager.recordSettings)
         recorder.isMeteringEnabled = true
-        recorder.delegate = self
         
         createMeasurementStream(for: session) { result in
             switch result {
@@ -57,17 +62,18 @@ final class MicrophoneManager: NSObject, ObservableObject {
         }
         locationProvider.requestLocation()
         isRecording = true
-        recorder.record()
-        sampleMeasurement()
-        levelTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(timerTick), userInfo: nil, repeats: true)
+        if recorder.record() {
+            levelTimer = createTimer()
+            sampleMeasurement()
+        }
     }
     
-    func stopRecording() throws {
+    func stopRecording() {
+        guard isRecording, let recorder = recorder else { return }
         levelTimer?.invalidate()
         locationProvider.stopUpdatingLocation()
         isRecording = false
-        recorder.stop()
-        recorder = nil
+        recorder.pause()
     }
 
     deinit {
@@ -81,34 +87,67 @@ final class MicrophoneManager: NSObject, ObservableObject {
     func requestRecordPermission(_ response: @escaping (Bool) -> Void) {
         audioSession.requestRecordPermission(response)
     }
+    
+    private func setupAudioSession() throws {
+        UIApplication.shared.beginReceivingRemoteControlEvents()
+        try audioSession.setCategory(AVAudioSession.Category.playAndRecord, options: [.duckOthers])
+    }
+    
+    private func createTimer() -> Timer {
+        Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(timerTick), userInfo: nil, repeats: true)
+    }
 }
 
-extension MicrophoneManager: AVAudioRecorderDelegate {
-    func audioRecorderBeginInterruption(_ recorder: AVAudioRecorder) {
-        Log.warning("audio recorder interruption began")
+extension MicrophoneManager: AVSessionInterruptionObserver {
+    func onAVSessionInteruptionStart() {
+        Log.info("audio recorder interruption began")
+        do {
+            try pauseForRecordingInterruption()
+        } catch {
+            Log.error("Failed to pause audio session: \(error.localizedDescription)")
+            // TODO: Decide on how to handle this situation
+        }
+    }
+    
+    func onAVSessionInteruptionEnd(shouldResume: Bool) {
+        Log.info("audio recorder interruption ended (should resume? \(shouldResume ? "yes." : "no.")")
+        guard shouldResume == true, let recorder = recorder else { return }
+        do {
+            try resumeInterruptedRecording(audioRecorder: recorder)
+        } catch {
+            Log.error("Failed to resume audio session: \(error.localizedDescription)")
+            // TODO: Decide on how to handle this situation
+        }
+    }
+    
+    private func pauseForRecordingInterruption() throws {
         levelTimer?.invalidate()
+        recorder?.pause()
+        try audioSession.setActive(false, options: [])
+        disconnectCurrentSession()
+    }
+    
+    private func resumeInterruptedRecording(audioRecorder: AVAudioRecorder) throws {
+        try audioSession.setActive(true, options: [])
+        guard audioRecorder.record() else { Log.warning("recording failed to resume!"); return }
+        Log.info("recording resumed.")
+        levelTimer = createTimer()
+    }
+    
+    private func disconnectCurrentSession() {
         measurementStreamStorage.accessStorage { storage in
             do {
-                try! storage.updateSessionStatus(.DISCONNECTED, for: self.session!.uuid)
+                try storage.updateSessionStatus(.DISCONNECTED, for: self.session!.uuid)
+            } catch {
+                Log.error("Couldn't disconnect session! \(error.localizedDescription)")
             }
         }
-    }
-
-    func audioRecorderEndInterruption(_ recorder: AVAudioRecorder, withOptions flags: Int) {
-        Log.info("audio recorder end interruption")
-        if !recorder.isRecording {
-            recorder.record()
-        }
-        self.levelTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.timerTick), userInfo: nil, repeats: true)
-    }
-
-    func audioRecorderEncodeErrorDidOccur(_ recorder: AVAudioRecorder, error: Error?) {
-        assertionFailure("audio recorder encode error did occur \(String(describing: error))")
     }
 }
 
 private extension MicrophoneManager {
     func sampleMeasurement() {
+        guard let recorder = recorder else { return }
         recorder.updateMeters()
         let power = recorder.averagePower(forChannel: 0)
         var decibels = Double(power + 90.0)
