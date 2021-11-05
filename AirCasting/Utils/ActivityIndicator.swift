@@ -19,6 +19,7 @@ struct ActivityIndicator: UIViewRepresentable {
 
 struct LoadingView<Content>: View where Content: View {
     @Binding var isShowing: Bool
+    var activityIndicatorText: String?
     var content: () -> Content
 
     var body: some View {
@@ -28,12 +29,14 @@ struct LoadingView<Content>: View where Content: View {
                     .disabled(self.isShowing)
                     .blur(radius: self.isShowing ? 3 : 0)
                 if isShowing {
+                    VStack(spacing: 5) {
                     ActivityIndicator(isAnimating: $isShowing, style: .medium)
-                        .frame(width: 80, height: 80)
-                        .foregroundColor(Color.red)
                         .cornerRadius(20)
-                        .accentColor(.red)
-                        .opacity(self.isShowing ? 1 : 0)
+                        .opacity(1)
+                        Text(activityIndicatorText ?? "")
+                            .foregroundColor(.aircastingGray)
+                            .multilineTextAlignment(.leading)
+                    }
                 }
             }
         }

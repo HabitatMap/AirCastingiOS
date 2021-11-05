@@ -18,6 +18,7 @@ struct RootAppView: View {
     
     @StateObject private var userSettings = UserSettings()
     @StateObject private var userRedirectionSettings = DefaultSettingsRedirection()
+    @StateObject private var userState = UserState()
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     @EnvironmentObject var microphoneManager: MicrophoneManager
     @EnvironmentObject var lifeTimeEventsProvider: LifeTimeEventsProvider
@@ -50,6 +51,7 @@ struct RootAppView: View {
                 })
             }
         }
+        .environmentObject(userState)
         .environmentObject(bluetoothManager)
         .environmentObject(userAuthenticationSession)
         .environmentObject(persistenceController)
@@ -87,16 +89,19 @@ struct MainAppView: View {
     @EnvironmentObject private var urlProvider: UserDefaultsBaseURLProvider
     @EnvironmentObject private var userAuthenticationSession: UserAuthenticationSession
     @EnvironmentObject private var bluetoothManager: BluetoothManager
+    @EnvironmentObject private var user: UserState
     
     var body: some View {
-        MainTabBarView(measurementUpdatingService: downloadService,
-                       urlProvider: urlProvider,
-                       measurementStreamStorage: measurementStreamStorage,
-                       sessionStoppableFactory: sessionStoppableFactory,
-                       sessionSynchronizer: sessionSynchronizer,
-                       sessionContext: CreateSessionContext(),
-                       coreDataHook: CoreDataHook(context: persistenceController.viewContext), locationHandler: locationHandler)
-            .environmentObject(airBeamConnectionController)
+        LoadingView(isShowing: $user.isLoggingOut, activityIndicatorText: Strings.MainTabBarView.loggingOut) {
+            MainTabBarView(measurementUpdatingService: downloadService,
+                           urlProvider: urlProvider,
+                           measurementStreamStorage: measurementStreamStorage,
+                           sessionStoppableFactory: sessionStoppableFactory,
+                           sessionSynchronizer: sessionSynchronizer,
+                           sessionContext: CreateSessionContext(),
+                           coreDataHook: CoreDataHook(context: persistenceController.viewContext), locationHandler: locationHandler)
+                .environmentObject(airBeamConnectionController)
+        }
     }
 }
 
