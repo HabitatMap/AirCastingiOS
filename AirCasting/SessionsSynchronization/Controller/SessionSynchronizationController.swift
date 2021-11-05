@@ -15,10 +15,7 @@ final class SessionSynchronizationController: SessionSynchronizer {
     private let upstream: SessionUpstream
     private let store: SessionSynchronizationStore
     private let dataConverter = SynchronizationDataConverter()
-    private(set) lazy var syncInProgress: AnyPublisher<Bool, Never> = $_syncInProgress.eraseToAnyPublisher()
-    // Progress tracking for filtering requests while already syncing
-    // (can this be somehow moved to a custom operator or something?)
-    @Published private var _syncInProgress: Bool = false
+    private(set) lazy var syncInProgress: CurrentValueSubject<Bool, Never> = .init(false)
     // Simple lock is sufficient here, no need for GCD
     private let lock = NSRecursiveLock()
     
@@ -33,19 +30,18 @@ final class SessionSynchronizationController: SessionSynchronizer {
         self.upstream = upstream
         self.store = store
     }
-    
-    func triggerSynchronization(completion: (() -> Void)?) {
+    func triggerSynchronization(options: SessionSynchronizationOptions, completion: (() -> Void)?) {
         lock.lock(); defer { lock.unlock() }
-        if _syncInProgress { return }
-        _syncInProgress = true
+        if syncInProgress.value { return }
+        syncInProgress.value = true
         
         let onFinish = {
             Log.info("[SYNC] Ending synchronization")
             completion?()
-            self._syncInProgress = false
+            self.syncInProgress.value = false
         }
         
-        startSynchronization()
+        startSynchronization(options: options)
             .handleEvents(receiveCancel: onFinish)
             .sink(receiveCompletion: { [weak self] result in
                 defer { onFinish() }
@@ -74,7 +70,7 @@ final class SessionSynchronizationController: SessionSynchronizer {
         return .unknown
     }
     
-    private func startSynchronization() -> AnyPublisher<Void, Error> {
+    private func startSynchronization(options: SessionSynchronizationOptions) -> AnyPublisher<Void, Error> {
         Log.info("[SYNC] Starting synchronization")
         // Let's make ourselves a favor and place that warning here 🔥
         if Thread.isMainThread { Log.warning("[SYNC] Synchronization started on main thread, reconsider") }
@@ -93,9 +89,9 @@ final class SessionSynchronizationController: SessionSynchronizer {
                     // Should this be extracted to separate strategy objects?
                     //
                     //                                           I think: no.
-                    self.processDownloads(context: context),
-                    self.processUploads(context: context),
-                    self.processRemoves(context: context)
+                    options.contains(.download) ? self.processDownloads(context: context) : Empty<Void, Error>().eraseToAnyPublisher(),
+                    options.contains(.upload) ? self.processUploads(context: context) : Empty<Void, Error>().eraseToAnyPublisher(),
+                    options.contains(.remove) ? self.processRemoves(context: context) : Empty<Void, Error>().eraseToAnyPublisher()
                 )
             }
             .eraseToAnyPublisher()

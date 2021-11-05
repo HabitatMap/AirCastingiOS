@@ -2,6 +2,7 @@
 //
 
 import Foundation
+import Combine
 
 struct User: Hashable {
     let id: Int
@@ -78,7 +79,7 @@ extension UserAuthenticationSession: RequestAuthorisationService {
 }
 
 protocol LogoutController {
-    func logout() throws
+    func logout(onEnd: @escaping () -> Void) throws
 }
 
 final class DefaultLogoutController: LogoutController {
@@ -97,10 +98,24 @@ final class DefaultLogoutController: LogoutController {
         self.sessionSynchronizer = sessionSynchronizer
     }
 
-    func logout() throws {
-        Log.info("[LOGOUT] Stopping any ongoing sync process")
-        sessionSynchronizer.stopSynchronization()
-
+    func logout(onEnd: @escaping () -> Void) throws {
+        if sessionSynchronizer.syncInProgress.value {
+            var subscription: AnyCancellable?
+            subscription = sessionSynchronizer.syncInProgress.receive(on: DispatchQueue.main).sink { [weak self] value in
+                guard value == false else { return }
+                self?.deleteEverything()
+                subscription?.cancel()
+                onEnd()
+            }
+            return
+        }
+        // For logout we only care about uploading sessions before we remove everything
+        sessionSynchronizer.triggerSynchronization(options: [.upload], completion: {
+            DispatchQueue.main.async { self.deleteEverything(); onEnd() }
+        })
+    }
+    
+    func deleteEverything() {
         Log.info("[LOGOUT] Cancelling all pending requests")
         URLSession.shared.getAllTasks { tasks in
             tasks.forEach { $0.cancel() }
@@ -110,18 +125,18 @@ final class DefaultLogoutController: LogoutController {
             try? microphoneManager.stopRecording()
         }
         Log.info("[LOGOUT] Clearing user credentials")
-        try userAuthenticationSession.deauthorize()
         do {
+            try userAuthenticationSession.deauthorize()
             try sessionStorage.clearAllSessionSilently()
         } catch {
-            assertionFailure("[LOGOUT] Failed to clear sessions \(error)")
+            assertionFailure("[LOGOUT] Failed to log out \(error)")
         }
     }
 }
 
 #if DEBUG
 final class FakeLogoutController: LogoutController {
-    func logout() throws {
+    func logout(onEnd: @escaping () -> Void) throws {
         fatalError("Should not be called. Only for preview")
     }
 }

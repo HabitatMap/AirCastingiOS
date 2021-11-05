@@ -100,7 +100,8 @@ struct SettingsView: View {
                 }
             }
         }.sheet(isPresented: $showModal, content: {
-            BackendSettingsView(logoutController: logoutController, urlProvider: urlProvider)
+            BackendSettingsView(logoutController: logoutController,
+                                urlProvider: urlProvider)
         })
     }
 }
@@ -108,7 +109,8 @@ struct SettingsView: View {
 #if DEBUG
 struct LogoutView_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsView(urlProvider: DummyURLProvider(), logoutController: FakeLogoutController())
+        SettingsView(urlProvider: DummyURLProvider(),
+                     logoutController: FakeLogoutController())
     }
 }
 #endif
