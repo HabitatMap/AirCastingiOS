@@ -8,7 +8,7 @@ struct MyAccountViewSignOut: View {
     let logoutController: LogoutController
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     @EnvironmentObject var persistenceController: PersistenceController
-    @Binding var isShowingLoadingScreen: Bool
+    @EnvironmentObject private var userState: UserState
     
     var body: some View {
         ZStack {
@@ -34,8 +34,8 @@ private extension MyAccountViewSignOut {
     var signOutButton: some View {
         Button(action: {
             do {
-                isShowingLoadingScreen = true
-                try logoutController.logout(onEnd: { isShowingLoadingScreen = false })
+                userState.isLoggingOut = true
+                try logoutController.logout { userState.isLoggingOut = false }
             } catch {
                 assertionFailure("Failed to deauthorize \(error)")
             }
@@ -56,8 +56,7 @@ private extension MyAccountViewSignOut {
 #if DEBUG
 struct MyAccountViewSingOut_Previews: PreviewProvider {
     static var previews: some View {
-        MyAccountViewSignOut(logoutController: FakeLogoutController(),
-                             isShowingLoadingScreen: .constant(false))
+        MyAccountViewSignOut(logoutController: FakeLogoutController())
     }
 }
 #endif

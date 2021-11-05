@@ -12,9 +12,7 @@ struct SettingsView: View {
     let urlProvider: BaseURLProvider
     let logoutController: LogoutController
     @State private var showModal = false
-    @State private var isShowingLoadingScreen = false
     @EnvironmentObject var userSettings: UserSettings
-    @EnvironmentObject private var userState: UserState
     
     init(urlProvider: BaseURLProvider, logoutController: LogoutController) {
         let navBarAppearance = UINavigationBar.appearance()
@@ -33,8 +31,6 @@ struct SettingsView: View {
             }
             .listStyle(GroupedListStyle())
             .navigationBarTitle(Strings.Settings.title)
-        }.onChange(of: isShowingLoadingScreen) { value in
-            value ? (userState.isLoggingOut = true) : (userState.isLoggingOut = false)
         }
     }
     
@@ -66,8 +62,7 @@ struct SettingsView: View {
     }
     
     private var signOutLink: some View {
-        NavigationLink(destination: MyAccountViewSignOut(logoutController: logoutController,
-                                                         isShowingLoadingScreen: $isShowingLoadingScreen)) {
+        NavigationLink(destination: MyAccountViewSignOut(logoutController: logoutController)) {
             Text(Strings.Settings.myAccount)
                 .font(Fonts.boldHeading1)
         }
@@ -106,8 +101,7 @@ struct SettingsView: View {
             }
         }.sheet(isPresented: $showModal, content: {
             BackendSettingsView(logoutController: logoutController,
-                                urlProvider: urlProvider,
-                                isShowingLoadingScreen: $isShowingLoadingScreen)
+                                urlProvider: urlProvider)
         })
     }
 }

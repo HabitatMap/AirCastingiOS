@@ -242,6 +242,7 @@
 		DD55C38E26BAA7330069838F /* LocationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD55C38D26BAA7330069838F /* LocationHandler.swift */; };
 		DD55C39026BAA73F0069838F /* BluetoothHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD55C38F26BAA73F0069838F /* BluetoothHandler.swift */; };
 		DD5687C326CFC8080028C2CA /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD5687C226CFC8080028C2CA /* Constants.swift */; };
+		DD5930E1273528860043C2A2 /* UserState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD5930E0273528860043C2A2 /* UserState.swift */; };
 		DD700CF22695CE9C0048A17D /* MailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD700CF12695CE9C0048A17D /* MailView.swift */; };
 		DD72DC4226A99D5000325FE5 /* ShareView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD72DC4126A99D5000325FE5 /* ShareView.swift */; };
 		DD839E15269F33A6006A8625 /* LocationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD839E14269F33A6006A8625 /* LocationState.swift */; };
@@ -536,6 +537,7 @@
 		DD55C38D26BAA7330069838F /* LocationHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationHandler.swift; sourceTree = "<group>"; };
 		DD55C38F26BAA73F0069838F /* BluetoothHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothHandler.swift; sourceTree = "<group>"; };
 		DD5687C226CFC8080028C2CA /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		DD5930E0273528860043C2A2 /* UserState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserState.swift; sourceTree = "<group>"; };
 		DD700CF12695CE9C0048A17D /* MailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailView.swift; sourceTree = "<group>"; };
 		DD72DC4126A99D5000325FE5 /* ShareView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareView.swift; sourceTree = "<group>"; };
 		DD839E14269F33A6006A8625 /* LocationState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationState.swift; sourceTree = "<group>"; };
@@ -755,6 +757,7 @@
 				DDC5F589271979F100F1F9D8 /* Fonts.swift */,
 				DDC5F5872719694800F1F9D8 /* ShadowImages.swift */,
 				B3ED03C22729A8E300513522 /* AirCastingNotifications.swift */,
+				DD5930E0273528860043C2A2 /* UserState.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1923,6 +1926,7 @@
 				DD9EBB4E26AFDD2100D51804 /* TurnOnLocationView.swift in Sources */,
 				B3EFAB1726EFE2DB00E88141 /* FirstRunInfoProvidable.swift in Sources */,
 				332F521425FA38430047236D /* MicrophoneManager.swift in Sources */,
+				DD5930E1273528860043C2A2 /* UserState.swift in Sources */,
 				AC8CFF4125E5095600FB2918 /* Textfield.swift in Sources */,
 				B3FD77C3267C94AF00E97CC2 /* SessionDownloadService.swift in Sources */,
 				AC7EB37625A6FB3A00A7F2AF /* AirCastingApp.swift in Sources */,

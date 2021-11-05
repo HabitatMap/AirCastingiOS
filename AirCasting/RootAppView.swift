@@ -94,7 +94,7 @@ struct MainAppView: View {
     @State private var isUserLoggingOut: Bool = false
     
     var body: some View {
-        LoadingView(isShowing: $isUserLoggingOut, activityIndicatorText: Strings.MainTabBarView.loggingOut) {
+        LoadingView(isShowing: $user.isLoggingOut, activityIndicatorText: Strings.MainTabBarView.loggingOut) {
             MainTabBarView(measurementUpdatingService: downloadService,
                            urlProvider: urlProvider,
                            measurementStreamStorage: measurementStreamStorage,
@@ -102,16 +102,9 @@ struct MainAppView: View {
                            sessionSynchronizer: sessionSynchronizer,
                            sessionContext: CreateSessionContext(),
                            coreDataHook: CoreDataHook(context: persistenceController.viewContext), locationHandler: locationHandler)
-                .onReceive(user.$isLoggingOut, perform: { value in
-                    value ? (isUserLoggingOut = true) : (isUserLoggingOut = false)
-                })
                 .environmentObject(airBeamConnectionController)
         }
     }
-}
-
-class UserState: ObservableObject {
-    @Published var isLoggingOut = false
 }
 
 #if DEBUG
