@@ -91,8 +91,6 @@ struct MainAppView: View {
     @EnvironmentObject private var bluetoothManager: BluetoothManager
     @EnvironmentObject private var user: UserState
     
-    @State private var isUserLoggingOut: Bool = false
-    
     var body: some View {
         LoadingView(isShowing: $user.isLoggingOut, activityIndicatorText: Strings.MainTabBarView.loggingOut) {
             MainTabBarView(measurementUpdatingService: downloadService,
