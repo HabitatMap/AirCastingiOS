@@ -68,8 +68,11 @@ struct Graph: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: AirCastingGraph, context: Context) {
+        // This code helps us to make graph faster and snappier
+        // The -if- statement is executed on dormant and active sessions to ensure it updates graph line well
+        // The -guard- code is executed only on active sessions and on data change events
+        // (⊙_◎)
         let thresholdWitness = ThresholdWitness(sensorThreshold: self.thresholds)
-        
         let counter: Int = calculateSeeingPointsNumber(entries: context.coordinator.entries!, uiView: uiView)
         
         if counter != context.coordinator.currentMeasurementsNumber {
@@ -90,10 +93,10 @@ struct Graph: UIViewRepresentable {
             return chartDataEntry
         }) ?? []
         
-        simplifyGraphline(entries: context.coordinator.entries!, uiView: uiView)
         context.coordinator.entries = entries
         context.coordinator.currentThreshold = ThresholdWitness(sensorThreshold: thresholds)
-        context.coordinator.totalNumberOfMeasurements = stream.allMeasurements?.count ?? 0
+        context.coordinator.totalNumberOfMeasurements = entries.count
+        context.coordinator.currentMeasurementsNumber = entries.count
     }
     
     private func simplifyGraphline(entries: [ChartDataEntry], uiView: AirCastingGraph) {
