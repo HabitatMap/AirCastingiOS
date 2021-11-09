@@ -45,11 +45,11 @@ struct AirBeam3Configurator {
     // service id
     private let SERVICE_UUID = CBUUID(string:"0000ffdd-0000-1000-8000-00805f9b34fb")
     
-    func configureMobileSession(date: Date, location: CLLocationCoordinate2D) {
-        let dateString = dateFormatter.string(from: date)
+    func configureMobileSession(location: CLLocationCoordinate2D) {
         sendLocationConfiguration(location: location)
 
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
+            let dateString = dateFormatter.string(from: Date().currentUTCTimeZoneDate)
             sendCurrentTimeConfiguration(date: dateString)
             DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
                 sendMobileModeRequest()
