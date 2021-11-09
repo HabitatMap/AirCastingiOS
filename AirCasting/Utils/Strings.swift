@@ -13,6 +13,7 @@ struct Strings {
         static let settingsHelp: String = "Help"
         static let hardwareDevelopers: String = "Hardware developers"
         static let about: String = "About AirCasting"
+        static let keepScreenTitle = "Keep screen on"
     }
     
     enum BackendSettings {
