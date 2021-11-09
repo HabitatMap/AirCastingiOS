@@ -14,7 +14,7 @@ struct GoogleMapView: UIViewRepresentable {
     @EnvironmentObject var tracker: LocationTracker
     @Binding var placePickerDismissed: Bool
     @Binding var isUserInteracting: Bool
-    var isSessionActive: Bool
+    var liveModeOn: Bool
     typealias UIViewType = GMSMapView
     let pathPoints: [PathPoint]
     private(set) var threshold: SensorThreshold?
@@ -27,7 +27,7 @@ struct GoogleMapView: UIViewRepresentable {
         self.isMyLocationEnabled = isMyLocationEnabled
         self._placePickerDismissed = placePickerDismissed
         self._isUserInteracting = isUserInteracting
-        self.isSessionActive = isSessionActive
+        self.liveModeOn = isSessionActive
     }
     
     func makeUIView(context: Context) -> GMSMapView {
@@ -38,7 +38,7 @@ struct GoogleMapView: UIViewRepresentable {
         
         let mapView = GMSMapView.map(withFrame: .zero,
                                      camera: startingPoint)
-        isSessionActive ? (mapView.settings.myLocationButton = true) : (mapView.settings.myLocationButton = false)
+        mapView.settings.myLocationButton = liveModeOn
         mapView.delegate = context.coordinator
         mapView.isMyLocationEnabled = isMyLocationEnabled
         polylineDrawing(mapView, context: context)
@@ -88,7 +88,7 @@ struct GoogleMapView: UIViewRepresentable {
             return GMSCameraUpdate.setTarget(location)
         }
         let initialBounds = GMSCoordinateBounds()
-        guard isSessionActive else {
+        guard liveModeOn else {
             let pathPointsBoundingBox = pathPoints.reduce(initialBounds) { bounds, point in
                 bounds.includingCoordinate(point.location)
             }
