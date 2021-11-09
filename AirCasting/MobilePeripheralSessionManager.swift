@@ -111,7 +111,6 @@ class MobilePeripheralSessionManager {
         guard let peripheral = activeMobileSession?.peripheral else { return }
         AirBeam3Configurator(userAuthenticationSession: userAuthenticationSession,
                              peripheral: peripheral).configureMobileSession(
-                                date: Date().currentUTCTimeZoneDate,
                                 location: CLLocationCoordinate2D(latitude: 200, longitude: 200))
     }
     
