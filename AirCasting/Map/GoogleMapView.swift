@@ -14,18 +14,20 @@ struct GoogleMapView: UIViewRepresentable {
     @EnvironmentObject var tracker: LocationTracker
     @Binding var placePickerDismissed: Bool
     @Binding var isUserInteracting: Bool
+    var isSessionActive: Bool
     typealias UIViewType = GMSMapView
     let pathPoints: [PathPoint]
     private(set) var threshold: SensorThreshold?
     var isMyLocationEnabled: Bool = false
     private var onPositionChange: (([PathPoint]) -> ())? = nil
     
-    init(pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false, placePickerDismissed: Binding<Bool>, isUserInteracting: Binding<Bool>) {
+    init(pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false, placePickerDismissed: Binding<Bool>, isUserInteracting: Binding<Bool>, isSessionActive: Bool = false) {
         self.pathPoints = pathPoints
         self.threshold = threshold
         self.isMyLocationEnabled = isMyLocationEnabled
         self._placePickerDismissed = placePickerDismissed
         self._isUserInteracting = isUserInteracting
+        self.isSessionActive = isSessionActive
     }
     
     func makeUIView(context: Context) -> GMSMapView {
@@ -85,14 +87,18 @@ struct GoogleMapView: UIViewRepresentable {
             return GMSCameraUpdate.setTarget(location)
         }
         let initialBounds = GMSCoordinateBounds()
-        let pathPointsBoundingBox = pathPoints.reduce(initialBounds) { bounds, point in
-            bounds.includingCoordinate(point.location)
+        guard isSessionActive else {
+            let pathPointsBoundingBox = pathPoints.reduce(initialBounds) { bounds, point in
+                bounds.includingCoordinate(point.location)
+            }
+            return GMSCameraUpdate.fit(pathPointsBoundingBox, withPadding: 1.0)
         }
+        let pathPointsBoundingBox = initialBounds.includingCoordinate(pathPoints.last!.location)
         return GMSCameraUpdate.fit(pathPointsBoundingBox, withPadding: 1.0)
     }
     
     func setStartingPoint(points: [PathPoint]) -> GMSCameraPosition {
-        if let lastPoint = tracker.googleLocation.last {
+        if let lastPoint = points.last {
             let long = lastPoint.location.longitude
             let lat = lastPoint.location.latitude
             

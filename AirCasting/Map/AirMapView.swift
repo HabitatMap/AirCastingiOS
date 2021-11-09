@@ -58,7 +58,8 @@ struct AirMapView: View {
                         GoogleMapView(pathPoints: pathPoints,
                                       threshold: threshold,
                                       placePickerDismissed: Binding.constant(false),
-                                      isUserInteracting: $isUserInteracting)
+                                      isUserInteracting: $isUserInteracting,
+                                      isSessionActive: session.isActive)
                         #warning("TODO: Implement calculating stats only for visible path points")
                         // This doesn't work properly and it needs to be fixed, so I'm commenting it out
 //                            .onPositionChange { [weak mapStatsDataSource, weak statsContainerViewModel] visiblePoints in
