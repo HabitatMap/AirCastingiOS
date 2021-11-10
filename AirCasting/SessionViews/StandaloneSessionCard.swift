@@ -7,6 +7,7 @@ import AirCastingStyling
 struct StandaloneSessionCard: View {
     var session: SessionEntity
     var sessionStopperFactory: SessionStoppableFactory
+    @State private var showingFinishAlert = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
@@ -17,14 +18,27 @@ struct StandaloneSessionCard: View {
                     .foregroundColor(.darkBlue)
                 Text("AirBeam3 is now recording using its SD card. The measurements will be displayed here after syncing.")
                 Button("Finish recording & don't sync") {
-                    do {
-                        try sessionStopperFactory.getSessionStopper(for: session).stopSession()
-                    } catch {
-                        Log.info("error when stpoing session - \(error)")
-                    }
+                    showingFinishAlert = true
                 }
                 .buttonStyle(BlueButtonStyle())
                 .padding()
+                .alert(isPresented: $showingFinishAlert) {
+                    Alert(title: Text(Strings.SessionHeaderView.finishAlertTitle) +
+                            Text(session.name ?? Strings.SessionHeaderView.finishAlertTitle_2)
+                            +
+                            Text(Strings.SessionHeaderView.finishAlertTitle_3),
+                          message: Text(Strings.SessionHeaderView.finishAlertMessage_1) +
+                            Text(Strings.SessionHeaderView.finishAlertMessage_2) +
+                            Text(Strings.SessionHeaderView.finishAlertMessage_3),
+                          primaryButton: .default(Text(Strings.SessionHeaderView.finishAlertButton), action: {
+                            do {
+                                try sessionStopperFactory.getSessionStopper(for: session).stopSession()
+                            } catch {
+                                Log.info("error when stpoing session - \(error)")
+                            }
+                          }),
+                          secondaryButton: .cancel())
+                }
             }
             .padding()
         }
@@ -33,6 +47,7 @@ struct StandaloneSessionCard: View {
         .padding()
         .background(Color.white
                         .shadow(color: Color(red: 205/255, green: 209/255, blue: 214/255, opacity: 0.36), radius: 9, x: 0, y: 1))
+        .overlay(Rectangle().frame(width: nil, height: 4, alignment: .top).foregroundColor(Color.red), alignment: .top)
     }
     
     var header: some View {

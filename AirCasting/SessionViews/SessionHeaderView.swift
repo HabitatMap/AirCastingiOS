@@ -112,7 +112,8 @@ private extension SessionHeaderView {
                     .frame(width: 50, height: 35, alignment: .trailing)
                     .opacity(0.0001)
             }
-        }.alert(isPresented: $showingFinishAlert) {
+        }
+        .alert(isPresented: $showingFinishAlert) {
             Alert(title: Text(Strings.SessionHeaderView.finishAlertTitle) +
                     Text(session.name ?? Strings.SessionHeaderView.finishAlertTitle_2)
                     +
