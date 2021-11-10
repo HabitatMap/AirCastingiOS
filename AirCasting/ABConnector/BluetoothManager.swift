@@ -110,15 +110,19 @@ extension BluetoothManager: CBCentralManagerDelegate {
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
         // Here's code for getting data from AB.
         peripheral.delegate = self
-        peripheral.discoverServices(nil)
         if mobilePeripheralSessionManager.activeSessionInProgressWith(peripheral) {
-            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(4)) {
+            var characteristicsHandle: Any?
+            characteristicsHandle = NotificationCenter.default.addObserver(forName: .discoveredCharacteristic, object: nil, queue: .main) { notification in
+                guard notification.userInfo?["peripheral uuid"] as! UUID == peripheral.identifier else { return }
                 self.mobileSessionReconnected = true
+                guard let characteristicsHandle = characteristicsHandle else { return }
+                NotificationCenter.default.removeObserver(characteristicsHandle)
             }
         } else {
             connectedPeripheral = peripheral
             NotificationCenter.default.post(name: .deviceConnected, object: nil, userInfo: [AirCastingNotificationKeys.DeviceConnected.uuid : peripheral.identifier])
         }
+        peripheral.discoverServices(nil)
     }
     
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
@@ -156,7 +160,7 @@ extension BluetoothManager: CBPeripheralDelegate {
                 }
             }
         }
-        hasSomeCharacteristics ? NotificationCenter.default.post(name: .discoveredCharacteristic, object: nil, userInfo: nil) : nil
+        hasSomeCharacteristics ? NotificationCenter.default.post(name: .discoveredCharacteristic, object: nil, userInfo: ["peripheral uuid" : peripheral.identifier]) : nil
     }
     
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
