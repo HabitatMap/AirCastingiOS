@@ -47,12 +47,16 @@ class MobilePeripheralSessionManager {
     }
     
     func finishSession(for peripheral: CBPeripheral, centralManager: CBCentralManager) {
-        guard let mobileSession = standaloneModeSessions.first(where: { $0.peripheral == peripheral }) else {
-                assertionFailure("Finishing session was called for unknown peripheral")
-                return
-            }
-        updateDatabaseForFinishedSession(with: mobileSession.session.uuid)
-        standaloneModeSessions.removeAll(where: { $0.peripheral == peripheral })
+        if activeMobileSession?.peripheral == peripheral {
+            finishActiveSession(for: peripheral, centralManager: centralManager)
+        } else {
+            guard let mobileSession = standaloneModeSessions.first(where: { $0.peripheral == peripheral }) else {
+                    assertionFailure("Finishing session was called for unknown peripheral")
+                    return
+                }
+            updateDatabaseForFinishedSession(with: mobileSession.session.uuid)
+            standaloneModeSessions.removeAll(where: { $0.peripheral == peripheral })
+        }
     }
     
     func finishSession(with uuid: SessionUUID, centralManager: CBCentralManager) {
@@ -80,7 +84,7 @@ class MobilePeripheralSessionManager {
         }
     }
     
-    func updateDatabaseForFinishedSession(with uuid: SessionUUID) {
+    private func updateDatabaseForFinishedSession(with uuid: SessionUUID) {
         measurementStreamStorage.accessStorage { storage in
             do {
                 try storage.updateSessionStatus(.FINISHED, for: uuid)
@@ -111,6 +115,23 @@ class MobilePeripheralSessionManager {
         standaloneModeSessions.append(activeMobileSession!)
         activeMobileSession = nil
         locationProvider.stopUpdatingLocation()
+    }
+    
+    func markActiveSessionAsDisconnected(peripheral: CBPeripheral) {
+        guard
+            let sessionUUID = activeMobileSession?.session.uuid,
+            activeMobileSession?.peripheral == peripheral
+        else {
+            return
+        }
+        measurementStreamStorage.accessStorage { storage in
+            do {
+                Log.info("## SESSION DISCONNECTED")
+                try storage.updateSessionStatus(.DISCONNECTED, for: sessionUUID)
+            } catch {
+                Log.error("Unable to change session status to disconnected because of an error: \(error)")
+            }
+        }
     }
     
     private func updateStreams(stream: ABMeasurementStream, sessionUUID: SessionUUID) throws {

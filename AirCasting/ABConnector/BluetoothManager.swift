@@ -126,7 +126,7 @@ extension BluetoothManager: CBCentralManagerDelegate {
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
         Log.info("Disconnected: \(String(describing: error?.localizedDescription))")
         guard mobilePeripheralSessionManager.activeSessionInProgressWith(peripheral) else { return }
-        // enter stand alone mode
+        mobilePeripheralSessionManager.markActiveSessionAsDisconnected(peripheral: peripheral)
         connect(to: peripheral)
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(10)) {
             guard peripheral.state != .connected else { return }
