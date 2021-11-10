@@ -436,6 +436,8 @@ struct Strings {
         static let transmissionPicker: String = "Data transmission:"
         static let cellularText: String = "Cellular"
         static let wifiText: String = "Wi-Fi"
+        static let sessionNamePlaceholder: String = "Session name"
+        static let sessionTagPlaceholder: String = "Tags"
     }
         
     enum AirBeamConnector {
