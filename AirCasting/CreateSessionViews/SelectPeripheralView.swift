@@ -64,6 +64,7 @@ struct SelectPeripheralView: View {
                     if CBCentralManager.authorization == .allowedAlways {
                         // it triggers the bluetooth searching on the appearing time
                         _ = bluetoothManager.centralManager
+                        bluetoothManager.startScanning()
                     }
                 }
                 .padding()
