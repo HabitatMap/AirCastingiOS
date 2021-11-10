@@ -42,6 +42,7 @@
 		4FEEAED3262C53C20024AB7E /* UpdateSessionParamsServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FEEAED2262C53C20024AB7E /* UpdateSessionParamsServiceTests.swift */; };
 		4FF60BE926550077001618BE /* SelectPeripheralView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC1DAD4425C9858C009AC4D1 /* SelectPeripheralView.swift */; };
 		4FF60BEA265500C4001618BE /* BluetoothManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC1DAD4825C987B3009AC4D1 /* BluetoothManager.swift */; };
+		75B1DD48273BCCD200BCDF9B /* Heatmap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B1DD47273BCCD200BCDF9B /* Heatmap.swift */; };
 		AC049F7F2604B7AF00398197 /* AuthErorrHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC049F7E2604B7AF00398197 /* AuthErorrHandling.swift */; };
 		AC049F872608B74C00398197 /* FixedSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC049F862608B74C00398197 /* FixedSession.swift */; };
 		AC049F8B2608DCB000398197 /* Session+Mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC049F8A2608DCB000398197 /* Session+Mock.swift */; };
@@ -337,6 +338,7 @@
 		4FB39E3F2622252700E5E564 /* XCTestCase+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+Extensions.swift"; sourceTree = "<group>"; };
 		4FD2CA4626406F2C007E932E /* Diff.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Diff.swift; sourceTree = "<group>"; };
 		4FEEAED2262C53C20024AB7E /* UpdateSessionParamsServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateSessionParamsServiceTests.swift; sourceTree = "<group>"; };
+		75B1DD47273BCCD200BCDF9B /* Heatmap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Heatmap.swift; sourceTree = "<group>"; };
 		80BDC4331283D7705B8C8952 /* Pods-AirCasting.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AirCasting.debug.xcconfig"; path = "Target Support Files/Pods-AirCasting/Pods-AirCasting.debug.xcconfig"; sourceTree = "<group>"; };
 		8E819223F8D800D3B8ED8F56 /* Pods_AirCasting.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AirCasting.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AC049F7E2604B7AF00398197 /* AuthErorrHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthErorrHandling.swift; sourceTree = "<group>"; };
@@ -995,6 +997,7 @@
 				AC8D6C7125C0574800ED74D1 /* LocationTracker.swift */,
 				AC8D6C6D25C056B400ED74D1 /* PathPoint.swift */,
 				AC8D6C6925C049E300ED74D1 /* Environment.swift */,
+				75B1DD47273BCCD200BCDF9B /* Heatmap.swift */,
 			);
 			path = Map;
 			sourceTree = "<group>";
@@ -1951,6 +1954,7 @@
 				AC8D6C6A25C049E300ED74D1 /* Environment.swift in Sources */,
 				ACD01F4025F8C1F800B8F65F /* SessionContext.swift in Sources */,
 				DDF62601269C779800F23489 /* UIApplication+AppInfo.swift.swift in Sources */,
+				75B1DD48273BCCD200BCDF9B /* Heatmap.swift in Sources */,
 				AC8D6C7225C0574800ED74D1 /* LocationTracker.swift in Sources */,
 				DD8C380C2689A3DA00901FDF /* BaseURLProvider.swift in Sources */,
 				AC4EC6C425B6FE0D00C1E312 /* ThresholdsSettingsView.swift in Sources */,
