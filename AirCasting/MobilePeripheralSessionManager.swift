@@ -86,7 +86,7 @@ class MobilePeripheralSessionManager {
             }
         }
         centralManger.cancelPeripheralConnection(activePeripheral)
-        standAloneModeSessions.append(activeMobileSession!)
+        standaloneModeSessions.append(activeMobileSession!)
         activeMobileSession = nil
         locationProvider.stopUpdatingLocation()
     }

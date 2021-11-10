@@ -180,7 +180,7 @@ extension BluetoothManager: CBPeripheralDelegate {
     
     func enterStandaloneMode(sessionUUID: SessionUUID) {
         connectedPeripheral = nil
-        mobilePeripheralSessionManager.enterStandAloneMode(sessionUUID: sessionUUID, centralManger: centralManager)
+        mobilePeripheralSessionManager.enterStandaloneMode(sessionUUID: sessionUUID, centralManger: centralManager)
     }
     
     func parseData(data: Data) -> ABMeasurementStream? {
