@@ -111,7 +111,7 @@ struct SessionCardView: View {
     }
     
     var standaloneSessionCard: some View {
-        StandaloneSessionCard(session: session, sessionStopperFactory: sessionStoppableFactory)
+        StandaloneSessionCardView(session: session, sessionStopperFactory: sessionStoppableFactory)
     }
     
     private func selectDefaultStreamIfNeeded(streams: [MeasurementStreamEntity]) {

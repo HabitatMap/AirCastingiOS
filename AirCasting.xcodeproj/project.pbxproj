@@ -14,7 +14,7 @@
 		33769A5C2705B06F007D1EA7 /* ChartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33769A5B2705B06F007D1EA7 /* ChartViewModel.swift */; };
 		338C30E225F1044B00E0305C /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 338C30E125F1044B00E0305C /* PersistenceController.swift */; };
 		338C30E825F10BFE00E0305C /* AirCasting.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 338C30E625F10BFE00E0305C /* AirCasting.xcdatamodeld */; };
-		33AC7D5C273C1B9700EB1274 /* StandaloneSessionCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33AC7D5B273C1B9700EB1274 /* StandaloneSessionCard.swift */; };
+		33AC7D5C273C1B9700EB1274 /* StandaloneSessionCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33AC7D5B273C1B9700EB1274 /* StandaloneSessionCardView.swift */; };
 		33BA3368266E4BCA00899343 /* MobilePeripheralSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33BA3367266E4BCA00899343 /* MobilePeripheralSessionManager.swift */; };
 		33BA336A266E4D1000899343 /* MobileSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33BA3369266E4D1000899343 /* MobileSession.swift */; };
 		33F2238A270C674E00F14909 /* TimeInterval.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F22389270C674E00F14909 /* TimeInterval.swift */; };
@@ -306,7 +306,7 @@
 		33769A5B2705B06F007D1EA7 /* ChartViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartViewModel.swift; sourceTree = "<group>"; };
 		338C30E125F1044B00E0305C /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceController.swift; sourceTree = "<group>"; };
 		338C30E725F10BFE00E0305C /* AirCasting.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AirCasting.xcdatamodel; sourceTree = "<group>"; };
-		33AC7D5B273C1B9700EB1274 /* StandaloneSessionCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandaloneSessionCard.swift; sourceTree = "<group>"; };
+		33AC7D5B273C1B9700EB1274 /* StandaloneSessionCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandaloneSessionCardView.swift; sourceTree = "<group>"; };
 		33BA3367266E4BCA00899343 /* MobilePeripheralSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobilePeripheralSessionManager.swift; sourceTree = "<group>"; };
 		33BA3369266E4D1000899343 /* MobileSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileSession.swift; sourceTree = "<group>"; };
 		33F22389270C674E00F14909 /* TimeInterval.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeInterval.swift; sourceTree = "<group>"; };
@@ -1462,7 +1462,7 @@
 				ACF77DFA25A8888700BB85B7 /* SessionCardView.swift */,
 				DDF12AE726B2ADF400D067C7 /* SessionCartViewModel.swift */,
 				DDF12AEA26B2B76C00D067C7 /* SessionCartFollowing.swift */,
-				33AC7D5B273C1B9700EB1274 /* StandaloneSessionCard.swift */,
+				33AC7D5B273C1B9700EB1274 /* StandaloneSessionCardView.swift */,
 			);
 			name = SessionCardView;
 			sourceTree = "<group>";
@@ -1950,7 +1950,7 @@
 				AC8CFF4125E5095600FB2918 /* Textfield.swift in Sources */,
 				B3FD77C3267C94AF00E97CC2 /* SessionDownloadService.swift in Sources */,
 				AC7EB37625A6FB3A00A7F2AF /* AirCastingApp.swift in Sources */,
-				33AC7D5C273C1B9700EB1274 /* StandaloneSessionCard.swift in Sources */,
+				33AC7D5C273C1B9700EB1274 /* StandaloneSessionCardView.swift in Sources */,
 				AC4A6A6C267CB3D40001F639 /* GraphRenderers.swift in Sources */,
 				ACD01F922600A3C800B8F65F /* RootAppView.swift in Sources */,
 				DD28047B26B3D7730060F55E /* BluetoothConnector.swift in Sources */,

@@ -4,7 +4,7 @@
 import SwiftUI
 import AirCastingStyling
 
-struct StandaloneSessionCard: View {
+struct StandaloneSessionCardView: View {
     var session: SessionEntity
     var sessionStopperFactory: SessionStoppableFactory
     @State private var showingFinishAlert = false
@@ -63,6 +63,6 @@ struct StandaloneSessionCard: View {
 
 struct StandaloneSessionCard_Previews: PreviewProvider {
     static var previews: some View {
-        StandaloneSessionCard(session: SessionEntity.mock, sessionStopperFactory: SessionStoppableFactoryDummy())
+        StandaloneSessionCardView(session: SessionEntity.mock, sessionStopperFactory: SessionStoppableFactoryDummy())
     }
 }
