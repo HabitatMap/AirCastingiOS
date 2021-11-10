@@ -16,6 +16,6 @@ class StandardSesssionStopper: SessionStoppable {
     
     func stopSession() {
         Log.verbose("Stopping session with uuid \(uuid.rawValue) using standard session stopper")
-        bluetoothManager.finishMobileSession()
+        bluetoothManager.finishMobileSession(with: uuid)
     }
 }

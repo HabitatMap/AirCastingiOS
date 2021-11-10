@@ -133,7 +133,7 @@ extension BluetoothManager: CBCentralManagerDelegate {
             self.cancelPeripheralConnection(for: peripheral)
             self.connectedPeripheral = nil
             self.mobilePeripheralSessionManager.finishSession(for: peripheral,
-                                                                 centralManger: self.centralManager)
+                                                                 centralManager: self.centralManager)
         }
     }
 }
@@ -173,14 +173,14 @@ extension BluetoothManager: CBPeripheralDelegate {
         }
     }
     
-    func finishMobileSession() {
+    func finishMobileSession(with uuid: SessionUUID) {
         connectedPeripheral = nil
-        mobilePeripheralSessionManager.finishActiveSession(centralManger: centralManager)
+        mobilePeripheralSessionManager.finishSession(with: uuid, centralManager: centralManager)
     }
     
     func enterStandaloneMode(sessionUUID: SessionUUID) {
         connectedPeripheral = nil
-        mobilePeripheralSessionManager.enterStandaloneMode(sessionUUID: sessionUUID, centralManger: centralManager)
+        mobilePeripheralSessionManager.enterStandaloneMode(sessionUUID: sessionUUID, centralManager: centralManager)
     }
     
     func parseData(data: Data) -> ABMeasurementStream? {
