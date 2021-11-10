@@ -10,6 +10,7 @@ class MobilePeripheralSessionManager {
     private lazy var locationProvider = LocationProvider()
     
     private var activeMobileSession: MobileSession?
+    private var standaloneModeSessions: [MobileSession] = []
     
     private var streamsIDs: [SensorName: MeasurementStreamLocalID] = [:]
     
@@ -66,6 +67,28 @@ class MobilePeripheralSessionManager {
             activeMobileSession = nil
             locationProvider.stopUpdatingLocation()
         }
+    }
+    
+    func enterStandaloneMode(sessionUUID: SessionUUID, centralManger: CBCentralManager) {
+        guard
+            let activePeripheral = activeMobileSession?.peripheral,
+            activeMobileSession?.session.uuid == sessionUUID
+        else {
+            Log.warning("Enter stand alone mode called for session which is not active")
+            return
+        }
+        measurementStreamStorage.accessStorage { storage in
+            do {
+                Log.info("## SESSION DISCONNECTED")
+                try storage.updateSessionStatus(.DISCONNECTED, for: sessionUUID)
+            } catch {
+                Log.error("Unable to change session status to disconnected because of an error: \(error)")
+            }
+        }
+        centralManger.cancelPeripheralConnection(activePeripheral)
+        standAloneModeSessions.append(activeMobileSession!)
+        activeMobileSession = nil
+        locationProvider.stopUpdatingLocation()
     }
     
     private func updateStreams(stream: ABMeasurementStream, sessionUUID: SessionUUID) throws {

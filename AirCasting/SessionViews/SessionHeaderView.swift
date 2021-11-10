@@ -14,6 +14,7 @@ struct SessionHeaderView: View {
     @Binding var isCollapsed: Bool
     @State var chevronIndicator = "chevron.down"
     @EnvironmentObject var networkChecker: NetworkChecker
+    @EnvironmentObject var bluetoothManager: BluetoothManager
     @ObservedObject var session: SessionEntity
     @State private var showingAlert = false
     @State private var showingFinishAlert = false
@@ -101,6 +102,9 @@ private extension SessionHeaderView {
     var actionsMenuMobile: some View {
         Menu {
             actionsMenuMobileStopButton
+            if session.deviceType == .AIRBEAM3 {
+                actionsMenuMobileEnterStandaloneMode
+            }
         } label: {
             ZStack(alignment: .trailing) {
                 EditButtonView()
@@ -132,6 +136,14 @@ private extension SessionHeaderView {
             showingFinishAlert = true
         } label: {
             Label(Strings.SessionHeaderView.stopRecordingButton, systemImage: "stop.circle")
+        }
+    }
+    
+    var actionsMenuMobileEnterStandaloneMode: some View {
+        Button {
+            bluetoothManager.enterStandaloneMode(sessionUUID: session.uuid)
+        } label: {
+            Label(Strings.SessionHeaderView.enterStandaloneModeButton, systemImage: "xmark.circle")
         }
     }
     

@@ -376,6 +376,7 @@ struct Strings {
         static let alertMessage: String = "You need to have internet connection to edit session data"
         static let confirmAlert: String = "Got it!"
         static let stopRecordingButton: String = "Finish recording session"
+        static let enterStandaloneModeButton: String = "Enter standalone mode"
         static let finishAlertTitle: String = "Finish recording "
         static let finishAlertTitle_2: String = "this session"
         static let finishAlertTitle_3: String = "?"

@@ -103,6 +103,7 @@ extension BluetoothManager: CBCentralManagerDelegate {
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
         if !devices.contains(peripheral) {
             if peripheral.name != nil {
+                // check if ab is not recording stand alone session at the moment
                 devices.append(peripheral)
             }
         }
@@ -125,6 +126,7 @@ extension BluetoothManager: CBCentralManagerDelegate {
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
         Log.info("Disconnected: \(String(describing: error?.localizedDescription))")
         guard mobilePeripheralSessionManager.activeSessionInProgressWith(peripheral) else { return }
+        // enter stand alone mode
         connect(to: peripheral)
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(10)) {
             guard peripheral.state != .connected else { return }
@@ -171,9 +173,14 @@ extension BluetoothManager: CBPeripheralDelegate {
         }
     }
     
-    func disconnectAirBeam() {
+    func finishMobileSession() {
         connectedPeripheral = nil
         mobilePeripheralSessionManager.finishActiveSession(centralManger: centralManager)
+    }
+    
+    func enterStandaloneMode(sessionUUID: SessionUUID) {
+        connectedPeripheral = nil
+        mobilePeripheralSessionManager.enterStandAloneMode(sessionUUID: sessionUUID, centralManger: centralManager)
     }
     
     func parseData(data: Data) -> ABMeasurementStream? {
