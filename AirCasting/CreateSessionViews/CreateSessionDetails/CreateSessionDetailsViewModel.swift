@@ -2,7 +2,6 @@
 //
 import Foundation
 import SystemConfiguration.CaptiveNetwork
-import SwiftUI
 
 class CreateSessionDetailsViewModel: ObservableObject {
     
