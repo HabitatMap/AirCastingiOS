@@ -62,7 +62,11 @@ struct SessionCardView: View {
     }
     
     var body: some View {
-        sessionCard
+        if session.isInStandaloneMode {
+            standaloneSessionCard
+        } else {
+            sessionCard
+        }
     }
     
     var sessionCard: some View {
@@ -106,6 +110,10 @@ struct SessionCardView: View {
         )
     }
     
+    var standaloneSessionCard: some View {
+        StandaloneSessionCard(session: session, sessionStopperFactory: sessionStoppableFactory)
+    }
+    
     private func selectDefaultStreamIfNeeded(streams: [MeasurementStreamEntity]) {
         if selectedStream == nil {
             selectedStream = streams.first
@@ -120,7 +128,8 @@ private extension SessionCardView {
                 withAnimation {
                     isCollapsed.toggle()
                 }
-            }, isExpandButtonNeeded: true,
+            },
+            isExpandButtonNeeded: true,
             isCollapsed: $isCollapsed,
             session: session,
             sessionStopperFactory: sessionStoppableFactory

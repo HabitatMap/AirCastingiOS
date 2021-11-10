@@ -14,6 +14,7 @@ extension SessionEntity {
     var isDormant: Bool { type == .mobile && status == .FINISHED }
     var isFixed: Bool { type == .fixed }
     var isFollowed: Bool { followedAt != nil }
+    var isInStandaloneMode: Bool { type == .mobile && status == .DISCONNECTED && deviceType == .AIRBEAM3 }
 }
 
 extension SessionEntity {
