@@ -43,13 +43,11 @@ struct SettingsView: View {
     private var settingsSection: some View {
         Section() {
             VStack(alignment: .leading) {
-                HStack(spacing: 5) {
-                    crowdMapTitle
-                    crowdMapSwitch
-                }
+                crowdMapSwitch
                 Spacer()
                 crowdMapDescription
             }
+            keepScreenOnSwitch
             navigateToBackendSettingsButton
         }
     }
@@ -68,15 +66,19 @@ struct SettingsView: View {
         }
     }
     
-    private var crowdMapTitle: some View {
-        Text(Strings.Settings.crowdMap)
-            .font(Fonts.boldHeading1)
-            .multilineTextAlignment(.leading)
+    private var keepScreenOnSwitch: some View {
+        Toggle(isOn: $userSettings.keepScreenOn, label: {
+            Text(Strings.Settings.keepScreenTitle)
+                .font(Fonts.boldHeading1)
+        }).toggleStyle(SwitchToggleStyle(tint: .accentColor))
     }
     
     private var crowdMapSwitch: some View {
-        Toggle(isOn: $userSettings.contributingToCrowdMap) {
-        }.toggleStyle(SwitchToggleStyle(tint: .accentColor))
+        Toggle(isOn: $userSettings.contributingToCrowdMap, label: {
+            Text(Strings.Settings.crowdMap)
+                .font(Fonts.boldHeading1)
+                .multilineTextAlignment(.leading)
+        }).toggleStyle(SwitchToggleStyle(tint: .accentColor))
     }
     
     private var crowdMapDescription: some View {

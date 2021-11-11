@@ -2,6 +2,7 @@
 //
 
 import Foundation
+import UIKit
 
 class UserSettings: ObservableObject {
     private let userDefaults: UserDefaults
@@ -16,8 +17,20 @@ class UserSettings: ObservableObject {
         }
     }
     
+    var keepScreenOn: Bool {
+        get {
+            userDefaults.bool(forKey: "keepScreenOn")
+        }
+        set {
+            userDefaults.setValue(newValue, forKey: "keepScreenOn")
+            UIApplication.shared.isIdleTimerDisabled = userDefaults.bool(forKey: "keepScreenOn")
+            Log.info("Changed keepScreenOn setting to \(keepScreenOn ? "ON" : "OFF")")
+        }
+    }
+    
     init(userDefaults: UserDefaults = .standard) {
         self.userDefaults = userDefaults
         contributingToCrowdMap = true
+        keepScreenOn = userDefaults.bool(forKey: "keepScreenOn")
     }
 }
