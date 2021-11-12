@@ -93,8 +93,6 @@ extension BluetoothManager: CBCentralManagerDelegate {
             print("central.state is .poweredOff")
         case .poweredOn:
             print("central.state is .poweredOn")
-            // App starts looking for peripherals when blueooth is powered on.
-            startScanning()
         @unknown default:
             fatalError()
         }
