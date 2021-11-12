@@ -42,7 +42,6 @@ struct EmptyMobileDashboardViewMobile: View {
                     .padding(.horizontal)
             }
         }
-        .background(Color(red: 251/255, green: 253/255, blue: 255/255))
     }
 }
 

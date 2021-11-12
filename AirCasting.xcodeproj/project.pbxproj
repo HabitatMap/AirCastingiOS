@@ -222,6 +222,7 @@
 		B3FD77C4267C94AF00E97CC2 /* SessionSynchronizationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3FD77B3267C94AF00E97CC2 /* SessionSynchronizationService.swift */; };
 		B3FD77C6267C94AF00E97CC2 /* SessionUploadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3FD77B5267C94AF00E97CC2 /* SessionUploadService.swift */; };
 		B3FD77C8267C997800E97CC2 /* PersistenceController+Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3FD77C7267C997800E97CC2 /* PersistenceController+Database.swift */; };
+		B3FFBA2B273DC0690095BA4A /* RefreshControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3FFBA2A273DC0690095BA4A /* RefreshControl.swift */; };
 		DD009D662698844A009F0443 /* DeleteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD009D652698844A009F0443 /* DeleteView.swift */; };
 		DD1C99C1267CBFCB00B786C4 /* MyAccountViewSignOut.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD1C99C0267CBFCB00B786C4 /* MyAccountViewSignOut.swift */; };
 		DD1EEB8B26B7C2F100AFC5C1 /* TurnOnLocationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD1EEB8A26B7C2F100AFC5C1 /* TurnOnLocationViewModel.swift */; };
@@ -519,6 +520,7 @@
 		B3FD77B3267C94AF00E97CC2 /* SessionSynchronizationService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionSynchronizationService.swift; sourceTree = "<group>"; };
 		B3FD77B5267C94AF00E97CC2 /* SessionUploadService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionUploadService.swift; sourceTree = "<group>"; };
 		B3FD77C7267C997800E97CC2 /* PersistenceController+Database.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PersistenceController+Database.swift"; sourceTree = "<group>"; };
+		B3FFBA2A273DC0690095BA4A /* RefreshControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshControl.swift; sourceTree = "<group>"; };
 		DD009D652698844A009F0443 /* DeleteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteView.swift; sourceTree = "<group>"; };
 		DD1C99C0267CBFCB00B786C4 /* MyAccountViewSignOut.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyAccountViewSignOut.swift; sourceTree = "<group>"; };
 		DD1EEB8A26B7C2F100AFC5C1 /* TurnOnLocationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurnOnLocationViewModel.swift; sourceTree = "<group>"; };
@@ -1011,6 +1013,7 @@
 			isa = PBXGroup;
 			children = (
 				AC9F52692652A360003CF61F /* DashboardView.swift */,
+				B3FFBA2A273DC0690095BA4A /* RefreshControl.swift */,
 				AC9F526A2652A360003CF61F /* EmptyMobileDashboardView.swift */,
 				DDDBD48726D3BEC000EAA0A1 /* EmptyFixedDashboardView.swift */,
 				AC9F526B2652A360003CF61F /* AirSectionPickerView.swift */,
@@ -1815,6 +1818,7 @@
 				DD8C38092689A34E00901FDF /* UserDefaultsBaseURLProvider.swift in Sources */,
 				DDF12AEB26B2B76C00D067C7 /* SessionCartFollowing.swift in Sources */,
 				B3F1448226AE4CD9006A4612 /* OfflineMessageViewModel.swift in Sources */,
+				B3FFBA2B273DC0690095BA4A /* RefreshControl.swift in Sources */,
 				AC5832DA25B196DD008C5DD5 /* Graph.swift in Sources */,
 				AC4A6A6A267CB3890001F639 /* AirCastingGraph.swift in Sources */,
 				AC93B8E725BEFE4F003D0A0D /* AirMapView.swift in Sources */,
