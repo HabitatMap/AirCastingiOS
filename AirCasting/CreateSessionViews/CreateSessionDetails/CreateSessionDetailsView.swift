@@ -1,7 +1,3 @@
-//
-//  AddNameAndTagsView.swift
-//  AirCasting
-//
 //  Created by Anna Olak on 24/02/2021.
 //
 import AirCastingStyling
@@ -26,7 +22,7 @@ struct CreateSessionDetailsView: View {
                         if sessionContext.sessionType == SessionType.fixed {
                             placementPicker
                             transmissionTypePicker
-                            if viewModel.showCompleteCredentials() {
+                            if viewModel.shouldShowCompleteCredentials() {
                                 providePasswordTitle
                                 if #available(iOS 15.0, *) {
                                     createTextfield(placeholder: Strings.WifiPopupView.wifiPlaceholder, binding: $viewModel.wifiSSID)

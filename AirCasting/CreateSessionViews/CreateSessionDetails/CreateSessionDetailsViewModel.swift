@@ -13,7 +13,7 @@ class CreateSessionDetailsViewModel: ObservableObject {
     @Published var wifiSSID: String = ""
     @Published var isConfirmCreatingSessionActive: Bool = false
     @Published var isLocationSessionDetailsActive: Bool = false
-    @Published var showingAlert = false
+    @Published var showAlertAboutEmptyCredentials = false
     @Published var isSSIDTextfieldDisplayed: Bool = false
     
     let baseURL: BaseURLProvider
@@ -31,26 +31,26 @@ class CreateSessionDetailsViewModel: ObservableObject {
         sessionContext.sessionName = sessionName
         sessionContext.sessionTags = sessionTags
         
-        if sessionContext.sessionType == SessionType.fixed {
-            sessionContext.isIndoor = isIndoor
-            if isWiFi, !(areCredentialsEmpty()) {
-                sessionContext.wifiSSID = wifiSSID
-                sessionContext.wifiPassword = wifiPassword
-            } else if isWiFi, areCredentialsEmpty() {
-                isConfirmCreatingSessionActive = false
-                showingAlert = true
-                return sessionContext
-            } else if !isWiFi {
-                // to be able to check if session is cellular
-                sessionContext.wifiSSID = nil
-                sessionContext.wifiPassword = nil
-            }
-            isConfirmCreatingSessionActive = isIndoor
-            isLocationSessionDetailsActive = isIndoor
-        } else {
+        guard sessionContext.sessionType == .fixed else {
             sessionContext.isIndoor = false
             isConfirmCreatingSessionActive = true
+            return sessionContext
         }
+        sessionContext.isIndoor = isIndoor
+        if isWiFi, !(areCredentialsEmpty()) {
+            sessionContext.wifiSSID = wifiSSID
+            sessionContext.wifiPassword = wifiPassword
+        } else if isWiFi, areCredentialsEmpty() {
+            isConfirmCreatingSessionActive = false
+            showAlertAboutEmptyCredentials = true
+            return sessionContext
+        } else if !isWiFi {
+            // to be able to check if session is cellular
+            sessionContext.wifiSSID = nil
+            sessionContext.wifiPassword = nil
+        }
+        isConfirmCreatingSessionActive = isIndoor
+        isLocationSessionDetailsActive = isIndoor
         return sessionContext
     }
     
@@ -62,18 +62,17 @@ class CreateSessionDetailsViewModel: ObservableObject {
         isSSIDTextfieldDisplayed = true
     }
     
-    func showCompleteCredentials() -> Bool {
+    func shouldShowCompleteCredentials() -> Bool {
         isWiFi && isSSIDTextfieldDisplayed
     }
     
-    func getWiFiSsid() -> String? {
+    private func getWiFiSsid() -> String? {
         var ssid: String?
-        if let interfaces = CNCopySupportedInterfaces() as NSArray? {
-            for interface in interfaces {
-                if let interfaceInfo = CNCopyCurrentNetworkInfo(interface as! CFString) as NSDictionary? {
-                    ssid = interfaceInfo[kCNNetworkInfoKeySSID as String] as? String
-                    break
-                }
+        guard let interfaces = CNCopySupportedInterfaces() as NSArray? else { return "" }
+        for interface in interfaces {
+            if let interfaceInfo = CNCopyCurrentNetworkInfo(interface as! CFString) as NSDictionary? {
+                ssid = interfaceInfo[kCNNetworkInfoKeySSID as String] as? String
+                break
             }
         }
         return ssid
