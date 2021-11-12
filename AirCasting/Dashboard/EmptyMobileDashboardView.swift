@@ -68,9 +68,9 @@ private extension EmptyMobileDashboardViewMobile {
     private var airBeamDescription: some View {
         ZStack {
             Rectangle()
-                .fill(Color(red: 251/255, green: 253/255, blue: 255/255))
+                .fill(Color.aliceBlue)
                 .cornerRadius(5)
-                .shadow(color: Color(white: 150/255, opacity: 0.5), radius: 7, x: 0, y: 1)
+                .shadow(color: Color.shadow, radius: 7, x: 0, y: 1)
             HStack {
                 Image("handairBeam")
                     .resizable()
