@@ -101,7 +101,7 @@ struct SessionCardView: View {
         .background(
             Group {
                 Color.white
-                    .shadow(color: Color(red: 205/255, green: 209/255, blue: 214/255, opacity: 0.36), radius: 9, x: 0, y: 1)
+                    .shadow(color: .sessionCardShadow, radius: 9, x: 0, y: 1)
                 mapNavigationLink
                 graphNavigationLink
                 // SwiftUI bug: two navigation links don't work properly
