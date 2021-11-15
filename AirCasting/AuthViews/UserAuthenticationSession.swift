@@ -122,15 +122,23 @@ final class DefaultLogoutController: LogoutController {
         }
         if microphoneManager.isRecording {
             Log.info("[LOGOUT] Canceling recording session")
-            try? microphoneManager.stopRecording()
+            microphoneManager.stopRecording()
         }
         Log.info("[LOGOUT] Clearing user credentials")
         do {
             try userAuthenticationSession.deauthorize()
-            try sessionStorage.clearAllSessionSilently()
+            sessionStorage.clearAllSessions(completion: { [weak self] result in
+                if case let .failure(error) = result {
+                    self?.failLogout(with: error)
+                }
+            })
         } catch {
-            assertionFailure("[LOGOUT] Failed to log out \(error)")
+            failLogout(with: error)
         }
+    }
+    
+    private func failLogout(with error: Error) {
+        assertionFailure("[LOGOUT] Failed to log out \(error)")
     }
 }
 
