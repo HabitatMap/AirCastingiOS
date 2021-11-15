@@ -64,7 +64,7 @@ class MobilePeripheralSessionManager {
             guard let activePeripheral = activeMobileSession?.peripheral else { return }
             finishActiveSession(for: activePeripheral, centralManager: centralManager)
         } else {
-            guard standaloneModeSessions.map( { $0.session.uuid } ).contains(uuid) else {
+            guard standaloneModeSessions.map(\.session.uuid).contains(uuid) else {
                 assertionFailure("Finishing session was called for session which is not in standalone mode")
                 return
             }
