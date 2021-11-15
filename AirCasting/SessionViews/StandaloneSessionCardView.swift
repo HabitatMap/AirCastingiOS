@@ -38,6 +38,7 @@ struct StandaloneSessionCardView: View {
                 .font(Fonts.boldHeading3)
                 .foregroundColor(.darkBlue)
             Text(Strings.StandaloneSessionCardView.description)
+                .multilineTextAlignment(.center)
             Button(Strings.StandaloneSessionCardView.buttonLabel) {
                 showingFinishAlert = true
             }
