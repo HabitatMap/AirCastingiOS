@@ -39,14 +39,14 @@ private extension CreateSessionDetailsView {
             placementPicker
             transmissionTypePicker
             if viewModel.shouldShowCompleteCredentials() {
-                shouldShowOnlyPassword
+                passwordEntry
             } else if viewModel.isWiFi {
-               shouldShowWiFiAndPassword
+               nameAndPasswordEntry
             }
         }
     }
     
-    var shouldShowOnlyPassword: some View {
+    var passwordEntry: some View {
         VStack(alignment: .leading, spacing: 25) {
             providePasswordTitle
             if #available(iOS 15.0, *) {
@@ -59,7 +59,7 @@ private extension CreateSessionDetailsView {
         }
     }
     
-    var shouldShowWiFiAndPassword: some View {
+    var nameAndPasswordEntry: some View {
         VStack(alignment: .leading, spacing: 25) {
             provideNameAndPasswordTitle
             wifiPasswordField
