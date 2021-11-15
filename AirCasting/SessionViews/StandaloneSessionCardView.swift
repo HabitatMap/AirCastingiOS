@@ -44,7 +44,7 @@ struct StandaloneSessionCardView: View {
             .buttonStyle(BlueButtonStyle())
             .padding()
             .alert(isPresented: $showingFinishAlert) {
-                finishSessionAlert(sessionStopper: sessionStopperFactory.getSessionStopper(for: session), sessionName: session.name)
+                SessionViews.finishSessionAlert(sessionStopper: sessionStopperFactory.getSessionStopper(for: session), sessionName: session.name)
             }
         }
         .padding()

@@ -822,6 +822,7 @@
 				AC4EC6C325B6FE0D00C1E312 /* HeatmapSettingsView.swift */,
 				AC6D56A425AF211200D221BA /* MultiSliderView.swift */,
 				AC4EC6BB25B5ABB700C1E312 /* StatisticsContainerView.swift */,
+				3334486F2742AF8D00ACA5E4 /* FinishSessionAlert.swift */,
 				AC9EB64326ECB0C000B1F780 /* SessionCartViewModel */,
 				DDEE3A492697473C0098CCA9 /* EditSessionButton */,
 				3328F11E266786C600B72D61 /* Chart */,
@@ -1465,7 +1466,6 @@
 				DDF12AE726B2ADF400D067C7 /* SessionCartViewModel.swift */,
 				DDF12AEA26B2B76C00D067C7 /* SessionCartFollowing.swift */,
 				33AC7D5B273C1B9700EB1274 /* StandaloneSessionCardView.swift */,
-				3334486F2742AF8D00ACA5E4 /* FinishSessionAlert.swift */,
 			);
 			name = SessionCardView;
 			sourceTree = "<group>";
