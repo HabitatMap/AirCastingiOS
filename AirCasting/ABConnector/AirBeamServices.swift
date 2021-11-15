@@ -42,7 +42,7 @@ class ConnectingAirBeamServicesBluetooth: ConnectingAirBeamServices {
             var characteristicsHandle: Any?
             NotificationCenter.default.removeObserver(self.connectionToken)
             characteristicsHandle = NotificationCenter.default.addObserver(forName: .discoveredCharacteristic, object: nil, queue: .main) { notification in
-                guard notification.userInfo?["peripheral uuid"] as! UUID == peripheral.identifier else { return }
+                guard notification.userInfo?[AirCastingNotificationKeys.DiscoveredCharacteristic.peripheralUUID] as! UUID == peripheral.identifier else { return }
                 self.connectionInProgress = false
                 completion(.success)
                 guard let characteristicsHandle = characteristicsHandle else { return }

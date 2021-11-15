@@ -113,7 +113,7 @@ extension BluetoothManager: CBCentralManagerDelegate {
         if mobilePeripheralSessionManager.activeSessionInProgressWith(peripheral) {
             var characteristicsHandle: Any?
             characteristicsHandle = NotificationCenter.default.addObserver(forName: .discoveredCharacteristic, object: nil, queue: .main) { notification in
-                guard notification.userInfo?["peripheral uuid"] as! UUID == peripheral.identifier else { return }
+                guard notification.userInfo?[AirCastingNotificationKeys.DiscoveredCharacteristic.peripheralUUID] as! UUID == peripheral.identifier else { return }
                 self.mobileSessionReconnected = true
                 guard let characteristicsHandle = characteristicsHandle else { return }
                 NotificationCenter.default.removeObserver(characteristicsHandle)
@@ -160,7 +160,7 @@ extension BluetoothManager: CBPeripheralDelegate {
                 }
             }
         }
-        hasSomeCharacteristics ? NotificationCenter.default.post(name: .discoveredCharacteristic, object: nil, userInfo: ["peripheral uuid" : peripheral.identifier]) : nil
+        hasSomeCharacteristics ? NotificationCenter.default.post(name: .discoveredCharacteristic, object: nil, userInfo: [AirCastingNotificationKeys.DiscoveredCharacteristic.peripheralUUID : peripheral.identifier]) : nil
     }
     
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
