@@ -19,7 +19,7 @@ struct CreateSessionDetailsView: View {
                             sessionNameField
                             sessionTagsField
                         }
-                        fixedSessionDetails
+                        if sessionContext.sessionType == SessionType.fixed { fixedSessionDetails }
                         Spacer()
                         continueButton
                     }
@@ -36,14 +36,12 @@ private extension CreateSessionDetailsView {
     
     var fixedSessionDetails: some View {
         VStack(alignment: .leading, spacing: 25) {
-            if sessionContext.sessionType == SessionType.fixed {
-                placementPicker
-                transmissionTypePicker
-                if viewModel.shouldShowCompleteCredentials() {
-                    shouldShowOnlyPassword
-                } else if viewModel.isWiFi {
-                   shouldShowWiFiAndPassword
-                }
+            placementPicker
+            transmissionTypePicker
+            if viewModel.shouldShowCompleteCredentials() {
+                shouldShowOnlyPassword
+            } else if viewModel.isWiFi {
+               shouldShowWiFiAndPassword
             }
         }
     }
