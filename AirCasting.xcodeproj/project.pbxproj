@@ -9,11 +9,13 @@
 /* Begin PBXBuildFile section */
 		331EA80A25E32094009DEFDB /* ConfirmCreatingSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331EA80925E32094009DEFDB /* ConfirmCreatingSessionView.swift */; };
 		332F521425FA38430047236D /* MicrophoneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332F521325FA38430047236D /* MicrophoneManager.swift */; };
+		333448702742AF8D00ACA5E4 /* FinishSessionAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3334486F2742AF8D00ACA5E4 /* FinishSessionAlert.swift */; };
 		3346F1F626318C1600BA4695 /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3346F1F526318C1600BA4695 /* SettingsManager.swift */; };
 		3362B4ED25E69987008D61BA /* CreateSessionDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3362B4EC25E69987008D61BA /* CreateSessionDetailsView.swift */; };
 		33769A5C2705B06F007D1EA7 /* ChartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33769A5B2705B06F007D1EA7 /* ChartViewModel.swift */; };
 		338C30E225F1044B00E0305C /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 338C30E125F1044B00E0305C /* PersistenceController.swift */; };
 		338C30E825F10BFE00E0305C /* AirCasting.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 338C30E625F10BFE00E0305C /* AirCasting.xcdatamodeld */; };
+		33AC7D5C273C1B9700EB1274 /* StandaloneSessionCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33AC7D5B273C1B9700EB1274 /* StandaloneSessionCardView.swift */; };
 		33BA3368266E4BCA00899343 /* MobilePeripheralSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33BA3367266E4BCA00899343 /* MobilePeripheralSessionManager.swift */; };
 		33BA336A266E4D1000899343 /* MobileSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33BA3369266E4D1000899343 /* MobileSession.swift */; };
 		33F2238A270C674E00F14909 /* TimeInterval.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F22389270C674E00F14909 /* TimeInterval.swift */; };
@@ -138,7 +140,7 @@
 		ACDF803A26DCD75500584F55 /* SingleMeasurementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACDF803926DCD75500584F55 /* SingleMeasurementView.swift */; };
 		ACDF82FC265BBDE200A4D04A /* UIFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACDF82FB265BBDE200A4D04A /* UIFont.swift */; };
 		ACF600BE2678D7F4005DD97C /* SwiftSimplify in Frameworks */ = {isa = PBXBuildFile; productRef = ACF600BD2678D7F4005DD97C /* SwiftSimplify */; };
-		ACF77DFB25A8888700BB85B7 /* SessionCartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACF77DFA25A8888700BB85B7 /* SessionCartView.swift */; };
+		ACF77DFB25A8888700BB85B7 /* SessionCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACF77DFA25A8888700BB85B7 /* SessionCardView.swift */; };
 		ACF7C05F260CC9FF007C24AE /* DownloadMeasurmentsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACF7C05E260CC9FF007C24AE /* DownloadMeasurmentsService.swift */; };
 		ACFC708925C1A36A00D609D9 /* UIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACFC708825C1A36A00D609D9 /* UIColor.swift */; };
 		B30BABFB2693509D00AE0476 /* StandardStatisticsCalculatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30BABFA2693509D00AE0476 /* StandardStatisticsCalculatorTests.swift */; };
@@ -300,11 +302,13 @@
 		278FFE79104B8F74B61CE3A2 /* Pods-AirCasting.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AirCasting.release.xcconfig"; path = "Target Support Files/Pods-AirCasting/Pods-AirCasting.release.xcconfig"; sourceTree = "<group>"; };
 		331EA80925E32094009DEFDB /* ConfirmCreatingSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmCreatingSessionView.swift; sourceTree = "<group>"; };
 		332F521325FA38430047236D /* MicrophoneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrophoneManager.swift; sourceTree = "<group>"; };
+		3334486F2742AF8D00ACA5E4 /* FinishSessionAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinishSessionAlert.swift; sourceTree = "<group>"; };
 		3346F1F526318C1600BA4695 /* SettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
 		3362B4EC25E69987008D61BA /* CreateSessionDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSessionDetailsView.swift; sourceTree = "<group>"; };
 		33769A5B2705B06F007D1EA7 /* ChartViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartViewModel.swift; sourceTree = "<group>"; };
 		338C30E125F1044B00E0305C /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceController.swift; sourceTree = "<group>"; };
 		338C30E725F10BFE00E0305C /* AirCasting.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AirCasting.xcdatamodel; sourceTree = "<group>"; };
+		33AC7D5B273C1B9700EB1274 /* StandaloneSessionCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandaloneSessionCardView.swift; sourceTree = "<group>"; };
 		33BA3367266E4BCA00899343 /* MobilePeripheralSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobilePeripheralSessionManager.swift; sourceTree = "<group>"; };
 		33BA3369266E4D1000899343 /* MobileSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileSession.swift; sourceTree = "<group>"; };
 		33F22389270C674E00F14909 /* TimeInterval.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeInterval.swift; sourceTree = "<group>"; };
@@ -435,7 +439,7 @@
 		ACDF803726D62EB500584F55 /* EmptyDashboardButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyDashboardButtonView.swift; sourceTree = "<group>"; };
 		ACDF803926DCD75500584F55 /* SingleMeasurementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleMeasurementView.swift; sourceTree = "<group>"; };
 		ACDF82FB265BBDE200A4D04A /* UIFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIFont.swift; sourceTree = "<group>"; };
-		ACF77DFA25A8888700BB85B7 /* SessionCartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionCartView.swift; sourceTree = "<group>"; };
+		ACF77DFA25A8888700BB85B7 /* SessionCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionCardView.swift; sourceTree = "<group>"; };
 		ACF7C05E260CC9FF007C24AE /* DownloadMeasurmentsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadMeasurmentsService.swift; sourceTree = "<group>"; };
 		ACFC708825C1A36A00D609D9 /* UIColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColor.swift; sourceTree = "<group>"; };
 		B30BABFA2693509D00AE0476 /* StandardStatisticsCalculatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandardStatisticsCalculatorTests.swift; sourceTree = "<group>"; };
@@ -807,7 +811,7 @@
 		AC6D56A825B0837500D221BA /* SessionViews */ = {
 			isa = PBXGroup;
 			children = (
-				DDF12AE926B2ADFD00D067C7 /* SessionCartView */,
+				DDF12AE926B2ADFD00D067C7 /* SessionCardView */,
 				AC6D569E25AEEAE700D221BA /* SessionHeaderView.swift */,
 				DD009D652698844A009F0443 /* DeleteView.swift */,
 				DD72DC4126A99D5000325FE5 /* ShareView.swift */,
@@ -818,6 +822,7 @@
 				AC4EC6C325B6FE0D00C1E312 /* HeatmapSettingsView.swift */,
 				AC6D56A425AF211200D221BA /* MultiSliderView.swift */,
 				AC4EC6BB25B5ABB700C1E312 /* StatisticsContainerView.swift */,
+				3334486F2742AF8D00ACA5E4 /* FinishSessionAlert.swift */,
 				AC9EB64326ECB0C000B1F780 /* SessionCartViewModel */,
 				DDEE3A492697473C0098CCA9 /* EditSessionButton */,
 				3328F11E266786C600B72D61 /* Chart */,
@@ -1454,14 +1459,15 @@
 			name = EditSessionButton;
 			sourceTree = "<group>";
 		};
-		DDF12AE926B2ADFD00D067C7 /* SessionCartView */ = {
+		DDF12AE926B2ADFD00D067C7 /* SessionCardView */ = {
 			isa = PBXGroup;
 			children = (
-				ACF77DFA25A8888700BB85B7 /* SessionCartView.swift */,
+				ACF77DFA25A8888700BB85B7 /* SessionCardView.swift */,
 				DDF12AE726B2ADF400D067C7 /* SessionCartViewModel.swift */,
 				DDF12AEA26B2B76C00D067C7 /* SessionCartFollowing.swift */,
+				33AC7D5B273C1B9700EB1274 /* StandaloneSessionCardView.swift */,
 			);
-			name = SessionCartView;
+			name = SessionCardView;
 			sourceTree = "<group>";
 		};
 		DDF12AEC26B2B7E300D067C7 /* SessionCartTests */ = {
@@ -1846,7 +1852,7 @@
 				DD2181EF267BBCBC0010EC2E /* MyAccountView.swift in Sources */,
 				DD3C99F226E9DE5800B42A46 /* SessionSynchronizationViewModel.swift in Sources */,
 				AC524A6F261329330061AD45 /* SessionExtension.swift in Sources */,
-				ACF77DFB25A8888700BB85B7 /* SessionCartView.swift in Sources */,
+				ACF77DFB25A8888700BB85B7 /* SessionCardView.swift in Sources */,
 				4F3CDF222652B58100596CD3 /* Measurement.swift in Sources */,
 				ACC536E026395C0900327267 /* MeasurementDotView.swift in Sources */,
 				4F858F5E2624B4980059271A /* Log.swift in Sources */,
@@ -1912,6 +1918,7 @@
 				B3EBB10C26A06D2D002BD81F /* DefaultForgotPasswordViewModel.swift in Sources */,
 				DDB448282732AA4B00F11340 /* AirCastingGraphSimplifier.swift in Sources */,
 				AC6D567F25AC54A400D221BA /* ChartView.swift in Sources */,
+				333448702742AF8D00ACA5E4 /* FinishSessionAlert.swift in Sources */,
 				DD839E15269F33A6006A8625 /* LocationState.swift in Sources */,
 				B3FD77BE267C94AF00E97CC2 /* SessionSynchronizationStore.swift in Sources */,
 				ACD01F952600A54400B8F65F /* UserDefaults+Preferences.swift in Sources */,
@@ -1947,6 +1954,7 @@
 				AC8CFF4125E5095600FB2918 /* Textfield.swift in Sources */,
 				B3FD77C3267C94AF00E97CC2 /* SessionDownloadService.swift in Sources */,
 				AC7EB37625A6FB3A00A7F2AF /* AirCastingApp.swift in Sources */,
+				33AC7D5C273C1B9700EB1274 /* StandaloneSessionCardView.swift in Sources */,
 				AC4A6A6C267CB3D40001F639 /* GraphRenderers.swift in Sources */,
 				ACD01F922600A3C800B8F65F /* RootAppView.swift in Sources */,
 				DD28047B26B3D7730060F55E /* BluetoothConnector.swift in Sources */,
