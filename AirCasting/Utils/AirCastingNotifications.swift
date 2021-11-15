@@ -12,4 +12,8 @@ enum AirCastingNotificationKeys {
     enum DeviceConnected {
         static let uuid = "uuid"
     }
+    
+    enum DiscoveredCharacteristic {
+        static let peripheralUUID = "peripheral uuid"
+    }
 }
