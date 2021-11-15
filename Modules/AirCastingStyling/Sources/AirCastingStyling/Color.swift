@@ -44,4 +44,7 @@ extension Color {
     public static var shadow: Color {
         return Color(white: 150/255, opacity: 0.5)
     }
+    public static var aliceBlue: Color {
+        Color(red: 251/255, green: 253/255, blue: 255/255)
+    }
 }

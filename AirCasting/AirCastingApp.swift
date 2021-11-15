@@ -45,7 +45,6 @@ struct AirCastingApp: App {
         averagingService = AveragingService(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared))
         syncScheduler = .init(synchronizer: sessionSynchronizer,
                               appBecameActive: appBecameActive.eraseToAnyPublisher(),
-                              periodicTimeInterval: 300,
                               authorization: authorization)
         
         
@@ -81,19 +80,9 @@ final class SynchronizationScheduler {
     
     init(synchronizer: SessionSynchronizer,
          appBecameActive: AnyPublisher<Void, Never>,
-         periodicTimeInterval: TimeInterval,
          authorization: UserAuthenticationSession) {
         
         appBecameActive
-            .filter { authorization.isLoggedIn }
-            .sink {
-                synchronizer.triggerSynchronization()
-            }
-            .store(in: &cancellables)
-        
-        Timer.publish(every: periodicTimeInterval, on: .current, in: .default)
-            .autoconnect()
-            .eraseToVoid()
             .filter { authorization.isLoggedIn }
             .sink {
                 synchronizer.triggerSynchronization()
