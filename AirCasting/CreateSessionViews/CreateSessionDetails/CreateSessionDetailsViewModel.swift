@@ -28,6 +28,8 @@ class CreateSessionDetailsViewModel: ObservableObject {
     }
     
     func onContinueClick(sessionContext: CreateSessionContext) -> CreateSessionContext {
+        // sessionContext is needed becouse it is being modified in the session creation proccess
+        // by 'modified' I mean - the data it ovverriden by the proper one (get from user) on every step
         sessionContext.sessionName = sessionName
         sessionContext.sessionTags = sessionTags
         
@@ -36,19 +38,28 @@ class CreateSessionDetailsViewModel: ObservableObject {
             isConfirmCreatingSessionActive = true
             return sessionContext
         }
-        sessionContext.isIndoor = isIndoor
+        sessionContext.ovverride(sessionContext: checkIfWiFi(sessionContext: sessionContext))
+        sessionContext.ovverride(sessionContext: compareIsIndoor(sessionContext: sessionContext))
+        return sessionContext
+    }
+    
+    func checkIfWiFi(sessionContext: CreateSessionContext) -> CreateSessionContext {
         if isWiFi, !(areCredentialsEmpty()) {
             sessionContext.wifiSSID = wifiSSID
             sessionContext.wifiPassword = wifiPassword
         } else if isWiFi, areCredentialsEmpty() {
             isConfirmCreatingSessionActive = false
             showAlertAboutEmptyCredentials = true
-            return sessionContext
         } else if !isWiFi {
             // to be able to check if session is cellular
             sessionContext.wifiSSID = nil
             sessionContext.wifiPassword = nil
         }
+        return sessionContext
+    }
+    
+    func compareIsIndoor(sessionContext: CreateSessionContext) -> CreateSessionContext {
+        sessionContext.isIndoor = isIndoor
         isConfirmCreatingSessionActive = isIndoor
         isLocationSessionDetailsActive = isIndoor
         return sessionContext

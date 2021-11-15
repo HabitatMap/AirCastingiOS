@@ -16,8 +16,8 @@ struct CreateSessionDetailsView: View {
                         ProgressView(value: 0.75)
                         titleLabel
                         VStack(spacing: 20) {
-                            createTextfield(placeholder: Strings.CreateSessionDetailsView.sessionNamePlaceholder, binding: $viewModel.sessionName)
-                            createTextfield(placeholder: Strings.CreateSessionDetailsView.sessionTagPlaceholder, binding: $viewModel.sessionTags)
+                            sessionNameField
+                            sessionTagsField
                         }
                         if sessionContext.sessionType == SessionType.fixed {
                             placementPicker
@@ -25,15 +25,15 @@ struct CreateSessionDetailsView: View {
                             if viewModel.shouldShowCompleteCredentials() {
                                 providePasswordTitle
                                 if #available(iOS 15.0, *) {
-                                    createTextfield(placeholder: Strings.WifiPopupView.wifiPlaceholder, binding: $viewModel.wifiSSID)
+                                   wifiSSIDField
                                         .onSubmit { viewModel.isSSIDTextfieldDisplayed = false }
                                 } else {
-                                    createTextfield(placeholder: Strings.WifiPopupView.wifiPlaceholder, binding: $viewModel.wifiSSID)
+                                    wifiSSIDField
                                 }
-                                createTextfield(placeholder: Strings.WifiPopupView.passwordPlaceholder, binding: $viewModel.wifiPassword)
+                                wifiPasswordField
                             } else if viewModel.isWiFi {
                                 provideNameAndPasswordTitle
-                                createTextfield(placeholder: Strings.WifiPopupView.passwordPlaceholder, binding: $viewModel.wifiPassword)
+                                wifiPasswordField
                                 connectToDifferentWifi
                             }
                         }
@@ -51,25 +51,49 @@ struct CreateSessionDetailsView: View {
 
 private extension CreateSessionDetailsView {
     
+    var wifiPasswordField: some View {
+        createTextfield(placeholder: Strings.WifiPopupView.passwordPlaceholder, binding: $viewModel.wifiPassword)
+    }
+    
+    var wifiSSIDField: some View {
+        createTextfield(placeholder: Strings.WifiPopupView.wifiPlaceholder, binding: $viewModel.wifiSSID)
+    }
+    
+    var sessionNameField: some View {
+        createTextfield(placeholder: Strings.CreateSessionDetailsView.sessionNamePlaceholder, binding: $viewModel.sessionName)
+    }
+    
+    var sessionTagsField: some View {
+        createTextfield(placeholder: Strings.CreateSessionDetailsView.sessionTagPlaceholder, binding: $viewModel.sessionTags)
+    }
+    
     var navigation: some View {
         ZStack {
-            NavigationLink(
-                destination: ChooseCustomLocationView(creatingSessionFlowContinues: $creatingSessionFlowContinues,
-                                                      sessionName: $viewModel.sessionName, baseURL: viewModel.baseURL),
-                isActive: $viewModel.isLocationSessionDetailsActive,
-                label: {
-                    EmptyView()
-                }
-            )
-            NavigationLink(
-                destination: ConfirmCreatingSessionView(creatingSessionFlowContinues: $creatingSessionFlowContinues,
-                                                        baseURL: viewModel.baseURL, sessionName: viewModel.sessionName),
-                isActive: $viewModel.isConfirmCreatingSessionActive,
-                label: {
-                    EmptyView()
-                }
-            )
+            locationPickerLink
+            createSesssionLink
         }
+    }
+    
+    var locationPickerLink: some View {
+        NavigationLink(
+            destination: ChooseCustomLocationView(creatingSessionFlowContinues: $creatingSessionFlowContinues,
+                                                  sessionName: $viewModel.sessionName, baseURL: viewModel.baseURL),
+            isActive: $viewModel.isLocationSessionDetailsActive,
+            label: {
+                EmptyView()
+            }
+        )
+    }
+    
+    var createSesssionLink: some View {
+        NavigationLink(
+            destination: ConfirmCreatingSessionView(creatingSessionFlowContinues: $creatingSessionFlowContinues,
+                                                    baseURL: viewModel.baseURL, sessionName: viewModel.sessionName),
+            isActive: $viewModel.isConfirmCreatingSessionActive,
+            label: {
+                EmptyView()
+            }
+        )
     }
     
     var continueButton: some View {
