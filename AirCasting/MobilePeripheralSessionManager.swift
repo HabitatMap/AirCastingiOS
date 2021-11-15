@@ -131,6 +131,7 @@ class MobilePeripheralSessionManager {
             let sessionUUID = activeMobileSession?.session.uuid,
             activeMobileSession?.peripheral == peripheral
         else {
+            Log.warning("Tried to disconnect session for peripheral which is not associated with an active session")
             return
         }
         measurementStreamStorage.accessStorage { storage in
