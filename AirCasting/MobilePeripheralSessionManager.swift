@@ -103,13 +103,8 @@ class MobilePeripheralSessionManager {
             Log.warning("Enter stand alone mode called for session which is not active")
             return
         }
-        measurementStreamStorage.accessStorage { storage in
-            do {
-                try storage.updateSessionStatus(.DISCONNECTED, for: sessionUUID)
-            } catch {
-                Log.error("Unable to change session status to disconnected because of an error: \(error)")
-            }
-        }
+        changeSessionStatusToDisconnected(uuid: sessionUUID)
+        
         centralManager.cancelPeripheralConnection(activePeripheral)
         standaloneModeSessions.append(activeMobileSession!)
         activeMobileSession = nil
@@ -134,9 +129,13 @@ class MobilePeripheralSessionManager {
             Log.warning("Tried to disconnect session for peripheral which is not associated with an active session")
             return
         }
+        changeSessionStatusToDisconnected(uuid: sessionUUID)
+    }
+    
+    private func changeSessionStatusToDisconnected(uuid: SessionUUID) {
         measurementStreamStorage.accessStorage { storage in
             do {
-                try storage.updateSessionStatus(.DISCONNECTED, for: sessionUUID)
+                try storage.updateSessionStatus(.DISCONNECTED, for: uuid)
             } catch {
                 Log.error("Unable to change session status to disconnected because of an error: \(error)")
             }
