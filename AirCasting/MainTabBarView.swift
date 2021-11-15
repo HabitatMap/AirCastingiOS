@@ -88,7 +88,10 @@ private extension MainTabBarView {
     // Tab Bar views
     private var dashboardTab: some View {
         NavigationView {
-            DashboardView(coreDataHook: coreDataHook, measurementStreamStorage: measurementStreamStorage, sessionStoppableFactory: sessionStoppableFactory)
+            DashboardView(coreDataHook: coreDataHook,
+                          measurementStreamStorage: measurementStreamStorage,
+                          sessionStoppableFactory: sessionStoppableFactory,
+                          sessionSynchronizer: sessionSynchronizer)
         }.navigationViewStyle(StackNavigationViewStyle())
             .tabItem {
                 Image(homeImage)
