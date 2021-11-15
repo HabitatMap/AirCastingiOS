@@ -117,6 +117,16 @@ class MobilePeripheralSessionManager {
         locationProvider.stopUpdatingLocation()
     }
     
+    func moveSessionToStandaloneMode(peripheral: CBPeripheral) {
+        guard activeMobileSession?.peripheral == peripheral else {
+            Log.warning("Enter stand alone mode called for perihperal which is not associated with active session")
+            return
+        }
+        
+        standaloneModeSessions.append(activeMobileSession!)
+        activeMobileSession = nil
+    }
+    
     func markActiveSessionAsDisconnected(peripheral: CBPeripheral) {
         guard
             let sessionUUID = activeMobileSession?.session.uuid,
