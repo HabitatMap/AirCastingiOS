@@ -19,24 +19,7 @@ struct CreateSessionDetailsView: View {
                             sessionNameField
                             sessionTagsField
                         }
-                        if sessionContext.sessionType == SessionType.fixed {
-                            placementPicker
-                            transmissionTypePicker
-                            if viewModel.shouldShowCompleteCredentials() {
-                                providePasswordTitle
-                                if #available(iOS 15.0, *) {
-                                   wifiSSIDField
-                                        .onSubmit { viewModel.isSSIDTextfieldDisplayed = false }
-                                } else {
-                                    wifiSSIDField
-                                }
-                                wifiPasswordField
-                            } else if viewModel.isWiFi {
-                                provideNameAndPasswordTitle
-                                wifiPasswordField
-                                connectToDifferentWifi
-                            }
-                        }
+                        fixedSessionDetails
                         Spacer()
                         continueButton
                     }
@@ -50,6 +33,41 @@ struct CreateSessionDetailsView: View {
 }
 
 private extension CreateSessionDetailsView {
+    
+    var fixedSessionDetails: some View {
+        VStack(alignment: .leading, spacing: 25) {
+            if sessionContext.sessionType == SessionType.fixed {
+                placementPicker
+                transmissionTypePicker
+                if viewModel.shouldShowCompleteCredentials() {
+                    shouldShowOnlyPassword
+                } else if viewModel.isWiFi {
+                   shouldShowWiFiAndPassword
+                }
+            }
+        }
+    }
+    
+    var shouldShowOnlyPassword: some View {
+        VStack(alignment: .leading, spacing: 25) {
+            providePasswordTitle
+            if #available(iOS 15.0, *) {
+               wifiSSIDField
+                    .onSubmit { viewModel.isSSIDTextfieldDisplayed = false }
+            } else {
+                wifiSSIDField
+            }
+            wifiPasswordField
+        }
+    }
+    
+    var shouldShowWiFiAndPassword: some View {
+        VStack(alignment: .leading, spacing: 25) {
+            provideNameAndPasswordTitle
+            wifiPasswordField
+            connectToDifferentWifi
+        }
+    }
     
     var wifiPasswordField: some View {
         createTextfield(placeholder: Strings.WifiPopupView.passwordPlaceholder, binding: $viewModel.wifiPassword)

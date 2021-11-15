@@ -17,6 +17,8 @@ class CreateSessionDetailsViewModel: ObservableObject {
     @Published var isSSIDTextfieldDisplayed: Bool = false
     
     let baseURL: BaseURLProvider
+    // It cannot be private as long as it is going to be passed
+    // by every view which is included in session creation process
     
     init(baseURL: BaseURLProvider) {
         self.baseURL = baseURL
