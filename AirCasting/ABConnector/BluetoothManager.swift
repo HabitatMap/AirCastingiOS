@@ -103,7 +103,7 @@ extension BluetoothManager: CBCentralManagerDelegate {
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
         if !devices.contains(peripheral) {
             if peripheral.name != nil {
-                // check if ab is not recording stand alone session at the moment
+                guard !mobilePeripheralSessionManager.standaloneSessionInProgressWith(peripheral) else { return }
                 devices.append(peripheral)
             }
         }

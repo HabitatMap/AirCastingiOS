@@ -105,7 +105,6 @@ class MobilePeripheralSessionManager {
         }
         measurementStreamStorage.accessStorage { storage in
             do {
-                Log.info("## SESSION DISCONNECTED")
                 try storage.updateSessionStatus(.DISCONNECTED, for: sessionUUID)
             } catch {
                 Log.error("Unable to change session status to disconnected because of an error: \(error)")
@@ -192,5 +191,9 @@ class MobilePeripheralSessionManager {
     
     func activeSessionInProgressWith(_ peripheral: CBPeripheral) -> Bool {
         activeMobileSession?.peripheral == peripheral
+    }
+    
+    func standaloneSessionInProgressWith(_ peripheral: CBPeripheral) -> Bool {
+        standaloneModeSessions.first(where: { $0.peripheral == peripheral }) != nil
     }
 }
