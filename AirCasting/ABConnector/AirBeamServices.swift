@@ -41,11 +41,12 @@ class ConnectingAirBeamServicesBluetooth: ConnectingAirBeamServices {
             Log.info("Airebeam connected successfully")
             var characteristicsHandle: Any?
             NotificationCenter.default.removeObserver(self.connectionToken)
-            characteristicsHandle = NotificationCenter.default.addObserver(forName: .discoveredCharacteristic, object: nil, queue: .main) { _ in
+            characteristicsHandle = NotificationCenter.default.addObserver(forName: .discoveredCharacteristic, object: nil, queue: .main) { notification in
+                guard notification.userInfo?[AirCastingNotificationKeys.DiscoveredCharacteristic.peripheralUUID] as! UUID == peripheral.identifier else { return }
                 self.connectionInProgress = false
                 completion(.success)
-                guard let contextHandle = characteristicsHandle else { return }
-                NotificationCenter.default.removeObserver(contextHandle)
+                guard let characteristicsHandle = characteristicsHandle else { return }
+                NotificationCenter.default.removeObserver(characteristicsHandle)
             }
         }
     }
