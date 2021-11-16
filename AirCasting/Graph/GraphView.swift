@@ -42,33 +42,35 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                 .padding(.horizontal)
            
             if isProceeding(session: session) {
-                    if let threshold = thresholds.threshold(for: selectedStream) {
+                if let threshold = thresholds.threshold(for: selectedStream) {
+                    if let selectedStream = selectedStream {
                         ZStack(alignment: .topLeading) {
-                            if let selectedStream = selectedStream {
-                                Graph(stream: selectedStream,
-                                      thresholds: threshold,
-                                      isAutozoomEnabled: session.type == .mobile).onDateRangeChange { [weak graphStatsDataSource, weak statsContainerViewModel] range in
-                                        graphStatsDataSource?.dateRange = range
-                                        statsContainerViewModel?.adjustForNewData()
-                                      }
-                                // Statistics container shouldn't be presented in mobile dormant tab
-                                if !(session.type == .mobile && session.isActive == false) {
-                                    StatisticsContainerView(statsContainerViewModel: statsContainerViewModel,
+                            Graph(stream: selectedStream,
+                                  thresholds: threshold,
+                                  isAutozoomEnabled: session.type == .mobile).onDateRangeChange { [weak graphStatsDataSource, weak statsContainerViewModel] range in
+                                graphStatsDataSource?.dateRange = range
+                                statsContainerViewModel?.adjustForNewData()
+                            }
+                            // Statistics container shouldn't be presented in mobile dormant tab
+                            if !session.isDormant {
+                                StatisticsContainerView(statsContainerViewModel: statsContainerViewModel,
                                                         threshold: threshold)
-                                }
                             }
                         }
-                        NavigationLink(destination: HeatmapSettingsView(changedThresholdValues: threshold.rawThresholdsBinding)) {
+                        NavigationLink(destination: ThresholdsSettingsView(thresholdValues: threshold.rawThresholdsBinding,
+                                                                           initialThresholds: selectedStream.thresholds)) {
                             EditButtonView()
+                                .padding(.horizontal)
+                                .padding(.top)
                         }
-                        .padding(.horizontal)
-                        .padding(.top)
-                        
-                        ThresholdsSliderView(threshold: threshold)
-                            .padding()
-                            // Fixes labels covered by tabbar
-                            .padding(.bottom)
                     }
+
+                    
+                    ThresholdsSliderView(threshold: threshold)
+                        .padding()
+                    // Fixes labels covered by tabbar
+                        .padding(.bottom)
+                }
             }
             Spacer()
         }
