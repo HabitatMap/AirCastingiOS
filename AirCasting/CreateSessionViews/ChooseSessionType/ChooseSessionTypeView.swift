@@ -14,6 +14,7 @@ struct ChooseSessionTypeView: View {
     @State private var isPowerABLinkActive = false
     @State private var isMobileLinkActive = false
     @State private var didTapFixedSession = false
+    @State private var startSync = false
     var viewModel: ChooseSessionTypeViewModel
     @EnvironmentObject private var tabSelection: TabBarSelection
     @EnvironmentObject var selectedSection: SelectSection
@@ -78,6 +79,10 @@ struct ChooseSessionTypeView: View {
                         SelectDeviceView(creatingSessionFlowContinues: $isMobileLinkActive, urlProvider: viewModel.passURLProvider)
                     }
                 }
+                
+                .fullScreenCover(isPresented: $startSync) {
+                    SDSyncRootView()
+                }
                 .onChange(of: viewModel.passBluetoothManager.centralManagerState) { _ in
                     if didTapFixedSession {
                         didTapFixedSession = false
@@ -112,6 +117,8 @@ struct ChooseSessionTypeView: View {
                                 fixedSessionButton
                                 mobileSessionButton
                             }
+                            Text("or")
+                            sdSyncButton
                         }
                         Spacer()
                     }
@@ -147,6 +154,10 @@ struct ChooseSessionTypeView: View {
                                 CreatingSessionFlowRootView {
                                     SelectDeviceView(creatingSessionFlowContinues: $isMobileLinkActive, urlProvider: viewModel.passURLProvider)
                                 }
+                            }
+                        EmptyView()
+                            .fullScreenCover(isPresented: $startSync) {
+                                SDSyncRootView()
                             }
                     }
                 )
@@ -216,6 +227,12 @@ struct ChooseSessionTypeView: View {
             handleMobileSessionState()
         }) {
             mobileSessionLabel
+        }
+    }
+    
+    var sdSyncButton: some View {
+        Button("Sync data from AirBeam3") {
+            startSync = true
         }
     }
     
