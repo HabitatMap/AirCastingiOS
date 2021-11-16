@@ -481,6 +481,7 @@ struct Strings {
     enum StandaloneSessionCardView {
         static let heading = "Your AirBeam3 is now in stand-alone mode"
         static let description = "AirBeam3 is now recording using its SD card. The measurements will be displayed here after syncing."
-        static let buttonLabel = "Finish recording & don't sync"
+        static let finishAndSyncButtonLabel = "Finish recording & sync"
+        static let finishAndDontSyncButtonLabel = "Finish recording & don't sync"
     }
 }

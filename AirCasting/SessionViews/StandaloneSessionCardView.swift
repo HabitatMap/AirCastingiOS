@@ -8,8 +8,30 @@ struct StandaloneSessionCardView: View {
     let session: SessionEntity
     let sessionStopperFactory: SessionStoppableFactory
     @State private var showingFinishAlert = false
+    @State private var showingFinishAndSyncAlert = false
+    @State private var startSyncing = false
     
     var body: some View {
+        if #available(iOS 15, *) {
+            standaloneSessionCard
+                .fullScreenCover(isPresented: $startSyncing) {
+                    SDSyncRootView() {
+                        Text("Syncing")
+                    }
+                }
+        } else {
+            standaloneSessionCard
+                .background(
+                    EmptyView()
+                        .fullScreenCover(isPresented: $startSyncing) {
+                            SDSyncRootView() {
+                                Text("Syncing")
+                            }
+                        })
+        }
+    }
+    
+    var standaloneSessionCard: some View {
         VStack(alignment: .leading, spacing: 5) {
             header
             content
@@ -39,16 +61,46 @@ struct StandaloneSessionCardView: View {
                 .foregroundColor(.darkBlue)
             Text(Strings.StandaloneSessionCardView.description)
                 .multilineTextAlignment(.center)
-            Button(Strings.StandaloneSessionCardView.buttonLabel) {
-                showingFinishAlert = true
-            }
-            .buttonStyle(BlueButtonStyle())
+            finishAndSyncButton
+                .alert(isPresented: $showingFinishAndSyncAlert) {
+                    finishAndSyncAlert(sessionName: session.name)
+                }
+            finishAndDontSyncButton
+                .alert(isPresented: $showingFinishAlert) {
+                    SessionViews.finishSessionAlert(sessionStopper: sessionStopperFactory.getSessionStopper(for: session), sessionName: session.name)
+                }
             .padding()
-            .alert(isPresented: $showingFinishAlert) {
-                SessionViews.finishSessionAlert(sessionStopper: sessionStopperFactory.getSessionStopper(for: session), sessionName: session.name)
-            }
         }
         .padding()
+    }
+    
+    var finishAndSyncButton: some View {
+        Button(Strings.StandaloneSessionCardView.finishAndSyncButtonLabel) {
+            showingFinishAndSyncAlert = true
+        }
+        .buttonStyle(BlueButtonStyle())
+    }
+    
+    var finishAndDontSyncButton: some View {
+        Button(Strings.StandaloneSessionCardView.finishAndDontSyncButtonLabel) {
+            showingFinishAlert = true
+        }
+        .foregroundColor(.accentColor)
+    }
+    
+    func finishAndSyncAlert(sessionName: String?) -> Alert {
+        Alert(title: Text(Strings.SessionHeaderView.finishAlertTitle) +
+              Text(sessionName ?? Strings.SessionHeaderView.finishAlertTitle_2)
+              +
+              Text(" and sync from SD card?"),
+              message: Text(Strings.SessionHeaderView.finishAlertMessage_1) +
+              Text(Strings.SessionHeaderView.finishAlertMessage_2) +
+              Text(Strings.SessionHeaderView.finishAlertMessage_3) +
+              Text("\nSD card will be cleared afterwards"),
+              primaryButton: .default(Text(Strings.SessionHeaderView.finishAlertButton), action: {
+            startSyncing = true
+        }),
+              secondaryButton: .cancel())
     }
 }
 
