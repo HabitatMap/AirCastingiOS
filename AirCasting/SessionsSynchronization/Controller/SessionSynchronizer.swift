@@ -35,6 +35,10 @@ extension SessionSynchronizer {
     func triggerSynchronization() {
         triggerSynchronization(options: [.download, .upload, .remove], completion: nil)
     }
+    
+    func triggerSynchronization(completion: @escaping (() -> Void)) {
+        triggerSynchronization(options: [.download, .upload, .remove], completion: completion)
+    }
 }
 
 // MARK: Namespacing struct

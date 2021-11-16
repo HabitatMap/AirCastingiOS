@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AirCastingStyling
 
 struct GreenButtonStyle: ButtonStyle {
     
@@ -18,7 +19,7 @@ struct GreenButtonStyle: ButtonStyle {
             .background(Color.aircastingMint)
             .cornerRadius(5)
             .padding(-3)
-            .shadow(color: Color(white: 150/255, opacity: 0.5), radius: 9, x: 0, y: 1)
+            .shadow(color: Color.shadow, radius: 9, x: 0, y: 1)
     }
 }
 #if DEBUG

@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Lunar on 17/06/2021.
 //
@@ -44,8 +44,9 @@ extension Color {
     public static var shadow: Color {
         return Color(white: 150/255, opacity: 0.5)
     }
-    
     public static var sessionCardShadow: Color {
         return Color(red: 205/255, green: 209/255, blue: 214/255, opacity: 0.36)
+    public static var aliceBlue: Color {
+        Color(red: 251/255, green: 253/255, blue: 255/255)
     }
 }
