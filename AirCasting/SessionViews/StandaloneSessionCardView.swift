@@ -15,18 +15,14 @@ struct StandaloneSessionCardView: View {
         if #available(iOS 15, *) {
             standaloneSessionCard
                 .fullScreenCover(isPresented: $startSyncing) {
-                    SDSyncRootView() {
-                        Text("Syncing")
-                    }
+                    SDSyncRootView()
                 }
         } else {
             standaloneSessionCard
                 .background(
                     EmptyView()
                         .fullScreenCover(isPresented: $startSyncing) {
-                            SDSyncRootView() {
-                                Text("Syncing")
-                            }
+                            SDSyncRootView()
                         })
         }
     }

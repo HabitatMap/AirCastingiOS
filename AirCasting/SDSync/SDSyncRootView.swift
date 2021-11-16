@@ -3,17 +3,17 @@
 
 import SwiftUI
 
-struct SDSyncRootView<Content: View>: View {
-    let content: () -> Content
-
+struct SDSyncRootView: View {
     @Environment(\.presentationMode) var presentationMode
+    let viewModel = SDSyncViewModel()
 
     var body: some View {
         NavigationView {
-            content()
+            Text("Syncing")
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationBarItems(leading: backButton)
         }
+        .onAppear(perform: viewModel.startSync)
     }
 
     var backButton: some View {
@@ -29,8 +29,6 @@ struct SDSyncRootView<Content: View>: View {
 
 struct SDSyncRootView_Previews: PreviewProvider {
     static var previews: some View {
-        SDSyncRootView {
-            Text("")
-        }
+        SDSyncRootView()
     }
 }
