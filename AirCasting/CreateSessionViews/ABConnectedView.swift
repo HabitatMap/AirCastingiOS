@@ -9,7 +9,6 @@ import AirCastingStyling
 import SwiftUI
 
 struct ABConnectedView: View {
-
     @Binding var creatingSessionFlowContinues: Bool
     let baseURL: BaseURLProvider
     
@@ -42,8 +41,7 @@ private extension ABConnectedView {
 
     var continueButton: some View {
         return NavigationLink(
-            destination: CreateSessionDetailsView(
-                creatingSessionFlowContinues: $creatingSessionFlowContinues, baseURL: baseURL),
+            destination: CreateSessionDetailsView(creatingSessionFlowContinues: $creatingSessionFlowContinues, baseURL: baseURL),
             label: {
                 Text(Strings.ABConnectedView.continueButton)
             })

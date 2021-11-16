@@ -6,6 +6,7 @@ struct Fonts {
     
     static let heavyTitle1: Font = Font.muli(size: 24, weight: .heavy)
     static let heavyTitle2: Font = Font.muli(size: 18, weight: .heavy)
+    static let heavyTitle3: Font = Font.muli(size: 15, weight: .heavy)
     
     static let boldTitle1: Font = Font.moderate(size: 32, weight: .bold)
     static let boldTitle2: Font = Font.moderate(size: 28, weight: .bold)
