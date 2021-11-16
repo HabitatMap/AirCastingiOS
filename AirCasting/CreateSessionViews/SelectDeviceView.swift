@@ -51,7 +51,7 @@ struct SelectDeviceView: View {
                     EmptyView()
                 })
             NavigationLink(
-                destination: CreateSessionDetailsView(viewModel: CreateSessionDetailsViewModel(baseURL: urlProvider), creatingSessionFlowContinues: $creatingSessionFlowContinues),
+                destination: CreateSessionDetailsView(creatingSessionFlowContinues: $creatingSessionFlowContinues, baseURL: urlProvider),
                 isActive: $isMicLinkActive,
                 label: {
                     EmptyView()

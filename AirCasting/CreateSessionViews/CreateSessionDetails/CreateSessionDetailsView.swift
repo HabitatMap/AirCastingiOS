@@ -6,8 +6,13 @@ import SwiftUI
 struct CreateSessionDetailsView: View {
     
     @EnvironmentObject private var sessionContext: CreateSessionContext
-    @StateObject var viewModel: CreateSessionDetailsViewModel
+    @StateObject private var viewModel: CreateSessionDetailsViewModel
     @Binding var creatingSessionFlowContinues: Bool
+    
+    init(creatingSessionFlowContinues: Binding<Bool>, baseURL: BaseURLProvider) {
+        self._creatingSessionFlowContinues = creatingSessionFlowContinues
+        self._viewModel = .init(wrappedValue: CreateSessionDetailsViewModel(baseURL: baseURL))
+    }
     
     var body: some View {
         GeometryReader { geometry in

@@ -41,8 +41,7 @@ private extension ABConnectedView {
 
     var continueButton: some View {
         return NavigationLink(
-            destination: CreateSessionDetailsView(
-                viewModel: CreateSessionDetailsViewModel(baseURL: baseURL), creatingSessionFlowContinues: $creatingSessionFlowContinues),
+            destination: CreateSessionDetailsView(creatingSessionFlowContinues: $creatingSessionFlowContinues, baseURL: baseURL),
             label: {
                 Text(Strings.ABConnectedView.continueButton)
             })
