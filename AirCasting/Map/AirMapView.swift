@@ -72,8 +72,10 @@ struct AirMapView: View {
                                                     threshold: threshold)
                         }
                     }
-                    NavigationLink(destination: HeatmapSettingsView(changedThresholdValues: threshold.rawThresholdsBinding)) {
-                        EditButtonView()
+                    if let selectedStream = selectedStream {
+                        NavigationLink(destination: ThresholdsSettingsView(thresholdValues: threshold.rawThresholdsBinding, initialThresholds: selectedStream.thresholds)) {
+                            EditButtonView()
+                        }
                     }
                     ThresholdsSliderView(threshold: threshold)
                         // Fixes labels covered by tabbar

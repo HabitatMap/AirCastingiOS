@@ -114,11 +114,11 @@ class PersistenceController: ObservableObject {
     }
 
     private struct DefaultMicThresholdsValues {
-        let thresholdVeryLow: Int32 = 100
-        let thresholdLow: Int32 = 80
+        let thresholdVeryLow: Int32 = 20
+        let thresholdLow: Int32 = 60
         let thresholdMedium: Int32 = 70
-        let thresholdHigh: Int32 = 60
-        let thresholdVeryHigh: Int32 = 20
+        let thresholdHigh: Int32 = 80
+        let thresholdVeryHigh: Int32 = 100
     }
 
     private func finishMobileSessions() {
