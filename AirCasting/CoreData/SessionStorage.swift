@@ -10,20 +10,18 @@ final class SessionStorage: ObservableObject {
         self.persistenceController = persistenceController
     }
 
-    func clearAllSession() throws {
-        let request: NSFetchRequest<SessionEntity> = SessionEntity.fetchRequest()
-        let context = persistenceController.viewContext
-        let sessions = try context.fetch(request)
-        sessions.forEach(context.delete)
-        try context.save()
-    }
-
-    // Uses NSBatchDeleteRequest not informing the native core data notification system
-    func clearAllSessionSilently() throws {
-        let deleteRequest = NSBatchDeleteRequest(fetchRequest: SessionEntity.fetchRequest())
-        deleteRequest.resultType = .resultTypeObjectIDs
-        let persistentStoreResult = try persistenceController.editContext.execute(deleteRequest)
-        Log.info("Deleted sessions \(persistentStoreResult)")
-        persistenceController.viewContext.reset()
+    func clearAllSessions(completion: ((Result<Void, Error>) -> Void)?) {
+        let context = persistenceController.editContext
+        context.perform({
+            do {
+                let request: NSFetchRequest<SessionEntity> = SessionEntity.fetchRequest()
+                let sessions = try context.fetch(request)
+                sessions.forEach(context.delete)
+                try context.save()
+                completion?(.success(()))
+            } catch {
+                completion?(.failure(error))
+            }
+        })
     }
 }

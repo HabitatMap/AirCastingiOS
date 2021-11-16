@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AirCastingStyling
 
 struct ChooseSessionTypeView: View {
     @State private var isInfoPresented: Bool = false
@@ -258,7 +259,7 @@ struct ChooseSessionTypeView: View {
         .padding()
         .frame(maxWidth: 180, maxHeight: 145)
         .background(Color.white)
-        .shadow(color: Color(white: 150/255, opacity: 0.5), radius: 9, x: 0, y: 1)
+        .shadow(color: Color.shadow, radius: 9, x: 0, y: 1)
     }
     
     var mobileSessionLabel: some View {
@@ -274,7 +275,7 @@ struct ChooseSessionTypeView: View {
         .padding()
         .frame(maxWidth: 180, maxHeight: 145)
         .background(Color.white)
-        .shadow(color: Color(white: 150/255, opacity: 0.5), radius: 9, x: 0, y: 1)
+        .shadow(color: Color.shadow, radius: 9, x: 0, y: 1)
     }
 }
 
