@@ -12,6 +12,7 @@
 		333448702742AF8D00ACA5E4 /* FinishSessionAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3334486F2742AF8D00ACA5E4 /* FinishSessionAlert.swift */; };
 		333448732743D7BB00ACA5E4 /* SDSyncRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333448722743D7BB00ACA5E4 /* SDSyncRootView.swift */; };
 		333448752743D94F00ACA5E4 /* SDSyncViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333448742743D94F00ACA5E4 /* SDSyncViewModel.swift */; };
+		333448772744104A00ACA5E4 /* SDSyncController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333448762744104A00ACA5E4 /* SDSyncController.swift */; };
 		3346F1F626318C1600BA4695 /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3346F1F526318C1600BA4695 /* SettingsManager.swift */; };
 		3362B4ED25E69987008D61BA /* CreateSessionDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3362B4EC25E69987008D61BA /* CreateSessionDetailsView.swift */; };
 		33769A5C2705B06F007D1EA7 /* ChartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33769A5B2705B06F007D1EA7 /* ChartViewModel.swift */; };
@@ -308,6 +309,7 @@
 		3334486F2742AF8D00ACA5E4 /* FinishSessionAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinishSessionAlert.swift; sourceTree = "<group>"; };
 		333448722743D7BB00ACA5E4 /* SDSyncRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSyncRootView.swift; sourceTree = "<group>"; };
 		333448742743D94F00ACA5E4 /* SDSyncViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSyncViewModel.swift; sourceTree = "<group>"; };
+		333448762744104A00ACA5E4 /* SDSyncController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSyncController.swift; sourceTree = "<group>"; };
 		3346F1F526318C1600BA4695 /* SettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
 		3362B4EC25E69987008D61BA /* CreateSessionDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSessionDetailsView.swift; sourceTree = "<group>"; };
 		33769A5B2705B06F007D1EA7 /* ChartViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartViewModel.swift; sourceTree = "<group>"; };
@@ -638,6 +640,7 @@
 			children = (
 				333448722743D7BB00ACA5E4 /* SDSyncRootView.swift */,
 				333448742743D94F00ACA5E4 /* SDSyncViewModel.swift */,
+				333448762744104A00ACA5E4 /* SDSyncController.swift */,
 			);
 			path = SDSync;
 			sourceTree = "<group>";
@@ -1993,6 +1996,7 @@
 				DDCD3570271EB641004969FF /* UIImage.swift in Sources */,
 				AC797FE7263C2C1600970254 /* SensorThreshold.swift in Sources */,
 				B3E26A032676D9AA001A8E4C /* ArrayUtils.swift in Sources */,
+				333448772744104A00ACA5E4 /* SDSyncController.swift in Sources */,
 				ACDF82FC265BBDE200A4D04A /* UIFont.swift in Sources */,
 				DD8C380E2689A55A00901FDF /* BackendSettingsView.swift in Sources */,
 				DD1EEB8E26B7C39000AFC5C1 /* ChooseSessionTypeViewModel.swift in Sources */,

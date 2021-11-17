@@ -18,6 +18,7 @@ struct ChooseSessionTypeView: View {
     @State private var startSync = false
     var viewModel: ChooseSessionTypeViewModel
     var sessionSynchronizer: SessionSynchronizer
+    @EnvironmentObject private var sdSyncController: SDSyncController
     @EnvironmentObject private var tabSelection: TabBarSelection
     @EnvironmentObject var selectedSection: SelectSection
     @EnvironmentObject private var emptyDashboardButtonTapped: EmptyDashboardButtonTapped
@@ -27,6 +28,7 @@ struct ChooseSessionTypeView: View {
 
     var body: some View {
         if #available(iOS 15, *) {
+            let _ = print(Self._printChanges())
             NavigationView {
                 VStack(spacing: 50) {
                     VStack(alignment: .leading, spacing: 10) {
@@ -47,6 +49,8 @@ struct ChooseSessionTypeView: View {
                                 fixedSessionButton
                                 mobileSessionButton
                             }
+                            Text("or")
+                            sdSyncButton
                         }
                         Spacer()
                     }
@@ -83,7 +87,7 @@ struct ChooseSessionTypeView: View {
                 }
                 
                 .fullScreenCover(isPresented: $startSync) {
-                    SDSyncRootView(sessionSynchronizer: sessionSynchronizer)
+                    SDSyncRootView(sessionSynchronizer: sessionSynchronizer, sdSyncController: sdSyncController)
                 }
                 .onChange(of: viewModel.passBluetoothManager.centralManagerState) { _ in
                     if didTapFixedSession {
@@ -159,7 +163,7 @@ struct ChooseSessionTypeView: View {
                             }
                         EmptyView()
                             .fullScreenCover(isPresented: $startSync) {
-                                SDSyncRootView(sessionSynchronizer: sessionSynchronizer)
+                                SDSyncRootView(sessionSynchronizer: sessionSynchronizer, sdSyncController: sdSyncController)
                             }
                     }
                 )

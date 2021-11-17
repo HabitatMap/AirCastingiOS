@@ -11,19 +11,20 @@ struct StandaloneSessionCardView: View {
     @State private var showingFinishAlert = false
     @State private var showingFinishAndSyncAlert = false
     @State private var startSyncing = false
+    @EnvironmentObject private var sdSyncController: SDSyncController
     
     var body: some View {
         if #available(iOS 15, *) {
             standaloneSessionCard
                 .fullScreenCover(isPresented: $startSyncing) {
-                    SDSyncRootView(sessionSynchronizer: sessionSynchronizer)
+                    SDSyncRootView(sessionSynchronizer: sessionSynchronizer, sdSyncController: sdSyncController)
                 }
         } else {
             standaloneSessionCard
                 .background(
                     EmptyView()
                         .fullScreenCover(isPresented: $startSyncing) {
-                            SDSyncRootView(sessionSynchronizer: sessionSynchronizer)
+                            SDSyncRootView(sessionSynchronizer: sessionSynchronizer, sdSyncController: sdSyncController)
                         })
         }
     }
