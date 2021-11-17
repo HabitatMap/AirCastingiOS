@@ -27,6 +27,7 @@ class BluetoothManager: NSObject, ObservableObject {
     @Published var connectedPeripheral: CBPeripheral?
     @Published var mobileSessionReconnected = false
     var observed: NSKeyValueObservation?
+    private var sdSyncInProgress = false
     
     let mobilePeripheralSessionManager: MobilePeripheralSessionManager
     
@@ -36,6 +37,12 @@ class BluetoothManager: NSObject, ObservableObject {
         CBUUID(string:"0000ffe4-0000-1000-8000-00805f9b34fb"),    // PM1
         CBUUID(string:"0000ffe5-0000-1000-8000-00805f9b34fb"),    // PM2.5
         CBUUID(string:"0000ffe6-0000-1000-8000-00805f9b34fb")]   // PM10
+    
+    // has notifications about measurements count in particular csv file on SD card
+    private let DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID = CBUUID(string:"0000ffde-0000-1000-8000-00805f9b34fb")
+    
+    // has notifications for reading measurements stored in csv files on SD card
+    private let DOWNLOAD_FROM_SD_CARD_CHARACTERISTIC_UUID = CBUUID(string:"0000ffdf-0000-1000-8000-00805f9b34fb")
     
     var airbeams: [CBPeripheral] {
         devices.filter { (device) -> Bool in
@@ -58,6 +65,14 @@ class BluetoothManager: NSObject, ObservableObject {
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(30)) { [centralManager] in
             centralManager.stopScan()
         }
+    }
+    
+    typealias CharacteristicObserver = (Result<Data?, Error>) -> Void
+    
+    var charactieristicsMapping: [CBUUID: [CharacteristicObserver]] = [:]
+    
+    func subscribeToCharacteristic(_ characteristic: CBUUID, notify: @escaping CharacteristicObserver) {
+        charactieristicsMapping[characteristic, default:[]].append(notify)
     }
     
     init(mobilePeripheralSessionManager: MobilePeripheralSessionManager) {
@@ -100,9 +115,10 @@ extension BluetoothManager: CBCentralManagerDelegate {
     
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
         if !devices.contains(peripheral) {
-            if peripheral.name != nil {
-                devices.append(peripheral)
-            }
+//            if peripheral.name != nil {
+//                guard !mobilePeripheralSessionManager.standaloneSessionInProgressWith(peripheral) else { return }
+//                devices.append(peripheral)
+//            }
         }
     }
     
@@ -127,13 +143,13 @@ extension BluetoothManager: CBCentralManagerDelegate {
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
         Log.info("Disconnected: \(String(describing: error?.localizedDescription))")
         guard mobilePeripheralSessionManager.activeSessionInProgressWith(peripheral) else { return }
+//        mobilePeripheralSessionManager.markActiveSessionAsDisconnected(peripheral: peripheral)
         connect(to: peripheral)
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(10)) {
             guard peripheral.state != .connected else { return }
             self.cancelPeripheralConnection(for: peripheral)
-            self.connectedPeripheral = nil
-            self.mobilePeripheralSessionManager.finishSession(for: peripheral,
-                                                                 centralManger: self.centralManager)
+//            self.connectedPeripheral = nil
+//            self.mobilePeripheralSessionManager.moveSessionToStandaloneMode(peripheral: peripheral)
         }
     }
 }
@@ -153,7 +169,18 @@ extension BluetoothManager: CBPeripheralDelegate {
         if let characteristics = service.characteristics {
             Crashlytics.crashlytics().log("BluetoothManager (didDiscoverCharacteristicsFor) - service characteristics\n \(String(describing: service.characteristics))")
             for characteristic in characteristics {
+                Log.info("## \(characteristic)")
                 if MEASUREMENTS_CHARACTERISTIC_UUIDS.contains(characteristic.uuid) {
+                    peripheral.setNotifyValue(true, for: characteristic)
+                    hasSomeCharacteristics = true
+                }
+                
+                if characteristic.uuid == DOWNLOAD_FROM_SD_CARD_CHARACTERISTIC_UUID {
+                    peripheral.setNotifyValue(true, for: characteristic)
+                    hasSomeCharacteristics = true
+                }
+                
+                if characteristic.uuid == DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID {
                     peripheral.setNotifyValue(true, for: characteristic)
                     hasSomeCharacteristics = true
                 }
@@ -167,15 +194,38 @@ extension BluetoothManager: CBPeripheralDelegate {
             Log.warning("AirBeam sent measurement without value")
             return
         }
-
+        
+        charactieristicsMapping[characteristic.uuid]?.forEach { block in
+            guard error != nil else { block(.failure(error!)); return }
+            block(.success(characteristic.value))
+        }
+        
+//        guard characteristic.uuid != DOWNLOAD_FROM_SD_CARD_CHARACTERISTIC_UUID else {
+//            let string = String(data: value, encoding: .utf8)
+//            print("## measurements", string)
+//            return
+//        }
+//
+//        guard characteristic.uuid != DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID else {
+//            let string = String(data: value, encoding: .utf8)
+//            print("## meta data:", string)
+//            return
+//        }
+        
+        
         if let parsedMeasurement = parseData(data: value) {
             mobilePeripheralSessionManager.handlePeripheralMeasurement(PeripheralMeasurement(peripheral: peripheral, measurementStream: parsedMeasurement))
         }
     }
     
-    func disconnectAirBeam() {
-        connectedPeripheral = nil
-        mobilePeripheralSessionManager.finishActiveSession(centralManger: centralManager)
+    func finishMobileSession(with uuid: SessionUUID) {
+//        connectedPeripheral = nil
+//        mobilePeripheralSessionManager.finishSession(with: uuid, centralManager: centralManager)
+    }
+    
+    func enterStandaloneMode(sessionUUID: SessionUUID) {
+//        connectedPeripheral = nil
+//        mobilePeripheralSessionManager.enterStandaloneMode(sessionUUID: sessionUUID, centralManager: centralManager)
     }
     
     func parseData(data: Data) -> ABMeasurementStream? {

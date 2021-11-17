@@ -157,6 +157,8 @@
 		B30BAC212694AEAA00AE0476 /* GraphStatsDataSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30BAC202694AEAA00AE0476 /* GraphStatsDataSourceTests.swift */; };
 		B30BAC232694B3DA00AE0476 /* XCTest+Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30BAC222694B3DA00AE0476 /* XCTest+Persistence.swift */; };
 		B30BAC252694B5D900AE0476 /* TestStreamGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30BAC242694B5D900AE0476 /* TestStreamGenerator.swift */; };
+		B30F9A612745601F00C85E17 /* SDSyncController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30F9A602745601F00C85E17 /* SDSyncController.swift */; };
+		B30F9A632745626B00C85E17 /* SDCardAirBeamServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30F9A622745626B00C85E17 /* SDCardAirBeamServices.swift */; };
 		B31B7EC9267E2024002DAC18 /* SyncContextServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31B7EC8267E2024002DAC18 /* SyncContextServiceTests.swift */; };
 		B31B7ECB267E4DF6002DAC18 /* DummyError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31B7ECA267E4DF6002DAC18 /* DummyError.swift */; };
 		B31B7ECD267E500B002DAC18 /* SyncDownstreamServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31B7ECC267E500B002DAC18 /* SyncDownstreamServiceTests.swift */; };
@@ -455,6 +457,8 @@
 		B30BAC202694AEAA00AE0476 /* GraphStatsDataSourceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphStatsDataSourceTests.swift; sourceTree = "<group>"; };
 		B30BAC222694B3DA00AE0476 /* XCTest+Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTest+Persistence.swift"; sourceTree = "<group>"; };
 		B30BAC242694B5D900AE0476 /* TestStreamGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestStreamGenerator.swift; sourceTree = "<group>"; };
+		B30F9A602745601F00C85E17 /* SDSyncController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSyncController.swift; sourceTree = "<group>"; };
+		B30F9A622745626B00C85E17 /* SDCardAirBeamServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDCardAirBeamServices.swift; sourceTree = "<group>"; };
 		B31B7EC8267E2024002DAC18 /* SyncContextServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncContextServiceTests.swift; sourceTree = "<group>"; };
 		B31B7ECA267E4DF6002DAC18 /* DummyError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DummyError.swift; sourceTree = "<group>"; };
 		B31B7ECC267E500B002DAC18 /* SyncDownstreamServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncDownstreamServiceTests.swift; sourceTree = "<group>"; };
@@ -726,6 +730,8 @@
 				DDD24D8526A8295F00D4A327 /* ConnectingABViewModel.swift */,
 				DD28047A26B3D7730060F55E /* BluetoothConnector.swift */,
 				DD28047626B3D6E70060F55E /* AirBeamServices.swift */,
+				B30F9A622745626B00C85E17 /* SDCardAirBeamServices.swift */,
+				B30F9A602745601F00C85E17 /* SDSyncController.swift */,
 				DD28047826B3D7370060F55E /* AirBeamConnectionController.swift */,
 				AC1DAD4825C987B3009AC4D1 /* BluetoothManager.swift */,
 				AC8CFF7D25EE5F9200FB2918 /* AirBeam3Configurator.swift */,
@@ -1805,6 +1811,7 @@
 				AC9F526E2652A360003CF61F /* AirSectionPickerView.swift in Sources */,
 				AC7EB37825A6FB3A00A7F2AF /* MainTabBarView.swift in Sources */,
 				B38E6CD026C5F83D00C21C45 /* StandardSesssionStopper.swift in Sources */,
+				B30F9A612745601F00C85E17 /* SDSyncController.swift in Sources */,
 				AC960C7825DD39F500EC95DD /* ABConnectedView.swift in Sources */,
 				DD5687C326CFC8080028C2CA /* Constants.swift in Sources */,
 				AC489B5C2603614E00CEEC48 /* MoreInfoPopupView.swift in Sources */,
@@ -1878,6 +1885,7 @@
 				B32D08AD267A6437006C97ED /* LogEvent.swift in Sources */,
 				33BA336A266E4D1000899343 /* MobileSession.swift in Sources */,
 				AC86EE6B25D03DC00083F8C0 /* SelectDeviceView.swift in Sources */,
+				B30F9A632745626B00C85E17 /* SDCardAirBeamServices.swift in Sources */,
 				4F15548B263C44AF00FF3208 /* Session.swift in Sources */,
 				AC1471A325F23AE40062A53F /* CreateSessionAPI.swift in Sources */,
 				B32D08A4267A4957006C97ED /* LogErrorAndCompletePublisher.swift in Sources */,
