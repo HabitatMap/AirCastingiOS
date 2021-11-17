@@ -67,6 +67,14 @@ class BluetoothManager: NSObject, ObservableObject {
         }
     }
     
+    typealias CharacteristicObserver = (Result<Data?, Error>) -> Void
+    
+    var charactieristicsMapping: [CBUUID: [CharacteristicObserver]] = [:]
+    
+    func subscribeToCharacteristic(_ characteristic: CBUUID, notify: @escaping CharacteristicObserver) {
+        charactieristicsMapping[characteristic, default:[]].append(notify)
+    }
+    
     init(mobilePeripheralSessionManager: MobilePeripheralSessionManager) {
         self.mobilePeripheralSessionManager = mobilePeripheralSessionManager
         super.init()
@@ -161,7 +169,18 @@ extension BluetoothManager: CBPeripheralDelegate {
         if let characteristics = service.characteristics {
             Crashlytics.crashlytics().log("BluetoothManager (didDiscoverCharacteristicsFor) - service characteristics\n \(String(describing: service.characteristics))")
             for characteristic in characteristics {
+                Log.info("## \(characteristic)")
                 if MEASUREMENTS_CHARACTERISTIC_UUIDS.contains(characteristic.uuid) {
+                    peripheral.setNotifyValue(true, for: characteristic)
+                    hasSomeCharacteristics = true
+                }
+                
+                if characteristic.uuid == DOWNLOAD_FROM_SD_CARD_CHARACTERISTIC_UUID {
+                    peripheral.setNotifyValue(true, for: characteristic)
+                    hasSomeCharacteristics = true
+                }
+                
+                if characteristic.uuid == DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID {
                     peripheral.setNotifyValue(true, for: characteristic)
                     hasSomeCharacteristics = true
                 }
@@ -175,7 +194,25 @@ extension BluetoothManager: CBPeripheralDelegate {
             Log.warning("AirBeam sent measurement without value")
             return
         }
-
+        
+        charactieristicsMapping[characteristic.uuid]?.forEach { block in
+            guard error != nil else { block(.failure(error!)); return }
+            block(.success(characteristic.value))
+        }
+        
+//        guard characteristic.uuid != DOWNLOAD_FROM_SD_CARD_CHARACTERISTIC_UUID else {
+//            let string = String(data: value, encoding: .utf8)
+//            print("## measurements", string)
+//            return
+//        }
+//
+//        guard characteristic.uuid != DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID else {
+//            let string = String(data: value, encoding: .utf8)
+//            print("## meta data:", string)
+//            return
+//        }
+        
+        
         if let parsedMeasurement = parseData(data: value) {
             mobilePeripheralSessionManager.handlePeripheralMeasurement(PeripheralMeasurement(peripheral: peripheral, measurementStream: parsedMeasurement))
         }
