@@ -478,4 +478,8 @@ struct Strings {
     enum DashboardView {
         static let dashboardText: String = "Dashboard"
     }
+    
+    enum RefreshControl {
+        static let progressViewTest: String = "Syncing..."
+    }
 }
