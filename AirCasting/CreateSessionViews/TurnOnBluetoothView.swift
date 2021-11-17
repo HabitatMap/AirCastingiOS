@@ -62,13 +62,13 @@ struct TurnOnBluetoothView: View {
     
     var continueButton: some View {
         Button(action: {
-//            if CBCentralManager.authorization == .denied {
-//                settingsRedirection.goToAppsBluetoothAuthSettings()
-//            } else if bluetoothManager.centralManager.state != .poweredOn {
-//                settingsRedirection.goToBluetoothAuthSettings()
-//            } else {
+            if CBCentralManager.authorization == .denied {
+                settingsRedirection.goToAppsBluetoothAuthSettings()
+            } else if bluetoothManager.centralManager.state != .poweredOn {
+                settingsRedirection.goToBluetoothAuthSettings()
+            } else {
                 isPowerABLinkActive = true
-//            }
+            }
         }, label: {
             Text(Strings.TurnOnBluetoothView.continueButton)
         })
