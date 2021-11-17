@@ -39,7 +39,7 @@ struct EmptyMobileDashboardViewMobile: View {
                     Spacer()
                 }
                 airBeamDescription
-                    .padding(.horizontal)
+                    .padding([.horizontal, .bottom])
             }
         }
     }

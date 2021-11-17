@@ -21,6 +21,8 @@ struct TurnOnBluetoothView: View {
         VStack(spacing: 50) {
             ProgressView(value: 0.125)
             Image("1-bluetooth")
+                .resizable()
+                .scaledToFit()
             VStack(alignment: .leading, spacing: 15) {
                 titleLabel
                 messageLabel
@@ -60,13 +62,13 @@ struct TurnOnBluetoothView: View {
     
     var continueButton: some View {
         Button(action: {
-            if CBCentralManager.authorization == .denied {
-                settingsRedirection.goToAppsBluetoothAuthSettings()
-            } else if bluetoothManager.centralManager.state != .poweredOn {
-                settingsRedirection.goToBluetoothAuthSettings()
-            } else {
+//            if CBCentralManager.authorization == .denied {
+//                settingsRedirection.goToAppsBluetoothAuthSettings()
+//            } else if bluetoothManager.centralManager.state != .poweredOn {
+//                settingsRedirection.goToBluetoothAuthSettings()
+//            } else {
                 isPowerABLinkActive = true
-            }
+//            }
         }, label: {
             Text(Strings.TurnOnBluetoothView.continueButton)
         })

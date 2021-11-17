@@ -62,20 +62,17 @@ struct _ABMeasurementsView: View {
                         .font(Fonts.moderateTitle1)
                         .padding(.bottom, 3)
                     HStack {
-                        Group {
-                            ForEach(streams, id : \.self) { stream in
-                                if let threshold = thresholds.threshold(for: stream) {
-                                    SingleMeasurementView(stream: stream,
-                                                          threshold: threshold,
-                                                          selectedStream: $selectedStream,
-                                                          isCollapsed: $isCollapsed,
-                                                          measurementPresentationStyle: measurementPresentationStyle,
-                                                          isDormant: session.isDormant)
-                                }
+                        ForEach(streams, id : \.self) { stream in
+                            if let threshold = thresholds.threshold(for: stream) {
+                                SingleMeasurementView(stream: stream,
+                                                      threshold: threshold,
+                                                      selectedStream: $selectedStream,
+                                                      isCollapsed: $isCollapsed,
+                                                      measurementPresentationStyle: measurementPresentationStyle,
+                                                      isDormant: session.isDormant)
                             }
+                            Spacer()
                         }
-                        .padding(.horizontal, 8)
-                        .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }
             } else {
