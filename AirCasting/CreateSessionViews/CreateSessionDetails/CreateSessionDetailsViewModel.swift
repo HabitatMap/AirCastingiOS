@@ -35,7 +35,7 @@ class CreateSessionDetailsViewModel: ObservableObject {
         sessionContext.sessionName = sessionName
         sessionContext.sessionTags = sessionTags
         
-        guard sessionContext.sessionType == .fixed else {
+        guard sessionContext.sessionType == .mobile else {
             sessionContext.isIndoor = false
             isConfirmCreatingSessionActive = true
             return sessionContext
