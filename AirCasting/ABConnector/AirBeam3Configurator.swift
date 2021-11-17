@@ -102,6 +102,10 @@ struct AirBeam3Configurator {
             sendAuthToken(authToken: token)
         }
     }
+    
+    func configureSDSync() {
+        downloadFromSDCardModeRequest()
+    }
 }
 
 private extension AirBeam3Configurator {
@@ -141,6 +145,11 @@ private extension AirBeam3Configurator {
     
     private func sendCellularConfiguration() {
         let message = hexMessageBuilder.cellularconfigurationCode
+        sendConfigMessage(data: message)
+    }
+    
+    private func downloadFromSDCardModeRequest() {
+        let message = hexMessageBuilder.downloadFromSDCardModeRequest
         sendConfigMessage(data: message)
     }
     

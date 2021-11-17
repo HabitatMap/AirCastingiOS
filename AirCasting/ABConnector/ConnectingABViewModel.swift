@@ -8,6 +8,7 @@ protocol AirbeamConnectionViewModel: ObservableObject {
     var shouldDismiss: Published<Bool>.Publisher { get }
     var isDeviceConnected: Published<Bool>.Publisher { get }
     func connectToAirBeam()
+    func connectToAirBeamAndSync()
 }
 
 class AirbeamConnectionViewModelDefault: AirbeamConnectionViewModel, ObservableObject {
@@ -42,6 +43,16 @@ class AirbeamConnectionViewModelDefault: AirbeamConnectionViewModel, ObservableO
         }
     }
     
+    func connectToAirBeamAndSync() {
+        self.airBeamConnectionController.connectToAirBeam(peripheral: peripheral) { success in
+//            self.isDeviceConnectedValue = success
+//            self.shouldDismissValue = !success
+            
+            guard success else { return }
+            self.configureABforSync()
+        }
+    }
+    
     private func configureAB() {
         if let sessionUUID = self.sessionContext.sessionUUID {
             let configurator = AirBeam3Configurator(userAuthenticationSession: self.userAuthenticationSession,
@@ -53,6 +64,16 @@ class AirbeamConnectionViewModelDefault: AirbeamConnectionViewModel, ObservableO
             }
         }
     }
+    
+    private func configureABforSync() {
+            let configurator = AirBeam3Configurator(userAuthenticationSession: self.userAuthenticationSession,
+                                                    peripheral: self.peripheral)
+            do {
+                try configurator.configureSDSync()
+            } catch {
+                Log.info("Couldn't configure AB for SD sync")
+            }
+    }
 }
 
 class NeverConnectingAirbeamConnectionViewModel: AirbeamConnectionViewModel {
@@ -63,4 +84,5 @@ class NeverConnectingAirbeamConnectionViewModel: AirbeamConnectionViewModel {
     @Published private var isDeviceConnectedValue: Bool = false
     
     func connectToAirBeam() { }
+    func connectToAirBeamAndSync() { }
 }

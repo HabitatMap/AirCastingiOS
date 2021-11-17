@@ -16,16 +16,16 @@ struct StandaloneSessionCardView: View {
     var body: some View {
         if #available(iOS 15, *) {
             standaloneSessionCard
-                .fullScreenCover(isPresented: $startSyncing) {
-                    SDSyncRootView(sessionSynchronizer: sessionSynchronizer, sdSyncController: sdSyncController)
-                }
+//                .fullScreenCover(isPresented: $startSyncing) {
+//                    SDSyncRootView(sessionSynchronizer: sessionSynchronizer, sdSyncController: sdSyncController)
+//                }
         } else {
             standaloneSessionCard
-                .background(
-                    EmptyView()
-                        .fullScreenCover(isPresented: $startSyncing) {
-                            SDSyncRootView(sessionSynchronizer: sessionSynchronizer, sdSyncController: sdSyncController)
-                        })
+//                .background(
+//                    EmptyView()
+//                        .fullScreenCover(isPresented: $startSyncing) {
+//                            SDSyncRootView(sessionSynchronizer: sessionSynchronizer, sdSyncController: sdSyncController)
+//                        })
         }
     }
     
