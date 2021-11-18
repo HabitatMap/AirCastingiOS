@@ -50,7 +50,7 @@ public class MeasurementStreamEntity: NSManagedObject, Identifiable {
         MeasurementStreamLocalID(id: objectID)
     }
     public var thresholds: [Int32] {
-     [thresholdVeryLow, thresholdLow , thresholdMedium ,thresholdHigh, thresholdVeryHigh ]
+     [thresholdVeryLow, thresholdLow, thresholdMedium, thresholdHigh, thresholdVeryHigh]
     }
 }
 
