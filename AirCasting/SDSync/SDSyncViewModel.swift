@@ -1,48 +1,65 @@
-// Created by Lunar on 16/11/2021.
+// Created by Lunar on 21/07/2021.
 //
 
-import Foundation
 import Combine
+import CoreBluetooth
 
-class SDSyncViewModel: ObservableObject {
-    private let sessionSynchronizer: SessionSynchronizer
-    private let sdSyncController: SDSyncController
-    @Published var backendSyncCompleted = false
-    
-    init(sessionSynchronizer: SessionSynchronizer, sdSyncController: SDSyncController) {
-        self.sessionSynchronizer = sessionSynchronizer
-        self.sdSyncController = sdSyncController
-    }
-    
-    func startSync() {
-        Log.info("## Started sync")
-        syncWithBackend()
-    }
-    
-    func syncWithBackend() {
-        Log.info("## Going to sync with backend")
-        guard !sessionSynchronizer.syncInProgress.value else {
-            onCurrentSyncEnd { self.startBackendSync() }
-            return
-        }
-        
-        startBackendSync()
-    }
-    
-    func startBackendSync() {
-        sessionSynchronizer.triggerSynchronization() {
-            Log.info("## ended sync with backed")
-            self.backendSyncCompleted = true
-        }
-    }
-    
-    private func onCurrentSyncEnd(_ completion: @escaping () -> Void) {
-            guard sessionSynchronizer.syncInProgress.value else { completion(); return }
-            var cancellable: AnyCancellable?
-            cancellable = sessionSynchronizer.syncInProgress.sink { syncInProgress in
-                guard !syncInProgress else { return }
-                completion()
-                cancellable?.cancel()
-            }
-        }
+protocol SDSyncViewModel: ObservableObject {
+    var shouldDismiss: Published<Bool>.Publisher { get }
+    var isSyncCompleted: Published<Bool>.Publisher { get }
+    func connectToAirBeamAndSync()
 }
+
+class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
+    var shouldDismiss: Published<Bool>.Publisher { $shouldDismissValue }
+    var isSyncCompleted: Published<Bool>.Publisher { $isSyncCompletedValue }
+    
+    @Published private var shouldDismissValue: Bool = false
+    @Published private var isSyncCompletedValue: Bool = false
+    
+    private let peripheral: CBPeripheral
+    private let airBeamConnectionController: AirBeamConnectionController
+    private let userAuthenticationSession: UserAuthenticationSession
+    private let sessionContext: CreateSessionContext
+    
+    init(airBeamConnectionController: AirBeamConnectionController,
+         userAuthenticationSession: UserAuthenticationSession,
+         sessionContext: CreateSessionContext,
+         peripheral: CBPeripheral) {
+        self.peripheral = peripheral
+        self.airBeamConnectionController = airBeamConnectionController
+        self.userAuthenticationSession = userAuthenticationSession
+        self.sessionContext = sessionContext
+    }
+    
+    func connectToAirBeamAndSync() {
+        self.airBeamConnectionController.connectToAirBeam(peripheral: peripheral) { success in
+//            self.isDeviceConnectedValue = success
+//            self.shouldDismissValue = !success
+            
+            guard success else { return }
+            self.configureABforSync()
+        }
+    }
+    
+    private func configureABforSync() {
+        let configurator = AirBeam3Configurator(userAuthenticationSession: self.userAuthenticationSession,
+                                                peripheral: self.peripheral)
+        do {
+            try configurator.configureSDSync()
+        } catch {
+            Log.info("Couldn't configure AB for SD sync")
+        }
+    }
+}
+
+//class NeverConnectingAirbeamConnectionViewModel: AirbeamConnectionViewModel {
+//    var shouldDismiss: Published<Bool>.Publisher { $shouldDismissValue }
+//    var isSyncCompleted: Published<Bool>.Publisher { $isisSyncCompletedValue }
+//
+//    @Published private var shouldDismissValue: Bool = false
+//    @Published private var isSyncCompletedValue: Bool = false
+//
+//    func connectToAirBeam() { }
+//    func connectToAirBeamAndSync() { }
+//}

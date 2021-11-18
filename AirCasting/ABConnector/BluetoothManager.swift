@@ -165,6 +165,16 @@ extension BluetoothManager: CBPeripheralDelegate {
                     peripheral.setNotifyValue(true, for: characteristic)
                     hasSomeCharacteristics = true
                 }
+                
+                if characteristic.uuid == DOWNLOAD_FROM_SD_CARD_CHARACTERISTIC_UUID {
+                    peripheral.setNotifyValue(true, for: characteristic)
+                    hasSomeCharacteristics = true
+                }
+                
+                if characteristic.uuid == DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID {
+                    peripheral.setNotifyValue(true, for: characteristic)
+                    hasSomeCharacteristics = true
+                }
             }
         }
         hasSomeCharacteristics ? NotificationCenter.default.post(name: .discoveredCharacteristic, object: nil, userInfo: [AirCastingNotificationKeys.DiscoveredCharacteristic.peripheralUUID : peripheral.identifier]) : nil
@@ -175,7 +185,20 @@ extension BluetoothManager: CBPeripheralDelegate {
             Log.warning("AirBeam sent measurement without value")
             return
         }
-
+        
+        guard characteristic.uuid != DOWNLOAD_FROM_SD_CARD_CHARACTERISTIC_UUID else {
+            let string = String(data: value, encoding: .utf8)
+            print("## measurements", string)
+            return
+        }
+        
+        guard characteristic.uuid != DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID else {
+            let string = String(data: value, encoding: .utf8)
+            print("## meta data:", string)
+            return
+        }
+        
+        
         if let parsedMeasurement = parseData(data: value) {
             mobilePeripheralSessionManager.handlePeripheralMeasurement(PeripheralMeasurement(peripheral: peripheral, measurementStream: parsedMeasurement))
         }

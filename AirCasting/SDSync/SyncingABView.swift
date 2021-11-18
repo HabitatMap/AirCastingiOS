@@ -8,7 +8,7 @@
 import CoreBluetooth
 import SwiftUI
 
-struct SyncingABView<VM: AirbeamConnectionViewModel>: View {
+struct SyncingABView<VM: SDSyncViewModel>: View {
     
     @Environment(\.presentationMode) var presentationMode
     @StateObject var viewModel: VM
@@ -44,7 +44,7 @@ struct SyncingABView<VM: AirbeamConnectionViewModel>: View {
             )
         )
         .padding()
-        .onReceive(viewModel.isDeviceConnected, perform: { isConnected in
+        .onReceive(viewModel.isSyncCompleted, perform: { isConnected in
             showNextScreen = isConnected
         })
         .onReceive(viewModel.shouldDismiss, perform: { dismiss in
