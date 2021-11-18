@@ -128,13 +128,17 @@ struct SelectPeripheralView: View {
     var connectButton: some View {
         var destination: AnyView
         if let selection = selection {
-            let viewModel =
-            AirbeamConnectionViewModelDefault(airBeamConnectionController: connectionController,
-                                              userAuthenticationSession: userAuthenticationSession, sessionContext: sessionContext,
-                                              peripheral: selection)
             if syncMode == true {
+                let viewModel =
+                SDSyncViewModelDefault(airBeamConnectionController: connectionController,
+                                                  userAuthenticationSession: userAuthenticationSession, sessionContext: sessionContext,
+                                                  peripheral: selection)
                 destination = AnyView(SyncingABView(viewModel: viewModel, baseURL: urlProvider, creatingSessionFlowContinues: $creatingSessionFlowContinues))
             } else {
+                let viewModel =
+                AirbeamConnectionViewModelDefault(airBeamConnectionController: connectionController,
+                                                  userAuthenticationSession: userAuthenticationSession, sessionContext: sessionContext,
+                                                  peripheral: selection)
                 destination = AnyView(ConnectingABView(viewModel: viewModel, baseURL: urlProvider, creatingSessionFlowContinues: $creatingSessionFlowContinues))
             }
         } else {

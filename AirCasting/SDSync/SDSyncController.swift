@@ -32,29 +32,3 @@ class SDSyncController: ObservableObject {
     }
 }
 
-//extension SDSyncController: CBPeripheralDelegate {
-//
-//
-//    func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
-//        if let services = peripheral.services {
-//            for service in services {
-//                peripheral.discoverCharacteristics(nil, for: service)
-//            }
-//        }
-//    }
-//
-//    func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
-//        var hasSomeCharacteristics = false
-//        if let characteristics = service.characteristics {
-//
-//        }
-//        hasSomeCharacteristics ? NotificationCenter.default.post(name: .discoveredCharacteristic, object: nil, userInfo: [AirCastingNotificationKeys.DiscoveredCharacteristic.peripheralUUID : peripheral.identifier]) : nil
-//    }
-//
-//    func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
-//        guard let value = characteristic.value else {
-//            Log.warning("AirBeam sent measurement without value")
-//            return
-//        }
-//    }
-//}

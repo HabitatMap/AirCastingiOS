@@ -10,14 +10,11 @@ struct SDSyncRootView: View {
     @EnvironmentObject var bluetoothManager: BluetoothManager
 //    @EnvironmentObject var sdSyncController: SDSyncController
     let sessionSynchronizer: SessionSynchronizer
-    var viewModel: SDSyncViewModel
     let urlProvider: BaseURLProvider
     
     @State private var backendSyncCompleted = false
     
     init(sessionSynchronizer: SessionSynchronizer, sdSyncController: SDSyncController, urlProvider: BaseURLProvider) {
-        viewModel = SDSyncViewModel(sessionSynchronizer: sessionSynchronizer, sdSyncController: sdSyncController)
-//        viewModel.startSync()
         self.sessionSynchronizer = sessionSynchronizer
         self.urlProvider = urlProvider
     }
@@ -38,11 +35,6 @@ struct SDSyncRootView: View {
             
         }
         .onAppear() {
-            if CBCentralManager.authorization == .allowedAlways {
-                // it triggers the bluetooth searching on the appearing time
-                _ = bluetoothManager.centralManager
-                bluetoothManager.startScanning()
-            }
             guard !sessionSynchronizer.syncInProgress.value else {
                 onCurrentSyncEnd { self.startBackendSync() }
                 return

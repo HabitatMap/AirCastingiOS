@@ -235,17 +235,17 @@ extension BluetoothManager: CBPeripheralDelegate {
             block(.success(characteristic.value))
         }
         
-//        guard characteristic.uuid != DOWNLOAD_FROM_SD_CARD_CHARACTERISTIC_UUID else {
-//            let string = String(data: value, encoding: .utf8)
-//            print("## measurements", string)
-//            return
-//        }
-//
-//        guard characteristic.uuid != DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID else {
-//            let string = String(data: value, encoding: .utf8)
-//            print("## meta data:", string)
-//            return
-//        }
+        guard characteristic.uuid != DOWNLOAD_FROM_SD_CARD_CHARACTERISTIC_UUID else {
+            let string = String(data: value, encoding: .utf8)
+            print("## measurements", string)
+            return
+        }
+        
+        guard characteristic.uuid != DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID else {
+            let string = String(data: value, encoding: .utf8)
+            print("## meta data:", string)
+            return
+        }
         
         
         if let parsedMeasurement = parseData(data: value) {
