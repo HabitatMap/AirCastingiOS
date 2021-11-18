@@ -61,18 +61,22 @@ struct ThresholdsSettingsView: View {
             .buttonStyle(BorderlessButtonStyle())
         }
         .onAppear {
-            thresholdSettingsViewModel.thresholdVeryLow = "\(Int(thresholdValues[0]))"
-            thresholdSettingsViewModel.thresholdLow = "\(Int(thresholdValues[1]))"
-            thresholdSettingsViewModel.thresholdMedium = "\(Int(thresholdValues[2]))"
-            thresholdSettingsViewModel.thresholdHigh = "\(Int(thresholdValues[3]))"
-            thresholdSettingsViewModel.thresholdVeryHigh = "\(Int(thresholdValues[4]))"
+            thresholdSettingsViewModel.thresholdVeryLow = string(thresholdValues[0])
+            thresholdSettingsViewModel.thresholdLow = string(thresholdValues[1])
+            thresholdSettingsViewModel.thresholdMedium = string(thresholdValues[2])
+            thresholdSettingsViewModel.thresholdHigh = string(thresholdValues[3])
+            thresholdSettingsViewModel.thresholdVeryHigh = string(thresholdValues[4])
         }
     }
-    
+                                                                 
     func showDescriptionLabel(text: String) -> some View {
         Text(text)
             .font(Fonts.muliHeading4)
             .foregroundColor(.aircastingGray)
+    }
+                                                                 
+    func string(_ threshold: Float) -> String {
+                return String(Int(threshold))
     }
     
     func showThresholdTextfield(value: Binding<String>) -> some View {

@@ -23,9 +23,8 @@ class ThresholdSettingsViewModel: ObservableObject {
     
     func resetToDefault() -> [Float] {
         var newInitial: [Float] = []
-        for value in initialThresholds {
-            let newValue = Float(value)
-            newInitial.append(newValue)
+        initialThresholds.forEach { value in
+            newInitial.append(Float(value))
         }
         return newInitial
     }
