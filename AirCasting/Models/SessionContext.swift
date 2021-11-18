@@ -29,6 +29,20 @@ final class CreateSessionContext: ObservableObject {
     private var locationProvider: LocationProvider?
     private var locationSink: Any?
     
+    func ovverride(sessionContext: CreateSessionContext) {
+        sessionName = sessionContext.sessionName
+        sessionTags = sessionContext.sessionTags
+        sessionUUID = sessionContext.sessionUUID
+        sessionType = sessionContext.sessionType
+        peripheral = sessionContext.peripheral
+        wifiSSID = sessionContext.wifiSSID
+        wifiPassword = sessionContext.wifiPassword
+        isIndoor = sessionContext.isIndoor
+        startingLocation = sessionContext.startingLocation
+        deviceType = sessionContext.deviceType
+        contribute = sessionContext.contribute
+    }
+    
     func saveCurrentLocation(lat: Double, log: Double) {
         startingLocation = CLLocationCoordinate2D(latitude: lat, longitude: log)
     }
