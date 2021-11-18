@@ -44,7 +44,8 @@ struct RootAppView: View {
                             sessionStoppableFactory: sessionStoppableFactory,
                             downloadService: downloadService,
                             measurementStreamStorage: measurementStreamStorage,
-                            locationHandler: DefaultLocationHandler(locationTracker: locationTracker), sdSyncController: sdSyncController)
+                            locationHandler: DefaultLocationHandler(locationTracker: locationTracker),
+                            sdSyncController: sdSyncController)
             } else if !userAuthenticationSession.isLoggedIn && lifeTimeEventsProvider.hasEverPassedOnBoarding {
                 NavigationView {
                     CreateAccountView(completion: { self.lifeTimeEventsProvider.hasEverLoggedIn = true }, userSession: userAuthenticationSession, baseURL: urlProvider).environmentObject(lifeTimeEventsProvider)
@@ -75,7 +76,7 @@ struct RootAppView: View {
             downloadService = DownloadMeasurementsService(authorisationService: userAuthenticationSession,
                                                           persistenceController: persistenceController,
                                                           baseUrl: urlProvider)
-            sdSyncController = SDSyncController(bluetoothManager: bluetoothManager, userAuthenticationSession: userAuthenticationSession)
+            sdSyncController = SDSyncController(airbeamServices: BluetoothSDCardAirBeamServices(bluetoothManager: bluetoothManager), fileWriter: SDSyncFileWritingService())
         }
     }
     
