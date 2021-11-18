@@ -67,14 +67,6 @@ class BluetoothManager: NSObject, ObservableObject {
         }
     }
     
-    typealias CharacteristicObserver = (Result<Data?, Error>) -> Void
-    
-    var charactieristicsMapping: [CBUUID: [CharacteristicObserver]] = [:]
-    
-    func subscribeToCharacteristic(_ characteristic: CBUUID, notify: @escaping CharacteristicObserver) {
-        charactieristicsMapping[characteristic, default:[]].append(notify)
-    }
-    
     init(mobilePeripheralSessionManager: MobilePeripheralSessionManager) {
         self.mobilePeripheralSessionManager = mobilePeripheralSessionManager
         super.init()
@@ -82,6 +74,49 @@ class BluetoothManager: NSObject, ObservableObject {
             // To avoid the .unknown state of centralManager when bluetooth is poweredOn
             let _ = centralManager
         }
+    }
+    
+    // MARK: - Refactored part
+    // This is the part of this class that is already refactored.
+    
+    typealias CharacteristicObserverAction = (Result<Data?, Error>) -> Void
+    
+    private struct CharacteristicObserver {
+        let identifier = UUID()
+        let action: CharacteristicObserverAction
+    }
+    
+    // The mapping is CBUUID -> CharacteristicObserver
+    // and not UUID(observation token) -> CharacteristicObserver
+    // because we care more about the update performance than un-register performance.
+    private var charactieristicsMapping: [CBUUID: [CharacteristicObserver]] = [:]
+    private let characteristicsMappingLock = NSLock()
+    
+    /// Adds an entry to observers of a particular characteristic
+    /// - Parameters:
+    ///   - characteristic: UUID of characteristic to observe
+    ///   - notify: block called each time characteristic changes (either changes value or throws an error)
+    /// - Returns: Opaque token to use when un-registering
+    func subscribeToCharacteristic(_ characteristic: CBUUID, notify: @escaping CharacteristicObserverAction) -> AnyHashable {
+        let observer = CharacteristicObserver(action: notify)
+        characteristicsMappingLock.lock()
+        charactieristicsMapping[characteristic, default:[]].append(observer)
+        characteristicsMappingLock.unlock()
+        return observer.identifier
+    }
+    
+    /// Removes an entry from observing characteristic
+    /// - Parameter token: Opaque token received on subscription
+    /// - Returns: A `Bool` value indicating if a given token was successfuly removed. Only reason it can fail is double unregistration.
+    @discardableResult func unregisterCharacteristicObserver(_ token: AnyHashable) -> Bool {
+        guard let uuid = token as? UUID else { return false }
+        characteristicsMappingLock.lock()
+        guard let containgObserver = charactieristicsMapping.first(where: { $1.contains { $0.identifier == uuid } }) else { return false }
+        var containingObserverArray = containgObserver.value
+        containingObserverArray.removeAll { $0.identifier == uuid }
+        charactieristicsMapping[containgObserver.key] = containingObserverArray
+        characteristicsMappingLock.unlock()
+        return true
     }
 }
 
