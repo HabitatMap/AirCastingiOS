@@ -6,6 +6,8 @@ import CoreBluetooth
 
 protocol SDSyncFileWriter {
     func writeToFile(data: String, sessionType: SDCardSessionType)
+    func finishAndSave()
+    func finishAndRemoveFiles()
 }
 
 class SDSyncController: ObservableObject {
@@ -22,6 +24,11 @@ class SDSyncController: ObservableObject {
         airbeamServices.downloadData(from: airbeamConnection, progress: { [weak self] chunk in
             // Filesystem write
             self?.fileWriter.writeToFile(data: chunk.payload, sessionType: chunk.sessionType)
+        }, completion: { [weak self] result in
+            switch result {
+            case .success: self?.fileWriter.finishAndSave()
+            case .failure: self?.fileWriter.finishAndRemoveFiles()
+            }
         })
     }
 }

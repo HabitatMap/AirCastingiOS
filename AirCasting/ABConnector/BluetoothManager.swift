@@ -108,7 +108,7 @@ class BluetoothManager: NSObject, ObservableObject {
     /// Removes an entry from observing characteristic
     /// - Parameter token: Opaque token received on subscription
     /// - Returns: A `Bool` value indicating if a given token was successfuly removed. Only reason it can fail is double unregistration.
-    @discardableResult func unregisterCharacteristicObserver(_ token: AnyHashable) -> Bool {
+    @discardableResult func unsubscribeCharacteristicObserver(_ token: AnyHashable) -> Bool {
         guard let uuid = token as? UUID else { return false }
         characteristicsMappingLock.lock()
         guard let containgObserver = charactieristicsMapping.first(where: { $1.contains { $0.identifier == uuid } }) else { return false }
@@ -229,25 +229,21 @@ extension BluetoothManager: CBPeripheralDelegate {
             Log.warning("AirBeam sent measurement without value")
             return
         }
-        
+
+        characteristicsMappingLock.lock()
         charactieristicsMapping[characteristic.uuid]?.forEach { block in
-            guard error != nil else { block.action(.failure(error!)); return }
+            guard error == nil else { block.action(.failure(error!)); return }
             block.action(.success(characteristic.value))
         }
+        characteristicsMappingLock.unlock()
+
+        // TODO: Refactor code below to not parse measurements in this class at all
         
-        guard characteristic.uuid != DOWNLOAD_FROM_SD_CARD_CHARACTERISTIC_UUID else {
-            let string = String(data: value, encoding: .utf8)
-            print("## measurements", string)
+        guard characteristic.uuid != DOWNLOAD_FROM_SD_CARD_CHARACTERISTIC_UUID,
+              characteristic.uuid != DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID else {
             return
         }
-        
-        guard characteristic.uuid != DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID else {
-            let string = String(data: value, encoding: .utf8)
-            print("## meta data:", string)
-            return
-        }
-        
-        
+
         if let parsedMeasurement = parseData(data: value) {
             mobilePeripheralSessionManager.handlePeripheralMeasurement(PeripheralMeasurement(peripheral: peripheral, measurementStream: parsedMeasurement))
         }
