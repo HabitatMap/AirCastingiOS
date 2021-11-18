@@ -5,7 +5,8 @@ import Foundation
 
 struct SDSyncFileWritingService: SDSyncFileWriter {
     func writeToFile(data: String, sessionType: SDCardSessionType) {
-        Log.info("## Writing to file: \(data), session type: \(sessionType)")
+        let dataEntries = data.components(separatedBy: "\r\n").filter { !$0.trimmingCharacters(in: ["\n"]).isEmpty }
+        Log.info("## Data entries: \(dataEntries)")
         // write to file
     }
 }
