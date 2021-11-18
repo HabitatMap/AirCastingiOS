@@ -177,6 +177,9 @@ extension BluetoothManager: CBCentralManagerDelegate {
 
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
         Log.info("Disconnected: \(String(describing: error?.localizedDescription))")
+        
+        charactieristicsMapping.removeAll()
+        
         guard mobilePeripheralSessionManager.activeSessionInProgressWith(peripheral) else { return }
         mobilePeripheralSessionManager.markActiveSessionAsDisconnected(peripheral: peripheral)
         connect(to: peripheral)
@@ -204,7 +207,6 @@ extension BluetoothManager: CBPeripheralDelegate {
         if let characteristics = service.characteristics {
             Crashlytics.crashlytics().log("BluetoothManager (didDiscoverCharacteristicsFor) - service characteristics\n \(String(describing: service.characteristics))")
             for characteristic in characteristics {
-                Log.info("## \(characteristic)")
                 if MEASUREMENTS_CHARACTERISTIC_UUIDS.contains(characteristic.uuid) {
                     peripheral.setNotifyValue(true, for: characteristic)
                     hasSomeCharacteristics = true
