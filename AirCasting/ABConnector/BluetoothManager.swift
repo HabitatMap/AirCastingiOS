@@ -110,12 +110,12 @@ class BluetoothManager: NSObject, ObservableObject {
     /// - Returns: A `Bool` value indicating if a given token was successfuly removed. Only reason it can fail is double unregistration.
     @discardableResult func unsubscribeCharacteristicObserver(_ token: AnyHashable) -> Bool {
         guard let uuid = token as? UUID else { return false }
-        characteristicsMappingLock.lock()
+//        characteristicsMappingLock.lock()
         guard let containgObserver = charactieristicsMapping.first(where: { $1.contains { $0.identifier == uuid } }) else { return false }
         var containingObserverArray = containgObserver.value
         containingObserverArray.removeAll { $0.identifier == uuid }
         charactieristicsMapping[containgObserver.key] = containingObserverArray
-        characteristicsMappingLock.unlock()
+//        characteristicsMappingLock.unlock()
         return true
     }
 }
