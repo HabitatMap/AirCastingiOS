@@ -24,7 +24,7 @@ struct CreateSessionDetailsView: View {
                             sessionNameField
                             sessionTagsField
                         }
-                        if sessionContext.sessionType == SessionType.mobile { fixedSessionDetails }
+                        if sessionContext.sessionType == SessionType.fixed { fixedSessionDetails }
                         Spacer()
                         continueButton
                     }
