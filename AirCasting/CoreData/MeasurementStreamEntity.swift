@@ -49,6 +49,9 @@ public class MeasurementStreamEntity: NSManagedObject, Identifiable {
     public var localID: MeasurementStreamLocalID {
         MeasurementStreamLocalID(id: objectID)
     }
+    public var thresholds: [Int32] {
+     [thresholdVeryLow, thresholdLow, thresholdMedium, thresholdHigh, thresholdVeryHigh]
+    }
 }
 
 // MARK: Generated accessors for measurements

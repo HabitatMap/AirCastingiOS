@@ -8,16 +8,19 @@
 import SwiftUI
 import AirCastingStyling
 
-struct HeatmapSettingsView: View {
+struct ThresholdsSettingsView: View {
     
-    @State private var thresholdVeryLow = ""
-    @State private var thresholdLow = ""
-    @State private var thresholdMedium = ""
-    @State private var thresholdHigh = ""
-    @State private var thresholdVeryHigh = ""
-    @Binding var changedThresholdValues: [Float]
+    @Binding var thresholdValues: [Float]
     @Environment(\.presentationMode) var presentationMode
-
+    let initialThresholds: [Int32]
+    @StateObject private var thresholdSettingsViewModel: ThresholdSettingsViewModel
+    
+    init(thresholdValues: Binding<[Float]>, initialThresholds: [Int32]) {
+        _thresholdValues = thresholdValues
+        self.initialThresholds = initialThresholds
+        _thresholdSettingsViewModel = .init(wrappedValue: ThresholdSettingsViewModel(initialThresholds: initialThresholds))
+    }
+    
     var body: some View {
         Form {
             VStack(alignment: .leading, spacing: 16) {
@@ -40,7 +43,7 @@ struct HeatmapSettingsView: View {
             
             VStack {
                 Button(action: {
-                    saveChanges()
+                    thresholdValues = thresholdSettingsViewModel.updateToNewThresholds()
                     presentationMode.wrappedValue.dismiss()
                 })
                 {
@@ -50,41 +53,30 @@ struct HeatmapSettingsView: View {
                 .buttonStyle(BlueButtonStyle())
                 
                 Button(Strings.SessionCart.resetChangesButton, action: {
+                    thresholdValues = thresholdSettingsViewModel.resetToDefault()
                     presentationMode.wrappedValue.dismiss()
                 })
-                .frame(minHeight: 35)
+                    .frame(minHeight: 35)
             }
             .buttonStyle(BorderlessButtonStyle())
         }
         .onAppear {
-            thresholdVeryLow = "\(Int(changedThresholdValues[0]))"
-            thresholdLow = "\(Int(changedThresholdValues[1]))"
-            thresholdMedium = "\(Int(changedThresholdValues[2]))"
-            thresholdHigh = "\(Int(changedThresholdValues[3]))"
-            thresholdVeryHigh = "\(Int(changedThresholdValues[4]))"
+            thresholdSettingsViewModel.thresholdVeryLow = string(thresholdValues[0])
+            thresholdSettingsViewModel.thresholdLow = string(thresholdValues[1])
+            thresholdSettingsViewModel.thresholdMedium = string(thresholdValues[2])
+            thresholdSettingsViewModel.thresholdHigh = string(thresholdValues[3])
+            thresholdSettingsViewModel.thresholdVeryHigh = string(thresholdValues[4])
         }
     }
-    
-    func saveChanges() {
-        let stringThresholdValues = [thresholdVeryHigh, thresholdHigh, thresholdMedium, thresholdLow, thresholdVeryLow]
-        var newThresholdValues: [Float] = []
-        for value in stringThresholdValues {
-            let convertedValue = convertToFloat(value: value)
-            newThresholdValues.append(convertedValue)
-        }
-        let sortedThresholdValues = newThresholdValues.sorted { $0 < $1 }
-        changedThresholdValues = sortedThresholdValues
-    }
-    
-    func convertToFloat(value: String) -> Float {
-        let floatValue = Float(value) ?? 0
-        return floatValue
-    }
-    
+                                                                 
     func showDescriptionLabel(text: String) -> some View {
         Text(text)
             .font(Fonts.muliHeading4)
             .foregroundColor(.aircastingGray)
+    }
+                                                                 
+    func string(_ threshold: Float) -> String {
+                return String(Int(threshold))
     }
     
     func showThresholdTextfield(value: Binding<String>) -> some View {
@@ -97,39 +89,40 @@ struct HeatmapSettingsView: View {
     var veryHighTextfield: some View {
         HStack {
             showDescriptionLabel(text: Strings.Thresholds.veryHigh)
-            showThresholdTextfield(value: $thresholdVeryHigh)
+            showThresholdTextfield(value: $thresholdSettingsViewModel.thresholdVeryHigh)
         }
     }
     var highTextfield: some View {
         HStack {
             showDescriptionLabel(text: Strings.Thresholds.high)
-            showThresholdTextfield(value: $thresholdHigh)
+            showThresholdTextfield(value: $thresholdSettingsViewModel.thresholdHigh)
         }
     }
     var mediumTextfield: some View {
         HStack {
             showDescriptionLabel(text: Strings.Thresholds.medium)
-            showThresholdTextfield(value: $thresholdMedium)
+            showThresholdTextfield(value: $thresholdSettingsViewModel.thresholdMedium)
         }
     }
-    
     var lowTextfield: some View {
         HStack {
             showDescriptionLabel(text: Strings.Thresholds.low)
-            showThresholdTextfield(value: $thresholdLow)
+            showThresholdTextfield(value: $thresholdSettingsViewModel.thresholdLow)
         }
     }
     var veryLowTextfield: some View {
         HStack {
             showDescriptionLabel(text: Strings.Thresholds.veryLow)
-            showThresholdTextfield(value: $thresholdVeryLow)
+            showThresholdTextfield(value: $thresholdSettingsViewModel.thresholdVeryLow)
         }
     }
-
 }
 
+#if DEBUG
 struct HeatmapSettings_Previews: PreviewProvider {
     static var previews: some View {
-        HeatmapSettingsView(changedThresholdValues: .constant([0, 20, 30, 40, 50]))
+        ThresholdsSettingsView(thresholdValues: .constant([0, 20, 30, 40, 50]),
+                               initialThresholds: [])
     }
 }
+#endif

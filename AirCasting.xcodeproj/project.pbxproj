@@ -59,7 +59,7 @@
 		AC4A6A6C267CB3D40001F639 /* GraphRenderers.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC4A6A6B267CB3D40001F639 /* GraphRenderers.swift */; };
 		AC4EC6BC25B5ABB700C1E312 /* StatisticsContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC4EC6BB25B5ABB700C1E312 /* StatisticsContainerView.swift */; };
 		AC4EC6C125B6F18A00C1E312 /* EditButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC4EC6C025B6F18A00C1E312 /* EditButtonView.swift */; };
-		AC4EC6C425B6FE0D00C1E312 /* HeatmapSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC4EC6C325B6FE0D00C1E312 /* HeatmapSettingsView.swift */; };
+		AC4EC6C425B6FE0D00C1E312 /* ThresholdsSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC4EC6C325B6FE0D00C1E312 /* ThresholdsSettingsView.swift */; };
 		AC5226C3270C50520048A585 /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = AC5226C2270C50520048A585 /* Algorithms */; };
 		AC524A6F261329330061AD45 /* SessionExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC524A6E261329330061AD45 /* SessionExtension.swift */; };
 		AC524A7626133A370061AD45 /* MeaurementStreamExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC524A7526133A370061AD45 /* MeaurementStreamExtension.swift */; };
@@ -118,6 +118,7 @@
 		AC93B8E725BEFE4F003D0A0D /* AirMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC93B8E625BEFE4F003D0A0D /* AirMapView.swift */; };
 		AC93B8FE25C02E0B003D0A0D /* GoogleMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC93B8FD25C02E0B003D0A0D /* GoogleMapView.swift */; };
 		AC960C7825DD39F500EC95DD /* ABConnectedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC960C7725DD39F500EC95DD /* ABConnectedView.swift */; };
+		AC96DBEA2742705100D5E8E0 /* ThresholdsSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96DBE92742705100D5E8E0 /* ThresholdsSettingsViewModel.swift */; };
 		AC9EB64526ECB11B00B1F780 /* DefaultSyncingMeasurementsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9EB64426ECB11B00B1F780 /* DefaultSyncingMeasurementsViewModel.swift */; };
 		AC9EB64726EF4EEB00B1F780 /* AirBeamCellularSessionCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9EB64626EF4EEB00B1F780 /* AirBeamCellularSessionCreator.swift */; };
 		AC9EB64926F1EB8D00B1F780 /* MeasurementsDownloadable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9EB64826F1EB8D00B1F780 /* MeasurementsDownloadable.swift */; };
@@ -357,7 +358,7 @@
 		AC4A6A6B267CB3D40001F639 /* GraphRenderers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphRenderers.swift; sourceTree = "<group>"; };
 		AC4EC6BB25B5ABB700C1E312 /* StatisticsContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsContainerView.swift; sourceTree = "<group>"; };
 		AC4EC6C025B6F18A00C1E312 /* EditButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditButtonView.swift; sourceTree = "<group>"; };
-		AC4EC6C325B6FE0D00C1E312 /* HeatmapSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeatmapSettingsView.swift; sourceTree = "<group>"; };
+		AC4EC6C325B6FE0D00C1E312 /* ThresholdsSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThresholdsSettingsView.swift; sourceTree = "<group>"; };
 		AC524A6E261329330061AD45 /* SessionExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionExtension.swift; sourceTree = "<group>"; };
 		AC524A7526133A370061AD45 /* MeaurementStreamExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeaurementStreamExtension.swift; sourceTree = "<group>"; };
 		AC524A882614733D0061AD45 /* CreatingSessionFlowRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatingSessionFlowRootView.swift; sourceTree = "<group>"; };
@@ -416,6 +417,7 @@
 		AC93B8E625BEFE4F003D0A0D /* AirMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirMapView.swift; sourceTree = "<group>"; };
 		AC93B8FD25C02E0B003D0A0D /* GoogleMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleMapView.swift; sourceTree = "<group>"; };
 		AC960C7725DD39F500EC95DD /* ABConnectedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ABConnectedView.swift; sourceTree = "<group>"; };
+		AC96DBE92742705100D5E8E0 /* ThresholdsSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThresholdsSettingsViewModel.swift; sourceTree = "<group>"; };
 		AC9EB64426ECB11B00B1F780 /* DefaultSyncingMeasurementsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultSyncingMeasurementsViewModel.swift; sourceTree = "<group>"; };
 		AC9EB64626EF4EEB00B1F780 /* AirBeamCellularSessionCreator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirBeamCellularSessionCreator.swift; sourceTree = "<group>"; };
 		AC9EB64826F1EB8D00B1F780 /* MeasurementsDownloadable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementsDownloadable.swift; sourceTree = "<group>"; };
@@ -816,7 +818,7 @@
 				AC08A661266E2AEC0081697C /* ABMeasurementsView.swift */,
 				ACDF803926DCD75500584F55 /* SingleMeasurementView.swift */,
 				ACC536DF26395C0900327267 /* MeasurementDotView.swift */,
-				AC4EC6C325B6FE0D00C1E312 /* HeatmapSettingsView.swift */,
+				AC96DBE827426FB700D5E8E0 /* ThresholdSettings */,
 				AC6D56A425AF211200D221BA /* MultiSliderView.swift */,
 				AC4EC6BB25B5ABB700C1E312 /* StatisticsContainerView.swift */,
 				AC9EB64326ECB0C000B1F780 /* SessionCartViewModel */,
@@ -995,6 +997,15 @@
 				AC8D6C6925C049E300ED74D1 /* Environment.swift */,
 			);
 			path = Map;
+			sourceTree = "<group>";
+		};
+		AC96DBE827426FB700D5E8E0 /* ThresholdSettings */ = {
+			isa = PBXGroup;
+			children = (
+				AC4EC6C325B6FE0D00C1E312 /* ThresholdsSettingsView.swift */,
+				AC96DBE92742705100D5E8E0 /* ThresholdsSettingsViewModel.swift */,
+			);
+			path = ThresholdSettings;
 			sourceTree = "<group>";
 		};
 		AC9EB64326ECB0C000B1F780 /* SessionCartViewModel */ = {
@@ -1891,6 +1902,7 @@
 				AC8D6C6E25C056B400ED74D1 /* PathPoint.swift in Sources */,
 				B30BAC172694AA8000AE0476 /* MeasurementsStatisticsOutput.swift in Sources */,
 				B30BAC192694AA8E00AE0476 /* StatisticsCalculator.swift in Sources */,
+				AC96DBEA2742705100D5E8E0 /* ThresholdsSettingsViewModel.swift in Sources */,
 				DDEE3A44269736270098CCA9 /* NetworkChecker.swift in Sources */,
 				B376DD25268096E20083FD2F /* SessionSynchronizationDatabase.swift in Sources */,
 				AC6D56A525AF211200D221BA /* MultiSliderView.swift in Sources */,
@@ -1941,7 +1953,7 @@
 				DDF62601269C779800F23489 /* UIApplication+AppInfo.swift.swift in Sources */,
 				AC8D6C7225C0574800ED74D1 /* LocationTracker.swift in Sources */,
 				DD8C380C2689A3DA00901FDF /* BaseURLProvider.swift in Sources */,
-				AC4EC6C425B6FE0D00C1E312 /* HeatmapSettingsView.swift in Sources */,
+				AC4EC6C425B6FE0D00C1E312 /* ThresholdsSettingsView.swift in Sources */,
 				DDD24D8626A8295F00D4A327 /* ConnectingABViewModel.swift in Sources */,
 				B3FD77C8267C997800E97CC2 /* PersistenceController+Database.swift in Sources */,
 				AC8CFF4525E510CB00FB2918 /* AuthorizationAPI.swift in Sources */,
@@ -2160,7 +2172,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_ASSET_PATHS = "\"AirCasting/Preview Content\"";
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
@@ -2171,7 +2183,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = org.habitatmap.AirCasting;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2189,7 +2201,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"AirCasting/Preview Content\"";
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
@@ -2199,7 +2211,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = org.habitatmap.AirCasting;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

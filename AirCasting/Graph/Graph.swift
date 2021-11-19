@@ -105,7 +105,6 @@ struct Graph: UIViewRepresentable {
         
         guard counter > simplifiedGraphEntryThreshold else {
             uiView.updateWithEntries(entries: entries, isAutozoomEnabled: isAutozoomEnabled)
-            print("Not Simplified")
             return
         }
         let simplifiedPoints = AirCastingGraphSimplifier.simplify(points: entries,
