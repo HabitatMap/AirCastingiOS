@@ -43,6 +43,7 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
             guard success else { return }
             self.configureABforSync()
             self.sdSyncController.syncFromAirbeam(self.peripheral)
+//            self.clearSDCard()
         }
     }
     

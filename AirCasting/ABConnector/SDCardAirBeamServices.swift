@@ -42,7 +42,10 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
         metadataCharacteristicObserver = bluetoothManager.subscribeToCharacteristic(DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID) { result in
             switch result {
             case .success(let data):
-                guard let data = data, let payload = String(data: data, encoding: .utf8) else { return }
+                guard let data = data, let payload = String(data: data, encoding: .utf8) else {
+                    Log.info("## Couldn't parse data")
+                    return
+                }
                 self.currentSessionType = self.currentSessionType.next // I'M NOT SURE IF WE CAN DEPENT IN THE ASSUMED ORDER OF RECEIVING VALUES FROM AB
                 // Sometimes w are not getting metadata for fixed sessions
                 // WE CAN INFER SESSION TYPE FROM FIRST WORD OF METADATA: BLE, WIFI I CELL

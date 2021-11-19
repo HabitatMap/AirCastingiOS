@@ -231,12 +231,12 @@ extension BluetoothManager: CBPeripheralDelegate {
             Log.warning("AirBeam sent measurement without value")
             return
         }
-        characteristicsMappingLock.lock()
+//        characteristicsMappingLock.lock()
         charactieristicsMapping[characteristic.uuid]?.forEach { block in
             guard error == nil else { block.action(.failure(error!)); return }
             block.action(.success(characteristic.value))
         }
-        characteristicsMappingLock.unlock()
+//        characteristicsMappingLock.unlock()
 
         // TODO: Refactor code below to not parse measurements in this class at all
         
