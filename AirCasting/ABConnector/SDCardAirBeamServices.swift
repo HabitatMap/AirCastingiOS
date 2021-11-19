@@ -4,7 +4,7 @@
 import CoreBluetooth
 import CoreMIDI
 
-enum SDCardSessionType {
+enum SDCardSessionType: CaseIterable {
     case mobile, fixed, cellular
 }
 
