@@ -120,24 +120,7 @@ struct GoogleMapView: UIViewRepresentable {
         let measurement = Int32(point.measurement)
         guard let thresholds = threshold else { return .white }
         
-        let veryLow = thresholds.thresholdVeryLow
-        let low = thresholds.thresholdLow
-        let medium = thresholds.thresholdMedium
-        let high = thresholds.thresholdHigh
-        let veryHigh = thresholds.thresholdVeryHigh
-        
-        switch measurement {
-        case veryLow ..< low:
-            return UIColor.aircastingGreen
-        case low ..< medium:
-            return UIColor.aircastingYellow
-        case medium ..< high:
-            return UIColor.aircastingOrange
-        case high ... veryHigh:
-            return UIColor.aircastingRed
-        default:
-            return UIColor.aircastingGray
-        }
+        return GoogleMapView.color(value: measurement, threshold: thresholds)
     }
     
     static func color(value: Int32, threshold: SensorThreshold?) -> UIColor {
