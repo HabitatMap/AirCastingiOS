@@ -119,6 +119,7 @@
 		AC93B8FE25C02E0B003D0A0D /* GoogleMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC93B8FD25C02E0B003D0A0D /* GoogleMapView.swift */; };
 		AC960C7825DD39F500EC95DD /* ABConnectedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC960C7725DD39F500EC95DD /* ABConnectedView.swift */; };
 		AC96DBEA2742705100D5E8E0 /* ThresholdsSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96DBE92742705100D5E8E0 /* ThresholdsSettingsViewModel.swift */; };
+		AC96DBEC27479D6300D5E8E0 /* ThresholdsValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96DBEB27479D6300D5E8E0 /* ThresholdsValue.swift */; };
 		AC9EB64526ECB11B00B1F780 /* DefaultSyncingMeasurementsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9EB64426ECB11B00B1F780 /* DefaultSyncingMeasurementsViewModel.swift */; };
 		AC9EB64726EF4EEB00B1F780 /* AirBeamCellularSessionCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9EB64626EF4EEB00B1F780 /* AirBeamCellularSessionCreator.swift */; };
 		AC9EB64926F1EB8D00B1F780 /* MeasurementsDownloadable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9EB64826F1EB8D00B1F780 /* MeasurementsDownloadable.swift */; };
@@ -418,6 +419,7 @@
 		AC93B8FD25C02E0B003D0A0D /* GoogleMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleMapView.swift; sourceTree = "<group>"; };
 		AC960C7725DD39F500EC95DD /* ABConnectedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ABConnectedView.swift; sourceTree = "<group>"; };
 		AC96DBE92742705100D5E8E0 /* ThresholdsSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThresholdsSettingsViewModel.swift; sourceTree = "<group>"; };
+		AC96DBEB27479D6300D5E8E0 /* ThresholdsValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThresholdsValue.swift; sourceTree = "<group>"; };
 		AC9EB64426ECB11B00B1F780 /* DefaultSyncingMeasurementsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultSyncingMeasurementsViewModel.swift; sourceTree = "<group>"; };
 		AC9EB64626EF4EEB00B1F780 /* AirBeamCellularSessionCreator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirBeamCellularSessionCreator.swift; sourceTree = "<group>"; };
 		AC9EB64826F1EB8D00B1F780 /* MeasurementsDownloadable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementsDownloadable.swift; sourceTree = "<group>"; };
@@ -975,6 +977,7 @@
 			isa = PBXGroup;
 			children = (
 				4F945EED2649F3F5008A5B22 /* SessionCreator.swift */,
+				AC96DBEB27479D6300D5E8E0 /* ThresholdsValue.swift */,
 				4F945EEF2649F455008A5B22 /* AirBeamFixedWifiSessionCreator.swift */,
 				AC9EB64626EF4EEB00B1F780 /* AirBeamCellularSessionCreator.swift */,
 				ACD01F3F25F8C1F800B8F65F /* SessionContext.swift */,
@@ -1907,6 +1910,7 @@
 				B376DD25268096E20083FD2F /* SessionSynchronizationDatabase.swift in Sources */,
 				AC6D56A525AF211200D221BA /* MultiSliderView.swift in Sources */,
 				AC524A7626133A370061AD45 /* MeaurementStreamExtension.swift in Sources */,
+				AC96DBEC27479D6300D5E8E0 /* ThresholdsValue.swift in Sources */,
 				DDC5F58A271979F100F1F9D8 /* Fonts.swift in Sources */,
 				DD28047726B3D6E70060F55E /* AirBeamServices.swift in Sources */,
 				DD28047926B3D7370060F55E /* AirBeamConnectionController.swift in Sources */,

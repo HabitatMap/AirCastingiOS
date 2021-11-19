@@ -10,12 +10,12 @@ import AirCastingStyling
 
 struct ThresholdsSettingsView: View {
     
-    @Binding var thresholdValues: [Float]
+    @Binding var thresholdValues: ThresholdsValue
     @Environment(\.presentationMode) var presentationMode
-    let initialThresholds: [Int32]
+    let initialThresholds: ThresholdsValue
     @StateObject private var thresholdSettingsViewModel: ThresholdSettingsViewModel
     
-    init(thresholdValues: Binding<[Float]>, initialThresholds: [Int32]) {
+    init(thresholdValues: Binding<ThresholdsValue>, initialThresholds: ThresholdsValue) {
         _thresholdValues = thresholdValues
         self.initialThresholds = initialThresholds
         _thresholdSettingsViewModel = .init(wrappedValue: ThresholdSettingsViewModel(initialThresholds: initialThresholds))
@@ -61,11 +61,11 @@ struct ThresholdsSettingsView: View {
             .buttonStyle(BorderlessButtonStyle())
         }
         .onAppear {
-            thresholdSettingsViewModel.thresholdVeryLow = string(thresholdValues[0])
-            thresholdSettingsViewModel.thresholdLow = string(thresholdValues[1])
-            thresholdSettingsViewModel.thresholdMedium = string(thresholdValues[2])
-            thresholdSettingsViewModel.thresholdHigh = string(thresholdValues[3])
-            thresholdSettingsViewModel.thresholdVeryHigh = string(thresholdValues[4])
+            thresholdSettingsViewModel.thresholdVeryLow = string(thresholdValues.veryLow)
+            thresholdSettingsViewModel.thresholdLow = string(thresholdValues.low)
+            thresholdSettingsViewModel.thresholdMedium = string(thresholdValues.medium)
+            thresholdSettingsViewModel.thresholdHigh = string(thresholdValues.high)
+            thresholdSettingsViewModel.thresholdVeryHigh = string(thresholdValues.veryHigh)
         }
     }
                                                                  
@@ -75,7 +75,7 @@ struct ThresholdsSettingsView: View {
             .foregroundColor(.aircastingGray)
     }
                                                                  
-    func string(_ threshold: Float) -> String {
+    func string(_ threshold: Int32) -> String {
                 return String(Int(threshold))
     }
     
@@ -121,8 +121,8 @@ struct ThresholdsSettingsView: View {
 #if DEBUG
 struct HeatmapSettings_Previews: PreviewProvider {
     static var previews: some View {
-        ThresholdsSettingsView(thresholdValues: .constant([0, 20, 30, 40, 50]),
-                               initialThresholds: [])
+        ThresholdsSettingsView(thresholdValues: .constant(.init(array: [0, 20, 30, 40, 50])),
+                               initialThresholds: ThresholdsValue.init(veryLow: 10, low: 15, medium: 20, high: 25, veryHigh: 30))
     }
 }
 #endif
