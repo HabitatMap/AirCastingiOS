@@ -9,6 +9,34 @@ protocol SDSyncFileWriter {
     func finishAndRemoveFiles()
 }
 
+final class ScheduledSDSyncFileWriterProxy: SDSyncFileWriter {
+    private var writer: SDSyncFileWriter
+    private let queue: DispatchQueue
+    
+    init(writer: SDSyncFileWriter, queue: DispatchQueue = DispatchQueue(label: "ScheduledSDSyncFileWriterProxy")) {
+        self.writer = writer
+        self.queue = queue
+    }
+    
+    func writeToFile(data: String, sessionType: SDCardSessionType) {
+        queue.async {
+            self.writer.writeToFile(data: data, sessionType: sessionType)
+        }
+    }
+    
+    func finishAndSave() {
+        queue.async {
+            self.writer.finishAndSave()
+        }
+    }
+    
+    func finishAndRemoveFiles() {
+        queue.async {
+            self.writer.finishAndRemoveFiles()
+        }
+    }
+}
+
 final class SDSyncFileWritingService: SDSyncFileWriter {
     var mobileFileURL: URL?
     var fixedFileURL: URL?
@@ -18,8 +46,13 @@ final class SDSyncFileWritingService: SDSyncFileWriter {
         return path
     }
     
-    private var buffers: [SDCardSessionType: [String]] = [:]
-    private var files: [SDCardSessionType: FileHandle] = [:]
+    private let bufferThreshold: Int
+    private var buffers: [URL: [String]] = [:]
+    private var files: [URL: FileHandle] = [:]
+    
+    init(bufferThreshold: Int) {
+        self.bufferThreshold = bufferThreshold
+    }
     
     func finishAndSave() {
         flushBuffers()
@@ -27,10 +60,6 @@ final class SDSyncFileWritingService: SDSyncFileWriter {
             try closeFiles()
         } catch {
             Log.error("Error closing files! \(error.localizedDescription)")
-        }
-        
-        SDCardSessionType.allCases.forEach { sessionType in
-            Log.info("\(try! String(contentsOfFile: fileURL(for: sessionType).path)) \(fileURL(for: sessionType).path)")
         }
     }
     
@@ -54,13 +83,11 @@ final class SDSyncFileWritingService: SDSyncFileWriter {
             }
         }
         
-        let dataEntries = data.components(separatedBy: "\r\n").filter { !$0.trimmingCharacters(in: ["\n"]).isEmpty }
-
-        guard buffers[sessionType, default: []].count > 20 else {
-            buffers[sessionType]?.append(contentsOf: dataEntries)
-            return
-        }
-        
+        let lines = data.components(separatedBy: "\r\n").filter { !$0.trimmingCharacters(in: ["\n"]).isEmpty }
+        let url = fileURL(for: sessionType)
+        buffers[url, default: []].append(contentsOf: lines)
+        let bufferCount = buffers[url]?.count ?? 0
+        guard bufferCount == bufferThreshold else { return }
         flushBuffer(for: sessionType)
     }
     
@@ -69,8 +96,14 @@ final class SDSyncFileWritingService: SDSyncFileWriter {
     }
     
     private func openFiles() throws {
-        try SDCardSessionType.allCases.forEach {
-            files[$0] = try FileHandle(forWritingTo: fileURL(for: $0))
+        let fileURLs = Set(SDCardSessionType.allCases.map { fileURL(for: $0) })
+        try fileURLs.forEach { fileURL in
+            let fileExists = FileManager.default.fileExists(atPath: fileURL.path)
+            if fileExists {
+                try FileManager.default.removeItem(at: fileURL)
+            }
+            try Data().write(to: fileURL)
+            files[fileURL] = try FileHandle(forWritingTo: fileURL)
         }
     }
     
@@ -87,17 +120,20 @@ final class SDSyncFileWritingService: SDSyncFileWriter {
     }
     
     private func flushBuffer(for sessionType: SDCardSessionType) {
+        let url = fileURL(for: sessionType)
+        guard let file = files[url] else {
+            Log.warning("File handle not found for session type \(sessionType)")
+            return
+        }
         do {
-            guard let file = files[sessionType] else {
-                Log.warning("File handle not found for session type \(sessionType)")
-                return
-            }
             try file.seekToEnd()
-            try file.write(contentsOf: buffers[sessionType, default: []].joined(separator: "\n").data(using: .utf8) ?? Data())
+            guard let buffer = buffers[url] else { return }
+            let content = buffer.joined(separator: "\n") + "\n"
+            try file.write(contentsOf: content.data(using: .utf8) ?? Data())
         } catch {
             Log.error("Writing to file failed: \(error)")
         }
-        buffers[sessionType] = []
+        buffers[url] = []
     }
     
     private func fileURL(for sessionType: SDCardSessionType) -> URL {
