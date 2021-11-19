@@ -55,10 +55,9 @@ final class SDSyncFileWritingService: SDSyncFileWriter {
         }
         
         let dataEntries = data.components(separatedBy: "\r\n").filter { !$0.trimmingCharacters(in: ["\n"]).isEmpty }
-        var buffer = buffers[sessionType, default: []]
-        defer { buffers[sessionType] = buffer }
-        guard buffer.count > 20 else {
-            buffer.append(contentsOf: dataEntries)
+
+        guard buffers[sessionType, default: []].count > 20 else {
+            buffers[sessionType]?.append(contentsOf: dataEntries)
             return
         }
         
@@ -88,19 +87,17 @@ final class SDSyncFileWritingService: SDSyncFileWriter {
     }
     
     private func flushBuffer(for sessionType: SDCardSessionType) {
-        var buffer = buffers[sessionType, default: []]
-        defer { buffers[sessionType] = buffer }
         do {
             guard let file = files[sessionType] else {
                 Log.warning("File handle not found for session type \(sessionType)")
                 return
             }
             try file.seekToEnd()
-            try file.write(contentsOf: buffer.joined(separator: "\n").data(using: .utf8) ?? Data())
+            try file.write(contentsOf: buffers[sessionType, default: []].joined(separator: "\n").data(using: .utf8) ?? Data())
         } catch {
             Log.error("Writing to file failed: \(error)")
         }
-        buffer = []
+        buffers[sessionType] = []
     }
     
     private func fileURL(for sessionType: SDCardSessionType) -> URL {
