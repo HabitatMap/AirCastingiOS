@@ -68,7 +68,11 @@ private extension CreateSessionDetailsView {
         VStack(alignment: .leading, spacing: 25) {
             provideNameAndPasswordTitle
             wifiPasswordField
-            connectToDifferentWifi
+            HStack {
+                Spacer()
+                connectToDifferentWifi
+                Spacer()
+            }
         }
     }
     
@@ -163,14 +167,18 @@ private extension CreateSessionDetailsView {
     
     var providePasswordTitle: some View {
         Text(Strings.WifiPopupView.passwordTitle)
-            .font(Fonts.heavyTitle3)
-            .foregroundColor(.darkBlue)
+            .font(Fonts.boldHeading1)
+            .foregroundColor(.aircastingDarkGray)
     }
     
     var provideNameAndPasswordTitle: some View {
-        Text("\(Strings.WifiPopupView.nameAndPasswordTitle_1) \(viewModel.wifiSSID) \(Strings.WifiPopupView.nameAndPasswordTitle_2)")
-            .font(Fonts.heavyTitle3)
-            .foregroundColor(.darkBlue)
+        Text("""
+        \(Strings.WifiPopupView.nameAndPasswordTitle_1)
+        "\(viewModel.wifiSSID)"
+        \(Strings.WifiPopupView.nameAndPasswordTitle_2)
+        """)
+            .font(Fonts.boldHeading1)
+            .foregroundColor(.aircastingDarkGray)
     }
     
     var connectToDifferentWifi: some View {
