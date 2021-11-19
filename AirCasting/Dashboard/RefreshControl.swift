@@ -15,7 +15,7 @@ struct RefreshControl: View {
                 startRefreshing()
             }
             ZStack(alignment: .center) {
-                if isRefreshing { ProgressView() } else { mimicPullToRefreshAnimation(with: geometry) }
+                if isRefreshing { ProgressView(Strings.RefreshControl.progressViewTest) } else { mimicPullToRefreshAnimation(with: geometry) }
             }
             .frame(width: geometry.size.width)
         }
@@ -24,7 +24,7 @@ struct RefreshControl: View {
         //
         // Values here are handpicked using the eye-ball technique 👀
         .padding(.top, isRefreshing ? 8 : -30)
-        .padding(.bottom, isRefreshing ? 20 : 0)
+        .padding(.bottom, isRefreshing ? 40 : 0)
     }
     
     private func shouldStartRefreshing(using geometry: GeometryProxy) -> Bool {
