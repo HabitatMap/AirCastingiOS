@@ -9,34 +9,6 @@ protocol SDSyncFileWriter {
     func finishAndRemoveFiles()
 }
 
-final class ScheduledSDSyncFileWriterProxy: SDSyncFileWriter {
-    private var writer: SDSyncFileWriter
-    private let queue: DispatchQueue
-    
-    init(writer: SDSyncFileWriter, queue: DispatchQueue = DispatchQueue(label: "ScheduledSDSyncFileWriterProxy")) {
-        self.writer = writer
-        self.queue = queue
-    }
-    
-    func writeToFile(data: String, sessionType: SDCardSessionType) {
-        queue.async {
-            self.writer.writeToFile(data: data, sessionType: sessionType)
-        }
-    }
-    
-    func finishAndSave() {
-        queue.async {
-            self.writer.finishAndSave()
-        }
-    }
-    
-    func finishAndRemoveFiles() {
-        queue.async {
-            self.writer.finishAndRemoveFiles()
-        }
-    }
-}
-
 final class SDSyncFileWritingService: SDSyncFileWriter {
     var mobileFileURL: URL?
     var fixedFileURL: URL?
