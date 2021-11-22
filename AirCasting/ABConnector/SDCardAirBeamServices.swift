@@ -9,7 +9,7 @@ enum SDCardSessionType: CaseIterable {
 }
 
 struct SDCardDataChunk {
-    let payload: String // Ten nasz characteristic (z Data do String)
+    let payload: String
     let sessionType: SDCardSessionType
 }
 
@@ -43,12 +43,9 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
             switch result {
             case .success(let data):
                 guard let data = data, let payload = String(data: data, encoding: .utf8) else {
-                    Log.info("## Couldn't parse data")
                     return
                 }
-                self.currentSessionType = self.currentSessionType.next // I'M NOT SURE IF WE CAN DEPENT IN THE ASSUMED ORDER OF RECEIVING VALUES FROM AB
-                // Sometimes w are not getting metadata for fixed sessions
-                // WE CAN INFER SESSION TYPE FROM FIRST WORD OF METADATA: BLE, WIFI I CELL
+                self.currentSessionType = self.currentSessionType.next
                 
                 Log.info(payload)
                 // Payload format is ` Some string: ${number_of_entries_expected} `
@@ -56,7 +53,7 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
                     completion(.success(()))
                     self.bluetoothManager.unsubscribeCharacteristicObserver(self.dataCharacteristicObserver!)
                     self.bluetoothManager.unsubscribeCharacteristicObserver(self.metadataCharacteristicObserver!)
-                    Log.info("## Sync finished. Unsubscribed")
+                    Log.info("Sync finished.")
                     return
                 }
                 guard let measurementsCountSting = payload.split(separator: ":").last?.trimmingCharacters(in: .whitespaces),
