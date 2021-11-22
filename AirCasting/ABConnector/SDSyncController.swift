@@ -5,7 +5,7 @@ import Foundation
 import CoreBluetooth
 
 class SDSyncController: ObservableObject {
-    private var fileWriter: SDSyncFileWriter
+    private let fileWriter: SDSyncFileWriter
     private let airbeamServices: SDCardAirBeamServices
 //    private let airbeamConnection: CBPeripheral
     

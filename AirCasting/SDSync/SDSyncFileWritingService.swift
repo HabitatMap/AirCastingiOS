@@ -4,7 +4,7 @@
 import Foundation
 
 protocol SDSyncFileWriter {
-    mutating func writeToFile(data: String, sessionType: SDCardSessionType)
+    func writeToFile(data: String, sessionType: SDCardSessionType)
     func finishAndSave()
     func finishAndRemoveFiles()
 }
@@ -19,6 +19,7 @@ final class SDSyncFileWritingService: SDSyncFileWriter {
     }
     
     private let bufferThreshold: Int
+    // We add buffers to limit the amount of savings to file. We save to file only when the amount of data reaches the threshold, or when the flushAndSave() func is called.
     private var buffers: [URL: [String]] = [:]
     private var files: [URL: FileHandle] = [:]
     
@@ -101,7 +102,8 @@ final class SDSyncFileWritingService: SDSyncFileWriter {
             try file.seekToEnd()
             guard let buffer = buffers[url] else { return }
             let content = buffer.joined(separator: "\n") + "\n"
-            try file.write(contentsOf: content.data(using: .utf8) ?? Data())
+            guard let data = content.data(using: .utf8) else { return }
+            try file.write(contentsOf: data)
         } catch {
             Log.error("Writing to file failed: \(error)")
         }
