@@ -56,6 +56,8 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
                     Log.info("Sync finished.")
                     return
                 }
+                
+                // This will be needed when we will want to show progress in the view
                 guard let measurementsCountSting = payload.split(separator: ":").last?.trimmingCharacters(in: .whitespaces),
                       let measurementsCount = Int(measurementsCountSting) else {
                     Log.warning("Unexpected metadata format: (\(payload))")
