@@ -172,11 +172,7 @@ private extension CreateSessionDetailsView {
     }
     
     var provideNameAndPasswordTitle: some View {
-        Text("""
-        \(Strings.WifiPopupView.nameAndPasswordTitle_1)
-        "\(viewModel.wifiSSID)"
-        \(Strings.WifiPopupView.nameAndPasswordTitle_2)
-        """)
+        Text("\(Strings.WifiPopupView.nameAndPasswordTitle_1)\"\(viewModel.wifiSSID)\"\(Strings.WifiPopupView.nameAndPasswordTitle_2)")
             .font(Fonts.boldHeading1)
             .foregroundColor(.aircastingDarkGray)
     }
