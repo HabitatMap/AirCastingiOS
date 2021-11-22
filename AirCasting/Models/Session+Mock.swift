@@ -14,6 +14,7 @@ extension SessionEntity {
         let context = PersistenceController.shared.viewContext
         let session: SessionEntity = try! context.newOrExisting(uuid: SessionUUID(rawValue: "mock")!)
         session.type = .mobile
+        session.name = "Session mock"
         // ...
                 
         return session

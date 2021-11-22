@@ -101,6 +101,7 @@ extension BluetoothManager: CBCentralManagerDelegate {
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
         if !devices.contains(peripheral) {
             if peripheral.name != nil {
+                guard !mobilePeripheralSessionManager.standaloneSessionInProgressWith(peripheral) else { return }
                 devices.append(peripheral)
             }
         }
@@ -127,13 +128,13 @@ extension BluetoothManager: CBCentralManagerDelegate {
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
         Log.info("Disconnected: \(String(describing: error?.localizedDescription))")
         guard mobilePeripheralSessionManager.activeSessionInProgressWith(peripheral) else { return }
+        mobilePeripheralSessionManager.markActiveSessionAsDisconnected(peripheral: peripheral)
         connect(to: peripheral)
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(10)) {
             guard peripheral.state != .connected else { return }
             self.cancelPeripheralConnection(for: peripheral)
             self.connectedPeripheral = nil
-            self.mobilePeripheralSessionManager.finishSession(for: peripheral,
-                                                                 centralManger: self.centralManager)
+            self.mobilePeripheralSessionManager.moveSessionToStandaloneMode(peripheral: peripheral)
         }
     }
 }
@@ -173,9 +174,14 @@ extension BluetoothManager: CBPeripheralDelegate {
         }
     }
     
-    func disconnectAirBeam() {
+    func finishMobileSession(with uuid: SessionUUID) {
         connectedPeripheral = nil
-        mobilePeripheralSessionManager.finishActiveSession(centralManger: centralManager)
+        mobilePeripheralSessionManager.finishSession(with: uuid, centralManager: centralManager)
+    }
+    
+    func enterStandaloneMode(sessionUUID: SessionUUID) {
+        connectedPeripheral = nil
+        mobilePeripheralSessionManager.enterStandaloneMode(sessionUUID: sessionUUID, centralManager: centralManager)
     }
     
     func parseData(data: Data) -> ABMeasurementStream? {
