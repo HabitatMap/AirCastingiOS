@@ -21,14 +21,16 @@ struct GoogleMapView: UIViewRepresentable {
     var isMyLocationEnabled: Bool = false
     private var onPositionChange: (([PathPoint]) -> ())? = nil
     var heatmap: Heatmap? = nil
+    var isSessionFixed: Bool
     
-    init(pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false, placePickerDismissed: Binding<Bool>, isUserInteracting: Binding<Bool>, isSessionActive: Bool = false) {
+    init(pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false, placePickerDismissed: Binding<Bool>, isUserInteracting: Binding<Bool>, isSessionActive: Bool = false, isSessionFixed: Bool = false) {
         self.pathPoints = pathPoints
         self.threshold = threshold
         self.isMyLocationEnabled = isMyLocationEnabled
         self._placePickerDismissed = placePickerDismissed
         self._isUserInteracting = isUserInteracting
         self.liveModeOn = isSessionActive
+        self.isSessionFixed = isSessionFixed
     }
     
     func makeUIView(context: Context) -> GMSMapView {
@@ -178,7 +180,7 @@ struct GoogleMapView: UIViewRepresentable {
     }
     
     mutating func drawHeatmap(_ uiView: GMSMapView) {
-        // TODO: do not draw in fixed sessions
+        if isSessionFixed { return }
         
         let mapWidth = uiView.frame.width
         let mapHeight = uiView.frame.height
