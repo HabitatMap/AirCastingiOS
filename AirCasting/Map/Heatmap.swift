@@ -267,7 +267,7 @@ struct Heatmap {
             calculateAverage()
             
             if let averagedValue = averagedValue {
-                let color: UIColor = GoogleMapView.color(value: Int32(averagedValue), threshold: sensorThreshold)
+                let color: UIColor = GoogleMapView.color(value: Int32(averagedValue), threshold: sensorThreshold).withAlphaComponent(0.5)
                 if color != fillColor {
                     fillColor = color
                     newColor = true
