@@ -123,23 +123,21 @@ private extension SessionCartView {
             }, isExpandButtonNeeded: true,
             isCollapsed: $isCollapsed,
             session: session,
-            sessionStopperFactory: sessionStoppableFactory
+            sessionStopperFactory: sessionStoppableFactory, measurementStreamStorage: measurementStreamStorage
         )
     }
     
     private var measurements: some View {
-        ABMeasurementsView(viewModelProvider: {
-            DefaultSyncingMeasurementsViewModel(measurementStreamStorage: measurementStreamStorage,
-                                                sessionDownloader: SessionDownloadService(client: URLSession.shared,
-                                                authorization: UserAuthenticationSession(),
-                                                responseValidator: DefaultHTTPResponseValidator()),
-                                                session: session)
-                                                },
-                                                session: session,
-                                                isCollapsed: $isCollapsed,
-                                                selectedStream: $selectedStream,
-                                                thresholds: thresholds,
-                                                measurementPresentationStyle: shouldShowValues)
+        _ABMeasurementsView(measurementsViewModel: DefaultSyncingMeasurementsViewModel(measurementStreamStorage: measurementStreamStorage,
+                                                                                       sessionDownloader: SessionDownloadService(client: URLSession.shared,
+                                                                                       authorization: UserAuthenticationSession(),
+                                                                                       responseValidator: DefaultHTTPResponseValidator()),
+                                                                                       session: session),
+                            session: session,
+                            isCollapsed: $isCollapsed,
+                            selectedStream: $selectedStream,
+                            thresholds: thresholds,
+                            measurementPresentationStyle: shouldShowValues)
     }
     
     private var graphButton: some View {

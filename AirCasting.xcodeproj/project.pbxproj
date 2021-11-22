@@ -256,6 +256,7 @@
 		DD8C380C2689A3DA00901FDF /* BaseURLProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8C380B2689A3DA00901FDF /* BaseURLProvider.swift */; };
 		DD8C380E2689A55A00901FDF /* BackendSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8C380D2689A55A00901FDF /* BackendSettingsView.swift */; };
 		DD9EBB4E26AFDD2100D51804 /* TurnOnLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD9EBB4D26AFDD2100D51804 /* TurnOnLocationView.swift */; };
+		DDB05581274BC60D00DA1A8A /* StreamRemover.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB05580274BC60D00DA1A8A /* StreamRemover.swift */; };
 		DDB448282732AA4B00F11340 /* AirCastingGraphSimplifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB448272732AA4B00F11340 /* AirCastingGraphSimplifier.swift */; };
 		DDB44C252704AF830027176E /* AveragingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB44C242704AF830027176E /* AveragingService.swift */; };
 		DDBC156426A0799300982526 /* SystemSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBC156326A0799300982526 /* SystemSettings.swift */; };
@@ -556,6 +557,7 @@
 		DD8C380D2689A55A00901FDF /* BackendSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendSettingsView.swift; sourceTree = "<group>"; };
 		DD8C380F268A0E9400901FDF /* ShareViewModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewModal.swift; sourceTree = "<group>"; };
 		DD9EBB4D26AFDD2100D51804 /* TurnOnLocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurnOnLocationView.swift; sourceTree = "<group>"; };
+		DDB05580274BC60D00DA1A8A /* StreamRemover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamRemover.swift; sourceTree = "<group>"; };
 		DDB448272732AA4B00F11340 /* AirCastingGraphSimplifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirCastingGraphSimplifier.swift; sourceTree = "<group>"; };
 		DDB44C242704AF830027176E /* AveragingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AveragingService.swift; sourceTree = "<group>"; };
 		DDBC156326A0799300982526 /* SystemSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemSettings.swift; sourceTree = "<group>"; };
@@ -886,6 +888,7 @@
 				AC1DAD4325C98556009AC4D1 /* ABConnector */,
 				332F521825FA38B90047236D /* MicrophoneSession */,
 				33BA3366266E4B9600899343 /* MobileSession */,
+				DDB0557F274BC5AF00DA1A8A /* StreamSynchronizer */,
 				AC6D56A825B0837500D221BA /* SessionViews */,
 				AC6D56A725B0833F00D221BA /* Graph */,
 				AC8D6C6825C049C200ED74D1 /* Map */,
@@ -1432,6 +1435,14 @@
 			path = URLProviders;
 			sourceTree = "<group>";
 		};
+		DDB0557F274BC5AF00DA1A8A /* StreamSynchronizer */ = {
+			isa = PBXGroup;
+			children = (
+				DDB05580274BC60D00DA1A8A /* StreamRemover.swift */,
+			);
+			path = StreamSynchronizer;
+			sourceTree = "<group>";
+		};
 		DDB448292732EB0800F11340 /* Map&GraphHelpers */ = {
 			isa = PBXGroup;
 			children = (
@@ -1844,6 +1855,7 @@
 				DDCE5D3A26A213620033C211 /* DefaultDeleteSessionViewModel.swift in Sources */,
 				DD55C38E26BAA7330069838F /* LocationHandler.swift in Sources */,
 				B3EBB10626A06CD7002BD81F /* ScheduledForgotPasswordControllerProxy.swift in Sources */,
+				DDB05581274BC60D00DA1A8A /* StreamRemover.swift in Sources */,
 				B38E6CD226C5F85000C21C45 /* SyncTriggeringSesionStopperProxy.swift in Sources */,
 				AC08A662266E2AEC0081697C /* ABMeasurementsView.swift in Sources */,
 				AC08A662266E2AEC0081697C /* ABMeasurementsView.swift in Sources */,

@@ -357,6 +357,8 @@ struct Strings {
         static let description: String = "Which stream would you like to delete?"
         static let continueButton: String = "Delete streams"
         static let cancelButton: String = "Cancel"
+        static let deleteAlert: String = "Are You sure?"
+        static let deleteButton: String = "Delete"
     }
     
     enum EditSession {

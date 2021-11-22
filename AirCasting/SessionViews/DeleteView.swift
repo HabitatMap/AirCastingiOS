@@ -7,7 +7,7 @@ import SwiftUI
 struct DeleteView<VM: DeleteSessionViewModel>: View {
     @ObservedObject var viewModel: VM
     @Binding var deleteModal: Bool
-    
+    @State var showingAlert: Bool = false
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
             title
@@ -15,10 +15,17 @@ struct DeleteView<VM: DeleteSessionViewModel>: View {
             chooseStream
             continueButton
             cancelButton
-        }.onAppear(perform: {
-            #warning("When implementing logic here we will differ what type of session it is")
-//            sessionContext.sessionType == .mobile ? viewModel.isMicrophoneToggle() : viewModel.isNotMicrophoneToggle()
-        })
+        }.alert(isPresented: $showingAlert) {
+            Alert(
+                title: Text(Strings.DeleteSession.deleteAlert),
+                primaryButton: .destructive(Text(Strings.DeleteSession.deleteButton), action: {
+                    viewModel.deleteSelected()
+                    deleteModal.toggle()
+                }),
+                secondaryButton: .default(Text(Strings.DeleteSession.cancelButton), action: {
+                    deleteModal.toggle()
+                }))
+        }
         .padding()
     }
     
@@ -49,7 +56,7 @@ struct DeleteView<VM: DeleteSessionViewModel>: View {
     
     private var continueButton: some View {
         Button {
-            deleteModal.toggle()
+            showingAlert = true
         } label: {
             Text(Strings.DeleteSession.continueButton)
                 .bold()
@@ -70,7 +77,10 @@ struct DeleteView<VM: DeleteSessionViewModel>: View {
 #if DEBUG
 struct DeleteViewModal_Previews: PreviewProvider {
     static var previews: some View {
-        DeleteView(viewModel: DefaultDeleteSessionViewModel(), deleteModal: .constant(false))
+        DeleteView(viewModel: DefaultDeleteSessionViewModel(session: .mock,
+                                                            measurementStreamStorage: PreviewMeasurementStreamStorage(),
+                                                            streamRemover: StreamRemoverDefaultDummy()),
+                                                            deleteModal: .constant(false))
     }
 }
 #endif

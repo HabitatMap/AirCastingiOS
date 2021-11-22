@@ -1,6 +1,3 @@
-// Created by Lunar on 07/06/2021.
-//
-
 import SwiftUI
 import AirCastingStyling
 
@@ -52,8 +49,7 @@ struct _ABMeasurementsView: View {
     }
     
     var body: some View {
-        let streams = streamsToShow
-        let hasAnyMeasurements = streams.filter { $0.latestValue != nil }.count > 0
+        let hasAnyMeasurements = streamsToShow.filter { $0.latestValue != nil }.count > 0
         
         return Group {
             if hasAnyMeasurements {
@@ -63,7 +59,7 @@ struct _ABMeasurementsView: View {
                         .padding(.bottom, 3)
                     HStack {
                         streamsToShow.count != 1 ? Spacer() : nil
-                        ForEach(streams, id : \.self) { stream in
+                        ForEach(streamsToShow.filter({ !$0.gotDeleted }), id : \.self) { stream in
                             if let threshold = thresholds.threshold(for: stream) {
                                 SingleMeasurementView(stream: stream,
                                                       threshold: threshold,
@@ -72,7 +68,7 @@ struct _ABMeasurementsView: View {
                                                       measurementPresentationStyle: measurementPresentationStyle,
                                                       isDormant: session.isDormant)
                             }
-                        Spacer()
+                            Spacer()
                         }
                     }
                 }
@@ -110,7 +106,7 @@ struct _ABMeasurementsView: View {
         return HStack {
             Group {
                 streamsToShow.count != 1 ? Spacer() : nil
-                ForEach(streamsToShow, id : \.self) { stream in
+                ForEach(streamsToShow.filter({ !$0.gotDeleted }), id : \.self) { stream in
                     SingleMeasurementView(stream: stream,
                                           threshold: nil,
                                           selectedStream: $selectedStream,

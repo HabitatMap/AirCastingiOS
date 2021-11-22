@@ -5,6 +5,7 @@ import CoreData
 import CoreLocation
 import Foundation
 import Combine
+import SwiftUI
 
 protocol MeasurementStreamStorage {
     func accessStorage(_ task: @escaping(HiddenCoreDataMeasurementStreamStorage) -> Void)
@@ -20,6 +21,10 @@ protocol MeasurementStreamStorageContextUpdate {
     func updateSessionEndtime(_ endTime: Date, for sessionUUID: SessionUUID) throws
     func updateSessionFollowing(_ sessionStatus: SessionFollowing, for sessionUUID: SessionUUID)
     func existingMeasurementStream(_ sessionUUID: SessionUUID, name: String) throws -> MeasurementStreamLocalID?
+    func preapareSessionForDeletion(_ sessionUUID: SessionUUID) throws
+    func preapareStreamForDeletion(_ sessionUUID: SessionUUID, sensorsName: [String], completion: () -> Void) throws
+    func deleteSession(_ sessionUUID: SessionUUID) throws
+    func deleteStreams(_ sessionUUID: SessionUUID) throws
     func save() throws
 }
 
@@ -54,7 +59,26 @@ final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
 }
 
 final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageContextUpdate {
-
+    func preapareStreamForDeletion(_ sessionUUID: SessionUUID, sensorsName: [String], completion: () -> Void) throws {
+        let sessionEntity = try context.existingSession(uuid: sessionUUID)
+        try sensorsName.forEach { sensorName in
+            guard let stream = sessionEntity.allStreams?.first(where: { $0.sensorName == sensorName }) else {
+                Log.info("Problem")
+                return
+            }
+            stream.gotDeleted = true
+            try context.save()
+        }
+        sessionEntity.changesCount += 1
+        completion()
+    }
+    
+    func preapareSessionForDeletion(_ sessionUUID: SessionUUID) throws {
+        let sessionEntity = try context.existingSession(uuid: sessionUUID)
+        sessionEntity.gotDeleted = true
+        try context.save()
+    }
+    
     enum Error: Swift.Error {
         case missingMeasurementStream
         case missingSensorName
@@ -67,6 +91,29 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         self.context = context
     }
     
+    func deleteSession(_ sessionUUID: SessionUUID) throws {
+        do {
+            try context.delete(context.existingSession(uuid: sessionUUID))
+        } catch {
+            Log.info("## Error when deleting session")
+        }
+    }
+    
+    func deleteStreams(_ sessionUUID: SessionUUID) throws {
+        let sessionEntity = try context.existingSession(uuid: sessionUUID)
+        let toDelete = sessionEntity.allStreams!.filter({ $0.gotDeleted })
+        toDelete.forEach { object in
+            do {
+                toDelete.forEach { object in
+                    context.delete(object)
+                }
+            } catch {
+                Log.info("## Error when deleting session")
+            }
+        }
+        sessionEntity.changesCount += 1
+    }
+
     func save() throws {
         try self.context.save()
     }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="19206" systemVersion="20G165" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="19461" systemVersion="21A559" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="MeasurementEntity" representedClassName="MeasurementEntity" syncable="YES">
         <attribute name="averagingWindow" optional="YES" attributeType="Integer 64" defaultValueString="1" usesScalarValueType="YES"/>
         <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
@@ -35,6 +35,7 @@
         <attribute name="thresholdVeryLow" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
     </entity>
     <entity name="SessionEntity" representedClassName="SessionEntity" syncable="YES">
+        <attribute name="changesCount" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="contribute" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="deviceId" optional="YES" attributeType="String"/>
         <attribute name="deviceType" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
@@ -56,9 +57,9 @@
         <relationship name="measurementStreams" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="MeasurementStreamEntity" inverseName="session" inverseEntity="MeasurementStreamEntity"/>
     </entity>
     <elements>
-        <element name="MeasurementEntity" positionX="-63" positionY="-18" width="128" height="134"/>
+        <element name="MeasurementEntity" positionX="147.2987670898438" positionY="-70.14356994628906" width="128" height="133"/>
         <element name="MeasurementStreamEntity" positionX="-63.7001953125" positionY="128.3192749023438" width="128" height="254"/>
         <element name="SensorThreshold" positionX="388.8433837890625" positionY="56.29141235351562" width="128" height="133"/>
-        <element name="SessionEntity" positionX="160" positionY="192" width="128" height="314"/>
+        <element name="SessionEntity" positionX="160" positionY="192" width="128" height="329"/>
     </elements>
 </model>
