@@ -5,10 +5,13 @@ import SwiftUI
 
 struct SDSyncRootView: View {
     @Environment(\.presentationMode) var presentationMode
+    @EnvironmentObject var bluetoothManager: BluetoothManager
+    @EnvironmentObject var sdSyncController: SDSyncController
     var viewModel: SDSyncViewModel
     
-    init(sessionSynchronizer: SessionSynchronizer) {
-        viewModel = SDSyncViewModel(sessionSynchronizer: sessionSynchronizer)
+    init(sessionSynchronizer: SessionSynchronizer, sdSyncController: SDSyncController) {
+        viewModel = SDSyncViewModel(sessionSynchronizer: sessionSynchronizer, sdSyncController: sdSyncController)
+        viewModel.startSync()
     }
     
     var body: some View {
@@ -17,7 +20,6 @@ struct SDSyncRootView: View {
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationBarItems(leading: backButton)
         }
-        .onAppear(perform: viewModel.startSync)
     }
 
     var backButton: some View {
@@ -31,10 +33,10 @@ struct SDSyncRootView: View {
     }
 }
 
-#if DEBUG
-struct SDSyncRootView_Previews: PreviewProvider {
-    static var previews: some View {
-        SDSyncRootView(sessionSynchronizer: DummySessionSynchronizer())
-    }
-}
-#endif
+//#if DEBUG
+//struct SDSyncRootView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        SDSyncRootView(sessionSynchronizer: DummySessionSynchronizer())
+//    }
+//}
+//#endif
