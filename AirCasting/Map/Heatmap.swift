@@ -261,7 +261,6 @@ struct Heatmap {
         }
         
         mutating func addMeasurement(_ pathPoint: PathPoint) {
-            print("MARYSIA: add measurement pathPoint \(pathPoint)")
             sum += pathPoint.measurement
             number += 1
             calculateAverage()

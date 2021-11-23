@@ -46,7 +46,8 @@ struct GoogleMapView: UIViewRepresentable {
         mapView.isMyLocationEnabled = isMyLocationEnabled
         polylineDrawing(mapView, context: context)
         context.coordinator.currentlyDisplayedPathPoints = pathPoints
-        context.coordinator.currentThreshold = ThresholdWitness(sensorThreshold: threshold)
+        context.coordinator.currentThresholdWitness = ThresholdWitness(sensorThreshold: threshold)
+        context.coordinator.currentThreshold = threshold
         context.coordinator.myLocationSink = mapView.publisher(for: \.myLocation)
             .sink { [weak mapView] (location) in
                 guard let coordinate = location?.coordinate else { return }
@@ -66,12 +67,16 @@ struct GoogleMapView: UIViewRepresentable {
     func updateUIView(_ uiView: GMSMapView, context: Context) {
         guard isUserInteracting else { return }
         let thresholdWitness = ThresholdWitness(sensorThreshold: self.threshold)
+  
         if pathPoints != context.coordinator.currentlyDisplayedPathPoints ||
-            thresholdWitness != context.coordinator.currentThreshold {
+            thresholdWitness != context.coordinator.currentThresholdWitness {
             polylineDrawing(uiView, context: context)
             context.coordinator.currentlyDisplayedPathPoints = pathPoints
-            context.coordinator.currentThreshold = ThresholdWitness(sensorThreshold: threshold)
+            context.coordinator.currentThresholdWitness = ThresholdWitness(sensorThreshold: threshold)
+            context.coordinator.currentThreshold = threshold
+            context.coordinator.drawHeatmap(uiView)
         }
+        
         placePickerDismissed ? uiView.moveCamera(cameraUpdate) : nil
         // Update camera's starting point
         guard context.coordinator.shouldAutoTrack else { return }
@@ -179,29 +184,14 @@ struct GoogleMapView: UIViewRepresentable {
         polyline.map = uiView
     }
     
-    mutating func drawHeatmap(_ uiView: GMSMapView) {
-        if isSessionFixed { return }
-        
-        let mapWidth = uiView.frame.width
-        let mapHeight = uiView.frame.height
-        
-        if heatmap != nil {
-            heatmap?.remove()
-            heatmap = nil
-        }
-        if let threshold = threshold {
-            heatmap = Heatmap(uiView, sensorThreshold: threshold, mapWidth: Int(mapWidth), mapHeight: Int(mapHeight))
-            heatmap?.drawHeatMap(pathPoints: pathPoints)
-        }
-    }
-    
     class Coordinator: NSObject, UINavigationControllerDelegate, GMSMapViewDelegate {
-        
         var parent: GoogleMapView!
         let polyline = GMSPolyline()
         let dot = GMSMarker()
         var currentlyDisplayedPathPoints = [PathPoint]()
-        var currentThreshold: ThresholdWitness?
+        var currentThresholdWitness: ThresholdWitness?
+        var currentThreshold: SensorThreshold?
+        var heatmap: Heatmap? = nil
         
         init(_ parent: GoogleMapView) {
             self.parent = parent
@@ -218,7 +208,25 @@ struct GoogleMapView: UIViewRepresentable {
         }
         
         func mapView(_ mapView: GMSMapView, idleAt cameraPosition: GMSCameraPosition) {
-            parent.drawHeatmap(mapView)
+            drawHeatmap(mapView)
+        }
+        
+        func drawHeatmap(_ mapView: GMSMapView) {
+            if parent.isSessionFixed { return }
+            
+            let mapWidth = mapView.frame.width
+            let mapHeight = mapView.frame.height
+            
+            guard mapWidth > 0, mapHeight > 0 else { return }
+            
+            if heatmap != nil {
+                heatmap?.remove()
+                heatmap = nil
+            }
+            if let threshold = currentThreshold {
+                heatmap = Heatmap(mapView, sensorThreshold: threshold, mapWidth: Int(mapWidth), mapHeight: Int(mapHeight))
+                heatmap?.drawHeatMap(pathPoints: currentlyDisplayedPathPoints)
+            }
         }
         
         func didTapMyLocationButton(for mapView: GMSMapView) -> Bool {
