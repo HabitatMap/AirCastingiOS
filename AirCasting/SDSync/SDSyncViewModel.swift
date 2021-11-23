@@ -7,7 +7,7 @@ import Combine
 class SDSyncViewModel: ObservableObject {
     private let sessionSynchronizer: SessionSynchronizer
     private let sdSyncController: SDSyncController
-//    @Published var backendSyncCompleted = false
+    @Published var backendSyncCompleted = false
     
     init(sessionSynchronizer: SessionSynchronizer, sdSyncController: SDSyncController) {
         self.sessionSynchronizer = sessionSynchronizer
@@ -32,14 +32,8 @@ class SDSyncViewModel: ObservableObject {
     func startBackendSync() {
         sessionSynchronizer.triggerSynchronization() {
             Log.info("## ended sync with backed")
-//            self.backendSyncCompleted = true
-            self.downloadDataFromSDCard()
+            self.backendSyncCompleted = true
         }
-    }
-    
-    func downloadDataFromSDCard() {
-        sdSyncController.scanForDevices()
-        sdSyncController.triggerDownloadingData()
     }
     
     private func onCurrentSyncEnd(_ completion: @escaping () -> Void) {

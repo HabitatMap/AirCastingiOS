@@ -42,6 +42,10 @@ struct HexMessagesBuilder {
         Data([BEGIN_MESSAGE_CODE, CELLULAR_CODE, END_MESSAGE_CODE])
     }
     
+    var downloadFromSDCardModeRequest: Data {
+        Data([BEGIN_MESSAGE_CODE, SYNC_CODE, END_MESSAGE_CODE])
+    }
+    
     func uuidMessage(uuid: SessionUUID) -> Data {
         return buildMessage(messageString: uuid.rawValue, configurationCode: UUID_CODE)
     }

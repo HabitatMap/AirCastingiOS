@@ -17,6 +17,7 @@ struct SelectPeripheralView: View {
     @Binding var creatingSessionFlowContinues: Bool
     let urlProvider: BaseURLProvider
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
+    var syncMode: Bool? = false
     
     var body: some View {
         GeometryReader { geometry in
@@ -92,7 +93,13 @@ struct SelectPeripheralView: View {
     }
     
     var titleLabel: some View {
-        Text(Strings.SelectPeripheralView.titleLabel)
+        var title: Text
+        if syncMode == true {
+            title = Text("Select the device you'd like to sync")
+        } else {
+            title = Text(Strings.SelectPeripheralView.titleLabel)
+        }
+        return title
             .font(Fonts.boldTitle3)
             .foregroundColor(.accentColor)
             .multilineTextAlignment(.leading)
@@ -125,7 +132,11 @@ struct SelectPeripheralView: View {
             AirbeamConnectionViewModelDefault(airBeamConnectionController: connectionController,
                                               userAuthenticationSession: userAuthenticationSession, sessionContext: sessionContext,
                                               peripheral: selection)
-            destination = AnyView(ConnectingABView(viewModel: viewModel, baseURL: urlProvider, creatingSessionFlowContinues: $creatingSessionFlowContinues))
+            if syncMode == true {
+                destination = AnyView(SyncingABView(viewModel: viewModel, baseURL: urlProvider, creatingSessionFlowContinues: $creatingSessionFlowContinues))
+            } else {
+                destination = AnyView(ConnectingABView(viewModel: viewModel, baseURL: urlProvider, creatingSessionFlowContinues: $creatingSessionFlowContinues))
+            }
         } else {
             destination = AnyView(EmptyView())
         }

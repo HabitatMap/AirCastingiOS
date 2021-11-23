@@ -13,6 +13,7 @@
 		333448732743D7BB00ACA5E4 /* SDSyncRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333448722743D7BB00ACA5E4 /* SDSyncRootView.swift */; };
 		333448752743D94F00ACA5E4 /* SDSyncViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333448742743D94F00ACA5E4 /* SDSyncViewModel.swift */; };
 		333448772744104A00ACA5E4 /* SDSyncController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333448762744104A00ACA5E4 /* SDSyncController.swift */; };
+		3334487927452EFD00ACA5E4 /* SyncingABView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3334487827452EFC00ACA5E4 /* SyncingABView.swift */; };
 		3346F1F626318C1600BA4695 /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3346F1F526318C1600BA4695 /* SettingsManager.swift */; };
 		3362B4ED25E69987008D61BA /* CreateSessionDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3362B4EC25E69987008D61BA /* CreateSessionDetailsView.swift */; };
 		33769A5C2705B06F007D1EA7 /* ChartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33769A5B2705B06F007D1EA7 /* ChartViewModel.swift */; };
@@ -311,6 +312,7 @@
 		333448722743D7BB00ACA5E4 /* SDSyncRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSyncRootView.swift; sourceTree = "<group>"; };
 		333448742743D94F00ACA5E4 /* SDSyncViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSyncViewModel.swift; sourceTree = "<group>"; };
 		333448762744104A00ACA5E4 /* SDSyncController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSyncController.swift; sourceTree = "<group>"; };
+		3334487827452EFC00ACA5E4 /* SyncingABView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncingABView.swift; sourceTree = "<group>"; };
 		3346F1F526318C1600BA4695 /* SettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
 		3362B4EC25E69987008D61BA /* CreateSessionDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSessionDetailsView.swift; sourceTree = "<group>"; };
 		33769A5B2705B06F007D1EA7 /* ChartViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartViewModel.swift; sourceTree = "<group>"; };
@@ -643,6 +645,7 @@
 				333448722743D7BB00ACA5E4 /* SDSyncRootView.swift */,
 				333448742743D94F00ACA5E4 /* SDSyncViewModel.swift */,
 				333448762744104A00ACA5E4 /* SDSyncController.swift */,
+				3334487827452EFC00ACA5E4 /* SyncingABView.swift */,
 			);
 			path = SDSync;
 			sourceTree = "<group>";
@@ -1925,6 +1928,7 @@
 				AC32040425CC067D00A68520 /* CheckBox.swift in Sources */,
 				AC8D6C6E25C056B400ED74D1 /* PathPoint.swift in Sources */,
 				B30BAC172694AA8000AE0476 /* MeasurementsStatisticsOutput.swift in Sources */,
+				3334487927452EFD00ACA5E4 /* SyncingABView.swift in Sources */,
 				B30BAC192694AA8E00AE0476 /* StatisticsCalculator.swift in Sources */,
 				AC96DBEA2742705100D5E8E0 /* ThresholdsSettingsViewModel.swift in Sources */,
 				DDEE3A44269736270098CCA9 /* NetworkChecker.swift in Sources */,

@@ -27,6 +27,7 @@ class BluetoothManager: NSObject, ObservableObject {
     @Published var connectedPeripheral: CBPeripheral?
     @Published var mobileSessionReconnected = false
     var observed: NSKeyValueObservation?
+    private var sdSyncInProgress = false
     
     let mobilePeripheralSessionManager: MobilePeripheralSessionManager
     
@@ -36,6 +37,12 @@ class BluetoothManager: NSObject, ObservableObject {
         CBUUID(string:"0000ffe4-0000-1000-8000-00805f9b34fb"),    // PM1
         CBUUID(string:"0000ffe5-0000-1000-8000-00805f9b34fb"),    // PM2.5
         CBUUID(string:"0000ffe6-0000-1000-8000-00805f9b34fb")]   // PM10
+    
+    // has notifications about measurements count in particular csv file on SD card
+    private let DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID = CBUUID(string:"0000ffde-0000-1000-8000-00805f9b34fb")
+    
+    // has notifications for reading measurements stored in csv files on SD card
+    private let DOWNLOAD_FROM_SD_CARD_CHARACTERISTIC_UUID = CBUUID(string:"0000ffdf-0000-1000-8000-00805f9b34fb")
     
     var airbeams: [CBPeripheral] {
         devices.filter { (device) -> Bool in
@@ -133,7 +140,7 @@ extension BluetoothManager: CBCentralManagerDelegate {
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(10)) {
             guard peripheral.state != .connected else { return }
             self.cancelPeripheralConnection(for: peripheral)
-            self.connectedPeripheral = nil
+//            self.connectedPeripheral = nil
             self.mobilePeripheralSessionManager.moveSessionToStandaloneMode(peripheral: peripheral)
         }
     }
@@ -175,12 +182,12 @@ extension BluetoothManager: CBPeripheralDelegate {
     }
     
     func finishMobileSession(with uuid: SessionUUID) {
-        connectedPeripheral = nil
+//        connectedPeripheral = nil
         mobilePeripheralSessionManager.finishSession(with: uuid, centralManager: centralManager)
     }
     
     func enterStandaloneMode(sessionUUID: SessionUUID) {
-        connectedPeripheral = nil
+//        connectedPeripheral = nil
         mobilePeripheralSessionManager.enterStandaloneMode(sessionUUID: sessionUUID, centralManager: centralManager)
     }
     

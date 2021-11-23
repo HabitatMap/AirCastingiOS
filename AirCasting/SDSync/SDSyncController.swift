@@ -15,10 +15,6 @@ class SDSyncController: ObservableObject {
         connectingAirBeamServicesBluetooth = ConnectingAirBeamServicesBluetooth(bluetoothConnector: bluetoothManager)
     }
     
-    func scanForDevices()  {
-
-    }
-    
     func triggerDownloadingData() {
         Log.info("## Downloading data triggered")
 //        guard let airbeam = bluetoothManager.airbeams.first else { return }
