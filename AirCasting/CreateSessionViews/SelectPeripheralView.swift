@@ -14,6 +14,7 @@ struct SelectPeripheralView: View {
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @EnvironmentObject var sessionContext: CreateSessionContext
     @EnvironmentObject var connectionController: DefaultAirBeamConnectionController
+    @EnvironmentObject var sdSyncController: SDSyncController
     @Binding var creatingSessionFlowContinues: Bool
     let urlProvider: BaseURLProvider
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
@@ -131,8 +132,9 @@ struct SelectPeripheralView: View {
             if syncMode == true {
                 let viewModel =
                 SDSyncViewModelDefault(airBeamConnectionController: connectionController,
-                                                  userAuthenticationSession: userAuthenticationSession, sessionContext: sessionContext,
-                                                  peripheral: selection)
+                                       sdSyncController: sdSyncController,
+                                       userAuthenticationSession: userAuthenticationSession, sessionContext: sessionContext,
+                                       peripheral: selection)
                 destination = AnyView(SyncingABView(viewModel: viewModel, baseURL: urlProvider, creatingSessionFlowContinues: $creatingSessionFlowContinues))
             } else {
                 let viewModel =

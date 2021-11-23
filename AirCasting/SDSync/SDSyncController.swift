@@ -1,34 +1,28 @@
-// Created by Lunar on 16/11/2021.
+// Created by Lunar on 17/11/2021.
 //
 
 import Foundation
 import CoreBluetooth
 
-class SDSyncController: ObservableObject {
-    let bluetoothManager: BluetoothManager
-    let userAuthenticationSession: UserAuthenticationSession
-    let connectingAirBeamServicesBluetooth: ConnectingAirBeamServicesBluetooth
-    
-    init(bluetoothManager: BluetoothManager, userAuthenticationSession: UserAuthenticationSession) {
-        self.bluetoothManager = bluetoothManager
-        self.userAuthenticationSession = userAuthenticationSession
-        connectingAirBeamServicesBluetooth = ConnectingAirBeamServicesBluetooth(bluetoothConnector: bluetoothManager)
-    }
-    
-    func triggerDownloadingData() {
-        Log.info("## Downloading data triggered")
-//        guard let airbeam = bluetoothManager.airbeams.first else { return }
-//        connectingAirBeamServicesBluetooth.connect(to: airbeam, timeout: 5, completion: { result in
-//            switch result {
-//            case .success:
-//                Log.info("SUCCESS")
-//            case .timeout:
-//                Log.info("TIME OUT")
-//            case .deviceBusy:
-//                Log.info("DEVICE BUSY")
-//            }
-//        })
-        
-    }
+protocol SDSyncFileWriter {
+    func writeToFile(data: String, for: SDCardSessionType)
 }
 
+class SDSyncController {
+    private let fileWriter: SDSyncFileWriter
+    private let airbeamServices: SDCardAirBeamServices
+    private let airbeamConnection: CBPeripheral
+    
+    init(airbeamServices: SDCardAirBeamServices, airbeamConnection: CBPeripheral, fileWriter: SDSyncFileWriter) {
+        self.airbeamServices = airbeamServices
+        self.airbeamConnection = airbeamConnection
+        self.fileWriter = fileWriter
+    }
+    
+    func syncFromAirbeam() {
+        airbeamServices.downloadData(from: airbeamConnection, progress: { [weak self] chunk in
+            // Filesystem write
+            self?.fileWriter.writeToFile(data: chunk.payload, for: chunk.sessionType)
+        })
+    }
+}

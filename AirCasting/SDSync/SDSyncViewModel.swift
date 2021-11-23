@@ -19,15 +19,18 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
     
     private let peripheral: CBPeripheral
     private let airBeamConnectionController: AirBeamConnectionController
+    private let sdSyncController: SDSyncController
     private let userAuthenticationSession: UserAuthenticationSession
     private let sessionContext: CreateSessionContext
     
     init(airBeamConnectionController: AirBeamConnectionController,
+         sdSyncController: SDSyncController,
          userAuthenticationSession: UserAuthenticationSession,
          sessionContext: CreateSessionContext,
          peripheral: CBPeripheral) {
         self.peripheral = peripheral
         self.airBeamConnectionController = airBeamConnectionController
+        self.sdSyncController = sdSyncController
         self.userAuthenticationSession = userAuthenticationSession
         self.sessionContext = sessionContext
     }
@@ -39,6 +42,7 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
             
             guard success else { return }
             self.configureABforSync()
+            self.sdSyncController.syncFromAirbeam(self.peripheral)
         }
     }
     

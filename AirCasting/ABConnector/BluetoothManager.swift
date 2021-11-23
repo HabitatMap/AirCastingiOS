@@ -231,8 +231,8 @@ extension BluetoothManager: CBPeripheralDelegate {
         }
         
         charactieristicsMapping[characteristic.uuid]?.forEach { block in
-            guard error != nil else { block(.failure(error!)); return }
-            block(.success(characteristic.value))
+            guard error != nil else { block.action(.failure(error!)); return }
+            block.action(.success(characteristic.value))
         }
         
         guard characteristic.uuid != DOWNLOAD_FROM_SD_CARD_CHARACTERISTIC_UUID else {

@@ -5,24 +5,23 @@ import Foundation
 import CoreBluetooth
 
 protocol SDSyncFileWriter {
-    func writeToFile(data: String, for: SDCardSessionType)
+    func writeToFile(data: String, sessionType: SDCardSessionType)
 }
 
-class SDSyncController {
+class SDSyncController: ObservableObject {
     private let fileWriter: SDSyncFileWriter
     private let airbeamServices: SDCardAirBeamServices
-    private let airbeamConnection: CBPeripheral
+//    private let airbeamConnection: CBPeripheral
     
-    init(airbeamServices: SDCardAirBeamServices, airbeamConnection: CBPeripheral, fileWriter: SDSyncFileWriter) {
+    init(airbeamServices: SDCardAirBeamServices, fileWriter: SDSyncFileWriter) {
         self.airbeamServices = airbeamServices
-        self.airbeamConnection = airbeamConnection
         self.fileWriter = fileWriter
     }
     
-    func syncFromAirbeam() {
+    func syncFromAirbeam(_ airbeamConnection: CBPeripheral) {
         airbeamServices.downloadData(from: airbeamConnection, progress: { [weak self] chunk in
             // Filesystem write
-            self?.fileWriter.writeToFile(data: chunk.payload, for: chunk.sessionType)
+            self?.fileWriter.writeToFile(data: chunk.payload, sessionType: chunk.sessionType)
         })
     }
 }
