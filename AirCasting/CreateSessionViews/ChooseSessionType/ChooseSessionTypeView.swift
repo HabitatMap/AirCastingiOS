@@ -28,7 +28,6 @@ struct ChooseSessionTypeView: View {
 
     var body: some View {
         if #available(iOS 15, *) {
-            let _ = print(Self._printChanges())
             NavigationView {
                 VStack(spacing: 50) {
                     VStack(alignment: .leading, spacing: 10) {

@@ -42,18 +42,22 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
             
             guard success else { return }
             self.configureABforSync()
-            self.sdSyncController.syncFromAirbeam(self.peripheral)
+            self.sdSyncController.syncFromAirbeam(self.peripheral) { result in
+                result ? self.clearSDCard() : nil
+            }
         }
     }
     
     private func configureABforSync() {
         let configurator = AirBeam3Configurator(userAuthenticationSession: self.userAuthenticationSession,
                                                 peripheral: self.peripheral)
-        do {
-            try configurator.configureSDSync()
-        } catch {
-            Log.info("Couldn't configure AB for SD sync")
-        }
+        configurator.configureSDSync()
+    }
+    
+    private func clearSDCard() {
+        let configurator = AirBeam3Configurator(userAuthenticationSession: self.userAuthenticationSession,
+                                                peripheral: self.peripheral)
+        configurator.clearSDCard()
     }
 }
 

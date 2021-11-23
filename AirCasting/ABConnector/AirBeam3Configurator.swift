@@ -106,6 +106,10 @@ struct AirBeam3Configurator {
     func configureSDSync() {
         downloadFromSDCardModeRequest()
     }
+    
+    func clearSDCard() {
+        clearSDCardModeRequest()
+    }
 }
 
 private extension AirBeam3Configurator {
@@ -150,6 +154,11 @@ private extension AirBeam3Configurator {
     
     private func downloadFromSDCardModeRequest() {
         let message = hexMessageBuilder.downloadFromSDCardModeRequest
+        sendConfigMessage(data: message)
+    }
+    
+    private func clearSDCardModeRequest() {
+        let message = hexMessageBuilder.clearSDCardModeRequest
         sendConfigMessage(data: message)
     }
     

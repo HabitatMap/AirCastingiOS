@@ -4,12 +4,12 @@
 import CoreBluetooth
 import CoreMIDI
 
-enum SDCardSessionType {
+enum SDCardSessionType: CaseIterable {
     case mobile, fixed, cellular
 }
 
 struct SDCardDataChunk {
-    let payload: String // Ten nasz characteristic (z Data do String)
+    let payload: String
     let sessionType: SDCardSessionType
 }
 
@@ -42,21 +42,28 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
         metadataCharacteristicObserver = bluetoothManager.subscribeToCharacteristic(DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID) { result in
             switch result {
             case .success(let data):
-                guard let data = data, let payload = String(data: data, encoding: .utf8) else { return }
+                guard let data = data, let payload = String(data: data, encoding: .utf8) else {
+                    return
+                }
                 self.currentSessionType = self.currentSessionType.next
+                
+                Log.info(payload)
                 // Payload format is ` Some string: ${number_of_entries_expected} `
+                if payload == "SD_SYNC_FINISH" {
+                    completion(.success(()))
+                    self.bluetoothManager.unsubscribeCharacteristicObserver(self.dataCharacteristicObserver!)
+                    self.bluetoothManager.unsubscribeCharacteristicObserver(self.metadataCharacteristicObserver!)
+                    Log.info("Sync finished.")
+                    return
+                }
+                
+                // This will be needed when we will want to show progress in the view
                 guard let measurementsCountSting = payload.split(separator: ":").last?.trimmingCharacters(in: .whitespaces),
                       let measurementsCount = Int(measurementsCountSting) else {
                     Log.warning("Unexpected metadata format: (\(payload))")
                     return
                 }
                 self.currentSessionTypeExpected = measurementsCount
-                
-                if self.currentSessionType == .cellular && measurementsCount == 0 {
-                    completion(.success(()))
-                    self.bluetoothManager.unsubscribeCharacteristicObserver(self.dataCharacteristicObserver!)
-                    self.bluetoothManager.unsubscribeCharacteristicObserver(self.metadataCharacteristicObserver!)
-                }
             case .failure(let error):
                 Log.warning("Error while receiving metadata from SD card: \(error.localizedDescription)")
                 completion(.failure(error))
@@ -75,13 +82,7 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
                 }
                 progress(SDCardDataChunk(payload: payload, sessionType: sessionType))
                 
-                if self.currentSessionType == .cellular && self.currentSessionTypeExpected >= self.currentSessionTypeReceived {
-                    completion(.success(()))
-                    self.bluetoothManager.unsubscribeCharacteristicObserver(self.dataCharacteristicObserver!)
-                    self.bluetoothManager.unsubscribeCharacteristicObserver(self.metadataCharacteristicObserver!)
-                } else {
-                    self.currentSessionTypeReceived += self.singleChunkMeasurementsCount
-                }
+
             case .failure(let error):
                 Log.warning("Error while receiving data from SD card: \(error.localizedDescription)")
                 completion(.failure(error))
@@ -99,9 +100,7 @@ extension Optional where Wrapped == SDCardSessionType {
         case .none: return .mobile
         case .some(.mobile): return .fixed
         case .some(.fixed): return .cellular
-        case .some(.cellular):
-            Log.error("Tried to increment from .cellular for SDCardSessionType")
-            return .cellular
+        case .some(.cellular): return .cellular
         }
     }
 }

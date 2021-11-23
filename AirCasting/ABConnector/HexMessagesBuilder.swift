@@ -33,7 +33,7 @@ struct HexMessagesBuilder {
     private var LAT_LNG_CODE = UInt8(0x06)
     private var CURRENT_TIME_CODE = UInt8(0x08)
     private var SYNC_CODE = UInt8(0x09)
-//    private var CLEAR_SDCARD_CODE = UInt8(0x0a)
+    private var CLEAR_SDCARD_CODE = UInt8(0x0a)
 
     var bluetoothConfigurationMessage: Data {
         Data([BEGIN_MESSAGE_CODE, BLUETOOTH_STREAMING_METHOD, END_MESSAGE_CODE])
@@ -44,6 +44,10 @@ struct HexMessagesBuilder {
     
     var downloadFromSDCardModeRequest: Data {
         Data([BEGIN_MESSAGE_CODE, SYNC_CODE, END_MESSAGE_CODE])
+    }
+    
+    var clearSDCardModeRequest: Data {
+        Data([BEGIN_MESSAGE_CODE, CLEAR_SDCARD_CODE, END_MESSAGE_CODE])
     }
     
     func uuidMessage(uuid: SessionUUID) -> Data {
