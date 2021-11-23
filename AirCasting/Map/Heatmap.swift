@@ -5,6 +5,28 @@ import UIKit
 import GoogleMaps
 import Foundation
 
+/*
+ * This is a custom "heatmap" for the Aircasting maps. The way it works is similar to what we already have
+ * on the website when you switch on "Crowdmap" but it works for single session and for mobile active measurements.
+ * We redraw the heatmap with every zoom and pan, because the grid squares are always calculated on the visible part of the map.
+ * We divide the visible are of the map into virtual squares (gridSquares). We calculate the size of the single square
+ * using heatmap density and size of the visible area on the screen.
+ * For example, a "portrait" map may be divided into 10x12 grid. In this case gridSizeX = 10 and gridSizeY = 12.
+ * For each grid square we calculate coordinates for each corner so we can use them to draw a Polygon if needed.
+ *
+ * NW-----NE
+ * |      |
+ * |      |
+ * SW-----SE
+ *
+ * On heatmap redraw, we go through all measurements we want to map and assign them to squares. The algorithm for this
+ * is a simple binary search based on grid squares coordinates. On assigning measurements, we caclulate the average
+ * value of each square and assign an appropriate level.
+ *
+ * With every new measurement, the average of appropriate square is recalculated and polygon redrawn
+ * (only if the level has changed)
+ */
+
 struct Heatmap {
     private let density: Int = 10
     
