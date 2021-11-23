@@ -44,7 +44,7 @@ struct GoogleMapView: UIViewRepresentable {
         mapView.settings.myLocationButton = liveModeOn
         mapView.delegate = context.coordinator
         mapView.isMyLocationEnabled = isMyLocationEnabled
-        polylineDrawing(mapView, context: context)
+        drawPolyline(mapView, context: context)
         context.coordinator.currentlyDisplayedPathPoints = pathPoints
         context.coordinator.currentThresholdWitness = ThresholdWitness(sensorThreshold: threshold)
         context.coordinator.currentThreshold = threshold
@@ -70,7 +70,7 @@ struct GoogleMapView: UIViewRepresentable {
   
         if pathPoints != context.coordinator.currentlyDisplayedPathPoints ||
             thresholdWitness != context.coordinator.currentThresholdWitness {
-            polylineDrawing(uiView, context: context)
+            drawPolyline(uiView, context: context)
             context.coordinator.currentlyDisplayedPathPoints = pathPoints
             context.coordinator.currentThresholdWitness = ThresholdWitness(sensorThreshold: threshold)
             context.coordinator.currentThreshold = threshold
@@ -153,7 +153,19 @@ struct GoogleMapView: UIViewRepresentable {
         }
     }
     
-    func polylineDrawing(_ uiView: GMSMapView, context: Context) {
+    fileprivate func drawLastMeasurementPoint(_ dot: GMSMarker) {
+        guard liveModeOn || isSessionFixed else {
+            dot.map = nil
+            return
+        }
+        
+        if let last = pathPoints.last {
+            let mainPoint = UIImage.imageWithColor(color: color(point: last), size: CGSize(width: Constants.Map.dotWidth, height: Constants.Map.dotHeight))
+            dot.icon = mainPoint
+        }
+    }
+    
+    func drawPolyline(_ uiView: GMSMapView, context: Context) {
         // Drawing the path
         let path = GMSMutablePath()
         let dot = context.coordinator.dot
@@ -166,10 +178,7 @@ struct GoogleMapView: UIViewRepresentable {
             dot.map = uiView
         }
         
-        if let last = pathPoints.last {
-            let mainPoint = UIImage.imageWithColor(color: color(point: last), size: CGSize(width: Constants.Map.dotWidth, height: Constants.Map.dotHeight))
-            dot.icon = mainPoint
-        }
+        drawLastMeasurementPoint(dot)
         
         let polyline = context.coordinator.polyline
         
