@@ -43,4 +43,7 @@ extension UIColor {
     static var graphRed: UIColor {
         return UIColor(Color("GraphRed"))
     }
+    static var accentColor: UIColor {
+        return UIColor(Color("AccentColor"))
+    }
 }

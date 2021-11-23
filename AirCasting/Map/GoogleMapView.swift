@@ -172,14 +172,9 @@ struct GoogleMapView: UIViewRepresentable {
         }
         
         let polyline = context.coordinator.polyline
-        let spans = pathPoints.map { point -> GMSStyleSpan in
-            let color = color(point: point)
-            return GMSStyleSpan(style: GMSStrokeStyle.solidColor(color),
-                                segments: 1)
-        }
         
         polyline.path = path
-        polyline.spans = spans
+        polyline.strokeColor = UIColor.accentColor
         polyline.strokeWidth = CGFloat(Constants.Map.polylineWidth)
         polyline.map = uiView
     }
