@@ -5,8 +5,12 @@ import SwiftUI
 
 struct SDSyncRootView: View {
     @Environment(\.presentationMode) var presentationMode
-    let viewModel = SDSyncViewModel()
-
+    var viewModel: SDSyncViewModel
+    
+    init(sessionSynchronizer: SessionSynchronizer) {
+        viewModel = SDSyncViewModel(sessionSynchronizer: sessionSynchronizer)
+    }
+    
     var body: some View {
         NavigationView {
             Text("Syncing")
@@ -27,8 +31,10 @@ struct SDSyncRootView: View {
     }
 }
 
+#if DEBUG
 struct SDSyncRootView_Previews: PreviewProvider {
     static var previews: some View {
-        SDSyncRootView()
+        SDSyncRootView(sessionSynchronizer: DummySessionSynchronizer())
     }
 }
+#endif

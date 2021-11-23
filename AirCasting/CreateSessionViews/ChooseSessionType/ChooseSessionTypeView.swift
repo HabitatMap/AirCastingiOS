@@ -17,6 +17,7 @@ struct ChooseSessionTypeView: View {
     @State private var didTapFixedSession = false
     @State private var startSync = false
     var viewModel: ChooseSessionTypeViewModel
+    var sessionSynchronizer: SessionSynchronizer
     @EnvironmentObject private var tabSelection: TabBarSelection
     @EnvironmentObject var selectedSection: SelectSection
     @EnvironmentObject private var emptyDashboardButtonTapped: EmptyDashboardButtonTapped
@@ -82,7 +83,7 @@ struct ChooseSessionTypeView: View {
                 }
                 
                 .fullScreenCover(isPresented: $startSync) {
-                    SDSyncRootView()
+                    SDSyncRootView(sessionSynchronizer: sessionSynchronizer)
                 }
                 .onChange(of: viewModel.passBluetoothManager.centralManagerState) { _ in
                     if didTapFixedSession {
@@ -158,7 +159,7 @@ struct ChooseSessionTypeView: View {
                             }
                         EmptyView()
                             .fullScreenCover(isPresented: $startSync) {
-                                SDSyncRootView()
+                                SDSyncRootView(sessionSynchronizer: sessionSynchronizer)
                             }
                     }
                 )
@@ -282,7 +283,7 @@ struct ChooseSessionTypeView: View {
 #if DEBUG
 struct CreateSessionView_Previews: PreviewProvider {
     static var previews: some View {
-        ChooseSessionTypeView(viewModel: ChooseSessionTypeViewModel(locationHandler: DummyDefaultLocationHandler(), bluetoothHandler: DummyDefaultBluetoothHandler(), userSettings: UserSettings(), sessionContext: CreateSessionContext(), urlProvider: DummyURLProvider(), bluetoothManager: BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: PreviewMeasurementStreamStorage())), bluetoothManagerState: BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: PreviewMeasurementStreamStorage())).centralManagerState))
+        ChooseSessionTypeView(viewModel: ChooseSessionTypeViewModel(locationHandler: DummyDefaultLocationHandler(), bluetoothHandler: DummyDefaultBluetoothHandler(), userSettings: UserSettings(), sessionContext: CreateSessionContext(), urlProvider: DummyURLProvider(), bluetoothManager: BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: PreviewMeasurementStreamStorage())), bluetoothManagerState: BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: PreviewMeasurementStreamStorage())).centralManagerState), sessionSynchronizer: DummySessionSynchronizer())
             .environmentObject(BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: PreviewMeasurementStreamStorage())))
     }
 }

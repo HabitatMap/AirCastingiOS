@@ -7,6 +7,7 @@ import AirCastingStyling
 struct StandaloneSessionCardView: View {
     let session: SessionEntity
     let sessionStopperFactory: SessionStoppableFactory
+    let sessionSynchronizer: SessionSynchronizer
     @State private var showingFinishAlert = false
     @State private var showingFinishAndSyncAlert = false
     @State private var startSyncing = false
@@ -15,14 +16,14 @@ struct StandaloneSessionCardView: View {
         if #available(iOS 15, *) {
             standaloneSessionCard
                 .fullScreenCover(isPresented: $startSyncing) {
-                    SDSyncRootView()
+                    SDSyncRootView(sessionSynchronizer: sessionSynchronizer)
                 }
         } else {
             standaloneSessionCard
                 .background(
                     EmptyView()
                         .fullScreenCover(isPresented: $startSyncing) {
-                            SDSyncRootView()
+                            SDSyncRootView(sessionSynchronizer: sessionSynchronizer)
                         })
         }
     }
@@ -103,7 +104,7 @@ struct StandaloneSessionCardView: View {
 #if DEBUG
 struct StandaloneSessionCard_Previews: PreviewProvider {
     static var previews: some View {
-        StandaloneSessionCardView(session: SessionEntity.mock, sessionStopperFactory: SessionStoppableFactoryDummy())
+        StandaloneSessionCardView(session: SessionEntity.mock, sessionStopperFactory: SessionStoppableFactoryDummy(), sessionSynchronizer: DummySessionSynchronizer())
     }
 }
 #endif

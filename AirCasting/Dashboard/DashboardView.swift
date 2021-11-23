@@ -118,7 +118,9 @@ struct DashboardView: View {
                                         sessionCartViewModel: viewModel,
                                         thresholds: thresholds,
                                         sessionStoppableFactory: sessionStoppableFactory,
-                                        measurementStreamStorage: measurementStreamStorage)
+                                        measurementStreamStorage: measurementStreamStorage,
+                                        sessionSynchronizer: sessionSynchronizer
+                        )
                     }
                 }
             }
