@@ -9,7 +9,7 @@ import AirCastingStyling
 import Charts
 import SwiftUI
 
-struct SessionCardView: View {
+struct SessionCartView: View {
     @State private var isCollapsed = true
     @State private var selectedStream: MeasurementStreamEntity?
     @State private var isMapButtonActive = false
@@ -40,10 +40,10 @@ struct SessionCardView: View {
         self.measurementStreamStorage = measurementStreamStorage
         let mapDataSource = MapStatsDataSource()
         self._mapStatsDataSource = .init(wrappedValue: mapDataSource)
-        self._mapStatsViewModel = .init(wrappedValue: SessionCardView.createStatsContainerViewModel(dataSource: mapDataSource, session: session))
+        self._mapStatsViewModel = .init(wrappedValue: SessionCartView.createStatsContainerViewModel(dataSource: mapDataSource, session: session))
         let graphDataSource = GraphStatsDataSource()
         self._graphStatsDataSource = .init(wrappedValue: graphDataSource)
-        self._graphStatsViewModel = .init(wrappedValue: SessionCardView.createStatsContainerViewModel(dataSource: graphDataSource, session: session))
+        self._graphStatsViewModel = .init(wrappedValue: SessionCartView.createStatsContainerViewModel(dataSource: graphDataSource, session: session))
         self._chartViewModel = .init(wrappedValue: ChartViewModel(session: session, persistence: PersistenceController.shared))
     }
     
@@ -62,11 +62,7 @@ struct SessionCardView: View {
     }
     
     var body: some View {
-        if session.isInStandaloneMode {
-            standaloneSessionCard
-        } else {
-            sessionCard
-        }
+        sessionCard
     }
     
     var sessionCard: some View {
@@ -101,17 +97,13 @@ struct SessionCardView: View {
         .background(
             Group {
                 Color.white
-                    .shadow(color: .sessionCardShadow, radius: 9, x: 0, y: 1)
+                    .shadow(color: Color(red: 205/255, green: 209/255, blue: 214/255, opacity: 0.36), radius: 9, x: 0, y: 1)
                 mapNavigationLink
                 graphNavigationLink
                 // SwiftUI bug: two navigation links don't work properly
                 NavigationLink(destination: EmptyView(), label: {EmptyView()})
             }
         )
-    }
-    
-    var standaloneSessionCard: some View {
-        StandaloneSessionCardView(session: session, sessionStopperFactory: sessionStoppableFactory)
     }
     
     private func selectDefaultStreamIfNeeded(streams: [MeasurementStreamEntity]) {
@@ -121,15 +113,14 @@ struct SessionCardView: View {
     }
 }
 
-private extension SessionCardView {
+private extension SessionCartView {
     var header: some View {
         SessionHeaderView(
             action: {
                 withAnimation {
                     isCollapsed.toggle()
                 }
-            },
-            isExpandButtonNeeded: true,
+            }, isExpandButtonNeeded: true,
             isCollapsed: $isCollapsed,
             session: session,
             sessionStopperFactory: sessionStoppableFactory
@@ -302,7 +293,7 @@ private extension SessionCardView {
  struct SessionCell_Previews: PreviewProvider {
     static var previews: some View {
         EmptyView()
-        SessionCardView(session: SessionEntity.mock,
+        SessionCartView(session: SessionEntity.mock,
                                 sessionCartViewModel: SessionCartViewModel(followingSetter: MockSessionFollowingSettable()),
                         thresholds: [.mock, .mock], sessionStoppableFactory: SessionStoppableFactoryDummy(), measurementStreamStorage: PreviewMeasurementStreamStorage())
             .padding()

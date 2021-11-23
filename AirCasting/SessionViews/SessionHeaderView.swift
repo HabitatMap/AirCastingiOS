@@ -14,7 +14,6 @@ struct SessionHeaderView: View {
     @Binding var isCollapsed: Bool
     @State var chevronIndicator = "chevron.down"
     @EnvironmentObject var networkChecker: NetworkChecker
-    @EnvironmentObject var bluetoothManager: BluetoothManager
     @ObservedObject var session: SessionEntity
     @State private var showingAlert = false
     @State private var showingFinishAlert = false
@@ -102,9 +101,6 @@ private extension SessionHeaderView {
     var actionsMenuMobile: some View {
         Menu {
             actionsMenuMobileStopButton
-            if session.deviceType == .AIRBEAM3 {
-                actionsMenuMobileEnterStandaloneMode
-            }
         } label: {
             ZStack(alignment: .trailing) {
                 EditButtonView()
@@ -112,9 +108,22 @@ private extension SessionHeaderView {
                     .frame(width: 50, height: 35, alignment: .trailing)
                     .opacity(0.0001)
             }
-        }
-        .alert(isPresented: $showingFinishAlert) {
-            SessionViews.finishSessionAlert(sessionStopper: sessionStopperFactory.getSessionStopper(for: session), sessionName: session.name)
+        }.alert(isPresented: $showingFinishAlert) {
+            Alert(title: Text(Strings.SessionHeaderView.finishAlertTitle) +
+                    Text(session.name ?? Strings.SessionHeaderView.finishAlertTitle_2)
+                    +
+                    Text(Strings.SessionHeaderView.finishAlertTitle_3),
+                  message: Text(Strings.SessionHeaderView.finishAlertMessage_1) +
+                    Text(Strings.SessionHeaderView.finishAlertMessage_2) +
+                    Text(Strings.SessionHeaderView.finishAlertMessage_3),
+                  primaryButton: .default(Text(Strings.SessionHeaderView.finishAlertButton), action: {
+                    do {
+                        try sessionStopperFactory.getSessionStopper(for: session).stopSession()
+                    } catch {
+                        Log.info("error when stpoing session - \(error)")
+                    }
+                  }),
+                  secondaryButton: .cancel())
         }
     }
     
@@ -123,14 +132,6 @@ private extension SessionHeaderView {
             showingFinishAlert = true
         } label: {
             Label(Strings.SessionHeaderView.stopRecordingButton, systemImage: "stop.circle")
-        }
-    }
-    
-    var actionsMenuMobileEnterStandaloneMode: some View {
-        Button {
-            bluetoothManager.enterStandaloneMode(sessionUUID: session.uuid)
-        } label: {
-            Label(Strings.SessionHeaderView.enterStandaloneModeButton, systemImage: "xmark.circle")
         }
     }
     

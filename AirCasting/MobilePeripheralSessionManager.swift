@@ -10,7 +10,6 @@ class MobilePeripheralSessionManager {
     private lazy var locationProvider = LocationProvider()
     
     private var activeMobileSession: MobileSession?
-    private var standaloneModeSessions: [MobileSession] = []
     
     private var streamsIDs: [SensorName: MeasurementStreamLocalID] = [:]
     
@@ -46,99 +45,26 @@ class MobilePeripheralSessionManager {
         }
     }
     
-    func finishSession(for peripheral: CBPeripheral, centralManager: CBCentralManager) {
-        if activeMobileSession?.peripheral == peripheral {
-            finishActiveSession(for: peripheral, centralManager: centralManager)
-        } else {
-            guard let mobileSession = standaloneModeSessions.first(where: { $0.peripheral == peripheral }) else {
-                    assertionFailure("Finishing session was called for unknown peripheral")
-                    return
-                }
-            updateDatabaseForFinishedSession(with: mobileSession.session.uuid)
-            standaloneModeSessions.removeAll(where: { $0.peripheral == peripheral })
-        }
+    func finishActiveSession(centralManger: CBCentralManager) {
+        guard let activePeripheral = activeMobileSession?.peripheral else { return }
+        finishSession(for: activePeripheral, centralManger: centralManger)
     }
     
-    func finishSession(with uuid: SessionUUID, centralManager: CBCentralManager) {
-        if activeMobileSession?.session.uuid == uuid {
-            guard let activePeripheral = activeMobileSession?.peripheral else { return }
-            finishActiveSession(for: activePeripheral, centralManager: centralManager)
-        } else {
-            guard standaloneModeSessions.map(\.session.uuid).contains(uuid) else {
-                assertionFailure("Finishing session was called for session which is not in standalone mode")
-                return
-            }
-            updateDatabaseForFinishedSession(with: uuid)
-            standaloneModeSessions.removeAll(where: { $0.session.uuid == uuid })
-        }
-    }
-    
-    func finishActiveSession(for peripheral: CBPeripheral, centralManager: CBCentralManager) {
+    func finishSession(for peripheral: CBPeripheral, centralManger: CBCentralManager) {
         if activeMobileSession?.peripheral == peripheral {
             let session = activeMobileSession!.session
             
-            updateDatabaseForFinishedSession(with: session.uuid)
-            centralManager.cancelPeripheralConnection(activeMobileSession!.peripheral)
+            measurementStreamStorage.accessStorage { storage in
+                do {
+                    try storage.updateSessionStatus(.FINISHED, for: session.uuid)
+                    try storage.updateSessionEndtime(Date(), for: session.uuid)
+                } catch {
+                    Log.error("Unable to change session status to finished because of an error: \(error)")
+                }
+            }
+            centralManger.cancelPeripheralConnection(activeMobileSession!.peripheral)
             activeMobileSession = nil
             locationProvider.stopUpdatingLocation()
-        }
-    }
-    
-    private func updateDatabaseForFinishedSession(with uuid: SessionUUID) {
-        measurementStreamStorage.accessStorage { storage in
-            do {
-                try storage.updateSessionStatus(.FINISHED, for: uuid)
-                try storage.updateSessionEndtime(Date(), for: uuid)
-            } catch {
-                Log.error("Unable to change session status to finished because of an error: \(error)")
-            }
-        }
-    }
-    
-    func enterStandaloneMode(sessionUUID: SessionUUID, centralManager: CBCentralManager) {
-        guard
-            let activePeripheral = activeMobileSession?.peripheral,
-            activeMobileSession?.session.uuid == sessionUUID
-        else {
-            Log.warning("Enter stand alone mode called for session which is not active")
-            return
-        }
-        changeSessionStatusToDisconnected(uuid: sessionUUID)
-        
-        centralManager.cancelPeripheralConnection(activePeripheral)
-        standaloneModeSessions.append(activeMobileSession!)
-        activeMobileSession = nil
-        locationProvider.stopUpdatingLocation()
-    }
-    
-    func moveSessionToStandaloneMode(peripheral: CBPeripheral) {
-        guard activeMobileSession?.peripheral == peripheral else {
-            Log.warning("Enter stand alone mode called for perihperal which is not associated with active session")
-            return
-        }
-        
-        standaloneModeSessions.append(activeMobileSession!)
-        activeMobileSession = nil
-    }
-    
-    func markActiveSessionAsDisconnected(peripheral: CBPeripheral) {
-        guard
-            let sessionUUID = activeMobileSession?.session.uuid,
-            activeMobileSession?.peripheral == peripheral
-        else {
-            Log.warning("Tried to disconnect session for peripheral which is not associated with an active session")
-            return
-        }
-        changeSessionStatusToDisconnected(uuid: sessionUUID)
-    }
-    
-    private func changeSessionStatusToDisconnected(uuid: SessionUUID) {
-        measurementStreamStorage.accessStorage { storage in
-            do {
-                try storage.updateSessionStatus(.DISCONNECTED, for: uuid)
-            } catch {
-                Log.error("Unable to change session status to disconnected because of an error: \(error)")
-            }
         }
     }
     
@@ -190,9 +116,5 @@ class MobilePeripheralSessionManager {
     
     func activeSessionInProgressWith(_ peripheral: CBPeripheral) -> Bool {
         activeMobileSession?.peripheral == peripheral
-    }
-    
-    func standaloneSessionInProgressWith(_ peripheral: CBPeripheral) -> Bool {
-        standaloneModeSessions.first(where: { $0.peripheral == peripheral }) != nil
     }
 }

@@ -376,7 +376,6 @@ struct Strings {
         static let alertMessage: String = "You need to have internet connection to edit session data"
         static let confirmAlert: String = "Got it!"
         static let stopRecordingButton: String = "Finish recording session"
-        static let enterStandaloneModeButton: String = "Enter standalone mode"
         static let finishAlertTitle: String = "Finish recording "
         static let finishAlertTitle_2: String = "this session"
         static let finishAlertTitle_3: String = "?"
@@ -482,11 +481,5 @@ struct Strings {
     
     enum RefreshControl {
         static let progressViewTest: String = "Syncing..."
-    }
-  
-    enum StandaloneSessionCardView {
-        static let heading = "Your AirBeam3 is now in stand-alone mode"
-        static let description = "AirBeam3 is now recording using its SD card. The measurements will be displayed here after syncing."
-        static let buttonLabel = "Finish recording & don't sync"
     }
 }
