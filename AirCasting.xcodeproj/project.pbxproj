@@ -11,7 +11,7 @@
 		332F521425FA38430047236D /* MicrophoneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332F521325FA38430047236D /* MicrophoneManager.swift */; };
 		333448702742AF8D00ACA5E4 /* FinishSessionAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3334486F2742AF8D00ACA5E4 /* FinishSessionAlert.swift */; };
 		333448732743D7BB00ACA5E4 /* SDSyncRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333448722743D7BB00ACA5E4 /* SDSyncRootView.swift */; };
-		333448752743D94F00ACA5E4 /* SDSyncController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333448742743D94F00ACA5E4 /* SDSyncController.swift */; };
+		333448752743D94F00ACA5E4 /* SDSyncViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333448742743D94F00ACA5E4 /* SDSyncViewModel.swift */; };
 		3346F1F626318C1600BA4695 /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3346F1F526318C1600BA4695 /* SettingsManager.swift */; };
 		3362B4ED25E69987008D61BA /* CreateSessionDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3362B4EC25E69987008D61BA /* CreateSessionDetailsView.swift */; };
 		33769A5C2705B06F007D1EA7 /* ChartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33769A5B2705B06F007D1EA7 /* ChartViewModel.swift */; };
@@ -308,7 +308,7 @@
 		332F521325FA38430047236D /* MicrophoneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrophoneManager.swift; sourceTree = "<group>"; };
 		3334486F2742AF8D00ACA5E4 /* FinishSessionAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinishSessionAlert.swift; sourceTree = "<group>"; };
 		333448722743D7BB00ACA5E4 /* SDSyncRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSyncRootView.swift; sourceTree = "<group>"; };
-		333448742743D94F00ACA5E4 /* SDSyncController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSyncController.swift; sourceTree = "<group>"; };
+		333448742743D94F00ACA5E4 /* SDSyncViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSyncViewModel.swift; sourceTree = "<group>"; };
 		3346F1F526318C1600BA4695 /* SettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
 		3362B4EC25E69987008D61BA /* CreateSessionDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSessionDetailsView.swift; sourceTree = "<group>"; };
 		33769A5B2705B06F007D1EA7 /* ChartViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartViewModel.swift; sourceTree = "<group>"; };
@@ -639,7 +639,7 @@
 			isa = PBXGroup;
 			children = (
 				333448722743D7BB00ACA5E4 /* SDSyncRootView.swift */,
-				333448742743D94F00ACA5E4 /* SDSyncController.swift */,
+				333448742743D94F00ACA5E4 /* SDSyncViewModel.swift */,
 			);
 			path = SDSync;
 			sourceTree = "<group>";
@@ -1798,7 +1798,7 @@
 				B32D08AF267A6D13006C97ED /* ErasingToVoidPublisher.swift in Sources */,
 				B3D1928D26F1FA1C0029E1C8 /* FixedSessionFaker.swift in Sources */,
 				AC049F7F2604B7AF00398197 /* AuthErorrHandling.swift in Sources */,
-				333448752743D94F00ACA5E4 /* SDSyncController.swift in Sources */,
+				333448752743D94F00ACA5E4 /* SDSyncViewModel.swift in Sources */,
 				B3FD77C4267C94AF00E97CC2 /* SessionSynchronizationService.swift in Sources */,
 				B33DB5762686161300ED1344 /* SensorName.swift in Sources */,
 				DD8AFE4F272886D700ED1CED /* ThresholdWitness.swift in Sources */,
