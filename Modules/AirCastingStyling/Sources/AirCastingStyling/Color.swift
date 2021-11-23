@@ -46,6 +46,7 @@ extension Color {
     }
     public static var sessionCardShadow: Color {
         return Color(red: 205/255, green: 209/255, blue: 214/255, opacity: 0.36)
+    }
     public static var aliceBlue: Color {
         Color(red: 251/255, green: 253/255, blue: 255/255)
     }
