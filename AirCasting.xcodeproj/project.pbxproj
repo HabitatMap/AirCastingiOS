@@ -181,6 +181,12 @@
 		B33DB5722686013400ED1344 /* XCTestCase+AwaitPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33DB5712686013400ED1344 /* XCTestCase+AwaitPublisher.swift */; };
 		B33DB5742686120600ED1344 /* XCTestCase+AssertContainsSameElements.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33DB5732686120600ED1344 /* XCTestCase+AssertContainsSameElements.swift */; };
 		B33DB5762686161300ED1344 /* SensorName.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33DB5752686161300ED1344 /* SensorName.swift */; };
+		B367A590274E9EAA004C605B /* FirebaseFeatureFlagProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B367A589274E9EAA004C605B /* FirebaseFeatureFlagProvider.swift */; };
+		B367A591274E9EAA004C605B /* DefaultFeatureFlagProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B367A58A274E9EAA004C605B /* DefaultFeatureFlagProvider.swift */; };
+		B367A593274E9EAA004C605B /* FeatureFlagProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B367A58C274E9EAA004C605B /* FeatureFlagProvider.swift */; };
+		B367A594274E9EAA004C605B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B367A58D274E9EAA004C605B /* AppDelegate.swift */; };
+		B367A595274E9EAA004C605B /* FeatureFlagsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B367A58E274E9EAA004C605B /* FeatureFlagsViewModel.swift */; };
+		B367A596274E9EAA004C605B /* RemoteNotificationRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B367A58F274E9EAA004C605B /* RemoteNotificationRouter.swift */; };
 		B371415B26726A930057BF60 /* SynchronizationControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37141582672117D0057BF60 /* SynchronizationControllerTests.swift */; };
 		B376DD23268091B80083FD2F /* BodyEncodingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B376DD22268091B80083FD2F /* BodyEncodingError.swift */; };
 		B376DD25268096E20083FD2F /* SessionSynchronizationDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B376DD24268096E20083FD2F /* SessionSynchronizationDatabase.swift */; };
@@ -490,6 +496,12 @@
 		B33DB5712686013400ED1344 /* XCTestCase+AwaitPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+AwaitPublisher.swift"; sourceTree = "<group>"; };
 		B33DB5732686120600ED1344 /* XCTestCase+AssertContainsSameElements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+AssertContainsSameElements.swift"; sourceTree = "<group>"; };
 		B33DB5752686161300ED1344 /* SensorName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorName.swift; sourceTree = "<group>"; };
+		B367A589274E9EAA004C605B /* FirebaseFeatureFlagProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseFeatureFlagProvider.swift; sourceTree = "<group>"; };
+		B367A58A274E9EAA004C605B /* DefaultFeatureFlagProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultFeatureFlagProvider.swift; sourceTree = "<group>"; };
+		B367A58C274E9EAA004C605B /* FeatureFlagProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeatureFlagProvider.swift; sourceTree = "<group>"; };
+		B367A58D274E9EAA004C605B /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		B367A58E274E9EAA004C605B /* FeatureFlagsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeatureFlagsViewModel.swift; sourceTree = "<group>"; };
+		B367A58F274E9EAA004C605B /* RemoteNotificationRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoteNotificationRouter.swift; sourceTree = "<group>"; };
 		B37141582672117D0057BF60 /* SynchronizationControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynchronizationControllerTests.swift; sourceTree = "<group>"; };
 		B376DD22268091B80083FD2F /* BodyEncodingError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyEncodingError.swift; sourceTree = "<group>"; };
 		B376DD24268096E20083FD2F /* SessionSynchronizationDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionSynchronizationDatabase.swift; sourceTree = "<group>"; };
@@ -874,6 +886,7 @@
 		AC7EB36925A6FB3A00A7F2AF = {
 			isa = PBXGroup;
 			children = (
+				B367A58D274E9EAA004C605B /* AppDelegate.swift */,
 				B3EFAB1D26F1F9DB00E88141 /* FixedSessionFaker.swift */,
 				4FB39E0E2621B5C100E5E564 /* Podfile */,
 				AC787D36267B41350034B222 /* Modules */,
@@ -898,6 +911,7 @@
 		AC7EB37425A6FB3A00A7F2AF /* AirCasting */ = {
 			isa = PBXGroup;
 			children = (
+				B367A587274E9E05004C605B /* FeatureFlags */,
 				B3EFAB1326EFE2C800E88141 /* Bootstrap */,
 				B38E6CC826C5F19400C21C45 /* SessionStopping */,
 				B3EBB0FD26A04BF0002BD81F /* ForgotPassword */,
@@ -1183,6 +1197,26 @@
 				B3F1447B26AE437E006A4612 /* OnErrorPublisher.swift */,
 			);
 			path = Publishers;
+			sourceTree = "<group>";
+		};
+		B367A587274E9E05004C605B /* FeatureFlags */ = {
+			isa = PBXGroup;
+			children = (
+				B367A58E274E9EAA004C605B /* FeatureFlagsViewModel.swift */,
+				B367A58C274E9EAA004C605B /* FeatureFlagProvider.swift */,
+				B367A588274E9EAA004C605B /* FeatureFlagProviders */,
+				B367A58F274E9EAA004C605B /* RemoteNotificationRouter.swift */,
+			);
+			path = FeatureFlags;
+			sourceTree = "<group>";
+		};
+		B367A588274E9EAA004C605B /* FeatureFlagProviders */ = {
+			isa = PBXGroup;
+			children = (
+				B367A589274E9EAA004C605B /* FirebaseFeatureFlagProvider.swift */,
+				B367A58A274E9EAA004C605B /* DefaultFeatureFlagProvider.swift */,
+			);
+			path = FeatureFlagProviders;
 			sourceTree = "<group>";
 		};
 		B376DD262680B3060083FD2F /* Services */ = {
@@ -1867,6 +1901,7 @@
 				B3F1448026AE4CA0006A4612 /* OfflineAlert.swift in Sources */,
 				4F8CDBD2265F8DAC00976B25 /* Assertions.swift in Sources */,
 				B3FD77C6267C94AF00E97CC2 /* SessionUploadService.swift in Sources */,
+				B367A596274E9EAA004C605B /* RemoteNotificationRouter.swift in Sources */,
 				AC194B0D2684BAB40048E2C8 /* SessionLoadingView.swift in Sources */,
 				33885BB227468B4E00F41CB5 /* SDSyncFileWritingService.swift in Sources */,
 				4FD2CA4726406F2C007E932E /* Diff.swift in Sources */,
@@ -1934,6 +1969,7 @@
 				AC86EE6B25D03DC00083F8C0 /* SelectDeviceView.swift in Sources */,
 				B30F9A632745626B00C85E17 /* SDCardAirBeamServices.swift in Sources */,
 				4F15548B263C44AF00FF3208 /* Session.swift in Sources */,
+				B367A595274E9EAA004C605B /* FeatureFlagsViewModel.swift in Sources */,
 				AC1471A325F23AE40062A53F /* CreateSessionAPI.swift in Sources */,
 				B32D08A4267A4957006C97ED /* LogErrorAndCompletePublisher.swift in Sources */,
 				ACC883882645784400C5DB70 /* GraphErorrHandling.swift in Sources */,
@@ -1955,6 +1991,7 @@
 				DDC5F58A271979F100F1F9D8 /* Fonts.swift in Sources */,
 				DD28047726B3D6E70060F55E /* ConnectingAirBeamServices.swift in Sources */,
 				DD28047926B3D7370060F55E /* AirBeamConnectionController.swift in Sources */,
+				B367A594274E9EAA004C605B /* AppDelegate.swift in Sources */,
 				DD430B042670FA9600F1BF2E /* AirBeamOnboarding.swift in Sources */,
 				AC8CFF7E25EE5F9200FB2918 /* AirBeam3Configurator.swift in Sources */,
 				AC8CFF7725ECF8B100FB2918 /* HexMessagesBuilder.swift in Sources */,
@@ -1968,6 +2005,8 @@
 				DD1EEB8B26B7C2F100AFC5C1 /* TurnOnLocationViewModel.swift in Sources */,
 				DDF7599A268332E900D906BA /* Strings.swift in Sources */,
 				DDD1F9B12705852400D8E87F /* DataFormatters.swift in Sources */,
+				B367A590274E9EAA004C605B /* FirebaseFeatureFlagProvider.swift in Sources */,
+				B367A593274E9EAA004C605B /* FeatureFlagProvider.swift in Sources */,
 				DD8A36A426C3CE7900C26725 /* ChooseCustomLocationView.swift in Sources */,
 				AC524A9A2615E3600061AD45 /* NSManagedObjectContext+Utils.swift in Sources */,
 				B38E6CCA26C5F19F00C21C45 /* SessionStoppable.swift in Sources */,
@@ -1982,6 +2021,7 @@
 				33F2238A270C674E00F14909 /* TimeInterval.swift in Sources */,
 				4FB39E3A2621BE7F00E5E564 /* APIClient.swift in Sources */,
 				AC9F526D2652A360003CF61F /* EmptyMobileDashboardView.swift in Sources */,
+				B367A591274E9EAA004C605B /* DefaultFeatureFlagProvider.swift in Sources */,
 				DDDBD48826D3BEC000EAA0A1 /* EmptyFixedDashboardView.swift in Sources */,
 				AC9EB64726EF4EEB00B1F780 /* AirBeamCellularSessionCreator.swift in Sources */,
 				B3FD77C1267C94AF00E97CC2 /* SessionUpstream.swift in Sources */,

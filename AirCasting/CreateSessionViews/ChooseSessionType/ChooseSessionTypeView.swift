@@ -25,42 +25,12 @@ struct ChooseSessionTypeView: View {
     var shouldGoToChooseSessionScreen: Bool {
         (tabSelection.selection == .createSession && emptyDashboardButtonTapped.mobileWasTapped) ? true : false
     }
+    @StateObject private var featureFlagsViewModel = FeatureFlagsViewModel.shared
 
     var body: some View {
         if #available(iOS 15, *) {
             NavigationView {
-                VStack(spacing: 50) {
-                    VStack(alignment: .leading, spacing: 10) {
-                        titleLabel
-                        messageLabel
-                    }
-                    .background(Color.white)
-                    .padding(.horizontal)
-                
-                    VStack {
-                        VStack(alignment: .leading, spacing: 15) {
-                            HStack {
-                                recordNewLabel
-                                Spacer()
-                                moreInfo
-                            }
-                            HStack(spacing: 25) {
-                                fixedSessionButton
-                                mobileSessionButton
-                            }
-                            Text("or")
-                            sdSyncButton
-                        }
-                        Spacer()
-                    }
-                    .padding(.vertical)
-                    .padding(.horizontal, 30)
-                    .background(
-                        Color.aircastingBackground.opacity(0.25)
-                            .ignoresSafeArea()
-                    )
-                }
-             
+                mainContent
                 .fullScreenCover(isPresented: $isPowerABLinkActive) {
                     CreatingSessionFlowRootView {
                         PowerABView(creatingSessionFlowContinues: $isPowerABLinkActive, urlProvider: viewModel.passURLProvider)
@@ -103,37 +73,7 @@ struct ChooseSessionTypeView: View {
             .environmentObject(viewModel.passSessionContext)
         } else {
             NavigationView {
-                VStack(spacing: 50) {
-                    VStack(alignment: .leading, spacing: 10) {
-                        titleLabel
-                        messageLabel
-                    }
-                    .background(Color.white)
-                    .padding(.horizontal)
-                    
-                    VStack {
-                        VStack(alignment: .leading, spacing: 15) {
-                            HStack {
-                                recordNewLabel
-                                Spacer()
-                                moreInfo
-                            }
-                            HStack(spacing: 25) {
-                                fixedSessionButton
-                                mobileSessionButton
-                            }
-                            Text("or")
-                            sdSyncButton
-                        }
-                        Spacer()
-                    }
-                    .padding(.vertical)
-                    .padding(.horizontal, 30)
-                    .background(
-                        Color.aircastingBackground.opacity(0.25)
-                            .ignoresSafeArea()
-                    )
-                }
+                mainContent
                 .background(
                     Group {
                         EmptyView()
@@ -179,6 +119,42 @@ struct ChooseSessionTypeView: View {
                 })
             }
             .environmentObject(viewModel.passSessionContext)
+        }
+    }
+    
+    private var mainContent: some View {
+        VStack(spacing: 50) {
+            VStack(alignment: .leading, spacing: 10) {
+                titleLabel
+                messageLabel
+            }
+            .background(Color.white)
+            .padding(.horizontal)
+        
+            VStack {
+                VStack(alignment: .leading, spacing: 15) {
+                    HStack {
+                        recordNewLabel
+                        Spacer()
+                        moreInfo
+                    }
+                    HStack(spacing: 25) {
+                        fixedSessionButton
+                        mobileSessionButton
+                    }
+                    if featureFlagsViewModel.enabledFeatures.contains(.sdCardSync) {
+                        Text("or")
+                        sdSyncButton
+                    }
+                }
+                Spacer()
+            }
+            .padding(.vertical)
+            .padding(.horizontal, 30)
+            .background(
+                Color.aircastingBackground.opacity(0.25)
+                    .ignoresSafeArea()
+            )
         }
     }
 

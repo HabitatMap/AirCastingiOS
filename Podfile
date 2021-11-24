@@ -11,6 +11,8 @@ target 'AirCasting' do
   # add the Firebase pod for Google Analytics
   pod 'Firebase/Analytics'
   pod 'Firebase/Crashlytics'
+  pod 'Firebase/Messaging'
+  pod 'Firebase/RemoteConfig'
 
     target 'AirCastingTests' do
         inherit! :search_paths

@@ -182,7 +182,9 @@ extension BluetoothManager: CBCentralManagerDelegate {
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(10)) {
             guard peripheral.state != .connected else { return }
             self.cancelPeripheralConnection(for: peripheral)
-            self.mobilePeripheralSessionManager.moveSessionToStandaloneMode(peripheral: peripheral)
+            if FeatureFlagsViewModel.shared.enabledFeatures.contains(.standaloneMode) {
+                self.mobilePeripheralSessionManager.moveSessionToStandaloneMode(peripheral: peripheral)
+            }
         }
     }
 }
