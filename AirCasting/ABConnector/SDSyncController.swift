@@ -4,10 +4,13 @@
 import Foundation
 import CoreBluetooth
 
+enum SDCardSessionType: CaseIterable {
+    case mobile, fixed, cellular
+}
+
 class SDSyncController: ObservableObject {
     private let fileWriter: SDSyncFileWriter
     private let airbeamServices: SDCardAirBeamServices
-//    private let airbeamConnection: CBPeripheral
     
     init(airbeamServices: SDCardAirBeamServices, fileWriter: SDSyncFileWriter) {
         self.airbeamServices = airbeamServices

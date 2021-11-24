@@ -4,10 +4,6 @@
 import CoreBluetooth
 import CoreMIDI
 
-enum SDCardSessionType: CaseIterable {
-    case mobile, fixed, cellular
-}
-
 struct SDCardDataChunk {
     let payload: String
     let sessionType: SDCardSessionType
@@ -47,17 +43,14 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
                 }
                 self.currentSessionType = self.currentSessionType.next
                 
-                Log.info(payload)
-                // Payload format is ` Some string: ${number_of_entries_expected} `
                 if payload == "SD_SYNC_FINISH" {
-                    completion(.success(()))
-                    self.bluetoothManager.unsubscribeCharacteristicObserver(self.dataCharacteristicObserver!)
-                    self.bluetoothManager.unsubscribeCharacteristicObserver(self.metadataCharacteristicObserver!)
+                    self.finishSync { completion(.success(())) }
                     Log.info("Sync finished.")
                     return
                 }
                 
                 // This will be needed when we will want to show progress in the view
+                // Payload format is ` Some string: ${number_of_entries_expected} `
                 guard let measurementsCountSting = payload.split(separator: ":").last?.trimmingCharacters(in: .whitespaces),
                       let measurementsCount = Int(measurementsCountSting) else {
                     Log.warning("Unexpected metadata format: (\(payload))")
@@ -66,9 +59,7 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
                 self.currentSessionTypeExpected = measurementsCount
             case .failure(let error):
                 Log.warning("Error while receiving metadata from SD card: \(error.localizedDescription)")
-                completion(.failure(error))
-                self.bluetoothManager.unsubscribeCharacteristicObserver(self.dataCharacteristicObserver!)
-                self.bluetoothManager.unsubscribeCharacteristicObserver(self.metadataCharacteristicObserver!)
+                self.finishSync { completion(.failure(error)) }
             }
         }
         
@@ -86,11 +77,16 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
             case .failure(let error):
                 Log.warning("Error while receiving data from SD card: \(error.localizedDescription)")
                 completion(.failure(error))
-                self.bluetoothManager.unsubscribeCharacteristicObserver(self.dataCharacteristicObserver!)
-                self.bluetoothManager.unsubscribeCharacteristicObserver(self.metadataCharacteristicObserver!)
+                self.finishSync { completion(.failure(error)) }
             }
             
         }
+    }
+    
+    func finishSync(completion: () -> Void) {
+        self.bluetoothManager.unsubscribeCharacteristicObserver(self.dataCharacteristicObserver!)
+        self.bluetoothManager.unsubscribeCharacteristicObserver(self.metadataCharacteristicObserver!)
+        completion()
     }
 }
 

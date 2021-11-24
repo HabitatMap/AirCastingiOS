@@ -24,10 +24,8 @@ class BluetoothManager: NSObject, ObservableObject {
     @Published var devices: [CBPeripheral] = []
     @Published var isScanning: Bool = true
     @Published var centralManagerState: CBManagerState = .unknown
-    @Published var connectedPeripheral: CBPeripheral?
     @Published var mobileSessionReconnected = false
     var observed: NSKeyValueObservation?
-    private var sdSyncInProgress = false
 
     let mobilePeripheralSessionManager: MobilePeripheralSessionManager
 
@@ -110,12 +108,11 @@ class BluetoothManager: NSObject, ObservableObject {
     /// - Returns: A `Bool` value indicating if a given token was successfuly removed. Only reason it can fail is double unregistration.
     @discardableResult func unsubscribeCharacteristicObserver(_ token: AnyHashable) -> Bool {
         guard let uuid = token as? UUID else { return false }
-//        characteristicsMappingLock.lock()
+        characteristicsMappingLock.lock(); defer { characteristicsMappingLock.unlock() }
         guard let containgObserver = charactieristicsMapping.first(where: { $1.contains { $0.identifier == uuid } }) else { return false }
         var containingObserverArray = containgObserver.value
         containingObserverArray.removeAll { $0.identifier == uuid }
         charactieristicsMapping[containgObserver.key] = containingObserverArray
-//        characteristicsMappingLock.unlock()
         return true
     }
 }
@@ -169,7 +166,6 @@ extension BluetoothManager: CBCentralManagerDelegate {
                 NotificationCenter.default.removeObserver(characteristicsHandle)
             }
         } else {
-            connectedPeripheral = peripheral
             NotificationCenter.default.post(name: .deviceConnected, object: nil, userInfo: [AirCastingNotificationKeys.DeviceConnected.uuid : peripheral.identifier])
         }
         peripheral.discoverServices(nil)
@@ -186,7 +182,6 @@ extension BluetoothManager: CBCentralManagerDelegate {
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(10)) {
             guard peripheral.state != .connected else { return }
             self.cancelPeripheralConnection(for: peripheral)
-//            self.connectedPeripheral = nil
             self.mobilePeripheralSessionManager.moveSessionToStandaloneMode(peripheral: peripheral)
         }
     }
@@ -251,12 +246,10 @@ extension BluetoothManager: CBPeripheralDelegate {
     }
 
     func finishMobileSession(with uuid: SessionUUID) {
-//        connectedPeripheral = nil
         mobilePeripheralSessionManager.finishSession(with: uuid, centralManager: centralManager)
     }
 
     func enterStandaloneMode(sessionUUID: SessionUUID) {
-//        connectedPeripheral = nil
         mobilePeripheralSessionManager.enterStandaloneMode(sessionUUID: sessionUUID, centralManager: centralManager)
     }
 
