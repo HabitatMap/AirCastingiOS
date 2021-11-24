@@ -5,7 +5,7 @@ import Foundation
 
 protocol SDSyncFileWriter {
     func writeToFile(data: String, sessionType: SDCardSessionType)
-    func finishAndSave()
+    func finishAndSave() -> [(URL, SDCardSessionType)]
     func finishAndRemoveFiles()
 }
 
@@ -27,15 +27,20 @@ final class SDSyncFileWritingService: SDSyncFileWriter {
         self.bufferThreshold = bufferThreshold
     }
     
-    func finishAndSave() {
+    func finishAndSave() -> [(URL, SDCardSessionType)] {
         guard fileHandles.count > 0 else {
             do {
                 try removeFiles()
             } catch {
                 Log.error("Error while removing files! \(error.localizedDescription)")
-                return
+                return []
             }
-            return
+            return []
+        }
+        let toReturn = SDCardSessionType.allCases.compactMap { type -> (URL, SDCardSessionType)? in
+            let url = fileURL(for: type)
+            guard fileHandles[url] != nil else { return nil }
+            return (url, type)
         }
         flushBuffers()
         do {
@@ -46,6 +51,7 @@ final class SDSyncFileWritingService: SDSyncFileWriter {
         SDCardSessionType.allCases.forEach { sessionType in
                     Log.info("\(try! String(contentsOfFile: fileURL(for: sessionType).path)) \(fileURL(for: sessionType).path)")
                 }
+        return toReturn
     }
     
     func finishAndRemoveFiles() {
