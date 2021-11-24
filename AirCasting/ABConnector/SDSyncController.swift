@@ -11,6 +11,7 @@ enum SDCardSessionType: CaseIterable {
 class SDSyncController: ObservableObject {
     private let fileWriter: SDSyncFileWriter
     private let airbeamServices: SDCardAirBeamServices
+    private let writingQueue = DispatchQueue(label: "SDSyncController")
     
     init(airbeamServices: SDCardAirBeamServices, fileWriter: SDSyncFileWriter) {
         self.airbeamServices = airbeamServices
@@ -18,16 +19,22 @@ class SDSyncController: ObservableObject {
     }
     
     func syncFromAirbeam(_ airbeamConnection: CBPeripheral, completion: @escaping (Bool) -> Void) {
-        airbeamServices.downloadData(from: airbeamConnection, progress: { [weak self] chunk in
-            // Filesystem write
-            DispatchQueue.global(qos: .userInitiated).sync {
-                self?.fileWriter.writeToFile(data: chunk.payload, sessionType: chunk.sessionType)
+        airbeamServices.downloadData(from: airbeamConnection, progress: { [weak self] data in
+            switch data {
+            case .chunk(let chunk):
+                // Filesystem write
+                self?.writingQueue.async {
+                    self?.fileWriter.writeToFile(data: chunk.payload, sessionType: chunk.sessionType)
+                }
+            case .metadata(let metaData):
+                break
             }
         }, completion: { [weak self] result in
-            switch result {
-            //TODO: we need to finish and save when all of the data is already saved to files
-            case .success: self?.fileWriter.finishAndSave(); completion(true)
-            case .failure: self?.fileWriter.finishAndRemoveFiles()
+            self?.writingQueue.sync {
+                switch result {
+                case .success: self?.fileWriter.finishAndSave(); completion(true)
+                case .failure: self?.fileWriter.finishAndRemoveFiles(); completion(false)
+                }
             }
         })
     }

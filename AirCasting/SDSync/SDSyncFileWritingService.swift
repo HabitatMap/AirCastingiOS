@@ -21,13 +21,22 @@ final class SDSyncFileWritingService: SDSyncFileWriter {
     private let bufferThreshold: Int
     // We add buffers to limit the amount of savings to file. We save to file only when the amount of data reaches the threshold, or when the flushAndSave() func is called.
     private var buffers: [URL: [String]] = [:]
-    private var files: [URL: FileHandle] = [:]
+    private var fileHandles: [URL: FileHandle] = [:]
     
     init(bufferThreshold: Int) {
         self.bufferThreshold = bufferThreshold
     }
     
     func finishAndSave() {
+        guard fileHandles.count > 0 else {
+            do {
+                try removeFiles()
+            } catch {
+                Log.error("Error while removing files! \(error.localizedDescription)")
+                return
+            }
+            return
+        }
         flushBuffers()
         do {
             try closeFiles()
@@ -50,7 +59,7 @@ final class SDSyncFileWritingService: SDSyncFileWriter {
     }
     
     func writeToFile(data: String, sessionType: SDCardSessionType) {
-        if files.count == 0 {
+        if fileHandles.count == 0 {
             do {
                 try openFiles()
             } catch {
@@ -79,12 +88,13 @@ final class SDSyncFileWritingService: SDSyncFileWriter {
                 try FileManager.default.removeItem(at: fileURL)
             }
             try Data().write(to: fileURL)
-            files[fileURL] = try FileHandle(forWritingTo: fileURL)
+            fileHandles[fileURL] = try FileHandle(forWritingTo: fileURL)
         }
     }
     
     private func closeFiles() throws {
-        try files.values.forEach { try $0.close() }
+        try fileHandles.values.forEach { try $0.close() }
+        fileHandles = [:]
     }
     
     private func removeFiles() throws {
@@ -97,7 +107,7 @@ final class SDSyncFileWritingService: SDSyncFileWriter {
     
     private func flushBuffer(for sessionType: SDCardSessionType) {
         let url = fileURL(for: sessionType)
-        guard let file = files[url] else {
+        guard let file = fileHandles[url] else {
             Log.warning("File handle not found for session type \(sessionType)")
             return
         }
