@@ -9,9 +9,10 @@ struct GetStarted: View {
     var body: some View {
         NavigationView {
             VStack {
-                mainImage
-                Spacer()
-                logoImage
+                ZStack(alignment: .bottom) {
+                    mainImage
+                    logoImage
+                }
                 descriptionText
                 startButton
                 Spacer()
@@ -42,7 +43,6 @@ private extension GetStarted {
             .font(Fonts.muliHeading2)
             .lineSpacing(10.0)
             .foregroundColor(.aircastingGray)
-            .multilineTextAlignment(.center)
     }
     
     var startButton: some View {
@@ -51,7 +51,6 @@ private extension GetStarted {
             label: {
                 Text(Strings.OnboardingGetStarted.getStarted)
                     .frame(maxWidth:.infinity)
-                    .navigationBarTitle("")
                     .navigationBarHidden(true)
             }
         ).buttonStyle(BlueTextButtonStyle())

@@ -221,14 +221,14 @@ private extension SessionCartView {
     }
     
     func displayButtons(thresholds: [SensorThreshold]) -> some View {
-        HStack(spacing: 20) {
+        HStack() {
             if sessionCartViewModel.isFollowing && session.type == .fixed {
                 unFollowButton
             } else if session.type == .fixed {
                 followButton
             }
             Spacer()
-            !session.isIndoor ? mapButton : nil
+            !session.isIndoor ? mapButton.padding(.trailing, 10) : nil
             graphButton
         }
         .buttonStyle(GrayButtonStyle())
