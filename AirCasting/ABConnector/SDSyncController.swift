@@ -8,14 +8,6 @@ enum SDCardSessionType: CaseIterable {
     case mobile, fixed, cellular
 }
 
-enum SDCardValidationError: Error {
-    case insufficientIntegrity
-}
-
-protocol SDSyncFileValidator {
-    func validate(files: [(URL, SDCardSessionType, expectedMeasurementsCount: Int)], completion: (Result<Void, SDCardValidationError>) -> Void)
-}
-
 class SDSyncController: ObservableObject {
     private let fileWriter: SDSyncFileWriter
     private let airbeamServices: SDCardAirBeamServices
@@ -46,12 +38,22 @@ class SDSyncController: ObservableObject {
             self.writingQueue.sync {
                 switch result {
                 case .success:
-                    let files = self.fileWriter.finishAndSave(); completion(true)
-                    let toValidate = files.map { file in (file.0, file.1, self.metadata.first(where: { $0.sessionType == file.1 })!.measurementsCount) }
-                    self.fileValidator.validate(files: toValidate, completion: { _ in })
+                    self.checkFilesForCorruption()
+                    //TODO: Continue processing SD card data when files are not corrupted. Return an error and finish sync without clreating sd card if they are.
                 case .failure: self.fileWriter.finishAndRemoveFiles(); completion(false)
                 }
             }
         })
+    }
+    
+    func checkFilesForCorruption() {
+        let files = self.fileWriter.finishAndSave()
+        let toValidate = files.map { file -> (URL, SDCardSessionType, Int) in
+            let fileURL = file.0
+            let sessionType = file.1
+            let expectedMeasurementsCount = self.metadata.first(where: { $0.sessionType == file.1 })!.measurementsCount
+            return (fileURL, sessionType, expectedMeasurementsCount)
+        }
+        self.fileValidator.validate(files: toValidate, completion: { _ in })
     }
 }

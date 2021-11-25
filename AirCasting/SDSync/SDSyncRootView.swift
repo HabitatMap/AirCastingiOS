@@ -8,7 +8,6 @@ import Combine
 struct SDSyncRootView: View {
     @Environment(\.presentationMode) var presentationMode
     @EnvironmentObject var bluetoothManager: BluetoothManager
-//    @EnvironmentObject var sdSyncController: SDSyncController
     let sessionSynchronizer: SessionSynchronizer
     let urlProvider: BaseURLProvider
     
