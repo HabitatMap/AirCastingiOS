@@ -21,7 +21,7 @@ platform :ios do
         build_app(workspace: "AirCasting.xcworkspace", scheme: "AirCasting", export_method: "ad-hoc", silent: "true", output_directory: "./build_ipa")
          firebase_app_distribution(
             app: "1:51291628191:ios:b090a81539b7acbb48b8aa",
-            firebase_cli_token: ENV["FASTLANE_TOKEN"],
+            firebase_cli_token: ENV["FIREBASE_TOKEN"],
             groups: “always_testers”,
             release_notes: "Next version of AirCasting app."
         )
