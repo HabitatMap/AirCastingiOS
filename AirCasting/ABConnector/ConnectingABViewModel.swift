@@ -63,5 +63,4 @@ class NeverConnectingAirbeamConnectionViewModel: AirbeamConnectionViewModel {
     @Published private var isDeviceConnectedValue: Bool = false
     
     func connectToAirBeam() { }
-    func connectToAirBeamAndSync() { }
 }
