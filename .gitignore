@@ -10,8 +10,11 @@
 ## User settings
 xcuserdata/
 
-##Fastlane with credentials
-Fastfile
+#config 
+*.env 
+.env.default
+.env.production 
+.env.testing
 
 ## compatibility with Xcode 8 and earlier (ignoring not required starting Xcode 9)
 *.xcscmblueprint
