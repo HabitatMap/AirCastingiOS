@@ -106,7 +106,8 @@ struct MainAppView: View {
                            sessionStoppableFactory: sessionStoppableFactory,
                            sessionSynchronizer: sessionSynchronizer,
                            sessionContext: CreateSessionContext(),
-                           coreDataHook: CoreDataHook(context: persistenceController.viewContext), locationHandler: locationHandler)
+                           coreDataHook: CoreDataHook(context: persistenceController.viewContext),
+                           locationHandler: locationHandler)
                 .environmentObject(airBeamConnectionController)
                 .environmentObject(sdSyncController)
         }

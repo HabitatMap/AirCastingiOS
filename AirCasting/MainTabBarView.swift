@@ -102,7 +102,14 @@ private extension MainTabBarView {
     }
     
     private var createSessionTab: some View {
-        ChooseSessionTypeView(viewModel: ChooseSessionTypeViewModel(locationHandler: locationHandler, bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: bluetoothManager), userSettings: userSettings, sessionContext: sessionContext, urlProvider: urlProvider, bluetoothManager: bluetoothManager, bluetoothManagerState: bluetoothManager.centralManagerState), sessionSynchronizer: sessionSynchronizer)
+        ChooseSessionTypeView(viewModel: ChooseSessionTypeViewModel(locationHandler: locationHandler,
+                                                                    bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: bluetoothManager),
+                                                                    userSettings: userSettings,
+                                                                    sessionContext: sessionContext,
+                                                                    urlProvider: urlProvider,
+                                                                    bluetoothManager: bluetoothManager,
+                                                                    bluetoothManagerState: bluetoothManager.centralManagerState),
+                              sessionSynchronizer: sessionSynchronizer)
             .tabItem {
                 Image(plusImage)
             }
@@ -110,11 +117,11 @@ private extension MainTabBarView {
     }
     
     private var settingsTab: some View {
-        SettingsView(urlProvider: UserDefaultsBaseURLProvider(), logoutController: DefaultLogoutController(
-            userAuthenticationSession: userAuthenticationSession,
-            sessionStorage: SessionStorage(persistenceController: persistenceController),
-            microphoneManager: microphoneManager,
-            sessionSynchronizer: sessionSynchronizer))
+        SettingsView(urlProvider: UserDefaultsBaseURLProvider(),
+                     logoutController: DefaultLogoutController(userAuthenticationSession: userAuthenticationSession,
+                                                               sessionStorage: SessionStorage(persistenceController: persistenceController),
+                                                               microphoneManager: microphoneManager,
+                                                               sessionSynchronizer: sessionSynchronizer))
             .tabItem {
                 Image(settingsImage)
             }
