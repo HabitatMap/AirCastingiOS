@@ -300,7 +300,7 @@ struct Strings {
         static let buttonMobile: String = "Record mobile session"
         static let buttonFixed: String = "Record new session"
         static let airBeamDescriptionText: String = "Did you know?"
-        static let airBeamDescriptionDescription: String = "AirBeam3 is weather resistant. To \nkeep tabs on your outdoor air quality \n24/7, hang one outside your home and \nrecord a fixed session."
+        static let airBeamDescriptionDescription: String = "AirBeam3 is weather resistant. To keep tabs on your outdoor air quality 24/7, hang one outside your home and record a fixed session."
         static let fetchingText: String = "Fetching..."
     }
     

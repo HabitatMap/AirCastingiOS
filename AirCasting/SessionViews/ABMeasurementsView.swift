@@ -62,20 +62,18 @@ struct _ABMeasurementsView: View {
                         .font(Fonts.moderateTitle1)
                         .padding(.bottom, 3)
                     HStack {
-                        Group {
-                            ForEach(streams, id : \.self) { stream in
-                                if let threshold = thresholds.threshold(for: stream) {
-                                    SingleMeasurementView(stream: stream,
-                                                          threshold: threshold,
-                                                          selectedStream: $selectedStream,
-                                                          isCollapsed: $isCollapsed,
-                                                          measurementPresentationStyle: measurementPresentationStyle,
-                                                          isDormant: session.isDormant)
-                                }
+                        streamsToShow.count != 1 ? Spacer() : nil
+                        ForEach(streams, id : \.self) { stream in
+                            if let threshold = thresholds.threshold(for: stream) {
+                                SingleMeasurementView(stream: stream,
+                                                      threshold: threshold,
+                                                      selectedStream: $selectedStream,
+                                                      isCollapsed: $isCollapsed,
+                                                      measurementPresentationStyle: measurementPresentationStyle,
+                                                      isDormant: session.isDormant)
                             }
+                        Spacer()
                         }
-                        .padding(.horizontal, 8)
-                        .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }
             } else {
@@ -111,6 +109,7 @@ struct _ABMeasurementsView: View {
     private var streamNames: some View {
         return HStack {
             Group {
+                streamsToShow.count != 1 ? Spacer() : nil
                 ForEach(streamsToShow, id : \.self) { stream in
                     SingleMeasurementView(stream: stream,
                                           threshold: nil,
@@ -118,9 +117,9 @@ struct _ABMeasurementsView: View {
                                           isCollapsed: $isCollapsed,
                                           measurementPresentationStyle: .hideValues,
                                           isDormant: session.isDormant)
+                    Spacer()
                 }
-            }.padding(.horizontal, 8)
-            .frame(maxWidth: .infinity, alignment: .leading)
+            }
         }
     }
 }
