@@ -60,14 +60,3 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
         configurator.clearSDCard()
     }
 }
-
-//class NeverConnectingAirbeamConnectionViewModel: AirbeamConnectionViewModel {
-//    var shouldDismiss: Published<Bool>.Publisher { $shouldDismissValue }
-//    var isSyncCompleted: Published<Bool>.Publisher { $isisSyncCompletedValue }
-//
-//    @Published private var shouldDismissValue: Bool = false
-//    @Published private var isSyncCompletedValue: Bool = false
-//
-//    func connectToAirBeam() { }
-//    func connectToAirBeamAndSync() { }
-//}
