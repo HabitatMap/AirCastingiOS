@@ -114,10 +114,10 @@ struct MainAppView: View {
     }
 }
 
-//#if DEBUG
-//struct RootAppView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        RootAppView(sessionSynchronizer: DummySessionSynchronizer(), persistenceController: PersistenceController(inMemory: true))
-//    }
-//}
-//#endif
+#if DEBUG
+struct RootAppView_Previews: PreviewProvider {
+    static var previews: some View {
+        RootAppView(sessionSynchronizer: DummySessionSynchronizer(), persistenceController: PersistenceController(inMemory: true))
+    }
+}
+#endif
