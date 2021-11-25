@@ -27,6 +27,7 @@ struct MainTabBarView: View {
     @StateObject var tabSelection: TabBarSelection = TabBarSelection()
     @StateObject var selectedSection = SelectSection()
     @StateObject var emptyDashboardButtonTapped = EmptyDashboardButtonTapped()
+    @StateObject var finishAndSyncButtonTapped = FinishAndSyncButtonTapped()
     @StateObject var sessionContext: CreateSessionContext
     @StateObject var coreDataHook: CoreDataHook
     let locationHandler: LocationHandler
@@ -81,6 +82,7 @@ struct MainTabBarView: View {
         .environmentObject(selectedSection)
         .environmentObject(tabSelection)
         .environmentObject(emptyDashboardButtonTapped)
+        .environmentObject(finishAndSyncButtonTapped)
     }
 }
 
@@ -136,6 +138,10 @@ class SelectSection: ObservableObject {
 
 class EmptyDashboardButtonTapped: ObservableObject {
     @Published var mobileWasTapped = false
+}
+
+class FinishAndSyncButtonTapped: ObservableObject {
+    @Published var finishAndSyncButtonWasTapped = false
 }
 
 extension MainTabBarView {

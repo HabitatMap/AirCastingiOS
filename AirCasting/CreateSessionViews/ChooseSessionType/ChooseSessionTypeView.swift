@@ -22,8 +22,12 @@ struct ChooseSessionTypeView: View {
     @EnvironmentObject private var tabSelection: TabBarSelection
     @EnvironmentObject var selectedSection: SelectSection
     @EnvironmentObject private var emptyDashboardButtonTapped: EmptyDashboardButtonTapped
+    @EnvironmentObject private var finishAndSyncButtonTapped: FinishAndSyncButtonTapped
     var shouldGoToChooseSessionScreen: Bool {
         (tabSelection.selection == .createSession && emptyDashboardButtonTapped.mobileWasTapped) ? true : false
+    }
+    var shouldGoToSyncScreen: Bool {
+        (tabSelection.selection == .createSession && finishAndSyncButtonTapped.finishAndSyncButtonWasTapped) ? true : false
     }
     @StateObject private var featureFlagsViewModel = FeatureFlagsViewModel.shared
 
@@ -65,9 +69,11 @@ struct ChooseSessionTypeView: View {
                 }
                 .onAppear {
                     shouldGoToChooseSessionScreen ? (handleMobileSessionState()) : (isMobileLinkActive = false)
+                    startSync = shouldGoToSyncScreen
                 }
                 .onChange(of: tabSelection.selection, perform: { _ in
                     shouldGoToChooseSessionScreen ? (handleMobileSessionState()) : (isMobileLinkActive = false)
+                    startSync = shouldGoToSyncScreen
                 })
             }
             .environmentObject(viewModel.passSessionContext)
@@ -113,9 +119,11 @@ struct ChooseSessionTypeView: View {
                 }
                 .onAppear {
                     shouldGoToChooseSessionScreen ? (handleMobileSessionState()) : (isMobileLinkActive = false)
+                    startSync = shouldGoToSyncScreen
                 }
                 .onChange(of: tabSelection.selection, perform: { _ in
                     shouldGoToChooseSessionScreen ? (handleMobileSessionState()) : (isMobileLinkActive = false)
+                    startSync = shouldGoToSyncScreen
                 })
             }
             .environmentObject(viewModel.passSessionContext)

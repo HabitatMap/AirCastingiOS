@@ -10,26 +10,12 @@ struct StandaloneSessionCardView: View {
     let sessionSynchronizer: SessionSynchronizer
     @State private var showingFinishAlert = false
     @State private var showingFinishAndSyncAlert = false
-    @State private var startSyncing = false
     @EnvironmentObject private var sdSyncController: SDSyncController
+    @EnvironmentObject private var urlProvider: UserDefaultsBaseURLProvider
+    @EnvironmentObject private var tabSelection: TabBarSelection
+    @EnvironmentObject private var finishAndSyncButtonTapped: FinishAndSyncButtonTapped
     
     var body: some View {
-        if #available(iOS 15, *) {
-            standaloneSessionCard
-//                .fullScreenCover(isPresented: $startSyncing) {
-//                    SDSyncRootView(sessionSynchronizer: sessionSynchronizer, sdSyncController: sdSyncController)
-//                }
-        } else {
-            standaloneSessionCard
-//                .background(
-//                    EmptyView()
-//                        .fullScreenCover(isPresented: $startSyncing) {
-//                            SDSyncRootView(sessionSynchronizer: sessionSynchronizer, sdSyncController: sdSyncController)
-//                        })
-        }
-    }
-    
-    var standaloneSessionCard: some View {
         VStack(alignment: .leading, spacing: 5) {
             header
             content
@@ -96,7 +82,14 @@ struct StandaloneSessionCardView: View {
               Text(Strings.SessionHeaderView.finishAlertMessage_3) +
               Text("\nSD card will be cleared afterwards"),
               primaryButton: .default(Text(Strings.SessionHeaderView.finishAlertButton), action: {
-            startSyncing = true
+            let sessionStopper = sessionStopperFactory.getSessionStopper(for: session)
+            do {
+                try sessionStopper.stopSession()
+            } catch {
+                Log.info("error when stpoing session - \(error)")
+            }
+            finishAndSyncButtonTapped.finishAndSyncButtonWasTapped = true
+            tabSelection.selection = .createSession
         }),
               secondaryButton: .cancel())
     }
@@ -106,6 +99,7 @@ struct StandaloneSessionCardView: View {
 struct StandaloneSessionCard_Previews: PreviewProvider {
     static var previews: some View {
         StandaloneSessionCardView(session: SessionEntity.mock, sessionStopperFactory: SessionStoppableFactoryDummy(), sessionSynchronizer: DummySessionSynchronizer())
+            .environmentObject(DummyURLProvider())
     }
 }
 #endif
