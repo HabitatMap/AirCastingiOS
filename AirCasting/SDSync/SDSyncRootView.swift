@@ -13,7 +13,7 @@ struct SDSyncRootView: View {
     
     @State private var backendSyncCompleted = false
     
-    init(sessionSynchronizer: SessionSynchronizer, sdSyncController: SDSyncController, urlProvider: BaseURLProvider) {
+    init(sessionSynchronizer: SessionSynchronizer, urlProvider: BaseURLProvider) {
         self.sessionSynchronizer = sessionSynchronizer
         self.urlProvider = urlProvider
     }
@@ -72,10 +72,10 @@ struct SDSyncRootView: View {
     }
 }
 
-//#if DEBUG
-//struct SDSyncRootView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        SDSyncRootView(sessionSynchronizer: DummySessionSynchronizer())
-//    }
-//}
-//#endif
+#if DEBUG
+struct SDSyncRootView_Previews: PreviewProvider {
+    static var previews: some View {
+        SDSyncRootView(sessionSynchronizer: DummySessionSynchronizer(), urlProvider: DummyURLProvider())
+    }
+}
+#endif
