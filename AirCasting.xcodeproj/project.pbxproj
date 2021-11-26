@@ -14,6 +14,7 @@
 		333448752743D94F00ACA5E4 /* SDSyncViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333448742743D94F00ACA5E4 /* SDSyncViewModel.swift */; };
 		3334487927452EFD00ACA5E4 /* SyncingABView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3334487827452EFC00ACA5E4 /* SyncingABView.swift */; };
 		3346F1F626318C1600BA4695 /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3346F1F526318C1600BA4695 /* SettingsManager.swift */; };
+		334CC6FA2751454C00C10B53 /* SDCardMobileSessionsSavingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 334CC6F92751454C00C10B53 /* SDCardMobileSessionsSavingService.swift */; };
 		3362B4ED25E69987008D61BA /* CreateSessionDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3362B4EC25E69987008D61BA /* CreateSessionDetailsView.swift */; };
 		33769A5C2705B06F007D1EA7 /* ChartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33769A5B2705B06F007D1EA7 /* ChartViewModel.swift */; };
 		3383511E2747C24800308068 /* SDSyncFileFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3383511D2747C24800308068 /* SDSyncFileFactory.swift */; };
@@ -327,6 +328,7 @@
 		333448742743D94F00ACA5E4 /* SDSyncViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSyncViewModel.swift; sourceTree = "<group>"; };
 		3334487827452EFC00ACA5E4 /* SyncingABView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncingABView.swift; sourceTree = "<group>"; };
 		3346F1F526318C1600BA4695 /* SettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
+		334CC6F92751454C00C10B53 /* SDCardMobileSessionsSavingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDCardMobileSessionsSavingService.swift; sourceTree = "<group>"; };
 		3362B4EC25E69987008D61BA /* CreateSessionDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSessionDetailsView.swift; sourceTree = "<group>"; };
 		33769A5B2705B06F007D1EA7 /* ChartViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartViewModel.swift; sourceTree = "<group>"; };
 		3383511D2747C24800308068 /* SDSyncFileFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSyncFileFactory.swift; sourceTree = "<group>"; };
@@ -677,6 +679,7 @@
 				33885BB127468B4E00F41CB5 /* SDSyncFileWritingService.swift */,
 				3383511D2747C24800308068 /* SDSyncFileFactory.swift */,
 				3384C1DC274EC4C00022B008 /* SDSyncFileValidationService.swift */,
+				334CC6F92751454C00C10B53 /* SDCardMobileSessionsSavingService.swift */,
 			);
 			path = SDSync;
 			sourceTree = "<group>";
@@ -1977,6 +1980,7 @@
 				4F858F5E2624B4980059271A /* Log.swift in Sources */,
 				DDD24D8826A8374600D4A327 /* LocationAlert.swift in Sources */,
 				DD430B062670FCC000F1BF2E /* GreenButtonStyle.swift in Sources */,
+				334CC6FA2751454C00C10B53 /* SDCardMobileSessionsSavingService.swift in Sources */,
 				ACFC708925C1A36A00D609D9 /* UIColor.swift in Sources */,
 				DDD24D8426A7FCE300D4A327 /* View+Print.swift in Sources */,
 				AC8CFF7225E7DA2D00FB2918 /* ABMeasurementStream.swift in Sources */,

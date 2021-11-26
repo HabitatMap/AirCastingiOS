@@ -8,17 +8,23 @@ enum SDCardSessionType: CaseIterable {
     case mobile, fixed, cellular
 }
 
+protocol SDCardMobileSessionssSaver {
+    func saveDataToDb(fileURL: URL)
+}
+
 class SDSyncController: ObservableObject {
     private let fileWriter: SDSyncFileWriter
     private let airbeamServices: SDCardAirBeamServices
     private let fileValidator: SDSyncFileValidator
+    private let mobileSessionsSaver: SDCardMobileSessionssSaver
     private let writingQueue = DispatchQueue(label: "SDSyncController")
     private var metadata: [SDCardMetaData] = []
     
-    init(airbeamServices: SDCardAirBeamServices, fileWriter: SDSyncFileWriter, fileValidator: SDSyncFileValidator) {
+    init(airbeamServices: SDCardAirBeamServices, fileWriter: SDSyncFileWriter, fileValidator: SDSyncFileValidator, mobileSessionsSaver: SDCardMobileSessionssSaver) {
         self.airbeamServices = airbeamServices
         self.fileWriter = fileWriter
         self.fileValidator = fileValidator
+        self.mobileSessionsSaver = mobileSessionsSaver
     }
     
     func syncFromAirbeam(_ airbeamConnection: CBPeripheral, completion: @escaping (Bool) -> Void) {
@@ -38,16 +44,19 @@ class SDSyncController: ObservableObject {
             self.writingQueue.sync {
                 switch result {
                 case .success:
-                    self.checkFilesForCorruption()
+                    let files = self.fileWriter.finishAndSave()
+                    self.checkFilesForCorruption(files)
                     //TODO: Continue processing SD card data when files are not corrupted. Return an error and finish sync without clreating sd card if they are.
+                    if let mobileFileURL = files.first(where: { $0.1 == SDCardSessionType.mobile })?.0 {
+                        self.mobileSessionsSaver.saveDataToDb(fileURL: mobileFileURL)
+                    }
                 case .failure: self.fileWriter.finishAndRemoveFiles(); completion(false)
                 }
             }
         })
     }
     
-    func checkFilesForCorruption() {
-        let files = self.fileWriter.finishAndSave()
+    func checkFilesForCorruption(_ files: [(URL, SDCardSessionType)]) {
         let toValidate = files.map { file -> (URL, SDCardSessionType, Int) in
             let fileURL = file.0
             let sessionType = file.1
