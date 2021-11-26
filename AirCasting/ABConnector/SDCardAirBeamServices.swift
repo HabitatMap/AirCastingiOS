@@ -11,6 +11,8 @@ enum SDCardData {
 
 enum SDCardSyncError: Error {
     case cantDecodePayload
+    case wrongOrderOfReceivedPayload
+    case unexpectedMetadataFormat
 }
 
 struct SDCardDataChunk {
@@ -53,7 +55,7 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
             switch result {
             case .success(let data):
                 guard let data = data, let payload = String(data: data, encoding: .utf8) else {
-                    completion(.failure(SDCardSyncError.cantDecodePayload))
+                    self.finishSync { completion(.failure(SDCardSyncError.cantDecodePayload)) }
                     return
                 }
                 self.currentSessionType = self.currentSessionType.next
@@ -68,9 +70,10 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
                 // Payload format is ` Some string: ${number_of_entries_expected} `
                 guard let measurementsCountSting = payload.split(separator: ":").last?.trimmingCharacters(in: .whitespaces),
                       let measurementsCount = Int(measurementsCountSting) else {
-                    Log.warning("Unexpected metadata format: (\(payload))")
-                    return
-                }
+                          Log.warning("Unexpected metadata format: (\(payload))")
+                          self.finishSync { completion(.failure(SDCardSyncError.unexpectedMetadataFormat)) }
+                          return
+                      }
                 self.currentSessionTypeExpected = measurementsCount
                 progress(.metadata(SDCardMetaData(sessionType: self.currentSessionType!, measurementsCount: measurementsCount)))
             case .failure(let error):
@@ -85,6 +88,7 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
                 guard let data = data, let payload = String(data: data, encoding: .utf8) else { return }
                 guard let sessionType = self.currentSessionType else {
                     Log.error("Received data before first metadata payload!")
+                    self.finishSync { completion(.failure(SDCardSyncError.wrongOrderOfReceivedPayload)) }
                     return
                 }
                 progress(.chunk(SDCardDataChunk(payload: payload, sessionType: sessionType)))
