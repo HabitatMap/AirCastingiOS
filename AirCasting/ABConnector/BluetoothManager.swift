@@ -78,11 +78,6 @@ class BluetoothManager: NSObject, ObservableObject {
     // This is the part of this class that is already refactored.
 
     typealias CharacteristicObserverAction = (Result<Data?, Error>) -> Void
-    private let observerQueue = DispatchQueue(label: "aircasting.bluetooth",
-                                              qos: .default,
-                                              attributes: .concurrent,
-                                              autoreleaseFrequency: .workItem,
-                                              target: nil)
 
     private struct CharacteristicObserver {
         let identifier = UUID()
@@ -235,10 +230,8 @@ extension BluetoothManager: CBPeripheralDelegate {
         }
         characteristicsMappingLock.lock()
         charactieristicsMapping[characteristic.uuid]?.forEach { block in
-            observerQueue.async {
-                guard error == nil else { block.action(.failure(error!)); return }
-                block.action(.success(characteristic.value))
-            }
+            guard error == nil else { block.action(.failure(error!)); return }
+            block.action(.success(characteristic.value))
         }
         characteristicsMappingLock.unlock()
 
