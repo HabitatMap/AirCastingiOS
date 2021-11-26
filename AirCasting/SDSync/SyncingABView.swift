@@ -49,7 +49,6 @@ struct SyncingABView<VM: SDSyncViewModel>: View {
         })
         .onReceive(viewModel.shouldDismiss, perform: { dismiss in
             presentAlert = dismiss
-            
         })
         .alert(isPresented: $presentAlert, content: {
             Alert(title: Text(Strings.AirBeamConnector.connectionTimeoutTitle),

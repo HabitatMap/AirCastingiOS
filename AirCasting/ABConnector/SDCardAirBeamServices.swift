@@ -9,6 +9,10 @@ enum SDCardData {
     case metadata(SDCardMetaData)
 }
 
+enum SDCardSyncError: Error {
+    case cantDecodePayload
+}
+
 struct SDCardDataChunk {
     let payload: String
     let sessionType: SDCardSessionType
@@ -24,7 +28,7 @@ protocol SDCardAirBeamServices {
 }
 
 class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
-    private let singleChunkMeasurementsCount = 4
+    private let singleChunkMeasurementsCount = Constants.SDCardSync.numberOfMeasurementsInDataChunk
     // has notifications about measurements count in particular csv file on SD card
     private let DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID = CBUUID(string:"0000ffde-0000-1000-8000-00805f9b34fb")
     
@@ -49,13 +53,14 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
             switch result {
             case .success(let data):
                 guard let data = data, let payload = String(data: data, encoding: .utf8) else {
+                    completion(.failure(SDCardSyncError.cantDecodePayload))
                     return
                 }
                 self.currentSessionType = self.currentSessionType.next
-                Log.info(payload)
+                Log.info("[SD CARD SYNC] " + payload)
                 if payload == "SD_SYNC_FINISH" {
                     self.finishSync { completion(.success(())) }
-                    Log.info("Sync finished.")
+                    Log.info("[SD CARD SYNC] Sync finished.")
                     return
                 }
                 
@@ -87,10 +92,8 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
 
             case .failure(let error):
                 Log.warning("Error while receiving data from SD card: \(error.localizedDescription)")
-                completion(.failure(error))
                 self.finishSync { completion(.failure(error)) }
             }
-            
         }
     }
     

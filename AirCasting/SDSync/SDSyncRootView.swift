@@ -44,9 +44,7 @@ struct SDSyncRootView: View {
     }
     
     func startBackendSync() {
-        Log.info("## Start sync")
         sessionSynchronizer.triggerSynchronization() {
-            Log.info("## ended sync with backed")
             self.backendSyncCompleted = true
         }
     }
