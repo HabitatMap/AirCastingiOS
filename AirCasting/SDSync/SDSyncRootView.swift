@@ -8,6 +8,7 @@ import Combine
 struct SDSyncRootView: View {
     @Environment(\.presentationMode) var presentationMode
     @EnvironmentObject var bluetoothManager: BluetoothManager
+    @EnvironmentObject private var finishAndSyncButtonTapped: FinishAndSyncButtonTapped
     let sessionSynchronizer: SessionSynchronizer
     let urlProvider: BaseURLProvider
     
@@ -38,7 +39,7 @@ struct SDSyncRootView: View {
                 onCurrentSyncEnd { self.startBackendSync() }
                 return
             }
-            
+            finishAndSyncButtonTapped.finishAndSyncButtonWasTapped = false
             startBackendSync()
         }
     }
