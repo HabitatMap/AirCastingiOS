@@ -27,6 +27,7 @@ struct MainTabBarView: View {
     @StateObject var tabSelection: TabBarSelection = TabBarSelection()
     @StateObject var selectedSection = SelectSection()
     @StateObject var emptyDashboardButtonTapped = EmptyDashboardButtonTapped()
+    @StateObject var finishAndSyncButtonTapped = FinishAndSyncButtonTapped()
     @StateObject var sessionContext: CreateSessionContext
     @StateObject var coreDataHook: CoreDataHook
     let locationHandler: LocationHandler
@@ -81,6 +82,7 @@ struct MainTabBarView: View {
         .environmentObject(selectedSection)
         .environmentObject(tabSelection)
         .environmentObject(emptyDashboardButtonTapped)
+        .environmentObject(finishAndSyncButtonTapped)
     }
 }
 
@@ -100,7 +102,14 @@ private extension MainTabBarView {
     }
     
     private var createSessionTab: some View {
-        ChooseSessionTypeView(viewModel: ChooseSessionTypeViewModel(locationHandler: locationHandler, bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: bluetoothManager), userSettings: userSettings, sessionContext: sessionContext, urlProvider: urlProvider, bluetoothManager: bluetoothManager, bluetoothManagerState: bluetoothManager.centralManagerState))
+        ChooseSessionTypeView(viewModel: ChooseSessionTypeViewModel(locationHandler: locationHandler,
+                                                                    bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: bluetoothManager),
+                                                                    userSettings: userSettings,
+                                                                    sessionContext: sessionContext,
+                                                                    urlProvider: urlProvider,
+                                                                    bluetoothManager: bluetoothManager,
+                                                                    bluetoothManagerState: bluetoothManager.centralManagerState),
+                              sessionSynchronizer: sessionSynchronizer)
             .tabItem {
                 Image(plusImage)
             }
@@ -108,11 +117,11 @@ private extension MainTabBarView {
     }
     
     private var settingsTab: some View {
-        SettingsView(urlProvider: UserDefaultsBaseURLProvider(), logoutController: DefaultLogoutController(
-            userAuthenticationSession: userAuthenticationSession,
-            sessionStorage: SessionStorage(persistenceController: persistenceController),
-            microphoneManager: microphoneManager,
-            sessionSynchronizer: sessionSynchronizer))
+        SettingsView(urlProvider: UserDefaultsBaseURLProvider(),
+                     logoutController: DefaultLogoutController(userAuthenticationSession: userAuthenticationSession,
+                                                               sessionStorage: SessionStorage(persistenceController: persistenceController),
+                                                               microphoneManager: microphoneManager,
+                                                               sessionSynchronizer: sessionSynchronizer))
             .tabItem {
                 Image(settingsImage)
             }
@@ -136,6 +145,10 @@ class SelectSection: ObservableObject {
 
 class EmptyDashboardButtonTapped: ObservableObject {
     @Published var mobileWasTapped = false
+}
+
+class FinishAndSyncButtonTapped: ObservableObject {
+    @Published var finishAndSyncButtonWasTapped = false
 }
 
 extension MainTabBarView {

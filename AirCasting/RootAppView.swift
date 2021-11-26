@@ -14,6 +14,7 @@ struct RootAppView: View {
     @State private var measurementStreamStorage: MeasurementStreamStorage = CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared)
     @State private var sessionStoppableFactory: SessionStoppableFactoryDefault?
     @State private var downloadService: DownloadMeasurementsService?
+    @State private var sdSyncController: SDSyncController?
     @StateObject private var bluetoothManager = BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared)))
     
     @StateObject private var userSettings = UserSettings()
@@ -29,10 +30,13 @@ struct RootAppView: View {
     let urlProvider = UserDefaultsBaseURLProvider()
     let networkChecker = NetworkChecker(connectionAvailable: false)
     
+    
+    
     var body: some View {
         ZStack {
             if userAuthenticationSession.isLoggedIn,
                let airBeamConnectionController = airBeamConnectionController,
+               let sdSyncController = sdSyncController,
                let sessionStoppableFactory = sessionStoppableFactory,
                let downloadService = downloadService {
                 MainAppView(airBeamConnectionController: airBeamConnectionController,
@@ -40,7 +44,8 @@ struct RootAppView: View {
                             sessionStoppableFactory: sessionStoppableFactory,
                             downloadService: downloadService,
                             measurementStreamStorage: measurementStreamStorage,
-                            locationHandler: DefaultLocationHandler(locationTracker: locationTracker))
+                            locationHandler: DefaultLocationHandler(locationTracker: locationTracker),
+                            sdSyncController: sdSyncController)
             } else if !userAuthenticationSession.isLoggedIn && lifeTimeEventsProvider.hasEverPassedOnBoarding {
                 NavigationView {
                     CreateAccountView(completion: { self.lifeTimeEventsProvider.hasEverLoggedIn = true }, userSession: userAuthenticationSession, baseURL: urlProvider).environmentObject(lifeTimeEventsProvider)
@@ -71,6 +76,7 @@ struct RootAppView: View {
             downloadService = DownloadMeasurementsService(authorisationService: userAuthenticationSession,
                                                           persistenceController: persistenceController,
                                                           baseUrl: urlProvider)
+            sdSyncController = SDSyncController(airbeamServices: BluetoothSDCardAirBeamServices(bluetoothManager: bluetoothManager), fileWriter: SDSyncFileWritingService(bufferThreshold: 10000), fileValidator: SDSyncFileValidationService())
         }
     }
     
@@ -84,6 +90,7 @@ struct MainAppView: View {
     let downloadService: DownloadMeasurementsService
     let measurementStreamStorage: MeasurementStreamStorage
     let locationHandler: LocationHandler
+    let sdSyncController: SDSyncController
     
     @EnvironmentObject private var persistenceController: PersistenceController
     @EnvironmentObject private var urlProvider: UserDefaultsBaseURLProvider
@@ -99,8 +106,10 @@ struct MainAppView: View {
                            sessionStoppableFactory: sessionStoppableFactory,
                            sessionSynchronizer: sessionSynchronizer,
                            sessionContext: CreateSessionContext(),
-                           coreDataHook: CoreDataHook(context: persistenceController.viewContext), locationHandler: locationHandler)
+                           coreDataHook: CoreDataHook(context: persistenceController.viewContext),
+                           locationHandler: locationHandler)
                 .environmentObject(airBeamConnectionController)
+                .environmentObject(sdSyncController)
         }
     }
 }

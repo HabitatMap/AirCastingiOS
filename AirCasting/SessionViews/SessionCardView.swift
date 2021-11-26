@@ -21,6 +21,7 @@ struct SessionCardView: View {
     let thresholds: [SensorThreshold]
     let sessionStoppableFactory: SessionStoppableFactory
     let measurementStreamStorage: MeasurementStreamStorage
+    let sessionSynchronizer: SessionSynchronizer
     
     @StateObject private var mapStatsDataSource: MapStatsDataSource
     @StateObject private var mapStatsViewModel: StatisticsContainerViewModel
@@ -32,12 +33,14 @@ struct SessionCardView: View {
          sessionCartViewModel: SessionCartViewModel,
          thresholds: [SensorThreshold],
          sessionStoppableFactory: SessionStoppableFactory,
-         measurementStreamStorage: MeasurementStreamStorage) {
+         measurementStreamStorage: MeasurementStreamStorage,
+         sessionSynchronizer: SessionSynchronizer) {
         self.session = session
         self.sessionCartViewModel = sessionCartViewModel
         self.thresholds = thresholds
         self.sessionStoppableFactory = sessionStoppableFactory
         self.measurementStreamStorage = measurementStreamStorage
+        self.sessionSynchronizer = sessionSynchronizer
         let mapDataSource = MapStatsDataSource()
         self._mapStatsDataSource = .init(wrappedValue: mapDataSource)
         self._mapStatsViewModel = .init(wrappedValue: SessionCardView.createStatsContainerViewModel(dataSource: mapDataSource, session: session))
@@ -111,7 +114,7 @@ struct SessionCardView: View {
     }
     
     var standaloneSessionCard: some View {
-        StandaloneSessionCardView(session: session, sessionStopperFactory: sessionStoppableFactory)
+        StandaloneSessionCardView(session: session, sessionStopperFactory: sessionStoppableFactory, sessionSynchronizer: sessionSynchronizer)
     }
     
     private func selectDefaultStreamIfNeeded(streams: [MeasurementStreamEntity]) {
@@ -304,7 +307,7 @@ private extension SessionCardView {
         EmptyView()
         SessionCardView(session: SessionEntity.mock,
                                 sessionCartViewModel: SessionCartViewModel(followingSetter: MockSessionFollowingSettable()),
-                        thresholds: [.mock, .mock], sessionStoppableFactory: SessionStoppableFactoryDummy(), measurementStreamStorage: PreviewMeasurementStreamStorage())
+                        thresholds: [.mock, .mock], sessionStoppableFactory: SessionStoppableFactoryDummy(), measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionSynchronizer: DummySessionSynchronizer())
             .padding()
             .previewLayout(.sizeThatFits)
             .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))

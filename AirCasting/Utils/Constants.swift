@@ -25,4 +25,8 @@ struct Constants {
         formatter.dateFormat = "HH:mm"
         return formatter
     }()
+    
+    enum SDCardSync {
+        static let numberOfMeasurementsInDataChunk = 4
+    }
 }

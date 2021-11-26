@@ -19,6 +19,7 @@ struct SessionHeaderView: View {
     @State private var showingAlert = false
     @State private var showingFinishAlert = false
     let sessionStopperFactory: SessionStoppableFactory
+    @StateObject private var featureFlagsViewModel = FeatureFlagsViewModel.shared
     
     var body: some View {
         VStack(alignment: .leading, spacing: 3) {
@@ -102,7 +103,7 @@ private extension SessionHeaderView {
     var actionsMenuMobile: some View {
         Menu {
             actionsMenuMobileStopButton
-            if session.deviceType == .AIRBEAM3 {
+            if session.deviceType == .AIRBEAM3 && featureFlagsViewModel.enabledFeatures.contains(.standaloneMode) {
                 actionsMenuMobileEnterStandaloneMode
             }
         } label: {
