@@ -17,7 +17,7 @@ struct SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
                         return
                     }
                     let sessionUUID = measurementInfo[1]
-                    // if there is no session with this UUID in the DB then ignore the measurement
+                    // if there is no session with this UUID in the DB then create an "Imported from SD card" session
                     let date = measurementInfo[2]
                     let time = measurementInfo[3]
                     // if data and time is later than the session end time then ignore the measurement
