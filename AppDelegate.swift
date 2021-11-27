@@ -9,6 +9,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, MessagingDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         FirebaseApp.configure()
         Messaging.messaging().delegate = self
+        let _ = FeatureFlagsViewModel.shared // Needed so that if we launch with remote notification pending the FirebaseFeatureFlagProvider is already there.
         // NOTE: We don't ask user for the remote notifications permissions since we're only using APNS for
         // the firebase config change notifications (silent push notifications - no permission is needed for
         // this kind). If you want to add non-silet notifications, uncomment:
