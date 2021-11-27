@@ -76,7 +76,10 @@ struct RootAppView: View {
             downloadService = DownloadMeasurementsService(authorisationService: userAuthenticationSession,
                                                           persistenceController: persistenceController,
                                                           baseUrl: urlProvider)
-            sdSyncController = SDSyncController(airbeamServices: BluetoothSDCardAirBeamServices(bluetoothManager: bluetoothManager), fileWriter: SDSyncFileWritingService(bufferThreshold: 10000), fileValidator: SDSyncFileValidationService())
+            sdSyncController = SDSyncController(airbeamServices: BluetoothSDCardAirBeamServices(bluetoothManager: bluetoothManager),
+                                                fileWriter: SDSyncFileWritingService(bufferThreshold: 10000),
+                                                fileValidator: SDSyncFileValidationService(),
+                                                mobileSessionsSaver: SDCardMobileSessionsSavingService())
         }
     }
     
