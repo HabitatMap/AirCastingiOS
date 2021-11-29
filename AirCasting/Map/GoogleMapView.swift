@@ -158,10 +158,10 @@ struct GoogleMapView: UIViewRepresentable {
             return
         }
         
-        if let last = pathPoints.last {
-            let mainPoint = UIImage.imageWithColor(color: color(point: last), size: CGSize(width: Constants.Map.dotWidth, height: Constants.Map.dotHeight))
-            dot.icon = mainPoint
-        }
+        guard let last = pathPoints.last else { return }
+        
+        let mainPoint = UIImage.imageWithColor(color: color(point: last), size: CGSize(width: Constants.Map.dotWidth, height: Constants.Map.dotHeight))
+        dot.icon = mainPoint
     }
     
     func drawPolyline(_ uiView: GMSMapView, context: Context) {
@@ -182,7 +182,7 @@ struct GoogleMapView: UIViewRepresentable {
         let polyline = context.coordinator.polyline
         
         polyline.path = path
-        polyline.strokeColor = UIColor.accentColor
+        polyline.strokeColor = .accentColor
         polyline.strokeWidth = CGFloat(Constants.Map.polylineWidth)
         polyline.map = uiView
     }
@@ -215,17 +215,16 @@ struct GoogleMapView: UIViewRepresentable {
         }
         
         func drawHeatmap(_ mapView: GMSMapView) {
-            if parent.isSessionFixed { return }
+            guard !parent.isSessionFixed else { return }
             
             let mapWidth = mapView.frame.width
             let mapHeight = mapView.frame.height
             
             guard mapWidth > 0, mapHeight > 0 else { return }
             
-            if heatmap != nil {
-                heatmap?.remove()
-                heatmap = nil
-            }
+            heatmap?.remove()
+            heatmap = nil
+            
             if let threshold = currentThreshold {
                 heatmap = Heatmap(mapView, sensorThreshold: threshold, mapWidth: Int(mapWidth), mapHeight: Int(mapHeight))
                 heatmap?.drawHeatMap(pathPoints: currentlyDisplayedPathPoints)

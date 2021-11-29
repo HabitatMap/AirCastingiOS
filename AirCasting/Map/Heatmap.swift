@@ -1,7 +1,6 @@
 // Created by Lunar on 10/11/2021.
 //
 
-import UIKit
 import GoogleMaps
 import Foundation
 
@@ -56,7 +55,6 @@ struct Heatmap {
         for pathPoint in pathPoints {
             assignMeasurementToSquare(pathPoint)
         }
-        
         drawPolygons()
     }
     
@@ -84,12 +82,10 @@ struct Heatmap {
     }
     
     private mutating func assignMeasurementToSquare(_ pathPoint: PathPoint) {
-        let squareXY = getSquareXY(pathPoint, indexXstart: 0, indexXend: gridSizeX - 1, indexYstart: 0, indexYend: gridSizeY - 1)
-        if let squareXY = squareXY {
-            var gridSquare = getGridSquare(x: squareXY.0, y: squareXY.1)
-            gridSquare?.addMeasurement(pathPoint)
-            setGridSquare(x: squareXY.0, y: squareXY.1, gridSquare: gridSquare)
-        }
+        guard let squareXY = getSquareXY(pathPoint, indexXstart: 0, indexXend: gridSizeX - 1, indexYstart: 0, indexYend: gridSizeY - 1) else { return }
+        var gridSquare = getGridSquare(x: squareXY.0, y: squareXY.1)
+        gridSquare?.addMeasurement(pathPoint)
+        setGridSquare(x: squareXY.0, y: squareXY.1, gridSquare: gridSquare)
     }
     
     private func getSquareXY(_ pathPoint: PathPoint, indexXstart: Int, indexXend: Int, indexYstart: Int, indexYend: Int) -> (Int, Int)? {
@@ -97,11 +93,10 @@ struct Heatmap {
         let middleY = indexYstart  + (indexYend - indexYstart) / 2
         let middleSquare = getGridSquare(x: middleX + 1, y: middleY + 1)
         
-        guard middleSquare != nil else {
-            return nil
-        }
+        guard middleSquare != nil else { return nil }
+        
         // We check every time if point is in binds of middle square. It may be the last square checked (indexStart == indexEnd)
-        if let middleSquare = middleSquare{
+        if let middleSquare = middleSquare {
             if (middleSquare.inBounds(coordinates: pathPoint.location)) {
                 return (middleX + 1, middleY + 1)
             }
@@ -160,7 +155,6 @@ struct Heatmap {
             visibleRegion.farRight.longitude,
             visibleRegion.nearLeft.longitude
         )
-        
     }
     
     private mutating func initGrid() {
@@ -189,7 +183,7 @@ struct Heatmap {
     }
     
     private func gridSquareKey(_ x: Int, _ y: Int) -> String {
-        return "\(x)_\(y)"
+        "\(x)_\(y)"
     }
     
     struct GridCalculator {
@@ -208,35 +202,35 @@ struct Heatmap {
         }
         
         func southWestLatLng() -> CLLocationCoordinate2D {
-            return CLLocationCoordinate2D(latitude: southLatitude(), longitude: westLongitude())
+            CLLocationCoordinate2D(latitude: southLatitude(), longitude: westLongitude())
         }
         
         func southEastLatLng() -> CLLocationCoordinate2D {
-            return CLLocationCoordinate2D(latitude: southLatitude(), longitude: eastLongitude())
+            CLLocationCoordinate2D(latitude: southLatitude(), longitude: eastLongitude())
         }
         
         func northEastLatLng() -> CLLocationCoordinate2D {
-            return CLLocationCoordinate2D(latitude: northLatitude(), longitude: eastLongitude())
+            CLLocationCoordinate2D(latitude: northLatitude(), longitude: eastLongitude())
         }
         
         func northWestLatLng() -> CLLocationCoordinate2D {
-            return CLLocationCoordinate2D(latitude: northLatitude(), longitude: westLongitude())
+            CLLocationCoordinate2D(latitude: northLatitude(), longitude: westLongitude())
         }
         
         private func eastLongitude() -> Double {
-            return visibleRegion.lonWest + Double(x) * lonGridSize
+            visibleRegion.lonWest + Double(x) * lonGridSize
         }
         
         private func westLongitude() -> Double {
-            return visibleRegion.lonWest + Double(x - 1) * lonGridSize
+            visibleRegion.lonWest + Double(x - 1) * lonGridSize
         }
         
         private func northLatitude() -> Double {
-            return visibleRegion.latSouth + Double(y) * latGridSize
+            visibleRegion.latSouth + Double(y) * latGridSize
         }
         
         private func southLatitude() -> Double {
-            return visibleRegion.latSouth + Double(y - 1) * latGridSize
+            visibleRegion.latSouth + Double(y - 1) * latGridSize
         }
     }
     
@@ -275,11 +269,7 @@ struct Heatmap {
         func inBounds(coordinates: CLLocationCoordinate2D?) -> Bool {
             let bounds = GMSCoordinateBounds(coordinate: southWestLatLng, coordinate: northEastLatLng)
             
-            if let coordinates = coordinates {
-                return bounds.contains(coordinates)
-            } else {
-                return false
-            }
+            return coordinates != nil ? bounds.contains(coordinates!) : false
         }
         
         mutating func addMeasurement(_ pathPoint: PathPoint) {
@@ -287,13 +277,12 @@ struct Heatmap {
             number += 1
             calculateAverage()
             
-            if let averagedValue = averagedValue {
-                let color: UIColor = GoogleMapView.color(value: Int32(averagedValue), threshold: sensorThreshold).withAlphaComponent(0.5)
-                if color != fillColor {
-                    fillColor = color
-                    newColor = true
-                    polygon?.fillColor = color
-                }
+            guard let averagedValue = averagedValue else { return }
+            let color: UIColor = GoogleMapView.color(value: Int32(averagedValue), threshold: sensorThreshold).withAlphaComponent(0.5)
+            if color != fillColor {
+                fillColor = color
+                newColor = true
+                polygon?.fillColor = color
             }
         }
         
@@ -304,7 +293,6 @@ struct Heatmap {
         }
         
         mutating func addPolygon() {
-            
             if (polygon?.map != nil) {
                 polygon?.map = nil
             }
