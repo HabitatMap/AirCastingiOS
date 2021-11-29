@@ -79,7 +79,7 @@ struct RootAppView: View {
             sdSyncController = SDSyncController(airbeamServices: BluetoothSDCardAirBeamServices(bluetoothManager: bluetoothManager),
                                                 fileWriter: SDSyncFileWritingService(bufferThreshold: 10000),
                                                 fileValidator: SDSyncFileValidationService(),
-                                                mobileSessionsSaver: SDCardMobileSessionsSavingService())
+                                                mobileSessionsSaver: SDCardMobileSessionsSavingService(measurementStreamStorage: measurementStreamStorage))
         }
     }
     
