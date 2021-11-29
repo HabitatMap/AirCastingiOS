@@ -4,9 +4,6 @@
 import Foundation
 import CoreLocation
 
-protocol SDCardMobileSessionssSaver {
-    func saveDataToDb(fileURL: URL)
-}
 
 struct SDSession {
     let uuid: SessionUUID
@@ -38,8 +35,8 @@ struct SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
     func saveDataToDb(fileURL: URL) {
         var sessionsUUIDandTimes: [SDSession] = []
         var sessionsWithMeasurement: [SDStream: [Measurement]] = [:]
-        do {
-            measurementStreamStorage.accessStorage { storage in
+        measurementStreamStorage.accessStorage { storage in
+            do {
                 try fileLineReader.readLines(of: fileURL, progress: { line in
                     switch line {
                     case .line(let content):
@@ -93,11 +90,11 @@ struct SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
                         return
                     }
                 })
-             }
-        } catch {
-            Log.error("Error reading file")
+            } catch {
+                Log.error("Error reading file")
+            }
+            Log.info("\(sessionsWithMeasurement)")
         }
-        Log.info("\(sessionsWithMeasurement)")
     }
     
     func dateFrom(date: Substring, time: Substring) -> Date? {
