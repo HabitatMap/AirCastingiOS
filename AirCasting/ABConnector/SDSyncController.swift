@@ -8,10 +8,6 @@ enum SDCardSessionType: CaseIterable {
     case mobile, fixed, cellular
 }
 
-protocol SDCardMobileSessionssSaver {
-    func saveDataToDb(fileURL: URL)
-}
-
 class SDSyncController: ObservableObject {
     private let fileWriter: SDSyncFileWriter
     private let airbeamServices: SDCardAirBeamServices
