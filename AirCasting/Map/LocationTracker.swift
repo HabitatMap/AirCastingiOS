@@ -17,6 +17,10 @@ class LocationTracker: NSObject, ObservableObject, CLLocationManagerDelegate {
     init(locationManager: CLLocationManager) {
         self.locationManager = locationManager
         self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        #warning("TESTING PURPOUSE: shorturl.at/ilwS1")
+        locationManager.allowsBackgroundLocationUpdates = true
+        locationManager.pausesLocationUpdatesAutomatically = false
+        // End of TESTING PURPOUSE
         switch locationManager.authorizationStatus {
             case .authorizedAlways, .authorizedWhenInUse:
                 self.locationGranted = .granted

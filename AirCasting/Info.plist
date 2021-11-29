@@ -79,6 +79,7 @@
 	<array>
 		<string>audio</string>
 		<string>bluetooth-central</string>
+		<string>location</string>
 	</array>
 	<key>UILaunchScreen</key>
 	<dict/>
