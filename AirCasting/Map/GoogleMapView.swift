@@ -225,10 +225,9 @@ struct GoogleMapView: UIViewRepresentable {
             heatmap?.remove()
             heatmap = nil
             
-            if let threshold = currentThreshold {
-                heatmap = Heatmap(mapView, sensorThreshold: threshold, mapWidth: Int(mapWidth), mapHeight: Int(mapHeight))
-                heatmap?.drawHeatMap(pathPoints: currentlyDisplayedPathPoints)
-            }
+            guard let threshold = currentThreshold else { return }
+            heatmap = Heatmap(mapView, sensorThreshold: threshold, mapWidth: Int(mapWidth), mapHeight: Int(mapHeight))
+            heatmap?.drawHeatMap(pathPoints: currentlyDisplayedPathPoints)
         }
         
         func didTapMyLocationButton(for mapView: GMSMapView) -> Bool {
