@@ -113,7 +113,7 @@ struct DashboardView: View {
                 LazyVStack(spacing: 8) {
                     ForEach(sessions.filter { $0.uuid != "" && !$0.gotDeleted }, id: \.uuid) { session in
                         let followingSetter = MeasurementStreamStorageFollowingSettable(session: session, measurementStreamStorage: measurementStreamStorage)
-                        let viewModel = SessionCartViewModel(followingSetter: followingSetter)
+                        let viewModel = SessionCardViewModel(followingSetter: followingSetter)
                         SessionCartView(session: session,
                                         sessionCartViewModel: viewModel,
                                         thresholds: thresholds,

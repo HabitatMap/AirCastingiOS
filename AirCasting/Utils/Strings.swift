@@ -484,4 +484,8 @@ struct Strings {
     enum RefreshControl {
         static let progressViewTest: String = "Syncing..."
     }
+    
+    enum DefaultDeleteSessionViewModel {
+        static let all: String = "All"
+    }
 }

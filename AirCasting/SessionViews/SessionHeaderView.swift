@@ -107,7 +107,7 @@ private extension SessionHeaderView {
     var actionsMenuMobile: some View {
         Menu {
             session.isActive ? actionsMenuStopButton : nil
-            (session.isDormant || session.isFixed) ? actionsMenuDeleteButton : nil
+            session.deletable ? actionsMenuDeleteButton : nil
         } label: {
             ZStack(alignment: .trailing) {
                 EditButtonView()

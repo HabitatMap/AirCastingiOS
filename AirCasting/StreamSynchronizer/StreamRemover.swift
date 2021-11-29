@@ -4,12 +4,12 @@
 import Foundation
 
 protocol StreamRemover {
-    func deleteStreams(client: APIClient, session: SessionEntity, completion: @escaping () -> Void)
+    func deleteStreams(session: SessionEntity, completion: @escaping () -> Void)
 }
 
 class StreamRemoverDefault: StreamRemover {
 
-    let authorization: RequestAuthorisationService
+    private let authorization: RequestAuthorisationService
     
     init(authorization: RequestAuthorisationService) {
         self.authorization = authorization
@@ -19,8 +19,7 @@ class StreamRemoverDefault: StreamRemover {
         let data: String
     }
 
-    func deleteStreams(client: APIClient, session: SessionEntity, completion: @escaping () -> Void) {
-        
+    func deleteStreams(session: SessionEntity, completion: @escaping () -> Void) {
         guard let url = URL(string: "http://aircasting.org/api/user/sessions/update_session.json") else { return }
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -72,7 +71,6 @@ class StreamRemoverDefault: StreamRemover {
                 guard let data = data, error == nil else { return }
                 let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
                 if let responseJSON = responseJSON as? [String: Any] {
-                    print(responseJSON)
                     completion()
                 }
             }
@@ -84,7 +82,7 @@ class StreamRemoverDefault: StreamRemover {
 }
 
 class StreamRemoverDefaultDummy: StreamRemover {
-    func deleteStreams(client: APIClient, session: SessionEntity, completion: @escaping () -> Void) {
+    func deleteStreams(session: SessionEntity, completion: @escaping () -> Void) {
         print("deletingStreams")
     }
 }

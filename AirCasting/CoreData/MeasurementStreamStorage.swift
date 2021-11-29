@@ -21,8 +21,8 @@ protocol MeasurementStreamStorageContextUpdate {
     func updateSessionEndtime(_ endTime: Date, for sessionUUID: SessionUUID) throws
     func updateSessionFollowing(_ sessionStatus: SessionFollowing, for sessionUUID: SessionUUID)
     func existingMeasurementStream(_ sessionUUID: SessionUUID, name: String) throws -> MeasurementStreamLocalID?
-    func preapareSessionForDeletion(_ sessionUUID: SessionUUID) throws
-    func preapareStreamForDeletion(_ sessionUUID: SessionUUID, sensorsName: [String], completion: () -> Void) throws
+    func markSessionForDelete(_ sessionUUID: SessionUUID) throws
+    func markStreamForDelete(_ sessionUUID: SessionUUID, sensorsName: [String], completion: () -> Void) throws
     func deleteSession(_ sessionUUID: SessionUUID) throws
     func deleteStreams(_ sessionUUID: SessionUUID) throws
     func save() throws
@@ -59,21 +59,24 @@ final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
 }
 
 final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageContextUpdate {
-    func preapareStreamForDeletion(_ sessionUUID: SessionUUID, sensorsName: [String], completion: () -> Void) throws {
+    func markStreamForDelete(_ sessionUUID: SessionUUID, sensorsName: [String], completion: () -> Void) throws {
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
         try sensorsName.forEach { sensorName in
             guard let stream = sessionEntity.allStreams?.first(where: { $0.sensorName == sensorName }) else {
-                Log.info("Problem")
+                Log.info("Error when trying to hide measurement streams")
                 return
             }
             stream.gotDeleted = true
             try context.save()
+            sessionEntity.changesCount += 1
+            // EXPLANATION for above line:
+            // We basically force core data to send change notifications for this Session objects in the app
+            // because the NSOrderedSet operations don't trigger KVO and thus don't trigger ObservableObject changes
         }
-        sessionEntity.changesCount += 1
         completion()
     }
     
-    func preapareSessionForDeletion(_ sessionUUID: SessionUUID) throws {
+    func markSessionForDelete(_ sessionUUID: SessionUUID) throws {
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
         sessionEntity.gotDeleted = true
         try context.save()
@@ -95,7 +98,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         do {
             try context.delete(context.existingSession(uuid: sessionUUID))
         } catch {
-            Log.info("## Error when deleting session")
+            Log.error("Error when deleting session")
         }
     }
     
@@ -108,7 +111,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
                     context.delete(object)
                 }
             } catch {
-                Log.info("## Error when deleting session")
+                Log.error("Error when deleting session")
             }
         }
         sessionEntity.changesCount += 1
@@ -236,7 +239,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
             }
             try context.save()
         } catch {
-            Log.info("Error when saving changes in session: \(error.localizedDescription) ")
+            Log.error("Error when saving changes in session: \(error.localizedDescription)")
         }
     }
 

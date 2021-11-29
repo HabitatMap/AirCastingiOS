@@ -17,7 +17,7 @@ struct SessionCartView: View {
     @State private var showLoadingIndicator = false
     @ObservedObject var session: SessionEntity
     @EnvironmentObject var selectedSection: SelectSection
-    let sessionCartViewModel: SessionCartViewModel
+    let sessionCartViewModel: SessionCardViewModel
     let thresholds: [SensorThreshold]
     let sessionStoppableFactory: SessionStoppableFactory
     let measurementStreamStorage: MeasurementStreamStorage
@@ -29,7 +29,7 @@ struct SessionCartView: View {
     @StateObject private var chartViewModel: ChartViewModel
 
     init(session: SessionEntity,
-         sessionCartViewModel: SessionCartViewModel,
+         sessionCartViewModel: SessionCardViewModel,
          thresholds: [SensorThreshold],
          sessionStoppableFactory: SessionStoppableFactory,
          measurementStreamStorage: MeasurementStreamStorage) {
@@ -292,7 +292,7 @@ private extension SessionCartView {
     static var previews: some View {
         EmptyView()
         SessionCartView(session: SessionEntity.mock,
-                                sessionCartViewModel: SessionCartViewModel(followingSetter: MockSessionFollowingSettable()),
+                                sessionCartViewModel: SessionCardViewModel(followingSetter: MockSessionFollowingSettable()),
                         thresholds: [.mock, .mock], sessionStoppableFactory: SessionStoppableFactoryDummy(), measurementStreamStorage: PreviewMeasurementStreamStorage())
             .padding()
             .previewLayout(.sizeThatFits)

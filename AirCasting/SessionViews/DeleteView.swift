@@ -7,7 +7,6 @@ import SwiftUI
 struct DeleteView<VM: DeleteSessionViewModel>: View {
     @ObservedObject var viewModel: VM
     @Binding var deleteModal: Bool
-    @State var showingAlert: Bool = false
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
             title
@@ -15,7 +14,7 @@ struct DeleteView<VM: DeleteSessionViewModel>: View {
             chooseStream
             continueButton
             cancelButton
-        }.alert(isPresented: $showingAlert) {
+        }.alert(isPresented: $viewModel.showingAlert) {
             Alert(
                 title: Text(Strings.DeleteSession.deleteAlert),
                 primaryButton: .destructive(Text(Strings.DeleteSession.deleteButton), action: {
@@ -43,7 +42,7 @@ struct DeleteView<VM: DeleteSessionViewModel>: View {
     
     private var chooseStream: some View {
         VStack(alignment: .leading) {
-            ForEach(viewModel.options, id: \.id) { option in
+            ForEach(viewModel.streamOptions, id: \.id) { option in
                 HStack {
                     CheckBox(isSelected: option.isSelected).onTapGesture {
                         viewModel.didSelect(option: option)
@@ -56,7 +55,7 @@ struct DeleteView<VM: DeleteSessionViewModel>: View {
     
     private var continueButton: some View {
         Button {
-            showingAlert = true
+            viewModel.showAlert()
         } label: {
             Text(Strings.DeleteSession.continueButton)
                 .bold()

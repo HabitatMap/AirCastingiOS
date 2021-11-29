@@ -14,6 +14,7 @@ extension SessionEntity {
     var isDormant: Bool { type == .mobile && status == .FINISHED }
     var isFixed: Bool { type == .fixed }
     var isFollowed: Bool { followedAt != nil }
+    var deletable: Bool { isDormant || type == .fixed }
 }
 
 extension SessionEntity {
