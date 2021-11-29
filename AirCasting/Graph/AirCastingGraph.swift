@@ -54,6 +54,7 @@ class AirCastingGraph: UIView {
         lineChartView.xAxis.drawLabelsEnabled = true
         lineChartView.xAxis.labelCount = 2
         lineChartView.extraBottomOffset = 25
+        lineChartView.extraTopOffset = -15 // To make graph lines close to the top
         
         lineChartView.highlightPerTapEnabled = false
         lineChartView.highlightPerDragEnabled = false
@@ -86,7 +87,8 @@ class AirCastingGraph: UIView {
         renderer.thresholds = thresholdValues
         
         lineChartView.leftAxis.axisMinimum = Double(thresholdValues.first ?? 0)
-        lineChartView.leftAxis.axisMaximum = Double(thresholdValues.last ?? 200)
+        lineChartView.leftAxis.axisMaximum = Double(thresholdValues.last ?? 200) + 0.5
+        // added 0.5 not to change line width when axisMaximum == Peak
         
         lineChartView.data = lineChartView.data
         lineChartView.setNeedsDisplay()

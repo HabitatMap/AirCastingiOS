@@ -425,7 +425,7 @@ struct Strings {
     
     enum CreateSessionDetailsView {
         static let wifiAlertTitle: String = "Wi-Fi credentials are empty "
-        static let wifiAlertMessage: String = "Do you want to pop up Wi-Fi screen?"
+        static let wifiAlertMessage: String = "Please, fill them up."
         static let primaryWifiButton: String = "Show Wi-fi screen"
         static let cancelButton: String = "Cancel"
         static let continueButton: String = "Continue"
