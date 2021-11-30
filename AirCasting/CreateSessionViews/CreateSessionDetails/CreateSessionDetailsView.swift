@@ -138,7 +138,7 @@ private extension CreateSessionDetailsView {
                 .frame(maxWidth: .infinity)
         })
         .buttonStyle(BlueButtonStyle())
-        .disabled(viewModel.areCredentialsEmpty())
+        .disabled(sessionContext.sessionType == .fixed && viewModel.areCredentialsEmpty())
     }
 
     var titleLabel: some View {
