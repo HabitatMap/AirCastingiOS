@@ -35,4 +35,13 @@ platform :ios do
        git_add
        git_commit(path: "", message: "Beta releasae of #{version}b#{build}") 
     end
+
+    lane :appstore do
+       ensure_git_status_clean
+       version = get_version_number
+       ensure_git_branch(branch: "release/#{version}")
+       build_app(workspace: "AirCasting.xcworkspace", scheme: "AirCasting", output_directory: "./build_ipa", configuration: "Release")
+       upload_to_testflight
+       clean_build_artifacts
+    end
 end
