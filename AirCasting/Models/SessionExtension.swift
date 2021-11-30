@@ -11,6 +11,7 @@ extension SessionEntity {
     var isMobile: Bool { type == .mobile }
     var isMIC: Bool { deviceType == .MIC }
     var isActive: Bool { type == .mobile && status == .RECORDING }
+    var isNew: Bool { type == .mobile && status == .NEW }
     var isDormant: Bool { type == .mobile && status == .FINISHED }
     var isFixed: Bool { type == .fixed }
     var isFollowed: Bool { followedAt != nil }

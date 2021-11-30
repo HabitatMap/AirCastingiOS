@@ -237,7 +237,7 @@ private extension SessionCartView {
     private static func createStatsContainerViewModel(dataSource: MeasurementsStatisticsDataSource, session: SessionEntity) -> StatisticsContainerViewModel {
         var computeStatisticsInterval: Double? = nil
         
-        if session.isActive {
+        if session.isActive || session.isNew {
             computeStatisticsInterval = 1
         } else if session.isFollowed {
             computeStatisticsInterval = 60
