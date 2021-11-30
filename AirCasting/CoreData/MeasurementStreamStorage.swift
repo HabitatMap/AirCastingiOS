@@ -187,7 +187,6 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
             sessionEntity.status = .FINISHED
             sessionEntity.endTime = sessionEntity.lastMeasurementTime
         }
-        try context.save()
     }
 
     func updateSessionStatus(_ sessionStatus: SessionStatus, for sessionUUID: SessionUUID) throws {
