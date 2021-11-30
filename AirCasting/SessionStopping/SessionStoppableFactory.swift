@@ -5,7 +5,7 @@ import Foundation
 
 protocol SessionStoppableFactory {
     // It really should not use SessionEntity (probably uuid), but the app is too entangled with it to make it all right at once.
-    func getSessionStopper(for: SessionEntity) -> SessionStoppable
+    func getSessionStopper(for: SessionEntity, options: FinishSessionOptions) -> SessionStoppable
 }
 
 final class SessionStoppableFactoryDefault: SessionStoppableFactory {
@@ -21,18 +21,27 @@ final class SessionStoppableFactoryDefault: SessionStoppableFactory {
         self.bluetoothManager = bluetoothManager
     }
     
-    func getSessionStopper(for session: SessionEntity) -> SessionStoppable {
-        let stopper = matchStopper(for: session)
+    func getSessionStopper(for session: SessionEntity, options: FinishSessionOptions) -> SessionStoppable {
+        let stopper = matchStopper(for: session, options: options)
+        if options.contains(.dontTriggerSync) {
+            return stopper
+        }
         return SyncTriggeringSesionStopperProxy(stoppable: stopper, synchronizer: synchronizer)
     }
     
-    private func matchStopper(for session: SessionEntity) -> SessionStoppable {
+    private func matchStopper(for session: SessionEntity, options: FinishSessionOptions) -> SessionStoppable {
         switch session.deviceType {
         case .MIC: return MicrophoneSessionStopper(uuid: session.uuid,
                                                    microphoneManager: microphoneManager,
                                                    measurementStreamStorage: measurementStreamStorage)
-        case .AIRBEAM3: return StandardSesssionStopper(uuid: session.uuid, measurementStreamStorage: measurementStreamStorage, bluetoothManager: bluetoothManager)
-        case .none: return StandardSesssionStopper(uuid: session.uuid, measurementStreamStorage: measurementStreamStorage, bluetoothManager: bluetoothManager)
+        case .AIRBEAM3: return StandardSesssionStopper(uuid: session.uuid,
+                                                       measurementStreamStorage: measurementStreamStorage,
+                                                       bluetoothManager: bluetoothManager,
+                                                       options: options)
+        case .none: return StandardSesssionStopper(uuid: session.uuid,
+                                                   measurementStreamStorage: measurementStreamStorage,
+                                                   bluetoothManager: bluetoothManager,
+                                                   options: options)
         }
     }
 }
@@ -42,7 +51,7 @@ struct SessionStoppableFactoryDummy: SessionStoppableFactory {
         func stopSession() throws { }
     }
     
-    func getSessionStopper(for: SessionEntity) -> SessionStoppable {
+    func getSessionStopper(for: SessionEntity, options: FinishSessionOptions) -> SessionStoppable {
         Dummy()
     }
 }

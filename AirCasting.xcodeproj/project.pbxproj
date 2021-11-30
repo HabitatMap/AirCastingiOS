@@ -192,6 +192,7 @@
 		B371415B26726A930057BF60 /* SynchronizationControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37141582672117D0057BF60 /* SynchronizationControllerTests.swift */; };
 		B376DD23268091B80083FD2F /* BodyEncodingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B376DD22268091B80083FD2F /* BodyEncodingError.swift */; };
 		B376DD25268096E20083FD2F /* SessionSynchronizationDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B376DD24268096E20083FD2F /* SessionSynchronizationDatabase.swift */; };
+		B37AAA5127567AE400588F7E /* FinishSessionOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37AAA5027567AE400588F7E /* FinishSessionOptions.swift */; };
 		B37E1C942748208C0020A281 /* SDSyncFileWritingServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37E1C932748208C0020A281 /* SDSyncFileWritingServiceTests.swift */; };
 		B38E6CCA26C5F19F00C21C45 /* SessionStoppable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B38E6CC926C5F19F00C21C45 /* SessionStoppable.swift */; };
 		B38E6CCC26C5F3D400C21C45 /* SessionStoppableFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B38E6CCB26C5F3D400C21C45 /* SessionStoppableFactory.swift */; };
@@ -512,6 +513,7 @@
 		B37141582672117D0057BF60 /* SynchronizationControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynchronizationControllerTests.swift; sourceTree = "<group>"; };
 		B376DD22268091B80083FD2F /* BodyEncodingError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyEncodingError.swift; sourceTree = "<group>"; };
 		B376DD24268096E20083FD2F /* SessionSynchronizationDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionSynchronizationDatabase.swift; sourceTree = "<group>"; };
+		B37AAA5027567AE400588F7E /* FinishSessionOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinishSessionOptions.swift; sourceTree = "<group>"; };
 		B37E1C932748208C0020A281 /* SDSyncFileWritingServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSyncFileWritingServiceTests.swift; sourceTree = "<group>"; };
 		B38E6CC926C5F19F00C21C45 /* SessionStoppable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionStoppable.swift; sourceTree = "<group>"; };
 		B38E6CCB26C5F3D400C21C45 /* SessionStoppableFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionStoppableFactory.swift; sourceTree = "<group>"; };
@@ -1256,6 +1258,7 @@
 			children = (
 				B38E6CC926C5F19F00C21C45 /* SessionStoppable.swift */,
 				B38E6CD126C5F85000C21C45 /* SyncTriggeringSesionStopperProxy.swift */,
+				B37AAA5027567AE400588F7E /* FinishSessionOptions.swift */,
 				B38E6CCF26C5F83D00C21C45 /* StandardSesssionStopper.swift */,
 				B38E6CCD26C5F81B00C21C45 /* MicrophoneSessionStopper.swift */,
 				B38E6CCB26C5F3D400C21C45 /* SessionStoppableFactory.swift */,
@@ -1970,6 +1973,7 @@
 				33BA3368266E4BCA00899343 /* MobilePeripheralSessionManager.swift in Sources */,
 				4F2D84EB2647DBE0003D9ED5 /* MeasurementStreamStorage.swift in Sources */,
 				ACC8838C265284AA00C5DB70 /* CoreDataHook.swift in Sources */,
+				B37AAA5127567AE400588F7E /* FinishSessionOptions.swift in Sources */,
 				AC8CFF5C25E6866100FB2918 /* SignInView.swift in Sources */,
 				DD2181EF267BBCBC0010EC2E /* MyAccountView.swift in Sources */,
 				DD3C99F226E9DE5800B42A46 /* SessionSynchronizationViewModel.swift in Sources */,

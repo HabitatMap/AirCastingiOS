@@ -59,7 +59,7 @@ class MobilePeripheralSessionManager {
         }
     }
     
-    func finishSession(with uuid: SessionUUID, centralManager: CBCentralManager) {
+    func finishSession(with uuid: SessionUUID, centralManager: CBCentralManager, options: FinishSessionOptions = []) {
         if activeMobileSession?.session.uuid == uuid {
             guard let activePeripheral = activeMobileSession?.peripheral else { return }
             finishActiveSession(for: activePeripheral, centralManager: centralManager)
@@ -68,7 +68,9 @@ class MobilePeripheralSessionManager {
                 assertionFailure("Finishing session was called for session which is not in standalone mode")
                 return
             }
-            updateDatabaseForFinishedSession(with: uuid)
+            if !options.contains(.omitDatabaseUpdate) {
+                updateDatabaseForFinishedSession(with: uuid)
+            }
             standaloneModeSessions.removeAll(where: { $0.session.uuid == uuid })
         }
     }
