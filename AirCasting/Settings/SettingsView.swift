@@ -11,7 +11,7 @@ import AirCastingStyling
 struct SettingsView: View {
     let urlProvider: BaseURLProvider
     let logoutController: LogoutController
-    @State private var showModal = false
+    @State private var showBackendSettings = false
     @EnvironmentObject var userSettings: UserSettings
     
     init(urlProvider: BaseURLProvider, logoutController: LogoutController) {
@@ -49,6 +49,7 @@ struct SettingsView: View {
             }
             keepScreenOnSwitch
             navigateToBackendSettingsButton
+            navigateToAppConfigurationButton
         }
     }
     
@@ -89,7 +90,7 @@ struct SettingsView: View {
     
     private var navigateToBackendSettingsButton: some View {
         Button(action: {
-            showModal.toggle()
+            showBackendSettings.toggle()
         }) {
             Group {
                 HStack {
@@ -101,10 +102,18 @@ struct SettingsView: View {
                         .accentColor(.gray).opacity(0.6)
                 }
             }
-        }.sheet(isPresented: $showModal, content: {
+        }.sheet(isPresented: $showBackendSettings, content: {
             BackendSettingsView(logoutController: logoutController,
                                 urlProvider: urlProvider)
         })
+    }
+    
+    private var navigateToAppConfigurationButton: some View {
+        NavigationLink("App config", destination: {
+            AppConfigurationView()
+                .navigationTitle("App config")
+        })
+            .font(Fonts.boldHeading1)
     }
 }
 

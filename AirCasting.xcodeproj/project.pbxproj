@@ -197,6 +197,7 @@
 		B38E6CCE26C5F81B00C21C45 /* MicrophoneSessionStopper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B38E6CCD26C5F81B00C21C45 /* MicrophoneSessionStopper.swift */; };
 		B38E6CD026C5F83D00C21C45 /* StandardSesssionStopper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B38E6CCF26C5F83D00C21C45 /* StandardSesssionStopper.swift */; };
 		B38E6CD226C5F85000C21C45 /* SyncTriggeringSesionStopperProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = B38E6CD126C5F85000C21C45 /* SyncTriggeringSesionStopperProxy.swift */; };
+		B392DC332755F944002F0145 /* AppConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B392DC322755F944002F0145 /* AppConfigurationView.swift */; };
 		B3AB8BE526BB5EF400AF23CC /* Array+MeasurementStatistics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3AB8BE426BB5EF400AF23CC /* Array+MeasurementStatistics.swift */; };
 		B3C3F8B92695A295003E2CB4 /* StatisticsContainerViewModelable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3C3F8B82695A295003E2CB4 /* StatisticsContainerViewModelable.swift */; };
 		B3D1928D26F1FA1C0029E1C8 /* FixedSessionFaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EFAB1D26F1F9DB00E88141 /* FixedSessionFaker.swift */; };
@@ -513,6 +514,7 @@
 		B38E6CCD26C5F81B00C21C45 /* MicrophoneSessionStopper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrophoneSessionStopper.swift; sourceTree = "<group>"; };
 		B38E6CCF26C5F83D00C21C45 /* StandardSesssionStopper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandardSesssionStopper.swift; sourceTree = "<group>"; };
 		B38E6CD126C5F85000C21C45 /* SyncTriggeringSesionStopperProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncTriggeringSesionStopperProxy.swift; sourceTree = "<group>"; };
+		B392DC322755F944002F0145 /* AppConfigurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfigurationView.swift; sourceTree = "<group>"; };
 		B3AB8BE426BB5EF400AF23CC /* Array+MeasurementStatistics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+MeasurementStatistics.swift"; sourceTree = "<group>"; };
 		B3C3F8B82695A295003E2CB4 /* StatisticsContainerViewModelable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsContainerViewModelable.swift; sourceTree = "<group>"; };
 		B3D4B4B326C2C6A1004322FC /* Date+Miliseconds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Miliseconds.swift"; sourceTree = "<group>"; };
@@ -1090,6 +1092,7 @@
 			isa = PBXGroup;
 			children = (
 				ACD32A4E2600A8DD00818946 /* SettingsView.swift */,
+				B392DC322755F944002F0145 /* AppConfigurationView.swift */,
 				DD8C380D2689A55A00901FDF /* BackendSettingsView.swift */,
 				DD1C99C0267CBFCB00B786C4 /* MyAccountViewSignOut.swift */,
 				DD2181EE267BBCBC0010EC2E /* MyAccountView.swift */,
@@ -1867,6 +1870,7 @@
 				AC049F7F2604B7AF00398197 /* AuthErorrHandling.swift in Sources */,
 				DD430B022670F3B300F1BF2E /* NearAirDescription.swift in Sources */,
 				DD72DC4226A99D5000325FE5 /* ShareView.swift in Sources */,
+				B392DC332755F944002F0145 /* AppConfigurationView.swift in Sources */,
 				AC524A962615D8620061AD45 /* MeasurementStreamEntity.swift in Sources */,
 				DD2E8BEB2685E13600439F8B /* BackendURLValidator.swift in Sources */,
 				DDCE5D3626A1F79F0033C211 /* UserSettings.swift in Sources */,
