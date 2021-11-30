@@ -101,7 +101,7 @@ struct SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
                             sessionsWithMeasurement[SDStream(sessionUUID: sessionUUID, name: .pm10), default: []].append(Measurement(time: date, value: pm10, location: CLLocationCoordinate2D(latitude: lat, longitude: long)))
                         }
                     case .endOfFile:
-                        return
+                        Log.info("Reached end of csv file")
                     }
                 })
                 
