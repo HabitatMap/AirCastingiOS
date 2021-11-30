@@ -46,18 +46,19 @@ class MobilePeripheralSessionManager {
         }
     }
 
-    func finishSession(for peripheral: CBPeripheral, centralManager: CBCentralManager) {
-        if activeMobileSession?.peripheral == peripheral {
-            finishActiveSession(for: peripheral, centralManager: centralManager)
-        } else {
-            guard let mobileSession = standaloneModeSessions.first(where: { $0.peripheral == peripheral }) else {
-                    assertionFailure("Finishing session was called for unknown peripheral")
-                    return
-                }
-            updateDatabaseForFinishedSession(with: mobileSession.session.uuid)
-            standaloneModeSessions.removeAll(where: { $0.peripheral == peripheral })
-        }
-    }
+
+//    func finishSession(for peripheral: CBPeripheral, centralManager: CBCentralManager) {
+//        if activeMobileSession?.peripheral == peripheral {
+//            finishActiveSession(for: peripheral, centralManager: centralManager)
+//        } else {
+//            guard let mobileSession = standaloneModeSessions.first(where: { $0.peripheral == peripheral }) else {
+//                    assertionFailure("Finishing session was called for unknown peripheral")
+//                    return
+//                }
+//            updateDatabaseForFinishedSession(with: mobileSession.session.uuid)
+//            standaloneModeSessions.removeAll(where: { $0.peripheral == peripheral })
+//        }
+//    }
 
     func finishSession(with uuid: SessionUUID, centralManager: CBCentralManager, options: FinishSessionOptions = []) {
         if activeMobileSession?.session.uuid == uuid {
