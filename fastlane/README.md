@@ -16,11 +16,16 @@ or alternatively using `brew install fastlane`
 
 # Available Actions
 ## iOS
-### ios distribute
+### ios beta
 ```
-fastlane ios distribute
+fastlane ios beta
 ```
 AirCastingApp
+### ios appstore
+```
+fastlane ios appstore
+```
+
 
 ----
 
