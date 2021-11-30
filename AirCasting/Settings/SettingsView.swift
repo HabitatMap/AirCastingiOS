@@ -49,7 +49,9 @@ struct SettingsView: View {
             }
             keepScreenOnSwitch
             navigateToBackendSettingsButton
+            #if BETA || DEBUG
             navigateToAppConfigurationButton
+            #endif
         }
     }
     
