@@ -35,19 +35,19 @@ struct SDSyncRootView: View {
             
         }
         .onAppear() {
-            guard !sessionSynchronizer.syncInProgress.value else {
-                onCurrentSyncEnd { self.startBackendSync() }
-                return
-            }
+//            guard !sessionSynchronizer.syncInProgress.value else {
+//                onCurrentSyncEnd { self.startBackendSync() }
+//                return
+//            }
             finishAndSyncButtonTapped.finishAndSyncButtonWasTapped = false
             startBackendSync()
         }
     }
     
     func startBackendSync() {
-        sessionSynchronizer.triggerSynchronization() {
+//        sessionSynchronizer.triggerSynchronization() {
             self.backendSyncCompleted = true
-        }
+//        }
     }
     
     private func onCurrentSyncEnd(_ completion: @escaping () -> Void) {

@@ -8,16 +8,16 @@ import CoreLocation
 class MobilePeripheralSessionManager {
     private let measurementStreamStorage: MeasurementStreamStorage
     private lazy var locationProvider = LocationProvider()
-    
+
     private var activeMobileSession: MobileSession?
     private var standaloneModeSessions: [MobileSession] = []
-    
+
     private var streamsIDs: [SensorName: MeasurementStreamLocalID] = [:]
-    
+
     init(measurementStreamStorage: MeasurementStreamStorage) {
         self.measurementStreamStorage = measurementStreamStorage
     }
-    
+
     func startRecording(session: Session, peripheral: CBPeripheral) {
         measurementStreamStorage.accessStorage { [weak self] storage in
             do {
@@ -31,12 +31,12 @@ class MobilePeripheralSessionManager {
             }
         }
     }
-    
+
     func handlePeripheralMeasurement(_ measurement: PeripheralMeasurement) {
         if activeMobileSession == nil {
             return
         }
-        
+
         if activeMobileSession?.peripheral == measurement.peripheral {
             do {
                 try updateStreams(stream: measurement.measurementStream, sessionUUID: activeMobileSession!.session.uuid)
@@ -45,7 +45,7 @@ class MobilePeripheralSessionManager {
             }
         }
     }
-    
+
     func finishSession(for peripheral: CBPeripheral, centralManager: CBCentralManager) {
         if activeMobileSession?.peripheral == peripheral {
             finishActiveSession(for: peripheral, centralManager: centralManager)
@@ -58,7 +58,7 @@ class MobilePeripheralSessionManager {
             standaloneModeSessions.removeAll(where: { $0.peripheral == peripheral })
         }
     }
-    
+
     func finishSession(with uuid: SessionUUID, centralManager: CBCentralManager, options: FinishSessionOptions = []) {
         if activeMobileSession?.session.uuid == uuid {
             guard let activePeripheral = activeMobileSession?.peripheral else { return }
@@ -74,18 +74,18 @@ class MobilePeripheralSessionManager {
             standaloneModeSessions.removeAll(where: { $0.session.uuid == uuid })
         }
     }
-    
+
     func finishActiveSession(for peripheral: CBPeripheral, centralManager: CBCentralManager) {
         if activeMobileSession?.peripheral == peripheral {
             let session = activeMobileSession!.session
-            
+
             updateDatabaseForFinishedSession(with: session.uuid)
             centralManager.cancelPeripheralConnection(activeMobileSession!.peripheral)
             activeMobileSession = nil
             locationProvider.stopUpdatingLocation()
         }
     }
-    
+
     private func updateDatabaseForFinishedSession(with uuid: SessionUUID) {
         measurementStreamStorage.accessStorage { storage in
             do {
@@ -96,7 +96,7 @@ class MobilePeripheralSessionManager {
             }
         }
     }
-    
+
     func enterStandaloneMode(sessionUUID: SessionUUID, centralManager: CBCentralManager) {
         guard
             let activePeripheral = activeMobileSession?.peripheral,
@@ -106,23 +106,23 @@ class MobilePeripheralSessionManager {
             return
         }
         changeSessionStatusToDisconnected(uuid: sessionUUID)
-        
+
         centralManager.cancelPeripheralConnection(activePeripheral)
         standaloneModeSessions.append(activeMobileSession!)
         activeMobileSession = nil
         locationProvider.stopUpdatingLocation()
     }
-    
+
     func moveSessionToStandaloneMode(peripheral: CBPeripheral) {
         guard activeMobileSession?.peripheral == peripheral else {
             Log.warning("Enter stand alone mode called for perihperal which is not associated with active session")
             return
         }
-        
+
         standaloneModeSessions.append(activeMobileSession!)
         activeMobileSession = nil
     }
-    
+
     func markActiveSessionAsDisconnected(peripheral: CBPeripheral) {
         guard
             let sessionUUID = activeMobileSession?.session.uuid,
@@ -133,7 +133,7 @@ class MobilePeripheralSessionManager {
         }
         changeSessionStatusToDisconnected(uuid: sessionUUID)
     }
-    
+
     private func changeSessionStatusToDisconnected(uuid: SessionUUID) {
         measurementStreamStorage.accessStorage { storage in
             do {
@@ -143,10 +143,10 @@ class MobilePeripheralSessionManager {
             }
         }
     }
-    
+
     private func updateStreams(stream: ABMeasurementStream, sessionUUID: SessionUUID) throws {
         let  location = locationProvider.currentLocation?.coordinate
-                
+
         measurementStreamStorage.accessStorage { storage in
             do {
                 let existingStreamID = try storage.existingMeasurementStream(sessionUUID, name: stream.sensorName)
@@ -159,8 +159,8 @@ class MobilePeripheralSessionManager {
             }
         }
     }
-    
-    private func createSessionStream(_ stream: ABMeasurementStream, _ sessionUUID: SessionUUID) throws {        
+
+    private func createSessionStream(_ stream: ABMeasurementStream, _ sessionUUID: SessionUUID) throws {
         let sessionStream = MeasurementStream(id: nil,
                                               sensorName: stream.sensorName,
                                               sensorPackageName: stream.packageName,
@@ -173,7 +173,7 @@ class MobilePeripheralSessionManager {
                                               thresholdMedium: Int32(stream.thresholdMedium),
                                               thresholdLow: Int32(stream.thresholdLow),
                                               thresholdVeryLow: Int32(stream.thresholdVeryLow))
-        
+
         measurementStreamStorage.accessStorage { [self] storage in
             do {
                 streamsIDs[stream.sensorName] = try storage.createMeasurementStream(sessionStream, for: sessionUUID)
@@ -182,18 +182,18 @@ class MobilePeripheralSessionManager {
             }
         }
     }
-    
+
     func configureAB(userAuthenticationSession: UserAuthenticationSession) {
         guard let peripheral = activeMobileSession?.peripheral else { return }
         AirBeam3Configurator(userAuthenticationSession: userAuthenticationSession,
                              peripheral: peripheral).configureMobileSession(
                                 location: CLLocationCoordinate2D(latitude: 200, longitude: 200))
     }
-    
+
     func activeSessionInProgressWith(_ peripheral: CBPeripheral) -> Bool {
         activeMobileSession?.peripheral == peripheral
     }
-    
+
     func standaloneSessionInProgressWith(_ peripheral: CBPeripheral) -> Bool {
         standaloneModeSessions.first(where: { $0.peripheral == peripheral }) != nil
     }

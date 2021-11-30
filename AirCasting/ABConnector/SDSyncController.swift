@@ -46,6 +46,7 @@ class SDSyncController: ObservableObject {
                     if let mobileFileURL = files.first(where: { $0.1 == SDCardSessionType.mobile })?.0 {
                         self.mobileSessionsSaver.saveDataToDb(fileURL: mobileFileURL)
                     }
+                    completion(true)
                 case .failure: self.fileWriter.finishAndRemoveFiles(); completion(false)
                 }
             }

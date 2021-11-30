@@ -91,6 +91,20 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         }
     }
     
+    func addMeasurements(_ measurements: [Measurement], toStreamWithID id: MeasurementStreamLocalID) throws {
+        let stream = try context.existingObject(with: id.id) as! MeasurementStreamEntity
+
+        measurements.forEach { measurement in
+            let newMeasurement = MeasurementEntity(context: context)
+            newMeasurement.location = measurement.location
+            newMeasurement.time = measurement.time
+            newMeasurement.value = measurement.value
+            stream.addToMeasurements(newMeasurement)
+        }
+        
+        Log.info("## Added measurements to stream \(stream): \(stream.measurements)")
+    }
+    
     func saveThresholdFor(sensorName: String, thresholdVeryHigh: Int32, thresholdHigh: Int32, thresholdMedium: Int32, thresholdLow: Int32, thresholdVeryLow: Int32) throws {
         let existingThreshold: SensorThreshold? = try context.existingObject(sensorName: sensorName)
         if existingThreshold == nil {
@@ -105,6 +119,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
 
     func createMeasurementStream(_ stream: MeasurementStream, for sessionUUID: SessionUUID) throws -> MeasurementStreamLocalID {
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
+        Log.info("## Created measurement stream for \(sessionEntity.name)")
         return try createMeasurementStream(for: sessionEntity, context: context, stream)
     }
 
@@ -164,6 +179,15 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         try context.obtainPermanentIDs(for: [newStream])
 
         return newStream.localID
+    }
+    
+    func setStatusToFinishedAndUpdateEndTime(for sessionUUIDs: [SessionUUID]) throws {
+        try sessionUUIDs.forEach { sessionUUID in
+            let sessionEntity = try context.existingSession(uuid: sessionUUID)
+            sessionEntity.status = .FINISHED
+            sessionEntity.endTime = sessionEntity.lastMeasurementTime
+        }
+        try context.save()
     }
 
     func updateSessionStatus(_ sessionStatus: SessionStatus, for sessionUUID: SessionUUID) throws {

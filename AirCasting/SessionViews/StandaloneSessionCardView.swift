@@ -14,7 +14,7 @@ struct StandaloneSessionCardView: View {
     @EnvironmentObject private var urlProvider: UserDefaultsBaseURLProvider
     @EnvironmentObject private var tabSelection: TabBarSelection
     @EnvironmentObject private var finishAndSyncButtonTapped: FinishAndSyncButtonTapped
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
             header
@@ -27,7 +27,7 @@ struct StandaloneSessionCardView: View {
                         .shadow(color: .sessionCardShadow, radius: 9, x: 0, y: 1))
         .overlay(Rectangle().frame(width: nil, height: 4, alignment: .top).foregroundColor(Color.red), alignment: .top)
     }
-    
+
     var header: some View {
         SessionHeaderView(
             action: {},
@@ -37,7 +37,7 @@ struct StandaloneSessionCardView: View {
             sessionStopperFactory: sessionStopperFactory
         )
     }
-    
+
     var content: some View {
         VStack(spacing: 15) {
             Text(Strings.StandaloneSessionCardView.heading)
@@ -57,21 +57,21 @@ struct StandaloneSessionCardView: View {
         }
         .padding()
     }
-    
+
     var finishAndSyncButton: some View {
         Button(Strings.StandaloneSessionCardView.finishAndSyncButtonLabel) {
             showingFinishAndSyncAlert = true
         }
         .buttonStyle(BlueButtonStyle())
     }
-    
+
     var finishAndDontSyncButton: some View {
         Button(Strings.StandaloneSessionCardView.finishAndDontSyncButtonLabel) {
             showingFinishAlert = true
         }
         .foregroundColor(.accentColor)
     }
-    
+
     func finishAndSyncAlert(sessionName: String?) -> Alert {
         Alert(title: Text(Strings.SessionHeaderView.finishAlertTitle) +
               Text(sessionName ?? Strings.SessionHeaderView.finishAlertTitle_2)
@@ -88,6 +88,7 @@ struct StandaloneSessionCardView: View {
             } catch {
                 Log.info("error when stpoing session - \(error)")
             }
+
             finishAndSyncButtonTapped.finishAndSyncButtonWasTapped = true
             tabSelection.selection = .createSession
         }),
