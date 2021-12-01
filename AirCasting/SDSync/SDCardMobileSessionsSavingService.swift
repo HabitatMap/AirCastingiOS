@@ -75,6 +75,7 @@ struct SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
                         if session == nil {
                             do {
                                 if let existingSession = try storage.getExistingSession(with: sessionUUID) {
+                                    //TODO: check if session was recorded with the syncing AB
                                     guard existingSession.isInStandaloneMode else {
                                         Log.info("## Ignoring session \(existingSession.name)")
                                         sessionsToIgnore.append(sessionUUID)
