@@ -116,14 +116,14 @@ struct SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
                             Log.error("Coudn't create a new session from imported data: \(error.localizedDescription)")
                         }
                         sessionsToCreate.removeAll(where: {$0 == sdStream.sessionUUID })
-                        let measurementStream = createMeasurementStream(for: sdStream.name)
+                        let measurementStream = createMeasurementStream(for: sdStream.name, sensorPackageName: deviceID)
                         let streamID = try storage.createMeasurementStream(measurementStream, for: sdStream.sessionUUID)
                         try storage.addMeasurements(measurements, toStreamWithID: streamID)
                     } else {
                         do {
                             var existingStreamID = try storage.existingMeasurementStream(sdStream.sessionUUID, name: sdStream.name.rawValue)
                             if existingStreamID == nil {
-                                let measurementStream = createMeasurementStream(for: sdStream.name)
+                                let measurementStream = createMeasurementStream(for: sdStream.name, sensorPackageName: deviceID)
                                 existingStreamID = try storage.createMeasurementStream(measurementStream, for: sdStream.sessionUUID)
                             }
 
@@ -149,12 +149,12 @@ struct SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         return date?.currentUTCTimeZoneDate
     }
     
-    func createMeasurementStream(for sensorName: StreamSensorName) -> MeasurementStream {
+    func createMeasurementStream(for sensorName: StreamSensorName, sensorPackageName: String) -> MeasurementStream {
         switch sensorName {
         case .f:
             return MeasurementStream(id: nil,
                               sensorName: sensorName.rawValue,
-                              sensorPackageName: "AirBeam3:84cca8099d6c", // CHANGE
+                              sensorPackageName: sensorPackageName, // CHANGE
                               measurementType: "Temperature",
                               measurementShortType: "F",
                               unitName: "degrees Fahrenheit",
@@ -167,7 +167,7 @@ struct SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         case .rh:
             return MeasurementStream(id: nil,
                               sensorName: sensorName.rawValue,
-                              sensorPackageName: "AirBeam3:84cca8099d6c", // CHANGE
+                              sensorPackageName: sensorPackageName, // CHANGE
                               measurementType: "Humidity",
                               measurementShortType: "RH",
                               unitName: "percent",
@@ -180,7 +180,7 @@ struct SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         case .pm1:
             return MeasurementStream(id: nil,
                               sensorName: sensorName.rawValue,
-                              sensorPackageName: "AirBeam3:84cca8099d6c", // CHANGE
+                              sensorPackageName: sensorPackageName, // CHANGE
                               measurementType: "Particulate Matter",
                               measurementShortType: "PM",
                               unitName: "micrograms per cubic meter",
@@ -193,7 +193,7 @@ struct SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         case .pm2_5:
             return MeasurementStream(id: nil,
                               sensorName: sensorName.rawValue,
-                              sensorPackageName: "AirBeam3:84cca8099d6c", // CHANGE
+                              sensorPackageName: sensorPackageName, // CHANGE
                               measurementType: "Particulate Matter",
                               measurementShortType: "PM",
                               unitName: "micrograms per cubic meter",
@@ -206,7 +206,7 @@ struct SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         case .pm10:
             return MeasurementStream(id: nil,
                               sensorName: sensorName.rawValue,
-                              sensorPackageName: "AirBeam3:84cca8099d6c", // CHANGE
+                              sensorPackageName: sensorPackageName, // CHANGE
                               measurementType: "Particulate Matter",
                               measurementShortType: "PM",
                               unitName: "micrograms per cubic meter",
