@@ -1,4 +1,5 @@
 PODS:
+  - DeviceKit (4.5.2)
   - Firebase/Analytics (8.9.1):
     - Firebase/Core
   - Firebase/Core (8.9.1):
@@ -130,6 +131,7 @@ PODS:
   - PromisesObjC (2.0.0)
 
 DEPENDENCIES:
+  - DeviceKit (~> 4.5.0)
   - Firebase/Analytics
   - Firebase/Crashlytics
   - Firebase/Messaging
@@ -140,6 +142,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - DeviceKit
     - Firebase
     - FirebaseABTesting
     - FirebaseAnalytics
@@ -159,17 +162,19 @@ SPEC REPOS:
     - PromisesObjC
 
 SPEC CHECKSUMS:
-  Firebase: fb5114cd2bf96e2ff7bcb01d0d9a156cf5fd2f07
-  FirebaseABTesting: 9de50b34bf9eb4a07d4edb7af82c14152fd905aa
-  FirebaseAnalytics: 4ab446ce08a3fe52e8a4303dd997cf26276bf968
-  FirebaseCore: c5aab092d9c4b8efea894946166b04c9d9ef0e68
-  FirebaseCoreDiagnostics: 5daa63f1c1409d981a2d5007daa100b36eac6a34
-  FirebaseCrashlytics: 40efbd81157dae307ec95612fa1328347284d2c2
-  FirebaseInstallations: caa7c8e0d3e2345b8829d2fa9ca1b4dfbf2fcc85
-  FirebaseMessaging: 82c4a48638f53f7b184f3cc9f6cd2cbe533ab316
-  FirebaseRemoteConfig: a75c1bd44ebd3ed4ad3fa1ff09414a8b133be405
-  GoogleAppMeasurement: 837649ad3987936c232f6717c5680216f6243d24
-  GoogleDataTransport: 629c20a4d363167143f30ea78320d5a7eb8bd940
+  DeviceKit: c622fc19f795f3e0b4d75d6d11b26604338cdab3
+  Firebase: fd5e4d2b756292c6e7ee6faac1eb320225d6e97e
+  FirebaseABTesting: e66f1f80747792630d9b292966de206d5df9853b
+  FirebaseAnalytics: 00b7f74571d346ee1ffb9bf0a2e6f2ffff222bcc
+  FirebaseCore: 06a2b68af8901f2244eb989419eb89edc3789b4d
+  FirebaseCoreDiagnostics: 35685db68b11fe7d19d2d8b557fd7e3a56ac81cc
+  FirebaseCrashlytics: 4d77da03c81dedc92cccbefc758f968dccf64b30
+  FirebaseInstallations: a46ae59915f0931e18814164849cd0354bea24ed
+  FirebaseInstanceID: ad5135045a498d7775903efd39762d2cdfa1be27
+  FirebaseMessaging: a2a23671eb281b1eed38b155af8549b335a4a38b
+  FirebaseRemoteConfig: 98dac0952e07858dbd70ad0f26d470eb7fa37ee4
+  GoogleAppMeasurement: 65a1071e5f52f63ab03d0a4d814a54fd762d885a
+  GoogleDataTransport: 1024b1a4dfbd7a0e92cb20d7e0a6f1fb66b449a4
   GoogleMaps: 008e2c80e38605b56b560e8deb73d4194ff30bef
   GooglePlaces: a058b776259c13e1323c9ff135549cb1b13ad8e7
   GoogleUtilities: 684ee790a24f73ebb2d1d966e9711c203f2a4237
@@ -177,6 +182,6 @@ SPEC CHECKSUMS:
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
   PromisesObjC: 68159ce6952d93e17b2dfe273b8c40907db5ba58
 
-PODFILE CHECKSUM: 832762ee4b47bdcd8b1deb8384ad7d594e657f38
+PODFILE CHECKSUM: 3cf2c95dfc6b77928321472bcad5bc6615fb67b4
 
 COCOAPODS: 1.11.2
