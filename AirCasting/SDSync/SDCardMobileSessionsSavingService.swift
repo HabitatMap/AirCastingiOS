@@ -27,9 +27,9 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         // We only want to save measurements of new sessions or for sessions in standalone mode
         var sessionsToCreate: [SessionUUID] = []
         var sessionsToIgnore: [SessionUUID] = []
-        var fileReadingCancellable: AnyCancellable?
         
         measurementStreamStorage.accessStorage { storage in
+            var fileReadingCancellable: AnyCancellable?
             fileReadingCancellable = self.read(fileURL: fileURL).sink { [weak self] completion in
                 defer { fileReadingCancellable?.cancel() }
                 guard case .finished = completion else { return }
@@ -112,7 +112,6 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
     private func processSession(storage: HiddenCoreDataMeasurementStreamStorage, sessionUUID: SessionUUID, deviceID: String, sessionsToIgnore: inout [SessionUUID], sessionsToCreate: inout [SessionUUID]) -> SDSession? {
         do {
             if let existingSession = try storage.getExistingSession(with: sessionUUID) {
-                //TODO: check if session was recorded with the syncing AB
                 guard existingSession.isInStandaloneMode && existingSession.sensorPackageName == deviceID else {
                     Log.info("## Ignoring session \(existingSession.name ?? "none")")
                     sessionsToIgnore.append(sessionUUID)
