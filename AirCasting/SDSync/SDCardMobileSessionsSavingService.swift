@@ -116,22 +116,17 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
     }
     
     private func processSession(storage: HiddenCoreDataMeasurementStreamStorage, sessionUUID: SessionUUID, deviceID: String, sessionsToIgnore: inout [SessionUUID], sessionsToCreate: inout [SessionUUID]) -> SDSession? {
-        do {
-            if let existingSession = try storage.getExistingSession(with: sessionUUID) {
-                guard existingSession.isInStandaloneMode && existingSession.sensorPackageName == deviceID else {
-                    Log.info("## Ignoring session \(existingSession.name ?? "none")")
-                    sessionsToIgnore.append(sessionUUID)
-                    return nil
-                }
-                
-                return SDSession(uuid: sessionUUID, lastMeasurementTime: existingSession.lastMeasurementTime)
-            } else {
-                sessionsToCreate.append(sessionUUID)
-                return SDSession(uuid: sessionUUID, lastMeasurementTime: nil)
+        if let existingSession = try? storage.getExistingSession(with: sessionUUID) {
+            guard existingSession.isInStandaloneMode && existingSession.sensorPackageName == deviceID else {
+                Log.info("## Ignoring session \(existingSession.name ?? "none")")
+                sessionsToIgnore.append(sessionUUID)
+                return nil
             }
-        } catch {
-            Log.error(error.localizedDescription)
-            return nil
+            
+            return SDSession(uuid: sessionUUID, lastMeasurementTime: existingSession.lastMeasurementTime)
+        } else {
+            sessionsToCreate.append(sessionUUID)
+            return SDSession(uuid: sessionUUID, lastMeasurementTime: nil)
         }
     }
     
