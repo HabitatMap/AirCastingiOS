@@ -45,7 +45,7 @@ class MobilePeripheralSessionManager {
         }
     }
 
-    func finishSession(with uuid: SessionUUID, centralManager: CBCentralManager, options: FinishSessionOptions = []) {
+    func finishSession(with uuid: SessionUUID, centralManager: CBCentralManager) {
         measurementStreamStorage.accessStorage { storage in
             do {
                 let session = try storage.getExistingSession(with: uuid)

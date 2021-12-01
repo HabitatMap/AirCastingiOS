@@ -115,7 +115,7 @@ private extension SessionHeaderView {
             }
         }
         .alert(isPresented: $showingFinishAlert) {
-            SessionViews.finishSessionAlert(sessionStopper: sessionStopperFactory.getSessionStopper(for: session, options: []), sessionName: session.name)
+            SessionViews.finishSessionAlert(sessionStopper: sessionStopperFactory.getSessionStopper(for: session), sessionName: session.name)
         }
     }
     

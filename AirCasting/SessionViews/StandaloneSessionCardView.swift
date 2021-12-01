@@ -51,7 +51,7 @@ struct StandaloneSessionCardView: View {
                 }
             finishAndDontSyncButton
                 .alert(isPresented: $showingFinishAlert) {
-                    SessionViews.finishSessionAlert(sessionStopper: sessionStopperFactory.getSessionStopper(for: session, options: []), sessionName: session.name)
+                    SessionViews.finishSessionAlert(sessionStopper: sessionStopperFactory.getSessionStopper(for: session), sessionName: session.name)
                 }
             .padding()
         }
@@ -82,13 +82,6 @@ struct StandaloneSessionCardView: View {
               Text(Strings.SessionHeaderView.finishAlertMessage_3) +
               Text("\nSD card will be cleared afterwards"),
               primaryButton: .default(Text(Strings.SessionHeaderView.finishAlertButton), action: {
-            let sessionStopper = sessionStopperFactory.getSessionStopper(for: session, options: [.omitDatabaseUpdate, .dontTriggerSync])
-            do {
-                try sessionStopper.stopSession()
-            } catch {
-                Log.info("error when stpoing session - \(error)")
-            }
-
             finishAndSyncButtonTapped.finishAndSyncButtonWasTapped = true
             tabSelection.selection = .createSession
         }),

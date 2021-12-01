@@ -246,8 +246,8 @@ extension BluetoothManager: CBPeripheralDelegate {
         }
     }
 
-    func finishMobileSession(with uuid: SessionUUID, options: FinishSessionOptions = []) {
-        mobilePeripheralSessionManager.finishSession(with: uuid, centralManager: centralManager, options: options)
+    func finishMobileSession(with uuid: SessionUUID) {
+        mobilePeripheralSessionManager.finishSession(with: uuid, centralManager: centralManager)
     }
 
     func enterStandaloneMode(sessionUUID: SessionUUID) {
