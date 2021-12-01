@@ -24,29 +24,35 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         var streamsWithMeasurements: [SDStream: [Measurement]] = [:]
         
         // We don't want to save data for session which have already been finished.
-        // We only want to save measurements of new sessions or for sessions in standalone mode
+        // We only want to save measurements of new sessions or for sessions in standalone mode recorded with the syncing device
         var sessionsToCreate: [SessionUUID] = []
         var sessionsToIgnore: [SessionUUID] = []
         
         measurementStreamStorage.accessStorage { storage in
-            var fileReadingCancellable: AnyCancellable?
-            fileReadingCancellable = self.read(fileURL: fileURL).sink { [weak self] completion in
-                defer { fileReadingCancellable?.cancel() }
-                guard case .finished = completion else { return }
-                self?.saveData(streamsWithMeasurements, to: storage, with: deviceID, sessionsToCreate: &sessionsToCreate)
-            } receiveValue: { [weak self] measurements in
-                guard let self = self, let measurements = measurements, !sessionsToIgnore.contains(measurements.sessionUUID) else { return }
-                
-                var session = processedSessions.first(where: {$0.uuid == measurements.sessionUUID })
-                if session == nil {
-                    session = self.processSession(storage: storage, sessionUUID: measurements.sessionUUID, deviceID: deviceID, sessionsToIgnore: &sessionsToIgnore, sessionsToCreate: &sessionsToCreate)
-                    guard session != nil else { return }
-                    processedSessions.insert(session!)
-                }
-                
-                guard session!.lastMeasurementTime == nil || measurements.date > session!.lastMeasurementTime! else { return }
-                
-                self.enqueueForSaving(measurements: measurements, buffer: &streamsWithMeasurements)
+            do {
+                try self.fileLineReader.readLines(of: fileURL, progress: { line in
+                    switch line {
+                    case .line(let content):
+                        let measurementsRow = self.parser.parseMeasurement(lineSting: content)
+                        guard let measurements = measurementsRow, !sessionsToIgnore.contains(measurements.sessionUUID) else { return }
+                        
+                        var session = processedSessions.first(where: {$0.uuid == measurements.sessionUUID })
+                        if session == nil {
+                            session = self.processSession(storage: storage, sessionUUID: measurements.sessionUUID, deviceID: deviceID, sessionsToIgnore: &sessionsToIgnore, sessionsToCreate: &sessionsToCreate)
+                            guard session != nil else { return }
+                            processedSessions.insert(session!)
+                        }
+                        
+                        guard session!.lastMeasurementTime == nil || measurements.date > session!.lastMeasurementTime! else { return }
+                        
+                        self.enqueueForSaving(measurements: measurements, buffer: &streamsWithMeasurements)
+                    case .endOfFile:
+                        Log.info("Reached end of csv file")
+                    }
+                })
+                self.saveData(streamsWithMeasurements, to: storage, with: deviceID, sessionsToCreate: &sessionsToCreate)
+            } catch {
+                Log.error("Error reading file")
             }
         }
     }

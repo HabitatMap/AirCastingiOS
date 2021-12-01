@@ -39,9 +39,9 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
     
     private let bluetoothManager: BluetoothManager
     
-    private var currentSessionType: SDCardSessionType?
-    private var currentSessionTypeReceived: Int = 0
-    private var currentSessionTypeExpected: Int = 0
+//    private var currentSessionType: SDCardSessionType?
+//    private var currentSessionTypeReceived: Int = 0
+//    private var currentSessionTypeExpected: Int = 0
     
     private var dataCharacteristicObserver: AnyHashable?
     private var metadataCharacteristicObserver: AnyHashable?
@@ -51,6 +51,9 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
     }
     
     func downloadData(from peripheral: CBPeripheral, progress: @escaping (SDCardData) -> Void, completion: @escaping (Result<Void, Error>) -> Void) {
+        var currentSessionType: SDCardSessionType?
+        var currentSessionTypeReceived: Int = 0
+        var currentSessionTypeExpected: Int = 0
         metadataCharacteristicObserver = bluetoothManager.subscribeToCharacteristic(DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID) { result in
             switch result {
             case .success(let data):
@@ -58,7 +61,7 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
                     self.finishSync { completion(.failure(SDCardSyncError.cantDecodePayload)) }
                     return
                 }
-                self.currentSessionType = self.currentSessionType.next
+                currentSessionType = currentSessionType.next
                 Log.info("[SD CARD SYNC] " + payload)
                 if payload == "SD_SYNC_FINISH" {
                     self.finishSync { completion(.success(())) }
@@ -74,8 +77,8 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
                           self.finishSync { completion(.failure(SDCardSyncError.unexpectedMetadataFormat)) }
                           return
                       }
-                self.currentSessionTypeExpected = measurementsCount
-                progress(.metadata(SDCardMetaData(sessionType: self.currentSessionType!, measurementsCount: measurementsCount)))
+                currentSessionTypeExpected = measurementsCount
+                progress(.metadata(SDCardMetaData(sessionType: currentSessionType!, measurementsCount: currentSessionTypeExpected)))
             case .failure(let error):
                 Log.warning("Error while receiving metadata from SD card: \(error.localizedDescription)")
                 self.finishSync { completion(.failure(error)) }
@@ -86,7 +89,7 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
             switch result {
             case .success(let data):
                 guard let data = data, let payload = String(data: data, encoding: .utf8) else { return }
-                guard let sessionType = self.currentSessionType else {
+                guard let sessionType = currentSessionType else {
                     Log.error("Received data before first metadata payload!")
                     self.finishSync { completion(.failure(SDCardSyncError.wrongOrderOfReceivedPayload)) }
                     return
