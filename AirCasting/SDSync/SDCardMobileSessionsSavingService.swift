@@ -108,12 +108,6 @@ struct SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
                 
                 try sessionsWithMeasurement.forEach { (sdStream: SDStream, measurements: [Measurement]) in
                     Log.info("## \(sdStream): \(measurements)")
-                    // if new session:
-                    //  create session "Imported from SD card
-                    //  change newSession to false
-                    //  create stream and add measurements
-                    // else
-                    //  take existing stream and append new measurements to the old ones or create a new stream
                     if sessionsToCreate.contains(sdStream.sessionUUID) {
                         do {
                             try storage.createSession(Session(uuid: sdStream.sessionUUID, type: .mobile, name: "Imported from SD card", deviceType: .AIRBEAM3, location: measurements.first?.location, startTime: measurements.first?.time))
@@ -134,13 +128,12 @@ struct SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
                             }
 
                             try storage.addMeasurements(measurements, toStreamWithID: existingStreamID!)
+                            try storage.setStatusToFinishedAndUpdateEndTime(for: sdStream.sessionUUID, endTime: measurements.last?.time)
                         } catch {
                             Log.info("\(error)")
                         }
                     }
                 }
-                
-                try storage.setStatusToFinishedAndUpdateEndTime(for: sessionsWithMeasurement.keys.map(\.sessionUUID))
             } catch {
                 Log.error("Error reading file")
             }
@@ -150,10 +143,10 @@ struct SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
     func dateFrom(date: Substring, time: Substring) -> Date? {
         let isoDate = String(date + "T" + time)
         let dateFormatter = DateFormatter()
-        dateFormatter.locale = Locale(identifier: "en_US_POSIX") // set locale to reliable US_POSIX
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
         dateFormatter.dateFormat = "MM/dd/yyy'T'HH:mm:ss"
         let date = dateFormatter.date(from:isoDate)
-        return date
+        return date?.currentUTCTimeZoneDate
     }
     
     func createMeasurementStream(for sensorName: StreamSensorName) -> MeasurementStream {
