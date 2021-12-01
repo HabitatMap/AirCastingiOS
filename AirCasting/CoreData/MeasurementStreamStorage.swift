@@ -135,7 +135,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         return stream?.localID
     }
     
-    func getExistingSession(with sessionUUID: SessionUUID) throws -> SessionEntity? {
+    func getExistingSession(with sessionUUID: SessionUUID) throws -> SessionEntity {
         let session = try context.existingSession(uuid: sessionUUID)
         return session
     }
