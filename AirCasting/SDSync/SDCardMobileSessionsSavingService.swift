@@ -60,10 +60,10 @@ struct SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
                             let lat = Double(measurementInfo[4]),
                             let long = Double(measurementInfo[5]),
                             let f = Double(measurementInfo[6]),
-                            let rh = Double(measurementInfo[7]),
-                            let pm1 = Double(measurementInfo[8]),
-                            let pm2_5 = Double(measurementInfo[9]),
-                            let pm10 = Double(measurementInfo[10])
+                            let rh = Double(measurementInfo[9]),
+                            let pm1 = Double(measurementInfo[10]),
+                            let pm2_5 = Double(measurementInfo[11]),
+                            let pm10 = Double(measurementInfo[12])
                         else {
                             Log.info("Wrong data format in the csv row: \(line)")
                             return
