@@ -24,7 +24,7 @@ enum StreamSensorName: String {
 }
 
 protocol SDCardMobileSessionssSaver {
-    func saveDataToDb(fileURL: URL)
+    func saveDataToDb(fileURL: URL, deviceID: String)
 }
 
 struct SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
@@ -35,7 +35,7 @@ struct SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         self.measurementStreamStorage = measurementStreamStorage
     }
     
-    func saveDataToDb(fileURL: URL) {
+    func saveDataToDb(fileURL: URL, deviceID: String) {
         var sessionsWithTimes = Set<SDSession>()
         var sessionsWithMeasurement: [SDStream: [Measurement]] = [:]
         
@@ -76,7 +76,7 @@ struct SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
                             do {
                                 if let existingSession = try storage.getExistingSession(with: sessionUUID) {
                                     //TODO: check if session was recorded with the syncing AB
-                                    guard existingSession.isInStandaloneMode else {
+                                    guard existingSession.isInStandaloneMode && existingSession.sensorPackageName == deviceID else {
                                         Log.info("## Ignoring session \(existingSession.name)")
                                         sessionsToIgnore.append(sessionUUID)
                                         return

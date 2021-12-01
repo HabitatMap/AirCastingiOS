@@ -24,6 +24,12 @@ class SDSyncController: ObservableObject {
     }
     
     func syncFromAirbeam(_ airbeamConnection: CBPeripheral, completion: @escaping (Bool) -> Void) {
+        guard let sensorName = airbeamConnection.name else {
+            Log.error("Unable to identify the device")
+            completion(false)
+            return
+        }
+
         metadata = []
         airbeamServices.downloadData(from: airbeamConnection, progress: { [weak self] data in
             switch data {
@@ -44,7 +50,7 @@ class SDSyncController: ObservableObject {
                     self.checkFilesForCorruption(files)
                     //TODO: Continue processing SD card data when files are not corrupted. Return an error and finish sync without clreating sd card if they are.
                     if let mobileFileURL = files.first(where: { $0.1 == SDCardSessionType.mobile })?.0 {
-                        self.mobileSessionsSaver.saveDataToDb(fileURL: mobileFileURL)
+                        self.mobileSessionsSaver.saveDataToDb(fileURL: mobileFileURL, deviceID: sensorName)
                     }
                     completion(true)
                 case .failure: self.fileWriter.finishAndRemoveFiles(); completion(false)
