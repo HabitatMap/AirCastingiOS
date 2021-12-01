@@ -68,10 +68,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
             }
             stream.gotDeleted = true
             try context.save()
-            sessionEntity.changesCount += 1
-            // EXPLANATION for above line:
-            // We basically force core data to send change notifications for this Session objects in the app
-            // because the NSOrderedSet operations don't trigger KVO and thus don't trigger ObservableObject changes
+           forceUpdate(sessionEntity: sessionEntity)
         }
         completion()
     }
@@ -114,7 +111,14 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
                 Log.error("Error when deleting session")
             }
         }
+        forceUpdate(sessionEntity: sessionEntity)
+    }
+    
+    func forceUpdate(sessionEntity: SessionEntity) {
         sessionEntity.changesCount += 1
+        // EXPLANATION for above line:
+        // We basically force core data to send change notifications for this Session objects in the app
+        // because the NSOrderedSet operations don't trigger KVO and thus don't trigger ObservableObject changes
     }
 
     func save() throws {

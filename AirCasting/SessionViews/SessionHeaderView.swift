@@ -18,7 +18,7 @@ struct SessionHeaderView: View {
     @State private var showingAlert = false
     @State private var showingFinishAlert = false
     let sessionStopperFactory: SessionStoppableFactory
-    @State var deleteModalShow = false
+    @State var showDeleteModal = false
     let measurementStreamStorage: MeasurementStreamStorage
     @EnvironmentObject var authorization: UserAuthenticationSession
     
@@ -37,8 +37,8 @@ struct SessionHeaderView: View {
         .sheet(isPresented: Binding.constant(false), content: {
             ShareView(showModal: Binding.constant(false))
         })
-        .sheet(isPresented: $deleteModalShow) {
-            DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session, measurementStreamStorage: measurementStreamStorage, streamRemover: StreamRemoverDefault(authorization: authorization)), deleteModal: $deleteModalShow)
+        .sheet(isPresented: $showDeleteModal) {
+            DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session, measurementStreamStorage: measurementStreamStorage, streamRemover: StreamRemoverDefault(authorization: authorization)), deleteModal: $showDeleteModal)
         }
         .font(Fonts.regularHeading4)
         .foregroundColor(.aircastingGray)
@@ -171,7 +171,7 @@ private extension SessionHeaderView {
     
     var actionsMenuDeleteButton: some View {
         Button {
-            deleteModalShow = true
+            showDeleteModal = true
         } label: {
             Label(Strings.SessionHeaderView.deleteButton, systemImage: "xmark.circle")
         }

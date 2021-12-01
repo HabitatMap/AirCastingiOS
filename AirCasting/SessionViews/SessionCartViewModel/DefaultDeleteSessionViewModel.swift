@@ -7,7 +7,7 @@ class DefaultDeleteSessionViewModel: DeleteSessionViewModel {
     private let measurementStreamStorage: MeasurementStreamStorage
     private var session: SessionEntity
     private let streamRemover: StreamRemover
-    @Published var showingAlert: Bool = false
+    @Published var showingConfirmationAlert: Bool = false
     
     var deleteEnabled: Bool = false {
         willSet {
@@ -44,8 +44,8 @@ class DefaultDeleteSessionViewModel: DeleteSessionViewModel {
         showProperStreams(sessionStreams: sessionStreams)
     }
     
-    func showAlert() {
-        showingAlert = true
+    func showConfirmationAlert() {
+        showingConfirmationAlert = true
     }
     
     private func showProperStreams(sessionStreams: [MeasurementStreamEntity]) {

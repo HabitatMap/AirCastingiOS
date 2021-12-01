@@ -14,7 +14,7 @@ struct DeleteView<VM: DeleteSessionViewModel>: View {
             chooseStream
             continueButton
             cancelButton
-        }.alert(isPresented: $viewModel.showingAlert) {
+        }.alert(isPresented: $viewModel.showingConfirmationAlert) {
             Alert(
                 title: Text(Strings.DeleteSession.deleteAlert),
                 primaryButton: .destructive(Text(Strings.DeleteSession.deleteButton), action: {
@@ -55,7 +55,7 @@ struct DeleteView<VM: DeleteSessionViewModel>: View {
     
     private var continueButton: some View {
         Button {
-            viewModel.showAlert()
+            viewModel.showConfirmationAlert()
         } label: {
             Text(Strings.DeleteSession.continueButton)
                 .bold()
