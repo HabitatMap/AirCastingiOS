@@ -177,7 +177,7 @@ class MobilePeripheralSessionManager {
 
         measurementStreamStorage.accessStorage { [self] storage in
             do {
-                streamsIDs[stream.sensorName] = try storage.createMeasurementStream(sessionStream, for: sessionUUID)
+                streamsIDs[stream.sensorName] = try storage.saveMeasurementStream(sessionStream, for: sessionUUID)
             } catch {
                 Log.info("\(error)")
             }

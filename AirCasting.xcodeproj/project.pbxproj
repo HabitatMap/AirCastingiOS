@@ -194,6 +194,7 @@
 		B376DD25268096E20083FD2F /* SessionSynchronizationDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B376DD24268096E20083FD2F /* SessionSynchronizationDatabase.swift */; };
 		B37AAA5127567AE400588F7E /* FinishSessionOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37AAA5027567AE400588F7E /* FinishSessionOptions.swift */; };
 		B37E1C942748208C0020A281 /* SDSyncFileWritingServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37E1C932748208C0020A281 /* SDSyncFileWritingServiceTests.swift */; };
+		B38BA5A22757DC9300F758C8 /* SDCardMeasurementsParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B38BA5A12757DC9300F758C8 /* SDCardMeasurementsParser.swift */; };
 		B38E6CCA26C5F19F00C21C45 /* SessionStoppable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B38E6CC926C5F19F00C21C45 /* SessionStoppable.swift */; };
 		B38E6CCC26C5F3D400C21C45 /* SessionStoppableFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B38E6CCB26C5F3D400C21C45 /* SessionStoppableFactory.swift */; };
 		B38E6CCE26C5F81B00C21C45 /* MicrophoneSessionStopper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B38E6CCD26C5F81B00C21C45 /* MicrophoneSessionStopper.swift */; };
@@ -515,6 +516,7 @@
 		B376DD24268096E20083FD2F /* SessionSynchronizationDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionSynchronizationDatabase.swift; sourceTree = "<group>"; };
 		B37AAA5027567AE400588F7E /* FinishSessionOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinishSessionOptions.swift; sourceTree = "<group>"; };
 		B37E1C932748208C0020A281 /* SDSyncFileWritingServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSyncFileWritingServiceTests.swift; sourceTree = "<group>"; };
+		B38BA5A12757DC9300F758C8 /* SDCardMeasurementsParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDCardMeasurementsParser.swift; sourceTree = "<group>"; };
 		B38E6CC926C5F19F00C21C45 /* SessionStoppable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionStoppable.swift; sourceTree = "<group>"; };
 		B38E6CCB26C5F3D400C21C45 /* SessionStoppableFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionStoppableFactory.swift; sourceTree = "<group>"; };
 		B38E6CCD26C5F81B00C21C45 /* MicrophoneSessionStopper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrophoneSessionStopper.swift; sourceTree = "<group>"; };
@@ -682,6 +684,7 @@
 				3383511D2747C24800308068 /* SDSyncFileFactory.swift */,
 				3384C1DC274EC4C00022B008 /* SDSyncFileValidationService.swift */,
 				334CC6F92751454C00C10B53 /* SDCardMobileSessionsSavingService.swift */,
+				B38BA5A12757DC9300F758C8 /* SDCardMeasurementsParser.swift */,
 			);
 			path = SDSync;
 			sourceTree = "<group>";
@@ -2006,6 +2009,7 @@
 				B32D08AD267A6437006C97ED /* LogEvent.swift in Sources */,
 				33BA336A266E4D1000899343 /* MobileSession.swift in Sources */,
 				AC86EE6B25D03DC00083F8C0 /* SelectDeviceView.swift in Sources */,
+				B38BA5A22757DC9300F758C8 /* SDCardMeasurementsParser.swift in Sources */,
 				B30F9A632745626B00C85E17 /* SDCardAirBeamServices.swift in Sources */,
 				4F15548B263C44AF00FF3208 /* Session.swift in Sources */,
 				B367A595274E9EAA004C605B /* FeatureFlagsViewModel.swift in Sources */,

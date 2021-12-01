@@ -3,158 +3,147 @@
 
 import Foundation
 import CoreLocation
-
-
-struct SDSession: Hashable {
-    let uuid: SessionUUID
-    let lastMeasurementTime: Date?
-}
-
-struct SDStream: Hashable {
-    let sessionUUID: SessionUUID
-    let name: StreamSensorName
-}
-
-enum StreamSensorName: String {
-    case f = "AirBeam3-F"
-    case rh = "AirBeam3-RH"
-    case pm1 = "AirBeam3-PM1"
-    case pm2_5 = "AirBeam3-PM2.5"
-    case pm10 = "AirBeam3-PM10"
-}
+import Combine
 
 protocol SDCardMobileSessionssSaver {
     func saveDataToDb(fileURL: URL, deviceID: String)
 }
 
-struct SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
-    private let fileLineReader = DefaultFileLineReader()
+class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
+    private let fileLineReader: FileLineReader
     private let measurementStreamStorage: MeasurementStreamStorage
+    private let parser = SDCardMeasurementsParser()
     
-    init(measurementStreamStorage: MeasurementStreamStorage) {
+    init(measurementStreamStorage: MeasurementStreamStorage, fileLineReader: FileLineReader) {
         self.measurementStreamStorage = measurementStreamStorage
+        self.fileLineReader = fileLineReader
     }
     
     func saveDataToDb(fileURL: URL, deviceID: String) {
-        var sessionsWithTimes = Set<SDSession>()
-        var sessionsWithMeasurement: [SDStream: [Measurement]] = [:]
+        var processedSessions = Set<SDSession>()
+        var streamsWithMeasurements: [SDStream: [Measurement]] = [:]
         
         // We don't want to save data for session which have already been finished.
         // We only want to save measurements of new sessions or for sessions in standalone mode
         var sessionsToCreate: [SessionUUID] = []
         var sessionsToIgnore: [SessionUUID] = []
+        var fileReadingCancellable: AnyCancellable?
         
         measurementStreamStorage.accessStorage { storage in
-            do {
-                try fileLineReader.readLines(of: fileURL, progress: { line in
-                    switch line {
-                    case .line(let content):
-                        let measurementInfo = content.split(separator: ",")
-                        guard measurementInfo.count == 13 else {
-                            Log.info("Line corrupted")
-                            return
-                        }
-                        guard
-                            let sessionUUID = SessionUUID(uuidString: String(measurementInfo[1])),
-                            let date = dateFrom(date: measurementInfo[2], time: measurementInfo[3]),
-                            let lat = Double(measurementInfo[4]),
-                            let long = Double(measurementInfo[5]),
-                            let f = Double(measurementInfo[6]),
-                            let rh = Double(measurementInfo[9]),
-                            let pm1 = Double(measurementInfo[10]),
-                            let pm2_5 = Double(measurementInfo[11]),
-                            let pm10 = Double(measurementInfo[12])
-                        else {
-                            Log.info("Wrong data format in the csv row: \(line)")
-                            return
-                        }
-                        guard !sessionsToIgnore.contains(sessionUUID) else { return }
-                        
-                        var session = sessionsWithTimes.first(where: {$0.uuid == sessionUUID })
-                        
-                        if session == nil {
-                            do {
-                                if let existingSession = try storage.getExistingSession(with: sessionUUID) {
-                                    //TODO: check if session was recorded with the syncing AB
-                                    guard existingSession.isInStandaloneMode && existingSession.sensorPackageName == deviceID else {
-                                        Log.info("## Ignoring session \(existingSession.name)")
-                                        sessionsToIgnore.append(sessionUUID)
-                                        return
-                                    }
-                                    
-                                    session = SDSession(uuid: sessionUUID, lastMeasurementTime: existingSession.lastMeasurementTime)
-                                } else {
-                                    session = SDSession(uuid: sessionUUID, lastMeasurementTime: nil)
-                                    sessionsToCreate.append(sessionUUID)
-                                }
-                            } catch {
-                                Log.error(error.localizedDescription)
-                            }
-                            
-                            sessionsWithTimes.insert(session!)
-                        }
-                        
-                        if  session!.lastMeasurementTime == nil || date > session!.lastMeasurementTime! {
-                            sessionsWithMeasurement[SDStream(sessionUUID: sessionUUID, name: .f), default: []].append(Measurement(time: date, value: f, location: CLLocationCoordinate2D(latitude: lat, longitude: long)))
-                            sessionsWithMeasurement[SDStream(sessionUUID: sessionUUID, name: .rh), default: []].append(Measurement(time: date, value: rh, location: CLLocationCoordinate2D(latitude: lat, longitude: long)))
-                            sessionsWithMeasurement[SDStream(sessionUUID: sessionUUID, name: .pm1), default: []].append(Measurement(time: date, value: pm1, location: CLLocationCoordinate2D(latitude: lat, longitude: long)))
-                            sessionsWithMeasurement[SDStream(sessionUUID: sessionUUID, name: .pm2_5), default: []].append(Measurement(time: date, value: pm2_5, location: CLLocationCoordinate2D(latitude: lat, longitude: long)))
-                            sessionsWithMeasurement[SDStream(sessionUUID: sessionUUID, name: .pm10), default: []].append(Measurement(time: date, value: pm10, location: CLLocationCoordinate2D(latitude: lat, longitude: long)))
-                        }
-                    case .endOfFile:
-                        Log.info("Reached end of csv file")
-                    }
-                })
+            fileReadingCancellable = self.read(fileURL: fileURL).sink { [weak self] completion in
+                defer { fileReadingCancellable?.cancel() }
+                guard case .finished = completion else { return }
+                self?.saveData(streamsWithMeasurements, to: storage, with: deviceID, sessionsToCreate: &sessionsToCreate)
+            } receiveValue: { [weak self] measurements in
+                guard let self = self, let measurements = measurements, !sessionsToIgnore.contains(measurements.sessionUUID) else { return }
                 
-                try sessionsWithMeasurement.forEach { (sdStream: SDStream, measurements: [Measurement]) in
-                    Log.info("## \(sdStream): \(measurements)")
-                    if sessionsToCreate.contains(sdStream.sessionUUID) {
-                        do {
-                            try storage.createSession(Session(uuid: sdStream.sessionUUID, type: .mobile, name: "Imported from SD card", deviceType: .AIRBEAM3, location: measurements.first?.location, startTime: measurements.first?.time))
-                            Log.info("## Created new session")
-                        } catch {
-                            Log.error("Coudn't create a new session from imported data: \(error.localizedDescription)")
-                        }
-                        sessionsToCreate.removeAll(where: {$0 == sdStream.sessionUUID })
-                        let measurementStream = createMeasurementStream(for: sdStream.name, sensorPackageName: deviceID)
-                        let streamID = try storage.createMeasurementStream(measurementStream, for: sdStream.sessionUUID)
-                        try storage.addMeasurements(measurements, toStreamWithID: streamID)
-                    } else {
-                        do {
-                            var existingStreamID = try storage.existingMeasurementStream(sdStream.sessionUUID, name: sdStream.name.rawValue)
-                            if existingStreamID == nil {
-                                let measurementStream = createMeasurementStream(for: sdStream.name, sensorPackageName: deviceID)
-                                existingStreamID = try storage.createMeasurementStream(measurementStream, for: sdStream.sessionUUID)
-                            }
-
-                            try storage.addMeasurements(measurements, toStreamWithID: existingStreamID!)
-                            try storage.setStatusToFinishedAndUpdateEndTime(for: sdStream.sessionUUID, endTime: measurements.last?.time)
-                        } catch {
-                            Log.info("\(error)")
-                        }
-                    }
+                var session = processedSessions.first(where: {$0.uuid == measurements.sessionUUID })
+                if session == nil {
+                    session = self.processSession(storage: storage, sessionUUID: measurements.sessionUUID, deviceID: deviceID, sessionsToIgnore: &sessionsToIgnore, sessionsToCreate: &sessionsToCreate)
+                    guard session != nil else { return }
+                    processedSessions.insert(session!)
                 }
-            } catch {
-                Log.error("Error reading file")
+                
+                guard session!.lastMeasurementTime == nil || measurements.date > session!.lastMeasurementTime! else { return }
+                
+                self.enqueueForSaving(measurements: measurements, buffer: &streamsWithMeasurements)
             }
         }
     }
     
-    func dateFrom(date: Substring, time: Substring) -> Date? {
-        let isoDate = String(date + "T" + time)
-        let dateFormatter = DateFormatter()
-        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-        dateFormatter.dateFormat = "MM/dd/yyy'T'HH:mm:ss"
-        let date = dateFormatter.date(from:isoDate)
-        return date?.currentUTCTimeZoneDate
+    private func read(fileURL: URL) -> PassthroughSubject<SDCardMeasurementsRow?, Error> {
+        let publisher = PassthroughSubject<SDCardMeasurementsRow?, Error>()
+        do {
+            try fileLineReader.readLines(of: fileURL, progress: { line in
+                switch line {
+                case .line(let content):
+                    let measurementsRow = parser.parseMeasurement(lineSting: content)
+                    publisher.send(measurementsRow)
+                case .endOfFile:
+                    publisher.send(completion: .finished)
+                }
+            })
+        } catch {
+            Log.error("Cannot read file \(fileURL): \(error.localizedDescription)")
+            publisher.send(completion: .failure(error))
+        }
+        return publisher
     }
     
-    func createMeasurementStream(for sensorName: StreamSensorName, sensorPackageName: String) -> MeasurementStream {
+    private func saveData(_ streamsWithMeasurements: [SDStream: [Measurement]], to storage: HiddenCoreDataMeasurementStreamStorage, with deviceID: String, sessionsToCreate: inout [SessionUUID]) {
+        streamsWithMeasurements.forEach { (sdStream: SDStream, measurements: [Measurement]) in
+            Log.info("## \(sdStream): \(measurements)")
+            if sessionsToCreate.contains(sdStream.sessionUUID) {
+                createSession(storage: storage, sdStream: sdStream, location: measurements.first?.location, time: measurements.first?.time, sessionsToCreate: &sessionsToCreate)
+                saveMeasurements(measurements: measurements, storage: storage, sdStream: sdStream, deviceID: deviceID)
+            } else {
+                saveMeasurements(measurements: measurements, storage: storage, sdStream: sdStream, deviceID: deviceID)
+                do {
+                    try storage.setStatusToFinishedAndUpdateEndTime(for: sdStream.sessionUUID, endTime: measurements.last?.time)
+                } catch {
+                    Log.info("Error setting status to finished and updating end time: \(error)")
+                }
+            }
+        }
+    }
+    
+    private func createSession(storage: HiddenCoreDataMeasurementStreamStorage, sdStream: SDStream, location: CLLocationCoordinate2D?, time: Date?, sessionsToCreate: inout [SessionUUID]) {
+        do {
+            try storage.createSession(Session(uuid: sdStream.sessionUUID, type: .mobile, name: "Imported from SD card", deviceType: .AIRBEAM3, location: location, startTime: time))
+            sessionsToCreate.removeAll(where: {$0 == sdStream.sessionUUID })
+        } catch {
+            Log.error("Couldn't create session: \(error.localizedDescription)")
+        }
+    }
+    
+    private func saveMeasurements(measurements: [Measurement], storage: HiddenCoreDataMeasurementStreamStorage, sdStream: SDStream, deviceID: String) {
+        do {
+            var existingStreamID = try storage.existingMeasurementStream(sdStream.sessionUUID, name: sdStream.name.rawValue)
+            if existingStreamID == nil {
+                let measurementStream = createMeasurementStream(for: sdStream.name, sensorPackageName: deviceID)
+                existingStreamID = try storage.saveMeasurementStream(measurementStream, for: sdStream.sessionUUID)
+            }
+            try storage.addMeasurements(measurements, toStreamWithID: existingStreamID!)
+        } catch {
+            Log.info("Saving measurements failed: \(error)")
+        }
+    }
+    
+    private func processSession(storage: HiddenCoreDataMeasurementStreamStorage, sessionUUID: SessionUUID, deviceID: String, sessionsToIgnore: inout [SessionUUID], sessionsToCreate: inout [SessionUUID]) -> SDSession? {
+        do {
+            if let existingSession = try storage.getExistingSession(with: sessionUUID) {
+                //TODO: check if session was recorded with the syncing AB
+                guard existingSession.isInStandaloneMode && existingSession.sensorPackageName == deviceID else {
+                    Log.info("## Ignoring session \(existingSession.name ?? "none")")
+                    sessionsToIgnore.append(sessionUUID)
+                    return nil
+                }
+                
+                return SDSession(uuid: sessionUUID, lastMeasurementTime: existingSession.lastMeasurementTime)
+            } else {
+                sessionsToCreate.append(sessionUUID)
+                return SDSession(uuid: sessionUUID, lastMeasurementTime: nil)
+            }
+        } catch {
+            Log.error(error.localizedDescription)
+            return nil
+        }
+    }
+    
+    private func enqueueForSaving(measurements: SDCardMeasurementsRow, buffer streamsWithMeasurements: inout [SDStream: [Measurement]]) {
+        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, name: .f), default: []].append(Measurement(time: measurements.date, value: measurements.f, location: CLLocationCoordinate2D(latitude: measurements.lat, longitude: measurements.long)))
+        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, name: .rh), default: []].append(Measurement(time: measurements.date, value: measurements.rh, location: CLLocationCoordinate2D(latitude: measurements.lat, longitude: measurements.long)))
+        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, name: .pm1), default: []].append(Measurement(time: measurements.date, value: measurements.pm1, location: CLLocationCoordinate2D(latitude: measurements.lat, longitude: measurements.long)))
+        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, name: .pm2_5), default: []].append(Measurement(time: measurements.date, value: measurements.pm2_5, location: CLLocationCoordinate2D(latitude: measurements.lat, longitude: measurements.long)))
+        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, name: .pm10), default: []].append(Measurement(time: measurements.date, value: measurements.pm10, location: CLLocationCoordinate2D(latitude: measurements.lat, longitude: measurements.long)))
+    }
+    
+    private func createMeasurementStream(for sensorName: StreamSensorName, sensorPackageName: String) -> MeasurementStream {
         switch sensorName {
         case .f:
             return MeasurementStream(id: nil,
                               sensorName: sensorName.rawValue,
-                              sensorPackageName: sensorPackageName, // CHANGE
+                              sensorPackageName: sensorPackageName,
                               measurementType: "Temperature",
                               measurementShortType: "F",
                               unitName: "degrees Fahrenheit",
@@ -167,7 +156,7 @@ struct SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         case .rh:
             return MeasurementStream(id: nil,
                               sensorName: sensorName.rawValue,
-                              sensorPackageName: sensorPackageName, // CHANGE
+                              sensorPackageName: sensorPackageName,
                               measurementType: "Humidity",
                               measurementShortType: "RH",
                               unitName: "percent",
@@ -180,7 +169,7 @@ struct SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         case .pm1:
             return MeasurementStream(id: nil,
                               sensorName: sensorName.rawValue,
-                              sensorPackageName: sensorPackageName, // CHANGE
+                              sensorPackageName: sensorPackageName,
                               measurementType: "Particulate Matter",
                               measurementShortType: "PM",
                               unitName: "micrograms per cubic meter",
@@ -193,7 +182,7 @@ struct SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         case .pm2_5:
             return MeasurementStream(id: nil,
                               sensorName: sensorName.rawValue,
-                              sensorPackageName: sensorPackageName, // CHANGE
+                              sensorPackageName: sensorPackageName,
                               measurementType: "Particulate Matter",
                               measurementShortType: "PM",
                               unitName: "micrograms per cubic meter",
@@ -206,7 +195,7 @@ struct SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         case .pm10:
             return MeasurementStream(id: nil,
                               sensorName: sensorName.rawValue,
-                              sensorPackageName: sensorPackageName, // CHANGE
+                              sensorPackageName: sensorPackageName,
                               measurementType: "Particulate Matter",
                               measurementShortType: "PM",
                               unitName: "micrograms per cubic meter",
@@ -218,4 +207,22 @@ struct SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
                               thresholdVeryLow: 0)
         }
     }
+}
+
+fileprivate struct SDSession: Hashable {
+    let uuid: SessionUUID
+    let lastMeasurementTime: Date?
+}
+
+fileprivate struct SDStream: Hashable {
+    let sessionUUID: SessionUUID
+    let name: StreamSensorName
+}
+
+fileprivate enum StreamSensorName: String {
+    case f = "AirBeam3-F"
+    case rh = "AirBeam3-RH"
+    case pm1 = "AirBeam3-PM1"
+    case pm2_5 = "AirBeam3-PM2.5"
+    case pm10 = "AirBeam3-PM10"
 }
