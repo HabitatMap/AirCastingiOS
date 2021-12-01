@@ -16,6 +16,7 @@ struct SelectPeripheralView: View {
     @EnvironmentObject var connectionController: DefaultAirBeamConnectionController
     @EnvironmentObject var sdSyncController: SDSyncController
     @Binding var creatingSessionFlowContinues: Bool
+    @Binding var sdSyncContinues: Bool
     let urlProvider: BaseURLProvider
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     var syncMode: Bool? = false
@@ -136,7 +137,7 @@ struct SelectPeripheralView: View {
                                        userAuthenticationSession: userAuthenticationSession,
                                        sessionContext: sessionContext,
                                        peripheral: selection)
-                destination = AnyView(SyncingABView(viewModel: viewModel, baseURL: urlProvider, creatingSessionFlowContinues: $creatingSessionFlowContinues))
+                destination = AnyView(SyncingABView(viewModel: viewModel, baseURL: urlProvider, creatingSessionFlowContinues: $creatingSessionFlowContinues, sdSyncContinues: $sdSyncContinues))
             } else {
                 let viewModel =
                 AirbeamConnectionViewModelDefault(airBeamConnectionController: connectionController,
@@ -158,7 +159,7 @@ struct SelectPeripheralView: View {
 #if DEBUG
 struct SelectPeripheralView_Previews: PreviewProvider {
     static var previews: some View {
-        SelectPeripheralView(creatingSessionFlowContinues: .constant(true), urlProvider: DummyURLProvider())
+        SelectPeripheralView(creatingSessionFlowContinues: .constant(true), sdSyncContinues: .constant(false), urlProvider: DummyURLProvider())
     }
 }
 #endif

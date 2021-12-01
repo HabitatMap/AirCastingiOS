@@ -13,6 +13,7 @@ struct SDSyncRootView: View {
     let urlProvider: BaseURLProvider
     
     @State private var backendSyncCompleted = false
+    @State var sdSyncContinues = true
     
     init(sessionSynchronizer: SessionSynchronizer, urlProvider: BaseURLProvider) {
         self.sessionSynchronizer = sessionSynchronizer
@@ -24,7 +25,7 @@ struct SDSyncRootView: View {
             Text("Syncing")
                 .background(
                     NavigationLink(
-                        destination: SelectPeripheralView(creatingSessionFlowContinues: .constant(true), urlProvider: urlProvider, syncMode: true),
+                        destination: SelectPeripheralView(creatingSessionFlowContinues: .constant(true), sdSyncContinues: $sdSyncContinues, urlProvider: urlProvider, syncMode: true),
                         isActive: $backendSyncCompleted,
                         label: {
                             EmptyView()
@@ -35,19 +36,22 @@ struct SDSyncRootView: View {
             
         }
         .onAppear() {
-//            guard !sessionSynchronizer.syncInProgress.value else {
-//                onCurrentSyncEnd { self.startBackendSync() }
-//                return
-//            }
+            guard !sessionSynchronizer.syncInProgress.value else {
+                onCurrentSyncEnd { self.startBackendSync() }
+                return
+            }
             finishAndSyncButtonTapped.finishAndSyncButtonWasTapped = false
             startBackendSync()
+        }
+        .onChange(of: sdSyncContinues) { newValue in
+            sdSyncContinues ? nil : presentationMode.wrappedValue.dismiss()
         }
     }
     
     func startBackendSync() {
-//        sessionSynchronizer.triggerSynchronization() {
+        sessionSynchronizer.triggerSynchronization() {
             self.backendSyncCompleted = true
-//        }
+        }
     }
     
     private func onCurrentSyncEnd(_ completion: @escaping () -> Void) {

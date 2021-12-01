@@ -39,10 +39,6 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
     
     private let bluetoothManager: BluetoothManager
     
-//    private var currentSessionType: SDCardSessionType?
-//    private var currentSessionTypeReceived: Int = 0
-//    private var currentSessionTypeExpected: Int = 0
-    
     private var dataCharacteristicObserver: AnyHashable?
     private var metadataCharacteristicObserver: AnyHashable?
     
