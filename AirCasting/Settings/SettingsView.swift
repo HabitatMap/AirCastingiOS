@@ -48,6 +48,7 @@ struct SettingsView: View {
                 crowdMapDescription
             }
             keepScreenOnSwitch
+            clearSDCard
             navigateToBackendSettingsButton
         }
     }
@@ -105,6 +106,23 @@ struct SettingsView: View {
             BackendSettingsView(logoutController: logoutController,
                                 urlProvider: urlProvider)
         })
+    }
+    
+    private var clearSDCard: some View {
+        Button {
+            // action
+        } label: {
+            Group {
+                HStack {
+                    Text("Clear SD card")
+                        .font(Fonts.boldHeading1)
+                        .accentColor(.black)
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .accentColor(.gray).opacity(0.6)
+                }
+            }
+        }
     }
 }
 
