@@ -42,6 +42,10 @@
 		4FEEAED3262C53C20024AB7E /* UpdateSessionParamsServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FEEAED2262C53C20024AB7E /* UpdateSessionParamsServiceTests.swift */; };
 		4FF60BE926550077001618BE /* SelectPeripheralView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC1DAD4425C9858C009AC4D1 /* SelectPeripheralView.swift */; };
 		4FF60BEA265500C4001618BE /* BluetoothManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC1DAD4825C987B3009AC4D1 /* BluetoothManager.swift */; };
+		750A51D82754D41A00D6F4E7 /* GridCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 750A51D72754D41A00D6F4E7 /* GridCalculator.swift */; };
+		750A51DA2754D47F00D6F4E7 /* GridSquare.swift in Sources */ = {isa = PBXBuildFile; fileRef = 750A51D92754D47F00D6F4E7 /* GridSquare.swift */; };
+		750A51DC2754D4BD00D6F4E7 /* VisibleRegionCoordinates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 750A51DB2754D4BD00D6F4E7 /* VisibleRegionCoordinates.swift */; };
+		75B1DD48273BCCD200BCDF9B /* Heatmap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B1DD47273BCCD200BCDF9B /* Heatmap.swift */; };
 		AC049F7F2604B7AF00398197 /* AuthErorrHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC049F7E2604B7AF00398197 /* AuthErorrHandling.swift */; };
 		AC049F872608B74C00398197 /* FixedSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC049F862608B74C00398197 /* FixedSession.swift */; };
 		AC049F8B2608DCB000398197 /* Session+Mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC049F8A2608DCB000398197 /* Session+Mock.swift */; };
@@ -340,6 +344,10 @@
 		4FB39E3F2622252700E5E564 /* XCTestCase+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+Extensions.swift"; sourceTree = "<group>"; };
 		4FD2CA4626406F2C007E932E /* Diff.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Diff.swift; sourceTree = "<group>"; };
 		4FEEAED2262C53C20024AB7E /* UpdateSessionParamsServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateSessionParamsServiceTests.swift; sourceTree = "<group>"; };
+		750A51D72754D41A00D6F4E7 /* GridCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridCalculator.swift; sourceTree = "<group>"; };
+		750A51D92754D47F00D6F4E7 /* GridSquare.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridSquare.swift; sourceTree = "<group>"; };
+		750A51DB2754D4BD00D6F4E7 /* VisibleRegionCoordinates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisibleRegionCoordinates.swift; sourceTree = "<group>"; };
+		75B1DD47273BCCD200BCDF9B /* Heatmap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Heatmap.swift; sourceTree = "<group>"; };
 		80BDC4331283D7705B8C8952 /* Pods-AirCasting.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AirCasting.debug.xcconfig"; path = "Target Support Files/Pods-AirCasting/Pods-AirCasting.debug.xcconfig"; sourceTree = "<group>"; };
 		8E819223F8D800D3B8ED8F56 /* Pods_AirCasting.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AirCasting.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AC049F7E2604B7AF00398197 /* AuthErorrHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthErorrHandling.swift; sourceTree = "<group>"; };
@@ -718,6 +726,17 @@
 			path = Mocks;
 			sourceTree = "<group>";
 		};
+		750A51D62754D3E800D6F4E7 /* Heatmap */ = {
+			isa = PBXGroup;
+			children = (
+				75B1DD47273BCCD200BCDF9B /* Heatmap.swift */,
+				750A51D72754D41A00D6F4E7 /* GridCalculator.swift */,
+				750A51D92754D47F00D6F4E7 /* GridSquare.swift */,
+				750A51DB2754D4BD00D6F4E7 /* VisibleRegionCoordinates.swift */,
+			);
+			path = Heatmap;
+			sourceTree = "<group>";
+		};
 		A39CC233FB1B8C6B1C3FF94A /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -998,6 +1017,7 @@
 		AC8D6C6825C049C200ED74D1 /* Map */ = {
 			isa = PBXGroup;
 			children = (
+				750A51D62754D3E800D6F4E7 /* Heatmap */,
 				AC93B8E625BEFE4F003D0A0D /* AirMapView.swift */,
 				AC93B8FD25C02E0B003D0A0D /* GoogleMapView.swift */,
 				AC8D6C7125C0574800ED74D1 /* LocationTracker.swift */,
@@ -1804,6 +1824,7 @@
 				B32D08AF267A6D13006C97ED /* ErasingToVoidPublisher.swift in Sources */,
 				B3D1928D26F1FA1C0029E1C8 /* FixedSessionFaker.swift in Sources */,
 				AC049F7F2604B7AF00398197 /* AuthErorrHandling.swift in Sources */,
+				750A51DC2754D4BD00D6F4E7 /* VisibleRegionCoordinates.swift in Sources */,
 				B3FD77C4267C94AF00E97CC2 /* SessionSynchronizationService.swift in Sources */,
 				B33DB5762686161300ED1344 /* SensorName.swift in Sources */,
 				DD8AFE4F272886D700ED1CED /* ThresholdWitness.swift in Sources */,
@@ -1843,6 +1864,7 @@
 				AC9F526E2652A360003CF61F /* AirSectionPickerView.swift in Sources */,
 				AC7EB37825A6FB3A00A7F2AF /* MainTabBarView.swift in Sources */,
 				B38E6CD026C5F83D00C21C45 /* StandardSesssionStopper.swift in Sources */,
+				750A51DA2754D47F00D6F4E7 /* GridSquare.swift in Sources */,
 				AC960C7825DD39F500EC95DD /* ABConnectedView.swift in Sources */,
 				DD5687C326CFC8080028C2CA /* Constants.swift in Sources */,
 				AC489B5C2603614E00CEEC48 /* MoreInfoPopupView.swift in Sources */,
@@ -1910,6 +1932,7 @@
 				DDCE5D3826A1FE2D0033C211 /* DeleteSessionViewModel.swift in Sources */,
 				DDD24D9626A8569400D4A327 /* ResetPasswordService.swift in Sources */,
 				B3D4B4B426C2C6A1004322FC /* Date+Miliseconds.swift in Sources */,
+				750A51D82754D41A00D6F4E7 /* GridCalculator.swift in Sources */,
 				B3FD77BB267C94AF00E97CC2 /* SessionsSynchronizationStoreDataConverter.swift in Sources */,
 				AC32041C25CC46EF00A68520 /* PowerABView.swift in Sources */,
 				DD700CF22695CE9C0048A17D /* MailView.swift in Sources */,
@@ -1978,6 +2001,7 @@
 				AC8D6C6A25C049E300ED74D1 /* Environment.swift in Sources */,
 				ACD01F4025F8C1F800B8F65F /* SessionContext.swift in Sources */,
 				DDF62601269C779800F23489 /* UIApplication+AppInfo.swift.swift in Sources */,
+				75B1DD48273BCCD200BCDF9B /* Heatmap.swift in Sources */,
 				AC8D6C7225C0574800ED74D1 /* LocationTracker.swift in Sources */,
 				DD8C380C2689A3DA00901FDF /* BaseURLProvider.swift in Sources */,
 				AC4EC6C425B6FE0D00C1E312 /* ThresholdsSettingsView.swift in Sources */,
