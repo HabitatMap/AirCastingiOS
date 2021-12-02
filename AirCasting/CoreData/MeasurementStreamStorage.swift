@@ -101,8 +101,6 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
             newMeasurement.value = measurement.value
             stream.addToMeasurements(newMeasurement)
         }
-        
-        Log.info("## Added measurements to stream \(stream): \(stream.measurements)")
     }
     
     func saveThresholdFor(sensorName: String, thresholdVeryHigh: Int32, thresholdHigh: Int32, thresholdMedium: Int32, thresholdLow: Int32, thresholdVeryLow: Int32) throws {
@@ -119,7 +117,6 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
 
     func saveMeasurementStream(_ stream: MeasurementStream, for sessionUUID: SessionUUID) throws -> MeasurementStreamLocalID {
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
-        Log.info("## Created measurement stream for \(sessionEntity.name)")
         return try saveMeasurementStream(for: sessionEntity, context: context, stream)
     }
 

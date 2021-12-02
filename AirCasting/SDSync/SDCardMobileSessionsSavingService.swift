@@ -78,7 +78,6 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
     
     private func saveData(_ streamsWithMeasurements: [SDStream: [Measurement]], to storage: HiddenCoreDataMeasurementStreamStorage, with deviceID: String, sessionsToCreate: inout [SessionUUID]) {
         streamsWithMeasurements.forEach { (sdStream: SDStream, measurements: [Measurement]) in
-            Log.info("## \(sdStream): \(measurements)")
             if sessionsToCreate.contains(sdStream.sessionUUID) {
                 createSession(storage: storage, sdStream: sdStream, location: measurements.first?.location, time: measurements.first?.time, sessionsToCreate: &sessionsToCreate)
                 saveMeasurements(measurements: measurements, storage: storage, sdStream: sdStream, deviceID: deviceID)
@@ -118,7 +117,7 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
     private func processSession(storage: HiddenCoreDataMeasurementStreamStorage, sessionUUID: SessionUUID, deviceID: String, sessionsToIgnore: inout [SessionUUID], sessionsToCreate: inout [SessionUUID]) -> SDSession? {
         if let existingSession = try? storage.getExistingSession(with: sessionUUID) {
             guard existingSession.isInStandaloneMode && existingSession.sensorPackageName == deviceID else {
-                Log.info("## Ignoring session \(existingSession.name ?? "none")")
+                Log.info("[SD SYNC] Ignoring session \(existingSession.name ?? "none")")
                 sessionsToIgnore.append(sessionUUID)
                 return nil
             }
