@@ -67,13 +67,17 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
                 
                 // This will be needed when we will want to show progress in the view
                 // Payload format is ` Some string: ${number_of_entries_expected} `
-                guard let measurementsCountSting = payload.split(separator: ":").last?.trimmingCharacters(in: .whitespaces),
-                      let measurementsCount = Int(measurementsCountSting) else {
+                guard let measurementsCountSting = payload.split(separator: ":").last?.trimmingCharacters(in: .whitespaces) else {
                           Log.warning("Unexpected metadata format: (\(payload))")
                           self.finishSync { completion(.failure(SDCardSyncError.unexpectedMetadataFormat)) }
                           return
                       }
-                currentSessionTypeExpected = measurementsCount
+                let measurementsCount = Int(measurementsCountSting)
+                
+                /* It can happen, that in the given airbeam some type of session was never recorded. In that case, metadata format will be different
+                 and in that case we want to set currentSessionTypeExpected to 0 */
+                currentSessionTypeExpected = measurementsCount ?? 0
+                
                 progress(.metadata(SDCardMetaData(sessionType: currentSessionType!, measurementsCount: currentSessionTypeExpected)))
             case .failure(let error):
                 Log.warning("Error while receiving metadata from SD card: \(error.localizedDescription)")
