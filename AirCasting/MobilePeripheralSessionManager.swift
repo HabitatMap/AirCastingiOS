@@ -44,6 +44,14 @@ class MobilePeripheralSessionManager {
             }
         }
     }
+    
+    // This function is still needed for when the standalone mode flag is disabled
+    func finishSession(for peripheral: CBPeripheral, centralManager: CBCentralManager) {
+        if activeMobileSession?.peripheral == peripheral {
+            finishActiveSession(for: peripheral, centralManager: centralManager)
+            updateDatabaseForFinishedSession(with: activeMobileSession!.session.uuid)
+        }
+    }
 
     func finishSession(with uuid: SessionUUID, centralManager: CBCentralManager) {
         measurementStreamStorage.accessStorage { storage in
