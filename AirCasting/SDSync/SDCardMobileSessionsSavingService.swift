@@ -138,74 +138,8 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, name: .pm10), default: []].append(Measurement(time: measurements.date, value: measurements.pm10, location: CLLocationCoordinate2D(latitude: measurements.lat, longitude: measurements.long)))
     }
     
-    private func createMeasurementStream(for sensorName: StreamSensorName, sensorPackageName: String) -> MeasurementStream {
-        switch sensorName {
-        case .f:
-            return MeasurementStream(id: nil,
-                              sensorName: sensorName.rawValue,
-                              sensorPackageName: sensorPackageName,
-                              measurementType: "Temperature",
-                              measurementShortType: "F",
-                              unitName: "degrees Fahrenheit",
-                              unitSymbol: "F",
-                              thresholdVeryHigh: 135,
-                              thresholdHigh: 100,
-                              thresholdMedium: 75,
-                              thresholdLow: 45,
-                              thresholdVeryLow: 15)
-        case .rh:
-            return MeasurementStream(id: nil,
-                              sensorName: sensorName.rawValue,
-                              sensorPackageName: sensorPackageName,
-                              measurementType: "Humidity",
-                              measurementShortType: "RH",
-                              unitName: "percent",
-                              unitSymbol: "%",
-                              thresholdVeryHigh: 100,
-                              thresholdHigh: 75,
-                              thresholdMedium: 50,
-                              thresholdLow: 25,
-                              thresholdVeryLow: 0)
-        case .pm1:
-            return MeasurementStream(id: nil,
-                              sensorName: sensorName.rawValue,
-                              sensorPackageName: sensorPackageName,
-                              measurementType: "Particulate Matter",
-                              measurementShortType: "PM",
-                              unitName: "micrograms per cubic meter",
-                              unitSymbol: "µg/m³",
-                              thresholdVeryHigh: 150,
-                              thresholdHigh: 55,
-                              thresholdMedium: 35,
-                              thresholdLow: 12,
-                              thresholdVeryLow: 0)
-        case .pm2_5:
-            return MeasurementStream(id: nil,
-                              sensorName: sensorName.rawValue,
-                              sensorPackageName: sensorPackageName,
-                              measurementType: "Particulate Matter",
-                              measurementShortType: "PM",
-                              unitName: "micrograms per cubic meter",
-                              unitSymbol: "µg/m³",
-                              thresholdVeryHigh: 150,
-                              thresholdHigh: 55,
-                              thresholdMedium: 35,
-                              thresholdLow: 12,
-                              thresholdVeryLow: 0)
-        case .pm10:
-            return MeasurementStream(id: nil,
-                              sensorName: sensorName.rawValue,
-                              sensorPackageName: sensorPackageName,
-                              measurementType: "Particulate Matter",
-                              measurementShortType: "PM",
-                              unitName: "micrograms per cubic meter",
-                              unitSymbol: "µg/m³",
-                              thresholdVeryHigh: 200,
-                              thresholdHigh: 100,
-                              thresholdMedium: 50,
-                              thresholdLow: 20,
-                              thresholdVeryLow: 0)
-        }
+    private func createMeasurementStream(for sensorName: MeasurementStreamSensorName, sensorPackageName: String) -> MeasurementStream {
+        MeasurementStream(sensorName: sensorName, sensorPackageName: sensorPackageName)
     }
 }
 
@@ -216,13 +150,5 @@ fileprivate struct SDSession: Hashable {
 
 fileprivate struct SDStream: Hashable {
     let sessionUUID: SessionUUID
-    let name: StreamSensorName
-}
-
-fileprivate enum StreamSensorName: String {
-    case f = "AirBeam3-F"
-    case rh = "AirBeam3-RH"
-    case pm1 = "AirBeam3-PM1"
-    case pm2_5 = "AirBeam3-PM2.5"
-    case pm10 = "AirBeam3-PM10"
+    let name: MeasurementStreamSensorName
 }
