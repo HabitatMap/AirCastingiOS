@@ -5,75 +5,65 @@
 //  Created by Lunar on 04/02/2021.
 //
 
-import CoreBluetooth
 import SwiftUI
 
-struct SyncingABView<VM: SDSyncViewModel>: View {
-    
+struct SDSyncABView<VM: SDSyncViewModel>: View {
     @Environment(\.presentationMode) var presentationMode
     @StateObject var viewModel: VM
-    let baseURL: BaseURLProvider
     @Binding var creatingSessionFlowContinues: Bool
-    @State private var showNextScreen: Bool = false
-    @State private var presentAlert: Bool = false
-    
     
     var body: some View {
-        VStack(spacing: 50) {
-            ProgressView(value: 0.5)
+        VStack(alignment: .leading, spacing: 40) {
+            ProgressView(value: 0.7)
+            Spacer()
             ZStack(alignment: Alignment(horizontal: .trailing, vertical: .bottom), content: {
-                Image("airbeam")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
+                syncingImage
                 loader
                     .padding()
                     .padding(.vertical)
             })
-            
+            Spacer()
             VStack(alignment: .leading, spacing: 15) {
                 titleLabel
                 messageLabel
             }
-        }.background(
-            NavigationLink(
-                destination: Text("Complete"),
-                isActive: $showNextScreen,
-                label: {
-                    EmptyView()
-                }
-            )
-        )
+            Spacer()
+        }
         .padding()
+        .background(navigationLink)
         .onReceive(viewModel.isSyncCompleted, perform: { isConnected in
-            showNextScreen = isConnected
+            viewModel.presentNextScreen = isConnected
         })
         .onReceive(viewModel.shouldDismiss, perform: { dismiss in
-            presentAlert = dismiss
+            viewModel.presentAlert = dismiss
         })
-        .alert(isPresented: $presentAlert, content: {
-            Alert(title: Text(Strings.AirBeamConnector.connectionTimeoutTitle),
-                  message: Text(Strings.AirBeamConnector.connectionTimeoutDescription),
-                  dismissButton: .default(Text(Strings.AirBeamConnector.connectionTimeoutActionTitle), action: {
-                presentationMode.wrappedValue.dismiss()
-            }))
-        })
+        .alert(isPresented: $viewModel.presentAlert, content: { connectionTimeOutAlert })
         .onAppear(perform: {
-            /* App is pushing the next view before this view is fully loaded. It resulted with showing next view and going back to this one.
+            /* App is pushing the next view before this view is fully loaded.
+             It resulted with showing next view and going back to this one.
              The async enables app to load this view and then push the next one. */
             DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
                 viewModel.connectToAirBeamAndSync()
             }
         })
     }
+}
+
+extension SDSyncABView {
+    var syncingImage: some View {
+        Image("airbeam")
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+    }
     
     var titleLabel: some View {
-        Text("Syncing")
+        Text(Strings.SDSyncABView.title)
             .font(Fonts.boldTitle3)
             .foregroundColor(.accentColor)
     }
     
     var messageLabel: some View {
-        Text("Keep your AirBeam close to your iPhone. Plug in your AirBeam to speed up the sync.")
+        Text(Strings.SDSyncABView.message)
             .font(Fonts.regularHeading1)
             .foregroundColor(.aircastingGray)
     }
@@ -87,5 +77,23 @@ struct SyncingABView<VM: SDSyncViewModel>: View {
                 .progressViewStyle(CircularProgressViewStyle(tint: Color.white))
                 .scaleEffect(2)
         }
+    }
+    
+    var connectionTimeOutAlert: Alert {
+        Alert(title: Text(Strings.AirBeamConnector.connectionTimeoutTitle),
+              message: Text(Strings.AirBeamConnector.connectionTimeoutDescription),
+              dismissButton: .default(Text(Strings.AirBeamConnector.connectionTimeoutActionTitle), action: {
+            presentationMode.wrappedValue.dismiss()
+        }))
+    }
+    
+    var navigationLink: some View {
+        NavigationLink(
+            destination: SDSyncCompleteView(creatingSessionFlowContinues: $creatingSessionFlowContinues),
+            isActive: $viewModel.presentNextScreen,
+            label: {
+                EmptyView()
+            }
+        )
     }
 }

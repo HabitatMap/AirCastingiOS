@@ -96,7 +96,7 @@ struct SelectPeripheralView: View {
     var titleLabel: some View {
         var title: Text
         if syncMode == true {
-            title = Text("Select the device you'd like to sync")
+            title = Text(Strings.SelectPeripheralView.titleSyncLabel)
         } else {
             title = Text(Strings.SelectPeripheralView.titleLabel)
         }
@@ -136,7 +136,7 @@ struct SelectPeripheralView: View {
                                        userAuthenticationSession: userAuthenticationSession,
                                        sessionContext: sessionContext,
                                        peripheral: selection)
-                destination = AnyView(SyncingABView(viewModel: viewModel, baseURL: urlProvider, creatingSessionFlowContinues: $creatingSessionFlowContinues))
+                destination = AnyView(SDSyncABView(viewModel: viewModel, creatingSessionFlowContinues: $creatingSessionFlowContinues))
             } else {
                 let viewModel =
                 AirbeamConnectionViewModelDefault(airBeamConnectionController: connectionController,

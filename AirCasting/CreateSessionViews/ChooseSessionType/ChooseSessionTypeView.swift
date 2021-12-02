@@ -60,7 +60,9 @@ struct ChooseSessionTypeView: View {
                 }
                 
                 .fullScreenCover(isPresented: $startSync) {
-                    SDSyncRootView(sessionSynchronizer: sessionSynchronizer, urlProvider: viewModel.passURLProvider)
+                    CreatingSessionFlowRootView {
+                        SDSyncRootView(viewModel: SDSyncRootViewModelDefault(sessionSynchronizer: sessionSynchronizer, urlProvider: viewModel.passURLProvider), creatingSessionFlowContinues: $startSync)
+                    }
                 }
                 .onChange(of: viewModel.passBluetoothManager.centralManagerState) { _ in
                     if didTapFixedSession {
@@ -108,7 +110,9 @@ struct ChooseSessionTypeView: View {
                             }
                         EmptyView()
                             .fullScreenCover(isPresented: $startSync) {
-                                SDSyncRootView(sessionSynchronizer: sessionSynchronizer, urlProvider: viewModel.passURLProvider)
+                                CreatingSessionFlowRootView {
+                                    SDSyncRootView(viewModel: SDSyncRootViewModelDefault(sessionSynchronizer: sessionSynchronizer, urlProvider: viewModel.passURLProvider), creatingSessionFlowContinues: $startSync)
+                                }
                             }
                     }
                 )
