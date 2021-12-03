@@ -21,9 +21,9 @@ or alternatively using `brew install fastlane`
 fastlane ios beta
 ```
 AirCastingApp
-### ios appstore
+### ios release
 ```
-fastlane ios appstore
+fastlane ios release
 ```
 
 
