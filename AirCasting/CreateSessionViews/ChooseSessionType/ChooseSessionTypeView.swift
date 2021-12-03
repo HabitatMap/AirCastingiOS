@@ -37,7 +37,7 @@ struct ChooseSessionTypeView: View {
                 mainContent
                 .fullScreenCover(isPresented: $isPowerABLinkActive) {
                     CreatingSessionFlowRootView {
-                        PowerABView(creatingSessionFlowContinues: $isPowerABLinkActive, urlProvider: viewModel.passURLProvider)
+                        PowerABView(creatingSessionFlowContinues: $isPowerABLinkActive, sdSyncContinues: .constant(false), urlProvider: viewModel.passURLProvider)
                     }
                 }
             
@@ -49,13 +49,13 @@ struct ChooseSessionTypeView: View {
           
                 .fullScreenCover(isPresented: $isTurnBluetoothOnLinkActive) {
                     CreatingSessionFlowRootView {
-                        TurnOnBluetoothView(creatingSessionFlowContinues: $isTurnBluetoothOnLinkActive, urlProvider: viewModel.passURLProvider)
+                        TurnOnBluetoothView(creatingSessionFlowContinues: $isTurnBluetoothOnLinkActive, sdSyncContinues: .constant(false), urlProvider: viewModel.passURLProvider)
                     }
                 }
 
                 .fullScreenCover(isPresented: $isMobileLinkActive) {
                     CreatingSessionFlowRootView {
-                        SelectDeviceView(creatingSessionFlowContinues: $isMobileLinkActive, urlProvider: viewModel.passURLProvider)
+                        SelectDeviceView(creatingSessionFlowContinues: $isMobileLinkActive, sdSyncContinues: .constant(false), urlProvider: viewModel.passURLProvider)
                     }
                 }
                 
@@ -85,7 +85,7 @@ struct ChooseSessionTypeView: View {
                         EmptyView()
                             .fullScreenCover(isPresented: $isPowerABLinkActive) {
                                 CreatingSessionFlowRootView {
-                                    PowerABView(creatingSessionFlowContinues: $isPowerABLinkActive, urlProvider: viewModel.passURLProvider)
+                                    PowerABView(creatingSessionFlowContinues: $isPowerABLinkActive, sdSyncContinues: .constant(false), urlProvider: viewModel.passURLProvider)
                                 }
                             }
                         EmptyView()
@@ -97,13 +97,13 @@ struct ChooseSessionTypeView: View {
                         EmptyView()
                             .fullScreenCover(isPresented: $isTurnBluetoothOnLinkActive) {
                                 CreatingSessionFlowRootView {
-                                    TurnOnBluetoothView(creatingSessionFlowContinues: $isTurnBluetoothOnLinkActive, urlProvider: viewModel.passURLProvider)
+                                    TurnOnBluetoothView(creatingSessionFlowContinues: $isTurnBluetoothOnLinkActive, sdSyncContinues: .constant(false), urlProvider: viewModel.passURLProvider)
                                 }
                             }
                         EmptyView()
                             .fullScreenCover(isPresented: $isMobileLinkActive) {
                                 CreatingSessionFlowRootView {
-                                    SelectDeviceView(creatingSessionFlowContinues: $isMobileLinkActive, urlProvider: viewModel.passURLProvider)
+                                    SelectDeviceView(creatingSessionFlowContinues: $isMobileLinkActive, sdSyncContinues: .constant(false), urlProvider: viewModel.passURLProvider)
                                 }
                             }
                         EmptyView()
