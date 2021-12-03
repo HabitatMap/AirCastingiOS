@@ -144,10 +144,10 @@ private extension SessionHeaderView {
 
     var actionsMenuFixed: some View {
         Menu {
-            actionsMenuFixedRepeatButton
-            actionsMenuFixedEditButton
-            actionsMenuFixedShareButton
-            actionsMenuFixedDeleteButton
+            actionsMenuRepeatButton
+            actionsMenuEditButton
+            actionsMenuShareButton
+            actionsMenuDeleteButton
         } label: {
             ZStack(alignment: .trailing) {
                 EditButtonView()
