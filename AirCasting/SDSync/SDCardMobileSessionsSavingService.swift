@@ -36,7 +36,7 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
                         let measurementsRow = self.parser.parseMeasurement(lineSting: content)
                         guard let measurements = measurementsRow, !sessionsToIgnore.contains(measurements.sessionUUID) else { return }
                         
-                        var session = processedSessions.first(where: {$0.uuid == measurements.sessionUUID })
+                        var session = processedSessions.first(where: { $0.uuid == measurements.sessionUUID })
                         if session == nil {
                             session = self.processSession(storage: storage, sessionUUID: measurements.sessionUUID, deviceID: deviceID, sessionsToIgnore: &sessionsToIgnore, sessionsToCreate: &sessionsToCreate)
                             guard session != nil else { return }
@@ -95,7 +95,7 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
     private func createSession(storage: HiddenCoreDataMeasurementStreamStorage, sdStream: SDStream, location: CLLocationCoordinate2D?, time: Date?, sessionsToCreate: inout [SessionUUID]) {
         do {
             try storage.createSession(Session(uuid: sdStream.sessionUUID, type: .mobile, name: "Imported from SD card", deviceType: .AIRBEAM3, location: location, startTime: time))
-            sessionsToCreate.removeAll(where: {$0 == sdStream.sessionUUID })
+            sessionsToCreate.removeAll(where: { $0 == sdStream.sessionUUID })
         } catch {
             Log.error("Couldn't create session: \(error.localizedDescription)")
         }

@@ -42,7 +42,7 @@ class SDCardMeasurementsParser {
     private func dateFrom(date: Substring, time: Substring) -> Date? {
         let isoDate = String(date + "T" + time)
         let dateFormatter = DateFormatters.SDCardSync.fileParserFormatter
-        let date = dateFormatter.date(from:isoDate)
+        let date = dateFormatter.date(from: isoDate)
         return date?.currentUTCTimeZoneDate
     }
 }
