@@ -37,7 +37,7 @@ platform :ios do
          git_add
          git_commit(path: "", message: "Beta releasae of #{version}b#{build}") 
       rescue => ex
-         reset_git_repo
+         reset_git_repo(skip_clean: true)
       end
 
     end
@@ -57,7 +57,7 @@ platform :ios do
          )
          clean_build_artifacts
       rescue => ex
-         reset_git_repo
+         reset_git_repo(skip_clean: true)
       end
    end
 end
