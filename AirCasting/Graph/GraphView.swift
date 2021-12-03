@@ -24,21 +24,21 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                                   isSensorTypeNeeded: false,
                                   isCollapsed: Binding.constant(false),
                                   session: session,
-                                  sessionStopperFactory: sessionStoppableFactory)
+                                  sessionStopperFactory: sessionStoppableFactory, measurementStreamStorage: measurementStreamStorage)
                 .padding([.bottom, .leading, .trailing])
             
             ABMeasurementsView(viewModelProvider: {
-                DefaultSyncingMeasurementsViewModel(measurementStreamStorage: measurementStreamStorage,
-                                          sessionDownloader: SessionDownloadService(client: URLSession.shared,
-                                                                                    authorization: UserAuthenticationSession(),
-                                                                                    responseValidator: DefaultHTTPResponseValidator()),
-                                          session: session)
-            },
-                               session: session,
-                               isCollapsed: Binding.constant(false),
-                               selectedStream: $selectedStream,
-                               thresholds: thresholds,
-                               measurementPresentationStyle: .showValues)
+                           DefaultSyncingMeasurementsViewModel(measurementStreamStorage: measurementStreamStorage,
+                                                     sessionDownloader: SessionDownloadService(client: URLSession.shared,
+                                                                                               authorization: UserAuthenticationSession(),
+                                                                                               responseValidator: DefaultHTTPResponseValidator()),
+                                                     session: session)
+                       },
+                                          session: session,
+                                          isCollapsed: Binding.constant(false),
+                                          selectedStream: $selectedStream,
+                                          thresholds: thresholds,
+                                          measurementPresentationStyle: .showValues)
                 .padding(.horizontal)
            
             if isProceeding(session: session) {

@@ -18,6 +18,9 @@ struct SessionHeaderView: View {
     @State private var showingAlert = false
     @State private var showingFinishAlert = false
     let sessionStopperFactory: SessionStoppableFactory
+    @State var showDeleteModal = false
+    let measurementStreamStorage: MeasurementStreamStorage
+    @EnvironmentObject var authorization: UserAuthenticationSession
     
     var body: some View {
         VStack(alignment: .leading, spacing: 3) {
@@ -25,7 +28,7 @@ struct SessionHeaderView: View {
                     dateAndTime
                         .foregroundColor(Color.aircastingTimeGray)
                     Spacer()
-                    session.isActive ? actionsMenuMobile : nil
+                    actionsMenuMobile
                 }
             nameLabelAndExpandButton
         }.onChange(of: isCollapsed, perform: { value in
@@ -34,6 +37,9 @@ struct SessionHeaderView: View {
         .sheet(isPresented: Binding.constant(false), content: {
             ShareView(showModal: Binding.constant(false))
         })
+        .sheet(isPresented: $showDeleteModal) {
+            DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session, measurementStreamStorage: measurementStreamStorage, streamRemover: StreamRemoverDefault(authorization: authorization)), deleteModal: $showDeleteModal)
+        }
         .font(Fonts.regularHeading4)
         .foregroundColor(.aircastingGray)
     }
@@ -100,7 +106,8 @@ private extension SessionHeaderView {
     
     var actionsMenuMobile: some View {
         Menu {
-            actionsMenuMobileStopButton
+            session.isActive ? actionsMenuStopButton : nil
+            session.deletable ? actionsMenuDeleteButton : nil
         } label: {
             ZStack(alignment: .trailing) {
                 EditButtonView()
@@ -127,7 +134,7 @@ private extension SessionHeaderView {
         }
     }
     
-    var actionsMenuMobileStopButton: some View {
+    var actionsMenuStopButton: some View {
         Button {
             showingFinishAlert = true
         } label: {
@@ -135,28 +142,7 @@ private extension SessionHeaderView {
         }
     }
     
-    var actionsMenuFixed: some View {
-        Menu {
-            actionsMenuFixedRepeatButton
-            actionsMenuFixedEditButton
-            actionsMenuFixedShareButton
-            actionsMenuFixedDeleteButton
-        } label: {
-            ZStack(alignment: .trailing) {
-                EditButtonView()
-                Rectangle()
-                    .frame(width: 35, height: 25, alignment: .trailing)
-                    .opacity(0.0001)
-            }
-        }.alert(isPresented: $showingAlert) {
-            Alert(title: Text(Strings.SessionHeaderView.alertTitle),
-                  message: Text(Strings.SessionHeaderView.alertMessage),
-                  dismissButton: .default(Text(Strings.SessionHeaderView.confirmAlert)))
-        }
-        .sheet(isPresented: Binding.constant(false)) { EditViewModal(showModalEdit: Binding.constant(false)) }
-    }
-    
-    var actionsMenuFixedRepeatButton: some View {
+    var actionsMenuRepeatButton: some View {
         Button {
             // action here
         } label: {
@@ -164,7 +150,7 @@ private extension SessionHeaderView {
         }
     }
     
-    var actionsMenuFixedEditButton: some View {
+    var actionsMenuEditButton: some View {
         Button {
             DispatchQueue.main.async {
                 print(" \(networkChecker.connectionAvailable) NETWORK")
@@ -175,7 +161,7 @@ private extension SessionHeaderView {
         }
     }
     
-    var actionsMenuFixedShareButton: some View {
+    var actionsMenuShareButton: some View {
         Button {
             // action here
         } label: {
@@ -183,9 +169,9 @@ private extension SessionHeaderView {
         }
     }
     
-    var actionsMenuFixedDeleteButton: some View {
+    var actionsMenuDeleteButton: some View {
         Button {
-            // action here
+            showDeleteModal = true
         } label: {
             Label(Strings.SessionHeaderView.deleteButton, systemImage: "xmark.circle")
         }
@@ -208,7 +194,7 @@ struct SessionHeader_Previews: PreviewProvider {
         SessionHeaderView(action: {},
                           isExpandButtonNeeded: true, isCollapsed: .constant(true),
                           session: SessionEntity.mock,
-                          sessionStopperFactory: SessionStoppableFactoryDummy())
+                          sessionStopperFactory: SessionStoppableFactoryDummy(), measurementStreamStorage: PreviewMeasurementStreamStorage())
                 .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
     }
 }

@@ -38,7 +38,7 @@ struct AirMapView: View {
                                   isSensorTypeNeeded: false,
                                   isCollapsed: Binding.constant(false),
                                   session: session,
-                                  sessionStopperFactory: sessionStoppableFactory)
+                                  sessionStopperFactory: sessionStoppableFactory, measurementStreamStorage: measurementStreamStorage)
             
             ABMeasurementsView(viewModelProvider: { DefaultSyncingMeasurementsViewModel(measurementStreamStorage: measurementStreamStorage,
                                                                               sessionDownloader: SessionDownloadService(client: URLSession.shared,

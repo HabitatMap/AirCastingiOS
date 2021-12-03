@@ -17,7 +17,7 @@ struct SessionCartView: View {
     @State private var showLoadingIndicator = false
     @ObservedObject var session: SessionEntity
     @EnvironmentObject var selectedSection: SelectSection
-    let sessionCartViewModel: SessionCartViewModel
+    let sessionCartViewModel: SessionCardViewModel
     let thresholds: [SensorThreshold]
     let sessionStoppableFactory: SessionStoppableFactory
     let measurementStreamStorage: MeasurementStreamStorage
@@ -29,7 +29,7 @@ struct SessionCartView: View {
     @StateObject private var chartViewModel: ChartViewModel
 
     init(session: SessionEntity,
-         sessionCartViewModel: SessionCartViewModel,
+         sessionCartViewModel: SessionCardViewModel,
          thresholds: [SensorThreshold],
          sessionStoppableFactory: SessionStoppableFactory,
          measurementStreamStorage: MeasurementStreamStorage) {
@@ -123,23 +123,21 @@ private extension SessionCartView {
             }, isExpandButtonNeeded: true,
             isCollapsed: $isCollapsed,
             session: session,
-            sessionStopperFactory: sessionStoppableFactory
+            sessionStopperFactory: sessionStoppableFactory, measurementStreamStorage: measurementStreamStorage
         )
     }
     
     private var measurements: some View {
-        ABMeasurementsView(viewModelProvider: {
-            DefaultSyncingMeasurementsViewModel(measurementStreamStorage: measurementStreamStorage,
-                                                sessionDownloader: SessionDownloadService(client: URLSession.shared,
-                                                authorization: UserAuthenticationSession(),
-                                                responseValidator: DefaultHTTPResponseValidator()),
-                                                session: session)
-                                                },
-                                                session: session,
-                                                isCollapsed: $isCollapsed,
-                                                selectedStream: $selectedStream,
-                                                thresholds: thresholds,
-                                                measurementPresentationStyle: shouldShowValues)
+        _ABMeasurementsView(measurementsViewModel: DefaultSyncingMeasurementsViewModel(measurementStreamStorage: measurementStreamStorage,
+                                                                                       sessionDownloader: SessionDownloadService(client: URLSession.shared,
+                                                                                       authorization: UserAuthenticationSession(),
+                                                                                       responseValidator: DefaultHTTPResponseValidator()),
+                                                                                       session: session),
+                            session: session,
+                            isCollapsed: $isCollapsed,
+                            selectedStream: $selectedStream,
+                            thresholds: thresholds,
+                            measurementPresentationStyle: shouldShowValues)
     }
     
     private var graphButton: some View {
@@ -294,7 +292,7 @@ private extension SessionCartView {
     static var previews: some View {
         EmptyView()
         SessionCartView(session: SessionEntity.mock,
-                                sessionCartViewModel: SessionCartViewModel(followingSetter: MockSessionFollowingSettable()),
+                                sessionCartViewModel: SessionCardViewModel(followingSetter: MockSessionFollowingSettable()),
                         thresholds: [.mock, .mock], sessionStoppableFactory: SessionStoppableFactoryDummy(), measurementStreamStorage: PreviewMeasurementStreamStorage())
             .padding()
             .previewLayout(.sizeThatFits)

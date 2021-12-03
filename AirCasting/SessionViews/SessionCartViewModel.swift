@@ -3,7 +3,7 @@
 
 import Foundation
 
-class SessionCartViewModel: ObservableObject {
+class SessionCardViewModel: ObservableObject {
     private var followingSetter: SessionFollowingSettable
     @Published var isFollowing: Bool
     

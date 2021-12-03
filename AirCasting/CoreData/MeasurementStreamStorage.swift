@@ -5,6 +5,7 @@ import CoreData
 import CoreLocation
 import Foundation
 import Combine
+import SwiftUI
 
 protocol MeasurementStreamStorage {
     func accessStorage(_ task: @escaping(HiddenCoreDataMeasurementStreamStorage) -> Void)
@@ -20,6 +21,10 @@ protocol MeasurementStreamStorageContextUpdate {
     func updateSessionEndtime(_ endTime: Date, for sessionUUID: SessionUUID) throws
     func updateSessionFollowing(_ sessionStatus: SessionFollowing, for sessionUUID: SessionUUID)
     func existingMeasurementStream(_ sessionUUID: SessionUUID, name: String) throws -> MeasurementStreamLocalID?
+    func markSessionForDelete(_ sessionUUID: SessionUUID) throws
+    func markStreamForDelete(_ sessionUUID: SessionUUID, sensorsName: [String], completion: () -> Void) throws
+    func deleteSession(_ sessionUUID: SessionUUID) throws
+    func deleteStreams(_ sessionUUID: SessionUUID) throws
     func save() throws
 }
 
@@ -54,7 +59,26 @@ final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
 }
 
 final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageContextUpdate {
-
+    func markStreamForDelete(_ sessionUUID: SessionUUID, sensorsName: [String], completion: () -> Void) throws {
+        let sessionEntity = try context.existingSession(uuid: sessionUUID)
+        try sensorsName.forEach { sensorName in
+            guard let stream = sessionEntity.allStreams?.first(where: { $0.sensorName == sensorName }) else {
+                Log.info("Error when trying to hide measurement streams")
+                return
+            }
+            stream.gotDeleted = true
+            try context.save()
+           forceUpdate(sessionEntity: sessionEntity)
+        }
+        completion()
+    }
+    
+    func markSessionForDelete(_ sessionUUID: SessionUUID) throws {
+        let sessionEntity = try context.existingSession(uuid: sessionUUID)
+        sessionEntity.gotDeleted = true
+        try context.save()
+    }
+    
     enum Error: Swift.Error {
         case missingMeasurementStream
         case missingSensorName
@@ -67,6 +91,36 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         self.context = context
     }
     
+    func deleteSession(_ sessionUUID: SessionUUID) throws {
+        do {
+            try context.delete(context.existingSession(uuid: sessionUUID))
+        } catch {
+            Log.error("Error when deleting session")
+        }
+    }
+    
+    func deleteStreams(_ sessionUUID: SessionUUID) throws {
+        let sessionEntity = try context.existingSession(uuid: sessionUUID)
+        let toDelete = sessionEntity.allStreams!.filter({ $0.gotDeleted })
+        toDelete.forEach { object in
+            do {
+                toDelete.forEach { object in
+                    context.delete(object)
+                }
+            } catch {
+                Log.error("Error when deleting session")
+            }
+        }
+        forceUpdate(sessionEntity: sessionEntity)
+    }
+    
+    func forceUpdate(sessionEntity: SessionEntity) {
+        sessionEntity.changesCount += 1
+        // EXPLANATION for above line:
+        // We basically force core data to send change notifications for this Session objects in the app
+        // because the NSOrderedSet operations don't trigger KVO and thus don't trigger ObservableObject changes
+    }
+
     func save() throws {
         try self.context.save()
     }
@@ -189,7 +243,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
             }
             try context.save()
         } catch {
-            Log.info("Error when saving changes in session: \(error.localizedDescription) ")
+            Log.error("Error when saving changes in session: \(error.localizedDescription)")
         }
     }
 
