@@ -1,8 +1,17 @@
 import Foundation
 
-enum FeatureFlag: Equatable, CaseIterable {
+enum FeatureFlag: String, Equatable, CaseIterable {
     case sdCardSync
     case standaloneMode
+}
+
+extension FeatureFlag {
+    var name: String {
+        switch self {
+        case .standaloneMode: return "Standalone mode"
+        case .sdCardSync: return "SD Card sync"
+        }
+    }
 }
 
 protocol FeatureFlagProvider {
