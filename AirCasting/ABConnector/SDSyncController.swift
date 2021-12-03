@@ -13,14 +13,16 @@ class SDSyncController: ObservableObject {
     private let airbeamServices: SDCardAirBeamServices
     private let fileValidator: SDSyncFileValidator
     private let mobileSessionsSaver: SDCardMobileSessionssSaver
+    private let averagingService: AveragingService
     private let writingQueue = DispatchQueue(label: "SDSyncController")
     private var metadata: [SDCardMetaData] = []
     
-    init(airbeamServices: SDCardAirBeamServices, fileWriter: SDSyncFileWriter, fileValidator: SDSyncFileValidator, mobileSessionsSaver: SDCardMobileSessionssSaver) {
+    init(airbeamServices: SDCardAirBeamServices, fileWriter: SDSyncFileWriter, fileValidator: SDSyncFileValidator, mobileSessionsSaver: SDCardMobileSessionssSaver, averagingService: AveragingService) {
         self.airbeamServices = airbeamServices
         self.fileWriter = fileWriter
         self.fileValidator = fileValidator
         self.mobileSessionsSaver = mobileSessionsSaver
+        self.averagingService = averagingService
     }
     
     func syncFromAirbeam(_ airbeamConnection: CBPeripheral, completion: @escaping (Bool) -> Void) {
@@ -48,11 +50,21 @@ class SDSyncController: ObservableObject {
                 case .success:
                     let files = self.fileWriter.finishAndSave()
                     self.checkFilesForCorruption(files)
-                    //TODO: Continue processing SD card data when files are not corrupted. Return an error and finish sync without clreating sd card if they are.
+                    //TODO: Continue processing SD card data when files are not corrupted. Return an error and finish sync without clearing sd card if they are.
                     if let mobileFileURL = files.first(where: { $0.1 == SDCardSessionType.mobile })?.0 {
-                        self.mobileSessionsSaver.saveDataToDb(fileURL: mobileFileURL, deviceID: sensorName)
+                        self.mobileSessionsSaver.saveDataToDb(fileURL: mobileFileURL, deviceID: sensorName) { result in
+                            switch result {
+                            case .success(let sessions):
+                                self.averagingService.averageMeasurements(for: sessions) {
+                                    Log.info("Averaging done")
+                                }
+                                completion(true)
+                            case .failure(let error):
+                                Log.error("Failed to save sessions to database: \(error.localizedDescription)")
+                                completion(false)
+                            }
+                        }
                     }
-                    completion(true)
                 case .failure: self.fileWriter.finishAndRemoveFiles(); completion(false)
                 }
             }

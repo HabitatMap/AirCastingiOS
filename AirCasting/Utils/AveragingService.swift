@@ -78,11 +78,33 @@ final class AveragingService: NSObject, ObservableObject {
         }
     }
     
+    func averageMeasurements(for sessions: [SessionUUID], completion: @escaping () -> Void) {
+        self.measurementStreamStorage.accessStorage { storage in
+            sessions.forEach { uuid in
+                Log.info("## Going to average measurements for session: \(uuid)")
+                guard let session = try? storage.getExistingSession(with: uuid) else {
+                    Log.info("Couldnt get session with uuid:\(uuid) from db to perform averaging")
+                    return }
+                guard let checkWindow = self.averagingWindowFor(startTime: session.startTime) else { return }
+                Log.info("## check window: \(checkWindow)")
+                guard checkWindow != .zeroWindow else { return }
+                
+                self.perform(storage: storage,
+                             session: session,
+                             averagingWindow: checkWindow,
+                             windowDidChange: false)
+            }
+            completion()
+        }
+    }
+    
     private func perform(storage: HiddenCoreDataMeasurementStreamStorage, session: SessionEntity, averagingWindow: AveragingWindow, windowDidChange: Bool) {
         session.allStreams?.forEach { stream in
             var averagedMeasurements: [MeasurementEntity] = (stream.allMeasurements ?? []).filter {
                 $0.averagingWindow == averagingWindow.rawValue
             }
+            
+            Log.info("## averaged measurements count: \(averagedMeasurements.count)")
             
             /// Step 1 - it'll be performed only once, after crossing the secondThresholdWindow
             /// The measurements that were already averaged with firstThresholdWindow will be reaveraged with secondThresholdWindow
@@ -104,10 +126,15 @@ final class AveragingService: NSObject, ObservableObject {
                 $0.averagingWindow == AveragingWindow.zeroWindow.rawValue
             }
             
+            Log.info("## unaveraged measurements count: \(unaveragedMeasurements.count)")
+            Log.info("## unaveraged measurements: \(unaveragedMeasurements)")
+            
             unaveragedMeasurements.chunks(ofCount: averagingWindow.rawValue).forEach( { measuremensInChunk in
                 let averaged = self.averagedMeasurementFrom(chunk: measuremensInChunk, window: averagingWindow, measurementCount: averagingWindow.rawValue)
                 averagedMeasurements.append(contentsOf: averaged)
             })
+            
+            Log.info("## averaged measurements after averaging: \(averagedMeasurements)")
             
             /// Step 3 - Update stream
             do {
@@ -181,7 +208,12 @@ final class AveragingService: NSObject, ObservableObject {
             return nil
         }
         let sessionDuration = abs(startTime.timeIntervalSince(Date().currentUTCTimeZoneDate))
-        return sessionDuration <= TimeInterval(TimeThreshold.secondThreshold.rawValue) ? .firstThresholdWindow : .secondThresholdWindow
+        if sessionDuration <= TimeInterval(TimeThreshold.firstThreshold.rawValue) {
+            return .zeroWindow
+        } else if sessionDuration <= TimeInterval(TimeThreshold.secondThreshold.rawValue) {
+            return .firstThresholdWindow
+        }
+        return .secondThresholdWindow
     }
 }
 
