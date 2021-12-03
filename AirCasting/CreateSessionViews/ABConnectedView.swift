@@ -16,6 +16,8 @@ struct ABConnectedView: View {
         VStack(spacing: 40) {
             ProgressView(value: 0.625)
             Image("4-connected")
+                .resizable()
+                .scaledToFit()
             VStack(alignment: .leading, spacing: 15) {
                 titleLabel
                 messageLabel

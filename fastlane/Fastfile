@@ -1,0 +1,53 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:ios)
+
+platform :ios do
+    desc "AirCastingApp"
+    lane :beta do 
+        ensure_git_branch(branch: "develop")
+        ensure_git_status_clean
+        increment_build_number
+        build_app(workspace: "AirCasting.xcworkspace", scheme: "AirCasting", export_method: "ad-hoc", silent: "true", output_directory: "./build_ipa", configuration: "Release")
+        firebase_app_distribution(
+           app: "1:51291628191:ios:b090a81539b7acbb48b8aa",
+           firebase_cli_token: ENV["FIREBASE_TOKEN"],
+           groups: “always_testers”,
+           release_notes: "Beta #{version}"
+       )
+       clean_build_artifacts
+       version = get_version_number
+       build = get_build_number
+       sh("git checkout -b beta/#{version}b#{build}")
+       git_add
+       git_commit(path: "", message: "Beta releasae of #{version}b#{build}") 
+    end
+
+    lane :appstore do
+       ensure_git_status_clean
+       version = get_version_number
+       ensure_git_branch(branch: "release/#{version}")
+       build_app(workspace: "AirCasting.xcworkspace", scheme: "AirCasting", output_directory: "./build_ipa", configuration: "Release")
+       upload_to_testflight
+       firebase_app_distribution(
+          app: "1:51291628191:ios:b090a81539b7acbb48b8aa",
+          firebase_cli_token: ENV["FIREBASE_TOKEN"],
+          groups: “always_testers”,
+          release_notes: "Release Candidate #{version}"
+       )
+       clean_build_artifacts
+    end
+end

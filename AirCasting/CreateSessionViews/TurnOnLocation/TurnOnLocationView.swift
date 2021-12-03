@@ -17,6 +17,8 @@ struct TurnOnLocationView: View {
         VStack(spacing: 50) {
             ProgressView(value: 0.125)
             Image("location-1")
+                .resizable()
+                .scaledToFit()
             VStack(alignment: .leading, spacing: 15) {
                 titleLabel
                 messageLabel

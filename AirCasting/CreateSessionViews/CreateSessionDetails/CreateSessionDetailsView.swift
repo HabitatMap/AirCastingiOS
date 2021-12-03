@@ -27,10 +27,18 @@ struct CreateSessionDetailsView: View {
                         if sessionContext.sessionType == SessionType.fixed { fixedSessionDetails }
                         Spacer()
                         continueButton
+                            .onTapGesture {
+                                viewModel.areCredentialsEmpty() ? (viewModel.showAlertAboutEmptyCredentials = true) : nil
+                            }
                     }
                 .padding()
                 .frame(maxWidth: .infinity, minHeight: geometry.size.height, alignment: .top)
             }
+            .alert(isPresented: $viewModel.showAlertAboutEmptyCredentials, content: {
+                Alert(title: Text(Strings.CreateSessionDetailsView.wifiAlertTitle),
+                      message: Text(Strings.CreateSessionDetailsView.wifiAlertMessage),
+                      dismissButton: .default(Text(Strings.CreateSessionDetailsView.continueButton)))
+            })
             .background(navigation)
         }
         .onAppear { viewModel.onScreenEnter() }
@@ -130,7 +138,7 @@ private extension CreateSessionDetailsView {
                 .frame(maxWidth: .infinity)
         })
         .buttonStyle(BlueButtonStyle())
-        .disabled(viewModel.isConfirmCreatingSessionActive)
+        .disabled(sessionContext.sessionType == .fixed && viewModel.areCredentialsEmpty())
     }
 
     var titleLabel: some View {
@@ -172,11 +180,7 @@ private extension CreateSessionDetailsView {
     }
     
     var provideNameAndPasswordTitle: some View {
-        Text("""
-        \(Strings.WifiPopupView.nameAndPasswordTitle_1)
-        "\(viewModel.wifiSSID)"
-        \(Strings.WifiPopupView.nameAndPasswordTitle_2)
-        """)
+        Text("\(Strings.WifiPopupView.nameAndPasswordTitle_1)\"\(viewModel.wifiSSID)\"\(Strings.WifiPopupView.nameAndPasswordTitle_2)")
             .font(Fonts.boldHeading1)
             .foregroundColor(.aircastingDarkGray)
     }

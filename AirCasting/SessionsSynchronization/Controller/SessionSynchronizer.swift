@@ -50,7 +50,7 @@ enum SessionsSynchronization { }
 struct DummySessionSynchronizer: SessionSynchronizer {
     var syncInProgress: CurrentValueSubject<Bool, Never> = .init(false)
     var errorStream: SessionSynchronizerErrorStream?
-    func triggerSynchronization(options: SessionSynchronizationOptions, completion: (() -> Void)?) { completion?() }
+    func triggerSynchronization(options streamOptions: SessionSynchronizationOptions, completion: (() -> Void)?) { completion?() }
     func stopSynchronization() { }
 }
 #endif

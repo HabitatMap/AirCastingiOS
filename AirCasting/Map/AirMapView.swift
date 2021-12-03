@@ -38,7 +38,7 @@ struct AirMapView: View {
                                   isSensorTypeNeeded: false,
                                   isCollapsed: Binding.constant(false),
                                   session: session,
-                                  sessionStopperFactory: sessionStoppableFactory)
+                                  sessionStopperFactory: sessionStoppableFactory, measurementStreamStorage: measurementStreamStorage)
             
             ABMeasurementsView(viewModelProvider: { DefaultSyncingMeasurementsViewModel(measurementStreamStorage: measurementStreamStorage,
                                                                               sessionDownloader: SessionDownloadService(client: URLSession.shared,
@@ -59,7 +59,8 @@ struct AirMapView: View {
                                       threshold: threshold,
                                       placePickerDismissed: Binding.constant(false),
                                       isUserInteracting: $isUserInteracting,
-                                      isSessionActive: session.isActive)
+                                      isSessionActive: session.isActive,
+                                      isSessionFixed: session.isFixed)
                         #warning("TODO: Implement calculating stats only for visible path points")
                         // This doesn't work properly and it needs to be fixed, so I'm commenting it out
 //                            .onPositionChange { [weak mapStatsDataSource, weak statsContainerViewModel] visiblePoints in

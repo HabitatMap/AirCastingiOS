@@ -1,6 +1,3 @@
-// Created by Lunar on 07/06/2021.
-//
-
 import SwiftUI
 import AirCastingStyling
 
@@ -52,8 +49,7 @@ struct _ABMeasurementsView: View {
     }
     
     var body: some View {
-        let streams = streamsToShow
-        let hasAnyMeasurements = streams.filter { $0.latestValue != nil }.count > 0
+        let hasAnyMeasurements = streamsToShow.filter { $0.latestValue != nil }.count > 0
         
         return Group {
             if hasAnyMeasurements {
@@ -62,20 +58,18 @@ struct _ABMeasurementsView: View {
                         .font(Fonts.moderateTitle1)
                         .padding(.bottom, 3)
                     HStack {
-                        Group {
-                            ForEach(streams, id : \.self) { stream in
-                                if let threshold = thresholds.threshold(for: stream) {
-                                    SingleMeasurementView(stream: stream,
-                                                          threshold: threshold,
-                                                          selectedStream: $selectedStream,
-                                                          isCollapsed: $isCollapsed,
-                                                          measurementPresentationStyle: measurementPresentationStyle,
-                                                          isDormant: session.isDormant)
-                                }
+                        streamsToShow.count != 1 ? Spacer() : nil
+                        ForEach(streamsToShow.filter({ !$0.gotDeleted }), id : \.self) { stream in
+                            if let threshold = thresholds.threshold(for: stream) {
+                                SingleMeasurementView(stream: stream,
+                                                      threshold: threshold,
+                                                      selectedStream: $selectedStream,
+                                                      isCollapsed: $isCollapsed,
+                                                      measurementPresentationStyle: measurementPresentationStyle,
+                                                      isDormant: session.isDormant)
                             }
+                            Spacer()
                         }
-                        .padding(.horizontal, 8)
-                        .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }
             } else {
@@ -111,16 +105,17 @@ struct _ABMeasurementsView: View {
     private var streamNames: some View {
         return HStack {
             Group {
-                ForEach(streamsToShow, id : \.self) { stream in
+                streamsToShow.count != 1 ? Spacer() : nil
+                ForEach(streamsToShow.filter({ !$0.gotDeleted }), id : \.self) { stream in
                     SingleMeasurementView(stream: stream,
                                           threshold: nil,
                                           selectedStream: $selectedStream,
                                           isCollapsed: $isCollapsed,
                                           measurementPresentationStyle: .hideValues,
                                           isDormant: session.isDormant)
+                    Spacer()
                 }
-            }.padding(.horizontal, 8)
-            .frame(maxWidth: .infinity, alignment: .leading)
+            }
         }
     }
 }

@@ -18,6 +18,8 @@ struct PowerABView: View {
         VStack(spacing: 45) {
             ProgressView(value: 0.25)
             Image("2-power")
+                .resizable()
+                .scaledToFit()
             HStack() {
                 titleLabel
                 Spacer()

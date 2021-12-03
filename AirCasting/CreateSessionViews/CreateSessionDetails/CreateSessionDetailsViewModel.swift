@@ -49,8 +49,7 @@ class CreateSessionDetailsViewModel: ObservableObject {
         if isWiFi, !(areCredentialsEmpty()) {
             sessionContext.wifiSSID = wifiSSID
             sessionContext.wifiPassword = wifiPassword
-        } else if isWiFi, areCredentialsEmpty() {
-            isConfirmCreatingSessionActive = false
+        } else if areCredentialsEmpty() {
             showAlertAboutEmptyCredentials = true
         } else if !isWiFi {
             // to be able to check if session is cellular
@@ -62,13 +61,13 @@ class CreateSessionDetailsViewModel: ObservableObject {
     
     func compareIsIndoor(sessionContext: CreateSessionContext) -> CreateSessionContext {
         sessionContext.isIndoor = isIndoor
+        isLocationSessionDetailsActive = !isIndoor
         isConfirmCreatingSessionActive = isIndoor
-        isLocationSessionDetailsActive = isIndoor
         return sessionContext
     }
     
     func areCredentialsEmpty() -> Bool {
-        wifiSSID.isEmpty && wifiPassword.isEmpty
+        isWiFi && wifiSSID.isEmpty && wifiPassword.isEmpty
     }
     
     func connectToOtherNetworkClick() {

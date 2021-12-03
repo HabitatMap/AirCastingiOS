@@ -19,8 +19,10 @@ struct DeleteSessionOptionViewModel {
 }
 
 protocol DeleteSessionViewModel: ObservableObject {
-    var options: [DeleteSessionOptionViewModel] { get }
+    var streamOptions: [DeleteSessionOptionViewModel] { get }
     var deleteEnabled: Bool { get }
+    var showingConfirmationAlert: Bool { get set }
     func didSelect(option: DeleteSessionOptionViewModel)
     func deleteSelected()
+    func showConfirmationAlert()
 }

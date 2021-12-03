@@ -17,12 +17,16 @@ class LocationTracker: NSObject, ObservableObject, CLLocationManagerDelegate {
     init(locationManager: CLLocationManager) {
         self.locationManager = locationManager
         self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        #warning("TESTING PURPOUSE: shorturl.at/ilwS1")
+        locationManager.allowsBackgroundLocationUpdates = true
+        locationManager.pausesLocationUpdatesAutomatically = false
+        // End of TESTING PURPOUSE
         switch locationManager.authorizationStatus {
             case .authorizedAlways, .authorizedWhenInUse:
                 self.locationGranted = .granted
                 if locationManager.location?.coordinate.latitude != nil && locationManager.location?.coordinate.longitude != nil {
-                    googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: (locationManager.location?.coordinate.latitude)!,
-                                                                                 longitude: (locationManager.location?.coordinate.longitude)!),
+                    googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude:(locationManager.location?.coordinate.latitude)!,
+                                                longitude: (locationManager.location?.coordinate.longitude)!),
                                                 measurementTime: Date(),
                                                 measurement: 20)]
                 } else {

@@ -20,14 +20,17 @@ struct SessionHeaderView: View {
     @State private var showingFinishAlert = false
     let sessionStopperFactory: SessionStoppableFactory
     @StateObject private var featureFlagsViewModel = FeatureFlagsViewModel.shared
-    
+    @State var showDeleteModal = false
+    let measurementStreamStorage: MeasurementStreamStorage
+    @EnvironmentObject var authorization: UserAuthenticationSession
+
     var body: some View {
         VStack(alignment: .leading, spacing: 3) {
                 HStack {
                     dateAndTime
                         .foregroundColor(Color.aircastingTimeGray)
                     Spacer()
-                    session.isActive ? actionsMenuMobile : nil
+                    actionsMenuMobile
                 }
             nameLabelAndExpandButton
         }.onChange(of: isCollapsed, perform: { value in
@@ -36,6 +39,9 @@ struct SessionHeaderView: View {
         .sheet(isPresented: Binding.constant(false), content: {
             ShareView(showModal: Binding.constant(false))
         })
+        .sheet(isPresented: $showDeleteModal) {
+            DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session, measurementStreamStorage: measurementStreamStorage, streamRemover: StreamRemoverDefault(authorization: authorization)), deleteModal: $showDeleteModal)
+        }
         .font(Fonts.regularHeading4)
         .foregroundColor(.aircastingGray)
     }
@@ -45,7 +51,7 @@ private extension SessionHeaderView {
     var dateAndTime: some View {
         adaptTimeAndDate()
     }
-    
+
     var nameLabelAndExpandButton: some View {
         VStack(alignment: .leading, spacing: 3) {
             HStack {
@@ -74,7 +80,7 @@ private extension SessionHeaderView {
         }
         .foregroundColor(.darkBlue)
     }
-    
+
     var sensorType: some View {
         var stream = [String]()
         var text = ""
@@ -89,7 +95,7 @@ private extension SessionHeaderView {
         text = stream.joined(separator: ", ")
         return Text("\(session.type!.description) : \(text)")
     }
-    
+
     func componentsSeparation(name: inout String) {
         // separation is used to nicely handle the case where sensor could be
         // AirBeam2-xxxx or AirBeam2:xxx
@@ -99,10 +105,11 @@ private extension SessionHeaderView {
             name = name.components(separatedBy: "-").first!
         }
     }
-    
+
     var actionsMenuMobile: some View {
         Menu {
-            actionsMenuMobileStopButton
+            session.isActive ? actionsMenuStopButton : nil
+            session.deletable ? actionsMenuDeleteButton : nil
             if session.deviceType == .AIRBEAM3 && featureFlagsViewModel.enabledFeatures.contains(.standaloneMode) {
                 actionsMenuMobileEnterStandaloneMode
             }
@@ -118,15 +125,15 @@ private extension SessionHeaderView {
             SessionViews.finishSessionAlert(sessionStopper: sessionStopperFactory.getSessionStopper(for: session), sessionName: session.name)
         }
     }
-    
-    var actionsMenuMobileStopButton: some View {
+
+    var actionsMenuStopButton: some View {
         Button {
             showingFinishAlert = true
         } label: {
             Label(Strings.SessionHeaderView.stopRecordingButton, systemImage: "stop.circle")
         }
     }
-    
+
     var actionsMenuMobileEnterStandaloneMode: some View {
         Button {
             bluetoothManager.enterStandaloneMode(sessionUUID: session.uuid)
@@ -134,7 +141,7 @@ private extension SessionHeaderView {
             Label(Strings.SessionHeaderView.enterStandaloneModeButton, systemImage: "xmark.circle")
         }
     }
-    
+
     var actionsMenuFixed: some View {
         Menu {
             actionsMenuFixedRepeatButton
@@ -155,16 +162,16 @@ private extension SessionHeaderView {
         }
         .sheet(isPresented: Binding.constant(false)) { EditViewModal(showModalEdit: Binding.constant(false)) }
     }
-    
-    var actionsMenuFixedRepeatButton: some View {
+
+    var actionsMenuRepeatButton: some View {
         Button {
             // action here
         } label: {
             Label("resume", systemImage: "repeat")
         }
     }
-    
-    var actionsMenuFixedEditButton: some View {
+
+    var actionsMenuEditButton: some View {
         Button {
             DispatchQueue.main.async {
                 print(" \(networkChecker.connectionAvailable) NETWORK")
@@ -174,29 +181,29 @@ private extension SessionHeaderView {
             Label(Strings.SessionHeaderView.editButton, systemImage: "pencil")
         }
     }
-    
-    var actionsMenuFixedShareButton: some View {
+
+    var actionsMenuShareButton: some View {
         Button {
             // action here
         } label: {
             Label(Strings.SessionHeaderView.shareButton, systemImage: "square.and.arrow.up")
         }
     }
-    
-    var actionsMenuFixedDeleteButton: some View {
+
+    var actionsMenuDeleteButton: some View {
         Button {
-            // action here
+            showDeleteModal = true
         } label: {
             Label(Strings.SessionHeaderView.deleteButton, systemImage: "xmark.circle")
         }
     }
-   
+
     func adaptTimeAndDate() -> Text {
         let formatter = DateFormatters.SessionCartView.utcDateIntervalFormatter
-        
+
         guard let start = session.startTime else { return Text("") }
         let end = session.endTime ?? Date().currentUTCTimeZoneDate
-        
+
         let string = formatter.string(from: start, to: end)
         return Text(string)
         }
@@ -208,7 +215,7 @@ struct SessionHeader_Previews: PreviewProvider {
         SessionHeaderView(action: {},
                           isExpandButtonNeeded: true, isCollapsed: .constant(true),
                           session: SessionEntity.mock,
-                          sessionStopperFactory: SessionStoppableFactoryDummy())
+                          sessionStopperFactory: SessionStoppableFactoryDummy(), measurementStreamStorage: PreviewMeasurementStreamStorage())
                 .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
     }
 }
