@@ -57,13 +57,13 @@ extension SyncingABView {
     }
     
     var titleLabel: some View {
-        Text(Strings.SDSyncABView.title)
+        Text(Strings.SyncingABView.title)
             .font(Fonts.boldTitle3)
             .foregroundColor(.accentColor)
     }
     
     var messageLabel: some View {
-        Text(Strings.SDSyncABView.message)
+        Text(Strings.SyncingABView.message)
             .font(Fonts.regularHeading1)
             .foregroundColor(.aircastingGray)
     }
@@ -80,8 +80,8 @@ extension SyncingABView {
     }
     
     var connectionTimeOutAlert: Alert {
-        Alert(title: Text(Strings.AirBeamConnector.connectionTimeoutTitle),
-              message: Text(Strings.AirBeamConnector.connectionTimeoutDescription),
+        Alert(title: Text(Strings.SyncingABView.alertTitle),
+              message: Text(Strings.SyncingABView.alertMessage),
               dismissButton: .default(Text(Strings.AirBeamConnector.connectionTimeoutActionTitle), action: {
             presentationMode.wrappedValue.dismiss()
         }))
