@@ -7,8 +7,7 @@ import Combine
 protocol SDSyncRootViewModel: ObservableObject {
     var backendSyncCompleted: Bool { get set }
     var urlProvider: BaseURLProvider { get }
-    func startBackendSync()
-    func onAppearExecute()
+    func executeBackendSync()
 }
 
 class SDSyncRootViewModelDefault: SDSyncRootViewModel, ObservableObject {
@@ -22,18 +21,19 @@ class SDSyncRootViewModelDefault: SDSyncRootViewModel, ObservableObject {
         self.urlProvider = urlProvider
     }
     
-    func startBackendSync() {
+    func executeBackendSync() {
+        guard !sessionSynchronizer.syncInProgress.value else {
+            onCurrentSyncEnd { self.startBackendSync() }
+            return
+        }
+        startBackendSync()
+    }
+    
+    private func startBackendSync() {
         sessionSynchronizer.triggerSynchronization() {
             DispatchQueue.main.async {
                 self.backendSyncCompleted = true
             }
-        }
-    }
-    
-    func onAppearExecute() {
-        guard !sessionSynchronizer.syncInProgress.value else {
-            onCurrentSyncEnd { self.startBackendSync() }
-            return
         }
     }
     
@@ -61,7 +61,7 @@ class DummySDSyncRootViewModelDefault: SDSyncRootViewModel, ObservableObject {
         print("startBackendSync")
     }
     
-    func onAppearExecute() {
+    func executeBackendSync() {
         print("onAppearExecute")
     }
     

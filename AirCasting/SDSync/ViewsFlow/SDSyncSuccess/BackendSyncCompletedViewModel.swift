@@ -3,12 +3,12 @@
 
 import Foundation
 
-protocol SDSyncSuccessViewModel: ObservableObject {
+protocol BackendSyncCompletedViewModel: ObservableObject {
     var presentNextScreen: Bool { get set }
     var urlProvider: BaseURLProvider { get }
 }
 
-class SDSyncSuccessViewModelDefault: SDSyncSuccessViewModel, ObservableObject {
+class BackendSyncCompletedViewModelDefault: BackendSyncCompletedViewModel, ObservableObject {
     
     @Published var presentNextScreen: Bool = false
     let urlProvider: BaseURLProvider

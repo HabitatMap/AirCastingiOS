@@ -136,7 +136,7 @@ struct SelectPeripheralView: View {
                                        userAuthenticationSession: userAuthenticationSession,
                                        sessionContext: sessionContext,
                                        peripheral: selection)
-                destination = AnyView(SDSyncABView(viewModel: viewModel, creatingSessionFlowContinues: $creatingSessionFlowContinues))
+                destination = AnyView(SyncingABView(viewModel: viewModel, creatingSessionFlowContinues: $creatingSessionFlowContinues))
             } else {
                 let viewModel =
                 AirbeamConnectionViewModelDefault(airBeamConnectionController: connectionController,

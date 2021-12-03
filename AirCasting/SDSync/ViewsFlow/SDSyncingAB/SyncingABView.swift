@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SDSyncABView<VM: SDSyncViewModel>: View {
+struct SyncingABView<VM: SDSyncViewModel>: View {
     @Environment(\.presentationMode) var presentationMode
     @StateObject var viewModel: VM
     @Binding var creatingSessionFlowContinues: Bool
@@ -49,7 +49,7 @@ struct SDSyncABView<VM: SDSyncViewModel>: View {
     }
 }
 
-extension SDSyncABView {
+extension SyncingABView {
     var syncingImage: some View {
         Image("airbeam")
             .resizable()

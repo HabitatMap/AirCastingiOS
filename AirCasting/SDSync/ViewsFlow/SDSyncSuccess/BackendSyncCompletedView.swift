@@ -4,7 +4,7 @@
 import AirCastingStyling
 import SwiftUI
 
-struct SDSyncSuccessView<VM: SDSyncSuccessViewModel>: View {
+struct BackendSyncCompletedView<VM: BackendSyncCompletedViewModel>: View {
     @StateObject var viewModel: VM
     @Binding var creatingSessionFlowContinues: Bool
     
@@ -30,7 +30,7 @@ struct SDSyncSuccessView<VM: SDSyncSuccessViewModel>: View {
     }
 }
 
-private extension SDSyncSuccessView {
+private extension BackendSyncCompletedView {
     
     var connectedImage: some View {
         Image("4-connected")

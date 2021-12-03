@@ -28,9 +28,8 @@ struct SDSyncRootView<VM: SDSyncRootViewModel>: View {
         .padding()
         .background(navigationLink)
         .onAppear() {
-            viewModel.onAppearExecute()
             finishAndSyncButtonTapped.finishAndSyncButtonWasTapped = false
-            viewModel.startBackendSync()
+            viewModel.executeBackendSync()
         }
     }
 }
@@ -67,7 +66,7 @@ private extension SDSyncRootView {
     
     var navigationLink: some View {
         NavigationLink(
-            destination: SDSyncSuccessView(viewModel: SDSyncSuccessViewModelDefault(urlProvider: viewModel.urlProvider), creatingSessionFlowContinues: $creatingSessionFlowContinues),
+            destination: BackendSyncCompletedView(viewModel: BackendSyncCompletedViewModelDefault(urlProvider: viewModel.urlProvider), creatingSessionFlowContinues: $creatingSessionFlowContinues),
             isActive: $viewModel.backendSyncCompleted,
             label: {
                 EmptyView()
