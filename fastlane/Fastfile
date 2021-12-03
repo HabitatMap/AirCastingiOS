@@ -22,6 +22,7 @@ platform :ios do
       ensure_git_status_clean
       increment_build_number
       version = get_version_number
+      cocoapods
       begin
          build_app(workspace: "AirCasting.xcworkspace", scheme: "AirCasting", export_method: "ad-hoc", silent: "true", output_directory: "./build_ipa", configuration: "Release")
          firebase_app_distribution(
@@ -46,6 +47,7 @@ platform :ios do
       ensure_git_status_clean
       version = get_version_number
       ensure_git_branch(branch: "release/#{version}")
+      cocoapods
       begin
          build_app(workspace: "AirCasting.xcworkspace", scheme: "AirCasting", output_directory: "./build_ipa", configuration: "Release")
          upload_to_testflight
