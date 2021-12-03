@@ -14,9 +14,11 @@ struct SelectPeripheralView: View {
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @EnvironmentObject var sessionContext: CreateSessionContext
     @EnvironmentObject var connectionController: DefaultAirBeamConnectionController
+    @EnvironmentObject var sdSyncController: SDSyncController
     @Binding var creatingSessionFlowContinues: Bool
     let urlProvider: BaseURLProvider
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
+    var syncMode: Bool? = false
     
     var body: some View {
         GeometryReader { geometry in
@@ -92,7 +94,13 @@ struct SelectPeripheralView: View {
     }
     
     var titleLabel: some View {
-        Text(Strings.SelectPeripheralView.titleLabel)
+        var title: Text
+        if syncMode == true {
+            title = Text(Strings.SelectPeripheralView.titleSyncLabel)
+        } else {
+            title = Text(Strings.SelectPeripheralView.titleLabel)
+        }
+        return title
             .font(Fonts.boldTitle3)
             .foregroundColor(.accentColor)
             .multilineTextAlignment(.leading)
@@ -121,11 +129,22 @@ struct SelectPeripheralView: View {
     var connectButton: some View {
         var destination: AnyView
         if let selection = selection {
-            let viewModel =
-            AirbeamConnectionViewModelDefault(airBeamConnectionController: connectionController,
-                                              userAuthenticationSession: userAuthenticationSession, sessionContext: sessionContext,
-                                              peripheral: selection)
-            destination = AnyView(ConnectingABView(viewModel: viewModel, baseURL: urlProvider, creatingSessionFlowContinues: $creatingSessionFlowContinues))
+            if syncMode == true {
+                let viewModel =
+                SDSyncViewModelDefault(airBeamConnectionController: connectionController,
+                                       sdSyncController: sdSyncController,
+                                       userAuthenticationSession: userAuthenticationSession,
+                                       sessionContext: sessionContext,
+                                       peripheral: selection)
+                destination = AnyView(SyncingABView(viewModel: viewModel, creatingSessionFlowContinues: $creatingSessionFlowContinues))
+            } else {
+                let viewModel =
+                AirbeamConnectionViewModelDefault(airBeamConnectionController: connectionController,
+                                                  userAuthenticationSession: userAuthenticationSession,
+                                                  sessionContext: sessionContext,
+                                                  peripheral: selection)
+                destination = AnyView(ConnectingABView(viewModel: viewModel, baseURL: urlProvider, creatingSessionFlowContinues: $creatingSessionFlowContinues))
+            }
         } else {
             destination = AnyView(EmptyView())
         }

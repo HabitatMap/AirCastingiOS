@@ -14,6 +14,7 @@ struct TurnOnBluetoothView: View {
     @EnvironmentObject var settingsRedirection: DefaultSettingsRedirection
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @Binding var creatingSessionFlowContinues: Bool
+    @Binding var sdSyncContinues: Bool
     
     let urlProvider: BaseURLProvider
     

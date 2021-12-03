@@ -111,6 +111,10 @@ public class SessionEntity: NSManagedObject, Identifiable {
         allStreams?.filter { $0.lastMeasurementTime != nil }.map { $0.lastMeasurementTime! }.max()
     }
     
+    public var sensorPackageName: String {
+        allStreams?.first?.sensorPackageName ?? ""
+    }
+    
     func streamWith(sensorName: String) -> MeasurementStreamEntity? {
        allStreams?.first { stream in
             stream.sensorName == sensorName

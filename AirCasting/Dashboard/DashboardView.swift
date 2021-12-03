@@ -17,17 +17,17 @@ struct DashboardView: View {
     @EnvironmentObject var selectedSection: SelectSection
     @EnvironmentObject var averaging: AveragingService
     @State var isRefreshing: Bool = false
-    
+
     private let measurementStreamStorage: MeasurementStreamStorage
     private let sessionStoppableFactory: SessionStoppableFactory
     private let sessionSynchronizer: SessionSynchronizer
-    
+
     private let dashboardCoordinateSpaceName = "dashboardCoordinateSpace"
-    
+
     private var sessions: [SessionEntity] {
         coreDataHook.sessions
     }
-    
+
     init(coreDataHook: CoreDataHook,
          measurementStreamStorage: MeasurementStreamStorage,
          sessionStoppableFactory: SessionStoppableFactory,
@@ -68,7 +68,7 @@ struct DashboardView: View {
             try! coreDataHook.setup(selectedSection: self.selectedSection.selectedSection)
         }
     }
-    
+
     private var sessionTypePicker: some View {
         AirSectionPickerView(selection: self.$selectedSection.selectedSection)
             .padding(.leading)
@@ -84,7 +84,7 @@ struct DashboardView: View {
             )
             .zIndex(2)
     }
-    
+
     private var emptySessionsView: some View {
         GeometryReader { geometry in
             ScrollView(.vertical, showsIndicators: false) {
@@ -103,7 +103,7 @@ struct DashboardView: View {
             .background(Color.aliceBlue)
         }
     }
-    
+
     private var sessionListView: some View {
         ZStack(alignment: .bottomTrailing) {
             Image("dashboard-background-thing")
@@ -114,11 +114,13 @@ struct DashboardView: View {
                     ForEach(sessions.filter { $0.uuid != "" && !$0.gotDeleted }, id: \.uuid) { session in
                         let followingSetter = MeasurementStreamStorageFollowingSettable(session: session, measurementStreamStorage: measurementStreamStorage)
                         let viewModel = SessionCardViewModel(followingSetter: followingSetter)
-                        SessionCartView(session: session,
+                        SessionCardView(session: session,
                                         sessionCartViewModel: viewModel,
                                         thresholds: thresholds,
                                         sessionStoppableFactory: sessionStoppableFactory,
-                                        measurementStreamStorage: measurementStreamStorage)
+                                        measurementStreamStorage: measurementStreamStorage,
+                                        sessionSynchronizer: sessionSynchronizer
+                        )
                     }
                 }
             }
@@ -128,7 +130,7 @@ struct DashboardView: View {
         .frame(maxWidth: .infinity)
         .background(Color.aircastingGray.opacity(0.05))
     }
-    
+
     private func onCurrentSyncEnd(_ completion: @escaping () -> Void) {
         guard sessionSynchronizer.syncInProgress.value else { completion(); return }
         var cancellable: AnyCancellable?
@@ -138,7 +140,7 @@ struct DashboardView: View {
             cancellable?.cancel()
         }
     }
-    
+
     func showPreviousTab() {
         switch selectedSection.selectedSection {
         case .following:
@@ -151,7 +153,7 @@ struct DashboardView: View {
             selectedSection.selectedSection = .mobileDormant
         }
     }
-    
+
     func showNextTab() {
         switch selectedSection.selectedSection {
         case .following:

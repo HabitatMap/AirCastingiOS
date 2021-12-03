@@ -9,7 +9,7 @@ import AirCastingStyling
 import Charts
 import SwiftUI
 
-struct SessionCartView: View {
+struct SessionCardView: View {
     @State private var isCollapsed = true
     @State private var selectedStream: MeasurementStreamEntity?
     @State private var isMapButtonActive = false
@@ -21,7 +21,8 @@ struct SessionCartView: View {
     let thresholds: [SensorThreshold]
     let sessionStoppableFactory: SessionStoppableFactory
     let measurementStreamStorage: MeasurementStreamStorage
-    
+    let sessionSynchronizer: SessionSynchronizer
+
     @StateObject private var mapStatsDataSource: MapStatsDataSource
     @StateObject private var mapStatsViewModel: StatisticsContainerViewModel
     @StateObject private var graphStatsDataSource: GraphStatsDataSource
@@ -32,39 +33,45 @@ struct SessionCartView: View {
          sessionCartViewModel: SessionCardViewModel,
          thresholds: [SensorThreshold],
          sessionStoppableFactory: SessionStoppableFactory,
-         measurementStreamStorage: MeasurementStreamStorage) {
+         measurementStreamStorage: MeasurementStreamStorage,
+         sessionSynchronizer: SessionSynchronizer) {
         self.session = session
         self.sessionCartViewModel = sessionCartViewModel
         self.thresholds = thresholds
         self.sessionStoppableFactory = sessionStoppableFactory
         self.measurementStreamStorage = measurementStreamStorage
+        self.sessionSynchronizer = sessionSynchronizer
         let mapDataSource = MapStatsDataSource()
         self._mapStatsDataSource = .init(wrappedValue: mapDataSource)
-        self._mapStatsViewModel = .init(wrappedValue: SessionCartView.createStatsContainerViewModel(dataSource: mapDataSource, session: session))
+        self._mapStatsViewModel = .init(wrappedValue: SessionCardView.createStatsContainerViewModel(dataSource: mapDataSource, session: session))
         let graphDataSource = GraphStatsDataSource()
         self._graphStatsDataSource = .init(wrappedValue: graphDataSource)
-        self._graphStatsViewModel = .init(wrappedValue: SessionCartView.createStatsContainerViewModel(dataSource: graphDataSource, session: session))
+        self._graphStatsViewModel = .init(wrappedValue: SessionCardView.createStatsContainerViewModel(dataSource: graphDataSource, session: session))
         self._chartViewModel = .init(wrappedValue: ChartViewModel(session: session, persistence: PersistenceController.shared))
     }
-    
+
     var shouldShowValues: MeasurementPresentationStyle {
         // We need to specify selectedSection to show values for fixed session only in following tab
         let shouldShow = isCollapsed && ( (session.isFixed && selectedSection.selectedSection == SelectedSection.fixed) || session.isDormant)
         return shouldShow ? .hideValues : .showValues
     }
-    
+
     var showChart: Bool {
         (session.isMobile && session.isActive) || (session.isFixed && selectedSection.selectedSection == SelectedSection.following)
     }
-    
+
     var hasStreams: Bool {
         session.allStreams != nil || session.allStreams != []
     }
-    
+
     var body: some View {
-        sessionCard
+        if session.isInStandaloneMode && FeatureFlagsViewModel.shared.enabledFeatures.contains(.standaloneMode) {
+            standaloneSessionCard
+        } else {
+            sessionCard
+        }
     }
-    
+
     var sessionCard: some View {
         VStack(alignment: .leading, spacing: 5) {
             header
@@ -97,7 +104,7 @@ struct SessionCartView: View {
         .background(
             Group {
                 Color.white
-                    .shadow(color: Color(red: 205/255, green: 209/255, blue: 214/255, opacity: 0.36), radius: 9, x: 0, y: 1)
+                    .shadow(color: .sessionCardShadow, radius: 9, x: 0, y: 1)
                 mapNavigationLink
                 graphNavigationLink
                 // SwiftUI bug: two navigation links don't work properly
@@ -105,7 +112,11 @@ struct SessionCartView: View {
             }
         )
     }
-    
+
+    var standaloneSessionCard: some View {
+        StandaloneSessionCardView(session: session, sessionStopperFactory: sessionStoppableFactory, sessionSynchronizer: sessionSynchronizer, measurementStreamStorage: measurementStreamStorage)
+    }
+
     private func selectDefaultStreamIfNeeded(streams: [MeasurementStreamEntity]) {
         if selectedStream == nil {
             selectedStream = streams.first
@@ -113,20 +124,21 @@ struct SessionCartView: View {
     }
 }
 
-private extension SessionCartView {
+private extension SessionCardView {
     var header: some View {
         SessionHeaderView(
             action: {
                 withAnimation {
                     isCollapsed.toggle()
                 }
-            }, isExpandButtonNeeded: true,
+            },
+            isExpandButtonNeeded: true,
             isCollapsed: $isCollapsed,
             session: session,
             sessionStopperFactory: sessionStoppableFactory, measurementStreamStorage: measurementStreamStorage
         )
     }
-    
+
     private var measurements: some View {
         _ABMeasurementsView(measurementsViewModel: DefaultSyncingMeasurementsViewModel(measurementStreamStorage: measurementStreamStorage,
                                                                                        sessionDownloader: SessionDownloadService(client: URLSession.shared,
@@ -139,7 +151,7 @@ private extension SessionCartView {
                             thresholds: thresholds,
                             measurementPresentationStyle: shouldShowValues)
     }
-    
+
     private var graphButton: some View {
         Button {
             isGraphButtonActive = true
@@ -149,7 +161,7 @@ private extension SessionCartView {
                 .padding(.horizontal, 8)
         }
     }
-    
+
     private var mapButton: some View {
         Button {
             isMapButtonActive = true
@@ -159,23 +171,23 @@ private extension SessionCartView {
                 .padding(.horizontal, 8)
         }
     }
-    
+
     private var followButton: some View {
         Button(Strings.SessionCartView.follow) {
             sessionCartViewModel.toggleFollowing()
         }.buttonStyle(FollowButtonStyle())
     }
-    
+
     private var unFollowButton: some View {
         Button(Strings.SessionCartView.unfollow) {
             sessionCartViewModel.toggleFollowing()
         }.buttonStyle(UnFollowButtonStyle())
     }
-    
+
     func pollutionChart(thresholds: [SensorThreshold]) -> some View {
         return VStack() {
             if let selectedStream = selectedStream {
-                Group { 
+                Group {
                     ChartView(thresholds: thresholds,
                               viewModel: chartViewModel)
                         .frame(height: 120)
@@ -195,29 +207,29 @@ private extension SessionCartView {
             }
         }
     }
-    
+
     var startTime: some View {
         let formatter = DateFormatters.SessionCartView.pollutionChartDateFormatter
-            
+
         guard let start = chartViewModel.chartStartTime else { return Text("") }
-        
+
         let string = formatter.string(from: start)
         return Text(string)
         }
-    
+
     var endTime: some View {
         let formatter = DateFormatters.SessionCartView.pollutionChartDateFormatter
-        
+
         let end = chartViewModel.chartEndTime ?? Date().currentUTCTimeZoneDate
-        
+
         let string = formatter.string(from: end)
         return Text(string)
         }
-    
+
     func descriptionText(stream: MeasurementStreamEntity) -> some View {
         return Text("\(stream.session.isMobile ? Strings.SessionCartView.avgSessionMin : Strings.SessionCartView.avgSessionH) \(stream.unitSymbol ?? "")")
     }
-    
+
     func displayButtons(thresholds: [SensorThreshold]) -> some View {
         HStack() {
             if sessionCartViewModel.isFollowing && session.type == .fixed {
@@ -231,16 +243,16 @@ private extension SessionCartView {
         }
         .buttonStyle(GrayButtonStyle())
     }
-    
+
     private static func createStatsContainerViewModel(dataSource: MeasurementsStatisticsDataSource, session: SessionEntity) -> StatisticsContainerViewModel {
         var computeStatisticsInterval: Double? = nil
-        
+
         if session.isActive || session.isNew {
             computeStatisticsInterval = 1
         } else if session.isFollowed {
             computeStatisticsInterval = 60
         }
-        
+
         let controller = MeasurementsStatisticsController(dataSource: dataSource,
                                                           calculator: StandardStatisticsCalculator(),
                                                           scheduledTimer: ScheduledTimerSetter(),
@@ -250,7 +262,7 @@ private extension SessionCartView {
         controller.output = viewModel
         return viewModel
     }
-    
+
     private var mapNavigationLink: some View {
          let mapView = AirMapView(thresholds: thresholds,
                                   statsContainerViewModel: mapStatsViewModel,
@@ -278,7 +290,7 @@ private extension SessionCartView {
                                    sessionStoppableFactory: sessionStoppableFactory,
                                    measurementStreamStorage: measurementStreamStorage)
              .foregroundColor(.aircastingDarkGray)
-         
+
          return NavigationLink(destination: graphView,
                                isActive: $isGraphButtonActive,
                                label: {
@@ -291,13 +303,12 @@ private extension SessionCartView {
  struct SessionCell_Previews: PreviewProvider {
     static var previews: some View {
         EmptyView()
-        SessionCartView(session: SessionEntity.mock,
+        SessionCardView(session: SessionEntity.mock,
                                 sessionCartViewModel: SessionCardViewModel(followingSetter: MockSessionFollowingSettable()),
-                        thresholds: [.mock, .mock], sessionStoppableFactory: SessionStoppableFactoryDummy(), measurementStreamStorage: PreviewMeasurementStreamStorage())
+                        thresholds: [.mock, .mock], sessionStoppableFactory: SessionStoppableFactoryDummy(), measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionSynchronizer: DummySessionSynchronizer())
             .padding()
             .previewLayout(.sizeThatFits)
             .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
     }
  }
  #endif
-

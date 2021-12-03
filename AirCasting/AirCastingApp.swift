@@ -8,8 +8,11 @@
 import SwiftUI
 import Firebase
 import Combine
+
 @main
 struct AirCastingApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    
     @Environment(\.scenePhase) var scenePhase
     private let authorization = UserAuthenticationSession()
     private let syncScheduler: SynchronizationScheduler

@@ -8,7 +8,7 @@ protocol BaseURLProvider {
 }
 
 #if DEBUG
-struct DummyURLProvider: BaseURLProvider {
+class DummyURLProvider: BaseURLProvider, ObservableObject {
     var baseAppURL: URL = URL(string: "http://aircasting.org/api")!
 }
 #endif
