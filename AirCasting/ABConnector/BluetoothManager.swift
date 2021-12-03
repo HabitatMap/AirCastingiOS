@@ -148,7 +148,6 @@ extension BluetoothManager: CBCentralManagerDelegate {
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
         if !devices.contains(peripheral) {
             if peripheral.name != nil {
-                guard !mobilePeripheralSessionManager.standaloneSessionInProgressWith(peripheral) else { return }
                 devices.append(peripheral)
             }
         }
@@ -184,6 +183,8 @@ extension BluetoothManager: CBCentralManagerDelegate {
             self.cancelPeripheralConnection(for: peripheral)
             if FeatureFlagsViewModel.shared.enabledFeatures.contains(.standaloneMode) {
                 self.mobilePeripheralSessionManager.moveSessionToStandaloneMode(peripheral: peripheral)
+            } else {
+                self.mobilePeripheralSessionManager.finishSession(for: peripheral, centralManager: self.centralManager)
             }
         }
     }

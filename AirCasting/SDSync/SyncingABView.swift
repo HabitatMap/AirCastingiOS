@@ -16,6 +16,7 @@ struct SyncingABView<VM: SDSyncViewModel>: View {
     @Binding var creatingSessionFlowContinues: Bool
     @State private var showNextScreen: Bool = false
     @State private var presentAlert: Bool = false
+    @Binding var sdSyncContinues: Bool
     
     
     var body: some View {
@@ -36,7 +37,7 @@ struct SyncingABView<VM: SDSyncViewModel>: View {
             }
         }.background(
             NavigationLink(
-                destination: Text("Complete"),
+                destination: completeView,
                 isActive: $showNextScreen,
                 label: {
                     EmptyView()
@@ -86,6 +87,15 @@ struct SyncingABView<VM: SDSyncViewModel>: View {
             ProgressView()
                 .progressViewStyle(CircularProgressViewStyle(tint: Color.white))
                 .scaleEffect(2)
+        }
+    }
+    
+    var completeView: some View {
+        VStack {
+            Text("Complete")
+            Button("Finish") {
+                sdSyncContinues = false
+            }
         }
     }
 }

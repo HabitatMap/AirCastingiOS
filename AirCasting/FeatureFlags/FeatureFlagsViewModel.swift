@@ -6,6 +6,16 @@ class FeatureFlagsViewModel: ObservableObject {
     private var provider: FeatureFlagProvider
     static private let overrides = OverridingFeatureFlagProvider()
     
+    private static let mainProvider: FeatureFlagProvider = {
+        #if DEBUG
+        Log.info("Debug build, enabling all fatures")
+        return AllFeaturesOn()
+        #else
+        Log.info("Release build, using firebase config for features")
+        return FirebaseFeatureFlagProvider(notificationsRouter: DefaultRemoteNotificationRouter.shared)
+        #endif
+    }()
+    
     static let shared: FeatureFlagsViewModel = {
         return .init(
             provider: CompositeFeatureFlagProvider(children: [
@@ -35,6 +45,11 @@ class FeatureFlagsViewModel: ObservableObject {
     private func updateList() {
         enabledFeatures = FeatureFlag.allCases.filter { provider.isFeatureOn($0) ?? false }
         Log.info("Updated feature list: \(enabledFeatures)")
+    }
+    
+    private struct AllFeaturesOn: FeatureFlagProvider {
+        var onFeatureListChange: (() -> Void)?
+        func isFeatureOn(_ feature: FeatureFlag) -> Bool? { true }
     }
 }
 
