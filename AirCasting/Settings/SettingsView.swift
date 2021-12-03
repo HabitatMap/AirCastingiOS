@@ -110,6 +110,7 @@ struct SettingsView: View {
         })
     }
     
+    #if DEBUG || BETA
     private var navigateToAppConfigurationButton: some View {
         NavigationLink("App config", destination: {
             AppConfigurationView()
@@ -117,6 +118,7 @@ struct SettingsView: View {
         })
             .font(Fonts.boldHeading1)
     }
+    #endif
 }
 
 #if DEBUG

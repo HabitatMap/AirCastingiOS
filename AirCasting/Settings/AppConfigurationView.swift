@@ -3,6 +3,7 @@
 
 import SwiftUI
 
+#if DEBUG || BETA
 struct AppConfigurationView: View {
     @StateObject private var config: FeatureFlagsViewModel = .shared
     
@@ -18,3 +19,4 @@ struct AppConfigurationView: View {
         }
     }
 }
+#endif

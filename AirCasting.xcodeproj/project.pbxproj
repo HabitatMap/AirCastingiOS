@@ -188,6 +188,7 @@
 		B367A594274E9EAA004C605B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B367A58D274E9EAA004C605B /* AppDelegate.swift */; };
 		B367A595274E9EAA004C605B /* FeatureFlagsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B367A58E274E9EAA004C605B /* FeatureFlagsViewModel.swift */; };
 		B367A596274E9EAA004C605B /* RemoteNotificationRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B367A58F274E9EAA004C605B /* RemoteNotificationRouter.swift */; };
+		B369CF32275A7A1500B71D81 /* OverridingFeatureFlagProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B369CF31275A7A1500B71D81 /* OverridingFeatureFlagProvider.swift */; };
 		B371415B26726A930057BF60 /* SynchronizationControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37141582672117D0057BF60 /* SynchronizationControllerTests.swift */; };
 		B376DD23268091B80083FD2F /* BodyEncodingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B376DD22268091B80083FD2F /* BodyEncodingError.swift */; };
 		B376DD25268096E20083FD2F /* SessionSynchronizationDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B376DD24268096E20083FD2F /* SessionSynchronizationDatabase.swift */; };
@@ -506,6 +507,7 @@
 		B367A58D274E9EAA004C605B /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B367A58E274E9EAA004C605B /* FeatureFlagsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeatureFlagsViewModel.swift; sourceTree = "<group>"; };
 		B367A58F274E9EAA004C605B /* RemoteNotificationRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoteNotificationRouter.swift; sourceTree = "<group>"; };
+		B369CF31275A7A1500B71D81 /* OverridingFeatureFlagProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverridingFeatureFlagProvider.swift; sourceTree = "<group>"; };
 		B37141582672117D0057BF60 /* SynchronizationControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynchronizationControllerTests.swift; sourceTree = "<group>"; };
 		B376DD22268091B80083FD2F /* BodyEncodingError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyEncodingError.swift; sourceTree = "<group>"; };
 		B376DD24268096E20083FD2F /* SessionSynchronizationDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionSynchronizationDatabase.swift; sourceTree = "<group>"; };
@@ -1225,6 +1227,7 @@
 			children = (
 				B367A589274E9EAA004C605B /* FirebaseFeatureFlagProvider.swift */,
 				B367A58A274E9EAA004C605B /* DefaultFeatureFlagProvider.swift */,
+				B369CF31275A7A1500B71D81 /* OverridingFeatureFlagProvider.swift */,
 			);
 			path = FeatureFlagProviders;
 			sourceTree = "<group>";
@@ -1647,7 +1650,7 @@
 			packageReferences = (
 				AC6D567A25AC540D00D221BA /* XCRemoteSwiftPackageReference "Charts" */,
 				ACF600BC2678D7F4005DD97C /* XCRemoteSwiftPackageReference "SwiftSimplify" */,
-				AC5226C1270C50520048A585 /* XCRemoteSwiftPackageReference "swift-algorithms.git" */,
+				AC5226C1270C50520048A585 /* XCRemoteSwiftPackageReference "swift-algorithms" */,
 			);
 			productRefGroup = AC7EB37325A6FB3A00A7F2AF /* Products */;
 			projectDirPath = "";
@@ -2042,6 +2045,7 @@
 				AC524A942615D8620061AD45 /* SessionEntity.swift in Sources */,
 				DDEE3A48269747250098CCA9 /* EditViewModal.swift in Sources */,
 				AC8CFF3625E502DD00FB2918 /* CreateAccountView.swift in Sources */,
+				B369CF32275A7A1500B71D81 /* OverridingFeatureFlagProvider.swift in Sources */,
 				338C30E825F10BFE00E0305C /* AirCasting.xcdatamodeld in Sources */,
 				DD009D662698844A009F0443 /* DeleteView.swift in Sources */,
 				B3FD77BA267C94AF00E97CC2 /* SessionSynchronizer.swift in Sources */,
@@ -2466,7 +2470,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		AC5226C1270C50520048A585 /* XCRemoteSwiftPackageReference "swift-algorithms.git" */ = {
+		AC5226C1270C50520048A585 /* XCRemoteSwiftPackageReference "swift-algorithms" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/swift-algorithms.git";
 			requirement = {
@@ -2495,7 +2499,7 @@
 /* Begin XCSwiftPackageProductDependency section */
 		AC5226C2270C50520048A585 /* Algorithms */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = AC5226C1270C50520048A585 /* XCRemoteSwiftPackageReference "swift-algorithms.git" */;
+			package = AC5226C1270C50520048A585 /* XCRemoteSwiftPackageReference "swift-algorithms" */;
 			productName = Algorithms;
 		};
 		AC6D567B25AC540D00D221BA /* Charts */ = {

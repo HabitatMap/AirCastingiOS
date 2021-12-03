@@ -16,10 +16,11 @@ class FeatureFlagsViewModel: ObservableObject {
         )
     }()
     
+    #if DEBUG || BETA
     func overrideFeature(_ feature: FeatureFlag, with value: Bool) {
-
         Self.overrides.overrides[feature] = value
     }
+    #endif
     
     private init(provider: FeatureFlagProvider) {
         self.provider = provider
@@ -50,20 +51,5 @@ fileprivate class CompositeFeatureFlagProvider: FeatureFlagProvider {
     
     func isFeatureOn(_ feature: FeatureFlag) -> Bool? {
         children.compactMap { $0.isFeatureOn(feature) }.first
-    }
-}
-
-fileprivate class OverridingFeatureFlagProvider: FeatureFlagProvider, ObservableObject {
-    var onFeatureListChange: (() -> Void)?
-    
-    var overrides: [FeatureFlag: Bool] = [:] {
-        didSet {
-            objectWillChange.send()
-            onFeatureListChange?()
-        }
-    }
-    
-    func isFeatureOn(_ feature: FeatureFlag) -> Bool? {
-        overrides[feature]
     }
 }
