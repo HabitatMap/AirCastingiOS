@@ -21,6 +21,10 @@ class OverridingFeatureFlagProvider: FeatureFlagProvider, ObservableObject {
         overrides = fromJsonDict(json: saved)
     }
     
+    func clear() {
+        overrides = [:]
+    }
+    
     private func toJsonDict() -> [String: Bool] {
         overrides.map { ($0.0.rawValue, $0.1) }.reduce(into: [:], { $0[$1.0] = $1.1 })
     }

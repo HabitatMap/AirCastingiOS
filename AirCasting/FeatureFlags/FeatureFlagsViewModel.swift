@@ -23,6 +23,10 @@ class FeatureFlagsViewModel: ObservableObject {
     #endif
     
     private init(provider: FeatureFlagProvider) {
+        // This prevents users that had the beta app to get invalid flags after updating to appstore version
+        #if RELEASE
+        Self.overrides.clear()
+        #endif
         self.provider = provider
         self.provider.onFeatureListChange = { [weak self] in self?.updateList() }
         updateList()
