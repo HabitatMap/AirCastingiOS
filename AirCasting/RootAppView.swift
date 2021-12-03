@@ -23,6 +23,7 @@ struct RootAppView: View {
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     @EnvironmentObject var microphoneManager: MicrophoneManager
     @EnvironmentObject var lifeTimeEventsProvider: LifeTimeEventsProvider
+    @EnvironmentObject var averagingService: AveragingService
     
     let locationTracker = LocationTracker(locationManager: CLLocationManager())
     var sessionSynchronizer: SessionSynchronizer
@@ -79,7 +80,7 @@ struct RootAppView: View {
             sdSyncController = SDSyncController(airbeamServices: BluetoothSDCardAirBeamServices(bluetoothManager: bluetoothManager),
                                                 fileWriter: SDSyncFileWritingService(bufferThreshold: 10000),
                                                 fileValidator: SDSyncFileValidationService(),
-                                                mobileSessionsSaver: SDCardMobileSessionsSavingService(measurementStreamStorage: measurementStreamStorage, fileLineReader: DefaultFileLineReader()))
+                                                mobileSessionsSaver: SDCardMobileSessionsSavingService(measurementStreamStorage: measurementStreamStorage, fileLineReader: DefaultFileLineReader()), averagingService: averagingService, sessionSynchronizer: sessionSynchronizer)
         }
     }
     
