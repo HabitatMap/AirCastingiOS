@@ -48,9 +48,6 @@ final class SDSyncFileWritingService: SDSyncFileWriter {
         } catch {
             Log.error("Error closing files! \(error.localizedDescription)")
         }
-        SDCardSessionType.allCases.forEach { sessionType in
-                    Log.info("\(try! String(contentsOfFile: fileURL(for: sessionType).path)) \(fileURL(for: sessionType).path)")
-                }
         return toReturn
     }
     

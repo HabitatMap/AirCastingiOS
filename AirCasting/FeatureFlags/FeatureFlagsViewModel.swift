@@ -6,9 +6,19 @@ class FeatureFlagsViewModel: ObservableObject {
     private var mainProvider: FeatureFlagProvider
     private var fallbackProvider: FeatureFlagProvider
     
+    private static let mainProvider: FeatureFlagProvider = {
+        #if DEBUG
+        Log.info("Debug build, enabling all fatures")
+        return AllFeaturesOn()
+        #else
+        Log.info("Release build, using firebase config for features")
+        return FirebaseFeatureFlagProvider(notificationsRouter: DefaultRemoteNotificationRouter.shared)
+        #endif
+    }()
+    
     static let shared: FeatureFlagsViewModel = {
         return .init(
-            mainProvider: DefaultFeatureFlagProvider(),
+            mainProvider: FeatureFlagsViewModel.mainProvider,
             fallbackProvider: DefaultFeatureFlagProvider()
         )
     }()
@@ -26,5 +36,10 @@ class FeatureFlagsViewModel: ObservableObject {
             mainProvider.isFeatureOn($0) ?? (fallbackProvider.isFeatureOn($0) ?? false)
         }
         Log.info("Updated feature list: \(enabledFeatures)")
+    }
+    
+    private struct AllFeaturesOn: FeatureFlagProvider {
+        var onFeatureListChange: (() -> Void)?
+        func isFeatureOn(_ feature: FeatureFlag) -> Bool? { true }
     }
 }

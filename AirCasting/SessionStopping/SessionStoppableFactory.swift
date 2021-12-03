@@ -31,8 +31,12 @@ final class SessionStoppableFactoryDefault: SessionStoppableFactory {
         case .MIC: return MicrophoneSessionStopper(uuid: session.uuid,
                                                    microphoneManager: microphoneManager,
                                                    measurementStreamStorage: measurementStreamStorage)
-        case .AIRBEAM3: return StandardSesssionStopper(uuid: session.uuid, measurementStreamStorage: measurementStreamStorage, bluetoothManager: bluetoothManager)
-        case .none: return StandardSesssionStopper(uuid: session.uuid, measurementStreamStorage: measurementStreamStorage, bluetoothManager: bluetoothManager)
+        case .AIRBEAM3: return StandardSesssionStopper(uuid: session.uuid,
+                                                       measurementStreamStorage: measurementStreamStorage,
+                                                       bluetoothManager: bluetoothManager)
+        case .none: return StandardSesssionStopper(uuid: session.uuid,
+                                                   measurementStreamStorage: measurementStreamStorage,
+                                                   bluetoothManager: bluetoothManager)
         }
     }
 }

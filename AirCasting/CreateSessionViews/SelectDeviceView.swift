@@ -19,6 +19,7 @@ struct SelectDeviceView: View {
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @EnvironmentObject private var microphoneManager: MicrophoneManager
     @Binding var creatingSessionFlowContinues : Bool
+    @Binding var sdSyncContinues : Bool
     @State private var showAlert = false
     @EnvironmentObject private var emptyDashboardButtonTapped: EmptyDashboardButtonTapped
     @EnvironmentObject private var tabSelection: TabBarSelection
@@ -45,7 +46,7 @@ struct SelectDeviceView: View {
                     EmptyView()
                 })
             NavigationLink(
-                destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider),
+                destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sdSyncContinues: $sdSyncContinues, urlProvider: urlProvider),
                 isActive: $isTurnOnBluetoothLinkActive,
                 label: {
                     EmptyView()

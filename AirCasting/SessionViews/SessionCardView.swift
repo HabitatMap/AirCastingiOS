@@ -65,7 +65,7 @@ struct SessionCardView: View {
     }
     
     var body: some View {
-        if session.isInStandaloneMode {
+        if session.isInStandaloneMode && FeatureFlagsViewModel.shared.enabledFeatures.contains(.standaloneMode) {
             standaloneSessionCard
         } else {
             sessionCard

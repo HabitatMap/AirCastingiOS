@@ -9,10 +9,10 @@ class FirebaseFeatureFlagProvider: FeatureFlagProvider {
     
     private let expirationDuration: TimeInterval = 43200 // 12hs
     private let messageIdentifier = "feature_flags_status"
-    private static let errorKey = "firebase_config_error"
-    private var isInErrorState: Bool = UserDefaults.standard.bool(forKey: FirebaseFeatureFlagProvider.errorKey) {
+    private static let userDefaultsErrorKey = "firebase_config_error"
+    private var isInErrorState: Bool = UserDefaults.standard.bool(forKey: FirebaseFeatureFlagProvider.userDefaultsErrorKey) {
         didSet {
-            UserDefaults.standard.set(isInErrorState, forKey: FirebaseFeatureFlagProvider.errorKey)
+            UserDefaults.standard.set(isInErrorState, forKey: FirebaseFeatureFlagProvider.userDefaultsErrorKey)
         }
     }
     
