@@ -80,7 +80,7 @@ struct TurnOnLocationView: View {
     
     var proceedToPowerABView: some View {
         NavigationLink(
-            destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sdSyncContinues: .constant(false), urlProvider: viewModel.passURLProvider),
+            destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: viewModel.passURLProvider),
             isActive: $isPowerABLinkActive,
             label: {
                 EmptyView()

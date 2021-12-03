@@ -37,7 +37,7 @@ struct ChooseSessionTypeView: View {
                 mainContent
                 .fullScreenCover(isPresented: $isPowerABLinkActive) {
                     CreatingSessionFlowRootView {
-                        PowerABView(creatingSessionFlowContinues: $isPowerABLinkActive, sdSyncContinues: .constant(false), urlProvider: viewModel.passURLProvider)
+                        PowerABView(creatingSessionFlowContinues: $isPowerABLinkActive, urlProvider: viewModel.passURLProvider)
                     }
                 }
             
@@ -60,7 +60,9 @@ struct ChooseSessionTypeView: View {
                 }
                 
                 .fullScreenCover(isPresented: $startSync) {
-                    SDSyncRootView(sessionSynchronizer: sessionSynchronizer, urlProvider: viewModel.passURLProvider)
+                    CreatingSessionFlowRootView {
+                        SDSyncRootView(viewModel: SDSyncRootViewModelDefault(sessionSynchronizer: sessionSynchronizer, urlProvider: viewModel.passURLProvider), creatingSessionFlowContinues: $startSync)
+                    }
                 }
                 .onChange(of: viewModel.passBluetoothManager.centralManagerState) { _ in
                     if didTapFixedSession {
@@ -85,7 +87,7 @@ struct ChooseSessionTypeView: View {
                         EmptyView()
                             .fullScreenCover(isPresented: $isPowerABLinkActive) {
                                 CreatingSessionFlowRootView {
-                                    PowerABView(creatingSessionFlowContinues: $isPowerABLinkActive, sdSyncContinues: .constant(false), urlProvider: viewModel.passURLProvider)
+                                    PowerABView(creatingSessionFlowContinues: $isPowerABLinkActive, urlProvider: viewModel.passURLProvider)
                                 }
                             }
                         EmptyView()
@@ -108,7 +110,9 @@ struct ChooseSessionTypeView: View {
                             }
                         EmptyView()
                             .fullScreenCover(isPresented: $startSync) {
-                                SDSyncRootView(sessionSynchronizer: sessionSynchronizer, urlProvider: viewModel.passURLProvider)
+                                CreatingSessionFlowRootView {
+                                    SDSyncRootView(viewModel: SDSyncRootViewModelDefault(sessionSynchronizer: sessionSynchronizer, urlProvider: viewModel.passURLProvider), creatingSessionFlowContinues: $startSync)
+                                }
                             }
                     }
                 )

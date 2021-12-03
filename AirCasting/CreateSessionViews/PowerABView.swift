@@ -11,7 +11,6 @@ import SwiftUI
 struct PowerABView: View {
     @State private var showAlert = false
     @Binding var creatingSessionFlowContinues: Bool
-    @Binding var sdSyncContinues: Bool
     @EnvironmentObject private var sessionContext: CreateSessionContext
     let urlProvider: BaseURLProvider
 
@@ -49,7 +48,7 @@ struct PowerABView: View {
     }
 
     var continueButton: some View {
-        NavigationLink(destination: SelectPeripheralView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sdSyncContinues: $sdSyncContinues, urlProvider: urlProvider)) {
+        NavigationLink(destination: SelectPeripheralView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider)) {
             Text(Strings.PowerABView.continueButton)
                 .frame(maxWidth: .infinity)
         }
@@ -59,7 +58,7 @@ struct PowerABView: View {
 #if DEBUG
 struct PowerABView_Previews: PreviewProvider {
     static var previews: some View {
-        PowerABView(creatingSessionFlowContinues: .constant(true), sdSyncContinues: .constant(false), urlProvider: DummyURLProvider())
+        PowerABView(creatingSessionFlowContinues: .constant(true), urlProvider: DummyURLProvider())
     }
 }
 #endif

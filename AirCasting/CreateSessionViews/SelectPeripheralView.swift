@@ -16,7 +16,6 @@ struct SelectPeripheralView: View {
     @EnvironmentObject var connectionController: DefaultAirBeamConnectionController
     @EnvironmentObject var sdSyncController: SDSyncController
     @Binding var creatingSessionFlowContinues: Bool
-    @Binding var sdSyncContinues: Bool
     let urlProvider: BaseURLProvider
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     var syncMode: Bool? = false
@@ -97,7 +96,7 @@ struct SelectPeripheralView: View {
     var titleLabel: some View {
         var title: Text
         if syncMode == true {
-            title = Text("Select the device you'd like to sync")
+            title = Text(Strings.SelectPeripheralView.titleSyncLabel)
         } else {
             title = Text(Strings.SelectPeripheralView.titleLabel)
         }
@@ -137,7 +136,7 @@ struct SelectPeripheralView: View {
                                        userAuthenticationSession: userAuthenticationSession,
                                        sessionContext: sessionContext,
                                        peripheral: selection)
-                destination = AnyView(SyncingABView(viewModel: viewModel, baseURL: urlProvider, creatingSessionFlowContinues: $creatingSessionFlowContinues, sdSyncContinues: $sdSyncContinues))
+                destination = AnyView(SyncingABView(viewModel: viewModel, creatingSessionFlowContinues: $creatingSessionFlowContinues))
             } else {
                 let viewModel =
                 AirbeamConnectionViewModelDefault(airBeamConnectionController: connectionController,
@@ -159,7 +158,7 @@ struct SelectPeripheralView: View {
 #if DEBUG
 struct SelectPeripheralView_Previews: PreviewProvider {
     static var previews: some View {
-        SelectPeripheralView(creatingSessionFlowContinues: .constant(true), sdSyncContinues: .constant(false), urlProvider: DummyURLProvider())
+        SelectPeripheralView(creatingSessionFlowContinues: .constant(true), urlProvider: DummyURLProvider())
     }
 }
 #endif

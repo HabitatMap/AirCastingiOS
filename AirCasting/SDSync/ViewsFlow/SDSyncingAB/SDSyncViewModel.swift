@@ -7,15 +7,20 @@ import CoreBluetooth
 protocol SDSyncViewModel: ObservableObject {
     var shouldDismiss: Published<Bool>.Publisher { get }
     var isSyncCompleted: Published<Bool>.Publisher { get }
+    var presentNextScreen: Bool { get set }
+    var presentAlert: Bool { get set }
     func connectToAirBeamAndSync()
 }
 
 class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
+    
     var shouldDismiss: Published<Bool>.Publisher { $shouldDismissValue }
     var isSyncCompleted: Published<Bool>.Publisher { $isSyncCompletedValue }
     
     @Published private var shouldDismissValue: Bool = false
     @Published private var isSyncCompletedValue: Bool = false
+    @Published var presentNextScreen: Bool = false
+    @Published var presentAlert: Bool = false
     
     private let peripheral: CBPeripheral
     private let airBeamConnectionController: AirBeamConnectionController

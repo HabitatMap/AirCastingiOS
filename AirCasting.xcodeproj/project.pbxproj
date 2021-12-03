@@ -272,6 +272,9 @@
 		DD5930E1273528860043C2A2 /* UserState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD5930E0273528860043C2A2 /* UserState.swift */; };
 		DD700CF22695CE9C0048A17D /* MailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD700CF12695CE9C0048A17D /* MailView.swift */; };
 		DD72DC4226A99D5000325FE5 /* ShareView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD72DC4126A99D5000325FE5 /* ShareView.swift */; };
+		DD79554C2757EB0900631A78 /* BackendSyncCompletedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD79554B2757EB0900631A78 /* BackendSyncCompletedView.swift */; };
+		DD7955512757F07900631A78 /* SDRestartABView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD7955502757F07900631A78 /* SDRestartABView.swift */; };
+		DD7955552757F2CA00631A78 /* SDSyncCompleteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD7955542757F2CA00631A78 /* SDSyncCompleteView.swift */; };
 		DD839E15269F33A6006A8625 /* LocationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD839E14269F33A6006A8625 /* LocationState.swift */; };
 		DD8A36A426C3CE7900C26725 /* ChooseCustomLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8A36A326C3CE7900C26725 /* ChooseCustomLocationView.swift */; };
 		DD8A36A726C3E76200C26725 /* PlacePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8A36A626C3E76200C26725 /* PlacePicker.swift */; };
@@ -279,6 +282,9 @@
 		DD8C38092689A34E00901FDF /* UserDefaultsBaseURLProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8C38082689A34E00901FDF /* UserDefaultsBaseURLProvider.swift */; };
 		DD8C380C2689A3DA00901FDF /* BaseURLProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8C380B2689A3DA00901FDF /* BaseURLProvider.swift */; };
 		DD8C380E2689A55A00901FDF /* BackendSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8C380D2689A55A00901FDF /* BackendSettingsView.swift */; };
+		DD9E354A2758E34A001791BC /* SDRestartABViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD9E35492758E34A001791BC /* SDRestartABViewModel.swift */; };
+		DD9E354C2758E359001791BC /* BackendSyncCompletedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD9E354B2758E359001791BC /* BackendSyncCompletedViewModel.swift */; };
+		DD9E354E2758E362001791BC /* SDSyncRootViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD9E354D2758E362001791BC /* SDSyncRootViewModel.swift */; };
 		DD9EBB4E26AFDD2100D51804 /* TurnOnLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD9EBB4D26AFDD2100D51804 /* TurnOnLocationView.swift */; };
 		DDB448282732AA4B00F11340 /* AirCastingGraphSimplifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB448272732AA4B00F11340 /* AirCastingGraphSimplifier.swift */; };
 		DDB44C252704AF830027176E /* AveragingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB44C242704AF830027176E /* AveragingService.swift */; };
@@ -597,6 +603,9 @@
 		DD5930E0273528860043C2A2 /* UserState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserState.swift; sourceTree = "<group>"; };
 		DD700CF12695CE9C0048A17D /* MailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailView.swift; sourceTree = "<group>"; };
 		DD72DC4126A99D5000325FE5 /* ShareView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareView.swift; sourceTree = "<group>"; };
+		DD79554B2757EB0900631A78 /* BackendSyncCompletedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendSyncCompletedView.swift; sourceTree = "<group>"; };
+		DD7955502757F07900631A78 /* SDRestartABView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDRestartABView.swift; sourceTree = "<group>"; };
+		DD7955542757F2CA00631A78 /* SDSyncCompleteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSyncCompleteView.swift; sourceTree = "<group>"; };
 		DD839E14269F33A6006A8625 /* LocationState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationState.swift; sourceTree = "<group>"; };
 		DD8A36A326C3CE7900C26725 /* ChooseCustomLocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseCustomLocationView.swift; sourceTree = "<group>"; };
 		DD8A36A626C3E76200C26725 /* PlacePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlacePicker.swift; sourceTree = "<group>"; };
@@ -605,6 +614,9 @@
 		DD8C380B2689A3DA00901FDF /* BaseURLProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseURLProvider.swift; sourceTree = "<group>"; };
 		DD8C380D2689A55A00901FDF /* BackendSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendSettingsView.swift; sourceTree = "<group>"; };
 		DD8C380F268A0E9400901FDF /* ShareViewModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewModal.swift; sourceTree = "<group>"; };
+		DD9E35492758E34A001791BC /* SDRestartABViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDRestartABViewModel.swift; sourceTree = "<group>"; };
+		DD9E354B2758E359001791BC /* BackendSyncCompletedViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendSyncCompletedViewModel.swift; sourceTree = "<group>"; };
+		DD9E354D2758E362001791BC /* SDSyncRootViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSyncRootViewModel.swift; sourceTree = "<group>"; };
 		DD9EBB4D26AFDD2100D51804 /* TurnOnLocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurnOnLocationView.swift; sourceTree = "<group>"; };
 		DDB448272732AA4B00F11340 /* AirCastingGraphSimplifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirCastingGraphSimplifier.swift; sourceTree = "<group>"; };
 		DDB44C242704AF830027176E /* AveragingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AveragingService.swift; sourceTree = "<group>"; };
@@ -680,10 +692,8 @@
 		333448712743D75300ACA5E4 /* SDSync */ = {
 			isa = PBXGroup;
 			children = (
-				333448722743D7BB00ACA5E4 /* SDSyncRootView.swift */,
-				333448742743D94F00ACA5E4 /* SDSyncViewModel.swift */,
+				DD79554A2757EAEA00631A78 /* ViewsFlow */,
 				B30F9A602745601F00C85E17 /* SDSyncController.swift */,
-				3334487827452EFC00ACA5E4 /* SyncingABView.swift */,
 				33885BB127468B4E00F41CB5 /* SDSyncFileWritingService.swift */,
 				3383511D2747C24800308068 /* SDSyncFileFactory.swift */,
 				3384C1DC274EC4C00022B008 /* SDSyncFileValidationService.swift */,
@@ -1538,6 +1548,62 @@
 			path = Helpers;
 			sourceTree = "<group>";
 		};
+		DD79554A2757EAEA00631A78 /* ViewsFlow */ = {
+			isa = PBXGroup;
+			children = (
+				DD79554D2757ED3E00631A78 /* SDSyncRootView */,
+				DD79554E2757ED9600631A78 /* SDSyncSuccess */,
+				DD79554F2757F05100631A78 /* SDRestartAB */,
+				DD7955522757F28100631A78 /* SDSyncingAB */,
+				DD7955532757F2A900631A78 /* SDSyncComplete */,
+			);
+			path = ViewsFlow;
+			sourceTree = "<group>";
+		};
+		DD79554D2757ED3E00631A78 /* SDSyncRootView */ = {
+			isa = PBXGroup;
+			children = (
+				333448722743D7BB00ACA5E4 /* SDSyncRootView.swift */,
+				DD9E354D2758E362001791BC /* SDSyncRootViewModel.swift */,
+			);
+			path = SDSyncRootView;
+			sourceTree = "<group>";
+		};
+		DD79554E2757ED9600631A78 /* SDSyncSuccess */ = {
+			isa = PBXGroup;
+			children = (
+				DD79554B2757EB0900631A78 /* BackendSyncCompletedView.swift */,
+				DD9E354B2758E359001791BC /* BackendSyncCompletedViewModel.swift */,
+			);
+			path = SDSyncSuccess;
+			sourceTree = "<group>";
+		};
+		DD79554F2757F05100631A78 /* SDRestartAB */ = {
+			isa = PBXGroup;
+			children = (
+				DD7955502757F07900631A78 /* SDRestartABView.swift */,
+				DD9E35492758E34A001791BC /* SDRestartABViewModel.swift */,
+			);
+			path = SDRestartAB;
+			sourceTree = "<group>";
+		};
+		DD7955522757F28100631A78 /* SDSyncingAB */ = {
+			isa = PBXGroup;
+			children = (
+				3334487827452EFC00ACA5E4 /* SyncingABView.swift */,
+				333448742743D94F00ACA5E4 /* SDSyncViewModel.swift */,
+			);
+			path = SDSyncingAB;
+			sourceTree = "<group>";
+		};
+		DD7955532757F2A900631A78 /* SDSyncComplete */ = {
+			isa = PBXGroup;
+			children = (
+				DD7955542757F2CA00631A78 /* SDSyncCompleteView.swift */,
+			);
+			path = SDSyncComplete;
+			sourceTree = "<group>";
+		};
 		DD8C380A2689A3B600901FDF /* URLProviders */ = {
 			isa = PBXGroup;
 			children = (
@@ -1892,6 +1958,7 @@
 				B32D08AF267A6D13006C97ED /* ErasingToVoidPublisher.swift in Sources */,
 				DD4108FA273BE94D00BF10FF /* CreateSessionDetailsViewModel.swift in Sources */,
 				B30BAC022694A89100AE0476 /* StatisticsContainerViewModel.swift in Sources */,
+				DD9E354C2758E359001791BC /* BackendSyncCompletedViewModel.swift in Sources */,
 				B3F1447A26AE436A006A4612 /* FilterErrorPublisher.swift in Sources */,
 				B32D08AF267A6D13006C97ED /* ErasingToVoidPublisher.swift in Sources */,
 				B3D1928D26F1FA1C0029E1C8 /* FixedSessionFaker.swift in Sources */,
@@ -1939,6 +2006,7 @@
 				AC7EB37825A6FB3A00A7F2AF /* MainTabBarView.swift in Sources */,
 				B38E6CD026C5F83D00C21C45 /* StandardSesssionStopper.swift in Sources */,
 				B30F9A612745601F00C85E17 /* SDSyncController.swift in Sources */,
+				DD9E354E2758E362001791BC /* SDSyncRootViewModel.swift in Sources */,
 				AC960C7825DD39F500EC95DD /* ABConnectedView.swift in Sources */,
 				DD5687C326CFC8080028C2CA /* Constants.swift in Sources */,
 				AC489B5C2603614E00CEEC48 /* MoreInfoPopupView.swift in Sources */,
@@ -2027,6 +2095,7 @@
 				4F5D3F73262C91C6003AD82E /* UserAuthenticationSession.swift in Sources */,
 				AC6D569F25AEEAE700D221BA /* SessionHeaderView.swift in Sources */,
 				B3AB8BE526BB5EF400AF23CC /* Array+MeasurementStatistics.swift in Sources */,
+				DD79554C2757EB0900631A78 /* BackendSyncCompletedView.swift in Sources */,
 				B3C3F8B92695A295003E2CB4 /* StatisticsContainerViewModelable.swift in Sources */,
 				AC32040425CC067D00A68520 /* CheckBox.swift in Sources */,
 				AC8D6C6E25C056B400ED74D1 /* PathPoint.swift in Sources */,
@@ -2034,6 +2103,7 @@
 				3334487927452EFD00ACA5E4 /* SyncingABView.swift in Sources */,
 				B30BAC192694AA8E00AE0476 /* StatisticsCalculator.swift in Sources */,
 				AC96DBEA2742705100D5E8E0 /* ThresholdsSettingsViewModel.swift in Sources */,
+				DD9E354A2758E34A001791BC /* SDRestartABViewModel.swift in Sources */,
 				DDEE3A44269736270098CCA9 /* NetworkChecker.swift in Sources */,
 				B376DD25268096E20083FD2F /* SessionSynchronizationDatabase.swift in Sources */,
 				AC6D56A525AF211200D221BA /* MultiSliderView.swift in Sources */,
@@ -2053,12 +2123,14 @@
 				AC4EC6C125B6F18A00C1E312 /* EditButtonView.swift in Sources */,
 				AC049F8B2608DCB000398197 /* Session+Mock.swift in Sources */,
 				DD1EEB8B26B7C2F100AFC5C1 /* TurnOnLocationViewModel.swift in Sources */,
+				DD7955512757F07900631A78 /* SDRestartABView.swift in Sources */,
 				DDF7599A268332E900D906BA /* Strings.swift in Sources */,
 				DDD1F9B12705852400D8E87F /* DataFormatters.swift in Sources */,
 				B367A590274E9EAA004C605B /* FirebaseFeatureFlagProvider.swift in Sources */,
 				B367A593274E9EAA004C605B /* FeatureFlagProvider.swift in Sources */,
 				DD8A36A426C3CE7900C26725 /* ChooseCustomLocationView.swift in Sources */,
 				AC524A9A2615E3600061AD45 /* NSManagedObjectContext+Utils.swift in Sources */,
+				DD7955552757F2CA00631A78 /* SDSyncCompleteView.swift in Sources */,
 				B38E6CCA26C5F19F00C21C45 /* SessionStoppable.swift in Sources */,
 				B3EBB10C26A06D2D002BD81F /* DefaultForgotPasswordViewModel.swift in Sources */,
 				DDB448282732AA4B00F11340 /* AirCastingGraphSimplifier.swift in Sources */,

@@ -40,7 +40,7 @@ struct SelectDeviceView: View {
         .padding()
         .background( Group {
             NavigationLink(
-                destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sdSyncContinues: $sdSyncContinues, urlProvider: urlProvider),
+                destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider),
                 isActive: $isPowerABLinkActive,
                 label: {
                     EmptyView()

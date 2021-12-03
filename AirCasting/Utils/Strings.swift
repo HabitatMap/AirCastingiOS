@@ -100,6 +100,7 @@ struct Strings {
         static let alertMessage: String = "Bluetooth connection failed. Please toggle the power on your device and try again."
         static let alertAccept: String = "Got it!"
         static let titleLabel: String = "Choose the device you'd like to record with"
+        static let titleSyncLabel: String = "Select the device you'd like to sync"
         static let refreshButton: String = "Don't see a device? Refresh scanning."
         static let connectText: String = "Connect"
     }
@@ -489,5 +490,32 @@ struct Strings {
         static let description = "AirBeam3 is now recording using its SD card. The measurements will be displayed here after syncing."
         static let finishAndSyncButtonLabel = "Finish recording & sync"
         static let finishAndDontSyncButtonLabel = "Finish recording & don't sync"
+    }
+    
+    enum SDSyncRootView {
+        static let title: String = "Updating sessions"
+        static let message: String = "Sessions must be updated prior to syncing SD card. Make sure your device is connected to the Internet."
+    }
+    
+    enum SDSyncSuccessView {
+        static let title: String = "Success"
+        static let message: String = "Sessions were updated successfully"
+    }
+    
+    enum SDRestartABView {
+        static let title: String = "Restart your AirBeam"
+        static let message: String = "Turn your AirBeam off and then back on."
+    }
+    
+    enum SyncingABView {
+        static let title: String = "Syncing..."
+        static let message: String = "Keep your AirBeam close to your iPhone. Plug in your AirBeam to speed up the sync."
+        static let alertTitle: String = "Failed to sync"
+        static let alertMessage: String = "Try again later"
+    }
+    
+    enum SDSyncCompleteView {
+        static let title: String = "Sync complete"
+        static let message: String = "The data from your AirBeam3 was synchronized successfully to the app. The SD card was cleared."
     }
 }
