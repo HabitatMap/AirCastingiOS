@@ -68,6 +68,8 @@ class SDSyncController: ObservableObject {
                                 completion(false)
                             }
                         }
+                    } else {
+                        completion(true)
                     }
                 case .failure: self.fileWriter.finishAndRemoveFiles(); completion(false)
                 }
