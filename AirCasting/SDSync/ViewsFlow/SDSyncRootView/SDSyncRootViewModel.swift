@@ -48,6 +48,7 @@ class SDSyncRootViewModelDefault: SDSyncRootViewModel, ObservableObject {
     }
 }
 
+#if DEBUG
 class DummySDSyncRootViewModelDefault: SDSyncRootViewModel, ObservableObject {
     
     @Published var backendSyncCompleted: Bool = false
@@ -66,3 +67,4 @@ class DummySDSyncRootViewModelDefault: SDSyncRootViewModel, ObservableObject {
     }
     
 }
+#endif
