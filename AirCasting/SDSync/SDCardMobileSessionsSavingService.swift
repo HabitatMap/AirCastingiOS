@@ -6,7 +6,7 @@ import CoreLocation
 import Combine
 
 protocol SDCardMobileSessionssSaver {
-    func saveDataToDb(fileURL: URL, deviceID: String)
+    func saveDataToDb(fileURL: URL, deviceID: String, completion: @escaping (Result<[SessionUUID], Error>) -> Void)
 }
 
 class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
@@ -19,7 +19,7 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         self.fileLineReader = fileLineReader
     }
     
-    func saveDataToDb(fileURL: URL, deviceID: String) {
+    func saveDataToDb(fileURL: URL, deviceID: String, completion: @escaping (Result<[SessionUUID], Error>) -> Void) {
         var processedSessions = Set<SDSession>()
         var streamsWithMeasurements: [SDStream: [Measurement]] = [:]
         
@@ -50,30 +50,13 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
                         Log.info("Reached end of csv file")
                     }
                 })
+                
                 self.saveData(streamsWithMeasurements, to: storage, with: deviceID, sessionsToCreate: &sessionsToCreate)
+                completion(.success(Array(Set(streamsWithMeasurements.keys.map(\.sessionUUID)))))
             } catch {
-                Log.error("Error reading file")
+                completion(.failure(error))
             }
         }
-    }
-    
-    private func read(fileURL: URL) -> PassthroughSubject<SDCardMeasurementsRow?, Error> {
-        let publisher = PassthroughSubject<SDCardMeasurementsRow?, Error>()
-        do {
-            try fileLineReader.readLines(of: fileURL, progress: { line in
-                switch line {
-                case .line(let content):
-                    let measurementsRow = parser.parseMeasurement(lineSting: content)
-                    publisher.send(measurementsRow)
-                case .endOfFile:
-                    publisher.send(completion: .finished)
-                }
-            })
-        } catch {
-            Log.error("Cannot read file \(fileURL): \(error.localizedDescription)")
-            publisher.send(completion: .failure(error))
-        }
-        return publisher
     }
     
     private func saveData(_ streamsWithMeasurements: [SDStream: [Measurement]], to storage: HiddenCoreDataMeasurementStreamStorage, with deviceID: String, sessionsToCreate: inout [SessionUUID]) {
