@@ -187,6 +187,7 @@
 		B33DB5722686013400ED1344 /* XCTestCase+AwaitPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33DB5712686013400ED1344 /* XCTestCase+AwaitPublisher.swift */; };
 		B33DB5742686120600ED1344 /* XCTestCase+AssertContainsSameElements.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33DB5732686120600ED1344 /* XCTestCase+AssertContainsSameElements.swift */; };
 		B33DB5762686161300ED1344 /* SensorName.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33DB5752686161300ED1344 /* SensorName.swift */; };
+		B34D4648275B12A000194E51 /* RemoteLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34D4647275B12A000194E51 /* RemoteLog.swift */; };
 		B367A590274E9EAA004C605B /* FirebaseFeatureFlagProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B367A589274E9EAA004C605B /* FirebaseFeatureFlagProvider.swift */; };
 		B367A591274E9EAA004C605B /* DefaultFeatureFlagProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B367A58A274E9EAA004C605B /* DefaultFeatureFlagProvider.swift */; };
 		B367A593274E9EAA004C605B /* FeatureFlagProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B367A58C274E9EAA004C605B /* FeatureFlagProvider.swift */; };
@@ -522,6 +523,7 @@
 		B33DB5712686013400ED1344 /* XCTestCase+AwaitPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+AwaitPublisher.swift"; sourceTree = "<group>"; };
 		B33DB5732686120600ED1344 /* XCTestCase+AssertContainsSameElements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+AssertContainsSameElements.swift"; sourceTree = "<group>"; };
 		B33DB5752686161300ED1344 /* SensorName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorName.swift; sourceTree = "<group>"; };
+		B34D4647275B12A000194E51 /* RemoteLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteLog.swift; sourceTree = "<group>"; };
 		B367A589274E9EAA004C605B /* FirebaseFeatureFlagProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseFeatureFlagProvider.swift; sourceTree = "<group>"; };
 		B367A58A274E9EAA004C605B /* DefaultFeatureFlagProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultFeatureFlagProvider.swift; sourceTree = "<group>"; };
 		B367A58C274E9EAA004C605B /* FeatureFlagProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeatureFlagProvider.swift; sourceTree = "<group>"; };
@@ -853,6 +855,7 @@
 				3346F1F526318C1600BA4695 /* SettingsManager.swift */,
 				4FD2CA4626406F2C007E932E /* Diff.swift */,
 				4F8CDBD1265F8DAC00976B25 /* Assertions.swift */,
+				B34D4647275B12A000194E51 /* RemoteLog.swift */,
 				B3E26A022676D9AA001A8E4C /* ArrayUtils.swift */,
 				DDF75999268332E900D906BA /* Strings.swift */,
 				DD5687C226CFC8080028C2CA /* Constants.swift */,
@@ -1997,6 +2000,7 @@
 				333448752743D94F00ACA5E4 /* SDSyncViewModel.swift in Sources */,
 				750A51DC2754D4BD00D6F4E7 /* VisibleRegionCoordinates.swift in Sources */,
 				B3FD77C4267C94AF00E97CC2 /* SessionSynchronizationService.swift in Sources */,
+				B34D4648275B12A000194E51 /* RemoteLog.swift in Sources */,
 				B33DB5762686161300ED1344 /* SensorName.swift in Sources */,
 				DD8AFE4F272886D700ED1CED /* ThresholdWitness.swift in Sources */,
 				B3F1447C26AE437E006A4612 /* OnErrorPublisher.swift in Sources */,
