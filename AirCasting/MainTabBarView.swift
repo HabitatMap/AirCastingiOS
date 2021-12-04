@@ -6,7 +6,6 @@
 //
 
 import CoreData
-import Firebase
 import CoreBluetooth
 import SwiftUI
 

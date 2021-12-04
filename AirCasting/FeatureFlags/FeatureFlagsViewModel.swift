@@ -6,17 +6,15 @@ class FeatureFlagsViewModel: ObservableObject {
     private var provider: FeatureFlagProvider
     static private let overrides = OverridingFeatureFlagProvider()
     
-    private static let mainProvider: FeatureFlagProvider = {
-        #if DEBUG
-        Log.info("Debug build, enabling all fatures")
-        return AllFeaturesOn()
-        #else
-        Log.info("Release build, using firebase config for features")
-        return FirebaseFeatureFlagProvider(notificationsRouter: DefaultRemoteNotificationRouter.shared)
-        #endif
-    }()
-    
     static let shared: FeatureFlagsViewModel = {
+        #if DEBUG
+        return .init(
+            provider: CompositeFeatureFlagProvider(children: [
+                FeatureFlagsViewModel.overrides,
+                AllFeaturesOn()
+            ])
+        )
+        #else
         return .init(
             provider: CompositeFeatureFlagProvider(children: [
                 FeatureFlagsViewModel.overrides,
@@ -24,6 +22,7 @@ class FeatureFlagsViewModel: ObservableObject {
                 DefaultFeatureFlagProvider()
             ])
         )
+        #endif
     }()
     
     #if DEBUG || BETA

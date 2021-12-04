@@ -7,7 +7,6 @@
 
 import Foundation
 import CoreBluetooth
-import FirebaseCrashlytics
 
 class BluetoothManager: NSObject, ObservableObject {
 
@@ -203,7 +202,7 @@ extension BluetoothManager: CBPeripheralDelegate {
     func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
         var hasSomeCharacteristics = false
         if let characteristics = service.characteristics {
-            Crashlytics.crashlytics().log("BluetoothManager (didDiscoverCharacteristicsFor) - service characteristics\n \(String(describing: service.characteristics))")
+            remoteLog("BluetoothManager (didDiscoverCharacteristicsFor) - service characteristics\n \(String(describing: service.characteristics))")
             for characteristic in characteristics {
                 if MEASUREMENTS_CHARACTERISTIC_UUIDS.contains(characteristic.uuid) {
                     peripheral.setNotifyValue(true, for: characteristic)

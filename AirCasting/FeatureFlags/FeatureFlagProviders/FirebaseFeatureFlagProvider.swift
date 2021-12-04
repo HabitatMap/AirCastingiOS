@@ -1,6 +1,7 @@
 import UIKit
 import FirebaseRemoteConfig
 
+#if !DEBUG
 class FirebaseFeatureFlagProvider: FeatureFlagProvider {
     var onFeatureListChange: (() -> Void)?
     
@@ -101,3 +102,4 @@ extension RemoteConfigFetchStatus {
         }
     }
 }
+#endif
