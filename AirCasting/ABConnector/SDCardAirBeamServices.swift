@@ -4,11 +4,6 @@
 import CoreBluetooth
 import CoreMIDI
 
-enum SDCardData {
-    case chunk(SDCardDataChunk)
-    case metadata(SDCardMetaData)
-}
-
 enum SDCardSyncError: Error {
     case cantDecodePayload
     case wrongOrderOfReceivedPayload
@@ -18,15 +13,15 @@ enum SDCardSyncError: Error {
 struct SDCardDataChunk {
     let payload: String
     let sessionType: SDCardSessionType
+    let progress: Double
 }
 
-struct SDCardMetaData {
-    let sessionType: SDCardSessionType
-    let measurementsCount: Int
+struct SDCardDownloadSummary {
+    let expectedMeasurementsCount: [SDCardSessionType: Int]
 }
 
 protocol SDCardAirBeamServices {
-    func downloadData(from peripheral: CBPeripheral, progress: @escaping (SDCardData) -> Void, completion: @escaping (Result<Void, Error>) -> Void)
+    func downloadData(from peripheral: CBPeripheral, progress: @escaping (SDCardDataChunk) -> Void, completion: @escaping (Result<SDCardDownloadSummary, Error>) -> Void)
 }
 
 class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
@@ -37,20 +32,20 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
     // has notifications for reading measurements stored in csv files on SD card
     private let DOWNLOAD_FROM_SD_CARD_CHARACTERISTIC_UUID = CBUUID(string:"0000ffdf-0000-1000-8000-00805f9b34fb")
     
-    private let bluetoothManager: BluetoothManager
+    private let bluetoothCommunicator: BluetoothCommunicator
     
     private var dataCharacteristicObserver: AnyHashable?
     private var metadataCharacteristicObserver: AnyHashable?
     
-    init(bluetoothManager: BluetoothManager) {
-        self.bluetoothManager = bluetoothManager
+    init(bluetoothCommunicator: BluetoothCommunicator) {
+        self.bluetoothCommunicator = bluetoothCommunicator
     }
     
-    func downloadData(from peripheral: CBPeripheral, progress: @escaping (SDCardData) -> Void, completion: @escaping (Result<Void, Error>) -> Void) {
+    func downloadData(from peripheral: CBPeripheral, progress: @escaping (SDCardDataChunk) -> Void, completion: @escaping (Result<SDCardDownloadSummary, Error>) -> Void) {
+        var expectedMeasurementsCount: [SDCardSessionType: Int] = [:]
+        var receivedMeasurementsCount: [SDCardSessionType: Int] = [:]
         var currentSessionType: SDCardSessionType?
-        var currentSessionTypeReceived: Int = 0
-        var currentSessionTypeExpected: Int = 0
-        metadataCharacteristicObserver = bluetoothManager.subscribeToCharacteristic(DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID) { result in
+        metadataCharacteristicObserver = bluetoothCommunicator.subscribeToCharacteristic(DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID) { result in
             switch result {
             case .success(let data):
                 guard let data = data, let payload = String(data: data, encoding: .utf8) else {
@@ -60,7 +55,7 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
                 currentSessionType = currentSessionType.next
                 Log.info("[SD CARD SYNC] " + payload)
                 if payload == "SD_SYNC_FINISH" {
-                    self.finishSync { completion(.success(())) }
+                    self.finishSync { completion(.success(.init(expectedMeasurementsCount: expectedMeasurementsCount))) }
                     Log.info("[SD CARD SYNC] Sync finished.")
                     return
                 }
@@ -76,16 +71,14 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
                 
                 /* It can happen, that in the given airbeam some type of session was never recorded. In that case, metadata format will be different
                  and in that case we want to set currentSessionTypeExpected to 0 */
-                currentSessionTypeExpected = measurementsCount ?? 0
-                
-                progress(.metadata(SDCardMetaData(sessionType: currentSessionType!, measurementsCount: currentSessionTypeExpected)))
+                expectedMeasurementsCount[currentSessionType!] = measurementsCount ?? 0
             case .failure(let error):
                 Log.warning("Error while receiving metadata from SD card: \(error.localizedDescription)")
                 self.finishSync { completion(.failure(error)) }
             }
         }
         
-        dataCharacteristicObserver = bluetoothManager.subscribeToCharacteristic(DOWNLOAD_FROM_SD_CARD_CHARACTERISTIC_UUID) { result in
+        dataCharacteristicObserver = bluetoothCommunicator.subscribeToCharacteristic(DOWNLOAD_FROM_SD_CARD_CHARACTERISTIC_UUID) { result in
             switch result {
             case .success(let data):
                 guard let data = data, let payload = String(data: data, encoding: .utf8) else { return }
@@ -94,8 +87,9 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
                     self.finishSync { completion(.failure(SDCardSyncError.wrongOrderOfReceivedPayload)) }
                     return
                 }
-                progress(.chunk(SDCardDataChunk(payload: payload, sessionType: sessionType)))
-                
+                receivedMeasurementsCount[sessionType, default: 0] += 1
+                let progressFraction = Double(receivedMeasurementsCount[sessionType]!) / Double(expectedMeasurementsCount[sessionType].orOne)
+                progress(SDCardDataChunk(payload: payload, sessionType: sessionType, progress: progressFraction))
 
             case .failure(let error):
                 Log.warning("Error while receiving data from SD card: \(error.localizedDescription)")
@@ -105,8 +99,8 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
     }
     
     func finishSync(completion: () -> Void) {
-        self.bluetoothManager.unsubscribeCharacteristicObserver(self.dataCharacteristicObserver!)
-        self.bluetoothManager.unsubscribeCharacteristicObserver(self.metadataCharacteristicObserver!)
+        self.bluetoothCommunicator.unsubscribeCharacteristicObserver(self.dataCharacteristicObserver!)
+        self.bluetoothCommunicator.unsubscribeCharacteristicObserver(self.metadataCharacteristicObserver!)
         completion()
     }
 }
