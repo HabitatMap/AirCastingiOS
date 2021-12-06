@@ -11,6 +11,7 @@ struct SessionHeaderView: View {
     let action: () -> Void
     let isExpandButtonNeeded: Bool
     var isSensorTypeNeeded: Bool = true
+    var isMenuNeeded = true
     @Binding var isCollapsed: Bool
     @State var chevronIndicator = "chevron.down"
     @EnvironmentObject var networkChecker: NetworkChecker
@@ -30,7 +31,7 @@ struct SessionHeaderView: View {
                     dateAndTime
                         .foregroundColor(Color.aircastingTimeGray)
                     Spacer()
-                    actionsMenuMobile
+                    isMenuNeeded ? actionsMenuMobile : nil
                 }
             nameLabelAndExpandButton
         }.onChange(of: isCollapsed, perform: { value in
