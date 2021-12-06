@@ -110,7 +110,7 @@ private extension SessionHeaderView {
         Menu {
             session.isActive ? actionsMenuStopButton : nil
             session.deletable ? actionsMenuDeleteButton : nil
-            if session.deviceType == .AIRBEAM3 && featureFlagsViewModel.enabledFeatures.contains(.standaloneMode) {
+            if session.deviceType == .AIRBEAM3 && session.isActive && featureFlagsViewModel.enabledFeatures.contains(.standaloneMode) {
                 actionsMenuMobileEnterStandaloneMode
             }
         } label: {
