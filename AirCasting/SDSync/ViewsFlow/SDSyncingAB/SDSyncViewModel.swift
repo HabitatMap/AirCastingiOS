@@ -8,8 +8,10 @@ protocol SDSyncViewModel: ObservableObject {
     var shouldDismiss: Published<Bool>.Publisher { get }
     var isSyncCompleted: Published<Bool>.Publisher { get }
     var presentNextScreen: Bool { get set }
-    var presentAlert: Bool { get set }
+    var failedSyncAlertPresent: Bool { get set }
     func connectToAirBeamAndSync()
+    func continueSyncFlow(value: Bool)
+    func presentedAlert(value: Bool)
 }
 
 class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
@@ -20,7 +22,7 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
     @Published private var shouldDismissValue: Bool = false
     @Published private var isSyncCompletedValue: Bool = false
     @Published var presentNextScreen: Bool = false
-    @Published var presentAlert: Bool = false
+    @Published var failedSyncAlertPresent: Bool = false
     
     private let peripheral: CBPeripheral
     private let airBeamConnectionController: AirBeamConnectionController
@@ -65,5 +67,13 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
         let configurator = AirBeam3Configurator(userAuthenticationSession: self.userAuthenticationSession,
                                                 peripheral: self.peripheral)
         configurator.clearSDCard()
+    }
+    
+    func continueSyncFlow(value: Bool) {
+        presentNextScreen = value
+    }
+    
+    func presentedAlert(value: Bool) {
+        failedSyncAlertPresent = value
     }
 }

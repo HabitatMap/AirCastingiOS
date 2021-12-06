@@ -7,6 +7,8 @@ import Combine
 protocol SDSyncRootViewModel: ObservableObject {
     var backendSyncCompleted: Bool { get set }
     var urlProvider: BaseURLProvider { get }
+    // backendSyncCompleted and urlProvider should should not be exposed
+    // BUT it is - REASON: it is needed only to pass to some navigation view
     func executeBackendSync()
 }
 
