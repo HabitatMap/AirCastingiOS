@@ -13,7 +13,7 @@ struct SyncingABView<VM: SDSyncViewModel>: View {
     @Binding var creatingSessionFlowContinues: Bool
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 40) {
+        VStack(spacing: 40) {
             ProgressView(value: 0.7)
             Spacer()
             ZStack(alignment: Alignment(horizontal: .trailing, vertical: .bottom), content: {
