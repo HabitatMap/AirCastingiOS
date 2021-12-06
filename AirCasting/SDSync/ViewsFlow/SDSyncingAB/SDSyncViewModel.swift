@@ -47,6 +47,7 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
             self.sdSyncController.syncFromAirbeam(self.peripheral) { result in
                 //TODO: SD card should be cleared only if the files are not corrupted
                 result ? self.clearSDCard() : nil
+                self.disconnectAirBeam()
                 DispatchQueue.main.async {
                     self.isSyncCompletedValue = result
                     self.shouldDismissValue = !result
@@ -65,5 +66,9 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
         let configurator = AirBeam3Configurator(userAuthenticationSession: self.userAuthenticationSession,
                                                 peripheral: self.peripheral)
         configurator.clearSDCard()
+    }
+    
+    private func disconnectAirBeam() {
+        airBeamConnectionController.disconnectAirBeam(peripheral: peripheral)
     }
 }
