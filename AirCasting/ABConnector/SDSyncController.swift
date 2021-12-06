@@ -11,7 +11,7 @@ enum SDCardSessionType: CaseIterable {
 
 struct SDCardSyncProgess {
     let sessionType: SDCardSessionType
-    let progress: Double
+    let progress: SDCardProgress
 }
 
 class SDSyncController: ObservableObject {

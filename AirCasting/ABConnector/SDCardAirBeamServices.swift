@@ -13,7 +13,12 @@ enum SDCardSyncError: Error {
 struct SDCardDataChunk {
     let payload: String
     let sessionType: SDCardSessionType
-    let progress: Double
+    let progress: SDCardProgress
+}
+
+struct SDCardProgress {
+    let received: Int
+    let expected: Int
 }
 
 struct SDCardDownloadSummary {
@@ -87,8 +92,15 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
                     self.finishSync { completion(.failure(SDCardSyncError.wrongOrderOfReceivedPayload)) }
                     return
                 }
-                receivedMeasurementsCount[sessionType, default: 0] += 1
-                let progressFraction = Double(receivedMeasurementsCount[sessionType]!) / Double(expectedMeasurementsCount[sessionType].orOne)
+                receivedMeasurementsCount[sessionType, default: 0] += Constants.SDCardSync.numberOfMeasurementsInDataChunk
+                
+                guard let expectedMeasurementsCount = expectedMeasurementsCount[sessionType], expectedMeasurementsCount != 0 else {
+                    Log.error("[SD SYNC] Received data for session type which should have 0 measurements")
+                    return
+                }
+                
+                let receivedMeasurementsNumber = receivedMeasurementsCount[sessionType]! < expectedMeasurementsCount  ? receivedMeasurementsCount[sessionType]! : expectedMeasurementsCount
+                let progressFraction = SDCardProgress(received: receivedMeasurementsNumber, expected: expectedMeasurementsCount)
                 progress(SDCardDataChunk(payload: payload, sessionType: sessionType, progress: progressFraction))
 
             case .failure(let error):

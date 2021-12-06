@@ -6,7 +6,7 @@ import CoreBluetooth
 
 struct SDSyncProgressViewModel {
     let label: String
-    let value: Double
+    let value: String
 }
 
 protocol SDSyncViewModel: ObservableObject {
@@ -55,8 +55,10 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
             self.sdSyncController.syncFromAirbeam(self.peripheral, progress: { [weak self] newProgress in
                 guard let self = self else { return }
                 DispatchQueue.main.async {
-                    let text = self.stringForSessionType(newProgress.sessionType)
-                    self.progressValue = .init(label: text, value: newProgress.progress)
+                    let label = "Syncing " + self.stringForSessionType(newProgress.sessionType)
+                    let value = "\(newProgress.progress.received)/\(newProgress.progress.expected)"
+                    self.progressValue = .init(label: label, value: value)
+                    Log.info("## \(self.progressValue)")
                 }
             }, completion: { [weak self] result in
                 //TODO: SD card should be cleared only if the files are not corrupted
