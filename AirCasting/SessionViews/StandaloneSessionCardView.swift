@@ -36,8 +36,8 @@ struct StandaloneSessionCardView: View {
             isCollapsed: .constant(false),
             session: session,
             sessionStopperFactory: sessionStopperFactory,
-            measurementStreamStorage: measurementStreamStorage
-        )
+            measurementStreamStorage: measurementStreamStorage,
+            sessionSynchronizer: sessionSynchronizer)
     }
 
     var content: some View {

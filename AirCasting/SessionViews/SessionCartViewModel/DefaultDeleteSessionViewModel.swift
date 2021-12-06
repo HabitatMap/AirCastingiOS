@@ -2,11 +2,13 @@
 //
 
 import Foundation
+import Combine
 
 class DefaultDeleteSessionViewModel: DeleteSessionViewModel {
     private let measurementStreamStorage: MeasurementStreamStorage
     private var session: SessionEntity
     private let streamRemover: StreamRemover
+    private let sessionSynchronizer: SessionSynchronizer
     @Published var showingConfirmationAlert: Bool = false
     
     var deleteEnabled: Bool = false {
@@ -31,10 +33,11 @@ class DefaultDeleteSessionViewModel: DeleteSessionViewModel {
         return arrayOfContent
     }
     
-    init(session: SessionEntity, measurementStreamStorage: MeasurementStreamStorage, streamRemover: StreamRemover) {
+    init(session: SessionEntity, measurementStreamStorage: MeasurementStreamStorage, streamRemover: StreamRemover, sessionSynchronizer: SessionSynchronizer) {
         self.measurementStreamStorage = measurementStreamStorage
         self.session = session
         self.streamRemover = streamRemover
+        self.sessionSynchronizer = sessionSynchronizer
         
         var sessionStreams: [MeasurementStreamEntity] {
             return session.sortedStreams?.filter( {!$0.gotDeleted} ) ?? []
@@ -74,6 +77,16 @@ class DefaultDeleteSessionViewModel: DeleteSessionViewModel {
             } catch {
                 Log.info("Error when deleting sessions/streams")
             }
+            if sessionSynchronizer.syncInProgress.value {
+                var subscription: AnyCancellable?
+                subscription = sessionSynchronizer.syncInProgress.receive(on: DispatchQueue.main).sink { value in
+                    guard value == false else { return }
+                    sessionSynchronizer.triggerSynchronization(options: [.upload, .remove])
+                    subscription?.cancel()
+                }
+                return
+            }
+            sessionSynchronizer.triggerSynchronization(options: [.upload, .remove])
         }
     }
     

@@ -135,7 +135,7 @@ private extension SessionCardView {
             isExpandButtonNeeded: true,
             isCollapsed: $isCollapsed,
             session: session,
-            sessionStopperFactory: sessionStoppableFactory, measurementStreamStorage: measurementStreamStorage
+            sessionStopperFactory: sessionStoppableFactory, measurementStreamStorage: measurementStreamStorage, sessionSynchronizer: sessionSynchronizer
         )
     }
 
@@ -271,7 +271,7 @@ private extension SessionCardView {
                                   showLoadingIndicator: $showLoadingIndicator,
                                   selectedStream: $selectedStream,
                                   sessionStoppableFactory: sessionStoppableFactory,
-                                  measurementStreamStorage: measurementStreamStorage)
+                                  measurementStreamStorage: measurementStreamStorage, sessionSynchronizer: sessionSynchronizer)
             .foregroundColor(.aircastingDarkGray)
 
          return NavigationLink(destination: mapView,
@@ -288,7 +288,7 @@ private extension SessionCardView {
                                    statsContainerViewModel: graphStatsViewModel,
                                    graphStatsDataSource: graphStatsDataSource,
                                    sessionStoppableFactory: sessionStoppableFactory,
-                                   measurementStreamStorage: measurementStreamStorage)
+                                   measurementStreamStorage: measurementStreamStorage, sessionSynchronizer: sessionSynchronizer)
              .foregroundColor(.aircastingDarkGray)
 
          return NavigationLink(destination: graphView,

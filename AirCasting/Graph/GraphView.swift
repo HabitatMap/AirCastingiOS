@@ -16,6 +16,7 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
     let graphStatsDataSource: GraphStatsDataSource
     let sessionStoppableFactory: SessionStoppableFactory
     let measurementStreamStorage: MeasurementStreamStorage
+    let sessionSynchronizer: SessionSynchronizer
     
     var body: some View {
         VStack(alignment: .trailing) {
@@ -24,7 +25,7 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                                   isSensorTypeNeeded: false,
                                   isCollapsed: Binding.constant(false),
                                   session: session,
-                                  sessionStopperFactory: sessionStoppableFactory, measurementStreamStorage: measurementStreamStorage)
+                                  sessionStopperFactory: sessionStoppableFactory, measurementStreamStorage: measurementStreamStorage, sessionSynchronizer: sessionSynchronizer)
                 .padding([.bottom, .leading, .trailing])
             
             ABMeasurementsView(viewModelProvider: {
@@ -92,7 +93,8 @@ struct GraphView_Previews: PreviewProvider {
                   statsContainerViewModel: FakeStatsViewModel(),
                   graphStatsDataSource: GraphStatsDataSource(),
                   sessionStoppableFactory: SessionStoppableFactoryDummy(),
-                  measurementStreamStorage: PreviewMeasurementStreamStorage())
+                  measurementStreamStorage: PreviewMeasurementStreamStorage(),
+                  sessionSynchronizer: DummySessionSynchronizer())
     }
 }
 #endif
