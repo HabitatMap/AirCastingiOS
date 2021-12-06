@@ -7,8 +7,7 @@
 
 import SwiftUI
 
-struct SyncingABView<VM: SDSyncViewModel>: View {
-    @Environment(\.presentationMode) var presentationMode
+struct ClearingSDCardView<VM: ClearingSDCardViewModel>: View {
     @StateObject var viewModel: VM
     @Binding var creatingSessionFlowContinues: Bool
     
@@ -29,27 +28,17 @@ struct SyncingABView<VM: SDSyncViewModel>: View {
             }
             Spacer()
         }
-        .padding()
-        .background(navigationLink)
-        .onReceive(viewModel.isSyncCompleted, perform: { isConnected in
-            viewModel.presentNextScreen = isConnected
-        })
-        .onReceive(viewModel.shouldDismiss, perform: { dismiss in
-            viewModel.presentAlert = dismiss
-        })
-        .alert(isPresented: $viewModel.presentAlert, content: { connectionTimeOutAlert })
         .onAppear(perform: {
-            /* App is pushing the next view before this view is fully loaded.
-             It resulted with showing next view and going back to this one.
-             The async enables app to load this view and then push the next one. */
-            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
-                viewModel.connectToAirBeamAndSync()
+            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(10)) {
+                viewModel.presentNextScreen.toggle()
             }
         })
+        .padding()
+        .background(navigationLink)
     }
 }
 
-extension SyncingABView {
+extension ClearingSDCardView {
     var syncingImage: some View {
         Image("airbeam")
             .resizable()
@@ -57,13 +46,13 @@ extension SyncingABView {
     }
     
     var titleLabel: some View {
-        Text(Strings.SyncingABView.title)
+        Text("Clearing SD card")
             .font(Fonts.boldTitle3)
             .foregroundColor(.accentColor)
     }
     
     var messageLabel: some View {
-        Text(Strings.SyncingABView.message)
+        Text("This should take less then 10 seconds.")
             .font(Fonts.regularHeading1)
             .foregroundColor(.aircastingGray)
     }
@@ -79,17 +68,9 @@ extension SyncingABView {
         }
     }
     
-    var connectionTimeOutAlert: Alert {
-        Alert(title: Text(Strings.SyncingABView.alertTitle),
-              message: Text(Strings.SyncingABView.alertMessage),
-              dismissButton: .default(Text(Strings.AirBeamConnector.connectionTimeoutActionTitle), action: {
-            presentationMode.wrappedValue.dismiss()
-        }))
-    }
-    
     var navigationLink: some View {
         NavigationLink(
-            destination: SDSyncCompleteView(creatingSessionFlowContinues: $creatingSessionFlowContinues, isSDClearProcess: false),
+            destination: SDSyncCompleteView(creatingSessionFlowContinues: $creatingSessionFlowContinues, isSDClearProcess: viewModel.isSDClearProcess),
             isActive: $viewModel.presentNextScreen,
             label: {
                 EmptyView()

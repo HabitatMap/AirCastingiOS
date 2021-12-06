@@ -7,6 +7,7 @@ import SwiftUI
 struct SDRestartABView<VM: SDRestartABViewModel>: View {
     @StateObject var viewModel: VM
     @Binding var creatingSessionFlowContinues: Bool
+    @State var goToclearingSD = false
     @EnvironmentObject private var sessionContext: CreateSessionContext
     
     var body: some View {
@@ -26,7 +27,10 @@ struct SDRestartABView<VM: SDRestartABViewModel>: View {
             continueButton
             Spacer()
         }
-        .background(navigationLink)
+        .background(
+            Group {
+                navigationLink
+            })
         .padding()
         .onAppear(perform: { if !viewModel.isSDClearProcess { sessionContext.deviceType = .AIRBEAM3 }})
     }
@@ -54,7 +58,7 @@ extension SDRestartABView {
     
     var continueButton: some View {
         Button {
-            viewModel.presentNextScreen = true
+            viewModel.isSDClearProcess ? goToclearingSD.toggle() : viewModel.presentNextScreen.toggle()
         } label: {
             Text(Strings.ABConnectedView.continueButton)
         }.buttonStyle(BlueButtonStyle())
@@ -62,8 +66,8 @@ extension SDRestartABView {
     
     var navigationLink: some View {
         NavigationLink(
-            destination:  SelectPeripheralView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: viewModel.urlProvider, syncMode: true),
-            isActive: $viewModel.presentNextScreen,
+            destination:  ClearingSDCardView(viewModel: ClearingSDCardViewModelDefault(isSDClearProcess: viewModel.isSDClearProcess), creatingSessionFlowContinues: $creatingSessionFlowContinues),
+            isActive: $goToclearingSD,
             label: {
                 EmptyView()
             })

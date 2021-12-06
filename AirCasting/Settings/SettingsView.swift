@@ -12,10 +12,14 @@ struct SettingsView: View {
     var viewModel: SettingsViewModel
     let urlProvider: BaseURLProvider
     let logoutController: LogoutController
+    let sessionContext = CreateSessionContext()
     @State private var showBackendSettings = false
     @State private var startSDClear = false
     @State private var BTScreenGo = false
+    @State private var LocationScreenGo = false
+    @State private var SDClearingRouteProcess = true
     @EnvironmentObject var userSettings: UserSettings
+    @EnvironmentObject var bluetoothManager: BluetoothManager
     
     init(urlProvider: BaseURLProvider, logoutController: LogoutController, viewModel: SettingsViewModel) {
         let navBarAppearance = UINavigationBar.appearance()
@@ -46,17 +50,17 @@ struct SettingsView: View {
                 SDRestartABView(viewModel: SDRestartABViewModelDefault(urlProvider: urlProvider, isSDClearProcess: true), creatingSessionFlowContinues: $startSDClear)
             }
         }
-//        .fullScreenCover(isPresented: $isTurnLocationOnLinkActive) {
-//            CreatingSessionFlowRootView {
-//                TurnOnLocationView(creatingSessionFlowContinues: $isTurnLocationOnLinkActive, viewModel: TurnOnLocationViewModel(locationHandler: viewModel.locationHandler, bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: viewModel.passBluetoothManager), sessionContext: viewModel.passSessionContext, urlProvider: viewModel.passURLProvider))
-//            }
-//        }
-//
-        .fullScreenCover(isPresented: $BTScreenGo) {
+        .fullScreenCover(isPresented: $LocationScreenGo) {
             CreatingSessionFlowRootView {
-                TurnOnBluetoothView(creatingSessionFlowContinues: $BTScreenGo, sdSyncContinues: .constant(false), isSDClearProcess: .constant(true), urlProvider: urlProvider)
+                TurnOnLocationView(creatingSessionFlowContinues: $LocationScreenGo, isSDClearProcess: $SDClearingRouteProcess, viewModel: TurnOnLocationViewModel(locationHandler: viewModel.locationHandler, bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: bluetoothManager), sessionContext: viewModel.sessionContext, urlProvider: urlProvider))
             }
         }
+        .fullScreenCover(isPresented: $BTScreenGo) {
+            CreatingSessionFlowRootView {
+                TurnOnBluetoothView(creatingSessionFlowContinues: $BTScreenGo, sdSyncContinues: .constant(false), isSDClearProcess: $SDClearingRouteProcess, urlProvider: urlProvider)
+            }
+        }
+        .environmentObject(viewModel.sessionContext)
     }
     
     private var signOutSection: some View {
@@ -136,8 +140,9 @@ struct SettingsView: View {
     private var clearSDCard: some View {
         Button {
             switch viewModel.NextStep() {
-            case .bluetooth: BTScreenGo = true
-            case .airBeam, .location, .mobile:
+            case .bluetooth: BTScreenGo.toggle()
+            case .location: LocationScreenGo.toggle()
+            case .airBeam, .mobile:
                 startSDClear.toggle()
             }
          } label: {

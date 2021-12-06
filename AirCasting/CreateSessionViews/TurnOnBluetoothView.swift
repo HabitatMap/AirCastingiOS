@@ -43,7 +43,7 @@ struct TurnOnBluetoothView: View {
                     }
                 )
                 NavigationLink(
-                    destination: SDRestartABView(viewModel: SDRestartABViewModelDefault(urlProvider: urlProvider, isSDClearProcess: true), creatingSessionFlowContinues: $creatingSessionFlowContinues),
+                    destination: SDRestartABView(viewModel: SDRestartABViewModelDefault(urlProvider: urlProvider, isSDClearProcess: isSDClearProcess), creatingSessionFlowContinues: $creatingSessionFlowContinues),
                     isActive: $SDRestartABLink,
                     label: {
                         EmptyView()
@@ -78,7 +78,7 @@ struct TurnOnBluetoothView: View {
             } else if bluetoothManager.centralManager.state != .poweredOn {
                 settingsRedirection.goToBluetoothAuthSettings()
             } else {
-                isSDClearProcess ? (SDRestartABLink = true) : (isPowerABLinkActive = true)
+                isSDClearProcess ? SDRestartABLink.toggle() : isPowerABLinkActive.toggle()
             }
         }, label: {
             Text(Strings.TurnOnBluetoothView.continueButton)
