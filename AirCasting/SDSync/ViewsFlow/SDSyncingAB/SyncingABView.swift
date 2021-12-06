@@ -10,6 +10,7 @@ import SwiftUI
 struct SyncingABView<VM: SDSyncViewModel>: View {
     @Environment(\.presentationMode) var presentationMode
     @StateObject var viewModel: VM
+    @State var progressLabel: String?
     @Binding var creatingSessionFlowContinues: Bool
     
     var body: some View {
@@ -37,6 +38,9 @@ struct SyncingABView<VM: SDSyncViewModel>: View {
         .onReceive(viewModel.shouldDismiss, perform: { dismiss in
             viewModel.presentAlert = dismiss
         })
+        .onReceive(viewModel.progress, perform: { newProgress in
+            self.progressLabel = newProgress?.toString()
+        })
         .alert(isPresented: $viewModel.presentAlert, content: { connectionTimeOutAlert })
         .onAppear(perform: {
             /* App is pushing the next view before this view is fully loaded.
@@ -57,7 +61,7 @@ extension SyncingABView {
     }
     
     var titleLabel: some View {
-        Text(Strings.SyncingABView.title)
+        Text(progressLabel ?? "")
             .font(Fonts.boldTitle3)
             .foregroundColor(.accentColor)
     }

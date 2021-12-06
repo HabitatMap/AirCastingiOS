@@ -510,7 +510,6 @@ struct Strings {
     }
 
     enum SyncingABView {
-        static let title: String = "Syncing..."
         static let message: String = "Keep your AirBeam close to your iPhone. Plug in your AirBeam to speed up the sync."
         static let alertTitle: String = "Failed to sync"
         static let alertMessage: String = "Try again later"
