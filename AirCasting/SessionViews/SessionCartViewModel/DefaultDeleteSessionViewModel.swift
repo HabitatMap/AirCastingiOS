@@ -77,17 +77,22 @@ class DefaultDeleteSessionViewModel: DeleteSessionViewModel {
             } catch {
                 Log.info("Error when deleting sessions/streams")
             }
-            if sessionSynchronizer.syncInProgress.value {
-                var subscription: AnyCancellable?
-                subscription = sessionSynchronizer.syncInProgress.receive(on: DispatchQueue.main).sink { value in
-                    guard value == false else { return }
-                    sessionSynchronizer.triggerSynchronization(options: [.upload, .remove])
-                    subscription?.cancel()
-                }
-                return
-            }
-            sessionSynchronizer.triggerSynchronization(options: [.upload, .remove])
+           executeSyncAfterRemove()
         }
+    }
+    
+    private func executeSyncAfterRemove() {
+        guard sessionSynchronizer.syncInProgress.value else {
+            sessionSynchronizer.triggerSynchronization(options: [.upload, .remove])
+            return
+        }
+        var subscription: AnyCancellable?
+        subscription = sessionSynchronizer.syncInProgress.receive(on: DispatchQueue.main).sink { value in
+            guard value == false else { return }
+            self.sessionSynchronizer.triggerSynchronization(options: [.upload, .remove])
+            subscription?.cancel()
+        }
+        return
     }
     
     private func processStreamDeleting() {
