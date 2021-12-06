@@ -33,6 +33,7 @@ struct StandaloneSessionCardView: View {
         SessionHeaderView(
             action: {},
             isExpandButtonNeeded: false,
+            isMenuNeeded: false,
             isCollapsed: .constant(false),
             session: session,
             sessionStopperFactory: sessionStopperFactory,
