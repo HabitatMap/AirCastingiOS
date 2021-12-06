@@ -4,11 +4,17 @@
 import Combine
 import CoreBluetooth
 
+struct SDSyncProgressViewModel {
+    let label: String
+    let value: Double
+}
+
 protocol SDSyncViewModel: ObservableObject {
     var shouldDismiss: Published<Bool>.Publisher { get }
     var isSyncCompleted: Published<Bool>.Publisher { get }
     var presentNextScreen: Bool { get set }
     var presentAlert: Bool { get set }
+    var progress: Published<SDSyncProgressViewModel?>.Publisher { get }
     func connectToAirBeamAndSync()
 }
 
@@ -16,9 +22,11 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
     
     var shouldDismiss: Published<Bool>.Publisher { $shouldDismissValue }
     var isSyncCompleted: Published<Bool>.Publisher { $isSyncCompletedValue }
+    var progress: Published<SDSyncProgressViewModel?>.Publisher { $progressValue }
     
     @Published private var shouldDismissValue: Bool = false
     @Published private var isSyncCompletedValue: Bool = false
+    @Published private var progressValue: SDSyncProgressViewModel?
     @Published var presentNextScreen: Bool = false
     @Published var presentAlert: Bool = false
     
@@ -44,8 +52,15 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
         self.airBeamConnectionController.connectToAirBeam(peripheral: peripheral) { success in
             guard success else { return }
             self.configureABforSync()
-            self.sdSyncController.syncFromAirbeam(self.peripheral, progress: { _ in }, completion: { result in
+            self.sdSyncController.syncFromAirbeam(self.peripheral, progress: { [weak self] newProgress in
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    let text = self.stringForSessionType(newProgress.sessionType)
+                    self.progressValue = .init(label: text, value: newProgress.progress)
+                }
+            }, completion: { [weak self] result in
                 //TODO: SD card should be cleared only if the files are not corrupted
+                guard let self = self else { return }
                 result ? self.clearSDCard() : nil
                 DispatchQueue.main.async {
                     self.isSyncCompletedValue = result
@@ -65,5 +80,14 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
         let configurator = AirBeam3Configurator(userAuthenticationSession: self.userAuthenticationSession,
                                                 peripheral: self.peripheral)
         configurator.clearSDCard()
+    }
+    
+    private func stringForSessionType(_ sessionType: SDCardSessionType) -> String {
+        //TODO: Correct string value and move to strings
+        switch sessionType {
+        case .cellular: return "Cellular"
+        case .fixed: return "Fixed"
+        case .mobile: return "Mobile"
+        }
     }
 }
