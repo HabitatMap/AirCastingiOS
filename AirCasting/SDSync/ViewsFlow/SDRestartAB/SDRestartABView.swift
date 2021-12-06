@@ -28,7 +28,7 @@ struct SDRestartABView<VM: SDRestartABViewModel>: View {
         }
         .background(navigationLink)
         .padding()
-        .onAppear(perform: { sessionContext.deviceType = .AIRBEAM3 })
+        .onAppear(perform: { if !viewModel.isSDClearProcess { sessionContext.deviceType = .AIRBEAM3 }})
     }
 }
 

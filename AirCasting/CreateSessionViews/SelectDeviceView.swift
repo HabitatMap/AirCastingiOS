@@ -46,7 +46,7 @@ struct SelectDeviceView: View {
                     EmptyView()
                 })
             NavigationLink(
-                destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sdSyncContinues: $sdSyncContinues, urlProvider: urlProvider),
+                destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sdSyncContinues: $sdSyncContinues, isSDClearProcess: .constant(false), urlProvider: urlProvider),
                 isActive: $isTurnOnBluetoothLinkActive,
                 label: {
                     EmptyView()

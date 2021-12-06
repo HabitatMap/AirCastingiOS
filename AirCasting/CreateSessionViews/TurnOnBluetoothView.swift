@@ -11,10 +11,12 @@ import SwiftUI
 
 struct TurnOnBluetoothView: View {
     @State private var isPowerABLinkActive = false
+    @State private var SDRestartABLink = false
     @EnvironmentObject var settingsRedirection: DefaultSettingsRedirection
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @Binding var creatingSessionFlowContinues: Bool
     @Binding var sdSyncContinues: Bool
+    @Binding var isSDClearProcess: Bool
     
     let urlProvider: BaseURLProvider
     
@@ -32,13 +34,21 @@ struct TurnOnBluetoothView: View {
                 .buttonStyle(BlueButtonStyle())
         }
         .background(
-            NavigationLink(
-                destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider),
-                isActive: $isPowerABLinkActive,
-                label: {
-                    EmptyView()
-                }
-            )
+            Group {
+                NavigationLink(
+                    destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider),
+                    isActive: $isPowerABLinkActive,
+                    label: {
+                        EmptyView()
+                    }
+                )
+                NavigationLink(
+                    destination: SDRestartABView(viewModel: SDRestartABViewModelDefault(urlProvider: urlProvider, isSDClearProcess: true), creatingSessionFlowContinues: $creatingSessionFlowContinues),
+                    isActive: $SDRestartABLink,
+                    label: {
+                        EmptyView()
+                    })
+            }
         )
         .onAppear(perform: {
             if CBCentralManager.authorization != .allowedAlways {
@@ -68,7 +78,7 @@ struct TurnOnBluetoothView: View {
             } else if bluetoothManager.centralManager.state != .poweredOn {
                 settingsRedirection.goToBluetoothAuthSettings()
             } else {
-                isPowerABLinkActive = true
+                isSDClearProcess ? (SDRestartABLink = true) : (isPowerABLinkActive = true)
             }
         }, label: {
             Text(Strings.TurnOnBluetoothView.continueButton)

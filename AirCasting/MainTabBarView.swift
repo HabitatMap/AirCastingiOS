@@ -120,7 +120,7 @@ private extension MainTabBarView {
                      logoutController: DefaultLogoutController(userAuthenticationSession: userAuthenticationSession,
                                                                sessionStorage: SessionStorage(persistenceController: persistenceController),
                                                                microphoneManager: microphoneManager,
-                                                               sessionSynchronizer: sessionSynchronizer))
+                                                               sessionSynchronizer: sessionSynchronizer), viewModel: SettingsViewModelDefault(locationHandler: locationHandler, bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: bluetoothManager)))
             .tabItem {
                 Image(settingsImage)
             }

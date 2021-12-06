@@ -9,17 +9,21 @@ import SwiftUI
 import AirCastingStyling
 
 struct SettingsView: View {
+    var viewModel: SettingsViewModel
     let urlProvider: BaseURLProvider
     let logoutController: LogoutController
     @State private var showBackendSettings = false
+    @State private var startSDClear = false
+    @State private var BTScreenGo = false
     @EnvironmentObject var userSettings: UserSettings
     
-    init(urlProvider: BaseURLProvider, logoutController: LogoutController) {
+    init(urlProvider: BaseURLProvider, logoutController: LogoutController, viewModel: SettingsViewModel) {
         let navBarAppearance = UINavigationBar.appearance()
         navBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(Color.darkBlue),
                                                      .font: Fonts.navBarSystemFont]
         self.urlProvider = urlProvider
         self.logoutController = logoutController
+        self.viewModel = viewModel
     }
     
     var body: some View {
@@ -27,10 +31,31 @@ struct SettingsView: View {
             Form {
                 signOutSection
                 settingsSection
+                #if BETA || DEBUG
+                Section() {
+                    navigateToAppConfigurationButton
+                }
+                #endif
                 appInfoSection
             }
             .listStyle(GroupedListStyle())
             .navigationBarTitle(Strings.Settings.title)
+        }
+        .fullScreenCover(isPresented: $startSDClear) {
+            CreatingSessionFlowRootView {
+                SDRestartABView(viewModel: SDRestartABViewModelDefault(urlProvider: urlProvider, isSDClearProcess: true), creatingSessionFlowContinues: $startSDClear)
+            }
+        }
+//        .fullScreenCover(isPresented: $isTurnLocationOnLinkActive) {
+//            CreatingSessionFlowRootView {
+//                TurnOnLocationView(creatingSessionFlowContinues: $isTurnLocationOnLinkActive, viewModel: TurnOnLocationViewModel(locationHandler: viewModel.locationHandler, bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: viewModel.passBluetoothManager), sessionContext: viewModel.passSessionContext, urlProvider: viewModel.passURLProvider))
+//            }
+//        }
+//
+        .fullScreenCover(isPresented: $BTScreenGo) {
+            CreatingSessionFlowRootView {
+                TurnOnBluetoothView(creatingSessionFlowContinues: $BTScreenGo, sdSyncContinues: .constant(false), isSDClearProcess: .constant(true), urlProvider: urlProvider)
+            }
         }
     }
     
@@ -48,10 +73,8 @@ struct SettingsView: View {
                 crowdMapDescription
             }
             keepScreenOnSwitch
+            clearSDCard
             navigateToBackendSettingsButton
-            #if BETA || DEBUG
-            navigateToAppConfigurationButton
-            #endif
         }
     }
     
@@ -110,6 +133,27 @@ struct SettingsView: View {
         })
     }
     
+    private var clearSDCard: some View {
+        Button {
+            switch viewModel.NextStep() {
+            case .bluetooth: BTScreenGo = true
+            case .airBeam, .location, .mobile:
+                startSDClear.toggle()
+            }
+         } label: {
+             Group {
+                 HStack {
+                     Text("Clear SD card")
+                         .font(Fonts.boldHeading1)
+                         .accentColor(.black)
+                     Spacer()
+                     Image(systemName: "chevron.right")
+                         .accentColor(.gray).opacity(0.6)
+                 }
+             }
+         }
+     }
+    
     #if DEBUG || BETA
     private var navigateToAppConfigurationButton: some View {
         NavigationLink("App config", destination: {
@@ -125,7 +169,8 @@ struct SettingsView: View {
 struct LogoutView_Previews: PreviewProvider {
     static var previews: some View {
         SettingsView(urlProvider: DummyURLProvider(),
-                     logoutController: FakeLogoutController())
+                     logoutController: FakeLogoutController(),
+                     viewModel: DummySettingsViewModelDefault())
     }
 }
 #endif

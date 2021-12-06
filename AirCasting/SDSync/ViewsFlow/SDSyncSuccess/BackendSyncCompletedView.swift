@@ -60,7 +60,7 @@ private extension BackendSyncCompletedView {
     
     var navigationLink: some View {
         NavigationLink(
-            destination: SDRestartABView(viewModel: SDRestartABViewModelDefault(urlProvider: viewModel.urlProvider), creatingSessionFlowContinues: $creatingSessionFlowContinues),
+            destination: SDRestartABView(viewModel: SDRestartABViewModelDefault(urlProvider: viewModel.urlProvider, isSDClearProcess: false), creatingSessionFlowContinues: $creatingSessionFlowContinues),
             isActive: $viewModel.presentNextScreen,
             label: {
                 EmptyView()
