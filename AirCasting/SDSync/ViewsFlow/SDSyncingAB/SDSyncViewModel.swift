@@ -5,11 +5,12 @@ import Combine
 import CoreBluetooth
 
 struct SDSyncProgressViewModel {
-    let sessionType: String
-    let progress: SDCardProgress
+    let title: String
+    let current: String
+    let total: String
     
-    func toString() -> String {
-        "Syncing " + sessionType + ": " + "\(progress.received)/\(progress.expected)"
+    func progressLabel() -> String {
+        "Syncing " + title + ": " + "\(current)/\(total)"
     }
 }
 
@@ -60,7 +61,7 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
                 guard let self = self else { return }
                 DispatchQueue.main.async {
                     let sessionType = self.stringForSessionType(newProgress.sessionType)
-                    self.progressValue = .init(sessionType: sessionType, progress: newProgress.progress)
+                    self.progressValue = .init(title: sessionType, current: String(newProgress.progress.received), total: String(newProgress.progress.expected))
                 }
             }, completion: { [weak self] result in
                 //TODO: SD card should be cleared only if the files are not corrupted

@@ -39,7 +39,7 @@ struct SyncingABView<VM: SDSyncViewModel>: View {
             viewModel.presentAlert = dismiss
         })
         .onReceive(viewModel.progress, perform: { newProgress in
-            self.progressLabel = newProgress?.toString()
+            self.progressLabel = newProgress?.progressLabel()
         })
         .alert(isPresented: $viewModel.presentAlert, content: { connectionTimeOutAlert })
         .onAppear(perform: {

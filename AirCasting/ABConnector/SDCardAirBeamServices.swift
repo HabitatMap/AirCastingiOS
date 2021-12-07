@@ -99,7 +99,7 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
                     return
                 }
                 
-                let receivedMeasurementsNumber = receivedMeasurementsCount[sessionType]! < expectedMeasurementsCount  ? receivedMeasurementsCount[sessionType]! : expectedMeasurementsCount
+                let receivedMeasurementsNumber = receivedMeasurementsCount[sessionType]! < expectedMeasurementsCount ? receivedMeasurementsCount[sessionType]! : expectedMeasurementsCount
                 let progressFraction = SDCardProgress(received: receivedMeasurementsNumber, expected: expectedMeasurementsCount)
                 progress(SDCardDataChunk(payload: payload, sessionType: sessionType, progress: progressFraction))
 
