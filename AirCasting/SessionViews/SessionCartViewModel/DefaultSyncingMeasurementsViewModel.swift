@@ -15,7 +15,7 @@ protocol SyncingMeasurementsViewModel: ObservableObject {
 }
 
 
-final class DefaultSyncingMeasurementsViewModel: SyncingMeasurementsViewModel {
+final class DefaultSyncingMeasurementsViewModel: SyncingMeasurementsViewModel, ObservableObject {
     
     var sessionDownloader: MeasurementsDownloadable
     var measurementStreamStorage: MeasurementStreamStorage?

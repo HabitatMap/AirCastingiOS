@@ -27,18 +27,16 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                                   sessionStopperFactory: sessionStoppableFactory, measurementStreamStorage: measurementStreamStorage)
                 .padding([.bottom, .leading, .trailing])
             
-            ABMeasurementsView(viewModelProvider: {
-                           DefaultSyncingMeasurementsViewModel(measurementStreamStorage: measurementStreamStorage,
-                                                     sessionDownloader: SessionDownloadService(client: URLSession.shared,
-                                                                                               authorization: UserAuthenticationSession(),
-                                                                                               responseValidator: DefaultHTTPResponseValidator()),
-                                                     session: session)
-                       },
-                                          session: session,
-                                          isCollapsed: Binding.constant(false),
-                                          selectedStream: $selectedStream,
-                                          thresholds: thresholds,
-                                          measurementPresentationStyle: .showValues)
+            ABMeasurementsView(
+                session: session,
+                isCollapsed: Binding.constant(false),
+                selectedStream: $selectedStream,
+                thresholds: thresholds, measurementPresentationStyle: .showValues,
+                viewModel: DefaultSyncingMeasurementsViewModel(measurementStreamStorage: measurementStreamStorage,
+                                                               sessionDownloader: SessionDownloadService(client: URLSession.shared,
+                                                                authorization: UserAuthenticationSession(),
+                                                                responseValidator: DefaultHTTPResponseValidator()),
+                                                                session: session))
                 .padding(.horizontal)
            
             if isProceeding(session: session) {

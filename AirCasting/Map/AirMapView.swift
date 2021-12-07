@@ -40,17 +40,15 @@ struct AirMapView: View {
                                   session: session,
                                   sessionStopperFactory: sessionStoppableFactory, measurementStreamStorage: measurementStreamStorage)
             
-            ABMeasurementsView(viewModelProvider: { DefaultSyncingMeasurementsViewModel(measurementStreamStorage: measurementStreamStorage,
-                                                                              sessionDownloader: SessionDownloadService(client: URLSession.shared,
-                                                                                                                        authorization: UserAuthenticationSession(),
-                                                                                                                        responseValidator: DefaultHTTPResponseValidator()),
-                                                                              session: session)
-            },
-                               session: session,
+            ABMeasurementsView(session: session,
                                isCollapsed: Binding.constant(false),
                                selectedStream: $selectedStream,
-                               thresholds: thresholds,
-                               measurementPresentationStyle: .showValues)
+                               thresholds: thresholds, measurementPresentationStyle: .showValues,
+                               viewModel:  DefaultSyncingMeasurementsViewModel(measurementStreamStorage: measurementStreamStorage,
+                                                                               sessionDownloader: SessionDownloadService(client: URLSession.shared,
+                                                                                authorization: UserAuthenticationSession(),
+                                                                                responseValidator: DefaultHTTPResponseValidator()),
+                                                                                session: session))
 
             if let threshold = thresholds.threshold(for: selectedStream) {
                 if !showLoadingIndicator {
