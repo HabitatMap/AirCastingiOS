@@ -22,6 +22,7 @@ struct AirMapView: View {
     @Binding var selectedStream: MeasurementStreamEntity?
     let sessionStoppableFactory: SessionStoppableFactory
     let measurementStreamStorage: MeasurementStreamStorage
+    let sessionSynchronizer: SessionSynchronizer
     
     private var pathPoints: [PathPoint] {
         return selectedStream?.allMeasurements?.compactMap {
@@ -38,7 +39,7 @@ struct AirMapView: View {
                                   isSensorTypeNeeded: false,
                                   isCollapsed: Binding.constant(false),
                                   session: session,
-                                  sessionStopperFactory: sessionStoppableFactory, measurementStreamStorage: measurementStreamStorage)
+                                  sessionStopperFactory: sessionStoppableFactory, measurementStreamStorage: measurementStreamStorage, sessionSynchronizer: sessionSynchronizer)
             
             ABMeasurementsView(session: session,
                                isCollapsed: Binding.constant(false),
@@ -110,7 +111,8 @@ struct Map_Previews: PreviewProvider {
                    showLoadingIndicator: .constant(true),
                    selectedStream: .constant(nil),
                    sessionStoppableFactory: SessionStoppableFactoryDummy(),
-                   measurementStreamStorage: PreviewMeasurementStreamStorage())
+                   measurementStreamStorage: PreviewMeasurementStreamStorage(),
+                   sessionSynchronizer: DummySessionSynchronizer())
     }
 }
 
