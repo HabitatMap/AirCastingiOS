@@ -77,6 +77,18 @@ class SDSyncController: ObservableObject {
         })
     }
     
+    func clearSDCard(_ airbeamConnection: CBPeripheral, completion: @escaping (Bool) -> Void) {
+        airbeamServices.clearSDCard(of: airbeamConnection) { result in
+            switch result {
+            case .success():
+                completion(true)
+            case .failure(let error):
+                Log.error(error.localizedDescription)
+                completion(false)
+            }
+        }
+    }
+    
     private func startBackendSync() {
         sessionSynchronizer.triggerSynchronization()
     }

@@ -530,6 +530,8 @@ struct Strings {
     enum ClearingSDCardView {
         static let title: String = "Clearing SD card"
         static let message: String = "This should take less then 10 seconds."
+        static let failedClearingAlertTitle: String = "Failed to clead SD card"
+        static let failedClearingAlertMessage: String = "Try again later"
     }
 
     enum DefaultDeleteSessionViewModel {

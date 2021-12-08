@@ -8,7 +8,9 @@
 import SwiftUI
 
 struct ClearingSDCardView<VM: ClearingSDCardViewModel>: View {
+    @Environment(\.presentationMode) var presentationMode
     @StateObject var viewModel: VM
+    @State private var showAlert = false
     @Binding var creatingSessionFlowContinues: Bool
     
     var body: some View {
@@ -28,10 +30,17 @@ struct ClearingSDCardView<VM: ClearingSDCardViewModel>: View {
             }
             Spacer()
         }
+        .alert(isPresented: $showAlert) {
+            alert
+        }
         .onAppear(perform: {
-            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(10)) {
-                viewModel.presentNextScreen.toggle()
-            }
+            viewModel.clearSDCard()
+        })
+        .onReceive(viewModel.isClearingCompleted, perform: { result in
+            viewModel.presentNextScreen = result
+        })
+        .onReceive(viewModel.shouldDismiss, perform: { result in
+            showAlert = result
         })
         .padding()
         .background(navigationLink)
@@ -66,6 +75,14 @@ extension ClearingSDCardView {
                 .progressViewStyle(CircularProgressViewStyle(tint: Color.white))
                 .scaleEffect(2)
         }
+    }
+    
+    var alert: Alert {
+        Alert(title: Text("\(viewModel.getAlertTitle())"),
+              message: Text("\(viewModel.getAlertMessage())"),
+              dismissButton: .default(Text(Strings.AirBeamConnector.connectionTimeoutActionTitle), action: {
+            presentationMode.wrappedValue.dismiss()
+        }))
     }
     
     var navigationLink: some View {

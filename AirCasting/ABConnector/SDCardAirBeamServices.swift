@@ -27,6 +27,7 @@ struct SDCardMetaData {
 
 protocol SDCardAirBeamServices {
     func downloadData(from peripheral: CBPeripheral, progress: @escaping (SDCardData) -> Void, completion: @escaping (Result<Void, Error>) -> Void)
+    func clearSDCard(of peripheral: CBPeripheral, completion: @escaping (Result<Void, Error>) -> Void)
 }
 
 class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
@@ -104,7 +105,33 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
         }
     }
     
-    func finishSync(completion: () -> Void) {
+    func clearSDCard(of peripheral: CBPeripheral, completion: @escaping (Result<Void, Error>) -> Void) {
+        metadataCharacteristicObserver = bluetoothManager.subscribeToCharacteristic(DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID) { result in
+            switch result {
+            case .success(let data):
+                guard let data = data, let payload = String(data: data, encoding: .utf8) else {
+                    completion(.failure(SDCardSyncError.cantDecodePayload))
+                    self.bluetoothManager.unsubscribeCharacteristicObserver(self.metadataCharacteristicObserver!)
+                    return
+                }
+                Log.info("[SD CARD SYNC] " + payload)
+                if payload == "SD_DELETE_FINISH" {
+                    completion(.success(()))
+                    Log.info("[SD CARD SYNC] SD card cleared")
+                    self.bluetoothManager.unsubscribeCharacteristicObserver(self.metadataCharacteristicObserver!)
+                } else {
+                    Log.warning("[SD CARD SYNC] Wrong metadata for clearing sd card")
+                    self.bluetoothManager.unsubscribeCharacteristicObserver(self.metadataCharacteristicObserver!)
+                }
+            case .failure(let error):
+                Log.warning("Error while receiving metadata from SD card: \(error.localizedDescription)")
+                completion(.failure(error))
+                self.bluetoothManager.unsubscribeCharacteristicObserver(self.metadataCharacteristicObserver!)
+            }
+        }
+    }
+    
+    private func finishSync(completion: () -> Void) {
         self.bluetoothManager.unsubscribeCharacteristicObserver(self.dataCharacteristicObserver!)
         self.bluetoothManager.unsubscribeCharacteristicObserver(self.metadataCharacteristicObserver!)
         completion()

@@ -42,7 +42,13 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
     
     func connectToAirBeamAndSync() {
         self.airBeamConnectionController.connectToAirBeam(peripheral: peripheral) { success in
-            guard success else { return }
+            guard success else {
+                DispatchQueue.main.async {
+                    self.isSyncCompletedValue = success
+                    self.shouldDismissValue = !success
+                }
+                return
+            }
             self.configureABforSync()
             self.sdSyncController.syncFromAirbeam(self.peripheral) { result in
                 //TODO: SD card should be cleared only if the files are not corrupted
