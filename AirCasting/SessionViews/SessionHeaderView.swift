@@ -17,8 +17,8 @@ struct SessionHeaderView: View {
     @EnvironmentObject var networkChecker: NetworkChecker
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @ObservedObject var session: SessionEntity
-    @State private var showingAlert = false
-    @State private var showingFinishAlert = false
+    @State private var showingNoConnectionAlert = false
+    @State private var alert: AlertInfo?
     let sessionStopperFactory: SessionStoppableFactory
     @StateObject private var featureFlagsViewModel = FeatureFlagsViewModel.shared
     @State var showDeleteModal = false
@@ -35,7 +35,9 @@ struct SessionHeaderView: View {
                     isMenuNeeded ? actionsMenuMobile : nil
                 }
             nameLabelAndExpandButton
-        }.onChange(of: isCollapsed, perform: { value in
+        }
+        .alert(item: $alert, content: { $0.makeAlert() })
+        .onChange(of: isCollapsed, perform: { value in
             isCollapsed ? (chevronIndicator = "chevron.down") :  (chevronIndicator = "chevron.up")
         })
         .sheet(isPresented: Binding.constant(false), content: {
@@ -123,14 +125,13 @@ private extension SessionHeaderView {
                     .opacity(0.0001)
             }
         }
-        .alert(isPresented: $showingFinishAlert) {
-            SessionViews.finishSessionAlert(sessionStopper: sessionStopperFactory.getSessionStopper(for: session), sessionName: session.name)
-        }
     }
 
     var actionsMenuStopButton: some View {
         Button {
-            showingFinishAlert = true
+            alert = InAppAlerts.finishSessionAlert(sessionName: session.name, action: {
+                self.finishSessionAlertAction(sessionStopper: self.sessionStopperFactory.getSessionStopper(for: self.session))
+            })
         } label: {
             Label(Strings.SessionHeaderView.stopRecordingButton, systemImage: "stop.circle")
         }
@@ -157,10 +158,6 @@ private extension SessionHeaderView {
                     .frame(width: 35, height: 25, alignment: .trailing)
                     .opacity(0.0001)
             }
-        }.alert(isPresented: $showingAlert) {
-            Alert(title: Text(Strings.SessionHeaderView.alertTitle),
-                  message: Text(Strings.SessionHeaderView.alertMessage),
-                  dismissButton: .default(Text(Strings.SessionHeaderView.confirmAlert)))
         }
         .sheet(isPresented: Binding.constant(false)) { EditViewModal(showModalEdit: Binding.constant(false)) }
     }
@@ -209,6 +206,14 @@ private extension SessionHeaderView {
         let string = formatter.string(from: start, to: end)
         return Text(string)
         }
+    
+    private func finishSessionAlertAction(sessionStopper: SessionStoppable) {
+        do {
+            try sessionStopper.stopSession()
+        } catch {
+            Log.info("error when stpoing session - \(error)")
+        }
+    }
 }
 
 #if DEBUG

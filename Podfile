@@ -7,6 +7,7 @@ target 'AirCasting' do
   pod 'GzipSwift'
   pod 'GoogleMaps', '4.1.0'
   pod 'GooglePlaces', '4.1.0'
+  pod 'DeviceKit', '~> 4.5.0'
 
   # add the Firebase pod for Google Analytics
   pod 'Firebase/Analytics'
