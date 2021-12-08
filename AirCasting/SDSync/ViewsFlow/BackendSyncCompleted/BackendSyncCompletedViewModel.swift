@@ -9,12 +9,12 @@ enum ProceedToSyncView {
 }
 
 protocol BackendSyncCompletedViewModel: ObservableObject {
-    var presentRestartNextScreen: Bool { get set }
-    var presentBTNextScreen: Bool { get set }
+    var presentRestartNextScreen: Bool { get }
+    var presentBTNextScreen: Bool { get }
+    // urlProvider should should not be exposed
+    // BUT it is - REASON: it is needed only to pass to some navigation view
     var urlProvider: BaseURLProvider { get }
-    func procedToBTScreen()
-    func procedToRestartScreen()
-    func sessionNextStep() -> ProceedToSyncView
+    func continueButtonTapped() 
 }
 
 class BackendSyncCompletedViewModelDefault: BackendSyncCompletedViewModel, ObservableObject {
@@ -29,11 +29,18 @@ class BackendSyncCompletedViewModelDefault: BackendSyncCompletedViewModel, Obser
         self.bluetoothHandler = bluetoothHandler
     }
     
-    func procedToBTScreen() { presentBTNextScreen.toggle() }
+    func continueButtonTapped() {
+        switch sessionNextStep() {
+        case .bluetooth: procedToBTScreen()
+        case .restart: procedToRestartScreen()
+        }
+    }
     
-    func procedToRestartScreen() { presentRestartNextScreen.toggle() }
+    private func procedToBTScreen() { presentBTNextScreen.toggle() }
     
-    func sessionNextStep() -> ProceedToSyncView {
+    private func procedToRestartScreen() { presentRestartNextScreen.toggle() }
+    
+    private func sessionNextStep() -> ProceedToSyncView {
         guard !bluetoothHandler.isBluetoothDenied() else { return .bluetooth }
         return .restart
     }

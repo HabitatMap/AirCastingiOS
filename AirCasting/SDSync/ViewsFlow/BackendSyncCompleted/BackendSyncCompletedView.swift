@@ -52,10 +52,7 @@ private extension BackendSyncCompletedView {
     
     var continueButton: some View {
         Button {
-            switch viewModel.sessionNextStep() {
-            case .bluetooth: viewModel.procedToBTScreen()
-            case .restart: viewModel.procedToRestartScreen()
-            }
+            viewModel.continueButtonTapped()
         } label: {
             Text(Strings.ABConnectedView.continueButton)
         }.buttonStyle(BlueButtonStyle())
@@ -64,7 +61,7 @@ private extension BackendSyncCompletedView {
     var restartNavigationLink: some View {
         NavigationLink(
             destination: SDRestartABView(viewModel: SDRestartABViewModelDefault(urlProvider: viewModel.urlProvider), creatingSessionFlowContinues: $creatingSessionFlowContinues),
-            isActive: $viewModel.presentRestartNextScreen,
+            isActive: .init(get: { viewModel.presentRestartNextScreen }, set: { _ in }),
             label: {
                 EmptyView()
             })
@@ -72,8 +69,8 @@ private extension BackendSyncCompletedView {
     
     var BTNavigationLink: some View {
         NavigationLink(
-            destination: TurnOnBluetoothView(creatingSessionFlowContinues: $viewModel.presentBTNextScreen, sdSyncContinues: .constant(true), urlProvider: viewModel.urlProvider),
-            isActive: $viewModel.presentBTNextScreen,
+            destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sdSyncContinues: .constant(true), urlProvider: viewModel.urlProvider),
+            isActive: .init(get: { viewModel.presentBTNextScreen }, set: { _ in }),
             label: {
                 EmptyView()
             })
