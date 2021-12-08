@@ -1587,7 +1587,7 @@
 			isa = PBXGroup;
 			children = (
 				DD79554D2757ED3E00631A78 /* SDSyncRootView */,
-				DD79554E2757ED9600631A78 /* SDSyncSuccess */,
+				DD79554E2757ED9600631A78 /* BackendSyncCompleted */,
 				DD79554F2757F05100631A78 /* SDRestartAB */,
 				DD7955522757F28100631A78 /* SDSyncingAB */,
 				DD7955532757F2A900631A78 /* SDSyncComplete */,
@@ -1604,13 +1604,13 @@
 			path = SDSyncRootView;
 			sourceTree = "<group>";
 		};
-		DD79554E2757ED9600631A78 /* SDSyncSuccess */ = {
+		DD79554E2757ED9600631A78 /* BackendSyncCompleted */ = {
 			isa = PBXGroup;
 			children = (
 				DD79554B2757EB0900631A78 /* BackendSyncCompletedView.swift */,
 				DD9E354B2758E359001791BC /* BackendSyncCompletedViewModel.swift */,
 			);
-			path = SDSyncSuccess;
+			path = BackendSyncCompleted;
 			sourceTree = "<group>";
 		};
 		DD79554F2757F05100631A78 /* SDRestartAB */ = {
