@@ -32,16 +32,7 @@ struct SyncingABView<VM: SDSyncViewModel>: View {
         }
         .padding()
         .background(navigationLink)
-        .onReceive(viewModel.isSyncCompleted, perform: { isConnected in
-            viewModel.presentNextScreen = isConnected
-        })
-        .onReceive(viewModel.shouldDismiss, perform: { dismiss in
-            viewModel.presentAlert = dismiss
-        })
-        .onReceive(viewModel.progress, perform: { newProgress in
-            self.progressLabel = newProgress?.progressLabel()
-        })
-        .alert(isPresented: $viewModel.presentAlert, content: { connectionTimeOutAlert })
+        .alert(isPresented: $viewModel.presentFailedSyncAlert, content: { connectionTimeOutAlert })
         .onAppear(perform: {
             /* App is pushing the next view before this view is fully loaded.
              It resulted with showing next view and going back to this one.
@@ -93,7 +84,7 @@ extension SyncingABView {
     
     var navigationLink: some View {
         NavigationLink(
-            destination: SDSyncCompleteView(creatingSessionFlowContinues: $creatingSessionFlowContinues),
+            destination: SDSyncCompleteView(viewModel: SDSyncCompleteViewModelDefault(), creatingSessionFlowContinues: $creatingSessionFlowContinues),
             isActive: $viewModel.presentNextScreen,
             label: {
                 EmptyView()

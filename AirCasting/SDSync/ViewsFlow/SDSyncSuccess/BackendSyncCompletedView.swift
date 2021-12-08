@@ -52,7 +52,7 @@ private extension BackendSyncCompletedView {
     
     var continueButton: some View {
         Button {
-            viewModel.presentNextScreen = true
+            viewModel.continueSynFlow()
         } label: {
             Text(Strings.ABConnectedView.continueButton)
         }.buttonStyle(BlueButtonStyle())

@@ -297,6 +297,7 @@
 		DDB44C252704AF830027176E /* AveragingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB44C242704AF830027176E /* AveragingService.swift */; };
 		DDBC156426A0799300982526 /* SystemSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBC156326A0799300982526 /* SystemSettings.swift */; };
 		DDBC992626A1652A00B0662E /* ForgotPasswordTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBC992526A1652A00B0662E /* ForgotPasswordTest.swift */; };
+		DDC3E952275E37C90066A5DF /* SDSyncCompleteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDC3E951275E37C90066A5DF /* SDSyncCompleteViewModel.swift */; };
 		DDC5F5882719694800F1F9D8 /* ShadowImages.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDC5F5872719694800F1F9D8 /* ShadowImages.swift */; };
 		DDC5F58A271979F100F1F9D8 /* Fonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDC5F589271979F100F1F9D8 /* Fonts.swift */; };
 		DDCD3570271EB641004969FF /* UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCD356F271EB641004969FF /* UIImage.swift */; };
@@ -636,6 +637,7 @@
 		DDB44C242704AF830027176E /* AveragingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AveragingService.swift; sourceTree = "<group>"; };
 		DDBC156326A0799300982526 /* SystemSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemSettings.swift; sourceTree = "<group>"; };
 		DDBC992526A1652A00B0662E /* ForgotPasswordTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordTest.swift; sourceTree = "<group>"; };
+		DDC3E951275E37C90066A5DF /* SDSyncCompleteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSyncCompleteViewModel.swift; sourceTree = "<group>"; };
 		DDC5F5872719694800F1F9D8 /* ShadowImages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowImages.swift; sourceTree = "<group>"; };
 		DDC5F589271979F100F1F9D8 /* Fonts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fonts.swift; sourceTree = "<group>"; };
 		DDCD356F271EB641004969FF /* UIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImage.swift; sourceTree = "<group>"; };
@@ -1629,6 +1631,7 @@
 			isa = PBXGroup;
 			children = (
 				DD7955542757F2CA00631A78 /* SDSyncCompleteView.swift */,
+				DDC3E951275E37C90066A5DF /* SDSyncCompleteViewModel.swift */,
 			);
 			path = SDSyncComplete;
 			sourceTree = "<group>";
@@ -2151,6 +2154,7 @@
 				B376DD25268096E20083FD2F /* SessionSynchronizationDatabase.swift in Sources */,
 				AC6D56A525AF211200D221BA /* MultiSliderView.swift in Sources */,
 				AC524A7626133A370061AD45 /* MeaurementStreamExtension.swift in Sources */,
+				DDC3E952275E37C90066A5DF /* SDSyncCompleteViewModel.swift in Sources */,
 				DDC5F58A271979F100F1F9D8 /* Fonts.swift in Sources */,
 				DD28047726B3D6E70060F55E /* ConnectingAirBeamServices.swift in Sources */,
 				DD28047926B3D7370060F55E /* AirBeamConnectionController.swift in Sources */,

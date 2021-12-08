@@ -67,7 +67,7 @@ private extension SDSyncRootView {
     var navigationLink: some View {
         NavigationLink(
             destination: BackendSyncCompletedView(viewModel: BackendSyncCompletedViewModelDefault(urlProvider: viewModel.urlProvider), creatingSessionFlowContinues: $creatingSessionFlowContinues),
-            isActive: $viewModel.backendSyncCompleted,
+            isActive: .init(get: { viewModel.backendSyncCompleted }, set: { _ in }),
             label: {
                 EmptyView()
             })
