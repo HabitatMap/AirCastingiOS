@@ -11,6 +11,7 @@ import SwiftUI
 
 struct TurnOnBluetoothView: View {
     @State private var isPowerABLinkActive = false
+    @State private var presentRestartNextScreen = false
     @EnvironmentObject var settingsRedirection: DefaultSettingsRedirection
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @Binding var creatingSessionFlowContinues: Bool
@@ -32,6 +33,7 @@ struct TurnOnBluetoothView: View {
                 .buttonStyle(BlueButtonStyle())
         }
         .background(
+            Group {
             NavigationLink(
                 destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider),
                 isActive: $isPowerABLinkActive,
@@ -39,6 +41,13 @@ struct TurnOnBluetoothView: View {
                     EmptyView()
                 }
             )
+           NavigationLink(
+                destination: SDRestartABView(viewModel: SDRestartABViewModelDefault(urlProvider: urlProvider), creatingSessionFlowContinues: $creatingSessionFlowContinues),
+                isActive: $presentRestartNextScreen,
+                label: {
+                    EmptyView()
+                })
+            }
         )
         .onAppear(perform: {
             if CBCentralManager.authorization != .allowedAlways {
@@ -68,7 +77,7 @@ struct TurnOnBluetoothView: View {
             } else if bluetoothManager.centralManager.state != .poweredOn {
                 settingsRedirection.goToBluetoothAuthSettings()
             } else {
-                isPowerABLinkActive = true
+                sdSyncContinues ? presentRestartNextScreen.toggle() : isPowerABLinkActive.toggle()
             }
         }, label: {
             Text(Strings.TurnOnBluetoothView.continueButton)

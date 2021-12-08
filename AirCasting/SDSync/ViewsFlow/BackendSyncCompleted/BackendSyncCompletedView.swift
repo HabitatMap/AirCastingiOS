@@ -25,7 +25,7 @@ struct BackendSyncCompletedView<VM: BackendSyncCompletedViewModel>: View {
             continueButton
             Spacer()
         }
-        .background(navigationLink)
+        .background(Group { restartNavigationLink; BTNavigationLink })
         .padding()
     }
 }
@@ -52,16 +52,28 @@ private extension BackendSyncCompletedView {
     
     var continueButton: some View {
         Button {
-            viewModel.presentNextScreen = true
+            switch viewModel.sessionNextStep() {
+            case .bluetooth: viewModel.procedToBTScreen()
+            case .restart: viewModel.procedToRestartScreen()
+            }
         } label: {
             Text(Strings.ABConnectedView.continueButton)
         }.buttonStyle(BlueButtonStyle())
     }
     
-    var navigationLink: some View {
+    var restartNavigationLink: some View {
         NavigationLink(
             destination: SDRestartABView(viewModel: SDRestartABViewModelDefault(urlProvider: viewModel.urlProvider), creatingSessionFlowContinues: $creatingSessionFlowContinues),
-            isActive: $viewModel.presentNextScreen,
+            isActive: $viewModel.presentRestartNextScreen,
+            label: {
+                EmptyView()
+            })
+    }
+    
+    var BTNavigationLink: some View {
+        NavigationLink(
+            destination: TurnOnBluetoothView(creatingSessionFlowContinues: $viewModel.presentBTNextScreen, sdSyncContinues: .constant(true), urlProvider: viewModel.urlProvider),
+            isActive: $viewModel.presentBTNextScreen,
             label: {
                 EmptyView()
             })
