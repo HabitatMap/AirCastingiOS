@@ -8,10 +8,6 @@ struct SDSyncProgressViewModel {
     let title: String
     let current: String
     let total: String
-
-    func progressLabel() -> String {
-        "Syncing " + title + ": " + "\(current)/\(total)"
-    }
 }
 
 protocol SDSyncViewModel: ObservableObject {
@@ -19,6 +15,7 @@ protocol SDSyncViewModel: ObservableObject {
     var isSyncCompleted: Published<Bool>.Publisher { get }
     var presentNextScreen: Bool { get set }
     var presentAlert: Bool { get set }
+    var isDownloadingFinished: Bool { get }
     var progress: Published<SDSyncProgressViewModel?>.Publisher { get }
     func connectToAirBeamAndSync()
 }
@@ -32,6 +29,7 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
     @Published private var shouldDismissValue: Bool = false
     @Published private var isSyncCompletedValue: Bool = false
     @Published private var progressValue: SDSyncProgressViewModel?
+    @Published var isDownloadingFinished: Bool = false
     @Published var presentNextScreen: Bool = false
     @Published var presentAlert: Bool = false
 
@@ -62,6 +60,10 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
                 DispatchQueue.main.async {
                     let sessionType = self.stringForSessionType(newProgress.sessionType)
                     self.progressValue = .init(title: sessionType, current: String(newProgress.progress.received), total: String(newProgress.progress.expected))
+                }
+            }, finalizing: {
+                DispatchQueue.main.async {
+                    self.isDownloadingFinished = true
                 }
             }, completion: { [weak self] result in
                 //TODO: SD card should be cleared only if the files are not corrupted

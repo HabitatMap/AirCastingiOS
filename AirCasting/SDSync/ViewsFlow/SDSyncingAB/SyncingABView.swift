@@ -10,7 +10,8 @@ import SwiftUI
 struct SyncingABView<VM: SDSyncViewModel>: View {
     @Environment(\.presentationMode) var presentationMode
     @StateObject var viewModel: VM
-    @State var progressLabel: String?
+    @State var progressTitle: String?
+    @State var progressCount: String?
     @Binding var creatingSessionFlowContinues: Bool
     
     var body: some View {
@@ -39,7 +40,10 @@ struct SyncingABView<VM: SDSyncViewModel>: View {
             viewModel.presentAlert = dismiss
         })
         .onReceive(viewModel.progress, perform: { newProgress in
-            self.progressLabel = newProgress?.progressLabel()
+            if let progress = newProgress {
+                self.progressTitle = progress.title
+                self.progressCount = "\(progress.current)/\(progress.total)"
+            }
         })
         .alert(isPresented: $viewModel.presentAlert, content: { connectionTimeOutAlert })
         .onAppear(perform: {
@@ -61,7 +65,14 @@ extension SyncingABView {
     }
     
     var titleLabel: some View {
-        Text(progressLabel ?? "")
+        VStack(alignment: .leading) {
+            if viewModel.isDownloadingFinished {
+                Text("Finalizing...")
+            } else {
+                progressTitle != nil ? Text("Syncing " + progressTitle!.lowercased()) : Text("Syncing...")
+                Text(progressCount ?? "")
+            }
+        }
             .font(Fonts.boldTitle3)
             .foregroundColor(.accentColor)
     }

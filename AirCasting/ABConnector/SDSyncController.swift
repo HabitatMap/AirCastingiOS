@@ -32,7 +32,7 @@ class SDSyncController: ObservableObject {
         self.sessionSynchronizer = sessionSynchronizer
     }
     
-    func syncFromAirbeam(_ airbeamConnection: CBPeripheral, progress: @escaping (SDCardSyncProgess) -> Void, completion: @escaping (Bool) -> Void) {
+    func syncFromAirbeam(_ airbeamConnection: CBPeripheral, progress: @escaping (SDCardSyncProgess) -> Void, finalizing: @escaping () -> Void, completion: @escaping (Bool) -> Void) {
         guard let sensorName = airbeamConnection.name else {
             Log.error("Unable to identify the device")
             completion(false)
@@ -50,6 +50,7 @@ class SDSyncController: ObservableObject {
             self.writingQueue.sync {
                 switch result {
                 case .success(let metadata):
+                    finalizing()
                     let files = self.fileWriter.finishAndSave()
                     self.checkFilesForCorruption(files, expectedMeasurementsCount: metadata.expectedMeasurementsCount)
                     //TODO: Continue processing SD card data when files are not corrupted. Return an error and finish sync without clearing sd card if they are.
