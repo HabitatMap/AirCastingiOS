@@ -99,7 +99,7 @@ struct SelectPeripheralView: View {
         if syncMode == true {
             title = Text(Strings.SelectPeripheralView.titleSyncLabel)
         } else if SDClearingRouteProcess {
-            title = Text(Strings.SelectPeripheralView.titleSyncLabel)
+            title = Text(Strings.SelectPeripheralView.titleSDClearLabel)
         }  else {
             title = Text(Strings.SelectPeripheralView.titleLabel)
         }
