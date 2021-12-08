@@ -1,4 +1,5 @@
 PODS:
+  - DeviceKit (4.5.2)
   - Firebase/Analytics (8.9.1):
     - Firebase/Core
   - Firebase/Core (8.9.1):
@@ -130,6 +131,7 @@ PODS:
   - PromisesObjC (2.0.0)
 
 DEPENDENCIES:
+  - DeviceKit (~> 4.5.0)
   - Firebase/Analytics
   - Firebase/Crashlytics
   - Firebase/Messaging
@@ -140,6 +142,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - DeviceKit
     - Firebase
     - FirebaseABTesting
     - FirebaseAnalytics
@@ -159,6 +162,7 @@ SPEC REPOS:
     - PromisesObjC
 
 SPEC CHECKSUMS:
+  DeviceKit: c622fc19f795f3e0b4d75d6d11b26604338cdab3
   Firebase: fb5114cd2bf96e2ff7bcb01d0d9a156cf5fd2f07
   FirebaseABTesting: 9de50b34bf9eb4a07d4edb7af82c14152fd905aa
   FirebaseAnalytics: 4ab446ce08a3fe52e8a4303dd997cf26276bf968
@@ -177,6 +181,6 @@ SPEC CHECKSUMS:
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
   PromisesObjC: 68159ce6952d93e17b2dfe273b8c40907db5ba58
 
-PODFILE CHECKSUM: 832762ee4b47bdcd8b1deb8384ad7d594e657f38
+PODFILE CHECKSUM: 3cf2c95dfc6b77928321472bcad5bc6615fb67b4
 
 COCOAPODS: 1.11.2

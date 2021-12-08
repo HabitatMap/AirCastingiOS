@@ -3,15 +3,15 @@
 
 import Foundation
 
-protocol SDRestartABViewModel: ObservableObject {
+protocol BackendSyncCompletedViewModel: ObservableObject {
     var presentNextScreen: Bool { get set }
+    var urlProvider: BaseURLProvider { get }
     // urlProvider should should not be exposed
     // BUT it is - REASON: it is needed only to pass to some navigation view
-    var urlProvider: BaseURLProvider { get }
-    func continueSyncFlow()
+    func continueSynFlow()
 }
 
-class SDRestartABViewModelDefault: SDRestartABViewModel, ObservableObject {
+class BackendSyncCompletedViewModelDefault: BackendSyncCompletedViewModel, ObservableObject {
     
     @Published var presentNextScreen: Bool = false
     let urlProvider: BaseURLProvider
@@ -20,7 +20,7 @@ class SDRestartABViewModelDefault: SDRestartABViewModel, ObservableObject {
         self.urlProvider = urlProvider
     }
     
-    func continueSyncFlow() {
-       presentNextScreen = true
+    func continueSynFlow() {
+        presentNextScreen = true
     }
 }

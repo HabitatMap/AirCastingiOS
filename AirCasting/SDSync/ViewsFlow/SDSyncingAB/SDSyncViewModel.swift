@@ -18,7 +18,7 @@ protocol SDSyncViewModel: ObservableObject {
     var shouldDismiss: Published<Bool>.Publisher { get }
     var isSyncCompleted: Published<Bool>.Publisher { get }
     var presentNextScreen: Bool { get set }
-    var presentAlert: Bool { get set }
+    var presentFailedSyncAlert: Bool { get set }
     var progress: Published<SDSyncProgressViewModel?>.Publisher { get }
     func connectToAirBeamAndSync()
 }
@@ -33,8 +33,8 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
     @Published private var isSyncCompletedValue: Bool = false
     @Published private var progressValue: SDSyncProgressViewModel?
     @Published var presentNextScreen: Bool = false
-    @Published var presentAlert: Bool = false
-
+    @Published var presentFailedSyncAlert: Bool = false
+    
     private let peripheral: CBPeripheral
     private let airBeamConnectionController: AirBeamConnectionController
     private let sdSyncController: SDSyncController
@@ -70,7 +70,9 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
                 self.disconnectAirBeam()
                 DispatchQueue.main.async {
                     self.isSyncCompletedValue = result
+                    self.presentNextScreen = result
                     self.shouldDismissValue = !result
+                    self.presentFailedSyncAlert = !result
                 }
             })
         }
