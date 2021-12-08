@@ -8,6 +8,7 @@ struct StandaloneSessionCardView: View {
     let session: SessionEntity
     let sessionStopperFactory: SessionStoppableFactory
     let sessionSynchronizer: SessionSynchronizer
+    let measurementStreamStorage: MeasurementStreamStorage
     @EnvironmentObject private var sdSyncController: SDSyncController
     @EnvironmentObject private var urlProvider: UserDefaultsBaseURLProvider
     @EnvironmentObject private var tabSelection: TabBarSelection
@@ -51,32 +52,16 @@ struct StandaloneSessionCardView: View {
             finishAndDontSyncButton
             .padding()
         }
-        .alert(item: $alert, content: { alert in
-            if alert.id == .finishSessionAlert {
-                return Alert(title: alert.title,
-                             message: alert.message,
-                             primaryButton: .default(alert.buttonTitle, action: {
-                    finishSessionAlertAction(sessionStopper: sessionStopperFactory.getSessionStopper(for: session))
-                }),
-                             secondaryButton: .cancel())
-            } else if alert.id == .finishSessionAndSyncAlert {
-                return Alert(title: alert.title,
-                             message: alert.message,
-                             primaryButton: .default(alert.buttonTitle, action: {
-                    finishSessionAndSyncAlertAction()
-                }), secondaryButton: .cancel())
-            }
-            return Alert(title: alert.title,
-                         message: alert.message,
-                         dismissButton: .default(alert.buttonTitle))
-        })
+        .alert(item: $alert, content: { $0.makeAlert() })
         .padding()
     }
 
     var finishAndSyncButton: some View {
         Button(Strings.StandaloneSessionCardView.finishAndSyncButtonLabel) {
             if networkChecker.connectionAvailable {
-                alert = InAppAlerts.finishAndSyncAlert(sessionName: session.name)
+                alert = InAppAlerts.finishAndSyncAlert(sessionName: session.name) {
+                    self.finishSessionAndSyncAlertAction()
+                }
             } else {
                 alert = InAppAlerts.noNetworkAlert()
             }
@@ -86,7 +71,9 @@ struct StandaloneSessionCardView: View {
 
     var finishAndDontSyncButton: some View {
         Button(Strings.StandaloneSessionCardView.finishAndDontSyncButtonLabel) {
-            alert = InAppAlerts.finishSessionAlert(sessionName: session.name)
+            alert = InAppAlerts.finishSessionAlert(sessionName: session.name) {
+                self.finishSessionAlertAction(sessionStopper: self.sessionStopperFactory.getSessionStopper(for: self.session))
+            }
         }
         .foregroundColor(.accentColor)
     }

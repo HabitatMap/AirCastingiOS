@@ -36,19 +36,7 @@ struct SessionHeaderView: View {
                 }
             nameLabelAndExpandButton
         }
-        .alert(item: $alert, content: { alert in
-            if alert.id == .finishSessionAlert {
-                return Alert(title: alert.title,
-                             message: alert.message,
-                             primaryButton: .default(alert.buttonTitle, action: {
-                    finishSessionAlertAction(sessionStopper: sessionStopperFactory.getSessionStopper(for: session))
-                }),
-                             secondaryButton: .cancel())
-            }
-            return Alert(title: alert.title,
-                         message: alert.message,
-                         dismissButton: .default(alert.buttonTitle))
-        })
+        .alert(item: $alert, content: { $0.makeAlert() })
         .onChange(of: isCollapsed, perform: { value in
             isCollapsed ? (chevronIndicator = "chevron.down") :  (chevronIndicator = "chevron.up")
         })
@@ -141,7 +129,9 @@ private extension SessionHeaderView {
 
     var actionsMenuStopButton: some View {
         Button {
-            alert = InAppAlerts.finishSessionAlert(sessionName: session.name)
+            alert = InAppAlerts.finishSessionAlert(sessionName: session.name, action: {
+                self.finishSessionAlertAction(sessionStopper: self.sessionStopperFactory.getSessionStopper(for: self.session))
+            })
         } label: {
             Label(Strings.SessionHeaderView.stopRecordingButton, systemImage: "stop.circle")
         }
@@ -149,7 +139,7 @@ private extension SessionHeaderView {
 
     var actionsMenuMobileEnterStandaloneMode: some View {
         Button {
-            DeviceHandler.disableButtonBasedOnBT ? alert = InAppAlerts.notSupportedBTAlert() : bluetoothManager.enterStandaloneMode(sessionUUID: session.uuid)
+            bluetoothManager.enterStandaloneMode(sessionUUID: session.uuid)
         } label: {
             Label(Strings.SessionHeaderView.enterStandaloneModeButton, systemImage: "xmark.circle")
         }

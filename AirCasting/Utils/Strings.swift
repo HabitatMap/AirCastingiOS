@@ -496,7 +496,6 @@ struct Strings {
         static let finishAndSyncButtonLabel = "Finish recording & sync"
         static let finishAndDontSyncButtonLabel = "Finish recording & don't sync"
     }
-<<<<<<< HEAD
 
     enum SDSyncRootView {
         static let title: String = "Updating sessions"

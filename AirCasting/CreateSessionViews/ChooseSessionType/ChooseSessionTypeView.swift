@@ -161,10 +161,6 @@ struct ChooseSessionTypeView: View {
                     if featureFlagsViewModel.enabledFeatures.contains(.sdCardSync) {
                         orLabel
                         sdSyncButton
-                            .disabled(DeviceHandler.disableButtonBasedOnBT)
-                            .onTapGesture {
-                                alert = InAppAlerts.notSupportedBTAlert()
-                            }
                     }
                     Spacer()
                 }
@@ -176,17 +172,7 @@ struct ChooseSessionTypeView: View {
                 Color.aircastingBackground.opacity(0.25)
                     .ignoresSafeArea()
             )
-            .alert(item: $alert, content: { alert in
-                if alert.id == .noNetworkAlert {
-                    return Alert(title: alert.title,
-                                 message: alert.message,
-                                 dismissButton: .default(alert.buttonTitle))
-                } else {
-                    return Alert(title: alert.title,
-                                 message: alert.message,
-                                 dismissButton: .default(alert.buttonTitle))
-                }
-            })
+            .alert(item: $alert, content: { $0.makeAlert() })
         }
     }
 

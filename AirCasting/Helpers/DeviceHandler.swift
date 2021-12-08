@@ -38,18 +38,6 @@ struct DeviceHandler {
                                             .iPadPro12Inch,
                                             .iPadPro12Inch2]
     
-    static var disableButtonBasedOnBT: Bool {
-        DeviceHandler.BTBelow5Devices.contains(Device.current)
-    }
-    
-    static func notSupportedAlert() -> Alert {
-        Alert(
-            title: Text(Strings.DeviceHandler.alertTitle),
-            message: Text(Strings.DeviceHandler.alertMessage),
-            dismissButton: .default(Text(Strings.DeviceHandler.continueText))
-        )
-    }
-    
     static func getDeviceNumber() -> Int {
         guard Device.current.isPhone else { return 0 }
         var arrayNumber = [String.Element]()
