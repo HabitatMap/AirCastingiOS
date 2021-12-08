@@ -1,20 +1,20 @@
-// Created by Lunar on 01/12/2021.
+// Created by Lunar on 08/12/2021.
 //
 
 import AirCastingStyling
 import SwiftUI
 
-struct BackendSyncCompletedView<VM: BackendSyncCompletedViewModel>: View {
+struct UnplugABView<VM: UnplugABViewModel>: View {
     @StateObject var viewModel: VM
     @Binding var creatingSessionFlowContinues: Bool
     
     var body: some View {
         VStack(alignment: .leading, spacing: 40) {
-            ProgressView(value: 0.2)
+            ProgressView(value: 0.3)
             Spacer()
             HStack() {
                 Spacer()
-                connectedImage
+                unplugImage
                 Spacer()
             }
             Spacer()
@@ -30,22 +30,22 @@ struct BackendSyncCompletedView<VM: BackendSyncCompletedViewModel>: View {
     }
 }
 
-private extension BackendSyncCompletedView {
+extension UnplugABView {
     
-    var connectedImage: some View {
-        Image("4-connected")
+    var unplugImage: some View {
+        Image("airbeam")
             .resizable()
             .aspectRatio(contentMode: .fit)
     }
     
     var titleLabel: some View {
-        Text(Strings.SDSyncSuccessView.title)
+        Text(Strings.UnplugAirbeamView.title)
             .font(Fonts.boldTitle3)
             .foregroundColor(.accentColor)
     }
     
     var messageLabel: some View {
-        Text(Strings.SDSyncSuccessView.message)
+        Text(Strings.UnplugAirbeamView.message)
             .font(Fonts.regularHeading1)
             .foregroundColor(.aircastingGray)
     }
@@ -54,16 +54,22 @@ private extension BackendSyncCompletedView {
         Button {
             viewModel.presentNextScreen = true
         } label: {
-            Text(Strings.ABConnectedView.continueButton)
+            Text(Strings.UnplugAirbeamView.continueButton)
         }.buttonStyle(BlueButtonStyle())
     }
     
     var navigationLink: some View {
         NavigationLink(
-            destination: UnplugABView(viewModel: UnplugABViewModelDefault(urlProvider: viewModel.urlProvider), creatingSessionFlowContinues: $creatingSessionFlowContinues),
+            destination: SDRestartABView(viewModel: SDRestartABViewModelDefault(urlProvider: viewModel.urlProvider), creatingSessionFlowContinues: $creatingSessionFlowContinues),
             isActive: $viewModel.presentNextScreen,
             label: {
                 EmptyView()
             })
+    }
+}
+
+struct UnplugAirBeamView_Previews: PreviewProvider {
+    static var previews: some View {
+        UnplugABView(viewModel: UnplugABViewModelDummy(), creatingSessionFlowContinues: .constant(false))
     }
 }

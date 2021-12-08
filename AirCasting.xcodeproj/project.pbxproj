@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		331EA80A25E32094009DEFDB /* ConfirmCreatingSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331EA80925E32094009DEFDB /* ConfirmCreatingSessionView.swift */; };
 		332F521425FA38430047236D /* MicrophoneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332F521325FA38430047236D /* MicrophoneManager.swift */; };
+		333245512760E8C2002ED10F /* UnplugABView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333245502760E8C2002ED10F /* UnplugABView.swift */; };
+		333245532760EC39002ED10F /* UnplugABViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333245522760EC39002ED10F /* UnplugABViewModel.swift */; };
 		333448702742AF8D00ACA5E4 /* FinishSessionAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3334486F2742AF8D00ACA5E4 /* FinishSessionAlert.swift */; };
 		333448732743D7BB00ACA5E4 /* SDSyncRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333448722743D7BB00ACA5E4 /* SDSyncRootView.swift */; };
 		333448752743D94F00ACA5E4 /* SDSyncViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333448742743D94F00ACA5E4 /* SDSyncViewModel.swift */; };
@@ -340,6 +342,8 @@
 		278FFE79104B8F74B61CE3A2 /* Pods-AirCasting.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AirCasting.release.xcconfig"; path = "Target Support Files/Pods-AirCasting/Pods-AirCasting.release.xcconfig"; sourceTree = "<group>"; };
 		331EA80925E32094009DEFDB /* ConfirmCreatingSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmCreatingSessionView.swift; sourceTree = "<group>"; };
 		332F521325FA38430047236D /* MicrophoneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrophoneManager.swift; sourceTree = "<group>"; };
+		333245502760E8C2002ED10F /* UnplugABView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnplugABView.swift; sourceTree = "<group>"; };
+		333245522760EC39002ED10F /* UnplugABViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnplugABViewModel.swift; sourceTree = "<group>"; };
 		3334486F2742AF8D00ACA5E4 /* FinishSessionAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinishSessionAlert.swift; sourceTree = "<group>"; };
 		333448722743D7BB00ACA5E4 /* SDSyncRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSyncRootView.swift; sourceTree = "<group>"; };
 		333448742743D94F00ACA5E4 /* SDSyncViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSyncViewModel.swift; sourceTree = "<group>"; };
@@ -701,6 +705,15 @@
 				B3EAF78E2730C161000FFF23 /* AVSessionInterruptionHandler.swift */,
 			);
 			path = MicrophoneSession;
+			sourceTree = "<group>";
+		};
+		3332454F2760E88A002ED10F /* SDSyncUnplugAB */ = {
+			isa = PBXGroup;
+			children = (
+				333245502760E8C2002ED10F /* UnplugABView.swift */,
+				333245522760EC39002ED10F /* UnplugABViewModel.swift */,
+			);
+			path = SDSyncUnplugAB;
 			sourceTree = "<group>";
 		};
 		333448712743D75300ACA5E4 /* SDSync */ = {
@@ -1582,6 +1595,7 @@
 			children = (
 				DD79554D2757ED3E00631A78 /* SDSyncRootView */,
 				DD79554E2757ED9600631A78 /* SDSyncSuccess */,
+				3332454F2760E88A002ED10F /* SDSyncUnplugAB */,
 				DD79554F2757F05100631A78 /* SDRestartAB */,
 				DD7955522757F28100631A78 /* SDSyncingAB */,
 				DD7955532757F2A900631A78 /* SDSyncComplete */,
@@ -2119,6 +2133,7 @@
 				3346F1F626318C1600BA4695 /* SettingsManager.swift in Sources */,
 				DDCE5D3826A1FE2D0033C211 /* DeleteSessionViewModel.swift in Sources */,
 				DDD24D9626A8569400D4A327 /* ResetPasswordService.swift in Sources */,
+				333245532760EC39002ED10F /* UnplugABViewModel.swift in Sources */,
 				B3D4B4B426C2C6A1004322FC /* Date+Miliseconds.swift in Sources */,
 				750A51D82754D41A00D6F4E7 /* GridCalculator.swift in Sources */,
 				B3FD77BB267C94AF00E97CC2 /* SessionsSynchronizationStoreDataConverter.swift in Sources */,
@@ -2242,6 +2257,7 @@
 				DD8C380E2689A55A00901FDF /* BackendSettingsView.swift in Sources */,
 				DD1EEB8E26B7C39000AFC5C1 /* ChooseSessionTypeViewModel.swift in Sources */,
 				4F15548F263C819C00FF3208 /* MeasurementEntity.swift in Sources */,
+				333245512760E8C2002ED10F /* UnplugABView.swift in Sources */,
 				DD1C99C1267CBFCB00B786C4 /* MyAccountViewSignOut.swift in Sources */,
 				B38E6CCC26C5F3D400C21C45 /* SessionStoppableFactory.swift in Sources */,
 				DD55C39026BAA73F0069838F /* BluetoothHandler.swift in Sources */,
