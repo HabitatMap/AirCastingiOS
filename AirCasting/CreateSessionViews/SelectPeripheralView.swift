@@ -96,9 +96,11 @@ struct SelectPeripheralView: View {
     
     var titleLabel: some View {
         var title: Text
-        if syncMode == true || SDClearingRouteProcess {
+        if syncMode == true {
             title = Text(Strings.SelectPeripheralView.titleSyncLabel)
-        } else {
+        } else if SDClearingRouteProcess {
+            title = Text(Strings.SelectPeripheralView.titleSyncLabel)
+        }  else {
             title = Text(Strings.SelectPeripheralView.titleLabel)
         }
         return title

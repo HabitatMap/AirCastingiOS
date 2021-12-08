@@ -104,6 +104,7 @@ struct Strings {
         static let alertAccept: String = "Got it!"
         static let titleLabel: String = "Choose the device you'd like to record with"
         static let titleSyncLabel: String = "Select the device you'd like to sync"
+        static let titleSDClearLabel: String = "Choose the device you'd like to clear with"
         static let refreshButton: String = "Don't see a device? Refresh scanning."
         static let connectText: String = "Connect"
     }
