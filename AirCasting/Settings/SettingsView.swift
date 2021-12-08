@@ -20,6 +20,7 @@ struct SettingsView: View {
     private var SDClearingRouteProcess = true
     @EnvironmentObject var userSettings: UserSettings
     @EnvironmentObject var bluetoothManager: BluetoothManager
+    @StateObject private var featureFlagsViewModel = FeatureFlagsViewModel.shared
     
     init(urlProvider: BaseURLProvider, logoutController: LogoutController, viewModel: SettingsViewModel) {
         let navBarAppearance = UINavigationBar.appearance()
@@ -109,7 +110,9 @@ struct SettingsView: View {
                 crowdMapDescription
             }
             keepScreenOnSwitch
-            clearSDCard
+            if featureFlagsViewModel.enabledFeatures.contains(.sdCardSync) {
+                clearSDCard
+            }
             navigateToBackendSettingsButton
         }
     }
