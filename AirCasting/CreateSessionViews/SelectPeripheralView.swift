@@ -11,6 +11,7 @@ import SwiftUI
 
 struct SelectPeripheralView: View {
     @State private var selection: CBPeripheral? = nil
+    var SDClearingRouteProcess: Bool
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @EnvironmentObject var sessionContext: CreateSessionContext
     @EnvironmentObject var connectionController: DefaultAirBeamConnectionController
@@ -95,7 +96,7 @@ struct SelectPeripheralView: View {
     
     var titleLabel: some View {
         var title: Text
-        if syncMode == true {
+        if syncMode == true || SDClearingRouteProcess {
             title = Text(Strings.SelectPeripheralView.titleSyncLabel)
         } else {
             title = Text(Strings.SelectPeripheralView.titleLabel)
@@ -137,6 +138,9 @@ struct SelectPeripheralView: View {
                                        sessionContext: sessionContext,
                                        peripheral: selection)
                 destination = AnyView(SyncingABView(viewModel: viewModel, creatingSessionFlowContinues: $creatingSessionFlowContinues))
+            } else if SDClearingRouteProcess {
+                let viewModel = ClearingSDCardViewModelDefault(isSDClearProcess: SDClearingRouteProcess)
+                destination = AnyView(ClearingSDCardView(viewModel: viewModel, creatingSessionFlowContinues: $creatingSessionFlowContinues))
             } else {
                 let viewModel =
                 AirbeamConnectionViewModelDefault(airBeamConnectionController: connectionController,
@@ -158,7 +162,7 @@ struct SelectPeripheralView: View {
 #if DEBUG
 struct SelectPeripheralView_Previews: PreviewProvider {
     static var previews: some View {
-        SelectPeripheralView(creatingSessionFlowContinues: .constant(true), urlProvider: DummyURLProvider())
+        SelectPeripheralView(SDClearingRouteProcess: false, creatingSessionFlowContinues: .constant(true), urlProvider: DummyURLProvider())
     }
 }
 #endif

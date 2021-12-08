@@ -39,13 +39,13 @@ private extension SDSyncCompleteView {
     }
     
     var titleLabel: some View {
-        Text(isSDClearProcess ? "SD card cleared" : Strings.SDSyncCompleteView.title)
+        Text(isSDClearProcess ? Strings.SDSyncCompleteView.SDClearTitle : Strings.SDSyncCompleteView.title)
             .font(Fonts.boldTitle3)
             .foregroundColor(.accentColor)
     }
     
     var messageLabel: some View {
-        Text(isSDClearProcess ? "SD inside your AirBeam was cleared sucesfully" : Strings.SDSyncCompleteView.message)
+        Text(isSDClearProcess ? Strings.SDSyncCompleteView.SDClearMessage : Strings.SDSyncCompleteView.message)
             .font(Fonts.regularHeading1)
             .foregroundColor(.aircastingGray)
     }

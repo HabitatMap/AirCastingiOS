@@ -2,15 +2,15 @@
 //
 
 import Foundation
-
+#warning("Move whole logic of settingsView to this ViewModel")
 protocol SettingsViewModel {
-    func NextStep() -> ProceedToView
+    func nextStep() -> ProceedToView
     var locationHandler: LocationHandler { get }
     var bluetoothHandler: BluetoothHandler { get }
     var sessionContext: CreateSessionContext { get }
 }
 
-class SettingsViewModelDefault: SettingsViewModel, ObservableObject {
+class SettingsViewModelDefault: SettingsViewModel {
     
     let locationHandler: LocationHandler
     let bluetoothHandler: BluetoothHandler
@@ -23,7 +23,7 @@ class SettingsViewModelDefault: SettingsViewModel, ObservableObject {
         self.sessionContext = sessionContext
     }
 
-    func NextStep() -> ProceedToView {
+    func nextStep() -> ProceedToView {
         guard !locationHandler.isLocationDenied() else { return .location }
         guard !bluetoothHandler.isBluetoothDenied() else { return .bluetooth }
         return .airBeam
@@ -37,7 +37,7 @@ class DummySettingsViewModelDefault: SettingsViewModel {
     
     var bluetoothHandler: BluetoothHandler = DummyDefaultBluetoothHandler()
     
-    func NextStep() -> ProceedToView {
+    func nextStep() -> ProceedToView {
         return .airBeam
     }
     

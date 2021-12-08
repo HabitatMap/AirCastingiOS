@@ -1588,8 +1588,8 @@
 				DD79554E2757ED9600631A78 /* SDSyncSuccess */,
 				DD79554F2757F05100631A78 /* SDRestartAB */,
 				DD7955522757F28100631A78 /* SDSyncingAB */,
-				DD7955532757F2A900631A78 /* SDSyncComplete */,
 				DDC3E955275E7B800066A5DF /* ClearingSDCard */,
+				DD7955532757F2A900631A78 /* SDSyncComplete */,
 			);
 			path = ViewsFlow;
 			sourceTree = "<group>";

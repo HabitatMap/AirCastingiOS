@@ -9,7 +9,7 @@ protocol ClearingSDCardViewModel: ObservableObject {
 
 class ClearingSDCardViewModelDefault: ClearingSDCardViewModel, ObservableObject {
 
-    @Published var isSDClearProcess: Bool
+    var isSDClearProcess: Bool
     @Published var presentNextScreen: Bool = false
     
     init(isSDClearProcess: Bool) {

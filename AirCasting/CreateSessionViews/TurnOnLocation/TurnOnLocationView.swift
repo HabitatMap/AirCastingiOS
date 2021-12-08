@@ -12,7 +12,7 @@ struct TurnOnLocationView: View {
     @State private var isMobileLinkActive = false
     @State private var restartABLink = false
     @Binding var creatingSessionFlowContinues: Bool
-    @Binding var isSDClearProcess: Bool
+    var isSDClearProcess: Bool
     let viewModel: TurnOnLocationViewModel
     
     var body: some View {
@@ -93,7 +93,7 @@ struct TurnOnLocationView: View {
     }
     var proceedToBluetoothView: some View {
         NavigationLink(
-            destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sdSyncContinues: .constant(false), isSDClearProcess: $isSDClearProcess, urlProvider: viewModel.passURLProvider),
+            destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sdSyncContinues: .constant(false), isSDClearProcess: isSDClearProcess, urlProvider: viewModel.passURLProvider),
             isActive: $isTurnBluetoothOnLinkActive,
             label: {
                 EmptyView()

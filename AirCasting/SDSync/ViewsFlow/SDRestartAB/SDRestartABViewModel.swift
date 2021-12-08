@@ -12,7 +12,7 @@ protocol SDRestartABViewModel: ObservableObject {
 class SDRestartABViewModelDefault: SDRestartABViewModel, ObservableObject {
     
     @Published var presentNextScreen: Bool = false
-    @Published var isSDClearProcess: Bool
+    var isSDClearProcess: Bool
     let urlProvider: BaseURLProvider
     
     init(urlProvider: BaseURLProvider, isSDClearProcess: Bool) {

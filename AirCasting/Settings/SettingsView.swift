@@ -17,7 +17,7 @@ struct SettingsView: View {
     @State private var startSDClear = false
     @State private var BTScreenGo = false
     @State private var LocationScreenGo = false
-    @State private var SDClearingRouteProcess = true
+    private var SDClearingRouteProcess = true
     @EnvironmentObject var userSettings: UserSettings
     @EnvironmentObject var bluetoothManager: BluetoothManager
     
@@ -47,17 +47,17 @@ struct SettingsView: View {
         }
         .fullScreenCover(isPresented: $startSDClear) {
             CreatingSessionFlowRootView {
-                SDRestartABView(viewModel: SDRestartABViewModelDefault(urlProvider: urlProvider, isSDClearProcess: true), creatingSessionFlowContinues: $startSDClear)
+                SDRestartABView(viewModel: SDRestartABViewModelDefault(urlProvider: urlProvider, isSDClearProcess: SDClearingRouteProcess), creatingSessionFlowContinues: $startSDClear)
             }
         }
         .fullScreenCover(isPresented: $LocationScreenGo) {
             CreatingSessionFlowRootView {
-                TurnOnLocationView(creatingSessionFlowContinues: $LocationScreenGo, isSDClearProcess: $SDClearingRouteProcess, viewModel: TurnOnLocationViewModel(locationHandler: viewModel.locationHandler, bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: bluetoothManager), sessionContext: viewModel.sessionContext, urlProvider: urlProvider))
+                TurnOnLocationView(creatingSessionFlowContinues: $LocationScreenGo, isSDClearProcess: SDClearingRouteProcess, viewModel: TurnOnLocationViewModel(locationHandler: viewModel.locationHandler, bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: bluetoothManager), sessionContext: viewModel.sessionContext, urlProvider: urlProvider))
             }
         }
         .fullScreenCover(isPresented: $BTScreenGo) {
             CreatingSessionFlowRootView {
-                TurnOnBluetoothView(creatingSessionFlowContinues: $BTScreenGo, sdSyncContinues: .constant(false), isSDClearProcess: $SDClearingRouteProcess, urlProvider: urlProvider)
+                TurnOnBluetoothView(creatingSessionFlowContinues: $BTScreenGo, sdSyncContinues: .constant(false), isSDClearProcess: SDClearingRouteProcess, urlProvider: urlProvider)
             }
         }
         .environmentObject(viewModel.sessionContext)
@@ -84,8 +84,8 @@ struct SettingsView: View {
     
     private var appInfoSection: some View {
         Section() {
-            Text("AirCasting App v. ") + Text("\(UIApplication.appVersion!)") +
-                Text(" build: ") + Text("\(UIApplication.buildVersion!)")
+            Text(Strings.Settings.appInfoTitle) + Text(". ") + Text("\(UIApplication.appVersion!)") +
+            Text(Strings.Settings.buildText) + Text(": ") + Text("\(UIApplication.buildVersion!)")
         }.foregroundColor(.aircastingGray)
     }
     
@@ -139,7 +139,7 @@ struct SettingsView: View {
     
     private var clearSDCard: some View {
         Button {
-            switch viewModel.NextStep() {
+            switch viewModel.nextStep() {
             case .bluetooth: BTScreenGo.toggle()
             case .location: LocationScreenGo.toggle()
             case .airBeam, .mobile:
@@ -148,7 +148,7 @@ struct SettingsView: View {
          } label: {
              Group {
                  HStack {
-                     Text("Clear SD card")
+                     Text(Strings.Settings.clearSDTitle)
                          .font(Fonts.boldHeading1)
                          .accentColor(.black)
                      Spacer()

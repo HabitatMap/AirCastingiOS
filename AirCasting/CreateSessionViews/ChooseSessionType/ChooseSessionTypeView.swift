@@ -43,13 +43,13 @@ struct ChooseSessionTypeView: View {
             
                 .fullScreenCover(isPresented: $isTurnLocationOnLinkActive) {
                     CreatingSessionFlowRootView {
-                        TurnOnLocationView(creatingSessionFlowContinues: $isTurnLocationOnLinkActive, isSDClearProcess: .constant(false), viewModel: TurnOnLocationViewModel(locationHandler: viewModel.locationHandler, bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: viewModel.passBluetoothManager), sessionContext: viewModel.passSessionContext, urlProvider: viewModel.passURLProvider))
+                        TurnOnLocationView(creatingSessionFlowContinues: $isTurnLocationOnLinkActive, isSDClearProcess: false, viewModel: TurnOnLocationViewModel(locationHandler: viewModel.locationHandler, bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: viewModel.passBluetoothManager), sessionContext: viewModel.passSessionContext, urlProvider: viewModel.passURLProvider))
                     }
                 }
           
                 .fullScreenCover(isPresented: $isTurnBluetoothOnLinkActive) {
                     CreatingSessionFlowRootView {
-                        TurnOnBluetoothView(creatingSessionFlowContinues: $isTurnBluetoothOnLinkActive, sdSyncContinues: .constant(false), isSDClearProcess: .constant(false), urlProvider: viewModel.passURLProvider)
+                        TurnOnBluetoothView(creatingSessionFlowContinues: $isTurnBluetoothOnLinkActive, sdSyncContinues: .constant(false), isSDClearProcess: false, urlProvider: viewModel.passURLProvider)
                     }
                 }
 
@@ -93,13 +93,13 @@ struct ChooseSessionTypeView: View {
                         EmptyView()
                             .fullScreenCover(isPresented: $isTurnLocationOnLinkActive) {
                                 CreatingSessionFlowRootView {
-                                    TurnOnLocationView(creatingSessionFlowContinues: $isTurnLocationOnLinkActive, isSDClearProcess: .constant(false), viewModel: TurnOnLocationViewModel(locationHandler: viewModel.locationHandler, bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: viewModel.passBluetoothManager), sessionContext: viewModel.passSessionContext, urlProvider: viewModel.passURLProvider))
+                                    TurnOnLocationView(creatingSessionFlowContinues: $isTurnLocationOnLinkActive, isSDClearProcess: false, viewModel: TurnOnLocationViewModel(locationHandler: viewModel.locationHandler, bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: viewModel.passBluetoothManager), sessionContext: viewModel.passSessionContext, urlProvider: viewModel.passURLProvider))
                                 }
                             }
                         EmptyView()
                             .fullScreenCover(isPresented: $isTurnBluetoothOnLinkActive) {
                                 CreatingSessionFlowRootView {
-                                    TurnOnBluetoothView(creatingSessionFlowContinues: $isTurnBluetoothOnLinkActive, sdSyncContinues: .constant(false), isSDClearProcess: .constant(false), urlProvider: viewModel.passURLProvider)
+                                    TurnOnBluetoothView(creatingSessionFlowContinues: $isTurnBluetoothOnLinkActive, sdSyncContinues: .constant(false), isSDClearProcess: false, urlProvider: viewModel.passURLProvider)
                                 }
                             }
                         EmptyView()

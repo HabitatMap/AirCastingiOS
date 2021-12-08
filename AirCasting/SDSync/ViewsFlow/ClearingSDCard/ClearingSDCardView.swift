@@ -46,13 +46,13 @@ extension ClearingSDCardView {
     }
     
     var titleLabel: some View {
-        Text("Clearing SD card")
+        Text(Strings.ClearingSDCardView.title)
             .font(Fonts.boldTitle3)
             .foregroundColor(.accentColor)
     }
     
     var messageLabel: some View {
-        Text("This should take less then 10 seconds.")
+        Text(Strings.ClearingSDCardView.message)
             .font(Fonts.regularHeading1)
             .foregroundColor(.aircastingGray)
     }
