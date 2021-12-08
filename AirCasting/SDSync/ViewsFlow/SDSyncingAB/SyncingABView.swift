@@ -31,13 +31,13 @@ struct SyncingABView<VM: SDSyncViewModel>: View {
         }
         .padding()
         .background(navigationLink)
-        .onReceive(viewModel.isSyncCompleted, perform: { isConnected in
-            viewModel.continueSyncFlow(value: isConnected)
+        .onReceive(viewModel.isSyncCompleted, perform: { isCompleted in
+            viewModel.continueSyncFlow(value: isCompleted)
         })
         .onReceive(viewModel.shouldDismiss, perform: { dismiss in
             viewModel.presentedAlert(value: dismiss)
         })
-        .alert(isPresented: $viewModel.failedSyncAlertPresent, content: { connectionTimeOutAlert })
+        .alert(isPresented: $viewModel.presentFailedSyncAlert, content: { connectionTimeOutAlert })
         .onAppear(perform: {
             /* App is pushing the next view before this view is fully loaded.
              It resulted with showing next view and going back to this one.

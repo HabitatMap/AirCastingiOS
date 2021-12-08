@@ -62,7 +62,7 @@ extension SDRestartABView {
     
     var continueToNextView: some View {
         NavigationLink(
-            destination:  SelectPeripheralView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: viewModel.urlProvider, syncMode: true),
+            destination: SelectPeripheralView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: viewModel.urlProvider, syncMode: true),
             isActive: $viewModel.presentNextScreen,
             label: {
                 EmptyView()
