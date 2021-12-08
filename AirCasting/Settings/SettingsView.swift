@@ -16,7 +16,7 @@ struct SettingsView: View {
     @State private var showBackendSettings = false
     @State private var startSDClear = false
     @State private var BTScreenGo = false
-    @State private var LocationScreenGo = false
+    @State private var locationScreenGo = false
     private var SDClearingRouteProcess = true
     @EnvironmentObject var userSettings: UserSettings
     @EnvironmentObject var bluetoothManager: BluetoothManager
@@ -31,36 +31,68 @@ struct SettingsView: View {
     }
     
     var body: some View {
-        NavigationView {
-            Form {
-                signOutSection
-                settingsSection
-                #if BETA || DEBUG
-                Section() {
-                    navigateToAppConfigurationButton
+        if #available(iOS 15, *) {
+            NavigationView {
+                main
+            }
+            .fullScreenCover(isPresented: $startSDClear) {
+                CreatingSessionFlowRootView {
+                    SDRestartABView(viewModel: SDRestartABViewModelDefault(urlProvider: urlProvider, isSDClearProcess: SDClearingRouteProcess), creatingSessionFlowContinues: $startSDClear)
                 }
-                #endif
-                appInfoSection
             }
-            .listStyle(GroupedListStyle())
-            .navigationBarTitle(Strings.Settings.title)
-        }
-        .fullScreenCover(isPresented: $startSDClear) {
-            CreatingSessionFlowRootView {
-                SDRestartABView(viewModel: SDRestartABViewModelDefault(urlProvider: urlProvider, isSDClearProcess: SDClearingRouteProcess), creatingSessionFlowContinues: $startSDClear)
+            .fullScreenCover(isPresented: $locationScreenGo) {
+                CreatingSessionFlowRootView {
+                    TurnOnLocationView(creatingSessionFlowContinues: $locationScreenGo, isSDClearProcess: SDClearingRouteProcess, viewModel: TurnOnLocationViewModel(locationHandler: viewModel.locationHandler, bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: bluetoothManager), sessionContext: viewModel.sessionContext, urlProvider: urlProvider))
+                }
             }
-        }
-        .fullScreenCover(isPresented: $LocationScreenGo) {
-            CreatingSessionFlowRootView {
-                TurnOnLocationView(creatingSessionFlowContinues: $LocationScreenGo, isSDClearProcess: SDClearingRouteProcess, viewModel: TurnOnLocationViewModel(locationHandler: viewModel.locationHandler, bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: bluetoothManager), sessionContext: viewModel.sessionContext, urlProvider: urlProvider))
+            .fullScreenCover(isPresented: $BTScreenGo) {
+                CreatingSessionFlowRootView {
+                    TurnOnBluetoothView(creatingSessionFlowContinues: $BTScreenGo, sdSyncContinues: .constant(false), isSDClearProcess: SDClearingRouteProcess, urlProvider: urlProvider)
+                }
             }
-        }
-        .fullScreenCover(isPresented: $BTScreenGo) {
-            CreatingSessionFlowRootView {
-                TurnOnBluetoothView(creatingSessionFlowContinues: $BTScreenGo, sdSyncContinues: .constant(false), isSDClearProcess: SDClearingRouteProcess, urlProvider: urlProvider)
+            .environmentObject(viewModel.sessionContext)
+        } else {
+            NavigationView {
+                main
             }
+            .background(
+                Group {
+                    EmptyView()
+                        .fullScreenCover(isPresented: $startSDClear) {
+                            CreatingSessionFlowRootView {
+                                SDRestartABView(viewModel: SDRestartABViewModelDefault(urlProvider: urlProvider, isSDClearProcess: SDClearingRouteProcess), creatingSessionFlowContinues: $startSDClear)
+                            }
+                        }
+                    EmptyView()
+                        .fullScreenCover(isPresented: $locationScreenGo) {
+                            CreatingSessionFlowRootView {
+                                TurnOnLocationView(creatingSessionFlowContinues: $locationScreenGo, isSDClearProcess: SDClearingRouteProcess, viewModel: TurnOnLocationViewModel(locationHandler: viewModel.locationHandler, bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: bluetoothManager), sessionContext: viewModel.sessionContext, urlProvider: urlProvider))
+                            }
+                        }
+                    EmptyView()
+                        .fullScreenCover(isPresented: $BTScreenGo) {
+                            CreatingSessionFlowRootView {
+                                TurnOnBluetoothView(creatingSessionFlowContinues: $BTScreenGo, sdSyncContinues: .constant(false), isSDClearProcess: SDClearingRouteProcess, urlProvider: urlProvider)
+                            }
+                        }
+                })
+            .environmentObject(viewModel.sessionContext)
         }
-        .environmentObject(viewModel.sessionContext)
+    }
+    
+    private var main: some View {
+        Form {
+            signOutSection
+            settingsSection
+            #if BETA || DEBUG
+            Section() {
+                navigateToAppConfigurationButton
+            }
+            #endif
+            appInfoSection
+        }
+        .listStyle(GroupedListStyle())
+        .navigationBarTitle(Strings.Settings.title)
     }
     
     private var signOutSection: some View {
@@ -141,7 +173,7 @@ struct SettingsView: View {
         Button {
             switch viewModel.nextStep() {
             case .bluetooth: BTScreenGo.toggle()
-            case .location: LocationScreenGo.toggle()
+            case .location: locationScreenGo.toggle()
             case .airBeam, .mobile:
                 startSDClear.toggle()
             }
