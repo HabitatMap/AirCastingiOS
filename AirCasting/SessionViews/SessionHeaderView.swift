@@ -11,6 +11,7 @@ struct SessionHeaderView: View {
     let action: () -> Void
     let isExpandButtonNeeded: Bool
     var isSensorTypeNeeded: Bool = true
+    var isMenuNeeded = true
     @Binding var isCollapsed: Bool
     @State var chevronIndicator = "chevron.down"
     @EnvironmentObject var networkChecker: NetworkChecker
@@ -22,6 +23,7 @@ struct SessionHeaderView: View {
     @StateObject private var featureFlagsViewModel = FeatureFlagsViewModel.shared
     @State var showDeleteModal = false
     let measurementStreamStorage: MeasurementStreamStorage
+    let sessionSynchronizer: SessionSynchronizer
     @EnvironmentObject var authorization: UserAuthenticationSession
 
     var body: some View {
@@ -30,7 +32,7 @@ struct SessionHeaderView: View {
                     dateAndTime
                         .foregroundColor(Color.aircastingTimeGray)
                     Spacer()
-                    actionsMenuMobile
+                    isMenuNeeded ? actionsMenuMobile : nil
                 }
             nameLabelAndExpandButton
         }.onChange(of: isCollapsed, perform: { value in
@@ -40,7 +42,7 @@ struct SessionHeaderView: View {
             ShareView(showModal: Binding.constant(false))
         })
         .sheet(isPresented: $showDeleteModal) {
-            DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session, measurementStreamStorage: measurementStreamStorage, streamRemover: StreamRemoverDefault(authorization: authorization)), deleteModal: $showDeleteModal)
+            DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session, measurementStreamStorage: measurementStreamStorage, streamRemover: StreamRemoverDefault(authorization: authorization), sessionSynchronizer: sessionSynchronizer), deleteModal: $showDeleteModal)
         }
         .font(Fonts.regularHeading4)
         .foregroundColor(.aircastingGray)
@@ -110,7 +112,7 @@ private extension SessionHeaderView {
         Menu {
             session.isActive ? actionsMenuStopButton : nil
             session.deletable ? actionsMenuDeleteButton : nil
-            if session.deviceType == .AIRBEAM3 && featureFlagsViewModel.enabledFeatures.contains(.standaloneMode) {
+            if session.deviceType == .AIRBEAM3 && session.isActive && featureFlagsViewModel.enabledFeatures.contains(.standaloneMode) {
                 actionsMenuMobileEnterStandaloneMode
             }
         } label: {
@@ -215,7 +217,7 @@ struct SessionHeader_Previews: PreviewProvider {
         SessionHeaderView(action: {},
                           isExpandButtonNeeded: true, isCollapsed: .constant(true),
                           session: SessionEntity.mock,
-                          sessionStopperFactory: SessionStoppableFactoryDummy(), measurementStreamStorage: PreviewMeasurementStreamStorage())
+                          sessionStopperFactory: SessionStoppableFactoryDummy(), measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionSynchronizer: DummySessionSynchronizer())
                 .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
     }
 }

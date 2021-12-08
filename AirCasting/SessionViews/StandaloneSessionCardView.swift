@@ -33,11 +33,12 @@ struct StandaloneSessionCardView: View {
         SessionHeaderView(
             action: {},
             isExpandButtonNeeded: false,
+            isMenuNeeded: false,
             isCollapsed: .constant(false),
             session: session,
             sessionStopperFactory: sessionStopperFactory,
-            measurementStreamStorage: measurementStreamStorage
-        )
+            measurementStreamStorage: measurementStreamStorage,
+            sessionSynchronizer: sessionSynchronizer)
     }
 
     var content: some View {

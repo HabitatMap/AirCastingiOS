@@ -12,6 +12,7 @@ enum AirBeamServicesConnectionResult {
 
 protocol ConnectingAirBeamServices {
     func connect(to peripheral: CBPeripheral, timeout: TimeInterval, completion: @escaping (AirBeamServicesConnectionResult) -> Void)
+    func disconnect(from peripheral: CBPeripheral)
 }
 
 class ConnectingAirBeamServicesBluetooth: ConnectingAirBeamServices {
@@ -49,5 +50,9 @@ class ConnectingAirBeamServicesBluetooth: ConnectingAirBeamServices {
                 NotificationCenter.default.removeObserver(characteristicsHandle)
             }
         }
+    }
+    
+    func disconnect(from peripheral: CBPeripheral) {
+        bluetoothConnector.cancelPeripheralConnection(for: peripheral)
     }
 }

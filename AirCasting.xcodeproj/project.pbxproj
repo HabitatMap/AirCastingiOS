@@ -182,6 +182,7 @@
 		B32D08A4267A4957006C97ED /* LogErrorAndCompletePublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32D08A3267A4957006C97ED /* LogErrorAndCompletePublisher.swift */; };
 		B32D08AD267A6437006C97ED /* LogEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32D08AC267A6437006C97ED /* LogEvent.swift */; };
 		B32D08AF267A6D13006C97ED /* ErasingToVoidPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32D08AE267A6D13006C97ED /* ErasingToVoidPublisher.swift */; };
+		B3332F5A275D61B000789BAD /* Int+orOne.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3332F59275D61B000789BAD /* Int+orOne.swift */; };
 		B33DB56E2685FB2400ED1344 /* LocalizedErrorStub.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33DB56D2685FB2400ED1344 /* LocalizedErrorStub.swift */; };
 		B33DB5702685FCFB00ED1344 /* SynchronizationTestMocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33DB56F2685FCFB00ED1344 /* SynchronizationTestMocks.swift */; };
 		B33DB5722686013400ED1344 /* XCTestCase+AwaitPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33DB5712686013400ED1344 /* XCTestCase+AwaitPublisher.swift */; };
@@ -519,6 +520,7 @@
 		B32D08A3267A4957006C97ED /* LogErrorAndCompletePublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogErrorAndCompletePublisher.swift; sourceTree = "<group>"; };
 		B32D08AC267A6437006C97ED /* LogEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogEvent.swift; sourceTree = "<group>"; };
 		B32D08AE267A6D13006C97ED /* ErasingToVoidPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErasingToVoidPublisher.swift; sourceTree = "<group>"; };
+		B3332F59275D61B000789BAD /* Int+orOne.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+orOne.swift"; sourceTree = "<group>"; };
 		B33DB56D2685FB2400ED1344 /* LocalizedErrorStub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizedErrorStub.swift; sourceTree = "<group>"; };
 		B33DB56F2685FCFB00ED1344 /* SynchronizationTestMocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynchronizationTestMocks.swift; sourceTree = "<group>"; };
 		B33DB5712686013400ED1344 /* XCTestCase+AwaitPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+AwaitPublisher.swift"; sourceTree = "<group>"; };
@@ -874,6 +876,7 @@
 				DDC5F5872719694800F1F9D8 /* ShadowImages.swift */,
 				B3ED03C22729A8E300513522 /* AirCastingNotifications.swift */,
 				DD5930E0273528860043C2A2 /* UserState.swift */,
+				B3332F59275D61B000789BAD /* Int+orOne.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -2056,6 +2059,7 @@
 				B3F1448026AE4CA0006A4612 /* OfflineAlert.swift in Sources */,
 				4F8CDBD2265F8DAC00976B25 /* Assertions.swift in Sources */,
 				B3FD77C6267C94AF00E97CC2 /* SessionUploadService.swift in Sources */,
+				B3332F5A275D61B000789BAD /* Int+orOne.swift in Sources */,
 				B367A596274E9EAA004C605B /* RemoteNotificationRouter.swift in Sources */,
 				AC194B0D2684BAB40048E2C8 /* SessionLoadingView.swift in Sources */,
 				33885BB227468B4E00F41CB5 /* SDSyncFileWritingService.swift in Sources */,
@@ -2428,7 +2432,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_ASSET_PATHS = "\"AirCasting/Preview Content\"";
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
@@ -2457,7 +2461,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: HabitatMap, Inc. (LXAGXH6CF6)";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_ASSET_PATHS = "\"AirCasting/Preview Content\"";
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
@@ -2545,7 +2549,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: HabitatMap, Inc. (LXAGXH6CF6)";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_ASSET_PATHS = "\"AirCasting/Preview Content\"";
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
