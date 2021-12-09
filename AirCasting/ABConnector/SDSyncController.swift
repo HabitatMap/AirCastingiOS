@@ -9,6 +9,11 @@ enum SDCardSessionType: CaseIterable {
     case mobile, fixed, cellular
 }
 
+struct SDCardSyncProgess {
+    let sessionType: SDCardSessionType
+    let progress: SDCardProgress
+}
+
 class SDSyncController: ObservableObject {
     private let fileWriter: SDSyncFileWriter
     private let airbeamServices: SDCardAirBeamServices
@@ -17,7 +22,6 @@ class SDSyncController: ObservableObject {
     private let averagingService: AveragingService
     private let sessionSynchronizer: SessionSynchronizer
     private let writingQueue = DispatchQueue(label: "SDSyncController")
-    private var metadata: [SDCardMetaData] = []
     
     init(airbeamServices: SDCardAirBeamServices, fileWriter: SDSyncFileWriter, fileValidator: SDSyncFileValidator, mobileSessionsSaver: SDCardMobileSessionssSaver, averagingService: AveragingService, sessionSynchronizer: SessionSynchronizer) {
         self.airbeamServices = airbeamServices
@@ -28,31 +32,26 @@ class SDSyncController: ObservableObject {
         self.sessionSynchronizer = sessionSynchronizer
     }
     
-    func syncFromAirbeam(_ airbeamConnection: CBPeripheral, completion: @escaping (Bool) -> Void) {
+    func syncFromAirbeam(_ airbeamConnection: CBPeripheral, progress: @escaping (SDCardSyncProgess) -> Void, completion: @escaping (Bool) -> Void) {
         guard let sensorName = airbeamConnection.name else {
             Log.error("Unable to identify the device")
             completion(false)
             return
         }
 
-        metadata = []
-        airbeamServices.downloadData(from: airbeamConnection, progress: { [weak self] data in
-            switch data {
-            case .chunk(let chunk):
-                // Filesystem write
-                self?.writingQueue.async {
-                    self?.fileWriter.writeToFile(data: chunk.payload, sessionType: chunk.sessionType)
-                }
-            case .metadata(let metaData):
-                self?.metadata.append(metaData)
+        airbeamServices.downloadData(from: airbeamConnection, progress: { [weak self] chunk in
+            // Filesystem write
+            self?.writingQueue.async {
+                self?.fileWriter.writeToFile(data: chunk.payload, sessionType: chunk.sessionType)
+                progress(.init(sessionType: chunk.sessionType, progress: chunk.progress))
             }
         }, completion: { [weak self] result in
             guard let self = self else { return }
             self.writingQueue.sync {
                 switch result {
-                case .success:
+                case .success(let metadata):
                     let files = self.fileWriter.finishAndSave()
-                    self.checkFilesForCorruption(files)
+                    self.checkFilesForCorruption(files, expectedMeasurementsCount: metadata.expectedMeasurementsCount)
                     //TODO: Continue processing SD card data when files are not corrupted. Return an error and finish sync without clearing sd card if they are.
                     if let mobileFileURL = files.first(where: { $0.1 == SDCardSessionType.mobile })?.0 {
                         self.mobileSessionsSaver.saveDataToDb(fileURL: mobileFileURL, deviceID: sensorName) { result in
@@ -103,11 +102,11 @@ class SDSyncController: ObservableObject {
         }
     }
     
-    func checkFilesForCorruption(_ files: [(URL, SDCardSessionType)]) {
+    private func checkFilesForCorruption(_ files: [(URL, SDCardSessionType)], expectedMeasurementsCount: [SDCardSessionType: Int]) {
         let toValidate = files.map { file -> (URL, SDCardSessionType, Int) in
             let fileURL = file.0
             let sessionType = file.1
-            let expectedMeasurementsCount = self.metadata.first(where: { $0.sessionType == file.1 })!.measurementsCount
+            let expectedMeasurementsCount = expectedMeasurementsCount[sessionType] ?? 0
             return (fileURL, sessionType, expectedMeasurementsCount)
         }
         self.fileValidator.validate(files: toValidate, completion: { _ in })

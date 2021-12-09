@@ -11,7 +11,7 @@ import SwiftUI
 
 struct TurnOnBluetoothView: View {
     @State private var isPowerABLinkActive = false
-    @State private var SDRestartABLink = false
+    @State private var presentRestartScreen = false
     @EnvironmentObject var settingsRedirection: DefaultSettingsRedirection
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @Binding var creatingSessionFlowContinues: Bool
@@ -35,19 +35,19 @@ struct TurnOnBluetoothView: View {
         }
         .background(
             Group {
-                NavigationLink(
-                    destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider),
-                    isActive: $isPowerABLinkActive,
-                    label: {
-                        EmptyView()
-                    }
-                )
-                NavigationLink(
-                    destination: SDRestartABView(viewModel: SDRestartABViewModelDefault(urlProvider: urlProvider, isSDClearProcess: isSDClearProcess), creatingSessionFlowContinues: $creatingSessionFlowContinues),
-                    isActive: $SDRestartABLink,
-                    label: {
-                        EmptyView()
-                    })
+            NavigationLink(
+                destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider),
+                isActive: $isPowerABLinkActive,
+                label: {
+                    EmptyView()
+                }
+            )
+           NavigationLink(
+            destination: SDRestartABView(viewModel: SDRestartABViewModelDefault(urlProvider: urlProvider, isSDClearProcess: isSDClearProcess), creatingSessionFlowContinues: $creatingSessionFlowContinues),
+                isActive: $presentRestartScreen,
+                label: {
+                    EmptyView()
+                })
             }
         )
         .onAppear(perform: {
@@ -78,7 +78,7 @@ struct TurnOnBluetoothView: View {
             } else if bluetoothManager.centralManager.state != .poweredOn {
                 settingsRedirection.goToBluetoothAuthSettings()
             } else {
-                isSDClearProcess ? SDRestartABLink.toggle() : isPowerABLinkActive.toggle()
+                sdSyncContinues ? presentRestartScreen.toggle() : isPowerABLinkActive.toggle()
             }
         }, label: {
             Text(Strings.TurnOnBluetoothView.continueButton)

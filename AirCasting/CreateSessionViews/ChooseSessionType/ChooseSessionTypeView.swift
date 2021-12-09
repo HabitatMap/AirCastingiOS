@@ -16,6 +16,7 @@ struct ChooseSessionTypeView: View {
     @State private var isMobileLinkActive = false
     @State private var didTapFixedSession = false
     @State private var startSync = false
+    @State private var alert: AlertInfo?
     var viewModel: ChooseSessionTypeViewModel
     var sessionSynchronizer: SessionSynchronizer
     @EnvironmentObject private var sdSyncController: SDSyncController
@@ -23,6 +24,8 @@ struct ChooseSessionTypeView: View {
     @EnvironmentObject var selectedSection: SelectSection
     @EnvironmentObject private var emptyDashboardButtonTapped: EmptyDashboardButtonTapped
     @EnvironmentObject private var finishAndSyncButtonTapped: FinishAndSyncButtonTapped
+    @EnvironmentObject var networkChecker: NetworkChecker
+    
     var shouldGoToChooseSessionScreen: Bool {
         (tabSelection.selection == .createSession && emptyDashboardButtonTapped.mobileWasTapped) ? true : false
     }
@@ -150,14 +153,16 @@ struct ChooseSessionTypeView: View {
                         Spacer()
                         moreInfo
                     }
-                    HStack(spacing: 25) {
+                    HStack(spacing: 35) {
                         fixedSessionButton
                         mobileSessionButton
                     }
+                    Spacer()
                     if featureFlagsViewModel.enabledFeatures.contains(.sdCardSync) {
-                        Text("or")
+                        orLabel
                         sdSyncButton
                     }
+                    Spacer()
                 }
                 Spacer()
             }
@@ -167,6 +172,7 @@ struct ChooseSessionTypeView: View {
                 Color.aircastingBackground.opacity(0.25)
                     .ignoresSafeArea()
             )
+            .alert(item: $alert, content: { $0.makeAlert() })
         }
     }
 
@@ -184,6 +190,12 @@ struct ChooseSessionTypeView: View {
 
     var recordNewLabel: some View {
         Text(Strings.ChooseSessionTypeView.recordNew)
+            .font(Fonts.boldHeading3)
+            .foregroundColor(.aircastingDarkGray)
+    }
+    
+    var orLabel: some View {
+        Text(Strings.ChooseSessionTypeView.orLabel)
             .font(Fonts.boldHeading3)
             .foregroundColor(.aircastingDarkGray)
     }
@@ -224,8 +236,10 @@ struct ChooseSessionTypeView: View {
     }
     
     var sdSyncButton: some View {
-        Button("Sync data from AirBeam3") {
-            startSync = true
+        Button(action: {
+            networkChecker.connectionAvailable ? startSync.toggle() : (alert = InAppAlerts.noNetworkAlert())
+        }) {
+            syncButtonLabel
         }
     }
     
@@ -248,8 +262,8 @@ struct ChooseSessionTypeView: View {
                 .foregroundColor(.aircastingGray)
                 .multilineTextAlignment(.leading)
         }
-        .padding()
-        .frame(maxWidth: 180, maxHeight: 145)
+        .padding(15)
+        .frame(maxWidth: 147, maxHeight: 145)
         .background(Color.white)
         .shadow(color: Color.shadow, radius: 9, x: 0, y: 1)
     }
@@ -264,8 +278,24 @@ struct ChooseSessionTypeView: View {
                 .foregroundColor(.aircastingGray)
                 .multilineTextAlignment(.leading)
         }
-        .padding()
-        .frame(maxWidth: 180, maxHeight: 145)
+        .padding(15)
+        .frame(maxWidth: 147, maxHeight: 145)
+        .background(Color.white)
+        .shadow(color: Color.shadow, radius: 9, x: 0, y: 1)
+    }
+    
+    var syncButtonLabel: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text(Strings.ChooseSessionTypeView.syncTitle)
+                .font(Fonts.boldHeading1)
+                .foregroundColor(.accentColor)
+            Text(Strings.ChooseSessionTypeView.syncDescription)
+                .font(Fonts.muliHeading3)
+                .foregroundColor(.aircastingGray)
+        }
+        .multilineTextAlignment(.leading)
+        .padding(15)
+        .frame(maxWidth: 147, maxHeight: 145)
         .background(Color.white)
         .shadow(color: Color.shadow, radius: 9, x: 0, y: 1)
     }

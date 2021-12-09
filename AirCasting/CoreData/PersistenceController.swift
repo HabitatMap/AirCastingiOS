@@ -124,7 +124,7 @@ class PersistenceController: ObservableObject {
     private func finishMobileSessions() {
         container.performBackgroundTask { context in
             let request: NSFetchRequest<SessionEntity> = SessionEntity.fetchRequest()
-            request.predicate = NSPredicate(format: "type == %@ && status IN %@", SessionType.mobile.rawValue, [SessionStatus.RECORDING, .DISCONNECTED, .NEW].map(\.rawValue))
+            request.predicate = NSPredicate(format: "type == %@ && status IN %@ || deviceType == %@ && status IN %@", SessionType.mobile.rawValue, [SessionStatus.RECORDING, .NEW].map(\.rawValue), DeviceType.MIC.rawValue, [SessionStatus.DISCONNECTED.rawValue])
             let sessions = try! context.fetch(request)
             if sessions.isEmpty {
                 return

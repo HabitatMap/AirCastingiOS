@@ -379,17 +379,16 @@ struct Strings {
         static let editButton: String = "Edit recording"
         static let shareButton: String = "Share session"
         static let deleteButton: String = "Delete session"
-        static let alertTitle: String = "No internet connection"
-        static let alertMessage: String = "You need to have internet connection to edit session data"
-        static let confirmAlert: String = "Got it!"
         static let stopRecordingButton: String = "Finish recording session"
         static let enterStandaloneModeButton: String = "Enter standalone mode"
         static let finishAlertTitle: String = "Finish recording "
         static let finishAlertTitle_2: String = "this session"
         static let finishAlertTitle_3: String = "?"
+        static let finishAlertTitle_3_SYNC: String = "and sync from SD card?"
         static let finishAlertMessage_1: String = "The session will be moved to "
         static let finishAlertMessage_2: String = "Mobile Dormant"
         static let finishAlertMessage_3: String = " tab and you won't be able to add new measurement to it."
+        static let finishAlertMessage_4: String = "\nSD card will be cleared afterwards"
         static let finishAlertButton: String = "Finish recording"
         static let airBeam3: String = "AirBeam3"
         static let airBeam2: String = "AirBeam2"
@@ -411,6 +410,10 @@ struct Strings {
         static let fixedLabel_2: String = "for measuring in one place"
         static let mobileLabel_1: String = "Mobile session"
         static let mobileLabel_2: String = "for moving\naround"
+        static let orLabel: String = "or"
+        static let syncTitle: String = "Sync data from \nAirBeam3"
+        static let syncDescription: String = "if you recorded with AirBeam3"
+        
     }
 
     enum MoreInfoPopupView {
@@ -514,8 +517,7 @@ struct Strings {
     }
 
     enum SyncingABView {
-        static let title: String = "Syncing..."
-        static let message: String = "Keep your AirBeam close to your iPhone. Plug in your AirBeam to speed up the sync."
+        static let message: String = "Keep your AirBeam unplugged and close to your iPhone"
         static let alertTitle: String = "Failed to sync"
         static let alertMessage: String = "Try again later"
     }
@@ -536,5 +538,17 @@ struct Strings {
 
     enum DefaultDeleteSessionViewModel {
         static let all: String = "All"
+    }
+    
+    enum DeviceHandler {
+        static let alertTitle = "Not supported device"
+        static let alertMessage = "To use the AirBeam3 in standalone mode and sync the SD card, an iPhone8 or higher is required"
+        static let continueText = "Continue"
+    }
+    
+    enum NetworkAlert {
+        static let alertTitle: String = "No internet connection"
+        static let alertMessage: String = "You need to have internet connection to continue"
+        static let confirmAlert: String = "Got it!"
     }
 }

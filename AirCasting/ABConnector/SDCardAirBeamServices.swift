@@ -4,11 +4,6 @@
 import CoreBluetooth
 import CoreMIDI
 
-enum SDCardData {
-    case chunk(SDCardDataChunk)
-    case metadata(SDCardMetaData)
-}
-
 enum SDCardSyncError: Error {
     case cantDecodePayload
     case wrongOrderOfReceivedPayload
@@ -18,15 +13,20 @@ enum SDCardSyncError: Error {
 struct SDCardDataChunk {
     let payload: String
     let sessionType: SDCardSessionType
+    let progress: SDCardProgress
 }
 
-struct SDCardMetaData {
-    let sessionType: SDCardSessionType
-    let measurementsCount: Int
+struct SDCardProgress {
+    let received: Int
+    let expected: Int
+}
+
+struct SDCardDownloadSummary {
+    let expectedMeasurementsCount: [SDCardSessionType: Int]
 }
 
 protocol SDCardAirBeamServices {
-    func downloadData(from peripheral: CBPeripheral, progress: @escaping (SDCardData) -> Void, completion: @escaping (Result<Void, Error>) -> Void)
+    func downloadData(from peripheral: CBPeripheral, progress: @escaping (SDCardDataChunk) -> Void, completion: @escaping (Result<SDCardDownloadSummary, Error>) -> Void)
     func clearSDCard(of peripheral: CBPeripheral, completion: @escaping (Result<Void, Error>) -> Void)
 }
 
@@ -47,10 +47,10 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
         self.bluetoothManager = bluetoothManager
     }
     
-    func downloadData(from peripheral: CBPeripheral, progress: @escaping (SDCardData) -> Void, completion: @escaping (Result<Void, Error>) -> Void) {
+    func downloadData(from peripheral: CBPeripheral, progress: @escaping (SDCardDataChunk) -> Void, completion: @escaping (Result<SDCardDownloadSummary, Error>) -> Void) {
+        var expectedMeasurementsCount: [SDCardSessionType: Int] = [:]
+        var receivedMeasurementsCount: [SDCardSessionType: Int] = [:]
         var currentSessionType: SDCardSessionType?
-        var currentSessionTypeReceived: Int = 0
-        var currentSessionTypeExpected: Int = 0
         metadataCharacteristicObserver = bluetoothManager.subscribeToCharacteristic(DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID) { result in
             switch result {
             case .success(let data):
@@ -61,7 +61,7 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
                 currentSessionType = currentSessionType.next
                 Log.info("[SD CARD SYNC] " + payload)
                 if payload == "SD_SYNC_FINISH" {
-                    self.finishSync { completion(.success(())) }
+                    self.finishSync { completion(.success(.init(expectedMeasurementsCount: expectedMeasurementsCount))) }
                     Log.info("[SD CARD SYNC] Sync finished.")
                     return
                 }
@@ -77,9 +77,7 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
                 
                 /* It can happen, that in the given airbeam some type of session was never recorded. In that case, metadata format will be different
                  and in that case we want to set currentSessionTypeExpected to 0 */
-                currentSessionTypeExpected = measurementsCount ?? 0
-                
-                progress(.metadata(SDCardMetaData(sessionType: currentSessionType!, measurementsCount: currentSessionTypeExpected)))
+                expectedMeasurementsCount[currentSessionType!] = measurementsCount ?? 0
             case .failure(let error):
                 Log.warning("Error while receiving metadata from SD card: \(error.localizedDescription)")
                 self.finishSync { completion(.failure(error)) }
@@ -95,8 +93,16 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
                     self.finishSync { completion(.failure(SDCardSyncError.wrongOrderOfReceivedPayload)) }
                     return
                 }
-                progress(.chunk(SDCardDataChunk(payload: payload, sessionType: sessionType)))
+                receivedMeasurementsCount[sessionType, default: 0] += Constants.SDCardSync.numberOfMeasurementsInDataChunk
                 
+                guard let expectedMeasurementsCount = expectedMeasurementsCount[sessionType], expectedMeasurementsCount != 0 else {
+                    Log.error("[SD SYNC] Received data for session type which should have 0 measurements")
+                    return
+                }
+                
+                let receivedMeasurementsNumber = receivedMeasurementsCount[sessionType]! < expectedMeasurementsCount ? receivedMeasurementsCount[sessionType]! : expectedMeasurementsCount
+                let progressFraction = SDCardProgress(received: receivedMeasurementsNumber, expected: expectedMeasurementsCount)
+                progress(SDCardDataChunk(payload: payload, sessionType: sessionType, progress: progressFraction))
 
             case .failure(let error):
                 Log.warning("Error while receiving data from SD card: \(error.localizedDescription)")
@@ -131,7 +137,7 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
         }
     }
     
-    private func finishSync(completion: () -> Void) {
+    func finishSync(completion: () -> Void) {
         self.bluetoothManager.unsubscribeCharacteristicObserver(self.dataCharacteristicObserver!)
         self.bluetoothManager.unsubscribeCharacteristicObserver(self.metadataCharacteristicObserver!)
         completion()

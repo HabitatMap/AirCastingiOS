@@ -87,7 +87,7 @@ extension ClearingSDCardView {
     
     var navigationLink: some View {
         NavigationLink(
-            destination: SDSyncCompleteView(creatingSessionFlowContinues: $creatingSessionFlowContinues, isSDClearProcess: viewModel.isSDClearProcess),
+            destination: SDSyncCompleteView(viewModel: SDSyncCompleteViewModelDefault(), creatingSessionFlowContinues: $creatingSessionFlowContinues, isSDClearProcess: viewModel.isSDClearProcess),
             isActive: $viewModel.presentNextScreen,
             label: {
                 EmptyView()

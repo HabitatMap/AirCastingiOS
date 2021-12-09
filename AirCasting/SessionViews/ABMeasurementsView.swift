@@ -7,13 +7,12 @@ enum MeasurementPresentationStyle {
 }
 
 struct ABMeasurementsView<VM: SyncingMeasurementsViewModel>: View {
-    var viewModelProvider: () -> VM
     @ObservedObject var session: SessionEntity
     @Binding var isCollapsed: Bool
     @Binding var selectedStream: MeasurementStreamEntity?
     var thresholds: [SensorThreshold]
     let measurementPresentationStyle: MeasurementPresentationStyle
-    @State private var viewModel: VM?
+    @StateObject var viewModel: VM
     
     var body: some View {
         ZStack {
@@ -26,15 +25,12 @@ struct ABMeasurementsView<VM: SyncingMeasurementsViewModel>: View {
                                     measurementPresentationStyle: measurementPresentationStyle)
             }
         }
-        .onAppear {
-            viewModel = viewModelProvider()
-        }
     }
 }
 
 struct _ABMeasurementsView: View {
     
-    @ObservedObject var measurementsViewModel: DefaultSyncingMeasurementsViewModel
+    @StateObject var measurementsViewModel: DefaultSyncingMeasurementsViewModel
     @ObservedObject var session: SessionEntity
     @Binding var isCollapsed: Bool
     @Binding var selectedStream: MeasurementStreamEntity?

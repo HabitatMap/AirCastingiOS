@@ -4,7 +4,8 @@
 import AirCastingStyling
 import SwiftUI
 
-struct SDSyncCompleteView: View {
+struct SDSyncCompleteView<VM: SDSyncCompleteViewModel>: View {
+    @StateObject var viewModel: VM
     @Binding var creatingSessionFlowContinues: Bool
     @EnvironmentObject private var tabSelection: TabBarSelection
     var isSDClearProcess: Bool

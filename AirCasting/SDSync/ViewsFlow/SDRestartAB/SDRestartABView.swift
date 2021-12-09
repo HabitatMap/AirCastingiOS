@@ -26,10 +26,7 @@ struct SDRestartABView<VM: SDRestartABViewModel>: View {
             continueButton
             Spacer()
         }
-        .background(
-            Group {
-                selectDeviceLink
-            })
+        .background(selectDeviceLink)
         .padding()
         .onAppear(perform: { sessionContext.deviceType = .AIRBEAM3 })
     }
@@ -57,7 +54,7 @@ extension SDRestartABView {
     
     var continueButton: some View {
         Button {
-            viewModel.presentNextScreen.toggle()
+            viewModel.continueSyncFlow()
         } label: {
             Text(Strings.ABConnectedView.continueButton)
         }.buttonStyle(BlueButtonStyle())

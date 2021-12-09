@@ -10,10 +10,11 @@ import SwiftUI
 struct SyncingABView<VM: SDSyncViewModel>: View {
     @Environment(\.presentationMode) var presentationMode
     @StateObject var viewModel: VM
+    @State var progressLabel: String?
     @Binding var creatingSessionFlowContinues: Bool
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 40) {
+        VStack(spacing: 40) {
             ProgressView(value: 0.7)
             Spacer()
             ZStack(alignment: Alignment(horizontal: .trailing, vertical: .bottom), content: {
@@ -31,13 +32,7 @@ struct SyncingABView<VM: SDSyncViewModel>: View {
         }
         .padding()
         .background(navigationLink)
-        .onReceive(viewModel.isSyncCompleted, perform: { isConnected in
-            viewModel.presentNextScreen = isConnected
-        })
-        .onReceive(viewModel.shouldDismiss, perform: { dismiss in
-            viewModel.presentAlert = dismiss
-        })
-        .alert(isPresented: $viewModel.presentAlert, content: { connectionTimeOutAlert })
+        .alert(isPresented: $viewModel.presentFailedSyncAlert, content: { connectionTimeOutAlert })
         .onAppear(perform: {
             /* App is pushing the next view before this view is fully loaded.
              It resulted with showing next view and going back to this one.
@@ -57,7 +52,7 @@ extension SyncingABView {
     }
     
     var titleLabel: some View {
-        Text(Strings.SyncingABView.title)
+        Text(progressLabel ?? "")
             .font(Fonts.boldTitle3)
             .foregroundColor(.accentColor)
     }
@@ -89,7 +84,7 @@ extension SyncingABView {
     
     var navigationLink: some View {
         NavigationLink(
-            destination: SDSyncCompleteView(creatingSessionFlowContinues: $creatingSessionFlowContinues, isSDClearProcess: false),
+        destination: SDSyncCompleteView(viewModel: SDSyncCompleteViewModelDefault(), creatingSessionFlowContinues: $creatingSessionFlowContinues, isSDClearProcess: false),
             isActive: $viewModel.presentNextScreen,
             label: {
                 EmptyView()
