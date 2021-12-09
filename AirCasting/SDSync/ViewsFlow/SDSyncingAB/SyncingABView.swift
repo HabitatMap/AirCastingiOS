@@ -32,6 +32,9 @@ struct SyncingABView<VM: SDSyncViewModel>: View {
         }
         .padding()
         .background(navigationLink)
+        .onReceive(viewModel.progress, perform: { newProgress in
+            self.progressLabel = newProgress?.progressLabel()
+        })
         .alert(isPresented: $viewModel.presentFailedSyncAlert, content: { connectionTimeOutAlert })
         .onAppear(perform: {
             /* App is pushing the next view before this view is fully loaded.
