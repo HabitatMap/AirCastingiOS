@@ -26,7 +26,7 @@ struct SDRestartABView<VM: SDRestartABViewModel>: View {
             continueButton
             Spacer()
         }
-        .background(navigationLink)
+        .background(continueToNextView)
         .padding()
         .onAppear(perform: { sessionContext.deviceType = .AIRBEAM3 })
     }
@@ -54,15 +54,15 @@ extension SDRestartABView {
     
     var continueButton: some View {
         Button {
-            viewModel.presentNextScreen = true
+            viewModel.continueSyncFlow()
         } label: {
             Text(Strings.ABConnectedView.continueButton)
         }.buttonStyle(BlueButtonStyle())
     }
     
-    var navigationLink: some View {
+    var continueToNextView: some View {
         NavigationLink(
-            destination:  SelectPeripheralView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: viewModel.urlProvider, syncMode: true),
+            destination: SelectPeripheralView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: viewModel.urlProvider, syncMode: true),
             isActive: $viewModel.presentNextScreen,
             label: {
                 EmptyView()
