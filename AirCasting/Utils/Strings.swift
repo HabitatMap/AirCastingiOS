@@ -510,6 +510,12 @@ struct Strings {
         static let title: String = "Success"
         static let message: String = "Sessions were updated successfully"
     }
+    
+    enum UnplugAirbeamView {
+        static let title: String = "Unplug your AirBeam"
+        static let message: String = "Keep it unplugged for the duration of the sync."
+        static let continueButton: String = "Continue"
+    }
 
     enum SDRestartABView {
         static let title: String = "Restart your AirBeam"

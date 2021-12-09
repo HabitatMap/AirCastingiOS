@@ -1,10 +1,10 @@
-// Created by Lunar on 01/12/2021.
+// Created by Lunar on 08/12/2021.
 //
 
 import AirCastingStyling
 import SwiftUI
 
-struct SDRestartABView<VM: SDRestartABViewModel>: View {
+struct UnplugABView<VM: UnplugABViewModel>: View {
     @StateObject var viewModel: VM
     @Binding var creatingSessionFlowContinues: Bool
     
@@ -14,7 +14,7 @@ struct SDRestartABView<VM: SDRestartABViewModel>: View {
             Spacer()
             HStack() {
                 Spacer()
-                restartImage
+                unplugImage
                 Spacer()
             }
             Spacer()
@@ -25,45 +25,53 @@ struct SDRestartABView<VM: SDRestartABViewModel>: View {
             continueButton
             Spacer()
         }
-        .background(selectDeviceLink)
+        .background(navigationLink)
         .padding()
     }
 }
 
-extension SDRestartABView {
+extension UnplugABView {
     
-    var restartImage: some View {
-        Image("2-power")
+    var unplugImage: some View {
+        Image("airbeam")
             .resizable()
             .aspectRatio(contentMode: .fit)
     }
     
     var titleLabel: some View {
-        Text(Strings.SDRestartABView.title)
+        Text(Strings.UnplugAirbeamView.title)
             .font(Fonts.boldTitle3)
             .foregroundColor(.accentColor)
     }
     
     var messageLabel: some View {
-        Text(Strings.SDRestartABView.message)
+        Text(Strings.UnplugAirbeamView.message)
             .font(Fonts.regularHeading1)
             .foregroundColor(.aircastingGray)
     }
     
     var continueButton: some View {
         Button {
-            viewModel.continueSyncFlow()
+            viewModel.continueButtonTapped()
         } label: {
-            Text(Strings.ABConnectedView.continueButton)
+            Text(Strings.UnplugAirbeamView.continueButton)
         }.buttonStyle(BlueButtonStyle())
     }
-
-    var selectDeviceLink: some View {
+    
+    var navigationLink: some View {
         NavigationLink(
-            destination: SelectPeripheralView(SDClearingRouteProcess: viewModel.isSDClearProcess, creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: viewModel.urlProvider, syncMode: !viewModel.isSDClearProcess),
-            isActive: $viewModel.presentNextScreen,
+            destination: SDRestartABView(viewModel: SDRestartABViewModelDefault(urlProvider: viewModel.urlProvider), creatingSessionFlowContinues: $creatingSessionFlowContinues),
+            isActive: .init(get: { viewModel.presentNextScreen }, set: { _ in }),
             label: {
                 EmptyView()
             })
     }
 }
+
+#if DEBUG
+struct UnplugAirBeamView_Previews: PreviewProvider {
+    static var previews: some View {
+        UnplugABView(viewModel: UnplugABViewModelDummy(), creatingSessionFlowContinues: .constant(false))
+    }
+}
+#endif
