@@ -516,6 +516,8 @@ struct Strings {
         static let message: String = "Keep your AirBeam unplugged and close to your iPhone"
         static let alertTitle: String = "Failed to sync"
         static let alertMessage: String = "Try again later"
+        static let startingSyncTitle: String = "Syncing..."
+        static let finishingSyncTitle: String = "Finalizing..."
     }
 
     enum SDSyncCompleteView {

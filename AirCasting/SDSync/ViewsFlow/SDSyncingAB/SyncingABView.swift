@@ -61,9 +61,9 @@ extension SyncingABView {
     var titleLabel: some View {
         VStack(alignment: .leading) {
             if viewModel.isDownloadingFinished {
-                Text("Finalizing...")
+                Text(Strings.SyncingABView.finishingSyncTitle)
             } else {
-                progressTitle != nil ? Text("Syncing " + progressTitle!.lowercased()) : Text("Syncing...")
+                progressTitle != nil ? Text("Syncing " + progressTitle!.lowercased()) : Text(Strings.SyncingABView.startingSyncTitle)
                 Text(progressCount ?? "")
             }
         }
