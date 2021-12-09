@@ -146,25 +146,26 @@ struct ChooseSessionTypeView: View {
             .background(Color.white)
             .padding(.horizontal)
         
-            VStack {
-                VStack(alignment: .leading, spacing: 15) {
-                    HStack {
-                        recordNewLabel
-                        Spacer()
-                        moreInfo
-                    }
-                    HStack(spacing: 35) {
-                        fixedSessionButton
-                        mobileSessionButton
-                    }
+            VStack(alignment: .leading, spacing: 15) {
+                HStack {
+                    recordNewLabel
                     Spacer()
-                    if featureFlagsViewModel.enabledFeatures.contains(.sdCardSync) {
-                        orLabel
-                        sdSyncButton
-                    }
+                    moreInfo
+                }
+                HStack {
+                    fixedSessionButton
                     Spacer()
+                    mobileSessionButton
                 }
                 Spacer()
+                if featureFlagsViewModel.enabledFeatures.contains(.sdCardSync) {
+                    orLabel
+                    GeometryReader { geometry in
+                        sdSyncButton
+                            .frame(width: geometry.size.width/1.4)
+                            .frame(height: geometry.size.height/)
+                    }
+                }
             }
             .padding(.vertical)
             .padding(.horizontal, 30)
@@ -263,7 +264,7 @@ struct ChooseSessionTypeView: View {
                 .multilineTextAlignment(.leading)
         }
         .padding(15)
-        .frame(maxWidth: 147, maxHeight: 145)
+        .frame(maxWidth: 147, minHeight: 145, alignment: .leading)
         .background(Color.white)
         .shadow(color: Color.shadow, radius: 9, x: 0, y: 1)
     }
@@ -279,23 +280,22 @@ struct ChooseSessionTypeView: View {
                 .multilineTextAlignment(.leading)
         }
         .padding(15)
-        .frame(maxWidth: 147, maxHeight: 145)
+        .frame(maxWidth: 147, minHeight: 145, alignment: .leading)
         .background(Color.white)
         .shadow(color: Color.shadow, radius: 9, x: 0, y: 1)
     }
     
     var syncButtonLabel: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text(Strings.ChooseSessionTypeView.syncTitle)
-                .font(Fonts.boldHeading1)
-                .foregroundColor(.accentColor)
-            Text(Strings.ChooseSessionTypeView.syncDescription)
-                .font(Fonts.muliHeading3)
-                .foregroundColor(.aircastingGray)
-        }
+            VStack(alignment: .leading, spacing: 10) {
+                Text(Strings.ChooseSessionTypeView.syncTitle)
+                    .font(Fonts.boldHeading1)
+                    .foregroundColor(.accentColor)
+                Text(Strings.ChooseSessionTypeView.syncDescription)
+                    .font(Fonts.muliHeading3)
+                    .foregroundColor(.aircastingGray)
+            }
         .multilineTextAlignment(.leading)
         .padding(15)
-        .frame(maxWidth: 147, maxHeight: 145)
         .background(Color.white)
         .shadow(color: Color.shadow, radius: 9, x: 0, y: 1)
     }
