@@ -160,13 +160,11 @@ struct ChooseSessionTypeView: View {
                 Spacer()
                 if featureFlagsViewModel.enabledFeatures.contains(.sdCardSync) {
                     orLabel
-                    GeometryReader { geometry in
-                        sdSyncButton
-                            .frame(width: geometry.size.width/1.4)
-                            .frame(height: geometry.size.height/)
-                    }
+                    sdSyncButton
                 }
+                Spacer()
             }
+            .padding(.bottom)
             .padding(.vertical)
             .padding(.horizontal, 30)
             .background(
@@ -254,48 +252,39 @@ struct ChooseSessionTypeView: View {
     }
     
     var fixedSessionLabel: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text(Strings.ChooseSessionTypeView.fixedLabel_1)
-                .font(Fonts.boldHeading1)
-                .foregroundColor(.accentColor)
-            Text(Strings.ChooseSessionTypeView.fixedLabel_2)
-                .font(Fonts.muliHeading3)
-                .foregroundColor(.aircastingGray)
-                .multilineTextAlignment(.leading)
-        }
-        .padding(15)
-        .frame(maxWidth: 147, minHeight: 145, alignment: .leading)
-        .background(Color.white)
-        .shadow(color: Color.shadow, radius: 9, x: 0, y: 1)
+        chooseSessionButton(title: Strings.ChooseSessionTypeView.fixedLabel_1,
+                            description: Strings.ChooseSessionTypeView.fixedLabel_2)
     }
     
     var mobileSessionLabel: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text(Strings.ChooseSessionTypeView.mobileLabel_1)
-                .font(Fonts.boldHeading1)
-                .foregroundColor(.accentColor)
-            Text(Strings.ChooseSessionTypeView.mobileLabel_2)
-                .font(Fonts.muliHeading3)
-                .foregroundColor(.aircastingGray)
-                .multilineTextAlignment(.leading)
-        }
-        .padding(15)
-        .frame(maxWidth: 147, minHeight: 145, alignment: .leading)
-        .background(Color.white)
-        .shadow(color: Color.shadow, radius: 9, x: 0, y: 1)
+        chooseSessionButton(title: Strings.ChooseSessionTypeView.mobileLabel_1,
+                            description: Strings.ChooseSessionTypeView.mobileLabel_2)
     }
     
     var syncButtonLabel: some View {
-            VStack(alignment: .leading, spacing: 10) {
-                Text(Strings.ChooseSessionTypeView.syncTitle)
-                    .font(Fonts.boldHeading1)
-                    .foregroundColor(.accentColor)
-                Text(Strings.ChooseSessionTypeView.syncDescription)
-                    .font(Fonts.muliHeading3)
-                    .foregroundColor(.aircastingGray)
-            }
+        chooseSessionButton(title: Strings.ChooseSessionTypeView.syncTitle,
+                            description: Strings.ChooseSessionTypeView.syncDescription)
+    }
+    
+}
+
+extension View {
+    func chooseSessionButton(title: String, description: String) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text(title)
+                .font(Fonts.boldHeading1)
+                .foregroundColor(.accentColor)
+            Text(description)
+                .font(Fonts.muliHeading3)
+                .foregroundColor(.aircastingGray)
+        }
         .multilineTextAlignment(.leading)
         .padding(15)
+        .frame(minWidth: (UIScreen.main.bounds.width / 2.5) < 147 ? (UIScreen.main.bounds.width / 2.5) : 147,
+               maxWidth: 147,
+               minHeight: (UIScreen.main.bounds.height) / 4.5 < 145 ? (UIScreen.main.bounds.height) : 145,
+               maxHeight: 145,
+               alignment: .leading)
         .background(Color.white)
         .shadow(color: Color.shadow, radius: 9, x: 0, y: 1)
     }
