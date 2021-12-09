@@ -42,6 +42,7 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
     
     private var dataCharacteristicObserver: AnyHashable?
     private var metadataCharacteristicObserver: AnyHashable?
+    private var clearCardCharacteristicObserver: AnyHashable?
     
     init(bluetoothManager: BluetoothManager) {
         self.bluetoothManager = bluetoothManager
@@ -112,27 +113,27 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
     }
     
     func clearSDCard(of peripheral: CBPeripheral, completion: @escaping (Result<Void, Error>) -> Void) {
-        metadataCharacteristicObserver = bluetoothManager.subscribeToCharacteristic(DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID) { result in
+        clearCardCharacteristicObserver = bluetoothManager.subscribeToCharacteristic(DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID) { result in
             switch result {
             case .success(let data):
                 guard let data = data, let payload = String(data: data, encoding: .utf8) else {
                     completion(.failure(SDCardSyncError.cantDecodePayload))
-                    self.bluetoothManager.unsubscribeCharacteristicObserver(self.metadataCharacteristicObserver!)
+                    self.bluetoothManager.unsubscribeCharacteristicObserver(self.clearCardCharacteristicObserver!)
                     return
                 }
                 Log.info("[SD CARD SYNC] " + payload)
                 if payload == "SD_DELETE_FINISH" {
                     completion(.success(()))
                     Log.info("[SD CARD SYNC] SD card cleared")
-                    self.bluetoothManager.unsubscribeCharacteristicObserver(self.metadataCharacteristicObserver!)
+                    self.bluetoothManager.unsubscribeCharacteristicObserver(self.clearCardCharacteristicObserver!)
                 } else {
                     Log.warning("[SD CARD SYNC] Wrong metadata for clearing sd card")
-                    self.bluetoothManager.unsubscribeCharacteristicObserver(self.metadataCharacteristicObserver!)
+                    self.bluetoothManager.unsubscribeCharacteristicObserver(self.clearCardCharacteristicObserver!)
                 }
             case .failure(let error):
                 Log.warning("Error while receiving metadata from SD card: \(error.localizedDescription)")
                 completion(.failure(error))
-                self.bluetoothManager.unsubscribeCharacteristicObserver(self.metadataCharacteristicObserver!)
+                self.bluetoothManager.unsubscribeCharacteristicObserver(self.clearCardCharacteristicObserver!)
             }
         }
     }
