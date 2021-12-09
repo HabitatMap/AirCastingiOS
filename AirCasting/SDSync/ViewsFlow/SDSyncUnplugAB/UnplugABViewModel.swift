@@ -26,6 +26,7 @@ class UnplugABViewModelDefault: UnplugABViewModel, ObservableObject {
     }
 }
 
+#if DEBUG
 class UnplugABViewModelDummy: UnplugABViewModel, ObservableObject {
     
     @Published var presentNextScreen: Bool = false
@@ -38,3 +39,4 @@ class UnplugABViewModelDummy: UnplugABViewModel, ObservableObject {
     
     func continueButtonTapped() { }
 }
+#endif

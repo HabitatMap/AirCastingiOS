@@ -30,6 +30,7 @@ class SettingsViewModelDefault: SettingsViewModel {
     }
 }
 
+#if DEBUG
 class DummySettingsViewModelDefault: SettingsViewModel {
     var sessionContext: CreateSessionContext = CreateSessionContext()
     
@@ -42,3 +43,4 @@ class DummySettingsViewModelDefault: SettingsViewModel {
     }
     
 }
+#endif
