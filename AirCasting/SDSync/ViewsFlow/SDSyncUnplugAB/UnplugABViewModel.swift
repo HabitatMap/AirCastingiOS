@@ -4,8 +4,9 @@
 import Foundation
 
 protocol UnplugABViewModel: ObservableObject {
-    var presentNextScreen: Bool { get set }
+    var presentNextScreen: Bool { get }
     var urlProvider: BaseURLProvider { get }
+    func continueButtonTapped()
 }
 
 class UnplugABViewModelDefault: UnplugABViewModel, ObservableObject {
@@ -15,6 +16,10 @@ class UnplugABViewModelDefault: UnplugABViewModel, ObservableObject {
     
     init(urlProvider: BaseURLProvider) {
         self.urlProvider = urlProvider
+    }
+    
+    func continueButtonTapped() {
+        presentNextScreen.toggle()
     }
 }
 
@@ -26,4 +31,6 @@ class UnplugABViewModelDummy: UnplugABViewModel, ObservableObject {
     init() {
         self.urlProvider = DummyURLProvider()
     }
+    
+    func continueButtonTapped() { }
 }

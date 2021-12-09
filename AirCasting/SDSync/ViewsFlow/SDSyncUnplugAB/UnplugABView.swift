@@ -52,7 +52,7 @@ extension UnplugABView {
     
     var continueButton: some View {
         Button {
-            viewModel.presentNextScreen = true
+            viewModel.continueButtonTapped()
         } label: {
             Text(Strings.UnplugAirbeamView.continueButton)
         }.buttonStyle(BlueButtonStyle())
@@ -61,15 +61,17 @@ extension UnplugABView {
     var navigationLink: some View {
         NavigationLink(
             destination: SDRestartABView(viewModel: SDRestartABViewModelDefault(urlProvider: viewModel.urlProvider), creatingSessionFlowContinues: $creatingSessionFlowContinues),
-            isActive: $viewModel.presentNextScreen,
+            isActive: .init(get: { viewModel.presentNextScreen }, set: { _ in }),
             label: {
                 EmptyView()
             })
     }
 }
 
+#if DEBUG
 struct UnplugAirBeamView_Previews: PreviewProvider {
     static var previews: some View {
         UnplugABView(viewModel: UnplugABViewModelDummy(), creatingSessionFlowContinues: .constant(false))
     }
 }
+#endif
