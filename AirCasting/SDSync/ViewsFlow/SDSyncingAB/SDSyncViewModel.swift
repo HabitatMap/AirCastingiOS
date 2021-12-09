@@ -49,15 +49,18 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
         self.airBeamConnectionController.connectToAirBeam(peripheral: peripheral) { success in
             guard success else { return }
             self.configureABforSync()
-            self.sdSyncController.syncFromAirbeam(self.peripheral, progress: { [weak self] newProgress in
+            self.sdSyncController.syncFromAirbeam(self.peripheral, progress: { [weak self] newStatus in
                 guard let self = self else { return }
-                DispatchQueue.main.async {
-                    let sessionType = self.stringForSessionType(newProgress.sessionType)
-                    self.progressValue = .init(title: sessionType, current: String(newProgress.progress.received), total: String(newProgress.progress.expected))
-                }
-            }, finalizing: {
-                DispatchQueue.main.async {
-                    self.isDownloadingFinished = true
+                switch newStatus {
+                case .inProgress(let progress):
+                    DispatchQueue.main.async {
+                        let sessionType = self.stringForSessionType(progress.sessionType)
+                        self.progressValue = .init(title: sessionType, current: String(progress.progress.received), total: String(progress.progress.expected))
+                    }
+                case .finalizing:
+                    DispatchQueue.main.async {
+                        self.isDownloadingFinished = true
+                    }
                 }
             }, completion: { [weak self] result in
                 //TODO: SD card should be cleared only if the files are not corrupted

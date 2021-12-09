@@ -9,9 +9,14 @@ enum SDCardSessionType: CaseIterable {
     case mobile, fixed, cellular
 }
 
-struct SDCardSyncProgess {
+struct SDCardSyncProgress {
     let sessionType: SDCardSessionType
     let progress: SDCardProgress
+}
+
+enum SDCardSyncStatus {
+    case inProgress(SDCardSyncProgress)
+    case finalizing
 }
 
 class SDSyncController: ObservableObject {
@@ -32,7 +37,7 @@ class SDSyncController: ObservableObject {
         self.sessionSynchronizer = sessionSynchronizer
     }
     
-    func syncFromAirbeam(_ airbeamConnection: CBPeripheral, progress: @escaping (SDCardSyncProgess) -> Void, finalizing: @escaping () -> Void, completion: @escaping (Bool) -> Void) {
+    func syncFromAirbeam(_ airbeamConnection: CBPeripheral, progress: @escaping (SDCardSyncStatus) -> Void, completion: @escaping (Bool) -> Void) {
         guard let sensorName = airbeamConnection.name else {
             Log.error("Unable to identify the device")
             completion(false)
@@ -43,14 +48,14 @@ class SDSyncController: ObservableObject {
             // Filesystem write
             self?.writingQueue.async {
                 self?.fileWriter.writeToFile(data: chunk.payload, sessionType: chunk.sessionType)
-                progress(.init(sessionType: chunk.sessionType, progress: chunk.progress))
+                progress(.inProgress(.init(sessionType: chunk.sessionType, progress: chunk.progress)))
             }
         }, completion: { [weak self] result in
             guard let self = self else { return }
             self.writingQueue.sync {
                 switch result {
                 case .success(let metadata):
-                    finalizing()
+                    progress(.finalizing)
                     let files = self.fileWriter.finishAndSave()
                     self.checkFilesForCorruption(files, expectedMeasurementsCount: metadata.expectedMeasurementsCount)
                     //TODO: Continue processing SD card data when files are not corrupted. Return an error and finish sync without clearing sd card if they are.
