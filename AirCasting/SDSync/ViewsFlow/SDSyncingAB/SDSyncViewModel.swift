@@ -54,7 +54,6 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
                 }
                 return
             }
-            self.configureABforSync()
             self.sdSyncController.syncFromAirbeam(self.peripheral, progress: { [weak self] newStatus in
                 guard let self = self else { return }
                 switch newStatus {
@@ -82,12 +81,6 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
                 }
             })
         }
-    }
-
-    private func configureABforSync() {
-        let configurator = AirBeam3Configurator(userAuthenticationSession: self.userAuthenticationSession,
-                                                peripheral: self.peripheral)
-        configurator.configureSDSync()
     }
 
     private func clearSDCard() {

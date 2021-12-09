@@ -54,6 +54,7 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
         var expectedMeasurementsCount: [SDCardSessionType: Int] = [:]
         var receivedMeasurementsCount: [SDCardSessionType: Int] = [:]
         var currentSessionType: SDCardSessionType?
+        configureABforSync(peripheral: peripheral)
         metadataCharacteristicObserver = bluetoothManager.subscribeToCharacteristic(DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID) { result in
             switch result {
             case .success(let data):
@@ -115,7 +116,7 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
     }
     
     func clearSDCard(of peripheral: CBPeripheral, completion: @escaping (Result<Void, Error>) -> Void) {
-        sendClearConfig(userAuthenticationSession: userAuthenticationSession, peripheral: peripheral)
+        sendClearConfig(peripheral: peripheral)
         clearCardCharacteristicObserver = bluetoothManager.subscribeToCharacteristic(DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID) { result in
             switch result {
             case .success(let data):
@@ -141,8 +142,14 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
         }
     }
     
-    private func sendClearConfig(userAuthenticationSession: UserAuthenticationSession, peripheral: CBPeripheral) {
-        let configurator = AirBeam3Configurator(userAuthenticationSession: userAuthenticationSession,
+    private func configureABforSync(peripheral: CBPeripheral) {
+        let configurator = AirBeam3Configurator(userAuthenticationSession: self.userAuthenticationSession,
+                                                peripheral: peripheral)
+        configurator.configureSDSync()
+    }
+    
+    private func sendClearConfig(peripheral: CBPeripheral) {
+        let configurator = AirBeam3Configurator(userAuthenticationSession: self.userAuthenticationSession,
                                                 peripheral: peripheral)
         configurator.clearSDCard()
     }
