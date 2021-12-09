@@ -9,13 +9,13 @@ struct StandaloneSessionCardView: View {
     let sessionStopperFactory: SessionStoppableFactory
     let sessionSynchronizer: SessionSynchronizer
     let measurementStreamStorage: MeasurementStreamStorage
-    @State private var showingFinishAlert = false
-    @State private var showingFinishAndSyncAlert = false
     @EnvironmentObject private var sdSyncController: SDSyncController
     @EnvironmentObject private var urlProvider: UserDefaultsBaseURLProvider
     @EnvironmentObject private var tabSelection: TabBarSelection
     @EnvironmentObject private var finishAndSyncButtonTapped: FinishAndSyncButtonTapped
-
+    @EnvironmentObject var networkChecker: NetworkChecker
+    @State private var alert: AlertInfo?
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
             header
@@ -49,46 +49,46 @@ struct StandaloneSessionCardView: View {
             Text(Strings.StandaloneSessionCardView.description)
                 .multilineTextAlignment(.center)
             finishAndSyncButton
-                .alert(isPresented: $showingFinishAndSyncAlert) {
-                    finishAndSyncAlert(sessionName: session.name)
-                }
             finishAndDontSyncButton
-                .alert(isPresented: $showingFinishAlert) {
-                    SessionViews.finishSessionAlert(sessionStopper: sessionStopperFactory.getSessionStopper(for: session), sessionName: session.name)
-                }
             .padding()
         }
+        .alert(item: $alert, content: { $0.makeAlert() })
         .padding()
     }
 
     var finishAndSyncButton: some View {
         Button(Strings.StandaloneSessionCardView.finishAndSyncButtonLabel) {
-            showingFinishAndSyncAlert = true
+            if networkChecker.connectionAvailable {
+                alert = InAppAlerts.finishAndSyncAlert(sessionName: session.name) {
+                    self.finishSessionAndSyncAlertAction()
+                }
+            } else {
+                alert = InAppAlerts.noNetworkAlert()
+            }
         }
         .buttonStyle(BlueButtonStyle())
     }
 
     var finishAndDontSyncButton: some View {
         Button(Strings.StandaloneSessionCardView.finishAndDontSyncButtonLabel) {
-            showingFinishAlert = true
+            alert = InAppAlerts.finishSessionAlert(sessionName: session.name) {
+                self.finishSessionAlertAction(sessionStopper: self.sessionStopperFactory.getSessionStopper(for: self.session))
+            }
         }
         .foregroundColor(.accentColor)
     }
 
-    func finishAndSyncAlert(sessionName: String?) -> Alert {
-        Alert(title: Text(Strings.SessionHeaderView.finishAlertTitle) +
-              Text(sessionName ?? Strings.SessionHeaderView.finishAlertTitle_2)
-              +
-              Text(" and sync from SD card?"),
-              message: Text(Strings.SessionHeaderView.finishAlertMessage_1) +
-              Text(Strings.SessionHeaderView.finishAlertMessage_2) +
-              Text(Strings.SessionHeaderView.finishAlertMessage_3) +
-              Text("\nSD card will be cleared afterwards"),
-              primaryButton: .default(Text(Strings.SessionHeaderView.finishAlertButton), action: {
-            finishAndSyncButtonTapped.finishAndSyncButtonWasTapped = true
-            tabSelection.selection = .createSession
-        }),
-              secondaryButton: .cancel())
+    func finishSessionAndSyncAlertAction() {
+        finishAndSyncButtonTapped.finishAndSyncButtonWasTapped = true
+        tabSelection.selection = .createSession
+    }
+    
+    func finishSessionAlertAction(sessionStopper: SessionStoppable) {
+        do {
+            try sessionStopper.stopSession()
+        } catch {
+            Log.info("error when stpoing session - \(error)")
+        }
     }
 }
 

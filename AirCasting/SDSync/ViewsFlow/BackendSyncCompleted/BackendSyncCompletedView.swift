@@ -7,7 +7,7 @@ import SwiftUI
 struct BackendSyncCompletedView<VM: BackendSyncCompletedViewModel>: View {
     @StateObject var viewModel: VM
     @Binding var creatingSessionFlowContinues: Bool
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 40) {
             ProgressView(value: 0.2)
@@ -25,43 +25,52 @@ struct BackendSyncCompletedView<VM: BackendSyncCompletedViewModel>: View {
             continueButton
             Spacer()
         }
-        .background(navigationLink)
+        .background(Group { restartNavigationLink; BTNavigationLink })
         .padding()
     }
 }
 
 private extension BackendSyncCompletedView {
-    
+
     var connectedImage: some View {
         Image("4-connected")
             .resizable()
             .aspectRatio(contentMode: .fit)
     }
-    
+
     var titleLabel: some View {
         Text(Strings.SDSyncSuccessView.title)
             .font(Fonts.boldTitle3)
             .foregroundColor(.accentColor)
     }
-    
+
     var messageLabel: some View {
         Text(Strings.SDSyncSuccessView.message)
             .font(Fonts.regularHeading1)
             .foregroundColor(.aircastingGray)
     }
-    
+
     var continueButton: some View {
         Button {
-            viewModel.presentNextScreen = true
+            viewModel.continueButtonTapped()
         } label: {
             Text(Strings.ABConnectedView.continueButton)
         }.buttonStyle(BlueButtonStyle())
     }
-    
-    var navigationLink: some View {
+
+    var restartNavigationLink: some View {
         NavigationLink(
-            destination: UnplugABView(viewModel: UnplugABViewModelDefault(urlProvider: viewModel.urlProvider), creatingSessionFlowContinues: $creatingSessionFlowContinues),
-            isActive: $viewModel.presentNextScreen,
+            destination: SDRestartABView(viewModel: SDRestartABViewModelDefault(urlProvider: viewModel.urlProvider), creatingSessionFlowContinues: $creatingSessionFlowContinues),
+            isActive: .init(get: { viewModel.presentRestartNextScreen }, set: { _ in }),
+            label: {
+                EmptyView()
+            })
+    }
+
+    var BTNavigationLink: some View {
+        NavigationLink(
+            destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sdSyncContinues: .constant(true), urlProvider: viewModel.urlProvider),
+            isActive: .init(get: { viewModel.presentBTNextScreen }, set: { _ in }),
             label: {
                 EmptyView()
             })
