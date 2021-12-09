@@ -42,7 +42,7 @@ struct TurnOnBluetoothView: View {
                 }
             )
            NavigationLink(
-                destination: SDRestartABView(viewModel: SDRestartABViewModelDefault(urlProvider: urlProvider), creatingSessionFlowContinues: $creatingSessionFlowContinues),
+                destination: UnplugABView(viewModel: UnplugABViewModelDefault(urlProvider: urlProvider), creatingSessionFlowContinues: $creatingSessionFlowContinues),
                 isActive: $presentRestartScreen,
                 label: {
                     EmptyView()
