@@ -71,11 +71,14 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
             }, completion: { [weak self] result in
                 //TODO: SD card should be cleared only if the files are not corrupted
                 guard let self = self else { return }
-                result ? self.clearSDCard() : nil
-                self.disconnectAirBeam()
-                DispatchQueue.main.async {
-                    self.presentNextScreen = result
-                    self.presentFailedSyncAlert = !result
+                if result {
+                    self.clearSDCard()
+                } else {
+                    DispatchQueue.main.async {
+                        self.presentNextScreen = false
+                        self.presentFailedSyncAlert = true
+                    }
+                    self.disconnectAirBeam()
                 }
             })
         }
@@ -88,9 +91,15 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
     }
 
     private func clearSDCard() {
-        let configurator = AirBeam3Configurator(userAuthenticationSession: self.userAuthenticationSession,
-                                                peripheral: self.peripheral)
-        configurator.clearSDCard()
+        self.sdSyncController.clearSDCard(self.peripheral) { result in
+            DispatchQueue.main.async {
+                self.presentNextScreen = true
+                if !result {
+                    Log.error("Couldn't clear SD card after sync")
+                }
+            }
+            self.disconnectAirBeam()
+        }
     }
 
     private func disconnectAirBeam() {
