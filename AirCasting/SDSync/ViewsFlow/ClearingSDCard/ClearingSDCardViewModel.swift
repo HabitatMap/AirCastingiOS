@@ -21,8 +21,6 @@ protocol ClearingSDCardViewModel: ObservableObject {
 import SwiftUI
 
 class ClearingSDCardViewModelDefault: ClearingSDCardViewModel, ObservableObject {
-    @Environment(\.presentationMode) var presentationMode
-    #warning("Think how to make view dismiss without SwiftUI")
     var shouldDismiss: Published<Bool>.Publisher { $shouldDismissValue }
     var isClearingCompleted: Published<Bool>.Publisher { $isClearingCompletedValue }
 
@@ -51,9 +49,8 @@ class ClearingSDCardViewModelDefault: ClearingSDCardViewModel, ObservableObject 
             guard success else {
                 DispatchQueue.main.async {
                     self.isClearingCompletedValue = false
-                    self.shouldDismissValue = true
-                    self.getAlert()
                     self.error = ClearingSDCardError.noConnection
+                    self.getAlert()
                 }
                 return
             }
@@ -61,9 +58,9 @@ class ClearingSDCardViewModelDefault: ClearingSDCardViewModel, ObservableObject 
                 DispatchQueue.main.async {
                     self.isClearingCompletedValue = result
                     self.presentNextScreen = result
-                    self.shouldDismissValue = !result
                     if !result {
                         self.error = ClearingSDCardError.noClearing
+                        self.getAlert()
                     }
                 }
             }
@@ -73,11 +70,15 @@ class ClearingSDCardViewModelDefault: ClearingSDCardViewModel, ObservableObject 
     private func getAlert() {
         switch error {
         case .undefined:
-            alert = InAppAlerts.failedSDClearingAlert(dismiss: self.presentationMode.wrappedValue.dismiss())
+            alert = InAppAlerts.failedSDClearingAlert(dismiss: dismissView())
         case .noConnection:
-            alert = InAppAlerts.connectionTimeoutAlert(dismiss: self.presentationMode.wrappedValue.dismiss())
+            alert = InAppAlerts.connectionTimeoutAlert(dismiss: dismissView())
         case .noClearing:
-            alert = InAppAlerts.failedClearingAlert(dismiss: self.presentationMode.wrappedValue.dismiss())
+            alert = InAppAlerts.failedSDClearingAlert(dismiss: dismissView())
         }
+    }
+    
+    private func dismissView() {
+        shouldDismissValue = true
     }
 }

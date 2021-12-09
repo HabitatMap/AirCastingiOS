@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ClearingSDCardView<VM: ClearingSDCardViewModel>: View {
+    @Environment(\.presentationMode) var presentationMode
     @StateObject var viewModel: VM
     @Binding var creatingSessionFlowContinues: Bool
     
@@ -29,6 +30,11 @@ struct ClearingSDCardView<VM: ClearingSDCardViewModel>: View {
             Spacer()
         }
         .alert(item: $viewModel.alert, content: { $0.makeAlert() })
+        .onReceive(viewModel.shouldDismiss, perform: { value in
+            if value {
+                presentationMode.wrappedValue.dismiss()
+            }
+        })
         .onAppear(perform: {
             viewModel.clearSDCardButtonTapped()
         })
