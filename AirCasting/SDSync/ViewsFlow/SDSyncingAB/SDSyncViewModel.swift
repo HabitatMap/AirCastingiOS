@@ -11,10 +11,7 @@ struct SDSyncProgressViewModel {
 }
 
 protocol SDSyncViewModel: ObservableObject {
-    var shouldDismiss: Published<Bool>.Publisher { get }
-    var isSyncCompleted: Published<Bool>.Publisher { get }
     var presentNextScreen: Bool { get set }
-    var presentAlert: Bool { get set }
     var isDownloadingFinished: Bool { get }
     var presentFailedSyncAlert: Bool { get set }
     var progress: Published<SDSyncProgressViewModel?>.Publisher { get }
@@ -23,12 +20,8 @@ protocol SDSyncViewModel: ObservableObject {
 
 class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
 
-    var shouldDismiss: Published<Bool>.Publisher { $shouldDismissValue }
-    var isSyncCompleted: Published<Bool>.Publisher { $isSyncCompletedValue }
     var progress: Published<SDSyncProgressViewModel?>.Publisher { $progressValue }
 
-    @Published private var shouldDismissValue: Bool = false
-    @Published private var isSyncCompletedValue: Bool = false
     @Published private var progressValue: SDSyncProgressViewModel?
     @Published var isDownloadingFinished: Bool = false
     @Published var presentNextScreen: Bool = false
@@ -72,9 +65,7 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
                 result ? self.clearSDCard() : nil
                 self.disconnectAirBeam()
                 DispatchQueue.main.async {
-                    self.isSyncCompletedValue = result
                     self.presentNextScreen = result
-                    self.shouldDismissValue = !result
                     self.presentFailedSyncAlert = !result
                 }
             })
