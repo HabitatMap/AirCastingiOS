@@ -16,7 +16,7 @@ struct TurnOnBluetoothView: View {
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @Binding var creatingSessionFlowContinues: Bool
     @Binding var sdSyncContinues: Bool
-    var isSDClearProcess: Bool
+    var isSDClearProcess: Bool = false
     
     let urlProvider: BaseURLProvider
     

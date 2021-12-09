@@ -69,7 +69,7 @@ private extension BackendSyncCompletedView {
     
     var BTNavigationLink: some View {
         NavigationLink(
-            destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sdSyncContinues: .constant(true), isSDClearProcess: false, urlProvider: viewModel.urlProvider),
+            destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sdSyncContinues: .constant(true), urlProvider: viewModel.urlProvider),
             isActive: .init(get: { viewModel.presentBTNextScreen }, set: { _ in }),
             label: {
                 EmptyView()

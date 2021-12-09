@@ -14,12 +14,15 @@ protocol ClearingSDCardViewModel: ObservableObject {
     var shouldDismiss: Published<Bool>.Publisher { get }
     var presentNextScreen: Bool { get set }
     var isSDClearProcess: Bool { get set }
-    func clearSDCard()
-    func getAlertTitle() -> String
-    func getAlertMessage() -> String
+    var alert: AlertInfo? { get set }
+    func clearSDCardButtonTapped()
 }
 
+import SwiftUI
+
 class ClearingSDCardViewModelDefault: ClearingSDCardViewModel, ObservableObject {
+    @Environment(\.presentationMode) var presentationMode
+    #warning("Think how to make view dismiss without SwiftUI")
     var shouldDismiss: Published<Bool>.Publisher { $shouldDismissValue }
     var isClearingCompleted: Published<Bool>.Publisher { $isClearingCompletedValue }
 
@@ -29,6 +32,7 @@ class ClearingSDCardViewModelDefault: ClearingSDCardViewModel, ObservableObject 
     private let airBeamConnectionController: AirBeamConnectionController
     private let sdSyncController: SDSyncController
     private var error = ClearingSDCardError.undefined
+    @Published var alert: AlertInfo?
     @Published private var isClearingCompletedValue: Bool = false
     @Published private var shouldDismissValue: Bool = false
     @Published var presentNextScreen: Bool = false
@@ -42,12 +46,13 @@ class ClearingSDCardViewModelDefault: ClearingSDCardViewModel, ObservableObject 
         self.sdSyncController = sdSyncController
     }
     
-    func clearSDCard() {
+    func clearSDCardButtonTapped() {
         self.airBeamConnectionController.connectToAirBeam(peripheral: peripheral) { success in
             guard success else {
                 DispatchQueue.main.async {
                     self.isClearingCompletedValue = false
                     self.shouldDismissValue = true
+                    self.getAlert()
                     self.error = ClearingSDCardError.noConnection
                 }
                 return
@@ -56,6 +61,7 @@ class ClearingSDCardViewModelDefault: ClearingSDCardViewModel, ObservableObject 
             self.sdSyncController.clearSDCard(self.peripheral) { result in
                 DispatchQueue.main.async {
                     self.isClearingCompletedValue = result
+                    self.presentNextScreen = result
                     self.shouldDismissValue = !result
                     if !result {
                         self.error = ClearingSDCardError.noClearing
@@ -65,25 +71,14 @@ class ClearingSDCardViewModelDefault: ClearingSDCardViewModel, ObservableObject 
         }
     }
     
-    func getAlertTitle() -> String {
+    private func getAlert() {
         switch error {
         case .undefined:
-            return Strings.ClearingSDCardView.failedClearingAlertTitle
+            alert = InAppAlerts.failedSDClearingAlert(dismiss: self.presentationMode.wrappedValue.dismiss())
         case .noConnection:
-            return Strings.AirBeamConnector.connectionTimeoutTitle
+            alert = InAppAlerts.connectionTimeoutAlert(dismiss: self.presentationMode.wrappedValue.dismiss())
         case .noClearing:
-            return Strings.ClearingSDCardView.failedClearingAlertTitle
-        }
-    }
-    
-    func getAlertMessage() -> String {
-        switch error {
-        case .undefined:
-            return Strings.ClearingSDCardView.failedClearingAlertMessage
-        case .noConnection:
-            return Strings.AirBeamConnector.connectionTimeoutDescription
-        case .noClearing:
-            return Strings.ClearingSDCardView.failedClearingAlertMessage
+            alert = InAppAlerts.failedClearingAlert(dismiss: self.presentationMode.wrappedValue.dismiss())
         }
     }
     
