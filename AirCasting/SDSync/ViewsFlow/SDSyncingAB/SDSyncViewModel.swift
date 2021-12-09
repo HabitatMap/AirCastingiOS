@@ -49,8 +49,8 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
         self.airBeamConnectionController.connectToAirBeam(peripheral: peripheral) { success in
             guard success else {
                 DispatchQueue.main.async {
-                    self.isSyncCompletedValue = success
-                    self.shouldDismissValue = !success
+                    self.presentNextScreen = success
+                    self.presentFailedSyncAlert = !success
                 }
                 return
             }

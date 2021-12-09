@@ -57,7 +57,6 @@ class ClearingSDCardViewModelDefault: ClearingSDCardViewModel, ObservableObject 
                 }
                 return
             }
-            self.sendClearConfig()
             self.sdSyncController.clearSDCard(self.peripheral) { result in
                 DispatchQueue.main.async {
                     self.isClearingCompletedValue = result
@@ -80,11 +79,5 @@ class ClearingSDCardViewModelDefault: ClearingSDCardViewModel, ObservableObject 
         case .noClearing:
             alert = InAppAlerts.failedClearingAlert(dismiss: self.presentationMode.wrappedValue.dismiss())
         }
-    }
-    
-    private func sendClearConfig() {
-        let configurator = AirBeam3Configurator(userAuthenticationSession: self.userAuthenticationSession,
-                                                peripheral: self.peripheral)
-        configurator.clearSDCard()
     }
 }

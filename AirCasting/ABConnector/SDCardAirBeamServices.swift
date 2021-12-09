@@ -39,13 +39,15 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
     private let DOWNLOAD_FROM_SD_CARD_CHARACTERISTIC_UUID = CBUUID(string:"0000ffdf-0000-1000-8000-00805f9b34fb")
     
     private let bluetoothManager: BluetoothManager
+    private let userAuthenticationSession: UserAuthenticationSession
     
     private var dataCharacteristicObserver: AnyHashable?
     private var metadataCharacteristicObserver: AnyHashable?
     private var clearCardCharacteristicObserver: AnyHashable?
     
-    init(bluetoothManager: BluetoothManager) {
+    init(bluetoothManager: BluetoothManager, userAuthenticationSession: UserAuthenticationSession) {
         self.bluetoothManager = bluetoothManager
+        self.userAuthenticationSession = userAuthenticationSession
     }
     
     func downloadData(from peripheral: CBPeripheral, progress: @escaping (SDCardDataChunk) -> Void, completion: @escaping (Result<SDCardDownloadSummary, Error>) -> Void) {
@@ -113,6 +115,7 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
     }
     
     func clearSDCard(of peripheral: CBPeripheral, completion: @escaping (Result<Void, Error>) -> Void) {
+        sendClearConfig(userAuthenticationSession: userAuthenticationSession, peripheral: peripheral)
         clearCardCharacteristicObserver = bluetoothManager.subscribeToCharacteristic(DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID) { result in
             switch result {
             case .success(let data):
@@ -138,7 +141,13 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
         }
     }
     
-    func finishSync(completion: () -> Void) {
+    private func sendClearConfig(userAuthenticationSession: UserAuthenticationSession, peripheral: CBPeripheral) {
+        let configurator = AirBeam3Configurator(userAuthenticationSession: userAuthenticationSession,
+                                                peripheral: peripheral)
+        configurator.clearSDCard()
+    }
+    
+    private func finishSync(completion: () -> Void) {
         self.bluetoothManager.unsubscribeCharacteristicObserver(self.dataCharacteristicObserver!)
         self.bluetoothManager.unsubscribeCharacteristicObserver(self.metadataCharacteristicObserver!)
         completion()
