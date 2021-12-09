@@ -79,12 +79,6 @@ struct StandaloneSessionCardView: View {
     }
 
     func finishSessionAndSyncAlertAction() {
-        let sessionStopper = sessionStopperFactory.getSessionStopper(for: session)
-        do {
-            try sessionStopper.stopSession()
-        } catch {
-            Log.info("error when stpoing session - \(error)")
-        }
         finishAndSyncButtonTapped.finishAndSyncButtonWasTapped = true
         tabSelection.selection = .createSession
     }
