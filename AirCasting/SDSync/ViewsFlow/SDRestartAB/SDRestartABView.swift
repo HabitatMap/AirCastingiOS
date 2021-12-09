@@ -25,7 +25,7 @@ struct SDRestartABView<VM: SDRestartABViewModel>: View {
             continueButton
             Spacer()
         }
-        .background(continueToNextView)
+        .background(selectDeviceLink)
         .padding()
     }
 }
@@ -57,10 +57,10 @@ extension SDRestartABView {
             Text(Strings.ABConnectedView.continueButton)
         }.buttonStyle(BlueButtonStyle())
     }
-    
-    var continueToNextView: some View {
+
+    var selectDeviceLink: some View {
         NavigationLink(
-            destination: SelectPeripheralView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: viewModel.urlProvider, syncMode: true),
+            destination: SelectPeripheralView(SDClearingRouteProcess: viewModel.isSDClearProcess, creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: viewModel.urlProvider, syncMode: !viewModel.isSDClearProcess),
             isActive: $viewModel.presentNextScreen,
             label: {
                 EmptyView()

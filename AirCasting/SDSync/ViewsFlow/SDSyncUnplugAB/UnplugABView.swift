@@ -60,7 +60,7 @@ extension UnplugABView {
     
     var navigationLink: some View {
         NavigationLink(
-            destination: SDRestartABView(viewModel: SDRestartABViewModelDefault(urlProvider: viewModel.urlProvider), creatingSessionFlowContinues: $creatingSessionFlowContinues),
+            destination: SDRestartABView(viewModel: SDRestartABViewModelDefault(urlProvider: viewModel.urlProvider, isSDClearProcess: viewModel.isSDClearProcess), creatingSessionFlowContinues: $creatingSessionFlowContinues),
             isActive: .init(get: { viewModel.presentNextScreen }, set: { _ in }),
             label: {
                 EmptyView()

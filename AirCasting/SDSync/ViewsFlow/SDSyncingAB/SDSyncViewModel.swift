@@ -47,7 +47,13 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
 
     func connectToAirBeamAndSync() {
         self.airBeamConnectionController.connectToAirBeam(peripheral: peripheral) { success in
-            guard success else { return }
+            guard success else {
+                DispatchQueue.main.async {
+                    self.presentNextScreen = success
+                    self.presentFailedSyncAlert = !success
+                }
+                return
+            }
             self.configureABforSync()
             self.sdSyncController.syncFromAirbeam(self.peripheral, progress: { [weak self] newStatus in
                 guard let self = self else { return }

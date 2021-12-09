@@ -10,7 +10,9 @@ struct TurnOnLocationView: View {
     @State private var showAlert = false
     @State private var isTurnBluetoothOnLinkActive = false
     @State private var isMobileLinkActive = false
+    @State private var restartABLink = false
     @Binding var creatingSessionFlowContinues: Bool
+    var isSDClearProcess: Bool
     let viewModel: TurnOnLocationViewModel
     
     var body: some View {
@@ -34,6 +36,7 @@ struct TurnOnLocationView: View {
                 proceedToPowerABView
                 proceedToBluetoothView
                 proceedToSelectDeviceView
+                proceedToRestartABView
             }
         )
         .padding()
@@ -69,7 +72,7 @@ struct TurnOnLocationView: View {
                 if viewModel.checkIfBluetoothDenied() {
                     isTurnBluetoothOnLinkActive = true
                 } else {
-                    isPowerABLinkActive = true
+                    isSDClearProcess ? restartABLink.toggle() : isPowerABLinkActive.toggle()
                 }
             }
         }, label: {
@@ -90,7 +93,7 @@ struct TurnOnLocationView: View {
     }
     var proceedToBluetoothView: some View {
         NavigationLink(
-            destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sdSyncContinues: .constant(false), urlProvider: viewModel.passURLProvider),
+            destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sdSyncContinues: .constant(false), isSDClearProcess: isSDClearProcess, urlProvider: viewModel.passURLProvider),
             isActive: $isTurnBluetoothOnLinkActive,
             label: {
                 EmptyView()
@@ -100,6 +103,14 @@ struct TurnOnLocationView: View {
         NavigationLink(
             destination: SelectDeviceView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sdSyncContinues: .constant(false), urlProvider: viewModel.passURLProvider),
             isActive: $isMobileLinkActive,
+            label: {
+                EmptyView()
+            })
+    }
+    var proceedToRestartABView: some View {
+        NavigationLink(
+            destination: SDRestartABView(viewModel: SDRestartABViewModelDefault(urlProvider: viewModel.passURLProvider, isSDClearProcess: isSDClearProcess), creatingSessionFlowContinues: $creatingSessionFlowContinues),
+            isActive: $restartABLink,
             label: {
                 EmptyView()
             })

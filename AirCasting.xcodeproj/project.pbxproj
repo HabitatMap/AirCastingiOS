@@ -300,6 +300,9 @@
 		DDB44C252704AF830027176E /* AveragingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB44C242704AF830027176E /* AveragingService.swift */; };
 		DDBC156426A0799300982526 /* SystemSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBC156326A0799300982526 /* SystemSettings.swift */; };
 		DDBC992626A1652A00B0662E /* ForgotPasswordTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBC992526A1652A00B0662E /* ForgotPasswordTest.swift */; };
+		DDC3E954275E4C3A0066A5DF /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDC3E953275E4C3A0066A5DF /* SettingsViewModel.swift */; };
+		DDC3E957275E7B990066A5DF /* ClearingSDCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDC3E956275E7B990066A5DF /* ClearingSDCardView.swift */; };
+		DDC3E959275E7BA50066A5DF /* ClearingSDCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDC3E958275E7BA50066A5DF /* ClearingSDCardViewModel.swift */; };
 		DDC3E952275E37C90066A5DF /* SDSyncCompleteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDC3E951275E37C90066A5DF /* SDSyncCompleteViewModel.swift */; };
 		DDC5F5882719694800F1F9D8 /* ShadowImages.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDC5F5872719694800F1F9D8 /* ShadowImages.swift */; };
 		DDC5F58A271979F100F1F9D8 /* Fonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDC5F589271979F100F1F9D8 /* Fonts.swift */; };
@@ -644,6 +647,9 @@
 		DDB44C242704AF830027176E /* AveragingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AveragingService.swift; sourceTree = "<group>"; };
 		DDBC156326A0799300982526 /* SystemSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemSettings.swift; sourceTree = "<group>"; };
 		DDBC992526A1652A00B0662E /* ForgotPasswordTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordTest.swift; sourceTree = "<group>"; };
+		DDC3E953275E4C3A0066A5DF /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
+		DDC3E956275E7B990066A5DF /* ClearingSDCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearingSDCardView.swift; sourceTree = "<group>"; };
+		DDC3E958275E7BA50066A5DF /* ClearingSDCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearingSDCardViewModel.swift; sourceTree = "<group>"; };
 		DDC3E951275E37C90066A5DF /* SDSyncCompleteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSyncCompleteViewModel.swift; sourceTree = "<group>"; };
 		DDC5F5872719694800F1F9D8 /* ShadowImages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowImages.swift; sourceTree = "<group>"; };
 		DDC5F589271979F100F1F9D8 /* Fonts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fonts.swift; sourceTree = "<group>"; };
@@ -1171,6 +1177,7 @@
 			isa = PBXGroup;
 			children = (
 				ACD32A4E2600A8DD00818946 /* SettingsView.swift */,
+				DDC3E953275E4C3A0066A5DF /* SettingsViewModel.swift */,
 				B392DC322755F944002F0145 /* AppConfigurationView.swift */,
 				DD8C380D2689A55A00901FDF /* BackendSettingsView.swift */,
 				DD1C99C0267CBFCB00B786C4 /* MyAccountViewSignOut.swift */,
@@ -1607,6 +1614,7 @@
 				DD79554E2757ED9600631A78 /* BackendSyncCompleted */,
 				DD79554F2757F05100631A78 /* SDRestartAB */,
 				DD7955522757F28100631A78 /* SDSyncingAB */,
+				DDC3E955275E7B800066A5DF /* ClearingSDCard */,
 				DD7955532757F2A900631A78 /* SDSyncComplete */,
 			);
 			path = ViewsFlow;
@@ -1689,6 +1697,15 @@
 				DDBC992526A1652A00B0662E /* ForgotPasswordTest.swift */,
 			);
 			path = ForgotPasswordTests;
+			sourceTree = "<group>";
+		};
+		DDC3E955275E7B800066A5DF /* ClearingSDCard */ = {
+			isa = PBXGroup;
+			children = (
+				DDC3E956275E7B990066A5DF /* ClearingSDCardView.swift */,
+				DDC3E958275E7BA50066A5DF /* ClearingSDCardViewModel.swift */,
+			);
+			path = ClearingSDCard;
 			sourceTree = "<group>";
 		};
 		DDD24D9126A8568400D4A327 /* Controller */ = {
@@ -2032,6 +2049,7 @@
 				DD8AFE4F272886D700ED1CED /* ThresholdWitness.swift in Sources */,
 				B3F1447C26AE437E006A4612 /* OnErrorPublisher.swift in Sources */,
 				B3FD77B7267C94AF00E97CC2 /* DatabaseMeasurement.swift in Sources */,
+				DDC3E957275E7B990066A5DF /* ClearingSDCardView.swift in Sources */,
 				AC524A962615D8620061AD45 /* MeasurementStreamEntity.swift in Sources */,
 				ACDF803A26DCD75500584F55 /* SingleMeasurementView.swift in Sources */,
 				B32D08A2267A4949006C97ED /* LogErrorPublisher.swift in Sources */,
@@ -2113,6 +2131,7 @@
 				4F945EEE2649F3F5008A5B22 /* SessionCreator.swift in Sources */,
 				4F945EF02649F455008A5B22 /* AirBeamFixedWifiSessionCreator.swift in Sources */,
 				B30BAC132694AA3200AE0476 /* MeasurementsStatisticsController.swift in Sources */,
+				DDC3E954275E4C3A0066A5DF /* SettingsViewModel.swift in Sources */,
 				33769A5C2705B06F007D1EA7 /* ChartViewModel.swift in Sources */,
 				4F945EF02649F455008A5B22 /* AirBeamFixedWifiSessionCreator.swift in Sources */,
 				33BA3368266E4BCA00899343 /* MobilePeripheralSessionManager.swift in Sources */,
@@ -2251,6 +2270,7 @@
 				DD28047B26B3D7730060F55E /* BluetoothConnector.swift in Sources */,
 				331EA80A25E32094009DEFDB /* ConfirmCreatingSessionView.swift in Sources */,
 				DD430B082670FE6100F1BF2E /* GreenTextButtonStyle.swift in Sources */,
+				DDC3E959275E7BA50066A5DF /* ClearingSDCardViewModel.swift in Sources */,
 				DD8A36A726C3E76200C26725 /* PlacePicker.swift in Sources */,
 				AC049F872608B74C00398197 /* FixedSession.swift in Sources */,
 				B30BAC1B2694AA9C00AE0476 /* MeasurementsStatisticsDataSource.swift in Sources */,

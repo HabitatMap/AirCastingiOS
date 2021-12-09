@@ -14,6 +14,9 @@ struct Strings {
         static let hardwareDevelopers: String = "Hardware developers"
         static let about: String = "About AirCasting"
         static let keepScreenTitle = "Keep screen on"
+        static let clearSDTitle = "Clear SD card"
+        static let appInfoTitle = "AirCasting App v"
+        static let buildText = "build"
     }
 
     enum BackendSettings {
@@ -101,6 +104,7 @@ struct Strings {
         static let alertAccept: String = "Got it!"
         static let titleLabel: String = "Choose the device you'd like to record with"
         static let titleSyncLabel: String = "Select the device you'd like to sync"
+        static let titleSDClearLabel: String = "Select the device you'd like to clear"
         static let refreshButton: String = "Don't see a device? Refresh scanning."
         static let connectText: String = "Connect"
     }
@@ -529,6 +533,15 @@ struct Strings {
     enum SDSyncCompleteView {
         static let title: String = "Sync complete"
         static let message: String = "The data from your AirBeam3 was synchronized successfully to the app. The SD card was cleared."
+        static let SDClearTitle: String = "SD card cleared"
+        static let SDClearMessage: String = "SD inside your AirBeam was cleared sucesfully"
+    }
+    
+    enum ClearingSDCardView {
+        static let title: String = "Clearing SD card"
+        static let message: String = "This should take less then 10 seconds."
+        static let failedClearingAlertTitle: String = "Failed to clead SD card"
+        static let failedClearingAlertMessage: String = "Try again later"
     }
 
     enum DefaultDeleteSessionViewModel {
