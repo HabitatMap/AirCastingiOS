@@ -8,16 +8,11 @@ struct SDSyncProgressViewModel {
     let title: String
     let current: String
     let total: String
-
-    func progressLabel() -> String {
-        "Syncing " + title + ": " + "\(current)/\(total)"
-    }
 }
 
 protocol SDSyncViewModel: ObservableObject {
-    var shouldDismiss: Published<Bool>.Publisher { get }
-    var isSyncCompleted: Published<Bool>.Publisher { get }
     var presentNextScreen: Bool { get set }
+    var isDownloadingFinished: Bool { get }
     var presentFailedSyncAlert: Bool { get set }
     var progress: Published<SDSyncProgressViewModel?>.Publisher { get }
     func connectToAirBeamAndSync()
@@ -25,16 +20,13 @@ protocol SDSyncViewModel: ObservableObject {
 
 class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
 
-    var shouldDismiss: Published<Bool>.Publisher { $shouldDismissValue }
-    var isSyncCompleted: Published<Bool>.Publisher { $isSyncCompletedValue }
     var progress: Published<SDSyncProgressViewModel?>.Publisher { $progressValue }
 
-    @Published private var shouldDismissValue: Bool = false
-    @Published private var isSyncCompletedValue: Bool = false
     @Published private var progressValue: SDSyncProgressViewModel?
+    @Published var isDownloadingFinished: Bool = false
     @Published var presentNextScreen: Bool = false
     @Published var presentFailedSyncAlert: Bool = false
-    
+
     private let peripheral: CBPeripheral
     private let airBeamConnectionController: AirBeamConnectionController
     private let sdSyncController: SDSyncController
@@ -63,11 +55,18 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
                 return
             }
             self.configureABforSync()
-            self.sdSyncController.syncFromAirbeam(self.peripheral, progress: { [weak self] newProgress in
+            self.sdSyncController.syncFromAirbeam(self.peripheral, progress: { [weak self] newStatus in
                 guard let self = self else { return }
-                DispatchQueue.main.async {
-                    let sessionType = self.stringForSessionType(newProgress.sessionType)
-                    self.progressValue = .init(title: sessionType, current: String(newProgress.progress.received), total: String(newProgress.progress.expected))
+                switch newStatus {
+                case .inProgress(let progress):
+                    DispatchQueue.main.async {
+                        let sessionType = self.stringForSessionType(progress.sessionType)
+                        self.progressValue = .init(title: sessionType, current: String(progress.progress.received), total: String(progress.progress.expected))
+                    }
+                case .finalizing:
+                    DispatchQueue.main.async {
+                        self.isDownloadingFinished = true
+                    }
                 }
             }, completion: { [weak self] result in
                 //TODO: SD card should be cleared only if the files are not corrupted
@@ -75,9 +74,7 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
                 result ? self.clearSDCard() : nil
                 self.disconnectAirBeam()
                 DispatchQueue.main.async {
-                    self.isSyncCompletedValue = result
                     self.presentNextScreen = result
-                    self.shouldDismissValue = !result
                     self.presentFailedSyncAlert = !result
                 }
             })

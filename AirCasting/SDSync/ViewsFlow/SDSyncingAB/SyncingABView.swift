@@ -10,9 +10,10 @@ import SwiftUI
 struct SyncingABView<VM: SDSyncViewModel>: View {
     @Environment(\.presentationMode) var presentationMode
     @StateObject var viewModel: VM
-    @State var progressLabel: String?
+    @State var progressTitle: String?
+    @State var progressCount: String?
     @Binding var creatingSessionFlowContinues: Bool
-    
+
     var body: some View {
         VStack(spacing: 40) {
             ProgressView(value: 0.7)
@@ -32,6 +33,12 @@ struct SyncingABView<VM: SDSyncViewModel>: View {
         }
         .padding()
         .background(navigationLink)
+        .onReceive(viewModel.progress, perform: { newProgress in
+            if let progress = newProgress {
+                self.progressTitle = progress.title
+                self.progressCount = "\(progress.current)/\(progress.total)"
+            }
+        })
         .alert(isPresented: $viewModel.presentFailedSyncAlert, content: { connectionTimeOutAlert })
         .onAppear(perform: {
             /* App is pushing the next view before this view is fully loaded.
@@ -50,19 +57,26 @@ extension SyncingABView {
             .resizable()
             .aspectRatio(contentMode: .fit)
     }
-    
+
     var titleLabel: some View {
-        Text(progressLabel ?? "")
+        VStack(alignment: .leading) {
+            if viewModel.isDownloadingFinished {
+                Text(Strings.SyncingABView.finishingSyncTitle)
+            } else {
+                progressTitle != nil ? Text("Syncing " + progressTitle!.lowercased()) : Text(Strings.SyncingABView.startingSyncTitle)
+                Text(progressCount ?? "")
+            }
+        }
             .font(Fonts.boldTitle3)
             .foregroundColor(.accentColor)
     }
-    
+
     var messageLabel: some View {
         Text(Strings.SyncingABView.message)
             .font(Fonts.regularHeading1)
             .foregroundColor(.aircastingGray)
     }
-    
+
     var loader: some View {
         ZStack {
             Color.accentColor
@@ -73,7 +87,7 @@ extension SyncingABView {
                 .scaleEffect(2)
         }
     }
-    
+
     var connectionTimeOutAlert: Alert {
         Alert(title: Text(Strings.SyncingABView.alertTitle),
               message: Text(Strings.SyncingABView.alertMessage),
@@ -81,7 +95,7 @@ extension SyncingABView {
             presentationMode.wrappedValue.dismiss()
         }))
     }
-    
+
     var navigationLink: some View {
         NavigationLink(
         destination: SDSyncCompleteView(viewModel: SDSyncCompleteViewModelDefault(), creatingSessionFlowContinues: $creatingSessionFlowContinues, isSDClearProcess: false),
