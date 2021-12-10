@@ -37,11 +37,8 @@ final class SDSyncFileWritingService: SDSyncFileWriter {
             }
             return []
         }
-        let toReturn = SDCardSessionType.allCases.compactMap { type -> (URL, SDCardSessionType)? in
-            let url = fileURL(for: type)
-            guard fileHandles[url] != nil else { return nil }
-            return (url, type)
-        }
+        
+        let toReturn = [(fileURL(for: .mobile), SDCardSessionType.mobile), (fileURL(for: .fixed), SDCardSessionType.fixed)]
         flushBuffers()
         do {
             try closeFiles()

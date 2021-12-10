@@ -14,6 +14,11 @@ struct SDCardSyncProgress {
     let progress: SDCardProgress
 }
 
+struct SDCardCSVFile {
+    let url: URL
+    let expectedLinesCount: Int
+}
+
 enum SDCardSyncStatus {
     case inProgress(SDCardSyncProgress)
     case finalizing
@@ -57,24 +62,32 @@ class SDSyncController: ObservableObject {
                 case .success(let metadata):
                     progress(.finalizing)
                     let files = self.fileWriter.finishAndSave()
-                    self.checkFilesForCorruption(files, expectedMeasurementsCount: metadata.expectedMeasurementsCount)
-                    //TODO: Continue processing SD card data when files are not corrupted. Return an error and finish sync without clearing sd card if they are.
-                    if let mobileFileURL = files.first(where: { $0.1 == SDCardSessionType.mobile })?.0 {
-                        self.mobileSessionsSaver.saveDataToDb(fileURL: mobileFileURL, deviceID: sensorName) { result in
-                            switch result {
-                            case .success(let sessions):
-                                self.averagingService.averageMeasurements(for: sessions) {
-                                    Log.info("Averaging done")
-                                    self.onCurrentSyncEnd { self.startBackendSync() }
+                    
+                    //MARK: checking if files have the right number of rows and if rows have the right values
+                    self.checkFilesForCorruption(files, expectedMeasurementsCount: metadata.expectedMeasurementsCount) { fileValidationResult in
+                        switch fileValidationResult {
+                        case .success(let verifiedFiles):
+                            if let mobileFileURL = verifiedFiles.first(where: { $0.1 == SDCardSessionType.mobile })?.0 {
+                                self.mobileSessionsSaver.saveDataToDb(fileURL: mobileFileURL, deviceID: sensorName) { result in
+                                    switch result {
+                                    case .success(let sessions):
+                                        self.averagingService.averageMeasurements(for: sessions) {
+                                            Log.info("Averaging done")
+                                            self.onCurrentSyncEnd { self.startBackendSync() }
+                                        }
+                                        completion(true)
+                                    case .failure(let error):
+                                        Log.error("Failed to save sessions to database: \(error.localizedDescription)")
+                                        completion(false)
+                                    }
                                 }
+                            } else {
                                 completion(true)
-                            case .failure(let error):
-                                Log.error("Failed to save sessions to database: \(error.localizedDescription)")
-                                completion(false)
                             }
+                        case .failure(let error):
+                            Log.error(error.localizedDescription)
+                            completion(false)
                         }
-                    } else {
-                        completion(true)
                     }
                 case .failure: self.fileWriter.finishAndRemoveFiles(); completion(false)
                 }
@@ -108,13 +121,27 @@ class SDSyncController: ObservableObject {
         }
     }
     
-    private func checkFilesForCorruption(_ files: [(URL, SDCardSessionType)], expectedMeasurementsCount: [SDCardSessionType: Int]) {
-        let toValidate = files.map { file -> (URL, SDCardSessionType, Int) in
+    private func checkFilesForCorruption(_ files: [(URL, SDCardSessionType)], expectedMeasurementsCount: [SDCardSessionType: Int], completion: (Result<[(URL, SDCardSessionType)], Error>) -> Void) {
+        let toValidate = files.compactMap { file -> SDCardCSVFile in
             let fileURL = file.0
             let sessionType = file.1
-            let expectedMeasurementsCount = expectedMeasurementsCount[sessionType] ?? 0
-            return (fileURL, sessionType, expectedMeasurementsCount)
+            
+            if sessionType == .mobile {
+                return .init(url: fileURL, expectedLinesCount: expectedMeasurementsCount[.mobile] ?? 0)
+            } else {
+                let expectedFixed = expectedMeasurementsCount[.fixed] ?? 0
+                let expectedCellular = expectedMeasurementsCount[.cellular] ?? 0
+                return .init(url: fileURL, expectedLinesCount: expectedFixed + expectedCellular)
+            }
         }
-        self.fileValidator.validate(files: toValidate, completion: { _ in })
+        
+        self.fileValidator.validate(files: toValidate) { result in
+            switch result {
+            case .failure(let error):
+                completion(.failure(error))
+            case .success:
+                completion(.success(files))
+            }
+        }
     }
 }

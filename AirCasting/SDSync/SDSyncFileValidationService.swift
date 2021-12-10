@@ -8,29 +8,86 @@ enum SDCardValidationError: Error {
 }
 
 protocol SDSyncFileValidator {
-    func validate(files: [(URL, SDCardSessionType, expectedMeasurementsCount: Int)], completion: (Result<Void, SDCardValidationError>) -> Void)
+    func validate(files: [SDCardCSVFile], completion: (Result<Void, SDCardValidationError>) -> Void)
 }
 
 struct SDSyncFileValidationService: SDSyncFileValidator {
-    func validate(files: [(URL, SDCardSessionType, expectedMeasurementsCount: Int)], completion: (Result<Void, SDCardValidationError>) -> Void) {
-        files.forEach { file in
-            if !check(file) {
-                completion(.failure(SDCardValidationError.insufficientIntegrity))
-                return
-            }
-        }
-        completion(.success(()))
+    private let expectedFieldsCount = 13
+    private let acceptanceThreshold = 0.8
+    
+    private let fileLineReader: FileLineReader
+    
+    init(fileLineReader: FileLineReader) {
+        self.fileLineReader = fileLineReader
     }
     
-    func check(_ file: (URL, SDCardSessionType, expectedMeasurementsCount: Int)) -> Bool {
-        do {
-            let fileHandle = try FileHandle(forReadingFrom: file.0)
-        } catch {
+    func validate(files: [SDCardCSVFile], completion: (Result<Void, SDCardValidationError>) -> Void) {
+        var result = true
+        
+        for file in files {
+            if !check(file) {
+                result = false
+                break
+            }
+        }
+        Log.info("Files validated")
+        result ? completion(.success(())) : completion(.failure(SDCardValidationError.insufficientIntegrity))
+    }
+    
+    private func check(_ file: SDCardCSVFile) -> Bool {
+        guard let stats = calculateStats(file) else {
             return false
         }
+        return validateAcceptedCorruption(stats, file.expectedLinesCount)
+    }
+    
+    private func calculateStats(_ file: SDCardCSVFile) -> Stats? {
+        var allCount = 0
+        var corruptedCount = 0
+        do {
+            try self.fileLineReader.readLines(of: file.url, progress: { line in
+                switch line {
+                case .line(let content):
+                    if (lineIsCorrupted(content)) {
+                        corruptedCount += 1
+                    }
+                    
+                    allCount += 1
+                case .endOfFile:
+                    Log.info("Reached end of csv file")
+                }
+            })
+            
+            return Stats(allCount, corruptedCount)
+        } catch {
+            Log.error(error.localizedDescription)
+            return nil
+        }
+    }
+    
+    private func lineIsCorrupted(_ line: String) -> Bool {
+        let fields = line.split(separator: ",")
+        return !line.isEmpty && fields.count != expectedFieldsCount
+    }
+    
+    private func validateAcceptedCorruption(_ stats: Stats, _ expectedCount: Int) -> Bool {
+        if (expectedCount == 0) { return true }
         
-        //TODO: Implement checking in files has the right number of rows and if rows have right amount of values
+        let countThreshold = Double(expectedCount) * acceptanceThreshold
+        let corruptionThreshold = Double(expectedCount) * (1 - acceptanceThreshold)
         
-        return true
+        // checks if downloaded file has at least 80% of expected lines
+        // and if there is at most 20% of corrupted lines
+        return Double(stats.allCount) >= countThreshold && Double(stats.corruptedCount) < corruptionThreshold
+    }
+}
+
+fileprivate struct Stats {
+    var allCount: Int
+    var corruptedCount: Int
+    
+    init(_ allCount: Int, _ corruptedCount: Int) {
+        self.allCount = allCount
+        self.corruptedCount = corruptedCount
     }
 }
