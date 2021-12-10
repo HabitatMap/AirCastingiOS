@@ -26,8 +26,4 @@ class SDRestartABViewModelDefault: SDRestartABViewModel, ObservableObject {
     func continueSyncFlow() {
        presentNextScreen = true
     }
-    
-    func continueSyncFlow() {
-       presentNextScreen = true
-    }
 }

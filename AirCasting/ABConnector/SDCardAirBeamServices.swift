@@ -88,7 +88,7 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
             }
         }
         
-        dataCharacteristicObserver = bluetoothCommunicator.subscribeToCharacteristic(DOWNLOAD_FROM_SD_CARD_CHARACTERISTIC_UUID) { result in
+        dataCharacteristicObserver = bluetoothManager.subscribeToCharacteristic(DOWNLOAD_FROM_SD_CARD_CHARACTERISTIC_UUID) { result in
             switch result {
             case .success(let data):
                 guard let data = data, let payload = String(data: data, encoding: .utf8) else { return }

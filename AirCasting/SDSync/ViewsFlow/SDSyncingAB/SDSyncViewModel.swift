@@ -83,15 +83,6 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
         }
     }
 
-<<<<<<< HEAD
-    private func configureABforSync() {
-        let configurator = AirBeam3Configurator(userAuthenticationSession: self.userAuthenticationSession,
-                                                peripheral: self.peripheral)
-        configurator.configureSDSync()
-    }
-
-=======
->>>>>>> develop
     private func clearSDCard() {
         self.sdSyncController.clearSDCard(self.peripheral) { result in
             DispatchQueue.main.async {
@@ -101,19 +92,6 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
                 }
             }
             self.disconnectAirBeam()
-        }
-    }
-
-    private func disconnectAirBeam() {
-        airBeamConnectionController.disconnectAirBeam(peripheral: peripheral)
-    }
-
-    private func stringForSessionType(_ sessionType: SDCardSessionType) -> String {
-        //TODO: Correct string value and move to strings
-        switch sessionType {
-        case .cellular: return "Cellular"
-        case .fixed: return "Fixed"
-        case .mobile: return "Mobile"
         }
     }
 
