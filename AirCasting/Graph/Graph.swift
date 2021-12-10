@@ -93,6 +93,8 @@ struct Graph: UIViewRepresentable {
             return chartDataEntry
         }) ?? []
         
+        simplifyGraphline(entries: entries, uiView: uiView)
+        
         context.coordinator.entries = entries
         context.coordinator.currentThreshold = ThresholdWitness(sensorThreshold: thresholds)
         context.coordinator.totalNumberOfMeasurements = entries.count

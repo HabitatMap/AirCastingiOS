@@ -25,7 +25,9 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                                   isSensorTypeNeeded: false,
                                   isCollapsed: Binding.constant(false),
                                   session: session,
-                                  sessionStopperFactory: sessionStoppableFactory, measurementStreamStorage: measurementStreamStorage, sessionSynchronizer: sessionSynchronizer)
+                                  sessionStopperFactory: sessionStoppableFactory,
+                                  measurementStreamStorage: measurementStreamStorage,
+                                  sessionSynchronizer: sessionSynchronizer)
                 .padding([.bottom, .leading, .trailing])
             
             ABMeasurementsView(
