@@ -84,7 +84,8 @@ struct RootAppView: View {
                                                           baseUrlProvider: urlProvider)
             
             let fixedSessionsService = SDCardFixedSessionsSavingService(apiService: apiService)
-            sdSyncController = SDSyncController(airbeamServices: BluetoothSDCardAirBeamServices(bluetoothCommunicator: bluetoothManager),
+            
+            sdSyncController = SDSyncController(airbeamServices: BluetoothSDCardAirBeamServices(bluetoothManager: bluetoothManager, userAuthenticationSession: userAuthenticationSession),
                                                 fileWriter: SDSyncFileWritingService(bufferThreshold: 10000),
                                                 fileValidator: SDSyncFileValidationService(),
                                                 fileLineReader: DefaultFileLineReader(),

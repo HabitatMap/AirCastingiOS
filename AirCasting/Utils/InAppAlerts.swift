@@ -65,6 +65,14 @@ struct InAppAlerts {
             ]
         )
     }
+    
+    static func connectionTimeoutAlert(dismiss: ()) -> AlertInfo {
+        AlertInfo(title: Strings.AirBeamConnector.connectionTimeoutTitle, message: Strings.AirBeamConnector.connectionTimeoutDescription, buttons: [ .default(title: Strings.AirBeamConnector.connectionTimeoutActionTitle, action: { dismiss }) ])
+    }
+    
+    static func failedSDClearingAlert(dismiss: ()) -> AlertInfo {
+        AlertInfo(title: Strings.ClearingSDCardView.failedClearingAlertTitle, message: Strings.ClearingSDCardView.failedClearingAlertMessage, buttons: [ .default(title: Strings.AirBeamConnector.connectionTimeoutActionTitle, action: { dismiss }) ])
+    }
 }
 
 import SwiftUI

@@ -8,9 +8,10 @@ struct SDSyncCompleteView<VM: SDSyncCompleteViewModel>: View {
     @StateObject var viewModel: VM
     @Binding var creatingSessionFlowContinues: Bool
     @EnvironmentObject private var tabSelection: TabBarSelection
+    var isSDClearProcess: Bool
     
     var body: some View {
-        VStack(spacing: 40) {
+        VStack(alignment: .leading, spacing: 40) {
             ProgressView(value: 0.9)
             Spacer()
             HStack() {
@@ -39,13 +40,13 @@ private extension SDSyncCompleteView {
     }
     
     var titleLabel: some View {
-        Text(Strings.SDSyncCompleteView.title)
+        Text(isSDClearProcess ? Strings.SDSyncCompleteView.SDClearTitle : Strings.SDSyncCompleteView.title)
             .font(Fonts.boldTitle3)
             .foregroundColor(.accentColor)
     }
     
     var messageLabel: some View {
-        Text(Strings.SDSyncCompleteView.message)
+        Text(isSDClearProcess ? Strings.SDSyncCompleteView.SDClearMessage : Strings.SDSyncCompleteView.message)
             .font(Fonts.regularHeading1)
             .foregroundColor(.aircastingGray)
     }

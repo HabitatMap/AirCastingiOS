@@ -8,16 +8,23 @@ protocol SDRestartABViewModel: ObservableObject {
     // urlProvider should should not be exposed
     // BUT it is - REASON: it is needed only to pass to some navigation view
     var urlProvider: BaseURLProvider { get }
+    var isSDClearProcess: Bool { get set }
     func continueSyncFlow()
 }
 
 class SDRestartABViewModelDefault: SDRestartABViewModel, ObservableObject {
     
     @Published var presentNextScreen: Bool = false
+    var isSDClearProcess: Bool
     let urlProvider: BaseURLProvider
     
-    init(urlProvider: BaseURLProvider) {
+    init(urlProvider: BaseURLProvider, isSDClearProcess: Bool) {
         self.urlProvider = urlProvider
+        self.isSDClearProcess = isSDClearProcess
+    }
+    
+    func continueSyncFlow() {
+       presentNextScreen = true
     }
     
     func continueSyncFlow() {

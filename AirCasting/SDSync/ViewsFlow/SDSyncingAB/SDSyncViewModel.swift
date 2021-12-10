@@ -47,8 +47,13 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
 
     func connectToAirBeamAndSync() {
         self.airBeamConnectionController.connectToAirBeam(peripheral: peripheral) { success in
-            guard success else { return }
-            self.configureABforSync()
+            guard success else {
+                DispatchQueue.main.async {
+                    self.presentNextScreen = success
+                    self.presentFailedSyncAlert = !success
+                }
+                return
+            }
             self.sdSyncController.syncFromAirbeam(self.peripheral, progress: { [weak self] newStatus in
                 guard let self = self else { return }
                 switch newStatus {
@@ -65,26 +70,51 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
             }, completion: { [weak self] result in
                 //TODO: SD card should be cleared only if the files are not corrupted
                 guard let self = self else { return }
-                result ? self.clearSDCard() : nil
-                self.disconnectAirBeam()
-                DispatchQueue.main.async {
-                    self.presentNextScreen = result
-                    self.presentFailedSyncAlert = !result
+                if result {
+                    self.clearSDCard()
+                } else {
+                    DispatchQueue.main.async {
+                        self.presentNextScreen = false
+                        self.presentFailedSyncAlert = true
+                    }
+                    self.disconnectAirBeam()
                 }
             })
         }
     }
 
+<<<<<<< HEAD
     private func configureABforSync() {
         let configurator = AirBeam3Configurator(userAuthenticationSession: self.userAuthenticationSession,
                                                 peripheral: self.peripheral)
         configurator.configureSDSync()
     }
 
+=======
+>>>>>>> develop
     private func clearSDCard() {
-        let configurator = AirBeam3Configurator(userAuthenticationSession: self.userAuthenticationSession,
-                                                peripheral: self.peripheral)
-        configurator.clearSDCard()
+        self.sdSyncController.clearSDCard(self.peripheral) { result in
+            DispatchQueue.main.async {
+                self.presentNextScreen = true
+                if !result {
+                    Log.error("Couldn't clear SD card after sync")
+                }
+            }
+            self.disconnectAirBeam()
+        }
+    }
+
+    private func disconnectAirBeam() {
+        airBeamConnectionController.disconnectAirBeam(peripheral: peripheral)
+    }
+
+    private func stringForSessionType(_ sessionType: SDCardSessionType) -> String {
+        //TODO: Correct string value and move to strings
+        switch sessionType {
+        case .cellular: return "Cellular"
+        case .fixed: return "Fixed"
+        case .mobile: return "Mobile"
+        }
     }
 
     private func disconnectAirBeam() {

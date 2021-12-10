@@ -46,7 +46,7 @@ struct ChooseSessionTypeView: View {
             
                 .fullScreenCover(isPresented: $isTurnLocationOnLinkActive) {
                     CreatingSessionFlowRootView {
-                        TurnOnLocationView(creatingSessionFlowContinues: $isTurnLocationOnLinkActive, viewModel: TurnOnLocationViewModel(locationHandler: viewModel.locationHandler, bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: viewModel.passBluetoothManager), sessionContext: viewModel.passSessionContext, urlProvider: viewModel.passURLProvider))
+                        TurnOnLocationView(creatingSessionFlowContinues: $isTurnLocationOnLinkActive, isSDClearProcess: false, viewModel: TurnOnLocationViewModel(locationHandler: viewModel.locationHandler, bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: viewModel.passBluetoothManager), sessionContext: viewModel.passSessionContext, urlProvider: viewModel.passURLProvider))
                     }
                 }
           
@@ -96,7 +96,7 @@ struct ChooseSessionTypeView: View {
                         EmptyView()
                             .fullScreenCover(isPresented: $isTurnLocationOnLinkActive) {
                                 CreatingSessionFlowRootView {
-                                    TurnOnLocationView(creatingSessionFlowContinues: $isTurnLocationOnLinkActive, viewModel: TurnOnLocationViewModel(locationHandler: viewModel.locationHandler, bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: viewModel.passBluetoothManager), sessionContext: viewModel.passSessionContext, urlProvider: viewModel.passURLProvider))
+                                    TurnOnLocationView(creatingSessionFlowContinues: $isTurnLocationOnLinkActive, isSDClearProcess: false, viewModel: TurnOnLocationViewModel(locationHandler: viewModel.locationHandler, bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: viewModel.passBluetoothManager), sessionContext: viewModel.passSessionContext, urlProvider: viewModel.passURLProvider))
                                 }
                             }
                         EmptyView()
@@ -146,26 +146,25 @@ struct ChooseSessionTypeView: View {
             .background(Color.white)
             .padding(.horizontal)
         
-            VStack {
-                VStack(alignment: .leading, spacing: 15) {
-                    HStack {
-                        recordNewLabel
-                        Spacer()
-                        moreInfo
-                    }
-                    HStack(spacing: 35) {
-                        fixedSessionButton
-                        mobileSessionButton
-                    }
+            VStack(alignment: .leading, spacing: 15) {
+                HStack {
+                    recordNewLabel
                     Spacer()
-                    if featureFlagsViewModel.enabledFeatures.contains(.sdCardSync) {
-                        orLabel
-                        sdSyncButton
-                    }
+                    moreInfo
+                }
+                HStack {
+                    fixedSessionButton
                     Spacer()
+                    mobileSessionButton
+                }
+                Spacer()
+                if featureFlagsViewModel.enabledFeatures.contains(.sdCardSync) {
+                    orLabel
+                    sdSyncButton
                 }
                 Spacer()
             }
+            .padding(.bottom)
             .padding(.vertical)
             .padding(.horizontal, 30)
             .background(
@@ -253,49 +252,39 @@ struct ChooseSessionTypeView: View {
     }
     
     var fixedSessionLabel: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text(Strings.ChooseSessionTypeView.fixedLabel_1)
-                .font(Fonts.boldHeading1)
-                .foregroundColor(.accentColor)
-            Text(Strings.ChooseSessionTypeView.fixedLabel_2)
-                .font(Fonts.muliHeading3)
-                .foregroundColor(.aircastingGray)
-                .multilineTextAlignment(.leading)
-        }
-        .padding(15)
-        .frame(maxWidth: 147, maxHeight: 145)
-        .background(Color.white)
-        .shadow(color: Color.shadow, radius: 9, x: 0, y: 1)
+        chooseSessionButton(title: Strings.ChooseSessionTypeView.fixedLabel_1,
+                            description: Strings.ChooseSessionTypeView.fixedLabel_2)
     }
     
     var mobileSessionLabel: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text(Strings.ChooseSessionTypeView.mobileLabel_1)
-                .font(Fonts.boldHeading1)
-                .foregroundColor(.accentColor)
-            Text(Strings.ChooseSessionTypeView.mobileLabel_2)
-                .font(Fonts.muliHeading3)
-                .foregroundColor(.aircastingGray)
-                .multilineTextAlignment(.leading)
-        }
-        .padding(15)
-        .frame(maxWidth: 147, maxHeight: 145)
-        .background(Color.white)
-        .shadow(color: Color.shadow, radius: 9, x: 0, y: 1)
+        chooseSessionButton(title: Strings.ChooseSessionTypeView.mobileLabel_1,
+                            description: Strings.ChooseSessionTypeView.mobileLabel_2)
     }
     
     var syncButtonLabel: some View {
+        chooseSessionButton(title: Strings.ChooseSessionTypeView.syncTitle,
+                            description: Strings.ChooseSessionTypeView.syncDescription)
+    }
+    
+}
+
+extension View {
+    func chooseSessionButton(title: String, description: String) -> some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text(Strings.ChooseSessionTypeView.syncTitle)
+            Text(title)
                 .font(Fonts.boldHeading1)
                 .foregroundColor(.accentColor)
-            Text(Strings.ChooseSessionTypeView.syncDescription)
+            Text(description)
                 .font(Fonts.muliHeading3)
                 .foregroundColor(.aircastingGray)
         }
         .multilineTextAlignment(.leading)
         .padding(15)
-        .frame(maxWidth: 147, maxHeight: 145)
+        .frame(minWidth: (UIScreen.main.bounds.width / 2.5) < 147 ? (UIScreen.main.bounds.width / 2.5) : 147,
+               maxWidth: 147,
+               minHeight: (UIScreen.main.bounds.height) / 4.5 < 145 ? (UIScreen.main.bounds.height) : 145,
+               maxHeight: 145,
+               alignment: .leading)
         .background(Color.white)
         .shadow(color: Color.shadow, radius: 9, x: 0, y: 1)
     }

@@ -11,6 +11,7 @@ import SwiftUI
 
 struct SelectPeripheralView: View {
     @State private var selection: CBPeripheral? = nil
+    var SDClearingRouteProcess: Bool
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @EnvironmentObject var sessionContext: CreateSessionContext
     @EnvironmentObject var connectionController: DefaultAirBeamConnectionController
@@ -97,7 +98,9 @@ struct SelectPeripheralView: View {
         var title: Text
         if syncMode == true {
             title = Text(Strings.SelectPeripheralView.titleSyncLabel)
-        } else {
+        } else if SDClearingRouteProcess {
+            title = Text(Strings.SelectPeripheralView.titleSDClearLabel)
+        }  else {
             title = Text(Strings.SelectPeripheralView.titleLabel)
         }
         return title
@@ -137,6 +140,9 @@ struct SelectPeripheralView: View {
                                        sessionContext: sessionContext,
                                        peripheral: selection)
                 destination = AnyView(SyncingABView(viewModel: viewModel, creatingSessionFlowContinues: $creatingSessionFlowContinues))
+            } else if SDClearingRouteProcess {
+                let viewModel = ClearingSDCardViewModelDefault(isSDClearProcess: SDClearingRouteProcess, userAuthenticationSession: userAuthenticationSession, peripheral: selection, airBeamConnectionController: connectionController, sdSyncController: sdSyncController)
+                destination = AnyView(ClearingSDCardView(viewModel: viewModel, creatingSessionFlowContinues: $creatingSessionFlowContinues))
             } else {
                 let viewModel =
                 AirbeamConnectionViewModelDefault(airBeamConnectionController: connectionController,
@@ -158,7 +164,7 @@ struct SelectPeripheralView: View {
 #if DEBUG
 struct SelectPeripheralView_Previews: PreviewProvider {
     static var previews: some View {
-        SelectPeripheralView(creatingSessionFlowContinues: .constant(true), urlProvider: DummyURLProvider())
+        SelectPeripheralView(SDClearingRouteProcess: false, creatingSessionFlowContinues: .constant(true), urlProvider: DummyURLProvider())
     }
 }
 #endif

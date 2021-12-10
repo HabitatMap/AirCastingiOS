@@ -98,7 +98,7 @@ extension SyncingABView {
 
     var navigationLink: some View {
         NavigationLink(
-            destination: SDSyncCompleteView(viewModel: SDSyncCompleteViewModelDefault(), creatingSessionFlowContinues: $creatingSessionFlowContinues),
+        destination: SDSyncCompleteView(viewModel: SDSyncCompleteViewModelDefault(), creatingSessionFlowContinues: $creatingSessionFlowContinues, isSDClearProcess: false),
             isActive: $viewModel.presentNextScreen,
             label: {
                 EmptyView()

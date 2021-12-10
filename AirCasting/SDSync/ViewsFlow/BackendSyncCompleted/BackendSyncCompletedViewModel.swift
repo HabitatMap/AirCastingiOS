@@ -14,7 +14,7 @@ protocol BackendSyncCompletedViewModel: ObservableObject {
     // urlProvider should should not be exposed
     // BUT it is - REASON: it is needed only to pass to some navigation view
     var urlProvider: BaseURLProvider { get }
-    func continueButtonTapped()
+    func continueButtonTapped() 
 }
 
 class BackendSyncCompletedViewModelDefault: BackendSyncCompletedViewModel, ObservableObject {
