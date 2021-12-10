@@ -12,7 +12,7 @@ protocol SDSyncFileValidator {
 }
 
 struct SDSyncFileValidationService: SDSyncFileValidator {
-    private var EXPECTED_FIELDS_COUNT = 14
+    private var EXPECTED_FIELDS_COUNT = 13
     private var ACCEPTANCE_THRESHOLD = 0.8
     
     let fileLineReader: FileLineReader
