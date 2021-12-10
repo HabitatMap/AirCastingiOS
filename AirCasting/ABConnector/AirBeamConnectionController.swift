@@ -6,6 +6,7 @@ import CoreBluetooth
 
 protocol AirBeamConnectionController {
     func connectToAirBeam(peripheral: CBPeripheral, completion: @escaping (Bool) -> Void)
+    func disconnectAirBeam(peripheral: CBPeripheral)
 }
 
 class DefaultAirBeamConnectionController: AirBeamConnectionController, ObservableObject {
@@ -24,6 +25,10 @@ class DefaultAirBeamConnectionController: AirBeamConnectionController, Observabl
         }
     }
     
+    func disconnectAirBeam(peripheral: CBPeripheral) {
+        connectingAirBeamServices.disconnect(from: peripheral)
+    }
+    
     init(connectingAirBeamServices: ConnectingAirBeamServices) {
         self.connectingAirBeamServices = connectingAirBeamServices
     }
@@ -34,5 +39,6 @@ struct DummyAirBeamConnectionController: AirBeamConnectionController {
     func connectToAirBeam(peripheral: CBPeripheral, completion: @escaping (Bool) -> Void) {
         completion(true)
     }
+    func disconnectAirBeam(peripheral: CBPeripheral) { }
 }
 #endif

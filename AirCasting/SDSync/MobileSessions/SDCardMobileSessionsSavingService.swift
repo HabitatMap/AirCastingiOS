@@ -33,7 +33,7 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
                 try self.fileLineReader.readLines(of: fileURL, progress: { line in
                     switch line {
                     case .line(let content):
-                        let measurementsRow = self.parser.parseMeasurement(lineSting: content)
+                        let measurementsRow = self.parser.parseMeasurement(lineString: content)
                         guard let measurements = measurementsRow, !sessionsToIgnore.contains(measurements.sessionUUID) else { return }
                         
                         var session = processedSessions.first(where: { $0.uuid == measurements.sessionUUID })
@@ -113,24 +113,14 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
     }
     
     private func enqueueForSaving(measurements: SDCardMeasurementsRow, buffer streamsWithMeasurements: inout [SDStream: [Measurement]]) {
-        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, name: .f), default: []].append(Measurement(time: measurements.date, value: measurements.f, location: CLLocationCoordinate2D(latitude: measurements.lat, longitude: measurements.long)))
-        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, name: .rh), default: []].append(Measurement(time: measurements.date, value: measurements.rh, location: CLLocationCoordinate2D(latitude: measurements.lat, longitude: measurements.long)))
-        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, name: .pm1), default: []].append(Measurement(time: measurements.date, value: measurements.pm1, location: CLLocationCoordinate2D(latitude: measurements.lat, longitude: measurements.long)))
-        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, name: .pm2_5), default: []].append(Measurement(time: measurements.date, value: measurements.pm2_5, location: CLLocationCoordinate2D(latitude: measurements.lat, longitude: measurements.long)))
-        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, name: .pm10), default: []].append(Measurement(time: measurements.date, value: measurements.pm10, location: CLLocationCoordinate2D(latitude: measurements.lat, longitude: measurements.long)))
+        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, name: .f, header: .f), default: []].append(Measurement(time: measurements.date, value: measurements.f, location: CLLocationCoordinate2D(latitude: measurements.lat, longitude: measurements.long)))
+        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, name: .rh, header: .rh), default: []].append(Measurement(time: measurements.date, value: measurements.rh, location: CLLocationCoordinate2D(latitude: measurements.lat, longitude: measurements.long)))
+        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, name: .pm1, header: .pm1), default: []].append(Measurement(time: measurements.date, value: measurements.pm1, location: CLLocationCoordinate2D(latitude: measurements.lat, longitude: measurements.long)))
+        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, name: .pm2_5, header: .pm2_5), default: []].append(Measurement(time: measurements.date, value: measurements.pm2_5, location: CLLocationCoordinate2D(latitude: measurements.lat, longitude: measurements.long)))
+        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, name: .pm10, header: .pm10), default: []].append(Measurement(time: measurements.date, value: measurements.pm10, location: CLLocationCoordinate2D(latitude: measurements.lat, longitude: measurements.long)))
     }
     
     private func createMeasurementStream(for sensorName: MeasurementStreamSensorName, sensorPackageName: String) -> MeasurementStream {
         MeasurementStream(sensorName: sensorName, sensorPackageName: sensorPackageName)
     }
-}
-
-fileprivate struct SDSession: Hashable {
-    let uuid: SessionUUID
-    let lastMeasurementTime: Date?
-}
-
-fileprivate struct SDStream: Hashable {
-    let sessionUUID: SessionUUID
-    let name: MeasurementStreamSensorName
 }

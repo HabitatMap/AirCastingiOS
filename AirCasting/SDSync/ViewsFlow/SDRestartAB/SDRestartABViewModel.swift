@@ -5,7 +5,10 @@ import Foundation
 
 protocol SDRestartABViewModel: ObservableObject {
     var presentNextScreen: Bool { get set }
+    // urlProvider should should not be exposed
+    // BUT it is - REASON: it is needed only to pass to some navigation view
     var urlProvider: BaseURLProvider { get }
+    func continueSyncFlow()
 }
 
 class SDRestartABViewModelDefault: SDRestartABViewModel, ObservableObject {
@@ -15,5 +18,9 @@ class SDRestartABViewModelDefault: SDRestartABViewModel, ObservableObject {
     
     init(urlProvider: BaseURLProvider) {
         self.urlProvider = urlProvider
+    }
+    
+    func continueSyncFlow() {
+       presentNextScreen = true
     }
 }

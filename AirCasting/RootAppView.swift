@@ -77,10 +77,21 @@ struct RootAppView: View {
             downloadService = DownloadMeasurementsService(authorisationService: userAuthenticationSession,
                                                           persistenceController: persistenceController,
                                                           baseUrl: urlProvider)
-            sdSyncController = SDSyncController(airbeamServices: BluetoothSDCardAirBeamServices(bluetoothManager: bluetoothManager),
+            let mobileSessionsService = SDCardMobileSessionsSavingService(measurementStreamStorage: measurementStreamStorage,
+                                                                          fileLineReader: DefaultFileLineReader())
+            
+            let apiService = UploadFixedSessionAPIService(authorisationService: userAuthenticationSession,
+                                                          baseUrlProvider: urlProvider)
+            
+            let fixedSessionsService = SDCardFixedSessionsSavingService(apiService: apiService)
+            sdSyncController = SDSyncController(airbeamServices: BluetoothSDCardAirBeamServices(bluetoothCommunicator: bluetoothManager),
                                                 fileWriter: SDSyncFileWritingService(bufferThreshold: 10000),
                                                 fileValidator: SDSyncFileValidationService(),
-                                                mobileSessionsSaver: SDCardMobileSessionsSavingService(measurementStreamStorage: measurementStreamStorage, fileLineReader: DefaultFileLineReader()), averagingService: averagingService, sessionSynchronizer: sessionSynchronizer)
+                                                fileLineReader: DefaultFileLineReader(),
+                                                mobileSessionsSaver: mobileSessionsService,
+                                                fixedSessionsSaver: fixedSessionsService,
+                                                averagingService: averagingService,
+                                                sessionSynchronizer: sessionSynchronizer)
         }
     }
     
