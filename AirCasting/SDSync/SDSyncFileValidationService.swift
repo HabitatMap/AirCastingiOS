@@ -12,7 +12,7 @@ protocol SDSyncFileValidator {
 }
 
 struct SDSyncFileValidationService: SDSyncFileValidator {
-    private var EXPECTED_FIELDS_COUNT = 13
+    private var EXPECTED_FIELDS_COUNT = 14
     private var ACCEPTANCE_THRESHOLD = 0.8
     
     let fileLineReader: FileLineReader
@@ -22,14 +22,16 @@ struct SDSyncFileValidationService: SDSyncFileValidator {
     }
     
     func validate(files: [SDCardCSVFile], completion: (Result<Void, SDCardValidationError>) -> Void) {
-        files.forEach { file in
+        var result = true
+        
+        for file in files {
             if !check(file) {
-                completion(.failure(SDCardValidationError.insufficientIntegrity))
-                return
+                result = false
+                break
             }
         }
         Log.info("Files validated")
-        completion(.success(()))
+        result ? completion(.success(())) : completion(.failure(SDCardValidationError.insufficientIntegrity))
     }
     
     func check(_ file: SDCardCSVFile) -> Bool {
