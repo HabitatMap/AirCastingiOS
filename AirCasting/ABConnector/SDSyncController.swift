@@ -82,14 +82,18 @@ class SDSyncController: ObservableObject {
         let mobileFileURL = files.first(where: { $0.1 == SDCardSessionType.mobile })?.0
         let fixedFileURL = files.first(where: { $0.1 == SDCardSessionType.fixed })?.0
         
-        ///TODO: There's a possibility that we have two files - one mobile and one fixed
-        ///then completion can be called more than once - after processing mobile is done and after processing fixed
-        /// Also we should handle situation when on processing is successfull and one is not.
-        #warning("TODO is important here!")
         if let mobileFileURL = mobileFileURL {
-            process(mobileSessionFile: mobileFileURL, deviceID: deviceID, completion: completion)
-        }
-        if let fixedFileURL = fixedFileURL {
+            process(mobileSessionFile: mobileFileURL, deviceID: deviceID) { mobileResult in
+                guard mobileResult else {
+                    completion(mobileResult)
+                    return
+                }
+                
+                if let fixedFileURL = fixedFileURL {
+                    try? self.process(fixedSessionFile: fixedFileURL, deviceID: deviceID, completion: completion)
+                }
+            }
+        } else if let fixedFileURL = fixedFileURL {
             try? process(fixedSessionFile: fixedFileURL, deviceID: deviceID, completion: completion)
         }
     }

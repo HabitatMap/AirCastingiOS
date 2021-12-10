@@ -13,15 +13,22 @@ class SDCardFixedSessionsSavingService {
     
     func processAndSync(csvSession: CSVSession, deviceID: String, completion: @escaping (Bool) -> Void) {
         let uploadParams = getSyncParams(csvSession: csvSession, deviceID: deviceID)
+        var tasksCompleted = 0
+        var allSuccess = true
         uploadParams.forEach { params in
             apiService.uploadFixedSession(input: params) { result in
+                tasksCompleted += 1
+                
                 switch result {
                 case .success:
                     Log.info("[SD Sync] Stream uploadedd. Session: \(params.session_uuid) Sensor: \(params.sensor_name ?? "")")
-                    completion(true)
                 case .failure(let error):
+                    allSuccess = false
                     Log.error("[SD Sync] Stream syncing failed: \(error)")
-                    completion(false)
+                }
+                
+                if tasksCompleted >= uploadParams.count {
+                    completion(allSuccess)
                 }
             }
         }
