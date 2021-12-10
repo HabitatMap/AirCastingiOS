@@ -8,7 +8,7 @@ enum SDCardValidationError: Error {
 }
 
 protocol SDSyncFileValidator {
-    func validate(files: [(URL, SDCardSessionType, expectedMeasurementsCount: Int)], completion: (Result<Void, SDCardValidationError>) -> Void)
+    func validate(files: [SDCardCSVFile], completion: (Result<Void, SDCardValidationError>) -> Void)
 }
 
 struct SDSyncFileValidationService: SDSyncFileValidator {
@@ -21,28 +21,29 @@ struct SDSyncFileValidationService: SDSyncFileValidator {
         self.fileLineReader = fileLineReader
     }
     
-    func validate(files: [(URL, SDCardSessionType, expectedMeasurementsCount: Int)], completion: (Result<Void, SDCardValidationError>) -> Void) {
+    func validate(files: [SDCardCSVFile], completion: (Result<Void, SDCardValidationError>) -> Void) {
         files.forEach { file in
             if !check(file) {
                 completion(.failure(SDCardValidationError.insufficientIntegrity))
                 return
             }
         }
+        Log.info("Files validated")
         completion(.success(()))
     }
     
-    func check(_ file: (URL, SDCardSessionType, expectedMeasurementsCount: Int)) -> Bool {
+    func check(_ file: SDCardCSVFile) -> Bool {
         guard let stats = calculateStats(file) else {
             return false
         }
-        return validateAcceptedCorruption(stats, file.2)
+        return validateAcceptedCorruption(stats, file.expectedLinesCount)
     }
     
-    private func calculateStats(_ file: (URL, SDCardSessionType, expectedMeasurementsCount: Int)) -> Stats? {
+    private func calculateStats(_ file: SDCardCSVFile) -> Stats? {
         var allCount = 0
         var corruptedCount = 0
         do {
-            try self.fileLineReader.readLines(of: file.0, progress: { line in
+            try self.fileLineReader.readLines(of: file.url, progress: { line in
                 switch line {
                 case .line(let content):
                     if (lineIsCorrupted(content)) {
@@ -55,7 +56,7 @@ struct SDSyncFileValidationService: SDSyncFileValidator {
                 }
             })
             
-            return Stats(allCount: allCount, corruptedCount: corruptedCount)
+            return Stats(allCount, corruptedCount)
         } catch {
             Log.error(error.localizedDescription)
             return nil
@@ -82,4 +83,9 @@ struct SDSyncFileValidationService: SDSyncFileValidator {
 fileprivate struct Stats {
     var allCount: Int
     var corruptedCount: Int
+    
+    init(_ allCount: Int, _ corruptedCount: Int) {
+        self.allCount = allCount
+        self.corruptedCount = corruptedCount
+    }
 }
