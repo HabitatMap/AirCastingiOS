@@ -12,10 +12,10 @@ protocol SDSyncFileValidator {
 }
 
 struct SDSyncFileValidationService: SDSyncFileValidator {
-    private var EXPECTED_FIELDS_COUNT = 13
-    private var ACCEPTANCE_THRESHOLD = 0.8
+    private let expectedFieldsCount = 13
+    private let acceptanceThreshold = 0.8
     
-    let fileLineReader: FileLineReader
+    private let fileLineReader: FileLineReader
     
     init(fileLineReader: FileLineReader) {
         self.fileLineReader = fileLineReader
@@ -34,7 +34,7 @@ struct SDSyncFileValidationService: SDSyncFileValidator {
         result ? completion(.success(())) : completion(.failure(SDCardValidationError.insufficientIntegrity))
     }
     
-    func check(_ file: SDCardCSVFile) -> Bool {
+    private func check(_ file: SDCardCSVFile) -> Bool {
         guard let stats = calculateStats(file) else {
             return false
         }
@@ -67,14 +67,14 @@ struct SDSyncFileValidationService: SDSyncFileValidator {
     
     private func lineIsCorrupted(_ line: String) -> Bool {
         let fields = line.split(separator: ",")
-        return !line.isEmpty && fields.count != EXPECTED_FIELDS_COUNT
+        return !line.isEmpty && fields.count != expectedFieldsCount
     }
     
     private func validateAcceptedCorruption(_ stats: Stats, _ expectedCount: Int) -> Bool {
         if (expectedCount == 0) { return true }
         
-        let countThreshold = Double(expectedCount) * ACCEPTANCE_THRESHOLD
-        let corruptionThreshold = Double(expectedCount) * (1 - ACCEPTANCE_THRESHOLD)
+        let countThreshold = Double(expectedCount) * acceptanceThreshold
+        let corruptionThreshold = Double(expectedCount) * (1 - acceptanceThreshold)
         
         // checks if downloaded file has at least 80% of expected lines
         // and if there is at most 20% of corrupted lines
