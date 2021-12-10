@@ -93,7 +93,7 @@ struct Graph: UIViewRepresentable {
             return chartDataEntry
         }) ?? []
         
-        uiView.updateWithEntries(entries: entries, isAutozoomEnabled: isAutozoomEnabled)
+        simplifyGraphline(entries: entries, uiView: uiView)
         
         context.coordinator.entries = entries
         context.coordinator.currentThreshold = ThresholdWitness(sensorThreshold: thresholds)
