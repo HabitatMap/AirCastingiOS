@@ -524,8 +524,8 @@ struct Strings {
 
     enum SyncingABView {
         static let message: String = "Keep your AirBeam unplugged and close to your iPhone"
-        static let alertTitle: String = "Failed to sync"
-        static let alertMessage: String = "Try again later"
+        static let alertTitle: String = "SD card sync failed"
+        static let alertMessage: String = "We're sorry, something unexpected caused the SD card sync to fail. Please try again"
         static let startingSyncTitle: String = "Syncing..."
         static let finishingSyncTitle: String = "Finalizing..."
     }
