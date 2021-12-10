@@ -82,6 +82,14 @@ class SDSyncController: ObservableObject {
         let mobileFileURL = files.first(where: { $0.1 == SDCardSessionType.mobile })?.0
         let fixedFileURL = files.first(where: { $0.1 == SDCardSessionType.fixed })?.0
         
+        func handleFixedFile(fixedFileURL: URL) {
+            do {
+                try self.process(fixedSessionFile: fixedFileURL, deviceID: deviceID, completion: completion)
+            } catch {
+                completion(false)
+            }
+        }
+        
         if let mobileFileURL = mobileFileURL {
             process(mobileSessionFile: mobileFileURL, deviceID: deviceID) { mobileResult in
                 guard mobileResult else {
@@ -90,11 +98,11 @@ class SDSyncController: ObservableObject {
                 }
                 
                 if let fixedFileURL = fixedFileURL {
-                    try? self.process(fixedSessionFile: fixedFileURL, deviceID: deviceID, completion: completion)
+                    handleFixedFile(fixedFileURL: fixedFileURL)
                 }
             }
         } else if let fixedFileURL = fixedFileURL {
-            try? process(fixedSessionFile: fixedFileURL, deviceID: deviceID, completion: completion)
+            handleFixedFile(fixedFileURL: fixedFileURL)
         }
     }
     
