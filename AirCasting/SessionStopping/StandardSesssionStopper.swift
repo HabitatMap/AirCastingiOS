@@ -16,6 +16,6 @@ class StandardSesssionStopper: SessionStoppable {
     
     func stopSession() {
         Log.verbose("Stopping session with uuid \(uuid.rawValue) using standard session stopper")
-        bluetoothManager.disconnectAirBeam()
+        bluetoothManager.finishMobileSession(with: uuid)
     }
 }

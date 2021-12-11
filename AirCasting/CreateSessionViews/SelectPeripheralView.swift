@@ -11,12 +11,15 @@ import SwiftUI
 
 struct SelectPeripheralView: View {
     @State private var selection: CBPeripheral? = nil
+    var SDClearingRouteProcess: Bool
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @EnvironmentObject var sessionContext: CreateSessionContext
     @EnvironmentObject var connectionController: DefaultAirBeamConnectionController
+    @EnvironmentObject var sdSyncController: SDSyncController
     @Binding var creatingSessionFlowContinues: Bool
     let urlProvider: BaseURLProvider
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
+    var syncMode: Bool? = false
     
     var body: some View {
         GeometryReader { geometry in
@@ -92,7 +95,15 @@ struct SelectPeripheralView: View {
     }
     
     var titleLabel: some View {
-        Text(Strings.SelectPeripheralView.titleLabel)
+        var title: Text
+        if syncMode == true {
+            title = Text(Strings.SelectPeripheralView.titleSyncLabel)
+        } else if SDClearingRouteProcess {
+            title = Text(Strings.SelectPeripheralView.titleSDClearLabel)
+        }  else {
+            title = Text(Strings.SelectPeripheralView.titleLabel)
+        }
+        return title
             .font(Fonts.boldTitle3)
             .foregroundColor(.accentColor)
             .multilineTextAlignment(.leading)
@@ -121,11 +132,25 @@ struct SelectPeripheralView: View {
     var connectButton: some View {
         var destination: AnyView
         if let selection = selection {
-            let viewModel =
-            AirbeamConnectionViewModelDefault(airBeamConnectionController: connectionController,
-                                              userAuthenticationSession: userAuthenticationSession, sessionContext: sessionContext,
-                                              peripheral: selection)
-            destination = AnyView(ConnectingABView(viewModel: viewModel, baseURL: urlProvider, creatingSessionFlowContinues: $creatingSessionFlowContinues))
+            if syncMode == true {
+                let viewModel =
+                SDSyncViewModelDefault(airBeamConnectionController: connectionController,
+                                       sdSyncController: sdSyncController,
+                                       userAuthenticationSession: userAuthenticationSession,
+                                       sessionContext: sessionContext,
+                                       peripheral: selection)
+                destination = AnyView(SyncingABView(viewModel: viewModel, creatingSessionFlowContinues: $creatingSessionFlowContinues))
+            } else if SDClearingRouteProcess {
+                let viewModel = ClearingSDCardViewModelDefault(isSDClearProcess: SDClearingRouteProcess, userAuthenticationSession: userAuthenticationSession, peripheral: selection, airBeamConnectionController: connectionController, sdSyncController: sdSyncController)
+                destination = AnyView(ClearingSDCardView(viewModel: viewModel, creatingSessionFlowContinues: $creatingSessionFlowContinues))
+            } else {
+                let viewModel =
+                AirbeamConnectionViewModelDefault(airBeamConnectionController: connectionController,
+                                                  userAuthenticationSession: userAuthenticationSession,
+                                                  sessionContext: sessionContext,
+                                                  peripheral: selection)
+                destination = AnyView(ConnectingABView(viewModel: viewModel, baseURL: urlProvider, creatingSessionFlowContinues: $creatingSessionFlowContinues))
+            }
         } else {
             destination = AnyView(EmptyView())
         }
@@ -139,7 +164,7 @@ struct SelectPeripheralView: View {
 #if DEBUG
 struct SelectPeripheralView_Previews: PreviewProvider {
     static var previews: some View {
-        SelectPeripheralView(creatingSessionFlowContinues: .constant(true), urlProvider: DummyURLProvider())
+        SelectPeripheralView(SDClearingRouteProcess: false, creatingSessionFlowContinues: .constant(true), urlProvider: DummyURLProvider())
     }
 }
 #endif

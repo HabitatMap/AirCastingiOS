@@ -14,8 +14,11 @@ struct Strings {
         static let hardwareDevelopers: String = "Hardware developers"
         static let about: String = "About AirCasting"
         static let keepScreenTitle = "Keep screen on"
+        static let clearSDTitle = "Clear SD card"
+        static let appInfoTitle = "AirCasting App v"
+        static let buildText = "build"
     }
-    
+
     enum BackendSettings {
         static let backendSettings: String = "Backend settings"
         static let Ok: String = "OK"
@@ -23,7 +26,7 @@ struct Strings {
         static let alertTitle: String = "Logout Alert"
         static let alertMessage: String = "Something went wrong, when logging out."
     }
-    
+
     enum MyAccountSettings {
         static let title: String = "My account"
         static let logStatus: String = "You aren’t currently logged in"
@@ -31,13 +34,13 @@ struct Strings {
         static let createAccount: String = "Create an account"
         static let logIn: String = "Log In"
     }
-    
+
     enum SignOutSettings {
         static let title: String = "My account"
         static let Logged: String = "You are currently logged in as "
         static let signOut: String = "Sign Out"
     }
-    
+
     enum ForgotPassword {
         static let title = "Forgot Password"
         static let actionTitle = "OK"
@@ -49,7 +52,7 @@ struct Strings {
         static let newPasswordFailureTitle = "Email response"
         static let alertAction = "OK"
     }
-    
+
     enum SignInView {
         static let title_1 = "Sign in"
         static let title_2 = "to record and map your environment"
@@ -66,7 +69,7 @@ struct Strings {
         static let noConnectionTitle = "No Internet Connection"
         static let noConnectionText = "Please make sure your device is connected to the internet."
     }
-  
+
     enum SessionShare {
         static let title: String = "Share session"
         static let description: String = "Select a stream to share"
@@ -78,12 +81,12 @@ struct Strings {
         static let shareFileButton: String = "Share file"
         static let checkboxDescription: String = "dB"
     }
-    
+
     enum LoadingSession {
         static let title: String = "Your AirBeam is gathering data."
         static let description: String = "Measurements will appear in 3 minutes."
     }
-    
+
     struct SessionCartView {
         static let map: String = "map"
         static let graph: String = "graph"
@@ -92,7 +95,7 @@ struct Strings {
         static let avgSessionH: String = "1 hr avg -"
         static let avgSessionMin: String = "1 min avg -"
     }
-    
+
     enum SelectPeripheralView {
         static let airBeamsText: String = "AirBeams"
         static let otherText: String = "Other devices"
@@ -100,10 +103,12 @@ struct Strings {
         static let alertMessage: String = "Bluetooth connection failed. Please toggle the power on your device and try again."
         static let alertAccept: String = "Got it!"
         static let titleLabel: String = "Choose the device you'd like to record with"
+        static let titleSyncLabel: String = "Select the device you'd like to sync"
+        static let titleSDClearLabel: String = "Select the device you'd like to clear"
         static let refreshButton: String = "Don't see a device? Refresh scanning."
         static let connectText: String = "Connect"
     }
-    
+
     enum SessionCart {
         static let measurementsTitle: String = "Last second measurement:"
         static let dormantMeasurementsTitle: String = "Avg value:"
@@ -114,7 +119,7 @@ struct Strings {
         static let parametersText: String = "Parameters:"
         static let lastMinuteMeasurement: String = "Last minute measurement"
     }
-    
+
     enum Thresholds {
         static let veryHigh: String = "Max"
         static let high: String = "High"
@@ -122,7 +127,7 @@ struct Strings {
         static let low: String = "Low"
         static let veryLow: String = "Min"
     }
-    
+
     enum WifiPopupView {
         static let wifiPlaceholder: String = "Wi-Fi name"
         static let passwordPlaceholder: String = "Password"
@@ -138,20 +143,20 @@ struct Strings {
         static let description: String = "record and map measurements from health and environmental monitoring devices"
         static let getStarted: String = "Get started"
     }
-    
+
     enum OnboardingNearAir {
         static let title: String = "How’s the air \nnear you?"
         static let description: String = "Find and follow a fixed air quality monitor near you and know how clean or polluted your air is right now."
         static let continueButton: String = "How’s the air \nnear you?"
     }
-    
+
     enum OnboardingAirBeam {
         static let title: String = "Measure and map \nyour exposure \nto air pollution"
         static let description: String = "Connect AirBeam to measure air quality humidity, and temperature."
         static let continueButton: String = "Continue"
         static let sheetButton: String = "Learn More"
     }
-    
+
     enum OnboardingAirBeamSheet {
         static let sheetTitle: String = "How AirBeam \nworks?"
         static let sheetDescription_1: String = "In "
@@ -160,20 +165,20 @@ struct Strings {
         static let sheetDescription_4: String = "fixed "
         static let sheetDescription_5: String = "mode, it can be \ninstalled indoors or outdoors to \nkeep tabs on pollution levels in \nyour home, office, backyard, or \nneighborhood 24/7."
     }
-    
+
     enum OnboardingPrivacy {
         static let title: String = "Your privacy"
         static let description: String = "Review our commitment to preserving your privacy and accept our privacy policy."
         static let continueButton: String = "Accept"
         static let sheetButton: String = "Learn More"
     }
-    
+
     enum OnboardingPrivacySheet {
         static let title: String = "Our privacy policy"
         static let description: String = """
         HabitatMap protects the personal data of AirCasting mobile application users, and fulfills conditions deriving from the law, especially from the Regulation (EU) 2016/679 of the European Parliament and of the Council of 27 April 2016 on the protection of natural persons with regard to the processing of personal data and on the free movement of such data, and repealing Directive 95/46/EC (GDPR). HabitatMap protects the security of the data of AirCasting app users using appropriate technical, logistical, administrative, and physical protection measures. AirCasting ensures that its employees and contractors are given training in protection of personal data.
             This privacy policy sets out the rules for HabitatMap’s processing of your data, including personal data, in relation to your use of the AirCasting mobile application.
-            
+
             Personal Data Controller
             The controller of your personal data is HabitatMap Incorporated, with its registered office located at 34A St Marks Avenue, Brooklyn, NY 11217 USA
 
@@ -181,7 +186,7 @@ struct Strings {
             You can contact the data controller:
             postal address: 34A St Marks Avenue, Brooklyn, NY 11217 USA
             e-mail address: info@habitatmap.org
-            
+
             Categories of Personal Data
             1. Data Obtained Directly from Users of the AirCasting App
 
@@ -190,9 +195,9 @@ struct Strings {
             Information regarding your request to receive email newsletters;
             Any data you provide when communicating with HabitatMap via email;
             Location data;
-            
+
             Providing the above mentioned data is voluntary. In addition, you can modify your location sharing settings and withdraw the consent to receive email newsletters at any time.
-            
+
             HabitatMap’s AirCasting app and AirCasting website neither request any personally identifiable information nor require any personally identifiable information. Before using the AirCasting app, you must create a profile name and provide an email address. Neither your profile name nor email address need to include information that identifies you personally. In addition, we do not verify email addresses, so the email address provided need not be valid. Though it should be noted, an invalid email address will prevent you from recovering your account in the event you forget your password.
 
             Location: The AirCasting app collects location data to enable geolocation of your health and environmental monitoring measurements. When recording a mobile session, the app will track your location even when the app is closed or not in use. The AirCasting app has several features that enable location data to remain private. AirCasters can “disable maps” in the app settings, which turns off GPS tracking. When AirCasters record data with the GPS disabled, the data never leaves the Android device and is never synced to our servers. AirCasters can elect to save their data to the AirCasting server but not contribute it to the “CrowdMap”. This means the data can only be viewed on the website via a link that you generate inside the app when signed in. AirCasters can also elect to send the data from the app directly to their own server, entirely bypassing the AirCasting server. In addition, when recording fixed indoor sessions, GPS coordinates are never logged.
@@ -200,11 +205,11 @@ struct Strings {
             Microphone: To record sound level measurements, the AirCasting app requests permission to access your microphone. The raw audio captured by AirCasters’ microphones is never recorded; rather the audio signal is immediately converted to a sound level measurement before it is stored on the phone and communicated to the AirCasting server.
 
             Phone Status: To record sound level measurements, the AirCasting app requests permission to read your phone’s state. Knowing the state of an AirCaster’s phone allows the app to temporarily suspend the recording of sound level measurements during phone calls.
-            
+
             USB Storage: To attach photos to notes, the AirCasting app requests permission to read the contents of your USB storage.
 
             2. Data Received by HabitatMap from Third Parties
-            
+
             HabitatMap may also be considered as the controller of the personal data you provide to the operators of the systems you use that are integrated into the AirCasting app, e.g. Android (Google LLC). This may include data such as your IP address or your device identifier. Despite being considered as the data controller, HabitatMap has no direct access to this data, meaning the data are not visible to HabitatMap. However, the processing of this data is necessary to enable the proper functioning of the HabitatMap AirCasting mobile app.
 
             HabitatMap may also have access to data that may (but not necessarily) be considered personal data. In order to maintain, improve, and develop the app, and to customize some of the app content to your preferences, HabitatMap uses information received through or provided by third party tools, with similar functions to cookies. This may include information such as the identifiers of the mobile devices you use, the language of the device, the time the app is opened, and other data you have provided to the entity that owns such a tool (see below for more details about tracking tools).
@@ -213,9 +218,9 @@ struct Strings {
 
             Purposes & Legal Basis for the Processing of Personal Data
             Your personal data may be processed for the purpose of:
-            
+
             1. Performing a contract, or taking an action at your request prior to the conclusion of a contract, and for the purpose of pursuing claims under the contract (Article 6(1)(b) and (f) GDPR).
-            
+
             HabitatMap processes your personal data to enable you to fully enjoy all the features of the AirCasting mobile app. Information, such as the fact of downloading the application and providing you with relevant content, may also be processed after the contract expiration (uninstallation of the app), among others, in the event of HabitatMap being accused of incorrect performance of its obligations.
 
             2. Providing you, upon your request, with information about the state of air quality at your location, which is in the exercise of HabitatMap’s legitimate interest (Article 6(1)(f) GDPR).
@@ -229,7 +234,7 @@ struct Strings {
             3. Contacting you, at your request, and responding to your questions, which are in the exercise of HabitatMap’s legitimate interest (Article 6(1)(f) GDPR).
 
             HabitatMap allows you to send inquiries and suggestions for improvements to the app via email and will process the email address you provide for this purpose.
-            
+
             4. Maintaining, improving, and developing the application, and customizing some of the app content to your preferences, which are in the exercise of HabitatMap’s legitimate interest (Article 6(1)(f) GDPR).
 
             HabitatMap processes information that may (but not necessarily) be considered personal data, using third-party-provided tools that perform similar functions to cookies to maintain, improve, and develop the app and to customize some of the content to your preferences.
@@ -239,7 +244,7 @@ struct Strings {
             HabitatMap has direct access only to the personal data you have provided.
 
             Some of the information about you that may (but not necessarily) be considered personal data is processed by HabitatMap through the use of tools that perform similar functions to cookies, provided to HabitatMap by third-party providers (referred to below).
-            
+
             Tracking Tools and Automated Decision-making
 
             HabitatMap uses the Firebase Analytics tool provided by Google LLC, which performs similar functions to cookies. In order to maintain, improve, and develop the app, and to customize some of the app content to your preferences, HabitatMap uses information provided by Firebase Analytics. This information may include the identifiers of the mobile devices you use, the language of the device, the time the app is opened, and other data you have provided to Google.
@@ -247,7 +252,7 @@ struct Strings {
             HabitatMap is not able to recognize your identity from the data provided by Firebase Analytics. Information about Firebase Analytics and how it works can be found here: https://policies.google.com/technologies/ads and https://firebase.google.com/terms/.
 
             Data regarding your location may be used for the purpose of automated decision making, consisting in sending information regarding the current quality of air pollution in your location. Automated decision making for the purposes referred to above depends on your consent, which may be withdrawn at any time, without prejudice to the use of the other application functions.
-            
+
             Categories of the Recipients of Personal Data
 
             For the purposes mentioned above and in particular to enable you to use the AirCasting mobile app, your data may be shared with HabitatMap’s trusted partners. HabitatMap will only share data that are necessary for the purposes of the processing indicated above and only for the fulfillment of these purposes. HabitatMap ensures that your data is shared with the third parties in compliance with the security rules provided by law (in particular the GDPR) as well as in accordance with the provisions of this Privacy Policy.
@@ -259,7 +264,7 @@ struct Strings {
             e-mail service providers;
             software as a service providers enabling HabitatMap internal communication, project, and task management;
             providers of tools that perform similar functions to cookies.
-            
+
             Recipients of Personal Data Outside the European Economic Area
 
             In order to enable you to use the app, communicate with HabitatMap, send you notifications upon your request, and maintain, improve, and develop the app, and customize some of its content to your preferences, Google LLC, which is an entity located outside the European Economic Area (EEA), may be a recipient of your personal data.
@@ -268,14 +273,14 @@ struct Strings {
             standard contractual clauses – HabitatMap transfers personal data to entities outside the EEA that have committed to use standard contractual clauses and ensure an adequate level of security of the personal data received. There are currently three decisions by the European Commission on standard contractual clauses: (i) Decision 2001/497/EC; (ii) Decision 2004/915/EC; (iii) Decision 2010/87/EU. The content of all decisions is available in the Database of European Union legal acts at http://eur-lex.europa.eu;
             performance of the contract – in some exceptional cases, when the recipient of the data from the third country has not committed to the application of standard contractual clauses, your data may be transferred if it is necessary for the performance of the contract between you and HabitatMap or for the implementation of pre-contractual measures taken on your request;
             your consent – if none of the above grounds for transferring data to a recipient outside the EEA is applicable, HabitatMap will transfer your data to a third-country recipient only with your express consent. However, we would like to inform you that in this case there is a risk of not ensuring adequate protection of your personal data, in connection with their transfer to a recipient outside the EEA.
-            
+
             Period of Personal Data Storage
 
             Your personal data will be processed:
             no longer then until the execution of the agreement (i.e. until you uninstall the AirCasting app), and after its execution until the expiry of the statute of limitations for claims related to the agreement (as a rule, a three-year statute of limitations);
             in case of processing of personal data for the marketing purposes, until such processing is objected to (Article 21(1) of the GDPR) or until the withdrawn of the consent to receive information of a marketing nature;
             where the processing of personal data is based on your consent or permission (e.g. processing of your geo-location data) - until it is withdrawn.
-            
+
             Rights of the Data Subject
 
             You have the right to:
@@ -290,7 +295,7 @@ struct Strings {
             Miscellaneous
 
             This Privacy Policy may be subject to updates and changes. In such case, HabitatMap will take steps to inform you of any such updates or changes by, for example, sending you a notification. Notwithstanding the foregoing, HabitatMap recommends that you review this page as often as possible.
- 
+
  """
     }
 
@@ -303,14 +308,14 @@ struct Strings {
         static let airBeamDescriptionDescription: String = "AirBeam3 is weather resistant. To keep tabs on your outdoor air quality 24/7, hang one outside your home and record a fixed session."
         static let fetchingText: String = "Fetching..."
     }
-    
+
     enum EmptyDashboardFixed {
         static let title: String = "Ready to get started?"
         static let description: String = "Record a new session to monitor\n your health & environment."
         static let newSession: String = "Record new session"
         static let fetchingText: String = "Fetching..."
     }
-    
+
     enum PowerABView {
         static let alertTitle: String = "Location alert"
         static let alertMessage: String = "Please go to settings and allow location first."
@@ -320,7 +325,7 @@ struct Strings {
         static let messageText: String = "Wait for the conncection indicator to change from red to green before continuing."
         static let continueButton: String = "Continue"
     }
-    
+
     enum SelectDeviceView {
         static let alertTitle: String = "Location alert"
         static let alertMessage: String = "Please go to settings and allow location first."
@@ -333,67 +338,69 @@ struct Strings {
         static let micLabel_2: String = "to measure sound level"
         static let chooseButton: String = "Choose"
     }
-    
+
     enum OfflineAlert {
         static let title = "Device is offline"
         static let message = "Could not finish session synchronization"
         static let dismissTitle = "Ok"
     }
-    
+
     enum TurnOnBluetoothView {
         static let title: String = "Turn on Bluetooth"
         static let messageText: String = "Turn on Bluetooth to enable your phone to connect to the AirBeam"
         static let continueButton: String = "Continue"
     }
-    
+
     enum TurnOnLocationView {
         static let title: String = "Turn on location services"
         static let messageText: String = "To map your measurements, turn on location services."
         static let continueButton: String = "Turn on"
     }
-    
+
     enum DeleteSession {
         static let title: String = "Delete this session"
         static let description: String = "Which stream would you like to delete?"
         static let continueButton: String = "Delete streams"
         static let cancelButton: String = "Cancel"
+        static let deleteAlert: String = "Are You sure?"
+        static let deleteButton: String = "Delete"
     }
-    
+
     enum EditSession {
         static let title: String = "Edit session details"
         static let namePlaceholder: String = "Session name"
         static let tagPlaceholder: String = "Select a stream to share"
         static let buttonAccept: String = "Accept"
     }
-    
+
     enum SessionHeaderView {
         static let measurementsMicText: String = "Most recent measurement:"
         static let stopButton: String = "Stop recording"
         static let editButton: String = "Edit recording"
         static let shareButton: String = "Share session"
         static let deleteButton: String = "Delete session"
-        static let alertTitle: String = "No internet connection"
-        static let alertMessage: String = "You need to have internet connection to edit session data"
-        static let confirmAlert: String = "Got it!"
         static let stopRecordingButton: String = "Finish recording session"
+        static let enterStandaloneModeButton: String = "Enter standalone mode"
         static let finishAlertTitle: String = "Finish recording "
         static let finishAlertTitle_2: String = "this session"
         static let finishAlertTitle_3: String = "?"
+        static let finishAlertTitle_3_SYNC: String = "and sync from SD card?"
         static let finishAlertMessage_1: String = "The session will be moved to "
         static let finishAlertMessage_2: String = "Mobile Dormant"
         static let finishAlertMessage_3: String = " tab and you won't be able to add new measurement to it."
+        static let finishAlertMessage_4: String = "\nSD card will be cleared afterwards"
         static let finishAlertButton: String = "Finish recording"
         static let airBeam3: String = "AirBeam3"
         static let airBeam2: String = "AirBeam2"
         static let airBeam1: String = "AirBeam1"
         static let mic: String = "Phone Mic"
     }
-    
+
     enum NetworkChecker {
         static let satisfiedPathText: String = "Current device has a network connection"
         static let failurePathText: String = "Current device DOES NOT have a network connection"
     }
-    
+
     enum ChooseSessionTypeView {
         static let title: String = "Let's begin"
         static let message: String = "How would you like to add your session?"
@@ -403,26 +410,30 @@ struct Strings {
         static let fixedLabel_2: String = "for measuring in one place"
         static let mobileLabel_1: String = "Mobile session"
         static let mobileLabel_2: String = "for moving\naround"
+        static let orLabel: String = "or"
+        static let syncTitle: String = "Sync data from \nAirBeam3"
+        static let syncDescription: String = "if you recorded with AirBeam3"
+        
     }
-    
+
     enum MoreInfoPopupView {
         static let text_1: String = "Session types"
         static let text_2: String = "If you plan on moving around with the AirBeam3 while recording air quality measurement, configure the AirBeam to record a mobile session. When recording a mobile AirCasting session, measurements are created, timestamped, and geolocated once per second."
         static let text_3: String = "If you plan to leave the AirBeam3 indoors or hang it outside then configure it to record a fixed session. When recording fixed AirCasting sessions, measurements are created and timestamped once per minute, and geocoordinates are fixed to a set location."
     }
-    
+
     enum ConnectingABView {
         static let title: String = "Connecting"
         static let message: String = "This should take less than 10 seconds."
         static let connect: String = "Connect"
     }
-    
+
     enum ABConnectedView {
         static let title: String = "AirBeam connected"
         static let message: String = "Your AirBeam is connected to your phone and ready to take some measurements."
         static let continueButton: String = "Continue"
     }
-    
+
     enum CreateSessionDetailsView {
         static let wifiAlertTitle: String = "Wi-Fi credentials are empty "
         static let wifiAlertMessage: String = "Please, fill them up."
@@ -439,13 +450,13 @@ struct Strings {
         static let sessionNamePlaceholder: String = "Session name"
         static let sessionTagPlaceholder: String = "Tags"
     }
-        
+
     enum AirBeamConnector {
         static let connectionTimeoutTitle: String = "Connection error"
         static let connectionTimeoutDescription: String = "Bluetooth connection failed. Please toggle the power on your device and try again."
         static let connectionTimeoutActionTitle: String = "Got it!"
     }
-    
+
     enum ConfirmCreatingSessionView {
         static let alertTitle: String = "Failure"
         static let alertMessage: String = "Failed to create session"
@@ -458,13 +469,13 @@ struct Strings {
         static let contentViewText_4Mobile: String = "Move to your starting location, confirm your location is accurate on the map, then press the start recording button below."
         static let startRecording: String = "Start recording"
     }
-    
+
     enum ChooseCustomLocationView {
         static let sessionLocation: String = "Session location"
         static let titleLabel: String = "Search the address and adjust the marker to indicate an exact placement of Your AirBeam"
         static let continueButton: String = "Continue"
     }
-    
+
     enum MainTabBarView {
         static let homeIcon: String = "home"
         static let homeBlueIcon: String = "bluehome"
@@ -474,12 +485,78 @@ struct Strings {
         static let settingsBlueIcon: String = "bluesettings"
         static let loggingOut: String = "Logging out, please wait..."
     }
-    
+
     enum DashboardView {
         static let dashboardText: String = "Dashboard"
     }
-    
+
     enum RefreshControl {
         static let progressViewTest: String = "Syncing..."
+    }
+
+    enum StandaloneSessionCardView {
+        static let heading = "Your AirBeam3 is now in stand-alone mode"
+        static let description = "AirBeam3 is now recording using its SD card. The measurements will be displayed here after syncing."
+        static let finishAndSyncButtonLabel = "Finish recording & sync"
+        static let finishAndDontSyncButtonLabel = "Finish recording & don't sync"
+    }
+
+    enum SDSyncRootView {
+        static let title: String = "Updating sessions"
+        static let message: String = "Sessions must be updated prior to syncing SD card. Make sure your device is connected to the Internet."
+    }
+
+    enum SDSyncSuccessView {
+        static let title: String = "Success"
+        static let message: String = "Sessions were updated successfully"
+    }
+    
+    enum UnplugAirbeamView {
+        static let title: String = "Unplug your AirBeam"
+        static let message: String = "Keep it unplugged for the duration of the sync."
+        static let continueButton: String = "Continue"
+    }
+
+    enum SDRestartABView {
+        static let title: String = "Restart your AirBeam"
+        static let message: String = "Turn your AirBeam off and then back on."
+    }
+
+    enum SyncingABView {
+        static let message: String = "Keep your AirBeam unplugged and close to your iPhone"
+        static let alertTitle: String = "SD card sync failed"
+        static let alertMessage: String = "We're sorry, something unexpected caused the SD card sync to fail. Please try again"
+        static let startingSyncTitle: String = "Syncing..."
+        static let finishingSyncTitle: String = "Finalizing..."
+    }
+
+    enum SDSyncCompleteView {
+        static let title: String = "Sync complete"
+        static let message: String = "The data from your AirBeam3 was synchronized successfully to the app. The SD card was cleared."
+        static let SDClearTitle: String = "SD card cleared"
+        static let SDClearMessage: String = "SD inside your AirBeam was cleared sucesfully"
+    }
+    
+    enum ClearingSDCardView {
+        static let title: String = "Clearing SD card"
+        static let message: String = "This should take less then 10 seconds."
+        static let failedClearingAlertTitle: String = "Failed to clead SD card"
+        static let failedClearingAlertMessage: String = "Try again later"
+    }
+
+    enum DefaultDeleteSessionViewModel {
+        static let all: String = "All"
+    }
+    
+    enum DeviceHandler {
+        static let alertTitle = "Not supported device"
+        static let alertMessage = "To use the AirBeam3 in standalone mode and sync the SD card, an iPhone8 or higher is required"
+        static let continueText = "Continue"
+    }
+    
+    enum NetworkAlert {
+        static let alertTitle: String = "No internet connection"
+        static let alertMessage: String = "You need to have internet connection to continue"
+        static let confirmAlert: String = "Got it!"
     }
 }

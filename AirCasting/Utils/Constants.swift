@@ -9,7 +9,7 @@ struct Constants {
     }
     
     enum Map {
-        static let polylineWidth = 5
+        static let polylineWidth = 3
         static let dotRadius = 10
         static let dotWidth = 20
         static let dotHeight = 20
@@ -25,4 +25,8 @@ struct Constants {
         formatter.dateFormat = "HH:mm"
         return formatter
     }()
+    
+    enum SDCardSync {
+        static let numberOfMeasurementsInDataChunk = 4
+    }
 }

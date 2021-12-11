@@ -11,12 +11,16 @@ import SwiftUI
 
 struct TurnOnBluetoothView: View {
     @State private var isPowerABLinkActive = false
+    @State private var presentRestartScreen = false
+    @State private var presentUnplugScreen = false
     @EnvironmentObject var settingsRedirection: DefaultSettingsRedirection
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @Binding var creatingSessionFlowContinues: Bool
-    
+    @Binding var sdSyncContinues: Bool
+    var isSDClearProcess: Bool = false
+
     let urlProvider: BaseURLProvider
-    
+
     var body: some View {
         VStack(spacing: 50) {
             ProgressView(value: 0.125)
@@ -31,6 +35,7 @@ struct TurnOnBluetoothView: View {
                 .buttonStyle(BlueButtonStyle())
         }
         .background(
+            Group {
             NavigationLink(
                 destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider),
                 isActive: $isPowerABLinkActive,
@@ -38,6 +43,20 @@ struct TurnOnBluetoothView: View {
                     EmptyView()
                 }
             )
+           NavigationLink(
+                destination: UnplugABView(viewModel: UnplugABViewModelDefault(urlProvider: urlProvider, isSDClearProcess: isSDClearProcess), creatingSessionFlowContinues: $creatingSessionFlowContinues),
+                isActive: $presentUnplugScreen,
+                label: {
+                    EmptyView()
+                }
+           )
+            NavigationLink(
+                 destination: SDRestartABView(viewModel: SDRestartABViewModelDefault(urlProvider: urlProvider, isSDClearProcess: isSDClearProcess), creatingSessionFlowContinues: $creatingSessionFlowContinues),
+                 isActive: $presentRestartScreen,
+                 label: {
+                     EmptyView()
+                 })
+             }
         )
         .onAppear(perform: {
             if CBCentralManager.authorization != .allowedAlways {
@@ -46,20 +65,20 @@ struct TurnOnBluetoothView: View {
         })
         .padding()
     }
-    
+
     var titleLabel: some View {
         Text(Strings.TurnOnBluetoothView.title)
             .font(Fonts.boldTitle3)
             .foregroundColor(.accentColor)
     }
-    
+
     var messageLabel: some View {
         Text(Strings.TurnOnBluetoothView.messageText)
             .font(Fonts.regularHeading1)
             .foregroundColor(.aircastingGray)
             .lineSpacing(10.0)
     }
-    
+
     var continueButton: some View {
         Button(action: {
             if CBCentralManager.authorization == .denied {
@@ -67,7 +86,11 @@ struct TurnOnBluetoothView: View {
             } else if bluetoothManager.centralManager.state != .poweredOn {
                 settingsRedirection.goToBluetoothAuthSettings()
             } else {
-                isPowerABLinkActive = true
+                if isSDClearProcess {
+                    presentRestartScreen.toggle()
+                } else {
+                    sdSyncContinues ? presentUnplugScreen.toggle() : isPowerABLinkActive.toggle()
+                }
             }
         }, label: {
             Text(Strings.TurnOnBluetoothView.continueButton)
@@ -76,4 +99,3 @@ struct TurnOnBluetoothView: View {
         .buttonStyle(BlueButtonStyle())
     }
 }
-

@@ -12,11 +12,11 @@ enum AirBeamServicesConnectionResult {
 
 protocol ConnectingAirBeamServices {
     func connect(to peripheral: CBPeripheral, timeout: TimeInterval, completion: @escaping (AirBeamServicesConnectionResult) -> Void)
+    func disconnect(from peripheral: CBPeripheral)
 }
 
 class ConnectingAirBeamServicesBluetooth: ConnectingAirBeamServices {
     
-    private(set) var connectionInProgress = true
     private let bluetoothConnector: BluetoothConnector
     private var connectionToken: AnyObject?
     
@@ -25,16 +25,18 @@ class ConnectingAirBeamServicesBluetooth: ConnectingAirBeamServices {
     }
 
     func connect(to peripheral: CBPeripheral, timeout: TimeInterval, completion: @escaping (AirBeamServicesConnectionResult) -> Void) {
+        var connectionInProgress = true
         Log.info("Starting Airbeam connection")
         guard !(peripheral.state == .connecting) else {
             completion(.deviceBusy); return
         }
         bluetoothConnector.connect(to: peripheral)
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(Int(timeout))) {
-            if self.connectionInProgress {
+            if connectionInProgress {
                 Log.info("Airbeam connection failed")
                 self.bluetoothConnector.cancelPeripheralConnection(for: peripheral)
                 completion(.timeout)
+                NotificationCenter.default.removeObserver(self.connectionToken)
             }
         }
         connectionToken = NotificationCenter.default.addObserver(forName: .deviceConnected, object: nil, queue: nil) { _ in
@@ -43,11 +45,15 @@ class ConnectingAirBeamServicesBluetooth: ConnectingAirBeamServices {
             NotificationCenter.default.removeObserver(self.connectionToken)
             characteristicsHandle = NotificationCenter.default.addObserver(forName: .discoveredCharacteristic, object: nil, queue: .main) { notification in
                 guard notification.userInfo?[AirCastingNotificationKeys.DiscoveredCharacteristic.peripheralUUID] as! UUID == peripheral.identifier else { return }
-                self.connectionInProgress = false
+                connectionInProgress = false
                 completion(.success)
                 guard let characteristicsHandle = characteristicsHandle else { return }
                 NotificationCenter.default.removeObserver(characteristicsHandle)
             }
         }
+    }
+    
+    func disconnect(from peripheral: CBPeripheral) {
+        bluetoothConnector.cancelPeripheralConnection(for: peripheral)
     }
 }

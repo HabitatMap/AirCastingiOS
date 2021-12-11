@@ -107,6 +107,15 @@ enum DateFormatters {
             return df
         }()
     }
+    
+    enum SDCardSync {
+        static let fileParserFormatter: DateFormatter = {
+            let dateFormatter = DateFormatter()
+            dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+            dateFormatter.dateFormat = "MM/dd/yyyy'T'HH:mm:ss"
+            return dateFormatter
+        }()
+    }
 }
 
 

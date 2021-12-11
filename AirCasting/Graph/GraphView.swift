@@ -16,6 +16,7 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
     let graphStatsDataSource: GraphStatsDataSource
     let sessionStoppableFactory: SessionStoppableFactory
     let measurementStreamStorage: MeasurementStreamStorage
+    let sessionSynchronizer: SessionSynchronizer
     
     var body: some View {
         VStack(alignment: .trailing) {
@@ -24,21 +25,21 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                                   isSensorTypeNeeded: false,
                                   isCollapsed: Binding.constant(false),
                                   session: session,
-                                  sessionStopperFactory: sessionStoppableFactory)
+                                  sessionStopperFactory: sessionStoppableFactory,
+                                  measurementStreamStorage: measurementStreamStorage,
+                                  sessionSynchronizer: sessionSynchronizer)
                 .padding([.bottom, .leading, .trailing])
             
-            ABMeasurementsView(viewModelProvider: {
-                DefaultSyncingMeasurementsViewModel(measurementStreamStorage: measurementStreamStorage,
-                                          sessionDownloader: SessionDownloadService(client: URLSession.shared,
-                                                                                    authorization: UserAuthenticationSession(),
-                                                                                    responseValidator: DefaultHTTPResponseValidator()),
-                                          session: session)
-            },
-                               session: session,
-                               isCollapsed: Binding.constant(false),
-                               selectedStream: $selectedStream,
-                               thresholds: thresholds,
-                               measurementPresentationStyle: .showValues)
+            ABMeasurementsView(
+                session: session,
+                isCollapsed: Binding.constant(false),
+                selectedStream: $selectedStream,
+                thresholds: thresholds, measurementPresentationStyle: .showValues,
+                viewModel: DefaultSyncingMeasurementsViewModel(measurementStreamStorage: measurementStreamStorage,
+                                                               sessionDownloader: SessionDownloadService(client: URLSession.shared,
+                                                                authorization: UserAuthenticationSession(),
+                                                                responseValidator: DefaultHTTPResponseValidator()),
+                                                                session: session))
                 .padding(.horizontal)
            
             if isProceeding(session: session) {
@@ -92,7 +93,8 @@ struct GraphView_Previews: PreviewProvider {
                   statsContainerViewModel: FakeStatsViewModel(),
                   graphStatsDataSource: GraphStatsDataSource(),
                   sessionStoppableFactory: SessionStoppableFactoryDummy(),
-                  measurementStreamStorage: PreviewMeasurementStreamStorage())
+                  measurementStreamStorage: PreviewMeasurementStreamStorage(),
+                  sessionSynchronizer: DummySessionSynchronizer())
     }
 }
 #endif

@@ -20,14 +20,16 @@ struct GoogleMapView: UIViewRepresentable {
     private(set) var threshold: SensorThreshold?
     var isMyLocationEnabled: Bool = false
     private var onPositionChange: (([PathPoint]) -> ())? = nil
+    var isSessionFixed: Bool
     
-    init(pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false, placePickerDismissed: Binding<Bool>, isUserInteracting: Binding<Bool>, isSessionActive: Bool = false) {
+    init(pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false, placePickerDismissed: Binding<Bool>, isUserInteracting: Binding<Bool>, isSessionActive: Bool = false, isSessionFixed: Bool = false) {
         self.pathPoints = pathPoints
         self.threshold = threshold
         self.isMyLocationEnabled = isMyLocationEnabled
         self._placePickerDismissed = placePickerDismissed
         self._isUserInteracting = isUserInteracting
         self.liveModeOn = isSessionActive
+        self.isSessionFixed = isSessionFixed
     }
     
     func makeUIView(context: Context) -> GMSMapView {
@@ -41,9 +43,10 @@ struct GoogleMapView: UIViewRepresentable {
         mapView.settings.myLocationButton = liveModeOn
         mapView.delegate = context.coordinator
         mapView.isMyLocationEnabled = isMyLocationEnabled
-        polylineDrawing(mapView, context: context)
+        drawPolyline(mapView, context: context)
         context.coordinator.currentlyDisplayedPathPoints = pathPoints
-        context.coordinator.currentThreshold = ThresholdWitness(sensorThreshold: threshold)
+        context.coordinator.currentThresholdWitness = ThresholdWitness(sensorThreshold: threshold)
+        context.coordinator.currentThreshold = threshold
         context.coordinator.myLocationSink = mapView.publisher(for: \.myLocation)
             .sink { [weak mapView] (location) in
                 guard let coordinate = location?.coordinate else { return }
@@ -62,25 +65,29 @@ struct GoogleMapView: UIViewRepresentable {
     
     func updateUIView(_ uiView: GMSMapView, context: Context) {
         guard isUserInteracting else { return }
-            let thresholdWitness = ThresholdWitness(sensorThreshold: self.threshold)
-            if pathPoints != context.coordinator.currentlyDisplayedPathPoints ||
-                thresholdWitness != context.coordinator.currentThreshold {
-                polylineDrawing(uiView, context: context)
-                context.coordinator.currentlyDisplayedPathPoints = pathPoints
-                context.coordinator.currentThreshold = ThresholdWitness(sensorThreshold: threshold)
-            }
-            placePickerDismissed ? uiView.moveCamera(cameraUpdate) : nil
-            // Update camera's starting point
-            guard context.coordinator.shouldAutoTrack else { return }
-                DispatchQueue.main.async {
-                    uiView.moveCamera(cameraUpdate)
-                    if uiView.camera.zoom > 16 {
-                        // The zoom is set automatically somehow which results sometimes in 'too close' map
-                        // This helps us to fix it and still manage to fit into the 'bigger picture' if needed because of the long session
-                        uiView.animate(toZoom: 16)
-                    }
-                }
+        let thresholdWitness = ThresholdWitness(sensorThreshold: self.threshold)
+  
+        if pathPoints != context.coordinator.currentlyDisplayedPathPoints ||
+            thresholdWitness != context.coordinator.currentThresholdWitness {
+            drawPolyline(uiView, context: context)
+            context.coordinator.currentlyDisplayedPathPoints = pathPoints
+            context.coordinator.currentThresholdWitness = ThresholdWitness(sensorThreshold: threshold)
+            context.coordinator.currentThreshold = threshold
+            context.coordinator.drawHeatmap(uiView)
         }
+        
+        placePickerDismissed ? uiView.moveCamera(cameraUpdate) : nil
+        // Update camera's starting point
+        guard context.coordinator.shouldAutoTrack else { return }
+        DispatchQueue.main.async {
+            uiView.moveCamera(cameraUpdate)
+            if uiView.camera.zoom > 16 {
+                // The zoom is set automatically somehow which results sometimes in 'too close' map
+                // This helps us to fix it and still manage to fit into the 'bigger picture' if needed because of the long session
+                uiView.animate(toZoom: 16)
+            }
+        }
+    }
     
     var cameraUpdate: GMSCameraUpdate {
         guard !pathPoints.isEmpty else {
@@ -109,23 +116,29 @@ struct GoogleMapView: UIViewRepresentable {
             return newCameraPosition
         } else {
             let appleParkPosition = GMSCameraPosition.camera(withLatitude: 37.35,
-                                                            longitude: -122.05,
-                                                            zoom: 16)
+                                                             longitude: -122.05,
+                                                             zoom: 16)
             return appleParkPosition
         }
     }
-
+    
     func color(point: PathPoint) -> UIColor {
         let measurement = Int32(point.measurement)
         guard let thresholds = threshold else { return .white }
         
-        let veryLow = thresholds.thresholdVeryLow
-        let low = thresholds.thresholdLow
-        let medium = thresholds.thresholdMedium
-        let high = thresholds.thresholdHigh
-        let veryHigh = thresholds.thresholdVeryHigh
+        return GoogleMapView.color(value: measurement, threshold: thresholds)
+    }
+    
+    static func color(value: Int32, threshold: SensorThreshold?) -> UIColor {
+        guard let threshold = threshold else { return .white }
         
-        switch measurement {
+        let veryLow = threshold.thresholdVeryLow
+        let low = threshold.thresholdLow
+        let medium = threshold.thresholdMedium
+        let high = threshold.thresholdHigh
+        let veryHigh = threshold.thresholdVeryHigh
+        
+        switch value {
         case veryLow ..< low:
             return UIColor.aircastingGreen
         case low ..< medium:
@@ -139,7 +152,19 @@ struct GoogleMapView: UIViewRepresentable {
         }
     }
     
-    func polylineDrawing(_ uiView: GMSMapView, context: Context) {
+    fileprivate func drawLastMeasurementPoint(_ dot: GMSMarker) {
+        guard liveModeOn || isSessionFixed else {
+            dot.map = nil
+            return
+        }
+        
+        guard let last = pathPoints.last else { return }
+        
+        let mainPoint = UIImage.imageWithColor(color: color(point: last), size: CGSize(width: Constants.Map.dotWidth, height: Constants.Map.dotHeight))
+        dot.icon = mainPoint
+    }
+    
+    func drawPolyline(_ uiView: GMSMapView, context: Context) {
         // Drawing the path
         let path = GMSMutablePath()
         let dot = context.coordinator.dot
@@ -147,36 +172,29 @@ struct GoogleMapView: UIViewRepresentable {
         for point in pathPoints {
             let coordinate = point.location
             path.add(coordinate)
-
+            
             dot.position = coordinate
             dot.map = uiView
         }
         
-        if let last = pathPoints.last {
-            let mainPoint = UIImage.imageWithColor(color: color(point: last), size: CGSize(width: Constants.Map.dotWidth, height: Constants.Map.dotHeight))
-            dot.icon = mainPoint
-        }
+        drawLastMeasurementPoint(dot)
         
         let polyline = context.coordinator.polyline
-        let spans = pathPoints.map { point -> GMSStyleSpan in
-        let color = color(point: point)
-        return GMSStyleSpan(style: GMSStrokeStyle.solidColor(color),
-                                segments: 1)
-        }
-
+        
         polyline.path = path
-        polyline.spans = spans
+        polyline.strokeColor = .accentColor
         polyline.strokeWidth = CGFloat(Constants.Map.polylineWidth)
         polyline.map = uiView
     }
     
     class Coordinator: NSObject, UINavigationControllerDelegate, GMSMapViewDelegate {
-
         var parent: GoogleMapView!
         let polyline = GMSPolyline()
         let dot = GMSMarker()
         var currentlyDisplayedPathPoints = [PathPoint]()
-        var currentThreshold: ThresholdWitness?
+        var currentThresholdWitness: ThresholdWitness?
+        var currentThreshold: SensorThreshold?
+        var heatmap: Heatmap? = nil
         
         init(_ parent: GoogleMapView) {
             self.parent = parent
@@ -190,6 +208,26 @@ struct GoogleMapView: UIViewRepresentable {
             positionChanged(for: mapView)
             
             shouldAutoTrack = false
+        }
+        
+        func mapView(_ mapView: GMSMapView, idleAt cameraPosition: GMSCameraPosition) {
+            drawHeatmap(mapView)
+        }
+        
+        func drawHeatmap(_ mapView: GMSMapView) {
+            guard !parent.isSessionFixed else { return }
+            
+            let mapWidth = mapView.frame.width
+            let mapHeight = mapView.frame.height
+            
+            guard mapWidth > 0, mapHeight > 0 else { return }
+            
+            heatmap?.remove()
+            heatmap = nil
+            
+            guard let threshold = currentThreshold else { return }
+            heatmap = Heatmap(mapView, sensorThreshold: threshold, mapWidth: Int(mapWidth), mapHeight: Int(mapHeight))
+            heatmap?.drawHeatMap(pathPoints: currentlyDisplayedPathPoints)
         }
         
         func didTapMyLocationButton(for mapView: GMSMapView) -> Bool {
@@ -210,7 +248,7 @@ struct GoogleMapView: UIViewRepresentable {
             let visiblePathPoints = parent.pathPoints.filter { bounds.contains($0.location) }
             parent.onPositionChange?(visiblePathPoints)
         }
-
+        
         var shouldAutoTrack: Bool = true
         var myLocationSink: Any?
     }

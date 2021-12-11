@@ -1,6 +1,3 @@
-// Created by Lunar on 07/06/2021.
-//
-
 import SwiftUI
 import AirCastingStyling
 
@@ -10,13 +7,12 @@ enum MeasurementPresentationStyle {
 }
 
 struct ABMeasurementsView<VM: SyncingMeasurementsViewModel>: View {
-    var viewModelProvider: () -> VM
     @ObservedObject var session: SessionEntity
     @Binding var isCollapsed: Bool
     @Binding var selectedStream: MeasurementStreamEntity?
     var thresholds: [SensorThreshold]
     let measurementPresentationStyle: MeasurementPresentationStyle
-    @State private var viewModel: VM?
+    @StateObject var viewModel: VM
     
     var body: some View {
         ZStack {
@@ -29,15 +25,12 @@ struct ABMeasurementsView<VM: SyncingMeasurementsViewModel>: View {
                                     measurementPresentationStyle: measurementPresentationStyle)
             }
         }
-        .onAppear {
-            viewModel = viewModelProvider()
-        }
     }
 }
 
 struct _ABMeasurementsView: View {
     
-    @ObservedObject var measurementsViewModel: DefaultSyncingMeasurementsViewModel
+    @StateObject var measurementsViewModel: DefaultSyncingMeasurementsViewModel
     @ObservedObject var session: SessionEntity
     @Binding var isCollapsed: Bool
     @Binding var selectedStream: MeasurementStreamEntity?
@@ -52,8 +45,7 @@ struct _ABMeasurementsView: View {
     }
     
     var body: some View {
-        let streams = streamsToShow
-        let hasAnyMeasurements = streams.filter { $0.latestValue != nil }.count > 0
+        let hasAnyMeasurements = streamsToShow.filter { $0.latestValue != nil }.count > 0
         
         return Group {
             if hasAnyMeasurements {
@@ -63,7 +55,7 @@ struct _ABMeasurementsView: View {
                         .padding(.bottom, 3)
                     HStack {
                         streamsToShow.count != 1 ? Spacer() : nil
-                        ForEach(streams, id : \.self) { stream in
+                        ForEach(streamsToShow.filter({ !$0.gotDeleted }), id : \.self) { stream in
                             if let threshold = thresholds.threshold(for: stream) {
                                 SingleMeasurementView(stream: stream,
                                                       threshold: threshold,
@@ -72,7 +64,7 @@ struct _ABMeasurementsView: View {
                                                       measurementPresentationStyle: measurementPresentationStyle,
                                                       isDormant: session.isDormant)
                             }
-                        Spacer()
+                            Spacer()
                         }
                     }
                 }
@@ -110,7 +102,7 @@ struct _ABMeasurementsView: View {
         return HStack {
             Group {
                 streamsToShow.count != 1 ? Spacer() : nil
-                ForEach(streamsToShow, id : \.self) { stream in
+                ForEach(streamsToShow.filter({ !$0.gotDeleted }), id : \.self) { stream in
                     SingleMeasurementView(stream: stream,
                                           threshold: nil,
                                           selectedStream: $selectedStream,

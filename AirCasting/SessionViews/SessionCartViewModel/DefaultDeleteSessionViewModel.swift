@@ -2,48 +2,126 @@
 //
 
 import Foundation
+import Combine
 
 class DefaultDeleteSessionViewModel: DeleteSessionViewModel {
+    private let measurementStreamStorage: MeasurementStreamStorage
+    private var session: SessionEntity
+    private let streamRemover: StreamRemover
+    private let sessionSynchronizer: SessionSynchronizer
+    @Published var showingConfirmationAlert: Bool = false
+    
     var deleteEnabled: Bool = false {
         willSet {
             objectWillChange.send()
         }
     }
     
-    func deleteSelected() {
-        #warning("TODO: Implement me")
-    }
-    
-    func didSelect(option: DeleteSessionOptionViewModel) {
-        guard let index = options.firstIndex(where: { $0.id == option.id }) else {
-            assertionFailure("Unknown option index")
-            return
-        }
-        options[index].toggleSelection()
-        if index == 0 {
-            for i in options.indices {
-                options[i].changeSelection(newSelected: options[0].isSelected)
-            }
-        }
-    }
-    
-    // It is variable because of the following scenario :
-    // 1. Go to delete session scene
-    // 2. Remove one of the streams on different device
-    // 3. It should after sync it should get removed from the view
-    
-    var options: [DeleteSessionOptionViewModel] {
+    var streamOptions: [DeleteSessionOptionViewModel] {
         willSet {
             objectWillChange.send()
         }
     }
     
-    init() {
-        #warning("TODO: When implementing please provide real data")
-        options = [.init(id: 0, title: "All", isSelected: false, isEnabled: false),
-                   .init(id: 1, title: "PM1", isSelected: false, isEnabled: false),
-                   .init(id: 2, title: "PM2.5", isSelected: false, isEnabled: false),
-                   .init(id: 3, title: "RH", isSelected: false, isEnabled: false),
-                   .init(id: 4, title: "F", isSelected: false, isEnabled: false)]
+    private var streamsToDelete: [String] {
+        var arrayOfContent = [String]()
+        streamOptions.filter({ $0.isSelected }).forEach { option in
+            guard let stream = session.allStreams?.first(where: { ($0.sensorName!.contains(option.title)) }) else { return }
+            guard stream.sensorName != nil else { return }
+            arrayOfContent.append(stream.sensorName!)
+        }
+        return arrayOfContent
+    }
+    
+    init(session: SessionEntity, measurementStreamStorage: MeasurementStreamStorage, streamRemover: StreamRemover, sessionSynchronizer: SessionSynchronizer) {
+        self.measurementStreamStorage = measurementStreamStorage
+        self.session = session
+        self.streamRemover = streamRemover
+        self.sessionSynchronizer = sessionSynchronizer
+        
+        var sessionStreams: [MeasurementStreamEntity] {
+            return session.sortedStreams?.filter( {!$0.gotDeleted} ) ?? []
+        }
+        
+        streamOptions = [.init(id: -1, title: Strings.DefaultDeleteSessionViewModel.all, isSelected: false, isEnabled: false)]
+        showProperStreams(sessionStreams: sessionStreams)
+    }
+    
+    func showConfirmationAlert() {
+        showingConfirmationAlert = true
+    }
+    
+    private func showProperStreams(sessionStreams: [MeasurementStreamEntity]) {
+        for (id, stream) in sessionStreams.enumerated() {
+            if var streamName = stream.sensorName {
+                if streamName == Constants.SensorName.microphone {
+                    streamOptions.append(.init(id: id, title: "dB", isSelected: false, isEnabled: false))
+                } else {
+                    streamName = streamName.components(separatedBy: "-")[1]
+                    streamOptions.append(.init(id: id, title: streamName, isSelected: false, isEnabled: false))
+                }
+            }
+        }
+    }
+    
+    func deleteSelected() {
+        measurementStreamStorage.accessStorage { [self] storage in
+            do {
+                if self.streamOptions.first!.isSelected {
+                    try storage.markSessionForDelete(self.session.uuid)
+                } else {
+                    try? storage.markStreamForDelete(session.uuid, sensorsName: streamsToDelete) {
+                        processStreamDeleting()
+                    }
+                }
+            } catch {
+                Log.info("Error when deleting sessions/streams")
+            }
+           executeSyncAfterRemove()
+        }
+    }
+    
+    private func executeSyncAfterRemove() {
+        guard sessionSynchronizer.syncInProgress.value else {
+            sessionSynchronizer.triggerSynchronization(options: [.upload, .remove])
+            return
+        }
+        var subscription: AnyCancellable?
+        subscription = sessionSynchronizer.syncInProgress.receive(on: DispatchQueue.main).sink { value in
+            guard value == false else { return }
+            self.sessionSynchronizer.triggerSynchronization(options: [.upload, .remove])
+            subscription?.cancel()
+        }
+        return
+    }
+    
+    private func processStreamDeleting() {
+        self.measurementStreamStorage.accessStorage { [self] storage in
+            guard let sessionToPass = try? storage.getExistingSession(with: session.uuid) else { return }
+            streamRemover.deleteStreams(session: sessionToPass) {
+                try? storage.deleteStreams(session.uuid)
+            }
+        }
+    }
+    
+    func didSelect(option: DeleteSessionOptionViewModel) {
+        guard let index = streamOptions.firstIndex(where: { $0.id == option.id }) else {
+            assertionFailure("Unknown option index")
+            return
+        }
+        streamOptions[index].toggleSelection()
+        
+        if index == 0 {
+            for i in streamOptions.indices {
+                streamOptions[i].changeSelection(newSelected: streamOptions[0].isSelected)
+            }
+        } else {
+            if streamOptions[index].isSelected == false && streamOptions[0].isSelected {
+                streamOptions[0].isSelected = false
+            }
+            if streamOptions.dropFirst().allSatisfy({ $0.isSelected }) {
+                streamOptions[0].isSelected = true
+            }
+        }
     }
 }

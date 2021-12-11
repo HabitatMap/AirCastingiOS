@@ -36,6 +36,7 @@ public class SessionEntity: NSManagedObject, Identifiable {
 
     @NSManaged public var urlLocation: String?
     @NSManaged public var version: Int16
+    @NSManaged public var changesCount: Int32
     
     /// Of type MeasurementStreamEntity
     @NSManaged public var measurementStreams: NSOrderedSet?
@@ -108,6 +109,10 @@ public class SessionEntity: NSManagedObject, Identifiable {
     
     public var lastMeasurementTime: Date? {
         allStreams?.filter { $0.lastMeasurementTime != nil }.map { $0.lastMeasurementTime! }.max()
+    }
+    
+    public var sensorPackageName: String {
+        allStreams?.first?.sensorPackageName ?? ""
     }
     
     func streamWith(sensorName: String) -> MeasurementStreamEntity? {

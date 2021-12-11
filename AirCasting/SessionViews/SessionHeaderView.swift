@@ -11,29 +11,41 @@ struct SessionHeaderView: View {
     let action: () -> Void
     let isExpandButtonNeeded: Bool
     var isSensorTypeNeeded: Bool = true
+    var isMenuNeeded = true
     @Binding var isCollapsed: Bool
     @State var chevronIndicator = "chevron.down"
     @EnvironmentObject var networkChecker: NetworkChecker
+    @EnvironmentObject var bluetoothManager: BluetoothManager
     @ObservedObject var session: SessionEntity
-    @State private var showingAlert = false
-    @State private var showingFinishAlert = false
+    @State private var showingNoConnectionAlert = false
+    @State private var alert: AlertInfo?
     let sessionStopperFactory: SessionStoppableFactory
-    
+    @StateObject private var featureFlagsViewModel = FeatureFlagsViewModel.shared
+    @State var showDeleteModal = false
+    let measurementStreamStorage: MeasurementStreamStorage
+    let sessionSynchronizer: SessionSynchronizer
+    @EnvironmentObject var authorization: UserAuthenticationSession
+
     var body: some View {
         VStack(alignment: .leading, spacing: 3) {
                 HStack {
                     dateAndTime
                         .foregroundColor(Color.aircastingTimeGray)
                     Spacer()
-                    session.isActive ? actionsMenuMobile : nil
+                    isMenuNeeded ? actionsMenuMobile : nil
                 }
             nameLabelAndExpandButton
-        }.onChange(of: isCollapsed, perform: { value in
+        }
+        .alert(item: $alert, content: { $0.makeAlert() })
+        .onChange(of: isCollapsed, perform: { value in
             isCollapsed ? (chevronIndicator = "chevron.down") :  (chevronIndicator = "chevron.up")
         })
         .sheet(isPresented: Binding.constant(false), content: {
             ShareView(showModal: Binding.constant(false))
         })
+        .sheet(isPresented: $showDeleteModal) {
+            DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session, measurementStreamStorage: measurementStreamStorage, streamRemover: StreamRemoverDefault(authorization: authorization), sessionSynchronizer: sessionSynchronizer), deleteModal: $showDeleteModal)
+        }
         .font(Fonts.regularHeading4)
         .foregroundColor(.aircastingGray)
     }
@@ -43,7 +55,7 @@ private extension SessionHeaderView {
     var dateAndTime: some View {
         adaptTimeAndDate()
     }
-    
+
     var nameLabelAndExpandButton: some View {
         VStack(alignment: .leading, spacing: 3) {
             HStack {
@@ -72,7 +84,7 @@ private extension SessionHeaderView {
         }
         .foregroundColor(.darkBlue)
     }
-    
+
     var sensorType: some View {
         var stream = [String]()
         var text = ""
@@ -87,7 +99,7 @@ private extension SessionHeaderView {
         text = stream.joined(separator: ", ")
         return Text("\(session.type!.description) : \(text)")
     }
-    
+
     func componentsSeparation(name: inout String) {
         // separation is used to nicely handle the case where sensor could be
         // AirBeam2-xxxx or AirBeam2:xxx
@@ -97,10 +109,14 @@ private extension SessionHeaderView {
             name = name.components(separatedBy: "-").first!
         }
     }
-    
+
     var actionsMenuMobile: some View {
         Menu {
-            actionsMenuMobileStopButton
+            session.isActive ? actionsMenuStopButton : nil
+            session.deletable ? actionsMenuDeleteButton : nil
+            if session.deviceType == .AIRBEAM3 && session.isActive && featureFlagsViewModel.enabledFeatures.contains(.standaloneMode) {
+                actionsMenuMobileEnterStandaloneMode
+            }
         } label: {
             ZStack(alignment: .trailing) {
                 EditButtonView()
@@ -108,39 +124,33 @@ private extension SessionHeaderView {
                     .frame(width: 50, height: 35, alignment: .trailing)
                     .opacity(0.0001)
             }
-        }.alert(isPresented: $showingFinishAlert) {
-            Alert(title: Text(Strings.SessionHeaderView.finishAlertTitle) +
-                    Text(session.name ?? Strings.SessionHeaderView.finishAlertTitle_2)
-                    +
-                    Text(Strings.SessionHeaderView.finishAlertTitle_3),
-                  message: Text(Strings.SessionHeaderView.finishAlertMessage_1) +
-                    Text(Strings.SessionHeaderView.finishAlertMessage_2) +
-                    Text(Strings.SessionHeaderView.finishAlertMessage_3),
-                  primaryButton: .default(Text(Strings.SessionHeaderView.finishAlertButton), action: {
-                    do {
-                        try sessionStopperFactory.getSessionStopper(for: session).stopSession()
-                    } catch {
-                        Log.info("error when stpoing session - \(error)")
-                    }
-                  }),
-                  secondaryButton: .cancel())
         }
     }
-    
-    var actionsMenuMobileStopButton: some View {
+
+    var actionsMenuStopButton: some View {
         Button {
-            showingFinishAlert = true
+            alert = InAppAlerts.finishSessionAlert(sessionName: session.name, action: {
+                self.finishSessionAlertAction(sessionStopper: self.sessionStopperFactory.getSessionStopper(for: self.session))
+            })
         } label: {
             Label(Strings.SessionHeaderView.stopRecordingButton, systemImage: "stop.circle")
         }
     }
-    
+
+    var actionsMenuMobileEnterStandaloneMode: some View {
+        Button {
+            bluetoothManager.enterStandaloneMode(sessionUUID: session.uuid)
+        } label: {
+            Label(Strings.SessionHeaderView.enterStandaloneModeButton, systemImage: "xmark.circle")
+        }
+    }
+
     var actionsMenuFixed: some View {
         Menu {
-            actionsMenuFixedRepeatButton
-            actionsMenuFixedEditButton
-            actionsMenuFixedShareButton
-            actionsMenuFixedDeleteButton
+            actionsMenuRepeatButton
+            actionsMenuEditButton
+            actionsMenuShareButton
+            actionsMenuDeleteButton
         } label: {
             ZStack(alignment: .trailing) {
                 EditButtonView()
@@ -148,23 +158,19 @@ private extension SessionHeaderView {
                     .frame(width: 35, height: 25, alignment: .trailing)
                     .opacity(0.0001)
             }
-        }.alert(isPresented: $showingAlert) {
-            Alert(title: Text(Strings.SessionHeaderView.alertTitle),
-                  message: Text(Strings.SessionHeaderView.alertMessage),
-                  dismissButton: .default(Text(Strings.SessionHeaderView.confirmAlert)))
         }
         .sheet(isPresented: Binding.constant(false)) { EditViewModal(showModalEdit: Binding.constant(false)) }
     }
-    
-    var actionsMenuFixedRepeatButton: some View {
+
+    var actionsMenuRepeatButton: some View {
         Button {
             // action here
         } label: {
             Label("resume", systemImage: "repeat")
         }
     }
-    
-    var actionsMenuFixedEditButton: some View {
+
+    var actionsMenuEditButton: some View {
         Button {
             DispatchQueue.main.async {
                 print(" \(networkChecker.connectionAvailable) NETWORK")
@@ -174,32 +180,40 @@ private extension SessionHeaderView {
             Label(Strings.SessionHeaderView.editButton, systemImage: "pencil")
         }
     }
-    
-    var actionsMenuFixedShareButton: some View {
+
+    var actionsMenuShareButton: some View {
         Button {
             // action here
         } label: {
             Label(Strings.SessionHeaderView.shareButton, systemImage: "square.and.arrow.up")
         }
     }
-    
-    var actionsMenuFixedDeleteButton: some View {
+
+    var actionsMenuDeleteButton: some View {
         Button {
-            // action here
+            showDeleteModal = true
         } label: {
             Label(Strings.SessionHeaderView.deleteButton, systemImage: "xmark.circle")
         }
     }
-   
+
     func adaptTimeAndDate() -> Text {
         let formatter = DateFormatters.SessionCartView.utcDateIntervalFormatter
-        
+
         guard let start = session.startTime else { return Text("") }
         let end = session.endTime ?? Date().currentUTCTimeZoneDate
-        
+
         let string = formatter.string(from: start, to: end)
         return Text(string)
         }
+    
+    private func finishSessionAlertAction(sessionStopper: SessionStoppable) {
+        do {
+            try sessionStopper.stopSession()
+        } catch {
+            Log.info("error when stpoing session - \(error)")
+        }
+    }
 }
 
 #if DEBUG
@@ -208,7 +222,7 @@ struct SessionHeader_Previews: PreviewProvider {
         SessionHeaderView(action: {},
                           isExpandButtonNeeded: true, isCollapsed: .constant(true),
                           session: SessionEntity.mock,
-                          sessionStopperFactory: SessionStoppableFactoryDummy())
+                          sessionStopperFactory: SessionStoppableFactoryDummy(), measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionSynchronizer: DummySessionSynchronizer())
                 .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
     }
 }

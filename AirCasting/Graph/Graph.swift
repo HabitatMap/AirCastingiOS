@@ -64,6 +64,7 @@ struct Graph: UIViewRepresentable {
         context.coordinator.currentThreshold = ThresholdWitness(sensorThreshold: thresholds)
         context.coordinator.currentMeasurementsNumber = calculateSeeingPointsNumber(entries: entries, uiView: uiView)
         context.coordinator.entries = entries
+        context.coordinator.stream = stream
         return uiView
     }
     
@@ -81,7 +82,8 @@ struct Graph: UIViewRepresentable {
         }
         
         guard context.coordinator.currentThreshold != thresholdWitness ||
-                context.coordinator.totalNumberOfMeasurements != stream.allMeasurements?.count else { return }
+                context.coordinator.totalNumberOfMeasurements != stream.allMeasurements?.count ||
+                stream != context.coordinator.stream else { return }
         
         try? uiView.updateWithThreshold(thresholdValues: thresholds.rawThresholdsBinding.wrappedValue)
         let allLimitLines = getLimitLines()
@@ -93,10 +95,13 @@ struct Graph: UIViewRepresentable {
             return chartDataEntry
         }) ?? []
         
+        simplifyGraphline(entries: entries, uiView: uiView)
+        
         context.coordinator.entries = entries
         context.coordinator.currentThreshold = ThresholdWitness(sensorThreshold: thresholds)
         context.coordinator.totalNumberOfMeasurements = entries.count
         context.coordinator.currentMeasurementsNumber = entries.count
+        context.coordinator.stream = stream
     }
     
     private func simplifyGraphline(entries: [ChartDataEntry], uiView: AirCastingGraph) {
@@ -168,6 +173,7 @@ struct Graph: UIViewRepresentable {
         var currentThreshold: ThresholdWitness?
         var currentMeasurementsNumber: Int?
         var entries: [ChartDataEntry]?
+        var stream: MeasurementStreamEntity?
         
         init(_ parent: Graph) {
             self.parent = parent

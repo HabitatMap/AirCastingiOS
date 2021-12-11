@@ -8,7 +8,6 @@
 import Foundation
 import CoreBluetooth
 import CoreLocation
-import FirebaseCrashlytics
 
 struct AirBeam3Configurator {
     enum AirBeam3ConfiguratorError: Swift.Error {
@@ -102,6 +101,14 @@ struct AirBeam3Configurator {
             sendAuthToken(authToken: token)
         }
     }
+    
+    func configureSDSync() {
+        downloadFromSDCardModeRequest()
+    }
+    
+    func clearSDCard() {
+        clearSDCardModeRequest()
+    }
 }
 
 private extension AirBeam3Configurator {
@@ -144,6 +151,16 @@ private extension AirBeam3Configurator {
         sendConfigMessage(data: message)
     }
     
+    private func downloadFromSDCardModeRequest() {
+        let message = hexMessageBuilder.downloadFromSDCardModeRequest
+        sendConfigMessage(data: message)
+    }
+    
+    private func clearSDCardModeRequest() {
+        let message = hexMessageBuilder.clearSDCardModeRequest
+        sendConfigMessage(data: message)
+    }
+    
     // MARK: Utils
     
     func sendConfigMessage(data: Data) {
@@ -158,11 +175,11 @@ private extension AirBeam3Configurator {
     }
     
     func getCharacteristic(serviceID: CBUUID, charID: CBUUID) -> CBCharacteristic? {
-        Crashlytics.crashlytics().log("AirBeam3Configurator (getCharacteristic) - peripheral services\n \(String(describing: peripheral.services))")
+        remoteLog("AirBeam3Configurator (getCharacteristic) - peripheral services\n \(String(describing: peripheral.services))")
         let service = peripheral.services?.first(where: { data -> Bool in
             data.uuid == serviceID
         })
-        Crashlytics.crashlytics().log("AirBeam3Configurator (getCharacteristic) - service characteristics\n \(String(describing: service?.characteristics))")
+        remoteLog("AirBeam3Configurator (getCharacteristic) - service characteristics\n \(String(describing: service?.characteristics))")
         guard let characteristic = service?.characteristics?.first(where: { characteristic -> Bool in
             characteristic.uuid == charID
         }) else {

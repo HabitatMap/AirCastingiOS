@@ -6,10 +6,12 @@
 //
 
 import SwiftUI
-import Firebase
 import Combine
+
 @main
 struct AirCastingApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    
     @Environment(\.scenePhase) var scenePhase
     private let authorization = UserAuthenticationSession()
     private let syncScheduler: SynchronizationScheduler
@@ -25,9 +27,6 @@ struct AirCastingApp: App {
     private var cancellables: [AnyCancellable] = []
 
     init() {
-        #if !DEBUG
-        FirebaseApp.configure()
-        #endif
         AppBootstrap(firstRunInfoProvider: lifeTimeEventsProvider, deauthorizable: authorization).bootstrap()
         let synchronizationContextProvider = SessionSynchronizationService(client: URLSession.shared, authorization: authorization, responseValidator: DefaultHTTPResponseValidator())
         let downloadService = SessionDownloadService(client: URLSession.shared, authorization: authorization, responseValidator: DefaultHTTPResponseValidator())

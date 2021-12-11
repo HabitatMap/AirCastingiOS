@@ -97,7 +97,7 @@ class MeasurementsStatisticsControllerTests: XCTestCase {
         let controller = MeasurementsStatisticsController(dataSource: dataSourceMock,
                                                           calculator: calculatorMock,
                                                           scheduledTimer: timerMock,
-                                                          desiredStats: stats)
+                                                          desiredStats: stats, computeStatisticsInterval: 1)
         controller.output = outputSpy
         return controller
     }

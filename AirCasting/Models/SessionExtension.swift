@@ -15,10 +15,12 @@ extension SessionEntity {
     var isDormant: Bool { type == .mobile && status == .FINISHED }
     var isFixed: Bool { type == .fixed }
     var isFollowed: Bool { followedAt != nil }
+    var isInStandaloneMode: Bool { type == .mobile && status == .DISCONNECTED && deviceType == .AIRBEAM3 }
+    var deletable: Bool { isDormant || type == .fixed }
 }
 
 extension SessionEntity {
-    
+
     var pm1Stream: MeasurementStreamEntity? {
         let match = measurementStreams?.first(where: { (stream) -> Bool in
             (stream as? MeasurementStreamEntity)?.sensorName == "AirBeam3-PM1" ||
@@ -28,7 +30,7 @@ extension SessionEntity {
         let pm1Stream = match as? MeasurementStreamEntity
         return pm1Stream
     }
-    
+
     var pm2Stream: MeasurementStreamEntity? {
         let match = measurementStreams?.first(where: { (stream) -> Bool in
             (stream as? MeasurementStreamEntity)?.sensorName?.contains("PM2.5") ?? false

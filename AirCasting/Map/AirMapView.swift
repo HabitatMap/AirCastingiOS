@@ -22,6 +22,7 @@ struct AirMapView: View {
     @Binding var selectedStream: MeasurementStreamEntity?
     let sessionStoppableFactory: SessionStoppableFactory
     let measurementStreamStorage: MeasurementStreamStorage
+    let sessionSynchronizer: SessionSynchronizer
     
     private var pathPoints: [PathPoint] {
         return selectedStream?.allMeasurements?.compactMap {
@@ -38,19 +39,17 @@ struct AirMapView: View {
                                   isSensorTypeNeeded: false,
                                   isCollapsed: Binding.constant(false),
                                   session: session,
-                                  sessionStopperFactory: sessionStoppableFactory)
+                                  sessionStopperFactory: sessionStoppableFactory, measurementStreamStorage: measurementStreamStorage, sessionSynchronizer: sessionSynchronizer)
             
-            ABMeasurementsView(viewModelProvider: { DefaultSyncingMeasurementsViewModel(measurementStreamStorage: measurementStreamStorage,
-                                                                              sessionDownloader: SessionDownloadService(client: URLSession.shared,
-                                                                                                                        authorization: UserAuthenticationSession(),
-                                                                                                                        responseValidator: DefaultHTTPResponseValidator()),
-                                                                              session: session)
-            },
-                               session: session,
+            ABMeasurementsView(session: session,
                                isCollapsed: Binding.constant(false),
                                selectedStream: $selectedStream,
-                               thresholds: thresholds,
-                               measurementPresentationStyle: .showValues)
+                               thresholds: thresholds, measurementPresentationStyle: .showValues,
+                               viewModel:  DefaultSyncingMeasurementsViewModel(measurementStreamStorage: measurementStreamStorage,
+                                                                               sessionDownloader: SessionDownloadService(client: URLSession.shared,
+                                                                                authorization: UserAuthenticationSession(),
+                                                                                responseValidator: DefaultHTTPResponseValidator()),
+                                                                                session: session))
 
             if let threshold = thresholds.threshold(for: selectedStream) {
                 if !showLoadingIndicator {
@@ -59,7 +58,8 @@ struct AirMapView: View {
                                       threshold: threshold,
                                       placePickerDismissed: Binding.constant(false),
                                       isUserInteracting: $isUserInteracting,
-                                      isSessionActive: session.isActive)
+                                      isSessionActive: session.isActive,
+                                      isSessionFixed: session.isFixed)
                         #warning("TODO: Implement calculating stats only for visible path points")
                         // This doesn't work properly and it needs to be fixed, so I'm commenting it out
 //                            .onPositionChange { [weak mapStatsDataSource, weak statsContainerViewModel] visiblePoints in
@@ -111,7 +111,8 @@ struct Map_Previews: PreviewProvider {
                    showLoadingIndicator: .constant(true),
                    selectedStream: .constant(nil),
                    sessionStoppableFactory: SessionStoppableFactoryDummy(),
-                   measurementStreamStorage: PreviewMeasurementStreamStorage())
+                   measurementStreamStorage: PreviewMeasurementStreamStorage(),
+                   sessionSynchronizer: DummySessionSynchronizer())
     }
 }
 
