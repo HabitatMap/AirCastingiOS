@@ -28,23 +28,27 @@ class SDSyncController: ObservableObject {
     private let fileWriter: SDSyncFileWriter
     private let airbeamServices: SDCardAirBeamServices
     private let fileValidator: SDSyncFileValidator
+    private let fileLineReader: FileLineReader
     private let mobileSessionsSaver: SDCardMobileSessionssSaver
+    private let fixedSessionsSaver: SDCardFixedSessionsSavingService
     private let averagingService: AveragingService
     private let sessionSynchronizer: SessionSynchronizer
     private let writingQueue = DispatchQueue(label: "SDSyncController")
     
-    init(airbeamServices: SDCardAirBeamServices, fileWriter: SDSyncFileWriter, fileValidator: SDSyncFileValidator, mobileSessionsSaver: SDCardMobileSessionssSaver, averagingService: AveragingService, sessionSynchronizer: SessionSynchronizer) {
+    init(airbeamServices: SDCardAirBeamServices, fileWriter: SDSyncFileWriter, fileValidator: SDSyncFileValidator, fileLineReader: FileLineReader, mobileSessionsSaver: SDCardMobileSessionssSaver, fixedSessionsSaver: SDCardFixedSessionsSavingService, averagingService: AveragingService, sessionSynchronizer: SessionSynchronizer) {
         self.airbeamServices = airbeamServices
         self.fileWriter = fileWriter
         self.fileValidator = fileValidator
+        self.fileLineReader = fileLineReader
         self.mobileSessionsSaver = mobileSessionsSaver
+        self.fixedSessionsSaver = fixedSessionsSaver
         self.averagingService = averagingService
         self.sessionSynchronizer = sessionSynchronizer
     }
     
     func syncFromAirbeam(_ airbeamConnection: CBPeripheral, progress: @escaping (SDCardSyncStatus) -> Void, completion: @escaping (Bool) -> Void) {
         guard let sensorName = airbeamConnection.name else {
-            Log.error("Unable to identify the device")
+            Log.error("[SD Sync] Unable to identify the device")
             completion(false)
             return
         }
@@ -67,32 +71,71 @@ class SDSyncController: ObservableObject {
                     self.checkFilesForCorruption(files, expectedMeasurementsCount: metadata.expectedMeasurementsCount) { fileValidationResult in
                         switch fileValidationResult {
                         case .success(let verifiedFiles):
-                            if let mobileFileURL = verifiedFiles.first(where: { $0.1 == SDCardSessionType.mobile })?.0 {
-                                self.mobileSessionsSaver.saveDataToDb(fileURL: mobileFileURL, deviceID: sensorName) { result in
-                                    switch result {
-                                    case .success(let sessions):
-                                        self.averagingService.averageMeasurements(for: sessions) {
-                                            Log.info("Averaging done")
-                                            self.onCurrentSyncEnd { self.startBackendSync() }
-                                        }
-                                        completion(true)
-                                    case .failure(let error):
-                                        Log.error("Failed to save sessions to database: \(error.localizedDescription)")
-                                        completion(false)
-                                    }
-                                }
-                            } else {
-                                completion(true)
-                            }
+                            self.handle(files: verifiedFiles, deviceID: sensorName, completion: completion)
                         case .failure(let error):
                             Log.error(error.localizedDescription)
                             completion(false)
                         }
                     }
-                case .failure: self.fileWriter.finishAndRemoveFiles(); completion(false)
+                case .failure:
+                    self.fileWriter.finishAndRemoveFiles()
+                    completion(false)
                 }
             }
         })
+    }
+    
+    private func handle(files: [(URL, SDCardSessionType)], deviceID: String, completion: @escaping (Bool) -> Void ) {
+        let mobileFileURL = files.first(where: { $0.1 == SDCardSessionType.mobile })?.0
+        let fixedFileURL = files.first(where: { $0.1 == SDCardSessionType.fixed })?.0
+        
+        func handleFixedFile(fixedFileURL: URL) {
+            do {
+                try self.process(fixedSessionFile: fixedFileURL, deviceID: deviceID, completion: completion)
+            } catch {
+                completion(false)
+            }
+        }
+        
+        if let mobileFileURL = mobileFileURL {
+            process(mobileSessionFile: mobileFileURL, deviceID: deviceID) { mobileResult in
+                guard mobileResult else {
+                    completion(mobileResult)
+                    return
+                }
+                
+                if let fixedFileURL = fixedFileURL {
+                    handleFixedFile(fixedFileURL: fixedFileURL)
+                }
+            }
+        } else if let fixedFileURL = fixedFileURL {
+            handleFixedFile(fixedFileURL: fixedFileURL)
+        } else {
+            completion(true)
+        }
+    }
+    
+    private func process(fixedSessionFile: URL, deviceID: String, completion: @escaping (Bool) -> Void) throws {
+        let csvSession = try CSVSession(fileURL: fixedSessionFile,
+                                        fileLineReader: fileLineReader)
+        fixedSessionsSaver.processAndSync(csvSession: csvSession, deviceID: deviceID, completion: completion)
+    }
+    
+    private func process(mobileSessionFile: URL, deviceID: String, completion: @escaping (Bool) -> Void) {
+        self.mobileSessionsSaver.saveDataToDb(fileURL: mobileSessionFile, deviceID: deviceID) { result in
+            switch result {
+            case .success(let sessions):
+                self.averagingService.averageMeasurements(for: sessions) {
+                    Log.info("[SD Sync] Averaging done")
+                    self.onCurrentSyncEnd { self.startBackendSync() }
+                }
+                // TODO: Shouldn't we call 'completion' only when averaging and backkend-sync has finished?
+                completion(true)
+            case .failure(let error):
+                Log.error("[SD Sync] Failed to save sessions to database: \(error.localizedDescription)")
+                completion(false)
+            }
+        }
     }
     
     func clearSDCard(_ airbeamConnection: CBPeripheral, completion: @escaping (Bool) -> Void) {

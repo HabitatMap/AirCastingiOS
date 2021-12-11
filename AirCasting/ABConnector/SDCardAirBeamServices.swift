@@ -40,7 +40,6 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
     
     private let bluetoothManager: BluetoothManager
     private let userAuthenticationSession: UserAuthenticationSession
-    
     private var dataCharacteristicObserver: AnyHashable?
     private var metadataCharacteristicObserver: AnyHashable?
     private var clearCardCharacteristicObserver: AnyHashable?
@@ -54,6 +53,7 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
         var expectedMeasurementsCount: [SDCardSessionType: Int] = [:]
         var receivedMeasurementsCount: [SDCardSessionType: Int] = [:]
         var currentSessionType: SDCardSessionType?
+        
         configureABforSync(peripheral: peripheral)
         metadataCharacteristicObserver = bluetoothManager.subscribeToCharacteristic(DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID) { result in
             switch result {
