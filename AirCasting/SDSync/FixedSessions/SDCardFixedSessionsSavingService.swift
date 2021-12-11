@@ -44,7 +44,7 @@ class SDCardFixedSessionsSavingService {
                 let csvMeasurements = measurements.map {
                     CSVMeasurement(longitude: $0.location?.longitude,
                                    latitude: $0.location?.latitude,
-                                   milliseconds: Int($0.time.timeIntervalSince1970.remainder(dividingBy: TimeInterval(MILLISECONDS_IN_SECOND))),
+                                   milliseconds: abs(Int($0.time.timeIntervalSince1970.remainder(dividingBy: TimeInterval(MILLISECONDS_IN_SECOND)))),
                                    time: $0.time,
                                    value: $0.value)
                 }
