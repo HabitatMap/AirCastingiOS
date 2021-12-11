@@ -103,6 +103,8 @@ class SDSyncController: ObservableObject {
             }
         } else if let fixedFileURL = fixedFileURL {
             handleFixedFile(fixedFileURL: fixedFileURL)
+        } else {
+            completion(true)
         }
     }
     
