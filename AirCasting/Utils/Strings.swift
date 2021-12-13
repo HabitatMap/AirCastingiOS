@@ -559,4 +559,13 @@ struct Strings {
         static let alertMessage: String = "You need to have internet connection to continue"
         static let confirmAlert: String = "Got it!"
     }
+    
+    enum MicrophoneAlert {
+        static let title: String = "Allow AirCasting to record audio"
+        static let message: String = "To record sound level measurements, the app needs access to your microhpone."
+    }
+    
+    enum InAppAlerts {
+        static let assertError: String = "Unsupported button count! For SwiftUI implementation max of 2 buttons is supported"
+    }
 }

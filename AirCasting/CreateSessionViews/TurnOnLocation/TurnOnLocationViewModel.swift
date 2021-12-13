@@ -4,7 +4,6 @@
 import Foundation
 
 class TurnOnLocationViewModel {
-    
     private let locationHandler: LocationHandler
     private let bluetoothHandler: BluetoothHandler
     private let sessionContext: CreateSessionContext

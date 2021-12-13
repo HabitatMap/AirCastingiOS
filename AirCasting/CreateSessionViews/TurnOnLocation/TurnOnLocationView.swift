@@ -5,9 +5,8 @@ import AirCastingStyling
 import SwiftUI
 
 struct TurnOnLocationView: View {
-    
+    @State private var alert: AlertInfo?
     @State private var isPowerABLinkActive = false
-    @State private var showAlert = false
     @State private var isTurnBluetoothOnLinkActive = false
     @State private var isMobileLinkActive = false
     @State private var restartABLink = false
@@ -28,9 +27,7 @@ struct TurnOnLocationView: View {
             continueButton
                 .buttonStyle(BlueButtonStyle())
         }
-        .alert(isPresented: $showAlert) {
-            Alert.locationAlert
-        }
+        .alert(item: $alert, content: { $0.makeAlert() })
         .background(
             Group {
                 proceedToPowerABView
@@ -43,11 +40,11 @@ struct TurnOnLocationView: View {
         .onAppear {
             viewModel.requestLocationAuthorisation()
             if viewModel.shouldShowAlert {
-                showAlert = true
+                alert = InAppAlerts.locationAlert()
             }
         }
         .onChange(of: viewModel.shouldShowAlert) { newValue in
-            showAlert = (newValue == true)
+            if newValue { alert = InAppAlerts.locationAlert() }
         }
     }
     
