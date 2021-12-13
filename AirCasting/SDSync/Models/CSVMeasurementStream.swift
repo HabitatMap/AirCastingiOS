@@ -78,6 +78,7 @@ struct CSVMeasurementStream {
     ]
     
     func sensorPackageName(deviceId: String) -> String {
-        "\(CSVMeasurementStream.DEVICE_NAME)-\(deviceId)"
+        let id = String(sensorName.drop { $0 != ":" || $0 != "-" })
+        return "\(CSVMeasurementStream.DEVICE_NAME)-\(id)"
     }
 }

@@ -52,7 +52,6 @@ class SDSyncController: ObservableObject {
             completion(false)
             return
         }
-
         airbeamServices.downloadData(from: airbeamConnection, progress: { [weak self] chunk in
             // Filesystem write
             self?.writingQueue.async {

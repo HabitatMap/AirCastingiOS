@@ -35,7 +35,7 @@ class SDCardFixedSessionsSavingService {
     }
     
     private func getSyncParams(csvSession: CSVSession, deviceID: String) -> [UploadFixedSessionAPIService.UploadFixedMeasurementsParams] {
-        csvSession.sessions.map { session -> [UploadFixedSessionAPIService.UploadFixedMeasurementsParams] in
+        let all = csvSession.sessions.map { session -> [UploadFixedSessionAPIService.UploadFixedMeasurementsParams] in
             let sessionStreams = csvSession.streamsWithMeasurements.filter { $0.key.sessionUUID == session.uuid }
             
             let perStreamParams = sessionStreams.map { sdStream, measurements -> UploadFixedSessionAPIService.UploadFixedMeasurementsParams in
@@ -66,6 +66,8 @@ class SDCardFixedSessionsSavingService {
             return perStreamParams
         }
         .flatMap { $0 }
+        
+        return all
     }
     
 }
