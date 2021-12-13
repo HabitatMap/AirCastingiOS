@@ -4,6 +4,7 @@
 import Foundation
 
 class SDCardFixedSessionsSavingService {
+    let measurementsChunkSize = 31*24*60 // about a month of data
     
     let apiService: UploadFixedSessionAPIService
     
@@ -18,7 +19,9 @@ class SDCardFixedSessionsSavingService {
         }
         let uploadParams = getSyncParams(csvSession: csvSession, deviceID: deviceID)
         var tasksCompleted = 0
+        
         var allSuccess = true
+        
         uploadParams.forEach { params in
             apiService.uploadFixedSession(input: params) { result in
                 tasksCompleted += 1
@@ -53,7 +56,7 @@ class SDCardFixedSessionsSavingService {
                                    value: $0.value)
                 }
                 return UploadFixedSessionAPIService.UploadFixedMeasurementsParams(session_uuid: session.uuid.rawValue,
-                                                                                  sensor_package_name: stream.sensorPackageName(deviceId: deviceID),
+                                                                                  sensor_package_name: deviceID.replacingOccurrences(of: ":", with: "-"),
                                                                                   sensor_name: stream.sensorName,
                                                                                   measurement_type: stream.measurementType,
                                                                                   measurement_short_type: stream.measurementShortType,
