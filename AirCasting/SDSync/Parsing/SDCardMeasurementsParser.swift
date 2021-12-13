@@ -27,7 +27,7 @@ class SDCardMeasurementsParser {
             let sessionUUID = SessionUUID(uuidString: String(measurementInfo[SDCardCSVFileFactory.Header.uuid.rawValue])),
             let date = SDParsingUtils.dateFrom(date: measurementInfo[SDCardCSVFileFactory.Header.date.rawValue],
                                                time: measurementInfo[SDCardCSVFileFactory.Header.time.rawValue]),
-            let lat = Double(measurementInfo[SDCardCSVFileFactory.Header.longitude.rawValue]),
+            let lat = Double(measurementInfo[SDCardCSVFileFactory.Header.latitude.rawValue]),
             let long = Double(measurementInfo[SDCardCSVFileFactory.Header.longitude.rawValue]),
             let f = Double(measurementInfo[SDCardCSVFileFactory.Header.f.rawValue]),
             let rh = Double(measurementInfo[SDCardCSVFileFactory.Header.rh.rawValue]),
