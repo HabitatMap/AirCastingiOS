@@ -4,7 +4,8 @@
 import Foundation
 
 class SDCardFixedSessionsSavingService {
-    let measurementsChunkSize = 31*24*60 // about a month of data
+//    let measurementsChunkSize = 31*24*60 // about a month of data
+    let measurementsChunkSize = 2 // about a month of data
     
     let apiService: UploadFixedSessionAPIService
     
@@ -42,10 +43,10 @@ class SDCardFixedSessionsSavingService {
     }
     
     private func getSyncParams(csvSession: CSVStreamsWithMeasurements, deviceID: String) -> [UploadFixedSessionAPIService.UploadFixedMeasurementsParams] {
-        csvSession.streamsWithMeasurements.compactMap { sdStream, measurements -> UploadFixedSessionAPIService.UploadFixedMeasurementsParams? in
+        csvSession.streamsWithMeasurements.compactMap { sdStream, measurements -> [UploadFixedSessionAPIService.UploadFixedMeasurementsParams] in
             guard let stream = CSVMeasurementStream.SUPPORTED_STREAMS[sdStream.header] else {
                 Log.info("Unsupported stream")
-                return nil
+                return []
             }
             let milisecondsInSecond = 1000
             let csvMeasurements = measurements.map {
@@ -55,20 +56,28 @@ class SDCardFixedSessionsSavingService {
                                time: $0.time,
                                value: $0.value)
             }
-            return UploadFixedSessionAPIService.UploadFixedMeasurementsParams(session_uuid: sdStream.sessionUUID.rawValue,
-                                                                              sensor_package_name: deviceID.replacingOccurrences(of: ":", with: "-"),
-                                                                              sensor_name: stream.sensorName,
-                                                                              measurement_type: stream.measurementType,
-                                                                              measurement_short_type: stream.measurementShortType,
-                                                                              unit_name: stream.unitName,
-                                                                              unit_symbol: stream.unitSymbol,
-                                                                              threshold_very_high: stream.thresholdVeryHigh,
-                                                                              threshold_high: stream.thresholdHigh,
-                                                                              threshold_medium: stream.thresholdMedium,
-                                                                              threshold_low: stream.thresholdLow,
-                                                                              threshold_very_low: stream.thresholdVeryLow,
-                                                                              measurements: csvMeasurements)
-        }
+            
+            let chunkedMeasurements = csvMeasurements.chunks(ofCount: measurementsChunkSize)
+            Log.info("\(Array(chunkedMeasurements))")
+            return chunkedMeasurements.compactMap { measurementsChunk in
+                guard !measurementsChunk.isEmpty else {
+                    return nil
+                }
+                return UploadFixedSessionAPIService.UploadFixedMeasurementsParams(session_uuid: sdStream.sessionUUID.rawValue,
+                                                                                  sensor_package_name: deviceID.replacingOccurrences(of: ":", with: "-"),
+                                                                                  sensor_name: stream.sensorName,
+                                                                                  measurement_type: stream.measurementType,
+                                                                                  measurement_short_type: stream.measurementShortType,
+                                                                                  unit_name: stream.unitName,
+                                                                                  unit_symbol: stream.unitSymbol,
+                                                                                  threshold_very_high: stream.thresholdVeryHigh,
+                                                                                  threshold_high: stream.thresholdHigh,
+                                                                                  threshold_medium: stream.thresholdMedium,
+                                                                                  threshold_low: stream.thresholdLow,
+                                                                                  threshold_very_low: stream.thresholdVeryLow,
+                                                                                  measurements: Array(measurementsChunk))
+            }
+        }.flatMap({$0})
     }
     
 }
