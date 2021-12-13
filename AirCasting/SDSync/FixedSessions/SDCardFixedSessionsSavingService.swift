@@ -11,7 +11,11 @@ class SDCardFixedSessionsSavingService {
         self.apiService = apiService
     }
     
-    func processAndSync(csvSession: CSVSession, deviceID: String, completion: @escaping (Bool) -> Void) {
+    func processAndSync(csvSession: CSVStreamsWithMeasurements, deviceID: String, completion: @escaping (Bool) -> Void) {
+        guard !csvSession.sessions.isEmpty else {
+            completion(true)
+            return
+        }
         let uploadParams = getSyncParams(csvSession: csvSession, deviceID: deviceID)
         var tasksCompleted = 0
         var allSuccess = true
@@ -34,7 +38,7 @@ class SDCardFixedSessionsSavingService {
         }
     }
     
-    private func getSyncParams(csvSession: CSVSession, deviceID: String) -> [UploadFixedSessionAPIService.UploadFixedMeasurementsParams] {
+    private func getSyncParams(csvSession: CSVStreamsWithMeasurements, deviceID: String) -> [UploadFixedSessionAPIService.UploadFixedMeasurementsParams] {
         csvSession.sessions.map { session -> [UploadFixedSessionAPIService.UploadFixedMeasurementsParams] in
             let sessionStreams = csvSession.streamsWithMeasurements.filter { $0.key.sessionUUID == session.uuid }
             

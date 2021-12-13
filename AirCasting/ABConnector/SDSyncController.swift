@@ -67,6 +67,11 @@ class SDSyncController: ObservableObject {
                     progress(.finalizing)
                     let files = self.fileWriter.finishAndSave()
                     
+                    guard !files.isEmpty else {
+                        completion(true)
+                        return
+                    }
+                    
                     //MARK: checking if files have the right number of rows and if rows have the right values
                     self.checkFilesForCorruption(files, expectedMeasurementsCount: metadata.expectedMeasurementsCount) { fileValidationResult in
                         switch fileValidationResult {
@@ -106,6 +111,8 @@ class SDSyncController: ObservableObject {
                 
                 if let fixedFileURL = fixedFileURL {
                     handleFixedFile(fixedFileURL: fixedFileURL)
+                } else {
+                    completion(true)
                 }
             }
         } else if let fixedFileURL = fixedFileURL {
@@ -116,7 +123,7 @@ class SDSyncController: ObservableObject {
     }
     
     private func process(fixedSessionFile: URL, deviceID: String, completion: @escaping (Bool) -> Void) throws {
-        let csvSession = try CSVSession(fileURL: fixedSessionFile,
+        let csvSession = try CSVStreamsWithMeasurements(fileURL: fixedSessionFile,
                                         fileLineReader: fileLineReader)
         fixedSessionsSaver.processAndSync(csvSession: csvSession, deviceID: deviceID, completion: completion)
     }
