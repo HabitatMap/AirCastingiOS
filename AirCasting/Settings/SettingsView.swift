@@ -119,7 +119,7 @@ struct SettingsView: View {
     
     private var appInfoSection: some View {
         Section() {
-            Text(Strings.Settings.appInfoTitle) + Text(". ") + Text("\(UIApplication.appVersion!)") +
+            Text(Strings.Settings.appInfoTitle) + Text(". ") + Text("\(UIApplication.appVersion!) ") +
             Text(Strings.Settings.buildText) + Text(": ") + Text("\(UIApplication.buildVersion!)")
         }.foregroundColor(.aircastingGray)
     }
