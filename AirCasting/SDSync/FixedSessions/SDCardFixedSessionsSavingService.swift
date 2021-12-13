@@ -42,37 +42,33 @@ class SDCardFixedSessionsSavingService {
     }
     
     private func getSyncParams(csvSession: CSVStreamsWithMeasurements, deviceID: String) -> [UploadFixedSessionAPIService.UploadFixedMeasurementsParams] {
-        csvSession.sessions.map { session -> [UploadFixedSessionAPIService.UploadFixedMeasurementsParams] in
-            let sessionStreams = csvSession.streamsWithMeasurements.filter { $0.key.sessionUUID == session.uuid }
-            
-            let perStreamParams = sessionStreams.map { sdStream, measurements -> UploadFixedSessionAPIService.UploadFixedMeasurementsParams in
-                let stream = CSVMeasurementStream.SUPPORTED_STREAMS[sdStream.header]!
-                let MILLISECONDS_IN_SECOND = 1000
-                let csvMeasurements = measurements.map {
-                    CSVMeasurement(longitude: $0.location?.longitude,
-                                   latitude: $0.location?.latitude,
-                                   milliseconds: abs(Int($0.time.timeIntervalSince1970.remainder(dividingBy: TimeInterval(MILLISECONDS_IN_SECOND)))),
-                                   time: $0.time,
-                                   value: $0.value)
-                }
-                return UploadFixedSessionAPIService.UploadFixedMeasurementsParams(session_uuid: session.uuid.rawValue,
-                                                                                  sensor_package_name: deviceID.replacingOccurrences(of: ":", with: "-"),
-                                                                                  sensor_name: stream.sensorName,
-                                                                                  measurement_type: stream.measurementType,
-                                                                                  measurement_short_type: stream.measurementShortType,
-                                                                                  unit_name: stream.unitName,
-                                                                                  unit_symbol: stream.unitSymbol,
-                                                                                  threshold_very_high: stream.thresholdVeryHigh,
-                                                                                  threshold_high: stream.thresholdHigh,
-                                                                                  threshold_medium: stream.thresholdMedium,
-                                                                                  threshold_low: stream.thresholdLow,
-                                                                                  threshold_very_low: stream.thresholdVeryLow,
-                                                                                  measurements: csvMeasurements)
+        csvSession.streamsWithMeasurements.compactMap { sdStream, measurements -> UploadFixedSessionAPIService.UploadFixedMeasurementsParams? in
+            guard let stream = CSVMeasurementStream.SUPPORTED_STREAMS[sdStream.header] else {
+                Log.info("Unsupported stream")
+                return nil
             }
-            Log.info("[SD Sync] Syncing \(perStreamParams.count) streams for session \(session.uuid)")
-            return perStreamParams
+            let milisecondsInSecond = 1000
+            let csvMeasurements = measurements.map {
+                CSVMeasurement(longitude: $0.location?.longitude,
+                               latitude: $0.location?.latitude,
+                               milliseconds: abs(Int($0.time.timeIntervalSince1970.remainder(dividingBy: TimeInterval(milisecondsInSecond)))),
+                               time: $0.time,
+                               value: $0.value)
+            }
+            return UploadFixedSessionAPIService.UploadFixedMeasurementsParams(session_uuid: sdStream.sessionUUID.rawValue,
+                                                                              sensor_package_name: deviceID.replacingOccurrences(of: ":", with: "-"),
+                                                                              sensor_name: stream.sensorName,
+                                                                              measurement_type: stream.measurementType,
+                                                                              measurement_short_type: stream.measurementShortType,
+                                                                              unit_name: stream.unitName,
+                                                                              unit_symbol: stream.unitSymbol,
+                                                                              threshold_very_high: stream.thresholdVeryHigh,
+                                                                              threshold_high: stream.thresholdHigh,
+                                                                              threshold_medium: stream.thresholdMedium,
+                                                                              threshold_low: stream.thresholdLow,
+                                                                              threshold_very_low: stream.thresholdVeryLow,
+                                                                              measurements: csvMeasurements)
         }
-        .flatMap { $0 }
     }
     
 }
