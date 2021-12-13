@@ -67,7 +67,7 @@ struct _ABMeasurementsView: View {
                             Spacer()
                         }
                     }
-                }
+                }.padding(.bottom, 10)
             } else {
                 if session.isFollowed {
                     SessionLoadingView()
