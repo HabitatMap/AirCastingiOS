@@ -215,6 +215,7 @@ struct ContentView_Previews: PreviewProvider {
     
     private class MeasurementUpdatingServiceMock: MeasurementUpdatingService {
         func start() {}
+        func updateMeasurements(for sessionUUID: SessionUUID, lastSynced: Date) {}
     }
 }
 #endif

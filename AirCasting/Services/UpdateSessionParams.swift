@@ -70,7 +70,7 @@ final class UpdateSessionParamsService {
                 if let id = $0.id {
                     return id == $1.id
                 } else {
-                    return $0.time == $1.time && $0.value == $1.measured_value
+                    return $0.time == $1.time && $0.value == Double($1.value)
                 }
             }
             measurementDiff.inserted.forEach {
@@ -80,7 +80,7 @@ final class UpdateSessionParamsService {
             }
 //            measurementDiff.removed.forEach(context.delete)
             measurementDiff.common.forEach { oldMeasurement, measurementOutput in
-                oldMeasurement.value = measurementOutput.measured_value
+                oldMeasurement.value = Double(measurementOutput.value)
                 oldMeasurement.location = CLLocationCoordinate2D(latitude: measurementOutput.latitude, longitude: measurementOutput.longitude)
                 oldMeasurement.time = measurementOutput.time
             }
@@ -109,7 +109,7 @@ final class UpdateSessionParamsService {
 
 private extension UpdateSessionParamsService {
     func fillMeasurement(_ entity: MeasurementEntity, with measurement: FixedSession.MeasurementOutput) {
-        entity.value = measurement.measured_value
+        entity.value = Double(measurement.value)
         entity.location = CLLocationCoordinate2D(latitude: measurement.latitude, longitude: measurement.longitude)
         entity.time = measurement.time
         entity.id = measurement.id

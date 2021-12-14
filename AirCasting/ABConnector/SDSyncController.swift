@@ -34,8 +34,9 @@ class SDSyncController: ObservableObject {
     private let averagingService: AveragingService
     private let sessionSynchronizer: SessionSynchronizer
     private let writingQueue = DispatchQueue(label: "SDSyncController")
+    private let measurementsDownloader: SyncedMeasurementsDownloader
     
-    init(airbeamServices: SDCardAirBeamServices, fileWriter: SDSyncFileWriter, fileValidator: SDSyncFileValidator, fileLineReader: FileLineReader, mobileSessionsSaver: SDCardMobileSessionssSaver, fixedSessionsSaver: SDCardFixedSessionsSavingService, averagingService: AveragingService, sessionSynchronizer: SessionSynchronizer) {
+    init(airbeamServices: SDCardAirBeamServices, fileWriter: SDSyncFileWriter, fileValidator: SDSyncFileValidator, fileLineReader: FileLineReader, mobileSessionsSaver: SDCardMobileSessionssSaver, fixedSessionsSaver: SDCardFixedSessionsSavingService, averagingService: AveragingService, sessionSynchronizer: SessionSynchronizer, measurementsDownloader: SyncedMeasurementsDownloader) {
         self.airbeamServices = airbeamServices
         self.fileWriter = fileWriter
         self.fileValidator = fileValidator
@@ -44,6 +45,7 @@ class SDSyncController: ObservableObject {
         self.fixedSessionsSaver = fixedSessionsSaver
         self.averagingService = averagingService
         self.sessionSynchronizer = sessionSynchronizer
+        self.measurementsDownloader = measurementsDownloader
     }
     
     func syncFromAirbeam(_ airbeamConnection: CBPeripheral, progress: @escaping (SDCardSyncStatus) -> Void, completion: @escaping (Bool) -> Void) {
@@ -96,7 +98,8 @@ class SDSyncController: ObservableObject {
         
         func handleFixedFile(fixedFileURL: URL) {
             do {
-                try self.process(fixedSessionFile: fixedFileURL, deviceID: sensorName, completion: completion)
+                let fixedSessionsUUIDs =  try self.process(fixedSessionFile: fixedFileURL, deviceID: sensorName, completion: completion)
+                measurementsDownloader.download(sessionsUUIDs: fixedSessionsUUIDs)
             } catch {
                 completion(false)
             }
@@ -122,10 +125,11 @@ class SDSyncController: ObservableObject {
         }
     }
     
-    private func process(fixedSessionFile: URL, deviceID: String, completion: @escaping (Bool) -> Void) throws {
+    private func process(fixedSessionFile: URL, deviceID: String, completion: @escaping (Bool) -> Void) throws -> [SessionUUID] {
         let csvSession = try CSVStreamsWithMeasurements(fileURL: fixedSessionFile,
                                         fileLineReader: fileLineReader)
         fixedSessionsSaver.processAndSync(csvSession: csvSession, deviceID: deviceID, completion: completion)
+        return csvSession.sessions.map { $0.uuid }
     }
     
     private func process(mobileSessionFile: URL, deviceID: String, completion: @escaping (Bool) -> Void) {

@@ -11,6 +11,7 @@ import Combine
 
 protocol MeasurementUpdatingService {
     func start()
+    func updateMeasurements(for sessionUUID: SessionUUID, lastSynced: Date)
 }
 
 final class DownloadMeasurementsService: MeasurementUpdatingService {
@@ -32,6 +33,12 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
         updateAllSessionsMeasurements()
         timerSink = Timer.publish(every: 60, on: .current, in: .common).autoconnect().sink { [weak self] tick in
             self?.updateAllSessionsMeasurements()
+        }
+    }
+    
+    func updateMeasurements(for sessionUUID: SessionUUID, lastSynced: Date) {
+        lastFetchCancellableTask = fixedSessionService.getFixedMeasurement(uuid: sessionUUID, lastSync: lastSynced) { [weak self] in
+            self?.processServiceResponse($0, for: sessionUUID)
         }
     }
     
@@ -65,12 +72,6 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
             .last
         let syncDate = SyncHelper().calculateLastSync(sessionEndTime: session?.endTime, lastMeasurementTime: lastMeasurementTime)
         return syncDate
-    }
-    
-    private func updateMeasurements(for sessionUUID: SessionUUID, lastSynced: Date) {
-        lastFetchCancellableTask = fixedSessionService.getFixedMeasurement(uuid: sessionUUID, lastSync: lastSynced) { [weak self] in
-            self?.processServiceResponse($0, for: sessionUUID)
-        }
     }
     
     private func processServiceResponse(_ response: Result<FixedSession.FixedMeasurementOutput, Error>,
