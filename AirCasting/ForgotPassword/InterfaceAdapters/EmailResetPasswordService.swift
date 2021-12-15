@@ -7,7 +7,7 @@ final class EmailResetPasswordService: ResetPasswordService {
     
     private let apiClient: APIClient
     private let validator: HTTPResponseValidator
-    private var urlProvider: BaseURLProvider
+    private let urlProvider: BaseURLProvider
     
     init(apiClient: APIClient, validator: HTTPResponseValidator, urlProvider: BaseURLProvider) {
         self.apiClient = apiClient

@@ -105,7 +105,7 @@ struct MainAppView: View {
     let measurementStreamStorage: MeasurementStreamStorage
     let locationHandler: LocationHandler
     let sdSyncController: SDSyncController
-    var urlProvider: BaseURLProvider
+    let urlProvider: BaseURLProvider
     
     @EnvironmentObject private var persistenceController: PersistenceController
     @EnvironmentObject private var userAuthenticationSession: UserAuthenticationSession
