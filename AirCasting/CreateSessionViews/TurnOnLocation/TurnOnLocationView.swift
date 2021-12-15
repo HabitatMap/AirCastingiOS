@@ -1,19 +1,11 @@
 // Created by Lunar on 27/07/2021.
 //
-
 import AirCastingStyling
 import SwiftUI
 
 struct TurnOnLocationView: View {
-    
-    @State private var isPowerABLinkActive = false
-    @State private var showAlert = false
-    @State private var isTurnBluetoothOnLinkActive = false
-    @State private var isMobileLinkActive = false
-    @State private var restartABLink = false
     @Binding var creatingSessionFlowContinues: Bool
-    var isSDClearProcess: Bool
-    let viewModel: TurnOnLocationViewModel
+    @StateObject var viewModel: TurnOnLocationViewModel
     
     var body: some View {
         VStack(spacing: 50) {
@@ -26,11 +18,9 @@ struct TurnOnLocationView: View {
                 messageLabel
             }
             continueButton
-                .buttonStyle(BlueButtonStyle())
         }
-        .alert(isPresented: $showAlert) {
-            Alert.locationAlert
-        }
+        .padding()
+        .alert(item: $viewModel.alert, content: { $0.makeAlert() })
         .background(
             Group {
                 proceedToPowerABView
@@ -39,15 +29,11 @@ struct TurnOnLocationView: View {
                 proceedToRestartABView
             }
         )
-        .padding()
         .onAppear {
             viewModel.requestLocationAuthorisation()
-            if viewModel.shouldShowAlert {
-                showAlert = true
-            }
         }
         .onChange(of: viewModel.shouldShowAlert) { newValue in
-            showAlert = (newValue == true)
+            if newValue { viewModel.alert = InAppAlerts.locationAlert() }
         }
     }
     
@@ -66,51 +52,50 @@ struct TurnOnLocationView: View {
     
     var continueButton: some View {
         Button(action: {
-            if viewModel.isMobileSession {
-                isMobileLinkActive = true
-            } else {
-                if viewModel.checkIfBluetoothDenied() {
-                    isTurnBluetoothOnLinkActive = true
-                } else {
-                    isSDClearProcess ? restartABLink.toggle() : isPowerABLinkActive.toggle()
-                }
-            }
+            viewModel.onButtonClick()
         }, label: {
             Text(Strings.TurnOnLocationView.continueButton)
         })
-        .disabled(viewModel.disableButton)
-            .frame(maxWidth: .infinity)
-            .buttonStyle(BlueButtonStyle())
+        .frame(maxWidth: .infinity)
+        .buttonStyle(BlueButtonStyle())
     }
     
     var proceedToPowerABView: some View {
         NavigationLink(
-            destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: viewModel.passURLProvider),
-            isActive: $isPowerABLinkActive,
+            destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues,
+                                     urlProvider: viewModel.passURLProvider),
+            isActive: $viewModel.isPowerABLinkActive,
             label: {
                 EmptyView()
             })
     }
     var proceedToBluetoothView: some View {
         NavigationLink(
-            destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sdSyncContinues: .constant(false), isSDClearProcess: isSDClearProcess, urlProvider: viewModel.passURLProvider),
-            isActive: $isTurnBluetoothOnLinkActive,
+            destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues,
+                                             sdSyncContinues: .constant(false),
+                                             isSDClearProcess: viewModel.isSDClearProcess,
+                                             urlProvider: viewModel.passURLProvider),
+            isActive: $viewModel.isTurnBluetoothOnLinkActive,
             label: {
                 EmptyView()
             })
     }
     var proceedToSelectDeviceView: some View {
         NavigationLink(
-            destination: SelectDeviceView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sdSyncContinues: .constant(false), urlProvider: viewModel.passURLProvider),
-            isActive: $isMobileLinkActive,
+            destination: SelectDeviceView(creatingSessionFlowContinues: $creatingSessionFlowContinues,
+                                          sdSyncContinues: .constant(false),
+                                          urlProvider: viewModel.passURLProvider),
+            isActive: $viewModel.isMobileLinkActive,
             label: {
                 EmptyView()
             })
     }
     var proceedToRestartABView: some View {
         NavigationLink(
-            destination: SDRestartABView(viewModel: SDRestartABViewModelDefault(urlProvider: viewModel.passURLProvider, isSDClearProcess: isSDClearProcess), creatingSessionFlowContinues: $creatingSessionFlowContinues),
-            isActive: $restartABLink,
+            destination: SDRestartABView(viewModel: SDRestartABViewModelDefault(urlProvider: viewModel.passURLProvider,
+                                                                                isSDClearProcess: viewModel.isSDClearProcess),
+                                         creatingSessionFlowContinues: $creatingSessionFlowContinues),
+            isActive: $viewModel.restartABLink,
             label: {
                 EmptyView()
             })
