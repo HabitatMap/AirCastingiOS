@@ -23,6 +23,7 @@ platform :ios do
       version = get_version_number
       begin
          cocoapods
+         add_badge
          build_app(workspace: "AirCasting.xcworkspace", scheme: "AirCasting", export_method: "ad-hoc", silent: "true", output_directory: "./build_ipa", configuration: "Beta")
          firebase_app_distribution(
             app: "1:51291628191:ios:b090a81539b7acbb48b8aa",
@@ -31,6 +32,7 @@ platform :ios do
             release_notes: "Beta #{version}"
          )
          clean_build_artifacts
+         reset_git_repo(files: "AirCasting/Assets.xcassets/*")
          version = get_version_number
          build = get_build_number
          sh("git checkout -b beta/#{version}b#{build}")
@@ -39,8 +41,7 @@ platform :ios do
       rescue => ex
          reset_git_repo(skip_clean: true)
       end
-
-    end
+   end
 
    lane :release do
       ensure_git_status_clean
