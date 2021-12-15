@@ -40,7 +40,7 @@ class UploadFixedSessionAPIService {
     
     @discardableResult
     func uploadFixedSession(input: UploadFixedMeasurementsParams, completion: @escaping (Result<APIOutput, Error>) -> Void) -> Cancellable {
-        let url = urlProvider.baseAppURL.appendingPathComponent("/realtime/measurements")
+        let url = urlProvider.baseAppURL.appendingPathComponent("api/realtime/measurements")
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")

@@ -16,6 +16,7 @@ struct SessionHeaderView: View {
     @State var chevronIndicator = "chevron.down"
     @EnvironmentObject var networkChecker: NetworkChecker
     @EnvironmentObject var bluetoothManager: BluetoothManager
+    @EnvironmentObject private var urlProvider: UserDefaultsBaseURLProvider
     @ObservedObject var session: SessionEntity
     @State private var showingNoConnectionAlert = false
     @State private var alert: AlertInfo?
@@ -44,7 +45,7 @@ struct SessionHeaderView: View {
             ShareView(showModal: Binding.constant(false))
         })
         .sheet(isPresented: $showDeleteModal) {
-            DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session, measurementStreamStorage: measurementStreamStorage, streamRemover: StreamRemoverDefault(authorization: authorization), sessionSynchronizer: sessionSynchronizer), deleteModal: $showDeleteModal)
+            DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session, measurementStreamStorage: measurementStreamStorage, streamRemover: StreamRemoverDefault(authorization: authorization, urlProvider: urlProvider), sessionSynchronizer: sessionSynchronizer), deleteModal: $showDeleteModal)
         }
         .font(Fonts.regularHeading4)
         .foregroundColor(.aircastingGray)

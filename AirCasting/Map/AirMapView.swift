@@ -20,6 +20,7 @@ struct AirMapView: View {
     @Binding var showLoadingIndicator: Bool
     @State var isUserInteracting = true
     @Binding var selectedStream: MeasurementStreamEntity?
+    @EnvironmentObject private var urlProvider: UserDefaultsBaseURLProvider
     let sessionStoppableFactory: SessionStoppableFactory
     let measurementStreamStorage: MeasurementStreamStorage
     let sessionSynchronizer: SessionSynchronizer
@@ -47,8 +48,7 @@ struct AirMapView: View {
                                thresholds: thresholds, measurementPresentationStyle: .showValues,
                                viewModel:  DefaultSyncingMeasurementsViewModel(measurementStreamStorage: measurementStreamStorage,
                                                                                sessionDownloader: SessionDownloadService(client: URLSession.shared,
-                                                                                authorization: UserAuthenticationSession(),
-                                                                                responseValidator: DefaultHTTPResponseValidator()),
+                                                                                                                         authorization: UserAuthenticationSession(), responseValidator: DefaultHTTPResponseValidator(), urlProvider: urlProvider),
                                                                                 session: session))
 
             if let threshold = thresholds.threshold(for: selectedStream) {

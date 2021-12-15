@@ -56,11 +56,7 @@ struct BackendSettingsView: View {
     
     private var oKButton: some View {
         Button {
-            if url != nil  {
-                urlProvider.baseAppURL = url!.appendingPathComponent("/api")
-            } else {
-                urlProvider.baseAppURL = URL(string: "http://aircasting.org/api")!
-            }
+            urlProvider.baseAppURL = url ?? URL(string: "http://aircasting.org/")!
             presentationMode.wrappedValue.dismiss()
             do {
                 userState.isLoggingOut = true

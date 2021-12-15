@@ -101,7 +101,7 @@ final class CreateSessionAPIService {
 
     @discardableResult
     func createEmptyFixedWifiSession(input: CreateSessionApi.Input, completion: @escaping (Result<CreateSessionApi.Output, Error>) -> Void) -> Cancellable {
-        let url = urlProvider.baseAppURL.appendingPathComponent("realtime/sessions.json")
+        let url = urlProvider.baseAppURL.appendingPathComponent("api/realtime/sessions.json")
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")

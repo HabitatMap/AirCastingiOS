@@ -159,7 +159,7 @@ private extension SignInView {
         Button(Strings.SignInView.forgotPasswordButton) {
             presentingModal = true
         }.sheet(isPresented: $presentingModal) {
-            let service = EmailResetPasswordService(apiClient: URLSession.shared, validator: DefaultHTTPResponseValidator())
+            let service = EmailResetPasswordService(apiClient: URLSession.shared, validator: DefaultHTTPResponseValidator(), urlProvider: baseURL)
             let controller = EmailForgotPasswordController(resetPasswordService: service)
             let scheduledController = ScheduledForgotPasswordControllerProxy(controller: controller, queue: .main)
             let vm = DefaultForgotPasswordViewModel(controller: scheduledController)

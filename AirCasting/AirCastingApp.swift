@@ -25,12 +25,13 @@ struct AirCastingApp: App {
     @ObservedObject private var offlineMessageViewModel: OfflineMessageViewModel
     private let lifeTimeEventsProvider = LifeTimeEventsProvider()
     private var cancellables: [AnyCancellable] = []
+    let urlProvider = UserDefaultsBaseURLProvider()
 
     init() {
         AppBootstrap(firstRunInfoProvider: lifeTimeEventsProvider, deauthorizable: authorization).bootstrap()
-        let synchronizationContextProvider = SessionSynchronizationService(client: URLSession.shared, authorization: authorization, responseValidator: DefaultHTTPResponseValidator())
-        let downloadService = SessionDownloadService(client: URLSession.shared, authorization: authorization, responseValidator: DefaultHTTPResponseValidator())
-        let uploadService = SessionUploadService(client: URLSession.shared, authorization: authorization, responseValidator: DefaultHTTPResponseValidator())
+        let synchronizationContextProvider = SessionSynchronizationService(client: URLSession.shared, authorization: authorization, responseValidator: DefaultHTTPResponseValidator(), urlProvider: urlProvider)
+        let downloadService = SessionDownloadService(client: URLSession.shared, authorization: authorization, responseValidator: DefaultHTTPResponseValidator(), urlProvider: urlProvider)
+        let uploadService = SessionUploadService(client: URLSession.shared, authorization: authorization, responseValidator: DefaultHTTPResponseValidator(), urlProvider: urlProvider)
         let syncStore = SessionSynchronizationDatabase(database: persistenceController)
         let unscheduledSyncController = SessionSynchronizationController(synchronizationContextProvider: synchronizationContextProvider,
                                                                          downstream: downloadService,
@@ -59,6 +60,7 @@ struct AirCastingApp: App {
                 .environmentObject(microphoneManager)
                 .environmentObject(averagingService)
                 .environmentObject(lifeTimeEventsProvider)
+                .environmentObject(urlProvider)
                 .alert(isPresented: $offlineMessageViewModel.showOfflineMessage, content: { Alert.offlineAlert })
         }.onChange(of: scenePhase) { newScenePhase in
             switch newScenePhase {

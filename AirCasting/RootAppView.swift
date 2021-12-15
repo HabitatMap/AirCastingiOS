@@ -24,14 +24,12 @@ struct RootAppView: View {
     @EnvironmentObject var microphoneManager: MicrophoneManager
     @EnvironmentObject var lifeTimeEventsProvider: LifeTimeEventsProvider
     @EnvironmentObject var averagingService: AveragingService
+    @EnvironmentObject private var urlProvider: UserDefaultsBaseURLProvider
     
     let locationTracker = LocationTracker(locationManager: CLLocationManager())
     var sessionSynchronizer: SessionSynchronizer
     let persistenceController: PersistenceController
-    let urlProvider = UserDefaultsBaseURLProvider()
     let networkChecker = NetworkChecker(connectionAvailable: false)
-    
-    
     
     var body: some View {
         ZStack {
@@ -65,7 +63,6 @@ struct RootAppView: View {
         .environmentObject(userSettings)
         .environmentObject(locationTracker)
         .environmentObject(userRedirectionSettings)
-        .environmentObject(urlProvider)
         .environment(\.managedObjectContext, persistenceController.viewContext)
         .onAppear {
             airBeamConnectionController = DefaultAirBeamConnectionController(connectingAirBeamServices: ConnectingAirBeamServicesBluetooth(bluetoothConnector: bluetoothManager))

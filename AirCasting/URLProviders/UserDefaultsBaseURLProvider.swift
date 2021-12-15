@@ -9,7 +9,7 @@ class UserDefaultsBaseURLProvider: BaseURLProvider, ObservableObject {
             userDefaults.set(newValue, forKey: "baseURL")
         }
         get {
-            userDefaults.url(forKey: "baseURL") ?? URL(string: "http://aircasting.org/api")!
+            userDefaults.url(forKey: "baseURL") ?? URL(string: "http://aircasting.org/")!
         }
     }
     

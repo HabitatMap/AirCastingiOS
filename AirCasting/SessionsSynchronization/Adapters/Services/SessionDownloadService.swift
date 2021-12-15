@@ -8,6 +8,7 @@ final class SessionDownloadService: SessionDownstream, MeasurementsDownloadable 
     private let client: APIClient
     private let authorization: RequestAuthorisationService
     private let responseValidator: HTTPResponseValidator
+    private let urlProvider: BaseURLProvider
     
     private let decoder: JSONDecoder = {
         let decoder = JSONDecoder()
@@ -17,10 +18,11 @@ final class SessionDownloadService: SessionDownstream, MeasurementsDownloadable 
         return decoder
     }()
     
-    init(client: APIClient, authorization: RequestAuthorisationService, responseValidator: HTTPResponseValidator) {
+    init(client: APIClient, authorization: RequestAuthorisationService, responseValidator: HTTPResponseValidator, urlProvider: BaseURLProvider) {
         self.client = client
         self.authorization = authorization
         self.responseValidator = responseValidator
+        self.urlProvider = urlProvider
     }
     
     func download(session: SessionUUID) -> AnyPublisher<SessionsSynchronization.SessionDownstreamData, Error> {
@@ -43,7 +45,8 @@ final class SessionDownloadService: SessionDownstream, MeasurementsDownloadable 
     }
     
     private func download(session: SessionUUID, completion: @escaping (Result<SessionsSynchronization.SessionDownstreamData, Error>) -> Void) -> Cancellable {
-        var urlComponents = URLComponents(string: "http://aircasting.org/api/user/sessions/empty.json")!
+        let urlF = urlProvider.baseAppURL.appendingPathComponent("api/user/sessions/update_session.json")
+        var urlComponents = URLComponents(string: urlF.absoluteString)!
         urlComponents.queryItems = [
             URLQueryItem(name: "uuid", value: session.rawValue)
         ]
@@ -75,7 +78,8 @@ final class SessionDownloadService: SessionDownstream, MeasurementsDownloadable 
     }
     
     func downloadSessionWithMeasurement(uuid: SessionUUID, completion: @escaping (Result<SessionsSynchronization.SessionDownstreamData, Error>) -> Void) -> Cancellable {
-        var urlComponents = URLComponents(string: "http://aircasting.org/api/user/sessions/empty.json")!
+        let urlF = urlProvider.baseAppURL.appendingPathComponent("api/user/sessions/empty.json")
+        var urlComponents = URLComponents(string: urlF.absoluteString)!
         urlComponents.queryItems = [
             URLQueryItem(name: "uuid", value: uuid.rawValue),
             URLQueryItem(name: "stream_measurements", value: "true")
