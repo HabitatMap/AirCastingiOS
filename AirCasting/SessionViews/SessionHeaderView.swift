@@ -16,6 +16,7 @@ struct SessionHeaderView: View {
     @State var chevronIndicator = "chevron.down"
     @EnvironmentObject var networkChecker: NetworkChecker
     @EnvironmentObject var bluetoothManager: BluetoothManager
+    @EnvironmentObject var selectedSection: SelectSection
     @ObservedObject var session: SessionEntity
     @State private var showingNoConnectionAlert = false
     @State private var alert: AlertInfo?
@@ -32,7 +33,7 @@ struct SessionHeaderView: View {
                     dateAndTime
                         .foregroundColor(Color.aircastingTimeGray)
                     Spacer()
-                    isMenuNeeded ? actionsMenuMobile : nil
+                    (isMenuNeeded && selectedSection.selectedSection != .following) ? actionsMenuMobile : nil
                 }
             nameLabelAndExpandButton
         }
