@@ -49,8 +49,13 @@ platform :ios do
       ensure_git_branch(branch: "release/#{version}")
       begin
          cocoapods
-         build_app(workspace: "AirCasting.xcworkspace", scheme: "AirCasting", output_directory: "./build_ipa", configuration: "Release")
+         build_app(workspace: "AirCasting.xcworkspace", scheme: "AirCasting", export_method: "app-store", output_directory: "./build_ipa", configuration: "Release")
          upload_to_testflight
+         build_app(workspace: "AirCasting.xcworkspace", scheme: "AirCasting", export_method: "ad-hoc", silent: "true", output_directory: "./build_ipa", configuration: "Release", export_options: {
+            provisioningProfiles: {
+               "org.habitatmap.AirCasting": "AirCasting Ad hoc distribution"
+            }
+         })
          firebase_app_distribution(
             app: "1:51291628191:ios:b090a81539b7acbb48b8aa",
             firebase_cli_token: ENV["FIREBASE_TOKEN"],

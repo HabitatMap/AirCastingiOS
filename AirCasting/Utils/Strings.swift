@@ -17,6 +17,8 @@ struct Strings {
         static let clearSDTitle = "Clear SD card"
         static let appInfoTitle = "AirCasting App v"
         static let buildText = "build"
+        static let betaBuild = "Beta build"
+        static let debugBuild = "Debug build"
     }
 
     enum BackendSettings {

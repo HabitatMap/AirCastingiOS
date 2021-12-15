@@ -121,6 +121,11 @@ struct SettingsView: View {
         Section() {
             Text(Strings.Settings.appInfoTitle) + Text(". ") + Text("\(UIApplication.appVersion!) ") +
             Text(Strings.Settings.buildText) + Text(": ") + Text("\(UIApplication.buildVersion!)")
+            #if BETA
+            Text(Strings.Settings.betaBuild).foregroundColor(.red)
+            #elseif DEBUG
+            Text(Strings.Settings.debugBuild).foregroundColor(.red)
+            #endif
         }.foregroundColor(.aircastingGray)
     }
     
