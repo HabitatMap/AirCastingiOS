@@ -29,7 +29,7 @@ struct RootAppView: View {
     var sessionSynchronizer: SessionSynchronizer
     let persistenceController: PersistenceController
     let networkChecker = NetworkChecker(connectionAvailable: false)
-    var urlProvider: BaseURLProvider
+    let urlProvider: BaseURLProvider
     
     var body: some View {
         ZStack {

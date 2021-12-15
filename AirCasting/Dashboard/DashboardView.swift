@@ -17,7 +17,7 @@ struct DashboardView: View {
     @EnvironmentObject var selectedSection: SelectSection
     @EnvironmentObject var averaging: AveragingService
     @State var isRefreshing: Bool = false
-    var urlProvider: BaseURLProvider
+    private let urlProvider: BaseURLProvider
     private let measurementStreamStorage: MeasurementStreamStorage
     private let sessionStoppableFactory: SessionStoppableFactory
     private let sessionSynchronizer: SessionSynchronizer

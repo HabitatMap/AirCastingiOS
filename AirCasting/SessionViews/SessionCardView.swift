@@ -17,7 +17,7 @@ struct SessionCardView: View {
     @State private var showLoadingIndicator = false
     @ObservedObject var session: SessionEntity
     @EnvironmentObject var selectedSection: SelectSection
-    var urlProvider: BaseURLProvider
+    let urlProvider: BaseURLProvider
     let sessionCartViewModel: SessionCardViewModel
     let thresholds: [SensorThreshold]
     let sessionStoppableFactory: SessionStoppableFactory
@@ -137,7 +137,8 @@ private extension SessionCardView {
             },
             isExpandButtonNeeded: true,
             isCollapsed: $isCollapsed,
-            urlProvider: urlProvider, session: session,
+            urlProvider: urlProvider,
+            session: session,
             sessionStopperFactory: sessionStoppableFactory,
             measurementStreamStorage: measurementStreamStorage,
             sessionSynchronizer: sessionSynchronizer
@@ -146,8 +147,7 @@ private extension SessionCardView {
 
     private var measurements: some View {
         _ABMeasurementsView(measurementsViewModel: DefaultSyncingMeasurementsViewModel(measurementStreamStorage: measurementStreamStorage,
-                                                                                       sessionDownloader: SessionDownloadService(client: URLSession.shared,
-                                                                                                                                 authorization: UserAuthenticationSession(), responseValidator: DefaultHTTPResponseValidator(), urlProvider: urlProvider),
+                                                                                       sessionDownloader: SessionDownloadService(client:URLSession.shared, authorization: UserAuthenticationSession(), responseValidator: DefaultHTTPResponseValidator(), urlProvider: urlProvider),
                                                                                        session: session),
                             session: session,
                             isCollapsed: $isCollapsed,

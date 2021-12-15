@@ -16,7 +16,7 @@ struct SessionHeaderView: View {
     @State var chevronIndicator = "chevron.down"
     @EnvironmentObject var networkChecker: NetworkChecker
     @EnvironmentObject var bluetoothManager: BluetoothManager
-    var urlProvider: BaseURLProvider
+    let urlProvider: BaseURLProvider
     @ObservedObject var session: SessionEntity
     @State private var showingNoConnectionAlert = false
     @State private var alert: AlertInfo?
@@ -221,8 +221,10 @@ private extension SessionHeaderView {
 struct SessionHeader_Previews: PreviewProvider {
     static var previews: some View {
         SessionHeaderView(action: {},
-                          isExpandButtonNeeded: true, isCollapsed: .constant(true),
-                          urlProvider: DummyURLProvider(), session: SessionEntity.mock,
+                          isExpandButtonNeeded: true,
+                          isCollapsed: .constant(true),
+                          urlProvider: DummyURLProvider(),
+                          session: SessionEntity.mock,
                           sessionStopperFactory: SessionStoppableFactoryDummy(),
                           measurementStreamStorage: PreviewMeasurementStreamStorage(),
                           sessionSynchronizer: DummySessionSynchronizer())

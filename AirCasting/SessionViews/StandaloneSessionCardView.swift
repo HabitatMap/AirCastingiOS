@@ -10,7 +10,7 @@ struct StandaloneSessionCardView: View {
     let sessionSynchronizer: SessionSynchronizer
     let measurementStreamStorage: MeasurementStreamStorage
     @EnvironmentObject private var sdSyncController: SDSyncController
-    var urlProvider: BaseURLProvider
+    let urlProvider: BaseURLProvider
     @EnvironmentObject private var tabSelection: TabBarSelection
     @EnvironmentObject private var finishAndSyncButtonTapped: FinishAndSyncButtonTapped
     @EnvironmentObject var networkChecker: NetworkChecker
@@ -35,7 +35,8 @@ struct StandaloneSessionCardView: View {
             isExpandButtonNeeded: false,
             isMenuNeeded: false,
             isCollapsed: .constant(false),
-            urlProvider: urlProvider, session: session,
+            urlProvider: urlProvider,
+            session: session,
             sessionStopperFactory: sessionStopperFactory,
             measurementStreamStorage: measurementStreamStorage,
             sessionSynchronizer: sessionSynchronizer)
