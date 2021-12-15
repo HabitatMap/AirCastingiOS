@@ -20,14 +20,18 @@ struct SyncedMeasurementsDownloadingService: SyncedMeasurementsDownloader {
     func download(sessionsUUIDs: [SessionUUID]) {
         
         prepareSessionsData(sessionsUUIDs) { sessionsData in
-            sessionsData.forEach { measurementsDownloadingService.updateMeasurements(for: $0.uuid, lastSynced: $0.lastSynced) }
+            sessionsData.forEach { session in
+                measurementsDownloadingService.downloadMeasurements(for: session.uuid, lastSynced: session.lastSynced) {
+                    //TODO: this is probably just temporary. Let's figure out how they do it in android
+                    removeDoubledMeasurements(session.uuid)
+                }
+            }
         }
     }
     
     private func prepareSessionsData(_ sessionsUUIDs: [SessionUUID], completion: @escaping ([(uuid: SessionUUID, lastSynced: Date)]) -> Void) {
         measurementStreamStorage.accessStorage { storage in
             let sessionsData = sessionsUUIDs.map { (uuid: $0, lastSynced: getLastSyncDate(for: $0, storage: storage)) }
-            Log.info("## \(sessionsData)")
             completion(sessionsData)
         }
     }
@@ -48,6 +52,17 @@ struct SyncedMeasurementsDownloadingService: SyncedMeasurementsDownloader {
         } else {
             let last24hours = Date(timeIntervalSince1970: (Date().timeIntervalSince1970 - measurementTimeframe))
             return last24hours
+        }
+    }
+    
+    private func removeDoubledMeasurements(_ sessionUUID: SessionUUID) {
+        measurementStreamStorage.accessStorage { storage in
+            do {
+                let session = try storage.removeDuplicatedMeasurements(for: sessionUUID)
+                
+            } catch {
+                Log.error("Error occured while removing duplicated measurements: \(error)")
+            }
         }
     }
 }

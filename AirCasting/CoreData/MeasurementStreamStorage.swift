@@ -124,6 +124,22 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
     func save() throws {
         try self.context.save()
     }
+    
+    func removeDuplicatedMeasurements(for sessionUUID: SessionUUID) throws {
+        let sessionEntity = try context.existingSession(uuid: sessionUUID)
+        sessionEntity.allStreams?.forEach({ stream in
+            guard let measurements = stream.allMeasurements else { return }
+            let sortedMeasurements = measurements.sorted(by: { $0.time < $1.time })
+            for (i, measurement) in sortedMeasurements.enumerated() {
+                if i > 0 {
+                    if measurement.time.roundedDownToSecond == sortedMeasurements[i-1].time.roundedDownToSecond {
+                        context.delete(measurement)
+                    }
+                }
+            }
+        })
+        Log.info("Deleted duplicated measurements")
+    }
 
     func addMeasurement(_ measurement: Measurement, toStreamWithID id: MeasurementStreamLocalID) throws {
         let stream = try context.existingObject(with: id.id) as! MeasurementStreamEntity
