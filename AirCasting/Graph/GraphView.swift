@@ -58,7 +58,7 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                                                         threshold: threshold)
                             }
                         }
-                        NavigationLink(destination: ThresholdsSettingsView(thresholdValues: threshold.rawThresholdsBinding,
+                        NavigationLink(destination: ThresholdsSettingsView(thresholdValues: threshold.thresholdsBinding,
                                                                            initialThresholds: selectedStream.thresholds)) {
                             EditButtonView()
                                 .padding([.horizontal, .top])

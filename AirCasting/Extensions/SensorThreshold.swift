@@ -6,6 +6,31 @@ import SwiftUI
 
 extension SensorThreshold {
     
+    public var thresholdValues: ThresholdsValue {
+        get {
+            ThresholdsValue(veryLow: thresholdVeryLow,
+                            low: thresholdLow,
+                            medium: thresholdMedium,
+                            high: thresholdHigh,
+                            veryHigh: thresholdVeryHigh)
+        }
+        set {
+            thresholdVeryLow = newValue.veryLow
+            thresholdLow = newValue.low
+            thresholdMedium = newValue.medium
+            thresholdHigh = newValue.high
+            thresholdVeryHigh = newValue.veryHigh
+        }
+    }
+    
+    var thresholdsBinding: Binding<ThresholdsValue> {
+        Binding<ThresholdsValue> {
+            self.thresholdValues
+        } set: { newValue in
+            self.thresholdValues = newValue
+        }
+    }
+    
     var rawThresholdsBinding: Binding<[Float]> {
         Binding<[Float]> { [self] in
             [
@@ -53,13 +78,11 @@ extension SensorThreshold {
         }
         
         let threshold: SensorThreshold = try! context.newOrExisting(sensorName: "mock-threshold")
-
         threshold.thresholdVeryLow = -100
         threshold.thresholdLow = -40
         threshold.thresholdMedium = -30
         threshold.thresholdHigh = -20
         threshold.thresholdVeryHigh = 10
-
         return threshold
     }
 }

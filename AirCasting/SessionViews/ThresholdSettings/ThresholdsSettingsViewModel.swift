@@ -10,32 +10,28 @@ class ThresholdSettingsViewModel: ObservableObject {
     @Published var thresholdMedium = ""
     @Published var thresholdHigh = ""
     @Published var thresholdVeryHigh = ""
-    let initialThresholds: [Int32]
-    
-    init(initialThresholds: [Int32]) {
+    let initialThresholds: ThresholdsValue
+
+    init(initialThresholds: ThresholdsValue) {
         self.initialThresholds = initialThresholds
     }
+
+    func resetToDefault() -> ThresholdsValue { initialThresholds }
     
-    private func convertToFloat(value: String) -> Float {
-        let floatValue = Float(value) ?? 0
-        return floatValue
-    }
-    
-    func resetToDefault() -> [Float] {
-        var newInitial: [Float] = []
-        initialThresholds.forEach { value in
-            newInitial.append(Float(value))
-        }
-        return newInitial
-    }
-    
-    func updateToNewThresholds() -> [Float] {
+    func updateToNewThresholds() -> ThresholdsValue {
         let stringThresholdValues = [thresholdVeryHigh, thresholdHigh, thresholdMedium, thresholdLow, thresholdVeryLow]
-        var newThresholdValues: [Float] = []
+        var newThresholdValues: [Int32] = []
         for value in stringThresholdValues {
-            let convertedValue = convertToFloat(value: value)
+            let convertedValue = convertToInt(value)
             newThresholdValues.append(convertedValue)
         }
-        return newThresholdValues.sorted { $0 < $1 }
+        let sortedValue = newThresholdValues.sorted { $0 < $1 }
+        return ThresholdsValue(veryLow: sortedValue[0],
+                               low: sortedValue[1],
+                               medium: sortedValue[2],
+                               high: sortedValue[3],
+                               veryHigh: sortedValue[4])
     }
+    
+    private func convertToInt(_ value: String) -> Int32 { Int32(value) ?? 0 }
 }
