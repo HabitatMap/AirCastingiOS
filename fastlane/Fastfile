@@ -46,7 +46,7 @@ platform :ios do
    lane :release do
       ensure_git_status_clean
       version = get_version_number
-      ensure_git_branch(branch: "release/#{version}")
+      ensure_git_branch(branch: "develop")
       begin
          cocoapods
          build_app(workspace: "AirCasting.xcworkspace", scheme: "AirCasting", export_method: "app-store", output_directory: "./build_ipa", configuration: "Release")
@@ -63,6 +63,8 @@ platform :ios do
             release_notes: "Release Candidate #{version}"
          )
          clean_build_artifacts
+         sh("git checkout -b release/#{version}")
+         sh("git push -u origin release/#{version}")
       rescue => ex
          reset_git_repo(skip_clean: true)
       end
