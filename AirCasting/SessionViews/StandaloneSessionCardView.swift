@@ -10,7 +10,7 @@ struct StandaloneSessionCardView: View {
     let sessionSynchronizer: SessionSynchronizer
     let measurementStreamStorage: MeasurementStreamStorage
     @EnvironmentObject private var sdSyncController: SDSyncController
-    @EnvironmentObject private var urlProvider: UserDefaultsBaseURLProvider
+    var urlProvider: BaseURLProvider
     @EnvironmentObject private var tabSelection: TabBarSelection
     @EnvironmentObject private var finishAndSyncButtonTapped: FinishAndSyncButtonTapped
     @EnvironmentObject var networkChecker: NetworkChecker
@@ -35,7 +35,7 @@ struct StandaloneSessionCardView: View {
             isExpandButtonNeeded: false,
             isMenuNeeded: false,
             isCollapsed: .constant(false),
-            session: session,
+            urlProvider: urlProvider, session: session,
             sessionStopperFactory: sessionStopperFactory,
             measurementStreamStorage: measurementStreamStorage,
             sessionSynchronizer: sessionSynchronizer)
@@ -95,7 +95,7 @@ struct StandaloneSessionCardView: View {
 #if DEBUG
 struct StandaloneSessionCard_Previews: PreviewProvider {
     static var previews: some View {
-        StandaloneSessionCardView(session: SessionEntity.mock, sessionStopperFactory: SessionStoppableFactoryDummy(), sessionSynchronizer: DummySessionSynchronizer(), measurementStreamStorage: PreviewMeasurementStreamStorage())
+        StandaloneSessionCardView(session: SessionEntity.mock, sessionStopperFactory: SessionStoppableFactoryDummy(), sessionSynchronizer: DummySessionSynchronizer(), measurementStreamStorage: PreviewMeasurementStreamStorage(), urlProvider: DummyURLProvider())
             .environmentObject(DummyURLProvider())
     }
 }

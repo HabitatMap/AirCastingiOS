@@ -20,7 +20,7 @@ struct AirMapView: View {
     @Binding var showLoadingIndicator: Bool
     @State var isUserInteracting = true
     @Binding var selectedStream: MeasurementStreamEntity?
-    @EnvironmentObject private var urlProvider: UserDefaultsBaseURLProvider
+    var urlProvider: BaseURLProvider
     let sessionStoppableFactory: SessionStoppableFactory
     let measurementStreamStorage: MeasurementStreamStorage
     let sessionSynchronizer: SessionSynchronizer
@@ -39,7 +39,7 @@ struct AirMapView: View {
                                   isExpandButtonNeeded: false,
                                   isSensorTypeNeeded: false,
                                   isCollapsed: Binding.constant(false),
-                                  session: session,
+                                  urlProvider: urlProvider, session: session,
                                   sessionStopperFactory: sessionStoppableFactory, measurementStreamStorage: measurementStreamStorage, sessionSynchronizer: sessionSynchronizer)
             
             ABMeasurementsView(session: session,
@@ -111,7 +111,7 @@ struct Map_Previews: PreviewProvider {
                    session: .mock,
                    showLoadingIndicator: .constant(true),
                    selectedStream: .constant(nil),
-                   sessionStoppableFactory: SessionStoppableFactoryDummy(),
+                   urlProvider: DummyURLProvider(), sessionStoppableFactory: SessionStoppableFactoryDummy(),
                    measurementStreamStorage: PreviewMeasurementStreamStorage(),
                    sessionSynchronizer: DummySessionSynchronizer())
     }

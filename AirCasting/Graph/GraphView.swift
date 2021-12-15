@@ -13,7 +13,7 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
     let thresholds: [SensorThreshold]
     @Binding var selectedStream: MeasurementStreamEntity?
     @StateObject var statsContainerViewModel: StatsViewModelType
-    @EnvironmentObject private var urlProvider: UserDefaultsBaseURLProvider
+    var urlProvider: BaseURLProvider
     let graphStatsDataSource: GraphStatsDataSource
     let sessionStoppableFactory: SessionStoppableFactory
     let measurementStreamStorage: MeasurementStreamStorage
@@ -25,7 +25,7 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                                   isExpandButtonNeeded: false,
                                   isSensorTypeNeeded: false,
                                   isCollapsed: Binding.constant(false),
-                                  session: session,
+                                  urlProvider: urlProvider, session: session,
                                   sessionStopperFactory: sessionStoppableFactory,
                                   measurementStreamStorage: measurementStreamStorage,
                                   sessionSynchronizer: sessionSynchronizer)
@@ -92,6 +92,7 @@ struct GraphView_Previews: PreviewProvider {
                   thresholds: [.mock],
                   selectedStream: .constant(nil),
                   statsContainerViewModel: FakeStatsViewModel(),
+                  urlProvider: DummyURLProvider(),
                   graphStatsDataSource: GraphStatsDataSource(),
                   sessionStoppableFactory: SessionStoppableFactoryDummy(),
                   measurementStreamStorage: PreviewMeasurementStreamStorage(),

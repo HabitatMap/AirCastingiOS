@@ -45,8 +45,8 @@ final class SessionDownloadService: SessionDownstream, MeasurementsDownloadable 
     }
     
     private func download(session: SessionUUID, completion: @escaping (Result<SessionsSynchronization.SessionDownstreamData, Error>) -> Void) -> Cancellable {
-        let urlF = urlProvider.baseAppURL.appendingPathComponent("api/user/sessions/update_session.json")
-        var urlComponents = URLComponents(string: urlF.absoluteString)!
+        let urlComponentPart = urlProvider.baseAppURL.appendingPathComponent("api/user/sessions/update_session.json")
+        var urlComponents = URLComponents(string: urlComponentPart.absoluteString)!
         urlComponents.queryItems = [
             URLQueryItem(name: "uuid", value: session.rawValue)
         ]
@@ -78,8 +78,8 @@ final class SessionDownloadService: SessionDownstream, MeasurementsDownloadable 
     }
     
     func downloadSessionWithMeasurement(uuid: SessionUUID, completion: @escaping (Result<SessionsSynchronization.SessionDownstreamData, Error>) -> Void) -> Cancellable {
-        let urlF = urlProvider.baseAppURL.appendingPathComponent("api/user/sessions/empty.json")
-        var urlComponents = URLComponents(string: urlF.absoluteString)!
+        let urlComponentPart = urlProvider.baseAppURL.appendingPathComponent("api/user/sessions/empty.json")
+        var urlComponents = URLComponents(string: urlComponentPart.absoluteString)!
         urlComponents.queryItems = [
             URLQueryItem(name: "uuid", value: uuid.rawValue),
             URLQueryItem(name: "stream_measurements", value: "true")

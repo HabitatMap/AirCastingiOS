@@ -54,13 +54,14 @@ struct AirCastingApp: App {
 
     var body: some Scene {
         WindowGroup {
-            RootAppView(sessionSynchronizer: sessionSynchronizer, persistenceController: persistenceController)
+            RootAppView(sessionSynchronizer: sessionSynchronizer,
+                        persistenceController: persistenceController,
+                        urlProvider: urlProvider)
                 .environmentObject(sessionSynchronizerViewModel)
                 .environmentObject(authorization)
                 .environmentObject(microphoneManager)
                 .environmentObject(averagingService)
                 .environmentObject(lifeTimeEventsProvider)
-                .environmentObject(urlProvider)
                 .alert(isPresented: $offlineMessageViewModel.showOfflineMessage, content: { Alert.offlineAlert })
         }.onChange(of: scenePhase) { newScenePhase in
             switch newScenePhase {
