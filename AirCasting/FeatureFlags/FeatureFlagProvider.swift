@@ -3,6 +3,7 @@ import Foundation
 enum FeatureFlag: String, Equatable, CaseIterable {
     case sdCardSync
     case standaloneMode
+    case notes
 }
 
 extension FeatureFlag {
@@ -10,6 +11,7 @@ extension FeatureFlag {
         switch self {
         case .standaloneMode: return "Standalone mode"
         case .sdCardSync: return "SD Card sync"
+        case .notes: return "Session notes"
         }
     }
 }
