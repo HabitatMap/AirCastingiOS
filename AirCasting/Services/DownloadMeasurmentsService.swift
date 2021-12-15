@@ -11,6 +11,7 @@ import Combine
 
 protocol MeasurementUpdatingService {
     func start()
+    func downloadMeasurements(for sessionUUID: SessionUUID, lastSynced: Date, completion: @escaping () -> Void)
 }
 
 final class DownloadMeasurementsService: MeasurementUpdatingService {
@@ -32,6 +33,18 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
         updateAllSessionsMeasurements()
         timerSink = Timer.publish(every: 60, on: .current, in: .common).autoconnect().sink { [weak self] tick in
             self?.updateAllSessionsMeasurements()
+        }
+    }
+    
+    func downloadMeasurements(for sessionUUID: SessionUUID, lastSynced: Date, completion: @escaping () -> Void) {
+        lastFetchCancellableTask = fixedSessionService.getFixedMeasurement(uuid: sessionUUID, lastSync: lastSynced) { [weak self] in
+            self?.processServiceResponse($0, for: sessionUUID, completion: completion)
+        }
+    }
+    
+    private func updateMeasurements(for sessionUUID: SessionUUID, lastSynced: Date) {
+        lastFetchCancellableTask = fixedSessionService.getFixedMeasurement(uuid: sessionUUID, lastSync: lastSynced) { [weak self] in
+            self?.processServiceResponse($0, for: sessionUUID)
         }
     }
     
@@ -67,17 +80,12 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
         return syncDate
     }
     
-    private func updateMeasurements(for sessionUUID: SessionUUID, lastSynced: Date) {
-        lastFetchCancellableTask = fixedSessionService.getFixedMeasurement(uuid: sessionUUID, lastSync: lastSynced) { [weak self] in
-            self?.processServiceResponse($0, for: sessionUUID)
-        }
-    }
-    
     private func processServiceResponse(_ response: Result<FixedSession.FixedMeasurementOutput, Error>,
-                                        for sessionUUID: SessionUUID) {
+                                        for sessionUUID: SessionUUID, completion: () -> Void = {}) {
         switch response {
         case .success(let response):
             processServiceOutput(response, for: sessionUUID)
+            completion()
         case .failure(let error):
             Log.warning("Failed to fetch measurements for uuid '\(sessionUUID)' \(error)")
         }

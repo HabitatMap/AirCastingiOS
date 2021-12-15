@@ -52,7 +52,7 @@ struct Graph: UIViewRepresentable {
             action?(newRange)
         })
         try? uiView.updateWithThreshold(thresholdValues: thresholds.rawThresholdsBinding.wrappedValue)
-        let entries = stream.allMeasurements?.compactMap({ measurement -> ChartDataEntry? in
+        let entries = stream.allMeasurements?.sorted(by: { $0.time < $1.time }).compactMap({ measurement -> ChartDataEntry? in
             let timeInterval = Double(measurement.time.timeIntervalSince1970)
             let chartDataEntry = ChartDataEntry(x: timeInterval, y: measurement.value)
             return chartDataEntry
@@ -89,7 +89,7 @@ struct Graph: UIViewRepresentable {
         let allLimitLines = getLimitLines()
         uiView.limitLines = allLimitLines
         
-        let entries = stream.allMeasurements?.compactMap({ measurement -> ChartDataEntry? in
+        let entries = stream.allMeasurements?.sorted(by: { $0.time < $1.time }).compactMap({ measurement -> ChartDataEntry? in
             let timeInterval = Double(measurement.time.timeIntervalSince1970)
             let chartDataEntry = ChartDataEntry(x: timeInterval, y: measurement.value)
             return chartDataEntry

@@ -92,7 +92,7 @@ struct RootAppView: View {
                                                 mobileSessionsSaver: mobileSessionsService,
                                                 fixedSessionsSaver: fixedSessionsService,
                                                 averagingService: averagingService,
-                                                sessionSynchronizer: sessionSynchronizer)
+                                                sessionSynchronizer: sessionSynchronizer, measurementsDownloader: SyncedMeasurementsDownloadingService(measurementStreamStorage: measurementStreamStorage, measurementsDownloadingService: downloadService!))
         }
     }
     
