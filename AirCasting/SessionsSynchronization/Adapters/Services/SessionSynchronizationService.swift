@@ -9,6 +9,7 @@ final class SessionSynchronizationService: SessionSynchronizationContextProvidab
     private let client: APIClient
     private let authorization: RequestAuthorisationService
     private let responseValidator: HTTPResponseValidator
+    private let urlProvider: BaseURLProvider
     
     private let encoder = JSONEncoder()
     private let decoder = JSONDecoder()
@@ -17,10 +18,11 @@ final class SessionSynchronizationService: SessionSynchronizationContextProvidab
         let data: String
     }
     
-    init(client: APIClient, authorization: RequestAuthorisationService, responseValidator: HTTPResponseValidator) {
+    init(client: APIClient, authorization: RequestAuthorisationService, responseValidator: HTTPResponseValidator, urlProvider: BaseURLProvider) {
         self.client = client
         self.authorization = authorization
         self.responseValidator = responseValidator
+        self.urlProvider = urlProvider
     }
     
     public func getSynchronizationContext(localSessions: [SessionsSynchronization.Metadata]) -> AnyPublisher<SessionsSynchronization.SynchronizationContext, Error> {
@@ -42,7 +44,7 @@ final class SessionSynchronizationService: SessionSynchronizationContextProvidab
     
     private func getSynchronizationContext(localSessions: [SessionsSynchronization.Metadata],
                                            completion: @escaping (Result<SessionsSynchronization.SynchronizationContext, Error>) -> Void) -> Cancellable {
-        let url = URL(string: "http://aircasting.org/api/user/sessions/sync_with_versioning.json")!
+        let url = urlProvider.baseAppURL.appendingPathComponent("api/user/sessions/sync_with_versioning.json")
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "Accept")

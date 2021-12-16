@@ -10,6 +10,7 @@ final class SessionUploadService: SessionUpstream {
     private let client: APIClient
     private let authorization: RequestAuthorisationService
     private let responseValidator: HTTPResponseValidator
+    private let urlProvider: BaseURLProvider
     
     private let encoder: JSONEncoder = {
         let encoder = JSONEncoder()
@@ -25,15 +26,16 @@ final class SessionUploadService: SessionUpstream {
         let compression: Bool
     }
     
-    init(client: APIClient, authorization: RequestAuthorisationService, responseValidator: HTTPResponseValidator) {
+    init(client: APIClient, authorization: RequestAuthorisationService, responseValidator: HTTPResponseValidator, urlProvider: BaseURLProvider) {
         self.client = client
         self.authorization = authorization
         self.responseValidator = responseValidator
+        self.urlProvider = urlProvider
     }
     
     func upload(session: SessionsSynchronization.SessionUpstreamData) -> Future<Void, Error> {
-        .init { [client, authorization, encoder, responseValidator] promise in
-            let url = URL(string: "http://aircasting.org/api/sessions")!
+        .init { [self, client, authorization, encoder, responseValidator] promise in
+            let url = urlProvider.baseAppURL.appendingPathComponent("api/sessions")
             var request = URLRequest(url: url)
             request.httpMethod = "POST"
             request.addValue("application/json", forHTTPHeaderField: "Content-Type")

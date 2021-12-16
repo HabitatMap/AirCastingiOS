@@ -13,6 +13,7 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
     let thresholds: [SensorThreshold]
     @Binding var selectedStream: MeasurementStreamEntity?
     @StateObject var statsContainerViewModel: StatsViewModelType
+    let urlProvider: BaseURLProvider
     let graphStatsDataSource: GraphStatsDataSource
     let sessionStoppableFactory: SessionStoppableFactory
     let measurementStreamStorage: MeasurementStreamStorage
@@ -24,6 +25,7 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                                   isExpandButtonNeeded: false,
                                   isSensorTypeNeeded: false,
                                   isCollapsed: Binding.constant(false),
+                                  urlProvider: urlProvider,
                                   session: session,
                                   sessionStopperFactory: sessionStoppableFactory,
                                   measurementStreamStorage: measurementStreamStorage,
@@ -37,8 +39,8 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                 thresholds: thresholds, measurementPresentationStyle: .showValues,
                 viewModel: DefaultSyncingMeasurementsViewModel(measurementStreamStorage: measurementStreamStorage,
                                                                sessionDownloader: SessionDownloadService(client: URLSession.shared,
-                                                                authorization: UserAuthenticationSession(),
-                                                                responseValidator: DefaultHTTPResponseValidator()),
+                                                                                                         authorization: UserAuthenticationSession(),
+                                                                                                         responseValidator: DefaultHTTPResponseValidator(), urlProvider: urlProvider),
                                                                 session: session))
                 .padding(.horizontal)
            
@@ -91,6 +93,7 @@ struct GraphView_Previews: PreviewProvider {
                   thresholds: [.mock],
                   selectedStream: .constant(nil),
                   statsContainerViewModel: FakeStatsViewModel(),
+                  urlProvider: DummyURLProvider(),
                   graphStatsDataSource: GraphStatsDataSource(),
                   sessionStoppableFactory: SessionStoppableFactoryDummy(),
                   measurementStreamStorage: PreviewMeasurementStreamStorage(),

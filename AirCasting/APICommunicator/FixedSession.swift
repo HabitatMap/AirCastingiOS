@@ -81,7 +81,7 @@ final class FixedSessionAPIService {
     @discardableResult
     func getFixedMeasurement(uuid: SessionUUID, lastSync: Date, completion: @escaping (Result<FixedSession.FixedMeasurementOutput, Error>) -> Void) -> Cancellable {
         // Build URL with query
-        let url = urlProvider.baseAppURL.appendingPathComponent("realtime/sync_measurements.json")
+        let url = urlProvider.baseAppURL.appendingPathComponent("api/realtime/sync_measurements.json")
         var components = URLComponents(url: url, resolvingAgainstBaseURL: false)!
         let syncDateStr = ISO8601DateFormatter.defaultLong.string(from: lastSync)
         components.queryItems = [

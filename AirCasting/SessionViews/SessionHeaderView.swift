@@ -16,6 +16,7 @@ struct SessionHeaderView: View {
     @State var chevronIndicator = "chevron.down"
     @EnvironmentObject var networkChecker: NetworkChecker
     @EnvironmentObject var bluetoothManager: BluetoothManager
+    let urlProvider: BaseURLProvider
     @EnvironmentObject var selectedSection: SelectSection
     @ObservedObject var session: SessionEntity
     @State private var showingNoConnectionAlert = false
@@ -45,7 +46,7 @@ struct SessionHeaderView: View {
             ShareView(showModal: Binding.constant(false))
         })
         .sheet(isPresented: $showDeleteModal) {
-            DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session, measurementStreamStorage: measurementStreamStorage, streamRemover: StreamRemoverDefault(authorization: authorization), sessionSynchronizer: sessionSynchronizer), deleteModal: $showDeleteModal)
+            DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session, measurementStreamStorage: measurementStreamStorage, streamRemover: StreamRemoverDefault(authorization: authorization, urlProvider: urlProvider), sessionSynchronizer: sessionSynchronizer), deleteModal: $showDeleteModal)
         }
         .font(Fonts.regularHeading4)
         .foregroundColor(.aircastingGray)
@@ -221,9 +222,13 @@ private extension SessionHeaderView {
 struct SessionHeader_Previews: PreviewProvider {
     static var previews: some View {
         SessionHeaderView(action: {},
-                          isExpandButtonNeeded: true, isCollapsed: .constant(true),
+                          isExpandButtonNeeded: true,
+                          isCollapsed: .constant(true),
+                          urlProvider: DummyURLProvider(),
                           session: SessionEntity.mock,
-                          sessionStopperFactory: SessionStoppableFactoryDummy(), measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionSynchronizer: DummySessionSynchronizer())
+                          sessionStopperFactory: SessionStoppableFactoryDummy(),
+                          measurementStreamStorage: PreviewMeasurementStreamStorage(),
+                          sessionSynchronizer: DummySessionSynchronizer())
                 .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
     }
 }

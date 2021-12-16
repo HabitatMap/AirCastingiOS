@@ -92,7 +92,8 @@ private extension MainTabBarView {
             DashboardView(coreDataHook: coreDataHook,
                           measurementStreamStorage: measurementStreamStorage,
                           sessionStoppableFactory: sessionStoppableFactory,
-                          sessionSynchronizer: sessionSynchronizer)
+                          sessionSynchronizer: sessionSynchronizer,
+                          urlProvider: urlProvider)
         }.navigationViewStyle(StackNavigationViewStyle())
             .tabItem {
                 Image(homeImage)

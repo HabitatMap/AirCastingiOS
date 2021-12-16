@@ -10,9 +10,11 @@ protocol StreamRemover {
 class StreamRemoverDefault: StreamRemover {
 
     private let authorization: RequestAuthorisationService
+    private let urlProvider: BaseURLProvider
     
-    init(authorization: RequestAuthorisationService) {
+    init(authorization: RequestAuthorisationService, urlProvider: BaseURLProvider) {
         self.authorization = authorization
+        self.urlProvider = urlProvider
     }
     
     private struct APICallData: Encodable {
@@ -20,7 +22,7 @@ class StreamRemoverDefault: StreamRemover {
     }
 
     func deleteStreams(session: SessionEntity, completion: @escaping () -> Void) {
-        guard let url = URL(string: "http://aircasting.org/api/user/sessions/update_session.json") else { return }
+        let url = urlProvider.baseAppURL.appendingPathComponent("api/user/sessions/update_session.json")
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "Accept")

@@ -20,6 +20,7 @@ struct AirMapView: View {
     @Binding var showLoadingIndicator: Bool
     @State var isUserInteracting = true
     @Binding var selectedStream: MeasurementStreamEntity?
+    let urlProvider: BaseURLProvider
     let sessionStoppableFactory: SessionStoppableFactory
     let measurementStreamStorage: MeasurementStreamStorage
     let sessionSynchronizer: SessionSynchronizer
@@ -38,8 +39,11 @@ struct AirMapView: View {
                                   isExpandButtonNeeded: false,
                                   isSensorTypeNeeded: false,
                                   isCollapsed: Binding.constant(false),
+                                  urlProvider: urlProvider,
                                   session: session,
-                                  sessionStopperFactory: sessionStoppableFactory, measurementStreamStorage: measurementStreamStorage, sessionSynchronizer: sessionSynchronizer)
+                                  sessionStopperFactory: sessionStoppableFactory,
+                                  measurementStreamStorage: measurementStreamStorage,
+                                  sessionSynchronizer: sessionSynchronizer)
             
             ABMeasurementsView(session: session,
                                isCollapsed: Binding.constant(false),
@@ -47,8 +51,7 @@ struct AirMapView: View {
                                thresholds: thresholds, measurementPresentationStyle: .showValues,
                                viewModel:  DefaultSyncingMeasurementsViewModel(measurementStreamStorage: measurementStreamStorage,
                                                                                sessionDownloader: SessionDownloadService(client: URLSession.shared,
-                                                                                authorization: UserAuthenticationSession(),
-                                                                                responseValidator: DefaultHTTPResponseValidator()),
+                                                                                                                         authorization: UserAuthenticationSession(), responseValidator: DefaultHTTPResponseValidator(), urlProvider: urlProvider),
                                                                                 session: session))
 
             if let threshold = thresholds.threshold(for: selectedStream) {
@@ -111,6 +114,7 @@ struct Map_Previews: PreviewProvider {
                    session: .mock,
                    showLoadingIndicator: .constant(true),
                    selectedStream: .constant(nil),
+                   urlProvider: DummyURLProvider(),
                    sessionStoppableFactory: SessionStoppableFactoryDummy(),
                    measurementStreamStorage: PreviewMeasurementStreamStorage(),
                    sessionSynchronizer: DummySessionSynchronizer())
