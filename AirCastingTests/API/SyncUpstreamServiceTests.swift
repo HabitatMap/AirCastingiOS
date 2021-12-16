@@ -62,7 +62,7 @@ final class SyncUpstreamServiceTests: XCTestCase {
         }
         XCTAssertEqual(sessionJson["uuid"] as? String, "654321")
         // Note this also tests snake_case conversion:
-        XCTAssertEqual(sessionJson["start_time"] as? String, "0001-01-01T01:24:00.000Z")
+        XCTAssertEqual(sessionJson["start_time"] as? String, "0001-01-01T00:00:00.000Z")
         XCTAssertEqual(sessionJson["contribute"] as? Bool, false)
         XCTAssertEqual(sessionJson["version"] as? Int, 1)
         let streams = sessionJson["streams"] as! [String : Any]
@@ -84,7 +84,7 @@ final class SyncUpstreamServiceTests: XCTestCase {
         XCTAssertEqual(measuremnets.count, 1)
         XCTAssertEqual(measuremnets.first?["value"] as! Double, 12.0, accuracy: 0.001)
         XCTAssertEqual(measuremnets.first?["longitude"] as! Double, 50.12, accuracy: 0.001)
-        XCTAssertEqual(measuremnets.first?["time"] as? String, "2001-01-01T01:02:30.000Z")
+        XCTAssertEqual(measuremnets.first?["time"] as? String, "2001-01-01T00:02:30.000Z")
         XCTAssertEqual(measuremnets.first?["latitude"] as! Double, 51.01, accuracy: 0.001)
         XCTAssertEqual(measuremnets.first?["milliseconds"] as? Int, 87)
     }
