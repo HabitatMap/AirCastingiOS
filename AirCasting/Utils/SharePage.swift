@@ -8,11 +8,14 @@ struct ActivityViewController: UIViewControllerRepresentable {
     
     var itemsToShare: [Any]
     var servicesToShareItem: [UIActivity]? = nil
+    var completion: () -> Void
     
     func makeUIViewController(context: UIViewControllerRepresentableContext<ActivityViewController>) -> UIActivityViewController {
         let controller = UIActivityViewController(activityItems: itemsToShare, applicationActivities: servicesToShareItem)
         return controller
     }
     
-    func updateUIViewController(_ uiViewController: UIActivityViewController, context: UIViewControllerRepresentableContext<ActivityViewController>) {}
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: UIViewControllerRepresentableContext<ActivityViewController>) {
+//        uiViewController.dismiss(animated: true, completion: { completion })
+    }
 }

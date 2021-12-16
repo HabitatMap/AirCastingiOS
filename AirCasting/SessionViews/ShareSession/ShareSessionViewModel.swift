@@ -49,6 +49,9 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
                 }
             }
         }
+        if !streamOptions.isEmpty {
+            streamOptions[0].toggleSelection()
+        }
     }
     
     private func toggleSelection(at index: Int) {
@@ -58,7 +61,7 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
             for i in streamOptions.indices {
                 streamOptions[i].changeSelection(newSelected: false)
             }
+            streamOptions[index].toggleSelection()
         }
-        streamOptions[index].toggleSelection()
     }
 }

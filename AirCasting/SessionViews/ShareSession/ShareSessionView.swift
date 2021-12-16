@@ -29,12 +29,14 @@ struct ShareSessionView<VM: ShareSessionViewModel>: View {
 //            descriptionMail
 //            createTextfield(placeholder: "Email", binding: $email)
 //                .padding(.vertical)
-//            VStack(alignment: .leading, spacing: 5) {
+            VStack(alignment: .leading, spacing: 5) {
 //                oKButton
-//                cancelButton
-//            }
+                cancelButton
+            }
         }.sheet(isPresented: $showSheet, content: {
-            ActivityViewController(itemsToShare: itemsForSharing)
+            ActivityViewController(itemsToShare: itemsForSharing) {
+                showSharingModal.toggle()
+            }
         }).padding()
     }
     
