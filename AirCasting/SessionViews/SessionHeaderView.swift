@@ -24,6 +24,7 @@ struct SessionHeaderView: View {
     let sessionStopperFactory: SessionStoppableFactory
     @StateObject private var featureFlagsViewModel = FeatureFlagsViewModel.shared
     @State var showDeleteModal = false
+    @State var showAddNoteModal = false
     let measurementStreamStorage: MeasurementStreamStorage
     let sessionSynchronizer: SessionSynchronizer
     @EnvironmentObject var authorization: UserAuthenticationSession
@@ -46,8 +47,10 @@ struct SessionHeaderView: View {
             ShareView(showModal: Binding.constant(false))
         })
         .sheet(isPresented: $showDeleteModal) {
-            EditNoteView()
-//            DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session, measurementStreamStorage: measurementStreamStorage, streamRemover: StreamRemoverDefault(authorization: authorization, urlProvider: urlProvider), sessionSynchronizer: sessionSynchronizer), deleteModal: $showDeleteModal)
+            DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session, measurementStreamStorage: measurementStreamStorage, streamRemover: StreamRemoverDefault(authorization: authorization, urlProvider: urlProvider), sessionSynchronizer: sessionSynchronizer), deleteModal: $showDeleteModal)
+        }
+        .sheet(isPresented: $showAddNoteModal) {
+            AddNoteView(viewModel: AddNoteViewModelDefault(), addNoteModal: $showAddNoteModal)
         }
         .font(Fonts.regularHeading4)
         .foregroundColor(.aircastingGray)
@@ -120,6 +123,8 @@ private extension SessionHeaderView {
             if session.deviceType == .AIRBEAM3 && session.isActive && featureFlagsViewModel.enabledFeatures.contains(.standaloneMode) {
                 actionsMenuMobileEnterStandaloneMode
             }
+            #warning("NOTE feature flag add")
+            session.isActive ? actionsMenuNoteButton : nil
         } label: {
             ZStack(alignment: .trailing) {
                 EditButtonView()
@@ -197,6 +202,14 @@ private extension SessionHeaderView {
             showDeleteModal = true
         } label: {
             Label(Strings.SessionHeaderView.deleteButton, systemImage: "xmark.circle")
+        }
+    }
+    
+    var actionsMenuNoteButton: some View {
+        Button {
+            showAddNoteModal.toggle()
+        } label: {
+            Label("Add a note", systemImage: "square.and.pencil")
         }
     }
 

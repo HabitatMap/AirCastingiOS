@@ -570,4 +570,21 @@ struct Strings {
     enum InAppAlerts {
         static let assertError: String = "Unsupported button count! For SwiftUI implementation max of 2 buttons is supported"
     }
+    
+    enum AddNoteView {
+        static let title: String = "Add a note"
+        static let description: String = "Your note will be timestamped and displayed on the AirCasting map"
+        static let placeholder: String = "Note"
+        static let continueButton: String = "Add a note"
+        static let cancelButton: String = "Cancel"
+    }
+    
+    enum EditNoteView {
+        static let title: String = "Edit this note"
+        static let description: String = "You can edit your note here"
+        static let placeholder: String = "Note"
+        static let saveButton: String = "Save changes"
+        static let deleteButton: String = "Delete note"
+        static let cancelButton: String = "Cancel"
+    }
 }

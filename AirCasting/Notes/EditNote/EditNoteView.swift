@@ -1,38 +1,40 @@
 // Created by Lunar on 16/12/2021.
 //
-
 import SwiftUI
 import AirCastingStyling
 
-struct AddNoteView: View {
-    @State private var xx = ""
+struct EditNoteView<VM: EditNoteViewModel>: View {
+    @StateObject var viewModel: VM
+    @Binding var editNoteModal: Bool
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
             title
             description
             noteField
             continueButton
+            deleteButton
             cancelButton
         }.padding()
     }
 }
 
-private extension AddNoteView {
+private extension EditNoteView {
     
     var title: some View {
-        Text("Add a note")
+        Text(Strings.EditNoteView.title)
             .font(Fonts.boldTitle4)
             .foregroundColor(.darkBlue)
     }
     
     var description: some View {
-        Text("Your note will be timestamped and displayed on the AirCasting map")
+        Text(Strings.EditNoteView.description)
             .font(Fonts.muliHeading2)
             .foregroundColor(.aircastingGray)
     }
     
     var noteField: some View {
-        TextField("NOTE", text: $xx)
+        TextField(Strings.EditNoteView.placeholder, text: $viewModel.noteText)
             .padding()
             .frame(minWidth: UIScreen.main.bounds.width - 40,
                    maxWidth: UIScreen.main.bounds.width - 40,
@@ -44,9 +46,19 @@ private extension AddNoteView {
     }
     var continueButton: some View {
         Button {
-           //)
+            //)
         } label: {
-            Text("Add a note")
+            Text(Strings.EditNoteView.saveButton)
+                .bold()
+        }
+        .buttonStyle(BlueButtonStyle())
+    }
+    
+    var deleteButton: some View {
+        Button {
+            //
+        } label: {
+            Text(Strings.EditNoteView.deleteButton)
                 .bold()
         }
         .buttonStyle(BlueButtonStyle())
@@ -54,16 +66,18 @@ private extension AddNoteView {
     
     var cancelButton: some View {
         Button {
-           //
+            editNoteModal.toggle()
         } label: {
-            Text("Cancel")
+            Text(Strings.EditNoteView.cancelButton)
         }
         .buttonStyle(BlueTextButtonStyle())
     }
 }
 
-struct AddNoteView_Previews: PreviewProvider {
+#if DEBUG
+struct EditNoteView_Previews: PreviewProvider {
     static var previews: some View {
-        AddNoteView()
+        EditNoteView(viewModel: DummyEditNoteViewModelDefault(), editNoteModal: .constant(true))
     }
 }
+#endif
