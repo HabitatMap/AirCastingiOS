@@ -25,6 +25,7 @@ protocol MeasurementStreamStorageContextUpdate {
     func markStreamForDelete(_ sessionUUID: SessionUUID, sensorsName: [String], completion: () -> Void) throws
     func deleteSession(_ sessionUUID: SessionUUID) throws
     func deleteStreams(_ sessionUUID: SessionUUID) throws
+    func addNote(_ note: Note, for sessionUUID: SessionUUID) throws 
     func save() throws
 }
 
@@ -277,6 +278,12 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         } catch {
             Log.error("Error when saving changes in session: \(error.localizedDescription)")
         }
+    }
+    
+    func addNote(_ note: Note, for sessionUUID: SessionUUID) throws {
+        let sessionEntity = try context.existingSession(uuid: sessionUUID)
+        sessionEntity.notes?.append(note)
+        try context.save()
     }
 
     func createSession(_ session: Session) throws {

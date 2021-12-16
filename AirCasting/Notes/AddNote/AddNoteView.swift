@@ -46,7 +46,11 @@ private extension AddNoteView {
     
     var continueButton: some View {
         Button {
-            //
+            viewModel.continueClicked(note: Note(date: Date(),
+                                                 text: viewModel.noteText,
+                                                 lat: 20.20,
+                                                 long: 20.20,
+                                                 number: 1))
         } label: {
             Text(Strings.AddNoteView.continueButton)
                 .bold()

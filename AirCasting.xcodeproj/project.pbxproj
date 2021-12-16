@@ -318,6 +318,8 @@
 		DDC5F58A271979F100F1F9D8 /* Fonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDC5F589271979F100F1F9D8 /* Fonts.swift */; };
 		DDC86644276B54A400A8E610 /* AddNoteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDC86643276B54A400A8E610 /* AddNoteViewModel.swift */; };
 		DDC86646276B561500A8E610 /* EditNoteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDC86645276B561500A8E610 /* EditNoteViewModel.swift */; };
+		DDC86648276B607C00A8E610 /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDC86647276B607C00A8E610 /* Note.swift */; };
+		DDC8664A276B695400A8E610 /* NotesHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDC86649276B695400A8E610 /* NotesHandler.swift */; };
 		DDCD3570271EB641004969FF /* UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCD356F271EB641004969FF /* UIImage.swift */; };
 		DDCE5D3626A1F79F0033C211 /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCE5D3526A1F79F0033C211 /* UserSettings.swift */; };
 		DDCE5D3826A1FE2D0033C211 /* DeleteSessionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCE5D3726A1FE2D0033C211 /* DeleteSessionViewModel.swift */; };
@@ -676,6 +678,8 @@
 		DDC5F589271979F100F1F9D8 /* Fonts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fonts.swift; sourceTree = "<group>"; };
 		DDC86643276B54A400A8E610 /* AddNoteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNoteViewModel.swift; sourceTree = "<group>"; };
 		DDC86645276B561500A8E610 /* EditNoteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditNoteViewModel.swift; sourceTree = "<group>"; };
+		DDC86647276B607C00A8E610 /* Note.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Note.swift; sourceTree = "<group>"; };
+		DDC86649276B695400A8E610 /* NotesHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesHandler.swift; sourceTree = "<group>"; };
 		DDCD356F271EB641004969FF /* UIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImage.swift; sourceTree = "<group>"; };
 		DDCE5D3526A1F79F0033C211 /* UserSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettings.swift; sourceTree = "<group>"; };
 		DDCE5D3726A1FE2D0033C211 /* DeleteSessionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteSessionViewModel.swift; sourceTree = "<group>"; };
@@ -1772,6 +1776,8 @@
 		DDBA6135276B3A8900E3FEF9 /* Notes */ = {
 			isa = PBXGroup;
 			children = (
+				DDC86647276B607C00A8E610 /* Note.swift */,
+				DDC86649276B695400A8E610 /* NotesHandler.swift */,
 				DDC86641276B547A00A8E610 /* AddNote */,
 				DDC86642276B548300A8E610 /* EditNote */,
 			);
@@ -2252,6 +2258,7 @@
 				4F3CDF222652B58100596CD3 /* Measurement.swift in Sources */,
 				ACC536E026395C0900327267 /* MeasurementDotView.swift in Sources */,
 				4F858F5E2624B4980059271A /* Log.swift in Sources */,
+				DDC8664A276B695400A8E610 /* NotesHandler.swift in Sources */,
 				DD430B062670FCC000F1BF2E /* GreenButtonStyle.swift in Sources */,
 				334CC6FA2751454C00C10B53 /* SDCardMobileSessionsSavingService.swift in Sources */,
 				ACFC708925C1A36A00D609D9 /* UIColor.swift in Sources */,
@@ -2363,6 +2370,7 @@
 				DDC86646276B561500A8E610 /* EditNoteViewModel.swift in Sources */,
 				AC8CFF4525E510CB00FB2918 /* AuthorizationAPI.swift in Sources */,
 				DD9EBB4E26AFDD2100D51804 /* TurnOnLocationView.swift in Sources */,
+				DDC86648276B607C00A8E610 /* Note.swift in Sources */,
 				B3EFAB1726EFE2DB00E88141 /* FirstRunInfoProvidable.swift in Sources */,
 				332F521425FA38430047236D /* MicrophoneManager.swift in Sources */,
 				DD5930E1273528860043C2A2 /* UserState.swift in Sources */,

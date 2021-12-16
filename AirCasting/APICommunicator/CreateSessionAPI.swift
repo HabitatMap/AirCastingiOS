@@ -44,7 +44,7 @@ class CreateSessionApi {
         let end_time: Date
         let contribute: Bool
         let is_indoor: Bool
-        let notes: [String]
+        let notes: [Note]
         let version: Int
         let streams: [String : MeasurementStreamParams]
 

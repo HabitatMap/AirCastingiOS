@@ -33,6 +33,8 @@ public class SessionEntity: NSManagedObject, Identifiable {
     @NSManaged public var name: String?
     @NSManaged public var startTime: Date?
     @NSManaged public var tags: String?
+    
+    @NSManaged public var notes: [Note]?
 
     @NSManaged public var urlLocation: String?
     @NSManaged public var version: Int16
