@@ -81,7 +81,6 @@ struct Strings {
         static let alertButton: String = "Got it!"
         static let shareLinkButton: String = "Share link"
         static let shareFileButton: String = "Share file"
-        static let checkboxDescription: String = "dB"
     }
 
     enum LoadingSession {

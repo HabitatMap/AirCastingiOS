@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		33050871276B568D00D18C69 /* ShareSessionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33050870276B568D00D18C69 /* ShareSessionViewModel.swift */; };
+		33050874276B734700D18C69 /* SessionHeaderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33050873276B734700D18C69 /* SessionHeaderViewModel.swift */; };
+		33050876276B7A4400D18C69 /* ShareSessionStreamOptionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33050875276B7A4400D18C69 /* ShareSessionStreamOptionViewModel.swift */; };
 		331EA80A25E32094009DEFDB /* ConfirmCreatingSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331EA80925E32094009DEFDB /* ConfirmCreatingSessionView.swift */; };
 		332F521425FA38430047236D /* MicrophoneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332F521325FA38430047236D /* MicrophoneManager.swift */; };
 		3346F1F626318C1600BA4695 /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3346F1F526318C1600BA4695 /* SettingsManager.swift */; };
@@ -296,7 +299,7 @@
 		DD5687C326CFC8080028C2CA /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD5687C226CFC8080028C2CA /* Constants.swift */; };
 		DD5930E1273528860043C2A2 /* UserState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD5930E0273528860043C2A2 /* UserState.swift */; };
 		DD700CF22695CE9C0048A17D /* MailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD700CF12695CE9C0048A17D /* MailView.swift */; };
-		DD72DC4226A99D5000325FE5 /* ShareView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD72DC4126A99D5000325FE5 /* ShareView.swift */; };
+		DD72DC4226A99D5000325FE5 /* ShareSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD72DC4126A99D5000325FE5 /* ShareSessionView.swift */; };
 		DD7955492757B30F00631A78 /* InAppAlerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD7955482757B30F00631A78 /* InAppAlerts.swift */; };
 		DD839E15269F33A6006A8625 /* LocationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD839E14269F33A6006A8625 /* LocationState.swift */; };
 		DD8A36A426C3CE7900C26725 /* ChooseCustomLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8A36A326C3CE7900C26725 /* ChooseCustomLocationView.swift */; };
@@ -353,6 +356,9 @@
 		08139B8AACC5B29DDED2C953 /* Pods-AirCastingTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AirCastingTests.release.xcconfig"; path = "Target Support Files/Pods-AirCastingTests/Pods-AirCastingTests.release.xcconfig"; sourceTree = "<group>"; };
 		18AAD6C6C2DE7FC9A0DA18D9 /* Pods-AirCasting.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AirCasting.beta.xcconfig"; path = "Target Support Files/Pods-AirCasting/Pods-AirCasting.beta.xcconfig"; sourceTree = "<group>"; };
 		278FFE79104B8F74B61CE3A2 /* Pods-AirCasting.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AirCasting.release.xcconfig"; path = "Target Support Files/Pods-AirCasting/Pods-AirCasting.release.xcconfig"; sourceTree = "<group>"; };
+		33050870276B568D00D18C69 /* ShareSessionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSessionViewModel.swift; sourceTree = "<group>"; };
+		33050873276B734700D18C69 /* SessionHeaderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionHeaderViewModel.swift; sourceTree = "<group>"; };
+		33050875276B7A4400D18C69 /* ShareSessionStreamOptionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSessionStreamOptionViewModel.swift; sourceTree = "<group>"; };
 		331EA80925E32094009DEFDB /* ConfirmCreatingSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmCreatingSessionView.swift; sourceTree = "<group>"; };
 		332F521325FA38430047236D /* MicrophoneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrophoneManager.swift; sourceTree = "<group>"; };
 		3346F1F526318C1600BA4695 /* SettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
@@ -649,7 +655,7 @@
 		DD5687C226CFC8080028C2CA /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		DD5930E0273528860043C2A2 /* UserState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserState.swift; sourceTree = "<group>"; };
 		DD700CF12695CE9C0048A17D /* MailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailView.swift; sourceTree = "<group>"; };
-		DD72DC4126A99D5000325FE5 /* ShareView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareView.swift; sourceTree = "<group>"; };
+		DD72DC4126A99D5000325FE5 /* ShareSessionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareSessionView.swift; sourceTree = "<group>"; };
 		DD7955482757B30F00631A78 /* InAppAlerts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppAlerts.swift; sourceTree = "<group>"; };
 		DD839E14269F33A6006A8625 /* LocationState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationState.swift; sourceTree = "<group>"; };
 		DD8A36A326C3CE7900C26725 /* ChooseCustomLocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseCustomLocationView.swift; sourceTree = "<group>"; };
@@ -715,6 +721,25 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3305086F276B566800D18C69 /* ShareSession */ = {
+			isa = PBXGroup;
+			children = (
+				DD72DC4126A99D5000325FE5 /* ShareSessionView.swift */,
+				33050870276B568D00D18C69 /* ShareSessionViewModel.swift */,
+				33050875276B7A4400D18C69 /* ShareSessionStreamOptionViewModel.swift */,
+			);
+			path = ShareSession;
+			sourceTree = "<group>";
+		};
+		33050872276B730100D18C69 /* SessionHeader */ = {
+			isa = PBXGroup;
+			children = (
+				AC6D569E25AEEAE700D221BA /* SessionHeaderView.swift */,
+				33050873276B734700D18C69 /* SessionHeaderViewModel.swift */,
+			);
+			path = SessionHeader;
+			sourceTree = "<group>";
+		};
 		3328F11E266786C600B72D61 /* Chart */ = {
 			isa = PBXGroup;
 			children = (
@@ -949,10 +974,10 @@
 		AC6D56A825B0837500D221BA /* SessionViews */ = {
 			isa = PBXGroup;
 			children = (
+				3305086F276B566800D18C69 /* ShareSession */,
 				DDF12AE926B2ADFD00D067C7 /* SessionCardView */,
-				AC6D569E25AEEAE700D221BA /* SessionHeaderView.swift */,
+				33050872276B730100D18C69 /* SessionHeader */,
 				DD009D652698844A009F0443 /* DeleteView.swift */,
-				DD72DC4126A99D5000325FE5 /* ShareView.swift */,
 				AC194B0C2684BAB40048E2C8 /* SessionLoadingView.swift */,
 				AC08A661266E2AEC0081697C /* ABMeasurementsView.swift */,
 				ACDF803926DCD75500584F55 /* SingleMeasurementView.swift */,
@@ -2117,7 +2142,7 @@
 				DD430B022670F3B300F1BF2E /* NearAirDescription.swift in Sources */,
 				ACCEB2192763A2230040140B /* SDSyncCompleteViewModel.swift in Sources */,
 				ACBB05102761F1C400A6B3FB /* SDStream.swift in Sources */,
-				DD72DC4226A99D5000325FE5 /* ShareView.swift in Sources */,
+				DD72DC4226A99D5000325FE5 /* ShareSessionView.swift in Sources */,
 				B392DC332755F944002F0145 /* AppConfigurationView.swift in Sources */,
 				AC524A962615D8620061AD45 /* MeasurementStreamEntity.swift in Sources */,
 				DD2E8BEB2685E13600439F8B /* BackendURLValidator.swift in Sources */,
@@ -2254,6 +2279,7 @@
 				B3AB8BE526BB5EF400AF23CC /* Array+MeasurementStatistics.swift in Sources */,
 				B3C3F8B92695A295003E2CB4 /* StatisticsContainerViewModelable.swift in Sources */,
 				AC32040425CC067D00A68520 /* CheckBox.swift in Sources */,
+				33050876276B7A4400D18C69 /* ShareSessionStreamOptionViewModel.swift in Sources */,
 				ACCEB2242763A2230040140B /* SyncingABView.swift in Sources */,
 				AC8D6C6E25C056B400ED74D1 /* PathPoint.swift in Sources */,
 				B30BAC172694AA8000AE0476 /* MeasurementsStatisticsOutput.swift in Sources */,
@@ -2279,6 +2305,7 @@
 				AC6D56A225AEF55C00D221BA /* GraphView.swift in Sources */,
 				AC4EC6C125B6F18A00C1E312 /* EditButtonView.swift in Sources */,
 				AC049F8B2608DCB000398197 /* Session+Mock.swift in Sources */,
+				33050871276B568D00D18C69 /* ShareSessionViewModel.swift in Sources */,
 				DD1EEB8B26B7C2F100AFC5C1 /* TurnOnLocationViewModel.swift in Sources */,
 				DDF7599A268332E900D906BA /* Strings.swift in Sources */,
 				DDD1F9B12705852400D8E87F /* DataFormatters.swift in Sources */,
@@ -2295,6 +2322,7 @@
 				DD839E15269F33A6006A8625 /* LocationState.swift in Sources */,
 				B3FD77BE267C94AF00E97CC2 /* SessionSynchronizationStore.swift in Sources */,
 				ACD01F952600A54400B8F65F /* UserDefaults+Preferences.swift in Sources */,
+				33050874276B734700D18C69 /* SessionHeaderViewModel.swift in Sources */,
 				33F2238A270C674E00F14909 /* TimeInterval.swift in Sources */,
 				4FB39E3A2621BE7F00E5E564 /* APIClient.swift in Sources */,
 				AC9F526D2652A360003CF61F /* EmptyMobileDashboardView.swift in Sources */,

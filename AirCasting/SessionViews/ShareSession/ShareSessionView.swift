@@ -6,8 +6,9 @@ import MessageUI
 import SwiftUI
 
 
-struct ShareView: View {
-    @Binding var showModal: Bool
+struct ShareSessionView<VM: ShareSessionViewModel>: View {
+    @ObservedObject var viewModel: VM
+    @Binding var showSharingModal: Bool
     @State var email: String = ""
     @State var itemsForSharing: [String] = ["www.google.com"]
     #warning("Implement working share sheet")
@@ -23,15 +24,15 @@ struct ShareView: View {
                 title
                 description
             }
-            checkBox
+            chooseStream
             shareButton
-            descriptionMail
-            createTextfield(placeholder: "Email", binding: $email)
-                .padding(.vertical)
-            VStack(alignment: .leading, spacing: 5) {
-                oKButton
-                cancelButton
-            }
+//            descriptionMail
+//            createTextfield(placeholder: "Email", binding: $email)
+//                .padding(.vertical)
+//            VStack(alignment: .leading, spacing: 5) {
+//                oKButton
+//                cancelButton
+//            }
         }.sheet(isPresented: $showSheet, content: {
             ActivityViewController(itemsToShare: itemsForSharing)
         }).padding()
@@ -48,12 +49,25 @@ struct ShareView: View {
             .font(Fonts.muliHeading2)
             .foregroundColor(.aircastingGray)
     }
+    
+    private var chooseStream: some View {
+        VStack(alignment: .leading) {
+            ForEach(viewModel.streamOptions, id: \.id) { option in
+                HStack {
+                    CheckBox(isSelected: option.isSelected).onTapGesture {
+                        viewModel.didSelect(option: option)
+                    }
+                    Text(option.title)
+                }
+            }
+        }.padding()
+    }
     #warning("This checkbox should be taken from the current streams available.")
     // It will be implemented on another branch and should be taken and implemented then here as well
     private var checkBox: some View {
         HStack {
             CheckBox(isSelected: true)
-            Text(Strings.SessionShare.checkboxDescription)
+            Text("dB")
         }.padding(.bottom)
     }
     
@@ -87,7 +101,15 @@ struct ShareView: View {
     
     private var cancelButton: some View {
         Button(Strings.BackendSettings.Cancel) {
-            showModal.toggle()
+            showSharingModal.toggle()
         }.buttonStyle(BlueTextButtonStyle())
     }
 }
+
+//#if DEBUG
+//struct ShareSessionView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ShareSessionView(showSharingModal: .constant(true))
+//    }
+//}
+//#endif

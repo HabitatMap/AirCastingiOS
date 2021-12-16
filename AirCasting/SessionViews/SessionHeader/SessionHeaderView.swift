@@ -24,6 +24,7 @@ struct SessionHeaderView: View {
     let sessionStopperFactory: SessionStoppableFactory
     @StateObject private var featureFlagsViewModel = FeatureFlagsViewModel.shared
     @State var showDeleteModal = false
+    @State var showShareModal = false
     let measurementStreamStorage: MeasurementStreamStorage
     let sessionSynchronizer: SessionSynchronizer
     @EnvironmentObject var authorization: UserAuthenticationSession
@@ -34,7 +35,7 @@ struct SessionHeaderView: View {
                     dateAndTime
                         .foregroundColor(Color.aircastingTimeGray)
                     Spacer()
-                    (isMenuNeeded && selectedSection.selectedSection != .following) ? actionsMenuMobile : nil
+                    (isMenuNeeded && selectedSection.selectedSection != .following) ? actionsMenu : nil
                 }
             nameLabelAndExpandButton
         }
@@ -42,12 +43,12 @@ struct SessionHeaderView: View {
         .onChange(of: isCollapsed, perform: { value in
             isCollapsed ? (chevronIndicator = "chevron.down") :  (chevronIndicator = "chevron.up")
         })
-        .sheet(isPresented: Binding.constant(false), content: {
-            ShareView(showModal: Binding.constant(false))
-        })
         .sheet(isPresented: $showDeleteModal) {
             DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session, measurementStreamStorage: measurementStreamStorage, streamRemover: StreamRemoverDefault(authorization: authorization, urlProvider: urlProvider), sessionSynchronizer: sessionSynchronizer), deleteModal: $showDeleteModal)
         }
+        .sheet(isPresented: $showShareModal, content: {
+            ShareSessionView(viewModel: DefaultShareSessionViewModel(session: session),showSharingModal: $showShareModal)
+        })
         .font(Fonts.regularHeading4)
         .foregroundColor(.aircastingGray)
     }
@@ -112,10 +113,11 @@ private extension SessionHeaderView {
         }
     }
 
-    var actionsMenuMobile: some View {
+    var actionsMenu: some View {
         Menu {
             session.isActive ? actionsMenuStopButton : nil
             session.deletable ? actionsMenuDeleteButton : nil
+            session.shareable ? actionsMenuShareButton : nil
             if session.deviceType == .AIRBEAM3 && session.isActive && featureFlagsViewModel.enabledFeatures.contains(.standaloneMode) {
                 actionsMenuMobileEnterStandaloneMode
             }
@@ -185,7 +187,7 @@ private extension SessionHeaderView {
 
     var actionsMenuShareButton: some View {
         Button {
-            // action here
+            showShareModal = true
         } label: {
             Label(Strings.SessionHeaderView.shareButton, systemImage: "square.and.arrow.up")
         }
