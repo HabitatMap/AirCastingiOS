@@ -17,6 +17,8 @@ struct Strings {
         static let clearSDTitle = "Clear SD card"
         static let appInfoTitle = "AirCasting App v"
         static let buildText = "build"
+        static let betaBuild = "Beta build"
+        static let debugBuild = "Debug build"
     }
 
     enum BackendSettings {
@@ -558,5 +560,14 @@ struct Strings {
         static let alertTitle: String = "No internet connection"
         static let alertMessage: String = "You need to have internet connection to continue"
         static let confirmAlert: String = "Got it!"
+    }
+    
+    enum MicrophoneAlert {
+        static let title: String = "Allow AirCasting to record audio"
+        static let message: String = "To record sound level measurements, the app needs access to your microhpone."
+    }
+    
+    enum InAppAlerts {
+        static let assertError: String = "Unsupported button count! For SwiftUI implementation max of 2 buttons is supported"
     }
 }

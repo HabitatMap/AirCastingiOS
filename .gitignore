@@ -1,5 +1,6 @@
 *Environment.swift
 *GoogleService-Info.plist
+*.p8
 
 *.DS_Store
 

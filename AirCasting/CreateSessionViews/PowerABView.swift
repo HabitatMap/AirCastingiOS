@@ -9,7 +9,6 @@ import AirCastingStyling
 import SwiftUI
 
 struct PowerABView: View {
-    @State private var showAlert = false
     @Binding var creatingSessionFlowContinues: Bool
     @EnvironmentObject private var sessionContext: CreateSessionContext
     let urlProvider: BaseURLProvider
@@ -26,9 +25,6 @@ struct PowerABView: View {
             }
             continueButton
                 .buttonStyle(BlueButtonStyle())
-        }
-        .alert(isPresented: $showAlert) {
-            Alert.locationAlert
         }
         .padding()
         .onAppear(perform: {

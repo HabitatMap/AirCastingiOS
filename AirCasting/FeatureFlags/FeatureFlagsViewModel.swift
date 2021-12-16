@@ -4,9 +4,12 @@ class FeatureFlagsViewModel: ObservableObject {
     @Published var enabledFeatures: [FeatureFlag] = []
     
     private var provider: FeatureFlagProvider
+    #if DEBUG || BETA
     static private let overrides = OverridingFeatureFlagProvider()
+    #endif
     
     static let shared: FeatureFlagsViewModel = {
+        // For debug builds we have all features turned on with possibility to switch flags inside the app
         #if DEBUG
         return .init(
             provider: CompositeFeatureFlagProvider(children: [
@@ -14,10 +17,19 @@ class FeatureFlagsViewModel: ObservableObject {
                 AllFeaturesOn()
             ])
         )
-        #else
+        // For beta builds we have firebase-based features with possibility to switch flags inside the app
+        #elseif BETA
         return .init(
             provider: CompositeFeatureFlagProvider(children: [
                 FeatureFlagsViewModel.overrides,
+                FirebaseFeatureFlagProvider(notificationsRouter: DefaultRemoteNotificationRouter.shared),
+                DefaultFeatureFlagProvider()
+            ])
+        )
+        // For release builds we have firebase-based features with no possibility of switching flags inside the app
+        #else
+        return .init(
+            provider: CompositeFeatureFlagProvider(children: [
                 FirebaseFeatureFlagProvider(notificationsRouter: DefaultRemoteNotificationRouter.shared),
                 DefaultFeatureFlagProvider()
             ])
@@ -32,10 +44,6 @@ class FeatureFlagsViewModel: ObservableObject {
     #endif
     
     private init(provider: FeatureFlagProvider) {
-        // This prevents users that had the beta app to get invalid flags after updating to appstore version
-        #if RELEASE
-        Self.overrides.clear()
-        #endif
         self.provider = provider
         self.provider.onFeatureListChange = { [weak self] in self?.updateList() }
         updateList()

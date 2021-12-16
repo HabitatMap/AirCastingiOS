@@ -10,7 +10,7 @@ import CoreBluetooth
 import AirCastingStyling
 
 struct SelectDeviceView: View {
-    
+    @State private var alert: AlertInfo?
     @State private var selected = 0
     @State private var isTurnOnBluetoothLinkActive: Bool = false
     @State private var isPowerABLinkActive: Bool = false
@@ -34,9 +34,8 @@ struct SelectDeviceView: View {
             micButton
             Spacer()
             
-        }.alert(isPresented: $showAlert) {
-            Alert.locationAlert
         }
+        .alert(item: $alert, content: { $0.makeAlert() })
         .padding()
         .background( Group {
             NavigationLink(
@@ -99,7 +98,8 @@ struct SelectDeviceView: View {
                         if isGranted {
                             isMicLinkActive = true
                         } else {
-                            SettingsManager.goToAuthSettings()
+                            alert = InAppAlerts.microphonePermissionAlert()
+                            selected = 0
                         }
                     }
                 }

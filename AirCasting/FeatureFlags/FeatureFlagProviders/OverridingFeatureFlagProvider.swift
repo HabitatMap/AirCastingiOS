@@ -8,16 +8,12 @@ class OverridingFeatureFlagProvider: FeatureFlagProvider {
     
     var onFeatureListChange: (() -> Void)?
     
-    #if DEBUG || BETA
     var overrides: [FeatureFlag: Bool] = [:] {
         didSet {
             onFeatureListChange?()
             UserDefaults.standard.set(toJsonDict(overrides), forKey: userDefaultsKey)
         }
     }
-    #else
-    private var overrides: [FeatureFlag: Bool] = [:]
-    #endif
     
     init() {
         guard let saved = UserDefaults.standard.dictionary(forKey: userDefaultsKey) as? [String: Bool] else { return }

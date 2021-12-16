@@ -244,7 +244,7 @@ private extension SessionCardView {
             Spacer()
             !session.isIndoor ? mapButton.padding(.trailing, 10) : nil
             graphButton
-        }
+        }.padding(.top, 10)
         .buttonStyle(GrayButtonStyle())
     }
 

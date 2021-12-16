@@ -17,6 +17,7 @@ struct SessionHeaderView: View {
     @EnvironmentObject var networkChecker: NetworkChecker
     @EnvironmentObject var bluetoothManager: BluetoothManager
     let urlProvider: BaseURLProvider
+    @EnvironmentObject var selectedSection: SelectSection
     @ObservedObject var session: SessionEntity
     @State private var showingNoConnectionAlert = false
     @State private var alert: AlertInfo?
@@ -33,7 +34,7 @@ struct SessionHeaderView: View {
                     dateAndTime
                         .foregroundColor(Color.aircastingTimeGray)
                     Spacer()
-                    isMenuNeeded ? actionsMenuMobile : nil
+                    (isMenuNeeded && selectedSection.selectedSection != .following) ? actionsMenuMobile : nil
                 }
             nameLabelAndExpandButton
         }
