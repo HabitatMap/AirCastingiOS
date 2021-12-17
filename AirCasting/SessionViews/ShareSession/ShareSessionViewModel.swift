@@ -6,11 +6,12 @@ import Foundation
 protocol ShareSessionViewModel: ObservableObject {
     var streamOptions: [ShareSessionStreamOptionViewModel] {get set}
     func didSelect(option: ShareSessionStreamOptionViewModel)
+    func getSharingLink() -> URL?
 }
 
 class DefaultShareSessionViewModel: ShareSessionViewModel {
-    var itemsForSharing: [String] = ["www.google.com"]
     private var session: SessionEntity
+    private lazy var selectedStream = streamOptions.first
     
     var streamOptions: [ShareSessionStreamOptionViewModel] {
         willSet {
@@ -34,34 +35,47 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
             assertionFailure("Unknown option index")
             return
         }
-        toggleSelection(at: index)
-        Log.info("##\(streamOptions)")
-    }
-    
-    private func showProperStreams(sessionStreams: [MeasurementStreamEntity]) {
-        for (id, stream) in sessionStreams.enumerated() {
-            if var streamName = stream.sensorName {
-                if streamName == Constants.SensorName.microphone {
-                    streamOptions.append(.init(id: id, title: "dB", isSelected: false, isEnabled: false))
-                } else {
-                    streamName = streamName.components(separatedBy: "-")[1]
-                    streamOptions.append(.init(id: id, title: streamName, isSelected: false, isEnabled: false))
-                }
-            }
-        }
-        if !streamOptions.isEmpty {
-            streamOptions[0].toggleSelection()
-        }
-    }
-    
-    private func toggleSelection(at index: Int) {
-        guard index < streamOptions.count else { return }
         
         if !streamOptions[index].isSelected {
             for i in streamOptions.indices {
                 streamOptions[i].changeSelection(newSelected: false)
             }
             streamOptions[index].toggleSelection()
+            selectedStream = streamOptions[index]
+        }
+    }
+    
+    func getSharingLink() -> URL? {
+        guard let sessionURL = session.urlLocation,
+              var components = URLComponents(string: sessionURL)
+        else {
+            //TODO: add alert to try again
+            return nil
+        }
+
+        components.queryItems = [URLQueryItem(name: "sensor_name", value: selectedStream?.streamName)]
+        
+        guard let url = components.url else {
+            Log.error("Coudn't compose url for this stream")
+            return nil
+        }
+        
+        return url
+    }
+    
+    private func showProperStreams(sessionStreams: [MeasurementStreamEntity]) {
+        for (id, stream) in sessionStreams.enumerated() {
+            if let streamName = stream.sensorName {
+                if streamName == Constants.SensorName.microphone {
+                    streamOptions.append(.init(id: id, title: "dB", streamName: Constants.SensorName.microphone, isSelected: false, isEnabled: false))
+                } else {
+                    let sensorName = streamName.components(separatedBy: "-")[1]
+                    streamOptions.append(.init(id: id, title: sensorName, streamName: streamName, isSelected: false, isEnabled: false))
+                }
+            }
+        }
+        if !streamOptions.isEmpty {
+            streamOptions[0].toggleSelection()
         }
     }
 }

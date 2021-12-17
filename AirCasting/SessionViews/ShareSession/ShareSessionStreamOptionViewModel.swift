@@ -6,6 +6,7 @@ import Foundation
 struct ShareSessionStreamOptionViewModel {
     let id: Int
     let title: String
+    let streamName: String
     var isSelected: Bool
     let isEnabled: Bool
 

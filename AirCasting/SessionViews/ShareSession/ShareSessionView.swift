@@ -34,7 +34,7 @@ struct ShareSessionView<VM: ShareSessionViewModel>: View {
                 cancelButton
             }
         }.sheet(isPresented: $showSheet, content: {
-            ActivityViewController(itemsToShare: itemsForSharing) {
+            ActivityViewController(itemsToShare: [viewModel.getSharingLink()]) {activityType,completed,returnedItems,error in
                 showSharingModal.toggle()
             }
         }).padding()
@@ -63,14 +63,6 @@ struct ShareSessionView<VM: ShareSessionViewModel>: View {
                 }
             }
         }.padding()
-    }
-    #warning("This checkbox should be taken from the current streams available.")
-    // It will be implemented on another branch and should be taken and implemented then here as well
-    private var checkBox: some View {
-        HStack {
-            CheckBox(isSelected: true)
-            Text("dB")
-        }.padding(.bottom)
     }
     
     private var shareButton: some View {
