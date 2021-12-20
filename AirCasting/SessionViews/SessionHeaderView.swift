@@ -123,8 +123,9 @@ private extension SessionHeaderView {
             if session.deviceType == .AIRBEAM3 && session.isActive && featureFlagsViewModel.enabledFeatures.contains(.standaloneMode) {
                 actionsMenuMobileEnterStandaloneMode
             }
-            #warning("NOTE feature flag add")
-            session.isActive ? actionsMenuNoteButton : nil
+            if session.isActive && featureFlagsViewModel.enabledFeatures.contains(.notes) {
+                actionsMenuNoteButton
+            }
         } label: {
             ZStack(alignment: .trailing) {
                 EditButtonView()
