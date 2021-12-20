@@ -45,6 +45,7 @@ class FirebaseFeatureFlagProvider: FeatureFlagProvider {
         switch feature {
         case .sdCardSync: return "sd_card_sync"
         case .standaloneMode: return "standalone_mode"
+        case .notes: return "session_notes"
         }
     }
     
