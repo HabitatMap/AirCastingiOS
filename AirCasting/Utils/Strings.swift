@@ -371,7 +371,7 @@ struct Strings {
     enum EditSession {
         static let title: String = "Edit session details"
         static let namePlaceholder: String = "Session name"
-        static let tagPlaceholder: String = "Select a stream to share"
+        static let tagPlaceholder: String = "Session tags"
         static let buttonAccept: String = "Accept"
     }
 

@@ -25,6 +25,9 @@ protocol SessionSynchronizer {
     func stopSynchronization()
     /// A plugin point for anyone interested in generated errors
     var errorStream: SessionSynchronizerErrorStream? { get set }
+    
+    /// Triggers downloading single session
+    func downloadSingleSession(sessionUUID: SessionUUID, completion: @escaping () -> Void)
 }
 
 extension SessionSynchronizer {
@@ -52,5 +55,7 @@ struct DummySessionSynchronizer: SessionSynchronizer {
     var errorStream: SessionSynchronizerErrorStream?
     func triggerSynchronization(options streamOptions: SessionSynchronizationOptions, completion: (() -> Void)?) { completion?() }
     func stopSynchronization() { }
+    func downloadSingleSession(sessionUUID: SessionUUID, completion: () -> Void) {
+        completion() }
 }
 #endif

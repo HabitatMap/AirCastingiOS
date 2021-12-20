@@ -25,47 +25,52 @@ extension PersistenceController: SessionsFetchable {
 }
 
 extension PersistenceController: SessionInsertable {
-    func insertSessions(_ sessions: [Database.Session], completion: ((Error?) -> Void)?) {
+    func insertOrUpdateSessions(_ sessions: [Database.Session], completion: ((Error?) -> Void)?) {
         let context = self.editContext
         context.perform {
-            sessions.forEach {
-                let sessionEntity = SessionEntity(context: context)
-                sessionEntity.uuid = $0.uuid
-                sessionEntity.type = $0.type
-                sessionEntity.name = $0.name
-                sessionEntity.deviceType = $0.deviceType
-                sessionEntity.location = $0.location
-                sessionEntity.startTime = $0.startTime
-                sessionEntity.contribute = $0.contribute
-                sessionEntity.deviceId = $0.deviceId
-                sessionEntity.endTime = $0.endTime
-                sessionEntity.followedAt = $0.followedAt
-                sessionEntity.gotDeleted = $0.gotDeleted
-                sessionEntity.isIndoor = $0.isIndoor
-                sessionEntity.tags = $0.tags
-                sessionEntity.urlLocation = $0.urlLocation
-                sessionEntity.version = Int16($0.version ?? 0)
-                sessionEntity.status = $0.status
-                $0.measurementStreams?.forEach {
-                    let streamEntity = MeasurementStreamEntity(context: context)
-                    streamEntity.id = $0.id
-                    streamEntity.measurementShortType = $0.measurementShortType
-                    streamEntity.measurementType = $0.measurementType
-                    streamEntity.sensorName = $0.sensorName
-                    streamEntity.sensorPackageName = $0.sensorPackageName
-                    streamEntity.thresholdHigh = Int32($0.thresholdHigh)
-                    streamEntity.thresholdLow = Int32($0.thresholdLow)
-                    streamEntity.thresholdMedium = Int32($0.thresholdMedium)
-                    streamEntity.thresholdVeryHigh = Int32($0.thresholdVeryHigh)
-                    streamEntity.thresholdVeryLow = Int32($0.thresholdVeryLow)
-                    streamEntity.unitName = $0.unitName
-                    streamEntity.unitSymbol = $0.unitSymbol
-                    streamEntity.measurements = []
-                    streamEntity.session = sessionEntity
-                    streamEntity.session = sessionEntity
-                }
-            }
             do {
+                try sessions.forEach {
+                    let sessionEntity: SessionEntity = try context.newOrExisting(uuid: $0.uuid)
+                    sessionEntity.uuid = $0.uuid
+                    sessionEntity.type = $0.type
+                    sessionEntity.name = $0.name
+                    sessionEntity.deviceType = $0.deviceType
+                    sessionEntity.location = $0.location
+                    sessionEntity.startTime = $0.startTime
+                    sessionEntity.contribute = $0.contribute
+                    sessionEntity.deviceId = $0.deviceId
+                    sessionEntity.endTime = $0.endTime
+                    sessionEntity.followedAt = $0.followedAt
+                    sessionEntity.gotDeleted = $0.gotDeleted
+                    sessionEntity.isIndoor = $0.isIndoor
+                    sessionEntity.tags = $0.tags
+                    sessionEntity.urlLocation = $0.urlLocation
+                    sessionEntity.version = Int16($0.version ?? 0)
+                    sessionEntity.status = $0.status
+                    try $0.measurementStreams?.forEach {
+                        let streamEntity: MeasurementStreamEntity
+                        if let id = $0.id {
+                            streamEntity = try context.newOrExisting(streamID: id)
+                        } else {
+                            streamEntity = MeasurementStreamEntity(context: context)
+                        }
+                        streamEntity.id = $0.id
+                        streamEntity.measurementShortType = $0.measurementShortType
+                        streamEntity.measurementType = $0.measurementType
+                        streamEntity.sensorName = $0.sensorName
+                        streamEntity.sensorPackageName = $0.sensorPackageName
+                        streamEntity.thresholdHigh = Int32($0.thresholdHigh)
+                        streamEntity.thresholdLow = Int32($0.thresholdLow)
+                        streamEntity.thresholdMedium = Int32($0.thresholdMedium)
+                        streamEntity.thresholdVeryHigh = Int32($0.thresholdVeryHigh)
+                        streamEntity.thresholdVeryLow = Int32($0.thresholdVeryLow)
+                        streamEntity.unitName = $0.unitName
+                        streamEntity.unitSymbol = $0.unitSymbol
+                        streamEntity.measurements = []
+                        streamEntity.session = sessionEntity
+                        streamEntity.session = sessionEntity
+                    }
+                }
                 try context.save()
                 completion?(nil)
             } catch {

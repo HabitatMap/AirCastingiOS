@@ -19,12 +19,13 @@ protocol MeasurementStreamStorageContextUpdate {
     func createSessionAndMeasurementStream(_ session: Session, _ stream: MeasurementStream) throws -> MeasurementStreamLocalID
     func updateSessionStatus(_ sessionStatus: SessionStatus, for sessionUUID: SessionUUID) throws
     func updateSessionEndtime(_ endTime: Date, for sessionUUID: SessionUUID) throws
+    func updateSessionNameAndTags(name: String, tags: String, for sessionUUID: SessionUUID) throws
     func updateSessionFollowing(_ sessionStatus: SessionFollowing, for sessionUUID: SessionUUID)
     func existingMeasurementStream(_ sessionUUID: SessionUUID, name: String) throws -> MeasurementStreamLocalID?
     func markSessionForDelete(_ sessionUUID: SessionUUID) throws
     func markStreamForDelete(_ sessionUUID: SessionUUID, sensorsName: [String], completion: () -> Void) throws
     func deleteSession(_ sessionUUID: SessionUUID) throws
-    func deleteStreams(_ sessionUUID: SessionUUID) throws
+    func updateSession(_ sessionUUID: SessionUUID) throws
     func save() throws
 }
 
@@ -99,7 +100,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         }
     }
     
-    func deleteStreams(_ sessionUUID: SessionUUID) throws {
+    func updateSession(_ sessionUUID: SessionUUID) throws {
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
         let toDelete = sessionEntity.allStreams!.filter({ $0.gotDeleted })
         toDelete.forEach { object in
@@ -262,6 +263,13 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
         sessionEntity.endTime = endTime.currentUTCTimeZoneDate
 
+        try context.save()
+    }
+    
+    func updateSessionNameAndTags(name: String, tags: String, for sessionUUID: SessionUUID) throws {
+        let sessionEntity = try context.existingSession(uuid: sessionUUID)
+        sessionEntity.name = name
+        sessionEntity.tags = tags
         try context.save()
     }
     

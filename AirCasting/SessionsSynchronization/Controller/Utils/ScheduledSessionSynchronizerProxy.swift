@@ -56,4 +56,12 @@ final class ScheduledSessionSynchronizerProxy<S: Scheduler>: SessionSynchronizer
             self?.controller.stopSynchronization()
         }
     }
+    
+    func downloadSingleSession(sessionUUID: SessionUUID, completion: @escaping () -> Void) {
+        scheduler.schedule { [weak self] in
+            guard let self = self else { return }
+            self.controller.downloadSingleSession(sessionUUID: sessionUUID,
+                                               completion: completion)
+        }
+    }
 }

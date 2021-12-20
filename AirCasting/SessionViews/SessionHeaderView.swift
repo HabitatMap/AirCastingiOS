@@ -24,6 +24,7 @@ struct SessionHeaderView: View {
     let sessionStopperFactory: SessionStoppableFactory
     @StateObject private var featureFlagsViewModel = FeatureFlagsViewModel.shared
     @State var showDeleteModal = false
+    @State var showEditView = false
     let measurementStreamStorage: MeasurementStreamStorage
     let sessionSynchronizer: SessionSynchronizer
     @EnvironmentObject var authorization: UserAuthenticationSession
@@ -34,7 +35,7 @@ struct SessionHeaderView: View {
                     dateAndTime
                         .foregroundColor(Color.aircastingTimeGray)
                     Spacer()
-                    (isMenuNeeded && selectedSection.selectedSection != .following) ? actionsMenuMobile : nil
+                    (isMenuNeeded && selectedSection.selectedSection != .following) ? actionsMenu : nil
                 }
             nameLabelAndExpandButton
         }
@@ -46,8 +47,21 @@ struct SessionHeaderView: View {
             ShareView(showModal: Binding.constant(false))
         })
         .sheet(isPresented: $showDeleteModal) {
-            DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session, measurementStreamStorage: measurementStreamStorage, streamRemover: StreamRemoverDefault(authorization: authorization, urlProvider: urlProvider), sessionSynchronizer: sessionSynchronizer), deleteModal: $showDeleteModal)
+            DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session,
+                                                                measurementStreamStorage: measurementStreamStorage,
+                                                                streamRemover: DefaultSessionUpdateService(authorization: authorization,
+                                                                                                           urlProvider: urlProvider),
+                                                                sessionSynchronizer: sessionSynchronizer),
+                       deleteModal: $showDeleteModal)
         }
+        .sheet(isPresented: $showEditView) {
+            EditView(measurementStreamStorage: measurementStreamStorage,
+                     sessionUUID: session.uuid,
+                     sessionSynchronizer: sessionSynchronizer, sessionUpdateService: DefaultSessionUpdateService(authorization: authorization,
+                                                                                                                 urlProvider: urlProvider),
+                     showModalEdit: $showEditView)
+        }
+
         .font(Fonts.regularHeading4)
         .foregroundColor(.aircastingGray)
     }
@@ -112,10 +126,11 @@ private extension SessionHeaderView {
         }
     }
 
-    var actionsMenuMobile: some View {
+    var actionsMenu: some View {
         Menu {
             session.isActive ? actionsMenuStopButton : nil
             session.deletable ? actionsMenuDeleteButton : nil
+            session.isEditable ? actionsMenuEditButton : nil
             if session.deviceType == .AIRBEAM3 && session.isActive && featureFlagsViewModel.enabledFeatures.contains(.standaloneMode) {
                 actionsMenuMobileEnterStandaloneMode
             }
@@ -147,23 +162,6 @@ private extension SessionHeaderView {
         }
     }
 
-    var actionsMenuFixed: some View {
-        Menu {
-            actionsMenuRepeatButton
-            actionsMenuEditButton
-            actionsMenuShareButton
-            actionsMenuDeleteButton
-        } label: {
-            ZStack(alignment: .trailing) {
-                EditButtonView()
-                Rectangle()
-                    .frame(width: 35, height: 25, alignment: .trailing)
-                    .opacity(0.0001)
-            }
-        }
-        .sheet(isPresented: Binding.constant(false)) { EditViewModal(showModalEdit: Binding.constant(false)) }
-    }
-
     var actionsMenuRepeatButton: some View {
         Button {
             // action here
@@ -174,10 +172,7 @@ private extension SessionHeaderView {
 
     var actionsMenuEditButton: some View {
         Button {
-            DispatchQueue.main.async {
-                print(" \(networkChecker.connectionAvailable) NETWORK")
-                networkChecker.connectionAvailable ? false : false
-            }
+            showEditView = true
         } label: {
             Label(Strings.SessionHeaderView.editButton, systemImage: "pencil")
         }

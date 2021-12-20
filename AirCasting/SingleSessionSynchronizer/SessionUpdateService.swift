@@ -3,11 +3,11 @@
 
 import Foundation
 
-protocol StreamRemover {
-    func deleteStreams(session: SessionEntity, completion: @escaping () -> Void)
+protocol SessionUpdateService {
+    func updateSession(session: SessionEntity, completion: @escaping () -> Void)
 }
 
-class StreamRemoverDefault: StreamRemover {
+class DefaultSessionUpdateService: SessionUpdateService {
 
     private let authorization: RequestAuthorisationService
     private let urlProvider: BaseURLProvider
@@ -21,7 +21,7 @@ class StreamRemoverDefault: StreamRemover {
         let data: String
     }
 
-    func deleteStreams(session: SessionEntity, completion: @escaping () -> Void) {
+    func updateSession(session: SessionEntity, completion: @escaping () -> Void) {
         let url = urlProvider.baseAppURL.appendingPathComponent("api/user/sessions/update_session.json")
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -70,21 +70,24 @@ class StreamRemoverDefault: StreamRemover {
             try authorization.authorise(request: &request)
             
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                defer {
+                    completion()
+                }
                 guard let data = data, error == nil else { return }
                 let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
                 if let responseJSON = responseJSON as? [String: Any] {
-                    completion()
+                    // ...
                 }
             }
             task.resume()
         } catch {
-            Log.info("Error when trying to delete from database")
+            Log.info("Error when trying to update from database")
         }
     }
 }
 
-class StreamRemoverDefaultDummy: StreamRemover {
-    func deleteStreams(session: SessionEntity, completion: @escaping () -> Void) {
-        print("deletingStreams")
+class SessionUpdateServiceDefaultDummy: SessionUpdateService {
+    func updateSession(session: SessionEntity, completion: @escaping () -> Void) {
+        print("updating session")
     }
 }
