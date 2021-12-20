@@ -98,9 +98,27 @@ final class SynchronizationControllerTests: XCTestCase {
         XCTAssertEqual(upload.longitude!, 51.0, accuracy: 0.1)
         XCTAssertEqual(upload.latitude!, 51.0, accuracy: 0.1)
         XCTAssertEqual(upload.type, SessionType.mobile.rawValue)
-        // See implementation file for notes on that:
-        #warning("Fix me - this is functional now!")
-        XCTAssertEqual(upload.streams, [:])
+        XCTAssertEqual(upload.streams, ["Phone Microphone":
+                                                .init(sensorName: "Phone Microphone",
+                                                      sensorPackageName: "Builtin",
+                                                      unitName: "decibels",
+                                                      measurementType: "Sound Level",
+                                                      measurementShortType: "dB",
+                                                      unitSymbol: "dB",
+                                                      thresholdVeryLow: 20,
+                                                      thresholdLow: 60,
+                                                      thresholdMedium: 70,
+                                                      thresholdHigh: 80,
+                                                      thresholdVeryHigh: 100,
+                                                      deleted: false,
+                                                      measurements: [
+                                                        .init(value: 12.02,
+                                                              milliseconds: 0,
+                                                              latitude: 51.04,
+                                                              longitude: 50.12,
+                                                              time: Date(timeIntervalSinceReferenceDate: 150))
+                                                      ])
+                                       ])
     }
     
     func test_whenSyncContextReceived_withSessionsToRemove_asksStoreToRemove() {
