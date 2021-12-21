@@ -70,14 +70,7 @@ class DefaultSessionUpdateService: SessionUpdateService {
             try authorization.authorise(request: &request)
             
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
-                defer {
                     completion()
-                }
-                guard let data = data, error == nil else { return }
-                let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
-                if let responseJSON = responseJSON as? [String: Any] {
-                    // ...
-                }
             }
             task.resume()
         } catch {

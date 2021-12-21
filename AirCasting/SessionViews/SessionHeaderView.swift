@@ -28,46 +28,80 @@ struct SessionHeaderView: View {
     let measurementStreamStorage: MeasurementStreamStorage
     let sessionSynchronizer: SessionSynchronizer
     @EnvironmentObject var authorization: UserAuthenticationSession
-
+    
     var body: some View {
-        VStack(alignment: .leading, spacing: 3) {
-                HStack {
-                    dateAndTime
-                        .foregroundColor(Color.aircastingTimeGray)
-                    Spacer()
-                    (isMenuNeeded && selectedSection.selectedSection != .following) ? actionsMenu : nil
+        if #available(iOS 15, *) {
+            sessionHeader
+                .sheet(isPresented: Binding.constant(false), content: {
+                    ShareView(showModal: Binding.constant(false))
+                })
+                .sheet(isPresented: $showDeleteModal) {
+                    DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session,
+                                                                        measurementStreamStorage: measurementStreamStorage,
+                                                                        streamRemover: DefaultSessionUpdateService(authorization: authorization,
+                                                                                                                   urlProvider: urlProvider),
+                                                                        sessionSynchronizer: sessionSynchronizer),
+                               deleteModal: $showDeleteModal)
                 }
+                .sheet(isPresented: $showEditView) {
+                    EditView(measurementStreamStorage: measurementStreamStorage,
+                             sessionUUID: session.uuid,
+                             sessionSynchronizer: sessionSynchronizer, sessionUpdateService: DefaultSessionUpdateService(authorization: authorization,
+                                                                                                                         urlProvider: urlProvider),
+                             showModalEdit: $showEditView)
+                }
+        } else {
+            sessionHeader
+                .background(
+                    Group {
+                        EmptyView()
+                            .sheet(isPresented: Binding.constant(false), content: {
+                                ShareView(showModal: Binding.constant(false))
+                            })
+                        EmptyView()
+                            .sheet(isPresented: $showDeleteModal) {
+                                DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session,
+                                                                                    measurementStreamStorage: measurementStreamStorage,
+                                                                                    streamRemover: DefaultSessionUpdateService(authorization: authorization,
+                                                                                                                               urlProvider: urlProvider),
+                                                                                    sessionSynchronizer: sessionSynchronizer),
+                                           deleteModal: $showDeleteModal)
+                            }
+                        EmptyView()
+                            .sheet(isPresented: $showEditView) {
+                                EditView(measurementStreamStorage: measurementStreamStorage,
+                                         sessionUUID: session.uuid,
+                                         sessionSynchronizer: sessionSynchronizer,
+                                         sessionUpdateService: DefaultSessionUpdateService(authorization: authorization,
+                                                                                           urlProvider: urlProvider),
+                                         showModalEdit: $showEditView)
+                            }
+                    }
+                )
+        }
+    }
+}
+
+private extension SessionHeaderView {
+    
+    var sessionHeader: some View {
+        VStack(alignment: .leading, spacing: 3) {
+            HStack {
+                dateAndTime
+                    .foregroundColor(Color.aircastingTimeGray)
+                Spacer()
+                (isMenuNeeded && selectedSection.selectedSection != .following) ? actionsMenu : nil
+            }
             nameLabelAndExpandButton
         }
         .alert(item: $alert, content: { $0.makeAlert() })
         .onChange(of: isCollapsed, perform: { value in
             isCollapsed ? (chevronIndicator = "chevron.down") :  (chevronIndicator = "chevron.up")
         })
-        .sheet(isPresented: Binding.constant(false), content: {
-            ShareView(showModal: Binding.constant(false))
-        })
-        .sheet(isPresented: $showDeleteModal) {
-            DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session,
-                                                                measurementStreamStorage: measurementStreamStorage,
-                                                                streamRemover: DefaultSessionUpdateService(authorization: authorization,
-                                                                                                           urlProvider: urlProvider),
-                                                                sessionSynchronizer: sessionSynchronizer),
-                       deleteModal: $showDeleteModal)
-        }
-        .sheet(isPresented: $showEditView) {
-            EditView(measurementStreamStorage: measurementStreamStorage,
-                     sessionUUID: session.uuid,
-                     sessionSynchronizer: sessionSynchronizer, sessionUpdateService: DefaultSessionUpdateService(authorization: authorization,
-                                                                                                                 urlProvider: urlProvider),
-                     showModalEdit: $showEditView)
-        }
-
         .font(Fonts.regularHeading4)
         .foregroundColor(.aircastingGray)
     }
-}
-
-private extension SessionHeaderView {
+        
     var dateAndTime: some View {
         adaptTimeAndDate()
     }

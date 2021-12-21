@@ -68,7 +68,6 @@ extension PersistenceController: SessionInsertable {
                         streamEntity.unitSymbol = $0.unitSymbol
                         streamEntity.measurements = []
                         streamEntity.session = sessionEntity
-                        streamEntity.session = sessionEntity
                     }
                 }
                 try context.save()

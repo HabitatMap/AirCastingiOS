@@ -5,15 +5,28 @@ import Foundation
 import SwiftUI
 import CoreData
 
-class EditSessionViewModel: ObservableObject {
+protocol EditViewModel: ObservableObject {
+    var sessionName: String { get set }
+    var sessionTags: String { get set }
+    var isSessionDownloaded: Bool { get set }
     
+    func saveChanges(for uuid: SessionUUID, completion: @escaping () -> Void)
+    func downloadSessionAndReloadView(sessionUUID: SessionUUID)
+    func reloadWith(_ sessionUUID: SessionUUID)
+}
+
+class EditSessionViewModel: EditViewModel {
+    
+    @Published var isSessionDownloaded = false
     @Published var sessionName = ""
     @Published var sessionTags = ""
     private let measurementStreamStorage: MeasurementStreamStorage
-    private let sessionUpdateService: SessionUpdateService
+    let sessionSynchronizer: SessionSynchronizer
+    let sessionUpdateService: SessionUpdateService
 
-    init(measurementStreamStorage: MeasurementStreamStorage, sessionUpdateService: SessionUpdateService) {
+    init(measurementStreamStorage: MeasurementStreamStorage,  sessionSynchronizer: SessionSynchronizer, sessionUpdateService: SessionUpdateService) {
         self.measurementStreamStorage = measurementStreamStorage
+        self.sessionSynchronizer = sessionSynchronizer
         self.sessionUpdateService = sessionUpdateService
     }
     
@@ -34,7 +47,14 @@ class EditSessionViewModel: ObservableObject {
         }
     }
     
-    func reloadWith(_ sessionUUID: SessionUUID) {
+    func downloadSessionAndReloadView(sessionUUID: SessionUUID) {
+        sessionSynchronizer.downloadSingleSession(sessionUUID: sessionUUID) {
+            self.isSessionDownloaded = true
+            self.reloadWith(sessionUUID)
+        }
+    }
+    
+    internal func reloadWith(_ sessionUUID: SessionUUID) {
         measurementStreamStorage.accessStorage { [self] storage in
             do {
                 let session = try storage.getExistingSession(with: sessionUUID)
@@ -49,9 +69,4 @@ class EditSessionViewModel: ObservableObject {
             }
         }
     }
-}
-
-protocol EditViewModel {
-    var sessionName: String { get set }
-    var sessionTags: String { get set }
 }

@@ -99,7 +99,7 @@ class DefaultDeleteSessionViewModel: DeleteSessionViewModel {
         self.measurementStreamStorage.accessStorage { [self] storage in
             guard let sessionToPass = try? storage.getExistingSession(with: session.uuid) else { return }
             streamRemover.updateSession(session: sessionToPass) {
-                try? storage.updateSession(session.uuid)
+                try? storage.deleteStreams(session.uuid)
             }
         }
     }

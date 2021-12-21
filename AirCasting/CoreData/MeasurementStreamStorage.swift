@@ -25,7 +25,7 @@ protocol MeasurementStreamStorageContextUpdate {
     func markSessionForDelete(_ sessionUUID: SessionUUID) throws
     func markStreamForDelete(_ sessionUUID: SessionUUID, sensorsName: [String], completion: () -> Void) throws
     func deleteSession(_ sessionUUID: SessionUUID) throws
-    func updateSession(_ sessionUUID: SessionUUID) throws
+    func deleteStreams(_ sessionUUID: SessionUUID) throws
     func save() throws
 }
 
@@ -100,7 +100,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         }
     }
     
-    func updateSession(_ sessionUUID: SessionUUID) throws {
+    func deleteStreams(_ sessionUUID: SessionUUID) throws {
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
         let toDelete = sessionEntity.allStreams!.filter({ $0.gotDeleted })
         toDelete.forEach { object in

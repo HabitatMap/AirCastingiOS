@@ -6,11 +6,10 @@ import AirCastingStyling
 
 struct EditView: View {
     
-    @State private var isSessionDownloaded = false
     private let measurementStreamStorage: MeasurementStreamStorage
     let sessionUUID: SessionUUID
-    private let sessionSynchronizer: SessionSynchronizer
     let sessionUpdateService: SessionUpdateService
+    let sessionSynchronizer: SessionSynchronizer
     @Binding var showModalEdit: Bool
     @StateObject private var editSessionViewModel: EditSessionViewModel
 
@@ -22,22 +21,20 @@ struct EditView: View {
         self.sessionUpdateService = sessionUpdateService
         _showModalEdit = showModalEdit
         _editSessionViewModel = .init(wrappedValue: EditSessionViewModel(measurementStreamStorage: measurementStreamStorage,
+                                                                         sessionSynchronizer: sessionSynchronizer,
                                                                          sessionUpdateService: sessionUpdateService))
     }
     
     var body: some View {
         ZStack {
-            if isSessionDownloaded {
+            if editSessionViewModel.isSessionDownloaded {
                 editView
             } else {
                 loader
             }
         }
         .onAppear {
-            sessionSynchronizer.downloadSingleSession(sessionUUID: sessionUUID) {
-                isSessionDownloaded = true
-                editSessionViewModel.reloadWith(sessionUUID)
-            }
+            editSessionViewModel.downloadSessionAndReloadView(sessionUUID: sessionUUID)
         }
     }
     
@@ -88,13 +85,13 @@ struct EditView: View {
     }
 }
 #if DEBUG
-struct EditViewModal_Previews: PreviewProvider {
-    static var previews: some View {
-        EditView(measurementStreamStorage: PreviewMeasurementStreamStorage(),
-                 sessionUUID: SessionEntity.mock.uuid,
-                 sessionSynchronizer: DummySessionSynchronizer(),
-                 sessionUpdateService: SessionUpdateServiceDefaultDummy(),
-                 showModalEdit: .constant(false))
-    }
-}
+//struct EditViewModal_Previews: PreviewProvider {
+//    static var previews: some View {
+//        EditView(measurementStreamStorage: PreviewMeasurementStreamStorage(),
+//                 sessionUUID: SessionEntity.mock.uuid,
+//                 sessionSynchronizer: DummySessionSynchronizer(),
+//                 sessionUpdateService: SessionUpdateServiceDefaultDummy(),
+//                 showModalEdit: .constant(false))
+//    }
+//}
 #endif

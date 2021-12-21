@@ -46,9 +46,7 @@ extension NSManagedObjectContext {
         fetchRequest.predicate = NSPredicate(format: "id == \(streamID)")
         
         let results = try self.fetch(fetchRequest)
-        if let existing  = results.first {
-            return existing
-        }
+        if let existing  = results.first { return existing }
         
         let new: T = T(context: self)
         new.setValue(streamID, forKey: "id")

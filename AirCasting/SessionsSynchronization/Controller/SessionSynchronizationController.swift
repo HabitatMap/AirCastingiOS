@@ -62,7 +62,7 @@ final class SessionSynchronizationController: SessionSynchronizer {
     
     func downloadSingleSession(sessionUUID: SessionUUID, completion: @escaping () -> Void) {
         processDownloads(context: .init(needToBeDownloaded: [sessionUUID], needToBeUploaded: [], removed: []))
-            .sink { result in
+            .sink { _ in
                 completion()
             } receiveValue: { _ in }
             .store(in: &cancellables)
