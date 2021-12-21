@@ -373,6 +373,7 @@ struct Strings {
         static let namePlaceholder: String = "Session name"
         static let tagPlaceholder: String = "Session tags"
         static let buttonAccept: String = "Accept"
+        static let erorr: String = "Session name can't be blank"
     }
 
     enum SessionHeaderView {

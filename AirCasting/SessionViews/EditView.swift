@@ -13,7 +13,6 @@ struct EditView: View {
     @Binding var showModalEdit: Bool
     @StateObject private var editSessionViewModel: EditSessionViewModel
 
-    
     init(measurementStreamStorage: MeasurementStreamStorage, sessionUUID: SessionUUID, sessionSynchronizer: SessionSynchronizer, sessionUpdateService: SessionUpdateService, showModalEdit: Binding<Bool>) {
         self.measurementStreamStorage = measurementStreamStorage
         self.sessionUUID = sessionUUID
@@ -45,6 +44,9 @@ struct EditView: View {
                 .padding(.bottom, 20)
             createTextfield(placeholder: Strings.EditSession.namePlaceholder,
                             binding: $editSessionViewModel.sessionName)
+            if editSessionViewModel.shouldShowError {
+                errorMessage(text: Strings.EditSession.erorr)
+            }
             createTextfield(placeholder: Strings.EditSession.tagPlaceholder,
                             binding: $editSessionViewModel.sessionTags)
             Spacer()
@@ -85,13 +87,13 @@ struct EditView: View {
     }
 }
 #if DEBUG
-//struct EditViewModal_Previews: PreviewProvider {
-//    static var previews: some View {
-//        EditView(measurementStreamStorage: PreviewMeasurementStreamStorage(),
-//                 sessionUUID: SessionEntity.mock.uuid,
-//                 sessionSynchronizer: DummySessionSynchronizer(),
-//                 sessionUpdateService: SessionUpdateServiceDefaultDummy(),
-//                 showModalEdit: .constant(false))
-//    }
-//}
+struct EditViewModal_Previews: PreviewProvider {
+    static var previews: some View {
+        EditView(measurementStreamStorage: PreviewMeasurementStreamStorage(),
+                 sessionUUID: SessionEntity.mock.uuid,
+                 sessionSynchronizer: DummySessionSynchronizer(),
+                 sessionUpdateService: SessionUpdateServiceDefaultDummy(),
+                 showModalEdit: .constant(false))
+    }
+}
 #endif

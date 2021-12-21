@@ -20,6 +20,7 @@ class EditSessionViewModel: EditViewModel {
     @Published var isSessionDownloaded = false
     @Published var sessionName = ""
     @Published var sessionTags = ""
+    @Published var shouldShowError = false
     private let measurementStreamStorage: MeasurementStreamStorage
     let sessionSynchronizer: SessionSynchronizer
     let sessionUpdateService: SessionUpdateService
@@ -31,7 +32,10 @@ class EditSessionViewModel: EditViewModel {
     }
     
     func saveChanges(for uuid: SessionUUID, completion: @escaping () -> Void) {
-        guard !sessionName.isEmpty else { return }
+        guard !sessionName.isEmpty else {
+            shouldShowError = true
+            return
+        }
         let name = sessionName
         let tags = sessionTags
         measurementStreamStorage.accessStorage { [self] storage in
@@ -49,8 +53,10 @@ class EditSessionViewModel: EditViewModel {
     
     func downloadSessionAndReloadView(sessionUUID: SessionUUID) {
         sessionSynchronizer.downloadSingleSession(sessionUUID: sessionUUID) {
-            self.isSessionDownloaded = true
-            self.reloadWith(sessionUUID)
+            DispatchQueue.main.async {  
+                self.isSessionDownloaded = true
+                self.reloadWith(sessionUUID)
+            }
         }
     }
     
