@@ -76,6 +76,8 @@ struct Strings {
         static let title: String = "Share session"
         static let description: String = "Select a stream to share"
         static let emailDescription: String = "Or email a CSV file with your session data"
+        static let linkSharingAlertTitle: String = "Sharing failed"
+        static let linkSharingAlertMessage: String = "Try again later"
         static let alertTitle: String = "No Email app"
         static let alertDescription: String = "Please, install Apple Email app"
         static let alertButton: String = "Got it!"

@@ -5,13 +5,24 @@ import Foundation
 
 protocol ShareSessionViewModel: ObservableObject {
     var streamOptions: [ShareSessionStreamOptionViewModel] {get set}
+    var alert: AlertInfo? { get set }
+    var showSheet: Bool { get set }
+    var sharingLink: URL? { get set }
     func didSelect(option: ShareSessionStreamOptionViewModel)
-    func getSharingLink() -> URL?
+    func shareLinkButtonGotPressed()
+}
+
+enum ShareSessionError: Error {
+    case noSessionURL
 }
 
 class DefaultShareSessionViewModel: ShareSessionViewModel {
     private var session: SessionEntity
     private lazy var selectedStream = streamOptions.first
+//    @Published var showAlert: Bool = false
+    @Published var alert: AlertInfo?
+    @Published var showSheet: Bool = false
+    @Published var sharingLink: URL?
     
     var streamOptions: [ShareSessionStreamOptionViewModel] {
         willSet {
@@ -45,22 +56,39 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
         }
     }
     
-    func getSharingLink() -> URL? {
+    func shareLinkButtonGotPressed() {
+        getSharingLink()
+        showSheet = true
+    }
+    
+    private func getSharingLink() {
         guard let sessionURL = session.urlLocation,
               var components = URLComponents(string: sessionURL)
         else {
-            //TODO: add alert to try again
-            return nil
+            getAlert(.noSessionURL)
+            return
         }
 
         components.queryItems = [URLQueryItem(name: "sensor_name", value: selectedStream?.streamName)]
         
         guard let url = components.url else {
             Log.error("Coudn't compose url for this stream")
-            return nil
+            getAlert(.noSessionURL)
+            return
         }
         
-        return url
+        sharingLink = url
+    }
+    
+    private func showAlert(_ error: ShareSessionError) {
+        
+    }
+    
+    private func getAlert(_ error: ShareSessionError) {
+        switch error {
+        case .noSessionURL:
+            alert = InAppAlerts.failedSharingAlert()
+        }
     }
     
     private func showProperStreams(sessionStreams: [MeasurementStreamEntity]) {

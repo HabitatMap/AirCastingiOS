@@ -10,7 +10,6 @@ struct ShareSessionView<VM: ShareSessionViewModel>: View {
     @ObservedObject var viewModel: VM
     @Binding var showSharingModal: Bool
     @State var email: String = ""
-    @State var showSheet = false
     @State var isShowingMailView = false
     @State var showingAlert = false
     @State var mailSendingResult: Result<MFMailComposeResult, Error>? = nil
@@ -23,18 +22,23 @@ struct ShareSessionView<VM: ShareSessionViewModel>: View {
             }
             chooseStream
             shareButton
-//            descriptionMail
-//            createTextfield(placeholder: "Email", binding: $email)
-//                .padding(.vertical)
+            //            descriptionMail
+            //            createTextfield(placeholder: "Email", binding: $email)
+            //                .padding(.vertical)
             VStack(alignment: .leading, spacing: 5) {
-//                oKButton
+                //                oKButton
                 cancelButton
             }
-        }.sheet(isPresented: $showSheet, content: {
-            ActivityViewController(itemsToShare: [viewModel.getSharingLink()]) {activityType,completed,returnedItems,error in
+        }
+        .alert(item: $viewModel.alert, content: { $0.makeAlert() })
+        .sheet(isPresented: $viewModel.showSheet, content: {
+            ActivityViewController(itemsToShare: [viewModel.sharingLink as Any]) {activityType,completed,returnedItems,error in
+//                Log.info("## \(showSharingModal)")
                 showSharingModal.toggle()
+//                Log.info("## \(showSharingModal)")
             }
-        }).padding()
+        })
+        .padding()
     }
     
     private var title: some View {
@@ -64,9 +68,9 @@ struct ShareSessionView<VM: ShareSessionViewModel>: View {
     
     private var shareButton: some View {
         Button(Strings.SessionShare.shareLinkButton) {
-            showSheet.toggle()
+            viewModel.shareLinkButtonGotPressed()
         }.buttonStyle(BlueButtonStyle())
-        .padding(.bottom)
+            .padding(.bottom)
     }
     
     private var descriptionMail: some View {
@@ -92,7 +96,9 @@ struct ShareSessionView<VM: ShareSessionViewModel>: View {
     
     private var cancelButton: some View {
         Button(Strings.BackendSettings.Cancel) {
+            Log.info("## \(showSharingModal)")
             showSharingModal.toggle()
+            Log.info("## \(showSharingModal)")
         }.buttonStyle(BlueTextButtonStyle())
     }
 }

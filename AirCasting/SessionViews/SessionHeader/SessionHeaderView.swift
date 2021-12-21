@@ -47,7 +47,7 @@ struct SessionHeaderView: View {
             DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session, measurementStreamStorage: measurementStreamStorage, streamRemover: StreamRemoverDefault(authorization: authorization, urlProvider: urlProvider), sessionSynchronizer: sessionSynchronizer), deleteModal: $showDeleteModal)
         }
         .sheet(isPresented: $showShareModal, content: {
-            ShareSessionView(viewModel: DefaultShareSessionViewModel(session: session),showSharingModal: $showShareModal)
+            ShareSessionView(viewModel: DefaultShareSessionViewModel(session: session), showSharingModal: $showShareModal)
         })
         .font(Fonts.regularHeading4)
         .foregroundColor(.aircastingGray)
