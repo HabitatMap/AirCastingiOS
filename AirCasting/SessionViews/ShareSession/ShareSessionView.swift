@@ -10,9 +10,6 @@ struct ShareSessionView<VM: ShareSessionViewModel>: View {
     @ObservedObject var viewModel: VM
     @Binding var showSharingModal: Bool
     @State var email: String = ""
-    @State var itemsForSharing: [String] = ["www.google.com"]
-    #warning("Implement working share sheet")
-    //To be sure that share sheet is working for now we are using "www.google.com" and then we will place some data there when making a logic to this
     @State var showSheet = false
     @State var isShowingMailView = false
     @State var showingAlert = false
