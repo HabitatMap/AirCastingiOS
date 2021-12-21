@@ -729,14 +729,6 @@
 			path = ShareSession;
 			sourceTree = "<group>";
 		};
-		33050872276B730100D18C69 /* SessionHeader */ = {
-			isa = PBXGroup;
-			children = (
-				AC6D569E25AEEAE700D221BA /* SessionHeaderView.swift */,
-			);
-			path = SessionHeader;
-			sourceTree = "<group>";
-		};
 		3328F11E266786C600B72D61 /* Chart */ = {
 			isa = PBXGroup;
 			children = (
@@ -973,7 +965,7 @@
 			children = (
 				3305086F276B566800D18C69 /* ShareSession */,
 				DDF12AE926B2ADFD00D067C7 /* SessionCardView */,
-				33050872276B730100D18C69 /* SessionHeader */,
+				AC6D569E25AEEAE700D221BA /* SessionHeaderView.swift */,
 				DD009D652698844A009F0443 /* DeleteView.swift */,
 				AC194B0C2684BAB40048E2C8 /* SessionLoadingView.swift */,
 				AC08A661266E2AEC0081697C /* ABMeasurementsView.swift */,
