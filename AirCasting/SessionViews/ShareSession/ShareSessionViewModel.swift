@@ -107,3 +107,12 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
         }
     }
 }
+
+class DummyShareSessionViewModel: ShareSessionViewModel {
+    var streamOptions: [ShareSessionStreamOptionViewModel] = []
+    var alert: AlertInfo?
+    var showSheet: Bool = false
+    var sharingLink: URL?
+    func didSelect(option: ShareSessionStreamOptionViewModel) { }
+    func shareLinkButtonGotPressed() { }
+}
