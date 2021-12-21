@@ -19,7 +19,6 @@ enum ShareSessionError: Error {
 class DefaultShareSessionViewModel: ShareSessionViewModel {
     private var session: SessionEntity
     private lazy var selectedStream = streamOptions.first
-//    @Published var showAlert: Bool = false
     @Published var alert: AlertInfo?
     @Published var showSheet: Bool = false
     @Published var sharingLink: URL?
@@ -78,10 +77,6 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
         }
         
         sharingLink = url
-    }
-    
-    private func showAlert(_ error: ShareSessionError) {
-        
     }
     
     private func getAlert(_ error: ShareSessionError) {
