@@ -5,7 +5,6 @@ import AirCastingStyling
 
 struct AddNoteView<VM: AddNoteViewModel>: View {
     @StateObject var viewModel: VM
-    @Binding var addNoteModal: Bool
     
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -56,7 +55,7 @@ private extension AddNoteView {
     
     var cancelButton: some View {
         Button {
-            addNoteModal.toggle()
+            viewModel.cancelTapped()
         } label: {
             Text(Strings.AddNoteView.cancelButton)
         }
@@ -67,7 +66,7 @@ private extension AddNoteView {
 #if DEBUG
 struct AddNoteView_Previews: PreviewProvider {
     static var previews: some View {
-        AddNoteView(viewModel: DummyAddNoteViewModelDefault(), addNoteModal: .constant(true))
+        AddNoteView(viewModel: DummyAddNoteViewModelDefault())
     }
 }
 #endif

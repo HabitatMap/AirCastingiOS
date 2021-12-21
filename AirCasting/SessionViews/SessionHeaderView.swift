@@ -50,7 +50,9 @@ struct SessionHeaderView: View {
             DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session, measurementStreamStorage: measurementStreamStorage, streamRemover: StreamRemoverDefault(authorization: authorization, urlProvider: urlProvider), sessionSynchronizer: sessionSynchronizer), deleteModal: $showDeleteModal)
         }
         .sheet(isPresented: $showAddNoteModal) {
-            AddNoteView(viewModel: AddNoteViewModelDefault(), addNoteModal: $showAddNoteModal)
+            AddNoteView(viewModel: AddNoteViewModelDefault(exitRoute: {
+                showAddNoteModal.toggle()
+            }))
         }
         .font(Fonts.regularHeading4)
         .foregroundColor(.aircastingGray)
