@@ -104,10 +104,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
         let toDelete = sessionEntity.allStreams!.filter({ $0.gotDeleted })
         toDelete.forEach { object in
-            #warning("We should check if this double forEach was intentional")
-            toDelete.forEach { object in
-                context.delete(object)
-            }
+            context.delete(object)
         }
         forceUpdate(sessionEntity: sessionEntity)
     }
