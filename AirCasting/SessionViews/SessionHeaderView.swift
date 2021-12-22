@@ -24,6 +24,7 @@ struct SessionHeaderView: View {
     let sessionStopperFactory: SessionStoppableFactory
     @StateObject private var featureFlagsViewModel = FeatureFlagsViewModel.shared
     @State var showDeleteModal = false
+    @State var showAddNoteModal = false
     @State var showShareModal = false
     @State var showEditView = false
     let measurementStreamStorage: MeasurementStreamStorage
@@ -43,6 +44,9 @@ struct SessionHeaderView: View {
                 }
                 .sheet(isPresented: $showEditView) {
                     editViewSheet
+                }
+                .sheet(isPresented: $showAddNoteModal) {
+                    AddNoteView(viewModel: AddNoteViewModelDefault(exitRoute: { showAddNoteModal.toggle() }))
                 }
         } else {
             sessionHeader
@@ -70,6 +74,10 @@ struct SessionHeaderView: View {
                         EmptyView()
                             .sheet(isPresented: $showEditView) {
                                 editViewSheet
+                            }
+                        EmptyView()
+                            .sheet(isPresented: $showAddNoteModal) {
+                                AddNoteView(viewModel: AddNoteViewModelDefault(exitRoute: { showAddNoteModal.toggle() }))
                             }
                     }
                 )
@@ -173,6 +181,9 @@ private extension SessionHeaderView {
             if session.deviceType == .AIRBEAM3 && session.isActive && featureFlagsViewModel.enabledFeatures.contains(.standaloneMode) {
                 actionsMenuMobileEnterStandaloneMode
             }
+            if session.isActive && featureFlagsViewModel.enabledFeatures.contains(.notes) {
+                actionsMenuNoteButton
+            }
         } label: {
             ZStack(alignment: .trailing) {
                 EditButtonView()
@@ -233,6 +244,14 @@ private extension SessionHeaderView {
         }
     }
     
+    var actionsMenuNoteButton: some View {
+        Button {
+            showAddNoteModal.toggle()
+        } label: {
+            Label(Strings.SessionHeaderView.addNoteButton, systemImage: "square.and.pencil")
+        }
+    }
+
     func adaptTimeAndDate() -> Text {
         let formatter = DateFormatters.SessionCartView.utcDateIntervalFormatter
         

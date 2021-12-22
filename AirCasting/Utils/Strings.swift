@@ -388,6 +388,7 @@ struct Strings {
         static let airBeam2: String = "AirBeam2"
         static let airBeam1: String = "AirBeam1"
         static let mic: String = "Phone Mic"
+        static let addNoteButton: String = "Add a note"
     }
 
     enum NetworkChecker {
@@ -555,5 +556,22 @@ struct Strings {
         static let unableToLogOutTitle: String = "No internet connection"
         static let unableToLogOutMessage: String = "To sign out, you must be connected to the Internet."
         static let unableToLogOutButton: String = "Got it!"
+    }
+    
+    enum AddNoteView {
+        static let title: String = "Add a note"
+        static let description: String = "Your note will be timestamped and displayed on the AirCasting map"
+        static let placeholder: String = "Note"
+        static let continueButton: String = "Add a note"
+        static let cancelButton: String = "Cancel"
+    }
+    
+    enum EditNoteView {
+        static let title: String = "Edit this note"
+        static let description: String = "You can edit your note here"
+        static let placeholder: String = "Note"
+        static let saveButton: String = "Save changes"
+        static let deleteButton: String = "Delete note"
+        static let cancelButton: String = "Cancel"
     }
 }

@@ -312,11 +312,15 @@
 		DDB05581274BC60D00DA1A8A /* SessionUpdateService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB05580274BC60D00DA1A8A /* SessionUpdateService.swift */; };
 		DDB448282732AA4B00F11340 /* AirCastingGraphSimplifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB448272732AA4B00F11340 /* AirCastingGraphSimplifier.swift */; };
 		DDB44C252704AF830027176E /* AveragingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB44C242704AF830027176E /* AveragingService.swift */; };
+		DDBA6137276B3AD700E3FEF9 /* AddNoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBA6136276B3AD700E3FEF9 /* AddNoteView.swift */; };
+		DDBA6139276B3AE200E3FEF9 /* EditNoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBA6138276B3AE200E3FEF9 /* EditNoteView.swift */; };
 		DDBC156426A0799300982526 /* SystemSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBC156326A0799300982526 /* SystemSettings.swift */; };
 		DDBC992626A1652A00B0662E /* ForgotPasswordTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBC992526A1652A00B0662E /* ForgotPasswordTest.swift */; };
 		DDC3E954275E4C3A0066A5DF /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDC3E953275E4C3A0066A5DF /* SettingsViewModel.swift */; };
 		DDC5F5882719694800F1F9D8 /* ShadowImages.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDC5F5872719694800F1F9D8 /* ShadowImages.swift */; };
 		DDC5F58A271979F100F1F9D8 /* Fonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDC5F589271979F100F1F9D8 /* Fonts.swift */; };
+		DDC86644276B54A400A8E610 /* AddNoteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDC86643276B54A400A8E610 /* AddNoteViewModel.swift */; };
+		DDC86646276B561500A8E610 /* EditNoteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDC86645276B561500A8E610 /* EditNoteViewModel.swift */; };
 		DDCD3570271EB641004969FF /* UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCD356F271EB641004969FF /* UIImage.swift */; };
 		DDCE5D3626A1F79F0033C211 /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCE5D3526A1F79F0033C211 /* UserSettings.swift */; };
 		DDCE5D3826A1FE2D0033C211 /* DeleteSessionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCE5D3726A1FE2D0033C211 /* DeleteSessionViewModel.swift */; };
@@ -669,11 +673,15 @@
 		DDB05580274BC60D00DA1A8A /* SessionUpdateService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionUpdateService.swift; sourceTree = "<group>"; };
 		DDB448272732AA4B00F11340 /* AirCastingGraphSimplifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirCastingGraphSimplifier.swift; sourceTree = "<group>"; };
 		DDB44C242704AF830027176E /* AveragingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AveragingService.swift; sourceTree = "<group>"; };
+		DDBA6136276B3AD700E3FEF9 /* AddNoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNoteView.swift; sourceTree = "<group>"; };
+		DDBA6138276B3AE200E3FEF9 /* EditNoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditNoteView.swift; sourceTree = "<group>"; };
 		DDBC156326A0799300982526 /* SystemSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemSettings.swift; sourceTree = "<group>"; };
 		DDBC992526A1652A00B0662E /* ForgotPasswordTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordTest.swift; sourceTree = "<group>"; };
 		DDC3E953275E4C3A0066A5DF /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		DDC5F5872719694800F1F9D8 /* ShadowImages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowImages.swift; sourceTree = "<group>"; };
 		DDC5F589271979F100F1F9D8 /* Fonts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fonts.swift; sourceTree = "<group>"; };
+		DDC86643276B54A400A8E610 /* AddNoteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNoteViewModel.swift; sourceTree = "<group>"; };
+		DDC86645276B561500A8E610 /* EditNoteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditNoteViewModel.swift; sourceTree = "<group>"; };
 		DDCD356F271EB641004969FF /* UIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImage.swift; sourceTree = "<group>"; };
 		DDCE5D3526A1F79F0033C211 /* UserSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettings.swift; sourceTree = "<group>"; };
 		DDCE5D3726A1FE2D0033C211 /* DeleteSessionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteSessionViewModel.swift; sourceTree = "<group>"; };
@@ -1044,6 +1052,8 @@
 				AC1DAD4325C98556009AC4D1 /* ABConnector */,
 				332F521825FA38B90047236D /* MicrophoneSession */,
 				33BA3366266E4B9600899343 /* MobileSession */,
+				DDB0557F274BC5AF00DA1A8A /* StreamSynchronizer */,
+				DDBA6135276B3A8900E3FEF9 /* Notes */,
 				DDB0557F274BC5AF00DA1A8A /* SingleSessionSynchronizer */,
 				AC6D56A825B0837500D221BA /* SessionViews */,
 				AC6D56A725B0833F00D221BA /* Graph */,
@@ -1776,12 +1786,39 @@
 			path = SessionViews;
 			sourceTree = "<group>";
 		};
+		DDBA6135276B3A8900E3FEF9 /* Notes */ = {
+			isa = PBXGroup;
+			children = (
+				DDC86641276B547A00A8E610 /* AddNote */,
+				DDC86642276B548300A8E610 /* EditNote */,
+			);
+			path = Notes;
+			sourceTree = "<group>";
+		};
 		DDBC992726A1914000B0662E /* ForgotPasswordTests */ = {
 			isa = PBXGroup;
 			children = (
 				DDBC992526A1652A00B0662E /* ForgotPasswordTest.swift */,
 			);
 			path = ForgotPasswordTests;
+			sourceTree = "<group>";
+		};
+		DDC86641276B547A00A8E610 /* AddNote */ = {
+			isa = PBXGroup;
+			children = (
+				DDBA6136276B3AD700E3FEF9 /* AddNoteView.swift */,
+				DDC86643276B54A400A8E610 /* AddNoteViewModel.swift */,
+			);
+			path = AddNote;
+			sourceTree = "<group>";
+		};
+		DDC86642276B548300A8E610 /* EditNote */ = {
+			isa = PBXGroup;
+			children = (
+				DDBA6138276B3AE200E3FEF9 /* EditNoteView.swift */,
+				DDC86645276B561500A8E610 /* EditNoteViewModel.swift */,
+			);
+			path = EditNote;
 			sourceTree = "<group>";
 		};
 		DDD24D9126A8568400D4A327 /* Controller */ = {
@@ -2118,6 +2155,7 @@
 				ACCEB21B2763A2230040140B /* ClearingSDCardView.swift in Sources */,
 				B3D1928D26F1FA1C0029E1C8 /* FixedSessionFaker.swift in Sources */,
 				AC049F7F2604B7AF00398197 /* AuthErorrHandling.swift in Sources */,
+				DDBA6139276B3AE200E3FEF9 /* EditNoteView.swift in Sources */,
 				750A51DC2754D4BD00D6F4E7 /* VisibleRegionCoordinates.swift in Sources */,
 				B3FD77C4267C94AF00E97CC2 /* SessionSynchronizationService.swift in Sources */,
 				B34D4648275B12A000194E51 /* RemoteLog.swift in Sources */,
@@ -2152,6 +2190,7 @@
 				AC3203CB25CA991C00A68520 /* TurnOnBluetoothView.swift in Sources */,
 				DD430B0C26710E0600F1BF2E /* PrivacyOnboarding.swift in Sources */,
 				4FF60BEA265500C4001618BE /* BluetoothManager.swift in Sources */,
+				DDC86644276B54A400A8E610 /* AddNoteViewModel.swift in Sources */,
 				B3FD77B6267C94AF00E97CC2 /* DatabaseSession.swift in Sources */,
 				AC32043625CD534700A68520 /* ChooseSessionTypeView.swift in Sources */,
 				AC8431D0265E6143004DC890 /* RemoveOldMeasurementsService.swift in Sources */,
@@ -2342,6 +2381,7 @@
 				AC4EC6C425B6FE0D00C1E312 /* ThresholdsSettingsView.swift in Sources */,
 				DDD24D8626A8295F00D4A327 /* ConnectingABViewModel.swift in Sources */,
 				B3FD77C8267C997800E97CC2 /* PersistenceController+Database.swift in Sources */,
+				DDC86646276B561500A8E610 /* EditNoteViewModel.swift in Sources */,
 				AC8CFF4525E510CB00FB2918 /* AuthorizationAPI.swift in Sources */,
 				DD9EBB4E26AFDD2100D51804 /* TurnOnLocationView.swift in Sources */,
 				B3EFAB1726EFE2DB00E88141 /* FirstRunInfoProvidable.swift in Sources */,
@@ -2360,6 +2400,7 @@
 				DD8A36A726C3E76200C26725 /* PlacePicker.swift in Sources */,
 				AC049F872608B74C00398197 /* FixedSession.swift in Sources */,
 				B30BAC1B2694AA9C00AE0476 /* MeasurementsStatisticsDataSource.swift in Sources */,
+				DDBA6137276B3AD700E3FEF9 /* AddNoteView.swift in Sources */,
 				B30BAC0B2694A9CB00AE0476 /* StandardStatisticsCalculator.swift in Sources */,
 				B38E6CCE26C5F81B00C21C45 /* MicrophoneSessionStopper.swift in Sources */,
 				B3EBB10326A05551002BD81F /* ForgotPasswordViewModel.swift in Sources */,
