@@ -102,6 +102,15 @@ struct InAppAlerts {
                     .default(title: Strings.SelectDeviceView.alertSettings,
                              action: DefaultSettingsRedirection().goToLocationAuthSettings)])
     }
+    
+    static func unableToLogOutAlert() -> AlertInfo {
+        AlertInfo(title: "No internet connection",
+                  message: "To sign out, you must be connected to the Internet.",
+                  buttons: [
+                    .default(title: "Got it!",
+                             action: nil)
+                  ])
+    }
 }
 
 import SwiftUI
