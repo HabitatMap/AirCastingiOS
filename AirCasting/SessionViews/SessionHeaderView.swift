@@ -24,6 +24,7 @@ struct SessionHeaderView: View {
     let sessionStopperFactory: SessionStoppableFactory
     @StateObject private var featureFlagsViewModel = FeatureFlagsViewModel.shared
     @State var showDeleteModal = false
+    @State var showShareModal = false
     @State var showEditView = false
     let measurementStreamStorage: MeasurementStreamStorage
     let sessionSynchronizer: SessionSynchronizer
@@ -32,16 +33,13 @@ struct SessionHeaderView: View {
     var body: some View {
         if #available(iOS 15, *) {
             sessionHeader
-                .sheet(isPresented: Binding.constant(false), content: {
-                    ShareView(showModal: Binding.constant(false))
-                })
                 .sheet(isPresented: $showDeleteModal) {
-                    DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session,
-                                                                        measurementStreamStorage: measurementStreamStorage,
-                                                                        streamRemover: DefaultSessionUpdateService(authorization: authorization,
-                                                                                                                   urlProvider: urlProvider),
-                                                                        sessionSynchronizer: sessionSynchronizer),
-                               deleteModal: $showDeleteModal)
+                    DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session, measurementStreamStorage: measurementStreamStorage, streamRemover: DefaultSessionUpdateService(authorization: authorization, urlProvider: urlProvider), sessionSynchronizer: sessionSynchronizer), deleteModal: $showDeleteModal)
+                }
+                .sheet(isPresented: $showShareModal) {
+                    ShareSessionView(viewModel: DefaultShareSessionViewModel(session: session, exitRoute: {
+                        showShareModal.toggle()
+                    }))
                 }
                 .sheet(isPresented: $showEditView) {
                     editViewSheet
@@ -51,9 +49,15 @@ struct SessionHeaderView: View {
                 .background(
                     Group {
                         EmptyView()
-                            .sheet(isPresented: Binding.constant(false), content: {
-                                ShareView(showModal: Binding.constant(false))
-                            })
+                            .sheet(isPresented: $showDeleteModal) {
+                                DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session, measurementStreamStorage: measurementStreamStorage, streamRemover: DefaultSessionUpdateService(authorization: authorization, urlProvider: urlProvider), sessionSynchronizer: sessionSynchronizer), deleteModal: $showDeleteModal)
+                            }
+                        EmptyView()
+                            .sheet(isPresented: $showShareModal) {
+                                ShareSessionView(viewModel: DefaultShareSessionViewModel(session: session, exitRoute: {
+                                    showShareModal.toggle()
+                                }))
+                            }
                         EmptyView()
                             .sheet(isPresented: $showDeleteModal) {
                                 DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session,
@@ -84,7 +88,6 @@ struct SessionHeaderView: View {
 }
 
 private extension SessionHeaderView {
-    
     var sessionHeader: some View {
         VStack(alignment: .leading, spacing: 3) {
             HStack {
@@ -102,11 +105,11 @@ private extension SessionHeaderView {
         .font(Fonts.regularHeading4)
         .foregroundColor(.aircastingGray)
     }
-        
+
     var dateAndTime: some View {
         adaptTimeAndDate()
     }
-
+    
     var nameLabelAndExpandButton: some View {
         VStack(alignment: .leading, spacing: 3) {
             HStack {
@@ -127,7 +130,7 @@ private extension SessionHeaderView {
             //  |   ___   |  -- | You, do something |
             //  |_________|     |-------------------|
             // so the idea at leat for now is this below
-            #warning("Fix - Handle session.deviceType (for now it is always nill)")
+#warning("Fix - Handle session.deviceType (for now it is always nill)")
             if isSensorTypeNeeded {
                 sensorType
                     .font(Fonts.regularHeading4)
@@ -135,7 +138,7 @@ private extension SessionHeaderView {
         }
         .foregroundColor(.darkBlue)
     }
-
+    
     var sensorType: some View {
         var stream = [String]()
         var text = ""
@@ -150,7 +153,7 @@ private extension SessionHeaderView {
         text = stream.joined(separator: ", ")
         return Text("\(session.type!.description) : \(text)")
     }
-
+    
     func componentsSeparation(name: inout String) {
         // separation is used to nicely handle the case where sensor could be
         // AirBeam2-xxxx or AirBeam2:xxx
@@ -165,6 +168,7 @@ private extension SessionHeaderView {
         Menu {
             session.isActive ? actionsMenuStopButton : nil
             session.deletable ? actionsMenuDeleteButton : nil
+            session.shareable ? actionsMenuShareButton : nil
             session.isEditable ? actionsMenuEditButton : nil
             if session.deviceType == .AIRBEAM3 && session.isActive && featureFlagsViewModel.enabledFeatures.contains(.standaloneMode) {
                 actionsMenuMobileEnterStandaloneMode
@@ -178,7 +182,7 @@ private extension SessionHeaderView {
             }
         }
     }
-
+    
     var actionsMenuStopButton: some View {
         Button {
             alert = InAppAlerts.finishSessionAlert(sessionName: session.name, action: {
@@ -188,7 +192,7 @@ private extension SessionHeaderView {
             Label(Strings.SessionHeaderView.stopRecordingButton, systemImage: "stop.circle")
         }
     }
-
+    
     var actionsMenuMobileEnterStandaloneMode: some View {
         Button {
             bluetoothManager.enterStandaloneMode(sessionUUID: session.uuid)
@@ -196,7 +200,7 @@ private extension SessionHeaderView {
             Label(Strings.SessionHeaderView.enterStandaloneModeButton, systemImage: "xmark.circle")
         }
     }
-
+    
     var actionsMenuRepeatButton: some View {
         Button {
             // action here
@@ -204,7 +208,7 @@ private extension SessionHeaderView {
             Label("resume", systemImage: "repeat")
         }
     }
-
+    
     var actionsMenuEditButton: some View {
         Button {
             showEditView = true
@@ -212,15 +216,15 @@ private extension SessionHeaderView {
             Label(Strings.SessionHeaderView.editButton, systemImage: "pencil")
         }
     }
-
+    
     var actionsMenuShareButton: some View {
         Button {
-            // action here
+            showShareModal = true
         } label: {
             Label(Strings.SessionHeaderView.shareButton, systemImage: "square.and.arrow.up")
         }
     }
-
+    
     var actionsMenuDeleteButton: some View {
         Button {
             showDeleteModal = true
@@ -228,16 +232,16 @@ private extension SessionHeaderView {
             Label(Strings.SessionHeaderView.deleteButton, systemImage: "xmark.circle")
         }
     }
-
+    
     func adaptTimeAndDate() -> Text {
         let formatter = DateFormatters.SessionCartView.utcDateIntervalFormatter
-
+        
         guard let start = session.startTime else { return Text("") }
         let end = session.endTime ?? Date().currentUTCTimeZoneDate
-
+        
         let string = formatter.string(from: start, to: end)
         return Text(string)
-        }
+    }
     
     private func finishSessionAlertAction(sessionStopper: SessionStoppable) {
         do {
@@ -259,7 +263,7 @@ struct SessionHeader_Previews: PreviewProvider {
                           sessionStopperFactory: SessionStoppableFactoryDummy(),
                           measurementStreamStorage: PreviewMeasurementStreamStorage(),
                           sessionSynchronizer: DummySessionSynchronizer())
-                .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
+            .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
     }
 }
 #endif

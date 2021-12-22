@@ -37,6 +37,15 @@ struct InAppAlerts {
                   ])
     }
     
+    static func failedSharingAlert() -> AlertInfo {
+        AlertInfo(title: Strings.SessionShare.linkSharingAlertTitle,
+                  message: Strings.SessionShare.linkSharingAlertMessage,
+                  buttons: [
+                    .default(title: Strings.SessionShare.alertButton,
+                             action: nil)
+                  ])
+    }
+    
     static func finishSessionAlert(sessionName: String?, action: @escaping (() -> Void)) -> AlertInfo {
         AlertInfo(
             title: Strings.SessionHeaderView.finishAlertTitle +
