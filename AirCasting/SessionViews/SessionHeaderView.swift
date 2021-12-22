@@ -34,7 +34,7 @@ struct SessionHeaderView: View {
         if #available(iOS 15, *) {
             sessionHeader
                 .sheet(isPresented: $showDeleteModal) {
-                    DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session, measurementStreamStorage: measurementStreamStorage, streamRemover: StreamRemoverDefault(authorization: authorization, urlProvider: urlProvider), sessionSynchronizer: sessionSynchronizer), deleteModal: $showDeleteModal)
+                    DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session, measurementStreamStorage: measurementStreamStorage, streamRemover: DefaultSessionUpdateService(authorization: authorization, urlProvider: urlProvider), sessionSynchronizer: sessionSynchronizer), deleteModal: $showDeleteModal)
                 }
                 .sheet(isPresented: $showShareModal) {
                     ShareSessionView(viewModel: DefaultShareSessionViewModel(session: session), showSharingModal: $showShareModal)
@@ -48,7 +48,7 @@ struct SessionHeaderView: View {
                     Group {
                         EmptyView()
                             .sheet(isPresented: $showDeleteModal) {
-                                DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session, measurementStreamStorage: measurementStreamStorage, streamRemover: StreamRemoverDefault(authorization: authorization, urlProvider: urlProvider), sessionSynchronizer: sessionSynchronizer), deleteModal: $showDeleteModal)
+                                DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session, measurementStreamStorage: measurementStreamStorage, streamRemover: DefaultSessionUpdateService(authorization: authorization, urlProvider: urlProvider), sessionSynchronizer: sessionSynchronizer), deleteModal: $showDeleteModal)
                             }
                         EmptyView()
                             .sheet(isPresented: $showShareModal) {
