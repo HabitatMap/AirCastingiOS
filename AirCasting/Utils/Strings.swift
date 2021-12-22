@@ -67,7 +67,6 @@ struct Strings {
         static let signUpButton_2 = "Create an account"
         static let alertTitle = "Login Error"
         static let alertComment = "Login Error alert title"
-        static let dismissButton = "OK"
         static let InvalidCredentialText = "The profile name or password is incorrect. Please try again. "
         static let noConnectionTitle = "No Internet Connection"
         static let noConnectionText = "Please make sure your device is connected to the internet."
@@ -79,7 +78,6 @@ struct Strings {
         static let emailDescription: String = "Or email a CSV file with your session data"
         static let alertTitle: String = "No Email app"
         static let alertDescription: String = "Please, install Apple Email app"
-        static let alertButton: String = "Got it!"
         static let shareLinkButton: String = "Share link"
         static let shareFileButton: String = "Share file"
         static let checkboxDescription: String = "dB"
@@ -104,7 +102,6 @@ struct Strings {
         static let otherText: String = "Other devices"
         static let alertTitle: String = "Connection error"
         static let alertMessage: String = "Bluetooth connection failed. Please toggle the power on your device and try again."
-        static let alertAccept: String = "Got it!"
         static let titleLabel: String = "Choose the device you'd like to record with"
         static let titleSyncLabel: String = "Select the device you'd like to sync"
         static let titleSDClearLabel: String = "Select the device you'd like to clear"
@@ -155,7 +152,6 @@ struct Strings {
     enum OnboardingAirBeam {
         static let title: String = "Measure and map \nyour exposure \nto air pollution"
         static let description: String = "Connect AirBeam to measure air quality humidity, and temperature."
-        static let continueButton: String = "Continue"
         static let sheetButton: String = "Learn More"
     }
 

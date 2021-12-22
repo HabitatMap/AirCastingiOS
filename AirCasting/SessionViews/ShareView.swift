@@ -81,7 +81,7 @@ struct ShareView: View {
         }.buttonStyle(BlueButtonStyle())
             .sheet(isPresented: $isShowingMailView) { MailView(isShowing: $isShowingMailView, result: $mailSendingResult) }
             .alert(isPresented: $showingAlert) {
-                Alert(title: Text(Strings.SessionShare.alertTitle), message: Text(Strings.SessionShare.alertDescription), dismissButton: .default(Text(Strings.SessionShare.alertButton)))
+                Alert(title: Text(Strings.SessionShare.alertTitle), message: Text(Strings.SessionShare.alertDescription), dismissButton: .default(Text(Strings.Commons.gotIt)))
             }
     }
     

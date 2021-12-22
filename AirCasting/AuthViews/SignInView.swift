@@ -197,16 +197,16 @@ private extension SignInView {
         case .emailTaken, .invalidCredentials, .usernameTaken:
             return Alert(title: Text(title),
                          message: Text(Strings.SignInView.InvalidCredentialText),
-                         dismissButton: .default(Text(Strings.SignInView.dismissButton)))
+                         dismissButton: .default(Text(Strings.Commons.ok)))
             
         case .noConnection:
             return Alert(title: Text(Strings.SignInView.noConnectionTitle),
                          message: Text(Strings.SignInView.noConnectionText),
-                         dismissButton: .default(Text(Strings.SignInView.dismissButton)))
+                         dismissButton: .default(Text(Strings.Commons.ok)))
         case .other, .timeout:
             return Alert(title: Text(title),
                          message: Text(error.localizedDescription),
-                         dismissButton: .default(Text(Strings.SignInView.dismissButton)))
+                         dismissButton: .default(Text(Strings.Commons.ok)))
         }
     }
 }
