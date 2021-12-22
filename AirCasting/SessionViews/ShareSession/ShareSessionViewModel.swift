@@ -69,6 +69,7 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
     }
     
     func sharingFinished() {
+        showShareSheet = false // this is kind of redundant, but also necessary for the shareSessionModal to disappear
         exitRoute()
     }
     
