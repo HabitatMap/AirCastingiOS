@@ -6,13 +6,11 @@ import MessageUI
 import SwiftUI
 
 
-struct ShareView: View {
-    @Binding var showModal: Bool
+struct ShareSessionView<VM: ShareSessionViewModel>: View {
+    @ObservedObject var viewModel: VM
+    
+    // This email logic will be moved to view model in the next task
     @State var email: String = ""
-    @State var itemsForSharing: [String] = ["www.google.com"]
-    #warning("Implement working share sheet")
-    //To be sure that share sheet is working for now we are using "www.google.com" and then we will place some data there when making a logic to this
-    @State var showSheet = false
     @State var isShowingMailView = false
     @State var showingAlert = false
     @State var mailSendingResult: Result<MFMailComposeResult, Error>? = nil
@@ -23,18 +21,24 @@ struct ShareView: View {
                 title
                 description
             }
-            checkBox
+            chooseStream
             shareButton
-            descriptionMail
-            createTextfield(placeholder: "Email", binding: $email)
-                .padding(.vertical)
+            //            descriptionMail
+            //            createTextfield(placeholder: "Email", binding: $email)
+            //                .padding(.vertical)
             VStack(alignment: .leading, spacing: 5) {
-                oKButton
+                //                oKButton
                 cancelButton
             }
-        }.sheet(isPresented: $showSheet, content: {
-            ActivityViewController(itemsToShare: itemsForSharing)
-        }).padding()
+        }
+        .alert(item: $viewModel.alert, content: { $0.makeAlert() })
+        .sheet(isPresented: $viewModel.showShareSheet, content: {
+            ActivityViewController(itemsToShare: [viewModel.sharingLink as Any]) { activityType, completed, returnedItems, error in
+                //Sometimes this doesn't work
+                viewModel.sharingFinished()
+            }
+        })
+        .padding()
     }
     
     private var title: some View {
@@ -48,20 +52,25 @@ struct ShareView: View {
             .font(Fonts.muliHeading2)
             .foregroundColor(.aircastingGray)
     }
-    #warning("This checkbox should be taken from the current streams available.")
-    // It will be implemented on another branch and should be taken and implemented then here as well
-    private var checkBox: some View {
-        HStack {
-            CheckBox(isSelected: true)
-            Text(Strings.SessionShare.checkboxDescription)
-        }.padding(.bottom)
+    
+    private var chooseStream: some View {
+        VStack(alignment: .leading) {
+            ForEach(viewModel.streamOptions, id: \.id) { option in
+                HStack {
+                    CheckBox(isSelected: option.isSelected).onTapGesture {
+                        viewModel.didSelect(option: option)
+                    }
+                    Text(option.title)
+                }
+            }
+        }.padding()
     }
     
     private var shareButton: some View {
         Button(Strings.SessionShare.shareLinkButton) {
-            showSheet.toggle()
+            viewModel.shareLinkTepped()
         }.buttonStyle(BlueButtonStyle())
-        .padding(.bottom)
+            .padding(.bottom)
     }
     
     private var descriptionMail: some View {
@@ -87,7 +96,15 @@ struct ShareView: View {
     
     private var cancelButton: some View {
         Button(Strings.Commons.cancel) {
-            showModal.toggle()
+            viewModel.cancelTapped()
         }.buttonStyle(BlueTextButtonStyle())
     }
 }
+
+#if DEBUG
+struct ShareSessionView_Previews: PreviewProvider {
+    static var previews: some View {
+        ShareSessionView(viewModel: DummyShareSessionViewModel())
+    }
+}
+#endif

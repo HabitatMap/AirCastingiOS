@@ -76,11 +76,12 @@ struct Strings {
         static let title: String = "Share session"
         static let description: String = "Select a stream to share"
         static let emailDescription: String = "Or email a CSV file with your session data"
+        static let linkSharingAlertTitle: String = "Sharing failed"
+        static let linkSharingAlertMessage: String = "Try again later"
         static let alertTitle: String = "No Email app"
         static let alertDescription: String = "Please, install Apple Email app"
         static let shareLinkButton: String = "Share link"
         static let shareFileButton: String = "Share file"
-        static let checkboxDescription: String = "dB"
     }
 
     enum LoadingSession {
@@ -361,8 +362,9 @@ struct Strings {
     enum EditSession {
         static let title: String = "Edit session details"
         static let namePlaceholder: String = "Session name"
-        static let tagPlaceholder: String = "Select a stream to share"
+        static let tagPlaceholder: String = "Session tags"
         static let buttonAccept: String = "Accept"
+        static let erorr: String = "Session name can't be blank"
     }
 
     enum SessionHeaderView {
