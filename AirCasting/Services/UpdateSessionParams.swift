@@ -101,7 +101,6 @@ final class UpdateSessionParamsService {
         entity.gotDeleted = session.gotDeleted
         entity.isIndoor = session.isIndoor
         entity.tags = session.tags
-        entity.notes = []
         entity.urlLocation = session.urlLocation
         entity.version = session.version
         entity.status = session.status

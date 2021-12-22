@@ -50,7 +50,7 @@ struct SessionHeaderView: View {
             DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session, measurementStreamStorage: measurementStreamStorage, streamRemover: StreamRemoverDefault(authorization: authorization, urlProvider: urlProvider), sessionSynchronizer: sessionSynchronizer), deleteModal: $showDeleteModal)
         }
         .sheet(isPresented: $showAddNoteModal) {
-            AddNoteView(viewModel: AddNoteViewModelDefault(notesHandler: NotesHandlerDefault(measurementStreamStorage: measurementStreamStorage, session: session)), addNoteModal: $showAddNoteModal)
+            AddNoteView(viewModel: AddNoteViewModelDefault(exitRoute: { showAddNoteModal.toggle() }, notesHandler:  NotesHandlerDefault(measurementStreamStorage: measurementStreamStorage, session: session)))
         }
         .font(Fonts.regularHeading4)
         .foregroundColor(.aircastingGray)
@@ -210,7 +210,7 @@ private extension SessionHeaderView {
         Button {
             showAddNoteModal.toggle()
         } label: {
-            Label("Add a note", systemImage: "square.and.pencil")
+            Label(Strings.SessionHeaderView.addNoteButton, systemImage: "square.and.pencil")
         }
     }
 
