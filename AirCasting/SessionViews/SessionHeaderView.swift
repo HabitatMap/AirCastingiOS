@@ -50,7 +50,7 @@ struct SessionHeaderView: View {
             DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session, measurementStreamStorage: measurementStreamStorage, streamRemover: StreamRemoverDefault(authorization: authorization, urlProvider: urlProvider), sessionSynchronizer: sessionSynchronizer), deleteModal: $showDeleteModal)
         }
         .sheet(isPresented: $showAddNoteModal) {
-            AddNoteView(viewModel: AddNoteViewModelDefault(), addNoteModal: $showAddNoteModal)
+            AddNoteView(viewModel: AddNoteViewModelDefault(exitRoute: { showAddNoteModal.toggle() }))
         }
         .font(Fonts.regularHeading4)
         .foregroundColor(.aircastingGray)
@@ -123,9 +123,9 @@ private extension SessionHeaderView {
             if session.deviceType == .AIRBEAM3 && session.isActive && featureFlagsViewModel.enabledFeatures.contains(.standaloneMode) {
                 actionsMenuMobileEnterStandaloneMode
             }
-            if session.isActive && featureFlagsViewModel.enabledFeatures.contains(.notes) {
+//            if session.isActive && featureFlagsViewModel.enabledFeatures.contains(.notes) {
                 actionsMenuNoteButton
-            }
+//            }
         } label: {
             ZStack(alignment: .trailing) {
                 EditButtonView()
@@ -210,7 +210,7 @@ private extension SessionHeaderView {
         Button {
             showAddNoteModal.toggle()
         } label: {
-            Label("Add a note", systemImage: "square.and.pencil")
+            Label(Strings.SessionHeaderView.addNoteButton, systemImage: "square.and.pencil")
         }
     }
 

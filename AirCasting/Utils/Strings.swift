@@ -396,6 +396,7 @@ struct Strings {
         static let airBeam2: String = "AirBeam2"
         static let airBeam1: String = "AirBeam1"
         static let mic: String = "Phone Mic"
+        static let addNoteButton: String = "Add a note"
     }
 
     enum NetworkChecker {
