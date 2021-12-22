@@ -9,10 +9,12 @@ protocol EditViewModel: ObservableObject {
     var sessionName: String { get set }
     var sessionTags: String { get set }
     var isSessionDownloaded: Bool { get set }
+    var shouldShowError: Bool { get }
+    var didSave: Bool { get }
     
-    func saveChanges(for uuid: SessionUUID, completion: @escaping () -> Void)
-    func downloadSessionAndReloadView(sessionUUID: SessionUUID)
-    func reloadWith(_ sessionUUID: SessionUUID)
+    func saveChanges()
+    func downloadSessionAndReloadView()
+    func reload()
 }
 
 class EditSessionViewModel: EditViewModel {
@@ -21,17 +23,21 @@ class EditSessionViewModel: EditViewModel {
     @Published var sessionName = ""
     @Published var sessionTags = ""
     @Published var shouldShowError = false
+    @Published var didSave = false
     private let measurementStreamStorage: MeasurementStreamStorage
-    let sessionSynchronizer: SessionSynchronizer
+    let sessionSynchronizer: SingleSessionSynchronizer
     let sessionUpdateService: SessionUpdateService
-
-    init(measurementStreamStorage: MeasurementStreamStorage,  sessionSynchronizer: SessionSynchronizer, sessionUpdateService: SessionUpdateService) {
+    let sessionUUID: SessionUUID
+    
+    init(measurementStreamStorage: MeasurementStreamStorage,  sessionSynchronizer: SingleSessionSynchronizer, sessionUpdateService: SessionUpdateService,
+         sessionUUID: SessionUUID) {
         self.measurementStreamStorage = measurementStreamStorage
         self.sessionSynchronizer = sessionSynchronizer
         self.sessionUpdateService = sessionUpdateService
+        self.sessionUUID = sessionUUID
     }
     
-    func saveChanges(for uuid: SessionUUID, completion: @escaping () -> Void) {
+    func saveChanges() {
         guard !sessionName.isEmpty else {
             shouldShowError = true
             return
@@ -42,25 +48,29 @@ class EditSessionViewModel: EditViewModel {
             do {
                 try storage.updateSessionNameAndTags(name: name,
                                                      tags: tags,
-                                                     for: uuid)
-                let session = try storage.getExistingSession(with: uuid)
-                sessionUpdateService.updateSession(session: session, completion: completion)
+                                                     for: sessionUUID)
+                let session = try storage.getExistingSession(with: sessionUUID)
+                sessionUpdateService.updateSession(session: session) {
+                    DispatchQueue.main.async {
+                        didSave = true
+                    }
+                }
             } catch {
                 Log.info("Error while saving edited session name and tags.")
             }
         }
     }
     
-    func downloadSessionAndReloadView(sessionUUID: SessionUUID) {
+    func downloadSessionAndReloadView() {
         sessionSynchronizer.downloadSingleSession(sessionUUID: sessionUUID) {
             DispatchQueue.main.async {  
                 self.isSessionDownloaded = true
-                self.reloadWith(sessionUUID)
+                self.reload()
             }
         }
     }
     
-    internal func reloadWith(_ sessionUUID: SessionUUID) {
+    internal func reload() {
         measurementStreamStorage.accessStorage { [self] storage in
             do {
                 let session = try storage.getExistingSession(with: sessionUUID)

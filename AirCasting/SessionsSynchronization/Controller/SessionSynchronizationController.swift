@@ -60,6 +60,7 @@ final class SessionSynchronizationController: SessionSynchronizer {
         cancellables = []
     }
     
+    // MARK: - SingleSessionSynchronizer
     func downloadSingleSession(sessionUUID: SessionUUID, completion: @escaping () -> Void) {
         processDownloads(context: .init(needToBeDownloaded: [sessionUUID], needToBeUploaded: [], removed: []))
             .sink { _ in
@@ -67,6 +68,8 @@ final class SessionSynchronizationController: SessionSynchronizer {
             } receiveValue: { _ in }
             .store(in: &cancellables)
     }
+    
+    // MARK: - Private
     
     private func translateError(streamError: Error) -> SessionSynchronizerError {
         if let urlError = streamError as? URLError, urlError.code == URLError.Code.notConnectedToInternet {

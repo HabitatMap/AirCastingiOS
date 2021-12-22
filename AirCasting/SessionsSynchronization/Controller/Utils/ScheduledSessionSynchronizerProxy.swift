@@ -57,6 +57,8 @@ final class ScheduledSessionSynchronizerProxy<S: Scheduler>: SessionSynchronizer
         }
     }
     
+    // MARK: - SingleSessionSynchronizer
+    
     func downloadSingleSession(sessionUUID: SessionUUID, completion: @escaping () -> Void) {
         scheduler.schedule { [weak self] in
             guard let self = self else { return }

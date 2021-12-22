@@ -4,24 +4,13 @@
 import SwiftUI
 import AirCastingStyling
 
-struct EditView: View {
+struct EditView<VM: EditViewModel>: View {
     
-    private let measurementStreamStorage: MeasurementStreamStorage
-    let sessionUUID: SessionUUID
-    let sessionUpdateService: SessionUpdateService
-    let sessionSynchronizer: SessionSynchronizer
-    @Binding var showModalEdit: Bool
-    @StateObject private var editSessionViewModel: EditSessionViewModel
+    @Environment(\.presentationMode) private var presentationMode
+    @StateObject private var editSessionViewModel: VM
 
-    init(measurementStreamStorage: MeasurementStreamStorage, sessionUUID: SessionUUID, sessionSynchronizer: SessionSynchronizer, sessionUpdateService: SessionUpdateService, showModalEdit: Binding<Bool>) {
-        self.measurementStreamStorage = measurementStreamStorage
-        self.sessionUUID = sessionUUID
-        self.sessionSynchronizer = sessionSynchronizer
-        self.sessionUpdateService = sessionUpdateService
-        _showModalEdit = showModalEdit
-        _editSessionViewModel = .init(wrappedValue: EditSessionViewModel(measurementStreamStorage: measurementStreamStorage,
-                                                                         sessionSynchronizer: sessionSynchronizer,
-                                                                         sessionUpdateService: sessionUpdateService))
+    init(viewModel: VM) {
+        _editSessionViewModel = .init(wrappedValue: viewModel)
     }
     
     var body: some View {
@@ -33,7 +22,7 @@ struct EditView: View {
             }
         }
         .onAppear {
-            editSessionViewModel.downloadSessionAndReloadView(sessionUUID: sessionUUID)
+            editSessionViewModel.downloadSessionAndReloadView()
         }
     }
     
@@ -70,30 +59,33 @@ struct EditView: View {
     
     private var saveButton: some View {
         Button(action: {
-            editSessionViewModel.saveChanges(for: sessionUUID) {
-                showModalEdit.toggle()
-            }
+            editSessionViewModel.saveChanges()
         }, label: {
             Text(Strings.EditSession.buttonAccept)
                 .font(Fonts.semiboldHeading1)
-        }).buttonStyle(BlueButtonStyle())
-        .padding(.top, 20)
+        })
+            .buttonStyle(BlueButtonStyle())
+            .padding(.top, 20)
+            .onChange(of: editSessionViewModel.didSave) {
+                $0 ? presentationMode.wrappedValue.dismiss() : ()
+            }
     }
     
     private var cancelButton: some View {
         Button(Strings.BackendSettings.Cancel) {
-            showModalEdit.toggle()
+            presentationMode.wrappedValue.dismiss()
         }.buttonStyle(BlueTextButtonStyle())
     }
 }
+
 #if DEBUG
 struct EditViewModal_Previews: PreviewProvider {
     static var previews: some View {
-        EditView(measurementStreamStorage: PreviewMeasurementStreamStorage(),
-                 sessionUUID: SessionEntity.mock.uuid,
-                 sessionSynchronizer: DummySessionSynchronizer(),
-                 sessionUpdateService: SessionUpdateServiceDefaultDummy(),
-                 showModalEdit: .constant(false))
+        let vm = EditSessionViewModel(measurementStreamStorage: PreviewMeasurementStreamStorage(),
+                                      sessionSynchronizer: DummySessionSynchronizer(),
+                                      sessionUpdateService: SessionUpdateServiceDefaultDummy(),
+                                      sessionUUID: SessionEntity.mock.uuid)
+        return EditView(viewModel: vm)
     }
 }
 #endif

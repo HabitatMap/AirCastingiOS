@@ -44,11 +44,7 @@ struct SessionHeaderView: View {
                                deleteModal: $showDeleteModal)
                 }
                 .sheet(isPresented: $showEditView) {
-                    EditView(measurementStreamStorage: measurementStreamStorage,
-                             sessionUUID: session.uuid,
-                             sessionSynchronizer: sessionSynchronizer, sessionUpdateService: DefaultSessionUpdateService(authorization: authorization,
-                                                                                                                         urlProvider: urlProvider),
-                             showModalEdit: $showEditView)
+                    editViewSheet
                 }
         } else {
             sessionHeader
@@ -69,16 +65,21 @@ struct SessionHeaderView: View {
                             }
                         EmptyView()
                             .sheet(isPresented: $showEditView) {
-                                EditView(measurementStreamStorage: measurementStreamStorage,
-                                         sessionUUID: session.uuid,
-                                         sessionSynchronizer: sessionSynchronizer,
-                                         sessionUpdateService: DefaultSessionUpdateService(authorization: authorization,
-                                                                                           urlProvider: urlProvider),
-                                         showModalEdit: $showEditView)
+                                editViewSheet
                             }
                     }
                 )
         }
+    }
+    
+    @ViewBuilder
+    private var editViewSheet: some View {
+        let vm = EditSessionViewModel(measurementStreamStorage: measurementStreamStorage,
+                                      sessionSynchronizer: sessionSynchronizer,
+                                      sessionUpdateService: DefaultSessionUpdateService(authorization: authorization,
+                                                                                        urlProvider: urlProvider),
+                                      sessionUUID: session.uuid)
+        EditView(viewModel: vm)
     }
 }
 
