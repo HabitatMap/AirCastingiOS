@@ -111,6 +111,15 @@ struct InAppAlerts {
                     .default(title: Strings.SelectDeviceView.alertSettings,
                              action: DefaultSettingsRedirection().goToLocationAuthSettings)])
     }
+    
+    static func unableToLogOutAlert() -> AlertInfo {
+        AlertInfo(title: Strings.InAppAlerts.unableToLogOutTitle,
+                  message: Strings.InAppAlerts.unableToLogOutMessage,
+                  buttons: [
+                    .default(title: Strings.InAppAlerts.unableToLogOutButton,
+                             action: nil)
+                  ])
+    }
 }
 
 import SwiftUI
