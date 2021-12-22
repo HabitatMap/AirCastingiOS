@@ -3,24 +3,24 @@
 
 import Foundation
 
+enum ShareSessionError: Error {
+    case noSessionURL
+}
+
 protocol ShareSessionViewModel: ObservableObject {
-    var streamOptions: [ShareSessionStreamOptionViewModel] {get set}
+    var streamOptions: [ShareSessionStreamOptionViewModel] { get set }
     var alert: AlertInfo? { get set }
-    var showSheet: Bool { get set }
+    var showShareSheet: Bool { get set }
     var sharingLink: URL? { get set }
     func didSelect(option: ShareSessionStreamOptionViewModel)
     func shareLinkButtonGotPressed()
-}
-
-enum ShareSessionError: Error {
-    case noSessionURL
 }
 
 class DefaultShareSessionViewModel: ShareSessionViewModel {
     private var session: SessionEntity
     private lazy var selectedStream = streamOptions.first
     @Published var alert: AlertInfo?
-    @Published var showSheet: Bool = false
+    @Published var showShareSheet: Bool = false
     @Published var sharingLink: URL?
     
     var streamOptions: [ShareSessionStreamOptionViewModel] {
@@ -57,7 +57,7 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
     
     func shareLinkButtonGotPressed() {
         getSharingLink()
-        showSheet = true
+        showShareSheet = true
     }
     
     private func getSharingLink() {
@@ -106,7 +106,7 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
 class DummyShareSessionViewModel: ShareSessionViewModel {
     var streamOptions: [ShareSessionStreamOptionViewModel] = []
     var alert: AlertInfo?
-    var showSheet: Bool = false
+    var showShareSheet: Bool = false
     var sharingLink: URL?
     func didSelect(option: ShareSessionStreamOptionViewModel) { }
     func shareLinkButtonGotPressed() { }
