@@ -40,7 +40,7 @@ struct ConfirmCreatingSessionView: View {
         contentView.alert(isPresented: $isPresentingAlert) {
             Alert(title: Text(Strings.ConfirmCreatingSessionView.alertTitle),
                   message: Text(error?.localizedDescription ?? Strings.ConfirmCreatingSessionView.alertMessage),
-                  dismissButton: .default(Text(Strings.ConfirmCreatingSessionView.alertOK), action: { error = nil
+                  dismissButton: .default(Text(Strings.Commons.gotIt), action: { error = nil
             }))
         }
     }

@@ -47,7 +47,7 @@ struct PowerABView: View {
 
     var continueButton: some View {
         NavigationLink(destination: SelectPeripheralView(SDClearingRouteProcess: false, creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider)) {
-            Text(Strings.PowerABView.continueButton)
+            Text(Strings.Commons.continue)
                 .frame(maxWidth: .infinity)
         }
     }

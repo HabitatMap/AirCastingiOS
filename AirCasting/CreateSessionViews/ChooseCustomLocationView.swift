@@ -59,7 +59,7 @@ struct ChooseCustomLocationView: View {
         Button(action: {
             isConfirmCreatingSessionActive.toggle()
         }, label: {
-            Text(Strings.ChooseCustomLocationView.continueButton)
+            Text(Strings.Commons.continue)
                 .bold()
         }).buttonStyle(BlueButtonStyle())
     }

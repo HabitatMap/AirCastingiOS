@@ -23,7 +23,7 @@ struct InAppAlerts {
         AlertInfo(title: Strings.DeviceHandler.alertTitle,
                   message: Strings.DeviceHandler.alertMessage,
                   buttons: [
-                    .default(title: Strings.DeviceHandler.continueText,
+                    .default(title: Strings.Commons.continue,
                              action: nil)
                   ])
     }
@@ -32,7 +32,7 @@ struct InAppAlerts {
         AlertInfo(title: Strings.NetworkAlert.alertTitle,
                   message: Strings.NetworkAlert.alertMessage,
                   buttons: [
-                    .default(title: Strings.NetworkAlert.confirmAlert,
+                    .default(title: Strings.Commons.gotIt,
                              action: nil)
                   ])
     }
@@ -41,7 +41,7 @@ struct InAppAlerts {
         AlertInfo(title: Strings.SessionShare.linkSharingAlertTitle,
                   message: Strings.SessionShare.linkSharingAlertMessage,
                   buttons: [
-                    .default(title: Strings.SessionShare.alertButton,
+                    .default(title: Strings.Commons.gotIt,
                              action: nil)
                   ])
     }
@@ -82,7 +82,7 @@ struct InAppAlerts {
     static func connectionTimeoutAlert(dismiss: ()) -> AlertInfo {
         AlertInfo(title: Strings.AirBeamConnector.connectionTimeoutTitle,
                   message: Strings.AirBeamConnector.connectionTimeoutDescription,
-                  buttons: [ .default(title: Strings.AirBeamConnector.connectionTimeoutActionTitle,
+                  buttons: [ .default(title: Strings.Commons.gotIt,
                                       action: { dismiss }) ])
     }
     
@@ -90,7 +90,7 @@ struct InAppAlerts {
         AlertInfo(title: Strings.ClearingSDCardView.failedClearingAlertTitle,
                   message: Strings.ClearingSDCardView.failedClearingAlertMessage,
                   buttons: [
-                    .default(title: Strings.AirBeamConnector.connectionTimeoutActionTitle,
+                    .default(title: Strings.Commons.gotIt,
                              action: { dismiss }) ])
     }
     
@@ -98,7 +98,7 @@ struct InAppAlerts {
         AlertInfo(title: Strings.MicrophoneAlert.title,
                   message: Strings.MicrophoneAlert.message,
                   buttons: [
-                    .cancel(title: Strings.SelectDeviceView.alertConfirmation),
+                    .cancel(title: Strings.Commons.ok),
                     .default(title: Strings.SelectDeviceView.alertSettings,
                              action: SettingsManager.goToAuthSettings)])
     }
@@ -107,7 +107,7 @@ struct InAppAlerts {
         AlertInfo(title: Strings.SelectDeviceView.alertTitle,
                   message: Strings.SelectDeviceView.alertMessage,
                   buttons: [
-                    .cancel(title: Strings.SelectDeviceView.alertConfirmation),
+                    .cancel(title: Strings.Commons.ok),
                     .default(title: Strings.SelectDeviceView.alertSettings,
                              action: DefaultSettingsRedirection().goToLocationAuthSettings)])
     }

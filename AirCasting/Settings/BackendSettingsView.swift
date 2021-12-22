@@ -31,11 +31,11 @@ struct BackendSettingsView: View {
         VStack(alignment: .leading) {
             title
             Spacer()
-            createTextfield(placeholder: "current url: \(urlWithoutPort!)", binding: $pathText)
+            createTextfield(placeholder: "\(Strings.BackendSettings.currentURL): \(urlWithoutPort!)", binding: $pathText)
                 .onChange(of: pathText) { _ in
                     updateURL()
                 }
-            createTextfield(placeholder: "current port: \(port ?? 80)", binding: $portText)
+            createTextfield(placeholder: "\(Strings.BackendSettings.currentPort): \(port ?? 80)", binding: $portText)
                 .onChange(of: portText) { _ in
                     updateURL()
                 }
@@ -43,7 +43,7 @@ struct BackendSettingsView: View {
             oKButton
             cancelButton
         }.alert(isPresented: $alertPresented, content: {
-            Alert(title: Text(Strings.BackendSettings.alertTitle), message: Text(Strings.BackendSettings.alertMessage),  dismissButton: .default(Text(Strings.BackendSettings.Ok)))
+            Alert(title: Text(Strings.BackendSettings.alertTitle), message: Text(Strings.BackendSettings.alertMessage),  dismissButton: .default(Text(Strings.Commons.ok)))
         })
         .padding()
     }
@@ -66,13 +66,13 @@ struct BackendSettingsView: View {
                 Log.info("Error when logging out - \(error)")
             }
         } label: {
-            Text(Strings.BackendSettings.Ok)
+            Text(Strings.Commons.ok)
         }.buttonStyle(BlueButtonStyle())
             .disabled(!buttonEnabled)
     }
     
     private var cancelButton: some View {
-        Button(Strings.BackendSettings.Cancel) {
+        Button(Strings.Commons.cancel) {
             presentationMode.wrappedValue.dismiss()
         }.buttonStyle(BlueTextButtonStyle())
     }

@@ -20,14 +20,14 @@ struct MyAccountViewSignOut: View {
                 Spacer()
             }
         }
+        .navigationTitle(Strings.Commons.myAccount)
         .alert(item: $alert, content: { $0.makeAlert() })
-        .navigationTitle(Strings.SignOutSettings.title)
     }
 }
 
 private extension MyAccountViewSignOut {
     var logInLabel: some View {
-        Text(Strings.SignOutSettings.Logged + "\(KeychainStorage(service:  Bundle.main.bundleIdentifier!).getUsername())")
+        Text(Strings.SignOutSettings.logged + "\(KeychainStorage(service:  Bundle.main.bundleIdentifier!).getUsername())")
             .foregroundColor(.aircastingGray)
             .font(Fonts.muliHeading2)
             .padding()

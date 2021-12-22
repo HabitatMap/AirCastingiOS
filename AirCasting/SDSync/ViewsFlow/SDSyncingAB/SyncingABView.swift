@@ -91,7 +91,7 @@ extension SyncingABView {
     var connectionTimeOutAlert: Alert {
         Alert(title: Text(Strings.SyncingABView.alertTitle),
               message: Text(Strings.SyncingABView.alertMessage),
-              dismissButton: .default(Text(Strings.AirBeamConnector.connectionTimeoutActionTitle), action: {
+              dismissButton: .default(Text(Strings.Commons.gotIt), action: {
             presentationMode.wrappedValue.dismiss()
         }))
     }

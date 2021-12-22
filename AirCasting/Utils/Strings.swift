@@ -4,6 +4,14 @@
 import Foundation
 
 struct Strings {
+    enum Commons {
+        static let cancel: String = "Cancel"
+        static let ok: String = "OK"
+        static let myAccount: String = "My account"
+        static let `continue`: String = "Continue"
+        static let gotIt: String = "Got it!"
+    }
+    
     enum Settings {
         static let title: String = "Settings"
         static let myAccount: String = "My Account"
@@ -23,50 +31,42 @@ struct Strings {
 
     enum BackendSettings {
         static let backendSettings: String = "Backend settings"
-        static let Ok: String = "OK"
-        static let Cancel: String = "Cancel"
         static let alertTitle: String = "Logout Alert"
         static let alertMessage: String = "Something went wrong, when logging out."
+        static let currentURL: String = "current url"
+        static let currentPort: String = "current port"
     }
 
     enum MyAccountSettings {
-        static let title: String = "My account"
-        static let logStatus: String = "You aren’t currently logged in"
         static let notLogged: String = "You aren’t currently logged in"
         static let createAccount: String = "Create an account"
         static let logIn: String = "Log In"
     }
 
     enum SignOutSettings {
-        static let title: String = "My account"
-        static let Logged: String = "You are currently logged in as "
+        static let logged: String = "You are currently logged in as "
         static let signOut: String = "Sign Out"
     }
 
     enum ForgotPassword {
         static let title = "Forgot Password"
-        static let actionTitle = "OK"
-        static let cancelTitle = "Cancel"
         static let emailInputTitle = "email or username"
         static let newPasswordSuccessMessage = "Email was sent. Please check your inbox for the details."
         static let newPasswordSuccessTitle = "Email response"
         static let newPasswordFailureMessage = "Something went wrong, please try again"
         static let newPasswordFailureTitle = "Email response"
-        static let alertAction = "OK"
     }
 
     enum SignInView {
-        static let title_1 = "Sign in"
         static let title_2 = "to record and map your environment"
         static let usernameField = "Profile name"
         static let passwordField = "Password"
         static let forgotPasswordButton = "Forgot password?"
-        static let signInButton = "Sign in"
+        static let signIn = "Sign in"
         static let signUpButton_1 = "First time here? "
         static let signUpButton_2 = "Create an account"
         static let alertTitle = "Login Error"
         static let alertComment = "Login Error alert title"
-        static let dismissButton = "OK"
         static let InvalidCredentialText = "The profile name or password is incorrect. Please try again. "
         static let noConnectionTitle = "No Internet Connection"
         static let noConnectionText = "Please make sure your device is connected to the internet."
@@ -80,7 +80,6 @@ struct Strings {
         static let linkSharingAlertMessage: String = "Try again later"
         static let alertTitle: String = "No Email app"
         static let alertDescription: String = "Please, install Apple Email app"
-        static let alertButton: String = "Got it!"
         static let shareLinkButton: String = "Share link"
         static let shareFileButton: String = "Share file"
     }
@@ -104,7 +103,6 @@ struct Strings {
         static let otherText: String = "Other devices"
         static let alertTitle: String = "Connection error"
         static let alertMessage: String = "Bluetooth connection failed. Please toggle the power on your device and try again."
-        static let alertAccept: String = "Got it!"
         static let titleLabel: String = "Choose the device you'd like to record with"
         static let titleSyncLabel: String = "Select the device you'd like to sync"
         static let titleSDClearLabel: String = "Select the device you'd like to clear"
@@ -135,7 +133,6 @@ struct Strings {
         static let wifiPlaceholder: String = "Wi-Fi name"
         static let passwordPlaceholder: String = "Password"
         static let connectButton: String = "Connect"
-        static let cancelButton: String = "Cancel"
         static let passwordTitle: String = "WiFi network name & password:"
         static let nameAndPasswordTitle_1: String = "Password for "
         static let nameAndPasswordTitle_2: String = " network:"
@@ -156,7 +153,6 @@ struct Strings {
     enum OnboardingAirBeam {
         static let title: String = "Measure and map \nyour exposure \nto air pollution"
         static let description: String = "Connect AirBeam to measure air quality humidity, and temperature."
-        static let continueButton: String = "Continue"
         static let sheetButton: String = "Learn More"
     }
 
@@ -322,17 +318,14 @@ struct Strings {
     enum PowerABView {
         static let alertTitle: String = "Location alert"
         static let alertMessage: String = "Please go to settings and allow location first."
-        static let alertConfirmation: String = "OK"
         static let alertSettings: String = "Settings"
         static let title: String = "Power on your AirBeam"
         static let messageText: String = "Wait for the conncection indicator to change from red to green before continuing."
-        static let continueButton: String = "Continue"
     }
 
     enum SelectDeviceView {
         static let alertTitle: String = "Location alert"
         static let alertMessage: String = "Please go to settings and allow location first."
-        static let alertConfirmation: String = "OK"
         static let alertSettings: String = "Settings"
         static let title: String = "What device are you using to record this session?"
         static let bluetoothLabel_1: String = "Bluetooth device"
@@ -345,13 +338,11 @@ struct Strings {
     enum OfflineAlert {
         static let title = "Device is offline"
         static let message = "Could not finish session synchronization"
-        static let dismissTitle = "Ok"
     }
 
     enum TurnOnBluetoothView {
         static let title: String = "Turn on Bluetooth"
         static let messageText: String = "Turn on Bluetooth to enable your phone to connect to the AirBeam"
-        static let continueButton: String = "Continue"
     }
 
     enum TurnOnLocationView {
@@ -364,7 +355,6 @@ struct Strings {
         static let title: String = "Delete this session"
         static let description: String = "Which stream would you like to delete?"
         static let continueButton: String = "Delete streams"
-        static let cancelButton: String = "Cancel"
         static let deleteAlert: String = "Are You sure?"
         static let deleteButton: String = "Delete"
     }
@@ -435,15 +425,12 @@ struct Strings {
     enum ABConnectedView {
         static let title: String = "AirBeam connected"
         static let message: String = "Your AirBeam is connected to your phone and ready to take some measurements."
-        static let continueButton: String = "Continue"
     }
 
     enum CreateSessionDetailsView {
         static let wifiAlertTitle: String = "Wi-Fi credentials are empty "
         static let wifiAlertMessage: String = "Please, fill them up."
         static let primaryWifiButton: String = "Show Wi-fi screen"
-        static let cancelButton: String = "Cancel"
-        static let continueButton: String = "Continue"
         static let title: String = "New session details"
         static let placementPicker_1: String = "Where will you place your AirBeam?"
         static let placementPicker_2: String = "Indoor"
@@ -458,13 +445,11 @@ struct Strings {
     enum AirBeamConnector {
         static let connectionTimeoutTitle: String = "Connection error"
         static let connectionTimeoutDescription: String = "Bluetooth connection failed. Please toggle the power on your device and try again."
-        static let connectionTimeoutActionTitle: String = "Got it!"
     }
 
     enum ConfirmCreatingSessionView {
         static let alertTitle: String = "Failure"
         static let alertMessage: String = "Failed to create session"
-        static let alertOK: String = "Got it!"
         static let contentViewTitle: String = "Are you ready?"
         static let contentViewText_1: String = "Your "
         static let contentViewText_2: String = " session "
@@ -477,7 +462,6 @@ struct Strings {
     enum ChooseCustomLocationView {
         static let sessionLocation: String = "Session location"
         static let titleLabel: String = "Search the address and adjust the marker to indicate an exact placement of Your AirBeam"
-        static let continueButton: String = "Continue"
     }
 
     enum MainTabBarView {
@@ -518,7 +502,6 @@ struct Strings {
     enum UnplugAirbeamView {
         static let title: String = "Unplug your AirBeam"
         static let message: String = "Keep it unplugged for the duration of the sync."
-        static let continueButton: String = "Continue"
     }
 
     enum SDRestartABView {
@@ -555,13 +538,11 @@ struct Strings {
     enum DeviceHandler {
         static let alertTitle = "Not supported device"
         static let alertMessage = "To use the AirBeam3 in standalone mode and sync the SD card, an iPhone8 or higher is required"
-        static let continueText = "Continue"
     }
     
     enum NetworkAlert {
         static let alertTitle: String = "No internet connection"
         static let alertMessage: String = "You need to have internet connection to continue"
-        static let confirmAlert: String = "Got it!"
     }
     
     enum MicrophoneAlert {

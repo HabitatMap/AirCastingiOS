@@ -90,12 +90,12 @@ struct ShareSessionView<VM: ShareSessionViewModel>: View {
         }.buttonStyle(BlueButtonStyle())
             .sheet(isPresented: $isShowingMailView) { MailView(isShowing: $isShowingMailView, result: $mailSendingResult) }
             .alert(isPresented: $showingAlert) {
-                Alert(title: Text(Strings.SessionShare.alertTitle), message: Text(Strings.SessionShare.alertDescription), dismissButton: .default(Text(Strings.SessionShare.alertButton)))
+                Alert(title: Text(Strings.SessionShare.alertTitle), message: Text(Strings.SessionShare.alertDescription), dismissButton: .default(Text(Strings.Commons.gotIt)))
             }
     }
     
     private var cancelButton: some View {
-        Button(Strings.BackendSettings.Cancel) {
+        Button(Strings.Commons.cancel) {
             viewModel.cancelTapped()
         }.buttonStyle(BlueTextButtonStyle())
     }
