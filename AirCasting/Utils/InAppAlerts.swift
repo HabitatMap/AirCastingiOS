@@ -104,10 +104,10 @@ struct InAppAlerts {
     }
     
     static func unableToLogOutAlert() -> AlertInfo {
-        AlertInfo(title: "No internet connection",
-                  message: "To sign out, you must be connected to the Internet.",
+        AlertInfo(title: Strings.InAppAlerts.unableToLogOutTitle,
+                  message: Strings.InAppAlerts.unableToLogOutMessage,
                   buttons: [
-                    .default(title: "Got it!",
+                    .default(title: Strings.InAppAlerts.unableToLogOutButton,
                              action: nil)
                   ])
     }
