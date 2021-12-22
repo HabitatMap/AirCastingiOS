@@ -15,6 +15,7 @@ class CreateSessionDetailsViewModel: ObservableObject {
     @Published var isLocationSessionDetailsActive: Bool = false
     @Published var showAlertAboutEmptyCredentials = false
     @Published var isSSIDTextfieldDisplayed: Bool = false
+    @Published var shouldShowError = false
     
     let baseURL: BaseURLProvider
     // It cannot be private as long as it is going to be passed
@@ -22,6 +23,10 @@ class CreateSessionDetailsViewModel: ObservableObject {
     
     init(baseURL: BaseURLProvider) {
         self.baseURL = baseURL
+    }
+    
+    func onSessionNameChange() {
+        (sessionName != "") ? (shouldShowError = false) : (shouldShowError = true)
     }
     
     func onScreenEnter() {
@@ -32,6 +37,10 @@ class CreateSessionDetailsViewModel: ObservableObject {
     func onContinueClick(sessionContext: CreateSessionContext) -> CreateSessionContext {
         // sessionContext is needed becouse it is being modified in the session creation proccess
         // by 'modified' I mean - the data it ovverriden by the proper one (get from user) on every step
+        guard !sessionName.isEmpty else {
+            shouldShowError = true
+            return sessionContext
+        }
         sessionContext.sessionName = sessionName
         sessionContext.sessionTags = sessionTags
         

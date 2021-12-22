@@ -22,6 +22,7 @@ struct CreateSessionDetailsView: View {
                         titleLabel
                         VStack(spacing: 20) {
                             sessionNameField
+                            if viewModel.shouldShowError { errorMessage(text: Strings.EditSession.erorr) }
                             sessionTagsField
                         }
                         if sessionContext.sessionType == SessionType.fixed { fixedSessionDetails }
@@ -42,6 +43,9 @@ struct CreateSessionDetailsView: View {
             .background(navigation)
         }
         .onAppear { viewModel.onScreenEnter() }
+        .onChange(of: viewModel.sessionName) { _ in
+            viewModel.onSessionNameChange()
+        }
     }
 }
 
