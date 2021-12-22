@@ -16,7 +16,7 @@ struct SessionSynchronizationOptions: OptionSet {
 }
 
 /// Defines the interface for objects that provide session list synchronization to the app
-protocol SessionSynchronizer {
+protocol SessionSynchronizer: SingleSessionSynchronizer {
     var syncInProgress: CurrentValueSubject<Bool, Never> { get }
     /// Triggers a new synchronization pass
     /// - Parameter completion: closure called when sycnhronization finishes
@@ -25,6 +25,11 @@ protocol SessionSynchronizer {
     func stopSynchronization()
     /// A plugin point for anyone interested in generated errors
     var errorStream: SessionSynchronizerErrorStream? { get set }
+}
+
+protocol SingleSessionSynchronizer {
+    /// Triggers downloading single session
+    func downloadSingleSession(sessionUUID: SessionUUID, completion: @escaping () -> Void)
 }
 
 extension SessionSynchronizer {
@@ -52,5 +57,7 @@ struct DummySessionSynchronizer: SessionSynchronizer {
     var errorStream: SessionSynchronizerErrorStream?
     func triggerSynchronization(options streamOptions: SessionSynchronizationOptions, completion: (() -> Void)?) { completion?() }
     func stopSynchronization() { }
+    func downloadSingleSession(sessionUUID: SessionUUID, completion: () -> Void) {
+        completion() }
 }
 #endif

@@ -24,36 +24,85 @@ struct SessionHeaderView: View {
     let sessionStopperFactory: SessionStoppableFactory
     @StateObject private var featureFlagsViewModel = FeatureFlagsViewModel.shared
     @State var showDeleteModal = false
+    @State var showEditView = false
     let measurementStreamStorage: MeasurementStreamStorage
     let sessionSynchronizer: SessionSynchronizer
     @EnvironmentObject var authorization: UserAuthenticationSession
-
+    
     var body: some View {
-        VStack(alignment: .leading, spacing: 3) {
-                HStack {
-                    dateAndTime
-                        .foregroundColor(Color.aircastingTimeGray)
-                    Spacer()
-                    (isMenuNeeded && selectedSection.selectedSection != .following) ? actionsMenuMobile : nil
+        if #available(iOS 15, *) {
+            sessionHeader
+                .sheet(isPresented: Binding.constant(false), content: {
+                    ShareView(showModal: Binding.constant(false))
+                })
+                .sheet(isPresented: $showDeleteModal) {
+                    DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session,
+                                                                        measurementStreamStorage: measurementStreamStorage,
+                                                                        streamRemover: DefaultSessionUpdateService(authorization: authorization,
+                                                                                                                   urlProvider: urlProvider),
+                                                                        sessionSynchronizer: sessionSynchronizer),
+                               deleteModal: $showDeleteModal)
                 }
+                .sheet(isPresented: $showEditView) {
+                    editViewSheet
+                }
+        } else {
+            sessionHeader
+                .background(
+                    Group {
+                        EmptyView()
+                            .sheet(isPresented: Binding.constant(false), content: {
+                                ShareView(showModal: Binding.constant(false))
+                            })
+                        EmptyView()
+                            .sheet(isPresented: $showDeleteModal) {
+                                DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session,
+                                                                                    measurementStreamStorage: measurementStreamStorage,
+                                                                                    streamRemover: DefaultSessionUpdateService(authorization: authorization,
+                                                                                                                               urlProvider: urlProvider),
+                                                                                    sessionSynchronizer: sessionSynchronizer),
+                                           deleteModal: $showDeleteModal)
+                            }
+                        EmptyView()
+                            .sheet(isPresented: $showEditView) {
+                                editViewSheet
+                            }
+                    }
+                )
+        }
+    }
+    
+    @ViewBuilder
+    private var editViewSheet: some View {
+        let vm = EditSessionViewModel(measurementStreamStorage: measurementStreamStorage,
+                                      sessionSynchronizer: sessionSynchronizer,
+                                      sessionUpdateService: DefaultSessionUpdateService(authorization: authorization,
+                                                                                        urlProvider: urlProvider),
+                                      sessionUUID: session.uuid)
+        EditView(viewModel: vm)
+    }
+}
+
+private extension SessionHeaderView {
+    
+    var sessionHeader: some View {
+        VStack(alignment: .leading, spacing: 3) {
+            HStack {
+                dateAndTime
+                    .foregroundColor(Color.aircastingTimeGray)
+                Spacer()
+                (isMenuNeeded && selectedSection.selectedSection != .following) ? actionsMenu : nil
+            }
             nameLabelAndExpandButton
         }
         .alert(item: $alert, content: { $0.makeAlert() })
         .onChange(of: isCollapsed, perform: { value in
             isCollapsed ? (chevronIndicator = "chevron.down") :  (chevronIndicator = "chevron.up")
         })
-        .sheet(isPresented: Binding.constant(false), content: {
-            ShareView(showModal: Binding.constant(false))
-        })
-        .sheet(isPresented: $showDeleteModal) {
-            DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session, measurementStreamStorage: measurementStreamStorage, streamRemover: StreamRemoverDefault(authorization: authorization, urlProvider: urlProvider), sessionSynchronizer: sessionSynchronizer), deleteModal: $showDeleteModal)
-        }
         .font(Fonts.regularHeading4)
         .foregroundColor(.aircastingGray)
     }
-}
-
-private extension SessionHeaderView {
+        
     var dateAndTime: some View {
         adaptTimeAndDate()
     }
@@ -112,10 +161,11 @@ private extension SessionHeaderView {
         }
     }
 
-    var actionsMenuMobile: some View {
+    var actionsMenu: some View {
         Menu {
             session.isActive ? actionsMenuStopButton : nil
             session.deletable ? actionsMenuDeleteButton : nil
+            session.isEditable ? actionsMenuEditButton : nil
             if session.deviceType == .AIRBEAM3 && session.isActive && featureFlagsViewModel.enabledFeatures.contains(.standaloneMode) {
                 actionsMenuMobileEnterStandaloneMode
             }
@@ -147,23 +197,6 @@ private extension SessionHeaderView {
         }
     }
 
-    var actionsMenuFixed: some View {
-        Menu {
-            actionsMenuRepeatButton
-            actionsMenuEditButton
-            actionsMenuShareButton
-            actionsMenuDeleteButton
-        } label: {
-            ZStack(alignment: .trailing) {
-                EditButtonView()
-                Rectangle()
-                    .frame(width: 35, height: 25, alignment: .trailing)
-                    .opacity(0.0001)
-            }
-        }
-        .sheet(isPresented: Binding.constant(false)) { EditViewModal(showModalEdit: Binding.constant(false)) }
-    }
-
     var actionsMenuRepeatButton: some View {
         Button {
             // action here
@@ -174,10 +207,7 @@ private extension SessionHeaderView {
 
     var actionsMenuEditButton: some View {
         Button {
-            DispatchQueue.main.async {
-                print(" \(networkChecker.connectionAvailable) NETWORK")
-                networkChecker.connectionAvailable ? false : false
-            }
+            showEditView = true
         } label: {
             Label(Strings.SessionHeaderView.editButton, systemImage: "pencil")
         }
