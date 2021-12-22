@@ -6,19 +6,21 @@ import AirCastingStyling
 
 struct MyAccountViewSignOut: View {
     let logoutController: LogoutController
+    @State private var alert: AlertInfo?
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     @EnvironmentObject var persistenceController: PersistenceController
     @EnvironmentObject private var userState: UserState
+    @EnvironmentObject var networkChecker: NetworkChecker
     
     var body: some View {
         ZStack {
             VStack(alignment: .leading) {
-                #warning("Logic needs to be finished - handle name displayed")
                 logInLabel
                 signOutButton
                 Spacer()
             }
         }
+        .alert(item: $alert, content: { $0.makeAlert() })
         .navigationTitle(Strings.SignOutSettings.title)
     }
 }
@@ -33,6 +35,10 @@ private extension MyAccountViewSignOut {
     
     var signOutButton: some View {
         Button(action: {
+            guard networkChecker.connectionAvailable else {
+                alert = InAppAlerts.unableToLogOutAlert()
+                return
+            }
             do {
                 userState.isLoggingOut = true
                 try logoutController.logout { userState.isLoggingOut = false }

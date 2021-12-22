@@ -571,5 +571,8 @@ struct Strings {
     
     enum InAppAlerts {
         static let assertError: String = "Unsupported button count! For SwiftUI implementation max of 2 buttons is supported"
+        static let unableToLogOutTitle: String = "No internet connection"
+        static let unableToLogOutMessage: String = "To sign out, you must be connected to the Internet."
+        static let unableToLogOutButton: String = "Got it!"
     }
 }
