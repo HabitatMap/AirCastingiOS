@@ -86,7 +86,7 @@ struct ShareView: View {
     }
     
     private var cancelButton: some View {
-        Button(Strings.BackendSettings.Cancel) {
+        Button(Strings.Commons.cancel) {
             showModal.toggle()
         }.buttonStyle(BlueTextButtonStyle())
     }

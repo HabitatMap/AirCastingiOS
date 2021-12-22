@@ -54,7 +54,7 @@ extension UnplugABView {
         Button {
             viewModel.continueButtonTapped()
         } label: {
-            Text(Strings.UnplugAirbeamView.continueButton)
+            Text(Strings.Commons.continue)
         }.buttonStyle(BlueButtonStyle())
     }
     

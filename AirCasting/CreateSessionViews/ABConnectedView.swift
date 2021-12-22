@@ -45,7 +45,7 @@ private extension ABConnectedView {
         return NavigationLink(
             destination: CreateSessionDetailsView(creatingSessionFlowContinues: $creatingSessionFlowContinues, baseURL: baseURL),
             label: {
-                Text(Strings.ABConnectedView.continueButton)
+                Text(Strings.Commons.continue)
             })
             .buttonStyle(BlueButtonStyle())
     }

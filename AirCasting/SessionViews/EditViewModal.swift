@@ -40,7 +40,7 @@ struct EditViewModal: View {
     }
     
     private var cancelButton: some View {
-        Button(Strings.BackendSettings.Cancel) {
+        Button(Strings.Commons.cancel) {
             showModalEdit.toggle()
         }.buttonStyle(BlueTextButtonStyle())
     }

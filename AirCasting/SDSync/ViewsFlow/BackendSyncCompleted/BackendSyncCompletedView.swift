@@ -54,7 +54,7 @@ private extension BackendSyncCompletedView {
         Button {
             viewModel.continueButtonTapped()
         } label: {
-            Text(Strings.ABConnectedView.continueButton)
+            Text(Strings.Commons.continue)
         }.buttonStyle(BlueButtonStyle())
     }
 

@@ -37,7 +37,7 @@ struct CreateSessionDetailsView: View {
             .alert(isPresented: $viewModel.showAlertAboutEmptyCredentials, content: {
                 Alert(title: Text(Strings.CreateSessionDetailsView.wifiAlertTitle),
                       message: Text(Strings.CreateSessionDetailsView.wifiAlertMessage),
-                      dismissButton: .default(Text(Strings.CreateSessionDetailsView.continueButton)))
+                      dismissButton: .default(Text(Strings.Commons.continue)))
             })
             .background(navigation)
         }
@@ -134,7 +134,7 @@ private extension CreateSessionDetailsView {
             let updatedContext = viewModel.onContinueClick(sessionContext: sessionContext)
             sessionContext.ovverride(sessionContext: updatedContext)
         }, label: {
-            Text(Strings.CreateSessionDetailsView.continueButton)
+            Text(Strings.Commons.continue)
                 .frame(maxWidth: .infinity)
         })
         .buttonStyle(BlueButtonStyle())
