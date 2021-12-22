@@ -8,7 +8,6 @@ import SwiftUI
 
 struct ShareSessionView<VM: ShareSessionViewModel>: View {
     @ObservedObject var viewModel: VM
-    @Binding var showSharingModal: Bool
     
     // This email logic will be moved to view model in the next task
     @State var email: String = ""
@@ -36,7 +35,7 @@ struct ShareSessionView<VM: ShareSessionViewModel>: View {
         .sheet(isPresented: $viewModel.showShareSheet, content: {
             ActivityViewController(itemsToShare: [viewModel.sharingLink as Any]) { activityType, completed, returnedItems, error in
                 //Sometimes this doesn't work
-                showSharingModal.toggle()
+                viewModel.sharingFinished()
             }
         })
         .padding()
@@ -69,7 +68,7 @@ struct ShareSessionView<VM: ShareSessionViewModel>: View {
     
     private var shareButton: some View {
         Button(Strings.SessionShare.shareLinkButton) {
-            viewModel.shareLinkButtonGotPressed()
+            viewModel.shareLinkTepped()
         }.buttonStyle(BlueButtonStyle())
             .padding(.bottom)
     }
@@ -97,7 +96,7 @@ struct ShareSessionView<VM: ShareSessionViewModel>: View {
     
     private var cancelButton: some View {
         Button(Strings.BackendSettings.Cancel) {
-            showSharingModal.toggle()
+            viewModel.cancelTapped()
         }.buttonStyle(BlueTextButtonStyle())
     }
 }
@@ -105,7 +104,7 @@ struct ShareSessionView<VM: ShareSessionViewModel>: View {
 #if DEBUG
 struct ShareSessionView_Previews: PreviewProvider {
     static var previews: some View {
-        ShareSessionView(viewModel: DummyShareSessionViewModel(),showSharingModal: .constant(true))
+        ShareSessionView(viewModel: DummyShareSessionViewModel())
     }
 }
 #endif

@@ -13,15 +13,18 @@ protocol ShareSessionViewModel: ObservableObject {
     var showShareSheet: Bool { get set }
     var sharingLink: URL? { get set }
     func didSelect(option: ShareSessionStreamOptionViewModel)
-    func shareLinkButtonGotPressed()
+    func shareLinkTepped()
+    func cancelTapped()
+    func sharingFinished()
 }
 
 class DefaultShareSessionViewModel: ShareSessionViewModel {
-    private var session: SessionEntity
-    private lazy var selectedStream = streamOptions.first
     @Published var alert: AlertInfo?
     @Published var showShareSheet: Bool = false
     @Published var sharingLink: URL?
+    private let exitRoute: () -> Void
+    private var session: SessionEntity
+    private lazy var selectedStream = streamOptions.first
     
     var streamOptions: [ShareSessionStreamOptionViewModel] {
         willSet {
@@ -29,8 +32,9 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
         }
     }
     
-    init(session: SessionEntity) {
+    init(session: SessionEntity, exitRoute: @escaping () -> Void) {
         self.session = session
+        self.exitRoute = exitRoute
         
         var sessionStreams: [MeasurementStreamEntity] {
             return session.sortedStreams?.filter( {!$0.gotDeleted} ) ?? []
@@ -55,9 +59,17 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
         }
     }
     
-    func shareLinkButtonGotPressed() {
+    func shareLinkTepped() {
         getSharingLink()
         showShareSheet = true
+    }
+    
+    func cancelTapped() {
+        exitRoute()
+    }
+    
+    func sharingFinished() {
+        exitRoute()
     }
     
     private func getSharingLink() {
@@ -109,5 +121,7 @@ class DummyShareSessionViewModel: ShareSessionViewModel {
     var showShareSheet: Bool = false
     var sharingLink: URL?
     func didSelect(option: ShareSessionStreamOptionViewModel) { }
-    func shareLinkButtonGotPressed() { }
+    func shareLinkTepped() { }
+    func cancelTapped() { }
+    func sharingFinished() { }
 }

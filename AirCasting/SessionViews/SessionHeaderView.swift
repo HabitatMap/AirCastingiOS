@@ -37,7 +37,9 @@ struct SessionHeaderView: View {
                     DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session, measurementStreamStorage: measurementStreamStorage, streamRemover: DefaultSessionUpdateService(authorization: authorization, urlProvider: urlProvider), sessionSynchronizer: sessionSynchronizer), deleteModal: $showDeleteModal)
                 }
                 .sheet(isPresented: $showShareModal) {
-                    ShareSessionView(viewModel: DefaultShareSessionViewModel(session: session), showSharingModal: $showShareModal)
+                    ShareSessionView(viewModel: DefaultShareSessionViewModel(session: session, exitRoute: {
+                        showShareModal.toggle()
+                    }))
                 }
                 .sheet(isPresented: $showEditView) {
                     editViewSheet
@@ -52,7 +54,9 @@ struct SessionHeaderView: View {
                             }
                         EmptyView()
                             .sheet(isPresented: $showShareModal) {
-                                ShareSessionView(viewModel: DefaultShareSessionViewModel(session: session), showSharingModal: $showShareModal)
+                                ShareSessionView(viewModel: DefaultShareSessionViewModel(session: session, exitRoute: {
+                                    showShareModal.toggle()
+                                }))
                             }
                         EmptyView()
                             .sheet(isPresented: $showDeleteModal) {
