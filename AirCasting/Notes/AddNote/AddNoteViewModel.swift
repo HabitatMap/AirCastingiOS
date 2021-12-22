@@ -5,7 +5,7 @@ import Foundation
 protocol AddNoteViewModel: ObservableObject {
     var noteText: String { get set }
     
-    func continueClicked(note: Note)
+    func continueTapped()
     func cancelTapped()
 }
 
@@ -20,7 +20,13 @@ class AddNoteViewModelDefault: AddNoteViewModel, ObservableObject {
         self.exitRoute = exitRoute
     }
     
-    func continueClicked(note: Note) { notesHandler.addNoteToDatabase(note: note) }
+    func continueTapped() { notesHandler.addNoteToDatabase(note: Note(date: Date(),
+                                                                       text: noteText,
+                                                                       lat: 20.20,
+                                                                       long: 20.20,
+                                                                       number: 1))
+        exitRoute()
+    }
     
     func cancelTapped() { exitRoute() }
 }
@@ -28,6 +34,6 @@ class AddNoteViewModelDefault: AddNoteViewModel, ObservableObject {
 class DummyAddNoteViewModelDefault: AddNoteViewModel, ObservableObject {
     @Published var noteText = ""
     
-    func continueClicked(note: Note) { }
+    func continueTapped() { print("Clicked continue") }
     func cancelTapped() { print("Cancel tapped") }
 }

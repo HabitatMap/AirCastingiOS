@@ -4,8 +4,6 @@
 import Foundation
 
 protocol NotesHandler {
-    var measurementStreamStorage: MeasurementStreamStorage { get }
-    var session: SessionEntity { get }
     func addNoteToDatabase(note: Note)
 }
 
@@ -27,4 +25,6 @@ class NotesHandlerDefault: NotesHandler {
             }
         }
     }
+    
+    // wyciąganie notatek TUTAJ
 }

@@ -282,7 +282,13 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
     
     func addNote(_ note: Note, for sessionUUID: SessionUUID) throws {
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
-        // append notes
+        let noteEntity = NoteEntity(context: context)
+        noteEntity.lat = note.lat
+        noteEntity.long = note.long
+        noteEntity.text = note.text
+        noteEntity.date = note.date
+        noteEntity.number = Int64(note.number)
+        sessionEntity.addToNotes(noteEntity)
         try context.save()
     }
 

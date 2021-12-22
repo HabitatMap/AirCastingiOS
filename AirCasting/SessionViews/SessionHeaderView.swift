@@ -123,9 +123,9 @@ private extension SessionHeaderView {
             if session.deviceType == .AIRBEAM3 && session.isActive && featureFlagsViewModel.enabledFeatures.contains(.standaloneMode) {
                 actionsMenuMobileEnterStandaloneMode
             }
-            if session.isActive && featureFlagsViewModel.enabledFeatures.contains(.notes) {
+//            if session.isActive && featureFlagsViewModel.enabledFeatures.contains(.notes) {
                 actionsMenuNoteButton
-            }
+//            }
         } label: {
             ZStack(alignment: .trailing) {
                 EditButtonView()
