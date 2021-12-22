@@ -78,7 +78,7 @@ struct DeleteViewModal_Previews: PreviewProvider {
     static var previews: some View {
         DeleteView(viewModel: DefaultDeleteSessionViewModel(session: .mock,
                                                             measurementStreamStorage: PreviewMeasurementStreamStorage(),
-                                                            streamRemover: StreamRemoverDefaultDummy(), sessionSynchronizer: DummySessionSynchronizer()),
+                                                            streamRemover: SessionUpdateServiceDefaultDummy(), sessionSynchronizer: DummySessionSynchronizer()),
                                                             deleteModal: .constant(false))
     }
 }

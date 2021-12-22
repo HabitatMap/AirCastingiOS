@@ -36,7 +36,7 @@ public class MeasurementStreamEntity: NSManagedObject, Identifiable {
     // Of type MeasurementEntity
     @NSManaged public var measurements: NSOrderedSet?
     @NSManaged public var session: SessionEntity!
-
+    
     public var id: MeasurementStreamID? {
         get { value(forKey: "id") as? MeasurementStreamID }
         set { setValue(newValue, forKey: "id")}

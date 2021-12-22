@@ -23,5 +23,5 @@ protocol SessionRemovable {
 }
 
 protocol SessionInsertable {
-    func insertSessions(_ sessions: [Database.Session], completion: ((Error?) -> Void)?)
+    func insertOrUpdateSessions(_ sessions: [Database.Session], completion: ((Error?) -> Void)?)
 }
