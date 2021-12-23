@@ -58,8 +58,7 @@ struct SyncedMeasurementsDownloadingService: SyncedMeasurementsDownloader {
     private func removeDoubledMeasurements(_ sessionUUID: SessionUUID) {
         measurementStreamStorage.accessStorage { storage in
             do {
-                let session = try storage.removeDuplicatedMeasurements(for: sessionUUID)
-                
+                try storage.removeDuplicatedMeasurements(for: sessionUUID)
             } catch {
                 Log.error("Error occured while removing duplicated measurements: \(error)")
             }

@@ -36,13 +36,13 @@ class ConnectingAirBeamServicesBluetooth: ConnectingAirBeamServices {
                 Log.info("Airbeam connection failed")
                 self.bluetoothConnector.cancelPeripheralConnection(for: peripheral)
                 completion(.timeout)
-                NotificationCenter.default.removeObserver(self.connectionToken)
+                NotificationCenter.default.removeObserver(self.connectionToken as AnyObject)
             }
         }
         connectionToken = NotificationCenter.default.addObserver(forName: .deviceConnected, object: nil, queue: nil) { _ in
             Log.info("Airebeam connected successfully")
             var characteristicsHandle: Any?
-            NotificationCenter.default.removeObserver(self.connectionToken)
+            NotificationCenter.default.removeObserver(self.connectionToken as AnyObject)
             characteristicsHandle = NotificationCenter.default.addObserver(forName: .discoveredCharacteristic, object: nil, queue: .main) { notification in
                 guard notification.userInfo?[AirCastingNotificationKeys.DiscoveredCharacteristic.peripheralUUID] as! UUID == peripheral.identifier else { return }
                 connectionInProgress = false
