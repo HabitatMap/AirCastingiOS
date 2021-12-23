@@ -20,9 +20,12 @@ struct CreateSessionDetailsView: View {
                     VStack(alignment: .leading, spacing: 25) {
                         ProgressView(value: 0.75)
                         titleLabel
-                        VStack(spacing: 20) {
+                        VStack(alignment: .leading) {
                             sessionNameField
+                                .onTapGesture { viewModel.nameTextFieldTapped() }
+                            if viewModel.shouldShowError { errorMessage(text: Strings.EditSession.erorr) }
                             sessionTagsField
+                                .padding(.top, 20)
                         }
                         if sessionContext.sessionType == SessionType.fixed { fixedSessionDetails }
                         Spacer()
