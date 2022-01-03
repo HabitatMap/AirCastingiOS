@@ -175,9 +175,9 @@ private extension SessionHeaderView {
     var actionsMenu: some View {
         Menu {
             session.isActive ? actionsMenuStopButton : nil
-            session.deletable ? actionsMenuDeleteButton : nil
+            session.editable ? actionsMenuEditButton : nil
             session.shareable ? actionsMenuShareButton : nil
-            session.isEditable ? actionsMenuEditButton : nil
+            session.deletable ? actionsMenuDeleteButton : nil
             if session.deviceType == .AIRBEAM3 && session.isActive && featureFlagsViewModel.enabledFeatures.contains(.standaloneMode) {
                 actionsMenuMobileEnterStandaloneMode
             }
