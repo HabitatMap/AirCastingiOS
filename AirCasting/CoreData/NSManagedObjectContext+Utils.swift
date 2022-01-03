@@ -53,8 +53,6 @@ extension NSManagedObjectContext {
         new.setValue(uuid.rawValue, forKey: "uuid")
         return new
     }
-    
-
 }
 
 

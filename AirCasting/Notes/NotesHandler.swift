@@ -26,5 +26,15 @@ class NotesHandlerDefault: NotesHandler {
         }
     }
     
-    // wyciąganie notatek TUTAJ
+    func getNotesFromDatabase() -> [Note] {
+        var notes = [Note]()
+        measurementStreamStorage.accessStorage { [self] storage in
+            do {
+                notes = try storage.getNotes(for: session.uuid)
+            } catch {
+                Log.info("Error when fetching notes from DB")
+            }
+        }
+        return notes
+    }
 }

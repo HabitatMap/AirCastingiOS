@@ -206,7 +206,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
     }
     
     func updateMeasurements(stream: MeasurementStreamEntity, newMeasurements: NSOrderedSet) throws {
-            stream.measurements = newMeasurements
+        stream.measurements = newMeasurements
     }
     
     private func saveMeasurementStream(for session: SessionEntity, context: NSManagedObjectContext, _ stream: MeasurementStream) throws -> MeasurementStreamLocalID {
@@ -290,6 +290,20 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         noteEntity.number = Int64(note.number)
         sessionEntity.addToNotes(noteEntity)
         try context.save()
+    }
+    
+    func getNotes(for sessionUUID: SessionUUID) throws -> [Note] {
+        let sessionEntity = try context.existingSession(uuid: sessionUUID)
+        var notesArray = [Note]()
+        sessionEntity.notes?.forEach({ note in
+            let n = note as! NoteEntity
+            notesArray.append(Note(date: n.date ?? Date(),
+                                   text: n.text ?? "",
+                                   lat: n.lat,
+                                   long: n.long,
+                                   number: Int(n.number)))
+        })
+        return notesArray
     }
 
     func createSession(_ session: Session) throws {

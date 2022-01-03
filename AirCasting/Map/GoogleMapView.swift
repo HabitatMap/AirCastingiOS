@@ -21,8 +21,9 @@ struct GoogleMapView: UIViewRepresentable {
     var isMyLocationEnabled: Bool = false
     private var onPositionChange: (([PathPoint]) -> ())? = nil
     var isSessionFixed: Bool
+    var notes: NSOrderedSet
     
-    init(pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false, placePickerDismissed: Binding<Bool>, isUserInteracting: Binding<Bool>, isSessionActive: Bool = false, isSessionFixed: Bool = false) {
+    init(pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false, placePickerDismissed: Binding<Bool>, isUserInteracting: Binding<Bool>, isSessionActive: Bool = false, isSessionFixed: Bool = false, notes: NSOrderedSet = []) {
         self.pathPoints = pathPoints
         self.threshold = threshold
         self.isMyLocationEnabled = isMyLocationEnabled
@@ -30,6 +31,7 @@ struct GoogleMapView: UIViewRepresentable {
         self._isUserInteracting = isUserInteracting
         self.liveModeOn = isSessionActive
         self.isSessionFixed = isSessionFixed
+        self.notes = notes
     }
     
     func makeUIView(context: Context) -> GMSMapView {
@@ -110,7 +112,7 @@ struct GoogleMapView: UIViewRepresentable {
             let long = lastPoint.location.longitude
             let lat = lastPoint.location.latitude
             
-            let newCameraPosition =  GMSCameraPosition.camera(withLatitude: lat,
+            let newCameraPosition = GMSCameraPosition.camera(withLatitude: lat,
                                                               longitude: long,
                                                               zoom: 16)
             return newCameraPosition
@@ -185,6 +187,12 @@ struct GoogleMapView: UIViewRepresentable {
         polyline.strokeColor = .accentColor
         polyline.strokeWidth = CGFloat(Constants.Map.polylineWidth)
         polyline.map = uiView
+    }
+    
+    func placeNotes(_ uiView: GMSMapView, context: Context) {
+//        notes.forEach { note in
+//            note.
+//        }
     }
     
     class Coordinator: NSObject, UINavigationControllerDelegate, GMSMapViewDelegate {
@@ -275,7 +283,8 @@ struct GoogleMapView_Previews: PreviewProvider {
                                              measurement: 30)],
                       threshold: .mock,
                       placePickerDismissed: .constant(false),
-                      isUserInteracting: .constant(true))
+                      isUserInteracting: .constant(true),
+                      notes: [])
             .padding()
     }
 }
