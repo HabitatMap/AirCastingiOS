@@ -11,6 +11,7 @@ protocol ShareSessionViewModel: ObservableObject {
     var streamOptions: [ShareSessionStreamOptionViewModel] { get set }
     var alert: AlertInfo? { get set }
     var showShareSheet: Bool { get set }
+    var showInvalidEmailError: Bool { get set }
     var sharingLink: URL? { get set }
     var email: String { get set }
     func didSelect(option: ShareSessionStreamOptionViewModel)
@@ -24,6 +25,7 @@ protocol ShareSessionViewModel: ObservableObject {
 class DefaultShareSessionViewModel: ShareSessionViewModel {
     @Published var alert: AlertInfo?
     @Published var showShareSheet: Bool = false
+    @Published var showInvalidEmailError: Bool = false
     @Published var sharingLink: URL?
     @Published var email: String = ""
     private let exitRoute: () -> Void
@@ -85,9 +87,11 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
     
     func shareEmailTapped() {
         if isEmailValid() {
+            showInvalidEmailError = false
             Log.info("VALID")
+            // Send request to API
         } else {
-            Log.info("INVALID")
+            showInvalidEmailError = true
         }
     }
     
@@ -135,7 +139,8 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
 }
 
 class DummyShareSessionViewModel: ShareSessionViewModel {
-    var email: String = ""
+    var showInvalidEmailError: Bool = false
+    var email: String = "a@test.com"
     func isEmailValid() -> Bool { false }
     var streamOptions: [ShareSessionStreamOptionViewModel] = []
     var alert: AlertInfo?
