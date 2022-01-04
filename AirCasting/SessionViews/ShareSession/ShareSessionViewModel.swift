@@ -90,8 +90,36 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
             showInvalidEmailError = false
             Log.info("VALID")
             // Send request to API
+            sendRequest()
         } else {
             showInvalidEmailError = true
+        }
+    }
+    
+    private func sendRequest() {
+        let url = UserDefaultsBaseURLProvider().baseAppURL.appendingPathComponent("api/sessions/export_by_uuid.json")
+        var components = URLComponents(url: url, resolvingAgainstBaseURL: false)!
+        components.queryItems = [URLQueryItem(name: "email", value: email), URLQueryItem(name: "uuid", value: session.uuid.rawValue)]
+        
+        let requestUrl = components.url!
+        
+        var request = URLRequest(url: requestUrl)
+        request.httpMethod = "GET"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.addValue("application/json", forHTTPHeaderField: "Accept")
+        request.httpShouldHandleCookies = false
+        request.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
+        
+        let apiClient = URLSession.shared
+        let responseHandler = AuthorizationHTTPResponseHandler()
+        
+        apiClient.requestTask(for: request) { [responseHandler] result, _ in
+            switch responseHandler.handle(result) {
+            case .success(let response):
+                Log.info("SUCCESS")
+            case .failure(let error):
+                Log.info("ERROR: \(error)")
+            }
         }
     }
     
