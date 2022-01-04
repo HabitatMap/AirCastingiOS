@@ -10,38 +10,36 @@ struct ShareSessionView<VM: ShareSessionViewModel>: View {
     @ObservedObject var viewModel: VM
     
     var body: some View {
-        ZStack {
-            VStack(alignment: .leading, spacing: 20) {
-                VStack(alignment: .leading, spacing: 5) {
-                    title
-                    description
-                }
-                chooseStream
-                shareButton
-                descriptionMail
-                VStack {
-                    createTextfield(placeholder: "Email", binding: $viewModel.email)
-                        .padding(.vertical)
-                        .disableAutocorrection(true)
-                        .autocapitalization(.none)
-                    if viewModel.showInvalidEmailError {
-                        emailErrorLabel
-                    }
-                }
-                .padding(.vertical)
-                VStack(alignment: .leading, spacing: 5) {
-                    oKButton
-                    cancelButton
+        VStack(alignment: .leading, spacing: 20) {
+            VStack(alignment: .leading, spacing: 5) {
+                title
+                description
+            }
+            chooseStream
+            shareButton
+            descriptionMail
+            VStack {
+                createTextfield(placeholder: "Email", binding: $viewModel.email)
+                    .padding(.vertical)
+                    .disableAutocorrection(true)
+                    .autocapitalization(.none)
+                if viewModel.showInvalidEmailError {
+                    emailErrorLabel
                 }
             }
-            .alert(item: $viewModel.alert, content: { $0.makeAlert() })
-            .sheet(isPresented: $viewModel.showShareSheet, content: {
-                ActivityViewController(itemsToShare: [viewModel.sharingLink as Any]) { activityType, completed, returnedItems, error in
-                    viewModel.sharingFinished()
-                }
-            })
-            .padding()
+            .padding(.vertical)
+            VStack(alignment: .leading, spacing: 5) {
+                oKButton
+                cancelButton
+            }
         }
+        .alert(item: $viewModel.alert, content: { $0.makeAlert() })
+        .sheet(isPresented: $viewModel.showShareSheet, content: {
+            ActivityViewController(itemsToShare: [viewModel.sharingLink as Any]) { activityType, completed, returnedItems, error in
+                viewModel.sharingFinished()
+            }
+        })
+        .padding()
     }
     
     private var title: some View {
