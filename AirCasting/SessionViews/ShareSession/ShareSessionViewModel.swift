@@ -12,16 +12,20 @@ protocol ShareSessionViewModel: ObservableObject {
     var alert: AlertInfo? { get set }
     var showShareSheet: Bool { get set }
     var sharingLink: URL? { get set }
+    var email: String { get set }
     func didSelect(option: ShareSessionStreamOptionViewModel)
-    func shareLinkTepped()
+    func shareLinkTapped()
+    func shareEmailTapped()
     func cancelTapped()
     func sharingFinished()
+    func isEmailValid() -> Bool
 }
 
 class DefaultShareSessionViewModel: ShareSessionViewModel {
     @Published var alert: AlertInfo?
     @Published var showShareSheet: Bool = false
     @Published var sharingLink: URL?
+    @Published var email: String = ""
     private let exitRoute: () -> Void
     private var session: SessionEntity
     private lazy var selectedStream = streamOptions.first
@@ -59,7 +63,7 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
         }
     }
     
-    func shareLinkTepped() {
+    func shareLinkTapped() {
         getSharingLink()
         showShareSheet = true
     }
@@ -71,6 +75,20 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
     func sharingFinished() {
         showShareSheet = false // this is kind of redundant, but also necessary for the shareSessionModal to disappear
         exitRoute()
+    }
+    
+    func isEmailValid() -> Bool {
+        // regex taken from https://regexlib.com/Search.aspx?k=email&c=-1&m=5&ps=20
+        let emailTest = NSPredicate(format: "SELF MATCHES %@", #"^((([!#$%&'*+\-/=?^_`{|}~\w])|([!#$%&'*+\-/=?^_`{|}~\w][!#$%&'*+\-/=?^_`{|}~\.\w]{0,}[!#$%&'*+\-/=?^_`{|}~\w]))[@]\w+([-.]\w+)*\.\w+([-.]\w+)*)$"#)
+        return emailTest.evaluate(with: email)
+    }
+    
+    func shareEmailTapped() {
+        if isEmailValid() {
+            Log.info("VALID")
+        } else {
+            Log.info("INVALID")
+        }
     }
     
     private func getSharingLink() {
@@ -117,12 +135,15 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
 }
 
 class DummyShareSessionViewModel: ShareSessionViewModel {
+    var email: String = ""
+    func isEmailValid() -> Bool { false }
     var streamOptions: [ShareSessionStreamOptionViewModel] = []
     var alert: AlertInfo?
     var showShareSheet: Bool = false
     var sharingLink: URL?
     func didSelect(option: ShareSessionStreamOptionViewModel) { }
-    func shareLinkTepped() { }
+    func shareLinkTapped() { }
+    func shareEmailTapped() { }
     func cancelTapped() { }
     func sharingFinished() { }
 }
