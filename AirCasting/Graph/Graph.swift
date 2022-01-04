@@ -32,13 +32,16 @@ struct Graph: UIViewRepresentable {
     @ObservedObject var thresholds: SensorThreshold
     private var action: OnChange?
     
+    var notes: [Note]
+    
     var isAutozoomEnabled: Bool
     let simplifiedGraphEntryThreshold = 1000
     
-    init(stream: MeasurementStreamEntity, thresholds: SensorThreshold, isAutozoomEnabled: Bool) {
+    init(stream: MeasurementStreamEntity, thresholds: SensorThreshold, isAutozoomEnabled: Bool, notes: [Note]) {
         self.stream = stream
         self.thresholds = thresholds
         self.isAutozoomEnabled = isAutozoomEnabled
+        self.notes = notes
     }
     
     func onDateRangeChange(perform action: @escaping OnChange) -> Self {
@@ -163,6 +166,13 @@ struct Graph: UIViewRepresentable {
             line.lineDashLengths = [5]
             line.lineDashPhase = CGFloat(2)
             return line
+        }
+    }
+    
+    func placeNotes(entries: [ChartDataEntry]) {
+        notes.forEach { note in
+            let noteTime = note.date.timeIntervalSince1970
+            let position = entries.first(where: { $0.x >= noteTime })
         }
     }
     

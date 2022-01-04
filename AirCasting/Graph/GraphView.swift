@@ -50,7 +50,9 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                         ZStack(alignment: .topLeading) {
                             Graph(stream: selectedStream,
                                   thresholds: threshold,
-                                  isAutozoomEnabled: session.type == .mobile).onDateRangeChange { [weak graphStatsDataSource, weak statsContainerViewModel] range in
+                                  isAutozoomEnabled: session.type == .mobile,
+                                  notes: NotesHandlerDefault(measurementStreamStorage: measurementStreamStorage,
+                                                             session: session).getNotesFromDatabase()).onDateRangeChange { [weak graphStatsDataSource, weak statsContainerViewModel] range in
                                 graphStatsDataSource?.dateRange = range
                                 statsContainerViewModel?.adjustForNewData()
                             }

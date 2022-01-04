@@ -292,6 +292,19 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         try context.save()
     }
     
+    func updateNote(_ note: Note, newText: String, for sessionUUID: SessionUUID) throws {
+        let sessionEntity = try context.existingSession(uuid: sessionUUID)
+        let note = (sessionEntity.notes?.first(where: { ($0 as! NoteEntity).number == note.number }) as! NoteEntity)
+        note.text = newText
+        try context.save()
+    }
+    
+    func deleteNote(_ note: Note, for sessionUUID: SessionUUID) throws {
+        let sessionEntity = try context.existingSession(uuid: sessionUUID)
+        let note = (sessionEntity.notes?.first(where: { ($0 as! NoteEntity).number == note.number }) as! NoteEntity)
+        context.delete(note)
+    }
+    
     func getNotes(for sessionUUID: SessionUUID) throws -> [Note] {
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
         var notesArray = [Note]()

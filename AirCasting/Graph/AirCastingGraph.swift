@@ -70,6 +70,16 @@ class AirCastingGraph: UIView {
             throw GraphError.rendererError
         }
         lineChartView.leftYAxisRenderer = renderer
+        
+        let button = UIButton(type: .system) // let preferred over var here
+        button.setImage(UIImage(named: "message-square"), for: .normal)
+        button.frame = CGRect(x: 100, y: 100, width: 40, height: 40)
+        button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
+        self.lineChartView.addSubview(button)
+    }
+    
+    @objc func buttonAction(sender: UIButton!) {
+        print("Button tapped")
     }
     
     private func zoomoutToThirtyMinutes(dataSet: LineChartDataSet) {
@@ -163,7 +173,7 @@ extension AirCastingGraph: ChartViewDelegate {
 #if DEBUG
 struct AirCastingGraph_Previews: PreviewProvider {
     static var previews: some View {
-        Graph(stream: .mock, thresholds: .mock, isAutozoomEnabled: true)
+        Graph(stream: .mock, thresholds: .mock, isAutozoomEnabled: true, notes: [])
     }
 }
 #endif

@@ -45,7 +45,7 @@ private extension EditNoteView {
     }
     var continueButton: some View {
         Button {
-            //)
+            viewModel.saveTapped()
         } label: {
             Text(Strings.EditNoteView.saveButton)
                 .bold()
@@ -55,7 +55,7 @@ private extension EditNoteView {
     
     var deleteButton: some View {
         Button {
-            //
+            viewModel.deleteTapped()
         } label: {
             Text(Strings.EditNoteView.deleteButton)
                 .bold()

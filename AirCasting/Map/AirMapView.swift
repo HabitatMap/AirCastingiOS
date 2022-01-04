@@ -19,6 +19,8 @@ struct AirMapView: View {
     @ObservedObject var session: SessionEntity
     @Binding var showLoadingIndicator: Bool
     @State var isUserInteracting = true
+    @State var noteMarkerTapped = false
+    @State var noteNumber = 0
     @Binding var selectedStream: MeasurementStreamEntity?
     let urlProvider: BaseURLProvider
     let sessionStoppableFactory: SessionStoppableFactory
@@ -63,7 +65,10 @@ struct AirMapView: View {
                                       isUserInteracting: $isUserInteracting,
                                       isSessionActive: session.isActive,
                                       isSessionFixed: session.isFixed,
-                                      notes: session.notes ?? [])
+                                      notes: NotesHandlerDefault(measurementStreamStorage: measurementStreamStorage,
+                                                                 session: session).getNotesFromDatabase(),
+                                      noteMarketTapped: $noteMarkerTapped,
+                                      noteNumber: $noteNumber)
                         #warning("TODO: Implement calculating stats only for visible path points")
                         // This doesn't work properly and it needs to be fixed, so I'm commenting it out
 //                            .onPositionChange { [weak mapStatsDataSource, weak statsContainerViewModel] visiblePoints in
@@ -90,6 +95,14 @@ struct AirMapView: View {
                 }
             }
         }
+        .sheet(isPresented: $noteMarkerTapped, content: {
+            EditNoteView(viewModel: EditNoteViewModelDefault(exitRoute: {
+                noteMarkerTapped.toggle()
+            },
+                                                             noteNumber: noteNumber,
+                                                             notesHandler: NotesHandlerDefault(measurementStreamStorage: measurementStreamStorage,
+                                                                         session: session)))
+        })
         .navigationBarTitleDisplayMode(.inline)
 //        .onChange(of: selectedStream) { newStream in
 //            mapStatsDataSource.visiblePathPoints = pathPoints
