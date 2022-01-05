@@ -38,8 +38,11 @@ struct SessionHeaderView: View {
                     DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session, measurementStreamStorage: measurementStreamStorage, streamRemover: DefaultSessionUpdateService(authorization: authorization, urlProvider: urlProvider), sessionSynchronizer: sessionSynchronizer), deleteModal: $showDeleteModal)
                 }
                 .sheet(isPresented: $showShareModal) {
-                    ShareSessionView(viewModel: DefaultShareSessionViewModel(session: session, exitRoute: {
+                    ShareSessionView(viewModel: DefaultShareSessionViewModel(session: session, apiClient: ShareSessionApi(urlProvider: urlProvider), exitRoute: { sharedEmail in
                         showShareModal.toggle()
+                        if sharedEmail == true {
+                            alert = InAppAlerts.shareFileRequestSent()
+                        }
                     }))
                 }
                 .sheet(isPresented: $showEditView) {
@@ -58,8 +61,11 @@ struct SessionHeaderView: View {
                             }
                         EmptyView()
                             .sheet(isPresented: $showShareModal) {
-                                ShareSessionView(viewModel: DefaultShareSessionViewModel(session: session, exitRoute: {
+                                ShareSessionView(viewModel: DefaultShareSessionViewModel(session: session, apiClient: ShareSessionApi(urlProvider: urlProvider), exitRoute: { sharedEmail in
                                     showShareModal.toggle()
+                                    if sharedEmail == true {
+                                        alert = InAppAlerts.shareFileRequestSent()
+                                    }
                                 }))
                             }
                         EmptyView()

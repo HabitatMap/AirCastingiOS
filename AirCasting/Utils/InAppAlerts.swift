@@ -46,6 +46,26 @@ struct InAppAlerts {
                   ])
     }
     
+    static func failedEmailSharingAlert() -> AlertInfo {
+        AlertInfo(title: Strings.SessionShare.emailSharingAlertTitle,
+                  message: Strings.SessionShare.emailSharingAlertMessage,
+                  buttons: [
+                    .default(title: Strings.Commons.gotIt,
+                             action: nil)
+                  ])
+    }
+    
+    static func shareFileRequestSent() -> AlertInfo {
+        AlertInfo(
+            title: Strings.SessionHeaderView.shareFileAlertTitle,
+            message: Strings.SessionHeaderView.shareFileAlertMessage,
+            buttons: [
+                .default(title: Strings.Commons.gotIt,
+                         action: nil)
+            ]
+        )
+    }
+    
     static func finishSessionAlert(sessionName: String?, action: @escaping (() -> Void)) -> AlertInfo {
         AlertInfo(
             title: Strings.SessionHeaderView.finishAlertTitle +

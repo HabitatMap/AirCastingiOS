@@ -18,7 +18,7 @@ struct ShareSessionView<VM: ShareSessionViewModel>: View {
             chooseStream
             shareButton
             descriptionMail
-            VStack {
+            VStack(alignment: .leading, spacing: -5.0) {
                 createTextfield(placeholder: "Email", binding: $viewModel.email)
                     .padding(.vertical)
                     .disableAutocorrection(true)
@@ -84,6 +84,7 @@ struct ShareSessionView<VM: ShareSessionViewModel>: View {
         Text("This email is invalid")
             .font(Fonts.regularHeading5)
             .foregroundColor(.aircastingRed)
+            .multilineTextAlignment(.leading)
     }
     
     private var oKButton: some View {

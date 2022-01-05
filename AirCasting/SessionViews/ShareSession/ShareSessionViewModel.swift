@@ -5,6 +5,7 @@ import Foundation
 
 enum ShareSessionError: Error {
     case noSessionURL
+    case requestError
 }
 
 protocol ShareSessionViewModel: ObservableObject {
@@ -28,9 +29,10 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
     @Published var showInvalidEmailError: Bool = false
     @Published var sharingLink: URL?
     @Published var email: String = ""
-    private let exitRoute: () -> Void
+    private let exitRoute: (Bool?) -> Void
     private var session: SessionEntity
     private lazy var selectedStream = streamOptions.first
+    private var apiClient: ShareSessionApi
     
     var streamOptions: [ShareSessionStreamOptionViewModel] {
         willSet {
@@ -38,9 +40,10 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
         }
     }
     
-    init(session: SessionEntity, exitRoute: @escaping () -> Void) {
+    init(session: SessionEntity, apiClient: ShareSessionApi, exitRoute: @escaping (Bool?) -> Void) {
         self.session = session
         self.exitRoute = exitRoute
+        self.apiClient = apiClient
         
         var sessionStreams: [MeasurementStreamEntity] {
             return session.sortedStreams?.filter( {!$0.gotDeleted} ) ?? []
@@ -71,12 +74,12 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
     }
     
     func cancelTapped() {
-        exitRoute()
+        exitRoute(nil)
     }
     
     func sharingFinished() {
         showShareSheet = false // this is kind of redundant, but also necessary for the shareSessionModal to disappear
-        exitRoute()
+        exitRoute(nil)
     }
     
     func isEmailValid() -> Bool {
@@ -89,7 +92,6 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
         if isEmailValid() {
             showInvalidEmailError = false
             Log.info("VALID")
-            // Send request to API
             sendRequest()
         } else {
             showInvalidEmailError = true
@@ -97,28 +99,13 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
     }
     
     private func sendRequest() {
-        let url = UserDefaultsBaseURLProvider().baseAppURL.appendingPathComponent("api/sessions/export_by_uuid.json")
-        var components = URLComponents(url: url, resolvingAgainstBaseURL: false)!
-        components.queryItems = [URLQueryItem(name: "email", value: email), URLQueryItem(name: "uuid", value: session.uuid.rawValue)]
-        
-        let requestUrl = components.url!
-        
-        var request = URLRequest(url: requestUrl)
-        request.httpMethod = "GET"
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.addValue("application/json", forHTTPHeaderField: "Accept")
-        request.httpShouldHandleCookies = false
-        request.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
-        
-        let apiClient = URLSession.shared
-        let responseHandler = AuthorizationHTTPResponseHandler()
-        
-        apiClient.requestTask(for: request) { [responseHandler] result, _ in
-            switch responseHandler.handle(result) {
-            case .success(let response):
-                Log.info("SUCCESS")
+        apiClient.sendRequest(email: email, uuid: session.uuid.rawValue) { result in
+            switch result {
+            case .success():
+                self.exitRoute(true)
             case .failure(let error):
-                Log.info("ERROR: \(error)")
+                Log.info("Share session request error: \(error)")
+                self.getAlert(.requestError)
             }
         }
     }
@@ -143,9 +130,13 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
     }
     
     private func getAlert(_ error: ShareSessionError) {
-        switch error {
-        case .noSessionURL:
-            alert = InAppAlerts.failedSharingAlert()
+        DispatchQueue.main.async {
+            switch error {
+            case .noSessionURL:
+                self.alert = InAppAlerts.failedSharingAlert()
+            case .requestError:
+                self.alert = InAppAlerts.failedSharingAlert()
+            }
         }
     }
     
