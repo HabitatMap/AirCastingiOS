@@ -51,8 +51,7 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                             Graph(stream: selectedStream,
                                   thresholds: threshold,
                                   isAutozoomEnabled: session.type == .mobile,
-                                  notes: NotesHandlerDefault(measurementStreamStorage: measurementStreamStorage,
-                                                             session: session).getNotesFromDatabase()).onDateRangeChange { [weak graphStatsDataSource, weak statsContainerViewModel] range in
+                                  notes: NotesHandlerDefault(measurementStreamStorage: measurementStreamStorage, sessionUUID: session.uuid)).onDateRangeChange { [weak graphStatsDataSource, weak statsContainerViewModel] range in
                                 graphStatsDataSource?.dateRange = range
                                 statsContainerViewModel?.adjustForNewData()
                             }

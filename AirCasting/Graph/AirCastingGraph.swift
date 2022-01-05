@@ -71,7 +71,7 @@ class AirCastingGraph: UIView {
         }
         lineChartView.leftYAxisRenderer = renderer
         
-        let button = UIButton(type: .system) // let preferred over var here
+        let button = UIButton(type: .system)
         button.setImage(UIImage(named: "message-square"), for: .normal)
         button.frame = CGRect(x: 100, y: 100, width: 40, height: 40)
         button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
@@ -169,11 +169,3 @@ extension AirCastingGraph: ChartViewDelegate {
         didMoveOrScaleGraph = true
     }
 }
-
-#if DEBUG
-struct AirCastingGraph_Previews: PreviewProvider {
-    static var previews: some View {
-        Graph(stream: .mock, thresholds: .mock, isAutozoomEnabled: true, notes: [])
-    }
-}
-#endif

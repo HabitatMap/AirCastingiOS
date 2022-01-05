@@ -5,26 +5,28 @@ import Foundation
 
 protocol NotesHandler {
     func addNoteToDatabase(note: Note)
-    func getNotesFromDatabase() -> [Note]
-    func obtainNumber() -> Int
-    func fetchSpecifiedNote(number: Int) -> Note
+    func markWithNumberID() -> Int
     func deleteNoteFromDatabase(note: Note)
     func updateNoteInDatabase(note: Note, newText: String)
+    func getNotesFromDatabase(completion: @escaping ([Note]) -> Void)
+    func fetchSpecifiedNote(number: Int, completion: @escaping (Note) -> Void)
 }
 
 class NotesHandlerDefault: NotesHandler {
     var measurementStreamStorage: MeasurementStreamStorage
-    var session: SessionEntity
+    var sessionUUID: SessionUUID
+    var sessionNotesNumber: Int
     
-    init(measurementStreamStorage: MeasurementStreamStorage, session: SessionEntity) {
+    init(measurementStreamStorage: MeasurementStreamStorage, sessionUUID: SessionUUID, sessionNotesNumber: Int = 0) {
         self.measurementStreamStorage = measurementStreamStorage
-        self.session = session
+        self.sessionUUID = sessionUUID
+        self.sessionNotesNumber = sessionNotesNumber
     }
     
     func addNoteToDatabase(note: Note) {
         measurementStreamStorage.accessStorage { [self] storage in
             do {
-                try storage.addNote(note, for: session.uuid)
+                try storage.addNote(note, for: sessionUUID)
             } catch {
                 Log.info("Error when adding to DB")
             }
@@ -34,7 +36,7 @@ class NotesHandlerDefault: NotesHandler {
     func deleteNoteFromDatabase(note: Note) {
         measurementStreamStorage.accessStorage { [self] storage in
             do {
-                try storage.deleteNote(note, for: session.uuid)
+                try storage.deleteNote(note, for: sessionUUID)
             } catch {
                 Log.info("Error when deleting note")
             }
@@ -44,35 +46,32 @@ class NotesHandlerDefault: NotesHandler {
     func updateNoteInDatabase(note: Note, newText: String) {
         measurementStreamStorage.accessStorage { [self] storage in
             do {
-                try storage.updateNote(note, newText: newText, for: session.uuid)
+                try storage.updateNote(note, newText: newText, for: sessionUUID)
             } catch {
                 Log.info("Error when deleting note")
             }
         }
     }
     
-    func obtainNumber() -> Int { session.notes?.count ?? 0 }
+    func markWithNumberID() -> Int { sessionNotesNumber }
     
-// WHAT BELOW SHOULDN"T BE HERE - USING NoteEntity HERE BAAAAD ‼️
-    func getNotesFromDatabase() -> [Note] {
-        var notesArray = [Note]()
-        session.notes?.forEach({ note in
-            let n = note as! NoteEntity
-            notesArray.append(Note(date: n.date ?? Date(),
-                                   text: n.text ?? "",
-                                   lat: n.lat,
-                                   long: n.long,
-                                   number: Int(n.number)))
-        })
-        return notesArray
+    func getNotesFromDatabase(completion: @escaping ([Note]) -> Void) {
+        measurementStreamStorage.accessStorage { [self] storage in
+            do {
+                completion(try storage.getNotes(for: sessionUUID))
+            } catch {
+                Log.info("Error when deleting note")
+            }
+        }
     }
     
-    func fetchSpecifiedNote(number: Int) -> Note {
-        let note = (session.notes?.first(where: { ($0 as! NoteEntity).number == number }) as! NoteEntity)
-        return Note(date: note.date ?? Date(),
-                    text: note.text ?? "",
-                    lat: note.lat,
-                    long: note.long,
-                    number: Int(note.number))
+    func fetchSpecifiedNote(number: Int, completion: @escaping (Note) -> Void) {
+        measurementStreamStorage.accessStorage { [self] storage in
+            do {
+                completion(try storage.fetchSpecifiedNote(for: sessionUUID, number: number))
+            } catch {
+                Log.info("Error when deleting note")
+            }
+        }
     }
 }

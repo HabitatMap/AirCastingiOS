@@ -19,6 +19,7 @@ extension ChartDataEntry: Point2DRepresentable {
     public var yValue: Float {
         Float(self.y)
     }
+    
     public var cgPoint: CGPoint {
         .init(x: CGFloat(xValue), y: CGFloat(yValue))
     }
@@ -32,12 +33,12 @@ struct Graph: UIViewRepresentable {
     @ObservedObject var thresholds: SensorThreshold
     private var action: OnChange?
     
-    var notes: [Note]
+    var notes: NotesHandler
     
     var isAutozoomEnabled: Bool
     let simplifiedGraphEntryThreshold = 1000
     
-    init(stream: MeasurementStreamEntity, thresholds: SensorThreshold, isAutozoomEnabled: Bool, notes: [Note]) {
+    init(stream: MeasurementStreamEntity, thresholds: SensorThreshold, isAutozoomEnabled: Bool, notes: NotesHandler) {
         self.stream = stream
         self.thresholds = thresholds
         self.isAutozoomEnabled = isAutozoomEnabled
@@ -170,10 +171,10 @@ struct Graph: UIViewRepresentable {
     }
     
     func placeNotes(entries: [ChartDataEntry]) {
-        notes.forEach { note in
-            let noteTime = note.date.timeIntervalSince1970
-            let position = entries.first(where: { $0.x >= noteTime })
-        }
+//        notes.forEach { note in
+//            let noteTime = note.date.timeIntervalSince1970
+//            let position = entries.first(where: { $0.x >= noteTime })
+//        }
     }
     
     class Coordinator: NSObject, UINavigationControllerDelegate {

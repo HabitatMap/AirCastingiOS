@@ -307,16 +307,24 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
     
     func getNotes(for sessionUUID: SessionUUID) throws -> [Note] {
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
-        var notesArray = [Note]()
-        sessionEntity.notes?.forEach({ note in
+        return sessionEntity.notes?.map { note -> Note in
             let n = note as! NoteEntity
-            notesArray.append(Note(date: n.date ?? Date(),
+            return Note(date: n.date ?? Date(),
                                    text: n.text ?? "",
                                    lat: n.lat,
                                    long: n.long,
-                                   number: Int(n.number)))
-        })
-        return notesArray
+                                   number: Int(n.number))
+        } ?? []
+    }
+    
+    func fetchSpecifiedNote(for sessionUUID: SessionUUID, number: Int) throws -> Note {
+        let session = try context.existingSession(uuid: sessionUUID)
+        let note = (session.notes?.first(where: { ($0 as! NoteEntity).number == number }) as! NoteEntity)
+        return Note(date: note.date ?? Date(),
+                    text: note.text ?? "",
+                    lat: note.lat,
+                    long: note.long,
+                    number: Int(note.number))
     }
 
     func createSession(_ session: Session) throws {

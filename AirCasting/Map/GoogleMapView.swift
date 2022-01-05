@@ -23,9 +23,9 @@ struct GoogleMapView: UIViewRepresentable {
     var isMyLocationEnabled: Bool = false
     private var onPositionChange: (([PathPoint]) -> ())? = nil
     var isSessionFixed: Bool
-    var notes: [Note]
+    var mapNotesVM: MapNotesViewModelDefault
     
-    init(pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false, placePickerDismissed: Binding<Bool>, isUserInteracting: Binding<Bool>, isSessionActive: Bool = false, isSessionFixed: Bool = false, notes: [Note] = [], noteMarketTapped: Binding<Bool> = .constant(false), noteNumber: Binding<Int> = .constant(0)) {
+    init(pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false, placePickerDismissed: Binding<Bool>, isUserInteracting: Binding<Bool>, isSessionActive: Bool = false, isSessionFixed: Bool = false, noteMarketTapped: Binding<Bool> = .constant(false), noteNumber: Binding<Int> = .constant(0), mapNotesVM: MapNotesViewModelDefault) {
         self.pathPoints = pathPoints
         self.threshold = threshold
         self.isMyLocationEnabled = isMyLocationEnabled
@@ -33,9 +33,9 @@ struct GoogleMapView: UIViewRepresentable {
         self._isUserInteracting = isUserInteracting
         self.liveModeOn = isSessionActive
         self.isSessionFixed = isSessionFixed
-        self.notes = notes
         self._noteMarketTapped = noteMarketTapped
         self._noteNumber = noteNumber
+        self.mapNotesVM = mapNotesVM
     }
     
     func makeUIView(context: Context) -> GMSMapView {
@@ -195,17 +195,21 @@ struct GoogleMapView: UIViewRepresentable {
     }
     
     func placeNotes(_ uiView: GMSMapView, context: Context) {
-        notes.forEach { note in
-            let marker = GMSMarker()
+        mapNotesVM.prepareNotesForMap { notes in
+            DispatchQueue.main.async {
+                notes.forEach { note in
+                    let marker = GMSMarker()
 
-            let markerImage = UIImage(named: "message-square")!.withRenderingMode(.alwaysTemplate)
-            let markerView = UIImageView(image: markerImage)
-            markerView.tintColor = UIColor.black
-            
-            marker.position = CLLocationCoordinate2D(latitude: note.lat, longitude: note.long)
-            marker.userData = note.number
-            marker.iconView = markerView
-            marker.map = uiView
+                    let markerImage = UIImage(named: "message-square")!.withRenderingMode(.alwaysTemplate)
+                    let markerView = UIImageView(image: markerImage)
+                    markerView.tintColor = UIColor.black
+                    
+                    marker.position = CLLocationCoordinate2D(latitude: note.lat, longitude: note.long)
+                    marker.userData = note.number
+                    marker.iconView = markerView
+                    marker.map = uiView
+                }
+            }
         }
     }
     
@@ -285,27 +289,3 @@ struct GoogleMapView: UIViewRepresentable {
         Coordinator(self)
     }
 }
-
-#if DEBUG
-struct GoogleMapView_Previews: PreviewProvider {
-    static var previews: some View {
-        GoogleMapView(pathPoints: [PathPoint(location: CLLocationCoordinate2D(latitude: 40.73,
-                                                                              longitude: -73.93),
-                                             measurementTime: .distantPast,
-                                             measurement: 30),
-                                   PathPoint(location: CLLocationCoordinate2D(latitude: 40.83,
-                                                                              longitude: -73.93),
-                                             measurementTime: .distantPast,
-                                             measurement: 30),
-                                   PathPoint(location: CLLocationCoordinate2D(latitude: 40.93,
-                                                                              longitude: -73.83),
-                                             measurementTime: .distantPast,
-                                             measurement: 30)],
-                      threshold: .mock,
-                      placePickerDismissed: .constant(false),
-                      isUserInteracting: .constant(true),
-                      notes: [])
-            .padding()
-    }
-}
-#endif

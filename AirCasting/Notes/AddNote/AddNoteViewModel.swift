@@ -26,7 +26,7 @@ class AddNoteViewModelDefault: AddNoteViewModel, ObservableObject {
                                                   text: noteText,
                                                   lat: locationTracker.googleLocation.last?.location.latitude ?? 20.0,
                                                   long: locationTracker.googleLocation.last?.location.longitude ?? 20.0,
-                                                  number: notesHandler.obtainNumber()))
+                                                  number: notesHandler.markWithNumberID()))
         exitRoute()
     }
     

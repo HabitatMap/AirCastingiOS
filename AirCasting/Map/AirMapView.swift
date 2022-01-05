@@ -65,10 +65,9 @@ struct AirMapView: View {
                                       isUserInteracting: $isUserInteracting,
                                       isSessionActive: session.isActive,
                                       isSessionFixed: session.isFixed,
-                                      notes: NotesHandlerDefault(measurementStreamStorage: measurementStreamStorage,
-                                                                 session: session).getNotesFromDatabase(),
                                       noteMarketTapped: $noteMarkerTapped,
-                                      noteNumber: $noteNumber)
+                                      noteNumber: $noteNumber,
+                                      mapNotesVM: MapNotesViewModelDefault(notesHandler: NotesHandlerDefault(measurementStreamStorage: measurementStreamStorage, sessionUUID: session.uuid)))
                         #warning("TODO: Implement calculating stats only for visible path points")
                         // This doesn't work properly and it needs to be fixed, so I'm commenting it out
 //                            .onPositionChange { [weak mapStatsDataSource, weak statsContainerViewModel] visiblePoints in
@@ -100,8 +99,7 @@ struct AirMapView: View {
                 noteMarkerTapped.toggle()
             },
                                                              noteNumber: noteNumber,
-                                                             notesHandler: NotesHandlerDefault(measurementStreamStorage: measurementStreamStorage,
-                                                                         session: session)))
+                                                             notesHandler: NotesHandlerDefault(measurementStreamStorage: measurementStreamStorage, sessionUUID: session.uuid)))
         })
         .navigationBarTitleDisplayMode(.inline)
 //        .onChange(of: selectedStream) { newStream in
