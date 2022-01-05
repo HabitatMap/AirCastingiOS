@@ -370,7 +370,7 @@ struct Strings {
     enum SessionHeaderView {
         static let measurementsMicText: String = "Most recent measurement:"
         static let stopButton: String = "Stop recording"
-        static let editButton: String = "Edit recording"
+        static let editButton: String = "Edit session"
         static let shareButton: String = "Share session"
         static let deleteButton: String = "Delete session"
         static let stopRecordingButton: String = "Finish recording session"
