@@ -40,7 +40,7 @@ struct ChooseCustomLocationView: View {
     }
 
     var mapGoogle: some View {
-        GoogleMapView(pathPoints: [], placePickerDismissed: $placePickerPresented, isUserInteracting: Binding.constant(true), mapNotesVM: DummyMapNotesViewModelDefault(notesHandler: EmptyNotesHandler()))
+        GoogleMapView(pathPoints: [], placePickerDismissed: $placePickerPresented, isUserInteracting: Binding.constant(true), mapNotes: [])
     }
 
     var dot: some View {

@@ -23,9 +23,9 @@ struct GoogleMapView: UIViewRepresentable {
     var isMyLocationEnabled: Bool = false
     private var onPositionChange: (([PathPoint]) -> ())? = nil
     var isSessionFixed: Bool
-    var mapNotesVM: MapNotesViewModelDefault
+    var mapNotes: [MapNote]
     
-    init(pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false, placePickerDismissed: Binding<Bool>, isUserInteracting: Binding<Bool>, isSessionActive: Bool = false, isSessionFixed: Bool = false, noteMarketTapped: Binding<Bool> = .constant(false), noteNumber: Binding<Int> = .constant(0), mapNotesVM: MapNotesViewModelDefault) {
+    init(pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false, placePickerDismissed: Binding<Bool>, isUserInteracting: Binding<Bool>, isSessionActive: Bool = false, isSessionFixed: Bool = false, noteMarketTapped: Binding<Bool> = .constant(false), noteNumber: Binding<Int> = .constant(0), mapNotes: [MapNote]) {
         self.pathPoints = pathPoints
         self.threshold = threshold
         self.isMyLocationEnabled = isMyLocationEnabled
@@ -35,7 +35,7 @@ struct GoogleMapView: UIViewRepresentable {
         self.isSessionFixed = isSessionFixed
         self._noteMarketTapped = noteMarketTapped
         self._noteNumber = noteNumber
-        self.mapNotesVM = mapNotesVM
+        self.mapNotes = mapNotes
     }
     
     func makeUIView(context: Context) -> GMSMapView {
@@ -50,7 +50,7 @@ struct GoogleMapView: UIViewRepresentable {
         mapView.delegate = context.coordinator
         mapView.isMyLocationEnabled = isMyLocationEnabled
         drawPolyline(mapView, context: context)
-        placeNotes(mapView, context: context)
+        placeNotes(mapView, notes: mapNotes)
         context.coordinator.currentlyDisplayedPathPoints = pathPoints
         context.coordinator.currentThresholdWitness = ThresholdWitness(sensorThreshold: threshold)
         context.coordinator.currentThreshold = threshold
@@ -194,21 +194,19 @@ struct GoogleMapView: UIViewRepresentable {
         polyline.map = uiView
     }
     
-    func placeNotes(_ uiView: GMSMapView, context: Context) {
-        mapNotesVM.prepareNotesForMap { notes in
-            DispatchQueue.main.async {
-                notes.forEach { note in
-                    let marker = GMSMarker()
+    func placeNotes(_ uiView: GMSMapView, notes: [MapNote]) {
+        DispatchQueue.main.async {
+            notes.forEach { note in
+                let marker = GMSMarker()
 
-                    let markerImage = UIImage(named: "message-square")!.withRenderingMode(.alwaysTemplate)
-                    let markerView = UIImageView(image: markerImage)
-                    markerView.tintColor = UIColor.black
-                    
-                    marker.position = CLLocationCoordinate2D(latitude: note.lat, longitude: note.long)
-                    marker.userData = note.number
-                    marker.iconView = markerView
-                    marker.map = uiView
-                }
+                let markerImage = note.markerImage
+                let markerView = UIImageView(image: markerImage)
+                markerView.tintColor = UIColor.black
+                
+                marker.position = note.location
+                marker.userData = note.id
+                marker.iconView = markerView
+                marker.map = uiView
             }
         }
     }

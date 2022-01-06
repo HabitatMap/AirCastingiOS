@@ -13,6 +13,7 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
     let thresholds: [SensorThreshold]
     @Binding var selectedStream: MeasurementStreamEntity?
     @StateObject var statsContainerViewModel: StatsViewModelType
+    @EnvironmentObject var locationTracker: LocationTracker
     let urlProvider: BaseURLProvider
     let graphStatsDataSource: GraphStatsDataSource
     let sessionStoppableFactory: SessionStoppableFactory
@@ -51,7 +52,7 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                             Graph(stream: selectedStream,
                                   thresholds: threshold,
                                   isAutozoomEnabled: session.type == .mobile,
-                                  notes: NotesHandlerDefault(measurementStreamStorage: measurementStreamStorage, sessionUUID: session.uuid)).onDateRangeChange { [weak graphStatsDataSource, weak statsContainerViewModel] range in
+                                  notes: NotesHandlerDefault(measurementStreamStorage: measurementStreamStorage, sessionUUID: session.uuid, locationTracker: locationTracker)).onDateRangeChange { [weak graphStatsDataSource, weak statsContainerViewModel] range in
                                 graphStatsDataSource?.dateRange = range
                                 statsContainerViewModel?.adjustForNewData()
                             }

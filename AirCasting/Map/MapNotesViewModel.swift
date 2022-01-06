@@ -2,19 +2,33 @@
 //
 
 import Foundation
+import CoreLocation
+import UIKit
 
-class MapNotesViewModelDefault {
-    var notesHandler: NotesHandler
+struct MapNote {
+    let id: Int
+    let location: CLLocationCoordinate2D
+    let markerImage: UIImage
+}
+
+class MapNotesViewModelDefault: ObservableObject {
+    @Published var notes: [MapNote] = []
+    private let notesHandler: NotesHandler
     
     init(notesHandler: NotesHandler) {
         self.notesHandler = notesHandler
-    }
-    
-    func prepareNotesForMap(completion: @escaping ([Note]) -> Void) {
         notesHandler.getNotesFromDatabase { notes in
-            completion(notes)
+            DispatchQueue.main.async {
+                self.notes = notes.map({ note in
+                        .init(id: note.number,
+                              location: .init(latitude: note.lat, longitude: note.long),
+                              markerImage: UIImage(named: "message-square")!.withRenderingMode(.alwaysTemplate))
+                })
+            }
         }
     }
+    
+    
 }
 
 class DummyMapNotesViewModelDefault: MapNotesViewModelDefault {

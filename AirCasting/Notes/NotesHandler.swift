@@ -4,8 +4,7 @@
 import Foundation
 
 protocol NotesHandler {
-    func addNoteToDatabase(note: Note)
-    func markWithNumberID() -> Int
+    func addNoteToDatabase(noteText: String)
     func deleteNoteFromDatabase(note: Note)
     func updateNoteInDatabase(note: Note, newText: String)
     func getNotesFromDatabase(completion: @escaping ([Note]) -> Void)
@@ -15,18 +14,24 @@ protocol NotesHandler {
 class NotesHandlerDefault: NotesHandler {
     var measurementStreamStorage: MeasurementStreamStorage
     var sessionUUID: SessionUUID
-    var sessionNotesNumber: Int
+    var locationTracker: LocationTracker
     
-    init(measurementStreamStorage: MeasurementStreamStorage, sessionUUID: SessionUUID, sessionNotesNumber: Int = 0) {
+    init(measurementStreamStorage: MeasurementStreamStorage, sessionUUID: SessionUUID, locationTracker: LocationTracker) {
         self.measurementStreamStorage = measurementStreamStorage
         self.sessionUUID = sessionUUID
-        self.sessionNotesNumber = sessionNotesNumber
+        self.locationTracker = locationTracker
     }
     
-    func addNoteToDatabase(note: Note) {
+    func addNoteToDatabase(noteText: String) {
         measurementStreamStorage.accessStorage { [self] storage in
             do {
-                try storage.addNote(note, for: sessionUUID)
+                let currentNumber = try storage.getNotes(for: sessionUUID).map(\.number).sorted(by: < ).last
+                try storage.addNote(Note(date: Date(),
+                                         text: noteText,
+                                         lat: locationTracker.googleLocation.last?.location.latitude ?? 20.0,
+                                         long: locationTracker.googleLocation.last?.location.longitude ?? 20.0,
+                                         number: (currentNumber ?? -1) + 1),
+                                    for: sessionUUID)
             } catch {
                 Log.info("Error when adding to DB")
             }
@@ -52,8 +57,6 @@ class NotesHandlerDefault: NotesHandler {
             }
         }
     }
-    
-    func markWithNumberID() -> Int { sessionNotesNumber }
     
     func getNotesFromDatabase(completion: @escaping ([Note]) -> Void) {
         measurementStreamStorage.accessStorage { [self] storage in

@@ -12,21 +12,15 @@ class AddNoteViewModelDefault: AddNoteViewModel, ObservableObject {
     @Published var noteText = ""
     
     var notesHandler: NotesHandler
-    var locationTracker: LocationTracker
     private let exitRoute: () -> Void
     
-    init(exitRoute: @escaping () -> Void, notesHandler: NotesHandler, locationTracker: LocationTracker) {
+    init(exitRoute: @escaping () -> Void, notesHandler: NotesHandler) {
         self.notesHandler = notesHandler
         self.exitRoute = exitRoute
-        self.locationTracker = locationTracker
     }
     
     func continueTapped() {
-        notesHandler.addNoteToDatabase(note: Note(date: Date(),
-                                                  text: noteText,
-                                                  lat: locationTracker.googleLocation.last?.location.latitude ?? 20.0,
-                                                  long: locationTracker.googleLocation.last?.location.longitude ?? 20.0,
-                                                  number: notesHandler.markWithNumberID()))
+        notesHandler.addNoteToDatabase(noteText: noteText)
         exitRoute()
     }
     
