@@ -19,7 +19,7 @@ struct ShareSessionView<VM: ShareSessionViewModel>: View {
             shareButton
             descriptionMail
             VStack(alignment: .leading, spacing: -5.0) {
-                createTextfield(placeholder: "Email", binding: $viewModel.email)
+                createTextfield(placeholder: Strings.SessionShare.emailPlaceholder, binding: $viewModel.email)
                     .padding(.vertical)
                     .disableAutocorrection(true)
                     .autocapitalization(.none)
