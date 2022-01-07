@@ -91,7 +91,6 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
     func shareEmailTapped() {
         if isEmailValid() {
             showInvalidEmailError = false
-            Log.info("VALID")
             sendRequest()
         } else {
             showInvalidEmailError = true

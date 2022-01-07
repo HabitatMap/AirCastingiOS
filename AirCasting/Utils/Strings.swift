@@ -82,6 +82,7 @@ struct Strings {
         static let emailSharingAlertMessage: String = "Please try again later"
         static let shareLinkButton: String = "Share link"
         static let shareFileButton: String = "Share file"
+        static let invalidEmailLabel: String = "This email is invalid"
     }
 
     enum LoadingSession {

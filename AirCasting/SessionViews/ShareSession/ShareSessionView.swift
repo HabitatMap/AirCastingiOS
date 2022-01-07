@@ -81,7 +81,7 @@ struct ShareSessionView<VM: ShareSessionViewModel>: View {
     }
     
     private var emailErrorLabel: some View {
-        Text("This email is invalid")
+        Text(Strings.SessionShare.invalidEmailLabel)
             .font(Fonts.regularHeading5)
             .foregroundColor(.aircastingRed)
             .multilineTextAlignment(.leading)

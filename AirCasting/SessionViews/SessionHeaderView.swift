@@ -27,6 +27,7 @@ struct SessionHeaderView: View {
     @State var showAddNoteModal = false
     @State var showShareModal = false
     @State var showEditView = false
+    @State var detectEmailSent = false
     let measurementStreamStorage: MeasurementStreamStorage
     let sessionSynchronizer: SessionSynchronizer
     @EnvironmentObject var authorization: UserAuthenticationSession
@@ -39,11 +40,15 @@ struct SessionHeaderView: View {
                 }
                 .sheet(isPresented: $showShareModal) {
                     ShareSessionView(viewModel: DefaultShareSessionViewModel(session: session, apiClient: ShareSessionApi(urlProvider: urlProvider), exitRoute: { sharedEmail in
-                        showShareModal.toggle()
-                        if sharedEmail == true {
-                            alert = InAppAlerts.shareFileRequestSent()
-                        }
-                    }))
+                                            showShareModal.toggle()
+                                            if sharedEmail == true {
+                                                detectEmailSent = true
+                                            }
+                                        })).onDisappear(perform: {
+                                            if detectEmailSent {
+                                                alert = InAppAlerts.shareFileRequestSent()
+                                            }
+                                        })
                 }
                 .sheet(isPresented: $showEditView) {
                     editViewSheet
