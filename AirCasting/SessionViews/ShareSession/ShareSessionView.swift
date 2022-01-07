@@ -9,12 +9,6 @@ import SwiftUI
 struct ShareSessionView<VM: ShareSessionViewModel>: View {
     @ObservedObject var viewModel: VM
     
-    // This email logic will be moved to view model in the next task
-    @State var email: String = ""
-    @State var isShowingMailView = false
-    @State var showingAlert = false
-    @State var mailSendingResult: Result<MFMailComposeResult, Error>? = nil
-    
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
             VStack(alignment: .leading, spacing: 5) {
@@ -23,18 +17,25 @@ struct ShareSessionView<VM: ShareSessionViewModel>: View {
             }
             chooseStream
             shareButton
-            //            descriptionMail
-            //            createTextfield(placeholder: "Email", binding: $email)
-            //                .padding(.vertical)
+            descriptionMail
+            VStack(alignment: .leading, spacing: -5.0) {
+                createTextfield(placeholder: Strings.SessionShare.emailPlaceholder, binding: $viewModel.email)
+                    .padding(.vertical)
+                    .disableAutocorrection(true)
+                    .autocapitalization(.none)
+                if viewModel.showInvalidEmailError {
+                    emailErrorLabel
+                }
+            }
+            .padding(.vertical)
             VStack(alignment: .leading, spacing: 5) {
-                //                oKButton
+                oKButton
                 cancelButton
             }
         }
         .alert(item: $viewModel.alert, content: { $0.makeAlert() })
         .sheet(isPresented: $viewModel.showShareSheet, content: {
             ActivityViewController(itemsToShare: [viewModel.sharingLink as Any]) { activityType, completed, returnedItems, error in
-                //Sometimes this doesn't work
                 viewModel.sharingFinished()
             }
         })
@@ -68,7 +69,7 @@ struct ShareSessionView<VM: ShareSessionViewModel>: View {
     
     private var shareButton: some View {
         Button(Strings.SessionShare.shareLinkButton) {
-            viewModel.shareLinkTepped()
+            viewModel.shareLinkTapped()
         }.buttonStyle(BlueButtonStyle())
             .padding(.bottom)
     }
@@ -79,19 +80,18 @@ struct ShareSessionView<VM: ShareSessionViewModel>: View {
             .foregroundColor(.aircastingGray)
     }
     
+    private var emailErrorLabel: some View {
+        Text(Strings.SessionShare.invalidEmailLabel)
+            .font(Fonts.regularHeading5)
+            .foregroundColor(.aircastingRed)
+            .multilineTextAlignment(.leading)
+    }
+    
     private var oKButton: some View {
         Button(Strings.SessionShare.shareFileButton) {
-            if MFMailComposeViewController.canSendMail() {
-                isShowingMailView.toggle()
-            } else {
-                showingAlert = !isShowingMailView
-                Log.info("Not showing mail view (cannot send email from this device")
-            }
-        }.buttonStyle(BlueButtonStyle())
-            .sheet(isPresented: $isShowingMailView) { MailView(isShowing: $isShowingMailView, result: $mailSendingResult) }
-            .alert(isPresented: $showingAlert) {
-                Alert(title: Text(Strings.SessionShare.alertTitle), message: Text(Strings.SessionShare.alertDescription), dismissButton: .default(Text(Strings.Commons.gotIt)))
-            }
+            viewModel.shareEmailTapped()
+        }
+        .buttonStyle(BlueButtonStyle())
     }
     
     private var cancelButton: some View {

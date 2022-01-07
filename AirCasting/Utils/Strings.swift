@@ -76,12 +76,14 @@ struct Strings {
         static let title: String = "Share session"
         static let description: String = "Select a stream to share"
         static let emailDescription: String = "Or email a CSV file with your session data"
+        static let emailPlaceholder: String = "Email"
         static let linkSharingAlertTitle: String = "Sharing failed"
         static let linkSharingAlertMessage: String = "Try again later"
-        static let alertTitle: String = "No Email app"
-        static let alertDescription: String = "Please, install Apple Email app"
+        static let emailSharingAlertTitle: String = "Request failed"
+        static let emailSharingAlertMessage: String = "Please try again later"
         static let shareLinkButton: String = "Share link"
         static let shareFileButton: String = "Share file"
+        static let invalidEmailLabel: String = "This email is invalid"
     }
 
     enum LoadingSession {
@@ -384,6 +386,8 @@ struct Strings {
         static let finishAlertMessage_3: String = " tab and you won't be able to add new measurement to it."
         static let finishAlertMessage_4: String = "\nSD card will be cleared afterwards"
         static let finishAlertButton: String = "Finish recording"
+        static let shareFileAlertTitle: String = "Success!"
+        static let shareFileAlertMessage: String = "The session file was sent to provided email address"
         static let airBeam3: String = "AirBeam3"
         static let airBeam2: String = "AirBeam2"
         static let airBeam1: String = "AirBeam1"

@@ -27,6 +27,7 @@ struct SessionHeaderView: View {
     @State var showAddNoteModal = false
     @State var showShareModal = false
     @State var showEditView = false
+    @State var detectEmailSent = false
     let measurementStreamStorage: MeasurementStreamStorage
     let sessionSynchronizer: SessionSynchronizer
     @EnvironmentObject var authorization: UserAuthenticationSession
@@ -38,9 +39,16 @@ struct SessionHeaderView: View {
                     DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session, measurementStreamStorage: measurementStreamStorage, streamRemover: DefaultSessionUpdateService(authorization: authorization, urlProvider: urlProvider), sessionSynchronizer: sessionSynchronizer), deleteModal: $showDeleteModal)
                 }
                 .sheet(isPresented: $showShareModal) {
-                    ShareSessionView(viewModel: DefaultShareSessionViewModel(session: session, exitRoute: {
-                        showShareModal.toggle()
-                    }))
+                    ShareSessionView(viewModel: DefaultShareSessionViewModel(session: session, apiClient: ShareSessionApi(urlProvider: urlProvider), exitRoute: { result in
+                                            showShareModal.toggle()
+                        if result == .fileShared {
+                                                detectEmailSent = true
+                                            }
+                                        })).onDisappear(perform: {
+                                            if detectEmailSent {
+                                                alert = InAppAlerts.shareFileRequestSent()
+                                            }
+                                        })
                 }
                 .sheet(isPresented: $showEditView) {
                     editViewSheet
@@ -58,8 +66,11 @@ struct SessionHeaderView: View {
                             }
                         EmptyView()
                             .sheet(isPresented: $showShareModal) {
-                                ShareSessionView(viewModel: DefaultShareSessionViewModel(session: session, exitRoute: {
+                                ShareSessionView(viewModel: DefaultShareSessionViewModel(session: session, apiClient: ShareSessionApi(urlProvider: urlProvider), exitRoute: { result in
                                     showShareModal.toggle()
+                                    if result == .fileShared {
+                                        alert = InAppAlerts.shareFileRequestSent()
+                                    }
                                 }))
                             }
                         EmptyView()
