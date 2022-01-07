@@ -6,7 +6,7 @@ import UIKit
 
 class UserSettings: ObservableObject {
     private let userDefaults: UserDefaults
-    let crowdMapKey = Constants.UserDefaultsKeys.crowdMap
+    private let crowdMapKey = Constants.UserDefaultsKeys.crowdMap
     
     var contributingToCrowdMap: Bool {
         get {
