@@ -11,6 +11,10 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
     
     let session: SessionEntity
     let thresholds: [SensorThreshold]
+    // This pair doesn't belong here, it should be elegantly handled by VM when refactored
+    @State private var selectedNote: Note?
+    @State private var showNoteEdit: Bool = false
+    //
     @Binding var selectedStream: MeasurementStreamEntity?
     @StateObject var statsContainerViewModel: StatsViewModelType
     @EnvironmentObject var locationTracker: LocationTracker
@@ -52,9 +56,14 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                             Graph(stream: selectedStream,
                                   thresholds: threshold,
                                   isAutozoomEnabled: session.type == .mobile,
-                                  notes: NotesHandlerDefault(measurementStreamStorage: measurementStreamStorage, sessionUUID: session.uuid, locationTracker: locationTracker)).onDateRangeChange { [weak graphStatsDataSource, weak statsContainerViewModel] range in
+                                  notesHandler: NotesHandlerDefault(measurementStreamStorage: measurementStreamStorage, sessionUUID: session.uuid, locationTracker: locationTracker))
+                            .onDateRangeChange { [weak graphStatsDataSource, weak statsContainerViewModel] range in
                                 graphStatsDataSource?.dateRange = range
                                 statsContainerViewModel?.adjustForNewData()
+                            }
+                            .onNoteTap { note in
+                                selectedNote = note
+                                showNoteEdit = true
                             }
                             // Statistics container shouldn't be presented in mobile dormant tab
                             if !session.isDormant {
@@ -78,6 +87,13 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
             }
             Spacer()
         }
+        .sheet(isPresented: $showNoteEdit, content: { [selectedNote] in
+            EditNoteView(viewModel: EditNoteViewModelDefault(exitRoute: { showNoteEdit.toggle() },
+                                                             noteNumber: selectedNote!.number,
+                                                             notesHandler: NotesHandlerDefault(measurementStreamStorage: measurementStreamStorage,
+                                                                                               sessionUUID: session.uuid,
+                                                                                               locationTracker: locationTracker)))
+        })
         .navigationBarTitleDisplayMode(.inline)
     }
     
@@ -87,19 +103,3 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
         }) ?? false
     }
 }
-
-#if DEBUG
-struct GraphView_Previews: PreviewProvider {
-    static var previews: some View {
-        GraphView(session: .mock,
-                  thresholds: [.mock],
-                  selectedStream: .constant(nil),
-                  statsContainerViewModel: FakeStatsViewModel(),
-                  urlProvider: DummyURLProvider(),
-                  graphStatsDataSource: GraphStatsDataSource(),
-                  sessionStoppableFactory: SessionStoppableFactoryDummy(),
-                  measurementStreamStorage: PreviewMeasurementStreamStorage(),
-                  sessionSynchronizer: DummySessionSynchronizer())
-    }
-}
-#endif

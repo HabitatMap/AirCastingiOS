@@ -138,6 +138,12 @@ extension ConfirmCreatingSessionView {
     }
     
     func getAndSaveStartingLocation() {
+        #if targetEnvironment(simulator)
+        let krakowLat = 50.049683
+        let krakowLong = 19.944544
+        sessionContext.saveCurrentLocation(lat: krakowLat, log: krakowLong)
+        return
+        #endif
         if sessionContext.sessionType == .fixed {
             if sessionContext.isIndoor! {
                 locationTracker.googleLocation = [PathPoint.fakePathPoint]

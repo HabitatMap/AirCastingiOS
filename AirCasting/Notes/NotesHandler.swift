@@ -3,6 +3,7 @@
 
 import Foundation
 
+//TODO: Remove all "Database" suffixes here plz
 protocol NotesHandler {
     func addNoteToDatabase(noteText: String)
     func deleteNoteFromDatabase(note: Note)
