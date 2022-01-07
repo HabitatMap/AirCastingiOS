@@ -33,7 +33,7 @@ struct UnplugABView<VM: UnplugABViewModel>: View {
 extension UnplugABView {
     
     var unplugImage: some View {
-        Image("airbeam")
+        Image("airbeam-unplugged")
             .resizable()
             .aspectRatio(contentMode: .fit)
     }
