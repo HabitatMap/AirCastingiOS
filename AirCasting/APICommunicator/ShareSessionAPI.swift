@@ -8,10 +8,14 @@ enum ShareSessionAPIError: Error {
     case requestError(Error)
 }
 
-struct ShareSessionApi {
-    let urlProvider: BaseURLProvider
+protocol ShareSessionAPIServices {
+    func sendSession(email: String, uuid: String, completion: @escaping (Result<Void, ShareSessionAPIError>) -> Void)
+}
+
+struct ShareSessionApi: ShareSessionAPIServices {
+    private let urlProvider: BaseURLProvider
     
-    func sendRequest(email: String, uuid: String, completion: @escaping (Result<Void, ShareSessionAPIError>) -> Void) {
+    func sendSession(email: String, uuid: String, completion: @escaping (Result<Void, ShareSessionAPIError>) -> Void) {
         let url = urlProvider.baseAppURL.appendingPathComponent("api/sessions/export_by_uuid.json")
         
         guard var components = URLComponents(url: url, resolvingAgainstBaseURL: true) else {

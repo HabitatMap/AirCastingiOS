@@ -39,9 +39,9 @@ struct SessionHeaderView: View {
                     DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session, measurementStreamStorage: measurementStreamStorage, streamRemover: DefaultSessionUpdateService(authorization: authorization, urlProvider: urlProvider), sessionSynchronizer: sessionSynchronizer), deleteModal: $showDeleteModal)
                 }
                 .sheet(isPresented: $showShareModal) {
-                    ShareSessionView(viewModel: DefaultShareSessionViewModel(session: session, apiClient: ShareSessionApi(urlProvider: urlProvider), exitRoute: { sharedEmail in
+                    ShareSessionView(viewModel: DefaultShareSessionViewModel(session: session, apiClient: ShareSessionApi(urlProvider: urlProvider), exitRoute: { result in
                                             showShareModal.toggle()
-                                            if sharedEmail == true {
+                        if result == .fileShared {
                                                 detectEmailSent = true
                                             }
                                         })).onDisappear(perform: {
@@ -66,9 +66,9 @@ struct SessionHeaderView: View {
                             }
                         EmptyView()
                             .sheet(isPresented: $showShareModal) {
-                                ShareSessionView(viewModel: DefaultShareSessionViewModel(session: session, apiClient: ShareSessionApi(urlProvider: urlProvider), exitRoute: { sharedEmail in
+                                ShareSessionView(viewModel: DefaultShareSessionViewModel(session: session, apiClient: ShareSessionApi(urlProvider: urlProvider), exitRoute: { result in
                                     showShareModal.toggle()
-                                    if sharedEmail == true {
+                                    if result == .fileShared {
                                         alert = InAppAlerts.shareFileRequestSent()
                                     }
                                 }))

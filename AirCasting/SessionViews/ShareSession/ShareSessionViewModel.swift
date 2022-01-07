@@ -8,6 +8,12 @@ enum ShareSessionError: Error {
     case requestError
 }
 
+enum ShareSessionResult {
+    case linkShared
+    case fileShared
+    case cancelled
+}
+
 protocol ShareSessionViewModel: ObservableObject {
     var streamOptions: [ShareSessionStreamOptionViewModel] { get set }
     var alert: AlertInfo? { get set }
@@ -20,7 +26,6 @@ protocol ShareSessionViewModel: ObservableObject {
     func shareEmailTapped()
     func cancelTapped()
     func sharingFinished()
-    func isEmailValid() -> Bool
 }
 
 class DefaultShareSessionViewModel: ShareSessionViewModel {
@@ -29,10 +34,10 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
     @Published var showInvalidEmailError: Bool = false
     @Published var sharingLink: URL?
     @Published var email: String = ""
-    private let exitRoute: (Bool?) -> Void
+    private let exitRoute: (ShareSessionResult) -> Void
     private var session: SessionEntity
     private lazy var selectedStream = streamOptions.first
-    private var apiClient: ShareSessionApi
+    private let apiClient: ShareSessionAPIServices
     
     var streamOptions: [ShareSessionStreamOptionViewModel] {
         willSet {
@@ -40,7 +45,7 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
         }
     }
     
-    init(session: SessionEntity, apiClient: ShareSessionApi, exitRoute: @escaping (Bool?) -> Void) {
+    init(session: SessionEntity, apiClient: ShareSessionAPIServices, exitRoute: @escaping (ShareSessionResult) -> Void) {
         self.session = session
         self.exitRoute = exitRoute
         self.apiClient = apiClient
@@ -74,15 +79,15 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
     }
     
     func cancelTapped() {
-        exitRoute(nil)
+        exitRoute(.cancelled)
     }
     
     func sharingFinished() {
         showShareSheet = false // this is kind of redundant, but also necessary for the shareSessionModal to disappear
-        exitRoute(nil)
+        exitRoute(.linkShared)
     }
     
-    func isEmailValid() -> Bool {
+    private func isEmailValid() -> Bool {
         // regex taken from https://regexlib.com/Search.aspx?k=email&c=-1&m=5&ps=20
         let emailTest = NSPredicate(format: "SELF MATCHES %@", #"^((([!#$%&'*+\-/=?^_`{|}~\w])|([!#$%&'*+\-/=?^_`{|}~\w][!#$%&'*+\-/=?^_`{|}~\.\w]{0,}[!#$%&'*+\-/=?^_`{|}~\w]))[@]\w+([-.]\w+)*\.\w+([-.]\w+)*)$"#)
         return emailTest.evaluate(with: email)
@@ -98,10 +103,10 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
     }
     
     private func sendRequest() {
-        apiClient.sendRequest(email: email, uuid: session.uuid.rawValue) { result in
+        apiClient.sendSession(email: email, uuid: session.uuid.rawValue) { result in
             switch result {
             case .success():
-                self.exitRoute(true)
+                self.exitRoute(.fileShared)
             case .failure(let error):
                 Log.info("Share session request error: \(error)")
                 self.getAlert(.requestError)
@@ -120,7 +125,7 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
         components.queryItems = [URLQueryItem(name: "sensor_name", value: selectedStream?.streamName)]
         
         guard let url = components.url else {
-            Log.error("Coudn't compose url for this stream")
+            Log.error("Coudn't compose url for session \(String(describing: session.uuid))")
             getAlert(.noSessionURL)
             return
         }
@@ -140,12 +145,20 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
     }
     
     private func showProperStreams(sessionStreams: [MeasurementStreamEntity]) {
+        var sensorName: String
+        
         for (id, stream) in sessionStreams.enumerated() {
             if let streamName = stream.sensorName {
                 if streamName == Constants.SensorName.microphone {
                     streamOptions.append(.init(id: id, title: "dB", streamName: Constants.SensorName.microphone, isSelected: false, isEnabled: false))
                 } else {
-                    let sensorName = streamName.components(separatedBy: "-")[1]
+                    let sensorNameComponents = streamName.components(separatedBy: "-")
+                    if sensorNameComponents.count == 2 {
+                        sensorName = streamName.components(separatedBy: "-")[1]
+                    } else {
+                        Log.warning("Received unexpected stream name format from server")
+                        sensorName = streamName
+                    }
                     streamOptions.append(.init(id: id, title: sensorName, streamName: streamName, isSelected: false, isEnabled: false))
                 }
             }
