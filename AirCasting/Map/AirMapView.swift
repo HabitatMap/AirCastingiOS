@@ -34,7 +34,7 @@ struct AirMapView: View {
     }
 
     var body: some View {
-        VStack(alignment: .trailing, spacing: 20) {
+        VStack(alignment: .trailing) {
                 SessionHeaderView(action: {},
                                   isExpandButtonNeeded: false,
                                   isSensorTypeNeeded: false,
@@ -44,6 +44,7 @@ struct AirMapView: View {
                                   sessionStopperFactory: sessionStoppableFactory,
                                   measurementStreamStorage: measurementStreamStorage,
                                   sessionSynchronizer: sessionSynchronizer)
+                .padding([.bottom, .leading, .trailing])
             
             ABMeasurementsView(session: session,
                                isCollapsed: Binding.constant(false),
@@ -53,6 +54,7 @@ struct AirMapView: View {
                                                                                sessionDownloader: SessionDownloadService(client: URLSession.shared,
                                                                                                                          authorization: UserAuthenticationSession(), responseValidator: DefaultHTTPResponseValidator(), urlProvider: urlProvider),
                                                                                 session: session))
+                .padding([.bottom, .leading, .trailing])
 
             if let threshold = thresholds.threshold(for: selectedStream) {
                 if !showLoadingIndicator {
@@ -74,16 +76,16 @@ struct AirMapView: View {
                             StatisticsContainerView(statsContainerViewModel: statsContainerViewModel,
                                                     threshold: threshold)
                         }
-                    }
+                    }.padding(.bottom)
                     if let selectedStream = selectedStream {
                         NavigationLink(destination: ThresholdsSettingsView(thresholdValues: threshold.thresholdsBinding,
                                                                            initialThresholds: selectedStream.thresholds)) {
                             EditButtonView()
-                        }
+                        }.padding([.bottom, .leading, .trailing])
                     }
                     ThresholdsSliderView(threshold: threshold)
                         // Fixes labels covered by tabbar
-                        .padding(.bottom)
+                        .padding([.bottom, .leading, .trailing])
                 } else {
                     Spacer()
                 }
@@ -101,7 +103,7 @@ struct AirMapView: View {
             @unknown default: fatalError()
             }
         }
-        .padding([.bottom, .leading, .trailing])
+        .padding(.bottom)
     }
 }
 
