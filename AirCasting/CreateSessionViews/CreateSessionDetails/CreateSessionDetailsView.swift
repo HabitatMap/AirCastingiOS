@@ -22,7 +22,6 @@ struct CreateSessionDetailsView: View {
                         titleLabel
                         VStack(alignment: .leading) {
                             sessionNameField
-                                .onTapGesture { viewModel.nameTextFieldTapped() }
                             if viewModel.shouldShowError { errorMessage(text: Strings.EditSession.erorr) }
                             sessionTagsField
                                 .padding(.top, 20)
@@ -45,6 +44,9 @@ struct CreateSessionDetailsView: View {
             .background(navigation)
         }
         .onAppear { viewModel.onScreenEnter() }
+        .onChange(of: viewModel.sessionName) { _ in
+            viewModel.showErrorIndicator = false
+        }
     }
 }
 
