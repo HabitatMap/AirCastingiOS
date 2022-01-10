@@ -213,6 +213,8 @@
 		B33DB5742686120600ED1344 /* XCTestCase+AssertContainsSameElements.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33DB5732686120600ED1344 /* XCTestCase+AssertContainsSameElements.swift */; };
 		B33DB5762686161300ED1344 /* SensorName.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33DB5752686161300ED1344 /* SensorName.swift */; };
 		B34D4648275B12A000194E51 /* RemoteLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34D4647275B12A000194E51 /* RemoteLog.swift */; };
+		B35E04C1278C922A00227D8D /* Resolver in Frameworks */ = {isa = PBXBuildFile; productRef = B35E04C0278C922A00227D8D /* Resolver */; };
+		B35E04C3278C931700227D8D /* AppDelegate+Injection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B35E04C2278C931700227D8D /* AppDelegate+Injection.swift */; };
 		B367A590274E9EAA004C605B /* FirebaseFeatureFlagProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B367A589274E9EAA004C605B /* FirebaseFeatureFlagProvider.swift */; };
 		B367A591274E9EAA004C605B /* DefaultFeatureFlagProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B367A58A274E9EAA004C605B /* DefaultFeatureFlagProvider.swift */; };
 		B367A593274E9EAA004C605B /* FeatureFlagProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B367A58C274E9EAA004C605B /* FeatureFlagProvider.swift */; };
@@ -574,6 +576,7 @@
 		B33DB5732686120600ED1344 /* XCTestCase+AssertContainsSameElements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+AssertContainsSameElements.swift"; sourceTree = "<group>"; };
 		B33DB5752686161300ED1344 /* SensorName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorName.swift; sourceTree = "<group>"; };
 		B34D4647275B12A000194E51 /* RemoteLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteLog.swift; sourceTree = "<group>"; };
+		B35E04C2278C931700227D8D /* AppDelegate+Injection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppDelegate+Injection.swift"; sourceTree = "<group>"; };
 		B367A589274E9EAA004C605B /* FirebaseFeatureFlagProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseFeatureFlagProvider.swift; sourceTree = "<group>"; };
 		B367A58A274E9EAA004C605B /* DefaultFeatureFlagProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultFeatureFlagProvider.swift; sourceTree = "<group>"; };
 		B367A58C274E9EAA004C605B /* FeatureFlagProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeatureFlagProvider.swift; sourceTree = "<group>"; };
@@ -722,6 +725,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B35E04C1278C922A00227D8D /* Resolver in Frameworks */,
 				AC6D567C25AC540D00D221BA /* Charts in Frameworks */,
 				ACF600BE2678D7F4005DD97C /* SwiftSimplify in Frameworks */,
 				AC5226C3270C50520048A585 /* Algorithms in Frameworks */,
@@ -1006,6 +1010,7 @@
 		AC7EB36925A6FB3A00A7F2AF = {
 			isa = PBXGroup;
 			children = (
+				B35E04C2278C931700227D8D /* AppDelegate+Injection.swift */,
 				B367A58D274E9EAA004C605B /* AppDelegate.swift */,
 				B3EFAB1D26F1F9DB00E88141 /* FixedSessionFaker.swift */,
 				4FB39E0E2621B5C100E5E564 /* Podfile */,
@@ -1909,6 +1914,7 @@
 				AC787D74267B41990034B222 /* AirCastingStyling */,
 				ACF600BD2678D7F4005DD97C /* SwiftSimplify */,
 				AC5226C2270C50520048A585 /* Algorithms */,
+				B35E04C0278C922A00227D8D /* Resolver */,
 			);
 			productName = AirCasting;
 			productReference = AC7EB37225A6FB3A00A7F2AF /* AirCasting.app */;
@@ -1945,6 +1951,7 @@
 				AC6D567A25AC540D00D221BA /* XCRemoteSwiftPackageReference "Charts" */,
 				ACF600BC2678D7F4005DD97C /* XCRemoteSwiftPackageReference "SwiftSimplify" */,
 				AC5226C1270C50520048A585 /* XCRemoteSwiftPackageReference "swift-algorithms" */,
+				B35E04BF278C922A00227D8D /* XCRemoteSwiftPackageReference "Resolver" */,
 			);
 			productRefGroup = AC7EB37325A6FB3A00A7F2AF /* Products */;
 			projectDirPath = "";
@@ -2416,6 +2423,7 @@
 				ACDF82FC265BBDE200A4D04A /* UIFont.swift in Sources */,
 				DD8C380E2689A55A00901FDF /* BackendSettingsView.swift in Sources */,
 				ACCEB21E2763A2230040140B /* SDSyncRootView.swift in Sources */,
+				B35E04C3278C931700227D8D /* AppDelegate+Injection.swift in Sources */,
 				DD1EEB8E26B7C39000AFC5C1 /* ChooseSessionTypeViewModel.swift in Sources */,
 				4F15548F263C819C00FF3208 /* MeasurementEntity.swift in Sources */,
 				DD1C99C1267CBFCB00B786C4 /* MyAccountViewSignOut.swift in Sources */,
@@ -2822,6 +2830,14 @@
 				minimumVersion = 1.1.1;
 			};
 		};
+		B35E04BF278C922A00227D8D /* XCRemoteSwiftPackageReference "Resolver" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/hmlongco/Resolver";
+			requirement = {
+				kind = exactVersion;
+				version = 1.5.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -2843,6 +2859,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = ACF600BC2678D7F4005DD97C /* XCRemoteSwiftPackageReference "SwiftSimplify" */;
 			productName = SwiftSimplify;
+		};
+		B35E04C0278C922A00227D8D /* Resolver */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B35E04BF278C922A00227D8D /* XCRemoteSwiftPackageReference "Resolver" */;
+			productName = Resolver;
 		};
 /* End XCSwiftPackageProductDependency section */
 

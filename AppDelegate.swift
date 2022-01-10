@@ -1,6 +1,7 @@
 import SwiftUI
 import Firebase
 import FirebaseMessaging
+import Resolver
 
 @objc
 class AppDelegate: NSObject, UIApplicationDelegate, MessagingDelegate {
@@ -20,6 +21,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, MessagingDelegate {
         //     completionHandler: { _, _ in }
         // )
         application.registerForRemoteNotifications()
+        _ = Resolver.resolve(PersistenceController.self)
         return true
     }
     

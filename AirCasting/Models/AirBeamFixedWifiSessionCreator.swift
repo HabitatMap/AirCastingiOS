@@ -3,23 +3,22 @@
 
 import Foundation
 import CoreLocation
+import Resolver
 
 final class AirBeamFixedWifiSessionCreator: SessionCreator {
     enum AirBeamSessionCreatorError: Swift.Error {
         case invalidCreateSessionContext(CreateSessionContext)
     }
     let userAuthenticationSession: UserAuthenticationSession
-    let measurementStreamStorage: MeasurementStreamStorage
+    @Injected private var measurementStreamStorage: MeasurementStreamStorage
     private let createSessionService: CreateSessionAPIService
     
-    convenience init(measurementStreamStorage: MeasurementStreamStorage, userAuthenticationSession: UserAuthenticationSession, baseUrl: BaseURLProvider) {
-        self.init(measurementStreamStorage: measurementStreamStorage,
-                  createSessionService: CreateSessionAPIService(authorisationService: userAuthenticationSession, baseUrlProvider: baseUrl),
+    convenience init(userAuthenticationSession: UserAuthenticationSession, baseUrl: BaseURLProvider) {
+        self.init(createSessionService: CreateSessionAPIService(authorisationService: userAuthenticationSession, baseUrlProvider: baseUrl),
                   userAuthenticationSession: userAuthenticationSession)
     }
     
-    init(measurementStreamStorage: MeasurementStreamStorage, createSessionService: CreateSessionAPIService, userAuthenticationSession: UserAuthenticationSession) {
-        self.measurementStreamStorage = measurementStreamStorage
+    init(createSessionService: CreateSessionAPIService, userAuthenticationSession: UserAuthenticationSession) {
         self.createSessionService = createSessionService
         self.userAuthenticationSession = userAuthenticationSession
     }

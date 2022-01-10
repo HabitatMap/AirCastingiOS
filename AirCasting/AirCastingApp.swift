@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Combine
+import Resolver
 
 @main
 struct AirCastingApp: App {
@@ -15,11 +16,10 @@ struct AirCastingApp: App {
     @Environment(\.scenePhase) var scenePhase
     private let authorization = UserAuthenticationSession()
     private let syncScheduler: SynchronizationScheduler
-    private let microphoneManager: MicrophoneManager
     private var sessionSynchronizer: SessionSynchronizer
     private var sessionSynchronizerViewModel: DefaultSessionSynchronizationViewModel
     private let averagingService: AveragingService
-    private let persistenceController = PersistenceController.shared
+    @Injected private var persistenceController: PersistenceController
     private let appBecameActive = PassthroughSubject<Void, Never>()
     private let sessionSynchronizationController: SessionSynchronizationController
     @ObservedObject private var offlineMessageViewModel: OfflineMessageViewModel
@@ -32,7 +32,7 @@ struct AirCastingApp: App {
         let synchronizationContextProvider = SessionSynchronizationService(client: URLSession.shared, authorization: authorization, responseValidator: DefaultHTTPResponseValidator(), urlProvider: urlProvider)
         let downloadService = SessionDownloadService(client: URLSession.shared, authorization: authorization, responseValidator: DefaultHTTPResponseValidator(), urlProvider: urlProvider)
         let uploadService = SessionUploadService(client: URLSession.shared, authorization: authorization, responseValidator: DefaultHTTPResponseValidator(), urlProvider: urlProvider)
-        let syncStore = SessionSynchronizationDatabase(database: persistenceController)
+        let syncStore = SessionSynchronizationDatabase()
         let unscheduledSyncController = SessionSynchronizationController(synchronizationContextProvider: synchronizationContextProvider,
                                                                          downstream: downloadService,
                                                                          upstream: uploadService,
@@ -41,8 +41,7 @@ struct AirCastingApp: App {
         sessionSynchronizationController = unscheduledSyncController
         sessionSynchronizer = ScheduledSessionSynchronizerProxy(controller: unscheduledSyncController,
                                                                 scheduler: DispatchQueue.global())
-        microphoneManager = MicrophoneManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared))
-        averagingService = AveragingService(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared))
+        averagingService = AveragingService(measurementStreamStorage: CoreDataMeasurementStreamStorage())
         syncScheduler = .init(synchronizer: sessionSynchronizer,
                               appBecameActive: appBecameActive.eraseToAnyPublisher(),
                               authorization: authorization)
@@ -55,11 +54,9 @@ struct AirCastingApp: App {
     var body: some Scene {
         WindowGroup {
             RootAppView(sessionSynchronizer: sessionSynchronizer,
-                        persistenceController: persistenceController,
                         urlProvider: urlProvider)
                 .environmentObject(sessionSynchronizerViewModel)
                 .environmentObject(authorization)
-                .environmentObject(microphoneManager)
                 .environmentObject(averagingService)
                 .environmentObject(lifeTimeEventsProvider)
                 .alert(isPresented: $offlineMessageViewModel.showOfflineMessage, content: { Alert.offlineAlert })

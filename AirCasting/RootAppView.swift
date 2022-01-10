@@ -7,27 +7,26 @@
 
 import SwiftUI
 import CoreLocation
+import Resolver
 
 struct RootAppView: View {
     
     @State private var airBeamConnectionController: DefaultAirBeamConnectionController?
-    @State private var measurementStreamStorage: MeasurementStreamStorage = CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared)
+    @State private var measurementStreamStorage: MeasurementStreamStorage = CoreDataMeasurementStreamStorage()
     @State private var sessionStoppableFactory: SessionStoppableFactoryDefault?
     @State private var downloadService: DownloadMeasurementsService?
     @State private var sdSyncController: SDSyncController?
-    @StateObject private var bluetoothManager = BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared)))
+    @StateObject private var bluetoothManager = BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: CoreDataMeasurementStreamStorage()))
     
     @StateObject private var userSettings = UserSettings()
     @StateObject private var userRedirectionSettings = DefaultSettingsRedirection()
     @StateObject private var userState = UserState()
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
-    @EnvironmentObject var microphoneManager: MicrophoneManager
     @EnvironmentObject var lifeTimeEventsProvider: LifeTimeEventsProvider
     @EnvironmentObject var averagingService: AveragingService
     
     let locationTracker = LocationTracker(locationManager: CLLocationManager())
     var sessionSynchronizer: SessionSynchronizer
-    let persistenceController: PersistenceController
     let networkChecker = NetworkChecker(connectionAvailable: false)
     let urlProvider: BaseURLProvider
     
@@ -59,21 +58,18 @@ struct RootAppView: View {
         .environmentObject(userState)
         .environmentObject(bluetoothManager)
         .environmentObject(userAuthenticationSession)
-        .environmentObject(persistenceController)
         .environmentObject(networkChecker)
         .environmentObject(userSettings)
         .environmentObject(locationTracker)
         .environmentObject(userRedirectionSettings)
-        .environment(\.managedObjectContext, persistenceController.viewContext)
+//        .environment(\.managedObjectContext, persistenceController.viewContext)
         .onAppear {
             airBeamConnectionController = DefaultAirBeamConnectionController(connectingAirBeamServices: ConnectingAirBeamServicesBluetooth(bluetoothConnector: bluetoothManager))
             
-            sessionStoppableFactory = SessionStoppableFactoryDefault(microphoneManager: microphoneManager,
-                                                                         measurementStreamStorage: measurementStreamStorage,
-                                                                         synchronizer: sessionSynchronizer,
-                                                                         bluetoothManager: bluetoothManager)
+            sessionStoppableFactory = SessionStoppableFactoryDefault(measurementStreamStorage: measurementStreamStorage,
+                                                                     synchronizer: sessionSynchronizer,
+                                                                     bluetoothManager: bluetoothManager)
             downloadService = DownloadMeasurementsService(authorisationService: userAuthenticationSession,
-                                                          persistenceController: persistenceController,
                                                           baseUrl: urlProvider)
             let mobileSessionsService = SDCardMobileSessionsSavingService(measurementStreamStorage: measurementStreamStorage,
                                                                           fileLineReader: DefaultFileLineReader())
@@ -106,8 +102,8 @@ struct MainAppView: View {
     let locationHandler: LocationHandler
     let sdSyncController: SDSyncController
     let urlProvider: BaseURLProvider
+    @Injected private var persistenceController: PersistenceController
     
-    @EnvironmentObject private var persistenceController: PersistenceController
     @EnvironmentObject private var userAuthenticationSession: UserAuthenticationSession
     @EnvironmentObject private var bluetoothManager: BluetoothManager
     @EnvironmentObject private var user: UserState
@@ -127,11 +123,3 @@ struct MainAppView: View {
         }
     }
 }
-
-#if DEBUG
-struct RootAppView_Previews: PreviewProvider {
-    static var previews: some View {
-        RootAppView(sessionSynchronizer: DummySessionSynchronizer(), persistenceController: PersistenceController(inMemory: true), urlProvider: DummyURLProvider())
-    }
-}
-#endif

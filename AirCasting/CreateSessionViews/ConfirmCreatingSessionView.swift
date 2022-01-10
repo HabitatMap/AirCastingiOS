@@ -8,6 +8,7 @@
 import AirCastingStyling
 import CoreLocation
 import SwiftUI
+import Resolver
 
 struct ConfirmCreatingSessionView: View {
     @State private var isActive: Bool = false
@@ -21,9 +22,8 @@ struct ConfirmCreatingSessionView: View {
     @EnvironmentObject private var sessionContext: CreateSessionContext
     @EnvironmentObject private var locationTracker: LocationTracker
     @EnvironmentObject private var tabSelection: TabBarSelection
-    @EnvironmentObject var persistenceController: PersistenceController
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
-    @EnvironmentObject private var microphoneManager: MicrophoneManager
+    @InjectedObject private var microphoneManager: MicrophoneManager
     @EnvironmentObject var bluetoothManager: BluetoothManager
     @Binding var creatingSessionFlowContinues: Bool
     let baseURL: BaseURLProvider
@@ -158,19 +158,16 @@ extension ConfirmCreatingSessionView {
         let isWifi: Bool = (sessionContext.wifiSSID != nil && sessionContext.wifiSSID != nil)
         if sessionContext.sessionType == .fixed && isWifi {
             return AirBeamFixedWifiSessionCreator(
-                measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: persistenceController),
                 userAuthenticationSession: userAuthenticationSession,
                 baseUrl: baseURL)
         } else if sessionContext.sessionType == .fixed && !isWifi {
-            return AirBeamCellularSessionCreator(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: persistenceController),
-                                                 userAuthenticationSession: userAuthenticationSession,
+            return AirBeamCellularSessionCreator(userAuthenticationSession: userAuthenticationSession,
                                                  baseUrl: baseURL)
         } else if sessionContext.sessionType == .mobile && sessionContext.deviceType == .MIC {
-            return MicrophoneSessionCreator(microphoneManager: microphoneManager)
+            return MicrophoneSessionCreator()
         } else if sessionContext.sessionType == .mobile {
             return MobilePeripheralSessionCreator(
-                mobilePeripheralSessionManager: bluetoothManager.mobilePeripheralSessionManager, measurementStreamStorage: CoreDataMeasurementStreamStorage(
-                    persistenceController: persistenceController),
+                mobilePeripheralSessionManager: bluetoothManager.mobilePeripheralSessionManager,
                 userAuthenticationSession: userAuthenticationSession)
         } else {
             return nil

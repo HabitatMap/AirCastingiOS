@@ -8,7 +8,6 @@ struct MyAccountViewSignOut: View {
     let logoutController: LogoutController
     @State private var alert: AlertInfo?
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
-    @EnvironmentObject var persistenceController: PersistenceController
     @EnvironmentObject private var userState: UserState
     @EnvironmentObject var networkChecker: NetworkChecker
     

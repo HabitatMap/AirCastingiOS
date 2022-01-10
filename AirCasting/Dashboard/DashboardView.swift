@@ -181,11 +181,3 @@ struct PreventCollapseView: View {
             .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 1)
     }
 }
-
-#if DEBUG
-struct Dashboard_Previews: PreviewProvider {
-    static var previews: some View {
-        DashboardView(coreDataHook: CoreDataHook(context: PersistenceController(inMemory: true).viewContext), measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionStoppableFactory: SessionStoppableFactoryDummy(), sessionSynchronizer: DummySessionSynchronizer(), urlProvider: DummyURLProvider())
-    }
-}
-#endif

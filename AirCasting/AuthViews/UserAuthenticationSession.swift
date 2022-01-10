@@ -3,6 +3,7 @@
 
 import Foundation
 import Combine
+import Resolver
 
 struct User: Hashable {
     let id: Int
@@ -85,16 +86,14 @@ protocol LogoutController {
 final class DefaultLogoutController: LogoutController {
     let userAuthenticationSession: UserAuthenticationSession
     let sessionStorage: SessionStorage
-    let microphoneManager: MicrophoneManager
+    @Injected private var microphoneManager: MicrophoneManager
     let sessionSynchronizer: SessionSynchronizer
 
     init(userAuthenticationSession: UserAuthenticationSession,
          sessionStorage: SessionStorage,
-         microphoneManager: MicrophoneManager,
          sessionSynchronizer: SessionSynchronizer) {
         self.userAuthenticationSession = userAuthenticationSession
         self.sessionStorage = sessionStorage
-        self.microphoneManager = microphoneManager
         self.sessionSynchronizer = sessionSynchronizer
     }
 

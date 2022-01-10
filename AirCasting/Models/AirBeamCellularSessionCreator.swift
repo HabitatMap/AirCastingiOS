@@ -3,17 +3,17 @@
 
 import Foundation
 import CoreLocation
+import Resolver
 
 final class AirBeamCellularSessionCreator: SessionCreator {
     enum AirBeamSessionCreatorError: Swift.Error {
         case invalidCreateSessionContext(CreateSessionContext)
     }
     private let userAuthenticationSession: UserAuthenticationSession
-    private let measurementStreamStorage: MeasurementStreamStorage
+    @Injected private var measurementStreamStorage: MeasurementStreamStorage
     private let createSessionService: CreateSessionAPIService
     
-    init(measurementStreamStorage: MeasurementStreamStorage, userAuthenticationSession: UserAuthenticationSession, baseUrl: BaseURLProvider) {
-        self.measurementStreamStorage = measurementStreamStorage
+    init(userAuthenticationSession: UserAuthenticationSession, baseUrl: BaseURLProvider) {
         self.userAuthenticationSession = userAuthenticationSession
         self.createSessionService = CreateSessionAPIService(authorisationService: userAuthenticationSession,
                                                             baseUrlProvider: baseUrl)

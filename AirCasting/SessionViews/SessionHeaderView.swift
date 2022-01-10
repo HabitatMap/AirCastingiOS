@@ -281,19 +281,3 @@ private extension SessionHeaderView {
         }
     }
 }
-
-#if DEBUG
-struct SessionHeader_Previews: PreviewProvider {
-    static var previews: some View {
-        SessionHeaderView(action: {},
-                          isExpandButtonNeeded: true,
-                          isCollapsed: .constant(true),
-                          urlProvider: DummyURLProvider(),
-                          session: SessionEntity.mock,
-                          sessionStopperFactory: SessionStoppableFactoryDummy(),
-                          measurementStreamStorage: PreviewMeasurementStreamStorage(),
-                          sessionSynchronizer: DummySessionSynchronizer())
-            .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
-    }
-}
-#endif

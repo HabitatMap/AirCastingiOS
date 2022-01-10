@@ -164,7 +164,7 @@ private extension MicrophoneManager {
         }
     }
 
-    @objc func timerTick() {
+    @objc private func timerTick() {
         sampleMeasurement()
     }
 

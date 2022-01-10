@@ -8,6 +8,7 @@
 import SwiftUI
 import CoreBluetooth
 import AirCastingStyling
+import Resolver
 
 struct SelectDeviceView: View {
     @State private var alert: AlertInfo?
@@ -17,7 +18,7 @@ struct SelectDeviceView: View {
     @State private var isMicLinkActive: Bool = false
     @EnvironmentObject private var sessionContext: CreateSessionContext
     @EnvironmentObject var bluetoothManager: BluetoothManager
-    @EnvironmentObject private var microphoneManager: MicrophoneManager
+    @InjectedObject private var microphoneManager: MicrophoneManager
     @Binding var creatingSessionFlowContinues : Bool
     @Binding var sdSyncContinues : Bool
     @State private var showAlert = false

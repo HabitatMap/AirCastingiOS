@@ -50,7 +50,7 @@ struct SessionCardView: View {
         let graphDataSource = GraphStatsDataSource()
         self._graphStatsDataSource = .init(wrappedValue: graphDataSource)
         self._graphStatsViewModel = .init(wrappedValue: SessionCardView.createStatsContainerViewModel(dataSource: graphDataSource, session: session))
-        self._chartViewModel = .init(wrappedValue: ChartViewModel(session: session, persistence: PersistenceController.shared))
+        self._chartViewModel = .init(wrappedValue: ChartViewModel(session: session))
     }
 
     var shouldShowValues: MeasurementPresentationStyle {
@@ -305,17 +305,3 @@ private extension SessionCardView {
                                })
      }
 }
-
- #if DEBUG
- struct SessionCell_Previews: PreviewProvider {
-    static var previews: some View {
-        EmptyView()
-        SessionCardView(session: SessionEntity.mock,
-                                sessionCartViewModel: SessionCardViewModel(followingSetter: MockSessionFollowingSettable()),
-                        thresholds: [.mock, .mock], sessionStoppableFactory: SessionStoppableFactoryDummy(), measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionSynchronizer: DummySessionSynchronizer(), urlProvider: DummyURLProvider())
-            .padding()
-            .previewLayout(.sizeThatFits)
-            .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
-    }
- }
- #endif

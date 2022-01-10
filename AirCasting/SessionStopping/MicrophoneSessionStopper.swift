@@ -2,15 +2,15 @@
 //
 
 import Foundation
+import Resolver
 
 class MicrophoneSessionStopper: SessionStoppable {
     private let uuid: SessionUUID
-    private let microphoneManager: MicrophoneManager
+    @Injected private var microphoneManager: MicrophoneManager
     private let measurementStreamStorage: MeasurementStreamStorage
     
-    init(uuid: SessionUUID, microphoneManager: MicrophoneManager, measurementStreamStorage: MeasurementStreamStorage) {
+    init(uuid: SessionUUID, measurementStreamStorage: MeasurementStreamStorage) {
         self.uuid = uuid
-        self.microphoneManager = microphoneManager
         self.measurementStreamStorage = measurementStreamStorage
     }
     

@@ -18,8 +18,6 @@ struct MainTabBarView: View {
     @State var plusImage: String = PlusIcon.unselected.string
     let sessionStoppableFactory: SessionStoppableFactory
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
-    @EnvironmentObject var persistenceController: PersistenceController
-    @EnvironmentObject var microphoneManager: MicrophoneManager
     @EnvironmentObject var userSettings: UserSettings
     @EnvironmentObject var bluetoothManager: BluetoothManager
     let sessionSynchronizer: SessionSynchronizer
@@ -119,8 +117,7 @@ private extension MainTabBarView {
     private var settingsTab: some View {
         SettingsView(urlProvider: UserDefaultsBaseURLProvider(),
                      logoutController: DefaultLogoutController(userAuthenticationSession: userAuthenticationSession,
-                                                               sessionStorage: SessionStorage(persistenceController: persistenceController),
-                                                               microphoneManager: microphoneManager,
+                                                               sessionStorage: SessionStorage(),
                                                                sessionSynchronizer: sessionSynchronizer), viewModel: SettingsViewModelDefault(locationHandler: locationHandler, bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: bluetoothManager), sessionContext: CreateSessionContext()))
             .tabItem {
                 Image(settingsImage)
@@ -201,22 +198,3 @@ extension UITabBarController {
         }
     }
 }
-
-#if DEBUG
-struct ContentView_Previews: PreviewProvider {
-    private static let persistenceController = PersistenceController(inMemory: true)
-    
-    static var previews: some View {
-        MainTabBarView(measurementUpdatingService: MeasurementUpdatingServiceMock(), urlProvider: DummyURLProvider(), measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionStoppableFactory: SessionStoppableFactoryDummy(), sessionSynchronizer: DummySessionSynchronizer(), sessionContext: CreateSessionContext(), coreDataHook: CoreDataHook(context: PersistenceController(inMemory: true).viewContext), locationHandler: DummyDefaultLocationHandler())
-            .environmentObject(UserAuthenticationSession())
-            .environmentObject(BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: PreviewMeasurementStreamStorage())))
-            .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
-            .environment(\.managedObjectContext, persistenceController.viewContext)
-    }
-    
-    private class MeasurementUpdatingServiceMock: MeasurementUpdatingService {
-        func start() {}
-        func downloadMeasurements(for sessionUUID: SessionUUID, lastSynced: Date, completion: @escaping () -> Void) {}
-    }
-}
-#endif

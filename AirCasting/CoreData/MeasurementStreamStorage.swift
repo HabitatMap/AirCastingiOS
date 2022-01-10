@@ -6,6 +6,7 @@ import CoreLocation
 import Foundation
 import Combine
 import SwiftUI
+import Resolver
 
 protocol MeasurementStreamStorage {
     func accessStorage(_ task: @escaping(HiddenCoreDataMeasurementStreamStorage) -> Void)
@@ -37,16 +38,10 @@ extension HiddenCoreDataMeasurementStreamStorage {
 
 final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
 
-    private let persistenceController: PersistenceController
+    @Injected private var persistenceController: PersistenceController
     private lazy var updateSessionParamsService = UpdateSessionParamsService()
-    private let context: NSManagedObjectContext
-    let hiddenStorage: HiddenCoreDataMeasurementStreamStorage
-    
-    init(persistenceController: PersistenceController) {
-        self.persistenceController = persistenceController
-        self.context = persistenceController.editContext
-        self.hiddenStorage = HiddenCoreDataMeasurementStreamStorage(context: self.context)
-    }
+    private lazy var context: NSManagedObjectContext = persistenceController.editContext
+    private lazy var hiddenStorage = HiddenCoreDataMeasurementStreamStorage(context: self.context)
     
     /// All actions performed on CoreDataMeasurementStreamStorage must be performed
     /// within a block passed to this methood.

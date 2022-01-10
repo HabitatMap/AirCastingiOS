@@ -8,6 +8,7 @@
 import Foundation
 import CoreData
 import Combine
+import Resolver
 
 protocol MeasurementUpdatingService {
     func start()
@@ -16,15 +17,14 @@ protocol MeasurementUpdatingService {
 
 final class DownloadMeasurementsService: MeasurementUpdatingService {
     private let authorisationService: RequestAuthorisationService
-    private let persistenceController: PersistenceController
+    @Injected private var persistenceController: PersistenceController
     private let fixedSessionService: FixedSessionAPIService
     private var timerSink: Cancellable?
     private var lastFetchCancellableTask: Cancellable?
     private lazy var removeOldService: RemoveOldMeasurementsService = RemoveOldMeasurementsService()
     
-    init(authorisationService: RequestAuthorisationService, persistenceController: PersistenceController, baseUrl: BaseURLProvider) {
+    init(authorisationService: RequestAuthorisationService, baseUrl: BaseURLProvider) {
         self.authorisationService = authorisationService
-        self.persistenceController = persistenceController
         self.fixedSessionService = FixedSessionAPIService(authorisationService: authorisationService, baseUrl: baseUrl)
     }
 

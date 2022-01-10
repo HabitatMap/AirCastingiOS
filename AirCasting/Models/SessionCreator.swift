@@ -3,6 +3,7 @@
 
 import Foundation
 import CoreLocation
+import Resolver
 
 #if DEBUG
 /// Only to be used for swiftui previews
@@ -19,11 +20,7 @@ final class MicrophoneSessionCreator: SessionCreator {
     enum MicrophoneSessionCreatorError: Swift.Error {
         case invalidCreateSessionContext(CreateSessionContext)
     }
-    let microphoneManager: MicrophoneManager
-
-    init(microphoneManager: MicrophoneManager) {
-        self.microphoneManager = microphoneManager
-    }
+    @Injected private var microphoneManager: MicrophoneManager
 
     func createSession(_ sessionContext: CreateSessionContext, completion: @escaping (Result<Void, Error>) -> Void) {
         guard let sessionType = sessionContext.sessionType,
@@ -59,11 +56,10 @@ final class MobilePeripheralSessionCreator: SessionCreator {
     }
     let mobilePeripheralSessionManager: MobilePeripheralSessionManager
     let userAuthenticationSession: UserAuthenticationSession
-    let measurementStreamStorage: MeasurementStreamStorage
+    @Injected private var measurementStreamStorage: MeasurementStreamStorage
 
-    init(mobilePeripheralSessionManager: MobilePeripheralSessionManager, measurementStreamStorage: MeasurementStreamStorage, userAuthenticationSession: UserAuthenticationSession) {
+    init(mobilePeripheralSessionManager: MobilePeripheralSessionManager, userAuthenticationSession: UserAuthenticationSession) {
         self.mobilePeripheralSessionManager = mobilePeripheralSessionManager
-        self.measurementStreamStorage = measurementStreamStorage
         self.userAuthenticationSession = userAuthenticationSession
     }
 
