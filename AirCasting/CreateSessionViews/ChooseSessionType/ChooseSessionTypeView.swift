@@ -52,7 +52,6 @@ struct ChooseSessionTypeView: View {
                     CreatingSessionFlowRootView {
                         TurnOnLocationView(creatingSessionFlowContinues: $isTurnLocationOnLinkActive,
                                            viewModel: TurnOnLocationViewModel(locationHandler: viewModel.locationHandler,
-                                                                              bluetoothHandler: DefaultBluetoothHandler(),
                                                                               sessionContext: viewModel.passSessionContext,
                                                                               urlProvider: viewModel.passURLProvider,
                                                                               isSDClearProcess: false))
@@ -114,7 +113,6 @@ struct ChooseSessionTypeView: View {
                                 CreatingSessionFlowRootView {
                                     TurnOnLocationView(creatingSessionFlowContinues: $isTurnLocationOnLinkActive,
                                                        viewModel: TurnOnLocationViewModel(locationHandler: viewModel.locationHandler,
-                                                                                          bluetoothHandler: DefaultBluetoothHandler(),
                                                                                           sessionContext: viewModel.passSessionContext,
                                                                                           urlProvider: viewModel.passURLProvider,
                                                                                           isSDClearProcess: false))

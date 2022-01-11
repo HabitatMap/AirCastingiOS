@@ -2,24 +2,23 @@
 //
 
 import Foundation
+import Resolver
 #warning("Move whole logic of settingsView to this ViewModel")
 protocol SettingsViewModel {
     func nextStep() -> ProceedToView
     var locationHandler: LocationHandler { get }
-    var bluetoothHandler: BluetoothHandler { get }
     var sessionContext: CreateSessionContext { get }
 }
 
 class SettingsViewModelDefault: SettingsViewModel {
     
     let locationHandler: LocationHandler
-    let bluetoothHandler: BluetoothHandler
+    @Injected private var bluetoothHandler: BluetoothHandler
     let sessionContext: CreateSessionContext
 
 
-    init(locationHandler: LocationHandler, bluetoothHandler: BluetoothHandler, sessionContext: CreateSessionContext) {
+    init(locationHandler: LocationHandler, sessionContext: CreateSessionContext) {
         self.locationHandler = locationHandler
-        self.bluetoothHandler = bluetoothHandler
         self.sessionContext = sessionContext
     }
 

@@ -2,6 +2,7 @@
 //
 
 import Foundation
+import Resolver
 
 class TurnOnLocationViewModel: ObservableObject {
     @Published var isPowerABLinkActive = false
@@ -12,7 +13,7 @@ class TurnOnLocationViewModel: ObservableObject {
     var isSDClearProcess: Bool
     
     private let locationHandler: LocationHandler
-    private let bluetoothHandler: BluetoothHandler
+    @Injected private var bluetoothHandler: BluetoothHandler
     private let sessionContext: CreateSessionContext
     private let urlProvider: BaseURLProvider
     
@@ -32,9 +33,8 @@ class TurnOnLocationViewModel: ObservableObject {
         return sessionContext
     }
     
-    init(locationHandler: LocationHandler, bluetoothHandler: BluetoothHandler, sessionContext: CreateSessionContext, urlProvider: BaseURLProvider, isSDClearProcess: Bool) {
+    init(locationHandler: LocationHandler, sessionContext: CreateSessionContext, urlProvider: BaseURLProvider, isSDClearProcess: Bool) {
         self.locationHandler = locationHandler
-        self.bluetoothHandler = bluetoothHandler
         self.sessionContext = sessionContext
         self.urlProvider = urlProvider
         self.isSDClearProcess = isSDClearProcess

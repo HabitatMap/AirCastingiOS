@@ -66,7 +66,8 @@ private extension SDSyncRootView {
     
     var navigationLink: some View {
         NavigationLink(
-            destination: BackendSyncCompletedView(viewModel: BackendSyncCompletedViewModelDefault(urlProvider: viewModel.urlProvider, bluetoothHandler: DefaultBluetoothHandler()), creatingSessionFlowContinues: $creatingSessionFlowContinues),
+            destination: BackendSyncCompletedView(viewModel: BackendSyncCompletedViewModelDefault(urlProvider: viewModel.urlProvider),
+                                                  creatingSessionFlowContinues: $creatingSessionFlowContinues),
             isActive: .init(get: { viewModel.backendSyncCompleted }, set: { _ in }),
             label: {
                 EmptyView()

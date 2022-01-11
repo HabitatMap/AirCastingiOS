@@ -15,7 +15,7 @@ enum ProceedToView {
 class ChooseSessionTypeViewModel {
     
     let locationHandler: LocationHandler
-    private let bluetoothHandler: BluetoothHandler
+    @Injected private var bluetoothHandler: BluetoothHandler
     private let userSettings: UserSettings
     private let sessionContext: CreateSessionContext
     private let urlProvider: BaseURLProvider
@@ -37,9 +37,8 @@ class ChooseSessionTypeViewModel {
         return userSettings
     }
 
-    init(locationHandler: LocationHandler, bluetoothHandler: BluetoothHandler, userSettings: UserSettings, sessionContext: CreateSessionContext, urlProvider: BaseURLProvider, bluetoothManagerState: CBManagerState) {
+    init(locationHandler: LocationHandler, userSettings: UserSettings, sessionContext: CreateSessionContext, urlProvider: BaseURLProvider, bluetoothManagerState: CBManagerState) {
         self.locationHandler = locationHandler
-        self.bluetoothHandler = bluetoothHandler
         self.userSettings = userSettings
         self.sessionContext = sessionContext
         self.urlProvider = urlProvider

@@ -102,7 +102,6 @@ private extension MainTabBarView {
     
     private var createSessionTab: some View {
         ChooseSessionTypeView(viewModel: ChooseSessionTypeViewModel(locationHandler: locationHandler,
-                                                                    bluetoothHandler: DefaultBluetoothHandler(),
                                                                     userSettings: userSettings,
                                                                     sessionContext: sessionContext,
                                                                     urlProvider: urlProvider,
@@ -120,7 +119,6 @@ private extension MainTabBarView {
                                                                sessionStorage: SessionStorage(),
                                                                sessionSynchronizer: sessionSynchronizer),
                      viewModel: SettingsViewModelDefault(locationHandler: locationHandler,
-                                                         bluetoothHandler: DefaultBluetoothHandler(),
                                                          sessionContext: CreateSessionContext()))
             .tabItem {
                 Image(settingsImage)

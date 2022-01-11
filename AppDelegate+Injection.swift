@@ -20,6 +20,7 @@ extension Resolver: ResolverRegistering {
         main.register { BluetoothManager(mobilePeripheralSessionManager: Resolver.resolve()) }
             .implements(BluetoothConnector.self)
             .scope(.cached)
+        main.register { DefaultBluetoothHandler() as BluetoothHandler }
             
         
     }

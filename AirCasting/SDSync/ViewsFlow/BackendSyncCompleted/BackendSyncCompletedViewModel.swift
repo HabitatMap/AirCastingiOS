@@ -2,6 +2,7 @@
 //
 
 import Foundation
+import Resolver
 
 enum ProceedToSyncView {
     case restart
@@ -22,11 +23,10 @@ class BackendSyncCompletedViewModelDefault: BackendSyncCompletedViewModel, Obser
     @Published var presentRestartNextScreen: Bool = false
     @Published var presentBTNextScreen: Bool = false
     let urlProvider: BaseURLProvider
-    private let bluetoothHandler: BluetoothHandler
+    @Injected private var bluetoothHandler: BluetoothHandler
     
-    init(urlProvider: BaseURLProvider, bluetoothHandler: BluetoothHandler) {
+    init(urlProvider: BaseURLProvider) {
         self.urlProvider = urlProvider
-        self.bluetoothHandler = bluetoothHandler
     }
     
     func continueButtonTapped() {

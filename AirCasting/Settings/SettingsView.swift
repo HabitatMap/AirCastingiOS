@@ -46,7 +46,6 @@ struct SettingsView: View {
                 CreatingSessionFlowRootView {
                     TurnOnLocationView(creatingSessionFlowContinues: $locationScreenGo,
                                        viewModel: TurnOnLocationViewModel(locationHandler: viewModel.locationHandler,
-                                                                          bluetoothHandler: DefaultBluetoothHandler(),
                                                                           sessionContext: viewModel.sessionContext,
                                                                           urlProvider: urlProvider,
                                                                           isSDClearProcess: SDClearingRouteProcess))
@@ -80,7 +79,6 @@ struct SettingsView: View {
                             CreatingSessionFlowRootView {
                                 TurnOnLocationView(creatingSessionFlowContinues: $locationScreenGo,
                                                    viewModel: TurnOnLocationViewModel(locationHandler: viewModel.locationHandler,
-                                                                                      bluetoothHandler: DefaultBluetoothHandler(),
                                                                                       sessionContext: viewModel.sessionContext,
                                                                                       urlProvider: urlProvider,
                                                                                       isSDClearProcess: SDClearingRouteProcess))
