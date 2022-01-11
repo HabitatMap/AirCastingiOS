@@ -127,6 +127,7 @@ struct SettingsView: View {
                 Spacer()
                 crowdMapDescription
             }
+            disableMappingSwitch
             keepScreenOnSwitch
             if featureFlagsViewModel.enabledFeatures.contains(.sdCardSync) {
                 clearSDCard
@@ -173,6 +174,14 @@ struct SettingsView: View {
         Text(Strings.Settings.crowdMapDescription)
             .font(Fonts.muliHeading2)
             .foregroundColor(.aircastingGray)
+    }
+    
+    private var disableMappingSwitch: some View {
+        Toggle(isOn: $userSettings.disableMapping, label: {
+            Text(Strings.Settings.disableMapping)
+                .font(Fonts.boldHeading1)
+                .multilineTextAlignment(.leading)
+        }).toggleStyle(SwitchToggleStyle(tint: .accentColor))
     }
     
     private var navigateToBackendSettingsButton: some View {

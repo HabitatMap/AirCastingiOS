@@ -32,5 +32,7 @@ struct Constants {
     
     enum UserDefaultsKeys {
         static let crowdMap = "crowdMap"
+        static let keepScreenOn = "keepScreenOn"
+        static let disableMapping = "disableMapping"
     }
 }

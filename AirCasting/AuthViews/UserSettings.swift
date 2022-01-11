@@ -7,6 +7,8 @@ import UIKit
 class UserSettings: ObservableObject {
     private let userDefaults: UserDefaults
     private let crowdMapKey = Constants.UserDefaultsKeys.crowdMap
+    private let disableMappingKey = Constants.UserDefaultsKeys.disableMapping
+    private let keepScreenOnKey = Constants.UserDefaultsKeys.keepScreenOn
     
     var contributingToCrowdMap: Bool {
         get {
@@ -20,18 +22,29 @@ class UserSettings: ObservableObject {
     
     var keepScreenOn: Bool {
         get {
-            userDefaults.bool(forKey: "keepScreenOn")
+            userDefaults.bool(forKey: keepScreenOnKey)
         }
         set {
-            userDefaults.setValue(newValue, forKey: "keepScreenOn")
-            UIApplication.shared.isIdleTimerDisabled = userDefaults.bool(forKey: "keepScreenOn")
+            userDefaults.setValue(newValue, forKey: keepScreenOnKey)
+            UIApplication.shared.isIdleTimerDisabled = userDefaults.bool(forKey: keepScreenOnKey)
             Log.info("Changed keepScreenOn setting to \(keepScreenOn ? "ON" : "OFF")")
+        }
+    }
+    
+    var disableMapping: Bool {
+        get {
+            userDefaults.bool(forKey: disableMappingKey)
+        }
+        set {
+            userDefaults.setValue(newValue, forKey: disableMappingKey)
+            Log.info("Changed disable mapping setting to \(disableMapping ? "ON" : "OFF")")
         }
     }
     
     init(userDefaults: UserDefaults = .standard) {
         self.userDefaults = userDefaults
         contributingToCrowdMap = userDefaults.valueExists(forKey: crowdMapKey) ? userDefaults.bool(forKey: crowdMapKey) : true
-        keepScreenOn = userDefaults.bool(forKey: "keepScreenOn")
+        keepScreenOn = userDefaults.bool(forKey: keepScreenOnKey)
+        disableMapping = userDefaults.bool(forKey: disableMappingKey)
     }
 }
