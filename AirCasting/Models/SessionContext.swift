@@ -23,6 +23,7 @@ final class CreateSessionContext: ObservableObject {
     var startingLocation: CLLocationCoordinate2D?
     var deviceType: DeviceType?
     var contribute: Bool?
+    var locationless: Bool?
 
     private var syncSink: Any?
     
@@ -41,6 +42,7 @@ final class CreateSessionContext: ObservableObject {
         startingLocation = sessionContext.startingLocation
         deviceType = sessionContext.deviceType
         contribute = sessionContext.contribute
+        locationless = sessionContext.locationless
     }
     
     func saveCurrentLocation(lat: Double, log: Double) {

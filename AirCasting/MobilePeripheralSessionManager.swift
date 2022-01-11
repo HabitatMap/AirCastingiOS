@@ -22,7 +22,9 @@ class MobilePeripheralSessionManager {
             do {
                 try storage.createSession(session)
                 DispatchQueue.main.async {
-                    self?.locationProvider.requestLocation()
+                    if !session.locationless {
+                        self?.locationProvider.requestLocation()
+                    }
                     self?.activeMobileSession = MobileSession(peripheral: peripheral, session: session)
                 }
             } catch {
@@ -38,7 +40,7 @@ class MobilePeripheralSessionManager {
 
         if activeMobileSession?.peripheral == measurement.peripheral {
             do {
-                try updateStreams(stream: measurement.measurementStream, sessionUUID: activeMobileSession!.session.uuid)
+                try updateStreams(stream: measurement.measurementStream, sessionUUID: activeMobileSession!.session.uuid, isLocationTracked: activeMobileSession!.session.locationless)
             } catch {
                 Log.error("Unable to save measurement from airbeam to database because of an error: \(error)")
             }
@@ -72,7 +74,9 @@ class MobilePeripheralSessionManager {
         if activeMobileSession?.peripheral == peripheral {
             centralManager.cancelPeripheralConnection(activeMobileSession!.peripheral)
             activeMobileSession = nil
-            locationProvider.stopUpdatingLocation()
+            if activeMobileSession?.session.locationless != true {
+                locationProvider.stopUpdatingLocation()
+            }
         }
     }
 
@@ -98,8 +102,10 @@ class MobilePeripheralSessionManager {
         changeSessionStatusToDisconnected(uuid: sessionUUID)
 
         centralManager.cancelPeripheralConnection(activePeripheral)
+        if activeMobileSession?.session.locationless != true {
+            locationProvider.stopUpdatingLocation()
+        }
         activeMobileSession = nil
-        locationProvider.stopUpdatingLocation()
     }
 
     func moveSessionToStandaloneMode(peripheral: CBPeripheral) {
@@ -132,8 +138,8 @@ class MobilePeripheralSessionManager {
         }
     }
 
-    private func updateStreams(stream: ABMeasurementStream, sessionUUID: SessionUUID) throws {
-        let  location = locationProvider.currentLocation?.coordinate
+    private func updateStreams(stream: ABMeasurementStream, sessionUUID: SessionUUID, isLocationTracked: Bool) throws {
+        let  location = isLocationTracked ? locationProvider.currentLocation?.coordinate : CLLocationCoordinate2D(latitude: 200.0, longitude: 200.0)
 
         measurementStreamStorage.accessStorage { storage in
             do {
@@ -173,9 +179,12 @@ class MobilePeripheralSessionManager {
 
     func configureAB(userAuthenticationSession: UserAuthenticationSession) {
         guard let peripheral = activeMobileSession?.peripheral else { return }
+        locationProvider.requestLocation()
         AirBeam3Configurator(userAuthenticationSession: userAuthenticationSession,
-                             peripheral: peripheral).configureMobileSession(
-                                location: CLLocationCoordinate2D(latitude: 200, longitude: 200))
+                             peripheral: peripheral)
+            .configureMobileSession(
+                location: locationProvider.currentLocation?.coordinate ?? CLLocationCoordinate2D(latitude: 200.0, longitude: 200.0)
+            )
     }
 
     func activeSessionInProgressWith(_ peripheral: CBPeripheral) -> Bool {
