@@ -303,6 +303,7 @@
 		DD700CF22695CE9C0048A17D /* MailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD700CF12695CE9C0048A17D /* MailView.swift */; };
 		DD72DC4226A99D5000325FE5 /* ShareSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD72DC4126A99D5000325FE5 /* ShareSessionView.swift */; };
 		DD7955492757B30F00631A78 /* InAppAlerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD7955482757B30F00631A78 /* InAppAlerts.swift */; };
+		DD7B74AB278C63F80072DDF1 /* style.json in Resources */ = {isa = PBXBuildFile; fileRef = DD7B74AA278C63F80072DDF1 /* style.json */; };
 		DD839E15269F33A6006A8625 /* LocationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD839E14269F33A6006A8625 /* LocationState.swift */; };
 		DD8A36A426C3CE7900C26725 /* ChooseCustomLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8A36A326C3CE7900C26725 /* ChooseCustomLocationView.swift */; };
 		DD8A36A726C3E76200C26725 /* PlacePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8A36A626C3E76200C26725 /* PlacePicker.swift */; };
@@ -665,6 +666,7 @@
 		DD700CF12695CE9C0048A17D /* MailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailView.swift; sourceTree = "<group>"; };
 		DD72DC4126A99D5000325FE5 /* ShareSessionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareSessionView.swift; sourceTree = "<group>"; };
 		DD7955482757B30F00631A78 /* InAppAlerts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppAlerts.swift; sourceTree = "<group>"; };
+		DD7B74AA278C63F80072DDF1 /* style.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = style.json; sourceTree = "<group>"; };
 		DD839E14269F33A6006A8625 /* LocationState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationState.swift; sourceTree = "<group>"; };
 		DD8A36A326C3CE7900C26725 /* ChooseCustomLocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseCustomLocationView.swift; sourceTree = "<group>"; };
 		DD8A36A626C3E76200C26725 /* PlacePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlacePicker.swift; sourceTree = "<group>"; };
@@ -1165,6 +1167,7 @@
 		AC8D6C6825C049C200ED74D1 /* Map */ = {
 			isa = PBXGroup;
 			children = (
+				DD7B74AA278C63F80072DDF1 /* style.json */,
 				750A51D62754D3E800D6F4E7 /* Heatmap */,
 				AC93B8E625BEFE4F003D0A0D /* AirMapView.swift */,
 				AC93B8FD25C02E0B003D0A0D /* GoogleMapView.swift */,
@@ -1973,6 +1976,7 @@
 				AC7EB3AB25A7152000A7F2AF /* Muli-SemiBold.ttf in Resources */,
 				AC7EB3A225A7152000A7F2AF /* Moderat-Trial-Bold.otf in Resources */,
 				AC7EB3A125A7152000A7F2AF /* Muli-BoldItalic.ttf in Resources */,
+				DD7B74AB278C63F80072DDF1 /* style.json in Resources */,
 				AC7EB3AE25A7152000A7F2AF /* Muli-BlackItalic.ttf in Resources */,
 				AC7EB39E25A7152000A7F2AF /* Moderat-Trial-Medium.otf in Resources */,
 				AC7EB3A325A7152000A7F2AF /* Muli-Black.ttf in Resources */,

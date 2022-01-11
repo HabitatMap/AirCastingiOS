@@ -40,6 +40,15 @@ struct GoogleMapView: UIViewRepresentable {
         
         let mapView = GMSMapView.map(withFrame: .zero,
                                      camera: startingPoint)
+        do {
+            if let styleURL = Bundle.main.url(forResource: "style", withExtension: "json") {
+                mapView.mapStyle = try GMSMapStyle(contentsOfFileURL: styleURL)
+            } else {
+                Log.error("Unable to find style.json")
+            }
+        } catch {
+            Log.error("One or more of the map styles failed to load. \(error)")
+        }
         mapView.settings.myLocationButton = liveModeOn
         mapView.delegate = context.coordinator
         mapView.isMyLocationEnabled = isMyLocationEnabled
