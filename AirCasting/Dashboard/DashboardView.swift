@@ -9,13 +9,14 @@ import CoreData
 import SwiftUI
 import AirCastingStyling
 import Combine
+import Resolver
 
 struct DashboardView: View {
     #warning("This hook fires too often - on any stream measurement added/changed. Should only fire when list changes.")
     @StateObject var coreDataHook: CoreDataHook
     @FetchRequest<SensorThreshold>(sortDescriptors: [.init(key: "sensorName", ascending: true)]) var thresholds
     @EnvironmentObject var selectedSection: SelectSection
-    @EnvironmentObject var averaging: AveragingService
+    @Injected private var averaging: AveragingService
     @State var isRefreshing: Bool = false
     private let urlProvider: BaseURLProvider
     private let measurementStreamStorage: MeasurementStreamStorage

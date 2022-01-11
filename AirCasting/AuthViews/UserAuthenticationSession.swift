@@ -140,11 +140,3 @@ final class DefaultLogoutController: LogoutController {
         assertionFailure("[LOGOUT] Failed to log out \(error)")
     }
 }
-
-#if DEBUG
-final class FakeLogoutController: LogoutController {
-    func logout(onEnd: @escaping () -> Void) throws {
-        fatalError("Should not be called. Only for preview")
-    }
-}
-#endif

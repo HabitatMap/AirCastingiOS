@@ -29,18 +29,3 @@ class SettingsViewModelDefault: SettingsViewModel {
         return .airBeam
     }
 }
-
-#if DEBUG
-class DummySettingsViewModelDefault: SettingsViewModel {
-    var sessionContext: CreateSessionContext = CreateSessionContext()
-    
-    var locationHandler: LocationHandler = DummyDefaultLocationHandler()
-    
-    var bluetoothHandler: BluetoothHandler = DummyDefaultBluetoothHandler()
-    
-    func nextStep() -> ProceedToView {
-        return .airBeam
-    }
-    
-}
-#endif

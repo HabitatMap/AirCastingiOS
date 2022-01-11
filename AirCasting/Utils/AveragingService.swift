@@ -48,7 +48,7 @@ enum TimeThreshold: Int {
     case secondThreshold = 32400
 }
 
-final class AveragingService: NSObject, ObservableObject {
+final class AveragingService: NSObject {
     
     private var sessionEntity: SessionEntity?
     private let measurementStreamStorage: MeasurementStreamStorage

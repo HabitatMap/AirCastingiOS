@@ -227,13 +227,3 @@ struct SettingsView: View {
     }
     #endif
 }
-
-#if DEBUG
-struct LogoutView_Previews: PreviewProvider {
-    static var previews: some View {
-        SettingsView(urlProvider: DummyURLProvider(),
-                     logoutController: FakeLogoutController(),
-                     viewModel: DummySettingsViewModelDefault())
-    }
-}
-#endif

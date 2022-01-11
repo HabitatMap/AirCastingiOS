@@ -18,7 +18,6 @@ struct AirCastingApp: App {
     private let syncScheduler: SynchronizationScheduler
     private var sessionSynchronizer: SessionSynchronizer
     private var sessionSynchronizerViewModel: DefaultSessionSynchronizationViewModel
-    private let averagingService: AveragingService
     @Injected private var persistenceController: PersistenceController
     private let appBecameActive = PassthroughSubject<Void, Never>()
     private let sessionSynchronizationController: SessionSynchronizationController
@@ -41,7 +40,6 @@ struct AirCastingApp: App {
         sessionSynchronizationController = unscheduledSyncController
         sessionSynchronizer = ScheduledSessionSynchronizerProxy(controller: unscheduledSyncController,
                                                                 scheduler: DispatchQueue.global())
-        averagingService = AveragingService(measurementStreamStorage: CoreDataMeasurementStreamStorage())
         syncScheduler = .init(synchronizer: sessionSynchronizer,
                               appBecameActive: appBecameActive.eraseToAnyPublisher(),
                               authorization: authorization)
@@ -57,7 +55,6 @@ struct AirCastingApp: App {
                         urlProvider: urlProvider)
                 .environmentObject(sessionSynchronizerViewModel)
                 .environmentObject(authorization)
-                .environmentObject(averagingService)
                 .environmentObject(lifeTimeEventsProvider)
                 .alert(isPresented: $offlineMessageViewModel.showOfflineMessage, content: { Alert.offlineAlert })
         }.onChange(of: scenePhase) { newScenePhase in

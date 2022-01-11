@@ -23,7 +23,7 @@ struct RootAppView: View {
     @StateObject private var userState = UserState()
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     @EnvironmentObject var lifeTimeEventsProvider: LifeTimeEventsProvider
-    @EnvironmentObject var averagingService: AveragingService
+    @Injected private var averagingService: AveragingService
     
     let locationTracker = LocationTracker(locationManager: CLLocationManager())
     var sessionSynchronizer: SessionSynchronizer
@@ -62,7 +62,7 @@ struct RootAppView: View {
         .environmentObject(userSettings)
         .environmentObject(locationTracker)
         .environmentObject(userRedirectionSettings)
-//        .environment(\.managedObjectContext, persistenceController.viewContext)
+        .environment(\.managedObjectContext, Resolver.resolve(PersistenceController.self).viewContext) //TODO: Where is this used??
         .onAppear {
             airBeamConnectionController = DefaultAirBeamConnectionController(connectingAirBeamServices: ConnectingAirBeamServicesBluetooth(bluetoothConnector: bluetoothManager))
             

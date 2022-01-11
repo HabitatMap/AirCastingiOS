@@ -57,11 +57,3 @@ private extension MyAccountViewSignOut {
         .padding()
     }
 }
-
-#if DEBUG
-struct MyAccountViewSingOut_Previews: PreviewProvider {
-    static var previews: some View {
-        MyAccountViewSignOut(logoutController: FakeLogoutController())
-    }
-}
-#endif

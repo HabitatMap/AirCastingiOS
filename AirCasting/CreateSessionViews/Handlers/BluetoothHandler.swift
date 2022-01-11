@@ -24,15 +24,3 @@ class DefaultBluetoothHandler: BluetoothHandler {
         CBCentralManager.authorization != .allowedAlways || bluetoothManager.centralManager.state != .poweredOn ? true : false
     }
 }
-
-#if DEBUG
-class DummyDefaultBluetoothHandler: BluetoothHandler {
-    var bluetoothManager = BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
-    
-    var bluetoothManagerState: CBManagerState = .unauthorized
-    
-    func isBluetoothDenied() -> Bool {
-        return true
-    }
-}
-#endif
