@@ -8,13 +8,14 @@
 import AirCastingStyling
 import CoreBluetooth
 import SwiftUI
+import Resolver
 
 struct TurnOnBluetoothView: View {
     @State private var isPowerABLinkActive = false
     @State private var presentRestartScreen = false
     @State private var presentUnplugScreen = false
     @EnvironmentObject var settingsRedirection: DefaultSettingsRedirection
-    @EnvironmentObject var bluetoothManager: BluetoothManager
+    @InjectedObject private var bluetoothManager: BluetoothManager
     @Binding var creatingSessionFlowContinues: Bool
     @Binding var sdSyncContinues: Bool
     var isSDClearProcess: Bool = false

@@ -2,13 +2,14 @@
 //
 
 import Foundation
+import Resolver
 
 class StandardSesssionStopper: SessionStoppable {
     private let uuid: SessionUUID
     private let measurementStreamStorage: MeasurementStreamStorage
-    private let bluetoothManager: BluetoothManager
+    @Injected private var bluetoothManager: BluetoothManager
     
-    init(uuid: SessionUUID, measurementStreamStorage: MeasurementStreamStorage, bluetoothManager: BluetoothManager) {
+    init(uuid: SessionUUID, measurementStreamStorage: MeasurementStreamStorage) {
         self.uuid = uuid
         self.measurementStreamStorage = measurementStreamStorage
         self.bluetoothManager = bluetoothManager

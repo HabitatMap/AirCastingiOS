@@ -6,7 +6,6 @@ import SwiftUI
 struct SDSyncRootView<VM: SDSyncRootViewModel>: View {
     @StateObject var viewModel: VM
     @EnvironmentObject private var finishAndSyncButtonTapped: FinishAndSyncButtonTapped
-    @EnvironmentObject var bluetoothManager: BluetoothManager
     @Binding var creatingSessionFlowContinues: Bool
     
     var body: some View {
@@ -67,19 +66,10 @@ private extension SDSyncRootView {
     
     var navigationLink: some View {
         NavigationLink(
-            destination: BackendSyncCompletedView(viewModel: BackendSyncCompletedViewModelDefault(urlProvider: viewModel.urlProvider, bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: bluetoothManager)), creatingSessionFlowContinues: $creatingSessionFlowContinues),
+            destination: BackendSyncCompletedView(viewModel: BackendSyncCompletedViewModelDefault(urlProvider: viewModel.urlProvider, bluetoothHandler: DefaultBluetoothHandler()), creatingSessionFlowContinues: $creatingSessionFlowContinues),
             isActive: .init(get: { viewModel.backendSyncCompleted }, set: { _ in }),
             label: {
                 EmptyView()
             })
     }
 }
-
-#if DEBUG
-struct SDSyncRootView_Previews: PreviewProvider {
-    static var previews: some View {
-        SDSyncRootView(viewModel: DummySDSyncRootViewModelDefault(),
-                       creatingSessionFlowContinues: .constant(false))
-    }
-}
-#endif

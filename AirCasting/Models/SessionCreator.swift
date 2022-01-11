@@ -54,12 +54,11 @@ final class MobilePeripheralSessionCreator: SessionCreator {
     enum MobilePeripheralSessionCreatorError: Swift.Error {
         case invalidCreateSessionContext(CreateSessionContext)
     }
-    let mobilePeripheralSessionManager: MobilePeripheralSessionManager
+    @Injected private var mobilePeripheralSessionManager: MobilePeripheralSessionManager
     let userAuthenticationSession: UserAuthenticationSession
     @Injected private var measurementStreamStorage: MeasurementStreamStorage
 
-    init(mobilePeripheralSessionManager: MobilePeripheralSessionManager, userAuthenticationSession: UserAuthenticationSession) {
-        self.mobilePeripheralSessionManager = mobilePeripheralSessionManager
+    init(userAuthenticationSession: UserAuthenticationSession) {
         self.userAuthenticationSession = userAuthenticationSession
     }
 

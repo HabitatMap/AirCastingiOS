@@ -6,6 +6,7 @@
 //
 import AirCastingStyling
 import SwiftUI
+import Resolver
 
 struct SessionHeaderView: View {
     let action: () -> Void
@@ -15,7 +16,7 @@ struct SessionHeaderView: View {
     @Binding var isCollapsed: Bool
     @State var chevronIndicator = "chevron.down"
     @EnvironmentObject var networkChecker: NetworkChecker
-    @EnvironmentObject var bluetoothManager: BluetoothManager
+    @InjectedObject private var bluetoothManager: BluetoothManager
     let urlProvider: BaseURLProvider
     @EnvironmentObject var selectedSection: SelectSection
     @ObservedObject var session: SessionEntity

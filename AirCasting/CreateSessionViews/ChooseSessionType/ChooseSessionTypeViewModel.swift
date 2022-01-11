@@ -3,6 +3,7 @@
 
 import Foundation
 import CoreBluetooth
+import Resolver
 
 enum ProceedToView {
     case airBeam
@@ -18,7 +19,6 @@ class ChooseSessionTypeViewModel {
     private let userSettings: UserSettings
     private let sessionContext: CreateSessionContext
     private let urlProvider: BaseURLProvider
-    private var bluetoothManager: BluetoothManager
     private var bluetoothManagerState: CBManagerState
     
     var passURLProvider: BaseURLProvider {
@@ -29,10 +29,6 @@ class ChooseSessionTypeViewModel {
         return locationHandler
     }
     
-    var passBluetoothHandler: BluetoothHandler {
-        return bluetoothHandler
-    }
-    
     var passSessionContext: CreateSessionContext {
         return sessionContext
     }
@@ -40,18 +36,13 @@ class ChooseSessionTypeViewModel {
     var passUserSettings: UserSettings {
         return userSettings
     }
-    
-    var passBluetoothManager: BluetoothManager {
-        return bluetoothManager
-    }
 
-    init(locationHandler: LocationHandler, bluetoothHandler: BluetoothHandler, userSettings: UserSettings, sessionContext: CreateSessionContext, urlProvider: BaseURLProvider, bluetoothManager: BluetoothManager, bluetoothManagerState: CBManagerState) {
+    init(locationHandler: LocationHandler, bluetoothHandler: BluetoothHandler, userSettings: UserSettings, sessionContext: CreateSessionContext, urlProvider: BaseURLProvider, bluetoothManagerState: CBManagerState) {
         self.locationHandler = locationHandler
         self.bluetoothHandler = bluetoothHandler
         self.userSettings = userSettings
         self.sessionContext = sessionContext
         self.urlProvider = urlProvider
-        self.bluetoothManager = bluetoothManager
         self.bluetoothManagerState = bluetoothManagerState
     }
 

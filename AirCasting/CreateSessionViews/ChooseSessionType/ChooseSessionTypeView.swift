@@ -7,6 +7,7 @@
 
 import SwiftUI
 import AirCastingStyling
+import Resolver
 
 struct ChooseSessionTypeView: View {
     @State private var isInfoPresented: Bool = false
@@ -25,6 +26,8 @@ struct ChooseSessionTypeView: View {
     @EnvironmentObject private var emptyDashboardButtonTapped: EmptyDashboardButtonTapped
     @EnvironmentObject private var finishAndSyncButtonTapped: FinishAndSyncButtonTapped
     @EnvironmentObject var networkChecker: NetworkChecker
+    
+    @InjectedObject private var bluetoothManger: BluetoothManager //TODO: Fix this (see usage) - move to VM
     
     var shouldGoToChooseSessionScreen: Bool {
         (tabSelection.selection == .createSession && emptyDashboardButtonTapped.mobileWasTapped) ? true : false
@@ -49,7 +52,7 @@ struct ChooseSessionTypeView: View {
                     CreatingSessionFlowRootView {
                         TurnOnLocationView(creatingSessionFlowContinues: $isTurnLocationOnLinkActive,
                                            viewModel: TurnOnLocationViewModel(locationHandler: viewModel.locationHandler,
-                                                                              bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: viewModel.passBluetoothManager),
+                                                                              bluetoothHandler: DefaultBluetoothHandler(),
                                                                               sessionContext: viewModel.passSessionContext,
                                                                               urlProvider: viewModel.passURLProvider,
                                                                               isSDClearProcess: false))
@@ -78,7 +81,8 @@ struct ChooseSessionTypeView: View {
                                                                              urlProvider: viewModel.passURLProvider), creatingSessionFlowContinues: $startSync)
                     }
                 }
-                .onChange(of: viewModel.passBluetoothManager.centralManagerState) { _ in
+                // TODO: What is that??? Move to VM!
+                .onChange(of: bluetoothManger.centralManagerState) { _ in
                     if didTapFixedSession {
                         didTapFixedSession = false
                     }
@@ -109,7 +113,8 @@ struct ChooseSessionTypeView: View {
                             .fullScreenCover(isPresented: $isTurnLocationOnLinkActive) {
                                 CreatingSessionFlowRootView {
                                     TurnOnLocationView(creatingSessionFlowContinues: $isTurnLocationOnLinkActive,
-                                                       viewModel: TurnOnLocationViewModel(locationHandler: viewModel.locationHandler, bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: viewModel.passBluetoothManager),
+                                                       viewModel: TurnOnLocationViewModel(locationHandler: viewModel.locationHandler,
+                                                                                          bluetoothHandler: DefaultBluetoothHandler(),
                                                                                           sessionContext: viewModel.passSessionContext,
                                                                                           urlProvider: viewModel.passURLProvider,
                                                                                           isSDClearProcess: false))
@@ -141,7 +146,8 @@ struct ChooseSessionTypeView: View {
                             }
                     }
                 )
-                .onChange(of: viewModel.passBluetoothManager.centralManagerState) { _ in
+                // TODO: What is that??? Move to VM!
+                .onChange(of: bluetoothManger.centralManagerState) { _ in
                     if didTapFixedSession {
                         didTapFixedSession = false
                     }

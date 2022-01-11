@@ -16,7 +16,6 @@ struct RootAppView: View {
     @State private var sessionStoppableFactory: SessionStoppableFactoryDefault?
     @State private var downloadService: DownloadMeasurementsService?
     @State private var sdSyncController: SDSyncController?
-    @StateObject private var bluetoothManager = BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: CoreDataMeasurementStreamStorage()))
     
     @StateObject private var userSettings = UserSettings()
     @StateObject private var userRedirectionSettings = DefaultSettingsRedirection()
@@ -56,7 +55,6 @@ struct RootAppView: View {
             }
         }
         .environmentObject(userState)
-        .environmentObject(bluetoothManager)
         .environmentObject(userAuthenticationSession)
         .environmentObject(networkChecker)
         .environmentObject(userSettings)
@@ -64,11 +62,10 @@ struct RootAppView: View {
         .environmentObject(userRedirectionSettings)
         .environment(\.managedObjectContext, Resolver.resolve(PersistenceController.self).viewContext) //TODO: Where is this used??
         .onAppear {
-            airBeamConnectionController = DefaultAirBeamConnectionController(connectingAirBeamServices: ConnectingAirBeamServicesBluetooth(bluetoothConnector: bluetoothManager))
+            airBeamConnectionController = DefaultAirBeamConnectionController(connectingAirBeamServices: ConnectingAirBeamServicesBluetooth())
             
             sessionStoppableFactory = SessionStoppableFactoryDefault(measurementStreamStorage: measurementStreamStorage,
-                                                                     synchronizer: sessionSynchronizer,
-                                                                     bluetoothManager: bluetoothManager)
+                                                                     synchronizer: sessionSynchronizer)
             downloadService = DownloadMeasurementsService(authorisationService: userAuthenticationSession,
                                                           baseUrl: urlProvider)
             let mobileSessionsService = SDCardMobileSessionsSavingService(measurementStreamStorage: measurementStreamStorage,
@@ -79,7 +76,7 @@ struct RootAppView: View {
             
             let fixedSessionsService = SDCardFixedSessionsSavingService(apiService: apiService)
             
-            sdSyncController = SDSyncController(airbeamServices: BluetoothSDCardAirBeamServices(bluetoothManager: bluetoothManager, userAuthenticationSession: userAuthenticationSession),
+            sdSyncController = SDSyncController(airbeamServices: BluetoothSDCardAirBeamServices(userAuthenticationSession: userAuthenticationSession),
                                                 fileWriter: SDSyncFileWritingService(bufferThreshold: 10000),
                                                 fileValidator: SDSyncFileValidationService(fileLineReader: DefaultFileLineReader()),
                                                 fileLineReader: DefaultFileLineReader(),
@@ -105,7 +102,6 @@ struct MainAppView: View {
     @Injected private var persistenceController: PersistenceController
     
     @EnvironmentObject private var userAuthenticationSession: UserAuthenticationSession
-    @EnvironmentObject private var bluetoothManager: BluetoothManager
     @EnvironmentObject private var user: UserState
     
     var body: some View {

@@ -8,6 +8,7 @@
 import CoreData
 import CoreBluetooth
 import SwiftUI
+import Resolver
 
 struct MainTabBarView: View {
     let measurementUpdatingService: MeasurementUpdatingService
@@ -19,7 +20,7 @@ struct MainTabBarView: View {
     let sessionStoppableFactory: SessionStoppableFactory
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     @EnvironmentObject var userSettings: UserSettings
-    @EnvironmentObject var bluetoothManager: BluetoothManager
+    @InjectedObject private var bluetoothManager: BluetoothManager
     let sessionSynchronizer: SessionSynchronizer
     @StateObject var tabSelection: TabBarSelection = TabBarSelection()
     @StateObject var selectedSection = SelectSection()
@@ -101,11 +102,10 @@ private extension MainTabBarView {
     
     private var createSessionTab: some View {
         ChooseSessionTypeView(viewModel: ChooseSessionTypeViewModel(locationHandler: locationHandler,
-                                                                    bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: bluetoothManager),
+                                                                    bluetoothHandler: DefaultBluetoothHandler(),
                                                                     userSettings: userSettings,
                                                                     sessionContext: sessionContext,
                                                                     urlProvider: urlProvider,
-                                                                    bluetoothManager: bluetoothManager,
                                                                     bluetoothManagerState: bluetoothManager.centralManagerState),
                               sessionSynchronizer: sessionSynchronizer)
             .tabItem {
@@ -118,7 +118,10 @@ private extension MainTabBarView {
         SettingsView(urlProvider: UserDefaultsBaseURLProvider(),
                      logoutController: DefaultLogoutController(userAuthenticationSession: userAuthenticationSession,
                                                                sessionStorage: SessionStorage(),
-                                                               sessionSynchronizer: sessionSynchronizer), viewModel: SettingsViewModelDefault(locationHandler: locationHandler, bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: bluetoothManager), sessionContext: CreateSessionContext()))
+                                                               sessionSynchronizer: sessionSynchronizer),
+                     viewModel: SettingsViewModelDefault(locationHandler: locationHandler,
+                                                         bluetoothHandler: DefaultBluetoothHandler(),
+                                                         sessionContext: CreateSessionContext()))
             .tabItem {
                 Image(settingsImage)
             }

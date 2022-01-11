@@ -8,11 +8,12 @@
 import AirCastingStyling
 import CoreBluetooth
 import SwiftUI
+import Resolver
 
 struct SelectPeripheralView: View {
     @State private var selection: CBPeripheral? = nil
     var SDClearingRouteProcess: Bool
-    @EnvironmentObject var bluetoothManager: BluetoothManager
+    @InjectedObject private var bluetoothManager: BluetoothManager
     @EnvironmentObject var sessionContext: CreateSessionContext
     @EnvironmentObject var connectionController: DefaultAirBeamConnectionController
     @EnvironmentObject var sdSyncController: SDSyncController

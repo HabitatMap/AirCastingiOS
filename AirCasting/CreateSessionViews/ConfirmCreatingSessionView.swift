@@ -23,8 +23,6 @@ struct ConfirmCreatingSessionView: View {
     @EnvironmentObject private var locationTracker: LocationTracker
     @EnvironmentObject private var tabSelection: TabBarSelection
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
-    @InjectedObject private var microphoneManager: MicrophoneManager
-    @EnvironmentObject var bluetoothManager: BluetoothManager
     @Binding var creatingSessionFlowContinues: Bool
     let baseURL: BaseURLProvider
     var sessionName: String
@@ -167,7 +165,6 @@ extension ConfirmCreatingSessionView {
             return MicrophoneSessionCreator()
         } else if sessionContext.sessionType == .mobile {
             return MobilePeripheralSessionCreator(
-                mobilePeripheralSessionManager: bluetoothManager.mobilePeripheralSessionManager,
                 userAuthenticationSession: userAuthenticationSession)
         } else {
             return nil

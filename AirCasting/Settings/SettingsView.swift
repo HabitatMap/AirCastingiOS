@@ -19,7 +19,6 @@ struct SettingsView: View {
     @State private var locationScreenGo = false
     private var SDClearingRouteProcess = true
     @EnvironmentObject var userSettings: UserSettings
-    @EnvironmentObject var bluetoothManager: BluetoothManager
     @StateObject private var featureFlagsViewModel = FeatureFlagsViewModel.shared
     
     init(urlProvider: BaseURLProvider, logoutController: LogoutController, viewModel: SettingsViewModel) {
@@ -47,7 +46,7 @@ struct SettingsView: View {
                 CreatingSessionFlowRootView {
                     TurnOnLocationView(creatingSessionFlowContinues: $locationScreenGo,
                                        viewModel: TurnOnLocationViewModel(locationHandler: viewModel.locationHandler,
-                                                                          bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: bluetoothManager),
+                                                                          bluetoothHandler: DefaultBluetoothHandler(),
                                                                           sessionContext: viewModel.sessionContext,
                                                                           urlProvider: urlProvider,
                                                                           isSDClearProcess: SDClearingRouteProcess))
@@ -80,7 +79,9 @@ struct SettingsView: View {
                         .fullScreenCover(isPresented: $locationScreenGo) {
                             CreatingSessionFlowRootView {
                                 TurnOnLocationView(creatingSessionFlowContinues: $locationScreenGo,
-                                                   viewModel: TurnOnLocationViewModel(locationHandler: viewModel.locationHandler, bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: bluetoothManager), sessionContext: viewModel.sessionContext,
+                                                   viewModel: TurnOnLocationViewModel(locationHandler: viewModel.locationHandler,
+                                                                                      bluetoothHandler: DefaultBluetoothHandler(),
+                                                                                      sessionContext: viewModel.sessionContext,
                                                                                       urlProvider: urlProvider,
                                                                                       isSDClearProcess: SDClearingRouteProcess))
                             }
