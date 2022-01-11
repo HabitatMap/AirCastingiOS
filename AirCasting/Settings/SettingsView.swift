@@ -127,7 +127,9 @@ struct SettingsView: View {
                 Spacer()
                 crowdMapDescription
             }
-            disableMappingSwitch
+            if featureFlagsViewModel.enabledFeatures.contains(.disableMapping) {
+                disableMappingSwitch
+            }
             keepScreenOnSwitch
             if featureFlagsViewModel.enabledFeatures.contains(.sdCardSync) {
                 clearSDCard
