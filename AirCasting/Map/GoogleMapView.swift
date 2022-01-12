@@ -49,7 +49,7 @@ struct GoogleMapView: UIViewRepresentable {
         } catch {
             Log.error("One or more of the map styles failed to load. \(error)")
         }
-        mapView.settings.myLocationButton = liveModeOn
+        mapView.settings.myLocationButton = true
         mapView.delegate = context.coordinator
         mapView.isMyLocationEnabled = isMyLocationEnabled
         drawPolyline(mapView, context: context)
@@ -245,10 +245,19 @@ struct GoogleMapView: UIViewRepresentable {
         }
         
         func centerMap(for mapView: GMSMapView) {
-            let camera = GMSCameraPosition.camera(withLatitude: parent.tracker.locationManager.location!.coordinate.latitude,
-                                                  longitude: parent.tracker.locationManager.location!.coordinate.longitude,
-                                                  zoom: 16)
-            mapView.animate(to: camera)
+            switch parent.liveModeOn {
+            case true:
+                let camera = GMSCameraPosition.camera(withLatitude: parent.tracker.locationManager.location!.coordinate.latitude,
+                                                      longitude: parent.tracker.locationManager.location!.coordinate.longitude,
+                                                      zoom: 16)
+                mapView.animate(to: camera)
+            case false:
+                let camera = GMSCameraPosition.camera(withLatitude: parent.pathPoints.last?.location.latitude ?? 37.35,
+                                                      longitude: parent.pathPoints.last?.location.longitude ?? -122.05,
+                                                      zoom: 16)
+                mapView.animate(to: camera)
+                
+            }
         }
 
         private func positionChanged(for mapView: GMSMapView) {
