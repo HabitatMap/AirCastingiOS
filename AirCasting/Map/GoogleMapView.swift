@@ -245,19 +245,14 @@ struct GoogleMapView: UIViewRepresentable {
         }
         
         func centerMap(for mapView: GMSMapView) {
-            switch parent.liveModeOn {
-            case true:
-                let camera = GMSCameraPosition.camera(withLatitude: parent.tracker.locationManager.location!.coordinate.latitude,
-                                                      longitude: parent.tracker.locationManager.location!.coordinate.longitude,
-                                                      zoom: 16)
-                mapView.animate(to: camera)
-            case false:
-                let camera = GMSCameraPosition.camera(withLatitude: parent.pathPoints.last?.location.latitude ?? 37.35,
-                                                      longitude: parent.pathPoints.last?.location.longitude ?? -122.05,
-                                                      zoom: 16)
-                mapView.animate(to: camera)
-                
-            }
+            let lat = parent.liveModeOn ?
+            parent.tracker.locationManager.location!.coordinate.latitude :
+            parent.pathPoints.last?.location.latitude ?? 37.35
+            let long = parent.liveModeOn ?
+            parent.tracker.locationManager.location!.coordinate.longitude :
+            parent.pathPoints.last?.location.longitude ?? -122.05
+            let camera = GMSCameraPosition.camera(withLatitude: lat, longitude: long, zoom: 16)
+            mapView.animate(to: camera)
         }
 
         private func positionChanged(for mapView: GMSMapView) {
