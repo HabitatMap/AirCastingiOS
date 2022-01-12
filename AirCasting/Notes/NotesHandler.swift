@@ -3,12 +3,11 @@
 
 import Foundation
 
-//TODO: Remove all "Database" suffixes here plz
 protocol NotesHandler {
-    func addNoteToDatabase(noteText: String)
-    func deleteNoteFromDatabase(note: Note)
-    func updateNoteInDatabase(note: Note, newText: String)
-    func getNotesFromDatabase(completion: @escaping ([Note]) -> Void)
+    func addNote(noteText: String)
+    func deleteNote(note: Note)
+    func updateNote(note: Note, newText: String)
+    func getNotes(completion: @escaping ([Note]) -> Void)
     func fetchSpecifiedNote(number: Int, completion: @escaping (Note) -> Void)
 }
 
@@ -23,7 +22,7 @@ class NotesHandlerDefault: NotesHandler {
         self.locationTracker = locationTracker
     }
     
-    func addNoteToDatabase(noteText: String) {
+    func addNote(noteText: String) {
         measurementStreamStorage.accessStorage { [self] storage in
             do {
                 let currentNumber = try storage.getNotes(for: sessionUUID).map(\.number).sorted(by: < ).last
@@ -39,7 +38,7 @@ class NotesHandlerDefault: NotesHandler {
         }
     }
     
-    func deleteNoteFromDatabase(note: Note) {
+    func deleteNote(note: Note) {
         measurementStreamStorage.accessStorage { [self] storage in
             do {
                 try storage.deleteNote(note, for: sessionUUID)
@@ -49,7 +48,7 @@ class NotesHandlerDefault: NotesHandler {
         }
     }
     
-    func updateNoteInDatabase(note: Note, newText: String) {
+    func updateNote(note: Note, newText: String) {
         measurementStreamStorage.accessStorage { [self] storage in
             do {
                 try storage.updateNote(note, newText: newText, for: sessionUUID)
@@ -59,7 +58,7 @@ class NotesHandlerDefault: NotesHandler {
         }
     }
     
-    func getNotesFromDatabase(completion: @escaping ([Note]) -> Void) {
+    func getNotes(completion: @escaping ([Note]) -> Void) {
         measurementStreamStorage.accessStorage { [self] storage in
             do {
                 completion(try storage.getNotes(for: sessionUUID))

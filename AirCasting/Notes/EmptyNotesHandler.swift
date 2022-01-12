@@ -4,11 +4,11 @@
 import Foundation
 
 class EmptyNotesHandler: NotesHandler {
-    func addNoteToDatabase(noteText: String) {
+    func addNote(noteText: String) {
         fatalError()
     }
     
-    func updateNoteInDatabase(note: Note, newText: String) {
+    func updateNote(note: Note, newText: String) {
         fatalError()
     }
     
@@ -20,11 +20,11 @@ class EmptyNotesHandler: NotesHandler {
         fatalError()
     }
     
-    func deleteNoteFromDatabase(note: Note) {
+    func deleteNote(note: Note) {
         fatalError()
     }
     
-    func getNotesFromDatabase(completion: ([Note]) -> Void) {
+    func getNotes(completion: ([Note]) -> Void) {
         completion([])
     }
     

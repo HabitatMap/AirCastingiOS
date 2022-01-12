@@ -77,7 +77,7 @@ struct Graph: UIViewRepresentable {
         context.coordinator.currentMeasurementsNumber = calculateSeeingPointsNumber(entries: entries, uiView: uiView)
         context.coordinator.entries = entries
         context.coordinator.stream = stream
-        notesHandler.getNotesFromDatabase { notes in
+        notesHandler.getNotes { notes in
             uiView.setupNotes(notes) { noteAction?($0) }
         }
         return uiView

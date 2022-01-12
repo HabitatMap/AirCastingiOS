@@ -17,7 +17,7 @@ class MapNotesViewModelDefault: ObservableObject {
     
     init(notesHandler: NotesHandler) {
         self.notesHandler = notesHandler
-        notesHandler.getNotesFromDatabase { notes in
+        notesHandler.getNotes { notes in
             DispatchQueue.main.async {
                 self.notes = notes.map({ note in
                         .init(id: note.number,

@@ -26,11 +26,11 @@ class EditNoteViewModelDefault: EditNoteViewModel, ObservableObject {
     }
     
     func saveTapped() {
-        notesHandler.updateNoteInDatabase(note: note, newText: noteText); exitRoute()
+        notesHandler.updateNote(note: note, newText: noteText); exitRoute()
     }
     
     func deleteTapped() {
-        notesHandler.deleteNoteFromDatabase(note: note); exitRoute()
+        notesHandler.deleteNote(note: note); exitRoute()
     }
     
     func cancelTapped() {

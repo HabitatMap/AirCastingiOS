@@ -20,7 +20,7 @@ class AddNoteViewModelDefault: AddNoteViewModel, ObservableObject {
     }
     
     func continueTapped() {
-        notesHandler.addNoteToDatabase(noteText: noteText)
+        notesHandler.addNote(noteText: noteText)
         exitRoute()
     }
     
