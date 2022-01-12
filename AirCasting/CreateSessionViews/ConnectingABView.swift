@@ -7,6 +7,7 @@
 
 import CoreBluetooth
 import SwiftUI
+import AirCastingStyling
 
 struct ConnectingABView<VM: AirbeamConnectionViewModel>: View {
     
@@ -19,22 +20,25 @@ struct ConnectingABView<VM: AirbeamConnectionViewModel>: View {
     
     
     var body: some View {
-        VStack(spacing: 50) {
+        VStack() {
             ProgressView(value: 0.5)
+                .padding(.bottom, 50)
             ZStack(alignment: Alignment(horizontal: .trailing, vertical: .bottom), content: {
                 Image("airbeam")
                     .resizable()
-                    .aspectRatio(contentMode: .fit)
+                    .scaledToFit()
+                    .padding(.bottom, 15)
                 loader
                     .padding()
                     .padding(.vertical)
-            })
-            
+            }).frame(width: UIScreen.main.bounds.width - 40, height:  UIScreen.main.bounds.height / 2, alignment: .center)
             VStack(alignment: .leading, spacing: 15) {
-                titleLabel
-                messageLabel
-            }
-        }.background(
+               titleLabel
+               messageLabel
+           }
+            Spacer()
+        }
+        .background(
             NavigationLink(
                 destination: ABConnectedView(creatingSessionFlowContinues: $creatingSessionFlowContinues, baseURL: baseURL),
                 isActive: $showNextScreen,
@@ -82,7 +86,7 @@ struct ConnectingABView<VM: AirbeamConnectionViewModel>: View {
     var loader: some View {
         ZStack {
             Color.accentColor
-                .frame(width: 70, height: 70)
+                .frame(width: 90, height: 90)
                 .clipShape(Circle())
             ProgressView()
                 .progressViewStyle(CircularProgressViewStyle(tint: Color.white))
