@@ -22,16 +22,16 @@ struct ConnectingABView<VM: AirbeamConnectionViewModel>: View {
     var body: some View {
         VStack() {
             ProgressView(value: 0.25)
-                .padding(.bottom, 45)
+                .padding(.bottom, 50)
             ZStack(alignment: Alignment(horizontal: .trailing, vertical: .bottom), content: {
                 Image("airbeam")
                     .resizable()
                     .scaledToFit()
-                    .frame(width: UIScreen.main.bounds.width - 40, height:  UIScreen.main.bounds.height / 2, alignment: .center)
+                    .padding(.bottom, 15)
                 loader
                     .padding()
                     .padding(.vertical)
-            })
+            }).frame(width: UIScreen.main.bounds.width - 40, height:  UIScreen.main.bounds.height / 2, alignment: .center)
             VStack(alignment: .leading, spacing: 15) {
                titleLabel
                messageLabel
