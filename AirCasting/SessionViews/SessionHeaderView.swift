@@ -39,16 +39,20 @@ struct SessionHeaderView: View {
                     DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session, measurementStreamStorage: measurementStreamStorage, streamRemover: DefaultSessionUpdateService(authorization: authorization, urlProvider: urlProvider), sessionSynchronizer: sessionSynchronizer), deleteModal: $showDeleteModal)
                 }
                 .sheet(isPresented: $showShareModal) {
-                    ShareSessionView(viewModel: DefaultShareSessionViewModel(session: session, apiClient: ShareSessionApi(urlProvider: urlProvider), exitRoute: { result in
-                                            showShareModal.toggle()
-                        if result == .fileShared {
-                                                detectEmailSent = true
-                                            }
-                                        })).onDisappear(perform: {
-                                            if detectEmailSent {
-                                                alert = InAppAlerts.shareFileRequestSent()
-                                            }
-                                        })
+                    if session.locationless {
+                        ShareLocationlessSessionView(viewModel: ShareLocationlessSessionViewModel(session: session, fileGenerator: DefaultCSVFileGenerator(), exitRoute: { showShareModal.toggle() }))
+                    } else {
+                        ShareSessionView(viewModel: DefaultShareSessionViewModel(session: session, apiClient: ShareSessionApi(urlProvider: urlProvider), exitRoute: { result in
+                                                showShareModal.toggle()
+                            if result == .fileShared {
+                                                    detectEmailSent = true
+                                                }
+                                            })).onDisappear(perform: {
+                                                if detectEmailSent {
+                                                    alert = InAppAlerts.shareFileRequestSent()
+                                                }
+                                            })
+                    }
                 }
                 .sheet(isPresented: $showEditView) {
                     editViewSheet
@@ -66,12 +70,16 @@ struct SessionHeaderView: View {
                             }
                         EmptyView()
                             .sheet(isPresented: $showShareModal) {
-                                ShareSessionView(viewModel: DefaultShareSessionViewModel(session: session, apiClient: ShareSessionApi(urlProvider: urlProvider), exitRoute: { result in
-                                    showShareModal.toggle()
-                                    if result == .fileShared {
-                                        alert = InAppAlerts.shareFileRequestSent()
-                                    }
-                                }))
+                                if session.locationless {
+                                    ShareLocationlessSessionView(viewModel: ShareLocationlessSessionViewModel(session: session, fileGenerator: DefaultCSVFileGenerator(), exitRoute: { showShareModal.toggle() }))
+                                } else {
+                                    ShareSessionView(viewModel: DefaultShareSessionViewModel(session: session, apiClient: ShareSessionApi(urlProvider: urlProvider), exitRoute: { result in
+                                        showShareModal.toggle()
+                                        if result == .fileShared {
+                                            alert = InAppAlerts.shareFileRequestSent()
+                                        }
+                                    }))
+                                }
                             }
                         EmptyView()
                             .sheet(isPresented: $showDeleteModal) {
