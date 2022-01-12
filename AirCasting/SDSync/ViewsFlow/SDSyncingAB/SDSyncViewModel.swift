@@ -68,7 +68,6 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
                     }
                 }
             }, completion: { [weak self] result in
-                //TODO: SD card should be cleared only if the files are not corrupted
                 guard let self = self else { return }
                 if result {
                     self.clearSDCard()
