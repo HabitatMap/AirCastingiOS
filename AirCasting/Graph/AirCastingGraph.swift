@@ -183,7 +183,7 @@ extension AirCastingGraph {
     }
     
     private func createNewNoteButton() -> UIButton {
-        let button = UIButton(type: .system)
+        let button = UIButton(type: .custom)
         button.setImage(UIImage(named: "message-square"), for: .normal)
         button.addTarget(self, action: #selector(noteTapped), for: .touchUpInside)
         return button
@@ -238,7 +238,7 @@ extension AirCastingGraph {
         }
         let yValue = Double(entry.yValue)
         let position = lineChartView.pixelForValues(x: xValue, y: yValue, axis: YAxis.AxisDependency.left)
-        let buttonSize = 40.0
+        let buttonSize = 20.0
         return CGRect(x: position.x, y: position.y - buttonSize, width: buttonSize, height: buttonSize)
     }
     

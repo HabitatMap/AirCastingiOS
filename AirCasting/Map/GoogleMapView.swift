@@ -51,6 +51,7 @@ struct GoogleMapView: UIViewRepresentable {
         mapView.delegate = context.coordinator
         mapView.isMyLocationEnabled = isMyLocationEnabled
         drawPolyline(mapView, context: context)
+        context.coordinator.mapNotesCounter = mapNotes.count
         context.coordinator.currentlyDisplayedPathPoints = pathPoints
         context.coordinator.currentThresholdWitness = ThresholdWitness(sensorThreshold: threshold)
         context.coordinator.currentThreshold = threshold
@@ -72,6 +73,10 @@ struct GoogleMapView: UIViewRepresentable {
     
     func updateUIView(_ uiView: GMSMapView, context: Context) {
         placeNotes(uiView, notes: mapNotes)
+        if mapNotes.count != context.coordinator.mapNotesCounter {
+            placeNotes(uiView, notes: mapNotes)
+            context.coordinator.mapNotesCounter = mapNotes.count
+        }
         guard isUserInteracting else { return }
         let thresholdWitness = ThresholdWitness(sensorThreshold: self.threshold)
   
@@ -201,9 +206,7 @@ struct GoogleMapView: UIViewRepresentable {
                 let marker = GMSMarker()
 
                 let markerImage = note.markerImage
-                let markerView = UIImageView(image: markerImage)
-                markerView.tintColor = UIColor.black
-                
+                let markerView = UIImageView(image: markerImage.withRenderingMode(.alwaysOriginal))
                 marker.position = note.location
                 marker.userData = note.id
                 marker.iconView = markerView
@@ -220,6 +223,7 @@ struct GoogleMapView: UIViewRepresentable {
         var currentThresholdWitness: ThresholdWitness?
         var currentThreshold: SensorThreshold?
         var heatmap: Heatmap? = nil
+        var mapNotesCounter = 0
         
         init(_ parent: GoogleMapView) {
             self.parent = parent
