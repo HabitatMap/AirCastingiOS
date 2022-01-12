@@ -114,6 +114,7 @@ class AirCastingGraph: UIView {
         if !didMoveOrScaleGraph && isAutozoomEnabled {
             zoomoutToThirtyMinutes(dataSet: dataSet)
         }
+        layoutNotes()
         callDateRangeChangeObserver()
     }
     

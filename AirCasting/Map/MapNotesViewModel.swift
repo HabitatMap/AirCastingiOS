@@ -11,7 +11,7 @@ struct MapNote {
     let markerImage: UIImage
 }
 
-class MapNotesViewModelDefault: ObservableObject {
+class MapNotesViewModel: ObservableObject {
     @Published var notes: [MapNote] = []
     private let notesHandler: NotesHandler
     
@@ -27,10 +27,4 @@ class MapNotesViewModelDefault: ObservableObject {
             }
         }
     }
-    
-    
-}
-
-class DummyMapNotesViewModelDefault: MapNotesViewModelDefault {
-    
 }

@@ -90,9 +90,9 @@ struct ConfirmCreatingSessionView: View {
                 .lineSpacing(9.0)
                 ZStack {
                     if sessionContext.sessionType == .mobile {
-                        GoogleMapView(pathPoints: [], isMyLocationEnabled: true, placePickerDismissed: Binding.constant(false), isUserInteracting: Binding.constant(true), mapNotes: [])
+                        GoogleMapView(pathPoints: [], isMyLocationEnabled: true, placePickerDismissed: Binding.constant(false), isUserInteracting: Binding.constant(true), mapNotes: .constant([]))
                     } else if !(sessionContext.isIndoor ?? false) {
-                        GoogleMapView(pathPoints: [], placePickerDismissed: Binding.constant(false), isUserInteracting: Binding.constant(true), mapNotes: [])
+                        GoogleMapView(pathPoints: [], placePickerDismissed: Binding.constant(false), isUserInteracting: Binding.constant(true), mapNotes: .constant([]))
                             .disabled(true)
                         // It needs to be disabled to prevent user interaction (swiping map) because it is only conformation screen
                         dot

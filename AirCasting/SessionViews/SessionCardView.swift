@@ -276,8 +276,7 @@ private extension SessionCardView {
                                   measurementStreamStorage: measurementStreamStorage,
                                   sessionSynchronizer: sessionSynchronizer,
                                   statsContainerViewModel: _mapStatsViewModel,
-                                  mapNotesVM: .init(wrappedValue: MapNotesViewModelDefault(notesHandler:
-                                                                        NotesHandlerDefault(measurementStreamStorage: measurementStreamStorage, sessionUUID: session.uuid, locationTracker: locationTracker))),
+                                  notesHandler: NotesHandlerDefault(measurementStreamStorage: measurementStreamStorage, sessionUUID: session.uuid, locationTracker: locationTracker),
                                   showLoadingIndicator: $showLoadingIndicator,
                                   selectedStream: $selectedStream)
             .foregroundColor(.aircastingDarkGray)

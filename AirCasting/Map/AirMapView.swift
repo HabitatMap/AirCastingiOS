@@ -22,7 +22,7 @@ struct AirMapView: View {
     let sessionSynchronizer: SessionSynchronizer
     
     @StateObject var statsContainerViewModel: StatisticsContainerViewModel
-    @StateObject var mapNotesVM: MapNotesViewModelDefault
+    @StateObject var mapNotesVM: MapNotesViewModel
 //  @StateObject var mapStatsDataSource: MapStatsDataSource
     @ObservedObject var session: SessionEntity
     @Binding var showLoadingIndicator: Bool
@@ -38,7 +38,7 @@ struct AirMapView: View {
          measurementStreamStorage: MeasurementStreamStorage,
          sessionSynchronizer: SessionSynchronizer,
          statsContainerViewModel: StateObject<StatisticsContainerViewModel>,
-         mapNotesVM: StateObject<MapNotesViewModelDefault>,
+         notesHandler: NotesHandler,
          showLoadingIndicator: Binding<Bool>,
          selectedStream: Binding<MeasurementStreamEntity?>) {
         self.session = session
@@ -48,7 +48,7 @@ struct AirMapView: View {
         self.measurementStreamStorage = measurementStreamStorage
         self.sessionSynchronizer = sessionSynchronizer
         self._statsContainerViewModel = statsContainerViewModel
-        self._mapNotesVM = mapNotesVM // Need to be fixed
+        self._mapNotesVM = .init(wrappedValue: .init(notesHandler: notesHandler))
         self._showLoadingIndicator = showLoadingIndicator
         self._selectedStream = selectedStream
     }
@@ -93,7 +93,7 @@ struct AirMapView: View {
                                       isSessionFixed: session.isFixed,
                                       noteMarketTapped: $noteMarkerTapped,
                                       noteNumber: $noteNumber,
-                                      mapNotes: mapNotesVM.notes)
+                                      mapNotes: $mapNotesVM.notes)
                         #warning("TODO: Implement calculating stats only for visible path points")
                         // This doesn't work properly and it needs to be fixed, so I'm commenting it out
 //                            .onPositionChange { [weak mapStatsDataSource, weak statsContainerViewModel] visiblePoints in

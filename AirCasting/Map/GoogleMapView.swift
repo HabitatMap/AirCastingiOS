@@ -23,9 +23,9 @@ struct GoogleMapView: UIViewRepresentable {
     var isMyLocationEnabled: Bool = false
     private var onPositionChange: (([PathPoint]) -> ())? = nil
     var isSessionFixed: Bool
-    var mapNotes: [MapNote]
+    @Binding var mapNotes: [MapNote]
     
-    init(pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false, placePickerDismissed: Binding<Bool>, isUserInteracting: Binding<Bool>, isSessionActive: Bool = false, isSessionFixed: Bool = false, noteMarketTapped: Binding<Bool> = .constant(false), noteNumber: Binding<Int> = .constant(0), mapNotes: [MapNote]) {
+    init(pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false, placePickerDismissed: Binding<Bool>, isUserInteracting: Binding<Bool>, isSessionActive: Bool = false, isSessionFixed: Bool = false, noteMarketTapped: Binding<Bool> = .constant(false), noteNumber: Binding<Int> = .constant(0), mapNotes: Binding<[MapNote]>) {
         self.pathPoints = pathPoints
         self.threshold = threshold
         self.isMyLocationEnabled = isMyLocationEnabled
@@ -35,7 +35,7 @@ struct GoogleMapView: UIViewRepresentable {
         self.isSessionFixed = isSessionFixed
         self._noteMarketTapped = noteMarketTapped
         self._noteNumber = noteNumber
-        self.mapNotes = mapNotes
+        self._mapNotes = mapNotes
     }
     
     func makeUIView(context: Context) -> GMSMapView {
@@ -47,10 +47,10 @@ struct GoogleMapView: UIViewRepresentable {
         let mapView = GMSMapView.map(withFrame: .zero,
                                      camera: startingPoint)
         mapView.settings.myLocationButton = liveModeOn
+        placeNotes(mapView, notes: mapNotes)
         mapView.delegate = context.coordinator
         mapView.isMyLocationEnabled = isMyLocationEnabled
         drawPolyline(mapView, context: context)
-        placeNotes(mapView, notes: mapNotes)
         context.coordinator.currentlyDisplayedPathPoints = pathPoints
         context.coordinator.currentThresholdWitness = ThresholdWitness(sensorThreshold: threshold)
         context.coordinator.currentThreshold = threshold
@@ -71,6 +71,7 @@ struct GoogleMapView: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: GMSMapView, context: Context) {
+        placeNotes(uiView, notes: mapNotes)
         guard isUserInteracting else { return }
         let thresholdWitness = ThresholdWitness(sensorThreshold: self.threshold)
   
