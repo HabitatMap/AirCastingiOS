@@ -21,7 +21,7 @@ struct ConnectingABView<VM: AirbeamConnectionViewModel>: View {
     
     var body: some View {
         VStack() {
-            ProgressView(value: 0.25)
+            ProgressView(value: 0.5)
                 .padding(.bottom, 50)
             ZStack(alignment: Alignment(horizontal: .trailing, vertical: .bottom), content: {
                 Image("airbeam")
