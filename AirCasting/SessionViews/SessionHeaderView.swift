@@ -16,6 +16,7 @@ struct SessionHeaderView: View {
     @State var chevronIndicator = "chevron.down"
     @EnvironmentObject var networkChecker: NetworkChecker
     @EnvironmentObject var bluetoothManager: BluetoothManager
+    @EnvironmentObject var locationTracker: LocationTracker
     let urlProvider: BaseURLProvider
     @EnvironmentObject var selectedSection: SelectSection
     @ObservedObject var session: SessionEntity
@@ -54,7 +55,7 @@ struct SessionHeaderView: View {
                     editViewSheet
                 }
                 .sheet(isPresented: $showAddNoteModal) {
-                    AddNoteView(viewModel: AddNoteViewModelDefault(exitRoute: { showAddNoteModal.toggle() }))
+                    AddNoteView(viewModel: AddNoteViewModelDefault(exitRoute: { showAddNoteModal.toggle() }, notesHandler: NotesHandlerDefault(measurementStreamStorage: measurementStreamStorage, sessionUUID: session.uuid, locationTracker: locationTracker)))
                 }
         } else {
             sessionHeader
@@ -88,7 +89,7 @@ struct SessionHeaderView: View {
                             }
                         EmptyView()
                             .sheet(isPresented: $showAddNoteModal) {
-                                AddNoteView(viewModel: AddNoteViewModelDefault(exitRoute: { showAddNoteModal.toggle() }))
+                                AddNoteView(viewModel: AddNoteViewModelDefault(exitRoute: { showAddNoteModal.toggle() }, notesHandler: NotesHandlerDefault(measurementStreamStorage: measurementStreamStorage, sessionUUID: session.uuid, locationTracker: locationTracker)))
                             }
                     }
                 )

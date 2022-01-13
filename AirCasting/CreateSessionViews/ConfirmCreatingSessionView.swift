@@ -90,9 +90,9 @@ struct ConfirmCreatingSessionView: View {
                 .lineSpacing(9.0)
                 ZStack {
                     if sessionContext.sessionType == .mobile {
-                        GoogleMapView(pathPoints: [], isMyLocationEnabled: true, placePickerDismissed: Binding.constant(false), isUserInteracting: Binding.constant(true))
+                        GoogleMapView(pathPoints: [], isMyLocationEnabled: true, placePickerDismissed: Binding.constant(false), isUserInteracting: Binding.constant(true), mapNotes: .constant([]))
                     } else if !(sessionContext.isIndoor ?? false) {
-                        GoogleMapView(pathPoints: [], placePickerDismissed: Binding.constant(false), isUserInteracting: Binding.constant(true))
+                        GoogleMapView(pathPoints: [], placePickerDismissed: Binding.constant(false), isUserInteracting: Binding.constant(true), mapNotes: .constant([]))
                             .disabled(true)
                         // It needs to be disabled to prevent user interaction (swiping map) because it is only conformation screen
                         dot
@@ -138,6 +138,12 @@ extension ConfirmCreatingSessionView {
     }
     
     func getAndSaveStartingLocation() {
+        #if targetEnvironment(simulator)
+        let krakowLat = 50.049683
+        let krakowLong = 19.944544
+        sessionContext.saveCurrentLocation(lat: krakowLat, log: krakowLong)
+        return
+        #endif
         if sessionContext.sessionType == .fixed {
             if sessionContext.isIndoor! {
                 locationTracker.googleLocation = [PathPoint.fakePathPoint]

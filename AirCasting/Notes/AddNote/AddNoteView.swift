@@ -45,7 +45,7 @@ private extension AddNoteView {
     
     var continueButton: some View {
         Button {
-            //
+            viewModel.continueTapped()
         } label: {
             Text(Strings.AddNoteView.continueButton)
                 .bold()

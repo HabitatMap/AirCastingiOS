@@ -40,6 +40,8 @@ public class SessionEntity: NSManagedObject, Identifiable {
     
     /// Of type MeasurementStreamEntity
     @NSManaged public var measurementStreams: NSOrderedSet?
+    /// Of type NoteEntity
+    @NSManaged public var notes: NSOrderedSet?
 
     public var localID: SessionEntityLocalID {
         SessionEntityLocalID(id: objectID)
@@ -142,5 +144,8 @@ extension SessionEntity {
 
     @objc(removeMeasurementStreams:)
     @NSManaged public func removeFromMeasurementStreams(_ values: NSSet)
+    
+    @objc(addNotesObject:)
+    @NSManaged public func addToNotes(_ value: NoteEntity)
 
 }

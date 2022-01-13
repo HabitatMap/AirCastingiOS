@@ -19,6 +19,7 @@ extension ChartDataEntry: Point2DRepresentable {
     public var yValue: Float {
         Float(self.y)
     }
+    
     public var cgPoint: CGPoint {
         .init(x: CGFloat(xValue), y: CGFloat(yValue))
     }
@@ -27,29 +28,40 @@ extension ChartDataEntry: Point2DRepresentable {
 struct Graph: UIViewRepresentable {
     typealias UIViewType = AirCastingGraph
     typealias OnChange = (ClosedRange<Date>) -> Void
+    typealias NoteAction = (Note) -> Void
     
     @ObservedObject var stream: MeasurementStreamEntity
     @ObservedObject var thresholds: SensorThreshold
-    private var action: OnChange?
+    private var rangeChangeAction: OnChange?
+    private var noteAction: NoteAction?
+    
+    private let notesHandler: NotesHandler
     
     var isAutozoomEnabled: Bool
     let simplifiedGraphEntryThreshold = 1000
     
-    init(stream: MeasurementStreamEntity, thresholds: SensorThreshold, isAutozoomEnabled: Bool) {
+    init(stream: MeasurementStreamEntity, thresholds: SensorThreshold, isAutozoomEnabled: Bool, notesHandler: NotesHandler) {
         self.stream = stream
         self.thresholds = thresholds
         self.isAutozoomEnabled = isAutozoomEnabled
+        self.notesHandler = notesHandler
     }
     
     func onDateRangeChange(perform action: @escaping OnChange) -> Self {
         var newGraph = self
-        newGraph.action = action
+        newGraph.rangeChangeAction = action
+        return newGraph
+    }
+    
+    func onNoteTap(perform action: @escaping NoteAction) -> Self {
+        var newGraph = self
+        newGraph.noteAction = action
         return newGraph
     }
     
     func makeUIView(context: Context) -> AirCastingGraph {
         let uiView = AirCastingGraph(onDateRangeChange: { newRange in
-            action?(newRange)
+            rangeChangeAction?(newRange)
         })
         try? uiView.updateWithThreshold(thresholdValues: thresholds.rawThresholdsBinding.wrappedValue)
         let entries = stream.allMeasurements?.sorted(by: { $0.time < $1.time }).compactMap({ measurement -> ChartDataEntry? in
@@ -65,6 +77,9 @@ struct Graph: UIViewRepresentable {
         context.coordinator.currentMeasurementsNumber = calculateSeeingPointsNumber(entries: entries, uiView: uiView)
         context.coordinator.entries = entries
         context.coordinator.stream = stream
+        notesHandler.getNotes { notes in
+            uiView.setupNotes(notes) { noteAction?($0) }
+        }
         return uiView
     }
     
