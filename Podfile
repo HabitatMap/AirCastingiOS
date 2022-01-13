@@ -5,6 +5,7 @@ target 'AirCasting' do
 
   # Pods for AirCasting
   pod 'GzipSwift'
+  pod 'SSZipArchive'
   pod 'GoogleMaps', '4.1.0'
   pod 'GooglePlaces', '4.1.0'
   pod 'DeviceKit', '~> 4.5.0'

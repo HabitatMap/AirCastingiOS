@@ -2,6 +2,7 @@
 //
 
 import Foundation
+import SSZipArchive
 
 protocol GenerateSessionFileController {
     func generateFile(for session: SessionEntity) -> Result<URL, Error>
@@ -16,13 +17,15 @@ struct DefaultGenerateSessionFileController: GenerateSessionFileController {
     
     func generateFile(for session: SessionEntity) -> Result<URL, Error> {
         let fileContent = prepareFileContent(for: session)
-        let result = fileGenerator.generateFile(content: fileContent, fileName: session.name ?? "session")
+        let fileName = session.name?.replacingOccurrences(of: " ", with: "_") ?? "session"
+        let fileGenerationResult = fileGenerator.generateFile(content: fileContent, fileName: fileName)
         
-        switch result {
+        switch fileGenerationResult {
         case .success(let url):
-            return .success(url)
+            let zipResult = zipFile(url, fileName: fileName)
+            return zipResult
         case .failure(_):
-            return result
+            return fileGenerationResult
         }
     }
     
@@ -43,31 +46,23 @@ struct DefaultGenerateSessionFileController: GenerateSessionFileController {
         return content
     }
     
-    private func zipFile(_ url: URL) -> Result<URL, Error> {
-        let fm = FileManager.default
-        var archiveUrl: URL?
-        let coordinator = NSFileCoordinator()
-        var error: NSError?
-        coordinator.coordinate(readingItemAt: url, options: [.forUploading], error: &error) { (zipUrl) in
-            let tmpUrl = try! fm.url(
-                    for: .itemReplacementDirectory,
-                    in: .userDomainMask,
-                    appropriateFor: zipUrl,
-                    create: true
-                ).appendingPathComponent("archive.zip")
-            Log.info("file url: \(url)")
-            Log.info("temp url: \(tmpUrl)")
-            Log.info("zip url: \(zipUrl)")
-            try? fm.moveItem(at: zipUrl, to: tmpUrl)
-
-            // store the URL so we can use it outside the block
-            archiveUrl = tmpUrl
+    private func zipFile(_ url: URL, fileName: String) -> Result<URL, Error> {
+        var newUrl = url
+        let fileManager = FileManager.default
+        do {
+            let path = try fileManager.url(for: .documentDirectory, in: .allDomainsMask, appropriateFor: nil, create: false)
+            let zipPath = path.appendingPathComponent(fileName + ".zip").path
+            SSZipArchive.createZipFile(atPath: zipPath, withContentsOfDirectory: url.path, keepParentDirectory: false)
+            do {
+                try FileManager.default.removeItem(at: url)
+            } catch {
+                Log.error("Failed to delete session file: \(error)")
+            }
+            newUrl = URL(fileURLWithPath: zipPath)
+        } catch {
+            Log.error("Failed to create zipped file: \(error)")
         }
-        if let newUrl = archiveUrl {
-            return .success(newUrl)
-        } else {
-            return .success(url)
-        }
+        return .success(newUrl)
     }
 }
 

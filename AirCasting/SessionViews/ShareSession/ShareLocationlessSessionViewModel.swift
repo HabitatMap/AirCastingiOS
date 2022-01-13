@@ -22,7 +22,6 @@ class ShareLocationlessSessionViewModel: ObservableObject {
         
         switch result {
         case .success(let fileURL):
-            Log.info("\(try! String(contentsOfFile: fileURL.path))")
             file = fileURL
             showShareSheet = true
         case .failure(_):
@@ -39,10 +38,9 @@ class ShareLocationlessSessionViewModel: ObservableObject {
             do {
                 try FileManager.default.removeItem(at: file)
             } catch {
-                Log.error("Failed to delete session file")
+                Log.error("Failed to delete session file: \(error)")
             }
         }
-        showShareSheet = false // this is kind of redundant, but also necessary for the shareSessionModal to disappear
         exitRoute()
     }
     

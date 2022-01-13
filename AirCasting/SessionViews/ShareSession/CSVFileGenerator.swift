@@ -12,11 +12,15 @@ struct DefaultCSVFileGenerator: CSVFileGenerator {
         let fileManager = FileManager.default
         do {
             let path = try fileManager.url(for: .documentDirectory, in: .allDomainsMask, appropriateFor: nil, create: false)
-            let fileURL = path.appendingPathComponent(fileName)
+            let directoryURL = path.appendingPathComponent(fileName)
+            try? fileManager.createDirectory(at: directoryURL, withIntermediateDirectories: false, attributes: nil)
+            let fileURL = directoryURL.appendingPathComponent("\(fileName).csv")
+            // This is in case removing file previously failed
+            try? FileManager.default.removeItem(at: fileURL)
             try content.write(to: fileURL, atomically: true, encoding: .utf8)
-            return .success(fileURL)
+            return .success(directoryURL)
         } catch {
-            print("error creating file: \(error)")
+            Log.error("error creating file: \(error.localizedDescription)")
             return .failure(error)
         }
     }
