@@ -9,6 +9,7 @@ class UserSettings: ObservableObject {
     private let crowdMapKey = Constants.UserDefaultsKeys.crowdMap
     private let disableMappingKey = Constants.UserDefaultsKeys.disableMapping
     private let keepScreenOnKey = Constants.UserDefaultsKeys.keepScreenOn
+    private let featureFlagsViewModel = FeatureFlagsViewModel.shared
     
     var contributingToCrowdMap: Bool {
         get {
@@ -45,6 +46,7 @@ class UserSettings: ObservableObject {
         self.userDefaults = userDefaults
         contributingToCrowdMap = userDefaults.valueExists(forKey: crowdMapKey) ? userDefaults.bool(forKey: crowdMapKey) : true
         keepScreenOn = userDefaults.bool(forKey: keepScreenOnKey)
-        disableMapping = userDefaults.bool(forKey: disableMappingKey)
+        // This is included in case user turns on disable mapping but we turn of the feature, because otherwise the user could never turn this off
+        disableMapping = featureFlagsViewModel.enabledFeatures.contains(.disableMapping) ? userDefaults.bool(forKey: disableMappingKey) : false
     }
 }
