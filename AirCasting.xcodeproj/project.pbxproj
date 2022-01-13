@@ -21,7 +21,7 @@
 		3387DD48278F0FC300B11D02 /* CSVFileGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3387DD47278F0FC300B11D02 /* CSVFileGenerator.swift */; };
 		3387DD4A278F1A2900B11D02 /* ShareLocationlessSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3387DD49278F1A2900B11D02 /* ShareLocationlessSessionView.swift */; };
 		3387DD4C278F1A4000B11D02 /* ShareLocationlessSessionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3387DD4B278F1A4000B11D02 /* ShareLocationlessSessionViewModel.swift */; };
-		3387DD4E278F2AE400B11D02 /* ShareSessionFileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3387DD4D278F2AE400B11D02 /* ShareSessionFileController.swift */; };
+		3387DD4E278F2AE400B11D02 /* GenerateSessionFileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3387DD4D278F2AE400B11D02 /* GenerateSessionFileController.swift */; };
 		33885BB227468B4E00F41CB5 /* SDSyncFileWritingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33885BB127468B4E00F41CB5 /* SDSyncFileWritingService.swift */; };
 		338C30E225F1044B00E0305C /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 338C30E125F1044B00E0305C /* PersistenceController.swift */; };
 		338C30E825F10BFE00E0305C /* AirCasting.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 338C30E625F10BFE00E0305C /* AirCasting.xcdatamodeld */; };
@@ -380,7 +380,7 @@
 		3387DD47278F0FC300B11D02 /* CSVFileGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSVFileGenerator.swift; sourceTree = "<group>"; };
 		3387DD49278F1A2900B11D02 /* ShareLocationlessSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareLocationlessSessionView.swift; sourceTree = "<group>"; };
 		3387DD4B278F1A4000B11D02 /* ShareLocationlessSessionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareLocationlessSessionViewModel.swift; sourceTree = "<group>"; };
-		3387DD4D278F2AE400B11D02 /* ShareSessionFileController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSessionFileController.swift; sourceTree = "<group>"; };
+		3387DD4D278F2AE400B11D02 /* GenerateSessionFileController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateSessionFileController.swift; sourceTree = "<group>"; };
 		33885BB127468B4E00F41CB5 /* SDSyncFileWritingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSyncFileWritingService.swift; sourceTree = "<group>"; };
 		338C30E125F1044B00E0305C /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceController.swift; sourceTree = "<group>"; };
 		338C30E725F10BFE00E0305C /* AirCasting.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AirCasting.xcdatamodel; sourceTree = "<group>"; };
@@ -749,7 +749,7 @@
 				33050875276B7A4400D18C69 /* ShareSessionStreamOptionViewModel.swift */,
 				3387DD49278F1A2900B11D02 /* ShareLocationlessSessionView.swift */,
 				3387DD4B278F1A4000B11D02 /* ShareLocationlessSessionViewModel.swift */,
-				3387DD4D278F2AE400B11D02 /* ShareSessionFileController.swift */,
+				3387DD4D278F2AE400B11D02 /* GenerateSessionFileController.swift */,
 				3387DD47278F0FC300B11D02 /* CSVFileGenerator.swift */,
 			);
 			path = ShareSession;
@@ -2341,7 +2341,7 @@
 				DD28047926B3D7370060F55E /* AirBeamConnectionController.swift in Sources */,
 				B367A594274E9EAA004C605B /* AppDelegate.swift in Sources */,
 				DD430B042670FA9600F1BF2E /* AirBeamOnboarding.swift in Sources */,
-				3387DD4E278F2AE400B11D02 /* ShareSessionFileController.swift in Sources */,
+				3387DD4E278F2AE400B11D02 /* GenerateSessionFileController.swift in Sources */,
 				AC8CFF7E25EE5F9200FB2918 /* AirBeam3Configurator.swift in Sources */,
 				AC8CFF7725ECF8B100FB2918 /* HexMessagesBuilder.swift in Sources */,
 				338C30E225F1044B00E0305C /* PersistenceController.swift in Sources */,

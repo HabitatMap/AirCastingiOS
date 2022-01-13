@@ -56,6 +56,6 @@ struct ShareLocationlessSessionView: View {
 
 struct ShareLocationlessSession_Previews: PreviewProvider {
     static var previews: some View {
-        ShareLocationlessSessionView(viewModel: ShareLocationlessSessionViewModel(session: SessionEntity.mock, fileGenerator: DummyCSVFileGenerator(), exitRoute: { }))
+        ShareLocationlessSessionView(viewModel: ShareLocationlessSessionViewModel(session: SessionEntity.mock, fileGenerationController: DummyGenerateSessionFileController(), exitRoute: { }))
     }
 }

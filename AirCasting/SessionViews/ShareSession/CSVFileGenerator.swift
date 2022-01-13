@@ -4,20 +4,16 @@
 import Foundation
 
 protocol CSVFileGenerator {
-    func generateFile(for session: SessionEntity) -> Result<URL, Error>
+    func generateFile(content: String, fileName: String) -> Result<URL, Error>
 }
 
 struct DefaultCSVFileGenerator: CSVFileGenerator {
-    func generateFile(for session: SessionEntity) -> Result<URL, Error> {
-        
-        var csvString = ""
-        
-        
+    func generateFile(content: String, fileName: String) -> Result<URL, Error> {
         let fileManager = FileManager.default
         do {
             let path = try fileManager.url(for: .documentDirectory, in: .allDomainsMask, appropriateFor: nil, create: false)
-            let fileURL = path.appendingPathComponent("CSVSession.csv")
-            try csvString.write(to: fileURL, atomically: true, encoding: .utf8)
+            let fileURL = path.appendingPathComponent(fileName)
+            try content.write(to: fileURL, atomically: true, encoding: .utf8)
             return .success(fileURL)
         } catch {
             print("error creating file: \(error)")
@@ -27,5 +23,5 @@ struct DefaultCSVFileGenerator: CSVFileGenerator {
 }
 
 struct DummyCSVFileGenerator: CSVFileGenerator {
-    func generateFile(for session: SessionEntity) -> Result<URL, Error> { return .success(URL(fileURLWithPath: "")) }
+    func generateFile(content: String, fileName: String) -> Result<URL, Error> { return .success(URL(fileURLWithPath: "")) }
 }

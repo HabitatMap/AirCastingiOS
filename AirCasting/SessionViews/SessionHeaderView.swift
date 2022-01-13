@@ -40,7 +40,7 @@ struct SessionHeaderView: View {
                 }
                 .sheet(isPresented: $showShareModal) {
                     if session.locationless {
-                        ShareLocationlessSessionView(viewModel: ShareLocationlessSessionViewModel(session: session, fileGenerator: DefaultCSVFileGenerator(), exitRoute: { showShareModal.toggle() }))
+                        ShareLocationlessSessionView(viewModel: ShareLocationlessSessionViewModel(session: session, fileGenerationController: DefaultGenerateSessionFileController(), exitRoute: { showShareModal.toggle() }))
                     } else {
                         ShareSessionView(viewModel: DefaultShareSessionViewModel(session: session, apiClient: ShareSessionApi(urlProvider: urlProvider), exitRoute: { result in
                                                 showShareModal.toggle()
@@ -71,7 +71,7 @@ struct SessionHeaderView: View {
                         EmptyView()
                             .sheet(isPresented: $showShareModal) {
                                 if session.locationless {
-                                    ShareLocationlessSessionView(viewModel: ShareLocationlessSessionViewModel(session: session, fileGenerator: DefaultCSVFileGenerator(), exitRoute: { showShareModal.toggle() }))
+                                    ShareLocationlessSessionView(viewModel: ShareLocationlessSessionViewModel(session: session, fileGenerationController: DefaultGenerateSessionFileController(), exitRoute: { showShareModal.toggle() }))
                                 } else {
                                     ShareSessionView(viewModel: DefaultShareSessionViewModel(session: session, apiClient: ShareSessionApi(urlProvider: urlProvider), exitRoute: { result in
                                         showShareModal.toggle()

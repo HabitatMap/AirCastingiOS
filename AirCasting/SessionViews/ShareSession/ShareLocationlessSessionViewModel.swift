@@ -9,26 +9,22 @@ class ShareLocationlessSessionViewModel: ObservableObject {
     @Published var file: URL?
     let session: SessionEntity
     let exitRoute: () -> Void
-    let fileGenerator: CSVFileGenerator
+    let fileGenerationController: GenerateSessionFileController
     
-    init(session: SessionEntity, fileGenerator: CSVFileGenerator, exitRoute: @escaping () -> Void) {
+    init(session: SessionEntity, fileGenerationController: GenerateSessionFileController, exitRoute: @escaping () -> Void) {
         self.session = session
         self.exitRoute = exitRoute
-        self.fileGenerator = fileGenerator
+        self.fileGenerationController = fileGenerationController
     }
     
     func shareFileTapped() {
-        let result = fileGenerator.generateFile(for: session)
+        let result = fileGenerationController.generateFile(for: session)
         
         switch result {
         case .success(let fileURL):
             Log.info("\(try! String(contentsOfFile: fileURL.path))")
-            do {
-                try FileManager.default.removeItem(at: fileURL)
-            } catch {
-                Log.error("Failed to delete session file")
-            }
-            exitRoute()
+            file = fileURL
+            showShareSheet = true
         case .failure(_):
             getAlert()
         }
@@ -39,6 +35,13 @@ class ShareLocationlessSessionViewModel: ObservableObject {
     }
     
     func sharingFinished() {
+        if let file = file {
+            do {
+                try FileManager.default.removeItem(at: file)
+            } catch {
+                Log.error("Failed to delete session file")
+            }
+        }
         showShareSheet = false // this is kind of redundant, but also necessary for the shareSessionModal to disappear
         exitRoute()
     }
