@@ -23,7 +23,7 @@ extension NSManagedObjectContext {
         throw MissingSessionEntityError(uuid: uuid)
     }
 
-    // Checks if session/stream/measurement exists, if not, creates a new one
+    // Checks if session/measurement exists, if not, creates a new one
     func newOrExisting<T: NSManagedObject & Identifiable>(id: T.ID) throws -> T  {
         let className = NSStringFromClass(T.classForCoder())
         let fetchRequest = NSFetchRequest<T>(entityName: className)
@@ -36,6 +36,20 @@ extension NSManagedObjectContext {
         
         let new: T = T(context: self)
         new.setValue(id, forKey: "id")
+        return new
+    }
+    
+    // Checks if stream exists, if not, creates a new one
+    func newOrExisting<T: NSManagedObject>(streamID: MeasurementStreamID) throws -> T  {
+        let className = NSStringFromClass(T.classForCoder())
+        let fetchRequest = NSFetchRequest<T>(entityName: className)
+        fetchRequest.predicate = NSPredicate(format: "id == \(streamID)")
+        
+        let results = try self.fetch(fetchRequest)
+        if let existing  = results.first { return existing }
+        
+        let new: T = T(context: self)
+        new.setValue(streamID, forKey: "id")
         return new
     }
     

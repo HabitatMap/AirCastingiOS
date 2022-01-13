@@ -99,7 +99,7 @@ private extension SignInView {
 
     var titleLabel: some View {
         VStack(alignment: .leading, spacing: 15) {
-            Text(Strings.SignInView.title_1)
+            Text(Strings.SignInView.signIn)
                 .font(Fonts.boldTitle1)
                 .foregroundColor(.accentColor)
             Text(Strings.SignInView.title_2)
@@ -125,7 +125,7 @@ private extension SignInView {
     }
     
     var signinButton: some View {
-        Button(Strings.SignInView.signInButton) {
+        Button(Strings.SignInView.signIn) {
             checkInput()
             if !isPasswordBlank, !isUsernameBlank {
                 isActive = true
@@ -197,16 +197,16 @@ private extension SignInView {
         case .emailTaken, .invalidCredentials, .usernameTaken:
             return Alert(title: Text(title),
                          message: Text(Strings.SignInView.InvalidCredentialText),
-                         dismissButton: .default(Text(Strings.SignInView.dismissButton)))
+                         dismissButton: .default(Text(Strings.Commons.ok)))
             
         case .noConnection:
             return Alert(title: Text(Strings.SignInView.noConnectionTitle),
                          message: Text(Strings.SignInView.noConnectionText),
-                         dismissButton: .default(Text(Strings.SignInView.dismissButton)))
+                         dismissButton: .default(Text(Strings.Commons.ok)))
         case .other, .timeout:
             return Alert(title: Text(title),
                          message: Text(error.localizedDescription),
-                         dismissButton: .default(Text(Strings.SignInView.dismissButton)))
+                         dismissButton: .default(Text(Strings.Commons.ok)))
         }
     }
 }

@@ -20,9 +20,11 @@ struct CreateSessionDetailsView: View {
                     VStack(alignment: .leading, spacing: 25) {
                         ProgressView(value: 0.75)
                         titleLabel
-                        VStack(spacing: 20) {
+                        VStack(alignment: .leading) {
                             sessionNameField
+                            if viewModel.shouldShowError { errorMessage(text: Strings.EditSession.erorr) }
                             sessionTagsField
+                                .padding(.top, 20)
                         }
                         if sessionContext.sessionType == SessionType.fixed { fixedSessionDetails }
                         Spacer()
@@ -37,11 +39,14 @@ struct CreateSessionDetailsView: View {
             .alert(isPresented: $viewModel.showAlertAboutEmptyCredentials, content: {
                 Alert(title: Text(Strings.CreateSessionDetailsView.wifiAlertTitle),
                       message: Text(Strings.CreateSessionDetailsView.wifiAlertMessage),
-                      dismissButton: .default(Text(Strings.CreateSessionDetailsView.continueButton)))
+                      dismissButton: .default(Text(Strings.Commons.continue)))
             })
             .background(navigation)
         }
         .onAppear { viewModel.onScreenEnter() }
+        .onChange(of: viewModel.sessionName) { _ in
+            viewModel.showErrorIndicator = false
+        }
     }
 }
 
@@ -134,7 +139,7 @@ private extension CreateSessionDetailsView {
             let updatedContext = viewModel.onContinueClick(sessionContext: sessionContext)
             sessionContext.ovverride(sessionContext: updatedContext)
         }, label: {
-            Text(Strings.CreateSessionDetailsView.continueButton)
+            Text(Strings.Commons.continue)
                 .frame(maxWidth: .infinity)
         })
         .buttonStyle(BlueButtonStyle())

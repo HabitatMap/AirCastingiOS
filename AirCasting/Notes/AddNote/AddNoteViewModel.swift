@@ -23,7 +23,7 @@ class AddNoteViewModelDefault: AddNoteViewModel, ObservableObject {
         notesHandler.addNote(noteText: noteText)
         exitRoute()
     }
-    
+
     func cancelTapped() { exitRoute() }
 }
 
@@ -31,5 +31,6 @@ class DummyAddNoteViewModelDefault: AddNoteViewModel, ObservableObject {
     @Published var noteText = ""
     
     func continueTapped() { print("Clicked continue") }
+    
     func cancelTapped() { print("Cancel tapped") }
 }

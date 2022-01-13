@@ -33,7 +33,7 @@ struct UnplugABView<VM: UnplugABViewModel>: View {
 extension UnplugABView {
     
     var unplugImage: some View {
-        Image("airbeam")
+        Image("airbeam-unplugged")
             .resizable()
             .aspectRatio(contentMode: .fit)
     }
@@ -54,7 +54,7 @@ extension UnplugABView {
         Button {
             viewModel.continueButtonTapped()
         } label: {
-            Text(Strings.UnplugAirbeamView.continueButton)
+            Text(Strings.Commons.continue)
         }.buttonStyle(BlueButtonStyle())
     }
     

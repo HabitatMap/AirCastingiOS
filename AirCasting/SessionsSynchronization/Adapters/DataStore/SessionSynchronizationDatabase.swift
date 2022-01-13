@@ -40,7 +40,7 @@ final class SessionSynchronizationDatabase: SessionSynchronizationStore {
     func addSessions(with sessionsData: [SessionsSynchronization.SessionStoreSessionData]) -> Future<Void, Error> {
         return .init { [database] promise in
             database
-                .insertSessions(sessionsData.map { sessionData in
+                .insertOrUpdateSessions(sessionsData.map { sessionData in
                     let streams = sessionData.measurementStreams.map {
                         Database.MeasurementStream(id: MeasurementStreamID($0.id),
                                                    sensorName: $0.sensorName,

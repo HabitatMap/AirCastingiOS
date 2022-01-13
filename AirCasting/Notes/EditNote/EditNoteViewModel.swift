@@ -46,5 +46,11 @@ class DummyEditNoteViewModelDefault: EditNoteViewModel, ObservableObject {
     
     func deleteTapped() { print("Delete tapped") }
     
-    func cancelTapped() { print("Cancel tapped") }
+    private let exitRoute: () -> Void
+    
+    init(exitRoute: @escaping () -> Void) {
+        self.exitRoute = exitRoute
+    }
+    
+    func cancelTapped() { exitRoute() }
 }

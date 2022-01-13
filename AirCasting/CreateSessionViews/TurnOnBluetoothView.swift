@@ -93,7 +93,7 @@ struct TurnOnBluetoothView: View {
                 }
             }
         }, label: {
-            Text(Strings.TurnOnBluetoothView.continueButton)
+            Text(Strings.Commons.continue)
         })
         .frame(maxWidth: .infinity)
         .buttonStyle(BlueButtonStyle())

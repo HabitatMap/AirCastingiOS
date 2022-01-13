@@ -6,13 +6,14 @@ import UIKit
 
 class UserSettings: ObservableObject {
     private let userDefaults: UserDefaults
+    private let crowdMapKey = Constants.UserDefaultsKeys.crowdMap
     
     var contributingToCrowdMap: Bool {
         get {
-            userDefaults.bool(forKey: "crowdMap")
+            userDefaults.bool(forKey: crowdMapKey)
         }
         set {
-            userDefaults.setValue(newValue, forKey: "crowdMap")
+            userDefaults.setValue(newValue, forKey: crowdMapKey)
             Log.info("Changed crowdMap contribution setting to \(contributingToCrowdMap ? "ON" : "OFF")")
         }
     }
@@ -30,7 +31,7 @@ class UserSettings: ObservableObject {
     
     init(userDefaults: UserDefaults = .standard) {
         self.userDefaults = userDefaults
-        contributingToCrowdMap = true
+        contributingToCrowdMap = userDefaults.valueExists(forKey: crowdMapKey) ? userDefaults.bool(forKey: crowdMapKey) : true
         keepScreenOn = userDefaults.bool(forKey: "keepScreenOn")
     }
 }

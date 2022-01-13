@@ -29,4 +29,8 @@ struct Constants {
     enum SDCardSync {
         static let numberOfMeasurementsInDataChunk = 4
     }
+    
+    enum UserDefaultsKeys {
+        static let crowdMap = "crowdMap"
+    }
 }

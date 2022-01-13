@@ -76,7 +76,7 @@ private extension EditNoteView {
 #if DEBUG
 struct EditNoteView_Previews: PreviewProvider {
     static var previews: some View {
-        EditNoteView(viewModel: DummyEditNoteViewModelDefault())
+        EditNoteView(viewModel: DummyEditNoteViewModelDefault(exitRoute: {}))
     }
 }
 #endif
