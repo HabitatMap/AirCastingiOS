@@ -46,7 +46,7 @@ class UserSettings: ObservableObject {
         self.userDefaults = userDefaults
         contributingToCrowdMap = userDefaults.valueExists(forKey: crowdMapKey) ? userDefaults.bool(forKey: crowdMapKey) : true
         keepScreenOn = userDefaults.bool(forKey: keepScreenOnKey)
-        // This is included in case user turns on disable mapping but we turn of the feature, because otherwise the user could never turn this off
+        // This is included in case user turns on disable mapping but we turn off the feature, because otherwise the user could never turn this off
         disableMapping = featureFlagsViewModel.enabledFeatures.contains(.disableMapping) ? userDefaults.bool(forKey: disableMappingKey) : false
     }
 }
