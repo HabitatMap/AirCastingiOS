@@ -4,7 +4,6 @@
 import Foundation
 import Combine
 import CoreLocation
-import CoreData
 
 final class SessionSynchronizationDatabase: SessionSynchronizationStore {
     typealias DatabaseType = SessionsFetchable & SessionRemovable & SessionInsertable
