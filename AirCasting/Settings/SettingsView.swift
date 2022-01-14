@@ -128,6 +128,11 @@ struct SettingsView: View {
                 crowdMapDescription
             }
             keepScreenOnSwitch
+            VStack(alignment: .leading) {
+                temperatureSwitch
+                Spacer()
+                temperatureDescription
+            }
             if featureFlagsViewModel.enabledFeatures.contains(.sdCardSync) {
                 clearSDCard
             }
@@ -171,6 +176,20 @@ struct SettingsView: View {
     
     private var crowdMapDescription: some View {
         Text(Strings.Settings.crowdMapDescription)
+            .font(Fonts.muliHeading2)
+            .foregroundColor(.aircastingGray)
+    }
+    
+    private var temperatureSwitch: some View {
+        Toggle(isOn: $userSettings.convertToCelsius, label: {
+            Text(Strings.Settings.temperature)
+                .font(Fonts.boldHeading1)
+                .multilineTextAlignment(.leading)
+        }).toggleStyle(SwitchToggleStyle(tint: .accentColor))
+    }
+    
+    private var temperatureDescription: some View {
+        Text(Strings.Settings.celsiusDescription)
             .font(Fonts.muliHeading2)
             .foregroundColor(.aircastingGray)
     }

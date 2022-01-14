@@ -17,6 +17,8 @@ struct Strings {
         static let myAccount: String = "My Account"
         static let crowdMap: String = "Contribute to CrowdMap"
         static let crowdMapDescription: String = "Data contributed to the CrowdMap is publicly available at aircasting.org"
+        static let temperature = "Temperature Units"
+        static let celsiusDescription = "Use Celsius"
         static let backendSettings: String = "Backend settings"
         static let settingsHelp: String = "Help"
         static let hardwareDevelopers: String = "Hardware developers"
