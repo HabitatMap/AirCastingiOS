@@ -56,8 +56,10 @@ struct ShareLocationlessSessionView: View {
     }
 }
 
+#if DEBUG
 struct ShareLocationlessSession_Previews: PreviewProvider {
     static var previews: some View {
         ShareLocationlessSessionView(viewModel: ShareLocationlessSessionViewModel(session: SessionEntity.mock, fileGenerationController: DummyGenerateSessionFileController(), exitRoute: { }))
     }
 }
+#endif

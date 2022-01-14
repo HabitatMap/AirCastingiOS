@@ -8,9 +8,9 @@ class ShareLocationlessSessionViewModel: ObservableObject {
     @Published var showShareSheet: Bool = false
     @Published var file: URL?
     @Published var loaderVisible: Bool = false
-    let session: SessionEntity
-    let exitRoute: () -> Void
-    let fileGenerationController: GenerateSessionFileController
+    private let session: SessionEntity
+    private let exitRoute: () -> Void
+    private let fileGenerationController: GenerateSessionFileController
     
     init(session: SessionEntity, fileGenerationController: GenerateSessionFileController, exitRoute: @escaping () -> Void) {
         self.session = session
