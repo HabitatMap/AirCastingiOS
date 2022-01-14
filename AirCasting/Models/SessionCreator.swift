@@ -29,7 +29,6 @@ final class MicrophoneSessionCreator: SessionCreator {
         guard let sessionType = sessionContext.sessionType,
               let sessionUUID = sessionContext.sessionUUID,
               let contribute = sessionContext.contribute,
-              let locationless = sessionContext.locationless,
               let startingLocation = sessionContext.startingLocation else {
             assertionFailure("invalidCreateSessionContext \(sessionContext)")
             completion(.failure(MicrophoneSessionCreatorError.invalidCreateSessionContext(sessionContext)))
@@ -43,7 +42,7 @@ final class MicrophoneSessionCreator: SessionCreator {
                               location: startingLocation,
                               startTime: Date().currentUTCTimeZoneDate,
                               contribute: contribute,
-                              locationless: locationless)
+                              locationless: sessionContext.locationless)
 
         do {
             try microphoneManager.startRecording(session: session)
@@ -73,8 +72,7 @@ final class MobilePeripheralSessionCreator: SessionCreator {
         guard let sessionType = sessionContext.sessionType,
               let sessionUUID = sessionContext.sessionUUID,
               let startingLocation = sessionContext.startingLocation,
-              let contribute = sessionContext.contribute,
-              let locationless = sessionContext.locationless
+              let contribute = sessionContext.contribute
         else {
             assertionFailure("invalidCreateSessionContext \(sessionContext)")
             completion(.failure(MobilePeripheralSessionCreatorError.invalidCreateSessionContext(sessionContext)))
@@ -87,7 +85,7 @@ final class MobilePeripheralSessionCreator: SessionCreator {
                               location: startingLocation,
                               startTime: Date().currentUTCTimeZoneDate,
                               contribute: contribute,
-                              locationless: locationless,
+                              locationless: sessionContext.locationless,
                               tags: sessionContext.sessionTags,
                               status: .NEW)
         do {

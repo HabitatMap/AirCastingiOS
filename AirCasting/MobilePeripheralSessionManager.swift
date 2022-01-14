@@ -71,13 +71,15 @@ class MobilePeripheralSessionManager {
     }
 
     private func finishActiveSession(for peripheral: CBPeripheral, centralManager: CBCentralManager) {
-        if activeMobileSession?.peripheral == peripheral {
-            centralManager.cancelPeripheralConnection(activeMobileSession!.peripheral)
-            activeMobileSession = nil
-            if activeMobileSession?.session.locationless != true {
-                locationProvider.stopUpdatingLocation()
-            }
+        guard let activeSession = activeMobileSession, activeMobileSession?.peripheral == peripheral else {
+            return
         }
+
+        centralManager.cancelPeripheralConnection(activeSession.peripheral)
+        if activeSession.session.locationless {
+            locationProvider.stopUpdatingLocation()
+        }
+        activeMobileSession = nil
     }
 
     private func updateDatabaseForFinishedSession(with uuid: SessionUUID) {
@@ -102,7 +104,7 @@ class MobilePeripheralSessionManager {
         changeSessionStatusToDisconnected(uuid: sessionUUID)
 
         centralManager.cancelPeripheralConnection(activePeripheral)
-        if activeMobileSession?.session.locationless != true {
+        if !activeMobileSession!.session.locationless {
             locationProvider.stopUpdatingLocation()
         }
         activeMobileSession = nil

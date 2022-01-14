@@ -23,7 +23,7 @@ final class CreateSessionContext: ObservableObject {
     var startingLocation: CLLocationCoordinate2D?
     var deviceType: DeviceType?
     var contribute: Bool?
-    var locationless: Bool?
+    var locationless: Bool = false
 
     private var syncSink: Any?
     

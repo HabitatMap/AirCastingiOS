@@ -81,7 +81,7 @@ struct ConfirmCreatingSessionView: View {
                 VStack(alignment: .leading, spacing: 15) {
                     if sessionContext.sessionType == .fixed {
                         descriptionTextFixed
-                    } else if sessionContext.locationless != true {
+                    } else if !sessionContext.locationless {
                         descriptionTextMobile
                     } else {
                         defaultDescriptionText
@@ -92,7 +92,7 @@ struct ConfirmCreatingSessionView: View {
                 .lineSpacing(9.0)
                 ZStack {
                     if sessionContext.sessionType == .mobile {
-                        if sessionContext.locationless != true {
+                        if !sessionContext.locationless {
                             GoogleMapView(pathPoints: [], isMyLocationEnabled: true, placePickerDismissed: Binding.constant(false), isUserInteracting: Binding.constant(true))
                         }
                     } else if !(sessionContext.isIndoor ?? false) {
@@ -142,8 +142,8 @@ extension ConfirmCreatingSessionView {
     }
     
     func getAndSaveStartingLocation() {
-        if sessionContext.sessionType == .fixed || sessionContext.locationless == true {
-            if sessionContext.isIndoor! || sessionContext.locationless == true {
+        if sessionContext.sessionType == .fixed || sessionContext.locationless {
+            if sessionContext.isIndoor! || sessionContext.locationless {
                 locationTracker.googleLocation = [PathPoint.fakePathPoint]
             }
             guard let lat: Double = (locationTracker.googleLocation.last?.location.latitude),
