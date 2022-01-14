@@ -23,7 +23,7 @@ struct DefaultGenerateSessionFileController: GenerateSessionFileController {
         
         switch fileGenerationResult {
         case .success(let url):
-            let zipResult = fileZppier.createZipFile(url, fileName: fileName)
+            let zipResult = fileZppier.createZipFile(url, fileName: fileName, removeOriginalFile: true)
             return zipResult
         case .failure(_):
             return fileGenerationResult
