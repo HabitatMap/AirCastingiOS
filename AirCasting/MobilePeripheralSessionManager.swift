@@ -141,7 +141,7 @@ class MobilePeripheralSessionManager {
     }
 
     private func updateStreams(stream: ABMeasurementStream, sessionUUID: SessionUUID, isLocationTracked: Bool) throws {
-        let  location = isLocationTracked ? locationProvider.currentLocation?.coordinate : CLLocationCoordinate2D(latitude: 200.0, longitude: 200.0)
+        let  location = isLocationTracked ? locationProvider.currentLocation?.coordinate : .undefined
 
         measurementStreamStorage.accessStorage { storage in
             do {
@@ -185,7 +185,7 @@ class MobilePeripheralSessionManager {
         AirBeam3Configurator(userAuthenticationSession: userAuthenticationSession,
                              peripheral: peripheral)
             .configureMobileSession(
-                location: locationProvider.currentLocation?.coordinate ?? CLLocationCoordinate2D(latitude: 200.0, longitude: 200.0)
+                location: locationProvider.currentLocation?.coordinate ?? .undefined
             )
     }
 

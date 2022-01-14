@@ -155,7 +155,7 @@ private extension MicrophoneManager {
         var decibels = Double(power + 90.0)
         (decibels < 0) ? decibels = 0 : nil
         // 117 lines ensure that we won't get something like -70 etc.
-        let location = noLocation ? CLLocationCoordinate2D(latitude: 200.0, longitude: 200.0) : obtainCurrentLocation()
+        let location = noLocation ? .undefined : obtainCurrentLocation()
         
         measurementStreamStorage.accessStorage { storage in
             do {
