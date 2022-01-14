@@ -7,6 +7,7 @@ class ShareLocationlessSessionViewModel: ObservableObject {
     @Published var alert: AlertInfo?
     @Published var showShareSheet: Bool = false
     @Published var file: URL?
+    @Published var loaderVisible: Bool = false
     let session: SessionEntity
     let exitRoute: () -> Void
     let fileGenerationController: GenerateSessionFileController
@@ -18,14 +19,20 @@ class ShareLocationlessSessionViewModel: ObservableObject {
     }
     
     func shareFileTapped() {
-        let result = fileGenerationController.generateFile(for: session)
-        
-        switch result {
-        case .success(let fileURL):
-            file = fileURL
-            showShareSheet = true
-        case .failure(_):
-            getAlert()
+        loaderVisible = true
+        DispatchQueue.global(qos: .background).async { [self] in // prepare file in background
+            let result = fileGenerationController.generateFile(for: self.session)
+            
+            DispatchQueue.main.async { [self] in
+                self.loaderVisible = false
+                switch result {
+                case .success(let fileURL):
+                    file = fileURL
+                    showShareSheet = true
+                case .failure(_):
+                    getAlert()
+                }
+            }
         }
     }
     
@@ -34,11 +41,13 @@ class ShareLocationlessSessionViewModel: ObservableObject {
     }
     
     func sharingFinished() {
-        if let file = file {
-            do {
-                try FileManager.default.removeItem(at: file)
-            } catch {
-                Log.error("Failed to delete session file: \(error)")
+        DispatchQueue.global(qos: .background).async {
+            if let file = self.file {
+                do {
+                    try FileManager.default.removeItem(at: file)
+                } catch {
+                    Log.error("Failed to delete session file: \(error)")
+                }
             }
         }
         exitRoute()

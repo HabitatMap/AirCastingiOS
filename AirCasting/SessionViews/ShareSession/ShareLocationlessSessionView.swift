@@ -8,26 +8,28 @@ struct ShareLocationlessSessionView: View {
     @ObservedObject var viewModel: ShareLocationlessSessionViewModel
     
     var body: some View {
-        VStack(alignment: .leading) {
-            VStack(alignment: .leading, spacing: 40) {
-                title
-                description
+        LoadingView(isShowing: $viewModel.loaderVisible, activityIndicatorText: Strings.SessionShare.loadingFile) {
+            VStack(alignment: .leading) {
+                VStack(alignment: .leading, spacing: 40) {
+                    title
+                    description
+                }
+                Spacer()
+                VStack(alignment: .leading, spacing: 5) {
+                    shareFileButton
+                    cancelButton
+                }
+                Spacer()
             }
-            Spacer()
-            VStack(alignment: .leading, spacing: 5) {
-                shareFileButton
-                cancelButton
-            }
-            Spacer()
+            .padding()
+            .alert(item: $viewModel.alert, content: { $0.makeAlert() })
+            .sheet(isPresented: $viewModel.showShareSheet, content: {
+                ActivityViewController(itemsToShare: [viewModel.file as Any]) { activityType, completed, returnedItems, error in
+                    viewModel.sharingFinished()
+                }
+            })
+            .padding()
         }
-        .padding()
-        .alert(item: $viewModel.alert, content: { $0.makeAlert() })
-        .sheet(isPresented: $viewModel.showShareSheet, content: {
-            ActivityViewController(itemsToShare: [viewModel.file as Any]) { activityType, completed, returnedItems, error in
-                viewModel.sharingFinished()
-            }
-        })
-        .padding()
     }
     
     private var title: some View {
