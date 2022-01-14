@@ -26,6 +26,7 @@ protocol MeasurementStreamStorageContextUpdate {
     func markStreamForDelete(_ sessionUUID: SessionUUID, sensorsName: [String], completion: () -> Void) throws
     func deleteSession(_ sessionUUID: SessionUUID) throws
     func deleteStreams(_ sessionUUID: SessionUUID) throws
+    func addNote(_ note: Note, for sessionUUID: SessionUUID) throws 
     func save() throws
 }
 
@@ -200,7 +201,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
     }
     
     func updateMeasurements(stream: MeasurementStreamEntity, newMeasurements: NSOrderedSet) throws {
-            stream.measurements = newMeasurements
+        stream.measurements = newMeasurements
     }
     
     private func saveMeasurementStream(for session: SessionEntity, context: NSManagedObjectContext, _ stream: MeasurementStream) throws -> MeasurementStreamLocalID {
@@ -279,6 +280,53 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         } catch {
             Log.error("Error when saving changes in session: \(error.localizedDescription)")
         }
+    }
+    
+    func addNote(_ note: Note, for sessionUUID: SessionUUID) throws {
+        let sessionEntity = try context.existingSession(uuid: sessionUUID)
+        let noteEntity = NoteEntity(context: context)
+        noteEntity.lat = note.lat
+        noteEntity.long = note.long
+        noteEntity.text = note.text
+        noteEntity.date = note.date
+        noteEntity.number = Int64(note.number)
+        sessionEntity.addToNotes(noteEntity)
+        try context.save()
+    }
+    
+    func updateNote(_ note: Note, newText: String, for sessionUUID: SessionUUID) throws {
+        let sessionEntity = try context.existingSession(uuid: sessionUUID)
+        let note = (sessionEntity.notes?.first(where: { ($0 as! NoteEntity).number == note.number }) as! NoteEntity)
+        note.text = newText
+        try context.save()
+    }
+    
+    func deleteNote(_ note: Note, for sessionUUID: SessionUUID) throws {
+        let sessionEntity = try context.existingSession(uuid: sessionUUID)
+        let note = (sessionEntity.notes?.first(where: { ($0 as! NoteEntity).number == note.number }) as! NoteEntity)
+        context.delete(note)
+    }
+    
+    func getNotes(for sessionUUID: SessionUUID) throws -> [Note] {
+        let sessionEntity = try context.existingSession(uuid: sessionUUID)
+        return sessionEntity.notes?.map { note -> Note in
+            let n = note as! NoteEntity
+            return Note(date: n.date ?? Date(),
+                                   text: n.text ?? "",
+                                   lat: n.lat,
+                                   long: n.long,
+                                   number: Int(n.number))
+        } ?? []
+    }
+    
+    func fetchSpecifiedNote(for sessionUUID: SessionUUID, number: Int) throws -> Note {
+        let session = try context.existingSession(uuid: sessionUUID)
+        let note = (session.notes?.first(where: { ($0 as! NoteEntity).number == number }) as! NoteEntity)
+        return Note(date: note.date ?? Date(),
+                    text: note.text ?? "",
+                    lat: note.lat,
+                    long: note.long,
+                    number: Int(note.number))
     }
 
     func createSession(_ session: Session) throws {

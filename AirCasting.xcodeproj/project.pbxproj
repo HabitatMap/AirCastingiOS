@@ -310,6 +310,7 @@
 		DD700CF22695CE9C0048A17D /* MailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD700CF12695CE9C0048A17D /* MailView.swift */; };
 		DD72DC4226A99D5000325FE5 /* ShareSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD72DC4126A99D5000325FE5 /* ShareSessionView.swift */; };
 		DD7955492757B30F00631A78 /* InAppAlerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD7955482757B30F00631A78 /* InAppAlerts.swift */; };
+		DD7B74AB278C63F80072DDF1 /* style.json in Resources */ = {isa = PBXBuildFile; fileRef = DD7B74AA278C63F80072DDF1 /* style.json */; };
 		DD839E15269F33A6006A8625 /* LocationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD839E14269F33A6006A8625 /* LocationState.swift */; };
 		DD8A36A426C3CE7900C26725 /* ChooseCustomLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8A36A326C3CE7900C26725 /* ChooseCustomLocationView.swift */; };
 		DD8A36A726C3E76200C26725 /* PlacePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8A36A626C3E76200C26725 /* PlacePicker.swift */; };
@@ -317,6 +318,8 @@
 		DD8C38092689A34E00901FDF /* UserDefaultsBaseURLProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8C38082689A34E00901FDF /* UserDefaultsBaseURLProvider.swift */; };
 		DD8C380C2689A3DA00901FDF /* BaseURLProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8C380B2689A3DA00901FDF /* BaseURLProvider.swift */; };
 		DD8C380E2689A55A00901FDF /* BackendSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8C380D2689A55A00901FDF /* BackendSettingsView.swift */; };
+		DD8DE6892785B706009B1726 /* EmptyNotesHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8DE6882785B706009B1726 /* EmptyNotesHandler.swift */; };
+		DD8DE68B2785B93A009B1726 /* MapNotesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8DE68A2785B939009B1726 /* MapNotesViewModel.swift */; };
 		DD9EBB4E26AFDD2100D51804 /* TurnOnLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD9EBB4D26AFDD2100D51804 /* TurnOnLocationView.swift */; };
 		DDB05581274BC60D00DA1A8A /* SessionUpdateService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB05580274BC60D00DA1A8A /* SessionUpdateService.swift */; };
 		DDB448282732AA4B00F11340 /* AirCastingGraphSimplifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB448272732AA4B00F11340 /* AirCastingGraphSimplifier.swift */; };
@@ -330,6 +333,8 @@
 		DDC5F58A271979F100F1F9D8 /* Fonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDC5F589271979F100F1F9D8 /* Fonts.swift */; };
 		DDC86644276B54A400A8E610 /* AddNoteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDC86643276B54A400A8E610 /* AddNoteViewModel.swift */; };
 		DDC86646276B561500A8E610 /* EditNoteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDC86645276B561500A8E610 /* EditNoteViewModel.swift */; };
+		DDC86648276B607C00A8E610 /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDC86647276B607C00A8E610 /* Note.swift */; };
+		DDC8664A276B695400A8E610 /* NotesHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDC86649276B695400A8E610 /* NotesHandler.swift */; };
 		DDCD3570271EB641004969FF /* UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCD356F271EB641004969FF /* UIImage.swift */; };
 		DDCE5D3626A1F79F0033C211 /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCE5D3526A1F79F0033C211 /* UserSettings.swift */; };
 		DDCE5D3826A1FE2D0033C211 /* DeleteSessionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCE5D3726A1FE2D0033C211 /* DeleteSessionViewModel.swift */; };
@@ -678,6 +683,7 @@
 		DD700CF12695CE9C0048A17D /* MailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailView.swift; sourceTree = "<group>"; };
 		DD72DC4126A99D5000325FE5 /* ShareSessionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareSessionView.swift; sourceTree = "<group>"; };
 		DD7955482757B30F00631A78 /* InAppAlerts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppAlerts.swift; sourceTree = "<group>"; };
+		DD7B74AA278C63F80072DDF1 /* style.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = style.json; sourceTree = "<group>"; };
 		DD839E14269F33A6006A8625 /* LocationState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationState.swift; sourceTree = "<group>"; };
 		DD8A36A326C3CE7900C26725 /* ChooseCustomLocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseCustomLocationView.swift; sourceTree = "<group>"; };
 		DD8A36A626C3E76200C26725 /* PlacePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlacePicker.swift; sourceTree = "<group>"; };
@@ -686,6 +692,8 @@
 		DD8C380B2689A3DA00901FDF /* BaseURLProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseURLProvider.swift; sourceTree = "<group>"; };
 		DD8C380D2689A55A00901FDF /* BackendSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendSettingsView.swift; sourceTree = "<group>"; };
 		DD8C380F268A0E9400901FDF /* ShareViewModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewModal.swift; sourceTree = "<group>"; };
+		DD8DE6882785B706009B1726 /* EmptyNotesHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyNotesHandler.swift; sourceTree = "<group>"; };
+		DD8DE68A2785B939009B1726 /* MapNotesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapNotesViewModel.swift; sourceTree = "<group>"; };
 		DD9EBB4D26AFDD2100D51804 /* TurnOnLocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurnOnLocationView.swift; sourceTree = "<group>"; };
 		DDB05580274BC60D00DA1A8A /* SessionUpdateService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionUpdateService.swift; sourceTree = "<group>"; };
 		DDB448272732AA4B00F11340 /* AirCastingGraphSimplifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirCastingGraphSimplifier.swift; sourceTree = "<group>"; };
@@ -699,6 +707,8 @@
 		DDC5F589271979F100F1F9D8 /* Fonts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fonts.swift; sourceTree = "<group>"; };
 		DDC86643276B54A400A8E610 /* AddNoteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNoteViewModel.swift; sourceTree = "<group>"; };
 		DDC86645276B561500A8E610 /* EditNoteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditNoteViewModel.swift; sourceTree = "<group>"; };
+		DDC86647276B607C00A8E610 /* Note.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Note.swift; sourceTree = "<group>"; };
+		DDC86649276B695400A8E610 /* NotesHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesHandler.swift; sourceTree = "<group>"; };
 		DDCD356F271EB641004969FF /* UIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImage.swift; sourceTree = "<group>"; };
 		DDCE5D3526A1F79F0033C211 /* UserSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettings.swift; sourceTree = "<group>"; };
 		DDCE5D3726A1FE2D0033C211 /* DeleteSessionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteSessionViewModel.swift; sourceTree = "<group>"; };
@@ -1075,6 +1085,8 @@
 				AC1DAD4325C98556009AC4D1 /* ABConnector */,
 				332F521825FA38B90047236D /* MicrophoneSession */,
 				33BA3366266E4B9600899343 /* MobileSession */,
+				DDB0557F274BC5AF00DA1A8A /* StreamSynchronizer */,
+				DDBA6135276B3A8900E3FEF9 /* Notes */,
 				DDBA6135276B3A8900E3FEF9 /* Notes */,
 				DDB0557F274BC5AF00DA1A8A /* SingleSessionSynchronizer */,
 				AC6D56A825B0837500D221BA /* SessionViews */,
@@ -1184,7 +1196,9 @@
 		AC8D6C6825C049C200ED74D1 /* Map */ = {
 			isa = PBXGroup;
 			children = (
+				DD7B74AA278C63F80072DDF1 /* style.json */,
 				750A51D62754D3E800D6F4E7 /* Heatmap */,
+				DD8DE68A2785B939009B1726 /* MapNotesViewModel.swift */,
 				AC93B8E625BEFE4F003D0A0D /* AirMapView.swift */,
 				AC93B8FD25C02E0B003D0A0D /* GoogleMapView.swift */,
 				AC8D6C7125C0574800ED74D1 /* LocationTracker.swift */,
@@ -1814,6 +1828,9 @@
 		DDBA6135276B3A8900E3FEF9 /* Notes */ = {
 			isa = PBXGroup;
 			children = (
+				DDC86647276B607C00A8E610 /* Note.swift */,
+				DDC86649276B695400A8E610 /* NotesHandler.swift */,
+				DD8DE6882785B706009B1726 /* EmptyNotesHandler.swift */,
 				DDC86641276B547A00A8E610 /* AddNote */,
 				DDC86642276B548300A8E610 /* EditNote */,
 			);
@@ -1995,6 +2012,7 @@
 				AC7EB3AB25A7152000A7F2AF /* Muli-SemiBold.ttf in Resources */,
 				AC7EB3A225A7152000A7F2AF /* Moderat-Trial-Bold.otf in Resources */,
 				AC7EB3A125A7152000A7F2AF /* Muli-BoldItalic.ttf in Resources */,
+				DD7B74AB278C63F80072DDF1 /* style.json in Resources */,
 				AC7EB3AE25A7152000A7F2AF /* Muli-BlackItalic.ttf in Resources */,
 				AC7EB39E25A7152000A7F2AF /* Moderat-Trial-Medium.otf in Resources */,
 				AC7EB3A325A7152000A7F2AF /* Muli-Black.ttf in Resources */,
@@ -2292,6 +2310,7 @@
 				4F3CDF222652B58100596CD3 /* Measurement.swift in Sources */,
 				ACC536E026395C0900327267 /* MeasurementDotView.swift in Sources */,
 				4F858F5E2624B4980059271A /* Log.swift in Sources */,
+				DDC8664A276B695400A8E610 /* NotesHandler.swift in Sources */,
 				DD430B062670FCC000F1BF2E /* GreenButtonStyle.swift in Sources */,
 				334CC6FA2751454C00C10B53 /* SDCardMobileSessionsSavingService.swift in Sources */,
 				3387DD48278F0FC300B11D02 /* CSVFileGenerator.swift in Sources */,
@@ -2316,6 +2335,7 @@
 				AC32041C25CC46EF00A68520 /* PowerABView.swift in Sources */,
 				DD700CF22695CE9C0048A17D /* MailView.swift in Sources */,
 				B32D08AD267A6437006C97ED /* LogEvent.swift in Sources */,
+				DD8DE6892785B706009B1726 /* EmptyNotesHandler.swift in Sources */,
 				ACBB05132761F21500A6B3FB /* SDCardFixedSessionsSavingService.swift in Sources */,
 				33BA336A266E4D1000899343 /* MobileSession.swift in Sources */,
 				AC86EE6B25D03DC00083F8C0 /* SelectDeviceView.swift in Sources */,
@@ -2350,6 +2370,7 @@
 				3397C81F2787024C0050B333 /* UserDefaults.swift in Sources */,
 				DD28047726B3D6E70060F55E /* ConnectingAirBeamServices.swift in Sources */,
 				DD28047926B3D7370060F55E /* AirBeamConnectionController.swift in Sources */,
+				DD8DE68B2785B93A009B1726 /* MapNotesViewModel.swift in Sources */,
 				B367A594274E9EAA004C605B /* AppDelegate.swift in Sources */,
 				DD430B042670FA9600F1BF2E /* AirBeamOnboarding.swift in Sources */,
 				3387DD4E278F2AE400B11D02 /* GenerateSessionFileController.swift in Sources */,
@@ -2410,6 +2431,7 @@
 				DDC86646276B561500A8E610 /* EditNoteViewModel.swift in Sources */,
 				AC8CFF4525E510CB00FB2918 /* AuthorizationAPI.swift in Sources */,
 				DD9EBB4E26AFDD2100D51804 /* TurnOnLocationView.swift in Sources */,
+				DDC86648276B607C00A8E610 /* Note.swift in Sources */,
 				B3EFAB1726EFE2DB00E88141 /* FirstRunInfoProvidable.swift in Sources */,
 				332F521425FA38430047236D /* MicrophoneManager.swift in Sources */,
 				DD5930E1273528860043C2A2 /* UserState.swift in Sources */,
@@ -2632,7 +2654,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 0;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_ASSET_PATHS = "\"AirCasting/Preview Content\"";
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
@@ -2643,7 +2665,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.0;
+				MARKETING_VERSION = 1.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.habitatmap.AirCasting;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2661,7 +2683,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 0;
 				DEVELOPMENT_ASSET_PATHS = "\"AirCasting/Preview Content\"";
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
@@ -2671,7 +2693,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.0;
+				MARKETING_VERSION = 1.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.habitatmap.AirCasting;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "HabitatMap AppStore";
@@ -2749,7 +2771,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 0;
 				DEVELOPMENT_ASSET_PATHS = "\"AirCasting/Preview Content\"";
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
@@ -2759,7 +2781,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.0;
+				MARKETING_VERSION = 1.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.habitatmap.AirCasting;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "AirCasting Ad hoc distribution";
