@@ -2,17 +2,18 @@
 //
 
 import Foundation
-import ZipArchive
 
 protocol GenerateSessionFileController {
     func generateFile(for session: SessionEntity) -> Result<URL, Error>
 }
 
 struct DefaultGenerateSessionFileController: GenerateSessionFileController {
-    let fileGenerator: CSVFileGenerator
+    private let fileGenerator: CSVFileGenerator
+    private let fileZppier: FileZipper
     
-    init() {
-        fileGenerator = DefaultCSVFileGenerator()
+    init(fileGenerator: CSVFileGenerator, fileZipper: FileZipper) {
+        self.fileGenerator = fileGenerator
+        self.fileZppier = fileZipper
     }
     
     func generateFile(for session: SessionEntity) -> Result<URL, Error> {
@@ -22,7 +23,7 @@ struct DefaultGenerateSessionFileController: GenerateSessionFileController {
         
         switch fileGenerationResult {
         case .success(let url):
-            let zipResult = zipFile(url, fileName: fileName)
+            let zipResult = fileZppier.createZipFile(url, fileName: fileName)
             return zipResult
         case .failure(_):
             return fileGenerationResult
@@ -44,25 +45,6 @@ struct DefaultGenerateSessionFileController: GenerateSessionFileController {
             })
         })
         return content
-    }
-    
-    private func zipFile(_ url: URL, fileName: String) -> Result<URL, Error> {
-        var newUrl = url
-        let fileManager = FileManager.default
-        do {
-            let path = try fileManager.url(for: .documentDirectory, in: .allDomainsMask, appropriateFor: nil, create: false)
-            let zipPath = path.appendingPathComponent(fileName + ".zip").path
-            SSZipArchive.createZipFile(atPath: zipPath, withContentsOfDirectory: url.path, keepParentDirectory: false)
-            do {
-                try FileManager.default.removeItem(at: url)
-            } catch {
-                Log.error("Failed to delete session file: \(error)")
-            }
-            newUrl = URL(fileURLWithPath: zipPath)
-        } catch {
-            Log.error("Failed to create zipped file: \(error)")
-        }
-        return .success(newUrl)
     }
 }
 

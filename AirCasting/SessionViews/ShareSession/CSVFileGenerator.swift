@@ -11,7 +11,7 @@ struct DefaultCSVFileGenerator: CSVFileGenerator {
     func generateFile(content: String, fileName: String) -> Result<URL, Error> {
         let fileManager = FileManager.default
         do {
-            let path = try fileManager.url(for: .documentDirectory, in: .allDomainsMask, appropriateFor: nil, create: false)
+            let path = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
             let directoryURL = path.appendingPathComponent(fileName)
             try? fileManager.createDirectory(at: directoryURL, withIntermediateDirectories: false, attributes: nil)
             let fileURL = directoryURL.appendingPathComponent("\(fileName).csv")
