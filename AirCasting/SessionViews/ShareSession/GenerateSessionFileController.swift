@@ -2,7 +2,7 @@
 //
 
 import Foundation
-import SSZipArchive
+import ZipArchive
 
 protocol GenerateSessionFileController {
     func generateFile(for session: SessionEntity) -> Result<URL, Error>

@@ -15,6 +15,7 @@
 		334CC6FA2751454C00C10B53 /* SDCardMobileSessionsSavingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 334CC6F92751454C00C10B53 /* SDCardMobileSessionsSavingService.swift */; };
 		335A8B2F2785D49100355D46 /* ShareSessionAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 335A8B2E2785D49100355D46 /* ShareSessionAPI.swift */; };
 		3362B4ED25E69987008D61BA /* CreateSessionDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3362B4EC25E69987008D61BA /* CreateSessionDetailsView.swift */; };
+		3375E8D22791E7100019A5DE /* ZipArchive in Frameworks */ = {isa = PBXBuildFile; productRef = 3375E8D12791E7100019A5DE /* ZipArchive */; };
 		33769A5C2705B06F007D1EA7 /* ChartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33769A5B2705B06F007D1EA7 /* ChartViewModel.swift */; };
 		3383511E2747C24800308068 /* SDSyncFileFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3383511D2747C24800308068 /* SDSyncFileFactory.swift */; };
 		3384C1DD274EC4C00022B008 /* SDSyncFileValidationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3384C1DC274EC4C00022B008 /* SDSyncFileValidationService.swift */; };
@@ -735,6 +736,7 @@
 				AC5226C3270C50520048A585 /* Algorithms in Frameworks */,
 				AC787D75267B41990034B222 /* AirCastingStyling in Frameworks */,
 				DDD951B427550C250063D43D /* Pods_AirCasting.framework in Frameworks */,
+				3375E8D22791E7100019A5DE /* ZipArchive in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1921,6 +1923,7 @@
 				AC787D74267B41990034B222 /* AirCastingStyling */,
 				ACF600BD2678D7F4005DD97C /* SwiftSimplify */,
 				AC5226C2270C50520048A585 /* Algorithms */,
+				3375E8D12791E7100019A5DE /* ZipArchive */,
 			);
 			productName = AirCasting;
 			productReference = AC7EB37225A6FB3A00A7F2AF /* AirCasting.app */;
@@ -1957,6 +1960,7 @@
 				AC6D567A25AC540D00D221BA /* XCRemoteSwiftPackageReference "Charts" */,
 				ACF600BC2678D7F4005DD97C /* XCRemoteSwiftPackageReference "SwiftSimplify" */,
 				AC5226C1270C50520048A585 /* XCRemoteSwiftPackageReference "swift-algorithms" */,
+				3375E8D02791E7100019A5DE /* XCRemoteSwiftPackageReference "ZipArchive" */,
 			);
 			productRefGroup = AC7EB37325A6FB3A00A7F2AF /* Products */;
 			projectDirPath = "";
@@ -2814,6 +2818,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		3375E8D02791E7100019A5DE /* XCRemoteSwiftPackageReference "ZipArchive" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ZipArchive/ZipArchive";
+			requirement = {
+				kind = exactVersion;
+				version = 2.4.2;
+			};
+		};
 		AC5226C1270C50520048A585 /* XCRemoteSwiftPackageReference "swift-algorithms" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/swift-algorithms.git";
@@ -2841,6 +2853,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		3375E8D12791E7100019A5DE /* ZipArchive */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3375E8D02791E7100019A5DE /* XCRemoteSwiftPackageReference "ZipArchive" */;
+			productName = ZipArchive;
+		};
 		AC5226C2270C50520048A585 /* Algorithms */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = AC5226C1270C50520048A585 /* XCRemoteSwiftPackageReference "swift-algorithms" */;
