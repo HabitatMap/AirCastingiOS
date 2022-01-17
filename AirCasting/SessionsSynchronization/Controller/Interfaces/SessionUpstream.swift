@@ -21,7 +21,7 @@ extension SessionsSynchronization {
         let uuid: SessionUUID
         let type: String
         let title: String
-        let notes: [String]
+        let notes: [NoteUpstreamData]
         let tagList: String
         let startTime: Date
         let endTime: Date?
@@ -56,5 +56,13 @@ extension SessionsSynchronization {
         let latitude: Double?
         let longitude: Double?
         let time: Date
+    }
+    
+    struct NoteUpstreamData: Equatable, Codable {
+        let date: Date
+        let text: String
+        let latitude: Double
+        let longitude: Double
+        let number: Int
     }
 }

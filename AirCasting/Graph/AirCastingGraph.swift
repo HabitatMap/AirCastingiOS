@@ -179,7 +179,9 @@ extension AirCastingGraph {
         noteButtons.forEach { $0.button.removeFromSuperview() }
         noteButtons = notes.map { (createNewNoteButton(), $0, onTap) }
         noteButtons.forEach { lineChartView.addSubview($0.button) }
-        setNeedsLayout()
+        DispatchQueue.main.async { [self] in
+            setNeedsLayout()
+        }
     }
     
     private func createNewNoteButton() -> UIButton {

@@ -46,6 +46,7 @@ class DefaultSessionUpdateService: SessionUpdateService {
                                                                                 measurements: [])
         })
         
+        
         let sessionToPass = CreateSessionApi.SessionParams(uuid: session.uuid,
                                                  type: session.type,
                                                  title: session.name!,
