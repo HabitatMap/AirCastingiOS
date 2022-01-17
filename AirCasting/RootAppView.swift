@@ -25,7 +25,6 @@ struct RootAppView: View {
     
     let locationTracker = LocationTracker(locationManager: CLLocationManager())
     var sessionSynchronizer: SessionSynchronizer
-    let networkChecker = NetworkChecker(connectionAvailable: false)
     let urlProvider: BaseURLProvider
     
     var body: some View {
@@ -54,7 +53,6 @@ struct RootAppView: View {
             }
         }
         .environmentObject(userAuthenticationSession)
-        .environmentObject(networkChecker)
         .environmentObject(userSettings)
         .environmentObject(locationTracker)
         .environmentObject(userRedirectionSettings)

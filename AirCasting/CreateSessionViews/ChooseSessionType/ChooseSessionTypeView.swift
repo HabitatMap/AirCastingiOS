@@ -25,7 +25,7 @@ struct ChooseSessionTypeView: View {
     @EnvironmentObject var selectedSection: SelectSection
     @EnvironmentObject private var emptyDashboardButtonTapped: EmptyDashboardButtonTapped
     @EnvironmentObject private var finishAndSyncButtonTapped: FinishAndSyncButtonTapped
-    @EnvironmentObject var networkChecker: NetworkChecker
+    @Injected private var networkChecker: NetworkChecker
     
     @InjectedObject private var bluetoothManger: BluetoothManager //TODO: Fix this (see usage) - move to VM
     

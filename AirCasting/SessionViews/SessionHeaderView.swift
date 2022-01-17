@@ -15,7 +15,6 @@ struct SessionHeaderView: View {
     var isMenuNeeded = true
     @Binding var isCollapsed: Bool
     @State var chevronIndicator = "chevron.down"
-    @EnvironmentObject var networkChecker: NetworkChecker
     @InjectedObject private var bluetoothManager: BluetoothManager
     @EnvironmentObject var locationTracker: LocationTracker
     let urlProvider: BaseURLProvider

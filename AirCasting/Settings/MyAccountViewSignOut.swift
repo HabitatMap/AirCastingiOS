@@ -10,7 +10,7 @@ struct MyAccountViewSignOut: View {
     @State private var alert: AlertInfo?
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     @InjectedObject private var userState: UserState
-    @EnvironmentObject var networkChecker: NetworkChecker
+    @Injected private var networkChecker: NetworkChecker
     
     var body: some View {
         ZStack {

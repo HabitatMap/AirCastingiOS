@@ -52,6 +52,7 @@ extension Resolver: ResolverRegistering {
         }
         main.register { FeatureFlagsViewModel() }.scope(.application)
         main.register { UserState() }.scope(.application)
+        main.register { DefaultNetworkChecker() as NetworkChecker }.scope(.application)
     }
     
     // MARK: - Composition helpers

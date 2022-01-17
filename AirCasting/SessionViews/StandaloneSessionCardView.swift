@@ -3,6 +3,7 @@
 
 import SwiftUI
 import AirCastingStyling
+import Resolver
 
 struct StandaloneSessionCardView: View {
     let session: SessionEntity
@@ -13,7 +14,7 @@ struct StandaloneSessionCardView: View {
     let urlProvider: BaseURLProvider
     @EnvironmentObject private var tabSelection: TabBarSelection
     @EnvironmentObject private var finishAndSyncButtonTapped: FinishAndSyncButtonTapped
-    @EnvironmentObject var networkChecker: NetworkChecker
+    @Injected private var networkChecker: NetworkChecker
     @State private var alert: AlertInfo?
     
     var body: some View {
