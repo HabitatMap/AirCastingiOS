@@ -8,6 +8,7 @@
 import AirCastingStyling
 import Charts
 import SwiftUI
+import Resolver
 
 struct SessionCardView: View {
     @State private var isCollapsed = true
@@ -30,6 +31,7 @@ struct SessionCardView: View {
     @StateObject private var graphStatsDataSource: GraphStatsDataSource
     @StateObject private var graphStatsViewModel: StatisticsContainerViewModel
     @StateObject private var chartViewModel: ChartViewModel
+    @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
 
     init(session: SessionEntity,
          sessionCartViewModel: SessionCardViewModel,
@@ -69,7 +71,7 @@ struct SessionCardView: View {
     }
 
     var body: some View {
-        if session.isInStandaloneMode && FeatureFlagsViewModel.shared.enabledFeatures.contains(.standaloneMode) {
+        if session.isInStandaloneMode && featureFlagsViewModel.enabledFeatures.contains(.standaloneMode) {
             standaloneSessionCard
         } else {
             sessionCard

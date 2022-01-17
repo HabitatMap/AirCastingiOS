@@ -3,13 +3,14 @@
 
 import Foundation
 import UIKit
+import Resolver
 
 class UserSettings: ObservableObject {
     private let userDefaults: UserDefaults
     private let crowdMapKey = Constants.UserDefaultsKeys.crowdMap
     private let disableMappingKey = Constants.UserDefaultsKeys.disableMapping
     private let keepScreenOnKey = Constants.UserDefaultsKeys.keepScreenOn
-    private let featureFlagsViewModel = FeatureFlagsViewModel.shared
+    @Injected private var featureFlagProvider: FeatureFlagProvider
     private let convertToCelsiusKey = Constants.UserDefaultsKeys.convertToCelsius
 
     var contributingToCrowdMap: Bool {
@@ -58,7 +59,8 @@ class UserSettings: ObservableObject {
         contributingToCrowdMap = userDefaults.valueExists(forKey: crowdMapKey) ? userDefaults.bool(forKey: crowdMapKey) : true
         keepScreenOn = userDefaults.bool(forKey: keepScreenOnKey)
         // This is included in case user turns on disable mapping but we turn off the feature, because otherwise the user could never turn this off
-        disableMapping = featureFlagsViewModel.enabledFeatures.contains(.disableMapping) ? userDefaults.bool(forKey: disableMappingKey) : false
+        let isFeatureFlagOn = featureFlagProvider.isFeatureOn(.disableMapping) ?? false
+        disableMapping = isFeatureFlagOn ? userDefaults.bool(forKey: disableMappingKey) : false
         convertToCelsius = userDefaults.bool(forKey: convertToCelsiusKey)
     }
 }

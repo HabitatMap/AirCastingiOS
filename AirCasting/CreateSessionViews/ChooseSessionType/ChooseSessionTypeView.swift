@@ -35,7 +35,7 @@ struct ChooseSessionTypeView: View {
     var shouldGoToSyncScreen: Bool {
         (tabSelection.selection == .createSession && finishAndSyncButtonTapped.finishAndSyncButtonWasTapped) ? true : false
     }
-    @StateObject private var featureFlagsViewModel = FeatureFlagsViewModel.shared
+    @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
 
     var body: some View {
         if #available(iOS 15, *) {

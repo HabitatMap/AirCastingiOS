@@ -2,10 +2,11 @@
 //
 
 import SwiftUI
+import Resolver
 
 #if DEBUG || BETA
 struct AppConfigurationView: View {
-    @StateObject private var config: FeatureFlagsViewModel = .shared
+    @InjectedObject private var config: FeatureFlagsViewModel
     
     var body: some View {
         List(FeatureFlag.allCases, id: \.name) { feature in

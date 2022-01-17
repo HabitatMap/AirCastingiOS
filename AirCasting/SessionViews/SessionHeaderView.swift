@@ -24,7 +24,7 @@ struct SessionHeaderView: View {
     @State private var showingNoConnectionAlert = false
     @State private var alert: AlertInfo?
     let sessionStopperFactory: SessionStoppableFactory
-    @StateObject private var featureFlagsViewModel = FeatureFlagsViewModel.shared
+    @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
     @State var showDeleteModal = false
     @State var showAddNoteModal = false
     @State var showShareModal = false

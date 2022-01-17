@@ -7,6 +7,7 @@
 
 import SwiftUI
 import AirCastingStyling
+import Resolver
 
 struct SettingsView: View {
     var viewModel: SettingsViewModel
@@ -19,7 +20,7 @@ struct SettingsView: View {
     @State private var locationScreenGo = false
     private var SDClearingRouteProcess = true
     @EnvironmentObject var userSettings: UserSettings
-    @StateObject private var featureFlagsViewModel = FeatureFlagsViewModel.shared
+    @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
 
     init(urlProvider: BaseURLProvider, logoutController: LogoutController, viewModel: SettingsViewModel) {
         let navBarAppearance = UINavigationBar.appearance()
