@@ -186,7 +186,9 @@ struct SettingsView: View {
     private var disableMappingSwitch: some View {
         Toggle(isOn: $userSettings.disableMapping, label: {
             Text(Strings.Settings.disableMapping)
-        }
+                .font(Fonts.boldHeading1)
+                .multilineTextAlignment(.leading)
+        }).toggleStyle(SwitchToggleStyle(tint: .accentColor))
     }
     
     private var temperatureSwitch: some View {
