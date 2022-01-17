@@ -8,6 +8,10 @@ struct Constants {
         static let microphone = "Phone Microphone"
     }
     
+    enum MeasurementType {
+        static let temperature = "Temperature"
+    }
+    
     enum Map {
         static let polylineWidth = 3
         static let dotRadius = 10
@@ -32,5 +36,6 @@ struct Constants {
     
     enum UserDefaultsKeys {
         static let crowdMap = "crowdMap"
+        static let convertToCelsius = "convertToCelsius"
     }
 }

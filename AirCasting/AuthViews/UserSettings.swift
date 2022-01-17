@@ -7,6 +7,7 @@ import UIKit
 class UserSettings: ObservableObject {
     private let userDefaults: UserDefaults
     private let crowdMapKey = Constants.UserDefaultsKeys.crowdMap
+    private let convertToCelsiusKey = Constants.UserDefaultsKeys.convertToCelsius
     
     var contributingToCrowdMap: Bool {
         get {
@@ -29,9 +30,20 @@ class UserSettings: ObservableObject {
         }
     }
     
+    var convertToCelsius: Bool {
+        get {
+            userDefaults.bool(forKey: convertToCelsiusKey)
+        }
+        set {
+            userDefaults.setValue(newValue, forKey: convertToCelsiusKey)
+            Log.info("Changed convert to celcius setting to \(convertToCelsius ? "ON" : "OFF")")
+        }
+    }
+    
     init(userDefaults: UserDefaults = .standard) {
         self.userDefaults = userDefaults
         contributingToCrowdMap = userDefaults.valueExists(forKey: crowdMapKey) ? userDefaults.bool(forKey: crowdMapKey) : true
         keepScreenOn = userDefaults.bool(forKey: "keepScreenOn")
+        keepScreenOn = userDefaults.bool(forKey: convertToCelsiusKey)
     }
 }

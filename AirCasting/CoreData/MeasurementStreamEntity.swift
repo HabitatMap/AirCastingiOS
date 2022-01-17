@@ -45,6 +45,10 @@ public class MeasurementStreamEntity: NSManagedObject, Identifiable {
     public var allMeasurements: [MeasurementEntity]? {
         measurements?.array as? [MeasurementEntity]
     }
+    
+    public var isTemperature: Bool {
+        measurementType == Constants.MeasurementType.temperature
+    }
 
     public var localID: MeasurementStreamLocalID {
         MeasurementStreamLocalID(id: objectID)
