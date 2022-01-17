@@ -51,6 +51,7 @@ extension Resolver: ResolverRegistering {
             #endif
         }
         main.register { FeatureFlagsViewModel() }.scope(.application)
+        main.register { UserState() }.scope(.application)
     }
     
     // MARK: - Composition helpers

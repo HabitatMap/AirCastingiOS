@@ -3,6 +3,7 @@
 
 import AirCastingStyling
 import SwiftUI
+import Resolver
 
 struct BackendSettingsView: View {
     let backendURLBuilder = BackendURLValidator()
@@ -14,7 +15,7 @@ struct BackendSettingsView: View {
     @State private var portText: String = ""
     @State private var url: URL?
     @State private var alertPresented = false
-    @EnvironmentObject private var userState: UserState
+    @InjectedObject private var userState: UserState
     private var urlWithoutPort: String? {
         let components = URLComponents(url: urlProvider.baseAppURL, resolvingAgainstBaseURL: false)!
         return components.host

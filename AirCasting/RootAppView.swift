@@ -19,7 +19,6 @@ struct RootAppView: View {
     
     @StateObject private var userSettings = UserSettings()
     @StateObject private var userRedirectionSettings = DefaultSettingsRedirection()
-    @StateObject private var userState = UserState()
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     @EnvironmentObject var lifeTimeEventsProvider: LifeTimeEventsProvider
     @Injected private var averagingService: AveragingService
@@ -54,7 +53,6 @@ struct RootAppView: View {
                 })
             }
         }
-        .environmentObject(userState)
         .environmentObject(userAuthenticationSession)
         .environmentObject(networkChecker)
         .environmentObject(userSettings)
@@ -100,9 +98,8 @@ struct MainAppView: View {
     let sdSyncController: SDSyncController
     let urlProvider: BaseURLProvider
     @Injected private var persistenceController: PersistenceController
-    
+    @InjectedObject private var user: UserState
     @EnvironmentObject private var userAuthenticationSession: UserAuthenticationSession
-    @EnvironmentObject private var user: UserState
     
     var body: some View {
         LoadingView(isShowing: $user.isLoggingOut, activityIndicatorText: Strings.MainTabBarView.loggingOut) {

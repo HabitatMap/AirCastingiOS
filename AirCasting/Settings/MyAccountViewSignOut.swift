@@ -3,12 +3,13 @@
 
 import SwiftUI
 import AirCastingStyling
+import Resolver
 
 struct MyAccountViewSignOut: View {
     let logoutController: LogoutController
     @State private var alert: AlertInfo?
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
-    @EnvironmentObject private var userState: UserState
+    @InjectedObject private var userState: UserState
     @EnvironmentObject var networkChecker: NetworkChecker
     
     var body: some View {
