@@ -27,4 +27,16 @@ class MapNotesViewModel: ObservableObject {
             }
         }
     }
+    
+    func refreshNotes() {
+        notesHandler.getNotes { notes in
+            DispatchQueue.main.async {
+                self.notes = notes.map({ note in
+                        .init(id: note.number,
+                              location: .init(latitude: note.lat, longitude: note.long),
+                              markerImage: UIImage(named: "message-square")!.withRenderingMode(.alwaysTemplate))
+                })
+            }
+        }
+    }
 }

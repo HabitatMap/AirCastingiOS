@@ -82,7 +82,9 @@ struct GoogleMapView: UIViewRepresentable {
     
     func updateUIView(_ uiView: GMSMapView, context: Context) {
         if mapNotes.count != context.coordinator.mapNotesCounter {
+            uiView.clear()
             placeNotes(uiView, notes: mapNotes)
+            drawPolyline(uiView, context: context)
             context.coordinator.mapNotesCounter = mapNotes.count
         }
         guard isUserInteracting else { return }
@@ -212,7 +214,6 @@ struct GoogleMapView: UIViewRepresentable {
         DispatchQueue.main.async {
             notes.forEach { note in
                 let marker = GMSMarker()
-
                 let markerImage = note.markerImage
                 let markerView = UIImageView(image: markerImage.withRenderingMode(.alwaysOriginal))
                 marker.position = note.location
