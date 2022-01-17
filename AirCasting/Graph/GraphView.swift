@@ -90,11 +90,13 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
         .sheet(isPresented: $showNoteEdit, content: { [selectedNote] in
             EditNoteView(viewModel: EditNoteViewModelDefault(exitRoute: { showNoteEdit.toggle() },
                                                              noteNumber: selectedNote!.number,
-                                                             notesHandler:
-                                                                NotesHandlerDefault(measurementStreamStorage: measurementStreamStorage,
-                                                                    sessionUUID: session.uuid,
-                                                                    locationTracker: locationTracker),
-                                                             sessionUpdateService: DefaultSessionUpdateService(authorization: authorization, urlProvider: urlProvider)))
+                                                             notesHandler: NotesHandlerDefault(
+                                                                measurementStreamStorage: measurementStreamStorage,
+                                                                sessionUUID: session.uuid,
+                                                                locationTracker: locationTracker),
+                                                             sessionUpdateService: DefaultSessionUpdateService(
+                                                                authorization: authorization,
+                                                                urlProvider: urlProvider)))
         })
         .navigationBarTitleDisplayMode(.inline)
     }

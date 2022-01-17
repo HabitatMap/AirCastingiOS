@@ -17,15 +17,7 @@ class MapNotesViewModel: ObservableObject {
     
     init(notesHandler: NotesHandler) {
         self.notesHandler = notesHandler
-        notesHandler.getNotes { notes in
-            DispatchQueue.main.async {
-                self.notes = notes.map({ note in
-                        .init(id: note.number,
-                              location: .init(latitude: note.lat, longitude: note.long),
-                              markerImage: UIImage(named: "message-square")!.withRenderingMode(.alwaysTemplate))
-                })
-            }
-        }
+        refreshNotes()
     }
     
     func refreshNotes() {
