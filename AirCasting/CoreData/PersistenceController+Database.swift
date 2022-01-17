@@ -130,11 +130,12 @@ extension Database.Session {
                   notes: (coreDataEntity.notes?.map { note -> Database.Note in
                             let n = note as! NoteEntity
                             return Database.Note(date: n.date ?? Date(),
-                                                   text: n.text ?? "",
-                                                    latitude: n.lat,
-                                                    longitude: n.long,
-                                                   number: Int(n.number))
-                        } ?? []))
+                                                 text: n.text ?? "",
+                                                 latitude: n.lat,
+                                                 longitude: n.long,
+                                                 number: Int(n.number))
+                        } ?? [])
+        )
     }
 }
 

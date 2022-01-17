@@ -143,7 +143,6 @@ struct SynchronizationDataConverter {
                          number: note.number)
         }
         
-        
         return SessionsSynchronization.SessionStoreSessionData(uuid: entity.uuid,
                                                                contribute: entity.contribute,
                                                                endTime: entity.endTime,

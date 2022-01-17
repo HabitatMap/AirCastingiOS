@@ -45,8 +45,7 @@ class DefaultSessionUpdateService: SessionUpdateService {
                                                                                 threshold_very_low: Int(stream.thresholdVeryLow),
                                                                                 measurements: [])
         })
-        
-        
+    
         let sessionToPass = CreateSessionApi.SessionParams(uuid: session.uuid,
                                                  type: session.type,
                                                  title: session.name!,
