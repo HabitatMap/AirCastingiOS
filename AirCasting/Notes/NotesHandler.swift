@@ -6,9 +6,10 @@ import Foundation
 protocol NotesHandler {
     func addNote(noteText: String)
     func deleteNote(note: Note)
-    func updateNote(note: Note, newText: String)
+    func updateNote(note: Note, newText: String, completion: @escaping () -> Void)
     func getNotes(completion: @escaping ([Note]) -> Void)
     func fetchSpecifiedNote(number: Int, completion: @escaping (Note) -> Void)
+    func fetchSession(completion: @escaping (SessionEntity) -> Void) 
 }
 
 class NotesHandlerDefault: NotesHandler {
@@ -48,10 +49,11 @@ class NotesHandlerDefault: NotesHandler {
         }
     }
     
-    func updateNote(note: Note, newText: String) {
+    func updateNote(note: Note, newText: String, completion: @escaping () -> Void) {
         measurementStreamStorage.accessStorage { [self] storage in
             do {
                 try storage.updateNote(note, newText: newText, for: sessionUUID)
+                completion()
             } catch {
                 Log.info("Error when deleting note")
             }
@@ -72,6 +74,16 @@ class NotesHandlerDefault: NotesHandler {
         measurementStreamStorage.accessStorage { [self] storage in
             do {
                 completion(try storage.fetchSpecifiedNote(for: sessionUUID, number: number))
+            } catch {
+                Log.info("Error when deleting note")
+            }
+        }
+    }
+    
+    func fetchSession(completion: @escaping (SessionEntity) -> Void) {
+        measurementStreamStorage.accessStorage { [self] storage in
+            do {
+                completion(try storage.getExistingSession(with: sessionUUID))
             } catch {
                 Log.info("Error when deleting note")
             }

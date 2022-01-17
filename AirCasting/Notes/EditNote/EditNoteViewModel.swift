@@ -14,19 +14,30 @@ class EditNoteViewModelDefault: EditNoteViewModel, ObservableObject {
     private var note: Note!
     private var notesHandler: NotesHandler
     private let exitRoute: () -> Void
+    private let sessionUpdateService: SessionUpdateService
     
     
-    init(exitRoute: @escaping () -> Void, noteNumber: Int, notesHandler: NotesHandler) {
+    init(exitRoute: @escaping () -> Void, noteNumber: Int, notesHandler: NotesHandler, sessionUpdateService: SessionUpdateService) {
         self.exitRoute = exitRoute
         self.notesHandler = notesHandler
+        self.sessionUpdateService = sessionUpdateService
         notesHandler.fetchSpecifiedNote(number: noteNumber) { note in
-            self.note = note
-            self.noteText = note.text
+            DispatchQueue.main.async {
+                self.note = note
+                self.noteText = note.text
+            }
         }
     }
     
     func saveTapped() {
-        notesHandler.updateNote(note: note, newText: noteText); exitRoute()
+        notesHandler.updateNote(note: note, newText: noteText, completion: {
+            self.notesHandler.fetchSession { session in
+                self.sessionUpdateService.updateSession(session: session) {
+                    self.exitRoute()
+                    Log.info("Notes successfully updated")
+                }
+            }
+        })
     }
     
     func deleteTapped() {

@@ -81,7 +81,6 @@ struct GoogleMapView: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: GMSMapView, context: Context) {
-        placeNotes(uiView, notes: mapNotes)
         if mapNotes.count != context.coordinator.mapNotesCounter {
             placeNotes(uiView, notes: mapNotes)
             context.coordinator.mapNotesCounter = mapNotes.count
