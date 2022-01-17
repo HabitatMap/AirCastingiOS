@@ -17,6 +17,7 @@ struct SessionHeaderView: View {
     @State var chevronIndicator = "chevron.down"
     @EnvironmentObject var networkChecker: NetworkChecker
     @InjectedObject private var bluetoothManager: BluetoothManager
+    @EnvironmentObject var locationTracker: LocationTracker
     let urlProvider: BaseURLProvider
     @EnvironmentObject var selectedSection: SelectSection
     @ObservedObject var session: SessionEntity
@@ -40,22 +41,26 @@ struct SessionHeaderView: View {
                     DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session, measurementStreamStorage: measurementStreamStorage, streamRemover: DefaultSessionUpdateService(authorization: authorization, urlProvider: urlProvider), sessionSynchronizer: sessionSynchronizer), deleteModal: $showDeleteModal)
                 }
                 .sheet(isPresented: $showShareModal) {
-                    ShareSessionView(viewModel: DefaultShareSessionViewModel(session: session, apiClient: ShareSessionApi(urlProvider: urlProvider), exitRoute: { result in
-                                            showShareModal.toggle()
-                        if result == .fileShared {
-                                                detectEmailSent = true
-                                            }
-                                        })).onDisappear(perform: {
-                                            if detectEmailSent {
-                                                alert = InAppAlerts.shareFileRequestSent()
-                                            }
-                                        })
+                    if session.locationless {
+                        ShareLocationlessSessionView(viewModel: ShareLocationlessSessionViewModel(session: session, fileGenerationController: DefaultGenerateSessionFileController(fileGenerator: DefaultCSVFileGenerator(), fileZipper: SSZipFileZipper()), exitRoute: { showShareModal.toggle() }))
+                    } else {
+                        ShareSessionView(viewModel: DefaultShareSessionViewModel(session: session, apiClient: ShareSessionApi(urlProvider: urlProvider), exitRoute: { result in
+                                                showShareModal.toggle()
+                            if result == .fileShared {
+                                                    detectEmailSent = true
+                                                }
+                                            })).onDisappear(perform: {
+                                                if detectEmailSent {
+                                                    alert = InAppAlerts.shareFileRequestSent()
+                                                }
+                                            })
+                    }
                 }
                 .sheet(isPresented: $showEditView) {
                     editViewSheet
                 }
                 .sheet(isPresented: $showAddNoteModal) {
-                    AddNoteView(viewModel: AddNoteViewModelDefault(exitRoute: { showAddNoteModal.toggle() }))
+                    AddNoteView(viewModel: AddNoteViewModelDefault(exitRoute: { showAddNoteModal.toggle() }, notesHandler: NotesHandlerDefault(measurementStreamStorage: measurementStreamStorage, sessionUUID: session.uuid, locationTracker: locationTracker)))
                 }
         } else {
             sessionHeader
@@ -67,12 +72,16 @@ struct SessionHeaderView: View {
                             }
                         EmptyView()
                             .sheet(isPresented: $showShareModal) {
-                                ShareSessionView(viewModel: DefaultShareSessionViewModel(session: session, apiClient: ShareSessionApi(urlProvider: urlProvider), exitRoute: { result in
-                                    showShareModal.toggle()
-                                    if result == .fileShared {
-                                        alert = InAppAlerts.shareFileRequestSent()
-                                    }
-                                }))
+                                if session.locationless {
+                                    ShareLocationlessSessionView(viewModel: ShareLocationlessSessionViewModel(session: session, fileGenerationController: DefaultGenerateSessionFileController(fileGenerator: DefaultCSVFileGenerator(), fileZipper: SSZipFileZipper()), exitRoute: { showShareModal.toggle() }))
+                                } else {
+                                    ShareSessionView(viewModel: DefaultShareSessionViewModel(session: session, apiClient: ShareSessionApi(urlProvider: urlProvider), exitRoute: { result in
+                                        showShareModal.toggle()
+                                        if result == .fileShared {
+                                            alert = InAppAlerts.shareFileRequestSent()
+                                        }
+                                    }))
+                                }
                             }
                         EmptyView()
                             .sheet(isPresented: $showDeleteModal) {
@@ -89,7 +98,7 @@ struct SessionHeaderView: View {
                             }
                         EmptyView()
                             .sheet(isPresented: $showAddNoteModal) {
-                                AddNoteView(viewModel: AddNoteViewModelDefault(exitRoute: { showAddNoteModal.toggle() }))
+                                AddNoteView(viewModel: AddNoteViewModelDefault(exitRoute: { showAddNoteModal.toggle() }, notesHandler: NotesHandlerDefault(measurementStreamStorage: measurementStreamStorage, sessionUUID: session.uuid, locationTracker: locationTracker)))
                             }
                     }
                 )

@@ -21,10 +21,11 @@ This lane is used for beta releases to the [Firebase Distribution](https://fireb
 ### Release
 The Release lane will build and release the app to the appstoreconnect and Firebase. Versions released this way will be marked as Release Candidate (RC). To run this lane:
 1. `cd` into top project directory
-2. make sure you're on a branch that follows the `release/X.Y.Z` scheme (replace X.Y.Z with version number, it needs to match the version specified in the project) and your git status is clean
+2. make sure you're on a `develop` branch and your git status is clean
 3. run `fastlane release`
 4. after fastlane finishes push the release branch to repo, but don't make a PR out of it
-5. bump version number to the next one on `develop` 
+5. bump version number to the next one on `develop` (might need prior consultation with the AC team)
+6. after the version is accepted and released to AppStore merge the release branch into master and develop
 
 ### Integration
 For the fastlane setup to work you'll need to obtain an `.env.default` file and place it inside Fastlane directory. It contains secret keys used for Firebase communication and appstore connect key details. 

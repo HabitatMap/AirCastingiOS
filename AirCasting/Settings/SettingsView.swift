@@ -20,7 +20,7 @@ struct SettingsView: View {
     private var SDClearingRouteProcess = true
     @EnvironmentObject var userSettings: UserSettings
     @StateObject private var featureFlagsViewModel = FeatureFlagsViewModel.shared
-    
+
     init(urlProvider: BaseURLProvider, logoutController: LogoutController, viewModel: SettingsViewModel) {
         let navBarAppearance = UINavigationBar.appearance()
         navBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(Color.darkBlue),
@@ -29,7 +29,7 @@ struct SettingsView: View {
         self.logoutController = logoutController
         self.viewModel = viewModel
     }
-    
+
     var body: some View {
         if #available(iOS 15, *) {
             NavigationView {
@@ -97,7 +97,7 @@ struct SettingsView: View {
             .environmentObject(viewModel.sessionContext)
         }
     }
-    
+
     private var main: some View {
         Form {
             signOutSection
@@ -112,13 +112,13 @@ struct SettingsView: View {
         .listStyle(GroupedListStyle())
         .navigationBarTitle(Strings.Settings.title)
     }
-    
+
     private var signOutSection: some View {
         Section() {
             signOutLink
         }
     }
-    
+
     private var settingsSection: some View {
         Section() {
             VStack(alignment: .leading) {
@@ -126,14 +126,22 @@ struct SettingsView: View {
                 Spacer()
                 crowdMapDescription
             }
+            if featureFlagsViewModel.enabledFeatures.contains(.disableMapping) {
+                disableMappingSwitch
+            }
             keepScreenOnSwitch
+            VStack(alignment: .leading) {
+                temperatureSwitch
+                Spacer()
+                temperatureDescription
+            }
             if featureFlagsViewModel.enabledFeatures.contains(.sdCardSync) {
                 clearSDCard
             }
             navigateToBackendSettingsButton
         }
     }
-    
+
     private var appInfoSection: some View {
         Section() {
             Text(Strings.Settings.appInfoTitle) + Text(". ") + Text("\(UIApplication.appVersion!) ") +
@@ -145,21 +153,21 @@ struct SettingsView: View {
             #endif
         }.foregroundColor(.aircastingGray)
     }
-    
+
     private var signOutLink: some View {
         NavigationLink(destination: MyAccountViewSignOut(logoutController: logoutController)) {
             Text(Strings.Settings.myAccount)
                 .font(Fonts.boldHeading1)
         }
     }
-    
+
     private var keepScreenOnSwitch: some View {
         Toggle(isOn: $userSettings.keepScreenOn, label: {
             Text(Strings.Settings.keepScreenTitle)
                 .font(Fonts.boldHeading1)
         }).toggleStyle(SwitchToggleStyle(tint: .accentColor))
     }
-    
+
     private var crowdMapSwitch: some View {
         Toggle(isOn: $userSettings.contributingToCrowdMap, label: {
             Text(Strings.Settings.crowdMap)
@@ -167,13 +175,35 @@ struct SettingsView: View {
                 .multilineTextAlignment(.leading)
         }).toggleStyle(SwitchToggleStyle(tint: .accentColor))
     }
-    
+
     private var crowdMapDescription: some View {
         Text(Strings.Settings.crowdMapDescription)
             .font(Fonts.muliHeading2)
             .foregroundColor(.aircastingGray)
     }
+
+    private var disableMappingSwitch: some View {
+        Toggle(isOn: $userSettings.disableMapping, label: {
+            Text(Strings.Settings.disableMapping)
+                .font(Fonts.boldHeading1)
+                .multilineTextAlignment(.leading)
+        }).toggleStyle(SwitchToggleStyle(tint: .accentColor))
+    }
     
+    private var temperatureSwitch: some View {
+        Toggle(isOn: $userSettings.convertToCelsius, label: {
+            Text(Strings.Settings.temperature)
+                .font(Fonts.boldHeading1)
+                .multilineTextAlignment(.leading)
+        }).toggleStyle(SwitchToggleStyle(tint: .accentColor))
+    }
+
+    private var temperatureDescription: some View {
+        Text(Strings.Settings.celsiusDescription)
+            .font(Fonts.muliHeading2)
+            .foregroundColor(.aircastingGray)
+    }
+
     private var navigateToBackendSettingsButton: some View {
         Button(action: {
             showBackendSettings.toggle()
@@ -193,7 +223,7 @@ struct SettingsView: View {
                                 urlProvider: urlProvider)
         })
     }
-    
+
     private var clearSDCard: some View {
         Button {
             switch viewModel.nextStep() {
@@ -215,7 +245,7 @@ struct SettingsView: View {
              }
          }
      }
-    
+
     #if DEBUG || BETA
     private var navigateToAppConfigurationButton: some View {
         NavigationLink("App config", destination: {

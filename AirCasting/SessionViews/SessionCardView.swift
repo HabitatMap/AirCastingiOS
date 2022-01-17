@@ -17,6 +17,7 @@ struct SessionCardView: View {
     @State private var showLoadingIndicator = false
     @ObservedObject var session: SessionEntity
     @EnvironmentObject var selectedSection: SelectSection
+    @EnvironmentObject var locationTracker: LocationTracker
     let urlProvider: BaseURLProvider
     let sessionCartViewModel: SessionCardViewModel
     let thresholds: [SensorThreshold]
@@ -242,7 +243,7 @@ private extension SessionCardView {
                 followButton
             }
             Spacer()
-            !session.isIndoor ? mapButton.padding(.trailing, 10) : nil
+            !(session.isIndoor || session.locationless) ? mapButton.padding(.trailing, 10) : nil
             graphButton
         }.padding(.top, 10)
         .buttonStyle(GrayButtonStyle())
@@ -268,16 +269,16 @@ private extension SessionCardView {
     }
 
     private var mapNavigationLink: some View {
-         let mapView = AirMapView(thresholds: thresholds,
-                                  statsContainerViewModel: mapStatsViewModel,
-//                                  mapStatsDataSource: mapStatsDataSource,
-                                  session: session,
-                                  showLoadingIndicator: $showLoadingIndicator,
-                                  selectedStream: $selectedStream,
+         let mapView = AirMapView(session: session,
+                                  thresholds: thresholds,
                                   urlProvider: urlProvider,
                                   sessionStoppableFactory: sessionStoppableFactory,
                                   measurementStreamStorage: measurementStreamStorage,
-                                  sessionSynchronizer: sessionSynchronizer)
+                                  sessionSynchronizer: sessionSynchronizer,
+                                  statsContainerViewModel: _mapStatsViewModel,
+                                  notesHandler: NotesHandlerDefault(measurementStreamStorage: measurementStreamStorage, sessionUUID: session.uuid, locationTracker: locationTracker),
+                                  showLoadingIndicator: $showLoadingIndicator,
+                                  selectedStream: $selectedStream)
             .foregroundColor(.aircastingDarkGray)
 
          return NavigationLink(destination: mapView,
