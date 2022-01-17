@@ -101,6 +101,12 @@ struct Strings {
         static let avgSessionH: String = "1 hr avg -"
         static let avgSessionMin: String = "1 min avg -"
     }
+    
+    struct SingleMeasurementView {
+        static let microphoneUnit: String = "dB"
+        static let celsiusUnit: String = "C"
+        static let fahrenheitUnit: String = "F"
+    }
 
     enum SelectPeripheralView {
         static let airBeamsText: String = "AirBeams"

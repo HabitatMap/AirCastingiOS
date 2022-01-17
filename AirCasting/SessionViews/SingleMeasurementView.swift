@@ -56,9 +56,9 @@ struct SingleMeasurementView: View {
     func showStreamName() -> String {
         guard let streamName = stream.sensorName else { return "" }
         if streamName == Constants.SensorName.microphone {
-            return "dB"
+            return Strings.SingleMeasurementView.microphoneUnit
         } else if stream.isTemperature {
-            return userSettings.convertToCelsius ? "C" : "F"
+            return userSettings.convertToCelsius ? Strings.SingleMeasurementView.celsiusUnit : Strings.SingleMeasurementView.fahrenheitUnit
         } else {
             return streamName
                 .drop { $0 != "-" }
