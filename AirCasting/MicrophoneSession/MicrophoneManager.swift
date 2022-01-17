@@ -60,11 +60,13 @@ final class MicrophoneManager: NSObject, ObservableObject {
                 Log.info("\(error)")
             }
         }
-        locationProvider.requestLocation()
+        if !session.locationless {
+            locationProvider.requestLocation()
+        }
         isRecording = true
         if recorder.record() {
             levelTimer = createTimer()
-            sampleMeasurement()
+            sampleMeasurement(noLocation: session.locationless)
         }
     }
     
@@ -146,14 +148,14 @@ extension MicrophoneManager: AVSessionInterruptionObserver {
 }
 
 private extension MicrophoneManager {
-    func sampleMeasurement() {
+    func sampleMeasurement(noLocation: Bool) {
         guard let recorder = recorder else { return }
         recorder.updateMeters()
         let power = recorder.averagePower(forChannel: 0)
         var decibels = Double(power + 90.0)
         (decibels < 0) ? decibels = 0 : nil
         // 117 lines ensure that we won't get something like -70 etc.
-        let location = obtainCurrentLocation()
+        let location = noLocation ? .undefined : obtainCurrentLocation()
         
         measurementStreamStorage.accessStorage { storage in
             do {
@@ -165,7 +167,7 @@ private extension MicrophoneManager {
     }
 
     @objc func timerTick() {
-        sampleMeasurement()
+        sampleMeasurement(noLocation: session?.locationless ?? false)
     }
 
     func createMeasurementStream(for session: Session, completion: @escaping(Result<MeasurementStreamLocalID, Error>) -> Void) {
