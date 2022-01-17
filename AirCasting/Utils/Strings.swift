@@ -11,13 +11,15 @@ struct Strings {
         static let `continue`: String = "Continue"
         static let gotIt: String = "Got it!"
     }
-    
+
     enum Settings {
         static let title: String = "Settings"
         static let myAccount: String = "My Account"
         static let crowdMap: String = "Contribute to CrowdMap"
         static let crowdMapDescription: String = "Data contributed to the CrowdMap is publicly available at aircasting.org"
         static let disableMapping: String = "Disable Mapping"
+        static let temperature = "Temperature Units"
+        static let celsiusDescription = "Use Celsius"
         static let backendSettings: String = "Backend settings"
         static let settingsHelp: String = "Help"
         static let hardwareDevelopers: String = "Hardware developers"
@@ -101,6 +103,12 @@ struct Strings {
         static let unfollow: String = "unfollow"
         static let avgSessionH: String = "1 hr avg -"
         static let avgSessionMin: String = "1 min avg -"
+    }
+
+    struct SingleMeasurementView {
+        static let microphoneUnit: String = "dB"
+        static let celsiusUnit: String = "C"
+        static let fahrenheitUnit: String = "F"
     }
 
     enum SelectPeripheralView {
@@ -415,7 +423,7 @@ struct Strings {
         static let orLabel: String = "or"
         static let syncTitle: String = "Sync data from \nAirBeam3"
         static let syncDescription: String = "if you recorded with AirBeam3"
-        
+
     }
 
     enum MoreInfoPopupView {
@@ -506,7 +514,7 @@ struct Strings {
         static let title: String = "Success"
         static let message: String = "Sessions were updated successfully"
     }
-    
+
     enum UnplugAirbeamView {
         static let title: String = "Unplug your AirBeam"
         static let message: String = "Keep it unplugged for the duration of the sync."
@@ -531,7 +539,7 @@ struct Strings {
         static let SDClearTitle: String = "SD card cleared"
         static let SDClearMessage: String = "SD inside your AirBeam was cleared sucesfully"
     }
-    
+
     enum ClearingSDCardView {
         static let title: String = "Clearing SD card"
         static let message: String = "This should take less then 10 seconds."
@@ -542,29 +550,29 @@ struct Strings {
     enum DefaultDeleteSessionViewModel {
         static let all: String = "All"
     }
-    
+
     enum DeviceHandler {
         static let alertTitle = "Not supported device"
         static let alertMessage = "To use the AirBeam3 in standalone mode and sync the SD card, an iPhone8 or higher is required"
     }
-    
+
     enum NetworkAlert {
         static let alertTitle: String = "No internet connection"
         static let alertMessage: String = "You need to have internet connection to continue"
     }
-    
+
     enum MicrophoneAlert {
         static let title: String = "Allow AirCasting to record audio"
         static let message: String = "To record sound level measurements, the app needs access to your microhpone."
     }
-    
+
     enum InAppAlerts {
         static let assertError: String = "Unsupported button count! For SwiftUI implementation max of 2 buttons is supported"
         static let unableToLogOutTitle: String = "No internet connection"
         static let unableToLogOutMessage: String = "To sign out, you must be connected to the Internet."
         static let unableToLogOutButton: String = "Got it!"
     }
-    
+
     enum AddNoteView {
         static let title: String = "Add a note"
         static let description: String = "Your note will be timestamped and displayed on the AirCasting map"
@@ -572,7 +580,7 @@ struct Strings {
         static let continueButton: String = "Add a note"
         static let cancelButton: String = "Cancel"
     }
-    
+
     enum EditNoteView {
         static let title: String = "Edit this note"
         static let description: String = "You can edit your note here"

@@ -9,10 +9,17 @@ struct SingleMeasurementView: View {
     var threshold: SensorThreshold?
     @Binding var selectedStream: MeasurementStreamEntity?
     @Binding var isCollapsed: Bool
+    @EnvironmentObject var userSettings: UserSettings
     let measurementPresentationStyle: MeasurementPresentationStyle
     let isDormant: Bool
     var value: Double {
-        isDormant ? stream.averageValue : (stream.latestValue ?? 0)
+        let measurementValue = isDormant ? stream.averageValue : (stream.latestValue ?? 0)
+        
+        guard !(stream.isTemperature && userSettings.convertToCelsius) else {
+            return TemperatureConverter.calculateCelsius(fahrenheit: measurementValue)
+        }
+        
+        return measurementValue
     }
     
     var body: some View {
@@ -49,7 +56,9 @@ struct SingleMeasurementView: View {
     func showStreamName() -> String {
         guard let streamName = stream.sensorName else { return "" }
         if streamName == Constants.SensorName.microphone {
-            return "dB"
+            return Strings.SingleMeasurementView.microphoneUnit
+        } else if stream.isTemperature {
+            return userSettings.convertToCelsius ? Strings.SingleMeasurementView.celsiusUnit : Strings.SingleMeasurementView.fahrenheitUnit
         } else {
             return streamName
                 .drop { $0 != "-" }

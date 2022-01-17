@@ -10,7 +10,8 @@ class UserSettings: ObservableObject {
     private let disableMappingKey = Constants.UserDefaultsKeys.disableMapping
     private let keepScreenOnKey = Constants.UserDefaultsKeys.keepScreenOn
     private let featureFlagsViewModel = FeatureFlagsViewModel.shared
-    
+    private let convertToCelsiusKey = Constants.UserDefaultsKeys.convertToCelsius
+
     var contributingToCrowdMap: Bool {
         get {
             userDefaults.bool(forKey: crowdMapKey)
@@ -20,7 +21,7 @@ class UserSettings: ObservableObject {
             Log.info("Changed crowdMap contribution setting to \(contributingToCrowdMap ? "ON" : "OFF")")
         }
     }
-    
+
     var keepScreenOn: Bool {
         get {
             userDefaults.bool(forKey: keepScreenOnKey)
@@ -31,7 +32,7 @@ class UserSettings: ObservableObject {
             Log.info("Changed keepScreenOn setting to \(keepScreenOn ? "ON" : "OFF")")
         }
     }
-    
+
     var disableMapping: Bool {
         get {
             userDefaults.bool(forKey: disableMappingKey)
@@ -41,12 +42,23 @@ class UserSettings: ObservableObject {
             Log.info("Changed disable mapping setting to \(disableMapping ? "ON" : "OFF")")
         }
     }
-    
+
+    var convertToCelsius: Bool {
+        get {
+            userDefaults.bool(forKey: convertToCelsiusKey)
+        }
+        set {
+            userDefaults.setValue(newValue, forKey: convertToCelsiusKey)
+            Log.info("Changed convert to celcius setting to \(convertToCelsius ? "ON" : "OFF")")
+        }
+    }
+
     init(userDefaults: UserDefaults = .standard) {
         self.userDefaults = userDefaults
         contributingToCrowdMap = userDefaults.valueExists(forKey: crowdMapKey) ? userDefaults.bool(forKey: crowdMapKey) : true
         keepScreenOn = userDefaults.bool(forKey: keepScreenOnKey)
         // This is included in case user turns on disable mapping but we turn off the feature, because otherwise the user could never turn this off
         disableMapping = featureFlagsViewModel.enabledFeatures.contains(.disableMapping) ? userDefaults.bool(forKey: disableMappingKey) : false
+        convertToCelsius = userDefaults.bool(forKey: convertToCelsiusKey)
     }
 }
