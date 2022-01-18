@@ -18,13 +18,9 @@ struct SessionCardView: View {
     @State private var showLoadingIndicator = false
     @ObservedObject var session: SessionEntity
     @EnvironmentObject var selectedSection: SelectSection
-    @EnvironmentObject var locationTracker: LocationTracker
-    let urlProvider: BaseURLProvider
     let sessionCartViewModel: SessionCardViewModel
     let thresholds: [SensorThreshold]
     let sessionStoppableFactory: SessionStoppableFactory
-    let measurementStreamStorage: MeasurementStreamStorage
-    let sessionSynchronizer: SessionSynchronizer
 
     @StateObject private var mapStatsDataSource: MapStatsDataSource
     @StateObject private var mapStatsViewModel: StatisticsContainerViewModel
@@ -36,18 +32,12 @@ struct SessionCardView: View {
     init(session: SessionEntity,
          sessionCartViewModel: SessionCardViewModel,
          thresholds: [SensorThreshold],
-         sessionStoppableFactory: SessionStoppableFactory,
-         measurementStreamStorage: MeasurementStreamStorage,
-         sessionSynchronizer: SessionSynchronizer,
-         urlProvider: BaseURLProvider) {
+         sessionStoppableFactory: SessionStoppableFactory) {
         self.session = session
         self.sessionCartViewModel = sessionCartViewModel
         self.thresholds = thresholds
         self.sessionStoppableFactory = sessionStoppableFactory
-        self.measurementStreamStorage = measurementStreamStorage
-        self.sessionSynchronizer = sessionSynchronizer
         let mapDataSource = MapStatsDataSource()
-        self.urlProvider = urlProvider
         self._mapStatsDataSource = .init(wrappedValue: mapDataSource)
         self._mapStatsViewModel = .init(wrappedValue: SessionCardView.createStatsContainerViewModel(dataSource: mapDataSource, session: session))
         let graphDataSource = GraphStatsDataSource()
@@ -120,7 +110,7 @@ struct SessionCardView: View {
     }
 
     var standaloneSessionCard: some View {
-        StandaloneSessionCardView(session: session, sessionStopperFactory: sessionStoppableFactory, sessionSynchronizer: sessionSynchronizer, measurementStreamStorage: measurementStreamStorage, urlProvider: urlProvider)
+        StandaloneSessionCardView(session: session, sessionStopperFactory: sessionStoppableFactory)
     }
 
     private func selectDefaultStreamIfNeeded(streams: [MeasurementStreamEntity]) {
@@ -140,18 +130,13 @@ private extension SessionCardView {
             },
             isExpandButtonNeeded: true,
             isCollapsed: $isCollapsed,
-            urlProvider: urlProvider,
             session: session,
-            sessionStopperFactory: sessionStoppableFactory,
-            measurementStreamStorage: measurementStreamStorage,
-            sessionSynchronizer: sessionSynchronizer
+            sessionStopperFactory: sessionStoppableFactory
         )
     }
 
     private var measurements: some View {
-        _ABMeasurementsView(measurementsViewModel: DefaultSyncingMeasurementsViewModel(measurementStreamStorage: measurementStreamStorage,
-                                                                                       sessionDownloader: SessionDownloadService(client:URLSession.shared, authorization: UserAuthenticationSession(), responseValidator: DefaultHTTPResponseValidator(), urlProvider: urlProvider),
-                                                                                       session: session),
+        _ABMeasurementsView(measurementsViewModel: DefaultSyncingMeasurementsViewModel(sessionDownloader: SessionDownloadService(), session: session),
                             session: session,
                             isCollapsed: $isCollapsed,
                             selectedStream: $selectedStream,
@@ -273,12 +258,9 @@ private extension SessionCardView {
     private var mapNavigationLink: some View {
          let mapView = AirMapView(session: session,
                                   thresholds: thresholds,
-                                  urlProvider: urlProvider,
                                   sessionStoppableFactory: sessionStoppableFactory,
-                                  measurementStreamStorage: measurementStreamStorage,
-                                  sessionSynchronizer: sessionSynchronizer,
                                   statsContainerViewModel: _mapStatsViewModel,
-                                  notesHandler: NotesHandlerDefault(measurementStreamStorage: measurementStreamStorage, sessionUUID: session.uuid, locationTracker: locationTracker),
+                                  notesHandler: NotesHandlerDefault(sessionUUID: session.uuid),
                                   showLoadingIndicator: $showLoadingIndicator,
                                   selectedStream: $selectedStream)
             .foregroundColor(.aircastingDarkGray)
@@ -295,10 +277,8 @@ private extension SessionCardView {
                                    thresholds: thresholds,
                                    selectedStream: $selectedStream,
                                    statsContainerViewModel: graphStatsViewModel,
-                                   urlProvider: urlProvider,
                                    graphStatsDataSource: graphStatsDataSource,
-                                   sessionStoppableFactory: sessionStoppableFactory,
-                                   measurementStreamStorage: measurementStreamStorage, sessionSynchronizer: sessionSynchronizer)
+                                   sessionStoppableFactory: sessionStoppableFactory)
              .foregroundColor(.aircastingDarkGray)
 
          return NavigationLink(destination: graphView,

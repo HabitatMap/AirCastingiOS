@@ -2,6 +2,7 @@
 //
 
 import Foundation
+import Resolver
 
 protocol SessionUpdateService {
     func updateSession(session: SessionEntity, completion: @escaping () -> Void)
@@ -9,13 +10,8 @@ protocol SessionUpdateService {
 
 class DefaultSessionUpdateService: SessionUpdateService {
 
-    private let authorization: RequestAuthorisationService
-    private let urlProvider: BaseURLProvider
-    
-    init(authorization: RequestAuthorisationService, urlProvider: BaseURLProvider) {
-        self.authorization = authorization
-        self.urlProvider = urlProvider
-    }
+    @Injected private var authorization: RequestAuthorisationService
+    @Injected private var urlProvider: URLProvider
     
     private struct APICallData: Encodable {
         let data: String

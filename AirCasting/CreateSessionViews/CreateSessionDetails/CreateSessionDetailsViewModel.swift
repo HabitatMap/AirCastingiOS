@@ -2,6 +2,7 @@
 //
 import Foundation
 import SystemConfiguration.CaptiveNetwork
+import Resolver
 
 class CreateSessionDetailsViewModel: ObservableObject {
     
@@ -17,14 +18,6 @@ class CreateSessionDetailsViewModel: ObservableObject {
     @Published var isSSIDTextfieldDisplayed: Bool = false
     @Published var showErrorIndicator: Bool = false
     var shouldShowError: Bool { sessionName.isEmpty && showErrorIndicator }
-    
-    let baseURL: BaseURLProvider
-    // It cannot be private as long as it is going to be passed
-    // by every view which is included in session creation process
-    
-    init(baseURL: BaseURLProvider) {
-        self.baseURL = baseURL
-    }
     
     func onScreenEnter() {
         if let ssid = getWiFiSsid() { wifiSSID = ssid }

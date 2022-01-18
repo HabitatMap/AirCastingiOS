@@ -16,17 +16,12 @@ protocol MeasurementUpdatingService {
 }
 
 final class DownloadMeasurementsService: MeasurementUpdatingService {
-    private let authorisationService: RequestAuthorisationService
+    @Injected private var authorisationService: RequestAuthorisationService
     @Injected private var persistenceController: PersistenceController
-    private let fixedSessionService: FixedSessionAPIService
+    private let fixedSessionService = FixedSessionAPIService()
     private var timerSink: Cancellable?
     private var lastFetchCancellableTask: Cancellable?
     private lazy var removeOldService: RemoveOldMeasurementsService = RemoveOldMeasurementsService()
-    
-    init(authorisationService: RequestAuthorisationService, baseUrl: BaseURLProvider) {
-        self.authorisationService = authorisationService
-        self.fixedSessionService = FixedSessionAPIService(authorisationService: authorisationService, baseUrl: baseUrl)
-    }
 
     #warning("Add locking here so updates won't bump on one another")
     func start() {

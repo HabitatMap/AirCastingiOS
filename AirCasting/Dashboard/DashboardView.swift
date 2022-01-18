@@ -18,10 +18,8 @@ struct DashboardView: View {
     @EnvironmentObject var selectedSection: SelectSection
     @Injected private var averaging: AveragingService
     @State var isRefreshing: Bool = false
-    private let urlProvider: BaseURLProvider
-    private let measurementStreamStorage: MeasurementStreamStorage
     private let sessionStoppableFactory: SessionStoppableFactory
-    private let sessionSynchronizer: SessionSynchronizer
+    @Injected private var sessionSynchronizer: SessionSynchronizer
 
     private let dashboardCoordinateSpaceName = "dashboardCoordinateSpace"
 
@@ -30,17 +28,11 @@ struct DashboardView: View {
     }
 
     init(coreDataHook: CoreDataHook,
-         measurementStreamStorage: MeasurementStreamStorage,
-         sessionStoppableFactory: SessionStoppableFactory,
-         sessionSynchronizer: SessionSynchronizer,
-         urlProvider: BaseURLProvider) {
+         sessionStoppableFactory: SessionStoppableFactory) {
         let navBarAppearance = UINavigationBar.appearance()
         navBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(Color.darkBlue)]
         _coreDataHook = StateObject(wrappedValue: coreDataHook)
-        self.measurementStreamStorage = measurementStreamStorage
         self.sessionStoppableFactory = sessionStoppableFactory
-        self.sessionSynchronizer = sessionSynchronizer
-        self.urlProvider = urlProvider
     }
 
     var body: some View {
@@ -115,15 +107,12 @@ struct DashboardView: View {
                 RefreshControl(coordinateSpace: .named(dashboardCoordinateSpaceName), isRefreshing: $isRefreshing)
                 LazyVStack(spacing: 8) {
                     ForEach(sessions.filter { $0.uuid != "" && !$0.gotDeleted }, id: \.uuid) { session in
-                        let followingSetter = MeasurementStreamStorageFollowingSettable(session: session, measurementStreamStorage: measurementStreamStorage)
+                        let followingSetter = MeasurementStreamStorageFollowingSettable(session: session)
                         let viewModel = SessionCardViewModel(followingSetter: followingSetter)
                         SessionCardView(session: session,
                                         sessionCartViewModel: viewModel,
                                         thresholds: thresholds,
-                                        sessionStoppableFactory: sessionStoppableFactory,
-                                        measurementStreamStorage: measurementStreamStorage,
-                                        sessionSynchronizer: sessionSynchronizer,
-                                        urlProvider: urlProvider
+                                        sessionStoppableFactory: sessionStoppableFactory
                         )
                     }
                 }

@@ -9,18 +9,15 @@ import SwiftUI
 import CoreLocation
 import Foundation
 import CoreData
+import Resolver
 
 struct AirMapView: View {
     @Environment(\.scenePhase) var scenePhase
     
-    @EnvironmentObject var locationTracker: LocationTracker
-    @EnvironmentObject var userSettings: UserSettings
+    @InjectedObject private var userSettings: UserSettings
     
     var thresholds: [SensorThreshold]
-    let urlProvider: BaseURLProvider
     let sessionStoppableFactory: SessionStoppableFactory
-    let measurementStreamStorage: MeasurementStreamStorage
-    let sessionSynchronizer: SessionSynchronizer
     
     @StateObject var statsContainerViewModel: StatisticsContainerViewModel
     @StateObject var mapNotesVM: MapNotesViewModel
@@ -33,21 +30,15 @@ struct AirMapView: View {
     @State var noteNumber = 0
     
     init(session: SessionEntity,
-        thresholds: [SensorThreshold],
-         urlProvider: BaseURLProvider,
+         thresholds: [SensorThreshold],
          sessionStoppableFactory: SessionStoppableFactory,
-         measurementStreamStorage: MeasurementStreamStorage,
-         sessionSynchronizer: SessionSynchronizer,
          statsContainerViewModel: StateObject<StatisticsContainerViewModel>,
          notesHandler: NotesHandler,
          showLoadingIndicator: Binding<Bool>,
          selectedStream: Binding<MeasurementStreamEntity?>) {
         self.session = session
         self.thresholds = thresholds
-        self.urlProvider = urlProvider
         self.sessionStoppableFactory = sessionStoppableFactory
-        self.measurementStreamStorage = measurementStreamStorage
-        self.sessionSynchronizer = sessionSynchronizer
         self._statsContainerViewModel = statsContainerViewModel
         self._mapNotesVM = .init(wrappedValue: .init(notesHandler: notesHandler))
         self._showLoadingIndicator = showLoadingIndicator
@@ -68,20 +59,15 @@ struct AirMapView: View {
                                   isExpandButtonNeeded: false,
                                   isSensorTypeNeeded: false,
                                   isCollapsed: Binding.constant(false),
-                                  urlProvider: urlProvider,
                                   session: session,
-                                  sessionStopperFactory: sessionStoppableFactory,
-                                  measurementStreamStorage: measurementStreamStorage,
-                                  sessionSynchronizer: sessionSynchronizer)
+                                  sessionStopperFactory: sessionStoppableFactory)
                 .padding([.bottom, .leading, .trailing])
             
             ABMeasurementsView(session: session,
                                isCollapsed: Binding.constant(false),
                                selectedStream: $selectedStream,
                                thresholds: thresholds, measurementPresentationStyle: .showValues,
-                               viewModel:  DefaultSyncingMeasurementsViewModel(measurementStreamStorage: measurementStreamStorage,
-                                                                               sessionDownloader: SessionDownloadService(client: URLSession.shared,
-                                                                                                                         authorization: UserAuthenticationSession(), responseValidator: DefaultHTTPResponseValidator(), urlProvider: urlProvider),
+                               viewModel:  DefaultSyncingMeasurementsViewModel(sessionDownloader: SessionDownloadService(),
                                                                                 session: session))
                 .padding([.bottom, .leading, .trailing])
 
@@ -129,7 +115,7 @@ struct AirMapView: View {
                 noteMarkerTapped.toggle()
             },
                                                              noteNumber: noteNumber,
-                                                             notesHandler: NotesHandlerDefault(measurementStreamStorage: measurementStreamStorage, sessionUUID: session.uuid, locationTracker: locationTracker)))
+                                                             notesHandler: NotesHandlerDefault(sessionUUID: session.uuid)))
         })
         .navigationBarTitleDisplayMode(.inline)
 //        .onChange(of: selectedStream) { newStream in

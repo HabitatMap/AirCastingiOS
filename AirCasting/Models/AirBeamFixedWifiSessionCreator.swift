@@ -9,18 +9,16 @@ final class AirBeamFixedWifiSessionCreator: SessionCreator {
     enum AirBeamSessionCreatorError: Swift.Error {
         case invalidCreateSessionContext(CreateSessionContext)
     }
-    let userAuthenticationSession: UserAuthenticationSession
+    @Injected private var userAuthenticationSession: UserAuthenticationSession
     @Injected private var measurementStreamStorage: MeasurementStreamStorage
     private let createSessionService: CreateSessionAPIService
     
-    convenience init(userAuthenticationSession: UserAuthenticationSession, baseUrl: BaseURLProvider) {
-        self.init(createSessionService: CreateSessionAPIService(authorisationService: userAuthenticationSession, baseUrlProvider: baseUrl),
-                  userAuthenticationSession: userAuthenticationSession)
+    convenience init() {
+        self.init(createSessionService: CreateSessionAPIService())
     }
     
-    init(createSessionService: CreateSessionAPIService, userAuthenticationSession: UserAuthenticationSession) {
+    init(createSessionService: CreateSessionAPIService) {
         self.createSessionService = createSessionService
-        self.userAuthenticationSession = userAuthenticationSession
     }
     
     func createSession(_ sessionContext: CreateSessionContext, completion: @escaping (Result<Void, Error>) -> Void) {
@@ -77,8 +75,7 @@ final class AirBeamFixedWifiSessionCreator: SessionCreator {
                                                                     measurementStreamStorage.accessStorage { storage in
                                                                         do {
                                                                             try storage.createSession(session)
-                                                                            try AirBeam3Configurator(userAuthenticationSession: userAuthenticationSession,
-                                                                                                     peripheral: peripheral).configureFixedWifiSession(
+                                                                            try AirBeam3Configurator(peripheral: peripheral).configureFixedWifiSession(
                                                                                                         uuid: sessionUUID,
                                                                                                         location: sessionContext.startingLocation ?? CLLocationCoordinate2D(latitude: 200, longitude: 200),
                                                                                                         date: Date().currentUTCTimeZoneDate,

@@ -11,24 +11,18 @@ import SwiftUI
 import Resolver
 
 struct MainTabBarView: View {
-    let measurementUpdatingService: MeasurementUpdatingService
-    let urlProvider: BaseURLProvider
-    let measurementStreamStorage: MeasurementStreamStorage
+    @Injected private var measurementUpdatingService: MeasurementUpdatingService
     @State var homeImage: String = HomeIcon.selected.string
     @State var settingsImage: String = SettingsIcon.unselected.string
     @State var plusImage: String = PlusIcon.unselected.string
     let sessionStoppableFactory: SessionStoppableFactory
-    @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
-    @EnvironmentObject var userSettings: UserSettings
     @InjectedObject private var bluetoothManager: BluetoothManager
-    let sessionSynchronizer: SessionSynchronizer
     @StateObject var tabSelection: TabBarSelection = TabBarSelection()
     @StateObject var selectedSection = SelectSection()
     @StateObject var emptyDashboardButtonTapped = EmptyDashboardButtonTapped()
     @StateObject var finishAndSyncButtonTapped = FinishAndSyncButtonTapped()
     @StateObject var sessionContext: CreateSessionContext
     @StateObject var coreDataHook: CoreDataHook
-    let locationHandler: LocationHandler
     
     private var sessions: [SessionEntity] {
         coreDataHook.sessions
@@ -73,7 +67,7 @@ struct MainTabBarView: View {
         })
         .onChange(of: bluetoothManager.mobileSessionReconnected, perform: { _ in
             if bluetoothManager.mobileSessionReconnected {
-                bluetoothManager.mobilePeripheralSessionManager.configureAB(userAuthenticationSession: userAuthenticationSession)
+                bluetoothManager.mobilePeripheralSessionManager.configureAB()
                 bluetoothManager.mobileSessionReconnected.toggle()
             }
         })
@@ -88,11 +82,7 @@ private extension MainTabBarView {
     // Tab Bar views
     private var dashboardTab: some View {
         NavigationView {
-            DashboardView(coreDataHook: coreDataHook,
-                          measurementStreamStorage: measurementStreamStorage,
-                          sessionStoppableFactory: sessionStoppableFactory,
-                          sessionSynchronizer: sessionSynchronizer,
-                          urlProvider: urlProvider)
+            DashboardView(coreDataHook: coreDataHook, sessionStoppableFactory: sessionStoppableFactory)
         }.navigationViewStyle(StackNavigationViewStyle())
             .tabItem {
                 Image(homeImage)
@@ -101,12 +91,7 @@ private extension MainTabBarView {
     }
     
     private var createSessionTab: some View {
-        ChooseSessionTypeView(viewModel: ChooseSessionTypeViewModel(locationHandler: locationHandler,
-                                                                    userSettings: userSettings,
-                                                                    sessionContext: sessionContext,
-                                                                    urlProvider: urlProvider,
-                                                                    bluetoothManagerState: bluetoothManager.centralManagerState),
-                              sessionSynchronizer: sessionSynchronizer)
+        ChooseSessionTypeView(viewModel: ChooseSessionTypeViewModel(sessionContext: sessionContext))
             .tabItem {
                 Image(plusImage)
             }
@@ -114,12 +99,8 @@ private extension MainTabBarView {
     }
     
     private var settingsTab: some View {
-        SettingsView(urlProvider: UserDefaultsBaseURLProvider(),
-                     logoutController: DefaultLogoutController(userAuthenticationSession: userAuthenticationSession,
-                                                               sessionStorage: SessionStorage(),
-                                                               sessionSynchronizer: sessionSynchronizer),
-                     viewModel: SettingsViewModelDefault(locationHandler: locationHandler,
-                                                         sessionContext: CreateSessionContext()))
+        SettingsView(logoutController: DefaultLogoutController(sessionStorage: SessionStorage()),
+                     viewModel: SettingsViewModelDefault(sessionContext: CreateSessionContext()))
             .tabItem {
                 Image(settingsImage)
             }

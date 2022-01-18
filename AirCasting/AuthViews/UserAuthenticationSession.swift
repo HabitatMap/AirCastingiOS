@@ -84,17 +84,13 @@ protocol LogoutController {
 }
 
 final class DefaultLogoutController: LogoutController {
-    let userAuthenticationSession: UserAuthenticationSession
+    @Injected private var userAuthenticationSession: UserAuthenticationSession
     let sessionStorage: SessionStorage
     @Injected private var microphoneManager: MicrophoneManager
-    let sessionSynchronizer: SessionSynchronizer
+    @Injected private var sessionSynchronizer: SessionSynchronizer
 
-    init(userAuthenticationSession: UserAuthenticationSession,
-         sessionStorage: SessionStorage,
-         sessionSynchronizer: SessionSynchronizer) {
-        self.userAuthenticationSession = userAuthenticationSession
+    init(sessionStorage: SessionStorage) {
         self.sessionStorage = sessionStorage
-        self.sessionSynchronizer = sessionSynchronizer
     }
 
     func logout(onEnd: @escaping () -> Void) throws {

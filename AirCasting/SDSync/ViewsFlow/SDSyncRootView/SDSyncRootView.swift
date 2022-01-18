@@ -3,8 +3,8 @@
 
 import SwiftUI
 
-struct SDSyncRootView<VM: SDSyncRootViewModel>: View {
-    @StateObject var viewModel: VM
+struct SDSyncRootView: View {
+    @StateObject private var viewModel: SDSyncRootViewModel = .init()
     @EnvironmentObject private var finishAndSyncButtonTapped: FinishAndSyncButtonTapped
     @Binding var creatingSessionFlowContinues: Bool
     
@@ -66,7 +66,7 @@ private extension SDSyncRootView {
     
     var navigationLink: some View {
         NavigationLink(
-            destination: BackendSyncCompletedView(viewModel: BackendSyncCompletedViewModelDefault(urlProvider: viewModel.urlProvider),
+            destination: BackendSyncCompletedView(viewModel: BackendSyncCompletedViewModelDefault(),
                                                   creatingSessionFlowContinues: $creatingSessionFlowContinues),
             isActive: .init(get: { viewModel.backendSyncCompleted }, set: { _ in }),
             label: {

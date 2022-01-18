@@ -55,11 +55,3 @@ class LocationTracker: NSObject, ObservableObject, CLLocationManagerDelegate {
         }
     }
 }
-
-#if DEBUG
-class DummyLocationTrakcer: LocationTracker {
-    init() {
-        super.init(locationManager: CLLocationManager())
-    }
-}
-#endif

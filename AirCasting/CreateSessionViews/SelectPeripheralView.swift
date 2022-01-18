@@ -15,11 +15,8 @@ struct SelectPeripheralView: View {
     var SDClearingRouteProcess: Bool
     @InjectedObject private var bluetoothManager: BluetoothManager
     @EnvironmentObject var sessionContext: CreateSessionContext
-    @EnvironmentObject var connectionController: DefaultAirBeamConnectionController
-    @EnvironmentObject var sdSyncController: SDSyncController
+    @Injected private var connectionController: DefaultAirBeamConnectionController
     @Binding var creatingSessionFlowContinues: Bool
-    let urlProvider: BaseURLProvider
-    @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     var syncMode: Bool? = false
     
     var body: some View {
@@ -135,22 +132,17 @@ struct SelectPeripheralView: View {
         if let selection = selection {
             if syncMode == true {
                 let viewModel =
-                SDSyncViewModelDefault(airBeamConnectionController: connectionController,
-                                       sdSyncController: sdSyncController,
-                                       userAuthenticationSession: userAuthenticationSession,
-                                       sessionContext: sessionContext,
+                SDSyncViewModelDefault(sessionContext: sessionContext,
                                        peripheral: selection)
                 destination = AnyView(SyncingABView(viewModel: viewModel, creatingSessionFlowContinues: $creatingSessionFlowContinues))
             } else if SDClearingRouteProcess {
-                let viewModel = ClearingSDCardViewModelDefault(isSDClearProcess: SDClearingRouteProcess, userAuthenticationSession: userAuthenticationSession, peripheral: selection, airBeamConnectionController: connectionController, sdSyncController: sdSyncController)
+                let viewModel = ClearingSDCardViewModelDefault(isSDClearProcess: SDClearingRouteProcess, peripheral: selection)
                 destination = AnyView(ClearingSDCardView(viewModel: viewModel, creatingSessionFlowContinues: $creatingSessionFlowContinues))
             } else {
                 let viewModel =
-                AirbeamConnectionViewModelDefault(airBeamConnectionController: connectionController,
-                                                  userAuthenticationSession: userAuthenticationSession,
-                                                  sessionContext: sessionContext,
+                AirbeamConnectionViewModelDefault(sessionContext: sessionContext,
                                                   peripheral: selection)
-                destination = AnyView(ConnectingABView(viewModel: viewModel, baseURL: urlProvider, creatingSessionFlowContinues: $creatingSessionFlowContinues))
+                destination = AnyView(ConnectingABView(viewModel: viewModel, creatingSessionFlowContinues: $creatingSessionFlowContinues))
             }
         } else {
             destination = AnyView(EmptyView())
@@ -161,11 +153,3 @@ struct SelectPeripheralView: View {
         .buttonStyle(BlueButtonStyle())
     }
 }
-
-#if DEBUG
-struct SelectPeripheralView_Previews: PreviewProvider {
-    static var previews: some View {
-        SelectPeripheralView(SDClearingRouteProcess: false, creatingSessionFlowContinues: .constant(true), urlProvider: DummyURLProvider())
-    }
-}
-#endif

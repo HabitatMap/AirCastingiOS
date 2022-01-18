@@ -3,16 +3,14 @@
 
 import Foundation
 import Combine
+import Resolver
 
-protocol SessionSynchronizationViewModel: ObservableObject {
-    var syncInProgress: Bool { get }
-}
-
-class DefaultSessionSynchronizationViewModel: SessionSynchronizationViewModel {
+class SessionSynchronizationViewModel: ObservableObject {
     @Published public var syncInProgress: Bool = true
     private var cancellables = [AnyCancellable]()
     
-    init(syncSessionController: SessionSynchronizer) {
+    init() {
+        let syncSessionController = Resolver.resolve(SessionSynchronizer.self)
         syncSessionController.syncInProgress.receive(on: DispatchQueue.main).sink { [weak self] value in
             self?.syncInProgress = value
         }.store(in: &cancellables)

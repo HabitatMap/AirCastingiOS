@@ -9,7 +9,7 @@ import SwiftUI
 import Charts
 import SwiftSimplify
 import CoreMedia
-
+import Resolver
 
 extension ChartDataEntry: Point2DRepresentable {
     public var xValue: Float {
@@ -30,7 +30,7 @@ struct Graph: UIViewRepresentable {
     typealias OnChange = (ClosedRange<Date>) -> Void
     typealias NoteAction = (Note) -> Void
     
-    @EnvironmentObject var userSettings: UserSettings
+    @InjectedObject private var userSettings: UserSettings
     @ObservedObject var stream: MeasurementStreamEntity
     @ObservedObject var thresholds: SensorThreshold
     private var rangeChangeAction: OnChange?

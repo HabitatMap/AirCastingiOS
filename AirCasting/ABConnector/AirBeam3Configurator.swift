@@ -8,16 +8,16 @@
 import Foundation
 import CoreBluetooth
 import CoreLocation
+import Resolver
 
 struct AirBeam3Configurator {
     enum AirBeam3ConfiguratorError: Swift.Error {
         case missingAuthenticationToken
     }
-    let userAuthenticationSession: UserAuthenticationSession
+    @Injected private var userAuthenticationSession: UserAuthenticationSession
     let peripheral: CBPeripheral
 
-    init(userAuthenticationSession: UserAuthenticationSession, peripheral: CBPeripheral) {
-        self.userAuthenticationSession = userAuthenticationSession
+    init(peripheral: CBPeripheral) {
         self.peripheral = peripheral
     }
     

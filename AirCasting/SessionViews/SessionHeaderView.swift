@@ -16,8 +16,6 @@ struct SessionHeaderView: View {
     @Binding var isCollapsed: Bool
     @State var chevronIndicator = "chevron.down"
     @InjectedObject private var bluetoothManager: BluetoothManager
-    @EnvironmentObject var locationTracker: LocationTracker
-    let urlProvider: BaseURLProvider
     @EnvironmentObject var selectedSection: SelectSection
     @ObservedObject var session: SessionEntity
     @State private var showingNoConnectionAlert = false
@@ -29,21 +27,19 @@ struct SessionHeaderView: View {
     @State var showShareModal = false
     @State var showEditView = false
     @State var detectEmailSent = false
-    let measurementStreamStorage: MeasurementStreamStorage
-    let sessionSynchronizer: SessionSynchronizer
-    @EnvironmentObject var authorization: UserAuthenticationSession
     
     var body: some View {
         if #available(iOS 15, *) {
             sessionHeader
                 .sheet(isPresented: $showDeleteModal) {
-                    DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session, measurementStreamStorage: measurementStreamStorage, streamRemover: DefaultSessionUpdateService(authorization: authorization, urlProvider: urlProvider), sessionSynchronizer: sessionSynchronizer), deleteModal: $showDeleteModal)
+                    DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session, streamRemover: DefaultSessionUpdateService()),
+                               deleteModal: $showDeleteModal)
                 }
                 .sheet(isPresented: $showShareModal) {
                     if session.locationless {
                         ShareLocationlessSessionView(viewModel: ShareLocationlessSessionViewModel(session: session, fileGenerationController: DefaultGenerateSessionFileController(fileGenerator: DefaultCSVFileGenerator(), fileZipper: SSZipFileZipper()), exitRoute: { showShareModal.toggle() }))
                     } else {
-                        ShareSessionView(viewModel: DefaultShareSessionViewModel(session: session, apiClient: ShareSessionApi(urlProvider: urlProvider), exitRoute: { result in
+                        ShareSessionView(viewModel: DefaultShareSessionViewModel(session: session, apiClient: ShareSessionApi(), exitRoute: { result in
                                                 showShareModal.toggle()
                             if result == .fileShared {
                                                     detectEmailSent = true
@@ -59,7 +55,7 @@ struct SessionHeaderView: View {
                     editViewSheet
                 }
                 .sheet(isPresented: $showAddNoteModal) {
-                    AddNoteView(viewModel: AddNoteViewModelDefault(exitRoute: { showAddNoteModal.toggle() }, notesHandler: NotesHandlerDefault(measurementStreamStorage: measurementStreamStorage, sessionUUID: session.uuid, locationTracker: locationTracker)))
+                    AddNoteView(viewModel: AddNoteViewModelDefault(exitRoute: { showAddNoteModal.toggle() }, notesHandler: NotesHandlerDefault(sessionUUID: session.uuid)))
                 }
         } else {
             sessionHeader
@@ -67,14 +63,15 @@ struct SessionHeaderView: View {
                     Group {
                         EmptyView()
                             .sheet(isPresented: $showDeleteModal) {
-                                DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session, measurementStreamStorage: measurementStreamStorage, streamRemover: DefaultSessionUpdateService(authorization: authorization, urlProvider: urlProvider), sessionSynchronizer: sessionSynchronizer), deleteModal: $showDeleteModal)
+                                DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session, streamRemover: DefaultSessionUpdateService()),
+                                           deleteModal: $showDeleteModal)
                             }
                         EmptyView()
                             .sheet(isPresented: $showShareModal) {
                                 if session.locationless {
                                     ShareLocationlessSessionView(viewModel: ShareLocationlessSessionViewModel(session: session, fileGenerationController: DefaultGenerateSessionFileController(fileGenerator: DefaultCSVFileGenerator(), fileZipper: SSZipFileZipper()), exitRoute: { showShareModal.toggle() }))
                                 } else {
-                                    ShareSessionView(viewModel: DefaultShareSessionViewModel(session: session, apiClient: ShareSessionApi(urlProvider: urlProvider), exitRoute: { result in
+                                    ShareSessionView(viewModel: DefaultShareSessionViewModel(session: session, apiClient: ShareSessionApi(), exitRoute: { result in
                                         showShareModal.toggle()
                                         if result == .fileShared {
                                             alert = InAppAlerts.shareFileRequestSent()
@@ -84,11 +81,7 @@ struct SessionHeaderView: View {
                             }
                         EmptyView()
                             .sheet(isPresented: $showDeleteModal) {
-                                DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session,
-                                                                                    measurementStreamStorage: measurementStreamStorage,
-                                                                                    streamRemover: DefaultSessionUpdateService(authorization: authorization,
-                                                                                                                               urlProvider: urlProvider),
-                                                                                    sessionSynchronizer: sessionSynchronizer),
+                                DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session, streamRemover: DefaultSessionUpdateService()),
                                            deleteModal: $showDeleteModal)
                             }
                         EmptyView()
@@ -97,7 +90,7 @@ struct SessionHeaderView: View {
                             }
                         EmptyView()
                             .sheet(isPresented: $showAddNoteModal) {
-                                AddNoteView(viewModel: AddNoteViewModelDefault(exitRoute: { showAddNoteModal.toggle() }, notesHandler: NotesHandlerDefault(measurementStreamStorage: measurementStreamStorage, sessionUUID: session.uuid, locationTracker: locationTracker)))
+                                AddNoteView(viewModel: AddNoteViewModelDefault(exitRoute: { showAddNoteModal.toggle() }, notesHandler: NotesHandlerDefault(sessionUUID: session.uuid)))
                             }
                     }
                 )
@@ -106,11 +99,7 @@ struct SessionHeaderView: View {
     
     @ViewBuilder
     private var editViewSheet: some View {
-        let vm = EditSessionViewModel(measurementStreamStorage: measurementStreamStorage,
-                                      sessionSynchronizer: sessionSynchronizer,
-                                      sessionUpdateService: DefaultSessionUpdateService(authorization: authorization,
-                                                                                        urlProvider: urlProvider),
-                                      sessionUUID: session.uuid)
+        let vm = EditSessionViewModel(sessionUpdateService: DefaultSessionUpdateService(), sessionUUID: session.uuid)
         EditView(viewModel: vm)
     }
 }

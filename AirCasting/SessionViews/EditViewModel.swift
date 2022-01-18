@@ -4,6 +4,7 @@
 import Foundation
 import SwiftUI
 import CoreData
+import Resolver
 
 protocol EditViewModel: ObservableObject {
     var sessionName: String { get set }
@@ -24,15 +25,12 @@ class EditSessionViewModel: EditViewModel {
     @Published var sessionTags = ""
     @Published var shouldShowError = false
     @Published var didSave = false
-    private let measurementStreamStorage: MeasurementStreamStorage
-    let sessionSynchronizer: SingleSessionSynchronizer
-    let sessionUpdateService: SessionUpdateService
-    let sessionUUID: SessionUUID
+    @Injected private var measurementStreamStorage: MeasurementStreamStorage
+    @Injected private var sessionSynchronizer: SingleSessionSynchronizer
+    private let sessionUpdateService: SessionUpdateService
+    private let sessionUUID: SessionUUID
     
-    init(measurementStreamStorage: MeasurementStreamStorage,  sessionSynchronizer: SingleSessionSynchronizer, sessionUpdateService: SessionUpdateService,
-         sessionUUID: SessionUUID) {
-        self.measurementStreamStorage = measurementStreamStorage
-        self.sessionSynchronizer = sessionSynchronizer
+    init(sessionUpdateService: SessionUpdateService, sessionUUID: SessionUUID) {
         self.sessionUpdateService = sessionUpdateService
         self.sessionUUID = sessionUUID
     }

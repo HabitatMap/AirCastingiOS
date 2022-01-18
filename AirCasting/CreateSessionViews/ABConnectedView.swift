@@ -10,7 +10,6 @@ import SwiftUI
 
 struct ABConnectedView: View {
     @Binding var creatingSessionFlowContinues: Bool
-    let baseURL: BaseURLProvider
     
     var body: some View {
         VStack() {
@@ -46,7 +45,7 @@ private extension ABConnectedView {
 
     var continueButton: some View {
         return NavigationLink(
-            destination: CreateSessionDetailsView(creatingSessionFlowContinues: $creatingSessionFlowContinues, baseURL: baseURL),
+            destination: CreateSessionDetailsView(creatingSessionFlowContinues: $creatingSessionFlowContinues),
             label: {
                 Text(Strings.Commons.continue)
             })

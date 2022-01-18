@@ -56,12 +56,8 @@ final class MobilePeripheralSessionCreator: SessionCreator {
         case invalidCreateSessionContext(CreateSessionContext)
     }
     @Injected private var mobilePeripheralSessionManager: MobilePeripheralSessionManager
-    let userAuthenticationSession: UserAuthenticationSession
+    @Injected private var userAuthenticationSession: UserAuthenticationSession
     @Injected private var measurementStreamStorage: MeasurementStreamStorage
-
-    init(userAuthenticationSession: UserAuthenticationSession) {
-        self.userAuthenticationSession = userAuthenticationSession
-    }
 
     func createSession(_ sessionContext: CreateSessionContext, completion: @escaping (Result<Void, Error>) -> Void) {
         guard let sessionType = sessionContext.sessionType,
@@ -88,8 +84,7 @@ final class MobilePeripheralSessionCreator: SessionCreator {
                 assertionFailure("invalidCreateSessionContext \(sessionContext)")
                 throw MobilePeripheralSessionCreatorError.invalidCreateSessionContext(sessionContext)
             }
-            AirBeam3Configurator(userAuthenticationSession: userAuthenticationSession,
-                                 peripheral: peripheral).configureMobileSession(
+            AirBeam3Configurator(peripheral: peripheral).configureMobileSession(
                                     location: sessionContext.startingLocation ?? CLLocationCoordinate2D(latitude: 200, longitude: 200))
             mobilePeripheralSessionManager.startRecording(session: session, peripheral: peripheral)
             completion(.success(()))

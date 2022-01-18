@@ -179,11 +179,10 @@ class MobilePeripheralSessionManager {
         }
     }
 
-    func configureAB(userAuthenticationSession: UserAuthenticationSession) {
+    func configureAB() {
         guard let peripheral = activeMobileSession?.peripheral else { return }
         locationProvider.requestLocation()
-        AirBeam3Configurator(userAuthenticationSession: userAuthenticationSession,
-                             peripheral: peripheral)
+        AirBeam3Configurator(peripheral: peripheral)
             .configureMobileSession(
                 location: locationProvider.currentLocation?.coordinate ?? .undefined
             )

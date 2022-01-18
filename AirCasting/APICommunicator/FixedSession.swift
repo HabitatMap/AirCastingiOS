@@ -8,6 +8,7 @@
 import Foundation
 import Combine
 import CoreLocation
+import Resolver
 
 class FixedSession {
     struct FixedMeasurementOutput: Decodable, Hashable {
@@ -55,10 +56,10 @@ class FixedSession {
 }
 
 final class FixedSessionAPIService {
-    let urlProvider: BaseURLProvider
-    let apiClient: APIClient
-    let responseValidator: HTTPResponseValidator
-    let authorisationService: RequestAuthorisationService
+    @Injected private var urlProvider: URLProvider
+    @Injected private var apiClient: APIClient
+    @Injected private var responseValidator: HTTPResponseValidator
+    @Injected private var authorisationService: RequestAuthorisationService
     private lazy var decoder: JSONDecoder = {
         $0.dateDecodingStrategy = .custom({
             let container = try $0.singleValueContainer()
@@ -70,13 +71,6 @@ final class FixedSessionAPIService {
         })
         return $0
     }(JSONDecoder())
-
-    init(authorisationService: RequestAuthorisationService, apiClient: APIClient = URLSession.shared, responseValidator: HTTPResponseValidator = DefaultHTTPResponseValidator(), baseUrl: BaseURLProvider) {
-        self.authorisationService = authorisationService
-        self.apiClient = apiClient
-        self.responseValidator = responseValidator
-        self.urlProvider = baseUrl
-    }
 
     @discardableResult
     func getFixedMeasurement(uuid: SessionUUID, lastSync: Date, completion: @escaping (Result<FixedSession.FixedMeasurementOutput, Error>) -> Void) -> Cancellable {

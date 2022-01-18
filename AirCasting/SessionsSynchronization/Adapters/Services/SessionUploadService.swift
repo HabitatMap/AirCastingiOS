@@ -5,12 +5,13 @@ import Foundation
 import Combine
 import Gzip
 import CoreLocation
+import Resolver
 
 final class SessionUploadService: SessionUpstream {
-    private let client: APIClient
-    private let authorization: RequestAuthorisationService
-    private let responseValidator: HTTPResponseValidator
-    private let urlProvider: BaseURLProvider
+    @Injected private var client: APIClient
+    @Injected private var authorization: RequestAuthorisationService
+    @Injected private var responseValidator: HTTPResponseValidator
+    @Injected private var urlProvider: URLProvider
     
     private let encoder: JSONEncoder = {
         let encoder = JSONEncoder()
@@ -24,13 +25,6 @@ final class SessionUploadService: SessionUpstream {
     private struct APICallData: Encodable {
         let session: String
         let compression: Bool
-    }
-    
-    init(client: APIClient, authorization: RequestAuthorisationService, responseValidator: HTTPResponseValidator, urlProvider: BaseURLProvider) {
-        self.client = client
-        self.authorization = authorization
-        self.responseValidator = responseValidator
-        self.urlProvider = urlProvider
     }
     
     func upload(session: SessionsSynchronization.SessionUpstreamData) -> Future<Void, Error> {

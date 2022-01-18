@@ -9,9 +9,10 @@ import UIKit
 import SwiftUI
 import GoogleMaps
 import GooglePlaces
+import Resolver
 
 struct GoogleMapView: UIViewRepresentable {
-    @EnvironmentObject var tracker: LocationTracker
+    @InjectedObject private var tracker: LocationTracker
     @Binding var placePickerDismissed: Bool
     @Binding var isUserInteracting: Bool
     @Binding var noteMarketTapped: Bool

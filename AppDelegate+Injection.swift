@@ -2,26 +2,28 @@
 //
 
 import Foundation
-
+import CoreLocation
 import Resolver
 
 extension Resolver: ResolverRegistering {
     public static func registerAllServices() {
+        // MARK: Persistence
         main.register { PersistenceController(inMemory: false) }
             .implements(SessionsFetchable.self)
             .implements(SessionRemovable.self)
             .implements(SessionInsertable.self)
             .scope(.application)
-        
         main.register { CoreDataMeasurementStreamStorage() as MeasurementStreamStorage }.scope(.cached)
-        main.register { MicrophoneManager(measurementStreamStorage: Resolver.resolve()) }.scope(.cached)
-        main.register { AveragingService(measurementStreamStorage: Resolver.resolve()) }.scope(.cached)
-        main.register { MobilePeripheralSessionManager(measurementStreamStorage: Resolver.resolve()) }.scope(.cached)
-        main.register { BluetoothManager(mobilePeripheralSessionManager: Resolver.resolve()) }
-            .implements(BluetoothConnector.self)
-            .scope(.cached)
-        main.register { DefaultBluetoothHandler() as BluetoothHandler }
+        main.register { DefaultFileLineReader() as FileLineReader }
         
+        // MARK: - Networking
+        main.register { URLSession.shared as APIClient }.scope(.application)
+        main.register { UserAuthenticationSession() }.implements(RequestAuthorisationService.self).scope(.application)
+        main.register { DefaultHTTPResponseValidator() as HTTPResponseValidator }
+        main.register { UserDefaultsURLProvider() as URLProvider }
+        main.register { DefaultNetworkChecker() as NetworkChecker }.scope(.application)
+        
+        // MARK: - Feature flags
         main.register { DefaultRemoteNotificationRouter() }
             .implements(RemoteNotificationRouter.self)
             .implements(RemoteNotificationsHandler.self)
@@ -51,8 +53,47 @@ extension Resolver: ResolverRegistering {
             #endif
         }
         main.register { FeatureFlagsViewModel() }.scope(.application)
+        
+        // MARK: - Session sync
+        main.register { SessionSynchronizationService() as SessionSynchronizationContextProvidable }
+        main.register { SessionDownloadService() }.implements(SessionDownstream.self).implements(MeasurementsDownloadable.self)
+        main.register { SessionUploadService() as SessionUpstream }
+        main.register { SessionSynchronizationDatabase() as SessionSynchronizationStore }
+        main.register {
+            ScheduledSessionSynchronizerProxy(controller: SessionSynchronizationController(), scheduler: DispatchQueue.global()) as SessionSynchronizer
+        }
+        
+        // MARK: - Location handling
+        main.register { LocationTracker(locationManager: CLLocationManager()) }.scope(.application)
+        main.register { DefaultLocationHandler() as LocationHandler }.scope(.application)
+        
+        // MARK: - Settings
+        main.register { UserSettings(userDefaults: .standard) }.scope(.cached)
+        
+        // MARK: - Services
+        main.register { DownloadMeasurementsService() }.implements(MeasurementUpdatingService.self).scope(.cached)
+        main.register { DefaultSettingsRedirection() as SettingsRedirection }.scope(.application)
+        main.register { LifeTimeEventsProvider(userDefaults: .standard) }.implements(FirstRunInfoProvidable.self).scope(.application)
+        main.register { MicrophoneManager(measurementStreamStorage: Resolver.resolve()) }.scope(.cached)
+        main.register { AveragingService(measurementStreamStorage: Resolver.resolve()) }.scope(.cached)
+        main.register { MobilePeripheralSessionManager(measurementStreamStorage: Resolver.resolve()) }.scope(.cached)
+        main.register { BluetoothManager(mobilePeripheralSessionManager: Resolver.resolve()) }
+            .implements(BluetoothConnector.self)
+            .scope(.cached)
+        main.register { DefaultBluetoothHandler() as BluetoothHandler }
         main.register { UserState() }.scope(.application)
-        main.register { DefaultNetworkChecker() as NetworkChecker }.scope(.application)
+        main.register { SyncedMeasurementsDownloadingService() as SyncedMeasurementsDownloader }
+        main.register { ConnectingAirBeamServicesBluetooth() as ConnectingAirBeamServices }
+        main.register { DefaultAirBeamConnectionController() as AirBeamConnectionController }
+        
+        //MARK: - SDSync
+        main.register { SDSyncController() }.scope(.cached)
+        main.register { SDCardMobileSessionsSavingService() as SDCardMobileSessionssSaver }
+        main.register { UploadFixedSessionAPIService() }
+        main.register { SDCardFixedSessionsSavingService() }
+        main.register { SDSyncFileValidationService() as SDSyncFileValidator }
+        main.register { SDSyncFileWritingService(bufferThreshold: 1000) as SDSyncFileWriter }
+        main.register { BluetoothSDCardAirBeamServices() as SDCardAirBeamServices }
     }
     
     // MARK: - Composition helpers

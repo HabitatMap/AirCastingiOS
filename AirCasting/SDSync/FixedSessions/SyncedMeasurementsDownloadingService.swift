@@ -2,20 +2,16 @@
 //
 
 import Foundation
+import Resolver
 
 protocol SyncedMeasurementsDownloader {
     func download(sessionsUUIDs: [SessionUUID])
 }
 
 struct SyncedMeasurementsDownloadingService: SyncedMeasurementsDownloader {
-    private let measurementStreamStorage: MeasurementStreamStorage
-    private let measurementsDownloadingService: MeasurementUpdatingService
+    @Injected private var measurementStreamStorage: MeasurementStreamStorage
+    @Injected private var measurementsDownloadingService: MeasurementUpdatingService
     let measurementTimeframe: Double = 24 * 60 * 60 // 24 hours in seconds
-    
-    init(measurementStreamStorage: MeasurementStreamStorage, measurementsDownloadingService: MeasurementUpdatingService) {
-        self.measurementStreamStorage = measurementStreamStorage
-        self.measurementsDownloadingService = measurementsDownloadingService
-    }
     
     func download(sessionsUUIDs: [SessionUUID]) {
         

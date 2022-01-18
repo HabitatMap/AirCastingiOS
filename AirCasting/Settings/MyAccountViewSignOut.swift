@@ -8,7 +8,7 @@ import Resolver
 struct MyAccountViewSignOut: View {
     let logoutController: LogoutController
     @State private var alert: AlertInfo?
-    @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
+    @InjectedObject private var userAuthenticationSession: UserAuthenticationSession
     @InjectedObject private var userState: UserState
     @Injected private var networkChecker: NetworkChecker
     

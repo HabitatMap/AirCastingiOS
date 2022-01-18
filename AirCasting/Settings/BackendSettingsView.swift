@@ -10,7 +10,7 @@ struct BackendSettingsView: View {
     
     @Environment(\.presentationMode) var presentationMode
     let logoutController: LogoutController
-    @State var urlProvider: BaseURLProvider
+    @Injected private var urlProvider: URLProvider
     @State private var pathText: String = ""
     @State private var portText: String = ""
     @State private var url: URL?

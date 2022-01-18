@@ -13,14 +13,9 @@ protocol SessionStoppableFactory {
 }
 
 final class SessionStoppableFactoryDefault: SessionStoppableFactory {
-    private let measurementStreamStorage: MeasurementStreamStorage
-    private let synchronizer: SessionSynchronizer
+    @Injected private var measurementStreamStorage: MeasurementStreamStorage
+    @Injected private var synchronizer: SessionSynchronizer
     @Injected private var bluetoothManager: BluetoothManager
-    
-    init(measurementStreamStorage: MeasurementStreamStorage, synchronizer: SessionSynchronizer) {
-        self.measurementStreamStorage = measurementStreamStorage
-        self.synchronizer = synchronizer
-    }
     
     func getSessionStopper(for session: SessionEntity) -> SessionStoppable {
         let stopper = matchStopper(for: session)

@@ -3,6 +3,7 @@
 
 import Combine
 import CoreBluetooth
+import Resolver
 
 struct SDSyncProgressViewModel {
     let title: String
@@ -18,6 +19,7 @@ protocol SDSyncViewModel: ObservableObject {
     func connectToAirBeamAndSync()
 }
 
+// [RESOLVER] Move this VM init to view afte all dependencies are resolved
 class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
 
     var progress: Published<SDSyncProgressViewModel?>.Publisher { $progressValue }
@@ -28,20 +30,13 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
     @Published var presentFailedSyncAlert: Bool = false
 
     private let peripheral: CBPeripheral
-    private let airBeamConnectionController: AirBeamConnectionController
-    private let sdSyncController: SDSyncController
-    private let userAuthenticationSession: UserAuthenticationSession
+    @Injected private var airBeamConnectionController: AirBeamConnectionController
+    @Injected private var sdSyncController: SDSyncController
     private let sessionContext: CreateSessionContext
 
-    init(airBeamConnectionController: AirBeamConnectionController,
-         sdSyncController: SDSyncController,
-         userAuthenticationSession: UserAuthenticationSession,
-         sessionContext: CreateSessionContext,
+    init(sessionContext: CreateSessionContext,
          peripheral: CBPeripheral) {
         self.peripheral = peripheral
-        self.airBeamConnectionController = airBeamConnectionController
-        self.sdSyncController = sdSyncController
-        self.userAuthenticationSession = userAuthenticationSession
         self.sessionContext = sessionContext
     }
 

@@ -17,12 +17,8 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
     //
     @Binding var selectedStream: MeasurementStreamEntity?
     @StateObject var statsContainerViewModel: StatsViewModelType
-    @EnvironmentObject var locationTracker: LocationTracker
-    let urlProvider: BaseURLProvider
     let graphStatsDataSource: GraphStatsDataSource
     let sessionStoppableFactory: SessionStoppableFactory
-    let measurementStreamStorage: MeasurementStreamStorage
-    let sessionSynchronizer: SessionSynchronizer
     
     var body: some View {
         VStack(alignment: .trailing) {
@@ -30,11 +26,8 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                                   isExpandButtonNeeded: false,
                                   isSensorTypeNeeded: false,
                                   isCollapsed: Binding.constant(false),
-                                  urlProvider: urlProvider,
                                   session: session,
-                                  sessionStopperFactory: sessionStoppableFactory,
-                                  measurementStreamStorage: measurementStreamStorage,
-                                  sessionSynchronizer: sessionSynchronizer)
+                                  sessionStopperFactory: sessionStoppableFactory)
                 .padding([.bottom, .leading, .trailing])
             
             ABMeasurementsView(
@@ -42,11 +35,7 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                 isCollapsed: Binding.constant(false),
                 selectedStream: $selectedStream,
                 thresholds: thresholds, measurementPresentationStyle: .showValues,
-                viewModel: DefaultSyncingMeasurementsViewModel(measurementStreamStorage: measurementStreamStorage,
-                                                               sessionDownloader: SessionDownloadService(client: URLSession.shared,
-                                                                                                         authorization: UserAuthenticationSession(),
-                                                                                                         responseValidator: DefaultHTTPResponseValidator(), urlProvider: urlProvider),
-                                                                session: session))
+                viewModel: DefaultSyncingMeasurementsViewModel(sessionDownloader: SessionDownloadService(), session: session))
                 .padding(.horizontal)
            
             if isProceeding(session: session) {
@@ -56,7 +45,7 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                             Graph(stream: selectedStream,
                                   thresholds: threshold,
                                   isAutozoomEnabled: session.type == .mobile,
-                                  notesHandler: NotesHandlerDefault(measurementStreamStorage: measurementStreamStorage, sessionUUID: session.uuid, locationTracker: locationTracker))
+                                  notesHandler: NotesHandlerDefault(sessionUUID: session.uuid))
                             .onDateRangeChange { [weak graphStatsDataSource, weak statsContainerViewModel] range in
                                 graphStatsDataSource?.dateRange = range
                                 statsContainerViewModel?.adjustForNewData()
@@ -90,9 +79,7 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
         .sheet(isPresented: $showNoteEdit, content: { [selectedNote] in
             EditNoteView(viewModel: EditNoteViewModelDefault(exitRoute: { showNoteEdit.toggle() },
                                                              noteNumber: selectedNote!.number,
-                                                             notesHandler: NotesHandlerDefault(measurementStreamStorage: measurementStreamStorage,
-                                                                                               sessionUUID: session.uuid,
-                                                                                               locationTracker: locationTracker)))
+                                                             notesHandler: NotesHandlerDefault(sessionUUID: session.uuid)))
         })
         .navigationBarTitleDisplayMode(.inline)
     }

@@ -2,6 +2,7 @@
 //
 
 import Foundation
+import Resolver
 
 protocol NotesHandler {
     func addNote(noteText: String)
@@ -12,14 +13,12 @@ protocol NotesHandler {
 }
 
 class NotesHandlerDefault: NotesHandler {
-    var measurementStreamStorage: MeasurementStreamStorage
+    @Injected private var measurementStreamStorage: MeasurementStreamStorage
     var sessionUUID: SessionUUID
-    var locationTracker: LocationTracker
+    @Injected private var locationTracker: LocationTracker
     
-    init(measurementStreamStorage: MeasurementStreamStorage, sessionUUID: SessionUUID, locationTracker: LocationTracker) {
-        self.measurementStreamStorage = measurementStreamStorage
+    init(sessionUUID: SessionUUID) {
         self.sessionUUID = sessionUUID
-        self.locationTracker = locationTracker
     }
     
     func addNote(noteText: String) {

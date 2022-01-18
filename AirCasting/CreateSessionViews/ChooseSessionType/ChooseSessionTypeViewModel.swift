@@ -12,37 +12,21 @@ enum ProceedToView {
     case mobile
 }
 
+// [RESOLVER] Move this VM init to view
 class ChooseSessionTypeViewModel {
     
-    let locationHandler: LocationHandler
+    @Injected private var locationHandler: LocationHandler
     @Injected private var bluetoothHandler: BluetoothHandler
-    private let userSettings: UserSettings
+    @Injected private var userSettings: UserSettings
     private let sessionContext: CreateSessionContext
-    private let urlProvider: BaseURLProvider
-    private var bluetoothManagerState: CBManagerState
-    
-    var passURLProvider: BaseURLProvider {
-        return urlProvider
-    }
-    
-    var passLocationHandler: LocationHandler {
-        return locationHandler
-    }
+    @Injected private var urlProvider: URLProvider
     
     var passSessionContext: CreateSessionContext {
         return sessionContext
     }
-    
-    var passUserSettings: UserSettings {
-        return userSettings
-    }
 
-    init(locationHandler: LocationHandler, userSettings: UserSettings, sessionContext: CreateSessionContext, urlProvider: BaseURLProvider, bluetoothManagerState: CBManagerState) {
-        self.locationHandler = locationHandler
-        self.userSettings = userSettings
+    init(sessionContext: CreateSessionContext) {
         self.sessionContext = sessionContext
-        self.urlProvider = urlProvider
-        self.bluetoothManagerState = bluetoothManagerState
     }
 
     func fixedSessionNextStep() -> ProceedToView {

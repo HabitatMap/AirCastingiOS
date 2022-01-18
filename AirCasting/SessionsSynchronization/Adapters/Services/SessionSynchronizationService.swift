@@ -4,25 +4,19 @@
 import Foundation
 import Combine
 import CoreLocation
+import Resolver
 
 final class SessionSynchronizationService: SessionSynchronizationContextProvidable {
-    private let client: APIClient
-    private let authorization: RequestAuthorisationService
-    private let responseValidator: HTTPResponseValidator
-    private let urlProvider: BaseURLProvider
+    @Injected private var client: APIClient
+    @Injected private var authorization: RequestAuthorisationService
+    @Injected private var responseValidator: HTTPResponseValidator
+    @Injected private var urlProvider: URLProvider
     
     private let encoder = JSONEncoder()
     private let decoder = JSONDecoder()
     
     private struct APICallData: Encodable {
         let data: String
-    }
-    
-    init(client: APIClient, authorization: RequestAuthorisationService, responseValidator: HTTPResponseValidator, urlProvider: BaseURLProvider) {
-        self.client = client
-        self.authorization = authorization
-        self.responseValidator = responseValidator
-        self.urlProvider = urlProvider
     }
     
     public func getSynchronizationContext(localSessions: [SessionsSynchronization.Metadata]) -> AnyPublisher<SessionsSynchronization.SynchronizationContext, Error> {

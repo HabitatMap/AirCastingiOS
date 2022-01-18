@@ -4,20 +4,16 @@
 import Foundation
 import CoreLocation
 import Combine
+import Resolver
 
 protocol SDCardMobileSessionssSaver {
     func saveDataToDb(fileURL: URL, deviceID: String, completion: @escaping (Result<[SessionUUID], Error>) -> Void)
 }
 
 class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
-    private let fileLineReader: FileLineReader
-    private let measurementStreamStorage: MeasurementStreamStorage
+    @Injected private var fileLineReader: FileLineReader
+    @Injected private var measurementStreamStorage: MeasurementStreamStorage
     private let parser = SDCardMeasurementsParser()
-    
-    init(measurementStreamStorage: MeasurementStreamStorage, fileLineReader: FileLineReader) {
-        self.measurementStreamStorage = measurementStreamStorage
-        self.fileLineReader = fileLineReader
-    }
     
     func saveDataToDb(fileURL: URL, deviceID: String, completion: @escaping (Result<[SessionUUID], Error>) -> Void) {
         var processedSessions = Set<SDSession>()

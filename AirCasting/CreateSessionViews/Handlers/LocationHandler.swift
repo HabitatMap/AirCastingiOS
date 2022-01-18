@@ -3,6 +3,7 @@
 
 import Foundation
 import CoreLocation
+import Resolver
 
 protocol LocationHandler {
     func isLocationDenied() -> Bool
@@ -10,11 +11,7 @@ protocol LocationHandler {
 }
 
 class DefaultLocationHandler: LocationHandler {
-    var locationTracker: LocationTracker
-    
-    init(locationTracker: LocationTracker) {
-        self.locationTracker = locationTracker
-    }
+    @Injected private var locationTracker: LocationTracker
     
     func isLocationDenied() -> Bool {
         locationTracker.locationGranted == .denied ? true : false

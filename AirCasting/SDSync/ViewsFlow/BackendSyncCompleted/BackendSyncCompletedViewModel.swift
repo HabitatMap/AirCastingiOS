@@ -12,9 +12,6 @@ enum ProceedToSyncView {
 protocol BackendSyncCompletedViewModel: ObservableObject {
     var presentRestartNextScreen: Bool { get }
     var presentBTNextScreen: Bool { get }
-    // urlProvider should should not be exposed
-    // BUT it is - REASON: it is needed only to pass to some navigation view
-    var urlProvider: BaseURLProvider { get }
     func continueButtonTapped() 
 }
 
@@ -22,12 +19,7 @@ class BackendSyncCompletedViewModelDefault: BackendSyncCompletedViewModel, Obser
     
     @Published var presentRestartNextScreen: Bool = false
     @Published var presentBTNextScreen: Bool = false
-    let urlProvider: BaseURLProvider
     @Injected private var bluetoothHandler: BluetoothHandler
-    
-    init(urlProvider: BaseURLProvider) {
-        self.urlProvider = urlProvider
-    }
     
     func continueButtonTapped() {
         switch sessionNextStep() {
