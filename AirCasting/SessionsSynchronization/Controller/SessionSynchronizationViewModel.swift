@@ -11,6 +11,7 @@ class SessionSynchronizationViewModel: ObservableObject {
     
     init() {
         let syncSessionController = Resolver.resolve(SessionSynchronizer.self)
+        self.syncInProgress = syncSessionController.syncInProgress.value
         syncSessionController.syncInProgress.receive(on: DispatchQueue.main).sink { [weak self] value in
             self?.syncInProgress = value
         }.store(in: &cancellables)

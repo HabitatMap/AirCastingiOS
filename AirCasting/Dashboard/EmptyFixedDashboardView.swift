@@ -5,7 +5,7 @@ import SwiftUI
 import Resolver
 
 struct EmptyFixedDashboardView: View {
-    @InjectedObject private var defaultSessionSynchronizerViewModel: SessionSynchronizationViewModel
+    @StateObject private var defaultSessionSynchronizerViewModel = SessionSynchronizationViewModel()
     @EnvironmentObject var selectedSection: SelectSection
     
     var shouldSessionFetch: Bool {

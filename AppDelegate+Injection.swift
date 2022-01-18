@@ -18,7 +18,10 @@ extension Resolver: ResolverRegistering {
         
         // MARK: - Networking
         main.register { URLSession.shared as APIClient }.scope(.application)
-        main.register { UserAuthenticationSession() }.implements(RequestAuthorisationService.self).scope(.application)
+        main.register { UserAuthenticationSession() }
+            .implements(RequestAuthorisationService.self)
+            .implements(Deauthorizable.self)
+            .scope(.application)
         main.register { DefaultHTTPResponseValidator() as HTTPResponseValidator }
         main.register { UserDefaultsURLProvider() as URLProvider }
         main.register { DefaultNetworkChecker() as NetworkChecker }.scope(.application)
@@ -56,7 +59,9 @@ extension Resolver: ResolverRegistering {
         
         // MARK: - Session sync
         main.register { SessionSynchronizationService() as SessionSynchronizationContextProvidable }
-        main.register { SessionDownloadService() }.implements(SessionDownstream.self).implements(MeasurementsDownloadable.self)
+        main.register { SessionDownloadService() }
+            .implements(SessionDownstream.self)
+            .implements(MeasurementsDownloadable.self)
         main.register { SessionUploadService() as SessionUpstream }
         main.register { SessionSynchronizationDatabase() as SessionSynchronizationStore }
         main.register {
