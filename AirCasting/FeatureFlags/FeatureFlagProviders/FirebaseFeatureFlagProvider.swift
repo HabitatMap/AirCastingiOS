@@ -46,7 +46,7 @@ class FirebaseFeatureFlagProvider: FeatureFlagProvider {
         case .sdCardSync: return "sd_card_sync"
         case .standaloneMode: return "standalone_mode"
         case .notes: return "session_notes"
-        case .disableMapping: return "disable_mapping"
+        case .locationlessSessions: return "locationless_sessions"
         }
     }
     

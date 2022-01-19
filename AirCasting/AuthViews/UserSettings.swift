@@ -7,7 +7,7 @@ import UIKit
 class UserSettings: ObservableObject {
     private let userDefaults: UserDefaults
     private let crowdMapKey = Constants.UserDefaultsKeys.crowdMap
-    private let disableMappingKey = Constants.UserDefaultsKeys.disableMapping
+    private let locationlessKey = Constants.UserDefaultsKeys.disableMapping
     private let keepScreenOnKey = Constants.UserDefaultsKeys.keepScreenOn
     private let featureFlagsViewModel = FeatureFlagsViewModel.shared
     private let convertToCelsiusKey = Constants.UserDefaultsKeys.convertToCelsius
@@ -35,11 +35,11 @@ class UserSettings: ObservableObject {
 
     var disableMapping: Bool {
         get {
-            userDefaults.bool(forKey: disableMappingKey)
+            userDefaults.bool(forKey: locationlessKey)
         }
         set {
-            userDefaults.setValue(newValue, forKey: disableMappingKey)
-            Log.info("Changed disable mapping setting to \(disableMapping ? "ON" : "OFF")")
+            userDefaults.setValue(newValue, forKey: locationlessKey)
+            Log.info("Changed locationless sessions setting to \(disableMapping ? "ON" : "OFF")")
         }
     }
 
@@ -58,7 +58,7 @@ class UserSettings: ObservableObject {
         contributingToCrowdMap = userDefaults.valueExists(forKey: crowdMapKey) ? userDefaults.bool(forKey: crowdMapKey) : true
         keepScreenOn = userDefaults.bool(forKey: keepScreenOnKey)
         // This is included in case user turns on disable mapping but we turn off the feature, because otherwise the user could never turn this off
-        disableMapping = featureFlagsViewModel.enabledFeatures.contains(.disableMapping) ? userDefaults.bool(forKey: disableMappingKey) : false
+        disableMapping = featureFlagsViewModel.enabledFeatures.contains(.locationlessSessions) ? userDefaults.bool(forKey: locationlessKey) : false
         convertToCelsius = userDefaults.bool(forKey: convertToCelsiusKey)
     }
 }
