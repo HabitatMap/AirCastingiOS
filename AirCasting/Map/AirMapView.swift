@@ -32,7 +32,7 @@ struct AirMapView: View {
     @State var isUserInteracting = true
     @State var noteMarkerTapped = false
     @State var noteNumber = 0
-    var notesHandler: NotesHandler
+    private let notesHandler: NotesHandler
     
     init(session: SessionEntity,
          thresholds: [SensorThreshold],
@@ -133,7 +133,7 @@ struct AirMapView: View {
                 noteMarkerTapped.toggle()
             },
                                                              noteNumber: noteNumber,
-                                                             notesHandler: notesHandler, sessionUpdateService: DefaultSessionUpdateService(authorization: authorization, urlProvider: urlProvider)))
+                                                             notesHandler: notesHandler))
         })
         .navigationBarTitleDisplayMode(.inline)
 //        .onChange(of: selectedStream) { newStream in

@@ -56,7 +56,12 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                             Graph(stream: selectedStream,
                                   thresholds: threshold,
                                   isAutozoomEnabled: session.type == .mobile,
-                                  notesHandler: NotesHandlerDefault(measurementStreamStorage: measurementStreamStorage, sessionUUID: session.uuid, locationTracker: locationTracker))
+                                  notesHandler: NotesHandlerDefault(measurementStreamStorage: measurementStreamStorage,
+                                                                    sessionUUID: session.uuid,
+                                                                    locationTracker: locationTracker,
+                                                                    sessionUpdateService: DefaultSessionUpdateService(
+                                    authorization: authorization,
+                                    urlProvider: urlProvider)))
                             .onDateRangeChange { [weak graphStatsDataSource, weak statsContainerViewModel] range in
                                 graphStatsDataSource?.dateRange = range
                                 statsContainerViewModel?.adjustForNewData()
@@ -93,10 +98,10 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                                                              notesHandler: NotesHandlerDefault(
                                                                 measurementStreamStorage: measurementStreamStorage,
                                                                 sessionUUID: session.uuid,
-                                                                locationTracker: locationTracker),
-                                                             sessionUpdateService: DefaultSessionUpdateService(
-                                                                authorization: authorization,
-                                                                urlProvider: urlProvider)))
+                                                                locationTracker: locationTracker,
+                                                                sessionUpdateService: DefaultSessionUpdateService(
+                                                                    authorization: authorization,
+                                                                    urlProvider: urlProvider))))
         })
         .navigationBarTitleDisplayMode(.inline)
     }

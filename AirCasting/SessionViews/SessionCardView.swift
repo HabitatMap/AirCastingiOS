@@ -18,6 +18,7 @@ struct SessionCardView: View {
     @ObservedObject var session: SessionEntity
     @EnvironmentObject var selectedSection: SelectSection
     @EnvironmentObject var locationTracker: LocationTracker
+    @EnvironmentObject var authorization: UserAuthenticationSession
     let urlProvider: BaseURLProvider
     let sessionCartViewModel: SessionCardViewModel
     let thresholds: [SensorThreshold]
@@ -276,7 +277,12 @@ private extension SessionCardView {
                                   measurementStreamStorage: measurementStreamStorage,
                                   sessionSynchronizer: sessionSynchronizer,
                                   statsContainerViewModel: _mapStatsViewModel,
-                                  notesHandler: NotesHandlerDefault(measurementStreamStorage: measurementStreamStorage, sessionUUID: session.uuid, locationTracker: locationTracker),
+                                  notesHandler: NotesHandlerDefault(measurementStreamStorage: measurementStreamStorage,
+                                                                    sessionUUID: session.uuid,
+                                                                    locationTracker: locationTracker,
+                                                                    sessionUpdateService: DefaultSessionUpdateService(
+                                    authorization: authorization,
+                                    urlProvider: urlProvider)),
                                   showLoadingIndicator: $showLoadingIndicator,
                                   selectedStream: $selectedStream)
             .foregroundColor(.aircastingDarkGray)

@@ -9,18 +9,19 @@ protocol NotesHandler {
     func updateNote(note: Note, newText: String, completion: @escaping () -> Void)
     func getNotes(completion: @escaping ([Note]) -> Void)
     func fetchSpecifiedNote(number: Int, completion: @escaping (Note) -> Void)
-    func fetchSession(completion: @escaping (SessionEntity) -> Void) 
 }
 
 class NotesHandlerDefault: NotesHandler {
     var measurementStreamStorage: MeasurementStreamStorage
     var sessionUUID: SessionUUID
     var locationTracker: LocationTracker
+    private let sessionUpdateService: SessionUpdateService
     
-    init(measurementStreamStorage: MeasurementStreamStorage, sessionUUID: SessionUUID, locationTracker: LocationTracker) {
+    init(measurementStreamStorage: MeasurementStreamStorage, sessionUUID: SessionUUID, locationTracker: LocationTracker, sessionUpdateService: SessionUpdateService) {
         self.measurementStreamStorage = measurementStreamStorage
         self.sessionUUID = sessionUUID
         self.locationTracker = locationTracker
+        self.sessionUpdateService = sessionUpdateService
     }
     
     func addNote(noteText: String) {
@@ -53,7 +54,12 @@ class NotesHandlerDefault: NotesHandler {
         measurementStreamStorage.accessStorage { [self] storage in
             do {
                 try storage.updateNote(note, newText: newText, for: sessionUUID)
-                completion()
+                fetchSession { session in
+                    self.sessionUpdateService.updateSession(session: session) {
+                        Log.info("Notes successfully updated")
+                        completion()
+                    }
+                }
             } catch {
                 Log.info("Error when deleting note")
             }
@@ -79,8 +85,11 @@ class NotesHandlerDefault: NotesHandler {
             }
         }
     }
-    
-    func fetchSession(completion: @escaping (SessionEntity) -> Void) {
+}
+
+// MARK: Internal methods
+extension NotesHandlerDefault {
+    private func fetchSession(completion: @escaping (SessionEntity) -> Void) {
         measurementStreamStorage.accessStorage { [self] storage in
             do {
                 completion(try storage.getExistingSession(with: sessionUUID))

@@ -14,13 +14,10 @@ class EditNoteViewModelDefault: EditNoteViewModel, ObservableObject {
     private var note: Note!
     private var notesHandler: NotesHandler
     private let exitRoute: () -> Void
-    private let sessionUpdateService: SessionUpdateService
     
-    
-    init(exitRoute: @escaping () -> Void, noteNumber: Int, notesHandler: NotesHandler, sessionUpdateService: SessionUpdateService) {
+    init(exitRoute: @escaping () -> Void, noteNumber: Int, notesHandler: NotesHandler) {
         self.exitRoute = exitRoute
         self.notesHandler = notesHandler
-        self.sessionUpdateService = sessionUpdateService
         notesHandler.fetchSpecifiedNote(number: noteNumber) { note in
             DispatchQueue.main.async {
                 self.note = note
@@ -31,12 +28,7 @@ class EditNoteViewModelDefault: EditNoteViewModel, ObservableObject {
     
     func saveTapped() {
         notesHandler.updateNote(note: note, newText: noteText, completion: {
-            self.notesHandler.fetchSession { session in
-                self.sessionUpdateService.updateSession(session: session) {
-                    self.exitRoute()
-                    Log.info("Notes successfully updated")
-                }
-            }
+            self.exitRoute()
         })
     }
     
