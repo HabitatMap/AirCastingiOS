@@ -282,7 +282,8 @@ private extension SessionCardView {
                                                                     locationTracker: locationTracker,
                                                                     sessionUpdateService: DefaultSessionUpdateService(
                                     authorization: authorization,
-                                    urlProvider: urlProvider)),
+                                    urlProvider: urlProvider),
+                                                                    persistenceController: PersistenceController.shared),
                                   showLoadingIndicator: $showLoadingIndicator,
                                   selectedStream: $selectedStream)
             .foregroundColor(.aircastingDarkGray)

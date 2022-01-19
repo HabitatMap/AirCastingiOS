@@ -2,26 +2,42 @@
 //
 
 import Foundation
+import CoreData
 
-protocol NotesHandler {
+protocol NotesHandler: AnyObject {
     func addNote(noteText: String)
     func deleteNote(note: Note)
     func updateNote(note: Note, newText: String, completion: @escaping () -> Void)
     func getNotes(completion: @escaping ([Note]) -> Void)
     func fetchSpecifiedNote(number: Int, completion: @escaping (Note) -> Void)
+    var observer: (() -> Void)? { get set }
 }
 
-class NotesHandlerDefault: NotesHandler {
+@objc
+class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDelegate {
     var measurementStreamStorage: MeasurementStreamStorage
     var sessionUUID: SessionUUID
     var locationTracker: LocationTracker
+    var observer: (() -> Void)?
     private let sessionUpdateService: SessionUpdateService
+    private let frc: NSFetchedResultsController<NoteEntity>
     
-    init(measurementStreamStorage: MeasurementStreamStorage, sessionUUID: SessionUUID, locationTracker: LocationTracker, sessionUpdateService: SessionUpdateService) {
+    init(measurementStreamStorage: MeasurementStreamStorage, sessionUUID: SessionUUID, locationTracker: LocationTracker, sessionUpdateService: SessionUpdateService, persistenceController: PersistenceController) {
         self.measurementStreamStorage = measurementStreamStorage
         self.sessionUUID = sessionUUID
         self.locationTracker = locationTracker
         self.sessionUpdateService = sessionUpdateService
+        let fetchRequest = NoteEntity.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "text", ascending: true)]
+        frc = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: persistenceController.viewContext, sectionNameKeyPath: nil, cacheName: nil)
+        super.init()
+        frc.delegate = self
+        try? frc.performFetch()
+    }
+    
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        print("## PRINT TYMCZASOWY")
+        observer?()
     }
     
     func addNote(noteText: String) {

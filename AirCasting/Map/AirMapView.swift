@@ -129,7 +129,6 @@ struct AirMapView: View {
         }
         .sheet(isPresented: $noteMarkerTapped, content: {
             EditNoteView(viewModel: EditNoteViewModelDefault(exitRoute: {
-                mapNotesVM.refreshNotes()
                 noteMarkerTapped.toggle()
             },
                                                              noteNumber: noteNumber,

@@ -61,7 +61,8 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                                                                     locationTracker: locationTracker,
                                                                     sessionUpdateService: DefaultSessionUpdateService(
                                     authorization: authorization,
-                                    urlProvider: urlProvider)))
+                                    urlProvider: urlProvider),
+                                                                    persistenceController: PersistenceController.shared))
                             .onDateRangeChange { [weak graphStatsDataSource, weak statsContainerViewModel] range in
                                 graphStatsDataSource?.dateRange = range
                                 statsContainerViewModel?.adjustForNewData()
@@ -101,7 +102,8 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                                                                 locationTracker: locationTracker,
                                                                 sessionUpdateService: DefaultSessionUpdateService(
                                                                     authorization: authorization,
-                                                                    urlProvider: urlProvider))))
+                                                                    urlProvider: urlProvider),
+                                                                persistenceController: PersistenceController.shared)))
         })
         .navigationBarTitleDisplayMode(.inline)
     }

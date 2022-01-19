@@ -66,7 +66,8 @@ struct SessionHeaderView: View {
                                                                     locationTracker: locationTracker,
                                                                     sessionUpdateService: DefaultSessionUpdateService(
                                                                         authorization: authorization,
-                                                                        urlProvider: urlProvider))))
+                                                                        urlProvider: urlProvider),
+                                                                    persistenceController: PersistenceController.shared)))
                 }
         } else {
             sessionHeader
@@ -111,7 +112,8 @@ struct SessionHeaderView: View {
                                                                                 locationTracker: locationTracker,
                                                                                 sessionUpdateService: DefaultSessionUpdateService(
                                                                                     authorization: authorization,
-                                                                                    urlProvider: urlProvider))))
+                                                                                    urlProvider: urlProvider),
+                                                                                persistenceController: PersistenceController.shared)))
                             }
                     }
                 )
