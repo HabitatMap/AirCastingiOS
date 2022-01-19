@@ -79,7 +79,9 @@ struct Graph: UIViewRepresentable {
         context.coordinator.entries = entries
         context.coordinator.stream = stream
         notesHandler.getNotes { notes in
-            uiView.setupNotes(notes) { noteAction?($0) }
+            DispatchQueue.main.async {
+                uiView.setupNotes(notes) { noteAction?($0) }
+            }
         }
         return uiView
     }
