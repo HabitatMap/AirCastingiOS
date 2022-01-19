@@ -14,6 +14,7 @@ struct AirMapView: View {
     @Environment(\.scenePhase) var scenePhase
     
     @EnvironmentObject var locationTracker: LocationTracker
+    @EnvironmentObject var userSettings: UserSettings
     
     var thresholds: [SensorThreshold]
     let urlProvider: BaseURLProvider
@@ -57,7 +58,7 @@ struct AirMapView: View {
         return selectedStream?.allMeasurements?.compactMap {
             #warning("TODO: Do something with no location points")
             guard let location = $0.location else { return nil }
-            return PathPoint(location: location, measurementTime: $0.time, measurement: $0.value)
+            return PathPoint(location: location, measurementTime: $0.time, measurement: getValue(of: $0))
         } ?? []
     }
 
@@ -143,5 +144,9 @@ struct AirMapView: View {
             }
         }
         .padding(.bottom)
+    }
+    
+    private func getValue(of measurement: MeasurementEntity) -> Double {
+        measurement.measurementStream.isTemperature && userSettings.convertToCelsius ? TemperatureConverter.calculateCelsius(fahrenheit: measurement.value) : measurement.value
     }
 }
