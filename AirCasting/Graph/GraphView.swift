@@ -14,10 +14,10 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
     // This pair doesn't belong here, it should be elegantly handled by VM when refactored
     @State private var selectedNote: Note?
     @State private var showNoteEdit: Bool = false
-    //
     @Binding var selectedStream: MeasurementStreamEntity?
     @StateObject var statsContainerViewModel: StatsViewModelType
     @EnvironmentObject var locationTracker: LocationTracker
+    @EnvironmentObject var authorization: UserAuthenticationSession
     let urlProvider: BaseURLProvider
     let graphStatsDataSource: GraphStatsDataSource
     let sessionStoppableFactory: SessionStoppableFactory
@@ -56,7 +56,13 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                             Graph(stream: selectedStream,
                                   thresholds: threshold,
                                   isAutozoomEnabled: session.type == .mobile,
-                                  notesHandler: NotesHandlerDefault(measurementStreamStorage: measurementStreamStorage, sessionUUID: session.uuid, locationTracker: locationTracker))
+                                  notesHandler: NotesHandlerDefault(measurementStreamStorage: measurementStreamStorage,
+                                                                    sessionUUID: session.uuid,
+                                                                    locationTracker: locationTracker,
+                                                                    sessionUpdateService: DefaultSessionUpdateService(
+                                    authorization: authorization,
+                                    urlProvider: urlProvider),
+                                                                    persistenceController: PersistenceController.shared))
                             .onDateRangeChange { [weak graphStatsDataSource, weak statsContainerViewModel] range in
                                 graphStatsDataSource?.dateRange = range
                                 statsContainerViewModel?.adjustForNewData()
@@ -90,9 +96,14 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
         .sheet(isPresented: $showNoteEdit, content: { [selectedNote] in
             EditNoteView(viewModel: EditNoteViewModelDefault(exitRoute: { showNoteEdit.toggle() },
                                                              noteNumber: selectedNote!.number,
-                                                             notesHandler: NotesHandlerDefault(measurementStreamStorage: measurementStreamStorage,
-                                                                                               sessionUUID: session.uuid,
-                                                                                               locationTracker: locationTracker)))
+                                                             notesHandler: NotesHandlerDefault(
+                                                                measurementStreamStorage: measurementStreamStorage,
+                                                                sessionUUID: session.uuid,
+                                                                locationTracker: locationTracker,
+                                                                sessionUpdateService: DefaultSessionUpdateService(
+                                                                    authorization: authorization,
+                                                                    urlProvider: urlProvider),
+                                                                persistenceController: PersistenceController.shared)))
         })
         .navigationBarTitleDisplayMode(.inline)
     }

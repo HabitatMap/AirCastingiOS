@@ -14,6 +14,7 @@ struct AirMapView: View {
     @Environment(\.scenePhase) var scenePhase
     
     @EnvironmentObject var locationTracker: LocationTracker
+    @EnvironmentObject var authorization: UserAuthenticationSession
     @EnvironmentObject var userSettings: UserSettings
     
     var thresholds: [SensorThreshold]
@@ -31,9 +32,10 @@ struct AirMapView: View {
     @State var isUserInteracting = true
     @State var noteMarkerTapped = false
     @State var noteNumber = 0
+    private let notesHandler: NotesHandler
     
     init(session: SessionEntity,
-        thresholds: [SensorThreshold],
+         thresholds: [SensorThreshold],
          urlProvider: BaseURLProvider,
          sessionStoppableFactory: SessionStoppableFactory,
          measurementStreamStorage: MeasurementStreamStorage,
@@ -49,6 +51,7 @@ struct AirMapView: View {
         self.measurementStreamStorage = measurementStreamStorage
         self.sessionSynchronizer = sessionSynchronizer
         self._statsContainerViewModel = statsContainerViewModel
+        self.notesHandler = notesHandler
         self._mapNotesVM = .init(wrappedValue: .init(notesHandler: notesHandler))
         self._showLoadingIndicator = showLoadingIndicator
         self._selectedStream = selectedStream
@@ -129,7 +132,7 @@ struct AirMapView: View {
                 noteMarkerTapped.toggle()
             },
                                                              noteNumber: noteNumber,
-                                                             notesHandler: NotesHandlerDefault(measurementStreamStorage: measurementStreamStorage, sessionUUID: session.uuid, locationTracker: locationTracker)))
+                                                             notesHandler: notesHandler))
         })
         .navigationBarTitleDisplayMode(.inline)
 //        .onChange(of: selectedStream) { newStream in

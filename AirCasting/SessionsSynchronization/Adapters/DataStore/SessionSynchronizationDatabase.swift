@@ -60,6 +60,13 @@ final class SessionSynchronizationDatabase: SessionSynchronizationStore {
                                                    },
                                                    deleted: $0.deleted)
                     }
+                    let notes = sessionData.notes.map {
+                        Database.Note(date: $0.date,
+                                      text: $0.text,
+                                      latitude: $0.latitude,
+                                      longitude: $0.longitude,
+                                      number: $0.number)
+                    }
                     let location: CLLocationCoordinate2D? = {
                         guard let latitude = sessionData.latitude,
                               let longitude = sessionData.longitude else { return nil }
@@ -81,7 +88,8 @@ final class SessionSynchronizationDatabase: SessionSynchronizationStore {
                                             urlLocation: sessionData.urlLocation,
                                             version: sessionData.version,
                                             measurementStreams: streams,
-                                            status: .FINISHED)
+                                            status: .FINISHED,
+                                            notes: notes)
                 }, completion: { error in
                     if let error = error {
                         promise(.failure(error))

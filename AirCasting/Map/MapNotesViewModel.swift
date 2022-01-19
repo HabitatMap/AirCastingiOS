@@ -13,10 +13,17 @@ struct MapNote {
 
 class MapNotesViewModel: ObservableObject {
     @Published var notes: [MapNote] = []
-    private let notesHandler: NotesHandler
+    private var notesHandler: NotesHandler
     
     init(notesHandler: NotesHandler) {
         self.notesHandler = notesHandler
+        refreshNotes()
+        self.notesHandler.observer = { [weak self] in
+            self?.refreshNotes()
+        }
+    }
+    
+    private func refreshNotes() {
         notesHandler.getNotes { notes in
             DispatchQueue.main.async {
                 self.notes = notes.map({ note in

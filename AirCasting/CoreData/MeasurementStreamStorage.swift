@@ -70,7 +70,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
             }
             stream.gotDeleted = true
             try context.save()
-           forceUpdate(sessionEntity: sessionEntity)
+            forceUpdate(sessionEntity: sessionEntity)
         }
         completion()
     }

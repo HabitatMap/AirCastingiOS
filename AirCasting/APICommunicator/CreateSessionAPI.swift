@@ -11,6 +11,14 @@ import Gzip
 import CoreLocation
 
 class CreateSessionApi {
+    struct NotesParams: Encodable {
+        let date: Date
+        let text: String
+        let lat: Double
+        let long: Double
+        let number: Int
+    }
+    
     struct MeasurementParams: Encodable {
         let longitude: CLLocationDegrees?
         let latitude: CLLocationDegrees?
@@ -44,7 +52,7 @@ class CreateSessionApi {
         let end_time: Date
         let contribute: Bool
         let is_indoor: Bool
-        let notes: [String]
+        let notes: [NotesParams]
         let version: Int
         let streams: [String : MeasurementStreamParams]
 

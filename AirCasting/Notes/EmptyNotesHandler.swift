@@ -4,11 +4,18 @@
 import Foundation
 
 class EmptyNotesHandler: NotesHandler {
+    var observer: (() -> Void)?
+    
+    
+    func fetchSession(completion: @escaping (SessionEntity) -> Void) {
+        fatalError()
+    }
+    
     func addNote(noteText: String) {
         fatalError()
     }
     
-    func updateNote(note: Note, newText: String) {
+    func updateNote(note: Note, newText: String, completion: @escaping () -> Void) {
         fatalError()
     }
     
