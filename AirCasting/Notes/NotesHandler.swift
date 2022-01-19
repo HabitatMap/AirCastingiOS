@@ -36,7 +36,6 @@ class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDel
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        print("## PRINT TYMCZASOWY")
         observer?()
     }
     
