@@ -21,6 +21,12 @@ class DefaultFeatureFlagProvider: FeatureFlagProvider {
             #else
             return false
             #endif
+        case .disableMapping:
+            #if DEBUG
+            return true
+            #else
+            return false
+            #endif
         }
         
     }

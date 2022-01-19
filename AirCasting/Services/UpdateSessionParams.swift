@@ -95,6 +95,7 @@ final class UpdateSessionParamsService {
         entity.location = session.location
         entity.startTime = session.startTime
         entity.contribute = session.contribute
+        entity.locationless = session.locationless
         entity.deviceId = session.deviceId
         entity.endTime = session.endTime
         entity.followedAt = session.followedAt

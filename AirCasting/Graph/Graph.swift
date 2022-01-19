@@ -30,6 +30,7 @@ struct Graph: UIViewRepresentable {
     typealias OnChange = (ClosedRange<Date>) -> Void
     typealias NoteAction = (Note) -> Void
     
+    @EnvironmentObject var userSettings: UserSettings
     @ObservedObject var stream: MeasurementStreamEntity
     @ObservedObject var thresholds: SensorThreshold
     private var rangeChangeAction: OnChange?
@@ -66,7 +67,7 @@ struct Graph: UIViewRepresentable {
         try? uiView.updateWithThreshold(thresholdValues: thresholds.rawThresholdsBinding.wrappedValue)
         let entries = stream.allMeasurements?.sorted(by: { $0.time < $1.time }).compactMap({ measurement -> ChartDataEntry? in
             let timeInterval = Double(measurement.time.timeIntervalSince1970)
-            let chartDataEntry = ChartDataEntry(x: timeInterval, y: measurement.value)
+            let chartDataEntry = ChartDataEntry(x: timeInterval, y: getValue(of: measurement))
             return chartDataEntry
         }) ?? []
         let allLimitLines = getLimitLines()
@@ -106,7 +107,7 @@ struct Graph: UIViewRepresentable {
         
         let entries = stream.allMeasurements?.sorted(by: { $0.time < $1.time }).compactMap({ measurement -> ChartDataEntry? in
             let timeInterval = Double(measurement.time.timeIntervalSince1970)
-            let chartDataEntry = ChartDataEntry(x: timeInterval, y: measurement.value)
+            let chartDataEntry = ChartDataEntry(x: timeInterval, y: getValue(of: measurement))
             return chartDataEntry
         }) ?? []
         
@@ -179,6 +180,10 @@ struct Graph: UIViewRepresentable {
             line.lineDashPhase = CGFloat(2)
             return line
         }
+    }
+    
+    private func getValue(of measurement: MeasurementEntity) -> Double {
+        measurement.measurementStream.isTemperature && userSettings.convertToCelsius ? TemperatureConverter.calculateCelsius(fahrenheit: measurement.value) : measurement.value
     }
     
     class Coordinator: NSObject, UINavigationControllerDelegate {

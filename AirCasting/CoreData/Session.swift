@@ -13,6 +13,7 @@ public struct Session {
     let startTime: Date?
 
     let contribute: Bool
+    let locationless: Bool
     let deviceId: String?
     let endTime: Date?
     let followedAt: Date?
@@ -25,7 +26,7 @@ public struct Session {
     let status: SessionStatus?
 
     init(uuid: SessionUUID, type: SessionType, name: String?, deviceType: DeviceType?, location: CLLocationCoordinate2D?, startTime: Date?,
-         contribute: Bool = true, deviceId: String? = nil, endTime: Date? = nil, followedAt: Date? = nil, gotDeleted: Bool = false, isIndoor: Bool = false, tags: String? = nil, urlLocation: String? = nil, version: Int16 = 0, measurementStreams: [Any]? = nil, status: SessionStatus? = nil) {
+         contribute: Bool = true, locationless: Bool = false, deviceId: String? = nil, endTime: Date? = nil, followedAt: Date? = nil, gotDeleted: Bool = false, isIndoor: Bool = false, tags: String? = nil, urlLocation: String? = nil, version: Int16 = 0, measurementStreams: [Any]? = nil, status: SessionStatus? = nil) {
         self.uuid = uuid
         self.type = type
         self.name = name
@@ -33,6 +34,7 @@ public struct Session {
         self.location = location
         self.startTime = startTime
         self.contribute = contribute
+        self.locationless = locationless
         self.deviceId = deviceId
         self.endTime = endTime
         self.followedAt = followedAt

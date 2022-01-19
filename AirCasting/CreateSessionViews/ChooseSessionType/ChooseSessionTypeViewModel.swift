@@ -62,7 +62,7 @@ class ChooseSessionTypeViewModel {
     }
     
     func mobileSessionNextStep() -> ProceedToView {
-        locationHandler.isLocationDenied() ? .location : .mobile
+        !userSettings.disableMapping && locationHandler.isLocationDenied() ? .location : .mobile
     }
     
     func createNewSession(isSessionFixed: Bool) {
@@ -72,6 +72,7 @@ class ChooseSessionTypeViewModel {
             sessionContext.sessionType = SessionType.fixed
         } else {
             sessionContext.contribute = userSettings.contributingToCrowdMap
+            sessionContext.locationless = userSettings.disableMapping
             sessionContext.sessionType = SessionType.mobile
         }
     }
