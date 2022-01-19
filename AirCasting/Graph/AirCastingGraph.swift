@@ -176,12 +176,11 @@ extension AirCastingGraph: ChartViewDelegate {
 extension AirCastingGraph {
     
     func setupNotes(_ notes: [Note], onTap: @escaping NoteTap) {
+        assert(Thread.isMainThread)
         noteButtons.forEach { $0.button.removeFromSuperview() }
         noteButtons = notes.map { (createNewNoteButton(), $0, onTap) }
         noteButtons.forEach { lineChartView.addSubview($0.button) }
-        DispatchQueue.main.async { [self] in
-            setNeedsLayout()
-        }
+        setNeedsLayout()
     }
     
     private func createNewNoteButton() -> UIButton {
