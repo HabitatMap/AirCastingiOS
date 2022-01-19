@@ -15,7 +15,7 @@ struct SelectPeripheralView: View {
     var SDClearingRouteProcess: Bool
     @InjectedObject private var bluetoothManager: BluetoothManager
     @EnvironmentObject var sessionContext: CreateSessionContext
-    @Injected private var connectionController: DefaultAirBeamConnectionController
+    @Injected private var connectionController: AirBeamConnectionController
     @Binding var creatingSessionFlowContinues: Bool
     var syncMode: Bool? = false
     
