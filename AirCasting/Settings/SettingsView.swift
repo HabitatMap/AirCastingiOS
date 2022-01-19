@@ -115,7 +115,7 @@ struct SettingsView: View {
                 Spacer()
                 crowdMapDescription
             }
-            if featureFlagsViewModel.enabledFeatures.contains(.disableMapping) {
+            if featureFlagsViewModel.enabledFeatures.contains(.locationlessSessions) {
                 disableMappingSwitch
             }
             keepScreenOnSwitch

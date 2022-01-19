@@ -65,7 +65,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
             }
             stream.gotDeleted = true
             try context.save()
-           forceUpdate(sessionEntity: sessionEntity)
+            forceUpdate(sessionEntity: sessionEntity)
         }
         completion()
     }
@@ -277,6 +277,24 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         }
     }
     
+    // MARK: - Notes
+    
+    enum NoteStorageError: Swift.Error, LocalizedError {
+        case storageEmpty
+        case noteNotFound
+        case malformedStorageState
+        case multipleNotesFound
+        
+        var errorDescription: String? {
+            switch self {
+            case .storageEmpty: return "Note storage is empty"
+            case .multipleNotesFound: return "Multiple notes for given ID found"
+            case .noteNotFound: return "No note with given ID found"
+            case .malformedStorageState: return "Data storage is in malformed state"
+            }
+        }
+    }
+    
     func addNote(_ note: Note, for sessionUUID: SessionUUID) throws {
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
         let noteEntity = NoteEntity(context: context)
@@ -316,7 +334,15 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
     
     func fetchSpecifiedNote(for sessionUUID: SessionUUID, number: Int) throws -> Note {
         let session = try context.existingSession(uuid: sessionUUID)
-        let note = (session.notes?.first(where: { ($0 as! NoteEntity).number == number }) as! NoteEntity)
+        guard let allSessionNotes = session.notes else { throw NoteStorageError.storageEmpty }
+        let matching = try allSessionNotes.filter {
+            guard let note = $0 as? NoteEntity else { throw NoteStorageError.malformedStorageState }
+            return note.number == number
+        }
+        guard matching.count > 0 else { throw NoteStorageError.noteNotFound }
+        guard matching.count == 1 else { throw NoteStorageError.multipleNotesFound }
+        let note = matching[0] as! NoteEntity
+        
         return Note(date: note.date ?? Date(),
                     text: note.text ?? "",
                     lat: note.lat,

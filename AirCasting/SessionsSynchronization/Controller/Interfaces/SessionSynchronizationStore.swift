@@ -48,6 +48,7 @@ extension SessionsSynchronization {
         let sessionType: String
         let measurementStreams: [SessionStoreMeasurementStreamData]
         let deleted: Bool
+        let notes: [SessionStoreNotesData]
     }
     
     struct SessionStoreMeasurementStreamData: Equatable {
@@ -73,5 +74,13 @@ extension SessionsSynchronization {
         let value: Double
         let latitude: Double?
         let longitude: Double?
+    }
+    
+    struct SessionStoreNotesData: Equatable {
+        let date: Date
+        let text: String
+        let latitude: Double
+        let longitude: Double
+        let number: Int
     }
 }

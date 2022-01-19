@@ -32,7 +32,7 @@ struct SessionHeaderView: View {
         if #available(iOS 15, *) {
             sessionHeader
                 .sheet(isPresented: $showDeleteModal) {
-                    DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session, streamRemover: DefaultSessionUpdateService()),
+                    DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session),
                                deleteModal: $showDeleteModal)
                 }
                 .sheet(isPresented: $showShareModal) {
@@ -55,7 +55,7 @@ struct SessionHeaderView: View {
                     editViewSheet
                 }
                 .sheet(isPresented: $showAddNoteModal) {
-                    AddNoteView(viewModel: AddNoteViewModelDefault(exitRoute: { showAddNoteModal.toggle() }, notesHandler: NotesHandlerDefault(sessionUUID: session.uuid)))
+                    AddNoteView(viewModel: AddNoteViewModel(sessionUUID: session.uuid, exitRoute: { showAddNoteModal.toggle() }))
                 }
         } else {
             sessionHeader
@@ -63,7 +63,7 @@ struct SessionHeaderView: View {
                     Group {
                         EmptyView()
                             .sheet(isPresented: $showDeleteModal) {
-                                DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session, streamRemover: DefaultSessionUpdateService()),
+                                DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session),
                                            deleteModal: $showDeleteModal)
                             }
                         EmptyView()
@@ -81,7 +81,7 @@ struct SessionHeaderView: View {
                             }
                         EmptyView()
                             .sheet(isPresented: $showDeleteModal) {
-                                DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session, streamRemover: DefaultSessionUpdateService()),
+                                DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session),
                                            deleteModal: $showDeleteModal)
                             }
                         EmptyView()
@@ -90,7 +90,7 @@ struct SessionHeaderView: View {
                             }
                         EmptyView()
                             .sheet(isPresented: $showAddNoteModal) {
-                                AddNoteView(viewModel: AddNoteViewModelDefault(exitRoute: { showAddNoteModal.toggle() }, notesHandler: NotesHandlerDefault(sessionUUID: session.uuid)))
+                                AddNoteView(viewModel: AddNoteViewModel(sessionUUID: session.uuid, exitRoute: { showAddNoteModal.toggle() }))
                             }
                     }
                 )
@@ -99,7 +99,7 @@ struct SessionHeaderView: View {
     
     @ViewBuilder
     private var editViewSheet: some View {
-        let vm = EditSessionViewModel(sessionUpdateService: DefaultSessionUpdateService(), sessionUUID: session.uuid)
+        let vm = EditSessionViewModel(sessionUUID: session.uuid)
         EditView(viewModel: vm)
     }
 }

@@ -27,11 +27,10 @@ class EditSessionViewModel: EditViewModel {
     @Published var didSave = false
     @Injected private var measurementStreamStorage: MeasurementStreamStorage
     @Injected private var sessionSynchronizer: SingleSessionSynchronizer
-    private let sessionUpdateService: SessionUpdateService
+    @Injected private var sessionUpdateService: SessionUpdateService
     private let sessionUUID: SessionUUID
     
-    init(sessionUpdateService: SessionUpdateService, sessionUUID: SessionUUID) {
-        self.sessionUpdateService = sessionUpdateService
+    init(sessionUUID: SessionUUID) {
         self.sessionUUID = sessionUUID
     }
     

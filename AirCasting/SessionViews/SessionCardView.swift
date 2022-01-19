@@ -260,7 +260,6 @@ private extension SessionCardView {
                                   thresholds: thresholds,
                                   sessionStoppableFactory: sessionStoppableFactory,
                                   statsContainerViewModel: _mapStatsViewModel,
-                                  notesHandler: NotesHandlerDefault(sessionUUID: session.uuid),
                                   showLoadingIndicator: $showLoadingIndicator,
                                   selectedStream: $selectedStream)
             .foregroundColor(.aircastingDarkGray)

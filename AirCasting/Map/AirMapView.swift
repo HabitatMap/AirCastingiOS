@@ -15,7 +15,6 @@ struct AirMapView: View {
     @Environment(\.scenePhase) var scenePhase
     
     @InjectedObject private var userSettings: UserSettings
-    
     var thresholds: [SensorThreshold]
     let sessionStoppableFactory: SessionStoppableFactory
     
@@ -33,14 +32,13 @@ struct AirMapView: View {
          thresholds: [SensorThreshold],
          sessionStoppableFactory: SessionStoppableFactory,
          statsContainerViewModel: StateObject<StatisticsContainerViewModel>,
-         notesHandler: NotesHandler,
          showLoadingIndicator: Binding<Bool>,
          selectedStream: Binding<MeasurementStreamEntity?>) {
         self.session = session
         self.thresholds = thresholds
         self.sessionStoppableFactory = sessionStoppableFactory
         self._statsContainerViewModel = statsContainerViewModel
-        self._mapNotesVM = .init(wrappedValue: .init(notesHandler: notesHandler))
+        self._mapNotesVM = .init(wrappedValue: .init(sessionUUID: session.uuid))
         self._showLoadingIndicator = showLoadingIndicator
         self._selectedStream = selectedStream
     }
@@ -111,11 +109,9 @@ struct AirMapView: View {
             }
         }
         .sheet(isPresented: $noteMarkerTapped, content: {
-            EditNoteView(viewModel: EditNoteViewModelDefault(exitRoute: {
-                noteMarkerTapped.toggle()
-            },
+            EditNoteView(viewModel: EditNoteViewModelDefault(exitRoute: { noteMarkerTapped.toggle() },
                                                              noteNumber: noteNumber,
-                                                             notesHandler: NotesHandlerDefault(sessionUUID: session.uuid)))
+                                                             sessionUUID: session.uuid))
         })
         .navigationBarTitleDisplayMode(.inline)
 //        .onChange(of: selectedStream) { newStream in

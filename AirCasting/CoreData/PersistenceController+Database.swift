@@ -47,6 +47,15 @@ extension PersistenceController: SessionInsertable {
                     sessionEntity.urlLocation = $0.urlLocation
                     sessionEntity.version = Int16($0.version ?? 0)
                     sessionEntity.status = $0.status
+                    $0.notes?.forEach {
+                        let noteEntity = NoteEntity(context: context)
+                        noteEntity.date = $0.date
+                        noteEntity.text = $0.text
+                        noteEntity.lat = $0.latitude
+                        noteEntity.long = $0.longitude
+                        noteEntity.number = Int64($0.number)
+                        noteEntity.session = sessionEntity
+                    }
                     try $0.measurementStreams?.forEach {
                         let streamEntity: MeasurementStreamEntity
                         if let id = $0.id {
@@ -117,7 +126,16 @@ extension Database.Session {
                   urlLocation: coreDataEntity.urlLocation,
                   version: Int(coreDataEntity.version),
                   measurementStreams: (coreDataEntity.measurementStreams?.array as? [MeasurementStreamEntity])?.map(Database.MeasurementStream.init(coreDataEntity:)),
-                  status: coreDataEntity.status)
+                  status: coreDataEntity.status,
+                  notes: (coreDataEntity.notes?.map { note -> Database.Note in
+                            let n = note as! NoteEntity
+                            return Database.Note(date: n.date ?? Date(),
+                                                 text: n.text ?? "",
+                                                 latitude: n.lat,
+                                                 longitude: n.long,
+                                                 number: Int(n.number))
+                        } ?? [])
+        )
     }
 }
 
@@ -139,5 +157,15 @@ extension Database.MeasurementStream {
                     .init(id: $0.id!, time: $0.time, value: $0.value, latitude: $0.location?.latitude, longitude: $0.location?.longitude)
                   } ?? [],
                   deleted: coreDataEntity.gotDeleted)
+    }
+}
+
+extension Database.Note {
+    init(coreDataEntity: NoteEntity) {
+        self.init(date: coreDataEntity.date ?? Date(),
+                  text: coreDataEntity.text ?? "",
+                  latitude: coreDataEntity.lat,
+                  longitude: coreDataEntity.long,
+                  number: Int(coreDataEntity.number))
     }
 }

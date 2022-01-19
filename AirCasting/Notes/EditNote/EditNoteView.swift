@@ -72,11 +72,3 @@ private extension EditNoteView {
         .buttonStyle(BlueTextButtonStyle())
     }
 }
-
-#if DEBUG
-struct EditNoteView_Previews: PreviewProvider {
-    static var previews: some View {
-        EditNoteView(viewModel: DummyEditNoteViewModelDefault(exitRoute: {}))
-    }
-}
-#endif

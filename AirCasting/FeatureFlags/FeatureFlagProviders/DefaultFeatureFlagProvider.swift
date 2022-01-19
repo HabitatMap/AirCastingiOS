@@ -21,7 +21,7 @@ class DefaultFeatureFlagProvider: FeatureFlagProvider {
             #else
             return false
             #endif
-        case .disableMapping:
+        case .locationlessSessions:
             #if DEBUG
             return true
             #else

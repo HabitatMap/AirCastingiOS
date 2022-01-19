@@ -8,7 +8,7 @@ import Resolver
 class DefaultDeleteSessionViewModel: DeleteSessionViewModel {
     @Injected private var measurementStreamStorage: MeasurementStreamStorage
     private var session: SessionEntity
-    private let streamRemover: SessionUpdateService
+    @Injected private var streamRemover: SessionUpdateService
     @Injected private var sessionSynchronizer: SessionSynchronizer
     @Published var showingConfirmationAlert: Bool = false
     
@@ -34,9 +34,8 @@ class DefaultDeleteSessionViewModel: DeleteSessionViewModel {
         return arrayOfContent
     }
     
-    init(session: SessionEntity, streamRemover: SessionUpdateService) {
+    init(session: SessionEntity) {
         self.session = session
-        self.streamRemover = streamRemover
         
         var sessionStreams: [MeasurementStreamEntity] {
             return session.sortedStreams?.filter( {!$0.gotDeleted} ) ?? []

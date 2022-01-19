@@ -90,6 +90,7 @@ extension Resolver: ResolverRegistering {
         main.register { SyncedMeasurementsDownloadingService() as SyncedMeasurementsDownloader }
         main.register { ConnectingAirBeamServicesBluetooth() as ConnectingAirBeamServices }
         main.register { DefaultAirBeamConnectionController() as AirBeamConnectionController }
+        main.register { DefaultSessionUpdateService() as SessionUpdateService }
         
         //MARK: - SDSync
         main.register { SDSyncController() }.scope(.cached)
@@ -99,6 +100,9 @@ extension Resolver: ResolverRegistering {
         main.register { SDSyncFileValidationService() as SDSyncFileValidator }
         main.register { SDSyncFileWritingService(bufferThreshold: 1000) as SDSyncFileWriter }
         main.register { BluetoothSDCardAirBeamServices() as SDCardAirBeamServices }
+        
+        //MARK: - Notes
+        main.register { (_, args) in NotesHandlerDefault(sessionUUID: args()) as NotesHandler }.scope(.cached)
     }
     
     // MARK: - Composition helpers
