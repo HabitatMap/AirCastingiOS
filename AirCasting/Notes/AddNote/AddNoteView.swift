@@ -1,6 +1,7 @@
 // Created by Lunar on 16/12/2021.
 //
 import SwiftUI
+import SwiftUIX
 import AirCastingStyling
 
 struct AddNoteView<VM: AddNoteViewModel>: View {
@@ -32,7 +33,7 @@ private extension AddNoteView {
     }
     
     var noteField: some View {
-        TextField(Strings.AddNoteView.placeholder, text: $viewModel.noteText)
+        TextView(Strings.AddNoteView.placeholder, text: $viewModel.noteText)
             .padding()
             .frame(minWidth: UIScreen.main.bounds.width - 40,
                    maxWidth: UIScreen.main.bounds.width - 40,
