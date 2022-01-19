@@ -47,7 +47,7 @@ struct GoogleMapView: UIViewRepresentable {
         let mapView = GMSMapView.map(withFrame: .zero,
                                      camera: startingPoint)
         mapView.settings.myLocationButton = true
-        placeNotes(mapView, notes: mapNotes)
+        placeNotes(mapView, notes: mapNotes, context: context)
         do {
             if let styleURL = Bundle.main.url(forResource: "style", withExtension: "json") {
                 mapView.mapStyle = try GMSMapStyle(contentsOfFileURL: styleURL)
@@ -81,9 +81,9 @@ struct GoogleMapView: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: GMSMapView, context: Context) {
-        placeNotes(uiView, notes: mapNotes)
         if mapNotes.count != context.coordinator.mapNotesCounter {
-            placeNotes(uiView, notes: mapNotes)
+            placeNotes(uiView, notes: mapNotes, context: context)
+            drawPolyline(uiView, context: context)
             context.coordinator.mapNotesCounter = mapNotes.count
         }
         guard isUserInteracting else { return }
@@ -209,17 +209,21 @@ struct GoogleMapView: UIViewRepresentable {
         polyline.map = uiView
     }
     
-    func placeNotes(_ uiView: GMSMapView, notes: [MapNote]) {
+    func placeNotes(_ uiView: GMSMapView, notes: [MapNote], context: Context) {
+        context.coordinator.noteMarkers.forEach { marker in
+            marker.map = nil
+        }
+        context.coordinator.noteMarkers = []
         DispatchQueue.main.async {
             notes.forEach { note in
                 let marker = GMSMarker()
-
                 let markerImage = note.markerImage
                 let markerView = UIImageView(image: markerImage.withRenderingMode(.alwaysOriginal))
                 marker.position = note.location
                 marker.userData = note.id
                 marker.iconView = markerView
                 marker.map = uiView
+                context.coordinator.noteMarkers.append(marker)
             }
         }
     }
@@ -233,6 +237,7 @@ struct GoogleMapView: UIViewRepresentable {
         var currentThreshold: SensorThreshold?
         var heatmap: Heatmap? = nil
         var mapNotesCounter = 0
+        var noteMarkers = [GMSMarker]()
         
         init(_ parent: GoogleMapView) {
             self.parent = parent

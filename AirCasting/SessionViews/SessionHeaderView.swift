@@ -59,7 +59,15 @@ struct SessionHeaderView: View {
                     editViewSheet
                 }
                 .sheet(isPresented: $showAddNoteModal) {
-                    AddNoteView(viewModel: AddNoteViewModelDefault(exitRoute: { showAddNoteModal.toggle() }, notesHandler: NotesHandlerDefault(measurementStreamStorage: measurementStreamStorage, sessionUUID: session.uuid, locationTracker: locationTracker)))
+                    AddNoteView(viewModel: AddNoteViewModelDefault(exitRoute: { showAddNoteModal.toggle() },
+                                                                   notesHandler: NotesHandlerDefault(
+                                                                    measurementStreamStorage: measurementStreamStorage,
+                                                                    sessionUUID: session.uuid,
+                                                                    locationTracker: locationTracker,
+                                                                    sessionUpdateService: DefaultSessionUpdateService(
+                                                                        authorization: authorization,
+                                                                        urlProvider: urlProvider),
+                                                                    persistenceController: PersistenceController.shared)))
                 }
         } else {
             sessionHeader
@@ -97,7 +105,15 @@ struct SessionHeaderView: View {
                             }
                         EmptyView()
                             .sheet(isPresented: $showAddNoteModal) {
-                                AddNoteView(viewModel: AddNoteViewModelDefault(exitRoute: { showAddNoteModal.toggle() }, notesHandler: NotesHandlerDefault(measurementStreamStorage: measurementStreamStorage, sessionUUID: session.uuid, locationTracker: locationTracker)))
+                                AddNoteView(viewModel: AddNoteViewModelDefault(exitRoute: { showAddNoteModal.toggle() },
+                                                                               notesHandler: NotesHandlerDefault(
+                                                                                measurementStreamStorage: measurementStreamStorage,
+                                                                                sessionUUID: session.uuid,
+                                                                                locationTracker: locationTracker,
+                                                                                sessionUpdateService: DefaultSessionUpdateService(
+                                                                                    authorization: authorization,
+                                                                                    urlProvider: urlProvider),
+                                                                                persistenceController: PersistenceController.shared)))
                             }
                     }
                 )

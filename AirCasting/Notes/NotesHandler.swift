@@ -2,24 +2,41 @@
 //
 
 import Foundation
+import CoreData
 
-protocol NotesHandler {
+protocol NotesHandler: AnyObject {
     func addNote(noteText: String)
     func deleteNote(note: Note)
-    func updateNote(note: Note, newText: String)
+    func updateNote(note: Note, newText: String, completion: @escaping () -> Void)
     func getNotes(completion: @escaping ([Note]) -> Void)
     func fetchSpecifiedNote(number: Int, completion: @escaping (Note) -> Void)
+    var observer: (() -> Void)? { get set }
 }
 
-class NotesHandlerDefault: NotesHandler {
+@objc
+class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDelegate {
     var measurementStreamStorage: MeasurementStreamStorage
     var sessionUUID: SessionUUID
     var locationTracker: LocationTracker
+    var observer: (() -> Void)?
+    private let sessionUpdateService: SessionUpdateService
+    private let frc: NSFetchedResultsController<NoteEntity>
     
-    init(measurementStreamStorage: MeasurementStreamStorage, sessionUUID: SessionUUID, locationTracker: LocationTracker) {
+    init(measurementStreamStorage: MeasurementStreamStorage, sessionUUID: SessionUUID, locationTracker: LocationTracker, sessionUpdateService: SessionUpdateService, persistenceController: PersistenceController) {
         self.measurementStreamStorage = measurementStreamStorage
         self.sessionUUID = sessionUUID
         self.locationTracker = locationTracker
+        self.sessionUpdateService = sessionUpdateService
+        let fetchRequest = NoteEntity.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "text", ascending: true)]
+        frc = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: persistenceController.viewContext, sectionNameKeyPath: nil, cacheName: nil)
+        super.init()
+        frc.delegate = self
+        try? frc.performFetch()
+    }
+    
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        observer?()
     }
     
     func addNote(noteText: String) {
@@ -48,10 +65,16 @@ class NotesHandlerDefault: NotesHandler {
         }
     }
     
-    func updateNote(note: Note, newText: String) {
+    func updateNote(note: Note, newText: String, completion: @escaping () -> Void) {
         measurementStreamStorage.accessStorage { [self] storage in
             do {
                 try storage.updateNote(note, newText: newText, for: sessionUUID)
+                fetchSession { session in
+                    self.sessionUpdateService.updateSession(session: session) {
+                        Log.info("Notes successfully updated")
+                        completion()
+                    }
+                }
             } catch {
                 Log.info("Error when deleting note")
             }
@@ -72,6 +95,19 @@ class NotesHandlerDefault: NotesHandler {
         measurementStreamStorage.accessStorage { [self] storage in
             do {
                 completion(try storage.fetchSpecifiedNote(for: sessionUUID, number: number))
+            } catch {
+                Log.info("Error when deleting note")
+            }
+        }
+    }
+}
+
+// MARK: Internal methods
+extension NotesHandlerDefault {
+    private func fetchSession(completion: @escaping (SessionEntity) -> Void) {
+        measurementStreamStorage.accessStorage { [self] storage in
+            do {
+                completion(try storage.getExistingSession(with: sessionUUID))
             } catch {
                 Log.info("Error when deleting note")
             }

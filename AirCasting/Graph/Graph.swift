@@ -36,7 +36,7 @@ struct Graph: UIViewRepresentable {
     private var rangeChangeAction: OnChange?
     private var noteAction: NoteAction?
     
-    private let notesHandler: NotesHandler
+    private var notesHandler: NotesHandler
     
     var isAutozoomEnabled: Bool
     let simplifiedGraphEntryThreshold = 1000
@@ -78,10 +78,9 @@ struct Graph: UIViewRepresentable {
         context.coordinator.currentMeasurementsNumber = calculateSeeingPointsNumber(entries: entries, uiView: uiView)
         context.coordinator.entries = entries
         context.coordinator.stream = stream
-        notesHandler.getNotes { notes in
-            DispatchQueue.main.async {
-                uiView.setupNotes(notes) { noteAction?($0) }
-            }
+        refreshNotes(uiView)
+        notesHandler.observer = {
+            refreshNotes(uiView)
         }
         return uiView
     }
@@ -135,6 +134,14 @@ struct Graph: UIViewRepresentable {
                                                                   thresholdLimit: simplifiedGraphEntryThreshold)
         uiView.updateWithEntries(entries: simplifiedPoints, isAutozoomEnabled: isAutozoomEnabled)
         print("Simplified \(entries.count) to \(simplifiedPoints.count)")
+    }
+    
+    private func refreshNotes(_ uiView: AirCastingGraph) {
+        notesHandler.getNotes { notes in
+            DispatchQueue.main.async {
+                uiView.setupNotes(notes) { noteAction?($0) }
+            }
+        }
     }
     
     func calculateSeeingPointsNumber(entries: [ChartDataEntry], uiView: AirCastingGraph) -> Int {

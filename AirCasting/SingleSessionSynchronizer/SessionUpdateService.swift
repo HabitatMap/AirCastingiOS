@@ -29,6 +29,7 @@ class DefaultSessionUpdateService: SessionUpdateService {
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         
         var data = [String : CreateSessionApi.MeasurementStreamParams]()
+        var notes = [CreateSessionApi.NotesParams]()
         
         session.allStreams?.forEach({ stream in
             data[stream.sensorName!] = CreateSessionApi.MeasurementStreamParams(deleted: stream.gotDeleted,
@@ -45,6 +46,15 @@ class DefaultSessionUpdateService: SessionUpdateService {
                                                                                 threshold_very_low: Int(stream.thresholdVeryLow),
                                                                                 measurements: [])
         })
+        
+        session.notes?.forEach({ note in
+            let n = note as! NoteEntity
+            notes.append(CreateSessionApi.NotesParams(date: n.date ?? Date(),
+                                                      text: n.text ?? "",
+                                                      lat: n.lat,
+                                                      long: n.long,
+                                                      number: Int(n.number)))
+        })
     
         let sessionToPass = CreateSessionApi.SessionParams(uuid: session.uuid,
                                                  type: session.type,
@@ -54,7 +64,7 @@ class DefaultSessionUpdateService: SessionUpdateService {
                                                  end_time: session.endTime!,
                                                  contribute: session.contribute,
                                                  is_indoor: session.isIndoor,
-                                                 notes: [],
+                                                 notes: notes,
                                                  version: Int(session.version),
                                                  streams: data,
                                                  latitude: session.location?.latitude,
