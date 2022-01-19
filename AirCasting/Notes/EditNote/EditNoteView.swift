@@ -35,7 +35,6 @@ private extension EditNoteView {
     
     var noteField: some View {
         TextView(Strings.AddNoteView.placeholder, text: $viewModel.noteText)
-            .multilineTextAlignment(.leading)
             .padding()
             .frame(minWidth: UIScreen.main.bounds.width - 40,
                    maxWidth: UIScreen.main.bounds.width - 40,
