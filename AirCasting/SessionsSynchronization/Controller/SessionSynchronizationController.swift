@@ -16,7 +16,7 @@ final class SessionSynchronizationController: SessionSynchronizer {
     @Injected private var upstream: SessionUpstream
     @Injected private var store: SessionSynchronizationStore
     private let dataConverter = SynchronizationDataConverter()
-    private(set) lazy var syncInProgress: CurrentValueSubject<Bool, Never> = .init(false)
+    private(set) var syncInProgress: CurrentValueSubject<Bool, Never> = .init(false)
     // Simple lock is sufficient here, no need for GCD
     private let lock = NSRecursiveLock()
     

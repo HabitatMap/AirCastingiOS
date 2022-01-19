@@ -66,7 +66,7 @@ extension Resolver: ResolverRegistering {
         main.register { SessionSynchronizationDatabase() as SessionSynchronizationStore }
         main.register {
             ScheduledSessionSynchronizerProxy(controller: SessionSynchronizationController(), scheduler: DispatchQueue.global()) as SessionSynchronizer
-        }
+        }.scope(.application)
         
         // MARK: - Location handling
         main.register { LocationTracker(locationManager: CLLocationManager()) }.scope(.application)
