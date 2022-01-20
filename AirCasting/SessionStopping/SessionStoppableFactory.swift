@@ -24,9 +24,14 @@ final class SessionStoppableFactoryDefault: SessionStoppableFactory {
     func getSessionStopper(for session: SessionEntity) -> SessionStoppable {
         let stopper = matchStopper(for: session)
         if session.locationless {
+            if session.deviceType == .MIC {
+                return MicrophoneSessionStopper(uuid: session.uuid,
+                                                microphoneManager: microphoneManager,
+                                                measurementStreamStorage: measurementStreamStorage)
+            }
             return StandardSesssionStopper(uuid: session.uuid,
-                                          measurementStreamStorage: measurementStreamStorage,
-                                          bluetoothManager: bluetoothManager)
+                                           measurementStreamStorage: measurementStreamStorage,
+                                           bluetoothManager: bluetoothManager)
         }
         return SyncTriggeringSesionStopperProxy(stoppable: stopper, synchronizer: synchronizer)
     }
