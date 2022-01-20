@@ -1,7 +1,6 @@
 // Created by Lunar on 16/12/2021.
 //
 import SwiftUI
-import SwiftUIX
 import AirCastingStyling
 
 struct EditNoteView<VM: EditNoteViewModel>: View {
@@ -34,15 +33,12 @@ private extension EditNoteView {
     }
     
     var noteField: some View {
-        TextView(Strings.AddNoteView.placeholder, text: $viewModel.noteText)
-            .padding()
-            .frame(minWidth: UIScreen.main.bounds.width - 40,
-                   maxWidth: UIScreen.main.bounds.width - 40,
+        NoteTextView(text: $viewModel.noteText, placeholder: "Note")
+            .frame(minWidth: UIScreen.main.bounds.width - 30,
+                   maxWidth: UIScreen.main.bounds.width - 30,
                    minHeight: (UIScreen.main.bounds.height) / 3 < 200 ? (UIScreen.main.bounds.height / 3) : 200,
                    maxHeight: 200,
                    alignment: .topLeading)
-            .background(Color.aircastingGray.opacity(0.05))
-            .border(Color.aircastingGray.opacity(0.1))
     }
     
     var continueButton: some View {
