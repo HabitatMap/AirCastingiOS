@@ -32,12 +32,7 @@ private extension AddNoteView {
     }
     
     var noteField: some View {
-        NoteTextView(text: $viewModel.noteText, placeholder: "Note")
-            .frame(minWidth: UIScreen.main.bounds.width - 30,
-                   maxWidth: UIScreen.main.bounds.width - 30,
-                   minHeight: (UIScreen.main.bounds.height) / 3 < 200 ? (UIScreen.main.bounds.height / 3) : 200,
-                   maxHeight: 200,
-                   alignment: .topLeading)
+        createNoteTextField(binding: $viewModel.noteText)
     }
     
     var continueButton: some View {

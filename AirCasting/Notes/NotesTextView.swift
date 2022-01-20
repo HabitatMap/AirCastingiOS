@@ -58,3 +58,11 @@ struct NoteTextView: UIViewRepresentable {
     }
 }
 
+func createNoteTextField(binding: Binding<String>) -> some View {
+    NoteTextView(text: binding, placeholder: Strings.Commons.note)
+        .frame(minWidth: UIScreen.main.bounds.width - 30,
+               maxWidth: UIScreen.main.bounds.width - 30,
+               minHeight: (UIScreen.main.bounds.height) / 3 < 200 ? (UIScreen.main.bounds.height / 3) : 200,
+               maxHeight: 200,
+               alignment: .topLeading)
+}

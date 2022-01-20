@@ -9,7 +9,7 @@ protocol AddNoteViewModel: ObservableObject {
 }
 
 class AddNoteViewModelDefault: AddNoteViewModel, ObservableObject {
-    @Published var noteText = "Note"
+    @Published var noteText = Strings.Commons.note
     
     var notesHandler: NotesHandler
     private let exitRoute: () -> Void
