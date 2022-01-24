@@ -42,7 +42,7 @@ public class SimpleLogFormatter: LogFormatter {
         #endif
     }
 }
-
+// swiftlint:disable print_using
 public final class PrintLogger: Logger {
     let formatter: LogFormatter
     public var level: LogLevel
@@ -56,9 +56,10 @@ public final class PrintLogger: Logger {
         guard self.level.rawValue >= level.rawValue else {
             return
         }
-        Log.info(formatter.format(message(), type: type, file: file, function: function, line: line))
+        print(formatter.format(message(), type: type, file: file, function: function, line: line))
     }
 }
+// swiftlint:enable print_using
 
 public protocol Logger {
     func log(_ message: @autoclosure () -> String, type: LogLevel, file: String, function: String, line: Int)
