@@ -11,7 +11,7 @@ protocol EditNoteViewModel: ObservableObject {
 }
 
 class EditNoteViewModelDefault: EditNoteViewModel, ObservableObject {
-    @Published var noteText = ""
+    @Published var noteText = Strings.Commons.note
     private var note: Note!
     private let notesHandler: NotesHandler
     private let exitRoute: () -> Void

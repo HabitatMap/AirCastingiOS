@@ -33,16 +33,9 @@ private extension EditNoteView {
     }
     
     var noteField: some View {
-        TextField(Strings.EditNoteView.placeholder, text: $viewModel.noteText)
-            .padding()
-            .frame(minWidth: UIScreen.main.bounds.width - 40,
-                   maxWidth: UIScreen.main.bounds.width - 40,
-                   minHeight: (UIScreen.main.bounds.height) / 3 < 200 ? (UIScreen.main.bounds.height / 3) : 200,
-                   maxHeight: 200,
-                   alignment: .topLeading)
-            .background(Color.aircastingGray.opacity(0.05))
-            .border(Color.aircastingGray.opacity(0.1))
+        createNoteTextField(binding: $viewModel.noteText)
     }
+    
     var continueButton: some View {
         Button {
             viewModel.saveTapped()
