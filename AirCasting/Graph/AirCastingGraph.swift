@@ -244,6 +244,6 @@ extension AirCastingGraph {
     }
     
     private func xAxisValue(for note: Note) -> Double {
-        Double(note.date.currentUTCTimeZoneDate.timeIntervalSince1970)
+        Double(note.date.timeIntervalSince1970)
     }
 }
