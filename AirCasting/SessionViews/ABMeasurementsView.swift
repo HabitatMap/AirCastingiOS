@@ -70,7 +70,10 @@ struct _ABMeasurementsView: View {
                 }
             } else {
                 if session.isFollowed {
-                    SessionLoadingView()
+                    HStack {
+                        SessionLoadingView()
+                        Spacer()
+                    }
                 } else {
                     VStack(alignment: .leading, spacing: 8) {
                         measurementsTitle
