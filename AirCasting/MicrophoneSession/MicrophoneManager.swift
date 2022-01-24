@@ -73,7 +73,9 @@ final class MicrophoneManager: NSObject, ObservableObject {
     func stopRecording() {
         guard isRecording, let recorder = recorder else { return }
         levelTimer?.invalidate()
-        locationProvider.stopUpdatingLocation()
+        if !(session?.locationless ?? false) {
+            locationProvider.stopUpdatingLocation()
+        }
         isRecording = false
         recorder.pause()
     }
