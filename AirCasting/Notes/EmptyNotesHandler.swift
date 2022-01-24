@@ -26,7 +26,7 @@ class EmptyNotesHandler: NotesHandler {
         fatalError()
     }
     
-    func deleteNote(note: Note) {
+    func deleteNote(note: Note, completion: @escaping () -> Void) {
         fatalError()
     }
     

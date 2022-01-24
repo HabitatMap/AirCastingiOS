@@ -7,7 +7,7 @@ import CoreData
 
 protocol NotesHandler: AnyObject {
     func addNote(noteText: String)
-    func deleteNote(note: Note)
+    func deleteNote(note: Note, completion: @escaping () -> Void)
     func updateNote(note: Note, newText: String, completion: @escaping () -> Void)
     func getNotes(completion: @escaping ([Note]) -> Void)
     func fetchSpecifiedNote(number: Int, completion: @escaping (Note) -> Void)
@@ -59,10 +59,16 @@ class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDel
         }
     }
     
-    func deleteNote(note: Note) {
+    func deleteNote(note: Note, completion: @escaping () -> Void) {
         measurementStreamStorage.accessStorage { [self] storage in
             do {
                 try storage.deleteNote(note, for: sessionUUID)
+                fetchSession { session in
+                    self.sessionUpdateService.updateSession(session: session) {
+                        Log.info("Notes successfully updated")
+                        completion()
+                    }
+                }
             } catch {
                 Log.info("Error when deleting note: \(error)")
             }
