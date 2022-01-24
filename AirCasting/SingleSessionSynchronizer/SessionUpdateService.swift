@@ -57,18 +57,18 @@ class DefaultSessionUpdateService: SessionUpdateService {
         })
     
         let sessionToPass = CreateSessionApi.SessionParams(uuid: session.uuid,
-                                                 type: session.type,
-                                                 title: session.name!,
-                                                 tag_list: session.tags!,
-                                                 start_time: session.startTime!,
-                                                 end_time: session.endTime!,
-                                                 contribute: session.contribute,
-                                                 is_indoor: session.isIndoor,
-                                                 notes: notes,
-                                                 version: Int(session.version),
-                                                 streams: data,
-                                                 latitude: session.location?.latitude,
-                                                 longitude: session.location?.longitude)
+                                                           type: session.type,
+                                                           title: session.name!,
+                                                           tag_list: session.tags ?? "",
+                                                           start_time: session.startTime!,
+                                                           end_time: session.endTime ?? Date(),
+                                                           contribute: session.contribute,
+                                                           is_indoor: session.isIndoor,
+                                                           notes: notes,
+                                                           version: Int(session.version),
+                                                           streams: data,
+                                                           latitude: session.location?.latitude,
+                                                           longitude: session.location?.longitude)
         do {
             let encoder = JSONEncoder()
             let encodedData = try encoder.encode(sessionToPass)

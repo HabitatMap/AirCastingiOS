@@ -10,6 +10,7 @@ struct Strings {
         static let myAccount: String = "My account"
         static let `continue`: String = "Continue"
         static let gotIt: String = "Got it!"
+        static let note: String = "Note"
     }
 
     enum Settings {
