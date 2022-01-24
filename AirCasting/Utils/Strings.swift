@@ -19,6 +19,7 @@ struct Strings {
         static let crowdMap: String = "Contribute to CrowdMap"
         static let crowdMapDescription: String = "Data contributed to the CrowdMap is publicly available at aircasting.org"
         static let disableMapping: String = "Disable Mapping"
+        static let disableMappingDescription: String = "Turns off GPS tracking & session syncing. Use \"Share file\" to retrieve your measurements via email."
         static let temperature = "Temperature Units"
         static let celsiusDescription = "Use Celsius"
         static let backendSettings: String = "Backend settings"
