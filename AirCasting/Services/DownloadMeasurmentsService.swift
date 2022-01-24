@@ -117,10 +117,9 @@ class SyncHelper {
     func calculateLastSync(sessionEndTime: Date?, lastMeasurementTime: Date?) -> Date {
         let measurementTimeframe: Double = 24 * 60 * 60 // 24 hours in seconds
         
-        guard let sessionEndTime = sessionEndTime else { return Date().currentUTCTimeZoneDate }
+        guard let sessionEndTime = sessionEndTime else { return DateBuilder.getDate() }
         let sessionEndTimeSeconds = sessionEndTime.timeIntervalSince1970
-        
-        let last24hours = Date(timeIntervalSince1970: (sessionEndTimeSeconds - measurementTimeframe))
+        let last24hours = DateBuilder.getSince1970using((sessionEndTimeSeconds - measurementTimeframe))
         
         guard let lastMeasurementTime = lastMeasurementTime else { return last24hours }
         let lastMeasurementSeconds = lastMeasurementTime.timeIntervalSince1970

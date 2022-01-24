@@ -131,17 +131,17 @@ extension BluetoothManager: CBCentralManagerDelegate {
 
         switch central.state {
         case .unknown:
-            print("central.state is .unknown")
+            Log.info("central.state is .unknown")
         case .resetting:
-            print("central.state is .resetting")
+            Log.info("central.state is .resetting")
         case .unsupported:
-            print("central.state is .unsupported")
+            Log.info("central.state is .unsupported")
         case .unauthorized:
-            print("central.state is .unauthorized")
+            Log.info("central.state is .unauthorized")
         case .poweredOff:
-            print("central.state is .poweredOff")
+            Log.info("central.state is .poweredOff")
         case .poweredOn:
-            print("central.state is .poweredOn")
+            Log.info("central.state is .poweredOn")
         @unknown default:
             fatalError()
         }

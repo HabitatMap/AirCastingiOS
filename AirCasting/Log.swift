@@ -56,7 +56,7 @@ public final class PrintLogger: Logger {
         guard self.level.rawValue >= level.rawValue else {
             return
         }
-        print(formatter.format(message(), type: type, file: file, function: function, line: line))
+        Log.info(formatter.format(message(), type: type, file: file, function: function, line: line))
     }
 }
 

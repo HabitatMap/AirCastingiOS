@@ -32,8 +32,8 @@ final class AirBeamCellularSessionCreator: SessionCreator {
                               name: sessionContext.sessionName,
                               deviceType: sessionContext.deviceType,
                               location: sessionContext.startingLocation,
-                              startTime: Date().currentUTCTimeZoneDate,
-                              followedAt: Date().currentUTCTimeZoneDate,
+                              startTime: DateBuilder.getDate(),
+                              followedAt: DateBuilder.getDate(),
                               tags: sessionContext.sessionTags)
         
         // if session is fixed: create an empty session on server,
@@ -76,7 +76,7 @@ final class AirBeamCellularSessionCreator: SessionCreator {
                                                                             try AirBeam3Configurator(userAuthenticationSession: userAuthenticationSession,
                                                                                                      peripheral: peripheral).configureFixedCellularSession(uuid: sessionUUID,
                                                                                                                                                            location: sessionContext.startingLocation ?? CLLocationCoordinate2D(latitude: 200, longitude: 200),
-                                                                                                                                                           date: Date().currentUTCTimeZoneDate)
+                                                                                                                                                           date: DateBuilder.getDate())
                                                                             Log.warning("Created fixed cellular session \(output)")
                                                                             completion(.success(()))
                                                                         } catch {

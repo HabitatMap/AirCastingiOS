@@ -13,6 +13,7 @@ struct AirCastingApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
     @Environment(\.scenePhase) var scenePhase
+    let ninja = DateBuilder.getDate()
     private let authorization = UserAuthenticationSession()
     private let syncScheduler: SynchronizationScheduler
     private let microphoneManager: MicrophoneManager

@@ -19,7 +19,7 @@ class MicrophoneSessionStopper: SessionStoppable {
         microphoneManager.stopRecording()
         measurementStreamStorage.accessStorage { [self] storage in
             do {
-                try storage.updateSessionEndtime(Date(), for: self.uuid)
+                try storage.updateSessionEndtime(DateBuilder.getRawDate(), for: self.uuid)
                 try storage.updateSessionStatus(.FINISHED, for: self.uuid)
             } catch {
                 Log.info("\(error)")

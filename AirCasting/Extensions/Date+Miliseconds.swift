@@ -7,7 +7,7 @@ extension Date {
     static let msFormatter: DateFormatter = DateFormatters.DateExtension.milisecondsDateFormatter
     
     var milliseconds: Int {
-        Int(Date.msFormatter.string(from: self).dropFirst())!
+        Int(DateBuilder.msFormat(self).dropFirst())!
     }
 
     var currentUTCTimeZoneDate: Date {
@@ -19,16 +19,16 @@ extension Date {
 
     var roundedDownToSecond: Date {
         let date = self
-        return Date(timeIntervalSinceReferenceDate: date.timeIntervalSinceReferenceDate.rounded(.towardZero))
+        return DateBuilder.getSince(timeInterval: date.timeIntervalSinceReferenceDate.rounded(.towardZero))
     }
 
     var roundedUpToHour: Date {
         let date = self
-        return Date(timeIntervalSinceReferenceDate: (date.timeIntervalSinceReferenceDate / 3600.0).rounded(.awayFromZero) * 3600.0)
+        return DateBuilder.getSince(timeInterval: (date.timeIntervalSinceReferenceDate / 3600.0).rounded(.awayFromZero) * 3600.0)
     }
     
     var roundedDownToHour: Date {
         let date = self
-        return Date(timeIntervalSinceReferenceDate: (date.timeIntervalSinceReferenceDate / 3600.0).rounded(.towardZero) * 3600.0)
+        return DateBuilder.getSince(timeInterval: (date.timeIntervalSinceReferenceDate / 3600.0).rounded(.towardZero) * 3600.0)
     }
 }

@@ -17,8 +17,8 @@ class FixedSessionFaker {
             session.uuid = SessionUUID()
             session.name = "Its complicated"
             session.tags = ""
-            session.startTime = Date(timeIntervalSinceReferenceDate: 23443)
-            session.endTime = Date(timeIntervalSinceReferenceDate: 2344323)
+            session.startTime = DateBuilder.getSince(timeInterval: 23443)
+            session.endTime = DateBuilder.getSince(timeInterval: 2344323)
             session.gotDeleted = false
             session.version = 32
             session.status = .RECORDING
@@ -59,7 +59,7 @@ class FixedSessionFaker {
             for stream in session.allStreams ?? [] {
                 let measurement = MeasurementEntity(context: context)
                 measurement.id = currId
-                measurement.time = Date()
+                measurement.time = DateBuilder.getRawDate()
                 measurement.value = .random(in: 0...120)
                 measurement.location = .init(latitude: 50.049683, longitude: 19.944544)
                 stream.addToMeasurements(measurement)

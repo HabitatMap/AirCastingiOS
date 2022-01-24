@@ -20,7 +20,7 @@ class AppBootstrap {
     }
     
     private func handleFirstAppLaunch() {
-        print("First launch detected, clearing authentication data")
+        Log.info("First launch detected, clearing authentication data")
         try? deauthorizable.deauthorize()
     }
 }

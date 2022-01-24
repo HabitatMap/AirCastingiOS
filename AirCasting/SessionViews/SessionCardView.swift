@@ -226,7 +226,7 @@ private extension SessionCardView {
     var endTime: some View {
         let formatter = DateFormatters.SessionCartView.pollutionChartDateFormatter
 
-        let end = chartViewModel.chartEndTime ?? Date().currentUTCTimeZoneDate
+        let end = chartViewModel.chartEndTime ?? DateBuilder.getDate()
 
         let string = formatter.string(from: end)
         return Text(string)
