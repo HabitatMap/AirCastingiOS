@@ -49,7 +49,7 @@ class DefaultSessionUpdateService: SessionUpdateService {
         
         session.notes?.forEach({ note in
             let n = note as! NoteEntity
-            notes.append(CreateSessionApi.NotesParams(date: n.date ?? Date(),
+            notes.append(CreateSessionApi.NotesParams(date: n.date ?? Date().currentUTCTimeZoneDate,
                                                       text: n.text ?? "",
                                                       lat: n.lat,
                                                       long: n.long,
