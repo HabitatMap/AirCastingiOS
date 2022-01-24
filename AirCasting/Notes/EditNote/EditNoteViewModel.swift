@@ -33,8 +33,8 @@ class EditNoteViewModelDefault: EditNoteViewModel, ObservableObject {
     }
     
     func deleteTapped() {
-        notesHandler.deleteNote(note: note, completion: {
-            self.exitRoute()
+        notesHandler.deleteNote(note: note, completion: { [weak self] in
+            self?.exitRoute()
         })
     }
     
