@@ -3,9 +3,8 @@
 
 import Foundation
 
-protocol MeasurementsStatisticsDataSource {
+protocol MeasurementsStatisticsDataSource: AnyObject {
     var onForceReload: (() -> Void)? { get set }
     var allMeasurements: [MeasurementStatistics.Measurement] { get }
     var visibleMeasurements: [MeasurementStatistics.Measurement] { get }
-    var measurementsType: MeasurementStatistics.StreamType { get }
 }

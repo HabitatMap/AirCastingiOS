@@ -31,8 +31,4 @@ class MapStatsDataSource: MeasurementsStatisticsDataSource, ObservableObject {
 //        return visible
         return stream?.allMeasurements?.getStatistics() ?? []
     }
-    
-    var measurementsType: MeasurementStatistics.StreamType {
-        MeasurementStatistics.StreamType(stream?.measurementType)
-    }
 }

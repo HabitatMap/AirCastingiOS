@@ -38,7 +38,7 @@ class MeasurementsStatisticsController: MeasurementsStatisticsInput {
         desiredStats.map { stat -> MeasurementStatistics.StatisticItem in
             let dataSet = stat == .latest ? dataSource.allMeasurements : dataSource.visibleMeasurements
             let value = calculator.calculateValue(for: stat, from: dataSet)
-            return .init(stat: stat, value: value, type: dataSource.measurementsType)
+            return .init(stat: stat, value: value)
         }
     }
 }
