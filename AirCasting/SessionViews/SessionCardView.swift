@@ -53,7 +53,7 @@ struct SessionCardView: View {
         let graphDataSource = GraphStatsDataSource()
         self._graphStatsDataSource = .init(wrappedValue: graphDataSource)
         self._graphStatsViewModel = .init(wrappedValue: SessionCardView.createStatsContainerViewModel(dataSource: graphDataSource, session: session, userSettings: userSettings))
-        self._chartViewModel = .init(wrappedValue: ChartViewModel(session: session, persistence: PersistenceController.shared))
+        self._chartViewModel = .init(wrappedValue: ChartViewModel(session: session, persistence: PersistenceController.shared, useCelsius: userSettings.convertToCelsius))
     }
 
     var shouldShowValues: MeasurementPresentationStyle {

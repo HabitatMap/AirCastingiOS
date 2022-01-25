@@ -28,17 +28,19 @@ final class ChartViewModel: ObservableObject {
     private let numberOfEntries = Constants.Chart.numberOfEntries
     
     private var backgroundNotificationHandle: Any?
+    private var useCelsius: Bool
     
     deinit {
         mainTimer?.invalidate()
         firstTimer?.invalidate()
     }
     
-    init(session: SessionEntity, persistence: PersistenceController) {
+    init(session: SessionEntity, persistence: PersistenceController, useCelsius: Bool) {
         self.session = session
         self.chartStartTime = session.endTime
         self.chartEndTime = session.endTime
         self.persistence = persistence
+        self.useCelsius = useCelsius
         if session.isActive || session.isFollowed || session.status == .NEW {
             startTimers(session)
             scheduleBackgroundNotification()
@@ -131,7 +133,7 @@ final class ChartViewModel: ObservableObject {
     private func averagedValue(_ intervalStart: Date, _ intervalEnd: Date) -> Double? {
         guard stream != nil else { return nil }
         let measurements = stream!.getMeasurementsFromTimeRange(intervalStart.roundedDownToSecond, intervalEnd.roundedDownToSecond)
-        let values = measurements.map { stream!.isTemperature ? TemperatureConverter.calculateCelsius(fahrenheit: $0.value) : $0.value }
+        let values = measurements.map { stream!.isTemperature && useCelsius ? TemperatureConverter.calculateCelsius(fahrenheit: $0.value) : $0.value }
         return values.isEmpty ? nil : round(values.reduce(0, +) / Double(values.count))
     }
 }

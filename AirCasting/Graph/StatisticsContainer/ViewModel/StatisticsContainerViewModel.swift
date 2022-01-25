@@ -2,7 +2,6 @@
 //
 
 import Foundation
-import SwiftUI
 
 final class StatisticsContainerViewModel: StatisticsContainerViewModelable, MeasurementsStatisticsOutput {
     private let statsInput: MeasurementsStatisticsInput
