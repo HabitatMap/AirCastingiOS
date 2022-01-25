@@ -38,7 +38,8 @@ struct SessionCardView: View {
          sessionStoppableFactory: SessionStoppableFactory,
          measurementStreamStorage: MeasurementStreamStorage,
          sessionSynchronizer: SessionSynchronizer,
-         urlProvider: BaseURLProvider) {
+         urlProvider: BaseURLProvider,
+         userSettings: UserSettings) {
         self.session = session
         self.sessionCartViewModel = sessionCartViewModel
         self.thresholds = thresholds
@@ -48,10 +49,10 @@ struct SessionCardView: View {
         let mapDataSource = MapStatsDataSource()
         self.urlProvider = urlProvider
         self._mapStatsDataSource = .init(wrappedValue: mapDataSource)
-        self._mapStatsViewModel = .init(wrappedValue: SessionCardView.createStatsContainerViewModel(dataSource: mapDataSource, session: session))
+        self._mapStatsViewModel = .init(wrappedValue: SessionCardView.createStatsContainerViewModel(dataSource: mapDataSource, session: session, userSettings: userSettings))
         let graphDataSource = GraphStatsDataSource()
         self._graphStatsDataSource = .init(wrappedValue: graphDataSource)
-        self._graphStatsViewModel = .init(wrappedValue: SessionCardView.createStatsContainerViewModel(dataSource: graphDataSource, session: session))
+        self._graphStatsViewModel = .init(wrappedValue: SessionCardView.createStatsContainerViewModel(dataSource: graphDataSource, session: session, userSettings: userSettings))
         self._chartViewModel = .init(wrappedValue: ChartViewModel(session: session, persistence: PersistenceController.shared))
     }
 
@@ -250,7 +251,7 @@ private extension SessionCardView {
         .buttonStyle(GrayButtonStyle())
     }
 
-    private static func createStatsContainerViewModel(dataSource: MeasurementsStatisticsDataSource, session: SessionEntity) -> StatisticsContainerViewModel {
+    private static func createStatsContainerViewModel(dataSource: MeasurementsStatisticsDataSource, session: SessionEntity, userSettings: UserSettings) -> StatisticsContainerViewModel {
         var computeStatisticsInterval: Double? = nil
 
         if session.isActive || session.isNew {
@@ -264,7 +265,7 @@ private extension SessionCardView {
                                                           scheduledTimer: ScheduledTimerSetter(),
                                                           desiredStats: MeasurementStatistics.Statistic.allCases,
                                                           computeStatisticsInterval: computeStatisticsInterval)
-        let viewModel = StatisticsContainerViewModel(statsInput: controller)
+        let viewModel = StatisticsContainerViewModel(statsInput: controller, useCelsius: userSettings.convertToCelsius)
         controller.output = viewModel
         return viewModel
     }
@@ -320,7 +321,7 @@ private extension SessionCardView {
         EmptyView()
         SessionCardView(session: SessionEntity.mock,
                                 sessionCartViewModel: SessionCardViewModel(followingSetter: MockSessionFollowingSettable()),
-                        thresholds: [.mock, .mock], sessionStoppableFactory: SessionStoppableFactoryDummy(), measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionSynchronizer: DummySessionSynchronizer(), urlProvider: DummyURLProvider())
+                        thresholds: [.mock, .mock], sessionStoppableFactory: SessionStoppableFactoryDummy(), measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionSynchronizer: DummySessionSynchronizer(), urlProvider: DummyURLProvider(), userSettings: UserSettings())
             .padding()
             .previewLayout(.sizeThatFits)
             .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))

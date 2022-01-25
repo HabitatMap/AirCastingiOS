@@ -2,12 +2,15 @@
 //
 
 import Foundation
+import SwiftUI
 
 final class StatisticsContainerViewModel: StatisticsContainerViewModelable, MeasurementsStatisticsOutput {
     private let statsInput: MeasurementsStatisticsInput
+    private var useCelsius: Bool
     
-    init(statsInput: MeasurementsStatisticsInput) {
+    init(statsInput: MeasurementsStatisticsInput, useCelsius: Bool = false) {
         self.statsInput = statsInput
+        self.useCelsius = useCelsius
         statsInput.computeStatistics()
     }
     
@@ -21,7 +24,7 @@ final class StatisticsContainerViewModel: StatisticsContainerViewModelable, Meas
         stats = newStats.map {
             SingleStatViewModel(id: getIdentifier(for: $0.stat),
                                 title: getUILabel(for: $0.stat),
-                                value: $0.value,
+                                value: getValue($0),
                                 presentationStyle: getPresentationStyle(for: $0.stat))
         }
     }
@@ -47,5 +50,9 @@ final class StatisticsContainerViewModel: StatisticsContainerViewModelable, Meas
         case .average, .high: return .standard
         case .latest: return .distinct
         }
+    }
+    
+    private func getValue(_ stat: MeasurementStatistics.StatisticItem) -> Double {
+        stat.type == .temperature && useCelsius ? TemperatureConverter.calculateCelsius(fahrenheit: stat.value) : stat.value
     }
 }

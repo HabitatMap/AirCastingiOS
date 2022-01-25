@@ -131,7 +131,7 @@ final class ChartViewModel: ObservableObject {
     private func averagedValue(_ intervalStart: Date, _ intervalEnd: Date) -> Double? {
         guard stream != nil else { return nil }
         let measurements = stream!.getMeasurementsFromTimeRange(intervalStart.roundedDownToSecond, intervalEnd.roundedDownToSecond)
-        let values = measurements.map { $0.value }
+        let values = measurements.map { stream!.isTemperature ? TemperatureConverter.calculateCelsius(fahrenheit: $0.value) : $0.value }
         return values.isEmpty ? nil : round(values.reduce(0, +) / Double(values.count))
     }
 }

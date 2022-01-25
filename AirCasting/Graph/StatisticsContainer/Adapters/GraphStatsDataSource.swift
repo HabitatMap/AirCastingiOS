@@ -23,4 +23,8 @@ class GraphStatsDataSource: MeasurementsStatisticsDataSource, ObservableObject {
         guard filtered.count > 0 else { return allMeasurements }
         return filtered
     }
+    
+    var measurementsType: MeasurementStatistics.StreamType {
+        MeasurementStatistics.StreamType(stream?.measurementType)
+    }
 }
