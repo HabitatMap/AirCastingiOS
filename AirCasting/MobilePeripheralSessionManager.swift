@@ -40,7 +40,7 @@ class MobilePeripheralSessionManager {
 
         if activeMobileSession?.peripheral == measurement.peripheral {
             do {
-                try updateStreams(stream: measurement.measurementStream, sessionUUID: activeMobileSession!.session.uuid, isLocationTracked: activeMobileSession!.session.locationless)
+                try updateStreams(stream: measurement.measurementStream, sessionUUID: activeMobileSession!.session.uuid, isLocationTracked: !activeMobileSession!.session.locationless)
             } catch {
                 Log.error("Unable to save measurement from airbeam to database because of an error: \(error)")
             }
