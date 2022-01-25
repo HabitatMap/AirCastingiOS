@@ -215,6 +215,7 @@
 		B32D08AD267A6437006C97ED /* LogEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32D08AC267A6437006C97ED /* LogEvent.swift */; };
 		B32D08AF267A6D13006C97ED /* ErasingToVoidPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32D08AE267A6D13006C97ED /* ErasingToVoidPublisher.swift */; };
 		B3332F5A275D61B000789BAD /* Int+orOne.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3332F59275D61B000789BAD /* Int+orOne.swift */; };
+		B338934827A026BC0059E79B /* ConveringStatisticsDataSourceDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B338934727A026BC0059E79B /* ConveringStatisticsDataSourceDecorator.swift */; };
 		B33DB56E2685FB2400ED1344 /* LocalizedErrorStub.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33DB56D2685FB2400ED1344 /* LocalizedErrorStub.swift */; };
 		B33DB5702685FCFB00ED1344 /* SynchronizationTestMocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33DB56F2685FCFB00ED1344 /* SynchronizationTestMocks.swift */; };
 		B33DB5722686013400ED1344 /* XCTestCase+AwaitPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33DB5712686013400ED1344 /* XCTestCase+AwaitPublisher.swift */; };
@@ -591,6 +592,7 @@
 		B32D08AC267A6437006C97ED /* LogEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogEvent.swift; sourceTree = "<group>"; };
 		B32D08AE267A6D13006C97ED /* ErasingToVoidPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErasingToVoidPublisher.swift; sourceTree = "<group>"; };
 		B3332F59275D61B000789BAD /* Int+orOne.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+orOne.swift"; sourceTree = "<group>"; };
+		B338934727A026BC0059E79B /* ConveringStatisticsDataSourceDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConveringStatisticsDataSourceDecorator.swift; sourceTree = "<group>"; };
 		B33DB56D2685FB2400ED1344 /* LocalizedErrorStub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizedErrorStub.swift; sourceTree = "<group>"; };
 		B33DB56F2685FCFB00ED1344 /* SynchronizationTestMocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynchronizationTestMocks.swift; sourceTree = "<group>"; };
 		B33DB5712686013400ED1344 /* XCTestCase+AwaitPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+AwaitPublisher.swift"; sourceTree = "<group>"; };
@@ -1455,6 +1457,7 @@
 				B3AB8BE426BB5EF400AF23CC /* Array+MeasurementStatistics.swift */,
 				B30BAC052694A99300AE0476 /* GraphStatsDataSource.swift */,
 				B30BAC0A2694A9CB00AE0476 /* StandardStatisticsCalculator.swift */,
+				B338934727A026BC0059E79B /* ConveringStatisticsDataSourceDecorator.swift */,
 			);
 			path = Adapters;
 			sourceTree = "<group>";
@@ -2212,6 +2215,7 @@
 				AC049F7F2604B7AF00398197 /* AuthErorrHandling.swift in Sources */,
 				DDBA6139276B3AE200E3FEF9 /* EditNoteView.swift in Sources */,
 				750A51DC2754D4BD00D6F4E7 /* VisibleRegionCoordinates.swift in Sources */,
+				B338934827A026BC0059E79B /* ConveringStatisticsDataSourceDecorator.swift in Sources */,
 				B3FD77C4267C94AF00E97CC2 /* SessionSynchronizationService.swift in Sources */,
 				B34D4648275B12A000194E51 /* RemoteLog.swift in Sources */,
 				ACCEB21D2763A2230040140B /* SDSyncRootViewModel.swift in Sources */,
