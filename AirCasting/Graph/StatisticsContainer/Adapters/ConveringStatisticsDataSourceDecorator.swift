@@ -13,6 +13,7 @@ class ConveringStatisticsDataSourceDecorator<D: MeasurementsStatisticsDataSource
         self.dataSource = dataSource
         self.stream = stream
         self.settings = settings
+        setupHooks()
     }
     
     var onForceReload: (() -> Void)? {
