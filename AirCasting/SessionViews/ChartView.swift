@@ -123,7 +123,7 @@ struct ChartView: UIViewRepresentable {
 #if DEBUG
 struct MeasurementChart_Previews: PreviewProvider {
     static var previews: some View {
-        ChartView(thresholds: [.mock], viewModel: ChartViewModel(session: .mock, persistence: PersistenceController(inMemory: true)))
+        ChartView(thresholds: [.mock], viewModel: ChartViewModel(session: .mock, persistence: PersistenceController(inMemory: true), useCelsius: false))
             .frame(width: 300, height: 250, alignment: .center)
     }
 }
