@@ -272,7 +272,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         do {
             let sessionEntity = try context.existingSession(uuid: sessionUUID)
             if sessionFollowing == SessionFollowing.following {
-                sessionEntity.followedAt = DateBuilder.getDate()
+                sessionEntity.followedAt = DateBuilder.getFakeUTCDate()
             } else {
                 sessionEntity.followedAt = nil
             }
@@ -311,7 +311,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
         return sessionEntity.notes?.map { note -> Note in
             let n = note as! NoteEntity
-            return Note(date: n.date ?? DateBuilder.getDate(),
+            return Note(date: n.date ?? DateBuilder.getFakeUTCDate(),
                                    text: n.text ?? "",
                                    lat: n.lat,
                                    long: n.long,
@@ -322,7 +322,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
     func fetchSpecifiedNote(for sessionUUID: SessionUUID, number: Int) throws -> Note {
         let session = try context.existingSession(uuid: sessionUUID)
         let note = (session.notes?.first(where: { ($0 as! NoteEntity).number == number }) as! NoteEntity)
-        return Note(date: note.date ?? DateBuilder.getDate(),
+        return Note(date: note.date ?? DateBuilder.getFakeUTCDate(),
                     text: note.text ?? "",
                     lat: note.lat,
                     long: note.long,

@@ -89,14 +89,14 @@ custom_rules:
     capture_group: 0 # number of regex capture group to highlight the rule violation at. optional.
     match_kinds: # SyntaxKinds to match. optional.
       - identifier
-    message: "You! Use Air Casting date format - use Date().currentUTCTimeZoneDate" # violation message. optional.
+    message: "You! Use Air Casting date format - use DateBuilder class" # violation message. optional.
     severity: error # violation severity. optional
   
   print_using:
     included: ".*\\.swift" # regex that defines paths to include during linting. optional.
     excluded: ".*Tests\\.swift" # regex that defines paths to exclude during linting. optional
-    regex: 'print'
+    regex: "print(\\(|\\.)"
     match_kinds:
       - identifier
-    message: "Print decrease performance of the app"
+    message: "Print decrease performance of the app - use Log.info"
     severity: error

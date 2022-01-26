@@ -15,7 +15,7 @@ class TimeAxisRenderer: XAxisRenderer {
         
         let minX = transformer!.valueForTouchPoint(.init(x: minPxX, y: 0)).x
         let maxX = transformer!.valueForTouchPoint(.init(x: maxPxX, y: 0)).x
-        let startingTime = DateBuilder.getSince1970using(TimeInterval(minX))
+        let startingTime = DateBuilder.getDateWithTimeIntervalSince1970(TimeInterval(minX))
         let timeLeftLabel = dateFormatter.string(from: startingTime)
         
         drawLabel(context: context,
@@ -28,7 +28,7 @@ class TimeAxisRenderer: XAxisRenderer {
                   anchor: .zero,
                   angleRadians: 0)
         
-        let endTime = DateBuilder.getSince1970using(TimeInterval(maxX))
+        let endTime = DateBuilder.getDateWithTimeIntervalSince1970(TimeInterval(maxX))
         let timeRightLabel = dateFormatter.string(from: endTime)
         
         drawLabel(context: context,

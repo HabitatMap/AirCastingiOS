@@ -48,7 +48,7 @@ struct AirBeam3Configurator {
         sendLocationConfiguration(location: location)
 
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
-            let dateString = dateFormatter.string(from: DateBuilder.getDate())
+            let dateString = dateFormatter.string(from: DateBuilder.getFakeUTCDate())
             sendCurrentTimeConfiguration(date: dateString)
             DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
                 sendMobileModeRequest()

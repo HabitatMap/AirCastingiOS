@@ -113,7 +113,7 @@ final class ChartViewModel: ObservableObject {
         if session.isFixed {
             return lastMeasurementTime.roundedDownToHour
         } else {
-            let secondsSinceFullMinuteFromSessionStart = DateBuilder.getDate().timeIntervalSince(sessionStartTime).truncatingRemainder(dividingBy: timeUnit)
+            let secondsSinceFullMinuteFromSessionStart = DateBuilder.getFakeUTCDate().timeIntervalSince(sessionStartTime).truncatingRemainder(dividingBy: timeUnit)
             return DateBuilder.getRawDate().currentUTCTimeZoneDate - secondsSinceFullMinuteFromSessionStart
         }
     }
@@ -124,7 +124,7 @@ final class ChartViewModel: ObservableObject {
         if session.isFixed {
             return DateBuilder.getRawDate().roundedUpToHour.timeIntervalSince(DateBuilder.getRawDate())
         } else {
-            return timeUnit - DateBuilder.getDate().timeIntervalSince(sessionStartTime).truncatingRemainder(dividingBy: timeUnit)
+            return timeUnit - DateBuilder.getFakeUTCDate().timeIntervalSince(sessionStartTime).truncatingRemainder(dividingBy: timeUnit)
         }
     }
     

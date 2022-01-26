@@ -159,7 +159,7 @@ extension ConfirmCreatingSessionView {
         } else {
             guard let lat = (locationTracker.locationManager.location?.coordinate.latitude),
                   let lon = (locationTracker.locationManager.location?.coordinate.longitude) else { return }
-            locationTracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: lat, longitude: lon), measurementTime: DateBuilder.getDate(), measurement: 20.0)]
+            locationTracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: lat, longitude: lon), measurementTime: DateBuilder.getFakeUTCDate(), measurement: 20.0)]
 #warning("Do something with hard coded measurement")
             sessionContext.saveCurrentLocation(lat: lat, log: lon)
         }

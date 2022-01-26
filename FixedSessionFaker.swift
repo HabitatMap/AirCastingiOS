@@ -17,8 +17,8 @@ class FixedSessionFaker {
             session.uuid = SessionUUID()
             session.name = "Its complicated"
             session.tags = ""
-            session.startTime = DateBuilder.getSince(timeInterval: 23443)
-            session.endTime = DateBuilder.getSince(timeInterval: 2344323)
+            session.startTime = DateBuilder.getDateWithTimeIntervalSinceReferenceDate(23443)
+            session.endTime = DateBuilder.getDateWithTimeIntervalSinceReferenceDate(2344323)
             session.gotDeleted = false
             session.version = 32
             session.status = .RECORDING

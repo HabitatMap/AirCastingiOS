@@ -179,7 +179,7 @@ struct Graph: UIViewRepresentable {
     }
     
     func getLimitLines() -> [ChartLimitLine] {
-        let points = getMidnightsPoints(startingDate: stream.allMeasurements?.first?.time ?? DateBuilder.getDate(), endingDate: stream.allMeasurements?.last?.time ?? DateBuilder.getDate())
+        let points = getMidnightsPoints(startingDate: stream.allMeasurements?.first?.time ?? DateBuilder.getFakeUTCDate(), endingDate: stream.allMeasurements?.last?.time ?? DateBuilder.getFakeUTCDate())
         
         return points.map { point in
             let line = ChartLimitLine(limit: point)

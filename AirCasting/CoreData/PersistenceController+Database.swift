@@ -129,7 +129,7 @@ extension Database.Session {
                   status: coreDataEntity.status,
                   notes: (coreDataEntity.notes?.map { note -> Database.Note in
                             let n = note as! NoteEntity
-                            return Database.Note(date: n.date ?? DateBuilder.getDate(),
+                            return Database.Note(date: n.date ?? DateBuilder.getFakeUTCDate(),
                                                  text: n.text ?? "",
                                                  latitude: n.lat,
                                                  longitude: n.long,
@@ -162,7 +162,7 @@ extension Database.MeasurementStream {
 
 extension Database.Note {
     init(coreDataEntity: NoteEntity) {
-        self.init(date: coreDataEntity.date ?? DateBuilder.getDate(),
+        self.init(date: coreDataEntity.date ?? DateBuilder.getFakeUTCDate(),
                   text: coreDataEntity.text ?? "",
                   latitude: coreDataEntity.lat,
                   longitude: coreDataEntity.long,

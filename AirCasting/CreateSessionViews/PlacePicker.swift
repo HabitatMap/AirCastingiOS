@@ -42,7 +42,7 @@ struct PlacePicker: UIViewControllerRepresentable {
         func viewController(_ viewController: GMSAutocompleteViewController, didAutocompleteWith place: GMSPlace) {
             DispatchQueue.main.async { [self] in
                 self.parent.address =  place.name!
-                parent.tracker.googleLocation = [PathPoint(location: place.coordinate, measurementTime: DateBuilder.getDate(), measurement: 20.0)]
+                parent.tracker.googleLocation = [PathPoint(location: place.coordinate, measurementTime: DateBuilder.getFakeUTCDate(), measurement: 20.0)]
                 parent.placePickerDismissed = true
                 self.parent.presentationMode.wrappedValue.dismiss()
             }

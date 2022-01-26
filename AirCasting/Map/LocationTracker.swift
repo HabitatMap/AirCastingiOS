@@ -32,7 +32,7 @@ class LocationTracker: NSObject, ObservableObject, CLLocationManagerDelegate {
                 }
             case .denied, .notDetermined, .restricted:
                 self.locationGranted = .denied
-                googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: 37.35, longitude: -122.05), measurementTime: DateBuilder.getDate(), measurement: 20.0)]
+                googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: 37.35, longitude: -122.05), measurementTime: DateBuilder.getFakeUTCDate(), measurement: 20.0)]
                 #warning("Do something with hard coded measurement")
             @unknown default:
                 fatalError()

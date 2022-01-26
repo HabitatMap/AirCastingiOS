@@ -39,18 +39,18 @@ struct SyncedMeasurementsDownloadingService: SyncedMeasurementsDownloader {
     private func getLastSyncDate(for sessionUUID: SessionUUID, storage: HiddenCoreDataMeasurementStreamStorage) -> Date {
         if let existingSession = try? storage.getExistingSession(with: sessionUUID) {
             if let sessionEndTimeSeconds = existingSession.endTime?.timeIntervalSince1970 {
-                let last24hours = DateBuilder.getSince1970using((sessionEndTimeSeconds - measurementTimeframe))
+                let last24hours = DateBuilder.getDateWithTimeIntervalSince1970((sessionEndTimeSeconds - measurementTimeframe))
                 if let startTime = existingSession.startTime {
                     return startTime < last24hours ? last24hours : startTime
                 } else {
                     return last24hours
                 }
             } else {
-                let last24hours = DateBuilder.getSince1970using((DateBuilder.getSince1970() - measurementTimeframe))
+                let last24hours = DateBuilder.getDateWithTimeIntervalSince1970((DateBuilder.getTimeIntervalSince1970() - measurementTimeframe))
                 return last24hours
             }
         } else {
-            let last24hours = DateBuilder.getSince1970using((DateBuilder.getSince1970() - measurementTimeframe))
+            let last24hours = DateBuilder.getDateWithTimeIntervalSince1970((DateBuilder.getTimeIntervalSince1970() - measurementTimeframe))
             return last24hours
         }
     }

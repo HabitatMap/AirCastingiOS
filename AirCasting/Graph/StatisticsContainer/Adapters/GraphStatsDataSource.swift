@@ -2,7 +2,6 @@
 //
 
 import Foundation
-import Gzip
 
 class GraphStatsDataSource: MeasurementsStatisticsDataSource, ObservableObject {
     var stream: MeasurementStreamEntity? {

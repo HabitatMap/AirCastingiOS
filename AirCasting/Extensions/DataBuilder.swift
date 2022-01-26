@@ -4,23 +4,25 @@ import Foundation
 
 // swiftlint:disable airCasting_date
 class DateBuilder {
-    static func getDate() -> Date {
+    /// To match the Android app and the backend, we need to simulate the current taken Date() as the UTC.
+    /// This is the main function, which should replace standard Date(), in our case getRawDate() in most of the places.
+    static func getFakeUTCDate() -> Date {
         Date().currentUTCTimeZoneDate
     }
-    
+    /// Represent standard Date(), without any conversion/simulation.
     static func getRawDate() -> Date {
         Date()
     }
     
-    static func getSince1970using(_ timeInterval: Double) -> Date {
+    static func getDateWithTimeIntervalSince1970(_ timeInterval: Double) -> Date {
         Date(timeIntervalSince1970: timeInterval)
     }
     
-    static func getSince1970() -> Double {
+    static func getTimeIntervalSince1970() -> Double {
         Date().timeIntervalSince1970
     }
     
-    static func getSince(timeInterval: Double) -> Date {
+    static func getDateWithTimeIntervalSinceReferenceDate(_ timeInterval: Double) -> Date {
         Date(timeIntervalSinceReferenceDate: timeInterval)
     }
     
@@ -30,10 +32,6 @@ class DateBuilder {
     
     static func distantFuture() -> Date {
         Date.distantFuture
-    }
-    
-    static func msFormat(_ date: Date) -> String {
-        Date.msFormatter.string(from: date)
     }
 }
 // swiftlint:enable airCasting_date

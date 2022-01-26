@@ -43,7 +43,7 @@ class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDel
         measurementStreamStorage.accessStorage { [self] storage in
             do {
                 let currentNumber = try storage.getNotes(for: sessionUUID).map(\.number).sorted(by: < ).last
-                try storage.addNote(Note(date: DateBuilder.getDate(),
+                try storage.addNote(Note(date: DateBuilder.getFakeUTCDate(),
                                          text: noteText,
                                          lat: locationTracker.googleLocation.last?.location.latitude ?? 20.0,
                                          long: locationTracker.googleLocation.last?.location.longitude ?? 20.0,
