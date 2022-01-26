@@ -129,7 +129,6 @@ PODS:
   - nanopb/decode (2.30908.0)
   - nanopb/encode (2.30908.0)
   - PromisesObjC (2.0.0)
-  - SwiftLint (0.46.1)
 
 DEPENDENCIES:
   - DeviceKit (~> 4.5.0)
@@ -140,7 +139,6 @@ DEPENDENCIES:
   - GoogleMaps (= 4.1.0)
   - GooglePlaces (= 4.1.0)
   - GzipSwift
-  - SwiftLint
 
 SPEC REPOS:
   trunk:
@@ -162,7 +160,6 @@ SPEC REPOS:
     - GzipSwift
     - nanopb
     - PromisesObjC
-    - SwiftLint
 
 SPEC CHECKSUMS:
   DeviceKit: c622fc19f795f3e0b4d75d6d11b26604338cdab3
@@ -183,8 +180,7 @@ SPEC CHECKSUMS:
   GzipSwift: 893f3e48e597a1a4f62fafcb6514220fcf8287fa
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
   PromisesObjC: 68159ce6952d93e17b2dfe273b8c40907db5ba58
-  SwiftLint: aaa29a9f649316095a9079595cb60906bd899353
 
-PODFILE CHECKSUM: 9e601d5c4a5edcf2775b49583b8039f4c9b33caf
+PODFILE CHECKSUM: 3cf2c95dfc6b77928321472bcad5bc6615fb67b4
 
 COCOAPODS: 1.11.2
