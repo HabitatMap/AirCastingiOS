@@ -3,6 +3,7 @@
 
 import UIKit
 import Charts
+import Combine
 
 final class ChartViewModel: ObservableObject {
     @Published var entries: [ChartDataEntry] = []
@@ -28,21 +29,32 @@ final class ChartViewModel: ObservableObject {
     private let numberOfEntries = Constants.Chart.numberOfEntries
     
     private var backgroundNotificationHandle: Any?
+    private let settings: UserSettings
+    private var cancellables: [AnyCancellable] = []
     
     deinit {
         mainTimer?.invalidate()
         firstTimer?.invalidate()
     }
     
-    init(session: SessionEntity, persistence: PersistenceController) {
+    init(session: SessionEntity, persistence: PersistenceController, userSettings: UserSettings) {
         self.session = session
         self.chartStartTime = session.endTime
         self.chartEndTime = session.endTime
         self.persistence = persistence
+        self.settings = userSettings
         if session.isActive || session.isFollowed || session.status == .NEW {
             startTimers(session)
             scheduleBackgroundNotification()
         }
+        setupHooks()
+    }
+    
+    private func setupHooks() {
+        settings.objectWillChange.sink { [weak self] in
+            self?.objectWillChange.send()
+            self?.refreshChart()
+        }.store(in: &cancellables)
     }
     
     private func startTimers(_ session: SessionEntity) {
@@ -131,7 +143,7 @@ final class ChartViewModel: ObservableObject {
     private func averagedValue(_ intervalStart: Date, _ intervalEnd: Date) -> Double? {
         guard stream != nil else { return nil }
         let measurements = stream!.getMeasurementsFromTimeRange(intervalStart.roundedDownToSecond, intervalEnd.roundedDownToSecond)
-        let values = measurements.map { $0.value }
+        let values = measurements.map { stream!.isTemperature && settings.convertToCelsius ? TemperatureConverter.calculateCelsius(fahrenheit: $0.value) : $0.value }
         return values.isEmpty ? nil : round(values.reduce(0, +) / Double(values.count))
     }
 }
