@@ -5,7 +5,6 @@ import SwiftUI
 import AirCastingStyling
 
 struct SingleMeasurementView: View {
-//    @ObservedObject var viewModel: SingleMeasurementViewModel
     @ObservedObject var stream: MeasurementStreamEntity
     var threshold: SensorThreshold?
     @Binding var selectedStream: MeasurementStreamEntity?
