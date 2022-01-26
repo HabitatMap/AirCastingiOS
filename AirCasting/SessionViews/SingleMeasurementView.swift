@@ -5,7 +5,7 @@ import SwiftUI
 import AirCastingStyling
 
 struct SingleMeasurementView: View {
-    @ObservedObject var viewModel: SingleMeasurementViewModel
+//    @ObservedObject var viewModel: SingleMeasurementViewModel
     @ObservedObject var stream: MeasurementStreamEntity
     var threshold: SensorThreshold?
     @Binding var selectedStream: MeasurementStreamEntity?
@@ -16,7 +16,7 @@ struct SingleMeasurementView: View {
     var value: Double {
         let measurementValue = isDormant ? stream.averageValue : (stream.latestValue ?? 0)
         
-        guard !(stream.isTemperature && viewModel.settings.convertToCelsius) else {
+        guard !(stream.isTemperature && userSettings.convertToCelsius) else {
             return TemperatureConverter.calculateCelsius(fahrenheit: measurementValue)
         }
         

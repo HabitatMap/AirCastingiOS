@@ -36,7 +36,6 @@
 		33F20FDD27692231004364EA /* SyncedMeasurementsDownloadingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F20FDC27692231004364EA /* SyncedMeasurementsDownloadingService.swift */; };
 		33F2238A270C674E00F14909 /* TimeInterval.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F22389270C674E00F14909 /* TimeInterval.swift */; };
 		33FD502227A144B300162384 /* SingleMeasurementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33FD502127A144B300162384 /* SingleMeasurementView.swift */; };
-		33FD502427A14E2B00162384 /* SingleMeasurementViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33FD502327A14E2B00162384 /* SingleMeasurementViewModel.swift */; };
 		4F15548B263C44AF00FF3208 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F15548A263C44AF00FF3208 /* Session.swift */; };
 		4F15548F263C819C00FF3208 /* MeasurementEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F15548E263C819C00FF3208 /* MeasurementEntity.swift */; };
 		4F1D57D926454E3700F250AC /* MeasurementStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F1D57D826454E3700F250AC /* MeasurementStream.swift */; };
@@ -408,7 +407,6 @@
 		33F20FDC27692231004364EA /* SyncedMeasurementsDownloadingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncedMeasurementsDownloadingService.swift; sourceTree = "<group>"; };
 		33F22389270C674E00F14909 /* TimeInterval.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeInterval.swift; sourceTree = "<group>"; };
 		33FD502127A144B300162384 /* SingleMeasurementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleMeasurementView.swift; sourceTree = "<group>"; };
-		33FD502327A14E2B00162384 /* SingleMeasurementViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleMeasurementViewModel.swift; sourceTree = "<group>"; };
 		3A54057326D27D23E9906704 /* Pods_AirCastingTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AirCastingTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4327910762891E7B1AE9102E /* Pods-AirCastingTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AirCastingTests.debug.xcconfig"; path = "Target Support Files/Pods-AirCastingTests/Pods-AirCastingTests.debug.xcconfig"; sourceTree = "<group>"; };
 		4F15548A263C44AF00FF3208 /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
@@ -1035,7 +1033,6 @@
 				AC9EB64326ECB0C000B1F780 /* SessionCartViewModel */,
 				DDEE3A492697473C0098CCA9 /* EditSessionButton */,
 				3328F11E266786C600B72D61 /* Chart */,
-				33FD502327A14E2B00162384 /* SingleMeasurementViewModel.swift */,
 			);
 			path = SessionViews;
 			sourceTree = "<group>";
@@ -2366,7 +2363,6 @@
 				B367A595274E9EAA004C605B /* FeatureFlagsViewModel.swift in Sources */,
 				AC1471A325F23AE40062A53F /* CreateSessionAPI.swift in Sources */,
 				B32D08A4267A4957006C97ED /* LogErrorAndCompletePublisher.swift in Sources */,
-				33FD502427A14E2B00162384 /* SingleMeasurementViewModel.swift in Sources */,
 				ACC883882645784400C5DB70 /* GraphErorrHandling.swift in Sources */,
 				B3FD77BC267C94AF00E97CC2 /* ScheduledSessionSynchronizerProxy.swift in Sources */,
 				4F5D3F73262C91C6003AD82E /* UserAuthenticationSession.swift in Sources */,

@@ -58,8 +58,7 @@ struct _ABMeasurementsView: View {
                         streamsToShow.count != 1 ? Spacer() : nil
                         ForEach(streamsToShow.filter({ !$0.gotDeleted }), id : \.self) { stream in
                             if let threshold = thresholds.threshold(for: stream) {
-                                SingleMeasurementView(viewModel: SingleMeasurementViewModel(settings: userSettings),
-                                                      stream: stream,
+                                SingleMeasurementView(stream: stream,
                                                       threshold: threshold,
                                                       selectedStream: $selectedStream,
                                                       isCollapsed: $isCollapsed,
@@ -108,8 +107,7 @@ struct _ABMeasurementsView: View {
             Group {
                 streamsToShow.count != 1 ? Spacer() : nil
                 ForEach(streamsToShow.filter({ !$0.gotDeleted }), id : \.self) { stream in
-                    SingleMeasurementView(viewModel: SingleMeasurementViewModel(settings: userSettings),
-                                          stream: stream,
+                    SingleMeasurementView(stream: stream,
                                           threshold: nil,
                                           selectedStream: $selectedStream,
                                           isCollapsed: $isCollapsed,

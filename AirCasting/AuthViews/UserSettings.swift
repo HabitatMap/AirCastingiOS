@@ -50,6 +50,7 @@ class UserSettings: ObservableObject {
         set {
             userDefaults.setValue(newValue, forKey: convertToCelsiusKey)
             Log.info("Changed convert to celcius setting to \(convertToCelsius ? "ON" : "OFF")")
+            objectWillChange.send()
         }
     }
 
