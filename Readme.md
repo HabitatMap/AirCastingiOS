@@ -5,10 +5,16 @@
 [![iOS 14.0](https://img.shields.io/badge/iOS-14.0-green.svg)](https://developer.apple.com/ios/)
 
 - [AirCasting](#aircasting)
+  * [SwiftLint](#swiftlint)
   * [Fastlane](#fastlane)
     + [Beta](#beta)
     + [Release](#release)
   * [Feature Flags](#feature-flags)
+  
+## SwiftLint
+We use [swiftlint](https://github.com/realm/SwiftLint) to preserve clean code.
+Please, install it first using Homebrew: `brew install swiftlint`
+
 ## Fastlane
 We use [fastlane](https://fastlane.tools) to automate building and releasing our app. Currently we're using 2 paths of release:
 ### Beta
