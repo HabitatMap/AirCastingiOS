@@ -18,9 +18,9 @@ struct PathPoint: Equatable {
     
     let location: CLLocationCoordinate2D
     let measurementTime: Date
-    let measurement: Double
+    var measurement: Double = 20
 }
 
 extension PathPoint {
-    static var fakePathPoint = PathPoint(location: .undefined, measurementTime: Date(), measurement: 20.0)
+    static var fakePathPoint = PathPoint(location: .undefined, measurementTime: Date())
 }

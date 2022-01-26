@@ -59,6 +59,9 @@ struct MainTabBarView: View {
             
         }
         .onAppear {
+            let navBarAppearance = UINavigationBar.appearance()
+            navBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(Color.darkBlue),
+                                                         .font: Fonts.navBarSystemFont]
             UITabBar.appearance().backgroundColor = .systemBackground
             let appearance = UITabBarAppearance()
             appearance.backgroundImage = UIImage()
@@ -117,11 +120,16 @@ private extension MainTabBarView {
     }
     
     private var settingsTab: some View {
-        SettingsView(urlProvider: UserDefaultsBaseURLProvider(),
-                     logoutController: DefaultLogoutController(userAuthenticationSession: userAuthenticationSession,
-                                                               sessionStorage: SessionStorage(persistenceController: persistenceController),
-                                                               microphoneManager: microphoneManager,
-                                                               sessionSynchronizer: sessionSynchronizer), viewModel: SettingsViewModelDefault(locationHandler: locationHandler, bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: bluetoothManager), sessionContext: CreateSessionContext()))
+        SettingsView(viewModel: SettingsViewModelDefault(locationHandler: locationHandler,
+                                                         bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: bluetoothManager),
+                                                         sessionContext: sessionContext,
+                                                         urlProvider: urlProvider,
+                                                         logoutController: DefaultLogoutController(
+                                                            userAuthenticationSession: userAuthenticationSession,
+                                                            sessionStorage: SessionStorage(persistenceController: persistenceController),
+                                                            microphoneManager: microphoneManager,
+                                                            sessionSynchronizer: sessionSynchronizer)))
+        
             .tabItem {
                 Image(settingsImage)
             }
