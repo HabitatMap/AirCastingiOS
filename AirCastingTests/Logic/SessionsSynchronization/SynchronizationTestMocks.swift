@@ -27,7 +27,8 @@ extension SessionsSynchronization.SessionDownstreamData {
               version: .default,
               streams: .default,
               location: .default,
-              isIndoor: .default)
+              isIndoor: .default,
+              notes: [])
     }
 }
 
@@ -62,13 +63,14 @@ extension SessionsSynchronization.SessionStoreSessionData {
                                                                                deleted: false,
                                                                                measurements: [
                                                                                 .init(id: 1234,
-                                                                                      time: Date(timeIntervalSinceReferenceDate: 150),
+                                                                                      time: DateBuilder.getDateWithTimeIntervalSinceReferenceDate(_ timeInterval: 150),
                                                                                       value: 12.02,
                                                                                       latitude: 51.04,
                                                                                       longitude: 50.12)
                                                                                ])
               ],
-              deleted: false)
+              deleted: false,
+              notes: [])
     }
 }
 

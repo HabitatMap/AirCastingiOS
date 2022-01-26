@@ -86,7 +86,7 @@ class MobilePeripheralSessionManager {
         measurementStreamStorage.accessStorage { storage in
             do {
                 try storage.updateSessionStatus(.FINISHED, for: uuid)
-                try storage.updateSessionEndtime(Date(), for: uuid)
+                try storage.updateSessionEndtime(DateBuilder.getRawDate(), for: uuid)
             } catch {
                 Log.error("Unable to change session status to finished because of an error: \(error)")
             }

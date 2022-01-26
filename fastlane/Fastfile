@@ -47,6 +47,16 @@ platform :ios do
       end
    end
 
+   lane :code_lint do
+      swiftlint(
+         mode: :lint,
+         executable: "./Pods/SwiftLint/swiftlint",
+         config_file: ".swiftlint.yml",
+         raise_if_swiftlint_error: true,
+         ignore_exit_status: true
+       )
+   end
+
    lane :release do
       ensure_git_status_clean
       version = get_version_number

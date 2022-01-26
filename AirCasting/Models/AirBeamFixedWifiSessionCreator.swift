@@ -39,8 +39,8 @@ final class AirBeamFixedWifiSessionCreator: SessionCreator {
                               name: sessionContext.sessionName,
                               deviceType: sessionContext.deviceType,
                               location: sessionContext.startingLocation,
-                              startTime: Date().currentUTCTimeZoneDate,
-                              followedAt: Date().currentUTCTimeZoneDate,
+                              startTime: DateBuilder.getFakeUTCDate(),
+                              followedAt: DateBuilder.getFakeUTCDate(),
                               isIndoor: isIndoor,
                               tags: sessionContext.sessionTags)
         
@@ -84,7 +84,7 @@ final class AirBeamFixedWifiSessionCreator: SessionCreator {
                                                                                                      peripheral: peripheral).configureFixedWifiSession(
                                                                                                         uuid: sessionUUID,
                                                                                                         location: sessionContext.startingLocation ?? CLLocationCoordinate2D(latitude: 200, longitude: 200),
-                                                                                                        date: Date().currentUTCTimeZoneDate,
+                                                                                                        date: DateBuilder.getFakeUTCDate(),
                                                                                                         wifiSSID: wifiSSID,
                                                                                                         wifiPassword: wifiPassword)
                                                                             Log.warning("Created fixed Wifi session \(output)")

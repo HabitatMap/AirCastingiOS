@@ -133,7 +133,7 @@ struct Graph: UIViewRepresentable {
                                                                   visibleElementsNumber: counter,
                                                                   thresholdLimit: simplifiedGraphEntryThreshold)
         uiView.updateWithEntries(entries: simplifiedPoints, isAutozoomEnabled: isAutozoomEnabled)
-        print("Simplified \(entries.count) to \(simplifiedPoints.count)")
+        Log.info("Simplified \(entries.count) to \(simplifiedPoints.count)")
     }
     
     private func refreshNotes(_ uiView: AirCastingGraph) {
@@ -179,7 +179,7 @@ struct Graph: UIViewRepresentable {
     }
     
     func getLimitLines() -> [ChartLimitLine] {
-        let points = getMidnightsPoints(startingDate: stream.allMeasurements?.first?.time ?? Date().currentUTCTimeZoneDate, endingDate: stream.allMeasurements?.last?.time ?? Date().currentUTCTimeZoneDate)
+        let points = getMidnightsPoints(startingDate: stream.allMeasurements?.first?.time ?? DateBuilder.getFakeUTCDate(), endingDate: stream.allMeasurements?.last?.time ?? DateBuilder.getFakeUTCDate())
         
         return points.map { point in
             let line = ChartLimitLine(limit: point)

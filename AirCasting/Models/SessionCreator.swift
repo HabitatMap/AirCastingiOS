@@ -40,7 +40,7 @@ final class MicrophoneSessionCreator: SessionCreator {
                               name: sessionContext.sessionName,
                               deviceType: sessionContext.deviceType,
                               location: startingLocation,
-                              startTime: Date().currentUTCTimeZoneDate,
+                              startTime: DateBuilder.getFakeUTCDate(),
                               contribute: contribute,
                               locationless: sessionContext.locationless)
 
@@ -83,7 +83,7 @@ final class MobilePeripheralSessionCreator: SessionCreator {
                               name: sessionContext.sessionName,
                               deviceType: sessionContext.deviceType,
                               location: startingLocation,
-                              startTime: Date().currentUTCTimeZoneDate,
+                              startTime: DateBuilder.getFakeUTCDate(),
                               contribute: contribute,
                               locationless: sessionContext.locationless,
                               tags: sessionContext.sessionTags,

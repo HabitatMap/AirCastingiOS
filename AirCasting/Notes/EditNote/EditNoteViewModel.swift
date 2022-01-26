@@ -47,9 +47,9 @@ class DummyEditNoteViewModelDefault: EditNoteViewModel, ObservableObject {
     
     @Published var noteText = ""
     
-    func saveTapped() { print("Save tapped") }
+    func saveTapped() { Log.info("Save tapped") }
     
-    func deleteTapped() { print("Delete tapped") }
+    func deleteTapped() { Log.info("Delete tapped") }
     
     private let exitRoute: () -> Void
     

@@ -30,7 +30,7 @@ class AddNoteViewModelDefault: AddNoteViewModel, ObservableObject {
 class DummyAddNoteViewModelDefault: AddNoteViewModel, ObservableObject {
     @Published var noteText = ""
     
-    func continueTapped() { print("Clicked continue") }
+    func continueTapped() { Log.info("Clicked continue") }
     
-    func cancelTapped() { print("Cancel tapped") }
+    func cancelTapped() { Log.info("Cancel tapped") }
 }
