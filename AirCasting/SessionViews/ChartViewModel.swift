@@ -48,6 +48,7 @@ final class ChartViewModel: ObservableObject {
     private func startTimers(_ session: SessionEntity) {
         let timeOfNextAverage = timeOfNextAverage()
         firstTimer = Timer.scheduledTimer(withTimeInterval: TimeInterval(timeOfNextAverage), repeats: false) { [weak self] timer in
+            Log.info("FIRST TIMER TRIGGERED")
             self?.generateEntries()
             self?.startMainTimer()
         }
@@ -67,6 +68,7 @@ final class ChartViewModel: ObservableObject {
     
     func startMainTimer() {
         mainTimer = Timer.scheduledTimer(withTimeInterval: timeUnit, repeats: true) { [weak self] timer in
+            Log.info("MAIN TIMER TRIGGERED")
             self?.generateEntries()
         }
     }
@@ -85,11 +87,13 @@ final class ChartViewModel: ObservableObject {
         else {
             return
         }
+        Log.info("GENERATING ENTRIES")
         
         chartEndTime = intervalEnd
         var endOfFirstInterval = intervalEnd
         
         var intervalStart = intervalEnd - timeUnit
+        Log.info("start: \(intervalStart), end: \(intervalEnd)")
         
         var entries = [ChartDataEntry]()
         for i in (0..<numberOfEntries).reversed() {
@@ -103,15 +107,21 @@ final class ChartViewModel: ObservableObject {
             intervalStart = intervalEnd - timeUnit
         }
         chartStartTime = endOfFirstInterval
+        Log.info("entries: \(entries)")
         self.entries = entries
     }
     
     private func intervalEndTime() -> Date? {
         guard let lastMeasurementTime = stream?.lastMeasurementTime else { return nil }
         let sessionStartTime = session.startTime!
-        
+
         if session.isFixed {
-            return lastMeasurementTime.roundedDownToHour
+            // If the last recorded measurement in within the range between session start and full hour that has passed since session start, then
+            if lastMeasurementTime.roundedUpToHour > Date().currentUTCTimeZoneDate {
+                return lastMeasurementTime.roundedDownToHour
+            } else {
+                return lastMeasurementTime.roundedUpToHour
+            }
         } else {
             let secondsSinceFullMinuteFromSessionStart = Date().currentUTCTimeZoneDate.timeIntervalSince(sessionStartTime).truncatingRemainder(dividingBy: timeUnit)
             return Date().currentUTCTimeZoneDate - secondsSinceFullMinuteFromSessionStart
@@ -122,7 +132,9 @@ final class ChartViewModel: ObservableObject {
         let sessionStartTime = session.startTime!
         
         if session.isFixed {
-            return Date().roundedUpToHour.timeIntervalSince(Date())
+            let seconds = Date().roundedUpToHour.timeIntervalSince(Date())
+            Log.info("SECONDS: \(seconds)")
+            return seconds
         } else {
             return timeUnit - Date().currentUTCTimeZoneDate.timeIntervalSince(sessionStartTime).truncatingRemainder(dividingBy: timeUnit)
         }

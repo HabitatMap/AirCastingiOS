@@ -61,10 +61,16 @@ struct DashboardView: View {
         .onChange(of: isRefreshing, perform: { newValue in
             guard newValue == true else { return }
             guard !sessionSynchronizer.syncInProgress.value else {
-                onCurrentSyncEnd { isRefreshing = false }
+                onCurrentSyncEnd {
+                    isRefreshing = false
+                    // reload view? or call hook.setup again
+                }
                 return
             }
-            sessionSynchronizer.triggerSynchronization() { isRefreshing = false }
+            sessionSynchronizer.triggerSynchronization() {
+                isRefreshing = false
+                // reload view? or call hook.setup again
+            }
         })
         .onAppear() {
             try! coreDataHook.setup(selectedSection: self.selectedSection.selectedSection)
