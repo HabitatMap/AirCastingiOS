@@ -128,7 +128,11 @@ struct SettingsView: View {
                 crowdMapDescription
             }
             if featureFlagsViewModel.enabledFeatures.contains(.locationlessSessions) {
-                disableMappingSwitch
+                VStack(alignment: .leading) {
+                    disableMappingSwitch
+                    Spacer()
+                    disableMappingDescription
+                }
             }
             keepScreenOnSwitch
             VStack(alignment: .leading) {
@@ -189,6 +193,12 @@ struct SettingsView: View {
                 .font(Fonts.boldHeading1)
                 .multilineTextAlignment(.leading)
         }).toggleStyle(SwitchToggleStyle(tint: .accentColor))
+    }
+    
+    private var disableMappingDescription: some View {
+        Text(Strings.Settings.disableMappingDescription)
+            .font(Fonts.muliHeading2)
+            .foregroundColor(.aircastingGray)
     }
     
     private var temperatureSwitch: some View {

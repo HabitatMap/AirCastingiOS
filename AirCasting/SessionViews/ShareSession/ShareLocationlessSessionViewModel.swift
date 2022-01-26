@@ -50,6 +50,7 @@ class ShareLocationlessSessionViewModel: ObservableObject {
                 }
             }
         }
+        showShareSheet = false // this is redunant but necessary for the exit route to work
         exitRoute()
     }
     

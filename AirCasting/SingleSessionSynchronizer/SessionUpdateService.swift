@@ -64,7 +64,7 @@ class DefaultSessionUpdateService: SessionUpdateService {
                                                            end_time: session.endTime ?? DateBuilder.getRawDate(),
                                                            contribute: session.contribute,
                                                            is_indoor: session.isIndoor,
-                                                           notes: notes,
+                                                           notes: notes.sorted(by: { $0.number < $1.number }),
                                                            version: Int(session.version),
                                                            streams: data,
                                                            latitude: session.location?.latitude,
