@@ -122,10 +122,9 @@ struct AirMapView: View {
                     ThresholdsSliderView(threshold: threshold)
                         // Fixes labels covered by tabbar
                         .padding([.bottom, .leading, .trailing])
-                } else {
-                    Spacer()
                 }
             }
+            Spacer()
         }
         .sheet(isPresented: $noteMarkerTapped, content: {
             EditNoteView(viewModel: EditNoteViewModelDefault(exitRoute: {
