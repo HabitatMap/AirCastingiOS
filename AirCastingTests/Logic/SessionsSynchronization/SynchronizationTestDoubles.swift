@@ -41,15 +41,15 @@ class DownloadServiceMock: SessionDownstream {
 }
 
 class UploadServiceMock: SessionUpstream {
-    var toReturn: Result<Void, Error>?
+    var toReturn: Result<SessionsSynchronization.SessionUpstreamResult, Error>?
     @Published var recordedHistory: [SessionsSynchronization.SessionUpstreamData] = []
     
     var allUploadedUUIDs: [SessionUUID] { recordedHistory.map(\.uuid) }
     
-    func upload(session: SessionsSynchronization.SessionUpstreamData) -> Future<Void, Error> {
+    func upload(session: SessionsSynchronization.SessionUpstreamData) -> Future<SessionsSynchronization.SessionUpstreamResult, Error> {
         recordedHistory.append(session)
         return .init { promise in
-            promise(self.toReturn ?? .success(()))
+            promise(self.toReturn ?? .success(.init(location: "http://example.com/loc")))
         }
     }
 }

@@ -27,7 +27,8 @@ extension SessionsSynchronization.SessionDownstreamData {
               version: .default,
               streams: .default,
               location: .default,
-              isIndoor: .default)
+              isIndoor: .default,
+              notes: [])
     }
 }
 
@@ -68,7 +69,8 @@ extension SessionsSynchronization.SessionStoreSessionData {
                                                                                       longitude: 50.12)
                                                                                ])
               ],
-              deleted: false)
+              deleted: false,
+              notes: [])
     }
 }
 

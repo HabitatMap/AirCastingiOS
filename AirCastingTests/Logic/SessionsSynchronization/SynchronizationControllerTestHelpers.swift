@@ -196,7 +196,7 @@ extension SynchronizationControllerTests {
             if count == errorousUploadIndex {
                 self.uploadService.toReturn = .failure(DummyError())
             } else {
-                self.uploadService.toReturn = .success(())
+                self.uploadService.toReturn = .success(.init(location: "http://example.com/loc"))
             }
             if count == totalUploads { exp.fulfill() }
         }
