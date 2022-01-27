@@ -40,10 +40,17 @@ extension NSManagedObjectContext {
     }
     
     // Checks if stream exists, if not, creates a new one
-    func newOrExisting<T: NSManagedObject>(streamID: MeasurementStreamID) throws -> T  {
+    #warning("This seems odd and is also working odd. I don't think this is correct implementation")
+    // NOTE: I added session id as an optional parameter to fix my scenario, but this is a patch
+    func newOrExisting<T: NSManagedObject>(streamID: MeasurementStreamID, for session: SessionUUID? = nil) throws -> T  {
         let className = NSStringFromClass(T.classForCoder())
         let fetchRequest = NSFetchRequest<T>(entityName: className)
         fetchRequest.predicate = NSPredicate(format: "id == \(streamID)")
+        if let session = session {
+            fetchRequest.predicate = NSCompoundPredicate(type: .and,
+                                                         subpredicates: [fetchRequest.predicate!,
+                                                                         NSPredicate(format: "session.uuid == %@", session.rawValue)])
+        }
         
         let results = try self.fetch(fetchRequest)
         if let existing  = results.first { return existing }
