@@ -144,3 +144,26 @@ public enum DeviceType: Int, CustomStringConvertible {
         }
     }
 }
+
+extension Session {
+    func withUrlLocation(_ newLocation) -> Self {
+        .init(uuid: uuid,
+              type: type,
+              name: name,
+              deviceType: deviceType,
+              location: location,
+              startTime: startTime,
+              contribute: contribute,
+              locationless: locationless,
+              deviceId: deviceId,
+              endTime: endTime,
+              followedAt: followedAt,
+              gotDeleted: gotDeleted,
+              isIndoor: isIndoor,
+              tags: tags,
+              urlLocation: newLocation,
+              version: version,
+              measurementStreams: measurementStreams,
+              status: status)
+    }
+}

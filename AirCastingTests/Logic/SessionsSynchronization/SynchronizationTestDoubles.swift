@@ -56,14 +56,20 @@ class UploadServiceMock: SessionUpstream {
 
 class SessionStoreMock: SessionSynchronizationStore {
     enum HistoryItem: Equatable {
+        struct SaveURLArgs: Equatable {
+            let uuid: SessionUUID
+            let url: String
+        }
         case getLocalSessions
         case addSessions([SessionsSynchronization.SessionStoreSessionData])
+        case saveURLForSession(SaveURLArgs)
         case removeSessions([SessionUUID])
         case readSession(SessionUUID)
     }
     
     @Published private(set) var recordedHistory: [HistoryItem] = []
     var writeErrorToReturn: Error? = nil
+    var saveURLErrorToReturn: Error? = nil
     var readErrorToReturn: Error? = nil
     var deleteErrorToReturn: Error? = nil
     
@@ -81,6 +87,13 @@ class SessionStoreMock: SessionSynchronizationStore {
         recordedHistory.append(.addSessions(sessions))
         return .init {
             $0(self.writeErrorToReturn == nil ? .success(()) : .failure(self.writeErrorToReturn!))
+        }
+    }
+    
+    func saveURLForSession(uuid: SessionUUID, url: String) -> Future<Void, Error> {
+        recordedHistory.append(.saveURLForSession(.init(uuid: uuid, url: url)))
+        return .init {
+            $0(self.saveURLErrorToReturn == nil ? .success(()) : .failure(self.saveURLErrorToReturn!))
         }
     }
     

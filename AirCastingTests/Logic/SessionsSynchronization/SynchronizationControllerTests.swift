@@ -128,6 +128,13 @@ final class SynchronizationControllerTests: XCTestCase {
         assertContainsSameElements(removedSessions, sessionsToDelete)
     }
     
+    func test_whenSessionIsUploaded_savesURLLocationToDatabase() {
+        let urlsToReturn = ["A", "B"]
+        setupUploadWithStubbedSessionLocations(urlsToReturn)
+        let savedURLs = spyStoreURLUpdates(count: urlsToReturn.count)
+        assertContainsSameElements(urlsToReturn, savedURLs)
+    }
+    
     // MARK: - Error handling
     
     func test_whenErrorFetchingLocalData_itDoesNotProcessFuther() {
