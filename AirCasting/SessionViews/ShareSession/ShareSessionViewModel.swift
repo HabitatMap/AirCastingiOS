@@ -74,7 +74,7 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
     }
     
     func shareLinkTapped() {
-         getSharingLink()
+        getSharingLink()
         guard sharingLink != nil else {
             getAlert(.noSessionURL)
             return
@@ -125,7 +125,7 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
             Log.error("No URL for session \(String(describing: session.uuid))")
             return
         }
-
+        
         components.queryItems = [URLQueryItem(name: "sensor_name", value: selectedStream?.streamName)]
         
         guard let url = components.url else {
