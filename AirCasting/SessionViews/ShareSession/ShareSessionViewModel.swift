@@ -74,7 +74,11 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
     }
     
     func shareLinkTapped() {
-        getSharingLink()
+         getSharingLink()
+        guard sharingLink != nil else {
+            getAlert(.noSessionURL)
+            return
+        }
         showShareSheet = true
     }
     
@@ -118,7 +122,7 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
         guard let sessionURL = session.urlLocation,
               var components = URLComponents(string: sessionURL)
         else {
-            getAlert(.noSessionURL)
+            Log.error("No URL for session \(String(describing: session.uuid))")
             return
         }
 
@@ -126,7 +130,6 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
         
         guard let url = components.url else {
             Log.error("Coudn't compose url for session \(String(describing: session.uuid))")
-            getAlert(.noSessionURL)
             return
         }
         
