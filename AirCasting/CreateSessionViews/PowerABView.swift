@@ -12,6 +12,7 @@ struct PowerABView: View {
     @Binding var creatingSessionFlowContinues: Bool
     @EnvironmentObject private var sessionContext: CreateSessionContext
     let urlProvider: BaseURLProvider
+    let locationHandler: LocationHandler
 
     var body: some View {
         VStack() {
@@ -49,17 +50,9 @@ struct PowerABView: View {
     }
 
     var continueButton: some View {
-        NavigationLink(destination: SelectPeripheralView(SDClearingRouteProcess: false, creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider)) {
+        NavigationLink(destination: SelectPeripheralView(SDClearingRouteProcess: false, creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider, locationHandler: locationHandler)) {
             Text(Strings.Commons.continue)
                 .frame(maxWidth: .infinity)
         }
     }
 }
-
-#if DEBUG
-struct PowerABView_Previews: PreviewProvider {
-    static var previews: some View {
-        PowerABView(creatingSessionFlowContinues: .constant(true), urlProvider: DummyURLProvider())
-    }
-}
-#endif

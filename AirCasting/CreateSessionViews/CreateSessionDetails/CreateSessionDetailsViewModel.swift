@@ -13,17 +13,21 @@ class CreateSessionDetailsViewModel: ObservableObject {
     @Published var wifiSSID: String = ""
     @Published var isConfirmCreatingSessionActive: Bool = false
     @Published var isLocationSessionDetailsActive: Bool = false
+    @Published var isLocationScreenNedeed: Bool = false
     @Published var showAlertAboutEmptyCredentials = false
     @Published var isSSIDTextfieldDisplayed: Bool = false
     @Published var showErrorIndicator: Bool = false
     var shouldShowError: Bool { sessionName.isEmpty && showErrorIndicator }
+    let locationHandler: LocationHandler
+    
     
     let baseURL: BaseURLProvider
     // It cannot be private as long as it is going to be passed
     // by every view which is included in session creation process
     
-    init(baseURL: BaseURLProvider) {
+    init(baseURL: BaseURLProvider, locationHandler: LocationHandler) {
         self.baseURL = baseURL
+        self.locationHandler = locationHandler
     }
     
     func onScreenEnter() {
@@ -64,8 +68,12 @@ class CreateSessionDetailsViewModel: ObservableObject {
     
     func compareIsIndoor(sessionContext: CreateSessionContext) -> CreateSessionContext {
         sessionContext.isIndoor = isIndoor
-        isLocationSessionDetailsActive = !isIndoor
-        isConfirmCreatingSessionActive = isIndoor
+        guard locationHandler.isLocationDenied() && !(sessionContext.isIndoor != nil) else {
+            isLocationSessionDetailsActive = !isIndoor
+            isConfirmCreatingSessionActive = isIndoor
+            return sessionContext
+        }
+        isLocationScreenNedeed = true
         return sessionContext
     }
     

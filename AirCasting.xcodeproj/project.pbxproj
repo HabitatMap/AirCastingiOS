@@ -323,6 +323,8 @@
 		DD8C380E2689A55A00901FDF /* BackendSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8C380D2689A55A00901FDF /* BackendSettingsView.swift */; };
 		DD8DE6892785B706009B1726 /* EmptyNotesHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8DE6882785B706009B1726 /* EmptyNotesHandler.swift */; };
 		DD8DE68B2785B93A009B1726 /* MapNotesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8DE68A2785B939009B1726 /* MapNotesViewModel.swift */; };
+		DD9DD37327A2B91A00E657E4 /* TurnOnLocationFixedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD9DD37227A2B91A00E657E4 /* TurnOnLocationFixedView.swift */; };
+		DD9DD37527A2B92E00E657E4 /* TurnOnLocationFixedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD9DD37427A2B92E00E657E4 /* TurnOnLocationFixedViewModel.swift */; };
 		DD9EBB4E26AFDD2100D51804 /* TurnOnLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD9EBB4D26AFDD2100D51804 /* TurnOnLocationView.swift */; };
 		DD9EBFD5279EB70900192CB5 /* TextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD9EBFD4279EB70900192CB5 /* TextView.swift */; };
 		DD9EBFD8279EEAB300192CB5 /* DataBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD9EBFD7279EEAB300192CB5 /* DataBuilder.swift */; };
@@ -703,6 +705,8 @@
 		DD8C380F268A0E9400901FDF /* ShareViewModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewModal.swift; sourceTree = "<group>"; };
 		DD8DE6882785B706009B1726 /* EmptyNotesHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyNotesHandler.swift; sourceTree = "<group>"; };
 		DD8DE68A2785B939009B1726 /* MapNotesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapNotesViewModel.swift; sourceTree = "<group>"; };
+		DD9DD37227A2B91A00E657E4 /* TurnOnLocationFixedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurnOnLocationFixedView.swift; sourceTree = "<group>"; };
+		DD9DD37427A2B92E00E657E4 /* TurnOnLocationFixedViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurnOnLocationFixedViewModel.swift; sourceTree = "<group>"; };
 		DD9EBB4D26AFDD2100D51804 /* TurnOnLocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurnOnLocationView.swift; sourceTree = "<group>"; };
 		DD9EBFD4279EB70900192CB5 /* TextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextView.swift; sourceTree = "<group>"; };
 		DD9EBFD7279EEAB300192CB5 /* DataBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataBuilder.swift; sourceTree = "<group>"; };
@@ -997,6 +1001,7 @@
 				AC32041E25CC485E00A68520 /* ConnectingABView.swift */,
 				AC960C7725DD39F500EC95DD /* ABConnectedView.swift */,
 				DD4108F8273BE92700BF10FF /* CreateSessionDetails */,
+				DD9DD37127A2B8EE00E657E4 /* TurnOnLocationFixed */,
 				DD8A36A326C3CE7900C26725 /* ChooseCustomLocationView.swift */,
 				DD8A36A626C3E76200C26725 /* PlacePicker.swift */,
 				331EA80925E32094009DEFDB /* ConfirmCreatingSessionView.swift */,
@@ -1824,6 +1829,15 @@
 			path = URLProviders;
 			sourceTree = "<group>";
 		};
+		DD9DD37127A2B8EE00E657E4 /* TurnOnLocationFixed */ = {
+			isa = PBXGroup;
+			children = (
+				DD9DD37227A2B91A00E657E4 /* TurnOnLocationFixedView.swift */,
+				DD9DD37427A2B92E00E657E4 /* TurnOnLocationFixedViewModel.swift */,
+			);
+			path = TurnOnLocationFixed;
+			sourceTree = "<group>";
+		};
 		DDB0557F274BC5AF00DA1A8A /* SingleSessionSynchronizer */ = {
 			isa = PBXGroup;
 			children = (
@@ -2334,6 +2348,7 @@
 				4F945EEE2649F3F5008A5B22 /* SessionCreator.swift in Sources */,
 				4F945EF02649F455008A5B22 /* AirBeamFixedWifiSessionCreator.swift in Sources */,
 				B30BAC132694AA3200AE0476 /* MeasurementsStatisticsController.swift in Sources */,
+				DD9DD37527A2B92E00E657E4 /* TurnOnLocationFixedViewModel.swift in Sources */,
 				DDC3E954275E4C3A0066A5DF /* SettingsViewModel.swift in Sources */,
 				33769A5C2705B06F007D1EA7 /* ChartViewModel.swift in Sources */,
 				33BA3368266E4BCA00899343 /* MobilePeripheralSessionManager.swift in Sources */,
@@ -2405,6 +2420,7 @@
 				B376DD25268096E20083FD2F /* SessionSynchronizationDatabase.swift in Sources */,
 				AC6D56A525AF211200D221BA /* MultiSliderView.swift in Sources */,
 				AC524A7626133A370061AD45 /* MeaurementStreamExtension.swift in Sources */,
+				DD9DD37327A2B91A00E657E4 /* TurnOnLocationFixedView.swift in Sources */,
 				DDC5F58A271979F100F1F9D8 /* Fonts.swift in Sources */,
 				33F20FDD27692231004364EA /* SyncedMeasurementsDownloadingService.swift in Sources */,
 				3397C81F2787024C0050B333 /* UserDefaults.swift in Sources */,

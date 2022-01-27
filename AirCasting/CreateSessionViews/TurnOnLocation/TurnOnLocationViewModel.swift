@@ -11,7 +11,7 @@ class TurnOnLocationViewModel: ObservableObject {
     @Published var alert: AlertInfo?
     var isSDClearProcess: Bool
     
-    private let locationHandler: LocationHandler
+    let locationHandler: LocationHandler
     private let bluetoothHandler: BluetoothHandler
     private let sessionContext: CreateSessionContext
     private let urlProvider: BaseURLProvider

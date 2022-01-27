@@ -9,9 +9,9 @@ struct CreateSessionDetailsView: View {
     @StateObject private var viewModel: CreateSessionDetailsViewModel
     @Binding var creatingSessionFlowContinues: Bool
     
-    init(creatingSessionFlowContinues: Binding<Bool>, baseURL: BaseURLProvider) {
+    init(creatingSessionFlowContinues: Binding<Bool>, baseURL: BaseURLProvider, locationHandler: LocationHandler) {
         self._creatingSessionFlowContinues = creatingSessionFlowContinues
-        self._viewModel = .init(wrappedValue: CreateSessionDetailsViewModel(baseURL: baseURL))
+        self._viewModel = .init(wrappedValue: CreateSessionDetailsViewModel(baseURL: baseURL, locationHandler: locationHandler))
     }
     
     var body: some View {
@@ -115,7 +115,7 @@ private extension CreateSessionDetailsView {
     var locationPickerLink: some View {
         NavigationLink(
             destination: ChooseCustomLocationView(creatingSessionFlowContinues: $creatingSessionFlowContinues,
-                                                  sessionName: $viewModel.sessionName, baseURL: viewModel.baseURL),
+                                                  sessionName: viewModel.sessionName, baseURL: viewModel.baseURL),
             isActive: $viewModel.isLocationSessionDetailsActive,
             label: {
                 EmptyView()
@@ -128,6 +128,19 @@ private extension CreateSessionDetailsView {
             destination: ConfirmCreatingSessionView(creatingSessionFlowContinues: $creatingSessionFlowContinues,
                                                     baseURL: viewModel.baseURL, sessionName: viewModel.sessionName),
             isActive: $viewModel.isConfirmCreatingSessionActive,
+            label: {
+                EmptyView()
+            }
+        )
+    }
+    
+    var locationLink: some View {
+        NavigationLink(
+            destination: TurnOnLocationFixedView(creatingSessionFlowContinues:  $creatingSessionFlowContinues,
+                                                 viewModel: .init(locationHandler: viewModel.locationHandler,
+                                                                  sessionContext: sessionContext,
+                                                                  urlProvider: viewModel.baseURL)),
+            isActive: $viewModel.isLocationScreenNedeed,
             label: {
                 EmptyView()
             }

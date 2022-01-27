@@ -58,6 +58,7 @@ struct SettingsView: View {
                     TurnOnBluetoothView(creatingSessionFlowContinues: $BTScreenGo,
                                         sdSyncContinues: .constant(false),
                                         isSDClearProcess: SDClearingRouteProcess,
+                                        locationHandler: viewModel.locationHandler,
                                         urlProvider: urlProvider)
                 }
             }
@@ -91,7 +92,7 @@ struct SettingsView: View {
                                 TurnOnBluetoothView(creatingSessionFlowContinues: $BTScreenGo,
                                                     sdSyncContinues: .constant(false),
                                                     isSDClearProcess: SDClearingRouteProcess,
-                                                    urlProvider: urlProvider)
+                                                    locationHandler: viewModel.locationHandler, urlProvider: urlProvider)
                             }
                         }
                 })

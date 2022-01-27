@@ -18,6 +18,7 @@ struct SelectPeripheralView: View {
     @EnvironmentObject var sdSyncController: SDSyncController
     @Binding var creatingSessionFlowContinues: Bool
     let urlProvider: BaseURLProvider
+    let locationHandler: LocationHandler
     @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     var syncMode: Bool? = false
     
@@ -149,7 +150,7 @@ struct SelectPeripheralView: View {
                                                   userAuthenticationSession: userAuthenticationSession,
                                                   sessionContext: sessionContext,
                                                   peripheral: selection)
-                destination = AnyView(ConnectingABView(viewModel: viewModel, baseURL: urlProvider, creatingSessionFlowContinues: $creatingSessionFlowContinues))
+                destination = AnyView(ConnectingABView(viewModel: viewModel, baseURL: urlProvider, locationHandler: locationHandler, creatingSessionFlowContinues: $creatingSessionFlowContinues))
             }
         } else {
             destination = AnyView(EmptyView())
@@ -160,11 +161,3 @@ struct SelectPeripheralView: View {
         .buttonStyle(BlueButtonStyle())
     }
 }
-
-#if DEBUG
-struct SelectPeripheralView_Previews: PreviewProvider {
-    static var previews: some View {
-        SelectPeripheralView(SDClearingRouteProcess: false, creatingSessionFlowContinues: .constant(true), urlProvider: DummyURLProvider())
-    }
-}
-#endif

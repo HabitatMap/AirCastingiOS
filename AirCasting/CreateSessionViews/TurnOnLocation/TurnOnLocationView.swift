@@ -63,7 +63,8 @@ struct TurnOnLocationView: View {
     var proceedToPowerABView: some View {
         NavigationLink(
             destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues,
-                                     urlProvider: viewModel.passURLProvider),
+                                     urlProvider: viewModel.passURLProvider,
+                                     locationHandler: viewModel.locationHandler),
             isActive: $viewModel.isPowerABLinkActive,
             label: {
                 EmptyView()
@@ -74,7 +75,7 @@ struct TurnOnLocationView: View {
             destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues,
                                              sdSyncContinues: .constant(false),
                                              isSDClearProcess: viewModel.isSDClearProcess,
-                                             urlProvider: viewModel.passURLProvider),
+                                             locationHandler: viewModel.locationHandler, urlProvider: viewModel.passURLProvider),
             isActive: $viewModel.isTurnBluetoothOnLinkActive,
             label: {
                 EmptyView()
@@ -84,6 +85,7 @@ struct TurnOnLocationView: View {
         NavigationLink(
             destination: SelectDeviceView(creatingSessionFlowContinues: $creatingSessionFlowContinues,
                                           sdSyncContinues: .constant(false),
+                                          locationHandler: viewModel.locationHandler,
                                           urlProvider: viewModel.passURLProvider),
             isActive: $viewModel.isMobileLinkActive,
             label: {
