@@ -59,7 +59,7 @@ extension PersistenceController: SessionInsertable {
                     try $0.measurementStreams?.forEach {
                         let streamEntity: MeasurementStreamEntity
                         if let id = $0.id {
-                            streamEntity = try context.newOrExisting(streamID: id)
+                            streamEntity = try context.newOrExisting(streamID: id, for: sessionEntity.uuid)
                         } else {
                             streamEntity = MeasurementStreamEntity(context: context)
                         }

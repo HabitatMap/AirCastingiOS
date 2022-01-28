@@ -123,6 +123,7 @@ extension Array where Element == SessionStoreMock.HistoryItem {
     var allReads: [Element] { filter { if case .readSession(_) = $0 { return true }; return false } }
     var allWrites: [Element] { filter { if case .addSessions(_) = $0 { return true }; return false } }
     var allDeletes: [Element] { filter { if case .removeSessions(_) = $0 { return true }; return false } }
+    var allURLUpdates: [Element] { filter { if case .saveURLForSession(_) = $0 { return true }; return false } }
     
     var allWrittenData: [SessionsSynchronization.SessionStoreSessionData] {
         allWrites.map { write -> [SessionsSynchronization.SessionStoreSessionData]? in
@@ -142,6 +143,13 @@ extension Array where Element == SessionStoreMock.HistoryItem {
         }
         .compactMap { $0 }
         .flatMap { $0 }
+    }
+    
+    var allUpdatedURLs: [SessionStoreMock.HistoryItem.SaveURLArgs] {
+        allURLUpdates.compactMap { item -> SessionStoreMock.HistoryItem.SaveURLArgs? in
+            guard case .saveURLForSession(let args) = item else { return nil }
+            return args
+        }
     }
 }
 

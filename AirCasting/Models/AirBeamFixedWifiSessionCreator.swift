@@ -79,7 +79,8 @@ final class AirBeamFixedWifiSessionCreator: SessionCreator {
                                                                 case .success(let output):
                                                                     measurementStreamStorage.accessStorage { storage in
                                                                         do {
-                                                                            try storage.createSession(session)
+                                                                            let sessionWithURL = session.withUrlLocation(output.location)
+                                                                            try storage.createSession(sessionWithURL)
                                                                             try AirBeam3Configurator(userAuthenticationSession: userAuthenticationSession,
                                                                                                      peripheral: peripheral).configureFixedWifiSession(
                                                                                                         uuid: sessionUUID,
