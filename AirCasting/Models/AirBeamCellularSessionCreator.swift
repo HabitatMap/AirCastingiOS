@@ -72,7 +72,8 @@ final class AirBeamCellularSessionCreator: SessionCreator {
                                                                 case .success(let output):
                                                                     measurementStreamStorage.accessStorage { storage in
                                                                         do {
-                                                                            try storage.createSession(session)
+                                                                            let sessionWithURL = session.withUrlLocation(output.location)
+                                                                            try storage.createSession(sessionWithURL)
                                                                             try AirBeam3Configurator(userAuthenticationSession: userAuthenticationSession,
                                                                                                      peripheral: peripheral).configureFixedCellularSession(uuid: sessionUUID,
                                                                                                                                                            location: sessionContext.startingLocation ?? CLLocationCoordinate2D(latitude: 200, longitude: 200),

@@ -10,7 +10,8 @@ final class SyncUpstreamServiceTests: XCTestCase {
     let client = APIClientMock()
     let auth = RequestAuthorizationServiceMock()
     let responseValidator = HTTPResponseValidatorMock()
-    lazy var service = SessionUploadService(client: client, authorization: auth, responseValidator: responseValidator)
+    let urlProvider = URLProviderMock(baseAppURL: URL(string: "http://aircasting.org/")!)
+    lazy var service = SessionUploadService(client: client, authorization: auth, responseValidator: responseValidator, urlProvider: urlProvider)
     private var cancellables: [AnyCancellable] = []
     
     override func tearDown() {
@@ -89,6 +90,14 @@ final class SyncUpstreamServiceTests: XCTestCase {
         XCTAssertEqual(measuremnets.first?["milliseconds"] as? Int, 87)
     }
     
+    func test_when200OK_returnsURLAsResult() throws {
+        let location = "http://aircasting.habitatmap.org/s/url_location"
+        setupWithCorrectDataReturned(location: location)
+        let result = try awaitPublisher(service.upload(session: .mock()))
+        XCTAssertEqual(client.callHistory.count, 1)
+        XCTAssertEqual(result.location, "http://aircasting.habitatmap.org/s/url_location")
+    }
+    
     // MARK: - Error handling
     
     func test_whenServerReturnsError_itErrorsToo() {
@@ -99,9 +108,16 @@ final class SyncUpstreamServiceTests: XCTestCase {
     
     // MARK: - Fixture setup
     
-    private func setupWithCorrectDataReturned() {
+    private func setupWithCorrectDataReturned(location: String = "http://aircasting.habitatmap.org/s/test_loc") {
         client.requestTaskStub = { request, completion in
-            let response: (data: Data, response: HTTPURLResponse) = (data: "OK".data(using: .utf8)!, response: .success())
+            let returnedJson =
+            """
+            {
+                "location": "\(location)",
+                "notes": []
+            }
+            """
+            let response: (data: Data, response: HTTPURLResponse) = (data: returnedJson.data(using: .utf8)!, response: .success())
             // We need the client to be asynchronous, see details in implementation file.
             DispatchQueue.global().async {
                 completion(.success(response), request)
