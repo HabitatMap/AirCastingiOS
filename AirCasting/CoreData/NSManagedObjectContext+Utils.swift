@@ -52,6 +52,7 @@ extension NSManagedObjectContext {
     // and we decided to use a NSManagedObjectID instead. Somehow it's not working right, but when I added
     // additional session-id constraint it started to behave somewhat properly. But this is a blind patch
     // and should be investigated and resolved.
+    // Issue: https://github.com/HabitatMap/AirCastingiOS/issues/579
     
     // Checks if stream exists, if not, creates a new one
     func newOrExisting<T: NSManagedObject>(streamID: MeasurementStreamID, for session: SessionUUID? = nil) throws -> T  {
