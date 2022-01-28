@@ -60,7 +60,6 @@ final class ChartViewModel: ObservableObject {
     private func startTimers(_ session: SessionEntity) {
         let timeOfNextAverage = timeOfNextAverage()
         firstTimer = Timer.scheduledTimer(withTimeInterval: TimeInterval(timeOfNextAverage), repeats: false) { [weak self] timer in
-            Log.info("FIRST TIMER TRIGGERED")
             self?.generateEntries()
             self?.startMainTimer()
         }
@@ -80,7 +79,6 @@ final class ChartViewModel: ObservableObject {
 
     func startMainTimer() {
         mainTimer = Timer.scheduledTimer(withTimeInterval: timeUnit, repeats: true) { [weak self] timer in
-            Log.info("MAIN TIMER TRIGGERED")
             self?.generateEntries()
         }
     }
@@ -99,13 +97,11 @@ final class ChartViewModel: ObservableObject {
         else {
             return
         }
-        Log.info("GENERATING ENTRIES")
 
         chartEndTime = intervalEnd
         var endOfFirstInterval = intervalEnd
 
         var intervalStart = intervalEnd - timeUnit
-        Log.info("start: \(intervalStart), end: \(intervalEnd)")
 
         var entries = [ChartDataEntry]()
         for i in (0..<numberOfEntries).reversed() {
