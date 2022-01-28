@@ -100,3 +100,6 @@ custom_rules:
       - identifier
     message: "Print decrease performance of the app - use Log.info"
     severity: error
+
+excluded:
+  - Pods
