@@ -39,9 +39,21 @@ extension NSManagedObjectContext {
         return new
     }
     
-    // Checks if stream exists, if not, creates a new one
+    
     #warning("This seems odd and is also working odd. I don't think this is correct implementation")
-    // NOTE: I added session id as an optional parameter to fix my scenario, but this is a patch
+    // Explaination:
+    // I'm not sure why is that happening, but the fetch inside this function is returning multiple streams
+    // not associated with a single session. It causes the calling code to sometimes modify an incorrect
+    // stream object. I found this when implementing the url saving feature after uploads
+    // (https://github.com/HabitatMap/AirCastingiOS/pull/578) - I used the `Databse`s
+    // `func insertOrUpdateSessions(_ sessions: [Database.Session], completion: ((Error?) -> Void)?)`
+    // to achieve session URL update and it started acting weird - adding streams to existing dB sessions
+    // etc.. I think the root of the problem is that session streams don't have a unique identifiers
+    // and we decided to use a NSManagedObjectID instead. Somehow it's not working right, but when I added
+    // additional session-id constraint it started to behave somewhat properly. But this is a blind patch
+    // and should be investigated and resolved.
+    
+    // Checks if stream exists, if not, creates a new one
     func newOrExisting<T: NSManagedObject>(streamID: MeasurementStreamID, for session: SessionUUID? = nil) throws -> T  {
         let className = NSStringFromClass(T.classForCoder())
         let fetchRequest = NSFetchRequest<T>(entityName: className)
