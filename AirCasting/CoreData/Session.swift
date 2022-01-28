@@ -146,7 +146,7 @@ public enum DeviceType: Int, CustomStringConvertible {
 }
 
 extension Session {
-    func withUrlLocation(_ newLocation) -> Self {
+    func withUrlLocation(_ newLocation: String) -> Self {
         .init(uuid: uuid,
               type: type,
               name: name,
