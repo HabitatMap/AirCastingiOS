@@ -5,17 +5,24 @@ import Foundation
 import Combine
 import CoreLocation
 
+enum SessionSynchronizationStoreError: Error {
+    case noSessionsForUUID(uuid: SessionUUID)
+}
+
 /// Defines interface for objects which provide local store for sessions sync
 ///
 /// Overview of the sync process:
 /// 1. Fetch sessions stored locally on a device
 /// 2. Diff them against global database
-/// 3. Download/Upload/Delete accordingly (this interface)
+/// 3. Download/Upload/Delete accordingly
 protocol SessionSynchronizationStore {
     func getLocalSessionList() -> AnyPublisher<[SessionsSynchronization.Metadata], Error>
     
     @discardableResult
     func addSessions(with: [SessionsSynchronization.SessionStoreSessionData]) -> Future<Void, Error>
+    
+    @discardableResult
+    func saveURLForSession(uuid: SessionUUID, url: String) -> Future<Void, Error>
     
     @discardableResult
     func removeSessions(with: [SessionUUID]) -> Future<Void, Error>

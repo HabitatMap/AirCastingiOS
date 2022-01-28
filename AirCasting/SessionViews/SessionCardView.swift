@@ -26,9 +26,9 @@ struct SessionCardView: View {
     let measurementStreamStorage: MeasurementStreamStorage
     let sessionSynchronizer: SessionSynchronizer
 
-    @StateObject private var mapStatsDataSource: MapStatsDataSource
+    @StateObject private var mapStatsDataSource: ConveringStatisticsDataSourceDecorator<MapStatsDataSource>
     @StateObject private var mapStatsViewModel: StatisticsContainerViewModel
-    @StateObject private var graphStatsDataSource: GraphStatsDataSource
+    @StateObject private var graphStatsDataSource: ConveringStatisticsDataSourceDecorator<GraphStatsDataSource>
     @StateObject private var graphStatsViewModel: StatisticsContainerViewModel
     @StateObject private var chartViewModel: ChartViewModel
 
@@ -38,21 +38,22 @@ struct SessionCardView: View {
          sessionStoppableFactory: SessionStoppableFactory,
          measurementStreamStorage: MeasurementStreamStorage,
          sessionSynchronizer: SessionSynchronizer,
-         urlProvider: BaseURLProvider) {
+         urlProvider: BaseURLProvider,
+         userSettings: UserSettings) {
         self.session = session
         self.sessionCartViewModel = sessionCartViewModel
         self.thresholds = thresholds
         self.sessionStoppableFactory = sessionStoppableFactory
         self.measurementStreamStorage = measurementStreamStorage
         self.sessionSynchronizer = sessionSynchronizer
-        let mapDataSource = MapStatsDataSource()
+        let mapDataSource = ConveringStatisticsDataSourceDecorator<MapStatsDataSource>(dataSource: MapStatsDataSource(), stream: nil, settings: userSettings)
         self.urlProvider = urlProvider
         self._mapStatsDataSource = .init(wrappedValue: mapDataSource)
-        self._mapStatsViewModel = .init(wrappedValue: SessionCardView.createStatsContainerViewModel(dataSource: mapDataSource, session: session))
-        let graphDataSource = GraphStatsDataSource()
+        self._mapStatsViewModel = .init(wrappedValue: SessionCardView.createStatsContainerViewModel(dataSource: mapDataSource, session: session, userSettings: userSettings))
+        let graphDataSource = ConveringStatisticsDataSourceDecorator<GraphStatsDataSource>(dataSource: GraphStatsDataSource(), stream: nil, settings: userSettings)
         self._graphStatsDataSource = .init(wrappedValue: graphDataSource)
-        self._graphStatsViewModel = .init(wrappedValue: SessionCardView.createStatsContainerViewModel(dataSource: graphDataSource, session: session))
-        self._chartViewModel = .init(wrappedValue: ChartViewModel(session: session, persistence: PersistenceController.shared))
+        self._graphStatsViewModel = .init(wrappedValue: SessionCardView.createStatsContainerViewModel(dataSource: graphDataSource, session: session, userSettings: userSettings))
+        self._chartViewModel = .init(wrappedValue: ChartViewModel(session: session, persistence: PersistenceController.shared, userSettings: userSettings))
     }
 
     var shouldShowValues: MeasurementPresentationStyle {
@@ -100,7 +101,9 @@ struct SessionCardView: View {
         }
         .onChange(of: selectedStream, perform: { [weak graphStatsDataSource, weak mapStatsDataSource, weak chartViewModel] newStream in
             graphStatsDataSource?.stream = newStream
+            graphStatsDataSource?.dataSource.stream = newStream
             mapStatsDataSource?.stream = newStream
+            mapStatsDataSource?.dataSource.stream = newStream
             chartViewModel?.stream = newStream
         })
         .font(Fonts.regularHeading4)
@@ -226,7 +229,7 @@ private extension SessionCardView {
     var endTime: some View {
         let formatter = DateFormatters.SessionCartView.pollutionChartDateFormatter
 
-        let end = chartViewModel.chartEndTime ?? Date().currentUTCTimeZoneDate
+        let end = chartViewModel.chartEndTime ?? DateBuilder.getFakeUTCDate()
 
         let string = formatter.string(from: end)
         return Text(string)
@@ -250,7 +253,7 @@ private extension SessionCardView {
         .buttonStyle(GrayButtonStyle())
     }
 
-    private static func createStatsContainerViewModel(dataSource: MeasurementsStatisticsDataSource, session: SessionEntity) -> StatisticsContainerViewModel {
+    private static func createStatsContainerViewModel(dataSource: MeasurementsStatisticsDataSource, session: SessionEntity, userSettings: UserSettings) -> StatisticsContainerViewModel {
         var computeStatisticsInterval: Double? = nil
 
         if session.isActive || session.isNew {
@@ -301,7 +304,7 @@ private extension SessionCardView {
                                    selectedStream: $selectedStream,
                                    statsContainerViewModel: graphStatsViewModel,
                                    urlProvider: urlProvider,
-                                   graphStatsDataSource: graphStatsDataSource,
+                                   graphStatsDataSource: graphStatsDataSource.dataSource,
                                    sessionStoppableFactory: sessionStoppableFactory,
                                    measurementStreamStorage: measurementStreamStorage, sessionSynchronizer: sessionSynchronizer)
              .foregroundColor(.aircastingDarkGray)
@@ -320,7 +323,7 @@ private extension SessionCardView {
         EmptyView()
         SessionCardView(session: SessionEntity.mock,
                                 sessionCartViewModel: SessionCardViewModel(followingSetter: MockSessionFollowingSettable()),
-                        thresholds: [.mock, .mock], sessionStoppableFactory: SessionStoppableFactoryDummy(), measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionSynchronizer: DummySessionSynchronizer(), urlProvider: DummyURLProvider())
+                        thresholds: [.mock, .mock], sessionStoppableFactory: SessionStoppableFactoryDummy(), measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionSynchronizer: DummySessionSynchronizer(), urlProvider: DummyURLProvider(), userSettings: UserSettings())
             .padding()
             .previewLayout(.sizeThatFits)
             .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))

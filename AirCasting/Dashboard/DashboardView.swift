@@ -16,6 +16,7 @@ struct DashboardView: View {
     @FetchRequest<SensorThreshold>(sortDescriptors: [.init(key: "sensorName", ascending: true)]) var thresholds
     @EnvironmentObject var selectedSection: SelectSection
     @EnvironmentObject var averaging: AveragingService
+    @EnvironmentObject var userSettings: UserSettings
     @State var isRefreshing: Bool = false
     private let urlProvider: BaseURLProvider
     private let measurementStreamStorage: MeasurementStreamStorage
@@ -126,7 +127,8 @@ struct DashboardView: View {
                                         sessionStoppableFactory: sessionStoppableFactory,
                                         measurementStreamStorage: measurementStreamStorage,
                                         sessionSynchronizer: sessionSynchronizer,
-                                        urlProvider: urlProvider
+                                        urlProvider: urlProvider,
+                                        userSettings: userSettings
                         )
                     }
                 }

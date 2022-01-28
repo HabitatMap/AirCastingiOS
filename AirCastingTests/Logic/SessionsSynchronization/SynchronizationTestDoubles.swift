@@ -41,29 +41,35 @@ class DownloadServiceMock: SessionDownstream {
 }
 
 class UploadServiceMock: SessionUpstream {
-    var toReturn: Result<Void, Error>?
+    var toReturn: Result<SessionsSynchronization.SessionUpstreamResult, Error>?
     @Published var recordedHistory: [SessionsSynchronization.SessionUpstreamData] = []
     
     var allUploadedUUIDs: [SessionUUID] { recordedHistory.map(\.uuid) }
     
-    func upload(session: SessionsSynchronization.SessionUpstreamData) -> Future<Void, Error> {
+    func upload(session: SessionsSynchronization.SessionUpstreamData) -> Future<SessionsSynchronization.SessionUpstreamResult, Error> {
         recordedHistory.append(session)
         return .init { promise in
-            promise(self.toReturn ?? .success(()))
+            promise(self.toReturn ?? .success(.init(location: "http://example.com/loc")))
         }
     }
 }
 
 class SessionStoreMock: SessionSynchronizationStore {
     enum HistoryItem: Equatable {
+        struct SaveURLArgs: Equatable {
+            let uuid: SessionUUID
+            let url: String
+        }
         case getLocalSessions
         case addSessions([SessionsSynchronization.SessionStoreSessionData])
+        case saveURLForSession(SaveURLArgs)
         case removeSessions([SessionUUID])
         case readSession(SessionUUID)
     }
     
     @Published private(set) var recordedHistory: [HistoryItem] = []
     var writeErrorToReturn: Error? = nil
+    var saveURLErrorToReturn: Error? = nil
     var readErrorToReturn: Error? = nil
     var deleteErrorToReturn: Error? = nil
     
@@ -81,6 +87,13 @@ class SessionStoreMock: SessionSynchronizationStore {
         recordedHistory.append(.addSessions(sessions))
         return .init {
             $0(self.writeErrorToReturn == nil ? .success(()) : .failure(self.writeErrorToReturn!))
+        }
+    }
+    
+    func saveURLForSession(uuid: SessionUUID, url: String) -> Future<Void, Error> {
+        recordedHistory.append(.saveURLForSession(.init(uuid: uuid, url: url)))
+        return .init {
+            $0(self.saveURLErrorToReturn == nil ? .success(()) : .failure(self.saveURLErrorToReturn!))
         }
     }
     

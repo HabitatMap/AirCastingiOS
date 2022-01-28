@@ -100,6 +100,29 @@ final class SessionSynchronizationDatabase: SessionSynchronizationStore {
         }
     }
     
+    func saveURLForSession(uuid: SessionUUID, url: String) -> Future<Void, Error> {
+        Future { [database] promise in
+            database.fetchSessions(constrained: .predicate(.init(format: "uuid == %@", uuid.rawValue))) { result in
+                switch result {
+                case .failure(let error):
+                    promise(.failure(error))
+                case .success(let entries) where entries.count >= 1:
+                    if entries.count > 1 { Log.error("Found multiple sessions for ID [\(uuid)]") }
+                    let session = entries[0].withUrlLocation(url)
+                    database.insertOrUpdateSessions([session], completion: { error in
+                        guard error == nil else { promise(.failure(error!)); return }
+                        promise(.success(()))
+                    })
+                    break
+                case .success(let entries) where entries.count == 0:
+                    promise(.failure(SessionSynchronizationStoreError.noSessionsForUUID(uuid: uuid)))
+                    break
+                default: break
+                }
+            }
+        }
+    }
+    
     public func removeSessions(with uuids: [SessionUUID]) -> Future<Void, Error> {
         Future { [database] promise in
             database.removeSessions(where: .predicate(NSPredicate(format: "uuid IN %@", uuids))) { error in
@@ -127,5 +150,28 @@ final class SessionSynchronizationDatabase: SessionSynchronizationStore {
                 }
             })
         }
+    }
+}
+
+extension Database.Session {
+    func withUrlLocation(_ newLocation: String) -> Self {
+        return .init(uuid: uuid,
+                     type: type,
+                     name: name,
+                     deviceType: deviceType,
+                     location: location,
+                     startTime: startTime,
+                     contribute: contribute,
+                     deviceId: deviceId,
+                     endTime: endTime,
+                     followedAt: followedAt,
+                     gotDeleted: gotDeleted,
+                     isIndoor: isIndoor,
+                     tags: tags,
+                     urlLocation: newLocation,
+                     version: version,
+                     measurementStreams: measurementStreams,
+                     status: status,
+                     notes: notes)
     }
 }

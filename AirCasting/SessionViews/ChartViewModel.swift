@@ -3,48 +3,60 @@
 
 import UIKit
 import Charts
+import Combine
 
 final class ChartViewModel: ObservableObject {
     @Published var entries: [ChartDataEntry] = []
     @Published var chartStartTime: Date?
     @Published var chartEndTime: Date?
-    
+
     var stream: MeasurementStreamEntity? {
         didSet {
             guard session.isActive || session.isFollowed || session.status == .NEW else { return }
             generateEntries()
         }
     }
-    
+
     private let persistence: PersistenceController
     private let session: SessionEntity
 
     private var timeUnit: TimeInterval {
         session.isMobile ? .minute : .hour
     }
-    
+
     private var mainTimer: Timer?
     private var firstTimer: Timer?
     private let numberOfEntries = Constants.Chart.numberOfEntries
-    
+
     private var backgroundNotificationHandle: Any?
-    
+    private let settings: UserSettings
+    private var cancellables: [AnyCancellable] = []
+
     deinit {
         mainTimer?.invalidate()
         firstTimer?.invalidate()
     }
-    
-    init(session: SessionEntity, persistence: PersistenceController) {
+
+    init(session: SessionEntity, persistence: PersistenceController, userSettings: UserSettings) {
         self.session = session
         self.chartStartTime = session.endTime
         self.chartEndTime = session.endTime
         self.persistence = persistence
+        self.settings = userSettings
         if session.isActive || session.isFollowed || session.status == .NEW {
             startTimers(session)
             scheduleBackgroundNotification()
         }
+        setupHooks()
     }
-    
+
+    private func setupHooks() {
+        settings.objectWillChange.sink { [weak self] in
+            self?.objectWillChange.send()
+            self?.refreshChart()
+        }.store(in: &cancellables)
+    }
+
     private func startTimers(_ session: SessionEntity) {
         let timeOfNextAverage = timeOfNextAverage()
         firstTimer = Timer.scheduledTimer(withTimeInterval: TimeInterval(timeOfNextAverage), repeats: false) { [weak self] timer in
@@ -53,7 +65,7 @@ final class ChartViewModel: ObservableObject {
             self?.startMainTimer()
         }
     }
-    
+
     private func scheduleBackgroundNotification() {
         backgroundNotificationHandle = NotificationCenter.default.addObserver(forName: UIApplication.didEnterBackgroundNotification, object: nil, queue: .main) { [weak self] _ in
             guard let self = self else { return }
@@ -65,18 +77,18 @@ final class ChartViewModel: ObservableObject {
             }
         }
     }
-    
+
     func startMainTimer() {
         mainTimer = Timer.scheduledTimer(withTimeInterval: timeUnit, repeats: true) { [weak self] timer in
             Log.info("MAIN TIMER TRIGGERED")
             self?.generateEntries()
         }
     }
-    
+
     func refreshChart() {
         generateEntries()
     }
-    
+
     private func generateEntries() {
         // Set up begning and end of the interval for the first average
         //  - for fixed sessions we are taking the last full hour of the session, which has any measurements
@@ -88,13 +100,13 @@ final class ChartViewModel: ObservableObject {
             return
         }
         Log.info("GENERATING ENTRIES")
-        
+
         chartEndTime = intervalEnd
         var endOfFirstInterval = intervalEnd
-        
+
         var intervalStart = intervalEnd - timeUnit
         Log.info("start: \(intervalStart), end: \(intervalEnd)")
-        
+
         var entries = [ChartDataEntry]()
         for i in (0..<numberOfEntries).reversed() {
             if (intervalStart < stream!.session.startTime!.roundedDownToSecond) { break }
@@ -109,7 +121,7 @@ final class ChartViewModel: ObservableObject {
         chartStartTime = endOfFirstInterval
         self.entries = entries
     }
-    
+
     private func intervalEndTime() -> Date? {
         guard let lastMeasurementTime = stream?.lastMeasurementTime else { return nil }
         let sessionStartTime = session.startTime!
@@ -117,25 +129,25 @@ final class ChartViewModel: ObservableObject {
         if session.isFixed {
             return lastMeasurementTime.roundedDownToHour
         } else {
-            let secondsSinceFullMinuteFromSessionStart = Date().currentUTCTimeZoneDate.timeIntervalSince(sessionStartTime).truncatingRemainder(dividingBy: timeUnit)
-            return Date().currentUTCTimeZoneDate - secondsSinceFullMinuteFromSessionStart
+            let secondsSinceFullMinuteFromSessionStart = DateBuilder.getFakeUTCDate().timeIntervalSince(sessionStartTime).truncatingRemainder(dividingBy: timeUnit)
+            return DateBuilder.getRawDate().currentUTCTimeZoneDate - secondsSinceFullMinuteFromSessionStart
         }
     }
-    
+
     private func timeOfNextAverage() -> Double {
         let sessionStartTime = session.startTime!
-        
+
         if session.isFixed {
-            return Date().roundedUpToHour.timeIntervalSince(Date()) + 60
+            return DateBuilder.getRawDate().roundedUpToHour.timeIntervalSince(DateBuilder.getRawDate()) + 60
         } else {
-            return timeUnit - Date().currentUTCTimeZoneDate.timeIntervalSince(sessionStartTime).truncatingRemainder(dividingBy: timeUnit)
+            return timeUnit - DateBuilder.getFakeUTCDate().timeIntervalSince(sessionStartTime).truncatingRemainder(dividingBy: timeUnit)
         }
     }
-    
+
     private func averagedValue(_ intervalStart: Date, _ intervalEnd: Date) -> Double? {
         guard stream != nil else { return nil }
         let measurements = stream!.getMeasurementsFromTimeRange(intervalStart.roundedDownToSecond, intervalEnd.roundedDownToSecond)
-        let values = measurements.map { $0.value }
+        let values = measurements.map { stream!.isTemperature && settings.convertToCelsius ? TemperatureConverter.calculateCelsius(fahrenheit: $0.value) : $0.value }
         return values.isEmpty ? nil : round(values.reduce(0, +) / Double(values.count))
     }
 }

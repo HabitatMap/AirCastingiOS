@@ -160,7 +160,7 @@ final class AveragingService: NSObject, ObservableObject {
             return
         }
         guard let startTime = session.startTime else { return }
-        let fromSessionStartToFirstThreshold = (startTime.timeIntervalSince(Date().currentUTCTimeZoneDate) + Double(TimeThreshold.firstThreshold.rawValue) + Double(1))
+        let fromSessionStartToFirstThreshold = (startTime.timeIntervalSince(DateBuilder.getFakeUTCDate()) + Double(TimeThreshold.firstThreshold.rawValue) + Double(1))
         let timer = Timer.publish(every: TimeInterval(fromSessionStartToFirstThreshold), on: .main, in: .common)
             .autoconnect()
             .first()
@@ -198,7 +198,7 @@ final class AveragingService: NSObject, ObservableObject {
             Log.info("Can't calculate averaging window, session doesn't have the startTime")
             return nil
         }
-        let sessionDuration = abs(startTime.timeIntervalSince(Date().currentUTCTimeZoneDate))
+        let sessionDuration = abs(startTime.timeIntervalSince(DateBuilder.getFakeUTCDate()))
         if sessionDuration <= TimeInterval(TimeThreshold.firstThreshold.rawValue) {
             return .zeroWindow
         } else if sessionDuration <= TimeInterval(TimeThreshold.secondThreshold.rawValue) {

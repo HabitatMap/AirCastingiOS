@@ -9,7 +9,8 @@ final class SyncDownstreamServiceTests: XCTestCase {
     private let client = APIClientMock()
     private let auth = RequestAuthorizationServiceMock()
     private let responseValidator = HTTPResponseValidatorMock()
-    private lazy var service = SessionDownloadService(client: client, authorization: auth, responseValidator: responseValidator)
+    private let urlProvider = URLProviderMock(baseAppURL: URL(string: "http://aircasting.org/")!)
+    private lazy var service = SessionDownloadService(client: client, authorization: auth, responseValidator: responseValidator, urlProvider: urlProvider)
     private var cancellables: [AnyCancellable] = []
     
     override func tearDown() {
@@ -25,7 +26,7 @@ final class SyncDownstreamServiceTests: XCTestCase {
         
         XCTAssertEqual(self.client.callHistory.count, 1)
         let request = self.client.callHistory.first!
-        XCTAssertEqual(request.url?.absoluteString, "http://aircasting.org/api/user/sessions/empty.json?uuid=\(sessionUUID.rawValue)")
+        XCTAssertEqual(request.url?.absoluteString, "http://aircasting.org/api/user/sessions/update_session.json?uuid=\(sessionUUID.rawValue)")
         XCTAssertEqual(request.httpMethod, "GET")
         XCTAssertEqual(request.allHTTPHeaderFields?["Accept"], "application/json")
     }

@@ -59,7 +59,7 @@ extension PersistenceController: SessionInsertable {
                     try $0.measurementStreams?.forEach {
                         let streamEntity: MeasurementStreamEntity
                         if let id = $0.id {
-                            streamEntity = try context.newOrExisting(streamID: id)
+                            streamEntity = try context.newOrExisting(streamID: id, for: sessionEntity.uuid)
                         } else {
                             streamEntity = MeasurementStreamEntity(context: context)
                         }
@@ -129,7 +129,7 @@ extension Database.Session {
                   status: coreDataEntity.status,
                   notes: (coreDataEntity.notes?.map { note -> Database.Note in
                             let n = note as! NoteEntity
-                            return Database.Note(date: n.date ?? Date(),
+                            return Database.Note(date: n.date ?? DateBuilder.getFakeUTCDate(),
                                                  text: n.text ?? "",
                                                  latitude: n.lat,
                                                  longitude: n.long,
@@ -162,7 +162,7 @@ extension Database.MeasurementStream {
 
 extension Database.Note {
     init(coreDataEntity: NoteEntity) {
-        self.init(date: coreDataEntity.date ?? Date(),
+        self.init(date: coreDataEntity.date ?? DateBuilder.getFakeUTCDate(),
                   text: coreDataEntity.text ?? "",
                   latitude: coreDataEntity.lat,
                   longitude: coreDataEntity.long,
