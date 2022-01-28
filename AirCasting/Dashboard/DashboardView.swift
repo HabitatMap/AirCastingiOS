@@ -56,7 +56,7 @@ struct DashboardView: View {
             if sessions.isEmpty { emptySessionsView } else { sessionListView }
         }
         .background(
-            NavigationLink(destination: ReorderingDashboard(sessions: sessions, thresholds: Array(self.thresholds), measurementStreamStorage: measurementStreamStorage, urlProvider: urlProvider),
+            NavigationLink(destination: ReorderingDashboard(viewModel: ReorderingDashboardViewModel(sessions: sessions), thresholds: Array(self.thresholds), measurementStreamStorage: measurementStreamStorage, urlProvider: urlProvider),
                            isActive: $isReorderingButtonActive,
                            label: {EmptyView()})
         )

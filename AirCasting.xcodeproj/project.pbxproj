@@ -18,6 +18,8 @@
 		336A909127A453FE00851100 /* ReorderingDashboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 336A909027A453FE00851100 /* ReorderingDashboard.swift */; };
 		336A909327A4553000851100 /* ReoredringSessionCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 336A909227A4553000851100 /* ReoredringSessionCard.swift */; };
 		336A909527A48CA400851100 /* ReorderingSessionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 336A909427A48CA400851100 /* ReorderingSessionHeader.swift */; };
+		336A909727A492A000851100 /* DropViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 336A909627A492A000851100 /* DropViewDelegate.swift */; };
+		336A909927A4946400851100 /* ReorderingDashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 336A909827A4946400851100 /* ReorderingDashboardViewModel.swift */; };
 		3375E8CF279185430019A5DE /* TemperatureConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3375E8CE279185430019A5DE /* TemperatureConverter.swift */; };
 		3375E8D22791E7100019A5DE /* ZipArchive in Frameworks */ = {isa = PBXBuildFile; productRef = 3375E8D12791E7100019A5DE /* ZipArchive */; };
 		3375E8D42791EDC50019A5DE /* CLLocationCoordinate2D.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3375E8D32791EDC50019A5DE /* CLLocationCoordinate2D.swift */; };
@@ -394,6 +396,8 @@
 		336A909027A453FE00851100 /* ReorderingDashboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReorderingDashboard.swift; sourceTree = "<group>"; };
 		336A909227A4553000851100 /* ReoredringSessionCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReoredringSessionCard.swift; sourceTree = "<group>"; };
 		336A909427A48CA400851100 /* ReorderingSessionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReorderingSessionHeader.swift; sourceTree = "<group>"; };
+		336A909627A492A000851100 /* DropViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropViewDelegate.swift; sourceTree = "<group>"; };
+		336A909827A4946400851100 /* ReorderingDashboardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReorderingDashboardViewModel.swift; sourceTree = "<group>"; };
 		3375E8CE279185430019A5DE /* TemperatureConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemperatureConverter.swift; sourceTree = "<group>"; };
 		3375E8D32791EDC50019A5DE /* CLLocationCoordinate2D.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLLocationCoordinate2D.swift; sourceTree = "<group>"; };
 		3375E8D52791EFA70019A5DE /* FileZipper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileZipper.swift; sourceTree = "<group>"; };
@@ -1259,6 +1263,8 @@
 				336A909027A453FE00851100 /* ReorderingDashboard.swift */,
 				336A909227A4553000851100 /* ReoredringSessionCard.swift */,
 				336A909427A48CA400851100 /* ReorderingSessionHeader.swift */,
+				336A909627A492A000851100 /* DropViewDelegate.swift */,
+				336A909827A4946400851100 /* ReorderingDashboardViewModel.swift */,
 			);
 			path = Dashboard;
 			sourceTree = "<group>";
@@ -2275,6 +2281,7 @@
 				AC006D29275F52CB00E99019 /* CSVMeasurementStream.swift in Sources */,
 				B376DD23268091B80083FD2F /* BodyEncodingError.swift in Sources */,
 				DDB44C252704AF830027176E /* AveragingService.swift in Sources */,
+				336A909727A492A000851100 /* DropViewDelegate.swift in Sources */,
 				AC9F526C2652A360003CF61F /* DashboardView.swift in Sources */,
 				AC3203CB25CA991C00A68520 /* TurnOnBluetoothView.swift in Sources */,
 				DD430B0C26710E0600F1BF2E /* PrivacyOnboarding.swift in Sources */,
@@ -2300,6 +2307,7 @@
 				AC960C7825DD39F500EC95DD /* ABConnectedView.swift in Sources */,
 				DD5687C326CFC8080028C2CA /* Constants.swift in Sources */,
 				AC489B5C2603614E00CEEC48 /* MoreInfoPopupView.swift in Sources */,
+				336A909927A4946400851100 /* ReorderingDashboardViewModel.swift in Sources */,
 				DDD24D9526A8569400D4A327 /* EmailForgotPasswordController.swift in Sources */,
 				AC524A892614733D0061AD45 /* CreatingSessionFlowRootView.swift in Sources */,
 				3387DD4A278F1A2900B11D02 /* ShareLocationlessSessionView.swift in Sources */,
