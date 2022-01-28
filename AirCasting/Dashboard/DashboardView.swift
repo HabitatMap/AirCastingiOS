@@ -18,6 +18,7 @@ struct DashboardView: View {
     @EnvironmentObject var averaging: AveragingService
     @EnvironmentObject var userSettings: UserSettings
     @State var isRefreshing: Bool = false
+    @State var isReorderingButtonActive: Bool = false
     private let urlProvider: BaseURLProvider
     private let measurementStreamStorage: MeasurementStreamStorage
     private let sessionStoppableFactory: SessionStoppableFactory
@@ -54,7 +55,17 @@ struct DashboardView: View {
             sessionTypePicker
             if sessions.isEmpty { emptySessionsView } else { sessionListView }
         }
+        .background(
+            NavigationLink(destination: ReorderingDashboard(sessions: sessions, thresholds: Array(self.thresholds), measurementStreamStorage: measurementStreamStorage, urlProvider: urlProvider),
+                           isActive: $isReorderingButtonActive,
+                           label: {EmptyView()})
+        )
         .navigationBarTitle(NSLocalizedString(Strings.DashboardView.dashboardText, comment: ""))
+        .toolbar(content: {
+            Button("Reorder") {
+                isReorderingButtonActive = true
+            }
+        })
         .onChange(of: selectedSection.selectedSection) { selectedSection in
             self.selectedSection.selectedSection = selectedSection
             try! coreDataHook.setup(selectedSection: self.selectedSection.selectedSection)
