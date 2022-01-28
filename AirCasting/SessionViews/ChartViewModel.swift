@@ -58,7 +58,7 @@ final class ChartViewModel: ObservableObject {
         backgroundNotificationHandle = NotificationCenter.default.addObserver(forName: UIApplication.didEnterBackgroundNotification, object: nil, queue: .main) { [weak self] _ in
             guard let self = self else { return }
             var contextHandle: Any?
-            contextHandle = NotificationCenter.default.addObserver(forName: .NSManagedObjectContextObjectsDidChange, object: self.persistence.viewContext, queue: .main) { [weak self] _ in
+            contextHandle = NotificationCenter.default.addObserver(forName: .NSManagedObjectContextDidSave, object: self.persistence.viewContext, queue: .main) { [weak self] _ in
                 self?.generateEntries()
                 guard let contextHandle = contextHandle else { return }
                 NotificationCenter.default.removeObserver(contextHandle)
@@ -107,7 +107,6 @@ final class ChartViewModel: ObservableObject {
             intervalStart = intervalEnd - timeUnit
         }
         chartStartTime = endOfFirstInterval
-        Log.info("entries: \(entries)")
         self.entries = entries
     }
     
@@ -116,12 +115,7 @@ final class ChartViewModel: ObservableObject {
         let sessionStartTime = session.startTime!
 
         if session.isFixed {
-            // If the last recorded measurement in within the range between session start and full hour that has passed since session start, then
-            if lastMeasurementTime.roundedUpToHour > Date().currentUTCTimeZoneDate {
-                return lastMeasurementTime.roundedDownToHour
-            } else {
-                return lastMeasurementTime.roundedUpToHour
-            }
+            return lastMeasurementTime.roundedDownToHour
         } else {
             let secondsSinceFullMinuteFromSessionStart = Date().currentUTCTimeZoneDate.timeIntervalSince(sessionStartTime).truncatingRemainder(dividingBy: timeUnit)
             return Date().currentUTCTimeZoneDate - secondsSinceFullMinuteFromSessionStart
@@ -132,9 +126,7 @@ final class ChartViewModel: ObservableObject {
         let sessionStartTime = session.startTime!
         
         if session.isFixed {
-            let seconds = Date().roundedUpToHour.timeIntervalSince(Date())
-            Log.info("SECONDS: \(seconds)")
-            return seconds
+            return Date().roundedUpToHour.timeIntervalSince(Date()) + 60
         } else {
             return timeUnit - Date().currentUTCTimeZoneDate.timeIntervalSince(sessionStartTime).truncatingRemainder(dividingBy: timeUnit)
         }
