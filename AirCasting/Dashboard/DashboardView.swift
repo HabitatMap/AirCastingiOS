@@ -63,13 +63,11 @@ struct DashboardView: View {
             guard !sessionSynchronizer.syncInProgress.value else {
                 onCurrentSyncEnd {
                     isRefreshing = false
-                    // reload view? or call hook.setup again
                 }
                 return
             }
             sessionSynchronizer.triggerSynchronization() {
                 isRefreshing = false
-                // reload view? or call hook.setup again
             }
         })
         .onAppear() {
