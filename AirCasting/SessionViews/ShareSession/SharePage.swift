@@ -30,18 +30,18 @@ struct ActivityViewController: UIViewControllerRepresentable {
         }
         
         func activityViewControllerPlaceholderItem(_ activityViewController: UIActivityViewController) -> Any {
-            return "View my AirCasting session: \(parent.itemToShare)"
+            return "\(Strings.SessionShare.sharedEmailText): \(parent.itemToShare)"
         }
         
         func activityViewController(_ activityViewController: UIActivityViewController, itemForActivityType activityType: UIActivity.ActivityType?) -> Any? {
             guard activityType == .mail else {
                 return parent.itemToShare
             }
-            return "View my AirCasting session: \(parent.itemToShare)"
+            return "\(Strings.SessionShare.sharedEmailText): \(parent.itemToShare)"
         }
         
         func activityViewController(_ activityViewController: UIActivityViewController, subjectForActivityType activityType: UIActivity.ActivityType?) -> String {
-            return "View my AirCasting session"
+            return "\(Strings.SessionShare.sharedEmailText)"
         }
     }
 }

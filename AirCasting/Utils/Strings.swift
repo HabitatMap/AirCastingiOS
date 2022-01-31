@@ -91,6 +91,7 @@ struct Strings {
         static let shareFileButton: String = LocalizedStringKey("Share file").stringKey
         static let loadingFile: String = LocalizedStringKey("Generating file").stringKey
         static let invalidEmailLabel: String = LocalizedStringKey("This email is invalid").stringKey
+        static let sharedEmailText: String = LocalizedStringKey("View my AirCasting session").stringKey
     }
 
     enum LoadingSession {
