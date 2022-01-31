@@ -109,6 +109,7 @@ private extension CreateSessionDetailsView {
         ZStack {
             locationPickerLink
             createSesssionLink
+            locationLink
         }
     }
     
@@ -117,17 +118,6 @@ private extension CreateSessionDetailsView {
             destination: ChooseCustomLocationView(creatingSessionFlowContinues: $creatingSessionFlowContinues,
                                                   sessionName: viewModel.sessionName, baseURL: viewModel.baseURL),
             isActive: $viewModel.isLocationSessionDetailsActive,
-            label: {
-                EmptyView()
-            }
-        )
-    }
-    
-    var createSesssionLink: some View {
-        NavigationLink(
-            destination: ConfirmCreatingSessionView(creatingSessionFlowContinues: $creatingSessionFlowContinues,
-                                                    baseURL: viewModel.baseURL, sessionName: viewModel.sessionName),
-            isActive: $viewModel.isConfirmCreatingSessionActive,
             label: {
                 EmptyView()
             }
@@ -146,6 +136,18 @@ private extension CreateSessionDetailsView {
             }
         )
     }
+    
+    var createSesssionLink: some View {
+        NavigationLink(
+            destination: ConfirmCreatingSessionView(creatingSessionFlowContinues: $creatingSessionFlowContinues,
+                                                    baseURL: viewModel.baseURL, sessionName: viewModel.sessionName),
+            isActive: $viewModel.isConfirmCreatingSessionActive,
+            label: {
+                EmptyView()
+            }
+        )
+    }
+    
     
     var continueButton: some View {
         Button(action: {

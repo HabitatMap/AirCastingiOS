@@ -68,7 +68,7 @@ class CreateSessionDetailsViewModel: ObservableObject {
     
     func compareIsIndoor(sessionContext: CreateSessionContext) -> CreateSessionContext {
         sessionContext.isIndoor = isIndoor
-        guard locationHandler.isLocationDenied() && !(sessionContext.isIndoor != nil) else {
+        guard locationHandler.isLocationDenied() && !isIndoor else {
             isLocationSessionDetailsActive = !isIndoor
             isConfirmCreatingSessionActive = isIndoor
             return sessionContext
