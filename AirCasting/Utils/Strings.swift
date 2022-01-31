@@ -596,12 +596,9 @@ struct Strings {
 // Extension allows us to preserve current Strings system and allow XCode to detect strings and then we are able to export then easly.
 extension LocalizedStringKey {
     var stringKey: String {
-    let description = "\(self)"
-
-    let components = description.components(separatedBy: "key: \"")
-        .map { $0.components(separatedBy: "\",") }
-
-    return components[1][0]
+        let description = "\(self)"
+        let components = description.components(separatedBy: "key: \"").map { $0.components(separatedBy: "\",") }
+        return components[1][0]
     }
 }
 
