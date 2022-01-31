@@ -11,4 +11,8 @@ class ReorderingDashboardViewModel: ObservableObject {
     init(sessions: [SessionEntity]) {
         self.sessions = sessions
     }
+    
+    func deleteItems(at offsets: IndexSet) {
+        sessions.remove(atOffsets: offsets)
+    }
 }
