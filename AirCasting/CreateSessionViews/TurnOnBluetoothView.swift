@@ -18,7 +18,7 @@ struct TurnOnBluetoothView: View {
     @Binding var creatingSessionFlowContinues: Bool
     @Binding var sdSyncContinues: Bool
     var isSDClearProcess: Bool = false
-
+    let locationHandler: LocationHandler
     let urlProvider: BaseURLProvider
 
     var body: some View {
@@ -37,7 +37,7 @@ struct TurnOnBluetoothView: View {
         .background(
             Group {
             NavigationLink(
-                destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider),
+                destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider, locationHandler: locationHandler),
                 isActive: $isPowerABLinkActive,
                 label: {
                     EmptyView()

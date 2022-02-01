@@ -60,7 +60,7 @@ extension SDRestartABView {
 
     var selectDeviceLink: some View {
         NavigationLink(
-            destination: SelectPeripheralView(SDClearingRouteProcess: viewModel.isSDClearProcess, creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: viewModel.urlProvider, syncMode: !viewModel.isSDClearProcess),
+            destination: SelectPeripheralView(SDClearingRouteProcess: viewModel.isSDClearProcess, creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: viewModel.urlProvider, locationHandler: DummyDefaultLocationHandler(), syncMode: !viewModel.isSDClearProcess),
             isActive: $viewModel.presentNextScreen,
             label: {
                 EmptyView()

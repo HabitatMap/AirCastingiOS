@@ -21,6 +21,7 @@ struct SelectDeviceView: View {
     @Binding var creatingSessionFlowContinues : Bool
     @Binding var sdSyncContinues : Bool
     @State private var showAlert = false
+    let locationHandler: LocationHandler
     @EnvironmentObject private var emptyDashboardButtonTapped: EmptyDashboardButtonTapped
     @EnvironmentObject private var tabSelection: TabBarSelection
 
@@ -39,19 +40,19 @@ struct SelectDeviceView: View {
         .padding()
         .background( Group {
             NavigationLink(
-                destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider),
+                destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider, locationHandler: locationHandler),
                 isActive: $isPowerABLinkActive,
                 label: {
                     EmptyView()
                 })
             NavigationLink(
-                destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sdSyncContinues: $sdSyncContinues, urlProvider: urlProvider),
+                destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sdSyncContinues: $sdSyncContinues, locationHandler: locationHandler, urlProvider: urlProvider),
                 isActive: $isTurnOnBluetoothLinkActive,
                 label: {
                     EmptyView()
                 })
             NavigationLink(
-                destination: CreateSessionDetailsView(creatingSessionFlowContinues: $creatingSessionFlowContinues, baseURL: urlProvider),
+                destination: CreateSessionDetailsView(creatingSessionFlowContinues: $creatingSessionFlowContinues, baseURL: urlProvider, locationHandler: locationHandler),
                 isActive: $isMicLinkActive,
                 label: {
                     EmptyView()
