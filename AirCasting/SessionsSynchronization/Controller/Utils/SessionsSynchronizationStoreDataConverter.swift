@@ -55,7 +55,7 @@ struct SynchronizationDataConverter {
         return .init(uuid: session.uuid,
                      type: session.sessionType,
                      title: session.name,
-                     notes: convertDatabaseNotesToMetadata(session.notes),
+                     notes: convertDatabaseNotesToMetadata(session.notes).sorted(by: { $0.number < $1.number }),
                      tagList: session.tags ?? "",
                      startTime: session.startTime,
                      endTime: session.endTime,

@@ -225,7 +225,6 @@ struct ChooseSessionTypeView: View {
             viewModel.createNewSession(isSessionFixed: true)
             switch viewModel.fixedSessionNextStep() {
             case .airBeam: isPowerABLinkActive = true
-            case .location: isTurnLocationOnLinkActive = true
             case .bluetooth: isTurnBluetoothOnLinkActive = true
             default: return
             }

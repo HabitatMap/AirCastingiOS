@@ -30,7 +30,6 @@ class ChooseSessionTypeViewModel {
     }
 
     func fixedSessionNextStep() -> ProceedToView {
-        guard !locationHandler.isLocationDenied() else { return .location }
         guard !bluetoothHandler.isBluetoothDenied() else { return .bluetooth }
         return .airBeam
     }

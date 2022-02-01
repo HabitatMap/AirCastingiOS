@@ -14,10 +14,13 @@ class CreateSessionDetailsViewModel: ObservableObject {
     @Published var wifiSSID: String = ""
     @Published var isConfirmCreatingSessionActive: Bool = false
     @Published var isLocationSessionDetailsActive: Bool = false
+    @Published var isLocationScreenNedeed: Bool = false
     @Published var showAlertAboutEmptyCredentials = false
     @Published var isSSIDTextfieldDisplayed: Bool = false
     @Published var showErrorIndicator: Bool = false
     var shouldShowError: Bool { sessionName.isEmpty && showErrorIndicator }
+    @Injected private var locationHandler: LocationHandler
+    
     
     func onScreenEnter() {
         if let ssid = getWiFiSsid() { wifiSSID = ssid }
@@ -57,8 +60,12 @@ class CreateSessionDetailsViewModel: ObservableObject {
     
     func compareIsIndoor(sessionContext: CreateSessionContext) -> CreateSessionContext {
         sessionContext.isIndoor = isIndoor
-        isLocationSessionDetailsActive = !isIndoor
-        isConfirmCreatingSessionActive = isIndoor
+        guard locationHandler.isLocationDenied() && !isIndoor else {
+            isLocationSessionDetailsActive = !isIndoor
+            isConfirmCreatingSessionActive = isIndoor
+            return sessionContext
+        }
+        isLocationScreenNedeed = true
         return sessionContext
     }
     

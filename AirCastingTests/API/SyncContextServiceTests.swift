@@ -17,7 +17,8 @@ final class SyncContextServiceTests: XCTestCase {
     private let client = APIClientMock()
     private let auth = RequestAuthorizationServiceMock()
     private let responseValidator = HTTPResponseValidatorMock()
-    private lazy var service = SessionSynchronizationService(client: client, authorization: auth, responseValidator: responseValidator)
+    private let urlProvider = URLProviderMock(baseAppURL: URL(string: "http://aircasting.org/")!)
+    private lazy var service = SessionSynchronizationService(client: client, authorization: auth, responseValidator: responseValidator, urlProvider: urlProvider)
     private var cancellables: [AnyCancellable] = []
     
     override func tearDown() {
@@ -138,6 +139,14 @@ class HTTPResponseValidatorMock: HTTPResponseValidator {
     
     func validate(response: URLResponse, data: Data) throws {
         if let error = stubError { throw error }
+    }
+}
+
+class URLProviderMock: BaseURLProvider {
+    var baseAppURL: URL
+    
+    init(baseAppURL: URL) {
+        self.baseAppURL = baseAppURL
     }
 }
 

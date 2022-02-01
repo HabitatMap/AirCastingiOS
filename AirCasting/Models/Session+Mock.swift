@@ -31,7 +31,7 @@ extension MeasurementStreamEntity {
         for i in 0...10 {
             let measuremennt: MeasurementEntity = try! context.newOrExisting(id: Int64(i))
             measuremennt.value = Double(arc4random() % 150)
-            measuremennt.time = Date().addingTimeInterval(-3600).addingTimeInterval(10 * Double(i))
+            measuremennt.time = DateBuilder.getRawDate().addingTimeInterval(-3600).addingTimeInterval(10 * Double(i))
         }
         
         return stream

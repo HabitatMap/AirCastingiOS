@@ -10,7 +10,7 @@ struct ChooseCustomLocationView: View {
     @State var placePickerPresented: Bool = false
     @State var isLocationPopupPresented = false
     @Binding var creatingSessionFlowContinues: Bool
-    @Binding var sessionName: String
+    var sessionName: String
 
     var body: some View {
         VStack(spacing: 40) {

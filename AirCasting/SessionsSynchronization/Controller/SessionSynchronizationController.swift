@@ -155,6 +155,7 @@ final class SessionSynchronizationController: SessionSynchronizer {
                     .upload(session: uploadData)
                     .onError({ _ in self.errorStream?.handleSyncError(.uploadFailure(uploadData.uuid)) })
                     .filterError(self.isConnectionError(_:))
+                    .flatMap { self.store.saveURLForSession(uuid: uploadData.uuid, url: $0.location) }
                     .logError(message: "[SYNC] Uploading session failed")
             }
             .eraseToAnyPublisher()

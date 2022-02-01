@@ -31,6 +31,7 @@ class UserSettings: ObservableObject {
             userDefaults.setValue(newValue, forKey: keepScreenOnKey)
             UIApplication.shared.isIdleTimerDisabled = userDefaults.bool(forKey: keepScreenOnKey)
             Log.info("Changed keepScreenOn setting to \(keepScreenOn ? "ON" : "OFF")")
+            objectWillChange.send()
         }
     }
 
@@ -41,6 +42,7 @@ class UserSettings: ObservableObject {
         set {
             userDefaults.setValue(newValue, forKey: locationlessKey)
             Log.info("Changed locationless sessions setting to \(disableMapping ? "ON" : "OFF")")
+            objectWillChange.send()
         }
     }
 
@@ -51,6 +53,7 @@ class UserSettings: ObservableObject {
         set {
             userDefaults.setValue(newValue, forKey: convertToCelsiusKey)
             Log.info("Changed convert to celcius setting to \(convertToCelsius ? "ON" : "OFF")")
+            objectWillChange.send()
         }
     }
 

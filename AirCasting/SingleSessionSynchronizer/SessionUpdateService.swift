@@ -45,7 +45,7 @@ class DefaultSessionUpdateService: SessionUpdateService {
         
         session.notes?.forEach({ note in
             let n = note as! NoteEntity
-            notes.append(CreateSessionApi.NotesParams(date: n.date ?? Date(),
+            notes.append(CreateSessionApi.NotesParams(date: n.date ?? DateBuilder.getFakeUTCDate(),
                                                       text: n.text ?? "",
                                                       lat: n.lat,
                                                       long: n.long,
@@ -57,10 +57,10 @@ class DefaultSessionUpdateService: SessionUpdateService {
                                                            title: session.name!,
                                                            tag_list: session.tags ?? "",
                                                            start_time: session.startTime!,
-                                                           end_time: session.endTime ?? Date(),
+                                                           end_time: session.endTime ?? DateBuilder.getRawDate(),
                                                            contribute: session.contribute,
                                                            is_indoor: session.isIndoor,
-                                                           notes: notes,
+                                                           notes: notes.sorted(by: { $0.number < $1.number }),
                                                            version: Int(session.version),
                                                            streams: data,
                                                            latitude: session.location?.latitude,
@@ -87,6 +87,6 @@ class DefaultSessionUpdateService: SessionUpdateService {
 
 class SessionUpdateServiceDefaultDummy: SessionUpdateService {
     func updateSession(session: SessionEntity, completion: @escaping () -> Void) {
-        print("updating session")
+        Log.info("updating session")
     }
 }

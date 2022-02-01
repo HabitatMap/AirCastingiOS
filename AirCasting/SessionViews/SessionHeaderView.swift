@@ -265,7 +265,7 @@ private extension SessionHeaderView {
         let formatter = DateFormatters.SessionCartView.utcDateIntervalFormatter
         
         guard let start = session.startTime else { return Text("") }
-        let end = session.endTime ?? Date().currentUTCTimeZoneDate
+        let end = session.endTime ?? DateBuilder.getFakeUTCDate()
         
         let string = formatter.string(from: start, to: end)
         return Text(string)

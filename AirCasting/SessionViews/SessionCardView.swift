@@ -22,9 +22,9 @@ struct SessionCardView: View {
     let thresholds: [SensorThreshold]
     let sessionStoppableFactory: SessionStoppableFactory
 
-    @StateObject private var mapStatsDataSource: MapStatsDataSource
+    @StateObject private var mapStatsDataSource: ConveringStatisticsDataSourceDecorator<MapStatsDataSource>
     @StateObject private var mapStatsViewModel: StatisticsContainerViewModel
-    @StateObject private var graphStatsDataSource: GraphStatsDataSource
+    @StateObject private var graphStatsDataSource: ConveringStatisticsDataSourceDecorator<GraphStatsDataSource>
     @StateObject private var graphStatsViewModel: StatisticsContainerViewModel
     @StateObject private var chartViewModel: ChartViewModel
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
@@ -37,10 +37,10 @@ struct SessionCardView: View {
         self.sessionCartViewModel = sessionCartViewModel
         self.thresholds = thresholds
         self.sessionStoppableFactory = sessionStoppableFactory
-        let mapDataSource = MapStatsDataSource()
+        let mapDataSource = ConveringStatisticsDataSourceDecorator<MapStatsDataSource>(dataSource: MapStatsDataSource(), stream: nil)
         self._mapStatsDataSource = .init(wrappedValue: mapDataSource)
         self._mapStatsViewModel = .init(wrappedValue: SessionCardView.createStatsContainerViewModel(dataSource: mapDataSource, session: session))
-        let graphDataSource = GraphStatsDataSource()
+        let graphDataSource = ConveringStatisticsDataSourceDecorator<GraphStatsDataSource>(dataSource: GraphStatsDataSource(), stream: nil)
         self._graphStatsDataSource = .init(wrappedValue: graphDataSource)
         self._graphStatsViewModel = .init(wrappedValue: SessionCardView.createStatsContainerViewModel(dataSource: graphDataSource, session: session))
         self._chartViewModel = .init(wrappedValue: ChartViewModel(session: session))
@@ -91,7 +91,9 @@ struct SessionCardView: View {
         }
         .onChange(of: selectedStream, perform: { [weak graphStatsDataSource, weak mapStatsDataSource, weak chartViewModel] newStream in
             graphStatsDataSource?.stream = newStream
+            graphStatsDataSource?.dataSource.stream = newStream
             mapStatsDataSource?.stream = newStream
+            mapStatsDataSource?.dataSource.stream = newStream
             chartViewModel?.stream = newStream
         })
         .font(Fonts.regularHeading4)
@@ -212,7 +214,7 @@ private extension SessionCardView {
     var endTime: some View {
         let formatter = DateFormatters.SessionCartView.pollutionChartDateFormatter
 
-        let end = chartViewModel.chartEndTime ?? Date().currentUTCTimeZoneDate
+        let end = chartViewModel.chartEndTime ?? DateBuilder.getFakeUTCDate()
 
         let string = formatter.string(from: end)
         return Text(string)
@@ -276,7 +278,7 @@ private extension SessionCardView {
                                    thresholds: thresholds,
                                    selectedStream: $selectedStream,
                                    statsContainerViewModel: graphStatsViewModel,
-                                   graphStatsDataSource: graphStatsDataSource,
+                                   graphStatsDataSource: graphStatsDataSource.dataSource,
                                    sessionStoppableFactory: sessionStoppableFactory)
              .foregroundColor(.aircastingDarkGray)
 

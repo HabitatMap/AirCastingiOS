@@ -7,11 +7,10 @@ import Resolver
 class MicrophoneSessionStopper: SessionStoppable {
     private let uuid: SessionUUID
     @Injected private var microphoneManager: MicrophoneManager
-    private let measurementStreamStorage: MeasurementStreamStorage
+    @Injected private var measurementStreamStorage: MeasurementStreamStorage
     
-    init(uuid: SessionUUID, measurementStreamStorage: MeasurementStreamStorage) {
+    init(uuid: SessionUUID) {
         self.uuid = uuid
-        self.measurementStreamStorage = measurementStreamStorage
     }
     
     func stopSession() throws {
@@ -19,7 +18,7 @@ class MicrophoneSessionStopper: SessionStoppable {
         microphoneManager.stopRecording()
         measurementStreamStorage.accessStorage { [self] storage in
             do {
-                try storage.updateSessionEndtime(Date(), for: self.uuid)
+                try storage.updateSessionEndtime(DateBuilder.getRawDate(), for: self.uuid)
                 try storage.updateSessionStatus(.FINISHED, for: self.uuid)
             } catch {
                 Log.info("\(error)")

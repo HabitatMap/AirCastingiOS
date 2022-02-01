@@ -2,7 +2,7 @@
 //
 
 import Foundation
-
+// swiftlint:disable airCasting_date
 extension Date {
     static let msFormatter: DateFormatter = DateFormatters.DateExtension.milisecondsDateFormatter
     
@@ -32,3 +32,4 @@ extension Date {
         return Date(timeIntervalSinceReferenceDate: (date.timeIntervalSinceReferenceDate / 3600.0).rounded(.towardZero) * 3600.0)
     }
 }
+// swiftlint:enable airCasting_date

@@ -3,7 +3,7 @@
 import Foundation
 import Resolver
 
-class AddNoteViewModel: AddNoteViewModel, ObservableObject {
+class AddNoteViewModel: ObservableObject {
     @Published var noteText = Strings.Commons.note
     
     private let notesHandler: NotesHandler

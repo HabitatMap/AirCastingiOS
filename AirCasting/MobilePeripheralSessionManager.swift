@@ -40,7 +40,7 @@ class MobilePeripheralSessionManager {
 
         if activeMobileSession?.peripheral == measurement.peripheral {
             do {
-                try updateStreams(stream: measurement.measurementStream, sessionUUID: activeMobileSession!.session.uuid, isLocationTracked: activeMobileSession!.session.locationless)
+                try updateStreams(stream: measurement.measurementStream, sessionUUID: activeMobileSession!.session.uuid, isLocationTracked: !activeMobileSession!.session.locationless)
             } catch {
                 Log.error("Unable to save measurement from airbeam to database because of an error: \(error)")
             }
@@ -86,7 +86,7 @@ class MobilePeripheralSessionManager {
         measurementStreamStorage.accessStorage { storage in
             do {
                 try storage.updateSessionStatus(.FINISHED, for: uuid)
-                try storage.updateSessionEndtime(Date(), for: uuid)
+                try storage.updateSessionEndtime(DateBuilder.getRawDate(), for: uuid)
             } catch {
                 Log.error("Unable to change session status to finished because of an error: \(error)")
             }

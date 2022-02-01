@@ -22,12 +22,14 @@ final class SessionUploadService: SessionUpstream {
         return encoder
     }()
     
+    private let decoder = JSONDecoder()
+    
     private struct APICallData: Encodable {
         let session: String
         let compression: Bool
     }
     
-    func upload(session: SessionsSynchronization.SessionUpstreamData) -> Future<Void, Error> {
+    func upload(session: SessionsSynchronization.SessionUpstreamData) -> Future<SessionsSynchronization.SessionUpstreamResult, Error> {
         .init { [self, client, authorization, encoder, responseValidator] promise in
             let url = urlProvider.baseAppURL.appendingPathComponent("api/sessions")
             var request = URLRequest(url: url)
@@ -53,9 +55,10 @@ final class SessionUploadService: SessionUpstream {
             }
             client.requestTask(for: request) { result, request in
                 promise(
-                    result.tryMap { result -> Void in
+                    result.tryMap { result -> SessionsSynchronization.SessionUpstreamResult in
                         try responseValidator.validate(response: result.response, data: result.data)
-                        return ()
+                        let response = try decoder.decode(SessionsSynchronization.SessionUpstreamResult.self, from: result.data)
+                        return response
                     }
                 )
             }

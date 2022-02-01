@@ -10,8 +10,7 @@ class GraphStatsDataSource: MeasurementsStatisticsDataSource, ObservableObject {
         }
     }
     var onForceReload: (() -> Void)?
-    
-    var dateRange: ClosedRange<Date> = Date.distantPast...Date.distantFuture
+    var dateRange: ClosedRange<Date> = DateBuilder.distantPast()...DateBuilder.distantFuture()
     
     var allMeasurements: [MeasurementStatistics.Measurement] {
         return stream?.allMeasurements?.getStatistics() ?? []

@@ -21,24 +21,18 @@ final class SessionStoppableFactoryDefault: SessionStoppableFactory {
         let stopper = matchStopper(for: session)
         if session.locationless {
             if session.deviceType == .MIC {
-                return MicrophoneSessionStopper(uuid: session.uuid,
-                                                microphoneManager: microphoneManager,
-                                                measurementStreamStorage: measurementStreamStorage)
+                return MicrophoneSessionStopper(uuid: session.uuid)
             }
-            return StandardSesssionStopper(uuid: session.uuid,
-                                          measurementStreamStorage: measurementStreamStorage)
+            return StandardSesssionStopper(uuid: session.uuid)
         }
         return SyncTriggeringSesionStopperProxy(stoppable: stopper, synchronizer: synchronizer)
     }
     
     private func matchStopper(for session: SessionEntity) -> SessionStoppable {
         switch session.deviceType {
-        case .MIC: return MicrophoneSessionStopper(uuid: session.uuid,
-                                                   measurementStreamStorage: measurementStreamStorage)
-        case .AIRBEAM3: return StandardSesssionStopper(uuid: session.uuid,
-                                                       measurementStreamStorage: measurementStreamStorage)
-        case .none: return StandardSesssionStopper(uuid: session.uuid,
-                                                   measurementStreamStorage: measurementStreamStorage)
+        case .MIC: return MicrophoneSessionStopper(uuid: session.uuid)
+        case .AIRBEAM3: return StandardSesssionStopper(uuid: session.uuid)
+        case .none: return StandardSesssionStopper(uuid: session.uuid)
         }
     }
 }

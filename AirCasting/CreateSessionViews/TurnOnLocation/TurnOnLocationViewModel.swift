@@ -12,7 +12,7 @@ class TurnOnLocationViewModel: ObservableObject {
     @Published var restartABLink = false
     @Published var alert: AlertInfo?
     var isSDClearProcess: Bool
-    
+
     @Injected private var locationHandler: LocationHandler
     @Injected private var bluetoothHandler: BluetoothHandler
     private let sessionContext: CreateSessionContext

@@ -126,8 +126,8 @@ class AirCastingGraph: UIView {
     }
     
     private func getCurrentDateRange() -> ClosedRange<Date> {
-        let startDate = Date(timeIntervalSince1970: lineChartView.lowestVisibleX)
-        let endDate = Date(timeIntervalSince1970: lineChartView.highestVisibleX)
+        let startDate = DateBuilder.getDateWithTimeIntervalSince1970(lineChartView.lowestVisibleX)
+        let endDate = DateBuilder.getDateWithTimeIntervalSince1970(lineChartView.highestVisibleX)
         #warning("Please check if this is still the case")
         // Workaround for a weird quirk with Chart - when first called
         // `startDate` is sane, but `endDate` is 1970, so we need a special
@@ -244,6 +244,6 @@ extension AirCastingGraph {
     }
     
     private func xAxisValue(for note: Note) -> Double {
-        Double(note.date.currentUTCTimeZoneDate.timeIntervalSince1970)
+        Double(note.date.timeIntervalSince1970)
     }
 }

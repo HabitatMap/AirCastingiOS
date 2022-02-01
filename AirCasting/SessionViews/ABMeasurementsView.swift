@@ -39,6 +39,7 @@ struct _ABMeasurementsView: View {
     let measurementPresentationStyle: MeasurementPresentationStyle
     
     @EnvironmentObject var selectedSection: SelectSection
+    @EnvironmentObject var userSettings: UserSettings
     
     private var streamsToShow: [MeasurementStreamEntity] {
         return session.sortedStreams ?? []
