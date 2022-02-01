@@ -32,6 +32,7 @@ struct ReorderingDashboard: View {
             }
             .padding()
         }
+        .navigationBarTitle("Reordering")
         .background(Color.clear.edgesIgnoringSafeArea(.all)) // this is added to avoid session card staying 0.8 opaque when user drops card on the edges
         .onDrop(of: [.text], delegate: DropOutsideOfGridDelegate(currentSession: $viewModel.currentSession))
     }

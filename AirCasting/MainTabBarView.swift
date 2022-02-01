@@ -25,6 +25,7 @@ struct MainTabBarView: View {
     let sessionSynchronizer: SessionSynchronizer
     @StateObject var tabSelection: TabBarSelection = TabBarSelection()
     @StateObject var selectedSection = SelectSection()
+    @StateObject var reorderButton = ReorderButtonTapped()
     @StateObject var emptyDashboardButtonTapped = EmptyDashboardButtonTapped()
     @StateObject var finishAndSyncButtonTapped = FinishAndSyncButtonTapped()
     @StateObject var sessionContext: CreateSessionContext
@@ -82,6 +83,7 @@ struct MainTabBarView: View {
         .environmentObject(tabSelection)
         .environmentObject(emptyDashboardButtonTapped)
         .environmentObject(finishAndSyncButtonTapped)
+        .environmentObject(reorderButton)
     }
 }
 
@@ -99,6 +101,19 @@ private extension MainTabBarView {
                 Image(homeImage)
             }
             .tag(TabBarSelection.Tab.dashboard)
+            .overlay(
+                Button {
+                    reorderButton.reorderIsON = true
+                } label: {
+                    if sessions.count > 1 && selectedSection.selectedSection == .following {
+                        Image("draggable-icon")
+                            .frame(width: 50, height: 50)
+                            .imageScale(.large)
+                    } else {
+                        EmptyView()
+                    }
+                }.offset(x: 0, y: 50)
+                ,alignment: .topTrailing)
     }
     
     private var createSessionTab: some View {
@@ -149,6 +164,10 @@ class EmptyDashboardButtonTapped: ObservableObject {
 
 class FinishAndSyncButtonTapped: ObservableObject {
     @Published var finishAndSyncButtonWasTapped = false
+}
+
+class ReorderButtonTapped: ObservableObject {
+    @Published var reorderIsON = false
 }
 
 extension MainTabBarView {
