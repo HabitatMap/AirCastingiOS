@@ -62,9 +62,11 @@ struct DashboardView: View {
         )
         .navigationBarTitle(NSLocalizedString(Strings.DashboardView.dashboardText, comment: ""))
         .toolbar(content: {
-            Button("Reorder") {
-                isReorderingButtonActive = true
-            }
+                ToolbarItemGroup(placement: .navigationBarTrailing) {
+                    if selectedSection.selectedSection == .following && sessions.count > 1 {
+                        reorderButton
+                    }
+                }
         })
         .onChange(of: selectedSection.selectedSection) { selectedSection in
             self.selectedSection.selectedSection = selectedSection
@@ -145,6 +147,15 @@ struct DashboardView: View {
         .padding(.horizontal)
         .frame(maxWidth: .infinity)
         .background(Color.aircastingGray.opacity(0.05))
+    }
+    
+    private var reorderButton: some View {
+        Button(action: {
+            isReorderingButtonActive = true
+        }, label: {
+            Image("draggable-icon")
+                .imageScale(.large)
+        })
     }
 
     private func onCurrentSyncEnd(_ completion: @escaping () -> Void) {
