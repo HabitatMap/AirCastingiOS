@@ -7,10 +7,10 @@
 
 import AirCastingStyling
 import SwiftUI
+import Resolver
 
 struct EmptyMobileDashboardViewMobile: View {
-    #warning("Please switch to protocol ASAP")
-    @EnvironmentObject var defaultSessionSynchronizerViewModel: DefaultSessionSynchronizationViewModel
+    @StateObject private var defaultSessionSynchronizerViewModel = SessionSynchronizationViewModel()
     @EnvironmentObject var selectedSection: SelectSection
     
     var shouldSessionFetch: Bool {
@@ -90,11 +90,3 @@ private extension EmptyMobileDashboardViewMobile {
         .padding(.bottom)
     }
 }
-
-#if DEBUG
-struct EmptyDashboard_Previews: PreviewProvider {
-    static var previews: some View {
-        EmptyMobileDashboardViewMobile()
-    }
-}
-#endif

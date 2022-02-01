@@ -77,15 +77,3 @@ struct EditView<VM: EditViewModel>: View {
         }.buttonStyle(BlueTextButtonStyle())
     }
 }
-
-#if DEBUG
-struct EditViewModal_Previews: PreviewProvider {
-    static var previews: some View {
-        let vm = EditSessionViewModel(measurementStreamStorage: PreviewMeasurementStreamStorage(),
-                                      sessionSynchronizer: DummySessionSynchronizer(),
-                                      sessionUpdateService: SessionUpdateServiceDefaultDummy(),
-                                      sessionUUID: SessionEntity.mock.uuid)
-        return EditView(viewModel: vm)
-    }
-}
-#endif

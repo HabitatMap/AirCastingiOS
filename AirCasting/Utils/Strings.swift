@@ -1,195 +1,195 @@
 // Created by Lunar on 23/06/2021.
 //
 
-import Foundation
+import SwiftUI
 
 struct Strings {
     enum Commons {
-        static let cancel: String = "Cancel"
-        static let ok: String = "OK"
-        static let myAccount: String = "My account"
-        static let `continue`: String = "Continue"
-        static let gotIt: String = "Got it!"
-        static let note: String = "Note"
+        static let cancel: String = LocalizedStringKey("Cancel").stringKey
+        static let ok: String = LocalizedStringKey("OK").stringKey
+        static let myAccount: String = LocalizedStringKey("My account").stringKey
+        static let `continue`: String = LocalizedStringKey("Continue").stringKey
+        static let gotIt: String = LocalizedStringKey("Got it!").stringKey
+        static let note: String = LocalizedStringKey("Note").stringKey
     }
 
     enum Settings {
-        static let title: String = "Settings"
-        static let myAccount: String = "My Account"
-        static let crowdMap: String = "Contribute to CrowdMap"
-        static let crowdMapDescription: String = "Data contributed to the CrowdMap is publicly available at aircasting.org"
-        static let disableMapping: String = "Disable Mapping"
-        static let disableMappingDescription: String = "Turns off GPS tracking & session syncing. Use \"Share file\" to retrieve your measurements via email."
-        static let temperature = "Temperature Units"
-        static let celsiusDescription = "Use Celsius"
-        static let backendSettings: String = "Backend settings"
-        static let settingsHelp: String = "Help"
-        static let hardwareDevelopers: String = "Hardware developers"
-        static let about: String = "About AirCasting"
-        static let keepScreenTitle = "Keep screen on"
-        static let clearSDTitle = "Clear SD card"
-        static let appInfoTitle = "AirCasting App v"
-        static let buildText = "build"
-        static let betaBuild = "Beta build"
-        static let debugBuild = "Debug build"
+        static let title: String = LocalizedStringKey("Settings").stringKey
+        static let myAccount: String = LocalizedStringKey("My Account").stringKey
+        static let crowdMap: String = LocalizedStringKey("Contribute to CrowdMap").stringKey
+        static let crowdMapDescription: String = LocalizedStringKey("Data contributed to the CrowdMap is publicly available at aircasting.org").stringKey
+        static let disableMapping: String = LocalizedStringKey("Disable Mapping").stringKey
+        static let disableMappingDescription: String = LocalizedStringKey("Turns off GPS tracking & session syncing. Use \"Share file\" to retrieve your measurements via email.").stringKey
+        static let temperature = LocalizedStringKey("Temperature Units").stringKey
+        static let celsiusDescription = LocalizedStringKey("Use Celsius").stringKey
+        static let backendSettings: String = LocalizedStringKey("Backend settings").stringKey
+        static let settingsHelp: String = LocalizedStringKey("Help").stringKey
+        static let hardwareDevelopers: String = LocalizedStringKey("Hardware developers").stringKey
+        static let about: String = LocalizedStringKey("About AirCasting").stringKey
+        static let keepScreenTitle = LocalizedStringKey("Keep screen on").stringKey
+        static let clearSDTitle = LocalizedStringKey("Clear SD card").stringKey
+        static let appInfoTitle = LocalizedStringKey("AirCasting App v").stringKey
+        static let buildText = LocalizedStringKey("build").stringKey
+        static let betaBuild = LocalizedStringKey("Beta build").stringKey
+        static let debugBuild = LocalizedStringKey("Debug build").stringKey
     }
 
     enum BackendSettings {
-        static let backendSettings: String = "Backend settings"
-        static let alertTitle: String = "Logout Alert"
-        static let alertMessage: String = "Something went wrong, when logging out."
-        static let currentURL: String = "current url"
-        static let currentPort: String = "current port"
+        static let backendSettings: String = LocalizedStringKey("Backend settings").stringKey
+        static let alertTitle: String = LocalizedStringKey("Logout Alert").stringKey
+        static let alertMessage: String = LocalizedStringKey("Something went wrong, when logging out.").stringKey
+        static let currentURL: String = LocalizedStringKey("current url").stringKey
+        static let currentPort: String = LocalizedStringKey("current port").stringKey
     }
 
     enum MyAccountSettings {
-        static let notLogged: String = "You aren’t currently logged in"
-        static let createAccount: String = "Create an account"
-        static let logIn: String = "Log In"
+        static let notLogged: String = LocalizedStringKey("You aren’t currently logged in").stringKey
+        static let createAccount: String = LocalizedStringKey("Create an account").stringKey
+        static let logIn: String = LocalizedStringKey("Log In").stringKey
     }
 
     enum SignOutSettings {
-        static let logged: String = "You are currently logged in as "
-        static let signOut: String = "Sign Out"
+        static let logged: String = LocalizedStringKey("You are currently logged in as ").stringKey
+        static let signOut: String = LocalizedStringKey("Sign Out").stringKey
     }
 
     enum ForgotPassword {
-        static let title = "Forgot Password"
-        static let emailInputTitle = "email or username"
-        static let newPasswordSuccessMessage = "Email was sent. Please check your inbox for the details."
-        static let newPasswordSuccessTitle = "Email response"
-        static let newPasswordFailureMessage = "Something went wrong, please try again"
-        static let newPasswordFailureTitle = "Email response"
+        static let title = LocalizedStringKey("Forgot Password").stringKey
+        static let emailInputTitle = LocalizedStringKey("email or username").stringKey
+        static let newPasswordSuccessMessage = LocalizedStringKey("Email was sent. Please check your inbox for the details.").stringKey
+        static let newPasswordSuccessTitle = LocalizedStringKey("Email response").stringKey
+        static let newPasswordFailureMessage = LocalizedStringKey("Something went wrong, please try again").stringKey
+        static let newPasswordFailureTitle = LocalizedStringKey("Email response").stringKey
     }
 
     enum SignInView {
-        static let title_2 = "to record and map your environment"
-        static let usernameField = "Profile name"
-        static let passwordField = "Password"
-        static let forgotPasswordButton = "Forgot password?"
-        static let signIn = "Sign in"
-        static let signUpButton_1 = "First time here? "
-        static let signUpButton_2 = "Create an account"
-        static let alertTitle = "Login Error"
-        static let alertComment = "Login Error alert title"
-        static let InvalidCredentialText = "The profile name or password is incorrect. Please try again. "
-        static let noConnectionTitle = "No Internet Connection"
-        static let noConnectionText = "Please make sure your device is connected to the internet."
+        static let title_2 = LocalizedStringKey("to record and map your environment").stringKey
+        static let usernameField = LocalizedStringKey("Profile name").stringKey
+        static let passwordField = LocalizedStringKey("Password").stringKey
+        static let forgotPasswordButton = LocalizedStringKey("Forgot password?").stringKey
+        static let signIn = LocalizedStringKey("Sign in").stringKey
+        static let signUpButton_1 = LocalizedStringKey("First time here? ").stringKey
+        static let signUpButton_2 = LocalizedStringKey("Create an account").stringKey
+        static let alertTitle = LocalizedStringKey("Login Error").stringKey
+        static let alertComment = LocalizedStringKey("Login Error alert title").stringKey
+        static let InvalidCredentialText = LocalizedStringKey("The profile name or password is incorrect. Please try again. ").stringKey
+        static let noConnectionTitle = LocalizedStringKey("No Internet Connection").stringKey
+        static let noConnectionText = LocalizedStringKey("Please make sure your device is connected to the internet.").stringKey
     }
 
     enum SessionShare {
-        static let title: String = "Share session"
-        static let description: String = "Select a stream to share"
-        static let locationlessDescription: String = "Generate a CSV file with your session data"
-        static let emailDescription: String = "Or email a CSV file with your session data"
-        static let emailPlaceholder: String = "Email"
-        static let linkSharingAlertTitle: String = "Sharing failed"
-        static let linkSharingAlertMessage: String = "Try again later"
-        static let emailSharingAlertTitle: String = "Request failed"
-        static let emailSharingAlertMessage: String = "Please try again later"
-        static let shareLinkButton: String = "Share link"
-        static let shareFileButton: String = "Share file"
-        static let loadingFile: String = "Generating file"
-        static let invalidEmailLabel: String = "This email is invalid"
+        static let title: String = LocalizedStringKey("Share session").stringKey
+        static let description: String = LocalizedStringKey("Select a stream to share").stringKey
+        static let locationlessDescription: String = LocalizedStringKey("Generate a CSV file with your session data").stringKey
+        static let emailDescription: String = LocalizedStringKey("Or email a CSV file with your session data").stringKey
+        static let emailPlaceholder: String = LocalizedStringKey("Email").stringKey
+        static let linkSharingAlertTitle: String = LocalizedStringKey("Sharing failed").stringKey
+        static let linkSharingAlertMessage: String = LocalizedStringKey("Try again later").stringKey
+        static let emailSharingAlertTitle: String = LocalizedStringKey("Request failed").stringKey
+        static let emailSharingAlertMessage: String = LocalizedStringKey("Please try again later").stringKey
+        static let shareLinkButton: String = LocalizedStringKey("Share link").stringKey
+        static let shareFileButton: String = LocalizedStringKey("Share file").stringKey
+        static let loadingFile: String = LocalizedStringKey("Generating file").stringKey
+        static let invalidEmailLabel: String = LocalizedStringKey("This email is invalid").stringKey
     }
 
     enum LoadingSession {
-        static let title: String = "Your AirBeam is gathering data."
-        static let description: String = "Measurements will appear in 3 minutes."
+        static let title: String = LocalizedStringKey("Your AirBeam is gathering data.").stringKey
+        static let description: String = LocalizedStringKey("Measurements will appear in 3 minutes.").stringKey
     }
 
     struct SessionCartView {
-        static let map: String = "map"
-        static let graph: String = "graph"
-        static let follow: String = "follow"
-        static let unfollow: String = "unfollow"
-        static let avgSessionH: String = "1 hr avg -"
-        static let avgSessionMin: String = "1 min avg -"
+        static let map: String = LocalizedStringKey("map").stringKey
+        static let graph: String = LocalizedStringKey("graph").stringKey
+        static let follow: String = LocalizedStringKey("follow").stringKey
+        static let unfollow: String = LocalizedStringKey("unfollow").stringKey
+        static let avgSessionH: String = LocalizedStringKey("1 hr avg -").stringKey
+        static let avgSessionMin: String = LocalizedStringKey("1 min avg -").stringKey
     }
 
     struct SingleMeasurementView {
-        static let microphoneUnit: String = "dB"
-        static let celsiusUnit: String = "C"
-        static let fahrenheitUnit: String = "F"
+        static let microphoneUnit: String = LocalizedStringKey("dB").stringKey
+        static let celsiusUnit: String = LocalizedStringKey("C").stringKey
+        static let fahrenheitUnit: String = LocalizedStringKey("F").stringKey
     }
 
     enum SelectPeripheralView {
-        static let airBeamsText: String = "AirBeams"
-        static let otherText: String = "Other devices"
-        static let alertTitle: String = "Connection error"
-        static let alertMessage: String = "Bluetooth connection failed. Please toggle the power on your device and try again."
-        static let titleLabel: String = "Choose the device you'd like to record with"
-        static let titleSyncLabel: String = "Select the device you'd like to sync"
-        static let titleSDClearLabel: String = "Select the device you'd like to clear"
-        static let refreshButton: String = "Don't see a device? Refresh scanning."
-        static let connectText: String = "Connect"
+        static let airBeamsText: String = LocalizedStringKey("AirBeams").stringKey
+        static let otherText: String = LocalizedStringKey("Other devices").stringKey
+        static let alertTitle: String = LocalizedStringKey("Connection error").stringKey
+        static let alertMessage: String = LocalizedStringKey("Bluetooth connection failed. Please toggle the power on your device and try again.").stringKey
+        static let titleLabel: String = LocalizedStringKey("Choose the device you'd like to record with").stringKey
+        static let titleSyncLabel: String = LocalizedStringKey("Select the device you'd like to sync").stringKey
+        static let titleSDClearLabel: String = LocalizedStringKey("Select the device you'd like to clear").stringKey
+        static let refreshButton: String = LocalizedStringKey("Don't see a device? Refresh scanning.").stringKey
+        static let connectText: String = LocalizedStringKey("Connect").stringKey
     }
 
     enum SessionCart {
-        static let measurementsTitle: String = "Last second measurement:"
-        static let dormantMeasurementsTitle: String = "Avg value:"
-        static let heatmapSettingsTitle: String = "Heatmap settings"
-        static let heatmapSettingsdescription: String = "Values beyond Min and Max will not be displayed."
-        static let saveChangesButton: String = "Save changes"
-        static let resetChangesButton: String = "Reset to default"
-        static let parametersText: String = "Parameters:"
-        static let lastMinuteMeasurement: String = "Last minute measurement"
+        static let measurementsTitle: String = LocalizedStringKey("Last second measurement:").stringKey
+        static let dormantMeasurementsTitle: String = LocalizedStringKey("Avg value:").stringKey
+        static let heatmapSettingsTitle: String = LocalizedStringKey("Heatmap settings").stringKey
+        static let heatmapSettingsdescription: String = LocalizedStringKey("Values beyond Min and Max will not be displayed.").stringKey
+        static let saveChangesButton: String = LocalizedStringKey("Save changes").stringKey
+        static let resetChangesButton: String = LocalizedStringKey("Reset to default").stringKey
+        static let parametersText: String = LocalizedStringKey("Parameters:").stringKey
+        static let lastMinuteMeasurement: String = LocalizedStringKey("Last minute measurement").stringKey
     }
 
     enum Thresholds {
-        static let veryHigh: String = "Max"
-        static let high: String = "High"
-        static let medium: String = "Medium"
-        static let low: String = "Low"
-        static let veryLow: String = "Min"
+        static let veryHigh: String = LocalizedStringKey("Max").stringKey
+        static let high: String = LocalizedStringKey("High").stringKey
+        static let medium: String = LocalizedStringKey("Medium").stringKey
+        static let low: String = LocalizedStringKey("Low").stringKey
+        static let veryLow: String = LocalizedStringKey("Min").stringKey
     }
 
     enum WifiPopupView {
-        static let wifiPlaceholder: String = "Wi-Fi name"
-        static let passwordPlaceholder: String = "Password"
-        static let connectButton: String = "Connect"
-        static let passwordTitle: String = "WiFi network name & password:"
-        static let nameAndPasswordTitle_1: String = "Password for "
-        static let nameAndPasswordTitle_2: String = " network:"
-        static let differentNetwork: String = "Connect to a different WiFi network."
+        static let wifiPlaceholder: String = LocalizedStringKey("Wi-Fi name").stringKey
+        static let passwordPlaceholder: String = LocalizedStringKey("Password").stringKey
+        static let connectButton: String = LocalizedStringKey("Connect").stringKey
+        static let passwordTitle: String = LocalizedStringKey("WiFi network name & password:").stringKey
+        static let nameAndPasswordTitle_1: String = LocalizedStringKey("Password for ").stringKey
+        static let nameAndPasswordTitle_2: String = LocalizedStringKey(" network:").stringKey
+        static let differentNetwork: String = LocalizedStringKey("Connect to a different WiFi network.").stringKey
     }
 
     enum OnboardingGetStarted {
-        static let description: String = "record and map measurements from health and environmental monitoring devices"
-        static let getStarted: String = "Get started"
+        static let description: String = LocalizedStringKey("record and map measurements from health and environmental monitoring devices").stringKey
+        static let getStarted: String = LocalizedStringKey("Get started").stringKey
     }
 
     enum OnboardingNearAir {
-        static let title: String = "How’s the air \nnear you?"
-        static let description: String = "Find and follow a fixed air quality monitor near you and know how clean or polluted your air is right now."
-        static let continueButton: String = "How’s the air \nnear you?"
+        static let title: String = LocalizedStringKey("How’s the air \nnear you?").stringKey
+        static let description: String = LocalizedStringKey("Find and follow a fixed air quality monitor near you and know how clean or polluted your air is right now.").stringKey
+        static let continueButton: String = LocalizedStringKey("How’s the air \nnear you?").stringKey
     }
 
     enum OnboardingAirBeam {
-        static let title: String = "Measure and map \nyour exposure \nto air pollution"
-        static let description: String = "Connect AirBeam to measure air quality humidity, and temperature."
-        static let sheetButton: String = "Learn More"
+        static let title: String = LocalizedStringKey("Measure and map \nyour exposure \nto air pollution").stringKey
+        static let description: String = LocalizedStringKey("Connect AirBeam to measure air quality humidity, and temperature.").stringKey
+        static let sheetButton: String = LocalizedStringKey("Learn More").stringKey
     }
 
     enum OnboardingAirBeamSheet {
-        static let sheetTitle: String = "How AirBeam \nworks?"
-        static let sheetDescription_1: String = "In "
-        static let sheetDescription_2: String = "mobile "
-        static let sheetDescription_3: String = "mode, the AirBeam \ncaptures personal exposures.\n\nIn "
-        static let sheetDescription_4: String = "fixed "
-        static let sheetDescription_5: String = "mode, it can be \ninstalled indoors or outdoors to \nkeep tabs on pollution levels in \nyour home, office, backyard, or \nneighborhood 24/7."
+        static let sheetTitle: String = LocalizedStringKey("How AirBeam \nworks?").stringKey
+        static let sheetDescription_1: String = LocalizedStringKey("In ").stringKey
+        static let sheetDescription_2: String = LocalizedStringKey("mobile ").stringKey
+        static let sheetDescription_3: String = LocalizedStringKey("mode, the AirBeam \ncaptures personal exposures.\n\nIn ").stringKey
+        static let sheetDescription_4: String = LocalizedStringKey("fixed ").stringKey
+        static let sheetDescription_5: String = LocalizedStringKey("mode, it can be \ninstalled indoors or outdoors to \nkeep tabs on pollution levels in \nyour home, office, backyard, or \nneighborhood 24/7.").stringKey
     }
 
     enum OnboardingPrivacy {
-        static let title: String = "Your privacy"
-        static let description: String = "Review our commitment to preserving your privacy and accept our privacy policy."
-        static let continueButton: String = "Accept"
-        static let sheetButton: String = "Learn More"
+        static let title: String = LocalizedStringKey("Your privacy").stringKey
+        static let description: String = LocalizedStringKey("Review our commitment to preserving your privacy and accept our privacy policy.").stringKey
+        static let continueButton: String = LocalizedStringKey("Accept").stringKey
+        static let sheetButton: String = LocalizedStringKey("Learn More").stringKey
     }
 
     enum OnboardingPrivacySheet {
-        static let title: String = "Our privacy policy"
-        static let description: String = """
+        static let title: String = LocalizedStringKey("Our privacy policy").stringKey
+        static let description: String = LocalizedStringKey("""
         HabitatMap protects the personal data of AirCasting mobile application users, and fulfills conditions deriving from the law, especially from the Regulation (EU) 2016/679 of the European Parliament and of the Council of 27 April 2016 on the protection of natural persons with regard to the processing of personal data and on the free movement of such data, and repealing Directive 95/46/EC (GDPR). HabitatMap protects the security of the data of AirCasting app users using appropriate technical, logistical, administrative, and physical protection measures. AirCasting ensures that its employees and contractors are given training in protection of personal data.
             This privacy policy sets out the rules for HabitatMap’s processing of your data, including personal data, in relation to your use of the AirCasting mobile application.
 
@@ -310,285 +310,295 @@ struct Strings {
 
             This Privacy Policy may be subject to updates and changes. In such case, HabitatMap will take steps to inform you of any such updates or changes by, for example, sending you a notification. Notwithstanding the foregoing, HabitatMap recommends that you review this page as often as possible.
 
- """
+ """).stringKey
     }
 
     enum EmptyDashboardMobile {
-        static let title: String = "Start recording a \nmobile session"
-        static let description: String = "If you plan on moving around \nwhile recording measurements."
-        static let buttonMobile: String = "Record mobile session"
-        static let buttonFixed: String = "Record new session"
-        static let airBeamDescriptionText: String = "Did you know?"
-        static let airBeamDescriptionDescription: String = "AirBeam3 is weather resistant. To keep tabs on your outdoor air quality 24/7, hang one outside your home and record a fixed session."
-        static let fetchingText: String = "Fetching..."
+        static let title: String = LocalizedStringKey("Start recording a \nmobile session").stringKey
+        static let description: String = LocalizedStringKey("If you plan on moving around \nwhile recording measurements.").stringKey
+        static let buttonMobile: String = LocalizedStringKey("Record mobile session").stringKey
+        static let buttonFixed: String = LocalizedStringKey("Record new session").stringKey
+        static let airBeamDescriptionText: String = LocalizedStringKey("Did you know?").stringKey
+        static let airBeamDescriptionDescription: String = LocalizedStringKey("AirBeam3 is weather resistant. To keep tabs on your outdoor air quality 24/7, hang one outside your home and record a fixed session.").stringKey
+        static let fetchingText: String = LocalizedStringKey("Fetching...").stringKey
     }
 
     enum EmptyDashboardFixed {
-        static let title: String = "Ready to get started?"
-        static let description: String = "Record a new session to monitor\n your health & environment."
-        static let newSession: String = "Record new session"
-        static let fetchingText: String = "Fetching..."
+        static let title: String = LocalizedStringKey("Ready to get started?").stringKey
+        static let description: String = LocalizedStringKey("Record a new session to monitor\n your health & environment.").stringKey
+        static let newSession: String = LocalizedStringKey("Record new session").stringKey
+        static let fetchingText: String = LocalizedStringKey("Fetching...").stringKey
     }
 
     enum PowerABView {
-        static let alertTitle: String = "Location alert"
-        static let alertMessage: String = "Please go to settings and allow location first."
-        static let alertSettings: String = "Settings"
-        static let title: String = "Power on your AirBeam"
-        static let messageText: String = "Wait for the conncection indicator to change from red to green before continuing."
+        static let alertTitle: String = LocalizedStringKey("Location alert").stringKey
+        static let alertMessage: String = LocalizedStringKey("Please go to settings and allow location first.").stringKey
+        static let alertSettings: String = LocalizedStringKey("Settings").stringKey
+        static let title: String = LocalizedStringKey("Power on your AirBeam").stringKey
+        static let messageText: String = LocalizedStringKey("Wait for the conncection indicator to change from red to green before continuing.").stringKey
     }
 
     enum SelectDeviceView {
-        static let alertTitle: String = "Location alert"
-        static let alertMessage: String = "Please go to settings and allow location first."
-        static let alertSettings: String = "Settings"
-        static let title: String = "What device are you using to record this session?"
-        static let bluetoothLabel_1: String = "Bluetooth device"
-        static let bluetoothLabel_2: String = "for example AirBeam"
-        static let micLabel_1: String = "Phone microphone"
-        static let micLabel_2: String = "to measure sound level"
-        static let chooseButton: String = "Choose"
+        static let alertTitle: String = LocalizedStringKey("Location alert").stringKey
+        static let alertMessage: String = LocalizedStringKey("Please go to settings and allow location first.").stringKey
+        static let alertSettings: String = LocalizedStringKey("Settings").stringKey
+        static let title: String = LocalizedStringKey("What device are you using to record this session?").stringKey
+        static let bluetoothLabel_1: String = LocalizedStringKey("Bluetooth device").stringKey
+        static let bluetoothLabel_2: String = LocalizedStringKey("for example AirBeam").stringKey
+        static let micLabel_1: String = LocalizedStringKey("Phone microphone").stringKey
+        static let micLabel_2: String = LocalizedStringKey("to measure sound level").stringKey
+        static let chooseButton: String = LocalizedStringKey("Choose").stringKey
     }
 
     enum OfflineAlert {
-        static let title = "Device is offline"
-        static let message = "Could not finish session synchronization"
+        static let title = LocalizedStringKey("Device is offline").stringKey
+        static let message = LocalizedStringKey("Could not finish session synchronization").stringKey
     }
 
     enum TurnOnBluetoothView {
-        static let title: String = "Turn on Bluetooth"
-        static let messageText: String = "Turn on Bluetooth to enable your phone to connect to the AirBeam"
+        static let title: String = LocalizedStringKey("Turn on Bluetooth").stringKey
+        static let messageText: String = LocalizedStringKey("Turn on Bluetooth to enable your phone to connect to the AirBeam").stringKey
     }
 
     enum TurnOnLocationView {
-        static let title: String = "Turn on location services"
-        static let messageText: String = "To map your measurements, turn on location services."
-        static let continueButton: String = "Turn on"
+        static let title: String = LocalizedStringKey("Turn on location services").stringKey
+        static let messageText: String = LocalizedStringKey("To map your measurements, turn on location services.").stringKey
+        static let continueButton: String = LocalizedStringKey("Turn on").stringKey
     }
 
     enum DeleteSession {
-        static let title: String = "Delete this session"
-        static let description: String = "Which stream would you like to delete?"
-        static let continueButton: String = "Delete streams"
-        static let deleteAlert: String = "Are You sure?"
-        static let deleteButton: String = "Delete"
+        static let title: String = LocalizedStringKey("Delete this session").stringKey
+        static let description: String = LocalizedStringKey("Which stream would you like to delete?").stringKey
+        static let continueButton: String = LocalizedStringKey("Delete streams").stringKey
+        static let deleteAlert: String = LocalizedStringKey("Are You sure?").stringKey
+        static let deleteButton: String = LocalizedStringKey("Delete").stringKey
     }
 
     enum EditSession {
-        static let title: String = "Edit session details"
-        static let namePlaceholder: String = "Session name"
-        static let tagPlaceholder: String = "Session tags"
-        static let buttonAccept: String = "Accept"
-        static let erorr: String = "Session name can't be blank"
+        static let title: String = LocalizedStringKey("Edit session details").stringKey
+        static let namePlaceholder: String = LocalizedStringKey("Session name").stringKey
+        static let tagPlaceholder: String = LocalizedStringKey("Session tags").stringKey
+        static let buttonAccept: String = LocalizedStringKey("Accept").stringKey
+        static let erorr: String = LocalizedStringKey("Session name can't be blank").stringKey
     }
 
     enum SessionHeaderView {
-        static let measurementsMicText: String = "Most recent measurement:"
-        static let stopButton: String = "Stop recording"
-        static let editButton: String = "Edit session"
-        static let shareButton: String = "Share session"
-        static let deleteButton: String = "Delete session"
-        static let stopRecordingButton: String = "Finish recording session"
-        static let enterStandaloneModeButton: String = "Enter standalone mode"
-        static let finishAlertTitle: String = "Finish recording "
-        static let finishAlertTitle_2: String = "this session"
-        static let finishAlertTitle_3: String = "?"
-        static let finishAlertTitle_3_SYNC: String = "and sync from SD card?"
-        static let finishAlertMessage_1: String = "The session will be moved to "
-        static let finishAlertMessage_2: String = "Mobile Dormant"
-        static let finishAlertMessage_3: String = " tab and you won't be able to add new measurement to it."
-        static let finishAlertMessage_4: String = "\nSD card will be cleared afterwards"
-        static let finishAlertButton: String = "Finish recording"
-        static let shareFileAlertTitle: String = "Success!"
-        static let shareFileAlertMessage: String = "The session file was sent to provided email address"
-        static let airBeam3: String = "AirBeam3"
-        static let airBeam2: String = "AirBeam2"
-        static let airBeam1: String = "AirBeam1"
-        static let mic: String = "Phone Mic"
-        static let addNoteButton: String = "Add a note"
+        static let measurementsMicText: String = LocalizedStringKey("Most recent measurement:").stringKey
+        static let stopButton: String = LocalizedStringKey("Stop recording").stringKey
+        static let editButton: String = LocalizedStringKey("Edit session").stringKey
+        static let shareButton: String = LocalizedStringKey("Share session").stringKey
+        static let deleteButton: String = LocalizedStringKey("Delete session").stringKey
+        static let stopRecordingButton: String = LocalizedStringKey("Finish recording session").stringKey
+        static let enterStandaloneModeButton: String = LocalizedStringKey("Enter standalone mode").stringKey
+        static let finishAlertTitle: String = LocalizedStringKey("Finish recording ").stringKey
+        static let finishAlertTitle_2: String = LocalizedStringKey("this session").stringKey
+        static let finishAlertTitle_3: String = LocalizedStringKey("?").stringKey
+        static let finishAlertTitle_3_SYNC: String = LocalizedStringKey("and sync from SD card?").stringKey
+        static let finishAlertMessage_1: String = LocalizedStringKey("The session will be moved to ").stringKey
+        static let finishAlertMessage_2: String = LocalizedStringKey("Mobile Dormant").stringKey
+        static let finishAlertMessage_3: String = LocalizedStringKey(" tab and you won't be able to add new measurement to it.").stringKey
+        static let finishAlertMessage_4: String = LocalizedStringKey("\nSD card will be cleared afterwards").stringKey
+        static let finishAlertButton: String = LocalizedStringKey("Finish recording").stringKey
+        static let shareFileAlertTitle: String = LocalizedStringKey("Success!").stringKey
+        static let shareFileAlertMessage: String = LocalizedStringKey("The session file was sent to provided email address").stringKey
+        static let airBeam3: String = LocalizedStringKey("AirBeam3").stringKey
+        static let airBeam2: String = LocalizedStringKey("AirBeam2").stringKey
+        static let airBeam1: String = LocalizedStringKey("AirBeam1").stringKey
+        static let mic: String = LocalizedStringKey("Phone Mic").stringKey
+        static let addNoteButton: String = LocalizedStringKey("Add a note").stringKey
     }
 
     enum NetworkChecker {
-        static let satisfiedPathText: String = "Current device has a network connection"
-        static let failurePathText: String = "Current device DOES NOT have a network connection"
+        static let satisfiedPathText: String = LocalizedStringKey("Current device has a network connection").stringKey
+        static let failurePathText: String = LocalizedStringKey("Current device DOES NOT have a network connection").stringKey
     }
 
     enum ChooseSessionTypeView {
-        static let title: String = "Let's begin"
-        static let message: String = "How would you like to add your session?"
-        static let recordNew: String = "Record a new session"
-        static let moreInfo: String = "more info"
-        static let fixedLabel_1: String = "Fixed session"
-        static let fixedLabel_2: String = "for measuring in one place"
-        static let mobileLabel_1: String = "Mobile session"
-        static let mobileLabel_2: String = "for moving\naround"
-        static let orLabel: String = "or"
-        static let syncTitle: String = "Sync data from \nAirBeam3"
-        static let syncDescription: String = "if you recorded with AirBeam3"
+        static let title: String = LocalizedStringKey("Let's begin").stringKey
+        static let message: String = LocalizedStringKey("How would you like to add your session?").stringKey
+        static let recordNew: String = LocalizedStringKey("Record a new session").stringKey
+        static let moreInfo: String = LocalizedStringKey("more info").stringKey
+        static let fixedLabel_1: String = LocalizedStringKey("Fixed session").stringKey
+        static let fixedLabel_2: String = LocalizedStringKey("for measuring in one place").stringKey
+        static let mobileLabel_1: String = LocalizedStringKey("Mobile session").stringKey
+        static let mobileLabel_2: String = LocalizedStringKey("for moving\naround").stringKey
+        static let orLabel: String = LocalizedStringKey("or").stringKey
+        static let syncTitle: String = LocalizedStringKey("Sync data from \nAirBeam3").stringKey
+        static let syncDescription: String = LocalizedStringKey("if you recorded with AirBeam3").stringKey
 
     }
 
     enum MoreInfoPopupView {
-        static let text_1: String = "Session types"
-        static let text_2: String = "If you plan on moving around with the AirBeam3 while recording air quality measurement, configure the AirBeam to record a mobile session. When recording a mobile AirCasting session, measurements are created, timestamped, and geolocated once per second."
-        static let text_3: String = "If you plan to leave the AirBeam3 indoors or hang it outside then configure it to record a fixed session. When recording fixed AirCasting sessions, measurements are created and timestamped once per minute, and geocoordinates are fixed to a set location."
+        static let text_1: String = LocalizedStringKey("Session types").stringKey
+        static let text_2: String = LocalizedStringKey("If you plan on moving around with the AirBeam3 while recording air quality measurement, configure the AirBeam to record a mobile session. When recording a mobile AirCasting session, measurements are created, timestamped, and geolocated once per second.").stringKey
+        static let text_3: String = LocalizedStringKey("If you plan to leave the AirBeam3 indoors or hang it outside then configure it to record a fixed session. When recording fixed AirCasting sessions, measurements are created and timestamped once per minute, and geocoordinates are fixed to a set location.").stringKey
     }
 
     enum ConnectingABView {
-        static let title: String = "Connecting"
-        static let message: String = "This should take less than 10 seconds."
-        static let connect: String = "Connect"
+        static let title: String = LocalizedStringKey("Connecting").stringKey
+        static let message: String = LocalizedStringKey("This should take less than 10 seconds.").stringKey
+        static let connect: String = LocalizedStringKey("Connect").stringKey
     }
 
     enum ABConnectedView {
-        static let title: String = "AirBeam connected"
-        static let message: String = "Your AirBeam is connected to your phone and ready to take some measurements."
+        static let title: String = LocalizedStringKey("AirBeam connected").stringKey
+        static let message: String = LocalizedStringKey("Your AirBeam is connected to your phone and ready to take some measurements.").stringKey
     }
 
     enum CreateSessionDetailsView {
-        static let wifiAlertTitle: String = "Wi-Fi credentials are empty "
-        static let wifiAlertMessage: String = "Please, fill them up."
-        static let primaryWifiButton: String = "Show Wi-fi screen"
-        static let title: String = "New session details"
-        static let placementPicker_1: String = "Where will you place your AirBeam?"
-        static let placementPicker_2: String = "Indoor"
-        static let placementPicker_3: String = "Outdoor"
-        static let transmissionPicker: String = "Data transmission:"
-        static let cellularText: String = "Cellular"
-        static let wifiText: String = "Wi-Fi"
-        static let sessionNamePlaceholder: String = "Session name"
-        static let sessionTagPlaceholder: String = "Tags"
+        static let wifiAlertTitle: String = LocalizedStringKey("Wi-Fi credentials are empty ").stringKey
+        static let wifiAlertMessage: String = LocalizedStringKey("Please, fill them up.").stringKey
+        static let primaryWifiButton: String = LocalizedStringKey("Show Wi-fi screen").stringKey
+        static let title: String = LocalizedStringKey("New session details").stringKey
+        static let placementPicker_1: String = LocalizedStringKey("Where will you place your AirBeam?").stringKey
+        static let placementPicker_2: String = LocalizedStringKey("Indoor").stringKey
+        static let placementPicker_3: String = LocalizedStringKey("Outdoor").stringKey
+        static let transmissionPicker: String = LocalizedStringKey("Data transmission:").stringKey
+        static let cellularText: String = LocalizedStringKey("Cellular").stringKey
+        static let wifiText: String = LocalizedStringKey("Wi-Fi").stringKey
+        static let sessionNamePlaceholder: String = LocalizedStringKey("Session name").stringKey
+        static let sessionTagPlaceholder: String = LocalizedStringKey("Tags").stringKey
     }
 
     enum AirBeamConnector {
-        static let connectionTimeoutTitle: String = "Connection error"
-        static let connectionTimeoutDescription: String = "Bluetooth connection failed. Please toggle the power on your device and try again."
+        static let connectionTimeoutTitle: String = LocalizedStringKey("Connection error").stringKey
+        static let connectionTimeoutDescription: String = LocalizedStringKey("Bluetooth connection failed. Please toggle the power on your device and try again.").stringKey
     }
 
     enum ConfirmCreatingSessionView {
-        static let alertTitle: String = "Failure"
-        static let alertMessage: String = "Failed to create session"
-        static let contentViewTitle: String = "Are you ready?"
-        static let contentViewText_1: String = "Your "
-        static let contentViewText_2: String = " session "
-        static let contentViewText_3: String = " is ready to start gathering data.\n\n"
-        static let contentViewText_4: String = "Hang your AirBeam in a secure position, then press the start recording button below."
-        static let contentViewText_4Mobile: String = "Move to your starting location, confirm your location is accurate on the map, then press the start recording button below."
-        static let startRecording: String = "Start recording"
+        static let alertTitle: String = LocalizedStringKey("Failure").stringKey
+        static let alertMessage: String = LocalizedStringKey("Failed to create session").stringKey
+        static let contentViewTitle: String = LocalizedStringKey("Are you ready?").stringKey
+        static let contentViewText_1: String = LocalizedStringKey("Your ").stringKey
+        static let contentViewText_2: String = LocalizedStringKey(" session ").stringKey
+        static let contentViewText_3: String = LocalizedStringKey(" is ready to start gathering data.\n\n").stringKey
+        static let contentViewText_4: String = LocalizedStringKey("Hang your AirBeam in a secure position, then press the start recording button below.").stringKey
+        static let contentViewText_4Mobile: String = LocalizedStringKey("Move to your starting location, confirm your location is accurate on the map, then press the start recording button below.").stringKey
+        static let startRecording: String = LocalizedStringKey("Start recording").stringKey
     }
 
     enum ChooseCustomLocationView {
-        static let sessionLocation: String = "Session location"
-        static let titleLabel: String = "Search the address and adjust the marker to indicate an exact placement of Your AirBeam"
+        static let sessionLocation: String = LocalizedStringKey("Session location").stringKey
+        static let titleLabel: String = LocalizedStringKey("Search the address and adjust the marker to indicate an exact placement of Your AirBeam").stringKey
     }
 
     enum MainTabBarView {
-        static let homeIcon: String = "home"
-        static let homeBlueIcon: String = "bluehome"
-        static let plusIcon: String = "plus"
-        static let plusBlueIcon: String = "blueplus"
-        static let settingsIcon: String = "settings"
-        static let settingsBlueIcon: String = "bluesettings"
-        static let loggingOut: String = "Logging out, please wait..."
+        static let homeIcon: String = LocalizedStringKey("home").stringKey
+        static let homeBlueIcon: String = LocalizedStringKey("bluehome").stringKey
+        static let plusIcon: String = LocalizedStringKey("plus").stringKey
+        static let plusBlueIcon: String = LocalizedStringKey("blueplus").stringKey
+        static let settingsIcon: String = LocalizedStringKey("settings").stringKey
+        static let settingsBlueIcon: String = LocalizedStringKey("bluesettings").stringKey
+        static let loggingOut: String = LocalizedStringKey("Logging out, please wait...").stringKey
     }
 
     enum DashboardView {
-        static let dashboardText: String = "Dashboard"
+        static let dashboardText: String = LocalizedStringKey("Dashboard").stringKey
     }
 
     enum RefreshControl {
-        static let progressViewTest: String = "Syncing..."
+        static let progressViewTest: String = LocalizedStringKey("Syncing...").stringKey
     }
 
     enum StandaloneSessionCardView {
-        static let heading = "Your AirBeam3 is now in stand-alone mode"
-        static let description = "AirBeam3 is now recording using its SD card. The measurements will be displayed here after syncing."
-        static let finishAndSyncButtonLabel = "Finish recording & sync"
-        static let finishAndDontSyncButtonLabel = "Finish recording & don't sync"
+        static let heading = LocalizedStringKey("Your AirBeam3 is now in stand-alone mode").stringKey
+        static let description = LocalizedStringKey("AirBeam3 is now recording using its SD card. The measurements will be displayed here after syncing.").stringKey
+        static let finishAndSyncButtonLabel = LocalizedStringKey("Finish recording & sync").stringKey
+        static let finishAndDontSyncButtonLabel = LocalizedStringKey("Finish recording & don't sync").stringKey
     }
 
     enum SDSyncRootView {
-        static let title: String = "Updating sessions"
-        static let message: String = "Sessions must be updated prior to syncing SD card. Make sure your device is connected to the Internet."
+        static let title: String = LocalizedStringKey("Updating sessions").stringKey
+        static let message: String = LocalizedStringKey("Sessions must be updated prior to syncing SD card. Make sure your device is connected to the Internet.").stringKey
     }
 
     enum SDSyncSuccessView {
-        static let title: String = "Success"
-        static let message: String = "Sessions were updated successfully"
+        static let title: String = LocalizedStringKey("Success").stringKey
+        static let message: String = LocalizedStringKey("Sessions were updated successfully").stringKey
     }
 
     enum UnplugAirbeamView {
-        static let title: String = "Unplug your AirBeam"
-        static let message: String = "Keep it unplugged for the duration of the sync."
+        static let title: String = LocalizedStringKey("Unplug your AirBeam").stringKey
+        static let message: String = LocalizedStringKey("Keep it unplugged for the duration of the sync.").stringKey
     }
 
     enum SDRestartABView {
-        static let title: String = "Restart your AirBeam"
-        static let message: String = "Turn your AirBeam off and then back on."
+        static let title: String = LocalizedStringKey("Restart your AirBeam").stringKey
+        static let message: String = LocalizedStringKey("Turn your AirBeam off and then back on.").stringKey
     }
 
     enum SyncingABView {
-        static let message: String = "Keep your AirBeam unplugged and close to your iPhone"
-        static let alertTitle: String = "SD card sync failed"
-        static let alertMessage: String = "We're sorry, something unexpected caused the SD card sync to fail. Please try again"
-        static let startingSyncTitle: String = "Syncing..."
-        static let finishingSyncTitle: String = "Finalizing..."
+        static let message: String = LocalizedStringKey("Keep your AirBeam unplugged and close to your iPhone").stringKey
+        static let alertTitle: String = LocalizedStringKey("SD card sync failed").stringKey
+        static let alertMessage: String = LocalizedStringKey("We're sorry, something unexpected caused the SD card sync to fail. Please try again").stringKey
+        static let startingSyncTitle: String = LocalizedStringKey("Syncing...").stringKey
+        static let finishingSyncTitle: String = LocalizedStringKey("Finalizing...").stringKey
     }
 
     enum SDSyncCompleteView {
-        static let title: String = "Sync complete"
-        static let message: String = "The data from your AirBeam3 was synchronized successfully to the app. The SD card was cleared."
-        static let SDClearTitle: String = "SD card cleared"
-        static let SDClearMessage: String = "SD inside your AirBeam was cleared sucesfully"
+        static let title: String = LocalizedStringKey("Sync complete").stringKey
+        static let message: String = LocalizedStringKey("The data from your AirBeam3 was synchronized successfully to the app. The SD card was cleared.").stringKey
+        static let SDClearTitle: String = LocalizedStringKey("SD card cleared").stringKey
+        static let SDClearMessage: String = LocalizedStringKey("SD inside your AirBeam was cleared sucesfully").stringKey
     }
 
     enum ClearingSDCardView {
-        static let title: String = "Clearing SD card"
-        static let message: String = "This should take less then 10 seconds."
-        static let failedClearingAlertTitle: String = "Failed to clead SD card"
-        static let failedClearingAlertMessage: String = "Try again later"
+        static let title: String = LocalizedStringKey("Clearing SD card").stringKey
+        static let message: String = LocalizedStringKey("This should take less then 10 seconds.").stringKey
+        static let failedClearingAlertTitle: String = LocalizedStringKey("Failed to clead SD card").stringKey
+        static let failedClearingAlertMessage: String = LocalizedStringKey("Try again later").stringKey
     }
 
     enum DefaultDeleteSessionViewModel {
-        static let all: String = "All"
+        static let all: String = LocalizedStringKey("All").stringKey
     }
 
     enum DeviceHandler {
-        static let alertTitle = "Not supported device"
-        static let alertMessage = "To use the AirBeam3 in standalone mode and sync the SD card, an iPhone8 or higher is required"
+        static let alertTitle = LocalizedStringKey("Not supported device").stringKey
+        static let alertMessage = LocalizedStringKey("To use the AirBeam3 in standalone mode and sync the SD card, an iPhone8 or higher is required").stringKey
     }
 
     enum NetworkAlert {
-        static let alertTitle: String = "No internet connection"
-        static let alertMessage: String = "You need to have internet connection to continue"
+        static let alertTitle: String = LocalizedStringKey("No internet connection").stringKey
+        static let alertMessage: String = LocalizedStringKey("You need to have internet connection to continue").stringKey
     }
 
     enum MicrophoneAlert {
-        static let title: String = "Allow AirCasting to record audio"
-        static let message: String = "To record sound level measurements, the app needs access to your microhpone."
+        static let title: String = LocalizedStringKey("Allow AirCasting to record audio").stringKey
+        static let message: String = LocalizedStringKey("To record sound level measurements, the app needs access to your microhpone.").stringKey
     }
 
     enum InAppAlerts {
-        static let assertError: String = "Unsupported button count! For SwiftUI implementation max of 2 buttons is supported"
-        static let unableToLogOutTitle: String = "No internet connection"
-        static let unableToLogOutMessage: String = "To sign out, you must be connected to the Internet."
-        static let unableToLogOutButton: String = "Got it!"
+        static let assertError: String = LocalizedStringKey("Unsupported button count! For SwiftUI implementation max of 2 buttons is supported").stringKey
+        static let unableToLogOutTitle: String = LocalizedStringKey("No internet connection").stringKey
+        static let unableToLogOutMessage: String = LocalizedStringKey("To sign out, you must be connected to the Internet.").stringKey
+        static let unableToLogOutButton: String = LocalizedStringKey("Got it!").stringKey
     }
 
     enum AddNoteView {
-        static let title: String = "Add a note"
-        static let description: String = "Your note will be timestamped and displayed on the AirCasting map"
-        static let placeholder: String = "Note"
-        static let continueButton: String = "Add a note"
-        static let cancelButton: String = "Cancel"
+        static let title: String = LocalizedStringKey("Add a note").stringKey
+        static let description: String = LocalizedStringKey("Your note will be timestamped and displayed on the AirCasting map").stringKey
+        static let placeholder: String = LocalizedStringKey("Note").stringKey
+        static let continueButton: String = LocalizedStringKey("Add a note").stringKey
+        static let cancelButton: String = LocalizedStringKey("Cancel").stringKey
     }
 
     enum EditNoteView {
-        static let title: String = "Edit this note"
-        static let description: String = "You can edit your note here"
-        static let placeholder: String = "Note"
-        static let saveButton: String = "Save changes"
-        static let deleteButton: String = "Delete note"
-        static let cancelButton: String = "Cancel"
+        static let title: String = LocalizedStringKey("Edit this note").stringKey
+        static let description: String = LocalizedStringKey("You can edit your note here").stringKey
+        static let placeholder: String = LocalizedStringKey("Note").stringKey
+        static let saveButton: String = LocalizedStringKey("Save changes").stringKey
+        static let deleteButton: String = LocalizedStringKey("Delete note").stringKey
+        static let cancelButton: String = LocalizedStringKey("Cancel").stringKey
     }
 }
+
+// Extension allows us to preserve current Strings system and allow XCode to detect strings and then we are able to export then easly.
+extension LocalizedStringKey {
+    var stringKey: String {
+        let description = "\(self)"
+        let components = description.components(separatedBy: "key: \"").map { $0.components(separatedBy: "\",") }
+        return components[1][0]
+    }
+}
+

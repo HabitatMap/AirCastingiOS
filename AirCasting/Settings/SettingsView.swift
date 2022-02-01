@@ -7,12 +7,19 @@
 
 import SwiftUI
 import AirCastingStyling
+import Resolver
 
-struct SettingsView<VM: SettingsViewModel>: View {
-    @StateObject var viewModel: VM
-    @StateObject private var featureFlagsViewModel = FeatureFlagsViewModel.shared
-    @EnvironmentObject var userSettings: UserSettings
-    @EnvironmentObject var bluetoothManager: BluetoothManager
+struct SettingsView: View {
+    @StateObject private var viewModel: SettingsViewModel
+    @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
+    @InjectedObject private var userSettings: UserSettings
+    @InjectedObject private var bluetoothManager: BluetoothManager
+    private let sessionContext: CreateSessionContext
+    
+    init(sessionContext: CreateSessionContext) {
+        self.sessionContext = sessionContext
+        self._viewModel = .init(wrappedValue: .init(sessionContext: sessionContext))
+    }
 
     var body: some View {
         if #available(iOS 15, *) {
@@ -21,27 +28,21 @@ struct SettingsView<VM: SettingsViewModel>: View {
             }
             .fullScreenCover(isPresented: $viewModel.startSDClear) {
                 CreatingSessionFlowRootView {
-                    SDRestartABView(viewModel: SDRestartABViewModelDefault(urlProvider: viewModel.urlProvider,
-                                                                           isSDClearProcess: viewModel.SDClearingRouteProcess),
+                    SDRestartABView(isSDClearProcess: viewModel.SDClearingRouteProcess,
                                     creatingSessionFlowContinues: $viewModel.startSDClear)
                 }
             }
             .fullScreenCover(isPresented: $viewModel.locationScreenGo) {
                 CreatingSessionFlowRootView {
                     TurnOnLocationView(creatingSessionFlowContinues: $viewModel.locationScreenGo,
-                                       viewModel: TurnOnLocationViewModel(locationHandler: viewModel.locationHandler,
-                                                                          bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: bluetoothManager),
-                                                                          sessionContext: viewModel.sessionContext,
-                                                                          urlProvider: viewModel.urlProvider,
-                                                                          isSDClearProcess: viewModel.SDClearingRouteProcess))
+                                       viewModel: TurnOnLocationViewModel(sessionContext: sessionContext, isSDClearProcess: viewModel.SDClearingRouteProcess))
                 }
             }
             .fullScreenCover(isPresented: $viewModel.BTScreenGo) {
                 CreatingSessionFlowRootView {
                     TurnOnBluetoothView(creatingSessionFlowContinues: $viewModel.BTScreenGo,
                                         sdSyncContinues: .constant(false),
-                                        isSDClearProcess: viewModel.SDClearingRouteProcess,
-                                        urlProvider: viewModel.urlProvider)
+                                        isSDClearProcess: viewModel.SDClearingRouteProcess)
                 }
             }
         } else {
@@ -53,8 +54,7 @@ struct SettingsView<VM: SettingsViewModel>: View {
                     EmptyView()
                         .fullScreenCover(isPresented: $viewModel.startSDClear) {
                             CreatingSessionFlowRootView {
-                                SDRestartABView(viewModel: SDRestartABViewModelDefault(urlProvider: viewModel.urlProvider,
-                                                                                       isSDClearProcess: viewModel.SDClearingRouteProcess),
+                                SDRestartABView(isSDClearProcess: viewModel.SDClearingRouteProcess,
                                                 creatingSessionFlowContinues: $viewModel.startSDClear)
                             }
                         }
@@ -62,9 +62,7 @@ struct SettingsView<VM: SettingsViewModel>: View {
                         .fullScreenCover(isPresented: $viewModel.locationScreenGo) {
                             CreatingSessionFlowRootView {
                                 TurnOnLocationView(creatingSessionFlowContinues: $viewModel.locationScreenGo,
-                                                   viewModel: TurnOnLocationViewModel(locationHandler: viewModel.locationHandler,                                        bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: bluetoothManager),                                    sessionContext: viewModel.sessionContext,
-                                                                                      urlProvider: viewModel.urlProvider,
-                                                                                      isSDClearProcess: viewModel.SDClearingRouteProcess))
+                                                   viewModel: TurnOnLocationViewModel(sessionContext: sessionContext, isSDClearProcess: viewModel.SDClearingRouteProcess))
                             }
                         }
                     EmptyView()
@@ -72,8 +70,7 @@ struct SettingsView<VM: SettingsViewModel>: View {
                             CreatingSessionFlowRootView {
                                 TurnOnBluetoothView(creatingSessionFlowContinues: $viewModel.BTScreenGo,
                                                     sdSyncContinues: .constant(false),
-                                                    isSDClearProcess: viewModel.SDClearingRouteProcess,
-                                                    urlProvider: viewModel.urlProvider)
+                                                    isSDClearProcess: viewModel.SDClearingRouteProcess)
                             }
                         }
                 })
@@ -138,7 +135,7 @@ struct SettingsView<VM: SettingsViewModel>: View {
     }
 
     private var signOutLink: some View {
-        NavigationLink(destination: MyAccountViewSignOut(logoutController: viewModel.logoutController)) {
+        NavigationLink(destination: MyAccountViewSignOut()) {
             Text(Strings.Settings.myAccount)
                 .font(Fonts.boldHeading1)
         }
@@ -197,8 +194,7 @@ struct SettingsView<VM: SettingsViewModel>: View {
                 }
             }
         }.sheet(isPresented: $viewModel.showBackendSettings, content: {
-            BackendSettingsView(logoutController: viewModel.logoutController,
-                                urlProvider: viewModel.urlProvider)
+            BackendSettingsView()
         })
     }
 

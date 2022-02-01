@@ -6,6 +6,7 @@ import CoreLocation
 import Foundation
 import Combine
 import SwiftUI
+import Resolver
 
 protocol MeasurementStreamStorage {
     func accessStorage(_ task: @escaping(HiddenCoreDataMeasurementStreamStorage) -> Void)
@@ -31,23 +32,17 @@ protocol MeasurementStreamStorageContextUpdate {
 }
 
 extension HiddenCoreDataMeasurementStreamStorage {
-    func addMeasurementValue(_ value: Double, at location: CLLocationCoordinate2D? = nil, toStreamWithID id: MeasurementStreamLocalID, on time: Date = Date().currentUTCTimeZoneDate) throws {
+    func addMeasurementValue(_ value: Double, at location: CLLocationCoordinate2D? = nil, toStreamWithID id: MeasurementStreamLocalID, on time: Date = DateBuilder.getRawDate().currentUTCTimeZoneDate) throws {
         try addMeasurement(Measurement(time: time, value: value, location: location), toStreamWithID: id)
     }
 }
 
 final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
 
-    private let persistenceController: PersistenceController
+    @Injected private var persistenceController: PersistenceController
     private lazy var updateSessionParamsService = UpdateSessionParamsService()
-    private let context: NSManagedObjectContext
-    let hiddenStorage: HiddenCoreDataMeasurementStreamStorage
-    
-    init(persistenceController: PersistenceController) {
-        self.persistenceController = persistenceController
-        self.context = persistenceController.editContext
-        self.hiddenStorage = HiddenCoreDataMeasurementStreamStorage(context: self.context)
-    }
+    private lazy var context: NSManagedObjectContext = persistenceController.editContext
+    private lazy var hiddenStorage = HiddenCoreDataMeasurementStreamStorage(context: self.context)
     
     /// All actions performed on CoreDataMeasurementStreamStorage must be performed
     /// within a block passed to this methood.
@@ -272,13 +267,31 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         do {
             let sessionEntity = try context.existingSession(uuid: sessionUUID)
             if sessionFollowing == SessionFollowing.following {
-                sessionEntity.followedAt = Date().currentUTCTimeZoneDate
+                sessionEntity.followedAt = DateBuilder.getFakeUTCDate()
             } else {
                 sessionEntity.followedAt = nil
             }
             try context.save()
         } catch {
             Log.error("Error when saving changes in session: \(error.localizedDescription)")
+        }
+    }
+    
+    // MARK: - Notes
+    
+    enum NoteStorageError: Swift.Error, LocalizedError {
+        case storageEmpty
+        case noteNotFound
+        case malformedStorageState
+        case multipleNotesFound
+        
+        var errorDescription: String? {
+            switch self {
+            case .storageEmpty: return "Note storage is empty"
+            case .multipleNotesFound: return "Multiple notes for given ID found"
+            case .noteNotFound: return "No note with given ID found"
+            case .malformedStorageState: return "Data storage is in malformed state"
+            }
         }
     }
     
@@ -311,7 +324,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
         return sessionEntity.notes?.map { note -> Note in
             let n = note as! NoteEntity
-            return Note(date: n.date ?? Date().currentUTCTimeZoneDate,
+            return Note(date: n.date ?? DateBuilder.getFakeUTCDate(),
                                    text: n.text ?? "",
                                    lat: n.lat,
                                    long: n.long,
@@ -321,8 +334,16 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
     
     func fetchSpecifiedNote(for sessionUUID: SessionUUID, number: Int) throws -> Note {
         let session = try context.existingSession(uuid: sessionUUID)
-        let note = (session.notes?.first(where: { ($0 as! NoteEntity).number == number }) as! NoteEntity)
-        return Note(date: note.date ?? Date().currentUTCTimeZoneDate,
+        guard let allSessionNotes = session.notes else { throw NoteStorageError.storageEmpty }
+        let matching = try allSessionNotes.filter {
+            guard let note = $0 as? NoteEntity else { throw NoteStorageError.malformedStorageState }
+            return note.number == number
+        }
+        guard matching.count > 0 else { throw NoteStorageError.noteNotFound }
+        guard matching.count == 1 else { throw NoteStorageError.multipleNotesFound }
+        let note = matching[0] as! NoteEntity
+        
+        return Note(date: note.date ?? DateBuilder.getFakeUTCDate(),
                     text: note.text ?? "",
                     lat: note.lat,
                     long: note.long,
@@ -347,25 +368,25 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
 /// Only to be used for swiftui previews
 final class PreviewMeasurementStreamStorage: MeasurementStreamStorage {
     func accessStorage(_ task: @escaping (HiddenCoreDataMeasurementStreamStorage) -> Void) {
-        print("accessing storage")
+        Log.info("accessing storage")
     }
     
     func save() throws {
-        print("Faking saving ")
+        Log.info("Faking saving ")
     }
     
     func saveThresholdFor(sensorName: String, thresholdVeryHigh: Int32, thresholdHigh: Int32, thresholdMedium: Int32, thresholdLow: Int32, thresholdVeryLow: Int32) throws {
-        print("Faking saving thresholds")
+        Log.info("Faking saving thresholds")
     }
     
     func updateSessionEndtime(_ endTime: Date, for sessionUUID: SessionUUID) throws {
-        print("Faking updating sessioon end time happened: \(endTime) for session \(sessionUUID)")
+        Log.info("Faking updating sessioon end time happened: \(endTime) for session \(sessionUUID)")
     }
     
     func updateSessionFollowing(_ sessionStatus: SessionFollowing, for sessionUUID: SessionUUID) {}
     
     func addMeasurement(_ measurement: Measurement, toStreamWithID id: MeasurementStreamLocalID) throws {
-        print("Nothing happened for \(measurement)")
+        Log.info("Nothing happened for \(measurement)")
     }
 
     func saveMeasurementStream(_ stream: MeasurementStream, for sessionUUID: SessionUUID) throws -> MeasurementStreamLocalID {
@@ -381,11 +402,11 @@ final class PreviewMeasurementStreamStorage: MeasurementStreamStorage {
     }
 
     func updateSessionStatus(_ sessionStatus: SessionStatus, for sessionUUID: SessionUUID) throws {
-        print("Nothing happened for \(sessionStatus) \(sessionUUID)")
+        Log.info("Nothing happened for \(sessionStatus) \(sessionUUID)")
     }
 
     func createSession(_ session: Session) throws {
-        print("Nothing happened for \(session)")
+        Log.info("Nothing happened for \(session)")
     }
 }
 #endif

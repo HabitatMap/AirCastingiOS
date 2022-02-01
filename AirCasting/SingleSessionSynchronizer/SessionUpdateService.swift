@@ -2,6 +2,7 @@
 //
 
 import Foundation
+import Resolver
 
 protocol SessionUpdateService {
     func updateSession(session: SessionEntity, completion: @escaping () -> Void)
@@ -9,13 +10,8 @@ protocol SessionUpdateService {
 
 class DefaultSessionUpdateService: SessionUpdateService {
 
-    private let authorization: RequestAuthorisationService
-    private let urlProvider: BaseURLProvider
-    
-    init(authorization: RequestAuthorisationService, urlProvider: BaseURLProvider) {
-        self.authorization = authorization
-        self.urlProvider = urlProvider
-    }
+    @Injected private var authorization: RequestAuthorisationService
+    @Injected private var urlProvider: URLProvider
     
     private struct APICallData: Encodable {
         let data: String
@@ -49,7 +45,7 @@ class DefaultSessionUpdateService: SessionUpdateService {
         
         session.notes?.forEach({ note in
             let n = note as! NoteEntity
-            notes.append(CreateSessionApi.NotesParams(date: n.date ?? Date().currentUTCTimeZoneDate,
+            notes.append(CreateSessionApi.NotesParams(date: n.date ?? DateBuilder.getFakeUTCDate(),
                                                       text: n.text ?? "",
                                                       lat: n.lat,
                                                       long: n.long,
@@ -61,7 +57,7 @@ class DefaultSessionUpdateService: SessionUpdateService {
                                                            title: session.name!,
                                                            tag_list: session.tags ?? "",
                                                            start_time: session.startTime!,
-                                                           end_time: session.endTime ?? Date(),
+                                                           end_time: session.endTime ?? DateBuilder.getRawDate(),
                                                            contribute: session.contribute,
                                                            is_indoor: session.isIndoor,
                                                            notes: notes.sorted(by: { $0.number < $1.number }),
@@ -91,6 +87,6 @@ class DefaultSessionUpdateService: SessionUpdateService {
 
 class SessionUpdateServiceDefaultDummy: SessionUpdateService {
     func updateSession(session: SessionEntity, completion: @escaping () -> Void) {
-        print("updating session")
+        Log.info("updating session")
     }
 }

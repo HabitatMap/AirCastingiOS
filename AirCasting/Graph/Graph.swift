@@ -9,7 +9,7 @@ import SwiftUI
 import Charts
 import SwiftSimplify
 import CoreMedia
-
+import Resolver
 
 extension ChartDataEntry: Point2DRepresentable {
     public var xValue: Float {
@@ -30,7 +30,7 @@ struct Graph: UIViewRepresentable {
     typealias OnChange = (ClosedRange<Date>) -> Void
     typealias NoteAction = (Note) -> Void
     
-    @EnvironmentObject var userSettings: UserSettings
+    @InjectedObject private var userSettings: UserSettings
     @ObservedObject var stream: MeasurementStreamEntity
     @ObservedObject var thresholds: SensorThreshold
     private var rangeChangeAction: OnChange?
@@ -41,11 +41,11 @@ struct Graph: UIViewRepresentable {
     var isAutozoomEnabled: Bool
     let simplifiedGraphEntryThreshold = 1000
     
-    init(stream: MeasurementStreamEntity, thresholds: SensorThreshold, isAutozoomEnabled: Bool, notesHandler: NotesHandler) {
+    init(stream: MeasurementStreamEntity, thresholds: SensorThreshold, isAutozoomEnabled: Bool) {
         self.stream = stream
         self.thresholds = thresholds
         self.isAutozoomEnabled = isAutozoomEnabled
-        self.notesHandler = notesHandler
+        self.notesHandler = Resolver.resolve(NotesHandler.self, args: stream.session.uuid)
     }
     
     func onDateRangeChange(perform action: @escaping OnChange) -> Self {
@@ -133,7 +133,7 @@ struct Graph: UIViewRepresentable {
                                                                   visibleElementsNumber: counter,
                                                                   thresholdLimit: simplifiedGraphEntryThreshold)
         uiView.updateWithEntries(entries: simplifiedPoints, isAutozoomEnabled: isAutozoomEnabled)
-        print("Simplified \(entries.count) to \(simplifiedPoints.count)")
+        Log.info("Simplified \(entries.count) to \(simplifiedPoints.count)")
     }
     
     private func refreshNotes(_ uiView: AirCastingGraph) {
@@ -179,7 +179,7 @@ struct Graph: UIViewRepresentable {
     }
     
     func getLimitLines() -> [ChartLimitLine] {
-        let points = getMidnightsPoints(startingDate: stream.allMeasurements?.first?.time ?? Date().currentUTCTimeZoneDate, endingDate: stream.allMeasurements?.last?.time ?? Date().currentUTCTimeZoneDate)
+        let points = getMidnightsPoints(startingDate: stream.allMeasurements?.first?.time ?? DateBuilder.getFakeUTCDate(), endingDate: stream.allMeasurements?.last?.time ?? DateBuilder.getFakeUTCDate())
         
         return points.map { point in
             let line = ChartLimitLine(limit: point)

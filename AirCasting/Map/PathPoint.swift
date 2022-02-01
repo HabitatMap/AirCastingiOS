@@ -22,5 +22,5 @@ struct PathPoint: Equatable {
 }
 
 extension PathPoint {
-    static var fakePathPoint = PathPoint(location: .undefined, measurementTime: Date())
+    static var fakePathPoint = PathPoint(location: .undefined, measurementTime: DateBuilder.getRawDate())
 }

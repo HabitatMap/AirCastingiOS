@@ -72,14 +72,3 @@ struct DeleteView<VM: DeleteSessionViewModel>: View {
         .buttonStyle(BlueTextButtonStyle())
     }
 }
-
-#if DEBUG
-struct DeleteViewModal_Previews: PreviewProvider {
-    static var previews: some View {
-        DeleteView(viewModel: DefaultDeleteSessionViewModel(session: .mock,
-                                                            measurementStreamStorage: PreviewMeasurementStreamStorage(),
-                                                            streamRemover: SessionUpdateServiceDefaultDummy(), sessionSynchronizer: DummySessionSynchronizer()),
-                                                            deleteModal: .constant(false))
-    }
-}
-#endif

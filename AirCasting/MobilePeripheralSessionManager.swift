@@ -86,7 +86,7 @@ class MobilePeripheralSessionManager {
         measurementStreamStorage.accessStorage { storage in
             do {
                 try storage.updateSessionStatus(.FINISHED, for: uuid)
-                try storage.updateSessionEndtime(Date(), for: uuid)
+                try storage.updateSessionEndtime(DateBuilder.getRawDate(), for: uuid)
             } catch {
                 Log.error("Unable to change session status to finished because of an error: \(error)")
             }
@@ -179,11 +179,10 @@ class MobilePeripheralSessionManager {
         }
     }
 
-    func configureAB(userAuthenticationSession: UserAuthenticationSession) {
+    func configureAB() {
         guard let peripheral = activeMobileSession?.peripheral else { return }
         locationProvider.requestLocation()
-        AirBeam3Configurator(userAuthenticationSession: userAuthenticationSession,
-                             peripheral: peripheral)
+        AirBeam3Configurator(peripheral: peripheral)
             .configureMobileSession(
                 location: locationProvider.currentLocation?.coordinate ?? .undefined
             )

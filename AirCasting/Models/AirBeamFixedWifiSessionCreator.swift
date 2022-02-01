@@ -3,25 +3,22 @@
 
 import Foundation
 import CoreLocation
+import Resolver
 
 final class AirBeamFixedWifiSessionCreator: SessionCreator {
     enum AirBeamSessionCreatorError: Swift.Error {
         case invalidCreateSessionContext(CreateSessionContext)
     }
-    let userAuthenticationSession: UserAuthenticationSession
-    let measurementStreamStorage: MeasurementStreamStorage
+    @Injected private var userAuthenticationSession: UserAuthenticationSession
+    @Injected private var measurementStreamStorage: MeasurementStreamStorage
     private let createSessionService: CreateSessionAPIService
     
-    convenience init(measurementStreamStorage: MeasurementStreamStorage, userAuthenticationSession: UserAuthenticationSession, baseUrl: BaseURLProvider) {
-        self.init(measurementStreamStorage: measurementStreamStorage,
-                  createSessionService: CreateSessionAPIService(authorisationService: userAuthenticationSession, baseUrlProvider: baseUrl),
-                  userAuthenticationSession: userAuthenticationSession)
+    convenience init() {
+        self.init(createSessionService: CreateSessionAPIService())
     }
     
-    init(measurementStreamStorage: MeasurementStreamStorage, createSessionService: CreateSessionAPIService, userAuthenticationSession: UserAuthenticationSession) {
-        self.measurementStreamStorage = measurementStreamStorage
+    init(createSessionService: CreateSessionAPIService) {
         self.createSessionService = createSessionService
-        self.userAuthenticationSession = userAuthenticationSession
     }
     
     func createSession(_ sessionContext: CreateSessionContext, completion: @escaping (Result<Void, Error>) -> Void) {
@@ -39,8 +36,8 @@ final class AirBeamFixedWifiSessionCreator: SessionCreator {
                               name: sessionContext.sessionName,
                               deviceType: sessionContext.deviceType,
                               location: sessionContext.startingLocation,
-                              startTime: Date().currentUTCTimeZoneDate,
-                              followedAt: Date().currentUTCTimeZoneDate,
+                              startTime: DateBuilder.getFakeUTCDate(),
+                              followedAt: DateBuilder.getFakeUTCDate(),
                               isIndoor: isIndoor,
                               tags: sessionContext.sessionTags)
         
@@ -79,12 +76,12 @@ final class AirBeamFixedWifiSessionCreator: SessionCreator {
                                                                 case .success(let output):
                                                                     measurementStreamStorage.accessStorage { storage in
                                                                         do {
-                                                                            try storage.createSession(session)
-                                                                            try AirBeam3Configurator(userAuthenticationSession: userAuthenticationSession,
-                                                                                                     peripheral: peripheral).configureFixedWifiSession(
+                                                                            let sessionWithURL = session.withUrlLocation(output.location)
+                                                                            try storage.createSession(sessionWithURL)
+                                                                            try AirBeam3Configurator(peripheral: peripheral).configureFixedWifiSession(
                                                                                                         uuid: sessionUUID,
                                                                                                         location: sessionContext.startingLocation ?? CLLocationCoordinate2D(latitude: 200, longitude: 200),
-                                                                                                        date: Date().currentUTCTimeZoneDate,
+                                                                                                        date: DateBuilder.getFakeUTCDate(),
                                                                                                         wifiSSID: wifiSSID,
                                                                                                         wifiPassword: wifiPassword)
                                                                             Log.warning("Created fixed Wifi session \(output)")

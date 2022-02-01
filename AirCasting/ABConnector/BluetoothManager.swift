@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreBluetooth
+import Resolver
 
 protocol BluetoothCommunicator {
     typealias CharacteristicObserverAction = (Result<Data?, Error>) -> Void
@@ -43,6 +44,7 @@ class BluetoothManager: NSObject, BluetoothCommunicator, ObservableObject {
     var observed: NSKeyValueObservation?
 
     let mobilePeripheralSessionManager: MobilePeripheralSessionManager
+    @Injected private var featureFlagProvider: FeatureFlagProvider
 
     private var MEASUREMENTS_CHARACTERISTIC_UUIDS: [CBUUID] = [
         CBUUID(string:"0000ffe1-0000-1000-8000-00805f9b34fb"),    // Temperature
@@ -131,17 +133,17 @@ extension BluetoothManager: CBCentralManagerDelegate {
 
         switch central.state {
         case .unknown:
-            print("central.state is .unknown")
+            Log.info("central.state is .unknown")
         case .resetting:
-            print("central.state is .resetting")
+            Log.info("central.state is .resetting")
         case .unsupported:
-            print("central.state is .unsupported")
+            Log.info("central.state is .unsupported")
         case .unauthorized:
-            print("central.state is .unauthorized")
+            Log.info("central.state is .unauthorized")
         case .poweredOff:
-            print("central.state is .poweredOff")
+            Log.info("central.state is .poweredOff")
         case .poweredOn:
-            print("central.state is .poweredOn")
+            Log.info("central.state is .poweredOn")
         @unknown default:
             fatalError()
         }
@@ -183,7 +185,7 @@ extension BluetoothManager: CBCentralManagerDelegate {
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(10)) {
             guard peripheral.state != .connected else { return }
             self.cancelPeripheralConnection(for: peripheral)
-            if FeatureFlagsViewModel.shared.enabledFeatures.contains(.standaloneMode) {
+            if self.featureFlagProvider.isFeatureOn(.standaloneMode) ?? false {
                 self.mobilePeripheralSessionManager.moveSessionToStandaloneMode(peripheral: peripheral)
             } else {
                 self.mobilePeripheralSessionManager.finishSession(for: peripheral, centralManager: self.centralManager)

@@ -17,6 +17,21 @@ extension SynchronizationControllerTests {
         downloadService.toReturn = .success(download)
     }
     
+    func setupUploadWithStubbedSessionLocations(_ urlLocations: [String]) {
+        uploadService.toReturn = .success(.init(location: urlLocations[0]))
+        let uuidsToUpload = [SessionUUID](creating: .init(rawValue: UUID().uuidString)!, times: urlLocations.count)
+        let context = SessionsSynchronization.SynchronizationContext(needToBeDownloaded: [], needToBeUploaded: uuidsToUpload, removed: [])
+        remoteContextProvider.toReturn = .success(context)
+        var count: Int = 0
+        var sub: AnyCancellable?
+        sub = uploadService.$recordedHistory.sink { history in
+            guard history.count > 0 else { return }
+            guard count <= urlLocations.count else { sub?.cancel(); return }
+            self.uploadService.toReturn = .success(.init(location: urlLocations[count]))
+            count += 1
+        }
+    }
+    
     func setupWithStubbingStoreReads(_ stored: [SessionsSynchronization.SessionStoreSessionData]) {
         self.store.readSessionToReturn = stored[0]
         let uuidsToFetch = [SessionUUID?](creating: SessionUUID(rawValue: UUID().uuidString), times: stored.count).compactMap { $0 }
@@ -70,6 +85,14 @@ extension SynchronizationControllerTests {
             guard case .addSessions(_) = $0.last else { return false }
             return true
         }).last?.allWrittenData ?? []
+    }
+    
+    func spyStoreURLUpdates(count: Int = 1) -> [String] {
+        spyOnPublisher(store.$recordedHistory, count: count, filter: {
+            guard $0.count > 0 else { return false }
+            guard case .saveURLForSession(_) = $0.last else { return false }
+            return true
+        }).last?.allUpdatedURLs.map(\.url) ?? []
     }
     
     func spyStoreRemove(count: Int = 1) -> [SessionUUID] {
@@ -196,7 +219,7 @@ extension SynchronizationControllerTests {
             if count == errorousUploadIndex {
                 self.uploadService.toReturn = .failure(DummyError())
             } else {
-                self.uploadService.toReturn = .success(())
+                self.uploadService.toReturn = .success(.init(location: "http://example.com/loc"))
             }
             if count == totalUploads { exp.fulfill() }
         }

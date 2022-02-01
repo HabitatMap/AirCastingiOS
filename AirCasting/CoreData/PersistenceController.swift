@@ -9,8 +9,6 @@ import CoreData
 import SwiftUI
 
 class PersistenceController: ObservableObject {
-    static let shared = PersistenceController()
-
     var uiSuspended: Bool = false {
         didSet {
             Log.info("UI updates \(uiSuspended ? "suspended" : "resumed")")

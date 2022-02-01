@@ -3,6 +3,7 @@
 
 import Foundation
 import CoreBluetooth
+import Resolver
 
 enum ProceedToView {
     case airBeam
@@ -11,52 +12,24 @@ enum ProceedToView {
     case mobile
 }
 
+// [RESOLVER] Move this VM init to view
 class ChooseSessionTypeViewModel {
     
-    let locationHandler: LocationHandler
-    private let bluetoothHandler: BluetoothHandler
-    private let userSettings: UserSettings
+    @Injected private var locationHandler: LocationHandler
+    @Injected private var bluetoothHandler: BluetoothHandler
+    @Injected private var userSettings: UserSettings
     private let sessionContext: CreateSessionContext
-    private let urlProvider: BaseURLProvider
-    private var bluetoothManager: BluetoothManager
-    private var bluetoothManagerState: CBManagerState
-    
-    var passURLProvider: BaseURLProvider {
-        return urlProvider
-    }
-    
-    var passLocationHandler: LocationHandler {
-        return locationHandler
-    }
-    
-    var passBluetoothHandler: BluetoothHandler {
-        return bluetoothHandler
-    }
+    @Injected private var urlProvider: URLProvider
     
     var passSessionContext: CreateSessionContext {
         return sessionContext
     }
-    
-    var passUserSettings: UserSettings {
-        return userSettings
-    }
-    
-    var passBluetoothManager: BluetoothManager {
-        return bluetoothManager
-    }
 
-    init(locationHandler: LocationHandler, bluetoothHandler: BluetoothHandler, userSettings: UserSettings, sessionContext: CreateSessionContext, urlProvider: BaseURLProvider, bluetoothManager: BluetoothManager, bluetoothManagerState: CBManagerState) {
-        self.locationHandler = locationHandler
-        self.bluetoothHandler = bluetoothHandler
-        self.userSettings = userSettings
+    init(sessionContext: CreateSessionContext) {
         self.sessionContext = sessionContext
-        self.urlProvider = urlProvider
-        self.bluetoothManager = bluetoothManager
-        self.bluetoothManagerState = bluetoothManagerState
     }
 
     func fixedSessionNextStep() -> ProceedToView {
-        guard !locationHandler.isLocationDenied() else { return .location }
         guard !bluetoothHandler.isBluetoothDenied() else { return .bluetooth }
         return .airBeam
     }

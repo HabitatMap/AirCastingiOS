@@ -4,6 +4,7 @@
 import Foundation
 import CoreLocation
 import UIKit
+import Resolver
 
 struct MapNote {
     let id: Int
@@ -15,8 +16,8 @@ class MapNotesViewModel: ObservableObject {
     @Published var notes: [MapNote] = []
     private var notesHandler: NotesHandler
     
-    init(notesHandler: NotesHandler) {
-        self.notesHandler = notesHandler
+    init(sessionUUID: SessionUUID) {
+        self.notesHandler = Resolver.resolve(NotesHandler.self, args: sessionUUID)
         refreshNotes()
         self.notesHandler.observer = { [weak self] in
             self?.refreshNotes()

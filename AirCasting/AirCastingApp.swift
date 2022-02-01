@@ -7,61 +7,30 @@
 
 import SwiftUI
 import Combine
+import Resolver
 
 @main
 struct AirCastingApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
     @Environment(\.scenePhase) var scenePhase
-    private let authorization = UserAuthenticationSession()
     private let syncScheduler: SynchronizationScheduler
-    private let microphoneManager: MicrophoneManager
-    private var sessionSynchronizer: SessionSynchronizer
-    private var sessionSynchronizerViewModel: DefaultSessionSynchronizationViewModel
-    private let averagingService: AveragingService
-    private let persistenceController = PersistenceController.shared
+    @Injected private var sessionSynchronizer: SessionSynchronizer
+    @Injected private var persistenceController: PersistenceController
     private let appBecameActive = PassthroughSubject<Void, Never>()
-    private let sessionSynchronizationController: SessionSynchronizationController
     @ObservedObject private var offlineMessageViewModel: OfflineMessageViewModel
-    private let lifeTimeEventsProvider = LifeTimeEventsProvider()
     private var cancellables: [AnyCancellable] = []
-    let urlProvider = UserDefaultsBaseURLProvider()
 
     init() {
-        AppBootstrap(firstRunInfoProvider: lifeTimeEventsProvider, deauthorizable: authorization).bootstrap()
-        let synchronizationContextProvider = SessionSynchronizationService(client: URLSession.shared, authorization: authorization, responseValidator: DefaultHTTPResponseValidator(), urlProvider: urlProvider)
-        let downloadService = SessionDownloadService(client: URLSession.shared, authorization: authorization, responseValidator: DefaultHTTPResponseValidator(), urlProvider: urlProvider)
-        let uploadService = SessionUploadService(client: URLSession.shared, authorization: authorization, responseValidator: DefaultHTTPResponseValidator(), urlProvider: urlProvider)
-        let syncStore = SessionSynchronizationDatabase(database: persistenceController)
-        let unscheduledSyncController = SessionSynchronizationController(synchronizationContextProvider: synchronizationContextProvider,
-                                                                         downstream: downloadService,
-                                                                         upstream: uploadService,
-                                                                         store: syncStore)
-        sessionSynchronizerViewModel = DefaultSessionSynchronizationViewModel(syncSessionController: unscheduledSyncController)
-        sessionSynchronizationController = unscheduledSyncController
-        sessionSynchronizer = ScheduledSessionSynchronizerProxy(controller: unscheduledSyncController,
-                                                                scheduler: DispatchQueue.global())
-        microphoneManager = MicrophoneManager(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared))
-        averagingService = AveragingService(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: PersistenceController.shared))
-        syncScheduler = .init(synchronizer: sessionSynchronizer,
-                              appBecameActive: appBecameActive.eraseToAnyPublisher(),
-                              authorization: authorization)
-        
-        
+        AppBootstrap().bootstrap()
+        syncScheduler = .init(appBecameActive: appBecameActive.eraseToAnyPublisher())
         offlineMessageViewModel = .init()
         sessionSynchronizer.errorStream = offlineMessageViewModel
     }
 
     var body: some Scene {
         WindowGroup {
-            RootAppView(sessionSynchronizer: sessionSynchronizer,
-                        persistenceController: persistenceController,
-                        urlProvider: urlProvider)
-                .environmentObject(sessionSynchronizerViewModel)
-                .environmentObject(authorization)
-                .environmentObject(microphoneManager)
-                .environmentObject(averagingService)
-                .environmentObject(lifeTimeEventsProvider)
+            RootAppView()
                 .alert(isPresented: $offlineMessageViewModel.showOfflineMessage, content: { Alert.offlineAlert })
         }.onChange(of: scenePhase) { newScenePhase in
             switch newScenePhase {
@@ -79,15 +48,15 @@ struct AirCastingApp: App {
 
 final class SynchronizationScheduler {
     private var cancellables: [AnyCancellable] = []
+    @Injected private var synchronizer: SessionSynchronizer
+    @Injected private var authorization: UserAuthenticationSession
     
-    init(synchronizer: SessionSynchronizer,
-         appBecameActive: AnyPublisher<Void, Never>,
-         authorization: UserAuthenticationSession) {
+    init(appBecameActive: AnyPublisher<Void, Never>) {
         
         appBecameActive
-            .filter { authorization.isLoggedIn }
+            .filter { self.authorization.isLoggedIn }
             .sink {
-                synchronizer.triggerSynchronization()
+                self.synchronizer.triggerSynchronization()
             }
             .store(in: &cancellables)
         
@@ -97,7 +66,7 @@ final class SynchronizationScheduler {
             .filter { $0 }
             .eraseToVoid()
             .sink {
-                synchronizer.triggerSynchronization()
+                self.synchronizer.triggerSynchronization()
             }
             .store(in: &cancellables)
         

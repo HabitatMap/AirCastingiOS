@@ -8,6 +8,7 @@
 import Foundation
 import CoreData
 import Combine
+import Resolver
 
 protocol MeasurementUpdatingService {
     func start()
@@ -15,18 +16,12 @@ protocol MeasurementUpdatingService {
 }
 
 final class DownloadMeasurementsService: MeasurementUpdatingService {
-    private let authorisationService: RequestAuthorisationService
-    private let persistenceController: PersistenceController
-    private let fixedSessionService: FixedSessionAPIService
+    @Injected private var authorisationService: RequestAuthorisationService
+    @Injected private var persistenceController: PersistenceController
+    private let fixedSessionService = FixedSessionAPIService()
     private var timerSink: Cancellable?
     private var lastFetchCancellableTask: Cancellable?
     private lazy var removeOldService: RemoveOldMeasurementsService = RemoveOldMeasurementsService()
-    
-    init(authorisationService: RequestAuthorisationService, persistenceController: PersistenceController, baseUrl: BaseURLProvider) {
-        self.authorisationService = authorisationService
-        self.persistenceController = persistenceController
-        self.fixedSessionService = FixedSessionAPIService(authorisationService: authorisationService, baseUrl: baseUrl)
-    }
 
     #warning("Add locking here so updates won't bump on one another")
     func start() {
@@ -117,10 +112,9 @@ class SyncHelper {
     func calculateLastSync(sessionEndTime: Date?, lastMeasurementTime: Date?) -> Date {
         let measurementTimeframe: Double = 24 * 60 * 60 // 24 hours in seconds
         
-        guard let sessionEndTime = sessionEndTime else { return Date().currentUTCTimeZoneDate }
+        guard let sessionEndTime = sessionEndTime else { return DateBuilder.getFakeUTCDate() }
         let sessionEndTimeSeconds = sessionEndTime.timeIntervalSince1970
-        
-        let last24hours = Date(timeIntervalSince1970: (sessionEndTimeSeconds - measurementTimeframe))
+        let last24hours = DateBuilder.getDateWithTimeIntervalSince1970((sessionEndTimeSeconds - measurementTimeframe))
         
         guard let lastMeasurementTime = lastMeasurementTime else { return last24hours }
         let lastMeasurementSeconds = lastMeasurementTime.timeIntervalSince1970

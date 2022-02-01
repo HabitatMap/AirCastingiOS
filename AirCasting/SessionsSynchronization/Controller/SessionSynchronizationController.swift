@@ -4,32 +4,24 @@
 import Foundation
 import Combine
 import CoreLocation
+import Resolver
 
 final class SessionSynchronizationController: SessionSynchronizer {
     
     /// A plugin point for error handlers
     var errorStream: SessionSynchronizerErrorStream?
     
-    private let synchronizationContextProvider: SessionSynchronizationContextProvidable
-    private let downstream: SessionDownstream
-    private let upstream: SessionUpstream
-    private let store: SessionSynchronizationStore
+    @Injected private var synchronizationContextProvider: SessionSynchronizationContextProvidable
+    @Injected private var downstream: SessionDownstream
+    @Injected private var upstream: SessionUpstream
+    @Injected private var store: SessionSynchronizationStore
     private let dataConverter = SynchronizationDataConverter()
-    private(set) lazy var syncInProgress: CurrentValueSubject<Bool, Never> = .init(false)
+    private(set) var syncInProgress: CurrentValueSubject<Bool, Never> = .init(false)
     // Simple lock is sufficient here, no need for GCD
     private let lock = NSRecursiveLock()
     
     private var cancellables: [AnyCancellable] = []
-    
-    init(synchronizationContextProvider: SessionSynchronizationContextProvidable,
-         downstream: SessionDownstream,
-         upstream: SessionUpstream,
-         store: SessionSynchronizationStore) {
-        self.synchronizationContextProvider = synchronizationContextProvider
-        self.downstream = downstream
-        self.upstream = upstream
-        self.store = store
-    }
+
     func triggerSynchronization(options: SessionSynchronizationOptions, completion: (() -> Void)?) {
         lock.lock(); defer { lock.unlock() }
         if syncInProgress.value { return }
@@ -163,6 +155,7 @@ final class SessionSynchronizationController: SessionSynchronizer {
                     .upload(session: uploadData)
                     .onError({ _ in self.errorStream?.handleSyncError(.uploadFailure(uploadData.uuid)) })
                     .filterError(self.isConnectionError(_:))
+                    .flatMap { self.store.saveURLForSession(uuid: uploadData.uuid, url: $0.location) }
                     .logError(message: "[SYNC] Uploading session failed")
             }
             .eraseToAnyPublisher()

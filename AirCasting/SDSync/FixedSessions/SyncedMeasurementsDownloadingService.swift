@@ -2,20 +2,16 @@
 //
 
 import Foundation
+import Resolver
 
 protocol SyncedMeasurementsDownloader {
     func download(sessionsUUIDs: [SessionUUID])
 }
 
 struct SyncedMeasurementsDownloadingService: SyncedMeasurementsDownloader {
-    private let measurementStreamStorage: MeasurementStreamStorage
-    private let measurementsDownloadingService: MeasurementUpdatingService
+    @Injected private var measurementStreamStorage: MeasurementStreamStorage
+    @Injected private var measurementsDownloadingService: MeasurementUpdatingService
     let measurementTimeframe: Double = 24 * 60 * 60 // 24 hours in seconds
-    
-    init(measurementStreamStorage: MeasurementStreamStorage, measurementsDownloadingService: MeasurementUpdatingService) {
-        self.measurementStreamStorage = measurementStreamStorage
-        self.measurementsDownloadingService = measurementsDownloadingService
-    }
     
     func download(sessionsUUIDs: [SessionUUID]) {
         
@@ -39,18 +35,18 @@ struct SyncedMeasurementsDownloadingService: SyncedMeasurementsDownloader {
     private func getLastSyncDate(for sessionUUID: SessionUUID, storage: HiddenCoreDataMeasurementStreamStorage) -> Date {
         if let existingSession = try? storage.getExistingSession(with: sessionUUID) {
             if let sessionEndTimeSeconds = existingSession.endTime?.timeIntervalSince1970 {
-                let last24hours = Date(timeIntervalSince1970: (sessionEndTimeSeconds - measurementTimeframe))
+                let last24hours = DateBuilder.getDateWithTimeIntervalSince1970((sessionEndTimeSeconds - measurementTimeframe))
                 if let startTime = existingSession.startTime {
                     return startTime < last24hours ? last24hours : startTime
                 } else {
                     return last24hours
                 }
             } else {
-                let last24hours = Date(timeIntervalSince1970: (Date().timeIntervalSince1970 - measurementTimeframe))
+                let last24hours = DateBuilder.getDateWithTimeIntervalSince1970((DateBuilder.getTimeIntervalSince1970() - measurementTimeframe))
                 return last24hours
             }
         } else {
-            let last24hours = Date(timeIntervalSince1970: (Date().timeIntervalSince1970 - measurementTimeframe))
+            let last24hours = DateBuilder.getDateWithTimeIntervalSince1970((DateBuilder.getTimeIntervalSince1970() - measurementTimeframe))
             return last24hours
         }
     }

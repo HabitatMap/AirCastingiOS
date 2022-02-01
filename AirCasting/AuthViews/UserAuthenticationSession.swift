@@ -3,6 +3,7 @@
 
 import Foundation
 import Combine
+import Resolver
 
 struct User: Hashable {
     let id: Int
@@ -83,19 +84,13 @@ protocol LogoutController {
 }
 
 final class DefaultLogoutController: LogoutController {
-    let userAuthenticationSession: UserAuthenticationSession
+    @Injected private var userAuthenticationSession: UserAuthenticationSession
     let sessionStorage: SessionStorage
-    let microphoneManager: MicrophoneManager
-    let sessionSynchronizer: SessionSynchronizer
+    @Injected private var microphoneManager: MicrophoneManager
+    @Injected private var sessionSynchronizer: SessionSynchronizer
 
-    init(userAuthenticationSession: UserAuthenticationSession,
-         sessionStorage: SessionStorage,
-         microphoneManager: MicrophoneManager,
-         sessionSynchronizer: SessionSynchronizer) {
-        self.userAuthenticationSession = userAuthenticationSession
+    init(sessionStorage: SessionStorage) {
         self.sessionStorage = sessionStorage
-        self.microphoneManager = microphoneManager
-        self.sessionSynchronizer = sessionSynchronizer
     }
 
     func logout(onEnd: @escaping () -> Void) throws {
@@ -141,11 +136,3 @@ final class DefaultLogoutController: LogoutController {
         assertionFailure("[LOGOUT] Failed to log out \(error)")
     }
 }
-
-#if DEBUG
-final class FakeLogoutController: LogoutController {
-    func logout(onEnd: @escaping () -> Void) throws {
-        fatalError("Should not be called. Only for preview")
-    }
-}
-#endif

@@ -4,9 +4,9 @@
 import Foundation
 import Combine
 import CoreLocation
+import Resolver
 
 final class SessionSynchronizationDatabase: SessionSynchronizationStore {
-    typealias DatabaseType = SessionsFetchable & SessionRemovable & SessionInsertable
     private enum SessionSynchronizationDatabaseError: Error, LocalizedError {
         case sessionNotFound
         
@@ -17,17 +17,15 @@ final class SessionSynchronizationDatabase: SessionSynchronizationStore {
         }
     }
     
-    private let database: DatabaseType
+    @Injected private var sessionsFetcher: SessionsFetchable
+    @Injected private var sessionsRemover: SessionRemovable
+    @Injected private var sessionsInserter: SessionInsertable
     private let dataConverter = SynchronizationDataConverter()
     
-    init(database: DatabaseType) {
-        self.database = database
-    }
-    
     func getLocalSessionList() -> AnyPublisher<[SessionsSynchronization.Metadata], Error> {
-        Future { [database, dataConverter] promise in
+        Future { [sessionsFetcher, dataConverter] promise in
             let predicate = NSPredicate(format: "locationless = %d", false)
-            database.fetchSessions(constrained: .predicate(predicate)) { [dataConverter] result in
+            sessionsFetcher.fetchSessions(constrained: .predicate(predicate)) { [dataConverter] result in
                 switch result {
                 case .failure(let error):
                     promise(.failure(error))
@@ -39,8 +37,8 @@ final class SessionSynchronizationDatabase: SessionSynchronizationStore {
     }
     
     func addSessions(with sessionsData: [SessionsSynchronization.SessionStoreSessionData]) -> Future<Void, Error> {
-        return .init { [database] promise in
-            database
+        return .init { [sessionsInserter] promise in
+            sessionsInserter
                 .insertOrUpdateSessions(sessionsData.map { sessionData in
                     let streams = sessionData.measurementStreams.map {
                         Database.MeasurementStream(id: MeasurementStreamID($0.id),
@@ -100,9 +98,32 @@ final class SessionSynchronizationDatabase: SessionSynchronizationStore {
         }
     }
     
+    func saveURLForSession(uuid: SessionUUID, url: String) -> Future<Void, Error> {
+        Future { [sessionsFetcher, sessionsInserter] promise in
+            sessionsFetcher.fetchSessions(constrained: .predicate(.init(format: "uuid == %@", uuid.rawValue))) { result in
+                switch result {
+                case .failure(let error):
+                    promise(.failure(error))
+                case .success(let entries) where entries.count >= 1:
+                    if entries.count > 1 { Log.error("Found multiple sessions for ID [\(uuid)]") }
+                    let session = entries[0].withUrlLocation(url)
+                    sessionsInserter.insertOrUpdateSessions([session], completion: { error in
+                        guard error == nil else { promise(.failure(error!)); return }
+                        promise(.success(()))
+                    })
+                    break
+                case .success(let entries) where entries.count == 0:
+                    promise(.failure(SessionSynchronizationStoreError.noSessionsForUUID(uuid: uuid)))
+                    break
+                default: break
+                }
+            }
+        }
+    }
+    
     public func removeSessions(with uuids: [SessionUUID]) -> Future<Void, Error> {
-        Future { [database] promise in
-            database.removeSessions(where: .predicate(NSPredicate(format: "uuid IN %@", uuids))) { error in
+        Future { [sessionsRemover] promise in
+            sessionsRemover.removeSessions(where: .predicate(NSPredicate(format: "uuid IN %@", uuids))) { error in
                 if let error = error {
                     promise(.failure(error))
                 } else {
@@ -113,8 +134,8 @@ final class SessionSynchronizationDatabase: SessionSynchronizationStore {
     }
     
     public func readSession(with uuid: SessionUUID) -> Future<SessionsSynchronization.SessionStoreSessionData, Error> {
-        Future { [database, dataConverter] promise in
-            database.fetchSessions(constrained: .predicate(NSPredicate(format: "uuid == %@", uuid.rawValue)), completion: { [dataConverter] result in
+        Future { [sessionsFetcher, dataConverter] promise in
+            sessionsFetcher.fetchSessions(constrained: .predicate(NSPredicate(format: "uuid == %@", uuid.rawValue)), completion: { [dataConverter] result in
                 switch result {
                 case .failure(let error):
                     promise(.failure(error))
@@ -127,5 +148,28 @@ final class SessionSynchronizationDatabase: SessionSynchronizationStore {
                 }
             })
         }
+    }
+}
+
+extension Database.Session {
+    func withUrlLocation(_ newLocation: String) -> Self {
+        return .init(uuid: uuid,
+                     type: type,
+                     name: name,
+                     deviceType: deviceType,
+                     location: location,
+                     startTime: startTime,
+                     contribute: contribute,
+                     deviceId: deviceId,
+                     endTime: endTime,
+                     followedAt: followedAt,
+                     gotDeleted: gotDeleted,
+                     isIndoor: isIndoor,
+                     tags: tags,
+                     urlLocation: newLocation,
+                     version: version,
+                     measurementStreams: measurementStreams,
+                     status: status,
+                     notes: notes)
     }
 }

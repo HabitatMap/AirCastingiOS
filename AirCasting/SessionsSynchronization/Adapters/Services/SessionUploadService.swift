@@ -5,12 +5,13 @@ import Foundation
 import Combine
 import Gzip
 import CoreLocation
+import Resolver
 
 final class SessionUploadService: SessionUpstream {
-    private let client: APIClient
-    private let authorization: RequestAuthorisationService
-    private let responseValidator: HTTPResponseValidator
-    private let urlProvider: BaseURLProvider
+    @Injected private var client: APIClient
+    @Injected private var authorization: RequestAuthorisationService
+    @Injected private var responseValidator: HTTPResponseValidator
+    @Injected private var urlProvider: URLProvider
     
     private let encoder: JSONEncoder = {
         let encoder = JSONEncoder()
@@ -21,19 +22,14 @@ final class SessionUploadService: SessionUpstream {
         return encoder
     }()
     
+    private let decoder = JSONDecoder()
+    
     private struct APICallData: Encodable {
         let session: String
         let compression: Bool
     }
     
-    init(client: APIClient, authorization: RequestAuthorisationService, responseValidator: HTTPResponseValidator, urlProvider: BaseURLProvider) {
-        self.client = client
-        self.authorization = authorization
-        self.responseValidator = responseValidator
-        self.urlProvider = urlProvider
-    }
-    
-    func upload(session: SessionsSynchronization.SessionUpstreamData) -> Future<Void, Error> {
+    func upload(session: SessionsSynchronization.SessionUpstreamData) -> Future<SessionsSynchronization.SessionUpstreamResult, Error> {
         .init { [self, client, authorization, encoder, responseValidator] promise in
             let url = urlProvider.baseAppURL.appendingPathComponent("api/sessions")
             var request = URLRequest(url: url)
@@ -59,9 +55,10 @@ final class SessionUploadService: SessionUpstream {
             }
             client.requestTask(for: request) { result, request in
                 promise(
-                    result.tryMap { result -> Void in
+                    result.tryMap { result -> SessionsSynchronization.SessionUpstreamResult in
                         try responseValidator.validate(response: result.response, data: result.data)
-                        return ()
+                        let response = try decoder.decode(SessionsSynchronization.SessionUpstreamResult.self, from: result.data)
+                        return response
                     }
                 )
             }

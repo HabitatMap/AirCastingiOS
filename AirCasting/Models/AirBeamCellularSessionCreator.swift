@@ -3,20 +3,18 @@
 
 import Foundation
 import CoreLocation
+import Resolver
 
 final class AirBeamCellularSessionCreator: SessionCreator {
     enum AirBeamSessionCreatorError: Swift.Error {
         case invalidCreateSessionContext(CreateSessionContext)
     }
-    private let userAuthenticationSession: UserAuthenticationSession
-    private let measurementStreamStorage: MeasurementStreamStorage
+    @Injected private var userAuthenticationSession: UserAuthenticationSession
+    @Injected private var measurementStreamStorage: MeasurementStreamStorage
     private let createSessionService: CreateSessionAPIService
     
-    init(measurementStreamStorage: MeasurementStreamStorage, userAuthenticationSession: UserAuthenticationSession, baseUrl: BaseURLProvider) {
-        self.measurementStreamStorage = measurementStreamStorage
-        self.userAuthenticationSession = userAuthenticationSession
-        self.createSessionService = CreateSessionAPIService(authorisationService: userAuthenticationSession,
-                                                            baseUrlProvider: baseUrl)
+    init() {
+        self.createSessionService = CreateSessionAPIService()
     }
     
     func createSession(_ sessionContext: CreateSessionContext, completion: @escaping (Result<Void, Error>) -> Void) {
@@ -32,8 +30,8 @@ final class AirBeamCellularSessionCreator: SessionCreator {
                               name: sessionContext.sessionName,
                               deviceType: sessionContext.deviceType,
                               location: sessionContext.startingLocation,
-                              startTime: Date().currentUTCTimeZoneDate,
-                              followedAt: Date().currentUTCTimeZoneDate,
+                              startTime: DateBuilder.getFakeUTCDate(),
+                              followedAt: DateBuilder.getFakeUTCDate(),
                               tags: sessionContext.sessionTags)
         
         // if session is fixed: create an empty session on server,
@@ -72,11 +70,11 @@ final class AirBeamCellularSessionCreator: SessionCreator {
                                                                 case .success(let output):
                                                                     measurementStreamStorage.accessStorage { storage in
                                                                         do {
-                                                                            try storage.createSession(session)
-                                                                            try AirBeam3Configurator(userAuthenticationSession: userAuthenticationSession,
-                                                                                                     peripheral: peripheral).configureFixedCellularSession(uuid: sessionUUID,
+                                                                            let sessionWithURL = session.withUrlLocation(output.location)
+                                                                            try storage.createSession(sessionWithURL)
+                                                                            try AirBeam3Configurator(peripheral: peripheral).configureFixedCellularSession(uuid: sessionUUID,
                                                                                                                                                            location: sessionContext.startingLocation ?? CLLocationCoordinate2D(latitude: 200, longitude: 200),
-                                                                                                                                                           date: Date().currentUTCTimeZoneDate)
+                                                                                                                                                           date: DateBuilder.getFakeUTCDate())
                                                                             Log.warning("Created fixed cellular session \(output)")
                                                                             completion(.success(()))
                                                                         } catch {

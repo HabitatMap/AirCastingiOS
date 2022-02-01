@@ -2,6 +2,7 @@
 //
 
 import Foundation
+import Resolver
 
 protocol SessionFollowingSettable {
      var following: SessionFollowing { get set }
@@ -17,11 +18,10 @@ extension SessionFollowing {
  }
 
  class MeasurementStreamStorageFollowingSettable: SessionFollowingSettable {
-     private let measurementStreamStorage: MeasurementStreamStorage
+     @Injected private var measurementStreamStorage: MeasurementStreamStorage
      private let session: SessionEntity
 
-     init(session: SessionEntity, measurementStreamStorage: MeasurementStreamStorage) {
-         self.measurementStreamStorage = measurementStreamStorage
+     init(session: SessionEntity) {
          self.session = session
      }
 

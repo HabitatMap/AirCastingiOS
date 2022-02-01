@@ -1,22 +1,17 @@
 // Created by Lunar on 16/12/2021.
 //
 import Foundation
+import Resolver
 
-protocol AddNoteViewModel: ObservableObject {
-    var noteText: String { get set }
-    func continueTapped()
-    func cancelTapped()
-}
-
-class AddNoteViewModelDefault: AddNoteViewModel, ObservableObject {
+class AddNoteViewModel: ObservableObject {
     @Published var noteText = Strings.Commons.note
     
-    var notesHandler: NotesHandler
+    private let notesHandler: NotesHandler
     private let exitRoute: () -> Void
     
-    init(exitRoute: @escaping () -> Void, notesHandler: NotesHandler) {
-        self.notesHandler = notesHandler
+    init(sessionUUID: SessionUUID, exitRoute: @escaping () -> Void) {
         self.exitRoute = exitRoute
+        self.notesHandler = Resolver.resolve(NotesHandler.self, args: sessionUUID)
     }
     
     func continueTapped() {
@@ -25,12 +20,4 @@ class AddNoteViewModelDefault: AddNoteViewModel, ObservableObject {
     }
 
     func cancelTapped() { exitRoute() }
-}
-
-class DummyAddNoteViewModelDefault: AddNoteViewModel, ObservableObject {
-    @Published var noteText = ""
-    
-    func continueTapped() { print("Clicked continue") }
-    
-    func cancelTapped() { print("Cancel tapped") }
 }

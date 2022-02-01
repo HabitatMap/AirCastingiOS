@@ -4,6 +4,7 @@
 import Foundation
 import CoreBluetooth
 import Combine
+import Resolver
 
 enum SDCardSessionType: CaseIterable {
     case mobile, fixed, cellular
@@ -24,29 +25,18 @@ enum SDCardSyncStatus {
     case finalizing
 }
 
-class SDSyncController: ObservableObject {
-    private let fileWriter: SDSyncFileWriter
-    private let airbeamServices: SDCardAirBeamServices
-    private let fileValidator: SDSyncFileValidator
-    private let fileLineReader: FileLineReader
-    private let mobileSessionsSaver: SDCardMobileSessionssSaver
-    private let fixedSessionsSaver: SDCardFixedSessionsSavingService
-    private let averagingService: AveragingService
-    private let sessionSynchronizer: SessionSynchronizer
-    private let writingQueue = DispatchQueue(label: "SDSyncController")
-    private let measurementsDownloader: SyncedMeasurementsDownloader
+class SDSyncController {
+    @Injected private var fileWriter: SDSyncFileWriter
+    @Injected private var airbeamServices: SDCardAirBeamServices
+    @Injected private var fileValidator: SDSyncFileValidator
+    @Injected private var fileLineReader: FileLineReader
+    @Injected private var mobileSessionsSaver: SDCardMobileSessionssSaver
+    @Injected private var fixedSessionsSaver: SDCardFixedSessionsSavingService //TODO: This part needs refactoring
+    @Injected private var averagingService: AveragingService
+    @Injected private var sessionSynchronizer: SessionSynchronizer
+    @Injected private var measurementsDownloader: SyncedMeasurementsDownloader
     
-    init(airbeamServices: SDCardAirBeamServices, fileWriter: SDSyncFileWriter, fileValidator: SDSyncFileValidator, fileLineReader: FileLineReader, mobileSessionsSaver: SDCardMobileSessionssSaver, fixedSessionsSaver: SDCardFixedSessionsSavingService, averagingService: AveragingService, sessionSynchronizer: SessionSynchronizer, measurementsDownloader: SyncedMeasurementsDownloader) {
-        self.airbeamServices = airbeamServices
-        self.fileWriter = fileWriter
-        self.fileValidator = fileValidator
-        self.fileLineReader = fileLineReader
-        self.mobileSessionsSaver = mobileSessionsSaver
-        self.fixedSessionsSaver = fixedSessionsSaver
-        self.averagingService = averagingService
-        self.sessionSynchronizer = sessionSynchronizer
-        self.measurementsDownloader = measurementsDownloader
-    }
+    private let writingQueue = DispatchQueue(label: "SDSyncController")
     
     func syncFromAirbeam(_ airbeamConnection: CBPeripheral, progress: @escaping (SDCardSyncStatus) -> Void, completion: @escaping (Bool) -> Void) {
         guard let sensorName = airbeamConnection.name else {
@@ -126,8 +116,7 @@ class SDSyncController: ObservableObject {
     }
     
     private func process(fixedSessionFile: URL, deviceID: String, completion: @escaping (Bool) -> Void) throws -> [SessionUUID] {
-        let csvSession = try CSVStreamsWithMeasurements(fileURL: fixedSessionFile,
-                                        fileLineReader: fileLineReader)
+        let csvSession = try CSVStreamsWithMeasurements(fileURL: fixedSessionFile)
         fixedSessionsSaver.processAndSync(csvSession: csvSession, deviceID: deviceID, completion: completion)
         return csvSession.sessions.map { $0.uuid }
     }

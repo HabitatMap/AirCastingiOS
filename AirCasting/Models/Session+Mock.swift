@@ -6,12 +6,13 @@
 //
 
 import Foundation
+import Resolver
 
 #if DEBUG
 extension SessionEntity {
     
     static var mock: SessionEntity {
-        let context = PersistenceController.shared.viewContext
+        let context = Resolver.resolve(PersistenceController.self).viewContext
         let session: SessionEntity = try! context.newOrExisting(uuid: SessionUUID(rawValue: "mock")!)
         session.type = .mobile
         session.name = "Session mock"
@@ -24,13 +25,13 @@ extension SessionEntity {
 extension MeasurementStreamEntity {
     
     static var mock: MeasurementStreamEntity {
-        let context = PersistenceController.shared.viewContext
+        let context = Resolver.resolve(PersistenceController.self).viewContext
         let stream: MeasurementStreamEntity = try! context.newOrExisting(id: 1_001)
         
         for i in 0...10 {
             let measuremennt: MeasurementEntity = try! context.newOrExisting(id: Int64(i))
             measuremennt.value = Double(arc4random() % 150)
-            measuremennt.time = Date().addingTimeInterval(-3600).addingTimeInterval(10 * Double(i))
+            measuremennt.time = DateBuilder.getRawDate().addingTimeInterval(-3600).addingTimeInterval(10 * Double(i))
         }
         
         return stream

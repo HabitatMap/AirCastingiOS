@@ -1,15 +1,13 @@
 import SwiftUI
 import Firebase
 import FirebaseMessaging
+import Resolver
 
 @objc
 class AppDelegate: NSObject, UIApplicationDelegate, MessagingDelegate {
-    private let notificationsRouter = DefaultRemoteNotificationRouter.shared
-    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         FirebaseApp.configure()
         Messaging.messaging().delegate = self
-        let _ = FeatureFlagsViewModel.shared // Needed so that if we launch with remote notification pending the FirebaseFeatureFlagProvider is already there.
         // NOTE: We don't ask user for the remote notifications permissions since we're only using APNS for
         // the firebase config change notifications (silent push notifications - no permission is needed for
         // this kind). If you want to add non-silet notifications, uncomment:
@@ -24,7 +22,8 @@ class AppDelegate: NSObject, UIApplicationDelegate, MessagingDelegate {
     }
     
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        Log.info("Got APNS token: \(deviceToken)")
+        let tokenString = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
+        Log.info("Got APNS token: \(tokenString)")
         Messaging.messaging().apnsToken = deviceToken
     }
     
@@ -34,7 +33,8 @@ class AppDelegate: NSObject, UIApplicationDelegate, MessagingDelegate {
     
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         Log.info("Got APNS message: \(userInfo)")
-        notificationsRouter.handleSystemNotification(userInfo: userInfo, fetchCompletionHandler: completionHandler)
+        let handler = Resolver.resolve(RemoteNotificationsHandler.self)
+        handler.handleSystemNotification(userInfo: userInfo, fetchCompletionHandler: completionHandler)
     }
     
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {

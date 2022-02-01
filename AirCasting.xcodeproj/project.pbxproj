@@ -35,6 +35,7 @@
 		33BA336A266E4D1000899343 /* MobileSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33BA3369266E4D1000899343 /* MobileSession.swift */; };
 		33F20FDD27692231004364EA /* SyncedMeasurementsDownloadingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F20FDC27692231004364EA /* SyncedMeasurementsDownloadingService.swift */; };
 		33F2238A270C674E00F14909 /* TimeInterval.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F22389270C674E00F14909 /* TimeInterval.swift */; };
+		33FD502227A144B300162384 /* SingleMeasurementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33FD502127A144B300162384 /* SingleMeasurementView.swift */; };
 		4F15548B263C44AF00FF3208 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F15548A263C44AF00FF3208 /* Session.swift */; };
 		4F15548F263C819C00FF3208 /* MeasurementEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F15548E263C819C00FF3208 /* MeasurementEntity.swift */; };
 		4F1D57D926454E3700F250AC /* MeasurementStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F1D57D826454E3700F250AC /* MeasurementStream.swift */; };
@@ -180,7 +181,6 @@
 		ACD01F952600A54400B8F65F /* UserDefaults+Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACD01F942600A54400B8F65F /* UserDefaults+Preferences.swift */; };
 		ACD32A4F2600A8DD00818946 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACD32A4E2600A8DD00818946 /* SettingsView.swift */; };
 		ACDF803826D62EB500584F55 /* EmptyDashboardButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACDF803726D62EB500584F55 /* EmptyDashboardButtonView.swift */; };
-		ACDF803A26DCD75500584F55 /* SingleMeasurementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACDF803926DCD75500584F55 /* SingleMeasurementView.swift */; };
 		ACDF82FC265BBDE200A4D04A /* UIFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACDF82FB265BBDE200A4D04A /* UIFont.swift */; };
 		ACF600BE2678D7F4005DD97C /* SwiftSimplify in Frameworks */ = {isa = PBXBuildFile; productRef = ACF600BD2678D7F4005DD97C /* SwiftSimplify */; };
 		ACF77DFB25A8888700BB85B7 /* SessionCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACF77DFA25A8888700BB85B7 /* SessionCardView.swift */; };
@@ -215,12 +215,15 @@
 		B32D08AD267A6437006C97ED /* LogEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32D08AC267A6437006C97ED /* LogEvent.swift */; };
 		B32D08AF267A6D13006C97ED /* ErasingToVoidPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32D08AE267A6D13006C97ED /* ErasingToVoidPublisher.swift */; };
 		B3332F5A275D61B000789BAD /* Int+orOne.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3332F59275D61B000789BAD /* Int+orOne.swift */; };
+		B338934827A026BC0059E79B /* ConveringStatisticsDataSourceDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B338934727A026BC0059E79B /* ConveringStatisticsDataSourceDecorator.swift */; };
 		B33DB56E2685FB2400ED1344 /* LocalizedErrorStub.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33DB56D2685FB2400ED1344 /* LocalizedErrorStub.swift */; };
 		B33DB5702685FCFB00ED1344 /* SynchronizationTestMocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33DB56F2685FCFB00ED1344 /* SynchronizationTestMocks.swift */; };
 		B33DB5722686013400ED1344 /* XCTestCase+AwaitPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33DB5712686013400ED1344 /* XCTestCase+AwaitPublisher.swift */; };
 		B33DB5742686120600ED1344 /* XCTestCase+AssertContainsSameElements.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33DB5732686120600ED1344 /* XCTestCase+AssertContainsSameElements.swift */; };
 		B33DB5762686161300ED1344 /* SensorName.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33DB5752686161300ED1344 /* SensorName.swift */; };
 		B34D4648275B12A000194E51 /* RemoteLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34D4647275B12A000194E51 /* RemoteLog.swift */; };
+		B35E04C1278C922A00227D8D /* Resolver in Frameworks */ = {isa = PBXBuildFile; productRef = B35E04C0278C922A00227D8D /* Resolver */; };
+		B35E04C3278C931700227D8D /* AppDelegate+Injection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B35E04C2278C931700227D8D /* AppDelegate+Injection.swift */; };
 		B367A590274E9EAA004C605B /* FirebaseFeatureFlagProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B367A589274E9EAA004C605B /* FirebaseFeatureFlagProvider.swift */; };
 		B367A591274E9EAA004C605B /* DefaultFeatureFlagProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B367A58A274E9EAA004C605B /* DefaultFeatureFlagProvider.swift */; };
 		B367A593274E9EAA004C605B /* FeatureFlagProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B367A58C274E9EAA004C605B /* FeatureFlagProvider.swift */; };
@@ -317,13 +320,16 @@
 		DD8A36A426C3CE7900C26725 /* ChooseCustomLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8A36A326C3CE7900C26725 /* ChooseCustomLocationView.swift */; };
 		DD8A36A726C3E76200C26725 /* PlacePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8A36A626C3E76200C26725 /* PlacePicker.swift */; };
 		DD8AFE4F272886D700ED1CED /* ThresholdWitness.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8AFE4E272886D700ED1CED /* ThresholdWitness.swift */; };
-		DD8C38092689A34E00901FDF /* UserDefaultsBaseURLProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8C38082689A34E00901FDF /* UserDefaultsBaseURLProvider.swift */; };
-		DD8C380C2689A3DA00901FDF /* BaseURLProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8C380B2689A3DA00901FDF /* BaseURLProvider.swift */; };
+		DD8C38092689A34E00901FDF /* UserDefaultsURLProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8C38082689A34E00901FDF /* UserDefaultsURLProvider.swift */; };
+		DD8C380C2689A3DA00901FDF /* URLProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8C380B2689A3DA00901FDF /* URLProvider.swift */; };
 		DD8C380E2689A55A00901FDF /* BackendSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8C380D2689A55A00901FDF /* BackendSettingsView.swift */; };
 		DD8DE6892785B706009B1726 /* EmptyNotesHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8DE6882785B706009B1726 /* EmptyNotesHandler.swift */; };
 		DD8DE68B2785B93A009B1726 /* MapNotesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8DE68A2785B939009B1726 /* MapNotesViewModel.swift */; };
+		DD9DD37327A2B91A00E657E4 /* TurnOnLocationFixedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD9DD37227A2B91A00E657E4 /* TurnOnLocationFixedView.swift */; };
+		DD9DD37527A2B92E00E657E4 /* TurnOnLocationFixedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD9DD37427A2B92E00E657E4 /* TurnOnLocationFixedViewModel.swift */; };
 		DD9EBB4E26AFDD2100D51804 /* TurnOnLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD9EBB4D26AFDD2100D51804 /* TurnOnLocationView.swift */; };
 		DD9EBFD5279EB70900192CB5 /* TextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD9EBFD4279EB70900192CB5 /* TextView.swift */; };
+		DD9EBFD8279EEAB300192CB5 /* DataBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD9EBFD7279EEAB300192CB5 /* DataBuilder.swift */; };
 		DDB05581274BC60D00DA1A8A /* SessionUpdateService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB05580274BC60D00DA1A8A /* SessionUpdateService.swift */; };
 		DDB448282732AA4B00F11340 /* AirCastingGraphSimplifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB448272732AA4B00F11340 /* AirCastingGraphSimplifier.swift */; };
 		DDB44C252704AF830027176E /* AveragingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB44C242704AF830027176E /* AveragingService.swift */; };
@@ -405,6 +411,7 @@
 		33BA3369266E4D1000899343 /* MobileSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileSession.swift; sourceTree = "<group>"; };
 		33F20FDC27692231004364EA /* SyncedMeasurementsDownloadingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncedMeasurementsDownloadingService.swift; sourceTree = "<group>"; };
 		33F22389270C674E00F14909 /* TimeInterval.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeInterval.swift; sourceTree = "<group>"; };
+		33FD502127A144B300162384 /* SingleMeasurementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleMeasurementView.swift; sourceTree = "<group>"; };
 		3A54057326D27D23E9906704 /* Pods_AirCastingTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AirCastingTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4327910762891E7B1AE9102E /* Pods-AirCastingTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AirCastingTests.debug.xcconfig"; path = "Target Support Files/Pods-AirCastingTests/Pods-AirCastingTests.debug.xcconfig"; sourceTree = "<group>"; };
 		4F15548A263C44AF00FF3208 /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
@@ -557,7 +564,6 @@
 		ACD01F942600A54400B8F65F /* UserDefaults+Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Preferences.swift"; sourceTree = "<group>"; };
 		ACD32A4E2600A8DD00818946 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		ACDF803726D62EB500584F55 /* EmptyDashboardButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyDashboardButtonView.swift; sourceTree = "<group>"; };
-		ACDF803926DCD75500584F55 /* SingleMeasurementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleMeasurementView.swift; sourceTree = "<group>"; };
 		ACDF82FB265BBDE200A4D04A /* UIFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIFont.swift; sourceTree = "<group>"; };
 		ACF77DFA25A8888700BB85B7 /* SessionCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionCardView.swift; sourceTree = "<group>"; };
 		ACF7C05E260CC9FF007C24AE /* DownloadMeasurmentsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadMeasurmentsService.swift; sourceTree = "<group>"; };
@@ -591,12 +597,14 @@
 		B32D08AC267A6437006C97ED /* LogEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogEvent.swift; sourceTree = "<group>"; };
 		B32D08AE267A6D13006C97ED /* ErasingToVoidPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErasingToVoidPublisher.swift; sourceTree = "<group>"; };
 		B3332F59275D61B000789BAD /* Int+orOne.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+orOne.swift"; sourceTree = "<group>"; };
+		B338934727A026BC0059E79B /* ConveringStatisticsDataSourceDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConveringStatisticsDataSourceDecorator.swift; sourceTree = "<group>"; };
 		B33DB56D2685FB2400ED1344 /* LocalizedErrorStub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizedErrorStub.swift; sourceTree = "<group>"; };
 		B33DB56F2685FCFB00ED1344 /* SynchronizationTestMocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynchronizationTestMocks.swift; sourceTree = "<group>"; };
 		B33DB5712686013400ED1344 /* XCTestCase+AwaitPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+AwaitPublisher.swift"; sourceTree = "<group>"; };
 		B33DB5732686120600ED1344 /* XCTestCase+AssertContainsSameElements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+AssertContainsSameElements.swift"; sourceTree = "<group>"; };
 		B33DB5752686161300ED1344 /* SensorName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorName.swift; sourceTree = "<group>"; };
 		B34D4647275B12A000194E51 /* RemoteLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteLog.swift; sourceTree = "<group>"; };
+		B35E04C2278C931700227D8D /* AppDelegate+Injection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppDelegate+Injection.swift"; sourceTree = "<group>"; };
 		B367A589274E9EAA004C605B /* FirebaseFeatureFlagProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseFeatureFlagProvider.swift; sourceTree = "<group>"; };
 		B367A58A274E9EAA004C605B /* DefaultFeatureFlagProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultFeatureFlagProvider.swift; sourceTree = "<group>"; };
 		B367A58C274E9EAA004C605B /* FeatureFlagProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeatureFlagProvider.swift; sourceTree = "<group>"; };
@@ -694,14 +702,17 @@
 		DD8A36A326C3CE7900C26725 /* ChooseCustomLocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseCustomLocationView.swift; sourceTree = "<group>"; };
 		DD8A36A626C3E76200C26725 /* PlacePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlacePicker.swift; sourceTree = "<group>"; };
 		DD8AFE4E272886D700ED1CED /* ThresholdWitness.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThresholdWitness.swift; sourceTree = "<group>"; };
-		DD8C38082689A34E00901FDF /* UserDefaultsBaseURLProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsBaseURLProvider.swift; sourceTree = "<group>"; };
-		DD8C380B2689A3DA00901FDF /* BaseURLProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseURLProvider.swift; sourceTree = "<group>"; };
+		DD8C38082689A34E00901FDF /* UserDefaultsURLProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsURLProvider.swift; sourceTree = "<group>"; };
+		DD8C380B2689A3DA00901FDF /* URLProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLProvider.swift; sourceTree = "<group>"; };
 		DD8C380D2689A55A00901FDF /* BackendSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendSettingsView.swift; sourceTree = "<group>"; };
 		DD8C380F268A0E9400901FDF /* ShareViewModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewModal.swift; sourceTree = "<group>"; };
 		DD8DE6882785B706009B1726 /* EmptyNotesHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyNotesHandler.swift; sourceTree = "<group>"; };
 		DD8DE68A2785B939009B1726 /* MapNotesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapNotesViewModel.swift; sourceTree = "<group>"; };
+		DD9DD37227A2B91A00E657E4 /* TurnOnLocationFixedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurnOnLocationFixedView.swift; sourceTree = "<group>"; };
+		DD9DD37427A2B92E00E657E4 /* TurnOnLocationFixedViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurnOnLocationFixedViewModel.swift; sourceTree = "<group>"; };
 		DD9EBB4D26AFDD2100D51804 /* TurnOnLocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurnOnLocationView.swift; sourceTree = "<group>"; };
 		DD9EBFD4279EB70900192CB5 /* TextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextView.swift; sourceTree = "<group>"; };
+		DD9EBFD7279EEAB300192CB5 /* DataBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataBuilder.swift; sourceTree = "<group>"; };
 		DDB05580274BC60D00DA1A8A /* SessionUpdateService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionUpdateService.swift; sourceTree = "<group>"; };
 		DDB448272732AA4B00F11340 /* AirCastingGraphSimplifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirCastingGraphSimplifier.swift; sourceTree = "<group>"; };
 		DDB44C242704AF830027176E /* AveragingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AveragingService.swift; sourceTree = "<group>"; };
@@ -754,6 +765,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B35E04C1278C922A00227D8D /* Resolver in Frameworks */,
 				AC6D567C25AC540D00D221BA /* Charts in Frameworks */,
 				ACF600BE2678D7F4005DD97C /* SwiftSimplify in Frameworks */,
 				AC5226C3270C50520048A585 /* Algorithms in Frameworks */,
@@ -993,6 +1005,7 @@
 				AC32041E25CC485E00A68520 /* ConnectingABView.swift */,
 				AC960C7725DD39F500EC95DD /* ABConnectedView.swift */,
 				DD4108F8273BE92700BF10FF /* CreateSessionDetails */,
+				DD9DD37127A2B8EE00E657E4 /* TurnOnLocationFixed */,
 				DD8A36A326C3CE7900C26725 /* ChooseCustomLocationView.swift */,
 				DD8A36A626C3E76200C26725 /* PlacePicker.swift */,
 				331EA80925E32094009DEFDB /* ConfirmCreatingSessionView.swift */,
@@ -1023,7 +1036,7 @@
 				DD009D652698844A009F0443 /* DeleteView.swift */,
 				AC194B0C2684BAB40048E2C8 /* SessionLoadingView.swift */,
 				AC08A661266E2AEC0081697C /* ABMeasurementsView.swift */,
-				ACDF803926DCD75500584F55 /* SingleMeasurementView.swift */,
+				33FD502127A144B300162384 /* SingleMeasurementView.swift */,
 				ACC536DF26395C0900327267 /* MeasurementDotView.swift */,
 				AC96DBE827426FB700D5E8E0 /* ThresholdSettings */,
 				AC6D56A425AF211200D221BA /* MultiSliderView.swift */,
@@ -1046,6 +1059,7 @@
 		AC7EB36925A6FB3A00A7F2AF = {
 			isa = PBXGroup;
 			children = (
+				B35E04C2278C931700227D8D /* AppDelegate+Injection.swift */,
 				B367A58D274E9EAA004C605B /* AppDelegate.swift */,
 				B3EFAB1D26F1F9DB00E88141 /* FixedSessionFaker.swift */,
 				4FB39E0E2621B5C100E5E564 /* Podfile */,
@@ -1403,6 +1417,7 @@
 				DDCD356F271EB641004969FF /* UIImage.swift */,
 				3397C81E2787024C0050B333 /* UserDefaults.swift */,
 				3375E8D32791EDC50019A5DE /* CLLocationCoordinate2D.swift */,
+				DD9EBFD7279EEAB300192CB5 /* DataBuilder.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1455,6 +1470,7 @@
 				B3AB8BE426BB5EF400AF23CC /* Array+MeasurementStatistics.swift */,
 				B30BAC052694A99300AE0476 /* GraphStatsDataSource.swift */,
 				B30BAC0A2694A9CB00AE0476 /* StandardStatisticsCalculator.swift */,
+				B338934727A026BC0059E79B /* ConveringStatisticsDataSourceDecorator.swift */,
 			);
 			path = Adapters;
 			sourceTree = "<group>";
@@ -1812,10 +1828,19 @@
 		DD8C380A2689A3B600901FDF /* URLProviders */ = {
 			isa = PBXGroup;
 			children = (
-				DD8C380B2689A3DA00901FDF /* BaseURLProvider.swift */,
-				DD8C38082689A34E00901FDF /* UserDefaultsBaseURLProvider.swift */,
+				DD8C380B2689A3DA00901FDF /* URLProvider.swift */,
+				DD8C38082689A34E00901FDF /* UserDefaultsURLProvider.swift */,
 			);
 			path = URLProviders;
+			sourceTree = "<group>";
+		};
+		DD9DD37127A2B8EE00E657E4 /* TurnOnLocationFixed */ = {
+			isa = PBXGroup;
+			children = (
+				DD9DD37227A2B91A00E657E4 /* TurnOnLocationFixedView.swift */,
+				DD9DD37427A2B92E00E657E4 /* TurnOnLocationFixedViewModel.swift */,
+			);
+			path = TurnOnLocationFixed;
 			sourceTree = "<group>";
 		};
 		DDB0557F274BC5AF00DA1A8A /* SingleSessionSynchronizer */ = {
@@ -1946,6 +1971,7 @@
 				C3AC27DFF567C636D29031C2 /* [CP] Copy Pods Resources */,
 				CDF508737F6F7BD54E344891 /* [CP] Embed Pods Frameworks */,
 				AC5EF74B25C83F0E003657B1 /* Firebase Crashlytics */,
+				DD9EBFD6279ECD0700192CB5 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -1957,6 +1983,7 @@
 				AC787D74267B41990034B222 /* AirCastingStyling */,
 				ACF600BD2678D7F4005DD97C /* SwiftSimplify */,
 				AC5226C2270C50520048A585 /* Algorithms */,
+				B35E04C0278C922A00227D8D /* Resolver */,
 				3375E8D12791E7100019A5DE /* ZipArchive */,
 			);
 			productName = AirCasting;
@@ -1994,6 +2021,7 @@
 				AC6D567A25AC540D00D221BA /* XCRemoteSwiftPackageReference "Charts" */,
 				ACF600BC2678D7F4005DD97C /* XCRemoteSwiftPackageReference "SwiftSimplify" */,
 				AC5226C1270C50520048A585 /* XCRemoteSwiftPackageReference "swift-algorithms" */,
+				B35E04BF278C922A00227D8D /* XCRemoteSwiftPackageReference "Resolver" */,
 				3375E8D02791E7100019A5DE /* XCRemoteSwiftPackageReference "ZipArchive" */,
 			);
 			productRefGroup = AC7EB37325A6FB3A00A7F2AF /* Products */;
@@ -2150,6 +2178,23 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AirCasting/Pods-AirCasting-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		DD9EBFD6279ECD0700192CB5 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export PATH=\"$PATH:/opt/homebrew/bin\"\n\nif which swiftlint >/dev/null; then\n  swiftlint\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -2212,6 +2257,7 @@
 				AC049F7F2604B7AF00398197 /* AuthErorrHandling.swift in Sources */,
 				DDBA6139276B3AE200E3FEF9 /* EditNoteView.swift in Sources */,
 				750A51DC2754D4BD00D6F4E7 /* VisibleRegionCoordinates.swift in Sources */,
+				B338934827A026BC0059E79B /* ConveringStatisticsDataSourceDecorator.swift in Sources */,
 				B3FD77C4267C94AF00E97CC2 /* SessionSynchronizationService.swift in Sources */,
 				B34D4648275B12A000194E51 /* RemoteLog.swift in Sources */,
 				ACCEB21D2763A2230040140B /* SDSyncRootViewModel.swift in Sources */,
@@ -2222,7 +2268,6 @@
 				B3F1447C26AE437E006A4612 /* OnErrorPublisher.swift in Sources */,
 				B3FD77B7267C94AF00E97CC2 /* DatabaseMeasurement.swift in Sources */,
 				AC524A962615D8620061AD45 /* MeasurementStreamEntity.swift in Sources */,
-				ACDF803A26DCD75500584F55 /* SingleMeasurementView.swift in Sources */,
 				B32D08A2267A4949006C97ED /* LogErrorPublisher.swift in Sources */,
 				DDC5F5882719694800F1F9D8 /* ShadowImages.swift in Sources */,
 				DD430B022670F3B300F1BF2E /* NearAirDescription.swift in Sources */,
@@ -2280,13 +2325,14 @@
 				AC194B0D2684BAB40048E2C8 /* SessionLoadingView.swift in Sources */,
 				33885BB227468B4E00F41CB5 /* SDSyncFileWritingService.swift in Sources */,
 				4FD2CA4726406F2C007E932E /* Diff.swift in Sources */,
-				DD8C38092689A34E00901FDF /* UserDefaultsBaseURLProvider.swift in Sources */,
+				DD8C38092689A34E00901FDF /* UserDefaultsURLProvider.swift in Sources */,
 				DDF12AEB26B2B76C00D067C7 /* SessionCartFollowing.swift in Sources */,
 				B3F1448226AE4CD9006A4612 /* OfflineMessageViewModel.swift in Sources */,
 				B3FFBA2B273DC0690095BA4A /* RefreshControl.swift in Sources */,
 				AC5832DA25B196DD008C5DD5 /* Graph.swift in Sources */,
 				AC4A6A6A267CB3890001F639 /* AirCastingGraph.swift in Sources */,
 				AC93B8E725BEFE4F003D0A0D /* AirMapView.swift in Sources */,
+				DD9EBFD8279EEAB300192CB5 /* DataBuilder.swift in Sources */,
 				ACCEB21C2763A2230040140B /* ClearingSDCardViewModel.swift in Sources */,
 				3384C1DD274EC4C00022B008 /* SDSyncFileValidationService.swift in Sources */,
 				ACDF803826D62EB500584F55 /* EmptyDashboardButtonView.swift in Sources */,
@@ -2309,6 +2355,7 @@
 				4F945EEE2649F3F5008A5B22 /* SessionCreator.swift in Sources */,
 				4F945EF02649F455008A5B22 /* AirBeamFixedWifiSessionCreator.swift in Sources */,
 				B30BAC132694AA3200AE0476 /* MeasurementsStatisticsController.swift in Sources */,
+				DD9DD37527A2B92E00E657E4 /* TurnOnLocationFixedViewModel.swift in Sources */,
 				DDC3E954275E4C3A0066A5DF /* SettingsViewModel.swift in Sources */,
 				33769A5C2705B06F007D1EA7 /* ChartViewModel.swift in Sources */,
 				33BA3368266E4BCA00899343 /* MobilePeripheralSessionManager.swift in Sources */,
@@ -2380,6 +2427,7 @@
 				B376DD25268096E20083FD2F /* SessionSynchronizationDatabase.swift in Sources */,
 				AC6D56A525AF211200D221BA /* MultiSliderView.swift in Sources */,
 				AC524A7626133A370061AD45 /* MeaurementStreamExtension.swift in Sources */,
+				DD9DD37327A2B91A00E657E4 /* TurnOnLocationFixedView.swift in Sources */,
 				DDC5F58A271979F100F1F9D8 /* Fonts.swift in Sources */,
 				33F20FDD27692231004364EA /* SyncedMeasurementsDownloadingService.swift in Sources */,
 				3397C81F2787024C0050B333 /* UserDefaults.swift in Sources */,
@@ -2391,6 +2439,7 @@
 				3387DD4E278F2AE400B11D02 /* GenerateSessionFileController.swift in Sources */,
 				AC8CFF7E25EE5F9200FB2918 /* AirBeam3Configurator.swift in Sources */,
 				AC8CFF7725ECF8B100FB2918 /* HexMessagesBuilder.swift in Sources */,
+				33FD502227A144B300162384 /* SingleMeasurementView.swift in Sources */,
 				338C30E225F1044B00E0305C /* PersistenceController.swift in Sources */,
 				B3FD77C2267C94AF00E97CC2 /* SessionSynchronizationContextProvidable.swift in Sources */,
 				4F1D57D926454E3700F250AC /* MeasurementStream.swift in Sources */,
@@ -2439,7 +2488,7 @@
 				DDF62601269C779800F23489 /* UIApplication+AppInfo.swift.swift in Sources */,
 				75B1DD48273BCCD200BCDF9B /* Heatmap.swift in Sources */,
 				AC8D6C7225C0574800ED74D1 /* LocationTracker.swift in Sources */,
-				DD8C380C2689A3DA00901FDF /* BaseURLProvider.swift in Sources */,
+				DD8C380C2689A3DA00901FDF /* URLProvider.swift in Sources */,
 				AC4EC6C425B6FE0D00C1E312 /* ThresholdsSettingsView.swift in Sources */,
 				DDD24D8626A8295F00D4A327 /* ConnectingABViewModel.swift in Sources */,
 				B3FD77C8267C997800E97CC2 /* PersistenceController+Database.swift in Sources */,
@@ -2480,6 +2529,7 @@
 				ACDF82FC265BBDE200A4D04A /* UIFont.swift in Sources */,
 				DD8C380E2689A55A00901FDF /* BackendSettingsView.swift in Sources */,
 				ACCEB21E2763A2230040140B /* SDSyncRootView.swift in Sources */,
+				B35E04C3278C931700227D8D /* AppDelegate+Injection.swift in Sources */,
 				DD1EEB8E26B7C39000AFC5C1 /* ChooseSessionTypeViewModel.swift in Sources */,
 				4F15548F263C819C00FF3208 /* MeasurementEntity.swift in Sources */,
 				DD1C99C1267CBFCB00B786C4 /* MyAccountViewSignOut.swift in Sources */,
@@ -2601,6 +2651,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -2655,6 +2706,7 @@
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -2669,7 +2721,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_ASSET_PATHS = "\"AirCasting/Preview Content\"";
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
@@ -2680,7 +2732,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.3.0;
+				MARKETING_VERSION = 1.4.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.habitatmap.AirCasting;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2698,7 +2750,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"AirCasting/Preview Content\"";
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
@@ -2708,7 +2760,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.3.0;
+				MARKETING_VERSION = 1.4.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.habitatmap.AirCasting;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "HabitatMap AppStore";
@@ -2772,6 +2824,7 @@
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = BETA;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -2786,7 +2839,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"AirCasting/Preview Content\"";
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
@@ -2796,7 +2849,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.3.0;
+				MARKETING_VERSION = 1.4.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.habitatmap.AirCasting;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "AirCasting Ad hoc distribution";
@@ -2895,6 +2948,14 @@
 				minimumVersion = 1.1.1;
 			};
 		};
+		B35E04BF278C922A00227D8D /* XCRemoteSwiftPackageReference "Resolver" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/hmlongco/Resolver";
+			requirement = {
+				kind = exactVersion;
+				version = 1.5.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -2921,6 +2982,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = ACF600BC2678D7F4005DD97C /* XCRemoteSwiftPackageReference "SwiftSimplify" */;
 			productName = SwiftSimplify;
+		};
+		B35E04C0278C922A00227D8D /* Resolver */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B35E04BF278C922A00227D8D /* XCRemoteSwiftPackageReference "Resolver" */;
+			productName = Resolver;
 		};
 /* End XCSwiftPackageProductDependency section */
 

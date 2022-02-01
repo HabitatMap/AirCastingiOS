@@ -2,6 +2,7 @@
 //
 
 import Foundation
+import Resolver
 import CoreData
 
 protocol NotesHandler: AnyObject {
@@ -15,21 +16,24 @@ protocol NotesHandler: AnyObject {
 
 @objc
 class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDelegate {
-    var measurementStreamStorage: MeasurementStreamStorage
+    @Injected private var measurementStreamStorage: MeasurementStreamStorage
     var sessionUUID: SessionUUID
-    var locationTracker: LocationTracker
+    @Injected private var locationTracker: LocationTracker
+    @Injected private var sessionUpdateService: SessionUpdateService
+    @Injected private var persistenceController: PersistenceController
     var observer: (() -> Void)?
-    private let sessionUpdateService: SessionUpdateService
-    private let frc: NSFetchedResultsController<NoteEntity>
     
-    init(measurementStreamStorage: MeasurementStreamStorage, sessionUUID: SessionUUID, locationTracker: LocationTracker, sessionUpdateService: SessionUpdateService, persistenceController: PersistenceController) {
-        self.measurementStreamStorage = measurementStreamStorage
-        self.sessionUUID = sessionUUID
-        self.locationTracker = locationTracker
-        self.sessionUpdateService = sessionUpdateService
+    private lazy var frc: NSFetchedResultsController<NoteEntity> = {
         let fetchRequest = NoteEntity.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "text", ascending: true)]
-        frc = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: persistenceController.viewContext, sectionNameKeyPath: nil, cacheName: nil)
+        return NSFetchedResultsController(fetchRequest: fetchRequest,
+                                          managedObjectContext: persistenceController.viewContext,
+                                          sectionNameKeyPath: nil,
+                                          cacheName: nil)
+    }()
+    
+    init(sessionUUID: SessionUUID) {
+        self.sessionUUID = sessionUUID
         super.init()
         frc.delegate = self
         try? frc.performFetch()
@@ -43,14 +47,14 @@ class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDel
         measurementStreamStorage.accessStorage { [self] storage in
             do {
                 let currentNumber = try storage.getNotes(for: sessionUUID).map(\.number).sorted(by: < ).last
-                try storage.addNote(Note(date: Date().currentUTCTimeZoneDate,
+                try storage.addNote(Note(date: DateBuilder.getFakeUTCDate(),
                                          text: noteText,
                                          lat: locationTracker.googleLocation.last?.location.latitude ?? 20.0,
                                          long: locationTracker.googleLocation.last?.location.longitude ?? 20.0,
                                          number: (currentNumber ?? -1) + 1),
                                     for: sessionUUID)
             } catch {
-                Log.info("Error when adding to DB")
+                Log.info("Error when adding to DB: \(error)")
             }
         }
     }
@@ -66,7 +70,7 @@ class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDel
                     }
                 }
             } catch {
-                Log.info("Error when deleting note")
+                Log.info("Error when deleting note: \(error)")
             }
         }
     }
@@ -82,7 +86,7 @@ class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDel
                     }
                 }
             } catch {
-                Log.info("Error when deleting note")
+                Log.info("Error when updating note: \(error)")
             }
         }
     }
@@ -92,7 +96,7 @@ class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDel
             do {
                 completion(try storage.getNotes(for: sessionUUID))
             } catch {
-                Log.info("Error when deleting note")
+                Log.info("Error when getting all notes: \(error)")
             }
         }
     }
@@ -102,7 +106,7 @@ class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDel
             do {
                 completion(try storage.fetchSpecifiedNote(for: sessionUUID, number: number))
             } catch {
-                Log.info("Error when deleting note")
+                Log.info("Error when fetching note: \(error)")
             }
         }
     }
@@ -115,7 +119,7 @@ extension NotesHandlerDefault {
             do {
                 completion(try storage.getExistingSession(with: sessionUUID))
             } catch {
-                Log.info("Error when deleting note")
+                Log.info("Error when fetching session: \(error)")
             }
         }
     }

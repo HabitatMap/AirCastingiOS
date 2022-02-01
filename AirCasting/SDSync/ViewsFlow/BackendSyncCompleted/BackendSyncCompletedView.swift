@@ -60,7 +60,7 @@ private extension BackendSyncCompletedView {
 
     var restartNavigationLink: some View {
         NavigationLink(
-            destination: UnplugABView(viewModel: UnplugABViewModelDefault(urlProvider: viewModel.urlProvider, isSDClearProcess: false), creatingSessionFlowContinues: $creatingSessionFlowContinues),
+            destination: UnplugABView(isSDClearProcess: false, creatingSessionFlowContinues: $creatingSessionFlowContinues),
             isActive: .init(get: { viewModel.presentRestartNextScreen }, set: { _ in }),
             label: {
                 EmptyView()
@@ -69,7 +69,7 @@ private extension BackendSyncCompletedView {
 
     var BTNavigationLink: some View {
         NavigationLink(
-            destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sdSyncContinues: .constant(true), urlProvider: viewModel.urlProvider),
+            destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sdSyncContinues: .constant(true)),
             isActive: .init(get: { viewModel.presentBTNextScreen }, set: { _ in }),
             label: {
                 EmptyView()

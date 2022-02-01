@@ -3,12 +3,13 @@
 
 import Foundation
 import Combine
+import Resolver
 
 class DefaultDeleteSessionViewModel: DeleteSessionViewModel {
-    private let measurementStreamStorage: MeasurementStreamStorage
+    @Injected private var measurementStreamStorage: MeasurementStreamStorage
     private var session: SessionEntity
-    private let streamRemover: SessionUpdateService
-    private let sessionSynchronizer: SessionSynchronizer
+    @Injected private var streamRemover: SessionUpdateService
+    @Injected private var sessionSynchronizer: SessionSynchronizer
     @Published var showingConfirmationAlert: Bool = false
     
     var deleteEnabled: Bool = false {
@@ -33,11 +34,8 @@ class DefaultDeleteSessionViewModel: DeleteSessionViewModel {
         return arrayOfContent
     }
     
-    init(session: SessionEntity, measurementStreamStorage: MeasurementStreamStorage, streamRemover: SessionUpdateService, sessionSynchronizer: SessionSynchronizer) {
-        self.measurementStreamStorage = measurementStreamStorage
+    init(session: SessionEntity) {
         self.session = session
-        self.streamRemover = streamRemover
-        self.sessionSynchronizer = sessionSynchronizer
         
         var sessionStreams: [MeasurementStreamEntity] {
             return session.sortedStreams?.filter( {!$0.gotDeleted} ) ?? []

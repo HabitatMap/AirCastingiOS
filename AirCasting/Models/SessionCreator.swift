@@ -3,6 +3,7 @@
 
 import Foundation
 import CoreLocation
+import Resolver
 
 #if DEBUG
 /// Only to be used for swiftui previews
@@ -19,11 +20,7 @@ final class MicrophoneSessionCreator: SessionCreator {
     enum MicrophoneSessionCreatorError: Swift.Error {
         case invalidCreateSessionContext(CreateSessionContext)
     }
-    let microphoneManager: MicrophoneManager
-
-    init(microphoneManager: MicrophoneManager) {
-        self.microphoneManager = microphoneManager
-    }
+    @Injected private var microphoneManager: MicrophoneManager
 
     func createSession(_ sessionContext: CreateSessionContext, completion: @escaping (Result<Void, Error>) -> Void) {
         guard let sessionType = sessionContext.sessionType,
@@ -40,7 +37,7 @@ final class MicrophoneSessionCreator: SessionCreator {
                               name: sessionContext.sessionName,
                               deviceType: sessionContext.deviceType,
                               location: startingLocation,
-                              startTime: Date().currentUTCTimeZoneDate,
+                              startTime: DateBuilder.getFakeUTCDate(),
                               contribute: contribute,
                               locationless: sessionContext.locationless)
 
@@ -58,15 +55,9 @@ final class MobilePeripheralSessionCreator: SessionCreator {
     enum MobilePeripheralSessionCreatorError: Swift.Error {
         case invalidCreateSessionContext(CreateSessionContext)
     }
-    let mobilePeripheralSessionManager: MobilePeripheralSessionManager
-    let userAuthenticationSession: UserAuthenticationSession
-    let measurementStreamStorage: MeasurementStreamStorage
-
-    init(mobilePeripheralSessionManager: MobilePeripheralSessionManager, measurementStreamStorage: MeasurementStreamStorage, userAuthenticationSession: UserAuthenticationSession) {
-        self.mobilePeripheralSessionManager = mobilePeripheralSessionManager
-        self.measurementStreamStorage = measurementStreamStorage
-        self.userAuthenticationSession = userAuthenticationSession
-    }
+    @Injected private var mobilePeripheralSessionManager: MobilePeripheralSessionManager
+    @Injected private var userAuthenticationSession: UserAuthenticationSession
+    @Injected private var measurementStreamStorage: MeasurementStreamStorage
 
     func createSession(_ sessionContext: CreateSessionContext, completion: @escaping (Result<Void, Error>) -> Void) {
         guard let sessionType = sessionContext.sessionType,
@@ -83,7 +74,7 @@ final class MobilePeripheralSessionCreator: SessionCreator {
                               name: sessionContext.sessionName,
                               deviceType: sessionContext.deviceType,
                               location: startingLocation,
-                              startTime: Date().currentUTCTimeZoneDate,
+                              startTime: DateBuilder.getFakeUTCDate(),
                               contribute: contribute,
                               locationless: sessionContext.locationless,
                               tags: sessionContext.sessionTags,
@@ -93,8 +84,7 @@ final class MobilePeripheralSessionCreator: SessionCreator {
                 assertionFailure("invalidCreateSessionContext \(sessionContext)")
                 throw MobilePeripheralSessionCreatorError.invalidCreateSessionContext(sessionContext)
             }
-            AirBeam3Configurator(userAuthenticationSession: userAuthenticationSession,
-                                 peripheral: peripheral).configureMobileSession(
+            AirBeam3Configurator(peripheral: peripheral).configureMobileSession(
                                     location: sessionContext.startingLocation ?? CLLocationCoordinate2D(latitude: 200, longitude: 200))
             mobilePeripheralSessionManager.startRecording(session: session, peripheral: peripheral)
             completion(.success(()))

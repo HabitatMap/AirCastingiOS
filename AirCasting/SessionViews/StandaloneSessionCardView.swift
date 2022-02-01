@@ -3,17 +3,14 @@
 
 import SwiftUI
 import AirCastingStyling
+import Resolver
 
 struct StandaloneSessionCardView: View {
     let session: SessionEntity
     let sessionStopperFactory: SessionStoppableFactory
-    let sessionSynchronizer: SessionSynchronizer
-    let measurementStreamStorage: MeasurementStreamStorage
-    @EnvironmentObject private var sdSyncController: SDSyncController
-    let urlProvider: BaseURLProvider
     @EnvironmentObject private var tabSelection: TabBarSelection
     @EnvironmentObject private var finishAndSyncButtonTapped: FinishAndSyncButtonTapped
-    @EnvironmentObject var networkChecker: NetworkChecker
+    @Injected private var networkChecker: NetworkChecker
     @State private var alert: AlertInfo?
     
     var body: some View {
@@ -35,11 +32,8 @@ struct StandaloneSessionCardView: View {
             isExpandButtonNeeded: false,
             isMenuNeeded: false,
             isCollapsed: .constant(false),
-            urlProvider: urlProvider,
             session: session,
-            sessionStopperFactory: sessionStopperFactory,
-            measurementStreamStorage: measurementStreamStorage,
-            sessionSynchronizer: sessionSynchronizer)
+            sessionStopperFactory: sessionStopperFactory)
     }
 
     var content: some View {
@@ -92,12 +86,3 @@ struct StandaloneSessionCardView: View {
         }
     }
 }
-
-#if DEBUG
-struct StandaloneSessionCard_Previews: PreviewProvider {
-    static var previews: some View {
-        StandaloneSessionCardView(session: SessionEntity.mock, sessionStopperFactory: SessionStoppableFactoryDummy(), sessionSynchronizer: DummySessionSynchronizer(), measurementStreamStorage: PreviewMeasurementStreamStorage(), urlProvider: DummyURLProvider())
-            .environmentObject(DummyURLProvider())
-    }
-}
-#endif

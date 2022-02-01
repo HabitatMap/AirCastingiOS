@@ -8,6 +8,7 @@
 import AirCastingStyling
 import CoreLocation
 import SwiftUI
+import Resolver
 
 struct ConfirmCreatingSessionView: View {
     @State private var isActive: Bool = false
@@ -19,14 +20,10 @@ struct ConfirmCreatingSessionView: View {
     @State private var isPresentingAlert: Bool = false
     @EnvironmentObject var selectedSection: SelectSection
     @EnvironmentObject private var sessionContext: CreateSessionContext
-    @EnvironmentObject private var locationTracker: LocationTracker
+    @InjectedObject private var locationTracker: LocationTracker
     @EnvironmentObject private var tabSelection: TabBarSelection
-    @EnvironmentObject var persistenceController: PersistenceController
-    @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
-    @EnvironmentObject private var microphoneManager: MicrophoneManager
-    @EnvironmentObject var bluetoothManager: BluetoothManager
     @Binding var creatingSessionFlowContinues: Bool
-    let baseURL: BaseURLProvider
+
     var sessionName: String
     private var sessionType: String { (sessionContext.sessionType ?? .fixed).description.lowercased() }
 
@@ -159,28 +156,20 @@ extension ConfirmCreatingSessionView {
         } else {
             guard let lat = (locationTracker.locationManager.location?.coordinate.latitude),
                   let lon = (locationTracker.locationManager.location?.coordinate.longitude) else { return }
-            locationTracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: lat, longitude: lon), measurementTime: Date().currentUTCTimeZoneDate)]
+            locationTracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: lat, longitude: lon), measurementTime: DateBuilder.getFakeUTCDate())]
             sessionContext.saveCurrentLocation(lat: lat, log: lon)
         }
     }
     func setSessioonCreator() -> SessionCreator? {
         let isWifi: Bool = (sessionContext.wifiSSID != nil && sessionContext.wifiSSID != nil)
         if sessionContext.sessionType == .fixed && isWifi {
-            return AirBeamFixedWifiSessionCreator(
-                measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: persistenceController),
-                userAuthenticationSession: userAuthenticationSession,
-                baseUrl: baseURL)
+            return AirBeamFixedWifiSessionCreator()
         } else if sessionContext.sessionType == .fixed && !isWifi {
-            return AirBeamCellularSessionCreator(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: persistenceController),
-                                                 userAuthenticationSession: userAuthenticationSession,
-                                                 baseUrl: baseURL)
+            return AirBeamCellularSessionCreator()
         } else if sessionContext.sessionType == .mobile && sessionContext.deviceType == .MIC {
-            return MicrophoneSessionCreator(microphoneManager: microphoneManager)
+            return MicrophoneSessionCreator()
         } else if sessionContext.sessionType == .mobile {
-            return MobilePeripheralSessionCreator(
-                mobilePeripheralSessionManager: bluetoothManager.mobilePeripheralSessionManager, measurementStreamStorage: CoreDataMeasurementStreamStorage(
-                    persistenceController: persistenceController),
-                userAuthenticationSession: userAuthenticationSession)
+            return MobilePeripheralSessionCreator()
         } else {
             return nil
             Log.info("Can't set the session creator storage")
