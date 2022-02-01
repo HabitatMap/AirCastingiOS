@@ -155,12 +155,6 @@ struct DashboardView: View {
             Image("draggable-icon")
                 .imageScale(.large)
         })
-            .offset(CGSize(width: 0.0, height: 47.0))
-            .background(
-                NavigationLink(destination: ReorderingDashboard(viewModel: ReorderingDashboardViewModel(sessions: sessions), thresholds: Array(self.thresholds), measurementStreamStorage: measurementStreamStorage, urlProvider: urlProvider),
-                               isActive: $isReorderingButtonActive,
-                               label: {EmptyView()})
-            )
     }
 
     private func onCurrentSyncEnd(_ completion: @escaping () -> Void) {
