@@ -9,7 +9,7 @@
   * [Fastlane](#fastlane)
     + [Beta](#beta)
     + [Release](#release)
-    + [Release update](#release update)
+    + [Release update](#release-update)
   * [Feature Flags](#feature-flags)
   
 ## SwiftLint
@@ -34,6 +34,7 @@ The Release lane will build and release the app to the appstoreconnect and Fireb
 5. bump version number to the next one on `develop` (might need prior consultation with the AC team)
 6. after the version is accepted and released to AppStore merge the release branch into master
 
+<a id="release-update"></a>
 ### Release update
 Use the `release_update` lane when you need to add some changes to the release candidate:
 1. `cd` into top project directory
