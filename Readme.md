@@ -32,7 +32,7 @@ The Release lane will build and release the app to the appstoreconnect and Fireb
 3. run `fastlane release`
 4. after fastlane finishes push the release branch to repo, but don't make a PR out of it
 5. bump version number to the next one on `develop` (might need prior consultation with the AC team)
-6. after the version is accepted and released to AppStore merge the release branch into master and develop
+6. after the version is accepted and released to AppStore merge the release branch into master
 
 ### Release update
 Use the `release_update` lane when you need to add some changes to the release candidate:
