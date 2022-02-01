@@ -13,8 +13,6 @@ struct ConnectingABView<VM: AirbeamConnectionViewModel>: View {
     
     @Environment(\.presentationMode) var presentationMode
     @StateObject var viewModel: VM
-    let baseURL: BaseURLProvider
-    let locationHandler: LocationHandler
     @Binding var creatingSessionFlowContinues: Bool
     @State private var showNextScreen: Bool = false
     @State private var presentAlert: Bool = false
@@ -41,7 +39,7 @@ struct ConnectingABView<VM: AirbeamConnectionViewModel>: View {
         }
         .background(
             NavigationLink(
-                destination: ABConnectedView(creatingSessionFlowContinues: $creatingSessionFlowContinues, baseURL: baseURL, locationHandler: locationHandler),
+                destination: ABConnectedView(creatingSessionFlowContinues: $creatingSessionFlowContinues),
                 isActive: $showNextScreen,
                 label: {
                     EmptyView()

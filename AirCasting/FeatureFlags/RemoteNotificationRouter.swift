@@ -9,15 +9,13 @@ protocol RemoteNotificationRouter {
     func unregister(token: Token)
 }
 
-class DefaultRemoteNotificationRouter: RemoteNotificationRouter {
-    static let shared: DefaultRemoteNotificationRouter = {
-        DefaultRemoteNotificationRouter()
-    }()
-    
+protocol RemoteNotificationsHandler {
+    func handleSystemNotification(userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void)
+}
+
+class DefaultRemoteNotificationRouter: RemoteNotificationRouter, RemoteNotificationsHandler {
     private var blocks: [Token: NotificationHandler] = [:]
     private let queue = DispatchQueue(label: "default-remote-notif-router")
-    
-    private init() { }
     
     func register(_ handler: @escaping NotificationHandler) -> Token {
         let uuid = UUID()

@@ -2,24 +2,22 @@
 //
 
 import Foundation
+import Resolver
+
 #warning("Move whole logic of settingsView to this ViewModel")
 protocol SettingsViewModel {
     func nextStep() -> ProceedToView
-    var locationHandler: LocationHandler { get }
-    var bluetoothHandler: BluetoothHandler { get }
     var sessionContext: CreateSessionContext { get }
 }
 
 class SettingsViewModelDefault: SettingsViewModel {
     
-    let locationHandler: LocationHandler
-    let bluetoothHandler: BluetoothHandler
+    @Injected private var locationHandler: LocationHandler
+    @Injected private var bluetoothHandler: BluetoothHandler
     let sessionContext: CreateSessionContext
 
 
-    init(locationHandler: LocationHandler, bluetoothHandler: BluetoothHandler, sessionContext: CreateSessionContext) {
-        self.locationHandler = locationHandler
-        self.bluetoothHandler = bluetoothHandler
+    init(sessionContext: CreateSessionContext) {
         self.sessionContext = sessionContext
     }
 
@@ -29,18 +27,3 @@ class SettingsViewModelDefault: SettingsViewModel {
         return .airBeam
     }
 }
-
-#if DEBUG
-class DummySettingsViewModelDefault: SettingsViewModel {
-    var sessionContext: CreateSessionContext = CreateSessionContext()
-    
-    var locationHandler: LocationHandler = DummyDefaultLocationHandler()
-    
-    var bluetoothHandler: BluetoothHandler = DummyDefaultBluetoothHandler()
-    
-    func nextStep() -> ProceedToView {
-        return .airBeam
-    }
-    
-}
-#endif

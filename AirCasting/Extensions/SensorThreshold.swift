@@ -3,6 +3,7 @@
 
 import Foundation
 import SwiftUI
+import Resolver
 
 extension SensorThreshold {
     
@@ -71,7 +72,7 @@ extension SensorThreshold {
 #if DEBUG
 extension SensorThreshold {
     static var mock: SensorThreshold {
-        let context = PersistenceController.shared.viewContext
+        let context = Resolver.resolve(PersistenceController.self).viewContext
         
         if let existing = try! context.existingObject(sensorName: "mock-threshold") {
             return existing

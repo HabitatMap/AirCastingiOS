@@ -3,18 +3,19 @@
 
 import AirCastingStyling
 import SwiftUI
+import Resolver
 
 struct BackendSettingsView: View {
     let backendURLBuilder = BackendURLValidator()
     
     @Environment(\.presentationMode) var presentationMode
     let logoutController: LogoutController
-    @State var urlProvider: BaseURLProvider
+    @Injected private var urlProvider: URLProvider
     @State private var pathText: String = ""
     @State private var portText: String = ""
     @State private var url: URL?
     @State private var alertPresented = false
-    @EnvironmentObject private var userState: UserState
+    @InjectedObject private var userState: UserState
     private var urlWithoutPort: String? {
         let components = URLComponents(url: urlProvider.baseAppURL, resolvingAgainstBaseURL: false)!
         return components.host

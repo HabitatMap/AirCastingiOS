@@ -4,9 +4,14 @@
 import AirCastingStyling
 import SwiftUI
 
-struct UnplugABView<VM: UnplugABViewModel>: View {
-    @StateObject var viewModel: VM
-    @Binding var creatingSessionFlowContinues: Bool
+struct UnplugABView: View {
+    @StateObject private var viewModel: UnplugABViewModel
+    @Binding private var creatingSessionFlowContinues: Bool
+    
+    init(isSDClearProcess: Bool, creatingSessionFlowContinues: Binding<Bool>) {
+        self._creatingSessionFlowContinues = .init(projectedValue: creatingSessionFlowContinues)
+        self._viewModel = .init(wrappedValue: .init(isSDClearProcess: isSDClearProcess))
+    }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 40) {
@@ -60,18 +65,10 @@ extension UnplugABView {
     
     var navigationLink: some View {
         NavigationLink(
-            destination: SDRestartABView(viewModel: SDRestartABViewModelDefault(urlProvider: viewModel.urlProvider, isSDClearProcess: viewModel.isSDClearProcess), creatingSessionFlowContinues: $creatingSessionFlowContinues),
+            destination: SDRestartABView(isSDClearProcess: viewModel.isSDClearProcess, creatingSessionFlowContinues: $creatingSessionFlowContinues),
             isActive: .init(get: { viewModel.presentNextScreen }, set: { _ in }),
             label: {
                 EmptyView()
             })
     }
 }
-
-#if DEBUG
-struct UnplugAirBeamView_Previews: PreviewProvider {
-    static var previews: some View {
-        UnplugABView(viewModel: UnplugABViewModelDummy(), creatingSessionFlowContinues: .constant(false))
-    }
-}
-#endif

@@ -2,15 +2,11 @@
 //
 
 import Foundation
+import Resolver
 
 class AppBootstrap {
-    private let firstRunInfoProvider: FirstRunInfoProvidable
-    private let deauthorizable: Deauthorizable
-    
-    init(firstRunInfoProvider: FirstRunInfoProvidable, deauthorizable: Deauthorizable) {
-        self.firstRunInfoProvider = firstRunInfoProvider
-        self.deauthorizable = deauthorizable
-    }
+    @Injected private var firstRunInfoProvider: FirstRunInfoProvidable
+    @Injected private var deauthorizable: Deauthorizable
     
     func bootstrap() {
         if firstRunInfoProvider.isFirstAppLaunch {

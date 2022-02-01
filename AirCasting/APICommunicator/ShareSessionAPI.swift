@@ -2,6 +2,7 @@
 //
 
 import Foundation
+import Resolver
 
 enum ShareSessionAPIError: Error {
     case creatingURLComponentsError
@@ -13,11 +14,7 @@ protocol ShareSessionAPIServices {
 }
 
 struct ShareSessionApi: ShareSessionAPIServices {
-    private let urlProvider: BaseURLProvider
-    
-    init(urlProvider: BaseURLProvider) {
-        self.urlProvider = urlProvider
-    }
+    @Injected private var urlProvider: URLProvider
     
     func sendSession(email: String, uuid: String, completion: @escaping (Result<Void, ShareSessionAPIError>) -> Void) {
         let url = urlProvider.baseAppURL.appendingPathComponent("api/sessions/export_by_uuid.json")

@@ -8,6 +8,7 @@
 import SwiftUI
 import CoreBluetooth
 import AirCastingStyling
+import Resolver
 
 struct SelectDeviceView: View {
     @State private var alert: AlertInfo?
@@ -16,16 +17,14 @@ struct SelectDeviceView: View {
     @State private var isPowerABLinkActive: Bool = false
     @State private var isMicLinkActive: Bool = false
     @EnvironmentObject private var sessionContext: CreateSessionContext
-    @EnvironmentObject var bluetoothManager: BluetoothManager
-    @EnvironmentObject private var microphoneManager: MicrophoneManager
+    @InjectedObject private var bluetoothManager: BluetoothManager
+    @InjectedObject private var microphoneManager: MicrophoneManager
     @Binding var creatingSessionFlowContinues : Bool
     @Binding var sdSyncContinues : Bool
     @State private var showAlert = false
-    let locationHandler: LocationHandler
     @EnvironmentObject private var emptyDashboardButtonTapped: EmptyDashboardButtonTapped
     @EnvironmentObject private var tabSelection: TabBarSelection
 
-    let urlProvider: BaseURLProvider
     
     var body: some View {
         VStack(spacing: 30) {
@@ -40,19 +39,19 @@ struct SelectDeviceView: View {
         .padding()
         .background( Group {
             NavigationLink(
-                destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider, locationHandler: locationHandler),
+                destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues),
                 isActive: $isPowerABLinkActive,
                 label: {
                     EmptyView()
                 })
             NavigationLink(
-                destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sdSyncContinues: $sdSyncContinues, locationHandler: locationHandler, urlProvider: urlProvider),
+                destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sdSyncContinues: $sdSyncContinues),
                 isActive: $isTurnOnBluetoothLinkActive,
                 label: {
                     EmptyView()
                 })
             NavigationLink(
-                destination: CreateSessionDetailsView(creatingSessionFlowContinues: $creatingSessionFlowContinues, baseURL: urlProvider, locationHandler: locationHandler),
+                destination: CreateSessionDetailsView(creatingSessionFlowContinues: $creatingSessionFlowContinues),
                 isActive: $isMicLinkActive,
                 label: {
                     EmptyView()

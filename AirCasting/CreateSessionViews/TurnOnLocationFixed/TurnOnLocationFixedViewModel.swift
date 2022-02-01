@@ -1,6 +1,7 @@
 // Created by Lunar on 27/01/2022.
 //
 import Foundation
+import Resolver
 
 class TurnOnLocationFixedViewModel: ObservableObject {
     
@@ -8,13 +9,9 @@ class TurnOnLocationFixedViewModel: ObservableObject {
     @Published var isLocationSessionDetailsActive: Bool = false
     @Published var alert: AlertInfo?
     
-    private let locationHandler: LocationHandler
     private let sessionContext: CreateSessionContext
-    private let urlProvider: BaseURLProvider
-    
-    var passURLProvider: BaseURLProvider {
-        return urlProvider
-    }
+    @Injected private var locationHandler: LocationHandler
+    @Injected private var urlProvider: URLProvider
     
     var shouldShowAlert: Bool {
         return locationHandler.isLocationDenied()
@@ -24,10 +21,8 @@ class TurnOnLocationFixedViewModel: ObservableObject {
         return sessionContext.sessionName ?? ""
     }
     
-    init(locationHandler: LocationHandler, sessionContext: CreateSessionContext, urlProvider: BaseURLProvider) {
-        self.locationHandler = locationHandler
+    init(sessionContext: CreateSessionContext) {
         self.sessionContext = sessionContext
-        self.urlProvider = urlProvider
     }
     
     func requestLocationAuthorisation() {

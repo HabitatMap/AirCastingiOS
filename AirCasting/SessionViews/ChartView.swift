@@ -119,12 +119,3 @@ struct ChartView: UIViewRepresentable {
         return colors
     }
 }
-
-#if DEBUG
-struct MeasurementChart_Previews: PreviewProvider {
-    static var previews: some View {
-        ChartView(thresholds: [.mock], viewModel: ChartViewModel(session: .mock, persistence: PersistenceController(inMemory: true), userSettings: UserSettings()))
-            .frame(width: 300, height: 250, alignment: .center)
-    }
-}
-#endif

@@ -62,8 +62,7 @@ struct TurnOnLocationFixedView: View {
     var locationPickerLink: some View {
         NavigationLink(
             destination: ChooseCustomLocationView(creatingSessionFlowContinues: $creatingSessionFlowContinues,
-                                                  sessionName: viewModel.getSessionName,
-                                                  baseURL: viewModel.passURLProvider),
+                                                  sessionName: viewModel.getSessionName),
             isActive: $viewModel.isLocationSessionDetailsActive,
             label: {
                 EmptyView()
@@ -74,7 +73,6 @@ struct TurnOnLocationFixedView: View {
     var createSesssionLink: some View {
         NavigationLink(
             destination: ConfirmCreatingSessionView(creatingSessionFlowContinues: $creatingSessionFlowContinues,
-                                                    baseURL: viewModel.passURLProvider,
                                                     sessionName: viewModel.getSessionName),
             isActive: $viewModel.isConfirmCreatingSessionActive,
             label: {

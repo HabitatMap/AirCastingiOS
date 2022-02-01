@@ -2,10 +2,10 @@
 //
 import AirCastingStyling
 import SwiftUI
+import Resolver
 
 struct EmptyFixedDashboardView: View {
-    #warning("Please switch to protocol ASAP")
-    @EnvironmentObject var defaultSessionSynchronizerViewModel: DefaultSessionSynchronizationViewModel
+    @StateObject private var defaultSessionSynchronizerViewModel = SessionSynchronizationViewModel()
     @EnvironmentObject var selectedSection: SelectSection
     
     var shouldSessionFetch: Bool {

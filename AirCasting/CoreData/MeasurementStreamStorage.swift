@@ -6,6 +6,7 @@ import CoreLocation
 import Foundation
 import Combine
 import SwiftUI
+import Resolver
 
 protocol MeasurementStreamStorage {
     func accessStorage(_ task: @escaping(HiddenCoreDataMeasurementStreamStorage) -> Void)
@@ -38,16 +39,10 @@ extension HiddenCoreDataMeasurementStreamStorage {
 
 final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
 
-    private let persistenceController: PersistenceController
+    @Injected private var persistenceController: PersistenceController
     private lazy var updateSessionParamsService = UpdateSessionParamsService()
-    private let context: NSManagedObjectContext
-    let hiddenStorage: HiddenCoreDataMeasurementStreamStorage
-    
-    init(persistenceController: PersistenceController) {
-        self.persistenceController = persistenceController
-        self.context = persistenceController.editContext
-        self.hiddenStorage = HiddenCoreDataMeasurementStreamStorage(context: self.context)
-    }
+    private lazy var context: NSManagedObjectContext = persistenceController.editContext
+    private lazy var hiddenStorage = HiddenCoreDataMeasurementStreamStorage(context: self.context)
     
     /// All actions performed on CoreDataMeasurementStreamStorage must be performed
     /// within a block passed to this methood.
@@ -282,6 +277,24 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         }
     }
     
+    // MARK: - Notes
+    
+    enum NoteStorageError: Swift.Error, LocalizedError {
+        case storageEmpty
+        case noteNotFound
+        case malformedStorageState
+        case multipleNotesFound
+        
+        var errorDescription: String? {
+            switch self {
+            case .storageEmpty: return "Note storage is empty"
+            case .multipleNotesFound: return "Multiple notes for given ID found"
+            case .noteNotFound: return "No note with given ID found"
+            case .malformedStorageState: return "Data storage is in malformed state"
+            }
+        }
+    }
+    
     func addNote(_ note: Note, for sessionUUID: SessionUUID) throws {
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
         let noteEntity = NoteEntity(context: context)
@@ -321,7 +334,15 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
     
     func fetchSpecifiedNote(for sessionUUID: SessionUUID, number: Int) throws -> Note {
         let session = try context.existingSession(uuid: sessionUUID)
-        let note = (session.notes?.first(where: { ($0 as! NoteEntity).number == number }) as! NoteEntity)
+        guard let allSessionNotes = session.notes else { throw NoteStorageError.storageEmpty }
+        let matching = try allSessionNotes.filter {
+            guard let note = $0 as? NoteEntity else { throw NoteStorageError.malformedStorageState }
+            return note.number == number
+        }
+        guard matching.count > 0 else { throw NoteStorageError.noteNotFound }
+        guard matching.count == 1 else { throw NoteStorageError.multipleNotesFound }
+        let note = matching[0] as! NoteEntity
+        
         return Note(date: note.date ?? DateBuilder.getFakeUTCDate(),
                     text: note.text ?? "",
                     lat: note.lat,
