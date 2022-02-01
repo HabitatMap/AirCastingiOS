@@ -30,12 +30,17 @@ struct ActivityViewController: UIViewControllerRepresentable {
         }
         
         func activityViewControllerPlaceholderItem(_ activityViewController: UIActivityViewController) -> Any {
-            return "\(Strings.SessionShare.sharedEmailText): \(parent.itemToShare)"
+            return ""
         }
         
+        /// In email apps, other then Apple native one, the subject it taken/considered as the first line from the message body - which is writtien in the below func
         func activityViewController(_ activityViewController: UIActivityViewController, itemForActivityType activityType: UIActivity.ActivityType?) -> Any? {
             guard activityType == .mail else {
-                return parent.itemToShare
+                return """
+                        \(Strings.SessionShare.sharedEmailText)
+                        
+                        \(parent.itemToShare)
+                        """
             }
             return "\(Strings.SessionShare.sharedEmailText): \(parent.itemToShare)"
         }
