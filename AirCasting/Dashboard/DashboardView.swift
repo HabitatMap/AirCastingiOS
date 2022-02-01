@@ -55,18 +55,11 @@ struct DashboardView: View {
             sessionTypePicker
             if sessions.isEmpty { emptySessionsView } else { sessionListView }
         }
-        .background(
-            NavigationLink(destination: ReorderingDashboard(viewModel: ReorderingDashboardViewModel(sessions: sessions), thresholds: Array(self.thresholds), measurementStreamStorage: measurementStreamStorage, urlProvider: urlProvider),
-                           isActive: $isReorderingButtonActive,
-                           label: {EmptyView()})
-        )
         .navigationBarTitle(NSLocalizedString(Strings.DashboardView.dashboardText, comment: ""))
         .toolbar(content: {
-                ToolbarItemGroup(placement: .navigationBarTrailing) {
-                    if selectedSection.selectedSection == .following && sessions.count > 1 {
-                        reorderButton
-                    }
-                }
+            if selectedSection.selectedSection == .following && sessions.count > 1 {
+                reorderButton
+            }
         })
         .onChange(of: selectedSection.selectedSection) { selectedSection in
             self.selectedSection.selectedSection = selectedSection
@@ -83,6 +76,11 @@ struct DashboardView: View {
         .onAppear() {
             try! coreDataHook.setup(selectedSection: self.selectedSection.selectedSection)
         }
+        .background(
+            NavigationLink(destination: ReorderingDashboard(viewModel: ReorderingDashboardViewModel(sessions: sessions), thresholds: Array(self.thresholds), measurementStreamStorage: measurementStreamStorage, urlProvider: urlProvider),
+                           isActive: $isReorderingButtonActive,
+                           label: {EmptyView()})
+        )
     }
 
     private var sessionTypePicker: some View {
@@ -152,10 +150,17 @@ struct DashboardView: View {
     private var reorderButton: some View {
         Button(action: {
             isReorderingButtonActive = true
+            Log.info("HELLO")
         }, label: {
             Image("draggable-icon")
                 .imageScale(.large)
         })
+            .offset(CGSize(width: 0.0, height: 47.0))
+            .background(
+                NavigationLink(destination: ReorderingDashboard(viewModel: ReorderingDashboardViewModel(sessions: sessions), thresholds: Array(self.thresholds), measurementStreamStorage: measurementStreamStorage, urlProvider: urlProvider),
+                               isActive: $isReorderingButtonActive,
+                               label: {EmptyView()})
+            )
     }
 
     private func onCurrentSyncEnd(_ completion: @escaping () -> Void) {
