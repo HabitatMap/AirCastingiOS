@@ -9,7 +9,8 @@ final class SyncDownstreamServiceTests: XCTestCase {
     private let client = APIClientMock()
     private let auth = RequestAuthorizationServiceMock()
     private let responseValidator = HTTPResponseValidatorMock()
-    private lazy var service = SessionDownloadService(client: client, authorization: auth, responseValidator: responseValidator)
+    private let urlProvider = URLProviderMock(baseAppURL: URL(string: "http://aircasting.org/")!)
+    private lazy var service = SessionDownloadService(client: client, authorization: auth, responseValidator: responseValidator, urlProvider: urlProvider)
     private var cancellables: [AnyCancellable] = []
     
     override func tearDown() {
@@ -25,7 +26,7 @@ final class SyncDownstreamServiceTests: XCTestCase {
         
         XCTAssertEqual(self.client.callHistory.count, 1)
         let request = self.client.callHistory.first!
-        XCTAssertEqual(request.url?.absoluteString, "http://aircasting.org/api/user/sessions/empty.json?uuid=\(sessionUUID.rawValue)")
+        XCTAssertEqual(request.url?.absoluteString, "http://aircasting.org/api/user/sessions/update_session.json?uuid=\(sessionUUID.rawValue)")
         XCTAssertEqual(request.httpMethod, "GET")
         XCTAssertEqual(request.allHTTPHeaderFields?["Accept"], "application/json")
     }
@@ -36,15 +37,15 @@ final class SyncDownstreamServiceTests: XCTestCase {
         let session = try awaitPublisher(service.download(session: .random))
         
         XCTAssertEqual(session.id, 1704532)
-        XCTAssertEqual(session.createdAt.timeIntervalSinceReferenceDate, 632226953)
-        XCTAssertEqual(session.updatedAt.timeIntervalSinceReferenceDate, 632226953)
+        XCTAssertEqual(session.createdAt.timeIntervalSinceReferenceDate, 632230553)
+        XCTAssertEqual(session.updatedAt.timeIntervalSinceReferenceDate, 632230553)
         XCTAssertEqual(session.userId, 5350)
         XCTAssertEqual(session.uuid, "aef5aac4-3a9e-43ac-b5ba-18e001d65162")
         XCTAssertEqual(session.urlToken, "2vtaf")
         XCTAssertEqual(session.title, "bxhxhd")
         XCTAssertEqual(session.contribute, true)
-        XCTAssertEqual(session.startTime.timeIntervalSinceReferenceDate, 632230153)
-        XCTAssertEqual(session.endTime?.timeIntervalSinceReferenceDate, 632230269)
+        XCTAssertEqual(session.startTime.timeIntervalSinceReferenceDate, 632233753)
+        XCTAssertEqual(session.endTime?.timeIntervalSinceReferenceDate, 632233869)
         XCTAssertEqual(session.isIndoor, false)
         XCTAssertEqual(session.latitude!, 50.0443153, accuracy: 0.00001)
         XCTAssertEqual(session.longitude!, 19.9611183, accuracy: 0.00001)

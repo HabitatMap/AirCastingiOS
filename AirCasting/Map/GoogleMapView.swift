@@ -14,6 +14,8 @@ struct GoogleMapView: UIViewRepresentable {
     @EnvironmentObject var tracker: LocationTracker
     @Binding var placePickerDismissed: Bool
     @Binding var isUserInteracting: Bool
+    @Binding var noteMarketTapped: Bool
+    @Binding var noteNumber: Int
     var liveModeOn: Bool
     typealias UIViewType = GMSMapView
     let pathPoints: [PathPoint]
@@ -21,8 +23,9 @@ struct GoogleMapView: UIViewRepresentable {
     var isMyLocationEnabled: Bool = false
     private var onPositionChange: (([PathPoint]) -> ())? = nil
     var isSessionFixed: Bool
+    @Binding var mapNotes: [MapNote]
     
-    init(pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false, placePickerDismissed: Binding<Bool>, isUserInteracting: Binding<Bool>, isSessionActive: Bool = false, isSessionFixed: Bool = false) {
+    init(pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false, placePickerDismissed: Binding<Bool>, isUserInteracting: Binding<Bool>, isSessionActive: Bool = false, isSessionFixed: Bool = false, noteMarketTapped: Binding<Bool> = .constant(false), noteNumber: Binding<Int> = .constant(0), mapNotes: Binding<[MapNote]>) {
         self.pathPoints = pathPoints
         self.threshold = threshold
         self.isMyLocationEnabled = isMyLocationEnabled
@@ -30,6 +33,9 @@ struct GoogleMapView: UIViewRepresentable {
         self._isUserInteracting = isUserInteracting
         self.liveModeOn = isSessionActive
         self.isSessionFixed = isSessionFixed
+        self._noteMarketTapped = noteMarketTapped
+        self._noteNumber = noteNumber
+        self._mapNotes = mapNotes
     }
     
     func makeUIView(context: Context) -> GMSMapView {
@@ -40,10 +46,21 @@ struct GoogleMapView: UIViewRepresentable {
         
         let mapView = GMSMapView.map(withFrame: .zero,
                                      camera: startingPoint)
-        mapView.settings.myLocationButton = liveModeOn
+        mapView.settings.myLocationButton = true
+        placeNotes(mapView, notes: mapNotes, context: context)
+        do {
+            if let styleURL = Bundle.main.url(forResource: "style", withExtension: "json") {
+                mapView.mapStyle = try GMSMapStyle(contentsOfFileURL: styleURL)
+            } else {
+                Log.error("Unable to find style.json")
+            }
+        } catch {
+            Log.error("One or more of the map styles failed to load. \(error)")
+        }
         mapView.delegate = context.coordinator
         mapView.isMyLocationEnabled = isMyLocationEnabled
         drawPolyline(mapView, context: context)
+        context.coordinator.mapNotesCounter = mapNotes.count
         context.coordinator.currentlyDisplayedPathPoints = pathPoints
         context.coordinator.currentThresholdWitness = ThresholdWitness(sensorThreshold: threshold)
         context.coordinator.currentThreshold = threshold
@@ -64,6 +81,11 @@ struct GoogleMapView: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: GMSMapView, context: Context) {
+        if mapNotes.count != context.coordinator.mapNotesCounter {
+            placeNotes(uiView, notes: mapNotes, context: context)
+            drawPolyline(uiView, context: context)
+            context.coordinator.mapNotesCounter = mapNotes.count
+        }
         guard isUserInteracting else { return }
         let thresholdWitness = ThresholdWitness(sensorThreshold: self.threshold)
   
@@ -110,7 +132,7 @@ struct GoogleMapView: UIViewRepresentable {
             let long = lastPoint.location.longitude
             let lat = lastPoint.location.latitude
             
-            let newCameraPosition =  GMSCameraPosition.camera(withLatitude: lat,
+            let newCameraPosition = GMSCameraPosition.camera(withLatitude: lat,
                                                               longitude: long,
                                                               zoom: 16)
             return newCameraPosition
@@ -187,6 +209,25 @@ struct GoogleMapView: UIViewRepresentable {
         polyline.map = uiView
     }
     
+    func placeNotes(_ uiView: GMSMapView, notes: [MapNote], context: Context) {
+        context.coordinator.noteMarkers.forEach { marker in
+            marker.map = nil
+        }
+        context.coordinator.noteMarkers = []
+        DispatchQueue.main.async {
+            notes.forEach { note in
+                let marker = GMSMarker()
+                let markerImage = note.markerImage
+                let markerView = UIImageView(image: markerImage.withRenderingMode(.alwaysOriginal))
+                marker.position = note.location
+                marker.userData = note.id
+                marker.iconView = markerView
+                marker.map = uiView
+                context.coordinator.noteMarkers.append(marker)
+            }
+        }
+    }
+    
     class Coordinator: NSObject, UINavigationControllerDelegate, GMSMapViewDelegate {
         var parent: GoogleMapView!
         let polyline = GMSPolyline()
@@ -195,6 +236,8 @@ struct GoogleMapView: UIViewRepresentable {
         var currentThresholdWitness: ThresholdWitness?
         var currentThreshold: SensorThreshold?
         var heatmap: Heatmap? = nil
+        var mapNotesCounter = 0
+        var noteMarkers = [GMSMarker]()
         
         init(_ parent: GoogleMapView) {
             self.parent = parent
@@ -203,7 +246,7 @@ struct GoogleMapView: UIViewRepresentable {
         func mapView(_ mapView: GMSMapView, didChange position: GMSCameraPosition) {
             let lat = mapView.projection.coordinate(for: mapView.center).latitude
             let len = mapView.projection.coordinate(for: mapView.center).longitude
-            parent.tracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: lat, longitude: len), measurementTime: Date().currentUTCTimeZoneDate, measurement: 20.0)]
+            parent.tracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: lat, longitude: len), measurementTime: DateBuilder.getFakeUTCDate(), measurement: 20.0)]
             #warning("Do something with hard coded measurement")
             positionChanged(for: mapView)
             
@@ -235,10 +278,20 @@ struct GoogleMapView: UIViewRepresentable {
             return true
         }
         
+        func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
+            parent.noteNumber = marker.userData as! Int
+            parent.noteMarketTapped = true
+            return true
+        }
+        
         func centerMap(for mapView: GMSMapView) {
-            let camera = GMSCameraPosition.camera(withLatitude: parent.tracker.locationManager.location!.coordinate.latitude,
-                                                  longitude: parent.tracker.locationManager.location!.coordinate.longitude,
-                                                  zoom: 16)
+            let lat = parent.liveModeOn ?
+            parent.tracker.locationManager.location!.coordinate.latitude :
+            parent.pathPoints.last?.location.latitude ?? 37.35
+            let long = parent.liveModeOn ?
+            parent.tracker.locationManager.location!.coordinate.longitude :
+            parent.pathPoints.last?.location.longitude ?? -122.05
+            let camera = GMSCameraPosition.camera(withLatitude: lat, longitude: long, zoom: 16)
             mapView.animate(to: camera)
         }
 
@@ -257,26 +310,3 @@ struct GoogleMapView: UIViewRepresentable {
         Coordinator(self)
     }
 }
-
-#if DEBUG
-struct GoogleMapView_Previews: PreviewProvider {
-    static var previews: some View {
-        GoogleMapView(pathPoints: [PathPoint(location: CLLocationCoordinate2D(latitude: 40.73,
-                                                                              longitude: -73.93),
-                                             measurementTime: .distantPast,
-                                             measurement: 30),
-                                   PathPoint(location: CLLocationCoordinate2D(latitude: 40.83,
-                                                                              longitude: -73.93),
-                                             measurementTime: .distantPast,
-                                             measurement: 30),
-                                   PathPoint(location: CLLocationCoordinate2D(latitude: 40.93,
-                                                                              longitude: -73.83),
-                                             measurementTime: .distantPast,
-                                             measurement: 30)],
-                      threshold: .mock,
-                      placePickerDismissed: .constant(false),
-                      isUserInteracting: .constant(true))
-            .padding()
-    }
-}
-#endif

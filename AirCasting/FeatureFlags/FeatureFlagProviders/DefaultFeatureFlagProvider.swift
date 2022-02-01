@@ -15,6 +15,18 @@ class DefaultFeatureFlagProvider: FeatureFlagProvider {
             #else
             return false
             #endif
+        case .notes:
+            #if DEBUG
+            return true
+            #else
+            return false
+            #endif
+        case .locationlessSessions:
+            #if DEBUG
+            return true
+            #else
+            return false
+            #endif
         }
         
     }

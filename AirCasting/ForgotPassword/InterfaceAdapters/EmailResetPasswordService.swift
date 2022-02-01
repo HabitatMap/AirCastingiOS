@@ -7,16 +7,18 @@ final class EmailResetPasswordService: ResetPasswordService {
     
     private let apiClient: APIClient
     private let validator: HTTPResponseValidator
+    private let urlProvider: BaseURLProvider
     
-    init(apiClient: APIClient, validator: HTTPResponseValidator) {
+    init(apiClient: APIClient, validator: HTTPResponseValidator, urlProvider: BaseURLProvider) {
         self.apiClient = apiClient
         self.validator = validator
+        self.urlProvider = urlProvider
     }
     
     func resetPassword(login: String, completion: @escaping (Result<Void, ResetPasswordServiceError>) -> Void) {
         let params = ["user": ["login": login]]
-        #warning("TODO: Let's use URLProvider")
-        var request = URLRequest(url: URL(string: "http://aircasting.org/users/password.json")!)
+        let url = urlProvider.baseAppURL.appendingPathComponent("users/password.json")
+        var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.httpBody = try? JSONSerialization.data(withJSONObject: params, options: [])
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")

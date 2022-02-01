@@ -92,7 +92,8 @@ private extension MainTabBarView {
             DashboardView(coreDataHook: coreDataHook,
                           measurementStreamStorage: measurementStreamStorage,
                           sessionStoppableFactory: sessionStoppableFactory,
-                          sessionSynchronizer: sessionSynchronizer)
+                          sessionSynchronizer: sessionSynchronizer,
+                          urlProvider: urlProvider)
         }.navigationViewStyle(StackNavigationViewStyle())
             .tabItem {
                 Image(homeImage)
@@ -215,6 +216,7 @@ struct ContentView_Previews: PreviewProvider {
     
     private class MeasurementUpdatingServiceMock: MeasurementUpdatingService {
         func start() {}
+        func downloadMeasurements(for sessionUUID: SessionUUID, lastSynced: Date, completion: @escaping () -> Void) {}
     }
 }
 #endif

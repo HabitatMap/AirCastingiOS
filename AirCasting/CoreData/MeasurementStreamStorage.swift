@@ -19,17 +19,19 @@ protocol MeasurementStreamStorageContextUpdate {
     func createSessionAndMeasurementStream(_ session: Session, _ stream: MeasurementStream) throws -> MeasurementStreamLocalID
     func updateSessionStatus(_ sessionStatus: SessionStatus, for sessionUUID: SessionUUID) throws
     func updateSessionEndtime(_ endTime: Date, for sessionUUID: SessionUUID) throws
+    func updateSessionNameAndTags(name: String, tags: String, for sessionUUID: SessionUUID) throws
     func updateSessionFollowing(_ sessionStatus: SessionFollowing, for sessionUUID: SessionUUID)
     func existingMeasurementStream(_ sessionUUID: SessionUUID, name: String) throws -> MeasurementStreamLocalID?
     func markSessionForDelete(_ sessionUUID: SessionUUID) throws
     func markStreamForDelete(_ sessionUUID: SessionUUID, sensorsName: [String], completion: () -> Void) throws
     func deleteSession(_ sessionUUID: SessionUUID) throws
     func deleteStreams(_ sessionUUID: SessionUUID) throws
+    func addNote(_ note: Note, for sessionUUID: SessionUUID) throws 
     func save() throws
 }
 
 extension HiddenCoreDataMeasurementStreamStorage {
-    func addMeasurementValue(_ value: Double, at location: CLLocationCoordinate2D? = nil, toStreamWithID id: MeasurementStreamLocalID, on time: Date = Date().currentUTCTimeZoneDate) throws {
+    func addMeasurementValue(_ value: Double, at location: CLLocationCoordinate2D? = nil, toStreamWithID id: MeasurementStreamLocalID, on time: Date = DateBuilder.getRawDate().currentUTCTimeZoneDate) throws {
         try addMeasurement(Measurement(time: time, value: value, location: location), toStreamWithID: id)
     }
 }
@@ -68,7 +70,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
             }
             stream.gotDeleted = true
             try context.save()
-           forceUpdate(sessionEntity: sessionEntity)
+            forceUpdate(sessionEntity: sessionEntity)
         }
         completion()
     }
@@ -103,13 +105,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
         let toDelete = sessionEntity.allStreams!.filter({ $0.gotDeleted })
         toDelete.forEach { object in
-            do {
-                toDelete.forEach { object in
-                    context.delete(object)
-                }
-            } catch {
-                Log.error("Error when deleting session")
-            }
+            context.delete(object)
         }
         forceUpdate(sessionEntity: sessionEntity)
     }
@@ -123,6 +119,22 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
 
     func save() throws {
         try self.context.save()
+    }
+    
+    func removeDuplicatedMeasurements(for sessionUUID: SessionUUID) throws {
+        let sessionEntity = try context.existingSession(uuid: sessionUUID)
+        sessionEntity.allStreams?.forEach({ stream in
+            guard let measurements = stream.allMeasurements else { return }
+            let sortedMeasurements = measurements.sorted(by: { $0.time < $1.time })
+            for (i, measurement) in sortedMeasurements.enumerated() {
+                if i > 0 {
+                    if measurement.time.roundedDownToSecond == sortedMeasurements[i-1].time.roundedDownToSecond {
+                        context.delete(measurement)
+                    }
+                }
+            }
+        })
+        Log.info("Deleted duplicated measurements")
     }
 
     func addMeasurement(_ measurement: Measurement, toStreamWithID id: MeasurementStreamLocalID) throws {
@@ -189,7 +201,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
     }
     
     func updateMeasurements(stream: MeasurementStreamEntity, newMeasurements: NSOrderedSet) throws {
-            stream.measurements = newMeasurements
+        stream.measurements = newMeasurements
     }
     
     private func saveMeasurementStream(for session: SessionEntity, context: NSManagedObjectContext, _ stream: MeasurementStream) throws -> MeasurementStreamLocalID {
@@ -249,11 +261,18 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         try context.save()
     }
     
+    func updateSessionNameAndTags(name: String, tags: String, for sessionUUID: SessionUUID) throws {
+        let sessionEntity = try context.existingSession(uuid: sessionUUID)
+        sessionEntity.name = name
+        sessionEntity.tags = tags
+        try context.save()
+    }
+    
     func updateSessionFollowing(_ sessionFollowing: SessionFollowing, for sessionUUID: SessionUUID) {
         do {
             let sessionEntity = try context.existingSession(uuid: sessionUUID)
             if sessionFollowing == SessionFollowing.following {
-                sessionEntity.followedAt = Date().currentUTCTimeZoneDate
+                sessionEntity.followedAt = DateBuilder.getFakeUTCDate()
             } else {
                 sessionEntity.followedAt = nil
             }
@@ -261,6 +280,53 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         } catch {
             Log.error("Error when saving changes in session: \(error.localizedDescription)")
         }
+    }
+    
+    func addNote(_ note: Note, for sessionUUID: SessionUUID) throws {
+        let sessionEntity = try context.existingSession(uuid: sessionUUID)
+        let noteEntity = NoteEntity(context: context)
+        noteEntity.lat = note.lat
+        noteEntity.long = note.long
+        noteEntity.text = note.text
+        noteEntity.date = note.date
+        noteEntity.number = Int64(note.number)
+        sessionEntity.addToNotes(noteEntity)
+        try context.save()
+    }
+    
+    func updateNote(_ note: Note, newText: String, for sessionUUID: SessionUUID) throws {
+        let sessionEntity = try context.existingSession(uuid: sessionUUID)
+        let note = (sessionEntity.notes?.first(where: { ($0 as! NoteEntity).number == note.number }) as! NoteEntity)
+        note.text = newText
+        try context.save()
+    }
+    
+    func deleteNote(_ note: Note, for sessionUUID: SessionUUID) throws {
+        let sessionEntity = try context.existingSession(uuid: sessionUUID)
+        let note = (sessionEntity.notes?.first(where: { ($0 as! NoteEntity).number == note.number }) as! NoteEntity)
+        context.delete(note)
+    }
+    
+    func getNotes(for sessionUUID: SessionUUID) throws -> [Note] {
+        let sessionEntity = try context.existingSession(uuid: sessionUUID)
+        return sessionEntity.notes?.map { note -> Note in
+            let n = note as! NoteEntity
+            return Note(date: n.date ?? DateBuilder.getFakeUTCDate(),
+                                   text: n.text ?? "",
+                                   lat: n.lat,
+                                   long: n.long,
+                                   number: Int(n.number))
+        } ?? []
+    }
+    
+    func fetchSpecifiedNote(for sessionUUID: SessionUUID, number: Int) throws -> Note {
+        let session = try context.existingSession(uuid: sessionUUID)
+        let note = (session.notes?.first(where: { ($0 as! NoteEntity).number == number }) as! NoteEntity)
+        return Note(date: note.date ?? DateBuilder.getFakeUTCDate(),
+                    text: note.text ?? "",
+                    lat: note.lat,
+                    long: note.long,
+                    number: Int(note.number))
     }
 
     func createSession(_ session: Session) throws {
@@ -281,25 +347,25 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
 /// Only to be used for swiftui previews
 final class PreviewMeasurementStreamStorage: MeasurementStreamStorage {
     func accessStorage(_ task: @escaping (HiddenCoreDataMeasurementStreamStorage) -> Void) {
-        print("accessing storage")
+        Log.info("accessing storage")
     }
     
     func save() throws {
-        print("Faking saving ")
+        Log.info("Faking saving ")
     }
     
     func saveThresholdFor(sensorName: String, thresholdVeryHigh: Int32, thresholdHigh: Int32, thresholdMedium: Int32, thresholdLow: Int32, thresholdVeryLow: Int32) throws {
-        print("Faking saving thresholds")
+        Log.info("Faking saving thresholds")
     }
     
     func updateSessionEndtime(_ endTime: Date, for sessionUUID: SessionUUID) throws {
-        print("Faking updating sessioon end time happened: \(endTime) for session \(sessionUUID)")
+        Log.info("Faking updating sessioon end time happened: \(endTime) for session \(sessionUUID)")
     }
     
     func updateSessionFollowing(_ sessionStatus: SessionFollowing, for sessionUUID: SessionUUID) {}
     
     func addMeasurement(_ measurement: Measurement, toStreamWithID id: MeasurementStreamLocalID) throws {
-        print("Nothing happened for \(measurement)")
+        Log.info("Nothing happened for \(measurement)")
     }
 
     func saveMeasurementStream(_ stream: MeasurementStream, for sessionUUID: SessionUUID) throws -> MeasurementStreamLocalID {
@@ -315,11 +381,11 @@ final class PreviewMeasurementStreamStorage: MeasurementStreamStorage {
     }
 
     func updateSessionStatus(_ sessionStatus: SessionStatus, for sessionUUID: SessionUUID) throws {
-        print("Nothing happened for \(sessionStatus) \(sessionUUID)")
+        Log.info("Nothing happened for \(sessionStatus) \(sessionUUID)")
     }
 
     func createSession(_ session: Session) throws {
-        print("Nothing happened for \(session)")
+        Log.info("Nothing happened for \(session)")
     }
 }
 #endif

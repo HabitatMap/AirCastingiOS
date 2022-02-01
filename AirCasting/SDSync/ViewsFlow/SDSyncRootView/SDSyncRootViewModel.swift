@@ -61,11 +61,11 @@ class DummySDSyncRootViewModelDefault: SDSyncRootViewModel, ObservableObject {
     }
     
     func startBackendSync() {
-        print("startBackendSync")
+        Log.info("startBackendSync")
     }
     
     func executeBackendSync() {
-        print("onAppearExecute")
+        Log.info("onAppearExecute")
     }
     
 }

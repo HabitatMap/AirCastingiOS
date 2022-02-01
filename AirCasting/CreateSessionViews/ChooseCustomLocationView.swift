@@ -40,7 +40,7 @@ struct ChooseCustomLocationView: View {
     }
 
     var mapGoogle: some View {
-        GoogleMapView(pathPoints: [], placePickerDismissed: $placePickerPresented, isUserInteracting: Binding.constant(true))
+        GoogleMapView(pathPoints: [], placePickerDismissed: $placePickerPresented, isUserInteracting: Binding.constant(true), mapNotes: .constant([]))
     }
 
     var dot: some View {
@@ -59,7 +59,7 @@ struct ChooseCustomLocationView: View {
         Button(action: {
             isConfirmCreatingSessionActive.toggle()
         }, label: {
-            Text(Strings.ChooseCustomLocationView.continueButton)
+            Text(Strings.Commons.continue)
                 .bold()
         }).buttonStyle(BlueButtonStyle())
     }
@@ -76,4 +76,3 @@ struct ChooseCustomLocationView: View {
         )
     }
 }
-

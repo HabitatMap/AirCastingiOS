@@ -26,7 +26,8 @@ final class SessionSynchronizationDatabase: SessionSynchronizationStore {
     
     func getLocalSessionList() -> AnyPublisher<[SessionsSynchronization.Metadata], Error> {
         Future { [database, dataConverter] promise in
-            database.fetchSessions(constrained: .all) { [dataConverter] result in
+            let predicate = NSPredicate(format: "locationless = %d", false)
+            database.fetchSessions(constrained: .predicate(predicate)) { [dataConverter] result in
                 switch result {
                 case .failure(let error):
                     promise(.failure(error))
@@ -40,7 +41,7 @@ final class SessionSynchronizationDatabase: SessionSynchronizationStore {
     func addSessions(with sessionsData: [SessionsSynchronization.SessionStoreSessionData]) -> Future<Void, Error> {
         return .init { [database] promise in
             database
-                .insertSessions(sessionsData.map { sessionData in
+                .insertOrUpdateSessions(sessionsData.map { sessionData in
                     let streams = sessionData.measurementStreams.map {
                         Database.MeasurementStream(id: MeasurementStreamID($0.id),
                                                    sensorName: $0.sensorName,
@@ -58,6 +59,13 @@ final class SessionSynchronizationDatabase: SessionSynchronizationStore {
                                                     .init(id: $0.id, time: $0.time, value: $0.value, latitude: $0.latitude, longitude: $0.longitude)
                                                    },
                                                    deleted: $0.deleted)
+                    }
+                    let notes = sessionData.notes.map {
+                        Database.Note(date: $0.date,
+                                      text: $0.text,
+                                      latitude: $0.latitude,
+                                      longitude: $0.longitude,
+                                      number: $0.number)
                     }
                     let location: CLLocationCoordinate2D? = {
                         guard let latitude = sessionData.latitude,
@@ -80,7 +88,8 @@ final class SessionSynchronizationDatabase: SessionSynchronizationStore {
                                             urlLocation: sessionData.urlLocation,
                                             version: sessionData.version,
                                             measurementStreams: streams,
-                                            status: .FINISHED)
+                                            status: .FINISHED,
+                                            notes: notes)
                 }, completion: { error in
                     if let error = error {
                         promise(.failure(error))
@@ -88,6 +97,29 @@ final class SessionSynchronizationDatabase: SessionSynchronizationStore {
                         promise(.success(()))
                     }
                 })
+        }
+    }
+    
+    func saveURLForSession(uuid: SessionUUID, url: String) -> Future<Void, Error> {
+        Future { [database] promise in
+            database.fetchSessions(constrained: .predicate(.init(format: "uuid == %@", uuid.rawValue))) { result in
+                switch result {
+                case .failure(let error):
+                    promise(.failure(error))
+                case .success(let entries) where entries.count >= 1:
+                    if entries.count > 1 { Log.error("Found multiple sessions for ID [\(uuid)]") }
+                    let session = entries[0].withUrlLocation(url)
+                    database.insertOrUpdateSessions([session], completion: { error in
+                        guard error == nil else { promise(.failure(error!)); return }
+                        promise(.success(()))
+                    })
+                    break
+                case .success(let entries) where entries.count == 0:
+                    promise(.failure(SessionSynchronizationStoreError.noSessionsForUUID(uuid: uuid)))
+                    break
+                default: break
+                }
+            }
         }
     }
     
@@ -118,5 +150,28 @@ final class SessionSynchronizationDatabase: SessionSynchronizationStore {
                 }
             })
         }
+    }
+}
+
+extension Database.Session {
+    func withUrlLocation(_ newLocation: String) -> Self {
+        return .init(uuid: uuid,
+                     type: type,
+                     name: name,
+                     deviceType: deviceType,
+                     location: location,
+                     startTime: startTime,
+                     contribute: contribute,
+                     deviceId: deviceId,
+                     endTime: endTime,
+                     followedAt: followedAt,
+                     gotDeleted: gotDeleted,
+                     isIndoor: isIndoor,
+                     tags: tags,
+                     urlLocation: newLocation,
+                     version: version,
+                     measurementStreams: measurementStreams,
+                     status: status,
+                     notes: notes)
     }
 }

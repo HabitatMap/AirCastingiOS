@@ -11,6 +11,7 @@ import Combine
 
 protocol MeasurementUpdatingService {
     func start()
+    func downloadMeasurements(for sessionUUID: SessionUUID, lastSynced: Date, completion: @escaping () -> Void)
 }
 
 final class DownloadMeasurementsService: MeasurementUpdatingService {
@@ -32,6 +33,18 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
         updateAllSessionsMeasurements()
         timerSink = Timer.publish(every: 60, on: .current, in: .common).autoconnect().sink { [weak self] tick in
             self?.updateAllSessionsMeasurements()
+        }
+    }
+    
+    func downloadMeasurements(for sessionUUID: SessionUUID, lastSynced: Date, completion: @escaping () -> Void) {
+        lastFetchCancellableTask = fixedSessionService.getFixedMeasurement(uuid: sessionUUID, lastSync: lastSynced) { [weak self] in
+            self?.processServiceResponse($0, for: sessionUUID, completion: completion)
+        }
+    }
+    
+    private func updateMeasurements(for sessionUUID: SessionUUID, lastSynced: Date) {
+        lastFetchCancellableTask = fixedSessionService.getFixedMeasurement(uuid: sessionUUID, lastSync: lastSynced) { [weak self] in
+            self?.processServiceResponse($0, for: sessionUUID)
         }
     }
     
@@ -67,17 +80,12 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
         return syncDate
     }
     
-    private func updateMeasurements(for sessionUUID: SessionUUID, lastSynced: Date) {
-        lastFetchCancellableTask = fixedSessionService.getFixedMeasurement(uuid: sessionUUID, lastSync: lastSynced) { [weak self] in
-            self?.processServiceResponse($0, for: sessionUUID)
-        }
-    }
-    
     private func processServiceResponse(_ response: Result<FixedSession.FixedMeasurementOutput, Error>,
-                                        for sessionUUID: SessionUUID) {
+                                        for sessionUUID: SessionUUID, completion: () -> Void = {}) {
         switch response {
         case .success(let response):
             processServiceOutput(response, for: sessionUUID)
+            completion()
         case .failure(let error):
             Log.warning("Failed to fetch measurements for uuid '\(sessionUUID)' \(error)")
         }
@@ -109,10 +117,9 @@ class SyncHelper {
     func calculateLastSync(sessionEndTime: Date?, lastMeasurementTime: Date?) -> Date {
         let measurementTimeframe: Double = 24 * 60 * 60 // 24 hours in seconds
         
-        guard let sessionEndTime = sessionEndTime else { return Date().currentUTCTimeZoneDate }
+        guard let sessionEndTime = sessionEndTime else { return DateBuilder.getFakeUTCDate() }
         let sessionEndTimeSeconds = sessionEndTime.timeIntervalSince1970
-        
-        let last24hours = Date(timeIntervalSince1970: (sessionEndTimeSeconds - measurementTimeframe))
+        let last24hours = DateBuilder.getDateWithTimeIntervalSince1970((sessionEndTimeSeconds - measurementTimeframe))
         
         guard let lastMeasurementTime = lastMeasurementTime else { return last24hours }
         let lastMeasurementSeconds = lastMeasurementTime.timeIntervalSince1970

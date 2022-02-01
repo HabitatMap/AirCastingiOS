@@ -13,15 +13,18 @@ struct ABConnectedView: View {
     let baseURL: BaseURLProvider
     
     var body: some View {
-        VStack(spacing: 40) {
+        VStack() {
             ProgressView(value: 0.625)
+                .padding(.bottom, 50)
             Image("4-connected")
                 .resizable()
                 .scaledToFit()
+                .frame(width: UIScreen.main.bounds.width - 40, height:  UIScreen.main.bounds.height / 2, alignment: .center)
             VStack(alignment: .leading, spacing: 15) {
                 titleLabel
                 messageLabel
             }
+            Spacer()
             continueButton
         }
         .padding()
@@ -45,7 +48,7 @@ private extension ABConnectedView {
         return NavigationLink(
             destination: CreateSessionDetailsView(creatingSessionFlowContinues: $creatingSessionFlowContinues, baseURL: baseURL),
             label: {
-                Text(Strings.ABConnectedView.continueButton)
+                Text(Strings.Commons.continue)
             })
             .buttonStyle(BlueButtonStyle())
     }

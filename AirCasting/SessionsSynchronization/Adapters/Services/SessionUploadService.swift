@@ -10,6 +10,7 @@ final class SessionUploadService: SessionUpstream {
     private let client: APIClient
     private let authorization: RequestAuthorisationService
     private let responseValidator: HTTPResponseValidator
+    private let urlProvider: BaseURLProvider
     
     private let encoder: JSONEncoder = {
         let encoder = JSONEncoder()
@@ -20,20 +21,23 @@ final class SessionUploadService: SessionUpstream {
         return encoder
     }()
     
+    private let decoder = JSONDecoder()
+    
     private struct APICallData: Encodable {
         let session: String
         let compression: Bool
     }
     
-    init(client: APIClient, authorization: RequestAuthorisationService, responseValidator: HTTPResponseValidator) {
+    init(client: APIClient, authorization: RequestAuthorisationService, responseValidator: HTTPResponseValidator, urlProvider: BaseURLProvider) {
         self.client = client
         self.authorization = authorization
         self.responseValidator = responseValidator
+        self.urlProvider = urlProvider
     }
     
-    func upload(session: SessionsSynchronization.SessionUpstreamData) -> Future<Void, Error> {
-        .init { [client, authorization, encoder, responseValidator] promise in
-            let url = URL(string: "http://aircasting.org/api/sessions")!
+    func upload(session: SessionsSynchronization.SessionUpstreamData) -> Future<SessionsSynchronization.SessionUpstreamResult, Error> {
+        .init { [self, client, authorization, encoder, responseValidator] promise in
+            let url = urlProvider.baseAppURL.appendingPathComponent("api/sessions")
             var request = URLRequest(url: url)
             request.httpMethod = "POST"
             request.addValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -57,9 +61,10 @@ final class SessionUploadService: SessionUpstream {
             }
             client.requestTask(for: request) { result, request in
                 promise(
-                    result.tryMap { result -> Void in
+                    result.tryMap { result -> SessionsSynchronization.SessionUpstreamResult in
                         try responseValidator.validate(response: result.response, data: result.data)
-                        return ()
+                        let response = try decoder.decode(SessionsSynchronization.SessionUpstreamResult.self, from: result.data)
+                        return response
                     }
                 )
             }

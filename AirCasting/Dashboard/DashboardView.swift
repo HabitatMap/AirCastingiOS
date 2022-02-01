@@ -16,8 +16,9 @@ struct DashboardView: View {
     @FetchRequest<SensorThreshold>(sortDescriptors: [.init(key: "sensorName", ascending: true)]) var thresholds
     @EnvironmentObject var selectedSection: SelectSection
     @EnvironmentObject var averaging: AveragingService
+    @EnvironmentObject var userSettings: UserSettings
     @State var isRefreshing: Bool = false
-
+    private let urlProvider: BaseURLProvider
     private let measurementStreamStorage: MeasurementStreamStorage
     private let sessionStoppableFactory: SessionStoppableFactory
     private let sessionSynchronizer: SessionSynchronizer
@@ -31,13 +32,15 @@ struct DashboardView: View {
     init(coreDataHook: CoreDataHook,
          measurementStreamStorage: MeasurementStreamStorage,
          sessionStoppableFactory: SessionStoppableFactory,
-         sessionSynchronizer: SessionSynchronizer) {
+         sessionSynchronizer: SessionSynchronizer,
+         urlProvider: BaseURLProvider) {
         let navBarAppearance = UINavigationBar.appearance()
         navBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(Color.darkBlue)]
         _coreDataHook = StateObject(wrappedValue: coreDataHook)
         self.measurementStreamStorage = measurementStreamStorage
         self.sessionStoppableFactory = sessionStoppableFactory
         self.sessionSynchronizer = sessionSynchronizer
+        self.urlProvider = urlProvider
     }
 
     var body: some View {
@@ -119,7 +122,9 @@ struct DashboardView: View {
                                         thresholds: thresholds,
                                         sessionStoppableFactory: sessionStoppableFactory,
                                         measurementStreamStorage: measurementStreamStorage,
-                                        sessionSynchronizer: sessionSynchronizer
+                                        sessionSynchronizer: sessionSynchronizer,
+                                        urlProvider: urlProvider,
+                                        userSettings: userSettings
                         )
                     }
                 }
@@ -182,7 +187,7 @@ struct PreventCollapseView: View {
 #if DEBUG
 struct Dashboard_Previews: PreviewProvider {
     static var previews: some View {
-        DashboardView(coreDataHook: CoreDataHook(context: PersistenceController(inMemory: true).viewContext), measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionStoppableFactory: SessionStoppableFactoryDummy(), sessionSynchronizer: DummySessionSynchronizer())
+        DashboardView(coreDataHook: CoreDataHook(context: PersistenceController(inMemory: true).viewContext), measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionStoppableFactory: SessionStoppableFactoryDummy(), sessionSynchronizer: DummySessionSynchronizer(), urlProvider: DummyURLProvider())
     }
 }
 #endif

@@ -56,7 +56,7 @@ private extension SDSyncCompleteView {
             creatingSessionFlowContinues = false
             tabSelection.selection = TabBarSelection.Tab.dashboard
         } label: {
-            Text(Strings.ABConnectedView.continueButton)
+            Text(Strings.Commons.continue)
         }.buttonStyle(BlueButtonStyle())
     }
 }

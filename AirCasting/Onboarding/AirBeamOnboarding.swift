@@ -110,7 +110,7 @@ private extension AirBeamOnboarding {
         NavigationLink(
             destination: PrivacyOnboarding(completion: completion),
             label: {
-                Text(Strings.OnboardingAirBeam.continueButton)
+                Text(Strings.Commons.continue)
                     .font(Fonts.semiboldHeading1)
             }
         )

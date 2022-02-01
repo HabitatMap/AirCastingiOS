@@ -49,7 +49,8 @@ class FixedSession {
         let time: Date
         let stream_id: Int
         let milliseconds: Double
-        let measured_value: Double
+        //TODO: Fix this. We need to make it optional, because when we get measurements for sessions from SD Card, their measuredValue is nil
+        let measured_value: Double?
     }
 }
 
@@ -80,7 +81,7 @@ final class FixedSessionAPIService {
     @discardableResult
     func getFixedMeasurement(uuid: SessionUUID, lastSync: Date, completion: @escaping (Result<FixedSession.FixedMeasurementOutput, Error>) -> Void) -> Cancellable {
         // Build URL with query
-        let url = urlProvider.baseAppURL.appendingPathComponent("realtime/sync_measurements.json")
+        let url = urlProvider.baseAppURL.appendingPathComponent("api/realtime/sync_measurements.json")
         var components = URLComponents(url: url, resolvingAgainstBaseURL: false)!
         let syncDateStr = ISO8601DateFormatter.defaultLong.string(from: lastSync)
         components.queryItems = [

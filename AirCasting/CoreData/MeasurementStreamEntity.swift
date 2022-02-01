@@ -36,7 +36,7 @@ public class MeasurementStreamEntity: NSManagedObject, Identifiable {
     // Of type MeasurementEntity
     @NSManaged public var measurements: NSOrderedSet?
     @NSManaged public var session: SessionEntity!
-
+    
     public var id: MeasurementStreamID? {
         get { value(forKey: "id") as? MeasurementStreamID }
         set { setValue(newValue, forKey: "id")}
@@ -45,13 +45,22 @@ public class MeasurementStreamEntity: NSManagedObject, Identifiable {
     public var allMeasurements: [MeasurementEntity]? {
         measurements?.array as? [MeasurementEntity]
     }
+    
+    public var isTemperature: Bool {
+        measurementType == Constants.MeasurementType.temperature
+    }
 
     public var localID: MeasurementStreamLocalID {
         MeasurementStreamLocalID(id: objectID)
     }
-    public var thresholds: [Int32] {
-     [thresholdVeryLow, thresholdLow, thresholdMedium, thresholdHigh, thresholdVeryHigh]
-    }
+    
+    public var thresholds: ThresholdsValue {
+         ThresholdsValue(veryLow: thresholdVeryLow,
+                    low: thresholdLow,
+                    medium: thresholdMedium,
+                    high: thresholdHigh,
+                    veryHigh: thresholdVeryHigh)
+     }
 }
 
 // MARK: Generated accessors for measurements

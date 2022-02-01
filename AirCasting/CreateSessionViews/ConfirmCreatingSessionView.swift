@@ -29,22 +29,22 @@ struct ConfirmCreatingSessionView: View {
     let baseURL: BaseURLProvider
     var sessionName: String
     private var sessionType: String { (sessionContext.sessionType ?? .fixed).description.lowercased() }
-    
+
     var body: some View {
         LoadingView(isShowing: $isActive) {
             contentViewWithAlert
         }
     }
-    
+
     private var contentViewWithAlert: some View {
         contentView.alert(isPresented: $isPresentingAlert) {
             Alert(title: Text(Strings.ConfirmCreatingSessionView.alertTitle),
                   message: Text(error?.localizedDescription ?? Strings.ConfirmCreatingSessionView.alertMessage),
-                  dismissButton: .default(Text(Strings.ConfirmCreatingSessionView.alertOK), action: { error = nil
+                  dismissButton: .default(Text(Strings.Commons.gotIt), action: { error = nil
             }))
         }
     }
-    
+
     private var defaultDescriptionText: Text {
         Text(Strings.ConfirmCreatingSessionView.contentViewText_1)
         + Text(sessionType)
@@ -54,23 +54,23 @@ struct ConfirmCreatingSessionView: View {
             .foregroundColor(.accentColor)
         + Text(Strings.ConfirmCreatingSessionView.contentViewText_3)
     }
-    
+
     var dot: some View {
         Capsule()
             .fill(Color.accentColor)
             .frame(width: 15, height: 15)
     }
-    
+
     private var descriptionTextFixed: some View {
         defaultDescriptionText
         + Text((sessionContext.isIndoor!) ? "" : Strings.ConfirmCreatingSessionView.contentViewText_4)
     }
-    
+
     private var descriptionTextMobile: some View {
         defaultDescriptionText
         + Text(Strings.ConfirmCreatingSessionView.contentViewText_4Mobile)
     }
-    
+
     @ViewBuilder private var contentView: some View {
         if let sessionCreator = setSessioonCreator() {
             VStack(alignment: .leading, spacing: 40) {
@@ -81,8 +81,10 @@ struct ConfirmCreatingSessionView: View {
                 VStack(alignment: .leading, spacing: 15) {
                     if sessionContext.sessionType == .fixed {
                         descriptionTextFixed
-                    } else {
+                    } else if !sessionContext.locationless {
                         descriptionTextMobile
+                    } else {
+                        defaultDescriptionText
                     }
                 }
                 .font(Fonts.muliHeading2)
@@ -90,9 +92,11 @@ struct ConfirmCreatingSessionView: View {
                 .lineSpacing(9.0)
                 ZStack {
                     if sessionContext.sessionType == .mobile {
-                        GoogleMapView(pathPoints: [], isMyLocationEnabled: true, placePickerDismissed: Binding.constant(false), isUserInteracting: Binding.constant(true))
+                        if !sessionContext.locationless {
+                            GoogleMapView(pathPoints: [], isMyLocationEnabled: true, placePickerDismissed: Binding.constant(false), isUserInteracting: Binding.constant(true), mapNotes: .constant([]))
+                        }
                     } else if !(sessionContext.isIndoor ?? false) {
-                        GoogleMapView(pathPoints: [], placePickerDismissed: Binding.constant(false), isUserInteracting: Binding.constant(true))
+                        GoogleMapView(pathPoints: [], placePickerDismissed: Binding.constant(false), isUserInteracting: Binding.constant(true), mapNotes: .constant([]))
                             .disabled(true)
                         // It needs to be disabled to prevent user interaction (swiping map) because it is only conformation screen
                         dot
@@ -114,7 +118,7 @@ struct ConfirmCreatingSessionView: View {
 }
 
 extension ConfirmCreatingSessionView {
-    
+
     func createSession(sessionCreator: SessionCreator) {
         sessionCreator.createSession(sessionContext) { result in
             DispatchQueue.main.async {
@@ -127,7 +131,7 @@ extension ConfirmCreatingSessionView {
                         selectedSection.selectedSection = SelectedSection.following
                     }
                     tabSelection.selection = TabBarSelection.Tab.dashboard
-                    
+
                 case .failure(let error):
                     self.error = error as NSError
                     Log.warning("Failed to create session \(error)")
@@ -136,10 +140,16 @@ extension ConfirmCreatingSessionView {
             }
         }
     }
-    
+
     func getAndSaveStartingLocation() {
-        if sessionContext.sessionType == .fixed {
-            if sessionContext.isIndoor! {
+        #if targetEnvironment(simulator)
+        let krakowLat = 50.049683
+        let krakowLong = 19.944544
+        sessionContext.saveCurrentLocation(lat: krakowLat, log: krakowLong)
+        return
+        #endif
+        if sessionContext.sessionType == .fixed || sessionContext.locationless {
+            if sessionContext.isIndoor! || sessionContext.locationless {
                 locationTracker.googleLocation = [PathPoint.fakePathPoint]
             }
             guard let lat: Double = (locationTracker.googleLocation.last?.location.latitude),
@@ -149,7 +159,7 @@ extension ConfirmCreatingSessionView {
         } else {
             guard let lat = (locationTracker.locationManager.location?.coordinate.latitude),
                   let lon = (locationTracker.locationManager.location?.coordinate.longitude) else { return }
-            locationTracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: lat, longitude: lon), measurementTime: Date().currentUTCTimeZoneDate, measurement: 20.0)]
+            locationTracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: lat, longitude: lon), measurementTime: DateBuilder.getFakeUTCDate(), measurement: 20.0)]
 #warning("Do something with hard coded measurement")
             sessionContext.saveCurrentLocation(lat: lat, log: lon)
         }

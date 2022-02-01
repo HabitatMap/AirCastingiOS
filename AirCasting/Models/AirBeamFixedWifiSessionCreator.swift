@@ -26,7 +26,9 @@ final class AirBeamFixedWifiSessionCreator: SessionCreator {
     
     func createSession(_ sessionContext: CreateSessionContext, completion: @escaping (Result<Void, Error>) -> Void) {
         guard let sessionType = sessionContext.sessionType,
-              let sessionUUID = sessionContext.sessionUUID else {
+              let sessionUUID = sessionContext.sessionUUID,
+              let isIndoor = sessionContext.isIndoor
+        else {
             assertionFailure("invalidCreateSessionContext \(sessionContext)")
             completion(.failure(AirBeamSessionCreatorError.invalidCreateSessionContext(sessionContext)))
             return
@@ -37,8 +39,9 @@ final class AirBeamFixedWifiSessionCreator: SessionCreator {
                               name: sessionContext.sessionName,
                               deviceType: sessionContext.deviceType,
                               location: sessionContext.startingLocation,
-                              startTime: Date().currentUTCTimeZoneDate,
-                              followedAt: Date().currentUTCTimeZoneDate,
+                              startTime: DateBuilder.getFakeUTCDate(),
+                              followedAt: DateBuilder.getFakeUTCDate(),
+                              isIndoor: isIndoor,
                               tags: sessionContext.sessionTags)
         
         // if session is fixed: create an empty session on server,
@@ -48,14 +51,13 @@ final class AirBeamFixedWifiSessionCreator: SessionCreator {
               let peripheral = sessionContext.peripheral,
               let wifiSSID = sessionContext.wifiSSID,
               let wifiPassword = sessionContext.wifiPassword,
-              let contribute = sessionContext.contribute,
-              let isIndoor = sessionContext.isIndoor else {
+              let contribute = sessionContext.contribute
+        else {
             assertionFailure("invalidCreateSessionContext \(sessionContext)")
             completion(.failure(AirBeamSessionCreatorError.invalidCreateSessionContext(sessionContext)))
             return
         }
         
-        #warning("TODO: change mocked data -->  notes")
         let params = CreateSessionApi.SessionParams(uuid: sessionUUID,
                                                     type: .fixed,
                                                     title: name,
@@ -77,12 +79,13 @@ final class AirBeamFixedWifiSessionCreator: SessionCreator {
                                                                 case .success(let output):
                                                                     measurementStreamStorage.accessStorage { storage in
                                                                         do {
-                                                                            try storage.createSession(session)
+                                                                            let sessionWithURL = session.withUrlLocation(output.location)
+                                                                            try storage.createSession(sessionWithURL)
                                                                             try AirBeam3Configurator(userAuthenticationSession: userAuthenticationSession,
                                                                                                      peripheral: peripheral).configureFixedWifiSession(
                                                                                                         uuid: sessionUUID,
                                                                                                         location: sessionContext.startingLocation ?? CLLocationCoordinate2D(latitude: 200, longitude: 200),
-                                                                                                        date: Date().currentUTCTimeZoneDate,
+                                                                                                        date: DateBuilder.getFakeUTCDate(),
                                                                                                         wifiSSID: wifiSSID,
                                                                                                         wifiPassword: wifiPassword)
                                                                             Log.warning("Created fixed Wifi session \(output)")

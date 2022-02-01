@@ -28,10 +28,8 @@ struct RootAppView: View {
     let locationTracker = LocationTracker(locationManager: CLLocationManager())
     var sessionSynchronizer: SessionSynchronizer
     let persistenceController: PersistenceController
-    let urlProvider = UserDefaultsBaseURLProvider()
     let networkChecker = NetworkChecker(connectionAvailable: false)
-    
-    
+    let urlProvider: BaseURLProvider
     
     var body: some View {
         ZStack {
@@ -46,7 +44,8 @@ struct RootAppView: View {
                             downloadService: downloadService,
                             measurementStreamStorage: measurementStreamStorage,
                             locationHandler: DefaultLocationHandler(locationTracker: locationTracker),
-                            sdSyncController: sdSyncController)
+                            sdSyncController: sdSyncController,
+                            urlProvider: urlProvider)
             } else if !userAuthenticationSession.isLoggedIn && lifeTimeEventsProvider.hasEverPassedOnBoarding {
                 NavigationView {
                     CreateAccountView(completion: { self.lifeTimeEventsProvider.hasEverLoggedIn = true }, userSession: userAuthenticationSession, baseURL: urlProvider).environmentObject(lifeTimeEventsProvider)
@@ -65,7 +64,6 @@ struct RootAppView: View {
         .environmentObject(userSettings)
         .environmentObject(locationTracker)
         .environmentObject(userRedirectionSettings)
-        .environmentObject(urlProvider)
         .environment(\.managedObjectContext, persistenceController.viewContext)
         .onAppear {
             airBeamConnectionController = DefaultAirBeamConnectionController(connectingAirBeamServices: ConnectingAirBeamServicesBluetooth(bluetoothConnector: bluetoothManager))
@@ -92,7 +90,7 @@ struct RootAppView: View {
                                                 mobileSessionsSaver: mobileSessionsService,
                                                 fixedSessionsSaver: fixedSessionsService,
                                                 averagingService: averagingService,
-                                                sessionSynchronizer: sessionSynchronizer)
+                                                sessionSynchronizer: sessionSynchronizer, measurementsDownloader: SyncedMeasurementsDownloadingService(measurementStreamStorage: measurementStreamStorage, measurementsDownloadingService: downloadService!))
         }
     }
     
@@ -107,9 +105,9 @@ struct MainAppView: View {
     let measurementStreamStorage: MeasurementStreamStorage
     let locationHandler: LocationHandler
     let sdSyncController: SDSyncController
+    let urlProvider: BaseURLProvider
     
     @EnvironmentObject private var persistenceController: PersistenceController
-    @EnvironmentObject private var urlProvider: UserDefaultsBaseURLProvider
     @EnvironmentObject private var userAuthenticationSession: UserAuthenticationSession
     @EnvironmentObject private var bluetoothManager: BluetoothManager
     @EnvironmentObject private var user: UserState
@@ -133,7 +131,7 @@ struct MainAppView: View {
 #if DEBUG
 struct RootAppView_Previews: PreviewProvider {
     static var previews: some View {
-        RootAppView(sessionSynchronizer: DummySessionSynchronizer(), persistenceController: PersistenceController(inMemory: true))
+        RootAppView(sessionSynchronizer: DummySessionSynchronizer(), persistenceController: PersistenceController(inMemory: true), urlProvider: DummyURLProvider())
     }
 }
 #endif

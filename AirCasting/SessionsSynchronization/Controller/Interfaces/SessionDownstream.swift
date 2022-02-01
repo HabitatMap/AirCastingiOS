@@ -36,6 +36,7 @@ extension SessionsSynchronization {
         let streams: [String: MeasurementStreamDownstreamData]
         let location: URL?
         let isIndoor: Bool
+        let notes: [NoteDownstreamData]
     }
 
     struct MeasurementStreamDownstreamData: Equatable, Codable {
@@ -60,5 +61,13 @@ extension SessionsSynchronization {
         let latitude: Double?
         let longitude: Double?
         let time: Date
+    }
+    
+    struct NoteDownstreamData: Equatable, Codable {
+        let date: Date
+        let text: String
+        let latitude: Double
+        let longitude: Double
+        let number: Int
     }
 }

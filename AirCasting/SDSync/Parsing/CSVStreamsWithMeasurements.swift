@@ -4,7 +4,7 @@
 import Foundation
 import CoreLocation
 
-class CSVSession {
+class CSVStreamsWithMeasurements {
     
     private(set) var sessions = Set<SDSession>()
     private(set) var streamsWithMeasurements: [SDStream: [Measurement]] = [:]
@@ -26,8 +26,6 @@ class CSVSession {
                                         lastMeasurementTime: nil)
                     sessions.insert(session!)
                 }
-                
-                guard session!.lastMeasurementTime == nil || measurements.date > session!.lastMeasurementTime! else { return }
                 
                 self.enqueueForSaving(measurements: measurements, buffer: &streamsWithMeasurements)
             case .endOfFile:

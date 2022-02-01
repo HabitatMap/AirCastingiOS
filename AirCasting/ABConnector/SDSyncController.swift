@@ -34,8 +34,9 @@ class SDSyncController: ObservableObject {
     private let averagingService: AveragingService
     private let sessionSynchronizer: SessionSynchronizer
     private let writingQueue = DispatchQueue(label: "SDSyncController")
+    private let measurementsDownloader: SyncedMeasurementsDownloader
     
-    init(airbeamServices: SDCardAirBeamServices, fileWriter: SDSyncFileWriter, fileValidator: SDSyncFileValidator, fileLineReader: FileLineReader, mobileSessionsSaver: SDCardMobileSessionssSaver, fixedSessionsSaver: SDCardFixedSessionsSavingService, averagingService: AveragingService, sessionSynchronizer: SessionSynchronizer) {
+    init(airbeamServices: SDCardAirBeamServices, fileWriter: SDSyncFileWriter, fileValidator: SDSyncFileValidator, fileLineReader: FileLineReader, mobileSessionsSaver: SDCardMobileSessionssSaver, fixedSessionsSaver: SDCardFixedSessionsSavingService, averagingService: AveragingService, sessionSynchronizer: SessionSynchronizer, measurementsDownloader: SyncedMeasurementsDownloader) {
         self.airbeamServices = airbeamServices
         self.fileWriter = fileWriter
         self.fileValidator = fileValidator
@@ -44,6 +45,7 @@ class SDSyncController: ObservableObject {
         self.fixedSessionsSaver = fixedSessionsSaver
         self.averagingService = averagingService
         self.sessionSynchronizer = sessionSynchronizer
+        self.measurementsDownloader = measurementsDownloader
     }
     
     func syncFromAirbeam(_ airbeamConnection: CBPeripheral, progress: @escaping (SDCardSyncStatus) -> Void, completion: @escaping (Bool) -> Void) {
@@ -67,11 +69,16 @@ class SDSyncController: ObservableObject {
                     progress(.finalizing)
                     let files = self.fileWriter.finishAndSave()
                     
+                    guard !files.isEmpty else {
+                        completion(true)
+                        return
+                    }
+                    
                     //MARK: checking if files have the right number of rows and if rows have the right values
                     self.checkFilesForCorruption(files, expectedMeasurementsCount: metadata.expectedMeasurementsCount) { fileValidationResult in
                         switch fileValidationResult {
                         case .success(let verifiedFiles):
-                            self.handle(files: verifiedFiles, deviceID: sensorName, completion: completion)
+                            self.handle(files: verifiedFiles, sensorName: sensorName, completion: completion)
                         case .failure(let error):
                             Log.error(error.localizedDescription)
                             completion(false)
@@ -85,20 +92,21 @@ class SDSyncController: ObservableObject {
         })
     }
     
-    private func handle(files: [(URL, SDCardSessionType)], deviceID: String, completion: @escaping (Bool) -> Void ) {
+    private func handle(files: [(URL, SDCardSessionType)], sensorName: String, completion: @escaping (Bool) -> Void ) {
         let mobileFileURL = files.first(where: { $0.1 == SDCardSessionType.mobile })?.0
         let fixedFileURL = files.first(where: { $0.1 == SDCardSessionType.fixed })?.0
         
         func handleFixedFile(fixedFileURL: URL) {
             do {
-                try self.process(fixedSessionFile: fixedFileURL, deviceID: deviceID, completion: completion)
+                let fixedSessionsUUIDs =  try self.process(fixedSessionFile: fixedFileURL, deviceID: sensorName, completion: completion)
+                measurementsDownloader.download(sessionsUUIDs: fixedSessionsUUIDs)
             } catch {
                 completion(false)
             }
         }
         
         if let mobileFileURL = mobileFileURL {
-            process(mobileSessionFile: mobileFileURL, deviceID: deviceID) { mobileResult in
+            process(mobileSessionFile: mobileFileURL, deviceID: sensorName) { mobileResult in
                 guard mobileResult else {
                     completion(mobileResult)
                     return
@@ -106,6 +114,8 @@ class SDSyncController: ObservableObject {
                 
                 if let fixedFileURL = fixedFileURL {
                     handleFixedFile(fixedFileURL: fixedFileURL)
+                } else {
+                    completion(true)
                 }
             }
         } else if let fixedFileURL = fixedFileURL {
@@ -115,10 +125,11 @@ class SDSyncController: ObservableObject {
         }
     }
     
-    private func process(fixedSessionFile: URL, deviceID: String, completion: @escaping (Bool) -> Void) throws {
-        let csvSession = try CSVSession(fileURL: fixedSessionFile,
+    private func process(fixedSessionFile: URL, deviceID: String, completion: @escaping (Bool) -> Void) throws -> [SessionUUID] {
+        let csvSession = try CSVStreamsWithMeasurements(fileURL: fixedSessionFile,
                                         fileLineReader: fileLineReader)
         fixedSessionsSaver.processAndSync(csvSession: csvSession, deviceID: deviceID, completion: completion)
+        return csvSession.sessions.map { $0.uuid }
     }
     
     private func process(mobileSessionFile: URL, deviceID: String, completion: @escaping (Bool) -> Void) {

@@ -21,7 +21,7 @@ struct DeleteView<VM: DeleteSessionViewModel>: View {
                     viewModel.deleteSelected()
                     deleteModal.toggle()
                 }),
-                secondaryButton: .default(Text(Strings.DeleteSession.cancelButton), action: {
+                secondaryButton: .default(Text(Strings.Commons.cancel), action: {
                     deleteModal.toggle()
                 }))
         }
@@ -67,7 +67,7 @@ struct DeleteView<VM: DeleteSessionViewModel>: View {
         Button {
             deleteModal.toggle()
         } label: {
-            Text(Strings.DeleteSession.cancelButton)
+            Text(Strings.Commons.cancel)
         }
         .buttonStyle(BlueTextButtonStyle())
     }
@@ -78,7 +78,7 @@ struct DeleteViewModal_Previews: PreviewProvider {
     static var previews: some View {
         DeleteView(viewModel: DefaultDeleteSessionViewModel(session: .mock,
                                                             measurementStreamStorage: PreviewMeasurementStreamStorage(),
-                                                            streamRemover: StreamRemoverDefaultDummy(), sessionSynchronizer: DummySessionSynchronizer()),
+                                                            streamRemover: SessionUpdateServiceDefaultDummy(), sessionSynchronizer: DummySessionSynchronizer()),
                                                             deleteModal: .constant(false))
     }
 }

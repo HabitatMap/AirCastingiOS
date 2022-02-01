@@ -9,26 +9,25 @@ import AirCastingStyling
 import SwiftUI
 
 struct PowerABView: View {
-    @State private var showAlert = false
     @Binding var creatingSessionFlowContinues: Bool
     @EnvironmentObject private var sessionContext: CreateSessionContext
     let urlProvider: BaseURLProvider
 
     var body: some View {
-        VStack(spacing: 45) {
+        VStack() {
             ProgressView(value: 0.25)
+                .padding(.bottom, 50)
             Image("2-power")
                 .resizable()
                 .scaledToFit()
+                .frame(width: UIScreen.main.bounds.width - 40, height:  UIScreen.main.bounds.height / 2, alignment: .center)
             HStack() {
                 titleLabel
                 Spacer()
             }
+            Spacer()
             continueButton
                 .buttonStyle(BlueButtonStyle())
-        }
-        .alert(isPresented: $showAlert) {
-            Alert.locationAlert
         }
         .padding()
         .onAppear(perform: {
@@ -51,7 +50,7 @@ struct PowerABView: View {
 
     var continueButton: some View {
         NavigationLink(destination: SelectPeripheralView(SDClearingRouteProcess: false, creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider)) {
-            Text(Strings.PowerABView.continueButton)
+            Text(Strings.Commons.continue)
                 .frame(maxWidth: .infinity)
         }
     }

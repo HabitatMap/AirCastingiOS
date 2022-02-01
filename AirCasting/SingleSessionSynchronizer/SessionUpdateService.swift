@@ -3,30 +3,33 @@
 
 import Foundation
 
-protocol StreamRemover {
-    func deleteStreams(session: SessionEntity, completion: @escaping () -> Void)
+protocol SessionUpdateService {
+    func updateSession(session: SessionEntity, completion: @escaping () -> Void)
 }
 
-class StreamRemoverDefault: StreamRemover {
+class DefaultSessionUpdateService: SessionUpdateService {
 
     private let authorization: RequestAuthorisationService
+    private let urlProvider: BaseURLProvider
     
-    init(authorization: RequestAuthorisationService) {
+    init(authorization: RequestAuthorisationService, urlProvider: BaseURLProvider) {
         self.authorization = authorization
+        self.urlProvider = urlProvider
     }
     
     private struct APICallData: Encodable {
         let data: String
     }
 
-    func deleteStreams(session: SessionEntity, completion: @escaping () -> Void) {
-        guard let url = URL(string: "http://aircasting.org/api/user/sessions/update_session.json") else { return }
+    func updateSession(session: SessionEntity, completion: @escaping () -> Void) {
+        let url = urlProvider.baseAppURL.appendingPathComponent("api/user/sessions/update_session.json")
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "Accept")
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         
         var data = [String : CreateSessionApi.MeasurementStreamParams]()
+        var notes = [CreateSessionApi.NotesParams]()
         
         session.allStreams?.forEach({ stream in
             data[stream.sensorName!] = CreateSessionApi.MeasurementStreamParams(deleted: stream.gotDeleted,
@@ -44,19 +47,28 @@ class StreamRemoverDefault: StreamRemover {
                                                                                 measurements: [])
         })
         
+        session.notes?.forEach({ note in
+            let n = note as! NoteEntity
+            notes.append(CreateSessionApi.NotesParams(date: n.date ?? DateBuilder.getFakeUTCDate(),
+                                                      text: n.text ?? "",
+                                                      lat: n.lat,
+                                                      long: n.long,
+                                                      number: Int(n.number)))
+        })
+    
         let sessionToPass = CreateSessionApi.SessionParams(uuid: session.uuid,
-                                                 type: session.type,
-                                                 title: session.name!,
-                                                 tag_list: session.tags!,
-                                                 start_time: session.startTime!,
-                                                 end_time: session.endTime!,
-                                                 contribute: session.contribute,
-                                                 is_indoor: session.isIndoor,
-                                                 notes: [],
-                                                 version: Int(session.version),
-                                                 streams: data,
-                                                 latitude: session.location?.latitude,
-                                                 longitude: session.location?.longitude)
+                                                           type: session.type,
+                                                           title: session.name!,
+                                                           tag_list: session.tags ?? "",
+                                                           start_time: session.startTime!,
+                                                           end_time: session.endTime ?? DateBuilder.getRawDate(),
+                                                           contribute: session.contribute,
+                                                           is_indoor: session.isIndoor,
+                                                           notes: notes.sorted(by: { $0.number < $1.number }),
+                                                           version: Int(session.version),
+                                                           streams: data,
+                                                           latitude: session.location?.latitude,
+                                                           longitude: session.location?.longitude)
         do {
             let encoder = JSONEncoder()
             let encodedData = try encoder.encode(sessionToPass)
@@ -68,21 +80,17 @@ class StreamRemoverDefault: StreamRemover {
             try authorization.authorise(request: &request)
             
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
-                guard let data = data, error == nil else { return }
-                let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
-                if let responseJSON = responseJSON as? [String: Any] {
                     completion()
-                }
             }
             task.resume()
         } catch {
-            Log.info("Error when trying to delete from database")
+            Log.info("Error when trying to update from database")
         }
     }
 }
 
-class StreamRemoverDefaultDummy: StreamRemover {
-    func deleteStreams(session: SessionEntity, completion: @escaping () -> Void) {
-        print("deletingStreams")
+class SessionUpdateServiceDefaultDummy: SessionUpdateService {
+    func updateSession(session: SessionEntity, completion: @escaping () -> Void) {
+        Log.info("updating session")
     }
 }

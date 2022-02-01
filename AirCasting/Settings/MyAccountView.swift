@@ -15,13 +15,13 @@ struct MyAccountView: View {
                 Spacer()
             }
         }
-        .navigationTitle(Strings.MyAccountSettings.title)
+        .navigationTitle(Strings.Commons.myAccount)
     }
 }
 
 
 private var loggedOutInformationLabel: some View {
-    Text(Strings.MyAccountSettings.logStatus)
+    Text(Strings.MyAccountSettings.notLogged)
         .foregroundColor(.aircastingGray)
         .padding()
 }

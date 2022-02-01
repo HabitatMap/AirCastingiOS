@@ -13,33 +13,70 @@ import CoreData
 struct AirMapView: View {
     @Environment(\.scenePhase) var scenePhase
     
+    @EnvironmentObject var locationTracker: LocationTracker
+    @EnvironmentObject var authorization: UserAuthenticationSession
+    @EnvironmentObject var userSettings: UserSettings
+    
     var thresholds: [SensorThreshold]
-    @StateObject var statsContainerViewModel: StatisticsContainerViewModel
-//    @StateObject var mapStatsDataSource: MapStatsDataSource
-    @ObservedObject var session: SessionEntity
-    @Binding var showLoadingIndicator: Bool
-    @State var isUserInteracting = true
-    @Binding var selectedStream: MeasurementStreamEntity?
+    let urlProvider: BaseURLProvider
     let sessionStoppableFactory: SessionStoppableFactory
     let measurementStreamStorage: MeasurementStreamStorage
     let sessionSynchronizer: SessionSynchronizer
+    
+    @StateObject var statsContainerViewModel: StatisticsContainerViewModel
+    @StateObject var mapNotesVM: MapNotesViewModel
+//  @StateObject var mapStatsDataSource: MapStatsDataSource
+    @ObservedObject var session: SessionEntity
+    @Binding var showLoadingIndicator: Bool
+    @Binding var selectedStream: MeasurementStreamEntity?
+    @State var isUserInteracting = true
+    @State var noteMarkerTapped = false
+    @State var noteNumber = 0
+    private let notesHandler: NotesHandler
+    
+    init(session: SessionEntity,
+         thresholds: [SensorThreshold],
+         urlProvider: BaseURLProvider,
+         sessionStoppableFactory: SessionStoppableFactory,
+         measurementStreamStorage: MeasurementStreamStorage,
+         sessionSynchronizer: SessionSynchronizer,
+         statsContainerViewModel: StateObject<StatisticsContainerViewModel>,
+         notesHandler: NotesHandler,
+         showLoadingIndicator: Binding<Bool>,
+         selectedStream: Binding<MeasurementStreamEntity?>) {
+        self.session = session
+        self.thresholds = thresholds
+        self.urlProvider = urlProvider
+        self.sessionStoppableFactory = sessionStoppableFactory
+        self.measurementStreamStorage = measurementStreamStorage
+        self.sessionSynchronizer = sessionSynchronizer
+        self._statsContainerViewModel = statsContainerViewModel
+        self.notesHandler = notesHandler
+        self._mapNotesVM = .init(wrappedValue: .init(notesHandler: notesHandler))
+        self._showLoadingIndicator = showLoadingIndicator
+        self._selectedStream = selectedStream
+    }
     
     private var pathPoints: [PathPoint] {
         return selectedStream?.allMeasurements?.compactMap {
             #warning("TODO: Do something with no location points")
             guard let location = $0.location else { return nil }
-            return PathPoint(location: location, measurementTime: $0.time, measurement: $0.value)
+            return PathPoint(location: location, measurementTime: $0.time, measurement: getValue(of: $0))
         } ?? []
     }
 
     var body: some View {
-        VStack(alignment: .trailing, spacing: 20) {
+        VStack(alignment: .trailing) {
                 SessionHeaderView(action: {},
                                   isExpandButtonNeeded: false,
                                   isSensorTypeNeeded: false,
                                   isCollapsed: Binding.constant(false),
+                                  urlProvider: urlProvider,
                                   session: session,
-                                  sessionStopperFactory: sessionStoppableFactory, measurementStreamStorage: measurementStreamStorage, sessionSynchronizer: sessionSynchronizer)
+                                  sessionStopperFactory: sessionStoppableFactory,
+                                  measurementStreamStorage: measurementStreamStorage,
+                                  sessionSynchronizer: sessionSynchronizer)
+                .padding([.bottom, .leading, .trailing])
             
             ABMeasurementsView(session: session,
                                isCollapsed: Binding.constant(false),
@@ -47,9 +84,9 @@ struct AirMapView: View {
                                thresholds: thresholds, measurementPresentationStyle: .showValues,
                                viewModel:  DefaultSyncingMeasurementsViewModel(measurementStreamStorage: measurementStreamStorage,
                                                                                sessionDownloader: SessionDownloadService(client: URLSession.shared,
-                                                                                authorization: UserAuthenticationSession(),
-                                                                                responseValidator: DefaultHTTPResponseValidator()),
+                                                                                                                         authorization: UserAuthenticationSession(), responseValidator: DefaultHTTPResponseValidator(), urlProvider: urlProvider),
                                                                                 session: session))
+                .padding([.bottom, .leading, .trailing])
 
             if let threshold = thresholds.threshold(for: selectedStream) {
                 if !showLoadingIndicator {
@@ -59,7 +96,10 @@ struct AirMapView: View {
                                       placePickerDismissed: Binding.constant(false),
                                       isUserInteracting: $isUserInteracting,
                                       isSessionActive: session.isActive,
-                                      isSessionFixed: session.isFixed)
+                                      isSessionFixed: session.isFixed,
+                                      noteMarketTapped: $noteMarkerTapped,
+                                      noteNumber: $noteNumber,
+                                      mapNotes: $mapNotesVM.notes)
                         #warning("TODO: Implement calculating stats only for visible path points")
                         // This doesn't work properly and it needs to be fixed, so I'm commenting it out
 //                            .onPositionChange { [weak mapStatsDataSource, weak statsContainerViewModel] visiblePoints in
@@ -71,20 +111,28 @@ struct AirMapView: View {
                             StatisticsContainerView(statsContainerViewModel: statsContainerViewModel,
                                                     threshold: threshold)
                         }
-                    }
+                    }.padding(.bottom)
+                    
                     if let selectedStream = selectedStream {
-                        NavigationLink(destination: ThresholdsSettingsView(thresholdValues: threshold.rawThresholdsBinding, initialThresholds: selectedStream.thresholds)) {
+                        NavigationLink(destination: ThresholdsSettingsView(thresholdValues: threshold.thresholdsBinding,
+                                                                           initialThresholds: selectedStream.thresholds)) {
                             EditButtonView()
-                        }
+                        }.padding([.bottom, .leading, .trailing])
                     }
                     ThresholdsSliderView(threshold: threshold)
                         // Fixes labels covered by tabbar
-                        .padding(.bottom)
-                } else {
-                    Spacer()
+                        .padding([.bottom, .leading, .trailing])
                 }
             }
+            Spacer()
         }
+        .sheet(isPresented: $noteMarkerTapped, content: {
+            EditNoteView(viewModel: EditNoteViewModelDefault(exitRoute: {
+                noteMarkerTapped.toggle()
+            },
+                                                             noteNumber: noteNumber,
+                                                             notesHandler: notesHandler))
+        })
         .navigationBarTitleDisplayMode(.inline)
 //        .onChange(of: selectedStream) { newStream in
 //            mapStatsDataSource.visiblePathPoints = pathPoints
@@ -97,26 +145,10 @@ struct AirMapView: View {
             @unknown default: fatalError()
             }
         }
-        .padding([.bottom, .leading, .trailing])
+        .padding(.bottom)
+    }
+    
+    private func getValue(of measurement: MeasurementEntity) -> Double {
+        measurement.measurementStream.isTemperature && userSettings.convertToCelsius ? TemperatureConverter.calculateCelsius(fahrenheit: measurement.value) : measurement.value
     }
 }
-
-#if DEBUG
-struct Map_Previews: PreviewProvider {
-    static var previews: some View {
-        AirMapView(thresholds: [SensorThreshold.mock],
-                   statsContainerViewModel: StatisticsContainerViewModel(statsInput: MeasurementsStatisticsInputMock()),
-//                   mapStatsDataSource: MapStatsDataSource(),
-                   session: .mock,
-                   showLoadingIndicator: .constant(true),
-                   selectedStream: .constant(nil),
-                   sessionStoppableFactory: SessionStoppableFactoryDummy(),
-                   measurementStreamStorage: PreviewMeasurementStreamStorage(),
-                   sessionSynchronizer: DummySessionSynchronizer())
-    }
-}
-
-struct MeasurementsStatisticsInputMock: MeasurementsStatisticsInput {
-    func computeStatistics() { }
-}
-#endif

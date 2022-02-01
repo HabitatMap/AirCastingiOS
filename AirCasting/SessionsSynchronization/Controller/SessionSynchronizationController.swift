@@ -30,6 +30,7 @@ final class SessionSynchronizationController: SessionSynchronizer {
         self.upstream = upstream
         self.store = store
     }
+    
     func triggerSynchronization(options: SessionSynchronizationOptions, completion: (() -> Void)?) {
         lock.lock(); defer { lock.unlock() }
         if syncInProgress.value { return }
@@ -59,6 +60,17 @@ final class SessionSynchronizationController: SessionSynchronizer {
         Log.info("[SYNC] Forced stopping synchronization")
         cancellables = []
     }
+    
+    // MARK: - SingleSessionSynchronizer
+    func downloadSingleSession(sessionUUID: SessionUUID, completion: @escaping () -> Void) {
+        processDownloads(context: .init(needToBeDownloaded: [sessionUUID], needToBeUploaded: [], removed: []))
+            .sink { _ in
+                completion()
+            } receiveValue: { _ in }
+            .store(in: &cancellables)
+    }
+    
+    // MARK: - Private
     
     private func translateError(streamError: Error) -> SessionSynchronizerError {
         if let urlError = streamError as? URLError, urlError.code == URLError.Code.notConnectedToInternet {
@@ -152,6 +164,7 @@ final class SessionSynchronizationController: SessionSynchronizer {
                     .upload(session: uploadData)
                     .onError({ _ in self.errorStream?.handleSyncError(.uploadFailure(uploadData.uuid)) })
                     .filterError(self.isConnectionError(_:))
+                    .flatMap { self.store.saveURLForSession(uuid: uploadData.uuid, url: $0.location) }
                     .logError(message: "[SYNC] Uploading session failed")
             }
             .eraseToAnyPublisher()

@@ -55,13 +55,12 @@ final class CreateSessionAPIServiceTests: XCTestCase {
         XCTAssertEqual(request.allHTTPHeaderFields, ["Accept": "application/json", "Content-Type": "application/json"])
 
         let encoder: JSONEncoder = JSONEncoder()
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        let formatter = DateFormatters.CreateSessionAPIService.encoderDateFormatter
         encoder.dateEncodingStrategy = .formatted(formatter)
 
         let inputJSONData = try encoder.encode(sampleInput.session)
         let gzippedData = try inputJSONData.gzipped()
-        let sessionBase64String = gzippedData.base64EncodedString()
+        let sessionBase64String = gzippedData.base64EncodedString(options: [.lineLength76Characters, .endLineWithLineFeed])
 
         let apiInput = APIInput(session: sessionBase64String, compression: sampleInput.compression)
         XCTAssertEqual(try JSONDecoder().decode(APIInput.self, from: httpBody), apiInput)

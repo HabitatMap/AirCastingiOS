@@ -39,6 +39,7 @@ struct _ABMeasurementsView: View {
     let measurementPresentationStyle: MeasurementPresentationStyle
     
     @EnvironmentObject var selectedSection: SelectSection
+    @EnvironmentObject var userSettings: UserSettings
     
     private var streamsToShow: [MeasurementStreamEntity] {
         return session.sortedStreams ?? []
@@ -70,7 +71,10 @@ struct _ABMeasurementsView: View {
                 }
             } else {
                 if session.isFollowed {
-                    SessionLoadingView()
+                    HStack {
+                        SessionLoadingView()
+                        Spacer()
+                    }
                 } else {
                     VStack(alignment: .leading, spacing: 8) {
                         measurementsTitle

@@ -40,8 +40,9 @@ final class MicrophoneSessionCreator: SessionCreator {
                               name: sessionContext.sessionName,
                               deviceType: sessionContext.deviceType,
                               location: startingLocation,
-                              startTime: Date().currentUTCTimeZoneDate,
-                              contribute: contribute)
+                              startTime: DateBuilder.getFakeUTCDate(),
+                              contribute: contribute,
+                              locationless: sessionContext.locationless)
 
         do {
             try microphoneManager.startRecording(session: session)
@@ -70,7 +71,9 @@ final class MobilePeripheralSessionCreator: SessionCreator {
     func createSession(_ sessionContext: CreateSessionContext, completion: @escaping (Result<Void, Error>) -> Void) {
         guard let sessionType = sessionContext.sessionType,
               let sessionUUID = sessionContext.sessionUUID,
-              let startingLocation = sessionContext.startingLocation else {
+              let startingLocation = sessionContext.startingLocation,
+              let contribute = sessionContext.contribute
+        else {
             assertionFailure("invalidCreateSessionContext \(sessionContext)")
             completion(.failure(MobilePeripheralSessionCreatorError.invalidCreateSessionContext(sessionContext)))
             return
@@ -80,7 +83,9 @@ final class MobilePeripheralSessionCreator: SessionCreator {
                               name: sessionContext.sessionName,
                               deviceType: sessionContext.deviceType,
                               location: startingLocation,
-                              startTime: Date().currentUTCTimeZoneDate,
+                              startTime: DateBuilder.getFakeUTCDate(),
+                              contribute: contribute,
+                              locationless: sessionContext.locationless,
                               tags: sessionContext.sessionTags,
                               status: .NEW)
         do {

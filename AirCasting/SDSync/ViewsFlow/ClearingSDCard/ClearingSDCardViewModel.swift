@@ -55,6 +55,7 @@ class ClearingSDCardViewModelDefault: ClearingSDCardViewModel, ObservableObject 
                 return
             }
             self.sdSyncController.clearSDCard(self.peripheral) { result in
+                self.airBeamConnectionController.disconnectAirBeam(peripheral: self.peripheral)
                 DispatchQueue.main.async {
                     self.isClearingCompletedValue = result
                     self.presentNextScreen = result

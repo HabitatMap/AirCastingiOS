@@ -7,7 +7,7 @@ extension Alert {
     static var offlineAlert: Alert {
         Alert(title: Text(Strings.OfflineAlert.title),
               message: Text(Strings.OfflineAlert.message),
-              dismissButton: .default(Text(Strings.OfflineAlert.dismissTitle)))
+              dismissButton: .default(Text(Strings.Commons.ok)))
     }
 }
 

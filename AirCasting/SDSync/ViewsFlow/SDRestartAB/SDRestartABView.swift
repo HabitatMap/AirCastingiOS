@@ -54,7 +54,7 @@ extension SDRestartABView {
         Button {
             viewModel.continueSyncFlow()
         } label: {
-            Text(Strings.ABConnectedView.continueButton)
+            Text(Strings.Commons.continue)
         }.buttonStyle(BlueButtonStyle())
     }
 

@@ -11,7 +11,7 @@ import Combine
 /// 2. Diff them against upstream database
 /// 3. Download/Upload/Delete accordingly (this interface)
 protocol SessionUpstream {
-    func upload(session: SessionsSynchronization.SessionUpstreamData) -> Future<Void, Error>
+    func upload(session: SessionsSynchronization.SessionUpstreamData) -> Future<SessionsSynchronization.SessionUpstreamResult, Error>
 }
 
 // MARK: Data structures
@@ -21,7 +21,7 @@ extension SessionsSynchronization {
         let uuid: SessionUUID
         let type: String
         let title: String
-        let notes: [String]
+        let notes: [NoteUpstreamData]
         let tagList: String
         let startTime: Date
         let endTime: Date?
@@ -32,6 +32,10 @@ extension SessionsSynchronization {
         let latitude: Double?
         let longitude: Double?
         let deleted: Bool
+    }
+    
+    struct SessionUpstreamResult: Equatable, Codable {
+        let location: String
     }
     
     struct MeasurementStreamUpstreamData: Equatable, Codable {
@@ -56,5 +60,13 @@ extension SessionsSynchronization {
         let latitude: Double?
         let longitude: Double?
         let time: Date
+    }
+    
+    struct NoteUpstreamData: Equatable, Codable {
+        let date: Date
+        let text: String
+        let latitude: Double
+        let longitude: Double
+        let number: Int
     }
 }

@@ -7,7 +7,7 @@ import Combine
 class DefaultDeleteSessionViewModel: DeleteSessionViewModel {
     private let measurementStreamStorage: MeasurementStreamStorage
     private var session: SessionEntity
-    private let streamRemover: StreamRemover
+    private let streamRemover: SessionUpdateService
     private let sessionSynchronizer: SessionSynchronizer
     @Published var showingConfirmationAlert: Bool = false
     
@@ -33,7 +33,7 @@ class DefaultDeleteSessionViewModel: DeleteSessionViewModel {
         return arrayOfContent
     }
     
-    init(session: SessionEntity, measurementStreamStorage: MeasurementStreamStorage, streamRemover: StreamRemover, sessionSynchronizer: SessionSynchronizer) {
+    init(session: SessionEntity, measurementStreamStorage: MeasurementStreamStorage, streamRemover: SessionUpdateService, sessionSynchronizer: SessionSynchronizer) {
         self.measurementStreamStorage = measurementStreamStorage
         self.session = session
         self.streamRemover = streamRemover
@@ -98,7 +98,7 @@ class DefaultDeleteSessionViewModel: DeleteSessionViewModel {
     private func processStreamDeleting() {
         self.measurementStreamStorage.accessStorage { [self] storage in
             guard let sessionToPass = try? storage.getExistingSession(with: session.uuid) else { return }
-            streamRemover.deleteStreams(session: sessionToPass) {
+            streamRemover.updateSession(session: sessionToPass) {
                 try? storage.deleteStreams(session.uuid)
             }
         }

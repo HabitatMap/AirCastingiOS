@@ -25,6 +25,14 @@ struct SynchronizationDataConverter {
                 measurements: []
             )
          }
+        let notes = download.notes.map { note in
+            SessionsSynchronization.SessionStoreNotesData(
+                date: note.date,
+                text: note.text,
+                latitude: note.latitude,
+                longitude: note.longitude,
+                number: note.number)
+        }
         return .init(uuid: download.uuid,
                      contribute: download.contribute,
                      endTime: download.endTime,
@@ -39,15 +47,15 @@ struct SynchronizationDataConverter {
                      latitude: download.latitude,
                      sessionType: download.type,
                      measurementStreams: measurements,
-                     deleted: false)
+                     deleted: false,
+                     notes: notes)
     }
     
     func convertSessionToUploadData(_ session: SessionsSynchronization.SessionStoreSessionData) -> SessionsSynchronization.SessionUpstreamData {
         return .init(uuid: session.uuid,
                      type: session.sessionType,
                      title: session.name,
-                     // TODO: Notes implementation in the future would require this to be synced
-                     notes: [],
+                     notes: convertDatabaseNotesToMetadata(session.notes).sorted(by: { $0.number < $1.number }),
                      tagList: session.tags ?? "",
                      startTime: session.startTime,
                      endTime: session.endTime,
@@ -60,6 +68,16 @@ struct SynchronizationDataConverter {
                      latitude: session.latitude,
                      longitude: session.longitude,
                      deleted: session.gotDeleted)
+    }
+    
+    func convertDatabaseNotesToMetadata(_ notes: [SessionsSynchronization.SessionStoreNotesData]) -> [SessionsSynchronization.NoteUpstreamData] {
+        notes.map { note in
+            SessionsSynchronization.NoteUpstreamData(date: note.date,
+                                                     text: note.text,
+                                                     latitude: note.latitude,
+                                                     longitude: note.longitude,
+                                                     number: note.number)
+        }
     }
     
     func convertDatabaseSessionToMetadata(_ entity: Database.Session) -> SessionsSynchronization.Metadata {
@@ -116,6 +134,15 @@ struct SynchronizationDataConverter {
                                                                                                                                     longitude: $0.longitude)
                                                                              })
         }
+        
+        let notes = entity.notes?.map { note -> SessionsSynchronization.SessionStoreNotesData in
+            return .init(date: note.date,
+                         text: note.text,
+                         latitude: note.latitude,
+                         longitude: note.longitude,
+                         number: note.number)
+        }
+        
         return SessionsSynchronization.SessionStoreSessionData(uuid: entity.uuid,
                                                                contribute: entity.contribute,
                                                                endTime: entity.endTime,
@@ -130,7 +157,8 @@ struct SynchronizationDataConverter {
                                                                latitude: entity.location?.latitude,
                                                                sessionType: entity.type.rawValue,
                                                                measurementStreams: measurements ?? [],
-                                                               deleted: entity.gotDeleted)
+                                                               deleted: entity.gotDeleted,
+                                                               notes: notes ?? [])
     }
     
     func convertDownloadDataToDatabaseStream(data: SessionsSynchronization.MeasurementStreamDownstreamData) -> SessionsSynchronization.SessionStoreMeasurementStreamData {
