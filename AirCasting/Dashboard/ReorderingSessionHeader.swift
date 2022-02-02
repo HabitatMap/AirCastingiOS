@@ -18,7 +18,7 @@ private extension ReorderingSessionHeader {
                 dateAndTime
                     .foregroundColor(Color.aircastingTimeGray)
                 Spacer()
-                Image(systemName: "chevron.up.chevron.down")
+                Image("draggable-icon")
             }
             nameLabel
         }

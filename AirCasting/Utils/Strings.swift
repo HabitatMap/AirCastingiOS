@@ -490,10 +490,12 @@ struct Strings {
         static let settingsIcon: String = "settings"
         static let settingsBlueIcon: String = "bluesettings"
         static let loggingOut: String = "Logging out, please wait..."
+        static let finished: String = NSLocalizedString("Finished", comment: "")
     }
 
     enum DashboardView {
         static let dashboardText: String = "Dashboard"
+        static let following: String = NSLocalizedString("Following", comment: "")
     }
 
     enum RefreshControl {

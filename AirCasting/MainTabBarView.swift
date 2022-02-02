@@ -103,7 +103,7 @@ private extension MainTabBarView {
             .tag(TabBarSelection.Tab.dashboard)
             .overlay(
                 Group{
-                    if !reorderButton.reorderIsON && sessions.count > 1 && selectedSection.selectedSection == .following {
+                    if sessions.count > 1 && selectedSection.selectedSection == .following {
                         reorderingButton
                     }
                 },
@@ -139,13 +139,35 @@ private extension MainTabBarView {
     }
     
     private var reorderingButton: some View {
-        Button {
-            reorderButton.reorderIsON = true
-        } label: {
-            Image("draggable-icon")
-                .frame(width: 50, height: 50)
-                .imageScale(.large)
-        }.offset(x: 0, y: 50)
+        Group {
+            if !reorderButton.reorderIsON {
+                Button {
+                    reorderButton.reorderIsON = true
+                } label: {
+                    Image("draggable-icon")
+                        .frame(width: 60, height: 60)
+                        .imageScale(.large)
+                }
+                .offset(CGSize(width: 0.0, height: 42.0))
+            } else {
+                ZStack {
+                    Rectangle()
+                        .frame(width: 85, height: 35)
+                        .cornerRadius(15)
+                        .foregroundColor(.accentColor)
+                        .opacity(0.1)
+                    Button {
+                        reorderButton.reorderIsON = false
+                    } label: {
+                        Text(Strings.MainTabBarView.finished)
+                            .font(Fonts.muliHeading2)
+                            .bold()
+                    }
+                }
+                .padding()
+                .offset(CGSize(width: 0.0, height: 40.0))
+            }
+        }
     }
 }
 

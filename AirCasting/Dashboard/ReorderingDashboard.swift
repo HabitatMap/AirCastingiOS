@@ -14,9 +14,6 @@ struct ReorderingDashboard: View {
     let columns = [GridItem(.flexible())]
     
     var body: some View {
-        Button("Finish") {
-            viewModel.finish()
-        }
         ScrollView {
             LazyVGrid(columns: columns) {
                 ForEach(viewModel.sessions) { session in
@@ -35,6 +32,10 @@ struct ReorderingDashboard: View {
         .navigationBarTitle("Reordering")
         .background(Color.clear.edgesIgnoringSafeArea(.all)) // this is added to avoid session card staying 0.8 opaque when user drops card on the edges
         .onDrop(of: [.text], delegate: DropOutsideOfGridDelegate(currentSession: $viewModel.currentSession))
+        .onDisappear() {
+            // We need to wait for the order to change before going back
+            viewModel.finish()
+        }
     }
 }
 
