@@ -4,10 +4,8 @@
 //
 //  Created by Lunar on 23/02/2021.
 //
-
 import SwiftUI
 import AirCastingStyling
-
 
 struct CreateAccountView: View {
     
@@ -99,28 +97,28 @@ private extension CreateAccountView {
     
     var titleLabel: some View {
         VStack(alignment: .leading, spacing: 15) {
-            Text("Create account")
+            Text(Strings.CreateAccountView.createTitle_1)
                 .font(Fonts.boldTitle1)
                 .foregroundColor(.accentColor)
-            Text("to record and map your environment")
+            Text(Strings.CreateAccountView.createTitle_2)
                 .font(Fonts.muliHeading2)
                 .foregroundColor(.aircastingGray)
         }
     }
     
     var emailTextfield: some View {
-        createTextfield(placeholder: "Email",
+        createTextfield(placeholder: Strings.CreateAccountView.email,
                         binding: $email)
             .autocapitalization(.none)
     }
     
     var usernameTextfield: some View {
-        createTextfield(placeholder: "Profile name",
+        createTextfield(placeholder: Strings.CreateAccountView.profile,
                         binding: $username)
             .autocapitalization(.none)
     }
     var passwordTextfield: some View {
-        SecureField("Password", text: $password)
+        SecureField(Strings.CreateAccountView.password, text: $password)
             .padding()
             .autocapitalization(.none)
             .disableAutocorrection(true)
@@ -130,7 +128,7 @@ private extension CreateAccountView {
     }
     
     var createAccountButton: some View {
-        Button("Continue") {
+        Button(Strings.Commons.continue) {
             checkIfUserInputIsCorrect()
             // Hiding keyboard prevents from double displaying alert
             UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
@@ -174,11 +172,11 @@ private extension CreateAccountView {
     }
     
     var signingButtonText: some View {
-        Text("Already have an account? ")
+        Text(Strings.CreateAccountView.signIn_1)
             .font(Fonts.muliHeading2)
             .foregroundColor(.aircastingGray)
             
-            + Text("Sign in")
+        + Text(Strings.CreateAccountView.signIn_2)
             .font(Fonts.boldHeading2)
             .foregroundColor(.accentColor)
     }
@@ -190,21 +188,20 @@ private extension CreateAccountView {
     }
 
     func displayErrorAlert(error: AuthorizationError) -> Alert {
-        let title = NSLocalizedString("Cannot create account", comment: "Cannot create account alert title")
         switch error {
         case .emailTaken, .invalidCredentials, .usernameTaken:
-            return Alert(title: Text(title),
-                         message: Text("Email or profile name is already in use. Please try again."),
-                         dismissButton: .default(Text("Ok")))
+            return Alert(title: Text(Strings.CreateAccountView.takenAndOtherTitle),
+                         message: Text(error.localizedDescription),
+                         dismissButton: .default(Text(Strings.Commons.ok)))
 
         case .noConnection:
-            return Alert(title: Text("No Internet Connection"),
-                         message: Text("Please, make sure your device is connected to the internet."),
-                         dismissButton: .default(Text("Ok")))
-        case .other, .timeout:
-            return Alert(title: Text(title),
+            return Alert(title: Text(Strings.CreateAccountView.noInternetTitle),
                          message: Text(error.localizedDescription),
-                         dismissButton: .default(Text("Ok")))
+                         dismissButton: .default(Text(Strings.Commons.ok)))
+        case .other, .timeout:
+            return Alert(title: Text(Strings.CreateAccountView.takenAndOtherTitle),
+                         message: Text(error.localizedDescription),
+                         dismissButton: .default(Text(Strings.Commons.ok)))
         }
     }
 }

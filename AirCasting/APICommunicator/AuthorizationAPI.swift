@@ -44,13 +44,13 @@ enum AuthorizationError: Error, LocalizedError, Identifiable {
     var localizedDescription: String {
         switch self {
         case .other:
-            return NSLocalizedString("Unknown error occurred. Try again.", comment: "Unknown login message failure")
+            return Strings.AuthorizationAPI.otherError
         case .timeout:
-            return NSLocalizedString("It looks like the server is taking to long to respond. Try again later.", comment: "time out login message failure")
+            return Strings.AuthorizationAPI.timeoutError
         case .noConnection:
-            return NSLocalizedString("Please, make sure your device is connected to the internet.", comment: "connection failure login message failure")
+            return Strings.AuthorizationAPI.noConnectionError
         case .usernameTaken, .emailTaken, .invalidCredentials:
-            return NSLocalizedString("Email or profile name is already in use. Please try again.", comment: "connection failure login message failure")
+            return Strings.AuthorizationAPI.alreadyTakenError
         }
     }
     
