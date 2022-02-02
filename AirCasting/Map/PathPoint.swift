@@ -19,6 +19,7 @@ struct PathPoint: Equatable {
     let location: CLLocationCoordinate2D
     let measurementTime: Date
     var measurement: Double = 20
+    #warning("Do something with hard coded measurement")
 }
 
 extension PathPoint {
