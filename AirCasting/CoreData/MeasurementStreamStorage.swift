@@ -282,6 +282,37 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         }
     }
     
+    func updateSessionOrder(_ order: Int, for sessionUUID: SessionUUID) {
+        do {
+            let sessionEntity = try context.existingSession(uuid: sessionUUID)
+            sessionEntity.rowOrder = Int64(order)
+            try context.save()
+        } catch {
+            Log.error("Error when saving changes in session: \(error.localizedDescription)")
+        }
+    }
+    
+    func giveHighestOrder(to sessionUUID: SessionUUID) {
+        do {
+            let sessionEntity = try context.existingSession(uuid: sessionUUID)
+            let highestOrder = try context.getHighestRowOrder()
+            sessionEntity.rowOrder = (highestOrder ?? 0) + 1
+            try context.save()
+        } catch {
+            Log.error("Error when saving changes in session: \(error.localizedDescription)")
+        }
+    }
+    
+    func setOrderToZero(for sessionUUID: SessionUUID) {
+        do {
+            let sessionEntity = try context.existingSession(uuid: sessionUUID)
+            sessionEntity.rowOrder = 0
+            try context.save()
+        } catch {
+            Log.error("Error when saving changes in session: \(error.localizedDescription)")
+        }
+    }
+    
     func addNote(_ note: Note, for sessionUUID: SessionUUID) throws {
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
         let noteEntity = NoteEntity(context: context)

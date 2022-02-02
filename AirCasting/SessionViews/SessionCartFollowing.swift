@@ -34,6 +34,11 @@ extension SessionFollowing {
              let id = self.session.uuid!
              measurementStreamStorage.accessStorage { storage in
                  storage.updateSessionFollowing(newValue, for: id)
+                 if newValue == .following {
+                     storage.giveHighestOrder(to: id)
+                 } else {
+                     storage.setOrderToZero(for: id)
+                 }
              }
          }
      }

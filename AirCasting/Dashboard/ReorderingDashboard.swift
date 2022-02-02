@@ -14,6 +14,9 @@ struct ReorderingDashboard: View {
     let columns = [GridItem(.flexible())]
     
     var body: some View {
+        Button("Finish") {
+            viewModel.finish()
+        }
         ScrollView {
             LazyVGrid(columns: columns) {
                 ForEach(viewModel.sessions) { session in
@@ -34,8 +37,8 @@ struct ReorderingDashboard: View {
     }
 }
 
-struct ReorderingDashboard_Previews: PreviewProvider {
-    static var previews: some View {
-        ReorderingDashboard(viewModel: ReorderingDashboardViewModel(sessions: [.mock, .mock, .mock]), thresholds: [.mock, .mock], measurementStreamStorage: PreviewMeasurementStreamStorage(), urlProvider: DummyURLProvider())
-    }
-}
+//struct ReorderingDashboard_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ReorderingDashboard(viewModel: ReorderingDashboardViewModel(sessions: [.mock, .mock, .mock]), thresholds: [.mock, .mock], measurementStreamStorage: PreviewMeasurementStreamStorage(), urlProvider: DummyURLProvider())
+//    }
+//}

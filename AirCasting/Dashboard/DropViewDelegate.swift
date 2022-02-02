@@ -31,8 +31,8 @@ struct DropViewDelegate: DropDelegate {
     }
     
     func dropUpdated(info: DropInfo) -> DropProposal? {
-            return DropProposal(operation: .move)
-        }
+        return DropProposal(operation: .move)
+    }
     
     
     func performDrop(info: DropInfo) -> Bool {

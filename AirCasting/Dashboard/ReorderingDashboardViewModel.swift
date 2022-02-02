@@ -7,12 +7,18 @@ class ReorderingDashboardViewModel: ObservableObject {
     @Published var sessions: [SessionEntity]
     
     @Published var currentSession: SessionEntity?
+    private let measurementStreamStorage: MeasurementStreamStorage
     
-    init(sessions: [SessionEntity]) {
+    init(sessions: [SessionEntity], measurementStreamStorage: MeasurementStreamStorage) {
         self.sessions = sessions
+        self.measurementStreamStorage = measurementStreamStorage
     }
     
-    func deleteItems(at offsets: IndexSet) {
-        sessions.remove(atOffsets: offsets)
+    func finish() {
+        measurementStreamStorage.accessStorage { storage in
+            self.sessions.reversed().enumerated().forEach { index, session in
+                storage.updateSessionOrder(index + 1, for: session.uuid)
+            }
+        }
     }
 }

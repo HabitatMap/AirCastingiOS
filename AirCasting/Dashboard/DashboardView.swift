@@ -77,7 +77,7 @@ struct DashboardView: View {
             try! coreDataHook.setup(selectedSection: self.selectedSection.selectedSection)
         }
         .background(
-            NavigationLink(destination: ReorderingDashboard(viewModel: ReorderingDashboardViewModel(sessions: sessions), thresholds: Array(self.thresholds), measurementStreamStorage: measurementStreamStorage, urlProvider: urlProvider),
+            NavigationLink(destination: ReorderingDashboard(viewModel: ReorderingDashboardViewModel(sessions: sessions, measurementStreamStorage: measurementStreamStorage), thresholds: Array(self.thresholds), measurementStreamStorage: measurementStreamStorage, urlProvider: urlProvider),
                            isActive: $isReorderingButtonActive,
                            label: {EmptyView()})
         )
