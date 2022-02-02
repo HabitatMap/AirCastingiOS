@@ -5,6 +5,8 @@
 [![iOS 14.0](https://img.shields.io/badge/iOS-14.0-green.svg)](https://developer.apple.com/ios/)
 
 - [AirCasting](#aircasting)
+  * [Conventions](#conventions)
+    + [Marking technical debit](#tech-debit-marking)
   * [SwiftLint](#swiftlint)
   * [Fastlane](#fastlane)
     + [Beta](#beta)
@@ -12,6 +14,22 @@
     + [Release update](#release-update)
   * [Feature Flags](#feature-flags)
   
+## Conventions
+<a id="tech-debit-marking"></a>
+### Marking technical debit
+For potential bugs or severe code quality issues:
+1. Place warnings in places that can potentially cause a bug (or bugs), and are too big to resolve ad hoc.
+2. When placing a warning, add a comprehensive explanation of the issue in the comment. Also link the ticket from `3)` in this comment.
+3. Add a ticket to github issues section with correct tag:
+    + A "warning" tag for every warning related issue
+    + An "AirBeam needed" tag for issues that reuquire an AirBeam to resolve/reproduce
+
+For less severe stuff like minor code quality issues
+1. When the problem is not causing bug-level issues, but is too big to resolve ad hoc, add a `// FIXME:` marking in code and explain it **really well**, so that someone with more time that stumbles across this will be able to fully understand and refactor/fix. Also link the ticket from `2)` in this comment.
+2. Add a ticket to github issues section with correct tag:
+    * A "code quality" tag for quality issues
+    * An "AirBeam needed" tag for issues that reuquire an AirBeam to resolve/reproduce
+
 ## SwiftLint
 We use [swiftlint](https://github.com/realm/SwiftLint) to preserve clean code.
 Please, install it first using Homebrew: `brew install swiftlint`
