@@ -33,14 +33,8 @@ struct ReorderingDashboard: View {
         .background(Color.clear.edgesIgnoringSafeArea(.all)) // this is added to avoid session card staying 0.8 opaque when user drops card on the edges
         .onDrop(of: [.text], delegate: DropOutsideOfGridDelegate(currentSession: $viewModel.currentSession))
         .onDisappear() {
-            // We need to wait for the order to change before going back
+            //TODO: We need to wait for the order to change before going back??
             viewModel.finish()
         }
     }
 }
-
-//struct ReorderingDashboard_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ReorderingDashboard(viewModel: ReorderingDashboardViewModel(sessions: [.mock, .mock, .mock]), thresholds: [.mock, .mock], measurementStreamStorage: PreviewMeasurementStreamStorage(), urlProvider: DummyURLProvider())
-//    }
-//}

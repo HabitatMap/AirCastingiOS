@@ -18,7 +18,6 @@ struct DashboardView: View {
     @EnvironmentObject var userSettings: UserSettings
     @EnvironmentObject var reorderButton: ReorderButtonTapped
     @State var isRefreshing: Bool = false
-    @State var isReorderingButtonActive: Bool = false
     private let urlProvider: BaseURLProvider
     private let measurementStreamStorage: MeasurementStreamStorage
     private let sessionStoppableFactory: SessionStoppableFactory

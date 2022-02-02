@@ -14,9 +14,7 @@ struct ReoredringSessionCard: View {
     let urlProvider: BaseURLProvider
     
     var shouldShowValues: MeasurementPresentationStyle {
-        // We need to specify selectedSection to show values for fixed session only in following tab
-        let shouldHide = isCollapsed && ( (session.isFixed && selectedSection.selectedSection == SelectedSection.fixed) || session.isDormant)
-        return shouldHide ? .hideValues : .showValues
+        .showValues
     }
     
     var hasStreams: Bool {
@@ -86,11 +84,3 @@ private extension ReoredringSessionCard {
     
     
 }
-
-//#if DEBUG
-//struct ReoredringSessionCard_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ReoredringSessionCard(sessionName: "Test name")
-//    }
-//}
-//#endif
