@@ -102,18 +102,13 @@ private extension MainTabBarView {
             }
             .tag(TabBarSelection.Tab.dashboard)
             .overlay(
-                Button {
-                    reorderButton.reorderIsON = true
-                } label: {
-                    if sessions.count > 1 && selectedSection.selectedSection == .following {
-                        Image("draggable-icon")
-                            .frame(width: 50, height: 50)
-                            .imageScale(.large)
-                    } else {
-                        EmptyView()
+                Group{
+                    if !reorderButton.reorderIsON && sessions.count > 1 && selectedSection.selectedSection == .following {
+                        reorderingButton
                     }
-                }.offset(x: 0, y: 50)
-                ,alignment: .topTrailing)
+                },
+                alignment: .topTrailing
+            )
     }
     
     private var createSessionTab: some View {
@@ -141,6 +136,16 @@ private extension MainTabBarView {
                 Image(settingsImage)
             }
             .tag(TabBarSelection.Tab.settings)
+    }
+    
+    private var reorderingButton: some View {
+        Button {
+            reorderButton.reorderIsON = true
+        } label: {
+            Image("draggable-icon")
+                .frame(width: 50, height: 50)
+                .imageScale(.large)
+        }.offset(x: 0, y: 50)
     }
 }
 

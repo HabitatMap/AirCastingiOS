@@ -141,16 +141,6 @@ struct DashboardView: View {
         .frame(maxWidth: .infinity)
         .background(Color.aircastingGray.opacity(0.05))
     }
-    
-    private var reorderButton2: some View {
-        Button(action: {
-            isReorderingButtonActive = true
-            Log.info("HELLO")
-        }, label: {
-            Image("draggable-icon")
-                .imageScale(.large)
-        })
-    }
 
     private func onCurrentSyncEnd(_ completion: @escaping () -> Void) {
         guard sessionSynchronizer.syncInProgress.value else { completion(); return }
