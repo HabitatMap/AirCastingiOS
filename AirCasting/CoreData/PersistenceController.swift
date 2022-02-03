@@ -21,8 +21,14 @@ class PersistenceController: ObservableObject {
         didSet {
             Log.info("UI updates \(uiSuspended ? "suspended" : "resumed")")
             
-            if !uiSuspended { propagateChangesToUI() }
-            NotificationCenter.default.post(name: uiSuspended ? Self.uiDidSuspendNotificationName : Self.uiDidResumeNotificationName, object: self)
+            if !uiSuspended {
+                propagateChangesToUI() {
+                    NotificationCenter.default.post(name: Self.uiDidResumeNotificationName, object: self)
+                }
+            } else {
+                NotificationCenter.default.post(name: Self.uiDidSuspendNotificationName, object: self)
+            }
+            
         }
     }
     
@@ -97,13 +103,14 @@ class PersistenceController: ObservableObject {
         saveMainContext()
     }
     
-    private func propagateChangesToUI() {
-        saveMainContext()
+    private func propagateChangesToUI(completion: (()->Void)? = nil) {
+        saveMainContext(completion: completion)
     }
     
-    private func saveMainContext() {
+    private func saveMainContext(completion: (()->Void)? = nil) {
         sourceOfTruthContext.perform {
             try! self.sourceOfTruthContext.save()
+            completion?()
         }
     }
 
