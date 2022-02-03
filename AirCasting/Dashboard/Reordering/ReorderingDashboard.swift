@@ -18,22 +18,21 @@ struct ReorderingDashboard: View {
             LazyVGrid(columns: columns) {
                 ForEach(viewModel.sessions) { session in
                     ReoredringSessionCard(session: session, thresholds: thresholds, measurementStreamStorage: measurementStreamStorage, urlProvider: urlProvider)
-                        .overlay(viewModel.currentSession == session && changedView ? Color.white.opacity(0.8) : Color.clear)
+                        .overlay(viewModel.currentlyDraggedSession == session && changedView ? Color.white.opacity(0.8) : Color.clear)
                         .onDrag({
-                            viewModel.currentSession = session
+                            viewModel.currentlyDraggedSession = session
                             changedView = false
                             return NSItemProvider(object: String(describing: session.uuid) as NSString)
                         })
-                        .onDrop(of: [.text], delegate: DropViewDelegate(session: session, currentSession: $viewModel.currentSession, sessions: $viewModel.sessions, changedView: $changedView))
+                        .onDrop(of: [.text], delegate: DropViewDelegate(sessionAtDropDestination: session, currentlyDraggedSession: $viewModel.currentlyDraggedSession, sessions: $viewModel.sessions, changedView: $changedView))
                 }
             }
             .padding()
         }
         .navigationBarTitle("Reordering")
         .background(Color.clear.edgesIgnoringSafeArea(.all)) // this is added to avoid session card staying 0.8 opaque when user drops card on the edges
-        .onDrop(of: [.text], delegate: DropOutsideOfGridDelegate(currentSession: $viewModel.currentSession))
+        .onDrop(of: [.text], delegate: DropOutsideOfGridDelegate(currentlyDraggedSession: $viewModel.currentlyDraggedSession))
         .onDisappear() {
-            //TODO: We need to wait for the order to change before going back??
             viewModel.finish()
         }
     }

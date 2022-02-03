@@ -40,6 +40,7 @@
 		33BA336A266E4D1000899343 /* MobileSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33BA3369266E4D1000899343 /* MobileSession.swift */; };
 		33F20FDD27692231004364EA /* SyncedMeasurementsDownloadingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F20FDC27692231004364EA /* SyncedMeasurementsDownloadingService.swift */; };
 		33F2238A270C674E00F14909 /* TimeInterval.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F22389270C674E00F14909 /* TimeInterval.swift */; };
+		33F3D47C27AC1A5C003CA386 /* SessionTypeIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F3D47B27AC1A5C003CA386 /* SessionTypeIndicator.swift */; };
 		33FD502227A144B300162384 /* SingleMeasurementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33FD502127A144B300162384 /* SingleMeasurementView.swift */; };
 		4F15548B263C44AF00FF3208 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F15548A263C44AF00FF3208 /* Session.swift */; };
 		4F15548F263C819C00FF3208 /* MeasurementEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F15548E263C819C00FF3208 /* MeasurementEntity.swift */; };
@@ -418,6 +419,7 @@
 		33BA3369266E4D1000899343 /* MobileSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileSession.swift; sourceTree = "<group>"; };
 		33F20FDC27692231004364EA /* SyncedMeasurementsDownloadingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncedMeasurementsDownloadingService.swift; sourceTree = "<group>"; };
 		33F22389270C674E00F14909 /* TimeInterval.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeInterval.swift; sourceTree = "<group>"; };
+		33F3D47B27AC1A5C003CA386 /* SessionTypeIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionTypeIndicator.swift; sourceTree = "<group>"; };
 		33FD502127A144B300162384 /* SingleMeasurementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleMeasurementView.swift; sourceTree = "<group>"; };
 		3A54057326D27D23E9906704 /* Pods_AirCastingTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AirCastingTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4327910762891E7B1AE9102E /* Pods-AirCastingTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AirCastingTests.debug.xcconfig"; path = "Target Support Files/Pods-AirCastingTests/Pods-AirCastingTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -857,6 +859,18 @@
 			name = MobileSession;
 			sourceTree = "<group>";
 		};
+		33F3D47D27AC1A6A003CA386 /* Reordering */ = {
+			isa = PBXGroup;
+			children = (
+				336A909027A453FE00851100 /* ReorderingDashboard.swift */,
+				336A909227A4553000851100 /* ReoredringSessionCard.swift */,
+				336A909427A48CA400851100 /* ReorderingSessionHeader.swift */,
+				336A909627A492A000851100 /* DropViewDelegate.swift */,
+				336A909827A4946400851100 /* ReorderingDashboardViewModel.swift */,
+			);
+			path = Reordering;
+			sourceTree = "<group>";
+		};
 		4F858F4A2624A8120059271A /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -1261,11 +1275,8 @@
 				DDDBD48726D3BEC000EAA0A1 /* EmptyFixedDashboardView.swift */,
 				AC9F526B2652A360003CF61F /* AirSectionPickerView.swift */,
 				ACDF803726D62EB500584F55 /* EmptyDashboardButtonView.swift */,
-				336A909027A453FE00851100 /* ReorderingDashboard.swift */,
-				336A909227A4553000851100 /* ReoredringSessionCard.swift */,
-				336A909427A48CA400851100 /* ReorderingSessionHeader.swift */,
-				336A909627A492A000851100 /* DropViewDelegate.swift */,
-				336A909827A4946400851100 /* ReorderingDashboardViewModel.swift */,
+				33F3D47B27AC1A5C003CA386 /* SessionTypeIndicator.swift */,
+				33F3D47D27AC1A6A003CA386 /* Reordering */,
 			);
 			path = Dashboard;
 			sourceTree = "<group>";
@@ -2350,6 +2361,7 @@
 				DDBC156426A0799300982526 /* SystemSettings.swift in Sources */,
 				B3EBB10A26A06D11002BD81F /* EmailResetPasswordService.swift in Sources */,
 				4F945EEE2649F3F5008A5B22 /* SessionCreator.swift in Sources */,
+				33F3D47C27AC1A5C003CA386 /* SessionTypeIndicator.swift in Sources */,
 				4F945EF02649F455008A5B22 /* AirBeamFixedWifiSessionCreator.swift in Sources */,
 				B30BAC132694AA3200AE0476 /* MeasurementsStatisticsController.swift in Sources */,
 				DDC3E954275E4C3A0066A5DF /* SettingsViewModel.swift in Sources */,

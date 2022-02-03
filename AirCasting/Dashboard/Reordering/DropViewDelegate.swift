@@ -5,8 +5,8 @@ import SwiftUI
 
 struct DropViewDelegate: DropDelegate {
     
-    let session: SessionEntity
-    @Binding var currentSession: SessionEntity?
+    let sessionAtDropDestination: SessionEntity
+    @Binding var currentlyDraggedSession: SessionEntity?
     @Binding var sessions: [SessionEntity]
     @Binding var changedView: Bool
     
@@ -14,39 +14,35 @@ struct DropViewDelegate: DropDelegate {
         changedView = true
         
         let fromIndex = sessions.firstIndex { (session) -> Bool in
-            return session.uuid == currentSession?.uuid
+            return session.uuid == currentlyDraggedSession?.uuid
         } ?? 0
         
         let toIndex = sessions.firstIndex { (session) -> Bool in
-            return session.uuid == self.session.uuid
+            return session.uuid == sessionAtDropDestination.uuid
         } ?? 0
         
-        if fromIndex != toIndex {
-            withAnimation(.default) {
-                let fromPage = sessions[fromIndex]
-                sessions[fromIndex] = sessions[toIndex]
-                sessions[toIndex] = fromPage
-            }
-        }
+        guard fromIndex != toIndex else { return }
+        
+        withAnimation(.default) { sessions.swapAt(fromIndex, toIndex) }
     }
     
     func dropUpdated(info: DropInfo) -> DropProposal? {
-        return DropProposal(operation: .move)
+        DropProposal(operation: .move)
     }
     
     
     func performDrop(info: DropInfo) -> Bool {
-        currentSession = nil
+        currentlyDraggedSession = nil
         return true
     }
 }
 
 struct DropOutsideOfGridDelegate: DropDelegate {
     
-    @Binding var currentSession: SessionEntity?
+    @Binding var currentlyDraggedSession: SessionEntity?
     
     func performDrop(info: DropInfo) -> Bool {
-        currentSession = nil
+        currentlyDraggedSession = nil
         return true
     }
 }

@@ -6,7 +6,7 @@ import Foundation
 class ReorderingDashboardViewModel: ObservableObject {
     @Published var sessions: [SessionEntity]
     
-    @Published var currentSession: SessionEntity?
+    @Published var currentlyDraggedSession: SessionEntity?
     private let measurementStreamStorage: MeasurementStreamStorage
     
     init(sessions: [SessionEntity], measurementStreamStorage: MeasurementStreamStorage) {

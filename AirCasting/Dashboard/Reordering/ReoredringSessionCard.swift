@@ -80,7 +80,4 @@ private extension ReoredringSessionCard {
     func descriptionText(stream: MeasurementStreamEntity) -> some View {
         return Text("\(stream.session.isMobile ? Strings.SessionCartView.avgSessionMin : Strings.SessionCartView.avgSessionH) \(stream.unitSymbol ?? "")")
     }
-    
-    
-    
 }

@@ -44,28 +44,8 @@ private extension ReorderingSessionHeader {
     }
     
     var sensorType: some View {
-        var stream = [String]()
-        var text = ""
-        guard session.allStreams != nil else { return Text("") }
-        session.allStreams!.forEach { session in
-            if var name = session.sensorPackageName {
-                componentsSeparation(name: &name)
-                (name == "Builtin") ? (name = "Phone mic") : (name = name)
-                !stream.contains(name) ? stream.append(name) : nil
-            }
-        }
-        text = stream.joined(separator: ", ")
-        return Text("\(session.type!.description) : \(text)")
-    }
-    
-    func componentsSeparation(name: inout String) {
-        // separation is used to nicely handle the case where sensor could be
-        // AirBeam2-xxxx or AirBeam2:xxx
-        if name.contains(":") {
-            name = name.components(separatedBy: ":").first!
-        } else {
-            name = name.components(separatedBy: "-").first!
-        }
+        let allStreams = session.allStreams ?? []
+        return SessionTypeIndicator(sessionType: session.type, streamSensorNames: allStreams.compactMap(\.sensorPackageName))
     }
 
     func adaptTimeAndDate() -> Text {
@@ -78,7 +58,7 @@ private extension ReorderingSessionHeader {
         return Text(string)
     }
     
-    private func finishSessionAlertAction(sessionStopper: SessionStoppable) {
+    func finishSessionAlertAction(sessionStopper: SessionStoppable) {
         do {
             try sessionStopper.stopSession()
         } catch {
