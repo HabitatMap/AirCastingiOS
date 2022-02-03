@@ -7,7 +7,6 @@ import Resolver
 
 struct StandaloneSessionCardView: View {
     let session: SessionEntity
-    let sessionStopperFactory: SessionStoppableFactory
     @EnvironmentObject private var tabSelection: TabBarSelection
     @EnvironmentObject private var finishAndSyncButtonTapped: FinishAndSyncButtonTapped
     @Injected private var networkChecker: NetworkChecker
@@ -32,8 +31,7 @@ struct StandaloneSessionCardView: View {
             isExpandButtonNeeded: false,
             isMenuNeeded: false,
             isCollapsed: .constant(false),
-            session: session,
-            sessionStopperFactory: sessionStopperFactory)
+            session: session)
     }
 
     var content: some View {
@@ -67,7 +65,7 @@ struct StandaloneSessionCardView: View {
     var finishAndDontSyncButton: some View {
         Button(Strings.StandaloneSessionCardView.finishAndDontSyncButtonLabel) {
             alert = InAppAlerts.finishSessionAlert(sessionName: session.name) {
-                self.finishSessionAlertAction(sessionStopper: self.sessionStopperFactory.getSessionStopper(for: self.session))
+                self.finishSessionAlertAction()
             }
         }
         .foregroundColor(.accentColor)
@@ -78,7 +76,8 @@ struct StandaloneSessionCardView: View {
         tabSelection.selection = .createSession
     }
     
-    func finishSessionAlertAction(sessionStopper: SessionStoppable) {
+    func finishSessionAlertAction() {
+        let sessionStopper = Resolver.resolve(SessionStoppable.self, args: self.session)
         do {
             try sessionStopper.stopSession()
         } catch {

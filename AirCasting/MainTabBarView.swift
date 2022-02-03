@@ -15,7 +15,6 @@ struct MainTabBarView: View {
     @State var homeImage: String = HomeIcon.selected.string
     @State var settingsImage: String = SettingsIcon.unselected.string
     @State var plusImage: String = PlusIcon.unselected.string
-    let sessionStoppableFactory: SessionStoppableFactory
     @InjectedObject private var bluetoothManager: BluetoothManager
     @StateObject var tabSelection: TabBarSelection = TabBarSelection()
     @StateObject var selectedSection = SelectSection()
@@ -82,7 +81,7 @@ private extension MainTabBarView {
     // Tab Bar views
     private var dashboardTab: some View {
         NavigationView {
-            DashboardView(coreDataHook: coreDataHook, sessionStoppableFactory: sessionStoppableFactory)
+            DashboardView(coreDataHook: coreDataHook)
         }.navigationViewStyle(StackNavigationViewStyle())
             .tabItem {
                 Image(homeImage)

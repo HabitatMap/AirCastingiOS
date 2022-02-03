@@ -20,7 +20,6 @@ struct SessionHeaderView: View {
     @ObservedObject var session: SessionEntity
     @State private var showingNoConnectionAlert = false
     @State private var alert: AlertInfo?
-    let sessionStopperFactory: SessionStoppableFactory
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
     @State var showDeleteModal = false
     @State var showAddNoteModal = false
@@ -206,7 +205,7 @@ private extension SessionHeaderView {
     var actionsMenuStopButton: some View {
         Button {
             alert = InAppAlerts.finishSessionAlert(sessionName: session.name, action: {
-                self.finishSessionAlertAction(sessionStopper: self.sessionStopperFactory.getSessionStopper(for: self.session))
+                self.finishSessionAlertAction()
             })
         } label: {
             Label(Strings.SessionHeaderView.stopRecordingButton, systemImage: "stop.circle")
@@ -271,7 +270,8 @@ private extension SessionHeaderView {
         return Text(string)
     }
     
-    private func finishSessionAlertAction(sessionStopper: SessionStoppable) {
+    private func finishSessionAlertAction() {
+        let sessionStopper = Resolver.resolve(SessionStoppable.self, args: self.session)
         do {
             try sessionStopper.stopSession()
         } catch {

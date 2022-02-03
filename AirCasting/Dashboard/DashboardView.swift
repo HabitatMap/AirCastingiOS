@@ -18,7 +18,6 @@ struct DashboardView: View {
     @EnvironmentObject var selectedSection: SelectSection
     @Injected private var averaging: AveragingService
     @State var isRefreshing: Bool = false
-    private let sessionStoppableFactory: SessionStoppableFactory
     @Injected private var sessionSynchronizer: SessionSynchronizer
 
     private let dashboardCoordinateSpaceName = "dashboardCoordinateSpace"
@@ -27,12 +26,10 @@ struct DashboardView: View {
         coreDataHook.sessions
     }
 
-    init(coreDataHook: CoreDataHook,
-         sessionStoppableFactory: SessionStoppableFactory) {
+    init(coreDataHook: CoreDataHook) {
         let navBarAppearance = UINavigationBar.appearance()
         navBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(Color.darkBlue)]
         _coreDataHook = StateObject(wrappedValue: coreDataHook)
-        self.sessionStoppableFactory = sessionStoppableFactory
     }
 
     var body: some View {
@@ -111,8 +108,7 @@ struct DashboardView: View {
                         let viewModel = SessionCardViewModel(followingSetter: followingSetter)
                         SessionCardView(session: session,
                                         sessionCartViewModel: viewModel,
-                                        thresholds: thresholds,
-                                        sessionStoppableFactory: sessionStoppableFactory
+                                        thresholds: thresholds
                         )
                     }
                 }
