@@ -19,7 +19,9 @@ struct PathPoint: Equatable {
     let location: CLLocationCoordinate2D
     let measurementTime: Date
     var measurement: Double = 20
-    #warning("Do something with hard coded measurement")
+    #warning("Do something with hard coded measurement: https://github.com/HabitatMap/AirCastingiOS/issues/586")
+    // FIXME: PathPoints should not have hardcoded measurement, as it has now. It should only get any value, whenever the real measurement
+    // FIXME: appears in our app. Otherwise, it should not be considered getting any value, as it is now ( = 20).
 }
 
 extension PathPoint {
