@@ -35,7 +35,7 @@ struct ShareSessionView<VM: ShareSessionViewModel>: View {
         }
         .alert(item: $viewModel.alert, content: { $0.makeAlert() })
         .sheet(isPresented: $viewModel.showShareSheet, content: {
-            ActivityViewController(itemToShare: viewModel.sharingLink ?? URL(fileURLWithPath: "")) { activityType, completed, returnedItems, error in
+            ActivityViewController(isLocationless: false, itemToShare: viewModel.sharingLink!) { activityType, completed, returnedItems, error in
                 viewModel.sharingFinished()
             }
         })

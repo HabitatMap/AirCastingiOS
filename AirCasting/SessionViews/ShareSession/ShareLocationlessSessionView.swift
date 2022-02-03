@@ -24,7 +24,7 @@ struct ShareLocationlessSessionView: View {
             .padding()
             .alert(item: $viewModel.alert, content: { $0.makeAlert() })
             .sheet(isPresented: $viewModel.showShareSheet, content: {
-                ActivityViewController(itemToShare: viewModel.file ?? URL(fileURLWithPath: "")) { activityType, completed, returnedItems, error in
+                ActivityViewController(isLocationless: true, itemToShare: viewModel.file!) { activityType, completed, returnedItems, error in
                     viewModel.sharingFinished()
                 }
             })
