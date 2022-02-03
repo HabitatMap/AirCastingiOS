@@ -5,20 +5,11 @@ import SwiftUI
 import AirCastingStyling
 
 struct ReoredringSessionCard: View {
-    @State private var selectedStream: MeasurementStreamEntity?
     @ObservedObject var session: SessionEntity
-    @State private var isCollapsed = true
-    @EnvironmentObject var selectedSection: SelectSection
     let thresholds: [SensorThreshold]
-    let measurementStreamStorage: MeasurementStreamStorage
-    let urlProvider: BaseURLProvider
-    
-    var shouldShowValues: MeasurementPresentationStyle {
-        .showValues
-    }
     
     var hasStreams: Bool {
-        session.allStreams != nil || session.allStreams != []
+        session.allStreams != nil && session.allStreams != []
     }
     
     var body: some View {
@@ -34,12 +25,6 @@ struct ReoredringSessionCard: View {
                 SessionLoadingView()
             }
         }
-        .onAppear {
-            selectDefaultStreamIfNeeded(streams: session.sortedStreams ?? [])
-        }
-        .onChange(of: session.sortedStreams) { newValue in
-            selectDefaultStreamIfNeeded(streams: newValue ?? [])
-        }
         .font(Fonts.regularHeading4)
         .foregroundColor(.aircastingGray)
         .padding()
@@ -50,12 +35,6 @@ struct ReoredringSessionCard: View {
             }
         )
     }
-    
-    private func selectDefaultStreamIfNeeded(streams: [MeasurementStreamEntity]) {
-        if selectedStream == nil {
-            selectedStream = streams.first
-        }
-    }
 }
 
 private extension ReoredringSessionCard {
@@ -64,20 +43,24 @@ private extension ReoredringSessionCard {
     }
     
     private var measurements: some View {
-        _ABMeasurementsView(measurementsViewModel: DefaultSyncingMeasurementsViewModel(measurementStreamStorage: measurementStreamStorage,
-                                                                                       sessionDownloader: SessionDownloadService(client:URLSession.shared,
-                                                                                                                                 authorization: UserAuthenticationSession(),
-                                                                                                                                 responseValidator: DefaultHTTPResponseValidator(),
-                                                                                                                                 urlProvider: urlProvider),
-                                                                                       session: session),
-                            session: session,
-                            isCollapsed: $isCollapsed,
-                            selectedStream: $selectedStream,
-                            thresholds: thresholds,
-                            measurementPresentationStyle: shouldShowValues)
-    }
-    
-    func descriptionText(stream: MeasurementStreamEntity) -> some View {
-        return Text("\(stream.session.isMobile ? Strings.SessionCartView.avgSessionMin : Strings.SessionCartView.avgSessionH) \(stream.unitSymbol ?? "")")
+        VStack(alignment: .leading, spacing: 5) {
+            Text(Strings.SessionCart.lastMinuteMeasurement)
+                .font(Fonts.moderateTitle1)
+                .padding(.bottom, 3)
+            HStack {
+                session.sortedStreams!.count != 1 ? Spacer() : nil
+                ForEach(session.sortedStreams!.filter({ !$0.gotDeleted }), id : \.self) { stream in
+                    if let threshold = thresholds.threshold(for: stream) {
+                        SingleMeasurementView(stream: stream,
+                                              threshold: threshold,
+                                              selectedStream: .constant(nil),
+                                              isCollapsed: .constant(true),
+                                              measurementPresentationStyle: .showValues,
+                                              isDormant: session.isDormant)
+                    }
+                    Spacer()
+                }
+            }
+        }
     }
 }

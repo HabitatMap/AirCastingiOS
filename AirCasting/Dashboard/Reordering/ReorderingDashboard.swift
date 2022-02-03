@@ -8,16 +8,14 @@ struct ReorderingDashboard: View {
     @ObservedObject var viewModel: ReorderingDashboardViewModel
     @State private var changedView: Bool = false
     var thresholds: [SensorThreshold]
-    let measurementStreamStorage: MeasurementStreamStorage
-    let urlProvider: BaseURLProvider
     
-    let columns = [GridItem(.flexible())]
+    private let columns = [GridItem(.flexible())]
     
     var body: some View {
         ScrollView {
             LazyVGrid(columns: columns) {
                 ForEach(viewModel.sessions) { session in
-                    ReoredringSessionCard(session: session, thresholds: thresholds, measurementStreamStorage: measurementStreamStorage, urlProvider: urlProvider)
+                    ReoredringSessionCard(session: session, thresholds: thresholds)
                         .overlay(viewModel.currentlyDraggedSession == session && changedView ? Color.white.opacity(0.8) : Color.clear)
                         .onDrag({
                             viewModel.currentlyDraggedSession = session

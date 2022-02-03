@@ -53,7 +53,7 @@ struct DashboardView: View {
             PreventCollapseView()
             if reorderButton.reorderIsON {
                 followingTab
-                ReorderingDashboard(viewModel: ReorderingDashboardViewModel(sessions: sessions, measurementStreamStorage: measurementStreamStorage), thresholds: Array(self.thresholds), measurementStreamStorage: measurementStreamStorage, urlProvider: urlProvider)
+                ReorderingDashboard(viewModel: ReorderingDashboardViewModel(sessions: sessions, measurementStreamStorage: measurementStreamStorage), thresholds: Array(self.thresholds))
             } else {
                 sessionTypePicker
                 if sessions.isEmpty { emptySessionsView } else { sessionListView }

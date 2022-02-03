@@ -57,14 +57,6 @@ private extension ReorderingSessionHeader {
         let string = formatter.string(from: start, to: end)
         return Text(string)
     }
-    
-    func finishSessionAlertAction(sessionStopper: SessionStoppable) {
-        do {
-            try sessionStopper.stopSession()
-        } catch {
-            Log.info("error when stpoing session - \(error)")
-        }
-    }
 }
 
 struct ReorderingSessionHeader_Previews: PreviewProvider {
