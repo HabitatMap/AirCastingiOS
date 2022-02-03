@@ -9,10 +9,20 @@ import CoreData
 import SwiftUI
 
 class PersistenceController: ObservableObject {
+    static let uiWillSuspendNotificationName = NSNotification.Name("uiWillSuspendNotification")
+    static let uiWillResumeNotificationName = NSNotification.Name("uiWillResumeNotificationName")
+    static let uiDidSuspendNotificationName = NSNotification.Name("uiDidSuspendNotification")
+    static let uiDidResumeNotificationName = NSNotification.Name("uiDidResumeNotificationName")
+    
     var uiSuspended: Bool = false {
+        willSet {
+            NotificationCenter.default.post(name: newValue ? Self.uiWillSuspendNotificationName : Self.uiWillResumeNotificationName, object: self)
+        }
         didSet {
             Log.info("UI updates \(uiSuspended ? "suspended" : "resumed")")
+            
             if !uiSuspended { propagateChangesToUI() }
+            NotificationCenter.default.post(name: uiSuspended ? Self.uiDidSuspendNotificationName : Self.uiDidResumeNotificationName, object: self)
         }
     }
     
