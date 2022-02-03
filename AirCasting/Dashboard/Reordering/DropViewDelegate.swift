@@ -41,6 +41,10 @@ struct DropOutsideOfGridDelegate: DropDelegate {
     
     @Binding var currentlyDraggedSession: SessionEntity?
     
+    func dropUpdated(info: DropInfo) -> DropProposal? {
+        DropProposal(operation: .move)
+    }
+    
     func performDrop(info: DropInfo) -> Bool {
         currentlyDraggedSession = nil
         return true
