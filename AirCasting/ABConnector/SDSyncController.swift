@@ -25,7 +25,6 @@ enum SDCardSyncStatus {
     case finalizing
 }
 
-
 class SDSyncController {
     @Injected private var fileWriter: SDSyncFileWriter
     @Injected private var airbeamServices: SDCardAirBeamServices
