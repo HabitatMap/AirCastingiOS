@@ -58,9 +58,7 @@ final class ChartViewModel: ObservableObject {
 
     private func startTimers(_ session: SessionEntity) {
         let timeOfNextAverage = timeOfNextAverage()
-        Log.info("Next average for session \(session.name!) in: \(timeOfNextAverage)")
         firstTimer = Timer.scheduledTimer(withTimeInterval: TimeInterval(timeOfNextAverage), repeats: false) { [weak self] timer in
-            Log.info("First timer fired for session \(session.name!): \(Date())")
             self?.generateEntries()
             self?.startMainTimer()
         }
@@ -68,11 +66,9 @@ final class ChartViewModel: ObservableObject {
 
     private func scheduleBackgroundNotification() {
         backgroundNotificationHandle = NotificationCenter.default.addObserver(forName: UIApplication.didEnterBackgroundNotification, object: nil, queue: .main) { [weak self] _ in
-            Log.info("Entered background for session \(self?.session.name!)")
             guard let self = self else { return }
             var contextHandle: Any?
             contextHandle = NotificationCenter.default.addObserver(forName: .NSManagedObjectContextDidSave, object: self.persistence.viewContext, queue: .main) { [weak self] _ in
-                Log.info("Entered background with new data for session \(self?.session.name!)")
                 self?.generateEntries()
                 guard let contextHandle = contextHandle else { return }
                 NotificationCenter.default.removeObserver(contextHandle)
@@ -82,13 +78,11 @@ final class ChartViewModel: ObservableObject {
 
     func startMainTimer() {
         mainTimer = Timer.scheduledTimer(withTimeInterval: timeUnit, repeats: true) { [weak self] timer in
-            Log.info("Main timer started for session \(self?.session.name!): \(Date())")
             self?.generateEntries()
         }
     }
 
     func refreshChart() {
-        Log.info("Refresh chart called for session \(session.name!)")
         generateEntries()
     }
 
@@ -107,8 +101,6 @@ final class ChartViewModel: ObservableObject {
         var endOfFirstInterval = intervalEnd
 
         var intervalStart = intervalEnd - timeUnit
-        
-        Log.info("Generating entries for session \(session.name!): \(intervalStart) - \(intervalEnd)")
 
         var entries = [ChartDataEntry]()
         for i in (0..<numberOfEntries).reversed() {
@@ -122,7 +114,6 @@ final class ChartViewModel: ObservableObject {
             intervalStart = intervalEnd - timeUnit
         }
         chartStartTime = endOfFirstInterval
-        Log.info("Entries for session \(session.name!): \(entries.first) - \(entries.last)")
         self.entries = entries
     }
 
@@ -131,9 +122,6 @@ final class ChartViewModel: ObservableObject {
         let sessionStartTime = session.startTime!
 
         if session.isFixed {
-            Log.info("Time of calculation of end time: \(DateBuilder.getFakeUTCDate()) or \(DateBuilder.getRawDate())")
-            Log.info("LAST MEASUREMENT TIME of session \(session.name!): \(lastMeasurementTime)")
-            Log.info("Rounded time: \((lastMeasurementTime + 120).roundedDownToHour)")
             return (lastMeasurementTime + 120).roundedDownToHour
         } else {
             let secondsSinceFullMinuteFromSessionStart = DateBuilder.getFakeUTCDate().timeIntervalSince(sessionStartTime).truncatingRemainder(dividingBy: timeUnit)
