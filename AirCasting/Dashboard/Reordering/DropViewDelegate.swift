@@ -30,7 +30,6 @@ struct DropViewDelegate: DropDelegate {
         DropProposal(operation: .move)
     }
     
-    
     func performDrop(info: DropInfo) -> Bool {
         currentlyDraggedSession = nil
         return true

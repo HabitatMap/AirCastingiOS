@@ -329,6 +329,10 @@ struct Strings {
         static let newSession: String = "Record new session"
         static let fetchingText: String = "Fetching..."
     }
+    
+    enum ReorderingDashboard {
+        static let navigationTitle: String = NSLocalizedString("Reordering", comment: "Navigation title in reordering sessions view")
+    }
 
     enum PowerABView {
         static let alertTitle: String = "Location alert"
