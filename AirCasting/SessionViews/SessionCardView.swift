@@ -20,7 +20,6 @@ struct SessionCardView: View {
     @EnvironmentObject var selectedSection: SelectSection
     let sessionCartViewModel: SessionCardViewModel
     let thresholds: [SensorThreshold]
-    let sessionStoppableFactory: SessionStoppableFactory
 
     @StateObject private var mapStatsDataSource: ConveringStatisticsDataSourceDecorator<MapStatsDataSource>
     @StateObject private var mapStatsViewModel: StatisticsContainerViewModel
@@ -31,12 +30,10 @@ struct SessionCardView: View {
 
     init(session: SessionEntity,
          sessionCartViewModel: SessionCardViewModel,
-         thresholds: [SensorThreshold],
-         sessionStoppableFactory: SessionStoppableFactory) {
+         thresholds: [SensorThreshold]) {
         self.session = session
         self.sessionCartViewModel = sessionCartViewModel
         self.thresholds = thresholds
-        self.sessionStoppableFactory = sessionStoppableFactory
         let mapDataSource = ConveringStatisticsDataSourceDecorator<MapStatsDataSource>(dataSource: MapStatsDataSource(), stream: nil)
         self._mapStatsDataSource = .init(wrappedValue: mapDataSource)
         self._mapStatsViewModel = .init(wrappedValue: SessionCardView.createStatsContainerViewModel(dataSource: mapDataSource, session: session))
@@ -112,7 +109,7 @@ struct SessionCardView: View {
     }
 
     var standaloneSessionCard: some View {
-        StandaloneSessionCardView(session: session, sessionStopperFactory: sessionStoppableFactory)
+        StandaloneSessionCardView(session: session)
     }
 
     private func selectDefaultStreamIfNeeded(streams: [MeasurementStreamEntity]) {
@@ -132,8 +129,7 @@ private extension SessionCardView {
             },
             isExpandButtonNeeded: true,
             isCollapsed: $isCollapsed,
-            session: session,
-            sessionStopperFactory: sessionStoppableFactory
+            session: session
         )
     }
 
@@ -260,7 +256,6 @@ private extension SessionCardView {
     private var mapNavigationLink: some View {
          let mapView = AirMapView(session: session,
                                   thresholds: thresholds,
-                                  sessionStoppableFactory: sessionStoppableFactory,
                                   statsContainerViewModel: _mapStatsViewModel,
                                   showLoadingIndicator: $showLoadingIndicator,
                                   selectedStream: $selectedStream)
@@ -278,8 +273,7 @@ private extension SessionCardView {
                                    thresholds: thresholds,
                                    selectedStream: $selectedStream,
                                    statsContainerViewModel: graphStatsViewModel,
-                                   graphStatsDataSource: graphStatsDataSource.dataSource,
-                                   sessionStoppableFactory: sessionStoppableFactory)
+                                   graphStatsDataSource: graphStatsDataSource.dataSource)
              .foregroundColor(.aircastingDarkGray)
 
          return NavigationLink(destination: graphView,

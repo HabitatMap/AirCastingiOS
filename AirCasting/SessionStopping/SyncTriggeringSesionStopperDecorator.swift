@@ -3,7 +3,7 @@
 
 import Foundation
 
-class SyncTriggeringSesionStopperProxy: SessionStoppable {
+class SyncTriggeringSesionStopperDecorator: SessionStoppable {
     private let stoppable: SessionStoppable
     private let synchronizer: SessionSynchronizer
     

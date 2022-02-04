@@ -16,7 +16,6 @@ struct AirMapView: View {
     
     @InjectedObject private var userSettings: UserSettings
     var thresholds: [SensorThreshold]
-    let sessionStoppableFactory: SessionStoppableFactory
     
     @StateObject var statsContainerViewModel: StatisticsContainerViewModel
     @StateObject var mapNotesVM: MapNotesViewModel
@@ -30,13 +29,11 @@ struct AirMapView: View {
     
     init(session: SessionEntity,
          thresholds: [SensorThreshold],
-         sessionStoppableFactory: SessionStoppableFactory,
          statsContainerViewModel: StateObject<StatisticsContainerViewModel>,
          showLoadingIndicator: Binding<Bool>,
          selectedStream: Binding<MeasurementStreamEntity?>) {
         self.session = session
         self.thresholds = thresholds
-        self.sessionStoppableFactory = sessionStoppableFactory
         self._statsContainerViewModel = statsContainerViewModel
         self._mapNotesVM = .init(wrappedValue: .init(sessionUUID: session.uuid))
         self._showLoadingIndicator = showLoadingIndicator
@@ -57,8 +54,7 @@ struct AirMapView: View {
                                   isExpandButtonNeeded: false,
                                   isSensorTypeNeeded: false,
                                   isCollapsed: Binding.constant(false),
-                                  session: session,
-                                  sessionStopperFactory: sessionStoppableFactory)
+                                  session: session)
                 .padding([.bottom, .leading, .trailing])
             
             ABMeasurementsView(session: session,

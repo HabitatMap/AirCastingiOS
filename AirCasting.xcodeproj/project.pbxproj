@@ -237,10 +237,9 @@
 		B37E1C942748208C0020A281 /* SDSyncFileWritingServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37E1C932748208C0020A281 /* SDSyncFileWritingServiceTests.swift */; };
 		B38BA5A22757DC9300F758C8 /* SDCardMeasurementsParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B38BA5A12757DC9300F758C8 /* SDCardMeasurementsParser.swift */; };
 		B38E6CCA26C5F19F00C21C45 /* SessionStoppable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B38E6CC926C5F19F00C21C45 /* SessionStoppable.swift */; };
-		B38E6CCC26C5F3D400C21C45 /* SessionStoppableFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B38E6CCB26C5F3D400C21C45 /* SessionStoppableFactory.swift */; };
 		B38E6CCE26C5F81B00C21C45 /* MicrophoneSessionStopper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B38E6CCD26C5F81B00C21C45 /* MicrophoneSessionStopper.swift */; };
 		B38E6CD026C5F83D00C21C45 /* StandardSesssionStopper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B38E6CCF26C5F83D00C21C45 /* StandardSesssionStopper.swift */; };
-		B38E6CD226C5F85000C21C45 /* SyncTriggeringSesionStopperProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = B38E6CD126C5F85000C21C45 /* SyncTriggeringSesionStopperProxy.swift */; };
+		B38E6CD226C5F85000C21C45 /* SyncTriggeringSesionStopperDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B38E6CD126C5F85000C21C45 /* SyncTriggeringSesionStopperDecorator.swift */; };
 		B392DC332755F944002F0145 /* AppConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B392DC322755F944002F0145 /* AppConfigurationView.swift */; };
 		B3AB8BE526BB5EF400AF23CC /* Array+MeasurementStatistics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3AB8BE426BB5EF400AF23CC /* Array+MeasurementStatistics.swift */; };
 		B3C3F8B92695A295003E2CB4 /* StatisticsContainerViewModelable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3C3F8B82695A295003E2CB4 /* StatisticsContainerViewModelable.swift */; };
@@ -618,10 +617,9 @@
 		B37E1C932748208C0020A281 /* SDSyncFileWritingServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSyncFileWritingServiceTests.swift; sourceTree = "<group>"; };
 		B38BA5A12757DC9300F758C8 /* SDCardMeasurementsParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDCardMeasurementsParser.swift; sourceTree = "<group>"; };
 		B38E6CC926C5F19F00C21C45 /* SessionStoppable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionStoppable.swift; sourceTree = "<group>"; };
-		B38E6CCB26C5F3D400C21C45 /* SessionStoppableFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionStoppableFactory.swift; sourceTree = "<group>"; };
 		B38E6CCD26C5F81B00C21C45 /* MicrophoneSessionStopper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrophoneSessionStopper.swift; sourceTree = "<group>"; };
 		B38E6CCF26C5F83D00C21C45 /* StandardSesssionStopper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandardSesssionStopper.swift; sourceTree = "<group>"; };
-		B38E6CD126C5F85000C21C45 /* SyncTriggeringSesionStopperProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncTriggeringSesionStopperProxy.swift; sourceTree = "<group>"; };
+		B38E6CD126C5F85000C21C45 /* SyncTriggeringSesionStopperDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncTriggeringSesionStopperDecorator.swift; sourceTree = "<group>"; };
 		B392DC322755F944002F0145 /* AppConfigurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfigurationView.swift; sourceTree = "<group>"; };
 		B3AB8BE426BB5EF400AF23CC /* Array+MeasurementStatistics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+MeasurementStatistics.swift"; sourceTree = "<group>"; };
 		B3C3F8B82695A295003E2CB4 /* StatisticsContainerViewModelable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsContainerViewModelable.swift; sourceTree = "<group>"; };
@@ -1553,10 +1551,9 @@
 			isa = PBXGroup;
 			children = (
 				B38E6CC926C5F19F00C21C45 /* SessionStoppable.swift */,
-				B38E6CD126C5F85000C21C45 /* SyncTriggeringSesionStopperProxy.swift */,
+				B38E6CD126C5F85000C21C45 /* SyncTriggeringSesionStopperDecorator.swift */,
 				B38E6CCF26C5F83D00C21C45 /* StandardSesssionStopper.swift */,
 				B38E6CCD26C5F81B00C21C45 /* MicrophoneSessionStopper.swift */,
-				B38E6CCB26C5F3D400C21C45 /* SessionStoppableFactory.swift */,
 			);
 			path = SessionStopping;
 			sourceTree = "<group>";
@@ -2346,7 +2343,7 @@
 				DD55C38E26BAA7330069838F /* LocationHandler.swift in Sources */,
 				ACCEB21A2763A2230040140B /* SDSyncCompleteView.swift in Sources */,
 				DDB05581274BC60D00DA1A8A /* SessionUpdateService.swift in Sources */,
-				B38E6CD226C5F85000C21C45 /* SyncTriggeringSesionStopperProxy.swift in Sources */,
+				B38E6CD226C5F85000C21C45 /* SyncTriggeringSesionStopperDecorator.swift in Sources */,
 				ACCEB2292768A13B0040140B /* ThresholdsValue.swift in Sources */,
 				4F5D3F6F262C862E003AD82E /* KeychainStorage.swift in Sources */,
 				DD9EBFD5279EB70900192CB5 /* TextView.swift in Sources */,
@@ -2534,7 +2531,6 @@
 				4F15548F263C819C00FF3208 /* MeasurementEntity.swift in Sources */,
 				DD1C99C1267CBFCB00B786C4 /* MyAccountViewSignOut.swift in Sources */,
 				3375E8D62791EFA70019A5DE /* FileZipper.swift in Sources */,
-				B38E6CCC26C5F3D400C21C45 /* SessionStoppableFactory.swift in Sources */,
 				DD55C39026BAA73F0069838F /* BluetoothHandler.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

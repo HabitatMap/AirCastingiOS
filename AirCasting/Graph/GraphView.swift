@@ -17,7 +17,6 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
     @Binding var selectedStream: MeasurementStreamEntity?
     @StateObject var statsContainerViewModel: StatsViewModelType
     let graphStatsDataSource: GraphStatsDataSource
-    let sessionStoppableFactory: SessionStoppableFactory
     
     var body: some View {
         VStack(alignment: .trailing) {
@@ -25,8 +24,7 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                                   isExpandButtonNeeded: false,
                                   isSensorTypeNeeded: false,
                                   isCollapsed: Binding.constant(false),
-                                  session: session,
-                                  sessionStopperFactory: sessionStoppableFactory)
+                                  session: session)
                 .padding([.bottom, .leading, .trailing])
             
             ABMeasurementsView(

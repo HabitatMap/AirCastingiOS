@@ -92,7 +92,32 @@ extension Resolver: ResolverRegistering {
         main.register { DefaultAirBeamConnectionController() as AirBeamConnectionController }
         main.register { DefaultSessionUpdateService() as SessionUpdateService }
         
-        //MARK: - SDSync
+        // MARK: - Session stopping
+        
+        main.register { (_, args) in
+            getSessionStopper(for: args())
+        }
+        
+        func getSessionStopper(for session: SessionEntity) -> SessionStoppable {
+            let stopper = matchStopper(for: session)
+            if session.locationless {
+                if session.deviceType == .MIC {
+                    return MicrophoneSessionStopper(uuid: session.uuid)
+                }
+                return StandardSesssionStopper(uuid: session.uuid)
+            }
+            return SyncTriggeringSesionStopperDecorator(stoppable: stopper, synchronizer: Resolver.resolve())
+        }
+        
+        func matchStopper(for session: SessionEntity) -> SessionStoppable {
+            switch session.deviceType {
+            case .MIC: return MicrophoneSessionStopper(uuid: session.uuid)
+            case .AIRBEAM3: return StandardSesssionStopper(uuid: session.uuid)
+            case .none: return StandardSesssionStopper(uuid: session.uuid)
+            }
+        }
+        
+        // MARK: - SDSync
         main.register { SDSyncController() }.scope(.cached)
         main.register { SDCardMobileSessionsSavingService() as SDCardMobileSessionssSaver }
         main.register { UploadFixedSessionAPIService() }
@@ -101,8 +126,10 @@ extension Resolver: ResolverRegistering {
         main.register { SDSyncFileWritingService(bufferThreshold: 1000) as SDSyncFileWriter }
         main.register { BluetoothSDCardAirBeamServices() as SDCardAirBeamServices }
         
-        //MARK: - Notes
-        main.register { (_, args) in NotesHandlerDefault(sessionUUID: args()) as NotesHandler }.scope(.cached)
+        // MARK: - Notes
+        main.register { (_, args) in
+            NotesHandlerDefault(sessionUUID: args()) as NotesHandler
+        }
     }
     
     // MARK: - Composition helpers

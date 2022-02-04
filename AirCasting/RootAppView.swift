@@ -10,8 +10,6 @@ import CoreLocation
 import Resolver
 
 struct RootAppView: View {
-    
-    @State private var sessionStoppableFactory: SessionStoppableFactoryDefault?
 
     @InjectedObject var userAuthenticationSession: UserAuthenticationSession
     @InjectedObject var lifeTimeEventsProvider: LifeTimeEventsProvider
@@ -19,9 +17,8 @@ struct RootAppView: View {
     
     var body: some View {
         ZStack {
-            if userAuthenticationSession.isLoggedIn,
-               let sessionStoppableFactory = sessionStoppableFactory {
-                MainAppView(sessionStoppableFactory: sessionStoppableFactory)
+            if userAuthenticationSession.isLoggedIn {
+                MainAppView()
             } else if !userAuthenticationSession.isLoggedIn && lifeTimeEventsProvider.hasEverPassedOnBoarding {
                 NavigationView {
                     CreateAccountView(completion: { self.lifeTimeEventsProvider.hasEverLoggedIn = true }).environmentObject(lifeTimeEventsProvider)
@@ -33,23 +30,17 @@ struct RootAppView: View {
             }
         }
         .environment(\.managedObjectContext, Resolver.resolve(PersistenceController.self).viewContext) //TODO: Where is this used??
-        .onAppear {
-            sessionStoppableFactory = SessionStoppableFactoryDefault()
-        }
     }
     
 }
 
 struct MainAppView: View {
-    
-    let sessionStoppableFactory: SessionStoppableFactoryDefault
     @Injected private var persistenceController: PersistenceController
     @InjectedObject private var user: UserState
     
     var body: some View {
         LoadingView(isShowing: $user.isLoggingOut, activityIndicatorText: Strings.MainTabBarView.loggingOut) {
-            MainTabBarView(sessionStoppableFactory: sessionStoppableFactory,
-                           sessionContext: CreateSessionContext(),
+            MainTabBarView(sessionContext: CreateSessionContext(),
                            coreDataHook: CoreDataHook(context: persistenceController.viewContext))
         }
     }
