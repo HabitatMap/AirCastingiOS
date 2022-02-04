@@ -18,6 +18,7 @@ struct SessionCardView: View {
     @State private var showLoadingIndicator = false
     @ObservedObject var session: SessionEntity
     @EnvironmentObject var selectedSection: SelectSection
+    @EnvironmentObject var reorderButton: ReorderButtonTapped
     let sessionCartViewModel: SessionCardViewModel
     let thresholds: [SensorThreshold]
 
@@ -45,8 +46,8 @@ struct SessionCardView: View {
 
     var shouldShowValues: MeasurementPresentationStyle {
         // We need to specify selectedSection to show values for fixed session only in following tab
-        let shouldShow = isCollapsed && ( (session.isFixed && selectedSection.selectedSection == SelectedSection.fixed) || session.isDormant)
-        return shouldShow ? .hideValues : .showValues
+        let shouldHide = isCollapsed && ( (session.isFixed && selectedSection.selectedSection == SelectedSection.fixed) || session.isDormant)
+        return shouldHide ? .hideValues : .showValues
     }
 
     var showChart: Bool {
@@ -145,6 +146,8 @@ private extension SessionCardView {
     private var graphButton: some View {
         Button {
             isGraphButtonActive = true
+            reorderButton.isHidden = true
+            Log.info("\(reorderButton)")
         } label: {
             Text(Strings.SessionCartView.graph)
                 .font(Fonts.semiboldHeading2)
@@ -155,6 +158,8 @@ private extension SessionCardView {
     private var mapButton: some View {
         Button {
             isMapButtonActive = true
+            reorderButton.isHidden = true
+            Log.info("\(reorderButton)")
         } label: {
             Text(Strings.SessionCartView.map)
                 .font(Fonts.semiboldHeading2)

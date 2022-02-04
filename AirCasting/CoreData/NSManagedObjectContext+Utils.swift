@@ -112,3 +112,13 @@ extension NSManagedObjectContext {
     }
     
 }
+
+extension NSManagedObjectContext {
+
+    func getHighestRowOrder() throws -> Int64? {
+        let request: NSFetchRequest<SessionEntity> = SessionEntity.fetchRequest()
+        request.sortDescriptors = [NSSortDescriptor(key: "rowOrder", ascending: false)]
+        request.fetchLimit = 1
+        return try self.fetch(request).first?.rowOrder
+    }
+}

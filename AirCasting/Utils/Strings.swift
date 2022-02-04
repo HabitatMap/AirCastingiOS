@@ -330,6 +330,10 @@ struct Strings {
         static let fetchingText: String = LocalizedStringKey("Fetching...").stringKey
     }
 
+    enum ReorderingDashboard {
+        static let navigationTitle: String = NSLocalizedString("Reordering", comment: "Navigation title in reordering sessions view")
+    }
+
     enum PowerABView {
         static let alertTitle: String = LocalizedStringKey("Location alert").stringKey
         static let alertMessage: String = LocalizedStringKey("Please go to settings and allow location first.").stringKey
@@ -483,6 +487,19 @@ struct Strings {
     }
 
     enum MainTabBarView {
+        static let homeIcon: String = "home"
+        static let homeBlueIcon: String = "bluehome"
+        static let plusIcon: String = "plus"
+        static let plusBlueIcon: String = "blueplus"
+        static let settingsIcon: String = "settings"
+        static let settingsBlueIcon: String = "bluesettings"
+        static let loggingOut: String = "Logging out, please wait..."
+        static let finished: String = NSLocalizedString("Finished", comment: "")
+    }
+
+    enum DashboardView {
+        static let dashboardText: String = LocalizedStringKey("Dashboard").stringKey
+        static let following: String = NSLocalizedString("Following", comment: "")
         static let homeIcon: String = LocalizedStringKey("home").stringKey
         static let homeBlueIcon: String = LocalizedStringKey("bluehome").stringKey
         static let plusIcon: String = LocalizedStringKey("plus").stringKey
@@ -490,10 +507,6 @@ struct Strings {
         static let settingsIcon: String = LocalizedStringKey("settings").stringKey
         static let settingsBlueIcon: String = LocalizedStringKey("bluesettings").stringKey
         static let loggingOut: String = LocalizedStringKey("Logging out, please wait...").stringKey
-    }
-
-    enum DashboardView {
-        static let dashboardText: String = LocalizedStringKey("Dashboard").stringKey
     }
 
     enum RefreshControl {
@@ -601,4 +614,3 @@ extension LocalizedStringKey {
         return components[1][0]
     }
 }
-

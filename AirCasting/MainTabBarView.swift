@@ -18,6 +18,7 @@ struct MainTabBarView: View {
     @InjectedObject private var bluetoothManager: BluetoothManager
     @StateObject var tabSelection: TabBarSelection = TabBarSelection()
     @StateObject var selectedSection = SelectSection()
+    @StateObject var reorderButton = ReorderButtonTapped()
     @StateObject var emptyDashboardButtonTapped = EmptyDashboardButtonTapped()
     @StateObject var finishAndSyncButtonTapped = FinishAndSyncButtonTapped()
     @StateObject var sessionContext: CreateSessionContext
@@ -74,6 +75,7 @@ struct MainTabBarView: View {
         .environmentObject(tabSelection)
         .environmentObject(emptyDashboardButtonTapped)
         .environmentObject(finishAndSyncButtonTapped)
+        .environmentObject(reorderButton)
     }
 }
 
@@ -87,6 +89,14 @@ private extension MainTabBarView {
                 Image(homeImage)
             }
             .tag(TabBarSelection.Tab.dashboard)
+            .overlay(
+                Group{
+                    if !reorderButton.isHidden && sessions.count > 1 && selectedSection.selectedSection == .following {
+                        reorderingButton
+                    }
+                },
+                alignment: .topTrailing
+            )
     }
     
     private var createSessionTab: some View {
@@ -104,6 +114,38 @@ private extension MainTabBarView {
                 Image(settingsImage)
             }
             .tag(TabBarSelection.Tab.settings)
+    }
+    
+    private var reorderingButton: some View {
+        Group {
+            if !reorderButton.reorderIsON {
+                Button {
+                    reorderButton.reorderIsON = true
+                } label: {
+                    Image("draggable-icon")
+                        .frame(width: 60, height: 60)
+                        .imageScale(.large)
+                }
+                .offset(CGSize(width: 0.0, height: 42.0))
+            } else {
+                ZStack {
+                    Rectangle()
+                        .frame(width: 85, height: 35)
+                        .cornerRadius(15)
+                        .foregroundColor(.accentColor)
+                        .opacity(0.1)
+                    Button {
+                        reorderButton.reorderIsON = false
+                    } label: {
+                        Text(Strings.MainTabBarView.finished)
+                            .font(Fonts.muliHeading2)
+                            .bold()
+                    }
+                }
+                .padding()
+                .offset(CGSize(width: 0.0, height: 40.0))
+            }
+        }
     }
 }
 
@@ -127,6 +169,11 @@ class EmptyDashboardButtonTapped: ObservableObject {
 
 class FinishAndSyncButtonTapped: ObservableObject {
     @Published var finishAndSyncButtonWasTapped = false
+}
+
+class ReorderButtonTapped: ObservableObject {
+    @Published var reorderIsON = false
+    @Published var isHidden = false
 }
 
 extension MainTabBarView {

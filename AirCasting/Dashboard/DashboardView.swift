@@ -12,10 +12,10 @@ import Combine
 import Resolver
 
 struct DashboardView: View {
-    #warning("This hook fires too often - on any stream measurement added/changed. Should only fire when list changes.")
     @StateObject var coreDataHook: CoreDataHook
     @FetchRequest<SensorThreshold>(sortDescriptors: [.init(key: "sensorName", ascending: true)]) var thresholds
     @EnvironmentObject var selectedSection: SelectSection
+    @EnvironmentObject var reorderButton: ReorderButtonTapped
     @Injected private var averaging: AveragingService
     @State var isRefreshing: Bool = false
     @Injected private var sessionSynchronizer: SessionSynchronizer
@@ -40,8 +40,13 @@ struct DashboardView: View {
             //
             // Bug report was filled with Apple
             PreventCollapseView()
-            sessionTypePicker
-            if sessions.isEmpty { emptySessionsView } else { sessionListView }
+            if reorderButton.reorderIsON {
+                followingTab
+                ReorderingDashboard(sessions: sessions, thresholds: Array(self.thresholds))
+            } else {
+                sessionTypePicker
+                if sessions.isEmpty { emptySessionsView } else { sessionListView }
+            }
         }
         .navigationBarTitle(NSLocalizedString(Strings.DashboardView.dashboardText, comment: ""))
         .onChange(of: selectedSection.selectedSection) { selectedSection in
@@ -58,6 +63,7 @@ struct DashboardView: View {
         })
         .onAppear() {
             try! coreDataHook.setup(selectedSection: self.selectedSection.selectedSection)
+            reorderButton.isHidden = false
         }
     }
 
@@ -75,6 +81,27 @@ struct DashboardView: View {
                 }
             )
             .zIndex(2)
+    }
+
+    private var followingTab: some View {
+        HStack {
+            Button(Strings.DashboardView.following) {
+            }
+            .buttonStyle(PickerButtonStyle(isSelected: true))
+            Spacer()
+        }
+        .padding(.horizontal)
+        .background(
+            ZStack(alignment: .bottom) {
+                Color.green
+                    .frame(height: 3)
+                    .shadow(color: Color.aircastingDarkGray.opacity(0.4),
+                            radius: 6)
+                    .padding(.horizontal, -30)
+                Color.white
+            }
+        )
+        .zIndex(2)
     }
 
     private var emptySessionsView: some View {
