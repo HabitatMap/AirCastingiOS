@@ -59,7 +59,7 @@ struct ChartView: UIViewRepresentable {
     typealias UIViewType = UI_PollutionChart
     
     func makeUIView(context: Context) -> UI_PollutionChart {
-        return UI_PollutionChart()
+        UI_PollutionChart()
     }
     
     func updateUIView(_ uiView: UI_PollutionChart, context: Context) {
