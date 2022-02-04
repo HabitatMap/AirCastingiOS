@@ -19,6 +19,7 @@ struct SessionCardView: View {
     @EnvironmentObject var selectedSection: SelectSection
     @EnvironmentObject var locationTracker: LocationTracker
     @EnvironmentObject var authorization: UserAuthenticationSession
+    @EnvironmentObject var reorderButton: ReorderButtonTapped
     let urlProvider: BaseURLProvider
     let sessionCartViewModel: SessionCardViewModel
     let thresholds: [SensorThreshold]
@@ -164,6 +165,8 @@ private extension SessionCardView {
     private var graphButton: some View {
         Button {
             isGraphButtonActive = true
+            reorderButton.isHidden = true
+            Log.info("\(reorderButton)")
         } label: {
             Text(Strings.SessionCartView.graph)
                 .font(Fonts.semiboldHeading2)
@@ -174,6 +177,8 @@ private extension SessionCardView {
     private var mapButton: some View {
         Button {
             isMapButtonActive = true
+            reorderButton.isHidden = true
+            Log.info("\(reorderButton)")
         } label: {
             Text(Strings.SessionCartView.map)
                 .font(Fonts.semiboldHeading2)

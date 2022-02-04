@@ -16,7 +16,7 @@ struct DashboardView: View {
     @EnvironmentObject var selectedSection: SelectSection
     @EnvironmentObject var averaging: AveragingService
     @EnvironmentObject var userSettings: UserSettings
-    @Binding var isReordering: Bool
+    @EnvironmentObject var reorderButton: ReorderButtonTapped
     @State var isRefreshing: Bool = false
     private let urlProvider: BaseURLProvider
     private let measurementStreamStorage: MeasurementStreamStorage
@@ -33,8 +33,7 @@ struct DashboardView: View {
          measurementStreamStorage: MeasurementStreamStorage,
          sessionStoppableFactory: SessionStoppableFactory,
          sessionSynchronizer: SessionSynchronizer,
-         urlProvider: BaseURLProvider,
-         isReordering: Binding<Bool>) {
+         urlProvider: BaseURLProvider) {
         let navBarAppearance = UINavigationBar.appearance()
         navBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(Color.darkBlue)]
         _coreDataHook = StateObject(wrappedValue: coreDataHook)
@@ -42,7 +41,6 @@ struct DashboardView: View {
         self.sessionStoppableFactory = sessionStoppableFactory
         self.sessionSynchronizer = sessionSynchronizer
         self.urlProvider = urlProvider
-        self._isReordering = isReordering
     }
 
     var body: some View {
@@ -53,7 +51,7 @@ struct DashboardView: View {
             //
             // Bug report was filled with Apple
             PreventCollapseView()
-            if isReordering {
+            if reorderButton.reorderIsON {
                 followingTab
                 ReorderingDashboard(viewModel: ReorderingDashboardViewModel(sessions: sessions, measurementStreamStorage: measurementStreamStorage), thresholds: Array(self.thresholds))
             } else {
@@ -76,6 +74,7 @@ struct DashboardView: View {
         })
         .onAppear() {
             try! coreDataHook.setup(selectedSection: self.selectedSection.selectedSection)
+            reorderButton.isHidden = false
         }
     }
 
@@ -215,7 +214,7 @@ struct PreventCollapseView: View {
 #if DEBUG
 struct Dashboard_Previews: PreviewProvider {
     static var previews: some View {
-        DashboardView(coreDataHook: CoreDataHook(context: PersistenceController(inMemory: true).viewContext), measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionStoppableFactory: SessionStoppableFactoryDummy(), sessionSynchronizer: DummySessionSynchronizer(), urlProvider: DummyURLProvider(), isReordering: .constant(false))
+        DashboardView(coreDataHook: CoreDataHook(context: PersistenceController(inMemory: true).viewContext), measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionStoppableFactory: SessionStoppableFactoryDummy(), sessionSynchronizer: DummySessionSynchronizer(), urlProvider: DummyURLProvider())
     }
 }
 #endif

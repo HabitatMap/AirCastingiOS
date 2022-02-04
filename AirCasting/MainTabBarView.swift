@@ -25,7 +25,7 @@ struct MainTabBarView: View {
     let sessionSynchronizer: SessionSynchronizer
     @StateObject var tabSelection: TabBarSelection = TabBarSelection()
     @StateObject var selectedSection = SelectSection()
-    @State private var isCurrentlyReordeing: Bool = false
+    @StateObject var reorderButton = ReorderButtonTapped()
     @StateObject var emptyDashboardButtonTapped = EmptyDashboardButtonTapped()
     @StateObject var finishAndSyncButtonTapped = FinishAndSyncButtonTapped()
     @StateObject var sessionContext: CreateSessionContext
@@ -83,6 +83,7 @@ struct MainTabBarView: View {
         .environmentObject(tabSelection)
         .environmentObject(emptyDashboardButtonTapped)
         .environmentObject(finishAndSyncButtonTapped)
+        .environmentObject(reorderButton)
     }
 }
 
@@ -94,8 +95,7 @@ private extension MainTabBarView {
                           measurementStreamStorage: measurementStreamStorage,
                           sessionStoppableFactory: sessionStoppableFactory,
                           sessionSynchronizer: sessionSynchronizer,
-                          urlProvider: urlProvider,
-                          isReordering: $isCurrentlyReordeing)
+                          urlProvider: urlProvider)
         }.navigationViewStyle(StackNavigationViewStyle())
             .tabItem {
                 Image(homeImage)
@@ -103,7 +103,7 @@ private extension MainTabBarView {
             .tag(TabBarSelection.Tab.dashboard)
             .overlay(
                 Group{
-                    if sessions.count > 1 && selectedSection.selectedSection == .following {
+                    if !reorderButton.isHidden && sessions.count > 1 && selectedSection.selectedSection == .following {
                         reorderingButton
                     }
                 },
@@ -140,9 +140,9 @@ private extension MainTabBarView {
     
     private var reorderingButton: some View {
         Group {
-            if !isCurrentlyReordeing {
+            if !reorderButton.reorderIsON {
                 Button {
-                    isCurrentlyReordeing = true
+                    reorderButton.reorderIsON = true
                 } label: {
                     Image("draggable-icon")
                         .frame(width: 60, height: 60)
@@ -157,7 +157,7 @@ private extension MainTabBarView {
                         .foregroundColor(.accentColor)
                         .opacity(0.1)
                     Button {
-                        isCurrentlyReordeing = false
+                        reorderButton.reorderIsON = false
                     } label: {
                         Text(Strings.MainTabBarView.finished)
                             .font(Fonts.muliHeading2)
@@ -191,6 +191,11 @@ class EmptyDashboardButtonTapped: ObservableObject {
 
 class FinishAndSyncButtonTapped: ObservableObject {
     @Published var finishAndSyncButtonWasTapped = false
+}
+
+class ReorderButtonTapped: ObservableObject {
+    @Published var reorderIsON = false
+    @Published var isHidden = false
 }
 
 extension MainTabBarView {
