@@ -5,11 +5,13 @@ import UIKit
 import Charts
 import Resolver
 import Combine
+import SwiftUI
 
 final class ChartViewModel: ObservableObject {
     @Published var entries: [ChartDataEntry] = []
     @Published var chartStartTime: Date?
     @Published var chartEndTime: Date?
+    @ObservedObject var session: SessionEntity
 
     var stream: MeasurementStreamEntity? {
         didSet {
@@ -20,8 +22,6 @@ final class ChartViewModel: ObservableObject {
     @Injected private var persistence: PersistenceController
     @Injected private var settings: UserSettings
 
-    private let session: SessionEntity
-
     private var timeUnit: TimeInterval {
         session.isMobile ? .minute : .hour
     }
@@ -30,7 +30,7 @@ final class ChartViewModel: ObservableObject {
     private var firstTimer: Timer?
     private let numberOfEntries = Constants.Chart.numberOfEntries
 
-    private var backgroundNotificationHandle: Any?
+    private var uiResumedNotificationHandle: Any?
     private var cancellables: [AnyCancellable] = []
 
     deinit {
@@ -44,7 +44,7 @@ final class ChartViewModel: ObservableObject {
         self.chartEndTime = session.endTime
         if session.isActive || session.isFollowed || session.status == .NEW {
             startTimers(session)
-            scheduleBackgroundNotification()
+            scheduleUIResumeNotification()
         }
         setupHooks()
     }
@@ -64,15 +64,9 @@ final class ChartViewModel: ObservableObject {
         }
     }
 
-    private func scheduleBackgroundNotification() {
-        backgroundNotificationHandle = NotificationCenter.default.addObserver(forName: UIApplication.didEnterBackgroundNotification, object: nil, queue: .main) { [weak self] _ in
-            guard let self = self else { return }
-            var contextHandle: Any?
-            contextHandle = NotificationCenter.default.addObserver(forName: .NSManagedObjectContextDidSave, object: self.persistence.viewContext, queue: .main) { [weak self] _ in
-                self?.generateEntries()
-                guard let contextHandle = contextHandle else { return }
-                NotificationCenter.default.removeObserver(contextHandle)
-            }
+    private func scheduleUIResumeNotification() {
+        uiResumedNotificationHandle = NotificationCenter.default.addObserver(forName: PersistenceController.uiDidResumeNotificationName, object: nil, queue: .main) { [weak self] _ in
+            self?.generateEntries()
         }
     }
 
