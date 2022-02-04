@@ -59,12 +59,10 @@ struct ChartView: UIViewRepresentable {
     typealias UIViewType = UI_PollutionChart
     
     func makeUIView(context: Context) -> UI_PollutionChart {
-        Log.info("VIEW MAKE")
         return UI_PollutionChart()
     }
     
     func updateUIView(_ uiView: UI_PollutionChart, context: Context) {
-        Log.info("VIEW UPDATE")
         guard !viewModel.entries.isEmpty else { return }
         
         var entries = viewModel.entries
