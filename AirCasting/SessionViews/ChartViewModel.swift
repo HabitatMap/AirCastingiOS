@@ -5,11 +5,13 @@ import UIKit
 import Charts
 import Resolver
 import Combine
+import SwiftUI
 
 final class ChartViewModel: ObservableObject {
     @Published var entries: [ChartDataEntry] = []
     @Published var chartStartTime: Date?
     @Published var chartEndTime: Date?
+    @ObservedObject var session: SessionEntity
 
     var stream: MeasurementStreamEntity? {
         didSet {
@@ -19,8 +21,6 @@ final class ChartViewModel: ObservableObject {
     }
     @Injected private var persistence: PersistenceController
     @Injected private var settings: UserSettings
-
-    private let session: SessionEntity
 
     private var timeUnit: TimeInterval {
         session.isMobile ? .minute : .hour

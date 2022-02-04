@@ -54,7 +54,7 @@ class UI_PollutionChart: UIView {
 struct ChartView: UIViewRepresentable {
     let thresholds: [SensorThreshold]
 
-    @ObservedObject var viewModel: ChartViewModel
+    @StateObject var viewModel: ChartViewModel
     
     typealias UIViewType = UI_PollutionChart
     
