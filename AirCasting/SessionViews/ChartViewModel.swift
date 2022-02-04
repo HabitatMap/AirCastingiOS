@@ -3,6 +3,7 @@
 
 import UIKit
 import Charts
+import Resolver
 import Combine
 
 final class ChartViewModel: ObservableObject {
@@ -16,8 +17,9 @@ final class ChartViewModel: ObservableObject {
             generateEntries()
         }
     }
+    @Injected private var persistence: PersistenceController
+    @Injected private var settings: UserSettings
 
-    private let persistence: PersistenceController
     private let session: SessionEntity
 
     private var timeUnit: TimeInterval {
@@ -29,20 +31,17 @@ final class ChartViewModel: ObservableObject {
     private let numberOfEntries = Constants.Chart.numberOfEntries
 
     private var backgroundNotificationHandle: Any?
-    private let settings: UserSettings
     private var cancellables: [AnyCancellable] = []
 
     deinit {
         mainTimer?.invalidate()
         firstTimer?.invalidate()
     }
-
-    init(session: SessionEntity, persistence: PersistenceController, userSettings: UserSettings) {
+    
+    init(session: SessionEntity) {
         self.session = session
         self.chartStartTime = session.endTime
         self.chartEndTime = session.endTime
-        self.persistence = persistence
-        self.settings = userSettings
         if session.isActive || session.isFollowed || session.status == .NEW {
             startTimers(session)
             scheduleBackgroundNotification()

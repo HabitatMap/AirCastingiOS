@@ -3,12 +3,12 @@
 
 import Foundation
 
-protocol BaseURLProvider {
+protocol URLProvider: AnyObject {
     var baseAppURL: URL { get set }
 }
 
 #if DEBUG
-class DummyURLProvider: BaseURLProvider, ObservableObject {
+class DummyURLProvider: URLProvider, ObservableObject {
     var baseAppURL: URL = URL(string: "http://aircasting.org/")!
 }
 #endif

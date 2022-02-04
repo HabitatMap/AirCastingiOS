@@ -3,9 +3,10 @@
 
 import SwiftUI
 import GooglePlaces
+import Resolver
 
 struct PlacePicker: UIViewControllerRepresentable {
-    @EnvironmentObject var tracker: LocationTracker
+    @InjectedObject private var tracker: LocationTracker
     @Binding var placePickerDismissed: Bool
     @Environment(\.presentationMode) var presentationMode
     @Binding var address: String

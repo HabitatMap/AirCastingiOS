@@ -2,7 +2,9 @@
 //
 
 import Foundation
+import Resolver
 
+// [RESOLVER] Init this VM inside View
 class TurnOnLocationViewModel: ObservableObject {
     @Published var isPowerABLinkActive = false
     @Published var isTurnBluetoothOnLinkActive = false
@@ -10,15 +12,10 @@ class TurnOnLocationViewModel: ObservableObject {
     @Published var restartABLink = false
     @Published var alert: AlertInfo?
     var isSDClearProcess: Bool
-    
-    private let locationHandler: LocationHandler
-    private let bluetoothHandler: BluetoothHandler
+
+    @Injected private var locationHandler: LocationHandler
+    @Injected private var bluetoothHandler: BluetoothHandler
     private let sessionContext: CreateSessionContext
-    private let urlProvider: BaseURLProvider
-    
-    var passURLProvider: BaseURLProvider {
-        return urlProvider
-    }
     
     var shouldShowAlert: Bool {
         return locationHandler.isLocationDenied()
@@ -32,11 +29,8 @@ class TurnOnLocationViewModel: ObservableObject {
         return sessionContext
     }
     
-    init(locationHandler: LocationHandler, bluetoothHandler: BluetoothHandler, sessionContext: CreateSessionContext, urlProvider: BaseURLProvider, isSDClearProcess: Bool) {
-        self.locationHandler = locationHandler
-        self.bluetoothHandler = bluetoothHandler
+    init(sessionContext: CreateSessionContext, isSDClearProcess: Bool) {
         self.sessionContext = sessionContext
-        self.urlProvider = urlProvider
         self.isSDClearProcess = isSDClearProcess
     }
     

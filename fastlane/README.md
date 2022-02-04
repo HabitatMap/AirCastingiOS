@@ -23,10 +23,10 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 AirCastingApp
 
-### ios code_lint
+### ios release_update
 
 ```sh
-[bundle exec] fastlane ios code_lint
+[bundle exec] fastlane ios release_update
 ```
 
 

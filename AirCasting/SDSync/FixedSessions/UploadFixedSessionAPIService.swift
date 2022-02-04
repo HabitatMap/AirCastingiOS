@@ -4,13 +4,15 @@
 import Foundation
 import Combine
 import Gzip
+import Resolver
 
+// TODO: Hide this behind protocol
 class UploadFixedSessionAPIService {
 
-    let urlProvider: BaseURLProvider
-    let apiClient: APIClient
-    let responseValidator: HTTPResponseValidator
-    let authorisationService: RequestAuthorisationService
+    @Injected private var urlProvider: URLProvider
+    @Injected private var apiClient: APIClient
+    @Injected private var responseValidator: HTTPResponseValidator
+    @Injected private var authorisationService: RequestAuthorisationService
     
     private lazy var decoder: JSONDecoder = {
         $0.dateDecodingStrategy = .custom({
@@ -30,13 +32,6 @@ class UploadFixedSessionAPIService {
         $0.dateEncodingStrategy = .formatted(formatter)
         return $0
     }(JSONEncoder())
-
-    init(authorisationService: RequestAuthorisationService, apiClient: APIClient = URLSession.shared, responseValidator: HTTPResponseValidator = DefaultHTTPResponseValidator(), baseUrlProvider: BaseURLProvider) {
-        self.authorisationService = authorisationService
-        self.apiClient = apiClient
-        self.responseValidator = responseValidator
-        self.urlProvider = baseUrlProvider
-    }
     
     @discardableResult
     func uploadFixedSession(input: UploadFixedMeasurementsParams, completion: @escaping (Result<APIOutput, Error>) -> Void) -> Cancellable {

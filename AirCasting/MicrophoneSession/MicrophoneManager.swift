@@ -168,7 +168,7 @@ private extension MicrophoneManager {
         }
     }
 
-    @objc func timerTick() {
+    @objc private func timerTick() {
         sampleMeasurement(noLocation: session?.locationless ?? false)
     }
 

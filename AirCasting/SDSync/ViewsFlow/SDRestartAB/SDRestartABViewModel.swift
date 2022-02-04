@@ -2,24 +2,14 @@
 //
 
 import Foundation
+import Resolver
 
-protocol SDRestartABViewModel: ObservableObject {
-    var presentNextScreen: Bool { get set }
-    // urlProvider should should not be exposed
-    // BUT it is - REASON: it is needed only to pass to some navigation view
-    var urlProvider: BaseURLProvider { get }
-    var isSDClearProcess: Bool { get set }
-    func continueSyncFlow()
-}
-
-class SDRestartABViewModelDefault: SDRestartABViewModel, ObservableObject {
+class SDRestartABViewModel: ObservableObject {
     
     @Published var presentNextScreen: Bool = false
-    var isSDClearProcess: Bool
-    let urlProvider: BaseURLProvider
+    let isSDClearProcess: Bool
     
-    init(urlProvider: BaseURLProvider, isSDClearProcess: Bool) {
-        self.urlProvider = urlProvider
+    init(isSDClearProcess: Bool) {
         self.isSDClearProcess = isSDClearProcess
     }
     

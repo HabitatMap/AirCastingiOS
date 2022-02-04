@@ -1,11 +1,12 @@
-// Created by Lunar on 27/07/2021.
+// Created by Lunar on 27/01/2022.
 //
+
 import AirCastingStyling
 import SwiftUI
 
-struct TurnOnLocationView: View {
+struct TurnOnLocationFixedView: View {
     @Binding var creatingSessionFlowContinues: Bool
-    @StateObject var viewModel: TurnOnLocationViewModel
+    @StateObject var viewModel: TurnOnLocationFixedViewModel
     
     var body: some View {
         VStack(spacing: 50) {
@@ -23,10 +24,8 @@ struct TurnOnLocationView: View {
         .alert(item: $viewModel.alert, content: { $0.makeAlert() })
         .background(
             Group {
-                proceedToPowerABView
-                proceedToBluetoothView
-                proceedToSelectDeviceView
-                proceedToRestartABView
+                locationPickerLink
+                createSesssionLink
             }
         )
         .onAppear {
@@ -60,39 +59,25 @@ struct TurnOnLocationView: View {
         .buttonStyle(BlueButtonStyle())
     }
     
-    var proceedToPowerABView: some View {
+    var locationPickerLink: some View {
         NavigationLink(
-            destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues),
-            isActive: $viewModel.isPowerABLinkActive,
+            destination: ChooseCustomLocationView(creatingSessionFlowContinues: $creatingSessionFlowContinues,
+                                                  sessionName: viewModel.getSessionName),
+            isActive: $viewModel.isLocationSessionDetailsActive,
             label: {
                 EmptyView()
-            })
+            }
+        )
     }
-    var proceedToBluetoothView: some View {
+    
+    var createSesssionLink: some View {
         NavigationLink(
-            destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues,
-                                             sdSyncContinues: .constant(false),
-                                             isSDClearProcess: viewModel.isSDClearProcess),
-            isActive: $viewModel.isTurnBluetoothOnLinkActive,
+            destination: ConfirmCreatingSessionView(creatingSessionFlowContinues: $creatingSessionFlowContinues,
+                                                    sessionName: viewModel.getSessionName),
+            isActive: $viewModel.isConfirmCreatingSessionActive,
             label: {
                 EmptyView()
-            })
-    }
-    var proceedToSelectDeviceView: some View {
-        NavigationLink(
-            destination: SelectDeviceView(creatingSessionFlowContinues: $creatingSessionFlowContinues,
-                                          sdSyncContinues: .constant(false)),
-            isActive: $viewModel.isMobileLinkActive,
-            label: {
-                EmptyView()
-            })
-    }
-    var proceedToRestartABView: some View {
-        NavigationLink(
-            destination: SDRestartABView(isSDClearProcess: viewModel.isSDClearProcess, creatingSessionFlowContinues: $creatingSessionFlowContinues),
-            isActive: $viewModel.restartABLink,
-            label: {
-                EmptyView()
-            })
+            }
+        )
     }
 }

@@ -7,11 +7,11 @@
 
 import AirCastingStyling
 import SwiftUI
+import Resolver
 
 struct PowerABView: View {
     @Binding var creatingSessionFlowContinues: Bool
     @EnvironmentObject private var sessionContext: CreateSessionContext
-    let urlProvider: BaseURLProvider
 
     var body: some View {
         VStack() {
@@ -49,17 +49,9 @@ struct PowerABView: View {
     }
 
     var continueButton: some View {
-        NavigationLink(destination: SelectPeripheralView(SDClearingRouteProcess: false, creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider)) {
+        NavigationLink(destination: SelectPeripheralView(SDClearingRouteProcess: false, creatingSessionFlowContinues: $creatingSessionFlowContinues)) {
             Text(Strings.Commons.continue)
                 .frame(maxWidth: .infinity)
         }
     }
 }
-
-#if DEBUG
-struct PowerABView_Previews: PreviewProvider {
-    static var previews: some View {
-        PowerABView(creatingSessionFlowContinues: .constant(true), urlProvider: DummyURLProvider())
-    }
-}
-#endif

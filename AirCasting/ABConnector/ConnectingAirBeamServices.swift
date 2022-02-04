@@ -3,6 +3,7 @@
 
 import Foundation
 import CoreBluetooth
+import Resolver
 
 enum AirBeamServicesConnectionResult {
     case success
@@ -17,12 +18,8 @@ protocol ConnectingAirBeamServices {
 
 class ConnectingAirBeamServicesBluetooth: ConnectingAirBeamServices {
     
-    private let bluetoothConnector: BluetoothConnector
+    @Injected private var bluetoothConnector: BluetoothConnector
     private var connectionToken: AnyObject?
-    
-    init(bluetoothConnector: BluetoothConnector) {
-        self.bluetoothConnector = bluetoothConnector
-    }
 
     func connect(to peripheral: CBPeripheral, timeout: TimeInterval, completion: @escaping (AirBeamServicesConnectionResult) -> Void) {
         var connectionInProgress = true

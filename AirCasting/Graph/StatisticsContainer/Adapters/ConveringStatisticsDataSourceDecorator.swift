@@ -2,17 +2,17 @@
 //
 
 import Combine
+import Resolver
 
 class ConveringStatisticsDataSourceDecorator<D: MeasurementsStatisticsDataSource>: MeasurementsStatisticsDataSource, ObservableObject {
     let dataSource: D
     var stream: MeasurementStreamEntity?
-    private let settings: UserSettings
+    @Injected private var settings: UserSettings
     private var cancellables: [AnyCancellable] = []
     
-    init(dataSource: D, stream: MeasurementStreamEntity?, settings: UserSettings) {
+    init(dataSource: D, stream: MeasurementStreamEntity?) {
         self.dataSource = dataSource
         self.stream = stream
-        self.settings = settings
         setupHooks()
     }
     
