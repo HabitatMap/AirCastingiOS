@@ -5,9 +5,12 @@ import SwiftUI
 
 struct ReorderingDashboard: View {
     
-    @ObservedObject var viewModel: ReorderingDashboardViewModel
+    @StateObject var viewModel: ReorderingDashboardViewModel
     @State private var changedView: Bool = false
-    var thresholds: [SensorThreshold]
+    
+    init(sessions: [SessionEntity], thresholds: [SensorThreshold]) {
+        _viewModel = .init(wrappedValue: ReorderingDashboardViewModel(sessions: sessions, thresholds: thresholds))
+    }
     
     private let columns = [GridItem(.flexible())]
     
@@ -15,7 +18,7 @@ struct ReorderingDashboard: View {
         ScrollView {
             LazyVGrid(columns: columns) {
                 ForEach(viewModel.sessions) { session in
-                    ReoredringSessionCard(session: session, thresholds: thresholds)
+                    ReoredringSessionCard(session: session, thresholds: viewModel.thresholds)
                         .overlay(viewModel.currentlyDraggedSession == session && changedView ? Color.white.opacity(0.8) : Color.clear)
                         .onDrag({
                             viewModel.currentlyDraggedSession = session
@@ -27,7 +30,7 @@ struct ReorderingDashboard: View {
             }
             .padding()
         }
-        .navigationBarTitle("Reordering")
+        .navigationBarTitle(Strings.ReorderingDashboard.navigationTitle)
         .background(Color.clear.edgesIgnoringSafeArea(.all))
         // this is added to avoid session card staying 0.8 opaque when user drops card on the edges
         .onDrop(of: [.text], delegate: DropOutsideOfGridDelegate(currentlyDraggedSession: $viewModel.currentlyDraggedSession))

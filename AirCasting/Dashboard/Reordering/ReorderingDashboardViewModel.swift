@@ -2,16 +2,19 @@
 //
 
 import Foundation
+import Resolver
 
 class ReorderingDashboardViewModel: ObservableObject {
     @Published var sessions: [SessionEntity]
+    var thresholds: [SensorThreshold]
     
     @Published var currentlyDraggedSession: SessionEntity?
     private let measurementStreamStorage: MeasurementStreamStorage
     
-    init(sessions: [SessionEntity], measurementStreamStorage: MeasurementStreamStorage) {
+    init(sessions: [SessionEntity], thresholds: [SensorThreshold]) {
         self.sessions = sessions
-        self.measurementStreamStorage = measurementStreamStorage
+        self.measurementStreamStorage = Resolver.resolve()
+        self.thresholds = thresholds
     }
     
     func finish() {

@@ -15,7 +15,6 @@ struct DashboardView: View {
     @StateObject var coreDataHook: CoreDataHook
     @FetchRequest<SensorThreshold>(sortDescriptors: [.init(key: "sensorName", ascending: true)]) var thresholds
     @EnvironmentObject var selectedSection: SelectSection
-    @EnvironmentObject var userSettings: UserSettings
     @EnvironmentObject var reorderButton: ReorderButtonTapped
     @Injected private var averaging: AveragingService
     @State var isRefreshing: Bool = false
@@ -46,7 +45,7 @@ struct DashboardView: View {
             PreventCollapseView()
             if reorderButton.reorderIsON {
                 followingTab
-                ReorderingDashboard(viewModel: ReorderingDashboardViewModel(sessions: sessions, measurementStreamStorage: measurementStreamStorage), thresholds: Array(self.thresholds))
+                ReorderingDashboard(sessions: sessions, thresholds: Array(self.thresholds))
             } else {
                 sessionTypePicker
                 if sessions.isEmpty { emptySessionsView } else { sessionListView }
