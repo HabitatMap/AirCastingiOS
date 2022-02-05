@@ -13,9 +13,15 @@ final class ChartViewModel: ObservableObject {
     @Published var chartEndTime: Date?
     @ObservedObject var session: SessionEntity
 
+    private var databaseObserver: ChartDatabaseObserver?
     var stream: MeasurementStreamEntity? {
         didSet {
-            guard session.isActive || session.isFollowed || session.status == .NEW else { return }
+            databaseObserver = nil
+            guard shouldBeUpdatingChartForCurrentSession(), let sensor = stream?.sensorName else { return }
+            databaseObserver = ChartDatabaseObserver(session: session.uuid, sensor: sensor) {
+                Log.info("Measurements change detected [\(self.session.uuid ?? "??")]")
+                self.generateEntries()
+            }
             generateEntries()
         }
     }
@@ -30,23 +36,27 @@ final class ChartViewModel: ObservableObject {
     private var firstTimer: Timer?
     private let numberOfEntries = Constants.Chart.numberOfEntries
 
+    private var uiPausedNotificationHandle: Any?
     private var uiResumedNotificationHandle: Any?
     private var cancellables: [AnyCancellable] = []
 
     deinit {
-        mainTimer?.invalidate()
-        firstTimer?.invalidate()
+        stopTimers()
     }
     
     init(session: SessionEntity) {
         self.session = session
         self.chartStartTime = session.endTime
         self.chartEndTime = session.endTime
-        if session.isActive || session.isFollowed || session.status == .NEW {
-            startTimers(session)
+        if shouldBeUpdatingChartForCurrentSession() {
+            startTimers()
             scheduleUIResumeNotification()
         }
         setupHooks()
+    }
+    
+    private func shouldBeUpdatingChartForCurrentSession() -> Bool {
+        session.isActive || session.isFollowed || session.status == .NEW
     }
 
     private func setupHooks() {
@@ -56,22 +66,40 @@ final class ChartViewModel: ObservableObject {
         }.store(in: &cancellables)
     }
 
-    private func startTimers(_ session: SessionEntity) {
+    private func startTimers() {
         let timeOfNextAverage = timeOfNextAverage()
+        Log.info("Starting chart timers (time of first entry regen: \(timeOfNextAverage) (\(Date().addingTimeInterval(timeOfNextAverage))) [\(session.uuid ?? "??")]")
         firstTimer = Timer.scheduledTimer(withTimeInterval: TimeInterval(timeOfNextAverage), repeats: false) { [weak self] timer in
+            Log.info("Initial timer fired for chart [\(self?.session.uuid ?? "??")]")
             self?.generateEntries()
             self?.startMainTimer()
         }
     }
+    
+    private func stopTimers() {
+        Log.verbose("Stopping chart timers [\(session.uuid ?? "??")]")
+        firstTimer?.invalidate()
+        mainTimer?.invalidate()
+    }
 
     private func scheduleUIResumeNotification() {
+        uiPausedNotificationHandle = NotificationCenter.default.addObserver(forName: PersistenceController.uiDidSuspendNotificationName, object: nil, queue: .main) { [weak self] _ in
+            Log.info("Received uiDidSuspendNotificationName. Stopping timers [\(self?.session.uuid ?? "??")]")
+            self?.stopTimers()
+        }
         uiResumedNotificationHandle = NotificationCenter.default.addObserver(forName: PersistenceController.uiDidResumeNotificationName, object: nil, queue: .main) { [weak self] _ in
-            self?.generateEntries()
+            guard let self = self else { return }
+            guard self.shouldBeUpdatingChartForCurrentSession() else { return }
+            Log.info("Received uiDidSuspendNotificationName. Restarting timers [\(self.session.uuid ?? "??")]")
+            self.generateEntries()
+            self.startTimers()
         }
     }
 
     func startMainTimer() {
+        Log.verbose("Starting periodic (\(timeUnit)s) timer for chart [\(session.uuid ?? "??")]")
         mainTimer = Timer.scheduledTimer(withTimeInterval: timeUnit, repeats: true) { [weak self] timer in
+            Log.verbose("Periodic timer fired for chart [\(self?.session.uuid ?? "??")]")
             self?.generateEntries()
         }
     }
@@ -81,6 +109,7 @@ final class ChartViewModel: ObservableObject {
     }
 
     private func generateEntries() {
+        Log.verbose("Generating entries [\(session.uuid ?? "??")]")
         // Set up begning and end of the interval for the first average
         //  - for fixed sessions we are taking the last full hour of the session, which has any measurements
         //  - for mobile we are taking into account full minutes since the session started and we are taking the most recent one
@@ -88,6 +117,7 @@ final class ChartViewModel: ObservableObject {
             stream != nil,
             var intervalEnd = intervalEndTime()
         else {
+            Log.warning("Generating entried failed! Session: [\(session.uuid ?? "??")]")
             return
         }
 
@@ -108,6 +138,7 @@ final class ChartViewModel: ObservableObject {
             intervalStart = intervalEnd - timeUnit
         }
         chartStartTime = endOfFirstInterval
+        Log.info("Chart entries generated: \(entries) [\(session.uuid ?? "??")]")
         self.entries = entries
     }
 
