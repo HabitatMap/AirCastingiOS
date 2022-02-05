@@ -211,6 +211,7 @@
 		B30BAC252694B5D900AE0476 /* TestStreamGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30BAC242694B5D900AE0476 /* TestStreamGenerator.swift */; };
 		B30F9A612745601F00C85E17 /* SDSyncController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30F9A602745601F00C85E17 /* SDSyncController.swift */; };
 		B30F9A632745626B00C85E17 /* SDCardAirBeamServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30F9A622745626B00C85E17 /* SDCardAirBeamServices.swift */; };
+		B31AFB7027AE6F0700CA6FA3 /* PrintLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31AFB6F27AE6F0700CA6FA3 /* PrintLogger.swift */; };
 		B31B7EC9267E2024002DAC18 /* SyncContextServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31B7EC8267E2024002DAC18 /* SyncContextServiceTests.swift */; };
 		B31B7ECB267E4DF6002DAC18 /* DummyError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31B7ECA267E4DF6002DAC18 /* DummyError.swift */; };
 		B31B7ECD267E500B002DAC18 /* SyncDownstreamServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31B7ECC267E500B002DAC18 /* SyncDownstreamServiceTests.swift */; };
@@ -222,6 +223,28 @@
 		B32D08AF267A6D13006C97ED /* ErasingToVoidPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32D08AE267A6D13006C97ED /* ErasingToVoidPublisher.swift */; };
 		B3332F5A275D61B000789BAD /* Int+orOne.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3332F59275D61B000789BAD /* Int+orOne.swift */; };
 		B338934827A026BC0059E79B /* ConveringStatisticsDataSourceDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B338934727A026BC0059E79B /* ConveringStatisticsDataSourceDecorator.swift */; };
+		B33B15E827AEE68100138FFA /* TextFileTrimmer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33B15E727AEE68100138FFA /* TextFileTrimmer.swift */; };
+		B33B15F027AEE69900138FFA /* DocumentsFileLoggerStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33B15EA27AEE69900138FFA /* DocumentsFileLoggerStore.swift */; };
+		B33B15F127AEE69900138FFA /* ThresholdLoggerProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33B15EB27AEE69900138FFA /* ThresholdLoggerProxy.swift */; };
+		B33B15F227AEE69900138FFA /* FileLoggerDisposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33B15EC27AEE69900138FFA /* FileLoggerDisposer.swift */; };
+		B33B15F327AEE69900138FFA /* DocumentsFileLoggerStore+LogHandle.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33B15ED27AEE69900138FFA /* DocumentsFileLoggerStore+LogHandle.swift */; };
+		B33B15F427AEE69900138FFA /* CompositeLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33B15EE27AEE69900138FFA /* CompositeLogger.swift */; };
+		B33B15F527AEE69900138FFA /* FileLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33B15EF27AEE69900138FFA /* FileLogger.swift */; };
+		B33B15F727AEE6B000138FFA /* ScheduledLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33B15F627AEE6B000138FFA /* ScheduledLogger.swift */; };
+		B33B15FE27AEE6E900138FFA /* WeakRef+DisposableDataHolder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33B15FA27AEE6E900138FFA /* WeakRef+DisposableDataHolder.swift */; };
+		B33B15FF27AEE6E900138FFA /* WeakRef.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33B15FB27AEE6E900138FFA /* WeakRef.swift */; };
+		B33B160027AEE6E900138FFA /* GarbageCollector.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33B15FC27AEE6E900138FFA /* GarbageCollector.swift */; };
+		B33B160127AEE6E900138FFA /* DisposableDataHolder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33B15FD27AEE6E900138FFA /* DisposableDataHolder.swift */; };
+		B33B160E27AF0B3600138FFA /* ScheduledLoggerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33B160627AF0B3500138FFA /* ScheduledLoggerTests.swift */; };
+		B33B160F27AF0B3600138FFA /* LoggerSpy.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33B160727AF0B3500138FFA /* LoggerSpy.swift */; };
+		B33B161027AF0B3600138FFA /* DocumentsFileLoggerStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33B160827AF0B3500138FFA /* DocumentsFileLoggerStoreTests.swift */; };
+		B33B161127AF0B3600138FFA /* TextFileTrimmerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33B160927AF0B3500138FFA /* TextFileTrimmerTests.swift */; };
+		B33B161227AF0B3600138FFA /* CompositeLoggerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33B160A27AF0B3500138FFA /* CompositeLoggerTests.swift */; };
+		B33B161327AF0B3600138FFA /* ThresholdLoggerProxyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33B160B27AF0B3600138FFA /* ThresholdLoggerProxyTests.swift */; };
+		B33B161427AF0B3600138FFA /* FileLoggerTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33B160C27AF0B3600138FFA /* FileLoggerTestCase.swift */; };
+		B33B161527AF0B3600138FFA /* FileLoggerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33B160D27AF0B3600138FFA /* FileLoggerTests.swift */; };
+		B33B161727AF0B8C00138FFA /* LoggerBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33B161627AF0B8C00138FFA /* LoggerBuilder.swift */; };
+		B33B161927AF26BC00138FFA /* DateFormatter+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33B161827AF26BC00138FFA /* DateFormatter+Extensions.swift */; };
 		B33DB56E2685FB2400ED1344 /* LocalizedErrorStub.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33DB56D2685FB2400ED1344 /* LocalizedErrorStub.swift */; };
 		B33DB5702685FCFB00ED1344 /* SynchronizationTestMocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33DB56F2685FCFB00ED1344 /* SynchronizationTestMocks.swift */; };
 		B33DB5722686013400ED1344 /* XCTestCase+AwaitPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33DB5712686013400ED1344 /* XCTestCase+AwaitPublisher.swift */; };
@@ -599,6 +622,7 @@
 		B30BAC242694B5D900AE0476 /* TestStreamGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestStreamGenerator.swift; sourceTree = "<group>"; };
 		B30F9A602745601F00C85E17 /* SDSyncController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SDSyncController.swift; path = ../ABConnector/SDSyncController.swift; sourceTree = "<group>"; };
 		B30F9A622745626B00C85E17 /* SDCardAirBeamServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDCardAirBeamServices.swift; sourceTree = "<group>"; };
+		B31AFB6F27AE6F0700CA6FA3 /* PrintLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrintLogger.swift; sourceTree = "<group>"; };
 		B31B7EC8267E2024002DAC18 /* SyncContextServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncContextServiceTests.swift; sourceTree = "<group>"; };
 		B31B7ECA267E4DF6002DAC18 /* DummyError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DummyError.swift; sourceTree = "<group>"; };
 		B31B7ECC267E500B002DAC18 /* SyncDownstreamServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncDownstreamServiceTests.swift; sourceTree = "<group>"; };
@@ -610,6 +634,28 @@
 		B32D08AE267A6D13006C97ED /* ErasingToVoidPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErasingToVoidPublisher.swift; sourceTree = "<group>"; };
 		B3332F59275D61B000789BAD /* Int+orOne.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+orOne.swift"; sourceTree = "<group>"; };
 		B338934727A026BC0059E79B /* ConveringStatisticsDataSourceDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConveringStatisticsDataSourceDecorator.swift; sourceTree = "<group>"; };
+		B33B15E727AEE68100138FFA /* TextFileTrimmer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextFileTrimmer.swift; sourceTree = "<group>"; };
+		B33B15EA27AEE69900138FFA /* DocumentsFileLoggerStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentsFileLoggerStore.swift; sourceTree = "<group>"; };
+		B33B15EB27AEE69900138FFA /* ThresholdLoggerProxy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThresholdLoggerProxy.swift; sourceTree = "<group>"; };
+		B33B15EC27AEE69900138FFA /* FileLoggerDisposer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileLoggerDisposer.swift; sourceTree = "<group>"; };
+		B33B15ED27AEE69900138FFA /* DocumentsFileLoggerStore+LogHandle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DocumentsFileLoggerStore+LogHandle.swift"; sourceTree = "<group>"; };
+		B33B15EE27AEE69900138FFA /* CompositeLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompositeLogger.swift; sourceTree = "<group>"; };
+		B33B15EF27AEE69900138FFA /* FileLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileLogger.swift; sourceTree = "<group>"; };
+		B33B15F627AEE6B000138FFA /* ScheduledLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScheduledLogger.swift; sourceTree = "<group>"; };
+		B33B15FA27AEE6E900138FFA /* WeakRef+DisposableDataHolder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "WeakRef+DisposableDataHolder.swift"; sourceTree = "<group>"; };
+		B33B15FB27AEE6E900138FFA /* WeakRef.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeakRef.swift; sourceTree = "<group>"; };
+		B33B15FC27AEE6E900138FFA /* GarbageCollector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GarbageCollector.swift; sourceTree = "<group>"; };
+		B33B15FD27AEE6E900138FFA /* DisposableDataHolder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisposableDataHolder.swift; sourceTree = "<group>"; };
+		B33B160627AF0B3500138FFA /* ScheduledLoggerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScheduledLoggerTests.swift; sourceTree = "<group>"; };
+		B33B160727AF0B3500138FFA /* LoggerSpy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoggerSpy.swift; sourceTree = "<group>"; };
+		B33B160827AF0B3500138FFA /* DocumentsFileLoggerStoreTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentsFileLoggerStoreTests.swift; sourceTree = "<group>"; };
+		B33B160927AF0B3500138FFA /* TextFileTrimmerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextFileTrimmerTests.swift; sourceTree = "<group>"; };
+		B33B160A27AF0B3500138FFA /* CompositeLoggerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompositeLoggerTests.swift; sourceTree = "<group>"; };
+		B33B160B27AF0B3600138FFA /* ThresholdLoggerProxyTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThresholdLoggerProxyTests.swift; sourceTree = "<group>"; };
+		B33B160C27AF0B3600138FFA /* FileLoggerTestCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileLoggerTestCase.swift; sourceTree = "<group>"; };
+		B33B160D27AF0B3600138FFA /* FileLoggerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileLoggerTests.swift; sourceTree = "<group>"; };
+		B33B161627AF0B8C00138FFA /* LoggerBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggerBuilder.swift; sourceTree = "<group>"; };
+		B33B161827AF26BC00138FFA /* DateFormatter+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateFormatter+Extensions.swift"; sourceTree = "<group>"; };
 		B33DB56D2685FB2400ED1344 /* LocalizedErrorStub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizedErrorStub.swift; sourceTree = "<group>"; };
 		B33DB56F2685FCFB00ED1344 /* SynchronizationTestMocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynchronizationTestMocks.swift; sourceTree = "<group>"; };
 		B33DB5712686013400ED1344 /* XCTestCase+AwaitPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+AwaitPublisher.swift"; sourceTree = "<group>"; };
@@ -888,6 +934,7 @@
 		4FB39DFD2621B53C00E5E564 /* AirCastingTests */ = {
 			isa = PBXGroup;
 			children = (
+				B33B157D27AE854B00138FFA /* LoggerTests */,
 				B3E2B65D27506E9600019167 /* FileLineReaderTests */,
 				DDBC992726A1914000B0662E /* ForgotPasswordTests */,
 				B3E26A0A2676DAB0001A8E4C /* Logic */,
@@ -975,6 +1022,7 @@
 		AC32040625CC122900A68520 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				B31AFB6E27AE6EF200CA6FA3 /* Logging */,
 				B3E2B65827506DF500019167 /* FileLineReader */,
 				B32D08A0267A493C006C97ED /* Publishers */,
 				B3F1447F26AE4CA0006A4612 /* OfflineAlert.swift */,
@@ -999,6 +1047,7 @@
 				DDF62600269C779800F23489 /* UIApplication+AppInfo.swift.swift */,
 				DD3C99F326EA280800B42A46 /* TimeConversion.swift */,
 				DDD1F9B02705852400D8E87F /* DataFormatters.swift */,
+				B33B15E727AEE68100138FFA /* TextFileTrimmer.swift */,
 				DDB44C242704AF830027176E /* AveragingService.swift */,
 				DDC5F589271979F100F1F9D8 /* Fonts.swift */,
 				DDC5F5872719694800F1F9D8 /* ShadowImages.swift */,
@@ -1009,6 +1058,7 @@
 				3375E8D52791EFA70019A5DE /* FileZipper.swift */,
 				3375E8CE279185430019A5DE /* TemperatureConverter.swift */,
 				DD9EBFD4279EB70900192CB5 /* TextView.swift */,
+				B33B161827AF26BC00138FFA /* DateFormatter+Extensions.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1114,7 +1164,6 @@
 				B3EBB0FD26A04BF0002BD81F /* ForgotPassword */,
 				B3FD77A0267C94AF00E97CC2 /* Database */,
 				B3FD779F267C94AF00E97CC2 /* SessionsSynchronization */,
-				4F858F5D2624B4980059271A /* Log.swift */,
 				ACD01F6C25FF4C8C00B8F65F /* AirCasting.entitlements */,
 				AC7EB37525A6FB3A00A7F2AF /* AirCastingApp.swift */,
 				ACD01F912600A3C800B8F65F /* RootAppView.swift */,
@@ -1522,6 +1571,19 @@
 			path = Interfaces;
 			sourceTree = "<group>";
 		};
+		B31AFB6E27AE6EF200CA6FA3 /* Logging */ = {
+			isa = PBXGroup;
+			children = (
+				B33B15F927AEE6E900138FFA /* GarbageCollector */,
+				B33B15F827AEE6B400138FFA /* Helpers */,
+				B33B15E927AEE69900138FFA /* FileLogger */,
+				4F858F5D2624B4980059271A /* Log.swift */,
+				B33B161627AF0B8C00138FFA /* LoggerBuilder.swift */,
+				B31AFB6F27AE6F0700CA6FA3 /* PrintLogger.swift */,
+			);
+			path = Logging;
+			sourceTree = "<group>";
+		};
 		B32D08A0267A493C006C97ED /* Publishers */ = {
 			isa = PBXGroup;
 			children = (
@@ -1533,6 +1595,53 @@
 				B3F1447B26AE437E006A4612 /* OnErrorPublisher.swift */,
 			);
 			path = Publishers;
+			sourceTree = "<group>";
+		};
+		B33B157D27AE854B00138FFA /* LoggerTests */ = {
+			isa = PBXGroup;
+			children = (
+				B33B160A27AF0B3500138FFA /* CompositeLoggerTests.swift */,
+				B33B160827AF0B3500138FFA /* DocumentsFileLoggerStoreTests.swift */,
+				B33B160C27AF0B3600138FFA /* FileLoggerTestCase.swift */,
+				B33B160D27AF0B3600138FFA /* FileLoggerTests.swift */,
+				B33B160727AF0B3500138FFA /* LoggerSpy.swift */,
+				B33B160627AF0B3500138FFA /* ScheduledLoggerTests.swift */,
+				B33B160927AF0B3500138FFA /* TextFileTrimmerTests.swift */,
+				B33B160B27AF0B3600138FFA /* ThresholdLoggerProxyTests.swift */,
+			);
+			path = LoggerTests;
+			sourceTree = "<group>";
+		};
+		B33B15E927AEE69900138FFA /* FileLogger */ = {
+			isa = PBXGroup;
+			children = (
+				B33B15EA27AEE69900138FFA /* DocumentsFileLoggerStore.swift */,
+				B33B15EC27AEE69900138FFA /* FileLoggerDisposer.swift */,
+				B33B15ED27AEE69900138FFA /* DocumentsFileLoggerStore+LogHandle.swift */,
+				B33B15EF27AEE69900138FFA /* FileLogger.swift */,
+			);
+			path = FileLogger;
+			sourceTree = "<group>";
+		};
+		B33B15F827AEE6B400138FFA /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				B33B15F627AEE6B000138FFA /* ScheduledLogger.swift */,
+				B33B15EE27AEE69900138FFA /* CompositeLogger.swift */,
+				B33B15EB27AEE69900138FFA /* ThresholdLoggerProxy.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		B33B15F927AEE6E900138FFA /* GarbageCollector */ = {
+			isa = PBXGroup;
+			children = (
+				B33B15FA27AEE6E900138FFA /* WeakRef+DisposableDataHolder.swift */,
+				B33B15FB27AEE6E900138FFA /* WeakRef.swift */,
+				B33B15FC27AEE6E900138FFA /* GarbageCollector.swift */,
+				B33B15FD27AEE6E900138FFA /* DisposableDataHolder.swift */,
+			);
+			path = GarbageCollector;
 			sourceTree = "<group>";
 		};
 		B367A587274E9E05004C605B /* FeatureFlags */ = {
@@ -2230,6 +2339,7 @@
 				DD2E8BE92685E12000439F8B /* URLValidationTests.swift in Sources */,
 				4FB39E362621B77D00E5E564 /* APIClientMock.swift in Sources */,
 				B3E26A092676DA55001A8E4C /* TestDefaultProviding.swift in Sources */,
+				B33B161227AF0B3600138FFA /* CompositeLoggerTests.swift in Sources */,
 				B3EFAB1C26EFEA8B00E88141 /* AppBootstrapTests.swift in Sources */,
 				B30BAC1F2694AE9E00AE0476 /* MapStatsDataSourceTests.swift in Sources */,
 				B3F1447826AE4337006A4612 /* FilterErrorTests.swift in Sources */,
@@ -2242,22 +2352,29 @@
 				4FB39E092621B55D00E5E564 /* FixedSessionTests.swift in Sources */,
 				B37E1C942748208C0020A281 /* SDSyncFileWritingServiceTests.swift in Sources */,
 				B30BAC232694B3DA00AE0476 /* XCTest+Persistence.swift in Sources */,
+				B33B161527AF0B3600138FFA /* FileLoggerTests.swift in Sources */,
 				B33DB5702685FCFB00ED1344 /* SynchronizationTestMocks.swift in Sources */,
 				B3E26A2A26780D96001A8E4C /* SynchronizationControllerTestHelpers.swift in Sources */,
 				B30BAC212694AEAA00AE0476 /* GraphStatsDataSourceTests.swift in Sources */,
 				4FEEAED3262C53C20024AB7E /* UpdateSessionParamsServiceTests.swift in Sources */,
 				B30BABFD2693532700AE0476 /* MeasurementsStatisticsControllerTests.swift in Sources */,
 				B33DB56E2685FB2400ED1344 /* LocalizedErrorStub.swift in Sources */,
+				B33B161027AF0B3600138FFA /* DocumentsFileLoggerStoreTests.swift in Sources */,
 				B30BABFF26935C2B00AE0476 /* TimeInterval+Helpers.swift in Sources */,
 				B3E2B65F27506EA000019167 /* FileLineReaderTests.swift in Sources */,
 				B33DB5722686013400ED1344 /* XCTestCase+AwaitPublisher.swift in Sources */,
 				B30BAC252694B5D900AE0476 /* TestStreamGenerator.swift in Sources */,
+				B33B161327AF0B3600138FFA /* ThresholdLoggerProxyTests.swift in Sources */,
+				B33B160F27AF0B3600138FFA /* LoggerSpy.swift in Sources */,
 				B31B7EC9267E2024002DAC18 /* SyncContextServiceTests.swift in Sources */,
+				B33B161127AF0B3600138FFA /* TextFileTrimmerTests.swift in Sources */,
 				B31B7ECF267E83F6002DAC18 /* SyncUpstreamServiceTests.swift in Sources */,
 				B3E26A062676DA23001A8E4C /* ArrayExtensionsTests.swift in Sources */,
 				B3E26A0D2676DAD2001A8E4C /* SynchronizationTestDoubles.swift in Sources */,
 				B31B7ECB267E4DF6002DAC18 /* DummyError.swift in Sources */,
+				B33B161427AF0B3600138FFA /* FileLoggerTestCase.swift in Sources */,
 				B31B7ECD267E500B002DAC18 /* SyncDownstreamServiceTests.swift in Sources */,
+				B33B160E27AF0B3600138FFA /* ScheduledLoggerTests.swift in Sources */,
 				B30BABFB2693509D00AE0476 /* StandardStatisticsCalculatorTests.swift in Sources */,
 				DDF12AEE26B2B87F00D067C7 /* SessionCartViewModelTest.swift in Sources */,
 			);
@@ -2305,6 +2422,7 @@
 				DDD24D9726A8569400D4A327 /* ForgotPasswordController.swift in Sources */,
 				ACB7084C271EC50F00BA3816 /* Integer+ArraySlice.swift in Sources */,
 				4FF60BE926550077001618BE /* SelectPeripheralView.swift in Sources */,
+				B31AFB7027AE6F0700CA6FA3 /* PrintLogger.swift in Sources */,
 				AC32041F25CC485E00A68520 /* ConnectingABView.swift in Sources */,
 				ACD32A4F2600A8DD00818946 /* SettingsView.swift in Sources */,
 				4F8CDBD4265F8EE000976B25 /* SessionStorage.swift in Sources */,
@@ -2333,6 +2451,7 @@
 				B38E6CD026C5F83D00C21C45 /* StandardSesssionStopper.swift in Sources */,
 				ACBB05092761F07100A6B3FB /* CSVStreamsWithMeasurements.swift in Sources */,
 				B30F9A612745601F00C85E17 /* SDSyncController.swift in Sources */,
+				B33B15FE27AEE6E900138FFA /* WeakRef+DisposableDataHolder.swift in Sources */,
 				750A51DA2754D47F00D6F4E7 /* GridSquare.swift in Sources */,
 				AC960C7825DD39F500EC95DD /* ABConnectedView.swift in Sources */,
 				DD5687C326CFC8080028C2CA /* Constants.swift in Sources */,
@@ -2353,6 +2472,7 @@
 				4FD2CA4726406F2C007E932E /* Diff.swift in Sources */,
 				DD8C38092689A34E00901FDF /* UserDefaultsURLProvider.swift in Sources */,
 				DDF12AEB26B2B76C00D067C7 /* SessionCartFollowing.swift in Sources */,
+				B33B15F527AEE69900138FFA /* FileLogger.swift in Sources */,
 				B3F1448226AE4CD9006A4612 /* OfflineMessageViewModel.swift in Sources */,
 				B3FFBA2B273DC0690095BA4A /* RefreshControl.swift in Sources */,
 				AC5832DA25B196DD008C5DD5 /* Graph.swift in Sources */,
@@ -2368,6 +2488,7 @@
 				AC08A662266E2AEC0081697C /* ABMeasurementsView.swift in Sources */,
 				B3ED03C32729A8E300513522 /* AirCastingNotifications.swift in Sources */,
 				AC006D2B275F537300E99019 /* UploadFixedSessionAPIService.swift in Sources */,
+				B33B15FF27AEE6E900138FFA /* WeakRef.swift in Sources */,
 				DDCE5D3A26A213620033C211 /* DefaultDeleteSessionViewModel.swift in Sources */,
 				DD55C38E26BAA7330069838F /* LocationHandler.swift in Sources */,
 				ACCEB21A2763A2230040140B /* SDSyncCompleteView.swift in Sources */,
@@ -2376,6 +2497,7 @@
 				ACCEB2292768A13B0040140B /* ThresholdsValue.swift in Sources */,
 				4F5D3F6F262C862E003AD82E /* KeychainStorage.swift in Sources */,
 				DD9EBFD5279EB70900192CB5 /* TextView.swift in Sources */,
+				B33B15F127AEE69900138FFA /* ThresholdLoggerProxy.swift in Sources */,
 				DDBC156426A0799300982526 /* SystemSettings.swift in Sources */,
 				B3EBB10A26A06D11002BD81F /* EmailResetPasswordService.swift in Sources */,
 				4F945EEE2649F3F5008A5B22 /* SessionCreator.swift in Sources */,
@@ -2403,10 +2525,12 @@
 				334CC6FA2751454C00C10B53 /* SDCardMobileSessionsSavingService.swift in Sources */,
 				3387DD48278F0FC300B11D02 /* CSVFileGenerator.swift in Sources */,
 				ACFC708925C1A36A00D609D9 /* UIColor.swift in Sources */,
+				B33B15E827AEE68100138FFA /* TextFileTrimmer.swift in Sources */,
 				DDD24D8426A7FCE300D4A327 /* View+Print.swift in Sources */,
 				AC8CFF7225E7DA2D00FB2918 /* ABMeasurementStream.swift in Sources */,
 				B3EBB11126A06DCF002BD81F /* ForgotPasswordView.swift in Sources */,
 				DDD24D8E26A847CF00D4A327 /* LifeTimeEventsProvider.swift in Sources */,
+				B33B15F227AEE69900138FFA /* FileLoggerDisposer.swift in Sources */,
 				B3FD77B9267C94AF00E97CC2 /* DatabaseMeasurementStream.swift in Sources */,
 				AC524AAC2616003C0061AD45 /* DateFormatter.swift in Sources */,
 				AC93B8DA25BEDC46003D0A0D /* Array.swift in Sources */,
@@ -2435,6 +2559,7 @@
 				AC1471A325F23AE40062A53F /* CreateSessionAPI.swift in Sources */,
 				B32D08A4267A4957006C97ED /* LogErrorAndCompletePublisher.swift in Sources */,
 				ACC883882645784400C5DB70 /* GraphErorrHandling.swift in Sources */,
+				B33B15F027AEE69900138FFA /* DocumentsFileLoggerStore.swift in Sources */,
 				B3FD77BC267C94AF00E97CC2 /* ScheduledSessionSynchronizerProxy.swift in Sources */,
 				4F5D3F73262C91C6003AD82E /* UserAuthenticationSession.swift in Sources */,
 				AC6D569F25AEEAE700D221BA /* SessionHeaderView.swift in Sources */,
@@ -2464,6 +2589,7 @@
 				DD8DE68B2785B93A009B1726 /* MapNotesViewModel.swift in Sources */,
 				B367A594274E9EAA004C605B /* AppDelegate.swift in Sources */,
 				DD430B042670FA9600F1BF2E /* AirBeamOnboarding.swift in Sources */,
+				B33B161727AF0B8C00138FFA /* LoggerBuilder.swift in Sources */,
 				3387DD4E278F2AE400B11D02 /* GenerateSessionFileController.swift in Sources */,
 				AC8CFF7E25EE5F9200FB2918 /* AirBeam3Configurator.swift in Sources */,
 				AC8CFF7725ECF8B100FB2918 /* HexMessagesBuilder.swift in Sources */,
@@ -2483,6 +2609,7 @@
 				ACCEB22B276A240D0040140B /* EditViewModel.swift in Sources */,
 				B367A590274E9EAA004C605B /* FirebaseFeatureFlagProvider.swift in Sources */,
 				ACCEB2202763A2230040140B /* SDRestartABView.swift in Sources */,
+				B33B160127AEE6E900138FFA /* DisposableDataHolder.swift in Sources */,
 				B367A593274E9EAA004C605B /* FeatureFlagProvider.swift in Sources */,
 				DD8A36A426C3CE7900C26725 /* ChooseCustomLocationView.swift in Sources */,
 				AC524A9A2615E3600061AD45 /* NSManagedObjectContext+Utils.swift in Sources */,
@@ -2494,12 +2621,14 @@
 				DD839E15269F33A6006A8625 /* LocationState.swift in Sources */,
 				B3FD77BE267C94AF00E97CC2 /* SessionSynchronizationStore.swift in Sources */,
 				ACD01F952600A54400B8F65F /* UserDefaults+Preferences.swift in Sources */,
+				B33B15F427AEE69900138FFA /* CompositeLogger.swift in Sources */,
 				33F2238A270C674E00F14909 /* TimeInterval.swift in Sources */,
 				4FB39E3A2621BE7F00E5E564 /* APIClient.swift in Sources */,
 				AC9F526D2652A360003CF61F /* EmptyMobileDashboardView.swift in Sources */,
 				B367A591274E9EAA004C605B /* DefaultFeatureFlagProvider.swift in Sources */,
 				DDDBD48826D3BEC000EAA0A1 /* EmptyFixedDashboardView.swift in Sources */,
 				AC9EB64726EF4EEB00B1F780 /* AirBeamCellularSessionCreator.swift in Sources */,
+				B33B15F727AEE6B000138FFA /* ScheduledLogger.swift in Sources */,
 				B3FD77C1267C94AF00E97CC2 /* SessionUpstream.swift in Sources */,
 				AC4EC6BC25B5ABB700C1E312 /* StatisticsContainerView.swift in Sources */,
 				B3FD77B8267C94AF00E97CC2 /* Database.swift in Sources */,
@@ -2515,6 +2644,7 @@
 				AC8D6C6A25C049E300ED74D1 /* Environment.swift in Sources */,
 				ACD01F4025F8C1F800B8F65F /* SessionContext.swift in Sources */,
 				336A909327A4553000851100 /* ReoredringSessionCard.swift in Sources */,
+				B33B161927AF26BC00138FFA /* DateFormatter+Extensions.swift in Sources */,
 				DDF62601269C779800F23489 /* UIApplication+AppInfo.swift.swift in Sources */,
 				75B1DD48273BCCD200BCDF9B /* Heatmap.swift in Sources */,
 				AC8D6C7225C0574800ED74D1 /* LocationTracker.swift in Sources */,
@@ -2529,6 +2659,7 @@
 				B3EFAB1726EFE2DB00E88141 /* FirstRunInfoProvidable.swift in Sources */,
 				332F521425FA38430047236D /* MicrophoneManager.swift in Sources */,
 				DD5930E1273528860043C2A2 /* UserState.swift in Sources */,
+				B33B15F327AEE69900138FFA /* DocumentsFileLoggerStore+LogHandle.swift in Sources */,
 				AC8CFF4125E5095600FB2918 /* Textfield.swift in Sources */,
 				B3FD77C3267C94AF00E97CC2 /* SessionDownloadService.swift in Sources */,
 				AC7EB37625A6FB3A00A7F2AF /* AirCastingApp.swift in Sources */,
@@ -2565,6 +2696,7 @@
 				DD1C99C1267CBFCB00B786C4 /* MyAccountViewSignOut.swift in Sources */,
 				3375E8D62791EFA70019A5DE /* FileZipper.swift in Sources */,
 				DD55C39026BAA73F0069838F /* BluetoothHandler.swift in Sources */,
+				B33B160027AEE6E900138FFA /* GarbageCollector.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

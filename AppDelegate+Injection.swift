@@ -7,6 +7,33 @@ import Resolver
 
 extension Resolver: ResolverRegistering {
     public static func registerAllServices() {
+        // MARK: Logging
+        main.register { (_, _) -> Logger in
+            let fileQueue = DispatchQueue(label: "com.habitatmap.filelogger", qos: .utility, attributes: [], autoreleaseFrequency: .workItem, target: nil)
+            return CompositeLogger(loggers: [
+                LoggerBuilder(type: .debug).build(),
+                LoggerBuilder(type: .file)
+                    .addMinimalLevel(.info)
+                    .dispatchOn(fileQueue)
+                    .build()
+            ])
+        }.scope(.application)
+        
+        main.register {
+            DocumentsFileLoggerStore(logDirectory: "logs",
+                                     logFilename: "log.txt",
+                                     maxLogs: 3000,
+                                     overflowThreshold: 500) as FileLoggerStore
+        }
+        .implements(FileLoggerResettable.self)
+        .implements(LogfileProvider.self)
+        .scope(.application)
+        
+        main.register {
+            SimpleLogFormatter() as LogFormatter
+        }
+        
+        
         // MARK: Persistence
         main.register { PersistenceController(inMemory: false) }
             .implements(SessionsFetchable.self)

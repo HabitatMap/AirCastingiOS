@@ -9,6 +9,20 @@ import SwiftUI
 import AirCastingStyling
 import Resolver
 
+class ShareLogsViewModel: ObservableObject {
+    @Published var shareSheetPresented: Bool = false
+    var file: URL? { logFileProvider.logFileURLForSharing() }
+    @Injected private var logFileProvider: LogfileProvider
+    
+    func shareLogsButtonTapped() {
+        shareSheetPresented = true
+    }
+    
+    func sharingFinished() {
+        shareSheetPresented = false
+    }
+}
+
 struct SettingsView: View {
     var viewModel: SettingsViewModel
     let logoutController: LogoutController
@@ -20,6 +34,9 @@ struct SettingsView: View {
     private var SDClearingRouteProcess = true
     @InjectedObject private var userSettings: UserSettings
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
+    #if DEBUG || BETA
+    @StateObject private var shareLogsViewModel = ShareLogsViewModel()
+    #endif
 
     init(logoutController: LogoutController, viewModel: SettingsViewModel) {
         let navBarAppearance = UINavigationBar.appearance()
@@ -54,6 +71,13 @@ struct SettingsView: View {
                 }
             }
             .environmentObject(viewModel.sessionContext)
+            #if BETA || DEBUG
+            .sheet(isPresented: $shareLogsViewModel.shareSheetPresented) {
+                ActivityViewController(itemsToShare: [shareLogsViewModel.file as Any]) { _, _, _, _ in
+                    shareLogsViewModel.sharingFinished()
+                }
+            }
+            #endif
         } else {
             NavigationView {
                 main
@@ -84,6 +108,13 @@ struct SettingsView: View {
                         }
                 })
             .environmentObject(viewModel.sessionContext)
+            #if BETA || DEBUG
+            .sheet(isPresented: $shareLogsViewModel.shareSheetPresented) {
+                ActivityViewController(itemsToShare: [shareLogsViewModel.file as Any]) { _, _, _, _ in
+                    shareLogsViewModel.sharingFinished()
+                }
+            }
+            #endif
         }
     }
 
@@ -94,6 +125,7 @@ struct SettingsView: View {
             #if BETA || DEBUG
             Section() {
                 navigateToAppConfigurationButton
+                shareLogsButton
             }
             #endif
             appInfoSection
@@ -251,6 +283,12 @@ struct SettingsView: View {
                 .navigationTitle("App config")
         })
             .font(Fonts.boldHeading1)
+    }
+    
+    private var shareLogsButton: some View {
+        Button("Share logs") {
+            shareLogsViewModel.shareLogsButtonTapped()
+        }
     }
     #endif
 }
