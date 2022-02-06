@@ -11,8 +11,9 @@ class ScheduledLogger: Logger {
     }
     
     func log(_ message: @escaping @autoclosure () -> String, type: LogLevel, file: String = #file, function: String = #function, line: Int = #line) {
+        let msg = message()
         queue.async {
-            self.logger.log(message(), type: type, file: file, function: function, line: line)
+            self.logger.log(msg, type: type, file: file, function: function, line: line)
         }
     }
 }
