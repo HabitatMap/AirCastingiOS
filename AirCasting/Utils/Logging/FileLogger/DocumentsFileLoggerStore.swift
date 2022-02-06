@@ -1,4 +1,5 @@
 import Foundation
+import Resolver
 
 class DocumentsFileLoggerStore: FileLoggerStore, FileLoggerResettable, LogfileProvider {
     private weak var currentHandle: LogHandle?
@@ -7,6 +8,7 @@ class DocumentsFileLoggerStore: FileLoggerStore, FileLoggerResettable, LogfilePr
     private let logFilename: String
     private let maxLogs: UInt
     private let overflowThreshold: UInt
+    @Injected private var headerProvider: FileLoggerHeaderProvider
     
     /// For `maxLogs` and `overflowThreshold`docs please refer to the `LogHandle`
     init(logDirectory: String, logFilename: String, maxLogs: UInt, overflowThreshold: UInt) {
@@ -57,20 +59,24 @@ class DocumentsFileLoggerStore: FileLoggerStore, FileLoggerResettable, LogfilePr
     }
     
     private func createNewLogFile() throws {
-        let headerText = "AirCasting log started. \(headerDateFormatter.string(from: DateBuilder.getRawDate())) UTC."
         let directoryURL = getLogFileDirectory()
         if !FileManager.default.fileExists(atPath: directoryURL.path) {
             try FileManager.default.createDirectory(at: directoryURL, withIntermediateDirectories: true, attributes: nil)
         }
         let fileURL = getLogFilePath()
-        guard FileManager.default.createFile(atPath: fileURL.path, contents: headerText.data(using: .utf8)!, attributes: nil) else {
+        guard FileManager.default.createFile(atPath: fileURL.path,
+                                             contents: headerProvider.headerText.data(using: .utf8)!,
+                                             attributes: nil) else {
             assertionFailure("Couldn't create log file at \(fileURL)")
             throw DocumentsFileLoggerStoreError.couldntCreateLogFile
         }
     }
     
     private func generateHandle(for fileURL: URL) throws -> LogHandle {
-        let handle = try LogHandle(filePath: fileURL, headerLineCount: 1, maxLogs: maxLogs, overflowThreshold: overflowThreshold)
+        let handle = try LogHandle(filePath: fileURL,
+                                   headerLineCount: UInt(headerProvider.headerText.isEmpty ? 0 : headerProvider.headerText.components(separatedBy: .newlines).count),
+                                   maxLogs: maxLogs,
+                                   overflowThreshold: overflowThreshold)
         currentHandle = handle
         return handle
     }

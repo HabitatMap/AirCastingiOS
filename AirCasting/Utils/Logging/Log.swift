@@ -32,7 +32,7 @@ public protocol LogFormatter {
 
 public class SimpleLogFormatter: LogFormatter {
     let symbols: [LogLevel: String]
-    private let formatter = DateFormatter(format: "MM-dd-y HH:mm:sss", timezone: .utc)
+    private let formatter = DateFormatter(format: "MM-dd-y HH:mm:ss.SSS", timezone: .utc)
     
     public init(symbols: [LogLevel: String] = [.info: "👀", .warning: "⚠️", .error: "‼️"]) {
         self.symbols = symbols

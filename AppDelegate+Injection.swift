@@ -4,6 +4,7 @@
 import Foundation
 import CoreLocation
 import Resolver
+import DeviceKit
 
 extension Resolver: ResolverRegistering {
     public static let fileLoggerQueue = DispatchQueue(label: "com.habitatmap.filelogger", qos: .utility, attributes: [], autoreleaseFrequency: .workItem, target: nil)
@@ -31,6 +32,14 @@ extension Resolver: ResolverRegistering {
         
         main.register {
             SimpleLogFormatter() as LogFormatter
+        }
+        
+        main.register { (_, _) -> FileLoggerHeaderProvider in
+            let loggerDateFormatter = DateFormatter(format: "MM-dd-y HH:mm:ss", timezone: .utc, locale: Locale(identifier: "en_US"))
+            return AirCastingLogoFileLoggerHeaderProvider(logVersion: "1.0",
+                                                          created: loggerDateFormatter.string(from: DateBuilder.getRawDate()),
+                                                          device: "\(Device.current)",
+                                                          os: "\(Device.current.systemName ?? "??") \(Device.current.systemVersion ?? "??")") as FileLoggerHeaderProvider
         }
         
         // MARK: Garbage collection
