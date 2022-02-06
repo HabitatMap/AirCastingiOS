@@ -51,11 +51,12 @@ class TextFileTrimmer {
         switch progress {
         case .endOfFile: break
         case .line(let str):
-            let shouldAddNewline = lineCount > trimCount
+            let firstCopiedLineNumber = offset > 0 ? 0 : (offset + trimCount)
+            let shouldAddNewline = lineCount != firstCopiedLineNumber
             let prefix = shouldAddNewline ? "\n" : ""
             if lineCount < offset {
                 try file.write(contentsOf: (prefix + str).data(using: .utf8)!)
-            } else if (lineCount - offset) < trimCount {
+            } else if lineCount >= offset && lineCount < (offset + trimCount) {
                 break
             } else {
                 try file.write(contentsOf: (prefix + str).data(using: .utf8)!)

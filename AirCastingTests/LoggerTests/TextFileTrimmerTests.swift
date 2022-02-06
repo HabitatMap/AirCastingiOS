@@ -17,6 +17,12 @@ class TextFileTrimmerTests: FileLoggerTestCase {
         XCTAssertEqual(rawLogfileContent(), "Second\nThird")
     }
     
+    func test_multipleLinesOffset_andTrimmed() {
+        let sut = createSUT(fileLines: ["First", "Second", "Third", "Fourth", "Fifth"])
+        trim(sut, direction: .beginning(offset: 2), trimCount: 2)
+        XCTAssertEqual(rawLogfileContent(), "First\nSecond\nFifth")
+    }
+    
     func test_whenOffset_andTrimmed() {
         let sut = createSUT(fileLines: ["First", "Second", "Third"])
         trim(sut, direction: .beginning(offset: 1), trimCount: 1)
