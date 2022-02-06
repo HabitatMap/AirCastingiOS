@@ -3,10 +3,20 @@ import UIKit
 import Resolver
 
 extension DocumentsFileLoggerStore {
+    /// Internal class of the `DocumentsFileLoggerStore` representing a log file handle.
+    /// - Note
+    /// This class uses a buffered output. It will wait for a number of logs to accumulate before commiting
+    /// to an actual file write (see `maxBufferSize` const)
+    /// - Note
+    /// Log file trimming system is in place. It takes 3 parameters:
+    /// * headerLineCount: a number of lines at the top of the file that are a header and should be preserved while trimming
+    /// * maxLogs: maximum number of logs that a logfile should hold
+    /// * overflowThreshold: a threshold value for logfile overflow. When reached the trimming process will start (this is done
+    /// so that we don't trim on each save after maxLogs is exceeded)
     class LogHandle: FileLoggerFileHandle {
         let filePath: URL
         private let headerLineCount: UInt
-        private let maxBufferSize = 25
+        private let maxBufferSize: Int
         private let maxLogs: UInt
         private let overflowThreshold: UInt
         private var willTerminateToken: Any?
@@ -15,10 +25,11 @@ extension DocumentsFileLoggerStore {
         private var logCounter: UInt = 0
         private let trimmer: TextFileTrimmer
         
-        init(filePath: URL, headerLineCount: UInt, maxLogs: UInt, overflowThreshold: UInt) throws {
+        init(filePath: URL, headerLineCount: UInt, maxLogs: UInt, overflowThreshold: UInt, maxBufferSize: Int = 25) throws {
             assert(maxLogs + overflowThreshold > maxBufferSize, "Max logs cannot be lower than max buffer size!")
             self.filePath = filePath
             self.headerLineCount = headerLineCount
+            self.maxBufferSize = maxBufferSize
             self.maxLogs = maxLogs
             self.overflowThreshold = overflowThreshold
             let reader = Resolver.resolve(FileLineReader.self)

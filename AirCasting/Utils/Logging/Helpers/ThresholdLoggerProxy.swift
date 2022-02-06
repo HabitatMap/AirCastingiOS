@@ -1,5 +1,6 @@
 import Foundation
 
+/// A proxy that will drop messages that have lower `LogLevel` than the provided threshold.
 class ThresholdLoggerProxy: Logger {
     private let thresholdLevel: LogLevel
     private let logger: Logger

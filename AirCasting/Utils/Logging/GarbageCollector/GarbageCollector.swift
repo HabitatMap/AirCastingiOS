@@ -16,7 +16,7 @@ class GarbageCollector {
         }
     }
     
-    /// Adds a `DisposableDataHolder` to the list. Please note that this list references objects stringly. If you register a class type here, use a `WeakRef` wrapper.
+    /// Adds a `DisposableDataHolder` to the list. Please note that this list references objects strongly. If you register a class type here, use a `WeakRef` wrapper.
     func addHolder(_ holder: DisposableDataHolder) {
         Log.verbose("Added disposable data holder to garbage collection: \(printable(holder))")
         holders.append(holder)

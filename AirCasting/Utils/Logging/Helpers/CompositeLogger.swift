@@ -1,5 +1,6 @@
 import Foundation
 
+/// A composite providing for putting multiple `Logger` objects together.
 class CompositeLogger: Logger {
     private let loggers: [Logger]
     

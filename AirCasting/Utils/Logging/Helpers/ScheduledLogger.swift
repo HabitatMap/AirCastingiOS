@@ -1,5 +1,6 @@
 import Foundation
 
+/// A decorator providing scheduling `Logger` to a given `DispatchQueue`
 class ScheduledLogger: Logger {
     private let queue: DispatchQueue
     private let logger: Logger

@@ -6,15 +6,15 @@ import CoreLocation
 import Resolver
 
 extension Resolver: ResolverRegistering {
+    public static let fileLoggerQueue = DispatchQueue(label: "com.habitatmap.filelogger", qos: .utility, attributes: [], autoreleaseFrequency: .workItem, target: nil)
     public static func registerAllServices() {
         // MARK: Logging
         main.register { (_, _) -> Logger in
-            let fileQueue = DispatchQueue(label: "com.habitatmap.filelogger", qos: .utility, attributes: [], autoreleaseFrequency: .workItem, target: nil)
             return CompositeLogger(loggers: [
                 LoggerBuilder(type: .debug).build(),
                 LoggerBuilder(type: .file)
                     .addMinimalLevel(.info)
-                    .dispatchOn(fileQueue)
+                    .dispatchOn(fileLoggerQueue)
                     .build()
             ])
         }.scope(.application)
@@ -33,6 +33,13 @@ extension Resolver: ResolverRegistering {
             SimpleLogFormatter() as LogFormatter
         }
         
+        // MARK: Garbage collection
+        main.register { (_, _) -> GarbageCollector in
+            let collector = GarbageCollector()
+            let logsHolder = FileLoggerDisposer(resettableLogger: Resolver.resolve(), disposeQueue: fileLoggerQueue)
+            collector.addHolder(logsHolder)
+            return collector
+        }.scope(.application)
         
         // MARK: Persistence
         main.register { PersistenceController(inMemory: false) }

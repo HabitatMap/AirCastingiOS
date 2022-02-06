@@ -4,6 +4,7 @@
 import Foundation
 
 // swiftlint:disable print_using
+/// A logger that will use `print` statements as output. Only eligible for debug builds connected to the debugger (note that `print` logs are not seen in the Console.app
 public final class PrintLogger: Logger {
     let formatter: LogFormatter
 

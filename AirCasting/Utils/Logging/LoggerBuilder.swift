@@ -4,6 +4,7 @@
 import Foundation
 import Resolver
 
+/// Utility class to simplify logger creation process.
 class LoggerBuilder {
     enum LoggerType {
         case file

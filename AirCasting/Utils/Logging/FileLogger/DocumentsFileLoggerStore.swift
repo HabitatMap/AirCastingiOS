@@ -1,9 +1,5 @@
 import Foundation
 
-protocol LogfileProvider {
-    func logFileURLForSharing() -> URL?
-}
-
 class DocumentsFileLoggerStore: FileLoggerStore, FileLoggerResettable, LogfileProvider {
     private weak var currentHandle: LogHandle?
     private let headerDateFormatter = DateFormatter(format: "EEEE, MMM d, y", timezone: .utc, locale: .init(identifier: "en_US"))
@@ -12,6 +8,7 @@ class DocumentsFileLoggerStore: FileLoggerStore, FileLoggerResettable, LogfilePr
     private let maxLogs: UInt
     private let overflowThreshold: UInt
     
+    /// For `maxLogs` and `overflowThreshold`docs please refer to the `LogHandle`
     init(logDirectory: String, logFilename: String, maxLogs: UInt, overflowThreshold: UInt) {
         self.logDirectory = logDirectory
         self.logFilename = logFilename

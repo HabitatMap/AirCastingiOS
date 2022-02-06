@@ -9,20 +9,6 @@ import SwiftUI
 import AirCastingStyling
 import Resolver
 
-class ShareLogsViewModel: ObservableObject {
-    @Published var shareSheetPresented: Bool = false
-    var file: URL? { logFileProvider.logFileURLForSharing() }
-    @Injected private var logFileProvider: LogfileProvider
-    
-    func shareLogsButtonTapped() {
-        shareSheetPresented = true
-    }
-    
-    func sharingFinished() {
-        shareSheetPresented = false
-    }
-}
-
 struct SettingsView: View {
     var viewModel: SettingsViewModel
     let logoutController: LogoutController

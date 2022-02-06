@@ -1,5 +1,6 @@
 import Foundation
 
+/// Use this utility to weakify class-based protocol implementations
 public final class WeakRef<T: AnyObject>: CustomStringConvertible {
     public weak var object: T?
     
