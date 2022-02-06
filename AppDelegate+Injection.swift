@@ -20,6 +20,9 @@ extension Resolver: ResolverRegistering {
             ])
         }.scope(.application)
         
+        main.register { PrintLogger() }.scope(.application)
+        main.register { FileLogger() }.scope(.application)
+        
         main.register {
             DocumentsFileLoggerStore(logDirectory: "logs",
                                      logFilename: "log.txt",
@@ -45,7 +48,7 @@ extension Resolver: ResolverRegistering {
         // MARK: Garbage collection
         main.register { (_, _) -> GarbageCollector in
             let collector = GarbageCollector()
-            let logsHolder = FileLoggerDisposer(resettableLogger: Resolver.resolve(), disposeQueue: fileLoggerQueue)
+            let logsHolder = FileLoggerDisposer(disposeQueue: fileLoggerQueue)
             collector.addHolder(logsHolder)
             return collector
         }.scope(.application)

@@ -3,7 +3,6 @@ import Resolver
 
 class DocumentsFileLoggerStore: FileLoggerStore, FileLoggerResettable, LogfileProvider {
     private weak var currentHandle: LogHandle?
-    private let headerDateFormatter = DateFormatter(format: "EEEE, MMM d, y", timezone: .utc, locale: .init(identifier: "en_US"))
     private let logDirectory: String
     private let logFilename: String
     private let maxLogs: UInt
@@ -18,8 +17,12 @@ class DocumentsFileLoggerStore: FileLoggerStore, FileLoggerResettable, LogfilePr
         self.overflowThreshold = overflowThreshold
     }
     
-    func openOrCreateLogFile() throws -> FileLoggerFileHandle {
-        try _openOrCreateLogFile()
+    func openOrCreateLogFile() -> FileLoggerFileHandle {
+        do {
+            return try _openOrCreateLogFile()
+        } catch {
+            return EmptyFileLoggerFileHandle()
+        }
     }
     
     func resetFile() throws {
@@ -86,4 +89,10 @@ private enum DocumentsFileLoggerStoreError: String, Error, LocalizedError {
     case couldntCreateLogFile
     case logFileAlreadyOpened
     var errorDescription: String? { self.rawValue }
+}
+
+extension DocumentsFileLoggerStore {
+    class EmptyFileLoggerFileHandle: FileLoggerFileHandle {
+        func appendFile(with: String) throws { }
+    }
 }

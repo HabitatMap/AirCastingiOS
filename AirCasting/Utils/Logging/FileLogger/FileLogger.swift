@@ -2,10 +2,11 @@
 //
 
 import Foundation
+import Resolver
 
 /// Use d by the `FileLogger` for opening log files
 protocol FileLoggerStore {
-    func openOrCreateLogFile() throws -> FileLoggerFileHandle
+    func openOrCreateLogFile() -> FileLoggerFileHandle
 }
 
 /// Returned by the `FileLoggerStore`. Used for appending previously opened file
@@ -18,14 +19,11 @@ protocol FileLoggerFileHandle {
 
 /// A logger that outputs logs into a file
 class FileLogger: Logger {
-    private let store: FileLoggerStore
     private let fileHandle: FileLoggerFileHandle
-    private let formatter: LogFormatter
+    @Injected private var formatter: LogFormatter
     
-    init(store: FileLoggerStore, formatter: LogFormatter) throws {
-        self.store = store
-        self.fileHandle = try store.openOrCreateLogFile()
-        self.formatter = formatter
+    init() {
+        self.fileHandle = Resolver.resolve(FileLoggerStore.self).openOrCreateLogFile()
     }
     
     func log(_ message: @escaping @autoclosure () -> String, type: LogLevel, file: String = #file, function: String = #function, line: Int = #line) {

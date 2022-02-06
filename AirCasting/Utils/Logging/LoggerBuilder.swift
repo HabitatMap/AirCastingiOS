@@ -38,19 +38,10 @@ class LoggerBuilder {
     
     
     private static func createDebugLogger() -> Logger {
-        PrintLogger(formatter: Resolver.resolve())
+        return Resolver.resolve(PrintLogger.self)
     }
     
     private static func createFileLogger() -> Logger {
-        do {
-            return try FileLogger(store: Resolver.resolve(),
-                                  formatter: Resolver.resolve())
-        } catch {
-            return NullLoger()
-        }
-    }
-    
-    private struct NullLoger: Logger {
-        func log(_ message: @autoclosure @escaping () -> String, type: LogLevel, file: String, function: String, line: Int) { }
+        return Resolver.resolve(FileLogger.self)
     }
 }
