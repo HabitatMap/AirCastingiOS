@@ -259,6 +259,7 @@
 		B3E2B65A27506E0D00019167 /* FileLineReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E2B65927506E0D00019167 /* FileLineReader.swift */; };
 		B3E2B65C27506E7300019167 /* DefaultFileLineReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E2B65B27506E7300019167 /* DefaultFileLineReader.swift */; };
 		B3E2B65F27506EA000019167 /* FileLineReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E2B65E27506EA000019167 /* FileLineReaderTests.swift */; };
+		B3EAF01C27B03CDC00290222 /* ChartDatabaseObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EAF01B27B03CDC00290222 /* ChartDatabaseObserver.swift */; };
 		B3EAF78F2730C161000FFF23 /* AVSessionInterruptionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EAF78E2730C161000FFF23 /* AVSessionInterruptionHandler.swift */; };
 		B3EBB10326A05551002BD81F /* ForgotPasswordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EBB10226A05551002BD81F /* ForgotPasswordViewModel.swift */; };
 		B3EBB10626A06CD7002BD81F /* ScheduledForgotPasswordControllerProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EBB10526A06CD7002BD81F /* ScheduledForgotPasswordControllerProxy.swift */; };
@@ -645,6 +646,7 @@
 		B3E2B65927506E0D00019167 /* FileLineReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileLineReader.swift; sourceTree = "<group>"; };
 		B3E2B65B27506E7300019167 /* DefaultFileLineReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultFileLineReader.swift; sourceTree = "<group>"; };
 		B3E2B65E27506EA000019167 /* FileLineReaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileLineReaderTests.swift; sourceTree = "<group>"; };
+		B3EAF01B27B03CDC00290222 /* ChartDatabaseObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartDatabaseObserver.swift; sourceTree = "<group>"; };
 		B3EAF78E2730C161000FFF23 /* AVSessionInterruptionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVSessionInterruptionHandler.swift; sourceTree = "<group>"; };
 		B3EBB10226A05551002BD81F /* ForgotPasswordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordViewModel.swift; sourceTree = "<group>"; };
 		B3EBB10526A06CD7002BD81F /* ScheduledForgotPasswordControllerProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduledForgotPasswordControllerProxy.swift; sourceTree = "<group>"; };
@@ -808,6 +810,7 @@
 			children = (
 				AC6D567E25AC54A400D221BA /* ChartView.swift */,
 				33769A5B2705B06F007D1EA7 /* ChartViewModel.swift */,
+				B3EAF01B27B03CDC00290222 /* ChartDatabaseObserver.swift */,
 			);
 			name = Chart;
 			sourceTree = "<group>";
@@ -2492,6 +2495,7 @@
 				AC6D567F25AC54A400D221BA /* ChartView.swift in Sources */,
 				ACCEB2222763A2230040140B /* BackendSyncCompletedViewModel.swift in Sources */,
 				DD839E15269F33A6006A8625 /* LocationState.swift in Sources */,
+				B3EAF01C27B03CDC00290222 /* ChartDatabaseObserver.swift in Sources */,
 				B3FD77BE267C94AF00E97CC2 /* SessionSynchronizationStore.swift in Sources */,
 				ACD01F952600A54400B8F65F /* UserDefaults+Preferences.swift in Sources */,
 				33F2238A270C674E00F14909 /* TimeInterval.swift in Sources */,
