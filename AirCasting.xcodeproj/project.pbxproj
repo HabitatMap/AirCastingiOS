@@ -296,6 +296,7 @@
 		DD28047B26B3D7730060F55E /* BluetoothConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD28047A26B3D7730060F55E /* BluetoothConnector.swift */; };
 		DD2E8BE92685E12000439F8B /* URLValidationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD2E8BE82685E12000439F8B /* URLValidationTests.swift */; };
 		DD2E8BEB2685E13600439F8B /* BackendURLValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD2E8BEA2685E13600439F8B /* BackendURLValidator.swift */; };
+		DD38A4AF27B1584600D2091F /* StringsCustomizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD38A4AE27B1584600D2091F /* StringsCustomizer.swift */; };
 		DD3C99F226E9DE5800B42A46 /* SessionSynchronizationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD3C99F126E9DE5800B42A46 /* SessionSynchronizationViewModel.swift */; };
 		DD3C99F426EA280800B42A46 /* TimeConversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD3C99F326EA280800B42A46 /* TimeConversion.swift */; };
 		DD4108FA273BE94D00BF10FF /* CreateSessionDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD4108F9273BE94D00BF10FF /* CreateSessionDetailsViewModel.swift */; };
@@ -677,6 +678,7 @@
 		DD28047A26B3D7730060F55E /* BluetoothConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothConnector.swift; sourceTree = "<group>"; };
 		DD2E8BE82685E12000439F8B /* URLValidationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLValidationTests.swift; sourceTree = "<group>"; };
 		DD2E8BEA2685E13600439F8B /* BackendURLValidator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackendURLValidator.swift; sourceTree = "<group>"; };
+		DD38A4AE27B1584600D2091F /* StringsCustomizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringsCustomizer.swift; sourceTree = "<group>"; };
 		DD3C99F126E9DE5800B42A46 /* SessionSynchronizationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionSynchronizationViewModel.swift; sourceTree = "<group>"; };
 		DD3C99F326EA280800B42A46 /* TimeConversion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeConversion.swift; sourceTree = "<group>"; };
 		DD4108F9273BE94D00BF10FF /* CreateSessionDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSessionDetailsViewModel.swift; sourceTree = "<group>"; };
@@ -982,6 +984,7 @@
 				3375E8D52791EFA70019A5DE /* FileZipper.swift */,
 				3375E8CE279185430019A5DE /* TemperatureConverter.swift */,
 				DD9EBFD4279EB70900192CB5 /* TextView.swift */,
+				DD38A4AE27B1584600D2091F /* StringsCustomizer.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -2386,6 +2389,7 @@
 				750A51D82754D41A00D6F4E7 /* GridCalculator.swift in Sources */,
 				ACCEB2272763A2230040140B /* UnplugABViewModel.swift in Sources */,
 				B3FD77BB267C94AF00E97CC2 /* SessionsSynchronizationStoreDataConverter.swift in Sources */,
+				DD38A4AF27B1584600D2091F /* StringsCustomizer.swift in Sources */,
 				AC32041C25CC46EF00A68520 /* PowerABView.swift in Sources */,
 				DD700CF22695CE9C0048A17D /* MailView.swift in Sources */,
 				B32D08AD267A6437006C97ED /* LogEvent.swift in Sources */,

@@ -7,13 +7,6 @@ import SwiftUI
 /// EXAMPLE:
 /// static let [name of variable]: String = NSLocalizedString("[Text here]",
 ///                                             comment: " ")
-///
-/// Every time, when string is devided into parts, please use the same name, for each of them. At the end, use number which will be incremented on every next part.
-/// EXAMPLE:
-/// static let textInParts_1 = ...
-/// static let textInParts_2 = ...
-/// Add following comment in the NSLocalizedString: "It consists of few parts. Please consider them together. Whole text is following: [Provide merged text]"
-
 struct Strings {
     enum Commons {
         static let cancel: String = NSLocalizedString("Cancel",
@@ -62,10 +55,6 @@ struct Strings {
                                                     comment: "")
         static let buildText = NSLocalizedString("build",
                                                  comment: "")
-        static let betaBuild = NSLocalizedString("Beta build",
-                                                 comment: "")
-        static let debugBuild = NSLocalizedString("Debug build",
-                                                  comment: "")
     }
     
     enum BackendSettings {
@@ -261,9 +250,7 @@ struct Strings {
                                                              comment: "")
         static let passwordTitle: String = NSLocalizedString("WiFi network name & password:",
                                                              comment: "")
-        static let nameAndPasswordTitle_1: String = NSLocalizedString("Password for ",
-                                                                      comment: "It consists of few parts. Please consider them together. Whole text is following: Password for network %@")
-        static let nameAndPasswordTitle_2: String = NSLocalizedString(" network:",
+        static let nameAndPasswordTitle: String = NSLocalizedString("Password for %@ network",
                                                                       comment: "")
         static let differentNetwork: String = NSLocalizedString("Connect to a different WiFi network.",
                                                                 comment: "")
@@ -297,10 +284,12 @@ struct Strings {
     enum OnboardingAirBeamSheet {
         static let sheetTitle: String = NSLocalizedString("How AirBeam works?",
                                                           comment: "")
-        static let sheetDescription_1: String = NSLocalizedString("In ",
-                                                                  comment: "It consists of few parts. Please consider them together. Whole text is following: In mobile mode, the AirBeam captures personal exposures. In fixed mode, it can be installed indoors or outdoors to keep tabs on pollution levels in your home, office, backyard, or neighborhood 24/7.")
-        static let sheetDescription_2: String = NSLocalizedString("mobile ",
+        static let sheetDescription_1: String = NSLocalizedString("In mobile mode, the AirBeam captures personal exposures. In fixed mode, it can be installed indoors or outdoors to keep tabs on pollution levels in your home, office, backyard, or neighborhood 24/7.",
                                                                   comment: "")
+        static let mobile: String = NSLocalizedString("mobile",
+                                                      comment: "")
+        static let fixed: String = NSLocalizedString("fixed",
+                                                      comment: "")
         static let sheetDescription_3: String = NSLocalizedString("mode, the AirBeam captures personal exposures. In ",
                                                                   comment: "")
         static let sheetDescription_4: String = NSLocalizedString("fixed ",
@@ -497,13 +486,13 @@ struct Strings {
                                                              comment: "")
         static let title: String = NSLocalizedString("What device are you using to record this session?",
                                                      comment: "")
-        static let bluetoothLabel_1: String = NSLocalizedString("Bluetooth device",
-                                                                comment: "It consists of two parts. Please consider them together. Whole text is following: Bluetooth device for example AirBeam")
-        static let bluetoothLabel_2: String = NSLocalizedString("for example AirBeam",
+        static let bluetoothLabel: String = NSLocalizedString("Bluetooth device for example AirBeam",
                                                                 comment: "")
-        static let micLabel_1: String = NSLocalizedString("Phone microphone",
+        static let bluetoothDevice: String = NSLocalizedString("Bluetooth device",
+                                                                comment: "")
+        static let micLabel_1: String = NSLocalizedString("Phone microphone to measure sound level",
                                                           comment: "It consists of two parts. Please consider them together. Whole text is following: Phone microphone to measure sound level")
-        static let micLabel_2: String = NSLocalizedString("to measure sound level",
+        static let phoneMicrophone: String = NSLocalizedString("Phone microphone",
                                                           comment: "")
         static let chooseButton: String = NSLocalizedString("Choose",
                                                             comment: "")
@@ -568,22 +557,20 @@ struct Strings {
                                                                    comment: "")
         static let enterStandaloneModeButton: String = NSLocalizedString("Enter standalone mode",
                                                                          comment: "")
-        static let finishAlertTitle: String = NSLocalizedString("Finish recording ",
-                                                                comment: "It consists of few parts. Please consider them together. Whole text is following: Finish recording this session ?")
-        static let finishAlertTitle_2: String = NSLocalizedString("this session",
-                                                                  comment: "")
-        static let finishAlertTitle_3: String = NSLocalizedString("?",
-                                                                  comment: "")
-        static let finishAlertTitle_3_SYNC: String = NSLocalizedString("and sync from SD card?",
+        static let finishAlertTitleNoName: String = NSLocalizedString("Finish recording this session?",
+                                                                comment: "")
+        static let finishAlertTitleNamed: String = NSLocalizedString("Finish recording %@?",
+                                                                comment: "")
+        static let finishAlertTitleSYNCNoName: String = NSLocalizedString("Finish recording this session and sync from SD card?",
                                                                        comment: "")
-        static let finishAlertMessage_1: String = NSLocalizedString("The session will be moved to ",
-                                                                    comment: "It consists of few parts. Please consider them together. Whole text is following: The session will be moved to Mobile Dormant tab and you won't be able to add new measurement to it.")
-        static let finishAlertMessage_2: String = NSLocalizedString("Mobile Dormant",
-                                                                    comment: "")
-        static let finishAlertMessage_3: String = NSLocalizedString(" tab and you won't be able to add new measurement to it.",
-                                                                    comment: "")
-        static let finishAlertMessage_4: String = NSLocalizedString("SD card will be cleared afterwards",
-                                                                    comment: "")
+        static let finishAlertTitleSYNCNamed: String = NSLocalizedString("Finish recording %@ and sync from SD card?",
+                                                                       comment: "")
+        
+        
+        static let finishAlertMessage: String = NSLocalizedString("The session will be moved to Mobile Dormant tab and you won't be able to add new measurement to it.",
+                                                                  comment: "")
+        static let finishAlertMessage_withSync: String = NSLocalizedString(" SD card will be cleared afterwards.",
+                                                                           comment: "")
         static let finishAlertButton: String = NSLocalizedString("Finish recording",
                                                                  comment: "")
         static let shareFileAlertTitle: String = NSLocalizedString("Success!",
@@ -618,19 +605,23 @@ struct Strings {
                                                          comment: "")
         static let moreInfo: String = NSLocalizedString("more info",
                                                         comment: "")
-        static let fixedLabel_1: String = NSLocalizedString("Fixed session",
-                                                            comment: "It consists of few parts. Please consider them together. Whole text is following: Fixed session for measuring in one place")
-        static let fixedLabel_2: String = NSLocalizedString("for measuring in one place",
+        
+        static let fixedLabel: String = NSLocalizedString("Fixed session for measuring in one place",
                                                             comment: "")
-        static let mobileLabel_1: String = NSLocalizedString("Mobile session",
-                                                             comment: "It consists of few parts. Please consider them together. Whole text is following: Mobile session for moving around")
-        static let mobileLabel_2: String = NSLocalizedString("for moving around",
+        static let fixedSession: String = NSLocalizedString("Fixed session",
+                                                            comment: "")
+        
+        static let mobileLabel: String = NSLocalizedString("Mobile session for moving around",
+                                                             comment: "")
+        static let mobileSession: String = NSLocalizedString("Mobile session",
                                                              comment: "")
         static let orLabel: String = NSLocalizedString("or",
                                                        comment: "")
-        static let syncTitle: String = NSLocalizedString("Sync data from AirBeam3",
+        
+        static let syncTitle: String = NSLocalizedString("Sync data from AirBeam3 if you recorded with AirBeam3",
                                                          comment: "")
-        static let syncDescription: String = NSLocalizedString("if you recorded with AirBeam3",
+        
+        static let syncData: String = NSLocalizedString("Sync data from AirBeam3",
                                                                comment: "")
         
     }
@@ -701,14 +692,13 @@ struct Strings {
                                                             comment: "")
         static let contentViewTitle: String = NSLocalizedString("Are you ready?",
                                                                 comment: "")
-        static let contentViewText_1: String = NSLocalizedString("Your ", comment: "It consists of few parts. Please consider them together. Whole text is following: Your session is ready to start gathering data.")
-        static let contentViewText_2: String = NSLocalizedString(" session ",
+        
+        static let contentViewText: String = NSLocalizedString("Your %@ session %@ is ready to start gathering data.",
                                                                  comment: "")
-        static let contentViewText_3: String = NSLocalizedString(" is ready to start gathering data.",
+        
+        static let contentViewTextEnd: String = NSLocalizedString("Hang your AirBeam in a secure position, then press the start recording button below.",
                                                                  comment: "")
-        static let contentViewText_4: String = NSLocalizedString("Hang your AirBeam in a secure position, then press the start recording button below.",
-                                                                 comment: "")
-        static let contentViewText_4Mobile: String = NSLocalizedString("Move to your starting location, confirm your location is accurate on the map, then press the start recording button below.",
+        static let contentViewTextEndMobile: String = NSLocalizedString("Move to your starting location, confirm your location is accurate on the map, then press the start recording button below.",
                                                                        comment: "")
         static let startRecording: String = NSLocalizedString("Start recording",
                                                               comment: "")
@@ -722,18 +712,6 @@ struct Strings {
     }
     
     enum MainTabBarView {
-        static let homeIcon: String = NSLocalizedString("home",
-                                                        comment: "")
-        static let homeBlueIcon: String = NSLocalizedString("bluehome",
-                                                            comment: "")
-        static let plusIcon: String = NSLocalizedString("plus",
-                                                        comment: "")
-        static let plusBlueIcon: String = NSLocalizedString("blueplus",
-                                                            comment: "")
-        static let settingsIcon: String = NSLocalizedString("settings",
-                                                            comment: "")
-        static let settingsBlueIcon: String = NSLocalizedString("bluesettings",
-                                                                comment: "")
         static let loggingOut: String = NSLocalizedString("Logging out, please wait...",
                                                           comment: "")
     }
@@ -827,7 +805,7 @@ struct Strings {
     }
     
     enum DeviceHandler {
-        static let alertTitle = NSLocalizedString("Not supported device",
+        static let alertTitle = NSLocalizedString("Unsupprted device",
                                                   comment: "")
         static let alertMessage = NSLocalizedString("To use the AirBeam3 in standalone mode and sync the SD card, an iPhone8 or higher is required",
                                                     comment: "")
@@ -848,8 +826,6 @@ struct Strings {
     }
     
     enum InAppAlerts {
-        static let assertError: String = NSLocalizedString("Unsupported button count! For SwiftUI implementation max of 2 buttons is supported",
-                                                           comment: "")
         static let unableToLogOutTitle: String = NSLocalizedString("No internet connection",
                                                                    comment: "")
         static let unableToLogOutMessage: String = NSLocalizedString("To sign out, you must be connected to the Internet.",

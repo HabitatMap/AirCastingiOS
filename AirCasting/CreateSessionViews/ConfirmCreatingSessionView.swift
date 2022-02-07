@@ -46,13 +46,7 @@ struct ConfirmCreatingSessionView: View {
     }
 
     private var defaultDescriptionText: Text {
-        Text(Strings.ConfirmCreatingSessionView.contentViewText_1)
-        + Text(sessionType)
-            .foregroundColor(.accentColor)
-        + Text(Strings.ConfirmCreatingSessionView.contentViewText_2)
-        + Text(sessionName)
-            .foregroundColor(.accentColor)
-        + Text(Strings.ConfirmCreatingSessionView.contentViewText_3)
+        Text(String(format: Strings.ConfirmCreatingSessionView.contentViewText, arguments: [sessionType, sessionName]))
     }
 
     var dot: some View {
@@ -63,12 +57,12 @@ struct ConfirmCreatingSessionView: View {
 
     private var descriptionTextFixed: some View {
         defaultDescriptionText
-        + Text((sessionContext.isIndoor!) ? "" : Strings.ConfirmCreatingSessionView.contentViewText_4)
+        + Text((sessionContext.isIndoor!) ? "" : Strings.ConfirmCreatingSessionView.contentViewTextEnd)
     }
 
     private var descriptionTextMobile: some View {
         defaultDescriptionText
-        + Text(Strings.ConfirmCreatingSessionView.contentViewText_4Mobile)
+        + Text(Strings.ConfirmCreatingSessionView.contentViewTextEndMobile)
     }
 
     @ViewBuilder private var contentView: some View {

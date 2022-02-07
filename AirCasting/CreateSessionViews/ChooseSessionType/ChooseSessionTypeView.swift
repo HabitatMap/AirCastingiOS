@@ -276,29 +276,33 @@ struct ChooseSessionTypeView: View {
     }
     
     var fixedSessionLabel: some View {
-        chooseSessionButton(title: Strings.ChooseSessionTypeView.fixedLabel_1,
-                            description: Strings.ChooseSessionTypeView.fixedLabel_2)
+        chooseSessionButton(title:  StringCustomizer.customizeString(Strings.ChooseSessionTypeView.fixedLabel,
+                                                   using: [Strings.ChooseSessionTypeView.fixedSession],
+                                                   color: .accentColor,
+                                                   font: Fonts.boldHeading1))
     }
     
     var mobileSessionLabel: some View {
-        chooseSessionButton(title: Strings.ChooseSessionTypeView.mobileLabel_1,
-                            description: Strings.ChooseSessionTypeView.mobileLabel_2)
+        chooseSessionButton(title:  StringCustomizer.customizeString(Strings.ChooseSessionTypeView.mobileLabel,
+                                                   using: [Strings.ChooseSessionTypeView.mobileSession],
+                                                   color: .accentColor,
+                                                   font: Fonts.boldHeading1))
     }
     
     var syncButtonLabel: some View {
-        chooseSessionButton(title: Strings.ChooseSessionTypeView.syncTitle,
-                            description: Strings.ChooseSessionTypeView.syncDescription)
+        chooseSessionButton(title:  StringCustomizer.customizeString(Strings.ChooseSessionTypeView.syncTitle,
+                                                   using: [Strings.ChooseSessionTypeView.syncData],
+                                                   color: .accentColor,
+                                                   font: Fonts.boldHeading1,
+                                                   makeNewLineAfterCustomized: true))
     }
     
 }
 
 extension View {
-    func chooseSessionButton(title: String, description: String) -> some View {
+    func chooseSessionButton(title: Text) -> some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text(title)
-                .font(Fonts.boldHeading1)
-                .foregroundColor(.accentColor)
-            Text(description)
+                title
                 .font(Fonts.muliHeading3)
                 .foregroundColor(.aircastingGray)
         }

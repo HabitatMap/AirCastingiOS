@@ -158,8 +158,8 @@ extension MainTabBarView {
         
         var string: String {
             switch self {
-            case .selected: return Strings.MainTabBarView.homeBlueIcon
-            case .unselected: return Strings.MainTabBarView.homeIcon
+            case .selected: return "bluehome"
+            case .unselected: return "home"
             }
         }
     }
@@ -170,8 +170,8 @@ extension MainTabBarView {
         
         var string: String {
             switch self {
-            case .selected: return Strings.MainTabBarView.plusBlueIcon
-            case .unselected: return Strings.MainTabBarView.plusIcon
+            case .selected: return "blueplus"
+            case .unselected: return "plus"
             }
         }
     }
@@ -182,8 +182,8 @@ extension MainTabBarView {
         
         var string: String {
             switch self {
-            case .selected: return Strings.MainTabBarView.settingsBlueIcon
-            case .unselected: return Strings.MainTabBarView.settingsIcon
+            case .selected: return "bluesettings"
+            case .unselected: return "settings"
             }
         }
     }

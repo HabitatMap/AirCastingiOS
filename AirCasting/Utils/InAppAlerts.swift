@@ -68,12 +68,8 @@ struct InAppAlerts {
     
     static func finishSessionAlert(sessionName: String?, action: @escaping (() -> Void)) -> AlertInfo {
         AlertInfo(
-            title: Strings.SessionHeaderView.finishAlertTitle +
-            (sessionName ?? Strings.SessionHeaderView.finishAlertTitle_2) +
-            (Strings.SessionHeaderView.finishAlertTitle_3),
-            message: Strings.SessionHeaderView.finishAlertMessage_1 +
-            (Strings.SessionHeaderView.finishAlertMessage_2) +
-            (Strings.SessionHeaderView.finishAlertMessage_3),
+            title: ((sessionName == nil) ? Strings.SessionHeaderView.finishAlertTitleNoName : String(format: Strings.SessionHeaderView.finishAlertTitleNamed, arguments: [sessionName!])),
+            message: Strings.SessionHeaderView.finishAlertMessage,
             buttons: [
                 .default(title: Strings.SessionHeaderView.finishAlertButton,
                          action: action),
@@ -84,13 +80,9 @@ struct InAppAlerts {
     
     static func finishAndSyncAlert(sessionName: String?, action: @escaping (() -> Void)) -> AlertInfo {
         AlertInfo(
-            title: Strings.SessionHeaderView.finishAlertTitle +
-            (sessionName ?? Strings.SessionHeaderView.finishAlertTitle_2) +
-            Strings.SessionHeaderView.finishAlertTitle_3_SYNC,
-            message: Strings.SessionHeaderView.finishAlertMessage_1 +
-            Strings.SessionHeaderView.finishAlertMessage_2 +
-            Strings.SessionHeaderView.finishAlertMessage_3 +
-            Strings.SessionHeaderView.finishAlertMessage_4,
+            title: ((sessionName == nil) ? Strings.SessionHeaderView.finishAlertTitleSYNCNoName : String(format: Strings.SessionHeaderView.finishAlertTitleNamed, arguments: [sessionName!])),
+            message: Strings.SessionHeaderView.finishAlertMessage +
+            Strings.SessionHeaderView.finishAlertMessage_withSync,
             buttons: [
                 .default(title: Strings.SessionHeaderView.finishAlertButton,
                          action: action),
@@ -146,7 +138,7 @@ import SwiftUI
 
 extension AlertInfo {
     func makeAlert() -> Alert {
-        assert(buttons.count >= 1 && buttons.count <= 2, Strings.InAppAlerts.assertError)
+        assert(buttons.count >= 1 && buttons.count <= 2, "Unsupported button count! For SwiftUI implementation max of 2 buttons is supported")
         
         let alertButtons = buttons.map { type -> Alert.Button in
             switch type {
