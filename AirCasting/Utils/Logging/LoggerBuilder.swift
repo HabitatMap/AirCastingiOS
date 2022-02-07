@@ -33,15 +33,15 @@ class LoggerBuilder {
     }
     
     func build() -> Logger {
-        return partialLogger
+        partialLogger
     }
     
     
     private static func createDebugLogger() -> Logger {
-        return Resolver.resolve(PrintLogger.self)
+        Resolver.resolve(PrintLogger.self)
     }
     
     private static func createFileLogger() -> Logger {
-        return Resolver.resolve(FileLogger.self)
+        Resolver.resolve(FileLogger.self)
     }
 }

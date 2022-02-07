@@ -33,7 +33,7 @@ class DocumentsFileLoggerStore: FileLoggerStore, FileLoggerResettable, LogfilePr
     }
     
     func logFileURLForSharing() -> URL? {
-        guard let currentHandle = currentHandle else { return nil}
+        guard let currentHandle = currentHandle else { return nil }
         do {
             try currentHandle.saveBufferContents()
         } catch {
