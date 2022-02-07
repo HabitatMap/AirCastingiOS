@@ -59,8 +59,10 @@ private extension ReorderingSessionHeader {
     }
 }
 
+#if DEBUG
 struct ReorderingSessionHeader_Previews: PreviewProvider {
     static var previews: some View {
         ReorderingSessionHeader(session: SessionEntity.mock)
     }
 }
+#endif

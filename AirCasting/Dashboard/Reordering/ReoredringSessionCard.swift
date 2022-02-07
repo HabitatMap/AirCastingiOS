@@ -65,8 +65,10 @@ private extension ReoredringSessionCard {
     }
 }
 
+#if DEBUG
 struct ReoredringSessionCard_Previews: PreviewProvider {
     static var previews: some View {
         ReoredringSessionCard(session: .mock, thresholds: [.mock])
     }
 }
+#endif
