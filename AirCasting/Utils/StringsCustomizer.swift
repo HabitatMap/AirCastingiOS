@@ -31,6 +31,8 @@ final class StringCustomizer {
                     descriptionText = descriptionText + Text("\n")
                 }
                 descriptionText = (descriptionText == nil ? Text(w) : descriptionText + Text(w))
+                    .fontWeight(.regular)
+                    .foregroundColor(.aircastingGray)
                 newL = false
             }
             descriptionText = descriptionText + Text(" ")

@@ -46,7 +46,11 @@ struct ConfirmCreatingSessionView: View {
     }
 
     private var defaultDescriptionText: Text {
-        Text(String(format: Strings.ConfirmCreatingSessionView.contentViewText, arguments: [sessionType, sessionName]))
+        let text = String(format: Strings.ConfirmCreatingSessionView.contentViewText, arguments: [sessionType, sessionName])
+        return StringCustomizer.customizeString(text,
+                                                using: [sessionType, sessionName],
+                                                fontWeight: .bold,
+                                                color: .accentColor)
     }
 
     var dot: some View {
