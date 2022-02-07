@@ -6,11 +6,11 @@ import AirCastingStyling
 import Resolver
 
 struct MyAccountViewSignOut: View {
-    let logoutController: LogoutController
     @State private var alert: AlertInfo?
     @InjectedObject private var userAuthenticationSession: UserAuthenticationSession
     @InjectedObject private var userState: UserState
     @Injected private var networkChecker: NetworkChecker
+    @Injected private var logoutController: LogoutController
     
     var body: some View {
         ZStack {
