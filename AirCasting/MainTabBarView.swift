@@ -52,6 +52,9 @@ struct MainTabBarView: View {
             
         }
         .onAppear {
+            let navBarAppearance = UINavigationBar.appearance()
+            navBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(Color.darkBlue),
+                                                         .font: Fonts.navBarSystemFont]
             UITabBar.appearance().backgroundColor = .systemBackground
             let appearance = UITabBarAppearance()
             appearance.backgroundImage = UIImage()
@@ -108,8 +111,8 @@ private extension MainTabBarView {
     }
     
     private var settingsTab: some View {
-        SettingsView(logoutController: DefaultLogoutController(sessionStorage: SessionStorage()),
-                     viewModel: SettingsViewModelDefault(sessionContext: CreateSessionContext()))
+        SettingsView(sessionContext: sessionContext)
+        
             .tabItem {
                 Image(settingsImage)
             }

@@ -6,16 +6,18 @@ import SwiftUI
 import Resolver
 
 struct BackendSettingsView: View {
-    let backendURLBuilder = BackendURLValidator()
+    private let backendURLBuilder = BackendURLValidator()
     
     @Environment(\.presentationMode) var presentationMode
-    let logoutController: LogoutController
-    @Injected private var urlProvider: URLProvider
     @State private var pathText: String = ""
     @State private var portText: String = ""
     @State private var url: URL?
     @State private var alertPresented = false
+    
     @InjectedObject private var userState: UserState
+    @Injected private var logoutController: LogoutController
+    @Injected private var urlProvider: URLProvider
+    
     private var urlWithoutPort: String? {
         let components = URLComponents(url: urlProvider.baseAppURL, resolvingAgainstBaseURL: false)!
         return components.host

@@ -91,6 +91,7 @@ extension Resolver: ResolverRegistering {
         main.register { ConnectingAirBeamServicesBluetooth() as ConnectingAirBeamServices }
         main.register { DefaultAirBeamConnectionController() as AirBeamConnectionController }
         main.register { DefaultSessionUpdateService() as SessionUpdateService }
+        main.register { DefaultLogoutController(sessionStorage: SessionStorage()) as LogoutController }
         
         // MARK: - Session stopping
         
