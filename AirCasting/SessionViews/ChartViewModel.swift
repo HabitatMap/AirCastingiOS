@@ -18,7 +18,9 @@ final class ChartViewModel: ObservableObject {
         didSet {
             databaseObserver = nil
             guard shouldBeUpdatingChartForCurrentSession(), let sensor = stream?.sensorName else { return }
-            databaseObserver = ChartDatabaseObserver(session: session.uuid, sensor: sensor) {
+            let filterBy: ChartDatabaseObserverFilter = session.isFixed ? .hour : .minute
+            databaseObserver = ChartDatabaseObserver(session: session.uuid, sensor: sensor, timedFilter: filterBy) { [weak self] in
+                guard let self = self else { return }
                 Log.info("Measurements change detected [\(self.session.uuid ?? "??")]")
                 self.generateEntries()
             }
