@@ -47,7 +47,7 @@ final class ChartDatabaseObserver {
     private func shouldFireObserver(newMeasurement: MeasurementEntity) -> Bool {
         switch filteringComponent {
         case .none: return true
-        case .hour: return !isInNewHour(measurement: newMeasurement)
+        case .hour: return isInNewHour(measurement: newMeasurement)
         case .minute(let countingFrom): return isInNewMinute(measurement: newMeasurement, countingFrom: countingFrom)
         }
     }
@@ -57,7 +57,7 @@ final class ChartDatabaseObserver {
         guard Calendar.current.isDate(latestMeasurementTime, inSameDayAs: measurement.time) else { return true }
         let nowComponent = Calendar.current.component(.hour, from: measurement.time)
         let latestComponent = Calendar.current.component(.hour, from: latestMeasurementTime)
-        return latestComponent == nowComponent
+        return latestComponent != nowComponent
     }
     
     private func isInNewMinute(measurement: MeasurementEntity, countingFrom: Date) -> Bool {
