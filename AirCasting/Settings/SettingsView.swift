@@ -45,6 +45,7 @@ struct SettingsView: View {
                                         isSDClearProcess: viewModel.SDClearingRouteProcess)
                 }
             }
+            .environmentObject(viewModel.sessionContext)
         } else {
             NavigationView {
                 main
@@ -74,6 +75,7 @@ struct SettingsView: View {
                             }
                         }
                 })
+            .environmentObject(viewModel.sessionContext)
         }
     }
 
@@ -92,7 +94,6 @@ struct SettingsView: View {
         }
         .listStyle(GroupedListStyle())
         .navigationBarTitle(Strings.Settings.title)
-        .environmentObject(viewModel.sessionContext)
     }
 
     private var settingsSection: some View {
