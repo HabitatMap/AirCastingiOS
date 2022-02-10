@@ -6,7 +6,7 @@ import Resolver
 @objc
 class AppDelegate: NSObject, UIApplicationDelegate, MessagingDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-        if ProcessInfo.processInfo.environment["clean_boot"] == "YES" {
+        if ProcessInfo.processInfo.environment["boot_type"] == "clean" {
             Log.info("Running in clean boot mode, erasing all data and logging out before the app launches")
             performCleanBoot()
         }

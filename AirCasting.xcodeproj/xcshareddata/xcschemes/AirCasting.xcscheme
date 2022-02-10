@@ -62,9 +62,9 @@
       </BuildableProductRunnable>
       <EnvironmentVariables>
          <EnvironmentVariable
-            key = "clean_boot"
-            value = "YES"
-            isEnabled = "YES">
+            key = "boot_type"
+            value = "clean"
+            isEnabled = "NO">
          </EnvironmentVariable>
       </EnvironmentVariables>
       <LocationScenarioReference
