@@ -8,21 +8,16 @@ final class StringCustomizer {
         
         var descriptionText: Text!
         let separatedText = s.components(separatedBy: " ")
-        var total = [String]()
         var newL = false
+        var keyWordsSeparated = words.flatMap { $0.components(separatedBy: " ") }
         
-        words.forEach { wd in
-            let sp = wd.components(separatedBy: " ")
-            sp.forEach({ total.append( $0 ) })
-        }
-        
-        for w in separatedText {
-            if total.contains(w) {
-                if let index = total.firstIndex(of: w) {
-                    total.remove(at: index)
+        for word in separatedText {
+            if keyWordsSeparated.contains(word) {
+                if let index = keyWordsSeparated.firstIndex(of: word) {
+                    keyWordsSeparated.remove(at: index)
                 }
                 newL = true
-                descriptionText = (descriptionText == nil ? Text(w) : descriptionText + Text(w))
+                descriptionText = (descriptionText == nil ? Text(word) : descriptionText + Text(word))
                     .fontWeight(fontWeight)
                     .foregroundColor(color)
                     .font(font)
@@ -30,7 +25,7 @@ final class StringCustomizer {
                 if newL && makeNewLineAfterCustomized {
                     descriptionText = descriptionText + Text("\n")
                 }
-                descriptionText = (descriptionText == nil ? Text(w) : descriptionText + Text(w))
+                descriptionText = (descriptionText == nil ? Text(word) : descriptionText + Text(word))
                     .fontWeight(.regular)
                     .foregroundColor(.aircastingGray)
                 newL = false
