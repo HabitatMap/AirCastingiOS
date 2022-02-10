@@ -112,7 +112,6 @@ private extension MainTabBarView {
     
     private var settingsTab: some View {
         SettingsView(sessionContext: sessionContext)
-        
             .tabItem {
                 Image(settingsImage)
             }

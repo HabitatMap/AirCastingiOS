@@ -16,6 +16,10 @@ protocol Deauthorizable {
     func deauthorize() throws
 }
 
+protocol DataEraser {
+    func eraseAllData(completion: ((Result<Void, Error>) -> Void)?)
+}
+
 final class UserAuthenticationSession: Deauthorizable, ObservableObject {
 
     private static let userProfileKey = "UserProfileKey"
@@ -84,14 +88,10 @@ protocol LogoutController {
 }
 
 final class DefaultLogoutController: LogoutController {
-    @Injected private var userAuthenticationSession: UserAuthenticationSession
-    let sessionStorage: SessionStorage
+    @Injected private var deauthorizer: Deauthorizable
     @Injected private var microphoneManager: MicrophoneManager
     @Injected private var sessionSynchronizer: SessionSynchronizer
-
-    init(sessionStorage: SessionStorage) {
-        self.sessionStorage = sessionStorage
-    }
+    @Injected private var dataEraser: DataEraser
 
     func logout(onEnd: @escaping () -> Void) throws {
         if sessionSynchronizer.syncInProgress.value {
@@ -121,8 +121,8 @@ final class DefaultLogoutController: LogoutController {
         }
         Log.info("[LOGOUT] Clearing user credentials")
         do {
-            try userAuthenticationSession.deauthorize()
-            sessionStorage.clearAllSessions(completion: { [weak self] result in
+            try deauthorizer.deauthorize()
+            dataEraser.eraseAllData(completion: { [weak self] result in
                 if case let .failure(error) = result {
                     self?.failLogout(with: error)
                 }
