@@ -10,11 +10,14 @@ enum UploadingError: Error {
 }
 
 // TODO: Refactor this part
+
 class SDCardFixedSessionsUploadingService {
     @Injected private var fileLineReader: FileLineReader
     @Injected private var measurementStreamStorage: MeasurementStreamStorage
     @Injected private var apiService: UploadFixedSessionAPIService
     private let parser = SDCardMeasurementsParser()
+    
+    private let bufferThreshold = 200
     
     func processAndUpload(fileURL: URL, deviceID: String, completion: @escaping (Result<[SessionUUID], Error>) -> Void) {
         var sessionsForUpload = Set<SessionUUID>()
@@ -22,12 +25,16 @@ class SDCardFixedSessionsUploadingService {
         
         // We don't want to upload sessions of other users
         var sessionsToIgnore: [SessionUUID] = []
+
+        var readLines = 0
         
         measurementStreamStorage.accessStorage { storage in
             do {
                 try self.fileLineReader.readLines(of: fileURL, progress: { line in
                     switch line {
                     case .line(let content):
+                        readLines += 1
+                        Log.info("LINE: \(content)")
                         let measurementsRow = self.parser.parseMeasurement(lineString: content)
                         guard let measurements = measurementsRow,
                               !sessionsToIgnore.contains(measurements.sessionUUID),
@@ -36,17 +43,25 @@ class SDCardFixedSessionsUploadingService {
                         
                         sessionsForUpload.insert(measurements.sessionUUID)
                         
+                        Log.info("Enqueueing session: \(measurements.sessionUUID)")
                         self.enqueueForUploading(measurements: measurements, buffer: &streamsWithMeasurements)
+                        
+                        if readLines == self.bufferThreshold {
+                            self.processAndSync(streamsWithMeasurements: streamsWithMeasurements, deviceID: deviceID) { result in Log.info("Processed \(readLines) lines: \(result)") }
+                            streamsWithMeasurements = [:]
+                            readLines = 0
+                        }
                     case .endOfFile:
                         Log.info("Reached end of csv file")
                     }
                 })
-                
-                self.processAndSync(streamsWithMeasurements: streamsWithMeasurements, deviceID: deviceID) { success in
-                    success ? completion(.success(Array(sessionsForUpload))) : completion(.failure(UploadingError.uploadError))
+                if readLines != 0 {
+                    self.processAndSync(streamsWithMeasurements: streamsWithMeasurements, deviceID: deviceID) { result in Log.info("Processed \(readLines) lines: \(result)") }
                 }
+                
+                completion(.success(Array(sessionsForUpload)))
             } catch {
-                completion(.failure(error))
+                completion(.failure(UploadingError.uploadError))
             }
         }
     }
