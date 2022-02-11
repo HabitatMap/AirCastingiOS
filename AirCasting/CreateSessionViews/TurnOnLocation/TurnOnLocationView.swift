@@ -35,6 +35,13 @@ struct TurnOnLocationView: View {
         .onChange(of: viewModel.shouldShowAlert) { newValue in
             if newValue { viewModel.alert = InAppAlerts.locationAlert() }
         }
+        .onAppCameToForeground {
+            // The aim of this is to allow user to choose location option from native Apple location popup
+            // It is the case when the user first nedded to turn on system location services at all.
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                viewModel.requestLocationAuthorisation()
+            }
+        }
     }
     
     var titleLabel: some View {
@@ -54,7 +61,7 @@ struct TurnOnLocationView: View {
         Button(action: {
             viewModel.onButtonClick()
         }, label: {
-            Text(Strings.TurnOnLocationView.continueButton)
+            Text(Strings.Commons.continue)
         })
         .frame(maxWidth: .infinity)
         .buttonStyle(BlueButtonStyle())

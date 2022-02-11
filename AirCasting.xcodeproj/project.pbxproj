@@ -342,6 +342,7 @@
 		DDBA6139276B3AE200E3FEF9 /* EditNoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBA6138276B3AE200E3FEF9 /* EditNoteView.swift */; };
 		DDBC156426A0799300982526 /* SystemSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBC156326A0799300982526 /* SystemSettings.swift */; };
 		DDBC992626A1652A00B0662E /* ForgotPasswordTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBC992526A1652A00B0662E /* ForgotPasswordTest.swift */; };
+		DDC22C8027B6C508000E81D1 /* ViewControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDC22C7F27B6C508000E81D1 /* ViewControl.swift */; };
 		DDC3E954275E4C3A0066A5DF /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDC3E953275E4C3A0066A5DF /* SettingsViewModel.swift */; };
 		DDC5F5882719694800F1F9D8 /* ShadowImages.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDC5F5872719694800F1F9D8 /* ShadowImages.swift */; };
 		DDC5F58A271979F100F1F9D8 /* Fonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDC5F589271979F100F1F9D8 /* Fonts.swift */; };
@@ -731,6 +732,7 @@
 		DDBA6138276B3AE200E3FEF9 /* EditNoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditNoteView.swift; sourceTree = "<group>"; };
 		DDBC156326A0799300982526 /* SystemSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemSettings.swift; sourceTree = "<group>"; };
 		DDBC992526A1652A00B0662E /* ForgotPasswordTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordTest.swift; sourceTree = "<group>"; };
+		DDC22C7F27B6C508000E81D1 /* ViewControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControl.swift; sourceTree = "<group>"; };
 		DDC3E953275E4C3A0066A5DF /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		DDC5F5872719694800F1F9D8 /* ShadowImages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowImages.swift; sourceTree = "<group>"; };
 		DDC5F589271979F100F1F9D8 /* Fonts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fonts.swift; sourceTree = "<group>"; };
@@ -1443,6 +1445,7 @@
 				3397C81E2787024C0050B333 /* UserDefaults.swift */,
 				3375E8D32791EDC50019A5DE /* CLLocationCoordinate2D.swift */,
 				DD9EBFD7279EEAB300192CB5 /* DataBuilder.swift */,
+				DDC22C7F27B6C508000E81D1 /* ViewControl.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -2487,6 +2490,7 @@
 				DD8A36A426C3CE7900C26725 /* ChooseCustomLocationView.swift in Sources */,
 				AC524A9A2615E3600061AD45 /* NSManagedObjectContext+Utils.swift in Sources */,
 				B38E6CCA26C5F19F00C21C45 /* SessionStoppable.swift in Sources */,
+				DDC22C8027B6C508000E81D1 /* ViewControl.swift in Sources */,
 				B3EBB10C26A06D2D002BD81F /* DefaultForgotPasswordViewModel.swift in Sources */,
 				DDB448282732AA4B00F11340 /* AirCastingGraphSimplifier.swift in Sources */,
 				AC6D567F25AC54A400D221BA /* ChartView.swift in Sources */,

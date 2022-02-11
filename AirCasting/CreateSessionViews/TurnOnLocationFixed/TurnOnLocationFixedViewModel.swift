@@ -5,7 +5,6 @@ import Resolver
 
 class TurnOnLocationFixedViewModel: ObservableObject {
     
-    @Published var isConfirmCreatingSessionActive: Bool = false
     @Published var isLocationSessionDetailsActive: Bool = false
     @Published var alert: AlertInfo?
     
@@ -29,13 +28,16 @@ class TurnOnLocationFixedViewModel: ObservableObject {
         locationHandler.requestAuthorisation()
     }
     
+    func onContinueButtonClick() {
+        isLocationSessionDetailsActive = true
+    }
+    
     func onButtonClick() {
         switch shouldShowAlert {
         case true:
             alert = InAppAlerts.locationAlert()
         case false:
-            isLocationSessionDetailsActive = !(sessionContext.isIndoor ?? true)
-            isConfirmCreatingSessionActive = sessionContext.isIndoor ?? true
+            isLocationSessionDetailsActive = true
         }
     }
 }
