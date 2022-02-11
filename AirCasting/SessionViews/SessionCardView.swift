@@ -134,9 +134,6 @@ private extension SessionCardView {
             action: {
                 withAnimation {
                     isCollapsed.toggle()
-                    if isCollapsed {
-                        selectedStream = session.sortedStreams?.first
-                    }
                     uiState.cardToggle(sessionUUID: session.uuid)
                 }
             },
