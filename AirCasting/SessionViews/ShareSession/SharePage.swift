@@ -6,13 +6,13 @@ import SwiftUI
 struct ActivityViewController: UIViewControllerRepresentable {
     typealias Callback = (_ activityType: UIActivity.ActivityType?, _ completed: Bool, _ returnedItems: [Any]?, _ error: Error?) -> Void
     
-    let isLocationless: Bool
+    let sharingFileisLocationless: Bool
     var itemToShare: URL
     var servicesToShareItem: [UIActivity]? = nil
     var completion: Callback? = nil
     
     func makeUIViewController(context: UIViewControllerRepresentableContext<ActivityViewController>) -> UIActivityViewController {
-        let controller = UIActivityViewController(activityItems: isLocationless ? [itemToShare] : [context.coordinator], applicationActivities: servicesToShareItem)
+        let controller = UIActivityViewController(activityItems: sharingFileisLocationless ? [itemToShare] : [context.coordinator], applicationActivities: servicesToShareItem)
         controller.completionWithItemsHandler = completion
         return controller
     }
@@ -36,14 +36,19 @@ struct ActivityViewController: UIViewControllerRepresentable {
         
         /// In email apps, other than Apple native one, the subject is taken/considered as the first line from the message body - which is written in the below func
         func activityViewController(_ activityViewController: UIActivityViewController, itemForActivityType activityType: UIActivity.ActivityType?) -> Any? {
-            guard activityType == .mail else {
+            
+            switch activityType {
+            case UIActivity.ActivityType.copyToPasteboard:
+                return parent.itemToShare
+            case UIActivity.ActivityType.mail:
+                return "\(Strings.SessionShare.sharedEmailText): \(parent.itemToShare)"
+            default:
                 return """
                         \(Strings.SessionShare.sharedEmailText)
                         
                         \(parent.itemToShare)
                         """
             }
-            return "\(Strings.SessionShare.sharedEmailText): \(parent.itemToShare)"
         }
         
         func activityViewController(_ activityViewController: UIActivityViewController, subjectForActivityType activityType: UIActivity.ActivityType?) -> String {
