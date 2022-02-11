@@ -14,6 +14,7 @@ extension Resolver: ResolverRegistering {
             .implements(SessionInsertable.self)
             .scope(.application)
         main.register { CoreDataMeasurementStreamStorage() as MeasurementStreamStorage }.scope(.cached)
+        main.register { CoreDataUIStorage() as UIStorage }.scope(.cached)
         main.register { DefaultFileLineReader() as FileLineReader }
         
         // MARK: - Networking
@@ -126,6 +127,8 @@ extension Resolver: ResolverRegistering {
         main.register { SDSyncFileValidationService() as SDSyncFileValidator }
         main.register { SDSyncFileWritingService(bufferThreshold: 1000) as SDSyncFileWriter }
         main.register { BluetoothSDCardAirBeamServices() as SDCardAirBeamServices }
+        
+        main.register { UIStateHandlerDefault() as UIStateHandler }.scope(.cached)
         
         // MARK: - Notes
         main.register { (_, args) in
