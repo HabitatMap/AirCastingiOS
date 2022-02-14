@@ -792,6 +792,7 @@
 		3305086F276B566800D18C69 /* ShareSession */ = {
 			isa = PBXGroup;
 			children = (
+				DDEE3A4A26979D4C0098CCA9 /* SharePage.swift */,
 				DD72DC4126A99D5000325FE5 /* ShareSessionView.swift */,
 				33050870276B568D00D18C69 /* ShareSessionViewModel.swift */,
 				33050875276B7A4400D18C69 /* ShareSessionStreamOptionViewModel.swift */,
@@ -995,7 +996,6 @@
 				DDD24D8326A7FCE300D4A327 /* View+Print.swift */,
 				DD839E14269F33A6006A8625 /* LocationState.swift */,
 				DDBC156326A0799300982526 /* SystemSettings.swift */,
-				DDEE3A4A26979D4C0098CCA9 /* SharePage.swift */,
 				DDF62600269C779800F23489 /* UIApplication+AppInfo.swift.swift */,
 				DD3C99F326EA280800B42A46 /* TimeConversion.swift */,
 				DDD1F9B02705852400D8E87F /* DataFormatters.swift */,
