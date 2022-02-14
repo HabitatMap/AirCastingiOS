@@ -5,6 +5,10 @@ import Foundation
 import CoreLocation
 import Resolver
 
+enum UploadingError: Error {
+    case uploadError
+}
+
 class SDCardFixedSessionsUploadingService {
     @Injected private var fileLineReader: FileLineReader
     @Injected private var measurementStreamStorage: MeasurementStreamStorage
@@ -41,21 +45,14 @@ class SDCardFixedSessionsUploadingService {
                         
                         Log.info("Enqueueing session: \(measurements.sessionUUID)")
                         self.enqueueForUploading(measurements: measurements, buffer: &streamsWithMeasurements)
-                        
-                        if readLines == self.bufferThreshold {
-                            self.processAndSync(streamsWithMeasurements: streamsWithMeasurements, deviceID: deviceID) { result in Log.info("Processed \(readLines) lines: \(result)") }
-                            streamsWithMeasurements = [:]
-                            readLines = 0
-                        }
                     case .endOfFile:
                         Log.info("Reached end of csv file")
                     }
                 })
-                if readLines != 0 {
-                    self.processAndSync(streamsWithMeasurements: streamsWithMeasurements, deviceID: deviceID) { result in Log.info("Processed \(readLines) lines: \(result)") }
-                }
                 
-                completion(.success(Array(processedSessions)))
+                self.processAndSync(streamsWithMeasurements: streamsWithMeasurements, deviceID: deviceID) { success in
+                    success ? completion(.success(Array(processedSessions))) : completion(.failure(UploadingError.uploadError))
+                }
             } catch {
                 completion(.failure(error))
             }
