@@ -6,13 +6,13 @@ import SwiftUI
 struct ActivityViewController: UIViewControllerRepresentable {
     typealias Callback = (_ activityType: UIActivity.ActivityType?, _ completed: Bool, _ returnedItems: [Any]?, _ error: Error?) -> Void
     
-    let sharingFileisLocationless: Bool
+    let sharingFile: Bool
     var itemToShare: URL
     var servicesToShareItem: [UIActivity]? = nil
     var completion: Callback? = nil
     
     func makeUIViewController(context: UIViewControllerRepresentableContext<ActivityViewController>) -> UIActivityViewController {
-        let controller = UIActivityViewController(activityItems: sharingFileisLocationless ? [itemToShare] : [context.coordinator], applicationActivities: servicesToShareItem)
+        let controller = UIActivityViewController(activityItems: sharingFile ? [itemToShare] : [context.coordinator], applicationActivities: servicesToShareItem)
         controller.completionWithItemsHandler = completion
         return controller
     }

@@ -55,11 +55,10 @@ class ShareLocationlessSessionViewModel: ObservableObject {
     }
     
     func getSharePage() -> ActivityViewController? {
-        if file != nil {
-            return ActivityViewController(sharingFileisLocationless: true, itemToShare: file!) { activityType, completed, returnedItems, error in
-                self.sharingFinished()
-            }
-        } else { return nil }
+        guard file != nil else { return nil }
+        return ActivityViewController(sharingFile: true, itemToShare: file!) { activityType, completed, returnedItems, error in
+            self.sharingFinished()
+        }
     }
     
     private func getAlert() {

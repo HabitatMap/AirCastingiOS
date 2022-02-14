@@ -108,11 +108,10 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
     }
     
     func getSharePage() -> ActivityViewController? {
-        if sharingLink != nil {
-            return ActivityViewController(sharingFileisLocationless: false, itemToShare: sharingLink!) { activityType, completed, returnedItems, error in
-                self.sharingFinished()
-            }
-        } else { return nil }
+        guard sharingLink != nil else { return nil }
+        return ActivityViewController(sharingFile: false, itemToShare: sharingLink!) { activityType, completed, returnedItems, error in
+            self.sharingFinished()
+        }
     }
     
     private func sendRequest() {
