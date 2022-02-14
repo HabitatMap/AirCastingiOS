@@ -32,7 +32,7 @@ class TurnOnLocationFixedViewModel: ObservableObject {
         isLocationSessionDetailsActive = true
     }
     
-    func onButtonClick() {
+    func onTurnOnButtonClicked() {
         switch shouldShowAlert {
         case true:
             alert = InAppAlerts.locationAlert()

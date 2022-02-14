@@ -56,7 +56,7 @@ struct TurnOnLocationFixedView: View {
     
     var turnOnButton: some View {
         Button(action: {
-            viewModel.onButtonClick()
+            viewModel.onTurnOnButtonClicked()
         }, label: {
             Text(Strings.TurnOnLocationView.continueButton)
         })
