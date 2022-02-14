@@ -128,7 +128,6 @@ class SDSyncController {
     }
     
     private func process(mobileSessionFile: URL, deviceID: String, completion: @escaping (Bool) -> Void) {
-        Log.info("Processing fixed file")
         self.mobileSessionsSaver.saveDataToDb(fileURL: mobileSessionFile, deviceID: deviceID) { result in
             switch result {
             case .success(let sessions):
