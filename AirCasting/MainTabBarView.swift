@@ -19,10 +19,12 @@ struct MainTabBarView: View {
     @StateObject var tabSelection: TabBarSelection = TabBarSelection()
     @StateObject var selectedSection = SelectSection()
     @StateObject var reorderButton = ReorderButtonTapped()
+    @StateObject var searchAndFollow = SearchAndFollowButtonTapped()
     @StateObject var emptyDashboardButtonTapped = EmptyDashboardButtonTapped()
     @StateObject var finishAndSyncButtonTapped = FinishAndSyncButtonTapped()
     @StateObject var sessionContext: CreateSessionContext
     @StateObject var coreDataHook: CoreDataHook
+    @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
     
     private var sessions: [SessionEntity] {
         coreDataHook.sessions
@@ -79,6 +81,7 @@ struct MainTabBarView: View {
         .environmentObject(emptyDashboardButtonTapped)
         .environmentObject(finishAndSyncButtonTapped)
         .environmentObject(reorderButton)
+        .environmentObject(searchAndFollow)
     }
 }
 
@@ -94,8 +97,13 @@ private extension MainTabBarView {
             .tag(TabBarSelection.Tab.dashboard)
             .overlay(
                 Group{
-                    if !reorderButton.isHidden && sessions.count > 1 && selectedSection.selectedSection == .following {
-                        reorderingButton
+                    HStack {
+                        if !searchAndFollow.isHidden && featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) {
+                            searchAndFollowButton
+                        }
+                        if !reorderButton.isHidden && sessions.count > 1 && selectedSection.selectedSection == .following {
+                            reorderingButton
+                        }
                     }
                 },
                 alignment: .topTrailing
@@ -121,9 +129,9 @@ private extension MainTabBarView {
     
     private var reorderingButton: some View {
         Group {
-            if !reorderButton.reorderIsON {
+            if !reorderButton.reorderIsOn {
                 Button {
-                    reorderButton.reorderIsON = true
+                    reorderButton.reorderIsOn = true
                 } label: {
                     Image("draggable-icon")
                         .frame(width: 60, height: 60)
@@ -138,7 +146,7 @@ private extension MainTabBarView {
                         .foregroundColor(.accentColor)
                         .opacity(0.1)
                     Button {
-                        reorderButton.reorderIsON = false
+                        reorderButton.reorderIsOn = false
                     } label: {
                         Text(Strings.MainTabBarView.finished)
                             .font(Fonts.muliHeading2)
@@ -148,6 +156,20 @@ private extension MainTabBarView {
                 .padding()
                 .offset(CGSize(width: 0.0, height: 40.0))
             }
+        }
+    }
+    
+    private var searchAndFollowButton: some View {
+        Group {
+            Button {
+                searchAndFollow.searchIsON = true
+            } label: {
+                Image(systemName: "doc.text.magnifyingglass")
+                    .foregroundColor(Color.accentColor)
+                    .frame(width: 60, height: 60)
+                    .imageScale(.large)
+            }
+            .offset(CGSize(width: 0.0, height: 40.0))
         }
     }
 }
@@ -175,9 +197,14 @@ class FinishAndSyncButtonTapped: ObservableObject {
 }
 
 class ReorderButtonTapped: ObservableObject {
-    @Published var reorderIsON = false
+    @Published var reorderIsOn = false
     @Published var isHidden = false
 }
+
+class SearchAndFollowButtonTapped: ObservableObject {
+     @Published var searchIsON = false
+     @Published var isHidden = false
+ }
 
 extension MainTabBarView {
     enum HomeIcon {

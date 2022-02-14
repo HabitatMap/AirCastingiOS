@@ -321,6 +321,11 @@
 		DD72DC4226A99D5000325FE5 /* ShareSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD72DC4126A99D5000325FE5 /* ShareSessionView.swift */; };
 		DD7955492757B30F00631A78 /* InAppAlerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD7955482757B30F00631A78 /* InAppAlerts.swift */; };
 		DD7B74AB278C63F80072DDF1 /* style.json in Resources */ = {isa = PBXBuildFile; fileRef = DD7B74AA278C63F80072DDF1 /* style.json */; };
+		DD80AE1D27BA46C800D9B123 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD80AE1C27BA46C800D9B123 /* SearchView.swift */; };
+		DD80AE2027BA470700D9B123 /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD80AE1F27BA470700D9B123 /* SearchViewModel.swift */; };
+		DD80AE2227BA5EF500D9B123 /* ChooseLocationPickerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD80AE2127BA5EF500D9B123 /* ChooseLocationPickerService.swift */; };
+		DD80AE2427BA5F1200D9B123 /* PlacePickerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD80AE2327BA5F1200D9B123 /* PlacePickerService.swift */; };
+		DD80AE2727BA74A100D9B123 /* SearchPickerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD80AE2627BA74A100D9B123 /* SearchPickerService.swift */; };
 		DD839E15269F33A6006A8625 /* LocationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD839E14269F33A6006A8625 /* LocationState.swift */; };
 		DD8A36A426C3CE7900C26725 /* ChooseCustomLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8A36A326C3CE7900C26725 /* ChooseCustomLocationView.swift */; };
 		DD8A36A726C3E76200C26725 /* PlacePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8A36A626C3E76200C26725 /* PlacePicker.swift */; };
@@ -709,6 +714,11 @@
 		DD72DC4126A99D5000325FE5 /* ShareSessionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareSessionView.swift; sourceTree = "<group>"; };
 		DD7955482757B30F00631A78 /* InAppAlerts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppAlerts.swift; sourceTree = "<group>"; };
 		DD7B74AA278C63F80072DDF1 /* style.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = style.json; sourceTree = "<group>"; };
+		DD80AE1C27BA46C800D9B123 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
+		DD80AE1F27BA470700D9B123 /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
+		DD80AE2127BA5EF500D9B123 /* ChooseLocationPickerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseLocationPickerService.swift; sourceTree = "<group>"; };
+		DD80AE2327BA5F1200D9B123 /* PlacePickerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlacePickerService.swift; sourceTree = "<group>"; };
+		DD80AE2627BA74A100D9B123 /* SearchPickerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchPickerService.swift; sourceTree = "<group>"; };
 		DD839E14269F33A6006A8625 /* LocationState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationState.swift; sourceTree = "<group>"; };
 		DD8A36A326C3CE7900C26725 /* ChooseCustomLocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseCustomLocationView.swift; sourceTree = "<group>"; };
 		DD8A36A626C3E76200C26725 /* PlacePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlacePicker.swift; sourceTree = "<group>"; };
@@ -1030,7 +1040,8 @@
 				DD4108F8273BE92700BF10FF /* CreateSessionDetails */,
 				DD9DD37127A2B8EE00E657E4 /* TurnOnLocationFixed */,
 				DD8A36A326C3CE7900C26725 /* ChooseCustomLocationView.swift */,
-				DD8A36A626C3E76200C26725 /* PlacePicker.swift */,
+				DD80AE2127BA5EF500D9B123 /* ChooseLocationPickerService.swift */,
+				DD80AE2527BA5F1D00D9B123 /* PlacePicker */,
 				331EA80925E32094009DEFDB /* ConfirmCreatingSessionView.swift */,
 			);
 			path = CreateSessionViews;
@@ -1126,6 +1137,7 @@
 				338C30E025F1042000E0305C /* CoreData */,
 				AC8CFF4325E5108100FB2918 /* APICommunicator */,
 				DD8C380A2689A3B600901FDF /* URLProviders */,
+				DD80AE1B27BA46AA00D9B123 /* SearchAndFollow */,
 				AC8CFF3425E502C700FB2918 /* AuthViews */,
 				ACD32A4D2600A8CC00818946 /* Settings */,
 				AC32043425CD52E600A68520 /* CreateSessionViews */,
@@ -1849,6 +1861,33 @@
 			path = Helpers;
 			sourceTree = "<group>";
 		};
+		DD80AE1B27BA46AA00D9B123 /* SearchAndFollow */ = {
+			isa = PBXGroup;
+			children = (
+				DD80AE1E27BA46F500D9B123 /* SearchLocation */,
+			);
+			path = SearchAndFollow;
+			sourceTree = "<group>";
+		};
+		DD80AE1E27BA46F500D9B123 /* SearchLocation */ = {
+			isa = PBXGroup;
+			children = (
+				DD80AE1C27BA46C800D9B123 /* SearchView.swift */,
+				DD80AE1F27BA470700D9B123 /* SearchViewModel.swift */,
+				DD80AE2627BA74A100D9B123 /* SearchPickerService.swift */,
+			);
+			path = SearchLocation;
+			sourceTree = "<group>";
+		};
+		DD80AE2527BA5F1D00D9B123 /* PlacePicker */ = {
+			isa = PBXGroup;
+			children = (
+				DD8A36A626C3E76200C26725 /* PlacePicker.swift */,
+				DD80AE2327BA5F1200D9B123 /* PlacePickerService.swift */,
+			);
+			path = PlacePicker;
+			sourceTree = "<group>";
+		};
 		DD8C380A2689A3B600901FDF /* URLProviders */ = {
 			isa = PBXGroup;
 			children = (
@@ -2296,6 +2335,7 @@
 				DDC5F5882719694800F1F9D8 /* ShadowImages.swift in Sources */,
 				DD430B022670F3B300F1BF2E /* NearAirDescription.swift in Sources */,
 				ACCEB2192763A2230040140B /* SDSyncCompleteViewModel.swift in Sources */,
+				DD80AE2727BA74A100D9B123 /* SearchPickerService.swift in Sources */,
 				ACBB05102761F1C400A6B3FB /* SDStream.swift in Sources */,
 				DD72DC4226A99D5000325FE5 /* ShareSessionView.swift in Sources */,
 				DD49FB6F27904119004A1CA8 /* DatabaseNote.swift in Sources */,
@@ -2398,6 +2438,7 @@
 				4F3CDF222652B58100596CD3 /* Measurement.swift in Sources */,
 				ACC536E026395C0900327267 /* MeasurementDotView.swift in Sources */,
 				4F858F5E2624B4980059271A /* Log.swift in Sources */,
+				DD80AE2427BA5F1200D9B123 /* PlacePickerService.swift in Sources */,
 				DDC8664A276B695400A8E610 /* NotesHandler.swift in Sources */,
 				DD430B062670FCC000F1BF2E /* GreenButtonStyle.swift in Sources */,
 				334CC6FA2751454C00C10B53 /* SDCardMobileSessionsSavingService.swift in Sources */,
@@ -2418,11 +2459,13 @@
 				DDD24D9626A8569400D4A327 /* ResetPasswordService.swift in Sources */,
 				B3D4B4B426C2C6A1004322FC /* Date+Miliseconds.swift in Sources */,
 				750A51D82754D41A00D6F4E7 /* GridCalculator.swift in Sources */,
+				DD80AE1D27BA46C800D9B123 /* SearchView.swift in Sources */,
 				ACCEB2272763A2230040140B /* UnplugABViewModel.swift in Sources */,
 				B3FD77BB267C94AF00E97CC2 /* SessionsSynchronizationStoreDataConverter.swift in Sources */,
 				AC32041C25CC46EF00A68520 /* PowerABView.swift in Sources */,
 				DD700CF22695CE9C0048A17D /* MailView.swift in Sources */,
 				B32D08AD267A6437006C97ED /* LogEvent.swift in Sources */,
+				DD80AE2227BA5EF500D9B123 /* ChooseLocationPickerService.swift in Sources */,
 				DD8DE6892785B706009B1726 /* EmptyNotesHandler.swift in Sources */,
 				ACBB05132761F21500A6B3FB /* SDCardFixedSessionsSavingService.swift in Sources */,
 				33BA336A266E4D1000899343 /* MobileSession.swift in Sources */,
@@ -2512,6 +2555,7 @@
 				B3FD77BA267C94AF00E97CC2 /* SessionSynchronizer.swift in Sources */,
 				B30BAC062694A99300AE0476 /* GraphStatsDataSource.swift in Sources */,
 				DD430B002670BC6F00F1BF2E /* GetStarted.swift in Sources */,
+				DD80AE2027BA470700D9B123 /* SearchViewModel.swift in Sources */,
 				AC8D6C6A25C049E300ED74D1 /* Environment.swift in Sources */,
 				ACD01F4025F8C1F800B8F65F /* SessionContext.swift in Sources */,
 				336A909327A4553000851100 /* ReoredringSessionCard.swift in Sources */,

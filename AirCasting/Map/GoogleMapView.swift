@@ -13,7 +13,7 @@ import Resolver
 
 struct GoogleMapView: UIViewRepresentable {
     @InjectedObject private var tracker: LocationTracker
-    @Binding var placePickerDismissed: Bool
+    @Binding var placePickerPushUpdate: Bool
     @Binding var isUserInteracting: Bool
     @Binding var noteMarketTapped: Bool
     @Binding var noteNumber: Int
@@ -30,7 +30,7 @@ struct GoogleMapView: UIViewRepresentable {
         self.pathPoints = pathPoints
         self.threshold = threshold
         self.isMyLocationEnabled = isMyLocationEnabled
-        self._placePickerDismissed = placePickerDismissed
+        self._placePickerPushUpdate = placePickerDismissed
         self._isUserInteracting = isUserInteracting
         self.liveModeOn = isSessionActive
         self.isSessionFixed = isSessionFixed
@@ -99,7 +99,12 @@ struct GoogleMapView: UIViewRepresentable {
             context.coordinator.drawHeatmap(uiView)
         }
         
-        placePickerDismissed ? uiView.moveCamera(cameraUpdate) : nil
+        if placePickerPushUpdate {
+            uiView.moveCamera(cameraUpdate)
+            DispatchQueue.main.async {
+                placePickerPushUpdate = false
+            }
+        }
         // Update camera's starting point
         guard context.coordinator.shouldAutoTrack else { return }
         DispatchQueue.main.async {

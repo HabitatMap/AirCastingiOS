@@ -429,6 +429,8 @@ struct Strings {
         static let orLabel: String = LocalizedStringKey("or").stringKey
         static let syncTitle: String = LocalizedStringKey("Sync data from \nAirBeam3").stringKey
         static let syncDescription: String = LocalizedStringKey("if you recorded with AirBeam3").stringKey
+        static let followButtonTitle: String = LocalizedStringKey("Follow session").stringKey
+        static let followButtonDescription: String = LocalizedStringKey("recorded by a measuring station").stringKey
 
     }
 
@@ -603,6 +605,11 @@ struct Strings {
         static let saveButton: String = LocalizedStringKey("Save changes").stringKey
         static let deleteButton: String = LocalizedStringKey("Delete note").stringKey
         static let cancelButton: String = LocalizedStringKey("Cancel").stringKey
+    }
+    
+    enum SearchView {
+        static let title: String = LocalizedStringKey("Search").stringKey
+        static let placeholder: String = LocalizedStringKey("Session location").stringKey
     }
 }
 

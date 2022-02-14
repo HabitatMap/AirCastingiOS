@@ -16,6 +16,7 @@ struct ChooseSessionTypeView: View {
     @State private var isPowerABLinkActive = false
     @State private var isMobileLinkActive = false
     @State private var didTapFixedSession = false
+    @State private var didTapSearchAndFollow = false
     @State private var startSync = false
     @State private var alert: AlertInfo?
     var viewModel: ChooseSessionTypeViewModel
@@ -67,6 +68,12 @@ struct ChooseSessionTypeView: View {
                 .fullScreenCover(isPresented: $startSync) {
                     CreatingSessionFlowRootView {
                         SDSyncRootView(creatingSessionFlowContinues: $startSync)
+                    }
+                }
+                
+                .fullScreenCover(isPresented: $didTapSearchAndFollow) {
+                    CreatingSessionFlowRootView {
+                        SearchView(creatingSessionFlowContinues: $didTapSearchAndFollow)
                     }
                 }
                 // TODO: What is that??? Move to VM!
@@ -124,6 +131,13 @@ struct ChooseSessionTypeView: View {
                                     SDSyncRootView(creatingSessionFlowContinues: $startSync)
                                 }
                             }
+                        
+                        EmptyView()
+                            .fullScreenCover(isPresented: $didTapSearchAndFollow) {
+                                CreatingSessionFlowRootView {
+                                    SearchView(creatingSessionFlowContinues: $didTapSearchAndFollow)
+                                }
+                            }
                     }
                 )
                 // TODO: What is that??? Move to VM!
@@ -166,9 +180,15 @@ struct ChooseSessionTypeView: View {
                     mobileSessionButton
                 }
                 Spacer()
-                if featureFlagsViewModel.enabledFeatures.contains(.sdCardSync) {
-                    orLabel
-                    sdSyncButton
+                orLabel
+                HStack {
+                    if featureFlagsViewModel.enabledFeatures.contains(.sdCardSync) {
+                        sdSyncButton
+                    }
+                    Spacer()
+                    if featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) {
+                        followSessionButton
+                    }
                 }
                 Spacer()
             }
@@ -249,6 +269,14 @@ struct ChooseSessionTypeView: View {
         }
     }
     
+    var followSessionButton: some View {
+        Button(action: {
+            didTapSearchAndFollow = true
+        }) {
+            followButtonLabel
+        }
+    }
+    
     func handleMobileSessionState() {
         viewModel.createNewSession(isSessionFixed: false)
         switch viewModel.mobileSessionNextStep() {
@@ -271,6 +299,11 @@ struct ChooseSessionTypeView: View {
     var syncButtonLabel: some View {
         chooseSessionButton(title: Strings.ChooseSessionTypeView.syncTitle,
                             description: Strings.ChooseSessionTypeView.syncDescription)
+    }
+    
+    var followButtonLabel: some View {
+        chooseSessionButton(title: Strings.ChooseSessionTypeView.followButtonTitle,
+                            description: Strings.ChooseSessionTypeView.followButtonDescription)
     }
     
 }
