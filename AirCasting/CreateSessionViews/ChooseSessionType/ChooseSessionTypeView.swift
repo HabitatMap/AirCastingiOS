@@ -40,7 +40,7 @@ struct ChooseSessionTypeView: View {
                 mainContent
                 .fullScreenCover(isPresented: $isPowerABLinkActive) {
                     CreatingSessionFlowRootView {
-                        CreateSessionDetailsView(creatingSessionFlowContinues: $isPowerABLinkActive)
+                        PowerABView(creatingSessionFlowContinues: $isPowerABLinkActive)
                     }
                 }
             
@@ -225,7 +225,7 @@ struct ChooseSessionTypeView: View {
             viewModel.createNewSession(isSessionFixed: true)
             switch viewModel.fixedSessionNextStep() {
             case .airBeam: isPowerABLinkActive = true
-            case .bluetooth: isPowerABLinkActive = true
+            case .bluetooth: isTurnBluetoothOnLinkActive = true
             default: return
             }
         }) {
