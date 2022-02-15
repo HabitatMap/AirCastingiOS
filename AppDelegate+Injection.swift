@@ -15,6 +15,7 @@ extension Resolver: ResolverRegistering {
             .scope(.application)
         main.register { CoreDataMeasurementStreamStorage() as MeasurementStreamStorage }.scope(.cached)
         main.register { DefaultFileLineReader() as FileLineReader }
+        main.register { SessionDataEraser() as DataEraser }
         
         // MARK: - Networking
         main.register { URLSession.shared as APIClient }.scope(.application)
@@ -91,7 +92,7 @@ extension Resolver: ResolverRegistering {
         main.register { ConnectingAirBeamServicesBluetooth() as ConnectingAirBeamServices }
         main.register { DefaultAirBeamConnectionController() as AirBeamConnectionController }
         main.register { DefaultSessionUpdateService() as SessionUpdateService }
-        main.register { DefaultLogoutController(sessionStorage: SessionStorage()) as LogoutController }
+        main.register { DefaultLogoutController() as LogoutController }
         
         // MARK: - Session stopping
         
