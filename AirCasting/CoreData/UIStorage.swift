@@ -44,19 +44,19 @@ final class HiddenCoreDataUIStorage: UIStorageContextUpdate {
     
     func cardStateToggle(for sessionUUID: SessionUUID) throws {
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
-        checkUIStateAvaibility(entity: sessionEntity)
+        createUIStateIfNeeded(entity: sessionEntity)
         sessionEntity.userInterface?.expandedCard.toggle()
         try context.save()
     }
     
     func changeStream(for sessionUUID: SessionUUID, stream: String) throws {
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
-        checkUIStateAvaibility(entity: sessionEntity)
+        createUIStateIfNeeded(entity: sessionEntity)
         sessionEntity.userInterface?.sensorName = stream
         try context.save()
     }
     
-    private func checkUIStateAvaibility(entity: SessionEntity) {
+    private func createUIStateIfNeeded(entity: SessionEntity) {
         if entity.userInterface == nil {
             let UIState = UIStateEntity(context: context)
             UIState.session = entity
