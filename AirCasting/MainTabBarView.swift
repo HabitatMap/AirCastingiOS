@@ -18,8 +18,8 @@ struct MainTabBarView: View {
     @InjectedObject private var bluetoothManager: BluetoothManager
     @StateObject var tabSelection: TabBarSelection = TabBarSelection()
     @StateObject var selectedSection = SelectSection()
-    @StateObject var reorderButton = ReorderButtonTapped()
-    @StateObject var searchAndFollow = SearchAndFollowButtonTapped()
+    @StateObject var reorderButton = ReorderButton()
+    @StateObject var searchAndFollow = SearchAndFollowButton()
     @StateObject var emptyDashboardButtonTapped = EmptyDashboardButtonTapped()
     @StateObject var finishAndSyncButtonTapped = FinishAndSyncButtonTapped()
     @StateObject var sessionContext: CreateSessionContext
@@ -162,7 +162,7 @@ private extension MainTabBarView {
     private var searchAndFollowButton: some View {
         Group {
             Button {
-                searchAndFollow.searchIsON = true
+                searchAndFollow.searchIsOn = true
             } label: {
                 Image(systemName: "doc.text.magnifyingglass")
                     .foregroundColor(Color.accentColor)
@@ -196,13 +196,13 @@ class FinishAndSyncButtonTapped: ObservableObject {
     @Published var finishAndSyncButtonWasTapped = false
 }
 
-class ReorderButtonTapped: ObservableObject {
+class ReorderButton: ObservableObject {
     @Published var reorderIsOn = false
     @Published var isHidden = false
 }
 
-class SearchAndFollowButtonTapped: ObservableObject {
-     @Published var searchIsON = false
+class SearchAndFollowButton: ObservableObject {
+     @Published var searchIsOn = false
      @Published var isHidden = false
  }
 

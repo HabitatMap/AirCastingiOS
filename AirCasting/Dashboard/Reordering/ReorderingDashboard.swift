@@ -6,7 +6,7 @@ import SwiftUI
 struct ReorderingDashboard: View {
     
     @StateObject var viewModel: ReorderingDashboardViewModel
-    @EnvironmentObject var searchAndFollowButton: SearchAndFollowButtonTapped
+    @EnvironmentObject var searchAndFollowButton: SearchAndFollowButton
     @State private var changedView: Bool = false
     
     init(sessions: [SessionEntity], thresholds: [SensorThreshold]) {

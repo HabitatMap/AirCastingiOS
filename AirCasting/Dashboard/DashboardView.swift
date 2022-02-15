@@ -15,8 +15,8 @@ struct DashboardView: View {
     @StateObject var coreDataHook: CoreDataHook
     @FetchRequest<SensorThreshold>(sortDescriptors: [.init(key: "sensorName", ascending: true)]) var thresholds
     @EnvironmentObject var selectedSection: SelectSection
-    @EnvironmentObject var reorderButton: ReorderButtonTapped
-    @EnvironmentObject var searchAndFollowButton: SearchAndFollowButtonTapped
+    @EnvironmentObject var reorderButton: ReorderButton
+    @EnvironmentObject var searchAndFollowButton: SearchAndFollowButton
     @Injected private var averaging: AveragingService
     @State var isRefreshing: Bool = false
     @Injected private var sessionSynchronizer: SessionSynchronizer
@@ -49,9 +49,9 @@ struct DashboardView: View {
                 if sessions.isEmpty { emptySessionsView } else { sessionListView }
             }
         }
-        .fullScreenCover(isPresented: $searchAndFollowButton.searchIsON) {
+        .fullScreenCover(isPresented: $searchAndFollowButton.searchIsOn) {
             CreatingSessionFlowRootView {
-                SearchView(creatingSessionFlowContinues: $searchAndFollowButton.searchIsON)
+                SearchView(creatingSessionFlowContinues: $searchAndFollowButton.searchIsOn)
             }
         }
         .navigationBarTitle(NSLocalizedString(Strings.DashboardView.dashboardText, comment: ""))

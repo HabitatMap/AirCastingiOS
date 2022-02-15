@@ -18,8 +18,8 @@ struct SessionCardView: View {
     @State private var showLoadingIndicator = false
     @ObservedObject var session: SessionEntity
     @EnvironmentObject var selectedSection: SelectSection
-    @EnvironmentObject var reorderButton: ReorderButtonTapped
-    @EnvironmentObject var searchAndFollowButton: SearchAndFollowButtonTapped
+    @EnvironmentObject var reorderButton: ReorderButton
+    @EnvironmentObject var searchAndFollowButton: SearchAndFollowButton
     let sessionCartViewModel: SessionCardViewModel
     let thresholds: [SensorThreshold]
 

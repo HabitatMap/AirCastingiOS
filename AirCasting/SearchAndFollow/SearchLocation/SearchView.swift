@@ -4,7 +4,6 @@
 import SwiftUI
 import AirCastingStyling
 
-
 struct SearchView: View {
     @StateObject var viewModel: SearchViewModel
     @Binding var creatingSessionFlowContinues: Bool
@@ -22,7 +21,11 @@ struct SearchView: View {
             button
         }.padding()
         .sheet(isPresented: $viewModel.isLocationPopupPresented) {
-            PlacePicker(service: SearchPickerService(address: $viewModel.location))
+            PlacePicker(service: SearchPickerService(address: .init(get: {
+                viewModel.location
+            }, set: { newLocation in
+                viewModel.updateLocation(using: newLocation)
+            })))
         }
     }
 }
@@ -38,7 +41,11 @@ private extension SearchView {
     
     var textField: some View {
         createTextfield(placeholder: Strings.SearchView.placeholder,
-                        binding: $viewModel.location)
+                        binding: .init(get: {
+            viewModel.location
+        }, set: { newLocation in
+            viewModel.updateLocation(using: newLocation)
+        }))
             .disabled(true)
             .onTapGesture { viewModel.textFieldTapped() }
     }

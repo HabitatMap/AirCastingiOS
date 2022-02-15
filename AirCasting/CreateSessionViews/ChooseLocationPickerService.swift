@@ -7,14 +7,14 @@ import SwiftUI
 
 class ChooseLocationPickerService: PlacePickerService {
     @InjectedObject private var tracker: LocationTracker
-    @Binding var address: String
+    @Binding private var address: String
     
     init(address: Binding<String>) {
         self._address = address
     }
     
     func didComplete(using place: GMSPlace) {
-        address =  place.name ?? ""
+        address = place.name ?? ""
         tracker.googleLocation = [PathPoint(location: place.coordinate, measurementTime: DateBuilder.getFakeUTCDate())]
     }
 }

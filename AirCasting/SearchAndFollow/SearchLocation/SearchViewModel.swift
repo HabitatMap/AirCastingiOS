@@ -9,4 +9,6 @@ class SearchViewModel: ObservableObject {
     @Published var location = ""
     
     func textFieldTapped() { isLocationPopupPresented.toggle() }
+    
+    func updateLocation(using newLocation: String) { location = newLocation}
 }

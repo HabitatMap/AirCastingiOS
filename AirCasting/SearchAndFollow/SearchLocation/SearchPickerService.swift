@@ -5,7 +5,7 @@ import GooglePlaces
 import SwiftUI
 
 class SearchPickerService: PlacePickerService {
-    @Binding var address: String
+    @Binding private var address: String
     
     init(address: Binding<String>) {
         self._address = address
