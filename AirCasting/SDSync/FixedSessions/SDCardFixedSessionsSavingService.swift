@@ -9,41 +9,33 @@ enum UploadingError: Error {
     case uploadError
 }
 
+// TODO: Refactor this part
 class SDCardFixedSessionsUploadingService {
     @Injected private var fileLineReader: FileLineReader
     @Injected private var measurementStreamStorage: MeasurementStreamStorage
     @Injected private var apiService: UploadFixedSessionAPIService
     private let parser = SDCardMeasurementsParser()
     
-    private let bufferThreshold = 200
-    
     func processAndUpload(fileURL: URL, deviceID: String, completion: @escaping (Result<[SessionUUID], Error>) -> Void) {
-        var processedSessions = Set<SessionUUID>()
+        var sessionsForUpload = Set<SessionUUID>()
         var streamsWithMeasurements: [SDStream: [Measurement]] = [:]
         
         // We don't want to upload sessions of other users
         var sessionsToIgnore: [SessionUUID] = []
-        
-        var readLines = 0
         
         measurementStreamStorage.accessStorage { storage in
             do {
                 try self.fileLineReader.readLines(of: fileURL, progress: { line in
                     switch line {
                     case .line(let content):
-                        readLines += 1
-                        Log.info("LINE: \(content)")
                         let measurementsRow = self.parser.parseMeasurement(lineString: content)
-                        guard let measurements = measurementsRow, !sessionsToIgnore.contains(measurements.sessionUUID) else { return }
+                        guard let measurements = measurementsRow,
+                              !sessionsToIgnore.contains(measurements.sessionUUID),
+                              self.checkIfSessionExistis(storage: storage, sessionUUID: measurements.sessionUUID, sessionsToIgnore: &sessionsToIgnore)
+                        else { return }
                         
-                        let session = processedSessions.first(where: { $0 == measurements.sessionUUID })
-                        if session == nil {
-                            guard self.checkIfSessionExistis(storage: storage, sessionUUID: measurements.sessionUUID, sessionsToIgnore: &sessionsToIgnore) else { return }
-                            processedSessions.insert(measurements.sessionUUID)
-                            Log.info("Processed session: \(measurements.sessionUUID)")
-                        }
+                        sessionsForUpload.insert(measurements.sessionUUID)
                         
-                        Log.info("Enqueueing session: \(measurements.sessionUUID)")
                         self.enqueueForUploading(measurements: measurements, buffer: &streamsWithMeasurements)
                     case .endOfFile:
                         Log.info("Reached end of csv file")
@@ -51,7 +43,7 @@ class SDCardFixedSessionsUploadingService {
                 })
                 
                 self.processAndSync(streamsWithMeasurements: streamsWithMeasurements, deviceID: deviceID) { success in
-                    success ? completion(.success(Array(processedSessions))) : completion(.failure(UploadingError.uploadError))
+                    success ? completion(.success(Array(sessionsForUpload))) : completion(.failure(UploadingError.uploadError))
                 }
             } catch {
                 completion(.failure(error))

@@ -87,8 +87,15 @@ class SDSyncController {
         let fixedFileURL = files.first(where: { $0.1 == SDCardSessionType.fixed })?.0
         
         func handleFixedFile(fixedFileURL: URL) {
-            guard let fixedSessionsUUIDs =  process(fixedSessionFile: fixedFileURL, deviceID: sensorName, completion: completion) else { return }
-            measurementsDownloader.download(sessionsUUIDs: fixedSessionsUUIDs)
+            process(fixedSessionFile: fixedFileURL, deviceID: sensorName) { result in
+                switch result {
+                case .success(let fixedSessionsUUIDs):
+                    self.measurementsDownloader.download(sessionsUUIDs: fixedSessionsUUIDs)
+                    completion(true)
+                case .failure:
+                    completion(false)
+                }
+            }
         }
         
         if let mobileFileURL = mobileFileURL {
@@ -111,20 +118,17 @@ class SDSyncController {
         }
     }
     
-    private func process(fixedSessionFile: URL, deviceID: String, completion: @escaping (Bool) -> Void) -> [SessionUUID]? {
-        var uploadedSessions: [SessionUUID]? = nil
+    private func process(fixedSessionFile: URL, deviceID: String, completion: @escaping (Result<[SessionUUID], Error>) -> Void) {
         Log.info("Processing fixed file")
         fixedSessionsUploader.processAndUpload(fileURL: fixedSessionFile, deviceID: deviceID) { result in
             switch result {
             case .success(let sessions):
-                uploadedSessions = sessions
-                completion(true)
+                completion(.success(sessions))
             case .failure(let error):
                 Log.error("[SD Sync] Failed to upload sessions to backend: \(error.localizedDescription)")
-                completion(false)
+                completion(.failure(error))
             }
         }
-        return uploadedSessions
     }
     
     private func process(mobileSessionFile: URL, deviceID: String, completion: @escaping (Bool) -> Void) {
