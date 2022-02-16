@@ -14,7 +14,7 @@ final class ChartViewModel: ObservableObject {
     @ObservedObject var session: SessionEntity
 
     // TODO: This is not the best design. On a stream change the view should be regenerated and new viewmodel should be created (this way we can also create VM inside ChartView itself, not pass it around all the way from SessionCardView
-    //
+    // https://github.com/HabitatMap/AirCastingiOS/issues/605
     var stream: MeasurementStreamEntity? {
         didSet {
             setupDatabaseHook()
