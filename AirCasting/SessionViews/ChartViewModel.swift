@@ -13,6 +13,8 @@ final class ChartViewModel: ObservableObject {
     @Published var chartEndTime: Date?
     @ObservedObject var session: SessionEntity
 
+    // TODO: This is not the best design. On a stream change the view should be regenerated and new viewmodel should be created (this way we can also create VM inside ChartView itself, not pass it around all the way from SessionCardView
+    //
     var stream: MeasurementStreamEntity? {
         didSet {
             setupDatabaseHook()
@@ -21,34 +23,22 @@ final class ChartViewModel: ObservableObject {
     }
     @Injected private var persistence: PersistenceController
     @Injected private var settings: UserSettings
-
     
     private let numberOfEntries = Constants.Chart.numberOfEntries
     private var cancellables: [AnyCancellable] = []
-
-    deinit {
-        stopTimers()
-    }
     
     init(session: SessionEntity) {
         self.session = session
         self.chartStartTime = session.endTime
         self.chartEndTime = session.endTime
-        if shouldBeUpdatingChartForCurrentSession() {
-            startTimers()
-            scheduleUIResumeNotification()
-        }
         setupHooks()
-    }
-    
-    private func shouldBeUpdatingChartForCurrentSession() -> Bool {
-        session.isActive || session.isFollowed || session.status == .NEW
+        stream = session.sortedStreams?.first
     }
 
     private func setupHooks() {
         settings.objectWillChange.sink { [weak self] in
             self?.objectWillChange.send()
-            self?.refreshChart()
+            self?.generateEntries()
         }.store(in: &cancellables)
         setupDatabaseHook()
     }
@@ -59,7 +49,7 @@ final class ChartViewModel: ObservableObject {
     
     private func setupDatabaseHook() {
         databaseObserver = nil
-        guard shouldBeUpdatingChartForCurrentSession(), let sensor = stream?.sensorName else { return }
+        guard let sensor = stream?.sensorName else { return }
         let filter: ChartDatabaseObserverFilter = session.isFixed ? .hour : .minute(countingFrom: session.startTime?.convertedFromUTCToLocal ?? DateBuilder.getRawDate())
         databaseObserver = ChartDatabaseObserver(session: session.uuid, sensor: sensor, filtered: filter) { [weak self] in
             guard let self = self else { return }
@@ -68,73 +58,14 @@ final class ChartViewModel: ObservableObject {
         }
     }
     
-    // MARK: Timers
+    // MARK: Chart refresh
     
     private var timeUnit: TimeInterval {
         session.isMobile ? .minute : .hour
     }
 
-    private var mainTimer: Timer?
-    private var firstTimer: Timer?
-    private var uiPausedNotificationHandle: Any?
-    private var uiResumedNotificationHandle: Any?
-    
-    private func startMainTimer() {
-        Log.verbose("Starting periodic (\(timeUnit)s) timer")
-        mainTimer = Timer.scheduledTimer(withTimeInterval: timeUnit, repeats: true) { [weak self] timer in
-            Log.verbose("Periodic timer fired")
-            self?.generateEntries()
-        }
-    }
-
-    private func startTimers() {
-        let timeOfNextAverage = timeOfNextAverage()
-        log("Starting chart timers (time of first entry regen: \(timeOfNextAverage) (\(Date().addingTimeInterval(timeOfNextAverage)))")
-        firstTimer = Timer.scheduledTimer(withTimeInterval: TimeInterval(timeOfNextAverage), repeats: false) { [weak self] timer in
-            self?.log("Initial timer fired for chart")
-            self?.generateEntries()
-            self?.startMainTimer()
-        }
-    }
-    
-    private func stopTimers() {
-        Log.verbose("Stopping chart timers")
-        firstTimer?.invalidate()
-        mainTimer?.invalidate()
-    }
-    
-    private func timeOfNextAverage() -> Double {
-        let sessionStartTime = session.startTime!
-
-        if session.isFixed {
-            return DateBuilder.getRawDate().roundedUpToHour.timeIntervalSince(DateBuilder.getRawDate()) + 1
-        } else {
-            return timeUnit - DateBuilder.getFakeUTCDate().timeIntervalSince(sessionStartTime).truncatingRemainder(dividingBy: timeUnit)
-        }
-    }
-
-    private func scheduleUIResumeNotification() {
-        uiPausedNotificationHandle = NotificationCenter.default.addObserver(forName: PersistenceController.uiDidSuspendNotificationName, object: nil, queue: .main) { [weak self] _ in
-            self?.log("Received uiDidSuspendNotificationName. Stopping timers")
-            self?.stopTimers()
-        }
-        uiResumedNotificationHandle = NotificationCenter.default.addObserver(forName: PersistenceController.uiDidResumeNotificationName, object: nil, queue: .main) { [weak self] _ in
-            guard let self = self else { return }
-            guard self.shouldBeUpdatingChartForCurrentSession() else { return }
-            self.log("Received uiDidSuspendNotificationName. Restarting timers")
-            self.generateEntries()
-            self.startTimers()
-        }
-    }
-    
-    // MARK: Chart refresh
-
-    func refreshChart() {
-        generateEntries()
-    }
-
     private func generateEntries() {
-        Log.verbose("Generating entries")
+        log("Generating entries", level: .verbose)
         // Set up begning and end of the interval for the first average
         //  - for fixed sessions we are taking the last full hour of the session, which has any measurements
         //  - for mobile we are taking into account full minutes since the session started and we are taking the most recent one
@@ -142,7 +73,7 @@ final class ChartViewModel: ObservableObject {
             stream != nil,
             var intervalEnd = intervalEndTime()
         else {
-            Log.warning("Generating entried failed!")
+            log("Not generating entries - stream is nil.")
             return
         }
 
@@ -188,8 +119,8 @@ final class ChartViewModel: ObservableObject {
     
     // MARK: Debugging utils
     
-    private func log(_ msg: String) {
-        Log.info("\(msg). Session info: [\(logSessionInfo)]")
+    private func log(_ msg: String, level: LogLevel = .info, file: String = #fileID, function: String = #function, line: Int = #line) {
+        Log.log("\(msg). Session info: [\(logSessionInfo)]", type: level, file: file, function: function, line: line)
     }
     
     private var logSessionInfo: String {

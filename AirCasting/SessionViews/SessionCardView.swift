@@ -196,9 +196,6 @@ private extension SessionCardView {
                     }.foregroundColor(.aircastingGray)
                         .font(Fonts.semiboldHeading2)
                 }
-                .onAppear {
-                    chartViewModel.refreshChart()
-                }
             }
         }
     }
