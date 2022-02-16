@@ -103,7 +103,7 @@ private extension MainTabBarView {
     }
     
     private var createSessionTab: some View {
-        ChooseSessionTypeView(sessionContext: sessionContext)
+        ChooseSessionTypeView(viewModel: ChooseSessionTypeViewModel(sessionContext: sessionContext))
             .tabItem {
                 Image(plusImage)
             }
