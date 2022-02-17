@@ -441,6 +441,8 @@ struct Strings {
     enum EmptyDashboardMobile {
         static let title: String = NSLocalizedString("Start recording a mobile session",
                                                      comment: "")
+        static let titleDivider = NSLocalizedString("a",
+                                                    comment: "In addition to: Start recording a mobile session")
         static let description: String = NSLocalizedString("If you plan on moving around while recording measurements.",
                                                            comment: "")
         static let buttonMobile: String = NSLocalizedString("Record mobile session",
