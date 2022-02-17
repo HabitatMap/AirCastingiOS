@@ -6,7 +6,7 @@ import SwiftUI
 final class StringCustomizer {
     static func customizeString(_ s: String, using words: [String], fontWeight: Font.Weight = .bold, standardFontWeight: Font.Weight = .regular, color: Color = .aircastingGray, standardColor: Color = .aircastingGray, font: Font = .body, standardFont: Font = Fonts.muliHeading3, makeNewLineAfterCustomized: Bool = false) -> Text {
         
-        var customizedText: Text!
+        var customizedText: Text = Text("")
         let separatedText = s.components(separatedBy: " ")
         var newLine = false
         var separatedKeyWords = words.flatMap { $0.components(separatedBy: " ") }
