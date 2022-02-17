@@ -893,7 +893,7 @@ struct Strings {
                                                        comment: "")
         static let password: String = NSLocalizedString("Password",
                                                         comment: "")
-        static let signIn_1: String = NSLocalizedString("Password",
+        static let signIn_1: String = NSLocalizedString("Already have an account?",
                                                         comment: "")
         static let signIn_2: String = NSLocalizedString("Sign in",
                                                         comment: "")

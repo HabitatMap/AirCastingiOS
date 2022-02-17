@@ -45,13 +45,12 @@ struct AirBeamOnboarding: View {
         
         private var sheetDescription: some View {
             StringCustomizer.customizeString(Strings.OnboardingAirBeamSheet.sheetDescription_1,
-                           using: [Strings.OnboardingAirBeamSheet.fixed,
-                                   Strings.OnboardingAirBeamSheet.mobile],
-                           color: .aircastingMint)
-            .font(Fonts.muliHeading2)
-            .lineSpacing(10.0)
-            .multilineTextAlignment(.leading)
-            .foregroundColor(.aircastingGray)
+                                             using: [Strings.OnboardingAirBeamSheet.fixed,
+                                                     Strings.OnboardingAirBeamSheet.mobile],
+                                             color: .aircastingMint,
+                                             standardFont: Fonts.muliHeading2)
+                .lineSpacing(10.0)
+                .multilineTextAlignment(.leading)
         }
     }
 }

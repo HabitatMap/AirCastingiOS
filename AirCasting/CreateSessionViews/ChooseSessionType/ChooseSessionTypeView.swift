@@ -277,24 +277,24 @@ struct ChooseSessionTypeView: View {
     
     var fixedSessionLabel: some View {
         chooseSessionButton(title:  StringCustomizer.customizeString(Strings.ChooseSessionTypeView.fixedLabel,
-                                                   using: [Strings.ChooseSessionTypeView.fixedSession],
-                                                   color: .accentColor,
-                                                   font: Fonts.boldHeading1))
+                                                                     using: [Strings.ChooseSessionTypeView.fixedSession],
+                                                                     color: .accentColor,
+                                                                     font: Fonts.boldHeading1))
     }
     
     var mobileSessionLabel: some View {
         chooseSessionButton(title:  StringCustomizer.customizeString(Strings.ChooseSessionTypeView.mobileLabel,
-                                                   using: [Strings.ChooseSessionTypeView.mobileSession],
-                                                   color: .accentColor,
-                                                   font: Fonts.boldHeading1))
+                                                                     using: [Strings.ChooseSessionTypeView.mobileSession],
+                                                                     color: .accentColor,
+                                                                     font: Fonts.boldHeading1))
     }
     
     var syncButtonLabel: some View {
         chooseSessionButton(title:  StringCustomizer.customizeString(Strings.ChooseSessionTypeView.syncTitle,
-                                                   using: [Strings.ChooseSessionTypeView.syncData],
-                                                   color: .accentColor,
-                                                   font: Fonts.boldHeading1,
-                                                   makeNewLineAfterCustomized: true))
+                                                                     using: [Strings.ChooseSessionTypeView.syncData],
+                                                                     color: .accentColor,
+                                                                     font: Fonts.boldHeading1,
+                                                                     makeNewLineAfterCustomized: true))
     }
     
 }

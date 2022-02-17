@@ -175,7 +175,7 @@ private extension CreateAccountView {
         Text(Strings.CreateAccountView.signIn_1)
             .font(Fonts.muliHeading2)
             .foregroundColor(.aircastingGray)
-            
+        + Text(" ")
         + Text(Strings.CreateAccountView.signIn_2)
             .font(Fonts.boldHeading2)
             .foregroundColor(.accentColor)
