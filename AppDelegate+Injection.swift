@@ -12,6 +12,7 @@ extension Resolver: ResolverRegistering {
             .implements(SessionsFetchable.self)
             .implements(SessionRemovable.self)
             .implements(SessionInsertable.self)
+            .implements(SessionUpdateable.self)
             .scope(.application)
         main.register { CoreDataMeasurementStreamStorage() as MeasurementStreamStorage }.scope(.cached)
         main.register { DefaultFileLineReader() as FileLineReader }
