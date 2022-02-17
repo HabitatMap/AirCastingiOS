@@ -47,7 +47,9 @@ struct ConfirmCreatingSessionView: View {
         return StringCustomizer.customizeString(text,
                                                 using: [sessionType, sessionName],
                                                 fontWeight: .bold,
-                                                color: .accentColor)
+                                                color: .accentColor,
+                                                font: Fonts.muliHeading2,
+                                                standardFont: Fonts.muliHeading2)
     }
 
     var dot: some View {
