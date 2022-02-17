@@ -45,8 +45,8 @@ final class StringCustomizer {
         text + Text(" ")
     }
     
-    private static func appended(word: String, to text: Text?) -> Text {
-        return (text == nil ? Text(word) : text! + Text(word))
+    private static func appended(word: String, to text: Text) -> Text {
+        text + Text(word)
     }
     
     private static func shouldAddEmptyLine(after text: Text) -> Text {
