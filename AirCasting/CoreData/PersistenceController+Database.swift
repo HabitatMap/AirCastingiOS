@@ -113,7 +113,7 @@ extension PersistenceController: SessionUpdateable {
         let context = self.editContext
         context.perform {
             do {
-                let sessionEntity: SessionEntity = try context.newOrExisting(uuid: sessionUUID)
+                let sessionEntity = try context.existingSession(uuid: sessionUUID)
                 sessionEntity.urlLocation = url
                 try context.save()
                 completion?(nil)
