@@ -54,6 +54,13 @@ class ShareLocationlessSessionViewModel: ObservableObject {
         exitRoute()
     }
     
+    func getSharePage() -> ActivityViewController? {
+        guard file != nil else { return nil }
+        return ActivityViewController(sharingFile: true, itemToShare: file!) { activityType, completed, returnedItems, error in
+            self.sharingFinished()
+        }
+    }
+    
     private func getAlert() {
         DispatchQueue.main.async {
             self.alert = InAppAlerts.failedSharingAlert()

@@ -7,6 +7,7 @@
 
 import SwiftUI
 import AirCastingStyling
+import Resolver
 
 struct ChooseSessionTypeView: View {
     @State private var isInfoPresented: Bool = false
@@ -18,13 +19,12 @@ struct ChooseSessionTypeView: View {
     @State private var startSync = false
     @State private var alert: AlertInfo?
     var viewModel: ChooseSessionTypeViewModel
-    var sessionSynchronizer: SessionSynchronizer
-    @EnvironmentObject private var sdSyncController: SDSyncController
     @EnvironmentObject private var tabSelection: TabBarSelection
     @EnvironmentObject var selectedSection: SelectSection
     @EnvironmentObject private var emptyDashboardButtonTapped: EmptyDashboardButtonTapped
     @EnvironmentObject private var finishAndSyncButtonTapped: FinishAndSyncButtonTapped
-    @EnvironmentObject var networkChecker: NetworkChecker
+    @Injected private var networkChecker: NetworkChecker
+    @InjectedObject private var bluetoothManger: BluetoothManager //TODO: Fix this (see usage) - move to VM
     
     var shouldGoToChooseSessionScreen: Bool {
         (tabSelection.selection == .createSession && emptyDashboardButtonTapped.mobileWasTapped) ? true : false
@@ -32,7 +32,7 @@ struct ChooseSessionTypeView: View {
     var shouldGoToSyncScreen: Bool {
         (tabSelection.selection == .createSession && finishAndSyncButtonTapped.finishAndSyncButtonWasTapped) ? true : false
     }
-    @StateObject private var featureFlagsViewModel = FeatureFlagsViewModel.shared
+    @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
 
     var body: some View {
         if #available(iOS 15, *) {
@@ -40,47 +40,37 @@ struct ChooseSessionTypeView: View {
                 mainContent
                 .fullScreenCover(isPresented: $isPowerABLinkActive) {
                     CreatingSessionFlowRootView {
-                        PowerABView(creatingSessionFlowContinues: $isPowerABLinkActive,
-                                    urlProvider: viewModel.passURLProvider,
-                                    locationHandler: viewModel.locationHandler)
+                        PowerABView(creatingSessionFlowContinues: $isPowerABLinkActive)
                     }
                 }
             
                 .fullScreenCover(isPresented: $isTurnLocationOnLinkActive) {
                     CreatingSessionFlowRootView {
                         TurnOnLocationView(creatingSessionFlowContinues: $isTurnLocationOnLinkActive,
-                                           viewModel: TurnOnLocationViewModel(locationHandler: viewModel.locationHandler,
-                                                                              bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: viewModel.passBluetoothManager),
-                                                                              sessionContext: viewModel.passSessionContext,
-                                                                              urlProvider: viewModel.passURLProvider,
+                                           viewModel: TurnOnLocationViewModel(sessionContext: viewModel.passSessionContext,
                                                                               isSDClearProcess: false))
                     }
                 }
           
                 .fullScreenCover(isPresented: $isTurnBluetoothOnLinkActive) {
                     CreatingSessionFlowRootView {
-                        TurnOnBluetoothView(creatingSessionFlowContinues: $isTurnBluetoothOnLinkActive,
-                                            sdSyncContinues: .constant(false),
-                                            locationHandler: viewModel.locationHandler, urlProvider: viewModel.passURLProvider)
+                        TurnOnBluetoothView(creatingSessionFlowContinues: $isTurnBluetoothOnLinkActive, sdSyncContinues: .constant(false))
                     }
                 }
 
                 .fullScreenCover(isPresented: $isMobileLinkActive) {
                     CreatingSessionFlowRootView {
-                        SelectDeviceView(creatingSessionFlowContinues: $isMobileLinkActive,
-                                         sdSyncContinues: .constant(false),
-                                         locationHandler: viewModel.locationHandler,
-                                         urlProvider: viewModel.passURLProvider)
+                        SelectDeviceView(creatingSessionFlowContinues: $isMobileLinkActive, sdSyncContinues: .constant(false))
                     }
                 }
                 
                 .fullScreenCover(isPresented: $startSync) {
                     CreatingSessionFlowRootView {
-                        SDSyncRootView(viewModel: SDSyncRootViewModelDefault(sessionSynchronizer: sessionSynchronizer,
-                                                                             urlProvider: viewModel.passURLProvider), creatingSessionFlowContinues: $startSync)
+                        SDSyncRootView(creatingSessionFlowContinues: $startSync)
                     }
                 }
-                .onChange(of: viewModel.passBluetoothManager.centralManagerState) { _ in
+                // TODO: What is that??? Move to VM!
+                .onChange(of: bluetoothManger.centralManagerState) { _ in
                     if didTapFixedSession {
                         didTapFixedSession = false
                     }
@@ -103,18 +93,14 @@ struct ChooseSessionTypeView: View {
                         EmptyView()
                             .fullScreenCover(isPresented: $isPowerABLinkActive) {
                                 CreatingSessionFlowRootView {
-                                    PowerABView(creatingSessionFlowContinues: $isPowerABLinkActive,
-                                                urlProvider: viewModel.passURLProvider,
-                                                locationHandler: viewModel.locationHandler)
+                                    PowerABView(creatingSessionFlowContinues: $isPowerABLinkActive)
                                 }
                             }
                         EmptyView()
                             .fullScreenCover(isPresented: $isTurnLocationOnLinkActive) {
                                 CreatingSessionFlowRootView {
                                     TurnOnLocationView(creatingSessionFlowContinues: $isTurnLocationOnLinkActive,
-                                                       viewModel: TurnOnLocationViewModel(locationHandler: viewModel.locationHandler, bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: viewModel.passBluetoothManager),
-                                                                                          sessionContext: viewModel.passSessionContext,
-                                                                                          urlProvider: viewModel.passURLProvider,
+                                                       viewModel: TurnOnLocationViewModel(sessionContext: viewModel.passSessionContext,
                                                                                           isSDClearProcess: false))
                                 }
                             }
@@ -122,29 +108,26 @@ struct ChooseSessionTypeView: View {
                             .fullScreenCover(isPresented: $isTurnBluetoothOnLinkActive) {
                                 CreatingSessionFlowRootView {
                                     TurnOnBluetoothView(creatingSessionFlowContinues: $isTurnBluetoothOnLinkActive,
-                                                        sdSyncContinues: .constant(false),
-                                                        locationHandler: viewModel.locationHandler, urlProvider: viewModel.passURLProvider)
+                                                        sdSyncContinues: .constant(false))
                                 }
                             }
                         EmptyView()
                             .fullScreenCover(isPresented: $isMobileLinkActive) {
                                 CreatingSessionFlowRootView {
                                     SelectDeviceView(creatingSessionFlowContinues: $isMobileLinkActive,
-                                                     sdSyncContinues: .constant(false),
-                                                     locationHandler: viewModel.locationHandler, urlProvider: viewModel.passURLProvider)
+                                                     sdSyncContinues: .constant(false))
                                 }
                             }
                         EmptyView()
                             .fullScreenCover(isPresented: $startSync) {
                                 CreatingSessionFlowRootView {
-                                    SDSyncRootView(viewModel: SDSyncRootViewModelDefault(sessionSynchronizer: sessionSynchronizer,
-                                                                                         urlProvider: viewModel.passURLProvider),
-                                                   creatingSessionFlowContinues: $startSync)
+                                    SDSyncRootView(creatingSessionFlowContinues: $startSync)
                                 }
                             }
                     }
                 )
-                .onChange(of: viewModel.passBluetoothManager.centralManagerState) { _ in
+                // TODO: What is that??? Move to VM!
+                .onChange(of: bluetoothManger.centralManagerState) { _ in
                     if didTapFixedSession {
                         didTapFixedSession = false
                     }
@@ -317,12 +300,3 @@ extension View {
         .shadow(color: Color.shadow, radius: 9, x: 0, y: 1)
     }
 }
-
-#if DEBUG
-struct CreateSessionView_Previews: PreviewProvider {
-    static var previews: some View {
-        ChooseSessionTypeView(viewModel: ChooseSessionTypeViewModel(locationHandler: DummyDefaultLocationHandler(), bluetoothHandler: DummyDefaultBluetoothHandler(), userSettings: UserSettings(), sessionContext: CreateSessionContext(), urlProvider: DummyURLProvider(), bluetoothManager: BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: PreviewMeasurementStreamStorage())), bluetoothManagerState: BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: PreviewMeasurementStreamStorage())).centralManagerState), sessionSynchronizer: DummySessionSynchronizer())
-            .environmentObject(BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: PreviewMeasurementStreamStorage())))
-    }
-}
-#endif

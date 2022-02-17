@@ -7,28 +7,18 @@
 
 import SwiftUI
 import AirCastingStyling
+import Resolver
 
 struct SettingsView: View {
-    var viewModel: SettingsViewModel
-    let urlProvider: BaseURLProvider
-    let logoutController: LogoutController
-    let sessionContext = CreateSessionContext()
-    @State private var showBackendSettings = false
-    @State private var startSDClear = false
-    @State private var BTScreenGo = false
-    @State private var locationScreenGo = false
-    private var SDClearingRouteProcess = true
-    @EnvironmentObject var userSettings: UserSettings
-    @EnvironmentObject var bluetoothManager: BluetoothManager
-    @StateObject private var featureFlagsViewModel = FeatureFlagsViewModel.shared
-
-    init(urlProvider: BaseURLProvider, logoutController: LogoutController, viewModel: SettingsViewModel) {
-        let navBarAppearance = UINavigationBar.appearance()
-        navBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(Color.darkBlue),
-                                                     .font: Fonts.navBarSystemFont]
-        self.urlProvider = urlProvider
-        self.logoutController = logoutController
-        self.viewModel = viewModel
+    @StateObject private var viewModel: SettingsViewModel
+    @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
+    @InjectedObject private var userSettings: UserSettings
+    @InjectedObject private var bluetoothManager: BluetoothManager
+    private let sessionContext: CreateSessionContext
+    
+    init(sessionContext: CreateSessionContext) {
+        self.sessionContext = sessionContext
+        self._viewModel = .init(wrappedValue: .init(sessionContext: sessionContext))
     }
 
     var body: some View {
@@ -36,30 +26,23 @@ struct SettingsView: View {
             NavigationView {
                 main
             }
-            .fullScreenCover(isPresented: $startSDClear) {
+            .fullScreenCover(isPresented: $viewModel.startSDClear) {
                 CreatingSessionFlowRootView {
-                    SDRestartABView(viewModel: SDRestartABViewModelDefault(urlProvider: urlProvider,
-                                                                           isSDClearProcess: SDClearingRouteProcess),
-                                    creatingSessionFlowContinues: $startSDClear)
+                    SDRestartABView(isSDClearProcess: viewModel.SDClearingRouteProcess,
+                                    creatingSessionFlowContinues: $viewModel.startSDClear)
                 }
             }
-            .fullScreenCover(isPresented: $locationScreenGo) {
+            .fullScreenCover(isPresented: $viewModel.locationScreenGo) {
                 CreatingSessionFlowRootView {
-                    TurnOnLocationView(creatingSessionFlowContinues: $locationScreenGo,
-                                       viewModel: TurnOnLocationViewModel(locationHandler: viewModel.locationHandler,
-                                                                          bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: bluetoothManager),
-                                                                          sessionContext: viewModel.sessionContext,
-                                                                          urlProvider: urlProvider,
-                                                                          isSDClearProcess: SDClearingRouteProcess))
+                    TurnOnLocationView(creatingSessionFlowContinues: $viewModel.locationScreenGo,
+                                       viewModel: TurnOnLocationViewModel(sessionContext: sessionContext, isSDClearProcess: viewModel.SDClearingRouteProcess))
                 }
             }
-            .fullScreenCover(isPresented: $BTScreenGo) {
+            .fullScreenCover(isPresented: $viewModel.BTScreenGo) {
                 CreatingSessionFlowRootView {
-                    TurnOnBluetoothView(creatingSessionFlowContinues: $BTScreenGo,
+                    TurnOnBluetoothView(creatingSessionFlowContinues: $viewModel.BTScreenGo,
                                         sdSyncContinues: .constant(false),
-                                        isSDClearProcess: SDClearingRouteProcess,
-                                        locationHandler: viewModel.locationHandler,
-                                        urlProvider: urlProvider)
+                                        isSDClearProcess: viewModel.SDClearingRouteProcess)
                 }
             }
             .environmentObject(viewModel.sessionContext)
@@ -70,29 +53,25 @@ struct SettingsView: View {
             .background(
                 Group {
                     EmptyView()
-                        .fullScreenCover(isPresented: $startSDClear) {
+                        .fullScreenCover(isPresented: $viewModel.startSDClear) {
                             CreatingSessionFlowRootView {
-                                SDRestartABView(viewModel: SDRestartABViewModelDefault(urlProvider: urlProvider,
-                                                                                       isSDClearProcess: SDClearingRouteProcess),
-                                                creatingSessionFlowContinues: $startSDClear)
+                                SDRestartABView(isSDClearProcess: viewModel.SDClearingRouteProcess,
+                                                creatingSessionFlowContinues: $viewModel.startSDClear)
                             }
                         }
                     EmptyView()
-                        .fullScreenCover(isPresented: $locationScreenGo) {
+                        .fullScreenCover(isPresented: $viewModel.locationScreenGo) {
                             CreatingSessionFlowRootView {
-                                TurnOnLocationView(creatingSessionFlowContinues: $locationScreenGo,
-                                                   viewModel: TurnOnLocationViewModel(locationHandler: viewModel.locationHandler, bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: bluetoothManager), sessionContext: viewModel.sessionContext,
-                                                                                      urlProvider: urlProvider,
-                                                                                      isSDClearProcess: SDClearingRouteProcess))
+                                TurnOnLocationView(creatingSessionFlowContinues: $viewModel.locationScreenGo,
+                                                   viewModel: TurnOnLocationViewModel(sessionContext: sessionContext, isSDClearProcess: viewModel.SDClearingRouteProcess))
                             }
                         }
                     EmptyView()
-                        .fullScreenCover(isPresented: $BTScreenGo) {
+                        .fullScreenCover(isPresented: $viewModel.BTScreenGo) {
                             CreatingSessionFlowRootView {
-                                TurnOnBluetoothView(creatingSessionFlowContinues: $BTScreenGo,
+                                TurnOnBluetoothView(creatingSessionFlowContinues: $viewModel.BTScreenGo,
                                                     sdSyncContinues: .constant(false),
-                                                    isSDClearProcess: SDClearingRouteProcess,
-                                                    locationHandler: viewModel.locationHandler, urlProvider: urlProvider)
+                                                    isSDClearProcess: viewModel.SDClearingRouteProcess)
                             }
                         }
                 })
@@ -102,7 +81,9 @@ struct SettingsView: View {
 
     private var main: some View {
         Form {
-            signOutSection
+            Section() {
+                signOutLink
+            }
             settingsSection
             #if BETA || DEBUG
             Section() {
@@ -113,12 +94,6 @@ struct SettingsView: View {
         }
         .listStyle(GroupedListStyle())
         .navigationBarTitle(Strings.Settings.title)
-    }
-
-    private var signOutSection: some View {
-        Section() {
-            signOutLink
-        }
     }
 
     private var settingsSection: some View {
@@ -161,25 +136,20 @@ struct SettingsView: View {
     }
 
     private var signOutLink: some View {
-        NavigationLink(destination: MyAccountViewSignOut(logoutController: logoutController)) {
+        NavigationLink(destination: MyAccountViewSignOut()) {
             Text(Strings.Settings.myAccount)
                 .font(Fonts.boldHeading1)
         }
     }
 
     private var keepScreenOnSwitch: some View {
-        Toggle(isOn: $userSettings.keepScreenOn, label: {
-            Text(Strings.Settings.keepScreenTitle)
-                .font(Fonts.boldHeading1)
-        }).toggleStyle(SwitchToggleStyle(tint: .accentColor))
+        settingSwitch(toogle: $userSettings.keepScreenOn,
+                      label: Strings.Settings.keepScreenTitle)
     }
 
     private var crowdMapSwitch: some View {
-        Toggle(isOn: $userSettings.contributingToCrowdMap, label: {
-            Text(Strings.Settings.crowdMap)
-                .font(Fonts.boldHeading1)
-                .multilineTextAlignment(.leading)
-        }).toggleStyle(SwitchToggleStyle(tint: .accentColor))
+        settingSwitch(toogle: $userSettings.contributingToCrowdMap,
+                      label: Strings.Settings.crowdMap)
     }
 
     private var crowdMapDescription: some View {
@@ -189,11 +159,8 @@ struct SettingsView: View {
     }
 
     private var disableMappingSwitch: some View {
-        Toggle(isOn: $userSettings.disableMapping, label: {
-            Text(Strings.Settings.disableMapping)
-                .font(Fonts.boldHeading1)
-                .multilineTextAlignment(.leading)
-        }).toggleStyle(SwitchToggleStyle(tint: .accentColor))
+        settingSwitch(toogle: $userSettings.disableMapping,
+                      label: Strings.Settings.disableMapping)
     }
     
     private var disableMappingDescription: some View {
@@ -203,11 +170,8 @@ struct SettingsView: View {
     }
     
     private var temperatureSwitch: some View {
-        Toggle(isOn: $userSettings.convertToCelsius, label: {
-            Text(Strings.Settings.temperature)
-                .font(Fonts.boldHeading1)
-                .multilineTextAlignment(.leading)
-        }).toggleStyle(SwitchToggleStyle(tint: .accentColor))
+        settingSwitch(toogle: $userSettings.convertToCelsius,
+                      label: Strings.Settings.temperature)
     }
 
     private var temperatureDescription: some View {
@@ -218,7 +182,7 @@ struct SettingsView: View {
 
     private var navigateToBackendSettingsButton: some View {
         Button(action: {
-            showBackendSettings.toggle()
+            viewModel.navigateToBackendButtonTapped()
         }) {
             Group {
                 HStack {
@@ -230,20 +194,14 @@ struct SettingsView: View {
                         .accentColor(.gray).opacity(0.6)
                 }
             }
-        }.sheet(isPresented: $showBackendSettings, content: {
-            BackendSettingsView(logoutController: logoutController,
-                                urlProvider: urlProvider)
+        }.sheet(isPresented: $viewModel.showBackendSettings, content: {
+            BackendSettingsView()
         })
     }
 
     private var clearSDCard: some View {
         Button {
-            switch viewModel.nextStep() {
-            case .bluetooth: BTScreenGo.toggle()
-            case .location: locationScreenGo.toggle()
-            case .airBeam, .mobile:
-                startSDClear.toggle()
-            }
+            viewModel.clearSDButtonTapped()
          } label: {
              Group {
                  HStack {
@@ -269,12 +227,12 @@ struct SettingsView: View {
     #endif
 }
 
-#if DEBUG
-struct LogoutView_Previews: PreviewProvider {
-    static var previews: some View {
-        SettingsView(urlProvider: DummyURLProvider(),
-                     logoutController: FakeLogoutController(),
-                     viewModel: DummySettingsViewModelDefault())
+extension SettingsView {
+    func settingSwitch(toogle using: Binding<Bool>, label with: String) -> some View {
+        Toggle(isOn: using, label: {
+            Text(with)
+                .font(Fonts.boldHeading1)
+                .multilineTextAlignment(.leading)
+        }).toggleStyle(SwitchToggleStyle(tint: .accentColor))
     }
 }
-#endif

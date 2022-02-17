@@ -37,6 +37,7 @@ public class SessionEntity: NSManagedObject, Identifiable {
     @NSManaged public var urlLocation: String?
     @NSManaged public var version: Int16
     @NSManaged public var changesCount: Int32
+    @NSManaged public var rowOrder: Int64
     
     /// Of type MeasurementStreamEntity
     @NSManaged public var measurementStreams: NSOrderedSet?

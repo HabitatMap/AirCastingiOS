@@ -11,7 +11,6 @@ struct ChooseCustomLocationView: View {
     @State var isLocationPopupPresented = false
     @Binding var creatingSessionFlowContinues: Bool
     var sessionName: String
-    let baseURL: BaseURLProvider
 
     var body: some View {
         VStack(spacing: 40) {
@@ -67,7 +66,6 @@ struct ChooseCustomLocationView: View {
     var confirmCreatingSessionLink: some View {
         NavigationLink(
             destination: ConfirmCreatingSessionView(creatingSessionFlowContinues: $creatingSessionFlowContinues,
-                                                    baseURL: baseURL,
                                                     sessionName: sessionName),
             isActive: $isConfirmCreatingSessionActive,
             label: {

@@ -3,9 +3,10 @@
 
 import SwiftUI
 import GooglePlaces
+import Resolver
 
 struct PlacePicker: UIViewControllerRepresentable {
-    @EnvironmentObject var tracker: LocationTracker
+    @InjectedObject private var tracker: LocationTracker
     @Binding var placePickerDismissed: Bool
     @Environment(\.presentationMode) var presentationMode
     @Binding var address: String
@@ -42,7 +43,7 @@ struct PlacePicker: UIViewControllerRepresentable {
         func viewController(_ viewController: GMSAutocompleteViewController, didAutocompleteWith place: GMSPlace) {
             DispatchQueue.main.async { [self] in
                 self.parent.address =  place.name!
-                parent.tracker.googleLocation = [PathPoint(location: place.coordinate, measurementTime: DateBuilder.getFakeUTCDate(), measurement: 20.0)]
+                parent.tracker.googleLocation = [PathPoint(location: place.coordinate, measurementTime: DateBuilder.getFakeUTCDate())]
                 parent.placePickerDismissed = true
                 self.parent.presentationMode.wrappedValue.dismiss()
             }

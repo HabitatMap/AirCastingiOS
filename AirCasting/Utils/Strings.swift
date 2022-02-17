@@ -155,6 +155,7 @@ struct Strings {
                                                            comment: "")
         static let invalidEmailLabel: String = NSLocalizedString("This email is invalid",
                                                                  comment: "")
+        static let sharedEmailText: String = NSLocalizedString("View my AirCasting session", comment: "")
     }
     
     enum LoadingSession {
@@ -463,7 +464,11 @@ struct Strings {
         static let fetchingText: String = NSLocalizedString("Fetching...",
                                                             comment: "")
     }
-    
+
+    enum ReorderingDashboard {
+        static let navigationTitle: String = NSLocalizedString("Reordering", comment: "Navigation title in reordering sessions view")
+    }
+
     enum PowerABView {
         static let alertTitle: String = NSLocalizedString("Location alert",
                                                           comment: "")
@@ -565,7 +570,6 @@ struct Strings {
                                                                        comment: "")
         static let finishAlertTitleSYNCNamed: String = NSLocalizedString("Finish recording %@ and sync from SD card?",
                                                                        comment: "")
-        
         
         static let finishAlertMessage: String = NSLocalizedString("The session will be moved to Mobile Dormant tab and you won't be able to add new measurement to it.",
                                                                   comment: "")
@@ -714,13 +718,21 @@ struct Strings {
     enum MainTabBarView {
         static let loggingOut: String = NSLocalizedString("Logging out, please wait...",
                                                           comment: "")
+        static let finished: String = NSLocalizedString("Finished", comment: "")
+        static let homeIcon: String = "home"
+        static let homeBlueIcon: String = "bluehome"
+        static let plusIcon: String = "plus"
+        static let plusBlueIcon: String = "blueplus"
+        static let settingsIcon: String = "settings"
+        static let settingsBlueIcon: String = "bluesettings"
     }
     
     enum DashboardView {
         static let dashboardText: String = NSLocalizedString("Dashboard",
                                                              comment: "")
+        static let following: String = NSLocalizedString("Following", comment: "")
     }
-    
+
     enum RefreshControl {
         static let progressViewTest: String = NSLocalizedString("Syncing...",
                                                                 comment: "")

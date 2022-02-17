@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import Resolver
 
 class AuthorizationAPI {
     struct SignupUserInput: Encodable, Hashable {
@@ -63,17 +64,16 @@ final class AuthorizationAPIService {
         let user: AuthorizationAPI.SignupUserInput
     }
     
-    let apiClient: APIClient
-    let responseHandler: AuthorizationHTTPResponseHandler
+    @Injected private var apiClient: APIClient
+    private let responseHandler = AuthorizationHTTPResponseHandler()
     let url: URL
 
     private lazy var decoder: JSONDecoder = JSONDecoder()
     private lazy var encoder = JSONEncoder()
 
-    init(apiClient: APIClient = URLSession.shared, responseHandler: AuthorizationHTTPResponseHandler = .init(), baseUrl: BaseURLProvider) {
-        self.apiClient = apiClient
-        self.responseHandler = responseHandler
-        self.url = baseUrl.baseAppURL.appendingPathComponent("api/user.json")
+    init() {
+        let urlProvider = Resolver.resolve(URLProvider.self)
+        self.url = urlProvider.baseAppURL.appendingPathComponent("api/user.json")
     }
 
     @discardableResult

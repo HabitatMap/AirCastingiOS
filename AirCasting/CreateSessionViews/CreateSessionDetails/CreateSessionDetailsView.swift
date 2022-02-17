@@ -6,12 +6,11 @@ import SwiftUI
 struct CreateSessionDetailsView: View {
     
     @EnvironmentObject private var sessionContext: CreateSessionContext
-    @StateObject private var viewModel: CreateSessionDetailsViewModel
+    @StateObject private var viewModel: CreateSessionDetailsViewModel = .init()
     @Binding var creatingSessionFlowContinues: Bool
     
-    init(creatingSessionFlowContinues: Binding<Bool>, baseURL: BaseURLProvider, locationHandler: LocationHandler) {
+    init(creatingSessionFlowContinues: Binding<Bool>) {
         self._creatingSessionFlowContinues = creatingSessionFlowContinues
-        self._viewModel = .init(wrappedValue: CreateSessionDetailsViewModel(baseURL: baseURL, locationHandler: locationHandler))
     }
     
     var body: some View {
@@ -115,8 +114,7 @@ private extension CreateSessionDetailsView {
     
     var locationPickerLink: some View {
         NavigationLink(
-            destination: ChooseCustomLocationView(creatingSessionFlowContinues: $creatingSessionFlowContinues,
-                                                  sessionName: viewModel.sessionName, baseURL: viewModel.baseURL),
+            destination: ChooseCustomLocationView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sessionName: viewModel.sessionName),
             isActive: $viewModel.isLocationSessionDetailsActive,
             label: {
                 EmptyView()
@@ -127,9 +125,7 @@ private extension CreateSessionDetailsView {
     var locationLink: some View {
         NavigationLink(
             destination: TurnOnLocationFixedView(creatingSessionFlowContinues:  $creatingSessionFlowContinues,
-                                                 viewModel: .init(locationHandler: viewModel.locationHandler,
-                                                                  sessionContext: sessionContext,
-                                                                  urlProvider: viewModel.baseURL)),
+                                                 viewModel: .init(sessionContext: sessionContext)),
             isActive: $viewModel.isLocationScreenNedeed,
             label: {
                 EmptyView()
@@ -139,8 +135,7 @@ private extension CreateSessionDetailsView {
     
     var createSesssionLink: some View {
         NavigationLink(
-            destination: ConfirmCreatingSessionView(creatingSessionFlowContinues: $creatingSessionFlowContinues,
-                                                    baseURL: viewModel.baseURL, sessionName: viewModel.sessionName),
+            destination: ConfirmCreatingSessionView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sessionName: viewModel.sessionName),
             isActive: $viewModel.isConfirmCreatingSessionActive,
             label: {
                 EmptyView()

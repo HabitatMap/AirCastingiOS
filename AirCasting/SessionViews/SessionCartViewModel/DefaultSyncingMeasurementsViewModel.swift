@@ -4,10 +4,10 @@
 import Foundation
 import CoreLocation
 import CoreData
+import Resolver
 
 protocol SyncingMeasurementsViewModel: ObservableObject {
     var sessionDownloader: MeasurementsDownloadable { get }
-    var measurementStreamStorage: MeasurementStreamStorage? { get }
     var task: Cancellable? { get }
     var session: SessionEntity { get }
     
@@ -18,24 +18,20 @@ protocol SyncingMeasurementsViewModel: ObservableObject {
 final class DefaultSyncingMeasurementsViewModel: SyncingMeasurementsViewModel, ObservableObject {
     
     var sessionDownloader: MeasurementsDownloadable
-    var measurementStreamStorage: MeasurementStreamStorage?
+    @Injected private var measurementStreamStorage: MeasurementStreamStorage
     var task: Cancellable?
     var session: SessionEntity
     @Published var showLoadingIndicator = true
     
-    init(measurementStreamStorage: MeasurementStreamStorage?, sessionDownloader: MeasurementsDownloadable, session: SessionEntity) {
+    init(sessionDownloader: MeasurementsDownloadable, session: SessionEntity) {
         self.sessionDownloader = sessionDownloader
-        self.measurementStreamStorage = measurementStreamStorage
         self.session = session
     }
     
     func syncMeasurements() {
-        guard let measurementStreamStorage = measurementStreamStorage else { return }
         showLoadingIndicator = true
         
-        task = sessionDownloader.downloadSessionWithMeasurement(uuid: session.uuid) { [weak self] result in
-            guard let self = self else { return }
-            
+        task = sessionDownloader.downloadSessionWithMeasurement(uuid: session.uuid) { [measurementStreamStorage] result in
             switch result {
             case .success(let data):
                 let dataBaseStreams = data.streams.values.map { value in
@@ -48,6 +44,7 @@ final class DefaultSyncingMeasurementsViewModel: SyncingMeasurementsViewModel, O
                 measurementStreamStorage.accessStorage { storage in
                     
                     dataBaseStreams.forEach { stream in
+                        Log.info("Downloaded \(stream.measurements.count) measurements for \(stream.sensorName)")
                         let sensorName = stream.sensorName
                         do {
                             let streamID = try storage.existingMeasurementStream(sessionId, name: sensorName)

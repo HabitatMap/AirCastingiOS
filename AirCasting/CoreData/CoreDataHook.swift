@@ -28,15 +28,19 @@ final class CoreDataHook: NSObject, ObservableObject {
         switch selectedSection {
         case .fixed:
             predicate = NSPredicate(format: "type == %@", SessionType.fixed.rawValue)
+            fetchedResultsController.fetchRequest.sortDescriptors = [NSSortDescriptor(key: "startTime", ascending: false)]
         case .mobileActive:
             predicate = NSPredicate(format: "type == %@ AND (status == %li || status == %li || status == %li)", SessionType.mobile.rawValue,
                                     SessionStatus.RECORDING.rawValue,
                                     SessionStatus.DISCONNECTED.rawValue,
                                     SessionStatus.NEW.rawValue)
+            fetchedResultsController.fetchRequest.sortDescriptors = [NSSortDescriptor(key: "startTime", ascending: false)]
         case .mobileDormant:
             predicate = NSPredicate(format: "type == %@ AND status == %li", SessionType.mobile.rawValue, SessionStatus.FINISHED.rawValue)
+            fetchedResultsController.fetchRequest.sortDescriptors = [NSSortDescriptor(key: "startTime", ascending: false)]
         case .following:
             predicate = NSPredicate(format: "followedAt != NULL")
+            fetchedResultsController.fetchRequest.sortDescriptors = [NSSortDescriptor(key: "rowOrder", ascending: false), NSSortDescriptor(key: "startTime", ascending: false)]
         }
         fetchedResultsController.fetchRequest.predicate = predicate
         try fetchedResultsController.performFetch()

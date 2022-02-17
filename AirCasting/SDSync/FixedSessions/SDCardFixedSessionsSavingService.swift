@@ -2,13 +2,11 @@
 //
 
 import Foundation
+import Resolver
 
+//TODO: Refactor this part
 class SDCardFixedSessionsSavingService {
-    let apiService: UploadFixedSessionAPIService
-    
-    init(apiService: UploadFixedSessionAPIService) {
-        self.apiService = apiService
-    }
+    @Injected private var apiService: UploadFixedSessionAPIService
     
     func processAndSync(csvSession: CSVStreamsWithMeasurements, deviceID: String, completion: @escaping (Bool) -> Void) {
         guard !csvSession.sessions.isEmpty else {

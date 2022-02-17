@@ -3,14 +3,14 @@
 
 import SwiftUI
 import AirCastingStyling
+import Resolver
 
 struct MyAccountViewSignOut: View {
-    let logoutController: LogoutController
     @State private var alert: AlertInfo?
-    @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
-    @EnvironmentObject var persistenceController: PersistenceController
-    @EnvironmentObject private var userState: UserState
-    @EnvironmentObject var networkChecker: NetworkChecker
+    @InjectedObject private var userAuthenticationSession: UserAuthenticationSession
+    @InjectedObject private var userState: UserState
+    @Injected private var networkChecker: NetworkChecker
+    @Injected private var logoutController: LogoutController
     
     var body: some View {
         ZStack {
@@ -58,11 +58,3 @@ private extension MyAccountViewSignOut {
         .padding()
     }
 }
-
-#if DEBUG
-struct MyAccountViewSingOut_Previews: PreviewProvider {
-    static var previews: some View {
-        MyAccountViewSignOut(logoutController: FakeLogoutController())
-    }
-}
-#endif

@@ -3,22 +3,15 @@
 
 import Foundation
 import Combine
+import Resolver
 
-protocol SDSyncRootViewModel: ObservableObject {
-    // backendSyncCompleted and urlProvider should should not be exposed
-    // BUT it is - REASON: it is needed only to pass to some navigation view
-    var backendSyncCompleted: Bool { get }
-    var urlProvider: BaseURLProvider { get }
-    func executeBackendSync()
-}
-
-class SDSyncRootViewModelDefault: SDSyncRootViewModel, ObservableObject {
+class SDSyncRootViewModel: ObservableObject {
     
     @Published var backendSyncCompleted: Bool = false
-    private let sessionSynchronizer: SessionSynchronizer
-    let urlProvider: BaseURLProvider
+    @Injected private var sessionSynchronizer: SessionSynchronizer
+    @Injected private var urlProvider: URLProvider
     
-    init(sessionSynchronizer: SessionSynchronizer, urlProvider: BaseURLProvider) {
+    init() {
         self.sessionSynchronizer = sessionSynchronizer
         self.urlProvider = urlProvider
     }
@@ -49,24 +42,3 @@ class SDSyncRootViewModelDefault: SDSyncRootViewModel, ObservableObject {
         }
     }
 }
-
-#if DEBUG
-class DummySDSyncRootViewModelDefault: SDSyncRootViewModel, ObservableObject {
-    
-    @Published var backendSyncCompleted: Bool = false
-    var urlProvider: BaseURLProvider
-    
-    init() {
-        self.urlProvider = DummyURLProvider()
-    }
-    
-    func startBackendSync() {
-        Log.info("startBackendSync")
-    }
-    
-    func executeBackendSync() {
-        Log.info("onAppearExecute")
-    }
-    
-}
-#endif

@@ -9,19 +9,16 @@ import CoreData
 import SwiftUI
 import AirCastingStyling
 import Combine
+import Resolver
 
 struct DashboardView: View {
-    #warning("This hook fires too often - on any stream measurement added/changed. Should only fire when list changes.")
     @StateObject var coreDataHook: CoreDataHook
     @FetchRequest<SensorThreshold>(sortDescriptors: [.init(key: "sensorName", ascending: true)]) var thresholds
     @EnvironmentObject var selectedSection: SelectSection
-    @EnvironmentObject var averaging: AveragingService
-    @EnvironmentObject var userSettings: UserSettings
+    @EnvironmentObject var reorderButton: ReorderButtonTapped
+    @Injected private var averaging: AveragingService
     @State var isRefreshing: Bool = false
-    private let urlProvider: BaseURLProvider
-    private let measurementStreamStorage: MeasurementStreamStorage
-    private let sessionStoppableFactory: SessionStoppableFactory
-    private let sessionSynchronizer: SessionSynchronizer
+    @Injected private var sessionSynchronizer: SessionSynchronizer
 
     private let dashboardCoordinateSpaceName = "dashboardCoordinateSpace"
 
@@ -29,18 +26,10 @@ struct DashboardView: View {
         coreDataHook.sessions
     }
 
-    init(coreDataHook: CoreDataHook,
-         measurementStreamStorage: MeasurementStreamStorage,
-         sessionStoppableFactory: SessionStoppableFactory,
-         sessionSynchronizer: SessionSynchronizer,
-         urlProvider: BaseURLProvider) {
+    init(coreDataHook: CoreDataHook) {
         let navBarAppearance = UINavigationBar.appearance()
         navBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(Color.darkBlue)]
         _coreDataHook = StateObject(wrappedValue: coreDataHook)
-        self.measurementStreamStorage = measurementStreamStorage
-        self.sessionStoppableFactory = sessionStoppableFactory
-        self.sessionSynchronizer = sessionSynchronizer
-        self.urlProvider = urlProvider
     }
 
     var body: some View {
@@ -51,8 +40,13 @@ struct DashboardView: View {
             //
             // Bug report was filled with Apple
             PreventCollapseView()
-            sessionTypePicker
-            if sessions.isEmpty { emptySessionsView } else { sessionListView }
+            if reorderButton.reorderIsON {
+                followingTab
+                ReorderingDashboard(sessions: sessions, thresholds: Array(self.thresholds))
+            } else {
+                sessionTypePicker
+                if sessions.isEmpty { emptySessionsView } else { sessionListView }
+            }
         }
         .navigationBarTitle(Strings.DashboardView.dashboardText)
         .onChange(of: selectedSection.selectedSection) { selectedSection in
@@ -69,6 +63,7 @@ struct DashboardView: View {
         })
         .onAppear() {
             try! coreDataHook.setup(selectedSection: self.selectedSection.selectedSection)
+            reorderButton.isHidden = false
         }
     }
 
@@ -86,6 +81,27 @@ struct DashboardView: View {
                 }
             )
             .zIndex(2)
+    }
+
+    private var followingTab: some View {
+        HStack {
+            Button(Strings.DashboardView.following) {
+            }
+            .buttonStyle(PickerButtonStyle(isSelected: true))
+            Spacer()
+        }
+        .padding(.horizontal)
+        .background(
+            ZStack(alignment: .bottom) {
+                Color.green
+                    .frame(height: 3)
+                    .shadow(color: Color.aircastingDarkGray.opacity(0.4),
+                            radius: 6)
+                    .padding(.horizontal, -30)
+                Color.white
+            }
+        )
+        .zIndex(2)
     }
 
     private var emptySessionsView: some View {
@@ -115,16 +131,11 @@ struct DashboardView: View {
                 RefreshControl(coordinateSpace: .named(dashboardCoordinateSpaceName), isRefreshing: $isRefreshing)
                 LazyVStack(spacing: 8) {
                     ForEach(sessions.filter { $0.uuid != "" && !$0.gotDeleted }, id: \.uuid) { session in
-                        let followingSetter = MeasurementStreamStorageFollowingSettable(session: session, measurementStreamStorage: measurementStreamStorage)
+                        let followingSetter = MeasurementStreamStorageFollowingSettable(session: session)
                         let viewModel = SessionCardViewModel(followingSetter: followingSetter)
                         SessionCardView(session: session,
                                         sessionCartViewModel: viewModel,
-                                        thresholds: thresholds,
-                                        sessionStoppableFactory: sessionStoppableFactory,
-                                        measurementStreamStorage: measurementStreamStorage,
-                                        sessionSynchronizer: sessionSynchronizer,
-                                        urlProvider: urlProvider,
-                                        userSettings: userSettings
+                                        thresholds: thresholds
                         )
                     }
                 }
@@ -183,11 +194,3 @@ struct PreventCollapseView: View {
             .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 1)
     }
 }
-
-#if DEBUG
-struct Dashboard_Previews: PreviewProvider {
-    static var previews: some View {
-        DashboardView(coreDataHook: CoreDataHook(context: PersistenceController(inMemory: true).viewContext), measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionStoppableFactory: SessionStoppableFactoryDummy(), sessionSynchronizer: DummySessionSynchronizer(), urlProvider: DummyURLProvider())
-    }
-}
-#endif

@@ -9,12 +9,26 @@ import CoreData
 import SwiftUI
 
 class PersistenceController: ObservableObject {
-    static let shared = PersistenceController()
-
+    static let uiWillSuspendNotificationName = NSNotification.Name("uiWillSuspendNotification")
+    static let uiWillResumeNotificationName = NSNotification.Name("uiWillResumeNotificationName")
+    static let uiDidSuspendNotificationName = NSNotification.Name("uiDidSuspendNotification")
+    static let uiDidResumeNotificationName = NSNotification.Name("uiDidResumeNotificationName")
+    
     var uiSuspended: Bool = false {
+        willSet {
+            NotificationCenter.default.post(name: newValue ? Self.uiWillSuspendNotificationName : Self.uiWillResumeNotificationName, object: self)
+        }
         didSet {
             Log.info("UI updates \(uiSuspended ? "suspended" : "resumed")")
-            if !uiSuspended { propagateChangesToUI() }
+            
+            if !uiSuspended {
+                propagateChangesToUI() {
+                    NotificationCenter.default.post(name: Self.uiDidResumeNotificationName, object: self)
+                }
+            } else {
+                NotificationCenter.default.post(name: Self.uiDidSuspendNotificationName, object: self)
+            }
+            
         }
     }
     
@@ -89,13 +103,14 @@ class PersistenceController: ObservableObject {
         saveMainContext()
     }
     
-    private func propagateChangesToUI() {
-        saveMainContext()
+    private func propagateChangesToUI(completion: (()->Void)? = nil) {
+        saveMainContext(completion: completion)
     }
     
-    private func saveMainContext() {
+    private func saveMainContext(completion: (()->Void)? = nil) {
         sourceOfTruthContext.perform {
             try! self.sourceOfTruthContext.save()
+            completion?()
         }
     }
 

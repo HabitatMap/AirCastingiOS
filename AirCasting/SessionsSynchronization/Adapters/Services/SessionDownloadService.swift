@@ -3,12 +3,13 @@
 
 import Foundation
 import Combine
+import Resolver
 
 final class SessionDownloadService: SessionDownstream, MeasurementsDownloadable {
-    private let client: APIClient
-    private let authorization: RequestAuthorisationService
-    private let responseValidator: HTTPResponseValidator
-    private let urlProvider: BaseURLProvider
+    @Injected private var client: APIClient
+    @Injected private var authorization: RequestAuthorisationService
+    @Injected private var responseValidator: HTTPResponseValidator
+    @Injected private var urlProvider: URLProvider
     
     private let decoder: JSONDecoder = {
         let decoder = JSONDecoder()
@@ -17,13 +18,6 @@ final class SessionDownloadService: SessionDownstream, MeasurementsDownloadable 
         decoder.dateDecodingStrategy = .formatted(formatter)
         return decoder
     }()
-    
-    init(client: APIClient, authorization: RequestAuthorisationService, responseValidator: HTTPResponseValidator, urlProvider: BaseURLProvider) {
-        self.client = client
-        self.authorization = authorization
-        self.responseValidator = responseValidator
-        self.urlProvider = urlProvider
-    }
     
     func download(session: SessionUUID) -> AnyPublisher<SessionsSynchronization.SessionDownstreamData, Error> {
         // Warning: for this pattern to work the work cone by the `APIClient` must not be synchronous.

@@ -6,15 +6,14 @@
 //
 import SwiftUI
 import AirCastingStyling
+import Resolver
 
 struct CreateAccountView: View {
     
-    @EnvironmentObject var lifeTimeEventsProvider: LifeTimeEventsProvider
     var completion: () -> Void
-    
-    private let userAuthenticationSession: UserAuthenticationSession
-    private let authorizationAPIService: AuthorizationAPIService
-    private let baseURL: BaseURLProvider
+    @InjectedObject private var lifeTimeEventsProvider: LifeTimeEventsProvider
+    @InjectedObject private var userAuthenticationSession: UserAuthenticationSession
+    private let authorizationAPIService: AuthorizationAPIService = AuthorizationAPIService() // [Resolver] Move to dep.
 
     @State private var email: String = ""
     @State private var username: String = ""
@@ -24,10 +23,7 @@ struct CreateAccountView: View {
     @State private var isUsernameBlank = false
     @State private var presentedError: AuthorizationError?
     
-    init(completion: @escaping () -> Void, userSession: UserAuthenticationSession, baseURL: BaseURLProvider) {
-        userAuthenticationSession = userSession
-        authorizationAPIService = AuthorizationAPIService(baseUrl: baseURL)
-        self.baseURL = baseURL
+    init(completion: @escaping () -> Void) {
         self.completion = completion
     }
 
@@ -165,7 +161,7 @@ private extension CreateAccountView {
     
     var signinButton: some View {
         NavigationLink(
-            destination: SignInView(completion: completion, userSession: userAuthenticationSession, urlProvider: baseURL).environmentObject(lifeTimeEventsProvider),
+            destination: SignInView(completion: completion).environmentObject(lifeTimeEventsProvider),
             label: {
                 signingButtonText
             })
@@ -205,11 +201,3 @@ private extension CreateAccountView {
         }
     }
 }
-
-#if DEBUG
-struct CreateAccountView_Previews: PreviewProvider {
-    static var previews: some View {
-        CreateAccountView(completion: {}, userSession: UserAuthenticationSession(), baseURL: DummyURLProvider()).environmentObject(LifeTimeEventsProvider())
-    }
-}
-#endif

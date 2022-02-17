@@ -3,6 +3,7 @@
 
 import Foundation
 import Combine
+import Resolver
 
 struct User: Hashable {
     let id: Int
@@ -13,6 +14,10 @@ struct User: Hashable {
 
 protocol Deauthorizable {
     func deauthorize() throws
+}
+
+protocol DataEraser {
+    func eraseAllData(completion: ((Result<Void, Error>) -> Void)?)
 }
 
 final class UserAuthenticationSession: Deauthorizable, ObservableObject {
@@ -83,20 +88,10 @@ protocol LogoutController {
 }
 
 final class DefaultLogoutController: LogoutController {
-    let userAuthenticationSession: UserAuthenticationSession
-    let sessionStorage: SessionStorage
-    let microphoneManager: MicrophoneManager
-    let sessionSynchronizer: SessionSynchronizer
-
-    init(userAuthenticationSession: UserAuthenticationSession,
-         sessionStorage: SessionStorage,
-         microphoneManager: MicrophoneManager,
-         sessionSynchronizer: SessionSynchronizer) {
-        self.userAuthenticationSession = userAuthenticationSession
-        self.sessionStorage = sessionStorage
-        self.microphoneManager = microphoneManager
-        self.sessionSynchronizer = sessionSynchronizer
-    }
+    @Injected private var deauthorizer: Deauthorizable
+    @Injected private var microphoneManager: MicrophoneManager
+    @Injected private var sessionSynchronizer: SessionSynchronizer
+    @Injected private var dataEraser: DataEraser
 
     func logout(onEnd: @escaping () -> Void) throws {
         if sessionSynchronizer.syncInProgress.value {
@@ -126,8 +121,8 @@ final class DefaultLogoutController: LogoutController {
         }
         Log.info("[LOGOUT] Clearing user credentials")
         do {
-            try userAuthenticationSession.deauthorize()
-            sessionStorage.clearAllSessions(completion: { [weak self] result in
+            try deauthorizer.deauthorize()
+            dataEraser.eraseAllData(completion: { [weak self] result in
                 if case let .failure(error) = result {
                     self?.failLogout(with: error)
                 }
@@ -141,11 +136,3 @@ final class DefaultLogoutController: LogoutController {
         assertionFailure("[LOGOUT] Failed to log out \(error)")
     }
 }
-
-#if DEBUG
-final class FakeLogoutController: LogoutController {
-    func logout(onEnd: @escaping () -> Void) throws {
-        fatalError("Should not be called. Only for preview")
-    }
-}
-#endif

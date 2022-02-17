@@ -3,7 +3,10 @@
 
 import Foundation
 import CoreLocation
+import Resolver
 
+#warning("Fix this subsystem")
+//TODO: Uploading CSV needs to be changed soon. It reads whole files to memory and is misarchitected
 class CSVStreamsWithMeasurements {
     
     private(set) var sessions = Set<SDSession>()
@@ -11,7 +14,8 @@ class CSVStreamsWithMeasurements {
     
     private let parser = SDCardMeasurementsParser()
     
-    init(fileURL: URL, fileLineReader: FileLineReader) throws {
+    init(fileURL: URL) throws {
+        let fileLineReader = Resolver.resolve(FileLineReader.self)
         try fileLineReader.readLines(of: fileURL, progress: { line in
             switch line {
             case .line(let content):

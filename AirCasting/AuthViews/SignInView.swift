@@ -7,20 +7,20 @@
 
 import AirCastingStyling
 import SwiftUI
+import Resolver
 
 extension NSError: Identifiable {}
 
 struct SignInView: View {
     
     @State var presentingModal = false
-    @EnvironmentObject var lifeTimeEventsProvider: LifeTimeEventsProvider
+    @InjectedObject private var lifeTimeEventsProvider: LifeTimeEventsProvider
     var completion: () -> Void
     
     @State var isActive: Bool
-    let baseURL: BaseURLProvider
     
-    let userAuthenticationSession: UserAuthenticationSession
-    private let authorizationAPIService: AuthorizationAPIService
+    @InjectedObject private var userAuthenticationSession: UserAuthenticationSession
+    private let authorizationAPIService = AuthorizationAPIService()
     @State private var username: String = ""
     @State private var password: String = ""
     @State private var task: Cancellable? = nil
@@ -29,11 +29,8 @@ struct SignInView: View {
     @State private var isPasswordBlank = false
     
     
-    init(completion: @escaping () -> Void, active: Bool = false, userSession: UserAuthenticationSession, urlProvider: BaseURLProvider) {
-        self.baseURL = urlProvider
+    init(completion: @escaping () -> Void, active: Bool = false) {
         _isActive = State(initialValue: active)
-        self.userAuthenticationSession = userSession
-        self.authorizationAPIService = AuthorizationAPIService(baseUrl: baseURL)
         self.completion = completion
     }
     
@@ -159,8 +156,8 @@ private extension SignInView {
         Button(Strings.SignInView.forgotPasswordButton) {
             presentingModal = true
         }.sheet(isPresented: $presentingModal) {
-            let service = EmailResetPasswordService(apiClient: URLSession.shared, validator: DefaultHTTPResponseValidator(), urlProvider: baseURL)
-            let controller = EmailForgotPasswordController(resetPasswordService: service)
+            // [Resolver] - Move VM creation inside the View
+            let controller = EmailForgotPasswordController(resetPasswordService: EmailResetPasswordService())
             let scheduledController = ScheduledForgotPasswordControllerProxy(controller: controller, queue: .main)
             let vm = DefaultForgotPasswordViewModel(controller: scheduledController)
             ForgotPasswordView(viewModel: vm)
@@ -170,7 +167,7 @@ private extension SignInView {
     
     var signupButton: some View {
         NavigationLink(
-            destination: CreateAccountView(completion: completion, userSession: userAuthenticationSession, baseURL: baseURL).environmentObject(lifeTimeEventsProvider),
+            destination: CreateAccountView(completion: completion).environmentObject(lifeTimeEventsProvider),
             label: {
                 signupButtonText
             })
@@ -210,11 +207,3 @@ private extension SignInView {
         }
     }
 }
-
-#if DEBUG
-struct SignInView_Previews: PreviewProvider {
-    static var previews: some View {
-        SignInView(completion: {}, active: true, userSession: UserAuthenticationSession(), urlProvider: DummyURLProvider()).environmentObject(LifeTimeEventsProvider())
-    }
-}
-#endif

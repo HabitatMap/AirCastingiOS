@@ -3,12 +3,15 @@
 
 import UIKit
 import Charts
+import Resolver
 import Combine
+import SwiftUI
 
 final class ChartViewModel: ObservableObject {
     @Published var entries: [ChartDataEntry] = []
     @Published var chartStartTime: Date?
     @Published var chartEndTime: Date?
+    @ObservedObject var session: SessionEntity
 
     var stream: MeasurementStreamEntity? {
         didSet {
@@ -16,9 +19,8 @@ final class ChartViewModel: ObservableObject {
             generateEntries()
         }
     }
-
-    private let persistence: PersistenceController
-    private let session: SessionEntity
+    @Injected private var persistence: PersistenceController
+    @Injected private var settings: UserSettings
 
     private var timeUnit: TimeInterval {
         session.isMobile ? .minute : .hour
@@ -28,24 +30,21 @@ final class ChartViewModel: ObservableObject {
     private var firstTimer: Timer?
     private let numberOfEntries = Constants.Chart.numberOfEntries
 
-    private var backgroundNotificationHandle: Any?
-    private let settings: UserSettings
+    private var uiResumedNotificationHandle: Any?
     private var cancellables: [AnyCancellable] = []
 
     deinit {
         mainTimer?.invalidate()
         firstTimer?.invalidate()
     }
-
-    init(session: SessionEntity, persistence: PersistenceController, userSettings: UserSettings) {
+    
+    init(session: SessionEntity) {
         self.session = session
         self.chartStartTime = session.endTime
         self.chartEndTime = session.endTime
-        self.persistence = persistence
-        self.settings = userSettings
         if session.isActive || session.isFollowed || session.status == .NEW {
             startTimers(session)
-            scheduleBackgroundNotification()
+            scheduleUIResumeNotification()
         }
         setupHooks()
     }
@@ -65,15 +64,9 @@ final class ChartViewModel: ObservableObject {
         }
     }
 
-    private func scheduleBackgroundNotification() {
-        backgroundNotificationHandle = NotificationCenter.default.addObserver(forName: UIApplication.didEnterBackgroundNotification, object: nil, queue: .main) { [weak self] _ in
-            guard let self = self else { return }
-            var contextHandle: Any?
-            contextHandle = NotificationCenter.default.addObserver(forName: .NSManagedObjectContextDidSave, object: self.persistence.viewContext, queue: .main) { [weak self] _ in
-                self?.generateEntries()
-                guard let contextHandle = contextHandle else { return }
-                NotificationCenter.default.removeObserver(contextHandle)
-            }
+    private func scheduleUIResumeNotification() {
+        uiResumedNotificationHandle = NotificationCenter.default.addObserver(forName: PersistenceController.uiDidResumeNotificationName, object: nil, queue: .main) { [weak self] _ in
+            self?.generateEntries()
         }
     }
 
@@ -123,7 +116,7 @@ final class ChartViewModel: ObservableObject {
         let sessionStartTime = session.startTime!
 
         if session.isFixed {
-            return (lastMeasurementTime + 60).roundedDownToHour
+            return (lastMeasurementTime + 120).roundedDownToHour
         } else {
             let secondsSinceFullMinuteFromSessionStart = DateBuilder.getFakeUTCDate().timeIntervalSince(sessionStartTime).truncatingRemainder(dividingBy: timeUnit)
             return DateBuilder.getRawDate().currentUTCTimeZoneDate - secondsSinceFullMinuteFromSessionStart
@@ -134,7 +127,7 @@ final class ChartViewModel: ObservableObject {
         let sessionStartTime = session.startTime!
 
         if session.isFixed {
-            return DateBuilder.getRawDate().roundedUpToHour.timeIntervalSince(DateBuilder.getRawDate())
+            return DateBuilder.getRawDate().roundedUpToHour.timeIntervalSince(DateBuilder.getRawDate()) + 1
         } else {
             return timeUnit - DateBuilder.getFakeUTCDate().timeIntervalSince(sessionStartTime).truncatingRemainder(dividingBy: timeUnit)
         }

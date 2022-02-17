@@ -3,12 +3,10 @@
 
 import Foundation
 import CoreData
+import Resolver
 
-final class SessionStorage: ObservableObject {
-    let persistenceController: PersistenceController
-    init(persistenceController: PersistenceController) {
-        self.persistenceController = persistenceController
-    }
+final class SessionDataEraser: ObservableObject {
+    @Injected private var persistenceController: PersistenceController
 
     func clearAllSessions(completion: ((Result<Void, Error>) -> Void)?) {
         let context = persistenceController.editContext
@@ -23,5 +21,11 @@ final class SessionStorage: ObservableObject {
                 completion?(.failure(error))
             }
         })
+    }
+}
+
+extension SessionDataEraser: DataEraser {
+    func eraseAllData(completion: ((Result<Void, Error>) -> Void)?) {
+        clearAllSessions(completion: completion)
     }
 }

@@ -8,18 +8,17 @@
 import AirCastingStyling
 import CoreBluetooth
 import SwiftUI
+import Resolver
 
 struct TurnOnBluetoothView: View {
     @State private var isPowerABLinkActive = false
     @State private var presentRestartScreen = false
     @State private var presentUnplugScreen = false
-    @EnvironmentObject var settingsRedirection: DefaultSettingsRedirection
-    @EnvironmentObject var bluetoothManager: BluetoothManager
+    @Injected private var settingsRedirection: SettingsRedirection
+    @InjectedObject private var bluetoothManager: BluetoothManager
     @Binding var creatingSessionFlowContinues: Bool
     @Binding var sdSyncContinues: Bool
     var isSDClearProcess: Bool = false
-    let locationHandler: LocationHandler
-    let urlProvider: BaseURLProvider
 
     var body: some View {
         VStack(spacing: 50) {
@@ -37,21 +36,21 @@ struct TurnOnBluetoothView: View {
         .background(
             Group {
             NavigationLink(
-                destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider, locationHandler: locationHandler),
+                destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues),
                 isActive: $isPowerABLinkActive,
                 label: {
                     EmptyView()
                 }
             )
            NavigationLink(
-                destination: UnplugABView(viewModel: UnplugABViewModelDefault(urlProvider: urlProvider, isSDClearProcess: isSDClearProcess), creatingSessionFlowContinues: $creatingSessionFlowContinues),
+                destination: UnplugABView(isSDClearProcess: isSDClearProcess, creatingSessionFlowContinues: $creatingSessionFlowContinues),
                 isActive: $presentUnplugScreen,
                 label: {
                     EmptyView()
                 }
            )
             NavigationLink(
-                 destination: SDRestartABView(viewModel: SDRestartABViewModelDefault(urlProvider: urlProvider, isSDClearProcess: isSDClearProcess), creatingSessionFlowContinues: $creatingSessionFlowContinues),
+                 destination: SDRestartABView(isSDClearProcess: isSDClearProcess, creatingSessionFlowContinues: $creatingSessionFlowContinues),
                  isActive: $presentRestartScreen,
                  label: {
                      EmptyView()
@@ -82,9 +81,9 @@ struct TurnOnBluetoothView: View {
     var continueButton: some View {
         Button(action: {
             if CBCentralManager.authorization == .denied {
-                settingsRedirection.goToAppsBluetoothAuthSettings()
+                settingsRedirection.goToBluetoothSettings(type: .app)
             } else if bluetoothManager.centralManager.state != .poweredOn {
-                settingsRedirection.goToBluetoothAuthSettings()
+                settingsRedirection.goToBluetoothSettings(type: .global)
             } else {
                 if isSDClearProcess {
                     presentRestartScreen.toggle()

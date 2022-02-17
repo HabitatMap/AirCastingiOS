@@ -2,6 +2,8 @@
 //
 
 import Foundation
+import Resolver
+
 // This struct provides all nedded alerts in case of need. Using them from here, allows you
 // to place multiple instances of them (in one view) and every one of them will be called and show up nicely.
 // Key thing here - is the id.
@@ -116,12 +118,13 @@ struct InAppAlerts {
     }
     
     static func locationAlert() -> AlertInfo {
-        AlertInfo(title: Strings.SelectDeviceView.alertTitle,
-                  message: Strings.SelectDeviceView.alertMessage,
-                  buttons: [
-                    .cancel(title: Strings.Commons.ok),
-                    .default(title: Strings.SelectDeviceView.alertSettings,
-                             action: DefaultSettingsRedirection().goToLocationAuthSettings)])
+        let redirection = Resolver.resolve(SettingsRedirection.self)
+        return AlertInfo(title: Strings.SelectDeviceView.alertTitle,
+                         message: Strings.SelectDeviceView.alertMessage,
+                         buttons: [
+                            .cancel(title: Strings.Commons.ok),
+                            .default(title: Strings.SelectDeviceView.alertSettings,
+                                     action: redirection.goToLocationAuthSettings)])
     }
     
     static func unableToLogOutAlert() -> AlertInfo {

@@ -54,11 +54,3 @@ private extension AddNoteView {
         .buttonStyle(BlueTextButtonStyle())
     }
 }
-
-#if DEBUG
-struct AddNoteView_Previews: PreviewProvider {
-    static var previews: some View {
-        AddNoteView(viewModel: DummyAddNoteViewModelDefault())
-    }
-}
-#endif
