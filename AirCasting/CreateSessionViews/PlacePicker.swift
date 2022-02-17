@@ -7,7 +7,6 @@ import Resolver
 
 struct PlacePicker: UIViewControllerRepresentable {
     @InjectedObject private var tracker: LocationTracker
-    @Binding var placePickerDismissed: Bool
     @Environment(\.presentationMode) var presentationMode
     @Binding var address: String
 
@@ -44,7 +43,6 @@ struct PlacePicker: UIViewControllerRepresentable {
             DispatchQueue.main.async { [self] in
                 self.parent.address =  place.name!
                 parent.tracker.googleLocation = [PathPoint(location: place.coordinate, measurementTime: DateBuilder.getFakeUTCDate())]
-                parent.placePickerDismissed = true
                 self.parent.presentationMode.wrappedValue.dismiss()
             }
         }
