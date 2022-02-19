@@ -106,6 +106,9 @@ struct SettingsView: View {
             Section() {
                 navigateToAppConfigurationButton
                 shareLogsButton
+                Text("Crashlytics integration testing:")
+                crashButton
+                createErrorButton
             }
             #endif
             appInfoSection
@@ -246,6 +249,19 @@ struct SettingsView: View {
     private var shareLogsButton: some View {
         Button("Share logs") {
             shareLogsViewModel.shareLogsButtonTapped()
+        }
+    }
+    
+    private var crashButton: some View {
+        Button("Crash the app") {
+            let numbers = [0]
+            _ = numbers[1]
+        }
+    }
+    
+    private var createErrorButton: some View {
+        Button("Generate error") {
+            Log.error("Error induced")
         }
     }
     #endif

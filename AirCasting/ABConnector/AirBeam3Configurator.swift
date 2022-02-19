@@ -175,11 +175,11 @@ private extension AirBeam3Configurator {
     }
     
     func getCharacteristic(serviceID: CBUUID, charID: CBUUID) -> CBCharacteristic? {
-        remoteLog("AirBeam3Configurator (getCharacteristic) - peripheral services\n \(String(describing: peripheral.services))")
+        Log.info("Peripheral services\n \(String(describing: peripheral.services))")
         let service = peripheral.services?.first(where: { data -> Bool in
             data.uuid == serviceID
         })
-        remoteLog("AirBeam3Configurator (getCharacteristic) - service characteristics\n \(String(describing: service?.characteristics))")
+        Log.info("Service characteristics\n \(String(describing: service?.characteristics))")
         guard let characteristic = service?.characteristics?.first(where: { characteristic -> Bool in
             characteristic.uuid == charID
         }) else {
