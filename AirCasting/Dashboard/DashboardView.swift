@@ -48,7 +48,7 @@ struct DashboardView: View {
                 if sessions.isEmpty { emptySessionsView } else { sessionListView }
             }
         }
-        .navigationBarTitle(NSLocalizedString(Strings.DashboardView.dashboardText, comment: ""))
+        .navigationBarTitle(Strings.DashboardView.dashboardText)
         .onChange(of: selectedSection.selectedSection) { selectedSection in
             self.selectedSection.selectedSection = selectedSection
             try! coreDataHook.setup(selectedSection: self.selectedSection.selectedSection)

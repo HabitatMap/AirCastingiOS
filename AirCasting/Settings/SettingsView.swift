@@ -51,7 +51,7 @@ struct SettingsView: View {
             .environmentObject(viewModel.sessionContext)
             #if BETA || DEBUG
             .sheet(isPresented: $shareLogsViewModel.shareSheetPresented) {
-                ActivityViewController(itemsToShare: [shareLogsViewModel.file as Any]) { _, _, _, _ in
+                ActivityViewController(sharingFile: true, itemToShare: shareLogsViewModel.file!, servicesToShareItem: nil) { _,_,_,_ in
                     shareLogsViewModel.sharingFinished()
                 }
             }
@@ -88,7 +88,7 @@ struct SettingsView: View {
             .environmentObject(viewModel.sessionContext)
             #if BETA || DEBUG
             .sheet(isPresented: $shareLogsViewModel.shareSheetPresented) {
-                ActivityViewController(itemsToShare: [shareLogsViewModel.file as Any]) { _, _, _, _ in
+                ActivityViewController(sharingFile: true, itemToShare: shareLogsViewModel.file!, servicesToShareItem: nil) { _,_,_,_ in
                     shareLogsViewModel.sharingFinished()
                 }
             }
@@ -112,7 +112,6 @@ struct SettingsView: View {
         }
         .listStyle(GroupedListStyle())
         .navigationBarTitle(Strings.Settings.title)
-        .environmentObject(viewModel.sessionContext)
     }
 
     private var settingsSection: some View {
@@ -147,9 +146,9 @@ struct SettingsView: View {
             Text(Strings.Settings.appInfoTitle) + Text(". ") + Text("\(UIApplication.appVersion!) ") +
             Text(Strings.Settings.buildText) + Text(": ") + Text("\(UIApplication.buildVersion!)")
             #if BETA
-            Text(Strings.Settings.betaBuild).foregroundColor(.red)
+            Text("Beta build").foregroundColor(.red)
             #elseif DEBUG
-            Text(Strings.Settings.debugBuild).foregroundColor(.red)
+            Text("Debug build").foregroundColor(.red)
             #endif
         }.foregroundColor(.aircastingGray)
     }

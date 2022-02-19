@@ -63,6 +63,15 @@ final class SynchronizationScheduler {
         authorization
             .$isLoggedIn
             .removeDuplicates()
+            .scan((nil, nil)) {
+                ($0.1, $1)
+            }
+            .logVerbose { "Logged in state changed from \(String(describing: $0.0)) to \(String(describing: $0.1))" }
+            .compactMap {
+                guard let _ = $0.0 else { return nil }
+                guard let new = $0.1 else { return nil }
+                return new
+            }
             .filter { $0 }
             .eraseToVoid()
             .sink {

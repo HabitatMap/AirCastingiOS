@@ -7,7 +7,7 @@ import SwiftUI
 struct ChooseCustomLocationView: View {
     @State private var isConfirmCreatingSessionActive: Bool = false
     @State private var location = ""
-    @State var placePickerPresented: Bool = false
+    @State var placePickerIsUpdating: Bool = false
     @State var isLocationPopupPresented = false
     @Binding var creatingSessionFlowContinues: Bool
     var sessionName: String
@@ -29,17 +29,20 @@ struct ChooseCustomLocationView: View {
         }
         .background(confirmCreatingSessionLink)
         .sheet(isPresented: $isLocationPopupPresented) {
-            PlacePicker(placePickerDismissed: $placePickerPresented, address: $location)
+            PlacePicker(address: $location)
         }
-        .onChange(of: placePickerPresented, perform: { value in
+        .onChange(of: isLocationPopupPresented, perform: { present in
             // The reason for this is to prevent map from multiple times refreshing after first map update
-            placePickerPresented ? (placePickerPresented = false) : nil
+            placePickerIsUpdating = !present
         })
         .padding()
     }
 
     var mapGoogle: some View {
-        GoogleMapView(pathPoints: [], placePickerDismissed: $placePickerPresented, isUserInteracting: Binding.constant(true), mapNotes: .constant([]))
+        GoogleMapView(pathPoints: [],
+                      placePickerIsUpdating: $placePickerIsUpdating,
+                      isUserInteracting: Binding.constant(true),
+                      mapNotes: .constant([]))
     }
 
     var dot: some View {

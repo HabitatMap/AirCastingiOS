@@ -70,7 +70,7 @@ struct AirMapView: View {
                     ZStack(alignment: .topLeading) {
                         GoogleMapView(pathPoints: pathPoints,
                                       threshold: threshold,
-                                      placePickerDismissed: Binding.constant(false),
+                                      placePickerIsUpdating: Binding.constant(false),
                                       isUserInteracting: $isUserInteracting,
                                       isSessionActive: session.isActive,
                                       isSessionFixed: session.isFixed,

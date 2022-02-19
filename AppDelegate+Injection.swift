@@ -58,9 +58,11 @@ extension Resolver: ResolverRegistering {
             .implements(SessionsFetchable.self)
             .implements(SessionRemovable.self)
             .implements(SessionInsertable.self)
+            .implements(SessionUpdateable.self)
             .scope(.application)
         main.register { CoreDataMeasurementStreamStorage() as MeasurementStreamStorage }.scope(.cached)
         main.register { DefaultFileLineReader() as FileLineReader }
+        main.register { SessionDataEraser() as DataEraser }
         
         // MARK: - Networking
         main.register { URLSession.shared as APIClient }.scope(.application)
@@ -137,7 +139,7 @@ extension Resolver: ResolverRegistering {
         main.register { ConnectingAirBeamServicesBluetooth() as ConnectingAirBeamServices }
         main.register { DefaultAirBeamConnectionController() as AirBeamConnectionController }
         main.register { DefaultSessionUpdateService() as SessionUpdateService }
-        main.register { DefaultLogoutController(sessionStorage: SessionStorage()) as LogoutController }
+        main.register { DefaultLogoutController() as LogoutController }
         
         // MARK: - Session stopping
         
@@ -168,7 +170,7 @@ extension Resolver: ResolverRegistering {
         main.register { SDSyncController() }.scope(.cached)
         main.register { SDCardMobileSessionsSavingService() as SDCardMobileSessionssSaver }
         main.register { UploadFixedSessionAPIService() }
-        main.register { SDCardFixedSessionsSavingService() }
+        main.register { SDCardFixedSessionsUploadingService() }
         main.register { SDSyncFileValidationService() as SDSyncFileValidator }
         main.register { SDSyncFileWritingService(bufferThreshold: 1000) as SDSyncFileWriter }
         main.register { BluetoothSDCardAirBeamServices() as SDCardAirBeamServices }
