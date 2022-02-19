@@ -182,44 +182,11 @@ private extension SessionCardView {
     func pollutionChart(thresholds: [SensorThreshold]) -> some View {
         return VStack() {
             if let selectedStream = selectedStream {
-                Group {
-                    ChartView(thresholds: thresholds,
-                              viewModel: chartViewModel)
-                        .frame(height: 120)
-                        .disabled(true)
-                    HStack() {
-                            startTime
-                            Spacer()
-                            descriptionText(stream: selectedStream)
-                            Spacer()
-                            endTime
-                    }.foregroundColor(.aircastingGray)
-                        .font(Fonts.semiboldHeading2)
-                }
+                NewChartView(thresholds: thresholds, viewModel: chartViewModel, stream: selectedStream)
+                .foregroundColor(.aircastingGray)
+                    .font(Fonts.semiboldHeading2)
             }
         }
-    }
-
-    var startTime: some View {
-        let formatter = DateFormatters.SessionCartView.pollutionChartDateFormatter
-
-        guard let start = chartViewModel.chartStartTime else { return Text("") }
-
-        let string = formatter.string(from: start)
-        return Text(string)
-        }
-
-    var endTime: some View {
-        let formatter = DateFormatters.SessionCartView.pollutionChartDateFormatter
-
-        let end = chartViewModel.chartEndTime ?? DateBuilder.getFakeUTCDate()
-
-        let string = formatter.string(from: end)
-        return Text(string)
-        }
-
-    func descriptionText(stream: MeasurementStreamEntity) -> some View {
-        return Text("\(stream.session.isMobile ? Strings.SessionCartView.avgSessionMin : Strings.SessionCartView.avgSessionH) \(stream.unitSymbol ?? "")")
     }
 
     func displayButtons(thresholds: [SensorThreshold]) -> some View {
@@ -284,4 +251,46 @@ private extension SessionCardView {
                                  EmptyView()
                                })
      }
+}
+
+struct NewChartView: View {
+    let thresholds: [SensorThreshold]
+    @StateObject var viewModel: ChartViewModel
+    let stream: MeasurementStreamEntity
+    
+    var body: some View {
+        ChartView(thresholds: thresholds,
+                  viewModel: viewModel)
+            .frame(height: 120)
+            .disabled(true)
+        HStack() {
+                startTime
+                Spacer()
+                descriptionText(stream: stream)
+                Spacer()
+                endTime
+        }
+    }
+    
+    var startTime: some View {
+        let formatter = DateFormatters.SessionCartView.pollutionChartDateFormatter
+
+        guard let start = viewModel.chartStartTime else { return Text("") }
+
+        let string = formatter.string(from: start)
+        return Text(string)
+    }
+
+    var endTime: some View {
+        let formatter = DateFormatters.SessionCartView.pollutionChartDateFormatter
+
+        let end = viewModel.chartEndTime ?? DateBuilder.getFakeUTCDate()
+
+        let string = formatter.string(from: end)
+        return Text(string)
+    }
+    
+    func descriptionText(stream: MeasurementStreamEntity) -> some View {
+        return Text("\(stream.session.isMobile ? Strings.SessionCartView.avgSessionMin : Strings.SessionCartView.avgSessionH) \(stream.unitSymbol ?? "")")
+    }
 }
