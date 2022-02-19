@@ -4,9 +4,55 @@
 import Foundation
 import CoreLocation
 import Resolver
+import DeviceKit
 
 extension Resolver: ResolverRegistering {
+    public static let fileLoggerQueue = DispatchQueue(label: "com.habitatmap.filelogger", qos: .utility, attributes: [], autoreleaseFrequency: .workItem, target: nil)
     public static func registerAllServices() {
+        // MARK: Logging
+        main.register { (_, _) -> Logger in
+            return CompositeLogger(loggers: [
+                LoggerBuilder(type: .debug).build(),
+                LoggerBuilder(type: .file)
+                    .addMinimalLevel(.info)
+                    .dispatchOn(fileLoggerQueue)
+                    .build()
+            ])
+        }.scope(.application)
+        
+        main.register { PrintLogger() }.scope(.application)
+        main.register { FileLogger() }.scope(.application)
+        
+        main.register {
+            DocumentsFileLoggerStore(logDirectory: "logs",
+                                     logFilename: "log.txt",
+                                     maxLogs: 3000,
+                                     overflowThreshold: 500) as FileLoggerStore
+        }
+        .implements(FileLoggerResettable.self)
+        .implements(LogfileProvider.self)
+        .scope(.application)
+        
+        main.register {
+            SimpleLogFormatter() as LogFormatter
+        }
+        
+        main.register { (_, _) -> FileLoggerHeaderProvider in
+            let loggerDateFormatter = DateFormatter(format: "MM-dd-y HH:mm:ss", timezone: .utc, locale: Locale(identifier: "en_US"))
+            return AirCastingLogoFileLoggerHeaderProvider(logVersion: "1.0",
+                                                          created: loggerDateFormatter.string(from: DateBuilder.getRawDate()),
+                                                          device: "\(Device.current)",
+                                                          os: "\(Device.current.systemName ?? "??") \(Device.current.systemVersion ?? "??")") as FileLoggerHeaderProvider
+        }
+        
+        // MARK: Garbage collection
+        main.register { (_, _) -> GarbageCollector in
+            let collector = GarbageCollector()
+            let logsHolder = FileLoggerDisposer(disposeQueue: fileLoggerQueue)
+            collector.addHolder(logsHolder)
+            return collector
+        }.scope(.application)
+        
         // MARK: Persistence
         main.register { PersistenceController(inMemory: false) }
             .implements(SessionsFetchable.self)

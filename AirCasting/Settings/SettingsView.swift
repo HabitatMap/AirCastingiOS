@@ -15,6 +15,9 @@ struct SettingsView: View {
     @InjectedObject private var userSettings: UserSettings
     @InjectedObject private var bluetoothManager: BluetoothManager
     private let sessionContext: CreateSessionContext
+    #if DEBUG || BETA
+    @StateObject private var shareLogsViewModel = ShareLogsViewModel()
+    #endif
     
     init(sessionContext: CreateSessionContext) {
         self.sessionContext = sessionContext
@@ -46,6 +49,13 @@ struct SettingsView: View {
                 }
             }
             .environmentObject(viewModel.sessionContext)
+            #if BETA || DEBUG
+            .sheet(isPresented: $shareLogsViewModel.shareSheetPresented) {
+                ActivityViewController(sharingFile: true, itemToShare: shareLogsViewModel.file!, servicesToShareItem: nil) { _,_,_,_ in
+                    shareLogsViewModel.sharingFinished()
+                }
+            }
+            #endif
         } else {
             NavigationView {
                 main
@@ -76,6 +86,13 @@ struct SettingsView: View {
                         }
                 })
             .environmentObject(viewModel.sessionContext)
+            #if BETA || DEBUG
+            .sheet(isPresented: $shareLogsViewModel.shareSheetPresented) {
+                ActivityViewController(sharingFile: true, itemToShare: shareLogsViewModel.file!, servicesToShareItem: nil) { _,_,_,_ in
+                    shareLogsViewModel.sharingFinished()
+                }
+            }
+            #endif
         }
     }
 
@@ -88,6 +105,7 @@ struct SettingsView: View {
             #if BETA || DEBUG
             Section() {
                 navigateToAppConfigurationButton
+                shareLogsButton
             }
             #endif
             appInfoSection
@@ -223,6 +241,12 @@ struct SettingsView: View {
                 .navigationTitle("App config")
         })
             .font(Fonts.boldHeading1)
+    }
+    
+    private var shareLogsButton: some View {
+        Button("Share logs") {
+            shareLogsViewModel.shareLogsButtonTapped()
+        }
     }
     #endif
 }
