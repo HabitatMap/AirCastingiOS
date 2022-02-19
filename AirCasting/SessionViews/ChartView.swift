@@ -1,121 +1,56 @@
-//
-//  MeasurementChart.swift
-//  AirCasting
-//
-//  Created by Lunar on 11/01/2021.
+// Created by Lunar on 19/02/2022.
 //
 
 import SwiftUI
-import Charts
 
-class UI_PollutionChart: UIView {
-    let lineChartView = LineChartView()
+struct ChartView: View {
+    private let thresholds: [SensorThreshold]
+    @StateObject private var viewModel: ChartViewModel
+    @Binding private var stream: MeasurementStreamEntity?
     
-    init() {
-        super.init(frame: .zero)
-        
-        self.addSubview(lineChartView)
-        
-        lineChartView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            lineChartView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            lineChartView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            lineChartView.topAnchor.constraint(equalTo: self.topAnchor),
-            lineChartView.bottomAnchor.constraint(equalTo: self.bottomAnchor)
-        ])
-        //remove border lines and legend
-        lineChartView.xAxis.enabled = false
-        lineChartView.xAxis.drawLabelsEnabled = false
-        lineChartView.xAxis.labelPosition = .bottom
-        lineChartView.xAxis.drawGridLinesEnabled = true
-        lineChartView.minOffset = 20
-        // we are setting the values for x axis so that there is always a space for 8 averages and they are always starting at the right edge
-        lineChartView.xAxis.axisMinimum = 0
-        lineChartView.xAxis.axisMaximum = 8
-        lineChartView.leftAxis.gridColor = .aircastingGray.withAlphaComponent(0.2)
-        lineChartView.leftAxis.drawLabelsEnabled = false
-        lineChartView.leftAxis.drawAxisLineEnabled = false
-        
-        lineChartView.rightAxis.enabled = false
-        
-        lineChartView.legend.enabled = false
-        lineChartView.noDataText = "Waiting for the first average value"
-        lineChartView.noDataTextAlignment = .center
-        
-        //disable zooming
-        lineChartView.setScaleEnabled(false)
+    init(thresholds: [SensorThreshold], stream: Binding<MeasurementStreamEntity?>, session: SessionEntity) {
+        self.thresholds = thresholds
+        self._stream = .init(projectedValue: stream)
+        self._viewModel = .init(wrappedValue: .init(session: session, stream: stream.wrappedValue))
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
-
-struct ChartView: UIViewRepresentable {
-    let thresholds: [SensorThreshold]
-
-    @StateObject var viewModel: ChartViewModel
-    
-    typealias UIViewType = UI_PollutionChart
-    
-    func makeUIView(context: Context) -> UI_PollutionChart {
-        UI_PollutionChart()
-    }
-    
-    func updateUIView(_ uiView: UI_PollutionChart, context: Context) {
-        guard !viewModel.entries.isEmpty else { return }
-        
-        var entries = viewModel.entries
-        
-        entries.sort { (e1, e2) -> Bool in
-            e1.x < e2.x
-        }
-        
-        let dataSet = LineChartDataSet(entries: entries)
-        let data = LineChartData(dataSet: dataSet)
-        uiView.lineChartView.data = data
-        
-        //format data labels
-        formatData(data: data)
-        
-        //format line and dots
-        formatDataSet(dataSet: dataSet)
-    }
-    
-    private func formatData(data: LineChartData) {
-        let formatter = NumberFormatter()
-        formatter.maximumFractionDigits = 0
-        data.setValueFormatter(DefaultValueFormatter(formatter: formatter))
-        data.setValueFont(Fonts.muliHeadingUIFont2)
-        data.setValueTextColor(UIColor.aircastingGray)
-    }
-    
-    private func formatDataSet(dataSet: LineChartDataSet) {
-        //dots colors
-        dataSet.circleColors = generateColorsSet(for: dataSet.entries)
-        dataSet.drawCircleHoleEnabled = false
-        dataSet.circleRadius = 4
-
-        
-        //line color
-        dataSet.setColor(UIColor.aircastingGray.withAlphaComponent(0.7))
-    }
-    
-    private func generateColorsSet(for entries: [ChartDataEntry]) -> [UIColor] {
-        var colors: [UIColor] = []
-        guard let threshold = thresholds.threshold(for: viewModel.stream) else { return [.aircastingGray] }
-        for entry in entries {
-            switch Int32(entry.y) {
-            case threshold.thresholdVeryLow..<threshold.thresholdLow:
-                colors.append(UIColor.aircastingGreen)
-            case threshold.thresholdLow..<threshold.thresholdMedium:
-                colors.append(UIColor.aircastingYellow)
-            case threshold.thresholdMedium..<threshold.thresholdHigh:
-                colors.append(UIColor.aircastingOrange)
-            default:
-                colors.append(UIColor.aircastingRed)
+    var body: some View {
+        UIKitChartView(thresholds: thresholds,
+                       viewModel: viewModel)
+            .frame(height: 120)
+            .disabled(true)
+            .onChange(of: stream) { newValue in
+                viewModel.stream = newValue
             }
+        HStack() {
+            startTime
+            Spacer()
+            descriptionText(stream: stream)
+            Spacer()
+            endTime
         }
-        return colors
+    }
+    
+    var startTime: some View {
+        let formatter = DateFormatters.SessionCartView.pollutionChartDateFormatter
+
+        guard let start = viewModel.chartStartTime else { return Text("") }
+
+        let string = formatter.string(from: start)
+        return Text(string)
+    }
+
+    var endTime: some View {
+        let formatter = DateFormatters.SessionCartView.pollutionChartDateFormatter
+
+        let end = viewModel.chartEndTime ?? DateBuilder.getFakeUTCDate()
+
+        let string = formatter.string(from: end)
+        return Text(string)
+    }
+    
+    func descriptionText(stream: MeasurementStreamEntity?) -> some View {
+        guard let stream = stream else { return Text("") }
+        return Text("\(stream.session.isMobile ? Strings.SessionCartView.avgSessionMin : Strings.SessionCartView.avgSessionH) \(stream.unitSymbol ?? "")")
     }
 }

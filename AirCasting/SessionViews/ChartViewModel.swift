@@ -27,12 +27,14 @@ final class ChartViewModel: ObservableObject {
     private let numberOfEntries = Constants.Chart.numberOfEntries
     private var cancellables: [AnyCancellable] = []
     
-    init(session: SessionEntity) {
+    init(session: SessionEntity, stream: MeasurementStreamEntity?) {
         self.session = session
         self.chartStartTime = session.endTime
         self.chartEndTime = session.endTime
         setupHooks()
-        stream = session.sortedStreams?.first
+        self.stream = stream ?? session.sortedStreams?.first
+        setupDatabaseHook()
+        generateEntries()
     }
 
     private func setupHooks() {

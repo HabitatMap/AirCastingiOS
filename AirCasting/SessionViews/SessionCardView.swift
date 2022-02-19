@@ -26,7 +26,6 @@ struct SessionCardView: View {
     @StateObject private var mapStatsViewModel: StatisticsContainerViewModel
     @StateObject private var graphStatsDataSource: ConveringStatisticsDataSourceDecorator<GraphStatsDataSource>
     @StateObject private var graphStatsViewModel: StatisticsContainerViewModel
-    @StateObject private var chartViewModel: ChartViewModel
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
 
     init(session: SessionEntity,
@@ -41,7 +40,6 @@ struct SessionCardView: View {
         let graphDataSource = ConveringStatisticsDataSourceDecorator<GraphStatsDataSource>(dataSource: GraphStatsDataSource(), stream: nil)
         self._graphStatsDataSource = .init(wrappedValue: graphDataSource)
         self._graphStatsViewModel = .init(wrappedValue: SessionCardView.createStatsContainerViewModel(dataSource: graphDataSource, session: session))
-        self._chartViewModel = .init(wrappedValue: ChartViewModel(session: session))
     }
 
     var shouldShowValues: MeasurementPresentationStyle {
@@ -87,12 +85,11 @@ struct SessionCardView: View {
         .onChange(of: session.sortedStreams) { newValue in
             selectDefaultStreamIfNeeded(streams: newValue ?? [])
         }
-        .onChange(of: selectedStream, perform: { [weak graphStatsDataSource, weak mapStatsDataSource, weak chartViewModel] newStream in
+        .onChange(of: selectedStream, perform: { [weak graphStatsDataSource, weak mapStatsDataSource] newStream in
             graphStatsDataSource?.stream = newStream
             graphStatsDataSource?.dataSource.stream = newStream
             mapStatsDataSource?.stream = newStream
             mapStatsDataSource?.dataSource.stream = newStream
-            chartViewModel?.stream = newStream
         })
         .font(Fonts.regularHeading4)
         .foregroundColor(.aircastingGray)
@@ -181,11 +178,9 @@ private extension SessionCardView {
 
     func pollutionChart(thresholds: [SensorThreshold]) -> some View {
         return VStack() {
-            if let selectedStream = selectedStream {
-                NewChartView(thresholds: thresholds, viewModel: chartViewModel, stream: selectedStream)
-                .foregroundColor(.aircastingGray)
-                    .font(Fonts.semiboldHeading2)
-            }
+            ChartView(thresholds: thresholds, stream: $selectedStream, session: session)
+            .foregroundColor(.aircastingGray)
+                .font(Fonts.semiboldHeading2)
         }
     }
 
@@ -251,46 +246,4 @@ private extension SessionCardView {
                                  EmptyView()
                                })
      }
-}
-
-struct NewChartView: View {
-    let thresholds: [SensorThreshold]
-    @StateObject var viewModel: ChartViewModel
-    let stream: MeasurementStreamEntity
-    
-    var body: some View {
-        ChartView(thresholds: thresholds,
-                  viewModel: viewModel)
-            .frame(height: 120)
-            .disabled(true)
-        HStack() {
-                startTime
-                Spacer()
-                descriptionText(stream: stream)
-                Spacer()
-                endTime
-        }
-    }
-    
-    var startTime: some View {
-        let formatter = DateFormatters.SessionCartView.pollutionChartDateFormatter
-
-        guard let start = viewModel.chartStartTime else { return Text("") }
-
-        let string = formatter.string(from: start)
-        return Text(string)
-    }
-
-    var endTime: some View {
-        let formatter = DateFormatters.SessionCartView.pollutionChartDateFormatter
-
-        let end = viewModel.chartEndTime ?? DateBuilder.getFakeUTCDate()
-
-        let string = formatter.string(from: end)
-        return Text(string)
-    }
-    
-    func descriptionText(stream: MeasurementStreamEntity) -> some View {
-        return Text("\(stream.session.isMobile ? Strings.SessionCartView.avgSessionMin : Strings.SessionCartView.avgSessionH) \(stream.unitSymbol ?? "")")
-    }
 }
