@@ -13,6 +13,7 @@ enum ProceedToView {
 }
 
 class ChooseSessionTypeViewModel: ObservableObject {
+    @Published var isSearchAndFollow = false
     @Published var isTurnLocationOnLinkActive = false
     @Published var isMobileLinkActive = false
     @Published var isTurnBluetoothOnLinkActive = false
@@ -35,6 +36,7 @@ class ChooseSessionTypeViewModel: ObservableObject {
         self.sessionContext = sessionContext
     }
     
+    func setSearchAndFollow(using new: Bool) { isSearchAndFollow = new }
     func setInfoPresented(using new: Bool) { isInfoPresented = new }
     func setStartSync(using new: Bool) { startSync = new }
     func setPowerABLink(using new: Bool) { isPowerABLinkActive = new }
@@ -70,6 +72,10 @@ class ChooseSessionTypeViewModel: ObservableObject {
     
     func infoButtonTapped() {
         isInfoPresented = true
+    }
+    
+    func searchAndFollowTapped() {
+        isSearchAndFollow = true
     }
     
     // MARK: - Private methods

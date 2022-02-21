@@ -18,7 +18,8 @@ struct SessionCardView: View {
     @State private var showLoadingIndicator = false
     @ObservedObject var session: SessionEntity
     @EnvironmentObject var selectedSection: SelectSection
-    @EnvironmentObject var reorderButton: ReorderButtonTapped
+    @EnvironmentObject var reorderButton: ReorderButton
+    @EnvironmentObject var searchAndFollowButton: SearchAndFollowButton
     let sessionCartViewModel: SessionCardViewModel
     let thresholds: [SensorThreshold]
 
@@ -147,6 +148,7 @@ private extension SessionCardView {
         Button {
             isGraphButtonActive = true
             reorderButton.isHidden = true
+            searchAndFollowButton.isHidden = true
             Log.info("\(reorderButton)")
         } label: {
             Text(Strings.SessionCartView.graph)
@@ -159,6 +161,7 @@ private extension SessionCardView {
         Button {
             isMapButtonActive = true
             reorderButton.isHidden = true
+            searchAndFollowButton.isHidden = true
             Log.info("\(reorderButton)")
         } label: {
             Text(Strings.SessionCartView.map)

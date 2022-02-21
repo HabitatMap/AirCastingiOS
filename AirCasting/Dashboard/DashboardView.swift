@@ -15,7 +15,8 @@ struct DashboardView: View {
     @StateObject var coreDataHook: CoreDataHook
     @FetchRequest<SensorThreshold>(sortDescriptors: [.init(key: "sensorName", ascending: true)]) var thresholds
     @EnvironmentObject var selectedSection: SelectSection
-    @EnvironmentObject var reorderButton: ReorderButtonTapped
+    @EnvironmentObject var reorderButton: ReorderButton
+    @EnvironmentObject var searchAndFollowButton: SearchAndFollowButton
     @Injected private var averaging: AveragingService
     @State var isRefreshing: Bool = false
     @Injected private var sessionSynchronizer: SessionSynchronizer
@@ -40,12 +41,17 @@ struct DashboardView: View {
             //
             // Bug report was filled with Apple
             PreventCollapseView()
-            if reorderButton.reorderIsON {
+            if reorderButton.reorderIsOn {
                 followingTab
                 ReorderingDashboard(sessions: sessions, thresholds: Array(self.thresholds))
             } else {
                 sessionTypePicker
                 if sessions.isEmpty { emptySessionsView } else { sessionListView }
+            }
+        }
+        .fullScreenCover(isPresented: $searchAndFollowButton.searchIsOn) {
+            CreatingSessionFlowRootView {
+                SearchView(creatingSessionFlowContinues: $searchAndFollowButton.searchIsOn)
             }
         }
         .navigationBarTitle(Strings.DashboardView.dashboardText)
@@ -64,6 +70,7 @@ struct DashboardView: View {
         .onAppear() {
             try! coreDataHook.setup(selectedSection: self.selectedSection.selectedSection)
             reorderButton.isHidden = false
+            searchAndFollowButton.isHidden = false
         }
     }
 

@@ -29,7 +29,7 @@ struct ChooseCustomLocationView: View {
         }
         .background(confirmCreatingSessionLink)
         .sheet(isPresented: $isLocationPopupPresented) {
-            PlacePicker(address: $location)
+            PlacePicker(service: ChooseLocationPickerService(address: $location))
         }
         .onChange(of: isLocationPopupPresented, perform: { present in
             // The reason for this is to prevent map from multiple times refreshing after first map update
