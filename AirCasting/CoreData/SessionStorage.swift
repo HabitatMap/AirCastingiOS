@@ -5,7 +5,7 @@ import Foundation
 import CoreData
 import Resolver
 
-final class SessionStorage: ObservableObject {
+final class SessionDataEraser: ObservableObject {
     @Injected private var persistenceController: PersistenceController
 
     func clearAllSessions(completion: ((Result<Void, Error>) -> Void)?) {
@@ -21,5 +21,11 @@ final class SessionStorage: ObservableObject {
                 completion?(.failure(error))
             }
         })
+    }
+}
+
+extension SessionDataEraser: DataEraser {
+    func eraseAllData(completion: ((Result<Void, Error>) -> Void)?) {
+        clearAllSessions(completion: completion)
     }
 }

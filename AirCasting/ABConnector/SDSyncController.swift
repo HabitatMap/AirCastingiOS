@@ -31,7 +31,7 @@ class SDSyncController {
     @Injected private var fileValidator: SDSyncFileValidator
     @Injected private var fileLineReader: FileLineReader
     @Injected private var mobileSessionsSaver: SDCardMobileSessionssSaver
-    @Injected private var fixedSessionsSaver: SDCardFixedSessionsSavingService //TODO: This part needs refactoring
+    @Injected private var fixedSessionsUploader: SDCardFixedSessionsUploadingService
     @Injected private var averagingService: AveragingService
     @Injected private var sessionSynchronizer: SessionSynchronizer
     @Injected private var measurementsDownloader: SyncedMeasurementsDownloader
@@ -64,7 +64,7 @@ class SDSyncController {
                         return
                     }
                     
-                    //MARK: checking if files have the right number of rows and if rows have the right values
+                    // MARK: checking if files have the right number of rows and if rows have the right values
                     self.checkFilesForCorruption(files, expectedMeasurementsCount: metadata.expectedMeasurementsCount) { fileValidationResult in
                         switch fileValidationResult {
                         case .success(let verifiedFiles):
@@ -87,11 +87,14 @@ class SDSyncController {
         let fixedFileURL = files.first(where: { $0.1 == SDCardSessionType.fixed })?.0
         
         func handleFixedFile(fixedFileURL: URL) {
-            do {
-                let fixedSessionsUUIDs =  try self.process(fixedSessionFile: fixedFileURL, deviceID: sensorName, completion: completion)
-                measurementsDownloader.download(sessionsUUIDs: fixedSessionsUUIDs)
-            } catch {
-                completion(false)
+            process(fixedSessionFile: fixedFileURL, deviceID: sensorName) { result in
+                switch result {
+                case .success(let fixedSessionsUUIDs):
+                    self.measurementsDownloader.download(sessionsUUIDs: fixedSessionsUUIDs)
+                    completion(true)
+                case .failure:
+                    completion(false)
+                }
             }
         }
         
@@ -115,10 +118,17 @@ class SDSyncController {
         }
     }
     
-    private func process(fixedSessionFile: URL, deviceID: String, completion: @escaping (Bool) -> Void) throws -> [SessionUUID] {
-        let csvSession = try CSVStreamsWithMeasurements(fileURL: fixedSessionFile)
-        fixedSessionsSaver.processAndSync(csvSession: csvSession, deviceID: deviceID, completion: completion)
-        return csvSession.sessions.map { $0.uuid }
+    private func process(fixedSessionFile: URL, deviceID: String, completion: @escaping (Result<[SessionUUID], Error>) -> Void) {
+        Log.info("Processing fixed file")
+        fixedSessionsUploader.processAndUpload(fileURL: fixedSessionFile, deviceID: deviceID) { result in
+            switch result {
+            case .success(let sessions):
+                completion(.success(sessions))
+            case .failure(let error):
+                Log.error("[SD Sync] Failed to upload sessions to backend: \(error.localizedDescription)")
+                completion(.failure(error))
+            }
+        }
     }
     
     private func process(mobileSessionFile: URL, deviceID: String, completion: @escaping (Bool) -> Void) {
@@ -129,7 +139,6 @@ class SDSyncController {
                     Log.info("[SD Sync] Averaging done")
                     self.onCurrentSyncEnd { self.startBackendSync() }
                 }
-                // TODO: Shouldn't we call 'completion' only when averaging and backkend-sync has finished?
                 completion(true)
             case .failure(let error):
                 Log.error("[SD Sync] Failed to save sessions to database: \(error.localizedDescription)")
