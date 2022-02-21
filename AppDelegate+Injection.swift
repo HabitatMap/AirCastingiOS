@@ -4,17 +4,65 @@
 import Foundation
 import CoreLocation
 import Resolver
+import DeviceKit
 
 extension Resolver: ResolverRegistering {
+    public static let fileLoggerQueue = DispatchQueue(label: "com.habitatmap.filelogger", qos: .utility, attributes: [], autoreleaseFrequency: .workItem, target: nil)
     public static func registerAllServices() {
+        // MARK: Logging
+        main.register { (_, _) -> Logger in
+            return CompositeLogger(loggers: [
+                LoggerBuilder(type: .debug).build(),
+                LoggerBuilder(type: .file)
+                    .addMinimalLevel(.info)
+                    .dispatchOn(fileLoggerQueue)
+                    .build()
+            ])
+        }.scope(.application)
+        
+        main.register { PrintLogger() }.scope(.application)
+        main.register { FileLogger() }.scope(.application)
+        
+        main.register {
+            DocumentsFileLoggerStore(logDirectory: "logs",
+                                     logFilename: "log.txt",
+                                     maxLogs: 3000,
+                                     overflowThreshold: 500) as FileLoggerStore
+        }
+        .implements(FileLoggerResettable.self)
+        .implements(LogfileProvider.self)
+        .scope(.application)
+        
+        main.register {
+            SimpleLogFormatter() as LogFormatter
+        }
+        
+        main.register { (_, _) -> FileLoggerHeaderProvider in
+            let loggerDateFormatter = DateFormatter(format: "MM-dd-y HH:mm:ss", timezone: .utc, locale: Locale(identifier: "en_US"))
+            return AirCastingLogoFileLoggerHeaderProvider(logVersion: "1.0",
+                                                          created: loggerDateFormatter.string(from: DateBuilder.getRawDate()),
+                                                          device: "\(Device.current)",
+                                                          os: "\(Device.current.systemName ?? "??") \(Device.current.systemVersion ?? "??")") as FileLoggerHeaderProvider
+        }
+        
+        // MARK: Garbage collection
+        main.register { (_, _) -> GarbageCollector in
+            let collector = GarbageCollector()
+            let logsHolder = FileLoggerDisposer(disposeQueue: fileLoggerQueue)
+            collector.addHolder(logsHolder)
+            return collector
+        }.scope(.application)
+        
         // MARK: Persistence
         main.register { PersistenceController(inMemory: false) }
             .implements(SessionsFetchable.self)
             .implements(SessionRemovable.self)
             .implements(SessionInsertable.self)
+            .implements(SessionUpdateable.self)
             .scope(.application)
         main.register { CoreDataMeasurementStreamStorage() as MeasurementStreamStorage }.scope(.cached)
         main.register { DefaultFileLineReader() as FileLineReader }
+        main.register { SessionDataEraser() as DataEraser }
         
         // MARK: - Networking
         main.register { URLSession.shared as APIClient }.scope(.application)
@@ -91,7 +139,7 @@ extension Resolver: ResolverRegistering {
         main.register { ConnectingAirBeamServicesBluetooth() as ConnectingAirBeamServices }
         main.register { DefaultAirBeamConnectionController() as AirBeamConnectionController }
         main.register { DefaultSessionUpdateService() as SessionUpdateService }
-        main.register { DefaultLogoutController(sessionStorage: SessionStorage()) as LogoutController }
+        main.register { DefaultLogoutController() as LogoutController }
         
         // MARK: - Session stopping
         
@@ -122,7 +170,7 @@ extension Resolver: ResolverRegistering {
         main.register { SDSyncController() }.scope(.cached)
         main.register { SDCardMobileSessionsSavingService() as SDCardMobileSessionssSaver }
         main.register { UploadFixedSessionAPIService() }
-        main.register { SDCardFixedSessionsSavingService() }
+        main.register { SDCardFixedSessionsUploadingService() }
         main.register { SDSyncFileValidationService() as SDSyncFileValidator }
         main.register { SDSyncFileWritingService(bufferThreshold: 1000) as SDSyncFileWriter }
         main.register { BluetoothSDCardAirBeamServices() as SDCardAirBeamServices }

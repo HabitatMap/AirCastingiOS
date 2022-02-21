@@ -6,6 +6,11 @@ import Resolver
 @objc
 class AppDelegate: NSObject, UIApplicationDelegate, MessagingDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+        if ProcessInfo.processInfo.environment["boot_type"] == "clean" {
+            Log.info("Running in clean boot mode, erasing all data and logging out before the app launches")
+            performCleanBoot()
+        }
+        
         FirebaseApp.configure()
         Messaging.messaging().delegate = self
         // NOTE: We don't ask user for the remote notifications permissions since we're only using APNS for
@@ -40,5 +45,19 @@ class AppDelegate: NSObject, UIApplicationDelegate, MessagingDelegate {
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
         Log.info("fcm token received: \(fcmToken ?? "none")")
         Messaging.messaging().subscribe(toTopic: "feature_flags")
+    }
+    
+    private func performCleanBoot() {
+        let group = DispatchGroup()
+        group.enter()
+        Resolver.resolve(DataEraser.self).eraseAllData(completion: { _ in
+            group.leave()
+        })
+        group.wait()
+        do {
+            try Resolver.resolve(Deauthorizable.self).deauthorize()
+        } catch {
+            Log.warning("Couldn't deauthorize user: \(error.localizedDescription)")
+        }
     }
 }

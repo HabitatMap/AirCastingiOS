@@ -18,21 +18,26 @@ struct TurnOnLocationFixedView: View {
                 titleLabel
                 messageLabel
             }
-            continueButton
+            VStack(spacing: 20) {
+                turnOnButton
+                continueButton
+            }
         }
         .padding()
         .alert(item: $viewModel.alert, content: { $0.makeAlert() })
-        .background(
-            Group {
-                locationPickerLink
-                createSesssionLink
-            }
-        )
+        .background(locationPickerLink)
         .onAppear {
             viewModel.requestLocationAuthorisation()
         }
         .onChange(of: viewModel.shouldShowAlert) { newValue in
             if newValue { viewModel.alert = InAppAlerts.locationAlert() }
+        }
+        .onAppCameToForeground {
+            // The aim of this is to allow user to choose location option from native Apple location popup
+            // It is the case when the user first nedded to turn on system location services at all.
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                viewModel.requestLocationAuthorisation()
+            }
         }
     }
     
@@ -49,11 +54,21 @@ struct TurnOnLocationFixedView: View {
             .lineSpacing(10.0)
     }
     
-    var continueButton: some View {
+    var turnOnButton: some View {
         Button(action: {
-            viewModel.onButtonClick()
+            viewModel.onTurnOnButtonClicked()
         }, label: {
             Text(Strings.TurnOnLocationView.continueButton)
+        })
+        .frame(maxWidth: .infinity)
+        .buttonStyle(BlueButtonStyle())
+    }
+    
+    var continueButton: some View {
+        Button(action: {
+            viewModel.onContinueButtonClick()
+        }, label: {
+            Text(Strings.Commons.continue)
         })
         .frame(maxWidth: .infinity)
         .buttonStyle(BlueButtonStyle())
@@ -64,17 +79,6 @@ struct TurnOnLocationFixedView: View {
             destination: ChooseCustomLocationView(creatingSessionFlowContinues: $creatingSessionFlowContinues,
                                                   sessionName: viewModel.getSessionName),
             isActive: $viewModel.isLocationSessionDetailsActive,
-            label: {
-                EmptyView()
-            }
-        )
-    }
-    
-    var createSesssionLink: some View {
-        NavigationLink(
-            destination: ConfirmCreatingSessionView(creatingSessionFlowContinues: $creatingSessionFlowContinues,
-                                                    sessionName: viewModel.getSessionName),
-            isActive: $viewModel.isConfirmCreatingSessionActive,
             label: {
                 EmptyView()
             }
