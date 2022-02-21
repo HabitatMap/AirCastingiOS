@@ -2,8 +2,6 @@
 //
 
 import CoreData
-import Combine
-import SwiftUI
 import Resolver
 
 protocol UIStorage {
@@ -46,20 +44,18 @@ final class HiddenCoreDataUIStorage: UIStorageContextUpdate {
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
         createUIStateIfNeeded(entity: sessionEntity)
         sessionEntity.userInterface?.expandedCard.toggle()
-        try context.save()
     }
     
     func changeStream(for sessionUUID: SessionUUID, stream: String) throws {
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
         createUIStateIfNeeded(entity: sessionEntity)
         sessionEntity.userInterface?.sensorName = stream
-        try context.save()
     }
     
     private func createUIStateIfNeeded(entity: SessionEntity) {
         if entity.userInterface == nil {
-            let UIState = UIStateEntity(context: context)
-            UIState.session = entity
+            let uiState = UIStateEntity(context: context)
+            uiState.session = entity
         }
     }
     

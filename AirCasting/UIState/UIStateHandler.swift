@@ -4,30 +4,30 @@
 import Foundation
 import Resolver
 
-protocol UIStateHandler {
-    func cardToggle(sessionUUID: SessionUUID)
-    func streamChange(sessionUUID: SessionUUID, newStream: String)
+protocol SessionCardUIStateHandler {
+    func toggleCardExpanded(sessionUUID: SessionUUID)
+    func changeSelectedStream(sessionUUID: SessionUUID, newStream: String)
 }
 
-class UIStateHandlerDefault: UIStateHandler {
-    @Injected private var UIStorage: UIStorage
+class SessionCardUIStateHandlerDefault: SessionCardUIStateHandler {
+    @Injected private var uiStorage: UIStorage
     
-    func cardToggle(sessionUUID: SessionUUID) {
-        UIStorage.accessStorage { storage in
+    func toggleCardExpanded(sessionUUID: SessionUUID) {
+        uiStorage.accessStorage { storage in
             do {
                 try storage.cardStateToggle(for: sessionUUID)
             } catch {
-                Log.info("(UIState) Error toggling card state \(error)")
+                Log.info("Error toggling card state \(error)")
             }
         }
     }
     
-    func streamChange(sessionUUID: SessionUUID, newStream: String) {
-        UIStorage.accessStorage { storage in
+    func changeSelectedStream(sessionUUID: SessionUUID, newStream: String) {
+        uiStorage.accessStorage { storage in
             do {
                 try storage.changeStream(for: sessionUUID, stream: newStream)
             } catch {
-                Log.info("(UIState) Error changing stream \(error)")
+                Log.info("Error changing stream \(error)")
             }
         }
     }

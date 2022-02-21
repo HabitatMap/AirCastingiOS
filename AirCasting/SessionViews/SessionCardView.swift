@@ -28,7 +28,7 @@ struct SessionCardView: View {
     @StateObject private var chartViewModel: ChartViewModel
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
     @Injected private var measurementStreamStorage: MeasurementStreamStorage
-    @Injected private var uiState: UIStateHandler
+    @Injected private var uiState: SessionCardUIStateHandler
 
     init(session: SessionEntity,
          sessionCartViewModel: SessionCardViewModel,
@@ -97,7 +97,7 @@ struct SessionCardView: View {
             mapStatsDataSource?.stream = newStream
             mapStatsDataSource?.dataSource.stream = newStream
             chartViewModel?.stream = newStream
-            uiState.streamChange(sessionUUID: session.uuid, newStream: newStream?.sensorName ?? "")
+            uiState.changeSelectedStream(sessionUUID: session.uuid, newStream: newStream?.sensorName ?? "")
         })
         .font(Fonts.regularHeading4)
         .foregroundColor(.aircastingGray)
@@ -134,7 +134,7 @@ private extension SessionCardView {
             action: {
                 withAnimation {
                     isCollapsed.toggle()
-                    uiState.cardToggle(sessionUUID: session.uuid)
+                    uiState.toggleCardExpanded(sessionUUID: session.uuid)
                 }
             },
             isExpandButtonNeeded: true,

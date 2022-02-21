@@ -301,7 +301,7 @@
 		DD28047726B3D6E70060F55E /* ConnectingAirBeamServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD28047626B3D6E70060F55E /* ConnectingAirBeamServices.swift */; };
 		DD28047926B3D7370060F55E /* AirBeamConnectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD28047826B3D7370060F55E /* AirBeamConnectionController.swift */; };
 		DD28047B26B3D7730060F55E /* BluetoothConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD28047A26B3D7730060F55E /* BluetoothConnector.swift */; };
-		DD2DDBAC27B535EC00807011 /* UIState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD2DDBAB27B535EC00807011 /* UIState.swift */; };
+		DD2DDBAC27B535EC00807011 /* SessionCardUIState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD2DDBAB27B535EC00807011 /* SessionCardUIState.swift */; };
 		DD2DDBAE27B5450100807011 /* UIStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD2DDBAD27B5450100807011 /* UIStorage.swift */; };
 		DD2DDBB027B5490000807011 /* UIStateHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD2DDBAF27B5490000807011 /* UIStateHandler.swift */; };
 		DD2E8BE92685E12000439F8B /* URLValidationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD2E8BE82685E12000439F8B /* URLValidationTests.swift */; };
@@ -693,7 +693,7 @@
 		DD28047826B3D7370060F55E /* AirBeamConnectionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirBeamConnectionController.swift; sourceTree = "<group>"; };
 		DD28047A26B3D7730060F55E /* BluetoothConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothConnector.swift; sourceTree = "<group>"; };
 		DD2DDBA927B517CD00807011 /* AirCasting v4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AirCasting v4.xcdatamodel"; sourceTree = "<group>"; };
-		DD2DDBAB27B535EC00807011 /* UIState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIState.swift; sourceTree = "<group>"; };
+		DD2DDBAB27B535EC00807011 /* SessionCardUIState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionCardUIState.swift; sourceTree = "<group>"; };
 		DD2DDBAD27B5450100807011 /* UIStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIStorage.swift; sourceTree = "<group>"; };
 		DD2DDBAF27B5490000807011 /* UIStateHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIStateHandler.swift; sourceTree = "<group>"; };
 		DD2E8BE82685E12000439F8B /* URLValidationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLValidationTests.swift; sourceTree = "<group>"; };
@@ -1815,7 +1815,7 @@
 		DD2DDBAA27B535D900807011 /* UIState */ = {
 			isa = PBXGroup;
 			children = (
-				DD2DDBAB27B535EC00807011 /* UIState.swift */,
+				DD2DDBAB27B535EC00807011 /* SessionCardUIState.swift */,
 				DD2DDBAF27B5490000807011 /* UIStateHandler.swift */,
 			);
 			path = UIState;
@@ -2339,7 +2339,7 @@
 				AC32043625CD534700A68520 /* ChooseSessionTypeView.swift in Sources */,
 				3387DD4C278F1A4000B11D02 /* ShareLocationlessSessionViewModel.swift in Sources */,
 				AC8431D0265E6143004DC890 /* RemoveOldMeasurementsService.swift in Sources */,
-				DD2DDBAC27B535EC00807011 /* UIState.swift in Sources */,
+				DD2DDBAC27B535EC00807011 /* SessionCardUIState.swift in Sources */,
 				B3E2B65A27506E0D00019167 /* FileLineReader.swift in Sources */,
 				B30BAC152694AA7200AE0476 /* MeasurementsStatisticsInput.swift in Sources */,
 				DD3C99F426EA280800B42A46 /* TimeConversion.swift in Sources */,

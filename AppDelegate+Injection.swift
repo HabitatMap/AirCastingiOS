@@ -128,12 +128,15 @@ extension Resolver: ResolverRegistering {
         main.register { SDSyncFileWritingService(bufferThreshold: 1000) as SDSyncFileWriter }
         main.register { BluetoothSDCardAirBeamServices() as SDCardAirBeamServices }
         
-        main.register { UIStateHandlerDefault() as UIStateHandler }.scope(.cached)
+        main.register { SessionCardUIStateHandlerDefault() as SessionCardUIStateHandler }.scope(.cached)
         
         // MARK: - Notes
         main.register { (_, args) in
             NotesHandlerDefault(sessionUUID: args()) as NotesHandler
         }
+        
+        // MARK: - Update Session Params Service
+        main.register { UpdateSessionParamsService() }
     }
     
     // MARK: - Composition helpers
