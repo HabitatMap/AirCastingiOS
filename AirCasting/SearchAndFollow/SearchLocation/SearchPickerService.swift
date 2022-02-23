@@ -8,7 +8,7 @@ class SearchPickerService: PlacePickerService {
     @Binding private var address: String
     
     init(address: Binding<String>) {
-        self._address = address
+        self._address = .init(projectedValue: address)
     }
     
     func didComplete(using place: GMSPlace) {
