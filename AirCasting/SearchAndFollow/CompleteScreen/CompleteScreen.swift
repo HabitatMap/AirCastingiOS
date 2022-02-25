@@ -7,9 +7,9 @@ import SwiftUI
 import AirCastingStyling
 
 struct CompleteScreen: View {
-    var session: SearchSession
-    let thresholds: [SensorThreshold]
-    @State var selectedStream: SearchSession.SearchSessionStream
+    var session: SearchSession = .mock
+//    let thresholds: [SensorThreshold]
+    @State var selectedStream: SearchSession.SearchSessionStream?
     
     var body: some View {
         sessionCard
@@ -19,9 +19,8 @@ struct CompleteScreen: View {
         VStack(alignment: .leading, spacing: 5) {
             header
             measurements
-            GoogleMapView(pathPoints: [], placePickerIsUpdating: Binding.constant(false), isUserInteracting: Binding.constant(true), mapNotes: .constant([]))
+            SearchCompleteScreenMapView(longitude: session.longitude, latitude: session.latitude)
                 .frame(height: 300)
-                .padding(.vertical)
             buttons
             confirmationButton
         }
@@ -34,6 +33,9 @@ struct CompleteScreen: View {
                     .shadow(color: .sessionCardShadow, radius: 9, x: 0, y: 1)
             }
         )
+        .onAppear(perform: {
+            selectedStream = session.streams.first
+        })
     }
 }
 
@@ -51,7 +53,7 @@ private extension CompleteScreen {
                 HStack {
                     sortedStreams.count != 1 ? Spacer() : nil
                     ForEach(sortedStreams) { stream in
-                        singleMeasurement(stream: stream, value: stream.measurements.last?.value ?? 0, threshold: thresholds.threshold(for: nil))
+                        singleMeasurement(stream: stream, value: stream.measurements.last?.value ?? 0)
                         Spacer()
                     }
                 }
@@ -85,12 +87,13 @@ private extension CompleteScreen {
             //
         } label: {
             Text("Follow Session")
-                .font(Fonts.semiboldHeading2)
-                .padding(.horizontal, 8)
+                .font(Fonts.semiboldHeading1)
         }
+        .buttonStyle(BlueButtonStyle())
+        .padding()
     }
     
-    private func singleMeasurement(stream: SearchSession.SearchSessionStream, value: Double, threshold: SensorThreshold?) -> some View {
+    private func singleMeasurement(stream: SearchSession.SearchSessionStream, value: Double) -> some View {
         VStack(spacing: 3) {
             Button(action: {
                 selectedStream = stream
@@ -109,7 +112,7 @@ private extension CompleteScreen {
                         .padding(.horizontal, 9)
                         .overlay(
                             RoundedRectangle(cornerRadius: 8)
-                                .strokeBorder((selectedStream.sensorName == stream.sensorName) ? Color.aircastingGray : .clear)
+                                .strokeBorder((selectedStream?.sensorName ?? "" == stream.sensorName) ? Color.aircastingGray : .clear)
                         )
                     }
             })
@@ -139,7 +142,7 @@ private extension CompleteScreen {
 #if DEBUG
 struct CompleteScreen_Previews: PreviewProvider {
     static var previews: some View {
-        CompleteScreen(session: .mock, thresholds: [.mock], selectedStream: .init(id: 1, sensorPackageName: "AirBeam3", sensorName: "AirBeam-F", measurements: []))
+        CompleteScreen(session: .mock)
     }
 }
 #endif

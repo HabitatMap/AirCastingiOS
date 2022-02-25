@@ -34,7 +34,7 @@ struct SearchSession {
     #if DEBUG
     
     static var mock: SearchSession {
-        let session =  self.init(name: "Mock Session", startTime: DateBuilder.getFakeUTCDate() - 60, endTime: DateBuilder.getFakeUTCDate(), type: .mobile, longitude: 50.0, latitude: 50.0, streams: [.init(id: 1, sensorPackageName: "AirBeam3", sensorName: Constants.MeasurementType.temperature, measurements: [.init(time: DateBuilder.getFakeUTCDate(), value: 20)])])
+        let session =  self.init(name: "Mock Session", startTime: DateBuilder.getFakeUTCDate() - 60, endTime: DateBuilder.getFakeUTCDate(), type: .mobile, longitude: 19.944544, latitude: 50.049683, streams: [.init(id: 1, sensorPackageName: "AirBeam3", sensorName: Constants.MeasurementType.temperature, measurements: [.init(time: DateBuilder.getFakeUTCDate(), value: 20)])])
         // ...
                 
         return session

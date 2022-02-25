@@ -7,6 +7,7 @@ import AirCastingStyling
 struct SearchView: View {
     @StateObject var viewModel: SearchViewModel
     @Binding var creatingSessionFlowContinues: Bool
+    @State var showCompleteView: Bool = false // Will be moved to map view
     
     init(creatingSessionFlowContinues: Binding<Bool>) {
         _viewModel = .init(wrappedValue: SearchViewModel())
@@ -27,6 +28,7 @@ struct SearchView: View {
                 viewModel.updateLocation(using: newLocation)
             })))
         }
+        .sheet(isPresented: $showCompleteView, content: { CompleteScreen() })
     }
 }
 
@@ -53,6 +55,7 @@ private extension SearchView {
     var button: some View {
         Button {
             Log.info("Continuing to next screen")
+            showCompleteView = true
         } label: {
             Text(Strings.Commons.continue)
         }.buttonStyle(BlueButtonStyle())
