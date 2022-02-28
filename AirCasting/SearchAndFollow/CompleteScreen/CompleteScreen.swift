@@ -7,41 +7,54 @@ import SwiftUI
 import AirCastingStyling
 
 struct CompleteScreen: View {
-    var session: SearchSession = .mock
-//    let thresholds: [SensorThreshold]
-    @State var selectedStream: SearchSession.SearchSessionStream?
+    @Environment(\.presentationMode) var presentationMode
+    @StateObject var viewModel: CompleteScreenViewModel
+    @State var selectedStream: Int?
+    @State var isMapSelected: Bool = true
+    
+    init(session: SearchSession) {
+        _viewModel = .init(wrappedValue: CompleteScreenViewModel(session: session))
+        _selectedStream = .init(wrappedValue: session.streams.first?.id)
+    }
     
     var body: some View {
         sessionCard
+            .overlay(
+                Button(action: {
+                    presentationMode.wrappedValue.dismiss()
+                }, label: {
+                    Image(systemName: "xmark")
+                        .foregroundColor(.aircastingDarkGray)
+                        .imageScale(.large)
+                }).padding(),
+                alignment: .topTrailing
+            )
     }
     
     var sessionCard: some View {
         VStack(alignment: .leading, spacing: 5) {
             header
             measurements
-            SearchCompleteScreenMapView(longitude: session.longitude, latitude: session.latitude)
-                .frame(height: 300)
+            if isMapSelected {
+                SearchCompleteScreenMapView(longitude: viewModel.session.longitude, latitude: viewModel.session.latitude)
+                    .frame(height: 300)
+            } else {
+                // ChartView
+            }
             buttons
             confirmationButton
+            Spacer()
         }
         .font(Fonts.regularHeading4)
         .foregroundColor(.aircastingGray)
         .padding()
-        .background(
-            Group {
-                Color.white
-                    .shadow(color: .sessionCardShadow, radius: 9, x: 0, y: 1)
-            }
-        )
-        .onAppear(perform: {
-            selectedStream = session.streams.first
-        })
     }
 }
 
 private extension CompleteScreen {
     var header: some View {
-        SearchCompleteScreenHeader(session: session)
+        SearchCompleteScreenHeader(session: viewModel.session)
+            .padding(.vertical)
     }
     
     var measurements: some View {
@@ -49,37 +62,59 @@ private extension CompleteScreen {
             Text(Strings.SessionCart.lastMinuteMeasurement)
                 .font(Fonts.moderateTitle1)
                 .padding(.bottom, 3)
-            if let sortedStreams = session.sortedStreams {
+            if let streams = viewModel.session.streams {
                 HStack {
-                    sortedStreams.count != 1 ? Spacer() : nil
-                    ForEach(sortedStreams) { stream in
-                        singleMeasurement(stream: stream, value: stream.measurements.last?.value ?? 0)
+                    streams.count != 1 ? Spacer() : nil
+                    ForEach(streams) { stream in
+                        singleMeasurement(stream: stream, value: stream.measurements.last?.value ?? 0, selectedStreamId: $selectedStream)
                         Spacer()
                     }
                 }
             }
         }
+        .padding(.bottom)
     }
     
     var buttons: some View {
         HStack {
             Spacer()
-            Button {
-                //
-            } label: {
-                Text(Strings.SessionCartView.map)
-                    .font(Fonts.semiboldHeading2)
-                    .padding(.horizontal, 8)
-            }
-            Button {
-                //
-            } label: {
-                Text("Chart")
-                    .font(Fonts.semiboldHeading2)
-                    .padding(.horizontal, 8)
+            if isMapSelected {
+                Button {
+                    isMapSelected.toggle()
+                } label: {
+                    Text(Strings.SessionCartView.map)
+                        .font(Fonts.semiboldHeading2)
+                        .padding(.horizontal, 8)
+                }
+                .buttonStyle(FollowButtonStyle())
+                Button {
+                    isMapSelected.toggle()
+                } label: {
+                    Text("Chart")
+                        .font(Fonts.semiboldHeading2)
+                        .padding(.horizontal, 8)
+                }
+                .buttonStyle(GrayButtonStyle())
+            } else {
+                Button {
+                    isMapSelected.toggle()
+                } label: {
+                    Text(Strings.SessionCartView.map)
+                        .font(Fonts.semiboldHeading2)
+                        .padding(.horizontal, 8)
+                }
+                .buttonStyle(GrayButtonStyle())
+                Button {
+                    isMapSelected.toggle()
+                } label: {
+                    Text("chart")
+                        .font(Fonts.semiboldHeading2)
+                        .padding(.horizontal, 8)
+                }
+                .buttonStyle(FollowButtonStyle())
             }
         }
-        .buttonStyle(GrayButtonStyle())
+        .padding(.vertical)
     }
     
     var confirmationButton: some View {
@@ -90,52 +125,10 @@ private extension CompleteScreen {
                 .font(Fonts.semiboldHeading1)
         }
         .buttonStyle(BlueButtonStyle())
-        .padding()
     }
     
-    private func singleMeasurement(stream: SearchSession.SearchSessionStream, value: Double) -> some View {
-        VStack(spacing: 3) {
-            Button(action: {
-                selectedStream = stream
-            }, label: {
-                VStack(spacing: 1) {
-                    Text(showStreamName(stream: stream))
-                        .font(Fonts.systemFont1)
-                        .scaledToFill()
-                        HStack(spacing: 3) {
-                            dot
-                            Text("\(Int(value))")
-                                .font(Fonts.regularHeading3)
-                                .scaledToFill()
-                        }
-                        .padding(.vertical, 4)
-                        .padding(.horizontal, 9)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 8)
-                                .strokeBorder((selectedStream?.sensorName ?? "" == stream.sensorName) ? Color.aircastingGray : .clear)
-                        )
-                    }
-            })
-        }
-    }
-    
-    var dot: some View {
-        Color.aircastingGray
-            .clipShape(Circle())
-            .frame(width: 5, height: 5)
-    }
-    
-    func showStreamName(stream: SearchSession.SearchSessionStream) -> String {
-        let streamName = stream.sensorName
-        if streamName == Constants.SensorName.microphone {
-            return Strings.SingleMeasurementView.microphoneUnit
-//        } else if stream.isTemperature {
-//            return userSettings.convertToCelsius ? Strings.SingleMeasurementView.celsiusUnit : Strings.SingleMeasurementView.fahrenheitUnit
-        } else {
-            return streamName
-                .drop { $0 != "-" }
-                .replacingOccurrences(of: "-", with: "")
-        }
+    private func singleMeasurement(stream: SearchSession.SearchSessionStream, value: Double, selectedStreamId: Binding<Int?>) -> some View {
+        StaticSingleMeasurement(selectedStreamId: selectedStreamId, streamId: stream.id, streamName: stream.sensorName, value: stream.measurements.last?.value ?? 0)
     }
 }
 

@@ -28,7 +28,7 @@ struct SearchView: View {
                 viewModel.updateLocation(using: newLocation)
             })))
         }
-        .sheet(isPresented: $showCompleteView, content: { CompleteScreen() })
+        .sheet(isPresented: $showCompleteView, content: { CompleteScreen(session: SearchSession.mock) })
     }
 }
 

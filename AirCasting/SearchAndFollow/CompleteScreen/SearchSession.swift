@@ -17,7 +17,6 @@ struct SearchSession {
         let sensorPackageName: String?
         let sensorName: String
         let measurements: [SearchSessionMeasurement]
-        var isTemperature: Bool { sensorName == Constants.MeasurementType.temperature }
         
     }
     
@@ -26,18 +25,26 @@ struct SearchSession {
         let value: Double
     }
     
-    public var sortedStreams: [SearchSessionStream]? {
-        // To implement
-        return streams
-    }
     
-    #if DEBUG
+//    #if DEBUG
     
     static var mock: SearchSession {
-        let session =  self.init(name: "Mock Session", startTime: DateBuilder.getFakeUTCDate() - 60, endTime: DateBuilder.getFakeUTCDate(), type: .mobile, longitude: 19.944544, latitude: 50.049683, streams: [.init(id: 1, sensorPackageName: "AirBeam3", sensorName: Constants.MeasurementType.temperature, measurements: [.init(time: DateBuilder.getFakeUTCDate(), value: 20)])])
+        let session =  self.init(name: "Mock Session",
+                                 startTime: DateBuilder.getFakeUTCDate() - 60,
+                                 endTime: DateBuilder.getFakeUTCDate(),
+                                 type: .mobile,
+                                 longitude: 19.944544,
+                                 latitude: 50.049683,
+                                 streams: [
+                                    .init(id: 1, sensorPackageName: "AirBeam3", sensorName: "AirBeam3:PM10", measurements: [.init(time: DateBuilder.getFakeUTCDate(), value: 20), .init(time: DateBuilder.getFakeUTCDate(), value: 1), .init(time: DateBuilder.getFakeUTCDate(), value: 35)]),
+                                    .init(id: 2, sensorPackageName: "AirBeam3", sensorName: "AirBeam3:PM1", measurements: [.init(time: DateBuilder.getFakeUTCDate(), value: 20), .init(time: DateBuilder.getFakeUTCDate(), value: 1), .init(time: DateBuilder.getFakeUTCDate(), value: 15)]),
+                                    .init(id: 3, sensorPackageName: "AirBeam3", sensorName: "AirBeam3-PM2.5", measurements: [.init(time: DateBuilder.getFakeUTCDate(), value: 20), .init(time: DateBuilder.getFakeUTCDate(), value: 1), .init(time: DateBuilder.getFakeUTCDate(), value: 1)]),
+                                    .init(id: 4, sensorPackageName: "AirBeam3", sensorName: "AirBeam3-F", measurements: [.init(time: DateBuilder.getFakeUTCDate(), value: 20), .init(time: DateBuilder.getFakeUTCDate(), value: 1), .init(time: DateBuilder.getFakeUTCDate(), value: 12)]),
+                                    .init(id: 5, sensorPackageName: "AirBeam3", sensorName: "AirBeam3-RH", measurements: [.init(time: DateBuilder.getFakeUTCDate(), value: 20), .init(time: DateBuilder.getFakeUTCDate(), value: 1), .init(time: DateBuilder.getFakeUTCDate(), value: 50)])
+                                 ])
         // ...
                 
         return session
     }
-    #endif
+//    #endif
 }

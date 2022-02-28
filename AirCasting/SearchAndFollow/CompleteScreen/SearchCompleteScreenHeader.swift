@@ -19,6 +19,7 @@ private extension SearchCompleteScreenHeader {
                     .foregroundColor(Color.aircastingTimeGray)
                 Spacer()
             }
+            .padding(.vertical)
             nameLabel
         }
         .font(Fonts.regularHeading4)

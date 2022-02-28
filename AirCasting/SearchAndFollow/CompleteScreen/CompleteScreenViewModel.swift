@@ -4,14 +4,10 @@
 import Foundation
 import SwiftUI
 
-class CompleteScreenViewModel {
-    var session: Session
+class CompleteScreenViewModel: ObservableObject {
+    let session: SearchSession
     
-    init(session: Session) {
+    init(session: SearchSession) {
         self.session = session
     }
-    
-//    func mostRecentMeasurements() -> [String: (Double, Color)] {
-//        
-//    }
 }

@@ -8,8 +8,8 @@ import GooglePlaces
 
 struct SearchCompleteScreenMapView: UIViewRepresentable {
     typealias UIViewType = GMSMapView
-    var longitude: CLLocationDegrees = 19.944544
-    var latitude: CLLocationDegrees = 50.049683
+    var longitude: CLLocationDegrees
+    var latitude: CLLocationDegrees
     
     init(longitude: CLLocationDegrees, latitude: CLLocationDegrees) {
         GMSServices.provideAPIKey(GOOGLE_MAP_KEY)
@@ -39,7 +39,7 @@ struct SearchCompleteScreenMapView: UIViewRepresentable {
             Log.error("One or more of the map styles failed to load. \(error)")
         }
         
-        let mainPoint = UIImage.imageWithColor(color: UIColor.aircastingGray, size: CGSize(width: Constants.Map.dotWidth, height: Constants.Map.dotHeight))
+        let mainPoint = UIImage.imageWithColor(color: UIColor.accentColor, size: CGSize(width: Constants.Map.dotWidth, height: Constants.Map.dotHeight))
         
         let dot = GMSMarker()
         dot.icon = mainPoint
