@@ -15,7 +15,8 @@ struct DashboardView: View {
     @StateObject var coreDataHook: CoreDataHook
     @FetchRequest<SensorThreshold>(sortDescriptors: [.init(key: "sensorName", ascending: true)]) var thresholds
     @EnvironmentObject var selectedSection: SelectSection
-    @EnvironmentObject var reorderButton: ReorderButtonTapped
+    @EnvironmentObject var reorderButton: ReorderButton
+    @EnvironmentObject var searchAndFollowButton: SearchAndFollowButton
     @Injected private var averaging: AveragingService
     @State var isRefreshing: Bool = false
     @Injected private var sessionSynchronizer: SessionSynchronizer
@@ -40,7 +41,7 @@ struct DashboardView: View {
             //
             // Bug report was filled with Apple
             PreventCollapseView()
-            if reorderButton.reorderIsON {
+            if reorderButton.reorderIsOn {
                 followingTab
                 ReorderingDashboard(sessions: sessions, thresholds: Array(self.thresholds))
             } else {
@@ -48,7 +49,12 @@ struct DashboardView: View {
                 if sessions.isEmpty { emptySessionsView } else { sessionListView }
             }
         }
-        .navigationBarTitle(NSLocalizedString(Strings.DashboardView.dashboardText, comment: ""))
+        .fullScreenCover(isPresented: $searchAndFollowButton.searchIsOn) {
+            CreatingSessionFlowRootView {
+                SearchView(creatingSessionFlowContinues: $searchAndFollowButton.searchIsOn)
+            }
+        }
+        .navigationBarTitle(Strings.DashboardView.dashboardText)
         .onChange(of: selectedSection.selectedSection) { selectedSection in
             self.selectedSection.selectedSection = selectedSection
             try! coreDataHook.setup(selectedSection: self.selectedSection.selectedSection)
@@ -64,6 +70,7 @@ struct DashboardView: View {
         .onAppear() {
             try! coreDataHook.setup(selectedSection: self.selectedSection.selectedSection)
             reorderButton.isHidden = false
+            searchAndFollowButton.isHidden = false
         }
     }
 

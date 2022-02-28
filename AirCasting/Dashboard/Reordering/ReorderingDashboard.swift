@@ -6,6 +6,7 @@ import SwiftUI
 struct ReorderingDashboard: View {
     
     @StateObject var viewModel: ReorderingDashboardViewModel
+    @EnvironmentObject var searchAndFollowButton: SearchAndFollowButton
     @State private var changedView: Bool = false
     
     init(sessions: [SessionEntity], thresholds: [SensorThreshold]) {
@@ -30,11 +31,15 @@ struct ReorderingDashboard: View {
             }
             .padding()
         }
+        .onAppear(perform: {
+            searchAndFollowButton.isHidden = true
+        })
         .navigationBarTitle(Strings.ReorderingDashboard.navigationTitle)
         .background(Color.clear.edgesIgnoringSafeArea(.all))
         // this is added to avoid session card staying 0.8 opaque when user drops card on the edges
         .onDrop(of: [.text], delegate: DropOutsideOfGridDelegate(currentlyDraggedSession: $viewModel.currentlyDraggedSession))
         .onDisappear() {
+            searchAndFollowButton.isHidden = false
             viewModel.finish()
         }
     }

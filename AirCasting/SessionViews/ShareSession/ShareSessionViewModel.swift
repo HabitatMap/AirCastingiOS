@@ -26,6 +26,7 @@ protocol ShareSessionViewModel: ObservableObject {
     func shareEmailTapped()
     func cancelTapped()
     func sharingFinished()
+    func getSharePage() -> ActivityViewController?
 }
 
 class DefaultShareSessionViewModel: ShareSessionViewModel {
@@ -106,6 +107,13 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
         }
     }
     
+    func getSharePage() -> ActivityViewController? {
+        guard sharingLink != nil else { return nil }
+        return ActivityViewController(sharingFile: false, itemToShare: sharingLink!) { activityType, completed, returnedItems, error in
+            self.sharingFinished()
+        }
+    }
+    
     private func sendRequest() {
         apiClient.sendSession(email: email, uuid: session.uuid.rawValue) { result in
             switch result {
@@ -173,6 +181,7 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
 }
 
 class DummyShareSessionViewModel: ShareSessionViewModel {
+    func getSharePage() -> ActivityViewController? { return nil }
     var showInvalidEmailError: Bool = false
     var email: String = "a@test.com"
     func isEmailValid() -> Bool { false }

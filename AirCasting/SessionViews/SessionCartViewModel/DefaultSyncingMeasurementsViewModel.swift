@@ -46,6 +46,7 @@ final class DefaultSyncingMeasurementsViewModel: SyncingMeasurementsViewModel, O
                 measurementStreamStorage.accessStorage { storage in
                     
                     dataBaseStreams.forEach { stream in
+                        Log.info("Downloaded \(stream.measurements.count) measurements for \(stream.sensorName)")
                         let sensorName = stream.sensorName
                         do {
                             let streamID = try storage.existingMeasurementStream(sessionId, name: sensorName)
