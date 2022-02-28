@@ -110,7 +110,7 @@
 		AC5832DA25B196DD008C5DD5 /* Graph.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC5832D925B196DD008C5DD5 /* Graph.swift */; };
 		AC5EF76125C84888003657B1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = AC5EF76025C84888003657B1 /* GoogleService-Info.plist */; };
 		AC6D567C25AC540D00D221BA /* Charts in Frameworks */ = {isa = PBXBuildFile; productRef = AC6D567B25AC540D00D221BA /* Charts */; };
-		AC6D567F25AC54A400D221BA /* ChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6D567E25AC54A400D221BA /* ChartView.swift */; };
+		AC6D567F25AC54A400D221BA /* UIKitChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6D567E25AC54A400D221BA /* UIKitChartView.swift */; };
 		AC6D569F25AEEAE700D221BA /* SessionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6D569E25AEEAE700D221BA /* SessionHeaderView.swift */; };
 		AC6D56A225AEF55C00D221BA /* GraphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6D56A125AEF55C00D221BA /* GraphView.swift */; };
 		AC6D56A525AF211200D221BA /* MultiSliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6D56A425AF211200D221BA /* MultiSliderView.swift */; };
@@ -275,6 +275,7 @@
 		B38E6CD026C5F83D00C21C45 /* StandardSesssionStopper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B38E6CCF26C5F83D00C21C45 /* StandardSesssionStopper.swift */; };
 		B38E6CD226C5F85000C21C45 /* SyncTriggeringSesionStopperDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B38E6CD126C5F85000C21C45 /* SyncTriggeringSesionStopperDecorator.swift */; };
 		B392DC332755F944002F0145 /* AppConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B392DC322755F944002F0145 /* AppConfigurationView.swift */; };
+		B39AAE1C27C0F28F00D2F3C0 /* ChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B39AAE1B27C0F28F00D2F3C0 /* ChartView.swift */; };
 		B3AB8BE526BB5EF400AF23CC /* Array+MeasurementStatistics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3AB8BE426BB5EF400AF23CC /* Array+MeasurementStatistics.swift */; };
 		B3C3F8B92695A295003E2CB4 /* StatisticsContainerViewModelable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3C3F8B82695A295003E2CB4 /* StatisticsContainerViewModelable.swift */; };
 		B3D1928D26F1FA1C0029E1C8 /* FixedSessionFaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EFAB1D26F1F9DB00E88141 /* FixedSessionFaker.swift */; };
@@ -287,6 +288,7 @@
 		B3E2B65A27506E0D00019167 /* FileLineReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E2B65927506E0D00019167 /* FileLineReader.swift */; };
 		B3E2B65C27506E7300019167 /* DefaultFileLineReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E2B65B27506E7300019167 /* DefaultFileLineReader.swift */; };
 		B3E2B65F27506EA000019167 /* FileLineReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E2B65E27506EA000019167 /* FileLineReaderTests.swift */; };
+		B3EAF01C27B03CDC00290222 /* ChartDatabaseObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EAF01B27B03CDC00290222 /* ChartDatabaseObserver.swift */; };
 		B3EAF01827AFC43300290222 /* ShareLogsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EAF01727AFC43300290222 /* ShareLogsViewModel.swift */; };
 		B3EAF01A27B00F7300290222 /* FileLoggerHeaderProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EAF01927B00F7300290222 /* FileLoggerHeaderProvider.swift */; };
 		B3EAF78F2730C161000FFF23 /* AVSessionInterruptionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EAF78E2730C161000FFF23 /* AVSessionInterruptionHandler.swift */; };
@@ -533,7 +535,7 @@
 		AC524AAB2616003C0061AD45 /* DateFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormatter.swift; sourceTree = "<group>"; };
 		AC5832D925B196DD008C5DD5 /* Graph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Graph.swift; sourceTree = "<group>"; };
 		AC5EF76025C84888003657B1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
-		AC6D567E25AC54A400D221BA /* ChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartView.swift; sourceTree = "<group>"; };
+		AC6D567E25AC54A400D221BA /* UIKitChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitChartView.swift; sourceTree = "<group>"; };
 		AC6D569E25AEEAE700D221BA /* SessionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionHeaderView.swift; sourceTree = "<group>"; };
 		AC6D56A125AEF55C00D221BA /* GraphView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphView.swift; sourceTree = "<group>"; };
 		AC6D56A425AF211200D221BA /* MultiSliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiSliderView.swift; sourceTree = "<group>"; };
@@ -699,6 +701,7 @@
 		B38E6CCF26C5F83D00C21C45 /* StandardSesssionStopper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandardSesssionStopper.swift; sourceTree = "<group>"; };
 		B38E6CD126C5F85000C21C45 /* SyncTriggeringSesionStopperDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncTriggeringSesionStopperDecorator.swift; sourceTree = "<group>"; };
 		B392DC322755F944002F0145 /* AppConfigurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfigurationView.swift; sourceTree = "<group>"; };
+		B39AAE1B27C0F28F00D2F3C0 /* ChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartView.swift; sourceTree = "<group>"; };
 		B3AB8BE426BB5EF400AF23CC /* Array+MeasurementStatistics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+MeasurementStatistics.swift"; sourceTree = "<group>"; };
 		B3C3F8B82695A295003E2CB4 /* StatisticsContainerViewModelable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsContainerViewModelable.swift; sourceTree = "<group>"; };
 		B3D4B4B326C2C6A1004322FC /* Date+Miliseconds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Miliseconds.swift"; sourceTree = "<group>"; };
@@ -710,6 +713,7 @@
 		B3E2B65927506E0D00019167 /* FileLineReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileLineReader.swift; sourceTree = "<group>"; };
 		B3E2B65B27506E7300019167 /* DefaultFileLineReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultFileLineReader.swift; sourceTree = "<group>"; };
 		B3E2B65E27506EA000019167 /* FileLineReaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileLineReaderTests.swift; sourceTree = "<group>"; };
+		B3EAF01B27B03CDC00290222 /* ChartDatabaseObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartDatabaseObserver.swift; sourceTree = "<group>"; };
 		B3EAF01727AFC43300290222 /* ShareLogsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareLogsViewModel.swift; sourceTree = "<group>"; };
 		B3EAF01927B00F7300290222 /* FileLoggerHeaderProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileLoggerHeaderProvider.swift; sourceTree = "<group>"; };
 		B3EAF78E2730C161000FFF23 /* AVSessionInterruptionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVSessionInterruptionHandler.swift; sourceTree = "<group>"; };
@@ -881,8 +885,10 @@
 		3328F11E266786C600B72D61 /* Chart */ = {
 			isa = PBXGroup;
 			children = (
-				AC6D567E25AC54A400D221BA /* ChartView.swift */,
+				AC6D567E25AC54A400D221BA /* UIKitChartView.swift */,
 				33769A5B2705B06F007D1EA7 /* ChartViewModel.swift */,
+				B3EAF01B27B03CDC00290222 /* ChartDatabaseObserver.swift */,
+				B39AAE1B27C0F28F00D2F3C0 /* ChartView.swift */,
 			);
 			name = Chart;
 			sourceTree = "<group>";
@@ -2481,6 +2487,7 @@
 				B33DB5762686161300ED1344 /* SensorName.swift in Sources */,
 				DD8AFE4F272886D700ED1CED /* ThresholdWitness.swift in Sources */,
 				B3F1447C26AE437E006A4612 /* OnErrorPublisher.swift in Sources */,
+				B39AAE1C27C0F28F00D2F3C0 /* ChartView.swift in Sources */,
 				B3FD77B7267C94AF00E97CC2 /* DatabaseMeasurement.swift in Sources */,
 				AC524A962615D8620061AD45 /* MeasurementStreamEntity.swift in Sources */,
 				B32D08A2267A4949006C97ED /* LogErrorPublisher.swift in Sources */,
@@ -2701,9 +2708,10 @@
 				B3EBB10C26A06D2D002BD81F /* DefaultForgotPasswordViewModel.swift in Sources */,
 				B3EAF01827AFC43300290222 /* ShareLogsViewModel.swift in Sources */,
 				DDB448282732AA4B00F11340 /* AirCastingGraphSimplifier.swift in Sources */,
-				AC6D567F25AC54A400D221BA /* ChartView.swift in Sources */,
+				AC6D567F25AC54A400D221BA /* UIKitChartView.swift in Sources */,
 				ACCEB2222763A2230040140B /* BackendSyncCompletedViewModel.swift in Sources */,
 				DD839E15269F33A6006A8625 /* LocationState.swift in Sources */,
+				B3EAF01C27B03CDC00290222 /* ChartDatabaseObserver.swift in Sources */,
 				B3FD77BE267C94AF00E97CC2 /* SessionSynchronizationStore.swift in Sources */,
 				ACD01F952600A54400B8F65F /* UserDefaults+Preferences.swift in Sources */,
 				B33B15F427AEE69900138FFA /* CompositeLogger.swift in Sources */,
