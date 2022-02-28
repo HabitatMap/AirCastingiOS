@@ -3,7 +3,7 @@
 
 import SwiftUI
 
-struct StaticSingleMeasurement: View {
+struct StaticSingleMeasurementView: View {
     @Binding var selectedStreamId: Int?
     var streamId: Int
     var streamName: String
@@ -49,8 +49,8 @@ struct StaticSingleMeasurement: View {
     }
 }
 
-struct StaticSingleMeasurement_Previews: PreviewProvider {
+struct StaticSingleMeasurementView_Previews: PreviewProvider {
     static var previews: some View {
-        StaticSingleMeasurement(selectedStreamId: .constant(3), streamId: 3, streamName: "AirBeam3-PM1", value: 20)
+        StaticSingleMeasurementView(selectedStreamId: .constant(3), streamId: 3, streamName: "AirBeam3-PM1", value: 20)
     }
 }

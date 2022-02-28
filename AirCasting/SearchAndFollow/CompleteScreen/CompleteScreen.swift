@@ -34,14 +34,20 @@ struct CompleteScreen: View {
     var sessionCard: some View {
         VStack(alignment: .leading, spacing: 5) {
             header
-            measurements
-            if isMapSelected {
-                SearchCompleteScreenMapView(longitude: viewModel.session.longitude, latitude: viewModel.session.latitude)
-                    .frame(height: 300)
+            if !viewModel.session.streams.isEmpty {
+                measurements
+                if isMapSelected {
+                    SearchCompleteScreenMapView(longitude: viewModel.session.longitude, latitude: viewModel.session.latitude)
+                        .frame(height: 300)
+                } else {
+                    SearchAndFollowChartView(stream: viewModel.stream(withID: selectedStream))
+                        .frame(height: 300)
+                }
+                buttons
             } else {
-                // ChartView
+                Text("No streams available for this session")
+                    .padding(.vertical)
             }
-            buttons
             confirmationButton
             Spacer()
         }
@@ -66,7 +72,7 @@ private extension CompleteScreen {
                 HStack {
                     streams.count != 1 ? Spacer() : nil
                     ForEach(streams) { stream in
-                        singleMeasurement(stream: stream, value: stream.measurements.last?.value ?? 0, selectedStreamId: $selectedStream)
+                        StaticSingleMeasurementView(selectedStreamId: $selectedStream, streamId: stream.id, streamName: stream.sensorName, value: stream.measurements.last?.value ?? 0)
                         Spacer()
                     }
                 }
@@ -79,42 +85,38 @@ private extension CompleteScreen {
         HStack {
             Spacer()
             if isMapSelected {
-                Button {
-                    isMapSelected.toggle()
-                } label: {
-                    Text(Strings.SessionCartView.map)
-                        .font(Fonts.semiboldHeading2)
-                        .padding(.horizontal, 8)
-                }
+                mapButton
                 .buttonStyle(FollowButtonStyle())
-                Button {
-                    isMapSelected.toggle()
-                } label: {
-                    Text("Chart")
-                        .font(Fonts.semiboldHeading2)
-                        .padding(.horizontal, 8)
-                }
+                chartButton
                 .buttonStyle(GrayButtonStyle())
             } else {
-                Button {
-                    isMapSelected.toggle()
-                } label: {
-                    Text(Strings.SessionCartView.map)
-                        .font(Fonts.semiboldHeading2)
-                        .padding(.horizontal, 8)
-                }
+                mapButton
                 .buttonStyle(GrayButtonStyle())
-                Button {
-                    isMapSelected.toggle()
-                } label: {
-                    Text("chart")
-                        .font(Fonts.semiboldHeading2)
-                        .padding(.horizontal, 8)
-                }
+                chartButton
                 .buttonStyle(FollowButtonStyle())
             }
         }
         .padding(.vertical)
+    }
+    
+    var mapButton: some View {
+        Button {
+            isMapSelected.toggle()
+        } label: {
+            Text(Strings.SessionCartView.map)
+                .font(Fonts.semiboldHeading2)
+                .padding(.horizontal, 8)
+        }
+    }
+    
+    var chartButton: some View {
+        Button {
+            isMapSelected.toggle()
+        } label: {
+            Text("Chart")
+                .font(Fonts.semiboldHeading2)
+                .padding(.horizontal, 8)
+        }
     }
     
     var confirmationButton: some View {
@@ -125,10 +127,6 @@ private extension CompleteScreen {
                 .font(Fonts.semiboldHeading1)
         }
         .buttonStyle(BlueButtonStyle())
-    }
-    
-    private func singleMeasurement(stream: SearchSession.SearchSessionStream, value: Double, selectedStreamId: Binding<Int?>) -> some View {
-        StaticSingleMeasurement(selectedStreamId: selectedStreamId, streamId: stream.id, streamName: stream.sensorName, value: stream.measurements.last?.value ?? 0)
     }
 }
 
