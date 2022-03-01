@@ -61,6 +61,10 @@ extension Resolver: ResolverRegistering {
             .implements(SessionUpdateable.self)
             .scope(.application)
         main.register { CoreDataMeasurementStreamStorage() as MeasurementStreamStorage }.scope(.cached)
+        main.register { (_, _) -> UIStorage in
+            let context = Resolver.resolve(PersistenceController.self).editContext
+            return CoreDataUIStorage(context: context)
+        }.scope(.cached)
         main.register { DefaultFileLineReader() as FileLineReader }
         main.register { SessionDataEraser() as DataEraser }
         
@@ -177,10 +181,15 @@ extension Resolver: ResolverRegistering {
         main.register { SDSyncFileWritingService(bufferThreshold: 1000) as SDSyncFileWriter }
         main.register { BluetoothSDCardAirBeamServices() as SDCardAirBeamServices }
         
+        main.register { SessionCardUIStateHandlerDefault() as SessionCardUIStateHandler }.scope(.cached)
+        
         // MARK: - Notes
         main.register { (_, args) in
             NotesHandlerDefault(sessionUUID: args()) as NotesHandler
         }
+        
+        // MARK: - Update Session Params Service
+        main.register { UpdateSessionParamsService() }
     }
     
     // MARK: - Composition helpers

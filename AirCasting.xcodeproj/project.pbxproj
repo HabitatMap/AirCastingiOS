@@ -327,6 +327,9 @@
 		DD28047726B3D6E70060F55E /* ConnectingAirBeamServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD28047626B3D6E70060F55E /* ConnectingAirBeamServices.swift */; };
 		DD28047926B3D7370060F55E /* AirBeamConnectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD28047826B3D7370060F55E /* AirBeamConnectionController.swift */; };
 		DD28047B26B3D7730060F55E /* BluetoothConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD28047A26B3D7730060F55E /* BluetoothConnector.swift */; };
+		DD2DDBAC27B535EC00807011 /* SessionCardUIState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD2DDBAB27B535EC00807011 /* SessionCardUIState.swift */; };
+		DD2DDBAE27B5450100807011 /* UIStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD2DDBAD27B5450100807011 /* UIStorage.swift */; };
+		DD2DDBB027B5490000807011 /* UIStateHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD2DDBAF27B5490000807011 /* UIStateHandler.swift */; };
 		DD2E8BE92685E12000439F8B /* URLValidationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD2E8BE82685E12000439F8B /* URLValidationTests.swift */; };
 		DD2E8BEB2685E13600439F8B /* BackendURLValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD2E8BEA2685E13600439F8B /* BackendURLValidator.swift */; };
 		DD38A4AF27B1584600D2091F /* StringsCustomizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD38A4AE27B1584600D2091F /* StringsCustomizer.swift */; };
@@ -748,6 +751,10 @@
 		DD28047626B3D6E70060F55E /* ConnectingAirBeamServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectingAirBeamServices.swift; sourceTree = "<group>"; };
 		DD28047826B3D7370060F55E /* AirBeamConnectionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirBeamConnectionController.swift; sourceTree = "<group>"; };
 		DD28047A26B3D7730060F55E /* BluetoothConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothConnector.swift; sourceTree = "<group>"; };
+		DD2DDBA927B517CD00807011 /* AirCasting v4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AirCasting v4.xcdatamodel"; sourceTree = "<group>"; };
+		DD2DDBAB27B535EC00807011 /* SessionCardUIState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionCardUIState.swift; sourceTree = "<group>"; };
+		DD2DDBAD27B5450100807011 /* UIStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIStorage.swift; sourceTree = "<group>"; };
+		DD2DDBAF27B5490000807011 /* UIStateHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIStateHandler.swift; sourceTree = "<group>"; };
 		DD2E8BE82685E12000439F8B /* URLValidationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLValidationTests.swift; sourceTree = "<group>"; };
 		DD2E8BEA2685E13600439F8B /* BackendURLValidator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackendURLValidator.swift; sourceTree = "<group>"; };
 		DD38A4AE27B1584600D2091F /* StringsCustomizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringsCustomizer.swift; sourceTree = "<group>"; };
@@ -921,6 +928,7 @@
 				4F1D57D826454E3700F250AC /* MeasurementStream.swift */,
 				4F2D84EA2647DBE0003D9ED5 /* MeasurementStreamStorage.swift */,
 				4F8CDBD3265F8EE000976B25 /* SessionStorage.swift */,
+				DD2DDBAD27B5450100807011 /* UIStorage.swift */,
 			);
 			path = CoreData;
 			sourceTree = "<group>";
@@ -1182,6 +1190,7 @@
 		AC7EB37425A6FB3A00A7F2AF /* AirCasting */ = {
 			isa = PBXGroup;
 			children = (
+				DD2DDBAA27B535D900807011 /* UIState */,
 				B367A587274E9E05004C605B /* FeatureFlags */,
 				B3EFAB1326EFE2C800E88141 /* Bootstrap */,
 				B38E6CC826C5F19400C21C45 /* SessionStopping */,
@@ -1939,6 +1948,15 @@
 			path = ChooseSessionType;
 			sourceTree = "<group>";
 		};
+		DD2DDBAA27B535D900807011 /* UIState */ = {
+			isa = PBXGroup;
+			children = (
+				DD2DDBAB27B535EC00807011 /* SessionCardUIState.swift */,
+				DD2DDBAF27B5490000807011 /* UIStateHandler.swift */,
+			);
+			path = UIState;
+			sourceTree = "<group>";
+		};
 		DD2E8BE72685E0F500439F8B /* Settings */ = {
 			isa = PBXGroup;
 			children = (
@@ -2495,6 +2513,7 @@
 				AC32043625CD534700A68520 /* ChooseSessionTypeView.swift in Sources */,
 				3387DD4C278F1A4000B11D02 /* ShareLocationlessSessionViewModel.swift in Sources */,
 				AC8431D0265E6143004DC890 /* RemoveOldMeasurementsService.swift in Sources */,
+				DD2DDBAC27B535EC00807011 /* SessionCardUIState.swift in Sources */,
 				B3E2B65A27506E0D00019167 /* FileLineReader.swift in Sources */,
 				B30BAC152694AA7200AE0476 /* MeasurementsStatisticsInput.swift in Sources */,
 				DD3C99F426EA280800B42A46 /* TimeConversion.swift in Sources */,
@@ -2513,6 +2532,7 @@
 				AC489B5C2603614E00CEEC48 /* MoreInfoPopupView.swift in Sources */,
 				336A909927A4946400851100 /* ReorderingDashboardViewModel.swift in Sources */,
 				DDD24D9526A8569400D4A327 /* EmailForgotPasswordController.swift in Sources */,
+				DD2DDBAE27B5450100807011 /* UIStorage.swift in Sources */,
 				AC524A892614733D0061AD45 /* CreatingSessionFlowRootView.swift in Sources */,
 				3387DD4A278F1A2900B11D02 /* ShareLocationlessSessionView.swift in Sources */,
 				AC158E0B26A199F9006C61D3 /* Array+SensorThreshold.swift in Sources */,
@@ -2581,6 +2601,7 @@
 				334CC6FA2751454C00C10B53 /* SDCardMobileSessionsSavingService.swift in Sources */,
 				3387DD48278F0FC300B11D02 /* CSVFileGenerator.swift in Sources */,
 				ACFC708925C1A36A00D609D9 /* UIColor.swift in Sources */,
+				DD2DDBB027B5490000807011 /* UIStateHandler.swift in Sources */,
 				B33B15E827AEE68100138FFA /* TextFileTrimmer.swift in Sources */,
 				DDD24D8426A7FCE300D4A327 /* View+Print.swift in Sources */,
 				AC8CFF7225E7DA2D00FB2918 /* ABMeasurementStream.swift in Sources */,
@@ -3219,11 +3240,12 @@
 		338C30E625F10BFE00E0305C /* AirCasting.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				DD2DDBA927B517CD00807011 /* AirCasting v4.xcdatamodel */,
 				338FE86027AAB0F1006148DA /* AirCasting v3.xcdatamodel */,
 				DDF551D427985AAB009D1347 /* AirCasting v2.xcdatamodel */,
 				338C30E725F10BFE00E0305C /* AirCasting.xcdatamodel */,
 			);
-			currentVersion = 338FE86027AAB0F1006148DA /* AirCasting v3.xcdatamodel */;
+			currentVersion = DD2DDBA927B517CD00807011 /* AirCasting v4.xcdatamodel */;
 			path = AirCasting.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

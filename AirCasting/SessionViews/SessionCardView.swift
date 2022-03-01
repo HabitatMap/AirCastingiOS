@@ -4,14 +4,13 @@
 //
 //  Created by Lunar on 08/01/2021.
 //
-
 import AirCastingStyling
 import Charts
 import SwiftUI
 import Resolver
 
 struct SessionCardView: View {
-    @State private var isCollapsed = true
+    @State private var isCollapsed: Bool
     @State private var selectedStream: MeasurementStreamEntity?
     @State private var isMapButtonActive = false
     @State private var isGraphButtonActive = false
@@ -28,6 +27,8 @@ struct SessionCardView: View {
     @StateObject private var graphStatsDataSource: ConveringStatisticsDataSourceDecorator<GraphStatsDataSource>
     @StateObject private var graphStatsViewModel: StatisticsContainerViewModel
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
+    @Injected private var measurementStreamStorage: MeasurementStreamStorage
+    @Injected private var uiState: SessionCardUIStateHandler
 
     init(session: SessionEntity,
          sessionCartViewModel: SessionCardViewModel,
@@ -35,6 +36,9 @@ struct SessionCardView: View {
         self.session = session
         self.sessionCartViewModel = sessionCartViewModel
         self.thresholds = thresholds
+        
+        self._isCollapsed = .init(initialValue: !(session.userInterface?.expandedCard ?? false))
+        
         let mapDataSource = ConveringStatisticsDataSourceDecorator<MapStatsDataSource>(dataSource: MapStatsDataSource(), stream: nil)
         self._mapStatsDataSource = .init(wrappedValue: mapDataSource)
         self._mapStatsViewModel = .init(wrappedValue: SessionCardView.createStatsContainerViewModel(dataSource: mapDataSource, session: session))
@@ -91,6 +95,7 @@ struct SessionCardView: View {
             graphStatsDataSource?.dataSource.stream = newStream
             mapStatsDataSource?.stream = newStream
             mapStatsDataSource?.dataSource.stream = newStream
+            uiState.changeSelectedStream(sessionUUID: session.uuid, newStream: newStream?.sensorName ?? "")
         })
         .font(Fonts.regularHeading4)
         .foregroundColor(.aircastingGray)
@@ -113,6 +118,9 @@ struct SessionCardView: View {
 
     private func selectDefaultStreamIfNeeded(streams: [MeasurementStreamEntity]) {
         if selectedStream == nil {
+            if let newStream = session.streamWith(sensorName: session.userInterface?.sensorName ?? "") {
+                return selectedStream = newStream
+            }
             selectedStream = streams.first
         }
     }
@@ -124,6 +132,7 @@ private extension SessionCardView {
             action: {
                 withAnimation {
                     isCollapsed.toggle()
+                    uiState.toggleCardExpanded(sessionUUID: session.uuid)
                 }
             },
             isExpandButtonNeeded: true,
