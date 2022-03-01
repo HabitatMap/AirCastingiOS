@@ -16,10 +16,13 @@ protocol UIStorageContextUpdate {
 
 final class CoreDataUIStorage: UIStorage {
     
-    @Injected private var persistenceController: PersistenceController
+    private var context: NSManagedObjectContext
     private lazy var updateSessionParamsService = UpdateSessionParamsService()
-    private lazy var context: NSManagedObjectContext = persistenceController.editContext
     private lazy var hiddenStorage = HiddenCoreDataUIStorage(context: self.context)
+    
+    init(context: NSManagedObjectContext) {
+        self.context = context
+    }
     
     /// All actions performed on CoreDataMeasurementStreamStorage must be performed
     /// within a block passed to this methood.
