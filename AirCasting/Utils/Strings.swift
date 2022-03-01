@@ -629,7 +629,7 @@ struct Strings {
         
         static let syncData: String = NSLocalizedString("Sync data from AirBeam3",
                                                                comment: "")
-        static let followButtonTitle: String = NSLocalizedString("Follow session recorded by a measuring station",
+        static let followButtonTitle: String = NSLocalizedString("Follow session search & follow fixed sessions",
                                                                  comment: "")
         static let followSession: String = NSLocalizedString("Follow session",
                                                                        comment: "")
