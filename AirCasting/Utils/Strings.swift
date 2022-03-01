@@ -865,7 +865,7 @@ struct Strings {
     }
 
     enum SearchView {
-        static let title: String = NSLocalizedString("Search", comment: "")
+        static let title: String = NSLocalizedString("Search fixed sessions", comment: "")
         static let placeholder: String = NSLocalizedString("Session location", comment: "")
     }
     
