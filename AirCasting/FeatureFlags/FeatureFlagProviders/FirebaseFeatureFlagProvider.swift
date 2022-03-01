@@ -47,6 +47,7 @@ class FirebaseFeatureFlagProvider: FeatureFlagProvider {
         case .standaloneMode: return "standalone_mode"
         case .notes: return "session_notes"
         case .locationlessSessions: return "locationless_sessions"
+        case .searchAndFollow: return "search_and_follow"
         }
     }
     

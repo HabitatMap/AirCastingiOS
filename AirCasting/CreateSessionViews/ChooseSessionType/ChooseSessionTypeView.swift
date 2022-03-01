@@ -92,6 +92,20 @@ struct ChooseSessionTypeView: View {
                     }
                 
                     .fullScreenCover(isPresented: .init(get: {
+                        viewModel.isSearchAndFollow
+                    }, set: { new in
+                        viewModel.setSearchAndFollow(using: new)
+                    })) {
+                        CreatingSessionFlowRootView {
+                            SearchView(creatingSessionFlowContinues: .init(get: {
+                                viewModel.isSearchAndFollow
+                            }, set: { new in
+                                viewModel.setSearchAndFollow(using: new)
+                            }))
+                        }
+                    }
+                
+                    .fullScreenCover(isPresented: .init(get: {
                         viewModel.startSync
                     }, set: { new in
                         viewModel.setStartSync(using: new)
@@ -104,9 +118,9 @@ struct ChooseSessionTypeView: View {
                             }))
                         }
                     }
-                    .onAppear { defineNextMove() }
-                    .onChange(of: tabSelection.selection, perform: { _ in defineNextMove() })
             }
+            .onAppear { defineNextMove() }
+            .onChange(of: tabSelection.selection, perform: { _ in defineNextMove() })
             .environmentObject(viewModel.passSessionContext)
         } else {
             NavigationView {
@@ -187,11 +201,27 @@ struct ChooseSessionTypeView: View {
                                         }))
                                     }
                                 }
-                                .onAppear { defineNextMove() }
-                                .onChange(of: tabSelection.selection, perform: { _ in defineNextMove() })
+                            
+                            
+                            EmptyView()
+                                .fullScreenCover(isPresented: .init(get: {
+                                    viewModel.isSearchAndFollow
+                                }, set: { new in
+                                    viewModel.setSearchAndFollow(using: new)
+                                })) {
+                                    CreatingSessionFlowRootView {
+                                        SearchView(creatingSessionFlowContinues: .init(get: {
+                                            viewModel.isSearchAndFollow
+                                        }, set: { new in
+                                            viewModel.setSearchAndFollow(using: new)
+                                        }))
+                                    }
+                                }
                         }
                     )
             }
+            .onAppear { defineNextMove() }
+            .onChange(of: tabSelection.selection, perform: { _ in defineNextMove() })
             .environmentObject(viewModel.passSessionContext)
         }
     }
@@ -217,9 +247,15 @@ struct ChooseSessionTypeView: View {
                     mobileSessionButton
                 }
                 Spacer()
-                if featureFlagsViewModel.enabledFeatures.contains(.sdCardSync) {
-                    orLabel
-                    sdSyncButton
+                orLabel
+                HStack {
+                    if featureFlagsViewModel.enabledFeatures.contains(.sdCardSync) {
+                        sdSyncButton
+                    }
+                    Spacer()
+                    if featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) {
+                        followSessionButton
+                    }
                 }
                 Spacer()
             }
@@ -313,33 +349,48 @@ private extension ChooseSessionTypeView {
         }
     }
     
+    var followSessionButton: some View {
+        Button(action: {
+            viewModel.searchAndFollowTapped()
+        }) {
+            followButtonLabel
+        }
+    }
+    
     var fixedSessionLabel: some View {
-        chooseSessionButton(title:  StringCustomizer.customizeString(Strings.ChooseSessionTypeView.fixedLabel,
+        chooseSessionButton(title: StringCustomizer.customizeString(Strings.ChooseSessionTypeView.fixedLabel,
                                                                      using: [Strings.ChooseSessionTypeView.fixedSession],
                                                                      color: .accentColor,
                                                                      font: Fonts.boldHeading1))
     }
     
     var mobileSessionLabel: some View {
-        chooseSessionButton(title:  StringCustomizer.customizeString(Strings.ChooseSessionTypeView.mobileLabel,
+        chooseSessionButton(title: StringCustomizer.customizeString(Strings.ChooseSessionTypeView.mobileLabel,
                                                                      using: [Strings.ChooseSessionTypeView.mobileSession],
                                                                      color: .accentColor,
                                                                      font: Fonts.boldHeading1))
     }
     
     var syncButtonLabel: some View {
-        chooseSessionButton(title:  StringCustomizer.customizeString(Strings.ChooseSessionTypeView.syncTitle,
+        chooseSessionButton(title: StringCustomizer.customizeString(Strings.ChooseSessionTypeView.syncTitle,
                                                                      using: [Strings.ChooseSessionTypeView.syncData],
                                                                      color: .accentColor,
                                                                      font: Fonts.boldHeading1,
                                                                      makeNewLineAfterCustomized: true))
+    }
+    
+    var followButtonLabel: some View {
+        chooseSessionButton(title: StringCustomizer.customizeString(Strings.ChooseSessionTypeView.followButtonTitle,
+                                                                    using: [Strings.ChooseSessionTypeView.followSession],
+                                                                    color: .accentColor,
+                                                                    font: Fonts.boldHeading1))
     }
 }
 
 extension View {
     func chooseSessionButton(title: Text) -> some View {
         VStack(alignment: .leading, spacing: 10) {
-                title
+            title
                 .font(Fonts.muliHeading3)
                 .foregroundColor(.aircastingGray)
         }

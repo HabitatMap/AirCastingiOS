@@ -117,8 +117,10 @@ extension Resolver: ResolverRegistering {
         main.register { SessionUploadService() as SessionUpstream }
         main.register { SessionSynchronizationDatabase() as SessionSynchronizationStore }
         main.register {
-            ScheduledSessionSynchronizerProxy(controller: SessionSynchronizationController(), scheduler: DispatchQueue.global()) as SessionSynchronizer
+            ScheduledSessionSynchronizerProxy(controller: SessionSynchronizationController(), scheduler: DispatchQueue.global())
         }.scope(.application)
+            .implements(SingleSessionSynchronizer.self)
+            .implements(SessionSynchronizer.self)
         
         // MARK: - Location handling
         main.register { LocationTracker(locationManager: CLLocationManager()) }.scope(.application)
