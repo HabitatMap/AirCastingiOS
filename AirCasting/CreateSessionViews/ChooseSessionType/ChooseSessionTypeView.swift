@@ -92,13 +92,13 @@ struct ChooseSessionTypeView: View {
                     }
                 
                     .fullScreenCover(isPresented: .init(get: {
-                        viewModel.isSearchAndFollow
+                        viewModel.isSearchAndFollowLinkActive
                     }, set: { new in
                         viewModel.setSearchAndFollow(using: new)
                     })) {
                         CreatingSessionFlowRootView {
                             SearchView(creatingSessionFlowContinues: .init(get: {
-                                viewModel.isSearchAndFollow
+                                viewModel.isSearchAndFollowLinkActive
                             }, set: { new in
                                 viewModel.setSearchAndFollow(using: new)
                             }))
@@ -205,13 +205,13 @@ struct ChooseSessionTypeView: View {
                             
                             EmptyView()
                                 .fullScreenCover(isPresented: .init(get: {
-                                    viewModel.isSearchAndFollow
+                                    viewModel.isSearchAndFollowLinkActive
                                 }, set: { new in
                                     viewModel.setSearchAndFollow(using: new)
                                 })) {
                                     CreatingSessionFlowRootView {
                                         SearchView(creatingSessionFlowContinues: .init(get: {
-                                            viewModel.isSearchAndFollow
+                                            viewModel.isSearchAndFollowLinkActive
                                         }, set: { new in
                                             viewModel.setSearchAndFollow(using: new)
                                         }))
@@ -247,7 +247,9 @@ struct ChooseSessionTypeView: View {
                     mobileSessionButton
                 }
                 Spacer()
-                orLabel
+                if featureFlagsViewModel.enabledFeatures.contains(.sdCardSync) || featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) {
+                    orLabel
+                }
                 HStack {
                     if featureFlagsViewModel.enabledFeatures.contains(.sdCardSync) {
                         sdSyncButton
