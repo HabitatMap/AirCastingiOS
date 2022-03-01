@@ -16,7 +16,7 @@ protocol UIStorageContextUpdate {
 
 final class CoreDataUIStorage: UIStorage {
     
-    private var context: NSManagedObjectContext
+    private let context: NSManagedObjectContext
     private lazy var updateSessionParamsService = UpdateSessionParamsService()
     private lazy var hiddenStorage = HiddenCoreDataUIStorage(context: self.context)
     
