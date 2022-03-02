@@ -9,12 +9,10 @@ import AirCastingStyling
 struct CompleteScreen: View {
     @Environment(\.presentationMode) var presentationMode
     @StateObject var viewModel: CompleteScreenViewModel
-    @State var selectedStream: Int?
-    @State var isMapSelected: Bool = true
+    
     
     init(session: SearchSession) {
         _viewModel = .init(wrappedValue: CompleteScreenViewModel(session: session))
-        _selectedStream = .init(wrappedValue: session.streams.first?.id)
     }
     
     var body: some View {
@@ -36,16 +34,14 @@ struct CompleteScreen: View {
             header
             if !viewModel.session.streams.isEmpty {
                 measurements
-                if isMapSelected {
+                if viewModel.isMapSelected {
                     SearchCompleteScreenMapView(longitude: viewModel.session.longitude, latitude: viewModel.session.latitude)
-                        .frame(height: 300)
                 } else {
-                    SearchAndFollowChartView(stream: viewModel.stream(withID: selectedStream))
-                        .frame(height: 300)
+                    SearchAndFollowChartView(stream: viewModel.stream(withID: viewModel.selectedStream))
                 }
                 buttons
             } else {
-                Text("No streams available for this session")
+                Text(Strings.CompleteSearchView.noStreamsDescription)
                     .padding(.vertical)
             }
             confirmationButton
@@ -72,7 +68,7 @@ private extension CompleteScreen {
                 HStack {
                     streams.count != 1 ? Spacer() : nil
                     ForEach(streams) { stream in
-                        StaticSingleMeasurementView(selectedStreamId: $selectedStream, streamId: stream.id, streamName: stream.sensorName, value: stream.measurements.last?.value ?? 0)
+                        StaticSingleMeasurementView(selectedStreamId: $viewModel.selectedStream, streamId: stream.id, streamName: stream.sensorName, value: stream.measurements.last?.value ?? 0)
                         Spacer()
                     }
                 }
@@ -84,7 +80,7 @@ private extension CompleteScreen {
     var buttons: some View {
         HStack {
             Spacer()
-            if isMapSelected {
+            if viewModel.isMapSelected {
                 mapButton
                 .buttonStyle(FollowButtonStyle())
                 chartButton
@@ -101,9 +97,9 @@ private extension CompleteScreen {
     
     var mapButton: some View {
         Button {
-            isMapSelected.toggle()
+            viewModel.mapTapped()
         } label: {
-            Text(Strings.SessionCartView.map)
+            Text(Strings.CompleteSearchView.map)
                 .font(Fonts.semiboldHeading2)
                 .padding(.horizontal, 8)
         }
@@ -111,9 +107,9 @@ private extension CompleteScreen {
     
     var chartButton: some View {
         Button {
-            isMapSelected.toggle()
+            viewModel.chartTapped()
         } label: {
-            Text("Chart")
+            Text(Strings.CompleteSearchView.chart)
                 .font(Fonts.semiboldHeading2)
                 .padding(.horizontal, 8)
         }
@@ -123,7 +119,7 @@ private extension CompleteScreen {
         Button {
             //
         } label: {
-            Text("Follow Session")
+            Text(Strings.CompleteSearchView.confirmationButtonTitle)
                 .font(Fonts.semiboldHeading1)
         }
         .buttonStyle(BlueButtonStyle())

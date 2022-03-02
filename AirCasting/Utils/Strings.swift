@@ -869,6 +869,13 @@ struct Strings {
         static let placeholder: String = NSLocalizedString("Session location", comment: "")
     }
     
+    enum CompleteSearchView {
+        static let map: String = NSLocalizedString("map", comment: "")
+        static let chart: String = NSLocalizedString("chart", comment: "")
+        static let confirmationButtonTitle: String = NSLocalizedString("Follow Session", comment: "")
+        static let noStreamsDescription = NSLocalizedString("No streams available for this session", comment: "")
+    }
+    
     enum EditNoteView {
         static let title: String = NSLocalizedString("Edit this note",
                                                      comment: "")

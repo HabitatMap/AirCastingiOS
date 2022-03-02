@@ -4,7 +4,6 @@
 import SwiftUI
 import UIKit
 import GoogleMaps
-import GooglePlaces
 
 struct SearchCompleteScreenMapView: UIViewRepresentable {
     typealias UIViewType = GMSMapView
@@ -18,7 +17,6 @@ struct SearchCompleteScreenMapView: UIViewRepresentable {
     }
     
     func makeUIView(context: Context) -> GMSMapView {
-        GMSServices.provideAPIKey(GOOGLE_MAP_KEY)
         // Zoom:
         // 1. World
         // 5. Continent
