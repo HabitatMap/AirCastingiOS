@@ -13,6 +13,7 @@ struct ChooseSessionTypeView: View {
     @EnvironmentObject private var tabSelection: TabBarSelection
     @EnvironmentObject private var emptyDashboardButtonTapped: EmptyDashboardButtonTapped
     @EnvironmentObject private var finishAndSyncButtonTapped: FinishAndSyncButtonTapped
+    @EnvironmentObject private var exploreSessionsButton: ExploreSessionsButton
     @StateObject var viewModel: ChooseSessionTypeViewModel
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
     
@@ -21,6 +22,10 @@ struct ChooseSessionTypeView: View {
     }
     var shouldGoToSyncScreen: Bool {
         (tabSelection.selection == .createSession && finishAndSyncButtonTapped.finishAndSyncButtonWasTapped) ? true : false
+    }
+    
+    var shouldGotToSearchScreen: Bool {
+        (tabSelection.selection == .createSession && exploreSessionsButton.exploreSessionsButtonTapped) ? true : false
     }
     
     init(sessionContext: CreateSessionContext) {
@@ -277,6 +282,7 @@ private extension ChooseSessionTypeView {
     func defineNextMove() {
         shouldGoToChooseSessionScreen ? (viewModel.handleMobileSessionState()) : (viewModel.isMobileLinkActive = false)
         viewModel.setStartSync(using: shouldGoToSyncScreen)
+        viewModel.setSearchAndFollow(using: shouldGotToSearchScreen)
     }
 }
 

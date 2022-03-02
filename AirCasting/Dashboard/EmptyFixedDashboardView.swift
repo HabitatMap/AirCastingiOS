@@ -7,6 +7,8 @@ import Resolver
 struct EmptyFixedDashboardView: View {
     @StateObject private var defaultSessionSynchronizerViewModel = SessionSynchronizationViewModel()
     @EnvironmentObject var selectedSection: SelectSection
+    @EnvironmentObject private var tabSelection: TabBarSelection
+    @EnvironmentObject private var exploreSessionsButton: ExploreSessionsButton
     
     var shouldSessionFetch: Bool {
         (selectedSection.selectedSection == .mobileDormant || selectedSection.selectedSection == .fixed) && defaultSessionSynchronizerViewModel.syncInProgress
@@ -30,6 +32,7 @@ struct EmptyFixedDashboardView: View {
                 VStack(spacing: 20) {
                     emptyFixedDashboardText
                     EmptyDashboardButtonView(isFixed: true)
+                    exploreExistingSessionsButton
                 }
                 // Additional padding to put the text at similar height
                 // as in mobile empty dashboard
@@ -41,6 +44,15 @@ struct EmptyFixedDashboardView: View {
 }
 
 private extension EmptyFixedDashboardView {
+    private var exploreExistingSessionsButton: some View {
+        Button(action: {
+            exploreSessionsButton.exploreSessionsButtonTapped = true
+            tabSelection.selection = .createSession
+        }, label: {
+            Text(Strings.EmptyDashboardFixed.exploreSessionsButton)
+                .bold()
+        })
+    }
     
     private var emptyFixedDashboardText: some View {
         VStack(spacing: 14) {
