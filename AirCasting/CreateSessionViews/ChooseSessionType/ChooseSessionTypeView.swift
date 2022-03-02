@@ -297,13 +297,13 @@ private extension ChooseSessionTypeView {
     var recordNewLabel: some View {
         Text(Strings.ChooseSessionTypeView.recordNew)
             .font(Fonts.boldHeading3)
-            .foregroundColor(.aircastingDarkGray)
+            .foregroundColor(.aircastingGray)
     }
     
     var orLabel: some View {
         Text(Strings.ChooseSessionTypeView.orLabel)
             .font(Fonts.boldHeading3)
-            .foregroundColor(.aircastingDarkGray)
+            .foregroundColor(.aircastingGray)
     }
     
     var moreInfoLabel: some View {
@@ -376,7 +376,7 @@ private extension ChooseSessionTypeView {
     var syncButtonLabel: some View {
         chooseSessionButton(title: StringCustomizer.customizeString(Strings.ChooseSessionTypeView.syncTitle,
                                                                      using: [Strings.ChooseSessionTypeView.syncData],
-                                                                     color: .accentColor,
+                                                                     color: .aircastingGray,
                                                                      font: Fonts.boldHeading1,
                                                                      makeNewLineAfterCustomized: true))
     }
@@ -384,7 +384,7 @@ private extension ChooseSessionTypeView {
     var followButtonLabel: some View {
         chooseSessionButton(title: StringCustomizer.customizeString(Strings.ChooseSessionTypeView.followButtonTitle,
                                                                     using: [Strings.ChooseSessionTypeView.followSession],
-                                                                    color: .accentColor,
+                                                                    color: .aircastingGray,
                                                                     font: Fonts.boldHeading1))
     }
 }
