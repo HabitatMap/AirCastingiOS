@@ -9,6 +9,7 @@ struct EmptyFixedDashboardView: View {
     @EnvironmentObject var selectedSection: SelectSection
     @EnvironmentObject private var tabSelection: TabBarSelection
     @EnvironmentObject private var exploreSessionsButton: ExploreSessionsButton
+    @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
     
     var shouldSessionFetch: Bool {
         (selectedSection.selectedSection == .mobileDormant || selectedSection.selectedSection == .fixed) && defaultSessionSynchronizerViewModel.syncInProgress
@@ -32,7 +33,9 @@ struct EmptyFixedDashboardView: View {
                 VStack(spacing: 20) {
                     emptyFixedDashboardText
                     EmptyDashboardButtonView(isFixed: true)
-                    exploreExistingSessionsButton
+                    if featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) {
+                        exploreExistingSessionsButton
+                    }
                 }
                 // Additional padding to put the text at similar height
                 // as in mobile empty dashboard
