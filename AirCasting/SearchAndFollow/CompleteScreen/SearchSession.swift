@@ -27,7 +27,6 @@ struct SearchSession {
     
     
 //    #if DEBUG
-    
     static var mock: SearchSession {
         let session =  self.init(name: "Mock Session",
                                  startTime: DateBuilder.getFakeUTCDate() - 60,

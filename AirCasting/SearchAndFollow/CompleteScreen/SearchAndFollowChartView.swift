@@ -30,10 +30,10 @@ struct SearchAndFollowChartView: UIViewRepresentable {
         let data = LineChartData(dataSet: dataSet)
         uiView.lineChartView.data = data
         
-        //format data labels
+        // format data labels
         formatData(data: data)
         
-        //format line and dots
+        // format line and dots
         formatDataSet(dataSet: dataSet)
     }
     
@@ -46,13 +46,12 @@ struct SearchAndFollowChartView: UIViewRepresentable {
     }
     
     private func formatDataSet(dataSet: LineChartDataSet) {
-        //dots colors
+        // dots colors
         dataSet.circleColors = generateColorsSet(for: dataSet.entries)
         dataSet.drawCircleHoleEnabled = false
         dataSet.circleRadius = 4
-
         
-        //line color
+        // line color
         dataSet.setColor(UIColor.aircastingGray.withAlphaComponent(0.7))
     }
     

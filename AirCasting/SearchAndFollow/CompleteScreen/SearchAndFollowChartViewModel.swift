@@ -11,7 +11,7 @@ class SearchAndFollowChartViewModel: ObservableObject {
         generateEntries(for: stream)
     }
     
-    func generateEntries(for stream: SearchSession.SearchSessionStream){
+    func generateEntries(for stream: SearchSession.SearchSessionStream) {
         entries = [
             .init(x: 0, y: 1),
             .init(x: 1, y: 3),

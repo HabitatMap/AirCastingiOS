@@ -10,7 +10,6 @@ struct CompleteScreen: View {
     @Environment(\.presentationMode) var presentationMode
     @StateObject var viewModel: CompleteScreenViewModel
     
-    
     init(session: SearchSession) {
         _viewModel = .init(wrappedValue: CompleteScreenViewModel(session: session))
     }
