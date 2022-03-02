@@ -47,7 +47,7 @@ private extension GetStarted {
     
     var startButton: some View {
         NavigationLink(
-            destination: AirBeamOnboarding(completion: completion),
+            destination: NearAirDescription(completion: completion),
             label: {
                 Text(Strings.OnboardingGetStarted.getStarted)
                     .frame(maxWidth:.infinity)

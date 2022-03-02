@@ -269,8 +269,6 @@ struct Strings {
                                                      comment: "")
         static let description: String = NSLocalizedString("Find and follow a fixed air quality monitor near you and know how clean or polluted your air is right now.",
                                                            comment: "")
-        static let continueButton: String = NSLocalizedString("How’s the air near you?",
-                                                              comment: "")
     }
     
     enum OnboardingAirBeam {
