@@ -55,6 +55,20 @@ struct Strings {
                                                     comment: "")
         static let buildText = NSLocalizedString("build",
                                                  comment: "")
+        
+        static let crashlyticsSectionTitle = "Crashlytics integration testing:"
+        
+        static let appConfig = "App config"
+        
+        static let shareLogs = "Share logs"
+        
+        static let crashTheApp = "Crash the app"
+        
+        static let generateError = "Generate error"
+        
+        static let betaBuild = "Beta build"
+        
+        static let debugBuild = "Debug build"
     }
     
     enum BackendSettings {
