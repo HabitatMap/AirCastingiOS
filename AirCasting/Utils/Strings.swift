@@ -55,6 +55,19 @@ struct Strings {
                                                     comment: "")
         static let buildText = NSLocalizedString("build",
                                                  comment: "")
+        static let crashlyticsSectionTitle = "Crashlytics integration testing:"
+        
+        static let appConfig = "App config"
+        
+        static let shareLogs = "Share logs"
+        
+        static let crashTheApp = "Crash the app"
+        
+        static let generateError = "Generate error"
+        
+        static let betaBuild = "Beta build"
+        
+        static let debugBuild = "Debug build"
     }
     
     enum BackendSettings {
@@ -629,7 +642,7 @@ struct Strings {
         
         static let syncData: String = NSLocalizedString("Sync data from AirBeam3",
                                                                comment: "")
-        static let followButtonTitle: String = NSLocalizedString("Follow session recorded by a measuring station",
+        static let followButtonTitle: String = NSLocalizedString("Follow session search & follow fixed sessions",
                                                                  comment: "")
         static let followSession: String = NSLocalizedString("Follow session",
                                                                        comment: "")
@@ -869,7 +882,7 @@ struct Strings {
     }
 
     enum SearchView {
-        static let title: String = NSLocalizedString("Search", comment: "")
+        static let title: String = NSLocalizedString("Search fixed sessions", comment: "")
         static let placeholder: String = NSLocalizedString("Session location", comment: "")
     }
     

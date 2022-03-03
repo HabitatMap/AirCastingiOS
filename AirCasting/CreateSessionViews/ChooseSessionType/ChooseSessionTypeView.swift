@@ -283,13 +283,13 @@ private extension ChooseSessionTypeView {
     var recordNewLabel: some View {
         Text(Strings.ChooseSessionTypeView.recordNew)
             .font(Fonts.boldHeading3)
-            .foregroundColor(.aircastingDarkGray)
+            .foregroundColor(.aircastingGray)
     }
     
     var orLabel: some View {
         Text(Strings.ChooseSessionTypeView.orLabel)
             .font(Fonts.boldHeading3)
-            .foregroundColor(.aircastingDarkGray)
+            .foregroundColor(.aircastingGray)
     }
     
     var moreInfoLabel: some View {
@@ -337,7 +337,6 @@ private extension ChooseSessionTypeView {
         }
     }
     
-    
     var followSessionButton: some View {
         Button(action: {
             viewModel.searchAndFollowTapped()
@@ -348,9 +347,9 @@ private extension ChooseSessionTypeView {
     
     var fixedSessionLabel: some View {
         chooseSessionButton(title: StringCustomizer.customizeString(Strings.ChooseSessionTypeView.fixedLabel,
-                                                                    using: [Strings.ChooseSessionTypeView.fixedSession],
-                                                                    color: .accentColor,
-                                                                    font: Fonts.boldHeading1))
+                                                                     using: [Strings.ChooseSessionTypeView.fixedSession],
+                                                                     color: .accentColor,
+                                                                     font: Fonts.boldHeading1))
     }
     
     var mobileSessionLabel: some View {
@@ -362,16 +361,14 @@ private extension ChooseSessionTypeView {
     
     var syncButtonLabel: some View {
         chooseSessionButton(title: StringCustomizer.customizeString(Strings.ChooseSessionTypeView.syncTitle,
-                                                                    using: [Strings.ChooseSessionTypeView.syncData],
-                                                                    color: .accentColor,
-                                                                    font: Fonts.boldHeading1,
-                                                                    makeNewLineAfterCustomized: true))
+                                                                     using: [Strings.ChooseSessionTypeView.syncData],
+                                                                     font: Fonts.boldHeading1,
+                                                                     makeNewLineAfterCustomized: true))
     }
     
     var followButtonLabel: some View {
         chooseSessionButton(title: StringCustomizer.customizeString(Strings.ChooseSessionTypeView.followButtonTitle,
                                                                     using: [Strings.ChooseSessionTypeView.followSession],
-                                                                    color: .accentColor,
                                                                     font: Fonts.boldHeading1))
     }
 }

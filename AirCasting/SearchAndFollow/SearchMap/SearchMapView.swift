@@ -54,8 +54,9 @@ private extension SearchMapView {
         } label: {
             Text("\(Strings.SearchMapView.redoText) \(Image(systemName: "goforward"))")
                 .font(Fonts.boldHeading3)
-                .minimumScaleFactor(0.1)
                 .lineLimit(1)
+                .scaledToFill()
+                .multilineTextAlignment(.leading)
         }
         .foregroundColor(.white)
         .frame(width: UIScreen.main.bounds.width / 2.2, height: 8, alignment: .center)

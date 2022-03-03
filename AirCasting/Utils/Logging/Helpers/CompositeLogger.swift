@@ -2,10 +2,10 @@ import Foundation
 
 /// A composite providing for putting multiple `Logger` objects together.
 class CompositeLogger: Logger {
-    private let loggers: [Logger]
+    private var loggers: [Logger] = []
     
-    init(loggers: [Logger]) {
-        self.loggers = loggers
+    func add(_ logger: Logger) {
+        self.loggers.append(logger)
     }
     
     func log(_ message: @escaping @autoclosure () -> String, type: LogLevel, file: String = #file, function: String = #function, line: Int = #line) {

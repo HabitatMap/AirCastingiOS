@@ -11,13 +11,20 @@ extension Resolver: ResolverRegistering {
     public static func registerAllServices() {
         // MARK: Logging
         main.register { (_, _) -> Logger in
-            return CompositeLogger(loggers: [
-                LoggerBuilder(type: .debug).build(),
-                LoggerBuilder(type: .file)
-                    .addMinimalLevel(.info)
-                    .dispatchOn(fileLoggerQueue)
-                    .build()
-            ])
+            var composite = CompositeLogger()
+            #if DEBUG
+            composite.add(LoggerBuilder(type: .debug).build())
+            #endif
+            #if BETA || RELEASE
+            composite.add(LoggerBuilder(type: .file)
+                            .addMinimalLevel(.info)
+                            .dispatchOn(fileLoggerQueue)
+                            .build())
+            composite.add(LoggerBuilder(type: .crashlytics)
+                            .addMinimalLevel(.info)
+                            .build())
+            #endif
+            return composite
         }.scope(.application)
         
         main.register { PrintLogger() }.scope(.application)

@@ -28,7 +28,6 @@ class FileLoggerTests: XCTestCase {
             let unformattedMessage = "test"; let messageLevel = LogLevel.info
             let formattedMessage = "Formatted test"
             formatterMock.returnValue = formattedMessage
-
             sut.log(unformattedMessage, type: messageLevel)
             XCTAssertEqual(storeSpy.recordedWrites, [formattedMessage])
             XCTAssertEqual(formatterMock.formattedMessages, [.init(message: unformattedMessage, type: messageLevel)])
@@ -36,9 +35,9 @@ class FileLoggerTests: XCTestCase {
             XCTFail("Couldnt create SUT: \(error)")
         }
     }
-
+    
     // MARK: - Private helpers
-
+    
     func makeSUT(file: StaticString = #file, line: UInt = #line) throws -> (FileLogger, FileLoggerStoreSpy, LogFormatterMock) {
         let storeSpy = FileLoggerStoreSpy()
         let formatterMock = LogFormatterMock()
@@ -50,15 +49,26 @@ class FileLoggerStoreSpy: FileLoggerStore {
     private var fileHandleSpy: FileHandleSpy!
     var recordedWrites: [String] { fileHandleSpy.recordedStrings }
     var logFileOpenedTimes: Int = 0
+<<<<<<< HEAD
 
     private class FileHandleSpy: FileLoggerFileHandle {
         private(set) var recordedStrings: [String] = []
 
+=======
+    
+    private class FileHandleSpy: FileLoggerFileHandle {
+        private(set) var recordedStrings: [String] = []
+        
+>>>>>>> develop
         func appendFile(with text: String) throws {
             recordedStrings.append(text)
         }
     }
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> develop
     func openOrCreateLogFile() throws -> FileLoggerFileHandle {
         logFileOpenedTimes += 1
         fileHandleSpy = .init()
