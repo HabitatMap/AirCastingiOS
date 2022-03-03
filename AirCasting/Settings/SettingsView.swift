@@ -106,7 +106,7 @@ struct SettingsView: View {
             Section() {
                 navigateToAppConfigurationButton
                 shareLogsButton
-                Text("Crashlytics integration testing:")
+                Text(Strings.Settings.crashlyticsSectionTitle)
                 crashButton
                 createErrorButton
             }
@@ -149,9 +149,9 @@ struct SettingsView: View {
             Text(Strings.Settings.appInfoTitle) + Text(". ") + Text("\(UIApplication.appVersion!) ") +
             Text(Strings.Settings.buildText) + Text(": ") + Text("\(UIApplication.buildVersion!)")
             #if BETA
-            Text("Beta build").foregroundColor(.red)
+            Text(Strings.Settings.betaBuild).foregroundColor(.red)
             #elseif DEBUG
-            Text("Debug build").foregroundColor(.red)
+            Text(Strings.Settings.debugBuild).foregroundColor(.red)
             #endif
         }.foregroundColor(.aircastingGray)
     }
@@ -239,28 +239,28 @@ struct SettingsView: View {
 
     #if DEBUG || BETA
     private var navigateToAppConfigurationButton: some View {
-        NavigationLink("App config", destination: {
+        NavigationLink(Strings.Settings.appConfig, destination: {
             AppConfigurationView()
-                .navigationTitle("App config")
+                .navigationTitle(Strings.Settings.appConfig)
         })
             .font(Fonts.boldHeading1)
     }
     
     private var shareLogsButton: some View {
-        Button("Share logs") {
+        Button(Strings.Settings.shareLogs) {
             shareLogsViewModel.shareLogsButtonTapped()
         }
     }
     
     private var crashButton: some View {
-        Button("Crash the app") {
+        Button(Strings.Settings.crashTheApp) {
             let numbers = [0]
             _ = numbers[1]
         }
     }
     
     private var createErrorButton: some View {
-        Button("Generate error") {
+        Button(Strings.Settings.generateError) {
             Log.error("Error induced")
         }
     }
