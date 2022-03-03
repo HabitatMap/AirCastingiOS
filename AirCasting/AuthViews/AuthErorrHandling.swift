@@ -19,11 +19,11 @@ extension AuthErrors: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .passwordTooShort:
-            return NSLocalizedString("Password is too short (minimum is 8 characters)", comment: "")
+            return Strings.AuthErrors.passwordTooShort
         case .incorrectEmail:
-            return NSLocalizedString("The email address is incorrect.", comment: "")
+            return Strings.AuthErrors.incorrectEmail
         case .emptyTextfield:
-            return NSLocalizedString("This field cannot be left blank.", comment: "")
+            return Strings.AuthErrors.emptyTextfield
             
         }
     }

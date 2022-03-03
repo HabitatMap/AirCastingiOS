@@ -20,6 +20,7 @@ final class SessionSynchronizationDatabase: SessionSynchronizationStore {
     @Injected private var sessionsFetcher: SessionsFetchable
     @Injected private var sessionsRemover: SessionRemovable
     @Injected private var sessionsInserter: SessionInsertable
+    @Injected private var sessionsUpdater: SessionUpdateable
     private let dataConverter = SynchronizationDataConverter()
     
     func getLocalSessionList() -> AnyPublisher<[SessionsSynchronization.Metadata], Error> {
@@ -99,23 +100,12 @@ final class SessionSynchronizationDatabase: SessionSynchronizationStore {
     }
     
     func saveURLForSession(uuid: SessionUUID, url: String) -> Future<Void, Error> {
-        Future { [sessionsFetcher, sessionsInserter] promise in
-            sessionsFetcher.fetchSessions(constrained: .predicate(.init(format: "uuid == %@", uuid.rawValue))) { result in
-                switch result {
-                case .failure(let error):
+        Future { [sessionsUpdater] promise in
+            sessionsUpdater.updateSessionUrl(url, for: uuid) { error in
+                if let error = error {
                     promise(.failure(error))
-                case .success(let entries) where entries.count >= 1:
-                    if entries.count > 1 { Log.error("Found multiple sessions for ID [\(uuid)]") }
-                    let session = entries[0].withUrlLocation(url)
-                    sessionsInserter.insertOrUpdateSessions([session], completion: { error in
-                        guard error == nil else { promise(.failure(error!)); return }
-                        promise(.success(()))
-                    })
-                    break
-                case .success(let entries) where entries.count == 0:
-                    promise(.failure(SessionSynchronizationStoreError.noSessionsForUUID(uuid: uuid)))
-                    break
-                default: break
+                } else {
+                    promise(.success(()))
                 }
             }
         }

@@ -16,17 +16,23 @@ class PersistenceController: ObservableObject {
     
     var uiSuspended: Bool = false {
         willSet {
-            NotificationCenter.default.post(name: newValue ? Self.uiWillSuspendNotificationName : Self.uiWillResumeNotificationName, object: self)
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: newValue ? Self.uiWillSuspendNotificationName : Self.uiWillResumeNotificationName, object: self)
+            }
         }
         didSet {
             Log.info("UI updates \(uiSuspended ? "suspended" : "resumed")")
             
             if !uiSuspended {
                 propagateChangesToUI() {
-                    NotificationCenter.default.post(name: Self.uiDidResumeNotificationName, object: self)
+                    DispatchQueue.main.async {
+                        NotificationCenter.default.post(name: Self.uiDidResumeNotificationName, object: self)
+                    }
                 }
             } else {
-                NotificationCenter.default.post(name: Self.uiDidSuspendNotificationName, object: self)
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name: Self.uiDidSuspendNotificationName, object: self)
+                }
             }
             
         }

@@ -7,9 +7,8 @@ import Resolver
 
 struct PlacePicker: UIViewControllerRepresentable {
     @InjectedObject private var tracker: LocationTracker
-    @Binding var placePickerDismissed: Bool
     @Environment(\.presentationMode) var presentationMode
-    @Binding var address: String
+    let service: PlacePickerService
 
     func makeUIViewController(context: UIViewControllerRepresentableContext<PlacePicker>) -> GMSAutocompleteViewController {
         GMSPlacesClient.provideAPIKey(GOOGLE_PLACES_KEY)
@@ -42,9 +41,7 @@ struct PlacePicker: UIViewControllerRepresentable {
 
         func viewController(_ viewController: GMSAutocompleteViewController, didAutocompleteWith place: GMSPlace) {
             DispatchQueue.main.async { [self] in
-                self.parent.address =  place.name!
-                parent.tracker.googleLocation = [PathPoint(location: place.coordinate, measurementTime: DateBuilder.getFakeUTCDate())]
-                parent.placePickerDismissed = true
+                parent.service.didComplete(using: place)
                 self.parent.presentationMode.wrappedValue.dismiss()
             }
         }

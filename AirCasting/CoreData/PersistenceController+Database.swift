@@ -108,6 +108,25 @@ extension PersistenceController: SessionRemovable {
     }
 }
 
+extension PersistenceController: SessionUpdateable {
+    func updateSessionUrl(_ url: String, for sessionUUID: SessionUUID, completion: ((Error?) -> Void)?) {
+        let context = self.editContext
+        context.perform {
+            do {
+                let sessionEntity = try context.existingSession(uuid: sessionUUID)
+                sessionEntity.urlLocation = url
+                try context.save()
+                completion?(nil)
+            } catch {
+                Log.error("Error adding urlLocation for session: \(error)")
+                completion?(error)
+            }
+        }
+    }
+}
+
+
+
 extension Database.Session {
     init(coreDataEntity: SessionEntity) {
         self.init(uuid: coreDataEntity.uuid,

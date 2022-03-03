@@ -60,7 +60,8 @@ struct AirMapView: View {
             ABMeasurementsView(session: session,
                                isCollapsed: Binding.constant(false),
                                selectedStream: $selectedStream,
-                               thresholds: thresholds, measurementPresentationStyle: .showValues,
+                               thresholds: thresholds,
+                               measurementPresentationStyle: .showValues,
                                viewModel:  DefaultSyncingMeasurementsViewModel(sessionDownloader: SessionDownloadService(),
                                                                                 session: session))
                 .padding([.bottom, .leading, .trailing])
@@ -70,7 +71,7 @@ struct AirMapView: View {
                     ZStack(alignment: .topLeading) {
                         GoogleMapView(pathPoints: pathPoints,
                                       threshold: threshold,
-                                      placePickerDismissed: Binding.constant(false),
+                                      placePickerIsUpdating: Binding.constant(false),
                                       isUserInteracting: $isUserInteracting,
                                       isSessionActive: session.isActive,
                                       isSessionFixed: session.isFixed,

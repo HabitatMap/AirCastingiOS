@@ -35,8 +35,8 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
                         var session = processedSessions.first(where: { $0.uuid == measurements.sessionUUID })
                         if session == nil {
                             session = self.processSession(storage: storage, sessionUUID: measurements.sessionUUID, deviceID: deviceID, sessionsToIgnore: &sessionsToIgnore, sessionsToCreate: &sessionsToCreate)
-                            guard session != nil else { return }
-                            processedSessions.insert(session!)
+                            guard let createdSession = session else { return }
+                            processedSessions.insert(createdSession)
                         }
                         
                         guard session!.lastMeasurementTime == nil || measurements.date > session!.lastMeasurementTime! else { return }

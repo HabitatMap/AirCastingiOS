@@ -5,6 +5,7 @@ enum FeatureFlag: String, Equatable, CaseIterable {
     case standaloneMode
     case notes
     case locationlessSessions
+    case searchAndFollow
 }
 
 extension FeatureFlag {
@@ -14,6 +15,7 @@ extension FeatureFlag {
         case .sdCardSync: return "SD Card sync"
         case .notes: return "Session notes"
         case .locationlessSessions: return "Disable Mapping"
+        case .searchAndFollow: return "Search and Follow"
         }
     }
 }

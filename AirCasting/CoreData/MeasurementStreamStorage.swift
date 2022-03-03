@@ -40,7 +40,7 @@ extension HiddenCoreDataMeasurementStreamStorage {
 final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
 
     @Injected private var persistenceController: PersistenceController
-    private lazy var updateSessionParamsService = UpdateSessionParamsService()
+    @Injected private var updateSessionParamsService: UpdateSessionParamsService
     private lazy var context: NSManagedObjectContext = persistenceController.editContext
     private lazy var hiddenStorage = HiddenCoreDataMeasurementStreamStorage(context: self.context)
 
@@ -81,7 +81,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         case missingSensorName
     }
 
-    private lazy var updateSessionParamsService = UpdateSessionParamsService()
+    @Injected private var updateSessionParamsService: UpdateSessionParamsService
     private let context: NSManagedObjectContext
 
     init(context: NSManagedObjectContext) {
@@ -179,7 +179,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
     }
 
     func createSessionAndMeasurementStream(_ session: Session, _ stream: MeasurementStream) throws -> MeasurementStreamLocalID {
-        let sessionEntity = SessionEntity(context: context)
+        let sessionEntity = newSessionEntity()
         updateSessionParamsService.updateSessionsParams(sessionEntity, session: session)
         return try saveMeasurementStream(for: sessionEntity, context: context, stream)
     }
@@ -380,9 +380,16 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
                     long: note.long,
                     number: Int(note.number))
     }
+    
+    private func newSessionEntity() -> SessionEntity {
+        let sessionEntity = SessionEntity(context: context)
+        let uiState = UIStateEntity(context: context)
+        uiState.session = sessionEntity
+        return sessionEntity
+    }
 
     func createSession(_ session: Session) throws {
-        let sessionEntity = SessionEntity(context: context)
+        let sessionEntity = newSessionEntity()
         updateSessionParamsService.updateSessionsParams(sessionEntity, session: session)
         try context.save()
     }

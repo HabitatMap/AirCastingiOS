@@ -109,9 +109,9 @@ public enum SessionType: RawRepresentable, CustomStringConvertible, Hashable, Co
 
     public var description: String {
         switch self {
-        case .mobile: return NSLocalizedString("Mobile", comment: "Mobile session readable localized description")
-        case .fixed: return NSLocalizedString("Fixed", comment: "Fixed session readable localized description")
-        case .unknown: return NSLocalizedString("Other", comment: "Unknown session readable localized description")
+        case .mobile: return Strings.SessionStruct.mobile
+        case .fixed: return Strings.SessionStruct.fixed
+        case .unknown: return Strings.SessionStruct.other
         }
     }
 }

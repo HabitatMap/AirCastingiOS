@@ -31,6 +31,22 @@ AirCastingApp
 
 
 
+### ios hotfix_init
+
+```sh
+[bundle exec] fastlane ios hotfix_init
+```
+
+
+
+### ios hotfix_release
+
+```sh
+[bundle exec] fastlane ios hotfix_release
+```
+
+
+
 ### ios release
 
 ```sh

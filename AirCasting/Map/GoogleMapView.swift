@@ -13,7 +13,7 @@ import Resolver
 
 struct GoogleMapView: UIViewRepresentable {
     @InjectedObject private var tracker: LocationTracker
-    @Binding var placePickerDismissed: Bool
+    @Binding var placePickerIsUpdating: Bool
     @Binding var isUserInteracting: Bool
     @Binding var noteMarketTapped: Bool
     @Binding var noteNumber: Int
@@ -25,18 +25,20 @@ struct GoogleMapView: UIViewRepresentable {
     private var onPositionChange: (([PathPoint]) -> ())? = nil
     var isSessionFixed: Bool
     @Binding var mapNotes: [MapNote]
+    let showButton: Bool
     
-    init(pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false, placePickerDismissed: Binding<Bool>, isUserInteracting: Binding<Bool>, isSessionActive: Bool = false, isSessionFixed: Bool = false, noteMarketTapped: Binding<Bool> = .constant(false), noteNumber: Binding<Int> = .constant(0), mapNotes: Binding<[MapNote]>) {
+    init(pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false, placePickerIsUpdating: Binding<Bool>, isUserInteracting: Binding<Bool>, isSessionActive: Bool = false, isSessionFixed: Bool = false, noteMarketTapped: Binding<Bool> = .constant(false), noteNumber: Binding<Int> = .constant(0), mapNotes: Binding<[MapNote]>, showButton: Bool = true) {
         self.pathPoints = pathPoints
         self.threshold = threshold
         self.isMyLocationEnabled = isMyLocationEnabled
-        self._placePickerDismissed = placePickerDismissed
+        self._placePickerIsUpdating = placePickerIsUpdating
         self._isUserInteracting = isUserInteracting
         self.liveModeOn = isSessionActive
         self.isSessionFixed = isSessionFixed
         self._noteMarketTapped = noteMarketTapped
         self._noteNumber = noteNumber
         self._mapNotes = mapNotes
+        self.showButton = showButton
     }
     
     func makeUIView(context: Context) -> GMSMapView {
@@ -47,8 +49,9 @@ struct GoogleMapView: UIViewRepresentable {
         
         let mapView = GMSMapView.map(withFrame: .zero,
                                      camera: startingPoint)
-        mapView.settings.myLocationButton = true
+        mapView.settings.myLocationButton = showButton
         placeNotes(mapView, notes: mapNotes, context: context)
+//        placeDots(mapView, context: context)
         do {
             if let styleURL = Bundle.main.url(forResource: "style", withExtension: "json") {
                 mapView.mapStyle = try GMSMapStyle(contentsOfFileURL: styleURL)
@@ -87,6 +90,7 @@ struct GoogleMapView: UIViewRepresentable {
             drawPolyline(uiView, context: context)
             context.coordinator.mapNotesCounter = mapNotes.count
         }
+        
         guard isUserInteracting else { return }
         let thresholdWitness = ThresholdWitness(sensorThreshold: self.threshold)
   
@@ -99,7 +103,12 @@ struct GoogleMapView: UIViewRepresentable {
             context.coordinator.drawHeatmap(uiView)
         }
         
-        placePickerDismissed ? uiView.moveCamera(cameraUpdate) : nil
+        if placePickerIsUpdating {
+            uiView.moveCamera(cameraUpdate)
+            DispatchQueue.main.async {
+                placePickerIsUpdating = false
+            }
+        }
         // Update camera's starting point
         guard context.coordinator.shouldAutoTrack else { return }
         DispatchQueue.main.async {
@@ -135,7 +144,7 @@ struct GoogleMapView: UIViewRepresentable {
             
             let newCameraPosition = GMSCameraPosition.camera(withLatitude: lat,
                                                               longitude: long,
-                                                              zoom: 16)
+                                                              zoom: 10) // use 10 when using SEARCH AND FOLLOW
             return newCameraPosition
         } else {
             let appleParkPosition = GMSCameraPosition.camera(withLatitude: 37.35,
@@ -210,6 +219,20 @@ struct GoogleMapView: UIViewRepresentable {
         polyline.map = uiView
     }
     
+//    func placeDots(_ uiView: GMSMapView, context: Context) {
+//        DispatchQueue.main.async {
+//            searchFollowService.sessionsList.forEach { sess in
+//                let marker = GMSMarker()
+//                let markerImage =  UIImage(systemName: "smallcircle.filled.circle.fill")!
+//                let markerView = UIImageView(image: markerImage.withRenderingMode(.alwaysOriginal))
+//                marker.position = CLLocationCoordinate2D(latitude: sess.latitude, longitude: sess.longitude)
+//                marker.userData = sess.id
+//                marker.iconView = markerView
+//                marker.map = uiView
+//            }
+//        }
+//    }
+    
     func placeNotes(_ uiView: GMSMapView, notes: [MapNote], context: Context) {
         context.coordinator.noteMarkers.forEach { marker in
             marker.map = nil
@@ -249,9 +272,10 @@ struct GoogleMapView: UIViewRepresentable {
             let len = mapView.projection.coordinate(for: mapView.center).longitude
             parent.tracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: lat, longitude: len), measurementTime: DateBuilder.getFakeUTCDate())]
             positionChanged(for: mapView)
-            
+            dotsPositionShouldChange(for: mapView)
             shouldAutoTrack = false
         }
+        
         
         func mapView(_ mapView: GMSMapView, idleAt cameraPosition: GMSCameraPosition) {
             drawHeatmap(mapView)
@@ -281,6 +305,7 @@ struct GoogleMapView: UIViewRepresentable {
         func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
             parent.noteNumber = marker.userData as! Int
             parent.noteMarketTapped = true
+            Log.info("MARKET TAPPPPPED \(marker.userData)")
             return true
         }
         
@@ -293,6 +318,15 @@ struct GoogleMapView: UIViewRepresentable {
             parent.pathPoints.last?.location.longitude ?? -122.05
             let camera = GMSCameraPosition.camera(withLatitude: lat, longitude: long, zoom: 16)
             mapView.animate(to: camera)
+        }
+        
+        // Done for search and follow feature
+        private func dotsPositionShouldChange(for mapView: GMSMapView) {
+//            let NW = (mapView.projection.visibleRegion().farLeft.latitude, mapView.projection.visibleRegion().farLeft.longitude)
+//            let SE = (mapView.projection.visibleRegion().nearRight.latitude, mapView.projection.visibleRegion().nearRight.longitude)
+//            if parent.searchFollowService.getNorthWest() != NW || parent.searchFollowService.getNorthWest() != SE {
+//                parent.searchFollowService.updateParameters(north: NW.0, south: SE.0, east: SE.1, west: NW.1)
+//            }
         }
 
         private func positionChanged(for mapView: GMSMapView) {

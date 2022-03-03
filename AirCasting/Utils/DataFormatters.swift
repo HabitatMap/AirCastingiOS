@@ -116,6 +116,14 @@ enum DateFormatters {
             return dateFormatter
         }()
     }
+    
+    enum Debug {
+        static let logsFormatter: DateFormatter = {
+            let df = DateFormatter()
+            df.dateFormat = "yyyy-MM-dd HH:mm:ss"
+            return df
+        }()
+    }
 }
 
 

@@ -41,6 +41,8 @@ final class DefaultSyncingMeasurementsViewModel: SyncingMeasurementsViewModel, O
                 let sessionId = self.session.uuid!
                 let sessionName = self.session.name
                 
+                // TODO: Move all this logic to a service/controller
+                // https://github.com/HabitatMap/AirCastingiOS/issues/606
                 measurementStreamStorage.accessStorage { storage in
                     
                     dataBaseStreams.forEach { stream in
