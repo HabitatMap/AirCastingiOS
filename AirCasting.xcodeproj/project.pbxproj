@@ -282,9 +282,9 @@
 		B3E2B65A27506E0D00019167 /* FileLineReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E2B65927506E0D00019167 /* FileLineReader.swift */; };
 		B3E2B65C27506E7300019167 /* DefaultFileLineReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E2B65B27506E7300019167 /* DefaultFileLineReader.swift */; };
 		B3E2B65F27506EA000019167 /* FileLineReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E2B65E27506EA000019167 /* FileLineReaderTests.swift */; };
-		B3EAF01C27B03CDC00290222 /* ChartDatabaseObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EAF01B27B03CDC00290222 /* ChartDatabaseObserver.swift */; };
 		B3EAF01827AFC43300290222 /* ShareLogsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EAF01727AFC43300290222 /* ShareLogsViewModel.swift */; };
 		B3EAF01A27B00F7300290222 /* FileLoggerHeaderProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EAF01927B00F7300290222 /* FileLoggerHeaderProvider.swift */; };
+		B3EAF01C27B03CDC00290222 /* ChartDatabaseObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EAF01B27B03CDC00290222 /* ChartDatabaseObserver.swift */; };
 		B3EAF78F2730C161000FFF23 /* AVSessionInterruptionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EAF78E2730C161000FFF23 /* AVSessionInterruptionHandler.swift */; };
 		B3EBB10326A05551002BD81F /* ForgotPasswordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EBB10226A05551002BD81F /* ForgotPasswordViewModel.swift */; };
 		B3EBB10626A06CD7002BD81F /* ScheduledForgotPasswordControllerProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EBB10526A06CD7002BD81F /* ScheduledForgotPasswordControllerProxy.swift */; };
@@ -704,9 +704,9 @@
 		B3E2B65927506E0D00019167 /* FileLineReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileLineReader.swift; sourceTree = "<group>"; };
 		B3E2B65B27506E7300019167 /* DefaultFileLineReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultFileLineReader.swift; sourceTree = "<group>"; };
 		B3E2B65E27506EA000019167 /* FileLineReaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileLineReaderTests.swift; sourceTree = "<group>"; };
-		B3EAF01B27B03CDC00290222 /* ChartDatabaseObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartDatabaseObserver.swift; sourceTree = "<group>"; };
 		B3EAF01727AFC43300290222 /* ShareLogsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareLogsViewModel.swift; sourceTree = "<group>"; };
 		B3EAF01927B00F7300290222 /* FileLoggerHeaderProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileLoggerHeaderProvider.swift; sourceTree = "<group>"; };
+		B3EAF01B27B03CDC00290222 /* ChartDatabaseObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartDatabaseObserver.swift; sourceTree = "<group>"; };
 		B3EAF78E2730C161000FFF23 /* AVSessionInterruptionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVSessionInterruptionHandler.swift; sourceTree = "<group>"; };
 		B3EBB10226A05551002BD81F /* ForgotPasswordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordViewModel.swift; sourceTree = "<group>"; };
 		B3EBB10526A06CD7002BD81F /* ScheduledForgotPasswordControllerProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduledForgotPasswordControllerProxy.swift; sourceTree = "<group>"; };
@@ -2967,7 +2967,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 0;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_ASSET_PATHS = "\"AirCasting/Preview Content\"";
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
@@ -2978,7 +2978,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.5.0;
+				MARKETING_VERSION = 1.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.habitatmap.AirCasting;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2996,7 +2996,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 0;
 				DEVELOPMENT_ASSET_PATHS = "\"AirCasting/Preview Content\"";
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
@@ -3006,7 +3006,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.5.0;
+				MARKETING_VERSION = 1.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.habitatmap.AirCasting;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "HabitatMap AppStore";
@@ -3085,7 +3085,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 0;
 				DEVELOPMENT_ASSET_PATHS = "\"AirCasting/Preview Content\"";
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
@@ -3095,7 +3095,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.5.0;
+				MARKETING_VERSION = 1.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.habitatmap.AirCasting;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "AirCasting Ad hoc distribution";
