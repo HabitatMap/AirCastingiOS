@@ -14,7 +14,7 @@ struct SearchSession {
     
     struct SearchSessionStream: Identifiable {
         var id: Int
-        let sensorPackageName: String?
+        let sensorPackageName: String
         let sensorName: String
         let measurements: [SearchSessionMeasurement]
         
