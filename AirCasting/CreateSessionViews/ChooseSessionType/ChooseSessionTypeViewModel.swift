@@ -75,7 +75,7 @@ class ChooseSessionTypeViewModel: ObservableObject {
     }
     
     func searchAndFollowTapped() {
-        networkChecker.connectionAvailable ? isSearchAndFollowLinkActive = true : (alert = InAppAlerts.noNetworkAlert())
+       isSearchAndFollowLinkActive = true
     }
     
     // MARK: - Private methods

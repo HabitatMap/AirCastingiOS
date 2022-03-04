@@ -7,6 +7,7 @@ import CoreLocation
 
 struct SearchView: View {
     @StateObject var viewModel: SearchViewModel
+    @Environment(\.presentationMode) var presentationMode
     
     init() {
         _viewModel = .init(wrappedValue: SearchViewModel())
@@ -19,17 +20,23 @@ struct SearchView: View {
             Spacer()
             button
         }.padding()
-        .sheet(isPresented: $viewModel.isLocationPopupPresented) {
-            PlacePicker(service: SearchPickerService(addressName: .init(get: {
-                viewModel.addressName
-            }, set: { new in
-                viewModel.updateLocationName(using: new)
-            }), addressLocation: .init(get: {
-                viewModel.addresslocation
-            }, set: { new in
-                viewModel.updateLocationAddress(using: new)
-            })))
-        }
+            .onAppear(perform: {
+                viewModel.onAppearAction {
+                    presentationMode.wrappedValue.dismiss()
+                }
+            })
+            .alert(item: $viewModel.alert, content: { $0.makeAlert() })
+            .sheet(isPresented: $viewModel.isLocationPopupPresented) {
+                PlacePicker(service: SearchPickerService(addressName: .init(get: {
+                    viewModel.addressName
+                }, set: { new in
+                    viewModel.updateLocationName(using: new)
+                }), addressLocation: .init(get: {
+                    viewModel.addresslocation
+                }, set: { new in
+                    viewModel.updateLocationAddress(using: new)
+                })))
+            }
     }
 }
 

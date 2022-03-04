@@ -30,12 +30,12 @@ struct InAppAlerts {
                   ])
     }
     
-    static func noNetworkAlert() -> AlertInfo {
+    static func noNetworkAlert(dismiss: (() -> Void)? = nil) -> AlertInfo {
         AlertInfo(title: Strings.NetworkAlert.alertTitle,
                   message: Strings.NetworkAlert.alertMessage,
                   buttons: [
                     .default(title: Strings.Commons.gotIt,
-                             action: nil)
+                             action: dismiss)
                   ])
     }
     

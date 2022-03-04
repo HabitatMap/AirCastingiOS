@@ -844,7 +844,7 @@ struct Strings {
     enum NetworkAlert {
         static let alertTitle: String = NSLocalizedString("No internet connection",
                                                           comment: "")
-        static let alertMessage: String = NSLocalizedString("You need to have internet connection to continue",
+        static let alertMessage: String = NSLocalizedString("You need to have internet connection to continue.",
                                                             comment: "")
     }
     
