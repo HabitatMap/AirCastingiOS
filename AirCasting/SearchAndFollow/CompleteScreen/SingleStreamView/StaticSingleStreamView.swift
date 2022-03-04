@@ -3,24 +3,27 @@
 
 import SwiftUI
 
-struct StaticSingleMeasurementView: View {
+struct StaticSingleStreamView: View {
+    @StateObject var viewModel: StaticSingleStreamViewModel
     @Binding var selectedStreamId: Int?
-    var streamId: Int
-    var streamName: String
-    var value: Double
+    
+    init(selectedStreamId: Binding<Int?>,streamId: Int, streamName: String, value: Double) {
+        _selectedStreamId = .init(projectedValue: selectedStreamId)
+        _viewModel = .init(wrappedValue: StaticSingleStreamViewModel(streamId: streamId, streamName: streamName, value: value))
+    }
     
     var body: some View {
         VStack(spacing: 3) {
             Button(action: {
-                selectedStreamId = streamId
+                selectedStreamId = viewModel.streamId
             }, label: {
                 VStack(spacing: 1) {
-                    Text(showStreamName(streamName))
+                    Text(viewModel.streamName)
                         .font(Fonts.systemFont1)
                         .scaledToFill()
                         HStack(spacing: 3) {
                             dot
-                            Text("\(Int(value))")
+                            Text("\(Int(viewModel.value))")
                                 .font(Fonts.regularHeading3)
                                 .scaledToFill()
                         }
@@ -28,7 +31,7 @@ struct StaticSingleMeasurementView: View {
                         .padding(.horizontal, 9)
                         .overlay(
                             RoundedRectangle(cornerRadius: 8)
-                                .strokeBorder((selectedStreamId == streamId) ? Color.aircastingGray : .clear)
+                                .strokeBorder((selectedStreamId == viewModel.streamId) ? Color.aircastingGray : .clear)
                         )
                     }
             })
@@ -40,17 +43,10 @@ struct StaticSingleMeasurementView: View {
             .clipShape(Circle())
             .frame(width: 5, height: 5)
     }
-    
-    func showStreamName(_ streamName: String) -> String {
-        streamName
-            .replacingOccurrences(of: ":", with: "-")
-            .drop { $0 != "-" }
-            .replacingOccurrences(of: "-", with: "")
-    }
 }
 
-struct StaticSingleMeasurementView_Previews: PreviewProvider {
+struct StaticSingleStreamView_Previews: PreviewProvider {
     static var previews: some View {
-        StaticSingleMeasurementView(selectedStreamId: .constant(3), streamId: 3, streamName: "AirBeam3-PM1", value: 20)
+        StaticSingleStreamView(selectedStreamId: .constant(3), streamId: 3, streamName: "AirBeam3-PM1", value: 20)
     }
 }

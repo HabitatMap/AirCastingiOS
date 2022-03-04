@@ -35,11 +35,12 @@
 		33885BB227468B4E00F41CB5 /* SDSyncFileWritingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33885BB127468B4E00F41CB5 /* SDSyncFileWritingService.swift */; };
 		338C30E225F1044B00E0305C /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 338C30E125F1044B00E0305C /* PersistenceController.swift */; };
 		338C30E825F10BFE00E0305C /* AirCasting.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 338C30E625F10BFE00E0305C /* AirCasting.xcdatamodeld */; };
-		338CA6CF27CD13E900505331 /* StaticSingleMeasurementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 338CA6CE27CD13E900505331 /* StaticSingleMeasurementView.swift */; };
+		338CA6CF27CD13E900505331 /* StaticSingleStreamView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 338CA6CE27CD13E900505331 /* StaticSingleStreamView.swift */; };
 		338CA6D127CD2D9200505331 /* SearchAndFollowChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 338CA6D027CD2D9200505331 /* SearchAndFollowChartView.swift */; };
 		338CA6D327CD2F1900505331 /* SearchAndFollowChartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 338CA6D227CD2F1900505331 /* SearchAndFollowChartViewModel.swift */; };
 		3397C81F2787024C0050B333 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3397C81E2787024C0050B333 /* UserDefaults.swift */; };
 		339BF3E127D231F000BBCB23 /* StaticSessionHeaderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 339BF3E027D231F000BBCB23 /* StaticSessionHeaderViewModel.swift */; };
+		339BF3E427D23C2300BBCB23 /* StaticSingleStreamViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 339BF3E327D23C2300BBCB23 /* StaticSingleStreamViewModel.swift */; };
 		33A7FF1A27C5115700A138D6 /* CompleteScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33A7FF1927C5115700A138D6 /* CompleteScreen.swift */; };
 		33A7FF1D27C511A200A138D6 /* CompleteScreenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33A7FF1C27C511A200A138D6 /* CompleteScreenViewModel.swift */; };
 		33A7FF1F27C514AE00A138D6 /* SearchSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33A7FF1E27C514AE00A138D6 /* SearchSession.swift */; };
@@ -458,12 +459,13 @@
 		33885BB127468B4E00F41CB5 /* SDSyncFileWritingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSyncFileWritingService.swift; sourceTree = "<group>"; };
 		338C30E125F1044B00E0305C /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceController.swift; sourceTree = "<group>"; };
 		338C30E725F10BFE00E0305C /* AirCasting.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AirCasting.xcdatamodel; sourceTree = "<group>"; };
-		338CA6CE27CD13E900505331 /* StaticSingleMeasurementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaticSingleMeasurementView.swift; sourceTree = "<group>"; };
+		338CA6CE27CD13E900505331 /* StaticSingleStreamView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaticSingleStreamView.swift; sourceTree = "<group>"; };
 		338CA6D027CD2D9200505331 /* SearchAndFollowChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchAndFollowChartView.swift; sourceTree = "<group>"; };
 		338CA6D227CD2F1900505331 /* SearchAndFollowChartViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchAndFollowChartViewModel.swift; sourceTree = "<group>"; };
 		338FE86027AAB0F1006148DA /* AirCasting v3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AirCasting v3.xcdatamodel"; sourceTree = "<group>"; };
 		3397C81E2787024C0050B333 /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 		339BF3E027D231F000BBCB23 /* StaticSessionHeaderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaticSessionHeaderViewModel.swift; sourceTree = "<group>"; };
+		339BF3E327D23C2300BBCB23 /* StaticSingleStreamViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaticSingleStreamViewModel.swift; sourceTree = "<group>"; };
 		33A7FF1927C5115700A138D6 /* CompleteScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteScreen.swift; sourceTree = "<group>"; };
 		33A7FF1C27C511A200A138D6 /* CompleteScreenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteScreenViewModel.swift; sourceTree = "<group>"; };
 		33A7FF1E27C514AE00A138D6 /* SearchSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchSession.swift; sourceTree = "<group>"; };
@@ -952,6 +954,15 @@
 			path = Header;
 			sourceTree = "<group>";
 		};
+		339BF3E227D23B7200BBCB23 /* SingleStreamView */ = {
+			isa = PBXGroup;
+			children = (
+				338CA6CE27CD13E900505331 /* StaticSingleStreamView.swift */,
+				339BF3E327D23C2300BBCB23 /* StaticSingleStreamViewModel.swift */,
+			);
+			path = SingleStreamView;
+			sourceTree = "<group>";
+		};
 		33A7FF1B27C5116E00A138D6 /* CompleteScreen */ = {
 			isa = PBXGroup;
 			children = (
@@ -960,7 +971,7 @@
 				33A7FF1E27C514AE00A138D6 /* SearchSession.swift */,
 				339BF3DF27D231B900BBCB23 /* Header */,
 				3367B61627C924B000930E62 /* SearchCompleteScreenMapView.swift */,
-				338CA6CE27CD13E900505331 /* StaticSingleMeasurementView.swift */,
+				339BF3E227D23B7200BBCB23 /* SingleStreamView */,
 				338CA6D027CD2D9200505331 /* SearchAndFollowChartView.swift */,
 				338CA6D227CD2F1900505331 /* SearchAndFollowChartViewModel.swift */,
 			);
@@ -2481,6 +2492,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				339BF3E427D23C2300BBCB23 /* StaticSingleStreamViewModel.swift in Sources */,
 				AC93B8FE25C02E0B003D0A0D /* GoogleMapView.swift in Sources */,
 				B3F1447426ADF8A7006A4612 /* ScheduledTimer.swift in Sources */,
 				B30BAC042694A8B400AE0476 /* MapStatsDataSource.swift in Sources */,
@@ -2779,7 +2791,7 @@
 				AC7EB37625A6FB3A00A7F2AF /* AirCastingApp.swift in Sources */,
 				33AC7D5C273C1B9700EB1274 /* StandaloneSessionCardView.swift in Sources */,
 				AC4A6A6C267CB3D40001F639 /* GraphRenderers.swift in Sources */,
-				338CA6CF27CD13E900505331 /* StaticSingleMeasurementView.swift in Sources */,
+				338CA6CF27CD13E900505331 /* StaticSingleStreamView.swift in Sources */,
 				ACD01F922600A3C800B8F65F /* RootAppView.swift in Sources */,
 				DD28047B26B3D7730060F55E /* BluetoothConnector.swift in Sources */,
 				ACCEB2232763A2230040140B /* BackendSyncCompletedView.swift in Sources */,

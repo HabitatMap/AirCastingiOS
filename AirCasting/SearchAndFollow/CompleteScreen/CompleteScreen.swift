@@ -66,7 +66,7 @@ private extension CompleteScreen {
                 HStack {
                     streams.count != 1 ? Spacer() : nil
                     ForEach(streams) { stream in
-                        StaticSingleMeasurementView(selectedStreamId: $viewModel.selectedStream, streamId: stream.id, streamName: stream.sensorName, value: stream.measurements.last?.value ?? 0)
+                        StaticSingleStreamView(selectedStreamId: $viewModel.selectedStream, streamId: stream.id, streamName: stream.sensorName, value: stream.measurements.last?.value ?? 0)
                         Spacer()
                     }
                 }
