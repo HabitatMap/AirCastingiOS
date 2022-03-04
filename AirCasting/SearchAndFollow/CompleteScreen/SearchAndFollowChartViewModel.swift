@@ -7,7 +7,8 @@ import Charts
 class SearchAndFollowChartViewModel: ObservableObject {
     @Published var entries: [ChartDataEntry] = []
     
-    init(stream: SearchSession.SearchSessionStream) {
+    init(stream: SearchSession.SearchSessionStream?) {
+        guard let stream = stream else { return }
         generateEntries(for: stream)
     }
     

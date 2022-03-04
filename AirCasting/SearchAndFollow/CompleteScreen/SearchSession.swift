@@ -7,7 +7,6 @@ struct SearchSession {
     let name: String
     let startTime: Date
     let endTime: Date
-    let type: SessionType
     let longitude: Double
     let latitude: Double
     let streams: [SearchSessionStream]
@@ -31,7 +30,6 @@ struct SearchSession {
         let session =  self.init(name: "Mock Session",
                                  startTime: DateBuilder.getFakeUTCDate() - 60,
                                  endTime: DateBuilder.getFakeUTCDate(),
-                                 type: .mobile,
                                  longitude: 19.944544,
                                  latitude: 50.049683,
                                  streams: [

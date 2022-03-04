@@ -9,8 +9,8 @@ struct SearchAndFollowChartView: UIViewRepresentable {
     
     typealias UIViewType = UI_PollutionChart
     
-    init(stream: SearchSession.SearchSessionStream) {
-        _viewModel = .init(wrappedValue: SearchAndFollowChartViewModel(stream: stream))
+    init(viewModel: SearchAndFollowChartViewModel) {
+        _viewModel = .init(wrappedValue: viewModel)
     }
     
     func makeUIView(context: Context) -> UI_PollutionChart {

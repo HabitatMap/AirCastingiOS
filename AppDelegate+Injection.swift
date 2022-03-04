@@ -181,6 +181,9 @@ extension Resolver: ResolverRegistering {
         main.register { (_, args) in
             NotesHandlerDefault(sessionUUID: args()) as NotesHandler
         }
+        
+        // MARK: - Search
+        main.register { SearchSessionStreamsDownstreamMock() as SearchSessionStreamsDownstream }
     }
     
     // MARK: - Composition helpers

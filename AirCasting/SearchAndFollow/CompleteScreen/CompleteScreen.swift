@@ -8,7 +8,7 @@ struct CompleteScreen: View {
     @Environment(\.presentationMode) var presentationMode
     @StateObject var viewModel: CompleteScreenViewModel
     
-    init(session: SearchSession) {
+    init(session: SearchSessionResult) {
         _viewModel = .init(wrappedValue: CompleteScreenViewModel(session: session))
     }
     
@@ -29,12 +29,12 @@ struct CompleteScreen: View {
     var sessionCard: some View {
         VStack(alignment: .leading, spacing: 5) {
             header
-            if let selectedStream = viewModel.streamForChart {
+            if viewModel.sessionStreams.isReady {
                 measurements
                 if viewModel.isMapSelected {
                     SearchCompleteScreenMapView(longitude: viewModel.sessionLongitude, latitude: viewModel.sessionLatitude)
                 } else {
-                    SearchAndFollowChartView(stream: selectedStream)
+                    SearchAndFollowChartView(viewModel: viewModel.chartViewModel.get)
                 }
                 buttons
             } else {
@@ -62,7 +62,7 @@ private extension CompleteScreen {
             Text(Strings.SessionCart.lastMinuteMeasurement)
                 .font(Fonts.moderateTitle1)
                 .padding(.bottom, 3)
-            if let streams = viewModel.sessionStreams {
+            if let streams = viewModel.sessionStreams.get {
                 HStack {
                     streams.count != 1 ? Spacer() : nil
                     ForEach(streams) { stream in
