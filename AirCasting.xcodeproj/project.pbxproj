@@ -39,10 +39,11 @@
 		338CA6D127CD2D9200505331 /* SearchAndFollowChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 338CA6D027CD2D9200505331 /* SearchAndFollowChartView.swift */; };
 		338CA6D327CD2F1900505331 /* SearchAndFollowChartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 338CA6D227CD2F1900505331 /* SearchAndFollowChartViewModel.swift */; };
 		3397C81F2787024C0050B333 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3397C81E2787024C0050B333 /* UserDefaults.swift */; };
+		339BF3E127D231F000BBCB23 /* StaticSessionHeaderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 339BF3E027D231F000BBCB23 /* StaticSessionHeaderViewModel.swift */; };
 		33A7FF1A27C5115700A138D6 /* CompleteScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33A7FF1927C5115700A138D6 /* CompleteScreen.swift */; };
 		33A7FF1D27C511A200A138D6 /* CompleteScreenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33A7FF1C27C511A200A138D6 /* CompleteScreenViewModel.swift */; };
 		33A7FF1F27C514AE00A138D6 /* SearchSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33A7FF1E27C514AE00A138D6 /* SearchSession.swift */; };
-		33A7FF2127C5160A00A138D6 /* SearchCompleteScreenHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33A7FF2027C5160A00A138D6 /* SearchCompleteScreenHeader.swift */; };
+		33A7FF2127C5160A00A138D6 /* StaticSessionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33A7FF2027C5160A00A138D6 /* StaticSessionHeader.swift */; };
 		33AC7D5C273C1B9700EB1274 /* StandaloneSessionCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33AC7D5B273C1B9700EB1274 /* StandaloneSessionCardView.swift */; };
 		33BA3368266E4BCA00899343 /* MobilePeripheralSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33BA3367266E4BCA00899343 /* MobilePeripheralSessionManager.swift */; };
 		33BA336A266E4D1000899343 /* MobileSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33BA3369266E4D1000899343 /* MobileSession.swift */; };
@@ -462,10 +463,11 @@
 		338CA6D227CD2F1900505331 /* SearchAndFollowChartViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchAndFollowChartViewModel.swift; sourceTree = "<group>"; };
 		338FE86027AAB0F1006148DA /* AirCasting v3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AirCasting v3.xcdatamodel"; sourceTree = "<group>"; };
 		3397C81E2787024C0050B333 /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
+		339BF3E027D231F000BBCB23 /* StaticSessionHeaderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaticSessionHeaderViewModel.swift; sourceTree = "<group>"; };
 		33A7FF1927C5115700A138D6 /* CompleteScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteScreen.swift; sourceTree = "<group>"; };
 		33A7FF1C27C511A200A138D6 /* CompleteScreenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteScreenViewModel.swift; sourceTree = "<group>"; };
 		33A7FF1E27C514AE00A138D6 /* SearchSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchSession.swift; sourceTree = "<group>"; };
-		33A7FF2027C5160A00A138D6 /* SearchCompleteScreenHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchCompleteScreenHeader.swift; sourceTree = "<group>"; };
+		33A7FF2027C5160A00A138D6 /* StaticSessionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaticSessionHeader.swift; sourceTree = "<group>"; };
 		33AC7D5B273C1B9700EB1274 /* StandaloneSessionCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandaloneSessionCardView.swift; sourceTree = "<group>"; };
 		33BA3367266E4BCA00899343 /* MobilePeripheralSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobilePeripheralSessionManager.swift; sourceTree = "<group>"; };
 		33BA3369266E4D1000899343 /* MobileSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileSession.swift; sourceTree = "<group>"; };
@@ -941,13 +943,22 @@
 			path = CoreData;
 			sourceTree = "<group>";
 		};
+		339BF3DF27D231B900BBCB23 /* Header */ = {
+			isa = PBXGroup;
+			children = (
+				33A7FF2027C5160A00A138D6 /* StaticSessionHeader.swift */,
+				339BF3E027D231F000BBCB23 /* StaticSessionHeaderViewModel.swift */,
+			);
+			path = Header;
+			sourceTree = "<group>";
+		};
 		33A7FF1B27C5116E00A138D6 /* CompleteScreen */ = {
 			isa = PBXGroup;
 			children = (
 				33A7FF1927C5115700A138D6 /* CompleteScreen.swift */,
 				33A7FF1C27C511A200A138D6 /* CompleteScreenViewModel.swift */,
 				33A7FF1E27C514AE00A138D6 /* SearchSession.swift */,
-				33A7FF2027C5160A00A138D6 /* SearchCompleteScreenHeader.swift */,
+				339BF3DF27D231B900BBCB23 /* Header */,
 				3367B61627C924B000930E62 /* SearchCompleteScreenMapView.swift */,
 				338CA6CE27CD13E900505331 /* StaticSingleMeasurementView.swift */,
 				338CA6D027CD2D9200505331 /* SearchAndFollowChartView.swift */,
@@ -2481,6 +2492,7 @@
 				B3F1447A26AE436A006A4612 /* FilterErrorPublisher.swift in Sources */,
 				ACCEB21B2763A2230040140B /* ClearingSDCardView.swift in Sources */,
 				B3D1928D26F1FA1C0029E1C8 /* FixedSessionFaker.swift in Sources */,
+				339BF3E127D231F000BBCB23 /* StaticSessionHeaderViewModel.swift in Sources */,
 				AC049F7F2604B7AF00398197 /* AuthErorrHandling.swift in Sources */,
 				DDBA6139276B3AE200E3FEF9 /* EditNoteView.swift in Sources */,
 				750A51DC2754D4BD00D6F4E7 /* VisibleRegionCoordinates.swift in Sources */,
@@ -2544,7 +2556,7 @@
 				DD5687C326CFC8080028C2CA /* Constants.swift in Sources */,
 				AC489B5C2603614E00CEEC48 /* MoreInfoPopupView.swift in Sources */,
 				336A909927A4946400851100 /* ReorderingDashboardViewModel.swift in Sources */,
-				33A7FF2127C5160A00A138D6 /* SearchCompleteScreenHeader.swift in Sources */,
+				33A7FF2127C5160A00A138D6 /* StaticSessionHeader.swift in Sources */,
 				DDD24D9526A8569400D4A327 /* EmailForgotPasswordController.swift in Sources */,
 				AC524A892614733D0061AD45 /* CreatingSessionFlowRootView.swift in Sources */,
 				3387DD4A278F1A2900B11D02 /* ShareLocationlessSessionView.swift in Sources */,

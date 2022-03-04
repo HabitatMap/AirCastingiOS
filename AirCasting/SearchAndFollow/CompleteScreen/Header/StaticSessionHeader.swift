@@ -3,15 +3,19 @@
 
 import SwiftUI
 
-struct SearchCompleteScreenHeader: View {
-    var session: SearchSession
+struct StaticSessionHeader: View {
+    @StateObject var viewModel: StaticSessionHeaderViewModel
+    
+    init(name: String, startTime: Date, endTime: Date, sensorType: String) {
+        _viewModel = .init(wrappedValue: StaticSessionHeaderViewModel(name: name, startTime: startTime, endTime: endTime, sensorType: sensorType))
+    }
     
     var body: some View {
         sessionHeader
     }
 }
 
-private extension SearchCompleteScreenHeader {
+private extension StaticSessionHeader {
     var sessionHeader: some View {
         VStack(alignment: .leading, spacing: 3) {
             HStack {
@@ -33,7 +37,7 @@ private extension SearchCompleteScreenHeader {
     var nameLabel: some View {
         VStack(alignment: .leading, spacing: 3) {
             HStack {
-                Text(session.name)
+                Text(viewModel.sessionName)
                     .font(Fonts.regularHeading1)
                 Spacer()
             }
@@ -44,25 +48,24 @@ private extension SearchCompleteScreenHeader {
     }
     
     var sensorType: some View {
-        let allStreams = session.streams
-        return SessionTypeIndicator(sessionType: session.type, streamSensorNames: allStreams.compactMap(\.sensorPackageName))
+        Text(viewModel.sensorType)
     }
 
     func adaptTimeAndDate() -> Text {
         let formatter = DateFormatters.SessionCartView.utcDateIntervalFormatter
-        
-        let start = session.startTime
-        let end = session.endTime
-        
+
+        let start = viewModel.sessionStartTime
+        let end = viewModel.sessionEndTime
+
         let string = formatter.string(from: start, to: end)
         return Text(string)
     }
 }
 
 #if DEBUG
-struct SearchCompleteScreenHeader_Previews: PreviewProvider {
+struct StaticSessionHeader_Previews: PreviewProvider {
     static var previews: some View {
-        SearchCompleteScreenHeader(session: SearchSession.mock)
+        StaticSessionHeader(name: "Test Session", startTime: DateBuilder.getFakeUTCDate(), endTime: DateBuilder.getFakeUTCDate(), sensorType: "AirBeam2")
     }
 }
 #endif

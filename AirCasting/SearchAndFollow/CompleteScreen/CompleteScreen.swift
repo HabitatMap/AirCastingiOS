@@ -1,7 +1,5 @@
 // Created by Lunar on 22/02/2022.
 //
-// Created by Lunar on 28/01/2022.
-//
 
 import SwiftUI
 import AirCastingStyling
@@ -31,17 +29,18 @@ struct CompleteScreen: View {
     var sessionCard: some View {
         VStack(alignment: .leading, spacing: 5) {
             header
-            if !viewModel.session.streams.isEmpty {
+            if let selectedStream = viewModel.streamForChart {
                 measurements
                 if viewModel.isMapSelected {
-                    SearchCompleteScreenMapView(longitude: viewModel.session.longitude, latitude: viewModel.session.latitude)
+                    SearchCompleteScreenMapView(longitude: viewModel.sessionLongitude, latitude: viewModel.sessionLatitude)
                 } else {
-                    SearchAndFollowChartView(stream: viewModel.stream(withID: viewModel.selectedStream))
+                    SearchAndFollowChartView(stream: selectedStream)
                 }
                 buttons
             } else {
                 Text(Strings.CompleteSearchView.noStreamsDescription)
                     .padding(.vertical)
+                SearchCompleteScreenMapView(longitude: viewModel.sessionLongitude, latitude: viewModel.sessionLatitude)
             }
             confirmationButton
             Spacer()
@@ -54,7 +53,7 @@ struct CompleteScreen: View {
 
 private extension CompleteScreen {
     var header: some View {
-        SearchCompleteScreenHeader(session: viewModel.session)
+        StaticSessionHeader(name: viewModel.sessionName, startTime: viewModel.sessionStartTime, endTime: viewModel.sessionEndTime, sensorType: viewModel.sensorType)
             .padding(.vertical)
     }
     
@@ -63,7 +62,7 @@ private extension CompleteScreen {
             Text(Strings.SessionCart.lastMinuteMeasurement)
                 .font(Fonts.moderateTitle1)
                 .padding(.bottom, 3)
-            if let streams = viewModel.session.streams {
+            if let streams = viewModel.sessionStreams {
                 HStack {
                     streams.count != 1 ? Spacer() : nil
                     ForEach(streams) { stream in
