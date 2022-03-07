@@ -5,18 +5,14 @@ import Foundation
 import Resolver
 import SwiftUI
 
-protocol MapSessionsDownloader {
-    func getSessions(geoSquare: GeoSquare,  completion: @escaping (Result<[SearchedSession], Error>) -> Void)
-}
-
 // swiftlint:disable print_using
-class MapSessionsDownloaderDefault: MapSessionsDownloader {
+class MapSessionsDownloader {
     @Injected private var authorization: RequestAuthorisationService
     @Injected private var urlProvider: URLProvider
     @Injected private var client: APIClient
     @Injected private var responseValidator: HTTPResponseValidator
     
-    func getSessions(geoSquare: GeoSquare,  completion: @escaping (Result<[SearchedSession], Error>) -> Void) {
+    func getSessions(geoSquare: GeoSquare,  completion: @escaping ([SearchedSession]) -> Void) {
         let urlComponentPart = urlProvider.baseAppURL.appendingPathComponent("/api/fixed/active/sessions.json")
         
         var urlComponents = URLComponents(string: urlComponentPart.absoluteString)!
@@ -31,7 +27,7 @@ class MapSessionsDownloaderDefault: MapSessionsDownloader {
                           usernames: "",
                           west: geoSquare.west,
                           east: geoSquare.east,
-                          soth: geoSquare.south, // TODO: SOTH !!!
+                          soth: geoSquare.south,
                           north: geoSquare.north,
                           limit: 100,
                           offset: 0,
@@ -52,23 +48,11 @@ class MapSessionsDownloaderDefault: MapSessionsDownloader {
             request.addValue("application/json", forHTTPHeaderField: "Accept")
             
             try authorization.authorise(request: &request)
-            client.requestTask(for: request) { [responseValidator] response, _ in
-                switch response {
-                case .failure(let error):
-                    completion(.failure(error))
-                case .success(let response):
-                    do {
-                        try responseValidator.validate(response: response.response, data: response.data)
-                        let decoder = JSONDecoder()
-                        let sessionData = try decoder.decode(SearchedSessions.self, from: response.data)
-                        completion(.success(sessionData.sessions))
-                    } catch {
-                        completion(.failure(error))
-                    }
-                }
+            client.requestTask(for: request) { response, _ in
+                
             }
         } catch {
-            completion(.failure(error))
+            // handle error
         }
     }
 }
