@@ -29,6 +29,7 @@ extension Resolver: ResolverRegistering {
         
         main.register { PrintLogger() }.scope(.application)
         main.register { FileLogger() }.scope(.application)
+        main.register { CrashlyticsLogger() }.scope(.application)
         
         main.register {
             DocumentsFileLoggerStore(logDirectory: "logs",

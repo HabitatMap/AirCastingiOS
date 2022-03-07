@@ -10,7 +10,7 @@ struct Query: Codable {
     let usernames: String
     let west: Double
     let east: Double
-    let soth: Double
+    let south: Double
     let north: Double
     let limit: Double
     let offset: Double
@@ -25,7 +25,7 @@ struct Query: Codable {
         case usernames = "usernames"
         case west = "west"
         case east = "east"
-        case soth = "south"
+        case south = "south"
         case north = "north"
         case limit = "limit"
         case offset = "offset"

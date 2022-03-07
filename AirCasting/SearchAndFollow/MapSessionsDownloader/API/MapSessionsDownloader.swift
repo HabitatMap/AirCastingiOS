@@ -31,7 +31,7 @@ class MapSessionsDownloaderDefault: MapSessionsDownloader {
                           usernames: "",
                           west: geoSquare.west,
                           east: geoSquare.east,
-                          soth: geoSquare.south, // TODO: SOTH !!!
+                          south: geoSquare.south,
                           north: geoSquare.north,
                           limit: 100,
                           offset: 0,
