@@ -19,10 +19,18 @@ struct SearchMapView: View {
             LoadingView(isShowing: $viewModel.showLoadingIndicator, activityIndicatorText: Strings.SearchMapView.loadingText) {
                 map
             }
-            VStack(alignment: .center, content: {
+            VStack(content: {
                 textField
                 parametersText
                 redoneButton
+                Spacer()
+                ScrollView(.horizontal, showsIndicators: false) {
+                    LazyHStack(spacing: 8) {
+                        ForEach(Range(1...10)) { session in
+                            BottomCardView()
+                        }
+                    }
+                }
             })
                 .padding(.top, 50)
                 .padding(.horizontal)
