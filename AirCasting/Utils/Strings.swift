@@ -479,6 +479,7 @@ struct Strings {
                                                           comment: "")
         static let fetchingText: String = NSLocalizedString("Fetching...",
                                                             comment: "")
+        static let exploreSessionsButton = NSLocalizedString("Explore existing sessions", comment: "")
     }
 
     enum ReorderingDashboard {
