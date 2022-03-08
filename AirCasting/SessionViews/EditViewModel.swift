@@ -15,7 +15,6 @@ protocol EditViewModel: ObservableObject {
     
     func saveChanges()
     func downloadSessionAndReloadView()
-    func reload()
 }
 
 class EditSessionViewModel: EditViewModel {
@@ -59,27 +58,33 @@ class EditSessionViewModel: EditViewModel {
     }
     
     func downloadSessionAndReloadView() {
-        sessionSynchronizer.downloadSingleSession(sessionUUID: sessionUUID) {
-            DispatchQueue.main.async {  
-                self.isSessionDownloaded = true
-                self.reload()
+        measurementStreamStorage.accessStorage { [self] storage in
+            do {
+                let session = try storage.getExistingSession(with: sessionUUID)
+                guard let name = session.name else {
+                    download(session: session)
+                    return
+                }
+                saveSession(name: name, tags: session.tags)
+            } catch {
+                Log.error("Error reloading session data for edit view.")
             }
         }
     }
     
-    internal func reload() {
-        measurementStreamStorage.accessStorage { [self] storage in
-            do {
-                let session = try storage.getExistingSession(with: sessionUUID)
-                guard let name = session.name else { return }
-                let tags = session.tags ?? ""
-                DispatchQueue.main.async {
-                    sessionName = name
-                    sessionTags = tags
-                }
-            } catch {
-                Log.error("Error reloading session data for edit view.")
+    private func download(session: SessionEntity) {
+        sessionSynchronizer.downloadSingleSession(sessionUUID: sessionUUID) {
+            DispatchQueue.main.async {
+                self.saveSession(name: session.name, tags: session.tags)
             }
+        }
+    }
+    
+    private func saveSession(name: String?, tags: String?) {
+        DispatchQueue.main.async {
+            self.sessionName = name ?? ""
+            self.sessionTags = tags ?? ""
+            self.isSessionDownloaded = true
         }
     }
 }
