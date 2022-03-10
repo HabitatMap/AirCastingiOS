@@ -199,7 +199,6 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
 
     private func saveMeasurementStream(for session: SessionEntity, context: NSManagedObjectContext, _ stream: MeasurementStream) throws -> MeasurementStreamLocalID {
         let newStream = NSEntityDescription.insertNewObject(forEntityName: "MeasurementStreamEntity", into: context) as! MeasurementStreamEntity
-//        let newStream = MeasurementStreamEntity(context: context)
         newStream.sensorName = stream.sensorName
         newStream.sensorPackageName = stream.sensorPackageName
         newStream.measurementType = stream.measurementType
