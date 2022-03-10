@@ -21,11 +21,10 @@ struct SelectPeripheralView: View {
     
     var body: some View {
         GeometryReader { geometry in
-            ScrollView {
-                VStack(spacing: 30) {
-                    ProgressView(value: 0.375)
-                    titleLabel
-                    
+            VStack(spacing: 30) {
+                ProgressView(value: 0.375)
+                titleLabel
+                ScrollView {
                     LazyVStack(alignment: .leading, spacing: 25) {
                         HStack(spacing: 8) {
                             Text(Strings.SelectPeripheralView.airBeamsText)
@@ -43,37 +42,34 @@ struct SelectPeripheralView: View {
                         }
                         displayDeviceButton(devices: bluetoothManager.otherDevices)
                     }
-                    .listStyle(PlainListStyle())
-                    .listItemTint(Color.red)
-                    .font(Fonts.regularHeading1)
-                    .foregroundColor(.aircastingDarkGray)
-                    
                     Spacer()
-                    
-                    if !bluetoothManager.isScanning {
-                        refreshButton
-                            .frame(alignment: .trailing)
-                    }
-                    
-                    if selection != nil {
-                        connectButton.disabled(false)
-                    } else {
-                        connectButton.disabled(true)
-                    }
                 }
-                .onAppear {
-                    if CBCentralManager.authorization == .allowedAlways {
-                        // it triggers the bluetooth searching on the appearing time
-                        _ = bluetoothManager.centralManager
-                        bluetoothManager.startScanning()
-                    }
+                .listStyle(PlainListStyle())
+                .font(Fonts.regularHeading1)
+                .foregroundColor(.aircastingDarkGray)
+                if !bluetoothManager.isScanning {
+                    refreshButton
+                        .frame(alignment: .trailing)
                 }
-                .onDisappear {
-                    bluetoothManager.centralManager.stopScan()
+                
+                if selection != nil {
+                    connectButton.disabled(false)
+                } else {
+                    connectButton.disabled(true)
                 }
-                .padding()
-                .frame(maxWidth: .infinity, minHeight: geometry.size.height, alignment: .top)
             }
+            .onAppear {
+                if CBCentralManager.authorization == .allowedAlways {
+                    // it triggers the bluetooth searching on the appearing time
+                    _ = bluetoothManager.centralManager
+                    bluetoothManager.startScanning()
+                }
+            }
+            .onDisappear {
+                bluetoothManager.centralManager.stopScan()
+            }
+            .padding()
+            .frame(maxWidth: .infinity, minHeight: geometry.size.height, alignment: .top)
         }
     }
     
