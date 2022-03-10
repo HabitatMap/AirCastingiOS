@@ -15,30 +15,41 @@ struct SearchMapView: View {
     }
     
     var body: some View {
-        ZStack(alignment: .top, content: {
-            LoadingView(isShowing: $viewModel.showLoadingIndicator, activityIndicatorText: Strings.SearchMapView.loadingText) {
-                map
-            }
-            VStack(content: {
-                textField
-                parametersText
-                redoneButton
-                Spacer()
-                ScrollView(.horizontal, showsIndicators: false) {
-                    LazyHStack(spacing: 8) {
-                        ForEach(Range(1...10)) { session in
-                            BottomCardView()
+        GeometryReader { geometry in
+            ZStack(alignment: .top, content: {
+                LoadingView(isShowing: $viewModel.showLoadingIndicator, activityIndicatorText: Strings.SearchMapView.loadingText) {
+                    ZStack(alignment: .top) {
+                        map
+                        VStack {
+                        Spacer()
+                        HStack(alignment: .bottom) {
+                            Text("Sessions")
+                                .bold()
+                            Text("showing 6 of 2500 results")
+                        }.foregroundColor(.darkBlue)
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            LazyHStack(alignment: .bottom, spacing: 12) {
+                                ForEach(Range(1...10)) { session in
+                                    BottomCardView()
+                                }
+                            }
+                        }.frame(height: UIScreen.main.bounds.height / 9, alignment: .leading)
                         }
                     }
                 }
+                VStack(content: {
+                    textField
+                    parametersText
+                    redoneButton
+                })
+                    .padding(.top, 50)
+                    .padding(.horizontal)
             })
-                .padding(.top, 50)
-                .padding(.horizontal)
+        }
+        .onChange(of: viewModel.shouldDismissView, perform: { _ in
+            viewModel.shouldDismissView ? self.presentationMode.wrappedValue.dismiss() : nil
         })
-            .onChange(of: viewModel.shouldDismissView, perform: { _ in
-                viewModel.shouldDismissView ? self.presentationMode.wrappedValue.dismiss() : nil
-            })
-            .alert(item: $viewModel.alert, content: { $0.makeAlert() })
+        .alert(item: $viewModel.alert, content: { $0.makeAlert() })
     }
 }
 

@@ -13,9 +13,12 @@ struct BottomCardView: View {
     var sessionCard: some View {
         VStack(alignment: .leading, spacing: 5) {
             Text("Testowana sesja")
+                .font(Fonts.boldHeading2)
+                .foregroundColor(.darkBlue)
+            dataAndTime
+            streams
+            
         }
-        .font(Fonts.regularHeading4)
-        .foregroundColor(.aircastingGray)
         .padding()
         .background(
             Group {
@@ -23,5 +26,19 @@ struct BottomCardView: View {
                     .shadow(color: .sessionCardShadow, radius: 9, x: 0, y: 1)
             }
         )
+    }
+}
+
+private extension BottomCardView {
+    var dataAndTime: some View {
+        Text("12.02.2019 13:10 - 14:15")
+            .font(Fonts.regularHeading4)
+            .foregroundColor(.aircastingGray)
+    }
+    
+    var streams: some View {
+        Text("PM1 PM2.5 PM10 F RH")
+            .font(Fonts.regularHeading4)
+            .foregroundColor(.aircastingGray)
     }
 }
