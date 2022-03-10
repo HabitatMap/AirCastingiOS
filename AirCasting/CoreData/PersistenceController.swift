@@ -77,23 +77,10 @@ class PersistenceController: ObservableObject {
         NotificationCenter.default.addObserver(self, selector: #selector(appWillClose), name: UIApplication.willTerminateNotification, object: nil)
     }
     
-    lazy var editContext: NSManagedObjectContext = {
+    var editContext: NSManagedObjectContext {
         let ctx = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
         ctx.parent = sourceOfTruthContext
-        ctx.automaticallyMergesChangesFromParent = true
         return ctx
-    }()
-    
-    func performBackgroundTask(_ block: @escaping (NSManagedObjectContext) -> Void) {
-        let context = editContext
-        context.perform {
-            do {
-                block(context)
-                try context.save()
-            } catch {
-                Log.error("Couldn't save context! \(error.localizedDescription)")
-            }
-        }
     }
     
     @objc private func mainContextChanged() {

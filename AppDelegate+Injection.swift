@@ -69,10 +69,7 @@ extension Resolver: ResolverRegistering {
             .implements(SessionUpdateable.self)
             .scope(.application)
         main.register { CoreDataMeasurementStreamStorage() as MeasurementStreamStorage }.scope(.cached)
-        main.register { (_, _) -> UIStorage in
-            let context = Resolver.resolve(PersistenceController.self).editContext
-            return CoreDataUIStorage(context: context)
-        }.scope(.cached)
+        main.register { CoreDataUIStorage() as UIStorage }.scope(.cached)
         main.register { DefaultFileLineReader() as FileLineReader }
         main.register { SessionDataEraser() as DataEraser }
         

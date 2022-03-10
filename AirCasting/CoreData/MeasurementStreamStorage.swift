@@ -38,19 +38,17 @@ extension HiddenCoreDataMeasurementStreamStorage {
 }
 
 final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
-
     @Injected private var persistenceController: PersistenceController
     @Injected private var updateSessionParamsService: UpdateSessionParamsService
-    private lazy var context: NSManagedObjectContext = persistenceController.editContext
-    private lazy var hiddenStorage = HiddenCoreDataMeasurementStreamStorage(context: self.context)
-
     /// All actions performed on CoreDataMeasurementStreamStorage must be performed
     /// within a block passed to this methood.
     /// This ensures thread-safety by dispatching all calls to the queue owned by the NSManagedObjectContext.
     func accessStorage(_ task: @escaping(HiddenCoreDataMeasurementStreamStorage) -> Void) {
+        let context = persistenceController.editContext
+        let hiddenStorage = HiddenCoreDataMeasurementStreamStorage(context: context)
         context.perform {
-            task(self.hiddenStorage)
-            try? self.hiddenStorage.save()
+            task(hiddenStorage)
+            try? hiddenStorage.save()
         }
     }
 }
@@ -135,7 +133,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
     func addMeasurement(_ measurement: Measurement, toStreamWithID id: MeasurementStreamLocalID) throws {
         let stream = try context.existingObject(with: id.id) as! MeasurementStreamEntity
 
-        let newMeasurement = MeasurementEntity(context: context)
+        let newMeasurement = NSEntityDescription.insertNewObject(forEntityName: "MeasurementEntity", into: context) as! MeasurementEntity
         newMeasurement.location = measurement.location
         newMeasurement.time = measurement.time
         newMeasurement.value = measurement.value
@@ -153,7 +151,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         let stream = try context.existingObject(with: id.id) as! MeasurementStreamEntity
 
         measurements.forEach { measurement in
-            let newMeasurement = MeasurementEntity(context: context)
+            let newMeasurement = NSEntityDescription.insertNewObject(forEntityName: "MeasurementEntity", into: context) as! MeasurementEntity
             newMeasurement.location = measurement.location
             newMeasurement.time = measurement.time
             newMeasurement.value = measurement.value
@@ -200,7 +198,8 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
     }
 
     private func saveMeasurementStream(for session: SessionEntity, context: NSManagedObjectContext, _ stream: MeasurementStream) throws -> MeasurementStreamLocalID {
-        let newStream = MeasurementStreamEntity(context: context)
+        let newStream = NSEntityDescription.insertNewObject(forEntityName: "MeasurementStreamEntity", into: context) as! MeasurementStreamEntity
+//        let newStream = MeasurementStreamEntity(context: context)
         newStream.sensorName = stream.sensorName
         newStream.sensorPackageName = stream.sensorPackageName
         newStream.measurementType = stream.measurementType

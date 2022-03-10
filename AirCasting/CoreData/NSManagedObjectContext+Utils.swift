@@ -92,22 +92,22 @@ extension NSManagedObjectContext {
 
 extension NSManagedObjectContext {
 
-    func existingObject<T: SensorThreshold>(sensorName: String) throws -> T?  {
+    func existingObject(sensorName: String) throws -> SensorThreshold?  {
         #warning("We do not check streams ids, sensor name are not enough to differentiate streams")
-        let className = NSStringFromClass(T.classForCoder())
-        let fetchRequest = NSFetchRequest<T>(entityName: className)
+        let className = NSStringFromClass(SensorThreshold.classForCoder())
+        let fetchRequest = NSFetchRequest<SensorThreshold>(entityName: className)
         fetchRequest.predicate = NSPredicate(format: "sensorName == %@", sensorName)
         let results = try self.fetch(fetchRequest)
         return results.first
     }
     
-    func createObject<T: SensorThreshold>(sensorName: String) throws -> T  {
-        let new: T = T(context: self)
+    func createObject(sensorName: String) throws -> SensorThreshold  {
+        let new = NSEntityDescription.insertNewObject(forEntityName: "SensorThreshold", into: self) as! SensorThreshold
         new.setValue(sensorName, forKey: "sensorName")
         return new
     }
 
-    func newOrExisting<T: SensorThreshold>(sensorName: String) throws -> T  {
+    func newOrExisting(sensorName: String) throws -> SensorThreshold  {
         try existingObject(sensorName: sensorName) ?? createObject(sensorName: sensorName)
     }
     

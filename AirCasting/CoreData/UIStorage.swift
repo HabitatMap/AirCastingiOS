@@ -15,22 +15,18 @@ protocol UIStorageContextUpdate {
 }
 
 final class CoreDataUIStorage: UIStorage {
-    
-    private let context: NSManagedObjectContext
+    @Injected private var persistenceController: PersistenceController
     private lazy var updateSessionParamsService = UpdateSessionParamsService()
-    private lazy var hiddenStorage = HiddenCoreDataUIStorage(context: self.context)
-    
-    init(context: NSManagedObjectContext) {
-        self.context = context
-    }
     
     /// All actions performed on CoreDataMeasurementStreamStorage must be performed
     /// within a block passed to this methood.
     /// This ensures thread-safety by dispatching all calls to the queue owned by the NSManagedObjectContext.
     func accessStorage(_ task: @escaping(HiddenCoreDataUIStorage) -> Void) {
+        let context = persistenceController.editContext
+        let hiddenStorage = HiddenCoreDataUIStorage(context: context)
         context.perform {
-            task(self.hiddenStorage)
-            try? self.hiddenStorage.save()
+            task(hiddenStorage)
+            try? hiddenStorage.save()
         }
     }
 }

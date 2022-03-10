@@ -74,7 +74,7 @@ final class UpdateSessionParamsService {
                 }
             }
             measurementDiff.inserted.forEach {
-                let newMeasurement = MeasurementEntity(context: context)
+                let newMeasurement = NSEntityDescription.insertNewObject(forEntityName: "MeasurementEntity", into: context) as! MeasurementEntity
                 fillMeasurement(newMeasurement, with: $0)
                 newMeasurement.measurementStream = oldStream
             }
@@ -134,7 +134,7 @@ private extension UpdateSessionParamsService {
             throw Error.missingContext(entity)
         }
         streamOutput.measurements.forEach {
-            let newMeasurement = MeasurementEntity(context: context)
+            let newMeasurement = NSEntityDescription.insertNewObject(forEntityName: "MeasurementEntity", into: context) as! MeasurementEntity
             fillMeasurement(newMeasurement, with: $0)
             newMeasurement.measurementStream = entity
         }
