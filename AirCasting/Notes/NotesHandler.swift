@@ -64,9 +64,15 @@ class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDel
             do {
                 try storage.deleteNote(note, for: sessionUUID)
                 fetchSession { session in
-                    self.sessionUpdateService.updateSession(session: session) { _ in
-                        Log.info("Notes successfully updated")
-                        completion()
+                    self.sessionUpdateService.updateSession(session: session) { result in
+                        switch result {
+                        case .success(let updateData):
+                            try? storage.updateVersion(for: sessionUUID, to: updateData.version)
+                            Log.info("Notes successfully updated")
+                            completion()
+                        case .failure(let error):
+                            Log.info("Failed updating session while updating notes: \(error.localizedDescription)")
+                        }
                     }
                 }
             } catch {
@@ -80,9 +86,15 @@ class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDel
             do {
                 try storage.updateNote(note, newText: newText, for: sessionUUID)
                 fetchSession { session in
-                    self.sessionUpdateService.updateSession(session: session) { _ in
-                        Log.info("Notes successfully updated")
-                        completion()
+                    self.sessionUpdateService.updateSession(session: session) { result in
+                        switch result {
+                        case .success(let updateData):
+                            try? storage.updateVersion(for: sessionUUID, to: updateData.version)
+                            Log.info("Notes successfully updated")
+                            completion()
+                        case .failure(let error):
+                            Log.info("Failed updating session while updating notes: \(error.localizedDescription)")
+                        }
                     }
                 }
             } catch {
