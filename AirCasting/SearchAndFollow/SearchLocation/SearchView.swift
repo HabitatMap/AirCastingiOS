@@ -67,6 +67,8 @@ private extension SearchView {
                                        parametr: "particular matter"),
             label: {
                 Text(Strings.Commons.continue)
-            }).buttonStyle(BlueButtonStyle())
+            })
+            .disabled(viewModel.addressName == "")
+            .buttonStyle(BlueButtonStyle())
     }
 }

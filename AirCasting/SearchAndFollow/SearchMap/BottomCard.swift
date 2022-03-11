@@ -5,19 +5,24 @@ import Foundation
 import SwiftUI
 
 struct BottomCardView: View {
+    let title: String
     
     var body: some View {
         sessionCard
     }
     
     var sessionCard: some View {
-        VStack(alignment: .leading, spacing: 5) {
-            Text("Testowana sesja")
-                .font(Fonts.boldHeading2)
-                .foregroundColor(.darkBlue)
-            dataAndTime
-            streams
-            
+        Button {
+            Log.info("Clicked.x")
+        } label: {
+            VStack(alignment: .leading, spacing: 5) {
+                Text(title)
+                    .font(Fonts.boldHeading2)
+                    .foregroundColor(.darkBlue)
+                dataAndTime
+                streams
+                
+            }
         }
         .padding()
         .background(

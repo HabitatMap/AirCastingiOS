@@ -53,6 +53,7 @@ class SearchMapViewModel: ObservableObject {
                 DispatchQueue.main.async {
                     self.sessionsList = sessions.map { s in
                         return MappedSession(id: s.id,
+                                             title: s.title,
                                       location: .init(latitude: s.latitude, longitude: s.longitude),
                                       markerImage: UIImage(systemName: "circle.circle.fill")!)
                         

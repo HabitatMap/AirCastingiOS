@@ -21,19 +21,9 @@ struct SearchMapView: View {
                     ZStack(alignment: .top) {
                         map
                         VStack {
-                        Spacer()
-                        HStack(alignment: .bottom) {
-                            Text("Sessions")
-                                .bold()
-                            Text("showing 6 of 2500 results")
-                        }.foregroundColor(.darkBlue)
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            LazyHStack(alignment: .bottom, spacing: 12) {
-                                ForEach(Range(1...10)) { session in
-                                    BottomCardView()
-                                }
-                            }
-                        }.frame(height: UIScreen.main.bounds.height / 9, alignment: .leading)
+                            Spacer()
+                            cardsTitle
+                            cards
                         }
                     }
                 }
@@ -106,7 +96,22 @@ private extension SearchMapView {
                            startPoint: .bottom,
                            endPoint: .top)
                 .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height / 4.5, alignment: .top)
-            
         }
+    }
+    
+    var cardsTitle: some View {
+        HStack(alignment: .bottom) {
+            StringCustomizer.customizeString(String(format: Strings.SearchMapView.cardsTitle, arguments: ["\(6)", "\(2500)"]), using: [Strings.SearchMapView.sessionsText], color: .darkBlue, standardColor: .darkBlue, font: Fonts.boldHeading2)
+        }.foregroundColor(.darkBlue)
+    }
+    
+    var cards: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            LazyHStack(alignment: .bottom, spacing: 12) {
+                ForEach(viewModel.sessionsList, id: \.id) { session in
+                    BottomCardView(title: session.title)
+                }
+            }
+        }.frame(height: UIScreen.main.bounds.height / 9, alignment: .leading)
     }
 }

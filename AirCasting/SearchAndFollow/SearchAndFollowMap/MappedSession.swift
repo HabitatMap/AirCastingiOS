@@ -6,6 +6,7 @@ import CoreLocation
 
 struct MappedSession {
     let id: Int
+    let title: String
     let location: CLLocationCoordinate2D
     let markerImage: UIImage
 }
