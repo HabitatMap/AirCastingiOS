@@ -64,7 +64,7 @@ class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDel
             do {
                 try storage.deleteNote(note, for: sessionUUID)
                 fetchSession { session in
-                    self.sessionUpdateService.updateSession(session: session) {
+                    self.sessionUpdateService.updateSession(session: session) { _ in
                         Log.info("Notes successfully updated")
                         completion()
                     }
@@ -80,7 +80,7 @@ class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDel
             do {
                 try storage.updateNote(note, newText: newText, for: sessionUUID)
                 fetchSession { session in
-                    self.sessionUpdateService.updateSession(session: session) {
+                    self.sessionUpdateService.updateSession(session: session) { _ in
                         Log.info("Notes successfully updated")
                         completion()
                     }

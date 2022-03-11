@@ -96,7 +96,7 @@ class DefaultDeleteSessionViewModel: DeleteSessionViewModel {
     private func processStreamDeleting() {
         self.measurementStreamStorage.accessStorage { [self] storage in
             guard let sessionToPass = try? storage.getExistingSession(with: session.uuid) else { return }
-            streamRemover.updateSession(session: sessionToPass) {
+            streamRemover.updateSession(session: sessionToPass) { _ in
                 try? storage.deleteStreams(session.uuid)
             }
         }

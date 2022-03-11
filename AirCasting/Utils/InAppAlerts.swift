@@ -135,6 +135,24 @@ struct InAppAlerts {
                              action: nil)
                   ])
     }
+    
+    static func failedToDownload(dismiss: ()) -> AlertInfo {
+        AlertInfo(title: Strings.InAppAlerts.failedDownloadTitle,
+                  message: Strings.InAppAlerts.failedDownloadMessage,
+                  buttons: [
+                    .default(title: Strings.InAppAlerts.failedDownloadButton,
+                             action: { dismiss })
+                  ])
+    }
+    
+    static func failedSavingData(dismiss: ()) -> AlertInfo {
+        AlertInfo(title: Strings.InAppAlerts.failedSavingTitle,
+                  message: Strings.InAppAlerts.failedSavingMessage,
+                  buttons: [
+                    .default(title: Strings.InAppAlerts.failedSavingButton,
+                             action: { dismiss })
+                  ])
+    }
 }
 
 import SwiftUI

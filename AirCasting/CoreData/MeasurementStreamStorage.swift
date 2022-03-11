@@ -262,6 +262,11 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         sessionEntity.tags = tags
         try context.save()
     }
+    
+    func updateVersion(for sessionUUID: SessionUUID, to version: Int) throws {
+        let sessionEntity = try context.existingSession(uuid: sessionUUID)
+        sessionEntity.version = Int16(version)
+    }
 
     func updateSessionFollowing(_ sessionFollowing: SessionFollowing, for sessionUUID: SessionUUID) {
         do {
