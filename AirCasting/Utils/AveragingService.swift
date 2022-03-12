@@ -58,7 +58,9 @@ final class AveragingService: NSObject {
     init(measurementStreamStorage: MeasurementStreamStorage) {
         self.measurementStreamStorage = measurementStreamStorage
         super.init()
-        
+    }
+    
+    func start() {
         measurementStreamStorage.accessStorage { [weak self] storage in
             let request: NSFetchRequest<SessionEntity> = SessionEntity.fetchRequest()
             request.predicate = NSPredicate(format: "type == %@ AND status == %i",
