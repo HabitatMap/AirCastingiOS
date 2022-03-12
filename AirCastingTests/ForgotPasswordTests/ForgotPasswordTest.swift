@@ -4,7 +4,7 @@
 import XCTest
 @testable import AirCasting
 
-class ForgotPasswordViewModelTest: XCTestCase {
+class ForgotPasswordViewModelTest: ACTestCase {
     
     private var defaultForgotPasswordViewModel: DefaultForgotPasswordViewModel!
     

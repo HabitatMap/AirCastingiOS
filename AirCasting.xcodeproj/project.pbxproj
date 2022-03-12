@@ -270,6 +270,8 @@
 		B38E6CD226C5F85000C21C45 /* SyncTriggeringSesionStopperDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B38E6CD126C5F85000C21C45 /* SyncTriggeringSesionStopperDecorator.swift */; };
 		B392DC332755F944002F0145 /* AppConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B392DC322755F944002F0145 /* AppConfigurationView.swift */; };
 		B39AAE1C27C0F28F00D2F3C0 /* ChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B39AAE1B27C0F28F00D2F3C0 /* ChartView.swift */; };
+		B3AA784927D4D22A003B39F6 /* Resolver+XCTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3AA784827D4D22A003B39F6 /* Resolver+XCTest.swift */; };
+		B3AA784B27D4D7EF003B39F6 /* APIServiceTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3AA784A27D4D7EF003B39F6 /* APIServiceTestCase.swift */; };
 		B3AB8BE526BB5EF400AF23CC /* Array+MeasurementStatistics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3AB8BE426BB5EF400AF23CC /* Array+MeasurementStatistics.swift */; };
 		B3C3F8B92695A295003E2CB4 /* StatisticsContainerViewModelable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3C3F8B82695A295003E2CB4 /* StatisticsContainerViewModelable.swift */; };
 		B3D1928D26F1FA1C0029E1C8 /* FixedSessionFaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EFAB1D26F1F9DB00E88141 /* FixedSessionFaker.swift */; };
@@ -330,7 +332,7 @@
 		DD2DDBAC27B535EC00807011 /* SessionCardUIState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD2DDBAB27B535EC00807011 /* SessionCardUIState.swift */; };
 		DD2DDBAE27B5450100807011 /* UIStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD2DDBAD27B5450100807011 /* UIStorage.swift */; };
 		DD2DDBB027B5490000807011 /* UIStateHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD2DDBAF27B5490000807011 /* UIStateHandler.swift */; };
-		DD2E8BE92685E12000439F8B /* URLValidationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD2E8BE82685E12000439F8B /* URLValidationTests.swift */; };
+		DD2E8BE92685E12000439F8B /* URLValidatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD2E8BE82685E12000439F8B /* URLValidatorTests.swift */; };
 		DD2E8BEB2685E13600439F8B /* BackendURLValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD2E8BEA2685E13600439F8B /* BackendURLValidator.swift */; };
 		DD38A4AF27B1584600D2091F /* StringsCustomizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD38A4AE27B1584600D2091F /* StringsCustomizer.swift */; };
 		DD3C99F226E9DE5800B42A46 /* SessionSynchronizationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD3C99F126E9DE5800B42A46 /* SessionSynchronizationViewModel.swift */; };
@@ -693,6 +695,8 @@
 		B38E6CD126C5F85000C21C45 /* SyncTriggeringSesionStopperDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncTriggeringSesionStopperDecorator.swift; sourceTree = "<group>"; };
 		B392DC322755F944002F0145 /* AppConfigurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfigurationView.swift; sourceTree = "<group>"; };
 		B39AAE1B27C0F28F00D2F3C0 /* ChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartView.swift; sourceTree = "<group>"; };
+		B3AA784827D4D22A003B39F6 /* Resolver+XCTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Resolver+XCTest.swift"; sourceTree = "<group>"; };
+		B3AA784A27D4D7EF003B39F6 /* APIServiceTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIServiceTestCase.swift; sourceTree = "<group>"; };
 		B3AB8BE426BB5EF400AF23CC /* Array+MeasurementStatistics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+MeasurementStatistics.swift"; sourceTree = "<group>"; };
 		B3C3F8B82695A295003E2CB4 /* StatisticsContainerViewModelable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsContainerViewModelable.swift; sourceTree = "<group>"; };
 		B3D4B4B326C2C6A1004322FC /* Date+Miliseconds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Miliseconds.swift"; sourceTree = "<group>"; };
@@ -755,7 +759,7 @@
 		DD2DDBAB27B535EC00807011 /* SessionCardUIState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionCardUIState.swift; sourceTree = "<group>"; };
 		DD2DDBAD27B5450100807011 /* UIStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIStorage.swift; sourceTree = "<group>"; };
 		DD2DDBAF27B5490000807011 /* UIStateHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIStateHandler.swift; sourceTree = "<group>"; };
-		DD2E8BE82685E12000439F8B /* URLValidationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLValidationTests.swift; sourceTree = "<group>"; };
+		DD2E8BE82685E12000439F8B /* URLValidatorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLValidatorTests.swift; sourceTree = "<group>"; };
 		DD2E8BEA2685E13600439F8B /* BackendURLValidator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackendURLValidator.swift; sourceTree = "<group>"; };
 		DD38A4AE27B1584600D2091F /* StringsCustomizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringsCustomizer.swift; sourceTree = "<group>"; };
 		DD3C99F126E9DE5800B42A46 /* SessionSynchronizationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionSynchronizationViewModel.swift; sourceTree = "<group>"; };
@@ -965,6 +969,7 @@
 		4FB39DFD2621B53C00E5E564 /* AirCastingTests */ = {
 			isa = PBXGroup;
 			children = (
+				B3AA784827D4D22A003B39F6 /* Resolver+XCTest.swift */,
 				B33B157D27AE854B00138FFA /* LoggerTests */,
 				B3E2B65D27506E9600019167 /* FileLineReaderTests */,
 				DDBC992726A1914000B0662E /* ForgotPasswordTests */,
@@ -985,6 +990,7 @@
 		4FEEAED8262C53C80024AB7E /* API */ = {
 			isa = PBXGroup;
 			children = (
+				B3AA784A27D4D7EF003B39F6 /* APIServiceTestCase.swift */,
 				4FB39E082621B55D00E5E564 /* FixedSessionTests.swift */,
 				4F5D3F7E262D735A003AD82E /* CreateSessionAPIServiceTests.swift */,
 				4FA83EEE26342D84003E2BF2 /* AuthorizationAPIServiceTests.swift */,
@@ -1960,7 +1966,7 @@
 		DD2E8BE72685E0F500439F8B /* Settings */ = {
 			isa = PBXGroup;
 			children = (
-				DD2E8BE82685E12000439F8B /* URLValidationTests.swift */,
+				DD2E8BE82685E12000439F8B /* URLValidatorTests.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -2408,7 +2414,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B32D089D267A3232006C97ED /* LogErrorPublisherTests.swift in Sources */,
-				DD2E8BE92685E12000439F8B /* URLValidationTests.swift in Sources */,
+				DD2E8BE92685E12000439F8B /* URLValidatorTests.swift in Sources */,
 				4FB39E362621B77D00E5E564 /* APIClientMock.swift in Sources */,
 				B3E26A092676DA55001A8E4C /* TestDefaultProviding.swift in Sources */,
 				B33B161227AF0B3600138FFA /* CompositeLoggerTests.swift in Sources */,
@@ -2425,6 +2431,7 @@
 				B37E1C942748208C0020A281 /* SDSyncFileWritingServiceTests.swift in Sources */,
 				B30BAC232694B3DA00AE0476 /* XCTest+Persistence.swift in Sources */,
 				B33B161527AF0B3600138FFA /* FileLoggerTests.swift in Sources */,
+				B3AA784B27D4D7EF003B39F6 /* APIServiceTestCase.swift in Sources */,
 				B33DB5702685FCFB00ED1344 /* SynchronizationTestMocks.swift in Sources */,
 				B3E26A2A26780D96001A8E4C /* SynchronizationControllerTestHelpers.swift in Sources */,
 				B30BAC212694AEAA00AE0476 /* GraphStatsDataSourceTests.swift in Sources */,
@@ -2433,6 +2440,7 @@
 				B33DB56E2685FB2400ED1344 /* LocalizedErrorStub.swift in Sources */,
 				B33B161027AF0B3600138FFA /* DocumentsFileLoggerStoreTests.swift in Sources */,
 				B30BABFF26935C2B00AE0476 /* TimeInterval+Helpers.swift in Sources */,
+				B3AA784927D4D22A003B39F6 /* Resolver+XCTest.swift in Sources */,
 				B3E2B65F27506EA000019167 /* FileLineReaderTests.swift in Sources */,
 				B33DB5722686013400ED1344 /* XCTestCase+AwaitPublisher.swift in Sources */,
 				B30BAC252694B5D900AE0476 /* TestStreamGenerator.swift in Sources */,

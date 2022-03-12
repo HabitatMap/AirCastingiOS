@@ -1,7 +1,8 @@
 import XCTest
+import Resolver
 @testable import AirCasting
 
-class FileLoggerTests: XCTestCase {
+class FileLoggerTests: ACTestCase {
     
     func test_onInit_opensLogFile() {
         do {
@@ -42,7 +43,9 @@ class FileLoggerTests: XCTestCase {
     func makeSUT(file: StaticString = #file, line: UInt = #line) throws -> (FileLogger, FileLoggerStoreSpy, LogFormatterMock) {
         let storeSpy = FileLoggerStoreSpy()
         let formatterMock = LogFormatterMock()
-        return (try FileLogger(store: storeSpy, formatter: formatterMock), storeSpy, formatterMock)
+        Resolver.register { storeSpy as FileLoggerStore }
+        Resolver.register { formatterMock as LogFormatter }
+        return (FileLogger(), storeSpy, formatterMock)
     }
 }
 
@@ -50,16 +53,16 @@ class FileLoggerStoreSpy: FileLoggerStore {
     private var fileHandleSpy: FileHandleSpy!
     var recordedWrites: [String] { fileHandleSpy.recordedStrings }
     var logFileOpenedTimes: Int = 0
-    
+
     private class FileHandleSpy: FileLoggerFileHandle {
         private(set) var recordedStrings: [String] = []
-        
+
         func appendFile(with text: String) throws {
             recordedStrings.append(text)
         }
     }
-    
-    func openOrCreateLogFile() throws -> FileLoggerFileHandle {
+
+    func openOrCreateLogFile() -> FileLoggerFileHandle {
         logFileOpenedTimes += 1
         fileHandleSpy = .init()
         return fileHandleSpy

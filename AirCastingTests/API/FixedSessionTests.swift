@@ -7,33 +7,11 @@ import XCTest
 import Combine
 @testable import AirCasting
 
-final class AuthorisationServiceMock: RequestAuthorisationService {
-    var authoriseStub: ((_ request: URLRequest) throws -> URLRequest)
-
-    init(authoriseStub: @escaping (_ request: URLRequest) throws -> URLRequest = { return $0 }) {
-        self.authoriseStub = authoriseStub
-    }
-
-    @discardableResult
-    func authorise(request: inout URLRequest) throws -> URLRequest {
-        try authoriseStub(request)
-    }
-}
-
-final class FixedSessionTests: XCTestCase {
-    private lazy var apiClientMock: APIClientMock! = APIClientMock()
-    private lazy var authorisationServiceMock: AuthorisationServiceMock! = AuthorisationServiceMock()
-    private lazy var tested: FixedSessionAPIService! = FixedSessionAPIService(authorisationService: authorisationServiceMock, apiClient: apiClientMock, baseUrl: DummyURLProvider())
-
-    override func tearDown() {
-        self.apiClientMock = nil
-        self.authorisationServiceMock = nil
-        self.tested = nil
-        super.tearDown()
-    }
+final class FixedSessionTests: APIServiceTestCase {
+    private lazy var tested: FixedSessionAPIService = FixedSessionAPIService()
 
     func testTimeout() throws {
-        apiClientMock.failing(with: URLError(.timedOut))
+        client.failing(with: URLError(.timedOut))
 
         var result: Result<FixedSession.FixedMeasurementOutput, Error>?
         tested.getFixedMeasurement(uuid: SessionUUID(), lastSync: Date()) {
@@ -52,7 +30,7 @@ final class FixedSessionTests: XCTestCase {
 
     func testRequestCreation() throws {
         var receivedRequest: URLRequest?
-        apiClientMock.requestTaskStub = { request, completion in
+        client.requestTaskStub = { request, completion in
             receivedRequest = request
             completion(.failure(URLError(.timedOut)), request)
         }
@@ -68,7 +46,7 @@ final class FixedSessionTests: XCTestCase {
     }
 
     func testRequestCreationFailedWhenAuthorizationFails() throws {
-        authorisationServiceMock.authoriseStub = { _ in
+        authorization.authoriseStub = { _ in
             throw URLError(.userAuthenticationRequired)
         }
 
@@ -89,7 +67,10 @@ final class FixedSessionTests: XCTestCase {
 
     func testInvalidResponse() throws {
         let response = HTTPURLResponse(url: URL(string: "http://test.com")!, statusCode: 500, httpVersion: nil, headerFields: nil)!
-        apiClientMock.returning((data: Data(#"{ "error": "some invalid message" }"#.utf8), response: response))
+        client.returning((data: Data(#"{ "error": "some invalid message" }"#.utf8), response: response))
+        
+        let errorContent = "ASD"
+        validator.stubError = DummyError(errorData: errorContent)
 
         var result: Result<FixedSession.FixedMeasurementOutput, Error>?
         tested.getFixedMeasurement(uuid: SessionUUID(), lastSync: Date()) {
@@ -99,8 +80,8 @@ final class FixedSessionTests: XCTestCase {
         switch try XCTUnwrap(result) {
         case .success(let response):
             XCTFail("Should fail but returned success type \(response)")
-        case .failure(URLError.badServerResponse):
-            print("Retuned valid error \(String(describing: result))")
+        case .failure(let error as DummyError):
+            XCTAssertEqual(error.errorData, errorContent)
         case .failure(let error):
             XCTFail("Failed with a unexpected error type \(error)")
         }
@@ -109,7 +90,7 @@ final class FixedSessionTests: XCTestCase {
     func testSuccessfulSampleFileResponse() throws {
         let url = Bundle(for: Self.self).url(forResource: "SampleFixedSession", withExtension: "json")!
         let data = try Data(contentsOf: url)
-        apiClientMock.returning((data: data, response: .success()))
+        client.returning((data: data, response: .success()))
 
         var result: Result<FixedSession.FixedMeasurementOutput, Error>?
         tested.getFixedMeasurement(uuid: SessionUUID(), lastSync: Date()) {

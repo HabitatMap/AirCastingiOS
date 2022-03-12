@@ -1,7 +1,7 @@
 import XCTest
 @testable import AirCasting
 
-class ThresholdLoggerProxyTests: XCTestCase {
+class ThresholdLoggerProxyTests: ACTestCase {
     func test_onLog_logsOnlyMinimalLogLevelOrHigher() {
         let loggerSpy = LoggerSpy()
         let sut = ThresholdLoggerProxy(thresholdLevel: .warning, logger: loggerSpy)
