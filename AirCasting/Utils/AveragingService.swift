@@ -132,12 +132,8 @@ final class AveragingService: NSObject {
             })
             
             /// Step 3 - Update stream
-            do {
-                if !averagedMeasurements.isEmpty {
-                    try storage.updateMeasurements(stream: stream, newMeasurements: NSOrderedSet(array: averagedMeasurements))
-                }
-            } catch {
-                Log.info("Couldn't update Measurements for stream \(stream)")
+            if !averagedMeasurements.isEmpty {
+                storage.removeAllMeasurements(in: stream, except: averagedMeasurements)
             }
         }
     }
