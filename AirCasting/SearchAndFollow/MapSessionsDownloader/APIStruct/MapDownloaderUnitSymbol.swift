@@ -3,11 +3,11 @@
 
 import Foundation
 
-enum UnitSymbol: Codable {
+enum MapDownloaderUnitSymbol: Codable {
     case uqm3
 }
 
-extension UnitSymbol {
+extension MapDownloaderUnitSymbol {
     var name: String {
         switch self {
         case .uqm3: return "µg/m³"

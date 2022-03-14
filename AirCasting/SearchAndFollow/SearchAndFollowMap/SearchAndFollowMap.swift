@@ -13,10 +13,10 @@ struct SearchAndFollowMap: UIViewRepresentable {
     typealias UIViewType = GMSMapView
     var startingPoint: CLLocationCoordinate2D
     @Binding var showRedoButton: Bool
-    @Binding var sessions: [MappedSession]
+    @Binding var sessions: [MapSessionMarker]
     private var onPositionChangeAction: ((GeoSquare) -> ())? = nil
     
-    init(startingPoint: CLLocationCoordinate2D, showRedoButton: Binding<Bool>, sessions: Binding<[MappedSession]>) {
+    init(startingPoint: CLLocationCoordinate2D, showRedoButton: Binding<Bool>, sessions: Binding<[MapSessionMarker]>) {
         self.startingPoint = startingPoint
         self._showRedoButton = .init(projectedValue: showRedoButton)
         self._sessions = .init(projectedValue: sessions)

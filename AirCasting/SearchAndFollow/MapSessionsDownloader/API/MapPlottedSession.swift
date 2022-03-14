@@ -3,42 +3,44 @@
 
 import Foundation
 import Resolver
-import SwiftUI
 
-protocol MapSessionsDownloader {
-    func getSessions(geoSquare: GeoSquare,  completion: @escaping (Result<[SearchedSession], Error>) -> Void)
+protocol MapPlottedSession {
+    func getSessions(geoSquare: GeoSquare, timeFrom: Double, timeTo: Double, completion: @escaping (Result<[MapDownloaderSearchedSession], Error>) -> Void)
 }
 
-class MapSessionsDownloaderDefault: MapSessionsDownloader {
+fileprivate struct SearchedSessions: Codable {
+    let sessions: [MapDownloaderSearchedSession]
+}
+
+class MapPlottedSessionDefault: MapPlottedSession {
+    
     @Injected private var authorization: RequestAuthorisationService
     @Injected private var urlProvider: URLProvider
     @Injected private var client: APIClient
     @Injected private var responseValidator: HTTPResponseValidator
     
-    func getSessions(geoSquare: GeoSquare,  completion: @escaping (Result<[SearchedSession], Error>) -> Void) {
+    func getSessions(geoSquare: GeoSquare, timeFrom: Double, timeTo: Double, completion: @escaping (Result<[MapDownloaderSearchedSession], Error>) -> Void) {
         let urlComponentPart = urlProvider.baseAppURL.appendingPathComponent("/api/fixed/active/sessions.json")
         
         var urlComponents = URLComponents(string: urlComponentPart.absoluteString)!
         
-        // We are going to use current day and current day year ago
-        let timeFrom = DateBuilder.beginingOfDayInSeconds(using: DateBuilder.yearAgo())
-        let timeTo = DateBuilder.endOfDayInSeconds(using: DateBuilder.getRawDate())
-        
-        let query = Query(timeFrom: "\(Int(timeFrom))",
-                          timeTo: "\(Int(timeTo))",
-                          tags: "",
-                          usernames: "",
-                          west: geoSquare.west,
-                          east: geoSquare.east,
-                          south: geoSquare.south,
-                          north: geoSquare.north,
-                          limit: 100,
-                          offset: 0,
-                          sensor_name: "openaq-pm2.5",
-                          measurement_type: MeasurementType.particulateMatter.name,
-                          unitSymbol: UnitSymbol.uqm3.name)
+        let query = MapDownloaderQuery(timeFrom: "\(Int(timeFrom))",
+                                       timeTo: "\(Int(timeTo))",
+                                       tags: "",
+                                       usernames: "",
+                                       west: geoSquare.west,
+                                       east: geoSquare.east,
+                                       south: geoSquare.south,
+                                       north: geoSquare.north,
+                                       limit: 100,
+                                       offset: 0,
+                                       sensorName: "openaq-pm2.5",
+                                       measurementType: MapDownloaderMeasurementType.particulateMatter.name,
+                                       unitSymbol: MapDownloaderUnitSymbol.uqm3.name)
         do {
-            let encodedQuery = try JSONEncoder().encode(query)
+            let encoder = JSONEncoder()
+            encoder.keyEncodingStrategy = .convertToSnakeCase
+            let encodedQuery = try encoder.encode(query)
             let jsonString = String(data: encodedQuery, encoding: .utf8)!
             urlComponents.queryItems = [
                 URLQueryItem(name: "q", value: jsonString),
@@ -59,6 +61,7 @@ class MapSessionsDownloaderDefault: MapSessionsDownloader {
                     do {
                         try responseValidator.validate(response: response.response, data: response.data)
                         let decoder = JSONDecoder()
+                        decoder.keyDecodingStrategy = .convertFromSnakeCase
                         let sessionData = try decoder.decode(SearchedSessions.self, from: response.data)
                         completion(.success(sessionData.sessions))
                     } catch {

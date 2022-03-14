@@ -4,7 +4,7 @@
 import UIKit
 import CoreLocation
 
-struct MappedSession {
+struct MapSessionMarker {
     let id: Int
     let location: CLLocationCoordinate2D
     let markerImage: UIImage

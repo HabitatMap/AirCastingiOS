@@ -25,9 +25,9 @@ struct GoogleMapView: UIViewRepresentable {
     private var onPositionChange: (([PathPoint]) -> ())? = nil
     var isSessionFixed: Bool
     @Binding var mapNotes: [MapNote]
-    let showButton: Bool
+    let showMyLocationButton: Bool
     
-    init(pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false, placePickerIsUpdating: Binding<Bool>, isUserInteracting: Binding<Bool>, isSessionActive: Bool = false, isSessionFixed: Bool = false, noteMarketTapped: Binding<Bool> = .constant(false), noteNumber: Binding<Int> = .constant(0), mapNotes: Binding<[MapNote]>, showButton: Bool = true) {
+    init(pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false, placePickerIsUpdating: Binding<Bool>, isUserInteracting: Binding<Bool>, isSessionActive: Bool = false, isSessionFixed: Bool = false, noteMarketTapped: Binding<Bool> = .constant(false), noteNumber: Binding<Int> = .constant(0), mapNotes: Binding<[MapNote]>, showMyLocationButton: Bool = true) {
         
         self.pathPoints = pathPoints
         self.threshold = threshold
@@ -39,7 +39,7 @@ struct GoogleMapView: UIViewRepresentable {
         self._noteMarketTapped = noteMarketTapped
         self._noteNumber = noteNumber
         self._mapNotes = mapNotes
-        self.showButton = showButton
+        self.showMyLocationButton = showMyLocationButton
     }
     
     func makeUIView(context: Context) -> GMSMapView {
@@ -50,7 +50,7 @@ struct GoogleMapView: UIViewRepresentable {
         
         let mapView = GMSMapView.map(withFrame: .zero,
                                      camera: startingPoint)
-        mapView.settings.myLocationButton = showButton
+        mapView.settings.myLocationButton = showMyLocationButton
         placeNotes(mapView, notes: mapNotes, context: context)
         do {
             if let styleURL = Bundle.main.url(forResource: "style", withExtension: "json") {

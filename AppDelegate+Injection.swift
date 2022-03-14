@@ -200,7 +200,7 @@ extension Resolver: ResolverRegistering {
         main.register { UpdateSessionParamsService() }
         
         //MARK: - Search and Follow
-        main.register { MapSessionsDownloaderDefault() as MapSessionsDownloader }
+        main.register { MapPlottedSessionDefault() as MapPlottedSession }
     }
     
     // MARK: - Composition helpers

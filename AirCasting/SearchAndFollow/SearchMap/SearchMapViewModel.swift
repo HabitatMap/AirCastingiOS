@@ -4,26 +4,24 @@
 import Foundation
 import CoreLocation
 import SwiftUI
-import Combine
-import FirebaseRemoteConfig
 import Resolver
 
 class SearchMapViewModel: ObservableObject {
-    var passedLocation: String
-    var passedLocationAddress: CLLocationCoordinate2D
-    var passedParameter: String
-    @Injected private var mapSessionsDownloader: MapSessionsDownloader
-    @Published var sessionsList = [MappedSession]()
-    @Published var showRedoButton: Bool = false
+    let passedLocation: String
+    let passedLocationAddress: CLLocationCoordinate2D
+    let measurementType: String
+    @Injected private var mapSessionsDownloader: MapPlottedSession
+    @Published var sessionsList = [MapSessionMarker]()
+    @Published var searchAgainButton: Bool = false
     @Published var showLoadingIndicator: Bool = false
     @Published var alert: AlertInfo?
     @Published var shouldDismissView: Bool = false
     private var currentPosition: GeoSquare?
     
-    init(passedLocation: String, passedLocationAddress: CLLocationCoordinate2D, passedParameter: String) {
+    init(passedLocation: String, passedLocationAddress: CLLocationCoordinate2D, measurementType: String) {
         self.passedLocation = passedLocation
         self.passedLocationAddress = passedLocationAddress
-        self.passedParameter = passedParameter
+        self.measurementType = measurementType
     }
     
     func redoTapped() {
@@ -32,39 +30,52 @@ class SearchMapViewModel: ObservableObject {
             return
         }
         updateSessionList(geoSquare: currentPosition)
-        showRedoButton = false
+        searchAgainButton = false
     }
     
     func mapPositionsChanged(geoSquare: GeoSquare) {
         if currentPosition == nil {
-          updateSessionList(geoSquare: geoSquare)
+            updateSessionList(geoSquare: geoSquare)
         } else {
-            showRedoButton = true
+            searchAgainButton = true
         }
-      currentPosition = geoSquare
+        currentPosition = geoSquare
     }
     
     private func updateSessionList(geoSquare: GeoSquare) {
         showLoadingIndicator = true
-        mapSessionsDownloader.getSessions(geoSquare: geoSquare) { result in
+        
+        // We are going to use current day and current day year ago
+        let timeFrom = DateBuilder.beginingOfDayInSeconds(using: DateBuilder.yearAgo())
+        let timeTo = DateBuilder.endOfDayInSeconds(using: DateBuilder.getRawDate())
+        
+        mapSessionsDownloader.getSessions(geoSquare: geoSquare, timeFrom: timeFrom, timeTo: timeTo) { result in
             DispatchQueue.main.async { self.showLoadingIndicator = false }
             switch result {
             case .success(let sessions):
-                DispatchQueue.main.async {
-                    self.sessionsList = sessions.map { s in
-                        return MappedSession(id: s.id,
-                                      location: .init(latitude: s.latitude, longitude: s.longitude),
-                                      markerImage: UIImage(systemName: "circle.circle.fill")!)
-                        
-                    }
-                }
+                self.handleUpdatingSuccess(using: sessions)
             case .failure(let error):
-                Log.warning("Error when downloading sessions \(error)")
-                DispatchQueue.main.async {
-                    self.alert = InAppAlerts.downloadingSessionsFailedAlert {
-                        self.shouldDismissView = true
-                    }
-                }
+                self.handleUpdatingError(using: error)
+            }
+        }
+    }
+    
+    private func handleUpdatingSuccess(using sessions: [MapDownloaderSearchedSession]) {
+        DispatchQueue.main.async {
+            self.sessionsList = sessions.map { s in
+                return MapSessionMarker(id: s.id,
+                              location: .init(latitude: s.latitude, longitude: s.longitude),
+                              markerImage: UIImage(systemName: "circle.circle.fill")!)
+                
+            }
+        }
+    }
+    
+    private func handleUpdatingError(using error: Error) {
+        Log.warning("Error when downloading sessions \(error)")
+        DispatchQueue.main.async {
+            self.alert = InAppAlerts.downloadingSessionsFailedAlert {
+                self.shouldDismissView = true
             }
         }
     }

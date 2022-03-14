@@ -3,12 +3,12 @@
 
 import Foundation
 
-enum MeasurementType: Codable {
+enum MapDownloaderMeasurementType: Codable {
     case particulateMatter
     case ozone
 }
 
-extension MeasurementType {
+extension MapDownloaderMeasurementType {
     var name: String {
         switch self {
         case .particulateMatter: return "Particulate Matter"
