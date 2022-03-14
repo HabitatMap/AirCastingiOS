@@ -5,7 +5,10 @@ import Foundation
 import SwiftUI
 
 struct BottomCardView: View {
+    let id: Int
+    @Binding var cardPointer: Int
     let title: String
+    let startTime: String
     
     var body: some View {
         sessionCard
@@ -13,17 +16,21 @@ struct BottomCardView: View {
     
     var sessionCard: some View {
         Button {
-            Log.info("Clicked.x")
+            cardPointer = id
+            Log.info("Clicked \(cardPointer) and \(id)")
         } label: {
             VStack(alignment: .leading, spacing: 5) {
                 Text(title)
-                    .font(Fonts.boldHeading2)
                     .foregroundColor(.darkBlue)
+                    .lineLimit(2)
+                    .scaledToFit()
+                    .multilineTextAlignment(.leading)
                 dataAndTime
                 streams
                 
             }
         }
+        .frame(width: 150, height: 70, alignment: .center)
         .padding()
         .background(
             Group {
@@ -36,7 +43,7 @@ struct BottomCardView: View {
 
 private extension BottomCardView {
     var dataAndTime: some View {
-        Text("12.02.2019 13:10 - 14:15")
+        return Text(startTime)
             .font(Fonts.regularHeading4)
             .foregroundColor(.aircastingGray)
     }

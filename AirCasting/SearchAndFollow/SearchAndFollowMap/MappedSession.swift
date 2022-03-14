@@ -8,5 +8,6 @@ struct MappedSession {
     let id: Int
     let title: String
     let location: CLLocationCoordinate2D
+    let startTime: String
     let markerImage: UIImage
 }

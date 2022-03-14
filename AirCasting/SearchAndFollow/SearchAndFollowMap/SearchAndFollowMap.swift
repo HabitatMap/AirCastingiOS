@@ -14,12 +14,15 @@ struct SearchAndFollowMap: UIViewRepresentable {
     var startingPoint: CLLocationCoordinate2D
     @Binding var showRedoButton: Bool
     @Binding var sessions: [MappedSession]
+    @Binding var pointerID: Int
+    @State var markerWasTapped: Bool = false
     private var onPositionChangeAction: ((GeoSquare) -> ())? = nil
     
-    init(startingPoint: CLLocationCoordinate2D, showRedoButton: Binding<Bool>, sessions: Binding<[MappedSession]>) {
+    init(startingPoint: CLLocationCoordinate2D, showRedoButton: Binding<Bool>, sessions: Binding<[MappedSession]>, pointerID: Binding<Int>) {
         self.startingPoint = startingPoint
         self._showRedoButton = .init(projectedValue: showRedoButton)
         self._sessions = .init(projectedValue: sessions)
+        self._pointerID = .init(projectedValue: pointerID)
     }
     
     /// Adds an action for when the map viewport is changed.
@@ -53,7 +56,19 @@ struct SearchAndFollowMap: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: GMSMapView, context: Context) {
-        if !showRedoButton {
+        if markerWasTapped {
+            // Jeżeli nastąpi kliknięcie kropki na mapie
+            placeDots(uiView, context: context)
+            DispatchQueue.main.async {
+                markerWasTapped = false
+            }
+        }
+        if pointerID != context.coordinator.idKeeper {
+            placeDots(uiView, context: context)
+            Log.info("😎 WE WILL SEE!")
+            context.coordinator.idKeeper = pointerID
+        }
+        if !showRedoButton && pointerID == context.coordinator.idKeeper {
             placeDots(uiView, context: context)
         }
     }
@@ -86,7 +101,7 @@ struct SearchAndFollowMap: UIViewRepresentable {
                 let marker = GMSMarker()
                 let markerImage = s.markerImage
                 let markerView = UIImageView(image: markerImage.withRenderingMode(.alwaysTemplate))
-                markerView.tintColor = .accentColor
+                markerView.tintColor = (s.id == pointerID ? .aircastingGreen : .accentColor)
                 marker.position = s.location
                 marker.userData = s.id
                 marker.iconView = markerView
@@ -99,6 +114,9 @@ struct SearchAndFollowMap: UIViewRepresentable {
     class Coordinator: NSObject, UINavigationControllerDelegate, GMSMapViewDelegate {
         var parent: SearchAndFollowMap!
         var sessionSearched = [GMSMarker]()
+        var idKeeper: Int = -1
+        var showRedo: Bool = true
+        var isDifferent: Bool = false
         
         init(_ parent: SearchAndFollowMap) {
             self.parent = parent
@@ -121,6 +139,14 @@ struct SearchAndFollowMap: UIViewRepresentable {
         
         func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
             // Will be implemented in next task
+            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(100)) {
+                self.parent.pointerID = marker.userData as! Int
+                self.parent.markerWasTapped = true
+            }
+//            parent.pointerID = marker.userData as! Int
+//            if parent.pointerID != idKeeper {
+//                parent.hoho = true
+//            }
             return true
         }
         

@@ -15,7 +15,6 @@ struct SearchMapView: View {
     }
     
     var body: some View {
-        GeometryReader { geometry in
             ZStack(alignment: .top, content: {
                 LoadingView(isShowing: $viewModel.showLoadingIndicator, activityIndicatorText: Strings.SearchMapView.loadingText) {
                     ZStack(alignment: .top) {
@@ -35,7 +34,6 @@ struct SearchMapView: View {
                     .padding(.top, 50)
                     .padding(.horizontal)
             })
-        }
         .onChange(of: viewModel.shouldDismissView, perform: { _ in
             viewModel.shouldDismissView ? self.presentationMode.wrappedValue.dismiss() : nil
         })
@@ -82,7 +80,8 @@ private extension SearchMapView {
         ZStack(alignment: .top) {
             SearchAndFollowMap(startingPoint: viewModel.passedLocationAddress,
                       showRedoButton: $viewModel.showRedoButton,
-                      sessions: $viewModel.sessionsList).onPositionChange(action: { geoSquare in
+                               sessions: $viewModel.sessionsList,
+                               pointerID: $viewModel.cardPointerID).onPositionChange(action: { geoSquare in
                 viewModel.mapPositionsChanged(geoSquare: geoSquare)
             })
                 .padding(.top, 50)
@@ -101,17 +100,33 @@ private extension SearchMapView {
     
     var cardsTitle: some View {
         HStack(alignment: .bottom) {
-            StringCustomizer.customizeString(String(format: Strings.SearchMapView.cardsTitle, arguments: ["\(6)", "\(2500)"]), using: [Strings.SearchMapView.sessionsText], color: .darkBlue, standardColor: .darkBlue, font: Fonts.boldHeading2)
+            StringCustomizer.customizeString(String(format: Strings.SearchMapView.cardsTitle, arguments: ["\(viewModel.sessionsList.count)", "\(2500)"]),
+                                             using: [Strings.SearchMapView.sessionsText], color: .darkBlue, standardColor: .darkBlue, font: Fonts.boldHeading2)
         }.foregroundColor(.darkBlue)
     }
     
     var cards: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            LazyHStack(alignment: .bottom, spacing: 12) {
-                ForEach(viewModel.sessionsList, id: \.id) { session in
-                    BottomCardView(title: session.title)
+        ScrollViewReader { scrollProxy in
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(alignment: .bottom, spacing: 12) {
+                    ForEach(viewModel.sessionsList, id: \.id) { session in
+                        BottomCardView(id: session.id, cardPointer: $viewModel.cardPointerID, title: session.title, startTime: session.startTime)
+                            .id(session.id)
+                            .border((viewModel.cardPointerID == session.id ? .green : .clear), width: 1)
+                            
+                    }
+                }
+                
+                .onReceive(viewModel.$cardPointerID) { v in
+                DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(200)) {
+                    withAnimation(.linear) {
+                        scrollProxy.scrollTo(Int(viewModel.cardPointerID), anchor: .leading)
+                    }
                 }
             }
-        }.frame(height: UIScreen.main.bounds.height / 9, alignment: .leading)
+            }
+        }
+        .padding(.horizontal, 5)
+        .frame(height: UIScreen.main.bounds.height / 9, alignment: .leading)
     }
 }

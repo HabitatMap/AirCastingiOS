@@ -18,6 +18,7 @@ class SearchMapViewModel: ObservableObject {
     @Published var showLoadingIndicator: Bool = false
     @Published var alert: AlertInfo?
     @Published var shouldDismissView: Bool = false
+    @Published var cardPointerID: Int = -1
     private var currentPosition: GeoSquare?
     
     init(passedLocation: String, passedLocationAddress: CLLocationCoordinate2D, passedParameter: String) {
@@ -54,8 +55,9 @@ class SearchMapViewModel: ObservableObject {
                     self.sessionsList = sessions.map { s in
                         return MappedSession(id: s.id,
                                              title: s.title,
-                                      location: .init(latitude: s.latitude, longitude: s.longitude),
-                                      markerImage: UIImage(systemName: "circle.circle.fill")!)
+                                             location: .init(latitude: s.latitude, longitude: s.longitude),
+                                             startTime: s.startTimeLocal,
+                                             markerImage: UIImage(systemName: "circle.circle.fill")!)
                         
                     }
                 }
