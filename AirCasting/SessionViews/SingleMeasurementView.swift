@@ -34,6 +34,7 @@ struct SingleMeasurementView: View {
                 VStack(spacing: 1) {
                     Text(showStreamName())
                         .font(Fonts.systemFont1)
+                        .foregroundColor(selectedStream == stream ? .aircastingDarkGray : .aircastingGray)
                         .scaledToFill()
                     if let threshold = threshold, measurementPresentationStyle == .showValues {
                         HStack(spacing: 3) {
