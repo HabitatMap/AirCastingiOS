@@ -21,7 +21,7 @@ struct SearchMapView: View {
             }
             VStack(alignment: .center, content: {
                 addressTextField
-                parametersText
+                measurementTypeText
                 searchAgainButton
             })
                 .padding(.top, 50)
@@ -41,7 +41,7 @@ private extension SearchMapView {
             .disabled(true)
     }
     
-    var parametersText: some View {
+    var measurementTypeText: some View {
         Text(String(format: Strings.SearchMapView.parameterText, arguments: [viewModel.measurementType]))
             .font(.muli(size: 16, weight: .semibold))
     }
