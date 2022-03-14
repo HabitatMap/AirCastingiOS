@@ -49,11 +49,15 @@ private extension EmptyMobileDashboardViewMobile {
     
     private var emptyMobileDashboardText: some View {
         VStack(spacing: 14) {
-            Text(Strings.EmptyDashboardMobile.title)
-                .font(Fonts.boldTitle4)
-                .foregroundColor(Color.darkBlue)
+            StringCustomizer.customizeString(Strings.EmptyDashboardMobile.title,
+                                             using: [Strings.EmptyDashboardMobile.titleDivider],
+                                             standardFontWeight: .bold,
+                                             color: .darkBlue,
+                                             standardColor: .darkBlue,
+                                             font: Fonts.boldTitle4,
+                                             standardFont: Fonts.boldTitle4,
+                                             makeNewLineAfterCustomized: true)
                 .minimumScaleFactor(0.1)
-            
             Text(Strings.EmptyDashboardMobile.description)
                 .font(Fonts.muliHeading2)
                 .foregroundColor(Color.aircastingGray)

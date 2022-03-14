@@ -10,21 +10,12 @@ import AirCastingStyling
 import Resolver
 
 struct ChooseSessionTypeView: View {
-    @State private var isInfoPresented: Bool = false
-    @State private var isTurnBluetoothOnLinkActive = false
-    @State private var isTurnLocationOnLinkActive = false
-    @State private var isPowerABLinkActive = false
-    @State private var isMobileLinkActive = false
-    @State private var didTapFixedSession = false
-    @State private var startSync = false
-    @State private var alert: AlertInfo?
-    var viewModel: ChooseSessionTypeViewModel
     @EnvironmentObject private var tabSelection: TabBarSelection
-    @EnvironmentObject var selectedSection: SelectSection
     @EnvironmentObject private var emptyDashboardButtonTapped: EmptyDashboardButtonTapped
     @EnvironmentObject private var finishAndSyncButtonTapped: FinishAndSyncButtonTapped
-    @Injected private var networkChecker: NetworkChecker
-    @InjectedObject private var bluetoothManger: BluetoothManager //TODO: Fix this (see usage) - move to VM
+    @EnvironmentObject private var exploreSessionsButton: ExploreSessionsButton
+    @StateObject var viewModel: ChooseSessionTypeViewModel
+    @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
     
     var shouldGoToChooseSessionScreen: Bool {
         (tabSelection.selection == .createSession && emptyDashboardButtonTapped.mobileWasTapped) ? true : false
@@ -32,118 +23,199 @@ struct ChooseSessionTypeView: View {
     var shouldGoToSyncScreen: Bool {
         (tabSelection.selection == .createSession && finishAndSyncButtonTapped.finishAndSyncButtonWasTapped) ? true : false
     }
-    @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
-
+    
+    var shouldGotToSearchScreen: Bool {
+        (tabSelection.selection == .createSession && exploreSessionsButton.exploreSessionsButtonTapped) ? true : false
+    }
+    
+    init(sessionContext: CreateSessionContext) {
+        self._viewModel = .init(wrappedValue: .init(sessionContext: sessionContext))
+    }
+    
     var body: some View {
         if #available(iOS 15, *) {
             NavigationView {
                 mainContent
-                .fullScreenCover(isPresented: $isPowerABLinkActive) {
-                    CreatingSessionFlowRootView {
-                        PowerABView(creatingSessionFlowContinues: $isPowerABLinkActive)
+                    .fullScreenCover(isPresented: .init(get: {
+                        viewModel.isPowerABLinkActive
+                    }, set: { new in
+                        viewModel.setPowerABLink(using: new)
+                    })) {
+                        CreatingSessionFlowRootView {
+                            PowerABView(creatingSessionFlowContinues: .init(get: {
+                                viewModel.isPowerABLinkActive
+                            }, set: { new in
+                                viewModel.setPowerABLink(using: new)
+                            }))
+                        }
                     }
-                }
-            
-                .fullScreenCover(isPresented: $isTurnLocationOnLinkActive) {
-                    CreatingSessionFlowRootView {
-                        TurnOnLocationView(creatingSessionFlowContinues: $isTurnLocationOnLinkActive,
-                                           viewModel: TurnOnLocationViewModel(sessionContext: viewModel.passSessionContext,
-                                                                              isSDClearProcess: false))
+                    .fullScreenCover(isPresented: .init(get: {
+                        viewModel.isTurnLocationOnLinkActive
+                    }, set: { new in
+                        viewModel.setLocationLink(using: new)
+                    })) {
+                        CreatingSessionFlowRootView {
+                            TurnOnLocationView(creatingSessionFlowContinues: .init(get: {
+                                viewModel.isTurnLocationOnLinkActive
+                            }, set: { new in
+                                viewModel.setLocationLink(using: new)
+                            }),
+                                               viewModel: TurnOnLocationViewModel(sessionContext: viewModel.passSessionContext,
+                                                                                  isSDClearProcess: false))
+                        }
                     }
-                }
-          
-                .fullScreenCover(isPresented: $isTurnBluetoothOnLinkActive) {
-                    CreatingSessionFlowRootView {
-                        TurnOnBluetoothView(creatingSessionFlowContinues: $isTurnBluetoothOnLinkActive, sdSyncContinues: .constant(false))
+                    .fullScreenCover(isPresented: .init(get: {
+                        viewModel.isTurnBluetoothOnLinkActive
+                    }, set: { new in
+                        viewModel.setBluetoothLink(using: new)
+                    })) {
+                        CreatingSessionFlowRootView {
+                            TurnOnBluetoothView(creatingSessionFlowContinues: .init(get: {
+                                viewModel.isTurnBluetoothOnLinkActive
+                            }, set: { new in
+                                viewModel.setBluetoothLink(using: new)
+                            }),
+                                                sdSyncContinues: .constant(false))
+                        }
                     }
-                }
-
-                .fullScreenCover(isPresented: $isMobileLinkActive) {
-                    CreatingSessionFlowRootView {
-                        SelectDeviceView(creatingSessionFlowContinues: $isMobileLinkActive, sdSyncContinues: .constant(false))
+                    .fullScreenCover(isPresented: .init(get: {
+                        viewModel.isMobileLinkActive
+                    }, set: { new in
+                        viewModel.setMobileLink(using: new)
+                    })) {
+                        CreatingSessionFlowRootView {
+                            SelectDeviceView(creatingSessionFlowContinues: .init(get: {
+                                viewModel.isMobileLinkActive
+                            }, set: { new in
+                                viewModel.setMobileLink(using: new)
+                            }),
+                                             sdSyncContinues: .constant(false))
+                        }
                     }
-                }
-                
-                .fullScreenCover(isPresented: $startSync) {
-                    CreatingSessionFlowRootView {
-                        SDSyncRootView(creatingSessionFlowContinues: $startSync)
+                    .fullScreenCover(isPresented: .init(get: {
+                        viewModel.isSearchAndFollowLinkActive
+                    }, set: { new in
+                        viewModel.setSearchAndFollow(using: new)
+                    })) {
+                        CreatingSessionFlowRootView {
+                            SearchView()
+                        }
                     }
-                }
-                // TODO: What is that??? Move to VM!
-                .onChange(of: bluetoothManger.centralManagerState) { _ in
-                    if didTapFixedSession {
-                        didTapFixedSession = false
+                    .fullScreenCover(isPresented: .init(get: {
+                        viewModel.startSync
+                    }, set: { new in
+                        viewModel.setStartSync(using: new)
+                    })) {
+                        CreatingSessionFlowRootView {
+                            SDSyncRootView(creatingSessionFlowContinues: .init(get: {
+                                viewModel.startSync
+                            }, set: { new in
+                                viewModel.setStartSync(using: new)
+                            }))
+                        }
                     }
-                }
-                .onAppear {
-                    shouldGoToChooseSessionScreen ? (handleMobileSessionState()) : (isMobileLinkActive = false)
-                    startSync = shouldGoToSyncScreen
-                }
-                .onChange(of: tabSelection.selection, perform: { _ in
-                    shouldGoToChooseSessionScreen ? (handleMobileSessionState()) : (isMobileLinkActive = false)
-                    startSync = shouldGoToSyncScreen
-                })
             }
+            .onAppear { defineNextMove() }
+            .onChange(of: tabSelection.selection, perform: { _ in defineNextMove() })
             .environmentObject(viewModel.passSessionContext)
         } else {
             NavigationView {
                 mainContent
-                .background(
-                    Group {
-                        EmptyView()
-                            .fullScreenCover(isPresented: $isPowerABLinkActive) {
-                                CreatingSessionFlowRootView {
-                                    PowerABView(creatingSessionFlowContinues: $isPowerABLinkActive)
+                    .background(
+                        Group {
+                            EmptyView()
+                                .fullScreenCover(isPresented: .init(get: {
+                                    viewModel.isPowerABLinkActive
+                                }, set: { new in
+                                    viewModel.setPowerABLink(using: new)
+                                })) {
+                                    CreatingSessionFlowRootView {
+                                        PowerABView(creatingSessionFlowContinues: .init(get: {
+                                            viewModel.isPowerABLinkActive
+                                        }, set: { new in
+                                            viewModel.setPowerABLink(using: new)
+                                        }))
+                                    }
                                 }
-                            }
-                        EmptyView()
-                            .fullScreenCover(isPresented: $isTurnLocationOnLinkActive) {
-                                CreatingSessionFlowRootView {
-                                    TurnOnLocationView(creatingSessionFlowContinues: $isTurnLocationOnLinkActive,
-                                                       viewModel: TurnOnLocationViewModel(sessionContext: viewModel.passSessionContext,
-                                                                                          isSDClearProcess: false))
+                            EmptyView()
+                                .fullScreenCover(isPresented: .init(get: {
+                                    viewModel.isTurnLocationOnLinkActive
+                                }, set: { new in
+                                    viewModel.setLocationLink(using: new)
+                                })) {
+                                    CreatingSessionFlowRootView {
+                                        TurnOnLocationView(creatingSessionFlowContinues: .init(get: {
+                                            viewModel.isTurnLocationOnLinkActive
+                                        }, set: { new in
+                                            viewModel.setLocationLink(using: new)
+                                        }),
+                                                           viewModel: TurnOnLocationViewModel(sessionContext: viewModel.passSessionContext,
+                                                                                              isSDClearProcess: false))
+                                    }
                                 }
-                            }
-                        EmptyView()
-                            .fullScreenCover(isPresented: $isTurnBluetoothOnLinkActive) {
-                                CreatingSessionFlowRootView {
-                                    TurnOnBluetoothView(creatingSessionFlowContinues: $isTurnBluetoothOnLinkActive,
-                                                        sdSyncContinues: .constant(false))
+                            EmptyView()
+                                .fullScreenCover(isPresented: .init(get: {
+                                    viewModel.isTurnBluetoothOnLinkActive
+                                }, set: { new in
+                                    viewModel.setBluetoothLink(using: new)
+                                })) {
+                                    CreatingSessionFlowRootView {
+                                        TurnOnBluetoothView(creatingSessionFlowContinues: .init(get: {
+                                            viewModel.isTurnBluetoothOnLinkActive
+                                        }, set: { new in
+                                            viewModel.setBluetoothLink(using: new)
+                                        }),
+                                                            sdSyncContinues: .constant(false))
+                                    }
                                 }
-                            }
-                        EmptyView()
-                            .fullScreenCover(isPresented: $isMobileLinkActive) {
-                                CreatingSessionFlowRootView {
-                                    SelectDeviceView(creatingSessionFlowContinues: $isMobileLinkActive,
-                                                     sdSyncContinues: .constant(false))
+                            EmptyView()
+                                .fullScreenCover(isPresented: .init(get: {
+                                    viewModel.isMobileLinkActive
+                                }, set: { new in
+                                    viewModel.setMobileLink(using: new)
+                                })) {
+                                    CreatingSessionFlowRootView {
+                                        SelectDeviceView(creatingSessionFlowContinues: .init(get: {
+                                            viewModel.isMobileLinkActive
+                                        }, set: { new in
+                                            viewModel.setMobileLink(using: new)
+                                        }),
+                                                         sdSyncContinues: .constant(false))
+                                    }
                                 }
-                            }
-                        EmptyView()
-                            .fullScreenCover(isPresented: $startSync) {
-                                CreatingSessionFlowRootView {
-                                    SDSyncRootView(creatingSessionFlowContinues: $startSync)
+                            EmptyView()
+                                .fullScreenCover(isPresented: .init(get: {
+                                    viewModel.startSync
+                                }, set: { new in
+                                    viewModel.setStartSync(using: new)
+                                })) {
+                                    CreatingSessionFlowRootView {
+                                        SDSyncRootView(creatingSessionFlowContinues: .init(get: {
+                                            viewModel.startSync
+                                        }, set: { new in
+                                            viewModel.setStartSync(using: new)
+                                        }))
+                                    }
                                 }
-                            }
-                    }
-                )
-                // TODO: What is that??? Move to VM!
-                .onChange(of: bluetoothManger.centralManagerState) { _ in
-                    if didTapFixedSession {
-                        didTapFixedSession = false
-                    }
-                }
-                .onAppear {
-                    shouldGoToChooseSessionScreen ? (handleMobileSessionState()) : (isMobileLinkActive = false)
-                    startSync = shouldGoToSyncScreen
-                }
-                .onChange(of: tabSelection.selection, perform: { _ in
-                    shouldGoToChooseSessionScreen ? (handleMobileSessionState()) : (isMobileLinkActive = false)
-                    startSync = shouldGoToSyncScreen
-                })
+                            EmptyView()
+                                .fullScreenCover(isPresented: .init(get: {
+                                    viewModel.isSearchAndFollowLinkActive
+                                }, set: { new in
+                                    viewModel.setSearchAndFollow(using: new)
+                                })) {
+                                    CreatingSessionFlowRootView {
+                                        SearchView()
+                                    }
+                                }
+                        }
+                    )
             }
+            .onAppear { defineNextMove() }
+            .onChange(of: tabSelection.selection, perform: { _ in defineNextMove() })
             .environmentObject(viewModel.passSessionContext)
         }
     }
+    
     
     private var mainContent: some View {
         VStack(spacing: 50) {
@@ -153,7 +225,7 @@ struct ChooseSessionTypeView: View {
             }
             .background(Color.white)
             .padding(.horizontal)
-        
+            
             VStack(alignment: .leading, spacing: 15) {
                 HStack {
                     recordNewLabel
@@ -166,68 +238,90 @@ struct ChooseSessionTypeView: View {
                     mobileSessionButton
                 }
                 Spacer()
-                if featureFlagsViewModel.enabledFeatures.contains(.sdCardSync) {
+                if featureFlagsViewModel.enabledFeatures.contains(.sdCardSync) || featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) {
                     orLabel
-                    sdSyncButton
+                }
+                HStack {
+                    if featureFlagsViewModel.enabledFeatures.contains(.sdCardSync) {
+                        sdSyncButton
+                    }
+                    Spacer()
+                    if featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) {
+                        followSessionButton
+                    }
                 }
                 Spacer()
             }
-            .padding(.bottom)
-            .padding(.vertical)
+            .padding([.bottom, .vertical])
             .padding(.horizontal, 30)
             .background(
                 Color.aircastingBackground.opacity(0.25)
                     .ignoresSafeArea()
             )
-            .alert(item: $alert, content: { $0.makeAlert() })
+            .alert(item: $viewModel.alert, content: { $0.makeAlert() })
         }
     }
+}
 
+// MARK: - Private View Functions
+private extension ChooseSessionTypeView {
+    func defineNextMove() {
+        shouldGoToChooseSessionScreen ? (viewModel.handleMobileSessionState()) : (viewModel.isMobileLinkActive = false)
+        viewModel.setStartSync(using: shouldGoToSyncScreen)
+        viewModel.setSearchAndFollow(using: shouldGotToSearchScreen)
+    }
+}
+
+// MARK: - Private View Components
+private extension ChooseSessionTypeView {
     var titleLabel: some View {
         Text(Strings.ChooseSessionTypeView.title)
             .font(Fonts.boldTitle1)
             .foregroundColor(.accentColor)
     }
-
+    
     var messageLabel: some View {
         Text(Strings.ChooseSessionTypeView.message)
             .font(Fonts.regularHeading1)
             .foregroundColor(.aircastingGray)
     }
-
+    
     var recordNewLabel: some View {
         Text(Strings.ChooseSessionTypeView.recordNew)
             .font(Fonts.boldHeading3)
-            .foregroundColor(.aircastingDarkGray)
+            .foregroundColor(.aircastingGray)
     }
     
     var orLabel: some View {
         Text(Strings.ChooseSessionTypeView.orLabel)
             .font(Fonts.boldHeading3)
-            .foregroundColor(.aircastingDarkGray)
+            .foregroundColor(.aircastingGray)
+    }
+    
+    var moreInfoLabel: some View {
+        Text(Strings.ChooseSessionTypeView.moreInfo)
+            .font(Fonts.regularHeading3)
+            .foregroundColor(.accentColor)
     }
     
     var moreInfo: some View {
         Button(action: {
-            isInfoPresented = true
+            viewModel.infoButtonTapped()
         }, label: {
-            Text(Strings.ChooseSessionTypeView.moreInfo)
-                .font(Fonts.regularHeading3)
-                .foregroundColor(.accentColor)
+            moreInfoLabel
         })
-            .sheet(isPresented: $isInfoPresented, content: {
+            .sheet(isPresented: .init(get: {
+                viewModel.isInfoPresented
+            }, set: { new in
+                viewModel.setInfoPresented(using: new)
+            }), content: {
                 MoreInfoPopupView()
             })
     }
     
     var fixedSessionButton: some View {
         Button(action: {
-            viewModel.createNewSession(isSessionFixed: true)
-            switch viewModel.fixedSessionNextStep() {
-            case .airBeam: isPowerABLinkActive = true
-            case .bluetooth: isTurnBluetoothOnLinkActive = true
-            default: return
-            }
+            viewModel.fixedSessionButtonTapped()
         }) {
             fixedSessionLabel
         }
@@ -235,7 +329,7 @@ struct ChooseSessionTypeView: View {
     
     var mobileSessionButton: some View {
         Button(action: {
-            handleMobileSessionState()
+            viewModel.mobileSessionButtonTapped()
         }) {
             mobileSessionLabel
         }
@@ -243,45 +337,52 @@ struct ChooseSessionTypeView: View {
     
     var sdSyncButton: some View {
         Button(action: {
-            networkChecker.connectionAvailable ? startSync.toggle() : (alert = InAppAlerts.noNetworkAlert())
+            viewModel.syncButtonTapped()
         }) {
             syncButtonLabel
         }
     }
     
-    func handleMobileSessionState() {
-        viewModel.createNewSession(isSessionFixed: false)
-        switch viewModel.mobileSessionNextStep() {
-        case .location: isTurnLocationOnLinkActive = true
-        case .mobile: isMobileLinkActive = true
-        default: return
+    var followSessionButton: some View {
+        Button(action: {
+            viewModel.searchAndFollowTapped()
+        }) {
+            followButtonLabel
         }
     }
     
     var fixedSessionLabel: some View {
-        chooseSessionButton(title: Strings.ChooseSessionTypeView.fixedLabel_1,
-                            description: Strings.ChooseSessionTypeView.fixedLabel_2)
+        chooseSessionButton(title: StringCustomizer.customizeString(Strings.ChooseSessionTypeView.fixedLabel,
+                                                                     using: [Strings.ChooseSessionTypeView.fixedSession],
+                                                                     color: .accentColor,
+                                                                     font: Fonts.boldHeading1))
     }
     
     var mobileSessionLabel: some View {
-        chooseSessionButton(title: Strings.ChooseSessionTypeView.mobileLabel_1,
-                            description: Strings.ChooseSessionTypeView.mobileLabel_2)
+        chooseSessionButton(title: StringCustomizer.customizeString(Strings.ChooseSessionTypeView.mobileLabel,
+                                                                    using: [Strings.ChooseSessionTypeView.mobileSession],
+                                                                    color: .accentColor,
+                                                                    font: Fonts.boldHeading1))
     }
     
     var syncButtonLabel: some View {
-        chooseSessionButton(title: Strings.ChooseSessionTypeView.syncTitle,
-                            description: Strings.ChooseSessionTypeView.syncDescription)
+        chooseSessionButton(title: StringCustomizer.customizeString(Strings.ChooseSessionTypeView.syncTitle,
+                                                                     using: [Strings.ChooseSessionTypeView.syncData],
+                                                                     font: Fonts.boldHeading1,
+                                                                     makeNewLineAfterCustomized: true))
     }
     
+    var followButtonLabel: some View {
+        chooseSessionButton(title: StringCustomizer.customizeString(Strings.ChooseSessionTypeView.followButtonTitle,
+                                                                    using: [Strings.ChooseSessionTypeView.followSession],
+                                                                    font: Fonts.boldHeading1))
+    }
 }
 
 extension View {
-    func chooseSessionButton(title: String, description: String) -> some View {
+    func chooseSessionButton(title: Text) -> some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text(title)
-                .font(Fonts.boldHeading1)
-                .foregroundColor(.accentColor)
-            Text(description)
+            title
                 .font(Fonts.muliHeading3)
                 .foregroundColor(.aircastingGray)
         }
@@ -296,3 +397,4 @@ extension View {
         .shadow(color: Color.shadow, radius: 9, x: 0, y: 1)
     }
 }
+

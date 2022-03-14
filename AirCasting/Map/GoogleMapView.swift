@@ -13,7 +13,7 @@ import Resolver
 
 struct GoogleMapView: UIViewRepresentable {
     @InjectedObject private var tracker: LocationTracker
-    @Binding var placePickerDismissed: Bool
+    @Binding var placePickerIsUpdating: Bool
     @Binding var isUserInteracting: Bool
     @Binding var noteMarketTapped: Bool
     @Binding var noteNumber: Int
@@ -25,18 +25,20 @@ struct GoogleMapView: UIViewRepresentable {
     private var onPositionChange: (([PathPoint]) -> ())? = nil
     var isSessionFixed: Bool
     @Binding var mapNotes: [MapNote]
+    let showButton: Bool
     
-    init(pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false, placePickerDismissed: Binding<Bool>, isUserInteracting: Binding<Bool>, isSessionActive: Bool = false, isSessionFixed: Bool = false, noteMarketTapped: Binding<Bool> = .constant(false), noteNumber: Binding<Int> = .constant(0), mapNotes: Binding<[MapNote]>) {
+    init(pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false, placePickerIsUpdating: Binding<Bool>, isUserInteracting: Binding<Bool>, isSessionActive: Bool = false, isSessionFixed: Bool = false, noteMarketTapped: Binding<Bool> = .constant(false), noteNumber: Binding<Int> = .constant(0), mapNotes: Binding<[MapNote]>, showButton: Bool = true) {
         self.pathPoints = pathPoints
         self.threshold = threshold
         self.isMyLocationEnabled = isMyLocationEnabled
-        self._placePickerDismissed = placePickerDismissed
+        self._placePickerIsUpdating = placePickerIsUpdating
         self._isUserInteracting = isUserInteracting
         self.liveModeOn = isSessionActive
         self.isSessionFixed = isSessionFixed
         self._noteMarketTapped = noteMarketTapped
         self._noteNumber = noteNumber
         self._mapNotes = mapNotes
+        self.showButton = showButton
     }
     
     func makeUIView(context: Context) -> GMSMapView {
@@ -47,7 +49,7 @@ struct GoogleMapView: UIViewRepresentable {
         
         let mapView = GMSMapView.map(withFrame: .zero,
                                      camera: startingPoint)
-        mapView.settings.myLocationButton = true
+        mapView.settings.myLocationButton = showButton
         placeNotes(mapView, notes: mapNotes, context: context)
         do {
             if let styleURL = Bundle.main.url(forResource: "style", withExtension: "json") {
@@ -87,6 +89,7 @@ struct GoogleMapView: UIViewRepresentable {
             drawPolyline(uiView, context: context)
             context.coordinator.mapNotesCounter = mapNotes.count
         }
+        
         guard isUserInteracting else { return }
         let thresholdWitness = ThresholdWitness(sensorThreshold: self.threshold)
   
@@ -99,7 +102,12 @@ struct GoogleMapView: UIViewRepresentable {
             context.coordinator.drawHeatmap(uiView)
         }
         
-        placePickerDismissed ? uiView.moveCamera(cameraUpdate) : nil
+        if placePickerIsUpdating {
+            uiView.moveCamera(cameraUpdate)
+            DispatchQueue.main.async {
+                placePickerIsUpdating = false
+            }
+        }
         // Update camera's starting point
         guard context.coordinator.shouldAutoTrack else { return }
         DispatchQueue.main.async {
@@ -249,7 +257,6 @@ struct GoogleMapView: UIViewRepresentable {
             let len = mapView.projection.coordinate(for: mapView.center).longitude
             parent.tracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: lat, longitude: len), measurementTime: DateBuilder.getFakeUTCDate())]
             positionChanged(for: mapView)
-            
             shouldAutoTrack = false
         }
         

@@ -44,27 +44,20 @@ struct AirBeamOnboarding: View {
         }
         
         private var sheetDescription: some View {
-            VStack {
-                Text(Strings.OnboardingAirBeamSheet.sheetDescription_1)
-                    + Text(Strings.OnboardingAirBeamSheet.sheetDescription_2)
-                    .foregroundColor(.aircastingMint)
-                    .fontWeight(.bold)
-                    + Text(Strings.OnboardingAirBeamSheet.sheetDescription_3)
-                    + Text(Strings.OnboardingAirBeamSheet.sheetDescription_4)
-                    .foregroundColor(.aircastingMint)
-                    .fontWeight(.bold)
-                    + Text(Strings.OnboardingAirBeamSheet.sheetDescription_5)
-            }
-            .font(Fonts.muliHeading2)
-            .lineSpacing(10.0)
-            .foregroundColor(.aircastingGray)
+            StringCustomizer.customizeString(Strings.OnboardingAirBeamSheet.sheetDescription_1,
+                                             using: [Strings.OnboardingAirBeamSheet.fixed,
+                                                     Strings.OnboardingAirBeamSheet.mobile],
+                                             color: .aircastingMint,
+                                             standardFont: Fonts.muliHeading2)
+                .lineSpacing(10.0)
+                .multilineTextAlignment(.leading)
         }
     }
 }
 
 private extension AirBeamOnboarding {
     private var progressBar: some View {
-        ProgressView(value: 0.325)
+        ProgressView(value: 0.4)
             .accentColor(.aircastingMint)
             .padding(.bottom, 20)
     }

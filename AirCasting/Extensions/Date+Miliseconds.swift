@@ -10,10 +10,21 @@ extension Date {
         Int(Date.msFormatter.string(from: self).dropFirst())!
     }
 
+    // TODO: This uses two date formatters. It's relatively slow and should be changed to more roboust solution as we're using this quite often
+    // https://github.com/HabitatMap/AirCastingiOS/issues/595
     var currentUTCTimeZoneDate: Date {
         let formatter = DateFormatters.DateExtension.currentTimeZoneDateFormatter
         let stringDate = formatter.string(from: self)
         let dateFormatter = DateFormatters.DateExtension.utcTimeZoneDateFormatter
+        return dateFormatter.date(from: stringDate)!
+    }
+    
+    // TODO: This uses two date formatters. It's relatively slow and should be changed to more roboust solution as we're using this quite often
+    // https://github.com/HabitatMap/AirCastingiOS/issues/595
+    var convertedFromUTCToLocal: Date {
+        let formatter = DateFormatters.DateExtension.utcTimeZoneDateFormatter
+        let stringDate = formatter.string(from: self)
+        let dateFormatter = DateFormatters.DateExtension.currentTimeZoneDateFormatter
         return dateFormatter.date(from: stringDate)!
     }
 
