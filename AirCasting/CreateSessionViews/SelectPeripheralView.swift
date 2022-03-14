@@ -51,12 +51,7 @@ struct SelectPeripheralView: View {
                     refreshButton
                         .frame(alignment: .trailing)
                 }
-                
-                if selection != nil {
-                    connectButton.disabled(false)
-                } else {
-                    connectButton.disabled(true)
-                }
+                connectButton.disabled(selection == nil)
             }
             .onAppear {
                 if CBCentralManager.authorization == .allowedAlways {
