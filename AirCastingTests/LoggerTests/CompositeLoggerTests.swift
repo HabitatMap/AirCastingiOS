@@ -7,7 +7,10 @@ class CompositeLoggerTests: XCTestCase {
         let spy1 = LoggerSpy()
         let spy2 = LoggerSpy()
         let spy3 = LoggerSpy()
-        let sut = CompositeLogger(loggers: [spy1, spy2, spy3])
+        let sut = CompositeLogger()
+        sut.add(spy1)
+        sut.add(spy2)
+        sut.add(spy3)
         
         let message = "test"
         let level = LogLevel.debug
