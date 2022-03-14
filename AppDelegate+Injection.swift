@@ -201,9 +201,7 @@ extension Resolver: ResolverRegistering {
         
         //MARK: - Search and Follow
         main.register { MapSessionsDownloaderDefault() as MapSessionsDownloader }
-        
     }
-    
     
     // MARK: - Composition helpers
     

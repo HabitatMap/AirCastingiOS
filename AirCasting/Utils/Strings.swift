@@ -958,6 +958,5 @@ struct Strings {
                                                               comment: "")
         static let redoText: String = NSLocalizedString("Redo Search in Map",
                                                               comment: "")
-        
     }
 }

@@ -1231,6 +1231,7 @@
 				338C30E025F1042000E0305C /* CoreData */,
 				AC8CFF4325E5108100FB2918 /* APICommunicator */,
 				DD8C380A2689A3B600901FDF /* URLProviders */,
+				DD80AE1B27BA46AA00D9B123 /* SearchAndFollow */,
 				AC8CFF3425E502C700FB2918 /* AuthViews */,
 				ACD32A4D2600A8CC00818946 /* Settings */,
 				AC32043425CD52E600A68520 /* CreateSessionViews */,
@@ -2073,6 +2074,14 @@
 				DDDEB8B6275512E000564F02 /* DeviceHandler.swift */,
 			);
 			path = Helpers;
+			sourceTree = "<group>";
+		};
+		DD80AE1B27BA46AA00D9B123 /* SearchAndFollow */ = {
+			isa = PBXGroup;
+			children = (
+				DD80AE1E27BA46F500D9B123 /* SearchLocation */,
+			);
+			path = SearchAndFollow;
 			sourceTree = "<group>";
 		};
 		DD80AE1E27BA46F500D9B123 /* SearchLocation */ = {
