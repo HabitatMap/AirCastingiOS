@@ -6,7 +6,7 @@ import XCTest
 import CoreData
 @testable import AirCasting
 
-final class UpdateSessionParamsServiceTests: XCTestCase {
+final class UpdateSessionParamsServiceTests: ACTestCase {
     private static let sampleOutput = FixedSession.FixedMeasurementOutput(
         type: .fixed,
         uuid: SessionUUID(uuidString: "51dd1e15-0af6-4810-bacd-11e061ac9d1d")!,

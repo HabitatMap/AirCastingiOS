@@ -4,7 +4,7 @@
 import XCTest
 @testable import AirCasting
 
-class StandardStatisticsCalculatorTests: XCTestCase {
+class StandardStatisticsCalculatorTests: ACTestCase {
     let calculator = StandardStatisticsCalculator()
     
     func test_whenEmptyMeasurementsPassedIn_defaultsToZero() {

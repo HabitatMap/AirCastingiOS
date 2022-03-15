@@ -12,7 +12,7 @@ struct LogFuncParameters {
     let line: Int
 }
 
-class LogErrorPublisherTests: XCTestCase {
+class LogErrorPublisherTests: ACTestCase {
     private var cancellables: [AnyCancellable] = []
     
     func testLogsError() throws {
@@ -49,7 +49,7 @@ class LogErrorPublisherTests: XCTestCase {
     }
 }
 
-class LogErrorAndContinuePublisherTests: XCTestCase {
+class LogErrorAndContinuePublisherTests: ACTestCase {
     private var cancellables: [AnyCancellable] = []
     
     func testLogsError() throws {

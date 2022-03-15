@@ -6,7 +6,6 @@ import SwiftUI
 import Resolver
 
 class SearchPickerService: PlacePickerService {
-    @InjectedObject private var tracker: LocationTracker
     @Binding private var addressName: String
     @Binding private var addressLocation: CLLocationCoordinate2D
     

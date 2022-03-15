@@ -7,12 +7,14 @@ import Resolver
 class AppBootstrap {
     @Injected private var firstRunInfoProvider: FirstRunInfoProvidable
     @Injected private var deauthorizable: Deauthorizable
+    @Injected private var averagingService: AveragingService
     
     func bootstrap() {
         if firstRunInfoProvider.isFirstAppLaunch {
             handleFirstAppLaunch()
         }
         firstRunInfoProvider.registerAppLaunch()
+        averagingService.start()
     }
     
     private func handleFirstAppLaunch() {

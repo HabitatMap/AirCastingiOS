@@ -87,7 +87,7 @@ struct CreateAccountView: View {
 private extension CreateAccountView {
     
     var progressBar: some View {
-        ProgressView(value: 0.825)
+        ProgressView(value: 0.8)
             .accentColor(Color.accentColor)
     }
     

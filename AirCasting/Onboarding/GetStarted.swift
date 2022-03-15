@@ -3,8 +3,11 @@
 
 import SwiftUI
 import AirCastingStyling
+import Resolver
 
 struct GetStarted: View {
+    @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
+    
     var completion: () -> Void
     var body: some View {
         NavigationView {
@@ -14,7 +17,11 @@ struct GetStarted: View {
                     logoImage
                 }
                 descriptionText
-                startButton
+                if featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) {
+                    continueToAirNearYouScreenButton
+                } else {
+                    startButton
+                }
                 Spacer()
             }
         }
@@ -46,8 +53,25 @@ private extension GetStarted {
     }
     
     var startButton: some View {
+            NavigationLink(
+                destination: AirBeamOnboarding(completion: completion),
+                label: {
+                    Text(Strings.OnboardingGetStarted.getStarted)
+                        .frame(maxWidth:.infinity)
+                        .navigationBarHidden(true)
+                }
+            ).buttonStyle(BlueTextButtonStyle())
+            .background(
+                RoundedRectangle(cornerRadius: 5)
+                    .stroke(lineWidth: 0.1)
+                    .accentColor(Color.aircastingGray)
+            )
+            .padding()
+    }
+    
+    var continueToAirNearYouScreenButton: some View {
         NavigationLink(
-            destination: AirBeamOnboarding(completion: completion),
+            destination: NearAirDescription(completion: completion),
             label: {
                 Text(Strings.OnboardingGetStarted.getStarted)
                     .frame(maxWidth:.infinity)

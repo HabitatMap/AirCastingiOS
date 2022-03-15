@@ -64,7 +64,7 @@ struct PrivacyOnboarding: View {
 
 private extension PrivacyOnboarding {
     private var progressBar: some View {
-        ProgressView(value: 0.525)
+        ProgressView(value: 0.6)
             .accentColor(.accentColor)
     }
     

@@ -4,7 +4,7 @@
 import XCTest
 @testable import AirCasting
 
-class GraphStatsDataSourceTests: XCTestCase {
+class GraphStatsDataSourceTests: ACTestCase {
     let stream = TestStreamGenerator.createStream(numberOfMeasurements: 100)
     
     override func tearDown() {

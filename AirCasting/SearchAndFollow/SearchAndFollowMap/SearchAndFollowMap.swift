@@ -4,7 +4,6 @@
 import UIKit
 import SwiftUI
 import GoogleMaps
-import GooglePlaces
 import Resolver
 import Combine
 
@@ -13,12 +12,12 @@ struct SearchAndFollowMap: UIViewRepresentable {
     typealias UIViewType = GMSMapView
     var startingPoint: CLLocationCoordinate2D
     @Binding var showRedoButton: Bool
-    @Binding var sessions: [MappedSession]
-    @Binding var pointerID: Int
+    @Binding var sessions: [MapSessionMarker]
     @State var markerWasTapped: Bool = false
+    @Binding var pointerID: Int
     private var onPositionChangeAction: ((GeoSquare) -> ())? = nil
     
-    init(startingPoint: CLLocationCoordinate2D, showRedoButton: Binding<Bool>, sessions: Binding<[MappedSession]>, pointerID: Binding<Int>) {
+    init(startingPoint: CLLocationCoordinate2D, showRedoButton: Binding<Bool>, sessions: Binding<[MapSessionMarker]>, pointerID: Binding<Int>) {
         self.startingPoint = startingPoint
         self._showRedoButton = .init(projectedValue: showRedoButton)
         self._sessions = .init(projectedValue: sessions)
@@ -35,7 +34,6 @@ struct SearchAndFollowMap: UIViewRepresentable {
     
     func makeUIView(context: Context) -> GMSMapView {
         GMSServices.provideAPIKey(GOOGLE_MAP_KEY)
-        GMSPlacesClient.provideAPIKey(GOOGLE_PLACES_KEY)
         let startingPoint = setStartingPoint(using: startingPoint)
         let mapView = GMSMapView.map(withFrame: .zero,
                                      camera: startingPoint)
@@ -74,21 +72,14 @@ struct SearchAndFollowMap: UIViewRepresentable {
     }
     
     
-    func setStartingPoint(using point: CLLocationCoordinate2D?) -> GMSCameraPosition {
-        if let startPosition = point {
-            let long = startPosition.longitude
-            let lat = startPosition.latitude
+    func setStartingPoint(using point: CLLocationCoordinate2D) -> GMSCameraPosition {
+            let long = point.longitude
+            let lat = point.latitude
             
             let newCameraPosition = GMSCameraPosition.camera(withLatitude: lat,
                                                               longitude: long,
                                                               zoom: 10)
             return newCameraPosition
-        } else {
-            let appleParkPosition = GMSCameraPosition.camera(withLatitude: 37.35,
-                                                             longitude: -122.05,
-                                                             zoom: 10)
-            return appleParkPosition
-        }
     }
     
     func placeDots(_ uiView: GMSMapView, context: Context) {
@@ -97,13 +88,13 @@ struct SearchAndFollowMap: UIViewRepresentable {
         }
         context.coordinator.sessionSearched = []
         DispatchQueue.main.async {
-            sessions.forEach { s in
+            sessions.forEach { session in
                 let marker = GMSMarker()
-                let markerImage = s.markerImage
+                let markerImage = session.markerImage
                 let markerView = UIImageView(image: markerImage.withRenderingMode(.alwaysTemplate))
-                markerView.tintColor = (s.id == pointerID ? .aircastingGreen : .accentColor)
-                marker.position = s.location
-                marker.userData = s.id
+                markerView.tintColor = (session.id == pointerID ? .aircastingGreen : .accentColor)
+                marker.position = session.location
+                marker.userData = session.id
                 marker.iconView = markerView
                 marker.map = uiView
                 context.coordinator.sessionSearched.append(marker)

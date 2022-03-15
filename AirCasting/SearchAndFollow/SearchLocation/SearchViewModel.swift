@@ -13,17 +13,19 @@ class SearchViewModel: ObservableObject {
     @Published var addresslocation = CLLocationCoordinate2D(latitude: 20.0, longitude: 20.0)
     @Published var alert: AlertInfo?
     
+    var continueDisabled: Bool { addressName == "" }
+    
     func textFieldTapped() { isLocationPopupPresented.toggle() }
     
-    func updateLocationName(using newLocationName: String) {
+    func locationNameInteracted(with newLocationName: String) {
         addressName = newLocationName
     }
     
-    func updateLocationAddress(using newLocationAddress: CLLocationCoordinate2D) {
+    func locationAddressInteracted(with newLocationAddress: CLLocationCoordinate2D) {
         addresslocation = newLocationAddress
     }
     
-    func onAppearAction(onEnd: @escaping () -> Void) {
+    func viewInitialized(onEnd: @escaping () -> Void) {
         if !networkChecker.connectionAvailable {
             (alert = InAppAlerts.noNetworkAlert(dismiss: {
                 onEnd()

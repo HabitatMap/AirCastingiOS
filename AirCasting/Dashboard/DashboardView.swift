@@ -17,7 +17,6 @@ struct DashboardView: View {
     @EnvironmentObject var selectedSection: SelectSection
     @EnvironmentObject var reorderButton: ReorderButton
     @EnvironmentObject var searchAndFollowButton: SearchAndFollowButton
-    @Injected private var averaging: AveragingService
     @State var isRefreshing: Bool = false
     @Injected private var sessionSynchronizer: SessionSynchronizer
 

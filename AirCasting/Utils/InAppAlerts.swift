@@ -142,6 +142,24 @@ struct InAppAlerts {
                   buttons: [
                     .default(title: Strings.Commons.gotIt,
                              action: action)
+                    ])
+                }
+                    
+    static func failedToDownload(dismiss: ()) -> AlertInfo {
+        AlertInfo(title: Strings.InAppAlerts.failedDownloadTitle,
+                  message: Strings.InAppAlerts.failedDownloadMessage,
+                  buttons: [
+                    .default(title: Strings.InAppAlerts.failedDownloadButton,
+                             action: { dismiss })
+                  ])
+    }
+    
+    static func failedSavingData(dismiss: ()) -> AlertInfo {
+        AlertInfo(title: Strings.InAppAlerts.failedSavingTitle,
+                  message: Strings.InAppAlerts.failedSavingMessage,
+                  buttons: [
+                    .default(title: Strings.InAppAlerts.failedSavingButton,
+                             action: { dismiss })
                   ])
     }
 }

@@ -8,6 +8,7 @@ import CoreLocation
 struct SearchView: View {
     @StateObject var viewModel: SearchViewModel
     @Environment(\.presentationMode) var presentationMode
+    @EnvironmentObject private var exploreSessionsButton: ExploreSessionsButton
     
     init() {
         _viewModel = .init(wrappedValue: SearchViewModel())
@@ -21,8 +22,9 @@ struct SearchView: View {
             button
         }.padding()
             .onAppear(perform: {
-                viewModel.onAppearAction {
+                viewModel.viewInitialized {
                     presentationMode.wrappedValue.dismiss()
+                    exploreSessionsButton.exploreSessionsButtonTapped = false
                 }
             })
             .alert(item: $viewModel.alert, content: { $0.makeAlert() })
@@ -30,11 +32,11 @@ struct SearchView: View {
                 PlacePicker(service: SearchPickerService(addressName: .init(get: {
                     viewModel.addressName
                 }, set: { new in
-                    viewModel.updateLocationName(using: new)
+                    viewModel.locationNameInteracted(with: new)
                 }), addressLocation: .init(get: {
                     viewModel.addresslocation
                 }, set: { new in
-                    viewModel.updateLocationAddress(using: new)
+                    viewModel.locationAddressInteracted(with: new)
                 })))
             }
     }
@@ -54,7 +56,7 @@ private extension SearchView {
                         binding: .init(get: {
             viewModel.addressName
         }, set: { new in
-            viewModel.updateLocationName(using: new)
+            viewModel.locationNameInteracted(with: new)
         }))
             .disabled(true)
             .onTapGesture { viewModel.textFieldTapped() }
@@ -64,11 +66,11 @@ private extension SearchView {
         return NavigationLink(
             destination: SearchMapView(locationName: viewModel.addressName,
                                        locationAddress: viewModel.addresslocation,
-                                       parametr: "particular matter"),
+                                       measurementType: "particular matter"),
             label: {
                 Text(Strings.Commons.continue)
             })
-            .disabled(viewModel.addressName == "")
             .buttonStyle(BlueButtonStyle())
+            .disabled(viewModel.continueDisabled)
     }
 }

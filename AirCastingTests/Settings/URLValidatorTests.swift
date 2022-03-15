@@ -1,18 +1,14 @@
-//
-//  URLValidationTests.swift
-//  URLValidationTests
-//
 // Created by Lunar on 25/06/2021.
 //
 
 import XCTest
 @testable import AirCasting
 
-class URLBuilderTests: XCTestCase {
-    private let builder = BackendURLBuilder()
+class URLValidatorTests: ACTestCase {
+    private let validator = BackendURLValidator()
     static private let validURL = "https://superstronka.com/"
     static private let validPort = "23"
-    private typealias ErrorType = BackendURLBuilder.ValidationError
+    private typealias ErrorType = BackendURLValidator.ValidationError
     
     // MARK: - URL Validation
     
@@ -113,7 +109,7 @@ class URLBuilderTests: XCTestCase {
     // MARK: - Private Helpers
     
     @discardableResult
-    private func runBuilder(url: String = URLBuilderTests.validURL, port: String = URLBuilderTests.validPort) throws -> URL? {
-        try builder.createURL(url: url, port: port)
+    private func runBuilder(url: String = URLValidatorTests.validURL, port: String = URLValidatorTests.validPort) throws -> URL? {
+        try validator.createURL(url: url, port: port)
     }
 }

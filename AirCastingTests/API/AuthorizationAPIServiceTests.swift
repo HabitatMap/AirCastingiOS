@@ -4,18 +4,11 @@
 import XCTest
 @testable import AirCasting
 
-final class SignInAuthorizationAPIServiceTests: XCTestCase {
-    private lazy var apiClientMock: APIClientMock! = APIClientMock()
-    private lazy var tested: AuthorizationAPIService! = AuthorizationAPIService(apiClient: apiClientMock, baseUrl: DummyURLProvider())
-
-    override func tearDown() {
-        apiClientMock = nil
-        tested = nil
-        super.tearDown()
-    }
+final class SignInAuthorizationAPIServiceTests: APIServiceTestCase {
+    private lazy var tested: AuthorizationAPIService = AuthorizationAPIService()
 
     func testTimeout() throws {
-        apiClientMock.failing(with: URLError(.timedOut))
+        client.failing(with: URLError(.timedOut))
 
         let input = AuthorizationAPI.SigninUserInput(username: UUID().uuidString, password: UUID().uuidString)
         var result: Result<AuthorizationAPI.UserProfile, AuthorizationError>?
@@ -35,7 +28,7 @@ final class SignInAuthorizationAPIServiceTests: XCTestCase {
 
     func testRequestCreation() throws {
         var receivedRequest: URLRequest?
-        apiClientMock.requestTaskStub = { request, completion in
+        client.requestTaskStub = { request, completion in
             receivedRequest = request
             completion(.failure(URLError(.timedOut)), request)
         }
@@ -57,7 +50,10 @@ final class SignInAuthorizationAPIServiceTests: XCTestCase {
 
     func testInvalidResponse() throws {
         let response = HTTPURLResponse(url: URL(string: "http://test.com")!, statusCode: 500, httpVersion: nil, headerFields: nil)!
-        apiClientMock.returning((data: Data(#"{ "error": "some invalid message" }"#.utf8), response: response))
+        client.returning((data: Data(#"{ "error": "some invalid message" }"#.utf8), response: response))
+        
+        let errorContent = "ASD"
+        validator.stubError = DummyError(errorData: errorContent)
 
         let input = AuthorizationAPI.SigninUserInput(username: UUID().uuidString, password: UUID().uuidString)
         var result: Result<AuthorizationAPI.UserProfile, AuthorizationError>?
@@ -85,7 +81,7 @@ final class SignInAuthorizationAPIServiceTests: XCTestCase {
                 "session_stopped_alert": false
             }
             """.utf8)
-        apiClientMock.returning((data: data, response: .success()))
+        client.returning((data: data, response: .success()))
 
         let input = AuthorizationAPI.SigninUserInput(username: UUID().uuidString, password: UUID().uuidString)
         var result: Result<AuthorizationAPI.UserProfile, AuthorizationError>?
@@ -100,24 +96,16 @@ final class SignInAuthorizationAPIServiceTests: XCTestCase {
     }
 }
 
-final class CreateAccountAuthorizationAPIServiceTests: XCTestCase {
-    private lazy var apiClientMock: APIClientMock! = APIClientMock()
-    private lazy var tested: AuthorizationAPIService! = AuthorizationAPIService(apiClient: apiClientMock, baseUrl: DummyURLProvider())
-    private lazy var input: AuthorizationAPI.SignupUserInput! = AuthorizationAPI.SignupUserInput(
+final class CreateAccountAuthorizationAPIServiceTests: APIServiceTestCase {
+    private lazy var tested: AuthorizationAPIService = AuthorizationAPIService()
+    private lazy var input: AuthorizationAPI.SignupUserInput = AuthorizationAPI.SignupUserInput(
         email: UUID().uuidString + "@do.com",
         username: UUID().uuidString,
         password: UUID().uuidString,
         send_emails: .random())
 
-    override func tearDown() {
-        apiClientMock = nil
-        tested = nil
-        input = nil
-        super.tearDown()
-    }
-
     func testTimeout() throws {
-        apiClientMock.failing(with: URLError(.timedOut))
+        client.failing(with: URLError(.timedOut))
 
         var result: Result<AuthorizationAPI.UserProfile, AuthorizationError>?
         tested.createAccount(input: input) {
@@ -136,7 +124,7 @@ final class CreateAccountAuthorizationAPIServiceTests: XCTestCase {
 
     func testRequestCreation() throws {
         var receivedRequest: URLRequest?
-        apiClientMock.requestTaskStub = { request, completion in
+        client.requestTaskStub = { request, completion in
             receivedRequest = request
             completion(.failure(URLError(.timedOut)), request)
         }
@@ -159,7 +147,7 @@ final class CreateAccountAuthorizationAPIServiceTests: XCTestCase {
 
     func testInvalidResponse() throws {
         let response = HTTPURLResponse(url: URL(string: "http://test.com")!, statusCode: 500, httpVersion: nil, headerFields: nil)!
-        apiClientMock.returning((data: Data(#"{ "error": "some invalid message" }"#.utf8), response: response))
+        client.returning((data: Data(#"{ "error": "some invalid message" }"#.utf8), response: response))
 
         var result: Result<AuthorizationAPI.UserProfile, AuthorizationError>?
         tested.createAccount(input: input) {
@@ -187,7 +175,7 @@ final class CreateAccountAuthorizationAPIServiceTests: XCTestCase {
             }
 
             """.utf8)
-        apiClientMock.returning((data: data, response: .success()))
+        client.returning((data: data, response: .success()))
 
         var result: Result<AuthorizationAPI.UserProfile, AuthorizationError>?
         tested.createAccount(input: input) {
@@ -202,7 +190,7 @@ final class CreateAccountAuthorizationAPIServiceTests: XCTestCase {
 
     func testUsernameTakenError() throws {
         let response = HTTPURLResponse(url: URL(string: "http://test.com")!, statusCode: 422, httpVersion: nil, headerFields: nil)!
-        apiClientMock.returning((data: Data(#"{"username": ["has already been taken"] }"#.utf8), response: response))
+        client.returning((data: Data(#"{"username": ["has already been taken"] }"#.utf8), response: response))
 
         var result: Result<AuthorizationAPI.UserProfile, AuthorizationError>?
         tested.createAccount(input: input) {
@@ -221,7 +209,7 @@ final class CreateAccountAuthorizationAPIServiceTests: XCTestCase {
 
     func testEmailTakenError() throws {
         let response = HTTPURLResponse(url: URL(string: "http://test.com")!, statusCode: 422, httpVersion: nil, headerFields: nil)!
-        apiClientMock.returning((data: Data(#"{"email": ["has already been taken"] }"#.utf8), response: response))
+        client.returning((data: Data(#"{"email": ["has already been taken"] }"#.utf8), response: response))
 
         var result: Result<AuthorizationAPI.UserProfile, AuthorizationError>?
         tested.createAccount(input: input) {
@@ -240,7 +228,7 @@ final class CreateAccountAuthorizationAPIServiceTests: XCTestCase {
 
     func testEmailAndUsernameTakenError() throws {
         let response = HTTPURLResponse(url: URL(string: "http://test.com")!, statusCode: 422, httpVersion: nil, headerFields: nil)!
-        apiClientMock.returning((data: Data(#"{"email": ["has already been taken"], "username": ["has already been taken"] }"#.utf8), response: response))
+        client.returning((data: Data(#"{"email": ["has already been taken"], "username": ["has already been taken"] }"#.utf8), response: response))
 
         var result: Result<AuthorizationAPI.UserProfile, AuthorizationError>?
         tested.createAccount(input: input) {

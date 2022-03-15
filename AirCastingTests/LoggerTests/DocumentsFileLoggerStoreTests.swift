@@ -14,21 +14,22 @@ class DocumentsFileLoggerStoreTests: FileLoggerTestCase {
     
     func test_whenOpened_addsAnAircastingHeader() {
         let sut = createSUT()
+        let headerText = "AirCasting log started."
+        headerProvider.headerText = headerText
         openLogFile(sut)
-        XCTAssertTrue(try String(contentsOf: logFile).hasPrefix("AirCasting log started."))
-        XCTAssertTrue(try String(contentsOf: logFile).hasSuffix(" UTC."))
+        XCTAssertTrue(try String(contentsOf: logFile).hasPrefix(headerText))
     }
     
     // MARK: - Writing to a file
     
-    func test_onWrite_doesntWriteToFileUntilTheBufferIsFull() { //NOTE: Buffer size is 25.
+    func test_onWrite_doesntWriteToFileUntilTheBufferIsFull() { // NOTE: Buffer size is 25.
         let sut = createSUT()
         let file = openLogFile(sut)
         appendLogFile(file, "TEST")
         XCTAssertEqual(readLogsFromFile(), [])
     }
     
-    func test_onWrite_writesIn25Chunks() { //NOTE: Buffer size is 25.
+    func test_onWrite_writesIn25Chunks() { // NOTE: Buffer size is 25.
         let sut = createSUT()
         let file = openLogFile(sut)
         (0..<bufferSize+5).forEach { _ in appendLogFile(file, "TEST") }
@@ -120,10 +121,12 @@ class DocumentsFileLoggerStoreTests: FileLoggerTestCase {
     
     // MARK: - Errors
     
-    func test_whenOpeningWhenActiveHandle_throwsError() {
+    func test_whenOpeningWhenActiveHandle_returnsEmptyHandle() {
         let sut = createSUT()
-        let handle = openLogFile(sut)
-        XCTAssertThrowsError(try sut.openOrCreateLogFile())
+        let firstHandle = openLogFile(sut)
+        let secondHandle = openLogFile(sut)
+        XCTAssertTrue(firstHandle is DocumentsFileLoggerStore.LogHandle)
+        XCTAssertTrue(secondHandle is DocumentsFileLoggerStore.EmptyFileLoggerFileHandle)
     }
     
     // MARK: - Private helpers
@@ -134,12 +137,7 @@ class DocumentsFileLoggerStoreTests: FileLoggerTestCase {
     
     @discardableResult
     private func openLogFile(_ sut: DocumentsFileLoggerStore, file: StaticString = #file, line: UInt = #line) -> FileLoggerFileHandle {
-        do {
-            return try sut.openOrCreateLogFile()
-        } catch {
-            XCTFail("Unexpected error: \(error)", file: file, line: line)
-            return FileLoggerFileHandleDummy()
-        }
+        sut.openOrCreateLogFile()
     }
     
     private func appendLogFile(_ handle: FileLoggerFileHandle, _ string: String, file: StaticString = #file, line: UInt = #line) {

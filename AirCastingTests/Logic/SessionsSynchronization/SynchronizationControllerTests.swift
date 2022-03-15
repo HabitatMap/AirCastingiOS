@@ -4,22 +4,24 @@
 import XCTest
 import Combine
 import CoreLocation
+import Resolver
 @testable import AirCasting
 
-final class SynchronizationControllerTests: XCTestCase {
+final class SynchronizationControllerTests: ACTestCase {
     private var cancellables: [AnyCancellable] = []
     var remoteContextProvider = SynchronizationContextProviderMock()
     var downloadService = DownloadServiceMock()
     var uploadService = UploadServiceMock()
     var store = SessionStoreMock()
     var errorStream = SessionSynchronizerErrorStreamSpy()
-    lazy var controller = SessionSynchronizationController(synchronizationContextProvider: remoteContextProvider,
-                                                                   downstream: downloadService,
-                                                                   upstream: uploadService,
-                                                                   store: store)
+    lazy var controller = SessionSynchronizationController()
     
     override func setUp() {
         super.setUp()
+        Resolver.test.register { self.remoteContextProvider as SessionSynchronizationContextProvidable }
+        Resolver.test.register { self.downloadService as SessionDownstream }
+        Resolver.test.register { self.uploadService as SessionUpstream }
+        Resolver.test.register { self.store as SessionSynchronizationStore }
         controller.errorStream = errorStream
     }
     

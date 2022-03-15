@@ -13,7 +13,6 @@ struct RootAppView: View {
 
     @InjectedObject var userAuthenticationSession: UserAuthenticationSession
     @InjectedObject var lifeTimeEventsProvider: LifeTimeEventsProvider
-    @Injected private var averagingService: AveragingService
     
     var body: some View {
         ZStack {

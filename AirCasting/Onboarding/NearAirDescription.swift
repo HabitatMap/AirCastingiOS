@@ -23,7 +23,7 @@ struct NearAirDescription: View {
 
 private extension NearAirDescription {
     private var progressView: some View {
-        ProgressView(value: 0.125)
+        ProgressView(value: 0.2)
             .accentColor(.accentColor)
             .padding(.bottom, 20)
     }
@@ -56,7 +56,7 @@ private extension NearAirDescription {
         NavigationLink(
             destination: AirBeamOnboarding(completion: completion),
             label: {
-                Text(Strings.OnboardingNearAir.continueButton)
+                Text(Strings.Commons.continue)
                     .font(Fonts.semiboldHeading1)
             }
         )

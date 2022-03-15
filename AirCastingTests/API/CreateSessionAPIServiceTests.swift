@@ -4,22 +4,13 @@
 import XCTest
 @testable import AirCasting
 
-final class CreateSessionAPIServiceTests: XCTestCase {
-    private lazy var apiClientMock: APIClientMock! = APIClientMock()
-    private lazy var authorisationServiceMock: AuthorisationServiceMock! = AuthorisationServiceMock()
-    private lazy var tested: CreateSessionAPIService! = CreateSessionAPIService(authorisationService: authorisationServiceMock, apiClient: apiClientMock, baseUrlProvider: DummyURLProvider())
+final class CreateSessionAPIServiceTests: APIServiceTestCase {
+    private lazy var tested: CreateSessionAPIService = CreateSessionAPIService()
 
     private lazy var sampleInput = CreateSessionApi.Input.mock()
 
-    override func tearDown() {
-        apiClientMock = nil
-        authorisationServiceMock = nil
-        tested = nil
-        super.tearDown()
-    }
-
     func testTimeout() throws {
-        apiClientMock.failing(with: URLError(.timedOut))
+        client.failing(with: URLError(.timedOut))
 
         var result: Result<CreateSessionApi.Output, Error>?
         tested.createEmptyFixedWifiSession(input: sampleInput) {
@@ -42,7 +33,7 @@ final class CreateSessionAPIServiceTests: XCTestCase {
             let compression: Bool
         }
         var receivedRequest: URLRequest?
-        apiClientMock.requestTaskStub = { request, completion in
+        client.requestTaskStub = { request, completion in
             receivedRequest = request
             completion(.failure(URLError(.timedOut)), request)
         }
@@ -69,7 +60,7 @@ final class CreateSessionAPIServiceTests: XCTestCase {
     func testRequestCreationFailedWhenAuthorizationFails() throws {
         struct MockError: Swift.Error {}
 
-        authorisationServiceMock.authoriseStub = { _ in
+        authorization.authoriseStub = { _ in
             throw MockError()
         }
 
@@ -90,8 +81,11 @@ final class CreateSessionAPIServiceTests: XCTestCase {
 
     func testInvalidResponse() throws {
         let response = HTTPURLResponse(url: URL(string: "http://test.com")!, statusCode: 500, httpVersion: nil, headerFields: nil)!
-        apiClientMock.returning((data: Data(#"{ "error": "some invalid message" }"#.utf8), response: response))
+        client.returning((data: Data(#"{ "error": "some invalid message" }"#.utf8), response: response))
 
+        let errorContent = "ASD"
+        validator.stubError = DummyError(errorData: "ASD")
+        
         var result: Result<CreateSessionApi.Output, Error>?
         tested.createEmptyFixedWifiSession(input: sampleInput) {
             result = $0
@@ -100,8 +94,8 @@ final class CreateSessionAPIServiceTests: XCTestCase {
         switch try XCTUnwrap(result) {
         case .success(let response):
             XCTFail("Should fail but returned success type \(response)")
-        case .failure(URLError.badServerResponse):
-            print("Retuned valid error \(String(describing: result))")
+        case .failure(let error as DummyError):
+            XCTAssertEqual(error.errorData, errorContent)
         case .failure(let error):
             XCTFail("Failed with a unexpected error type \(error)")
         }
@@ -110,7 +104,7 @@ final class CreateSessionAPIServiceTests: XCTestCase {
     func testSuccessfulCreationResponse() throws {
         let location = UUID().uuidString
         let data = Data("{\"location\": \"\(location)\"}".utf8)
-        apiClientMock.returning((data: data, response: .success()))
+        client.returning((data: data, response: .success()))
 
         var result: Result<CreateSessionApi.Output, Error>?
         tested.createEmptyFixedWifiSession(input: sampleInput) {

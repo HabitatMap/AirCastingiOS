@@ -7,53 +7,53 @@ import SwiftUI
 import AirCastingStyling
 
 struct SearchMapView: View {
-    @StateObject var viewModel: SearchMapViewModel
+    @StateObject private var viewModel: SearchMapViewModel
     @Environment(\.presentationMode) var presentationMode
     
-    init(locationName: String, locationAddress: CLLocationCoordinate2D, parametr: String) {
-        _viewModel = .init(wrappedValue: .init(passedLocation: locationName, passedLocationAddress: locationAddress, passedParameter: parametr))
+    init(locationName: String, locationAddress: CLLocationCoordinate2D, measurementType: String) {
+        _viewModel = .init(wrappedValue: .init(passedLocation: locationName, passedLocationAddress: locationAddress, measurementType: measurementType))
     }
     
     var body: some View {
-            ZStack(alignment: .top, content: {
-                LoadingView(isShowing: $viewModel.showLoadingIndicator, activityIndicatorText: Strings.SearchMapView.loadingText) {
-                    ZStack(alignment: .top) {
-                        map
-                        VStack {
-                            Spacer()
-                            cardsTitle
-                            cards
-                        }
+        ZStack(alignment: .top, content: {
+            LoadingView(isShowing: $viewModel.showLoadingIndicator, activityIndicatorText: Strings.SearchMapView.loadingText) {
+                ZStack(alignment: .top) {
+                    map
+                    VStack {
+                        Spacer()
+                        cardsTitle
+                        cards
                     }
                 }
-                VStack(content: {
-                    textField
-                    parametersText
-                    redoneButton
-                })
-                    .padding(.top, 50)
-                    .padding(.horizontal)
+            }
+            VStack(alignment: .center, content: {
+                addressTextField
+                measurementTypeText
+                searchAgainButton
             })
-        .onChange(of: viewModel.shouldDismissView, perform: { _ in
-            viewModel.shouldDismissView ? self.presentationMode.wrappedValue.dismiss() : nil
+                .padding(.top, 50)
+                .padding(.horizontal)
         })
-        .alert(item: $viewModel.alert, content: { $0.makeAlert() })
+            .onChange(of: viewModel.shouldDismissView, perform: { result in
+                result ? self.presentationMode.wrappedValue.dismiss() : nil
+            })
+            .alert(item: $viewModel.alert, content: { $0.makeAlert() })
     }
 }
 
 // MARK: - Private View Components
 private extension SearchMapView {
-    var textField: some View {
+    var addressTextField: some View {
         createTextfield(placeholder: "", binding: .constant(viewModel.passedLocation))
             .disabled(true)
     }
     
-    var parametersText: some View {
-        Text(String(format: Strings.SearchMapView.parameterText, arguments: [viewModel.passedParameter]))
+    var measurementTypeText: some View {
+        Text(String(format: Strings.SearchMapView.parameterText, arguments: [viewModel.measurementType]))
             .font(.muli(size: 16, weight: .semibold))
     }
     
-    var redoneButton: some View {
+    var searchAgainButton: some View {
         Button {
             withAnimation(.easeOut(duration: 0.2)) {
                 viewModel.redoTapped()

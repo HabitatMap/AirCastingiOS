@@ -282,8 +282,6 @@ struct Strings {
                                                      comment: "")
         static let description: String = NSLocalizedString("Find and follow a fixed air quality monitor near you and know how clean or polluted your air is right now.",
                                                            comment: "")
-        static let continueButton: String = NSLocalizedString("How’s the air near you?",
-                                                              comment: "")
     }
     
     enum OnboardingAirBeam {
@@ -478,6 +476,7 @@ struct Strings {
                                                           comment: "")
         static let fetchingText: String = NSLocalizedString("Fetching...",
                                                             comment: "")
+        static let exploreSessionsButton = NSLocalizedString("Explore existing sessions", comment: "")
     }
 
     enum ReorderingDashboard {
@@ -865,6 +864,18 @@ struct Strings {
         static let failedTitle: String = NSLocalizedString("Failed",
                                                                     comment: "")
         static let downloadingFailedMessage: String = NSLocalizedString("Cannot download sessions at this moment. Please try again in a moment.",
+                                                                        comment: "")
+        static let failedDownloadTitle: String = NSLocalizedString("Connection failure",
+                                                                   comment: "")
+        static let failedDownloadMessage: String = NSLocalizedString("Something went wrong when downloading most recent session data. Please try again later.",
+                                                                     comment: "")
+        static let failedDownloadButton: String = NSLocalizedString("Got it!",
+                                                                    comment: "")
+        static let failedSavingTitle: String = NSLocalizedString("Request failed",
+                                                                   comment: "")
+        static let failedSavingMessage: String = NSLocalizedString("New data couldn't be saved. Please try again later.",
+                                                                     comment: "")
+        static let failedSavingButton: String = NSLocalizedString("Got it!",
                                                                     comment: "")
     }
     
@@ -963,6 +974,5 @@ struct Strings {
                                                               comment: "")
         static let sessionsText: String = NSLocalizedString("Sessions",
                                                               comment: "")
-        
     }
 }

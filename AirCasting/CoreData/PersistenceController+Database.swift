@@ -25,12 +25,11 @@ extension PersistenceController: SessionsFetchable {
 }
 
 extension PersistenceController: SessionInsertable {
-    func insertOrUpdateSessions(_ sessions: [Database.Session], completion: ((Error?) -> Void)?) {
+    func insertSessions(_ sessions: [Database.Session], completion: ((Error?) -> Void)?) {
         let context = self.editContext
         context.perform {
-            do {
-                try sessions.forEach {
-                    let sessionEntity: SessionEntity = try context.newOrExisting(uuid: $0.uuid)
+            sessions.forEach {
+                    let sessionEntity: SessionEntity = SessionEntity(context: context)
                     sessionEntity.uuid = $0.uuid
                     sessionEntity.type = $0.type
                     sessionEntity.name = $0.name
@@ -56,13 +55,8 @@ extension PersistenceController: SessionInsertable {
                         noteEntity.number = Int64($0.number)
                         noteEntity.session = sessionEntity
                     }
-                    try $0.measurementStreams?.forEach {
-                        let streamEntity: MeasurementStreamEntity
-                        if let id = $0.id {
-                            streamEntity = try context.newOrExisting(streamID: id, for: sessionEntity.uuid)
-                        } else {
-                            streamEntity = MeasurementStreamEntity(context: context)
-                        }
+                    $0.measurementStreams?.forEach {
+                        let streamEntity = MeasurementStreamEntity(context: context)
                         streamEntity.id = $0.id
                         streamEntity.measurementShortType = $0.measurementShortType
                         streamEntity.measurementType = $0.measurementType
@@ -79,6 +73,7 @@ extension PersistenceController: SessionInsertable {
                         streamEntity.session = sessionEntity
                     }
                 }
+            do {
                 try context.save()
                 completion?(nil)
             } catch {

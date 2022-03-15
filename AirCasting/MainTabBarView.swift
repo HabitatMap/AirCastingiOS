@@ -22,6 +22,7 @@ struct MainTabBarView: View {
     @StateObject var searchAndFollow = SearchAndFollowButton()
     @StateObject var emptyDashboardButtonTapped = EmptyDashboardButtonTapped()
     @StateObject var finishAndSyncButtonTapped = FinishAndSyncButtonTapped()
+    @StateObject var exploreSessionsButton = ExploreSessionsButton()
     @StateObject var sessionContext: CreateSessionContext
     @StateObject var coreDataHook: CoreDataHook
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
@@ -80,6 +81,7 @@ struct MainTabBarView: View {
         .environmentObject(tabSelection)
         .environmentObject(emptyDashboardButtonTapped)
         .environmentObject(finishAndSyncButtonTapped)
+        .environmentObject(exploreSessionsButton)
         .environmentObject(reorderButton)
         .environmentObject(searchAndFollow)
     }
@@ -189,6 +191,10 @@ class SelectSection: ObservableObject {
 
 class EmptyDashboardButtonTapped: ObservableObject {
     @Published var mobileWasTapped = false
+}
+
+class ExploreSessionsButton: ObservableObject {
+    @Published var exploreSessionsButtonTapped = false
 }
 
 class FinishAndSyncButtonTapped: ObservableObject {
