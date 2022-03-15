@@ -4,15 +4,15 @@
 import Foundation
 import Resolver
 
-protocol MapPlottedSession {
+protocol SessionsForLocationDownloader {
     func getSessions(geoSquare: GeoSquare, timeFrom: Double, timeTo: Double, completion: @escaping (Result<[MapDownloaderSearchedSession], Error>) -> Void)
 }
 
-fileprivate struct SearchedSessions: Codable {
+fileprivate struct MapPlottedSession: Codable {
     let sessions: [MapDownloaderSearchedSession]
 }
 
-class MapPlottedSessionDefault: MapPlottedSession {
+class SessionsForLocationDownloaderDefault: SessionsForLocationDownloader {
     
     @Injected private var authorization: RequestAuthorisationService
     @Injected private var urlProvider: URLProvider
@@ -62,7 +62,7 @@ class MapPlottedSessionDefault: MapPlottedSession {
                         try responseValidator.validate(response: response.response, data: response.data)
                         let decoder = JSONDecoder()
                         decoder.keyDecodingStrategy = .convertFromSnakeCase
-                        let sessionData = try decoder.decode(SearchedSessions.self, from: response.data)
+                        let sessionData = try decoder.decode(MapPlottedSession.self, from: response.data)
                         completion(.success(sessionData.sessions))
                     } catch {
                         completion(.failure(error))

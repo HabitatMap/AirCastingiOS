@@ -10,7 +10,7 @@ class SearchMapViewModel: ObservableObject {
     let passedLocation: String
     let passedLocationAddress: CLLocationCoordinate2D
     let measurementType: String
-    @Injected private var mapSessionsDownloader: MapPlottedSession
+    @Injected private var mapSessionsDownloader: SessionsForLocationDownloader
     @Published var sessionsList = [MapSessionMarker]()
     @Published var searchAgainButton: Bool = false
     @Published var showLoadingIndicator: Bool = false

@@ -324,7 +324,7 @@
 		DD009D662698844A009F0443 /* DeleteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD009D652698844A009F0443 /* DeleteView.swift */; };
 		DD123EBF27BD1CD3001083C3 /* SearchMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD123EBE27BD1CD3001083C3 /* SearchMapView.swift */; };
 		DD123EC227BD2C53001083C3 /* SearchMapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD123EC127BD2C53001083C3 /* SearchMapViewModel.swift */; };
-		DD123EC527BD35E8001083C3 /* MapPlottedSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD123EC427BD35E8001083C3 /* MapPlottedSession.swift */; };
+		DD123EC527BD35E8001083C3 /* SessionsForLocationDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD123EC427BD35E8001083C3 /* SessionsForLocationDownloader.swift */; };
 		DD197FA727BE439200340672 /* MapDownloaderUnitSymbol.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD197FA627BE439200340672 /* MapDownloaderUnitSymbol.swift */; };
 		DD197FA927BE43A900340672 /* MapDownloaderMeasurementType.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD197FA827BE43A900340672 /* MapDownloaderMeasurementType.swift */; };
 		DD197FAB27BE448200340672 /* MapDownloaderQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD197FAA27BE448200340672 /* MapDownloaderQuery.swift */; };
@@ -762,7 +762,7 @@
 		DD009D652698844A009F0443 /* DeleteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteView.swift; sourceTree = "<group>"; };
 		DD123EBE27BD1CD3001083C3 /* SearchMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchMapView.swift; sourceTree = "<group>"; };
 		DD123EC127BD2C53001083C3 /* SearchMapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchMapViewModel.swift; sourceTree = "<group>"; };
-		DD123EC427BD35E8001083C3 /* MapPlottedSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapPlottedSession.swift; sourceTree = "<group>"; };
+		DD123EC427BD35E8001083C3 /* SessionsForLocationDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionsForLocationDownloader.swift; sourceTree = "<group>"; };
 		DD197FA627BE439200340672 /* MapDownloaderUnitSymbol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapDownloaderUnitSymbol.swift; sourceTree = "<group>"; };
 		DD197FA827BE43A900340672 /* MapDownloaderMeasurementType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapDownloaderMeasurementType.swift; sourceTree = "<group>"; };
 		DD197FAA27BE448200340672 /* MapDownloaderQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapDownloaderQuery.swift; sourceTree = "<group>"; };
@@ -1994,7 +1994,7 @@
 		DD197FA527BE438000340672 /* API */ = {
 			isa = PBXGroup;
 			children = (
-				DD123EC427BD35E8001083C3 /* MapPlottedSession.swift */,
+				DD123EC427BD35E8001083C3 /* SessionsForLocationDownloader.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -2577,7 +2577,7 @@
 				ACCEB21D2763A2230040140B /* SDSyncRootViewModel.swift in Sources */,
 				DDDC8B692799971A00F64803 /* NotesTextView.swift in Sources */,
 				335A8B2F2785D49100355D46 /* ShareSessionAPI.swift in Sources */,
-				DD123EC527BD35E8001083C3 /* MapPlottedSession.swift in Sources */,
+				DD123EC527BD35E8001083C3 /* SessionsForLocationDownloader.swift in Sources */,
 				B33DB5762686161300ED1344 /* SensorName.swift in Sources */,
 				DD8AFE4F272886D700ED1CED /* ThresholdWitness.swift in Sources */,
 				B3F1447C26AE437E006A4612 /* OnErrorPublisher.swift in Sources */,

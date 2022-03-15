@@ -12,7 +12,7 @@ extension MapDownloaderMeasurementType {
     var name: String {
         switch self {
         case .particulateMatter: return "Particulate Matter"
-        case .ozone: return ""
+        case .ozone: return "Ozone"
         }
     }
 }

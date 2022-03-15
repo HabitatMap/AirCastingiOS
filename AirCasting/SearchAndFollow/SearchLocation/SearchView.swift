@@ -71,6 +71,6 @@ private extension SearchView {
                 Text(Strings.Commons.continue)
             })
             .buttonStyle(BlueButtonStyle())
-            .disabled(viewModel.continueDisable)
+            .disabled(viewModel.continueDisabled)
     }
 }
