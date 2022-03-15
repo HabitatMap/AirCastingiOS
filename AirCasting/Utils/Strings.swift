@@ -864,6 +864,18 @@ struct Strings {
         static let failedTitle: String = NSLocalizedString("Failed",
                                                                     comment: "")
         static let downloadingFailedMessage: String = NSLocalizedString("Cannot download sessions at this moment. Please try again in a moment.",
+                                                                        comment: "")
+        static let failedDownloadTitle: String = NSLocalizedString("Connection failure",
+                                                                   comment: "")
+        static let failedDownloadMessage: String = NSLocalizedString("Something went wrong when downloading most recent session data. Please try again later.",
+                                                                     comment: "")
+        static let failedDownloadButton: String = NSLocalizedString("Got it!",
+                                                                    comment: "")
+        static let failedSavingTitle: String = NSLocalizedString("Request failed",
+                                                                   comment: "")
+        static let failedSavingMessage: String = NSLocalizedString("New data couldn't be saved. Please try again later.",
+                                                                     comment: "")
+        static let failedSavingButton: String = NSLocalizedString("Got it!",
                                                                     comment: "")
     }
     

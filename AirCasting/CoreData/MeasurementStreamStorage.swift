@@ -195,8 +195,10 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         return session
     }
 
-    func updateMeasurements(stream: MeasurementStreamEntity, newMeasurements: NSOrderedSet) throws {
-        stream.measurements = newMeasurements
+    func removeAllMeasurements(in stream: MeasurementStreamEntity, except measurementsToLeave: [MeasurementEntity]) {
+        let idsToLeave = measurementsToLeave.map(\.objectID)
+        let measurementsToDelete = stream.allMeasurements?.filter { !idsToLeave.contains($0.objectID) } ?? []
+        measurementsToDelete.forEach { context.delete($0) }
     }
 
     private func saveMeasurementStream(for session: SessionEntity, context: NSManagedObjectContext, _ stream: MeasurementStream) throws -> MeasurementStreamLocalID {
@@ -261,6 +263,11 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         sessionEntity.name = name
         sessionEntity.tags = tags
         try context.save()
+    }
+    
+    func updateVersion(for sessionUUID: SessionUUID, to version: Int) throws {
+        let sessionEntity = try context.existingSession(uuid: sessionUUID)
+        sessionEntity.version = Int16(version)
     }
 
     func updateSessionFollowing(_ sessionFollowing: SessionFollowing, for sessionUUID: SessionUUID) {

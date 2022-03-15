@@ -85,6 +85,7 @@ extension Resolver: ResolverRegistering {
         main.register { DefaultHTTPResponseValidator() as HTTPResponseValidator }
         main.register { UserDefaultsURLProvider() as URLProvider }
         main.register { DefaultNetworkChecker() as NetworkChecker }.scope(.application)
+        main.register { DefaultSingleSessionDownloader() as SingleSessionDownloader }
         
         // MARK: - Feature flags
         main.register { DefaultRemoteNotificationRouter() }
@@ -127,7 +128,6 @@ extension Resolver: ResolverRegistering {
         main.register {
             ScheduledSessionSynchronizerProxy(controller: SessionSynchronizationController(), scheduler: DispatchQueue.global())
         }.scope(.application)
-            .implements(SingleSessionSynchronizer.self)
             .implements(SessionSynchronizer.self)
         
         // MARK: - Location handling
