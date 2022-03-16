@@ -292,10 +292,10 @@ struct GoogleMapView: UIViewRepresentable {
         func centerMap(for mapView: GMSMapView) {
             let lat = parent.liveModeOn ?
             parent.tracker.locationManager.location!.coordinate.latitude :
-            parent.pathPoints.last?.location.latitude ?? 37.35
+            parent.pathPoints.last?.location.latitude ?? parent.tracker.locationManager.location!.coordinate.latitude
             let long = parent.liveModeOn ?
             parent.tracker.locationManager.location!.coordinate.longitude :
-            parent.pathPoints.last?.location.longitude ?? -122.05
+            parent.pathPoints.last?.location.longitude ?? parent.tracker.locationManager.location!.coordinate.longitude
             let camera = GMSCameraPosition.camera(withLatitude: lat, longitude: long, zoom: 16)
             mapView.animate(to: camera)
         }
