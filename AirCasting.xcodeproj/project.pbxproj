@@ -34,6 +34,9 @@
 		33885BB227468B4E00F41CB5 /* SDSyncFileWritingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33885BB127468B4E00F41CB5 /* SDSyncFileWritingService.swift */; };
 		338C30E225F1044B00E0305C /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 338C30E125F1044B00E0305C /* PersistenceController.swift */; };
 		338C30E825F10BFE00E0305C /* AirCasting.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 338C30E625F10BFE00E0305C /* AirCasting.xcdatamodeld */; };
+		338CA6F527D1045400505331 /* WKWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 338CA6F427D1045300505331 /* WKWebView.swift */; };
+		338CA6F727D104AF00505331 /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 338CA6F627D104AF00505331 /* WebView.swift */; };
+		338CA6F927D1071200505331 /* PrivacyOnboardingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 338CA6F827D1071200505331 /* PrivacyOnboardingViewModel.swift */; };
 		3397C81F2787024C0050B333 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3397C81E2787024C0050B333 /* UserDefaults.swift */; };
 		33AC7D5C273C1B9700EB1274 /* StandaloneSessionCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33AC7D5B273C1B9700EB1274 /* StandaloneSessionCardView.swift */; };
 		33BA3368266E4BCA00899343 /* MobilePeripheralSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33BA3367266E4BCA00899343 /* MobilePeripheralSessionManager.swift */; };
@@ -282,9 +285,9 @@
 		B3E2B65A27506E0D00019167 /* FileLineReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E2B65927506E0D00019167 /* FileLineReader.swift */; };
 		B3E2B65C27506E7300019167 /* DefaultFileLineReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E2B65B27506E7300019167 /* DefaultFileLineReader.swift */; };
 		B3E2B65F27506EA000019167 /* FileLineReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E2B65E27506EA000019167 /* FileLineReaderTests.swift */; };
-		B3EAF01C27B03CDC00290222 /* ChartDatabaseObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EAF01B27B03CDC00290222 /* ChartDatabaseObserver.swift */; };
 		B3EAF01827AFC43300290222 /* ShareLogsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EAF01727AFC43300290222 /* ShareLogsViewModel.swift */; };
 		B3EAF01A27B00F7300290222 /* FileLoggerHeaderProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EAF01927B00F7300290222 /* FileLoggerHeaderProvider.swift */; };
+		B3EAF01C27B03CDC00290222 /* ChartDatabaseObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EAF01B27B03CDC00290222 /* ChartDatabaseObserver.swift */; };
 		B3EAF78F2730C161000FFF23 /* AVSessionInterruptionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EAF78E2730C161000FFF23 /* AVSessionInterruptionHandler.swift */; };
 		B3EBB10326A05551002BD81F /* ForgotPasswordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EBB10226A05551002BD81F /* ForgotPasswordViewModel.swift */; };
 		B3EBB10626A06CD7002BD81F /* ScheduledForgotPasswordControllerProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EBB10526A06CD7002BD81F /* ScheduledForgotPasswordControllerProxy.swift */; };
@@ -451,6 +454,9 @@
 		33885BB127468B4E00F41CB5 /* SDSyncFileWritingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSyncFileWritingService.swift; sourceTree = "<group>"; };
 		338C30E125F1044B00E0305C /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceController.swift; sourceTree = "<group>"; };
 		338C30E725F10BFE00E0305C /* AirCasting.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AirCasting.xcdatamodel; sourceTree = "<group>"; };
+		338CA6F427D1045300505331 /* WKWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WKWebView.swift; sourceTree = "<group>"; };
+		338CA6F627D104AF00505331 /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
+		338CA6F827D1071200505331 /* PrivacyOnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyOnboardingViewModel.swift; sourceTree = "<group>"; };
 		338FE86027AAB0F1006148DA /* AirCasting v3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AirCasting v3.xcdatamodel"; sourceTree = "<group>"; };
 		3397C81E2787024C0050B333 /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 		33AC7D5B273C1B9700EB1274 /* StandaloneSessionCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandaloneSessionCardView.swift; sourceTree = "<group>"; };
@@ -704,9 +710,9 @@
 		B3E2B65927506E0D00019167 /* FileLineReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileLineReader.swift; sourceTree = "<group>"; };
 		B3E2B65B27506E7300019167 /* DefaultFileLineReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultFileLineReader.swift; sourceTree = "<group>"; };
 		B3E2B65E27506EA000019167 /* FileLineReaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileLineReaderTests.swift; sourceTree = "<group>"; };
-		B3EAF01B27B03CDC00290222 /* ChartDatabaseObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartDatabaseObserver.swift; sourceTree = "<group>"; };
 		B3EAF01727AFC43300290222 /* ShareLogsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareLogsViewModel.swift; sourceTree = "<group>"; };
 		B3EAF01927B00F7300290222 /* FileLoggerHeaderProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileLoggerHeaderProvider.swift; sourceTree = "<group>"; };
+		B3EAF01B27B03CDC00290222 /* ChartDatabaseObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartDatabaseObserver.swift; sourceTree = "<group>"; };
 		B3EAF78E2730C161000FFF23 /* AVSessionInterruptionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVSessionInterruptionHandler.swift; sourceTree = "<group>"; };
 		B3EBB10226A05551002BD81F /* ForgotPasswordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordViewModel.swift; sourceTree = "<group>"; };
 		B3EBB10526A06CD7002BD81F /* ScheduledForgotPasswordControllerProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduledForgotPasswordControllerProxy.swift; sourceTree = "<group>"; };
@@ -1090,6 +1096,7 @@
 				DD9EBFD4279EB70900192CB5 /* TextView.swift */,
 				B33B161827AF26BC00138FFA /* DateFormatter+Extensions.swift */,
 				DD38A4AE27B1584600D2091F /* StringsCustomizer.swift */,
+				338CA6F627D104AF00505331 /* WebView.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1527,6 +1534,7 @@
 				3375E8D32791EDC50019A5DE /* CLLocationCoordinate2D.swift */,
 				DD9EBFD7279EEAB300192CB5 /* DataBuilder.swift */,
 				DDC22C7F27B6C508000E81D1 /* ViewControl.swift */,
+				338CA6F427D1045300505331 /* WKWebView.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1981,6 +1989,7 @@
 				DD430B012670F3B300F1BF2E /* NearAirDescription.swift */,
 				DD430B032670FA9600F1BF2E /* AirBeamOnboarding.swift */,
 				DD430B0B26710E0600F1BF2E /* PrivacyOnboarding.swift */,
+				338CA6F827D1071200505331 /* PrivacyOnboardingViewModel.swift */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
@@ -2630,6 +2639,7 @@
 				DD8DE6892785B706009B1726 /* EmptyNotesHandler.swift in Sources */,
 				ACBB05132761F21500A6B3FB /* SDCardFixedSessionsSavingService.swift in Sources */,
 				33BA336A266E4D1000899343 /* MobileSession.swift in Sources */,
+				338CA6F527D1045400505331 /* WKWebView.swift in Sources */,
 				AC86EE6B25D03DC00083F8C0 /* SelectDeviceView.swift in Sources */,
 				B38BA5A22757DC9300F758C8 /* SDCardMeasurementsParser.swift in Sources */,
 				B30F9A632745626B00C85E17 /* SDCardAirBeamServices.swift in Sources */,
@@ -2733,9 +2743,11 @@
 				DDF62601269C779800F23489 /* UIApplication+AppInfo.swift.swift in Sources */,
 				75B1DD48273BCCD200BCDF9B /* Heatmap.swift in Sources */,
 				AC8D6C7225C0574800ED74D1 /* LocationTracker.swift in Sources */,
+				338CA6F927D1071200505331 /* PrivacyOnboardingViewModel.swift in Sources */,
 				DD8C380C2689A3DA00901FDF /* URLProvider.swift in Sources */,
 				AC4EC6C425B6FE0D00C1E312 /* ThresholdsSettingsView.swift in Sources */,
 				DDD24D8626A8295F00D4A327 /* ConnectingABViewModel.swift in Sources */,
+				338CA6F727D104AF00505331 /* WebView.swift in Sources */,
 				B3FD77C8267C997800E97CC2 /* PersistenceController+Database.swift in Sources */,
 				DDC86646276B561500A8E610 /* EditNoteViewModel.swift in Sources */,
 				AC8CFF4525E510CB00FB2918 /* AuthorizationAPI.swift in Sources */,
