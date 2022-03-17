@@ -127,6 +127,7 @@ class MobilePeripheralSessionManager {
             Log.warning("Tried to disconnect session for peripheral which is not associated with an active session")
             return
         }
+        Log.info("Changing session status to disconnected for: \(sessionUUID)")
         changeSessionStatusToDisconnected(uuid: sessionUUID)
     }
 

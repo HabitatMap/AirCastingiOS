@@ -27,6 +27,7 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
     func start() {
         updateAllSessionsMeasurements()
         timerSink = Timer.publish(every: 60, on: .current, in: .common).autoconnect().sink { [weak self] tick in
+            Log.info("Timer triggered for fixed sessions measurements download")
             self?.updateAllSessionsMeasurements()
         }
     }
@@ -88,6 +89,7 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
     
     private func processServiceOutput(_ output: FixedSession.FixedMeasurementOutput,
                                       for sessionUUID: SessionUUID) {
+        Log.info("Processing download measurements response for: \(sessionUUID)")
         let context = persistenceController.editContext
         context.perform {
             do {
