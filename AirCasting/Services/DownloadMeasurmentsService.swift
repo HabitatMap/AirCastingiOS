@@ -16,7 +16,6 @@ protocol MeasurementUpdatingService {
 }
 
 final class DownloadMeasurementsService: MeasurementUpdatingService {
-    @Injected private var authorisationService: RequestAuthorisationService
     @Injected private var persistenceController: PersistenceController
     private let fixedSessionService = FixedSessionAPIService()
     private var timerSink: Cancellable?
@@ -27,6 +26,7 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
     func start() {
         updateAllSessionsMeasurements()
         timerSink = Timer.publish(every: 60, on: .current, in: .common).autoconnect().sink { [weak self] tick in
+            guard !(self?.persistenceController.uiSuspended ?? true) else { return }
             self?.updateAllSessionsMeasurements()
         }
     }
