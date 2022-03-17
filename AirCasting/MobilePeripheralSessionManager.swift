@@ -50,8 +50,8 @@ class MobilePeripheralSessionManager {
     // This function is still needed for when the standalone mode flag is disabled
     func finishSession(for peripheral: CBPeripheral, centralManager: CBCentralManager) {
         if activeMobileSession?.peripheral == peripheral {
-            finishActiveSession(for: peripheral, centralManager: centralManager)
             updateDatabaseForFinishedSession(with: activeMobileSession!.session.uuid)
+            finishActiveSession(for: peripheral, centralManager: centralManager)
         }
     }
 
