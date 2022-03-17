@@ -52,7 +52,7 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
     
     private func getAllSessionsData(completion: @escaping ([(uuid: SessionUUID, lastSynced: Date)]) -> Void) {
         let request: NSFetchRequest<SessionEntity> = SessionEntity.fetchRequest()
-        request.predicate = request.typePredicate(.fixed)
+        request.predicate = NSPredicate(format: "followedAt != NULL")
         let context = persistenceController.editContext
         var returnData: [(uuid: SessionUUID, lastSynced: Date)] = []
         context.perform { [unowned self] in
