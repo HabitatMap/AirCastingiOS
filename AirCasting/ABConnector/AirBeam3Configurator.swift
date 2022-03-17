@@ -45,6 +45,7 @@ struct AirBeam3Configurator {
     private let SERVICE_UUID = CBUUID(string:"0000ffdd-0000-1000-8000-00805f9b34fb")
     
     func configureMobileSession(location: CLLocationCoordinate2D) {
+        Log.info("Starting configuring mobile session.")
         sendLocationConfiguration(location: location)
 
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
@@ -116,38 +117,45 @@ private extension AirBeam3Configurator {
     // MARK: Commands
     private func sendUUIDRequest(uuid: SessionUUID) {
         let message = hexMessageBuilder.uuidMessage(uuid: uuid)
+        Log.info("Sending UUID request to peripheral")
         sendConfigMessage(data: message)
     }
     
     private func sendAuthToken(authToken: String) {
         let message = hexMessageBuilder.authTokenMessage(authToken: authToken)
+        Log.info("Sending auth token to peripheral")
         sendConfigMessage(data: message!)
     }
     
     private func sendLocationConfiguration(location: CLLocationCoordinate2D) {
         let message = hexMessageBuilder.locationMessage(lat: location.latitude,
                                                            lng: location.longitude)
+        Log.info("Sending location configuration to peripheral")
         sendConfigMessage(data: message)
     }
     
     private func sendCurrentTimeConfiguration(date: String) {
         let message = hexMessageBuilder.currentTimeMessage(date: date)
+        Log.info("Sending time configuration to peripheral")
         sendConfigMessage(data: message)
     }
     
     private func sendMobileModeRequest() {
         let message = hexMessageBuilder.bluetoothConfigurationMessage
+        Log.info("Sending mobile mode request to peripheral")
         sendConfigMessage(data: message)
     }
     
     private func sendWifiConfiguration(wifiSSID: String, wifiPassword: String) {
         let message = hexMessageBuilder.wifiConfigurationMessage(wifiSSID: wifiSSID,
                                                                  wifiPassword: wifiPassword)
+        Log.info("Sending wifi configuration to peripheral")
         sendConfigMessage(data: message)
     }
     
     private func sendCellularConfiguration() {
         let message = hexMessageBuilder.cellularconfigurationCode
+        Log.info("Sending cellular configuration to peripheral")
         sendConfigMessage(data: message)
     }
     
@@ -169,17 +177,18 @@ private extension AirBeam3Configurator {
             assertionFailure("Unable to get characteristic from \(peripheral)")
             return
         }
+        Log.info("Writing value to peripheral")
         peripheral.writeValue(data,
                               for: characteristic,
                               type: .withResponse)
     }
     
     func getCharacteristic(serviceID: CBUUID, charID: CBUUID) -> CBCharacteristic? {
-        Log.info("Peripheral services\n \(String(describing: peripheral.services))")
+        Log.info("Getting characteristics for peripheral. Peripheral services: \(String(describing: peripheral.services?.count))")
         let service = peripheral.services?.first(where: { data -> Bool in
             data.uuid == serviceID
         })
-        Log.info("Service characteristics\n \(String(describing: service?.characteristics))")
+        Log.info("Service characteristics: \(String(describing: service?.characteristics?.count))")
         guard let characteristic = service?.characteristics?.first(where: { characteristic -> Bool in
             characteristic.uuid == charID
         }) else {
