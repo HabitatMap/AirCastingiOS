@@ -90,7 +90,7 @@ struct ConfirmCreatingSessionView: View {
                 ZStack {
                     if sessionContext.sessionType == .mobile {
                         if !sessionContext.locationless {
-                            GoogleMapView(pathPoints: [], isMyLocationEnabled: true, placePickerIsUpdating: Binding.constant(false), isUserInteracting: Binding.constant(true), mapNotes: .constant([]))
+                            GoogleMapView(pathPoints: [], isMyLocationEnabled: true, placePickerIsUpdating: Binding.constant(false), isUserInteracting: Binding.constant(true), mapNotes: .constant([]), isCreatingSessionScreen: true)
                         }
                     } else if !(sessionContext.isIndoor ?? false) {
                         GoogleMapView(pathPoints: [], placePickerIsUpdating: Binding.constant(false), isUserInteracting: Binding.constant(true), mapNotes: .constant([]))

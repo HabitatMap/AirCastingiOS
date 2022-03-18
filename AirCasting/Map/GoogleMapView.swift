@@ -25,8 +25,9 @@ struct GoogleMapView: UIViewRepresentable {
     private var onPositionChange: (([PathPoint]) -> ())? = nil
     var isSessionFixed: Bool
     @Binding var mapNotes: [MapNote]
+    var isCreatingSessionScreen: Bool
     
-    init(pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false, placePickerIsUpdating: Binding<Bool>, isUserInteracting: Binding<Bool>, isSessionActive: Bool = false, isSessionFixed: Bool = false, noteMarketTapped: Binding<Bool> = .constant(false), noteNumber: Binding<Int> = .constant(0), mapNotes: Binding<[MapNote]>) {
+    init(pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false, placePickerIsUpdating: Binding<Bool>, isUserInteracting: Binding<Bool>, isSessionActive: Bool = false, isSessionFixed: Bool = false, noteMarketTapped: Binding<Bool> = .constant(false), noteNumber: Binding<Int> = .constant(0), mapNotes: Binding<[MapNote]>, isCreatingSessionScreen: Bool = false) {
         self.pathPoints = pathPoints
         self.threshold = threshold
         self.isMyLocationEnabled = isMyLocationEnabled
@@ -37,6 +38,7 @@ struct GoogleMapView: UIViewRepresentable {
         self._noteMarketTapped = noteMarketTapped
         self._noteNumber = noteNumber
         self._mapNotes = mapNotes
+        self.isCreatingSessionScreen = isCreatingSessionScreen
     }
     
     func makeUIView(context: Context) -> GMSMapView {
@@ -290,14 +292,24 @@ struct GoogleMapView: UIViewRepresentable {
         }
         
         func centerMap(for mapView: GMSMapView) {
-            let lat = parent.liveModeOn ?
-            parent.tracker.locationManager.location!.coordinate.latitude :
-            parent.pathPoints.last?.location.latitude ?? parent.tracker.locationManager.location!.coordinate.latitude
-            let long = parent.liveModeOn ?
-            parent.tracker.locationManager.location!.coordinate.longitude :
-            parent.pathPoints.last?.location.longitude ?? parent.tracker.locationManager.location!.coordinate.longitude
-            let camera = GMSCameraPosition.camera(withLatitude: lat, longitude: long, zoom: 16)
+            var lat: CLLocationDegrees
+            var long: CLLocationDegrees
+            var camera: GMSCameraPosition
+            
+            if parent.isCreatingSessionScreen {
+                lat = parent.tracker.locationManager.location!.coordinate.latitude
+                long = parent.tracker.locationManager.location!.coordinate.longitude
+            } else {
+                lat = parent.liveModeOn ?
+                parent.tracker.locationManager.location!.coordinate.latitude :
+                parent.pathPoints.last?.location.latitude ?? 37.35
+                long = parent.liveModeOn ?
+                parent.tracker.locationManager.location!.coordinate.longitude :
+                parent.pathPoints.last?.location.longitude ?? -122.05
+            }
+            camera = GMSCameraPosition.camera(withLatitude: lat, longitude: long, zoom: 16)
             mapView.animate(to: camera)
+
         }
 
         private func positionChanged(for mapView: GMSMapView) {
