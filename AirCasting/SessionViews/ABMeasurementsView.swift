@@ -45,10 +45,12 @@ struct _ABMeasurementsView: View {
         return session.sortedStreams ?? []
     }
     
+    private var hasAnyMeasurements: Bool {
+        (session.sortedStreams ?? []).filter { $0.latestValue != nil }.count > 0
+    }
+    
     var body: some View {
-        let hasAnyMeasurements = streamsToShow.filter { $0.latestValue != nil }.count > 0
-        
-        return Group {
+        Group {
             if hasAnyMeasurements {
                 VStack(alignment: .leading, spacing: 5) {
                     measurementsTitle
@@ -96,7 +98,7 @@ struct _ABMeasurementsView: View {
             }
         }
         .onChange(of: isCollapsed, perform: { new in
-            if isCollapsed == false && !hasAnyMeasurements {
+            if isCollapsed == false && (!hasAnyMeasurements || (session.isFixed && !session.isFollowed)) {
                 measurementsViewModel.syncMeasurements()
             }
         })
