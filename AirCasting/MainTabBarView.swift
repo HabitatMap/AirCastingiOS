@@ -54,6 +54,9 @@ struct MainTabBarView: View {
             }
             
         }
+        .onAppCameToForeground {
+            measurementUpdatingService.updateMeasurementsOnceGoingForeground()
+        }
         .onAppear {
             let navBarAppearance = UINavigationBar.appearance()
             navBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(Color.darkBlue),
