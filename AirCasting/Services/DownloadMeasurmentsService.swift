@@ -13,7 +13,7 @@ import Resolver
 protocol MeasurementUpdatingService {
     func start()
     func downloadMeasurements(for sessionUUID: SessionUUID, lastSynced: Date, completion: @escaping () -> Void)
-    func updateMeasurementsOnceGoingForeground()
+    func updateAllSessionsMeasurements()
 }
 
 final class DownloadMeasurementsService: MeasurementUpdatingService {
@@ -32,8 +32,6 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
         }
     }
     
-    func updateMeasurementsOnceGoingForeground() { updateAllSessionsMeasurements() }
-    
     func downloadMeasurements(for sessionUUID: SessionUUID, lastSynced: Date, completion: @escaping () -> Void) {
         lastFetchCancellableTask = fixedSessionService.getFixedMeasurement(uuid: sessionUUID, lastSync: lastSynced) { [weak self] in
             self?.processServiceResponse($0, for: sessionUUID, completion: completion)
@@ -46,7 +44,7 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
         }
     }
     
-    private func updateAllSessionsMeasurements() {
+    func updateAllSessionsMeasurements() {
         getAllSessionsData() { [unowned self] sessionsData in
             Log.info("Scheduled measurements update triggered (session count: \(sessionsData.count))")
             sessionsData.forEach { self.updateMeasurements(for: $0.uuid, lastSynced: $0.lastSynced) }

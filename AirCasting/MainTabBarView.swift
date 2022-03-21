@@ -55,7 +55,7 @@ struct MainTabBarView: View {
             
         }
         .onAppCameToForeground {
-            measurementUpdatingService.updateMeasurementsOnceGoingForeground()
+            measurementUpdatingService.updateAllSessionsMeasurements()
         }
         .onAppear {
             let navBarAppearance = UINavigationBar.appearance()
