@@ -16,7 +16,6 @@ struct SearchSession {
         let sensorPackageName: String
         let sensorName: String
         let measurements: [SearchSessionMeasurement]
-        
     }
     
     struct SearchSessionMeasurement {

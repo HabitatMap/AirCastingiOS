@@ -31,17 +31,17 @@ struct CompleteScreen: View {
             header
             if viewModel.sessionStreams.isReady {
                 measurements
-                if viewModel.isMapSelected {
-                    SearchCompleteScreenMapView(longitude: viewModel.sessionLongitude, latitude: viewModel.sessionLatitude)
-                } else {
-                    SearchAndFollowChartView(viewModel: viewModel.chartViewModel.get)
-                }
-                buttons
             } else {
-                Text(Strings.CompleteSearchView.noStreamsDescription)
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle())
                     .padding(.vertical)
-                SearchCompleteScreenMapView(longitude: viewModel.sessionLongitude, latitude: viewModel.sessionLatitude)
             }
+            if viewModel.isMapSelected {
+                SearchCompleteScreenMapView(longitude: viewModel.sessionLongitude, latitude: viewModel.sessionLatitude)
+            } else {
+                SearchAndFollowChartView(viewModel: viewModel.chartViewModel)
+            }
+            buttons
             confirmationButton
             Spacer()
         }

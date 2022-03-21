@@ -34,9 +34,9 @@ enum Loadable<T> {
         }
     }
     
-    var get: T {
+    var get: T? {
         switch self {
-        case .loading: fatalError("variable not ready!")
+        case .loading: return nil as T?
         case .ready(let item): return item
         }
     }
@@ -66,6 +66,7 @@ struct SearchSessionResult {
 class CompleteScreenViewModel: ObservableObject {
     @Published var selectedStream: Int?
     @Published var isMapSelected: Bool = true
+    
     let sessionLongitude: Double
     let sessionLatitude: Double
     let sessionName: String
@@ -73,7 +74,7 @@ class CompleteScreenViewModel: ObservableObject {
     let sessionEndTime: Date
     let sensorType: String
     @Published var sessionStreams: Loadable<[SessionStreamViewModel]> = .loading
-    @Published var chartViewModel: Loadable<SearchAndFollowChartViewModel> = .loading
+    @Published var chartViewModel = SearchAndFollowChartViewModel(stream: nil)
     
     private let session: SearchSessionResult
     @Injected private var service: SearchSessionStreamsDownstream
@@ -91,11 +92,10 @@ class CompleteScreenViewModel: ObservableObject {
     
     private func reloadData() {
         sessionStreams = .loading
-        chartViewModel = .loading
         service.downloadSession(uuid: session.uuid) { [weak self] result in
             guard let self = self else { return }
             switch result {
-            case .failure(let error): break //TODO: Handle me
+            case .failure(let error): break // TODO: Handle me
             case .success(let downloadedSession):
                 self.sessionStreams = .ready(
                     downloadedSession.streams.map({
@@ -104,8 +104,10 @@ class CompleteScreenViewModel: ObservableObject {
                               lastMeasurementValue: $0.measurements.last?.value ?? 0)
                     })
                 )
-                self.chartViewModel = .ready(.init(stream: downloadedSession.streams.first))
                 self.selectedStream = downloadedSession.streams.first?.id
+                if let stream = downloadedSession.streams.first {
+                    self.chartViewModel.setStream(to: stream)
+                }
             }
         }
     }
