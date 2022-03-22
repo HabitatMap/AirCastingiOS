@@ -253,6 +253,11 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
 
         try context.save()
     }
+    
+    func updateSessionEndTimeWithoutUTCConversion(_ endTime: Date, for sessionUUID: SessionUUID) throws {
+        let sessionEntity = try context.existingSession(uuid: sessionUUID)
+        sessionEntity.endTime = endTime
+    }
 
     func updateSessionNameAndTags(name: String, tags: String, for sessionUUID: SessionUUID) throws {
         let sessionEntity = try context.existingSession(uuid: sessionUUID)

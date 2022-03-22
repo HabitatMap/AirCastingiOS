@@ -132,7 +132,7 @@ private extension SessionCardView {
             action: {
                 withAnimation {
                     isCollapsed.toggle()
-                    if !(session.isFixed && !session.isFollowed) {
+                    if !session.isFixedNotFollowed {
                         uiState.toggleCardExpanded(sessionUUID: session.uuid)
                     }
                 }
