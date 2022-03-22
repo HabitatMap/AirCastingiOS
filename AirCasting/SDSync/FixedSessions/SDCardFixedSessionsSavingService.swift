@@ -81,6 +81,11 @@ class SDCardFixedSessionsUploadingService {
         var tasksCompleted = 0
         var allSuccess = true
         
+        guard !uploadParams.isEmpty else {
+            completion(true)
+            return
+        }
+        
         uploadParams.forEach { params in
             apiService.uploadFixedSession(input: params) { result in
                 tasksCompleted += 1
