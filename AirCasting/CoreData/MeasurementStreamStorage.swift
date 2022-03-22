@@ -230,11 +230,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
             threshold.thresholdHigh = stream.thresholdHigh
             threshold.thresholdVeryHigh = stream.thresholdVeryHigh
         }
-        // Save here is important so that NSManagedObjectID is not temporary.
-        try context.save()
-
-        try context.obtainPermanentIDs(for: [newStream])
-
+        
         return newStream.localID
     }
 
