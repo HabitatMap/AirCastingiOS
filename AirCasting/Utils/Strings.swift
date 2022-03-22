@@ -857,6 +857,13 @@ struct Strings {
                                                        comment: "")
     }
     
+    enum MicrophoneSessionAlreadyRecordingAlert {
+        static let title: String = NSLocalizedString("There is already a microphone session in progress",
+                                                     comment: "")
+        static let message: String = NSLocalizedString("You can record only one microphone session at once.",
+                                                       comment: "")
+    }
+    
     enum InAppAlerts {
         static let unableToLogOutTitle: String = NSLocalizedString("No internet connection",
                                                                    comment: "")

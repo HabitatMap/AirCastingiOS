@@ -52,16 +52,16 @@ final class MicrophoneManager: NSObject, ObservableObject {
         try audioSession.setActive(true)
         recorder.isMeteringEnabled = true
         
-        createMeasurementStream(for: session) { [unowned self] result in
+        createMeasurementStream(for: session) { [weak self] result in
             switch result {
-            case .success():
+            case .success:
                 if !session.locationless {
-                    locationProvider.requestLocation()
+                    self?.locationProvider.requestLocation()
                 }
-                isRecording = true
+                self?.isRecording = true
                 if recorder.record() {
                     DispatchQueue.main.async {
-                        levelTimer = createTimer()
+                        self?.levelTimer = self?.createTimer()
                     }
                 }
             case .failure(let error):
