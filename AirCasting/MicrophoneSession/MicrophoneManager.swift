@@ -54,10 +54,10 @@ final class MicrophoneManager: NSObject, ObservableObject {
         
         createMeasurementStream(for: session) { result in
             switch result {
-            case .success(let id):
-                self.measurementStreamLocalID = id
+            case .success():
+                break
             case .failure(let error):
-                Log.info("\(error)")
+                Log.error("Failed to create stream for microphone session: \(error)")
             }
         }
         if !session.locationless {
@@ -161,9 +161,18 @@ private extension MicrophoneManager {
         
         measurementStreamStorage.accessStorage { storage in
             do {
-                try storage.addMeasurementValue(decibels, at: location, toStreamWithID: self.measurementStreamLocalID!)
+                if let streamID = self.measurementStreamLocalID {
+                    try storage.addMeasurementValue(decibels, at: location, toStreamWithID: streamID)
+                } else {
+                    guard let streamID = try storage.existingMeasurementStream(self.session!.uuid, name: Constants.SensorName.microphone) else {
+                        Log.error("Failed to find existing microphone stream")
+                        return
+                    }
+                    self.measurementStreamLocalID = streamID
+                    try storage.addMeasurementValue(decibels, at: location, toStreamWithID: streamID)
+                }
             } catch {
-                Log.info("\(error)")
+                Log.error("Failed sampling measurement: \(error)")
             }
         }
     }
@@ -172,7 +181,7 @@ private extension MicrophoneManager {
         sampleMeasurement(noLocation: session?.locationless ?? false)
     }
 
-    func createMeasurementStream(for session: Session, completion: @escaping(Result<MeasurementStreamLocalID, Error>) -> Void) {
+    func createMeasurementStream(for session: Session, completion: @escaping(Result<Void, Error>) -> Void) {
         let stream = MeasurementStream(id: nil,
                                        sensorName: Constants.SensorName.microphone,
                                        sensorPackageName: "Builtin",
@@ -188,8 +197,8 @@ private extension MicrophoneManager {
         
         measurementStreamStorage.accessStorage { storage in
             do {
-                let id = try storage.createSessionAndMeasurementStream(session, stream)
-                completion(.success(id))
+                _ = try storage.createSessionAndMeasurementStream(session, stream)
+                completion(.success(()))
             } catch {
                 completion(.failure(error))
             }
