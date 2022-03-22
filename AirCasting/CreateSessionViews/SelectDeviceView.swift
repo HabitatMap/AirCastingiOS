@@ -108,6 +108,7 @@ struct SelectDeviceView: View {
             micLabels
         })
         .buttonStyle(WhiteSelectingButtonStyle(isSelected: selected == 2))
+        .disabled(microphoneManager.isRecording)
     }
     
     var bluetoothLabels: some View {
