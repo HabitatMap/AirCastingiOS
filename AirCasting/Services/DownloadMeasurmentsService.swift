@@ -13,10 +13,10 @@ import Resolver
 protocol MeasurementUpdatingService {
     func start()
     func downloadMeasurements(for sessionUUID: SessionUUID, lastSynced: Date, completion: @escaping () -> Void)
+    func updateAllSessionsMeasurements()
 }
 
 final class DownloadMeasurementsService: MeasurementUpdatingService {
-    @Injected private var authorisationService: RequestAuthorisationService
     @Injected private var persistenceController: PersistenceController
     private let fixedSessionService = FixedSessionAPIService()
     private var timerSink: Cancellable?
@@ -27,6 +27,7 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
     func start() {
         updateAllSessionsMeasurements()
         timerSink = Timer.publish(every: 60, on: .current, in: .common).autoconnect().sink { [weak self] tick in
+            guard !(self?.persistenceController.uiSuspended ?? true) else { return }
             Log.info("Timer triggered for fixed sessions measurements download")
             self?.updateAllSessionsMeasurements()
         }
@@ -44,7 +45,7 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
         }
     }
     
-    private func updateAllSessionsMeasurements() {
+    func updateAllSessionsMeasurements() {
         getAllSessionsData() { [unowned self] sessionsData in
             Log.info("Scheduled measurements update triggered (session count: \(sessionsData.count))")
             sessionsData.forEach { self.updateMeasurements(for: $0.uuid, lastSynced: $0.lastSynced) }
