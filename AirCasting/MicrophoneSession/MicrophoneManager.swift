@@ -52,21 +52,21 @@ final class MicrophoneManager: NSObject, ObservableObject {
         try audioSession.setActive(true)
         recorder.isMeteringEnabled = true
         
-        createMeasurementStream(for: session) { result in
+        createMeasurementStream(for: session) { [unowned self] result in
             switch result {
             case .success():
-                break
+                if !session.locationless {
+                    locationProvider.requestLocation()
+                }
+                isRecording = true
+                if recorder.record() {
+                    DispatchQueue.main.async {
+                        levelTimer = createTimer()
+                    }
+                }
             case .failure(let error):
                 Log.error("Failed to create stream for microphone session: \(error)")
             }
-        }
-        if !session.locationless {
-            locationProvider.requestLocation()
-        }
-        isRecording = true
-        if recorder.record() {
-            levelTimer = createTimer()
-            sampleMeasurement(noLocation: session.locationless)
         }
     }
     
@@ -77,6 +77,7 @@ final class MicrophoneManager: NSObject, ObservableObject {
             locationProvider.stopUpdatingLocation()
         }
         isRecording = false
+        measurementStreamLocalID = nil
         recorder.pause()
     }
 
