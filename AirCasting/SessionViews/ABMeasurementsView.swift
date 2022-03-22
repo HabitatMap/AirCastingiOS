@@ -98,7 +98,7 @@ struct _ABMeasurementsView: View {
             }
         }
         .onChange(of: isCollapsed, perform: { _ in
-            if isCollapsed == false && (!hasAnyMeasurements || session.isFixedNotFollowed) {
+            if isCollapsed == false && (!hasAnyMeasurements || session.isUnfollowedFixed) {
                 measurementsViewModel.syncMeasurements()
             }
         })
