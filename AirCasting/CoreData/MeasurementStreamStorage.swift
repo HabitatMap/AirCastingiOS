@@ -278,6 +278,9 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
                 sessionEntity.followedAt = DateBuilder.getFakeUTCDate()
             } else {
                 sessionEntity.followedAt = nil
+                if let ui = sessionEntity.userInterface {
+                    context.delete(ui)
+                }
             }
             try context.save()
         } catch {
