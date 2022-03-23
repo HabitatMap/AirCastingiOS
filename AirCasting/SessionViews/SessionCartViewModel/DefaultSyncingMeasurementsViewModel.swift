@@ -37,14 +37,19 @@ final class DefaultSyncingMeasurementsViewModel: SyncingMeasurementsViewModel, O
                 let dataBaseStreams = data.streams.values.map { value in
                     SynchronizationDataConverter().convertDownloadDataToDatabaseStream(data: value)
                 }
-                
                 let sessionId = self.session.uuid!
                 let sessionName = self.session.name
                 
                 // TODO: Move all this logic to a service/controller
                 // https://github.com/HabitatMap/AirCastingiOS/issues/606
                 measurementStreamStorage.accessStorage { storage in
-                    
+                    if let endTime = data.endTime {
+                        do {
+                            try storage.updateSessionEndTimeWithoutUTCConversion(endTime, for: data.uuid)
+                        } catch {
+                            Log.error("Failed to save new session end time: \(error)")
+                        }
+                    }
                     dataBaseStreams.forEach { stream in
                         Log.info("Downloaded \(stream.measurements.count) measurements for \(stream.sensorName)")
                         let sensorName = stream.sensorName

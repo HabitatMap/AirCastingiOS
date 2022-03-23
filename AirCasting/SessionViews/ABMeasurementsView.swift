@@ -45,10 +45,12 @@ struct _ABMeasurementsView: View {
         return session.sortedStreams ?? []
     }
     
+    private var hasAnyMeasurements: Bool {
+        (session.sortedStreams ?? []).filter { $0.latestValue != nil }.count > 0
+    }
+    
     var body: some View {
-        let hasAnyMeasurements = streamsToShow.filter { $0.latestValue != nil }.count > 0
-        
-        return Group {
+        Group {
             if hasAnyMeasurements {
                 VStack(alignment: .leading, spacing: 5) {
                     measurementsTitle
@@ -80,7 +82,7 @@ struct _ABMeasurementsView: View {
                         measurementsTitle
                             .font(Fonts.moderateTitle1)
                         streamNames
-                        if session.type == .mobile && session.deviceType == .AIRBEAM3 {
+                        if session.type == .mobile {
                             if measurementsViewModel.showLoadingIndicator {
                                 ProgressView()
                                     .progressViewStyle(CircularProgressViewStyle())
@@ -95,8 +97,8 @@ struct _ABMeasurementsView: View {
                 }
             }
         }
-        .onChange(of: isCollapsed, perform: { new in
-            if isCollapsed == false && !hasAnyMeasurements {
+        .onChange(of: isCollapsed, perform: { _ in
+            if isCollapsed == false && (!hasAnyMeasurements || session.isUnfollowedFixed) {
                 measurementsViewModel.syncMeasurements()
             }
         })
