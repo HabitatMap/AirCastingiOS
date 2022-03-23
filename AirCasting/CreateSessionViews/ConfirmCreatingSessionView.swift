@@ -93,7 +93,7 @@ struct ConfirmCreatingSessionView: View {
                             CreatingSessionMapView(isMyLocationEnabled: true)
                         }
                     } else if !(sessionContext.isIndoor ?? false) {
-                        CreatingSessionMapView()
+                        GoogleMapView(pathPoints: [], placePickerIsUpdating: Binding.constant(false), isUserInteracting: Binding.constant(true), mapNotes: .constant([]))
                             .disabled(true)
                         // It needs to be disabled to prevent user interaction (swiping map) because it is only conformation screen
                         dot
