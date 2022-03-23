@@ -284,8 +284,10 @@ struct GoogleMapView: UIViewRepresentable {
         }
         
         func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
-            parent.noteNumber = marker.userData as! Int
-            parent.noteMarketTapped = true
+            if let userData = marker.userData as? Int {
+                parent.noteNumber = userData
+                parent.noteMarketTapped = true
+            }
             return true
         }
         

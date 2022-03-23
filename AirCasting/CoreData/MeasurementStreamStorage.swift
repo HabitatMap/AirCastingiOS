@@ -346,20 +346,20 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         noteEntity.date = note.date
         noteEntity.number = Int64(note.number)
         sessionEntity.addToNotes(noteEntity)
-        try context.save()
     }
 
     func updateNote(_ note: Note, newText: String, for sessionUUID: SessionUUID) throws {
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
-        let note = (sessionEntity.notes?.first(where: { ($0 as! NoteEntity).number == note.number }) as! NoteEntity)
-        note.text = newText
-        try context.save()
+        if let note = (sessionEntity.notes?.first(where: { ($0 as! NoteEntity).number == note.number }) as? NoteEntity) {
+            note.text = newText
+        }
     }
 
     func deleteNote(_ note: Note, for sessionUUID: SessionUUID) throws {
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
-        let note = (sessionEntity.notes?.first(where: { ($0 as! NoteEntity).number == note.number }) as! NoteEntity)
-        context.delete(note)
+        if let note = (sessionEntity.notes?.first(where: { ($0 as! NoteEntity).number == note.number }) as? NoteEntity) {
+            context.delete(note)
+        }
     }
 
     func getNotes(for sessionUUID: SessionUUID) throws -> [Note] {

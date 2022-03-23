@@ -63,7 +63,7 @@ class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDel
         measurementStreamStorage.accessStorage { [self] storage in
             do {
                 try storage.deleteNote(note, for: sessionUUID)
-                fetchSession { session in
+                fetchSession(storage: storage) { session in
                     self.sessionUpdateService.updateSession(session: session) { result in
                         switch result {
                         case .success(let updateData):
@@ -72,6 +72,7 @@ class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDel
                             completion()
                         case .failure(let error):
                             Log.info("Failed updating session while updating notes: \(error.localizedDescription)")
+                            completion()
                         }
                     }
                 }
@@ -85,7 +86,7 @@ class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDel
         measurementStreamStorage.accessStorage { [self] storage in
             do {
                 try storage.updateNote(note, newText: newText, for: sessionUUID)
-                fetchSession { session in
+                fetchSession(storage: storage) { session in
                     self.sessionUpdateService.updateSession(session: session) { result in
                         switch result {
                         case .success(let updateData):
@@ -94,6 +95,7 @@ class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDel
                             completion()
                         case .failure(let error):
                             Log.info("Failed updating session while updating notes: \(error.localizedDescription)")
+                            completion()
                         }
                     }
                 }
@@ -126,13 +128,11 @@ class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDel
 
 // MARK: Internal methods
 extension NotesHandlerDefault {
-    private func fetchSession(completion: @escaping (SessionEntity) -> Void) {
-        measurementStreamStorage.accessStorage { [self] storage in
-            do {
-                completion(try storage.getExistingSession(with: sessionUUID))
-            } catch {
-                Log.info("Error when fetching session: \(error)")
-            }
+    private func fetchSession(storage: HiddenCoreDataMeasurementStreamStorage,completion: @escaping (SessionEntity) -> Void) {
+        do {
+            completion(try storage.getExistingSession(with: sessionUUID))
+        } catch {
+            Log.info("Error when fetching session: \(error)")
         }
     }
 }
