@@ -48,6 +48,7 @@
 		33BA3368266E4BCA00899343 /* MobilePeripheralSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33BA3367266E4BCA00899343 /* MobilePeripheralSessionManager.swift */; };
 		33BA336A266E4D1000899343 /* MobileSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33BA3369266E4D1000899343 /* MobileSession.swift */; };
 		33D92F5D27EB6D5000252F3B /* SearchSessionStreamsDownstream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33D92F5C27EB6D5000252F3B /* SearchSessionStreamsDownstream.swift */; };
+		33D92F5F27EB742800252F3B /* Loadable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33D92F5E27EB742800252F3B /* Loadable.swift */; };
 		33F20FDD27692231004364EA /* SyncedMeasurementsDownloadingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F20FDC27692231004364EA /* SyncedMeasurementsDownloadingService.swift */; };
 		33F2238A270C674E00F14909 /* TimeInterval.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F22389270C674E00F14909 /* TimeInterval.swift */; };
 		33F3D47C27AC1A5C003CA386 /* SessionTypeIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F3D47B27AC1A5C003CA386 /* SessionTypeIndicator.swift */; };
@@ -473,6 +474,7 @@
 		33BA3367266E4BCA00899343 /* MobilePeripheralSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobilePeripheralSessionManager.swift; sourceTree = "<group>"; };
 		33BA3369266E4D1000899343 /* MobileSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileSession.swift; sourceTree = "<group>"; };
 		33D92F5C27EB6D5000252F3B /* SearchSessionStreamsDownstream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchSessionStreamsDownstream.swift; sourceTree = "<group>"; };
+		33D92F5E27EB742800252F3B /* Loadable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Loadable.swift; sourceTree = "<group>"; };
 		33F20FDC27692231004364EA /* SyncedMeasurementsDownloadingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncedMeasurementsDownloadingService.swift; sourceTree = "<group>"; };
 		33F22389270C674E00F14909 /* TimeInterval.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeInterval.swift; sourceTree = "<group>"; };
 		33F3D47B27AC1A5C003CA386 /* SessionTypeIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionTypeIndicator.swift; sourceTree = "<group>"; };
@@ -1135,6 +1137,7 @@
 				DD9EBFD4279EB70900192CB5 /* TextView.swift */,
 				B33B161827AF26BC00138FFA /* DateFormatter+Extensions.swift */,
 				DD38A4AE27B1584600D2091F /* StringsCustomizer.swift */,
+				33D92F5E27EB742800252F3B /* Loadable.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -2637,6 +2640,7 @@
 				DD80AE2427BA5F1200D9B123 /* PlacePickerService.swift in Sources */,
 				DDC8664A276B695400A8E610 /* NotesHandler.swift in Sources */,
 				DD430B062670FCC000F1BF2E /* GreenButtonStyle.swift in Sources */,
+				33D92F5F27EB742800252F3B /* Loadable.swift in Sources */,
 				334CC6FA2751454C00C10B53 /* SDCardMobileSessionsSavingService.swift in Sources */,
 				33A7FF1F27C514AE00A138D6 /* SearchSession.swift in Sources */,
 				3387DD48278F0FC300B11D02 /* CSVFileGenerator.swift in Sources */,

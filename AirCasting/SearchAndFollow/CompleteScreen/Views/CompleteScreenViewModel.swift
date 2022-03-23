@@ -11,37 +11,6 @@ struct SessionStreamViewModel: Identifiable {
     let lastMeasurementValue: Double
 }
 
-protocol SearchSessionStreamsDownstream {
-    func downloadSession(uuid: SessionUUID, completion: @escaping (Result<SearchSession, Error>) -> Void)
-}
-
-class SearchSessionStreamsDownstreamMock: SearchSessionStreamsDownstream {
-    func downloadSession(uuid: SessionUUID, completion: @escaping (Result<SearchSession, Error>) -> Void) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(5)) {
-            completion(.success(.mock))
-        }
-    }
-}
-
-enum Loadable<T> {
-    case loading
-    case ready(T)
-    
-    var isReady: Bool {
-        switch self {
-        case .ready: return true
-        case .loading: return false
-        }
-    }
-    
-    var get: T? {
-        switch self {
-        case .loading: return nil as T?
-        case .ready(let item): return item
-        }
-    }
-}
-
 struct SearchSessionResult {
     let uuid: SessionUUID
     let name: String
