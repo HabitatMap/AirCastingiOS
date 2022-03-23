@@ -135,6 +135,14 @@ struct InAppAlerts {
                              action: nil)
                   ])
     }
+    
+    static func failedSessionDownloadAlert() -> AlertInfo {
+        AlertInfo(title: Strings.CompleteSearchView.failedDownloadAlertTitle,
+                  message: Strings.CompleteSearchView.failedDownloadAlertMessage,
+                  buttons: [
+                    .default(title: Strings.Commons.gotIt,
+                             action: nil) ])
+    }
 }
 
 import SwiftUI

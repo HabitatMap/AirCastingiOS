@@ -24,6 +24,7 @@ struct CompleteScreen: View {
                 }).padding(),
                 alignment: .topTrailing
             )
+            .alert(item: $viewModel.alert, content: { $0.makeAlert() })
     }
     
     var sessionCard: some View {

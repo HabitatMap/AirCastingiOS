@@ -878,6 +878,8 @@ struct Strings {
         static let chart: String = NSLocalizedString("chart", comment: "")
         static let confirmationButtonTitle: String = NSLocalizedString("Follow Session", comment: "")
         static let noStreamsDescription = NSLocalizedString("No streams available for this session", comment: "")
+        static let failedDownloadAlertTitle = NSLocalizedString("Session download failed", comment: "")
+        static let failedDownloadAlertMessage = NSLocalizedString("Please try again later.", comment: "")
     }
     
     enum EditNoteView {

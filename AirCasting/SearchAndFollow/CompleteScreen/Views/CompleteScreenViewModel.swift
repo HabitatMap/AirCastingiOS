@@ -66,6 +66,7 @@ struct SearchSessionResult {
 class CompleteScreenViewModel: ObservableObject {
     @Published var selectedStream: Int?
     @Published var isMapSelected: Bool = true
+    @Published var alert: AlertInfo?
     
     let sessionLongitude: Double
     let sessionLatitude: Double
@@ -95,7 +96,9 @@ class CompleteScreenViewModel: ObservableObject {
         service.downloadSession(uuid: session.uuid) { [weak self] result in
             guard let self = self else { return }
             switch result {
-            case .failure(let error): break // TODO: Handle me
+            case .failure(let error):
+                Log.error("Failed to download session: \(error)")
+                self.alert = InAppAlerts.failedSessionDownloadAlert()
             case .success(let downloadedSession):
                 self.sessionStreams = .ready(
                     downloadedSession.streams.map({
