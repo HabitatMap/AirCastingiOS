@@ -3,14 +3,11 @@
 
 import XCTest
 import Combine
+import Resolver
 @testable import AirCasting
 
-final class SyncDownstreamServiceTests: XCTestCase {
-    private let client = APIClientMock()
-    private let auth = RequestAuthorizationServiceMock()
-    private let responseValidator = HTTPResponseValidatorMock()
-    private let urlProvider = URLProviderMock(baseAppURL: URL(string: "http://aircasting.org/")!)
-    private lazy var service = SessionDownloadService(client: client, authorization: auth, responseValidator: responseValidator, urlProvider: urlProvider)
+final class SyncDownstreamServiceTests: APIServiceTestCase {
+    private lazy var service = SessionDownloadService()
     private var cancellables: [AnyCancellable] = []
     
     override func tearDown() {

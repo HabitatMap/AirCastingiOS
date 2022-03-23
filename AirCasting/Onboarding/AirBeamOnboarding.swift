@@ -57,7 +57,7 @@ struct AirBeamOnboarding: View {
 
 private extension AirBeamOnboarding {
     private var progressBar: some View {
-        ProgressView(value: 0.325)
+        ProgressView(value: 0.4)
             .accentColor(.aircastingMint)
             .padding(.bottom, 20)
     }

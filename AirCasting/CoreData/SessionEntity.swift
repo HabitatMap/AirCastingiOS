@@ -129,7 +129,7 @@ public class SessionEntity: NSManagedObject, Identifiable {
 }
 
 extension NSFetchRequest where ResultType == SessionEntity {
-    public func typePredicate(_ type: SessionType) -> NSPredicate {
+    public func typePredicate(_ type: SessionType, status: SessionStatus? = nil) -> NSPredicate {
         NSPredicate(format: "type == \"\(type.rawValue)\"")
     }
 }

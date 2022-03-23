@@ -283,8 +283,6 @@ struct Strings {
                                                      comment: "")
         static let description: String = NSLocalizedString("Find and follow a fixed air quality monitor near you and know how clean or polluted your air is right now.",
                                                            comment: "")
-        static let continueButton: String = NSLocalizedString("How’s the air near you?",
-                                                              comment: "")
     }
     
     enum OnboardingAirBeam {
@@ -475,10 +473,13 @@ struct Strings {
                                                      comment: "")
         static let description: String = NSLocalizedString("Record a new session to monitor your health & environment.",
                                                            comment: "")
+        static let exploreSessionsDescription: String = NSLocalizedString("Explore & follow existing Aircasting sessions or use your own device to record a new session and monitor your health & environment.",
+                                                                          comment: "")
         static let newSession: String = NSLocalizedString("Record new session",
                                                           comment: "")
         static let fetchingText: String = NSLocalizedString("Fetching...",
                                                             comment: "")
+        static let exploreSessionsButton = NSLocalizedString("Explore existing sessions", comment: "")
     }
 
     enum ReorderingDashboard {
@@ -758,7 +759,7 @@ struct Strings {
     }
     
     enum StandaloneSessionCardView {
-        static let heading = NSLocalizedString("Your AirBeam3 is now in stand-alone mode",
+        static let heading = NSLocalizedString("Your AirBeam3 is now in standalone mode",
                                                comment: "")
         static let description = NSLocalizedString("AirBeam3 is now recording using its SD card. The measurements will be displayed here after syncing.",
                                                    comment: "")

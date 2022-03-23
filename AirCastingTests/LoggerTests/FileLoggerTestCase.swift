@@ -1,11 +1,15 @@
 import XCTest
+import Resolver
+@testable import AirCasting
 
-class FileLoggerTestCase: XCTestCase {
+class FileLoggerTestCase: ACTestCase {
     lazy var logDir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last!.appendingPathComponent("log_dir", isDirectory: true)
     lazy var logFile = logDir.appendingPathComponent("logs.txt")
+    let headerProvider = FileLoggerHeaderProviderStub()
     
     override func setUp() {
         super.setUp()
+        Resolver.test.register { self.headerProvider as FileLoggerHeaderProvider }
         if FileManager.default.fileExists(atPath: logFile.path) {
             try! FileManager.default.removeItem(at: logFile)
             try! FileManager.default.removeItem(at: logDir)
@@ -62,4 +66,8 @@ class FileLoggerTestCase: XCTestCase {
             XCTFail("Error while reading contents of \(logDir.path): \(error)", file: file, line: line)
         }
     }
+}
+
+class FileLoggerHeaderProviderStub: FileLoggerHeaderProvider {
+    var headerText: String = ""
 }

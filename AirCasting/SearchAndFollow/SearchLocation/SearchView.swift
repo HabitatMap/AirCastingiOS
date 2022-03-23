@@ -7,6 +7,7 @@ import AirCastingStyling
 struct SearchView: View {
     @StateObject var viewModel: SearchViewModel
     @Binding var creatingSessionFlowContinues: Bool
+    @EnvironmentObject private var exploreSessionsButton: ExploreSessionsButton
     
     init(creatingSessionFlowContinues: Binding<Bool>) {
         _viewModel = .init(wrappedValue: SearchViewModel())
@@ -20,6 +21,7 @@ struct SearchView: View {
             Spacer()
             button
         }.padding()
+        .onAppear(perform: { exploreSessionsButton.exploreSessionsButtonTapped = false })
         .sheet(isPresented: $viewModel.isLocationPopupPresented) {
             PlacePicker(service: SearchPickerService(address: .init(get: {
                 viewModel.location

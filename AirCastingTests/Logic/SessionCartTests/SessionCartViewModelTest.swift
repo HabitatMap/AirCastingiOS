@@ -4,6 +4,6 @@
 import XCTest
 @testable import AirCasting
 
-class SessionCartViewModelTest: XCTestCase {
+class SessionCartViewModelTest: ACTestCase {
     
 }

@@ -4,7 +4,7 @@
 @testable import AirCasting
 import XCTest
 
-class LineFileReaderTests: XCTestCase {
+class LineFileReaderTests: ACTestCase {
     let sut: FileLineReader = DefaultFileLineReader()
     let fileURL = FileManager.default.temporaryDirectory.appendingPathComponent("LineFileReaderTests")
     
