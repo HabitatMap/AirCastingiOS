@@ -40,9 +40,6 @@ struct GoogleMapView: UIViewRepresentable {
     }
     
     func makeUIView(context: Context) -> GMSMapView {
-        GMSServices.provideAPIKey(GOOGLE_MAP_KEY)
-        GMSPlacesClient.provideAPIKey(GOOGLE_PLACES_KEY)
-        
         let startingPoint = setStartingPoint(points: pathPoints)
         
         let mapView = GMSMapView.map(withFrame: .zero,

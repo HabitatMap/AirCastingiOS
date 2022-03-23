@@ -11,7 +11,6 @@ struct SearchCompleteScreenMapView: UIViewRepresentable {
     var latitude: CLLocationDegrees
     
     init(longitude: CLLocationDegrees, latitude: CLLocationDegrees) {
-        GMSServices.provideAPIKey(GOOGLE_MAP_KEY)
         self.longitude = longitude
         self.latitude = latitude
     }
