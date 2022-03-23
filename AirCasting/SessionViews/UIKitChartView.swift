@@ -108,7 +108,7 @@ class UI_PollutionChart: UIView {
         lineChartView.rightAxis.enabled = false
         
         lineChartView.legend.enabled = false
-        lineChartView.noDataText = "Waiting for the first average value"
+        lineChartView.noDataText = Strings.Chart.emptyChartMessage
         lineChartView.noDataTextAlignment = .center
         
         //disable zooming

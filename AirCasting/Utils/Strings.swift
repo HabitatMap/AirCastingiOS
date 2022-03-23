@@ -737,6 +737,10 @@ struct Strings {
                                                              comment: "")
         static let following: String = NSLocalizedString("Following", comment: "")
     }
+    
+    enum Chart {
+        static let emptyChartMessage = NSLocalizedString("Waiting for the first average value", comment: "")
+    }
 
     enum RefreshControl {
         static let progressViewTest: String = NSLocalizedString("Syncing...",
