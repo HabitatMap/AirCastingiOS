@@ -136,6 +136,14 @@ struct GoogleMapView: UIViewRepresentable {
     }
     
     func setStartingPoint(points: [PathPoint]) -> GMSCameraPosition {
+        guard !isMapOnPickerScreen else {
+            let lat = tracker.locationManager.location?.coordinate.latitude ?? 37.35
+            let long = tracker.locationManager.location?.coordinate.longitude ?? -122.05
+            let newCameraPosition = GMSCameraPosition.camera(withLatitude: lat,
+                                                              longitude: long,
+                                                              zoom: 16)
+            return newCameraPosition
+        }
         if let lastPoint = tracker.googleLocation.last {
             let long = lastPoint.location.longitude
             let lat = lastPoint.location.latitude
