@@ -26,6 +26,7 @@ final class DefaultSyncingMeasurementsViewModel: SyncingMeasurementsViewModel, O
     init(sessionDownloader: MeasurementsDownloadable, session: SessionEntity) {
         self.sessionDownloader = sessionDownloader
         self.session = session
+        showLoadingIndicator = !session.isDormant
     }
     
     func syncMeasurements() {
