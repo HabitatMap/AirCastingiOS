@@ -19,12 +19,13 @@ struct CreatingSessionMapView: UIViewRepresentable {
     }
     
     func makeUIView(context: Context) -> GMSMapView {
-        let latitude = tracker.locationManager.location?.coordinate.latitude ?? 37.35
-        let longitude = tracker.locationManager.location?.coordinate.longitude ?? -122.05
+        let latitude = isMyLocationEnabled ? (tracker.locationManager.location?.coordinate.latitude ?? 37.35) : tracker.googleLocation.last?.location.latitude ?? 37.35
+        let longitude = isMyLocationEnabled ? (tracker.locationManager.location?.coordinate.longitude ?? -122.05) :
+        tracker.googleLocation.last?.location.longitude ?? -122.05
         let camera = GMSCameraPosition.camera(withLatitude: latitude, longitude: longitude, zoom: 16)
         let mapView = GMSMapView.map(withFrame: .zero, camera: camera)
         
-        mapView.settings.myLocationButton = true
+        mapView.settings.myLocationButton = isMyLocationEnabled
         mapView.isMyLocationEnabled = isMyLocationEnabled
 
         do {
