@@ -3,6 +3,8 @@
 
 import Foundation
 import Resolver
+import GoogleMaps
+import GooglePlaces
 
 class AppBootstrap {
     @Injected private var firstRunInfoProvider: FirstRunInfoProvidable
@@ -14,6 +16,8 @@ class AppBootstrap {
             handleFirstAppLaunch()
         }
         firstRunInfoProvider.registerAppLaunch()
+        GMSServices.provideAPIKey(GOOGLE_MAP_KEY)
+        GMSPlacesClient.provideAPIKey(GOOGLE_PLACES_KEY)
         averagingService.start()
     }
     

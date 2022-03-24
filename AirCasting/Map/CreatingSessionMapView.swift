@@ -14,7 +14,6 @@ struct CreatingSessionMapView: UIViewRepresentable {
     var isMyLocationEnabled = false
     
     init(isMyLocationEnabled: Bool = false) {
-        GMSServices.provideAPIKey(GOOGLE_MAP_KEY)
         self.isMyLocationEnabled = isMyLocationEnabled
     }
     

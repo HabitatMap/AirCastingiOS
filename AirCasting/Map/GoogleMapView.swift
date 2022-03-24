@@ -42,8 +42,6 @@ struct GoogleMapView: UIViewRepresentable {
     }
     
     func makeUIView(context: Context) -> GMSMapView {
-        GMSServices.provideAPIKey(GOOGLE_MAP_KEY)
-        GMSPlacesClient.provideAPIKey(GOOGLE_PLACES_KEY)
         
         let startingPoint = setStartingPoint(points: pathPoints)
         
@@ -325,7 +323,7 @@ struct GoogleMapView: UIViewRepresentable {
             parent.onPositionChange?(visiblePathPoints)
         }
         
-        var shouldAutoTrack: Bool = true
+        lazy var shouldAutoTrack: Bool = !parent.isMapOnPickerScreen
         var myLocationSink: Any?
     }
     

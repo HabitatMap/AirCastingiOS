@@ -11,7 +11,6 @@ struct PlacePicker: UIViewControllerRepresentable {
     let service: PlacePickerService
 
     func makeUIViewController(context: UIViewControllerRepresentableContext<PlacePicker>) -> GMSAutocompleteViewController {
-        GMSPlacesClient.provideAPIKey(GOOGLE_PLACES_KEY)
         
         let autocompleteController = GMSAutocompleteViewController()
         autocompleteController.delegate = context.coordinator
