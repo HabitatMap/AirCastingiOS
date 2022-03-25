@@ -33,25 +33,5 @@ class DateBuilder {
     static func distantFuture() -> Date {
         Date.distantFuture
     }
-    
-    func yearAgo() -> Date {
-        Date().yearAgo
-    }
-    
-    static func beginingOfCurrentDayInSeconds() -> Double {
-        Date().beginingOfCurrentDayInSeconds
-    }
-    
-    static func beginingOfDayInSeconds(using date: Date) -> Double {
-        var calendar = Calendar.current
-        calendar.timeZone = TimeZone.utc
-        return calendar.startOfDay(for: date).timeIntervalSince1970
-    }
-    
-    static func endOfDayInSeconds(using date: Date) -> Double {
-        var calendar = Calendar.current
-        calendar.timeZone = TimeZone.utc
-        return calendar.startOfDay(for: date).timeIntervalSince1970 + (23 * 60 * 60 + 3540 + 59)
-    }
 }
 // swiftlint:enable airCasting_date

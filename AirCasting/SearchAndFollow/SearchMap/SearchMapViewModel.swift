@@ -46,8 +46,8 @@ class SearchMapViewModel: ObservableObject {
         showLoadingIndicator = true
         
         // We are going to use current day and current day year ago
-        let timeFrom = DateBuilder.beginingOfDayInSeconds(using: DateBuilder().yearAgo())
-        let timeTo = DateBuilder.endOfDayInSeconds(using: DateBuilder.getRawDate())
+        let timeFrom = DateBuilder.getRawDate().yearAgo.beginingOfDayInSeconds
+        let timeTo = DateBuilder.getRawDate().endOfDayInSeconds
         
         mapSessionsDownloader.getSessions(geoSquare: geoSquare, timeFrom: timeFrom, timeTo: timeTo) { result in
             DispatchQueue.main.async { self.showLoadingIndicator = false }
