@@ -2,13 +2,33 @@
 //
 
 import Foundation
+import CoreLocation
+import Resolver
 
 class SearchViewModel: ObservableObject {
+    @Injected private var networkChecker: NetworkChecker
     
     @Published var isLocationPopupPresented = false
-    @Published var location = ""
+    @Published var addressName = ""
+    @Published var addresslocation = CLLocationCoordinate2D(latitude: 20.0, longitude: 20.0)
+    @Published var alert: AlertInfo?
+    var continueDisabled: Bool { addressName == "" }
     
     func textFieldTapped() { isLocationPopupPresented.toggle() }
     
-    func updateLocation(using newLocation: String) { location = newLocation}
+    func locationNameInteracted(with newLocationName: String) {
+        addressName = newLocationName
+    }
+    
+    func locationAddressInteracted(with newLocationAddress: CLLocationCoordinate2D) {
+        addresslocation = newLocationAddress
+    }
+    
+    func viewInitialized(onEnd: @escaping () -> Void) {
+        if !networkChecker.connectionAvailable {
+            (alert = InAppAlerts.noNetworkAlert(dismiss: {
+                onEnd()
+            }))
+        }
+    }
 }

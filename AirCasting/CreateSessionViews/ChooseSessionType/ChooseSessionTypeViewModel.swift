@@ -75,7 +75,7 @@ class ChooseSessionTypeViewModel: ObservableObject {
     }
     
     func searchAndFollowTapped() {
-        isSearchAndFollowLinkActive = true
+       isSearchAndFollowLinkActive = true
     }
     
     // MARK: - Private methods

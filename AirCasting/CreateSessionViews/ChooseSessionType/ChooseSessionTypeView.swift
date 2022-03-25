@@ -49,7 +49,6 @@ struct ChooseSessionTypeView: View {
                             }))
                         }
                     }
-                
                     .fullScreenCover(isPresented: .init(get: {
                         viewModel.isTurnLocationOnLinkActive
                     }, set: { new in
@@ -65,7 +64,6 @@ struct ChooseSessionTypeView: View {
                                                                                   isSDClearProcess: false))
                         }
                     }
-                
                     .fullScreenCover(isPresented: .init(get: {
                         viewModel.isTurnBluetoothOnLinkActive
                     }, set: { new in
@@ -80,7 +78,6 @@ struct ChooseSessionTypeView: View {
                                                 sdSyncContinues: .constant(false))
                         }
                     }
-                
                     .fullScreenCover(isPresented: .init(get: {
                         viewModel.isMobileLinkActive
                     }, set: { new in
@@ -95,21 +92,15 @@ struct ChooseSessionTypeView: View {
                                              sdSyncContinues: .constant(false))
                         }
                     }
-                
                     .fullScreenCover(isPresented: .init(get: {
                         viewModel.isSearchAndFollowLinkActive
                     }, set: { new in
                         viewModel.setSearchAndFollow(using: new)
                     })) {
                         CreatingSessionFlowRootView {
-                            SearchView(creatingSessionFlowContinues: .init(get: {
-                                viewModel.isSearchAndFollowLinkActive
-                            }, set: { new in
-                                viewModel.setSearchAndFollow(using: new)
-                            }))
+                            SearchView()
                         }
                     }
-                
                     .fullScreenCover(isPresented: .init(get: {
                         viewModel.startSync
                     }, set: { new in
@@ -206,8 +197,6 @@ struct ChooseSessionTypeView: View {
                                         }))
                                     }
                                 }
-                            
-                            
                             EmptyView()
                                 .fullScreenCover(isPresented: .init(get: {
                                     viewModel.isSearchAndFollowLinkActive
@@ -215,11 +204,7 @@ struct ChooseSessionTypeView: View {
                                     viewModel.setSearchAndFollow(using: new)
                                 })) {
                                     CreatingSessionFlowRootView {
-                                        SearchView(creatingSessionFlowContinues: .init(get: {
-                                            viewModel.isSearchAndFollowLinkActive
-                                        }, set: { new in
-                                            viewModel.setSearchAndFollow(using: new)
-                                        }))
+                                        SearchView()
                                     }
                                 }
                         }
@@ -230,6 +215,7 @@ struct ChooseSessionTypeView: View {
             .environmentObject(viewModel.passSessionContext)
         }
     }
+    
     
     private var mainContent: some View {
         VStack(spacing: 50) {
@@ -374,15 +360,14 @@ private extension ChooseSessionTypeView {
     
     var mobileSessionLabel: some View {
         chooseSessionButton(title: StringCustomizer.customizeString(Strings.ChooseSessionTypeView.mobileLabel,
-                                                                     using: [Strings.ChooseSessionTypeView.mobileSession],
-                                                                     color: .accentColor,
-                                                                     font: Fonts.boldHeading1))
+                                                                    using: [Strings.ChooseSessionTypeView.mobileSession],
+                                                                    color: .accentColor,
+                                                                    font: Fonts.boldHeading1))
     }
     
     var syncButtonLabel: some View {
         chooseSessionButton(title: StringCustomizer.customizeString(Strings.ChooseSessionTypeView.syncTitle,
                                                                      using: [Strings.ChooseSessionTypeView.syncData],
-                                                                     color: .aircastingGray,
                                                                      font: Fonts.boldHeading1,
                                                                      makeNewLineAfterCustomized: true))
     }
@@ -390,7 +375,6 @@ private extension ChooseSessionTypeView {
     var followButtonLabel: some View {
         chooseSessionButton(title: StringCustomizer.customizeString(Strings.ChooseSessionTypeView.followButtonTitle,
                                                                     using: [Strings.ChooseSessionTypeView.followSession],
-                                                                    color: .aircastingGray,
                                                                     font: Fonts.boldHeading1))
     }
 }

@@ -55,7 +55,6 @@ struct Strings {
                                                     comment: "")
         static let buildText = NSLocalizedString("build",
                                                  comment: "")
-        
         static let crashlyticsSectionTitle = "Crashlytics integration testing:"
         
         static let appConfig = "App config"
@@ -846,7 +845,7 @@ struct Strings {
     enum NetworkAlert {
         static let alertTitle: String = NSLocalizedString("No internet connection",
                                                           comment: "")
-        static let alertMessage: String = NSLocalizedString("You need to have internet connection to continue",
+        static let alertMessage: String = NSLocalizedString("You need to have internet connection to continue.",
                                                             comment: "")
     }
     
@@ -871,6 +870,10 @@ struct Strings {
                                                                      comment: "")
         static let unableToLogOutButton: String = NSLocalizedString("Got it!",
                                                                     comment: "")
+        static let failedTitle: String = NSLocalizedString("Failed",
+                                                                    comment: "")
+        static let downloadingFailedMessage: String = NSLocalizedString("Cannot download sessions at this moment. Please try again in a moment.",
+                                                                        comment: "")
         static let failedDownloadTitle: String = NSLocalizedString("Connection failure",
                                                                    comment: "")
         static let failedDownloadMessage: String = NSLocalizedString("Something went wrong when downloading most recent session data. Please try again later.",
@@ -966,6 +969,15 @@ struct Strings {
         static let incorrectEmail: String = NSLocalizedString("The email address is incorrect.",
                                                               comment: "")
         static let emptyTextfield: String = NSLocalizedString("This field cannot be left blank.",
+                                                              comment: "")
+    }
+    
+    enum SearchMapView {
+        static let loadingText: String = NSLocalizedString("Loading sessions.",
+                                                              comment: "")
+        static let parameterText: String = NSLocalizedString("Showing results for: %@",
+                                                              comment: "")
+        static let redoText: String = NSLocalizedString("Redo Search in Map",
                                                               comment: "")
     }
 }

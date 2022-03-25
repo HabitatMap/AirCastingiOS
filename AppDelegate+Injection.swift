@@ -198,6 +198,9 @@ extension Resolver: ResolverRegistering {
         
         // MARK: - Update Session Params Service
         main.register { UpdateSessionParamsService() }
+        
+        //MARK: - Search and Follow
+        main.register { SessionsForLocationDownloaderDefault() as SessionsForLocationDownloader }
     }
     
     // MARK: - Composition helpers

@@ -3,15 +3,15 @@
 
 import SwiftUI
 import AirCastingStyling
+import CoreLocation
 
 struct SearchView: View {
     @StateObject var viewModel: SearchViewModel
-    @Binding var creatingSessionFlowContinues: Bool
+    @Environment(\.presentationMode) var presentationMode
     @EnvironmentObject private var exploreSessionsButton: ExploreSessionsButton
     
-    init(creatingSessionFlowContinues: Binding<Bool>) {
+    init() {
         _viewModel = .init(wrappedValue: SearchViewModel())
-        self._creatingSessionFlowContinues = creatingSessionFlowContinues
     }
     
     var body: some View {
@@ -21,14 +21,24 @@ struct SearchView: View {
             Spacer()
             button
         }.padding()
-        .onAppear(perform: { exploreSessionsButton.exploreSessionsButtonTapped = false })
-        .sheet(isPresented: $viewModel.isLocationPopupPresented) {
-            PlacePicker(service: SearchPickerService(address: .init(get: {
-                viewModel.location
-            }, set: { newLocation in
-                viewModel.updateLocation(using: newLocation)
-            })))
-        }
+            .onAppear(perform: {
+                viewModel.viewInitialized {
+                    presentationMode.wrappedValue.dismiss()
+                    exploreSessionsButton.exploreSessionsButtonTapped = false
+                }
+            })
+            .alert(item: $viewModel.alert, content: { $0.makeAlert() })
+            .sheet(isPresented: $viewModel.isLocationPopupPresented) {
+                PlacePicker(service: SearchPickerService(addressName: .init(get: {
+                    viewModel.addressName
+                }, set: { new in
+                    viewModel.locationNameInteracted(with: new)
+                }), addressLocation: .init(get: {
+                    viewModel.addresslocation
+                }, set: { new in
+                    viewModel.locationAddressInteracted(with: new)
+                })))
+            }
     }
 }
 
@@ -44,19 +54,23 @@ private extension SearchView {
     var textField: some View {
         createTextfield(placeholder: Strings.SearchView.placeholder,
                         binding: .init(get: {
-            viewModel.location
-        }, set: { newLocation in
-            viewModel.updateLocation(using: newLocation)
+            viewModel.addressName
+        }, set: { new in
+            viewModel.locationNameInteracted(with: new)
         }))
             .disabled(true)
             .onTapGesture { viewModel.textFieldTapped() }
     }
     
     var button: some View {
-        Button {
-            Log.info("Continuing to next screen")
-        } label: {
-            Text(Strings.Commons.continue)
-        }.buttonStyle(BlueButtonStyle())
+        return NavigationLink(
+            destination: SearchMapView(locationName: viewModel.addressName,
+                                       locationAddress: viewModel.addresslocation,
+                                       measurementType: "particular matter"),
+            label: {
+                Text(Strings.Commons.continue)
+            })
+            .buttonStyle(BlueButtonStyle())
+            .disabled(viewModel.continueDisabled)
     }
 }

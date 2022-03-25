@@ -30,12 +30,12 @@ struct InAppAlerts {
                   ])
     }
     
-    static func noNetworkAlert() -> AlertInfo {
+    static func noNetworkAlert(dismiss: (() -> Void)? = nil) -> AlertInfo {
         AlertInfo(title: Strings.NetworkAlert.alertTitle,
                   message: Strings.NetworkAlert.alertMessage,
                   buttons: [
                     .default(title: Strings.Commons.gotIt,
-                             action: nil)
+                             action: dismiss)
                   ])
     }
     
@@ -144,6 +144,15 @@ struct InAppAlerts {
                   ])
     }
     
+    static func downloadingSessionsFailedAlert(action: @escaping (() -> Void)) -> AlertInfo {
+        AlertInfo(title: Strings.InAppAlerts.failedTitle,
+                  message: Strings.InAppAlerts.downloadingFailedMessage,
+                  buttons: [
+                    .default(title: Strings.Commons.gotIt,
+                             action: action)
+                    ])
+                }
+                    
     static func failedToDownload(dismiss: ()) -> AlertInfo {
         AlertInfo(title: Strings.InAppAlerts.failedDownloadTitle,
                   message: Strings.InAppAlerts.failedDownloadMessage,

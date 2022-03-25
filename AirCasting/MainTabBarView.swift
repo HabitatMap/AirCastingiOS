@@ -103,7 +103,7 @@ private extension MainTabBarView {
             .overlay(
                 Group{
                     HStack {
-                        if !searchAndFollow.isHidden && featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) {
+                        if !searchAndFollow.isHidden && featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) && selectedSection.selectedSection == .following {
                             searchAndFollowButton
                         }
                         if !reorderButton.isHidden && sessions.count > 1 && selectedSection.selectedSection == .following {
@@ -168,7 +168,7 @@ private extension MainTabBarView {
             Button {
                 searchAndFollow.searchIsOn = true
             } label: {
-                Image(systemName: "doc.text.magnifyingglass")
+                Image("SearchFollow")
                     .foregroundColor(Color.accentColor)
                     .frame(width: 60, height: 60)
                     .imageScale(.large)

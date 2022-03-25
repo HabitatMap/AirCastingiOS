@@ -5,13 +5,16 @@ import GooglePlaces
 import SwiftUI
 
 class SearchPickerService: PlacePickerService {
-    @Binding private var address: String
+    @Binding private var addressName: String
+    @Binding private var addressLocation: CLLocationCoordinate2D
     
-    init(address: Binding<String>) {
-        self._address = .init(projectedValue: address)
+    init(addressName: Binding<String>, addressLocation: Binding<CLLocationCoordinate2D>) {
+        self._addressName = .init(projectedValue: addressName)
+        self._addressLocation = .init(projectedValue: addressLocation)
     }
     
     func didComplete(using place: GMSPlace) {
-        address = place.name ?? ""
+        addressName = place.name ?? ""
+        addressLocation = place.coordinate
     }
 }

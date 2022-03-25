@@ -26,8 +26,9 @@ struct GoogleMapView: UIViewRepresentable {
     var isSessionFixed: Bool
     let isMapOnPickerScreen: Bool
     @Binding var mapNotes: [MapNote]
+    let showMyLocationButton: Bool
     
-    init(pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false, placePickerIsUpdating: Binding<Bool>, isUserInteracting: Binding<Bool>, isSessionActive: Bool = false, isSessionFixed: Bool = false, noteMarketTapped: Binding<Bool> = .constant(false), noteNumber: Binding<Int> = .constant(0), mapNotes: Binding<[MapNote]>, isMapOnPickerScreen: Bool = false) {
+    init(pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false, placePickerIsUpdating: Binding<Bool>, isUserInteracting: Binding<Bool>, isSessionActive: Bool = false, isSessionFixed: Bool = false, noteMarketTapped: Binding<Bool> = .constant(false), noteNumber: Binding<Int> = .constant(0), mapNotes: Binding<[MapNote]>, showMyLocationButton: Bool = true, isMapOnPickerScreen: Bool = false) {
         self.pathPoints = pathPoints
         self.threshold = threshold
         self.isMyLocationEnabled = isMyLocationEnabled
@@ -38,6 +39,7 @@ struct GoogleMapView: UIViewRepresentable {
         self._noteMarketTapped = noteMarketTapped
         self._noteNumber = noteNumber
         self._mapNotes = mapNotes
+        self.showMyLocationButton = showMyLocationButton
         self.isMapOnPickerScreen = isMapOnPickerScreen
     }
     
@@ -47,7 +49,7 @@ struct GoogleMapView: UIViewRepresentable {
         
         let mapView = GMSMapView.map(withFrame: .zero,
                                      camera: startingPoint)
-        mapView.settings.myLocationButton = true
+        mapView.settings.myLocationButton = showMyLocationButton
         placeNotes(mapView, notes: mapNotes, context: context)
         do {
             if let styleURL = Bundle.main.url(forResource: "style", withExtension: "json") {
@@ -87,6 +89,7 @@ struct GoogleMapView: UIViewRepresentable {
             drawPolyline(uiView, context: context)
             context.coordinator.mapNotesCounter = mapNotes.count
         }
+        
         guard isUserInteracting else { return }
         let thresholdWitness = ThresholdWitness(sensorThreshold: self.threshold)
   
@@ -262,7 +265,6 @@ struct GoogleMapView: UIViewRepresentable {
             let len = mapView.projection.coordinate(for: mapView.center).longitude
             parent.tracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: lat, longitude: len), measurementTime: DateBuilder.getFakeUTCDate())]
             positionChanged(for: mapView)
-            
             shouldAutoTrack = false
         }
         
