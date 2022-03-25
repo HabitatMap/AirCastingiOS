@@ -49,7 +49,6 @@ class SDCardFixedSessionsUploadingService {
                         
                         guard self.processAndSync(streamsWithMeasurements: streamsWithMeasurements, deviceID: deviceID) else {
                             Log.error("Upload fixed sessions stream failed")
-                            completion(.failure(UploadingError.uploadError))
                             uploadFailed = true
                             return
                         }
@@ -59,6 +58,11 @@ class SDCardFixedSessionsUploadingService {
                         Log.info("Reached end of csv file")
                     }
                 })
+                guard !uploadFailed else {
+                    completion(.failure(UploadingError.uploadError))
+                    return
+                }
+                
                 guard self.processAndSync(streamsWithMeasurements: streamsWithMeasurements, deviceID: deviceID) else {
                     completion(.failure(UploadingError.uploadError))
                     return
