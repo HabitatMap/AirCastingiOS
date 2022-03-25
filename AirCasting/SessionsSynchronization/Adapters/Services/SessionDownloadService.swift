@@ -97,9 +97,7 @@ final class SessionDownloadService: SessionDownstream, MeasurementsDownloadable 
                 do {
                     try responseValidator.validate(response: response.response, data: response.data)
                     let sessionData = try decoder.decode(SessionsSynchronization.SessionDownstreamData.self, from: response.data)
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
                     completion(.success(sessionData))
-                                         }
                 } catch {
                     completion(.failure(error))
                 }

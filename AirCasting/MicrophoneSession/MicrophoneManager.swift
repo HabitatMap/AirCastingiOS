@@ -52,21 +52,21 @@ final class MicrophoneManager: NSObject, ObservableObject {
         try audioSession.setActive(true)
         recorder.isMeteringEnabled = true
         
-        createMeasurementStream(for: session) { result in
+        createMeasurementStream(for: session) { [weak self] result in
             switch result {
-            case .success(let id):
-                self.measurementStreamLocalID = id
+            case .success:
+                if !session.locationless {
+                    self?.locationProvider.requestLocation()
+                }
+                self?.isRecording = true
+                if recorder.record() {
+                    DispatchQueue.main.async {
+                        self?.levelTimer = self?.createTimer()
+                    }
+                }
             case .failure(let error):
-                Log.info("\(error)")
+                Log.error("Failed to create stream for microphone session: \(error)")
             }
-        }
-        if !session.locationless {
-            locationProvider.requestLocation()
-        }
-        isRecording = true
-        if recorder.record() {
-            levelTimer = createTimer()
-            sampleMeasurement(noLocation: session.locationless)
         }
     }
     
@@ -77,6 +77,7 @@ final class MicrophoneManager: NSObject, ObservableObject {
             locationProvider.stopUpdatingLocation()
         }
         isRecording = false
+        measurementStreamLocalID = nil
         recorder.pause()
     }
 
@@ -161,9 +162,18 @@ private extension MicrophoneManager {
         
         measurementStreamStorage.accessStorage { storage in
             do {
-                try storage.addMeasurementValue(decibels, at: location, toStreamWithID: self.measurementStreamLocalID!)
+                if let streamID = self.measurementStreamLocalID {
+                    try storage.addMeasurementValue(decibels, at: location, toStreamWithID: streamID)
+                } else {
+                    guard let streamID = try storage.existingMeasurementStream(self.session!.uuid, name: Constants.SensorName.microphone) else {
+                        Log.error("Failed to find existing microphone stream")
+                        return
+                    }
+                    self.measurementStreamLocalID = streamID
+                    try storage.addMeasurementValue(decibels, at: location, toStreamWithID: streamID)
+                }
             } catch {
-                Log.info("\(error)")
+                Log.error("Failed sampling measurement: \(error)")
             }
         }
     }
@@ -172,7 +182,7 @@ private extension MicrophoneManager {
         sampleMeasurement(noLocation: session?.locationless ?? false)
     }
 
-    func createMeasurementStream(for session: Session, completion: @escaping(Result<MeasurementStreamLocalID, Error>) -> Void) {
+    func createMeasurementStream(for session: Session, completion: @escaping(Result<Void, Error>) -> Void) {
         let stream = MeasurementStream(id: nil,
                                        sensorName: Constants.SensorName.microphone,
                                        sensorPackageName: "Builtin",
@@ -188,8 +198,8 @@ private extension MicrophoneManager {
         
         measurementStreamStorage.accessStorage { storage in
             do {
-                let id = try storage.createSessionAndMeasurementStream(session, stream)
-                completion(.success(id))
+                _ = try storage.createSessionAndMeasurementStream(session, stream)
+                completion(.success(()))
             } catch {
                 completion(.failure(error))
             }
