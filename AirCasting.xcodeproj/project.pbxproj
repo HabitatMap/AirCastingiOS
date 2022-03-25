@@ -161,6 +161,7 @@
 		AC9F526C2652A360003CF61F /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9F52692652A360003CF61F /* DashboardView.swift */; };
 		AC9F526D2652A360003CF61F /* EmptyMobileDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9F526A2652A360003CF61F /* EmptyMobileDashboardView.swift */; };
 		AC9F526E2652A360003CF61F /* AirSectionPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9F526B2652A360003CF61F /* AirSectionPickerView.swift */; };
+		ACAC936D27EAFF7900829F82 /* CreatingSessionMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACAC936C27EAFF7900829F82 /* CreatingSessionMapView.swift */; };
 		ACB7084C271EC50F00BA3816 /* Integer+ArraySlice.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACB7084B271EC50F00BA3816 /* Integer+ArraySlice.swift */; };
 		ACBB050E2761F1B600A6B3FB /* SDSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACBB050D2761F1B600A6B3FB /* SDSession.swift */; };
 		ACBB05102761F1C400A6B3FB /* SDStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACBB050F2761F1C400A6B3FB /* SDStream.swift */; };
@@ -603,6 +604,7 @@
 		AC9F52692652A360003CF61F /* DashboardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
 		AC9F526A2652A360003CF61F /* EmptyMobileDashboardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmptyMobileDashboardView.swift; sourceTree = "<group>"; };
 		AC9F526B2652A360003CF61F /* AirSectionPickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AirSectionPickerView.swift; sourceTree = "<group>"; };
+		ACAC936C27EAFF7900829F82 /* CreatingSessionMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatingSessionMapView.swift; sourceTree = "<group>"; };
 		ACB7084B271EC50F00BA3816 /* Integer+ArraySlice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Integer+ArraySlice.swift"; sourceTree = "<group>"; };
 		ACBB050D2761F1B600A6B3FB /* SDSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSession.swift; sourceTree = "<group>"; };
 		ACBB050F2761F1C400A6B3FB /* SDStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDStream.swift; sourceTree = "<group>"; };
@@ -1371,6 +1373,7 @@
 				DD8DE68A2785B939009B1726 /* MapNotesViewModel.swift */,
 				AC93B8E625BEFE4F003D0A0D /* AirMapView.swift */,
 				AC93B8FD25C02E0B003D0A0D /* GoogleMapView.swift */,
+				ACAC936C27EAFF7900829F82 /* CreatingSessionMapView.swift */,
 				AC8D6C7125C0574800ED74D1 /* LocationTracker.swift */,
 				AC8D6C6D25C056B400ED74D1 /* PathPoint.swift */,
 				AC8D6C6925C049E300ED74D1 /* Environment.swift */,
@@ -2803,6 +2806,7 @@
 				B3FD77C2267C94AF00E97CC2 /* SessionSynchronizationContextProvidable.swift in Sources */,
 				4F1D57D926454E3700F250AC /* MeasurementStream.swift in Sources */,
 				B3FD77BF267C94AF00E97CC2 /* SessionDownstream.swift in Sources */,
+				ACAC936D27EAFF7900829F82 /* CreatingSessionMapView.swift in Sources */,
 				AC6D56A225AEF55C00D221BA /* GraphView.swift in Sources */,
 				AC4EC6C125B6F18A00C1E312 /* EditButtonView.swift in Sources */,
 				AC049F8B2608DCB000398197 /* Session+Mock.swift in Sources */,
