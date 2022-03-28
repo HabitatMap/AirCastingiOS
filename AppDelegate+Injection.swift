@@ -12,10 +12,10 @@ extension Resolver: ResolverRegistering {
         // MARK: Logging
         main.register { (_, _) -> Logger in
             var composite = CompositeLogger()
-            #if DEBUG
+#if DEBUG
             composite.add(LoggerBuilder(type: .debug).build())
-            #endif
-            #if BETA || RELEASE
+#endif
+#if BETA || RELEASE
             composite.add(LoggerBuilder(type: .file)
                             .addMinimalLevel(.info)
                             .dispatchOn(fileLoggerQueue)
@@ -23,7 +23,7 @@ extension Resolver: ResolverRegistering {
             composite.add(LoggerBuilder(type: .crashlytics)
                             .addMinimalLevel(.info)
                             .build())
-            #endif
+#endif
             return composite
         }.scope(.application)
         
@@ -63,11 +63,11 @@ extension Resolver: ResolverRegistering {
         
         // MARK: Persistence
         main.register { PersistenceController(inMemory: false) }
-            .implements(SessionsFetchable.self)
-            .implements(SessionRemovable.self)
-            .implements(SessionInsertable.self)
-            .implements(SessionUpdateable.self)
-            .scope(.application)
+        .implements(SessionsFetchable.self)
+        .implements(SessionRemovable.self)
+        .implements(SessionInsertable.self)
+        .implements(SessionUpdateable.self)
+        .scope(.application)
         main.register { CoreDataMeasurementStreamStorage() as MeasurementStreamStorage }.scope(.cached)
         main.register { (_, _) -> UIStorage in
             let context = Resolver.resolve(PersistenceController.self).editContext
@@ -79,9 +79,9 @@ extension Resolver: ResolverRegistering {
         // MARK: - Networking
         main.register { URLSession.shared as APIClient }.scope(.application)
         main.register { UserAuthenticationSession() }
-            .implements(RequestAuthorisationService.self)
-            .implements(Deauthorizable.self)
-            .scope(.application)
+        .implements(RequestAuthorisationService.self)
+        .implements(Deauthorizable.self)
+        .scope(.application)
         main.register { DefaultHTTPResponseValidator() as HTTPResponseValidator }
         main.register { UserDefaultsURLProvider() as URLProvider }
         main.register { DefaultNetworkChecker() as NetworkChecker }.scope(.application)
@@ -89,40 +89,40 @@ extension Resolver: ResolverRegistering {
         
         // MARK: - Feature flags
         main.register { DefaultRemoteNotificationRouter() }
-            .implements(RemoteNotificationRouter.self)
-            .implements(RemoteNotificationsHandler.self)
-            .scope(.application)
+        .implements(RemoteNotificationRouter.self)
+        .implements(RemoteNotificationsHandler.self)
+        .scope(.application)
         main.register { OverridingFeatureFlagProvider() }.scope(.cached)
         main.register { DefaultFeatureFlagProvider() }.scope(.cached)
-        #if !DEBUG
+#if !DEBUG
         main.register { FirebaseFeatureFlagProvider() }.scope(.cached)
-        #endif
+#endif
         main.register {
-            #if DEBUG
+#if DEBUG
             CompositeFeatureFlagProvider(children: [
                 Resolver.resolve(OverridingFeatureFlagProvider.self),
                 AllFeaturesOn()
             ]) as FeatureFlagProvider
-            #elseif BETA
+#elseif BETA
             CompositeFeatureFlagProvider(children: [
                 Resolver.resolve(OverridingFeatureFlagProvider.self),
                 Resolver.resolve(FirebaseFeatureFlagProvider.self),
                 Resolver.resolve(DefaultFeatureFlagProvider.self)
             ]) as FeatureFlagProvider
-            #else
+#else
             CompositeFeatureFlagProvider(children: [
                 Resolver.resolve(FirebaseFeatureFlagProvider.self),
                 Resolver.resolve(DefaultFeatureFlagProvider.self)
             ]) as FeatureFlagProvider
-            #endif
+#endif
         }
         main.register { FeatureFlagsViewModel() }.scope(.application)
         
         // MARK: - Session sync
         main.register { SessionSynchronizationService() as SessionSynchronizationContextProvidable }
         main.register { SessionDownloadService() }
-            .implements(SessionDownstream.self)
-            .implements(MeasurementsDownloadable.self)
+        .implements(SessionDownstream.self)
+        .implements(MeasurementsDownloadable.self)
         main.register { SessionUploadService() as SessionUpstream }
         main.register { SessionSynchronizationDatabase() as SessionSynchronizationStore }
         main.register {
@@ -145,8 +145,8 @@ extension Resolver: ResolverRegistering {
         main.register { AveragingService(measurementStreamStorage: Resolver.resolve()) }.scope(.cached)
         main.register { MobilePeripheralSessionManager(measurementStreamStorage: Resolver.resolve()) }.scope(.cached)
         main.register { BluetoothManager(mobilePeripheralSessionManager: Resolver.resolve()) }
-            .implements(BluetoothConnector.self)
-            .scope(.cached)
+        .implements(BluetoothConnector.self)
+        .scope(.cached)
         main.register { DefaultBluetoothHandler() as BluetoothHandler }
         main.register { UserState() }.scope(.application)
         main.register { SyncedMeasurementsDownloadingService() as SyncedMeasurementsDownloader }
@@ -201,6 +201,7 @@ extension Resolver: ResolverRegistering {
         
         //MARK: - Search and Follow
         main.register { SessionsForLocationDownloaderDefault() as SessionsForLocationDownloader }
+        main.register { SearchSessionStreamsDownstreamMock() as SearchSessionStreamsDownstream }
     }
     
     // MARK: - Composition helpers
