@@ -43,6 +43,7 @@ struct SearchAndFollowChartView: UIViewRepresentable {
         data.setValueFormatter(DefaultValueFormatter(formatter: formatter))
         data.setValueFont(Fonts.muliHeadingUIFont2)
         data.setValueTextColor(UIColor.aircastingGray)
+        data.highlightEnabled = false
     }
     
     private func formatDataSet(dataSet: LineChartDataSet) {
