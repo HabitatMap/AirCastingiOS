@@ -44,7 +44,6 @@ struct GoogleMapView: UIViewRepresentable {
     }
     
     func makeUIView(context: Context) -> GMSMapView {
-        
         let startingPoint = setStartingPoint(points: pathPoints)
         
         let mapView = GMSMapView.map(withFrame: .zero,
@@ -92,7 +91,7 @@ struct GoogleMapView: UIViewRepresentable {
         
         guard isUserInteracting else { return }
         let thresholdWitness = ThresholdWitness(sensorThreshold: self.threshold)
-  
+        
         if pathPoints != context.coordinator.currentlyDisplayedPathPoints ||
             thresholdWitness != context.coordinator.currentThresholdWitness {
             drawPolyline(uiView, context: context)
@@ -141,8 +140,8 @@ struct GoogleMapView: UIViewRepresentable {
             let lat = tracker.locationManager.location?.coordinate.latitude ?? 37.35
             let long = tracker.locationManager.location?.coordinate.longitude ?? -122.05
             let newCameraPosition = GMSCameraPosition.camera(withLatitude: lat,
-                                                              longitude: long,
-                                                              zoom: 16)
+                                                             longitude: long,
+                                                             zoom: 16)
             return newCameraPosition
         }
         if let lastPoint = tracker.googleLocation.last {
@@ -150,8 +149,8 @@ struct GoogleMapView: UIViewRepresentable {
             let lat = lastPoint.location.latitude
             
             let newCameraPosition = GMSCameraPosition.camera(withLatitude: lat,
-                                                              longitude: long,
-                                                              zoom: 10) // use 10 when using SEARCH AND FOLLOW
+                                                             longitude: long,
+                                                             zoom: 16)
             return newCameraPosition
         } else {
             let appleParkPosition = GMSCameraPosition.camera(withLatitude: 37.35,
@@ -335,15 +334,6 @@ struct GoogleMapView: UIViewRepresentable {
             mapView.animate(to: camera)
         }
         
-        // Done for search and follow feature
-        private func dotsPositionShouldChange(for mapView: GMSMapView) {
-//            let NW = (mapView.projection.visibleRegion().farLeft.latitude, mapView.projection.visibleRegion().farLeft.longitude)
-//            let SE = (mapView.projection.visibleRegion().nearRight.latitude, mapView.projection.visibleRegion().nearRight.longitude)
-//            if parent.searchFollowService.getNorthWest() != NW || parent.searchFollowService.getNorthWest() != SE {
-//                parent.searchFollowService.updateParameters(north: NW.0, south: SE.0, east: SE.1, west: NW.1)
-//            }
-        }
-
         private func positionChanged(for mapView: GMSMapView) {
             let visibleRegion = mapView.projection.visibleRegion()
             let bounds = GMSCoordinateBounds(region: visibleRegion)

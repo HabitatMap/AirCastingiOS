@@ -751,6 +751,10 @@ struct Strings {
                                                              comment: "")
         static let following: String = NSLocalizedString("Following", comment: "")
     }
+    
+    enum Chart {
+        static let emptyChartMessage = NSLocalizedString("Waiting for the first average value", comment: "")
+    }
 
     enum RefreshControl {
         static let progressViewTest: String = NSLocalizedString("Syncing...",
@@ -904,6 +908,15 @@ struct Strings {
     enum SearchView {
         static let title: String = NSLocalizedString("Search fixed sessions", comment: "")
         static let placeholder: String = NSLocalizedString("Session location", comment: "")
+    }
+    
+    enum CompleteSearchView {
+        static let map: String = NSLocalizedString("map", comment: "")
+        static let chart: String = NSLocalizedString("chart", comment: "")
+        static let confirmationButtonTitle: String = NSLocalizedString("Follow Session", comment: "")
+        static let noStreamsDescription = NSLocalizedString("No streams available for this session", comment: "")
+        static let failedDownloadAlertTitle = NSLocalizedString("Session download failed", comment: "")
+        static let failedDownloadAlertMessage = NSLocalizedString("Please try again later.", comment: "")
     }
     
     enum EditNoteView {
