@@ -72,14 +72,14 @@ private extension SearchMapView {
         .cornerRadius(5)
         .padding(-3)
         .shadow(color: Color.shadow, radius: 9, x: 0, y: 1)
-        .disabled(!viewModel.showRedoButton)
-        .opacity(viewModel.showRedoButton ? 1.0 : 0.0)
+        .disabled(!viewModel.searchAgainButton)
+        .opacity(viewModel.searchAgainButton ? 1.0 : 0.0)
     }
     
     var map: some View {
         ZStack(alignment: .top) {
             SearchAndFollowMap(startingPoint: viewModel.passedLocationAddress,
-                      showRedoButton: $viewModel.showRedoButton,
+                      showRedoButton: $viewModel.searchAgainButton,
                                sessions: $viewModel.sessionsList,
                                pointerID: $viewModel.cardPointerID).onPositionChange(action: { geoSquare in
                 viewModel.mapPositionsChanged(geoSquare: geoSquare)

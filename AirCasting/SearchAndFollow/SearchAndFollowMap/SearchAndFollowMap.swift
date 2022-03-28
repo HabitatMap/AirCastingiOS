@@ -56,17 +56,16 @@ struct SearchAndFollowMap: UIViewRepresentable {
     func updateUIView(_ uiView: GMSMapView, context: Context) {
         if markerWasTapped {
             // Jeżeli nastąpi kliknięcie kropki na mapie
-            placeDots(uiView, context: context)
+//            placeDots(uiView, context: context)
             DispatchQueue.main.async {
                 markerWasTapped = false
             }
         }
         if pointerID != context.coordinator.idKeeper {
-            placeDots(uiView, context: context)
-            Log.info("😎 WE WILL SEE!")
+//            placeDots(uiView, context: context)
             context.coordinator.idKeeper = pointerID
         }
-        if !showRedoButton && pointerID == context.coordinator.idKeeper {
+        if !showRedoButton {
             placeDots(uiView, context: context)
         }
     }
@@ -134,15 +133,7 @@ struct SearchAndFollowMap: UIViewRepresentable {
                 self.parent.pointerID = marker.userData as! Int
                 self.parent.markerWasTapped = true
             }
-//            parent.pointerID = marker.userData as! Int
-//            if parent.pointerID != idKeeper {
-//                parent.hoho = true
-//            }
-            
             return true
-        }
-        
-        func centerMap(for mapView: GMSMapView) {
         }
         
         private func dotsPositionShouldChange(for mapView: GMSMapView) {
