@@ -6,11 +6,11 @@ import Resolver
 import SwiftUI
 
 class ChooseLocationPickerService: PlacePickerService {
-    @InjectedObject private var tracker: LocationTracker
+    @Injected private var tracker: LocationTracker
     @Binding private var address: String
     
     init(address: Binding<String>) {
-        self._address = address
+        self._address = .init(projectedValue: address)
     }
     
     func didComplete(using place: GMSPlace) {

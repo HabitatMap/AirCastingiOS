@@ -4,7 +4,7 @@
 import XCTest
 @testable import AirCasting
 
-class SDSyncFileWritingServiceTests: XCTestCase {
+class SDSyncFileWritingServiceTests: ACTestCase {
     
     func test_integration() {
         let threshold = 3

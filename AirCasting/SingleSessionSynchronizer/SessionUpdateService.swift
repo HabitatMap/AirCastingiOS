@@ -5,19 +5,26 @@ import Foundation
 import Resolver
 
 protocol SessionUpdateService {
-    func updateSession(session: SessionEntity, completion: @escaping () -> Void)
+    func updateSession(session: SessionEntity, completion: @escaping (Result<UpdateSessionReturnedData, Error>) -> Void)
+}
+
+struct UpdateSessionReturnedData: Codable {
+    let version: Int
 }
 
 class DefaultSessionUpdateService: SessionUpdateService {
-
+    @Injected private var client: APIClient
     @Injected private var authorization: RequestAuthorisationService
+    @Injected private var responseValidator: HTTPResponseValidator
     @Injected private var urlProvider: URLProvider
+    
+    private let decoder = JSONDecoder()
     
     private struct APICallData: Encodable {
         let data: String
     }
 
-    func updateSession(session: SessionEntity, completion: @escaping () -> Void) {
+    func updateSession(session: SessionEntity, completion: @escaping (Result<UpdateSessionReturnedData, Error>) -> Void) {
         let url = urlProvider.baseAppURL.appendingPathComponent("api/user/sessions/update_session.json")
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -44,12 +51,13 @@ class DefaultSessionUpdateService: SessionUpdateService {
         })
         
         session.notes?.forEach({ note in
-            let n = note as! NoteEntity
-            notes.append(CreateSessionApi.NotesParams(date: n.date ?? DateBuilder.getFakeUTCDate(),
-                                                      text: n.text ?? "",
-                                                      lat: n.lat,
-                                                      long: n.long,
-                                                      number: Int(n.number)))
+            if let n = note as? NoteEntity {
+                notes.append(CreateSessionApi.NotesParams(date: n.date ?? DateBuilder.getFakeUTCDate(),
+                                                          text: n.text ?? "",
+                                                          lat: n.lat,
+                                                          long: n.long,
+                                                          number: Int(n.number)))
+            }
         })
     
         let sessionToPass = CreateSessionApi.SessionParams(uuid: session.uuid,
@@ -75,18 +83,29 @@ class DefaultSessionUpdateService: SessionUpdateService {
             request.httpBody = try encoder.encode(APICallData(data: jsonString))
             try authorization.authorise(request: &request)
             
-            let task = URLSession.shared.dataTask(with: request) { data, response, error in
-                    completion()
+            client.requestTask(for: request) { [responseValidator, decoder] result, _ in
+                switch result {
+                case .success(let response):
+                    do {
+                        try responseValidator.validate(response: response.response, data: response.data)
+                        let sessionData = try decoder.decode(UpdateSessionReturnedData.self, from: response.data)
+                        completion(.success(sessionData))
+                    } catch {
+                        completion(.failure(error))
+                    }
+                case .failure(let error):
+                    completion(.failure(error))
+                }
             }
-            task.resume()
         } catch {
             Log.info("Error when trying to update from database")
+            completion(.failure(error))
         }
     }
 }
 
 class SessionUpdateServiceDefaultDummy: SessionUpdateService {
-    func updateSession(session: SessionEntity, completion: @escaping () -> Void) {
+    func updateSession(session: SessionEntity, completion: @escaping (Result<UpdateSessionReturnedData, Error>) -> Void) {
         Log.info("updating session")
     }
 }

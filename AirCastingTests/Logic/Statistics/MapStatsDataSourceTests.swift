@@ -5,7 +5,7 @@ import XCTest
 import CoreLocation
 @testable import AirCasting
 
-class MapStatsDataSourceTests: XCTestCase {
+class MapStatsDataSourceTests: ACTestCase {
     let stream = TestStreamGenerator.createStream(numberOfMeasurements: 100)
     
     override func tearDown() {

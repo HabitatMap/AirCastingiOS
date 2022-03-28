@@ -22,6 +22,7 @@ struct MainTabBarView: View {
     @StateObject var searchAndFollow = SearchAndFollowButton()
     @StateObject var emptyDashboardButtonTapped = EmptyDashboardButtonTapped()
     @StateObject var finishAndSyncButtonTapped = FinishAndSyncButtonTapped()
+    @StateObject var exploreSessionsButton = ExploreSessionsButton()
     @StateObject var sessionContext: CreateSessionContext
     @StateObject var coreDataHook: CoreDataHook
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
@@ -53,6 +54,9 @@ struct MainTabBarView: View {
             }
             
         }
+        .onAppCameToForeground {
+            measurementUpdatingService.updateAllSessionsMeasurements()
+        }
         .onAppear {
             let navBarAppearance = UINavigationBar.appearance()
             navBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(Color.darkBlue),
@@ -80,6 +84,7 @@ struct MainTabBarView: View {
         .environmentObject(tabSelection)
         .environmentObject(emptyDashboardButtonTapped)
         .environmentObject(finishAndSyncButtonTapped)
+        .environmentObject(exploreSessionsButton)
         .environmentObject(reorderButton)
         .environmentObject(searchAndFollow)
     }
@@ -98,7 +103,7 @@ private extension MainTabBarView {
             .overlay(
                 Group{
                     HStack {
-                        if !searchAndFollow.isHidden && featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) {
+                        if !searchAndFollow.isHidden && featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) && selectedSection.selectedSection == .following {
                             searchAndFollowButton
                         }
                         if !reorderButton.isHidden && sessions.count > 1 && selectedSection.selectedSection == .following {
@@ -163,7 +168,7 @@ private extension MainTabBarView {
             Button {
                 searchAndFollow.searchIsOn = true
             } label: {
-                Image(systemName: "doc.text.magnifyingglass")
+                Image("SearchFollow")
                     .foregroundColor(Color.accentColor)
                     .frame(width: 60, height: 60)
                     .imageScale(.large)
@@ -189,6 +194,10 @@ class SelectSection: ObservableObject {
 
 class EmptyDashboardButtonTapped: ObservableObject {
     @Published var mobileWasTapped = false
+}
+
+class ExploreSessionsButton: ObservableObject {
+    @Published var exploreSessionsButtonTapped = false
 }
 
 class FinishAndSyncButtonTapped: ObservableObject {

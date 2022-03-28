@@ -13,6 +13,7 @@ struct ChooseSessionTypeView: View {
     @EnvironmentObject private var tabSelection: TabBarSelection
     @EnvironmentObject private var emptyDashboardButtonTapped: EmptyDashboardButtonTapped
     @EnvironmentObject private var finishAndSyncButtonTapped: FinishAndSyncButtonTapped
+    @EnvironmentObject private var exploreSessionsButton: ExploreSessionsButton
     @StateObject var viewModel: ChooseSessionTypeViewModel
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
     
@@ -21,6 +22,10 @@ struct ChooseSessionTypeView: View {
     }
     var shouldGoToSyncScreen: Bool {
         (tabSelection.selection == .createSession && finishAndSyncButtonTapped.finishAndSyncButtonWasTapped) ? true : false
+    }
+    
+    var shouldGotToSearchScreen: Bool {
+        (tabSelection.selection == .createSession && exploreSessionsButton.exploreSessionsButtonTapped) ? true : false
     }
     
     init(sessionContext: CreateSessionContext) {
@@ -44,7 +49,6 @@ struct ChooseSessionTypeView: View {
                             }))
                         }
                     }
-                
                     .fullScreenCover(isPresented: .init(get: {
                         viewModel.isTurnLocationOnLinkActive
                     }, set: { new in
@@ -60,7 +64,6 @@ struct ChooseSessionTypeView: View {
                                                                                   isSDClearProcess: false))
                         }
                     }
-                
                     .fullScreenCover(isPresented: .init(get: {
                         viewModel.isTurnBluetoothOnLinkActive
                     }, set: { new in
@@ -75,7 +78,6 @@ struct ChooseSessionTypeView: View {
                                                 sdSyncContinues: .constant(false))
                         }
                     }
-                
                     .fullScreenCover(isPresented: .init(get: {
                         viewModel.isMobileLinkActive
                     }, set: { new in
@@ -90,21 +92,15 @@ struct ChooseSessionTypeView: View {
                                              sdSyncContinues: .constant(false))
                         }
                     }
-                
                     .fullScreenCover(isPresented: .init(get: {
-                        viewModel.isSearchAndFollow
+                        viewModel.isSearchAndFollowLinkActive
                     }, set: { new in
                         viewModel.setSearchAndFollow(using: new)
                     })) {
                         CreatingSessionFlowRootView {
-                            SearchView(creatingSessionFlowContinues: .init(get: {
-                                viewModel.isSearchAndFollow
-                            }, set: { new in
-                                viewModel.setSearchAndFollow(using: new)
-                            }))
+                            SearchView()
                         }
                     }
-                
                     .fullScreenCover(isPresented: .init(get: {
                         viewModel.startSync
                     }, set: { new in
@@ -201,20 +197,14 @@ struct ChooseSessionTypeView: View {
                                         }))
                                     }
                                 }
-                            
-                            
                             EmptyView()
                                 .fullScreenCover(isPresented: .init(get: {
-                                    viewModel.isSearchAndFollow
+                                    viewModel.isSearchAndFollowLinkActive
                                 }, set: { new in
                                     viewModel.setSearchAndFollow(using: new)
                                 })) {
                                     CreatingSessionFlowRootView {
-                                        SearchView(creatingSessionFlowContinues: .init(get: {
-                                            viewModel.isSearchAndFollow
-                                        }, set: { new in
-                                            viewModel.setSearchAndFollow(using: new)
-                                        }))
+                                        SearchView()
                                     }
                                 }
                         }
@@ -225,6 +215,7 @@ struct ChooseSessionTypeView: View {
             .environmentObject(viewModel.passSessionContext)
         }
     }
+    
     
     private var mainContent: some View {
         VStack(spacing: 50) {
@@ -247,7 +238,9 @@ struct ChooseSessionTypeView: View {
                     mobileSessionButton
                 }
                 Spacer()
-                orLabel
+                if featureFlagsViewModel.enabledFeatures.contains(.sdCardSync) || featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) {
+                    orLabel
+                }
                 HStack {
                     if featureFlagsViewModel.enabledFeatures.contains(.sdCardSync) {
                         sdSyncButton
@@ -275,6 +268,7 @@ private extension ChooseSessionTypeView {
     func defineNextMove() {
         shouldGoToChooseSessionScreen ? (viewModel.handleMobileSessionState()) : (viewModel.isMobileLinkActive = false)
         viewModel.setStartSync(using: shouldGoToSyncScreen)
+        viewModel.setSearchAndFollow(using: shouldGotToSearchScreen)
     }
 }
 
@@ -295,13 +289,13 @@ private extension ChooseSessionTypeView {
     var recordNewLabel: some View {
         Text(Strings.ChooseSessionTypeView.recordNew)
             .font(Fonts.boldHeading3)
-            .foregroundColor(.aircastingDarkGray)
+            .foregroundColor(.aircastingGray)
     }
     
     var orLabel: some View {
         Text(Strings.ChooseSessionTypeView.orLabel)
             .font(Fonts.boldHeading3)
-            .foregroundColor(.aircastingDarkGray)
+            .foregroundColor(.aircastingGray)
     }
     
     var moreInfoLabel: some View {
@@ -366,15 +360,14 @@ private extension ChooseSessionTypeView {
     
     var mobileSessionLabel: some View {
         chooseSessionButton(title: StringCustomizer.customizeString(Strings.ChooseSessionTypeView.mobileLabel,
-                                                                     using: [Strings.ChooseSessionTypeView.mobileSession],
-                                                                     color: .accentColor,
-                                                                     font: Fonts.boldHeading1))
+                                                                    using: [Strings.ChooseSessionTypeView.mobileSession],
+                                                                    color: .accentColor,
+                                                                    font: Fonts.boldHeading1))
     }
     
     var syncButtonLabel: some View {
         chooseSessionButton(title: StringCustomizer.customizeString(Strings.ChooseSessionTypeView.syncTitle,
                                                                      using: [Strings.ChooseSessionTypeView.syncData],
-                                                                     color: .accentColor,
                                                                      font: Fonts.boldHeading1,
                                                                      makeNewLineAfterCustomized: true))
     }
@@ -382,7 +375,6 @@ private extension ChooseSessionTypeView {
     var followButtonLabel: some View {
         chooseSessionButton(title: StringCustomizer.customizeString(Strings.ChooseSessionTypeView.followButtonTitle,
                                                                     using: [Strings.ChooseSessionTypeView.followSession],
-                                                                    color: .accentColor,
                                                                     font: Fonts.boldHeading1))
     }
 }
@@ -405,3 +397,4 @@ extension View {
         .shadow(color: Color.shadow, radius: 9, x: 0, y: 1)
     }
 }
+

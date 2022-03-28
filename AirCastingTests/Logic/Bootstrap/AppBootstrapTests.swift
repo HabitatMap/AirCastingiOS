@@ -2,12 +2,19 @@
 //
 
 import XCTest
+import Resolver
 @testable import AirCasting
 
-class AppBootstrapTests: XCTestCase {
+class AppBootstrapTests: ACTestCase {
     let firstRunProvider = FirstRunInfoProviderMock()
     let deauthorizer = DeauthorizerMock()
-    lazy var bootstrap = AppBootstrap(firstRunInfoProvider: firstRunProvider, deauthorizable: deauthorizer)
+    lazy var bootstrap = AppBootstrap()
+    
+    override func setUp() {
+        super.setUp()
+        Resolver.test.register { self.firstRunProvider as FirstRunInfoProvidable }
+        Resolver.test.register { self.deauthorizer as Deauthorizable }
+    }
     
     func test_whenFirstTimeRunningTheApp_clearsPreviousAuthorizationData() {
         firstRunProvider.isFirstAppLaunch = true

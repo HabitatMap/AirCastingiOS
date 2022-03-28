@@ -132,6 +132,7 @@ class SDSyncController {
     }
     
     private func process(mobileSessionFile: URL, deviceID: String, completion: @escaping (Bool) -> Void) {
+        Log.info("Processing fixed file")
         self.mobileSessionsSaver.saveDataToDb(fileURL: mobileSessionFile, deviceID: deviceID) { result in
             switch result {
             case .success(let sessions):
@@ -153,7 +154,7 @@ class SDSyncController {
             case .success():
                 completion(true)
             case .failure(let error):
-                Log.error(error.localizedDescription)
+                Log.error("Failed to clear SD card: \(error.localizedDescription)")
                 completion(false)
             }
         }

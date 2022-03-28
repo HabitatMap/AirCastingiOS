@@ -55,6 +55,19 @@ struct Strings {
                                                     comment: "")
         static let buildText = NSLocalizedString("build",
                                                  comment: "")
+        static let crashlyticsSectionTitle = "Crashlytics integration testing:"
+        
+        static let appConfig = "App config"
+        
+        static let shareLogs = "Share logs"
+        
+        static let crashTheApp = "Crash the app"
+        
+        static let generateError = "Generate error"
+        
+        static let betaBuild = "Beta build"
+        
+        static let debugBuild = "Debug build"
     }
     
     enum BackendSettings {
@@ -269,8 +282,6 @@ struct Strings {
                                                      comment: "")
         static let description: String = NSLocalizedString("Find and follow a fixed air quality monitor near you and know how clean or polluted your air is right now.",
                                                            comment: "")
-        static let continueButton: String = NSLocalizedString("How’s the air near you?",
-                                                              comment: "")
     }
     
     enum OnboardingAirBeam {
@@ -461,10 +472,13 @@ struct Strings {
                                                      comment: "")
         static let description: String = NSLocalizedString("Record a new session to monitor your health & environment.",
                                                            comment: "")
+        static let exploreSessionsDescription: String = NSLocalizedString("Explore & follow existing AirCasting sessions or use your own device to record a new session and monitor your health & environment.",
+                                                                          comment: "")
         static let newSession: String = NSLocalizedString("Record new session",
                                                           comment: "")
         static let fetchingText: String = NSLocalizedString("Fetching...",
                                                             comment: "")
+        static let exploreSessionsButton = NSLocalizedString("Explore existing sessions", comment: "")
     }
 
     enum ReorderingDashboard {
@@ -629,7 +643,7 @@ struct Strings {
         
         static let syncData: String = NSLocalizedString("Sync data from AirBeam3",
                                                                comment: "")
-        static let followButtonTitle: String = NSLocalizedString("Follow session recorded by a measuring station",
+        static let followButtonTitle: String = NSLocalizedString("Follow session search & follow fixed sessions",
                                                                  comment: "")
         static let followSession: String = NSLocalizedString("Follow session",
                                                                        comment: "")
@@ -748,7 +762,7 @@ struct Strings {
     }
     
     enum StandaloneSessionCardView {
-        static let heading = NSLocalizedString("Your AirBeam3 is now in stand-alone mode",
+        static let heading = NSLocalizedString("Your AirBeam3 is now in standalone mode",
                                                comment: "")
         static let description = NSLocalizedString("AirBeam3 is now recording using its SD card. The measurements will be displayed here after syncing.",
                                                    comment: "")
@@ -835,7 +849,7 @@ struct Strings {
     enum NetworkAlert {
         static let alertTitle: String = NSLocalizedString("No internet connection",
                                                           comment: "")
-        static let alertMessage: String = NSLocalizedString("You need to have internet connection to continue",
+        static let alertMessage: String = NSLocalizedString("You need to have internet connection to continue.",
                                                             comment: "")
     }
     
@@ -846,12 +860,35 @@ struct Strings {
                                                        comment: "")
     }
     
+    enum MicrophoneSessionAlreadyRecordingAlert {
+        static let title: String = NSLocalizedString("There is already a microphone session in progress",
+                                                     comment: "")
+        static let message: String = NSLocalizedString("You can record only one microphone session at once.",
+                                                       comment: "")
+    }
+    
     enum InAppAlerts {
         static let unableToLogOutTitle: String = NSLocalizedString("No internet connection",
                                                                    comment: "")
         static let unableToLogOutMessage: String = NSLocalizedString("To sign out, you must be connected to the Internet.",
                                                                      comment: "")
         static let unableToLogOutButton: String = NSLocalizedString("Got it!",
+                                                                    comment: "")
+        static let failedTitle: String = NSLocalizedString("Failed",
+                                                                    comment: "")
+        static let downloadingFailedMessage: String = NSLocalizedString("Cannot download sessions at this moment. Please try again in a moment.",
+                                                                        comment: "")
+        static let failedDownloadTitle: String = NSLocalizedString("Connection failure",
+                                                                   comment: "")
+        static let failedDownloadMessage: String = NSLocalizedString("Something went wrong when downloading most recent session data. Please try again later.",
+                                                                     comment: "")
+        static let failedDownloadButton: String = NSLocalizedString("Got it!",
+                                                                    comment: "")
+        static let failedSavingTitle: String = NSLocalizedString("Request failed",
+                                                                   comment: "")
+        static let failedSavingMessage: String = NSLocalizedString("New data couldn't be saved. Please try again later.",
+                                                                     comment: "")
+        static let failedSavingButton: String = NSLocalizedString("Got it!",
                                                                     comment: "")
     }
     
@@ -869,7 +906,7 @@ struct Strings {
     }
 
     enum SearchView {
-        static let title: String = NSLocalizedString("Search", comment: "")
+        static let title: String = NSLocalizedString("Search fixed sessions", comment: "")
         static let placeholder: String = NSLocalizedString("Session location", comment: "")
     }
     
@@ -945,6 +982,15 @@ struct Strings {
         static let incorrectEmail: String = NSLocalizedString("The email address is incorrect.",
                                                               comment: "")
         static let emptyTextfield: String = NSLocalizedString("This field cannot be left blank.",
+                                                              comment: "")
+    }
+    
+    enum SearchMapView {
+        static let loadingText: String = NSLocalizedString("Loading sessions.",
+                                                              comment: "")
+        static let parameterText: String = NSLocalizedString("Showing results for: %@",
+                                                              comment: "")
+        static let redoText: String = NSLocalizedString("Redo Search in Map",
                                                               comment: "")
     }
 }

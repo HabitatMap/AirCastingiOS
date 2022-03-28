@@ -1,7 +1,3 @@
-//
-//  BackendURLValidator.swift
-//  URLValidation
-//
 // Created by Lunar on 25/06/2021.
 //
 

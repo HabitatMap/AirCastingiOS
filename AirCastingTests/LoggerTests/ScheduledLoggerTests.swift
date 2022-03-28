@@ -1,7 +1,7 @@
 import XCTest
 @testable import AirCasting
 
-class ScheduledLoggerTests: XCTestCase {
+class ScheduledLoggerTests: ACTestCase {
     func test_onLog_schedulesToAGivenQueue() {
         let loggerSpy = LoggerQueueSpy()
         let sut = ScheduledLogger(queue: .global(), logger: loggerSpy)

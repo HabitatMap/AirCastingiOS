@@ -9,7 +9,8 @@ import GooglePlaces
 class AppBootstrap {
     @Injected private var firstRunInfoProvider: FirstRunInfoProvidable
     @Injected private var deauthorizable: Deauthorizable
-    
+    @Injected private var averagingService: AveragingService
+
     func bootstrap() {
         if firstRunInfoProvider.isFirstAppLaunch {
             handleFirstAppLaunch()
@@ -17,8 +18,9 @@ class AppBootstrap {
         firstRunInfoProvider.registerAppLaunch()
         GMSServices.provideAPIKey(GOOGLE_MAP_KEY)
         GMSPlacesClient.provideAPIKey(GOOGLE_PLACES_KEY)
+        averagingService.start()
     }
-    
+
     private func handleFirstAppLaunch() {
         Log.info("First launch detected, clearing authentication data")
         try? deauthorizable.deauthorize()

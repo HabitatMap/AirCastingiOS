@@ -42,7 +42,8 @@ struct ChooseCustomLocationView: View {
         GoogleMapView(pathPoints: [],
                       placePickerIsUpdating: $placePickerIsUpdating,
                       isUserInteracting: Binding.constant(true),
-                      mapNotes: .constant([]))
+                      mapNotes: .constant([]),
+                      isMapOnPickerScreen: true)
     }
 
     var dot: some View {

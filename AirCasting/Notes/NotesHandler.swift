@@ -63,10 +63,17 @@ class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDel
         measurementStreamStorage.accessStorage { [self] storage in
             do {
                 try storage.deleteNote(note, for: sessionUUID)
-                fetchSession { session in
-                    self.sessionUpdateService.updateSession(session: session) {
-                        Log.info("Notes successfully updated")
-                        completion()
+                fetchSession(storage: storage) { session in
+                    self.sessionUpdateService.updateSession(session: session) { result in
+                        switch result {
+                        case .success(let updateData):
+                            try? storage.updateVersion(for: sessionUUID, to: updateData.version)
+                            Log.info("Notes successfully updated")
+                            completion()
+                        case .failure(let error):
+                            Log.info("Failed updating session while updating notes: \(error.localizedDescription)")
+                            completion()
+                        }
                     }
                 }
             } catch {
@@ -79,10 +86,17 @@ class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDel
         measurementStreamStorage.accessStorage { [self] storage in
             do {
                 try storage.updateNote(note, newText: newText, for: sessionUUID)
-                fetchSession { session in
-                    self.sessionUpdateService.updateSession(session: session) {
-                        Log.info("Notes successfully updated")
-                        completion()
+                fetchSession(storage: storage) { session in
+                    self.sessionUpdateService.updateSession(session: session) { result in
+                        switch result {
+                        case .success(let updateData):
+                            try? storage.updateVersion(for: sessionUUID, to: updateData.version)
+                            Log.info("Notes successfully updated")
+                            completion()
+                        case .failure(let error):
+                            Log.info("Failed updating session while updating notes: \(error.localizedDescription)")
+                            completion()
+                        }
                     }
                 }
             } catch {
@@ -114,13 +128,11 @@ class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDel
 
 // MARK: Internal methods
 extension NotesHandlerDefault {
-    private func fetchSession(completion: @escaping (SessionEntity) -> Void) {
-        measurementStreamStorage.accessStorage { [self] storage in
-            do {
-                completion(try storage.getExistingSession(with: sessionUUID))
-            } catch {
-                Log.info("Error when fetching session: \(error)")
-            }
+    private func fetchSession(storage: HiddenCoreDataMeasurementStreamStorage,completion: @escaping (SessionEntity) -> Void) {
+        do {
+            completion(try storage.getExistingSession(with: sessionUUID))
+        } catch {
+            Log.info("Error when fetching session: \(error)")
         }
     }
 }

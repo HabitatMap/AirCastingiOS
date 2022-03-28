@@ -44,3 +44,22 @@ extension Date {
     }
 }
 // swiftlint:enable airCasting_date
+
+
+extension Date {
+    var yearAgo: Date {
+        self - (365 * 24 * 60 * 60)
+    }
+    
+    var beginingOfDayInSeconds: Double {
+        var calendar = Calendar.current
+        calendar.timeZone = TimeZone.utc
+        return calendar.startOfDay(for: self).timeIntervalSince1970
+    }
+    
+    var endOfDayInSeconds: Double {
+        var calendar = Calendar.current
+        calendar.timeZone = TimeZone.utc
+        return calendar.startOfDay(for: self).timeIntervalSince1970 + (23 * 60 * 60 + 3540 + 59)
+    }
+}

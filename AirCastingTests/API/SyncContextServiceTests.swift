@@ -5,7 +5,7 @@ import XCTest
 import Combine
 @testable import AirCasting
 
-final class SyncContextServiceTests: XCTestCase {
+final class SyncContextServiceTests: APIServiceTestCase {
     private let validContextResponseData: Data =
         """
         {
@@ -14,11 +14,7 @@ final class SyncContextServiceTests: XCTestCase {
             "deleted": ["UUID-TO-DELETE1", "UUID-TO-DELETE2"],
         }
         """.data(using: .utf8)!
-    private let client = APIClientMock()
-    private let auth = RequestAuthorizationServiceMock()
-    private let responseValidator = HTTPResponseValidatorMock()
-    private let urlProvider = URLProviderMock(baseAppURL: URL(string: "http://aircasting.org/")!)
-    private lazy var service = SessionSynchronizationService(client: client, authorization: auth, responseValidator: responseValidator, urlProvider: urlProvider)
+    private lazy var service = SessionSynchronizationService()
     private var cancellables: [AnyCancellable] = []
     
     override func tearDown() {
@@ -123,31 +119,6 @@ final class SyncContextServiceTests: XCTestCase {
 
 extension Array where Element == SessionsSynchronization.Metadata {
     static var random: [Element] = [.random, .random]
-}
-
-class RequestAuthorizationServiceMock: RequestAuthorisationService {
-    var stubError: Error? = nil
-    
-    func authorise(request: inout URLRequest) throws -> URLRequest {
-        if let error = stubError { throw error }
-        return request
-    }
-}
-
-class HTTPResponseValidatorMock: HTTPResponseValidator {
-    var stubError: Error? = nil
-    
-    func validate(response: URLResponse, data: Data) throws {
-        if let error = stubError { throw error }
-    }
-}
-
-class URLProviderMock: BaseURLProvider {
-    var baseAppURL: URL
-    
-    init(baseAppURL: URL) {
-        self.baseAppURL = baseAppURL
-    }
 }
 
 extension SessionsSynchronization.Metadata {

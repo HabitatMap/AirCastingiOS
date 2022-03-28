@@ -9,6 +9,7 @@ class LoggerBuilder {
     enum LoggerType {
         case file
         case debug
+        case crashlytics
     }
     
     private var partialLogger: Logger
@@ -17,6 +18,7 @@ class LoggerBuilder {
         switch type {
         case .debug: partialLogger = Self.createDebugLogger()
         case .file: partialLogger = Self.createFileLogger()
+        case .crashlytics: partialLogger = Self.createCrashlyticsLogger()
         }
     }
     
@@ -43,5 +45,9 @@ class LoggerBuilder {
     
     private static func createFileLogger() -> Logger {
         Resolver.resolve(FileLogger.self)
+    }
+    
+    private static func createCrashlyticsLogger() -> Logger {
+        Resolver.resolve(CrashlyticsLogger.self)
     }
 }
