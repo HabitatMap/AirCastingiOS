@@ -1255,6 +1255,7 @@
 				338C30E025F1042000E0305C /* CoreData */,
 				AC8CFF4325E5108100FB2918 /* APICommunicator */,
 				DD8C380A2689A3B600901FDF /* URLProviders */,
+				33A7FF1B27C5116E00A138D6 /* CompleteScreen */,
 				DD80AE1B27BA46AA00D9B123 /* SearchAndFollow */,
 				AC8CFF3425E502C700FB2918 /* AuthViews */,
 				ACD32A4D2600A8CC00818946 /* Settings */,
@@ -2045,7 +2046,6 @@
 			isa = PBXGroup;
 			children = (
 				DD80AE1E27BA46F500D9B123 /* SearchLocation */,
-				33A7FF1B27C5116E00A138D6 /* CompleteScreen */,
 			);
 			path = SearchAndFollow;
 			sourceTree = "<group>";
