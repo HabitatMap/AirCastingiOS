@@ -21,14 +21,6 @@ struct SearchView: View {
             Spacer()
             button
         }.padding()
-        .sheet(isPresented: $viewModel.isLocationPopupPresented) {
-            PlacePicker(service: SearchPickerService(address: .init(get: {
-                viewModel.location
-            }, set: { newLocation in
-                viewModel.updateLocation(using: newLocation)
-            })))
-        }
-        .sheet(isPresented: $showCompleteView, content: { CompleteScreen(session: SearchSessionResult.mock) })
             .onAppear(perform: {
                 viewModel.viewInitialized {
                     presentationMode.wrappedValue.dismiss()
@@ -71,12 +63,6 @@ private extension SearchView {
     }
 
     var button: some View {
-        Button {
-            Log.info("Continuing to next screen")
-            showCompleteView = true
-        } label: {
-            Text(Strings.Commons.continue)
-        }.buttonStyle(BlueButtonStyle())
         return NavigationLink(
             destination: SearchMapView(locationName: viewModel.addressName,
                                        locationAddress: viewModel.addresslocation,
