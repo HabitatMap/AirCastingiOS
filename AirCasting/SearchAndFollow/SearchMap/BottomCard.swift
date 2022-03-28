@@ -11,6 +11,7 @@ struct BottomCardModel {
 }
 
 struct BottomCardView: View {
+    @State var isModalScreenPresented = false
     @Binding var cardPointer: Int
     let dataModel: BottomCardModel
     
@@ -21,6 +22,7 @@ struct BottomCardView: View {
     var sessionCard: some View {
         Button {
             cardPointer = dataModel.id
+            isModalScreenPresented.toggle()
         } label: {
             VStack(alignment: .leading, spacing: 5) {
                 Text(dataModel.title)
@@ -33,6 +35,14 @@ struct BottomCardView: View {
                     .foregroundColor(.aircastingGray)
             }
         }
+        .sheet(isPresented: $isModalScreenPresented, content: {
+            CompleteScreen(session: .init(uuid: .init(),
+                                          name: dataModel.title,
+                                          startTime: Date(),
+                                          endTime: Date(),
+                                          longitude: 50.50,
+                                          latitude: 50.50))
+        })
         .frame(width: 150, height: 70, alignment: .center)
         .padding()
         .background(

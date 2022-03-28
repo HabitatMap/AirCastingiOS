@@ -31,9 +31,6 @@ struct SearchMapView: View {
                 addressTextField
                 measurementTypeText
                 searchAgainButton
-                // This is temporary untill we implement clickable cards
-                Spacer()
-                Button(action: { showCompleteScreen = true }, label: { Text("Complete screen") })
             })
                 .padding(.top, 50)
                 .padding(.horizontal)
@@ -105,7 +102,7 @@ private extension SearchMapView {
     
     var cardsTitle: some View {
         HStack(alignment: .bottom) {
-            StringCustomizer.customizeString(String(format: Strings.SearchMapView.cardsTitle, arguments: ["\(viewModel.sessionsList.count)", "\(2500)"]),
+            StringCustomizer.customizeString(String(format: Strings.SearchMapView.cardsTitle, arguments: ["\(viewModel.sessionsList.count)"]),
                                              using: [Strings.SearchMapView.sessionsText], color: .darkBlue, standardColor: .darkBlue, font: Fonts.boldHeading2)
         }.foregroundColor(.darkBlue)
     }
