@@ -27,7 +27,7 @@ struct GoogleMapView: UIViewRepresentable {
     let isMapOnPickerScreen: Bool
     @Binding var mapNotes: [MapNote]
     let showMyLocationButton: Bool
-
+    
     init(pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false, placePickerIsUpdating: Binding<Bool>, isUserInteracting: Binding<Bool>, isSessionActive: Bool = false, isSessionFixed: Bool = false, noteMarketTapped: Binding<Bool> = .constant(false), noteNumber: Binding<Int> = .constant(0), mapNotes: Binding<[MapNote]>, showMyLocationButton: Bool = true, isMapOnPickerScreen: Bool = false) {
         self.pathPoints = pathPoints
         self.threshold = threshold
@@ -42,10 +42,10 @@ struct GoogleMapView: UIViewRepresentable {
         self.showMyLocationButton = showMyLocationButton
         self.isMapOnPickerScreen = isMapOnPickerScreen
     }
-
+    
     func makeUIView(context: Context) -> GMSMapView {
         let startingPoint = setStartingPoint(points: pathPoints)
-
+        
         let mapView = GMSMapView.map(withFrame: .zero,
                                      camera: startingPoint)
         mapView.settings.myLocationButton = showMyLocationButton
@@ -73,7 +73,7 @@ struct GoogleMapView: UIViewRepresentable {
             }
         return mapView
     }
-
+    
     /// Adds an action for when the map viewport is changed.
     /// - Parameter action: an action block that takes an array of currently visible `PathPoint`s.
     func onPositionChange(action: @escaping (_ visiblePoints: [PathPoint]) -> ()) -> Self {
@@ -81,17 +81,17 @@ struct GoogleMapView: UIViewRepresentable {
         newSelf.onPositionChange = action
         return newSelf
     }
-
+    
     func updateUIView(_ uiView: GMSMapView, context: Context) {
         if mapNotes.count != context.coordinator.mapNotesCounter {
             placeNotes(uiView, notes: mapNotes, context: context)
             drawPolyline(uiView, context: context)
             context.coordinator.mapNotesCounter = mapNotes.count
         }
-
+        
         guard isUserInteracting else { return }
         let thresholdWitness = ThresholdWitness(sensorThreshold: self.threshold)
-
+        
         if pathPoints != context.coordinator.currentlyDisplayedPathPoints ||
             thresholdWitness != context.coordinator.currentThresholdWitness {
             drawPolyline(uiView, context: context)
@@ -100,7 +100,7 @@ struct GoogleMapView: UIViewRepresentable {
             context.coordinator.currentThreshold = threshold
             context.coordinator.drawHeatmap(uiView)
         }
-
+        
         if placePickerIsUpdating {
             uiView.moveCamera(cameraUpdate)
             DispatchQueue.main.async {
@@ -118,7 +118,7 @@ struct GoogleMapView: UIViewRepresentable {
             }
         }
     }
-
+    
     var cameraUpdate: GMSCameraUpdate {
         guard !pathPoints.isEmpty else {
             let location = tracker.googleLocation.last?.location ?? CLLocationCoordinate2D(latitude: 0, longitude: 0)
@@ -134,23 +134,23 @@ struct GoogleMapView: UIViewRepresentable {
         let pathPointsBoundingBox = initialBounds.includingCoordinate(pathPoints.last!.location)
         return GMSCameraUpdate.fit(pathPointsBoundingBox, withPadding: 1.0)
     }
-
+    
     func setStartingPoint(points: [PathPoint]) -> GMSCameraPosition {
         guard !isMapOnPickerScreen else {
             let lat = tracker.locationManager.location?.coordinate.latitude ?? 37.35
             let long = tracker.locationManager.location?.coordinate.longitude ?? -122.05
             let newCameraPosition = GMSCameraPosition.camera(withLatitude: lat,
-                                                              longitude: long,
-                                                              zoom: 16)
+                                                             longitude: long,
+                                                             zoom: 16)
             return newCameraPosition
         }
         if let lastPoint = tracker.googleLocation.last {
             let long = lastPoint.location.longitude
             let lat = lastPoint.location.latitude
-
+            
             let newCameraPosition = GMSCameraPosition.camera(withLatitude: lat,
-                                                              longitude: long,
-                                                              zoom: 16)
+                                                             longitude: long,
+                                                             zoom: 16)
             return newCameraPosition
         } else {
             let appleParkPosition = GMSCameraPosition.camera(withLatitude: 37.35,
@@ -159,23 +159,23 @@ struct GoogleMapView: UIViewRepresentable {
             return appleParkPosition
         }
     }
-
+    
     func color(point: PathPoint) -> UIColor {
         let measurement = Int32(point.measurement)
         guard let thresholds = threshold else { return .white }
-
+        
         return GoogleMapView.color(value: measurement, threshold: thresholds)
     }
-
+    
     static func color(value: Int32, threshold: SensorThreshold?) -> UIColor {
         guard let threshold = threshold else { return .white }
-
+        
         let veryLow = threshold.thresholdVeryLow
         let low = threshold.thresholdLow
         let medium = threshold.thresholdMedium
         let high = threshold.thresholdHigh
         let veryHigh = threshold.thresholdVeryHigh
-
+        
         switch value {
         case veryLow ..< low:
             return UIColor.aircastingGreen
@@ -189,42 +189,42 @@ struct GoogleMapView: UIViewRepresentable {
             return UIColor.aircastingGray
         }
     }
-
+    
     fileprivate func drawLastMeasurementPoint(_ dot: GMSMarker) {
         guard liveModeOn || isSessionFixed else {
             dot.map = nil
             return
         }
-
+        
         guard let last = pathPoints.last else { return }
-
+        
         let mainPoint = UIImage.imageWithColor(color: color(point: last), size: CGSize(width: Constants.Map.dotWidth, height: Constants.Map.dotHeight))
         dot.icon = mainPoint
     }
-
+    
     func drawPolyline(_ uiView: GMSMapView, context: Context) {
         // Drawing the path
         let path = GMSMutablePath()
         let dot = context.coordinator.dot
-
+        
         for point in pathPoints {
             let coordinate = point.location
             path.add(coordinate)
-
+            
             dot.position = coordinate
             dot.map = uiView
         }
-
+        
         drawLastMeasurementPoint(dot)
-
+        
         let polyline = context.coordinator.polyline
-
+        
         polyline.path = path
         polyline.strokeColor = .accentColor
         polyline.strokeWidth = CGFloat(Constants.Map.polylineWidth)
         polyline.map = uiView
     }
-
+    
     func placeNotes(_ uiView: GMSMapView, notes: [MapNote], context: Context) {
         context.coordinator.noteMarkers.forEach { marker in
             marker.map = nil
@@ -243,7 +243,7 @@ struct GoogleMapView: UIViewRepresentable {
             }
         }
     }
-
+    
     class Coordinator: NSObject, UINavigationControllerDelegate, GMSMapViewDelegate {
         var parent: GoogleMapView!
         let polyline = GMSPolyline()
@@ -254,11 +254,11 @@ struct GoogleMapView: UIViewRepresentable {
         var heatmap: Heatmap? = nil
         var mapNotesCounter = 0
         var noteMarkers = [GMSMarker]()
-
+        
         init(_ parent: GoogleMapView) {
             self.parent = parent
         }
-
+        
         func mapView(_ mapView: GMSMapView, didChange position: GMSCameraPosition) {
             let lat = mapView.projection.coordinate(for: mapView.center).latitude
             let len = mapView.projection.coordinate(for: mapView.center).longitude
@@ -266,32 +266,32 @@ struct GoogleMapView: UIViewRepresentable {
             positionChanged(for: mapView)
             shouldAutoTrack = false
         }
-
+        
         func mapView(_ mapView: GMSMapView, idleAt cameraPosition: GMSCameraPosition) {
             drawHeatmap(mapView)
         }
-
+        
         func drawHeatmap(_ mapView: GMSMapView) {
             guard !parent.isSessionFixed else { return }
-
+            
             let mapWidth = mapView.frame.width
             let mapHeight = mapView.frame.height
-
+            
             guard mapWidth > 0, mapHeight > 0 else { return }
-
+            
             heatmap?.remove()
             heatmap = nil
-
+            
             guard let threshold = currentThreshold else { return }
             heatmap = Heatmap(mapView, sensorThreshold: threshold, mapWidth: Int(mapWidth), mapHeight: Int(mapHeight))
             heatmap?.drawHeatMap(pathPoints: currentlyDisplayedPathPoints)
         }
-
+        
         func didTapMyLocationButton(for mapView: GMSMapView) -> Bool {
             centerMap(for: mapView)
             return true
         }
-
+        
         func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
             if let userData = marker.userData as? Int {
                 parent.noteNumber = userData
@@ -299,7 +299,7 @@ struct GoogleMapView: UIViewRepresentable {
             }
             return true
         }
-
+        
         func centerMap(for mapView: GMSMapView) {
             guard !parent.isMapOnPickerScreen else {
                 let lat = parent.tracker.locationManager.location?.coordinate.latitude ?? 37.35
@@ -314,22 +314,22 @@ struct GoogleMapView: UIViewRepresentable {
             let long = parent.liveModeOn ?
             parent.tracker.locationManager.location!.coordinate.longitude :
             parent.pathPoints.last?.location.longitude ?? -122.05
-
+            
             let camera = GMSCameraPosition.camera(withLatitude: lat, longitude: long, zoom: 16)
             mapView.animate(to: camera)
         }
-
+        
         private func positionChanged(for mapView: GMSMapView) {
             let visibleRegion = mapView.projection.visibleRegion()
             let bounds = GMSCoordinateBounds(region: visibleRegion)
             let visiblePathPoints = parent.pathPoints.filter { bounds.contains($0.location) }
             parent.onPositionChange?(visiblePathPoints)
         }
-
+        
         lazy var shouldAutoTrack: Bool = !parent.isMapOnPickerScreen
         var myLocationSink: Any?
     }
-
+    
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
     }

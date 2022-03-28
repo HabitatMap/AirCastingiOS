@@ -9,11 +9,11 @@ struct SearchView: View {
     @StateObject var viewModel: SearchViewModel
     @Environment(\.presentationMode) var presentationMode
     @EnvironmentObject private var exploreSessionsButton: ExploreSessionsButton
-
+    
     init() {
         _viewModel = .init(wrappedValue: SearchViewModel())
     }
-
+    
     var body: some View {
         VStack(alignment: .leading) {
             title
@@ -50,7 +50,7 @@ private extension SearchView {
             .font(Font.muli(size: 24, weight: .medium))
             .padding(.bottom, 20)
     }
-
+    
     var textField: some View {
         createTextfield(placeholder: Strings.SearchView.placeholder,
                         binding: .init(get: {
@@ -61,7 +61,7 @@ private extension SearchView {
             .disabled(true)
             .onTapGesture { viewModel.textFieldTapped() }
     }
-
+    
     var button: some View {
         return NavigationLink(
             destination: SearchMapView(locationName: viewModel.addressName,
