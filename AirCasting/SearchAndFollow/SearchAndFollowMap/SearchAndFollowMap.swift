@@ -56,13 +56,13 @@ struct SearchAndFollowMap: UIViewRepresentable {
     func updateUIView(_ uiView: GMSMapView, context: Context) {
         if markerWasTapped {
             // Jeżeli nastąpi kliknięcie kropki na mapie
-//            placeDots(uiView, context: context)
+            placeDots(uiView, context: context)
             DispatchQueue.main.async {
                 markerWasTapped = false
             }
         }
         if pointerID != context.coordinator.idKeeper {
-//            placeDots(uiView, context: context)
+            placeDots(uiView, context: context)
             context.coordinator.idKeeper = pointerID
         }
         if !showRedoButton {
@@ -89,9 +89,9 @@ struct SearchAndFollowMap: UIViewRepresentable {
         DispatchQueue.main.async {
             sessions.forEach { session in
                 let marker = GMSMarker()
-                let markerImage = session.markerImage
+                let markerImage = ((session.id == pointerID) ? session.markerImage.scalePreservingAspectRatio(targetSize: CGSize(width: 35, height: 35)) : session.markerImage)
                 let markerView = UIImageView(image: markerImage.withRenderingMode(.alwaysTemplate))
-                markerView.tintColor = (session.id == pointerID ? .aircastingGreen : .accentColor)
+                markerView.tintColor = .accentColor
                 marker.position = session.location
                 marker.userData = session.id
                 marker.iconView = markerView
@@ -145,5 +145,38 @@ struct SearchAndFollowMap: UIViewRepresentable {
     
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
+    }
+}
+
+
+import UIKit
+
+extension UIImage {
+    func scalePreservingAspectRatio(targetSize: CGSize) -> UIImage {
+        // Determine the scale factor that preserves aspect ratio
+        let widthRatio = targetSize.width / size.width
+        let heightRatio = targetSize.height / size.height
+        
+        let scaleFactor = min(widthRatio, heightRatio)
+        
+        // Compute the new image size that preserves aspect ratio
+        let scaledImageSize = CGSize(
+            width: size.width * scaleFactor,
+            height: size.height * scaleFactor
+        )
+
+        // Draw and return the resized UIImage
+        let renderer = UIGraphicsImageRenderer(
+            size: scaledImageSize
+        )
+
+        let scaledImage = renderer.image { _ in
+            self.draw(in: CGRect(
+                origin: .zero,
+                size: scaledImageSize
+            ))
+        }
+        
+        return scaledImage
     }
 }

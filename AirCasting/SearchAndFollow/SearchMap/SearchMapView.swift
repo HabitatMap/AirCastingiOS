@@ -110,13 +110,12 @@ private extension SearchMapView {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(alignment: .bottom, spacing: 12) {
                     ForEach(viewModel.sessionsList, id: \.id) { session in
-                        BottomCardView(id: session.id, cardPointer: $viewModel.cardPointerID, title: session.title, startTime: session.startTime)
+                        BottomCardView(cardPointer: $viewModel.cardPointerID, dataModel: .init(id: session.id, title: session.title, startTime: session.startTime))
                             .id(session.id)
-                            .border((viewModel.cardPointerID == session.id ? .green : .clear), width: 1)
+                            .border((viewModel.cardPointerID == session.id ? .blue : .clear), width: 1)
                             
                     }
                 }
-                
                 .onReceive(viewModel.$cardPointerID) { v in
                 DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(200)) {
                     withAnimation(.linear) {

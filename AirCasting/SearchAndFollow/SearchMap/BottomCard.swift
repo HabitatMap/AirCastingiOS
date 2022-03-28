@@ -4,11 +4,15 @@
 import Foundation
 import SwiftUI
 
-struct BottomCardView: View {
+struct BottomCardModel {
     let id: Int
-    @Binding var cardPointer: Int
     let title: String
     let startTime: String
+}
+
+struct BottomCardView: View {
+    @Binding var cardPointer: Int
+    let dataModel: BottomCardModel
     
     var body: some View {
         sessionCard
@@ -16,18 +20,17 @@ struct BottomCardView: View {
     
     var sessionCard: some View {
         Button {
-            cardPointer = id
-            Log.info("Clicked \(cardPointer) and \(id)")
+            cardPointer = dataModel.id
         } label: {
             VStack(alignment: .leading, spacing: 5) {
-                Text(title)
+                Text(dataModel.title)
                     .foregroundColor(.darkBlue)
-                    .lineLimit(2)
-                    .scaledToFit()
+                    .lineLimit(3)
                     .multilineTextAlignment(.leading)
+                Spacer()
                 dataAndTime
-                streams
-                
+                    .font(Fonts.regularHeading4)
+                    .foregroundColor(.aircastingGray)
             }
         }
         .frame(width: 150, height: 70, alignment: .center)
@@ -43,14 +46,15 @@ struct BottomCardView: View {
 
 private extension BottomCardView {
     var dataAndTime: some View {
-        return Text(startTime)
-            .font(Fonts.regularHeading4)
-            .foregroundColor(.aircastingGray)
+        adaptTime()
     }
     
-    var streams: some View {
-        Text("PM1 PM2.5 PM10 F RH")
-            .font(Fonts.regularHeading4)
-            .foregroundColor(.aircastingGray)
+    func adaptTime() -> Text {
+        let formatter = DateFormatters.CreateSessionAPIService.encoderDateFormatter
+        let date = formatter.date(from: dataModel.startTime)
+        guard let d = date else { return Text("") }
+        let formatter2 = DateFormatters.SearchAndFollow.format
+        let string = formatter2.string(from: d)
+        return Text(string)
     }
 }
