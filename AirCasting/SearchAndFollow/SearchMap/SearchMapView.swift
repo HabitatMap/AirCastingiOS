@@ -9,6 +9,7 @@ import AirCastingStyling
 struct SearchMapView: View {
     @StateObject private var viewModel: SearchMapViewModel
     @Environment(\.presentationMode) var presentationMode
+    @State var showCompleteScreen = false
     
     init(locationName: String, locationAddress: CLLocationCoordinate2D, measurementType: String) {
         _viewModel = .init(wrappedValue: .init(passedLocation: locationName, passedLocationAddress: locationAddress, measurementType: measurementType))
@@ -23,6 +24,9 @@ struct SearchMapView: View {
                 addressTextField
                 measurementTypeText
                 searchAgainButton
+                // This is temporary untill we implement clickable cards
+                Spacer()
+                Button(action: { showCompleteScreen = true }, label: { Text("Complete screen") })
             })
                 .padding(.top, 50)
                 .padding(.horizontal)
@@ -31,6 +35,7 @@ struct SearchMapView: View {
                 result ? self.presentationMode.wrappedValue.dismiss() : nil
             })
             .alert(item: $viewModel.alert, content: { $0.makeAlert() })
+            .sheet(isPresented: $showCompleteScreen, content: { CompleteScreen(session: SearchSessionResult.mock) })
     }
 }
 
