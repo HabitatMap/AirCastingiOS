@@ -72,7 +72,7 @@ class PersistenceController: ObservableObject {
             }
         })
         createInitialMicThreshold(in: viewContext)
-        finishMobileSessions()
+        handleActiveMobileSessions()
         NotificationCenter.default.addObserver(self, selector: #selector(mainContextChanged), name: .NSManagedObjectContextObjectsDidChange, object: self.sourceOfTruthContext)
         NotificationCenter.default.addObserver(self, selector: #selector(appWillClose), name: UIApplication.willTerminateNotification, object: nil)
     }
@@ -142,7 +142,7 @@ class PersistenceController: ObservableObject {
         let thresholdVeryHigh: Int32 = 100
     }
 
-    private func finishMobileSessions() {
+    private func handleActiveMobileSessions() {
         container.performBackgroundTask { context in
             let request: NSFetchRequest<SessionEntity> = SessionEntity.fetchRequest()
             request.predicate = NSPredicate(format: "type == %@ && status IN %@ || deviceType == %@ && status IN %@", SessionType.mobile.rawValue, [SessionStatus.RECORDING, .NEW].map(\.rawValue), DeviceType.MIC.rawValue, [SessionStatus.DISCONNECTED.rawValue])
@@ -152,10 +152,18 @@ class PersistenceController: ObservableObject {
             }
             Log.info("Finishing sessions \( sessions.map({ "\(String(describing: $0.uuid)): \(String(describing: $0.status)) \(String(describing: $0.type))"}) )")
             sessions.forEach {
-                $0.status = .FINISHED
-                $0.endTime = $0.lastMeasurementTime ?? $0.startTime
+                if $0.deviceType == .AIRBEAM3 {
+                    $0.status = .DISCONNECTED
+                } else {
+                    $0.status = .FINISHED
+                    $0.endTime = $0.lastMeasurementTime ?? $0.startTime
+                }
             }
-            try! context.save()
+            do {
+                try context.save()
+            } catch {
+                Log.error("Failed to finish or disconnect active mobile sessions: \(error)")
+            }
         }
     }
 }

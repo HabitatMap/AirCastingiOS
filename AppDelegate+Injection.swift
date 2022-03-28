@@ -34,7 +34,7 @@ extension Resolver: ResolverRegistering {
         main.register {
             DocumentsFileLoggerStore(logDirectory: "logs",
                                      logFilename: "log.txt",
-                                     maxLogs: 3000,
+                                     maxLogs: 30000,
                                      overflowThreshold: 500) as FileLoggerStore
         }
         .implements(FileLoggerResettable.self)

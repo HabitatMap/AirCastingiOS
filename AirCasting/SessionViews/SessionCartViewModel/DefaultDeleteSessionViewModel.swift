@@ -103,6 +103,7 @@ class DefaultDeleteSessionViewModel: DeleteSessionViewModel {
                     try? storage.updateVersion(for: sessionToPass.uuid, to: updateData.version)
                 case .failure(let error):
                     Log.info("Failed updating session while deleting streams: \(error.localizedDescription)")
+                    try? storage.deleteStreams(session.uuid)
                 }
             }
         }

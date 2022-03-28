@@ -8,11 +8,11 @@ protocol SessionsForLocationDownloader {
     func getSessions(geoSquare: GeoSquare, timeFrom: Double, timeTo: Double, completion: @escaping (Result<[MapDownloaderSearchedSession], Error>) -> Void)
 }
 
-fileprivate struct MapPlottedSession: Codable {
-    let sessions: [MapDownloaderSearchedSession]
-}
-
 class SessionsForLocationDownloaderDefault: SessionsForLocationDownloader {
+    
+    private struct FollowingSessions: Codable {
+        let sessions: [MapDownloaderSearchedSession]
+    }
     
     @Injected private var authorization: RequestAuthorisationService
     @Injected private var urlProvider: URLProvider
@@ -62,7 +62,7 @@ class SessionsForLocationDownloaderDefault: SessionsForLocationDownloader {
                         try responseValidator.validate(response: response.response, data: response.data)
                         let decoder = JSONDecoder()
                         decoder.keyDecodingStrategy = .convertFromSnakeCase
-                        let sessionData = try decoder.decode(MapPlottedSession.self, from: response.data)
+                        let sessionData = try decoder.decode(FollowingSessions.self, from: response.data)
                         completion(.success(sessionData.sessions))
                     } catch {
                         completion(.failure(error))

@@ -34,6 +34,9 @@
 		33885BB227468B4E00F41CB5 /* SDSyncFileWritingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33885BB127468B4E00F41CB5 /* SDSyncFileWritingService.swift */; };
 		338C30E225F1044B00E0305C /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 338C30E125F1044B00E0305C /* PersistenceController.swift */; };
 		338C30E825F10BFE00E0305C /* AirCasting.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 338C30E625F10BFE00E0305C /* AirCasting.xcdatamodeld */; };
+		338CA6F527D1045400505331 /* WKWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 338CA6F427D1045300505331 /* WKWebView.swift */; };
+		338CA6F727D104AF00505331 /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 338CA6F627D104AF00505331 /* WebView.swift */; };
+		338CA6F927D1071200505331 /* PrivacyOnboardingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 338CA6F827D1071200505331 /* PrivacyOnboardingViewModel.swift */; };
 		3397C81F2787024C0050B333 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3397C81E2787024C0050B333 /* UserDefaults.swift */; };
 		3399394D27DA1722006144AF /* SingleSessionDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3399394C27DA1722006144AF /* SingleSessionDownloader.swift */; };
 		33AC7D5C273C1B9700EB1274 /* StandaloneSessionCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33AC7D5B273C1B9700EB1274 /* StandaloneSessionCardView.swift */; };
@@ -158,6 +161,7 @@
 		AC9F526C2652A360003CF61F /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9F52692652A360003CF61F /* DashboardView.swift */; };
 		AC9F526D2652A360003CF61F /* EmptyMobileDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9F526A2652A360003CF61F /* EmptyMobileDashboardView.swift */; };
 		AC9F526E2652A360003CF61F /* AirSectionPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9F526B2652A360003CF61F /* AirSectionPickerView.swift */; };
+		ACAC936D27EAFF7900829F82 /* CreatingSessionMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACAC936C27EAFF7900829F82 /* CreatingSessionMapView.swift */; };
 		ACB7084C271EC50F00BA3816 /* Integer+ArraySlice.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACB7084B271EC50F00BA3816 /* Integer+ArraySlice.swift */; };
 		ACBB050E2761F1B600A6B3FB /* SDSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACBB050D2761F1B600A6B3FB /* SDSession.swift */; };
 		ACBB05102761F1C400A6B3FB /* SDStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACBB050F2761F1C400A6B3FB /* SDStream.swift */; };
@@ -276,7 +280,7 @@
 		B3AB8BE526BB5EF400AF23CC /* Array+MeasurementStatistics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3AB8BE426BB5EF400AF23CC /* Array+MeasurementStatistics.swift */; };
 		B3C3F8B92695A295003E2CB4 /* StatisticsContainerViewModelable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3C3F8B82695A295003E2CB4 /* StatisticsContainerViewModelable.swift */; };
 		B3D1928D26F1FA1C0029E1C8 /* FixedSessionFaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EFAB1D26F1F9DB00E88141 /* FixedSessionFaker.swift */; };
-		B3D4B4B426C2C6A1004322FC /* Date+Miliseconds.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3D4B4B326C2C6A1004322FC /* Date+Miliseconds.swift */; };
+		B3D4B4B426C2C6A1004322FC /* Date+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3D4B4B326C2C6A1004322FC /* Date+Extensions.swift */; };
 		B3E26A032676D9AA001A8E4C /* ArrayUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E26A022676D9AA001A8E4C /* ArrayUtils.swift */; };
 		B3E26A062676DA23001A8E4C /* ArrayExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E26A052676DA23001A8E4C /* ArrayExtensionsTests.swift */; };
 		B3E26A092676DA55001A8E4C /* TestDefaultProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E26A082676DA55001A8E4C /* TestDefaultProviding.swift */; };
@@ -473,6 +477,9 @@
 		33885BB127468B4E00F41CB5 /* SDSyncFileWritingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSyncFileWritingService.swift; sourceTree = "<group>"; };
 		338C30E125F1044B00E0305C /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceController.swift; sourceTree = "<group>"; };
 		338C30E725F10BFE00E0305C /* AirCasting.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AirCasting.xcdatamodel; sourceTree = "<group>"; };
+		338CA6F427D1045300505331 /* WKWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WKWebView.swift; sourceTree = "<group>"; };
+		338CA6F627D104AF00505331 /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
+		338CA6F827D1071200505331 /* PrivacyOnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyOnboardingViewModel.swift; sourceTree = "<group>"; };
 		338FE86027AAB0F1006148DA /* AirCasting v3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AirCasting v3.xcdatamodel"; sourceTree = "<group>"; };
 		3397C81E2787024C0050B333 /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 		3399394C27DA1722006144AF /* SingleSessionDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleSessionDownloader.swift; sourceTree = "<group>"; };
@@ -604,6 +611,7 @@
 		AC9F52692652A360003CF61F /* DashboardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
 		AC9F526A2652A360003CF61F /* EmptyMobileDashboardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmptyMobileDashboardView.swift; sourceTree = "<group>"; };
 		AC9F526B2652A360003CF61F /* AirSectionPickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AirSectionPickerView.swift; sourceTree = "<group>"; };
+		ACAC936C27EAFF7900829F82 /* CreatingSessionMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatingSessionMapView.swift; sourceTree = "<group>"; };
 		ACB7084B271EC50F00BA3816 /* Integer+ArraySlice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Integer+ArraySlice.swift"; sourceTree = "<group>"; };
 		ACBB050D2761F1B600A6B3FB /* SDSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSession.swift; sourceTree = "<group>"; };
 		ACBB050F2761F1C400A6B3FB /* SDStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDStream.swift; sourceTree = "<group>"; };
@@ -720,7 +728,7 @@
 		B3AA784A27D4D7EF003B39F6 /* APIServiceTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIServiceTestCase.swift; sourceTree = "<group>"; };
 		B3AB8BE426BB5EF400AF23CC /* Array+MeasurementStatistics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+MeasurementStatistics.swift"; sourceTree = "<group>"; };
 		B3C3F8B82695A295003E2CB4 /* StatisticsContainerViewModelable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsContainerViewModelable.swift; sourceTree = "<group>"; };
-		B3D4B4B326C2C6A1004322FC /* Date+Miliseconds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Miliseconds.swift"; sourceTree = "<group>"; };
+		B3D4B4B326C2C6A1004322FC /* Date+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extensions.swift"; sourceTree = "<group>"; };
 		B3E26A022676D9AA001A8E4C /* ArrayUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayUtils.swift; sourceTree = "<group>"; };
 		B3E26A052676DA23001A8E4C /* ArrayExtensionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayExtensionsTests.swift; sourceTree = "<group>"; };
 		B3E26A082676DA55001A8E4C /* TestDefaultProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestDefaultProviding.swift; sourceTree = "<group>"; };
@@ -1136,6 +1144,7 @@
 				DD9EBFD4279EB70900192CB5 /* TextView.swift */,
 				B33B161827AF26BC00138FFA /* DateFormatter+Extensions.swift */,
 				DD38A4AE27B1584600D2091F /* StringsCustomizer.swift */,
+				338CA6F627D104AF00505331 /* WebView.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1378,6 +1387,7 @@
 				DD8DE68A2785B939009B1726 /* MapNotesViewModel.swift */,
 				AC93B8E625BEFE4F003D0A0D /* AirMapView.swift */,
 				AC93B8FD25C02E0B003D0A0D /* GoogleMapView.swift */,
+				ACAC936C27EAFF7900829F82 /* CreatingSessionMapView.swift */,
 				AC8D6C7125C0574800ED74D1 /* LocationTracker.swift */,
 				AC8D6C6D25C056B400ED74D1 /* PathPoint.swift */,
 				AC8D6C6925C049E300ED74D1 /* Environment.swift */,
@@ -1568,13 +1578,14 @@
 				AC93B8D925BEDC46003D0A0D /* Array.swift */,
 				ACDF82FB265BBDE200A4D04A /* UIFont.swift */,
 				ACFC708825C1A36A00D609D9 /* UIColor.swift */,
-				B3D4B4B326C2C6A1004322FC /* Date+Miliseconds.swift */,
+				B3D4B4B326C2C6A1004322FC /* Date+Extensions.swift */,
 				33F22389270C674E00F14909 /* TimeInterval.swift */,
 				DDCD356F271EB641004969FF /* UIImage.swift */,
 				3397C81E2787024C0050B333 /* UserDefaults.swift */,
 				3375E8D32791EDC50019A5DE /* CLLocationCoordinate2D.swift */,
 				DD9EBFD7279EEAB300192CB5 /* DataBuilder.swift */,
 				DDC22C7F27B6C508000E81D1 /* ViewControl.swift */,
+				338CA6F427D1045300505331 /* WKWebView.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -2088,6 +2099,7 @@
 				DD430B012670F3B300F1BF2E /* NearAirDescription.swift */,
 				DD430B032670FA9600F1BF2E /* AirBeamOnboarding.swift */,
 				DD430B0B26710E0600F1BF2E /* PrivacyOnboarding.swift */,
+				338CA6F827D1071200505331 /* PrivacyOnboardingViewModel.swift */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
@@ -2757,7 +2769,7 @@
 				3346F1F626318C1600BA4695 /* SettingsManager.swift in Sources */,
 				DDCE5D3826A1FE2D0033C211 /* DeleteSessionViewModel.swift in Sources */,
 				DDD24D9626A8569400D4A327 /* ResetPasswordService.swift in Sources */,
-				B3D4B4B426C2C6A1004322FC /* Date+Miliseconds.swift in Sources */,
+				B3D4B4B426C2C6A1004322FC /* Date+Extensions.swift in Sources */,
 				750A51D82754D41A00D6F4E7 /* GridCalculator.swift in Sources */,
 				DD80AE1D27BA46C800D9B123 /* SearchView.swift in Sources */,
 				ACCEB2272763A2230040140B /* UnplugABViewModel.swift in Sources */,
@@ -2770,6 +2782,7 @@
 				DD8DE6892785B706009B1726 /* EmptyNotesHandler.swift in Sources */,
 				ACBB05132761F21500A6B3FB /* SDCardFixedSessionsSavingService.swift in Sources */,
 				33BA336A266E4D1000899343 /* MobileSession.swift in Sources */,
+				338CA6F527D1045400505331 /* WKWebView.swift in Sources */,
 				AC86EE6B25D03DC00083F8C0 /* SelectDeviceView.swift in Sources */,
 				B38BA5A22757DC9300F758C8 /* SDCardMeasurementsParser.swift in Sources */,
 				B30F9A632745626B00C85E17 /* SDCardAirBeamServices.swift in Sources */,
@@ -2822,6 +2835,7 @@
 				B3FD77C2267C94AF00E97CC2 /* SessionSynchronizationContextProvidable.swift in Sources */,
 				4F1D57D926454E3700F250AC /* MeasurementStream.swift in Sources */,
 				B3FD77BF267C94AF00E97CC2 /* SessionDownstream.swift in Sources */,
+				ACAC936D27EAFF7900829F82 /* CreatingSessionMapView.swift in Sources */,
 				AC6D56A225AEF55C00D221BA /* GraphView.swift in Sources */,
 				AC4EC6C125B6F18A00C1E312 /* EditButtonView.swift in Sources */,
 				AC049F8B2608DCB000398197 /* Session+Mock.swift in Sources */,
@@ -2879,9 +2893,11 @@
 				DDF62601269C779800F23489 /* UIApplication+AppInfo.swift.swift in Sources */,
 				75B1DD48273BCCD200BCDF9B /* Heatmap.swift in Sources */,
 				AC8D6C7225C0574800ED74D1 /* LocationTracker.swift in Sources */,
+				338CA6F927D1071200505331 /* PrivacyOnboardingViewModel.swift in Sources */,
 				DD8C380C2689A3DA00901FDF /* URLProvider.swift in Sources */,
 				AC4EC6C425B6FE0D00C1E312 /* ThresholdsSettingsView.swift in Sources */,
 				DDD24D8626A8295F00D4A327 /* ConnectingABViewModel.swift in Sources */,
+				338CA6F727D104AF00505331 /* WebView.swift in Sources */,
 				B3FD77C8267C997800E97CC2 /* PersistenceController+Database.swift in Sources */,
 				DDC86646276B561500A8E610 /* EditNoteViewModel.swift in Sources */,
 				AC8CFF4525E510CB00FB2918 /* AuthorizationAPI.swift in Sources */,
@@ -3114,7 +3130,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 5;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_ASSET_PATHS = "\"AirCasting/Preview Content\"";
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
@@ -3143,7 +3159,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_ASSET_PATHS = "\"AirCasting/Preview Content\"";
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
@@ -3232,7 +3248,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_ASSET_PATHS = "\"AirCasting/Preview Content\"";
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;

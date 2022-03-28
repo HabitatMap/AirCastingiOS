@@ -21,12 +21,10 @@ class MobilePeripheralSessionManager {
         measurementStreamStorage.accessStorage { [weak self] storage in
             do {
                 try storage.createSession(session)
-                DispatchQueue.main.async {
-                    if !session.locationless {
-                        self?.locationProvider.requestLocation()
-                    }
-                    self?.activeMobileSession = MobileSession(peripheral: peripheral, session: session)
+                if !session.locationless {
+                    self?.locationProvider.requestLocation()
                 }
+                self?.activeMobileSession = MobileSession(peripheral: peripheral, session: session)
             } catch {
                 Log.info("\(error)")
             }
@@ -50,8 +48,8 @@ class MobilePeripheralSessionManager {
     // This function is still needed for when the standalone mode flag is disabled
     func finishSession(for peripheral: CBPeripheral, centralManager: CBCentralManager) {
         if activeMobileSession?.peripheral == peripheral {
-            finishActiveSession(for: peripheral, centralManager: centralManager)
             updateDatabaseForFinishedSession(with: activeMobileSession!.session.uuid)
+            finishActiveSession(for: peripheral, centralManager: centralManager)
         }
     }
 
@@ -127,6 +125,7 @@ class MobilePeripheralSessionManager {
             Log.warning("Tried to disconnect session for peripheral which is not associated with an active session")
             return
         }
+        Log.info("Changing session status to disconnected for: \(sessionUUID)")
         changeSessionStatusToDisconnected(uuid: sessionUUID)
     }
 
@@ -147,16 +146,18 @@ class MobilePeripheralSessionManager {
             do {
                 let existingStreamID = try storage.existingMeasurementStream(sessionUUID, name: stream.sensorName)
                 guard let id = existingStreamID else {
-                    return try self.createSessionStream(stream, sessionUUID)
+                    let streamId = try self.createSessionStream(stream, sessionUUID, storage: storage)
+                    try storage.addMeasurementValue(stream.measuredValue, at: location, toStreamWithID: streamId)
+                    return
                 }
                 try storage.addMeasurementValue(stream.measuredValue, at: location, toStreamWithID: id)
             } catch {
-                Log.info("\(error)")
+                Log.error("Error saving value from peripheral: \(error)")
             }
         }
     }
 
-    private func createSessionStream(_ stream: ABMeasurementStream, _ sessionUUID: SessionUUID) throws {
+    private func createSessionStream(_ stream: ABMeasurementStream, _ sessionUUID: SessionUUID, storage: HiddenCoreDataMeasurementStreamStorage) throws -> MeasurementStreamLocalID {
         let sessionStream = MeasurementStream(id: nil,
                                               sensorName: stream.sensorName,
                                               sensorPackageName: stream.packageName,
@@ -170,13 +171,7 @@ class MobilePeripheralSessionManager {
                                               thresholdLow: Int32(stream.thresholdLow),
                                               thresholdVeryLow: Int32(stream.thresholdVeryLow))
 
-        measurementStreamStorage.accessStorage { [self] storage in
-            do {
-                streamsIDs[stream.sensorName] = try storage.saveMeasurementStream(sessionStream, for: sessionUUID)
-            } catch {
-                Log.info("\(error)")
-            }
-        }
+        return try storage.saveMeasurementStream(sessionStream, for: sessionUUID)
     }
 
     func configureAB() {

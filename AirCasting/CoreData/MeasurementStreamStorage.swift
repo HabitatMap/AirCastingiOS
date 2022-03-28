@@ -230,11 +230,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
             threshold.thresholdHigh = stream.thresholdHigh
             threshold.thresholdVeryHigh = stream.thresholdVeryHigh
         }
-        // Save here is important so that NSManagedObjectID is not temporary.
-        try context.save()
-
-        try context.obtainPermanentIDs(for: [newStream])
-
+        
         return newStream.localID
     }
 
@@ -257,6 +253,11 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
 
         try context.save()
     }
+    
+    func updateSessionEndTimeWithoutUTCConversion(_ endTime: Date, for sessionUUID: SessionUUID) throws {
+        let sessionEntity = try context.existingSession(uuid: sessionUUID)
+        sessionEntity.endTime = endTime
+    }
 
     func updateSessionNameAndTags(name: String, tags: String, for sessionUUID: SessionUUID) throws {
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
@@ -277,6 +278,9 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
                 sessionEntity.followedAt = DateBuilder.getFakeUTCDate()
             } else {
                 sessionEntity.followedAt = nil
+                if let ui = sessionEntity.userInterface {
+                    context.delete(ui)
+                }
             }
             try context.save()
         } catch {
@@ -342,20 +346,20 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         noteEntity.date = note.date
         noteEntity.number = Int64(note.number)
         sessionEntity.addToNotes(noteEntity)
-        try context.save()
     }
 
     func updateNote(_ note: Note, newText: String, for sessionUUID: SessionUUID) throws {
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
-        let note = (sessionEntity.notes?.first(where: { ($0 as! NoteEntity).number == note.number }) as! NoteEntity)
-        note.text = newText
-        try context.save()
+        if let note = (sessionEntity.notes?.first(where: { ($0 as! NoteEntity).number == note.number }) as? NoteEntity) {
+            note.text = newText
+        }
     }
 
     func deleteNote(_ note: Note, for sessionUUID: SessionUUID) throws {
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
-        let note = (sessionEntity.notes?.first(where: { ($0 as! NoteEntity).number == note.number }) as! NoteEntity)
-        context.delete(note)
+        if let note = (sessionEntity.notes?.first(where: { ($0 as! NoteEntity).number == note.number }) as? NoteEntity) {
+            context.delete(note)
+        }
     }
 
     func getNotes(for sessionUUID: SessionUUID) throws -> [Note] {

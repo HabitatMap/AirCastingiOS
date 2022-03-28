@@ -117,6 +117,14 @@ struct InAppAlerts {
                              action: SettingsManager.goToAuthSettings)])
     }
     
+    static func microphoneSessionAlreadyRecordingAlert() -> AlertInfo {
+        AlertInfo(title: Strings.MicrophoneSessionAlreadyRecordingAlert.title,
+                  message: Strings.MicrophoneSessionAlreadyRecordingAlert.message,
+                  buttons: [
+                    .default(title: Strings.Commons.gotIt,
+                             action: nil) ])
+    }
+    
     static func locationAlert() -> AlertInfo {
         let redirection = Resolver.resolve(SettingsRedirection.self)
         return AlertInfo(title: Strings.SelectDeviceView.alertTitle,

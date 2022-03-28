@@ -64,7 +64,7 @@ private extension EmptyFixedDashboardView {
                 .foregroundColor(Color.darkBlue)
                 .minimumScaleFactor(0.1)
             
-            Text(Strings.EmptyDashboardFixed.description)
+            Text(featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) ? Strings.EmptyDashboardFixed.exploreSessionsDescription : Strings.EmptyDashboardFixed.description)
                 .font(Fonts.muliHeading2)
                 .foregroundColor(Color.aircastingGray)
                 .lineSpacing(9.0)

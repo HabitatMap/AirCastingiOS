@@ -51,12 +51,13 @@ class DefaultSessionUpdateService: SessionUpdateService {
         })
         
         session.notes?.forEach({ note in
-            let n = note as! NoteEntity
-            notes.append(CreateSessionApi.NotesParams(date: n.date ?? DateBuilder.getFakeUTCDate(),
-                                                      text: n.text ?? "",
-                                                      lat: n.lat,
-                                                      long: n.long,
-                                                      number: Int(n.number)))
+            if let n = note as? NoteEntity {
+                notes.append(CreateSessionApi.NotesParams(date: n.date ?? DateBuilder.getFakeUTCDate(),
+                                                          text: n.text ?? "",
+                                                          lat: n.lat,
+                                                          long: n.long,
+                                                          number: Int(n.number)))
+            }
         })
     
         let sessionToPass = CreateSessionApi.SessionParams(uuid: session.uuid,

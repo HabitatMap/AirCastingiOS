@@ -102,7 +102,9 @@ private extension PrivacyOnboarding {
             Text(Strings.OnboardingPrivacy.sheetButton)
         })
         .buttonStyle(BlueTextButtonStyle())
-        .sheet(isPresented: $presentingModal) { ModalView(presentedAsModal: self.$presentingModal) }
+        .sheet(isPresented: $presentingModal) {
+            WebView(url: Constants.PrivacyPolicy.url)
+        }
     }
 }
 

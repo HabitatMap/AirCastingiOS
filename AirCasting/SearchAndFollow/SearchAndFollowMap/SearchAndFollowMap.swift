@@ -138,6 +138,7 @@ struct SearchAndFollowMap: UIViewRepresentable {
 //            if parent.pointerID != idKeeper {
 //                parent.hoho = true
 //            }
+            
             return true
         }
         

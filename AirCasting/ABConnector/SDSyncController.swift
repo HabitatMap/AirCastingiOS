@@ -153,7 +153,7 @@ class SDSyncController {
             case .success():
                 completion(true)
             case .failure(let error):
-                Log.error(error.localizedDescription)
+                Log.error("Failed to clear SD card: \(error.localizedDescription)")
                 completion(false)
             }
         }

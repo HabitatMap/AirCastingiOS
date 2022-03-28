@@ -26,8 +26,9 @@ struct GoogleMapView: UIViewRepresentable {
     var isSessionFixed: Bool
     @Binding var mapNotes: [MapNote]
     let showMyLocationButton: Bool
+    let isMapOnPickerScreen: Bool
     
-    init(pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false, placePickerIsUpdating: Binding<Bool>, isUserInteracting: Binding<Bool>, isSessionActive: Bool = false, isSessionFixed: Bool = false, noteMarketTapped: Binding<Bool> = .constant(false), noteNumber: Binding<Int> = .constant(0), mapNotes: Binding<[MapNote]>, showMyLocationButton: Bool = true) {
+    init(pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false, placePickerIsUpdating: Binding<Bool>, isUserInteracting: Binding<Bool>, isSessionActive: Bool = false, isSessionFixed: Bool = false, noteMarketTapped: Binding<Bool> = .constant(false), noteNumber: Binding<Int> = .constant(0), mapNotes: Binding<[MapNote]>, showMyLocationButton: Bool = true, isMapOnPickerScreen: Bool = false) {
         self.pathPoints = pathPoints
         self.threshold = threshold
         self.isMyLocationEnabled = isMyLocationEnabled
@@ -39,11 +40,10 @@ struct GoogleMapView: UIViewRepresentable {
         self._noteNumber = noteNumber
         self._mapNotes = mapNotes
         self.showMyLocationButton = showMyLocationButton
+        self.isMapOnPickerScreen = isMapOnPickerScreen
     }
     
     func makeUIView(context: Context) -> GMSMapView {
-        GMSServices.provideAPIKey(GOOGLE_MAP_KEY)
-        GMSPlacesClient.provideAPIKey(GOOGLE_PLACES_KEY)
         
         let startingPoint = setStartingPoint(points: pathPoints)
         
@@ -137,6 +137,14 @@ struct GoogleMapView: UIViewRepresentable {
     }
     
     func setStartingPoint(points: [PathPoint]) -> GMSCameraPosition {
+        guard !isMapOnPickerScreen else {
+            let lat = tracker.locationManager.location?.coordinate.latitude ?? 37.35
+            let long = tracker.locationManager.location?.coordinate.longitude ?? -122.05
+            let newCameraPosition = GMSCameraPosition.camera(withLatitude: lat,
+                                                              longitude: long,
+                                                              zoom: 16)
+            return newCameraPosition
+        }
         if let lastPoint = tracker.googleLocation.last {
             let long = lastPoint.location.longitude
             let lat = lastPoint.location.latitude
@@ -301,19 +309,28 @@ struct GoogleMapView: UIViewRepresentable {
         }
         
         func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
-            parent.noteNumber = marker.userData as! Int
-            parent.noteMarketTapped = true
-            Log.info("MARKET TAPPPPPED \(marker.userData)")
+            if let userData = marker.userData as? Int {
+                parent.noteNumber = userData
+                parent.noteMarketTapped = true
+            }
             return true
         }
         
         func centerMap(for mapView: GMSMapView) {
+            guard !parent.isMapOnPickerScreen else {
+                let lat = parent.tracker.locationManager.location?.coordinate.latitude ?? 37.35
+                let long = parent.tracker.locationManager.location?.coordinate.longitude ?? -122.05
+                let camera = GMSCameraPosition.camera(withLatitude: lat, longitude: long, zoom: 16)
+                mapView.animate(to: camera)
+                return
+            }
             let lat = parent.liveModeOn ?
             parent.tracker.locationManager.location!.coordinate.latitude :
             parent.pathPoints.last?.location.latitude ?? 37.35
             let long = parent.liveModeOn ?
             parent.tracker.locationManager.location!.coordinate.longitude :
             parent.pathPoints.last?.location.longitude ?? -122.05
+            
             let camera = GMSCameraPosition.camera(withLatitude: lat, longitude: long, zoom: 16)
             mapView.animate(to: camera)
         }
@@ -334,7 +351,7 @@ struct GoogleMapView: UIViewRepresentable {
             parent.onPositionChange?(visiblePathPoints)
         }
         
-        var shouldAutoTrack: Bool = true
+        lazy var shouldAutoTrack: Bool = !parent.isMapOnPickerScreen
         var myLocationSink: Any?
     }
     

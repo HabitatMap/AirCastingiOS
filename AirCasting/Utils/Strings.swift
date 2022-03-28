@@ -472,6 +472,8 @@ struct Strings {
                                                      comment: "")
         static let description: String = NSLocalizedString("Record a new session to monitor your health & environment.",
                                                            comment: "")
+        static let exploreSessionsDescription: String = NSLocalizedString("Explore & follow existing AirCasting sessions or use your own device to record a new session and monitor your health & environment.",
+                                                                          comment: "")
         static let newSession: String = NSLocalizedString("Record new session",
                                                           comment: "")
         static let fetchingText: String = NSLocalizedString("Fetching...",
@@ -756,7 +758,7 @@ struct Strings {
     }
     
     enum StandaloneSessionCardView {
-        static let heading = NSLocalizedString("Your AirBeam3 is now in stand-alone mode",
+        static let heading = NSLocalizedString("Your AirBeam3 is now in standalone mode",
                                                comment: "")
         static let description = NSLocalizedString("AirBeam3 is now recording using its SD card. The measurements will be displayed here after syncing.",
                                                    comment: "")
@@ -851,6 +853,13 @@ struct Strings {
         static let title: String = NSLocalizedString("Allow AirCasting to record audio",
                                                      comment: "")
         static let message: String = NSLocalizedString("To record sound level measurements, the app needs access to your microhpone.",
+                                                       comment: "")
+    }
+    
+    enum MicrophoneSessionAlreadyRecordingAlert {
+        static let title: String = NSLocalizedString("There is already a microphone session in progress",
+                                                     comment: "")
+        static let message: String = NSLocalizedString("You can record only one microphone session at once.",
                                                        comment: "")
     }
     

@@ -109,6 +109,7 @@ final class AveragingService: NSObject {
             /// Step 1 - it'll be performed only once, after crossing the secondThresholdWindow
             /// The measurements that were already averaged with firstThresholdWindow will be reaveraged with secondThresholdWindow
             if windowDidChange && averagingWindow == .secondThresholdWindow {
+                Log.info("Averaging for second threshold window")
                 let averagedWithFirstThreshold = (stream.allMeasurements ?? []).filter {
                     $0.averagingWindow == AveragingWindow.firstThresholdWindow.rawValue
                 }
@@ -134,6 +135,8 @@ final class AveragingService: NSObject {
             /// Step 3 - Update stream
             if !averagedMeasurements.isEmpty {
                 storage.removeAllMeasurements(in: stream, except: averagedMeasurements)
+            } else {
+                Log.info("There were no averaged mesurements")
             }
         }
     }
@@ -192,6 +195,7 @@ final class AveragingService: NSObject {
                                  session: session,
                                  averagingWindow: checkWindow,
                                  windowDidChange: windowDidChange)
+                    Log.info("Averaging performed for \(session.uuid) [\(session.name)]")
                 }
             }
         timers[uuid] = timer

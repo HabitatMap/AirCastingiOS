@@ -40,4 +40,8 @@ struct Constants {
         static let disableMapping = "disableMapping"
         static let convertToCelsius = "convertToCelsius"
     }
+    
+    enum PrivacyPolicy {
+        static let url = URL(string: "https://www.habitatmap.org/aircasting-app-privacy-policy")
+    }
 }
