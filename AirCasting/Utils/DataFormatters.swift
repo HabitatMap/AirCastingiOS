@@ -130,7 +130,7 @@ enum DateFormatters {
             let df = DateFormatter()
             df.timeZone =  TimeZone.init(abbreviation: "UTC")
             df.locale = Locale(identifier: "en_US")
-            df.dateFormat = "dd-MM-yyyy HH:mm"
+            df.dateFormat = "MM/dd/yyyy HH:mm"
             return df
         }()
     }

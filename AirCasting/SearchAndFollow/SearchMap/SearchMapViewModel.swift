@@ -69,6 +69,7 @@ class SearchMapViewModel: ObservableObject {
                                         title: s.title,
                                         location: .init(latitude: s.latitude, longitude: s.longitude),
                                         startTime: s.startTimeLocal,
+                                        endTime: s.endTimeLocal,
                                         markerImage: UIImage(systemName: "circle.circle.fill")!)
                 
             }

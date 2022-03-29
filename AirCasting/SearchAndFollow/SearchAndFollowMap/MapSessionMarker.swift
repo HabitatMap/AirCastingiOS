@@ -9,5 +9,6 @@ struct MapSessionMarker {
     let title: String
     let location: CLLocationCoordinate2D
     let startTime: String
+    let endTime: String
     let markerImage: UIImage
 }

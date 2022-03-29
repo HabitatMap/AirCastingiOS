@@ -8,6 +8,9 @@ struct BottomCardModel {
     let id: Int
     let title: String
     let startTime: String
+    let endTime: String
+    let latitude: Double
+    let longitude: Double
 }
 
 struct BottomCardView: View {
@@ -27,23 +30,25 @@ struct BottomCardView: View {
             VStack(alignment: .leading, spacing: 5) {
                 Text(dataModel.title)
                     .foregroundColor(.darkBlue)
-                    .lineLimit(3)
                     .multilineTextAlignment(.leading)
-                Spacer()
+                    .minimumScaleFactor(0.01)
+                Spacer(minLength: 0.01)
                 dataAndTime
                     .font(Fonts.regularHeading4)
                     .foregroundColor(.aircastingGray)
+                    .minimumScaleFactor(0.1)
+                    .scaledToFit()
             }
         }
         .sheet(isPresented: $isModalScreenPresented, content: {
-            CompleteScreen(session: .init(uuid: .init(),
+            CompleteScreen(session: .init(uuid: .init(rawValue: "\(dataModel.id)") ?? .init(),
                                           name: dataModel.title,
-                                          startTime: Date(),
-                                          endTime: Date(),
-                                          longitude: 50.50,
-                                          latitude: 50.50))
+                                          startTime: startTimeAsDate(),
+                                          endTime: endTimeAsDate(),
+                                          longitude: dataModel.longitude,
+                                          latitude: dataModel.latitude))
         })
-        .frame(width: 150, height: 70, alignment: .center)
+        .frame(maxWidth: UIScreen.main.bounds.width / 2, alignment: .leading)
         .padding()
         .background(
             Group {
@@ -56,15 +61,30 @@ struct BottomCardView: View {
 
 private extension BottomCardView {
     var dataAndTime: some View {
-        adaptTime()
+        adaptTimeAndDate()
     }
     
-    func adaptTime() -> Text {
+    func adaptTimeAndDate() -> Text {
+        let formatter = DateFormatters.SessionCartView.utcDateIntervalFormatter
+
+        let start = startTimeAsDate()
+        let end = endTimeAsDate()
+
+        let string = formatter.string(from: start, to: end)
+        return Text(string)
+    }
+    
+    func startTimeAsDate() -> Date {
         let formatter = DateFormatters.CreateSessionAPIService.encoderDateFormatter
         let date = formatter.date(from: dataModel.startTime)
-        guard let d = date else { return Text("") }
-        let formatter2 = DateFormatters.SearchAndFollow.format
-        let string = formatter2.string(from: d)
-        return Text(string)
+        guard let d = date else { return Date() }
+        return d
+    }
+    
+    func endTimeAsDate() -> Date {
+        let formatter = DateFormatters.CreateSessionAPIService.encoderDateFormatter
+        let date = formatter.date(from: dataModel.endTime)
+        guard let d = date else { return Date() }
+        return d
     }
 }

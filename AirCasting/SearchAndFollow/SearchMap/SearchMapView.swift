@@ -102,7 +102,7 @@ private extension SearchMapView {
     
     var cardsTitle: some View {
         HStack(alignment: .bottom) {
-            StringCustomizer.customizeString(String(format: Strings.SearchMapView.cardsTitle, arguments: ["\(viewModel.sessionsList.count)"]),
+            StringCustomizer.customizeString(String(format: Strings.SearchMapView.cardsTitle, arguments: ["\(viewModel.sessionsList.count)", "\(viewModel.sessionsList.count)"]),
                                              using: [Strings.SearchMapView.sessionsText], color: .darkBlue, standardColor: .darkBlue, font: Fonts.boldHeading2)
         }.foregroundColor(.darkBlue)
     }
@@ -112,7 +112,12 @@ private extension SearchMapView {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(alignment: .bottom, spacing: 12) {
                     ForEach(viewModel.sessionsList, id: \.id) { session in
-                        BottomCardView(cardPointer: $viewModel.cardPointerID, dataModel: .init(id: session.id, title: session.title, startTime: session.startTime))
+                        BottomCardView(cardPointer: $viewModel.cardPointerID, dataModel: .init(id: session.id,
+                                                                                               title: session.title,
+                                                                                               startTime: session.startTime,
+                                                                                               endTime: session.endTime,
+                                                                                               latitude: session.location.latitude,
+                                                                                               longitude: session.location.longitude))
                             .id(session.id)
                             .border((viewModel.cardPointerID == session.id ? .blue : .clear), width: 1)
                             
