@@ -24,7 +24,8 @@ struct SearchMapView: View {
                         Spacer()
                         cardsTitle
                         cards
-                    }
+                            .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height / 7, alignment: .leading)
+                    }.padding(.bottom, 5)
                 }
             }
             VStack(alignment: .center, content: {

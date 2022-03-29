@@ -31,7 +31,8 @@ struct BottomCardView: View {
                 Text(dataModel.title)
                     .foregroundColor(.darkBlue)
                     .multilineTextAlignment(.leading)
-                    .minimumScaleFactor(0.01)
+                    .lineLimit(3)
+                    .minimumScaleFactor(0.7)
                 Spacer(minLength: 0.01)
                 dataAndTime
                     .font(Fonts.regularHeading4)
@@ -48,8 +49,8 @@ struct BottomCardView: View {
                                           longitude: dataModel.longitude,
                                           latitude: dataModel.latitude))
         })
-        .frame(maxWidth: UIScreen.main.bounds.width / 2, alignment: .leading)
-        .padding()
+        .frame(width: UIScreen.main.bounds.width / 2, height: UIScreen.main.bounds.height / 9, alignment: .leading)
+        .padding([.all], 10)
         .background(
             Group {
                 Color.white
