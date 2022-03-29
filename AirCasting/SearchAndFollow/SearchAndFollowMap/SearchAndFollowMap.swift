@@ -148,7 +148,6 @@ struct SearchAndFollowMap: UIViewRepresentable {
     }
 }
 
-
 import UIKit
 
 extension UIImage {

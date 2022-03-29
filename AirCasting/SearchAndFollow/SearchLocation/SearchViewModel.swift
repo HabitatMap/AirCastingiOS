@@ -12,7 +12,7 @@ class SearchViewModel: ObservableObject {
     @Published var addressName = ""
     @Published var addresslocation = CLLocationCoordinate2D(latitude: 20.0, longitude: 20.0)
     @Published var alert: AlertInfo?
-    
+
     var continueDisabled: Bool { addressName == "" }
     
     func textFieldTapped() { isLocationPopupPresented.toggle() }

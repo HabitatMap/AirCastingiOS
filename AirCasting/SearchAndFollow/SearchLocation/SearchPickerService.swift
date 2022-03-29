@@ -3,7 +3,6 @@
 import Foundation
 import GooglePlaces
 import SwiftUI
-import Resolver
 
 class SearchPickerService: PlacePickerService {
     @Binding private var addressName: String

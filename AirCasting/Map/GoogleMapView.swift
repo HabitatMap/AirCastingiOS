@@ -24,9 +24,9 @@ struct GoogleMapView: UIViewRepresentable {
     var isMyLocationEnabled: Bool = false
     private var onPositionChange: (([PathPoint]) -> ())? = nil
     var isSessionFixed: Bool
+    let isMapOnPickerScreen: Bool
     @Binding var mapNotes: [MapNote]
     let showMyLocationButton: Bool
-    let isMapOnPickerScreen: Bool
     
     init(pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false, placePickerIsUpdating: Binding<Bool>, isUserInteracting: Binding<Bool>, isSessionActive: Bool = false, isSessionFixed: Bool = false, noteMarketTapped: Binding<Bool> = .constant(false), noteNumber: Binding<Int> = .constant(0), mapNotes: Binding<[MapNote]>, showMyLocationButton: Bool = true, isMapOnPickerScreen: Bool = false) {
         self.pathPoints = pathPoints
