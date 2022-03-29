@@ -11,15 +11,15 @@ struct SearchAndFollowMap: UIViewRepresentable {
     
     typealias UIViewType = GMSMapView
     var startingPoint: CLLocationCoordinate2D
-    @Binding var showRedoButton: Bool
+    @Binding var showSearchAgainButton: Bool
     @Binding var sessions: [MapSessionMarker]
     @State var markerWasTapped: Bool = false
     @Binding var pointerID: Int
     private var onPositionChangeAction: ((GeoSquare) -> ())? = nil
     
-    init(startingPoint: CLLocationCoordinate2D, showRedoButton: Binding<Bool>, sessions: Binding<[MapSessionMarker]>, pointerID: Binding<Int>) {
+    init(startingPoint: CLLocationCoordinate2D, showSearchAgainButton: Binding<Bool>, sessions: Binding<[MapSessionMarker]>, pointerID: Binding<Int>) {
         self.startingPoint = startingPoint
-        self._showRedoButton = .init(projectedValue: showRedoButton)
+        self._showSearchAgainButton = .init(projectedValue: showSearchAgainButton)
         self._sessions = .init(projectedValue: sessions)
         self._pointerID = .init(projectedValue: pointerID)
     }
@@ -54,27 +54,18 @@ struct SearchAndFollowMap: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: GMSMapView, context: Context) {
-        if markerWasTapped {
-            // Jeżeli nastąpi kliknięcie kropki na mapie
+        if pointerID != context.coordinator.pointerIdHolder {
+            context.coordinator.pointerIdHolder = pointerID
             placeDots(uiView, context: context)
-            DispatchQueue.main.async {
-                markerWasTapped = false
-            }
         }
-        if pointerID != context.coordinator.idKeeper {
-            placeDots(uiView, context: context)
-            context.coordinator.idKeeper = pointerID
-        }
-        if !showRedoButton {
+        if !showSearchAgainButton {
             placeDots(uiView, context: context)
         }
     }
     
-    
     func setStartingPoint(using point: CLLocationCoordinate2D) -> GMSCameraPosition {
             let long = point.longitude
             let lat = point.latitude
-            
             let newCameraPosition = GMSCameraPosition.camera(withLatitude: lat,
                                                               longitude: long,
                                                               zoom: 10)
@@ -104,9 +95,7 @@ struct SearchAndFollowMap: UIViewRepresentable {
     class Coordinator: NSObject, UINavigationControllerDelegate, GMSMapViewDelegate {
         var parent: SearchAndFollowMap!
         var sessionSearched = [GMSMarker]()
-        var idKeeper: Int = -1
-        var showRedo: Bool = true
-        var isDifferent: Bool = false
+        var pointerIdHolder: Int = -1
         
         init(_ parent: SearchAndFollowMap) {
             self.parent = parent
@@ -128,11 +117,8 @@ struct SearchAndFollowMap: UIViewRepresentable {
         }
         
         func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
-            // Will be implemented in next task
-            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(100)) {
-                self.parent.pointerID = marker.userData as! Int
-                self.parent.markerWasTapped = true
-            }
+            self.parent.pointerID = marker.userData as! Int
+            self.parent.markerWasTapped = true
             return true
         }
         
@@ -145,37 +131,5 @@ struct SearchAndFollowMap: UIViewRepresentable {
     
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
-    }
-}
-
-import UIKit
-
-extension UIImage {
-    func scalePreservingAspectRatio(targetSize: CGSize) -> UIImage {
-        // Determine the scale factor that preserves aspect ratio
-        let widthRatio = targetSize.width / size.width
-        let heightRatio = targetSize.height / size.height
-        
-        let scaleFactor = min(widthRatio, heightRatio)
-        
-        // Compute the new image size that preserves aspect ratio
-        let scaledImageSize = CGSize(
-            width: size.width * scaleFactor,
-            height: size.height * scaleFactor
-        )
-
-        // Draw and return the resized UIImage
-        let renderer = UIGraphicsImageRenderer(
-            size: scaledImageSize
-        )
-
-        let scaledImage = renderer.image { _ in
-            self.draw(in: CGRect(
-                origin: .zero,
-                size: scaledImageSize
-            ))
-        }
-        
-        return scaledImage
     }
 }

@@ -42,26 +42,6 @@ extension Date {
         let date = self
         return Date(timeIntervalSinceReferenceDate: (date.timeIntervalSinceReferenceDate / 3600.0).rounded(.towardZero) * 3600.0)
     }
-    
-    static func yearAgo() -> Date {
-        DateBuilder.getFakeUTCDate() - (365 * 24 * 60 * 60)
-    }
-    
-    static func beginingOfCurrentDayInSeconds() -> Double {
-        Calendar.current.startOfDay(for: DateBuilder.getFakeUTCDate()).timeIntervalSince1970
-    }
-    
-    static func beginingOfDayInSeconds(using date: Date) -> Double {
-        var calendar = Calendar.current
-        calendar.timeZone = TimeZone.utc
-        return calendar.startOfDay(for: date).timeIntervalSince1970
-    }
-    
-    static func endOfDayInSeconds(using date: Date) -> Double {
-        var calendar = Calendar.current
-        calendar.timeZone = TimeZone.utc
-        return calendar.startOfDay(for: date).timeIntervalSince1970 + (23 * 60 * 60 + 3540 + 59)
-    }
 }
 // swiftlint:enable airCasting_date
 

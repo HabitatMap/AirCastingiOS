@@ -33,21 +33,5 @@ class DateBuilder {
     static func distantFuture() -> Date {
         Date.distantFuture
     }
-    
-    static func yearAgo() -> Date {
-        Date.yearAgo()
-    }
-    
-    static func beginingOfCurrentDayInSeconds() -> Double {
-        Date.beginingOfCurrentDayInSeconds()
-    }
-    
-    static func beginingOfDayInSeconds(using date: Date) -> Double {
-        Date.beginingOfDayInSeconds(using: date)
-    }
-    
-    static func endOfDayInSeconds(using date: Date) -> Double {
-        Date.endOfDayInSeconds(using: date)
-    }
 }
 // swiftlint:enable airCasting_date

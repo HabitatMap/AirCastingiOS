@@ -225,20 +225,6 @@ struct GoogleMapView: UIViewRepresentable {
         polyline.map = uiView
     }
     
-//    func placeDots(_ uiView: GMSMapView, context: Context) {
-//        DispatchQueue.main.async {
-//            searchFollowService.sessionsList.forEach { sess in
-//                let marker = GMSMarker()
-//                let markerImage =  UIImage(systemName: "smallcircle.filled.circle.fill")!
-//                let markerView = UIImageView(image: markerImage.withRenderingMode(.alwaysOriginal))
-//                marker.position = CLLocationCoordinate2D(latitude: sess.latitude, longitude: sess.longitude)
-//                marker.userData = sess.id
-//                marker.iconView = markerView
-//                marker.map = uiView
-//            }
-//        }
-//    }
-    
     func placeNotes(_ uiView: GMSMapView, notes: [MapNote], context: Context) {
         context.coordinator.noteMarkers.forEach { marker in
             marker.map = nil
@@ -280,7 +266,6 @@ struct GoogleMapView: UIViewRepresentable {
             positionChanged(for: mapView)
             shouldAutoTrack = false
         }
-        
         
         func mapView(_ mapView: GMSMapView, idleAt cameraPosition: GMSCameraPosition) {
             drawHeatmap(mapView)

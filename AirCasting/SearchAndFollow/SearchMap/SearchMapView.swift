@@ -82,13 +82,13 @@ private extension SearchMapView {
     var map: some View {
         ZStack(alignment: .top) {
             SearchAndFollowMap(startingPoint: viewModel.passedLocationAddress,
-                      showRedoButton: $viewModel.searchAgainButton,
+                               showSearchAgainButton: $viewModel.searchAgainButton,
                                sessions: $viewModel.sessionsList,
                                pointerID: $viewModel.cardPointerID).onPositionChange(action: { geoSquare in
                 viewModel.mapPositionsChanged(geoSquare: geoSquare)
             })
-                .padding(.top, 50)
-                .ignoresSafeArea(.all, edges: [.bottom])
+                               .padding(.top, 50)
+                               .ignoresSafeArea(.all, edges: [.bottom])
             LinearGradient(gradient: Gradient(colors: [.white.opacity(0.1),
                                                        .white.opacity(0.5),
                                                        .white.opacity(0.7),
@@ -97,14 +97,19 @@ private extension SearchMapView {
                                                        .white]),
                            startPoint: .bottom,
                            endPoint: .top)
-                .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height / 4.5, alignment: .top)
+            .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height / 4.5, alignment: .top)
         }
     }
     
     var cardsTitle: some View {
         HStack(alignment: .bottom) {
-            StringCustomizer.customizeString(String(format: Strings.SearchMapView.cardsTitle, arguments: ["\(viewModel.sessionsList.count)", "\(viewModel.sessionsList.count)"]),
-                                             using: [Strings.SearchMapView.sessionsText], color: .darkBlue, standardColor: .darkBlue, font: Fonts.boldHeading2)
+            StringCustomizer.customizeString(String(format: Strings.SearchMapView.cardsTitle,
+                                                    arguments: ["\(viewModel.sessionsList.count)",
+                                                                "\(viewModel.sessionsList.count)"]),
+                                             using: [Strings.SearchMapView.sessionsText],
+                                             color: .darkBlue,
+                                             standardColor: .darkBlue,
+                                             font: Fonts.boldHeading2)
         }.foregroundColor(.darkBlue)
     }
     
@@ -113,27 +118,27 @@ private extension SearchMapView {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(alignment: .bottom, spacing: 12) {
                     ForEach(viewModel.sessionsList, id: \.id) { session in
-                        BottomCardView(cardPointer: $viewModel.cardPointerID, dataModel: .init(id: session.id,
-                                                                                               title: session.title,
-                                                                                               startTime: session.startTime,
-                                                                                               endTime: session.endTime,
-                                                                                               latitude: session.location.latitude,
-                                                                                               longitude: session.location.longitude))
-                            .id(session.id)
-                            .border((viewModel.cardPointerID == session.id ? .blue : .clear), width: 1)
-                            
+                        BottomCardView(cardPointer: $viewModel.cardPointerID,
+                                       dataModel: .init(id: session.id,
+                                                        title: session.title,
+                                                        startTime: session.startTime,
+                                                        endTime: session.endTime,
+                                                        latitude: session.location.latitude,
+                                                        longitude: session.location.longitude))
+                        .border((viewModel.cardPointerID == session.id ? .blue : .clear), width: 1)
+                        
                     }
                 }
-                .onReceive(viewModel.$cardPointerID) { v in
-                DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(200)) {
-                    withAnimation(.linear) {
-                        scrollProxy.scrollTo(Int(viewModel.cardPointerID), anchor: .leading)
+                .onReceive(viewModel.$cardPointerID) { _ in
+                    DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(200)) {
+                        // This Dispatch allows us to show first choice made by user
+                        withAnimation(.linear) {
+                            scrollProxy.scrollTo(Int(viewModel.cardPointerID), anchor: .leading)
+                        }
                     }
                 }
-            }
             }
         }
         .padding(.horizontal, 5)
-        .frame(height: UIScreen.main.bounds.height / 9, alignment: .leading)
     }
 }

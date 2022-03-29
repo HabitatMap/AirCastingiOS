@@ -13,7 +13,6 @@ class SearchMapViewModel: ObservableObject {
     @Injected private var mapSessionsDownloader: SessionsForLocationDownloader
     @Published var sessionsList = [MapSessionMarker]()
     @Published var searchAgainButton: Bool = false
-    @Published var showRedoButton: Bool = false
     @Published var showLoadingIndicator: Bool = false
     @Published var alert: AlertInfo?
     @Published var shouldDismissView: Bool = false

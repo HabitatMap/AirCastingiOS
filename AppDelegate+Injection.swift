@@ -204,7 +204,6 @@ extension Resolver: ResolverRegistering {
         main.register { SearchSessionStreamsDownstreamMock() as SearchSessionStreamsDownstream }
     }
     
-    
     // MARK: - Composition helpers
     
     private class CompositeFeatureFlagProvider: FeatureFlagProvider {
