@@ -1,0 +1,53 @@
+// Created by Lunar on 05/02/2022.
+//
+
+import Foundation
+import Resolver
+
+/// Utility class to simplify logger creation process.
+class LoggerBuilder {
+    enum LoggerType {
+        case file
+        case debug
+        case crashlytics
+    }
+    
+    private var partialLogger: Logger
+    
+    init(type: LoggerType) {
+        switch type {
+        case .debug: partialLogger = Self.createDebugLogger()
+        case .file: partialLogger = Self.createFileLogger()
+        case .crashlytics: partialLogger = Self.createCrashlyticsLogger()
+        }
+    }
+    
+    @discardableResult
+    func addMinimalLevel(_ minLevel: LogLevel) -> Self {
+        partialLogger = ThresholdLoggerProxy(thresholdLevel: minLevel, logger: partialLogger)
+        return self
+    }
+    
+    @discardableResult
+    func dispatchOn(_ queue: DispatchQueue) -> Self {
+        partialLogger = ScheduledLogger(queue: queue, logger: partialLogger)
+        return self
+    }
+    
+    func build() -> Logger {
+        partialLogger
+    }
+    
+    
+    private static func createDebugLogger() -> Logger {
+        Resolver.resolve(PrintLogger.self)
+    }
+    
+    private static func createFileLogger() -> Logger {
+        Resolver.resolve(FileLogger.self)
+    }
+    
+    private static func createCrashlyticsLogger() -> Logger {
+        Resolver.resolve(CrashlyticsLogger.self)
+    }
+}

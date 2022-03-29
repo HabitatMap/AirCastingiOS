@@ -39,7 +39,8 @@ final class MicrophoneSessionCreator: SessionCreator {
                               location: startingLocation,
                               startTime: DateBuilder.getFakeUTCDate(),
                               contribute: contribute,
-                              locationless: sessionContext.locationless)
+                              locationless: sessionContext.locationless,
+                              status: .NEW)
 
         do {
             try microphoneManager.startRecording(session: session)

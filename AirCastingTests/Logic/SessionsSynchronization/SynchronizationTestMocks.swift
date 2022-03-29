@@ -63,7 +63,7 @@ extension SessionsSynchronization.SessionStoreSessionData {
                                                                                deleted: false,
                                                                                measurements: [
                                                                                 .init(id: 1234,
-                                                                                      time: DateBuilder.getDateWithTimeIntervalSinceReferenceDate(_ timeInterval: 150),
+                                                                                      time: DateBuilder.getDateWithTimeIntervalSinceReferenceDate(150),
                                                                                       value: 12.02,
                                                                                       latitude: 51.04,
                                                                                       longitude: 50.12)

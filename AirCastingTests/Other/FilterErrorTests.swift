@@ -5,7 +5,7 @@ import XCTest
 import Combine
 @testable import AirCasting
 
-class FilterErrorTests: XCTestCase {
+class FilterErrorTests: ACTestCase {
     var cancellables: [AnyCancellable] = []
     
     func test_filtering_willFinishFilteredOutErrors() {

@@ -108,14 +108,20 @@ struct SelectDeviceView: View {
             micLabels
         })
         .buttonStyle(WhiteSelectingButtonStyle(isSelected: selected == 2))
+        .disabled(microphoneManager.isRecording)
+        .onTapGesture {
+            alert = InAppAlerts.microphoneSessionAlreadyRecordingAlert()
+        }
     }
     
     var bluetoothLabels: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text(Strings.SelectDeviceView.bluetoothLabel_1)
-                .font(Fonts.boldHeading1)
-                .foregroundColor(.accentColor)
-            Text(Strings.SelectDeviceView.bluetoothLabel_2)
+            StringCustomizer.customizeString(Strings.SelectDeviceView.bluetoothLabel,
+                            using: [Strings.SelectDeviceView.bluetoothDevice],
+                            fontWeight: .bold,
+                            color: .accentColor,
+                            font: Fonts.boldHeading1,
+                            makeNewLineAfterCustomized: true)
                 .font(Fonts.muliHeading3)
                 .foregroundColor(.aircastingGray)
         }
@@ -123,10 +129,12 @@ struct SelectDeviceView: View {
     
     var micLabels: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text(Strings.SelectDeviceView.micLabel_1)
-                .font(Fonts.boldHeading1)
-                .foregroundColor(.accentColor)
-            Text(Strings.SelectDeviceView.micLabel_2)
+            StringCustomizer.customizeString(Strings.SelectDeviceView.micLabel_1,
+                            using: [Strings.SelectDeviceView.phoneMicrophone],
+                            fontWeight: .bold,
+                            color: .accentColor,
+                            font: Fonts.boldHeading1,
+                            makeNewLineAfterCustomized: true)
                 .font(Fonts.muliHeading3)
                 .foregroundColor(.aircastingGray)
         }

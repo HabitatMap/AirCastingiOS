@@ -2,26 +2,122 @@
 //
 
 import Foundation
+import CoreLocation
 import Resolver
 
-//TODO: Refactor this part
-class SDCardFixedSessionsSavingService {
+enum UploadingError: Error {
+    case uploadError
+    case readingFileError
+}
+
+class SDCardFixedSessionsUploadingService {
+    @Injected private var fileLineReader: FileLineReader
+    @Injected private var measurementStreamStorage: MeasurementStreamStorage
     @Injected private var apiService: UploadFixedSessionAPIService
+    private let parser = SDCardMeasurementsParser()
     
-    func processAndSync(csvSession: CSVStreamsWithMeasurements, deviceID: String, completion: @escaping (Bool) -> Void) {
-        guard !csvSession.sessions.isEmpty else {
-            completion(true)
-            return
+    private let bufferThreshold = 50
+    
+    func processAndUpload(fileURL: URL, deviceID: String, completion: @escaping (Result<[SessionUUID], Error>) -> Void) {
+        DispatchQueue.global().async {
+            var sessionsForUpload = Set<SessionUUID>()
+            var streamsWithMeasurements: [SDStream: [Measurement]] = [:]
+            
+            // We don't want to upload sessions of other users
+            var sessionsToIgnore: [SessionUUID] = []
+            var uploadFailed = false
+            
+            var readLines = 0
+            do {
+                try self.fileLineReader.readLines(of: fileURL, progress: { line in
+                    guard !uploadFailed else { return }
+                    switch line {
+                    case .line(let content):
+                        readLines += 1
+                        let measurementsRow = self.parser.parseMeasurement(lineString: content)
+                        guard let measurements = measurementsRow,
+                              !sessionsToIgnore.contains(measurements.sessionUUID),
+                              self.checkIfSessionExistis(sessionUUID: measurements.sessionUUID, sessionsToIgnore: &sessionsToIgnore)
+                        else { return }
+                        
+                        sessionsForUpload.insert(measurements.sessionUUID)
+                        
+                        Log.info("Enqueueing session: \(measurements.sessionUUID)")
+                        self.enqueueForUploading(measurements: measurements, buffer: &streamsWithMeasurements)
+                        
+                        guard readLines == self.bufferThreshold else { return }
+                        
+                        guard self.processAndSync(streamsWithMeasurements: streamsWithMeasurements, deviceID: deviceID) else {
+                            Log.error("Upload fixed sessions stream failed")
+                            uploadFailed = true
+                            return
+                        }
+                        streamsWithMeasurements = [:]
+                        readLines = 0
+                    case .endOfFile:
+                        Log.info("Reached end of csv file")
+                    }
+                })
+                guard !uploadFailed else {
+                    completion(.failure(UploadingError.uploadError))
+                    return
+                }
+                
+                guard self.processAndSync(streamsWithMeasurements: streamsWithMeasurements, deviceID: deviceID) else {
+                    completion(.failure(UploadingError.uploadError))
+                    return
+                }
+                
+                completion(.success(Array(sessionsForUpload)))
+            } catch {
+                completion(.failure(UploadingError.readingFileError))
+            }
         }
-        let uploadParams = getSyncParams(csvSession: csvSession, deviceID: deviceID)
+    }
+    
+    private func enqueueForUploading(measurements: SDCardMeasurementsRow, buffer streamsWithMeasurements: inout [SDStream: [Measurement]]) {
+        let location = CLLocationCoordinate2D(latitude: measurements.lat, longitude: measurements.long)
+        let date = measurements.date
         
-        var tasksCompleted = 0
+        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, name: .f, header: .f), default: []]
+            .append(Measurement(time: date, value: measurements.f, location: location))
+        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, name: .rh, header: .rh), default: []]
+            .append(Measurement(time: date, value: measurements.rh, location: location))
+        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, name: .pm1, header: .pm1), default: []]
+            .append(Measurement(time: date, value: measurements.pm1, location: location))
+        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, name: .pm2_5, header: .pm2_5), default: []]
+            .append(Measurement(time: date, value: measurements.pm2_5, location: location))
+        streamsWithMeasurements[SDStream(sessionUUID: measurements.sessionUUID, name: .pm10, header: .pm10), default: []]
+            .append(Measurement(time: date, value: measurements.pm10, location: location))
+    }
+    
+    private func checkIfSessionExistis(sessionUUID: SessionUUID, sessionsToIgnore: inout [SessionUUID]) -> Bool {
+        var doesSessionExist = false
+        let dispatchGroup = DispatchGroup()
+        dispatchGroup.enter()
+        measurementStreamStorage.accessStorage { storage in
+            doesSessionExist = (try? storage.getExistingSession(with: sessionUUID)) != nil
+            dispatchGroup.leave()
+        }
+        dispatchGroup.wait()
+        doesSessionExist ? nil : sessionsToIgnore.append(sessionUUID)
+        return doesSessionExist
+    }
+    
+    func processAndSync(streamsWithMeasurements: [SDStream: [Measurement]], deviceID: String) -> Bool {
+        assert(!Thread.isMainThread)
+        Log.info("Starting streams upload")
+        let uploadParams = getSyncParams(streamsWithMeasurements: streamsWithMeasurements, deviceID: deviceID)
         var allSuccess = true
         
+        guard !uploadParams.isEmpty else {
+            return true
+        }
+        
+        let dispatchGroup = DispatchGroup()
         uploadParams.forEach { params in
+            dispatchGroup.enter()
             apiService.uploadFixedSession(input: params) { result in
-                tasksCompleted += 1
-                
                 switch result {
                 case .success:
                     Log.info("[SD Sync] Stream uploadedd. Session: \(params.session_uuid) Sensor: \(params.sensor_name ?? "")")
@@ -29,16 +125,16 @@ class SDCardFixedSessionsSavingService {
                     allSuccess = false
                     Log.error("[SD Sync] Stream syncing failed: \(error)")
                 }
-                
-                if tasksCompleted >= uploadParams.count {
-                    completion(allSuccess)
-                }
+                dispatchGroup.leave()
             }
         }
+        
+        dispatchGroup.wait()
+        return allSuccess
     }
     
-    private func getSyncParams(csvSession: CSVStreamsWithMeasurements, deviceID: String) -> [UploadFixedSessionAPIService.UploadFixedMeasurementsParams] {
-        csvSession.streamsWithMeasurements.compactMap { sdStream, measurements -> UploadFixedSessionAPIService.UploadFixedMeasurementsParams? in
+    private func getSyncParams(streamsWithMeasurements: [SDStream: [Measurement]], deviceID: String) -> [UploadFixedSessionAPIService.UploadFixedMeasurementsParams] {
+        streamsWithMeasurements.compactMap { sdStream, measurements -> UploadFixedSessionAPIService.UploadFixedMeasurementsParams? in
             guard let stream = CSVMeasurementStream.SUPPORTED_STREAMS[sdStream.header] else {
                 Log.info("Unsupported stream")
                 return nil

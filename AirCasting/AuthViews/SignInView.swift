@@ -96,10 +96,10 @@ private extension SignInView {
 
     var titleLabel: some View {
         VStack(alignment: .leading, spacing: 15) {
-            Text(Strings.SignInView.signIn)
+            Text(Strings.SignInView.signIn_1)
                 .font(Fonts.boldTitle1)
                 .foregroundColor(.accentColor)
-            Text(Strings.SignInView.title_2)
+            Text(Strings.SignInView.signIn_2)
                 .font(Fonts.muliHeading2)
                 .foregroundColor(.aircastingGray)
         }
@@ -122,7 +122,7 @@ private extension SignInView {
     }
     
     var signinButton: some View {
-        Button(Strings.SignInView.signIn) {
+        Button(Strings.SignInView.signIn_1) {
             checkInput()
             if !isPasswordBlank, !isUsernameBlank {
                 isActive = true
@@ -189,7 +189,7 @@ private extension SignInView {
     }
     
     func displayErrorAlert(error: AuthorizationError) -> Alert {
-        let title = NSLocalizedString(Strings.SignInView.alertTitle, comment: Strings.SignInView.alertComment)
+        let title = Strings.SignInView.alertTitle
         switch error {
         case .emailTaken, .invalidCredentials, .usernameTaken:
             return Alert(title: Text(title),

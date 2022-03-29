@@ -116,6 +116,24 @@ enum DateFormatters {
             return dateFormatter
         }()
     }
+    
+    enum Debug {
+        static let logsFormatter: DateFormatter = {
+            let df = DateFormatter()
+            df.dateFormat = "yyyy-MM-dd HH:mm:ss"
+            return df
+        }()
+    }
+    
+    enum SearchAndFollow {
+        static let format: DateFormatter = {
+            let df = DateFormatter()
+            df.timeZone =  TimeZone.init(abbreviation: "UTC")
+            df.locale = Locale(identifier: "en_US")
+            df.dateFormat = "MM/dd/yyyy HH:mm"
+            return df
+        }()
+    }
 }
 
 

@@ -64,7 +64,7 @@ struct PrivacyOnboarding: View {
 
 private extension PrivacyOnboarding {
     private var progressBar: some View {
-        ProgressView(value: 0.525)
+        ProgressView(value: 0.6)
             .accentColor(.accentColor)
     }
     
@@ -102,7 +102,9 @@ private extension PrivacyOnboarding {
             Text(Strings.OnboardingPrivacy.sheetButton)
         })
         .buttonStyle(BlueTextButtonStyle())
-        .sheet(isPresented: $presentingModal) { ModalView(presentedAsModal: self.$presentingModal) }
+        .sheet(isPresented: $presentingModal) {
+            WebView(url: Constants.PrivacyPolicy.url)
+        }
     }
 }
 

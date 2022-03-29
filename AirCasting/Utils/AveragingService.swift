@@ -58,7 +58,9 @@ final class AveragingService: NSObject {
     init(measurementStreamStorage: MeasurementStreamStorage) {
         self.measurementStreamStorage = measurementStreamStorage
         super.init()
-        
+    }
+    
+    func start() {
         measurementStreamStorage.accessStorage { [weak self] storage in
             let request: NSFetchRequest<SessionEntity> = SessionEntity.fetchRequest()
             request.predicate = NSPredicate(format: "type == %@ AND status == %i",
@@ -75,6 +77,7 @@ final class AveragingService: NSObject {
             }
             frc.delegate = self
             self?.fetchedResultsController = frc
+            Log.info("Averaging service started")
         }
     }
     
@@ -97,6 +100,7 @@ final class AveragingService: NSObject {
     }
     
     private func perform(storage: HiddenCoreDataMeasurementStreamStorage, session: SessionEntity, averagingWindow: AveragingWindow, windowDidChange: Bool) {
+        Log.info("Performing averaging for \(session.uuid ?? "N/A") [\(session.name ?? "unnamed")]")
         session.allStreams?.forEach { stream in
             var averagedMeasurements: [MeasurementEntity] = (stream.allMeasurements ?? []).filter {
                 $0.averagingWindow == averagingWindow.rawValue
@@ -105,6 +109,7 @@ final class AveragingService: NSObject {
             /// Step 1 - it'll be performed only once, after crossing the secondThresholdWindow
             /// The measurements that were already averaged with firstThresholdWindow will be reaveraged with secondThresholdWindow
             if windowDidChange && averagingWindow == .secondThresholdWindow {
+                Log.info("Averaging for second threshold window")
                 let averagedWithFirstThreshold = (stream.allMeasurements ?? []).filter {
                     $0.averagingWindow == AveragingWindow.firstThresholdWindow.rawValue
                 }
@@ -128,12 +133,10 @@ final class AveragingService: NSObject {
             })
             
             /// Step 3 - Update stream
-            do {
-                if !averagedMeasurements.isEmpty {
-                    try storage.updateMeasurements(stream: stream, newMeasurements: NSOrderedSet(array: averagedMeasurements))
-                }
-            } catch {
-                Log.info("Couldn't update Measurements for stream \(stream)")
+            if !averagedMeasurements.isEmpty {
+                storage.removeAllMeasurements(in: stream, except: averagedMeasurements)
+            } else {
+                Log.info("There were no averaged mesurements")
             }
         }
     }
@@ -160,7 +163,9 @@ final class AveragingService: NSObject {
             return
         }
         guard let startTime = session.startTime else { return }
+        
         let fromSessionStartToFirstThreshold = (startTime.timeIntervalSince(DateBuilder.getFakeUTCDate()) + Double(TimeThreshold.firstThreshold.rawValue) + Double(1))
+        Log.info("Scheduling periodic averaging start in \(fromSessionStartToFirstThreshold)s for \(session.uuid ?? "N/A") [\(session.name ?? "unnamed")]")
         let timer = Timer.publish(every: TimeInterval(fromSessionStartToFirstThreshold), on: .main, in: .common)
             .autoconnect()
             .first()
@@ -171,6 +176,7 @@ final class AveragingService: NSObject {
     }
     
     private func startPeriodicAveraging(uuid: SessionUUID, window: AveragingWindow) {
+        Log.info("Starting periodic averaging with window of \(window.rawValue)s for \(uuid)")
         let timer = Timer.publish(every: TimeInterval(window.rawValue), on: .main, in: .common)
             .autoconnect()
             .sink { [weak self] _ in
@@ -179,6 +185,7 @@ final class AveragingService: NSObject {
                     guard let session = try? storage.getExistingSession(with: uuid) else {
                         Log.info("Couldnt get session with uuid:\(uuid) from db to start periodic averaging")
                         return }
+                    Log.info("Periodic averaging fired for \(session.name ?? "N/A")")
                     guard let checkWindow = self.averagingWindowFor(startTime: session.startTime) else {return}
                     let windowDidChange = checkWindow != window
                     if windowDidChange {
@@ -188,6 +195,7 @@ final class AveragingService: NSObject {
                                  session: session,
                                  averagingWindow: checkWindow,
                                  windowDidChange: windowDidChange)
+                    Log.info("Averaging performed for \(session.uuid) [\(session.name)]")
                 }
             }
         timers[uuid] = timer

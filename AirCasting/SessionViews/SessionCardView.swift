@@ -4,21 +4,21 @@
 //
 //  Created by Lunar on 08/01/2021.
 //
-
 import AirCastingStyling
 import Charts
 import SwiftUI
 import Resolver
 
 struct SessionCardView: View {
-    @State private var isCollapsed = true
+    @State private var isCollapsed: Bool
     @State private var selectedStream: MeasurementStreamEntity?
     @State private var isMapButtonActive = false
     @State private var isGraphButtonActive = false
     @State private var showLoadingIndicator = false
     @ObservedObject var session: SessionEntity
     @EnvironmentObject var selectedSection: SelectSection
-    @EnvironmentObject var reorderButton: ReorderButtonTapped
+    @EnvironmentObject var reorderButton: ReorderButton
+    @EnvironmentObject var searchAndFollowButton: SearchAndFollowButton
     let sessionCartViewModel: SessionCardViewModel
     let thresholds: [SensorThreshold]
 
@@ -26,8 +26,9 @@ struct SessionCardView: View {
     @StateObject private var mapStatsViewModel: StatisticsContainerViewModel
     @StateObject private var graphStatsDataSource: ConveringStatisticsDataSourceDecorator<GraphStatsDataSource>
     @StateObject private var graphStatsViewModel: StatisticsContainerViewModel
-    @StateObject private var chartViewModel: ChartViewModel
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
+    @Injected private var measurementStreamStorage: MeasurementStreamStorage
+    @Injected private var uiState: SessionCardUIStateHandler
 
     init(session: SessionEntity,
          sessionCartViewModel: SessionCardViewModel,
@@ -35,13 +36,15 @@ struct SessionCardView: View {
         self.session = session
         self.sessionCartViewModel = sessionCartViewModel
         self.thresholds = thresholds
+        
+        self._isCollapsed = .init(initialValue: !(session.userInterface?.expandedCard ?? false))
+        
         let mapDataSource = ConveringStatisticsDataSourceDecorator<MapStatsDataSource>(dataSource: MapStatsDataSource(), stream: nil)
         self._mapStatsDataSource = .init(wrappedValue: mapDataSource)
         self._mapStatsViewModel = .init(wrappedValue: SessionCardView.createStatsContainerViewModel(dataSource: mapDataSource, session: session))
         let graphDataSource = ConveringStatisticsDataSourceDecorator<GraphStatsDataSource>(dataSource: GraphStatsDataSource(), stream: nil)
         self._graphStatsDataSource = .init(wrappedValue: graphDataSource)
         self._graphStatsViewModel = .init(wrappedValue: SessionCardView.createStatsContainerViewModel(dataSource: graphDataSource, session: session))
-        self._chartViewModel = .init(wrappedValue: ChartViewModel(session: session))
     }
 
     var shouldShowValues: MeasurementPresentationStyle {
@@ -87,12 +90,12 @@ struct SessionCardView: View {
         .onChange(of: session.sortedStreams) { newValue in
             selectDefaultStreamIfNeeded(streams: newValue ?? [])
         }
-        .onChange(of: selectedStream, perform: { [weak graphStatsDataSource, weak mapStatsDataSource, weak chartViewModel] newStream in
+        .onChange(of: selectedStream, perform: { [weak graphStatsDataSource, weak mapStatsDataSource] newStream in
             graphStatsDataSource?.stream = newStream
             graphStatsDataSource?.dataSource.stream = newStream
             mapStatsDataSource?.stream = newStream
             mapStatsDataSource?.dataSource.stream = newStream
-            chartViewModel?.stream = newStream
+            uiState.changeSelectedStream(sessionUUID: session.uuid, newStream: newStream?.sensorName ?? "")
         })
         .font(Fonts.regularHeading4)
         .foregroundColor(.aircastingGray)
@@ -115,6 +118,9 @@ struct SessionCardView: View {
 
     private func selectDefaultStreamIfNeeded(streams: [MeasurementStreamEntity]) {
         if selectedStream == nil {
+            if let newStream = session.streamWith(sensorName: session.userInterface?.sensorName ?? "") {
+                return selectedStream = newStream
+            }
             selectedStream = streams.first
         }
     }
@@ -126,6 +132,9 @@ private extension SessionCardView {
             action: {
                 withAnimation {
                     isCollapsed.toggle()
+                    if !session.isUnfollowedFixed {
+                        uiState.toggleCardExpanded(sessionUUID: session.uuid)
+                    }
                 }
             },
             isExpandButtonNeeded: true,
@@ -147,6 +156,7 @@ private extension SessionCardView {
         Button {
             isGraphButtonActive = true
             reorderButton.isHidden = true
+            searchAndFollowButton.isHidden = true
             Log.info("\(reorderButton)")
         } label: {
             Text(Strings.SessionCartView.graph)
@@ -159,6 +169,7 @@ private extension SessionCardView {
         Button {
             isMapButtonActive = true
             reorderButton.isHidden = true
+            searchAndFollowButton.isHidden = true
             Log.info("\(reorderButton)")
         } label: {
             Text(Strings.SessionCartView.map)
@@ -181,48 +192,10 @@ private extension SessionCardView {
 
     func pollutionChart(thresholds: [SensorThreshold]) -> some View {
         return VStack() {
-            if let selectedStream = selectedStream {
-                Group {
-                    ChartView(thresholds: thresholds,
-                              viewModel: chartViewModel)
-                        .frame(height: 120)
-                        .disabled(true)
-                    HStack() {
-                            startTime
-                            Spacer()
-                            descriptionText(stream: selectedStream)
-                            Spacer()
-                            endTime
-                    }.foregroundColor(.aircastingGray)
-                        .font(Fonts.semiboldHeading2)
-                }
-                .onAppear {
-                    chartViewModel.refreshChart()
-                }
-            }
+            ChartView(thresholds: thresholds, stream: $selectedStream, session: session)
+            .foregroundColor(.aircastingGray)
+                .font(Fonts.semiboldHeading2)
         }
-    }
-
-    var startTime: some View {
-        let formatter = DateFormatters.SessionCartView.pollutionChartDateFormatter
-
-        guard let start = chartViewModel.chartStartTime else { return Text("") }
-
-        let string = formatter.string(from: start)
-        return Text(string)
-        }
-
-    var endTime: some View {
-        let formatter = DateFormatters.SessionCartView.pollutionChartDateFormatter
-
-        let end = chartViewModel.chartEndTime ?? DateBuilder.getFakeUTCDate()
-
-        let string = formatter.string(from: end)
-        return Text(string)
-        }
-
-    func descriptionText(stream: MeasurementStreamEntity) -> some View {
-        return Text("\(stream.session.isMobile ? Strings.SessionCartView.avgSessionMin : Strings.SessionCartView.avgSessionH) \(stream.unitSymbol ?? "")")
     }
 
     func displayButtons(thresholds: [SensorThreshold]) -> some View {

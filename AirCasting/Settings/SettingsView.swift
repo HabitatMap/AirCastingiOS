@@ -15,6 +15,9 @@ struct SettingsView: View {
     @InjectedObject private var userSettings: UserSettings
     @InjectedObject private var bluetoothManager: BluetoothManager
     private let sessionContext: CreateSessionContext
+    #if DEBUG || BETA
+    @StateObject private var shareLogsViewModel = ShareLogsViewModel()
+    #endif
     
     init(sessionContext: CreateSessionContext) {
         self.sessionContext = sessionContext
@@ -45,6 +48,14 @@ struct SettingsView: View {
                                         isSDClearProcess: viewModel.SDClearingRouteProcess)
                 }
             }
+            .environmentObject(viewModel.sessionContext)
+            #if BETA || DEBUG
+            .sheet(isPresented: $shareLogsViewModel.shareSheetPresented) {
+                ActivityViewController(sharingFile: true, itemToShare: shareLogsViewModel.file!, servicesToShareItem: nil) { _,_,_,_ in
+                    shareLogsViewModel.sharingFinished()
+                }
+            }
+            #endif
         } else {
             NavigationView {
                 main
@@ -74,6 +85,14 @@ struct SettingsView: View {
                             }
                         }
                 })
+            .environmentObject(viewModel.sessionContext)
+            #if BETA || DEBUG
+            .sheet(isPresented: $shareLogsViewModel.shareSheetPresented) {
+                ActivityViewController(sharingFile: true, itemToShare: shareLogsViewModel.file!, servicesToShareItem: nil) { _,_,_,_ in
+                    shareLogsViewModel.sharingFinished()
+                }
+            }
+            #endif
         }
     }
 
@@ -86,13 +105,16 @@ struct SettingsView: View {
             #if BETA || DEBUG
             Section() {
                 navigateToAppConfigurationButton
+                shareLogsButton
+                Text(Strings.Settings.crashlyticsSectionTitle)
+                crashButton
+                createErrorButton
             }
             #endif
             appInfoSection
         }
         .listStyle(GroupedListStyle())
         .navigationBarTitle(Strings.Settings.title)
-        .environmentObject(viewModel.sessionContext)
     }
 
     private var settingsSection: some View {
@@ -127,9 +149,9 @@ struct SettingsView: View {
             Text(Strings.Settings.appInfoTitle) + Text(". ") + Text("\(UIApplication.appVersion!) ") +
             Text(Strings.Settings.buildText) + Text(": ") + Text("\(UIApplication.buildVersion!)")
             #if BETA
-            Text(Strings.Settings.betaBuild).foregroundColor(.red)
+            Text("Beta build").foregroundColor(.red)
             #elseif DEBUG
-            Text(Strings.Settings.debugBuild).foregroundColor(.red)
+            Text("Debug build").foregroundColor(.red)
             #endif
         }.foregroundColor(.aircastingGray)
     }
@@ -217,11 +239,30 @@ struct SettingsView: View {
 
     #if DEBUG || BETA
     private var navigateToAppConfigurationButton: some View {
-        NavigationLink("App config", destination: {
+        NavigationLink(Strings.Settings.appConfig, destination: {
             AppConfigurationView()
-                .navigationTitle("App config")
+                .navigationTitle(Strings.Settings.appConfig)
         })
             .font(Fonts.boldHeading1)
+    }
+    
+    private var shareLogsButton: some View {
+        Button(Strings.Settings.shareLogs) {
+            shareLogsViewModel.shareLogsButtonTapped()
+        }
+    }
+    
+    private var crashButton: some View {
+        Button(Strings.Settings.crashTheApp) {
+            let numbers = [0]
+            _ = numbers[1]
+        }
+    }
+    
+    private var createErrorButton: some View {
+        Button(Strings.Settings.generateError) {
+            Log.error("Error induced")
+        }
     }
     #endif
 }

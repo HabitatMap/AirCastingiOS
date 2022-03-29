@@ -162,8 +162,10 @@ extension BluetoothManager: CBCentralManagerDelegate {
         peripheral.delegate = self
         if mobilePeripheralSessionManager.activeSessionInProgressWith(peripheral) {
             var characteristicsHandle: Any?
+            Log.info("Reconnected to a peripheral: \(peripheral)")
             characteristicsHandle = NotificationCenter.default.addObserver(forName: .discoveredCharacteristic, object: nil, queue: .main) { notification in
                 guard notification.userInfo?[AirCastingNotificationKeys.DiscoveredCharacteristic.peripheralUUID] as! UUID == peripheral.identifier else { return }
+                Log.info("Discovered characteristics for reconnected peripheral \(peripheral)")
                 self.mobileSessionReconnected = true
                 guard let characteristicsHandle = characteristicsHandle else { return }
                 NotificationCenter.default.removeObserver(characteristicsHandle)
@@ -175,7 +177,7 @@ extension BluetoothManager: CBCentralManagerDelegate {
     }
 
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
-        Log.info("Disconnected: \(String(describing: error?.localizedDescription))")
+        Log.info("Disconnected peripheral \(peripheral) with error: \(String(describing: error?.localizedDescription))")
 
         charactieristicsMapping.removeAll()
 
@@ -184,8 +186,10 @@ extension BluetoothManager: CBCentralManagerDelegate {
         connect(to: peripheral)
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(10)) {
             guard peripheral.state != .connected else { return }
+            Log.info("Didn't connect with peripheral within 10s. Canceling peripheral connection.")
             self.cancelPeripheralConnection(for: peripheral)
             if self.featureFlagProvider.isFeatureOn(.standaloneMode) ?? false {
+                Log.info("Moving session to standalone mode")
                 self.mobilePeripheralSessionManager.moveSessionToStandaloneMode(peripheral: peripheral)
             } else {
                 self.mobilePeripheralSessionManager.finishSession(for: peripheral, centralManager: self.centralManager)
@@ -207,7 +211,7 @@ extension BluetoothManager: CBPeripheralDelegate {
     func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
         var hasSomeCharacteristics = false
         if let characteristics = service.characteristics {
-            remoteLog("BluetoothManager (didDiscoverCharacteristicsFor) - service characteristics\n \(String(describing: service.characteristics))")
+            Log.info("Did discover service characteristics\n")
             for characteristic in characteristics {
                 if MEASUREMENTS_CHARACTERISTIC_UUIDS.contains(characteristic.uuid) {
                     peripheral.setNotifyValue(true, for: characteristic)

@@ -40,7 +40,7 @@ extension HiddenCoreDataMeasurementStreamStorage {
 final class CoreDataMeasurementStreamStorage: MeasurementStreamStorage {
 
     @Injected private var persistenceController: PersistenceController
-    private lazy var updateSessionParamsService = UpdateSessionParamsService()
+    @Injected private var updateSessionParamsService: UpdateSessionParamsService
     private lazy var context: NSManagedObjectContext = persistenceController.editContext
     private lazy var hiddenStorage = HiddenCoreDataMeasurementStreamStorage(context: self.context)
 
@@ -81,7 +81,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         case missingSensorName
     }
 
-    private lazy var updateSessionParamsService = UpdateSessionParamsService()
+    @Injected private var updateSessionParamsService: UpdateSessionParamsService
     private let context: NSManagedObjectContext
 
     init(context: NSManagedObjectContext) {
@@ -179,7 +179,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
     }
 
     func createSessionAndMeasurementStream(_ session: Session, _ stream: MeasurementStream) throws -> MeasurementStreamLocalID {
-        let sessionEntity = SessionEntity(context: context)
+        let sessionEntity = newSessionEntity()
         updateSessionParamsService.updateSessionsParams(sessionEntity, session: session)
         return try saveMeasurementStream(for: sessionEntity, context: context, stream)
     }
@@ -195,8 +195,10 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         return session
     }
 
-    func updateMeasurements(stream: MeasurementStreamEntity, newMeasurements: NSOrderedSet) throws {
-        stream.measurements = newMeasurements
+    func removeAllMeasurements(in stream: MeasurementStreamEntity, except measurementsToLeave: [MeasurementEntity]) {
+        let idsToLeave = measurementsToLeave.map(\.objectID)
+        let measurementsToDelete = stream.allMeasurements?.filter { !idsToLeave.contains($0.objectID) } ?? []
+        measurementsToDelete.forEach { context.delete($0) }
     }
 
     private func saveMeasurementStream(for session: SessionEntity, context: NSManagedObjectContext, _ stream: MeasurementStream) throws -> MeasurementStreamLocalID {
@@ -228,11 +230,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
             threshold.thresholdHigh = stream.thresholdHigh
             threshold.thresholdVeryHigh = stream.thresholdVeryHigh
         }
-        // Save here is important so that NSManagedObjectID is not temporary.
-        try context.save()
-
-        try context.obtainPermanentIDs(for: [newStream])
-
+        
         return newStream.localID
     }
 
@@ -255,12 +253,22 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
 
         try context.save()
     }
+    
+    func updateSessionEndTimeWithoutUTCConversion(_ endTime: Date, for sessionUUID: SessionUUID) throws {
+        let sessionEntity = try context.existingSession(uuid: sessionUUID)
+        sessionEntity.endTime = endTime
+    }
 
     func updateSessionNameAndTags(name: String, tags: String, for sessionUUID: SessionUUID) throws {
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
         sessionEntity.name = name
         sessionEntity.tags = tags
         try context.save()
+    }
+    
+    func updateVersion(for sessionUUID: SessionUUID, to version: Int) throws {
+        let sessionEntity = try context.existingSession(uuid: sessionUUID)
+        sessionEntity.version = Int16(version)
     }
 
     func updateSessionFollowing(_ sessionFollowing: SessionFollowing, for sessionUUID: SessionUUID) {
@@ -270,6 +278,9 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
                 sessionEntity.followedAt = DateBuilder.getFakeUTCDate()
             } else {
                 sessionEntity.followedAt = nil
+                if let ui = sessionEntity.userInterface {
+                    context.delete(ui)
+                }
             }
             try context.save()
         } catch {
@@ -335,20 +346,20 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         noteEntity.date = note.date
         noteEntity.number = Int64(note.number)
         sessionEntity.addToNotes(noteEntity)
-        try context.save()
     }
 
     func updateNote(_ note: Note, newText: String, for sessionUUID: SessionUUID) throws {
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
-        let note = (sessionEntity.notes?.first(where: { ($0 as! NoteEntity).number == note.number }) as! NoteEntity)
-        note.text = newText
-        try context.save()
+        if let note = (sessionEntity.notes?.first(where: { ($0 as! NoteEntity).number == note.number }) as? NoteEntity) {
+            note.text = newText
+        }
     }
 
     func deleteNote(_ note: Note, for sessionUUID: SessionUUID) throws {
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
-        let note = (sessionEntity.notes?.first(where: { ($0 as! NoteEntity).number == note.number }) as! NoteEntity)
-        context.delete(note)
+        if let note = (sessionEntity.notes?.first(where: { ($0 as! NoteEntity).number == note.number }) as? NoteEntity) {
+            context.delete(note)
+        }
     }
 
     func getNotes(for sessionUUID: SessionUUID) throws -> [Note] {
@@ -380,9 +391,16 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
                     long: note.long,
                     number: Int(note.number))
     }
+    
+    private func newSessionEntity() -> SessionEntity {
+        let sessionEntity = SessionEntity(context: context)
+        let uiState = UIStateEntity(context: context)
+        uiState.session = sessionEntity
+        return sessionEntity
+    }
 
     func createSession(_ session: Session) throws {
-        let sessionEntity = SessionEntity(context: context)
+        let sessionEntity = newSessionEntity()
         updateSessionParamsService.updateSessionsParams(sessionEntity, session: session)
         try context.save()
     }

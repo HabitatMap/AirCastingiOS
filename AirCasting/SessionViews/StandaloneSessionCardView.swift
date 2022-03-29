@@ -13,16 +13,19 @@ struct StandaloneSessionCardView: View {
     @State private var alert: AlertInfo?
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 5) {
-            header
-            content
+        Group {
+            Spacer()
+            VStack(alignment: .leading, spacing: 5) {
+                header
+                content
+            }
+            .font(Fonts.regularHeading4)
+            .foregroundColor(.aircastingGray)
+            .padding()
+            .background(Color.white
+                            .shadow(color: .sessionCardShadow, radius: 9, x: 0, y: 1))
+            .overlay(Rectangle().frame(width: nil, height: 4, alignment: .top).foregroundColor(Color.red), alignment: .top)
         }
-        .font(Fonts.regularHeading4)
-        .foregroundColor(.aircastingGray)
-        .padding()
-        .background(Color.white
-                        .shadow(color: .sessionCardShadow, radius: 9, x: 0, y: 1))
-        .overlay(Rectangle().frame(width: nil, height: 4, alignment: .top).foregroundColor(Color.red), alignment: .top)
     }
 
     var header: some View {
@@ -39,6 +42,7 @@ struct StandaloneSessionCardView: View {
             Text(Strings.StandaloneSessionCardView.heading)
                 .font(Fonts.boldHeading3)
                 .foregroundColor(.darkBlue)
+                .multilineTextAlignment(.center)
             Text(Strings.StandaloneSessionCardView.description)
                 .multilineTextAlignment(.center)
             finishAndSyncButton
