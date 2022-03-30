@@ -201,7 +201,7 @@ extension Resolver: ResolverRegistering {
         
         //MARK: - Search and Follow
         main.register { SessionsForLocationDownloaderDefault() as SessionsForLocationDownloader }
-        main.register { SearchSessionStreamsDownstreamMock() as SearchSessionStreamsDownstream }
+        main.register { DefaultStreamDownloader() as StreamDownloader }
     }
     
     // MARK: - Composition helpers

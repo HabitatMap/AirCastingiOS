@@ -7,16 +7,16 @@ import Charts
 class SearchAndFollowChartViewModel: ObservableObject {
     @Published var entries: [ChartDataEntry] = []
     
-    init(stream: SearchSession.SearchSessionStream?) {
+    init(stream: StreamWithMeasurementsDownstream?) {
         guard let stream = stream else { return }
         generateEntries(for: stream)
     }
     
-    func setStream(to stream: SearchSession.SearchSessionStream) {
+    func setStream(to stream: StreamWithMeasurementsDownstream) {
         generateEntries(for: stream)
     }
     
-    private func generateEntries(for stream: SearchSession.SearchSessionStream) {
+    private func generateEntries(for stream: StreamWithMeasurementsDownstream) {
         entries = [
             .init(x: 0, y: 1),
             .init(x: 1, y: 3),
