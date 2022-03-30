@@ -78,6 +78,7 @@ final class SessionDownloadService: SessionDownstream, MeasurementsDownloadable 
             URLQueryItem(name: "uuid", value: uuid.rawValue),
             URLQueryItem(name: "stream_measurements", value: "true")
         ]
+        
         let url = urlComponents.url!
         var request = URLRequest(url: url)
         request.httpMethod = "GET"

@@ -11,23 +11,41 @@ struct SessionStreamViewModel: Identifiable {
     let lastMeasurementValue: Double
 }
 
+struct StreamWithMeasurementsDownstream: Decodable {
+    let title: String
+    let username: String
+    let measurements: [StreamWithMeasurementsDownstream.Measurements]
+    let id: Int
+    let lastMeasurementValue: Double
+    let sensorName: String
+    
+    struct Measurements: Decodable {
+        let value: Double
+        let time: Int
+        let longitude: Double
+        let latitude: Double
+    }
+}
+
 struct SearchSessionResult {
-    let uuid: SessionUUID
+    let id: String
     let name: String
     let startTime: Date
     let endTime: Date
     let longitude: Double
     let latitude: Double
+    let streamId: String
     
     static var mock: SearchSessionResult {
-        let session =  self.init(uuid: .init(rawValue: "ASD")!,
-                                 name: "Mock Session",
+        let session =  self.init(id: "202411",
+                                 name: "KAHULUI, MAUI",
                                  startTime: DateBuilder.getFakeUTCDate() - 60,
                                  endTime: DateBuilder.getFakeUTCDate(),
                                  longitude: 19.944544,
-                                 latitude: 50.049683)
+                                 latitude: 50.049683,
+                                 streamId: "499130")
         // ...
-                
+        
         return session
     }
 }
@@ -43,11 +61,12 @@ class CompleteScreenViewModel: ObservableObject {
     let sessionStartTime: Date
     let sessionEndTime: Date
     let sensorType: String
+    private var streamId: String
     @Published var sessionStreams: Loadable<[SessionStreamViewModel]> = .loading
     @Published var chartViewModel = SearchAndFollowChartViewModel(stream: nil)
     
     private let session: SearchSessionResult
-    @Injected private var service: SearchSessionStreamsDownstream
+    private var service = DefaultStreamDownloader()
     
     init(session: SearchSessionResult) {
         self.session = session
@@ -57,29 +76,27 @@ class CompleteScreenViewModel: ObservableObject {
         sessionStartTime = session.startTime
         sessionEndTime = session.endTime
         sensorType = "OpenAir"
+        streamId = session.streamId
         reloadData()
     }
     
     private func reloadData() {
         sessionStreams = .loading
-        service.downloadSession(uuid: session.uuid) { [weak self] result in
+        service.downloadStreamWithMeasurements(id: streamId) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .failure(let error):
                 Log.error("Failed to download session: \(error)")
-                self.alert = InAppAlerts.failedSessionDownloadAlert()
-            case .success(let downloadedSession):
-                self.sessionStreams = .ready(
-                    downloadedSession.streams.map({
-                        .init(id: $0.id,
-                              sensorName: Self.showStreamName($0.sensorName),
-                              lastMeasurementValue: $0.measurements.last?.value ?? 0)
-                    })
-                )
-                self.selectedStream = downloadedSession.streams.first?.id
-                if let stream = downloadedSession.streams.first {
-                    self.chartViewModel.setStream(to: stream)
+                DispatchQueue.main.async {
+                    self.alert = InAppAlerts.failedSessionDownloadAlert()
                 }
+            case .success(let downloadedStream):
+                self.sessionStreams = .ready(
+                    [.init(id: downloadedStream.id,
+                           sensorName: Self.showStreamName(downloadedStream.sensorName),
+                           lastMeasurementValue: downloadedStream.lastMeasurementValue)])
+                self.selectedStream = downloadedStream.id
+                self.chartViewModel.setStream(to: downloadedStream)
             }
         }
     }
