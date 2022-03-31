@@ -2,25 +2,28 @@
 //
 
 import Foundation
-import Charts
+import SwiftUI
+
+struct ChartDot {
+    let value: Double
+    let color: Color
+}
 
 class SearchAndFollowChartViewModel: ObservableObject {
-    @Published var entries: [ChartDataEntry] = []
+    @Published var entries: [ChartDot] = []
     
-    init(stream: StreamWithMeasurementsDownstream?) {
-        guard let stream = stream else { return }
-        generateEntries(for: stream)
+    let numberOfEntries = 9
+    
+    func generateEntries(with measurements: [Double], thresholds: ThresholdsValue) {
+        entries = measurements.suffix(9).map {
+            return ChartDot(value: $0, color: thresholds.colorFor(value: $0))
+        }
     }
     
-    func setStream(to stream: StreamWithMeasurementsDownstream) {
-        generateEntries(for: stream)
-    }
+//    private func intervalEndTime(for stream: StreamWithMeasurementsDownstream) -> Date? {
+//        guard let measurement = stream.measurements.last else { return nil }
+//        return DateBuilder.getDateWithTimeIntervalSinceReferenceDate(Double(measurement.time))
+//    }
     
-    private func generateEntries(for stream: StreamWithMeasurementsDownstream) {
-        entries = [
-            .init(x: 0, y: 1),
-            .init(x: 1, y: 3),
-            .init(x: 2, y: 2)
-        ]
-    }
+    
 }
