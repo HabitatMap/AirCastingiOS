@@ -69,7 +69,7 @@ private extension CompleteScreen {
                     streams.count != 1 ? Spacer() : nil
                     ForEach(streams) { stream in
                         let isSelected = stream.id == viewModel.selectedStream
-                        StaticSingleStreamView(streamName: stream.sensorName, value: stream.lastMeasurementValue, isSelected: isSelected) {
+                        StaticSingleStreamView(streamName: stream.sensorName, value: stream.lastMeasurementValue, color: stream.color, isSelected: isSelected) {
                             viewModel.selectedStream(with: stream.id)
                         }
                         Spacer()
