@@ -4,6 +4,22 @@
 import Foundation
 import Resolver
 
+struct StreamWithMeasurementsDownstream: Decodable {
+    let title: String
+    let username: String
+    let measurements: [StreamWithMeasurementsDownstream.Measurements]
+    let id: Int
+    let lastMeasurementValue: Double
+    let sensorName: String
+    
+    struct Measurements: Decodable {
+        let value: Double
+        let time: Int
+        let longitude: Double
+        let latitude: Double
+    }
+}
+
 protocol StreamDownloader {
     func downloadStreamWithMeasurements(id: String, completion: @escaping (Result<StreamWithMeasurementsDownstream, Error>) -> Void)
 }
@@ -24,7 +40,6 @@ class DefaultStreamDownloader: StreamDownloader {
         let urlComponentPart = urlProvider.baseAppURL.appendingPathComponent("api/fixed/streams/\(id).json")
         var urlComponents = URLComponents(string: urlComponentPart.absoluteString)!
         urlComponents.queryItems = [
-//            URLQueryItem(name: "uuid", value: "nill"),
             URLQueryItem(name: "measurements_limit", value: "1140")
         ]
         
