@@ -79,6 +79,16 @@ private extension CompleteScreen {
         .padding(.bottom)
     }
     
+    var chartDescription: some View {
+        HStack() {
+//            chartStartTime
+//            Spacer()
+//            charDescriptionText(stream: stream)
+//            Spacer()
+//            chartEndTime
+        }
+    }
+    
     var buttons: some View {
         HStack {
             Spacer()

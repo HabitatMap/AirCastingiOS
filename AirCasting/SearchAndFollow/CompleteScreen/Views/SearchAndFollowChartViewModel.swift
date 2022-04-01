@@ -15,15 +15,6 @@ class SearchAndFollowChartViewModel: ObservableObject {
     let numberOfEntries = 9
     
     func generateEntries(with measurements: [Double], thresholds: ThresholdsValue) {
-        entries = measurements.suffix(9).map {
-            return ChartDot(value: $0, color: thresholds.colorFor(value: $0))
-        }
+        entries = measurements.suffix(numberOfEntries).map { ChartDot(value: $0, color: thresholds.colorFor(value: $0)) }
     }
-    
-//    private func intervalEndTime(for stream: StreamWithMeasurementsDownstream) -> Date? {
-//        guard let measurement = stream.measurements.last else { return nil }
-//        return DateBuilder.getDateWithTimeIntervalSinceReferenceDate(Double(measurement.time))
-//    }
-    
-    
 }
