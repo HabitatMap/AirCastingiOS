@@ -6,8 +6,12 @@ import SwiftUI
 
 struct BottomCardView: View {
     @State var isModalScreenPresented = false
-    @Binding var cardPointer: Int
-    let dataModel: BottomCardModel
+    @StateObject var viewModel: BottomCardViewModel
+    private var onMarkerChangeAction: ((Int) -> ())? = nil
+    
+    init(id: Int, title: String, startTime: String, endTime: String, latitude: Double, longitude: Double) {
+        _viewModel = .init(wrappedValue: .init(id: id, title: title, startTime: startTime, endTime: endTime, latitude: latitude, longitude: longitude))
+    }
     
     var body: some View {
         sessionCard
@@ -15,10 +19,11 @@ struct BottomCardView: View {
     
     var sessionCard: some View {
         Button {
-            onButtonClick()
+            isModalScreenPresented.toggle()
+            onMarkerChangeAction?(viewModel.dataModel.id)
         } label: {
             VStack(alignment: .leading, spacing: 5) {
-                Text(dataModel.title)
+                Text(viewModel.dataModel.title)
                     .foregroundColor(.darkBlue)
                     .multilineTextAlignment(.leading)
                     .lineLimit(3)
@@ -31,7 +36,7 @@ struct BottomCardView: View {
                     .scaledToFit()
             }
         }
-        .sheet(isPresented: $isModalScreenPresented, content: { initCompleteScreen() })
+        .sheet(isPresented: $isModalScreenPresented, content: { viewModel.initCompleteScreen() })
         .frame(width: UIScreen.main.bounds.width / 2, height: UIScreen.main.bounds.height / 9, alignment: .leading)
         .padding([.all], 10)
         .background(
@@ -43,45 +48,17 @@ struct BottomCardView: View {
     }
 }
 
-// MARK: - Private View Components and Methods
+// MARK: - Private View Components
 private extension BottomCardView {
     var dataAndTime: some View {
-        adaptTimeAndDate()
+        Text(viewModel.adaptTimeAndDate())
     }
-    
-    func adaptTimeAndDate() -> Text {
-        let formatter = DateFormatters.SessionCartView.utcDateIntervalFormatter
-        let start = startTimeAsDate()
-        let end = endTimeAsDate()
-        let string = formatter.string(from: start, to: end)
-        return Text(string)
-    }
-    
-    func startTimeAsDate() -> Date {
-        let formatter = DateFormatters.SearchAndFollow.timeFormatter
-        let date = formatter.date(from: dataModel.startTime)
-        guard let d = date else { return Date() }
-        return d
-    }
-    
-    func endTimeAsDate() -> Date {
-        let formatter = DateFormatters.SearchAndFollow.timeFormatter
-        let date = formatter.date(from: dataModel.endTime)
-        guard let d = date else { return Date() }
-        return d
-    }
-    
-    func onButtonClick() {
-        cardPointer = dataModel.id
-        isModalScreenPresented.toggle()
-    }
-    
-    func initCompleteScreen() -> CompleteScreen {
-        CompleteScreen(session: .init(uuid: .init(rawValue: "\(dataModel.id)") ?? .init(),
-                                      name: dataModel.title,
-                                      startTime: startTimeAsDate(),
-                                      endTime: endTimeAsDate(),
-                                      longitude: dataModel.longitude,
-                                      latitude: dataModel.latitude))
+}
+
+extension BottomCardView {
+    func onMarkerChange(action: @escaping (_ pointer: Int) -> ()) -> Self {
+        var newSelf = self
+        newSelf.onMarkerChangeAction = action
+        return newSelf
     }
 }

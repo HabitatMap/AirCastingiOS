@@ -13,15 +13,15 @@ struct SearchAndFollowMap: UIViewRepresentable {
     var startingPoint: CLLocationCoordinate2D
     @Binding var showSearchAgainButton: Bool
     @Binding var sessions: [MapSessionMarker]
-    @State var markerWasTapped: Bool = false
-    @Binding var pointerID: Int
+    @Binding var selectedPointerID: Int
     private var onPositionChangeAction: ((GeoSquare) -> ())? = nil
+    private var onMarkerChangeAction: ((Int) -> ())? = nil
     
-    init(startingPoint: CLLocationCoordinate2D, showSearchAgainButton: Binding<Bool>, sessions: Binding<[MapSessionMarker]>, pointerID: Binding<Int>) {
+    init(startingPoint: CLLocationCoordinate2D, showSearchAgainButton: Binding<Bool>, sessions: Binding<[MapSessionMarker]>, selectedPointerID: Binding<Int>) {
         self.startingPoint = startingPoint
         self._showSearchAgainButton = .init(projectedValue: showSearchAgainButton)
         self._sessions = .init(projectedValue: sessions)
-        self._pointerID = .init(projectedValue: pointerID)
+        self._selectedPointerID = .init(projectedValue: selectedPointerID)
     }
     
     /// Adds an action for when the map viewport is changed.
@@ -29,6 +29,12 @@ struct SearchAndFollowMap: UIViewRepresentable {
     func onPositionChange(action: @escaping (_ geoSquare: GeoSquare) -> ()) -> Self {
         var newSelf = self
         newSelf.onPositionChangeAction = action
+        return newSelf
+    }
+    
+    func onMarkerChange(action: @escaping (_ pointer: Int) -> ()) -> Self {
+        var newSelf = self
+        newSelf.onMarkerChangeAction = action
         return newSelf
     }
     
@@ -54,8 +60,8 @@ struct SearchAndFollowMap: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: GMSMapView, context: Context) {
-        if pointerID != context.coordinator.pointerIdHolder {
-            context.coordinator.pointerIdHolder = pointerID
+        if selectedPointerID != context.coordinator.pointerIdHolder {
+            context.coordinator.pointerIdHolder = selectedPointerID
             placeDots(uiView, context: context)
         }
         if !showSearchAgainButton {
@@ -80,7 +86,7 @@ struct SearchAndFollowMap: UIViewRepresentable {
         DispatchQueue.main.async {
             sessions.forEach { session in
                 let marker = GMSMarker()
-                let markerImage = ((session.id == pointerID) ? session.markerImage.scalePreservingAspectRatio(targetSize: CGSize(width: 35, height: 35)) : session.markerImage)
+                let markerImage = ((session.id == selectedPointerID) ? session.markerImage.scalePreservingAspectRatio(targetSize: CGSize(width: 35, height: 35)) : session.markerImage)
                 let markerView = UIImageView(image: markerImage.withRenderingMode(.alwaysTemplate))
                 markerView.tintColor = .accentColor
                 marker.position = session.location
@@ -117,8 +123,12 @@ struct SearchAndFollowMap: UIViewRepresentable {
         }
         
         func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
-            self.parent.pointerID = marker.userData as! Int
-            self.parent.markerWasTapped = true
+            guard let newPointerID = marker.userData as? Int else {
+                Log.error("To continue the program ensure yourself why newPointerID is not and INT!")
+                assertionFailure()
+                return true
+            }
+            parent.onMarkerChangeAction?(newPointerID)
             return true
         }
         

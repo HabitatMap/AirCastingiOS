@@ -441,6 +441,7 @@
 		DDF62601269C779800F23489 /* UIApplication+AppInfo.swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF62600269C779800F23489 /* UIApplication+AppInfo.swift.swift */; };
 		DDF7599A268332E900D906BA /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF75999268332E900D906BA /* Strings.swift */; };
 		EE969E7E1981C41852FB7745 /* Pods_AirCastingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A54057326D27D23E9906704 /* Pods_AirCastingTests.framework */; };
+		FAB1D4A427FAD83E004F531D /* BottomCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB1D4A327FAD83E004F531D /* BottomCardViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -898,6 +899,7 @@
 		DDF551D427985AAB009D1347 /* AirCasting v2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AirCasting v2.xcdatamodel"; sourceTree = "<group>"; };
 		DDF62600269C779800F23489 /* UIApplication+AppInfo.swift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+AppInfo.swift.swift"; sourceTree = "<group>"; };
 		DDF75999268332E900D906BA /* Strings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Strings.swift; sourceTree = "<group>"; };
+		FAB1D4A327FAD83E004F531D /* BottomCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomCardViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2054,6 +2056,7 @@
 				DD123EBE27BD1CD3001083C3 /* SearchMapView.swift */,
 				DD123EC127BD2C53001083C3 /* SearchMapViewModel.swift */,
 				DD22F0FC27D668DD00CB8B97 /* BottomCard.swift */,
+				FAB1D4A327FAD83E004F531D /* BottomCardViewModel.swift */,
 				DD6CD56127F31D040044F843 /* BottomCardModel.swift */,
 			);
 			path = SearchMap;
@@ -2642,6 +2645,7 @@
 				B30BAC1D2694AABC00AE0476 /* MeasurementStatisticsTypes.swift in Sources */,
 				B32D08AF267A6D13006C97ED /* ErasingToVoidPublisher.swift in Sources */,
 				DD4108FA273BE94D00BF10FF /* CreateSessionDetailsViewModel.swift in Sources */,
+				FAB1D4A427FAD83E004F531D /* BottomCardViewModel.swift in Sources */,
 				B30BAC022694A89100AE0476 /* StatisticsContainerViewModel.swift in Sources */,
 				B3F1447A26AE436A006A4612 /* FilterErrorPublisher.swift in Sources */,
 				ACCEB21B2763A2230040140B /* ClearingSDCardView.swift in Sources */,

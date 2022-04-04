@@ -17,6 +17,7 @@ class SearchMapViewModel: ObservableObject {
     @Published var alert: AlertInfo?
     @Published var shouldDismissView: Bool = false
     @Published var cardPointerID: Int = -1
+    @Published var shouldCardsScroll: Bool = false
     private var currentPosition: GeoSquare?
     
     init(passedLocation: String, passedLocationAddress: CLLocationCoordinate2D, measurementType: String) {
@@ -41,6 +42,11 @@ class SearchMapViewModel: ObservableObject {
             searchAgainButton = true
         }
         currentPosition = geoSquare
+    }
+    
+    func markerPositionChanged(using point: Int) {
+        self.cardPointerID = point
+        shouldCardsScroll.toggle()
     }
     
     private func updateSessionList(geoSquare: GeoSquare) {
