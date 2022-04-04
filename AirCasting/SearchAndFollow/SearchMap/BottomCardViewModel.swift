@@ -4,11 +4,15 @@
 import Foundation
 
 class BottomCardViewModel: ObservableObject {
+    @Published private var isModalScreenPresented = false
     let dataModel: BottomCardModel
     
     init(id: Int, title: String, startTime: String, endTime: String, latitude: Double, longitude: Double) {
         dataModel = .init(id: id, title: title, startTime: startTime, endTime: endTime, latitude: latitude, longitude: longitude)
     }
+    
+    func getIsModalScreenPresented() -> Bool { isModalScreenPresented }
+    func setIsModalScreenPresented() { isModalScreenPresented.toggle() }
     
     func adaptTimeAndDate() -> String {
         let formatter = DateFormatters.SessionCartView.utcDateIntervalFormatter

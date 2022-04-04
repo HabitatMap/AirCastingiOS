@@ -5,7 +5,6 @@ import Foundation
 import SwiftUI
 
 struct BottomCardView: View {
-    @State var isModalScreenPresented = false
     @StateObject var viewModel: BottomCardViewModel
     private var onMarkerChangeAction: ((Int) -> ())? = nil
     
@@ -19,7 +18,7 @@ struct BottomCardView: View {
     
     var sessionCard: some View {
         Button {
-            isModalScreenPresented.toggle()
+            viewModel.setIsModalScreenPresented()
             onMarkerChangeAction?(viewModel.dataModel.id)
         } label: {
             VStack(alignment: .leading, spacing: 5) {
@@ -36,8 +35,12 @@ struct BottomCardView: View {
                     .scaledToFit()
             }
         }
-        .sheet(isPresented: $isModalScreenPresented, content: { viewModel.initCompleteScreen() })
-        .frame(width: UIScreen.main.bounds.width / 2, height: UIScreen.main.bounds.height / 9, alignment: .leading)
+        .sheet(isPresented: .init(get: {
+            viewModel.getIsModalScreenPresented()
+        }, set: { _ in
+            viewModel.setIsModalScreenPresented()
+        }), content: { viewModel.initCompleteScreen() })
+        .frame(width: 200, alignment: .leading)
         .padding([.all], 10)
         .background(
             Group {
