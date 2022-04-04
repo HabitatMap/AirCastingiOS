@@ -41,6 +41,7 @@ private extension NearAirDescription {
             .foregroundColor(.accentColor)
             .multilineTextAlignment(.leading)
             .padding(.bottom, 30)
+            .scaledToFill()
     }
     
     private var descriptionText: some View {
