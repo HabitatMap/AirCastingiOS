@@ -908,6 +908,14 @@ struct Strings {
     enum SearchView {
         static let title: String = NSLocalizedString("Search fixed sessions", comment: "")
         static let placeholder: String = NSLocalizedString("Session location", comment: "")
+        static let parametersQuestion: String = NSLocalizedString("Which parameter are you intrested in?", comment: "")
+        static let sensorQuestion: String = NSLocalizedString("Which sensor are you intrested in?", comment: "")
+        static let ozoneText: String = NSLocalizedString("Ozone", comment: "")
+        static let particularMatterText: String = NSLocalizedString("Particular matter", comment: "")
+        static let AirBeam325: String = NSLocalizedString("AirBeam3-PM2.5(µg/m³)", comment: "")
+        static let AirBeam225: String = NSLocalizedString("AirBeam3-PM2.5(µg/m³)", comment: "")
+        static let openAQ: String = NSLocalizedString("OpenAQ-PM2.5(µg/m³)", comment: "")
+        static let openAQOzone: String = NSLocalizedString("OpenAQ-O3(ppb)", comment: "")
     }
     
     enum CompleteSearchView {
@@ -988,7 +996,9 @@ struct Strings {
     enum SearchMapView {
         static let loadingText: String = NSLocalizedString("Loading sessions.",
                                                               comment: "")
-        static let parameterText: String = NSLocalizedString("Showing results for: %@",
+        static let parameterText: String = NSLocalizedString("Results for: %@",
+                                                              comment: "")
+        static let sensorText: String = NSLocalizedString("using: %@",
                                                               comment: "")
         static let redoText: String = NSLocalizedString("Redo Search in Map",
                                                               comment: "")

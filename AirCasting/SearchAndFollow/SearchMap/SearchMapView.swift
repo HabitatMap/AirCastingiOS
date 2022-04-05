@@ -11,8 +11,11 @@ struct SearchMapView: View {
     @Environment(\.presentationMode) var presentationMode
     @State var showCompleteScreen = false
     
-    init(locationName: String, locationAddress: CLLocationCoordinate2D, measurementType: String) {
-        _viewModel = .init(wrappedValue: .init(passedLocation: locationName, passedLocationAddress: locationAddress, measurementType: measurementType))
+    init(locationName: String, locationAddress: CLLocationCoordinate2D, parameterType: MapDownloaderMeasurementType, sensorType: MapDownloaderSensorType) {
+        _viewModel = .init(wrappedValue: .init(passedLocation: locationName,
+                                               passedLocationAddress: locationAddress,
+                                               measurementType: parameterType,
+                                               sensorType: sensorType))
     }
     
     var body: some View {
@@ -22,7 +25,11 @@ struct SearchMapView: View {
             }
             VStack(alignment: .center, content: {
                 addressTextField
-                measurementTypeText
+                HStack {
+                    measurementTypeText
+                    Spacer()
+                    sensorTypeText
+                }
                 searchAgainButton
                 // This is temporary untill we implement clickable cards
                 Spacer()
@@ -47,8 +54,17 @@ private extension SearchMapView {
     }
     
     var measurementTypeText: some View {
-        Text(String(format: Strings.SearchMapView.parameterText, arguments: [viewModel.measurementType]))
-            .font(.muli(size: 16, weight: .semibold))
+        Text(String(format: Strings.SearchMapView.parameterText, arguments: [viewModel.measurementType.name]))
+            .font(Fonts.semiboldHeading2)
+            .lineLimit(1)
+            .scaledToFit()
+    }
+    
+    var sensorTypeText: some View {
+        Text(String(format: Strings.SearchMapView.sensorText, arguments: [viewModel.sensorType.name]))
+            .font(Fonts.semiboldHeading2)
+            .lineLimit(1)
+            .scaledToFit()
     }
     
     var searchAgainButton: some View {

@@ -9,7 +9,8 @@ import Resolver
 class SearchMapViewModel: ObservableObject {
     let passedLocation: String
     let passedLocationAddress: CLLocationCoordinate2D
-    let measurementType: String
+    let measurementType: MapDownloaderMeasurementType
+    let sensorType: MapDownloaderSensorType
     @Injected private var mapSessionsDownloader: SessionsForLocationDownloader
     @Published var sessionsList = [MapSessionMarker]()
     @Published var searchAgainButton: Bool = false
@@ -18,10 +19,11 @@ class SearchMapViewModel: ObservableObject {
     @Published var shouldDismissView: Bool = false
     private var currentPosition: GeoSquare?
     
-    init(passedLocation: String, passedLocationAddress: CLLocationCoordinate2D, measurementType: String) {
+    init(passedLocation: String, passedLocationAddress: CLLocationCoordinate2D, measurementType: MapDownloaderMeasurementType, sensorType: MapDownloaderSensorType) {
         self.passedLocation = passedLocation
         self.passedLocationAddress = passedLocationAddress
         self.measurementType = measurementType
+        self.sensorType = sensorType
     }
     
     func redoTapped() {
@@ -49,7 +51,11 @@ class SearchMapViewModel: ObservableObject {
         let timeFrom = DateBuilder.getRawDate().yearAgo.beginingOfDayInSeconds
         let timeTo = DateBuilder.getRawDate().endOfDayInSeconds
         
-        mapSessionsDownloader.getSessions(geoSquare: geoSquare, timeFrom: timeFrom, timeTo: timeTo) { result in
+        mapSessionsDownloader.getSessions(geoSquare: geoSquare,
+                                          timeFrom: timeFrom,
+                                          timeTo: timeTo,
+                                          parameter: measurementType,
+                                          sensor: sensorType) { result in
             DispatchQueue.main.async { self.showLoadingIndicator = false }
             switch result {
             case .success(let sessions):

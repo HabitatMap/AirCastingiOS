@@ -18,6 +18,21 @@ struct SearchView: View {
         VStack(alignment: .leading) {
             title
             textField
+            parametersQuestion
+            HStack(spacing: 12) {
+                particularMatterButton
+                ozoneButton
+            }
+            sensorQuestion
+            if viewModel.shoudShowPMChoiceSheet {
+                    OpenAQ
+                    .padding(.bottom, 5)
+                    ABP325
+                    .padding(.bottom, 5)
+                    ABP225
+            } else {
+                OzoneSensor
+            }
             Spacer()
             button
         }.padding()
@@ -62,11 +77,84 @@ private extension SearchView {
             .onTapGesture { viewModel.textFieldTapped() }
     }
     
+    var parametersQuestion: some View {
+        Text(Strings.SearchView.parametersQuestion)
+            .padding(.top, 20)
+            .font(Fonts.mediumHeading2)
+            .foregroundColor(.aircastingDarkGray)
+    }
+    
+    var sensorQuestion: some View {
+        Text(Strings.SearchView.sensorQuestion)
+            .padding(.top, 20)
+            .font(Fonts.mediumHeading2)
+            .foregroundColor(.aircastingDarkGray)
+    }
+    
+    var ozoneButton: some View {
+        Button {
+            withAnimation(.easeInOut(duration: 0.3), {
+                viewModel.onOzoneButtonTap()
+            })
+        } label: {
+            Text(Strings.SearchView.ozoneText)
+                .padding([.all], 5)
+        }.buttonStyle(MultiSelectButtonStyle(isSelected: viewModel.isOzone))
+    }
+    
+    var particularMatterButton: some View {
+        Button {
+            withAnimation(.easeInOut(duration: 0.3), {
+                viewModel.onPMButtonTap()
+            })
+        } label: {
+            Text(Strings.SearchView.particularMatterText)
+                .padding([.all], 5)
+        }.buttonStyle(MultiSelectButtonStyle(isSelected: viewModel.isPM))
+    }
+    
+    var ABP325: some View {
+        Button {
+            viewModel.onAB325ButtonTap()
+        } label: {
+            Text(Strings.SearchView.AirBeam325)
+                .padding([.all], 5)
+        }.buttonStyle(MultiSelectButtonStyle(isSelected: viewModel.isAB325))
+    }
+    
+    var ABP225: some View {
+        Button {
+            viewModel.onAB225ButtonTap()
+        } label: {
+            Text(Strings.SearchView.AirBeam225)
+                .padding([.all], 5)
+        }.buttonStyle(MultiSelectButtonStyle(isSelected: viewModel.isAB225))
+    }
+    
+    var OpenAQ: some View {
+        Button {
+            viewModel.onOpenAQButtonTap()
+        } label: {
+            Text(Strings.SearchView.openAQ)
+                .padding([.all], 5)
+        }.buttonStyle(MultiSelectButtonStyle(isSelected: viewModel.isOpenAQ))
+    }
+    
+    var OzoneSensor: some View {
+        Button {
+            viewModel.onOzoneSensorButtonTap()
+        } label: {
+            Text(Strings.SearchView.openAQOzone)
+                .padding([.all], 5)
+        }.buttonStyle(MultiSelectButtonStyle(isSelected: viewModel.isOzoneSensor))
+    }
+    
     var button: some View {
         return NavigationLink(
             destination: SearchMapView(locationName: viewModel.addressName,
                                        locationAddress: viewModel.addresslocation,
-                                       measurementType: "particular matter"),
+                                       parameterType: viewModel.getParameter,
+                                       sensorType: viewModel.getSensor),
             label: {
                 Text(Strings.Commons.continue)
             })

@@ -32,6 +32,7 @@ struct Fonts {
     
     static let semiboldHeading1: Font = Font.moderate(size: 16, weight: .semibold)
     static let semiboldHeading2: Font = Font.muli(size: 13, weight: .semibold)
+    static let semiboldHeading3: Font = Font.muli(size: 16, weight: .semibold)
     
     static let regularHeading1: Font = Font.moderate(size: 18, weight: .regular)
     static let regularHeading2: Font = Font.moderate(size: 16, weight: .regular)
@@ -40,6 +41,7 @@ struct Fonts {
     static let regularHeading5: Font = Font.moderate(size: 10, weight: .regular)
     
     static let mediumHeading1: Font = Font.muli(size: 16, weight: .medium)
+    static let mediumHeading2: Font = Font.muli(size: 14, weight: .medium)
     
     static let systemFont1: Font = Font.system(size: 13)
     
