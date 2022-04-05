@@ -25,14 +25,14 @@ class BottomCardViewModel: ObservableObject {
     func startTimeAsDate() -> Date {
         let formatter = DateFormatters.SearchAndFollow.timeFormatter
         let date = formatter.date(from: dataModel.startTime)
-        guard let d = date else { return Date() }
+        guard let d = date else { return DateBuilder.getFakeUTCDate() }
         return d
     }
     
     func endTimeAsDate() -> Date {
         let formatter = DateFormatters.SearchAndFollow.timeFormatter
         let date = formatter.date(from: dataModel.endTime)
-        guard let d = date else { return Date() }
+        guard let d = date else { return DateBuilder.getFakeUTCDate() }
         return d
     }
     
