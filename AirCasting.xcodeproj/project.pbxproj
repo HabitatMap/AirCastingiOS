@@ -1307,7 +1307,6 @@
 				AC7EB37725A6FB3A00A7F2AF /* MainTabBarView.swift */,
 				DD430AFE2670BB3000F1BF2E /* Onboarding */,
 				AC9F52682652A360003CF61F /* Dashboard */,
-				DDDA056327DF2A5100C6B9B9 /* GeoSquare */,
 				DD123EBD27BD1CA8001083C3 /* SearchAndFollow */,
 				ACF7C05D260CC9DB007C24AE /* Services */,
 				338C30E025F1042000E0305C /* CoreData */,
@@ -2276,13 +2275,6 @@
 				DDD24D9326A8569300D4A327 /* ResetPasswordService.swift */,
 			);
 			path = Controller;
-			sourceTree = "<group>";
-		};
-		DDDA056327DF2A5100C6B9B9 /* GeoSquare */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = GeoSquare;
 			sourceTree = "<group>";
 		};
 		DDDCEC3727D0C89F00B3757C /* DateBuilderTests */ = {
