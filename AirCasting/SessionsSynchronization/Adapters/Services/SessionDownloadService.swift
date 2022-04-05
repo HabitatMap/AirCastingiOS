@@ -39,7 +39,7 @@ final class SessionDownloadService: SessionDownstream, MeasurementsDownloadable 
     }
     
     private func download(session: SessionUUID, completion: @escaping (Result<SessionsSynchronization.SessionDownstreamData, Error>) -> Void) -> Cancellable {
-        let urlComponentPart = urlProvider.baseAppURL.appendingPathComponent("api/user/sessions/update_session.json")
+        let urlComponentPart = urlProvider.baseAppURL.appendingPathComponent("api/user/sessions/empty.json")
         var urlComponents = URLComponents(string: urlComponentPart.absoluteString)!
         urlComponents.queryItems = [
             URLQueryItem(name: "uuid", value: session.rawValue)
