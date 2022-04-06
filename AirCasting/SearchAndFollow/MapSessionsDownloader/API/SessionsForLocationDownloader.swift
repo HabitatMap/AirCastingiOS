@@ -34,7 +34,7 @@ class SessionsForLocationDownloaderDefault: SessionsForLocationDownloader {
                                        north: geoSquare.north,
                                        limit: 100,
                                        offset: 0,
-                                       sensorName: "openaq-pm2.5",
+                                       sensorName: "airbeam-pm2.5",
                                        measurementType: MapDownloaderMeasurementType.particulateMatter.name,
                                        unitSymbol: MapDownloaderUnitSymbol.uqm3.name)
         do {

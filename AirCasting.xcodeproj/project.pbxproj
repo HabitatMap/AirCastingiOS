@@ -693,6 +693,7 @@
 		B32D08AC267A6437006C97ED /* LogEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogEvent.swift; sourceTree = "<group>"; };
 		B32D08AE267A6D13006C97ED /* ErasingToVoidPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErasingToVoidPublisher.swift; sourceTree = "<group>"; };
 		B3332F59275D61B000789BAD /* Int+orOne.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+orOne.swift"; sourceTree = "<group>"; };
+		B336551A27FDBFA000B593BB /* AirCasting v5.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AirCasting v5.xcdatamodel"; sourceTree = "<group>"; };
 		B338934727A026BC0059E79B /* ConveringStatisticsDataSourceDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConveringStatisticsDataSourceDecorator.swift; sourceTree = "<group>"; };
 		B33B15E727AEE68100138FFA /* TextFileTrimmer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextFileTrimmer.swift; sourceTree = "<group>"; };
 		B33B15EA27AEE69900138FFA /* DocumentsFileLoggerStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentsFileLoggerStore.swift; sourceTree = "<group>"; };
@@ -3444,6 +3445,7 @@
 		338C30E625F10BFE00E0305C /* AirCasting.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				B336551A27FDBFA000B593BB /* AirCasting v5.xcdatamodel */,
 				DD2DDBA927B517CD00807011 /* AirCasting v4.xcdatamodel */,
 				338FE86027AAB0F1006148DA /* AirCasting v3.xcdatamodel */,
 				DDF551D427985AAB009D1347 /* AirCasting v2.xcdatamodel */,

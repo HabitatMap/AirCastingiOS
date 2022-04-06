@@ -35,7 +35,7 @@ struct SearchMapView: View {
                 result ? self.presentationMode.wrappedValue.dismiss() : nil
             })
             .alert(item: $viewModel.alert, content: { $0.makeAlert() })
-            .sheet(isPresented: $showCompleteScreen, content: { CompleteScreen(session: SearchSessionResult.mock) })
+            .sheet(isPresented: $showCompleteScreen, content: { CompleteScreen(session: CompleteScreenViewModel.PartialExternalSession.mock) })
     }
 }
 

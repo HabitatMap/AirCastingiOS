@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="19574" systemVersion="20E241" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="ExternalSessionEntity" representedClassName="ExternalSessionEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="endTime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="id" optional="YES" attributeType="String"/>
+        <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="provider" optional="YES" attributeType="String"/>
+        <attribute name="sensorName" optional="YES" attributeType="String"/>
+        <attribute name="startTime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="measurementStreams" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MeasurementStreamEntity" inverseName="externalSession" inverseEntity="MeasurementStreamEntity"/>
+    </entity>
     <entity name="MeasurementEntity" representedClassName="MeasurementEntity" syncable="YES">
         <attribute name="averagingWindow" optional="YES" attributeType="Integer 64" defaultValueString="1" usesScalarValueType="YES"/>
         <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
@@ -23,6 +34,7 @@
         <attribute name="thresholdVeryLow" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="unitName" optional="YES" attributeType="String"/>
         <attribute name="unitSymbol" optional="YES" attributeType="String"/>
+        <relationship name="externalSession" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ExternalSessionEntity" inverseName="measurementStreams" inverseEntity="ExternalSessionEntity"/>
         <relationship name="measurements" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="MeasurementEntity" inverseName="measurementStream" inverseEntity="MeasurementEntity"/>
         <relationship name="session" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SessionEntity" inverseName="measurementStreams" inverseEntity="SessionEntity"/>
     </entity>
@@ -73,8 +85,9 @@
         <relationship name="session" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SessionEntity" inverseName="userInterface" inverseEntity="SessionEntity"/>
     </entity>
     <elements>
-        <element name="MeasurementEntity" positionX="147.2987670898438" positionY="-70.14356994628906" width="128" height="133"/>
-        <element name="MeasurementStreamEntity" positionX="-63.7001953125" positionY="128.3192749023438" width="128" height="254"/>
+        <element name="ExternalSessionEntity" positionX="135" positionY="81" width="128" height="164"/>
+        <element name="MeasurementEntity" positionX="147.2987670898438" positionY="-70.14356994628906" width="128" height="134"/>
+        <element name="MeasurementStreamEntity" positionX="-63.7001953125" positionY="128.3192749023438" width="128" height="269"/>
         <element name="NoteEntity" positionX="452.0951538085938" positionY="347.4150085449219" width="128" height="119"/>
         <element name="SensorThreshold" positionX="388.8433837890625" positionY="56.29141235351562" width="128" height="133"/>
         <element name="SessionEntity" positionX="192.664794921875" positionY="224.3333435058594" width="128" height="374"/>
