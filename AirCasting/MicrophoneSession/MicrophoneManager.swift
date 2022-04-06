@@ -19,7 +19,7 @@ final class MicrophoneManager: NSObject, ObservableObject {
     private let measurementStreamStorage: MeasurementStreamStorage
     private var measurementStreamLocalID: MeasurementStreamLocalID?
 
-    //This variable is used to block recording more than one microphone session at a time
+    // This variable is used to block recording more than one microphone session at a time
     private(set) var isRecording = false {
         didSet { isRecording ? interruptionHandler.resume() : interruptionHandler.pause() }
     }
@@ -55,12 +55,12 @@ final class MicrophoneManager: NSObject, ObservableObject {
         createMeasurementStream(for: session) { [weak self] result in
             switch result {
             case .success:
-                if !session.locationless {
-                    self?.locationProvider.requestLocation()
-                }
-                self?.isRecording = true
                 if recorder.record() {
                     DispatchQueue.main.async {
+                        self?.isRecording = true
+                        if !session.locationless {
+                            self?.locationProvider.requestLocation()
+                        }
                         self?.levelTimer = self?.createTimer()
                     }
                 }
