@@ -21,10 +21,12 @@ class MobilePeripheralSessionManager {
         measurementStreamStorage.accessStorage { [weak self] storage in
             do {
                 try storage.createSession(session)
-                if !session.locationless {
-                    self?.locationProvider.requestLocation()
+                DispatchQueue.main.async {
+                    if !session.locationless {
+                        self?.locationProvider.requestLocation()
+                    }
+                    self?.activeMobileSession = MobileSession(peripheral: peripheral, session: session)
                 }
-                self?.activeMobileSession = MobileSession(peripheral: peripheral, session: session)
             } catch {
                 Log.info("\(error)")
             }
