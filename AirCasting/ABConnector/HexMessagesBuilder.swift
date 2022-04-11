@@ -86,11 +86,15 @@ struct HexMessagesBuilder {
     
     func asciToHex(asciStr: String) -> String {
         var outputString = ""
-        
         for character in asciStr {
-            let asci = character.asciiValue
-            let hex = String(format: "%02hhx", asci!)
-            outputString.append(hex)
+            if let asci = character.asciiValue {
+                let hex = String(format: "%02hhx", asci)
+                outputString.append(hex)
+            } else {
+                let data = Data(character.utf8)
+                let hex = data.map{ String(format:"%02hhx", $0) }.joined()
+                outputString.append(hex)
+            }
         }
         return outputString
     }
