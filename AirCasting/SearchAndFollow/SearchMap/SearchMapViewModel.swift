@@ -6,6 +6,19 @@ import CoreLocation
 import SwiftUI
 import Resolver
 
+enum PointerValue {
+    case value(of: Int)
+    case noValue
+    
+    var number: Int {
+        switch self {
+        case .noValue: return -1
+        case .value(of: let value):
+            return value
+        }
+    }
+}
+
 class SearchMapViewModel: ObservableObject {
     let passedLocation: String
     let passedLocationAddress: CLLocationCoordinate2D
@@ -16,7 +29,7 @@ class SearchMapViewModel: ObservableObject {
     @Published var showLoadingIndicator: Bool = false
     @Published var alert: AlertInfo?
     @Published var shouldDismissView: Bool = false
-    @Published var cardPointerID: Int = -1
+    @Published var cardPointerID: PointerValue = .noValue
     @Published var shouldCardsScroll: Bool = false
     private var currentPosition: GeoSquare?
     
@@ -33,6 +46,7 @@ class SearchMapViewModel: ObservableObject {
         }
         updateSessionList(geoSquare: currentPosition)
         searchAgainButton = false
+        cardPointerID = .noValue
     }
     
     func mapPositionsChanged(geoSquare: GeoSquare) {
@@ -44,8 +58,8 @@ class SearchMapViewModel: ObservableObject {
         currentPosition = geoSquare
     }
     
-    func markerPositionChanged(using point: Int) {
-        self.cardPointerID = point
+    func markerSelectionChanged(using point: Int) {
+        self.cardPointerID = .value(of: point)
         shouldCardsScroll.toggle()
     }
     

@@ -2,6 +2,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 class BottomCardViewModel: ObservableObject {
     @Published private var isModalScreenPresented = false
@@ -12,7 +13,11 @@ class BottomCardViewModel: ObservableObject {
     }
     
     func getIsModalScreenPresented() -> Bool { isModalScreenPresented }
-    func setIsModalScreenPresented() { isModalScreenPresented.toggle() }
+    func setIsModalScreenPresented(using v: Bool) { isModalScreenPresented = v }
+    
+    func sessionCardTapped() {
+        setIsModalScreenPresented(using: true)
+    }
     
     func adaptTimeAndDate() -> String {
         let formatter = DateFormatters.SessionCartView.utcDateIntervalFormatter
@@ -42,6 +47,11 @@ class BottomCardViewModel: ObservableObject {
                                       startTime: startTimeAsDate(),
                                       endTime: endTimeAsDate(),
                                       longitude: dataModel.longitude,
-                                      latitude: dataModel.latitude))
+                                      latitude: dataModel.latitude),
+                       presentationMode: .init(get: {
+            self.getIsModalScreenPresented()
+        }, set: { value in
+            self.setIsModalScreenPresented(using: value)
+        }))
     }
 }

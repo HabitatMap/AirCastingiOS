@@ -50,12 +50,12 @@ extension UIImage {
             width: size.width * scaleFactor,
             height: size.height * scaleFactor
         )
-
+        
         // Draw and return the resized UIImage
         let renderer = UIGraphicsImageRenderer(
             size: scaledImageSize
         )
-
+        
         let scaledImage = renderer.image { _ in
             self.draw(in: CGRect(
                 origin: .zero,

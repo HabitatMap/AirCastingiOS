@@ -13,11 +13,11 @@ struct SearchAndFollowMap: UIViewRepresentable {
     var startingPoint: CLLocationCoordinate2D
     @Binding var showSearchAgainButton: Bool
     @Binding var sessions: [MapSessionMarker]
-    @Binding var selectedPointerID: Int
+    @Binding var selectedPointerID: PointerValue
     private var onPositionChangeAction: ((GeoSquare) -> ())? = nil
     private var onMarkerChangeAction: ((Int) -> ())? = nil
     
-    init(startingPoint: CLLocationCoordinate2D, showSearchAgainButton: Binding<Bool>, sessions: Binding<[MapSessionMarker]>, selectedPointerID: Binding<Int>) {
+    init(startingPoint: CLLocationCoordinate2D, showSearchAgainButton: Binding<Bool>, sessions: Binding<[MapSessionMarker]>, selectedPointerID: Binding<PointerValue>) {
         self.startingPoint = startingPoint
         self._showSearchAgainButton = .init(projectedValue: showSearchAgainButton)
         self._sessions = .init(projectedValue: sessions)
@@ -60,11 +60,10 @@ struct SearchAndFollowMap: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: GMSMapView, context: Context) {
-        if selectedPointerID != context.coordinator.pointerIdHolder {
+        if selectedPointerID.number != context.coordinator.pointerIdHolder.number {
             context.coordinator.pointerIdHolder = selectedPointerID
             placeDots(uiView, context: context)
-        }
-        if !showSearchAgainButton {
+        } else if !showSearchAgainButton {
             placeDots(uiView, context: context)
         }
     }
@@ -86,7 +85,7 @@ struct SearchAndFollowMap: UIViewRepresentable {
         DispatchQueue.main.async {
             sessions.forEach { session in
                 let marker = GMSMarker()
-                let markerImage = ((session.id == selectedPointerID) ? session.markerImage.scalePreservingAspectRatio(targetSize: CGSize(width: 35, height: 35)) : session.markerImage)
+                let markerImage = ((session.id == selectedPointerID.number) ? session.markerImage.scalePreservingAspectRatio(targetSize: CGSize(width: 35, height: 35)) : session.markerImage)
                 let markerView = UIImageView(image: markerImage.withRenderingMode(.alwaysTemplate))
                 markerView.tintColor = .accentColor
                 marker.position = session.location
@@ -101,7 +100,7 @@ struct SearchAndFollowMap: UIViewRepresentable {
     class Coordinator: NSObject, UINavigationControllerDelegate, GMSMapViewDelegate {
         var parent: SearchAndFollowMap!
         var sessionSearched = [GMSMarker]()
-        var pointerIdHolder: Int = -1
+        var pointerIdHolder: PointerValue = .noValue
         
         init(_ parent: SearchAndFollowMap) {
             self.parent = parent
@@ -124,7 +123,7 @@ struct SearchAndFollowMap: UIViewRepresentable {
         
         func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
             guard let newPointerID = marker.userData as? Int else {
-                Log.error("To continue the program ensure yourself why newPointerID is not and INT!")
+                Log.error("Unexpectedly found value other than Int in marker userData")
                 assertionFailure()
                 return true
             }

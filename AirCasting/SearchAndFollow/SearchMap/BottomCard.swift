@@ -18,7 +18,7 @@ struct BottomCardView: View {
     
     var sessionCard: some View {
         Button {
-            viewModel.setIsModalScreenPresented()
+            viewModel.sessionCardTapped()
             onMarkerChangeAction?(viewModel.dataModel.id)
         } label: {
             VStack(alignment: .leading, spacing: 5) {
@@ -37,8 +37,8 @@ struct BottomCardView: View {
         }
         .sheet(isPresented: .init(get: {
             viewModel.getIsModalScreenPresented()
-        }, set: { _ in
-            viewModel.setIsModalScreenPresented()
+        }, set: { value in
+            viewModel.setIsModalScreenPresented(using: value)
         }), content: { viewModel.initCompleteScreen() })
         .frame(width: 200, alignment: .leading)
         .padding([.all], 10)

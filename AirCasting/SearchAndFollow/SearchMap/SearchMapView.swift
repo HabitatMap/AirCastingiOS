@@ -9,7 +9,6 @@ import AirCastingStyling
 struct SearchMapView: View {
     @StateObject private var viewModel: SearchMapViewModel
     @Environment(\.presentationMode) var presentationMode
-    @State var showCompleteScreen = false
     
     init(locationName: String, locationAddress: CLLocationCoordinate2D, measurementType: String) {
         _viewModel = .init(wrappedValue: .init(passedLocation: locationName, passedLocationAddress: locationAddress, measurementType: measurementType))
@@ -53,7 +52,6 @@ struct SearchMapView: View {
                 result ? self.presentationMode.wrappedValue.dismiss() : nil
             })
             .alert(item: $viewModel.alert, content: { $0.makeAlert() })
-            .sheet(isPresented: $showCompleteScreen, content: { CompleteScreen(session: SearchSessionResult.mock) })
     }
 }
 
@@ -93,7 +91,7 @@ private extension SearchMapView {
                     viewModel.mapPositionsChanged(geoSquare: geoSquare)
                 })
                 .onMarkerChange(action: { pointer in
-                    viewModel.markerPositionChanged(using: pointer)
+                    viewModel.markerSelectionChanged(using: pointer)
                 })
                                    .padding(.top, 50)
                                    .ignoresSafeArea(.all, edges: [.bottom])
@@ -133,15 +131,15 @@ private extension SearchMapView {
                                        latitude: session.location.latitude,
                                        longitude: session.location.longitude)
                         .onMarkerChange(action: { pointer in
-                            viewModel.markerPositionChanged(using: pointer)
+                            viewModel.markerSelectionChanged(using: pointer)
                         })
-                        .border((viewModel.cardPointerID == session.id ? Color.accentColor : .clear), width: 1)
+                        .border((viewModel.cardPointerID.number == session.id ? Color.accentColor : .clear), width: 1)
                         
                     }
                 }
-                .onChange(of: viewModel.cardPointerID, perform: { newValue in
+                .onChange(of: viewModel.cardPointerID.number , perform: { newValue in
                     withAnimation(.linear) {
-                        scrollProxy.scrollTo(Int(viewModel.cardPointerID), anchor: .leading)
+                        scrollProxy.scrollTo(viewModel.cardPointerID.number, anchor: .leading)
                     }
                 })
             }

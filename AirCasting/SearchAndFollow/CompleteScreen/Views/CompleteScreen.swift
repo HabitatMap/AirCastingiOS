@@ -5,18 +5,19 @@ import SwiftUI
 import AirCastingStyling
 
 struct CompleteScreen: View {
-    @Environment(\.presentationMode) var presentationMode
+    @Binding var presentationMode: Bool
     @StateObject var viewModel: CompleteScreenViewModel
     
-    init(session: SearchSessionResult) {
+    init(session: SearchSessionResult, presentationMode: Binding<Bool>) {
         _viewModel = .init(wrappedValue: CompleteScreenViewModel(session: session))
+        _presentationMode = .init(projectedValue: presentationMode)
     }
     
     var body: some View {
         sessionCard
             .overlay(
                 Button(action: {
-                    presentationMode.wrappedValue.dismiss()
+                    presentationMode = false
                 }, label: {
                     Image(systemName: "xmark")
                         .foregroundColor(.aircastingDarkGray)
@@ -131,7 +132,7 @@ private extension CompleteScreen {
 #if DEBUG
 struct CompleteScreen_Previews: PreviewProvider {
     static var previews: some View {
-        CompleteScreen(session: .mock)
+        CompleteScreen(session: .mock, presentationMode: .constant(false))
     }
 }
 #endif
