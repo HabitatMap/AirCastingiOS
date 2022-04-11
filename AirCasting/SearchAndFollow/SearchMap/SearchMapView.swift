@@ -31,9 +31,6 @@ struct SearchMapView: View {
                     sensorTypeText
                 }
                 searchAgainButton
-                // This is temporary untill we implement clickable cards
-                Spacer()
-                Button(action: { showCompleteScreen = true }, label: { Text("Complete screen") })
             })
                 .padding(.top, 50)
                 .padding(.horizontal)
@@ -57,14 +54,14 @@ private extension SearchMapView {
         Text(String(format: Strings.SearchMapView.parameterText, arguments: [viewModel.measurementType.name]))
             .font(Fonts.semiboldHeading2)
             .lineLimit(1)
-            .scaledToFit()
+            .scaledToFill()
     }
     
     var sensorTypeText: some View {
-        Text(String(format: Strings.SearchMapView.sensorText, arguments: [viewModel.sensorType.name]))
+        Text(String(format: Strings.SearchMapView.sensorText, arguments: [viewModel.sensorType.capitalizedName]))
             .font(Fonts.semiboldHeading2)
             .lineLimit(1)
-            .scaledToFit()
+            .scaledToFill()
     }
     
     var searchAgainButton: some View {

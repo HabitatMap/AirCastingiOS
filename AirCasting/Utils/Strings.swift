@@ -912,8 +912,11 @@ struct Strings {
         static let sensorQuestion: String = NSLocalizedString("Which sensor are you intrested in?", comment: "")
         static let ozoneText: String = NSLocalizedString("Ozone", comment: "")
         static let particularMatterText: String = NSLocalizedString("Particular matter", comment: "")
+    }
+    
+    enum SearchFollowSensorNames {
         static let AirBeam325: String = NSLocalizedString("AirBeam3-PM2.5(µg/m³)", comment: "")
-        static let AirBeam225: String = NSLocalizedString("AirBeam3-PM2.5(µg/m³)", comment: "")
+        static let AirBeam225: String = NSLocalizedString("AirBeam2-PM2.5(µg/m³)", comment: "")
         static let openAQ: String = NSLocalizedString("OpenAQ-PM2.5(µg/m³)", comment: "")
         static let openAQOzone: String = NSLocalizedString("OpenAQ-O3(ppb)", comment: "")
     }

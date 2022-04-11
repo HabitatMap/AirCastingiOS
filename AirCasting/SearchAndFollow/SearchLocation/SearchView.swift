@@ -117,7 +117,7 @@ private extension SearchView {
         Button {
             viewModel.onAB325ButtonTap()
         } label: {
-            Text(Strings.SearchView.AirBeam325)
+            Text(Strings.SearchFollowSensorNames.AirBeam325)
                 .padding([.all], 5)
         }.buttonStyle(MultiSelectButtonStyle(isSelected: viewModel.isAB325))
     }
@@ -126,7 +126,7 @@ private extension SearchView {
         Button {
             viewModel.onAB225ButtonTap()
         } label: {
-            Text(Strings.SearchView.AirBeam225)
+            Text(Strings.SearchFollowSensorNames.AirBeam225)
                 .padding([.all], 5)
         }.buttonStyle(MultiSelectButtonStyle(isSelected: viewModel.isAB225))
     }
@@ -135,7 +135,7 @@ private extension SearchView {
         Button {
             viewModel.onOpenAQButtonTap()
         } label: {
-            Text(Strings.SearchView.openAQ)
+            Text(Strings.SearchFollowSensorNames.openAQ)
                 .padding([.all], 5)
         }.buttonStyle(MultiSelectButtonStyle(isSelected: viewModel.isOpenAQ))
     }
@@ -144,7 +144,7 @@ private extension SearchView {
         Button {
             viewModel.onOzoneSensorButtonTap()
         } label: {
-            Text(Strings.SearchView.openAQOzone)
+            Text(Strings.SearchFollowSensorNames.openAQOzone)
                 .padding([.all], 5)
         }.buttonStyle(MultiSelectButtonStyle(isSelected: viewModel.isOzoneSensor))
     }

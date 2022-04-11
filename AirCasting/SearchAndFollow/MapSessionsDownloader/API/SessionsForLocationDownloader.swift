@@ -34,7 +34,7 @@ class SessionsForLocationDownloaderDefault: SessionsForLocationDownloader {
                                        north: geoSquare.north,
                                        limit: 100,
                                        offset: 0,
-                                       sensorName: sensor.name,
+                                       sensorName: sensor.apiName,
                                        measurementType: parameter.name,
                                        unitSymbol: (parameter == .particulateMatter) ? MapDownloaderUnitSymbol.uqm3.name : MapDownloaderUnitSymbol.ppb.name)
         do {
