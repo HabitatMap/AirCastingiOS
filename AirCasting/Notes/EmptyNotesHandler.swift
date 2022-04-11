@@ -2,6 +2,7 @@
 //
 
 import Foundation
+import CoreLocation
 
 class EmptyNotesHandler: NotesHandler {
     var observer: (() -> Void)?
@@ -10,7 +11,7 @@ class EmptyNotesHandler: NotesHandler {
         fatalError()
     }
     
-    func addNote(noteText: String) {
+    func addNote(noteText: String, latitude: CLLocationDegrees, longitude: CLLocationDegrees) {
         fatalError()
     }
     
