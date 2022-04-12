@@ -39,6 +39,9 @@ struct SearchSessionResult {
 
 class CompleteScreenViewModel: ObservableObject {
     @Published var selectedStream: Int?
+    @Published var selectedStreamSymbol: String?
+    @Published var chartStartTime: Date?
+    @Published var chartEndTime: Date?
     @Published var isMapSelected: Bool = true
     @Published var alert: AlertInfo?
     

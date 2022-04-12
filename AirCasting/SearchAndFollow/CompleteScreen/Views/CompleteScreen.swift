@@ -82,12 +82,34 @@ private extension CompleteScreen {
     
     var chartDescription: some View {
         HStack() {
-//            chartStartTime
-//            Spacer()
-//            charDescriptionText(stream: stream)
-//            Spacer()
-//            chartEndTime
+            chartStartTime
+            Spacer()
+            chartDescriptionText
+            Spacer()
+            chartEndTime
         }
+    }
+    
+    var chartStartTime: some View {
+        let formatter = DateFormatters.SessionCartView.pollutionChartDateFormatter
+
+        guard let start = viewModel.chartStartTime else { return Text("") }
+
+        let string = formatter.string(from: start)
+        return Text(string)
+    }
+
+    var chartEndTime: some View {
+        let formatter = DateFormatters.SessionCartView.pollutionChartDateFormatter
+
+        let end = viewModel.chartEndTime ?? DateBuilder.getFakeUTCDate()
+
+        let string = formatter.string(from: end)
+        return Text(string)
+    }
+    
+    var chartDescriptionText: some View {
+        Text(viewModel.selectedStreamSymbol ?? "")
     }
     
     var buttons: some View {
