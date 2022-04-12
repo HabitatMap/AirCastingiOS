@@ -35,7 +35,7 @@ class SessionsForLocationDownloaderDefault: SessionsForLocationDownloader {
                                        limit: 100,
                                        offset: 0,
                                        sensorName: sensor.apiName,
-                                       measurementType: parameter.name,
+                                       measurementType: parameter.apiName,
                                        unitSymbol: (parameter == .particulateMatter) ? MapDownloaderUnitSymbol.uqm3.name : MapDownloaderUnitSymbol.ppb.name)
         do {
             let encoder = JSONEncoder()

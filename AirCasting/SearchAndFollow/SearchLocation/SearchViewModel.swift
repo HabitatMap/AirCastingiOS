@@ -19,29 +19,22 @@ class SearchViewModel: ObservableObject {
     
     var continueDisabled: Bool { addressName == "" }
     var shoudShowPMChoiceSheet: Bool { parameter == .particulateMatter }
-    var isOzone: Bool { parameter == .ozone }
-    var isPM: Bool { parameter == .particulateMatter }
-    var isAB325: Bool { sensor == .AB325 }
-    var isAB225: Bool { sensor == .AB225 }
-    var isOpenAQ: Bool { sensor == .OpenAQ }
-    var isOzoneSensor: Bool { sensor == .OzoneSensor }
     var getParameter: MapDownloaderMeasurementType { parameter }
     var getSensor: MapDownloaderSensorType { sensor }
-    
     func textFieldTapped() { isLocationPopupPresented.toggle() }
-    func onAB325ButtonTap() { sensor = .AB325 }
-    func onAB225ButtonTap() { sensor = .AB225 }
-    func onOpenAQButtonTap() { sensor = .OpenAQ }
-    func onOzoneSensorButtonTap() { sensor = .OzoneSensor }
     
-    func onOzoneButtonTap() {
-        parameter = .ozone
-        sensor = .OzoneSensor
+    func onPMSensorTap(with sensor: PMSensorType) {
+        self.sensor = MapDownloaderSensorType.allCases.first(where: { $0.capitalizedName == sensor.capitalizedName }) ?? .AB3and2
     }
     
-    func onPMButtonTap() {
-        parameter = .particulateMatter
-        sensor = .OpenAQ
+    func onOzoneSensorTap(with sensor: OzoneSensorType) {
+        self.sensor = MapDownloaderSensorType.allCases.first(where: { $0.capitalizedName == sensor.capitalizedName }) ?? .OzoneSensor
+        
+    }
+    
+    func onParameterTap(with param: ParameterType) {
+        self.parameter = MapDownloaderMeasurementType.allCases.first(where: { $0.capitalizedName == param.capitalizedName }) ?? .particulateMatter
+        self.parameter == .particulateMatter ? (sensor = .AB3and2) : (sensor = .OzoneSensor)
     }
     
     func locationNameInteracted(with newLocationName: String) {

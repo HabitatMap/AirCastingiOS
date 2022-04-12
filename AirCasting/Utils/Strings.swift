@@ -915,10 +915,15 @@ struct Strings {
     }
     
     enum SearchFollowSensorNames {
-        static let AirBeam325: String = NSLocalizedString("AirBeam3-PM2.5(µg/m³)", comment: "")
-        static let AirBeam225: String = NSLocalizedString("AirBeam2-PM2.5(µg/m³)", comment: "")
-        static let openAQ: String = NSLocalizedString("OpenAQ-PM2.5(µg/m³)", comment: "")
-        static let openAQOzone: String = NSLocalizedString("OpenAQ-O3(ppb)", comment: "")
+        static let AirBeam3and2: String = NSLocalizedString("AirBeam", comment: "")
+        static let openAQ: String = NSLocalizedString("OpenAQ", comment: "")
+        static let purpleAir: String = NSLocalizedString("PurpleAir", comment: "")
+        static let openAQOzone: String = NSLocalizedString("OpenAQ", comment: "")
+    }
+    
+    enum SearchFollowParamNames {
+        static let particulateMatter: String = NSLocalizedString("Particulate Matter", comment: "")
+        static let ozone: String = NSLocalizedString("Ozone", comment: "")
     }
     
     enum CompleteSearchView {

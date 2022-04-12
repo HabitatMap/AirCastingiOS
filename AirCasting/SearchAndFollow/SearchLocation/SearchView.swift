@@ -20,18 +20,40 @@ struct SearchView: View {
             textField
             parametersQuestion
             HStack(spacing: 12) {
-                particularMatterButton
-                ozoneButton
+                ForEach(ParameterType.allCases) { param in
+                    Button {
+                        withAnimation(.easeInOut(duration: 0.3)) {
+                            viewModel.onParameterTap(with: param)
+                        }
+                    } label: {
+                        Text(param.capitalizedName)
+                            .padding([.all], 5)
+                    }.buttonStyle(MultiSelectButtonStyle(isSelected: param.capitalizedName == viewModel.getParameter.capitalizedName))
+                        .padding(.bottom, 5)
+                }
             }
             sensorQuestion
             if viewModel.shoudShowPMChoiceSheet {
-                    OpenAQ
-                    .padding(.bottom, 5)
-                    ABP325
-                    .padding(.bottom, 5)
-                    ABP225
+                ForEach(PMSensorType.allCases) { sensor in
+                    Button {
+                        viewModel.onPMSensorTap(with: sensor)
+                    } label: {
+                        Text(sensor.capitalizedName)
+                            .padding([.all], 5)
+                    }.buttonStyle(MultiSelectButtonStyle(isSelected: sensor.capitalizedName == viewModel.getSensor.capitalizedName))
+                        .padding(.bottom, 5)
+                }
             } else {
-                OzoneSensor
+                ForEach(OzoneSensorType.allCases) { sensor in
+                    Button {
+                        viewModel.onOzoneSensorTap(with: sensor)
+                    } label: {
+                        Text(sensor.capitalizedName)
+                            .padding([.all], 5)
+                    }.buttonStyle(MultiSelectButtonStyle(isSelected: sensor.capitalizedName == viewModel.getSensor.capitalizedName))
+                        .padding(.bottom, 5)
+                    
+                }
             }
             Spacer()
             button
@@ -73,8 +95,8 @@ private extension SearchView {
         }, set: { new in
             viewModel.locationNameInteracted(with: new)
         }))
-            .disabled(true)
-            .onTapGesture { viewModel.textFieldTapped() }
+        .disabled(true)
+        .onTapGesture { viewModel.textFieldTapped() }
     }
     
     var parametersQuestion: some View {
@@ -91,64 +113,6 @@ private extension SearchView {
             .foregroundColor(.aircastingDarkGray)
     }
     
-    var ozoneButton: some View {
-        Button {
-            withAnimation(.easeInOut(duration: 0.3), {
-                viewModel.onOzoneButtonTap()
-            })
-        } label: {
-            Text(Strings.SearchView.ozoneText)
-                .padding([.all], 5)
-        }.buttonStyle(MultiSelectButtonStyle(isSelected: viewModel.isOzone))
-    }
-    
-    var particularMatterButton: some View {
-        Button {
-            withAnimation(.easeInOut(duration: 0.3), {
-                viewModel.onPMButtonTap()
-            })
-        } label: {
-            Text(Strings.SearchView.particularMatterText)
-                .padding([.all], 5)
-        }.buttonStyle(MultiSelectButtonStyle(isSelected: viewModel.isPM))
-    }
-    
-    var ABP325: some View {
-        Button {
-            viewModel.onAB325ButtonTap()
-        } label: {
-            Text(Strings.SearchFollowSensorNames.AirBeam325)
-                .padding([.all], 5)
-        }.buttonStyle(MultiSelectButtonStyle(isSelected: viewModel.isAB325))
-    }
-    
-    var ABP225: some View {
-        Button {
-            viewModel.onAB225ButtonTap()
-        } label: {
-            Text(Strings.SearchFollowSensorNames.AirBeam225)
-                .padding([.all], 5)
-        }.buttonStyle(MultiSelectButtonStyle(isSelected: viewModel.isAB225))
-    }
-    
-    var OpenAQ: some View {
-        Button {
-            viewModel.onOpenAQButtonTap()
-        } label: {
-            Text(Strings.SearchFollowSensorNames.openAQ)
-                .padding([.all], 5)
-        }.buttonStyle(MultiSelectButtonStyle(isSelected: viewModel.isOpenAQ))
-    }
-    
-    var OzoneSensor: some View {
-        Button {
-            viewModel.onOzoneSensorButtonTap()
-        } label: {
-            Text(Strings.SearchFollowSensorNames.openAQOzone)
-                .padding([.all], 5)
-        }.buttonStyle(MultiSelectButtonStyle(isSelected: viewModel.isOzoneSensor))
-    }
-    
     var button: some View {
         return NavigationLink(
             destination: SearchMapView(locationName: viewModel.addressName,
@@ -158,7 +122,7 @@ private extension SearchView {
             label: {
                 Text(Strings.Commons.continue)
             })
-            .buttonStyle(BlueButtonStyle())
-            .disabled(viewModel.continueDisabled)
+        .buttonStyle(BlueButtonStyle())
+        .disabled(viewModel.continueDisabled)
     }
 }

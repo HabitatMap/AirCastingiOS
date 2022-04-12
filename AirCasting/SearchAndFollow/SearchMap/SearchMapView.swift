@@ -51,7 +51,7 @@ private extension SearchMapView {
     }
     
     var measurementTypeText: some View {
-        Text(String(format: Strings.SearchMapView.parameterText, arguments: [viewModel.measurementType.name]))
+        Text(String(format: Strings.SearchMapView.parameterText, arguments: [viewModel.measurementType.capitalizedName]))
             .font(Fonts.semiboldHeading2)
             .lineLimit(1)
             .scaledToFill()
