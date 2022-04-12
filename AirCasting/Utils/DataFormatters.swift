@@ -124,6 +124,16 @@ enum DateFormatters {
             return df
         }()
     }
+    
+    enum SearchAndFollow {
+        static let timeFormatter: DateFormatter = {
+            let df = DateFormatter()
+            df.timeZone =  TimeZone.init(abbreviation: "UTC")
+            df.locale = Locale(identifier: "en_US")
+            df.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+            return df
+        }()
+    }
 }
 
 

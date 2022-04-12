@@ -233,6 +233,8 @@ struct GoogleMapView: UIViewRepresentable {
         DispatchQueue.main.async {
             notes.forEach { note in
                 let marker = GMSMarker()
+                // 10 used here to be sure it will be on top of evertyhing
+                marker.zIndex = 10
                 let markerImage = note.markerImage
                 let markerView = UIImageView(image: markerImage.withRenderingMode(.alwaysOriginal))
                 marker.position = note.location

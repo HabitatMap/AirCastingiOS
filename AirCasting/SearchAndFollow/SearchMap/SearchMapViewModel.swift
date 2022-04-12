@@ -6,6 +6,19 @@ import CoreLocation
 import SwiftUI
 import Resolver
 
+enum PointerValue {
+    case value(of: Int)
+    case noValue
+    
+    var number: Int {
+        switch self {
+        case .noValue: return -1
+        case .value(of: let value):
+            return value
+        }
+    }
+}
+
 class SearchMapViewModel: ObservableObject {
     let passedLocation: String
     let passedLocationAddress: CLLocationCoordinate2D
@@ -17,6 +30,8 @@ class SearchMapViewModel: ObservableObject {
     @Published var showLoadingIndicator: Bool = false
     @Published var alert: AlertInfo?
     @Published var shouldDismissView: Bool = false
+    @Published var cardPointerID: PointerValue = .noValue
+    @Published var shouldCardsScroll: Bool = false
     private var currentPosition: GeoSquare?
     
     init(passedLocation: String, passedLocationAddress: CLLocationCoordinate2D, measurementType: MapDownloaderMeasurementType, sensorType: MapDownloaderSensorType) {
@@ -33,6 +48,7 @@ class SearchMapViewModel: ObservableObject {
         }
         updateSessionList(geoSquare: currentPosition)
         searchAgainButton = false
+        cardPointerID = .noValue
     }
     
     func mapPositionsChanged(geoSquare: GeoSquare) {
@@ -42,6 +58,11 @@ class SearchMapViewModel: ObservableObject {
             searchAgainButton = true
         }
         currentPosition = geoSquare
+    }
+    
+    func markerSelectionChanged(using point: Int) {
+        self.cardPointerID = .value(of: point)
+        shouldCardsScroll.toggle()
     }
     
     private func updateSessionList(geoSquare: GeoSquare) {
@@ -70,8 +91,11 @@ class SearchMapViewModel: ObservableObject {
         DispatchQueue.main.async {
             self.sessionsList = sessions.map { s in
                 return MapSessionMarker(id: s.id,
-                              location: .init(latitude: s.latitude, longitude: s.longitude),
-                              markerImage: UIImage(systemName: "circle.circle.fill")!)
+                                        title: s.title,
+                                        location: .init(latitude: s.latitude, longitude: s.longitude),
+                                        startTime: s.startTimeLocal,
+                                        endTime: s.endTimeLocal,
+                                        markerImage: UIImage(systemName: "circle.circle.fill")!)
                 
             }
         }

@@ -394,6 +394,7 @@ extension View {
                maxHeight: 145,
                alignment: .leading)
         .background(Color.white)
+        .cornerRadius(8)
         .shadow(color: Color.shadow, radius: 9, x: 0, y: 1)
     }
 }
