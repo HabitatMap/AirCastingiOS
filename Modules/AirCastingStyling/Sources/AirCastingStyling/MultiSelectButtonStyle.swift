@@ -20,6 +20,5 @@ public struct MultiSelectButtonStyle: ButtonStyle {
             .clipShape(Capsule())
             .padding(-3)
             .shadow(color: Color.shadow, radius: 9, x: 0, y: 1)
-
     }
 }

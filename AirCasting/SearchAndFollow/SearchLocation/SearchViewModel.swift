@@ -28,8 +28,7 @@ class SearchViewModel: ObservableObject {
     }
     
     func onOzoneSensorTap(with sensor: OzoneSensorType) {
-        self.sensor = MapDownloaderSensorType.allCases.first(where: { $0.capitalizedName == sensor.capitalizedName }) ?? .OzoneSensor
-        
+        self.sensor = MapDownloaderSensorType.allCases.first(where: { $0.capitalizedName == sensor.capitalizedName }) ?? .OzoneSensor 
     }
     
     func onParameterTap(with param: ParameterType) {
