@@ -60,7 +60,7 @@ class CompleteScreenViewModel: ObservableObject {
     @Published var chartEndTime: Date?
     @Published var isMapSelected: Bool = true
     @Published var showAlert = false
-    lazy var alert: Alert = makeAlert()
+    @Published var alert: AlertInfo?
     
     let sessionLongitude: Double
     let sessionLatitude: Double
@@ -73,10 +73,10 @@ class CompleteScreenViewModel: ObservableObject {
     
     private let session: PartialExternalSession
     private var service = DefaultStreamDownloader()
-    private var presentationMode: Binding<Bool>
+    private var isPresented: Binding<Bool>
     @Injected private var thresholdsStore: ThresholdsStore
     
-    init(session: PartialExternalSession, presentationMode: Binding<Bool>) {
+    init(session: PartialExternalSession, isPresented: Binding<Bool>) {
         self.session = session
         sessionLongitude = session.longitude
         sessionLatitude = session.latitude
@@ -84,7 +84,7 @@ class CompleteScreenViewModel: ObservableObject {
         sessionStartTime = session.startTime
         sessionEndTime = session.endTime
         sensorType = session.provider
-        self.presentationMode = presentationMode
+        self.isPresented = isPresented
         reloadData()
     }
     
@@ -100,7 +100,7 @@ class CompleteScreenViewModel: ObservableObject {
                     case .failure(let error):
                         Log.error("Failed to download session: \(error)")
                         DispatchQueue.main.async {
-                            self.showAlert = true
+                            self.alert = InAppAlerts.failedSessionDownloadAlert(dismiss: self.dismissView)
                         }
                     case .success(let downloadedStreams):
                         DispatchQueue.main.async {
@@ -110,15 +110,17 @@ class CompleteScreenViewModel: ObservableObject {
                                       lastMeasurementValue: $0.lastMeasurementValue,
                                       color: thresholdsValues.colorFor(value: $0.lastMeasurementValue))
                             })
-                            self.selectedStream = downloadedStreams.first?.id
-                            self.chartViewModel.generateEntries(with: downloadedStreams.first?.measurements.map(\.value) ?? [], thresholds: thresholdsValues)
+                            if let stream = downloadedStreams.first {
+                                self.selectedStream = stream.id
+                                (self.chartStartTime, self.chartEndTime) = self.chartViewModel.generateEntries(with: stream.measurements.map({ SearchAndFollowChartViewModel.ChartMeasurement(value: $0.value, time: DateBuilder.getDateWithTimeIntervalSince1970(Double($0.time))) }), thresholds: thresholdsValues)
+                            }
                         }
                     }
                 }
             case .failure(let error):
                 Log.error("Failed to get threshold values: \(error)")
                 DispatchQueue.main.async {
-                    self.showAlert = true
+                    self.alert = InAppAlerts.failedSessionDownloadAlert(dismiss: self.dismissView)
                 }
             }
         }
@@ -137,20 +139,16 @@ class CompleteScreenViewModel: ObservableObject {
     }
     
     func xMarkTapped() {
-        presentationMode.wrappedValue = false
+        isPresented.wrappedValue = false
     }
     
-    private func makeAlert() -> Alert {
-        Alert(title: Text(Strings.CompleteSearchView.failedDownloadAlertTitle),
-              message: Text(Strings.CompleteSearchView.failedDownloadAlertMessage),
-              dismissButton: .default(Text(Strings.Commons.gotIt), action: {
-            self.presentationMode.wrappedValue = false
-        }))
+    func dismissView() {
+        isPresented.wrappedValue = false
     }
     
     private func downloadMeasurements(completion: @escaping (Result<[StreamWithMeasurementsDownstream], Error>) -> Void) {
             var results: [Result<StreamWithMeasurementsDownstream, Error>] = []
-            let streams = ["", "", "", "", ""] // TODO: Get those streamIds from backend
+            let streams = ["499130"] // TODO: Get those streamIds from backend
             let group = DispatchGroup()
             streams.forEach { streamId in
                 group.enter()

@@ -5,12 +5,10 @@ import SwiftUI
 import AirCastingStyling
 
 struct CompleteScreen: View {
-//    @Binding var presentationMode2: Bool
     @StateObject var viewModel: CompleteScreenViewModel
     
-    init(session: CompleteScreenViewModel.PartialExternalSession, presentationMode: Binding<Bool>) {
-        _viewModel = .init(wrappedValue: CompleteScreenViewModel(session: session, presentationMode: presentationMode))
-//        _presentationMode2 = .init(projectedValue: presentationMode)
+    init(session: CompleteScreenViewModel.PartialExternalSession, isPresented: Binding<Bool>) {
+        _viewModel = .init(wrappedValue: CompleteScreenViewModel(session: session, isPresented: isPresented))
     }
     
     var body: some View {
@@ -25,7 +23,7 @@ struct CompleteScreen: View {
                 }).padding(),
                 alignment: .topTrailing
             )
-            .alert(isPresented: $viewModel.showAlert, content: { viewModel.alert })
+            .alert(item: $viewModel.alert, content: { $0.makeAlert() })
     }
     
     var sessionCard: some View {
@@ -42,6 +40,7 @@ struct CompleteScreen: View {
                 SearchCompleteScreenMapView(longitude: viewModel.sessionLongitude, latitude: viewModel.sessionLatitude)
             } else {
                 SearchAndFollowChartView(viewModel: viewModel.chartViewModel)
+                chartDescription
             }
             buttons
             confirmationButton
@@ -82,29 +81,20 @@ private extension CompleteScreen {
     
     var chartDescription: some View {
         HStack() {
-            chartStartTime
+            formatChartTime(time: viewModel.chartStartTime)
             Spacer()
             chartDescriptionText
             Spacer()
-            chartEndTime
+            formatChartTime(time: viewModel.chartEndTime)
         }
     }
-    
-    var chartStartTime: some View {
+
+    func formatChartTime(time: Date?) -> some View {
         let formatter = DateFormatters.SessionCartView.pollutionChartDateFormatter
 
-        guard let start = viewModel.chartStartTime else { return Text("") }
+        let date = time ?? DateBuilder.getFakeUTCDate()
 
-        let string = formatter.string(from: start)
-        return Text(string)
-    }
-
-    var chartEndTime: some View {
-        let formatter = DateFormatters.SessionCartView.pollutionChartDateFormatter
-
-        let end = viewModel.chartEndTime ?? DateBuilder.getFakeUTCDate()
-
-        let string = formatter.string(from: end)
+        let string = formatter.string(from: date)
         return Text(string)
     }
     
@@ -164,7 +154,7 @@ private extension CompleteScreen {
 #if DEBUG
 struct CompleteScreen_Previews: PreviewProvider {
     static var previews: some View {
-        CompleteScreen(session: .mock, presentationMode: .constant(false))
+        CompleteScreen(session: .mock, isPresented: .constant(false))
     }
 }
 #endif

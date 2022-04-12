@@ -50,7 +50,7 @@ class BottomCardViewModel: ObservableObject {
                                       longitude: dataModel.longitude,
                                       latitude: dataModel.latitude,
                                       sensorName: "OpenAir-pm25"),
-                       presentationMode: .init(get: {
+                       isPresented: .init(get: {
             self.getIsModalScreenPresented()
         }, set: { value in
             self.setIsModalScreenPresented(using: value)
