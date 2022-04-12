@@ -993,4 +993,8 @@ struct Strings {
         static let redoText: String = NSLocalizedString("Redo Search in Map",
                                                               comment: "")
     }
+    
+    enum ProtectedScreen {
+        static let title: String = NSLocalizedString("Please, do not force close the app while recording a session!", comment: "")
+    }
 }
