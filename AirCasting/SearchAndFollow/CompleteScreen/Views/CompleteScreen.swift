@@ -5,19 +5,19 @@ import SwiftUI
 import AirCastingStyling
 
 struct CompleteScreen: View {
-    @Binding var presentationMode: Bool
+//    @Binding var presentationMode2: Bool
     @StateObject var viewModel: CompleteScreenViewModel
     
     init(session: CompleteScreenViewModel.PartialExternalSession, presentationMode: Binding<Bool>) {
-        _viewModel = .init(wrappedValue: CompleteScreenViewModel(session: session))
-        _presentationMode = .init(projectedValue: presentationMode)
+        _viewModel = .init(wrappedValue: CompleteScreenViewModel(session: session, presentationMode: presentationMode))
+//        _presentationMode2 = .init(projectedValue: presentationMode)
     }
     
     var body: some View {
         sessionCard
             .overlay(
                 Button(action: {
-                    presentationMode = false
+                    viewModel.xMarkTapped()
                 }, label: {
                     Image(systemName: "xmark")
                         .foregroundColor(.aircastingDarkGray)
@@ -25,7 +25,7 @@ struct CompleteScreen: View {
                 }).padding(),
                 alignment: .topTrailing
             )
-            .alert(item: $viewModel.alert, content: { $0.makeAlert() })
+            .alert(isPresented: $viewModel.showAlert, content: { viewModel.alert })
     }
     
     var sessionCard: some View {

@@ -54,13 +54,13 @@ class CompleteScreenViewModel: ObservableObject {
         }
     }
     
-    
     @Published var selectedStream: Int?
     @Published var selectedStreamSymbol: String?
     @Published var chartStartTime: Date?
     @Published var chartEndTime: Date?
     @Published var isMapSelected: Bool = true
-    @Published var alert: AlertInfo?
+    @Published var showAlert = false
+    lazy var alert: Alert = makeAlert()
     
     let sessionLongitude: Double
     let sessionLatitude: Double
@@ -73,9 +73,10 @@ class CompleteScreenViewModel: ObservableObject {
     
     private let session: PartialExternalSession
     private var service = DefaultStreamDownloader()
+    private var presentationMode: Binding<Bool>
     @Injected private var thresholdsStore: ThresholdsStore
     
-    init(session: PartialExternalSession) {
+    init(session: PartialExternalSession, presentationMode: Binding<Bool>) {
         self.session = session
         sessionLongitude = session.longitude
         sessionLatitude = session.latitude
@@ -83,6 +84,7 @@ class CompleteScreenViewModel: ObservableObject {
         sessionStartTime = session.startTime
         sessionEndTime = session.endTime
         sensorType = session.provider
+        self.presentationMode = presentationMode
         reloadData()
     }
     
@@ -98,7 +100,7 @@ class CompleteScreenViewModel: ObservableObject {
                     case .failure(let error):
                         Log.error("Failed to download session: \(error)")
                         DispatchQueue.main.async {
-                            self.alert = InAppAlerts.failedSessionDownloadAlert()
+                            self.showAlert = true
                         }
                     case .success(let downloadedStreams):
                         DispatchQueue.main.async {
@@ -116,7 +118,7 @@ class CompleteScreenViewModel: ObservableObject {
             case .failure(let error):
                 Log.error("Failed to get threshold values: \(error)")
                 DispatchQueue.main.async {
-                    self.alert = InAppAlerts.failedSessionDownloadAlert()
+                    self.showAlert = true
                 }
             }
         }
@@ -132,6 +134,18 @@ class CompleteScreenViewModel: ObservableObject {
     
     func selectedStream(with id: Int) {
         selectedStream = id
+    }
+    
+    func xMarkTapped() {
+        presentationMode.wrappedValue = false
+    }
+    
+    private func makeAlert() -> Alert {
+        Alert(title: Text(Strings.CompleteSearchView.failedDownloadAlertTitle),
+              message: Text(Strings.CompleteSearchView.failedDownloadAlertMessage),
+              dismissButton: .default(Text(Strings.Commons.gotIt), action: {
+            self.presentationMode.wrappedValue = false
+        }))
     }
     
     private func downloadMeasurements(completion: @escaping (Result<[StreamWithMeasurementsDownstream], Error>) -> Void) {
