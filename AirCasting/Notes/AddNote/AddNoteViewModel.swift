@@ -18,12 +18,14 @@ class AddNoteViewModel: ObservableObject {
     }
     
     func continueTapped() {
-        if let latitude = locationTracker.locationManager.location?.coordinate.latitude,
-           let longitude = locationTracker.locationManager.location?.coordinate.longitude,
-           trackLocation {
-            notesHandler.addNote(noteText: noteText, latitude: latitude, longitude: longitude)
+        guard let latitude = locationTracker.locationManager.location?.coordinate.latitude,
+              let longitude = locationTracker.locationManager.location?.coordinate.longitude,
+              trackLocation else {
+            notesHandler.addNote(noteText: noteText, latitude: 20.0, longitude: 20.0)
+            exitRoute()
+            return
         }
-        notesHandler.addNote(noteText: noteText, latitude: 20.0, longitude: 20.0)
+        notesHandler.addNote(noteText: noteText, latitude: latitude, longitude: longitude)
         exitRoute()
     }
 

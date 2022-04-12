@@ -4,10 +4,9 @@
 import Foundation
 import Resolver
 import CoreData
-import CoreLocation
 
 protocol NotesHandler: AnyObject {
-    func addNote(noteText: String, latitude: CLLocationDegrees, longitude: CLLocationDegrees)
+    func addNote(noteText: String, latitude: Double, longitude: Double)
     func deleteNote(note: Note, completion: @escaping () -> Void)
     func updateNote(note: Note, newText: String, completion: @escaping () -> Void)
     func getNotes(completion: @escaping ([Note]) -> Void)
@@ -44,7 +43,7 @@ class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDel
         observer?()
     }
     
-    func addNote(noteText: String, latitude: CLLocationDegrees, longitude: CLLocationDegrees) {
+    func addNote(noteText: String, latitude: Double, longitude: Double) {
         measurementStreamStorage.accessStorage { [self] storage in
             do {
                 let currentNumber = try storage.getNotes(for: sessionUUID).map(\.number).sorted(by: < ).last
