@@ -349,6 +349,7 @@
 		DD1EEB8B26B7C2F100AFC5C1 /* TurnOnLocationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD1EEB8A26B7C2F100AFC5C1 /* TurnOnLocationViewModel.swift */; };
 		DD1EEB8E26B7C39000AFC5C1 /* ChooseSessionTypeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD1EEB8D26B7C39000AFC5C1 /* ChooseSessionTypeViewModel.swift */; };
 		DD2181EF267BBCBC0010EC2E /* MyAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD2181EE267BBCBC0010EC2E /* MyAccountView.swift */; };
+		DD22F0FD27D668DD00CB8B97 /* BottomCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD22F0FC27D668DD00CB8B97 /* BottomCard.swift */; };
 		DD28047726B3D6E70060F55E /* ConnectingAirBeamServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD28047626B3D6E70060F55E /* ConnectingAirBeamServices.swift */; };
 		DD28047926B3D7370060F55E /* AirBeamConnectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD28047826B3D7370060F55E /* AirBeamConnectionController.swift */; };
 		DD28047B26B3D7730060F55E /* BluetoothConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD28047A26B3D7730060F55E /* BluetoothConnector.swift */; };
@@ -372,6 +373,7 @@
 		DD55C39026BAA73F0069838F /* BluetoothHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD55C38F26BAA73F0069838F /* BluetoothHandler.swift */; };
 		DD5687C326CFC8080028C2CA /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD5687C226CFC8080028C2CA /* Constants.swift */; };
 		DD5930E1273528860043C2A2 /* UserState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD5930E0273528860043C2A2 /* UserState.swift */; };
+		DD6CD56227F31D040044F843 /* BottomCardModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6CD56127F31D040044F843 /* BottomCardModel.swift */; };
 		DD700CF22695CE9C0048A17D /* MailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD700CF12695CE9C0048A17D /* MailView.swift */; };
 		DD72DC4226A99D5000325FE5 /* ShareSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD72DC4126A99D5000325FE5 /* ShareSessionView.swift */; };
 		DD7955492757B30F00631A78 /* InAppAlerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD7955482757B30F00631A78 /* InAppAlerts.swift */; };
@@ -439,6 +441,7 @@
 		DDF62601269C779800F23489 /* UIApplication+AppInfo.swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF62600269C779800F23489 /* UIApplication+AppInfo.swift.swift */; };
 		DDF7599A268332E900D906BA /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF75999268332E900D906BA /* Strings.swift */; };
 		EE969E7E1981C41852FB7745 /* Pods_AirCastingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A54057326D27D23E9906704 /* Pods_AirCastingTests.framework */; };
+		FAB1D4A427FAD83E004F531D /* BottomCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB1D4A327FAD83E004F531D /* BottomCardViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -803,6 +806,7 @@
 		DD1EEB8A26B7C2F100AFC5C1 /* TurnOnLocationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurnOnLocationViewModel.swift; sourceTree = "<group>"; };
 		DD1EEB8D26B7C39000AFC5C1 /* ChooseSessionTypeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseSessionTypeViewModel.swift; sourceTree = "<group>"; };
 		DD2181EE267BBCBC0010EC2E /* MyAccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyAccountView.swift; sourceTree = "<group>"; };
+		DD22F0FC27D668DD00CB8B97 /* BottomCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomCard.swift; sourceTree = "<group>"; };
 		DD28047626B3D6E70060F55E /* ConnectingAirBeamServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectingAirBeamServices.swift; sourceTree = "<group>"; };
 		DD28047826B3D7370060F55E /* AirBeamConnectionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirBeamConnectionController.swift; sourceTree = "<group>"; };
 		DD28047A26B3D7730060F55E /* BluetoothConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothConnector.swift; sourceTree = "<group>"; };
@@ -827,6 +831,7 @@
 		DD55C38F26BAA73F0069838F /* BluetoothHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothHandler.swift; sourceTree = "<group>"; };
 		DD5687C226CFC8080028C2CA /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		DD5930E0273528860043C2A2 /* UserState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserState.swift; sourceTree = "<group>"; };
+		DD6CD56127F31D040044F843 /* BottomCardModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomCardModel.swift; sourceTree = "<group>"; };
 		DD700CF12695CE9C0048A17D /* MailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailView.swift; sourceTree = "<group>"; };
 		DD72DC4126A99D5000325FE5 /* ShareSessionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareSessionView.swift; sourceTree = "<group>"; };
 		DD7955482757B30F00631A78 /* InAppAlerts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppAlerts.swift; sourceTree = "<group>"; };
@@ -894,6 +899,7 @@
 		DDF551D427985AAB009D1347 /* AirCasting v2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AirCasting v2.xcdatamodel"; sourceTree = "<group>"; };
 		DDF62600269C779800F23489 /* UIApplication+AppInfo.swift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+AppInfo.swift.swift"; sourceTree = "<group>"; };
 		DDF75999268332E900D906BA /* Strings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Strings.swift; sourceTree = "<group>"; };
+		FAB1D4A327FAD83E004F531D /* BottomCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomCardViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1301,7 +1307,6 @@
 				AC7EB37725A6FB3A00A7F2AF /* MainTabBarView.swift */,
 				DD430AFE2670BB3000F1BF2E /* Onboarding */,
 				AC9F52682652A360003CF61F /* Dashboard */,
-				DDDA056327DF2A5100C6B9B9 /* GeoSquare */,
 				DD123EBD27BD1CA8001083C3 /* SearchAndFollow */,
 				ACF7C05D260CC9DB007C24AE /* Services */,
 				338C30E025F1042000E0305C /* CoreData */,
@@ -2049,6 +2054,9 @@
 			children = (
 				DD123EBE27BD1CD3001083C3 /* SearchMapView.swift */,
 				DD123EC127BD2C53001083C3 /* SearchMapViewModel.swift */,
+				DD22F0FC27D668DD00CB8B97 /* BottomCard.swift */,
+				FAB1D4A327FAD83E004F531D /* BottomCardViewModel.swift */,
+				DD6CD56127F31D040044F843 /* BottomCardModel.swift */,
 			);
 			path = SearchMap;
 			sourceTree = "<group>";
@@ -2073,6 +2081,7 @@
 		DD1DE9B627C6577800F17AB5 /* APIStruct */ = {
 			isa = PBXGroup;
 			children = (
+				DDDCEC3A27D0DA7100B3757C /* GeoSquare.swift */,
 				DD197FA627BE439200340672 /* MapDownloaderUnitSymbol.swift */,
 				DD197FA827BE43A900340672 /* MapDownloaderMeasurementType.swift */,
 				DD197FAA27BE448200340672 /* MapDownloaderQuery.swift */,
@@ -2266,14 +2275,6 @@
 				DDD24D9326A8569300D4A327 /* ResetPasswordService.swift */,
 			);
 			path = Controller;
-			sourceTree = "<group>";
-		};
-		DDDA056327DF2A5100C6B9B9 /* GeoSquare */ = {
-			isa = PBXGroup;
-			children = (
-				DDDCEC3A27D0DA7100B3757C /* GeoSquare.swift */,
-			);
-			path = GeoSquare;
 			sourceTree = "<group>";
 		};
 		DDDCEC3727D0C89F00B3757C /* DateBuilderTests */ = {
@@ -2636,6 +2637,7 @@
 				B30BAC1D2694AABC00AE0476 /* MeasurementStatisticsTypes.swift in Sources */,
 				B32D08AF267A6D13006C97ED /* ErasingToVoidPublisher.swift in Sources */,
 				DD4108FA273BE94D00BF10FF /* CreateSessionDetailsViewModel.swift in Sources */,
+				FAB1D4A427FAD83E004F531D /* BottomCardViewModel.swift in Sources */,
 				B30BAC022694A89100AE0476 /* StatisticsContainerViewModel.swift in Sources */,
 				B3F1447A26AE436A006A4612 /* FilterErrorPublisher.swift in Sources */,
 				ACCEB21B2763A2230040140B /* ClearingSDCardView.swift in Sources */,
@@ -2650,6 +2652,7 @@
 				ACCEB21D2763A2230040140B /* SDSyncRootViewModel.swift in Sources */,
 				DDDC8B692799971A00F64803 /* NotesTextView.swift in Sources */,
 				335A8B2F2785D49100355D46 /* ShareSessionAPI.swift in Sources */,
+				DD123EC527BD35E8001083C3 /* SessionsForLocationDownloader.swift in Sources */,
 				DD123EC527BD35E8001083C3 /* SessionsForLocationDownloader.swift in Sources */,
 				B33DB5762686161300ED1344 /* SensorName.swift in Sources */,
 				DD8AFE4F272886D700ED1CED /* ThresholdWitness.swift in Sources */,
@@ -2695,6 +2698,7 @@
 				DD3C99F426EA280800B42A46 /* TimeConversion.swift in Sources */,
 				B3F1447626AE0BD4006A4612 /* SessionSynchronizerErrorStream.swift in Sources */,
 				DDA90F0327CD00CB002F4465 /* MapSessionMarker.swift in Sources */,
+				DDA90F0327CD00CB002F4465 /* MapSessionMarker.swift in Sources */,
 				B3EAF78F2730C161000FFF23 /* AVSessionInterruptionHandler.swift in Sources */,
 				ACF7C05F260CC9FF007C24AE /* DownloadMeasurmentsService.swift in Sources */,
 				3383511E2747C24800308068 /* SDSyncFileFactory.swift in Sources */,
@@ -2735,6 +2739,7 @@
 				AC5832DA25B196DD008C5DD5 /* Graph.swift in Sources */,
 				AC4A6A6A267CB3890001F639 /* AirCastingGraph.swift in Sources */,
 				DD197FA727BE439200340672 /* MapDownloaderUnitSymbol.swift in Sources */,
+				DD197FA727BE439200340672 /* MapDownloaderUnitSymbol.swift in Sources */,
 				AC93B8E725BEFE4F003D0A0D /* AirMapView.swift in Sources */,
 				DD9EBFD8279EEAB300192CB5 /* DataBuilder.swift in Sources */,
 				ACCEB21C2763A2230040140B /* ClearingSDCardViewModel.swift in Sources */,
@@ -2760,6 +2765,7 @@
 				DDBC156426A0799300982526 /* SystemSettings.swift in Sources */,
 				B3EBB10A26A06D11002BD81F /* EmailResetPasswordService.swift in Sources */,
 				4F945EEE2649F3F5008A5B22 /* SessionCreator.swift in Sources */,
+				DD22F0FD27D668DD00CB8B97 /* BottomCard.swift in Sources */,
 				33F3D47C27AC1A5C003CA386 /* SessionTypeIndicator.swift in Sources */,
 				4F945EF02649F455008A5B22 /* AirBeamFixedWifiSessionCreator.swift in Sources */,
 				B30BAC132694AA3200AE0476 /* MeasurementsStatisticsController.swift in Sources */,
@@ -2844,6 +2850,7 @@
 				B30BAC172694AA8000AE0476 /* MeasurementsStatisticsOutput.swift in Sources */,
 				DD7955492757B30F00631A78 /* InAppAlerts.swift in Sources */,
 				DD197FA927BE43A900340672 /* MapDownloaderMeasurementType.swift in Sources */,
+				DD197FA927BE43A900340672 /* MapDownloaderMeasurementType.swift in Sources */,
 				B30BAC192694AA8E00AE0476 /* StatisticsCalculator.swift in Sources */,
 				AC96DBEA2742705100D5E8E0 /* ThresholdsSettingsViewModel.swift in Sources */,
 				DDEE3A44269736270098CCA9 /* NetworkChecker.swift in Sources */,
@@ -2879,6 +2886,7 @@
 				33050871276B568D00D18C69 /* ShareSessionViewModel.swift in Sources */,
 				DD1EEB8B26B7C2F100AFC5C1 /* TurnOnLocationViewModel.swift in Sources */,
 				DDF7599A268332E900D906BA /* Strings.swift in Sources */,
+				DD6CD56227F31D040044F843 /* BottomCardModel.swift in Sources */,
 				DDD1F9B12705852400D8E87F /* DataFormatters.swift in Sources */,
 				ACCEB22B276A240D0040140B /* EditViewModel.swift in Sources */,
 				B367A590274E9EAA004C605B /* FirebaseFeatureFlagProvider.swift in Sources */,
@@ -2903,6 +2911,7 @@
 				4FB39E3A2621BE7F00E5E564 /* APIClient.swift in Sources */,
 				AC9F526D2652A360003CF61F /* EmptyMobileDashboardView.swift in Sources */,
 				DD197FAB27BE448200340672 /* MapDownloaderQuery.swift in Sources */,
+				DD197FAB27BE448200340672 /* MapDownloaderQuery.swift in Sources */,
 				B367A591274E9EAA004C605B /* DefaultFeatureFlagProvider.swift in Sources */,
 				DDDBD48826D3BEC000EAA0A1 /* EmptyFixedDashboardView.swift in Sources */,
 				AC9EB64726EF4EEB00B1F780 /* AirBeamCellularSessionCreator.swift in Sources */,
@@ -2916,6 +2925,7 @@
 				B369CF32275A7A1500B71D81 /* OverridingFeatureFlagProvider.swift in Sources */,
 				338C30E825F10BFE00E0305C /* AirCasting.xcdatamodeld in Sources */,
 				DD009D662698844A009F0443 /* DeleteView.swift in Sources */,
+				DD197FAE27BE857D00340672 /* MapDownloaderSearchedSessions.swift in Sources */,
 				DD197FAE27BE857D00340672 /* MapDownloaderSearchedSessions.swift in Sources */,
 				B3FD77BA267C94AF00E97CC2 /* SessionSynchronizer.swift in Sources */,
 				B30BAC062694A99300AE0476 /* GraphStatsDataSource.swift in Sources */,

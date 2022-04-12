@@ -992,5 +992,9 @@ struct Strings {
                                                               comment: "")
         static let redoText: String = NSLocalizedString("Redo Search in Map",
                                                               comment: "")
+        static let cardsTitle: String = NSLocalizedString("Sessions showing %@ of %@ results",
+                                                              comment: "")
+        static let sessionsText: String = NSLocalizedString("Sessions",
+                                                              comment: "")
     }
 }
