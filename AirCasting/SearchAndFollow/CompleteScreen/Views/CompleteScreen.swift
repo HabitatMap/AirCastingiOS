@@ -8,7 +8,7 @@ struct CompleteScreen: View {
     @Binding var presentationMode: Bool
     @StateObject var viewModel: CompleteScreenViewModel
     
-    init(session: SearchSessionResult, presentationMode: Binding<Bool>) {
+    init(session: CompleteScreenViewModel.PartialExternalSession, presentationMode: Binding<Bool>) {
         _viewModel = .init(wrappedValue: CompleteScreenViewModel(session: session))
         _presentationMode = .init(projectedValue: presentationMode)
     }

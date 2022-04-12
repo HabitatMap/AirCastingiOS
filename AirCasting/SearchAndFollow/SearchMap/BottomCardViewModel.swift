@@ -42,12 +42,14 @@ class BottomCardViewModel: ObservableObject {
     }
     
     func initCompleteScreen() -> CompleteScreen {
-        CompleteScreen(session: .init(uuid: .init(rawValue: "\(dataModel.id)") ?? .init(),
+        CompleteScreen(session: .init(uuid: "\(dataModel.id)",
+                                      provider: "OpenAir",
                                       name: dataModel.title,
                                       startTime: startTimeAsDate(),
                                       endTime: endTimeAsDate(),
                                       longitude: dataModel.longitude,
-                                      latitude: dataModel.latitude),
+                                      latitude: dataModel.latitude,
+                                      sensorName: "OpenAir-pm25"),
                        presentationMode: .init(get: {
             self.getIsModalScreenPresented()
         }, set: { value in

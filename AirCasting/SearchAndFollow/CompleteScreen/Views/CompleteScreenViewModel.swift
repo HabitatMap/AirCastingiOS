@@ -12,32 +12,49 @@ struct SessionStreamViewModel: Identifiable {
     let color: Color
 }
 
-struct SearchSessionResult {
-    let id: String
+struct ExternalSession {
+    let uuid: String
+    let provider: String
     let name: String
     let startTime: Date
     let endTime: Date
     let longitude: Double
     let latitude: Double
-    let streamId: String
+    let streams: [Stream]
     let sensorName: String
     
-    static var mock: SearchSessionResult {
-        let session =  self.init(id: "202411",
-                                 name: "KAHULUI, MAUI",
-                                 startTime: DateBuilder.getFakeUTCDate() - 60,
-                                 endTime: DateBuilder.getFakeUTCDate(),
-                                 longitude: 19.944544,
-                                 latitude: 50.049683,
-                                 streamId: "499130",
-                                 sensorName: "OpenAQ-PM2.5")
-        // ...
-        
-        return session
+    //TODO: Unfinished
+    struct Stream {
     }
 }
 
 class CompleteScreenViewModel: ObservableObject {
+    struct PartialExternalSession {
+        let uuid: String
+        let provider: String
+        let name: String
+        let startTime: Date
+        let endTime: Date
+        let longitude: Double
+        let latitude: Double
+        let sensorName: String
+        
+        static var mock: PartialExternalSession {
+            let session =  self.init(uuid: "202411",
+                                     provider: "OpenAir",
+                                     name: "KAHULUI, MAUI",
+                                     startTime: DateBuilder.getFakeUTCDate() - 60,
+                                     endTime: DateBuilder.getFakeUTCDate(),
+                                     longitude: 19.944544,
+                                     latitude: 50.049683,
+                                     sensorName: "OpenAQ-PM2.5")
+            // ...
+            
+            return session
+        }
+    }
+    
+    
     @Published var selectedStream: Int?
     @Published var selectedStreamSymbol: String?
     @Published var chartStartTime: Date?
@@ -51,23 +68,21 @@ class CompleteScreenViewModel: ObservableObject {
     let sessionStartTime: Date
     let sessionEndTime: Date
     let sensorType: String
-    private var streamId: String
     @Published var sessionStreams: Loadable<[SessionStreamViewModel]> = .loading
     @Published var chartViewModel = SearchAndFollowChartViewModel()
     
-    private let session: SearchSessionResult
+    private let session: PartialExternalSession
     private var service = DefaultStreamDownloader()
     @Injected private var thresholdsStore: ThresholdsStore
     
-    init(session: SearchSessionResult) {
+    init(session: PartialExternalSession) {
         self.session = session
         sessionLongitude = session.longitude
         sessionLatitude = session.latitude
         sessionName = session.name
         sessionStartTime = session.startTime
         sessionEndTime = session.endTime
-        sensorType = "OpenAir"
-        streamId = session.streamId
+        sensorType = session.provider
         reloadData()
     }
     
@@ -77,7 +92,7 @@ class CompleteScreenViewModel: ObservableObject {
             guard let self = self else { return }
             switch result {
             case .success(let thresholdsValues):
-                self.service.downloadStreamWithMeasurements(id: self.streamId) { [weak self] result in
+                self.downloadMeasurements() { [weak self] result in
                     guard let self = self else { return }
                     switch result {
                     case .failure(let error):
@@ -85,15 +100,16 @@ class CompleteScreenViewModel: ObservableObject {
                         DispatchQueue.main.async {
                             self.alert = InAppAlerts.failedSessionDownloadAlert()
                         }
-                    case .success(let downloadedStream):
+                    case .success(let downloadedStreams):
                         DispatchQueue.main.async {
-                            self.sessionStreams = .ready(
-                                [.init(id: downloadedStream.id,
-                                       sensorName: Self.getSensorName(downloadedStream.sensorName),
-                                       lastMeasurementValue: downloadedStream.lastMeasurementValue,
-                                       color: thresholdsValues.colorFor(value: downloadedStream.lastMeasurementValue))])
-                            self.selectedStream = downloadedStream.id
-                            self.chartViewModel.generateEntries(with: downloadedStream.measurements.map(\.value), thresholds: thresholdsValues)
+                            self.sessionStreams = .ready( downloadedStreams.map {
+                                .init(id: $0.id,
+                                      sensorName: Self.getSensorName($0.sensorName),
+                                      lastMeasurementValue: $0.lastMeasurementValue,
+                                      color: thresholdsValues.colorFor(value: $0.lastMeasurementValue))
+                            })
+                            self.selectedStream = downloadedStreams.first?.id
+                            self.chartViewModel.generateEntries(with: downloadedStreams.first?.measurements.map(\.value) ?? [], thresholds: thresholdsValues)
                         }
                     }
                 }
@@ -117,6 +133,28 @@ class CompleteScreenViewModel: ObservableObject {
     func selectedStream(with id: Int) {
         selectedStream = id
     }
+    
+    private func downloadMeasurements(completion: @escaping (Result<[StreamWithMeasurementsDownstream], Error>) -> Void) {
+            var results: [Result<StreamWithMeasurementsDownstream, Error>] = []
+            let streams = ["", "", "", "", ""] // TODO: Get those streamIds from backend
+            let group = DispatchGroup()
+            streams.forEach { streamId in
+                group.enter()
+                self.service.downloadStreamWithMeasurements(id: streamId) { results.append($0); group.leave() }
+            }
+            group.notify(queue: .global()) {
+                var allDownstreams = [StreamWithMeasurementsDownstream]()
+                for result in results {
+                    do {
+                        allDownstreams.append(try result.get())
+                    } catch {
+                        completion(.failure(error))
+                        return
+                    }
+                }
+                completion(.success(allDownstreams))
+            }
+        }
     
     private static func getSensorName(_ streamName: String) -> String {
         streamName
