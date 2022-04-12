@@ -22,8 +22,8 @@ enum PointerValue {
 class SearchMapViewModel: ObservableObject {
     let passedLocation: String
     let passedLocationAddress: CLLocationCoordinate2D
-    let measurementType: MapDownloaderMeasurementType
-    let sensorType: MapDownloaderSensorType
+    private let measurementType: MapDownloaderMeasurementType
+    private let sensorType: MapDownloaderSensorType
     @Injected private var mapSessionsDownloader: SessionsForLocationDownloader
     @Published var sessionsList = [MapSessionMarker]()
     @Published var searchAgainButton: Bool = false
@@ -40,6 +40,9 @@ class SearchMapViewModel: ObservableObject {
         self.measurementType = measurementType
         self.sensorType = sensorType
     }
+    
+    func getMeasurementName() -> String { measurementType.capitalizedName }
+    func getSensorName() -> String { sensorType.capitalizedName }
     
     func redoTapped() {
         guard let currentPosition = currentPosition else {

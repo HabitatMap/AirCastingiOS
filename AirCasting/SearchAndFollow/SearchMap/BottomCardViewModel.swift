@@ -7,9 +7,11 @@ import SwiftUI
 class BottomCardViewModel: ObservableObject {
     @Published private var isModalScreenPresented = false
     let dataModel: BottomCardModel
+    let sensorType: String
     
-    init(id: Int, title: String, startTime: String, endTime: String, latitude: Double, longitude: Double) {
+    init(id: Int, title: String, startTime: String, endTime: String, latitude: Double, longitude: Double, sensorType: String) {
         dataModel = .init(id: id, title: title, startTime: startTime, endTime: endTime, latitude: latitude, longitude: longitude)
+        self.sensorType = sensorType
     }
     
     func getIsModalScreenPresented() -> Bool { isModalScreenPresented }
@@ -48,6 +50,7 @@ class BottomCardViewModel: ObservableObject {
                                       endTime: endTimeAsDate(),
                                       longitude: dataModel.longitude,
                                       latitude: dataModel.latitude),
+                       sensorType: sensorType,
                        presentationMode: .init(get: {
             self.getIsModalScreenPresented()
         }, set: { value in

@@ -49,14 +49,14 @@ class CompleteScreenViewModel: ObservableObject {
     private let session: SearchSessionResult
     @Injected private var service: SearchSessionStreamsDownstream
     
-    init(session: SearchSessionResult) {
+    init(session: SearchSessionResult, sensorType: String) {
         self.session = session
         sessionLongitude = session.longitude
         sessionLatitude = session.latitude
         sessionName = session.name
         sessionStartTime = session.startTime
         sessionEndTime = session.endTime
-        sensorType = "OpenAir"
+        self.sensorType = sensorType
         reloadData()
     }
     

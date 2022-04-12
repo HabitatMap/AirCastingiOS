@@ -8,8 +8,8 @@ struct CompleteScreen: View {
     @Binding var presentationMode: Bool
     @StateObject var viewModel: CompleteScreenViewModel
     
-    init(session: SearchSessionResult, presentationMode: Binding<Bool>) {
-        _viewModel = .init(wrappedValue: CompleteScreenViewModel(session: session))
+    init(session: SearchSessionResult, sensorType: String, presentationMode: Binding<Bool>) {
+        _viewModel = .init(wrappedValue: CompleteScreenViewModel(session: session, sensorType: sensorType))
         _presentationMode = .init(projectedValue: presentationMode)
     }
     
@@ -132,7 +132,7 @@ private extension CompleteScreen {
 #if DEBUG
 struct CompleteScreen_Previews: PreviewProvider {
     static var previews: some View {
-        CompleteScreen(session: .mock, presentationMode: .constant(false))
+        CompleteScreen(session: .mock, sensorType: "", presentationMode: .constant(false))
     }
 }
 #endif

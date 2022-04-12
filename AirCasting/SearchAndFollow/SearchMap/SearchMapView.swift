@@ -70,14 +70,14 @@ private extension SearchMapView {
     }
     
     var measurementTypeText: some View {
-        Text(String(format: Strings.SearchMapView.parameterText, arguments: [viewModel.measurementType.capitalizedName]))
+        Text(String(format: Strings.SearchMapView.parameterText, arguments: [viewModel.getMeasurementName()]))
             .font(Fonts.semiboldHeading2)
             .lineLimit(1)
             .scaledToFill()
     }
     
     var sensorTypeText: some View {
-        Text(String(format: Strings.SearchMapView.sensorText, arguments: [viewModel.sensorType.capitalizedName]))
+        Text(String(format: Strings.SearchMapView.sensorText, arguments: [viewModel.getSensorName()]))
             .font(Fonts.semiboldHeading2)
             .lineLimit(1)
             .scaledToFill()
@@ -145,7 +145,8 @@ private extension SearchMapView {
                                        startTime: session.startTime,
                                        endTime: session.endTime,
                                        latitude: session.location.latitude,
-                                       longitude: session.location.longitude)
+                                       longitude: session.location.longitude,
+                                       sensorType: viewModel.getSensorName())
                         .onMarkerChange(action: { pointer in
                             viewModel.markerSelectionChanged(using: pointer)
                         })
