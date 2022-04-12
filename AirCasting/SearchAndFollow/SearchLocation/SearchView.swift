@@ -51,8 +51,7 @@ struct SearchView: View {
                         Text(sensor.capitalizedName)
                             .padding([.all], 5)
                     }.buttonStyle(MultiSelectButtonStyle(isSelected: sensor.capitalizedName == viewModel.getSensor.capitalizedName))
-                        .padding(.bottom, 5)
-                    
+                        .padding(.bottom, 5) 
                 }
             }
             Spacer()
