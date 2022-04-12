@@ -66,7 +66,7 @@ private extension SearchView {
         return NavigationLink(
             destination: SearchMapView(locationName: viewModel.addressName,
                                        locationAddress: viewModel.addresslocation,
-                                       measurementType: "particular matter"),
+                                       measurementType: "particulate matter"),
             label: {
                 Text(Strings.Commons.continue)
             })
