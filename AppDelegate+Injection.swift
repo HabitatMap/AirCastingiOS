@@ -199,9 +199,13 @@ extension Resolver: ResolverRegistering {
         // MARK: - Update Session Params Service
         main.register { UpdateSessionParamsService() }
         
-        //MARK: - Search and Follow
+        // MARK: - Search and Follow
         main.register { SessionsForLocationDownloaderDefault() as SessionsForLocationDownloader }
-        main.register { SearchSessionStreamsDownstreamMock() as SearchSessionStreamsDownstream }
+        main.register { DefaultStreamDownloader() as StreamDownloader }
+        main.register { (_, _) -> ThresholdsStore in
+            let context = Resolver.resolve(PersistenceController.self).editContext
+            return DefaultThresholdsStore(context: context)
+        }
     }
     
     // MARK: - Composition helpers

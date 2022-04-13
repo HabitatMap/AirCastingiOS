@@ -8,8 +8,8 @@ struct BottomCardView: View {
     @StateObject var viewModel: BottomCardViewModel
     private var onMarkerChangeAction: ((Int) -> ())? = nil
     
-    init(id: Int, title: String, startTime: String, endTime: String, latitude: Double, longitude: Double) {
-        _viewModel = .init(wrappedValue: .init(id: id, title: title, startTime: startTime, endTime: endTime, latitude: latitude, longitude: longitude))
+    init(id: Int, uuid: String, title: String, startTime: String, endTime: String, latitude: Double, longitude: Double, streamId: Int, thresholds: ThresholdsValue) {
+        _viewModel = .init(wrappedValue: .init(id: id, uuid: uuid, title: title, startTime: startTime, endTime: endTime, latitude: latitude, longitude: longitude, streamId: streamId, thresholds: thresholds))
     }
     
     var body: some View {

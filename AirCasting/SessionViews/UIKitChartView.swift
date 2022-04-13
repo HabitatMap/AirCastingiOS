@@ -32,10 +32,10 @@ struct UIKitChartView: UIViewRepresentable {
         let data = LineChartData(dataSet: dataSet)
         uiView.lineChartView.data = data
         
-        //format data labels
+        // format data labels
         formatData(data: data)
         
-        //format line and dots
+        // format line and dots
         formatDataSet(dataSet: dataSet)
     }
     
@@ -48,13 +48,13 @@ struct UIKitChartView: UIViewRepresentable {
     }
     
     private func formatDataSet(dataSet: LineChartDataSet) {
-        //dots colors
+        // dots colors
         dataSet.circleColors = generateColorsSet(for: dataSet.entries)
         dataSet.drawCircleHoleEnabled = false
         dataSet.circleRadius = 4
 
         
-        //line color
+        // line color
         dataSet.setColor(UIColor.aircastingGray.withAlphaComponent(0.7))
     }
     
@@ -92,12 +92,14 @@ class UI_PollutionChart: UIView {
             lineChartView.topAnchor.constraint(equalTo: self.topAnchor),
             lineChartView.bottomAnchor.constraint(equalTo: self.bottomAnchor)
         ])
-        //remove border lines and legend
+        
+        // remove border lines and legend
         lineChartView.xAxis.enabled = false
         lineChartView.xAxis.drawLabelsEnabled = false
         lineChartView.xAxis.labelPosition = .bottom
         lineChartView.xAxis.drawGridLinesEnabled = true
         lineChartView.minOffset = 20
+        
         // we are setting the values for x axis so that there is always a space for 8 averages and they are always starting at the right edge
         lineChartView.xAxis.axisMinimum = 0
         lineChartView.xAxis.axisMaximum = 8

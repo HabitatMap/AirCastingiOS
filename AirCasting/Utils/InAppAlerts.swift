@@ -144,12 +144,12 @@ struct InAppAlerts {
                   ])
     }
     
-    static func failedSessionDownloadAlert() -> AlertInfo {
+    static func failedSessionDownloadAlert(dismiss: @escaping () -> Void) -> AlertInfo {
         AlertInfo(title: Strings.CompleteSearchView.failedDownloadAlertTitle,
                   message: Strings.CompleteSearchView.failedDownloadAlertMessage,
                   buttons: [
                     .default(title: Strings.Commons.gotIt,
-                             action: nil) ])
+                             action: dismiss ) ])
     }
     
     static func downloadingSessionsFailedAlert(action: @escaping (() -> Void)) -> AlertInfo {

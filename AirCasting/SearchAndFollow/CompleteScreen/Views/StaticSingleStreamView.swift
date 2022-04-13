@@ -6,6 +6,7 @@ import SwiftUI
 struct StaticSingleStreamView: View {
     let streamName: String
     let value: Double
+    let color: Color
     let isSelected: Bool
     let action: () -> Void
     
@@ -28,7 +29,7 @@ struct StaticSingleStreamView: View {
                         .padding(.horizontal, 9)
                         .overlay(
                             RoundedRectangle(cornerRadius: 8)
-                                .strokeBorder(isSelected ? Color.aircastingGray : .clear)
+                                .strokeBorder(isSelected ? color : .clear)
                         )
                     }
             })
@@ -36,7 +37,7 @@ struct StaticSingleStreamView: View {
     }
     
     var dot: some View {
-        Color.aircastingGray
+        color
             .clipShape(Circle())
             .frame(width: 5, height: 5)
     }
@@ -44,6 +45,6 @@ struct StaticSingleStreamView: View {
 
 struct StaticSingleStreamView_Previews: PreviewProvider {
     static var previews: some View {
-        StaticSingleStreamView(streamName: "AirBeam3-PM1", value: 20, isSelected: true) { }
+        StaticSingleStreamView(streamName: "AirBeam3-PM1", value: 20, color: Color.aircastingGray, isSelected: true) { }
     }
 }

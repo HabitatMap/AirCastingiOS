@@ -20,10 +20,8 @@ struct SearchAndFollowChartView: UIViewRepresentable {
     func updateUIView(_ uiView: UI_PollutionChart, context: Context) {
         guard !viewModel.entries.isEmpty else { return }
         
-        var entries = viewModel.entries
-        
-        entries.sort { (e1, e2) -> Bool in
-            e1.x < e2.x
+        let entries = viewModel.entries.enumerated().map { (i, dot) -> ChartDataEntry in
+            ChartDataEntry(x: Double(i), y: dot.value)
         }
         
         let dataSet = LineChartDataSet(entries: entries)
@@ -34,7 +32,8 @@ struct SearchAndFollowChartView: UIViewRepresentable {
         formatData(data: data)
         
         // format line and dots
-        formatDataSet(dataSet: dataSet)
+        let colors = viewModel.entries.map(\.color).map({ UIColor($0) })
+        formatDataSet(dataSet: dataSet, colors: colors)
     }
     
     private func formatData(data: LineChartData) {
@@ -46,17 +45,13 @@ struct SearchAndFollowChartView: UIViewRepresentable {
         data.highlightEnabled = false
     }
     
-    private func formatDataSet(dataSet: LineChartDataSet) {
+    private func formatDataSet(dataSet: LineChartDataSet, colors: [UIColor]) {
         // dots colors
-        dataSet.circleColors = generateColorsSet(for: dataSet.entries)
+        dataSet.circleColors = colors
         dataSet.drawCircleHoleEnabled = false
         dataSet.circleRadius = 4
         
         // line color
         dataSet.setColor(UIColor.aircastingGray.withAlphaComponent(0.7))
-    }
-    
-    private func generateColorsSet(for entries: [ChartDataEntry]) -> [UIColor] {
-        [.aircastingGray]
     }
 }
