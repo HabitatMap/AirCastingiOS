@@ -43,19 +43,16 @@ class BottomCardViewModel: ObservableObject {
     
     func initCompleteScreen() -> CompleteScreen {
         CompleteScreen(session: .init(uuid: "\(dataModel.uuid)",
-                                      provider: "OpenAir",
+                                      provider: "OpenAQ",
                                       name: dataModel.title,
                                       startTime: startTimeAsDate(),
                                       endTime: endTimeAsDate(),
                                       longitude: dataModel.longitude,
                                       latitude: dataModel.latitude,
-                                      sensorName: "OpenAir-PM2.5",
+                                      sensorName: "OpenAQ-PM2.5",
                                       streamID: dataModel.streamId,
-                                      thresholdsValues: dataModel.thresholds),
-                       isPresented: .init(get: {
-            self.getIsModalScreenPresented()
-        }, set: { value in
-            self.setIsModalScreenPresented(using: value)
-        }))
+                                      thresholdsValues: dataModel.thresholds)) { [weak self] in
+            self?.isModalScreenPresented = false
+        }
     }
 }

@@ -4,10 +4,10 @@
 import Foundation
 import Resolver
 
-struct StreamWithMeasurementsDownstream: Decodable {
+struct StreamWithMeasurements: Decodable {
     let title: String
     let username: String
-    let measurements: [StreamWithMeasurementsDownstream.Measurements]
+    let measurements: [StreamWithMeasurements.Measurements]
     let id: Int
     let lastMeasurementValue: Double
     let sensorName: String
@@ -22,7 +22,7 @@ struct StreamWithMeasurementsDownstream: Decodable {
 }
 
 protocol StreamDownloader {
-    func downloadStreamWithMeasurements(id: String, completion: @escaping (Result<StreamWithMeasurementsDownstream, Error>) -> Void)
+    func downloadStreamWithMeasurements(id: String, measurementsLimit: Int, completion: @escaping (Result<StreamWithMeasurements, Error>) -> Void)
 }
 
 class DefaultStreamDownloader: StreamDownloader {
@@ -37,11 +37,11 @@ class DefaultStreamDownloader: StreamDownloader {
         return decoder
     }()
     
-    func downloadStreamWithMeasurements(id: String, completion: @escaping (Result<StreamWithMeasurementsDownstream, Error>) -> Void) {
+    func downloadStreamWithMeasurements(id: String, measurementsLimit: Int, completion: @escaping (Result<StreamWithMeasurements, Error>) -> Void) {
         let urlComponentPart = urlProvider.baseAppURL.appendingPathComponent("api/fixed/streams/\(id).json")
         var urlComponents = URLComponents(string: urlComponentPart.absoluteString)!
         urlComponents.queryItems = [
-            URLQueryItem(name: "measurements_limit", value: "1140")
+            URLQueryItem(name: "measurements_limit", value: String(measurementsLimit))
         ]
         
         let url = urlComponents.url!
@@ -61,7 +61,7 @@ class DefaultStreamDownloader: StreamDownloader {
             case .success(let response):
                 do {
                     try responseValidator.validate(response: response.response, data: response.data)
-                    let sessionData = try decoder.decode(StreamWithMeasurementsDownstream.self, from: response.data)
+                    let sessionData = try decoder.decode(StreamWithMeasurements.self, from: response.data)
                     completion(.success(sessionData))
                 } catch {
                     completion(.failure(error))

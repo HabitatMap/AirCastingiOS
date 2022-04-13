@@ -71,7 +71,6 @@ class CompleteScreenViewModel: ObservableObject {
     @Published var chartStartTime: Date?
     @Published var chartEndTime: Date?
     @Published var isMapSelected: Bool = true
-    @Published var showAlert = false
     @Published var alert: AlertInfo?
     
     let sessionLongitude: Double
@@ -83,13 +82,14 @@ class CompleteScreenViewModel: ObservableObject {
     @Published var sessionStreams: Loadable<[SessionStreamViewModel]> = .loading
     @Published var chartViewModel = SearchAndFollowChartViewModel()
     
+    let exitRoute: () -> Void
+    
     private let session: PartialExternalSession
-    private var service = DefaultStreamDownloader()
-    private var isPresented: Binding<Bool>
+    @Injected private var service: StreamDownloader
     @Injected private var thresholdsStore: ThresholdsStore
     @Injected private var singleSessionDownloader: SingleSessionDownloader
     
-    init(session: PartialExternalSession, isPresented: Binding<Bool>) {
+    init(session: PartialExternalSession, exitRoute: @escaping () -> Void) {
         self.session = session
         sessionLongitude = session.longitude
         sessionLatitude = session.latitude
@@ -97,7 +97,7 @@ class CompleteScreenViewModel: ObservableObject {
         sessionStartTime = session.startTime
         sessionEndTime = session.endTime
         sensorType = session.provider
-        self.isPresented = isPresented
+        self.exitRoute = exitRoute
         reloadData()
     }
     
@@ -135,14 +135,14 @@ class CompleteScreenViewModel: ObservableObject {
     }
     
     func xMarkTapped() {
-        isPresented.wrappedValue = false
+        exitRoute()
     }
     
-    func dismissView() {
-        isPresented.wrappedValue = false
+    private func dismissView() {
+        exitRoute()
     }
     
-    func getMeasurementsAndDisplayData(_ thresholds: ThresholdsValue) {
+    private func getMeasurementsAndDisplayData(_ thresholds: ThresholdsValue) {
         let streams = [String(session.streamID)] // In the future this will be changed for Airbeam sessions, cause we will need to get other streams ids from backend
         downloadMeasurements(streams: streams) { [weak self] result in
             guard let self = self else { return }
@@ -171,15 +171,16 @@ class CompleteScreenViewModel: ObservableObject {
         }
     }
     
-    private func downloadMeasurements(streams: [String],completion: @escaping (Result<[StreamWithMeasurementsDownstream], Error>) -> Void) {
-            var results: [Result<StreamWithMeasurementsDownstream, Error>] = []
+    private func downloadMeasurements(streams: [String],completion: @escaping (Result<[StreamWithMeasurements], Error>) -> Void) {
+            var results: [Result<StreamWithMeasurements, Error>] = []
+            let measurementsLimit = 60*24 // We want measurement from 24 hours
             let group = DispatchGroup()
             streams.forEach { streamId in
                 group.enter()
-                self.service.downloadStreamWithMeasurements(id: streamId) { results.append($0); group.leave() }
+                self.service.downloadStreamWithMeasurements(id: streamId, measurementsLimit: measurementsLimit) { results.append($0); group.leave() }
             }
             group.notify(queue: .global()) {
-                var allDownstreams = [StreamWithMeasurementsDownstream]()
+                var allDownstreams = [StreamWithMeasurements]()
                 for result in results {
                     do {
                         allDownstreams.append(try result.get())

@@ -7,8 +7,8 @@ import AirCastingStyling
 struct CompleteScreen: View {
     @StateObject var viewModel: CompleteScreenViewModel
     
-    init(session: CompleteScreenViewModel.PartialExternalSession, isPresented: Binding<Bool>) {
-        _viewModel = .init(wrappedValue: CompleteScreenViewModel(session: session, isPresented: isPresented))
+    init(session: CompleteScreenViewModel.PartialExternalSession, exitRoute: @escaping () -> Void) {
+        _viewModel = .init(wrappedValue: CompleteScreenViewModel(session: session, exitRoute: exitRoute))
     }
     
     var body: some View {
@@ -60,7 +60,7 @@ private extension CompleteScreen {
     
     var measurements: some View {
         VStack(alignment: .leading, spacing: 5) {
-            Text(Strings.SessionCart.lastMinuteMeasurement)
+            Text(Strings.CompleteSearchView.lastMeasurement)
                 .font(Fonts.moderateTitle1)
                 .padding(.bottom, 3)
             if let streams = viewModel.sessionStreams.get {
@@ -154,7 +154,7 @@ private extension CompleteScreen {
 #if DEBUG
 struct CompleteScreen_Previews: PreviewProvider {
     static var previews: some View {
-        CompleteScreen(session: .mock, isPresented: .constant(false))
+        CompleteScreen(session: .mock, exitRoute: { })
     }
 }
 #endif
