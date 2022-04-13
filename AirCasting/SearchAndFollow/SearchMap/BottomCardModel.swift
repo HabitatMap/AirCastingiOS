@@ -11,4 +11,6 @@ struct BottomCardModel {
     let endTime: String
     let latitude: Double
     let longitude: Double
+    let streamId: Int
+    let thresholds: ThresholdsValue
 }

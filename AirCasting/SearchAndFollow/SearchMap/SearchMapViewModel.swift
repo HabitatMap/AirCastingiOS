@@ -83,15 +83,20 @@ class SearchMapViewModel: ObservableObject {
     
     private func handleUpdatingSuccess(using sessions: [MapDownloaderSearchedSession]) {
         DispatchQueue.main.async {
-            self.sessionsList = sessions.map { s in
+            self.sessionsList = sessions.compactMap { s in
+                guard let stream = s.streams.first?.value else {
+                    // If session doesn't have any streams we don't want to display it on the map
+                    return nil
+                }
                 return MapSessionMarker(id: s.id,
                                         uuid: s.uuid,
                                         title: s.title,
                                         location: .init(latitude: s.latitude, longitude: s.longitude),
                                         startTime: s.startTimeLocal,
                                         endTime: s.endTimeLocal,
-                                        markerImage: UIImage(systemName: "circle.circle.fill")!)
-                
+                                        markerImage: UIImage(systemName: "circle.circle.fill")!,
+                                        streamId: stream.id,
+                                        thresholdsValues: ThresholdsValue(veryLow: Int32(stream.thresholdVeryLow), low: Int32(stream.thresholdLow), medium: Int32(stream.thresholdMedium), high: Int32(stream.thresholdHigh), veryHigh: Int32(stream.thresholdVeryHigh)))
             }
         }
     }

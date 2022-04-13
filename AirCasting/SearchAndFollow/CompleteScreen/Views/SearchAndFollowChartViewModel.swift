@@ -19,6 +19,7 @@ class SearchAndFollowChartViewModel: ObservableObject {
     let numberOfEntries = 9
     
     func generateEntries(with measurements: [ChartMeasurement], thresholds: ThresholdsValue) -> (Date?, Date?) {
+        // TODO: Rewrite this. We need to check how many measurements we have for a specific hour and then calculate the average. Separate ticket is added to trello
         var times: [Date] = []
         entries = measurements.suffix(numberOfEntries).map {
             times.append($0.time)

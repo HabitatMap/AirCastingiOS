@@ -8,8 +8,8 @@ class BottomCardViewModel: ObservableObject {
     @Published private var isModalScreenPresented = false
     let dataModel: BottomCardModel
     
-    init(id: Int, uuid: String, title: String, startTime: String, endTime: String, latitude: Double, longitude: Double) {
-        dataModel = .init(id: id, uuid: uuid, title: title, startTime: startTime, endTime: endTime, latitude: latitude, longitude: longitude)
+    init(id: Int, uuid: String, title: String, startTime: String, endTime: String, latitude: Double, longitude: Double, streamId: Int, thresholds: ThresholdsValue) {
+        dataModel = .init(id: id, uuid: uuid, title: title, startTime: startTime, endTime: endTime, latitude: latitude, longitude: longitude, streamId: streamId, thresholds: thresholds)
     }
     
     func getIsModalScreenPresented() -> Bool { isModalScreenPresented }
@@ -49,7 +49,9 @@ class BottomCardViewModel: ObservableObject {
                                       endTime: endTimeAsDate(),
                                       longitude: dataModel.longitude,
                                       latitude: dataModel.latitude,
-                                      sensorName: "OpenAir-PM2.5"),
+                                      sensorName: "OpenAir-PM2.5",
+                                      streamID: dataModel.streamId,
+                                      thresholdsValues: dataModel.thresholds),
                        isPresented: .init(get: {
             self.getIsModalScreenPresented()
         }, set: { value in

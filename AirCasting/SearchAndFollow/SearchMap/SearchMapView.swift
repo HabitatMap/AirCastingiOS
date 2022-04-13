@@ -130,7 +130,9 @@ private extension SearchMapView {
                                        startTime: session.startTime,
                                        endTime: session.endTime,
                                        latitude: session.location.latitude,
-                                       longitude: session.location.longitude)
+                                       longitude: session.location.longitude,
+                                       streamId: session.streamId,
+                                       thresholds: session.thresholdsValues)
                         .onMarkerChange(action: { pointer in
                             viewModel.markerSelectionChanged(using: pointer)
                         })

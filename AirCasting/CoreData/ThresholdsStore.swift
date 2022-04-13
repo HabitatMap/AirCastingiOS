@@ -4,7 +4,12 @@
 import CoreData
 
 protocol ThresholdsStore {
-    func getThresholdsValues(for sensorName: String, completion: @escaping (Result<ThresholdsValue, Error>) -> Void)
+    func getThresholdsValues(for sensorName: String, completion: @escaping (Result<ThresholdsValue, ThresholdsStoreError>) -> Void)
+}
+
+enum ThresholdsStoreError: Error {
+    case noThresholdsFound
+    case fetchRequestFailed
 }
 
 struct DefaultThresholdsStore: ThresholdsStore {
@@ -14,7 +19,7 @@ struct DefaultThresholdsStore: ThresholdsStore {
         self.context = context
     }
     
-    func getThresholdsValues(for sensorName: String, completion: @escaping (Result<ThresholdsValue, Error>) -> Void) {
+    func getThresholdsValues(for sensorName: String, completion: @escaping (Result<ThresholdsValue, ThresholdsStoreError>) -> Void) {
         let request = SensorThreshold.fetchRequest()
         request.predicate = NSPredicate(format: "sensorName CONTAINS[cd] %@", sensorName)
         context.perform {
@@ -23,7 +28,7 @@ struct DefaultThresholdsStore: ThresholdsStore {
                 
                 guard let thresholds = result.first else {
                     Log.warning("Didn't find thresholds for \(sensorName)")
-                    completion(.success(ThresholdsValue(veryLow: .max, low: .max, medium: .max, high: .max, veryHigh: .max)))
+                    completion(.failure(ThresholdsStoreError.noThresholdsFound))
                     return
                 }
                 
@@ -34,7 +39,7 @@ struct DefaultThresholdsStore: ThresholdsStore {
                 
                 completion(.success(ThresholdsValue(veryLow: thresholds.thresholdVeryLow, low: thresholds.thresholdLow, medium: thresholds.thresholdMedium, high: thresholds.thresholdHigh, veryHigh: thresholds.thresholdVeryHigh)))
             } catch {
-                completion(.failure(error))
+                completion(.failure(ThresholdsStoreError.fetchRequestFailed))
             }
         }
     }

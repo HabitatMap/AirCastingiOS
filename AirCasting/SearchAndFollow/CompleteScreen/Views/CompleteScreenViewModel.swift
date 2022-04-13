@@ -46,6 +46,8 @@ class CompleteScreenViewModel: ObservableObject {
         let longitude: Double
         let latitude: Double
         let sensorName: String
+        let streamID: Int
+        let thresholdsValues: ThresholdsValue
         
         static var mock: PartialExternalSession {
             let session =  self.init(uuid: "202411",
@@ -55,7 +57,9 @@ class CompleteScreenViewModel: ObservableObject {
                                      endTime: DateBuilder.getFakeUTCDate(),
                                      longitude: 19.944544,
                                      latitude: 50.049683,
-                                     sensorName: "OpenAQ-PM2.5")
+                                     sensorName: "OpenAQ-PM2.5",
+                                     streamID: 499130,
+                                     thresholdsValues: ThresholdsValue(veryLow: 0, low: 5, medium: 8, high: 10, veryHigh: 12))
             // ...
             
             return session
@@ -83,6 +87,7 @@ class CompleteScreenViewModel: ObservableObject {
     private var service = DefaultStreamDownloader()
     private var isPresented: Binding<Bool>
     @Injected private var thresholdsStore: ThresholdsStore
+    @Injected private var singleSessionDownloader: SingleSessionDownloader
     
     init(session: PartialExternalSession, isPresented: Binding<Bool>) {
         self.session = session
@@ -102,35 +107,16 @@ class CompleteScreenViewModel: ObservableObject {
             guard let self = self else { return }
             switch result {
             case .success(let thresholdsValues):
-                self.downloadMeasurements() { [weak self] result in
-                    guard let self = self else { return }
-                    switch result {
-                    case .failure(let error):
-                        Log.error("Failed to download session: \(error)")
-                        DispatchQueue.main.async {
-                            self.alert = InAppAlerts.failedSessionDownloadAlert(dismiss: self.dismissView)
-                        }
-                    case .success(let downloadedStreams):
-                        DispatchQueue.main.async {
-                            self.sessionStreams = .ready( downloadedStreams.map {
-                                .init(id: $0.id,
-                                      sensorName: Self.getSensorName($0.sensorName),
-                                      lastMeasurementValue: $0.lastMeasurementValue,
-                                      color: thresholdsValues.colorFor(value: $0.lastMeasurementValue),
-                                      measurements: $0.measurements.map({.init(value: $0.value, time: DateBuilder.getDateWithTimeIntervalSince1970(Double($0.time)), latitude: $0.latitude, longitude: $0.longitude)}))
-                            })
-                            if let stream = downloadedStreams.first {
-                                self.selectedStream = stream.id
-                                self.selectedStreamUnitSymbol = stream.sensorUnit
-                                (self.chartStartTime, self.chartEndTime) = self.chartViewModel.generateEntries(with: stream.measurements.map({ SearchAndFollowChartViewModel.ChartMeasurement(value: $0.value, time: DateBuilder.getDateWithTimeIntervalSince1970(Double($0.time))) }), thresholds: thresholdsValues)
-                            }
-                        }
-                    }
-                }
+                self.getMeasurementsAndDisplayData(thresholdsValues)
             case .failure(let error):
-                Log.error("Failed to get threshold values: \(error)")
-                DispatchQueue.main.async {
-                    self.alert = InAppAlerts.failedSessionDownloadAlert(dismiss: self.dismissView)
+                switch error {
+                case .noThresholdsFound:
+                    self.getMeasurementsAndDisplayData(self.session.thresholdsValues)
+                default:
+                    Log.error("Failed to get threshold values: \(error)")
+                    DispatchQueue.main.async {
+                        self.alert = InAppAlerts.failedSessionDownloadAlert(dismiss: self.dismissView)
+                    }
                 }
             }
         }
@@ -156,9 +142,37 @@ class CompleteScreenViewModel: ObservableObject {
         isPresented.wrappedValue = false
     }
     
-    private func downloadMeasurements(completion: @escaping (Result<[StreamWithMeasurementsDownstream], Error>) -> Void) {
+    func getMeasurementsAndDisplayData(_ thresholds: ThresholdsValue) {
+        let streams = [String(session.streamID)] // In the future this will be changed for Airbeam sessions, cause we will need to get other streams ids from backend
+        downloadMeasurements(streams: streams) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .failure(let error):
+                Log.error("Failed to download session: \(error)")
+                DispatchQueue.main.async {
+                    self.alert = InAppAlerts.failedSessionDownloadAlert(dismiss: self.dismissView)
+                }
+            case .success(let downloadedStreams):
+                DispatchQueue.main.async {
+                    self.sessionStreams = .ready( downloadedStreams.map {
+                        .init(id: $0.id,
+                              sensorName: Self.getSensorName($0.sensorName),
+                              lastMeasurementValue: $0.lastMeasurementValue,
+                              color: thresholds.colorFor(value: $0.lastMeasurementValue),
+                              measurements: $0.measurements.map({.init(value: $0.value, time: DateBuilder.getDateWithTimeIntervalSince1970(Double($0.time)), latitude: $0.latitude, longitude: $0.longitude)}))
+                    })
+                    if let stream = downloadedStreams.first {
+                        self.selectedStream = stream.id
+                        self.selectedStreamUnitSymbol = stream.sensorUnit
+                        (self.chartStartTime, self.chartEndTime) = self.chartViewModel.generateEntries(with: stream.measurements.map({ SearchAndFollowChartViewModel.ChartMeasurement(value: $0.value, time: DateBuilder.getDateWithTimeIntervalSince1970(Double($0.time/1000))) }), thresholds: thresholds)
+                    }
+                }
+            }
+        }
+    }
+    
+    private func downloadMeasurements(streams: [String],completion: @escaping (Result<[StreamWithMeasurementsDownstream], Error>) -> Void) {
             var results: [Result<StreamWithMeasurementsDownstream, Error>] = []
-            let streams = ["499130"] // TODO: Get those streamIds from backend
             let group = DispatchGroup()
             streams.forEach { streamId in
                 group.enter()
