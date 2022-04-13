@@ -44,8 +44,8 @@ class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDel
     }
     
     func addNote(noteText: String) {
-        guard let latitude = locationTracker.locationManager.location?.coordinate.latitude,
-              let longitude = locationTracker.locationManager.location?.coordinate.longitude else { return }
+        let latitude = locationTracker.locationManager.location?.coordinate.latitude ?? locationTracker.googleLocation.last?.location.latitude ?? 50.09
+        let longitude = locationTracker.locationManager.location?.coordinate.longitude ?? locationTracker.googleLocation.last?.location.longitude ?? 19.96
         measurementStreamStorage.accessStorage { [self] storage in
             do {
                 let currentNumber = try storage.getNotes(for: sessionUUID).map(\.number).sorted(by: < ).last
