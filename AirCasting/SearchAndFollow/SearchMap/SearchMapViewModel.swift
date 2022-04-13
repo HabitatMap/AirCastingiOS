@@ -85,6 +85,7 @@ class SearchMapViewModel: ObservableObject {
         DispatchQueue.main.async {
             self.sessionsList = sessions.map { s in
                 return MapSessionMarker(id: s.id,
+                                        uuid: s.uuid,
                                         title: s.title,
                                         location: .init(latitude: s.latitude, longitude: s.longitude),
                                         startTime: s.startTimeLocal,

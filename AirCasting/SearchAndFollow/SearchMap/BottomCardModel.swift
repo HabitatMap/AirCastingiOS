@@ -5,6 +5,7 @@ import Foundation
 
 struct BottomCardModel {
     let id: Int
+    let uuid: String
     let title: String
     let startTime: String
     let endTime: String

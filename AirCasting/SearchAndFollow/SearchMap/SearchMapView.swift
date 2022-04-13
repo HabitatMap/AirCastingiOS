@@ -125,6 +125,7 @@ private extension SearchMapView {
                 HStack(alignment: .bottom, spacing: 12) {
                     ForEach(viewModel.sessionsList, id: \.id) { session in
                         BottomCardView(id: session.id,
+                                       uuid: session.uuid,
                                        title: session.title,
                                        startTime: session.startTime,
                                        endTime: session.endTime,

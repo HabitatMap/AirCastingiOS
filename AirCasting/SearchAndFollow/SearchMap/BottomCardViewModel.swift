@@ -8,8 +8,8 @@ class BottomCardViewModel: ObservableObject {
     @Published private var isModalScreenPresented = false
     let dataModel: BottomCardModel
     
-    init(id: Int, title: String, startTime: String, endTime: String, latitude: Double, longitude: Double) {
-        dataModel = .init(id: id, title: title, startTime: startTime, endTime: endTime, latitude: latitude, longitude: longitude)
+    init(id: Int, uuid: String, title: String, startTime: String, endTime: String, latitude: Double, longitude: Double) {
+        dataModel = .init(id: id, uuid: uuid, title: title, startTime: startTime, endTime: endTime, latitude: latitude, longitude: longitude)
     }
     
     func getIsModalScreenPresented() -> Bool { isModalScreenPresented }
@@ -42,7 +42,7 @@ class BottomCardViewModel: ObservableObject {
     }
     
     func initCompleteScreen() -> CompleteScreen {
-        CompleteScreen(session: .init(uuid: "\(dataModel.id)",
+        CompleteScreen(session: .init(uuid: "\(dataModel.uuid)",
                                       provider: "OpenAir",
                                       name: dataModel.title,
                                       startTime: startTimeAsDate(),

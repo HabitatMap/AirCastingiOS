@@ -6,6 +6,7 @@ import CoreLocation
 
 struct MapSessionMarker {
     let id: Int
+    let uuid: String
     let title: String
     let location: CLLocationCoordinate2D
     let startTime: String
