@@ -10,6 +10,14 @@ struct SessionStreamViewModel: Identifiable {
     let sensorName: String
     let lastMeasurementValue: Double
     let color: Color
+    let measurements: [Measurement]
+    
+    struct Measurement {
+        let value: Double
+        let time: Date
+        let latitude: Double
+        let longitude: Double
+    }
 }
 
 struct ExternalSession {
@@ -23,7 +31,7 @@ struct ExternalSession {
     let streams: [Stream]
     let sensorName: String
     
-    //TODO: Unfinished
+    // TODO: This will be implemented with the functionality for saving session to the database
     struct Stream {
     }
 }
@@ -55,7 +63,7 @@ class CompleteScreenViewModel: ObservableObject {
     }
     
     @Published var selectedStream: Int?
-    @Published var selectedStreamSymbol: String?
+    @Published var selectedStreamUnitSymbol: String?
     @Published var chartStartTime: Date?
     @Published var chartEndTime: Date?
     @Published var isMapSelected: Bool = true
@@ -108,10 +116,12 @@ class CompleteScreenViewModel: ObservableObject {
                                 .init(id: $0.id,
                                       sensorName: Self.getSensorName($0.sensorName),
                                       lastMeasurementValue: $0.lastMeasurementValue,
-                                      color: thresholdsValues.colorFor(value: $0.lastMeasurementValue))
+                                      color: thresholdsValues.colorFor(value: $0.lastMeasurementValue),
+                                      measurements: $0.measurements.map({.init(value: $0.value, time: DateBuilder.getDateWithTimeIntervalSince1970(Double($0.time)), latitude: $0.latitude, longitude: $0.longitude)}))
                             })
                             if let stream = downloadedStreams.first {
                                 self.selectedStream = stream.id
+                                self.selectedStreamUnitSymbol = stream.sensorUnit
                                 (self.chartStartTime, self.chartEndTime) = self.chartViewModel.generateEntries(with: stream.measurements.map({ SearchAndFollowChartViewModel.ChartMeasurement(value: $0.value, time: DateBuilder.getDateWithTimeIntervalSince1970(Double($0.time))) }), thresholds: thresholdsValues)
                             }
                         }

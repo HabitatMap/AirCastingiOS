@@ -11,6 +11,7 @@ struct StreamWithMeasurementsDownstream: Decodable {
     let id: Int
     let lastMeasurementValue: Double
     let sensorName: String
+    let sensorUnit: String
     
     struct Measurements: Decodable {
         let value: Double

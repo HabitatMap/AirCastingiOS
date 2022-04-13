@@ -99,7 +99,7 @@ private extension CompleteScreen {
     }
     
     var chartDescriptionText: some View {
-        Text(viewModel.selectedStreamSymbol ?? "")
+        Text("\(Strings.SessionCartView.avgSessionH) \(viewModel.selectedStreamUnitSymbol ?? "")")
     }
     
     var buttons: some View {
