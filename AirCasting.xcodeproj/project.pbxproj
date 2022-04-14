@@ -442,6 +442,10 @@
 		DDF62601269C779800F23489 /* UIApplication+AppInfo.swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF62600269C779800F23489 /* UIApplication+AppInfo.swift.swift */; };
 		DDF7599A268332E900D906BA /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF75999268332E900D906BA /* Strings.swift */; };
 		EE969E7E1981C41852FB7745 /* Pods_AirCastingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A54057326D27D23E9906704 /* Pods_AirCastingTests.framework */; };
+		FAB1D4A627FB28C8004F531D /* MapDownloaderSensorType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB1D4A527FB28C8004F531D /* MapDownloaderSensorType.swift */; };
+		FAF3B4DD28057A3300F0F4B0 /* PMSensorType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF3B4DC28057A3300F0F4B0 /* PMSensorType.swift */; };
+		FAF3B4DF28057A3D00F0F4B0 /* OzoneSensorType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF3B4DE28057A3D00F0F4B0 /* OzoneSensorType.swift */; };
+		FAF3B4E128057EC100F0F4B0 /* ParameterType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF3B4E028057EC100F0F4B0 /* ParameterType.swift */; };
 		FAF3B4E528058B6700F0F4B0 /* ProtectedScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF3B4E428058B6700F0F4B0 /* ProtectedScreen.swift */; };
 		FAB1D4A427FAD83E004F531D /* BottomCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB1D4A327FAD83E004F531D /* BottomCardViewModel.swift */; };
 /* End PBXBuildFile section */
@@ -902,6 +906,10 @@
 		DDF551D427985AAB009D1347 /* AirCasting v2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AirCasting v2.xcdatamodel"; sourceTree = "<group>"; };
 		DDF62600269C779800F23489 /* UIApplication+AppInfo.swift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+AppInfo.swift.swift"; sourceTree = "<group>"; };
 		DDF75999268332E900D906BA /* Strings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Strings.swift; sourceTree = "<group>"; };
+		FAB1D4A527FB28C8004F531D /* MapDownloaderSensorType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapDownloaderSensorType.swift; sourceTree = "<group>"; };
+		FAF3B4DC28057A3300F0F4B0 /* PMSensorType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PMSensorType.swift; sourceTree = "<group>"; };
+		FAF3B4DE28057A3D00F0F4B0 /* OzoneSensorType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OzoneSensorType.swift; sourceTree = "<group>"; };
+		FAF3B4E028057EC100F0F4B0 /* ParameterType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParameterType.swift; sourceTree = "<group>"; };
 		FAF3B4E428058B6700F0F4B0 /* ProtectedScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProtectedScreen.swift; sourceTree = "<group>"; };
 		FAB1D4A327FAD83E004F531D /* BottomCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomCardViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -2090,6 +2098,7 @@
 				DDDCEC3A27D0DA7100B3757C /* GeoSquare.swift */,
 				DD197FA627BE439200340672 /* MapDownloaderUnitSymbol.swift */,
 				DD197FA827BE43A900340672 /* MapDownloaderMeasurementType.swift */,
+				FAB1D4A527FB28C8004F531D /* MapDownloaderSensorType.swift */,
 				DD197FAA27BE448200340672 /* MapDownloaderQuery.swift */,
 				DDDA056527DF3B3A00C6B9B9 /* MapDownloaderSearchedStreams.swift */,
 				DD197FAD27BE857D00340672 /* MapDownloaderSearchedSessions.swift */,
@@ -2177,6 +2186,9 @@
 				DD80AE1C27BA46C800D9B123 /* SearchView.swift */,
 				DD80AE1F27BA470700D9B123 /* SearchViewModel.swift */,
 				DD80AE2627BA74A100D9B123 /* SearchPickerService.swift */,
+				FAF3B4DC28057A3300F0F4B0 /* PMSensorType.swift */,
+				FAF3B4DE28057A3D00F0F4B0 /* OzoneSensorType.swift */,
+				FAF3B4E028057EC100F0F4B0 /* ParameterType.swift */,
 			);
 			path = SearchLocation;
 			sourceTree = "<group>";
@@ -2380,6 +2392,7 @@
 			attributes = {
 				LastSwiftUpdateCheck = 1240;
 				LastUpgradeCheck = 1320;
+				ORGANIZATIONNAME = Lunar;
 				TargetAttributes = {
 					4FB39DFB2621B53C00E5E564 = {
 						CreatedOnToolsVersion = 12.4;
@@ -2790,6 +2803,7 @@
 				DD3C99F226E9DE5800B42A46 /* SessionSynchronizationViewModel.swift in Sources */,
 				AC524A6F261329330061AD45 /* SessionExtension.swift in Sources */,
 				ACF77DFB25A8888700BB85B7 /* SessionCardView.swift in Sources */,
+				FAB1D4A627FB28C8004F531D /* MapDownloaderSensorType.swift in Sources */,
 				4F3CDF222652B58100596CD3 /* Measurement.swift in Sources */,
 				ACC536E026395C0900327267 /* MeasurementDotView.swift in Sources */,
 				4F858F5E2624B4980059271A /* Log.swift in Sources */,
@@ -2846,6 +2860,7 @@
 				4F5D3F73262C91C6003AD82E /* UserAuthenticationSession.swift in Sources */,
 				AC6D569F25AEEAE700D221BA /* SessionHeaderView.swift in Sources */,
 				B3AB8BE526BB5EF400AF23CC /* Array+MeasurementStatistics.swift in Sources */,
+				FAF3B4E128057EC100F0F4B0 /* ParameterType.swift in Sources */,
 				B3C3F8B92695A295003E2CB4 /* StatisticsContainerViewModelable.swift in Sources */,
 				AC32040425CC067D00A68520 /* CheckBox.swift in Sources */,
 				3375E8D42791EDC50019A5DE /* CLLocationCoordinate2D.swift in Sources */,
@@ -2921,6 +2936,7 @@
 				DD197FAB27BE448200340672 /* MapDownloaderQuery.swift in Sources */,
 				B367A591274E9EAA004C605B /* DefaultFeatureFlagProvider.swift in Sources */,
 				DDDBD48826D3BEC000EAA0A1 /* EmptyFixedDashboardView.swift in Sources */,
+				FAF3B4DD28057A3300F0F4B0 /* PMSensorType.swift in Sources */,
 				AC9EB64726EF4EEB00B1F780 /* AirBeamCellularSessionCreator.swift in Sources */,
 				B33B15F727AEE6B000138FFA /* ScheduledLogger.swift in Sources */,
 				B3FD77C1267C94AF00E97CC2 /* SessionUpstream.swift in Sources */,
@@ -2947,6 +2963,7 @@
 				AC8D6C7225C0574800ED74D1 /* LocationTracker.swift in Sources */,
 				338CA6F927D1071200505331 /* PrivacyOnboardingViewModel.swift in Sources */,
 				DD8C380C2689A3DA00901FDF /* URLProvider.swift in Sources */,
+				FAF3B4DF28057A3D00F0F4B0 /* OzoneSensorType.swift in Sources */,
 				AC4EC6C425B6FE0D00C1E312 /* ThresholdsSettingsView.swift in Sources */,
 				DDD24D8626A8295F00D4A327 /* ConnectingABViewModel.swift in Sources */,
 				338CA6F727D104AF00505331 /* WebView.swift in Sources */,

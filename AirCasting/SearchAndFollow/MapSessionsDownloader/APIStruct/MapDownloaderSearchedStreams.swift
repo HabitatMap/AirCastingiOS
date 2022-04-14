@@ -17,8 +17,8 @@ struct MapDownloaderSearchedStreams: Codable {
     let sensorPackageName: String
     let sessionId: Int
     let size: Int
-    let startLatitude: Double
-    let startLongitude: Double
+    let startLatitude: Double?
+    let startLongitude: Double?
     let thresholdHigh: Int
     let thresholdLow: Int
     let thresholdMedium: Int

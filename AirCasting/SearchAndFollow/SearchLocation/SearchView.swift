@@ -18,6 +18,42 @@ struct SearchView: View {
         VStack(alignment: .leading) {
             title
             textField
+            parametersQuestion
+            HStack(spacing: 12) {
+                ForEach(ParameterType.allCases) { param in
+                    Button {
+                        withAnimation(.easeInOut(duration: 0.3)) {
+                            viewModel.onParameterTap(with: param)
+                        }
+                    } label: {
+                        Text(param.capitalizedName)
+                            .padding([.all], 5)
+                    }.buttonStyle(MultiSelectButtonStyle(isSelected: param.capitalizedName == viewModel.getParameter.capitalizedName))
+                        .padding(.bottom, 5)
+                }
+            }
+            sensorQuestion
+            if viewModel.shoudShowPMChoiceSheet {
+                ForEach(PMSensorType.allCases) { sensor in
+                    Button {
+                        viewModel.onPMSensorTap(with: sensor)
+                    } label: {
+                        Text(sensor.capitalizedName)
+                            .padding([.all], 5)
+                    }.buttonStyle(MultiSelectButtonStyle(isSelected: sensor.capitalizedName == viewModel.getSensor.capitalizedName))
+                        .padding(.bottom, 5)
+                }
+            } else {
+                ForEach(OzoneSensorType.allCases) { sensor in
+                    Button {
+                        viewModel.onOzoneSensorTap(with: sensor)
+                    } label: {
+                        Text(sensor.capitalizedName)
+                            .padding([.all], 5)
+                    }.buttonStyle(MultiSelectButtonStyle(isSelected: sensor.capitalizedName == viewModel.getSensor.capitalizedName))
+                        .padding(.bottom, 5) 
+                }
+            }
             Spacer()
             button
         }.padding()
@@ -58,19 +94,34 @@ private extension SearchView {
         }, set: { new in
             viewModel.locationNameInteracted(with: new)
         }))
-            .disabled(true)
-            .onTapGesture { viewModel.textFieldTapped() }
+        .disabled(true)
+        .onTapGesture { viewModel.textFieldTapped() }
+    }
+    
+    var parametersQuestion: some View {
+        Text(Strings.SearchView.parametersQuestion)
+            .padding(.top, 20)
+            .font(Fonts.mediumHeading2)
+            .foregroundColor(.aircastingDarkGray)
+    }
+    
+    var sensorQuestion: some View {
+        Text(Strings.SearchView.sensorQuestion)
+            .padding(.top, 20)
+            .font(Fonts.mediumHeading2)
+            .foregroundColor(.aircastingDarkGray)
     }
     
     var button: some View {
         return NavigationLink(
             destination: SearchMapView(locationName: viewModel.addressName,
                                        locationAddress: viewModel.addresslocation,
-                                       measurementType: "particulate matter"),
+                                       parameterType: viewModel.getParameter,
+                                       sensorType: viewModel.getSensor),
             label: {
                 Text(Strings.Commons.continue)
             })
-            .buttonStyle(BlueButtonStyle())
-            .disabled(viewModel.continueDisabled)
+        .buttonStyle(BlueButtonStyle())
+        .disabled(viewModel.continueDisabled)
     }
 }

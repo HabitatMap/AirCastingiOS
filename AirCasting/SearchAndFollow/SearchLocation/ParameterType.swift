@@ -1,20 +1,15 @@
-// Created by Lunar on 17/02/2022.
+// Created by Lunar on 12/04/2022.
 //
 
 import Foundation
 
-enum MapDownloaderMeasurementType: Codable, CaseIterable {
+enum ParameterType: Codable, Identifiable, CaseIterable {
     case particulateMatter
     case ozone
 }
 
-extension MapDownloaderMeasurementType {
-    var apiName: String {
-        switch self {
-        case .particulateMatter: return "Particulate Matter"
-        case .ozone: return "Ozone"
-        }
-    }
+extension ParameterType {
+    var id: Self { self }
     
     var capitalizedName: String {
         switch self {

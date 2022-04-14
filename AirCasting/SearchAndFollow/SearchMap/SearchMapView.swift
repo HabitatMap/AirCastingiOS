@@ -10,8 +10,11 @@ struct SearchMapView: View {
     @StateObject private var viewModel: SearchMapViewModel
     @Environment(\.presentationMode) var presentationMode
     
-    init(locationName: String, locationAddress: CLLocationCoordinate2D, measurementType: String) {
-        _viewModel = .init(wrappedValue: .init(passedLocation: locationName, passedLocationAddress: locationAddress, measurementType: measurementType))
+    init(locationName: String, locationAddress: CLLocationCoordinate2D, parameterType: MapDownloaderMeasurementType, sensorType: MapDownloaderSensorType) {
+        _viewModel = .init(wrappedValue: .init(passedLocation: locationName,
+                                               passedLocationAddress: locationAddress,
+                                               measurementType: parameterType,
+                                               sensorType: sensorType))
     }
     
     var body: some View {
@@ -32,7 +35,11 @@ struct SearchMapView: View {
                 }
                 VStack(alignment: .center, content: {
                     addressTextField
-                    measurementTypeText
+                    HStack {
+                        measurementTypeText
+                        Spacer()
+                        sensorTypeText
+                    }
                     searchAgainButton
                         .foregroundColor(.white)
                         .frame(width: reader.size.width / 2.2, height: 8, alignment: .center)
@@ -63,8 +70,17 @@ private extension SearchMapView {
     }
     
     var measurementTypeText: some View {
-        Text(String(format: Strings.SearchMapView.parameterText, arguments: [viewModel.measurementType]))
-            .font(.muli(size: 16, weight: .semibold))
+        Text(String(format: Strings.SearchMapView.parameterText, arguments: [viewModel.getMeasurementName()]))
+            .font(Fonts.semiboldHeading2)
+            .lineLimit(1)
+            .scaledToFill()
+    }
+    
+    var sensorTypeText: some View {
+        Text(String(format: Strings.SearchMapView.sensorText, arguments: [viewModel.getSensorName()]))
+            .font(Fonts.semiboldHeading2)
+            .lineLimit(1)
+            .scaledToFill()
     }
     
     var searchAgainButton: some View {
@@ -132,14 +148,15 @@ private extension SearchMapView {
                                        latitude: session.location.latitude,
                                        longitude: session.location.longitude,
                                        streamId: session.streamId,
-                                       thresholds: session.thresholdsValues)
+                                       thresholds: session.thresholdsValues,
+                                       username: session.username,
+                                       sensorType: viewModel.getSensorName())
                         .onMarkerChange(action: { pointer in
                             viewModel.markerSelectionChanged(using: pointer)
                         })
                         .border((viewModel.cardPointerID.number == session.id ? Color.accentColor : .clear), width: 1)
-                        
                     }
-                }
+                                       }
                 .onChange(of: viewModel.cardPointerID.number , perform: { newValue in
                     withAnimation(.linear) {
                         scrollProxy.scrollTo(viewModel.cardPointerID.number, anchor: .leading)
