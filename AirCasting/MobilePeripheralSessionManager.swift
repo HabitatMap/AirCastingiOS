@@ -6,6 +6,8 @@ import CoreBluetooth
 import CoreLocation
 
 class MobilePeripheralSessionManager {
+    var isMobileSessionActive: Bool { activeMobileSession != nil }
+
     private let measurementStreamStorage: MeasurementStreamStorage
     private lazy var locationProvider = LocationProvider()
 

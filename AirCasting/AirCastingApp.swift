@@ -18,6 +18,8 @@ struct AirCastingApp: App {
     private let syncScheduler: SynchronizationScheduler
     @Injected private var sessionSynchronizer: SessionSynchronizer
     @Injected private var persistenceController: PersistenceController
+    @Injected private var mobilePeripheralSessionManager: MobilePeripheralSessionManager
+    @Injected private var microphoneManager: MicrophoneManager
     private let appBecameActive = PassthroughSubject<Void, Never>()
     @ObservedObject private var offlineMessageViewModel: OfflineMessageViewModel
     private var cancellables: [AnyCancellable] = []
@@ -39,11 +41,15 @@ struct AirCastingApp: App {
         }.onChange(of: scenePhase) { newScenePhase in
             switch newScenePhase {
             case .active:
-                shouldProtect = false
+                if mobilePeripheralSessionManager.isMobileSessionActive || microphoneManager.isRecording {
+                    shouldProtect = false
+                }
                 persistenceController.uiSuspended = false
                 appBecameActive.send()
             case .background, .inactive:
-                shouldProtect = true
+                if mobilePeripheralSessionManager.isMobileSessionActive || microphoneManager.isRecording {
+                    shouldProtect = true
+                }
                 persistenceController.uiSuspended = true
             @unknown default:
                 fatalError()
