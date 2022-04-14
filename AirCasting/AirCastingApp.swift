@@ -41,9 +41,7 @@ struct AirCastingApp: App {
         }.onChange(of: scenePhase) { newScenePhase in
             switch newScenePhase {
             case .active:
-                if mobilePeripheralSessionManager.isMobileSessionActive || microphoneManager.isRecording {
-                    shouldProtect = false
-                }
+                shouldProtect = false
                 persistenceController.uiSuspended = false
                 appBecameActive.send()
             case .background, .inactive:
