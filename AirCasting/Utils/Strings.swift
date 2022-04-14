@@ -929,6 +929,7 @@ struct Strings {
     enum CompleteSearchView {
         static let map: String = NSLocalizedString("map", comment: "")
         static let chart: String = NSLocalizedString("chart", comment: "")
+        static let lastMeasurement = NSLocalizedString("Last measurement", comment: "")
         static let confirmationButtonTitle: String = NSLocalizedString("Follow Session", comment: "")
         static let noStreamsDescription = NSLocalizedString("No streams available for this session", comment: "")
         static let failedDownloadAlertTitle = NSLocalizedString("Session download failed", comment: "")

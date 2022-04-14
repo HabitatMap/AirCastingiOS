@@ -5,19 +5,17 @@ import SwiftUI
 import AirCastingStyling
 
 struct CompleteScreen: View {
-    @Binding var presentationMode: Bool
     @StateObject var viewModel: CompleteScreenViewModel
     
-    init(session: SearchSessionResult, sensorType: String, presentationMode: Binding<Bool>) {
-        _viewModel = .init(wrappedValue: CompleteScreenViewModel(session: session, sensorType: sensorType))
-        _presentationMode = .init(projectedValue: presentationMode)
+    init(session: CompleteScreenViewModel.PartialExternalSession, exitRoute: @escaping () -> Void) {
+        _viewModel = .init(wrappedValue: CompleteScreenViewModel(session: session, exitRoute: exitRoute))
     }
     
     var body: some View {
         sessionCard
             .overlay(
                 Button(action: {
-                    presentationMode = false
+                    viewModel.xMarkTapped()
                 }, label: {
                     Image(systemName: "xmark")
                         .foregroundColor(.aircastingDarkGray)
@@ -42,6 +40,7 @@ struct CompleteScreen: View {
                 SearchCompleteScreenMapView(longitude: viewModel.sessionLongitude, latitude: viewModel.sessionLatitude)
             } else {
                 SearchAndFollowChartView(viewModel: viewModel.chartViewModel)
+                chartDescription
             }
             buttons
             confirmationButton
@@ -61,7 +60,7 @@ private extension CompleteScreen {
     
     var measurements: some View {
         VStack(alignment: .leading, spacing: 5) {
-            Text(Strings.SessionCart.lastMinuteMeasurement)
+            Text(Strings.CompleteSearchView.lastMeasurement)
                 .font(Fonts.moderateTitle1)
                 .padding(.bottom, 3)
             if let streams = viewModel.sessionStreams.get {
@@ -69,7 +68,7 @@ private extension CompleteScreen {
                     streams.count != 1 ? Spacer() : nil
                     ForEach(streams) { stream in
                         let isSelected = stream.id == viewModel.selectedStream
-                        StaticSingleStreamView(streamName: stream.sensorName, value: stream.lastMeasurementValue, isSelected: isSelected) {
+                        StaticSingleStreamView(streamName: stream.sensorName, value: stream.lastMeasurementValue, color: stream.color, isSelected: isSelected) {
                             viewModel.selectedStream(with: stream.id)
                         }
                         Spacer()
@@ -78,6 +77,29 @@ private extension CompleteScreen {
             }
         }
         .padding(.bottom)
+    }
+    
+    var chartDescription: some View {
+        HStack() {
+            formatChartTime(time: viewModel.chartStartTime)
+            Spacer()
+            chartDescriptionText
+            Spacer()
+            formatChartTime(time: viewModel.chartEndTime)
+        }
+    }
+
+    func formatChartTime(time: Date?) -> some View {
+        let formatter = DateFormatters.SessionCartView.pollutionChartDateFormatter
+
+        let date = time ?? DateBuilder.getFakeUTCDate()
+
+        let string = formatter.string(from: date)
+        return Text(string)
+    }
+    
+    var chartDescriptionText: some View {
+        Text("\(Strings.SessionCartView.avgSessionH) \(viewModel.selectedStreamUnitSymbol ?? "")")
     }
     
     var buttons: some View {
@@ -132,7 +154,7 @@ private extension CompleteScreen {
 #if DEBUG
 struct CompleteScreen_Previews: PreviewProvider {
     static var previews: some View {
-        CompleteScreen(session: .mock, sensorType: "", presentationMode: .constant(false))
+        CompleteScreen(session: .mock, exitRoute: { })
     }
 }
 #endif

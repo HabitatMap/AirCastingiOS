@@ -2,25 +2,30 @@
 //
 
 import Foundation
-import Charts
+import SwiftUI
 
 class SearchAndFollowChartViewModel: ObservableObject {
-    @Published var entries: [ChartDataEntry] = []
-    
-    init(stream: SearchSession.SearchSessionStream?) {
-        guard let stream = stream else { return }
-        generateEntries(for: stream)
+    struct ChartDot {
+        let value: Double
+        let color: Color
+    }
+    struct ChartMeasurement {
+        let value: Double
+        let time: Date
     }
     
-    func setStream(to stream: SearchSession.SearchSessionStream) {
-        generateEntries(for: stream)
-    }
+    @Published var entries: [ChartDot] = []
     
-    private func generateEntries(for stream: SearchSession.SearchSessionStream) {
-        entries = [
-            .init(x: 0, y: 1),
-            .init(x: 1, y: 3),
-            .init(x: 2, y: 2)
-        ]
+    let numberOfEntries = 9
+    
+    func generateEntries(with measurements: [ChartMeasurement], thresholds: ThresholdsValue) -> (Date?, Date?) {
+        // TODO: Rewrite this. We need to check how many measurements we have for a specific hour and then calculate the average. Separate ticket is added to trello
+        var times: [Date] = []
+        entries = measurements.suffix(numberOfEntries).map {
+            times.append($0.time)
+            return ChartDot(value: $0.value, color: thresholds.colorFor(value: $0.value))
+        }
+        
+        return (startTime: times.min(), endTime: times.max())
     }
 }

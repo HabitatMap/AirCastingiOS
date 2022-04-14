@@ -141,19 +141,22 @@ private extension SearchMapView {
                 HStack(alignment: .bottom, spacing: 12) {
                     ForEach(viewModel.sessionsList, id: \.id) { session in
                         BottomCardView(id: session.id,
+                                       uuid: session.uuid,
                                        title: session.title,
                                        startTime: session.startTime,
                                        endTime: session.endTime,
                                        latitude: session.location.latitude,
                                        longitude: session.location.longitude,
+                                       streamId: session.streamId,
+                                       thresholds: session.thresholdsValues,
+                                       username: session.username,
                                        sensorType: viewModel.getSensorName())
                         .onMarkerChange(action: { pointer in
                             viewModel.markerSelectionChanged(using: pointer)
                         })
                         .border((viewModel.cardPointerID.number == session.id ? Color.accentColor : .clear), width: 1)
-                        
                     }
-                }
+                                       }
                 .onChange(of: viewModel.cardPointerID.number , perform: { newValue in
                     withAnimation(.linear) {
                         scrollProxy.scrollTo(viewModel.cardPointerID.number, anchor: .leading)

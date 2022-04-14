@@ -9,31 +9,67 @@ struct SessionStreamViewModel: Identifiable {
     let id: Int
     let sensorName: String
     let lastMeasurementValue: Double
+    let color: Color
+    let measurements: [Measurement]
+    
+    struct Measurement {
+        let value: Double
+        let time: Date
+        let latitude: Double
+        let longitude: Double
+    }
 }
 
-struct SearchSessionResult {
-    let uuid: SessionUUID
+struct ExternalSession {
+    let uuid: String
+    let provider: String
     let name: String
     let startTime: Date
     let endTime: Date
     let longitude: Double
     let latitude: Double
+    let streams: [Stream]
+    let sensorName: String
     
-    static var mock: SearchSessionResult {
-        let session =  self.init(uuid: .init(rawValue: "ASD")!,
-                                 name: "Mock Session",
-                                 startTime: DateBuilder.getFakeUTCDate() - 60,
-                                 endTime: DateBuilder.getFakeUTCDate(),
-                                 longitude: 19.944544,
-                                 latitude: 50.049683)
-        // ...
-                
-        return session
+    // TODO: This will be implemented with the functionality for saving session to the database
+    struct Stream {
     }
 }
 
 class CompleteScreenViewModel: ObservableObject {
+    struct PartialExternalSession {
+        let uuid: String
+        let provider: String
+        let name: String
+        let startTime: Date
+        let endTime: Date
+        let longitude: Double
+        let latitude: Double
+        let sensorName: String
+        let streamID: Int
+        let thresholdsValues: ThresholdsValue
+        
+        static var mock: PartialExternalSession {
+            let session =  self.init(uuid: "202411",
+                                     provider: "OpenAir",
+                                     name: "KAHULUI, MAUI",
+                                     startTime: DateBuilder.getFakeUTCDate() - 60,
+                                     endTime: DateBuilder.getFakeUTCDate(),
+                                     longitude: 19.944544,
+                                     latitude: 50.049683,
+                                     sensorName: "OpenAQ-PM2.5",
+                                     streamID: 499130,
+                                     thresholdsValues: ThresholdsValue(veryLow: 0, low: 5, medium: 8, high: 10, veryHigh: 12))
+            // ...
+            
+            return session
+        }
+    }
+    
     @Published var selectedStream: Int?
+    @Published var selectedStreamUnitSymbol: String?
+    @Published var chartStartTime: Date?
+    @Published var chartEndTime: Date?
     @Published var isMapSelected: Bool = true
     @Published var alert: AlertInfo?
     
@@ -44,41 +80,43 @@ class CompleteScreenViewModel: ObservableObject {
     let sessionEndTime: Date
     let sensorType: String
     @Published var sessionStreams: Loadable<[SessionStreamViewModel]> = .loading
-    @Published var chartViewModel = SearchAndFollowChartViewModel(stream: nil)
+    @Published var chartViewModel = SearchAndFollowChartViewModel()
     
-    private let session: SearchSessionResult
-    @Injected private var service: SearchSessionStreamsDownstream
+    let exitRoute: () -> Void
     
-    init(session: SearchSessionResult, sensorType: String) {
+    private let session: PartialExternalSession
+    @Injected private var service: StreamDownloader
+    @Injected private var thresholdsStore: ThresholdsStore
+    @Injected private var singleSessionDownloader: SingleSessionDownloader
+    
+    init(session: PartialExternalSession, exitRoute: @escaping () -> Void) {
         self.session = session
         sessionLongitude = session.longitude
         sessionLatitude = session.latitude
         sessionName = session.name
         sessionStartTime = session.startTime
         sessionEndTime = session.endTime
-        self.sensorType = sensorType
+        sensorType = session.provider
+        self.exitRoute = exitRoute
         reloadData()
     }
     
     private func reloadData() {
         sessionStreams = .loading
-        service.downloadSession(uuid: session.uuid) { [weak self] result in
+        thresholdsStore.getThresholdsValues(for: Self.getSensorName(session.sensorName)) { [weak self] result in
             guard let self = self else { return }
             switch result {
+            case .success(let thresholdsValues):
+                self.getMeasurementsAndDisplayData(thresholdsValues)
             case .failure(let error):
-                Log.error("Failed to download session: \(error)")
-                self.alert = InAppAlerts.failedSessionDownloadAlert()
-            case .success(let downloadedSession):
-                self.sessionStreams = .ready(
-                    downloadedSession.streams.map({
-                        .init(id: $0.id,
-                              sensorName: Self.showStreamName($0.sensorName),
-                              lastMeasurementValue: $0.measurements.last?.value ?? 0)
-                    })
-                )
-                self.selectedStream = downloadedSession.streams.first?.id
-                if let stream = downloadedSession.streams.first {
-                    self.chartViewModel.setStream(to: stream)
+                switch error {
+                case .noThresholdsFound:
+                    self.getMeasurementsAndDisplayData(self.session.thresholdsValues)
+                default:
+                    Log.error("Failed to get threshold values: \(error)")
+                    DispatchQueue.main.async {
+                        self.alert = InAppAlerts.failedSessionDownloadAlert(dismiss: self.dismissView)
+                    }
                 }
             }
         }
@@ -96,7 +134,66 @@ class CompleteScreenViewModel: ObservableObject {
         selectedStream = id
     }
     
-    private static func showStreamName(_ streamName: String) -> String {
+    func xMarkTapped() {
+        exitRoute()
+    }
+    
+    private func dismissView() {
+        exitRoute()
+    }
+    
+    private func getMeasurementsAndDisplayData(_ thresholds: ThresholdsValue) {
+        let streams = [String(session.streamID)] // In the future this will be changed for Airbeam sessions, cause we will need to get other streams ids from backend
+        downloadMeasurements(streams: streams) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .failure(let error):
+                Log.error("Failed to download session: \(error)")
+                DispatchQueue.main.async {
+                    self.alert = InAppAlerts.failedSessionDownloadAlert(dismiss: self.dismissView)
+                }
+            case .success(let downloadedStreams):
+                DispatchQueue.main.async {
+                    self.sessionStreams = .ready( downloadedStreams.map {
+                        .init(id: $0.id,
+                              sensorName: Self.getSensorName($0.sensorName),
+                              lastMeasurementValue: $0.lastMeasurementValue,
+                              color: thresholds.colorFor(value: $0.lastMeasurementValue),
+                              measurements: $0.measurements.map({.init(value: $0.value, time: DateBuilder.getDateWithTimeIntervalSince1970(Double($0.time)), latitude: $0.latitude, longitude: $0.longitude)}))
+                    })
+                    if let stream = downloadedStreams.first {
+                        self.selectedStream = stream.id
+                        self.selectedStreamUnitSymbol = stream.sensorUnit
+                        (self.chartStartTime, self.chartEndTime) = self.chartViewModel.generateEntries(with: stream.measurements.map({ SearchAndFollowChartViewModel.ChartMeasurement(value: $0.value, time: DateBuilder.getDateWithTimeIntervalSince1970(Double($0.time/1000))) }), thresholds: thresholds)
+                    }
+                }
+            }
+        }
+    }
+    
+    private func downloadMeasurements(streams: [String],completion: @escaping (Result<[StreamWithMeasurements], Error>) -> Void) {
+            var results: [Result<StreamWithMeasurements, Error>] = []
+            let measurementsLimit = 60*24 // We want measurement from 24 hours
+            let group = DispatchGroup()
+            streams.forEach { streamId in
+                group.enter()
+                self.service.downloadStreamWithMeasurements(id: streamId, measurementsLimit: measurementsLimit) { results.append($0); group.leave() }
+            }
+            group.notify(queue: .global()) {
+                var allDownstreams = [StreamWithMeasurements]()
+                for result in results {
+                    do {
+                        allDownstreams.append(try result.get())
+                    } catch {
+                        completion(.failure(error))
+                        return
+                    }
+                }
+                completion(.success(allDownstreams))
+            }
+        }
+    
+    private static func getSensorName(_ streamName: String) -> String {
         streamName
             .replacingOccurrences(of: ":", with: "-")
             .drop { $0 != "-" }
