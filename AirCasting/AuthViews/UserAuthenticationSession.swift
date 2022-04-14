@@ -85,6 +85,7 @@ extension UserAuthenticationSession: RequestAuthorisationService {
 
 protocol LogoutController {
     func logout(onEnd: @escaping () -> Void) throws
+    func deleteAccount(completion: @escaping (Result<String, Error>) -> Void) throws
 }
 
 final class DefaultLogoutController: LogoutController {
@@ -92,6 +93,12 @@ final class DefaultLogoutController: LogoutController {
     @Injected private var microphoneManager: MicrophoneManager
     @Injected private var sessionSynchronizer: SessionSynchronizer
     @Injected private var dataEraser: DataEraser
+    @Injected private var authorization: RequestAuthorisationService
+    @Injected private var urlProvider: URLProvider
+    @Injected private var client: APIClient
+    @Injected private var responseValidator: HTTPResponseValidator
+    
+    private let responseHandler = AuthorizationHTTPResponseHandler()
 
     func logout(onEnd: @escaping () -> Void) throws {
         if sessionSynchronizer.syncInProgress.value {
@@ -108,6 +115,28 @@ final class DefaultLogoutController: LogoutController {
         sessionSynchronizer.triggerSynchronization(options: [.upload], completion: {
             DispatchQueue.main.async { self.deleteEverything(); onEnd() }
         })
+    }
+    
+    func deleteAccount(completion: @escaping (Result<String, Error>) -> Void) throws {
+        let url = urlProvider.baseAppURL.appendingPathComponent("api/user.json")
+        do {
+            var request = URLRequest(url: url)
+            request.httpMethod = "DELETE"
+            request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.addValue("application/json", forHTTPHeaderField: "Accept")
+            try authorization.authorise(request: &request)
+            client.requestTask(for: request) { [responseHandler] result, _ in
+                switch responseHandler.handle(result) {
+                case .success(_):
+                    completion(.success("Deleted"))
+                    self.deleteEverything()
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+            }
+        } catch {
+            completion(.failure(error))
+        }
     }
     
     func deleteEverything() {

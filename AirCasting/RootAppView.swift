@@ -38,7 +38,7 @@ struct MainAppView: View {
     @InjectedObject private var user: UserState
     
     var body: some View {
-        LoadingView(isShowing: $user.isLoggingOut, activityIndicatorText: Strings.MainTabBarView.loggingOut) {
+        LoadingView(isShowing: $user.isShowingLoading, activityIndicatorText: user.currentState == .loggingOut ? Strings.MainTabBarView.loggingOut : Strings.MainTabBarView.deletingAccount) {
             MainTabBarView(sessionContext: CreateSessionContext(),
                            coreDataHook: CoreDataHook(context: persistenceController.viewContext))
         }

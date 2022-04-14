@@ -178,6 +178,37 @@ struct InAppAlerts {
                              action: { dismiss })
                   ])
     }
+    
+    static func firstConfirmationDeletingAccountAlert(action: ()) -> AlertInfo {
+        AlertInfo(title: Strings.InAppAlerts.firstDeletingAccountTitle, message: Strings.InAppAlerts.firstDeletingAccountMessage, buttons: [
+            .cancel(title: Strings.InAppAlerts.cancelDeletingButton),
+            .default(title: Strings.InAppAlerts.firstConfirmingDeletingButton, action: { action })
+        ])
+    }
+    
+    static func secondConfirmationDeletingAccountAlert(action: ()) -> AlertInfo {
+        AlertInfo(title: Strings.InAppAlerts.secondDeletingAccountTitle, message: Strings.InAppAlerts.secondDeletingAccountMessage, buttons: [
+            .cancel(title: Strings.InAppAlerts.cancelDeletingButton),
+            .default(title: Strings.InAppAlerts.secondConfirmingDeletingButton, action: { action })
+        ])
+    }
+    
+    static func thirdConfirmationDeletingAccountAlert() -> AlertInfo {
+        AlertInfo(title: Strings.InAppAlerts.thirdDeletingAccountTitle, message: Strings.InAppAlerts.thirdDeletingAccountMessage, buttons: [
+            .default(title: Strings.InAppAlerts.thirdConfirmingDeletingButton, action: nil)
+        ])
+    }
+    
+    static func unableToConnectBeforeDeletingAccount() -> AlertInfo {
+        AlertInfo(title: Strings.InAppAlerts.unableConnectTitle, message: Strings.InAppAlerts.unableConnectMessage, buttons: [
+            .default(title: Strings.InAppAlerts.failedButton, action: nil)
+        ])
+    }
+    static func failedDeletingAccount() -> AlertInfo {
+        AlertInfo(title: Strings.InAppAlerts.failedTitle, message: Strings.InAppAlerts.failedDeletingMessage, buttons: [
+            .default(title: Strings.InAppAlerts.failedButton, action: nil)
+        ])
+    }
 }
 
 import SwiftUI

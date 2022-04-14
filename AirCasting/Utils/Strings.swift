@@ -97,6 +97,8 @@ struct Strings {
                                                       comment: "")
         static let signOut: String = NSLocalizedString("Sign Out",
                                                        comment: "")
+        static let deleteAccount: String = NSLocalizedString("Delete Account",
+                                                             comment: "")
     }
     
     enum ForgotPassword {
@@ -737,6 +739,8 @@ struct Strings {
     enum MainTabBarView {
         static let loggingOut: String = NSLocalizedString("Logging out, please wait...",
                                                           comment: "")
+        static let deletingAccount: String = NSLocalizedString("Deleting account, please wait...",
+                                                             comment: "")
         static let finished: String = NSLocalizedString("Finished", comment: "")
         static let homeIcon: String = "home"
         static let homeBlueIcon: String = "bluehome"
@@ -890,6 +894,35 @@ struct Strings {
                                                                      comment: "")
         static let failedSavingButton: String = NSLocalizedString("Got it!",
                                                                     comment: "")
+        static let firstDeletingAccountTitle: String = NSLocalizedString("Delete account?",
+                                                                    comment: "")
+        static let firstDeletingAccountMessage: String = NSLocalizedString("Would you like to delete your account?",
+                                                                      comment: "")
+        static let firstConfirmingDeletingButton: String = NSLocalizedString("Confirm",
+                                                                          comment: "")
+        static let cancelDeletingButton: String = NSLocalizedString("Cancel",
+                                                                    comment: "")
+        static let secondDeletingAccountTitle: String = NSLocalizedString("Delete confirmation",
+                                                                          comment: "")
+        static let secondDeletingAccountMessage: String = NSLocalizedString("You will lose all your sessions and data. Are you sure to delete the account?",
+                                                                            comment: "")
+        static let secondConfirmingDeletingButton: String = NSLocalizedString("Delete account",
+                                                                              comment: "")
+        
+        static let failedDeletingMessage: String = NSLocalizedString("Something went wrong deleting the account. Please try again later.",
+                                                                     comment: "")
+        static let failedButton: String = NSLocalizedString("Got it!",
+                                                                   comment: "")
+        static let unableConnectTitle: String = NSLocalizedString("No Internet connection",
+                                                                  comment: "")
+        static let unableConnectMessage: String = NSLocalizedString("To sign out, you must be connected to the Internet",
+                                                                    comment: "")
+        static let thirdDeletingAccountTitle: String = NSLocalizedString("Success",
+                                                                   comment: "")
+        static let thirdDeletingAccountMessage: String = NSLocalizedString("Your account has been deleted.",
+                                                                   comment: "")
+        static let thirdConfirmingDeletingButton: String = NSLocalizedString("Got it!",
+                                                                   comment: "")
     }
     
     enum AddNoteView {
