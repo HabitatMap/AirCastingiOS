@@ -1015,4 +1015,8 @@ struct Strings {
         static let sessionsText: String = NSLocalizedString("Sessions",
                                                               comment: "")
     }
+    
+    enum ProtectedScreen {
+        static let title: String = NSLocalizedString("Please, do not force close the app while recording a session!", comment: "")
+    }
 }

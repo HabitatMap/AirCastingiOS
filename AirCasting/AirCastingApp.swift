@@ -14,6 +14,7 @@ struct AirCastingApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
     @Environment(\.scenePhase) var scenePhase
+    @State var shouldProtect = false
     private let syncScheduler: SynchronizationScheduler
     @Injected private var sessionSynchronizer: SessionSynchronizer
     @Injected private var persistenceController: PersistenceController
@@ -31,13 +32,18 @@ struct AirCastingApp: App {
     var body: some Scene {
         WindowGroup {
             RootAppView()
+                .fullScreenCover(isPresented: $shouldProtect, content: {
+                    ProtectedScreen()
+                })
                 .alert(isPresented: $offlineMessageViewModel.showOfflineMessage, content: { Alert.offlineAlert })
         }.onChange(of: scenePhase) { newScenePhase in
             switch newScenePhase {
             case .active:
+                shouldProtect = false
                 persistenceController.uiSuspended = false
                 appBecameActive.send()
             case .background, .inactive:
+                shouldProtect = true
                 persistenceController.uiSuspended = true
             @unknown default:
                 fatalError()
