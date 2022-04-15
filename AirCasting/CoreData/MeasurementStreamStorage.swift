@@ -103,6 +103,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
             context.delete(object)
         }
         forceUpdate(sessionEntity: sessionEntity)
+        try context.save()
     }
 
     func forceUpdate(sessionEntity: SessionEntity) {
@@ -269,6 +270,8 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
     func updateVersion(for sessionUUID: SessionUUID, to version: Int) throws {
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
         sessionEntity.version = Int16(version)
+        // I needed to add this, because in the note editing function this get's called from another thread and the context save in `accessStorage` function was getting called before this function got exectuted.
+        try context.save()
     }
 
     func updateSessionFollowing(_ sessionFollowing: SessionFollowing, for sessionUUID: SessionUUID) {
