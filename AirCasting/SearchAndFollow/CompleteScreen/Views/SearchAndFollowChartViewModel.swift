@@ -32,7 +32,7 @@ class SearchAndFollowChartViewModel: ObservableObject {
                 continue
             }
             
-            let average = Int(buffer.map { $0.value }.reduce(0, +)) / buffer.count
+            let average = (buffer.map { $0.value }.reduce(0, +)) / Double(buffer.count)
             
             times.append(buffer.last!.time.roundedUpToHour)
             entries.append(ChartDot(value: Double(average), color: thresholds.colorFor(value: measurement.value)))
