@@ -70,9 +70,7 @@ struct SearchAndFollowMap: UIViewRepresentable {
     
     func updateUIView(_ uiView: GMSMapView, context: Context) {
         if (startingPoint.latitude, startingPoint.longitude) != (context.coordinator.startingPointHolder.latitude, context.coordinator.startingPointHolder.longitude) {
-            DispatchQueue.main.async {
-                startingPointChanged = true
-            }
+            DispatchQueue.main.async { startingPointChanged = true }
             uiView.animate(to: GMSCameraPosition(latitude: startingPoint.latitude, longitude: startingPoint.longitude, zoom: 10))
         }
         if selectedPointerID.number != context.coordinator.pointerIdHolder.number {
