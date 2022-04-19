@@ -6,7 +6,7 @@ import CoreLocation
 import SwiftUI
 import Resolver
 
-enum PointerValue {
+enum PointerValue: Equatable {
     case value(of: Int)
     case noValue
     
@@ -20,11 +20,12 @@ enum PointerValue {
 }
 
 class SearchMapViewModel: ObservableObject {
-    let passedLocation: String
-    let passedLocationAddress: CLLocationCoordinate2D
+    var passedLocation: String
+    @Published var passedLocationAddress: CLLocationCoordinate2D
     private let measurementType: MapDownloaderMeasurementType
     private let sensorType: MapDownloaderSensorType
     @Injected private var mapSessionsDownloader: SessionsForLocationDownloader
+    @Published var isLocationPopupPresented = false
     @Published var sessionsList = [MapSessionMarker]()
     @Published var searchAgainButton: Bool = false
     @Published var showLoadingIndicator: Bool = false
@@ -41,8 +42,17 @@ class SearchMapViewModel: ObservableObject {
         self.sensorType = sensorType
     }
     
+    func textFieldTapped() { isLocationPopupPresented.toggle() }
     func getMeasurementName() -> String { measurementType.capitalizedName }
     func getSensorName() -> String { sensorType.capitalizedName }
+    
+    func locationNameInteracted(with newLocationName: String) {
+        passedLocation = newLocationName
+    }
+    
+    func locationAddressInteracted(with newLocationAddress: CLLocationCoordinate2D) {
+        passedLocationAddress = newLocationAddress
+    }
     
     func redoTapped() {
         guard let currentPosition = currentPosition else {
@@ -61,6 +71,12 @@ class SearchMapViewModel: ObservableObject {
             searchAgainButton = true
         }
         currentPosition = geoSquare
+    }
+    
+    func forceUpdateOnLocationChange(geoSquare: GeoSquare) {
+        updateSessionList(geoSquare: geoSquare)
+        searchAgainButton = false
+        cardPointerID = .noValue
     }
     
     func markerSelectionChanged(using point: Int) {
