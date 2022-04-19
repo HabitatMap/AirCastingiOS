@@ -78,7 +78,7 @@ class SearchMapViewModel: ObservableObject {
         mapSessionsDownloader.getSessions(geoSquare: geoSquare,
                                           timeFrom: timeFrom,
                                           timeTo: timeTo,
-                                          parameter: measurementType,
+                                          measurementType: measurementType,
                                           sensor: sensorType) { result in
             DispatchQueue.main.async { self.showLoadingIndicator = false }
             switch result {

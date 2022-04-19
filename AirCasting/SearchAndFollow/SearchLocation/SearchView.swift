@@ -20,38 +20,43 @@ struct SearchView: View {
             textField
             parametersQuestion
             HStack(spacing: 12) {
-                ForEach(ParameterType.allCases) { param in
+                ForEach(viewModel.MeasurementTypes) { param in
                     Button {
                         withAnimation(.easeInOut(duration: 0.3)) {
-                            viewModel.onParameterTap(with: param)
+                            viewModel.onParameterTap(with: param.name)
                         }
                     } label: {
-                        Text(param.capitalizedName)
+                        Text(param.name)
                             .padding([.all], 5)
-                    }.buttonStyle(MultiSelectButtonStyle(isSelected: param.capitalizedName == viewModel.getParameter.capitalizedName))
+                    }.buttonStyle(MultiSelectButtonStyle(isSelected: param.isSelected))
                         .padding(.bottom, 5)
                 }
             }
             sensorQuestion
-            if viewModel.shoudShowPMChoiceSheet {
-                ForEach(PMSensorType.allCases) { sensor in
-                    Button {
-                        viewModel.onPMSensorTap(with: sensor)
-                    } label: {
-                        Text(sensor.capitalizedName)
-                            .padding([.all], 5)
-                    }.buttonStyle(MultiSelectButtonStyle(isSelected: sensor.capitalizedName == viewModel.getSensor.capitalizedName))
-                        .padding(.bottom, 5)
+            switch viewModel.getParameter {
+            case .particulateMatter:
+                HStack(spacing: 12) {
+                    ForEach(viewModel.PMSensorTypes) { sensor in
+                        Button {
+                            viewModel.onPMSensorTap(with: sensor.name)
+                        } label: {
+                            Text(sensor.name)
+                                .padding([.all], 5)
+                        }.buttonStyle(MultiSelectButtonStyle(isSelected: sensor.isSelected))
+                            .padding(.bottom, 5)
+                    }
                 }
-            } else {
-                ForEach(OzoneSensorType.allCases) { sensor in
-                    Button {
-                        viewModel.onOzoneSensorTap(with: sensor)
-                    } label: {
-                        Text(sensor.capitalizedName)
-                            .padding([.all], 5)
-                    }.buttonStyle(MultiSelectButtonStyle(isSelected: sensor.capitalizedName == viewModel.getSensor.capitalizedName))
-                        .padding(.bottom, 5) 
+            case .ozone:
+                HStack(spacing: 12) {
+                    ForEach(viewModel.OzoneSensorTypes) { sensor in
+                        Button {
+                            viewModel.onOzoneSensorTap(with: sensor.name)
+                        } label: {
+                            Text(sensor.name)
+                                .padding([.all], 5)
+                        }.buttonStyle(MultiSelectButtonStyle(isSelected: sensor.isSelected))
+                            .padding(.bottom, 5)
+                    }
                 }
             }
             Spacer()
