@@ -82,7 +82,7 @@ struct InAppAlerts {
                                       action: dismiss) ])
     }
     
-    static func failedSDClearingAlert(dismiss: @escaping () -> Void) -> AlertInfo {
+    static func failedSDClearingAlert(dismiss: (@escaping () -> Void)) -> AlertInfo {
         AlertInfo(title: Strings.ClearingSDCardView.failedClearingAlertTitle,
                   message: Strings.ClearingSDCardView.failedClearingAlertMessage,
                   buttons: [
