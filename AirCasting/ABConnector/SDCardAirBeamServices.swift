@@ -133,7 +133,6 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
                 Log.warning("Error while receiving metadata from SD card: \(error.localizedDescription)")
                 completion(.failure(error))
                 self.bluetoothManager.unsubscribeCharacteristicObserver(self.clearCardCharacteristicObserver!)
-                return
             }
         }
     }
