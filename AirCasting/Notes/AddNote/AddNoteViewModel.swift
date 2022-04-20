@@ -9,7 +9,7 @@ class AddNoteViewModel: ObservableObject {
     private let notesHandler: NotesHandler
     private let exitRoute: () -> Void
     
-    init(sessionUUID: SessionUUID, withLocation: Bool, exitRoute: @escaping () -> Void) {
+    init(sessionUUID: SessionUUID, exitRoute: @escaping () -> Void) {
         self.exitRoute = exitRoute
         self.notesHandler = Resolver.resolve(NotesHandler.self, args: sessionUUID)
     }
