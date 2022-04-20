@@ -179,7 +179,7 @@ private extension SearchMapView {
                         .overlay(
                             RoundedRectangle(cornerRadius: 8)
                                 .stroke((viewModel.cardPointerID.number == session.id ? Color.accentColor : .clear), lineWidth: 1)
-                        ).padding([.all], 2)
+                        ).padding(2)
                     }
                                        }
                 .onChange(of: viewModel.cardPointerID.number , perform: { newValue in
