@@ -21,15 +21,6 @@ struct AlertInfo: Identifiable {
 }
 
 struct InAppAlerts {
-    static func notSupportedBTAlert() -> AlertInfo {
-        AlertInfo(title: Strings.DeviceHandler.alertTitle,
-                  message: Strings.DeviceHandler.alertMessage,
-                  buttons: [
-                    .default(title: Strings.Commons.continue,
-                             action: nil)
-                  ])
-    }
-    
     static func noNetworkAlert(dismiss: (() -> Void)? = nil) -> AlertInfo {
         AlertInfo(title: Strings.NetworkAlert.alertTitle,
                   message: Strings.NetworkAlert.alertMessage,
@@ -42,15 +33,6 @@ struct InAppAlerts {
     static func failedSharingAlert() -> AlertInfo {
         AlertInfo(title: Strings.SessionShare.linkSharingAlertTitle,
                   message: Strings.SessionShare.linkSharingAlertMessage,
-                  buttons: [
-                    .default(title: Strings.Commons.gotIt,
-                             action: nil)
-                  ])
-    }
-    
-    static func failedEmailSharingAlert() -> AlertInfo {
-        AlertInfo(title: Strings.SessionShare.emailSharingAlertTitle,
-                  message: Strings.SessionShare.emailSharingAlertMessage,
                   buttons: [
                     .default(title: Strings.Commons.gotIt,
                              action: nil)
@@ -93,19 +75,19 @@ struct InAppAlerts {
         )
     }
     
-    static func connectionTimeoutAlert(dismiss: ()) -> AlertInfo {
+    static func connectionTimeoutAlert(dismiss: @escaping () -> Void) -> AlertInfo {
         AlertInfo(title: Strings.AirBeamConnector.connectionTimeoutTitle,
                   message: Strings.AirBeamConnector.connectionTimeoutDescription,
                   buttons: [ .default(title: Strings.Commons.gotIt,
-                                      action: { dismiss }) ])
+                                      action: dismiss) ])
     }
     
-    static func failedSDClearingAlert(dismiss: ()) -> AlertInfo {
+    static func failedSDClearingAlert(dismiss: @escaping () -> Void) -> AlertInfo {
         AlertInfo(title: Strings.ClearingSDCardView.failedClearingAlertTitle,
                   message: Strings.ClearingSDCardView.failedClearingAlertMessage,
                   buttons: [
                     .default(title: Strings.Commons.gotIt,
-                             action: { dismiss }) ])
+                             action: dismiss) ])
     }
     
     static func microphonePermissionAlert() -> AlertInfo {
@@ -161,21 +143,21 @@ struct InAppAlerts {
                   ])
     }
     
-    static func failedToDownload(dismiss: ()) -> AlertInfo {
+    static func failedToDownload(dismiss: @escaping (() -> Void)) -> AlertInfo {
         AlertInfo(title: Strings.InAppAlerts.failedDownloadTitle,
                   message: Strings.InAppAlerts.failedDownloadMessage,
                   buttons: [
                     .default(title: Strings.InAppAlerts.failedDownloadButton,
-                             action: { dismiss })
+                             action: dismiss)
                   ])
     }
     
-    static func failedSavingData(dismiss: ()) -> AlertInfo {
+    static func failedSavingData(dismiss: @escaping (() -> Void)) -> AlertInfo {
         AlertInfo(title: Strings.InAppAlerts.failedSavingTitle,
                   message: Strings.InAppAlerts.failedSavingMessage,
                   buttons: [
                     .default(title: Strings.InAppAlerts.failedSavingButton,
-                             action: { dismiss })
+                             action: dismiss)
                   ])
     }
 }

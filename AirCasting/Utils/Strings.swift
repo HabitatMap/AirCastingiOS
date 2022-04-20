@@ -828,7 +828,7 @@ struct Strings {
                                                      comment: "")
         static let message: String = NSLocalizedString("This should take less then 10 seconds.",
                                                        comment: "")
-        static let failedClearingAlertTitle: String = NSLocalizedString("Failed to clead SD card",
+        static let failedClearingAlertTitle: String = NSLocalizedString("Failed to clear SD card",
                                                                         comment: "")
         static let failedClearingAlertMessage: String = NSLocalizedString("Try again later",
                                                                           comment: "")
