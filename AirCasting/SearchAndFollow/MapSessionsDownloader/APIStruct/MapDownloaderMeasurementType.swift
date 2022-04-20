@@ -3,7 +3,7 @@
 
 import Foundation
 
-enum MapDownloaderMeasurementType: Codable, CaseIterable {
+enum MapDownloaderMeasurementType: Codable {
     case particulateMatter
     case ozone
 }

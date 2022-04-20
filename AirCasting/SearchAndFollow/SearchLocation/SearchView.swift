@@ -27,7 +27,7 @@ struct SearchView: View {
                         }
                     } label: {
                         Text(param.name)
-                            .padding([.all], 5)
+                            .padding(5)
                     }.buttonStyle(MultiSelectButtonStyle(isSelected: param.isSelected))
                         .padding(.bottom, 5)
                 }
@@ -39,7 +39,7 @@ struct SearchView: View {
                         viewModel.onSensorTap(with: sensor.name)
                     } label: {
                         Text(sensor.name)
-                            .padding([.all], 5)
+                            .padding(5)
                     }.buttonStyle(MultiSelectButtonStyle(isSelected: sensor.isSelected))
                         .padding(.bottom, 5)
                 }

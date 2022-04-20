@@ -3,7 +3,7 @@
 
 import Foundation
 
-enum MapDownloaderSensorType: Codable, CaseIterable {
+enum MapDownloaderSensorType: Codable {
     case AB3and2
     case OpenAQ
     case PurpleAir

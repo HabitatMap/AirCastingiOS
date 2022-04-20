@@ -7,17 +7,6 @@ import Resolver
 
 /// PM will stand for "Particulate matter"
 
-class SearchParameter: Identifiable {
-    let id = UUID()
-    var isSelected: Bool
-    let name: String
-    
-    init(isSelected: Bool, name: String) {
-        self.isSelected = isSelected
-        self.name = name
-    }
-}
-
 class SearchViewModel: ObservableObject {
     @Injected private var networkChecker: NetworkChecker
     
@@ -28,7 +17,6 @@ class SearchViewModel: ObservableObject {
     @Published var measurementTypes = [SearchParameter]()
     @Published var sensorTypes = [SearchParameter]()
     
-
     init() {
         measurementTypes = [
             .init(isSelected: true, name: Strings.SearchFollowParamNames.particulateMatter),
