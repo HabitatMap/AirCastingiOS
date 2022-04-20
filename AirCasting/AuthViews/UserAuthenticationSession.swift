@@ -96,7 +96,6 @@ final class DefaultLogoutController: LogoutController {
     @Injected private var authorization: RequestAuthorisationService
     @Injected private var urlProvider: URLProvider
     @Injected private var client: APIClient
-    @Injected private var responseValidator: HTTPResponseValidator
     
     private let responseHandler = AuthorizationHTTPResponseHandler()
 

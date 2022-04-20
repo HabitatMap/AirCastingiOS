@@ -909,8 +909,6 @@ struct Strings {
         
         static let failedDeletingMessage: String = NSLocalizedString("Something went wrong deleting the account. Please try again later.",
                                                                      comment: "")
-        static let failedButton: String = NSLocalizedString("Got it!",
-                                                                   comment: "")
         static let unableConnectTitle: String = NSLocalizedString("No Internet connection",
                                                                   comment: "")
         static let unableConnectMessage: String = NSLocalizedString("To sign out, you must be connected to the Internet",
@@ -918,8 +916,6 @@ struct Strings {
         static let thirdDeletingAccountTitle: String = NSLocalizedString("Success",
                                                                    comment: "")
         static let thirdDeletingAccountMessage: String = NSLocalizedString("Your account has been deleted.",
-                                                                   comment: "")
-        static let thirdConfirmingDeletingButton: String = NSLocalizedString("Got it!",
                                                                    comment: "")
     }
     
