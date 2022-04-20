@@ -136,11 +136,6 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
                 return
             }
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(10)) {
-            Log.warning("Error while receiving metadata from SD card: ")
-            completion(.failure(SDCardSyncError.wrongOrderOfReceivedPayload))
-            self.bluetoothManager.unsubscribeCharacteristicObserver(self.clearCardCharacteristicObserver!)
-        }
     }
     
     private func configureABforSync(peripheral: CBPeripheral) {
