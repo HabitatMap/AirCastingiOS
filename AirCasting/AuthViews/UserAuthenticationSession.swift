@@ -128,8 +128,8 @@ final class DefaultLogoutController: LogoutController {
             client.requestTask(for: request) { [responseHandler] result, _ in
                 switch responseHandler.handle(result) {
                 case .success(_):
-                    completion(.success("Deleted"))
                     self.deleteEverything()
+                    completion(.success("Deleted"))
                 case .failure(let error):
                     completion(.failure(error))
                 }
