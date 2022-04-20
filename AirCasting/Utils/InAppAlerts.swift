@@ -179,24 +179,36 @@ struct InAppAlerts {
                   ])
     }
     
-    static func firstConfirmationDeletingAccountAlert(action: ()) -> AlertInfo {
-        AlertInfo(title: Strings.InAppAlerts.firstDeletingAccountTitle, message: Strings.InAppAlerts.firstDeletingAccountMessage, buttons: [
-            .cancel(title: Strings.InAppAlerts.cancelDeletingButton),
-            .default(title: Strings.InAppAlerts.firstConfirmingDeletingButton, action: { action })
-        ])
+    static func firstConfirmationDeletingAccountAlert(action: @escaping (() -> Void)) -> AlertInfo {
+        AlertInfo(
+            title: Strings.InAppAlerts.firstDeletingAccountTitle, message: Strings.InAppAlerts.firstDeletingAccountMessage,
+            buttons: [
+                .default(title: Strings.InAppAlerts.firstConfirmingDeletingButton,
+                         action: action),
+                .cancel()
+            ]
+        )
     }
     
-    static func secondConfirmationDeletingAccountAlert(action: ()) -> AlertInfo {
-        AlertInfo(title: Strings.InAppAlerts.secondDeletingAccountTitle, message: Strings.InAppAlerts.secondDeletingAccountMessage, buttons: [
-            .cancel(title: Strings.InAppAlerts.cancelDeletingButton),
-            .default(title: Strings.InAppAlerts.secondConfirmingDeletingButton, action: { action })
-        ])
+    static func secondConfirmationDeletingAccountAlert(action: @escaping (() -> Void)) -> AlertInfo {
+        AlertInfo(
+            title: Strings.InAppAlerts.secondDeletingAccountTitle, message: Strings.InAppAlerts.secondDeletingAccountMessage,
+            buttons: [
+                .default(title: Strings.InAppAlerts.secondConfirmingDeletingButton,
+                         action: action),
+                .cancel()
+            ]
+        )
     }
     
-    static func thirdConfirmationDeletingAccountAlert() -> AlertInfo {
-        AlertInfo(title: Strings.InAppAlerts.thirdDeletingAccountTitle, message: Strings.InAppAlerts.thirdDeletingAccountMessage, buttons: [
-            .default(title: Strings.InAppAlerts.thirdConfirmingDeletingButton, action: nil)
-        ])
+    static func thirdConfirmationDeletingAccountAlert(action: @escaping (() -> Void)) -> AlertInfo {
+        AlertInfo(
+            title: Strings.InAppAlerts.thirdDeletingAccountTitle, message: Strings.InAppAlerts.thirdDeletingAccountMessage,
+            buttons: [
+                .default(title: Strings.InAppAlerts.thirdConfirmingDeletingButton,
+                         action: action),
+            ]
+        )
     }
     
     static func unableToConnectBeforeDeletingAccount() -> AlertInfo {

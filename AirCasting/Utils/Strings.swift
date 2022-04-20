@@ -900,13 +900,11 @@ struct Strings {
                                                                       comment: "")
         static let firstConfirmingDeletingButton: String = NSLocalizedString("Confirm",
                                                                           comment: "")
-        static let cancelDeletingButton: String = NSLocalizedString("Cancel",
-                                                                    comment: "")
         static let secondDeletingAccountTitle: String = NSLocalizedString("Delete confirmation",
                                                                           comment: "")
         static let secondDeletingAccountMessage: String = NSLocalizedString("You will lose all your sessions and data. Are you sure to delete the account?",
                                                                             comment: "")
-        static let secondConfirmingDeletingButton: String = NSLocalizedString("Delete account",
+        static let secondConfirmingDeletingButton: String = NSLocalizedString("Delete",
                                                                               comment: "")
         
         static let failedDeletingMessage: String = NSLocalizedString("Something went wrong deleting the account. Please try again later.",

@@ -7,6 +7,7 @@ class UserState: ObservableObject {
     enum State {
         case loggingOut
         case deleting
+        case none
     }
     
     @Published var isLoggingOut = false
