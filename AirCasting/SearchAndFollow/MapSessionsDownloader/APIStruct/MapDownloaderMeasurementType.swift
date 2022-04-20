@@ -16,6 +16,13 @@ extension MapDownloaderMeasurementType {
         }
     }
     
+    var apiNameSufix: String {
+        switch self {
+        case .particulateMatter: return "-pm2.5"
+        case .ozone: return "-o3"
+        }
+    }
+    
     var capitalizedName: String {
         switch self {
         case .particulateMatter: return Strings.SearchFollowParamNames.particulateMatter

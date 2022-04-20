@@ -20,7 +20,7 @@ struct SearchView: View {
             textField
             parametersQuestion
             HStack(spacing: 12) {
-                ForEach(viewModel.MeasurementTypes) { param in
+                ForEach(viewModel.measurementTypes) { param in
                     Button {
                         withAnimation(.easeInOut(duration: 0.3)) {
                             viewModel.onParameterTap(with: param.name)
@@ -33,30 +33,15 @@ struct SearchView: View {
                 }
             }
             sensorQuestion
-            switch viewModel.getParameter {
-            case .particulateMatter:
-                HStack(spacing: 12) {
-                    ForEach(viewModel.PMSensorTypes) { sensor in
-                        Button {
-                            viewModel.onPMSensorTap(with: sensor.name)
-                        } label: {
-                            Text(sensor.name)
-                                .padding([.all], 5)
-                        }.buttonStyle(MultiSelectButtonStyle(isSelected: sensor.isSelected))
-                            .padding(.bottom, 5)
-                    }
-                }
-            case .ozone:
-                HStack(spacing: 12) {
-                    ForEach(viewModel.OzoneSensorTypes) { sensor in
-                        Button {
-                            viewModel.onOzoneSensorTap(with: sensor.name)
-                        } label: {
-                            Text(sensor.name)
-                                .padding([.all], 5)
-                        }.buttonStyle(MultiSelectButtonStyle(isSelected: sensor.isSelected))
-                            .padding(.bottom, 5)
-                    }
+            HStack(spacing: 12) {
+                ForEach(viewModel.sensorTypes) { sensor in
+                    Button {
+                        viewModel.onSensorTap(with: sensor.name)
+                    } label: {
+                        Text(sensor.name)
+                            .padding([.all], 5)
+                    }.buttonStyle(MultiSelectButtonStyle(isSelected: sensor.isSelected))
+                        .padding(.bottom, 5)
                 }
             }
             Spacer()
@@ -121,8 +106,8 @@ private extension SearchView {
         return NavigationLink(
             destination: SearchMapView(locationName: viewModel.addressName,
                                        locationAddress: viewModel.addresslocation,
-                                       parameterType: viewModel.getParameter,
-                                       sensorType: viewModel.getSensor),
+                                       parameterType: viewModel.selectedParameter ?? .particulateMatter,
+                                       sensorType: viewModel.selectedSensor ?? .OpenAQ),
             label: {
                 Text(Strings.Commons.continue)
             })

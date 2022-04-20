@@ -7,10 +7,15 @@ import Resolver
 
 /// PM will stand for "Particulate matter"
 
-struct SearchParameter: Identifiable {
+class SearchParameter: Identifiable {
     let id = UUID()
-    let isSelected: Bool
+    var isSelected: Bool
     let name: String
+    
+    init(isSelected: Bool, name: String) {
+        self.isSelected = isSelected
+        self.name = name
+    }
 }
 
 class SearchViewModel: ObservableObject {
@@ -20,43 +25,70 @@ class SearchViewModel: ObservableObject {
     @Published var addressName = ""
     @Published var addresslocation = CLLocationCoordinate2D(latitude: 20.0, longitude: 20.0)
     @Published var alert: AlertInfo?
-    @Published private var MeasurementType: MapDownloaderMeasurementType = .particulateMatter
-    @Published private var sensor: MapDownloaderSensorType = .OpenAQ
+    @Published var measurementTypes = [SearchParameter]()
+    @Published var sensorTypes = [SearchParameter]()
     
-    var MeasurementTypes: [SearchParameter] {
-        MapDownloaderMeasurementType.allCases.map { value in
-            SearchParameter.init(isSelected: value.capitalizedName == getSensor.capitalizedName, name: value.capitalizedName)
-        }
-    }
-    
-    var PMSensorTypes: [SearchParameter] {
-        PMSensorType.allCases.map { value in
-            SearchParameter.init(isSelected: value.capitalizedName == getSensor.capitalizedName, name: value.capitalizedName)
-        }
-    }
-    
-    var OzoneSensorTypes: [SearchParameter] {
-        OzoneSensorType.allCases.map { value in
-            SearchParameter.init(isSelected: value.capitalizedName == getSensor.capitalizedName, name: value.capitalizedName)
-        }
+
+    init() {
+        measurementTypes = [
+            .init(isSelected: true, name: Strings.SearchFollowParamNames.particulateMatter),
+            .init(isSelected: false, name: Strings.SearchFollowParamNames.ozone)
+        ]
+        onParameterTap(with: Strings.SearchFollowParamNames.particulateMatter)
     }
     
     var continueDisabled: Bool { addressName == "" }
-    var getParameter: MapDownloaderMeasurementType { MeasurementType }
-    var getSensor: MapDownloaderSensorType { sensor }
-    func textFieldTapped() { isLocationPopupPresented.toggle() }
     
-    func onPMSensorTap(with sensor: String) {
-        self.sensor = MapDownloaderSensorType.allCases.first(where: { $0.capitalizedName == sensor }) ?? .AB3and2
+    var selectedParameter: MeasurementType? {
+        guard let selected = measurementTypes.first(where: { $0.isSelected }) else { return nil }
+        return measurementType(from: selected.name)
     }
     
-    func onOzoneSensorTap(with sensor: String) {
-        self.sensor = MapDownloaderSensorType.allCases.first(where: { $0.capitalizedName == sensor }) ?? .OzoneSensor
+    var selectedSensor: SensorType? {
+        guard let selected = sensorTypes.first(where: { $0.isSelected }) else { return nil }
+        return sensorType(from: selected.name)
+    }
+    
+    func textFieldTapped() { isLocationPopupPresented.toggle() }
+    
+    private func measurementType(from: String) -> MeasurementType? {
+        switch from {
+        case Strings.SearchFollowParamNames.particulateMatter: return .particulateMatter
+        case Strings.SearchFollowParamNames.ozone: return .ozone
+        default: return nil
+        }
+    }
+    
+    private func sensorType(from: String) -> SensorType? {
+        switch from {
+        case Strings.SearchFollowSensorNames.AirBeam3and2: return .AB3and2
+        case Strings.SearchFollowSensorNames.openAQ: return .OpenAQ
+        case Strings.SearchFollowSensorNames.purpleAir: return .PurpleAir
+        case Strings.SearchFollowSensorNames.openAQOzone: return .OpenAQ
+        default: return nil
+        }
     }
     
     func onParameterTap(with param: String) {
-        self.MeasurementType = MapDownloaderMeasurementType.allCases.first(where: { $0.capitalizedName == param }) ?? .particulateMatter
-        self.MeasurementType == .particulateMatter ? (sensor = .AB3and2) : (sensor = .OzoneSensor)
+        self.measurementTypes.forEach({ $0.isSelected = false })
+        self.measurementTypes.first(where: { $0.name == param })?.isSelected = true
+        switch measurementType(from: param) {
+        case .particulateMatter: self.sensorTypes = [
+            .init(isSelected: false, name: SensorType.AB3and2.capitalizedName),
+            .init(isSelected: true, name: SensorType.OpenAQ.capitalizedName),
+            .init(isSelected: false, name: SensorType.PurpleAir.capitalizedName)
+        ]
+        case .ozone: self.sensorTypes = [
+            .init(isSelected: true, name: SensorType.OpenAQ.capitalizedName)
+        ]
+        case .none: return
+        }
+    }
+    
+    func onSensorTap(with name: String) {
+        self.sensorTypes.forEach({ $0.isSelected = false })
+        self.sensorTypes.first(where: { $0.name == name })?.isSelected = true
+        self.objectWillChange.send()
     }
     
     func locationNameInteracted(with newLocationName: String) {
