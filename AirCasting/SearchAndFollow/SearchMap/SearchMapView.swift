@@ -178,7 +178,7 @@ private extension SearchMapView {
                         })
                         .overlay(
                             RoundedRectangle(cornerRadius: 8)
-                                .stroke(viewModel.strokeColor(sessionID: session.id), lineWidth: 1)
+                                .stroke(viewModel.strokeColor(with: session.id), lineWidth: 1)
                         ).padding(2)
                     }
                                        }

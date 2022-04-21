@@ -46,7 +46,7 @@ class SearchMapViewModel: ObservableObject {
     func getMeasurementName() -> String { measurementType.capitalizedName }
     func getSensorName() -> String { sensorType.capitalizedName }
     
-    func strokeColor(sessionID: Int) -> Color {
+    func strokeColor(with sessionID: Int) -> Color {
         cardPointerID.number == sessionID ? Color.accentColor : .clear
     }
     
