@@ -101,13 +101,13 @@ class BluetoothManager: NSObject, BluetoothCommunicator, ObservableObject {
     // MARK: - Refactored part
     // This is the part of this class that is already refactored.
     
-    enum CharacteristicObserverError: Error {
+    enum CharacteristicObservingError: Error {
         case timeout
     }
 
     private class CharacteristicObserver {
         let identifier = UUID()
-        var counter = 0
+        var triggerCounter = 0
         let action: CharacteristicObserverAction
         
         init(action: @escaping CharacteristicObserverAction) {
@@ -127,15 +127,13 @@ class BluetoothManager: NSObject, BluetoothCommunicator, ObservableObject {
         return observer.identifier
     }
     
-    private func scheduleTimeout(_ timeout: TimeInterval,for observer: CharacteristicObserver) {
+    private func scheduleTimeout(_ timeout: TimeInterval, for observer: CharacteristicObserver) {
         Log.info("Scheduling timeout")
         DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(Int(timeout * 1000))) {
             self.characteristicsMappingLock.lock()
-            defer {
-                self.characteristicsMappingLock.unlock()
-            }
-            guard observer.counter == 0 else { return }
-            observer.action(.failure(CharacteristicObserverError.timeout))
+            defer { self.characteristicsMappingLock.unlock() }
+            guard observer.triggerCounter == 0 else { return }
+            observer.action(.failure(CharacteristicObservingError.timeout))
         }
     }
     
@@ -268,7 +266,7 @@ extension BluetoothManager: CBPeripheralDelegate {
         }
         characteristicsMappingLock.lock()
         charactieristicsMapping[characteristic.uuid]?.forEach { observer in
-            observer.counter += 1
+            observer.triggerCounter += 1
             guard error == nil else { observer.action(.failure(error!)); return }
             observer.action(.success(characteristic.value))
         }
