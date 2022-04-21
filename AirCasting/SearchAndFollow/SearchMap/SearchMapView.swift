@@ -60,16 +60,16 @@ struct SearchMapView: View {
             })
             .alert(item: $viewModel.alert, content: { $0.makeAlert() })
             .sheet(isPresented: $viewModel.isLocationPopupPresented, onDismiss: {
-                viewModel.redoTapped()
+                viewModel.dismissedTapped()
             }) {
                 PlacePicker(service: SearchPickerService(addressName: .init(get: {
                     viewModel.passedLocation
                 }, set: { new in
-                    viewModel.locationNameInteracted(with: new)
+                    viewModel.enteredNewLocation(name: new)
                 }), addressLocation: .init(get: {
                     viewModel.passedLocationAddress
                 }, set: { new in
-                    viewModel.locationAddressInteracted(with: new)
+                    viewModel.enteredNewLocationAdress(new)
                 })))
             }
     }
@@ -82,7 +82,7 @@ private extension SearchMapView {
                         binding: .init(get: {
             viewModel.passedLocation
         }, set: { new in
-            viewModel.locationNameInteracted(with: new)
+            viewModel.enteredNewLocation(name: new)
         }))
         .disabled(true)
         .onTapGesture { viewModel.textFieldTapped() }
@@ -129,7 +129,7 @@ private extension SearchMapView {
                     viewModel.markerSelectionChanged(using: pointer)
                 })
                 .onStartingLocationChange { geoSquare in
-                    viewModel.forceUpdateOnLocationChange(geoSquare: geoSquare)
+                    viewModel.startingLocationChanged(geoSquare: geoSquare)
                 }
                                    .padding(.top, 50)
                                    .ignoresSafeArea(.all, edges: [.bottom])
@@ -178,7 +178,7 @@ private extension SearchMapView {
                         })
                         .overlay(
                             RoundedRectangle(cornerRadius: 8)
-                                .stroke((viewModel.cardPointerID.number == session.id ? Color.accentColor : .clear), lineWidth: 1)
+                                .stroke(viewModel.strokeColor(sessionID: session.id), lineWidth: 1)
                         ).padding(2)
                     }
                                        }

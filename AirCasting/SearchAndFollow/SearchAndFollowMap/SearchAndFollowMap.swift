@@ -131,16 +131,12 @@ struct SearchAndFollowMap: UIViewRepresentable {
                 mapView.camera = mapCamera
                 
             }
+            parent.startingPoint = CLLocationCoordinate2D(latitude: mapView.camera.target.latitude, longitude: mapView.camera.target.longitude)
+            startingPointHolder = parent.startingPoint
             if parent.startingPointChanged {
-                parent.startingPoint = CLLocationCoordinate2D(latitude: mapView.camera.target.latitude, longitude: mapView.camera.target.longitude)
-                startingPointHolder = parent.startingPoint
                 startPositionShouldChange(for: mapView)
-                DispatchQueue.main.async {
-                    self.parent.startingPointChanged = false
-                }
+                DispatchQueue.main.async { self.parent.startingPointChanged = false }
             } else {
-                parent.startingPoint = CLLocationCoordinate2D(latitude: mapView.camera.target.latitude, longitude: mapView.camera.target.longitude)
-                startingPointHolder = parent.startingPoint
                 dotsPositionShouldChange(for: mapView)
             }
         }

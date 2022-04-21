@@ -46,12 +46,26 @@ class SearchMapViewModel: ObservableObject {
     func getMeasurementName() -> String { measurementType.capitalizedName }
     func getSensorName() -> String { sensorType.capitalizedName }
     
-    func locationNameInteracted(with newLocationName: String) {
+    func strokeColor(sessionID: Int) -> Color {
+        cardPointerID.number == sessionID ? Color.accentColor : .clear
+    }
+    
+    func enteredNewLocation(name newLocationName: String) {
         passedLocation = newLocationName
     }
     
-    func locationAddressInteracted(with newLocationAddress: CLLocationCoordinate2D) {
+    func enteredNewLocationAdress(_ newLocationAddress: CLLocationCoordinate2D) {
         passedLocationAddress = newLocationAddress
+    }
+    
+    func dismissedTapped() {
+        guard let currentPosition = currentPosition else {
+            Log.warning("Should never happen that current position is not present")
+            return
+        }
+        updateSessionList(geoSquare: currentPosition)
+        searchAgainButton = false
+        cardPointerID = .noValue
     }
     
     func redoTapped() {
@@ -73,7 +87,7 @@ class SearchMapViewModel: ObservableObject {
         currentPosition = geoSquare
     }
     
-    func forceUpdateOnLocationChange(geoSquare: GeoSquare) {
+    func startingLocationChanged(geoSquare: GeoSquare) {
         updateSessionList(geoSquare: geoSquare)
         searchAgainButton = false
         cardPointerID = .noValue
