@@ -906,16 +906,15 @@ struct Strings {
                                                                             comment: "")
         static let secondConfirmingDeletingButton: String = NSLocalizedString("Delete",
                                                                               comment: "")
-        
-        static let failedDeletingMessage: String = NSLocalizedString("Something went wrong deleting the account. Please try again later.",
+        static let failedDeletingAccountErrorMessage: String = NSLocalizedString("Something went wrong deleting the account. Please try again later.",
                                                                      comment: "")
-        static let unableConnectTitle: String = NSLocalizedString("No Internet connection",
+        static let unableToConnectTitle: String = NSLocalizedString("No Internet connection",
                                                                   comment: "")
-        static let unableConnectMessage: String = NSLocalizedString("To sign out, you must be connected to the Internet",
+        static let unableToConnectMessage: String = NSLocalizedString("To sign out, you must be connected to the Internet",
                                                                     comment: "")
-        static let thirdDeletingAccountTitle: String = NSLocalizedString("Success",
+        static let accountDeletionSuccessTitle: String = NSLocalizedString("Success",
                                                                    comment: "")
-        static let thirdDeletingAccountMessage: String = NSLocalizedString("Your account has been deleted.",
+        static let accountDeletionSuccessMessage: String = NSLocalizedString("Your account has been deleted.",
                                                                    comment: "")
     }
     

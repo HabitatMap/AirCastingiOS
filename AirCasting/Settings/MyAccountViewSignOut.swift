@@ -11,6 +11,7 @@ struct MyAccountViewSignOut: View {
     @InjectedObject private var userState: UserState
     @Injected private var networkChecker: NetworkChecker
     @Injected private var logoutController: LogoutController
+    @Injected private var deleteController: DeleteAccountController
     
     var body: some View {
         ZStack {
@@ -40,18 +41,16 @@ private extension MyAccountViewSignOut {
     
     var signOutButton: some View {
         Button(action: {
-            userState.currentState = .loggingOut
             guard networkChecker.connectionAvailable else {
                 alert = InAppAlerts.unableToLogOutAlert()
                 return
             }
+            userState.currentState = .loggingOut
             do {
-                userState.isLoggingOut = true
                 userState.isShowingLoading = true
                 try logoutController.logout {
-                    userState.isLoggingOut = false
                     userState.isShowingLoading = false
-                    userState.currentState = .none
+                    userState.currentState = .other
                 }
             } catch {
                 assertionFailure("Failed to deauthorize \(error)")
@@ -73,14 +72,14 @@ private extension MyAccountViewSignOut {
         Button {
             alert = InAppAlerts.firstConfirmationDeletingAccountAlert {
                 alert = InAppAlerts.secondConfirmationDeletingAccountAlert {
-                    userState.currentState = .deleting
                     guard networkChecker.connectionAvailable else {
                         alert = InAppAlerts.unableToConnectBeforeDeletingAccount()
                         return
                     }
+                    userState.currentState = .deletingAccount
                     do {
                         userState.isShowingLoading = true
-                        try logoutController.deleteAccount { result in
+                        try deleteController.deleteAccount { result in
                             switch result {
                             case .success(_):
                                 DispatchQueue.main.async {
@@ -88,6 +87,7 @@ private extension MyAccountViewSignOut {
                                 }
                             case .failure(_):
                                 alert = InAppAlerts.failedDeletingAccount()
+                                userState.currentState = .other
                             }
                         }
                     } catch {

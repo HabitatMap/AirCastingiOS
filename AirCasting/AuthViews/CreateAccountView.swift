@@ -76,9 +76,9 @@ struct CreateAccountView: View {
                 }
                 .alert(item: $alert, content: { $0.makeAlert() })
                 .onAppear {
-                    if userState.currentState == .deleting {
-                        alert = InAppAlerts.thirdConfirmationDeletingAccountAlert {
-                            userState.currentState = .none
+                    if userState.currentState == .deletingAccount {
+                        alert = InAppAlerts.successfulAccountDeletionConfirmation {
+                            userState.currentState = .other
                         }
                     }
                 }

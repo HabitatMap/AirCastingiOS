@@ -31,7 +31,9 @@ final class UserAuthenticationSession: Deauthorizable, ObservableObject {
 
     private(set) var user: User? {
         didSet {
-            isLoggedIn = user != nil
+            DispatchQueue.main.async {
+                self.isLoggedIn = self.user != nil
+            }
         }
     }
 
@@ -85,17 +87,11 @@ extension UserAuthenticationSession: RequestAuthorisationService {
 
 protocol LogoutController {
     func logout(onEnd: @escaping () -> Void) throws
-    func deleteAccount(completion: @escaping (Result<String, Error>) -> Void) throws
 }
 
 final class DefaultLogoutController: LogoutController {
-    @Injected private var deauthorizer: Deauthorizable
-    @Injected private var microphoneManager: MicrophoneManager
     @Injected private var sessionSynchronizer: SessionSynchronizer
-    @Injected private var dataEraser: DataEraser
-    @Injected private var authorization: RequestAuthorisationService
-    @Injected private var urlProvider: URLProvider
-    @Injected private var client: APIClient
+    @Injected private var removeDataController: RemoveDataController
     
     private let responseHandler = AuthorizationHTTPResponseHandler()
 
@@ -104,7 +100,7 @@ final class DefaultLogoutController: LogoutController {
             var subscription: AnyCancellable?
             subscription = sessionSynchronizer.syncInProgress.receive(on: DispatchQueue.main).sink { [weak self] value in
                 guard value == false else { return }
-                self?.deleteEverything()
+                self?.removeDataController.removeData()
                 subscription?.cancel()
                 onEnd()
             }
@@ -112,33 +108,21 @@ final class DefaultLogoutController: LogoutController {
         }
         // For logout we only care about uploading sessions before we remove everything
         sessionSynchronizer.triggerSynchronization(options: [.upload], completion: {
-            DispatchQueue.main.async { self.deleteEverything(); onEnd() }
+            DispatchQueue.main.async { self.removeDataController.removeData(); onEnd() }
         })
     }
-    
-    func deleteAccount(completion: @escaping (Result<String, Error>) -> Void) throws {
-        let url = urlProvider.baseAppURL.appendingPathComponent("api/user.json")
-        do {
-            var request = URLRequest(url: url)
-            request.httpMethod = "DELETE"
-            request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-            request.addValue("application/json", forHTTPHeaderField: "Accept")
-            try authorization.authorise(request: &request)
-            client.requestTask(for: request) { [responseHandler] result, _ in
-                switch responseHandler.handle(result) {
-                case .success(_):
-                    self.deleteEverything()
-                    completion(.success("Deleted"))
-                case .failure(let error):
-                    completion(.failure(error))
-                }
-            }
-        } catch {
-            completion(.failure(error))
-        }
-    }
-    
-    func deleteEverything() {
+}
+
+protocol RemoveDataController {
+    func removeData()
+}
+
+final class DefaultRemoveDataController: RemoveDataController {
+    @Injected private var microphoneManager: MicrophoneManager
+    @Injected private var deauthorizer: Deauthorizable
+    @Injected private var dataEraser: DataEraser
+
+    func removeData() {
         Log.info("[LOGOUT] Cancelling all pending requests")
         URLSession.shared.getAllTasks { tasks in
             tasks.forEach { $0.cancel() }
@@ -162,5 +146,40 @@ final class DefaultLogoutController: LogoutController {
     
     private func failLogout(with error: Error) {
         assertionFailure("[LOGOUT] Failed to log out \(error)")
+    }
+}
+
+protocol DeleteAccountController {
+    func deleteAccount(completion: @escaping (Result<String, Error>) -> Void) throws
+}
+
+final class DefaultDeleteAccountController: DeleteAccountController {
+    @Injected private var authorisation: RequestAuthorisationService
+    @Injected private var urlProvider: URLProvider
+    @Injected private var client: APIClient
+    @Injected private var removeDataController: RemoveDataController
+
+    private let responseHandler = AuthorizationHTTPResponseHandler()
+    
+    func deleteAccount(completion: @escaping (Result<String, Error>) -> Void) throws {
+        let url = urlProvider.baseAppURL.appendingPathComponent("api/user.json")
+        do {
+            var request = URLRequest(url: url)
+            request.httpMethod = "DELETE"
+            request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.addValue("application/json", forHTTPHeaderField: "Accept")
+            try authorisation.authorise(request: &request)
+            client.requestTask(for: request) { [responseHandler] result, _ in
+                switch responseHandler.handle(result) {
+                case .success(_):
+                    self.removeDataController.removeData()
+                    completion(.success("Deleted"))
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+            }
+        } catch {
+            completion(.failure(error))
+        }
     }
 }

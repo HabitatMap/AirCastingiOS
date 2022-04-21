@@ -201,9 +201,9 @@ struct InAppAlerts {
         )
     }
     
-    static func thirdConfirmationDeletingAccountAlert(action: @escaping (() -> Void)) -> AlertInfo {
+    static func successfulAccountDeletionConfirmation(action: @escaping (() -> Void)) -> AlertInfo {
         AlertInfo(
-            title: Strings.InAppAlerts.thirdDeletingAccountTitle, message: Strings.InAppAlerts.thirdDeletingAccountMessage,
+            title: Strings.InAppAlerts.accountDeletionSuccessTitle, message: Strings.InAppAlerts.accountDeletionSuccessMessage,
             buttons: [
                 .default(title: Strings.Commons.gotIt,
                          action: action),
@@ -212,13 +212,13 @@ struct InAppAlerts {
     }
     
     static func unableToConnectBeforeDeletingAccount() -> AlertInfo {
-        AlertInfo(title: Strings.InAppAlerts.unableConnectTitle, message: Strings.InAppAlerts.unableConnectMessage, buttons: [
+        AlertInfo(title: Strings.InAppAlerts.unableToConnectTitle, message: Strings.InAppAlerts.unableToConnectMessage, buttons: [
             .default(title: Strings.Commons.gotIt, action: nil)
         ])
     }
     
     static func failedDeletingAccount() -> AlertInfo {
-        AlertInfo(title: Strings.InAppAlerts.failedTitle, message: Strings.InAppAlerts.failedDeletingMessage, buttons: [
+        AlertInfo(title: Strings.InAppAlerts.failedTitle, message: Strings.InAppAlerts.failedDeletingAccountErrorMessage, buttons: [
             .default(title: Strings.Commons.gotIt, action: nil)
         ])
     }

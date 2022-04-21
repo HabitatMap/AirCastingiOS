@@ -62,8 +62,12 @@ struct BackendSettingsView: View {
             urlProvider.baseAppURL = url ?? URL(string: "http://aircasting.org/")!
             presentationMode.wrappedValue.dismiss()
             do {
-                userState.isLoggingOut = true
-                try logoutController.logout { userState.isLoggingOut = false }
+                userState.isShowingLoading = true
+                userState.currentState = .loggingOut
+                try logoutController.logout {
+                    userState.isShowingLoading = false
+                    userState.currentState = .other
+                }
             } catch {
                 alertPresented = true
                 Log.info("Error when logging out - \(error)")
