@@ -34,7 +34,7 @@ class SessionsForLocationDownloaderDefault: SessionsForLocationDownloader {
                                        north: geoSquare.north,
                                        limit: 100,
                                        offset: 0,
-                                       sensorName: sensor.apiNamePrefix + measurementType.apiNameSufix,
+                                       sensorName: sensor.sensorNamePrefix + measurementType.sensorNameSuffix,
                                        measurementType: measurementType.apiName,
                                        unitSymbol: getProperUnitSymbol(using: measurementType).name)
         do {

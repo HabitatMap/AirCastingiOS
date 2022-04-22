@@ -10,7 +10,7 @@ enum MapDownloaderSensorType: Codable {
 }
 
 extension MapDownloaderSensorType {
-    var apiNamePrefix: String {
+    var sensorNamePrefix: String {
         switch self {
         case .AB3and2: return "airbeam"
         case .OpenAQ: return "openaq"

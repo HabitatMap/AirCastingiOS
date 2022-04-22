@@ -17,14 +17,6 @@ class SearchViewModel: ObservableObject {
     @Published var measurementTypes = [SearchParameter]()
     @Published var sensorTypes = [SearchParameter]()
     
-    init() {
-        measurementTypes = [
-            .init(isSelected: true, name: Strings.SearchFollowParamNames.particulateMatter),
-            .init(isSelected: false, name: Strings.SearchFollowParamNames.ozone)
-        ]
-        onParameterTap(with: Strings.SearchFollowParamNames.particulateMatter)
-    }
-    
     var continueDisabled: Bool { addressName == "" }
     
     var selectedParameter: MeasurementType? {
@@ -37,25 +29,15 @@ class SearchViewModel: ObservableObject {
         return sensorType(from: selected.name)
     }
     
+    init() {
+        measurementTypes = [
+            .init(isSelected: true, name: Strings.SearchFollowParamNames.particulateMatter),
+            .init(isSelected: false, name: Strings.SearchFollowParamNames.ozone)
+        ]
+        onParameterTap(with: Strings.SearchFollowParamNames.particulateMatter)
+    }
+    
     func textFieldTapped() { isLocationPopupPresented.toggle() }
-    
-    private func measurementType(from: String) -> MeasurementType? {
-        switch from {
-        case Strings.SearchFollowParamNames.particulateMatter: return .particulateMatter
-        case Strings.SearchFollowParamNames.ozone: return .ozone
-        default: return nil
-        }
-    }
-    
-    private func sensorType(from: String) -> SensorType? {
-        switch from {
-        case Strings.SearchFollowSensorNames.AirBeam3and2: return .AB3and2
-        case Strings.SearchFollowSensorNames.openAQ: return .OpenAQ
-        case Strings.SearchFollowSensorNames.purpleAir: return .PurpleAir
-        case Strings.SearchFollowSensorNames.openAQOzone: return .OpenAQ
-        default: return nil
-        }
-    }
     
     func onParameterTap(with param: String) {
         self.measurementTypes.forEach({ $0.isSelected = false })
@@ -92,6 +74,24 @@ class SearchViewModel: ObservableObject {
             (alert = InAppAlerts.noNetworkAlert(dismiss: {
                 onEnd()
             }))
+        }
+    }
+    
+    private func measurementType(from: String) -> MeasurementType? {
+        switch from {
+        case Strings.SearchFollowParamNames.particulateMatter: return .particulateMatter
+        case Strings.SearchFollowParamNames.ozone: return .ozone
+        default: return nil
+        }
+    }
+    
+    private func sensorType(from: String) -> SensorType? {
+        switch from {
+        case Strings.SearchFollowSensorNames.AirBeam3and2: return .AB3and2
+        case Strings.SearchFollowSensorNames.openAQ: return .OpenAQ
+        case Strings.SearchFollowSensorNames.purpleAir: return .PurpleAir
+        case Strings.SearchFollowSensorNames.openAQOzone: return .OpenAQ
+        default: return nil
         }
     }
 }

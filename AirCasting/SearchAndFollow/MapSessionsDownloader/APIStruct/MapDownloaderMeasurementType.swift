@@ -16,7 +16,7 @@ extension MapDownloaderMeasurementType {
         }
     }
     
-    var apiNameSufix: String {
+    var sensorNameSuffix: String {
         switch self {
         case .particulateMatter: return "-pm2.5"
         case .ozone: return "-o3"
