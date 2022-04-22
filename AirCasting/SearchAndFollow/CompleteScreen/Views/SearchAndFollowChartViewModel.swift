@@ -32,14 +32,25 @@ class SearchAndFollowChartViewModel: ObservableObject {
                 continue
             }
             
-            let average = (buffer.map { $0.value }.reduce(0, +)) / Double(buffer.count)
+            addAverage(for: buffer, times: &times, thresholds: thresholds)
             
-            times.append(buffer.last!.time.roundedUpToHour)
-            entries.append(ChartDot(value: Double(average), color: thresholds.colorFor(value: measurement.value)))
             buffer = [measurement]
         }
+        
+        if entries.count < 9 && !buffer.isEmpty {
+            addAverage(for: buffer, times: &times, thresholds: thresholds)
+        }
+        
         entries.reverse()
         return (startTime: times.min(), endTime: times.max())
+    }
+    
+    private func addAverage(for buffer: [ChartMeasurement], times: inout [Date], thresholds: ThresholdsValue) {
+        guard !buffer.isEmpty else { return }
+        let average = (buffer.map { $0.value }.reduce(0, +)) / Double(buffer.count)
+        
+        times.append(buffer.last!.time.roundedUpToHour)
+        entries.append(ChartDot(value: Double(average), color: thresholds.colorFor(value: average)))
     }
     
     private func hourIsAlreadyPresent(in times: [Date], date: Date) -> Bool {
