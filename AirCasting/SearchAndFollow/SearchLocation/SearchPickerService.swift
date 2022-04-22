@@ -14,7 +14,7 @@ class SearchPickerService: PlacePickerService {
     }
     
     func didComplete(using place: GMSPlace) {
-        addressName = place.name ?? ""
+        addressName = place.formattedAddress ?? ""
         addressLocation = place.coordinate
     }
 }

@@ -14,7 +14,7 @@ class ChooseLocationPickerService: PlacePickerService {
     }
     
     func didComplete(using place: GMSPlace) {
-        address = place.name ?? ""
+        address = place.formattedAddress ?? ""
         tracker.googleLocation = [PathPoint(location: place.coordinate, measurementTime: DateBuilder.getFakeUTCDate())]
     }
 }
