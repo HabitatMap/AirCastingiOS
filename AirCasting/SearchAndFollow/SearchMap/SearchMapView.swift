@@ -60,7 +60,7 @@ struct SearchMapView: View {
             })
             .alert(item: $viewModel.alert, content: { $0.makeAlert() })
             .sheet(isPresented: $viewModel.isLocationPopupPresented, onDismiss: {
-                viewModel.dismissedTapped()
+                viewModel.locationPopupDisimssed()
             }) {
                 PlacePicker(service: SearchPickerService(addressName: .init(get: {
                     viewModel.passedLocation

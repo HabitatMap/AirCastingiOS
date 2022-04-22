@@ -58,15 +58,7 @@ class SearchMapViewModel: ObservableObject {
         passedLocationAddress = newLocationAddress
     }
     
-    func dismissedTapped() {
-        guard let currentPosition = currentPosition else {
-            Log.warning("Should never happen that current position is not present")
-            return
-        }
-        updateSessionList(geoSquare: currentPosition)
-        searchAgainButton = false
-        cardPointerID = .noValue
-    }
+    func locationPopupDisimssed() { redoTapped() }
     
     func redoTapped() {
         guard let currentPosition = currentPosition else {
