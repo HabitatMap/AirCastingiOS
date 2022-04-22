@@ -54,7 +54,7 @@ struct SessionHeaderView: View {
                     editViewSheet
                 }
                 .sheet(isPresented: $showAddNoteModal) {
-                    AddNoteView(viewModel: AddNoteViewModel(sessionUUID: session.uuid, exitRoute: { showAddNoteModal.toggle() }))
+                    AddNoteView(viewModel: AddNoteViewModel(sessionUUID: session.uuid, withLocation: !session.locationless, exitRoute: { showAddNoteModal.toggle() }))
                 }
         } else {
             sessionHeader
@@ -89,7 +89,7 @@ struct SessionHeaderView: View {
                             }
                         EmptyView()
                             .sheet(isPresented: $showAddNoteModal) {
-                                AddNoteView(viewModel: AddNoteViewModel(sessionUUID: session.uuid, exitRoute: { showAddNoteModal.toggle() }))
+                                AddNoteView(viewModel: AddNoteViewModel(sessionUUID: session.uuid, withLocation: !session.locationless, exitRoute: { showAddNoteModal.toggle() }))
                             }
                     }
                 )
