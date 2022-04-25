@@ -13,6 +13,8 @@ func createTextfield(placeholder: String, binding: Binding<String> ) -> some Vie
         .padding()
         .frame(height: 50)
         .background(Color.aircastingGray.opacity(0.05))
-        .border(Color.aircastingGray.opacity(0.1))
-        
+        .overlay(
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(Color.aircastingGray.opacity(0.1), lineWidth: 1)
+        )
 }
