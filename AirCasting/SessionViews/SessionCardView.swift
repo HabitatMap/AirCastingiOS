@@ -110,7 +110,6 @@ struct SessionCardView: View {
                 NavigationLink(destination: EmptyView(), label: {EmptyView()})
             }
         )
-        .cornerRadius(8)
     }
 
     var standaloneSessionCard: some View {

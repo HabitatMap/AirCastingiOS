@@ -117,8 +117,11 @@ private extension SignInView {
             .padding()
             .frame(height: 50)
             .disableAutocorrection(true)
-            .background(Color.aircastingGray.opacity(0.05))
-            .border(Color.aircastingGray.opacity(0.1))
+            .overlay(
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(Color.aircastingGray.opacity(0.1), lineWidth: 1)
+            )
+            .background(RoundedRectangle(cornerRadius: 8).fill(Color.aircastingGray.opacity(0.05)))
     }
     
     var signinButton: some View {

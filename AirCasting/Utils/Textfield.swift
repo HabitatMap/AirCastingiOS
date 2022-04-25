@@ -12,9 +12,9 @@ func createTextfield(placeholder: String, binding: Binding<String> ) -> some Vie
               text: binding)
         .padding()
         .frame(height: 50)
-        .background(Color.aircastingGray.opacity(0.05))
         .overlay(
             RoundedRectangle(cornerRadius: 8)
                 .stroke(Color.aircastingGray.opacity(0.1), lineWidth: 1)
         )
+        .background(RoundedRectangle(cornerRadius: 8).fill(Color.aircastingGray.opacity(0.05)))
 }

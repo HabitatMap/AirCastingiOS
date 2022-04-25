@@ -119,8 +119,11 @@ private extension CreateAccountView {
             .autocapitalization(.none)
             .disableAutocorrection(true)
             .frame(height: 50)
-            .background(Color.aircastingGray.opacity(0.05))
-            .border(Color.aircastingGray.opacity(0.1))
+            .overlay(
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(Color.aircastingGray.opacity(0.1), lineWidth: 1)
+            )
+            .background(RoundedRectangle(cornerRadius: 8).fill(Color.aircastingGray.opacity(0.05)))
     }
     
     var createAccountButton: some View {
