@@ -31,7 +31,7 @@ extension PersistenceController: SessionInsertable {
             sessions.forEach {
                     // This is added to ensure that we don't add session if a session with this uuid already existis in the database
                     guard (try? context.existingSession(uuid: $0.uuid)) == nil else {
-                        Log.warning("Tried to add new session with same UUID")
+                        Log.error("Tried to add new session with same UUID")
                         return
                     }
                     let sessionEntity: SessionEntity = SessionEntity(context: context)

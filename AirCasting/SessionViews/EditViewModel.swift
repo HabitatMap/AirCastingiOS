@@ -50,14 +50,17 @@ class EditSessionViewModel: EditViewModel {
                 sessionUpdateService.updateSession(session: session) { result in
                     switch result {
                     case .success(let session):
-                        do {
-                            try storage.updateVersion(for: sessionUUID,to: session.version)
-                        } catch {
-                            Log.info("Error while saving edited session name and tags \(error).")
-                            showAlert(InAppAlerts.failedSavingData(dismiss: self.dismissView()))
+                        self.measurementStreamStorage.accessStorage { storage in
+                            do {
+                                try storage.updateVersion(for: sessionUUID, to: session.version)
+                                Log.info("Updated session version to: \(session.version)")
+                            } catch {
+                                Log.error("Error while saving edited session name and tags \(error).")
+                                showAlert(InAppAlerts.failedSavingData(dismiss: self.dismissView()))
+                            }
                         }
                     case .failure(let error):
-                        Log.info("Error while sending updated session to backend \(error).")
+                        Log.error("Error while sending updated session to backend \(error).")
                         showAlert(InAppAlerts.failedSavingData(dismiss: self.dismissView()))
                     }
                     DispatchQueue.main.async {
