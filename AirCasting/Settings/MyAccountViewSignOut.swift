@@ -12,6 +12,7 @@ struct MyAccountViewSignOut: View {
     @Injected private var networkChecker: NetworkChecker
     @Injected private var logoutController: LogoutController
     @Injected private var deleteController: DeleteAccountController
+    @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
     
     var body: some View {
         ZStack {
@@ -21,7 +22,9 @@ struct MyAccountViewSignOut: View {
                 Spacer()
                 HStack() {
                     Spacer()
-                    deleteProfileButton
+                    if featureFlagsViewModel.enabledFeatures.contains(.deleteAccount) {
+                        deleteProfileButton
+                    }
                     Spacer()
                 }
             }
