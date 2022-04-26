@@ -58,6 +58,7 @@ struct ThresholdsSettingsView: View {
                 })
                     .frame(minHeight: 35)
             }
+            .listRowBackground(Color.clear)
             .buttonStyle(BorderlessButtonStyle())
         }
         .onAppear {
