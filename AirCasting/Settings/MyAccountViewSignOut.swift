@@ -80,22 +80,18 @@ private extension MyAccountViewSignOut {
                         return
                     }
                     userState.currentState = .deletingAccount
-                    do {
-                        userState.isShowingLoading = true
-                        try deleteController.deleteAccount { result in
-                            switch result {
-                            case .success(_):
-                                DispatchQueue.main.async {
-                                    userState.isShowingLoading = false
-                                }
-                            case .failure(let error):
-                                alert = InAppAlerts.failedDeletingAccount()
-                                userState.currentState = .other
-                                assertionFailure("Failed to delete account: \(error)")
+                    userState.isShowingLoading = true
+                    deleteController.deleteAccount { result in
+                        switch result {
+                        case .success(_):
+                            DispatchQueue.main.async {
+                                userState.isShowingLoading = false
                             }
+                        case .failure(let error):
+                            alert = InAppAlerts.failedDeletingAccount()
+                            userState.currentState = .other
+                            assertionFailure("Failed to delete account: \(error)")
                         }
-                    } catch {
-                        assertionFailure("Failed to delete account: \(error)")
                     }
                 }
             }
