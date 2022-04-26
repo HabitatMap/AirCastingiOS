@@ -6,7 +6,6 @@ import Foundation
 class EmptyNotesHandler: NotesHandler {
     var observer: (() -> Void)?
     
-    
     func fetchSession(completion: @escaping (SessionEntity) -> Void) {
         fatalError()
     }

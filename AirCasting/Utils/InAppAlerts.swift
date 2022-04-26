@@ -2,6 +2,8 @@
 //
 
 import Foundation
+import Resolver
+
 // This struct provides all nedded alerts in case of need. Using them from here, allows you
 // to place multiple instances of them (in one view) and every one of them will be called and show up nicely.
 // Key thing here - is the id.
@@ -19,36 +21,18 @@ struct AlertInfo: Identifiable {
 }
 
 struct InAppAlerts {
-    static func notSupportedBTAlert() -> AlertInfo {
-        AlertInfo(title: Strings.DeviceHandler.alertTitle,
-                  message: Strings.DeviceHandler.alertMessage,
-                  buttons: [
-                    .default(title: Strings.Commons.continue,
-                             action: nil)
-                  ])
-    }
-    
-    static func noNetworkAlert() -> AlertInfo {
+    static func noNetworkAlert(dismiss: (() -> Void)? = nil) -> AlertInfo {
         AlertInfo(title: Strings.NetworkAlert.alertTitle,
                   message: Strings.NetworkAlert.alertMessage,
                   buttons: [
                     .default(title: Strings.Commons.gotIt,
-                             action: nil)
+                             action: dismiss)
                   ])
     }
     
     static func failedSharingAlert() -> AlertInfo {
         AlertInfo(title: Strings.SessionShare.linkSharingAlertTitle,
                   message: Strings.SessionShare.linkSharingAlertMessage,
-                  buttons: [
-                    .default(title: Strings.Commons.gotIt,
-                             action: nil)
-                  ])
-    }
-    
-    static func failedEmailSharingAlert() -> AlertInfo {
-        AlertInfo(title: Strings.SessionShare.emailSharingAlertTitle,
-                  message: Strings.SessionShare.emailSharingAlertMessage,
                   buttons: [
                     .default(title: Strings.Commons.gotIt,
                              action: nil)
@@ -68,12 +52,8 @@ struct InAppAlerts {
     
     static func finishSessionAlert(sessionName: String?, action: @escaping (() -> Void)) -> AlertInfo {
         AlertInfo(
-            title: Strings.SessionHeaderView.finishAlertTitle +
-            (sessionName ?? Strings.SessionHeaderView.finishAlertTitle_2) +
-            (Strings.SessionHeaderView.finishAlertTitle_3),
-            message: Strings.SessionHeaderView.finishAlertMessage_1 +
-            (Strings.SessionHeaderView.finishAlertMessage_2) +
-            (Strings.SessionHeaderView.finishAlertMessage_3),
+            title: ((sessionName == nil) ? Strings.SessionHeaderView.finishAlertTitleNoName : String(format: Strings.SessionHeaderView.finishAlertTitleNamed, arguments: [sessionName!])),
+            message: Strings.SessionHeaderView.finishAlertMessage,
             buttons: [
                 .default(title: Strings.SessionHeaderView.finishAlertButton,
                          action: action),
@@ -84,13 +64,9 @@ struct InAppAlerts {
     
     static func finishAndSyncAlert(sessionName: String?, action: @escaping (() -> Void)) -> AlertInfo {
         AlertInfo(
-            title: Strings.SessionHeaderView.finishAlertTitle +
-            (sessionName ?? Strings.SessionHeaderView.finishAlertTitle_2) +
-            Strings.SessionHeaderView.finishAlertTitle_3_SYNC,
-            message: Strings.SessionHeaderView.finishAlertMessage_1 +
-            Strings.SessionHeaderView.finishAlertMessage_2 +
-            Strings.SessionHeaderView.finishAlertMessage_3 +
-            Strings.SessionHeaderView.finishAlertMessage_4,
+            title: ((sessionName == nil) ? Strings.SessionHeaderView.finishAlertTitleSYNCNoName : String(format: Strings.SessionHeaderView.finishAlertTitleNamed, arguments: [sessionName!])),
+            message: Strings.SessionHeaderView.finishAlertMessage +
+            Strings.SessionHeaderView.finishAlertMessage_withSync,
             buttons: [
                 .default(title: Strings.SessionHeaderView.finishAlertButton,
                          action: action),
@@ -99,19 +75,19 @@ struct InAppAlerts {
         )
     }
     
-    static func connectionTimeoutAlert(dismiss: ()) -> AlertInfo {
+    static func connectionTimeoutAlert(dismiss: @escaping () -> Void) -> AlertInfo {
         AlertInfo(title: Strings.AirBeamConnector.connectionTimeoutTitle,
                   message: Strings.AirBeamConnector.connectionTimeoutDescription,
                   buttons: [ .default(title: Strings.Commons.gotIt,
-                                      action: { dismiss }) ])
+                                      action: dismiss) ])
     }
     
-    static func failedSDClearingAlert(dismiss: ()) -> AlertInfo {
+    static func failedSDClearingAlert(dismiss: (@escaping () -> Void)) -> AlertInfo {
         AlertInfo(title: Strings.ClearingSDCardView.failedClearingAlertTitle,
                   message: Strings.ClearingSDCardView.failedClearingAlertMessage,
                   buttons: [
                     .default(title: Strings.Commons.gotIt,
-                             action: { dismiss }) ])
+                             action: dismiss) ])
     }
     
     static func microphonePermissionAlert() -> AlertInfo {
@@ -123,13 +99,22 @@ struct InAppAlerts {
                              action: SettingsManager.goToAuthSettings)])
     }
     
-    static func locationAlert() -> AlertInfo {
-        AlertInfo(title: Strings.SelectDeviceView.alertTitle,
-                  message: Strings.SelectDeviceView.alertMessage,
+    static func microphoneSessionAlreadyRecordingAlert() -> AlertInfo {
+        AlertInfo(title: Strings.MicrophoneSessionAlreadyRecordingAlert.title,
+                  message: Strings.MicrophoneSessionAlreadyRecordingAlert.message,
                   buttons: [
-                    .cancel(title: Strings.Commons.ok),
-                    .default(title: Strings.SelectDeviceView.alertSettings,
-                             action: DefaultSettingsRedirection().goToLocationAuthSettings)])
+                    .default(title: Strings.Commons.gotIt,
+                             action: nil) ])
+    }
+    
+    static func locationAlert() -> AlertInfo {
+        let redirection = Resolver.resolve(SettingsRedirection.self)
+        return AlertInfo(title: Strings.SelectDeviceView.alertTitle,
+                         message: Strings.SelectDeviceView.alertMessage,
+                         buttons: [
+                            .cancel(title: Strings.Commons.ok),
+                            .default(title: Strings.SelectDeviceView.alertSettings,
+                                     action: redirection.goToLocationAuthSettings)])
     }
     
     static func unableToLogOutAlert() -> AlertInfo {
@@ -140,13 +125,48 @@ struct InAppAlerts {
                              action: nil)
                   ])
     }
+    
+    static func failedSessionDownloadAlert(dismiss: @escaping () -> Void) -> AlertInfo {
+        AlertInfo(title: Strings.CompleteSearchView.failedDownloadAlertTitle,
+                  message: Strings.CompleteSearchView.failedDownloadAlertMessage,
+                  buttons: [
+                    .default(title: Strings.Commons.gotIt,
+                             action: dismiss ) ])
+    }
+    
+    static func downloadingSessionsFailedAlert(action: @escaping (() -> Void)) -> AlertInfo {
+        AlertInfo(title: Strings.InAppAlerts.failedTitle,
+                  message: Strings.InAppAlerts.downloadingFailedMessage,
+                  buttons: [
+                    .default(title: Strings.Commons.gotIt,
+                             action: action)
+                  ])
+    }
+    
+    static func failedToDownload(dismiss: @escaping (() -> Void)) -> AlertInfo {
+        AlertInfo(title: Strings.InAppAlerts.failedDownloadTitle,
+                  message: Strings.InAppAlerts.failedDownloadMessage,
+                  buttons: [
+                    .default(title: Strings.InAppAlerts.failedDownloadButton,
+                             action: dismiss)
+                  ])
+    }
+    
+    static func failedSavingData(dismiss: @escaping (() -> Void)) -> AlertInfo {
+        AlertInfo(title: Strings.InAppAlerts.failedSavingTitle,
+                  message: Strings.InAppAlerts.failedSavingMessage,
+                  buttons: [
+                    .default(title: Strings.InAppAlerts.failedSavingButton,
+                             action: dismiss)
+                  ])
+    }
 }
 
 import SwiftUI
 
 extension AlertInfo {
     func makeAlert() -> Alert {
-        assert(buttons.count >= 1 && buttons.count <= 2, Strings.InAppAlerts.assertError)
+        assert(buttons.count >= 1 && buttons.count <= 2, "Unsupported button count! For SwiftUI implementation max of 2 buttons is supported")
         
         let alertButtons = buttons.map { type -> Alert.Button in
             switch type {

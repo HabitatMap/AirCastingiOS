@@ -4,12 +4,17 @@
 import Foundation
 import SwiftUI
 
-protocol SettingsRedirection {
-    func goToLocationAuthSettings()
-    func goToAppsBluetoothAuthSettings()
+enum BluetoothSettingsType {
+    case app
+    case global
 }
 
-extension SettingsRedirection {
+protocol SettingsRedirection {
+    func goToLocationAuthSettings()
+    func goToBluetoothSettings(type: BluetoothSettingsType)
+}
+
+final class DefaultSettingsRedirection: SettingsRedirection {
     func goToLocationAuthSettings() {
         if let url = URL(string: UIApplication.openSettingsURLString) {
             let app = UIApplication.shared
@@ -19,23 +24,15 @@ extension SettingsRedirection {
         }
     }
     
-    func goToAppsBluetoothAuthSettings() {
-        if let url = URL(string: UIApplication.openSettingsURLString) {
-            let app = UIApplication.shared
-            if app.canOpenURL(url) {
-                app.open(url, options: [:], completionHandler: nil)
-            }
+    func goToBluetoothSettings(type: BluetoothSettingsType) {
+        var url: URL!
+        switch type {
+        case .global: url = URL(string: "App-prefs:root=Bluetooth")
+        case .app: url = URL(string: UIApplication.openSettingsURLString)
         }
-    }
-    
-    func goToBluetoothAuthSettings() {
-        if let url = URL(string: "App-prefs:root=Bluetooth") {
-            let app = UIApplication.shared
-            if app.canOpenURL(url) {
-                app.open(url, options: [:], completionHandler: nil)
-            }
+        let app = UIApplication.shared
+        if app.canOpenURL(url) {
+            app.open(url, options: [:], completionHandler: nil)
         }
     }
 }
-
-final class DefaultSettingsRedirection: SettingsRedirection, ObservableObject { }

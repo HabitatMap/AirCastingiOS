@@ -8,6 +8,7 @@
 import AirCastingStyling
 import CoreLocation
 import SwiftUI
+import Resolver
 
 struct ConfirmCreatingSessionView: View {
     @State private var isActive: Bool = false
@@ -19,14 +20,10 @@ struct ConfirmCreatingSessionView: View {
     @State private var isPresentingAlert: Bool = false
     @EnvironmentObject var selectedSection: SelectSection
     @EnvironmentObject private var sessionContext: CreateSessionContext
-    @EnvironmentObject private var locationTracker: LocationTracker
+    @InjectedObject private var locationTracker: LocationTracker
     @EnvironmentObject private var tabSelection: TabBarSelection
-    @EnvironmentObject var persistenceController: PersistenceController
-    @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
-    @EnvironmentObject private var microphoneManager: MicrophoneManager
-    @EnvironmentObject var bluetoothManager: BluetoothManager
     @Binding var creatingSessionFlowContinues: Bool
-    let baseURL: BaseURLProvider
+
     var sessionName: String
     private var sessionType: String { (sessionContext.sessionType ?? .fixed).description.lowercased() }
 
@@ -46,13 +43,13 @@ struct ConfirmCreatingSessionView: View {
     }
 
     private var defaultDescriptionText: Text {
-        Text(Strings.ConfirmCreatingSessionView.contentViewText_1)
-        + Text(sessionType)
-            .foregroundColor(.accentColor)
-        + Text(Strings.ConfirmCreatingSessionView.contentViewText_2)
-        + Text(sessionName)
-            .foregroundColor(.accentColor)
-        + Text(Strings.ConfirmCreatingSessionView.contentViewText_3)
+        let text = String(format: Strings.ConfirmCreatingSessionView.contentViewText, arguments: [sessionType, sessionName])
+        return StringCustomizer.customizeString(text,
+                                                using: [sessionType, sessionName],
+                                                fontWeight: .bold,
+                                                color: .accentColor,
+                                                font: Fonts.muliHeading2,
+                                                standardFont: Fonts.muliHeading2)
     }
 
     var dot: some View {
@@ -63,12 +60,12 @@ struct ConfirmCreatingSessionView: View {
 
     private var descriptionTextFixed: some View {
         defaultDescriptionText
-        + Text((sessionContext.isIndoor!) ? "" : Strings.ConfirmCreatingSessionView.contentViewText_4)
+        + Text((sessionContext.isIndoor!) ? "" : Strings.ConfirmCreatingSessionView.contentViewTextEnd)
     }
 
     private var descriptionTextMobile: some View {
         defaultDescriptionText
-        + Text(Strings.ConfirmCreatingSessionView.contentViewText_4Mobile)
+        + Text(Strings.ConfirmCreatingSessionView.contentViewTextEndMobile)
     }
 
     @ViewBuilder private var contentView: some View {
@@ -93,10 +90,10 @@ struct ConfirmCreatingSessionView: View {
                 ZStack {
                     if sessionContext.sessionType == .mobile {
                         if !sessionContext.locationless {
-                            GoogleMapView(pathPoints: [], isMyLocationEnabled: true, placePickerDismissed: Binding.constant(false), isUserInteracting: Binding.constant(true), mapNotes: .constant([]))
+                            CreatingSessionMapView(isMyLocationEnabled: true)
                         }
                     } else if !(sessionContext.isIndoor ?? false) {
-                        GoogleMapView(pathPoints: [], placePickerDismissed: Binding.constant(false), isUserInteracting: Binding.constant(true), mapNotes: .constant([]))
+                        CreatingSessionMapView(isMyLocationEnabled: false)
                             .disabled(true)
                         // It needs to be disabled to prevent user interaction (swiping map) because it is only conformation screen
                         dot
@@ -159,29 +156,20 @@ extension ConfirmCreatingSessionView {
         } else {
             guard let lat = (locationTracker.locationManager.location?.coordinate.latitude),
                   let lon = (locationTracker.locationManager.location?.coordinate.longitude) else { return }
-            locationTracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: lat, longitude: lon), measurementTime: DateBuilder.getFakeUTCDate(), measurement: 20.0)]
-#warning("Do something with hard coded measurement")
+            locationTracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: lat, longitude: lon), measurementTime: DateBuilder.getFakeUTCDate())]
             sessionContext.saveCurrentLocation(lat: lat, log: lon)
         }
     }
     func setSessioonCreator() -> SessionCreator? {
         let isWifi: Bool = (sessionContext.wifiSSID != nil && sessionContext.wifiSSID != nil)
         if sessionContext.sessionType == .fixed && isWifi {
-            return AirBeamFixedWifiSessionCreator(
-                measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: persistenceController),
-                userAuthenticationSession: userAuthenticationSession,
-                baseUrl: baseURL)
+            return AirBeamFixedWifiSessionCreator()
         } else if sessionContext.sessionType == .fixed && !isWifi {
-            return AirBeamCellularSessionCreator(measurementStreamStorage: CoreDataMeasurementStreamStorage(persistenceController: persistenceController),
-                                                 userAuthenticationSession: userAuthenticationSession,
-                                                 baseUrl: baseURL)
+            return AirBeamCellularSessionCreator()
         } else if sessionContext.sessionType == .mobile && sessionContext.deviceType == .MIC {
-            return MicrophoneSessionCreator(microphoneManager: microphoneManager)
+            return MicrophoneSessionCreator()
         } else if sessionContext.sessionType == .mobile {
-            return MobilePeripheralSessionCreator(
-                mobilePeripheralSessionManager: bluetoothManager.mobilePeripheralSessionManager, measurementStreamStorage: CoreDataMeasurementStreamStorage(
-                    persistenceController: persistenceController),
-                userAuthenticationSession: userAuthenticationSession)
+            return MobilePeripheralSessionCreator()
         } else {
             return nil
             Log.info("Can't set the session creator storage")

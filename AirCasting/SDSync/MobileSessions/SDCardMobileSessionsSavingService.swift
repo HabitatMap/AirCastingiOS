@@ -4,20 +4,16 @@
 import Foundation
 import CoreLocation
 import Combine
+import Resolver
 
 protocol SDCardMobileSessionssSaver {
     func saveDataToDb(fileURL: URL, deviceID: String, completion: @escaping (Result<[SessionUUID], Error>) -> Void)
 }
 
 class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
-    private let fileLineReader: FileLineReader
-    private let measurementStreamStorage: MeasurementStreamStorage
+    @Injected private var fileLineReader: FileLineReader
+    @Injected private var measurementStreamStorage: MeasurementStreamStorage
     private let parser = SDCardMeasurementsParser()
-    
-    init(measurementStreamStorage: MeasurementStreamStorage, fileLineReader: FileLineReader) {
-        self.measurementStreamStorage = measurementStreamStorage
-        self.fileLineReader = fileLineReader
-    }
     
     func saveDataToDb(fileURL: URL, deviceID: String, completion: @escaping (Result<[SessionUUID], Error>) -> Void) {
         var processedSessions = Set<SDSession>()
@@ -39,8 +35,8 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
                         var session = processedSessions.first(where: { $0.uuid == measurements.sessionUUID })
                         if session == nil {
                             session = self.processSession(storage: storage, sessionUUID: measurements.sessionUUID, deviceID: deviceID, sessionsToIgnore: &sessionsToIgnore, sessionsToCreate: &sessionsToCreate)
-                            guard session != nil else { return }
-                            processedSessions.insert(session!)
+                            guard let createdSession = session else { return }
+                            processedSessions.insert(createdSession)
                         }
                         
                         guard session!.lastMeasurementTime == nil || measurements.date > session!.lastMeasurementTime! else { return }

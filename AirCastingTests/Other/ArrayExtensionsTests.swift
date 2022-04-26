@@ -4,7 +4,7 @@
 @testable import AirCasting
 import XCTest
 
-final class ArrayCountElementsTests: XCTestCase {
+final class ArrayCountElementsTests: ACTestCase {
     func testWhenNoSuchItemFound_returnsZero() {
         let array = [0,1,2,3,4]
         XCTAssertEqual(array.count(of: 5), 0)
@@ -22,7 +22,7 @@ final class ArrayCountElementsTests: XCTestCase {
 }
 
 
-final class ArrayContainsSameElementsTests: XCTestCase {
+final class ArrayContainsSameElementsTests: ACTestCase {
     func testNonRepeatingContainment_returnsTrueIfEqual() {
         let array1 = [0,1,2,3,4,5]
         let array2 = [2,3,0,4,1,5]
@@ -66,7 +66,7 @@ final class ArrayContainsSameElementsTests: XCTestCase {
     }
 }
 
-final class ArrayCreatingTimesTests: XCTestCase {
+final class ArrayCreatingTimesTests: ACTestCase {
     class ExampleClass { }
     
     func testCreatingArray_containsCorrectNumberOfElements() {

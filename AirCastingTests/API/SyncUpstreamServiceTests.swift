@@ -6,12 +6,8 @@ import Combine
 import Gzip
 @testable import AirCasting
 
-final class SyncUpstreamServiceTests: XCTestCase {
-    let client = APIClientMock()
-    let auth = RequestAuthorizationServiceMock()
-    let responseValidator = HTTPResponseValidatorMock()
-    let urlProvider = URLProviderMock(baseAppURL: URL(string: "http://aircasting.org/")!)
-    lazy var service = SessionUploadService(client: client, authorization: auth, responseValidator: responseValidator, urlProvider: urlProvider)
+final class SyncUpstreamServiceTests: APIServiceTestCase {
+    lazy var service = SessionUploadService()
     private var cancellables: [AnyCancellable] = []
     
     override func tearDown() {

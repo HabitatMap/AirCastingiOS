@@ -4,7 +4,7 @@
 import XCTest
 @testable import AirCasting
 
-class MeasurementsStatisticsControllerTests: XCTestCase {
+class MeasurementsStatisticsControllerTests: ACTestCase {
     let outputSpy = OutputSpy()
     let dataSourceMock = DataSourceMock()
     let calculatorMock = CalculatorMock()

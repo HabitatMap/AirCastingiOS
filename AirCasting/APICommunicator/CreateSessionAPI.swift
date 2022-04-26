@@ -9,6 +9,7 @@ import Foundation
 import Combine
 import Gzip
 import CoreLocation
+import Resolver
 
 class CreateSessionApi {
     struct NotesParams: Encodable {
@@ -76,10 +77,10 @@ final class CreateSessionAPIService {
         let compression: Bool
     }
     
-    let urlProvider: BaseURLProvider
-    let apiClient: APIClient
-    let responseValidator: HTTPResponseValidator
-    let authorisationService: RequestAuthorisationService
+    @Injected private var urlProvider: URLProvider
+    @Injected private var apiClient: APIClient
+    @Injected private var responseValidator: HTTPResponseValidator
+    @Injected private var authorisationService: RequestAuthorisationService
     
     private lazy var decoder: JSONDecoder = {
         $0.dateDecodingStrategy = .custom({
@@ -99,13 +100,6 @@ final class CreateSessionAPIService {
         $0.dateEncodingStrategy = .formatted(formatter)
         return $0
     }(JSONEncoder())
-
-    init(authorisationService: RequestAuthorisationService, apiClient: APIClient = URLSession.shared, responseValidator: HTTPResponseValidator = DefaultHTTPResponseValidator(), baseUrlProvider: BaseURLProvider) {
-        self.authorisationService = authorisationService
-        self.apiClient = apiClient
-        self.responseValidator = responseValidator
-        self.urlProvider = baseUrlProvider
-    }
 
     @discardableResult
     func createEmptyFixedWifiSession(input: CreateSessionApi.Input, completion: @escaping (Result<CreateSessionApi.Output, Error>) -> Void) -> Cancellable {

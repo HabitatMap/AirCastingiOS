@@ -8,30 +8,27 @@
 import Foundation
 import CoreData
 import Combine
+import Resolver
 
 protocol MeasurementUpdatingService {
     func start()
     func downloadMeasurements(for sessionUUID: SessionUUID, lastSynced: Date, completion: @escaping () -> Void)
+    func updateAllSessionsMeasurements()
 }
 
 final class DownloadMeasurementsService: MeasurementUpdatingService {
-    private let authorisationService: RequestAuthorisationService
-    private let persistenceController: PersistenceController
-    private let fixedSessionService: FixedSessionAPIService
+    @Injected private var persistenceController: PersistenceController
+    private let fixedSessionService = FixedSessionAPIService()
     private var timerSink: Cancellable?
     private var lastFetchCancellableTask: Cancellable?
     private lazy var removeOldService: RemoveOldMeasurementsService = RemoveOldMeasurementsService()
-    
-    init(authorisationService: RequestAuthorisationService, persistenceController: PersistenceController, baseUrl: BaseURLProvider) {
-        self.authorisationService = authorisationService
-        self.persistenceController = persistenceController
-        self.fixedSessionService = FixedSessionAPIService(authorisationService: authorisationService, baseUrl: baseUrl)
-    }
 
     #warning("Add locking here so updates won't bump on one another")
     func start() {
         updateAllSessionsMeasurements()
         timerSink = Timer.publish(every: 60, on: .current, in: .common).autoconnect().sink { [weak self] tick in
+            guard !(self?.persistenceController.uiSuspended ?? true) else { return }
+            Log.info("Timer triggered for fixed sessions measurements download")
             self?.updateAllSessionsMeasurements()
         }
     }
@@ -48,7 +45,7 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
         }
     }
     
-    private func updateAllSessionsMeasurements() {
+    func updateAllSessionsMeasurements() {
         getAllSessionsData() { [unowned self] sessionsData in
             Log.info("Scheduled measurements update triggered (session count: \(sessionsData.count))")
             sessionsData.forEach { self.updateMeasurements(for: $0.uuid, lastSynced: $0.lastSynced) }
@@ -57,7 +54,7 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
     
     private func getAllSessionsData(completion: @escaping ([(uuid: SessionUUID, lastSynced: Date)]) -> Void) {
         let request: NSFetchRequest<SessionEntity> = SessionEntity.fetchRequest()
-        request.predicate = request.typePredicate(.fixed)
+        request.predicate = NSPredicate(format: "followedAt != NULL")
         let context = persistenceController.editContext
         var returnData: [(uuid: SessionUUID, lastSynced: Date)] = []
         context.perform { [unowned self] in
@@ -93,6 +90,7 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
     
     private func processServiceOutput(_ output: FixedSession.FixedMeasurementOutput,
                                       for sessionUUID: SessionUUID) {
+        Log.info("Processing download measurements response for: \(sessionUUID)")
         let context = persistenceController.editContext
         context.perform {
             do {

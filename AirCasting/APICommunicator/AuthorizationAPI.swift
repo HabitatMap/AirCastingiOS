@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import Resolver
 
 class AuthorizationAPI {
     struct SignupUserInput: Encodable, Hashable {
@@ -44,13 +45,13 @@ enum AuthorizationError: Error, LocalizedError, Identifiable {
     var localizedDescription: String {
         switch self {
         case .other:
-            return NSLocalizedString("Unknown error occurred. Try again.", comment: "Unknown login message failure")
+            return Strings.AuthorizationAPI.otherError
         case .timeout:
-            return NSLocalizedString("It looks like the server is taking to long to respond. Try again later.", comment: "time out login message failure")
+            return Strings.AuthorizationAPI.timeoutError
         case .noConnection:
-            return NSLocalizedString("Please, make sure your device is connected to the internet.", comment: "connection failure login message failure")
+            return Strings.AuthorizationAPI.noConnectionError
         case .usernameTaken, .emailTaken, .invalidCredentials:
-            return NSLocalizedString("Email or profile name is already in use. Please try again.", comment: "connection failure login message failure")
+            return Strings.AuthorizationAPI.alreadyTakenError
         }
     }
     
@@ -63,17 +64,16 @@ final class AuthorizationAPIService {
         let user: AuthorizationAPI.SignupUserInput
     }
     
-    let apiClient: APIClient
-    let responseHandler: AuthorizationHTTPResponseHandler
+    @Injected private var apiClient: APIClient
+    private let responseHandler = AuthorizationHTTPResponseHandler()
     let url: URL
 
     private lazy var decoder: JSONDecoder = JSONDecoder()
     private lazy var encoder = JSONEncoder()
 
-    init(apiClient: APIClient = URLSession.shared, responseHandler: AuthorizationHTTPResponseHandler = .init(), baseUrl: BaseURLProvider) {
-        self.apiClient = apiClient
-        self.responseHandler = responseHandler
-        self.url = baseUrl.baseAppURL.appendingPathComponent("api/user.json")
+    init() {
+        let urlProvider = Resolver.resolve(URLProvider.self)
+        self.url = urlProvider.baseAppURL.appendingPathComponent("api/user.json")
     }
 
     @discardableResult

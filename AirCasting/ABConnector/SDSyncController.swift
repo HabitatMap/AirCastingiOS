@@ -4,6 +4,7 @@
 import Foundation
 import CoreBluetooth
 import Combine
+import Resolver
 
 enum SDCardSessionType: CaseIterable {
     case mobile, fixed, cellular
@@ -24,29 +25,18 @@ enum SDCardSyncStatus {
     case finalizing
 }
 
-class SDSyncController: ObservableObject {
-    private let fileWriter: SDSyncFileWriter
-    private let airbeamServices: SDCardAirBeamServices
-    private let fileValidator: SDSyncFileValidator
-    private let fileLineReader: FileLineReader
-    private let mobileSessionsSaver: SDCardMobileSessionssSaver
-    private let fixedSessionsSaver: SDCardFixedSessionsSavingService
-    private let averagingService: AveragingService
-    private let sessionSynchronizer: SessionSynchronizer
-    private let writingQueue = DispatchQueue(label: "SDSyncController")
-    private let measurementsDownloader: SyncedMeasurementsDownloader
+class SDSyncController {
+    @Injected private var fileWriter: SDSyncFileWriter
+    @Injected private var airbeamServices: SDCardAirBeamServices
+    @Injected private var fileValidator: SDSyncFileValidator
+    @Injected private var fileLineReader: FileLineReader
+    @Injected private var mobileSessionsSaver: SDCardMobileSessionssSaver
+    @Injected private var fixedSessionsUploader: SDCardFixedSessionsUploadingService
+    @Injected private var averagingService: AveragingService
+    @Injected private var sessionSynchronizer: SessionSynchronizer
+    @Injected private var measurementsDownloader: SyncedMeasurementsDownloader
     
-    init(airbeamServices: SDCardAirBeamServices, fileWriter: SDSyncFileWriter, fileValidator: SDSyncFileValidator, fileLineReader: FileLineReader, mobileSessionsSaver: SDCardMobileSessionssSaver, fixedSessionsSaver: SDCardFixedSessionsSavingService, averagingService: AveragingService, sessionSynchronizer: SessionSynchronizer, measurementsDownloader: SyncedMeasurementsDownloader) {
-        self.airbeamServices = airbeamServices
-        self.fileWriter = fileWriter
-        self.fileValidator = fileValidator
-        self.fileLineReader = fileLineReader
-        self.mobileSessionsSaver = mobileSessionsSaver
-        self.fixedSessionsSaver = fixedSessionsSaver
-        self.averagingService = averagingService
-        self.sessionSynchronizer = sessionSynchronizer
-        self.measurementsDownloader = measurementsDownloader
-    }
+    private let writingQueue = DispatchQueue(label: "SDSyncController")
     
     func syncFromAirbeam(_ airbeamConnection: CBPeripheral, progress: @escaping (SDCardSyncStatus) -> Void, completion: @escaping (Bool) -> Void) {
         guard let sensorName = airbeamConnection.name else {
@@ -74,7 +64,7 @@ class SDSyncController: ObservableObject {
                         return
                     }
                     
-                    //MARK: checking if files have the right number of rows and if rows have the right values
+                    // MARK: checking if files have the right number of rows and if rows have the right values
                     self.checkFilesForCorruption(files, expectedMeasurementsCount: metadata.expectedMeasurementsCount) { fileValidationResult in
                         switch fileValidationResult {
                         case .success(let verifiedFiles):
@@ -97,11 +87,14 @@ class SDSyncController: ObservableObject {
         let fixedFileURL = files.first(where: { $0.1 == SDCardSessionType.fixed })?.0
         
         func handleFixedFile(fixedFileURL: URL) {
-            do {
-                let fixedSessionsUUIDs =  try self.process(fixedSessionFile: fixedFileURL, deviceID: sensorName, completion: completion)
-                measurementsDownloader.download(sessionsUUIDs: fixedSessionsUUIDs)
-            } catch {
-                completion(false)
+            process(fixedSessionFile: fixedFileURL, deviceID: sensorName) { result in
+                switch result {
+                case .success(let fixedSessionsUUIDs):
+                    self.measurementsDownloader.download(sessionsUUIDs: fixedSessionsUUIDs)
+                    completion(true)
+                case .failure:
+                    completion(false)
+                }
             }
         }
         
@@ -125,14 +118,21 @@ class SDSyncController: ObservableObject {
         }
     }
     
-    private func process(fixedSessionFile: URL, deviceID: String, completion: @escaping (Bool) -> Void) throws -> [SessionUUID] {
-        let csvSession = try CSVStreamsWithMeasurements(fileURL: fixedSessionFile,
-                                        fileLineReader: fileLineReader)
-        fixedSessionsSaver.processAndSync(csvSession: csvSession, deviceID: deviceID, completion: completion)
-        return csvSession.sessions.map { $0.uuid }
+    private func process(fixedSessionFile: URL, deviceID: String, completion: @escaping (Result<[SessionUUID], Error>) -> Void) {
+        Log.info("Processing fixed file")
+        fixedSessionsUploader.processAndUpload(fileURL: fixedSessionFile, deviceID: deviceID) { result in
+            switch result {
+            case .success(let sessions):
+                completion(.success(sessions))
+            case .failure(let error):
+                Log.error("[SD Sync] Failed to upload sessions to backend: \(error.localizedDescription)")
+                completion(.failure(error))
+            }
+        }
     }
     
     private func process(mobileSessionFile: URL, deviceID: String, completion: @escaping (Bool) -> Void) {
+        Log.info("Processing fixed file")
         self.mobileSessionsSaver.saveDataToDb(fileURL: mobileSessionFile, deviceID: deviceID) { result in
             switch result {
             case .success(let sessions):
@@ -140,7 +140,6 @@ class SDSyncController: ObservableObject {
                     Log.info("[SD Sync] Averaging done")
                     self.onCurrentSyncEnd { self.startBackendSync() }
                 }
-                // TODO: Shouldn't we call 'completion' only when averaging and backkend-sync has finished?
                 completion(true)
             case .failure(let error):
                 Log.error("[SD Sync] Failed to save sessions to database: \(error.localizedDescription)")
@@ -155,7 +154,7 @@ class SDSyncController: ObservableObject {
             case .success():
                 completion(true)
             case .failure(let error):
-                Log.error(error.localizedDescription)
+                Log.error("Failed to clear SD card: \(error.localizedDescription)")
                 completion(false)
             }
         }

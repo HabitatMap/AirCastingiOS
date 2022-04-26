@@ -24,6 +24,10 @@ struct EditView<VM: EditViewModel>: View {
         .onAppear {
             editSessionViewModel.downloadSessionAndReloadView()
         }
+        .onChange(of: editSessionViewModel.shouldDismiss) {
+            $0 ? presentationMode.wrappedValue.dismiss() : ()
+        }
+        .alert(item: $editSessionViewModel.alert, content: { $0.makeAlert() })
     }
     
     var editView: some View {
@@ -66,9 +70,6 @@ struct EditView<VM: EditViewModel>: View {
         })
             .buttonStyle(BlueButtonStyle())
             .padding(.top, 20)
-            .onChange(of: editSessionViewModel.didSave) {
-                $0 ? presentationMode.wrappedValue.dismiss() : ()
-            }
     }
     
     private var cancelButton: some View {
@@ -77,15 +78,3 @@ struct EditView<VM: EditViewModel>: View {
         }.buttonStyle(BlueTextButtonStyle())
     }
 }
-
-#if DEBUG
-struct EditViewModal_Previews: PreviewProvider {
-    static var previews: some View {
-        let vm = EditSessionViewModel(measurementStreamStorage: PreviewMeasurementStreamStorage(),
-                                      sessionSynchronizer: DummySessionSynchronizer(),
-                                      sessionUpdateService: SessionUpdateServiceDefaultDummy(),
-                                      sessionUUID: SessionEntity.mock.uuid)
-        return EditView(viewModel: vm)
-    }
-}
-#endif

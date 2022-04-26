@@ -1,11 +1,12 @@
 import UIKit
 import FirebaseRemoteConfig
+import Resolver
 
 #if !DEBUG
 class FirebaseFeatureFlagProvider: FeatureFlagProvider {
     var onFeatureListChange: (() -> Void)?
     
-    private let notificationsRouter: RemoteNotificationRouter
+    @Injected private var notificationsRouter: RemoteNotificationRouter
     private var remoteNotificationsToken: RemoteNotificationRouter.Token!
     
     private let expirationDuration: TimeInterval = 43200 // 12hs
@@ -17,8 +18,7 @@ class FirebaseFeatureFlagProvider: FeatureFlagProvider {
         }
     }
     
-    init(notificationsRouter: RemoteNotificationRouter) {
-        self.notificationsRouter = notificationsRouter
+    init() {
         self.remoteNotificationsToken = notificationsRouter.register { [unowned self] userInfo, callback in
             guard let status = userInfo[self.messageIdentifier] as? String, status == "STALE" else { return }
             Log.info("firebase configuration changed!")
@@ -47,6 +47,7 @@ class FirebaseFeatureFlagProvider: FeatureFlagProvider {
         case .standaloneMode: return "standalone_mode"
         case .notes: return "session_notes"
         case .locationlessSessions: return "locationless_sessions"
+        case .searchAndFollow: return "search_and_follow"
         }
     }
     

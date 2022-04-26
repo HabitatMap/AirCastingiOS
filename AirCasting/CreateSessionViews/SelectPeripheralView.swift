@@ -8,26 +8,23 @@
 import AirCastingStyling
 import CoreBluetooth
 import SwiftUI
+import Resolver
 
 struct SelectPeripheralView: View {
     @State private var selection: CBPeripheral? = nil
     var SDClearingRouteProcess: Bool
-    @EnvironmentObject var bluetoothManager: BluetoothManager
+    @InjectedObject private var bluetoothManager: BluetoothManager
     @EnvironmentObject var sessionContext: CreateSessionContext
-    @EnvironmentObject var connectionController: DefaultAirBeamConnectionController
-    @EnvironmentObject var sdSyncController: SDSyncController
+    @Injected private var connectionController: AirBeamConnectionController
     @Binding var creatingSessionFlowContinues: Bool
-    let urlProvider: BaseURLProvider
-    @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
     var syncMode: Bool? = false
     
     var body: some View {
         GeometryReader { geometry in
-            ScrollView {
-                VStack(spacing: 30) {
-                    ProgressView(value: 0.375)
-                    titleLabel
-                    
+            VStack(spacing: 30) {
+                ProgressView(value: 0.375)
+                titleLabel
+                ScrollView {
                     LazyVStack(alignment: .leading, spacing: 25) {
                         HStack(spacing: 8) {
                             Text(Strings.SelectPeripheralView.airBeamsText)
@@ -45,37 +42,29 @@ struct SelectPeripheralView: View {
                         }
                         displayDeviceButton(devices: bluetoothManager.otherDevices)
                     }
-                    .listStyle(PlainListStyle())
-                    .listItemTint(Color.red)
-                    .font(Fonts.regularHeading1)
-                    .foregroundColor(.aircastingDarkGray)
-                    
                     Spacer()
-                    
-                    if !bluetoothManager.isScanning {
-                        refreshButton
-                            .frame(alignment: .trailing)
-                    }
-                    
-                    if selection != nil {
-                        connectButton.disabled(false)
-                    } else {
-                        connectButton.disabled(true)
-                    }
                 }
-                .onAppear {
-                    if CBCentralManager.authorization == .allowedAlways {
-                        // it triggers the bluetooth searching on the appearing time
-                        _ = bluetoothManager.centralManager
-                        bluetoothManager.startScanning()
-                    }
+                .listStyle(PlainListStyle())
+                .font(Fonts.regularHeading1)
+                .foregroundColor(.aircastingDarkGray)
+                if !bluetoothManager.isScanning {
+                    refreshButton
+                        .frame(alignment: .trailing)
                 }
-                .onDisappear {
-                    bluetoothManager.centralManager.stopScan()
-                }
-                .padding()
-                .frame(maxWidth: .infinity, minHeight: geometry.size.height, alignment: .top)
+                connectButton.disabled(selection == nil)
             }
+            .onAppear {
+                if CBCentralManager.authorization == .allowedAlways {
+                    // it triggers the bluetooth searching on the appearing time
+                    _ = bluetoothManager.centralManager
+                    bluetoothManager.startScanning()
+                }
+            }
+            .onDisappear {
+                bluetoothManager.centralManager.stopScan()
+            }
+            .padding()
+            .frame(maxWidth: .infinity, minHeight: geometry.size.height, alignment: .top)
         }
     }
     
@@ -134,22 +123,17 @@ struct SelectPeripheralView: View {
         if let selection = selection {
             if syncMode == true {
                 let viewModel =
-                SDSyncViewModelDefault(airBeamConnectionController: connectionController,
-                                       sdSyncController: sdSyncController,
-                                       userAuthenticationSession: userAuthenticationSession,
-                                       sessionContext: sessionContext,
+                SDSyncViewModelDefault(sessionContext: sessionContext,
                                        peripheral: selection)
                 destination = AnyView(SyncingABView(viewModel: viewModel, creatingSessionFlowContinues: $creatingSessionFlowContinues))
             } else if SDClearingRouteProcess {
-                let viewModel = ClearingSDCardViewModelDefault(isSDClearProcess: SDClearingRouteProcess, userAuthenticationSession: userAuthenticationSession, peripheral: selection, airBeamConnectionController: connectionController, sdSyncController: sdSyncController)
+                let viewModel = ClearingSDCardViewModelDefault(isSDClearProcess: SDClearingRouteProcess, peripheral: selection)
                 destination = AnyView(ClearingSDCardView(viewModel: viewModel, creatingSessionFlowContinues: $creatingSessionFlowContinues))
             } else {
                 let viewModel =
-                AirbeamConnectionViewModelDefault(airBeamConnectionController: connectionController,
-                                                  userAuthenticationSession: userAuthenticationSession,
-                                                  sessionContext: sessionContext,
+                AirbeamConnectionViewModelDefault(sessionContext: sessionContext,
                                                   peripheral: selection)
-                destination = AnyView(ConnectingABView(viewModel: viewModel, baseURL: urlProvider, creatingSessionFlowContinues: $creatingSessionFlowContinues))
+                destination = AnyView(ConnectingABView(viewModel: viewModel, creatingSessionFlowContinues: $creatingSessionFlowContinues))
             }
         } else {
             destination = AnyView(EmptyView())
@@ -160,11 +144,3 @@ struct SelectPeripheralView: View {
         .buttonStyle(BlueButtonStyle())
     }
 }
-
-#if DEBUG
-struct SelectPeripheralView_Previews: PreviewProvider {
-    static var previews: some View {
-        SelectPeripheralView(SDClearingRouteProcess: false, creatingSessionFlowContinues: .constant(true), urlProvider: DummyURLProvider())
-    }
-}
-#endif

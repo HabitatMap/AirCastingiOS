@@ -9,7 +9,7 @@ import SwiftUI
 import Charts
 import SwiftSimplify
 import CoreMedia
-
+import Resolver
 
 extension ChartDataEntry: Point2DRepresentable {
     public var xValue: Float {
@@ -30,7 +30,7 @@ struct Graph: UIViewRepresentable {
     typealias OnChange = (ClosedRange<Date>) -> Void
     typealias NoteAction = (Note) -> Void
     
-    @EnvironmentObject var userSettings: UserSettings
+    @InjectedObject private var userSettings: UserSettings
     @ObservedObject var stream: MeasurementStreamEntity
     @ObservedObject var thresholds: SensorThreshold
     private var rangeChangeAction: OnChange?
@@ -41,11 +41,11 @@ struct Graph: UIViewRepresentable {
     var isAutozoomEnabled: Bool
     let simplifiedGraphEntryThreshold = 1000
     
-    init(stream: MeasurementStreamEntity, thresholds: SensorThreshold, isAutozoomEnabled: Bool, notesHandler: NotesHandler) {
+    init(stream: MeasurementStreamEntity, thresholds: SensorThreshold, isAutozoomEnabled: Bool) {
         self.stream = stream
         self.thresholds = thresholds
         self.isAutozoomEnabled = isAutozoomEnabled
-        self.notesHandler = notesHandler
+        self.notesHandler = Resolver.resolve(NotesHandler.self, args: stream.session.uuid)
     }
     
     func onDateRangeChange(perform action: @escaping OnChange) -> Self {

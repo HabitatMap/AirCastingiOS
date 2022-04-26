@@ -2,6 +2,7 @@
 //
 
 import Foundation
+import Resolver
 
 protocol SessionFollowingSettable {
      var following: SessionFollowing { get set }
@@ -17,11 +18,10 @@ extension SessionFollowing {
  }
 
  class MeasurementStreamStorageFollowingSettable: SessionFollowingSettable {
-     private let measurementStreamStorage: MeasurementStreamStorage
+     @Injected private var measurementStreamStorage: MeasurementStreamStorage
      private let session: SessionEntity
 
-     init(session: SessionEntity, measurementStreamStorage: MeasurementStreamStorage) {
-         self.measurementStreamStorage = measurementStreamStorage
+     init(session: SessionEntity) {
          self.session = session
      }
 
@@ -32,8 +32,14 @@ extension SessionFollowing {
          set {
              #warning("❌This 'setter' is asynchronous!!!")
              let id = self.session.uuid!
-             measurementStreamStorage.accessStorage { storage in
+             measurementStreamStorage.accessStorage { [sessionId = session.uuid] storage in
+                 Log.info("\(newValue == .following ? "Following" : "Unfollowing") session [\(sessionId ?? "NONE")]")
                  storage.updateSessionFollowing(newValue, for: id)
+                 if newValue == .following {
+                     storage.giveHighestOrder(to: id)
+                 } else {
+                     storage.setOrderToZero(for: id)
+                 }
              }
          }
      }

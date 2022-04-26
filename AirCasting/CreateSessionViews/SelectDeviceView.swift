@@ -8,6 +8,7 @@
 import SwiftUI
 import CoreBluetooth
 import AirCastingStyling
+import Resolver
 
 struct SelectDeviceView: View {
     @State private var alert: AlertInfo?
@@ -16,15 +17,14 @@ struct SelectDeviceView: View {
     @State private var isPowerABLinkActive: Bool = false
     @State private var isMicLinkActive: Bool = false
     @EnvironmentObject private var sessionContext: CreateSessionContext
-    @EnvironmentObject var bluetoothManager: BluetoothManager
-    @EnvironmentObject private var microphoneManager: MicrophoneManager
+    @InjectedObject private var bluetoothManager: BluetoothManager
+    @InjectedObject private var microphoneManager: MicrophoneManager
     @Binding var creatingSessionFlowContinues : Bool
     @Binding var sdSyncContinues : Bool
     @State private var showAlert = false
     @EnvironmentObject private var emptyDashboardButtonTapped: EmptyDashboardButtonTapped
     @EnvironmentObject private var tabSelection: TabBarSelection
 
-    let urlProvider: BaseURLProvider
     
     var body: some View {
         VStack(spacing: 30) {
@@ -39,19 +39,19 @@ struct SelectDeviceView: View {
         .padding()
         .background( Group {
             NavigationLink(
-                destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues, urlProvider: urlProvider),
+                destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues),
                 isActive: $isPowerABLinkActive,
                 label: {
                     EmptyView()
                 })
             NavigationLink(
-                destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sdSyncContinues: $sdSyncContinues, urlProvider: urlProvider),
+                destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sdSyncContinues: $sdSyncContinues),
                 isActive: $isTurnOnBluetoothLinkActive,
                 label: {
                     EmptyView()
                 })
             NavigationLink(
-                destination: CreateSessionDetailsView(creatingSessionFlowContinues: $creatingSessionFlowContinues, baseURL: urlProvider),
+                destination: CreateSessionDetailsView(creatingSessionFlowContinues: $creatingSessionFlowContinues),
                 isActive: $isMicLinkActive,
                 label: {
                     EmptyView()
@@ -108,14 +108,20 @@ struct SelectDeviceView: View {
             micLabels
         })
         .buttonStyle(WhiteSelectingButtonStyle(isSelected: selected == 2))
+        .disabled(microphoneManager.isRecording)
+        .onTapGesture {
+            alert = InAppAlerts.microphoneSessionAlreadyRecordingAlert()
+        }
     }
     
     var bluetoothLabels: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text(Strings.SelectDeviceView.bluetoothLabel_1)
-                .font(Fonts.boldHeading1)
-                .foregroundColor(.accentColor)
-            Text(Strings.SelectDeviceView.bluetoothLabel_2)
+            StringCustomizer.customizeString(Strings.SelectDeviceView.bluetoothLabel,
+                            using: [Strings.SelectDeviceView.bluetoothDevice],
+                            fontWeight: .bold,
+                            color: .accentColor,
+                            font: Fonts.boldHeading1,
+                            makeNewLineAfterCustomized: true)
                 .font(Fonts.muliHeading3)
                 .foregroundColor(.aircastingGray)
         }
@@ -123,10 +129,12 @@ struct SelectDeviceView: View {
     
     var micLabels: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text(Strings.SelectDeviceView.micLabel_1)
-                .font(Fonts.boldHeading1)
-                .foregroundColor(.accentColor)
-            Text(Strings.SelectDeviceView.micLabel_2)
+            StringCustomizer.customizeString(Strings.SelectDeviceView.micLabel_1,
+                            using: [Strings.SelectDeviceView.phoneMicrophone],
+                            fontWeight: .bold,
+                            color: .accentColor,
+                            font: Fonts.boldHeading1,
+                            makeNewLineAfterCustomized: true)
                 .font(Fonts.muliHeading3)
                 .foregroundColor(.aircastingGray)
         }

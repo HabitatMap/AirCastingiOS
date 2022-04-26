@@ -3,12 +3,13 @@
 
 import Foundation
 import Combine
+import Resolver
 
 final class SessionDownloadService: SessionDownstream, MeasurementsDownloadable {
-    private let client: APIClient
-    private let authorization: RequestAuthorisationService
-    private let responseValidator: HTTPResponseValidator
-    private let urlProvider: BaseURLProvider
+    @Injected private var client: APIClient
+    @Injected private var authorization: RequestAuthorisationService
+    @Injected private var responseValidator: HTTPResponseValidator
+    @Injected private var urlProvider: URLProvider
     
     private let decoder: JSONDecoder = {
         let decoder = JSONDecoder()
@@ -17,13 +18,6 @@ final class SessionDownloadService: SessionDownstream, MeasurementsDownloadable 
         decoder.dateDecodingStrategy = .formatted(formatter)
         return decoder
     }()
-    
-    init(client: APIClient, authorization: RequestAuthorisationService, responseValidator: HTTPResponseValidator, urlProvider: BaseURLProvider) {
-        self.client = client
-        self.authorization = authorization
-        self.responseValidator = responseValidator
-        self.urlProvider = urlProvider
-    }
     
     func download(session: SessionUUID) -> AnyPublisher<SessionsSynchronization.SessionDownstreamData, Error> {
         // Warning: for this pattern to work the work cone by the `APIClient` must not be synchronous.
@@ -45,7 +39,7 @@ final class SessionDownloadService: SessionDownstream, MeasurementsDownloadable 
     }
     
     private func download(session: SessionUUID, completion: @escaping (Result<SessionsSynchronization.SessionDownstreamData, Error>) -> Void) -> Cancellable {
-        let urlComponentPart = urlProvider.baseAppURL.appendingPathComponent("api/user/sessions/update_session.json")
+        let urlComponentPart = urlProvider.baseAppURL.appendingPathComponent("api/user/sessions/empty.json")
         var urlComponents = URLComponents(string: urlComponentPart.absoluteString)!
         urlComponents.queryItems = [
             URLQueryItem(name: "uuid", value: session.rawValue)
@@ -84,6 +78,7 @@ final class SessionDownloadService: SessionDownstream, MeasurementsDownloadable 
             URLQueryItem(name: "uuid", value: uuid.rawValue),
             URLQueryItem(name: "stream_measurements", value: "true")
         ]
+        
         let url = urlComponents.url!
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
@@ -103,9 +98,7 @@ final class SessionDownloadService: SessionDownstream, MeasurementsDownloadable 
                 do {
                     try responseValidator.validate(response: response.response, data: response.data)
                     let sessionData = try decoder.decode(SessionsSynchronization.SessionDownstreamData.self, from: response.data)
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
                     completion(.success(sessionData))
-                                         }
                 } catch {
                     completion(.failure(error))
                 }

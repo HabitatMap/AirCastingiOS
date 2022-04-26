@@ -4,16 +4,15 @@
 import Foundation
 import Network
 
-protocol NetworkStatusPresenter {
+protocol NetworkChecker {
     var connectionAvailable: Bool { get }
 }
 
-final class NetworkChecker: NetworkStatusPresenter, ObservableObject {
-    var connectionAvailable: Bool
+final class DefaultNetworkChecker: NetworkChecker {
+    var connectionAvailable: Bool = false
     private let monitor = NWPathMonitor()
 
-    init(connectionAvailable: Bool) {
-        self.connectionAvailable = connectionAvailable
+    init() {
         monitorNetwork()
     }
 
@@ -32,7 +31,7 @@ final class NetworkChecker: NetworkStatusPresenter, ObservableObject {
     }
 }
 
-final class DummyNetworkChecker: NetworkStatusPresenter {
+final class DummyNetworkChecker: NetworkChecker {
     var connectionAvailable: Bool
 
     init(connectionAvailable: Bool) {

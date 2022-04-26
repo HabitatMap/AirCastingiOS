@@ -2,18 +2,13 @@
 //
 
 import Foundation
+import Resolver
 
 final class EmailResetPasswordService: ResetPasswordService {
     
-    private let apiClient: APIClient
-    private let validator: HTTPResponseValidator
-    private let urlProvider: BaseURLProvider
-    
-    init(apiClient: APIClient, validator: HTTPResponseValidator, urlProvider: BaseURLProvider) {
-        self.apiClient = apiClient
-        self.validator = validator
-        self.urlProvider = urlProvider
-    }
+    @Injected private var apiClient: APIClient
+    @Injected private var validator: HTTPResponseValidator
+    @Injected private var urlProvider: URLProvider
     
     func resetPassword(login: String, completion: @escaping (Result<Void, ResetPasswordServiceError>) -> Void) {
         let params = ["user": ["login": login]]

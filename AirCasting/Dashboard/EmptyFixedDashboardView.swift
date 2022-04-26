@@ -2,11 +2,14 @@
 //
 import AirCastingStyling
 import SwiftUI
+import Resolver
 
 struct EmptyFixedDashboardView: View {
-    #warning("Please switch to protocol ASAP")
-    @EnvironmentObject var defaultSessionSynchronizerViewModel: DefaultSessionSynchronizationViewModel
+    @StateObject private var defaultSessionSynchronizerViewModel = SessionSynchronizationViewModel()
     @EnvironmentObject var selectedSection: SelectSection
+    @EnvironmentObject private var tabSelection: TabBarSelection
+    @EnvironmentObject private var exploreSessionsButton: ExploreSessionsButton
+    @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
     
     var shouldSessionFetch: Bool {
         (selectedSection.selectedSection == .mobileDormant || selectedSection.selectedSection == .fixed) && defaultSessionSynchronizerViewModel.syncInProgress
@@ -30,6 +33,9 @@ struct EmptyFixedDashboardView: View {
                 VStack(spacing: 20) {
                     emptyFixedDashboardText
                     EmptyDashboardButtonView(isFixed: true)
+                    if featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) {
+                        exploreExistingSessionsButton
+                    }
                 }
                 // Additional padding to put the text at similar height
                 // as in mobile empty dashboard
@@ -41,6 +47,15 @@ struct EmptyFixedDashboardView: View {
 }
 
 private extension EmptyFixedDashboardView {
+    private var exploreExistingSessionsButton: some View {
+        Button(action: {
+            exploreSessionsButton.exploreSessionsButtonTapped = true
+            tabSelection.selection = .createSession
+        }, label: {
+            Text(Strings.EmptyDashboardFixed.exploreSessionsButton)
+                .bold()
+        })
+    }
     
     private var emptyFixedDashboardText: some View {
         VStack(spacing: 14) {
@@ -49,7 +64,7 @@ private extension EmptyFixedDashboardView {
                 .foregroundColor(Color.darkBlue)
                 .minimumScaleFactor(0.1)
             
-            Text(Strings.EmptyDashboardFixed.description)
+            Text(featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) ? Strings.EmptyDashboardFixed.exploreSessionsDescription : Strings.EmptyDashboardFixed.description)
                 .font(Fonts.muliHeading2)
                 .foregroundColor(Color.aircastingGray)
                 .lineSpacing(9.0)

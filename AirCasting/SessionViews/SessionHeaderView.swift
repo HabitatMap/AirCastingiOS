@@ -6,6 +6,7 @@
 //
 import AirCastingStyling
 import SwiftUI
+import Resolver
 
 struct SessionHeaderView: View {
     let action: () -> Void
@@ -14,36 +15,30 @@ struct SessionHeaderView: View {
     var isMenuNeeded = true
     @Binding var isCollapsed: Bool
     @State var chevronIndicator = "chevron.down"
-    @EnvironmentObject var networkChecker: NetworkChecker
-    @EnvironmentObject var bluetoothManager: BluetoothManager
-    @EnvironmentObject var locationTracker: LocationTracker
-    let urlProvider: BaseURLProvider
+    @InjectedObject private var bluetoothManager: BluetoothManager
     @EnvironmentObject var selectedSection: SelectSection
     @ObservedObject var session: SessionEntity
     @State private var showingNoConnectionAlert = false
     @State private var alert: AlertInfo?
-    let sessionStopperFactory: SessionStoppableFactory
-    @StateObject private var featureFlagsViewModel = FeatureFlagsViewModel.shared
+    @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
     @State var showDeleteModal = false
     @State var showAddNoteModal = false
     @State var showShareModal = false
     @State var showEditView = false
     @State var detectEmailSent = false
-    let measurementStreamStorage: MeasurementStreamStorage
-    let sessionSynchronizer: SessionSynchronizer
-    @EnvironmentObject var authorization: UserAuthenticationSession
     
     var body: some View {
         if #available(iOS 15, *) {
             sessionHeader
                 .sheet(isPresented: $showDeleteModal) {
-                    DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session, measurementStreamStorage: measurementStreamStorage, streamRemover: DefaultSessionUpdateService(authorization: authorization, urlProvider: urlProvider), sessionSynchronizer: sessionSynchronizer), deleteModal: $showDeleteModal)
+                    DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session),
+                               deleteModal: $showDeleteModal)
                 }
                 .sheet(isPresented: $showShareModal) {
                     if session.locationless {
                         ShareLocationlessSessionView(viewModel: ShareLocationlessSessionViewModel(session: session, fileGenerationController: DefaultGenerateSessionFileController(fileGenerator: DefaultCSVFileGenerator(), fileZipper: SSZipFileZipper()), exitRoute: { showShareModal.toggle() }))
                     } else {
-                        ShareSessionView(viewModel: DefaultShareSessionViewModel(session: session, apiClient: ShareSessionApi(urlProvider: urlProvider), exitRoute: { result in
+                        ShareSessionView(viewModel: DefaultShareSessionViewModel(session: session, apiClient: ShareSessionApi(), exitRoute: { result in
                                                 showShareModal.toggle()
                             if result == .fileShared {
                                                     detectEmailSent = true
@@ -59,15 +54,7 @@ struct SessionHeaderView: View {
                     editViewSheet
                 }
                 .sheet(isPresented: $showAddNoteModal) {
-                    AddNoteView(viewModel: AddNoteViewModelDefault(exitRoute: { showAddNoteModal.toggle() },
-                                                                   notesHandler: NotesHandlerDefault(
-                                                                    measurementStreamStorage: measurementStreamStorage,
-                                                                    sessionUUID: session.uuid,
-                                                                    locationTracker: locationTracker,
-                                                                    sessionUpdateService: DefaultSessionUpdateService(
-                                                                        authorization: authorization,
-                                                                        urlProvider: urlProvider),
-                                                                    persistenceController: PersistenceController.shared)))
+                    AddNoteView(viewModel: AddNoteViewModel(sessionUUID: session.uuid, exitRoute: { showAddNoteModal.toggle() }))
                 }
         } else {
             sessionHeader
@@ -75,14 +62,15 @@ struct SessionHeaderView: View {
                     Group {
                         EmptyView()
                             .sheet(isPresented: $showDeleteModal) {
-                                DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session, measurementStreamStorage: measurementStreamStorage, streamRemover: DefaultSessionUpdateService(authorization: authorization, urlProvider: urlProvider), sessionSynchronizer: sessionSynchronizer), deleteModal: $showDeleteModal)
+                                DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session),
+                                           deleteModal: $showDeleteModal)
                             }
                         EmptyView()
                             .sheet(isPresented: $showShareModal) {
                                 if session.locationless {
                                     ShareLocationlessSessionView(viewModel: ShareLocationlessSessionViewModel(session: session, fileGenerationController: DefaultGenerateSessionFileController(fileGenerator: DefaultCSVFileGenerator(), fileZipper: SSZipFileZipper()), exitRoute: { showShareModal.toggle() }))
                                 } else {
-                                    ShareSessionView(viewModel: DefaultShareSessionViewModel(session: session, apiClient: ShareSessionApi(urlProvider: urlProvider), exitRoute: { result in
+                                    ShareSessionView(viewModel: DefaultShareSessionViewModel(session: session, apiClient: ShareSessionApi(), exitRoute: { result in
                                         showShareModal.toggle()
                                         if result == .fileShared {
                                             alert = InAppAlerts.shareFileRequestSent()
@@ -92,11 +80,7 @@ struct SessionHeaderView: View {
                             }
                         EmptyView()
                             .sheet(isPresented: $showDeleteModal) {
-                                DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session,
-                                                                                    measurementStreamStorage: measurementStreamStorage,
-                                                                                    streamRemover: DefaultSessionUpdateService(authorization: authorization,
-                                                                                                                               urlProvider: urlProvider),
-                                                                                    sessionSynchronizer: sessionSynchronizer),
+                                DeleteView(viewModel: DefaultDeleteSessionViewModel(session: session),
                                            deleteModal: $showDeleteModal)
                             }
                         EmptyView()
@@ -105,15 +89,7 @@ struct SessionHeaderView: View {
                             }
                         EmptyView()
                             .sheet(isPresented: $showAddNoteModal) {
-                                AddNoteView(viewModel: AddNoteViewModelDefault(exitRoute: { showAddNoteModal.toggle() },
-                                                                               notesHandler: NotesHandlerDefault(
-                                                                                measurementStreamStorage: measurementStreamStorage,
-                                                                                sessionUUID: session.uuid,
-                                                                                locationTracker: locationTracker,
-                                                                                sessionUpdateService: DefaultSessionUpdateService(
-                                                                                    authorization: authorization,
-                                                                                    urlProvider: urlProvider),
-                                                                                persistenceController: PersistenceController.shared)))
+                                AddNoteView(viewModel: AddNoteViewModel(sessionUUID: session.uuid, exitRoute: { showAddNoteModal.toggle() }))
                             }
                     }
                 )
@@ -122,11 +98,7 @@ struct SessionHeaderView: View {
     
     @ViewBuilder
     private var editViewSheet: some View {
-        let vm = EditSessionViewModel(measurementStreamStorage: measurementStreamStorage,
-                                      sessionSynchronizer: sessionSynchronizer,
-                                      sessionUpdateService: DefaultSessionUpdateService(authorization: authorization,
-                                                                                        urlProvider: urlProvider),
-                                      sessionUUID: session.uuid)
+        let vm = EditSessionViewModel(sessionUUID: session.uuid)
         EditView(viewModel: vm)
     }
 }
@@ -184,28 +156,8 @@ private extension SessionHeaderView {
     }
     
     var sensorType: some View {
-        var stream = [String]()
-        var text = ""
-        guard session.allStreams != nil else { return Text("") }
-        session.allStreams!.forEach { session in
-            if var name = session.sensorPackageName {
-                componentsSeparation(name: &name)
-                (name == "Builtin") ? (name = "Phone mic") : (name = name)
-                !stream.contains(name) ? stream.append(name) : nil
-            }
-        }
-        text = stream.joined(separator: ", ")
-        return Text("\(session.type!.description) : \(text)")
-    }
-    
-    func componentsSeparation(name: inout String) {
-        // separation is used to nicely handle the case where sensor could be
-        // AirBeam2-xxxx or AirBeam2:xxx
-        if name.contains(":") {
-            name = name.components(separatedBy: ":").first!
-        } else {
-            name = name.components(separatedBy: "-").first!
-        }
+        let allStreams = session.allStreams ?? []
+        return SessionTypeIndicator(sessionType: session.type, streamSensorNames: allStreams.compactMap(\.sensorPackageName))
     }
 
     var actionsMenu: some View {
@@ -233,7 +185,7 @@ private extension SessionHeaderView {
     var actionsMenuStopButton: some View {
         Button {
             alert = InAppAlerts.finishSessionAlert(sessionName: session.name, action: {
-                self.finishSessionAlertAction(sessionStopper: self.sessionStopperFactory.getSessionStopper(for: self.session))
+                self.finishSessionAlertAction()
             })
         } label: {
             Label(Strings.SessionHeaderView.stopRecordingButton, systemImage: "stop.circle")
@@ -298,7 +250,8 @@ private extension SessionHeaderView {
         return Text(string)
     }
     
-    private func finishSessionAlertAction(sessionStopper: SessionStoppable) {
+    private func finishSessionAlertAction() {
+        let sessionStopper = Resolver.resolve(SessionStoppable.self, args: self.session)
         do {
             try sessionStopper.stopSession()
         } catch {
@@ -306,19 +259,3 @@ private extension SessionHeaderView {
         }
     }
 }
-
-#if DEBUG
-struct SessionHeader_Previews: PreviewProvider {
-    static var previews: some View {
-        SessionHeaderView(action: {},
-                          isExpandButtonNeeded: true,
-                          isCollapsed: .constant(true),
-                          urlProvider: DummyURLProvider(),
-                          session: SessionEntity.mock,
-                          sessionStopperFactory: SessionStoppableFactoryDummy(),
-                          measurementStreamStorage: PreviewMeasurementStreamStorage(),
-                          sessionSynchronizer: DummySessionSynchronizer())
-            .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
-    }
-}
-#endif

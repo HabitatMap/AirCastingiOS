@@ -7,7 +7,6 @@
 
 import Foundation
 import CoreData
-import struct CoreLocation.CLLocationCoordinate2D
 import CoreLocation
 
 public struct SessionEntityLocalID {
@@ -37,6 +36,10 @@ public class SessionEntity: NSManagedObject, Identifiable {
     @NSManaged public var urlLocation: String?
     @NSManaged public var version: Int16
     @NSManaged public var changesCount: Int32
+    @NSManaged public var rowOrder: Int64
+    
+    // UserInterface state
+    @NSManaged public var userInterface: UIStateEntity?
     
     /// Of type MeasurementStreamEntity
     @NSManaged public var measurementStreams: NSOrderedSet?
@@ -126,7 +129,7 @@ public class SessionEntity: NSManagedObject, Identifiable {
 }
 
 extension NSFetchRequest where ResultType == SessionEntity {
-    public func typePredicate(_ type: SessionType) -> NSPredicate {
+    public func typePredicate(_ type: SessionType, status: SessionStatus? = nil) -> NSPredicate {
         NSPredicate(format: "type == \"\(type.rawValue)\"")
     }
 }

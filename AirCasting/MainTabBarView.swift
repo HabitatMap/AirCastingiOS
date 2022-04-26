@@ -8,28 +8,24 @@
 import CoreData
 import CoreBluetooth
 import SwiftUI
+import Resolver
 
 struct MainTabBarView: View {
-    let measurementUpdatingService: MeasurementUpdatingService
-    let urlProvider: BaseURLProvider
-    let measurementStreamStorage: MeasurementStreamStorage
+    @Injected private var measurementUpdatingService: MeasurementUpdatingService
     @State var homeImage: String = HomeIcon.selected.string
     @State var settingsImage: String = SettingsIcon.unselected.string
     @State var plusImage: String = PlusIcon.unselected.string
-    let sessionStoppableFactory: SessionStoppableFactory
-    @EnvironmentObject var userAuthenticationSession: UserAuthenticationSession
-    @EnvironmentObject var persistenceController: PersistenceController
-    @EnvironmentObject var microphoneManager: MicrophoneManager
-    @EnvironmentObject var userSettings: UserSettings
-    @EnvironmentObject var bluetoothManager: BluetoothManager
-    let sessionSynchronizer: SessionSynchronizer
+    @InjectedObject private var bluetoothManager: BluetoothManager
     @StateObject var tabSelection: TabBarSelection = TabBarSelection()
     @StateObject var selectedSection = SelectSection()
+    @StateObject var reorderButton = ReorderButton()
+    @StateObject var searchAndFollow = SearchAndFollowButton()
     @StateObject var emptyDashboardButtonTapped = EmptyDashboardButtonTapped()
     @StateObject var finishAndSyncButtonTapped = FinishAndSyncButtonTapped()
+    @StateObject var exploreSessionsButton = ExploreSessionsButton()
     @StateObject var sessionContext: CreateSessionContext
     @StateObject var coreDataHook: CoreDataHook
-    let locationHandler: LocationHandler
+    @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
     
     private var sessions: [SessionEntity] {
         coreDataHook.sessions
@@ -58,7 +54,13 @@ struct MainTabBarView: View {
             }
             
         }
+        .onAppCameToForeground {
+            measurementUpdatingService.updateAllSessionsMeasurements()
+        }
         .onAppear {
+            let navBarAppearance = UINavigationBar.appearance()
+            navBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(Color.darkBlue),
+                                                         .font: Fonts.navBarSystemFont]
             UITabBar.appearance().backgroundColor = .systemBackground
             let appearance = UITabBarAppearance()
             appearance.backgroundImage = UIImage()
@@ -74,7 +76,7 @@ struct MainTabBarView: View {
         })
         .onChange(of: bluetoothManager.mobileSessionReconnected, perform: { _ in
             if bluetoothManager.mobileSessionReconnected {
-                bluetoothManager.mobilePeripheralSessionManager.configureAB(userAuthenticationSession: userAuthenticationSession)
+                bluetoothManager.mobilePeripheralSessionManager.configureAB()
                 bluetoothManager.mobileSessionReconnected.toggle()
             }
         })
@@ -82,6 +84,9 @@ struct MainTabBarView: View {
         .environmentObject(tabSelection)
         .environmentObject(emptyDashboardButtonTapped)
         .environmentObject(finishAndSyncButtonTapped)
+        .environmentObject(exploreSessionsButton)
+        .environmentObject(reorderButton)
+        .environmentObject(searchAndFollow)
     }
 }
 
@@ -89,27 +94,29 @@ private extension MainTabBarView {
     // Tab Bar views
     private var dashboardTab: some View {
         NavigationView {
-            DashboardView(coreDataHook: coreDataHook,
-                          measurementStreamStorage: measurementStreamStorage,
-                          sessionStoppableFactory: sessionStoppableFactory,
-                          sessionSynchronizer: sessionSynchronizer,
-                          urlProvider: urlProvider)
+            DashboardView(coreDataHook: coreDataHook)
         }.navigationViewStyle(StackNavigationViewStyle())
             .tabItem {
                 Image(homeImage)
             }
             .tag(TabBarSelection.Tab.dashboard)
+            .overlay(
+                Group{
+                    HStack {
+                        if !searchAndFollow.isHidden && featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) && selectedSection.selectedSection == .following {
+                            searchAndFollowButton
+                        }
+                        if !reorderButton.isHidden && sessions.count > 1 && selectedSection.selectedSection == .following {
+                            reorderingButton
+                        }
+                    }
+                },
+                alignment: .topTrailing
+            )
     }
     
     private var createSessionTab: some View {
-        ChooseSessionTypeView(viewModel: ChooseSessionTypeViewModel(locationHandler: locationHandler,
-                                                                    bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: bluetoothManager),
-                                                                    userSettings: userSettings,
-                                                                    sessionContext: sessionContext,
-                                                                    urlProvider: urlProvider,
-                                                                    bluetoothManager: bluetoothManager,
-                                                                    bluetoothManagerState: bluetoothManager.centralManagerState),
-                              sessionSynchronizer: sessionSynchronizer)
+        ChooseSessionTypeView(sessionContext: sessionContext)
             .tabItem {
                 Image(plusImage)
             }
@@ -117,15 +124,57 @@ private extension MainTabBarView {
     }
     
     private var settingsTab: some View {
-        SettingsView(urlProvider: UserDefaultsBaseURLProvider(),
-                     logoutController: DefaultLogoutController(userAuthenticationSession: userAuthenticationSession,
-                                                               sessionStorage: SessionStorage(persistenceController: persistenceController),
-                                                               microphoneManager: microphoneManager,
-                                                               sessionSynchronizer: sessionSynchronizer), viewModel: SettingsViewModelDefault(locationHandler: locationHandler, bluetoothHandler: DefaultBluetoothHandler(bluetoothManager: bluetoothManager), sessionContext: CreateSessionContext()))
+        SettingsView(sessionContext: sessionContext)
             .tabItem {
                 Image(settingsImage)
             }
             .tag(TabBarSelection.Tab.settings)
+    }
+    
+    private var reorderingButton: some View {
+        Group {
+            if !reorderButton.reorderIsOn {
+                Button {
+                    reorderButton.reorderIsOn = true
+                } label: {
+                    Image("draggable-icon")
+                        .frame(width: 60, height: 60)
+                        .imageScale(.large)
+                }
+                .offset(CGSize(width: 0.0, height: 42.0))
+            } else {
+                ZStack {
+                    Rectangle()
+                        .frame(width: 85, height: 35)
+                        .cornerRadius(15)
+                        .foregroundColor(.accentColor)
+                        .opacity(0.1)
+                    Button {
+                        reorderButton.reorderIsOn = false
+                    } label: {
+                        Text(Strings.MainTabBarView.finished)
+                            .font(Fonts.muliHeading2)
+                            .bold()
+                    }
+                }
+                .padding()
+                .offset(CGSize(width: 0.0, height: 40.0))
+            }
+        }
+    }
+    
+    private var searchAndFollowButton: some View {
+        Group {
+            Button {
+                searchAndFollow.searchIsOn = true
+            } label: {
+                Image("SearchFollow")
+                    .foregroundColor(Color.accentColor)
+                    .frame(width: 60, height: 60)
+                    .imageScale(.large)
+            }
+            .offset(CGSize(width: 0.0, height: 40.0))
+        }
     }
 }
 
@@ -147,9 +196,23 @@ class EmptyDashboardButtonTapped: ObservableObject {
     @Published var mobileWasTapped = false
 }
 
+class ExploreSessionsButton: ObservableObject {
+    @Published var exploreSessionsButtonTapped = false
+}
+
 class FinishAndSyncButtonTapped: ObservableObject {
     @Published var finishAndSyncButtonWasTapped = false
 }
+
+class ReorderButton: ObservableObject {
+    @Published var reorderIsOn = false
+    @Published var isHidden = false
+}
+
+class SearchAndFollowButton: ObservableObject {
+     @Published var searchIsOn = false
+     @Published var isHidden = false
+ }
 
 extension MainTabBarView {
     enum HomeIcon {
@@ -201,22 +264,3 @@ extension UITabBarController {
         }
     }
 }
-
-#if DEBUG
-struct ContentView_Previews: PreviewProvider {
-    private static let persistenceController = PersistenceController(inMemory: true)
-    
-    static var previews: some View {
-        MainTabBarView(measurementUpdatingService: MeasurementUpdatingServiceMock(), urlProvider: DummyURLProvider(), measurementStreamStorage: PreviewMeasurementStreamStorage(), sessionStoppableFactory: SessionStoppableFactoryDummy(), sessionSynchronizer: DummySessionSynchronizer(), sessionContext: CreateSessionContext(), coreDataHook: CoreDataHook(context: PersistenceController(inMemory: true).viewContext), locationHandler: DummyDefaultLocationHandler())
-            .environmentObject(UserAuthenticationSession())
-            .environmentObject(BluetoothManager(mobilePeripheralSessionManager: MobilePeripheralSessionManager(measurementStreamStorage: PreviewMeasurementStreamStorage())))
-            .environmentObject(MicrophoneManager(measurementStreamStorage: PreviewMeasurementStreamStorage()))
-            .environment(\.managedObjectContext, persistenceController.viewContext)
-    }
-    
-    private class MeasurementUpdatingServiceMock: MeasurementUpdatingService {
-        func start() {}
-        func downloadMeasurements(for sessionUUID: SessionUUID, lastSynced: Date, completion: @escaping () -> Void) {}
-    }
-}
-#endif

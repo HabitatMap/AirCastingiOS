@@ -19,16 +19,17 @@ protocol ClearingSDCardViewModel: ObservableObject {
 }
 
 import SwiftUI
+import Resolver
 
+// [RESOLVER] Move this VM init to view afte all dependencies are resolved
 class ClearingSDCardViewModelDefault: ClearingSDCardViewModel, ObservableObject {
     var shouldDismiss: Published<Bool>.Publisher { $shouldDismissValue }
     var isClearingCompleted: Published<Bool>.Publisher { $isClearingCompletedValue }
 
     var isSDClearProcess: Bool
-    private let userAuthenticationSession: UserAuthenticationSession
     private let peripheral: CBPeripheral
-    private let airBeamConnectionController: AirBeamConnectionController
-    private let sdSyncController: SDSyncController
+    @Injected private var airBeamConnectionController: AirBeamConnectionController
+    @Injected private var sdSyncController: SDSyncController
     private var error = ClearingSDCardError.undefined
     @Published var alert: AlertInfo?
     @Published private var isClearingCompletedValue: Bool = false
@@ -36,12 +37,9 @@ class ClearingSDCardViewModelDefault: ClearingSDCardViewModel, ObservableObject 
     @Published var presentNextScreen: Bool = false
     
     
-    init(isSDClearProcess: Bool, userAuthenticationSession: UserAuthenticationSession, peripheral: CBPeripheral, airBeamConnectionController: AirBeamConnectionController, sdSyncController: SDSyncController) {
+    init(isSDClearProcess: Bool, peripheral: CBPeripheral) {
         self.isSDClearProcess = isSDClearProcess
-        self.userAuthenticationSession = userAuthenticationSession
         self.peripheral = peripheral
-        self.airBeamConnectionController = airBeamConnectionController
-        self.sdSyncController = sdSyncController
     }
     
     func clearSDCardButtonTapped() {
@@ -71,11 +69,11 @@ class ClearingSDCardViewModelDefault: ClearingSDCardViewModel, ObservableObject 
     private func getAlert() {
         switch error {
         case .undefined:
-            alert = InAppAlerts.failedSDClearingAlert(dismiss: dismissView())
+            alert = InAppAlerts.failedSDClearingAlert { self.dismissView() }
         case .noConnection:
-            alert = InAppAlerts.connectionTimeoutAlert(dismiss: dismissView())
+            alert = InAppAlerts.connectionTimeoutAlert { self.dismissView() }
         case .noClearing:
-            alert = InAppAlerts.failedSDClearingAlert(dismiss: dismissView())
+            alert = InAppAlerts.failedSDClearingAlert { self.dismissView() }
         }
     }
     

@@ -2,6 +2,7 @@
 //
 
 import Foundation
+import Resolver
 
 enum SDCardValidationError: Error {
     case insufficientIntegrity
@@ -15,11 +16,7 @@ struct SDSyncFileValidationService: SDSyncFileValidator {
     private let expectedFieldsCount = 13
     private let acceptanceThreshold = 0.8
     
-    private let fileLineReader: FileLineReader
-    
-    init(fileLineReader: FileLineReader) {
-        self.fileLineReader = fileLineReader
-    }
+    @Injected private var fileLineReader: FileLineReader
     
     func validate(files: [SDCardCSVFile], completion: (Result<Void, SDCardValidationError>) -> Void) {
         var result = true

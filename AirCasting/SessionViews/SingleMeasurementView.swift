@@ -3,13 +3,14 @@
 
 import SwiftUI
 import AirCastingStyling
+import Resolver
 
 struct SingleMeasurementView: View {
     @ObservedObject var stream: MeasurementStreamEntity
     var threshold: SensorThreshold?
     @Binding var selectedStream: MeasurementStreamEntity?
     @Binding var isCollapsed: Bool
-    @EnvironmentObject var userSettings: UserSettings
+    @InjectedObject private var userSettings: UserSettings
     let measurementPresentationStyle: MeasurementPresentationStyle
     let isDormant: Bool
     var value: Double {

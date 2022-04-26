@@ -2,16 +2,15 @@
 //
 
 import Foundation
+import Resolver
 
 class StandardSesssionStopper: SessionStoppable {
     private let uuid: SessionUUID
-    private let measurementStreamStorage: MeasurementStreamStorage
-    private let bluetoothManager: BluetoothManager
+    @Injected private var measurementStreamStorage: MeasurementStreamStorage
+    @Injected private var bluetoothManager: BluetoothManager
     
-    init(uuid: SessionUUID, measurementStreamStorage: MeasurementStreamStorage, bluetoothManager: BluetoothManager) {
+    init(uuid: SessionUUID) {
         self.uuid = uuid
-        self.measurementStreamStorage = measurementStreamStorage
-        self.bluetoothManager = bluetoothManager
     }
     
     func stopSession() {

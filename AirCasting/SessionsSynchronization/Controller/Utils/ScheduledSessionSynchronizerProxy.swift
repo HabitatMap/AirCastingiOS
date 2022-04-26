@@ -36,8 +36,12 @@ final class ScheduledSessionSynchronizerProxy<S: Scheduler>: SessionSynchronizer
     func triggerSynchronization(options: SessionSynchronizationOptions, completion: (() -> Void)?) {
         scheduler.schedule { [weak self] in
             guard let self = self else { return }
-            self.backgroundTaskIdentifier = UIApplication.shared.beginBackgroundTask(withName: "Session synchronization") {
-                self.controller.stopSynchronization()
+            self.backgroundTaskIdentifier = UIApplication.shared.beginBackgroundTask(withName: "Session synchronization") { [weak self] in
+                Log.info("Background task expired, stopping synchronization")
+                self?.controller.stopSynchronization()
+                if let identifier  = self?.backgroundTaskIdentifier {
+                    UIApplication.shared.endBackgroundTask(identifier)
+                }
             }
             self.controller.triggerSynchronization(options: options) { [ weak self] in
                 if let identifier  = self?.backgroundTaskIdentifier {
@@ -54,16 +58,6 @@ final class ScheduledSessionSynchronizerProxy<S: Scheduler>: SessionSynchronizer
                 UIApplication.shared.endBackgroundTask(identifier)
             }
             self?.controller.stopSynchronization()
-        }
-    }
-    
-    // MARK: - SingleSessionSynchronizer
-    
-    func downloadSingleSession(sessionUUID: SessionUUID, completion: @escaping () -> Void) {
-        scheduler.schedule { [weak self] in
-            guard let self = self else { return }
-            self.controller.downloadSingleSession(sessionUUID: sessionUUID,
-                                               completion: completion)
         }
     }
 }

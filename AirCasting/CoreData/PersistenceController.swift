@@ -9,12 +9,32 @@ import CoreData
 import SwiftUI
 
 class PersistenceController: ObservableObject {
-    static let shared = PersistenceController()
-
+    static let uiWillSuspendNotificationName = NSNotification.Name("uiWillSuspendNotification")
+    static let uiWillResumeNotificationName = NSNotification.Name("uiWillResumeNotificationName")
+    static let uiDidSuspendNotificationName = NSNotification.Name("uiDidSuspendNotification")
+    static let uiDidResumeNotificationName = NSNotification.Name("uiDidResumeNotificationName")
+    
     var uiSuspended: Bool = false {
+        willSet {
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: newValue ? Self.uiWillSuspendNotificationName : Self.uiWillResumeNotificationName, object: self)
+            }
+        }
         didSet {
             Log.info("UI updates \(uiSuspended ? "suspended" : "resumed")")
-            if !uiSuspended { propagateChangesToUI() }
+            
+            if !uiSuspended {
+                propagateChangesToUI() {
+                    DispatchQueue.main.async {
+                        NotificationCenter.default.post(name: Self.uiDidResumeNotificationName, object: self)
+                    }
+                }
+            } else {
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name: Self.uiDidSuspendNotificationName, object: self)
+                }
+            }
+            
         }
     }
     
@@ -52,7 +72,7 @@ class PersistenceController: ObservableObject {
             }
         })
         createInitialMicThreshold(in: viewContext)
-        finishMobileSessions()
+        handleActiveMobileSessions()
         NotificationCenter.default.addObserver(self, selector: #selector(mainContextChanged), name: .NSManagedObjectContextObjectsDidChange, object: self.sourceOfTruthContext)
         NotificationCenter.default.addObserver(self, selector: #selector(appWillClose), name: UIApplication.willTerminateNotification, object: nil)
     }
@@ -89,13 +109,14 @@ class PersistenceController: ObservableObject {
         saveMainContext()
     }
     
-    private func propagateChangesToUI() {
-        saveMainContext()
+    private func propagateChangesToUI(completion: (()->Void)? = nil) {
+        saveMainContext(completion: completion)
     }
     
-    private func saveMainContext() {
+    private func saveMainContext(completion: (()->Void)? = nil) {
         sourceOfTruthContext.perform {
             try! self.sourceOfTruthContext.save()
+            completion?()
         }
     }
 
@@ -121,7 +142,7 @@ class PersistenceController: ObservableObject {
         let thresholdVeryHigh: Int32 = 100
     }
 
-    private func finishMobileSessions() {
+    private func handleActiveMobileSessions() {
         container.performBackgroundTask { context in
             let request: NSFetchRequest<SessionEntity> = SessionEntity.fetchRequest()
             request.predicate = NSPredicate(format: "type == %@ && status IN %@ || deviceType == %@ && status IN %@", SessionType.mobile.rawValue, [SessionStatus.RECORDING, .NEW].map(\.rawValue), DeviceType.MIC.rawValue, [SessionStatus.DISCONNECTED.rawValue])
@@ -131,10 +152,18 @@ class PersistenceController: ObservableObject {
             }
             Log.info("Finishing sessions \( sessions.map({ "\(String(describing: $0.uuid)): \(String(describing: $0.status)) \(String(describing: $0.type))"}) )")
             sessions.forEach {
-                $0.status = .FINISHED
-                $0.endTime = $0.lastMeasurementTime ?? $0.startTime
+                if $0.deviceType == .AIRBEAM3 {
+                    $0.status = .DISCONNECTED
+                } else {
+                    $0.status = .FINISHED
+                    $0.endTime = $0.lastMeasurementTime ?? $0.startTime
+                }
             }
-            try! context.save()
+            do {
+                try context.save()
+            } catch {
+                Log.error("Failed to finish or disconnect active mobile sessions: \(error)")
+            }
         }
     }
 }

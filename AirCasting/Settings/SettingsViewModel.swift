@@ -2,25 +2,29 @@
 //
 
 import Foundation
-#warning("Move whole logic of settingsView to this ViewModel")
-protocol SettingsViewModel {
-    func nextStep() -> ProceedToView
-    var locationHandler: LocationHandler { get }
-    var bluetoothHandler: BluetoothHandler { get }
-    var sessionContext: CreateSessionContext { get }
-}
+import Resolver
 
-class SettingsViewModelDefault: SettingsViewModel {
+class SettingsViewModel: ObservableObject {
     
-    let locationHandler: LocationHandler
-    let bluetoothHandler: BluetoothHandler
+    @Published var showBackendSettings = false
+    @Published var startSDClear = false
+    @Published var BTScreenGo = false
+    @Published var locationScreenGo = false
+    
+    var SDClearingRouteProcess = true
+    
+    @Injected private var urlProvider: URLProvider
+    @Injected private var locationHandler: LocationHandler
+    @Injected private var bluetoothHandler: BluetoothHandler
     let sessionContext: CreateSessionContext
 
 
-    init(locationHandler: LocationHandler, bluetoothHandler: BluetoothHandler, sessionContext: CreateSessionContext) {
-        self.locationHandler = locationHandler
-        self.bluetoothHandler = bluetoothHandler
+    init(sessionContext: CreateSessionContext) {
         self.sessionContext = sessionContext
+    }
+    
+    func navigateToBackendButtonTapped() {
+        showBackendSettings.toggle()
     }
 
     func nextStep() -> ProceedToView {
@@ -28,19 +32,12 @@ class SettingsViewModelDefault: SettingsViewModel {
         guard !bluetoothHandler.isBluetoothDenied() else { return .bluetooth }
         return .airBeam
     }
-}
-
-#if DEBUG
-class DummySettingsViewModelDefault: SettingsViewModel {
-    var sessionContext: CreateSessionContext = CreateSessionContext()
     
-    var locationHandler: LocationHandler = DummyDefaultLocationHandler()
-    
-    var bluetoothHandler: BluetoothHandler = DummyDefaultBluetoothHandler()
-    
-    func nextStep() -> ProceedToView {
-        return .airBeam
+    func clearSDButtonTapped() {
+        switch nextStep() {
+        case .bluetooth: BTScreenGo.toggle()
+        case .location: locationScreenGo.toggle()
+        case .airBeam, .mobile: startSDClear.toggle()
+        }
     }
-    
 }
-#endif

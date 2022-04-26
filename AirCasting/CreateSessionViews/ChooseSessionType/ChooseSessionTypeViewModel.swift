@@ -3,6 +3,7 @@
 
 import Foundation
 import CoreBluetooth
+import Resolver
 
 enum ProceedToView {
     case airBeam
@@ -11,61 +12,74 @@ enum ProceedToView {
     case mobile
 }
 
-class ChooseSessionTypeViewModel {
-    
-    let locationHandler: LocationHandler
-    private let bluetoothHandler: BluetoothHandler
-    private let userSettings: UserSettings
+class ChooseSessionTypeViewModel: ObservableObject {
+    @Published var isSearchAndFollowLinkActive = false
+    @Published var isTurnLocationOnLinkActive = false
+    @Published var isMobileLinkActive = false
+    @Published var isTurnBluetoothOnLinkActive = false
+    @Published var isPowerABLinkActive = false
+    @Published var startSync = false
+    @Published var isInfoPresented: Bool = false
+    @Published var alert: AlertInfo?
+    @Injected private var networkChecker: NetworkChecker
+    @Injected private var locationHandler: LocationHandler
+    @Injected private var bluetoothHandler: BluetoothHandler
+    @Injected private var userSettings: UserSettings
+    @Injected private var urlProvider: URLProvider
     private let sessionContext: CreateSessionContext
-    private let urlProvider: BaseURLProvider
-    private var bluetoothManager: BluetoothManager
-    private var bluetoothManagerState: CBManagerState
-    
-    var passURLProvider: BaseURLProvider {
-        return urlProvider
-    }
-    
-    var passLocationHandler: LocationHandler {
-        return locationHandler
-    }
-    
-    var passBluetoothHandler: BluetoothHandler {
-        return bluetoothHandler
-    }
     
     var passSessionContext: CreateSessionContext {
         return sessionContext
     }
     
-    var passUserSettings: UserSettings {
-        return userSettings
-    }
-    
-    var passBluetoothManager: BluetoothManager {
-        return bluetoothManager
-    }
-
-    init(locationHandler: LocationHandler, bluetoothHandler: BluetoothHandler, userSettings: UserSettings, sessionContext: CreateSessionContext, urlProvider: BaseURLProvider, bluetoothManager: BluetoothManager, bluetoothManagerState: CBManagerState) {
-        self.locationHandler = locationHandler
-        self.bluetoothHandler = bluetoothHandler
-        self.userSettings = userSettings
+    init(sessionContext: CreateSessionContext) {
         self.sessionContext = sessionContext
-        self.urlProvider = urlProvider
-        self.bluetoothManager = bluetoothManager
-        self.bluetoothManagerState = bluetoothManagerState
-    }
-
-    func fixedSessionNextStep() -> ProceedToView {
-        guard !locationHandler.isLocationDenied() else { return .location }
-        guard !bluetoothHandler.isBluetoothDenied() else { return .bluetooth }
-        return .airBeam
     }
     
-    func mobileSessionNextStep() -> ProceedToView {
-        !userSettings.disableMapping && locationHandler.isLocationDenied() ? .location : .mobile
+    func setSearchAndFollow(using new: Bool) { isSearchAndFollowLinkActive = new }
+    func setInfoPresented(using new: Bool) { isInfoPresented = new }
+    func setStartSync(using new: Bool) { startSync = new }
+    func setPowerABLink(using new: Bool) { isPowerABLinkActive = new }
+    func setBluetoothLink(using new: Bool) { isTurnBluetoothOnLinkActive = new }
+    func setMobileLink(using new: Bool) { isMobileLinkActive = new }
+    func setLocationLink(using new: Bool) { isTurnLocationOnLinkActive = new }
+    
+    func handleMobileSessionState() {
+        createNewSession(isSessionFixed: false)
+        switch mobileSessionNextStep() {
+        case .location: isTurnLocationOnLinkActive = true
+        case .mobile: isMobileLinkActive = true
+        default: return
+        }
     }
     
-    func createNewSession(isSessionFixed: Bool) {
+    func fixedSessionButtonTapped() {
+        createNewSession(isSessionFixed: true)
+        switch fixedSessionNextStep() {
+        case .airBeam: isPowerABLinkActive = true
+        case .bluetooth: isTurnBluetoothOnLinkActive = true
+        default: return
+        }
+    }
+    
+    func mobileSessionButtonTapped() {
+        handleMobileSessionState()
+    }
+    
+    func syncButtonTapped() {
+        networkChecker.connectionAvailable ? startSync.toggle() : (alert = InAppAlerts.noNetworkAlert())
+    }
+    
+    func infoButtonTapped() {
+        isInfoPresented = true
+    }
+    
+    func searchAndFollowTapped() {
+       isSearchAndFollowLinkActive = true
+    }
+    
+    // MARK: - Private methods
+    private func createNewSession(isSessionFixed: Bool) {
         sessionContext.sessionUUID = SessionUUID()
         if isSessionFixed {
             sessionContext.contribute = true
@@ -75,5 +89,14 @@ class ChooseSessionTypeViewModel {
             sessionContext.locationless = userSettings.disableMapping
             sessionContext.sessionType = SessionType.mobile
         }
+    }
+    
+    private func fixedSessionNextStep() -> ProceedToView {
+        guard !bluetoothHandler.isBluetoothDenied() else { return .bluetooth }
+        return .airBeam
+    }
+    
+    private func mobileSessionNextStep() -> ProceedToView {
+        !userSettings.disableMapping && locationHandler.isLocationDenied() ? .location : .mobile
     }
 }
