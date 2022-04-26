@@ -5,7 +5,7 @@ import Foundation
 import Resolver
 
 protocol DeleteAccountController {
-    func deleteAccount(completion: @escaping (Result<Void, Error>) -> Void) throws
+    func deleteAccount(completion: @escaping (Result<Void, Error>) -> Void)
 }
 
 final class DefaultDeleteAccountController: DeleteAccountController {
@@ -16,7 +16,7 @@ final class DefaultDeleteAccountController: DeleteAccountController {
 
     private let responseHandler = AuthorizationHTTPResponseHandler()
     
-    func deleteAccount(completion: @escaping (Result<Void, Error>) -> Void) throws {
+    func deleteAccount(completion: @escaping (Result<Void, Error>) -> Void) {
         let url = urlProvider.baseAppURL.appendingPathComponent("api/user.json")
         do {
             var request = URLRequest(url: url)
