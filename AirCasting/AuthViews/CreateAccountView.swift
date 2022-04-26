@@ -114,16 +114,7 @@ private extension CreateAccountView {
             .autocapitalization(.none)
     }
     var passwordTextfield: some View {
-        SecureField(Strings.CreateAccountView.password, text: $password)
-            .padding()
-            .autocapitalization(.none)
-            .disableAutocorrection(true)
-            .frame(height: 50)
-            .overlay(
-                RoundedRectangle(cornerRadius: 8)
-                    .stroke(Color.aircastingGray.opacity(0.1), lineWidth: 1)
-            )
-            .background(RoundedRectangle(cornerRadius: 8).fill(Color.aircastingGray.opacity(0.05)))
+        createSecuredTextfield(placeholder: Strings.CreateAccountView.password, binding: $password)
     }
     
     var createAccountButton: some View {

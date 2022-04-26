@@ -66,7 +66,7 @@ class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDel
             do {
                 try storage.deleteNote(note, for: sessionUUID)
                 fetchSession(storage: storage) { session in
-                    self.sessionUpdateService.updateSession(session: session) { result in
+                    self.sessionUpdateService.updateSession(session: session) { [self] result in
                         switch result {
                         case .success(let updateData):
                             try? storage.updateVersion(for: sessionUUID, to: updateData.version)
@@ -89,7 +89,7 @@ class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDel
             do {
                 try storage.updateNote(note, newText: newText, for: sessionUUID)
                 fetchSession(storage: storage) { session in
-                    self.sessionUpdateService.updateSession(session: session) { result in
+                    self.sessionUpdateService.updateSession(session: session) { [self] result in
                         switch result {
                         case .success(let updateData):
                             try? storage.updateVersion(for: sessionUUID, to: updateData.version)

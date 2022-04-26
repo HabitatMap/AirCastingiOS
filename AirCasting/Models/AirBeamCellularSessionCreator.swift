@@ -63,7 +63,7 @@ final class AirBeamCellularSessionCreator: SessionCreator {
         
         createSessionService.createEmptyFixedWifiSession(input: .init(session: params,
                                                                       compression: true),
-                                                         completion: { [measurementStreamStorage, userAuthenticationSession] result in
+                                                         completion: { [measurementStreamStorage] result in
                                                             #warning("TODO: https://github.com/HabitatMap/AirCastingiOS/pull/221/files#r707437312")
                                                             DispatchQueue.main.async {
                                                                 switch result {

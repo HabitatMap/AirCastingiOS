@@ -113,15 +113,7 @@ private extension SignInView {
     }
     
     var passwordTextfield: some View {
-        SecureField(Strings.SignInView.passwordField, text: $password)
-            .padding()
-            .frame(height: 50)
-            .disableAutocorrection(true)
-            .overlay(
-                RoundedRectangle(cornerRadius: 8)
-                    .stroke(Color.aircastingGray.opacity(0.1), lineWidth: 1)
-            )
-            .background(RoundedRectangle(cornerRadius: 8).fill(Color.aircastingGray.opacity(0.05)))
+        createSecuredTextfield(placeholder: Strings.SignInView.passwordField, binding: $password)
     }
     
     var signinButton: some View {
