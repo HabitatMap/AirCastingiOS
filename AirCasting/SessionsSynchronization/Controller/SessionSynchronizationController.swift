@@ -21,7 +21,7 @@ final class SessionSynchronizationController: SessionSynchronizer {
     private let lock = NSRecursiveLock()
     
     private var cancellables: [AnyCancellable] = []
-
+    
     func triggerSynchronization(options: SessionSynchronizationOptions, completion: (() -> Void)?) {
         lock.lock(); defer { lock.unlock() }
         if syncInProgress.value { return }
