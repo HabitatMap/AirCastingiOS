@@ -88,13 +88,14 @@ private extension MyAccountViewSignOut {
                                 DispatchQueue.main.async {
                                     userState.isShowingLoading = false
                                 }
-                            case .failure(_):
+                            case .failure(let error):
                                 alert = InAppAlerts.failedDeletingAccount()
                                 userState.currentState = .other
+                                assertionFailure("Failed to delete account: \(error)")
                             }
                         }
                     } catch {
-                        assertionFailure("Failed to delete account \(error)")
+                        assertionFailure("Failed to delete account: \(error)")
                     }
                 }
             }

@@ -96,6 +96,9 @@
 		AC1471A325F23AE40062A53F /* CreateSessionAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC1471A225F23AE40062A53F /* CreateSessionAPI.swift */; };
 		AC158E0B26A199F9006C61D3 /* Array+SensorThreshold.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC158E0A26A199F9006C61D3 /* Array+SensorThreshold.swift */; };
 		AC194B0D2684BAB40048E2C8 /* SessionLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC194B0C2684BAB40048E2C8 /* SessionLoadingView.swift */; };
+		AC25C6D62817DA250091C714 /* LogoutController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC25C6D52817DA250091C714 /* LogoutController.swift */; };
+		AC25C6D82817DA720091C714 /* RemoveDataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC25C6D72817DA720091C714 /* RemoveDataController.swift */; };
+		AC25C6DA2817DAAE0091C714 /* DeleteAccountController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC25C6D92817DAAE0091C714 /* DeleteAccountController.swift */; };
 		AC3203CB25CA991C00A68520 /* TurnOnBluetoothView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC3203CA25CA991C00A68520 /* TurnOnBluetoothView.swift */; };
 		AC32040425CC067D00A68520 /* CheckBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC32040325CC067D00A68520 /* CheckBox.swift */; };
 		AC32041C25CC46EF00A68520 /* PowerABView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC32041B25CC46EF00A68520 /* PowerABView.swift */; };
@@ -441,8 +444,8 @@
 		DDF62601269C779800F23489 /* UIApplication+AppInfo.swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF62600269C779800F23489 /* UIApplication+AppInfo.swift.swift */; };
 		DDF7599A268332E900D906BA /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF75999268332E900D906BA /* Strings.swift */; };
 		EE969E7E1981C41852FB7745 /* Pods_AirCastingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A54057326D27D23E9906704 /* Pods_AirCastingTests.framework */; };
-		FAF3B4E528058B6700F0F4B0 /* ProtectedScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF3B4E428058B6700F0F4B0 /* ProtectedScreen.swift */; };
 		FAB1D4A427FAD83E004F531D /* BottomCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB1D4A327FAD83E004F531D /* BottomCardViewModel.swift */; };
+		FAF3B4E528058B6700F0F4B0 /* ProtectedScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF3B4E428058B6700F0F4B0 /* ProtectedScreen.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -554,6 +557,9 @@
 		AC194B0C2684BAB40048E2C8 /* SessionLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionLoadingView.swift; sourceTree = "<group>"; };
 		AC1DAD4425C9858C009AC4D1 /* SelectPeripheralView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectPeripheralView.swift; sourceTree = "<group>"; };
 		AC1DAD4825C987B3009AC4D1 /* BluetoothManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothManager.swift; sourceTree = "<group>"; };
+		AC25C6D52817DA250091C714 /* LogoutController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogoutController.swift; sourceTree = "<group>"; };
+		AC25C6D72817DA720091C714 /* RemoveDataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoveDataController.swift; sourceTree = "<group>"; };
+		AC25C6D92817DAAE0091C714 /* DeleteAccountController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteAccountController.swift; sourceTree = "<group>"; };
 		AC3203CA25CA991C00A68520 /* TurnOnBluetoothView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurnOnBluetoothView.swift; sourceTree = "<group>"; };
 		AC32040325CC067D00A68520 /* CheckBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckBox.swift; sourceTree = "<group>"; };
 		AC32041B25CC46EF00A68520 /* PowerABView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PowerABView.swift; sourceTree = "<group>"; };
@@ -900,8 +906,8 @@
 		DDF551D427985AAB009D1347 /* AirCasting v2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AirCasting v2.xcdatamodel"; sourceTree = "<group>"; };
 		DDF62600269C779800F23489 /* UIApplication+AppInfo.swift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+AppInfo.swift.swift"; sourceTree = "<group>"; };
 		DDF75999268332E900D906BA /* Strings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Strings.swift; sourceTree = "<group>"; };
-		FAF3B4E428058B6700F0F4B0 /* ProtectedScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProtectedScreen.swift; sourceTree = "<group>"; };
 		FAB1D4A327FAD83E004F531D /* BottomCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomCardViewModel.swift; sourceTree = "<group>"; };
+		FAF3B4E428058B6700F0F4B0 /* ProtectedScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProtectedScreen.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1389,6 +1395,9 @@
 			isa = PBXGroup;
 			children = (
 				4F5D3F72262C91C6003AD82E /* UserAuthenticationSession.swift */,
+				AC25C6D52817DA250091C714 /* LogoutController.swift */,
+				AC25C6D72817DA720091C714 /* RemoveDataController.swift */,
+				AC25C6D92817DAAE0091C714 /* DeleteAccountController.swift */,
 				4F5D3F6E262C862E003AD82E /* KeychainStorage.swift */,
 				AC8CFF3525E502DD00FB2918 /* CreateAccountView.swift */,
 				AC8CFF5B25E6866100FB2918 /* SignInView.swift */,
@@ -2673,6 +2682,7 @@
 				DD49FB6F27904119004A1CA8 /* DatabaseNote.swift in Sources */,
 				B392DC332755F944002F0145 /* AppConfigurationView.swift in Sources */,
 				DD2E8BEB2685E13600439F8B /* BackendURLValidator.swift in Sources */,
+				AC25C6D82817DA720091C714 /* RemoveDataController.swift in Sources */,
 				DDCE5D3626A1F79F0033C211 /* UserSettings.swift in Sources */,
 				DDD24D9726A8569400D4A327 /* ForgotPasswordController.swift in Sources */,
 				ACB7084C271EC50F00BA3816 /* Integer+ArraySlice.swift in Sources */,
@@ -2716,6 +2726,7 @@
 				DD5687C326CFC8080028C2CA /* Constants.swift in Sources */,
 				AC489B5C2603614E00CEEC48 /* MoreInfoPopupView.swift in Sources */,
 				336A909927A4946400851100 /* ReorderingDashboardViewModel.swift in Sources */,
+				AC25C6D62817DA250091C714 /* LogoutController.swift in Sources */,
 				33A7FF2127C5160A00A138D6 /* StaticSessionHeader.swift in Sources */,
 				DDD24D9526A8569400D4A327 /* EmailForgotPasswordController.swift in Sources */,
 				DD2DDBAE27B5450100807011 /* UIStorage.swift in Sources */,
@@ -2899,6 +2910,7 @@
 				DD8A36A426C3CE7900C26725 /* ChooseCustomLocationView.swift in Sources */,
 				AC524A9A2615E3600061AD45 /* NSManagedObjectContext+Utils.swift in Sources */,
 				B38E6CCA26C5F19F00C21C45 /* SessionStoppable.swift in Sources */,
+				AC25C6DA2817DAAE0091C714 /* DeleteAccountController.swift in Sources */,
 				DDC22C8027B6C508000E81D1 /* ViewControl.swift in Sources */,
 				B3EBB10C26A06D2D002BD81F /* DefaultForgotPasswordViewModel.swift in Sources */,
 				B3EAF01827AFC43300290222 /* ShareLogsViewModel.swift in Sources */,
