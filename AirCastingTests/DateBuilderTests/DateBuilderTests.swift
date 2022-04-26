@@ -13,13 +13,13 @@ final class DateBuilderTests: XCTestCase {
     }
     
     func test_beginingOfDay() {
-        let beginingInSeconds =  DateBuilder.getFakeUTCDate().beginingOfDayInSeconds
+        let beginingInSeconds = DateBuilder.getFakeUTCDate().beginingOfDayInSeconds
         let currentTime = formatter.string(from:  Date(timeIntervalSince1970: beginingInSeconds))
         XCTAssertEqual(currentTime, "00:00")
     }
     
     func test_endOfTheDay() {
-        let endInSeconds =         DateBuilder.getFakeUTCDate().endOfDayInSeconds
+        let endInSeconds = DateBuilder.getFakeUTCDate().endOfDayInSeconds
         let currentTime = formatter.string(from:  Date(timeIntervalSince1970: endInSeconds))
         XCTAssertEqual(currentTime, "23:59")
     }
