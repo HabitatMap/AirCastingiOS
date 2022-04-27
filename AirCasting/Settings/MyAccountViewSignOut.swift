@@ -19,14 +19,11 @@ struct MyAccountViewSignOut: View {
             VStack(alignment: .leading) {
                 logInLabel
                 signOutButton
-                Spacer()
-                HStack() {
-                    Spacer()
-                    if featureFlagsViewModel.enabledFeatures.contains(.deleteAccount) {
-                        deleteProfileButton
-                    }
-                    Spacer()
+                if featureFlagsViewModel.enabledFeatures.contains(.deleteAccount) {
+                    deleteProfileButton
+                        .frame(maxWidth: .infinity, alignment: .center)
                 }
+                Spacer()
             }
         }
         .navigationTitle(Strings.Commons.myAccount)
@@ -79,19 +76,14 @@ private extension MyAccountViewSignOut {
                         return
                     }
                     userState.currentState = .deletingAccount
-                    do {
-                        try deleteController.deleteAccount { result in
-                            userState.currentState = .idle
-                            switch result {
-                            case .success(_): break
-                            case .failure(_):
-                                alert = InAppAlerts.failedDeletingAccount()
-                                userState.currentState = .idle
-                            }
-                        }
-                    } catch {
+                    deleteController.deleteAccount { result in
                         userState.currentState = .idle
-                        assertionFailure("Failed to delete account \(error)")
+                        switch result {
+                        case .success(_): break
+                        case .failure(let error):
+                            alert = InAppAlerts.failedDeletingAccount()
+                            assertionFailure("Failed to delete account: \(error)")
+                        }
                     }
                 }
             }
