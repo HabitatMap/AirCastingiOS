@@ -15,7 +15,7 @@ protocol EditViewModel: ObservableObject {
     var shouldDismiss: Bool { get }
     
     func saveChanges()
-    func downloadSessionAndReloadView()
+    func viewAppeared()
 }
 
 class EditSessionViewModel: EditViewModel {
@@ -66,11 +66,12 @@ class EditSessionViewModel: EditViewModel {
                 }
             } catch {
                 Log.info("Error while saving edited session name and tags.")
+                self.showAlert(InAppAlerts.failedSavingData { self.dismissView() })
             }
         }
     }
     
-    func downloadSessionAndReloadView() {
+    func viewAppeared() {
         sessionDownloader.downloadSessionNameAndTags(with: sessionUUID) { [weak self] result in
             guard let self = self else { return }
             switch result {
