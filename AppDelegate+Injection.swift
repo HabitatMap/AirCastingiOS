@@ -206,6 +206,10 @@ extension Resolver: ResolverRegistering {
             let context = Resolver.resolve(PersistenceController.self).editContext
             return DefaultThresholdsStore(context: context)
         }
+        main.register { (_, _) -> ExternalSessionsStore in
+            let context = Resolver.resolve(PersistenceController.self).editContext
+            return DefaultExternalSessionsStore(context: context)
+        }
     }
     
     // MARK: - Composition helpers

@@ -5,12 +5,14 @@ import Foundation
 import SwiftUI
 import Resolver
 
-struct SessionStreamViewModel: Identifiable {
+struct ExternalSessionStream: Identifiable {
     let id: Int
     let sensorName: String
+    let sensorUnit: String
     let lastMeasurementValue: Double
     let color: Color
     let measurements: [Measurement]
+    let thresholds: ThresholdsValue
     
     struct Measurement {
         let value: Double
@@ -36,7 +38,6 @@ struct ExternalSession {
     }
 }
 
-class CompleteScreenViewModel: ObservableObject {
     struct PartialExternalSession {
         let uuid: String
         let provider: String
@@ -46,8 +47,21 @@ class CompleteScreenViewModel: ObservableObject {
         let longitude: Double
         let latitude: Double
         let sensorName: String
-        let streamID: Int
+        let stream: Stream
         let thresholdsValues: ThresholdsValue
+        
+        struct Stream {
+            let id: Int
+            let unitName: String
+            let unitSymbol: String
+            let sensorName: String
+            let sensorPackageName: String
+            let thresholdVeryLow: Int
+            let thresholdLow: Int
+            let thresholdMedium: Int
+            let thresholdHigh: Int
+            let thresholdVeryHigh: Int
+        }
         
         static var mock: PartialExternalSession {
             let session =  self.init(uuid: "202411",
@@ -58,7 +72,16 @@ class CompleteScreenViewModel: ObservableObject {
                                      longitude: 19.944544,
                                      latitude: 50.049683,
                                      sensorName: "OpenAQ-PM2.5",
-                                     streamID: 499130,
+                                     stream: Stream(id: 499130,
+                                                           unitName: "microgram per cubic meter",
+                                                           unitSymbol: "µg/m³",
+                                                           sensorName: "OpenAQ-PM2.5",
+                                                           sensorPackageName : "OpenAQ-PM2.5",
+                                                           thresholdVeryLow : 0,
+                                                           thresholdLow : 12,
+                                                           thresholdMedium : 35,
+                                                           thresholdHigh : 55,
+                                                           thresholdVeryHigh : 150),
                                      thresholdsValues: ThresholdsValue(veryLow: 0, low: 5, medium: 8, high: 10, veryHigh: 12))
             // ...
             
@@ -66,6 +89,7 @@ class CompleteScreenViewModel: ObservableObject {
         }
     }
     
+class CompleteScreenViewModel: ObservableObject {
     @Published var selectedStream: Int?
     @Published var selectedStreamUnitSymbol: String?
     @Published var chartStartTime: Date?
@@ -79,7 +103,12 @@ class CompleteScreenViewModel: ObservableObject {
     let sessionStartTime: Date
     let sessionEndTime: Date
     let sensorType: String
-    @Published var sessionStreams: Loadable<[SessionStreamViewModel]> = .loading
+    @Published var completeButtonEnabled: Bool = false
+    @Published var sessionStreams: Loadable<[ExternalSessionStream]> = .loading {
+        didSet {
+            completeButtonEnabled = sessionStreams.isReady
+        }
+    }
     @Published var chartViewModel = SearchAndFollowChartViewModel()
     
     let exitRoute: () -> Void
@@ -88,6 +117,7 @@ class CompleteScreenViewModel: ObservableObject {
     @Injected private var service: StreamDownloader
     @Injected private var thresholdsStore: ThresholdsStore
     @Injected private var singleSessionDownloader: SingleSessionDownloader
+    @Injected private var externalSessionsStore: ExternalSessionsStore
     
     init(session: PartialExternalSession, exitRoute: @escaping () -> Void) {
         self.session = session
@@ -138,6 +168,18 @@ class CompleteScreenViewModel: ObservableObject {
         exitRoute()
     }
     
+    func confirmationButtonPressed() {
+        do {
+            try externalSessionsStore.createExternalSession(session: session)
+            sessionStreams.get?.forEach({ stream in
+                
+            })
+        } catch {
+            Log.error("FAILED")
+            self.alert = InAppAlerts.failedSessionDownloadAlert(dismiss: self.dismissView)
+        }
+    }
+    
     private func dismissView() {
         exitRoute()
     }
@@ -157,9 +199,10 @@ class CompleteScreenViewModel: ObservableObject {
                     self.sessionStreams = .ready( downloadedStreams.map {
                         .init(id: $0.id,
                               sensorName: Self.getSensorName($0.sensorName),
+                              sensorUnit: $0.sensorUnit,
                               lastMeasurementValue: $0.lastMeasurementValue,
                               color: thresholds.colorFor(value: $0.lastMeasurementValue),
-                              measurements: $0.measurements.map({.init(value: $0.value, time: DateBuilder.getDateWithTimeIntervalSince1970(Double($0.time)), latitude: $0.latitude, longitude: $0.longitude)}))
+                              measurements: $0.measurements.map({.init(value: $0.value, time: DateBuilder.getDateWithTimeIntervalSince1970(Double($0.time)), latitude: $0.latitude, longitude: $0.longitude)}), thresholds: thresholds)
                     })
                     if let stream = downloadedStreams.first {
                         self.selectedStream = stream.id

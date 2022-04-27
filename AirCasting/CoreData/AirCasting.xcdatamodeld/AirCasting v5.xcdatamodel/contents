@@ -10,6 +10,7 @@
         <attribute name="startTime" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="uuid" attributeType="String"/>
         <relationship name="measurementStreams" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="MeasurementStreamEntity" inverseName="externalSession" inverseEntity="MeasurementStreamEntity"/>
+        <relationship name="uiState" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="UIStateEntity" inverseName="externalSession" inverseEntity="UIStateEntity"/>
     </entity>
     <entity name="MeasurementEntity" representedClassName="MeasurementEntity" syncable="YES">
         <attribute name="averagingWindow" optional="YES" attributeType="Integer 64" defaultValueString="1" usesScalarValueType="YES"/>
@@ -82,15 +83,16 @@
     <entity name="UIStateEntity" representedClassName="UIStateEntity" syncable="YES" codeGenerationType="class">
         <attribute name="expandedCard" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="sensorName" optional="YES" attributeType="String"/>
+        <relationship name="externalSession" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ExternalSessionEntity" inverseName="uiState" inverseEntity="ExternalSessionEntity"/>
         <relationship name="session" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SessionEntity" inverseName="userInterface" inverseEntity="SessionEntity"/>
     </entity>
     <elements>
+        <element name="ExternalSessionEntity" positionX="-62.5064697265625" positionY="-240.4995422363281" width="128" height="179"/>
         <element name="MeasurementEntity" positionX="147.2987670898438" positionY="-70.14356994628906" width="128" height="133"/>
         <element name="MeasurementStreamEntity" positionX="-63.7001953125" positionY="128.3192749023438" width="128" height="283"/>
         <element name="NoteEntity" positionX="452.0951538085938" positionY="347.4150085449219" width="128" height="119"/>
         <element name="SensorThreshold" positionX="388.8433837890625" positionY="56.29141235351562" width="128" height="133"/>
         <element name="SessionEntity" positionX="192.664794921875" positionY="224.3333435058594" width="128" height="374"/>
-        <element name="UIStateEntity" positionX="416.1559448242188" positionY="560.4293060302734" width="128" height="74"/>
-        <element name="ExternalSessionEntity" positionX="-62.5064697265625" positionY="-240.4995422363281" width="128" height="178"/>
+        <element name="UIStateEntity" positionX="416.1559448242188" positionY="560.4293060302734" width="128" height="89"/>
     </elements>
 </model>

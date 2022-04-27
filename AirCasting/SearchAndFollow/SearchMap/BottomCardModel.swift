@@ -11,6 +11,19 @@ struct BottomCardModel {
     let endTime: String
     let latitude: Double
     let longitude: Double
-    let streamId: Int
+    let stream: Stream
     let thresholds: ThresholdsValue
+    
+    struct Stream {
+        let id: Int
+        let unitName: String
+        let unitSymbol: String
+        let sensorName: String
+        let sensorPackageName: String
+        let thresholdVeryLow: Int
+        let thresholdLow: Int
+        let thresholdMedium: Int
+        let thresholdHigh: Int
+        let thresholdVeryHigh: Int
+    }
 }

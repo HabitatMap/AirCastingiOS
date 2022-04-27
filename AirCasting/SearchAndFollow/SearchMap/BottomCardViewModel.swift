@@ -54,7 +54,7 @@ class BottomCardViewModel: ObservableObject {
                                       longitude: dataModel.longitude,
                                       latitude: dataModel.latitude,
                                       sensorName: sensorType,
-                                      streamID: dataModel.streamId,
+                                      stream: PartialExternalSession.Stream(id: dataModel.stream.id, unitName: dataModel.stream.unitName, unitSymbol: dataModel.stream.unitSymbol, sensorName: dataModel.stream.sensorName, sensorPackageName: dataModel.stream.sensorPackageName, thresholdVeryLow: dataModel.stream.thresholdVeryLow, thresholdLow: dataModel.stream.thresholdLow, thresholdMedium: dataModel.stream.thresholdMedium, thresholdHigh: dataModel.stream.thresholdHigh, thresholdVeryHigh: dataModel.stream.thresholdVeryHigh),
                                       thresholdsValues: dataModel.thresholds)) { [weak self] in
             self?.isModalScreenPresented = false
         }
