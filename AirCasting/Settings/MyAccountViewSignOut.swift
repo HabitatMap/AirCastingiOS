@@ -19,14 +19,11 @@ struct MyAccountViewSignOut: View {
             VStack(alignment: .leading) {
                 logInLabel
                 signOutButton
-                Spacer()
-                HStack() {
-                    Spacer()
-                    if featureFlagsViewModel.enabledFeatures.contains(.deleteAccount) {
-                        deleteProfileButton
-                    }
-                    Spacer()
+                if featureFlagsViewModel.enabledFeatures.contains(.deleteAccount) {
+                    deleteProfileButton
+                        .frame(maxWidth: .infinity, alignment: .center)
                 }
+                Spacer()
             }
         }
         .navigationTitle(Strings.Commons.myAccount)
