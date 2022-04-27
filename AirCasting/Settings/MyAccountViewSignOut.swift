@@ -50,12 +50,11 @@ private extension MyAccountViewSignOut {
             }
             userState.currentState = .loggingOut
             do {
-                userState.isShowingLoading = true
                 try logoutController.logout {
-                    userState.isShowingLoading = false
-                    userState.currentState = .other
+                    userState.currentState = .idle
                 }
             } catch {
+                userState.currentState = .idle
                 assertionFailure("Failed to deauthorize \(error)")
             }
         }) {
@@ -81,19 +80,17 @@ private extension MyAccountViewSignOut {
                     }
                     userState.currentState = .deletingAccount
                     do {
-                        userState.isShowingLoading = true
                         try deleteController.deleteAccount { result in
+                            userState.currentState = .idle
                             switch result {
-                            case .success(_):
-                                DispatchQueue.main.async {
-                                    userState.isShowingLoading = false
-                                }
+                            case .success(_): break
                             case .failure(_):
                                 alert = InAppAlerts.failedDeletingAccount()
-                                userState.currentState = .other
+                                userState.currentState = .idle
                             }
                         }
                     } catch {
+                        userState.currentState = .idle
                         assertionFailure("Failed to delete account \(error)")
                     }
                 }

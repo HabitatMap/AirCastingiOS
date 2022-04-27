@@ -78,7 +78,7 @@ struct CreateAccountView: View {
                 .onAppear {
                     if userState.currentState == .deletingAccount {
                         alert = InAppAlerts.successfulAccountDeletionConfirmation {
-                            userState.currentState = .other
+                            userState.currentState = .idle
                         }
                     }
                 }
