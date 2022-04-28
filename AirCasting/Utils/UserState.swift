@@ -5,11 +5,13 @@ import Foundation
 
 class UserState: ObservableObject {
     enum State {
+        /// Set while the user is in the process of logging out
         case loggingOut
+        /// Set while the user is in the process of account deletion
         case deletingAccount
-        case other
+        /// Set when the user is logged in or logged out
+        case idle
     }
     
-    @Published var isShowingLoading = false
-    @Published var currentState: State = .loggingOut
+    @Published var currentState: State = .idle
 }
