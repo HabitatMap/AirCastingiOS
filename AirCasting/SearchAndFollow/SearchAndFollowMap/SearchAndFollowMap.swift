@@ -136,9 +136,9 @@ struct SearchAndFollowMap: UIViewRepresentable {
             if parent.startingPointChanged {
                 startPositionShouldChange(for: mapView)
                 DispatchQueue.main.async { self.parent.startingPointChanged = false }
-            } else {
-                dotsPositionShouldChange(for: mapView)
+                return
             }
+            dotsPositionShouldChange(for: mapView)
         }
 
         func selectNewPointer(newid: Int, oldid: Int) {
@@ -151,12 +151,10 @@ struct SearchAndFollowMap: UIViewRepresentable {
                     }
                     if marker == newid {
                         let markerImage = UIImage(systemName: "circle.circle.fill")!.scalePreservingAspectRatio(targetSize: CGSize(width: 35, height: 35))
-                        let markerView = UIImageView(image: markerImage.withRenderingMode(.alwaysTemplate))
-                        m.iconView = markerView
+                        m.iconView = self.adjustMarkerImage(with: markerImage)
                     } else if marker == oldid {
                         let markerImage = UIImage(systemName: "circle.circle.fill")!
-                        let markerView = UIImageView(image: markerImage.withRenderingMode(.alwaysTemplate))
-                        m.iconView = markerView
+                        m.iconView = self.adjustMarkerImage(with: markerImage)
                     }
                 }
             }
@@ -170,6 +168,10 @@ struct SearchAndFollowMap: UIViewRepresentable {
             }
             parent.onMarkerChangeAction?(newPointerID)
             return true
+        }
+        
+        private func adjustMarkerImage(with image: UIImage) -> UIImageView {
+            return UIImageView(image: image.withRenderingMode(.alwaysTemplate))
         }
         
         private func startPositionShouldChange(for mapView: GMSMapView) {
