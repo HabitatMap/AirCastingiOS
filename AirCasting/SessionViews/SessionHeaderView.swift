@@ -98,8 +98,13 @@ struct SessionHeaderView: View {
     
     @ViewBuilder
     private var editViewSheet: some View {
-        let vm = EditSessionViewModel(sessionUUID: session.uuid)
-        EditView(viewModel: vm)
+        if session.locationless {
+            let vm = EditLocationlessSessionViewModel(sessionUUID: session.uuid, sessionName: session.name ?? "", sessionTags: session.tags ?? "")
+            EditView(viewModel: vm)
+        } else {
+            let vm = EditSessionViewModel(sessionUUID: session.uuid)
+            EditView(viewModel: vm)
+        }
     }
 }
 

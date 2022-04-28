@@ -20,38 +20,28 @@ struct SearchView: View {
             textField
             parametersQuestion
             HStack(spacing: 12) {
-                ForEach(ParameterType.allCases) { param in
+                ForEach(viewModel.measurementTypes) { param in
                     Button {
                         withAnimation(.easeInOut(duration: 0.3)) {
-                            viewModel.onParameterTap(with: param)
+                            viewModel.onParameterTap(with: param.name)
                         }
                     } label: {
-                        Text(param.capitalizedName)
-                            .padding([.all], 5)
-                    }.buttonStyle(MultiSelectButtonStyle(isSelected: param.capitalizedName == viewModel.getParameter.capitalizedName))
+                        Text(param.name)
+                            .padding(5)
+                    }.buttonStyle(MultiSelectButtonStyle(isSelected: param.isSelected))
                         .padding(.bottom, 5)
                 }
             }
             sensorQuestion
-            if viewModel.shoudShowPMChoiceSheet {
-                ForEach(PMSensorType.allCases) { sensor in
+            HStack(spacing: 12) {
+                ForEach(viewModel.sensorTypes) { sensor in
                     Button {
-                        viewModel.onPMSensorTap(with: sensor)
+                        viewModel.onSensorTap(with: sensor.name)
                     } label: {
-                        Text(sensor.capitalizedName)
-                            .padding([.all], 5)
-                    }.buttonStyle(MultiSelectButtonStyle(isSelected: sensor.capitalizedName == viewModel.getSensor.capitalizedName))
+                        Text(sensor.name)
+                            .padding(5)
+                    }.buttonStyle(MultiSelectButtonStyle(isSelected: sensor.isSelected))
                         .padding(.bottom, 5)
-                }
-            } else {
-                ForEach(OzoneSensorType.allCases) { sensor in
-                    Button {
-                        viewModel.onOzoneSensorTap(with: sensor)
-                    } label: {
-                        Text(sensor.capitalizedName)
-                            .padding([.all], 5)
-                    }.buttonStyle(MultiSelectButtonStyle(isSelected: sensor.capitalizedName == viewModel.getSensor.capitalizedName))
-                        .padding(.bottom, 5) 
                 }
             }
             Spacer()
@@ -116,8 +106,8 @@ private extension SearchView {
         return NavigationLink(
             destination: SearchMapView(locationName: viewModel.addressName,
                                        locationAddress: viewModel.addresslocation,
-                                       parameterType: viewModel.getParameter,
-                                       sensorType: viewModel.getSensor),
+                                       parameterType: viewModel.selectedParameter ?? .particulateMatter,
+                                       sensorType: viewModel.selectedSensor ?? .OpenAQ),
             label: {
                 Text(Strings.Commons.continue)
             })

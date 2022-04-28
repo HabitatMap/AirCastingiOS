@@ -3,7 +3,7 @@
 
 import Foundation
 
-enum MapDownloaderMeasurementType: Codable, CaseIterable {
+enum MapDownloaderMeasurementType: Codable {
     case particulateMatter
     case ozone
 }
@@ -13,6 +13,13 @@ extension MapDownloaderMeasurementType {
         switch self {
         case .particulateMatter: return "Particulate Matter"
         case .ozone: return "Ozone"
+        }
+    }
+    
+    var sensorNameSuffix: String {
+        switch self {
+        case .particulateMatter: return "-pm2.5"
+        case .ozone: return "-o3"
         }
     }
     
