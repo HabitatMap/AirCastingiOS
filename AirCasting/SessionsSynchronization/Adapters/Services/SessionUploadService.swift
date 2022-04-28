@@ -53,11 +53,11 @@ final class SessionUploadService: SessionUpstream {
             } catch {
                 promise(.failure(error))
             }
-            client.requestTask(for: request) { [self] result, request in
+            client.requestTask(for: request) { result, request in
                 promise(
                     result.tryMap { result -> SessionsSynchronization.SessionUpstreamResult in
                         try responseValidator.validate(response: result.response, data: result.data)
-                        let response = try decoder.decode(SessionsSynchronization.SessionUpstreamResult.self, from: result.data)
+                        let response = try self.decoder.decode(SessionsSynchronization.SessionUpstreamResult.self, from: result.data)
                         return response
                     }
                 )
