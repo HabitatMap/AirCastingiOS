@@ -10,7 +10,7 @@ struct SearchMapView: View {
     @StateObject private var viewModel: SearchMapViewModel
     @Environment(\.presentationMode) var presentationMode
     
-    init(locationName: String, locationAddress: CLLocationCoordinate2D, parameterType: MapDownloaderMeasurementType, sensorType: MapDownloaderSensorType) {
+    init(locationName: String, locationAddress: CLLocationCoordinate2D, parameterType: MeasurementType, sensorType: SensorType) {
         _viewModel = .init(wrappedValue: .init(passedLocation: locationName,
                                                passedLocationAddress: locationAddress,
                                                measurementType: parameterType,

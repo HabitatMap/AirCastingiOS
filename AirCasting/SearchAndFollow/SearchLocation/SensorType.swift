@@ -3,14 +3,13 @@
 
 import Foundation
 
-enum PMSensorType: Codable, CaseIterable, Identifiable {
+enum SensorType: Codable, CaseIterable {
     case AB3and2
     case OpenAQ
     case PurpleAir
 }
 
-extension PMSensorType {
-    var id: Self { self }
+extension SensorType {
     
     var capitalizedName: String {
         switch self {

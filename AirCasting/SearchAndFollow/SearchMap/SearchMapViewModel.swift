@@ -22,8 +22,8 @@ enum PointerValue: Equatable {
 class SearchMapViewModel: ObservableObject {
     var passedLocation: String
     @Published var passedLocationAddress: CLLocationCoordinate2D
-    private let measurementType: MapDownloaderMeasurementType
-    private let sensorType: MapDownloaderSensorType
+    private let measurementType: MeasurementType
+    private let sensorType: SensorType
     @Injected private var mapSessionsDownloader: SessionsForLocationDownloader
     @Published var isLocationPopupPresented = false
     @Published var sessionsList = [MapSessionMarker]()
@@ -35,7 +35,7 @@ class SearchMapViewModel: ObservableObject {
     @Published var shouldCardsScroll: Bool = false
     private var currentPosition: GeoSquare?
     
-    init(passedLocation: String, passedLocationAddress: CLLocationCoordinate2D, measurementType: MapDownloaderMeasurementType, sensorType: MapDownloaderSensorType) {
+    init(passedLocation: String, passedLocationAddress: CLLocationCoordinate2D, measurementType: MeasurementType, sensorType: SensorType) {
         self.passedLocation = passedLocation
         self.passedLocationAddress = passedLocationAddress
         self.measurementType = measurementType
@@ -100,8 +100,8 @@ class SearchMapViewModel: ObservableObject {
         mapSessionsDownloader.getSessions(geoSquare: geoSquare,
                                           timeFrom: timeFrom,
                                           timeTo: timeTo,
-                                          parameter: measurementType,
-                                          sensor: sensorType) { result in
+                                          measurementType: measurementType.downloaderType,
+                                          sensor: sensorType.downloaderType) { result in
             DispatchQueue.main.async { self.showLoadingIndicator = false }
             switch result {
             case .success(let sessions):
@@ -139,6 +139,25 @@ class SearchMapViewModel: ObservableObject {
             self.alert = InAppAlerts.downloadingSessionsFailedAlert {
                 self.shouldDismissView = true
             }
+        }
+    }
+}
+
+extension MeasurementType {
+    var downloaderType: MapDownloaderMeasurementType {
+        switch self {
+        case .particulateMatter: return .particulateMatter
+        case .ozone: return .ozone
+        }
+    }
+}
+
+extension SensorType {
+    var downloaderType: MapDownloaderSensorType {
+        switch self {
+        case .AB3and2: return .AB3and2
+        case .OpenAQ: return .OpenAQ
+        case .PurpleAir: return .PurpleAir
         }
     }
 }
