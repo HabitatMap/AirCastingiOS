@@ -3,33 +3,22 @@
 import SwiftUI
 import Resolver
 
-final class AirBeamMeasurementsDownloader {
+protocol AirBeamMeasurementsDownloader {
+    func downloadStreams(with sessionID: Int, for airbeam: AirBeamStreamPrefix, completion: @escaping (Result<[MeasurementsDownloaderResultModel], Error>) -> Void) throws
+}
+
+final class AirBeamMeasurementsDownloaderDefault: AirBeamMeasurementsDownloader {
     @Injected private var urlProvider: URLProvider
     @Injected private var client: APIClient
     @Injected private var responseValidator: HTTPResponseValidator
     private let responseHandler = AuthorizationHTTPResponseHandler()
     
-    func downloadStreams(using sessionID: Int, completion: @escaping (Result<[MeasurementsDownloaderResultModel], Error>) -> Void) throws {
+    func downloadStreams(with sessionID: Int, for airbeam: AirBeamStreamPrefix, completion: @escaping (Result<[MeasurementsDownloaderResultModel], Error>) -> Void) throws {
         let decoder = JSONDecoder()
         let group = DispatchGroup()
-        var requests = [URLRequest]()
         var combinedResult = [MeasurementsDownloaderResultModel]()
         
-        AirBeamStreamSuffixes.allCases.forEach { s in
-            let urlComponentPart = urlProvider.baseAppURL.appendingPathComponent("api/fixed/sessions/\(sessionID).json")
-            var urlComponents = URLComponents(string: urlComponentPart.absoluteString)!
-            urlComponents.queryItems = [
-                URLQueryItem(name: "sensor_name", value: "airbeam3-\(s.rawName)"),
-                // optional parameter: measurements_limit (on the web is equal to 1440)
-                URLQueryItem(name: "measurements_limit", value: "10"),
-            ]
-            let url = urlComponents.url!
-            var request = URLRequest(url: url)
-            request.httpMethod = "GET"
-            request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-            request.addValue("application/json", forHTTPHeaderField: "Accept")
-            requests.append(request)
-        }
+        let requests = prepareRequests(using: sessionID, sensor: airbeam)
         
         for request in requests {
             group.enter()
@@ -42,12 +31,14 @@ final class AirBeamMeasurementsDownloader {
                         combinedResult.append(resultPart)
                         group.leave()
                     } catch {
+                        Log.info("Error when downloading one of the AirBeam streams: \(error)")
+                        group.leave()
                         completion(.failure(error))
-                        fatalError("Error when downloading one of the AirBeam streams: \(error)")
                     }
                 case .failure(let error):
+                    Log.info("Error when downloading one of the AirBeam streams: \(error)")
+                    group.leave()
                     completion(.failure(error))
-                    fatalError("Error when downloading one of the AirBeam streams: \(error)")
                 }
             }
         }
@@ -55,5 +46,26 @@ final class AirBeamMeasurementsDownloader {
             Log.info("Downloading all of the streams for AirBeam - completed.")
             completion(.success(combinedResult))
         }
+    }
+    
+    private func prepareRequests(using sessionID: Int, sensor: AirBeamStreamPrefix) -> [URLRequest] {
+        var requests = [URLRequest]()
+        AirBeamStreamSuffixes.allCases.forEach { s in
+            let urlComponentPart = urlProvider.baseAppURL.appendingPathComponent("api/fixed/sessions/\(sessionID).json")
+            let url = structureURLComponents(with: urlComponentPart, name: s, sensor: sensor)
+            let request = URLRequest.jsonGET(url: url)
+            requests.append(request)
+        }
+        return requests
+    }
+    
+    private func structureURLComponents(with urlComponentPart: URL, name: AirBeamStreamSuffixes, sensor: AirBeamStreamPrefix) -> URL {
+        var urlComponents = URLComponents(string: urlComponentPart.absoluteString)!
+        urlComponents.queryItems = [
+            URLQueryItem(name: "sensor_name", value: "\(sensor.rawName)-\(name.rawName)"),
+            // optional parameter: measurements_limit (on the web is equal to 1440)
+            URLQueryItem(name: "measurements_limit", value: "10"),
+        ]
+        return urlComponents.url!
     }
 }

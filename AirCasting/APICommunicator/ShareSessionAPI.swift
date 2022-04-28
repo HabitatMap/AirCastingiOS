@@ -30,10 +30,7 @@ struct ShareSessionApi: ShareSessionAPIServices {
             return
         }
         
-        var request = URLRequest(url: requestUrl)
-        request.httpMethod = "GET"
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.addValue("application/json", forHTTPHeaderField: "Accept")
+        var request = URLRequest.jsonGET(url: url)
         request.httpShouldHandleCookies = false
         request.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
         

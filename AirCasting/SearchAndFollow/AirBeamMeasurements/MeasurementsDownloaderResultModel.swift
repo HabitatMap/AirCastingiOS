@@ -5,12 +5,13 @@ import Foundation
 
 struct MeasurementsDownloaderResultModel: Decodable {
     let sensorName: String
-    let measurements: [theMeasurement]
+    let measurements: [Measurement]
+    
+    struct Measurement: Decodable {
+        let value: Double
+        let time: Double
+        let longitude: Double
+        let latitude: Double
+    }
 }
 
-struct theMeasurement: Decodable {
-    let value: Double
-    let time: Double
-    let longitude: Double
-    let latitude: Double
-}
