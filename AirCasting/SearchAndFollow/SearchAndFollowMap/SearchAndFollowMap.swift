@@ -10,15 +10,17 @@ import Combine
 struct SearchAndFollowMap: UIViewRepresentable {
     
     typealias UIViewType = GMSMapView
-    var startingPoint: CLLocationCoordinate2D
+    @Binding var startingPoint: CLLocationCoordinate2D
     @Binding var showSearchAgainButton: Bool
     @Binding var sessions: [MapSessionMarker]
     @Binding var selectedPointerID: PointerValue
     private var onPositionChangeAction: ((GeoSquare) -> ())? = nil
     private var onMarkerChangeAction: ((Int) -> ())? = nil
+    private var onStartingLocationAction: ((GeoSquare) -> ())? = nil
+    @State var startingPointChanged = false
     
-    init(startingPoint: CLLocationCoordinate2D, showSearchAgainButton: Binding<Bool>, sessions: Binding<[MapSessionMarker]>, selectedPointerID: Binding<PointerValue>) {
-        self.startingPoint = startingPoint
+    init(startingPoint: Binding<CLLocationCoordinate2D>, showSearchAgainButton: Binding<Bool>, sessions: Binding<[MapSessionMarker]>, selectedPointerID: Binding<PointerValue>) {
+        self._startingPoint = .init(projectedValue: startingPoint)
         self._showSearchAgainButton = .init(projectedValue: showSearchAgainButton)
         self._sessions = .init(projectedValue: sessions)
         self._selectedPointerID = .init(projectedValue: selectedPointerID)
@@ -38,8 +40,15 @@ struct SearchAndFollowMap: UIViewRepresentable {
         return newSelf
     }
     
+    func onStartingLocationChange(action: @escaping (GeoSquare) -> ()) -> Self {
+        var newSelf = self
+        newSelf.onStartingLocationAction = action
+        return newSelf
+    }
+    
     func makeUIView(context: Context) -> GMSMapView {
         GMSServices.provideAPIKey(GOOGLE_MAP_KEY)
+        context.coordinator.startingPointHolder = self.startingPoint
         let startingPoint = setStartingPoint(using: startingPoint)
         let mapView = GMSMapView.map(withFrame: .zero,
                                      camera: startingPoint)
@@ -60,10 +69,14 @@ struct SearchAndFollowMap: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: GMSMapView, context: Context) {
+        if (startingPoint.latitude, startingPoint.longitude) != (context.coordinator.startingPointHolder.latitude, context.coordinator.startingPointHolder.longitude) {
+            DispatchQueue.main.async { startingPointChanged = true }
+            uiView.animate(to: GMSCameraPosition(latitude: startingPoint.latitude, longitude: startingPoint.longitude, zoom: 10))
+        }
         if selectedPointerID.number != context.coordinator.pointerIdHolder.number {
+            context.coordinator.selectNewPointer(newid: selectedPointerID.number, oldid: context.coordinator.pointerIdHolder.number)
             context.coordinator.pointerIdHolder = selectedPointerID
-            placeDots(uiView, context: context)
-        } else if !showSearchAgainButton {
+        } else if !showSearchAgainButton && selectedPointerID == .noValue {
             placeDots(uiView, context: context)
         }
     }
@@ -85,7 +98,7 @@ struct SearchAndFollowMap: UIViewRepresentable {
         DispatchQueue.main.async {
             sessions.forEach { session in
                 let marker = GMSMarker()
-                let markerImage = ((session.id == selectedPointerID.number) ? session.markerImage.scalePreservingAspectRatio(targetSize: CGSize(width: 35, height: 35)) : session.markerImage)
+                let markerImage = session.markerImage
                 let markerView = UIImageView(image: markerImage.withRenderingMode(.alwaysTemplate))
                 markerView.tintColor = .accentColor
                 marker.position = session.location
@@ -101,6 +114,7 @@ struct SearchAndFollowMap: UIViewRepresentable {
         var parent: SearchAndFollowMap!
         var sessionSearched = [GMSMarker]()
         var pointerIdHolder: PointerValue = .noValue
+        var startingPointHolder: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 20, longitude: 20)
         
         init(_ parent: SearchAndFollowMap) {
             self.parent = parent
@@ -118,7 +132,32 @@ struct SearchAndFollowMap: UIViewRepresentable {
                 
             }
             parent.startingPoint = CLLocationCoordinate2D(latitude: mapView.camera.target.latitude, longitude: mapView.camera.target.longitude)
+            startingPointHolder = parent.startingPoint
+            if parent.startingPointChanged {
+                startPositionShouldChange(for: mapView)
+                DispatchQueue.main.async { self.parent.startingPointChanged = false }
+                return
+            }
             dotsPositionShouldChange(for: mapView)
+        }
+
+        func selectNewPointer(newid: Int, oldid: Int) {
+            DispatchQueue.main.async {
+                self.sessionSearched.forEach { m in
+                    guard let marker = m.userData as? Int else {
+                        Log.error("Unexpectedly found value other than Int in marker userData")
+                        assertionFailure()
+                        return
+                    }
+                    if marker == newid {
+                        let markerImage = UIImage(systemName: "circle.circle.fill")!.scalePreservingAspectRatio(targetSize: CGSize(width: 35, height: 35))
+                        m.iconView = self.adjustMarkerImage(with: markerImage)
+                    } else if marker == oldid {
+                        let markerImage = UIImage(systemName: "circle.circle.fill")!
+                        m.iconView = self.adjustMarkerImage(with: markerImage)
+                    }
+                }
+            }
         }
         
         func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
@@ -129,6 +168,16 @@ struct SearchAndFollowMap: UIViewRepresentable {
             }
             parent.onMarkerChangeAction?(newPointerID)
             return true
+        }
+        
+        private func adjustMarkerImage(with image: UIImage) -> UIImageView {
+            return UIImageView(image: image.withRenderingMode(.alwaysTemplate))
+        }
+        
+        private func startPositionShouldChange(for mapView: GMSMapView) {
+            let NW = (mapView.projection.visibleRegion().farLeft.latitude, mapView.projection.visibleRegion().farLeft.longitude)
+            let SE = (mapView.projection.visibleRegion().nearRight.latitude, mapView.projection.visibleRegion().nearRight.longitude)
+            parent.onStartingLocationAction?(GeoSquare(north: NW.0, south: SE.0, east: SE.1, west: NW.1))
         }
         
         private func dotsPositionShouldChange(for mapView: GMSMapView) {

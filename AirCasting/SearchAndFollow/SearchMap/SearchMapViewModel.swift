@@ -6,7 +6,7 @@ import CoreLocation
 import SwiftUI
 import Resolver
 
-enum PointerValue {
+enum PointerValue: Equatable {
     case value(of: Int)
     case noValue
     
@@ -20,11 +20,12 @@ enum PointerValue {
 }
 
 class SearchMapViewModel: ObservableObject {
-    let passedLocation: String
-    let passedLocationAddress: CLLocationCoordinate2D
+    var passedLocation: String
+    @Published var passedLocationAddress: CLLocationCoordinate2D
     private let measurementType: MeasurementType
     private let sensorType: SensorType
     @Injected private var mapSessionsDownloader: SessionsForLocationDownloader
+    @Published var isLocationPopupPresented = false
     @Published var sessionsList = [MapSessionMarker]()
     @Published var searchAgainButton: Bool = false
     @Published var showLoadingIndicator: Bool = false
@@ -41,8 +42,23 @@ class SearchMapViewModel: ObservableObject {
         self.sensorType = sensorType
     }
     
+    func textFieldTapped() { isLocationPopupPresented.toggle() }
     func getMeasurementName() -> String { measurementType.capitalizedName }
     func getSensorName() -> String { sensorType.capitalizedName }
+    
+    func strokeColor(with sessionID: Int) -> Color {
+        cardPointerID.number == sessionID ? Color.accentColor : .clear
+    }
+    
+    func enteredNewLocation(name newLocationName: String) {
+        passedLocation = newLocationName
+    }
+    
+    func enteredNewLocationAdress(_ newLocationAddress: CLLocationCoordinate2D) {
+        passedLocationAddress = newLocationAddress
+    }
+    
+    func locationPopupDisimssed() { redoTapped() }
     
     func redoTapped() {
         guard let currentPosition = currentPosition else {
@@ -61,6 +77,12 @@ class SearchMapViewModel: ObservableObject {
             searchAgainButton = true
         }
         currentPosition = geoSquare
+    }
+    
+    func startingLocationChanged(geoSquare: GeoSquare) {
+        updateSessionList(geoSquare: geoSquare)
+        searchAgainButton = false
+        cardPointerID = .noValue
     }
     
     func markerSelectionChanged(using point: Int) {
