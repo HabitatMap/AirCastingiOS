@@ -69,7 +69,7 @@ class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDel
                     self.sessionUpdateService.updateSession(session: session) { result in
                         switch result {
                         case .success(let updateData):
-                            try? storage.updateVersion(for: sessionUUID, to: updateData.version)
+                            try? storage.updateVersion(for: self.sessionUUID, to: updateData.version)
                             Log.info("Notes successfully updated")
                             completion()
                         case .failure(let error):
@@ -92,7 +92,7 @@ class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDel
                     self.sessionUpdateService.updateSession(session: session) { result in
                         switch result {
                         case .success(let updateData):
-                            try? storage.updateVersion(for: sessionUUID, to: updateData.version)
+                            try? storage.updateVersion(for: self.sessionUUID, to: updateData.version)
                             Log.info("Notes successfully updated")
                             completion()
                         case .failure(let error):
