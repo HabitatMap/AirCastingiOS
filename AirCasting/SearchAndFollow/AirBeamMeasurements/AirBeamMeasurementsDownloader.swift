@@ -20,6 +20,7 @@ final class AirBeamMeasurementsDownloaderDefault: AirBeamMeasurementsDownloader 
         
         let requests = prepareRequests(using: sessionID, sensor: airbeam)
         
+        var allErrors: [Error] = []
         for request in requests {
             group.enter()
             client.requestTask(for: request) { [responseValidator] result, _ in
@@ -31,32 +32,31 @@ final class AirBeamMeasurementsDownloaderDefault: AirBeamMeasurementsDownloader 
                         combinedResult.append(resultPart)
                         group.leave()
                     } catch {
+                        allErrors.append(error)
                         Log.info("Error when downloading one of the AirBeam streams: \(error)")
                         group.leave()
-                        completion(.failure(error))
                     }
                 case .failure(let error):
+                    allErrors.append(error)
                     Log.info("Error when downloading one of the AirBeam streams: \(error)")
                     group.leave()
-                    completion(.failure(error))
                 }
             }
         }
         group.notify(queue: .main) {
+            if !allErrors.isEmpty { completion(.failure(allErrors.first!)) }
             Log.info("Downloading all of the streams for AirBeam - completed.")
             completion(.success(combinedResult))
         }
     }
     
     private func prepareRequests(using sessionID: Int, sensor: AirBeamStreamPrefix) -> [URLRequest] {
-        var requests = [URLRequest]()
-        AirBeamStreamSuffixes.allCases.forEach { s in
+        return AirBeamStreamSuffixes.allCases.map { suffix in
             let urlComponentPart = urlProvider.baseAppURL.appendingPathComponent("api/fixed/sessions/\(sessionID).json")
-            let url = structureURLComponents(with: urlComponentPart, name: s, sensor: sensor)
+            let url = structureURLComponents(with: urlComponentPart, name: suffix, sensor: sensor)
             let request = URLRequest.jsonGET(url: url)
-            requests.append(request)
+            return request
         }
-        return requests
     }
     
     private func structureURLComponents(with urlComponentPart: URL, name: AirBeamStreamSuffixes, sensor: AirBeamStreamPrefix) -> URL {
