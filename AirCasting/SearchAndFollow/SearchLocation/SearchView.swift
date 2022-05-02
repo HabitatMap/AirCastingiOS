@@ -44,18 +44,6 @@ struct SearchView: View {
                         .padding(.bottom, 5)
                 }
             }
-            Button {
-                do {
-                    try AirBeamMeasurementsDownloaderDefault().downloadStreams(with: 1758913, for: .airBeam3) { result in
-                        //
-                    }
-                } catch {
-                    
-                }
-            } label: {
-                Text("Gello")
-            }
-
             Spacer()
             button
         }.padding()
