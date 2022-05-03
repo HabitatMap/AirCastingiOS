@@ -22,21 +22,21 @@ struct ExternalSessionStream: Identifiable {
     }
 }
 
-struct ExternalSession {
-    let uuid: String
-    let provider: String
-    let name: String
-    let startTime: Date
-    let endTime: Date
-    let longitude: Double
-    let latitude: Double
-    let streams: [Stream]
-    let sensorName: String
-    
-    // TODO: This will be implemented with the functionality for saving session to the database
-    struct Stream {
-    }
-}
+//struct ExternalSession {
+//    let uuid: String
+//    let provider: String
+//    let name: String
+//    let startTime: Date
+//    let endTime: Date
+//    let longitude: Double
+//    let latitude: Double
+//    let streams: [Stream]
+//    let sensorName: String
+//    
+//    // TODO: This will be implemented with the functionality for saving session to the database
+//    struct Stream {
+//    }
+//}
 
     struct PartialExternalSession {
         let uuid: String
@@ -56,11 +56,19 @@ struct ExternalSession {
             let unitSymbol: String
             let sensorName: String
             let sensorPackageName: String
-            let thresholdVeryLow: Int
-            let thresholdLow: Int
-            let thresholdMedium: Int
-            let thresholdHigh: Int
-            let thresholdVeryHigh: Int
+            let thresholdVeryLow: Int32
+            let thresholdLow: Int32
+            let thresholdMedium: Int32
+            let thresholdHigh: Int32
+            let thresholdVeryHigh: Int32
+            let measurements: [Measurement] = []
+        }
+        
+        struct Measurement {
+            let value: Double
+            let time: Date
+            let latitude: Double
+            let longitude: Double
         }
         
         static var mock: PartialExternalSession {
@@ -175,9 +183,10 @@ class CompleteScreenViewModel: ObservableObject {
                 
             })
         } catch {
-            Log.error("FAILED")
+            Log.error("FAILED: \(error)")
             self.alert = InAppAlerts.failedSessionDownloadAlert(dismiss: self.dismissView)
         }
+        
     }
     
     private func dismissView() {
@@ -185,7 +194,7 @@ class CompleteScreenViewModel: ObservableObject {
     }
     
     private func getMeasurementsAndDisplayData(_ thresholds: ThresholdsValue) {
-        let streams = [String(session.streamID)] // In the future this will be changed for Airbeam sessions, cause we will need to get other streams ids from backend
+        let streams = [String(session.stream.id)] // In the future this will be changed for Airbeam sessions, cause we will need to get other streams ids from backend
         downloadMeasurements(streams: streams) { [weak self] result in
             guard let self = self else { return }
             switch result {
@@ -204,6 +213,7 @@ class CompleteScreenViewModel: ObservableObject {
                               color: thresholds.colorFor(value: $0.lastMeasurementValue),
                               measurements: $0.measurements.map({.init(value: $0.value, time: DateBuilder.getDateWithTimeIntervalSince1970(Double($0.time)), latitude: $0.latitude, longitude: $0.longitude)}), thresholds: thresholds)
                     })
+                    // Add measurements to session streams
                     if let stream = downloadedStreams.first {
                         self.selectedStream = stream.id
                         self.selectedStreamUnitSymbol = stream.sensorUnit

@@ -10,8 +10,8 @@ class BottomCardViewModel: ObservableObject {
     let sensorType: String
     let username: String
     
-    init(id: Int, uuid: String, title: String, startTime: String, endTime: String, latitude: Double, longitude: Double, streamId: Int, thresholds: ThresholdsValue, sensorType: String, username: String) {
-        dataModel = .init(id: id, uuid: uuid, title: title, startTime: startTime, endTime: endTime, latitude: latitude, longitude: longitude, streamId: streamId, thresholds: thresholds)
+    init(id: Int, uuid: String, title: String, startTime: String, endTime: String, latitude: Double, longitude: Double, streamId: Int, streamUnitName: String, streamUnitSymbol: String, streamSensorName: String, streamSensorPackageName: String, thresholds: ThresholdsValue, sensorType: String, username: String) {
+        dataModel = .init(id: id, uuid: uuid, title: title, startTime: startTime, endTime: endTime, latitude: latitude, longitude: longitude, stream: .init(id: streamId, unitName: streamUnitName, unitSymbol: streamUnitSymbol, sensorName: streamSensorName, sensorPackageName: streamSensorPackageName, thresholdVeryLow: thresholds.veryLow, thresholdLow: thresholds.low, thresholdMedium: thresholds.medium, thresholdHigh: thresholds.high, thresholdVeryHigh: thresholds.veryHigh), thresholds: thresholds)
         self.sensorType = sensorType
         self.username = username
     }

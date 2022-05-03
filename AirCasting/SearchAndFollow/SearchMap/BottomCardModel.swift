@@ -20,10 +20,10 @@ struct BottomCardModel {
         let unitSymbol: String
         let sensorName: String
         let sensorPackageName: String
-        let thresholdVeryLow: Int
-        let thresholdLow: Int
-        let thresholdMedium: Int
-        let thresholdHigh: Int
-        let thresholdVeryHigh: Int
+        let thresholdVeryLow: Int32
+        let thresholdLow: Int32
+        let thresholdMedium: Int32
+        let thresholdHigh: Int32
+        let thresholdVeryHigh: Int32
     }
 }

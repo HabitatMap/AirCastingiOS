@@ -105,8 +105,21 @@ class SearchMapViewModel: ObservableObject {
                                         startTime: s.startTimeLocal,
                                         endTime: s.endTimeLocal,
                                         markerImage: UIImage(systemName: "circle.circle.fill")!,
-                                        streamId: stream.id,
-                                        thresholdsValues: ThresholdsValue(veryLow: Int32(stream.thresholdVeryLow), low: Int32(stream.thresholdLow), medium: Int32(stream.thresholdMedium), high: Int32(stream.thresholdHigh), veryHigh: Int32(stream.thresholdVeryHigh)))
+                                        streams: s.streams.values.map { stream in
+                        .init(
+                            id: stream.id,
+                            unitName: stream.unitName,
+                            unitSymbol: stream.unitSymbol,
+                            sensorName: stream.sensorName,
+                            sensorPackageName: stream.sensorPackageName,
+                            thresholdsValues: .init(veryLow: Int32(stream.thresholdVeryLow),
+                                                    low: Int32(stream.thresholdLow),
+                                                    medium: Int32(stream.thresholdMedium),
+                                                    high: Int32(stream.thresholdHigh),
+                                                    veryHigh: Int32(stream.thresholdVeryHigh))
+                        )
+                }
+                )
             }
         }
     }

@@ -8,8 +8,8 @@ struct BottomCardView: View {
     @StateObject var viewModel: BottomCardViewModel
     private var onMarkerChangeAction: ((Int) -> ())? = nil
     
-    init(id: Int, uuid: String, title: String, startTime: String, endTime: String, latitude: Double, longitude: Double, streamId: Int, thresholds: ThresholdsValue, username: String, sensorType: String) {
-        _viewModel = .init(wrappedValue: .init(id: id, uuid: uuid, title: title, startTime: startTime, endTime: endTime, latitude: latitude, longitude: longitude, streamId: streamId, thresholds: thresholds, sensorType: sensorType, username: username))
+    init(id: Int, uuid: String, title: String, startTime: String, endTime: String, latitude: Double, longitude: Double, streams: [PartialExternalSession.Stream], username: String, sensorType: String) {
+        _viewModel = .init(wrappedValue: .init(id: id, uuid: uuid, title: title, startTime: startTime, endTime: endTime, latitude: latitude, longitude: longitude, streamId: streams.first!.id, streamUnitName: streams.first!.unitName, streamUnitSymbol: streams.first!.unitSymbol, streamSensorName: streams.first!.sensorName, streamSensorPackageName: streams.first!.sensorPackageName, thresholds: .init(veryLow: 0, low: 0, medium: 0, high: 0, veryHigh: 0), sensorType: sensorType, username: username))
     }
     
     var body: some View {

@@ -147,8 +147,9 @@ private extension SearchMapView {
                                        endTime: session.endTime,
                                        latitude: session.location.latitude,
                                        longitude: session.location.longitude,
-                                       streamId: session.streamId,
-                                       thresholds: session.thresholdsValues,
+                                       streams: session.streams.map { stream in
+                                .init(id: stream.id, unitName: stream.unitName, unitSymbol: stream.unitSymbol, sensorName: stream.sensorName, sensorPackageName: stream.sensorPackageName, thresholdVeryLow: stream.thresholdsValues.veryLow, thresholdLow: stream.thresholdsValues.low, thresholdMedium: stream.thresholdsValues.medium, thresholdHigh: stream.thresholdsValues.high, thresholdVeryHigh: stream.thresholdsValues.veryHigh)
+                        },
                                        username: session.username,
                                        sensorType: viewModel.getSensorName())
                         .onMarkerChange(action: { pointer in

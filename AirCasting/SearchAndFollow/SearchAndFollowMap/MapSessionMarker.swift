@@ -13,6 +13,14 @@ struct MapSessionMarker {
     let startTime: String
     let endTime: String
     let markerImage: UIImage
-    let streamId: Int
-    let thresholdsValues: ThresholdsValue
+    let streams: [Stream]
+    
+    struct Stream {
+        let id: Int
+        let unitName: String
+        let unitSymbol: String
+        let sensorName: String
+        let sensorPackageName: String
+        let thresholdsValues: ThresholdsValue
+    }
 }
