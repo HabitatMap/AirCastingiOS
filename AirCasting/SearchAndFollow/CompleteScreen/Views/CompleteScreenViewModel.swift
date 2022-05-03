@@ -54,6 +54,9 @@ struct ExternalSessionStream: Identifiable {
             let id: Int
             let unitName: String
             let unitSymbol: String
+            // CHANGE THIS
+            let measurementShortType = "PM"
+            let measurementType = "Particulate Matter"
             let sensorName: String
             let sensorPackageName: String
             let thresholdVeryLow: Int32
@@ -179,9 +182,8 @@ class CompleteScreenViewModel: ObservableObject {
     func confirmationButtonPressed() {
         do {
             try externalSessionsStore.createExternalSession(session: session)
-            sessionStreams.get?.forEach({ stream in
-                
-            })
+            let s = try externalSessionsStore.getExistingSession(uuid: session.uuid)
+            Log.info("\(s.measurementStreams)")
         } catch {
             Log.error("FAILED: \(error)")
             self.alert = InAppAlerts.failedSessionDownloadAlert(dismiss: self.dismissView)

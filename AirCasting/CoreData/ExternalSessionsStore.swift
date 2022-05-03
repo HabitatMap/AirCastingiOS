@@ -17,16 +17,18 @@ struct DefaultExternalSessionsStore: ExternalSessionsStore {
     }
     
     func createExternalSession(session: PartialExternalSession) throws {
+        // Check if session with this uuid doesn't already exist in the db
         let sessionEntity = newSessionEntity()
         updateSessionsParams(sessionEntity, session: session)
+        addStream(session.stream, to: sessionEntity)
         try context.save()
     }
     
-//    func addStream(_ stream: ExternalSessionStream, to sessionUUID: String) throws {
-//        let existingSession = try context.existingExternalSession(uuid: sessionUUID)
-//        let measurementStream = MeasurementStreamEntity(context: context)
-//
-//    }
+    private func addStream(_ stream: PartialExternalSession.Stream, to session: ExternalSessionEntity) {
+        let measurementStream = MeasurementStreamEntity(context: context)
+        updateMeasurementStreamParams(measurementStream, stream: stream, session: session)
+        session.addToMeasurementStreams(measurementStream)
+    }
     
     // THIS IS FOR DEBUGGING PURPOSES
     func getExistingSession(uuid: String) throws -> ExternalSessionEntity {
@@ -50,21 +52,19 @@ struct DefaultExternalSessionsStore: ExternalSessionsStore {
         entity.provider = session.provider
     }
     
-//    private func updateMeasurementStreamParams(_ entity: MeasurementStreamEntity, stream: ExternalSessionStream, session: ExternalSessionEntity) {
-//        let newStream = MeasurementStreamEntity(context: context)
-//        newStream.sensorName = stream.sensorName
-//        newStream.sensorPackageName = stream.sensorPackageName
-//        newStream.measurementType = stream.measurementType
-//        newStream.measurementShortType = stream.measurementShortType
-//        newStream.unitName = stream.unitName
-//        newStream.unitSymbol = stream.unitSymbol
-//        newStream.thresholdVeryLow = stream.thresholds.veryLow
-//        newStream.thresholdLow = stream.thresholds.low
-//        newStream.thresholdMedium = stream.thresholds.medium
-//        newStream.thresholdHigh = stream.thresholds.high
-//        newStream.thresholdVeryHigh = stream.thresholds.veryHigh
-//        newStream.gotDeleted = false
-//
-//        session.addToMeasurementStreams(newStream)
-//    }
+    private func updateMeasurementStreamParams(_ entity: MeasurementStreamEntity, stream: PartialExternalSession.Stream, session: ExternalSessionEntity) {
+        let newStream = MeasurementStreamEntity(context: context)
+        newStream.sensorName = stream.sensorName
+        newStream.sensorPackageName = stream.sensorPackageName
+        newStream.measurementType = stream.measurementType
+        newStream.measurementShortType = stream.measurementShortType
+        newStream.unitName = stream.unitName
+        newStream.unitSymbol = stream.unitSymbol
+        newStream.thresholdVeryLow = stream.thresholdVeryLow
+        newStream.thresholdLow = stream.thresholdLow
+        newStream.thresholdMedium = stream.thresholdMedium
+        newStream.thresholdHigh = stream.thresholdHigh
+        newStream.thresholdVeryHigh = stream.thresholdVeryHigh
+        newStream.gotDeleted = false
+    }
 }
