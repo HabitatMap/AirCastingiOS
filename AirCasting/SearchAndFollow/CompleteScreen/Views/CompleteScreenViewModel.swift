@@ -67,8 +67,8 @@ class CompleteScreenViewModel: ObservableObject {
     private func reloadData() {
         // If the session already exists in the db change the button text to followed
         sessionStreams = .loading
-        //TODO: remove force unwrapping
-        thresholdsStore.getThresholdsValues(for: Self.getSensorName(session.streams.first!.sensorName)) { [weak self] result in
+        // TODO: remove force unwrapping
+        thresholdsStore.getThresholdsValues(for: Self.getSensorName(session.stream.first!.sensorName)) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let thresholdsValues):
@@ -76,7 +76,7 @@ class CompleteScreenViewModel: ObservableObject {
             case .failure(let error):
                 switch error {
                 case .noThresholdsFound:
-                    self.getMeasurementsAndDisplayData(self.session.thresholdsValues)
+                    self.getMeasurementsAndDisplayData(self.session.stream.first!.thresholdsValues)
                 default:
                     Log.error("Failed to get threshold values: \(error)")
                     DispatchQueue.main.async {
@@ -106,6 +106,7 @@ class CompleteScreenViewModel: ObservableObject {
     func confirmationButtonPressed() {
         do {
             try externalSessionsStore.createExternalSession(session: session)
+            // TODO: remove after debugging
             let s = try externalSessionsStore.getExistingSession(uuid: session.uuid)
             Log.info("\(s.measurementStreams)")
         } catch {
@@ -120,8 +121,8 @@ class CompleteScreenViewModel: ObservableObject {
     }
     
     private func getMeasurementsAndDisplayData(_ thresholds: ThresholdsValue) {
-        //TODO: remove force unwrapping
-        let streams = [String(session.streams.first!.id)] // In the future this will be changed for Airbeam sessions, cause we will need to get other streams ids from backend
+        // TODO: remove force unwrapping
+        let streams = [String(session.stream.first!.id)] // In the future this will be changed for Airbeam sessions, cause we will need to get other streams ids from backend
         downloadMeasurements(streams: streams) { [weak self] result in
             guard let self = self else { return }
             switch result {

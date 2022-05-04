@@ -91,9 +91,10 @@ class SearchMapViewModel: ObservableObject {
     }
     
     private func handleUpdatingSuccess(using sessions: [MapDownloaderSearchedSession]) {
-        DispatchQueue.main.async {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
             self.sessionsList = sessions.compactMap { s in
-                guard let stream = s.streams.first?.value else {
+                guard !s.streams.isEmpty else {
                     // If session doesn't have any streams we don't want to display it on the map
                     return nil
                 }
@@ -109,8 +110,8 @@ class SearchMapViewModel: ObservableObject {
                                                        uuid: s.uuid,
                                                        provider: s.username,
                                                        name: s.title,
-                                                       startTime: timeAsDate(s.startTimeLocal),
-                                                       endTime: timeAsDate(s.endTimeLocal),
+                                                       startTime: self.timeAsDate(s.startTimeLocal),
+                                                       endTime: self.timeAsDate(s.endTimeLocal),
                                                        longitude: s.longitude,
                                                        latitude: s.latitude,
                                                        stream: s.streams.values.map { stream in
@@ -137,7 +138,10 @@ class SearchMapViewModel: ObservableObject {
     private func timeAsDate(_ time: String) -> Date {
         let formatter = DateFormatters.SearchAndFollow.timeFormatter
         let date = formatter.date(from: time)
-        guard let d = date else { return DateBuilder.getFakeUTCDate() }
+        guard let d = date else {
+            Log.error("Failed to convert start time received from API to date")
+            return DateBuilder.getFakeUTCDate()
+        }
         return d
     }
 

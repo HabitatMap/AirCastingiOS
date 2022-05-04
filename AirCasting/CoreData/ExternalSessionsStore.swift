@@ -20,7 +20,9 @@ struct DefaultExternalSessionsStore: ExternalSessionsStore {
         // Check if session with this uuid doesn't already exist in the db
         let sessionEntity = newSessionEntity()
         updateSessionsParams(sessionEntity, session: session)
-        addStream(session.stream, to: sessionEntity)
+        session.stream.forEach { stream in
+            addStream(stream, to: sessionEntity)
+        }
         try context.save()
     }
     
@@ -60,11 +62,11 @@ struct DefaultExternalSessionsStore: ExternalSessionsStore {
         newStream.measurementShortType = stream.measurementShortType
         newStream.unitName = stream.unitName
         newStream.unitSymbol = stream.unitSymbol
-        newStream.thresholdVeryLow = stream.thresholdVeryLow
-        newStream.thresholdLow = stream.thresholdLow
-        newStream.thresholdMedium = stream.thresholdMedium
-        newStream.thresholdHigh = stream.thresholdHigh
-        newStream.thresholdVeryHigh = stream.thresholdVeryHigh
+        newStream.thresholdVeryLow = stream.thresholdsValues.veryLow
+        newStream.thresholdLow = stream.thresholdsValues.low
+        newStream.thresholdMedium = stream.thresholdsValues.medium
+        newStream.thresholdHigh = stream.thresholdsValues.high
+        newStream.thresholdVeryHigh = stream.thresholdsValues.veryHigh
         newStream.gotDeleted = false
     }
 }
