@@ -55,10 +55,10 @@ struct SearchMapView: View {
                     .padding(.horizontal)
             })
         }
-            .onChange(of: viewModel.shouldDismissView, perform: { result in
-                result ? self.presentationMode.wrappedValue.dismiss() : nil
-            })
-            .alert(item: $viewModel.alert, content: { $0.makeAlert() })
+        .onChange(of: viewModel.shouldDismissView, perform: { result in
+            result ? self.presentationMode.wrappedValue.dismiss() : nil
+        })
+        .alert(item: $viewModel.alert, content: { $0.makeAlert() })
     }
 }
 
@@ -103,14 +103,14 @@ private extension SearchMapView {
                                    showSearchAgainButton: $viewModel.searchAgainButton,
                                    sessions: $viewModel.sessionsList,
                                    selectedPointerID: $viewModel.cardPointerID)
-                .onPositionChange(action: { geoSquare in
-                    viewModel.mapPositionsChanged(geoSquare: geoSquare)
-                })
-                .onMarkerChange(action: { pointer in
-                    viewModel.markerSelectionChanged(using: pointer)
-                })
-                                   .padding(.top, 50)
-                                   .ignoresSafeArea(.all, edges: [.bottom])
+                    .onPositionChange(action: { geoSquare in
+                        viewModel.mapPositionsChanged(geoSquare: geoSquare)
+                    })
+                    .onMarkerChange(action: { pointer in
+                        viewModel.markerSelectionChanged(using: pointer)
+                    })
+                    .padding(.top, 50)
+                    .ignoresSafeArea(.all, edges: [.bottom])
                 LinearGradient(gradient: Gradient(colors: [.white.opacity(0.1),
                                                            .white.opacity(0.5),
                                                            .white.opacity(0.7),
@@ -119,7 +119,7 @@ private extension SearchMapView {
                                                            .white]),
                                startPoint: .bottom,
                                endPoint: .top)
-                .frame(width: reader.size.width, height: reader.size.height / 4.5, alignment: .top)
+                    .frame(width: reader.size.width, height: reader.size.height / 4.5, alignment: .top)
             }
         }
     }
@@ -132,32 +132,22 @@ private extension SearchMapView {
                                          color: .darkBlue,
                                          standardColor: .darkBlue,
                                          font: Fonts.boldHeading2)
-        .foregroundColor(.darkBlue)
+            .foregroundColor(.darkBlue)
     }
     
     var cards: some View {
         ScrollViewReader { scrollProxy in
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(alignment: .bottom, spacing: 12) {
-                    ForEach(viewModel.sessionsList, id: \.id) { session in
-                        BottomCardView(id: session.id,
-                                       uuid: session.uuid,
-                                       title: session.title,
-                                       startTime: session.startTime,
-                                       endTime: session.endTime,
-                                       latitude: session.location.latitude,
-                                       longitude: session.location.longitude,
-                                       streams: session.streams.map { stream in
-                                .init(id: stream.id, unitName: stream.unitName, unitSymbol: stream.unitSymbol, sensorName: stream.sensorName, sensorPackageName: stream.sensorPackageName, thresholdVeryLow: stream.thresholdsValues.veryLow, thresholdLow: stream.thresholdsValues.low, thresholdMedium: stream.thresholdsValues.medium, thresholdHigh: stream.thresholdsValues.high, thresholdVeryHigh: stream.thresholdsValues.veryHigh)
-                        },
-                                       username: session.username,
-                                       sensorType: viewModel.getSensorName())
-                        .onMarkerChange(action: { pointer in
-                            viewModel.markerSelectionChanged(using: pointer)
-                        })
-                        .border((viewModel.cardPointerID.number == session.id ? Color.accentColor : .clear), width: 1)
+                    ForEach(viewModel.sessionsList, id: \.id) { sessionMarker in
+                        let session = sessionMarker.session
+                        BottomCardView(session: session)
+                            .onMarkerChange(action: { pointer in
+                                viewModel.markerSelectionChanged(using: pointer)
+                            })
+                            .border((viewModel.cardPointerID.number == session.id ? Color.accentColor : .clear), width: 1)
                     }
-                                       }
+                }
                 .onChange(of: viewModel.cardPointerID.number , perform: { newValue in
                     withAnimation(.linear) {
                         scrollProxy.scrollTo(viewModel.cardPointerID.number, anchor: .leading)

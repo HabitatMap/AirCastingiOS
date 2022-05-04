@@ -105,11 +105,21 @@ class SearchMapViewModel: ObservableObject {
                                         startTime: s.startTimeLocal,
                                         endTime: s.endTimeLocal,
                                         markerImage: UIImage(systemName: "circle.circle.fill")!,
-                                        streams: s.streams.values.map { stream in
+                                        session: .init(id: s.id,
+                                                       uuid: s.uuid,
+                                                       provider: s.username,
+                                                       name: s.title,
+                                                       startTime: timeAsDate(s.startTimeLocal),
+                                                       endTime: timeAsDate(s.endTimeLocal),
+                                                       longitude: s.longitude,
+                                                       latitude: s.latitude,
+                                                       stream: s.streams.values.map { stream in
                         .init(
                             id: stream.id,
                             unitName: stream.unitName,
                             unitSymbol: stream.unitSymbol,
+                            measurementShortType: stream.measurementShortType,
+                            measurementType: stream.measurementType,
                             sensorName: stream.sensorName,
                             sensorPackageName: stream.sensorPackageName,
                             thresholdsValues: .init(veryLow: Int32(stream.thresholdVeryLow),
@@ -118,12 +128,19 @@ class SearchMapViewModel: ObservableObject {
                                                     high: Int32(stream.thresholdHigh),
                                                     veryHigh: Int32(stream.thresholdVeryHigh))
                         )
-                }
+                })
                 )
             }
         }
     }
     
+    private func timeAsDate(_ time: String) -> Date {
+        let formatter = DateFormatters.SearchAndFollow.timeFormatter
+        let date = formatter.date(from: time)
+        guard let d = date else { return DateBuilder.getFakeUTCDate() }
+        return d
+    }
+
     private func handleUpdatingError(using error: Error) {
         Log.warning("Error when downloading sessions \(error)")
         DispatchQueue.main.async {

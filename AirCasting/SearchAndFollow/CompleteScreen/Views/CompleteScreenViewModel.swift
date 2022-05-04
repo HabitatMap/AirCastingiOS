@@ -21,84 +21,6 @@ struct ExternalSessionStream: Identifiable {
         let longitude: Double
     }
 }
-
-//struct ExternalSession {
-//    let uuid: String
-//    let provider: String
-//    let name: String
-//    let startTime: Date
-//    let endTime: Date
-//    let longitude: Double
-//    let latitude: Double
-//    let streams: [Stream]
-//    let sensorName: String
-//    
-//    // TODO: This will be implemented with the functionality for saving session to the database
-//    struct Stream {
-//    }
-//}
-
-    struct PartialExternalSession {
-        let uuid: String
-        let provider: String
-        let name: String
-        let startTime: Date
-        let endTime: Date
-        let longitude: Double
-        let latitude: Double
-        let sensorName: String
-        let stream: Stream
-        let thresholdsValues: ThresholdsValue
-        
-        struct Stream {
-            let id: Int
-            let unitName: String
-            let unitSymbol: String
-            // CHANGE THIS
-            let measurementShortType = "PM"
-            let measurementType = "Particulate Matter"
-            let sensorName: String
-            let sensorPackageName: String
-            let thresholdVeryLow: Int32
-            let thresholdLow: Int32
-            let thresholdMedium: Int32
-            let thresholdHigh: Int32
-            let thresholdVeryHigh: Int32
-            let measurements: [Measurement] = []
-        }
-        
-        struct Measurement {
-            let value: Double
-            let time: Date
-            let latitude: Double
-            let longitude: Double
-        }
-        
-        static var mock: PartialExternalSession {
-            let session =  self.init(uuid: "202411",
-                                     provider: "OpenAir",
-                                     name: "KAHULUI, MAUI",
-                                     startTime: DateBuilder.getFakeUTCDate() - 60,
-                                     endTime: DateBuilder.getFakeUTCDate(),
-                                     longitude: 19.944544,
-                                     latitude: 50.049683,
-                                     sensorName: "OpenAQ-PM2.5",
-                                     stream: Stream(id: 499130,
-                                                           unitName: "microgram per cubic meter",
-                                                           unitSymbol: "µg/m³",
-                                                           sensorName: "OpenAQ-PM2.5",
-                                                           sensorPackageName : "OpenAQ-PM2.5",
-                                                           thresholdVeryLow : 0,
-                                                           thresholdLow : 12,
-                                                           thresholdMedium : 35,
-                                                           thresholdHigh : 55,
-                                                           thresholdVeryHigh : 150),
-                                     thresholdsValues: ThresholdsValue(veryLow: 0, low: 5, medium: 8, high: 10, veryHigh: 12))
-            // ...
-            
-            return session
-        }
-    }
     
 class CompleteScreenViewModel: ObservableObject {
     @Published var selectedStream: Int?
@@ -143,8 +65,10 @@ class CompleteScreenViewModel: ObservableObject {
     }
     
     private func reloadData() {
+        // If the session already exists in the db change the button text to followed
         sessionStreams = .loading
-        thresholdsStore.getThresholdsValues(for: Self.getSensorName(session.sensorName)) { [weak self] result in
+        //TODO: remove force unwrapping
+        thresholdsStore.getThresholdsValues(for: Self.getSensorName(session.streams.first!.sensorName)) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let thresholdsValues):
@@ -196,7 +120,8 @@ class CompleteScreenViewModel: ObservableObject {
     }
     
     private func getMeasurementsAndDisplayData(_ thresholds: ThresholdsValue) {
-        let streams = [String(session.stream.id)] // In the future this will be changed for Airbeam sessions, cause we will need to get other streams ids from backend
+        //TODO: remove force unwrapping
+        let streams = [String(session.streams.first!.id)] // In the future this will be changed for Airbeam sessions, cause we will need to get other streams ids from backend
         downloadMeasurements(streams: streams) { [weak self] result in
             guard let self = self else { return }
             switch result {

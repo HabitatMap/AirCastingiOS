@@ -5,6 +5,7 @@ import UIKit
 import CoreLocation
 
 struct MapSessionMarker {
+    // DELETE UNNECESSARY FIELDS
     let id: Int
     let username: String
     let uuid: String
@@ -13,14 +14,5 @@ struct MapSessionMarker {
     let startTime: String
     let endTime: String
     let markerImage: UIImage
-    let streams: [Stream]
-    
-    struct Stream {
-        let id: Int
-        let unitName: String
-        let unitSymbol: String
-        let sensorName: String
-        let sensorPackageName: String
-        let thresholdsValues: ThresholdsValue
-    }
+    let session: PartialExternalSession
 }
