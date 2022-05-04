@@ -57,7 +57,6 @@ class CompleteScreenViewModel: ObservableObject {
     private var externalSessionWithStreams: ExternalSessionWithStreamsAndMeasurements?
     
     @Injected private var service: StreamDownloader
-    @Injected private var thresholdsStore: ThresholdsStore
     @Injected private var singleSessionDownloader: SingleSessionDownloader
     @Injected private var externalSessionsStore: ExternalSessionsStore
     
@@ -76,24 +75,7 @@ class CompleteScreenViewModel: ObservableObject {
     private func reloadData() {
         // If the session already exists in the db change the button text to followed
         sessionStreams = .loading
-        // TODO: remove force unwrapping
-        thresholdsStore.getThresholdsValues(for: Self.getSensorName(session.stream.first!.sensorName)) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let thresholdsValues):
-                self.getMeasurementsAndDisplayData(thresholdsValues)
-            case .failure(let error):
-                switch error {
-                case .noThresholdsFound:
-                    self.getMeasurementsAndDisplayData(self.session.stream.first!.thresholdsValues)
-                default:
-                    Log.error("Failed to get threshold values: \(error)")
-                    DispatchQueue.main.async {
-                        self.alert = InAppAlerts.failedSessionDownloadAlert(dismiss: self.dismissView)
-                    }
-                }
-            }
-        }
+        getMeasurementsAndDisplayData()
     }
     
     func mapTapped() {
@@ -138,7 +120,7 @@ class CompleteScreenViewModel: ObservableObject {
         exitRoute()
     }
     
-    private func getMeasurementsAndDisplayData(_ thresholds: ThresholdsValue) {
+    private func getMeasurementsAndDisplayData() {
         let streams = session.stream.map(\.id)
         
         downloadMeasurements(streams: streams) { [weak self] result in
@@ -151,56 +133,58 @@ class CompleteScreenViewModel: ObservableObject {
                 }
             case .success(let downloadedStreamsWithMeasurements):
                 guard !downloadedStreamsWithMeasurements.isEmpty else { return }
+                
                 DispatchQueue.main.async {
-                    self.sessionStreams = .ready( downloadedStreamsWithMeasurements.map {
+                    self.externalSessionWithStreams = self.createExternalSession(with: downloadedStreamsWithMeasurements)
+                    
+                    self.sessionStreams = .ready( self.externalSessionWithStreams!.streams.map {
                         .init(id: $0.id,
                               sensorName: Self.getSensorName($0.sensorName),
-                              sensorUnit: $0.sensorUnit,
-                              lastMeasurementValue: $0.lastMeasurementValue,
-                              color: thresholds.colorFor(value: $0.lastMeasurementValue),
-                              measurements: $0.measurements.map({.init(value: $0.value, time: DateBuilder.getDateWithTimeIntervalSince1970(Double($0.time/1000)), latitude: $0.latitude, longitude: $0.longitude)}), thresholds: thresholds)
+                              sensorUnit: $0.unitSymbol,
+                              lastMeasurementValue: $0.measurements.last?.value ?? 0,
+                              color: $0.thresholdsValues.colorFor(value: $0.measurements.last?.value ?? 0),
+                              measurements: $0.measurements.map({.init(value: $0.value, time: $0.time, latitude: $0.latitude, longitude: $0.longitude)}), thresholds: $0.thresholdsValues)
                     })
                     
-                    self.externalSessionWithStreams =
-                        .init(uuid: self.session.uuid,
-                              provider: self.session.provider,
-                              name: self.session.name,
-                              startTime: self.session.startTime,
-                              endTime: self.session.endTime,
-                              longitude: self.session.longitude,
-                              latitude: self.session.latitude,
-                              streams: self.session.stream.compactMap { stream in
-                            
-                            guard let downloadedStream = downloadedStreamsWithMeasurements.first(where: { $0.sensorName == stream.sensorName }) else { return nil }
-                            
-                            let measurements = downloadedStream.measurements
-                            return .init(id: stream.id,
-                                         unitName: stream.unitName,
-                                         unitSymbol: stream.unitSymbol,
-                                         measurementShortType: stream.measurementShortType,
-                                         measurementType: stream.measurementType,
-                                         sensorName: stream.sensorName,
-                                         sensorPackageName: stream.sensorPackageName,
-                                         thresholdVeryLow: stream.thresholdsValues.veryLow,
-                                         thresholdLow: stream.thresholdsValues.low,
-                                         thresholdMedium: stream.thresholdsValues.medium,
-                                         thresholdHigh: stream.thresholdsValues.high,
-                                         thresholdVeryHigh: stream.thresholdsValues.veryHigh,
-                                         thresholdsValues: stream.thresholdsValues,
-                                         measurements: measurements.map {.init(value: $0.value, time: DateBuilder.getDateWithTimeIntervalSince1970(Double($0.time/1000)), latitude: $0.latitude, longitude: $0.longitude)})
-                        })
-                    
-                    if let stream = downloadedStreamsWithMeasurements.first {
+                    if let stream = self.externalSessionWithStreams!.streams.first {
                         self.selectedStream = stream.id
-                        self.selectedStreamUnitSymbol = stream.sensorUnit
-                        (self.chartStartTime, self.chartEndTime) = self.chartViewModel.generateEntries(with: stream.measurements.map({ SearchAndFollowChartViewModel.ChartMeasurement(value: $0.value, time: DateBuilder.getDateWithTimeIntervalSince1970(Double($0.time/1000))) }), thresholds: thresholds)
+                        self.selectedStreamUnitSymbol = stream.unitSymbol
+                        (self.chartStartTime, self.chartEndTime) = self.chartViewModel.generateEntries(with: stream.measurements.map({ SearchAndFollowChartViewModel.ChartMeasurement(value: $0.value, time: $0.time) }), thresholds: stream.thresholdsValues)
                     }
                 }
             }
         }
     }
     
-    
+    private func createExternalSession(with downloadedStreamsWithMeasurements: [StreamWithMeasurements]) -> ExternalSessionWithStreamsAndMeasurements {
+        .init(uuid: self.session.uuid,
+              provider: self.session.provider,
+              name: self.session.name,
+              startTime: self.session.startTime,
+              endTime: self.session.endTime,
+              longitude: self.session.longitude,
+              latitude: self.session.latitude,
+              streams: self.session.stream.compactMap { stream in
+            
+            guard let downloadedStream = downloadedStreamsWithMeasurements.first(where: { $0.sensorName == stream.sensorName }) else { return nil }
+            
+            let measurements = downloadedStream.measurements
+            return .init(id: stream.id,
+                         unitName: stream.unitName,
+                         unitSymbol: stream.unitSymbol,
+                         measurementShortType: stream.measurementShortType,
+                         measurementType: stream.measurementType,
+                         sensorName: stream.sensorName,
+                         sensorPackageName: stream.sensorPackageName,
+                         thresholdVeryLow: stream.thresholdsValues.veryLow,
+                         thresholdLow: stream.thresholdsValues.low,
+                         thresholdMedium: stream.thresholdsValues.medium,
+                         thresholdHigh: stream.thresholdsValues.high,
+                         thresholdVeryHigh: stream.thresholdsValues.veryHigh,
+                         thresholdsValues: stream.thresholdsValues,
+                         measurements: measurements.map {.init(value: $0.value, time: DateBuilder.getDateWithTimeIntervalSince1970(Double($0.time/1000)), latitude: $0.latitude, longitude: $0.longitude)})
+        })
+    }
     
     private func downloadMeasurements(streams: [Int], completion: @escaping (Result<[StreamWithMeasurements], Error>) -> Void) {
         guard !streams.isEmpty else {

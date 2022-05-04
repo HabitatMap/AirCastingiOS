@@ -12,6 +12,8 @@ enum ThresholdsStoreError: Error {
     case fetchRequestFailed
 }
 
+//TODO: Use this on external sessions saved to db
+
 struct DefaultThresholdsStore: ThresholdsStore {
     private let context: NSManagedObjectContext
     
