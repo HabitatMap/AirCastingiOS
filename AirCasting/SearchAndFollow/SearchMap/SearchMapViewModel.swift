@@ -99,12 +99,7 @@ class SearchMapViewModel: ObservableObject {
                     return nil
                 }
                 return MapSessionMarker(id: s.id,
-                                        username: s.username,
-                                        uuid: s.uuid,
-                                        title: s.title,
                                         location: .init(latitude: s.latitude, longitude: s.longitude),
-                                        startTime: s.startTimeLocal,
-                                        endTime: s.endTimeLocal,
                                         markerImage: UIImage(systemName: "circle.circle.fill")!,
                                         session: .init(id: s.id,
                                                        uuid: s.uuid,
