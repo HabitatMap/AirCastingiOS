@@ -37,6 +37,7 @@ class CompleteScreenViewModel: ObservableObject {
     let sessionEndTime: Date
     let sensorType: String
     @Published var completeButtonEnabled: Bool = false
+    @Published var completeButtonText: String = Strings.CompleteSearchView.confirmationButtonTitle
     @Published var sessionStreams: Loadable<[ExternalSessionStream]> = .loading {
         didSet {
             completeButtonEnabled = sessionStreams.isReady
@@ -109,6 +110,8 @@ class CompleteScreenViewModel: ObservableObject {
             // TODO: remove after debugging
             let s = try externalSessionsStore.getExistingSession(uuid: session.uuid)
             Log.info("\(s.measurementStreams)")
+            completeButtonEnabled = false
+            completeButtonText = Strings.CompleteSearchView.followedSessionButtonTitle
         } catch {
             Log.error("FAILED: \(error)")
             self.alert = InAppAlerts.failedSessionDownloadAlert(dismiss: self.dismissView)

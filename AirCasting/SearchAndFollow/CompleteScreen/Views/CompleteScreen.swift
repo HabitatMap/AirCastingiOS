@@ -144,7 +144,7 @@ private extension CompleteScreen {
         Button {
             viewModel.confirmationButtonPressed()
         } label: {
-            Text(Strings.CompleteSearchView.confirmationButtonTitle)
+            Text(viewModel.completeButtonText)
                 .font(Fonts.semiboldHeading1)
         }
         .buttonStyle(BlueButtonStyle())
