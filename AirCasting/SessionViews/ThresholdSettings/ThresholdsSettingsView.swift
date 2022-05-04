@@ -7,6 +7,7 @@
 
 import SwiftUI
 import AirCastingStyling
+import Resolver
 
 struct ThresholdsSettingsView: View {
     
@@ -14,11 +15,12 @@ struct ThresholdsSettingsView: View {
     @Environment(\.presentationMode) var presentationMode
     let initialThresholds: ThresholdsValue
     @StateObject private var thresholdSettingsViewModel: ThresholdSettingsViewModel
+    @InjectedObject private var userSettings: UserSettings
     
-    init(thresholdValues: Binding<ThresholdsValue>, initialThresholds: ThresholdsValue) {
+    init(thresholdValues: Binding<ThresholdsValue>, initialThresholds: ThresholdsValue, threshold: SensorThreshold) {
         _thresholdValues = thresholdValues
         self.initialThresholds = initialThresholds
-        _thresholdSettingsViewModel = .init(wrappedValue: ThresholdSettingsViewModel(initialThresholds: initialThresholds))
+        _thresholdSettingsViewModel = .init(wrappedValue: ThresholdSettingsViewModel(initialThresholds: initialThresholds, threshold: threshold))
     }
     
     var body: some View {
@@ -131,7 +133,7 @@ struct HeatmapSettings_Previews: PreviewProvider {
                                                                            low:      15,
                                                                            medium:   20,
                                                                            high:     25,
-                                                                           veryHigh: 30))
+                                                                           veryHigh: 30), threshold: .mock)
         }
 }
 #endif

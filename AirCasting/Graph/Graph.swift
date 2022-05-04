@@ -64,7 +64,7 @@ struct Graph: UIViewRepresentable {
         let uiView = AirCastingGraph(onDateRangeChange: { newRange in
             rangeChangeAction?(newRange)
         })
-        try? uiView.updateWithThreshold(thresholdValues: thresholds.rawThresholdsBinding.wrappedValue)
+        try? uiView.updateWithThreshold(thresholdValues: thresholds.sensorName == MeasurementStreamSensorName.f.rawValue && userSettings.convertToCelsius ? thresholds.rawThresholdsBindingCelsius.wrappedValue : thresholds.rawThresholdsBinding.wrappedValue)
         let entries = stream.allMeasurements?.sorted(by: { $0.time < $1.time }).compactMap({ measurement -> ChartDataEntry? in
             let timeInterval = Double(measurement.time.timeIntervalSince1970)
             let chartDataEntry = ChartDataEntry(x: timeInterval, y: getValue(of: measurement))
@@ -102,7 +102,7 @@ struct Graph: UIViewRepresentable {
                 context.coordinator.totalNumberOfMeasurements != stream.allMeasurements?.count ||
                 stream != context.coordinator.stream else { return }
         
-        try? uiView.updateWithThreshold(thresholdValues: thresholds.rawThresholdsBinding.wrappedValue)
+        try? uiView.updateWithThreshold(thresholdValues: thresholds.sensorName == MeasurementStreamSensorName.f.rawValue && userSettings.convertToCelsius ? thresholds.rawThresholdsBindingCelsius.wrappedValue : thresholds.rawThresholdsBinding.wrappedValue)
         let allLimitLines = getLimitLines()
         uiView.limitLines = allLimitLines
         

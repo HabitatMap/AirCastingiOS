@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Resolver
 
 struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsContainerViewModelable {
     
@@ -17,7 +18,8 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
     @Binding var selectedStream: MeasurementStreamEntity?
     @StateObject var statsContainerViewModel: StatsViewModelType
     let graphStatsDataSource: GraphStatsDataSource
-    
+    @InjectedObject private var userSettings: UserSettings
+
     var body: some View {
         VStack(alignment: .trailing) {
                 SessionHeaderView(action: {},
@@ -56,8 +58,10 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                                                         threshold: threshold)
                             }
                         }
-                        NavigationLink(destination: ThresholdsSettingsView(thresholdValues: threshold.thresholdsBinding,
-                                                                           initialThresholds: selectedStream.thresholds)) {
+//                        NavigationLink(destination: ThresholdsSettingsView(thresholdValues: threshold.thresholdsBinding,
+//                                                                           initialThresholds: selectedStream.thresholds, threshold: threshold)) {
+                        NavigationLink(destination: ThresholdsSettingsView(thresholdValues: threshold.sensorName == MeasurementStreamSensorName.f.rawValue && userSettings.convertToCelsius ? threshold.thresholdsCelsiusBinding : threshold.thresholdsBinding,
+                                                                           initialThresholds: selectedStream.thresholds, threshold: threshold)) {
                             EditButtonView()
                                 .padding([.horizontal, .top])
                         }

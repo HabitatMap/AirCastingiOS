@@ -2,6 +2,7 @@
 //
 
 import Foundation
+import Resolver
 
 class ThresholdSettingsViewModel: ObservableObject {
     
@@ -11,12 +12,27 @@ class ThresholdSettingsViewModel: ObservableObject {
     @Published var thresholdHigh = ""
     @Published var thresholdVeryHigh = ""
     let initialThresholds: ThresholdsValue
-
-    init(initialThresholds: ThresholdsValue) {
+    var threshold: SensorThreshold
+    @InjectedObject private var userSettings: UserSettings
+    
+    init(initialThresholds: ThresholdsValue, threshold: SensorThreshold) {
         self.initialThresholds = initialThresholds
+        self.threshold = threshold
     }
 
-    func resetToDefault() -> ThresholdsValue { initialThresholds }
+    func resetToDefault() -> ThresholdsValue {
+        if threshold.sensorName == MeasurementStreamSensorName.f.rawValue && userSettings.convertToCelsius {
+            return ThresholdsValue(
+                veryLow: Int32(TemperatureConverter.calculateCelsius(fahrenheit: Double(initialThresholds.veryLow))),
+                low: Int32(TemperatureConverter.calculateCelsius(fahrenheit: Double(initialThresholds.low))),
+                medium: Int32(TemperatureConverter.calculateCelsius(fahrenheit: Double(initialThresholds.medium))),
+                high: Int32(TemperatureConverter.calculateCelsius(fahrenheit: Double(initialThresholds.high))),
+                veryHigh: Int32(TemperatureConverter.calculateCelsius(fahrenheit: Double(initialThresholds.veryHigh)))
+            )
+        } else {
+            return initialThresholds
+        }
+    }
     
     func updateToNewThresholds() -> ThresholdsValue {
         let stringThresholdValues = [thresholdVeryHigh, thresholdHigh, thresholdMedium, thresholdLow, thresholdVeryLow]
