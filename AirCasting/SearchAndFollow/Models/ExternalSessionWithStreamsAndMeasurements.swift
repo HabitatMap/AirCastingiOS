@@ -26,6 +26,7 @@ struct ExternalSessionWithStreamsAndMeasurements {
         let thresholdMedium: Int32
         let thresholdHigh: Int32
         let thresholdVeryHigh: Int32
+        let thresholdsValues: ThresholdsValue // REMOVE THIS OR THE ABOVE
         let measurements: [Measurement]
     }
     
