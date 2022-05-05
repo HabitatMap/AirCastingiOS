@@ -3,13 +3,12 @@
 
 import Foundation
 
-enum ParameterType: Codable, Identifiable, CaseIterable {
+enum MeasurementType: Codable, CaseIterable {
     case particulateMatter
     case ozone
 }
 
-extension ParameterType {
-    var id: Self { self }
+extension MeasurementType {
     
     var capitalizedName: String {
         switch self {

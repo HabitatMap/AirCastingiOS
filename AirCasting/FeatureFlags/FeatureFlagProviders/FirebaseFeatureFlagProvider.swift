@@ -48,6 +48,7 @@ class FirebaseFeatureFlagProvider: FeatureFlagProvider {
         case .notes: return "session_notes"
         case .locationlessSessions: return "locationless_sessions"
         case .searchAndFollow: return "search_and_follow"
+        case .deleteAccount: return "delete_account"
         }
     }
     

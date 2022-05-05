@@ -48,6 +48,7 @@ struct BottomCardView: View {
                     .shadow(color: .sessionCardShadow, radius: 9, x: 0, y: 1)
             }
         )
+        .cornerRadius(8)
     }
 }
 

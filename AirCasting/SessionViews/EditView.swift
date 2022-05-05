@@ -22,7 +22,7 @@ struct EditView<VM: EditViewModel>: View {
             }
         }
         .onAppear {
-            editSessionViewModel.downloadSessionAndReloadView()
+            editSessionViewModel.viewAppeared()
         }
         .onChange(of: editSessionViewModel.shouldDismiss) {
             $0 ? presentationMode.wrappedValue.dismiss() : ()
