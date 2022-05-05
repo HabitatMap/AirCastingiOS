@@ -15,6 +15,10 @@ final class SessionDataEraser: ObservableObject {
                 let request: NSFetchRequest<SessionEntity> = SessionEntity.fetchRequest()
                 let sessions = try context.fetch(request)
                 sessions.forEach(context.delete)
+                
+                let externalSessionsRequest = ExternalSessionEntity.fetchRequest()
+                let externalSessions = try context.fetch(externalSessionsRequest)
+                externalSessions.forEach(context.delete)
                 try context.save()
                 completion?(.success(()))
             } catch {
