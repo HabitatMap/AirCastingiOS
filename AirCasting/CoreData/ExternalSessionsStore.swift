@@ -18,7 +18,14 @@ struct DefaultExternalSessionsStore: ExternalSessionsStore {
     }
     
     func createExternalSession(session: ExternalSessionWithStreamsAndMeasurements) throws {
-        _ = try context.existingExternalSession(uuid: session.uuid)
+        enum CreatingExternalSessionError: Error {
+            case sessionAlreadyExists
+        }
+        
+        guard (try? context.existingExternalSession(uuid: session.uuid)) == nil else {
+            throw CreatingExternalSessionError.sessionAlreadyExists
+        }
+        
         let sessionEntity = newSessionEntity()
         updateSessionsParams(sessionEntity, session: session)
         session.streams.forEach { stream in
