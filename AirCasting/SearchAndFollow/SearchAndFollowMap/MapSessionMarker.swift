@@ -4,7 +4,11 @@
 import UIKit
 import CoreLocation
 
-struct MapSessionMarker {
+struct MapSessionMarker: Equatable {
+    static func == (lhs: MapSessionMarker, rhs: MapSessionMarker) -> Bool {
+        lhs.id == rhs.id
+    }
+    
     let id: Int
     let username: String
     let uuid: String

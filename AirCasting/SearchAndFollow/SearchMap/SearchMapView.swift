@@ -59,9 +59,7 @@ struct SearchMapView: View {
                 result ? self.presentationMode.wrappedValue.dismiss() : nil
             })
             .alert(item: $viewModel.alert, content: { $0.makeAlert() })
-            .sheet(isPresented: $viewModel.isLocationPopupPresented, onDismiss: {
-                viewModel.locationPopupDisimssed()
-            }) {
+            .sheet(isPresented: $viewModel.isLocationPopupPresented) {
                 PlacePicker(service: SearchPickerService(addressName: .init(get: {
                     viewModel.passedLocation
                 }, set: { new in
