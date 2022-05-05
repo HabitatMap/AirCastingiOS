@@ -18,7 +18,7 @@ struct DefaultExternalSessionsStore: ExternalSessionsStore {
     }
     
     func createExternalSession(session: ExternalSessionWithStreamsAndMeasurements) throws {
-        // Check if session with this uuid doesn't already exist in the db
+        _ = try context.existingExternalSession(uuid: session.uuid)
         let sessionEntity = newSessionEntity()
         updateSessionsParams(sessionEntity, session: session)
         session.streams.forEach { stream in
