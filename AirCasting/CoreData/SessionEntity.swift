@@ -108,6 +108,7 @@ public class SessionEntity: NSManagedObject, Identifiable {
         }) ?? []
     }
     
+    //TODO: COPY THIS
     public var allStreams: [MeasurementStreamEntity]? {
         measurementStreams?.array as? [MeasurementStreamEntity]
     }

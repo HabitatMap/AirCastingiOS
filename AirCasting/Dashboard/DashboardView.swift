@@ -153,7 +153,7 @@ struct DashboardView: View {
                                             thresholds: thresholds
                             )
                         case .externalSession(let externalSesssion):
-                            Text(externalSesssion.name ?? "External session")
+                            ExternalSessionCard(session: externalSesssion, thresholds: thresholds)
                         }
                     }
                 }

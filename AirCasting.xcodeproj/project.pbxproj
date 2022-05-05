@@ -11,8 +11,8 @@
 		33050876276B7A4400D18C69 /* ShareSessionStreamOptionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33050875276B7A4400D18C69 /* ShareSessionStreamOptionViewModel.swift */; };
 		331EA80A25E32094009DEFDB /* ConfirmCreatingSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331EA80925E32094009DEFDB /* ConfirmCreatingSessionView.swift */; };
 		332F521425FA38430047236D /* MicrophoneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332F521325FA38430047236D /* MicrophoneManager.swift */; };
-		33406247281821FA004DA4DA /* ExternalSessionsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33406246281821FA004DA4DA /* ExternalSessionsStore.swift */; };
 		334062442816B4B6004DA4DA /* EditLocationlessSessionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 334062432816B4B6004DA4DA /* EditLocationlessSessionViewModel.swift */; };
+		33406247281821FA004DA4DA /* ExternalSessionsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33406246281821FA004DA4DA /* ExternalSessionsStore.swift */; };
 		3346F1F626318C1600BA4695 /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3346F1F526318C1600BA4695 /* SettingsManager.swift */; };
 		334CC6FA2751454C00C10B53 /* SDCardMobileSessionsSavingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 334CC6F92751454C00C10B53 /* SDCardMobileSessionsSavingService.swift */; };
 		335A8B2F2785D49100355D46 /* ShareSessionAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 335A8B2E2785D49100355D46 /* ShareSessionAPI.swift */; };
@@ -60,6 +60,8 @@
 		33F604A528227F9700B48C63 /* PartialExternalSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F604A428227F9700B48C63 /* PartialExternalSession.swift */; };
 		33F604A728227FD700B48C63 /* ExternalSessionWithStreamsAndMeasurements.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F604A628227FD700B48C63 /* ExternalSessionWithStreamsAndMeasurements.swift */; };
 		33F604AA2822B93C00B48C63 /* SearchAndFollowCompleteScreenController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F604A92822B93C00B48C63 /* SearchAndFollowCompleteScreenController.swift */; };
+		33F604AF2824174E00B48C63 /* ExternalSessionCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F604AE2824174E00B48C63 /* ExternalSessionCard.swift */; };
+		33F604B12824180900B48C63 /* ExternalSessionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F604B02824180900B48C63 /* ExternalSessionHeader.swift */; };
 		33F82FC227F60498001654D8 /* ThresholdsValue+Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F82FC127F60498001654D8 /* ThresholdsValue+Color.swift */; };
 		33F82FC427F61D3D001654D8 /* ThresholdsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F82FC327F61D3D001654D8 /* ThresholdsStore.swift */; };
 		33FD502227A144B300162384 /* SingleMeasurementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33FD502127A144B300162384 /* SingleMeasurementView.swift */; };
@@ -475,9 +477,9 @@
 		33050875276B7A4400D18C69 /* ShareSessionStreamOptionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSessionStreamOptionViewModel.swift; sourceTree = "<group>"; };
 		331EA80925E32094009DEFDB /* ConfirmCreatingSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmCreatingSessionView.swift; sourceTree = "<group>"; };
 		332F521325FA38430047236D /* MicrophoneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrophoneManager.swift; sourceTree = "<group>"; };
+		334062432816B4B6004DA4DA /* EditLocationlessSessionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditLocationlessSessionViewModel.swift; sourceTree = "<group>"; };
 		3340624528181376004DA4DA /* AirCasting v5.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AirCasting v5.xcdatamodel"; sourceTree = "<group>"; };
 		33406246281821FA004DA4DA /* ExternalSessionsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalSessionsStore.swift; sourceTree = "<group>"; };
-		334062432816B4B6004DA4DA /* EditLocationlessSessionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditLocationlessSessionViewModel.swift; sourceTree = "<group>"; };
 		3346F1F526318C1600BA4695 /* SettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
 		334CC6F92751454C00C10B53 /* SDCardMobileSessionsSavingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDCardMobileSessionsSavingService.swift; sourceTree = "<group>"; };
 		335A8B2E2785D49100355D46 /* ShareSessionAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSessionAPI.swift; sourceTree = "<group>"; };
@@ -525,6 +527,8 @@
 		33F604A428227F9700B48C63 /* PartialExternalSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartialExternalSession.swift; sourceTree = "<group>"; };
 		33F604A628227FD700B48C63 /* ExternalSessionWithStreamsAndMeasurements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalSessionWithStreamsAndMeasurements.swift; sourceTree = "<group>"; };
 		33F604A92822B93C00B48C63 /* SearchAndFollowCompleteScreenController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchAndFollowCompleteScreenController.swift; sourceTree = "<group>"; };
+		33F604AE2824174E00B48C63 /* ExternalSessionCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalSessionCard.swift; sourceTree = "<group>"; };
+		33F604B02824180900B48C63 /* ExternalSessionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalSessionHeader.swift; sourceTree = "<group>"; };
 		33F82FC127F60498001654D8 /* ThresholdsValue+Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ThresholdsValue+Color.swift"; sourceTree = "<group>"; };
 		33F82FC327F61D3D001654D8 /* ThresholdsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThresholdsStore.swift; sourceTree = "<group>"; };
 		33FD502127A144B300162384 /* SingleMeasurementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleMeasurementView.swift; sourceTree = "<group>"; };
@@ -1100,6 +1104,15 @@
 			path = Contollers;
 			sourceTree = "<group>";
 		};
+		33F604AD2824173300B48C63 /* ExternalSessionsViews */ = {
+			isa = PBXGroup;
+			children = (
+				33F604AE2824174E00B48C63 /* ExternalSessionCard.swift */,
+				33F604B02824180900B48C63 /* ExternalSessionHeader.swift */,
+			);
+			path = ExternalSessionsViews;
+			sourceTree = "<group>";
+		};
 		4F858F4A2624A8120059271A /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -1285,6 +1298,7 @@
 		AC6D56A825B0837500D221BA /* SessionViews */ = {
 			isa = PBXGroup;
 			children = (
+				33F604AD2824173300B48C63 /* ExternalSessionsViews */,
 				3305086F276B566800D18C69 /* ShareSession */,
 				DDF12AE926B2ADFD00D067C7 /* SessionCardView */,
 				AC6D569E25AEEAE700D221BA /* SessionHeaderView.swift */,
@@ -2820,6 +2834,7 @@
 				DDB05581274BC60D00DA1A8A /* SessionUpdateService.swift in Sources */,
 				B38E6CD226C5F85000C21C45 /* SyncTriggeringSesionStopperDecorator.swift in Sources */,
 				ACCEB2292768A13B0040140B /* ThresholdsValue.swift in Sources */,
+				33F604B12824180900B48C63 /* ExternalSessionHeader.swift in Sources */,
 				DDA90F0127CCB5AE002F4465 /* SearchAndFollowMap.swift in Sources */,
 				4F5D3F6F262C862E003AD82E /* KeychainStorage.swift in Sources */,
 				DD9EBFD5279EB70900192CB5 /* TextView.swift in Sources */,
@@ -3060,6 +3075,7 @@
 				4F15548F263C819C00FF3208 /* MeasurementEntity.swift in Sources */,
 				DD1C99C1267CBFCB00B786C4 /* MyAccountViewSignOut.swift in Sources */,
 				3375E8D62791EFA70019A5DE /* FileZipper.swift in Sources */,
+				33F604AF2824174E00B48C63 /* ExternalSessionCard.swift in Sources */,
 				DD55C39026BAA73F0069838F /* BluetoothHandler.swift in Sources */,
 				B33B160027AEE6E900138FFA /* GarbageCollector.swift in Sources */,
 			);
