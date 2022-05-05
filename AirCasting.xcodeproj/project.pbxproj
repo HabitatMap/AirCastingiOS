@@ -58,6 +58,7 @@
 		33F3D47C27AC1A5C003CA386 /* SessionTypeIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F3D47B27AC1A5C003CA386 /* SessionTypeIndicator.swift */; };
 		33F604A528227F9700B48C63 /* PartialExternalSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F604A428227F9700B48C63 /* PartialExternalSession.swift */; };
 		33F604A728227FD700B48C63 /* ExternalSessionWithStreamsAndMeasurements.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F604A628227FD700B48C63 /* ExternalSessionWithStreamsAndMeasurements.swift */; };
+		33F604AA2822B93C00B48C63 /* SearchAndFollowCompleteScreenController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F604A92822B93C00B48C63 /* SearchAndFollowCompleteScreenController.swift */; };
 		33F82FC227F60498001654D8 /* ThresholdsValue+Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F82FC127F60498001654D8 /* ThresholdsValue+Color.swift */; };
 		33F82FC427F61D3D001654D8 /* ThresholdsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F82FC327F61D3D001654D8 /* ThresholdsStore.swift */; };
 		33FD502227A144B300162384 /* SingleMeasurementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33FD502127A144B300162384 /* SingleMeasurementView.swift */; };
@@ -518,6 +519,7 @@
 		33F3D47B27AC1A5C003CA386 /* SessionTypeIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionTypeIndicator.swift; sourceTree = "<group>"; };
 		33F604A428227F9700B48C63 /* PartialExternalSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartialExternalSession.swift; sourceTree = "<group>"; };
 		33F604A628227FD700B48C63 /* ExternalSessionWithStreamsAndMeasurements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalSessionWithStreamsAndMeasurements.swift; sourceTree = "<group>"; };
+		33F604A92822B93C00B48C63 /* SearchAndFollowCompleteScreenController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchAndFollowCompleteScreenController.swift; sourceTree = "<group>"; };
 		33F82FC127F60498001654D8 /* ThresholdsValue+Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ThresholdsValue+Color.swift"; sourceTree = "<group>"; };
 		33F82FC327F61D3D001654D8 /* ThresholdsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThresholdsStore.swift; sourceTree = "<group>"; };
 		33FD502127A144B300162384 /* SingleMeasurementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleMeasurementView.swift; sourceTree = "<group>"; };
@@ -1030,6 +1032,8 @@
 		33A7FF1B27C5116E00A138D6 /* CompleteScreen */ = {
 			isa = PBXGroup;
 			children = (
+				33F604A82822B91E00B48C63 /* Contollers */,
+				33F604A328227F7500B48C63 /* Models */,
 				33D92F5B27EB6D2000252F3B /* Views */,
 			);
 			path = CompleteScreen;
@@ -1078,6 +1082,14 @@
 				33F604A628227FD700B48C63 /* ExternalSessionWithStreamsAndMeasurements.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		33F604A82822B91E00B48C63 /* Contollers */ = {
+			isa = PBXGroup;
+			children = (
+				33F604A92822B93C00B48C63 /* SearchAndFollowCompleteScreenController.swift */,
+			);
+			path = Contollers;
 			sourceTree = "<group>";
 		};
 		4F858F4A2624A8120059271A /* Resources */ = {
@@ -2069,7 +2081,6 @@
 		DD123EBD27BD1CA8001083C3 /* SearchAndFollow */ = {
 			isa = PBXGroup;
 			children = (
-				33F604A328227F7500B48C63 /* Models */,
 				DD123EC327BD35CB001083C3 /* MapSessionsDownloader */,
 				DDA90EFF27CCB597002F4465 /* SearchAndFollowMap */,
 				DD80AE1E27BA46F500D9B123 /* SearchLocation */,
@@ -2896,6 +2907,7 @@
 				AC6D56A525AF211200D221BA /* MultiSliderView.swift in Sources */,
 				AC524A7626133A370061AD45 /* MeaurementStreamExtension.swift in Sources */,
 				DD9DD37327A2B91A00E657E4 /* TurnOnLocationFixedView.swift in Sources */,
+				33F604AA2822B93C00B48C63 /* SearchAndFollowCompleteScreenController.swift in Sources */,
 				DDC5F58A271979F100F1F9D8 /* Fonts.swift in Sources */,
 				33F20FDD27692231004364EA /* SyncedMeasurementsDownloadingService.swift in Sources */,
 				3397C81F2787024C0050B333 /* UserDefaults.swift in Sources */,
