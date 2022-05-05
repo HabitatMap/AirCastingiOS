@@ -46,7 +46,7 @@ class CompleteScreenViewModel: ObservableObject {
     @Published var completeButtonText: String = Strings.CompleteSearchView.confirmationButtonTitle
     @Published var sessionStreams: Loadable<[SessionStreamViewModel]> = .loading {
         didSet {
-            completeButtonEnabled = sessionStreams.isReady
+            completeButtonEnabled = sessionStreams.isReady && !sessionAlreadyFollowed
         }
     }
     @Published var chartViewModel = SearchAndFollowChartViewModel()
@@ -55,6 +55,10 @@ class CompleteScreenViewModel: ObservableObject {
     
     private let session: PartialExternalSession
     private var externalSessionWithStreams: ExternalSessionWithStreamsAndMeasurements?
+    private var sessionAlreadyFollowed: Bool {
+        externalSessionsStore.doesSessionExist(uuid: session.uuid)
+    }
+    private var followedText = Strings.CompleteSearchView.followedSessionButtonTitle
     
     @Injected private var singleSessionDownloader: SingleSessionDownloader
     @Injected private var externalSessionsStore: ExternalSessionsStore
@@ -69,11 +73,13 @@ class CompleteScreenViewModel: ObservableObject {
         sessionEndTime = session.endTime
         sensorType = session.provider
         self.exitRoute = exitRoute
+        if sessionAlreadyFollowed {
+            completeButtonText = followedText
+        }
         reloadData()
     }
     
     private func reloadData() {
-        // If the session already exists in the db change the button text to followed
         sessionStreams = .loading
         getMeasurementsAndDisplayData()
     }
@@ -108,7 +114,7 @@ class CompleteScreenViewModel: ObservableObject {
             let s = try externalSessionsStore.getExistingSession(uuid: externalSessionWithStreams.uuid)
             Log.info("\(s.measurementStreams)")
             completeButtonEnabled = false
-            completeButtonText = Strings.CompleteSearchView.followedSessionButtonTitle
+            completeButtonText = followedText
         } catch {
             Log.error("FAILED: \(error)")
             self.alert = InAppAlerts.failedSessionDownloadAlert(dismiss: self.dismissView)

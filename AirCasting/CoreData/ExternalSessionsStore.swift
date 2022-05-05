@@ -7,6 +7,7 @@ import CoreData
 protocol ExternalSessionsStore {
     func createExternalSession(session: ExternalSessionWithStreamsAndMeasurements) throws
     func getExistingSession(uuid: String) throws -> ExternalSessionEntity
+    func doesSessionExist(uuid: String) -> Bool
 }
 
 struct DefaultExternalSessionsStore: ExternalSessionsStore {
@@ -27,6 +28,10 @@ struct DefaultExternalSessionsStore: ExternalSessionsStore {
         // TODO: If thresholds don't exist in the db already, create the thresholdsEntity
         
         try context.save()
+    }
+    
+    func doesSessionExist(uuid: String) -> Bool {
+        (try? context.existingExternalSession(uuid: uuid)) != nil
     }
     
     private func addStream(_ stream: ExternalSessionWithStreamsAndMeasurements.Stream, to session: ExternalSessionEntity) {
