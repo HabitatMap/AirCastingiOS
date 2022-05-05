@@ -101,10 +101,7 @@ final class AuthorizationAPIService {
 
     @discardableResult
     func signIn(input: AuthorizationAPI.SigninUserInput, completion: @escaping (Result<AuthorizationAPI.UserProfile, AuthorizationError>) -> Void) -> Cancellable{
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.addValue("application/json", forHTTPHeaderField: "Accept")
+        var request = URLRequest.jsonGET(url: url)
         request.httpShouldHandleCookies = false
         request.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
 

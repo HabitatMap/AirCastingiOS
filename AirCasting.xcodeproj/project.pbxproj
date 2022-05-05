@@ -445,6 +445,16 @@
 		DDF62601269C779800F23489 /* UIApplication+AppInfo.swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF62600269C779800F23489 /* UIApplication+AppInfo.swift.swift */; };
 		DDF7599A268332E900D906BA /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF75999268332E900D906BA /* Strings.swift */; };
 		EE969E7E1981C41852FB7745 /* Pods_AirCastingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A54057326D27D23E9906704 /* Pods_AirCastingTests.framework */; };
+		FA4F1B732817EDDE002711B4 /* AirBeamMeasurementsDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4F1B722817EDDE002711B4 /* AirBeamMeasurementsDownloader.swift */; };
+		FA4F1B75281809B2002711B4 /* AirBeamStreamSuffixes.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4F1B74281809B2002711B4 /* AirBeamStreamSuffixes.swift */; };
+		FA4F1B77281809EE002711B4 /* MeasurementsDownloaderResultModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4F1B76281809EE002711B4 /* MeasurementsDownloaderResultModel.swift */; };
+		FAB1D4A427FAD83E004F531D /* BottomCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB1D4A327FAD83E004F531D /* BottomCardViewModel.swift */; };
+		FAB1D4A627FB28C8004F531D /* MapDownloaderSensorType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB1D4A527FB28C8004F531D /* MapDownloaderSensorType.swift */; };
+		FAB34933281AB208001F6E58 /* URLRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB34932281AB208001F6E58 /* URLRequest.swift */; };
+		FAB34935281AC28E001F6E58 /* AirBeamStreamPrefix.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB34934281AC28E001F6E58 /* AirBeamStreamPrefix.swift */; };
+		FAF3B4DD28057A3300F0F4B0 /* PMSensorType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF3B4DC28057A3300F0F4B0 /* PMSensorType.swift */; };
+		FAF3B4DF28057A3D00F0F4B0 /* OzoneSensorType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF3B4DE28057A3D00F0F4B0 /* OzoneSensorType.swift */; };
+		FAF3B4E128057EC100F0F4B0 /* ParameterType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF3B4E028057EC100F0F4B0 /* ParameterType.swift */; };
 		FA26E9E928107150008EE514 /* SearchParameter.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA26E9E828107150008EE514 /* SearchParameter.swift */; };
 		FAB1D4A427FAD83E004F531D /* BottomCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB1D4A327FAD83E004F531D /* BottomCardViewModel.swift */; };
 		FAB1D4A627FB28C8004F531D /* MapDownloaderSensorType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB1D4A527FB28C8004F531D /* MapDownloaderSensorType.swift */; };
@@ -912,6 +922,16 @@
 		DDF551D427985AAB009D1347 /* AirCasting v2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AirCasting v2.xcdatamodel"; sourceTree = "<group>"; };
 		DDF62600269C779800F23489 /* UIApplication+AppInfo.swift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+AppInfo.swift.swift"; sourceTree = "<group>"; };
 		DDF75999268332E900D906BA /* Strings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Strings.swift; sourceTree = "<group>"; };
+		FA4F1B722817EDDE002711B4 /* AirBeamMeasurementsDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirBeamMeasurementsDownloader.swift; sourceTree = "<group>"; };
+		FA4F1B74281809B2002711B4 /* AirBeamStreamSuffixes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirBeamStreamSuffixes.swift; sourceTree = "<group>"; };
+		FA4F1B76281809EE002711B4 /* MeasurementsDownloaderResultModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementsDownloaderResultModel.swift; sourceTree = "<group>"; };
+		FAB1D4A327FAD83E004F531D /* BottomCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomCardViewModel.swift; sourceTree = "<group>"; };
+		FAB1D4A527FB28C8004F531D /* MapDownloaderSensorType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapDownloaderSensorType.swift; sourceTree = "<group>"; };
+		FAB34932281AB208001F6E58 /* URLRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLRequest.swift; sourceTree = "<group>"; };
+		FAB34934281AC28E001F6E58 /* AirBeamStreamPrefix.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirBeamStreamPrefix.swift; sourceTree = "<group>"; };
+		FAF3B4DC28057A3300F0F4B0 /* PMSensorType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PMSensorType.swift; sourceTree = "<group>"; };
+		FAF3B4DE28057A3D00F0F4B0 /* OzoneSensorType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OzoneSensorType.swift; sourceTree = "<group>"; };
+		FAF3B4E028057EC100F0F4B0 /* ParameterType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParameterType.swift; sourceTree = "<group>"; };
 		FA26E9E828107150008EE514 /* SearchParameter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchParameter.swift; sourceTree = "<group>"; };
 		FAB1D4A327FAD83E004F531D /* BottomCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomCardViewModel.swift; sourceTree = "<group>"; };
 		FAB1D4A527FB28C8004F531D /* MapDownloaderSensorType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapDownloaderSensorType.swift; sourceTree = "<group>"; };
@@ -1656,6 +1676,7 @@
 				DD9EBFD7279EEAB300192CB5 /* DataBuilder.swift */,
 				DDC22C7F27B6C508000E81D1 /* ViewControl.swift */,
 				338CA6F427D1045300505331 /* WKWebView.swift */,
+				FAB34932281AB208001F6E58 /* URLRequest.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -2063,6 +2084,7 @@
 		DD123EBD27BD1CA8001083C3 /* SearchAndFollow */ = {
 			isa = PBXGroup;
 			children = (
+				FA4F1B712817EDC8002711B4 /* AirBeamMeasurements */,
 				DD123EC327BD35CB001083C3 /* MapSessionsDownloader */,
 				DDA90EFF27CCB597002F4465 /* SearchAndFollowMap */,
 				DD80AE1E27BA46F500D9B123 /* SearchLocation */,
@@ -2339,6 +2361,17 @@
 				DDF12AED26B2B87F00D067C7 /* SessionCartViewModelTest.swift */,
 			);
 			path = SessionCartTests;
+			sourceTree = "<group>";
+		};
+		FA4F1B712817EDC8002711B4 /* AirBeamMeasurements */ = {
+			isa = PBXGroup;
+			children = (
+				FA4F1B722817EDDE002711B4 /* AirBeamMeasurementsDownloader.swift */,
+				FA4F1B74281809B2002711B4 /* AirBeamStreamSuffixes.swift */,
+				FA4F1B76281809EE002711B4 /* MeasurementsDownloaderResultModel.swift */,
+				FAB34934281AC28E001F6E58 /* AirBeamStreamPrefix.swift */,
+			);
+			path = AirBeamMeasurements;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -2780,6 +2813,7 @@
 				3362B4ED25E69987008D61BA /* CreateSessionDetailsView.swift in Sources */,
 				B3EBB10626A06CD7002BD81F /* ScheduledForgotPasswordControllerProxy.swift in Sources */,
 				AC08A662266E2AEC0081697C /* ABMeasurementsView.swift in Sources */,
+				FA4F1B75281809B2002711B4 /* AirBeamStreamSuffixes.swift in Sources */,
 				B3ED03C32729A8E300513522 /* AirCastingNotifications.swift in Sources */,
 				AC006D2B275F537300E99019 /* UploadFixedSessionAPIService.swift in Sources */,
 				B33B15FF27AEE6E900138FFA /* WeakRef.swift in Sources */,
@@ -2795,12 +2829,14 @@
 				B33B15F127AEE69900138FFA /* ThresholdLoggerProxy.swift in Sources */,
 				DDBC156426A0799300982526 /* SystemSettings.swift in Sources */,
 				B3EBB10A26A06D11002BD81F /* EmailResetPasswordService.swift in Sources */,
+				FAB34935281AC28E001F6E58 /* AirBeamStreamPrefix.swift in Sources */,
 				4F945EEE2649F3F5008A5B22 /* SessionCreator.swift in Sources */,
 				DD22F0FD27D668DD00CB8B97 /* BottomCard.swift in Sources */,
 				33F3D47C27AC1A5C003CA386 /* SessionTypeIndicator.swift in Sources */,
 				4F945EF02649F455008A5B22 /* AirBeamFixedWifiSessionCreator.swift in Sources */,
 				B30BAC132694AA3200AE0476 /* MeasurementsStatisticsController.swift in Sources */,
 				DD9DD37527A2B92E00E657E4 /* TurnOnLocationFixedViewModel.swift in Sources */,
+				FAB34933281AB208001F6E58 /* URLRequest.swift in Sources */,
 				3367B61727C924B000930E62 /* SearchCompleteScreenMapView.swift in Sources */,
 				DDC3E954275E4C3A0066A5DF /* SettingsViewModel.swift in Sources */,
 				33769A5C2705B06F007D1EA7 /* ChartViewModel.swift in Sources */,
@@ -2906,6 +2942,7 @@
 				3387DD4E278F2AE400B11D02 /* GenerateSessionFileController.swift in Sources */,
 				AC8CFF7E25EE5F9200FB2918 /* AirBeam3Configurator.swift in Sources */,
 				AC8CFF7725ECF8B100FB2918 /* HexMessagesBuilder.swift in Sources */,
+				FA4F1B732817EDDE002711B4 /* AirBeamMeasurementsDownloader.swift in Sources */,
 				336A909527A48CA400851100 /* ReorderingSessionHeader.swift in Sources */,
 				33FD502227A144B300162384 /* SingleMeasurementView.swift in Sources */,
 				338C30E225F1044B00E0305C /* PersistenceController.swift in Sources */,
@@ -2928,6 +2965,7 @@
 				B33B160127AEE6E900138FFA /* DisposableDataHolder.swift in Sources */,
 				B367A593274E9EAA004C605B /* FeatureFlagProvider.swift in Sources */,
 				DD8A36A426C3CE7900C26725 /* ChooseCustomLocationView.swift in Sources */,
+				FA4F1B77281809EE002711B4 /* MeasurementsDownloaderResultModel.swift in Sources */,
 				AC524A9A2615E3600061AD45 /* NSManagedObjectContext+Utils.swift in Sources */,
 				B38E6CCA26C5F19F00C21C45 /* SessionStoppable.swift in Sources */,
 				AC25C6DA2817DAAE0091C714 /* DeleteAccountController.swift in Sources */,
