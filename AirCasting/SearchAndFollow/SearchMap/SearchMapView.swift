@@ -9,12 +9,15 @@ import AirCastingStyling
 struct SearchMapView: View {
     @StateObject private var viewModel: SearchMapViewModel
     @Environment(\.presentationMode) var presentationMode
-    
-    init(locationName: String, locationAddress: CLLocationCoordinate2D, parameterType: MeasurementType, sensorType: SensorType) {
+    @Binding var isSearchAndFollowFlowActive: Bool
+    @EnvironmentObject var tabSelection: TabBarSelection
+
+    init(locationName: String, locationAddress: CLLocationCoordinate2D, parameterType: MeasurementType, sensorType: SensorType, isSearchAndFollowFlowActive: Binding<Bool>) {
         _viewModel = .init(wrappedValue: .init(passedLocation: locationName,
                                                passedLocationAddress: locationAddress,
                                                measurementType: parameterType,
                                                sensorType: sensorType))
+        _isSearchAndFollowFlowActive = .init(projectedValue: isSearchAndFollowFlowActive)
     }
     
     var body: some View {
@@ -63,10 +66,6 @@ struct SearchMapView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     finishButton
                 }
-            }
-            .fullScreenCover(isPresented: $viewModel.isMainTabBarPresented) {
-                MainTabBarView(sessionContext: CreateSessionContext(),
-                               coreDataHook: CoreDataHook(context: viewModel.persistenceController.viewContext))
             }
             .sheet(isPresented: $viewModel.isLocationPopupPresented, onDismiss: {
                 viewModel.locationPopupDisimssed()
@@ -202,7 +201,8 @@ private extension SearchMapView {
     
     var finishButton: some View {
         Button {
-            viewModel.isMainTabBarPresented = true
+            isSearchAndFollowFlowActive = false
+            tabSelection.selection = .dashboard
         } label: {
             Text(Strings.SearchMapView.finishText)
                 .font(Fonts.muliHeading2.bold())
