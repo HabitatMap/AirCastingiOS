@@ -32,11 +32,6 @@ struct DefaultSearchAndFollowCompleteScreenController: SearchAndFollowCompleteSc
                          measurementType: stream.measurementType,
                          sensorName: stream.sensorName,
                          sensorPackageName: stream.sensorPackageName,
-                         thresholdVeryLow: stream.thresholdsValues.veryLow,
-                         thresholdLow: stream.thresholdsValues.low,
-                         thresholdMedium: stream.thresholdsValues.medium,
-                         thresholdHigh: stream.thresholdsValues.high,
-                         thresholdVeryHigh: stream.thresholdsValues.veryHigh,
                          thresholdsValues: stream.thresholdsValues,
                          measurements: measurements.map {.init(value: $0.value, time: DateBuilder.getDateWithTimeIntervalSince1970(Double($0.time/1000)), latitude: $0.latitude, longitude: $0.longitude)})
         })

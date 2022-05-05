@@ -21,12 +21,7 @@ struct ExternalSessionWithStreamsAndMeasurements {
         let measurementType: String
         let sensorName: String
         let sensorPackageName: String
-        let thresholdVeryLow: Int32
-        let thresholdLow: Int32
-        let thresholdMedium: Int32
-        let thresholdHigh: Int32
-        let thresholdVeryHigh: Int32
-        let thresholdsValues: ThresholdsValue // REMOVE THIS OR THE ABOVE
+        let thresholdsValues: ThresholdsValue
         let measurements: [Measurement]
     }
     
