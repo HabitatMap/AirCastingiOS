@@ -22,7 +22,7 @@ struct DashboardView: View {
 
     private let dashboardCoordinateSpaceName = "dashboardCoordinateSpace"
 
-    private var sessions: [SessionEntity] {
+    private var sessions: [CoreDataHook.Session] {
         coreDataHook.sessions
     }
 
@@ -42,7 +42,14 @@ struct DashboardView: View {
             PreventCollapseView()
             if reorderButton.reorderIsOn {
                 followingTab
-                ReorderingDashboard(sessions: sessions, thresholds: Array(self.thresholds))
+                ReorderingDashboard(sessions: sessions.compactMap( {
+                    switch $0 {
+                    case .session(let session):
+                        return session
+                    case .externalSession(_):
+                        return nil
+                    }
+                } ), thresholds: Array(self.thresholds))
             } else {
                 sessionTypePicker
                 if sessions.isEmpty { emptySessionsView } else { sessionListView }
@@ -137,12 +144,17 @@ struct DashboardView: View {
                 RefreshControl(coordinateSpace: .named(dashboardCoordinateSpaceName), isRefreshing: $isRefreshing)
                 LazyVStack(spacing: 8) {
                     ForEach(sessions.filter { $0.uuid != "" && !$0.gotDeleted }, id: \.uuid) { session in
-                        let followingSetter = MeasurementStreamStorageFollowingSettable(session: session)
-                        let viewModel = SessionCardViewModel(followingSetter: followingSetter)
-                        SessionCardView(session: session,
-                                        sessionCartViewModel: viewModel,
-                                        thresholds: thresholds
-                        )
+                        switch session {
+                        case .session(let session):
+                            let followingSetter = MeasurementStreamStorageFollowingSettable(session: session)
+                            let viewModel = SessionCardViewModel(followingSetter: followingSetter)
+                            SessionCardView(session: session,
+                                            sessionCartViewModel: viewModel,
+                                            thresholds: thresholds
+                            )
+                        case .externalSession(let externalSesssion):
+                            Text(externalSesssion.name ?? "External session")
+                        }
                     }
                 }
             }
