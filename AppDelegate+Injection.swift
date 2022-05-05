@@ -154,6 +154,8 @@ extension Resolver: ResolverRegistering {
         main.register { DefaultAirBeamConnectionController() as AirBeamConnectionController }
         main.register { DefaultSessionUpdateService() as SessionUpdateService }
         main.register { DefaultLogoutController() as LogoutController }
+        main.register { DefaultDeleteAccountController() as DeleteAccountController }
+        main.register { DefaultRemoveDataController() as RemoveDataController }
         
         // MARK: - Session stopping
         

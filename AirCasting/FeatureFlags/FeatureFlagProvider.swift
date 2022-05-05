@@ -6,6 +6,7 @@ enum FeatureFlag: String, Equatable, CaseIterable {
     case notes
     case locationlessSessions
     case searchAndFollow
+    case deleteAccount
 }
 
 extension FeatureFlag {
@@ -16,6 +17,7 @@ extension FeatureFlag {
         case .notes: return "Session notes"
         case .locationlessSessions: return "Disable Mapping"
         case .searchAndFollow: return "Search and Follow"
+        case .deleteAccount: return "Delete Account"
         }
     }
 }
