@@ -43,7 +43,7 @@ struct DefaultExternalSessionsStore: ExternalSessionsStore {
     
     private func addStream(_ stream: ExternalSessionWithStreamsAndMeasurements.Stream, to session: ExternalSessionEntity) {
         let measurementStream = MeasurementStreamEntity(context: context)
-        updateMeasurementStreamParams(measurementStream, stream: stream, session: session)
+        updateMeasurementStreamParams(measurementStream, stream: stream)
         session.addToMeasurementStreams(measurementStream)
     }
     
@@ -69,8 +69,7 @@ struct DefaultExternalSessionsStore: ExternalSessionsStore {
         entity.provider = session.provider
     }
     
-    private func updateMeasurementStreamParams(_ entity: MeasurementStreamEntity, stream: ExternalSessionWithStreamsAndMeasurements.Stream, session: ExternalSessionEntity) {
-        let newStream = MeasurementStreamEntity(context: context)
+    private func updateMeasurementStreamParams(_ newStream: MeasurementStreamEntity, stream: ExternalSessionWithStreamsAndMeasurements.Stream) {
         newStream.sensorName = stream.sensorName
         newStream.sensorPackageName = stream.sensorPackageName
         newStream.measurementType = stream.measurementType
