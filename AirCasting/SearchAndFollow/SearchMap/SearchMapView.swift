@@ -59,6 +59,15 @@ struct SearchMapView: View {
                 result ? self.presentationMode.wrappedValue.dismiss() : nil
             })
             .alert(item: $viewModel.alert, content: { $0.makeAlert() })
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    finishButton
+                }
+            }
+            .fullScreenCover(isPresented: $viewModel.isMainTabBarPresented) {
+                MainTabBarView(sessionContext: CreateSessionContext(),
+                               coreDataHook: CoreDataHook(context: viewModel.persistenceController.viewContext))
+            }
             .sheet(isPresented: $viewModel.isLocationPopupPresented, onDismiss: {
                 viewModel.locationPopupDisimssed()
             }) {
@@ -189,5 +198,22 @@ private extension SearchMapView {
                 })
             }
         }
+    }
+    
+    var finishButton: some View {
+        Button {
+            viewModel.isMainTabBarPresented = true
+        } label: {
+            Text(Strings.SearchMapView.finishText)
+                .font(Fonts.muliHeading2.bold())
+                .padding(.trailing, 7)
+        }
+        .overlay(
+            Rectangle()
+                .frame(width: 85, height: 35)
+                .cornerRadius(15)
+                .foregroundColor(.accentColor)
+                .opacity(0.1)
+        )
     }
 }
