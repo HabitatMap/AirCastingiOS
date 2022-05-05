@@ -15,7 +15,7 @@ protocol EditViewModel: ObservableObject {
     var shouldDismiss: Bool { get }
     
     func saveChanges()
-    func downloadSessionAndReloadView()
+    func viewAppeared()
 }
 
 class EditSessionViewModel: EditViewModel {
@@ -51,26 +51,27 @@ class EditSessionViewModel: EditViewModel {
                     switch result {
                     case .success(let session):
                         do {
-                            try storage.updateVersion(for: sessionUUID,to: session.version)
+                            try storage.updateVersion(for: self.sessionUUID,to: session.version)
                         } catch {
                             Log.info("Error while saving edited session name and tags \(error).")
-                            showAlert(InAppAlerts.failedSavingData(dismiss: self.dismissView()))
+                            self.showAlert(InAppAlerts.failedSavingData { self.dismissView() })
                         }
                     case .failure(let error):
                         Log.info("Error while sending updated session to backend \(error).")
-                        showAlert(InAppAlerts.failedSavingData(dismiss: self.dismissView()))
+                        self.showAlert(InAppAlerts.failedSavingData { self.dismissView() })
                     }
                     DispatchQueue.main.async {
-                        shouldDismiss = true
+                        self.shouldDismiss = true
                     }
                 }
             } catch {
                 Log.info("Error while saving edited session name and tags.")
+                self.showAlert(InAppAlerts.failedSavingData { self.dismissView() })
             }
         }
     }
     
-    func downloadSessionAndReloadView() {
+    func viewAppeared() {
         sessionDownloader.downloadSessionNameAndTags(with: sessionUUID) { [weak self] result in
             guard let self = self else { return }
             switch result {
@@ -84,7 +85,7 @@ class EditSessionViewModel: EditViewModel {
                 }
             case .failure(let error):
                 Log.error("Error downloading session data for edit view: \(error.localizedDescription)")
-                self.showAlert(InAppAlerts.failedToDownload(dismiss: self.dismissView()))
+                self.showAlert(InAppAlerts.failedToDownload(dismiss: { self.dismissView() }))
             }
         }
     }
@@ -98,7 +99,7 @@ class EditSessionViewModel: EditViewModel {
                 closure()
             } catch {
                 Log.error("Failed to save new session name and tags")
-                showAlert(InAppAlerts.failedSavingData(dismiss: self.dismissView()))
+                self.showAlert(InAppAlerts.failedSavingData { self.dismissView() })
             }
         }
     }

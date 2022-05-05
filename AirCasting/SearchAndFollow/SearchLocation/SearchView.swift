@@ -18,6 +18,32 @@ struct SearchView: View {
         VStack(alignment: .leading) {
             title
             textField
+            parametersQuestion
+            HStack(spacing: 12) {
+                ForEach(viewModel.measurementTypes) { param in
+                    Button {
+                        withAnimation(.easeInOut(duration: 0.3)) {
+                            viewModel.onParameterTap(with: param.name)
+                        }
+                    } label: {
+                        Text(param.name)
+                            .padding(5)
+                    }.buttonStyle(MultiSelectButtonStyle(isSelected: param.isSelected))
+                        .padding(.bottom, 5)
+                }
+            }
+            sensorQuestion
+            HStack(spacing: 12) {
+                ForEach(viewModel.sensorTypes) { sensor in
+                    Button {
+                        viewModel.onSensorTap(with: sensor.name)
+                    } label: {
+                        Text(sensor.name)
+                            .padding(5)
+                    }.buttonStyle(MultiSelectButtonStyle(isSelected: sensor.isSelected))
+                        .padding(.bottom, 5)
+                }
+            }
             Spacer()
             button
         }.padding()
@@ -58,19 +84,34 @@ private extension SearchView {
         }, set: { new in
             viewModel.locationNameInteracted(with: new)
         }))
-            .disabled(true)
-            .onTapGesture { viewModel.textFieldTapped() }
+        .disabled(true)
+        .onTapGesture { viewModel.textFieldTapped() }
+    }
+    
+    var parametersQuestion: some View {
+        Text(Strings.SearchView.parametersQuestion)
+            .padding(.top, 20)
+            .font(Fonts.mediumHeading2)
+            .foregroundColor(.aircastingDarkGray)
+    }
+    
+    var sensorQuestion: some View {
+        Text(Strings.SearchView.sensorQuestion)
+            .padding(.top, 20)
+            .font(Fonts.mediumHeading2)
+            .foregroundColor(.aircastingDarkGray)
     }
     
     var button: some View {
         return NavigationLink(
             destination: SearchMapView(locationName: viewModel.addressName,
                                        locationAddress: viewModel.addresslocation,
-                                       measurementType: "particulate matter"),
+                                       parameterType: viewModel.selectedParameter ?? .particulateMatter,
+                                       sensorType: viewModel.selectedSensor ?? .OpenAQ),
             label: {
                 Text(Strings.Commons.continue)
             })
-            .buttonStyle(BlueButtonStyle())
-            .disabled(viewModel.continueDisabled)
+        .buttonStyle(BlueButtonStyle())
+        .disabled(viewModel.continueDisabled)
     }
 }

@@ -15,14 +15,21 @@ protocol BluetoothCommunicator {
     /// Adds an entry to observers of a particular characteristic
     /// - Parameters:
     ///   - characteristic: UUID of characteristic to observe
+    ///   - timeout: a timeout after which the error is produced
     ///   - notify: block called each time characteristic changes (either changes value or throws an error)
     /// - Returns: Opaque token to use when un-registering
-    func subscribeToCharacteristic(_ characteristic: CBUUID, notify: @escaping CharacteristicObserverAction) -> AnyHashable
+    func subscribeToCharacteristic(_ characteristic: CBUUID, timeout: TimeInterval?, notify: @escaping CharacteristicObserverAction) -> AnyHashable
     
     /// Removes an entry from observing characteristic
     /// - Parameter token: Opaque token received on subscription
     /// - Returns: A `Bool` value indicating if a given token was successfuly removed. Only reason it can fail is double unregistration.
     @discardableResult func unsubscribeCharacteristicObserver(_ token: AnyHashable) -> Bool
+}
+
+extension BluetoothCommunicator {
+    func subscribeToCharacteristic(_ characteristic: CBUUID, notify: @escaping CharacteristicObserverAction) -> AnyHashable {
+        subscribeToCharacteristic(characteristic, timeout: nil, notify: notify)
+    }
 }
 
 class BluetoothManager: NSObject, BluetoothCommunicator, ObservableObject {
@@ -93,21 +100,41 @@ class BluetoothManager: NSObject, BluetoothCommunicator, ObservableObject {
 
     // MARK: - Refactored part
     // This is the part of this class that is already refactored.
+    
+    enum CharacteristicObservingError: Error {
+        case timeout
+    }
 
-    private struct CharacteristicObserver {
+    private class CharacteristicObserver {
         let identifier = UUID()
+        var triggerCounter = 0
         let action: CharacteristicObserverAction
+        
+        init(action: @escaping CharacteristicObserverAction) {
+            self.action = action
+        }
     }
     
     private var charactieristicsMapping: [CBUUID: [CharacteristicObserver]] = [:]
     private let characteristicsMappingLock = NSRecursiveLock()
 
-    func subscribeToCharacteristic(_ characteristic: CBUUID, notify: @escaping CharacteristicObserverAction) -> AnyHashable {
+    func subscribeToCharacteristic(_ characteristic: CBUUID, timeout: TimeInterval? = nil, notify: @escaping CharacteristicObserverAction) -> AnyHashable {
         let observer = CharacteristicObserver(action: notify)
+        if let timeout = timeout { scheduleTimeout(timeout, for: observer) }
         characteristicsMappingLock.lock()
         charactieristicsMapping[characteristic, default:[]].append(observer)
         characteristicsMappingLock.unlock()
         return observer.identifier
+    }
+    
+    private func scheduleTimeout(_ timeout: TimeInterval, for observer: CharacteristicObserver) {
+        Log.info("Scheduling timeout")
+        DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(Int(timeout * 1000))) {
+            self.characteristicsMappingLock.lock()
+            defer { self.characteristicsMappingLock.unlock() }
+            guard observer.triggerCounter == 0 else { return }
+            observer.action(.failure(CharacteristicObservingError.timeout))
+        }
     }
     
     @discardableResult func unsubscribeCharacteristicObserver(_ token: AnyHashable) -> Bool {
@@ -238,9 +265,10 @@ extension BluetoothManager: CBPeripheralDelegate {
             return
         }
         characteristicsMappingLock.lock()
-        charactieristicsMapping[characteristic.uuid]?.forEach { block in
-            guard error == nil else { block.action(.failure(error!)); return }
-            block.action(.success(characteristic.value))
+        charactieristicsMapping[characteristic.uuid]?.forEach { observer in
+            observer.triggerCounter += 1
+            guard error == nil else { observer.action(.failure(error!)); return }
+            observer.action(.success(characteristic.value))
         }
         characteristicsMappingLock.unlock()
 

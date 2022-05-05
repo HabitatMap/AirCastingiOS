@@ -832,7 +832,7 @@ struct Strings {
                                                      comment: "")
         static let message: String = NSLocalizedString("This should take less then 10 seconds.",
                                                        comment: "")
-        static let failedClearingAlertTitle: String = NSLocalizedString("Failed to clead SD card",
+        static let failedClearingAlertTitle: String = NSLocalizedString("Failed to clear SD card",
                                                                         comment: "")
         static let failedClearingAlertMessage: String = NSLocalizedString("Try again later",
                                                                           comment: "")
@@ -934,11 +934,28 @@ struct Strings {
     enum SearchView {
         static let title: String = NSLocalizedString("Search fixed sessions", comment: "")
         static let placeholder: String = NSLocalizedString("Session location", comment: "")
+        static let parametersQuestion: String = NSLocalizedString("Which parameter are you intrested in?", comment: "")
+        static let sensorQuestion: String = NSLocalizedString("Which sensor are you intrested in?", comment: "")
+        static let ozoneText: String = NSLocalizedString("Ozone", comment: "")
+        static let particularMatterText: String = NSLocalizedString("Particular matter", comment: "")
+    }
+    
+    enum SearchFollowSensorNames {
+        static let AirBeam3and2: String = NSLocalizedString("AirBeam", comment: "")
+        static let openAQ: String = NSLocalizedString("OpenAQ", comment: "")
+        static let purpleAir: String = NSLocalizedString("PurpleAir", comment: "")
+        static let openAQOzone: String = NSLocalizedString("OpenAQ", comment: "")
+    }
+    
+    enum SearchFollowParamNames {
+        static let particulateMatter: String = NSLocalizedString("Particulate Matter", comment: "")
+        static let ozone: String = NSLocalizedString("Ozone", comment: "")
     }
     
     enum CompleteSearchView {
         static let map: String = NSLocalizedString("map", comment: "")
         static let chart: String = NSLocalizedString("chart", comment: "")
+        static let lastMeasurement = NSLocalizedString("Last measurement", comment: "")
         static let confirmationButtonTitle: String = NSLocalizedString("Follow Session", comment: "")
         static let noStreamsDescription = NSLocalizedString("No streams available for this session", comment: "")
         static let failedDownloadAlertTitle = NSLocalizedString("Session download failed", comment: "")
@@ -1014,7 +1031,9 @@ struct Strings {
     enum SearchMapView {
         static let loadingText: String = NSLocalizedString("Loading sessions.",
                                                               comment: "")
-        static let parameterText: String = NSLocalizedString("Showing results for: %@",
+        static let parameterText: String = NSLocalizedString("Results for: %@",
+                                                              comment: "")
+        static let sensorText: String = NSLocalizedString("using: %@",
                                                               comment: "")
         static let redoText: String = NSLocalizedString("Redo Search in Map",
                                                               comment: "")

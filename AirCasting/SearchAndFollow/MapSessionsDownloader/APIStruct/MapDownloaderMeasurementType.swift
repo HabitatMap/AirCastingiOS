@@ -9,10 +9,24 @@ enum MapDownloaderMeasurementType: Codable {
 }
 
 extension MapDownloaderMeasurementType {
-    var name: String {
+    var apiName: String {
         switch self {
         case .particulateMatter: return "Particulate Matter"
         case .ozone: return "Ozone"
+        }
+    }
+    
+    var sensorNameSuffix: String {
+        switch self {
+        case .particulateMatter: return "-pm2.5"
+        case .ozone: return "-o3"
+        }
+    }
+    
+    var capitalizedName: String {
+        switch self {
+        case .particulateMatter: return Strings.SearchFollowParamNames.particulateMatter
+        case .ozone: return Strings.SearchFollowParamNames.ozone
         }
     }
 }

@@ -5,7 +5,7 @@ import Foundation
 import Resolver
 
 protocol SessionsForLocationDownloader {
-    func getSessions(geoSquare: GeoSquare, timeFrom: Double, timeTo: Double, completion: @escaping (Result<[MapDownloaderSearchedSession], Error>) -> Void)
+    func getSessions(geoSquare: GeoSquare, timeFrom: Double, timeTo: Double, measurementType: MapDownloaderMeasurementType, sensor: MapDownloaderSensorType, completion: @escaping (Result<[MapDownloaderSearchedSession], Error>) -> Void)
 }
 
 class SessionsForLocationDownloaderDefault: SessionsForLocationDownloader {
@@ -19,8 +19,8 @@ class SessionsForLocationDownloaderDefault: SessionsForLocationDownloader {
     @Injected private var client: APIClient
     @Injected private var responseValidator: HTTPResponseValidator
     
-    func getSessions(geoSquare: GeoSquare, timeFrom: Double, timeTo: Double, completion: @escaping (Result<[MapDownloaderSearchedSession], Error>) -> Void) {
-        let urlComponentPart = urlProvider.baseAppURL.appendingPathComponent("/api/fixed/active/sessions.json")
+    func getSessions(geoSquare: GeoSquare, timeFrom: Double, timeTo: Double, measurementType: MapDownloaderMeasurementType, sensor: MapDownloaderSensorType, completion: @escaping (Result<[MapDownloaderSearchedSession], Error>) -> Void) {
+        let urlComponentPart = urlProvider.baseAppURL.appendingPathComponent("api/fixed/active/sessions.json")
         
         var urlComponents = URLComponents(string: urlComponentPart.absoluteString)!
         
@@ -34,9 +34,9 @@ class SessionsForLocationDownloaderDefault: SessionsForLocationDownloader {
                                        north: geoSquare.north,
                                        limit: 100,
                                        offset: 0,
-                                       sensorName: "openaq-pm2.5",
-                                       measurementType: MapDownloaderMeasurementType.particulateMatter.name,
-                                       unitSymbol: MapDownloaderUnitSymbol.uqm3.name)
+                                       sensorName: sensor.sensorNamePrefix + measurementType.sensorNameSuffix,
+                                       measurementType: measurementType.apiName,
+                                       unitSymbol: getProperUnitSymbol(using: measurementType).name)
         do {
             let encoder = JSONEncoder()
             encoder.keyEncodingStrategy = .convertToSnakeCase
@@ -71,6 +71,17 @@ class SessionsForLocationDownloaderDefault: SessionsForLocationDownloader {
             }
         } catch {
             completion(.failure(error))
+        }
+    }
+}
+
+extension SessionsForLocationDownloaderDefault {
+    func getProperUnitSymbol(using parameter: MapDownloaderMeasurementType) -> MapDownloaderUnitSymbol {
+        switch parameter {
+        case .particulateMatter:
+            return .uqm3
+        case .ozone:
+            return .ppb
         }
     }
 }

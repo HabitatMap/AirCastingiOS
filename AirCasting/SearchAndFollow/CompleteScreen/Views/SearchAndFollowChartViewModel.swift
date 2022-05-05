@@ -2,25 +2,60 @@
 //
 
 import Foundation
-import Charts
+import SwiftUI
 
 class SearchAndFollowChartViewModel: ObservableObject {
-    @Published var entries: [ChartDataEntry] = []
-    
-    init(stream: SearchSession.SearchSessionStream?) {
-        guard let stream = stream else { return }
-        generateEntries(for: stream)
+    struct ChartDot {
+        let value: Double
+        let color: Color
+    }
+    struct ChartMeasurement {
+        let value: Double
+        let time: Date
     }
     
-    func setStream(to stream: SearchSession.SearchSessionStream) {
-        generateEntries(for: stream)
+    @Published var entries: [ChartDot] = []
+    
+    let numberOfEntries = 9
+    
+    func generateEntries(with measurements: [ChartMeasurement], thresholds: ThresholdsValue) -> (Date?, Date?) {
+        var times: [Date] = []
+        var buffer: [ChartMeasurement] = []
+        
+        for measurement in measurements.reversed() {
+            if entries.count == 9 {
+                break
+            }
+            
+            if buffer.isEmpty || hourIsAlreadyPresent(in: buffer.map({ $0.time }), date: measurement.time) {
+                buffer.append(measurement)
+                continue
+            }
+            
+            addAverage(for: buffer, times: &times, thresholds: thresholds)
+            
+            buffer = [measurement]
+        }
+        
+        if entries.count < 9 && !buffer.isEmpty {
+            addAverage(for: buffer, times: &times, thresholds: thresholds)
+        }
+        
+        entries.reverse()
+        return (startTime: times.min(), endTime: times.max())
     }
     
-    private func generateEntries(for stream: SearchSession.SearchSessionStream) {
-        entries = [
-            .init(x: 0, y: 1),
-            .init(x: 1, y: 3),
-            .init(x: 2, y: 2)
-        ]
+    private func addAverage(for buffer: [ChartMeasurement], times: inout [Date], thresholds: ThresholdsValue) {
+        guard !buffer.isEmpty else { return }
+        let average = (buffer.map { $0.value }.reduce(0, +)) / Double(buffer.count)
+        
+        times.append(buffer.last!.time.roundedUpToHour)
+        entries.append(ChartDot(value: Double(average), color: thresholds.colorFor(value: average)))
+    }
+    
+    private func hourIsAlreadyPresent(in times: [Date], date: Date) -> Bool {
+        let nowComponent = Calendar.current.component(.hour, from: date)
+        let hoursAlreadyPresent = times.map { Calendar.current.component(.hour, from: $0) }
+        return hoursAlreadyPresent.contains(nowComponent)
     }
 }
