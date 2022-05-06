@@ -101,25 +101,29 @@ class CompleteScreenViewModel: ObservableObject {
     }
     
     func confirmationButtonPressed() {
+        following()
+        saveToDb()
+    }
+    
+    private func following() {
+        // This doesn't work and I don't know why
+        completeButtonEnabled = false
+        completeButtonText = "Following..."
+    }
+    
+    private func saveToDb() {
         guard let externalSessionWithStreams = externalSessionWithStreams else {
             assertionFailure("Confirmation button pressed when there was no session with streams")
             return
         }
         
-        Log.info("session: \(externalSessionWithStreams)")
-        
         do {
             try externalSessionsStore.createExternalSession(session: externalSessionWithStreams)
-            // TODO: remove after debugging
-            let s = try externalSessionsStore.getExistingSession(uuid: externalSessionWithStreams.uuid)
-            Log.info("\(s.measurementStreams)")
-            completeButtonEnabled = false
             completeButtonText = followedText
         } catch {
             Log.error("FAILED: \(error)")
             self.alert = InAppAlerts.failedSessionDownloadAlert(dismiss: self.dismissView)
         }
-        
     }
     
     private func dismissView() {
