@@ -3,6 +3,7 @@
 
 import Foundation
 import CoreData
+import CoreLocation
 
 protocol ExternalSessionsStore {
     func createExternalSession(session: ExternalSessionWithStreamsAndMeasurements) throws
@@ -44,7 +45,18 @@ struct DefaultExternalSessionsStore: ExternalSessionsStore {
     private func addStream(_ stream: ExternalSessionWithStreamsAndMeasurements.Stream, to session: ExternalSessionEntity) {
         let measurementStream = MeasurementStreamEntity(context: context)
         updateMeasurementStreamParams(measurementStream, stream: stream)
+        addMeasurements(stream.measurements, to: measurementStream)
         session.addToMeasurementStreams(measurementStream)
+    }
+    
+    private func addMeasurements(_ measurements: [ExternalSessionWithStreamsAndMeasurements.Measurement], to stream: MeasurementStreamEntity) {
+        measurements.forEach { measurement in
+            let newMeasurement = MeasurementEntity(context: context)
+            newMeasurement.location = CLLocationCoordinate2D(latitude: measurement.latitude, longitude: measurement.longitude)
+            newMeasurement.time = measurement.time
+            newMeasurement.value = measurement.value
+            stream.addToMeasurements(newMeasurement)
+        }
     }
     
     // THIS IS FOR DEBUGGING PURPOSES
