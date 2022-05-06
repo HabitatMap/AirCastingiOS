@@ -7,7 +7,6 @@
 
 import SwiftUI
 import AirCastingStyling
-import Resolver
 
 struct ThresholdsSettingsView: View {
     
@@ -15,7 +14,6 @@ struct ThresholdsSettingsView: View {
     @Environment(\.presentationMode) var presentationMode
     let initialThresholds: ThresholdsValue
     @StateObject private var thresholdSettingsViewModel: ThresholdSettingsViewModel
-    @InjectedObject private var userSettings: UserSettings
     
     init(thresholdValues: Binding<ThresholdsValue>, initialThresholds: ThresholdsValue, threshold: SensorThreshold) {
         _thresholdValues = thresholdValues

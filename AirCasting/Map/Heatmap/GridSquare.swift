@@ -3,6 +3,7 @@
 
 import GoogleMaps
 import Foundation
+import Resolver
 
 struct GridSquare {
     private var mapView: GMSMapView! = nil
@@ -19,6 +20,7 @@ struct GridSquare {
     private var southEastLatLng: CLLocationCoordinate2D
     var northEastLatLng: CLLocationCoordinate2D
     private var northWestLatLng: CLLocationCoordinate2D
+    @InjectedObject private var userSettings: UserSettings
     
     init(mapView: GMSMapView, sensorThreshold: SensorThreshold, _ southWestLatLng: CLLocationCoordinate2D, _ southEastLatLng: CLLocationCoordinate2D, _ northEastLatLng: CLLocationCoordinate2D, _ northWestLatLng: CLLocationCoordinate2D) {
         self.mapView = mapView
@@ -48,7 +50,7 @@ struct GridSquare {
         calculateAverage()
         
         guard let averagedValue = averagedValue else { return }
-        let color: UIColor = GoogleMapView.color(value: Int32(averagedValue), threshold: sensorThreshold).withAlphaComponent(0.5)
+        let color: UIColor = GoogleMapView.color(value: sensorThreshold.sensorName == MeasurementStreamSensorName.f.rawValue && userSettings.convertToCelsius ? Int32(TemperatureConverter.calculateFahrenheit(celsius: averagedValue)) : Int32(averagedValue), threshold: sensorThreshold).withAlphaComponent(0.5)
         if color != fillColor {
             fillColor = color
             newColor = true

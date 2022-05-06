@@ -60,15 +60,15 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                         }
 //                        NavigationLink(destination: ThresholdsSettingsView(thresholdValues: threshold.thresholdsBinding,
 //                                                                           initialThresholds: selectedStream.thresholds, threshold: threshold)) {
-                        NavigationLink(destination: ThresholdsSettingsView(thresholdValues: threshold.sensorName == MeasurementStreamSensorName.f.rawValue && userSettings.convertToCelsius ? threshold.thresholdsCelsiusBinding : threshold.thresholdsBinding,
-                                                                           initialThresholds: selectedStream.thresholds, threshold: threshold)) {
+                        NavigationLink(destination: ThresholdsSettingsView(thresholdValues: selectedStream.isTemperature && userSettings.convertToCelsius ? threshold.thresholdsCelsiusBinding : threshold.thresholdsBinding,
+                                                                           initialThresholds: selectedStream.thresholds,
+                                                                           threshold: threshold)) {
                             EditButtonView()
                                 .padding([.horizontal, .top])
                         }
                     }
 
-                    
-                    ThresholdsSliderView(threshold: threshold)
+                    ThresholdsSliderView(threshold: threshold, selectedStream: $selectedStream)
                         .padding()
                     // Fixes labels covered by tabbar
                         .padding(.bottom)

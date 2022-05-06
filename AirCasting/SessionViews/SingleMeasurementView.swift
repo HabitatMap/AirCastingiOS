@@ -46,7 +46,7 @@ struct SingleMeasurementView: View {
                         .padding(.horizontal, 9)
                         .overlay(
                             RoundedRectangle(cornerRadius: 8)
-                                .strokeBorder((selectedStream == stream) ? threshold.sensorName == MeasurementStreamSensorName.f.rawValue && userSettings.convertToCelsius ? threshold.colorForCelsius(value: Int32(value)) : threshold.colorFor(value: Int32(value)) : .clear)
+                                .strokeBorder((selectedStream == stream) ? stream.isTemperature && userSettings.convertToCelsius ? threshold.colorForCelsius(value: Int32(value)) : threshold.colorFor(value: Int32(value)) : .clear)
                         )
                     }
                 }
