@@ -2,12 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:/Users/annaolak/projects/Aircasting/AirCastingiOS/AirCasting/CoreData/ExternalSessionEntity+CoreDataClass.swift">
-   </FileRef>
-   <FileRef
-      location = "group:/Users/annaolak/projects/Aircasting/AirCastingiOS/AirCasting/CoreData/ExternalSessionEntity+CoreDataProperties.swift">
-   </FileRef>
-   <FileRef
       location = "group:AirCasting.xcodeproj">
    </FileRef>
    <FileRef
