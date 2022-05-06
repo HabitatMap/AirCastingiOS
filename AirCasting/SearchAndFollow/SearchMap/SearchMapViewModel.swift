@@ -34,8 +34,6 @@ class SearchMapViewModel: ObservableObject {
     @Published var cardPointerID: PointerValue = .noValue
     @Published var shouldCardsScroll: Bool = false
     private var currentPosition: GeoSquare?
-    @Injected var persistenceController: PersistenceController
-    @Published var isMainTabBarPresented = false
 
     init(passedLocation: String, passedLocationAddress: CLLocationCoordinate2D, measurementType: MeasurementType, sensorType: SensorType) {
         self.passedLocation = passedLocation
