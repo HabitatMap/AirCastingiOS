@@ -5,11 +5,11 @@ import SwiftUI
 import AirCastingStyling
 
 struct ExternalSessionCard: View {
-    @ObservedObject var session: ExternalSessionEntity
+    var session: ExternalSessionEntity
     let thresholds: [SensorThreshold]
     
     var streams: [MeasurementStreamEntity] {
-        session.measurementStreams?.sortedArray(using: [NSSortDescriptor.init(key: "sensorName", ascending: true)]) as? [MeasurementStreamEntity] ?? [] as [MeasurementStreamEntity]
+        session.measurementStreams
     }
     
     var body: some View {
@@ -46,14 +46,14 @@ private extension ExternalSessionCard {
             HStack {
                 streams.count != 1 ? Spacer() : nil
                 ForEach(streams, id : \.id) { stream in
-//                    if let threshold = thresholds.threshold(for: stream) {
+                    if let threshold = thresholds.threshold(for: stream.sensorName ?? "") {
                         SingleMeasurementView(stream: stream,
-                                              threshold: nil,
+                                              threshold: threshold,
                                               selectedStream: .constant(nil),
                                               isCollapsed: .constant(true),
                                               measurementPresentationStyle: .showValues,
                                               isDormant: false)
-//                    }
+                    }
                     Spacer()
                 }
             }

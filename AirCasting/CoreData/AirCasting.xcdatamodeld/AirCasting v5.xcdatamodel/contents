@@ -8,7 +8,7 @@
         <attribute name="provider" attributeType="String"/>
         <attribute name="startTime" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="uuid" attributeType="String"/>
-        <relationship name="measurementStreams" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="MeasurementStreamEntity" inverseName="externalSession" inverseEntity="MeasurementStreamEntity"/>
+        <relationship name="measurementStreams" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="MeasurementStreamEntity" inverseName="externalSession" inverseEntity="MeasurementStreamEntity"/>
         <relationship name="uiState" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="UIStateEntity" inverseName="externalSession" inverseEntity="UIStateEntity"/>
     </entity>
     <entity name="MeasurementEntity" representedClassName="MeasurementEntity" syncable="YES">

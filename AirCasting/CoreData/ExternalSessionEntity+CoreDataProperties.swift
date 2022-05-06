@@ -19,7 +19,7 @@ extension ExternalSessionEntity {
     @NSManaged public var provider: String?
     @NSManaged public var startTime: Date?
     @NSManaged public var uuid: String?
-    @NSManaged public var measurementStreams: NSSet?
+    @NSManaged public var measurementStreams: Array<MeasurementStreamEntity>
     @NSManaged public var uiState: UIStateEntity?
 
 }

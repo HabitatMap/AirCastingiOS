@@ -18,8 +18,6 @@ private extension ExternalSessionHeader {
             HStack {
                 dateAndTime
                     .foregroundColor(Color.aircastingTimeGray)
-                Spacer()
-                Image("draggable-icon")
             }
             nameLabel
         }
@@ -45,7 +43,7 @@ private extension ExternalSessionHeader {
     }
     
     var sensorType: some View {
-        let allStreams = session.measurementStreams?.sortedArray(using: [NSSortDescriptor.init(key: "sensorName", ascending: true)]) as? [MeasurementStreamEntity] ?? [] as [MeasurementStreamEntity]
+        let allStreams = session.measurementStreams
         return SessionTypeIndicator(sessionType: .fixed, streamSensorNames: allStreams.compactMap(\.sensorPackageName))
     }
 
