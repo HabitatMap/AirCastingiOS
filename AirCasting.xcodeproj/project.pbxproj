@@ -11,8 +11,8 @@
 		33050876276B7A4400D18C69 /* ShareSessionStreamOptionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33050875276B7A4400D18C69 /* ShareSessionStreamOptionViewModel.swift */; };
 		331EA80A25E32094009DEFDB /* ConfirmCreatingSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331EA80925E32094009DEFDB /* ConfirmCreatingSessionView.swift */; };
 		332F521425FA38430047236D /* MicrophoneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332F521325FA38430047236D /* MicrophoneManager.swift */; };
-		33406247281821FA004DA4DA /* ExternalSessionsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33406246281821FA004DA4DA /* ExternalSessionsStore.swift */; };
 		334062442816B4B6004DA4DA /* EditLocationlessSessionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 334062432816B4B6004DA4DA /* EditLocationlessSessionViewModel.swift */; };
+		33406247281821FA004DA4DA /* ExternalSessionsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33406246281821FA004DA4DA /* ExternalSessionsStore.swift */; };
 		3346F1F626318C1600BA4695 /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3346F1F526318C1600BA4695 /* SettingsManager.swift */; };
 		334CC6FA2751454C00C10B53 /* SDCardMobileSessionsSavingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 334CC6F92751454C00C10B53 /* SDCardMobileSessionsSavingService.swift */; };
 		335A8B2F2785D49100355D46 /* ShareSessionAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 335A8B2E2785D49100355D46 /* ShareSessionAPI.swift */; };
@@ -52,6 +52,8 @@
 		33AC7D5C273C1B9700EB1274 /* StandaloneSessionCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33AC7D5B273C1B9700EB1274 /* StandaloneSessionCardView.swift */; };
 		33BA3368266E4BCA00899343 /* MobilePeripheralSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33BA3367266E4BCA00899343 /* MobilePeripheralSessionManager.swift */; };
 		33BA336A266E4D1000899343 /* MobileSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33BA3369266E4D1000899343 /* MobileSession.swift */; };
+		33D07A1D2825716E00F25B4C /* ExternalSessionEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33D07A1B2825716E00F25B4C /* ExternalSessionEntity+CoreDataClass.swift */; };
+		33D07A1E2825716E00F25B4C /* ExternalSessionEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33D07A1C2825716E00F25B4C /* ExternalSessionEntity+CoreDataProperties.swift */; };
 		33D92F5F27EB742800252F3B /* Loadable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33D92F5E27EB742800252F3B /* Loadable.swift */; };
 		33E56F3D27F3498A0032117E /* StreamDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33E56F3C27F3498A0032117E /* StreamDownloader.swift */; };
 		33F20FDD27692231004364EA /* SyncedMeasurementsDownloadingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F20FDC27692231004364EA /* SyncedMeasurementsDownloadingService.swift */; };
@@ -475,9 +477,9 @@
 		33050875276B7A4400D18C69 /* ShareSessionStreamOptionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSessionStreamOptionViewModel.swift; sourceTree = "<group>"; };
 		331EA80925E32094009DEFDB /* ConfirmCreatingSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmCreatingSessionView.swift; sourceTree = "<group>"; };
 		332F521325FA38430047236D /* MicrophoneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrophoneManager.swift; sourceTree = "<group>"; };
+		334062432816B4B6004DA4DA /* EditLocationlessSessionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditLocationlessSessionViewModel.swift; sourceTree = "<group>"; };
 		3340624528181376004DA4DA /* AirCasting v5.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AirCasting v5.xcdatamodel"; sourceTree = "<group>"; };
 		33406246281821FA004DA4DA /* ExternalSessionsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalSessionsStore.swift; sourceTree = "<group>"; };
-		334062432816B4B6004DA4DA /* EditLocationlessSessionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditLocationlessSessionViewModel.swift; sourceTree = "<group>"; };
 		3346F1F526318C1600BA4695 /* SettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
 		334CC6F92751454C00C10B53 /* SDCardMobileSessionsSavingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDCardMobileSessionsSavingService.swift; sourceTree = "<group>"; };
 		335A8B2E2785D49100355D46 /* ShareSessionAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSessionAPI.swift; sourceTree = "<group>"; };
@@ -517,6 +519,8 @@
 		33AC7D5B273C1B9700EB1274 /* StandaloneSessionCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandaloneSessionCardView.swift; sourceTree = "<group>"; };
 		33BA3367266E4BCA00899343 /* MobilePeripheralSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobilePeripheralSessionManager.swift; sourceTree = "<group>"; };
 		33BA3369266E4D1000899343 /* MobileSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileSession.swift; sourceTree = "<group>"; };
+		33D07A1B2825716E00F25B4C /* ExternalSessionEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "ExternalSessionEntity+CoreDataClass.swift"; path = "/Users/annaolak/projects/Aircasting/AirCastingiOS/AirCasting/CoreData/ExternalSessionEntity+CoreDataClass.swift"; sourceTree = "<absolute>"; };
+		33D07A1C2825716E00F25B4C /* ExternalSessionEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "ExternalSessionEntity+CoreDataProperties.swift"; path = "/Users/annaolak/projects/Aircasting/AirCastingiOS/AirCasting/CoreData/ExternalSessionEntity+CoreDataProperties.swift"; sourceTree = "<absolute>"; };
 		33D92F5E27EB742800252F3B /* Loadable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Loadable.swift; sourceTree = "<group>"; };
 		33E56F3C27F3498A0032117E /* StreamDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamDownloader.swift; sourceTree = "<group>"; };
 		33F20FDC27692231004364EA /* SyncedMeasurementsDownloadingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncedMeasurementsDownloadingService.swift; sourceTree = "<group>"; };
@@ -1009,6 +1013,8 @@
 			isa = PBXGroup;
 			children = (
 				B3FD77C7267C997800E97CC2 /* PersistenceController+Database.swift */,
+				33D07A1B2825716E00F25B4C /* ExternalSessionEntity+CoreDataClass.swift */,
+				33D07A1C2825716E00F25B4C /* ExternalSessionEntity+CoreDataProperties.swift */,
 				4F15548A263C44AF00FF3208 /* Session.swift */,
 				4F15548E263C819C00FF3208 /* MeasurementEntity.swift */,
 				4F3CDF212652B58100596CD3 /* Measurement.swift */,
@@ -2787,6 +2793,7 @@
 				338CA6D327CD2F1900505331 /* SearchAndFollowChartViewModel.swift in Sources */,
 				B3332F5A275D61B000789BAD /* Int+orOne.swift in Sources */,
 				B367A596274E9EAA004C605B /* RemoteNotificationRouter.swift in Sources */,
+				33D07A1D2825716E00F25B4C /* ExternalSessionEntity+CoreDataClass.swift in Sources */,
 				AC194B0D2684BAB40048E2C8 /* SessionLoadingView.swift in Sources */,
 				33885BB227468B4E00F41CB5 /* SDSyncFileWritingService.swift in Sources */,
 				4FD2CA4726406F2C007E932E /* Diff.swift in Sources */,
@@ -2845,6 +2852,7 @@
 				DD2181EF267BBCBC0010EC2E /* MyAccountView.swift in Sources */,
 				DD3C99F226E9DE5800B42A46 /* SessionSynchronizationViewModel.swift in Sources */,
 				AC524A6F261329330061AD45 /* SessionExtension.swift in Sources */,
+				33D07A1E2825716E00F25B4C /* ExternalSessionEntity+CoreDataProperties.swift in Sources */,
 				ACF77DFB25A8888700BB85B7 /* SessionCardView.swift in Sources */,
 				FAB1D4A627FB28C8004F531D /* MapDownloaderSensorType.swift in Sources */,
 				4F3CDF222652B58100596CD3 /* Measurement.swift in Sources */,
