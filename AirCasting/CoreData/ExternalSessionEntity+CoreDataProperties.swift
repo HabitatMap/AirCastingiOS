@@ -1,8 +1,4 @@
-//
-//  ExternalSessionEntity+CoreDataProperties.swift
-//  
-//
-//  Created by Lunar on 06/05/2022.
+// Created by Lunar on 06/05/2022.
 //
 //
 
@@ -42,5 +38,9 @@ extension ExternalSessionEntity {
 
     @objc(removeMeasurementStreams:)
     @NSManaged public func removeFromMeasurementStreams(_ values: NSSet)
+
+}
+
+extension ExternalSessionEntity : Identifiable {
 
 }

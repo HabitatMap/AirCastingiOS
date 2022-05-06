@@ -1,8 +1,4 @@
-//
-//  ExternalSessionEntity+CoreDataClass.swift
-//  
-//
-//  Created by Lunar on 06/05/2022.
+// Created by Lunar on 06/05/2022.
 //
 //
 
