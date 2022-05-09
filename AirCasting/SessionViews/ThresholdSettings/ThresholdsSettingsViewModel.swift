@@ -21,17 +21,7 @@ class ThresholdSettingsViewModel: ObservableObject {
     }
 
     func resetToDefault() -> ThresholdsValue {
-        if threshold.sensorName == MeasurementStreamSensorName.f.rawValue && userSettings.convertToCelsius {
-            return ThresholdsValue(
-                veryLow: Int32(TemperatureConverter.calculateCelsius(fahrenheit: Double(initialThresholds.veryLow))),
-                low: Int32(TemperatureConverter.calculateCelsius(fahrenheit: Double(initialThresholds.low))),
-                medium: Int32(TemperatureConverter.calculateCelsius(fahrenheit: Double(initialThresholds.medium))),
-                high: Int32(TemperatureConverter.calculateCelsius(fahrenheit: Double(initialThresholds.high))),
-                veryHigh: Int32(TemperatureConverter.calculateCelsius(fahrenheit: Double(initialThresholds.veryHigh)))
-            )
-        } else {
-            return initialThresholds
-        }
+        return initialThresholds
     }
     
     func updateToNewThresholds() -> ThresholdsValue {

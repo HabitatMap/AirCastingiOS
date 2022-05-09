@@ -51,11 +51,11 @@ extension SensorThreshold {
             )
         }
         set {
-            thresholdVeryLow = Int32(TemperatureConverter.calculateFahrenheit(celsius: Double(newValue.veryLow)))
-            thresholdLow = Int32(TemperatureConverter.calculateFahrenheit(celsius: Double(newValue.low)))
-            thresholdMedium = Int32(TemperatureConverter.calculateFahrenheit(celsius: Double(newValue.medium)))
-            thresholdHigh = Int32(TemperatureConverter.calculateFahrenheit(celsius: Double(newValue.high)))
-            thresholdVeryHigh = Int32(TemperatureConverter.calculateFahrenheit(celsius: Double(newValue.veryHigh)))
+            thresholdVeryLow = newValue.veryLow
+            thresholdLow = newValue.low
+            thresholdMedium = newValue.medium
+            thresholdHigh = newValue.high
+            thresholdVeryHigh = newValue.veryHigh
         }
     }
     
