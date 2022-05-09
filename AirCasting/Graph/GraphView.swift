@@ -58,8 +58,6 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                                                         threshold: threshold)
                             }
                         }
-//                        NavigationLink(destination: ThresholdsSettingsView(thresholdValues: threshold.thresholdsBinding,
-//                                                                           initialThresholds: selectedStream.thresholds, threshold: threshold)) {
                         NavigationLink(destination: ThresholdsSettingsView(thresholdValues: selectedStream.isTemperature && userSettings.convertToCelsius ? threshold.thresholdsCelsiusBinding : threshold.thresholdsBinding,
                                                                            initialThresholds: selectedStream.thresholds,
                                                                            threshold: threshold)) {

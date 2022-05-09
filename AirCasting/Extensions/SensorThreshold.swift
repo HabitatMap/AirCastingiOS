@@ -94,7 +94,6 @@ extension SensorThreshold {
             thresholdMedium =  Int32(TemperatureConverter.calculateFahrenheit(celsius: Double(newThresholds[2])))
             thresholdHigh =  Int32(TemperatureConverter.calculateFahrenheit(celsius: Double(newThresholds[3])))
             thresholdVeryHigh =  Int32(TemperatureConverter.calculateFahrenheit(celsius: Double(newThresholds[4])))
-            Log.info("\(self)")
         }
     }
 }
