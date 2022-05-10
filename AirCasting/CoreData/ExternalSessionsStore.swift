@@ -3,10 +3,10 @@
 
 import Foundation
 import CoreData
+import CoreLocation
 
 protocol ExternalSessionsStore {
-    func createExternalSession(session: ExternalSessionWithStreamsAndMeasurements) throws
-    func getExistingSession(uuid: String) throws -> ExternalSessionEntity
+    func createExternalSession(session: ExternalSessionWithStreamsAndMeasurements, completion: @escaping (Result<Void, Error>) -> Void)
     func doesSessionExist(uuid: String) -> Bool
 }
 
@@ -17,24 +17,31 @@ struct DefaultExternalSessionsStore: ExternalSessionsStore {
         self.context = context
     }
     
-    func createExternalSession(session: ExternalSessionWithStreamsAndMeasurements) throws {
+    func createExternalSession(session: ExternalSessionWithStreamsAndMeasurements, completion: @escaping (Result<Void, Error>) -> Void) {
         enum CreatingExternalSessionError: Error {
             case sessionAlreadyExists
         }
         
-        guard (try? context.existingExternalSession(uuid: session.uuid)) == nil else {
-            throw CreatingExternalSessionError.sessionAlreadyExists
+        context.perform {
+            do {
+                guard (try? context.existingExternalSession(uuid: session.uuid)) == nil else {
+                    throw CreatingExternalSessionError.sessionAlreadyExists
+                }
+                
+                let sessionEntity = newSessionEntity()
+                updateSessionsParams(sessionEntity, session: session)
+                session.streams.forEach { stream in
+                    addStream(stream, to: sessionEntity)
+                }
+                
+                // TODO: If thresholds don't exist in the db already, create the thresholdsEntity
+                
+                try context.save()
+                completion(.success(()))
+            } catch {
+                completion(.failure(error))
+            }
         }
-        
-        let sessionEntity = newSessionEntity()
-        updateSessionsParams(sessionEntity, session: session)
-        session.streams.forEach { stream in
-            addStream(stream, to: sessionEntity)
-        }
-        
-        // TODO: If thresholds don't exist in the db already, create the thresholdsEntity
-        
-        try context.save()
     }
     
     func doesSessionExist(uuid: String) -> Bool {
@@ -44,12 +51,18 @@ struct DefaultExternalSessionsStore: ExternalSessionsStore {
     private func addStream(_ stream: ExternalSessionWithStreamsAndMeasurements.Stream, to session: ExternalSessionEntity) {
         let measurementStream = MeasurementStreamEntity(context: context)
         updateMeasurementStreamParams(measurementStream, stream: stream)
+        addMeasurements(stream.measurements, to: measurementStream)
         session.addToMeasurementStreams(measurementStream)
     }
     
-    // THIS IS FOR DEBUGGING PURPOSES
-    func getExistingSession(uuid: String) throws -> ExternalSessionEntity {
-        try context.existingExternalSession(uuid: uuid)
+    private func addMeasurements(_ measurements: [ExternalSessionWithStreamsAndMeasurements.Measurement], to stream: MeasurementStreamEntity) {
+        measurements.forEach { measurement in
+            let newMeasurement = MeasurementEntity(context: context)
+            newMeasurement.location = CLLocationCoordinate2D(latitude: measurement.latitude, longitude: measurement.longitude)
+            newMeasurement.time = measurement.time
+            newMeasurement.value = measurement.value
+            stream.addToMeasurements(newMeasurement)
+        }
     }
     
     private func newSessionEntity() -> ExternalSessionEntity {

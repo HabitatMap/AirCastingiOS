@@ -62,7 +62,7 @@ class CompleteScreenViewModel: ObservableObject {
     
     @Injected private var singleSessionDownloader: SingleSessionDownloader
     @Injected private var externalSessionsStore: ExternalSessionsStore
-    @Injected private var controller: SearchAndFollowCompleteScreenController
+    @Injected private var service: SearchAndFollowCompleteScreenService
     
     init(session: PartialExternalSession, exitRoute: @escaping () -> Void) {
         self.session = session
@@ -101,25 +101,39 @@ class CompleteScreenViewModel: ObservableObject {
     }
     
     func confirmationButtonPressed() {
+        guard externalSessionWithStreams != nil else {
+            completeButtonEnabled = false
+            self.showAlert()
+            return
+        }
+        following()
+        saveToDb()
+    }
+    
+    private func following() {
+        completeButtonEnabled = false
+        completeButtonText = "Following..."
+    }
+    
+    private func saveToDb() {
         guard let externalSessionWithStreams = externalSessionWithStreams else {
             assertionFailure("Confirmation button pressed when there was no session with streams")
             return
         }
         
-        Log.info("session: \(externalSessionWithStreams)")
-        
-        do {
-            try externalSessionsStore.createExternalSession(session: externalSessionWithStreams)
-            // TODO: remove after debugging
-            let s = try externalSessionsStore.getExistingSession(uuid: externalSessionWithStreams.uuid)
-            Log.info("\(s.measurementStreams)")
-            completeButtonEnabled = false
-            completeButtonText = followedText
-        } catch {
-            Log.error("FAILED: \(error)")
-            self.alert = InAppAlerts.failedSessionDownloadAlert(dismiss: self.dismissView)
+        service.followSession(session: externalSessionWithStreams) { [weak self] result in
+            switch result {
+            case .success:
+                Log.info("Successfully followed session: \(externalSessionWithStreams.uuid)")
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    self.completeButtonText = self.followedText
+                }
+            case .failure(let error):
+                Log.error("Following external session failed: \(error)")
+                self?.showAlert()
+            }
         }
-        
     }
     
     private func dismissView() {
@@ -129,19 +143,17 @@ class CompleteScreenViewModel: ObservableObject {
     private func getMeasurementsAndDisplayData() {
         let streams = session.stream.map(\.id)
         
-        controller.downloadMeasurements(streams: streams) { [weak self] result in
+        service.downloadMeasurements(streamsIds: streams) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .failure(let error):
                 Log.error("Failed to download session: \(error)")
-                DispatchQueue.main.async {
-                    self.alert = InAppAlerts.failedSessionDownloadAlert(dismiss: self.dismissView)
-                }
+                self.showAlert()
             case .success(let downloadedStreamsWithMeasurements):
                 guard !downloadedStreamsWithMeasurements.isEmpty else { return }
                 
                 DispatchQueue.main.async {
-                    self.externalSessionWithStreams = self.controller.createExternalSession(from: self.session, with: downloadedStreamsWithMeasurements)
+                    self.externalSessionWithStreams = self.service.createExternalSession(from: self.session, with: downloadedStreamsWithMeasurements)
                     
                     self.sessionStreams = .ready( self.externalSessionWithStreams!.streams.map {
                         .init(id: $0.id,
@@ -162,7 +174,11 @@ class CompleteScreenViewModel: ObservableObject {
         }
     }
     
-    
+    private func showAlert() {
+        DispatchQueue.main.async {
+            self.alert = InAppAlerts.failedSessionDownloadAlert(dismiss: self.dismissView)
+        }
+    }
     
     private static func getSensorName(_ streamName: String) -> String {
         streamName
