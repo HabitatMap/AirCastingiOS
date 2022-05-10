@@ -148,7 +148,7 @@ private extension SessionCardView {
                             session: session,
                             isCollapsed: $isCollapsed,
                             selectedStream: $selectedStream,
-                            thresholds: thresholds,
+                            thresholds: .init(value: thresholds),
                             measurementPresentationStyle: shouldShowValues)
     }
 
@@ -233,7 +233,7 @@ private extension SessionCardView {
 
     private var mapNavigationLink: some View {
          let mapView = AirMapView(session: session,
-                                  thresholds: thresholds,
+                                  thresholds: .init(value: thresholds),
                                   statsContainerViewModel: _mapStatsViewModel,
                                   showLoadingIndicator: $showLoadingIndicator,
                                   selectedStream: $selectedStream)

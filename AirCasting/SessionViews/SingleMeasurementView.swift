@@ -7,7 +7,7 @@ import Resolver
 
 struct SingleMeasurementView: View {
     @ObservedObject var stream: MeasurementStreamEntity
-    var threshold: SensorThreshold?
+    @ObservedObject var threshold: SensorThreshold
     @Binding var selectedStream: MeasurementStreamEntity?
     @Binding var isCollapsed: Bool
     @InjectedObject private var userSettings: UserSettings

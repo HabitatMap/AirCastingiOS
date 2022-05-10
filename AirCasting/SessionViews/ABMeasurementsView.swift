@@ -6,11 +6,19 @@ enum MeasurementPresentationStyle {
     case hideValues
 }
 
+class ABMeasurementsViewThreshold: ObservableObject {
+    var value: [SensorThreshold]
+
+    init(value: [SensorThreshold]) {
+        self.value = value
+    }
+}
+
 struct ABMeasurementsView<VM: SyncingMeasurementsViewModel>: View {
     @ObservedObject var session: SessionEntity
     @Binding var isCollapsed: Bool
     @Binding var selectedStream: MeasurementStreamEntity?
-    var thresholds: [SensorThreshold]
+    @ObservedObject var thresholds: ABMeasurementsViewThreshold
     let measurementPresentationStyle: MeasurementPresentationStyle
     @StateObject var viewModel: VM
     
@@ -21,7 +29,7 @@ struct ABMeasurementsView<VM: SyncingMeasurementsViewModel>: View {
                                     session: session,
                                     isCollapsed: $isCollapsed,
                                     selectedStream: $selectedStream,
-                                    thresholds: thresholds,
+                                    thresholds: .init(value: thresholds.value),
                                     measurementPresentationStyle: measurementPresentationStyle)
             }
         }
@@ -29,13 +37,12 @@ struct ABMeasurementsView<VM: SyncingMeasurementsViewModel>: View {
 }
 
 struct _ABMeasurementsView: View {
-    
     @StateObject var measurementsViewModel: DefaultSyncingMeasurementsViewModel
     @ObservedObject var session: SessionEntity
     @Binding var isCollapsed: Bool
     @Binding var selectedStream: MeasurementStreamEntity?
     
-    var thresholds: [SensorThreshold]
+    @ObservedObject var thresholds: ABMeasurementsViewThreshold
     let measurementPresentationStyle: MeasurementPresentationStyle
     
     @EnvironmentObject var selectedSection: SelectSection
@@ -59,7 +66,7 @@ struct _ABMeasurementsView: View {
                     HStack {
                         streamsToShow.count != 1 ? Spacer() : nil
                         ForEach(streamsToShow.filter({ !$0.gotDeleted }), id : \.self) { stream in
-                            if let threshold = thresholds.threshold(for: stream) {
+                            if let threshold = thresholds.value.threshold(for: stream) {
                                 SingleMeasurementView(stream: stream,
                                                       threshold: threshold,
                                                       selectedStream: $selectedStream,
@@ -110,7 +117,7 @@ struct _ABMeasurementsView: View {
                 streamsToShow.count != 1 ? Spacer() : nil
                 ForEach(streamsToShow.filter({ !$0.gotDeleted }), id : \.self) { stream in
                     SingleMeasurementView(stream: stream,
-                                          threshold: nil,
+                                          threshold: .init(),
                                           selectedStream: $selectedStream,
                                           isCollapsed: $isCollapsed,
                                           measurementPresentationStyle: .hideValues,

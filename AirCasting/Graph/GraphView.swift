@@ -31,8 +31,10 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                 session: session,
                 isCollapsed: Binding.constant(false),
                 selectedStream: $selectedStream,
-                thresholds: thresholds, measurementPresentationStyle: .showValues,
-                viewModel: DefaultSyncingMeasurementsViewModel(sessionDownloader: SessionDownloadService(), session: session))
+                thresholds: .init(value: thresholds),
+                measurementPresentationStyle: .showValues,
+                viewModel: DefaultSyncingMeasurementsViewModel(sessionDownloader: SessionDownloadService(),
+                                                               session: session))
                 .padding(.horizontal)
            
             if isProceeding(session: session) {

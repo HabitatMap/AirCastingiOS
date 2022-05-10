@@ -15,8 +15,7 @@ struct AirMapView: View {
     @Environment(\.scenePhase) var scenePhase
     
     @InjectedObject private var userSettings: UserSettings
-    var thresholds: [SensorThreshold]
-    
+    @ObservedObject var thresholds: ABMeasurementsViewThreshold
     @StateObject var statsContainerViewModel: StatisticsContainerViewModel
     @StateObject var mapNotesVM: MapNotesViewModel
 //  @StateObject var mapStatsDataSource: MapStatsDataSource
@@ -28,7 +27,7 @@ struct AirMapView: View {
     @State var noteNumber = 0
     
     init(session: SessionEntity,
-         thresholds: [SensorThreshold],
+         thresholds: ABMeasurementsViewThreshold,
          statsContainerViewModel: StateObject<StatisticsContainerViewModel>,
          showLoadingIndicator: Binding<Bool>,
          selectedStream: Binding<MeasurementStreamEntity?>) {
@@ -66,7 +65,7 @@ struct AirMapView: View {
                                                                                 session: session))
                 .padding([.bottom, .leading, .trailing])
 
-            if let threshold = thresholds.threshold(for: selectedStream) {
+            if let threshold = thresholds.value.threshold(for: selectedStream) {
                 if !showLoadingIndicator {
                     ZStack(alignment: .topLeading) {
                         GoogleMapView(pathPoints: pathPoints,
