@@ -8,6 +8,7 @@ import CoreLocation
 protocol ExternalSessionsStore {
     func createExternalSession(session: ExternalSessionWithStreamsAndMeasurements, completion: @escaping (Result<Void, Error>) -> Void)
     func doesSessionExist(uuid: String) -> Bool
+    func deleteSession(uuid: String, completion: @escaping (Result<Void, Error>) -> Void)
 }
 
 struct DefaultExternalSessionsStore: ExternalSessionsStore {
@@ -46,6 +47,19 @@ struct DefaultExternalSessionsStore: ExternalSessionsStore {
     
     func doesSessionExist(uuid: String) -> Bool {
         (try? context.existingExternalSession(uuid: uuid)) != nil
+    }
+    
+    func deleteSession(uuid: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        context.perform {
+            do {
+                let session = try context.existingExternalSession(uuid: uuid)
+                context.delete(session)
+                try context.save()
+                completion(.success(()))
+            } catch {
+                completion(.failure(error))
+            }
+        }
     }
     
     private func addStream(_ stream: ExternalSessionWithStreamsAndMeasurements.Stream, to session: ExternalSessionEntity) {

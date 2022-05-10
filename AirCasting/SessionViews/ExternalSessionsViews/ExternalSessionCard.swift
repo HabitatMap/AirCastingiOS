@@ -5,11 +5,27 @@ import SwiftUI
 import AirCastingStyling
 import Resolver
 
+class ExternalSessionCardViewModel: ObservableObject {
+    @Injected var store: ExternalSessionsStore
+    
+    func unfollow(sessionUUID: String) {
+        store.deleteSession(uuid: sessionUUID) { result in
+            switch result {
+            case .success():
+                Log.info("Unfollowed external session")
+            case .failure(let error):
+                Log.error("Failure when unfollowing external session \(error)")
+            }
+        }
+    }
+}
+
 struct ExternalSessionCard: View {
     var session: ExternalSessionEntity
     let thresholds: [SensorThreshold]
     @State private var isCollapsed: Bool
     @State private var selectedStream: MeasurementStreamEntity?
+    @ObservedObject var viewModel = ExternalSessionCardViewModel()
     
     @Injected private var uiStateHandler: SessionCardUIStateHandler
     
@@ -35,7 +51,7 @@ struct ExternalSessionCard: View {
             VStack(alignment: .trailing, spacing: 10) {
                 if !isCollapsed {
                     pollutionChart(thresholds: thresholds)
-//                    displayButtons(thresholds: thresholds)
+                    displayButtons()
                 }
             }
         }
@@ -100,6 +116,22 @@ private extension ExternalSessionCard {
             }
             selectedStream = streams.first
         }
+    }
+    
+    func displayButtons() -> some View {
+        HStack() {
+            unFollowButton
+            Spacer()
+//            mapButton.padding(.trailing, 10)
+//            graphButton
+        }.padding(.top, 10)
+        .buttonStyle(GrayButtonStyle())
+    }
+    
+    private var unFollowButton: some View {
+        Button(Strings.SessionCartView.unfollow) {
+            viewModel.unfollow(sessionUUID: session.uuid)
+        }.buttonStyle(UnFollowButtonStyle())
     }
 }
 
