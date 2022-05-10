@@ -28,7 +28,7 @@ class ThresholdSettingsViewModel: ObservableObject {
         let stringThresholdValues = [thresholdVeryHigh, thresholdHigh, thresholdMedium, thresholdLow, thresholdVeryLow]
         var newThresholdValues: [Int32] = []
         for value in stringThresholdValues {
-            let convertedValue = convertToInt(value)
+            let convertedValue = threshold.sensorName == MeasurementStreamSensorName.f.rawValue && userSettings.convertToCelsius ? Int32(TemperatureConverter.calculateFahrenheit(celsius: Double(convertToInt(value)))) : convertToInt(value)
             newThresholdValues.append(convertedValue)
         }
         let sortedValue = newThresholdValues.sorted { $0 < $1 }

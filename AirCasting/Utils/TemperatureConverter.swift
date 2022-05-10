@@ -5,7 +5,7 @@ import Foundation
 
 struct TemperatureConverter {
     static func calculateCelsius(fahrenheit: Double) -> Double {
-        ((fahrenheit - 32) * 5 / 9).rounded()
+        (fahrenheit - 32) * 5 / 9
     }
     
     static func calculateFahrenheit(celsius: Double) -> Double {
