@@ -98,7 +98,7 @@ struct ChooseSessionTypeView: View {
                         viewModel.setSearchAndFollow(using: new)
                     })) {
                         CreatingSessionFlowRootView {
-                            SearchView(isSearchAndFollowFlowActive: .init(get: {
+                            SearchView(isSearchAndFollowLinkActive: .init(get: {
                                 viewModel.isSearchAndFollowLinkActive
                             }, set: { new in
                                 viewModel.setSearchAndFollow(using: new)
@@ -208,7 +208,7 @@ struct ChooseSessionTypeView: View {
                                     viewModel.setSearchAndFollow(using: new)
                                 })) {
                                     CreatingSessionFlowRootView {
-                                        SearchView(isSearchAndFollowFlowActive: .init(get: {
+                                        SearchView(isSearchAndFollowLinkActive: .init(get: {
                                             viewModel.isSearchAndFollowLinkActive
                                         }, set: { new in
                                             viewModel.setSearchAndFollow(using: new)

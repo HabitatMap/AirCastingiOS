@@ -17,7 +17,7 @@ class SearchViewModel: ObservableObject {
     @Published var alert: AlertInfo?
     @Published var measurementTypes = [SearchParameter]()
     @Published var sensorTypes = [SearchParameter]()
-    @Published var isSearchAndFollowFlowActive: Binding<Bool>
+    @Published var isSearchAndFollowLinkActive: Binding<Bool>
     
     var continueDisabled: Bool { addressName == "" }
     
@@ -31,8 +31,8 @@ class SearchViewModel: ObservableObject {
         return sensorType(from: selected.name)
     }
     
-    init(isSearchAndFollowFlowActive: Binding<Bool>) {
-        self.isSearchAndFollowFlowActive = isSearchAndFollowFlowActive
+    init(isSearchAndFollowLinkActive: Binding<Bool>) {
+        self.isSearchAndFollowLinkActive = isSearchAndFollowLinkActive
         measurementTypes = [
             .init(isSelected: true, name: Strings.SearchFollowParamNames.particulateMatter),
             .init(isSelected: false, name: Strings.SearchFollowParamNames.ozone)

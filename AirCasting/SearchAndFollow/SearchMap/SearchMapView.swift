@@ -9,15 +9,15 @@ import AirCastingStyling
 struct SearchMapView: View {
     @StateObject private var viewModel: SearchMapViewModel
     @Environment(\.presentationMode) var presentationMode
-    @Binding var isSearchAndFollowFlowActive: Bool
+    @Binding var isSearchAndFollowLinkActive: Bool
     @EnvironmentObject var tabSelection: TabBarSelection
 
-    init(locationName: String, locationAddress: CLLocationCoordinate2D, parameterType: MeasurementType, sensorType: SensorType, isSearchAndFollowFlowActive: Binding<Bool>) {
+    init(locationName: String, locationAddress: CLLocationCoordinate2D, parameterType: MeasurementType, sensorType: SensorType, isSearchAndFollowLinkActive: Binding<Bool>) {
         _viewModel = .init(wrappedValue: .init(passedLocation: locationName,
                                                passedLocationAddress: locationAddress,
                                                measurementType: parameterType,
                                                sensorType: sensorType))
-        _isSearchAndFollowFlowActive = .init(projectedValue: isSearchAndFollowFlowActive)
+        _isSearchAndFollowLinkActive = .init(projectedValue: isSearchAndFollowLinkActive)
     }
     
     var body: some View {
@@ -201,7 +201,7 @@ private extension SearchMapView {
     
     var finishButton: some View {
         Button {
-            isSearchAndFollowFlowActive = false
+            isSearchAndFollowLinkActive = false
             tabSelection.selection = .dashboard
         } label: {
             Text(Strings.SearchMapView.finishText)
@@ -209,11 +209,11 @@ private extension SearchMapView {
                 .padding(.trailing, 7)
         }
         .overlay(
-            Rectangle()
+            Capsule()
                 .frame(width: 85, height: 35)
-                .cornerRadius(15)
                 .foregroundColor(.accentColor)
                 .opacity(0.1)
         )
+        .padding(.trailing, 10)
     }
 }
