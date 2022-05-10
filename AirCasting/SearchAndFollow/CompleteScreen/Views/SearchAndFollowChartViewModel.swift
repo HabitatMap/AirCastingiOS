@@ -21,8 +21,19 @@ class SearchAndFollowChartViewModel: ObservableObject {
     func generateEntries(with measurements: [ChartMeasurement], thresholds: ThresholdsValue) -> (Date?, Date?) {
         var times: [Date] = []
         var buffer: [ChartMeasurement] = []
+        var updatedMeasuremnets = measurements
         
-        for measurement in measurements.reversed() {
+        // This allows us to delete all of the measurements that cannot fulfill the whole hour range.
+        // Result of this, is the chart that is the same; as on the session card.
+        guard let firstElement = updatedMeasuremnets.reversed().first?.time else { return (nil, nil) }
+        let hoursForRemoval = Calendar.current.component(.hour, from: firstElement)
+        for (index, item) in updatedMeasuremnets.enumerated().reversed() {
+            if Calendar.current.component(.hour, from: item.time) == hoursForRemoval {
+                updatedMeasuremnets.remove(at: index)
+            }
+        }
+        
+        for measurement in updatedMeasuremnets.reversed() {
             if entries.count == 9 {
                 break
             }
@@ -47,7 +58,7 @@ class SearchAndFollowChartViewModel: ObservableObject {
     
     private func addAverage(for buffer: [ChartMeasurement], times: inout [Date], thresholds: ThresholdsValue) {
         guard !buffer.isEmpty else { return }
-        let average = (buffer.map { $0.value }.reduce(0, +)) / Double(buffer.count)
+        let average = round((buffer.map { $0.value }.reduce(0, +)) / Double(buffer.count))
         
         times.append(buffer.last!.time.roundedUpToHour)
         entries.append(ChartDot(value: Double(average), color: thresholds.colorFor(value: average)))
