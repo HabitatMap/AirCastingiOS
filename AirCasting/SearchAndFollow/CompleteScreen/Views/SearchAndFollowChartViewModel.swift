@@ -21,19 +21,19 @@ class SearchAndFollowChartViewModel: ObservableObject {
     func generateEntries(with measurements: [ChartMeasurement], thresholds: ThresholdsValue) -> (Date?, Date?) {
         var times: [Date] = []
         var buffer: [ChartMeasurement] = []
-        var updatedMeasuremnets = measurements
+        var updatedMeasurements = measurements
         
         // This allows us to delete all of the measurements that cannot fulfill the whole hour range.
         // Result of this, is the chart that is the same; as on the session card.
-        guard let firstElement = updatedMeasuremnets.reversed().first?.time else { return (nil, nil) }
+        guard let firstElement = updatedMeasurements.reversed().first?.time else { return (nil, nil) }
         let hoursForRemoval = Calendar.current.component(.hour, from: firstElement)
-        for (index, item) in updatedMeasuremnets.enumerated().reversed() {
+        for (index, item) in updatedMeasurements.enumerated().reversed() {
             if Calendar.current.component(.hour, from: item.time) == hoursForRemoval {
-                updatedMeasuremnets.remove(at: index)
+                updatedMeasurements.remove(at: index)
             }
         }
         
-        for measurement in updatedMeasuremnets.reversed() {
+        for measurement in updatedMeasurements.reversed() {
             if entries.count == 9 {
                 break
             }
