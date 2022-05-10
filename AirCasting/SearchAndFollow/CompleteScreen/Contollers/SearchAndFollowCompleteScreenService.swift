@@ -4,15 +4,17 @@
 import Foundation
 import Resolver
 
-protocol SearchAndFollowCompleteScreenController {
-    func createExternalSession(from session: PartialExternalSession,with downloadedStreamsWithMeasurements: [StreamWithMeasurements]) -> ExternalSessionWithStreamsAndMeasurements
-    func downloadMeasurements(streams: [Int], completion: @escaping (Result<[StreamWithMeasurements], Error>) -> Void)
+protocol SearchAndFollowCompleteScreenService {
+    func createExternalSession(from session: PartialExternalSession, with downloadedStreamsWithMeasurements: [StreamWithMeasurements]) -> ExternalSessionWithStreamsAndMeasurements
+    func downloadMeasurements(streamsIds: [Int], completion: @escaping (Result<[StreamWithMeasurements], Error>) -> Void)
+    func followSession(session: ExternalSessionWithStreamsAndMeasurements, completion: @escaping (Result<Void, Error>) -> Void)
 }
 
-struct DefaultSearchAndFollowCompleteScreenController: SearchAndFollowCompleteScreenController {
+struct DefaultSearchAndFollowCompleteScreenService: SearchAndFollowCompleteScreenService {
     @Injected private var service: StreamDownloader
+    @Injected private var externalSessionsStore: ExternalSessionsStore
     
-    func createExternalSession(from session: PartialExternalSession,with downloadedStreamsWithMeasurements: [StreamWithMeasurements]) -> ExternalSessionWithStreamsAndMeasurements {
+    func createExternalSession(from session: PartialExternalSession, with downloadedStreamsWithMeasurements: [StreamWithMeasurements]) -> ExternalSessionWithStreamsAndMeasurements {
         .init(uuid: session.uuid,
               provider: session.provider,
               name: session.name,
@@ -37,29 +39,26 @@ struct DefaultSearchAndFollowCompleteScreenController: SearchAndFollowCompleteSc
         })
     }
     
-    func downloadMeasurements(streams: [Int], completion: @escaping (Result<[StreamWithMeasurements], Error>) -> Void) {
-        guard !streams.isEmpty else {
+    func downloadMeasurements(streamsIds: [Int], completion: @escaping (Result<[StreamWithMeasurements], Error>) -> Void) {
+        guard !streamsIds.isEmpty else {
             completion(.failure(CompletionScreenError.noStreams))
             return
         }
         var results: [Result<StreamWithMeasurements, Error>] = []
         let measurementsLimit = 60*24 // We want measurements from 24 hours
         let group = DispatchGroup()
-        streams.forEach { streamId in
+        streamsIds.forEach { streamId in
             group.enter()
             self.service.downloadStreamWithMeasurements(id: streamId, measurementsLimit: measurementsLimit) { results.append($0); group.leave() }
         }
         group.notify(queue: .global()) {
-            var allDownstreams = [StreamWithMeasurements]()
-            for result in results {
-                do {
-                    allDownstreams.append(try result.get())
-                } catch {
-                    completion(.failure(error))
-                    return
-                }
-            }
-            completion(.success(allDownstreams))
+            do { try completion(.success(results.map { try $0.get() })) }
+            catch { completion(.failure(error)) }
         }
+    }
+    
+    func followSession(session: ExternalSessionWithStreamsAndMeasurements, completion: @escaping (Result<Void, Error>) -> Void) {
+        sleep(3 )
+        externalSessionsStore.createExternalSession(session: session, completion: completion)
     }
 }
