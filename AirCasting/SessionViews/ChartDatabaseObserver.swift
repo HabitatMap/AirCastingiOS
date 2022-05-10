@@ -14,13 +14,13 @@ enum ChartDatabaseObserverFilter {
 final class ChartDatabaseObserver {
     @Injected private var persistence: PersistenceController
     private let onMeasurementsChange: (() -> Void)
-    private let session: SessionUUID
+    private let session: String
     private let sensor: String
     private let filteringComponent: ChartDatabaseObserverFilter
     
     private var latestMeasurementTime: Date?
     
-    init(session: SessionUUID, sensor: String, filtered: ChartDatabaseObserverFilter, onMeasurementsChange: @escaping (() -> Void)) {
+    init(session: String, sensor: String, filtered: ChartDatabaseObserverFilter, onMeasurementsChange: @escaping (() -> Void)) {
         self.onMeasurementsChange = onMeasurementsChange
         self.session = session
         self.sensor = sensor
@@ -32,14 +32,16 @@ final class ChartDatabaseObserver {
     @objc private func contextChanged(_ n: Notification) {
         guard let insertedObjects = (n.userInfo?[NSInsertedObjectsKey] as? NSSet)?.allObjects else { return }
         let insertedMeasurements = insertedObjects.compactMap { $0 as? MeasurementEntity }
-        let filtered = insertedMeasurements.filter { $0.measurementStream.session.uuid == session && $0.measurementStream.sensorName == sensor }
+        let filtered = insertedMeasurements.filter { $0.measurementStream.session?.uuid.rawValue == session ||
+            $0.measurementStream.externalSession?.uuid == session &&
+            $0.measurementStream.sensorName == sensor }
         guard let newestMeasurement = filtered.sorted(by: { $0.time > $1.time }).first else { return }
         defer { latestMeasurementTime = newestMeasurement.time }
         guard filtered.count > 0, shouldFireObserver(newMeasurement: newestMeasurement) else { return }
         Log.info("Firing.\n" +
                  "   New measurement time: \(newestMeasurement.time.debugInfo),\n" +
-                 "   session name: \(newestMeasurement.measurementStream.session.name ?? "??")\n" +
-                 "   session start time: \(newestMeasurement.measurementStream.session.startTime.debugInfo),\n" +
+                 "   session name: \(newestMeasurement.measurementStream.session?.name ?? newestMeasurement.measurementStream.externalSession?.name ?? "??")\n" +
+                 "   session start time: \(newestMeasurement.measurementStream.session?.startTime.debugInfo ?? newestMeasurement.measurementStream.externalSession?.startTime.debugDescription),\n" +
                  "   filtering: \(filteringComponent)")
         onMeasurementsChange()
     }

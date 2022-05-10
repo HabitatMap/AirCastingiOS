@@ -192,7 +192,7 @@ private extension SessionCardView {
 
     func pollutionChart(thresholds: [SensorThreshold]) -> some View {
         return VStack() {
-            ChartView(thresholds: thresholds, stream: $selectedStream, session: session)
+            ChartView(thresholds: thresholds, stream: $selectedStream, session: .session(session))
             .foregroundColor(.aircastingGray)
                 .font(Fonts.semiboldHeading2)
         }

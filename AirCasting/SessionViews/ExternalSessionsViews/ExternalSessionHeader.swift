@@ -5,6 +5,8 @@ import SwiftUI
 
 struct ExternalSessionHeader: View {
     var session: ExternalSessionEntity
+    let action: () -> Void
+    @State var chevronIndicator = "chevron.down"
     
     var body: some View {
         sessionHeader
@@ -35,6 +37,13 @@ private extension ExternalSessionHeader {
                 Text(session.name ?? "")
                     .font(Fonts.regularHeading1)
                 Spacer()
+                Button(action: {
+                    action()
+                    chevronIndicator = chevronIndicator == "chevron.down" ? "chevron.up" : "chevron.down"
+                }) {
+                    Image(systemName: chevronIndicator)
+                        .renderingMode(.original)
+                }
             }
             sensorType
                 .font(Fonts.regularHeading4)
@@ -50,7 +59,7 @@ private extension ExternalSessionHeader {
     func adaptTimeAndDate() -> Text {
         let formatter = DateFormatters.SessionCartView.utcDateIntervalFormatter
         
-        guard let start = session.startTime else { return Text("") }
+        let start = session.startTime
         let end = session.endTime ?? DateBuilder.getFakeUTCDate()
         
         let string = formatter.string(from: start, to: end)

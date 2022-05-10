@@ -7,5 +7,5 @@ import CoreData
 
 @objc(ExternalSessionEntity)
 public class ExternalSessionEntity: NSManagedObject {
-
+    public var isMobile = false
 }

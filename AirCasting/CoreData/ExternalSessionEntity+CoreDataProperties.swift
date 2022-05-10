@@ -15,13 +15,18 @@ extension ExternalSessionEntity {
     @NSManaged public var endTime: Date?
     @NSManaged public var latitude: Double
     @NSManaged public var longitude: Double
-    @NSManaged public var name: String?
-    @NSManaged public var provider: String?
-    @NSManaged public var startTime: Date?
-    @NSManaged public var uuid: String?
+    @NSManaged public var name: String
+    @NSManaged public var provider: String
+    @NSManaged public var startTime: Date
+    @NSManaged public var uuid: String
     @NSManaged public var measurementStreams: Array<MeasurementStreamEntity>
     @NSManaged public var uiState: UIStateEntity?
-
+    
+    func streamWith(sensorName: String) -> MeasurementStreamEntity? {
+       measurementStreams.first { stream in
+            stream.sensorName == sensorName
+        }
+    }
 }
 
 // MARK: Generated accessors for measurementStreams

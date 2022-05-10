@@ -14,7 +14,7 @@ final class CoreDataHook: NSObject, ObservableObject {
             case .session(let sessionEntity):
                 return sessionEntity.uuid.rawValue
             case .externalSession(let externalSessionEntity):
-                return externalSessionEntity.uuid!
+                return externalSessionEntity.uuid
             }
         }
         
