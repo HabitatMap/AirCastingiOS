@@ -58,7 +58,6 @@ struct DefaultSearchAndFollowCompleteScreenService: SearchAndFollowCompleteScree
     }
     
     func followSession(session: ExternalSessionWithStreamsAndMeasurements, completion: @escaping (Result<Void, Error>) -> Void) {
-        sleep(3 )
         externalSessionsStore.createExternalSession(session: session, completion: completion)
     }
 }
