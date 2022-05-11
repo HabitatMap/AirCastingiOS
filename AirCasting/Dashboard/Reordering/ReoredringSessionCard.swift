@@ -52,7 +52,7 @@ private extension ReoredringSessionCard {
                 ForEach(session.sortedStreams!.filter({ !$0.gotDeleted }), id : \.self) { stream in
                     if let threshold = thresholds.threshold(for: stream) {
                         SingleMeasurementView(stream: stream,
-                                              threshold: threshold,
+                                              threshold: .init(value: threshold),
                                               selectedStream: .constant(nil),
                                               isCollapsed: .constant(true),
                                               measurementPresentationStyle: .showValues,

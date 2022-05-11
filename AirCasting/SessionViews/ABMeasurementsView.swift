@@ -68,7 +68,7 @@ struct _ABMeasurementsView: View {
                         ForEach(streamsToShow.filter({ !$0.gotDeleted }), id : \.self) { stream in
                             if let threshold = thresholds.value.threshold(for: stream) {
                                 SingleMeasurementView(stream: stream,
-                                                      threshold: threshold,
+                                                      threshold: .init(value: threshold),
                                                       selectedStream: $selectedStream,
                                                       isCollapsed: $isCollapsed,
                                                       measurementPresentationStyle: measurementPresentationStyle,
@@ -117,7 +117,7 @@ struct _ABMeasurementsView: View {
                 streamsToShow.count != 1 ? Spacer() : nil
                 ForEach(streamsToShow.filter({ !$0.gotDeleted }), id : \.self) { stream in
                     SingleMeasurementView(stream: stream,
-                                          threshold: .init(),
+                                          threshold: .init(value: nil),
                                           selectedStream: $selectedStream,
                                           isCollapsed: $isCollapsed,
                                           measurementPresentationStyle: .hideValues,

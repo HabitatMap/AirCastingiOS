@@ -5,9 +5,17 @@ import SwiftUI
 import AirCastingStyling
 import Resolver
 
+class SingleMeasurementViewThreshold: ObservableObject {
+    var value: SensorThreshold? = nil
+    
+    init(value: SensorThreshold? = nil) {
+        self.value = value
+    }
+}
+
 struct SingleMeasurementView: View {
     @ObservedObject var stream: MeasurementStreamEntity
-    @ObservedObject var threshold: SensorThreshold
+    @ObservedObject var threshold: SingleMeasurementViewThreshold
     @Binding var selectedStream: MeasurementStreamEntity?
     @Binding var isCollapsed: Bool
     @InjectedObject private var userSettings: UserSettings
@@ -35,7 +43,7 @@ struct SingleMeasurementView: View {
                     Text(showStreamName())
                         .font(Fonts.systemFont1)
                         .scaledToFill()
-                    if let threshold = threshold, measurementPresentationStyle == .showValues {
+                    if let threshold = threshold.value, measurementPresentationStyle == .showValues {
                         HStack(spacing: 3) {
                             MeasurementDotView(value: value, thresholds: threshold)
                             Text("\(Int(value))")
