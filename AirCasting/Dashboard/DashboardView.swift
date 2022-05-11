@@ -19,6 +19,7 @@ struct DashboardView: View {
     @EnvironmentObject var searchAndFollowButton: SearchAndFollowButton
     @State var isRefreshing: Bool = false
     @Injected private var sessionSynchronizer: SessionSynchronizer
+    @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
 
     private let dashboardCoordinateSpaceName = "dashboardCoordinateSpace"
 
@@ -153,7 +154,9 @@ struct DashboardView: View {
                                             thresholds: thresholds
                             )
                         case .externalSession(let externalSesssion):
-                            ExternalSessionCard(session: externalSesssion, thresholds: thresholds)
+                            if featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) {
+                                ExternalSessionCard(session: externalSesssion, thresholds: thresholds)
+                            }
                         }
                     }
                 }
