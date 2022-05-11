@@ -34,7 +34,7 @@ private extension ExternalSessionHeader {
     var nameLabel: some View {
         VStack(alignment: .leading, spacing: 3) {
             HStack {
-                Text(session.name ?? "")
+                Text(session.name)
                     .font(Fonts.regularHeading1)
                 Spacer()
                 Button(action: {
