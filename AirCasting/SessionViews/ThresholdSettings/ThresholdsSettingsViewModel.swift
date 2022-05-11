@@ -20,9 +20,7 @@ class ThresholdSettingsViewModel: ObservableObject {
         self.threshold = threshold
     }
 
-    func resetToDefault() -> ThresholdsValue {
-        return initialThresholds
-    }
+    func resetToDefault() -> ThresholdsValue { initialThresholds }
     
     func updateToNewThresholds() -> ThresholdsValue {
         let stringThresholdValues = [thresholdVeryHigh, thresholdHigh, thresholdMedium, thresholdLow, thresholdVeryLow]

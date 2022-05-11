@@ -22,8 +22,8 @@ struct GridSquare {
     private var northWestLatLng: CLLocationCoordinate2D
     @InjectedObject private var userSettings: UserSettings
     
-    private var properThreshold: Int32 {
-        guard let averagedValue = averagedValue else { return 0 }
+    private var adjustedAverage: Int32? {
+        guard let averagedValue = averagedValue else { return nil }
 
         return sensorThreshold.sensorName == MeasurementStreamSensorName.f.rawValue && userSettings.convertToCelsius ? Int32(TemperatureConverter.calculateFahrenheit(celsius: averagedValue)) : Int32(averagedValue)
     }
@@ -55,7 +55,8 @@ struct GridSquare {
         number += 1
         calculateAverage()
         
-        let color: UIColor = GoogleMapView.color(value: properThreshold, threshold: sensorThreshold).withAlphaComponent(0.5)
+        guard let adjustedAverage = adjustedAverage else { return }
+        let color: UIColor = GoogleMapView.color(value: adjustedAverage, threshold: sensorThreshold).withAlphaComponent(0.5)
         if color != fillColor {
             fillColor = color
             newColor = true

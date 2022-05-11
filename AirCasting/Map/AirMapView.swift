@@ -98,7 +98,7 @@ struct AirMapView: View {
                             EditButtonView()
                         }.padding([.bottom, .leading, .trailing])
                     }
-                    ThresholdsSliderView(threshold: threshold, selectedStream: $selectedStream)
+                    ThresholdsSliderView(threshold: threshold, selectedStream: selectedStream)
                         // Fixes labels covered by tabbar
                         .padding([.bottom, .leading, .trailing])
                 }

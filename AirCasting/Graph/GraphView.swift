@@ -66,7 +66,7 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                         }
                     }
 
-                    ThresholdsSliderView(threshold: threshold, selectedStream: $selectedStream)
+                    ThresholdsSliderView(threshold: threshold, selectedStream: selectedStream)
                         .padding()
                     // Fixes labels covered by tabbar
                         .padding(.bottom)

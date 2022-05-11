@@ -11,7 +11,7 @@ import Resolver
 struct ThresholdsSliderView: View {
     
     @ObservedObject var threshold: SensorThreshold
-    @Binding var selectedStream: MeasurementStreamEntity?
+    var selectedStream: MeasurementStreamEntity?
     
     var body: some View {
         if let selectedStream = selectedStream {
@@ -23,7 +23,7 @@ struct ThresholdsSliderView: View {
 struct MultiSliderView: View {
     @InjectedObject private var userSettings: UserSettings
     @Binding var thresholds: [Float]
-    @ObservedObject var selectedStream: MeasurementStreamEntity
+    var selectedStream: MeasurementStreamEntity
     
     private var thresholdButtonValues: [Float] {
         get {
@@ -112,7 +112,7 @@ struct MultiSliderView: View {
 #if DEBUG
 struct MultiSlider_Previews: PreviewProvider {
     static var previews: some View {
-        ThresholdsSliderView(threshold: .mock, selectedStream: .constant(MeasurementStreamEntity.mock))
+        ThresholdsSliderView(threshold: .mock, selectedStream: MeasurementStreamEntity.mock)
     }
 }
 #endif
