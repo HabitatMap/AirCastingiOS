@@ -94,8 +94,7 @@ private extension ExternalSessionCard {
             HStack {
                 streams.count != 1 ? Spacer() : nil
                 ForEach(streams, id : \.id) { stream in
-//                    if let threshold = thresholds.threshold(for: stream.sensorName ?? "") {
-                    if let threshold = thresholds.threshold(for: "PM2.5") { // This is temporary until we start saving thresholds
+                    if let threshold = thresholds.threshold(for: stream.sensorName ?? "") {
                         SingleMeasurementView(stream: stream,
                                               threshold: threshold,
                                               selectedStream: .constant(nil),
