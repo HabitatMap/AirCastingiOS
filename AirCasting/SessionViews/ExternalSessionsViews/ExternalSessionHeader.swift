@@ -66,11 +66,3 @@ private extension ExternalSessionHeader {
         return Text(string)
     }
 }
-
-//#if DEBUG
-//struct ExternalSessionHeader_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ExternalSessionHeader()
-//    }
-//}
-//#endif
