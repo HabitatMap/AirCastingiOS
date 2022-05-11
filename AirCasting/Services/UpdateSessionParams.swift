@@ -13,6 +13,21 @@ final class UpdateSessionParamsService {
     enum Error: Swift.Error {
         case missingContext(Any)
     }
+    
+    func updateExternalSessionParams(session: ExternalSessionEntity, output: FixedSession.FixedMeasurementOutput, context: NSManagedObjectContext) throws {
+        session.endTime = output.end_time
+        output.streams.forEach({ stream in
+            if let sessionStream = session.measurementStreams.first(where: { $0.sensorName == stream.key }) {
+                stream.value.measurements.forEach({ measurement in
+                    let newMeasurement = MeasurementEntity(context: context)
+                    newMeasurement.location = CLLocationCoordinate2D(latitude: measurement.latitude, longitude: measurement.longitude)
+                    newMeasurement.time = measurement.time
+                    newMeasurement.value = Double(measurement.value)
+                    sessionStream.addToMeasurements(newMeasurement)
+                })
+            }
+        })
+    }
 
     func updateSessionsParams(session: SessionEntity, output: FixedSession.FixedMeasurementOutput) throws {
         #warning("TODO: set only values that have changed to avoid core data notifications and context changes")

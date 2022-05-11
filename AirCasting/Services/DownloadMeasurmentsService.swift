@@ -43,7 +43,6 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
     private var timerSink: Cancellable?
     private var lastFetchCancellableTask: Cancellable?
     private lazy var removeOldService: RemoveOldMeasurementsService = RemoveOldMeasurementsService()
-//    private var externalSessionsMeasurementsDownloaderService = ExternalSessionsMeasurementsDownloaderService()
 
     #warning("Add locking here so updates won't bump on one another")
     func start() {
@@ -82,7 +81,6 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
         var returnData: [(uuid: SessionUUID, lastSynced: Date, type: Session.SessionType)] = []
         
         let externalSessionsRequest = ExternalSessionEntity.fetchRequest()
-        request.predicate = NSPredicate(value: true)
         
         context.perform { [unowned self] in
             do {
@@ -142,20 +140,9 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
                     try self.removeOldService.removeOldestMeasurements(in: context,
                                                                        from: sessionUUID, of: type)
                 case .external:
-                    Log.info("Processing external session response: \(output)")
+                    Log.info("Processing external session response")
                     let session = try context.existingExternalSession(uuid: sessionUUID.rawValue)
-                    session.endTime = output.end_time
-                    output.streams.forEach({ stream in
-                        if let sessionStream = session.measurementStreams.first(where: { $0.sensorName == stream.key }) {
-                            stream.value.measurements.forEach({ measurement in
-                                let newMeasurement = MeasurementEntity(context: context)
-                                newMeasurement.location = CLLocationCoordinate2D(latitude: measurement.latitude, longitude: measurement.longitude)
-                                newMeasurement.time = measurement.time
-                                newMeasurement.value = Double(measurement.value)
-                                sessionStream.addToMeasurements(newMeasurement)
-                            })
-                        }
-                    })
+                    try UpdateSessionParamsService().updateExternalSessionParams(session: session, output: output, context: context)
                     try self.removeOldService.removeOldestMeasurements(in: context,
                                                                        from: sessionUUID, of: type)
                 }
