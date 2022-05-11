@@ -13,9 +13,9 @@ protocol EditViewModel: ObservableObject {
     var alert: AlertInfo? { get set }
     var shouldShowError: Bool { get }
     var shouldDismiss: Bool { get }
-    
+
     func saveChanges()
-    func downloadSessionAndReloadView()
+    func viewAppeared()
 }
 
 class EditSessionViewModel: EditViewModel {
@@ -29,11 +29,11 @@ class EditSessionViewModel: EditViewModel {
     @Injected private var sessionDownloader: SingleSessionDownloader
     @Injected private var sessionUpdateService: SessionUpdateService
     private let sessionUUID: SessionUUID
-    
+
     init(sessionUUID: SessionUUID) {
         self.sessionUUID = sessionUUID
     }
-    
+
     func saveChanges() {
         guard !sessionName.isEmpty else {
             shouldShowError = true
@@ -64,16 +64,17 @@ class EditSessionViewModel: EditViewModel {
                         showAlert(InAppAlerts.failedSavingData(dismiss: self.dismissView()))
                     }
                     DispatchQueue.main.async {
-                        shouldDismiss = true
+                        self.shouldDismiss = true
                     }
                 }
             } catch {
                 Log.info("Error while saving edited session name and tags.")
+                self.showAlert(InAppAlerts.failedSavingData { self.dismissView() })
             }
         }
     }
-    
-    func downloadSessionAndReloadView() {
+
+    func viewAppeared() {
         sessionDownloader.downloadSessionNameAndTags(with: sessionUUID) { [weak self] result in
             guard let self = self else { return }
             switch result {
@@ -87,11 +88,11 @@ class EditSessionViewModel: EditViewModel {
                 }
             case .failure(let error):
                 Log.error("Error downloading session data for edit view: \(error.localizedDescription)")
-                self.showAlert(InAppAlerts.failedToDownload(dismiss: self.dismissView()))
+                self.showAlert(InAppAlerts.failedToDownload(dismiss: { self.dismissView() }))
             }
         }
     }
-    
+
     private func updateSessionNameAndTagsWithBackendData(name: String, tags: String, closure: @escaping () -> ()) {
         self.measurementStreamStorage.accessStorage { [self] storage in
             do {
@@ -101,17 +102,17 @@ class EditSessionViewModel: EditViewModel {
                 closure()
             } catch {
                 Log.error("Failed to save new session name and tags")
-                showAlert(InAppAlerts.failedSavingData(dismiss: self.dismissView()))
+                self.showAlert(InAppAlerts.failedSavingData { self.dismissView() })
             }
         }
     }
-    
+
     private func showAlert(_ alert: AlertInfo) {
         DispatchQueue.main.async {
             self.alert = alert
         }
     }
-    
+
     private func dismissView() {
         DispatchQueue.main.async {
             self.shouldDismiss = true

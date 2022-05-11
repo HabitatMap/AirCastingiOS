@@ -11,12 +11,18 @@ struct MyAccountViewSignOut: View {
     @InjectedObject private var userState: UserState
     @Injected private var networkChecker: NetworkChecker
     @Injected private var logoutController: LogoutController
+    @Injected private var deleteController: DeleteAccountController
+    @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
     
     var body: some View {
         ZStack {
             VStack(alignment: .leading) {
                 logInLabel
                 signOutButton
+                if featureFlagsViewModel.enabledFeatures.contains(.deleteAccount) {
+                    deleteProfileButton
+                        .frame(maxWidth: .infinity, alignment: .center)
+                }
                 Spacer()
             }
         }
@@ -39,10 +45,13 @@ private extension MyAccountViewSignOut {
                 alert = InAppAlerts.unableToLogOutAlert()
                 return
             }
+            userState.currentState = .loggingOut
             do {
-                userState.isLoggingOut = true
-                try logoutController.logout { userState.isLoggingOut = false }
+                try logoutController.logout {
+                    userState.currentState = .idle
+                }
             } catch {
+                userState.currentState = .idle
                 assertionFailure("Failed to deauthorize \(error)")
             }
         }) {
@@ -55,6 +64,34 @@ private extension MyAccountViewSignOut {
                 .padding(.horizontal)
             }
         }.buttonStyle(BlueButtonStyle())
+        .padding()
+    }
+    
+    var deleteProfileButton: some View {
+        Button {
+            alert = InAppAlerts.firstConfirmationDeletingAccountAlert {
+                alert = InAppAlerts.secondConfirmationDeletingAccountAlert {
+                    guard networkChecker.connectionAvailable else {
+                        alert = InAppAlerts.unableToConnectBeforeDeletingAccount()
+                        return
+                    }
+                    userState.currentState = .deletingAccount
+                    deleteController.deleteAccount { result in
+                        userState.currentState = .idle
+                        switch result {
+                        case .success(_): break
+                        case .failure(let error):
+                            alert = InAppAlerts.failedDeletingAccount()
+                            assertionFailure("Failed to delete account: \(error)")
+                        }
+                    }
+                }
+            }
+        } label: {
+            Text(Strings.SignOutSettings.deleteAccount)
+        }
+        .foregroundColor(.red)
+        .padding(.bottom, 20)
         .padding()
     }
 }

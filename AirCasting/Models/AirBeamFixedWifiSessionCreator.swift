@@ -70,7 +70,7 @@ final class AirBeamFixedWifiSessionCreator: SessionCreator {
                                                     longitude: sessionContext.startingLocation?.longitude)
         createSessionService.createEmptyFixedWifiSession(input: .init(session: params,
                                                                       compression: true),
-                                                         completion: { [measurementStreamStorage, userAuthenticationSession] result in
+                                                         completion: { [measurementStreamStorage] result in
                                                             DispatchQueue.main.async {
                                                                 switch result {
                                                                 case .success(let output):

@@ -27,7 +27,7 @@ class DefaultSingleSessionDownloader: SingleSessionDownloader {
     }()
     
     func downloadSessionNameAndTags(with sessionUUID: SessionUUID, completion: @escaping (Result<SessionWithNameAndTags, Error>) -> ()) {
-        let urlComponentPart = urlProvider.baseAppURL.appendingPathComponent("api/user/sessions/update_session.json")
+        let urlComponentPart = urlProvider.baseAppURL.appendingPathComponent("api/user/sessions/empty.json")
         var urlComponents = URLComponents(string: urlComponentPart.absoluteString)!
         urlComponents.queryItems = [
             URLQueryItem(name: "uuid", value: sessionUUID.rawValue)

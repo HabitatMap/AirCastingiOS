@@ -8,15 +8,17 @@ class AddNoteViewModel: ObservableObject {
     
     private let notesHandler: NotesHandler
     private let exitRoute: () -> Void
+    private let trackLocation: Bool
     
-    init(sessionUUID: SessionUUID, exitRoute: @escaping () -> Void) {
+    init(sessionUUID: SessionUUID, withLocation: Bool, exitRoute: @escaping () -> Void) {
         self.exitRoute = exitRoute
         self.notesHandler = Resolver.resolve(NotesHandler.self, args: sessionUUID)
+        trackLocation = withLocation
     }
     
     func continueTapped() {
-        notesHandler.addNote(noteText: noteText)
-        exitRoute()
+        notesHandler.addNote(noteText: noteText, withLocation: trackLocation)
+            exitRoute()
     }
 
     func cancelTapped() { exitRoute() }

@@ -31,7 +31,9 @@ final class UserAuthenticationSession: Deauthorizable, ObservableObject {
 
     private(set) var user: User? {
         didSet {
-            isLoggedIn = user != nil
+            DispatchQueue.main.async {
+                self.isLoggedIn = self.user != nil
+            }
         }
     }
 
@@ -80,59 +82,5 @@ extension UserAuthenticationSession: RequestAuthorisationService {
         let auth = "\(authToken):X".data(using: .utf8)!.base64EncodedString()
         request.setValue("Basic \(auth)", forHTTPHeaderField: "Authorization")
         return request
-    }
-}
-
-protocol LogoutController {
-    func logout(onEnd: @escaping () -> Void) throws
-}
-
-final class DefaultLogoutController: LogoutController {
-    @Injected private var deauthorizer: Deauthorizable
-    @Injected private var microphoneManager: MicrophoneManager
-    @Injected private var sessionSynchronizer: SessionSynchronizer
-    @Injected private var dataEraser: DataEraser
-
-    func logout(onEnd: @escaping () -> Void) throws {
-        if sessionSynchronizer.syncInProgress.value {
-            var subscription: AnyCancellable?
-            subscription = sessionSynchronizer.syncInProgress.receive(on: DispatchQueue.main).sink { [weak self] value in
-                guard value == false else { return }
-                self?.deleteEverything()
-                subscription?.cancel()
-                onEnd()
-            }
-            return
-        }
-        // For logout we only care about uploading sessions before we remove everything
-        sessionSynchronizer.triggerSynchronization(options: [.upload], completion: {
-            DispatchQueue.main.async { self.deleteEverything(); onEnd() }
-        })
-    }
-    
-    func deleteEverything() {
-        Log.info("[LOGOUT] Cancelling all pending requests")
-        URLSession.shared.getAllTasks { tasks in
-            tasks.forEach { $0.cancel() }
-        }
-        if microphoneManager.isRecording {
-            Log.info("[LOGOUT] Canceling recording session")
-            microphoneManager.stopRecording()
-        }
-        Log.info("[LOGOUT] Clearing user credentials")
-        do {
-            try deauthorizer.deauthorize()
-            dataEraser.eraseAllData(completion: { [weak self] result in
-                if case let .failure(error) = result {
-                    self?.failLogout(with: error)
-                }
-            })
-        } catch {
-            failLogout(with: error)
-        }
-    }
-    
-    private func failLogout(with error: Error) {
-        assertionFailure("[LOGOUT] Failed to log out \(error)")
     }
 }

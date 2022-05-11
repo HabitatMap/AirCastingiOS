@@ -10,7 +10,7 @@ struct SearchMapView: View {
     @StateObject private var viewModel: SearchMapViewModel
     @Environment(\.presentationMode) var presentationMode
     
-    init(locationName: String, locationAddress: CLLocationCoordinate2D, parameterType: MapDownloaderMeasurementType, sensorType: MapDownloaderSensorType) {
+    init(locationName: String, locationAddress: CLLocationCoordinate2D, parameterType: MeasurementType, sensorType: SensorType) {
         _viewModel = .init(wrappedValue: .init(passedLocation: locationName,
                                                passedLocationAddress: locationAddress,
                                                measurementType: parameterType,
@@ -30,7 +30,7 @@ struct SearchMapView: View {
                                 .frame(width: reader.size.width, height: reader.size.height / 7, alignment: .leading)
                         }
                         .padding(.horizontal, 5)
-                        .padding(.bottom, 5)
+                        .padding(.bottom, 28)
                     }
                 }
                 VStack(alignment: .center, content: {
@@ -51,7 +51,7 @@ struct SearchMapView: View {
                         .disabled(!viewModel.searchAgainButton)
                         .opacity(viewModel.searchAgainButton ? 1.0 : 0.0)
                 })
-                    .padding(.top, 50)
+                    .padding(.top, 20)
                     .padding(.horizontal)
             })
         }
@@ -59,14 +59,31 @@ struct SearchMapView: View {
                 result ? self.presentationMode.wrappedValue.dismiss() : nil
             })
             .alert(item: $viewModel.alert, content: { $0.makeAlert() })
+            .sheet(isPresented: $viewModel.isLocationPopupPresented) {
+                PlacePicker(service: SearchPickerService(addressName: .init(get: {
+                    viewModel.passedLocation
+                }, set: { new in
+                    viewModel.enteredNewLocation(name: new)
+                }), addressLocation: .init(get: {
+                    viewModel.passedLocationAddress
+                }, set: { new in
+                    viewModel.enteredNewLocationAdress(new)
+                })))
+            }
     }
 }
 
 // MARK: - Private View Components
 private extension SearchMapView {
     var addressTextField: some View {
-        createTextfield(placeholder: "", binding: .constant(viewModel.passedLocation))
-            .disabled(true)
+        createTextfield(placeholder: Strings.SearchView.placeholder,
+                        binding: .init(get: {
+            viewModel.passedLocation
+        }, set: { new in
+            viewModel.enteredNewLocation(name: new)
+        }))
+        .disabled(true)
+        .onTapGesture { viewModel.textFieldTapped() }
     }
     
     var measurementTypeText: some View {
@@ -99,7 +116,7 @@ private extension SearchMapView {
     var map: some View {
         GeometryReader { reader in
             ZStack(alignment: .top) {
-                SearchAndFollowMap(startingPoint: viewModel.passedLocationAddress,
+                SearchAndFollowMap(startingPoint: $viewModel.passedLocationAddress,
                                    showSearchAgainButton: $viewModel.searchAgainButton,
                                    sessions: $viewModel.sessionsList,
                                    selectedPointerID: $viewModel.cardPointerID)
@@ -109,6 +126,9 @@ private extension SearchMapView {
                 .onMarkerChange(action: { pointer in
                     viewModel.markerSelectionChanged(using: pointer)
                 })
+                .onStartingLocationChange { geoSquare in
+                    viewModel.startingLocationChanged(geoSquare: geoSquare)
+                }
                                    .padding(.top, 50)
                                    .ignoresSafeArea(.all, edges: [.bottom])
                 LinearGradient(gradient: Gradient(colors: [.white.opacity(0.1),
@@ -154,7 +174,10 @@ private extension SearchMapView {
                         .onMarkerChange(action: { pointer in
                             viewModel.markerSelectionChanged(using: pointer)
                         })
-                        .border((viewModel.cardPointerID.number == session.id ? Color.accentColor : .clear), width: 1)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(viewModel.strokeColor(with: session.id), lineWidth: 1)
+                        ).padding(2)
                     }
                                        }
                 .onChange(of: viewModel.cardPointerID.number , perform: { newValue in

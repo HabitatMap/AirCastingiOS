@@ -6,7 +6,7 @@ import CoreLocation
 import SwiftUI
 import Resolver
 
-enum PointerValue {
+enum PointerValue: Equatable {
     case value(of: Int)
     case noValue
     
@@ -20,11 +20,12 @@ enum PointerValue {
 }
 
 class SearchMapViewModel: ObservableObject {
-    let passedLocation: String
-    let passedLocationAddress: CLLocationCoordinate2D
-    private let measurementType: MapDownloaderMeasurementType
-    private let sensorType: MapDownloaderSensorType
+    var passedLocation: String
+    @Published var passedLocationAddress: CLLocationCoordinate2D
+    private let measurementType: MeasurementType
+    private let sensorType: SensorType
     @Injected private var mapSessionsDownloader: SessionsForLocationDownloader
+    @Published var isLocationPopupPresented = false
     @Published var sessionsList = [MapSessionMarker]()
     @Published var searchAgainButton: Bool = false
     @Published var showLoadingIndicator: Bool = false
@@ -34,15 +35,28 @@ class SearchMapViewModel: ObservableObject {
     @Published var shouldCardsScroll: Bool = false
     private var currentPosition: GeoSquare?
     
-    init(passedLocation: String, passedLocationAddress: CLLocationCoordinate2D, measurementType: MapDownloaderMeasurementType, sensorType: MapDownloaderSensorType) {
+    init(passedLocation: String, passedLocationAddress: CLLocationCoordinate2D, measurementType: MeasurementType, sensorType: SensorType) {
         self.passedLocation = passedLocation
         self.passedLocationAddress = passedLocationAddress
         self.measurementType = measurementType
         self.sensorType = sensorType
     }
     
+    func textFieldTapped() { isLocationPopupPresented.toggle() }
     func getMeasurementName() -> String { measurementType.capitalizedName }
     func getSensorName() -> String { sensorType.capitalizedName }
+    
+    func strokeColor(with sessionID: Int) -> Color {
+        cardPointerID.number == sessionID ? Color.accentColor : .clear
+    }
+    
+    func enteredNewLocation(name newLocationName: String) {
+        passedLocation = newLocationName
+    }
+    
+    func enteredNewLocationAdress(_ newLocationAddress: CLLocationCoordinate2D) {
+        passedLocationAddress = newLocationAddress
+    }
     
     func redoTapped() {
         guard let currentPosition = currentPosition else {
@@ -63,6 +77,13 @@ class SearchMapViewModel: ObservableObject {
         currentPosition = geoSquare
     }
     
+    func startingLocationChanged(geoSquare: GeoSquare) {
+        updateSessionList(geoSquare: geoSquare)
+        searchAgainButton = false
+        cardPointerID = .noValue
+        currentPosition = geoSquare
+    }
+    
     func markerSelectionChanged(using point: Int) {
         self.cardPointerID = .value(of: point)
         shouldCardsScroll.toggle()
@@ -78,8 +99,8 @@ class SearchMapViewModel: ObservableObject {
         mapSessionsDownloader.getSessions(geoSquare: geoSquare,
                                           timeFrom: timeFrom,
                                           timeTo: timeTo,
-                                          parameter: measurementType,
-                                          sensor: sensorType) { result in
+                                          measurementType: measurementType.downloaderType,
+                                          sensor: sensorType.downloaderType) { result in
             DispatchQueue.main.async { self.showLoadingIndicator = false }
             switch result {
             case .success(let sessions):
@@ -117,6 +138,25 @@ class SearchMapViewModel: ObservableObject {
             self.alert = InAppAlerts.downloadingSessionsFailedAlert {
                 self.shouldDismissView = true
             }
+        }
+    }
+}
+
+extension MeasurementType {
+    var downloaderType: MapDownloaderMeasurementType {
+        switch self {
+        case .particulateMatter: return .particulateMatter
+        case .ozone: return .ozone
+        }
+    }
+}
+
+extension SensorType {
+    var downloaderType: MapDownloaderSensorType {
+        switch self {
+        case .AB3and2: return .AB3and2
+        case .OpenAQ: return .OpenAQ
+        case .PurpleAir: return .PurpleAir
         }
     }
 }
