@@ -93,7 +93,8 @@ struct AirMapView: View {
                     
                     if let selectedStream = selectedStream {
                         NavigationLink(destination: ThresholdsSettingsView(thresholdValues: threshold.thresholdsBinding,
-                                                                           initialThresholds: selectedStream.thresholds, threshold: threshold)) {
+                                                                           initialThresholds: selectedStream.thresholds,
+                                                                           threshold: threshold)) {
                             EditButtonView()
                         }.padding([.bottom, .leading, .trailing])
                     }

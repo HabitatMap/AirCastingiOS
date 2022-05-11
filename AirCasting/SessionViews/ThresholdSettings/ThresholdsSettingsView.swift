@@ -131,7 +131,8 @@ struct HeatmapSettings_Previews: PreviewProvider {
                                                                            low:      15,
                                                                            medium:   20,
                                                                            high:     25,
-                                                                           veryHigh: 30), threshold: .mock)
+                                                                           veryHigh: 30),
+                                   threshold: .mock)
         }
 }
 #endif
