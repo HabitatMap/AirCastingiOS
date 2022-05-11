@@ -4,7 +4,7 @@
 import SwiftUI
 
 struct ExternalSessionHeader: View {
-    var session: ExternalSessionEntity
+    @ObservedObject var session: ExternalSessionEntity
     let action: () -> Void
     @State var chevronIndicator = "chevron.down"
     
