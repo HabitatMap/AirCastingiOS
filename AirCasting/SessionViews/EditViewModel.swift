@@ -56,12 +56,12 @@ class EditSessionViewModel: EditViewModel {
                                 Log.info("Updated session version to: \(session.version)")
                             } catch {
                                 Log.error("Error while saving edited session name and tags \(error).")
-                                showAlert(InAppAlerts.failedSavingData(dismiss: self.dismissView()))
+                                showAlert(InAppAlerts.failedSavingData(dismiss: self.dismissView))
                             }
                         }
                     case .failure(let error):
                         Log.error("Error while sending updated session to backend \(error).")
-                        showAlert(InAppAlerts.failedSavingData(dismiss: self.dismissView()))
+                        showAlert(InAppAlerts.failedSavingData(dismiss: self.dismissView))
                     }
                     DispatchQueue.main.async {
                         self.shouldDismiss = true
