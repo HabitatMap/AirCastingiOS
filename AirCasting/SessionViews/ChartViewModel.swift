@@ -8,78 +8,10 @@ import Combine
 import SwiftUI
 
 final class ChartViewModel: ObservableObject {
-    enum Session {
-        case session(SessionEntity)
-        case externalSession(ExternalSessionEntity)
-        
-        var uuid: String {
-            switch self {
-            case .session(let sessionEntity):
-                return sessionEntity.uuid.rawValue
-            case .externalSession(let externalSessionEntity):
-                return externalSessionEntity.uuid
-            }
-        }
-        
-        var endTime: Date? {
-            switch self {
-            case .session(let sessionEntity):
-                return sessionEntity.endTime
-            case .externalSession(let externalSessionEntity):
-                return externalSessionEntity.endTime
-            }
-        }
-        
-        var sortedStreams: [MeasurementStreamEntity]? {
-            switch self {
-            case .session(let sessionEntity):
-                return sessionEntity.sortedStreams
-            case .externalSession(let externalSessionEntity):
-                return externalSessionEntity.measurementStreams
-            }
-        }
-        
-        var isFixed: Bool {
-            switch self {
-            case .session(let sessionEntity):
-                return sessionEntity.isFixed
-            case .externalSession(_):
-                return true
-            }
-        }
-        
-        var isMobile: Bool {
-            switch self {
-            case .session(let sessionEntity):
-                return sessionEntity.isMobile
-            case .externalSession(_):
-                return false
-            }
-        }
-        
-        var startTime: Date? {
-            switch self {
-            case .session(let sessionEntity):
-                return sessionEntity.startTime
-            case .externalSession(let externalSessionEntity):
-                return externalSessionEntity.startTime
-            }
-        }
-        
-        var name: String? {
-            switch self {
-            case .session(let sessionEntity):
-                return sessionEntity.name
-            case .externalSession(let externalSessionEntity):
-                return externalSessionEntity.name
-            }
-        }
-    }
-    
     @Published var entries: [ChartDataEntry] = []
     @Published var chartStartTime: Date?
     @Published var chartEndTime: Date?
-    var session: Session
+    var session: Sessionable
 
     var stream: MeasurementStreamEntity? {
         didSet {
@@ -93,12 +25,12 @@ final class ChartViewModel: ObservableObject {
     private let numberOfEntries = Constants.Chart.numberOfEntries
     private var cancellables: [AnyCancellable] = []
     
-    init(session: Session, stream: MeasurementStreamEntity?) {
+    init(session: Sessionable, stream: MeasurementStreamEntity?) {
         self.session = session
         self.chartStartTime = session.endTime
         self.chartEndTime = session.endTime
         setupHooks()
-        self.stream = stream ?? session.sortedStreams?.first
+        self.stream = stream ?? session.sortedStreams.first
         setupDatabaseHook()
         generateEntries()
     }
@@ -119,7 +51,7 @@ final class ChartViewModel: ObservableObject {
         databaseObserver = nil
         guard let sensor = stream?.sensorName else { return }
         let filter: ChartDatabaseObserverFilter = session.isFixed ? .hour : .minute(countingFrom: session.startTime?.convertedFromUTCToLocal ?? DateBuilder.getRawDate())
-        databaseObserver = ChartDatabaseObserver(session: session.uuid, sensor: sensor, filtered: filter) { [weak self] in
+        databaseObserver = ChartDatabaseObserver(session: session.uuid?.rawValue ?? "", sensor: sensor, filtered: filter) { [weak self] in
             guard let self = self else { return }
             self.log("Measurements change detected")
             self.generateEntries()

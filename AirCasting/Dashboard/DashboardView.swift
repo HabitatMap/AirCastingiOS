@@ -23,7 +23,7 @@ struct DashboardView: View {
 
     private let dashboardCoordinateSpaceName = "dashboardCoordinateSpace"
 
-    private var sessions: [CoreDataHook.Session] {
+    private var sessions: [Sessionable] {
         coreDataHook.sessions
     }
 
@@ -43,14 +43,9 @@ struct DashboardView: View {
             PreventCollapseView()
             if reorderButton.reorderIsOn {
                 followingTab
-                ReorderingDashboard(sessions: sessions.compactMap( {
-                    switch $0 {
-                    case .session(let session):
-                        return session
-                    case .externalSession(_):
-                        return nil
-                    }
-                } ), thresholds: Array(self.thresholds))
+                let sessions = sessions.filter({ !$0.isExternal }) as! [SessionEntity] //TODO: Get rid of casting, make reordering use Sessionable
+                ReorderingDashboard(sessions: sessions,
+                                    thresholds: Array(self.thresholds))
             } else {
                 sessionTypePicker
                 if sessions.isEmpty { emptySessionsView } else { sessionListView }
@@ -144,19 +139,19 @@ struct DashboardView: View {
             ScrollView {
                 RefreshControl(coordinateSpace: .named(dashboardCoordinateSpaceName), isRefreshing: $isRefreshing)
                 LazyVStack(spacing: 8) {
-                    ForEach(sessions.filter { $0.uuid != "" && !$0.gotDeleted }, id: \.self) { session in
-                        switch session {
-                        case .session(let session):
-                            let followingSetter = MeasurementStreamStorageFollowingSettable(session: session)
+                    ForEach(sessions.filter { $0.uuid != "" && !$0.gotDeleted }, id: \.uuid) { session in
+                        if session.isExternal && featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) {
+                            let entity = session as! ExternalSessionEntity
+                            ExternalSessionCard(session: entity, thresholds: thresholds) //TODO: get rid of type casting, use Sessionable in views
+                        } else {
+                            let entity = session as! SessionEntity
+                            //TODO: get rid of type casting, use Sessionable in views and proper abstractions
+                            let followingSetter = MeasurementStreamStorageFollowingSettable(session: entity)
                             let viewModel = SessionCardViewModel(followingSetter: followingSetter)
-                            SessionCardView(session: session,
+                            SessionCardView(session: entity,
                                             sessionCartViewModel: viewModel,
                                             thresholds: thresholds
                             )
-                        case .externalSession(let externalSesssion):
-                            if featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) {
-                                ExternalSessionCard(session: externalSesssion, thresholds: thresholds)
-                            }
                         }
                     }
                 }

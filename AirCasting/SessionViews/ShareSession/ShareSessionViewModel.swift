@@ -52,7 +52,7 @@ class DefaultShareSessionViewModel: ShareSessionViewModel {
         self.apiClient = apiClient
         
         var sessionStreams: [MeasurementStreamEntity] {
-            return session.sortedStreams?.filter( {!$0.gotDeleted} ) ?? []
+            return session.sortedStreams.filter( {!$0.gotDeleted} )
         }
         
         streamOptions = []

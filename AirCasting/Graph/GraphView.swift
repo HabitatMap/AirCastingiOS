@@ -81,7 +81,7 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
     }
     
     func isProceeding(session: SessionEntity) -> Bool {
-        return session.allStreams?.allSatisfy({ stream in
+        return session.allStreams.allSatisfy({ stream in
             !(stream.allMeasurements?.isEmpty ?? true)
         }) ?? false
     }

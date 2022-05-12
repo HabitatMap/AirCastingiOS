@@ -59,7 +59,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
     func markStreamForDelete(_ sessionUUID: SessionUUID, sensorsName: [String], completion: () -> Void) throws {
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
         try sensorsName.forEach { sensorName in
-            guard let stream = sessionEntity.allStreams?.first(where: { $0.sensorName == sensorName }) else {
+            guard let stream = sessionEntity.allStreams.first(where: { $0.sensorName == sensorName }) else {
                 Log.info("Error when trying to hide measurement streams")
                 return
             }
@@ -98,7 +98,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
 
     func deleteStreams(_ sessionUUID: SessionUUID) throws {
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
-        let toDelete = sessionEntity.allStreams!.filter({ $0.gotDeleted })
+        let toDelete = sessionEntity.allStreams.filter({ $0.gotDeleted })
         toDelete.forEach { object in
             context.delete(object)
         }
@@ -118,7 +118,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
 
     func removeDuplicatedMeasurements(for sessionUUID: SessionUUID) throws {
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
-        sessionEntity.allStreams?.forEach({ stream in
+        sessionEntity.allStreams.forEach({ stream in
             guard let measurements = stream.allMeasurements else { return }
             let sortedMeasurements = measurements.sorted(by: { $0.time < $1.time })
             for (i, measurement) in sortedMeasurements.enumerated() {

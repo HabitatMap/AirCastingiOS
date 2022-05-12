@@ -4,7 +4,7 @@
 import Foundation
 
 struct ExternalSessionWithStreamsAndMeasurements {
-    let uuid: String
+    let uuid: SessionUUID
     let provider: String
     let name: String
     let startTime: Date

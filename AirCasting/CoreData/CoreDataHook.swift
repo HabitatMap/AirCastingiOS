@@ -5,40 +5,8 @@ import Foundation
 import CoreData
 
 final class CoreDataHook: NSObject, ObservableObject {
-    enum Session: Hashable {
-        case session(SessionEntity)
-        case externalSession(ExternalSessionEntity)
-        
-        var uuid: String {
-            switch self {
-            case .session(let sessionEntity):
-                return sessionEntity.uuid.rawValue
-            case .externalSession(let externalSessionEntity):
-                return externalSessionEntity.uuid
-            }
-        }
-        
-        var gotDeleted: Bool {
-            switch self {
-            case .session(let sessionEntity):
-                return sessionEntity.gotDeleted
-            case .externalSession(_):
-                return false
-            }
-        }
-        
-        var isActive: Bool {
-            switch self {
-            case .session(let sessionEntity):
-                return sessionEntity.isActive
-            case .externalSession(_):
-                return false
-            }
-        }
-    }
-    
-    @Published private(set) var sessions: [Session] = []
-    
+    @Published private(set) var sessions: [Sessionable] = []
+
     let context: NSManagedObjectContext
 
     init(context: NSManagedObjectContext) {
@@ -55,7 +23,7 @@ final class CoreDataHook: NSObject, ObservableObject {
         fetchedResultsController.delegate = self
         return fetchedResultsController
     }()
-    
+
     private lazy var externalSessionsFetchedResultsController: NSFetchedResultsController<ExternalSessionEntity> = {
         let request = NSFetchRequest<ExternalSessionEntity>(entityName: "ExternalSessionEntity")
         request.sortDescriptors = [NSSortDescriptor(key: "startTime", ascending: false)]
@@ -66,11 +34,11 @@ final class CoreDataHook: NSObject, ObservableObject {
         fetchedResultsController.delegate = self
         return fetchedResultsController
     }()
-    
+
     func setup(selectedSection: SelectedSection) throws {
         let predicate: NSPredicate
         var externalSessionsPredicate = NSPredicate(value: false)
-        
+
         switch selectedSection {
         case .fixed:
             predicate = NSPredicate(format: "type == %@", SessionType.fixed.rawValue)
@@ -93,19 +61,19 @@ final class CoreDataHook: NSObject, ObservableObject {
         externalSessionsFetchedResultsController.fetchRequest.predicate = externalSessionsPredicate
         try fetchedResultsController.performFetch()
         try externalSessionsFetchedResultsController.performFetch()
-        
+
         refreshSessions()
     }
-    
+
     func refreshSessions() {
-        let sessionEntities = fetchedResultsController.fetchedObjects?.compactMap { Session.session($0) } ?? []
-        let externalSessionEntities = externalSessionsFetchedResultsController.fetchedObjects?.compactMap { Session.externalSession($0) } ?? []
+        let sessionEntities = fetchedResultsController.fetchedObjects ?? []
+        let externalSessionEntities = externalSessionsFetchedResultsController.fetchedObjects ?? []
         sessions = sessionEntities + externalSessionEntities
     }
 }
 
 extension CoreDataHook: NSFetchedResultsControllerDelegate {
-    
+
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         refreshSessions()
     }
