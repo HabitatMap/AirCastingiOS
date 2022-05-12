@@ -33,13 +33,15 @@ struct Heatmap {
     var gridSquares = [String: GridSquare]()
     var visibleRegion: VisibleRegionCoordinates! = nil
     var sensorThreshold: SensorThreshold! = nil
+    var selectedStream: MeasurementStreamEntity?
     
     var gridSizeX: Int
     var gridSizeY: Int
     
-    init(_ uiView: GMSMapView, sensorThreshold: SensorThreshold, mapWidth: Int, mapHeight: Int) {
+    init(_ uiView: GMSMapView, sensorThreshold: SensorThreshold, mapWidth: Int, mapHeight: Int, selectedStream: MeasurementStreamEntity?) {
         self.mapView = uiView
         self.sensorThreshold = sensorThreshold
+        self.selectedStream = selectedStream
         
         let size = min(mapWidth, mapHeight) / density
         
@@ -169,6 +171,7 @@ struct Heatmap {
                 setGridSquare(x, y, GridSquare(
                     mapView: mapView,
                     sensorThreshold: sensorThreshold,
+                    selectedStream: selectedStream,
                     gridCalculator.southWestLatLng(),
                     gridCalculator.southEastLatLng(),
                     gridCalculator.northEastLatLng(),

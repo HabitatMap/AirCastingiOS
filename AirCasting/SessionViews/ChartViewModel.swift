@@ -20,7 +20,7 @@ final class ChartViewModel: ObservableObject {
         }
     }
     @Injected private var persistence: PersistenceController
-    @Injected private var settings: UserSettings
+    @InjectedObject var settings: UserSettings
     
     private let numberOfEntries = Constants.Chart.numberOfEntries
     private var cancellables: [AnyCancellable] = []

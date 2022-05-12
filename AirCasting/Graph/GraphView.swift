@@ -55,12 +55,13 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                             // Statistics container shouldn't be presented in mobile dormant tab
                             if !session.isDormant {
                                 StatisticsContainerView(statsContainerViewModel: statsContainerViewModel,
-                                                        threshold: threshold)
+                                                        threshold: threshold, selectedStream: selectedStream)
                             }
                         }
                         NavigationLink(destination: ThresholdsSettingsView(thresholdValues: selectedStream.isTemperature && userSettings.convertToCelsius ? threshold.thresholdsCelsiusBinding : threshold.thresholdsBinding,
                                                                            initialThresholds: selectedStream.thresholds,
-                                                                           threshold: threshold)) {
+                                                                           threshold: threshold,
+                                                                           selectedStream: selectedStream)) {
                             EditButtonView()
                                 .padding([.horizontal, .top])
                         }

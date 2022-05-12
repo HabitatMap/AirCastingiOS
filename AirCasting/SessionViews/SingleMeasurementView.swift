@@ -37,7 +37,7 @@ struct SingleMeasurementView: View {
                         .scaledToFill()
                     if let threshold = threshold, measurementPresentationStyle == .showValues {
                         HStack(spacing: 3) {
-                            MeasurementDotView(value: value, thresholds: threshold)
+                            MeasurementDotView(value: value, thresholds: threshold, stream: stream)
                             Text("\(Int(value))")
                                 .font(Fonts.regularHeading3)
                                 .scaledToFill()

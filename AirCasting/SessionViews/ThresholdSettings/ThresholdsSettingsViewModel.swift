@@ -13,11 +13,13 @@ class ThresholdSettingsViewModel: ObservableObject {
     @Published var thresholdVeryHigh = ""
     let initialThresholds: ThresholdsValue
     var threshold: SensorThreshold
+    var selectedStream: MeasurementStreamEntity
     @InjectedObject private var userSettings: UserSettings
     
-    init(initialThresholds: ThresholdsValue, threshold: SensorThreshold) {
+    init(initialThresholds: ThresholdsValue, threshold: SensorThreshold, selectedStream: MeasurementStreamEntity) {
         self.initialThresholds = initialThresholds
         self.threshold = threshold
+        self.selectedStream = selectedStream
     }
 
     func resetToDefault() -> ThresholdsValue { initialThresholds }
@@ -26,7 +28,7 @@ class ThresholdSettingsViewModel: ObservableObject {
         let stringThresholdValues = [thresholdVeryHigh, thresholdHigh, thresholdMedium, thresholdLow, thresholdVeryLow]
         var newThresholdValues: [Int32] = []
         for value in stringThresholdValues {
-            let convertedValue = threshold.sensorName == MeasurementStreamSensorName.f.rawValue && userSettings.convertToCelsius ? Int32(TemperatureConverter.calculateFahrenheit(celsius: Double(convertToInt(value)))) : convertToInt(value)
+            let convertedValue = selectedStream.isTemperature && userSettings.convertToCelsius ? Int32(TemperatureConverter.calculateFahrenheit(celsius: Double(convertToInt(value)))) : convertToInt(value)
             newThresholdValues.append(convertedValue)
         }
         let sortedValue = newThresholdValues.sorted { $0 < $1 }

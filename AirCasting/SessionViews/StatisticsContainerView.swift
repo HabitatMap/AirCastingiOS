@@ -6,11 +6,14 @@
 //
 
 import SwiftUI
+import Resolver
 
 struct StatisticsContainerView<ViewModelType>: View where ViewModelType: StatisticsContainerViewModelable {
     @ObservedObject var statsContainerViewModel: ViewModelType
     @ObservedObject var threshold: SensorThreshold
-    
+    var selectedStream: MeasurementStreamEntity?
+    @InjectedObject private var userSettings: UserSettings
+
     var body: some View {
         HStack {
             ForEach(statsContainerViewModel.stats) { stat in
@@ -35,12 +38,12 @@ struct StatisticsContainerView<ViewModelType>: View where ViewModelType: Statist
     
     private func standardParameter(value: Double) -> some View {
         ZStack {
-            threshold.colorFor(value: Int32(value))
+            color(value: value)
                 .opacity(0.32)
                 .cornerRadius(7.5)
             HStack {
                 Spacer()
-                threshold.colorFor(value: Int32(value))
+                color(value: value)
                     .clipShape(Circle())
                     .frame(width: 6, height: 6)
                 Spacer()
@@ -54,12 +57,12 @@ struct StatisticsContainerView<ViewModelType>: View where ViewModelType: Statist
     
     private func distinctParameter(value: Double) -> some View {
         ZStack {
-            threshold.colorFor(value: Int32(value))
+            color(value: value)
                 .opacity(0.32)
                 .cornerRadius(7.5)
             HStack {
                 Spacer()
-                threshold.colorFor(value: Int32(value))
+                color(value: value)
                     .clipShape(Circle())
                     .frame(width: 8, height: 8)
                 Spacer()
@@ -69,6 +72,15 @@ struct StatisticsContainerView<ViewModelType>: View where ViewModelType: Statist
                 Spacer()
             }
         }.frame(width: 68, height: 33, alignment: .center)
+    }
+    
+    func color(value: Double) -> Color {
+        guard let selectedStream = selectedStream else { return .aircastingGray }
+        if selectedStream.isTemperature && userSettings.convertToCelsius {
+            return threshold.colorForCelsius(value: Int32(value))
+        } else {
+            return threshold.colorFor(value: Int32(value))
+        }
     }
     
 }
