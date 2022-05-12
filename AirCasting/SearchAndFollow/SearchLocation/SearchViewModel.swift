@@ -4,7 +4,6 @@
 import Foundation
 import CoreLocation
 import Resolver
-import SwiftUI
 
 /// PM will stand for "Particulate matter"
 
@@ -17,7 +16,6 @@ class SearchViewModel: ObservableObject {
     @Published var alert: AlertInfo?
     @Published var measurementTypes = [SearchParameter]()
     @Published var sensorTypes = [SearchParameter]()
-    @Published var isSearchAndFollowLinkActive: Binding<Bool>
     
     var continueDisabled: Bool { addressName == "" }
     
@@ -31,8 +29,7 @@ class SearchViewModel: ObservableObject {
         return sensorType(from: selected.name)
     }
     
-    init(isSearchAndFollowLinkActive: Binding<Bool>) {
-        self.isSearchAndFollowLinkActive = isSearchAndFollowLinkActive
+    init() {
         measurementTypes = [
             .init(isSelected: true, name: Strings.SearchFollowParamNames.particulateMatter),
             .init(isSelected: false, name: Strings.SearchFollowParamNames.ozone)
