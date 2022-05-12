@@ -30,7 +30,9 @@ class SearchAndFollowChartViewModel: ObservableObject {
         for (index, item) in updatedMeasurements.enumerated().reversed() {
             if Calendar.current.component(.hour, from: item.time) == hoursForRemoval {
                 updatedMeasurements.remove(at: index)
+                continue
             }
+            break
         }
         
         for measurement in updatedMeasurements.reversed() {
