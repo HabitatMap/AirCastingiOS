@@ -5,7 +5,7 @@ import Foundation
 
 struct PartialExternalSession {
     let id: Int
-    let uuid: String
+    let uuid: SessionUUID
     let provider: String
     let name: String
     let startTime: Date

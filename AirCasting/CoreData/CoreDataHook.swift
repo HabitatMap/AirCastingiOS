@@ -5,39 +5,7 @@ import Foundation
 import CoreData
 
 final class CoreDataHook: NSObject, ObservableObject {
-    enum Session {
-        case session(SessionEntity)
-        case externalSession(ExternalSessionEntity)
-        
-        var uuid: String {
-            switch self {
-            case .session(let sessionEntity):
-                return sessionEntity.uuid.rawValue
-            case .externalSession(let externalSessionEntity):
-                return externalSessionEntity.uuid
-            }
-        }
-        
-        var gotDeleted: Bool {
-            switch self {
-            case .session(let sessionEntity):
-                return sessionEntity.gotDeleted
-            case .externalSession(_):
-                return false
-            }
-        }
-        
-        var isActive: Bool {
-            switch self {
-            case .session(let sessionEntity):
-                return sessionEntity.isActive
-            case .externalSession(_):
-                return false
-            }
-        }
-    }
-    
-    @Published private(set) var sessions: [Session] = []
+    @Published private(set) var sessions: [Sessionable] = []
     
     let context: NSManagedObjectContext
 
@@ -98,8 +66,8 @@ final class CoreDataHook: NSObject, ObservableObject {
     }
     
     func refreshSessions() {
-        let sessionEntities = fetchedResultsController.fetchedObjects?.compactMap { Session.session($0) } ?? []
-        let externalSessionEntities = externalSessionsFetchedResultsController.fetchedObjects?.compactMap { Session.externalSession($0) } ?? []
+        let sessionEntities = fetchedResultsController.fetchedObjects ?? []
+        let externalSessionEntities = externalSessionsFetchedResultsController.fetchedObjects ?? []
         sessions = sessionEntities + externalSessionEntities
     }
 }

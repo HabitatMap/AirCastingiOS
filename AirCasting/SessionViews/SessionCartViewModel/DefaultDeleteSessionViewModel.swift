@@ -27,7 +27,7 @@ class DefaultDeleteSessionViewModel: DeleteSessionViewModel {
     private var streamsToDelete: [String] {
         var arrayOfContent = [String]()
         streamOptions.filter({ $0.isSelected }).forEach { option in
-            guard let stream = session.allStreams?.first(where: { ($0.sensorName!.contains(option.title)) }) else { return }
+            guard let stream = session.allStreams.first(where: { ($0.sensorName!.contains(option.title)) }) else { return }
             guard stream.sensorName != nil else { return }
             arrayOfContent.append(stream.sensorName!)
         }
@@ -38,7 +38,7 @@ class DefaultDeleteSessionViewModel: DeleteSessionViewModel {
         self.session = session
         
         var sessionStreams: [MeasurementStreamEntity] {
-            return session.sortedStreams?.filter( {!$0.gotDeleted} ) ?? []
+            return session.sortedStreams.filter( {!$0.gotDeleted} ) 
         }
         
         streamOptions = [.init(id: -1, title: Strings.DefaultDeleteSessionViewModel.all, isSelected: false, isEnabled: false)]

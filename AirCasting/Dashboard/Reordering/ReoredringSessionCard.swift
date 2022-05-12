@@ -9,7 +9,7 @@ struct ReoredringSessionCard: View {
     let thresholds: [SensorThreshold]
     
     var hasStreams: Bool {
-        session.allStreams != nil && session.allStreams != []
+        !session.allStreams.isEmpty
     }
     
     var body: some View {
@@ -48,8 +48,8 @@ private extension ReoredringSessionCard {
                 .font(Fonts.moderateTitle1)
                 .padding(.bottom, 3)
             HStack {
-                session.sortedStreams!.count != 1 ? Spacer() : nil
-                ForEach(session.sortedStreams!.filter({ !$0.gotDeleted }), id : \.self) { stream in
+                session.sortedStreams.count != 1 ? Spacer() : nil
+                ForEach(session.sortedStreams.filter({ !$0.gotDeleted }), id : \.self) { stream in
                     if let threshold = thresholds.threshold(for: stream) {
                         SingleMeasurementView(stream: stream,
                                               threshold: threshold,

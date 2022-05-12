@@ -4,7 +4,7 @@
 
 import Foundation
 import CoreData
-
+import CoreLocation
 
 extension ExternalSessionEntity {
 
@@ -15,17 +15,34 @@ extension ExternalSessionEntity {
     @NSManaged public var endTime: Date?
     @NSManaged public var latitude: Double
     @NSManaged public var longitude: Double
-    @NSManaged public var name: String
+    @NSManaged public var name: String?
     @NSManaged public var provider: String
-    @NSManaged public var startTime: Date
-    @NSManaged public var uuid: String
-    @NSManaged public var measurementStreams: Array<MeasurementStreamEntity>
+    @NSManaged public var startTime: Date?
+    @NSManaged public var measurementStreams: NSOrderedSet?
     @NSManaged public var uiState: UIStateEntity?
     
+    //TODO: Think about this empty string stuff
+    public var uuid: SessionUUID! {
+        get { SessionUUID(rawValue: value(forKey: "uuid") as? String ?? "") }
+        set { setValue(newValue.rawValue, forKey: "uuid") }
+    }
+    
+    public var allStreams: [MeasurementStreamEntity] {
+        return (measurementStreams?.array as? [MeasurementStreamEntity]) ?? []
+    }
+    
     func streamWith(sensorName: String) -> MeasurementStreamEntity? {
-       measurementStreams.first { stream in
-            stream.sensorName == sensorName
-        }
+        allStreams.first { stream in
+             stream.sensorName == sensorName
+         }
+    }
+    
+    public var sortedStreams: [MeasurementStreamEntity] {
+        [FStream,
+         pm1Stream,
+         pm2Stream,
+         pm10Stream,
+         HStream].compactMap { $0 }
     }
 }
 
@@ -48,4 +65,158 @@ extension ExternalSessionEntity {
 
 extension ExternalSessionEntity : Identifiable {
 
+}
+
+extension ExternalSessionEntity {
+
+    var pm1Stream: MeasurementStreamEntity? {
+        let match = measurementStreams?.first(where: { (stream) -> Bool in
+            (stream as? MeasurementStreamEntity)?.sensorName == "AirBeam3-PM1" ||
+                (stream as? MeasurementStreamEntity)?.sensorName == "AirBeam2-PM1" ||
+                    (stream as? MeasurementStreamEntity)?.sensorName == "AirBeam1-PM1"
+        })
+        let pm1Stream = match as? MeasurementStreamEntity
+        return pm1Stream
+    }
+
+    var pm2Stream: MeasurementStreamEntity? {
+        let match = measurementStreams?.first(where: { (stream) -> Bool in
+            (stream as? MeasurementStreamEntity)?.sensorName?.contains("PM2.5") ?? false
+        })
+        let pm2Stream = match as? MeasurementStreamEntity
+        return pm2Stream
+    }
+    var pm10Stream: MeasurementStreamEntity? {
+        let match = measurementStreams?.first(where: { (stream) -> Bool in
+            (stream as? MeasurementStreamEntity)?.sensorName?.contains("PM10") ?? false
+        })
+        let pm10Stream = match as? MeasurementStreamEntity
+        return pm10Stream
+    }
+    var FStream: MeasurementStreamEntity? {
+        let match = measurementStreams?.first(where: { (stream) -> Bool in
+            (stream as? MeasurementStreamEntity)?.measurementShortType == "F"
+        })
+        let FStream = match as? MeasurementStreamEntity
+        return FStream
+    }
+    var HStream: MeasurementStreamEntity? {
+        let match = measurementStreams?.first(where: { (stream) -> Bool in
+            (stream as? MeasurementStreamEntity)?.measurementShortType == "RH"
+        })
+        let HStream = match as? MeasurementStreamEntity
+        return HStream
+    }
+    var dbStream: MeasurementStreamEntity? {
+        let match = measurementStreams?.first(where: { (stream) -> Bool in
+            (stream as? MeasurementStreamEntity)?.measurementShortType == "db"
+        })
+        let dbStream = match as? MeasurementStreamEntity
+        return dbStream
+    }
+}
+
+extension ExternalSessionEntity: Sessionable {
+    var contribute: Bool {
+        false
+    }
+    
+    var deviceId: String? {
+        nil
+    }
+    
+    var followedAt: Date? {
+        nil
+    }
+    
+    var gotDeleted: Bool {
+        false
+    }
+    
+    var isIndoor: Bool {
+        false
+    }
+    
+    var locationless: Bool {
+        false
+    }
+    
+    var tags: String? {
+        nil
+    }
+    
+    var urlLocation: String? {
+        nil
+    }
+    
+    var version: Int16 {
+        0
+    }
+    
+    var changesCount: Int32 {
+        0
+    }
+    
+    var rowOrder: Int64 {
+        0
+    }
+    
+    var userInterface: UIStateEntity? {
+        get { uiState }
+        set { uiState = newValue }
+    }
+    
+    var notes: NSOrderedSet? {
+        nil
+    }
+    
+    var localID: SessionEntityLocalID {
+        SessionEntityLocalID(id: objectID)
+    }
+    
+    var location: CLLocationCoordinate2D? {
+        get {
+            guard let lat = value(forKey: "latitude") as? CLLocationDegrees,
+                    let lon = value(forKey: "longitude") as? CLLocationDegrees else {
+                return nil
+            }
+            return CLLocationCoordinate2D(latitude: lat, longitude: lon)
+        }
+        set {
+            setValue(newValue?.latitude, forKey: "latitude")
+            setValue(newValue?.longitude, forKey: "longitude")
+        }
+    }
+    
+    var status: SessionStatus? {
+        nil
+    }
+    
+    var deviceType: DeviceType? {
+        nil
+    }
+    
+    var type: SessionType! {
+        .unknown("followed")
+    }
+    
+    public var lastMeasurementTime: Date? {
+        allStreams.filter { $0.lastMeasurementTime != nil }.map { $0.lastMeasurementTime! }.max()
+    }
+    
+    public var sensorPackageName: String {
+        allStreams.first?.sensorPackageName ?? ""
+    }
+    
+    var isFixed: Bool {
+        return true
+    }
+    
+    var isExternal: Bool {
+        return true
+    }
+    
+    var isActive: Bool {
+        return true
+    }
 }

@@ -69,7 +69,7 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
     }
     
     private func getSyncDate(for session: SessionEntity?) -> Date {
-        let lastMeasurementTime = session?.allStreams?
+        let lastMeasurementTime = session?.allStreams
             .compactMap(\.lastMeasurementTime)
             .sorted()
             .last

@@ -8,7 +8,7 @@ import Resolver
 class ExternalSessionCardViewModel: ObservableObject {
     @Injected var store: ExternalSessionsStore
     
-    func unfollow(sessionUUID: String) {
+    func unfollow(sessionUUID: SessionUUID) {
         store.deleteSession(uuid: sessionUUID) { result in
             switch result {
             case .success():
@@ -36,12 +36,12 @@ struct ExternalSessionCard: View {
     }
     
     var streams: [MeasurementStreamEntity] {
-        session.measurementStreams
+        session.allStreams
     }
     
     var body: some View {
         sessionCard
-            .onAppear(perform: { selectDefaultStreamIfNeeded(streams: session.measurementStreams) })
+            .onAppear(perform: { selectDefaultStreamIfNeeded(streams: session.allStreams) })
     }
     
     var sessionCard: some View {
@@ -80,7 +80,7 @@ private extension ExternalSessionCard {
     
     func pollutionChart(thresholds: [SensorThreshold]) -> some View {
         return VStack() {
-            ChartView(thresholds: thresholds, stream: $selectedStream, session: ChartViewModel.Session.externalSession(session))
+            ChartView(thresholds: thresholds, stream: $selectedStream, session: session)
             .foregroundColor(.aircastingGray)
                 .font(Fonts.semiboldHeading2)
         }

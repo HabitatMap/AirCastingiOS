@@ -9,6 +9,41 @@ import Foundation
 import CoreData
 import CoreLocation
 
+protocol Sessionable {
+    var contribute: Bool { get }
+    var deviceId: String? { get }
+    var endTime: Date? { get }
+    var followedAt: Date? { get }
+    var gotDeleted: Bool { get }
+    var isIndoor: Bool { get }
+    var locationless: Bool { get }
+    var name: String? { get }
+    var startTime: Date? { get }
+    var tags: String? { get }
+    var urlLocation: String? { get }
+    var version: Int16 { get }
+    var changesCount: Int32 { get }
+    var rowOrder: Int64 { get }
+    var userInterface: UIStateEntity? { get }
+    var measurementStreams: NSOrderedSet? { get }
+    var notes: NSOrderedSet? { get }
+    var localID: SessionEntityLocalID { get }
+    var location: CLLocationCoordinate2D? { get }
+    var status: SessionStatus? { get }
+    var uuid: SessionUUID! { get }
+    var deviceType: DeviceType? { get }
+    var type: SessionType! { get }
+    var sortedStreams: [MeasurementStreamEntity] { get }
+    var allStreams: [MeasurementStreamEntity] { get }
+    var lastMeasurementTime: Date? { get }
+    var sensorPackageName: String { get }
+    func streamWith(sensorName: String) -> MeasurementStreamEntity?
+    var isFixed: Bool { get }
+    var isMobile: Bool { get }
+    var isExternal: Bool { get }
+    var isActive: Bool { get }
+}
+
 public struct SessionEntityLocalID {
     let id: NSManagedObjectID
 }
@@ -86,14 +121,14 @@ public class SessionEntity: NSManagedObject, Identifiable {
         set { setValue(newValue.rawValue, forKey: "type") }
     }
     
-    public var sortedStreams: [MeasurementStreamEntity]? {
+    public var sortedStreams: [MeasurementStreamEntity] {
         let defaultSortedABStreams = [FStream,
                                       pm1Stream,
                                       pm2Stream,
                                       pm10Stream,
                                       HStream].compactMap { $0 }
         
-        return allStreams?.sorted(by: { a, b in
+        return allStreams.sorted(by: { a, b in
             let aIdx = defaultSortedABStreams.firstIndex(of: a)
             let bIdx = defaultSortedABStreams.firstIndex(of: b)
             
@@ -105,23 +140,23 @@ public class SessionEntity: NSManagedObject, Identifiable {
             // If 'A' and 'B' streams are known,
             // preserve order of 'defaultSortedABStrams'
             return aIdx < bIdx
-        }) ?? []
+        }) 
     }
     
-    public var allStreams: [MeasurementStreamEntity]? {
-        measurementStreams?.array as? [MeasurementStreamEntity]
+    public var allStreams: [MeasurementStreamEntity] {
+        (measurementStreams?.array as? [MeasurementStreamEntity]) ?? []
     }
     
     public var lastMeasurementTime: Date? {
-        allStreams?.filter { $0.lastMeasurementTime != nil }.map { $0.lastMeasurementTime! }.max()
+        allStreams.filter { $0.lastMeasurementTime != nil }.map { $0.lastMeasurementTime! }.max()
     }
     
     public var sensorPackageName: String {
-        allStreams?.first?.sensorPackageName ?? ""
+        allStreams.first?.sensorPackageName ?? ""
     }
     
     func streamWith(sensorName: String) -> MeasurementStreamEntity? {
-       allStreams?.first { stream in
+       allStreams.first { stream in
             stream.sensorName == sensorName
         }
     }
@@ -151,4 +186,8 @@ extension SessionEntity {
     @objc(addNotesObject:)
     @NSManaged public func addToNotes(_ value: NoteEntity)
 
+}
+
+extension SessionEntity: Sessionable {
+    var isExternal: Bool { false } 
 }

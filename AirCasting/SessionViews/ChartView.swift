@@ -8,7 +8,7 @@ struct ChartView: View {
     @StateObject private var viewModel: ChartViewModel
     @Binding private var stream: MeasurementStreamEntity?
     
-    init(thresholds: [SensorThreshold], stream: Binding<MeasurementStreamEntity?>, session: ChartViewModel.Session) {
+    init(thresholds: [SensorThreshold], stream: Binding<MeasurementStreamEntity?>, session: Sessionable) {
         self.thresholds = thresholds
         self._stream = .init(projectedValue: stream)
         self._viewModel = .init(wrappedValue: .init(session: session, stream: stream.wrappedValue))

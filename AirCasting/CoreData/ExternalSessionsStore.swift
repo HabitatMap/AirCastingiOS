@@ -7,8 +7,8 @@ import CoreLocation
 
 protocol ExternalSessionsStore {
     func createExternalSession(session: ExternalSessionWithStreamsAndMeasurements, completion: @escaping (Result<Void, Error>) -> Void)
-    func doesSessionExist(uuid: String) -> Bool
-    func deleteSession(uuid: String, completion: @escaping (Result<Void, Error>) -> Void)
+    func doesSessionExist(uuid: SessionUUID) -> Bool
+    func deleteSession(uuid: SessionUUID, completion: @escaping (Result<Void, Error>) -> Void)
 }
 
 struct DefaultExternalSessionsStore: ExternalSessionsStore {
@@ -45,11 +45,11 @@ struct DefaultExternalSessionsStore: ExternalSessionsStore {
         }
     }
     
-    func doesSessionExist(uuid: String) -> Bool {
+    func doesSessionExist(uuid: SessionUUID) -> Bool {
         (try? context.existingExternalSession(uuid: uuid)) != nil
     }
     
-    func deleteSession(uuid: String, completion: @escaping (Result<Void, Error>) -> Void) {
+    func deleteSession(uuid: SessionUUID, completion: @escaping (Result<Void, Error>) -> Void) {
         context.perform {
             do {
                 let session = try context.existingExternalSession(uuid: uuid)

@@ -4,7 +4,7 @@
 import SwiftUI
 
 struct ExternalSessionHeader: View {
-    var session: ExternalSessionEntity
+    var session: Sessionable
     let action: () -> Void
     @State var chevronIndicator = "chevron.down"
     
@@ -34,7 +34,7 @@ private extension ExternalSessionHeader {
     var nameLabel: some View {
         VStack(alignment: .leading, spacing: 3) {
             HStack {
-                Text(session.name)
+                Text(session.name ?? "")
                     .font(Fonts.regularHeading1)
                 Spacer()
                 Button(action: {
@@ -52,14 +52,14 @@ private extension ExternalSessionHeader {
     }
     
     var sensorType: some View {
-        let allStreams = session.measurementStreams
+        let allStreams = session.allStreams
         return SessionTypeIndicator(sessionType: .fixed, streamSensorNames: allStreams.compactMap(\.sensorPackageName))
     }
 
     func adaptTimeAndDate() -> Text {
         let formatter = DateFormatters.SessionCartView.utcDateIntervalFormatter
         
-        let start = session.startTime
+        let start = session.startTime ?? DateBuilder.getFakeUTCDate()
         let end = session.endTime ?? DateBuilder.getFakeUTCDate()
         
         let string = formatter.string(from: start, to: end)
