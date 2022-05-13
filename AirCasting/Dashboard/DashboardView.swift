@@ -144,7 +144,7 @@ struct DashboardView: View {
             ScrollView {
                 RefreshControl(coordinateSpace: .named(dashboardCoordinateSpaceName), isRefreshing: $isRefreshing)
                 LazyVStack(spacing: 8) {
-                    ForEach(sessions.filter { $0.uuid != "" && !$0.gotDeleted }, id: \.uuid) { session in
+                    ForEach(sessions.filter { $0.uuid != "" && !$0.gotDeleted }, id: \.self) { session in
                         switch session {
                         case .session(let session):
                             let followingSetter = MeasurementStreamStorageFollowingSettable(session: session)

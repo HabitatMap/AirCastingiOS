@@ -221,6 +221,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         guard let sensorName = stream.sensorName else {
             throw Error.missingSensorName
         }
+        
         let existingThreshold: SensorThreshold? = try context.existingObject(sensorName: sensorName)
         if existingThreshold == nil {
             let threshold: SensorThreshold = try context.newOrExisting(sensorName: sensorName)
