@@ -38,7 +38,8 @@ struct MainAppView: View {
     @InjectedObject private var user: UserState
     
     var body: some View {
-        LoadingView(isShowing: $user.isLoggingOut, activityIndicatorText: Strings.MainTabBarView.loggingOut) {
+        let shouldPresentLoading = Binding<Bool>(get: { user.currentState != .idle } , set: { _ in assertionFailure("Unexpected binding setting") })
+        LoadingView(isShowing: shouldPresentLoading, activityIndicatorText: user.currentState == .loggingOut ? Strings.MainTabBarView.loggingOut : Strings.MainTabBarView.deletingAccount) {
             MainTabBarView(sessionContext: CreateSessionContext(),
                            coreDataHook: CoreDataHook(context: persistenceController.viewContext))
         }

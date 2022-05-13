@@ -58,8 +58,6 @@ class SearchMapViewModel: ObservableObject {
         passedLocationAddress = newLocationAddress
     }
     
-    func locationPopupDisimssed() { redoTapped() }
-    
     func redoTapped() {
         guard let currentPosition = currentPosition else {
             Log.warning("Should never happen that current position is not present")
@@ -83,6 +81,7 @@ class SearchMapViewModel: ObservableObject {
         updateSessionList(geoSquare: geoSquare)
         searchAgainButton = false
         cardPointerID = .noValue
+        currentPosition = geoSquare
     }
     
     func markerSelectionChanged(using point: Int) {

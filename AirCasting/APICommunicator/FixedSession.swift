@@ -86,10 +86,7 @@ final class FixedSessionAPIService {
         let urlWithParams = components.url!
 
         // Build URLRequest
-        var request = URLRequest(url: urlWithParams)
-        request.httpMethod = "GET"
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.addValue("application/json", forHTTPHeaderField: "Accept")
+        var request = URLRequest.jsonGET(url: url)
         do {
             try authorisationService.authorise(request: &request)
             return apiClient.requestTask(for: request) { [responseValidator, decoder] result, _ in

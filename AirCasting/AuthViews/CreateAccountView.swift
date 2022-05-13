@@ -13,6 +13,7 @@ struct CreateAccountView: View {
     var completion: () -> Void
     @InjectedObject private var lifeTimeEventsProvider: LifeTimeEventsProvider
     @InjectedObject private var userAuthenticationSession: UserAuthenticationSession
+    @InjectedObject private var userState: UserState
     private let authorizationAPIService: AuthorizationAPIService = AuthorizationAPIService() // [Resolver] Move to dep.
 
     @State private var email: String = ""
@@ -22,6 +23,7 @@ struct CreateAccountView: View {
     @State private var isEmailCorrect = true
     @State private var isUsernameBlank = false
     @State private var presentedError: AuthorizationError?
+    @State private var alert: AlertInfo?
     
     init(completion: @escaping () -> Void) {
         self.completion = completion
@@ -71,6 +73,14 @@ struct CreateAccountView: View {
                 .frame(maxWidth: .infinity, minHeight: geometry.size.height)
                 .alert(item: $presentedError) { error in
                     displayErrorAlert(error: error)
+                }
+                .alert(item: $alert, content: { $0.makeAlert() })
+                .onAppear {
+                    if userState.currentState == .deletingAccount {
+                        alert = InAppAlerts.successfulAccountDeletionConfirmation {
+                            userState.currentState = .idle
+                        }
+                    }
                 }
             }
         }
