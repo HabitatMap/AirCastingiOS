@@ -1041,6 +1041,8 @@ struct Strings {
                                                               comment: "")
         static let sessionsText: String = NSLocalizedString("Sessions",
                                                               comment: "")
+        static let finishText: String = NSLocalizedString("Finish",
+                                                              comment: "")
     }
     
     enum ProtectedScreen {

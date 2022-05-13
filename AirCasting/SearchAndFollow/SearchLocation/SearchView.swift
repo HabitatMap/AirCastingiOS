@@ -9,9 +9,11 @@ struct SearchView: View {
     @StateObject var viewModel: SearchViewModel
     @Environment(\.presentationMode) var presentationMode
     @EnvironmentObject private var exploreSessionsButton: ExploreSessionsButton
+    @Binding var isSearchAndFollowLinkActive: Bool
     
-    init() {
+    init(isSearchAndFollowLinkActive: Binding<Bool>) {
         _viewModel = .init(wrappedValue: SearchViewModel())
+        _isSearchAndFollowLinkActive = .init(projectedValue: isSearchAndFollowLinkActive)
     }
     
     var body: some View {
@@ -107,7 +109,7 @@ private extension SearchView {
             destination: SearchMapView(locationName: viewModel.addressName,
                                        locationAddress: viewModel.addresslocation,
                                        parameterType: viewModel.selectedParameter ?? .particulateMatter,
-                                       sensorType: viewModel.selectedSensor ?? .OpenAQ),
+                                       sensorType: viewModel.selectedSensor ?? .OpenAQ, isSearchAndFollowLinkActive: $isSearchAndFollowLinkActive),
             label: {
                 Text(Strings.Commons.continue)
             })

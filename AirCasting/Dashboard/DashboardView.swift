@@ -50,7 +50,7 @@ struct DashboardView: View {
         }
         .fullScreenCover(isPresented: $searchAndFollowButton.searchIsOn) {
             CreatingSessionFlowRootView {
-                SearchView()
+                SearchView(isSearchAndFollowLinkActive: $searchAndFollowButton.searchIsOn)
             }
         }
         .navigationBarTitle(Strings.DashboardView.dashboardText)
