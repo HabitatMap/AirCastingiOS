@@ -66,7 +66,7 @@ struct AirMapView: View {
                                                                                 session: session))
                 .padding([.bottom, .leading, .trailing])
 
-            if let threshold = thresholds.threshold(for: selectedStream) {
+            if let threshold = thresholds.threshold(for: selectedStream?.sensorName ?? "") {
                 if !showLoadingIndicator {
                     ZStack(alignment: .topLeading) {
                         GoogleMapView(pathPoints: pathPoints,

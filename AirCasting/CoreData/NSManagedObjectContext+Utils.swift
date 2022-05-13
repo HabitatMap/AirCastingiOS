@@ -88,7 +88,6 @@ extension NSManagedObjectContext {
         }
         fetchRequest.predicate = NSPredicate(format: "sensorName CONTAINS[cd] %@", String(sensorType))
         let results = try self.fetch(fetchRequest)
-        Log.info("\(results)")
         return results.first
     }
     
