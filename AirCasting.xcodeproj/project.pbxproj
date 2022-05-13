@@ -61,10 +61,9 @@
 		33F3D47C27AC1A5C003CA386 /* SessionTypeIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F3D47B27AC1A5C003CA386 /* SessionTypeIndicator.swift */; };
 		33F604A528227F9700B48C63 /* PartialExternalSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F604A428227F9700B48C63 /* PartialExternalSession.swift */; };
 		33F604A728227FD700B48C63 /* ExternalSessionWithStreamsAndMeasurements.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F604A628227FD700B48C63 /* ExternalSessionWithStreamsAndMeasurements.swift */; };
-
+		33F604AA2822B93C00B48C63 /* SearchAndFollowCompleteScreenService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F604A92822B93C00B48C63 /* SearchAndFollowCompleteScreenService.swift */; };
 		33F604AF2824174E00B48C63 /* ExternalSessionCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F604AE2824174E00B48C63 /* ExternalSessionCard.swift */; };
 		33F604B12824180900B48C63 /* ExternalSessionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F604B02824180900B48C63 /* ExternalSessionHeader.swift */; };
-		33F604AA2822B93C00B48C63 /* SearchAndFollowCompleteScreenService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F604A92822B93C00B48C63 /* SearchAndFollowCompleteScreenService.swift */; };
 		33F82FC227F60498001654D8 /* ThresholdsValue+Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F82FC127F60498001654D8 /* ThresholdsValue+Color.swift */; };
 		33FD502227A144B300162384 /* SingleMeasurementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33FD502127A144B300162384 /* SingleMeasurementView.swift */; };
 		4F15548B263C44AF00FF3208 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F15548A263C44AF00FF3208 /* Session.swift */; };
@@ -530,10 +529,9 @@
 		33F3D47B27AC1A5C003CA386 /* SessionTypeIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionTypeIndicator.swift; sourceTree = "<group>"; };
 		33F604A428227F9700B48C63 /* PartialExternalSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartialExternalSession.swift; sourceTree = "<group>"; };
 		33F604A628227FD700B48C63 /* ExternalSessionWithStreamsAndMeasurements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalSessionWithStreamsAndMeasurements.swift; sourceTree = "<group>"; };
-
+		33F604A92822B93C00B48C63 /* SearchAndFollowCompleteScreenService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchAndFollowCompleteScreenService.swift; sourceTree = "<group>"; };
 		33F604AE2824174E00B48C63 /* ExternalSessionCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalSessionCard.swift; sourceTree = "<group>"; };
 		33F604B02824180900B48C63 /* ExternalSessionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalSessionHeader.swift; sourceTree = "<group>"; };
-		33F604A92822B93C00B48C63 /* SearchAndFollowCompleteScreenService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchAndFollowCompleteScreenService.swift; sourceTree = "<group>"; };
 		33F82FC127F60498001654D8 /* ThresholdsValue+Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ThresholdsValue+Color.swift"; sourceTree = "<group>"; };
 		33FD502127A144B300162384 /* SingleMeasurementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleMeasurementView.swift; sourceTree = "<group>"; };
 		3A54057326D27D23E9906704 /* Pods_AirCastingTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AirCastingTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1049,7 +1047,7 @@
 		33A7FF1B27C5116E00A138D6 /* CompleteScreen */ = {
 			isa = PBXGroup;
 			children = (
-				33F604A82822B91E00B48C63 /* Contollers */,
+				33F604A82822B91E00B48C63 /* Services */,
 				33F604A328227F7500B48C63 /* Models */,
 				33D92F5B27EB6D2000252F3B /* Views */,
 			);
@@ -1101,12 +1099,12 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
-		33F604A82822B91E00B48C63 /* Contollers */ = {
+		33F604A82822B91E00B48C63 /* Services */ = {
 			isa = PBXGroup;
 			children = (
 				33F604A92822B93C00B48C63 /* SearchAndFollowCompleteScreenService.swift */,
 			);
-			path = Contollers;
+			path = Services;
 			sourceTree = "<group>";
 		};
 		33F604AD2824173300B48C63 /* ExternalSessionsViews */ = {
