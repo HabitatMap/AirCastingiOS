@@ -117,7 +117,7 @@ struct _ABMeasurementsView: View {
                 streamsToShow.count != 1 ? Spacer() : nil
                 ForEach(streamsToShow.filter({ !$0.gotDeleted }), id : \.self) { stream in
                     SingleMeasurementView(stream: stream,
-                                          threshold: .init(value: nil),
+                                          threshold: .init(),
                                           selectedStream: $selectedStream,
                                           isCollapsed: $isCollapsed,
                                           measurementPresentationStyle: .hideValues,

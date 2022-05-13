@@ -6,7 +6,7 @@ import AirCastingStyling
 import Resolver
 
 class SingleMeasurementViewThreshold: ObservableObject {
-    var value: SensorThreshold? = nil
+    var value: SensorThreshold?
     
     init(value: SensorThreshold? = nil) {
         self.value = value
