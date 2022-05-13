@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="19574" systemVersion="20E241" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="ExternalSessionEntity" representedClassName="ExternalSessionEntity" syncable="YES">
+        <attribute name="endTime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="name" attributeType="String"/>
+        <attribute name="provider" attributeType="String"/>
+        <attribute name="startTime" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="uuid" attributeType="String"/>
+        <relationship name="measurementStreams" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="MeasurementStreamEntity" inverseName="externalSession" inverseEntity="MeasurementStreamEntity"/>
+        <relationship name="uiState" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="UIStateEntity" inverseName="externalSession" inverseEntity="UIStateEntity"/>
+    </entity>
+    <entity name="MeasurementEntity" representedClassName="MeasurementEntity" syncable="YES">
+        <attribute name="averagingWindow" optional="YES" attributeType="Integer 64" defaultValueString="1" usesScalarValueType="YES"/>
+        <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="time" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="value" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <relationship name="measurementStream" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MeasurementStreamEntity" inverseName="measurements" inverseEntity="MeasurementStreamEntity"/>
+    </entity>
+    <entity name="MeasurementStreamEntity" representedClassName="MeasurementStreamEntity" syncable="YES">
+        <attribute name="gotDeleted" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="measurementShortType" optional="YES" attributeType="String"/>
+        <attribute name="measurementType" optional="YES" attributeType="String"/>
+        <attribute name="sensorName" optional="YES" attributeType="String"/>
+        <attribute name="sensorPackageName" optional="YES" attributeType="String"/>
+        <attribute name="thresholdHigh" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="thresholdLow" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="thresholdMedium" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="thresholdVeryHigh" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="thresholdVeryLow" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="unitName" optional="YES" attributeType="String"/>
+        <attribute name="unitSymbol" optional="YES" attributeType="String"/>
+        <relationship name="externalSession" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ExternalSessionEntity" inverseName="measurementStreams" inverseEntity="ExternalSessionEntity"/>
+        <relationship name="measurements" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="MeasurementEntity" inverseName="measurementStream" inverseEntity="MeasurementEntity"/>
+        <relationship name="session" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SessionEntity" inverseName="measurementStreams" inverseEntity="SessionEntity"/>
+    </entity>
+    <entity name="NoteEntity" representedClassName="NoteEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="lat" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="long" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="number" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="text" optional="YES" attributeType="String"/>
+        <relationship name="session" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SessionEntity" inverseName="notes" inverseEntity="SessionEntity"/>
+    </entity>
+    <entity name="SensorThreshold" representedClassName="SensorThreshold" syncable="YES" codeGenerationType="class">
+        <attribute name="sensorName" attributeType="String"/>
+        <attribute name="thresholdHigh" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="thresholdLow" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="thresholdMedium" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="thresholdVeryHigh" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="thresholdVeryLow" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+    </entity>
+    <entity name="SessionEntity" representedClassName="SessionEntity" syncable="YES">
+        <attribute name="changesCount" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="contribute" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="deviceId" optional="YES" attributeType="String"/>
+        <attribute name="deviceType" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="endTime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="followedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="gotDeleted" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="isIndoor" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="locationless" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="rowOrder" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="startTime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="status" optional="YES" attributeType="Integer 16" defaultValueString="-1" usesScalarValueType="YES"/>
+        <attribute name="tags" optional="YES" attributeType="String"/>
+        <attribute name="type" attributeType="String"/>
+        <attribute name="urlLocation" optional="YES" attributeType="String"/>
+        <attribute name="uuid" attributeType="String"/>
+        <attribute name="version" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="measurementStreams" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="MeasurementStreamEntity" inverseName="session" inverseEntity="MeasurementStreamEntity"/>
+        <relationship name="notes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="NoteEntity" inverseName="session" inverseEntity="NoteEntity"/>
+        <relationship name="userInterface" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="UIStateEntity" inverseName="session" inverseEntity="UIStateEntity"/>
+    </entity>
+    <entity name="UIStateEntity" representedClassName="UIStateEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="expandedCard" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="sensorName" optional="YES" attributeType="String"/>
+        <relationship name="externalSession" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ExternalSessionEntity" inverseName="uiState" inverseEntity="ExternalSessionEntity"/>
+        <relationship name="session" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SessionEntity" inverseName="userInterface" inverseEntity="SessionEntity"/>
+    </entity>
+    <elements>
+        <element name="ExternalSessionEntity" positionX="-62.5064697265625" positionY="-240.4995422363281" width="128" height="164"/>
+        <element name="MeasurementEntity" positionX="147.2987670898438" positionY="-70.14356994628906" width="128" height="133"/>
+        <element name="MeasurementStreamEntity" positionX="-63.7001953125" positionY="128.3192749023438" width="128" height="283"/>
+        <element name="NoteEntity" positionX="452.0951538085938" positionY="347.4150085449219" width="128" height="119"/>
+        <element name="SensorThreshold" positionX="388.8433837890625" positionY="56.29141235351562" width="128" height="133"/>
+        <element name="SessionEntity" positionX="192.664794921875" positionY="224.3333435058594" width="128" height="374"/>
+        <element name="UIStateEntity" positionX="416.1559448242188" positionY="560.4293060302734" width="128" height="89"/>
+    </elements>
+</model>

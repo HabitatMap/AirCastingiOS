@@ -22,6 +22,27 @@ extension NSManagedObjectContext {
         }
         throw MissingSessionEntityError(uuid: uuid)
     }
+    
+    func existingExternalSession(uuid: String) throws -> ExternalSessionEntity  {
+        enum ExternalSessionEntityError: Error {
+            case noSession(with: String)
+            case moreThanOneSession(with: String)
+        }
+        let fetchRequest: NSFetchRequest<ExternalSessionEntity> = ExternalSessionEntity.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "uuid == %@", uuid)
+
+        let results = try self.fetch(fetchRequest)
+        
+        guard let existing = results.first else {
+            throw ExternalSessionEntityError.noSession(with: uuid)
+        }
+        
+        guard results.count == 1 else {
+            throw ExternalSessionEntityError.moreThanOneSession(with: uuid)
+        }
+        
+        return existing
+    }
 
     // Checks if session/measurement exists, if not, creates a new one
     func newOrExisting<T: NSManagedObject & Identifiable>(id: T.ID) throws -> T  {

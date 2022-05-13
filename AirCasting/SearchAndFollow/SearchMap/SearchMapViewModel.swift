@@ -112,26 +112,55 @@ class SearchMapViewModel: ObservableObject {
     }
     
     private func handleUpdatingSuccess(using sessions: [MapDownloaderSearchedSession]) {
-        DispatchQueue.main.async {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
             self.sessionsList = sessions.compactMap { s in
-                guard let stream = s.streams.first?.value else {
+                guard !s.streams.isEmpty else {
                     // If session doesn't have any streams we don't want to display it on the map
                     return nil
                 }
                 return MapSessionMarker(id: s.id,
-                                        username: s.username,
-                                        uuid: s.uuid,
-                                        title: s.title,
                                         location: .init(latitude: s.latitude, longitude: s.longitude),
-                                        startTime: s.startTimeLocal,
-                                        endTime: s.endTimeLocal,
                                         markerImage: UIImage(systemName: "circle.circle.fill")!,
-                                        streamId: stream.id,
-                                        thresholdsValues: ThresholdsValue(veryLow: Int32(stream.thresholdVeryLow), low: Int32(stream.thresholdLow), medium: Int32(stream.thresholdMedium), high: Int32(stream.thresholdHigh), veryHigh: Int32(stream.thresholdVeryHigh)))
+                                        session: .init(id: s.id,
+                                                       uuid: s.uuid,
+                                                       provider: s.username,
+                                                       name: s.title,
+                                                       startTime: self.timeAsDate(s.startTimeLocal),
+                                                       endTime: self.timeAsDate(s.endTimeLocal),
+                                                       longitude: s.longitude,
+                                                       latitude: s.latitude,
+                                                       stream: s.streams.values.map { stream in
+                        .init(
+                            id: stream.id,
+                            unitName: stream.unitName,
+                            unitSymbol: stream.unitSymbol,
+                            measurementShortType: stream.measurementShortType,
+                            measurementType: stream.measurementType,
+                            sensorName: stream.sensorName,
+                            sensorPackageName: stream.sensorPackageName,
+                            thresholdsValues: .init(veryLow: Int32(stream.thresholdVeryLow),
+                                                    low: Int32(stream.thresholdLow),
+                                                    medium: Int32(stream.thresholdMedium),
+                                                    high: Int32(stream.thresholdHigh),
+                                                    veryHigh: Int32(stream.thresholdVeryHigh))
+                        )
+                })
+                )
             }
         }
     }
     
+    private func timeAsDate(_ time: String) -> Date {
+        let formatter = DateFormatters.SearchAndFollow.timeFormatter
+        let date = formatter.date(from: time)
+        guard let d = date else {
+            Log.error("Failed to convert start time received from API to date")
+            return DateBuilder.getFakeUTCDate()
+        }
+        return d
+    }
+
     private func handleUpdatingError(using error: Error) {
         Log.warning("Error when downloading sessions \(error)")
         DispatchQueue.main.async {

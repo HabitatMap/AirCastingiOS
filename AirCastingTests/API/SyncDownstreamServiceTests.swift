@@ -23,7 +23,7 @@ final class SyncDownstreamServiceTests: APIServiceTestCase {
         
         XCTAssertEqual(self.client.callHistory.count, 1)
         let request = self.client.callHistory.first!
-        XCTAssertEqual(request.url?.absoluteString, "http://aircasting.org/api/user/sessions/update_session.json?uuid=\(sessionUUID.rawValue)")
+        XCTAssertEqual(request.url?.absoluteString, "http://aircasting.org/api/user/sessions/empty.json?uuid=\(sessionUUID.rawValue)")
         XCTAssertEqual(request.httpMethod, "GET")
         XCTAssertEqual(request.allHTTPHeaderFields?["Accept"], "application/json")
     }

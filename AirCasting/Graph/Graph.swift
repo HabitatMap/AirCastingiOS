@@ -45,7 +45,7 @@ struct Graph: UIViewRepresentable {
         self.stream = stream
         self.thresholds = thresholds
         self.isAutozoomEnabled = isAutozoomEnabled
-        self.notesHandler = Resolver.resolve(NotesHandler.self, args: stream.session.uuid)
+        self.notesHandler = Resolver.resolve(NotesHandler.self, args: stream.session!.uuid)
     }
     
     func onDateRangeChange(perform action: @escaping OnChange) -> Self {
