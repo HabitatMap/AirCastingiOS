@@ -34,7 +34,7 @@ class SearchMapViewModel: ObservableObject {
     @Published var cardPointerID: PointerValue = .noValue
     @Published var shouldCardsScroll: Bool = false
     private var currentPosition: GeoSquare?
-    
+
     init(passedLocation: String, passedLocationAddress: CLLocationCoordinate2D, measurementType: MeasurementType, sensorType: SensorType) {
         self.passedLocation = passedLocation
         self.passedLocationAddress = passedLocationAddress
@@ -57,8 +57,6 @@ class SearchMapViewModel: ObservableObject {
     func enteredNewLocationAdress(_ newLocationAddress: CLLocationCoordinate2D) {
         passedLocationAddress = newLocationAddress
     }
-    
-    func locationPopupDisimssed() { redoTapped() }
     
     func redoTapped() {
         guard let currentPosition = currentPosition else {
@@ -83,6 +81,7 @@ class SearchMapViewModel: ObservableObject {
         updateSessionList(geoSquare: geoSquare)
         searchAgainButton = false
         cardPointerID = .noValue
+        currentPosition = geoSquare
     }
     
     func markerSelectionChanged(using point: Int) {

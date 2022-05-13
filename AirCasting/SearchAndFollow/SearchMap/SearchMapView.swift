@@ -9,12 +9,15 @@ import AirCastingStyling
 struct SearchMapView: View {
     @StateObject private var viewModel: SearchMapViewModel
     @Environment(\.presentationMode) var presentationMode
+    @Binding var isSearchAndFollowLinkActive: Bool
+    @EnvironmentObject var tabSelection: TabBarSelection
 
-    init(locationName: String, locationAddress: CLLocationCoordinate2D, parameterType: MeasurementType, sensorType: SensorType) {
+    init(locationName: String, locationAddress: CLLocationCoordinate2D, parameterType: MeasurementType, sensorType: SensorType, isSearchAndFollowLinkActive: Binding<Bool>) {
         _viewModel = .init(wrappedValue: .init(passedLocation: locationName,
                                                passedLocationAddress: locationAddress,
                                                measurementType: parameterType,
                                                sensorType: sensorType))
+        _isSearchAndFollowLinkActive = .init(projectedValue: isSearchAndFollowLinkActive)
     }
 
     var body: some View {
@@ -59,9 +62,12 @@ struct SearchMapView: View {
                 result ? self.presentationMode.wrappedValue.dismiss() : nil
             })
             .alert(item: $viewModel.alert, content: { $0.makeAlert() })
-            .sheet(isPresented: $viewModel.isLocationPopupPresented, onDismiss: {
-                viewModel.locationPopupDisimssed()
-            }) {
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    finishButton
+                }
+            }
+            .sheet(isPresented: $viewModel.isLocationPopupPresented) {
                 PlacePicker(service: SearchPickerService(addressName: .init(get: {
                     viewModel.passedLocation
                 }, set: { new in
@@ -180,5 +186,23 @@ private extension SearchMapView {
                 })
             }
         }
+    }
+
+    var finishButton: some View {
+        Button {
+            isSearchAndFollowLinkActive = false
+            tabSelection.selection = .dashboard
+        } label: {
+            Text(Strings.SearchMapView.finishText)
+                .font(Fonts.muliHeading2.bold())
+                .padding(.trailing, 7)
+        }
+        .overlay(
+            Capsule()
+                .frame(width: 85, height: 35)
+                .foregroundColor(.accentColor)
+                .opacity(0.1)
+        )
+        .padding(.trailing, 10)
     }
 }
