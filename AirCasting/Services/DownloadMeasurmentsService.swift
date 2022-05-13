@@ -43,7 +43,6 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
     private var timerSink: Cancellable?
     private var lastFetchCancellableTask: Cancellable?
     private lazy var removeOldService: RemoveOldMeasurementsService = RemoveOldMeasurementsService()
-//    private var externalSessionsMeasurementsDownloaderService = ExternalSessionsMeasurementsDownloaderService()
 
     #warning("Add locking here so updates won't bump on one another")
     func start() {
@@ -63,7 +62,6 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
     
     private func updateMeasurements(for sessionUUID: SessionUUID, lastSynced: Date, type: Session.SessionType) {
         lastFetchCancellableTask = fixedSessionService.getFixedMeasurement(uuid: sessionUUID, lastSync: lastSynced) { [weak self] in
-            Log.info("Response for \(sessionUUID) of type \(type): \($0)")
             self?.processServiceResponse($0, for: sessionUUID, type: type)
         }
     }
@@ -91,7 +89,6 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
                 let mappedSessions = sessions.map { ($0.uuid!, self.getSyncDate(for: $0), Session.SessionType.regular) }
                 let mappedExternalSessions = externalSessions.map { (SessionUUID(uuidString: $0.uuid)!, self.getExternalSessionSyncDate(for: $0), Session.SessionType.external) }
                 returnData = mappedSessions + mappedExternalSessions
-                Log.info("Local sessions: \(returnData)")
                 completion(returnData)
             } catch {
                 Log.error("Error fetching sessions data: \(error)")
@@ -142,7 +139,7 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
                     try self.removeOldService.removeOldestMeasurements(in: context,
                                                                        from: sessionUUID, of: type)
                 case .external:
-                    Log.info("Processing external session response: \(output)")
+                    Log.info("Processing external session response")
                     let session = try context.existingExternalSession(uuid: sessionUUID.rawValue)
                     session.endTime = output.end_time
                     output.streams.forEach({ stream in
