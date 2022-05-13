@@ -242,6 +242,7 @@ struct Strings {
                                                               comment: "")
         static let lastMinuteMeasurement: String = NSLocalizedString("Last minute measurement",
                                                                      comment: "")
+        static let keyboardToolbarDoneButton: String = NSLocalizedString("Done", comment: "")
     }
     
     enum Thresholds {
