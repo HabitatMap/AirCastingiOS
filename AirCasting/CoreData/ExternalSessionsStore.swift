@@ -46,7 +46,11 @@ struct DefaultExternalSessionsStore: ExternalSessionsStore {
     }
     
     func doesSessionExist(uuid: String) -> Bool {
-        (try? context.existingExternalSession(uuid: uuid)) != nil
+        var result: Bool = false
+        context.performAndWait {
+            result = (try? context.existingExternalSession(uuid: uuid)) != nil
+        }
+        return result
     }
     
     func deleteSession(uuid: String, completion: @escaping (Result<Void, Error>) -> Void) {
