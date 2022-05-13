@@ -5,7 +5,7 @@ import Foundation
 import CoreData
 
 final class CoreDataHook: NSObject, ObservableObject {
-    enum Session {
+    enum Session: Hashable {
         case session(SessionEntity)
         case externalSession(ExternalSessionEntity)
         

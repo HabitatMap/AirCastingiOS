@@ -35,7 +35,6 @@ struct DefaultExternalSessionsStore: ExternalSessionsStore {
                     addStream(stream, to: sessionEntity)
                 }
                 
-                // TODO: If thresholds don't exist in the db already, create the thresholdsEntity
                 
                 try context.save()
                 completion(.success(()))
@@ -70,6 +69,7 @@ struct DefaultExternalSessionsStore: ExternalSessionsStore {
         let measurementStream = MeasurementStreamEntity(context: context)
         updateMeasurementStreamParams(measurementStream, stream: stream)
         addMeasurements(stream.measurements, to: measurementStream)
+        addThresholds(for: measurementStream)
         session.addToMeasurementStreams(measurementStream)
     }
     
@@ -81,6 +81,30 @@ struct DefaultExternalSessionsStore: ExternalSessionsStore {
             newMeasurement.value = measurement.value
             stream.addToMeasurements(newMeasurement)
         }
+    }
+    
+    private func addThresholds(for stream: MeasurementStreamEntity) {
+        guard !doesSensorThresholdExist(sensorName: stream.sensorName) else { return }
+        guard let sensorName = stream.sensorName else {
+            Log.error("Tried to create threshold for stream with no sensor name")
+            return
+        }
+        
+        createThreshold(sensorName: sensorName, thresholdValues: ThresholdsValue(veryLow: stream.thresholdVeryLow, low: stream.thresholdLow, medium: stream.thresholdMedium, high: stream.thresholdHigh, veryHigh: stream.thresholdVeryHigh))
+    }
+    
+    private func doesSensorThresholdExist(sensorName: String?) -> Bool {
+        (try? context.existingObject(sensorName: sensorName ?? "")) != nil
+    }
+    
+    private func createThreshold(sensorName: String, thresholdValues: ThresholdsValue) {
+        let threshold: SensorThreshold = SensorThreshold(context: context)
+        threshold.sensorName = sensorName
+        threshold.thresholdVeryLow = thresholdValues.veryLow
+        threshold.thresholdLow = thresholdValues.low
+        threshold.thresholdMedium = thresholdValues.medium
+        threshold.thresholdHigh = thresholdValues.high
+        threshold.thresholdVeryHigh = thresholdValues.veryHigh
     }
     
     private func newSessionEntity() -> ExternalSessionEntity {
