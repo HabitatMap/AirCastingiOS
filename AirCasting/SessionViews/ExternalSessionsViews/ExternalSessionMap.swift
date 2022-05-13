@@ -1,11 +1,11 @@
-// Created by Lunar on 25/02/2022.
+// Created by Lunar on 13/05/2022.
 //
 
 import SwiftUI
 import UIKit
 import GoogleMaps
 
-struct SearchCompleteScreenMapView: UIViewRepresentable {
+struct ExternalSessionMap: UIViewRepresentable {
     typealias UIViewType = GMSMapView
     var longitude: CLLocationDegrees
     var latitude: CLLocationDegrees
@@ -16,13 +16,6 @@ struct SearchCompleteScreenMapView: UIViewRepresentable {
     }
     
     func makeUIView(context: Context) -> GMSMapView {
-        // Zoom:
-        // 1. World
-        // 5. Continent
-        // 10. Cities
-        // 15. Streets
-        // 20. Buildings
-        
         let camera = GMSCameraPosition.camera(withLatitude: latitude, longitude: longitude, zoom: 15.0)
         let mapView = GMSMapView.map(withFrame: .zero, camera: camera)
         

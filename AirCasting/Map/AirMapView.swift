@@ -41,7 +41,6 @@ struct AirMapView: View {
     
     private var pathPoints: [PathPoint] {
         return selectedStream?.allMeasurements?.compactMap {
-            #warning("TODO: Do something with no location points")
             guard let location = $0.location else { return nil }
             return PathPoint(location: location, measurementTime: $0.time, measurement: getValue(of: $0))
         } ?? []

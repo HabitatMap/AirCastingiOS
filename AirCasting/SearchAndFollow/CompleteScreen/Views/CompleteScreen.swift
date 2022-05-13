@@ -37,7 +37,7 @@ struct CompleteScreen: View {
                     .padding(.vertical)
             }
             if viewModel.isMapSelected {
-                SearchCompleteScreenMapView(longitude: viewModel.sessionLongitude, latitude: viewModel.sessionLatitude)
+                StaticSessionMap(longitude: viewModel.sessionLongitude, latitude: viewModel.sessionLatitude)
             } else {
                 SearchAndFollowChartView(viewModel: viewModel.chartViewModel)
                 chartDescription
