@@ -59,6 +59,7 @@ class CompleteScreenViewModel: ObservableObject {
         externalSessionsStore.doesSessionExist(uuid: session.uuid)
     }
     private var followedText = Strings.CompleteSearchView.followedSessionButtonTitle
+    private var followingText = Strings.CompleteSearchView.followingSessionButtonTitle
     
     @Injected private var singleSessionDownloader: SingleSessionDownloader
     @Injected private var externalSessionsStore: ExternalSessionsStore
@@ -106,13 +107,13 @@ class CompleteScreenViewModel: ObservableObject {
             self.showAlert()
             return
         }
-        following()
+        setButtonToFollowing()
         saveToDb()
     }
     
-    private func following() {
+    private func setButtonToFollowing() {
         completeButtonEnabled = false
-        completeButtonText = "Following..."
+        completeButtonText = followingText
     }
     
     private func saveToDb() {
@@ -150,7 +151,11 @@ class CompleteScreenViewModel: ObservableObject {
                 Log.error("Failed to download session: \(error)")
                 self.showAlert()
             case .success(let downloadedStreamsWithMeasurements):
-                guard !downloadedStreamsWithMeasurements.isEmpty else { return }
+                guard !downloadedStreamsWithMeasurements.isEmpty else {
+                    Log.error("Session has no streams")
+                    self.showAlert()
+                    return
+                }
                 
                 DispatchQueue.main.async {
                     self.externalSessionWithStreams = self.service.createExternalSession(from: self.session, with: downloadedStreamsWithMeasurements)

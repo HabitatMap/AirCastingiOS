@@ -40,10 +40,10 @@ struct SingleMeasurementView: View {
                     if let threshold = threshold, measurementPresentationStyle == .showValues {
                         HStack(spacing: 3) {
                             if value != nil {
-                            MeasurementDotView(value: value!, thresholds: threshold)
-                            Text("\(Int(value!))")
-                                .font(Fonts.regularHeading3)
-                                .scaledToFill()
+                                MeasurementDotView(value: value!, thresholds: threshold)
+                                Text("\(Int(value!))")
+                                    .font(Fonts.regularHeading3)
+                                    .scaledToFill()
                             } else {
                                 Text("-")
                                     .font(Fonts.regularHeading3)

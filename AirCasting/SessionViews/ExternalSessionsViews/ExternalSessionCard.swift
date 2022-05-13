@@ -6,9 +6,9 @@ import AirCastingStyling
 import Resolver
 
 class ExternalSessionCardViewModel: ObservableObject {
-    @Injected var store: ExternalSessionsStore
+    @Injected private var store: ExternalSessionsStore
     
-    func unfollow(sessionUUID: String) {
+    func unfollowTapped(sessionUUID: String) {
         store.deleteSession(uuid: sessionUUID) { result in
             switch result {
             case .success():
@@ -121,15 +121,13 @@ private extension ExternalSessionCard {
         HStack() {
             unFollowButton
             Spacer()
-//            mapButton.padding(.trailing, 10)
-//            graphButton
         }.padding(.top, 10)
         .buttonStyle(GrayButtonStyle())
     }
     
     private var unFollowButton: some View {
         Button(Strings.SessionCartView.unfollow) {
-            viewModel.unfollow(sessionUUID: session.uuid)
+            viewModel.unfollowTapped(sessionUUID: session.uuid)
         }.buttonStyle(UnFollowButtonStyle())
     }
 }
