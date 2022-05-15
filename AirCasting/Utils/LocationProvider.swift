@@ -34,3 +34,9 @@ final class LocationProvider: NSObject, CLLocationManagerDelegate {
         currentLocation = locations.last
     }
 }
+
+extension LocationProvider: LocationService {
+    func getCurrentLocation() throws -> CLLocationCoordinate2D? {
+        currentLocation?.coordinate
+    }
+}

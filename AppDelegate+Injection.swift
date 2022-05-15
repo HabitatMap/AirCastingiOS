@@ -141,7 +141,7 @@ extension Resolver: ResolverRegistering {
         main.register { DownloadMeasurementsService() }.implements(MeasurementUpdatingService.self).scope(.cached)
         main.register { DefaultSettingsRedirection() as SettingsRedirection }.scope(.application)
         main.register { LifeTimeEventsProvider(userDefaults: .standard) }.implements(FirstRunInfoProvidable.self).scope(.application)
-        main.register { MicrophoneManager(measurementStreamStorage: Resolver.resolve()) }.scope(.cached)
+        main.register { MicrophoneManager() }.scope(.cached)
         main.register { AveragingService(measurementStreamStorage: Resolver.resolve()) }.scope(.cached)
         main.register { MobilePeripheralSessionManager(measurementStreamStorage: Resolver.resolve()) }.scope(.cached)
         main.register { BluetoothManager(mobilePeripheralSessionManager: Resolver.resolve()) }
