@@ -26,6 +26,27 @@ class SearchAndFollowChartViewModel: ObservableObject {
         // This allows us to delete all of the measurements that cannot fulfill the whole hour range.
         // Result of this, is the chart that is the same; as on the session card.
         guard let firstElement = updatedMeasurements.reversed().first?.time else { return (nil, nil) }
+        
+//        let formatter = DateFormatters.SearchAndFollow.timeFormatter
+//        let date = formatter.date(from: firstElement)
+        
+        // (1) - Get the date from UTC timezone
+        let formatter = DateFormatters.SearchAndFollow.getCurrentUTC
+        let dateUTCString = formatter.string(from: DateBuilder.getRawDate())
+        let dateUTC = formatter.date(from: dateUTCString)
+        
+        // (2) - get first element in seconds
+        let sec = firstElement.timeIntervalSince1970
+        let date = DateBuilder.getDateWithTimeIntervalSince1970(sec)
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        dateFormatter.timeZone = TimeZone.current
+        let dateString = dateFormatter.string(from: date)
+        let teest = formatter.date(from: dateString)
+        
+
+        
         let hoursForRemoval = Calendar.current.component(.hour, from: firstElement)
         for (index, item) in updatedMeasurements.enumerated().reversed() {
             if Calendar.current.component(.hour, from: item.time) == hoursForRemoval {
