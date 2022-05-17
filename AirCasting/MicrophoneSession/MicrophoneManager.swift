@@ -1,14 +1,17 @@
 import Foundation
-import AVFoundation
+import Resolver
 
-final class MicrophoneManager: NSObject, ObservableObject {
-    var isRecording: Bool { controller != nil }
+final class MicrophoneManager {
+    @Injected private var microphone: Microphone
+    
     private var controller: Any?
 
     func startRecording(session: Session) throws {
+        let sessionStopper = Resolver.resolve(SessionStoppable.self, args: session)
         let controller = LevelMeasurementController(
-            sampler: DecibelSampler(microphone: try AVMicrophone()),
-            measurementSaver: DecibelMeasurementSaveable(session: session, locationService: LocationProvider()),
+            sampler: DecibelSampler(microphone: microphone),
+            measurementSaver: DecibelMeasurementSaveable(session: session),
+            sessionStopper: sessionStopper,
             timer: FoundationTimerScheduler()
         )
         controller.startMeasuring(with: 1.0)
@@ -17,13 +20,5 @@ final class MicrophoneManager: NSObject, ObservableObject {
     
     func stopRecording() {
         controller = nil
-    }
-    
-    func recordPermissionGranted() -> Bool {
-        AVAudioSession.sharedInstance().recordPermission == .granted
-    }
-    
-    func requestRecordPermission(_ response: @escaping (Bool) -> Void) {
-        AVAudioSession.sharedInstance().requestRecordPermission(response)
     }
 }

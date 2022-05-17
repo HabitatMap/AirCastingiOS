@@ -31,7 +31,7 @@ extension SessionFollowing {
          }
          set {
              #warning("❌This 'setter' is asynchronous!!!")
-             let id = self.session.uuid!
+             let id = self.session.uuid
              measurementStreamStorage.accessStorage { [sessionId = session.uuid] storage in
                  Log.info("\(newValue == .following ? "Following" : "Unfollowing") session [\(sessionId ?? "NONE")]")
                  storage.updateSessionFollowing(newValue, for: id)

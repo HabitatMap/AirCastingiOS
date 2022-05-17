@@ -15,7 +15,7 @@ class DecibelSampler: LevelSampler {
             guard microphone.state != .interrupted else { throw LevelSamplerDisconnectedError() }
             if microphone.state == .notRecording { try microphone.startRecording() }
             guard let db = microphone.getCurrentDecibelLevel() else {
-                fatalError("MAJOR ERROR, SIR") //TODO: After testing put a throw in here
+                throw DecibelSamplerError.couldntGetMicrophoneLevel
             }
             completion(.success(db))
         } catch {
@@ -29,5 +29,9 @@ class DecibelSampler: LevelSampler {
         } catch {
             Log.error("Couldn't stop recording: \(error)")
         }
+    }
+    
+    enum DecibelSamplerError: Error {
+        case couldntGetMicrophoneLevel
     }
 }

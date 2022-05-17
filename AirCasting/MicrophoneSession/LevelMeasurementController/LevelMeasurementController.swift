@@ -5,30 +5,13 @@ import Foundation
 import CoreLocation
 import Resolver
 
-enum SamplerState {
-    case connected, disconnected
-}
-
-struct LevelSamplerDisconnectedError: Error { }
-
-protocol LevelSampler {
-    associatedtype Measurement
-    func sample(completion: (Result<Measurement, Error>) -> Void)
-}
-
-protocol MeasurementSaveable {
-    associatedtype Measurement
-    func saveMeasurement(_: Measurement, completion: @escaping (Result<Void, Error>) -> Void)
-}
-
-final class LevelMeasurementController<SamplerType: LevelSampler, SaverType: MeasurementSaveable> where SamplerType.Measurement == SaverType.Measurement {
-    private var sampler: SamplerType
-    private let measurementSaver: SaverType
+final class LevelMeasurementController<Sampler: LevelSampler, Saver: MeasurementSaveable>: LevelMeasurer where Sampler.Measurement == Saver.Measurement {
+    private var sampler: Sampler
+    private let measurementSaver: Saver
     private let timer: TimerScheduler
-    
     private var timerToken: AnyObject?
     
-    init(sampler: SamplerType, measurementSaver: SaverType, timer: TimerScheduler) {
+    init(sampler: Sampler, measurementSaver: Saver, sessionStopper: SessionStoppable, timer: TimerScheduler) {
         self.sampler = sampler
         self.measurementSaver = measurementSaver
         self.timer = timer
@@ -45,7 +28,8 @@ final class LevelMeasurementController<SamplerType: LevelSampler, SaverType: Mea
                         }
                     })
                 } catch _ as LevelSamplerDisconnectedError {
-                    Log.verbose("Sampler disconnected")
+                    Log.verbose("[DEBUG] Sampler disconnected")
+                    self?.measurementSaver.handleInterruption()
                 } catch {
                     Log.error("Sampling failed: \(error)")
                 }
@@ -54,6 +38,7 @@ final class LevelMeasurementController<SamplerType: LevelSampler, SaverType: Mea
     }
     
     deinit {
+        Log.info("[DEBUG] Deinitialized")
         if let timerToken = timerToken {
             timer.stop(token: timerToken)
         }

@@ -86,7 +86,7 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
             do {
                 let sessions = try context.fetch(request)
                 let externalSessions = try context.fetch(externalSessionsRequest)
-                let mappedSessions = sessions.map { ($0.uuid!, self.getSyncDate(for: $0), Session.SessionType.regular) }
+                let mappedSessions = sessions.map { ($0.uuid, self.getSyncDate(for: $0), Session.SessionType.regular) }
                 let mappedExternalSessions = externalSessions.map { (SessionUUID(uuidString: $0.uuid)!, self.getExternalSessionSyncDate(for: $0), Session.SessionType.external) }
                 returnData = mappedSessions + mappedExternalSessions
                 completion(returnData)

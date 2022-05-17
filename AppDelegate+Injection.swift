@@ -130,9 +130,15 @@ extension Resolver: ResolverRegistering {
         }.scope(.application)
             .implements(SessionSynchronizer.self)
         
+        // MARK: - Session recording
+        main.register { try! AVMicrophone() as Microphone }
+            .scope(.application)
+            .implements(MicrophonePermissions.self)
+        
         // MARK: - Location handling
         main.register { LocationTracker(locationManager: CLLocationManager()) }.scope(.application)
         main.register { DefaultLocationHandler() as LocationHandler }.scope(.application)
+        main.register { LocationProvider() }.implements(LocationService.self)
         
         // MARK: - Settings
         main.register { UserSettings(userDefaults: .standard) }.scope(.cached)
@@ -163,7 +169,8 @@ extension Resolver: ResolverRegistering {
             getSessionStopper(for: args())
         }
         
-        func getSessionStopper(for session: SessionEntity) -> SessionStoppable {
+        // TODO: Move to a Sessionable when merged in (?)
+        func getSessionStopper(for session: DevicedSession) -> SessionStoppable {
             let stopper = matchStopper(for: session)
             if session.locationless {
                 if session.deviceType == .MIC {
@@ -174,7 +181,7 @@ extension Resolver: ResolverRegistering {
             return SyncTriggeringSesionStopperDecorator(stoppable: stopper, synchronizer: Resolver.resolve())
         }
         
-        func matchStopper(for session: SessionEntity) -> SessionStoppable {
+        func matchStopper(for session: DevicedSession) -> SessionStoppable {
             switch session.deviceType {
             case .MIC: return MicrophoneSessionStopper(uuid: session.uuid)
             case .AIRBEAM3: return StandardSesssionStopper(uuid: session.uuid)
@@ -238,3 +245,13 @@ extension Resolver: ResolverRegistering {
         func isFeatureOn(_ feature: FeatureFlag) -> Bool? { true }
     }
 }
+
+// TODO: Remove when we move to Sessionable?
+protocol DevicedSession {
+    var uuid: SessionUUID { get }
+    var deviceType: DeviceType? { get }
+    var locationless: Bool { get }
+}
+
+extension Session: DevicedSession { }
+extension SessionEntity: DevicedSession { }

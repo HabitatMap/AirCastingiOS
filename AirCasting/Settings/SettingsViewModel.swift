@@ -16,6 +16,7 @@ class SettingsViewModel: ObservableObject {
     @Injected private var urlProvider: URLProvider
     @Injected private var locationHandler: LocationHandler
     @Injected private var bluetoothHandler: BluetoothHandler
+    @Injected private var microphone: Microphone
     let sessionContext: CreateSessionContext
 
 

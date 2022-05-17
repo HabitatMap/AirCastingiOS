@@ -27,7 +27,6 @@ final class CreateSessionContext: ObservableObject {
 
     private var syncSink: Any?
     
-    private var locationProvider: LocationProvider?
     private var locationSink: Any?
     
     func ovverride(sessionContext: CreateSessionContext) {

@@ -2,26 +2,20 @@
 //
 
 import Foundation
-import CoreLocation
 import Resolver
 
-protocol LocationService {
-    func getCurrentLocation() throws -> CLLocationCoordinate2D?
-}
-
 class DecibelMeasurementSaveable: MeasurementSaveable {
-    private let locationService: LocationService
     private let session: Session
     private var databasePrepared: Bool = false
     @Injected private var persistence: MeasurementStreamStorage
+    @Injected private var locationService: LocationService
     
     enum DecibelMeasurementSaveableError: Error {
         case streamNotFound
     }
     
-    init(session: Session, locationService: LocationService) {
+    init(session: Session) {
         self.session = session
-        self.locationService = locationService
         prepareData { result in
             switch result {
             case .success: self.databasePrepared = true
@@ -48,6 +42,19 @@ class DecibelMeasurementSaveable: MeasurementSaveable {
             }
         } catch {
             completion(.failure(error))
+        }
+    }
+    
+    func handleInterruption() {
+        persistence.accessStorage { [weak self] storage in
+            guard let self = self else { return }
+            do {
+                Log.info("[DEBUG] Disconnecting \(self.session.name ?? "Unknown") [\(self.session.uuid)]")
+                try storage.updateSessionStatus(.DISCONNECTED, for: self.session.uuid)
+                Log.info("[DEBUG] Disconnected \(self.session.name ?? "Unknown") [\(self.session.uuid)]")
+            } catch {
+                Log.error("Couldn't disconnect \(self.session.name ?? "Unknown") [\(self.session.uuid)]! \(error.localizedDescription)")
+            }
         }
     }
     
