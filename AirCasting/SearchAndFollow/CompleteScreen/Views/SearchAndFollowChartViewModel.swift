@@ -9,51 +9,44 @@ class SearchAndFollowChartViewModel: ObservableObject {
         let value: Double
         let color: Color
     }
+    
     struct ChartMeasurement {
         let value: Double
         let time: Date
+    }
+    
+    enum EntriesSensor: String {
+        case OpenAQ = "OpenAQ"
+        case AirBeam = "AirBeam"
+        case PurpleAir = "PurpleAir"
+        case undefined = ""
     }
     
     @Published var entries: [ChartDot] = []
     
     let numberOfEntries = 9
     
-    func generateEntries(with measurements: [ChartMeasurement], thresholds: ThresholdsValue) -> (Date?, Date?) {
+    func generateEntries(with measurements: [ChartMeasurement], thresholds: ThresholdsValue, basedOn sensorName: String) -> (Date?, Date?) {
         var times: [Date] = []
         var buffer: [ChartMeasurement] = []
         var updatedMeasurements = measurements
         
-        // This allows us to delete all of the measurements that cannot fulfill the whole hour range.
-        // Result of this, is the chart that is the same; as on the session card.
-        guard let firstElement = updatedMeasurements.reversed().first?.time else { return (nil, nil) }
-        
-//        let formatter = DateFormatters.SearchAndFollow.timeFormatter
-//        let date = formatter.date(from: firstElement)
-        
-        // (1) - Get the date from UTC timezone
-        let formatter = DateFormatters.SearchAndFollow.getCurrentUTC
-        let dateUTCString = formatter.string(from: DateBuilder.getRawDate())
-        let dateUTC = formatter.date(from: dateUTCString)
-        
-        // (2) - get first element in seconds
-        let sec = firstElement.timeIntervalSince1970
-        let date = DateBuilder.getDateWithTimeIntervalSince1970(sec)
-        
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        dateFormatter.timeZone = TimeZone.current
-        let dateString = dateFormatter.string(from: date)
-        let teest = formatter.date(from: dateString)
-        
-
-        
-        let hoursForRemoval = Calendar.current.component(.hour, from: firstElement)
-        for (index, item) in updatedMeasurements.enumerated().reversed() {
-            if Calendar.current.component(.hour, from: item.time) == hoursForRemoval {
-                updatedMeasurements.remove(at: index)
-                continue
+        let sensor = getEntriesSensor(using: sensorName)
+        if sensor != .OpenAQ {
+            guard let firstElement = updatedMeasurements.reversed().first?.time else { return (nil, nil) }
+            
+            switch sensor {
+            case .AirBeam:
+                // AB stands for AirBeam
+                clearABData(using: &updatedMeasurements, hourToRemove: firstElement)
+            case .PurpleAir:
+                // PA stands for PurpleAir
+                clearPAData(using: &updatedMeasurements, hourToRemove: firstElement)
+            case .undefined:
+                Log.info("Missing sensor name in the chart VM")
+            default:
+                return (nil, nil)
             }
-            break
         }
         
         for measurement in updatedMeasurements.reversed() {
@@ -78,6 +71,35 @@ class SearchAndFollowChartViewModel: ObservableObject {
         entries.reverse()
         return (startTime: times.min(), endTime: times.max())
     }
+    
+    private func getEntriesSensor(using sensor: String) -> EntriesSensor {
+        switch sensor {
+        case EntriesSensor.OpenAQ.rawValue: return .OpenAQ
+        case EntriesSensor.AirBeam.rawValue: return .AirBeam
+        case EntriesSensor.PurpleAir.rawValue: return .PurpleAir
+        default: return .undefined
+        }
+    }
+    
+    private func clearPAData(using updatedMeasurements: inout [ChartMeasurement], hourToRemove: Date) {
+        for (index, item) in updatedMeasurements.enumerated().reversed() {
+            if Calendar.current.component(.hour, from: item.time) == hoursForRemoval(using: hourToRemove) && Calendar.current.component(.minute, from: item.time) != 00 {
+                updatedMeasurements.remove(at: index)
+            }
+        }
+    }
+    
+    private func clearABData(using updatedMeasurements: inout [ChartMeasurement], hourToRemove: Date) {
+        for (index, item) in updatedMeasurements.enumerated().reversed() {
+            if Calendar.current.component(.hour, from: item.time) == hoursForRemoval(using: hourToRemove) {
+                updatedMeasurements.remove(at: index)
+                continue
+            }
+            break
+        }
+    }
+    
+    private func hoursForRemoval(using element: Date) -> Int { Calendar.current.component(.hour, from: element) }
     
     private func addAverage(for buffer: [ChartMeasurement], times: inout [Date], thresholds: ThresholdsValue) {
         guard !buffer.isEmpty else { return }

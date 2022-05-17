@@ -166,7 +166,7 @@ class CompleteScreenViewModel: ObservableObject {
                         self.selectedStreamUnitSymbol = stream.sensorUnit
                         (self.chartStartTime, self.chartEndTime) = self.chartViewModel.generateEntries(with: stream.measurements.map({ SearchAndFollowChartViewModel.ChartMeasurement(value: $0.value,
                                                                                                                                                                                       time: DateBuilder.getDateWithTimeIntervalSince1970(Double($0.time/1000))) }),
-                                                                                                       thresholds: thresholds)
+                                                                                                       thresholds: thresholds, basedOn: self.session.sensorName)
                     }
                 }
             }
