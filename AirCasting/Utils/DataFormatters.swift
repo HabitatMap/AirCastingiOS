@@ -133,25 +133,6 @@ enum DateFormatters {
             df.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
             return df
         }()
-        
-        static let getCurrentUTC: DateFormatter = {
-            let df = DateFormatter()
-            df.timeZone =  TimeZone.init(abbreviation: "UTC")
-            df.dateFormat = "yyyy-MM-dd HH:mm:ss"
-            return df
-        }()
-        
-        static func convertCurrentToUTC(current: Date) -> Date {
-            let formatter = DateFormatter()
-            formatter.dateFormat = "dd-MM-yyyy hh:mm:ss"
-            let stringDate = formatter.string(from: current)
-            
-            formatter.timeZone = TimeZone(identifier: "UTC")
-            let convertedDate = formatter.date(from: stringDate)
-//            formatter.timeZone = TimeZone(identifier: "UTC")
-            
-            return convertedDate!
-        }
     }
 }
 
