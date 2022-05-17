@@ -7,7 +7,7 @@ import AirCastingStyling
 struct CompleteScreen: View {
     @StateObject var viewModel: CompleteScreenViewModel
     
-    init(session: CompleteScreenViewModel.PartialExternalSession, exitRoute: @escaping () -> Void) {
+    init(session: PartialExternalSession, exitRoute: @escaping () -> Void) {
         _viewModel = .init(wrappedValue: CompleteScreenViewModel(session: session, exitRoute: exitRoute))
     }
     
@@ -142,12 +142,13 @@ private extension CompleteScreen {
     
     var confirmationButton: some View {
         Button {
-            //
+            viewModel.confirmationButtonPressed()
         } label: {
-            Text(Strings.CompleteSearchView.confirmationButtonTitle)
+            Text(viewModel.completeButtonText)
                 .font(Fonts.semiboldHeading1)
         }
         .buttonStyle(BlueButtonStyle())
+        .disabled(!viewModel.completeButtonEnabled)
     }
 }
 

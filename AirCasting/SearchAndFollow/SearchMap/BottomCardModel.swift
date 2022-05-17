@@ -5,12 +5,7 @@ import Foundation
 
 struct BottomCardModel {
     let id: Int
-    let uuid: String
     let title: String
-    let startTime: String
-    let endTime: String
-    let latitude: Double
-    let longitude: Double
-    let streamId: Int
-    let thresholds: ThresholdsValue
+    let startTime: Date
+    let endTime: Date
 }

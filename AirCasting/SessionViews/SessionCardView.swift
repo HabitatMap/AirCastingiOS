@@ -77,7 +77,7 @@ struct SessionCardView: View {
                 VStack(alignment: .trailing, spacing: 10) {
                     if !isCollapsed {
                         showChart ? pollutionChart(thresholds: thresholds) : nil
-                        displayButtons(thresholds: thresholds)
+                        displayButtons()
                     }
                 }
             } else {
@@ -192,13 +192,13 @@ private extension SessionCardView {
 
     func pollutionChart(thresholds: [SensorThreshold]) -> some View {
         return VStack() {
-            ChartView(thresholds: thresholds, stream: $selectedStream, session: session)
+            ChartView(thresholds: thresholds, stream: $selectedStream, session: .session(session))
             .foregroundColor(.aircastingGray)
                 .font(Fonts.semiboldHeading2)
         }
     }
 
-    func displayButtons(thresholds: [SensorThreshold]) -> some View {
+    func displayButtons() -> some View {
         HStack() {
             if sessionCartViewModel.isFollowing && session.type == .fixed {
                 unFollowButton

@@ -27,7 +27,7 @@ struct MainTabBarView: View {
     @StateObject var coreDataHook: CoreDataHook
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
     
-    private var sessions: [SessionEntity] {
+    private var sessions: [CoreDataHook.Session] {
         coreDataHook.sessions
     }
     

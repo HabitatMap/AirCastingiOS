@@ -8,7 +8,7 @@ struct ChartView: View {
     @StateObject private var viewModel: ChartViewModel
     @Binding private var stream: MeasurementStreamEntity?
     
-    init(thresholds: [SensorThreshold], stream: Binding<MeasurementStreamEntity?>, session: SessionEntity) {
+    init(thresholds: [SensorThreshold], stream: Binding<MeasurementStreamEntity?>, session: ChartViewModel.Session) {
         self.thresholds = thresholds
         self._stream = .init(projectedValue: stream)
         self._viewModel = .init(wrappedValue: .init(session: session, stream: stream.wrappedValue))
@@ -51,6 +51,9 @@ struct ChartView: View {
     
     func descriptionText(stream: MeasurementStreamEntity?) -> some View {
         guard let stream = stream else { return Text("") }
-        return Text("\(stream.session.isMobile ? Strings.SessionCartView.avgSessionMin : Strings.SessionCartView.avgSessionH) \(stream.unitSymbol ?? "")")
+        if let session = stream.session {
+            return Text("\(session.isMobile ? Strings.SessionCartView.avgSessionMin : Strings.SessionCartView.avgSessionH) \(stream.unitSymbol ?? "")")
+        }
+        return Text("\(Strings.SessionCartView.avgSessionH) \(stream.unitSymbol ?? "")")
     }
 }

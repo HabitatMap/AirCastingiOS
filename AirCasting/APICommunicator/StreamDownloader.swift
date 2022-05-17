@@ -12,6 +12,7 @@ struct StreamWithMeasurements: Decodable {
     let lastMeasurementValue: Double
     let sensorName: String
     let sensorUnit: String
+    let notes: [String]
     
     struct Measurements: Decodable {
         let value: Double
@@ -22,7 +23,7 @@ struct StreamWithMeasurements: Decodable {
 }
 
 protocol StreamDownloader {
-    func downloadStreamWithMeasurements(id: String, measurementsLimit: Int, completion: @escaping (Result<StreamWithMeasurements, Error>) -> Void)
+    func downloadStreamWithMeasurements(id: Int, measurementsLimit: Int, completion: @escaping (Result<StreamWithMeasurements, Error>) -> Void)
 }
 
 class DefaultStreamDownloader: StreamDownloader {
@@ -37,7 +38,7 @@ class DefaultStreamDownloader: StreamDownloader {
         return decoder
     }()
     
-    func downloadStreamWithMeasurements(id: String, measurementsLimit: Int, completion: @escaping (Result<StreamWithMeasurements, Error>) -> Void) {
+    func downloadStreamWithMeasurements(id: Int, measurementsLimit: Int, completion: @escaping (Result<StreamWithMeasurements, Error>) -> Void) {
         let urlComponentPart = urlProvider.baseAppURL.appendingPathComponent("api/fixed/streams/\(id).json")
         var urlComponents = URLComponents(string: urlComponentPart.absoluteString)!
         urlComponents.queryItems = [

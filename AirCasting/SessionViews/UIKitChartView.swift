@@ -60,7 +60,7 @@ struct UIKitChartView: UIViewRepresentable {
     
     private func generateColorsSet(for entries: [ChartDataEntry]) -> [UIColor] {
         var colors: [UIColor] = []
-        guard let threshold = thresholds.threshold(for: viewModel.stream) else { return [.aircastingGray] }
+        guard let threshold = thresholds.threshold(for: viewModel.stream?.sensorName ?? "") else { return [.aircastingGray] }
         for entry in entries {
             switch Int32(entry.y) {
             case threshold.thresholdVeryLow..<threshold.thresholdLow:
