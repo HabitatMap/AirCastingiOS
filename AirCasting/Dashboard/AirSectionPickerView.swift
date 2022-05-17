@@ -4,7 +4,6 @@
 import SwiftUI
 
 struct AirSectionPickerView: View {
-    
     @Binding var selection: SelectedSection
     
     var body: some View {

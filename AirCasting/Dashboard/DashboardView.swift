@@ -18,6 +18,7 @@ struct DashboardView: View {
     @EnvironmentObject var reorderButton: ReorderButton
     @EnvironmentObject var searchAndFollowButton: SearchAndFollowButton
     @State var isRefreshing: Bool = false
+    @State var isSwipingLeft: Bool = false
     @Injected private var sessionSynchronizer: SessionSynchronizer
 
     private let dashboardCoordinateSpaceName = "dashboardCoordinateSpace"
@@ -45,9 +46,39 @@ struct DashboardView: View {
                 ReorderingDashboard(sessions: sessions, thresholds: Array(self.thresholds))
             } else {
                 sessionTypePicker
-                if sessions.isEmpty { emptySessionsView } else { sessionListView }
+                if sessions.isEmpty {
+                    Group {
+                        if selectedSection.selectedSection == .following {
+                            emptyFollowingSessionsView
+                        } else if selectedSection.selectedSection == .mobileActive {
+                            emptyMobileActiveSessionsView
+                        } else if selectedSection.selectedSection == .mobileDormant {
+                            emptyMobileDormantSessionsView
+                        } else if selectedSection.selectedSection == .fixed {
+                            emptyFixedSessionsView
+                        }
+                    }
+                    .transition(AnyTransition.asymmetric(insertion: .move(edge: isSwipingLeft ? .trailing : .leading), removal: .move(edge: isSwipingLeft ? .leading : .trailing)))
+                } else {
+                    Group {
+                        if selectedSection.selectedSection == .following {
+                            followingSessionListView
+                        } else if selectedSection.selectedSection == .mobileActive {
+                            mobileActiveSessionListView
+                        } else if selectedSection.selectedSection == .mobileDormant {
+                            mobileDormantSessionListView
+                        } else if selectedSection.selectedSection == .fixed {
+                            fixedSessionListView
+                        }
+                    }
+                    .transition(AnyTransition.asymmetric(insertion: .move(edge: isSwipingLeft ? .trailing : .leading), removal: .move(edge: isSwipingLeft ? .leading : .trailing)))
+                }
             }
         }
+        .highPriorityGesture(DragGesture().onEnded({
+            self.handleSwipe(translation: $0.translation.width)
+        }))
+        .animation(.default)
         .fullScreenCover(isPresented: $searchAndFollowButton.searchIsOn) {
             CreatingSessionFlowRootView {
                 SearchView(isSearchAndFollowLinkActive: $searchAndFollowButton.searchIsOn)
@@ -128,6 +159,14 @@ struct DashboardView: View {
             .background(Color.aliceBlue)
         }
     }
+    
+    private var emptyFollowingSessionsView: some View { emptySessionsView }
+    
+    private var emptyMobileActiveSessionsView: some View { emptySessionsView }
+    
+    private var emptyMobileDormantSessionsView: some View { emptySessionsView }
+    
+    private var emptyFixedSessionsView: some View { emptySessionsView }
 
     private var sessionListView: some View {
         ZStack(alignment: .bottomTrailing) {
@@ -152,6 +191,14 @@ struct DashboardView: View {
         .frame(maxWidth: .infinity)
         .background(Color.aircastingGray.opacity(0.05))
     }
+    
+    private var fixedSessionListView: some View { sessionListView }
+    
+    private var followingSessionListView: some View { sessionListView }
+    
+    private var mobileActiveSessionListView: some View { sessionListView }
+    
+    private var mobileDormantSessionListView: some View { sessionListView }
 
     private func onCurrentSyncEnd(_ completion: @escaping () -> Void) {
         guard sessionSynchronizer.syncInProgress.value else { completion(); return }
@@ -163,7 +210,7 @@ struct DashboardView: View {
         }
     }
 
-    func showPreviousTab() {
+    private func showPreviousTab() {
         switch selectedSection.selectedSection {
         case .following:
             break
@@ -176,7 +223,7 @@ struct DashboardView: View {
         }
     }
 
-    func showNextTab() {
+    private func showNextTab() {
         switch selectedSection.selectedSection {
         case .following:
             selectedSection.selectedSection = .mobileActive
@@ -186,6 +233,17 @@ struct DashboardView: View {
             selectedSection.selectedSection = .fixed
         case .fixed:
             break
+        }
+    }
+    
+    private func handleSwipe(translation: CGFloat) {
+        let minDragTranslationForSwipe: CGFloat = 50
+        if translation > minDragTranslationForSwipe {
+            showPreviousTab()
+            isSwipingLeft = false
+        } else  if translation < -minDragTranslationForSwipe {
+            showNextTab()
+            isSwipingLeft = true
         }
     }
 }
