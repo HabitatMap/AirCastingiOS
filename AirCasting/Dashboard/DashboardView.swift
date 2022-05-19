@@ -140,17 +140,18 @@ struct DashboardView: View {
                 LazyVStack(spacing: 8) {
                     ForEach(sessions.filter { $0.uuid != "" && !$0.gotDeleted }, id: \.uuid) { session in
                         if session.isExternal && featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) {
-                            let entity = session as! ExternalSessionEntity
-                            ExternalSessionCard(session: entity, thresholds: thresholds) //TODO: get rid of type casting, use Sessionable in views
+                            if let entity = session as? ExternalSessionEntity {
+                                ExternalSessionCard(session: entity, thresholds: thresholds)
+                            }
                         } else {
-                            let entity = session as! SessionEntity
-                            //TODO: get rid of type casting, use Sessionable in views and proper abstractions
-                            let followingSetter = MeasurementStreamStorageFollowingSettable(session: entity)
-                            let viewModel = SessionCardViewModel(followingSetter: followingSetter)
-                            SessionCardView(session: entity,
-                                            sessionCartViewModel: viewModel,
-                                            thresholds: thresholds
-                            )
+                            if let entity = session as? SessionEntity {
+                                let followingSetter = MeasurementStreamStorageFollowingSettable(session: entity)
+                                let viewModel = SessionCardViewModel(followingSetter: followingSetter)
+                                SessionCardView(session: entity,
+                                                sessionCartViewModel: viewModel,
+                                                thresholds: thresholds
+                                )
+                            }
                         }
                     }
                 }

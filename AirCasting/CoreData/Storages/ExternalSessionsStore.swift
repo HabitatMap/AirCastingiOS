@@ -35,7 +35,6 @@ struct DefaultExternalSessionsStore: ExternalSessionsStore {
                     addStream(stream, to: sessionEntity)
                 }
 
-
                 try context.save()
                 completion(.success(()))
             } catch {

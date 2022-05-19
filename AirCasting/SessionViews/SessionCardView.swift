@@ -85,17 +85,17 @@ struct SessionCardView: View {
             }
         }
         .onAppear {
-            selectDefaultStreamIfNeeded(streams: session.sortedStreams ?? [])
+            selectDefaultStreamIfNeeded(streams: session.sortedStreams)
         }
         .onChange(of: session.sortedStreams) { newValue in
-            selectDefaultStreamIfNeeded(streams: newValue ?? [])
+            selectDefaultStreamIfNeeded(streams: newValue)
         }
         .onChange(of: selectedStream, perform: { [weak graphStatsDataSource, weak mapStatsDataSource] newStream in
             graphStatsDataSource?.stream = newStream
             graphStatsDataSource?.dataSource.stream = newStream
             mapStatsDataSource?.stream = newStream
             mapStatsDataSource?.dataSource.stream = newStream
-            uiState.changeSelectedStream(sessionUUID: session.uuid, newStream: newStream?.sensorName ?? "")
+            uiState.changeSelectedStream(sessionUUID: session.uuid, newStream: newStream?.sensorName ?? "", isSessionExternal: false)
         })
         .font(Fonts.regularHeading4)
         .foregroundColor(.aircastingGray)
@@ -133,7 +133,7 @@ private extension SessionCardView {
                 withAnimation {
                     isCollapsed.toggle()
                     if !session.isUnfollowedFixed {
-                        uiState.toggleCardExpanded(sessionUUID: session.uuid)
+                        uiState.toggleCardExpanded(sessionUUID: session.uuid, isSessionExternal: false)
                     }
                 }
             },
