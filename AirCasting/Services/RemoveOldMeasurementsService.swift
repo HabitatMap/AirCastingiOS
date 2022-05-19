@@ -16,14 +16,13 @@ final class RemoveOldMeasurementsService {
     
     /// In fixed sessions we need to remove measurements older than 24h, but we treat 24 not like a date, but as a sum of measurements.
     /// We know that we have 60 measurements per hour, so we take 1440 last measurements for each stream, and we remove older than the first of them.
-    func removeOldestMeasurements(in context: NSManagedObjectContext, from sessionUUID: SessionUUID, of type: DownloadMeasurementsService.Session.SessionType) throws {
-        switch type {
-        case .regular:
+    func removeOldestMeasurements(in context: NSManagedObjectContext, from sessionUUID: SessionUUID, which isExternal: Bool) throws {
+        if !isExternal {
             let session = try context.existingSession(uuid: sessionUUID)
-            try removeMeasurementsSurplus(context: context, streams: session.allStreams ?? [])
-        case .external:
-            let session = try context.existingExternalSession(uuid: sessionUUID.rawValue)
-            try removeMeasurementsSurplus(context: context, streams: session.measurementStreams)
+            try removeMeasurementsSurplus(context: context, streams: session.allStreams)
+        } else {
+            let session = try context.existingExternalSession(uuid: sessionUUID)
+            try removeMeasurementsSurplus(context: context, streams: session.allStreams)
         }
     }
     

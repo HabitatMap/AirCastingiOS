@@ -8,7 +8,7 @@ import Resolver
 class ExternalSessionCardViewModel: ObservableObject {
     @Injected private var store: ExternalSessionsStore
 
-    func unfollow(sessionUUID: SessionUUID) {
+    func unfollowTapped(sessionUUID: SessionUUID) {
         store.deleteSession(uuid: sessionUUID) { result in
             switch result {
             case .success():
