@@ -143,6 +143,9 @@ private extension SessionHeaderView {
                     }) {
                         Image(systemName: chevronIndicator)
                             .renderingMode(.original)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 18, height: 18)
                     }
                 }
             }

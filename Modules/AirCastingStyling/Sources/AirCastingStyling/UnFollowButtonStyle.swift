@@ -14,7 +14,7 @@ public struct UnFollowButtonStyle: ButtonStyle {
         configuration
             .label
             .foregroundColor(.accentColor)
-            .frame(width: 82, height: 23, alignment: .center)
+            .frame(width: 82, height: 29, alignment: .center)
             .background(Color.white)
             .font(.muli(size: 13, weight: .semibold))
             .overlay(
