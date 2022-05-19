@@ -103,6 +103,7 @@
 		AC32041C25CC46EF00A68520 /* PowerABView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC32041B25CC46EF00A68520 /* PowerABView.swift */; };
 		AC32041F25CC485E00A68520 /* ConnectingABView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC32041E25CC485E00A68520 /* ConnectingABView.swift */; };
 		AC32043625CD534700A68520 /* ChooseSessionTypeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC32043525CD534700A68520 /* ChooseSessionTypeView.swift */; };
+		AC4499AB2834ECB700C7D138 /* ThresholdFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC4499AA2834ECB700C7D138 /* ThresholdFormatter.swift */; };
 		AC489B5C2603614E00CEEC48 /* MoreInfoPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC489B5B2603614E00CEEC48 /* MoreInfoPopupView.swift */; };
 		AC4A6A6A267CB3890001F639 /* AirCastingGraph.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC4A6A69267CB3890001F639 /* AirCastingGraph.swift */; };
 		AC4A6A6C267CB3D40001F639 /* GraphRenderers.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC4A6A6B267CB3D40001F639 /* GraphRenderers.swift */; };
@@ -566,6 +567,7 @@
 		AC32041B25CC46EF00A68520 /* PowerABView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PowerABView.swift; sourceTree = "<group>"; };
 		AC32041E25CC485E00A68520 /* ConnectingABView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectingABView.swift; sourceTree = "<group>"; };
 		AC32043525CD534700A68520 /* ChooseSessionTypeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseSessionTypeView.swift; sourceTree = "<group>"; };
+		AC4499AA2834ECB700C7D138 /* ThresholdFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThresholdFormatter.swift; sourceTree = "<group>"; };
 		AC489B5B2603614E00CEEC48 /* MoreInfoPopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoreInfoPopupView.swift; sourceTree = "<group>"; };
 		AC4A6A69267CB3890001F639 /* AirCastingGraph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirCastingGraph.swift; sourceTree = "<group>"; };
 		AC4A6A6B267CB3D40001F639 /* GraphRenderers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphRenderers.swift; sourceTree = "<group>"; };
@@ -1428,6 +1430,7 @@
 			children = (
 				4F945EED2649F3F5008A5B22 /* SessionCreator.swift */,
 				ACCEB2282768A13B0040140B /* ThresholdsValue.swift */,
+				AC4499AA2834ECB700C7D138 /* ThresholdFormatter.swift */,
 				4F945EEF2649F455008A5B22 /* AirBeamFixedWifiSessionCreator.swift */,
 				AC9EB64626EF4EEB00B1F780 /* AirBeamCellularSessionCreator.swift */,
 				ACD01F3F25F8C1F800B8F65F /* SessionContext.swift */,
@@ -2820,6 +2823,7 @@
 				DDD24D8426A7FCE300D4A327 /* View+Print.swift in Sources */,
 				AC8CFF7225E7DA2D00FB2918 /* ABMeasurementStream.swift in Sources */,
 				B3EBB11126A06DCF002BD81F /* ForgotPasswordView.swift in Sources */,
+				AC4499AB2834ECB700C7D138 /* ThresholdFormatter.swift in Sources */,
 				DDD24D8E26A847CF00D4A327 /* LifeTimeEventsProvider.swift in Sources */,
 				B33B15F227AEE69900138FFA /* FileLoggerDisposer.swift in Sources */,
 				B3FD77B9267C94AF00E97CC2 /* DatabaseMeasurementStream.swift in Sources */,
