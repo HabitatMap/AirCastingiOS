@@ -5,7 +5,7 @@ import SwiftUI
 import AirCastingStyling
 
 struct ReoredringSessionCard: View {
-    @ObservedObject var session: SessionEntity
+    var session: Sessionable
     let thresholds: [SensorThreshold]
 
     var hasStreams: Bool {
@@ -56,7 +56,7 @@ private extension ReoredringSessionCard {
                                               selectedStream: .constant(nil),
                                               isCollapsed: .constant(true),
                                               measurementPresentationStyle: .showValues,
-                                              isDormant: session.isDormant)
+                                              isDormant: false)
                     }
                     Spacer()
                 }
@@ -64,11 +64,3 @@ private extension ReoredringSessionCard {
         }
     }
 }
-
-#if DEBUG
-struct ReoredringSessionCard_Previews: PreviewProvider {
-    static var previews: some View {
-        ReoredringSessionCard(session: .mock, thresholds: [.mock])
-    }
-}
-#endif

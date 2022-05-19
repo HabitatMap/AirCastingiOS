@@ -4,7 +4,7 @@
 import SwiftUI
 
 struct ReorderingSessionHeader: View {
-    var session: SessionEntity
+    var session: Sessionable
     
     var body: some View {
         sessionHeader
@@ -44,7 +44,7 @@ private extension ReorderingSessionHeader {
     }
     
     var sensorType: some View {
-        let allStreams = session.allStreams ?? []
+        let allStreams = session.allStreams
         return SessionTypeIndicator(sessionType: session.type, streamSensorNames: allStreams.compactMap(\.sensorPackageName))
     }
 
