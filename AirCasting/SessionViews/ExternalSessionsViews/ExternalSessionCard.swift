@@ -133,11 +133,3 @@ private extension ExternalSessionCard {
         }.buttonStyle(UnFollowButtonStyle())
     }
 }
-
-#if DEBUG
-struct ExternalSessionCard_Previews: PreviewProvider {
-    static var previews: some View {
-        ReoredringSessionCard(session: .mock, thresholds: [.mock])
-    }
-}
-#endif

@@ -43,7 +43,6 @@ struct DashboardView: View {
             PreventCollapseView()
             if reorderButton.reorderIsOn {
                 followingTab
-                let sessions = sessions.filter({ !$0.isExternal }) as! [SessionEntity] //TODO: Get rid of casting, make reordering use Sessionable
                 ReorderingDashboard(sessions: sessions,
                                     thresholds: Array(self.thresholds))
             } else {
