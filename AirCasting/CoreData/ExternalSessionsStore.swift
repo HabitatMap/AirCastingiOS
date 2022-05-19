@@ -35,8 +35,6 @@ struct DefaultExternalSessionsStore: ExternalSessionsStore {
                     addStream(stream, to: sessionEntity)
                 }
                 
-                // TODO: If thresholds don't exist in the db already, create the thresholdsEntity
-                
                 try context.save()
                 completion(.success(()))
             } catch {

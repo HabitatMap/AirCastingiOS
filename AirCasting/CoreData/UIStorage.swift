@@ -9,8 +9,8 @@ protocol UIStorage {
 }
 
 protocol UIStorageContextUpdate {
-    func cardStateToggle(for sessionUUID: SessionUUID) throws
-    func changeStream(for sessionUUID: SessionUUID, stream: String) throws
+    func cardStateToggle(for sessionUUID: SessionUUID, isSessionExternal: Bool) throws
+    func changeStream(for sessionUUID: SessionUUID, stream: String, isSessionExternal: Bool) throws
     func save() throws
 }
 
@@ -43,22 +43,42 @@ final class HiddenCoreDataUIStorage: UIStorageContextUpdate {
         self.context = context
     }
     
-    func cardStateToggle(for sessionUUID: SessionUUID) throws {
-        let sessionEntity = try context.existingSession(uuid: sessionUUID)
-        createUIStateIfNeeded(entity: sessionEntity)
-        sessionEntity.userInterface?.expandedCard.toggle()
+    func cardStateToggle(for sessionUUID: SessionUUID, isSessionExternal: Bool) throws {
+        if isSessionExternal {
+            let sessionEntity = try context.existingExternalSession(uuid: sessionUUID)
+            createUIStateIfNeededForExternalSession(entity: sessionEntity)
+            sessionEntity.userInterface?.expandedCard.toggle()
+        } else {
+            let sessionEntity = try context.existingSession(uuid: sessionUUID)
+            createUIStateIfNeeded(entity: sessionEntity)
+            sessionEntity.userInterface?.expandedCard.toggle()
+        }
     }
     
-    func changeStream(for sessionUUID: SessionUUID, stream: String) throws {
-        let sessionEntity = try context.existingSession(uuid: sessionUUID)
-        createUIStateIfNeeded(entity: sessionEntity)
-        sessionEntity.userInterface?.sensorName = stream
+    func changeStream(for sessionUUID: SessionUUID, stream: String, isSessionExternal: Bool) throws {
+        if isSessionExternal {
+            let sessionEntity = try context.existingExternalSession(uuid: sessionUUID)
+            createUIStateIfNeededForExternalSession(entity: sessionEntity)
+            sessionEntity.userInterface?.sensorName = stream
+        } else {
+            let sessionEntity = try context.existingSession(uuid: sessionUUID)
+            createUIStateIfNeeded(entity: sessionEntity)
+            sessionEntity.userInterface?.sensorName = stream
+        }
+        
     }
     
     private func createUIStateIfNeeded(entity: SessionEntity) {
         if entity.userInterface == nil {
             let uiState = UIStateEntity(context: context)
             uiState.session = entity
+        }
+    }
+    
+    private func createUIStateIfNeededForExternalSession(entity: ExternalSessionEntity) {
+        if entity.userInterface == nil {
+            let uiState = UIStateEntity(context: context)
+            uiState.externalSession = entity
         }
     }
     

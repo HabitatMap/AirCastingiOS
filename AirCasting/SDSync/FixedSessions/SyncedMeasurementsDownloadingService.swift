@@ -18,7 +18,6 @@ struct SyncedMeasurementsDownloadingService: SyncedMeasurementsDownloader {
         prepareSessionsData(sessionsUUIDs) { sessionsData in
             sessionsData.forEach { session in
                 measurementsDownloadingService.downloadMeasurements(for: session.uuid, lastSynced: session.lastSynced) {
-                    //TODO: this is probably just temporary. Let's figure out how they do it in android
                     removeDoubledMeasurements(session.uuid)
                 }
             }
