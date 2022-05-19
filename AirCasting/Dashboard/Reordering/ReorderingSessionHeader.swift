@@ -45,7 +45,7 @@ private extension ReorderingSessionHeader {
     
     var sensorType: some View {
         let allStreams = session.allStreams
-        return SessionTypeIndicator(sessionType: session.type, streamSensorNames: allStreams.compactMap(\.sensorPackageName))
+        return SessionTypeIndicator(sessionType: .fixed, streamSensorNames: allStreams.compactMap(\.sensorPackageName))
     }
 
     func adaptTimeAndDate() -> Text {

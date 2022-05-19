@@ -117,61 +117,13 @@ extension ExternalSessionEntity {
 }
 
 extension ExternalSessionEntity: Sessionable {
-    var contribute: Bool {
-        false
-    }
-    
-    var deviceId: String? {
-        nil
-    }
-    
-    var followedAt: Date? {
-        nil
-    }
-    
     var gotDeleted: Bool {
         false
-    }
-    
-    var isIndoor: Bool {
-        false
-    }
-    
-    var locationless: Bool {
-        false
-    }
-    
-    var tags: String? {
-        nil
-    }
-    
-    var urlLocation: String? {
-        nil
-    }
-    
-    var version: Int16 {
-        0
-    }
-    
-    var changesCount: Int32 {
-        0
-    }
-    
-    var rowOrder: Int64 {
-        0
     }
     
     var userInterface: UIStateEntity? {
         get { uiState }
         set { uiState = newValue }
-    }
-    
-    var notes: NSOrderedSet? {
-        nil
-    }
-    
-    var localID: SessionEntityLocalID {
-        SessionEntityLocalID(id: objectID)
     }
     
     var location: CLLocationCoordinate2D? {
@@ -186,26 +138,6 @@ extension ExternalSessionEntity: Sessionable {
             setValue(newValue?.latitude, forKey: "latitude")
             setValue(newValue?.longitude, forKey: "longitude")
         }
-    }
-    
-    var status: SessionStatus? {
-        nil
-    }
-    
-    var deviceType: DeviceType? {
-        nil
-    }
-    
-    var type: SessionType! {
-        .unknown("followed")
-    }
-    
-    public var lastMeasurementTime: Date? {
-        allStreams.filter { $0.lastMeasurementTime != nil }.map { $0.lastMeasurementTime! }.max()
-    }
-    
-    public var sensorPackageName: String {
-        allStreams.first?.sensorPackageName ?? ""
     }
     
     var isFixed: Bool {
