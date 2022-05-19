@@ -20,6 +20,7 @@ class ReorderingDashboardViewModel: ObservableObject {
     func finish() {
         measurementStreamStorage.accessStorage { storage in
             self.sessions.reversed().enumerated().forEach { index, session in
+                // TODO: implement new logic for saving new sessions order
                 storage.updateSessionOrder(index + 1, for: session.uuid)
             }
         }
