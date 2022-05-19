@@ -56,11 +56,12 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
     private func getAllSessionsData(completion: @escaping ([(uuid: SessionUUID, lastSynced: Date, isExternal: Bool)]) -> Void) {
         let request: NSFetchRequest<SessionEntity> = SessionEntity.fetchRequest()
         request.predicate = NSPredicate(format: "followedAt != NULL")
-        let context = persistenceController.editContext
-        var returnData: [(uuid: SessionUUID, lastSynced: Date, isExternal: Bool)] = []
         
         let externalSessionsRequest = ExternalSessionEntity.fetchRequest()
-        request.predicate = NSPredicate(value: true)
+        externalSessionsRequest.predicate = NSPredicate(value: true)
+        
+        let context = persistenceController.editContext
+        var returnData: [(uuid: SessionUUID, lastSynced: Date, isExternal: Bool)] = []
         
         context.perform { [unowned self] in
             do {
@@ -101,7 +102,7 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
             processServiceOutput(response, for: sessionUUID, isExternal: isExternal)
             completion()
         case .failure(let error):
-            Log.warning("Failed to fetch measurements for uuid '\(sessionUUID)' \(error)")
+            Log.warning("Failed to fetch measurements for uuid '\(sessionUUID). Session external: \(isExternal)' \(error)")
         }
     }
     
