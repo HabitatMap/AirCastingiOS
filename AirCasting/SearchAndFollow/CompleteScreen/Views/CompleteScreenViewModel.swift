@@ -9,7 +9,7 @@ import Resolver
 enum CompletionScreenError: Error {
     case noStreams
 }
-    
+
 class CompleteScreenViewModel: ObservableObject {
     
     struct SessionStreamViewModel: Identifiable {
@@ -53,7 +53,7 @@ class CompleteScreenViewModel: ObservableObject {
     
     let exitRoute: () -> Void
     
-    private let session: PartialExternalSession
+    private var session: PartialExternalSession
     private var externalSessionWithStreams: ExternalSessionWithStreamsAndMeasurements?
     private var sessionAlreadyFollowed: Bool {
         externalSessionsStore.doesSessionExist(uuid: session.uuid)
@@ -64,6 +64,7 @@ class CompleteScreenViewModel: ObservableObject {
     @Injected private var singleSessionDownloader: SingleSessionDownloader
     @Injected private var externalSessionsStore: ExternalSessionsStore
     @Injected private var service: SearchAndFollowCompleteScreenService
+    @Injected private var streamsDownloader: AirBeamMeasurementsDownloader
     
     init(session: PartialExternalSession, exitRoute: @escaping () -> Void) {
         self.session = session
@@ -82,7 +83,7 @@ class CompleteScreenViewModel: ObservableObject {
     
     private func reloadData() {
         sessionStreams = .loading
-        getMeasurementsAndDisplayData()
+        getAndDisplayData()
     }
     
     func mapTapped() {
@@ -141,6 +142,43 @@ class CompleteScreenViewModel: ObservableObject {
         exitRoute()
     }
     
+    private func getAndDisplayData() {
+        if session.stream.first!.sensorName.contains("AirBeam") {
+            do {
+                try streamsDownloader.downloadStreams(with: session.id, for: .airBeam3) { result in
+                    switch result {
+                    case .success(let success):
+                        // TODO: - FIX Thresholds and Improve this part of code
+                        // TODO: Compare strings and get threshold value, example - comment below
+                        // let vl = MeasurementStream.init(sensorName: .pm1, sensorPackageName: "").thresholdVeryLow
+                        let partialSession = success.map({ PartialExternalSession.Stream(id: $0.streamId,
+                                                                                         unitName: "microgram per cubic meter",
+                                                                                         unitSymbol: $0.sensorUnit,
+                                                                                         measurementShortType: "PM",
+                                                                                         measurementType: "",
+                                                                                         sensorName: $0.sensorName,
+                                                                                         sensorPackageName: "",
+                                                                                         thresholdsValues: .init(veryLow: Int32(0),
+                                                                                                                 low: Int32(30),
+                                                                                                                 medium: Int32(40),
+                                                                                                                 high: Int32(50),
+                                                                                                                 veryHigh: Int32(120)))})
+                        self.session.stream = []
+                        partialSession.forEach { self.session.stream.append($0) }
+                        Log.info("Completed downloading missing streams.")
+                        self.getMeasurementsAndDisplayData()
+                    case .failure(let failure):
+                        Log.info("Something want wrong when downoading missing streams.")
+                    }
+                }
+            } catch {
+                Log.info("Something want wrong when downoading missing streams.")
+            }
+            return
+        }
+        getMeasurementsAndDisplayData()
+    }
+    
     private func getMeasurementsAndDisplayData() {
         let streams = session.stream.map(\.id)
         
@@ -170,13 +208,28 @@ class CompleteScreenViewModel: ObservableObject {
                     })
                     
                     if let stream = self.externalSessionWithStreams!.streams.first {
-                        self.selectedStream = stream.id
-                        self.selectedStreamUnitSymbol = stream.unitSymbol
-                        (self.chartStartTime, self.chartEndTime) = self.chartViewModel.generateEntries(with: stream.measurements.map({ SearchAndFollowChartViewModel.ChartMeasurement(value: $0.value, time: $0.time) }), thresholds: stream.thresholdsValues)
+                        self.assignValues(with: stream)
+                        self.defineChartRange(with: stream)
                     }
                 }
             }
         }
+    }
+    
+    func streamChanged() {
+        if let stream = self.externalSessionWithStreams?.streams.first(where: { $0.id == selectedStream }) {
+            assignValues(with: stream)
+            defineChartRange(with: stream)
+        }
+    }
+    
+    func assignValues(with stream: ExternalSessionWithStreamsAndMeasurements.Stream) {
+        self.selectedStream = stream.id
+        self.selectedStreamUnitSymbol = stream.unitSymbol
+    }
+    
+    func defineChartRange(with stream: ExternalSessionWithStreamsAndMeasurements.Stream) {
+        (self.chartStartTime, self.chartEndTime) = self.chartViewModel.generateEntries(with: stream.measurements.map({ SearchAndFollowChartViewModel.ChartMeasurement(value: $0.value, time: $0.time) }), thresholds: stream.thresholdsValues)
     }
     
     private func showAlert() {

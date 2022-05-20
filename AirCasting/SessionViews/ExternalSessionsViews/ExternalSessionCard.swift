@@ -97,7 +97,7 @@ private extension ExternalSessionCard {
                     if let threshold = thresholds.threshold(for: stream.sensorName ?? "") {
                         SingleMeasurementView(stream: stream,
                                               threshold: threshold,
-                                              selectedStream: .constant(nil),
+                                              selectedStream: $selectedStream,
                                               isCollapsed: .constant(true),
                                               measurementPresentationStyle: .showValues,
                                               isDormant: false)

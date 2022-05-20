@@ -6,11 +6,21 @@ import Charts
 
 struct SearchAndFollowChartView: UIViewRepresentable {
     @StateObject var viewModel: SearchAndFollowChartViewModel
+    @Binding var streamID: Int?
+    private var onStreamChangeAction: (() -> ())? = nil
     
     typealias UIViewType = UI_PollutionChart
     
-    init(viewModel: SearchAndFollowChartViewModel) {
+    init(viewModel: SearchAndFollowChartViewModel, streamID: Binding<Int?>) {
         _viewModel = .init(wrappedValue: viewModel)
+        self._streamID = .init(projectedValue: streamID)
+    }
+    
+    /// Adds an action for when the chart stream is changed.
+    func onStreamChange(action: @escaping () -> ()) -> Self {
+        var newSelf = self
+        newSelf.onStreamChangeAction = action
+        return newSelf
     }
     
     func makeUIView(context: Context) -> UI_PollutionChart {
@@ -18,6 +28,11 @@ struct SearchAndFollowChartView: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: UI_PollutionChart, context: Context) {
+        if context.coordinator.streamIDKepper != streamID {
+            viewModel.clearEntries()
+            context.coordinator.streamIDKepper = streamID!
+            onStreamChangeAction?()
+        }
         guard !viewModel.entries.isEmpty else { return }
         
         let entries = viewModel.entries.enumerated().map { (i, dot) -> ChartDataEntry in
@@ -54,4 +69,18 @@ struct SearchAndFollowChartView: UIViewRepresentable {
         // line color
         dataSet.setColor(UIColor.aircastingGray.withAlphaComponent(0.7))
     }
+    
+    class Coordinator: NSObject {
+        var parent: SearchAndFollowChartView!
+        var streamIDKepper = -1
+        
+        init(_ parent: SearchAndFollowChartView) {
+            self.parent = parent
+        }
+    }
+    
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+        
 }

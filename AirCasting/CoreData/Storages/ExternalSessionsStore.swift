@@ -125,6 +125,7 @@ struct DefaultExternalSessionsStore: ExternalSessionsStore {
     }
     
     private func updateMeasurementStreamParams(_ newStream: MeasurementStreamEntity, stream: ExternalSessionWithStreamsAndMeasurements.Stream) {
+        newStream.id = MeasurementStreamID(exactly: stream.id)
         newStream.sensorName = stream.sensorName
         newStream.sensorPackageName = stream.sensorPackageName
         newStream.measurementType = stream.measurementType

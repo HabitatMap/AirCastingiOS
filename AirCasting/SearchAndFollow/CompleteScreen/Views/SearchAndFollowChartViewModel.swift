@@ -45,6 +45,8 @@ class SearchAndFollowChartViewModel: ObservableObject {
         return (startTime: times.min(), endTime: times.max())
     }
     
+    func clearEntries() { entries = [] }
+    
     private func addAverage(for buffer: [ChartMeasurement], times: inout [Date], thresholds: ThresholdsValue) {
         guard !buffer.isEmpty else { return }
         let average = (buffer.map { $0.value }.reduce(0, +)) / Double(buffer.count)
