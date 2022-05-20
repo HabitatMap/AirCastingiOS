@@ -27,10 +27,8 @@ struct GoogleMapView: UIViewRepresentable {
     let isMapOnPickerScreen: Bool
     @Binding var mapNotes: [MapNote]
     let showMyLocationButton: Bool
-    @InjectedObject private var userSettings: UserSettings
-    var selectedStream: MeasurementStreamEntity?
     
-    init(pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false, placePickerIsUpdating: Binding<Bool>, isUserInteracting: Binding<Bool>, isSessionActive: Bool = false, isSessionFixed: Bool = false, noteMarketTapped: Binding<Bool> = .constant(false), noteNumber: Binding<Int> = .constant(0), mapNotes: Binding<[MapNote]>, showMyLocationButton: Bool = true, isMapOnPickerScreen: Bool = false, selectedStream: MeasurementStreamEntity? = nil) {
+    init(pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false, placePickerIsUpdating: Binding<Bool>, isUserInteracting: Binding<Bool>, isSessionActive: Bool = false, isSessionFixed: Bool = false, noteMarketTapped: Binding<Bool> = .constant(false), noteNumber: Binding<Int> = .constant(0), mapNotes: Binding<[MapNote]>, showMyLocationButton: Bool = true, isMapOnPickerScreen: Bool = false) {
         self.pathPoints = pathPoints
         self.threshold = threshold
         self.isMyLocationEnabled = isMyLocationEnabled
@@ -43,7 +41,6 @@ struct GoogleMapView: UIViewRepresentable {
         self._mapNotes = mapNotes
         self.showMyLocationButton = showMyLocationButton
         self.isMapOnPickerScreen = isMapOnPickerScreen
-        self.selectedStream = selectedStream
     }
     
     func makeUIView(context: Context) -> GMSMapView {
@@ -69,7 +66,6 @@ struct GoogleMapView: UIViewRepresentable {
         context.coordinator.currentlyDisplayedPathPoints = pathPoints
         context.coordinator.currentThresholdWitness = ThresholdWitness(sensorThreshold: threshold)
         context.coordinator.currentThreshold = threshold
-        context.coordinator.stream = selectedStream
         context.coordinator.myLocationSink = mapView.publisher(for: \.myLocation)
             .sink { [weak mapView] (location) in
                 guard let coordinate = location?.coordinate else { return }
@@ -102,7 +98,6 @@ struct GoogleMapView: UIViewRepresentable {
             context.coordinator.currentlyDisplayedPathPoints = pathPoints
             context.coordinator.currentThresholdWitness = ThresholdWitness(sensorThreshold: threshold)
             context.coordinator.currentThreshold = threshold
-            context.coordinator.stream = selectedStream
             context.coordinator.drawHeatmap(uiView)
         }
         
@@ -166,8 +161,9 @@ struct GoogleMapView: UIViewRepresentable {
     }
     
     func color(point: PathPoint) -> UIColor {
-        guard let thresholds = threshold, let selectedStream = selectedStream else { return .white }
-        let measurement = selectedStream.isTemperature && userSettings.convertToCelsius ? Int32(TemperatureConverter.calculateFahrenheit(celsius: point.measurement)) : Int32(point.measurement)
+        guard let thresholds = threshold else { return .white }
+        let formatter = ThresholdFormatter(for: thresholds)
+        let measurement = formatter.formattedToFahrenheit(for: point)
         
         return GoogleMapView.color(value: measurement, threshold: thresholds)
     }
@@ -261,7 +257,6 @@ struct GoogleMapView: UIViewRepresentable {
         var heatmap: Heatmap? = nil
         var mapNotesCounter = 0
         var noteMarkers = [GMSMarker]()
-        var stream: MeasurementStreamEntity?
         
         init(_ parent: GoogleMapView) {
             self.parent = parent
@@ -291,7 +286,7 @@ struct GoogleMapView: UIViewRepresentable {
             heatmap = nil
             
             guard let threshold = currentThreshold else { return }
-            heatmap = Heatmap(mapView, sensorThreshold: threshold, mapWidth: Int(mapWidth), mapHeight: Int(mapHeight), selectedStream: stream)
+            heatmap = Heatmap(mapView, sensorThreshold: threshold, mapWidth: Int(mapWidth), mapHeight: Int(mapHeight))
             heatmap?.drawHeatMap(pathPoints: currentlyDisplayedPathPoints)
         }
         

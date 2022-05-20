@@ -6,24 +6,18 @@
 //
 
 import SwiftUI
-import Resolver
 
 struct ThresholdsSliderView: View {
-    
     @ObservedObject var threshold: SensorThreshold
-    var selectedStream: MeasurementStreamEntity?
     
     var body: some View {
-        if let selectedStream = selectedStream {
-            MultiSliderView(thresholds: threshold.rawThresholdsBinding, selectedStream: selectedStream)
-        }
+        MultiSliderView(thresholds: threshold.rawThresholdsBinding, formatter: .init(for: threshold))
     }
 }
 
 struct MultiSliderView: View {
-    @InjectedObject private var userSettings: UserSettings
     @Binding var thresholds: [Float]
-    var selectedStream: MeasurementStreamEntity
+    let formatter: ThresholdFormatter
     
     private var thresholdButtonValues: [Float] {
         get {
@@ -98,7 +92,7 @@ struct MultiSliderView: View {
     func labels(geometry: GeometryProxy) -> some View {
         let y = geometry.frame(in: .local).size.height / 2
         return ForEach(thresholds.indices, id: \.self) { index in
-            let ints = selectedStream.isTemperature && userSettings.convertToCelsius ? Int(TemperatureConverter.calculateCelsius(fahrenheit: Double(thresholds[index]))) : Int(thresholds[index])
+            let ints = formatter.formattedToCelsius(for: thresholds, at: index)
             Text("\(ints)")
                 .position(x: calculateXAxisSize(thresholdValue: thresholds[index], geometry: geometry),
                           y: y)
@@ -112,7 +106,7 @@ struct MultiSliderView: View {
 #if DEBUG
 struct MultiSlider_Previews: PreviewProvider {
     static var previews: some View {
-        ThresholdsSliderView(threshold: .mock, selectedStream: MeasurementStreamEntity.mock)
+        ThresholdsSliderView(threshold: .mock)
     }
 }
 #endif

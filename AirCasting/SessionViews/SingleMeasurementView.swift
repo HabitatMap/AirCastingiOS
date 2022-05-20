@@ -35,9 +35,9 @@ struct SingleMeasurementView: View {
                     Text(showStreamName())
                         .font(Fonts.systemFont1)
                         .scaledToFill()
-                    if let threshold = threshold, measurementPresentationStyle == .showValues {
+                    if let threshold = threshold, measurementPresentationStyle == .showValues, let formatter = ThresholdFormatter(for: threshold) {
                         HStack(spacing: 3) {
-                            MeasurementDotView(value: value, thresholds: threshold, stream: stream)
+                            MeasurementDotView(value: value, thresholds: threshold)
                             Text("\(Int(value))")
                                 .font(Fonts.regularHeading3)
                                 .scaledToFill()
@@ -46,7 +46,7 @@ struct SingleMeasurementView: View {
                         .padding(.horizontal, 9)
                         .overlay(
                             RoundedRectangle(cornerRadius: 8)
-                                .strokeBorder((selectedStream == stream) ? stream.isTemperature && userSettings.convertToCelsius ? threshold.colorForCelsius(value: Int32(value)) : threshold.colorFor(value: Int32(value)) : .clear)
+                                .strokeBorder((selectedStream == stream) ? formatter.formattedColor(for: value) : .clear)
                         )
                     }
                 }

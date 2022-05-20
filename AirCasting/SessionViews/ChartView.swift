@@ -15,7 +15,7 @@ struct ChartView: View {
     }
     
     var body: some View {
-        UIKitChartView(thresholds: thresholds, selectedStream: stream,
+        UIKitChartView(thresholds: thresholds,
                        viewModel: viewModel)
             .frame(height: 120)
             .disabled(true)
@@ -50,7 +50,8 @@ struct ChartView: View {
     }
     
     func descriptionText(stream: MeasurementStreamEntity?) -> some View {
-        guard let stream = stream else { return Text("") }
-        return Text("\(stream.session.isMobile ? Strings.SessionCartView.avgSessionMin : Strings.SessionCartView.avgSessionH) \(stream.isTemperature && viewModel.settings.convertToCelsius ? "C" : stream.unitSymbol ?? "")")
+        guard let stream = stream, let threshold = thresholds.threshold(for: stream) else { return Text("") }
+        let formatter = ThresholdFormatter(for: threshold)
+        return Text("\(stream.session.isMobile ? Strings.SessionCartView.avgSessionMin : Strings.SessionCartView.avgSessionH) \(stream.isTemperature ? formatter.formattedUnitSymbol() : stream.unitSymbol ?? "")")
     }
 }

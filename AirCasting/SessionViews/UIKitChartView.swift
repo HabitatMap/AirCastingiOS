@@ -10,7 +10,6 @@ import Charts
 
 struct UIKitChartView: UIViewRepresentable {
     let thresholds: [SensorThreshold]
-    var selectedStream: MeasurementStreamEntity?
     @StateObject var viewModel: ChartViewModel
     
     typealias UIViewType = UI_PollutionChart
@@ -60,9 +59,10 @@ struct UIKitChartView: UIViewRepresentable {
     
     private func generateColorsSet(for entries: [ChartDataEntry]) -> [UIColor] {
         var colors: [UIColor] = []
-        guard let threshold = thresholds.threshold(for: viewModel.stream), let selectedStream = selectedStream else { return [.aircastingGray] }
+        guard let threshold = thresholds.threshold(for: viewModel.stream) else { return [.aircastingGray] }
+        let formatter = ThresholdFormatter(for: threshold)
         for entry in entries {
-            switch selectedStream.isTemperature && viewModel.settings.convertToCelsius ? Int32(TemperatureConverter.calculateFahrenheit(celsius: entry.y)) : Int32(entry.y) {
+            switch formatter.formattedToFahrenheit(for: entry) {
             case threshold.thresholdVeryLow..<threshold.thresholdLow:
                 colors.append(UIColor.aircastingGreen)
             case threshold.thresholdLow..<threshold.thresholdMedium:

@@ -77,8 +77,7 @@ struct AirMapView: View {
                                       isSessionFixed: session.isFixed,
                                       noteMarketTapped: $noteMarkerTapped,
                                       noteNumber: $noteNumber,
-                                      mapNotes: $mapNotesVM.notes,
-                                      selectedStream: selectedStream)
+                                      mapNotes: $mapNotesVM.notes)
                         #warning("TODO: Implement calculating stats only for visible path points")
                         // This doesn't work properly and it needs to be fixed, so I'm commenting it out
 //                            .onPositionChange { [weak mapStatsDataSource, weak statsContainerViewModel] visiblePoints in
@@ -88,19 +87,19 @@ struct AirMapView: View {
                         // Statistics container shouldn't be presented in mobile dormant tab
                         if !(session.type == .mobile && session.isActive == false) {
                             StatisticsContainerView(statsContainerViewModel: statsContainerViewModel,
-                                                    threshold: threshold, selectedStream: selectedStream)
+                                                    threshold: threshold,
+                                                    formatter: .init(for: threshold))
                         }
                     }.padding(.bottom)
                     
-                    if let selectedStream = selectedStream {
-                        NavigationLink(destination: ThresholdsSettingsView(thresholdValues: selectedStream.isTemperature && userSettings.convertToCelsius ? threshold.thresholdsCelsiusBinding : threshold.thresholdsBinding,
+                    if let selectedStream = selectedStream, let formatter = ThresholdFormatter(for: threshold) {
+                        NavigationLink(destination: ThresholdsSettingsView(thresholdValues: formatter.formattedBinding(),
                                                                            initialThresholds: selectedStream.thresholds,
-                                                                           threshold: threshold,
-                                                                           selectedStream: selectedStream)) {
+                                                                           threshold: threshold)) {
                             EditButtonView()
                         }.padding([.bottom, .leading, .trailing])
                     }
-                    ThresholdsSliderView(threshold: threshold, selectedStream: selectedStream)
+                    ThresholdsSliderView(threshold: threshold)
                         // Fixes labels covered by tabbar
                         .padding([.bottom, .leading, .trailing])
                 }

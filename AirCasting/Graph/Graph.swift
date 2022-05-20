@@ -40,16 +40,14 @@ struct Graph: UIViewRepresentable {
     
     var isAutozoomEnabled: Bool
     let simplifiedGraphEntryThreshold = 1000
-    
-    private var properThresholds: [Float] {
-        stream.isTemperature && userSettings.convertToCelsius ? thresholds.rawThresholdsBindingCelsius.wrappedValue : thresholds.rawThresholdsBinding.wrappedValue
-    }
+    private let formatter: ThresholdFormatter
     
     init(stream: MeasurementStreamEntity, thresholds: SensorThreshold, isAutozoomEnabled: Bool) {
         self.stream = stream
         self.thresholds = thresholds
         self.isAutozoomEnabled = isAutozoomEnabled
         self.notesHandler = Resolver.resolve(NotesHandler.self, args: stream.session.uuid)
+        formatter = ThresholdFormatter(for: thresholds)
     }
     
     func onDateRangeChange(perform action: @escaping OnChange) -> Self {
@@ -68,7 +66,7 @@ struct Graph: UIViewRepresentable {
         let uiView = AirCastingGraph(onDateRangeChange: { newRange in
             rangeChangeAction?(newRange)
         })
-        try? uiView.updateWithThreshold(thresholdValues: properThresholds)
+        try? uiView.updateWithThreshold(thresholdValues: formatter.formattedFloat())
         let entries = stream.allMeasurements?.sorted(by: { $0.time < $1.time }).compactMap({ measurement -> ChartDataEntry? in
             let timeInterval = Double(measurement.time.timeIntervalSince1970)
             let chartDataEntry = ChartDataEntry(x: timeInterval, y: getValue(of: measurement))
@@ -106,7 +104,7 @@ struct Graph: UIViewRepresentable {
                 context.coordinator.totalNumberOfMeasurements != stream.allMeasurements?.count ||
                 stream != context.coordinator.stream else { return }
         
-        try? uiView.updateWithThreshold(thresholdValues: properThresholds)
+        try? uiView.updateWithThreshold(thresholdValues: formatter.formattedFloat())
         let allLimitLines = getLimitLines()
         uiView.limitLines = allLimitLines
         

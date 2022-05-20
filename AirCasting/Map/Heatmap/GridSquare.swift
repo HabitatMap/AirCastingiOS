@@ -3,7 +3,6 @@
 
 import GoogleMaps
 import Foundation
-import Resolver
 
 struct GridSquare {
     private var mapView: GMSMapView! = nil
@@ -20,19 +19,10 @@ struct GridSquare {
     private var southEastLatLng: CLLocationCoordinate2D
     var northEastLatLng: CLLocationCoordinate2D
     private var northWestLatLng: CLLocationCoordinate2D
-    @InjectedObject private var userSettings: UserSettings
-    private var selectedStream: MeasurementStreamEntity?
     
-    private var adjustedAverage: Int32? {
-        guard let averagedValue = averagedValue, let selectedStream = selectedStream else { return nil }
-
-        return selectedStream.isTemperature && userSettings.convertToCelsius ? Int32(TemperatureConverter.calculateFahrenheit(celsius: averagedValue)) : Int32(averagedValue)
-    }
-    
-    init(mapView: GMSMapView, sensorThreshold: SensorThreshold, selectedStream: MeasurementStreamEntity?, _ southWestLatLng: CLLocationCoordinate2D, _ southEastLatLng: CLLocationCoordinate2D, _ northEastLatLng: CLLocationCoordinate2D, _ northWestLatLng: CLLocationCoordinate2D) {
+    init(mapView: GMSMapView, sensorThreshold: SensorThreshold, _ southWestLatLng: CLLocationCoordinate2D, _ southEastLatLng: CLLocationCoordinate2D, _ northEastLatLng: CLLocationCoordinate2D, _ northWestLatLng: CLLocationCoordinate2D) {
         self.mapView = mapView
         self.sensorThreshold = sensorThreshold
-        self.selectedStream = selectedStream
         self.southWestLatLng = southWestLatLng
         self.southEastLatLng = southEastLatLng
         self.northEastLatLng = northEastLatLng
@@ -57,8 +47,9 @@ struct GridSquare {
         number += 1
         calculateAverage()
         
-        guard let adjustedAverage = adjustedAverage else { return }
-        let color: UIColor = GoogleMapView.color(value: adjustedAverage, threshold: sensorThreshold).withAlphaComponent(0.5)
+        guard let averagedValue = averagedValue else { return }
+        let formatter = ThresholdFormatter(for: sensorThreshold)
+        let color: UIColor = GoogleMapView.color(value: formatter.formattedToFahrenheit(for: averagedValue), threshold: sensorThreshold).withAlphaComponent(0.5)
         if color != fillColor {
             fillColor = color
             newColor = true

@@ -7,44 +7,111 @@ import SwiftUI
 import Charts
 
 final class ThresholdFormatter: ObservableObject {
+    
+    enum TemperatureUnit {
+        case fahrenheit
+        case celsius
+    }
+    
     @InjectedObject private var userSettings: UserSettings
+    private var currentTemperatureUnit: TemperatureUnit = .fahrenheit
+    let threshold: SensorThreshold
+    
+    init(for threshold: SensorThreshold) {
+        self.threshold = threshold
+        currentTemperatureUnit = conversionIsOnFor()
+    }
 
-    func floatFromThreshold(for threshold: SensorThreshold) -> [Float] {
-        isCelsiusConversionOn(for: threshold) ? threshold.rawThresholdsBindingCelsius.wrappedValue : threshold.rawThresholdsBinding.wrappedValue
+    func formattedFloat() -> [Float] {
+        switch currentTemperatureUnit {
+        case .fahrenheit:
+            return threshold.rawThresholdsBinding.wrappedValue
+        case .celsius:
+            return threshold.rawThresholdsBindingCelsius.wrappedValue
+        }
     }
     
-    func bindingFromThreshold(for threshold: SensorThreshold) -> Binding<ThresholdsValue>  {
-        isCelsiusConversionOn(for: threshold) ? threshold.thresholdsCelsiusBinding : threshold.thresholdsBinding
+    func formattedBinding() -> Binding<ThresholdsValue>  {
+        switch currentTemperatureUnit {
+        case .fahrenheit:
+            return threshold.thresholdsBinding
+        case .celsius:
+            return threshold.thresholdsCelsiusBinding
+        }
     }
 
-    func celsiusUnitSymbol(for threshold: SensorThreshold) -> String {
-        isCelsiusConversionOn(for: threshold) ? "C" : ""
+    func formattedUnitSymbol() -> String {
+        switch currentTemperatureUnit {
+        case .fahrenheit:
+            return Strings.SingleMeasurementView.fahrenheitUnit
+        case .celsius:
+            return Strings.SingleMeasurementView.celsiusUnit
+        }
     }
     
-    func color(for threshold: SensorThreshold, from value: Double) -> Color {
-        isCelsiusConversionOn(for: threshold) ? threshold.colorForCelsius(value: Int32(value)) : threshold.colorFor(value: Int32(value))
+    func formattedColor(for value: Double) -> Color {
+        switch currentTemperatureUnit {
+        case .fahrenheit:
+            return threshold.colorFor(value: Int32(value))
+        case .celsius:
+           return threshold.colorForCelsius(value: Int32(value))
+        }
     }
     
-    func convertToFahrenheit(from threshold: SensorThreshold, for averagedValue: Double?) -> Int32? {
-        guard let averagedValue = averagedValue else { return nil }
-        return isCelsiusConversionOn(for: threshold) ? Int32(TemperatureConverter.calculateFahrenheit(celsius: averagedValue)) : Int32(averagedValue)
+    func formattedToFahrenheit(for averagedValue: Double) -> Int32 {
+        switch currentTemperatureUnit {
+        case .fahrenheit:
+            return Int32(averagedValue)
+        case .celsius:
+            return Int32(TemperatureConverter.calculateFahrenheit(celsius: averagedValue))
+        }
     }
     
-    func convertToFahrenheit(from threshold: SensorThreshold, for point: PathPoint) -> Int32 {
-        isCelsiusConversionOn(for: threshold) ? Int32(TemperatureConverter.calculateFahrenheit(celsius: point.measurement)) : Int32(point.measurement)
+    func formattedToFahrenheit(for point: PathPoint) -> Int32 {
+        switch currentTemperatureUnit {
+        case .fahrenheit:
+            return Int32(point.measurement)
+        case .celsius:
+            return Int32(TemperatureConverter.calculateFahrenheit(celsius: point.measurement))
+        }
     }
     
-    func convertToFahrenheit(from threshold: SensorThreshold, for entry: ChartDataEntry) -> Int32 {
-        isCelsiusConversionOn(for: threshold) ? Int32(TemperatureConverter.calculateFahrenheit(celsius: entry.y)) : Int32(entry.y)
+    func formattedToFahrenheit(for entry: ChartDataEntry) -> Int32 {
+        switch currentTemperatureUnit {
+        case .fahrenheit:
+            return Int32(entry.y)
+        case .celsius:
+            return Int32(TemperatureConverter.calculateFahrenheit(celsius: entry.y))
+        }
     }
     
-    func convertToFahrenheit(from threshold: SensorThreshold, for value: String) -> Int32 {
-        isCelsiusConversionOn(for: threshold) ? Int32(TemperatureConverter.calculateFahrenheit(celsius: Double(convertToInt(value)))) : convertToInt(value)
+    func formattedToFahrenheit(for value: String) -> Int32 {
+        switch currentTemperatureUnit {
+        case .fahrenheit:
+            return convertToInt(value)
+        case .celsius:
+            return Int32(TemperatureConverter.calculateFahrenheit(celsius: Double(convertToInt(value))))
+        }
     }
     
-    private func isSensorTemperature(for threshold: SensorThreshold) -> Bool { threshold.sensorName?.last == MeasurementStreamSensorName.f.rawValue.last }
+    func formattedToCelsius(for thresholds: [Float], at index: Int) -> Int {
+        switch currentTemperatureUnit {
+        case .fahrenheit:
+            return Int(thresholds[index])
+        case .celsius:
+            return Int(TemperatureConverter.calculateCelsius(fahrenheit: Double(thresholds[index])))
+        }
+    }
     
-    private func isCelsiusConversionOn(for threshold: SensorThreshold) -> Bool { isSensorTemperature(for: threshold) && userSettings.convertToCelsius }
+    private func isSensorTemperature() -> Bool { threshold.sensorName?.last == MeasurementStreamSensorName.f.rawValue.last }
+    
+    private func conversionIsOnFor() -> TemperatureUnit {
+        if isSensorTemperature() && userSettings.convertToCelsius {
+            return .celsius
+        } else {
+            return .fahrenheit
+        }
+    }
 
     private func convertToInt(_ value: String) -> Int32 { Int32(value) ?? 0 }
 }

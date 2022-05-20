@@ -2,15 +2,10 @@
 //
 
 import SwiftUI
-import Resolver
 
 struct MeasurementDotView: View {
-    
     let value: Double
     @ObservedObject var thresholds: SensorThreshold
-    @InjectedObject private var userSettings: UserSettings
-    @ObservedObject var stream: MeasurementStreamEntity
-    
     var body: some View {
         color
             .clipShape(Circle())
@@ -18,18 +13,15 @@ struct MeasurementDotView: View {
     }
     
     var color: Color {
-        if stream.isTemperature && userSettings.convertToCelsius {
-            return thresholds.colorForCelsius(value: Int32(value))
-        } else {
-            return thresholds.colorFor(value: Int32(value))
-        }
+        let formatter = ThresholdFormatter(for: thresholds)
+        return formatter.formattedColor(for: value)
     }
 }
 
 #if DEBUG
 struct MeasurementDotView_Previews: PreviewProvider {
     static var previews: some View {
-        MeasurementDotView(value: 15.0, thresholds: .mock, stream: MeasurementStreamEntity.mock)
+        MeasurementDotView(value: 15.0, thresholds: .mock)
     }
 }
 #endif

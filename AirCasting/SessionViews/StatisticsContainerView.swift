@@ -6,14 +6,12 @@
 //
 
 import SwiftUI
-import Resolver
 
 struct StatisticsContainerView<ViewModelType>: View where ViewModelType: StatisticsContainerViewModelable {
     @ObservedObject var statsContainerViewModel: ViewModelType
     @ObservedObject var threshold: SensorThreshold
-    var selectedStream: MeasurementStreamEntity?
-    @InjectedObject private var userSettings: UserSettings
-
+    let formatter: ThresholdFormatter
+    
     var body: some View {
         HStack {
             ForEach(statsContainerViewModel.stats) { stat in
@@ -38,12 +36,12 @@ struct StatisticsContainerView<ViewModelType>: View where ViewModelType: Statist
     
     private func standardParameter(value: Double) -> some View {
         ZStack {
-            color(value: value)
+            formatter.formattedColor(for: value)
                 .opacity(0.32)
                 .cornerRadius(7.5)
             HStack {
                 Spacer()
-                color(value: value)
+                formatter.formattedColor(for: value)
                     .clipShape(Circle())
                     .frame(width: 6, height: 6)
                 Spacer()
@@ -57,12 +55,12 @@ struct StatisticsContainerView<ViewModelType>: View where ViewModelType: Statist
     
     private func distinctParameter(value: Double) -> some View {
         ZStack {
-            color(value: value)
+            formatter.formattedColor(for: value)
                 .opacity(0.32)
                 .cornerRadius(7.5)
             HStack {
                 Spacer()
-                color(value: value)
+                formatter.formattedColor(for: value)
                     .clipShape(Circle())
                     .frame(width: 8, height: 8)
                 Spacer()
@@ -73,23 +71,13 @@ struct StatisticsContainerView<ViewModelType>: View where ViewModelType: Statist
             }
         }.frame(width: 68, height: 33, alignment: .center)
     }
-    
-    func color(value: Double) -> Color {
-        guard let selectedStream = selectedStream else { return .aircastingGray }
-        if selectedStream.isTemperature && userSettings.convertToCelsius {
-            return threshold.colorForCelsius(value: Int32(value))
-        } else {
-            return threshold.colorFor(value: Int32(value))
-        }
-    }
-    
 }
 
 #if DEBUG
 struct CalculatedMeasurements_Previews: PreviewProvider {
     static var previews: some View {
         StatisticsContainerView(statsContainerViewModel: FakeStatsViewModel(),
-                                threshold:  SensorThreshold.mock)
+                                threshold:  SensorThreshold.mock, formatter: ThresholdFormatter(for: SensorThreshold.mock))
             .previewLayout(.sizeThatFits)
     }
 }
