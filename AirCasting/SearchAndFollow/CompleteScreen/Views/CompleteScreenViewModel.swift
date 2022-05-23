@@ -172,20 +172,10 @@ class CompleteScreenViewModel: ObservableObject {
                     if let stream = self.externalSessionWithStreams!.streams.first {
                         self.selectedStream = stream.id
                         self.selectedStreamUnitSymbol = stream.unitSymbol
-                        (self.chartStartTime, self.chartEndTime) = self.chartViewModel.generateEntries(with: stream.measurements.map({ SearchAndFollowChartViewModel.ChartMeasurement(value: $0.value, time: $0.time) }), thresholds: stream.thresholdsValues, basedOn: self.componentsSeparation(name: stream.sensorName))
+                        (self.chartStartTime, self.chartEndTime) = self.chartViewModel.generateEntries(with: stream.measurements.map({ ChartMeasurement(value: $0.value, time: $0.time) }), thresholds: stream.thresholdsValues, basedOn: ChartSensorDefault(name: Self.getSensorName(stream.sensorName)))
                     }
                 }
             }
-        }
-    }
-    
-    private func componentsSeparation(name: String) -> String {
-        if name.contains(":") {
-            let value = name.components(separatedBy: ":").first!
-            return value.components(separatedBy: CharacterSet.decimalDigits).joined()
-        } else {
-            let value = name.components(separatedBy: "-").first!
-            return value.components(separatedBy: CharacterSet.decimalDigits).joined()
         }
     }
     
