@@ -172,7 +172,7 @@ class CompleteScreenViewModel: ObservableObject {
                     if let stream = self.externalSessionWithStreams!.streams.first {
                         self.selectedStream = stream.id
                         self.selectedStreamUnitSymbol = stream.unitSymbol
-                        (self.chartStartTime, self.chartEndTime) = self.chartViewModel.generateEntries(with: stream.measurements.map({ ChartMeasurement(value: $0.value, time: $0.time) }), thresholds: stream.thresholdsValues, basedOn: ChartSensorDefault(name: Self.getSensorName(stream.sensorName)))
+                        (self.chartStartTime, self.chartEndTime) = self.chartViewModel.generateEntries(with: stream.measurements.map({ SearchAndFollowChartViewModel.ChartMeasurement(value: $0.value, time: $0.time) }), thresholds: stream.thresholdsValues, basedOn: ChartSensorDefault(name: Self.getSensorName(stream.sensorName)))
                     }
                 }
             }

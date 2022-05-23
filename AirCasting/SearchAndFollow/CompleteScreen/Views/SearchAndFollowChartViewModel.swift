@@ -4,12 +4,13 @@
 import Foundation
 import SwiftUI
 
-struct ChartMeasurement {
-    let value: Double
-    let time: Date
-}
-
 class SearchAndFollowChartViewModel: ObservableObject {
+    
+    struct ChartMeasurement {
+        let value: Double
+        let time: Date
+    }
+    
     struct ChartDot {
         let value: Double
         let color: Color

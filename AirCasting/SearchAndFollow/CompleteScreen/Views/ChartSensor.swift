@@ -5,12 +5,13 @@ import Foundation
 import SwiftUI
 
 protocol ChartSensor {
-    func clean(measurements: inout [ChartMeasurement])
+    func clean(measurements: inout [SearchAndFollowChartViewModel.ChartMeasurement])
 }
 
 struct ChartSensorDefault: ChartSensor {
     let name: String
     var convertedName: EntriesSensor { return getEntriesSensor(using: name) }
+    typealias MeasurementType = SearchAndFollowChartViewModel.ChartMeasurement
     
     enum EntriesSensor: String {
         case OpenAQ = "OpenAQ"
@@ -19,7 +20,7 @@ struct ChartSensorDefault: ChartSensor {
         case undefined = ""
     }
     
-    func clean(measurements: inout [ChartMeasurement]) {
+    func clean(measurements: inout [MeasurementType]) {
         guard convertedName != .OpenAQ else { return }
         guard let firstElement = measurements.reversed().first?.time else { return }
         switch convertedName {
@@ -39,7 +40,7 @@ struct ChartSensorDefault: ChartSensor {
     
     private func hoursForRemoval(using element: Date) -> Int { Calendar.current.component(.hour, from: element) }
     
-    private func clearPAData(using updatedMeasurements: inout [ChartMeasurement], hourToRemove: Date) {
+    private func clearPAData(using updatedMeasurements: inout [MeasurementType], hourToRemove: Date) {
         for (index, item) in updatedMeasurements.enumerated().reversed() {
             if Calendar.current.component(.hour, from: item.time) == hoursForRemoval(using: hourToRemove) && Calendar.current.component(.minute, from: item.time) != 00 {
                 updatedMeasurements.remove(at: index)
@@ -47,7 +48,7 @@ struct ChartSensorDefault: ChartSensor {
         }
     }
     
-    private func clearABData(using updatedMeasurements: inout [ChartMeasurement], hourToRemove: Date) {
+    private func clearABData(using updatedMeasurements: inout [MeasurementType], hourToRemove: Date) {
         for (index, item) in updatedMeasurements.enumerated().reversed() {
             if Calendar.current.component(.hour, from: item.time) == hoursForRemoval(using: hourToRemove) {
                 updatedMeasurements.remove(at: index)
