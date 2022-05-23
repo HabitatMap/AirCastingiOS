@@ -62,16 +62,14 @@ class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDel
     }
 
     func deleteNote(note: Note, completion: @escaping () -> Void) {
-        measurementStreamStorage.accessStorage { [weak self] storage in
-            guard let self = self else { return }
+        measurementStreamStorage.accessStorage { storage in
             do {
                 try storage.deleteNote(note, for: self.sessionUUID)
                 self.fetchSession(storage: storage) { session in
                     self.sessionUpdateService.updateSession(session: session) { result in
                         switch result {
                         case .success(let updateData):
-                            self.measurementStreamStorage.accessStorage { [weak self] storage in
-                                guard let self = self else { return }
+                            self.measurementStreamStorage.accessStorage { storage in
                                 try? storage.updateVersion(for: self.sessionUUID, to: updateData.version)
                                 Log.info("Notes successfully updated")
                                 completion()
@@ -96,11 +94,7 @@ class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDel
                     self.sessionUpdateService.updateSession(session: session) { result in
                         switch result {
                         case .success(let updateData):
-                            self.measurementStreamStorage.accessStorage { [weak self] storage in
-                                guard let self = self else {
-                                    completion()
-                                    return
-                                }
+                            self.measurementStreamStorage.accessStorage {storage in
                                 try? storage.updateVersion(for: self.sessionUUID, to: updateData.version)
                                 Log.info("Notes successfully updated")
                                 completion()
