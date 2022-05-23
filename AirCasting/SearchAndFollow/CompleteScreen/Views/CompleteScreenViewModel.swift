@@ -9,7 +9,7 @@ import Resolver
 enum CompletionScreenError: Error {
     case noStreams
 }
-    
+
 class CompleteScreenViewModel: ObservableObject {
     
     struct SessionStreamViewModel: Identifiable {
@@ -172,7 +172,11 @@ class CompleteScreenViewModel: ObservableObject {
                     if let stream = self.externalSessionWithStreams!.streams.first {
                         self.selectedStream = stream.id
                         self.selectedStreamUnitSymbol = stream.unitSymbol
-                        (self.chartStartTime, self.chartEndTime) = self.chartViewModel.generateEntries(with: stream.measurements.map({ SearchAndFollowChartViewModel.ChartMeasurement(value: $0.value, time: $0.time) }), thresholds: stream.thresholdsValues, basedOn: ChartSensorDefault(name: Self.getSensorName(stream.sensorName)))
+                        guard let separatedSensorName = self.componentsSeparation(name: stream.sensorName) else {
+                            Log.error("No sensor name can be extracted from current stream.sensorName")
+                            return
+                        }
+                                (self.chartStartTime, self.chartEndTime) = self.chartViewModel.generateEntries(with: stream.measurements.map({ SearchAndFollowChartViewModel.ChartMeasurement(value: $0.value, time: $0.time) }), thresholds: stream.thresholdsValues, using: ChartMeasurementsFilterDefault(name: separatedSensorName))
                     }
                 }
             }
@@ -190,5 +194,14 @@ class CompleteScreenViewModel: ObservableObject {
             .replacingOccurrences(of: ":", with: "-")
             .drop { $0 != "-" }
             .replacingOccurrences(of: "-", with: "")
+    }
+    
+    private func componentsSeparation(name: String) -> String? {
+        if name.contains(":") {
+            let value = name.components(separatedBy: ":").first!
+            return value.components(separatedBy: CharacterSet.decimalDigits).joined()
+        }
+        let value = name.components(separatedBy: "-").first!
+        return value.components(separatedBy: CharacterSet.decimalDigits).joined()
     }
 }

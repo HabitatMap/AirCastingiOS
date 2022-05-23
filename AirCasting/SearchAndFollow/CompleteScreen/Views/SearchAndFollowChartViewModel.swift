@@ -20,12 +20,11 @@ class SearchAndFollowChartViewModel: ObservableObject {
     
     let numberOfEntries = 9
     
-    func generateEntries(with measurements: [ChartMeasurement], thresholds: ThresholdsValue, basedOn sensor: ChartSensor) -> (Date?, Date?) {
+    func generateEntries(with measurements: [ChartMeasurement], thresholds: ThresholdsValue, using sensor: ChartMeasurementsFilter) -> (Date?, Date?) {
         var times: [Date] = []
         var buffer: [ChartMeasurement] = []
-        var updatedMeasurements = measurements
         
-        sensor.clean(measurements: &updatedMeasurements)
+        let updatedMeasurements = sensor.filter(measurements: measurements)
         
         for measurement in updatedMeasurements.reversed() {
             if entries.count == 9 {
