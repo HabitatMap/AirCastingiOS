@@ -80,7 +80,7 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
         var returnData: [(uuid: SessionUUID, lastSynced: Date, type: Session.SessionType)] = []
         
         let externalSessionsRequest = ExternalSessionEntity.fetchRequest()
-        request.predicate = NSPredicate(value: true)
+        externalSessionsRequest.predicate = NSPredicate(value: true)
         
         context.perform { [unowned self] in
             do {
