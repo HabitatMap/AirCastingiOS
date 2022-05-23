@@ -204,9 +204,10 @@ extension Resolver: ResolverRegistering {
         // MARK: - Search and Follow
         main.register { SessionsForLocationDownloaderDefault() as SessionsForLocationDownloader }
         main.register { DefaultStreamDownloader() as StreamDownloader }
-        main.register { (_, _) -> ThresholdsStore in
+        main.register { DefaultSearchAndFollowCompleteScreenService() as SearchAndFollowCompleteScreenService }
+        main.register { (_, _) -> ExternalSessionsStore in
             let context = Resolver.resolve(PersistenceController.self).editContext
-            return DefaultThresholdsStore(context: context)
+            return DefaultExternalSessionsStore(context: context)
         }
     }
     

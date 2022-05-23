@@ -83,10 +83,9 @@ final class FixedSessionAPIService {
             URLQueryItem(name: "uuid", value: uuid.rawValue),
             URLQueryItem(name: "last_measurement_sync", value: syncDateStr)
         ]
-        let urlWithParams = components.url!
-
+        
         // Build URLRequest
-        var request = URLRequest.jsonGET(url: url)
+        var request = URLRequest.jsonGET(url: components.url!)
         do {
             try authorisationService.authorise(request: &request)
             return apiClient.requestTask(for: request) { [responseValidator, decoder] result, _ in
