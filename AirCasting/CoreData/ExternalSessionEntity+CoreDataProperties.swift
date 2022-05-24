@@ -7,11 +7,11 @@ import CoreData
 import CoreLocation
 
 extension ExternalSessionEntity {
-
+    
     @nonobjc public class func fetchRequest() -> NSFetchRequest<ExternalSessionEntity> {
         return NSFetchRequest<ExternalSessionEntity>(entityName: "ExternalSessionEntity")
     }
-
+    
     @NSManaged public var endTime: Date?
     @NSManaged public var latitude: Double
     @NSManaged public var longitude: Double
@@ -33,8 +33,8 @@ extension ExternalSessionEntity {
     
     func streamWith(sensorName: String) -> MeasurementStreamEntity? {
         allStreams.first { stream in
-             stream.sensorName == sensorName
-         }
+            stream.sensorName == sensorName
+        }
     }
     
     public var sortedStreams: [MeasurementStreamEntity] {
@@ -42,57 +42,66 @@ extension ExternalSessionEntity {
          pm1Stream,
          pm2Stream,
          pm10Stream,
-         HStream].compactMap { $0 }
+         HStream,
+         ozoneStream].compactMap { $0 }
     }
 }
 
 // MARK: Generated accessors for measurementStreams
 extension ExternalSessionEntity {
-
+    
     @objc(addMeasurementStreamsObject:)
     @NSManaged public func addToMeasurementStreams(_ value: MeasurementStreamEntity)
-
+    
     @objc(removeMeasurementStreamsObject:)
     @NSManaged public func removeFromMeasurementStreams(_ value: MeasurementStreamEntity)
-
+    
     @objc(addMeasurementStreams:)
     @NSManaged public func addToMeasurementStreams(_ values: NSSet)
-
+    
     @objc(removeMeasurementStreams:)
     @NSManaged public func removeFromMeasurementStreams(_ values: NSSet)
-
+    
 }
 
 extension ExternalSessionEntity : Identifiable {
-
+    
 }
 
 extension ExternalSessionEntity {
-
+    
     var pm1Stream: MeasurementStreamEntity? {
         let match = measurementStreams?.first(where: { (stream) -> Bool in
             (stream as? MeasurementStreamEntity)?.sensorName == "AirBeam3-PM1" ||
-                (stream as? MeasurementStreamEntity)?.sensorName == "AirBeam2-PM1" ||
-                    (stream as? MeasurementStreamEntity)?.sensorName == "AirBeam1-PM1"
+            (stream as? MeasurementStreamEntity)?.sensorName == "AirBeam2-PM1" ||
+            (stream as? MeasurementStreamEntity)?.sensorName == "AirBeam1-PM1"
         })
         let pm1Stream = match as? MeasurementStreamEntity
         return pm1Stream
     }
-
+    
     var pm2Stream: MeasurementStreamEntity? {
         streamWithSensorNameContaining("PM2.5")
     }
+    
     var pm10Stream: MeasurementStreamEntity? {
         streamWithSensorNameContaining("PM10")
     }
+    
     var FStream: MeasurementStreamEntity? {
         streamWithType("F")
     }
+    
     var HStream: MeasurementStreamEntity? {
         streamWithType("RH")
     }
+    
     var dbStream: MeasurementStreamEntity? {
         streamWithType("db")
+    }
+    
+    var ozoneStream: MeasurementStreamEntity? {
+        streamWithType("O3")
     }
     
     private func streamWithType(_ type: String) -> MeasurementStreamEntity? {
@@ -117,9 +126,9 @@ extension ExternalSessionEntity: Sessionable {
     var location: CLLocationCoordinate2D? {
         get {
             guard let lat = value(forKey: "latitude") as? CLLocationDegrees,
-                    let lon = value(forKey: "longitude") as? CLLocationDegrees else {
-                return nil
-            }
+                  let lon = value(forKey: "longitude") as? CLLocationDegrees else {
+                      return nil
+                  }
             return CLLocationCoordinate2D(latitude: lat, longitude: lon)
         }
         set {
