@@ -83,7 +83,7 @@ class CompleteScreenViewModel: ObservableObject {
     
     private func reloadData() {
         sessionStreams = .loading
-        getAndDisplayData()
+        refresh()
     }
     
     func mapTapped() {
@@ -95,6 +95,9 @@ class CompleteScreenViewModel: ObservableObject {
     }
     
     func selectedStream(with id: Int) {
+        if let stream = externalSessionWithStreams?.streams.first(where: { $0.id == id }) {
+            defineChartRange(with: stream)
+        }
         selectedStream = id
     }
     
@@ -142,41 +145,41 @@ class CompleteScreenViewModel: ObservableObject {
         exitRoute()
     }
     
-    private func getAndDisplayData() {
-        if session.stream.first!.sensorName.contains("AirBeam") {
-            do {
-                try streamsDownloader.downloadStreams(with: session.id, for: .airBeam3) { result in
-                    switch result {
-                    case .success(let success):
-                        // TODO: - FIX Thresholds and Improve this part of code
-                        // TODO: Compare strings and get threshold value, example - comment below
-                        // let vl = MeasurementStream.init(sensorName: .pm1, sensorPackageName: "").thresholdVeryLow
-                        let partialSession = success.map({ PartialExternalSession.Stream(id: $0.streamId,
-                                                                                         unitName: "microgram per cubic meter",
-                                                                                         unitSymbol: $0.sensorUnit,
-                                                                                         measurementShortType: "PM",
-                                                                                         measurementType: "",
-                                                                                         sensorName: $0.sensorName,
-                                                                                         sensorPackageName: "",
-                                                                                         thresholdsValues: .init(veryLow: Int32(0),
-                                                                                                                 low: Int32(30),
-                                                                                                                 medium: Int32(40),
-                                                                                                                 high: Int32(50),
-                                                                                                                 veryHigh: Int32(120)))})
-                        self.session.stream = []
-                        partialSession.forEach { self.session.stream.append($0) }
-                        Log.info("Completed downloading missing streams.")
-                        self.getMeasurementsAndDisplayData()
-                    case .failure(let failure):
-                        Log.info("Something want wrong when downoading missing streams.")
-                    }
+    private func refresh() {
+        guard ((session.stream.first?.sensorName.contains("AirBeam")) != nil) else { getMeasurementsAndDisplayData(); return }
+        var currentSensor = AirBeamStreamPrefix.airBeam3
+        if session.stream.first!.sensorName.contains("AirBeam2") { currentSensor = .airBeam2 }
+        do {
+            try streamsDownloader.downloadStreams(with: session.id, for: currentSensor) { result in
+                switch result {
+                case .success(let downloadedStreams):
+                    // TODO: - FIX Thresholds and Improve this part of code
+                    // TODO: Compare strings and get threshold value, example - comment below
+                    // let vl = MeasurementStream.init(sensorName: .pm1, sensorPackageName: "").thresholdVeryLow
+                    let sessionStream = downloadedStreams.map({ PartialExternalSession.Stream(id: $0.streamId,
+                                                                                     unitName: "microgram per cubic meter",
+                                                                                     unitSymbol: $0.sensorUnit,
+                                                                                     measurementShortType: "PM",
+                                                                                     measurementType: "",
+                                                                                     sensorName: $0.sensorName,
+                                                                                     sensorPackageName: "",
+                                                                                     thresholdsValues: .init(veryLow: Int32(0),
+                                                                                                             low: Int32(30),
+                                                                                                             medium: Int32(40),
+                                                                                                             high: Int32(50),
+                                                                                                             veryHigh: Int32(120)))})
+                    self.session.stream = []
+                    sessionStream.forEach { self.session.stream.append($0) }
+                    Log.error("Completed downloading missing streams.")
+                    self.getMeasurementsAndDisplayData()
+                case .failure(let error):
+                    Log.error("Something went wrong when downoading missing streams. \(error.localizedDescription)")
                 }
-            } catch {
-                Log.info("Something want wrong when downoading missing streams.")
             }
-            return
+        } catch {
+            Log.info("Something went wrong when downoading missing streams. \(error.localizedDescription)")
         }
-        getMeasurementsAndDisplayData()
+        return
     }
     
     private func getMeasurementsAndDisplayData() {
@@ -223,12 +226,12 @@ class CompleteScreenViewModel: ObservableObject {
         }
     }
     
-    func assignValues(with stream: ExternalSessionWithStreamsAndMeasurements.Stream) {
+    private func assignValues(with stream: ExternalSessionWithStreamsAndMeasurements.Stream) {
         self.selectedStream = stream.id
         self.selectedStreamUnitSymbol = stream.unitSymbol
     }
     
-    func defineChartRange(with stream: ExternalSessionWithStreamsAndMeasurements.Stream) {
+    private func defineChartRange(with stream: ExternalSessionWithStreamsAndMeasurements.Stream) {
         (self.chartStartTime, self.chartEndTime) = self.chartViewModel.generateEntries(with: stream.measurements.map({ SearchAndFollowChartViewModel.ChartMeasurement(value: $0.value, time: $0.time) }), thresholds: stream.thresholdsValues)
     }
     

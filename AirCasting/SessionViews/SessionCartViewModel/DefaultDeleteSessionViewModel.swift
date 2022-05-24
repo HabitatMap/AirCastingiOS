@@ -99,11 +99,15 @@ class DefaultDeleteSessionViewModel: DeleteSessionViewModel {
             streamRemover.updateSession(session: sessionToPass) { [self] result in
                 switch result {
                 case .success(let updateData):
-                    try? storage.deleteStreams(session.uuid)
-                    try? storage.updateVersion(for: sessionToPass.uuid, to: updateData.version)
+                    self.measurementStreamStorage.accessStorage { storage in
+                        try? storage.deleteStreams(session.uuid)
+                        try? storage.updateVersion(for: sessionToPass.uuid, to: updateData.version)
+                    }
                 case .failure(let error):
                     Log.info("Failed updating session while deleting streams: \(error.localizedDescription)")
-                    try? storage.deleteStreams(session.uuid)
+                    self.measurementStreamStorage.accessStorage { storage in
+                        try? storage.deleteStreams(session.uuid)
+                    }
                 }
             }
         }

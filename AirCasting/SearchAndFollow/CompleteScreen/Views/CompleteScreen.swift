@@ -39,10 +39,7 @@ struct CompleteScreen: View {
             if viewModel.isMapSelected {
                 SearchCompleteScreenMapView(longitude: viewModel.sessionLongitude, latitude: viewModel.sessionLatitude)
             } else {
-                SearchAndFollowChartView(viewModel: viewModel.chartViewModel, streamID: $viewModel.selectedStream)
-                    .onStreamChange {
-                        viewModel.streamChanged()
-                    }
+                SearchAndFollowChartView(viewModel: viewModel.chartViewModel)
                 chartDescription
             }
             buttons

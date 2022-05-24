@@ -148,7 +148,7 @@ private extension SessionCardView {
                             session: session,
                             isCollapsed: $isCollapsed,
                             selectedStream: $selectedStream,
-                            thresholds: thresholds,
+                            thresholds: .init(value: thresholds),
                             measurementPresentationStyle: shouldShowValues)
     }
 
@@ -191,9 +191,9 @@ private extension SessionCardView {
     }
 
     func pollutionChart(thresholds: [SensorThreshold]) -> some View {
-        return VStack() {
-            ChartView(thresholds: thresholds, stream: $selectedStream, session: .session(session))
-            .foregroundColor(.aircastingGray)
+        VStack() {
+            ChartView(thresholds: .init(value: thresholds), stream: $selectedStream, session: ChartViewModel.Session.session(session))
+                .foregroundColor(.aircastingGray)
                 .font(Fonts.semiboldHeading2)
         }
     }
@@ -233,7 +233,7 @@ private extension SessionCardView {
 
     private var mapNavigationLink: some View {
          let mapView = AirMapView(session: session,
-                                  thresholds: thresholds,
+                                  thresholds: .init(value: thresholds),
                                   statsContainerViewModel: _mapStatsViewModel,
                                   showLoadingIndicator: $showLoadingIndicator,
                                   selectedStream: $selectedStream)

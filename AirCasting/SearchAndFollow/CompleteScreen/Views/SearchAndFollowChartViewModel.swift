@@ -21,6 +21,7 @@ class SearchAndFollowChartViewModel: ObservableObject {
     func generateEntries(with measurements: [ChartMeasurement], thresholds: ThresholdsValue) -> (Date?, Date?) {
         var times: [Date] = []
         var buffer: [ChartMeasurement] = []
+        entries = []
         
         for measurement in measurements.reversed() {
             if entries.count == 9 {

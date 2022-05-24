@@ -22,7 +22,7 @@ class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDel
     @Injected private var sessionUpdateService: SessionUpdateService
     @Injected private var persistenceController: PersistenceController
     var observer: (() -> Void)?
-    
+
     private lazy var frc: NSFetchedResultsController<NoteEntity> = {
         let fetchRequest = NoteEntity.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "text", ascending: true)]
@@ -31,18 +31,18 @@ class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDel
                                           sectionNameKeyPath: nil,
                                           cacheName: nil)
     }()
-    
+
     init(sessionUUID: SessionUUID) {
         self.sessionUUID = sessionUUID
         super.init()
         frc.delegate = self
         try? frc.performFetch()
     }
-    
+
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         observer?()
     }
-    
+
     func addNote(noteText: String, withLocation: Bool) {
         let latitude = withLocation ? locationTracker.locationManager.location?.coordinate.latitude ?? locationTracker.googleLocation.last?.location.latitude ?? 20.0 : 20.0
         let longitude = withLocation ? locationTracker.locationManager.location?.coordinate.longitude ?? locationTracker.googleLocation.last?.location.longitude ?? 20.0 : 20.0
@@ -60,18 +60,20 @@ class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDel
             }
         }
     }
-    
+
     func deleteNote(note: Note, completion: @escaping () -> Void) {
-        measurementStreamStorage.accessStorage { [self] storage in
+        measurementStreamStorage.accessStorage { storage in
             do {
-                try storage.deleteNote(note, for: sessionUUID)
-                fetchSession(storage: storage) { session in
+                try storage.deleteNote(note, for: self.sessionUUID)
+                self.fetchSession(storage: storage) { session in
                     self.sessionUpdateService.updateSession(session: session) { result in
                         switch result {
                         case .success(let updateData):
-                            try? storage.updateVersion(for: self.sessionUUID, to: updateData.version)
-                            Log.info("Notes successfully updated")
-                            completion()
+                            self.measurementStreamStorage.accessStorage { storage in
+                                try? storage.updateVersion(for: self.sessionUUID, to: updateData.version)
+                                Log.info("Notes successfully updated")
+                                completion()
+                            }
                         case .failure(let error):
                             Log.info("Failed updating session while updating notes: \(error.localizedDescription)")
                             completion()
@@ -83,7 +85,7 @@ class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDel
             }
         }
     }
-    
+
     func updateNote(note: Note, newText: String, completion: @escaping () -> Void) {
         measurementStreamStorage.accessStorage { [self] storage in
             do {
@@ -92,9 +94,11 @@ class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDel
                     self.sessionUpdateService.updateSession(session: session) { result in
                         switch result {
                         case .success(let updateData):
-                            try? storage.updateVersion(for: self.sessionUUID, to: updateData.version)
-                            Log.info("Notes successfully updated")
-                            completion()
+                            self.measurementStreamStorage.accessStorage {storage in
+                                try? storage.updateVersion(for: self.sessionUUID, to: updateData.version)
+                                Log.info("Notes successfully updated")
+                                completion()
+                            }
                         case .failure(let error):
                             Log.info("Failed updating session while updating notes: \(error.localizedDescription)")
                             completion()
@@ -106,7 +110,7 @@ class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDel
             }
         }
     }
-    
+
     func getNotes(completion: @escaping ([Note]) -> Void) {
         measurementStreamStorage.accessStorage { [self] storage in
             do {
@@ -116,7 +120,7 @@ class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDel
             }
         }
     }
-    
+
     func fetchSpecifiedNote(number: Int, completion: @escaping (Note) -> Void) {
         measurementStreamStorage.accessStorage { [self] storage in
             do {
@@ -130,7 +134,7 @@ class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDel
 
 // MARK: Internal methods
 extension NotesHandlerDefault {
-    private func fetchSession(storage: HiddenCoreDataMeasurementStreamStorage,completion: @escaping (SessionEntity) -> Void) {
+    private func fetchSession(storage: HiddenCoreDataMeasurementStreamStorage, completion: @escaping (SessionEntity) -> Void) {
         do {
             completion(try storage.getExistingSession(with: sessionUUID))
         } catch {

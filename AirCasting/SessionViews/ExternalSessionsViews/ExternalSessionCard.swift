@@ -80,7 +80,7 @@ private extension ExternalSessionCard {
     
     func pollutionChart(thresholds: [SensorThreshold]) -> some View {
         return VStack() {
-            ChartView(thresholds: thresholds, stream: $selectedStream, session: ChartViewModel.Session.externalSession(session))
+            ChartView(thresholds: .init(value: thresholds), stream: $selectedStream, session: ChartViewModel.Session.externalSession(session))
             .foregroundColor(.aircastingGray)
                 .font(Fonts.semiboldHeading2)
         }
@@ -96,7 +96,7 @@ private extension ExternalSessionCard {
                 ForEach(streams, id : \.id) { stream in
                     if let threshold = thresholds.threshold(for: stream.sensorName ?? "") {
                         SingleMeasurementView(stream: stream,
-                                              threshold: threshold,
+                                              threshold: .init(value: threshold),
                                               selectedStream: $selectedStream,
                                               isCollapsed: .constant(true),
                                               measurementPresentationStyle: .showValues,
