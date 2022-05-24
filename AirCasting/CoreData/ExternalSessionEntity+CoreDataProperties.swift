@@ -80,39 +80,27 @@ extension ExternalSessionEntity {
     }
 
     var pm2Stream: MeasurementStreamEntity? {
-        let match = measurementStreams?.first(where: { (stream) -> Bool in
-            (stream as? MeasurementStreamEntity)?.sensorName?.contains("PM2.5") ?? false
-        })
-        let pm2Stream = match as? MeasurementStreamEntity
-        return pm2Stream
+        streamWithSensorNameContaining("PM2.5")
     }
     var pm10Stream: MeasurementStreamEntity? {
-        let match = measurementStreams?.first(where: { (stream) -> Bool in
-            (stream as? MeasurementStreamEntity)?.sensorName?.contains("PM10") ?? false
-        })
-        let pm10Stream = match as? MeasurementStreamEntity
-        return pm10Stream
+        streamWithSensorNameContaining("PM10")
     }
     var FStream: MeasurementStreamEntity? {
-        let match = measurementStreams?.first(where: { (stream) -> Bool in
-            (stream as? MeasurementStreamEntity)?.measurementShortType == "F"
-        })
-        let FStream = match as? MeasurementStreamEntity
-        return FStream
+        streamWithType("F")
     }
     var HStream: MeasurementStreamEntity? {
-        let match = measurementStreams?.first(where: { (stream) -> Bool in
-            (stream as? MeasurementStreamEntity)?.measurementShortType == "RH"
-        })
-        let HStream = match as? MeasurementStreamEntity
-        return HStream
+        streamWithType("RH")
     }
     var dbStream: MeasurementStreamEntity? {
-        let match = measurementStreams?.first(where: { (stream) -> Bool in
-            (stream as? MeasurementStreamEntity)?.measurementShortType == "db"
-        })
-        let dbStream = match as? MeasurementStreamEntity
-        return dbStream
+        streamWithType("db")
+    }
+    
+    private func streamWithType(_ type: String) -> MeasurementStreamEntity? {
+        allStreams.first(where: { $0.measurementShortType == type })
+    }
+    
+    private func streamWithSensorNameContaining(_ parameterName: String) -> MeasurementStreamEntity? {
+        allStreams.first(where: { $0.sensorName?.contains(parameterName) ?? false })
     }
 }
 
