@@ -153,31 +153,39 @@ class CompleteScreenViewModel: ObservableObject {
             try streamsDownloader.downloadStreams(with: session.id, for: currentSensor) { result in
                 switch result {
                 case .success(let downloadedStreams):
-                    // TODO: - FIX Thresholds and Improve this part of code
-                    // TODO: Compare strings and get threshold value, example - comment below
-                    // let vl = MeasurementStream.init(sensorName: .pm1, sensorPackageName: "").thresholdVeryLow
-                    let sessionStream = downloadedStreams.map({ PartialExternalSession.Stream(id: $0.streamId,
-                                                                                     unitName: "microgram per cubic meter",
-                                                                                     unitSymbol: $0.sensorUnit,
-                                                                                     measurementShortType: "PM",
-                                                                                     measurementType: "",
-                                                                                     sensorName: $0.sensorName,
-                                                                                     sensorPackageName: "",
-                                                                                     thresholdsValues: .init(veryLow: Int32(0),
-                                                                                                             low: Int32(30),
-                                                                                                             medium: Int32(40),
-                                                                                                             high: Int32(50),
-                                                                                                             veryHigh: Int32(120)))})
+                    
+                    // TODO: - FIX Thresholds, get those values from backend not from our hardcoded struct
+                    #warning("🚨 FIX Thresholds 🚨")
+                    let streamHardcodedData = [MeasurementStream(sensorName: .f, sensorPackageName: ""),
+                                               MeasurementStream(sensorName: .pm1, sensorPackageName: ""),
+                                               MeasurementStream(sensorName: .pm10, sensorPackageName: ""),
+                                               MeasurementStream(sensorName: .pm2_5, sensorPackageName: ""),
+                                               MeasurementStream(sensorName: .rh, sensorPackageName: "")]
+                    
+                    let sessionStream = downloadedStreams.map({ stream -> PartialExternalSession.Stream in
+                        let streamLocalData = streamHardcodedData.first(where: { Self.getSensorName($0.sensorName ?? "") == Self.getSensorName(stream.sensorName)})
+                        return PartialExternalSession.Stream(id: stream.streamId,
+                                                             unitName: streamLocalData?.unitName ?? "",
+                                                             unitSymbol: stream.sensorUnit,
+                                                             measurementShortType: streamLocalData?.measurementShortType ?? "",
+                                                             measurementType: streamLocalData?.measurementType ?? "",
+                                                             sensorName: stream.sensorName,
+                                                             sensorPackageName: "",
+                                                             thresholdsValues: .init(veryLow: streamLocalData?.thresholdVeryLow ?? 0,
+                                                                                     low: streamLocalData?.thresholdLow ?? 0,
+                                                                                     medium: streamLocalData?.thresholdMedium ?? 0,
+                                                                                     high: streamLocalData?.thresholdHigh ?? 0,
+                                                                                     veryHigh: streamLocalData?.thresholdVeryHigh ?? 0))})
                     self.session.stream = []
                     sessionStream.forEach { self.session.stream.append($0) }
-                    Log.error("Completed downloading missing streams.")
+                    Log.info("Completed downloading missing streams.")
                     self.getMeasurementsAndDisplayData()
                 case .failure(let error):
                     Log.error("Something went wrong when downoading missing streams. \(error.localizedDescription)")
                 }
             }
         } catch {
-            Log.info("Something went wrong when downoading missing streams. \(error.localizedDescription)")
+            Log.error("Something went wrong when downoading missing streams. \(error.localizedDescription)")
         }
         return
     }
