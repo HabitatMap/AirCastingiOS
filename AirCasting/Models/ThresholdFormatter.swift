@@ -7,7 +7,6 @@ import SwiftUI
 import Charts
 
 final class ThresholdFormatter: ObservableObject {
-    
     enum TemperatureUnit {
         case fahrenheit
         case celsius
@@ -115,5 +114,3 @@ final class ThresholdFormatter: ObservableObject {
 
     private func convertToInt(_ value: String) -> Int32 { Int32(value) ?? 0 }
 }
-
-
