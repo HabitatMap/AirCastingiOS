@@ -7,13 +7,13 @@ struct ChartView: View {
     @ObservedObject private var thresholds: ABMeasurementsViewThreshold
     @StateObject private var viewModel: ChartViewModel
     @Binding private var stream: MeasurementStreamEntity?
-    
-    init(thresholds: ABMeasurementsViewThreshold, stream: Binding<MeasurementStreamEntity?>, session: ChartViewModel.Session) {
+
+    init(thresholds: ABMeasurementsViewThreshold, stream: Binding<MeasurementStreamEntity?>, session: Sessionable) {
         self.thresholds = thresholds
         self._stream = .init(projectedValue: stream)
         self._viewModel = .init(wrappedValue: .init(session: session, stream: stream.wrappedValue))
     }
-    
+
     var body: some View {
         UIKitChartView(thresholds: thresholds.value,
                        viewModel: viewModel)
@@ -30,7 +30,7 @@ struct ChartView: View {
             endTime
         }
     }
-    
+
     var startTime: some View {
         let formatter = DateFormatters.SessionCartView.pollutionChartDateFormatter
 
@@ -48,7 +48,7 @@ struct ChartView: View {
         let string = formatter.string(from: end)
         return Text(string)
     }
-    
+
     func descriptionText(stream: MeasurementStreamEntity?) -> some View {
         guard let stream = stream else { return Text("") }
         if let session = stream.session {

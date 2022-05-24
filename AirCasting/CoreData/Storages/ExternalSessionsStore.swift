@@ -7,35 +7,34 @@ import CoreLocation
 
 protocol ExternalSessionsStore {
     func createExternalSession(session: ExternalSessionWithStreamsAndMeasurements, completion: @escaping (Result<Void, Error>) -> Void)
-    func doesSessionExist(uuid: String) -> Bool
-    func deleteSession(uuid: String, completion: @escaping (Result<Void, Error>) -> Void)
+    func doesSessionExist(uuid: SessionUUID) -> Bool
+    func deleteSession(uuid: SessionUUID, completion: @escaping (Result<Void, Error>) -> Void)
 }
 
 struct DefaultExternalSessionsStore: ExternalSessionsStore {
     private let context: NSManagedObjectContext
-    
+
     init(context: NSManagedObjectContext) {
         self.context = context
     }
-    
+
     func createExternalSession(session: ExternalSessionWithStreamsAndMeasurements, completion: @escaping (Result<Void, Error>) -> Void) {
         enum CreatingExternalSessionError: Error {
             case sessionAlreadyExists
         }
-        
+
         context.perform {
             do {
                 guard (try? context.existingExternalSession(uuid: session.uuid)) == nil else {
                     throw CreatingExternalSessionError.sessionAlreadyExists
                 }
-                
+
                 let sessionEntity = newSessionEntity()
                 updateSessionsParams(sessionEntity, session: session)
                 session.streams.forEach { stream in
                     addStream(stream, to: sessionEntity)
                 }
-                
-                
+
                 try context.save()
                 completion(.success(()))
             } catch {
@@ -43,16 +42,16 @@ struct DefaultExternalSessionsStore: ExternalSessionsStore {
             }
         }
     }
-    
-    func doesSessionExist(uuid: String) -> Bool {
+
+    func doesSessionExist(uuid: SessionUUID) -> Bool {
         var result: Bool = false
         context.performAndWait {
             result = (try? context.existingExternalSession(uuid: uuid)) != nil
         }
         return result
     }
-    
-    func deleteSession(uuid: String, completion: @escaping (Result<Void, Error>) -> Void) {
+
+    func deleteSession(uuid: SessionUUID, completion: @escaping (Result<Void, Error>) -> Void) {
         context.perform {
             do {
                 let session = try context.existingExternalSession(uuid: uuid)
@@ -64,7 +63,7 @@ struct DefaultExternalSessionsStore: ExternalSessionsStore {
             }
         }
     }
-    
+
     private func addStream(_ stream: ExternalSessionWithStreamsAndMeasurements.Stream, to session: ExternalSessionEntity) {
         let measurementStream = MeasurementStreamEntity(context: context)
         updateMeasurementStreamParams(measurementStream, stream: stream)
@@ -72,7 +71,7 @@ struct DefaultExternalSessionsStore: ExternalSessionsStore {
         addThresholds(for: measurementStream)
         session.addToMeasurementStreams(measurementStream)
     }
-    
+
     private func addMeasurements(_ measurements: [ExternalSessionWithStreamsAndMeasurements.Measurement], to stream: MeasurementStreamEntity) {
         measurements.forEach { measurement in
             let newMeasurement = MeasurementEntity(context: context)
@@ -82,21 +81,21 @@ struct DefaultExternalSessionsStore: ExternalSessionsStore {
             stream.addToMeasurements(newMeasurement)
         }
     }
-    
+
     private func addThresholds(for stream: MeasurementStreamEntity) {
         guard !doesSensorThresholdExist(sensorName: stream.sensorName) else { return }
         guard let sensorName = stream.sensorName else {
             Log.error("Tried to create threshold for stream with no sensor name")
             return
         }
-        
+
         createThreshold(sensorName: sensorName, thresholdValues: ThresholdsValue(veryLow: stream.thresholdVeryLow, low: stream.thresholdLow, medium: stream.thresholdMedium, high: stream.thresholdHigh, veryHigh: stream.thresholdVeryHigh))
     }
-    
+
     private func doesSensorThresholdExist(sensorName: String?) -> Bool {
         (try? context.existingObject(sensorName: sensorName ?? "")) != nil
     }
-    
+
     private func createThreshold(sensorName: String, thresholdValues: ThresholdsValue) {
         let threshold: SensorThreshold = SensorThreshold(context: context)
         threshold.sensorName = sensorName
@@ -106,14 +105,14 @@ struct DefaultExternalSessionsStore: ExternalSessionsStore {
         threshold.thresholdHigh = thresholdValues.high
         threshold.thresholdVeryHigh = thresholdValues.veryHigh
     }
-    
+
     private func newSessionEntity() -> ExternalSessionEntity {
         let sessionEntity = ExternalSessionEntity(context: context)
         let uiState = UIStateEntity(context: context)
         uiState.externalSession = sessionEntity
         return sessionEntity
     }
-    
+
     private func updateSessionsParams(_ entity: ExternalSessionEntity, session: ExternalSessionWithStreamsAndMeasurements) {
         entity.uuid = session.uuid
         entity.name = session.name
@@ -123,7 +122,7 @@ struct DefaultExternalSessionsStore: ExternalSessionsStore {
         entity.endTime = session.endTime
         entity.provider = session.provider
     }
-    
+
     private func updateMeasurementStreamParams(_ newStream: MeasurementStreamEntity, stream: ExternalSessionWithStreamsAndMeasurements.Stream) {
         newStream.sensorName = stream.sensorName
         newStream.sensorPackageName = stream.sensorPackageName
