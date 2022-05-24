@@ -72,7 +72,7 @@ private extension ExternalSessionCard {
         ExternalSessionHeader(session: session) {
             withAnimation {
                 isCollapsed.toggle()
-                uiStateHandler.toggleCardExpanded(sessionUUID: session.uuid, isSessionExternal: true)
+                uiStateHandler.toggleCardExpanded(sessionUUID: session.uuid)
             }
         }
     }
