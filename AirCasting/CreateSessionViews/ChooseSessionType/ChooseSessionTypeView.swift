@@ -98,7 +98,11 @@ struct ChooseSessionTypeView: View {
                         viewModel.setSearchAndFollow(using: new)
                     })) {
                         CreatingSessionFlowRootView {
-                            SearchView()
+                            SearchView(isSearchAndFollowLinkActive: .init(get: {
+                                viewModel.isSearchAndFollowLinkActive
+                            }, set: { new in
+                                viewModel.setSearchAndFollow(using: new)
+                            }))
                         }
                     }
                     .fullScreenCover(isPresented: .init(get: {
@@ -204,7 +208,11 @@ struct ChooseSessionTypeView: View {
                                     viewModel.setSearchAndFollow(using: new)
                                 })) {
                                     CreatingSessionFlowRootView {
-                                        SearchView()
+                                        SearchView(isSearchAndFollowLinkActive: .init(get: {
+                                            viewModel.isSearchAndFollowLinkActive
+                                        }, set: { new in
+                                            viewModel.setSearchAndFollow(using: new)
+                                        }))
                                     }
                                 }
                         }

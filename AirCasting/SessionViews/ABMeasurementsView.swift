@@ -66,7 +66,7 @@ struct _ABMeasurementsView: View {
                     HStack {
                         streamsToShow.count != 1 ? Spacer() : nil
                         ForEach(streamsToShow.filter({ !$0.gotDeleted }), id : \.self) { stream in
-                            if let threshold = thresholds.value.threshold(for: stream) {
+                            if let threshold = thresholds.value.threshold(for: stream.sensorName ?? "") {
                                 SingleMeasurementView(stream: stream,
                                                       threshold: .init(value: threshold),
                                                       selectedStream: $selectedStream,

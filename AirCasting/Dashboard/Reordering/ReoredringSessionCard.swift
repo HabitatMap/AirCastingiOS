@@ -50,7 +50,7 @@ private extension ReoredringSessionCard {
             HStack {
                 session.sortedStreams!.count != 1 ? Spacer() : nil
                 ForEach(session.sortedStreams!.filter({ !$0.gotDeleted }), id : \.self) { stream in
-                    if let threshold = thresholds.threshold(for: stream) {
+                    if let threshold = thresholds.threshold(for: stream.sensorName ?? "") {
                         SingleMeasurementView(stream: stream,
                                               threshold: .init(value: threshold),
                                               selectedStream: .constant(nil),

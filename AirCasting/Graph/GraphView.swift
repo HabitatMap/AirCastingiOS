@@ -38,7 +38,7 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                 .padding(.horizontal)
            
             if isProceeding(session: session) {
-                if let threshold = thresholds.threshold(for: selectedStream) {
+                if let threshold = thresholds.threshold(for: selectedStream?.sensorName ?? "") {
                     if let selectedStream = selectedStream {
                         ZStack(alignment: .topLeading) {
                             Graph(stream: selectedStream,

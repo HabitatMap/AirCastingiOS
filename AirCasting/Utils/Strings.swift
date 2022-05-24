@@ -242,6 +242,7 @@ struct Strings {
                                                               comment: "")
         static let lastMinuteMeasurement: String = NSLocalizedString("Last minute measurement",
                                                                      comment: "")
+        static let keyboardToolbarDoneButton: String = NSLocalizedString("Done", comment: "")
     }
     
     enum Thresholds {
@@ -957,6 +958,8 @@ struct Strings {
         static let chart: String = NSLocalizedString("chart", comment: "")
         static let lastMeasurement = NSLocalizedString("Last measurement", comment: "")
         static let confirmationButtonTitle: String = NSLocalizedString("Follow Session", comment: "")
+        static let followedSessionButtonTitle: String = NSLocalizedString("Followed", comment: "")
+        static let followingSessionButtonTitle: String = NSLocalizedString("Following...", comment: "")
         static let noStreamsDescription = NSLocalizedString("No streams available for this session", comment: "")
         static let failedDownloadAlertTitle = NSLocalizedString("Session download failed", comment: "")
         static let failedDownloadAlertMessage = NSLocalizedString("Please try again later.", comment: "")
@@ -1040,6 +1043,8 @@ struct Strings {
         static let cardsTitle: String = NSLocalizedString("Sessions showing %@ of %@ results",
                                                               comment: "")
         static let sessionsText: String = NSLocalizedString("Sessions",
+                                                              comment: "")
+        static let finishText: String = NSLocalizedString("Finish",
                                                               comment: "")
     }
     
