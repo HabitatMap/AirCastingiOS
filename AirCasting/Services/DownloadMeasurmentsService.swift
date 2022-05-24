@@ -118,8 +118,7 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
                     let session: SessionEntity = try context.newOrExisting(uuid: output.uuid)
                     try UpdateSessionParamsService().updateSessionsParams(session: session, output: output)
                     try self.removeOldService.removeOldestMeasurements(in: context,
-                                                                       from: sessionUUID,
-                                                                       which: isExternal)
+                                                                       from: sessionUUID)
                 } else {
                     Log.info("Processing external session response")
                     let session = try context.existingExternalSession(uuid: sessionUUID)
@@ -136,8 +135,7 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
                         }
                     })
                     try self.removeOldService.removeOldestMeasurements(in: context,
-                                                                       from: sessionUUID,
-                                                                       which: isExternal)
+                                                                       from: sessionUUID)
                 }
                 try context.save()
             } catch let error as UpdateSessionParamsService.Error {
