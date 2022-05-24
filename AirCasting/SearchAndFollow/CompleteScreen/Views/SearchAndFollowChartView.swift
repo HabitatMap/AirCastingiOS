@@ -6,7 +6,6 @@ import Charts
 
 struct SearchAndFollowChartView: UIViewRepresentable {
     @StateObject var viewModel: SearchAndFollowChartViewModel
-    private var onStreamChangeAction: (() -> ())? = nil
     
     typealias UIViewType = UI_PollutionChart
     
