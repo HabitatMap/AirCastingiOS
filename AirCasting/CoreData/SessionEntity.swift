@@ -152,7 +152,3 @@ extension SessionEntity {
     @NSManaged public func addToNotes(_ value: NoteEntity)
 
 }
-
-extension SessionEntity: Sessionable {
-    var isExternal: Bool { false } 
-}
