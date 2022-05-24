@@ -24,12 +24,10 @@ struct ChartMeasurementsFilterDefault: ChartMeasurementsFilter {
         guard convertedName != .OpenAQ else { return measurements }
         guard let firstElement = measurements.reversed().first?.time else { return [] }
         switch convertedName {
-        case .AirBeam:
+        case .AirBeam, .PurpleAir:
             // AB stands for AirBeam
-            return clearABData(using: measurements, hourToRemove: firstElement)
-        case .PurpleAir:
             // PA stands for PurpleAir
-            return clearPAData(using: measurements, hourToRemove: firstElement)
+            return clearData(using: measurements, hourToRemove: firstElement)
         case .undefined:
             Log.info("Missing sensor name in the chart VM")
             return []
@@ -41,17 +39,7 @@ struct ChartMeasurementsFilterDefault: ChartMeasurementsFilter {
     
     private func hoursForRemoval(using element: Date) -> Int { Calendar.current.component(.hour, from: element) }
     
-    private func clearPAData(using measurements: [MeasurementType], hourToRemove: Date) -> [MeasurementType] {
-        var updatedMeasurements = measurements
-        for (index, item) in updatedMeasurements.enumerated().reversed() {
-            if Calendar.current.component(.hour, from: item.time) == hoursForRemoval(using: hourToRemove) && Calendar.current.component(.minute, from: item.time) != 00 {
-                updatedMeasurements.remove(at: index)
-            }
-        }
-        return measurements
-    }
-    
-    private func clearABData(using measurements: [MeasurementType], hourToRemove: Date) -> [MeasurementType]{
+    private func clearData(using measurements: [MeasurementType], hourToRemove: Date) -> [MeasurementType] {
         var updatedMeasurements = measurements
         for (index, item) in updatedMeasurements.enumerated().reversed() {
             if Calendar.current.component(.hour, from: item.time) == hoursForRemoval(using: hourToRemove) {
