@@ -38,12 +38,13 @@ extension ExternalSessionEntity {
     }
     
     public var sortedStreams: [MeasurementStreamEntity] {
-        [FStream,
+        let abStreams = [FStream,
          pm1Stream,
          pm2Stream,
          pm10Stream,
-         HStream,
-         ozoneStream].compactMap { $0 }
+         HStream].compactMap { $0 }
+        
+        return abStreams.isEmpty ? allStreams : abStreams
     }
 }
 
@@ -98,10 +99,6 @@ extension ExternalSessionEntity {
     
     var dbStream: MeasurementStreamEntity? {
         streamWithType("db")
-    }
-    
-    var ozoneStream: MeasurementStreamEntity? {
-        streamWithType("O3")
     }
     
     private func streamWithType(_ type: String) -> MeasurementStreamEntity? {
