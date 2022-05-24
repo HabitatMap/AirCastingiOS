@@ -4,18 +4,18 @@
 import SwiftUI
 
 struct ChartView: View {
-    private let thresholds: [SensorThreshold]
+    @ObservedObject private var thresholds: ABMeasurementsViewThreshold
     @StateObject private var viewModel: ChartViewModel
     @Binding private var stream: MeasurementStreamEntity?
     
-    init(thresholds: [SensorThreshold], stream: Binding<MeasurementStreamEntity?>, session: ChartViewModel.Session) {
+    init(thresholds: ABMeasurementsViewThreshold, stream: Binding<MeasurementStreamEntity?>, session: ChartViewModel.Session) {
         self.thresholds = thresholds
         self._stream = .init(projectedValue: stream)
         self._viewModel = .init(wrappedValue: .init(session: session, stream: stream.wrappedValue))
     }
     
     var body: some View {
-        UIKitChartView(thresholds: thresholds,
+        UIKitChartView(thresholds: thresholds.value,
                        viewModel: viewModel)
             .frame(height: 120)
             .disabled(true)
