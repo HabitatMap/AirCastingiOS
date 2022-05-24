@@ -36,9 +36,9 @@ struct SessionCardView: View {
         self.session = session
         self.sessionCartViewModel = sessionCartViewModel
         self.thresholds = thresholds
-        
+
         self._isCollapsed = .init(initialValue: !(session.userInterface?.expandedCard ?? false))
-        
+
         let mapDataSource = ConveringStatisticsDataSourceDecorator<MapStatsDataSource>(dataSource: MapStatsDataSource(), stream: nil)
         self._mapStatsDataSource = .init(wrappedValue: mapDataSource)
         self._mapStatsViewModel = .init(wrappedValue: SessionCardView.createStatsContainerViewModel(dataSource: mapDataSource, session: session))
@@ -148,7 +148,7 @@ private extension SessionCardView {
                             session: session,
                             isCollapsed: $isCollapsed,
                             selectedStream: $selectedStream,
-                            thresholds: thresholds,
+                            thresholds: .init(value: thresholds),
                             measurementPresentationStyle: shouldShowValues)
     }
 
@@ -191,9 +191,9 @@ private extension SessionCardView {
     }
 
     func pollutionChart(thresholds: [SensorThreshold]) -> some View {
-        return VStack() {
-            ChartView(thresholds: thresholds, stream: $selectedStream, session: session)
-            .foregroundColor(.aircastingGray)
+        VStack() {
+            ChartView(thresholds: .init(value: thresholds), stream: $selectedStream, session: session)
+                .foregroundColor(.aircastingGray)
                 .font(Fonts.semiboldHeading2)
         }
     }
@@ -233,7 +233,7 @@ private extension SessionCardView {
 
     private var mapNavigationLink: some View {
          let mapView = AirMapView(session: session,
-                                  thresholds: thresholds,
+                                  thresholds: .init(value: thresholds),
                                   statsContainerViewModel: _mapStatsViewModel,
                                   showLoadingIndicator: $showLoadingIndicator,
                                   selectedStream: $selectedStream)

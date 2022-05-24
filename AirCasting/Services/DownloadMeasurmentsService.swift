@@ -33,36 +33,36 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
             self?.updateAllSessionsMeasurements()
         }
     }
-    
+
     func downloadMeasurements(for sessionUUID: SessionUUID, lastSynced: Date, completion: @escaping () -> Void) {
         lastFetchCancellableTask = fixedSessionService.getFixedMeasurement(uuid: sessionUUID, lastSync: lastSynced) { [weak self] in
             self?.processServiceResponse($0, for: sessionUUID, isExternal: false, completion: completion)
         }
     }
-    
+
     private func updateMeasurements(for sessionUUID: SessionUUID, lastSynced: Date, isExternal: Bool) {
         lastFetchCancellableTask = fixedSessionService.getFixedMeasurement(uuid: sessionUUID, lastSync: lastSynced) { [weak self] in
             self?.processServiceResponse($0, for: sessionUUID, isExternal: isExternal)
         }
     }
-    
+
     func updateAllSessionsMeasurements() {
         getAllSessionsData() { [unowned self] sessionsData in
             Log.info("Scheduled measurements update triggered (session count: \(sessionsData.count))")
             sessionsData.forEach { self.updateMeasurements(for: $0.uuid, lastSynced: $0.lastSynced, isExternal: $0.isExternal) }
         }
     }
-    
+
     private func getAllSessionsData(completion: @escaping ([(uuid: SessionUUID, lastSynced: Date, isExternal: Bool)]) -> Void) {
         let request: NSFetchRequest<SessionEntity> = SessionEntity.fetchRequest()
         request.predicate = NSPredicate(format: "followedAt != NULL")
-        
+
         let externalSessionsRequest = ExternalSessionEntity.fetchRequest()
         externalSessionsRequest.predicate = NSPredicate(value: true)
-        
+
         let context = persistenceController.editContext
         var returnData: [(uuid: SessionUUID, lastSynced: Date, isExternal: Bool)] = []
-        
+
         context.perform { [unowned self] in
             do {
                 let sessions = try context.fetch(request)
@@ -76,7 +76,7 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
             }
         }
     }
-    
+
     private func getSyncDate(for session: SessionEntity?) -> Date {
         let lastMeasurementTime = session?.allStreams
             .compactMap(\.lastMeasurementTime)
@@ -85,7 +85,7 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
         let syncDate = SyncHelper().calculateLastSync(sessionEndTime: session?.endTime, lastMeasurementTime: lastMeasurementTime)
         return syncDate
     }
-    
+
     private func getExternalSessionSyncDate(for session: ExternalSessionEntity?) -> Date {
         let lastMeasurementTime = session?.allStreams
             .compactMap(\.lastMeasurementTime)
@@ -94,7 +94,7 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
         let syncDate = SyncHelper().calculateLastSync(sessionEndTime: session?.endTime, lastMeasurementTime: lastMeasurementTime)
         return syncDate
     }
-    
+
     private func processServiceResponse(_ response: Result<FixedSession.FixedMeasurementOutput, Error>,
                                         for sessionUUID: SessionUUID, isExternal: Bool, completion: () -> Void = {}) {
         switch response {
@@ -105,7 +105,7 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
             Log.warning("Failed to fetch measurements for uuid '\(sessionUUID). Session external: \(isExternal)' \(error)")
         }
     }
-    
+
     private func processServiceOutput(_ output: FixedSession.FixedMeasurementOutput,
                                       for sessionUUID: SessionUUID,
                                       isExternal: Bool) {
@@ -152,17 +152,17 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
 }
 
 class SyncHelper {
-    
+
     func calculateLastSync(sessionEndTime: Date?, lastMeasurementTime: Date?) -> Date {
         let measurementTimeframe: Double = 24 * 60 * 60 // 24 hours in seconds
-        
+
         guard let sessionEndTime = sessionEndTime else { return DateBuilder.getFakeUTCDate() }
         let sessionEndTimeSeconds = sessionEndTime.timeIntervalSince1970
         let last24hours = DateBuilder.getDateWithTimeIntervalSince1970((sessionEndTimeSeconds - measurementTimeframe))
-        
+
         guard let lastMeasurementTime = lastMeasurementTime else { return last24hours }
         let lastMeasurementSeconds = lastMeasurementTime.timeIntervalSince1970
-        
+
         return ((sessionEndTimeSeconds - lastMeasurementSeconds) < measurementTimeframe) ? lastMeasurementTime : last24hours
     }
 }
