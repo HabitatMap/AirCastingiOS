@@ -4,6 +4,8 @@
 import Foundation
 
 struct MeasurementsDownloaderResultModel: Decodable {
+    let streamId: Int
+    let sensorUnit: String
     let sensorName: String
     let measurements: [Measurement]
     

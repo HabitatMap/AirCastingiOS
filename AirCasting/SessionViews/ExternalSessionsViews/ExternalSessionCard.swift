@@ -28,7 +28,7 @@ struct ExternalSessionCard: View {
     @State private var isMapButtonActive = false
     @EnvironmentObject var reorderButton: ReorderButton
     @EnvironmentObject var searchAndFollowButton: SearchAndFollowButton
-    
+
     @StateObject private var mapStatsDataSource: ConveringStatisticsDataSourceDecorator<MapStatsDataSource>
     @StateObject private var mapStatsViewModel: StatisticsContainerViewModel
 
@@ -46,7 +46,7 @@ struct ExternalSessionCard: View {
     }
 
     var streams: [MeasurementStreamEntity] {
-        session.allStreams
+        session.sortedStreams
     }
 
     var body: some View {

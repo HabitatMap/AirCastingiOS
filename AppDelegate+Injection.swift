@@ -209,6 +209,7 @@ extension Resolver: ResolverRegistering {
             let context = Resolver.resolve(PersistenceController.self).editContext
             return DefaultExternalSessionsStore(context: context)
         }
+        main.register { AirBeamMeasurementsDownloaderDefault() as AirBeamMeasurementsDownloader }
     }
     
     // MARK: - Composition helpers

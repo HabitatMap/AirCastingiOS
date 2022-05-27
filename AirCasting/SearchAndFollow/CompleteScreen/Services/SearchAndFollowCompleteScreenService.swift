@@ -13,6 +13,7 @@ protocol SearchAndFollowCompleteScreenService {
 struct DefaultSearchAndFollowCompleteScreenService: SearchAndFollowCompleteScreenService {
     @Injected private var service: StreamDownloader
     @Injected private var externalSessionsStore: ExternalSessionsStore
+    @Injected private var uiStore: UIStorage
     
     func createExternalSession(from session: PartialExternalSession, with downloadedStreamsWithMeasurements: [StreamWithMeasurements]) -> ExternalSessionWithStreamsAndMeasurements {
         .init(uuid: session.uuid,
@@ -58,6 +59,15 @@ struct DefaultSearchAndFollowCompleteScreenService: SearchAndFollowCompleteScree
     }
     
     func followSession(session: ExternalSessionWithStreamsAndMeasurements, completion: @escaping (Result<Void, Error>) -> Void) {
-        externalSessionsStore.createExternalSession(session: session, completion: completion)
+        externalSessionsStore.createExternalSession(session: session) { [uiStore] in
+            switch $0 {
+            case .success:
+                uiStore.accessStorage { store in
+                    store.giveHighestOrder(to: session.uuid)
+                    completion(.success(()))
+                }
+            case .failure(let error): completion(.failure(error))
+            }
+        }
     }
 }

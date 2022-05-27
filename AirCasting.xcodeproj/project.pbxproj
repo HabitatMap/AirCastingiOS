@@ -468,6 +468,7 @@
 		FAB1D4A627FB28C8004F531D /* MapDownloaderSensorType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB1D4A527FB28C8004F531D /* MapDownloaderSensorType.swift */; };
 		FAB34933281AB208001F6E58 /* URLRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB34932281AB208001F6E58 /* URLRequest.swift */; };
 		FAB34935281AC28E001F6E58 /* AirBeamStreamPrefix.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB34934281AC28E001F6E58 /* AirBeamStreamPrefix.swift */; };
+		FAC3B67A283B96480095D915 /* ChartMeasurementsFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC3B679283B96480095D915 /* ChartMeasurementsFilter.swift */; };
 		FAF3B4DD28057A3300F0F4B0 /* SensorType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF3B4DC28057A3300F0F4B0 /* SensorType.swift */; };
 		FAF3B4E128057EC100F0F4B0 /* MeasurementType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF3B4E028057EC100F0F4B0 /* MeasurementType.swift */; };
 		FAF3B4E528058B6700F0F4B0 /* ProtectedScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF3B4E428058B6700F0F4B0 /* ProtectedScreen.swift */; };
@@ -770,6 +771,7 @@
 		B33DB5752686161300ED1344 /* SensorName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorName.swift; sourceTree = "<group>"; };
 		B34D4647275B12A000194E51 /* CrashlyticsLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrashlyticsLogger.swift; sourceTree = "<group>"; };
 		B35E04C2278C931700227D8D /* AppDelegate+Injection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppDelegate+Injection.swift"; sourceTree = "<group>"; };
+		B3620725283F97750079C052 /* AirCasting v6.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AirCasting v6.xcdatamodel"; sourceTree = "<group>"; };
 		B367A589274E9EAA004C605B /* FirebaseFeatureFlagProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseFeatureFlagProvider.swift; sourceTree = "<group>"; };
 		B367A58A274E9EAA004C605B /* DefaultFeatureFlagProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultFeatureFlagProvider.swift; sourceTree = "<group>"; };
 		B367A58C274E9EAA004C605B /* FeatureFlagProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeatureFlagProvider.swift; sourceTree = "<group>"; };
@@ -952,6 +954,7 @@
 		FAB1D4A527FB28C8004F531D /* MapDownloaderSensorType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapDownloaderSensorType.swift; sourceTree = "<group>"; };
 		FAB34932281AB208001F6E58 /* URLRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLRequest.swift; sourceTree = "<group>"; };
 		FAB34934281AC28E001F6E58 /* AirBeamStreamPrefix.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirBeamStreamPrefix.swift; sourceTree = "<group>"; };
+		FAC3B679283B96480095D915 /* ChartMeasurementsFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartMeasurementsFilter.swift; sourceTree = "<group>"; };
 		FAF3B4DC28057A3300F0F4B0 /* SensorType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorType.swift; sourceTree = "<group>"; };
 		FAF3B4E028057EC100F0F4B0 /* MeasurementType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementType.swift; sourceTree = "<group>"; };
 		FAF3B4E428058B6700F0F4B0 /* ProtectedScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProtectedScreen.swift; sourceTree = "<group>"; };
@@ -1111,6 +1114,7 @@
 				3367B61627C924B000930E62 /* SearchCompleteScreenMapView.swift */,
 				338CA6D027CD2D9200505331 /* SearchAndFollowChartView.swift */,
 				338CA6D227CD2F1900505331 /* SearchAndFollowChartViewModel.swift */,
+				FAC3B679283B96480095D915 /* ChartMeasurementsFilter.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -3107,6 +3111,7 @@
 				AC8CFF4125E5095600FB2918 /* Textfield.swift in Sources */,
 				DD123EC227BD2C53001083C3 /* SearchMapViewModel.swift in Sources */,
 				B3FD77C3267C94AF00E97CC2 /* SessionDownloadService.swift in Sources */,
+				FAC3B67A283B96480095D915 /* ChartMeasurementsFilter.swift in Sources */,
 				AC7EB37625A6FB3A00A7F2AF /* AirCastingApp.swift in Sources */,
 				33AC7D5C273C1B9700EB1274 /* StandaloneSessionCardView.swift in Sources */,
 				AC4A6A6C267CB3D40001F639 /* GraphRenderers.swift in Sources */,
@@ -3633,13 +3638,14 @@
 		338C30E625F10BFE00E0305C /* AirCasting.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				B3620725283F97750079C052 /* AirCasting v6.xcdatamodel */,
 				3340624528181376004DA4DA /* AirCasting v5.xcdatamodel */,
 				DD2DDBA927B517CD00807011 /* AirCasting v4.xcdatamodel */,
 				338FE86027AAB0F1006148DA /* AirCasting v3.xcdatamodel */,
 				DDF551D427985AAB009D1347 /* AirCasting v2.xcdatamodel */,
 				338C30E725F10BFE00E0305C /* AirCasting.xcdatamodel */,
 			);
-			currentVersion = 3340624528181376004DA4DA /* AirCasting v5.xcdatamodel */;
+			currentVersion = B3620725283F97750079C052 /* AirCasting v6.xcdatamodel */;
 			path = AirCasting.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

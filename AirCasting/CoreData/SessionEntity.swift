@@ -36,7 +36,6 @@ public class SessionEntity: NSManagedObject, Identifiable {
     @NSManaged public var urlLocation: String?
     @NSManaged public var version: Int16
     @NSManaged public var changesCount: Int32
-    @NSManaged public var rowOrder: Int64
     
     // UserInterface state
     @NSManaged public var userInterface: UIStateEntity?
