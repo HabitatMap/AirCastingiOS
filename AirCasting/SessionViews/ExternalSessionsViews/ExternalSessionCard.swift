@@ -36,7 +36,7 @@ struct ExternalSessionCard: View {
     }
 
     var streams: [MeasurementStreamEntity] {
-        session.allStreams
+        session.sortedStreams
     }
 
     var body: some View {
@@ -96,7 +96,7 @@ private extension ExternalSessionCard {
                     if let threshold = thresholds.threshold(for: stream.sensorName ?? "") {
                         SingleMeasurementView(stream: stream,
                                               threshold: .init(value: threshold),
-                                              selectedStream: .constant(nil),
+                                              selectedStream: $selectedStream,
                                               isCollapsed: .constant(true),
                                               measurementPresentationStyle: .showValues,
                                               isDormant: false)
