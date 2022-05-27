@@ -58,7 +58,7 @@ struct SessionCardView: View {
     }
 
     var hasStreams: Bool {
-        session.allStreams != nil || session.allStreams != []
+        session.allStreams != []
     }
 
     var body: some View {
@@ -170,7 +170,6 @@ private extension SessionCardView {
             isMapButtonActive = true
             reorderButton.isHidden = true
             searchAndFollowButton.isHidden = true
-            Log.info("\(reorderButton)")
         } label: {
             Text(Strings.SessionCartView.map)
                 .font(Fonts.semiboldHeading2)

@@ -26,6 +26,7 @@
 		336A909527A48CA400851100 /* ReorderingSessionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 336A909427A48CA400851100 /* ReorderingSessionHeader.swift */; };
 		336A909727A492A000851100 /* DropViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 336A909627A492A000851100 /* DropViewDelegate.swift */; };
 		336A909927A4946400851100 /* ReorderingDashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 336A909827A4946400851100 /* ReorderingDashboardViewModel.swift */; };
+		336F86D0282E98E500FEFD61 /* ExternalSessionMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 336F86CF282E98E500FEFD61 /* ExternalSessionMapView.swift */; };
 		3375E8CF279185430019A5DE /* TemperatureConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3375E8CE279185430019A5DE /* TemperatureConverter.swift */; };
 		3375E8D22791E7100019A5DE /* ZipArchive in Frameworks */ = {isa = PBXBuildFile; productRef = 3375E8D12791E7100019A5DE /* ZipArchive */; };
 		3375E8D42791EDC50019A5DE /* CLLocationCoordinate2D.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3375E8D32791EDC50019A5DE /* CLLocationCoordinate2D.swift */; };
@@ -507,6 +508,7 @@
 		336A909427A48CA400851100 /* ReorderingSessionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReorderingSessionHeader.swift; sourceTree = "<group>"; };
 		336A909627A492A000851100 /* DropViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropViewDelegate.swift; sourceTree = "<group>"; };
 		336A909827A4946400851100 /* ReorderingDashboardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReorderingDashboardViewModel.swift; sourceTree = "<group>"; };
+		336F86CF282E98E500FEFD61 /* ExternalSessionMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalSessionMapView.swift; sourceTree = "<group>"; };
 		3375E8CE279185430019A5DE /* TemperatureConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemperatureConverter.swift; sourceTree = "<group>"; };
 		3375E8D32791EDC50019A5DE /* CLLocationCoordinate2D.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLLocationCoordinate2D.swift; sourceTree = "<group>"; };
 		3375E8D52791EFA70019A5DE /* FileZipper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileZipper.swift; sourceTree = "<group>"; };
@@ -1151,6 +1153,7 @@
 			children = (
 				33F604AE2824174E00B48C63 /* ExternalSessionCard.swift */,
 				33F604B02824180900B48C63 /* ExternalSessionHeader.swift */,
+				336F86CF282E98E500FEFD61 /* ExternalSessionMapView.swift */,
 			);
 			path = ExternalSessionsViews;
 			sourceTree = "<group>";
@@ -2849,6 +2852,7 @@
 				AC489B5C2603614E00CEEC48 /* MoreInfoPopupView.swift in Sources */,
 				336A909927A4946400851100 /* ReorderingDashboardViewModel.swift in Sources */,
 				AC25C6D62817DA250091C714 /* LogoutController.swift in Sources */,
+				336F86D0282E98E500FEFD61 /* ExternalSessionMapView.swift in Sources */,
 				33A7FF2127C5160A00A138D6 /* StaticSessionHeader.swift in Sources */,
 				DDD24D9526A8569400D4A327 /* EmailForgotPasswordController.swift in Sources */,
 				DD2DDBAE27B5450100807011 /* UIStorage.swift in Sources */,
