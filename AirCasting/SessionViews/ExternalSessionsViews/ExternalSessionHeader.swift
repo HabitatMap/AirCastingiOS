@@ -5,7 +5,7 @@ import SwiftUI
 
 struct ExternalSessionHeader: View {
     var session: Sessionable
-    let thresholds: [SensorThreshold]
+    @ObservedObject var thresholds: ABMeasurementsViewThreshold
     @Binding var selectedStream: MeasurementStreamEntity?
     let expandingAction: (() -> Void)?
     @State var chevronIndicator = "chevron.down"
@@ -86,7 +86,7 @@ private extension ExternalSessionHeader {
             HStack {
                 streams.count != 1 ? Spacer() : nil
                 ForEach(streams, id : \.id) { stream in
-                    if let threshold = thresholds.threshold(for: stream.sensorName ?? "") {
+                    if let threshold = thresholds.value.threshold(for: stream.sensorName ?? "") {
                         SingleMeasurementView(stream: stream,
                                               threshold: SingleMeasurementViewThreshold(value: threshold),
                                               selectedStream: $selectedStream,

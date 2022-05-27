@@ -84,7 +84,7 @@ struct ExternalSessionCard: View {
 
 private extension ExternalSessionCard {
     var header: some View {
-        ExternalSessionHeader(session: session, thresholds: thresholds, selectedStream: $selectedStream) {
+        ExternalSessionHeader(session: session, thresholds: .init(value: thresholds), selectedStream: $selectedStream) {
             withAnimation {
                 isCollapsed.toggle()
                 uiStateHandler.toggleCardExpanded(sessionUUID: session.uuid)

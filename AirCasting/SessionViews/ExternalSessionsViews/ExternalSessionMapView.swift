@@ -21,7 +21,7 @@ struct ExternalSessionMapView: View {
     
     var body: some View {
         VStack(alignment: .trailing) {
-            ExternalSessionHeader(session: session, thresholds: thresholds.value, selectedStream: $selectedStream, expandingAction: nil)
+            ExternalSessionHeader(session: session, thresholds: thresholds, selectedStream: $selectedStream, expandingAction: nil)
                 .padding([.bottom, .leading, .trailing])
             if let threshold = thresholds.value.threshold(for: selectedStream?.sensorName ?? "") {
                 ZStack(alignment: .topLeading) {
