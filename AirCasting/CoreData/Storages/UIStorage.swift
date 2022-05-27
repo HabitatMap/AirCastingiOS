@@ -88,6 +88,7 @@ final class HiddenCoreDataUIStorage: UIStorageContextUpdate {
                 Log.error("Trying to update order for nonexistent session [\(sessionUUID)]")
                 return
             }
+            createUIStateIfNeededForSessionable(session)
             let highestOrder = try context.getHighestRowOrder()
             session.userInterface?.rowOrder = (highestOrder ?? 0) + 1
             try context.save()
