@@ -36,9 +36,9 @@ struct SessionCardView: View {
         self.session = session
         self.sessionCartViewModel = sessionCartViewModel
         self.thresholds = thresholds
-        
+
         self._isCollapsed = .init(initialValue: !(session.userInterface?.expandedCard ?? false))
-        
+
         let mapDataSource = ConveringStatisticsDataSourceDecorator<MapStatsDataSource>(dataSource: MapStatsDataSource(), stream: nil)
         self._mapStatsDataSource = .init(wrappedValue: mapDataSource)
         self._mapStatsViewModel = .init(wrappedValue: SessionCardView.createStatsContainerViewModel(dataSource: mapDataSource, session: session))
@@ -85,10 +85,10 @@ struct SessionCardView: View {
             }
         }
         .onAppear {
-            selectDefaultStreamIfNeeded(streams: session.sortedStreams ?? [])
+            selectDefaultStreamIfNeeded(streams: session.sortedStreams)
         }
         .onChange(of: session.sortedStreams) { newValue in
-            selectDefaultStreamIfNeeded(streams: newValue ?? [])
+            selectDefaultStreamIfNeeded(streams: newValue)
         }
         .onChange(of: selectedStream, perform: { [weak graphStatsDataSource, weak mapStatsDataSource] newStream in
             graphStatsDataSource?.stream = newStream
@@ -192,7 +192,7 @@ private extension SessionCardView {
 
     func pollutionChart(thresholds: [SensorThreshold]) -> some View {
         VStack() {
-            ChartView(thresholds: .init(value: thresholds), stream: $selectedStream, session: ChartViewModel.Session.session(session))
+            ChartView(thresholds: .init(value: thresholds), stream: $selectedStream, session: session)
                 .foregroundColor(.aircastingGray)
                 .font(Fonts.semiboldHeading2)
         }

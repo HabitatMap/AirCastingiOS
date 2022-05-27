@@ -5,25 +5,29 @@ import Foundation
 import SwiftUI
 
 class SearchAndFollowChartViewModel: ObservableObject {
-    struct ChartDot {
-        let value: Double
-        let color: Color
-    }
+    
     struct ChartMeasurement {
         let value: Double
         let time: Date
+    }
+    
+    struct ChartDot {
+        let value: Double
+        let color: Color
     }
     
     @Published var entries: [ChartDot] = []
     
     let numberOfEntries = 9
     
-    func generateEntries(with measurements: [ChartMeasurement], thresholds: ThresholdsValue) -> (Date?, Date?) {
+    func generateEntries(with measurements: [ChartMeasurement], thresholds: ThresholdsValue, using sensor: ChartMeasurementsFilter) -> (Date?, Date?) {
         var times: [Date] = []
         var buffer: [ChartMeasurement] = []
         clearEntries()
         
-        for measurement in measurements.reversed() {
+        let updatedMeasurements = sensor.filter(measurements: measurements)
+        
+        for measurement in updatedMeasurements.reversed() {
             if entries.count == 9 {
                 break
             }
@@ -50,7 +54,7 @@ class SearchAndFollowChartViewModel: ObservableObject {
     
     private func addAverage(for buffer: [ChartMeasurement], times: inout [Date], thresholds: ThresholdsValue) {
         guard !buffer.isEmpty else { return }
-        let average = (buffer.map { $0.value }.reduce(0, +)) / Double(buffer.count)
+        let average = round((buffer.map { $0.value }.reduce(0, +)) / Double(buffer.count))
         
         times.append(buffer.last!.time.roundedUpToHour)
         entries.append(ChartDot(value: Double(average), color: thresholds.colorFor(value: average)))

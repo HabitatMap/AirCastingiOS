@@ -44,14 +44,25 @@ final class HiddenCoreDataUIStorage: UIStorageContextUpdate {
     }
     
     func cardStateToggle(for sessionUUID: SessionUUID) throws {
+        if let sessionEntity = try? context.existingExternalSession(uuid: sessionUUID) {
+            createUIStateIfNeededForExternalSession(entity: sessionEntity)
+            sessionEntity.userInterface?.expandedCard.toggle()
+            return
+        }
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
         createUIStateIfNeeded(entity: sessionEntity)
         sessionEntity.userInterface?.expandedCard.toggle()
     }
     
     func changeStream(for sessionUUID: SessionUUID, stream: String) throws {
-        let sessionEntity = try context.existingSession(uuid: sessionUUID)
-        createUIStateIfNeeded(entity: sessionEntity)
+        if let sessionEntity = try? context.existingSession(uuid: sessionUUID) {
+            createUIStateIfNeeded(entity: sessionEntity)
+            sessionEntity.userInterface?.sensorName = stream
+            return
+        }
+        
+        let sessionEntity = try context.existingExternalSession(uuid: sessionUUID)
+        createUIStateIfNeededForExternalSession(entity: sessionEntity)
         sessionEntity.userInterface?.sensorName = stream
     }
     
@@ -59,6 +70,13 @@ final class HiddenCoreDataUIStorage: UIStorageContextUpdate {
         if entity.userInterface == nil {
             let uiState = UIStateEntity(context: context)
             uiState.session = entity
+        }
+    }
+    
+    private func createUIStateIfNeededForExternalSession(entity: ExternalSessionEntity) {
+        if entity.userInterface == nil {
+            let uiState = UIStateEntity(context: context)
+            uiState.externalSession = entity
         }
     }
     

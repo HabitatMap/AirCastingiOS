@@ -5,9 +5,9 @@ import SwiftUI
 
 struct DropViewDelegate: DropDelegate {
     
-    let sessionAtDropDestination: SessionEntity
-    @Binding var currentlyDraggedSession: SessionEntity?
-    @Binding var sessions: [SessionEntity]
+    let sessionAtDropDestination: Sessionable
+    @Binding var currentlyDraggedSession: Sessionable?
+    @Binding var sessions: [Sessionable]
     @Binding var changedView: Bool
     
     func dropEntered(info: DropInfo) {
@@ -38,7 +38,7 @@ struct DropViewDelegate: DropDelegate {
 
 struct DropOutsideOfGridDelegate: DropDelegate {
     
-    @Binding var currentlyDraggedSession: SessionEntity?
+    @Binding var currentlyDraggedSession: Sessionable?
     
     func dropUpdated(info: DropInfo) -> DropProposal? {
         DropProposal(operation: .move)

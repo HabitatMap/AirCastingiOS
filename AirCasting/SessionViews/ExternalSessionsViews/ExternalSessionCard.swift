@@ -7,8 +7,8 @@ import Resolver
 
 class ExternalSessionCardViewModel: ObservableObject {
     @Injected private var store: ExternalSessionsStore
-    
-    func unfollowTapped(sessionUUID: String) {
+
+    func unfollowTapped(sessionUUID: SessionUUID) {
         store.deleteSession(uuid: sessionUUID) { result in
             switch result {
             case .success():
@@ -26,24 +26,24 @@ struct ExternalSessionCard: View {
     @State private var isCollapsed: Bool
     @State private var selectedStream: MeasurementStreamEntity?
     @ObservedObject var viewModel = ExternalSessionCardViewModel()
-    
+
     @Injected private var uiStateHandler: SessionCardUIStateHandler
-    
+
     init(session: ExternalSessionEntity, thresholds: [SensorThreshold]) {
         self.session = session
         self.thresholds = thresholds
         self._isCollapsed = .init(initialValue: !(session.uiState?.expandedCard ?? false))
     }
-    
+
     var streams: [MeasurementStreamEntity] {
-        session.measurementStreams
+        session.allStreams
     }
-    
+
     var body: some View {
         sessionCard
-            .onAppear(perform: { selectDefaultStreamIfNeeded(streams: session.measurementStreams) })
+            .onAppear(perform: { selectDefaultStreamIfNeeded(streams: session.allStreams) })
     }
-    
+
     var sessionCard: some View {
         VStack(alignment: .leading, spacing: 5) {
             header
@@ -72,20 +72,19 @@ private extension ExternalSessionCard {
         ExternalSessionHeader(session: session) {
             withAnimation {
                 isCollapsed.toggle()
-                // TODO: Handle toggling uiState for external session
-                //uiStateHandler.toggleCardExpanded(sessionUUID: SessionUUID(stringLiteral: session.uuid))
+                uiStateHandler.toggleCardExpanded(sessionUUID: session.uuid)
             }
         }
     }
-    
+
     func pollutionChart(thresholds: [SensorThreshold]) -> some View {
         return VStack() {
-            ChartView(thresholds: .init(value: thresholds), stream: $selectedStream, session: ChartViewModel.Session.externalSession(session))
+            ChartView(thresholds: .init(value: thresholds), stream: $selectedStream, session: session)
             .foregroundColor(.aircastingGray)
                 .font(Fonts.semiboldHeading2)
         }
     }
-    
+
     private var measurements: some View {
         VStack(alignment: .leading, spacing: 5) {
             Text(Strings.SessionCart.lastMinuteMeasurement)
@@ -107,7 +106,7 @@ private extension ExternalSessionCard {
             }
         }
     }
-    
+
     func selectDefaultStreamIfNeeded(streams: [MeasurementStreamEntity]) {
         if selectedStream == nil {
             if let newStream = session.streamWith(sensorName: session.uiState?.sensorName ?? "") {
@@ -116,7 +115,7 @@ private extension ExternalSessionCard {
             selectedStream = streams.first
         }
     }
-    
+
     func displayButtons() -> some View {
         HStack() {
             unFollowButton
@@ -124,18 +123,10 @@ private extension ExternalSessionCard {
         }.padding(.top, 10)
         .buttonStyle(GrayButtonStyle())
     }
-    
+
     private var unFollowButton: some View {
         Button(Strings.SessionCartView.unfollow) {
             viewModel.unfollowTapped(sessionUUID: session.uuid)
         }.buttonStyle(UnFollowButtonStyle())
     }
 }
-
-#if DEBUG
-struct ExternalSessionCard_Previews: PreviewProvider {
-    static var previews: some View {
-        ReoredringSessionCard(session: .mock, thresholds: [.mock])
-    }
-}
-#endif

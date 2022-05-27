@@ -9,7 +9,10 @@
 /* Begin PBXBuildFile section */
 		33050871276B568D00D18C69 /* ShareSessionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33050870276B568D00D18C69 /* ShareSessionViewModel.swift */; };
 		33050876276B7A4400D18C69 /* ShareSessionStreamOptionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33050875276B7A4400D18C69 /* ShareSessionStreamOptionViewModel.swift */; };
+		331D32D528328A92001A6414 /* Sessionable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331D32D428328A92001A6414 /* Sessionable.swift */; };
 		331EA80A25E32094009DEFDB /* ConfirmCreatingSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331EA80925E32094009DEFDB /* ConfirmCreatingSessionView.swift */; };
+		332020A6283CF6D1003E07F3 /* ExternalSessionEntity+Sessionable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332020A5283CF6D1003E07F3 /* ExternalSessionEntity+Sessionable.swift */; };
+		332020A8283CF724003E07F3 /* SessionEntity+Sessionable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332020A7283CF724003E07F3 /* SessionEntity+Sessionable.swift */; };
 		332F521425FA38430047236D /* MicrophoneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332F521325FA38430047236D /* MicrophoneManager.swift */; };
 		334062442816B4B6004DA4DA /* EditLocationlessSessionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 334062432816B4B6004DA4DA /* EditLocationlessSessionViewModel.swift */; };
 		33406247281821FA004DA4DA /* ExternalSessionsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33406246281821FA004DA4DA /* ExternalSessionsStore.swift */; };
@@ -464,6 +467,7 @@
 		FAB1D4A627FB28C8004F531D /* MapDownloaderSensorType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB1D4A527FB28C8004F531D /* MapDownloaderSensorType.swift */; };
 		FAB34933281AB208001F6E58 /* URLRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB34932281AB208001F6E58 /* URLRequest.swift */; };
 		FAB34935281AC28E001F6E58 /* AirBeamStreamPrefix.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB34934281AC28E001F6E58 /* AirBeamStreamPrefix.swift */; };
+		FAC3B67A283B96480095D915 /* ChartMeasurementsFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC3B679283B96480095D915 /* ChartMeasurementsFilter.swift */; };
 		FAF3B4DD28057A3300F0F4B0 /* SensorType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF3B4DC28057A3300F0F4B0 /* SensorType.swift */; };
 		FAF3B4E128057EC100F0F4B0 /* MeasurementType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF3B4E028057EC100F0F4B0 /* MeasurementType.swift */; };
 		FAF3B4E528058B6700F0F4B0 /* ProtectedScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF3B4E428058B6700F0F4B0 /* ProtectedScreen.swift */; };
@@ -485,7 +489,10 @@
 		278FFE79104B8F74B61CE3A2 /* Pods-AirCasting.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AirCasting.release.xcconfig"; path = "Target Support Files/Pods-AirCasting/Pods-AirCasting.release.xcconfig"; sourceTree = "<group>"; };
 		33050870276B568D00D18C69 /* ShareSessionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSessionViewModel.swift; sourceTree = "<group>"; };
 		33050875276B7A4400D18C69 /* ShareSessionStreamOptionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSessionStreamOptionViewModel.swift; sourceTree = "<group>"; };
+		331D32D428328A92001A6414 /* Sessionable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sessionable.swift; sourceTree = "<group>"; };
 		331EA80925E32094009DEFDB /* ConfirmCreatingSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmCreatingSessionView.swift; sourceTree = "<group>"; };
+		332020A5283CF6D1003E07F3 /* ExternalSessionEntity+Sessionable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExternalSessionEntity+Sessionable.swift"; sourceTree = "<group>"; };
+		332020A7283CF724003E07F3 /* SessionEntity+Sessionable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SessionEntity+Sessionable.swift"; sourceTree = "<group>"; };
 		332F521325FA38430047236D /* MicrophoneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrophoneManager.swift; sourceTree = "<group>"; };
 		334062432816B4B6004DA4DA /* EditLocationlessSessionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditLocationlessSessionViewModel.swift; sourceTree = "<group>"; };
 		3340624528181376004DA4DA /* AirCasting v5.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AirCasting v5.xcdatamodel"; sourceTree = "<group>"; };
@@ -944,6 +951,7 @@
 		FAB1D4A527FB28C8004F531D /* MapDownloaderSensorType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapDownloaderSensorType.swift; sourceTree = "<group>"; };
 		FAB34932281AB208001F6E58 /* URLRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLRequest.swift; sourceTree = "<group>"; };
 		FAB34934281AC28E001F6E58 /* AirBeamStreamPrefix.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirBeamStreamPrefix.swift; sourceTree = "<group>"; };
+		FAC3B679283B96480095D915 /* ChartMeasurementsFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartMeasurementsFilter.swift; sourceTree = "<group>"; };
 		FAF3B4DC28057A3300F0F4B0 /* SensorType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorType.swift; sourceTree = "<group>"; };
 		FAF3B4E028057EC100F0F4B0 /* MeasurementType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementType.swift; sourceTree = "<group>"; };
 		FAF3B4E428058B6700F0F4B0 /* ProtectedScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProtectedScreen.swift; sourceTree = "<group>"; };
@@ -1046,17 +1054,20 @@
 				336F86CC282E64B400FEFD61 /* Storages */,
 				33D07A232825963000F25B4C /* ExternalSessionEntity+CoreDataClass.swift */,
 				33D07A242825963000F25B4C /* ExternalSessionEntity+CoreDataProperties.swift */,
+				332020A5283CF6D1003E07F3 /* ExternalSessionEntity+Sessionable.swift */,
 				B3FD77C7267C997800E97CC2 /* PersistenceController+Database.swift */,
 				4F15548A263C44AF00FF3208 /* Session.swift */,
 				4F15548E263C819C00FF3208 /* MeasurementEntity.swift */,
 				4F3CDF212652B58100596CD3 /* Measurement.swift */,
 				AC524A902615D8620061AD45 /* SessionEntity.swift */,
+				332020A7283CF724003E07F3 /* SessionEntity+Sessionable.swift */,
 				AC524A922615D8620061AD45 /* MeasurementStreamEntity.swift */,
 				338C30E125F1044B00E0305C /* PersistenceController.swift */,
 				AC524A992615E3600061AD45 /* NSManagedObjectContext+Utils.swift */,
 				ACC8838B265284AA00C5DB70 /* CoreDataHook.swift */,
 				338C30E625F10BFE00E0305C /* AirCasting.xcdatamodeld */,
 				4F1D57D826454E3700F250AC /* MeasurementStream.swift */,
+				331D32D428328A92001A6414 /* Sessionable.swift */,
 			);
 			path = CoreData;
 			sourceTree = "<group>";
@@ -1100,6 +1111,7 @@
 				3367B61627C924B000930E62 /* SearchCompleteScreenMapView.swift */,
 				338CA6D027CD2D9200505331 /* SearchAndFollowChartView.swift */,
 				338CA6D227CD2F1900505331 /* SearchAndFollowChartViewModel.swift */,
+				FAC3B679283B96480095D915 /* ChartMeasurementsFilter.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -2781,6 +2793,7 @@
 				B32D08A2267A4949006C97ED /* LogErrorPublisher.swift in Sources */,
 				DDC5F5882719694800F1F9D8 /* ShadowImages.swift in Sources */,
 				DD430B022670F3B300F1BF2E /* NearAirDescription.swift in Sources */,
+				331D32D528328A92001A6414 /* Sessionable.swift in Sources */,
 				ACCEB2192763A2230040140B /* SDSyncCompleteViewModel.swift in Sources */,
 				33F604A728227FD700B48C63 /* ExternalSessionWithStreamsAndMeasurements.swift in Sources */,
 				DD80AE2727BA74A100D9B123 /* SearchPickerService.swift in Sources */,
@@ -2859,6 +2872,7 @@
 				334062442816B4B6004DA4DA /* EditLocationlessSessionViewModel.swift in Sources */,
 				B3FFBA2B273DC0690095BA4A /* RefreshControl.swift in Sources */,
 				DDDCEC3B27D0DA7100B3757C /* GeoSquare.swift in Sources */,
+				332020A8283CF724003E07F3 /* SessionEntity+Sessionable.swift in Sources */,
 				AC5832DA25B196DD008C5DD5 /* Graph.swift in Sources */,
 				AC4A6A6A267CB3890001F639 /* AirCastingGraph.swift in Sources */,
 				DD197FA727BE439200340672 /* MapDownloaderUnitSymbol.swift in Sources */,
@@ -3092,10 +3106,12 @@
 				AC8CFF4125E5095600FB2918 /* Textfield.swift in Sources */,
 				DD123EC227BD2C53001083C3 /* SearchMapViewModel.swift in Sources */,
 				B3FD77C3267C94AF00E97CC2 /* SessionDownloadService.swift in Sources */,
+				FAC3B67A283B96480095D915 /* ChartMeasurementsFilter.swift in Sources */,
 				AC7EB37625A6FB3A00A7F2AF /* AirCastingApp.swift in Sources */,
 				33AC7D5C273C1B9700EB1274 /* StandaloneSessionCardView.swift in Sources */,
 				AC4A6A6C267CB3D40001F639 /* GraphRenderers.swift in Sources */,
 				338CA6CF27CD13E900505331 /* StaticSingleStreamView.swift in Sources */,
+				332020A6283CF6D1003E07F3 /* ExternalSessionEntity+Sessionable.swift in Sources */,
 				ACD01F922600A3C800B8F65F /* RootAppView.swift in Sources */,
 				DD28047B26B3D7730060F55E /* BluetoothConnector.swift in Sources */,
 				ACCEB2232763A2230040140B /* BackendSyncCompletedView.swift in Sources */,
@@ -3316,7 +3332,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 5;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_ASSET_PATHS = "\"AirCasting/Preview Content\"";
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
@@ -3345,7 +3361,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_ASSET_PATHS = "\"AirCasting/Preview Content\"";
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
@@ -3434,7 +3450,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_ASSET_PATHS = "\"AirCasting/Preview Content\"";
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;

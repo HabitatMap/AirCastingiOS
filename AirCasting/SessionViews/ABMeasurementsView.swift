@@ -49,11 +49,11 @@ struct _ABMeasurementsView: View {
     @EnvironmentObject var userSettings: UserSettings
     
     private var streamsToShow: [MeasurementStreamEntity] {
-        return session.sortedStreams ?? []
+        return session.sortedStreams
     }
     
     private var hasAnyMeasurements: Bool {
-        (session.sortedStreams ?? []).filter { $0.latestValue != nil }.count > 0
+        (session.sortedStreams).filter { $0.latestValue != nil }.count > 0
     }
     
     var body: some View {

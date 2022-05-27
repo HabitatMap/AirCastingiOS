@@ -5,13 +5,13 @@ import Foundation
 import Resolver
 
 class ReorderingDashboardViewModel: ObservableObject {
-    @Published var sessions: [SessionEntity]
+    @Published var sessions: [Sessionable]
     var thresholds: [SensorThreshold]
     
-    @Published var currentlyDraggedSession: SessionEntity?
+    @Published var currentlyDraggedSession: Sessionable?
     private let measurementStreamStorage: MeasurementStreamStorage
     
-    init(sessions: [SessionEntity], thresholds: [SensorThreshold]) {
+    init(sessions: [Sessionable], thresholds: [SensorThreshold]) {
         self.sessions = sessions
         self.measurementStreamStorage = Resolver.resolve()
         self.thresholds = thresholds
@@ -20,6 +20,7 @@ class ReorderingDashboardViewModel: ObservableObject {
     func finish() {
         measurementStreamStorage.accessStorage { storage in
             self.sessions.reversed().enumerated().forEach { index, session in
+                // TODO: implement new logic for saving new sessions order
                 storage.updateSessionOrder(index + 1, for: session.uuid)
             }
         }
