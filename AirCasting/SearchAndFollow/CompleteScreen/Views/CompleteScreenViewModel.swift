@@ -171,7 +171,7 @@ class CompleteScreenViewModel: ObservableObject {
                                                              measurementShortType: streamLocalData?.measurementShortType ?? "",
                                                              measurementType: streamLocalData?.measurementType ?? "",
                                                              sensorName: stream.sensorName,
-                                                             sensorPackageName: "",
+                                                             sensorPackageName: currentSensor.rawName,
                                                              thresholdsValues: .init(veryLow: streamLocalData?.thresholdVeryLow ?? 0,
                                                                                      low: streamLocalData?.thresholdLow ?? 0,
                                                                                      medium: streamLocalData?.thresholdMedium ?? 0,
