@@ -96,9 +96,9 @@ class CompleteScreenViewModel: ObservableObject {
     
     func selectedStream(with id: Int) {
         if let stream = externalSessionWithStreams?.streams.first(where: { $0.id == id }) {
+            assignValues(with: stream)
             defineChartRange(with: stream)
         }
-        selectedStream = id
     }
     
     func xMarkTapped() {
@@ -181,11 +181,11 @@ class CompleteScreenViewModel: ObservableObject {
                     Log.info("Completed downloading missing streams.")
                     self.getMeasurementsAndDisplayData()
                 case .failure(let error):
-                    Log.error("Something went wrong when downoading missing streams. \(error.localizedDescription)")
+                    Log.error("Something went wrong when downloading missing streams. \(error.localizedDescription)")
                 }
             }
         } catch {
-            Log.error("Something went wrong when downoading missing streams. \(error.localizedDescription)")
+            Log.error("Something went wrong when downloading missing streams. \(error.localizedDescription)")
         }
         return
     }
@@ -224,13 +224,6 @@ class CompleteScreenViewModel: ObservableObject {
                     }
                 }
             }
-        }
-    }
-    
-    func streamChanged() {
-        if let stream = self.externalSessionWithStreams?.streams.first(where: { $0.id == selectedStream }) {
-            assignValues(with: stream)
-            defineChartRange(with: stream)
         }
     }
     
