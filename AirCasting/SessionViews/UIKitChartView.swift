@@ -113,7 +113,7 @@ class UI_PollutionChart: UIView {
         lineChartView.noDataText = Strings.Chart.emptyChartMessage
         lineChartView.noDataTextAlignment = .center
         
-        //disable zooming
+        // disable zooming
         lineChartView.setScaleEnabled(false)
     }
     
