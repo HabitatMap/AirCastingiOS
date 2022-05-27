@@ -25,8 +25,6 @@ struct ChartMeasurementsFilterDefault: ChartMeasurementsFilter {
         guard let firstElement = measurements.reversed().first?.time else { return [] }
         switch convertedName {
         case .AirBeam, .PurpleAir:
-            // AB stands for AirBeam
-            // PA stands for PurpleAir
             return clearData(using: measurements, hourToRemove: firstElement)
         case .undefined:
             Log.info("Missing sensor name in the chart VM")
@@ -48,7 +46,7 @@ struct ChartMeasurementsFilterDefault: ChartMeasurementsFilter {
             }
             break
         }
-        return measurements
+        return updatedMeasurements
     }
     
     private func getEntriesSensor(using sensor: String) -> EntriesSensor {
