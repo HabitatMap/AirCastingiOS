@@ -157,11 +157,11 @@ class CompleteScreenViewModel: ObservableObject {
 
                     // TODO: - FIX Thresholds, get those values from backend not from our hardcoded struct
                     #warning("🚨 FIX Thresholds 🚨")
-                    let streamHardcodedData = [MeasurementStream(sensorName: .f, sensorPackageName: currentSensor.rawName),
-                                               MeasurementStream(sensorName: .pm1, sensorPackageName: currentSensor.rawName),
-                                               MeasurementStream(sensorName: .pm10, sensorPackageName: currentSensor.rawName),
-                                               MeasurementStream(sensorName: .pm2_5, sensorPackageName: currentSensor.rawName),
-                                               MeasurementStream(sensorName: .rh, sensorPackageName: currentSensor.rawName)]
+                    let streamHardcodedData = [MeasurementStream(sensorName: .f, sensorPackageName: ""),
+                                               MeasurementStream(sensorName: .pm1, sensorPackageName: ""),
+                                               MeasurementStream(sensorName: .pm10, sensorPackageName: ""),
+                                               MeasurementStream(sensorName: .pm2_5, sensorPackageName: ""),
+                                               MeasurementStream(sensorName: .rh, sensorPackageName: "")]
 
                     let sessionStream = downloadedStreams.map({ stream -> PartialExternalSession.Stream in
                         let streamLocalData = streamHardcodedData.first(where: { Self.getSensorName($0.sensorName ?? "") == Self.getSensorName(stream.sensorName)})
@@ -171,7 +171,7 @@ class CompleteScreenViewModel: ObservableObject {
                                                              measurementShortType: streamLocalData?.measurementShortType ?? "",
                                                              measurementType: streamLocalData?.measurementType ?? "",
                                                              sensorName: stream.sensorName,
-                                                             sensorPackageName: "",
+                                                             sensorPackageName: currentSensor.rawName,
                                                              thresholdsValues: .init(veryLow: streamLocalData?.thresholdVeryLow ?? 0,
                                                                                      low: streamLocalData?.thresholdLow ?? 0,
                                                                                      medium: streamLocalData?.thresholdMedium ?? 0,
