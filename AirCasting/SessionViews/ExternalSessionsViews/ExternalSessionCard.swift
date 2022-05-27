@@ -36,7 +36,7 @@ struct ExternalSessionCard: View {
     }
 
     var streams: [MeasurementStreamEntity] {
-        session.allStreams
+        session.sortedStreams
     }
 
     var body: some View {
