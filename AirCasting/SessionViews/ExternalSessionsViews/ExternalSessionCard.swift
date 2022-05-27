@@ -26,7 +26,6 @@ struct ExternalSessionCard: View {
     @State private var isCollapsed: Bool
     @State private var selectedStream: MeasurementStreamEntity?
     @State private var isMapButtonActive = false
-    @State private var showLoadingIndicator = false
     @EnvironmentObject var reorderButton: ReorderButton
     @EnvironmentObject var searchAndFollowButton: SearchAndFollowButton
     
@@ -98,28 +97,6 @@ private extension ExternalSessionCard {
             ChartView(thresholds: .init(value: thresholds), stream: $selectedStream, session: session)
             .foregroundColor(.aircastingGray)
                 .font(Fonts.semiboldHeading2)
-        }
-    }
-
-    private var measurements: some View {
-        VStack(alignment: .leading, spacing: 5) {
-            Text(Strings.SessionCart.lastMinuteMeasurement)
-                .font(Fonts.moderateTitle1)
-                .padding(.bottom, 3)
-            HStack {
-                streams.count != 1 ? Spacer() : nil
-                ForEach(streams, id : \.id) { stream in
-                    if let threshold = thresholds.threshold(for: stream.sensorName ?? "") {
-                        SingleMeasurementView(stream: stream,
-                                              threshold: .init(value: threshold),
-                                              selectedStream: $selectedStream,
-                                              isCollapsed: .constant(true),
-                                              measurementPresentationStyle: .showValues,
-                                              isDormant: false)
-                    }
-                    Spacer()
-                }
-            }
         }
     }
 

@@ -9,12 +9,10 @@ struct SearchCompleteScreenMapView: UIViewRepresentable {
     typealias UIViewType = GMSMapView
     var longitude: CLLocationDegrees
     var latitude: CLLocationDegrees
-    let color: UIColor?
     
-    init(longitude: CLLocationDegrees, latitude: CLLocationDegrees, color: UIColor? = nil) {
+    init(longitude: CLLocationDegrees, latitude: CLLocationDegrees) {
         self.longitude = longitude
         self.latitude = latitude
-        self.color = color
     }
     
     func makeUIView(context: Context) -> GMSMapView {
@@ -38,7 +36,7 @@ struct SearchCompleteScreenMapView: UIViewRepresentable {
             Log.error("One or more of the map styles failed to load. \(error)")
         }
         
-        let mainPoint = UIImage.imageWithColor(color: color ?? UIColor.accentColor, size: CGSize(width: Constants.Map.dotWidth, height: Constants.Map.dotHeight))
+        let mainPoint = UIImage.imageWithColor(color: UIColor.accentColor, size: CGSize(width: Constants.Map.dotWidth, height: Constants.Map.dotHeight))
         
         let dot = GMSMarker()
         dot.icon = mainPoint

@@ -92,15 +92,8 @@ struct GoogleMapView: UIViewRepresentable {
         guard isUserInteracting else { return }
         let thresholdWitness = ThresholdWitness(sensorThreshold: self.threshold)
         
-        if thresholdWitness != context.coordinator.currentThresholdWitness {
-            drawPolyline(uiView, context: context)
-            context.coordinator.currentlyDisplayedPathPoints = pathPoints
-            context.coordinator.currentThresholdWitness = ThresholdWitness(sensorThreshold: threshold)
-            context.coordinator.currentThreshold = threshold
-            context.coordinator.drawHeatmap(uiView)
-        }
-        
-        if pathPoints != context.coordinator.currentlyDisplayedPathPoints {
+        if pathPoints != context.coordinator.currentlyDisplayedPathPoints ||
+            thresholdWitness != context.coordinator.currentThresholdWitness {
             drawPolyline(uiView, context: context)
             context.coordinator.currentlyDisplayedPathPoints = pathPoints
             context.coordinator.currentThresholdWitness = ThresholdWitness(sensorThreshold: threshold)
