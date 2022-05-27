@@ -26,7 +26,7 @@ class ThresholdSettingsViewModel: ObservableObject {
         let stringThresholdValues = [thresholdVeryHigh, thresholdHigh, thresholdMedium, thresholdLow, thresholdVeryLow]
         var newThresholdValues: [Int32] = []
         for value in stringThresholdValues {
-            let convertedValue = formatter.formattedToFahrenheit(for: value)
+            let convertedValue = formatter.formattedValue(for: value)
             newThresholdValues.append(convertedValue)
         }
         let sortedValue = newThresholdValues.sorted { $0 < $1 }

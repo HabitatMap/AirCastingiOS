@@ -163,7 +163,7 @@ struct GoogleMapView: UIViewRepresentable {
     func color(point: PathPoint) -> UIColor {
         guard let thresholds = threshold else { return .white }
         let formatter = ThresholdFormatter(for: thresholds)
-        let measurement = formatter.formattedToFahrenheit(for: point)
+        let measurement = formatter.formattedValue(for: point)
         
         return GoogleMapView.color(value: measurement, threshold: thresholds)
     }

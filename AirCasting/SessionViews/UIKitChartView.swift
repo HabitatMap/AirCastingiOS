@@ -62,7 +62,7 @@ struct UIKitChartView: UIViewRepresentable {
         guard let threshold = thresholds.threshold(for: viewModel.stream) else { return [.aircastingGray] }
         let formatter = ThresholdFormatter(for: threshold)
         for entry in entries {
-            switch formatter.formattedToFahrenheit(for: entry) {
+            switch formatter.formattedValue(for: entry) {
             case threshold.thresholdVeryLow..<threshold.thresholdLow:
                 colors.append(UIColor.aircastingGreen)
             case threshold.thresholdLow..<threshold.thresholdMedium:

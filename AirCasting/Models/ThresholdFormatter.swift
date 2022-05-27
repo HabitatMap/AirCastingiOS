@@ -57,7 +57,7 @@ final class ThresholdFormatter: ObservableObject {
         }
     }
     
-    func formattedToFahrenheit(for averagedValue: Double) -> Int32 {
+    func formattedValue(for averagedValue: Double) -> Int32 {
         switch currentTemperatureUnit {
         case .fahrenheit:
             return Int32(averagedValue)
@@ -66,7 +66,7 @@ final class ThresholdFormatter: ObservableObject {
         }
     }
     
-    func formattedToFahrenheit(for point: PathPoint) -> Int32 {
+    func formattedValue(for point: PathPoint) -> Int32 {
         switch currentTemperatureUnit {
         case .fahrenheit:
             return Int32(point.measurement)
@@ -75,7 +75,7 @@ final class ThresholdFormatter: ObservableObject {
         }
     }
     
-    func formattedToFahrenheit(for entry: ChartDataEntry) -> Int32 {
+    func formattedValue(for entry: ChartDataEntry) -> Int32 {
         switch currentTemperatureUnit {
         case .fahrenheit:
             return Int32(entry.y)
@@ -84,7 +84,7 @@ final class ThresholdFormatter: ObservableObject {
         }
     }
     
-    func formattedToFahrenheit(for value: String) -> Int32 {
+    func formattedValue(for value: String) -> Int32 {
         switch currentTemperatureUnit {
         case .fahrenheit:
             return convertToInt(value)
@@ -93,7 +93,7 @@ final class ThresholdFormatter: ObservableObject {
         }
     }
     
-    func formattedToCelsius(for thresholds: [Float], at index: Int) -> Int {
+    func formattedValue(for thresholds: [Float], at index: Int) -> Int {
         switch currentTemperatureUnit {
         case .fahrenheit:
             return Int(thresholds[index])
