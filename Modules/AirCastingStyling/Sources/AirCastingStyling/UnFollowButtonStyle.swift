@@ -18,7 +18,7 @@ public struct UnFollowButtonStyle: ButtonStyle {
             .background(Color.white)
             .font(.muli(size: 13, weight: .semibold))
             .overlay(
-                RoundedRectangle(cornerRadius: 11)
+                RoundedRectangle(cornerRadius: 14)
                     .stroke(Color.accentColor, lineWidth: 1))
     }
 }
