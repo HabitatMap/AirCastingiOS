@@ -24,12 +24,22 @@ struct CreateAccountView: View {
     @State private var isUsernameBlank = false
     @State private var presentedError: AuthorizationError?
     @State private var alert: AlertInfo?
-    
-    init(completion: @escaping () -> Void) {
+    @State private var isActive: Bool
+
+    init(completion: @escaping () -> Void, isActive: Bool = false) {
+        _isActive = State(initialValue: isActive)
         self.completion = completion
     }
 
     var body: some View {
+        LoadingView(isShowing: $isActive) {
+            contentView
+        }
+    }
+}
+
+private extension CreateAccountView {
+    var contentView: some View {
         GeometryReader { geometry in
             ScrollView {
                 VStack(spacing: 50) {
@@ -92,9 +102,6 @@ struct CreateAccountView: View {
         })
         )
     }
-}
-
-private extension CreateAccountView {
     
     var progressBar: some View {
         ProgressView(value: 0.8)
@@ -135,6 +142,7 @@ private extension CreateAccountView {
             
             if isPasswordCorrect && isEmailCorrect && !isUsernameBlank {
                 #warning("Show progress and lock ui to prevent multiple api calls")
+                isActive = true
                 let userInput = AuthorizationAPI.SignupUserInput(email: email,
                                                                 username: username,
                                                                 password: password,
@@ -156,6 +164,7 @@ private extension CreateAccountView {
                                 presentedError = .other(error)
                             }
                         }
+                        isActive = false
                     }
                 }
             }
