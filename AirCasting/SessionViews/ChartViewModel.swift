@@ -90,6 +90,7 @@ final class ChartViewModel: ObservableObject {
                     if let average = average {
                         entries.append(ChartDataEntry(x: Double(i), y: average))
                     }
+                endOfFirstInterval = intervalEnd
                 }
                 break
             }
