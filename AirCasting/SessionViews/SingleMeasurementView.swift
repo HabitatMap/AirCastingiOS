@@ -14,13 +14,7 @@ struct SingleMeasurementView: View {
     let measurementPresentationStyle: MeasurementPresentationStyle
     let isDormant: Bool
     var value: Double {
-        let measurementValue = isDormant ? stream.averageValue : (stream.latestValue ?? 0)
-        
-        guard !(stream.isTemperature && userSettings.convertToCelsius) else {
-            return TemperatureConverter.calculateCelsius(fahrenheit: measurementValue)
-        }
-        
-        return measurementValue
+        isDormant ? stream.averageValue : (stream.latestValue ?? 0)
     }
     
     var body: some View {
@@ -35,7 +29,8 @@ struct SingleMeasurementView: View {
                     Text(showStreamName())
                         .font(Fonts.systemFont1)
                         .scaledToFill()
-                    if let threshold = threshold, measurementPresentationStyle == .showValues, let formatter = ThresholdFormatter(for: threshold) {
+                    if let threshold = threshold, measurementPresentationStyle == .showValues {
+                        let formatter = Resolver.resolve(ThresholdFormatter.self, args: threshold)
                         HStack(spacing: 3) {
                             MeasurementDotView(value: value, thresholds: threshold)
                             Text("\(Int(value))")
@@ -46,7 +41,7 @@ struct SingleMeasurementView: View {
                         .padding(.horizontal, 9)
                         .overlay(
                             RoundedRectangle(cornerRadius: 8)
-                                .strokeBorder((selectedStream == stream) ? formatter.formattedColor(for: value) : .clear)
+                                .strokeBorder((selectedStream == stream) ? formatter.color(for: value) : .clear)
                         )
                     }
                 }

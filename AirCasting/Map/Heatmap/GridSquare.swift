@@ -3,6 +3,7 @@
 
 import GoogleMaps
 import Foundation
+import Resolver
 
 struct GridSquare {
     private var mapView: GMSMapView! = nil
@@ -48,8 +49,8 @@ struct GridSquare {
         calculateAverage()
         
         guard let averagedValue = averagedValue else { return }
-        let formatter = ThresholdFormatter(for: sensorThreshold)
-        let color: UIColor = GoogleMapView.color(value: formatter.formattedValue(for: averagedValue), threshold: sensorThreshold).withAlphaComponent(0.5)
+        let formatter = Resolver.resolve(ThresholdFormatter.self, args: sensorThreshold)
+        let color: UIColor = GoogleMapView.color(value: formatter.value(from: averagedValue), threshold: sensorThreshold).withAlphaComponent(0.5)
         if color != fillColor {
             fillColor = color
             newColor = true

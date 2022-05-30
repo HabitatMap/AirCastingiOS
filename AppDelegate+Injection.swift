@@ -206,6 +206,10 @@ extension Resolver: ResolverRegistering {
             let context = Resolver.resolve(PersistenceController.self).editContext
             return DefaultThresholdsStore(context: context)
         }
+        
+        // MARK: Unit / value formatting
+        main.register { (_, args) in TemperatureThresholdFormatter(threshold: args()) as ThresholdFormatter }
+        main.register { TemperatureUnitFormatter() as UnitFormatter }
     }
     
     // MARK: - Composition helpers

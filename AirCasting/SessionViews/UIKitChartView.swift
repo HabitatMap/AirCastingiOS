@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Charts
+import Resolver
 
 struct UIKitChartView: UIViewRepresentable {
     let thresholds: [SensorThreshold]
@@ -60,9 +61,9 @@ struct UIKitChartView: UIViewRepresentable {
     private func generateColorsSet(for entries: [ChartDataEntry]) -> [UIColor] {
         var colors: [UIColor] = []
         guard let threshold = thresholds.threshold(for: viewModel.stream) else { return [.aircastingGray] }
-        let formatter = ThresholdFormatter(for: threshold)
+        let formatter = Resolver.resolve(ThresholdFormatter.self, args: threshold)
         for entry in entries {
-            switch formatter.formattedValue(for: entry) {
+            switch formatter.value(from: entry.y) {
             case threshold.thresholdVeryLow..<threshold.thresholdLow:
                 colors.append(UIColor.aircastingGreen)
             case threshold.thresholdLow..<threshold.thresholdMedium:

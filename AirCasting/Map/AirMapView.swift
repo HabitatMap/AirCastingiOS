@@ -87,12 +87,11 @@ struct AirMapView: View {
                         // Statistics container shouldn't be presented in mobile dormant tab
                         if !(session.type == .mobile && session.isActive == false) {
                             StatisticsContainerView(statsContainerViewModel: statsContainerViewModel,
-                                                    threshold: threshold,
-                                                    formatter: .init(for: threshold))
+                                                    threshold: threshold)
                         }
                     }.padding(.bottom)
                     
-                    if let selectedStream = selectedStream, let formatter = ThresholdFormatter(for: threshold) {
+                    if let selectedStream = selectedStream, let formatter = Resolver.resolve(ThresholdFormatter.self, args: threshold) {
                         NavigationLink(destination: ThresholdsSettingsView(thresholdValues: formatter.formattedBinding(),
                                                                            initialThresholds: selectedStream.thresholds,
                                                                            threshold: threshold)) {

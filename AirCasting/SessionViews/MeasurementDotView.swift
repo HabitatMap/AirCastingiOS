@@ -2,6 +2,7 @@
 //
 
 import SwiftUI
+import Resolver
 
 struct MeasurementDotView: View {
     let value: Double
@@ -13,15 +14,7 @@ struct MeasurementDotView: View {
     }
     
     var color: Color {
-        let formatter = ThresholdFormatter(for: thresholds)
-        return formatter.formattedColor(for: value)
+        let formatter = Resolver.resolve(ThresholdFormatter.self, args: thresholds)
+        return formatter.color(for: value)
     }
 }
-
-#if DEBUG
-struct MeasurementDotView_Previews: PreviewProvider {
-    static var previews: some View {
-        MeasurementDotView(value: 15.0, thresholds: .mock)
-    }
-}
-#endif

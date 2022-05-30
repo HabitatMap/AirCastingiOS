@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Resolver
 
 struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsContainerViewModelable {
     
@@ -36,7 +37,8 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                 .padding(.horizontal)
            
             if isProceeding(session: session) {
-                if let threshold = thresholds.threshold(for: selectedStream), let formatter = ThresholdFormatter(for: threshold) {
+                if let threshold = thresholds.threshold(for: selectedStream) {
+                    let formatter = Resolver.resolve(ThresholdFormatter.self, args: threshold)
                     if let selectedStream = selectedStream {
                         ZStack(alignment: .topLeading) {
                             Graph(stream: selectedStream,
@@ -53,8 +55,7 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                             // Statistics container shouldn't be presented in mobile dormant tab
                             if !session.isDormant {
                                 StatisticsContainerView(statsContainerViewModel: statsContainerViewModel,
-                                                        threshold: threshold,
-                                                        formatter: .init(for: threshold))
+                                                        threshold: threshold)
                             }
                         }
                         NavigationLink(destination: ThresholdsSettingsView(thresholdValues: formatter.formattedBinding(),

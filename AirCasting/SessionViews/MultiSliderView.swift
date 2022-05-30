@@ -6,18 +6,18 @@
 //
 
 import SwiftUI
+import Resolver
 
 struct ThresholdsSliderView: View {
-    @ObservedObject var threshold: SensorThreshold
-    
-    var body: some View {
-        MultiSliderView(thresholds: threshold.rawThresholdsBinding, formatter: .init(for: threshold))
-    }
-}
-
-struct MultiSliderView: View {
     @Binding var thresholds: [Float]
-    let formatter: ThresholdFormatter
+    let threshold: SensorThreshold
+    private let formatter: ThresholdFormatter
+    
+    init(threshold: SensorThreshold) {
+        self.threshold = threshold
+        self.formatter = Resolver.resolve(ThresholdFormatter.self, args: threshold)
+        self._thresholds = .init(projectedValue: threshold.rawThresholdsBinding)
+    }
     
     private var thresholdButtonValues: [Float] {
         get {
@@ -92,7 +92,7 @@ struct MultiSliderView: View {
     func labels(geometry: GeometryProxy) -> some View {
         let y = geometry.frame(in: .local).size.height / 2
         return ForEach(thresholds.indices, id: \.self) { index in
-            let ints = formatter.formattedValue(for: thresholds, at: index)
+            let ints = formatter.formattedNumerics()[index]
             Text("\(ints)")
                 .position(x: calculateXAxisSize(thresholdValue: thresholds[index], geometry: geometry),
                           y: y)

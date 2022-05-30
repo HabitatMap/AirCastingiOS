@@ -47,7 +47,7 @@ struct Graph: UIViewRepresentable {
         self.thresholds = thresholds
         self.isAutozoomEnabled = isAutozoomEnabled
         self.notesHandler = Resolver.resolve(NotesHandler.self, args: stream.session.uuid)
-        formatter = ThresholdFormatter(for: thresholds)
+        self.formatter = Resolver.resolve(ThresholdFormatter.self, args: thresholds)
     }
     
     func onDateRangeChange(perform action: @escaping OnChange) -> Self {
@@ -66,7 +66,7 @@ struct Graph: UIViewRepresentable {
         let uiView = AirCastingGraph(onDateRangeChange: { newRange in
             rangeChangeAction?(newRange)
         })
-        try? uiView.updateWithThreshold(thresholdValues: formatter.formattedFloat())
+        try? uiView.updateWithThreshold(thresholdValues: formatter.formattedNumerics())
         let entries = stream.allMeasurements?.sorted(by: { $0.time < $1.time }).compactMap({ measurement -> ChartDataEntry? in
             let timeInterval = Double(measurement.time.timeIntervalSince1970)
             let chartDataEntry = ChartDataEntry(x: timeInterval, y: getValue(of: measurement))
@@ -104,7 +104,7 @@ struct Graph: UIViewRepresentable {
                 context.coordinator.totalNumberOfMeasurements != stream.allMeasurements?.count ||
                 stream != context.coordinator.stream else { return }
         
-        try? uiView.updateWithThreshold(thresholdValues: formatter.formattedFloat())
+        try? uiView.updateWithThreshold(thresholdValues: formatter.formattedNumerics())
         let allLimitLines = getLimitLines()
         uiView.limitLines = allLimitLines
         

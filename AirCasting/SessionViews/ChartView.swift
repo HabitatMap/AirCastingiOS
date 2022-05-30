@@ -2,9 +2,11 @@
 //
 
 import SwiftUI
+import Resolver
 
 struct ChartView: View {
     private let thresholds: [SensorThreshold]
+    @Injected private var formatter: UnitFormatter
     @StateObject private var viewModel: ChartViewModel
     @Binding private var stream: MeasurementStreamEntity?
     
@@ -50,8 +52,7 @@ struct ChartView: View {
     }
     
     func descriptionText(stream: MeasurementStreamEntity?) -> some View {
-        guard let stream = stream, let threshold = thresholds.threshold(for: stream) else { return Text("") }
-        let formatter = ThresholdFormatter(for: threshold)
-        return Text("\(stream.session.isMobile ? Strings.SessionCartView.avgSessionMin : Strings.SessionCartView.avgSessionH) \(stream.isTemperature ? formatter.formattedUnitSymbol() : stream.unitSymbol ?? "")")
+        guard let stream = stream else { return Text("") }
+        return Text("\(stream.session.isMobile ? Strings.SessionCartView.avgSessionMin : Strings.SessionCartView.avgSessionH) \(formatter.unitString(for: stream))")
     }
 }

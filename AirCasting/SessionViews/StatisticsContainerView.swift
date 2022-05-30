@@ -6,11 +6,18 @@
 //
 
 import SwiftUI
+import Resolver
 
 struct StatisticsContainerView<ViewModelType>: View where ViewModelType: StatisticsContainerViewModelable {
     @ObservedObject var statsContainerViewModel: ViewModelType
     @ObservedObject var threshold: SensorThreshold
-    let formatter: ThresholdFormatter
+    private let formatter: ThresholdFormatter
+    
+    init(statsContainerViewModel: ViewModelType, threshold: SensorThreshold) {
+        self._statsContainerViewModel = .init(wrappedValue: statsContainerViewModel)
+        self._threshold = .init(wrappedValue: threshold)
+        self.formatter = Resolver.resolve(ThresholdFormatter.self, args: threshold)
+    }
     
     var body: some View {
         HStack {
@@ -36,12 +43,12 @@ struct StatisticsContainerView<ViewModelType>: View where ViewModelType: Statist
     
     private func standardParameter(value: Double) -> some View {
         ZStack {
-            formatter.formattedColor(for: value)
+            formatter.color(for: value)
                 .opacity(0.32)
                 .cornerRadius(7.5)
             HStack {
                 Spacer()
-                formatter.formattedColor(for: value)
+                formatter.color(for: value)
                     .clipShape(Circle())
                     .frame(width: 6, height: 6)
                 Spacer()
@@ -55,12 +62,12 @@ struct StatisticsContainerView<ViewModelType>: View where ViewModelType: Statist
     
     private func distinctParameter(value: Double) -> some View {
         ZStack {
-            formatter.formattedColor(for: value)
+            formatter.color(for: value)
                 .opacity(0.32)
                 .cornerRadius(7.5)
             HStack {
                 Spacer()
-                formatter.formattedColor(for: value)
+                formatter.color(for: value)
                     .clipShape(Circle())
                     .frame(width: 8, height: 8)
                 Spacer()
@@ -77,7 +84,7 @@ struct StatisticsContainerView<ViewModelType>: View where ViewModelType: Statist
 struct CalculatedMeasurements_Previews: PreviewProvider {
     static var previews: some View {
         StatisticsContainerView(statsContainerViewModel: FakeStatsViewModel(),
-                                threshold:  SensorThreshold.mock, formatter: ThresholdFormatter(for: SensorThreshold.mock))
+                                threshold:  SensorThreshold.mock)
             .previewLayout(.sizeThatFits)
     }
 }
