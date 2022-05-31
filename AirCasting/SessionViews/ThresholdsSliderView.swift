@@ -10,7 +10,7 @@ import Resolver
 
 struct ThresholdsSliderView: View {
     @Binding var thresholds: [Float]
-    let threshold: SensorThreshold
+    @ObservedObject var threshold: SensorThreshold
     private let formatter: ThresholdFormatter
     
     init(threshold: SensorThreshold) {
