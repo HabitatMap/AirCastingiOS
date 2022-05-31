@@ -125,7 +125,7 @@
 		AC6D567F25AC54A400D221BA /* UIKitChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6D567E25AC54A400D221BA /* UIKitChartView.swift */; };
 		AC6D569F25AEEAE700D221BA /* SessionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6D569E25AEEAE700D221BA /* SessionHeaderView.swift */; };
 		AC6D56A225AEF55C00D221BA /* GraphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6D56A125AEF55C00D221BA /* GraphView.swift */; };
-		AC6D56A525AF211200D221BA /* MultiSliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6D56A425AF211200D221BA /* MultiSliderView.swift */; };
+		AC6D56A525AF211200D221BA /* ThresholdsSliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6D56A425AF211200D221BA /* ThresholdsSliderView.swift */; };
 		AC787D75267B41990034B222 /* AirCastingStyling in Frameworks */ = {isa = PBXBuildFile; productRef = AC787D74267B41990034B222 /* AirCastingStyling */; };
 		AC797FE7263C2C1600970254 /* SensorThreshold.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC797FE6263C2C1600970254 /* SensorThreshold.swift */; };
 		AC7EB37625A6FB3A00A7F2AF /* AirCastingApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC7EB37525A6FB3A00A7F2AF /* AirCastingApp.swift */; };
@@ -588,7 +588,7 @@
 		AC6D567E25AC54A400D221BA /* UIKitChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitChartView.swift; sourceTree = "<group>"; };
 		AC6D569E25AEEAE700D221BA /* SessionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionHeaderView.swift; sourceTree = "<group>"; };
 		AC6D56A125AEF55C00D221BA /* GraphView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphView.swift; sourceTree = "<group>"; };
-		AC6D56A425AF211200D221BA /* MultiSliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiSliderView.swift; sourceTree = "<group>"; };
+		AC6D56A425AF211200D221BA /* ThresholdsSliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThresholdsSliderView.swift; sourceTree = "<group>"; };
 		AC787D73267B41770034B222 /* AirCastingStyling */ = {isa = PBXFileReference; lastKnownFileType = folder; path = AirCastingStyling; sourceTree = "<group>"; };
 		AC797FE6263C2C1600970254 /* SensorThreshold.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorThreshold.swift; sourceTree = "<group>"; };
 		AC7EB37225A6FB3A00A7F2AF /* AirCasting.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AirCasting.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1263,7 +1263,7 @@
 				33FD502127A144B300162384 /* SingleMeasurementView.swift */,
 				ACC536DF26395C0900327267 /* MeasurementDotView.swift */,
 				AC96DBE827426FB700D5E8E0 /* ThresholdSettings */,
-				AC6D56A425AF211200D221BA /* MultiSliderView.swift */,
+				AC6D56A425AF211200D221BA /* ThresholdsSliderView.swift */,
 				AC4EC6BB25B5ABB700C1E312 /* StatisticsContainerView.swift */,
 				AC9EB64326ECB0C000B1F780 /* SessionCartViewModel */,
 				DDEE3A492697473C0098CCA9 /* EditSessionButton */,
@@ -2884,7 +2884,7 @@
 				AC96DBEA2742705100D5E8E0 /* ThresholdsSettingsViewModel.swift in Sources */,
 				DDEE3A44269736270098CCA9 /* NetworkChecker.swift in Sources */,
 				B376DD25268096E20083FD2F /* SessionSynchronizationDatabase.swift in Sources */,
-				AC6D56A525AF211200D221BA /* MultiSliderView.swift in Sources */,
+				AC6D56A525AF211200D221BA /* ThresholdsSliderView.swift in Sources */,
 				AC524A7626133A370061AD45 /* MeaurementStreamExtension.swift in Sources */,
 				DD9DD37327A2B91A00E657E4 /* TurnOnLocationFixedView.swift in Sources */,
 				DDC5F58A271979F100F1F9D8 /* Fonts.swift in Sources */,

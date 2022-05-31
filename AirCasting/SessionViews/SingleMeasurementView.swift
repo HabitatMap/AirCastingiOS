@@ -14,7 +14,13 @@ struct SingleMeasurementView: View {
     let measurementPresentationStyle: MeasurementPresentationStyle
     let isDormant: Bool
     var value: Double {
-        isDormant ? stream.averageValue : (stream.latestValue ?? 0)
+        let measurementValue = isDormant ? stream.averageValue : (stream.latestValue ?? 0)
+        
+        guard !(stream.isTemperature && userSettings.convertToCelsius) else {
+            return TemperatureConverter.calculateCelsius(fahrenheit: measurementValue)
+        }
+        
+        return measurementValue
     }
     
     var body: some View {

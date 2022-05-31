@@ -56,7 +56,7 @@ struct ThresholdsSliderView: View {
                 }
                 labels(geometry: geometry)
             }
-                .coordinateSpace(name: "MultiSliderSpace")
+            .coordinateSpace(name: "MultiSliderSpace")
         }
         .frame(height: 5)
     }
@@ -92,7 +92,7 @@ struct ThresholdsSliderView: View {
     func labels(geometry: GeometryProxy) -> some View {
         let y = geometry.frame(in: .local).size.height / 2
         return ForEach(thresholds.indices, id: \.self) { index in
-            let ints = formatter.formattedNumerics()[index]
+            let ints = Int(formatter.formattedNumerics()[index])
             Text("\(ints)")
                 .position(x: calculateXAxisSize(thresholdValue: thresholds[index], geometry: geometry),
                           y: y)
