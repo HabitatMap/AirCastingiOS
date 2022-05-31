@@ -24,15 +24,14 @@ struct CreateAccountView: View {
     @State private var isUsernameBlank = false
     @State private var presentedError: AuthorizationError?
     @State private var alert: AlertInfo?
-    @State private var isActive: Bool
+    @State private var isLoading = false
 
-    init(completion: @escaping () -> Void, isActive: Bool = false) {
-        _isActive = State(initialValue: isActive)
+    init(completion: @escaping () -> Void) {
         self.completion = completion
     }
 
     var body: some View {
-        LoadingView(isShowing: $isActive) {
+        LoadingView(isShowing: $isLoading) {
             contentView
         }
     }
@@ -142,7 +141,7 @@ private extension CreateAccountView {
             
             if isPasswordCorrect && isEmailCorrect && !isUsernameBlank {
                 #warning("Show progress and lock ui to prevent multiple api calls")
-                isActive = true
+                isLoading = true
                 let userInput = AuthorizationAPI.SignupUserInput(email: email,
                                                                 username: username,
                                                                 password: password,
@@ -164,7 +163,7 @@ private extension CreateAccountView {
                                 presentedError = .other(error)
                             }
                         }
-                        isActive = false
+                        isLoading = false
                     }
                 }
             }
