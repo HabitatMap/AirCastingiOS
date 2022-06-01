@@ -7,6 +7,7 @@ struct ExternalSessionHeader: View {
     var session: Sessionable
     @ObservedObject var thresholds: ABMeasurementsViewThreshold
     @Binding var selectedStream: MeasurementStreamEntity?
+    @Binding var isCollapsed: Bool
     let expandingAction: (() -> Void)?
     @State var chevronIndicator = "chevron.down"
 
@@ -90,7 +91,7 @@ private extension ExternalSessionHeader {
                         SingleMeasurementView(stream: stream,
                                               threshold: SingleMeasurementViewThreshold(value: threshold),
                                               selectedStream: $selectedStream,
-                                              isCollapsed: .constant(true),
+                                              isCollapsed: $isCollapsed,
                                               measurementPresentationStyle: .showValues,
                                               isDormant: false)
                     }

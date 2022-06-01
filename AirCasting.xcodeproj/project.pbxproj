@@ -461,6 +461,8 @@
 		DDF7599A268332E900D906BA /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF75999268332E900D906BA /* Strings.swift */; };
 		EE969E7E1981C41852FB7745 /* Pods_AirCastingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A54057326D27D23E9906704 /* Pods_AirCastingTests.framework */; };
 		FA26E9E928107150008EE514 /* SearchParameter.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA26E9E828107150008EE514 /* SearchParameter.swift */; };
+		FA45FEFE2844D53700F9C25F /* ExternalGraphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA45FEFD2844D53700F9C25F /* ExternalGraphView.swift */; };
+		FA45FF002844DD4100F9C25F /* ExternalGraph.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA45FEFF2844DD4100F9C25F /* ExternalGraph.swift */; };
 		FA4F1B732817EDDE002711B4 /* AirBeamMeasurementsDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4F1B722817EDDE002711B4 /* AirBeamMeasurementsDownloader.swift */; };
 		FA4F1B75281809B2002711B4 /* AirBeamStreamSuffixes.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4F1B74281809B2002711B4 /* AirBeamStreamSuffixes.swift */; };
 		FA4F1B77281809EE002711B4 /* MeasurementsDownloaderResultModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4F1B76281809EE002711B4 /* MeasurementsDownloaderResultModel.swift */; };
@@ -947,6 +949,8 @@
 		DDF62600269C779800F23489 /* UIApplication+AppInfo.swift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+AppInfo.swift.swift"; sourceTree = "<group>"; };
 		DDF75999268332E900D906BA /* Strings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Strings.swift; sourceTree = "<group>"; };
 		FA26E9E828107150008EE514 /* SearchParameter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchParameter.swift; sourceTree = "<group>"; };
+		FA45FEFD2844D53700F9C25F /* ExternalGraphView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalGraphView.swift; sourceTree = "<group>"; };
+		FA45FEFF2844DD4100F9C25F /* ExternalGraph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalGraph.swift; sourceTree = "<group>"; };
 		FA4F1B722817EDDE002711B4 /* AirBeamMeasurementsDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirBeamMeasurementsDownloader.swift; sourceTree = "<group>"; };
 		FA4F1B74281809B2002711B4 /* AirBeamStreamSuffixes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirBeamStreamSuffixes.swift; sourceTree = "<group>"; };
 		FA4F1B76281809EE002711B4 /* MeasurementsDownloaderResultModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementsDownloaderResultModel.swift; sourceTree = "<group>"; };
@@ -1331,6 +1335,7 @@
 			children = (
 				B30BAC002694A88800AE0476 /* StatisticsContainer */,
 				AC6D56A125AEF55C00D221BA /* GraphView.swift */,
+				FA45FF012844DD5200F9C25F /* External */,
 				AC5832D925B196DD008C5DD5 /* Graph.swift */,
 				AC4A6A69267CB3890001F639 /* AirCastingGraph.swift */,
 				AC4A6A6B267CB3D40001F639 /* GraphRenderers.swift */,
@@ -2431,6 +2436,15 @@
 			path = SessionCartTests;
 			sourceTree = "<group>";
 		};
+		FA45FF012844DD5200F9C25F /* External */ = {
+			isa = PBXGroup;
+			children = (
+				FA45FEFD2844D53700F9C25F /* ExternalGraphView.swift */,
+				FA45FEFF2844DD4100F9C25F /* ExternalGraph.swift */,
+			);
+			path = External;
+			sourceTree = "<group>";
+		};
 		FA4F1B712817EDC8002711B4 /* AirBeamMeasurements */ = {
 			isa = PBXGroup;
 			children = (
@@ -3004,6 +3018,7 @@
 				AC96DBEA2742705100D5E8E0 /* ThresholdsSettingsViewModel.swift in Sources */,
 				DDEE3A44269736270098CCA9 /* NetworkChecker.swift in Sources */,
 				B376DD25268096E20083FD2F /* SessionSynchronizationDatabase.swift in Sources */,
+				FA45FEFE2844D53700F9C25F /* ExternalGraphView.swift in Sources */,
 				AC6D56A525AF211200D221BA /* MultiSliderView.swift in Sources */,
 				AC524A7626133A370061AD45 /* MeaurementStreamExtension.swift in Sources */,
 				DD9DD37327A2B91A00E657E4 /* TurnOnLocationFixedView.swift in Sources */,
@@ -3038,6 +3053,7 @@
 				DD1EEB8B26B7C2F100AFC5C1 /* TurnOnLocationViewModel.swift in Sources */,
 				DDF7599A268332E900D906BA /* Strings.swift in Sources */,
 				DD6CD56227F31D040044F843 /* BottomCardModel.swift in Sources */,
+				FA45FF002844DD4100F9C25F /* ExternalGraph.swift in Sources */,
 				DDD1F9B12705852400D8E87F /* DataFormatters.swift in Sources */,
 				ACCEB22B276A240D0040140B /* EditViewModel.swift in Sources */,
 				B367A590274E9EAA004C605B /* FirebaseFeatureFlagProvider.swift in Sources */,

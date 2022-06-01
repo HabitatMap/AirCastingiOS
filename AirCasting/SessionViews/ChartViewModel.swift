@@ -103,7 +103,8 @@ final class ChartViewModel: ObservableObject {
         let sessionStartTime = session.startTime!
 
         if session.isFixed {
-            return (lastMeasurementTime + 120).roundedDownToHour
+            // We want to show an average when we have a measurement from last minute of the hour
+            return (lastMeasurementTime + 60).roundedDownToHour
         } else {
             let secondsSinceFullMinuteFromSessionStart = DateBuilder.getFakeUTCDate().timeIntervalSince(sessionStartTime).truncatingRemainder(dividingBy: timeUnit)
             return DateBuilder.getRawDate().currentUTCTimeZoneDate - secondsSinceFullMinuteFromSessionStart

@@ -6,7 +6,7 @@ import Resolver
 
 protocol SearchAndFollowCompleteScreenService {
     func createExternalSession(from session: PartialExternalSession, with downloadedStreamsWithMeasurements: [StreamWithMeasurements]) -> ExternalSessionWithStreamsAndMeasurements
-    func downloadMeasurements(streamsIds: [Int], completion: @escaping (Result<[StreamWithMeasurements], Error>) -> Void)
+    func downloadMeasurements(streamsIds: [Int], provider: String, completion: @escaping (Result<[StreamWithMeasurements], Error>) -> Void)
     func followSession(session: ExternalSessionWithStreamsAndMeasurements, completion: @escaping (Result<Void, Error>) -> Void)
 }
 
@@ -40,13 +40,19 @@ struct DefaultSearchAndFollowCompleteScreenService: SearchAndFollowCompleteScree
         })
     }
     
-    func downloadMeasurements(streamsIds: [Int], completion: @escaping (Result<[StreamWithMeasurements], Error>) -> Void) {
+    func downloadMeasurements(streamsIds: [Int], provider: String, completion: @escaping (Result<[StreamWithMeasurements], Error>) -> Void) {
         guard !streamsIds.isEmpty else {
             completion(.failure(CompletionScreenError.noStreams))
             return
         }
         var results: [Result<StreamWithMeasurements, Error>] = []
-        let measurementsLimit = 60*24 // We want measurements from 24 hours
+        
+        // PurpleAir — measurements from there are not consistent, so we need to do more 'manual work' 🔧
+        // OpenAQ — measurement every 12 min (5 times/1h): 120 measurements (per 24 hours)
+        // AirBeam - measurement every 1 min (60 times/1h): 1440 measurements (per 24 hours)
+        var measurementsLimit = 60 * 24 // We want measurements from 24 hours
+        if provider == "OpenAQ" { measurementsLimit = 5 * 24 } // We want measurements from 24 hours
+        
         let group = DispatchGroup()
         streamsIds.forEach { streamId in
             group.enter()
