@@ -2629,7 +2629,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nif [ \"${CONFIGURATION}\" == \"Release\" ] \nthen\n    echo \"FirebaseCrashlytics\"\n    \"${PODS_ROOT}/FirebaseCrashlytics/run\"\nelse\n    echo \"Will run FirebaseCrashlytics in release mode\"\nfi\n";
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nif [ \"${CONFIGURATION}\" == \"Release\" ] \nthen\n    echo \"FirebaseCrashlytics\"\n    \"${BUILD_DIR%Build/*}/SourcePackages/checkouts/firebase-ios-sdk/Crashlytics/run\"\nelse\n    echo \"Will run FirebaseCrashlytics in release mode\"\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		BA797DF3793837CC1AFA2CA9 /* [CP] Check Pods Manifest.lock */ = {
