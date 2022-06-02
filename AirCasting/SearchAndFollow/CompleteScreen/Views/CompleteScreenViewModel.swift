@@ -210,7 +210,7 @@ class CompleteScreenViewModel: ObservableObject {
                 // Special filter for PurpleAir as its measurements are not consistent
                 // PurpleAir — measurements from there are not consistent, so we need to do more 'manual work' 🔧
                 var streamWithMeasureementsCopy = downloadedStreamsWithMeasurements
-                if self.session.provider == SensorType.PurpleAir.capitalizedName {
+                if (self.session.provider == SensorType.OpenAQ.capitalizedName) || (self.session.provider == SensorType.PurpleAir.capitalizedName) {
                     guard let measurements = streamWithMeasureementsCopy.first?.measurements,
                           let lastMeasurement = measurements.last else { return }
                     let twentyFourHours = 86400000 // 24 hours in miliseconds: 60 * 60 * 24

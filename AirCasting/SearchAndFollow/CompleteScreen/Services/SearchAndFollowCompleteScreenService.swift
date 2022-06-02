@@ -47,11 +47,7 @@ struct DefaultSearchAndFollowCompleteScreenService: SearchAndFollowCompleteScree
         }
         var results: [Result<StreamWithMeasurements, Error>] = []
         
-        // PurpleAir — measurements from there are not consistent, so we need to do more 'manual work' 🔧
-        // OpenAQ — measurement every 12 min (5 times/1h): 120 measurements (per 24 hours)
-        // AirBeam - measurement every 1 min (60 times/1h): 1440 measurements (per 24 hours)
-        var measurementsLimit = 60 * 24 // We want measurements from 24 hours
-        if provider == "OpenAQ" { measurementsLimit = 5 * 24 } // We want measurements from 24 hours
+        let measurementsLimit = 60 * 24 // We want measurements from 24 hours
         
         let group = DispatchGroup()
         streamsIds.forEach { streamId in
