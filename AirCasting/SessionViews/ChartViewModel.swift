@@ -84,7 +84,16 @@ final class ChartViewModel: ObservableObject {
 
         var entries = [ChartDataEntry]()
         for i in (0..<numberOfEntries).reversed() {
-            if (intervalStart < session.startTime!.roundedDownToSecond) { break }
+            if (intervalStart < session.startTime!.roundedDownToSecond) {
+                if session.isFixed {
+                    let average = averagedValue(intervalStart, intervalEnd)
+                    if let average = average {
+                        entries.append(ChartDataEntry(x: Double(i), y: average))
+                    }
+                endOfFirstInterval = intervalEnd
+                }
+                break
+            }
             let average = averagedValue(intervalStart, intervalEnd)
             if let average = average {
                 entries.append(ChartDataEntry(x: Double(i), y: average))
