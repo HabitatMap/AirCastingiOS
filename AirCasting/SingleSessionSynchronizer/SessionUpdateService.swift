@@ -34,7 +34,7 @@ class DefaultSessionUpdateService: SessionUpdateService {
         var data = [String : CreateSessionApi.MeasurementStreamParams]()
         var notes = [CreateSessionApi.NotesParams]()
         
-        session.allStreams?.forEach({ stream in
+        session.allStreams.forEach({ stream in
             data[stream.sensorName!] = CreateSessionApi.MeasurementStreamParams(deleted: stream.gotDeleted,
                                                                                 sensor_package_name: stream.sensorPackageName!,
                                                                                 sensor_name: stream.sensorName,

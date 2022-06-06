@@ -33,7 +33,7 @@ final class ChartDatabaseObserver {
         guard let insertedObjects = (n.userInfo?[NSInsertedObjectsKey] as? NSSet)?.allObjects else { return }
         let insertedMeasurements = insertedObjects.compactMap { $0 as? MeasurementEntity }
         let filtered = insertedMeasurements.filter { $0.measurementStream.session?.uuid.rawValue == session ||
-            $0.measurementStream.externalSession?.uuid == session &&
+            $0.measurementStream.externalSession?.uuid.rawValue == session &&
             $0.measurementStream.sensorName == sensor }
         guard let newestMeasurement = filtered.sorted(by: { $0.time > $1.time }).first else { return }
         defer { latestMeasurementTime = newestMeasurement.time }

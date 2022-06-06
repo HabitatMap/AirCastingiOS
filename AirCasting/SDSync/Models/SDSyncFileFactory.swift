@@ -3,7 +3,6 @@
 
 import Foundation
 
-//TODO: I'm leaving this file just as an information about the file structure. It will changed when the implementation of saving data to db will be added
 class SDCardCSVFileFactory {
     enum Header: Int {
         case index      = 0

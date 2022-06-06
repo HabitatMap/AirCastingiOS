@@ -9,10 +9,11 @@ import Foundation
 import CoreData
 
 extension NSManagedObjectContext {
+    struct MissingSessionEntityError: Swift.Error {
+        let uuid: SessionUUID
+    }
+    
     func existingSession(uuid: SessionUUID) throws -> SessionEntity  {
-        struct MissingSessionEntityError: Swift.Error {
-            let uuid: SessionUUID
-        }
         let fetchRequest: NSFetchRequest<SessionEntity> = SessionEntity.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "uuid == %@", uuid.rawValue)
 
@@ -20,28 +21,56 @@ extension NSManagedObjectContext {
         if let existing  = results.first {
             return existing
         }
+        // TODO: Make this func returning an optional
         throw MissingSessionEntityError(uuid: uuid)
     }
     
-    func existingExternalSession(uuid: String) throws -> ExternalSessionEntity  {
-        enum ExternalSessionEntityError: Error {
-            case noSession(with: String)
-            case moreThanOneSession(with: String)
+    func optionalExistingSession(uuid: SessionUUID) throws -> SessionEntity? {
+        do {
+            return try existingSession(uuid: uuid)
+        } catch is MissingSessionEntityError {
+            return nil
+        } catch {
+            throw error
         }
+    }
+    
+    enum ExternalSessionEntityError: Error {
+        case noSession(with: String)
+        case moreThanOneSession(with: String)
+    }
+    
+    func existingExternalSession(uuid: SessionUUID) throws -> ExternalSessionEntity {
         let fetchRequest: NSFetchRequest<ExternalSessionEntity> = ExternalSessionEntity.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "uuid == %@", uuid)
+        fetchRequest.predicate = NSPredicate(format: "uuid == %@", uuid.rawValue)
 
         let results = try self.fetch(fetchRequest)
         
         guard let existing = results.first else {
-            throw ExternalSessionEntityError.noSession(with: uuid)
+            throw ExternalSessionEntityError.noSession(with: uuid.rawValue)
         }
         
         guard results.count == 1 else {
-            throw ExternalSessionEntityError.moreThanOneSession(with: uuid)
+            throw ExternalSessionEntityError.moreThanOneSession(with: uuid.rawValue)
         }
         
         return existing
+    }
+    
+    func optionalExistingExternalSession(uuid: SessionUUID) throws -> ExternalSessionEntity? {
+        do {
+            return try existingExternalSession(uuid: uuid)
+        } catch ExternalSessionEntityError.noSession {
+            return nil
+        } catch {
+            throw error
+        }
+    }
+    
+    func existingSessionable(uuid: SessionUUID) throws -> Sessionable? {
+        if let session = try optionalExistingSession(uuid: uuid) { return session }
+        if let externalSession = try optionalExistingExternalSession(uuid: uuid) { return externalSession }
+        return nil
     }
 
     // Checks if session/measurement exists, if not, creates a new one
@@ -106,7 +135,7 @@ extension NSManagedObjectContext {
 extension NSManagedObjectContext {
 
     func getHighestRowOrder() throws -> Int64? {
-        let request: NSFetchRequest<SessionEntity> = SessionEntity.fetchRequest()
+        let request: NSFetchRequest<UIStateEntity> = UIStateEntity.fetchRequest()
         request.sortDescriptors = [NSSortDescriptor(key: "rowOrder", ascending: false)]
         request.fetchLimit = 1
         return try self.fetch(request).first?.rowOrder

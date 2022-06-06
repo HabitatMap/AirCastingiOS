@@ -6,11 +6,19 @@ enum MeasurementPresentationStyle {
     case hideValues
 }
 
+class ABMeasurementsViewThreshold: ObservableObject {
+    var value: [SensorThreshold]
+
+    init(value: [SensorThreshold]) {
+        self.value = value
+    }
+}
+
 struct ABMeasurementsView<VM: SyncingMeasurementsViewModel>: View {
     @ObservedObject var session: SessionEntity
     @Binding var isCollapsed: Bool
     @Binding var selectedStream: MeasurementStreamEntity?
-    var thresholds: [SensorThreshold]
+    @ObservedObject var thresholds: ABMeasurementsViewThreshold
     let measurementPresentationStyle: MeasurementPresentationStyle
     @StateObject var viewModel: VM
     
@@ -21,7 +29,7 @@ struct ABMeasurementsView<VM: SyncingMeasurementsViewModel>: View {
                                     session: session,
                                     isCollapsed: $isCollapsed,
                                     selectedStream: $selectedStream,
-                                    thresholds: thresholds,
+                                    thresholds: .init(value: thresholds.value),
                                     measurementPresentationStyle: measurementPresentationStyle)
             }
         }
@@ -29,24 +37,23 @@ struct ABMeasurementsView<VM: SyncingMeasurementsViewModel>: View {
 }
 
 struct _ABMeasurementsView: View {
-    
     @StateObject var measurementsViewModel: DefaultSyncingMeasurementsViewModel
     @ObservedObject var session: SessionEntity
     @Binding var isCollapsed: Bool
     @Binding var selectedStream: MeasurementStreamEntity?
     
-    var thresholds: [SensorThreshold]
+    @ObservedObject var thresholds: ABMeasurementsViewThreshold
     let measurementPresentationStyle: MeasurementPresentationStyle
     
     @EnvironmentObject var selectedSection: SelectSection
     @EnvironmentObject var userSettings: UserSettings
     
     private var streamsToShow: [MeasurementStreamEntity] {
-        return session.sortedStreams ?? []
+        return session.sortedStreams
     }
     
     private var hasAnyMeasurements: Bool {
-        (session.sortedStreams ?? []).filter { $0.latestValue != nil }.count > 0
+        (session.sortedStreams).filter { $0.latestValue != nil }.count > 0
     }
     
     var body: some View {
@@ -59,9 +66,9 @@ struct _ABMeasurementsView: View {
                     HStack {
                         streamsToShow.count != 1 ? Spacer() : nil
                         ForEach(streamsToShow.filter({ !$0.gotDeleted }), id : \.self) { stream in
-                            if let threshold = thresholds.threshold(for: stream.sensorName ?? "") {
+                            if let threshold = thresholds.value.threshold(for: stream.sensorName ?? "") {
                                 SingleMeasurementView(stream: stream,
-                                                      threshold: threshold,
+                                                      threshold: .init(value: threshold),
                                                       selectedStream: $selectedStream,
                                                       isCollapsed: $isCollapsed,
                                                       measurementPresentationStyle: measurementPresentationStyle,
@@ -110,7 +117,7 @@ struct _ABMeasurementsView: View {
                 streamsToShow.count != 1 ? Spacer() : nil
                 ForEach(streamsToShow.filter({ !$0.gotDeleted }), id : \.self) { stream in
                     SingleMeasurementView(stream: stream,
-                                          threshold: nil,
+                                          threshold: .init(),
                                           selectedStream: $selectedStream,
                                           isCollapsed: $isCollapsed,
                                           measurementPresentationStyle: .hideValues,

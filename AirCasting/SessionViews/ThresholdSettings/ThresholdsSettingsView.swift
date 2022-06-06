@@ -124,13 +124,13 @@ struct ThresholdsSettingsView: View {
             }
             .listRowBackground(Color.clear)
             .buttonStyle(BorderlessButtonStyle())
-            .onAppear {
-                thresholdSettingsViewModel.thresholdVeryLow = string(thresholdValues.veryLow)
-                thresholdSettingsViewModel.thresholdLow = string(thresholdValues.low)
-                thresholdSettingsViewModel.thresholdMedium = string(thresholdValues.medium)
-                thresholdSettingsViewModel.thresholdHigh = string(thresholdValues.high)
-                thresholdSettingsViewModel.thresholdVeryHigh = string(thresholdValues.veryHigh)
-            }
+        }
+        .onAppear {
+            thresholdSettingsViewModel.thresholdVeryLow = string(thresholdValues.veryLow)
+            thresholdSettingsViewModel.thresholdLow = string(thresholdValues.low)
+            thresholdSettingsViewModel.thresholdMedium = string(thresholdValues.medium)
+            thresholdSettingsViewModel.thresholdHigh = string(thresholdValues.high)
+            thresholdSettingsViewModel.thresholdVeryHigh = string(thresholdValues.veryHigh)
         }
     }
 }

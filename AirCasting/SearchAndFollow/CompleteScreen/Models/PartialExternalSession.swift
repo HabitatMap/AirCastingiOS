@@ -5,14 +5,14 @@ import Foundation
 
 struct PartialExternalSession {
     let id: Int
-    let uuid: String
+    let uuid: SessionUUID
     let provider: String
     let name: String
     let startTime: Date
     let endTime: Date
     let longitude: Double
     let latitude: Double
-    let stream: [Stream]
+    var stream: [Stream]
     
     struct Stream {
         let id: Int

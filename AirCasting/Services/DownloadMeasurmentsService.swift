@@ -18,26 +18,6 @@ protocol MeasurementUpdatingService {
 }
 
 final class DownloadMeasurementsService: MeasurementUpdatingService {
-    enum Session {
-        case session(SessionEntity)
-        case externalSession(ExternalSessionEntity)
-        
-        var uuid: String {
-            switch self {
-            case .session(let sessionEntity):
-                return sessionEntity.uuid.rawValue
-            case .externalSession(let externalSessionEntity):
-                return externalSessionEntity.uuid
-            }
-        }
-        
-        enum SessionType {
-            case regular
-            case external
-        }
-    }
-    
-    
     @Injected private var persistenceController: PersistenceController
     private let fixedSessionService = FixedSessionAPIService()
     private var timerSink: Cancellable?
@@ -53,41 +33,42 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
             self?.updateAllSessionsMeasurements()
         }
     }
-    
+
     func downloadMeasurements(for sessionUUID: SessionUUID, lastSynced: Date, completion: @escaping () -> Void) {
         lastFetchCancellableTask = fixedSessionService.getFixedMeasurement(uuid: sessionUUID, lastSync: lastSynced) { [weak self] in
-            self?.processServiceResponse($0, for: sessionUUID, type: .regular, completion: completion)
+            self?.processServiceResponse($0, for: sessionUUID, isExternal: false, completion: completion)
         }
     }
-    
-    private func updateMeasurements(for sessionUUID: SessionUUID, lastSynced: Date, type: Session.SessionType) {
+
+    private func updateMeasurements(for sessionUUID: SessionUUID, lastSynced: Date, isExternal: Bool) {
         lastFetchCancellableTask = fixedSessionService.getFixedMeasurement(uuid: sessionUUID, lastSync: lastSynced) { [weak self] in
-            self?.processServiceResponse($0, for: sessionUUID, type: type)
+            self?.processServiceResponse($0, for: sessionUUID, isExternal: isExternal)
         }
     }
-    
+
     func updateAllSessionsMeasurements() {
         getAllSessionsData() { [unowned self] sessionsData in
             Log.info("Scheduled measurements update triggered (session count: \(sessionsData.count))")
-            sessionsData.forEach { self.updateMeasurements(for: $0.uuid, lastSynced: $0.lastSynced, type: $0.type) }
+            sessionsData.forEach { self.updateMeasurements(for: $0.uuid, lastSynced: $0.lastSynced, isExternal: $0.isExternal) }
         }
     }
-    
-    private func getAllSessionsData(completion: @escaping ([(uuid: SessionUUID, lastSynced: Date, type: Session.SessionType)]) -> Void) {
+
+    private func getAllSessionsData(completion: @escaping ([(uuid: SessionUUID, lastSynced: Date, isExternal: Bool)]) -> Void) {
         let request: NSFetchRequest<SessionEntity> = SessionEntity.fetchRequest()
         request.predicate = NSPredicate(format: "followedAt != NULL")
-        let context = persistenceController.editContext
-        var returnData: [(uuid: SessionUUID, lastSynced: Date, type: Session.SessionType)] = []
-        
+
         let externalSessionsRequest = ExternalSessionEntity.fetchRequest()
-        request.predicate = NSPredicate(value: true)
-        
+        externalSessionsRequest.predicate = NSPredicate(value: true)
+
+        let context = persistenceController.editContext
+        var returnData: [(uuid: SessionUUID, lastSynced: Date, isExternal: Bool)] = []
+
         context.perform { [unowned self] in
             do {
                 let sessions = try context.fetch(request)
                 let externalSessions = try context.fetch(externalSessionsRequest)
-                let mappedSessions = sessions.map { ($0.uuid!, self.getSyncDate(for: $0), Session.SessionType.regular) }
-                let mappedExternalSessions = externalSessions.map { (SessionUUID(uuidString: $0.uuid)!, self.getExternalSessionSyncDate(for: $0), Session.SessionType.external) }
+                let mappedSessions = sessions.map { ($0.uuid!, self.getSyncDate(for: $0), $0.isExternal) }
+                let mappedExternalSessions = externalSessions.map { ($0.uuid!, self.getExternalSessionSyncDate(for: $0), $0.isExternal) }
                 returnData = mappedSessions + mappedExternalSessions
                 completion(returnData)
             } catch {
@@ -95,55 +76,55 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
             }
         }
     }
-    
+
     private func getSyncDate(for session: SessionEntity?) -> Date {
-        let lastMeasurementTime = session?.allStreams?
+        let lastMeasurementTime = session?.allStreams
             .compactMap(\.lastMeasurementTime)
             .sorted()
             .last
         let syncDate = SyncHelper().calculateLastSync(sessionEndTime: session?.endTime, lastMeasurementTime: lastMeasurementTime)
         return syncDate
     }
-    
+
     private func getExternalSessionSyncDate(for session: ExternalSessionEntity?) -> Date {
-        let lastMeasurementTime = session?.measurementStreams
+        let lastMeasurementTime = session?.allStreams
             .compactMap(\.lastMeasurementTime)
             .sorted()
             .last
         let syncDate = SyncHelper().calculateLastSync(sessionEndTime: session?.endTime, lastMeasurementTime: lastMeasurementTime)
         return syncDate
     }
-    
+
     private func processServiceResponse(_ response: Result<FixedSession.FixedMeasurementOutput, Error>,
-                                        for sessionUUID: SessionUUID, type: Session.SessionType, completion: () -> Void = {}) {
+                                        for sessionUUID: SessionUUID, isExternal: Bool, completion: () -> Void = {}) {
         switch response {
         case .success(let response):
-            processServiceOutput(response, for: sessionUUID, type: type)
+            processServiceOutput(response, for: sessionUUID, isExternal: isExternal)
             completion()
         case .failure(let error):
-            Log.warning("Failed to fetch measurements for uuid '\(sessionUUID)' \(error)")
+            Log.warning("Failed to fetch measurements for uuid '\(sessionUUID). Session external: \(isExternal)' \(error)")
         }
     }
-    
+
     private func processServiceOutput(_ output: FixedSession.FixedMeasurementOutput,
-                                      for sessionUUID: SessionUUID, type: Session.SessionType) {
+                                      for sessionUUID: SessionUUID,
+                                      isExternal: Bool) {
         Log.info("Processing download measurements response for: \(sessionUUID)")
         let context = persistenceController.editContext
         context.perform {
             do {
-                switch type {
-                case .regular:
+                if !isExternal {
                     Log.info("Processing regular session response")
                     let session: SessionEntity = try context.newOrExisting(uuid: output.uuid)
                     try UpdateSessionParamsService().updateSessionsParams(session: session, output: output)
                     try self.removeOldService.removeOldestMeasurements(in: context,
-                                                                       from: sessionUUID, of: type)
-                case .external:
+                                                                       from: sessionUUID)
+                } else {
                     Log.info("Processing external session response")
-                    let session = try context.existingExternalSession(uuid: sessionUUID.rawValue)
+                    let session = try context.existingExternalSession(uuid: sessionUUID)
                     session.endTime = output.end_time
                     output.streams.forEach({ stream in
-                        if let sessionStream = session.measurementStreams.first(where: { $0.sensorName == stream.key }) {
+                        if let sessionStream = session.allStreams.first(where: { $0.sensorName == stream.key }) {
                             stream.value.measurements.forEach({ measurement in
                                 let newMeasurement = MeasurementEntity(context: context)
                                 newMeasurement.location = CLLocationCoordinate2D(latitude: measurement.latitude, longitude: measurement.longitude)
@@ -154,7 +135,7 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
                         }
                     })
                     try self.removeOldService.removeOldestMeasurements(in: context,
-                                                                       from: sessionUUID, of: type)
+                                                                       from: sessionUUID)
                 }
                 try context.save()
             } catch let error as UpdateSessionParamsService.Error {
@@ -169,17 +150,17 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
 }
 
 class SyncHelper {
-    
+
     func calculateLastSync(sessionEndTime: Date?, lastMeasurementTime: Date?) -> Date {
         let measurementTimeframe: Double = 24 * 60 * 60 // 24 hours in seconds
-        
+
         guard let sessionEndTime = sessionEndTime else { return DateBuilder.getFakeUTCDate() }
         let sessionEndTimeSeconds = sessionEndTime.timeIntervalSince1970
         let last24hours = DateBuilder.getDateWithTimeIntervalSince1970((sessionEndTimeSeconds - measurementTimeframe))
-        
+
         guard let lastMeasurementTime = lastMeasurementTime else { return last24hours }
         let lastMeasurementSeconds = lastMeasurementTime.timeIntervalSince1970
-        
+
         return ((sessionEndTimeSeconds - lastMeasurementSeconds) < measurementTimeframe) ? lastMeasurementTime : last24hours
     }
 }

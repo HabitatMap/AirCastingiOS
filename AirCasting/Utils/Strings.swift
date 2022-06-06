@@ -958,6 +958,7 @@ struct Strings {
         static let chart: String = NSLocalizedString("chart", comment: "")
         static let lastMeasurement = NSLocalizedString("Last measurement", comment: "")
         static let confirmationButtonTitle: String = NSLocalizedString("Follow Session", comment: "")
+        static let ownSessionButtonTitle: String = NSLocalizedString("Your session", comment: "")
         static let followedSessionButtonTitle: String = NSLocalizedString("Followed", comment: "")
         static let followingSessionButtonTitle: String = NSLocalizedString("Following...", comment: "")
         static let noStreamsDescription = NSLocalizedString("No streams available for this session", comment: "")

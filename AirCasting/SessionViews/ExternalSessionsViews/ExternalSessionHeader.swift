@@ -4,12 +4,22 @@
 import SwiftUI
 
 struct ExternalSessionHeader: View {
-    @ObservedObject var session: ExternalSessionEntity
-    let action: () -> Void
+    var session: Sessionable
+    @ObservedObject var thresholds: ABMeasurementsViewThreshold
+    @Binding var selectedStream: MeasurementStreamEntity?
+    @Binding var isCollapsed: Bool
+    let expandingAction: (() -> Void)?
     @State var chevronIndicator = "chevron.down"
 
+    var streams: [MeasurementStreamEntity] {
+        session.sortedStreams
+    }
+
     var body: some View {
-        sessionHeader
+        VStack {
+            sessionHeader
+            measurements
+        }
     }
 }
 
@@ -34,15 +44,17 @@ private extension ExternalSessionHeader {
     var nameLabel: some View {
         VStack(alignment: .leading, spacing: 3) {
             HStack {
-                Text(session.name)
+                Text(session.name ?? "")
                     .font(Fonts.regularHeading1)
                 Spacer()
-                Button(action: {
-                    action()
-                    chevronIndicator = chevronIndicator == "chevron.down" ? "chevron.up" : "chevron.down"
-                }) {
-                    Image(systemName: chevronIndicator)
-                        .renderingMode(.original)
+                if let action = expandingAction {
+                    Button(action: {
+                        action()
+                        chevronIndicator = chevronIndicator == "chevron.down" ? "chevron.up" : "chevron.down"
+                    }) {
+                        Image(systemName: chevronIndicator)
+                            .renderingMode(.original)
+                    }
                 }
             }
             sensorType
@@ -52,7 +64,7 @@ private extension ExternalSessionHeader {
     }
 
     var sensorType: some View {
-        let allStreams = session.measurementStreams
+        let allStreams = session.allStreams
         return SessionTypeIndicator(sessionType: .fixed, streamSensorNames: allStreams.compactMap(\.sensorPackageName))
     }
 
@@ -60,10 +72,32 @@ private extension ExternalSessionHeader {
     func adaptTimeAndDate() -> Text {
         let formatter = DateFormatters.SessionCartView.utcDateIntervalFormatter
 
-        let start = session.startTime
+        let start = session.startTime ?? DateBuilder.getFakeUTCDate()
         let end = session.endTime ?? DateBuilder.getFakeUTCDate()
 
         let string = formatter.string(from: start, to: end)
         return Text(string)
+    }
+
+    var measurements: some View {
+        VStack(alignment: .leading, spacing: 5) {
+            Text(Strings.SessionCart.lastMinuteMeasurement)
+                .font(Fonts.moderateTitle1)
+                .padding(.bottom, 3)
+            HStack {
+                streams.count != 1 ? Spacer() : nil
+                ForEach(streams, id : \.id) { stream in
+                    if let threshold = thresholds.value.threshold(for: stream.sensorName ?? "") {
+                        SingleMeasurementView(stream: stream,
+                                              threshold: SingleMeasurementViewThreshold(value: threshold),
+                                              selectedStream: $selectedStream,
+                                              isCollapsed: $isCollapsed,
+                                              measurementPresentationStyle: .showValues,
+                                              isDormant: false)
+                    }
+                    Spacer()
+                }
+            }
+        }
     }
 }

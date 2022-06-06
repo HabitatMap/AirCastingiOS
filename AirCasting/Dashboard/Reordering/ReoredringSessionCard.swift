@@ -5,17 +5,17 @@ import SwiftUI
 import AirCastingStyling
 
 struct ReoredringSessionCard: View {
-    @ObservedObject var session: SessionEntity
+    var session: Sessionable
     let thresholds: [SensorThreshold]
-    
+
     var hasStreams: Bool {
-        session.allStreams != nil && session.allStreams != []
+        !session.allStreams.isEmpty
     }
-    
+
     var body: some View {
         sessionCard
     }
-    
+
     var sessionCard: some View {
         VStack(alignment: .leading, spacing: 5) {
             header
@@ -41,22 +41,22 @@ private extension ReoredringSessionCard {
     var header: some View {
         ReorderingSessionHeader(session: session)
     }
-    
+
     private var measurements: some View {
         VStack(alignment: .leading, spacing: 5) {
             Text(Strings.SessionCart.lastMinuteMeasurement)
                 .font(Fonts.moderateTitle1)
                 .padding(.bottom, 3)
             HStack {
-                session.sortedStreams!.count != 1 ? Spacer() : nil
-                ForEach(session.sortedStreams!.filter({ !$0.gotDeleted }), id : \.self) { stream in
+                session.sortedStreams.count != 1 ? Spacer() : nil
+                ForEach(session.sortedStreams.filter({ !$0.gotDeleted }), id : \.self) { stream in
                     if let threshold = thresholds.threshold(for: stream.sensorName ?? "") {
                         SingleMeasurementView(stream: stream,
-                                              threshold: threshold,
+                                              threshold: .init(value: threshold),
                                               selectedStream: .constant(nil),
                                               isCollapsed: .constant(true),
                                               measurementPresentationStyle: .showValues,
-                                              isDormant: session.isDormant)
+                                              isDormant: false)
                     }
                     Spacer()
                 }
@@ -64,11 +64,3 @@ private extension ReoredringSessionCard {
         }
     }
 }
-
-#if DEBUG
-struct ReoredringSessionCard_Previews: PreviewProvider {
-    static var previews: some View {
-        ReoredringSessionCard(session: .mock, thresholds: [.mock])
-    }
-}
-#endif

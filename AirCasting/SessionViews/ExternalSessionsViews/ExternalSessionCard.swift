@@ -7,8 +7,8 @@ import Resolver
 
 class ExternalSessionCardViewModel: ObservableObject {
     @Injected private var store: ExternalSessionsStore
-    
-    func unfollowTapped(sessionUUID: String) {
+
+    func unfollowTapped(sessionUUID: SessionUUID) {
         store.deleteSession(uuid: sessionUUID) { result in
             switch result {
             case .success():
@@ -25,29 +25,43 @@ struct ExternalSessionCard: View {
     let thresholds: [SensorThreshold]
     @State private var isCollapsed: Bool
     @State private var selectedStream: MeasurementStreamEntity?
+    @State private var isMapButtonActive = false
+    @EnvironmentObject var reorderButton: ReorderButton
+    @EnvironmentObject var searchAndFollowButton: SearchAndFollowButton
+
+    @StateObject private var mapStatsDataSource: ConveringStatisticsDataSourceDecorator<MapStatsDataSource>
+    @StateObject private var mapStatsViewModel: StatisticsContainerViewModel
+
     @ObservedObject var viewModel = ExternalSessionCardViewModel()
-    
+
     @Injected private var uiStateHandler: SessionCardUIStateHandler
-    
+
     init(session: ExternalSessionEntity, thresholds: [SensorThreshold]) {
         self.session = session
         self.thresholds = thresholds
         self._isCollapsed = .init(initialValue: !(session.uiState?.expandedCard ?? false))
+        let mapDataSource = ConveringStatisticsDataSourceDecorator<MapStatsDataSource>(dataSource: MapStatsDataSource(), stream: nil)
+        self._mapStatsDataSource = .init(wrappedValue: mapDataSource)
+        self._mapStatsViewModel = .init(wrappedValue: ExternalSessionCard.createStatsContainerViewModel(dataSource: mapDataSource))
     }
-    
+
     var streams: [MeasurementStreamEntity] {
-        session.measurementStreams
+        session.sortedStreams
     }
-    
+
     var body: some View {
         sessionCard
-            .onAppear(perform: { selectDefaultStreamIfNeeded(streams: session.measurementStreams) })
+            .onAppear(perform: { selectDefaultStreamIfNeeded(streams: session.allStreams) })
+            .onChange(of: selectedStream, perform: { [weak mapStatsDataSource] newStream in
+                mapStatsDataSource?.stream = newStream
+                mapStatsDataSource?.dataSource.stream = newStream
+                uiStateHandler.changeSelectedStream(sessionUUID: session.uuid, newStream: newStream?.sensorName ?? "")
+            })
     }
-    
+
     var sessionCard: some View {
         VStack(alignment: .leading, spacing: 5) {
             header
-            measurements
             VStack(alignment: .trailing, spacing: 10) {
                 if !isCollapsed {
                     pollutionChart(thresholds: thresholds)
@@ -62,6 +76,7 @@ struct ExternalSessionCard: View {
             Group {
                 Color.white
                     .shadow(color: .sessionCardShadow, radius: 9, x: 0, y: 1)
+                mapNavigationLink
             }
         )
     }
@@ -69,45 +84,22 @@ struct ExternalSessionCard: View {
 
 private extension ExternalSessionCard {
     var header: some View {
-        ExternalSessionHeader(session: session) {
+        ExternalSessionHeader(session: session, thresholds: .init(value: thresholds), selectedStream: $selectedStream, isCollapsed: $isCollapsed) {
             withAnimation {
                 isCollapsed.toggle()
-                // TODO: Handle toggling uiState for external session
-                //uiStateHandler.toggleCardExpanded(sessionUUID: SessionUUID(stringLiteral: session.uuid))
+                uiStateHandler.toggleCardExpanded(sessionUUID: session.uuid)
             }
         }
     }
-    
+
     func pollutionChart(thresholds: [SensorThreshold]) -> some View {
         return VStack() {
-            ChartView(thresholds: thresholds, stream: $selectedStream, session: ChartViewModel.Session.externalSession(session))
+            ChartView(thresholds: .init(value: thresholds), stream: $selectedStream, session: session)
             .foregroundColor(.aircastingGray)
                 .font(Fonts.semiboldHeading2)
         }
     }
-    
-    private var measurements: some View {
-        VStack(alignment: .leading, spacing: 5) {
-            Text(Strings.SessionCart.lastMinuteMeasurement)
-                .font(Fonts.moderateTitle1)
-                .padding(.bottom, 3)
-            HStack {
-                streams.count != 1 ? Spacer() : nil
-                ForEach(streams, id : \.id) { stream in
-                    if let threshold = thresholds.threshold(for: stream.sensorName ?? "") {
-                        SingleMeasurementView(stream: stream,
-                                              threshold: threshold,
-                                              selectedStream: .constant(nil),
-                                              isCollapsed: .constant(true),
-                                              measurementPresentationStyle: .showValues,
-                                              isDormant: false)
-                    }
-                    Spacer()
-                }
-            }
-        }
-    }
-    
+
     func selectDefaultStreamIfNeeded(streams: [MeasurementStreamEntity]) {
         if selectedStream == nil {
             if let newStream = session.streamWith(sensorName: session.uiState?.sensorName ?? "") {
@@ -116,26 +108,55 @@ private extension ExternalSessionCard {
             selectedStream = streams.first
         }
     }
-    
+
     func displayButtons() -> some View {
         HStack() {
             unFollowButton
             Spacer()
+            mapButton
         }.padding(.top, 10)
         .buttonStyle(GrayButtonStyle())
     }
-    
+
     private var unFollowButton: some View {
         Button(Strings.SessionCartView.unfollow) {
             viewModel.unfollowTapped(sessionUUID: session.uuid)
         }.buttonStyle(UnFollowButtonStyle())
     }
-}
 
-#if DEBUG
-struct ExternalSessionCard_Previews: PreviewProvider {
-    static var previews: some View {
-        ReoredringSessionCard(session: .mock, thresholds: [.mock])
+    private var mapButton: some View {
+        Button {
+            isMapButtonActive = true
+            reorderButton.isHidden = true
+            searchAndFollowButton.isHidden = true
+        } label: {
+            Text(Strings.SessionCartView.map)
+                .font(Fonts.semiboldHeading2)
+                .padding(.horizontal, 8)
+        }
+    }
+
+    private var mapNavigationLink: some View {
+        let mapView = ExternalSessionMapView(session: session, thresholds: ABMeasurementsViewThreshold(value: thresholds), selectedStream: $selectedStream, statsContainerViewModel: mapStatsViewModel)
+            .foregroundColor(.aircastingDarkGray)
+
+         return NavigationLink(destination: mapView,
+                               isActive: $isMapButtonActive,
+                               label: {
+                                 EmptyView()
+                               })
+     }
+
+    private static func createStatsContainerViewModel(dataSource: MeasurementsStatisticsDataSource) -> StatisticsContainerViewModel {
+        let computeStatisticsInterval: Double = 60
+
+        let controller = MeasurementsStatisticsController(dataSource: dataSource,
+                                                          calculator: StandardStatisticsCalculator(),
+                                                          scheduledTimer: ScheduledTimerSetter(),
+                                                          desiredStats: MeasurementStatistics.Statistic.allCases,
+                                                          computeStatisticsInterval: computeStatisticsInterval)
+        let viewModel = StatisticsContainerViewModel(statsInput: controller)
+        controller.output = viewModel
+        return viewModel
     }
 }
-#endif
