@@ -242,11 +242,12 @@ class CompleteScreenViewModel: ObservableObject {
     }
 
     private func defineChartRange(with stream: ExternalSessionWithStreamsAndMeasurements.Stream) {
-    guard let separatedSensorName = self.componentsSeparation(name: stream.sensorName) else {
-        Log.error("No sensor name can be extracted from current stream.sensorName")
-        return
-    }
-            (self.chartStartTime, self.chartEndTime) = self.chartViewModel.generateEntries(with: stream.measurements.map({ SearchAndFollowChartViewModel.ChartMeasurement(value: $0.value, time: $0.time) }), thresholds: stream.thresholdsValues, using: ChartMeasurementsFilterDefault(name: separatedSensorName))
+        guard let separatedSensorName = self.componentsSeparation(name: stream.sensorName) else {
+            Log.error("No sensor name can be extracted from current stream.sensorName")
+            return
+        }
+        
+        (self.chartStartTime, self.chartEndTime) = self.chartViewModel.generateEntries(with: stream.measurements.map({ SearchAndFollowChartViewModel.ChartMeasurement(value: $0.value, time: $0.time) }), thresholds: stream.thresholdsValues, using: ChartMeasurementsFilterDefault(name: separatedSensorName))
     }
 
     private func showAlert() {
