@@ -165,14 +165,14 @@ class CompleteScreenViewModel: ObservableObject {
 
                     // TODO: - FIX Thresholds, get those values from backend not from our hardcoded struct
                     #warning("🚨 FIX Thresholds 🚨")
-                    let streamHardcodedData = [MeasurementStream(sensorName: .f, sensorPackageName: ""),
-                                               MeasurementStream(sensorName: .pm1, sensorPackageName: ""),
-                                               MeasurementStream(sensorName: .pm10, sensorPackageName: ""),
-                                               MeasurementStream(sensorName: .pm2_5, sensorPackageName: ""),
-                                               MeasurementStream(sensorName: .rh, sensorPackageName: "")]
+                    let streamSortedHardcodedData = [MeasurementStream(sensorName: .f, sensorPackageName: ""),
+                                                     MeasurementStream(sensorName: .pm1, sensorPackageName: ""),
+                                                     MeasurementStream(sensorName: .pm2_5, sensorPackageName: ""),
+                                                     MeasurementStream(sensorName: .pm10, sensorPackageName: ""),
+                                                     MeasurementStream(sensorName: .rh, sensorPackageName: "")]
 
                     let sessionStream = downloadedStreams.map({ stream -> PartialExternalSession.Stream in
-                        let streamLocalData = streamHardcodedData.first(where: { Self.getSensorName($0.sensorName ?? "") == Self.getSensorName(stream.sensorName)})
+                        let streamLocalData = streamSortedHardcodedData.first(where: { Self.getSensorName($0.sensorName ?? "") == Self.getSensorName(stream.sensorName)})
                         return PartialExternalSession.Stream(id: stream.streamId,
                                                              unitName: streamLocalData?.unitName ?? "",
                                                              unitSymbol: stream.sensorUnit,
@@ -186,7 +186,15 @@ class CompleteScreenViewModel: ObservableObject {
                                                                                      high: streamLocalData?.thresholdHigh ?? 0,
                                                                                      veryHigh: streamLocalData?.thresholdVeryHigh ?? 0))})
                     self.session.stream = []
-                    sessionStream.forEach { self.session.stream.append($0) }
+                    var sortedStreams = [PartialExternalSession.Stream]()
+                    #warning("-- think what to do here when fixing thresholds 🚨")
+                    streamSortedHardcodedData.forEach { sorted in
+                        if let first = sessionStream.first(where: { Self.getSensorName($0.sensorName) == Self.getSensorName(sorted.sensorName ?? "") }) {
+                            sortedStreams.append(first)
+                        }
+                    }
+                    
+                    sortedStreams.forEach { self.session.stream.append($0) }
                     Log.info("Completed downloading missing streams.")
                     self.getMeasurementsAndDisplayData()
                 case .failure(let error):
