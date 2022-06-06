@@ -57,10 +57,6 @@ struct SessionCardView: View {
         (session.isMobile && session.isActive) || (session.isFixed && selectedSection.selectedSection == SelectedSection.following)
     }
 
-    var hasStreams: Bool {
-        session.allStreams != []
-    }
-
     var body: some View {
         if session.isInStandaloneMode && featureFlagsViewModel.enabledFeatures.contains(.standaloneMode) {
             standaloneSessionCard
@@ -72,16 +68,12 @@ struct SessionCardView: View {
     var sessionCard: some View {
         VStack(alignment: .leading, spacing: 5) {
             header
-            if hasStreams {
-                measurements
-                VStack(alignment: .trailing, spacing: 10) {
-                    if !isCollapsed {
-                        showChart ? pollutionChart(thresholds: thresholds) : nil
-                        displayButtons()
-                    }
+            measurements
+            VStack(alignment: .trailing, spacing: 10) {
+                if !isCollapsed {
+                    showChart ? pollutionChart(thresholds: thresholds) : nil
+                    displayButtons()
                 }
-            } else {
-                SessionLoadingView()
             }
         }
         .onAppear {

@@ -69,6 +69,7 @@ platform :ios do
          download_dsyms(app_identifier: "org.habitatmap.AirCasting", version: version, build_number: build, api_key: get_appstore_api_key)
          upload_symbols_to_crashlytics(gsp_path: "./GoogleService-Info.plist",
                                        app_id: "1:51291628191:ios:b090a81539b7acbb48b8aa",
+                                       binary_path: "./upload-symbols",
                                        api_token: ENV["FIREBASE_TOKEN"])
          sh("git add -A")
          sh("git commit -m \"RC version #{version} build #{build}\"")
@@ -110,6 +111,7 @@ platform :ios do
          download_dsyms(app_identifier: "org.habitatmap.AirCasting", version: version, build_number: build, api_key: get_appstore_api_key)
          upload_symbols_to_crashlytics(gsp_path: "./GoogleService-Info.plist", 
                                        app_id: "1:51291628191:ios:b090a81539b7acbb48b8aa", 
+                                       binary_path: "./upload-symbols",
                                        api_token: ENV["FIREBASE_TOKEN"])
       end
    end
@@ -135,6 +137,7 @@ platform :ios do
          download_dsyms(app_identifier: "org.habitatmap.AirCasting", version: version, build_number: build, api_key: get_appstore_api_key)
          upload_symbols_to_crashlytics(gsp_path: "./GoogleService-Info.plist",
                                        app_id: "1:51291628191:ios:b090a81539b7acbb48b8aa",
+                                       binary_path: "./upload-symbols",
                                        api_token: ENV["FIREBASE_TOKEN"])
          sh("git checkout -b release/#{version}")
          sh("git push -u origin release/#{version}")

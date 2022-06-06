@@ -46,11 +46,12 @@ class CompleteScreenViewModel: ObservableObject {
     @Published var completeButtonText: String = Strings.CompleteSearchView.confirmationButtonTitle
     @Published var sessionStreams: Loadable<[SessionStreamViewModel]> = .loading {
         didSet {
-            completeButtonEnabled = sessionStreams.isReady && !sessionAlreadyFollowed
+            completeButtonEnabled = sessionStreams.isReady && !sessionAlreadyFollowed && !isOwnSession
         }
     }
     @Published var chartViewModel = SearchAndFollowChartViewModel()
-    
+    private var isOwnSession: Bool { userAuthenticationSession.user?.username == session.provider }
+
     let exitRoute: () -> Void
     
     private var session: PartialExternalSession
@@ -65,7 +66,8 @@ class CompleteScreenViewModel: ObservableObject {
     @Injected private var externalSessionsStore: ExternalSessionsStore
     @Injected private var service: SearchAndFollowCompleteScreenService
     @Injected private var streamsDownloader: AirBeamMeasurementsDownloader
-    
+    @Injected private var userAuthenticationSession: UserAuthenticationSession
+
     init(session: PartialExternalSession, exitRoute: @escaping () -> Void) {
         self.session = session
         sessionLongitude = session.longitude
@@ -75,9 +77,7 @@ class CompleteScreenViewModel: ObservableObject {
         sessionEndTime = session.endTime
         sensorType = session.provider
         self.exitRoute = exitRoute
-        if sessionAlreadyFollowed {
-            completeButtonText = followedText
-        }
+        refreshCompleteButtonText()
         reloadData()
     }
     
@@ -117,7 +117,15 @@ class CompleteScreenViewModel: ObservableObject {
     
     private func setButtonToFollowing() {
         completeButtonEnabled = false
-        completeButtonText = followingText
+        refreshCompleteButtonText()
+    }
+    
+    private func refreshCompleteButtonText() {
+        guard !isOwnSession else {
+            completeButtonText = Strings.CompleteSearchView.ownSessionButtonTitle
+            return
+        }
+        completeButtonText = sessionAlreadyFollowed ? Strings.CompleteSearchView.followedSessionButtonTitle : Strings.CompleteSearchView.confirmationButtonTitle
     }
     
     private func saveToDb() {
@@ -132,7 +140,7 @@ class CompleteScreenViewModel: ObservableObject {
                 Log.info("Successfully followed session: \(externalSessionWithStreams.uuid)")
                 guard let self = self else { return }
                 DispatchQueue.main.async {
-                    self.completeButtonText = self.followedText
+                    self.refreshCompleteButtonText()
                 }
             case .failure(let error):
                 Log.error("Following external session failed: \(error)")
