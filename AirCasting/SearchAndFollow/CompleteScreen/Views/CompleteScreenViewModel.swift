@@ -186,15 +186,14 @@ class CompleteScreenViewModel: ObservableObject {
                                                                                      high: streamLocalData?.thresholdHigh ?? 0,
                                                                                      veryHigh: streamLocalData?.thresholdVeryHigh ?? 0))})
                     self.session.stream = []
-                    var sortedStreams = [PartialExternalSession.Stream]()
+                    
                     #warning("-- think what to do here when fixing thresholds 🚨")
                     streamSortedHardcodedData.forEach { sorted in
                         if let first = sessionStream.first(where: { Self.getSensorName($0.sensorName) == Self.getSensorName(sorted.sensorName ?? "") }) {
-                            sortedStreams.append(first)
+                            self.session.stream.append(first)
                         }
                     }
                     
-                    sortedStreams.forEach { self.session.stream.append($0) }
                     Log.info("Completed downloading missing streams.")
                     self.getMeasurementsAndDisplayData()
                 case .failure(let error):
