@@ -19,10 +19,11 @@ struct DashboardView: View {
     @EnvironmentObject var searchAndFollowButton: SearchAndFollowButton
     @State var isRefreshing: Bool = false
     @Injected private var sessionSynchronizer: SessionSynchronizer
+    @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
 
     private let dashboardCoordinateSpaceName = "dashboardCoordinateSpace"
 
-    private var sessions: [SessionEntity] {
+    private var sessions: [Sessionable] {
         coreDataHook.sessions
     }
 
@@ -42,7 +43,8 @@ struct DashboardView: View {
             PreventCollapseView()
             if reorderButton.reorderIsOn {
                 followingTab
-                ReorderingDashboard(sessions: sessions, thresholds: Array(self.thresholds))
+                ReorderingDashboard(sessions: sessions,
+                                    thresholds: Array(self.thresholds))
             } else {
                 sessionTypePicker
                 if sessions.isEmpty { emptySessionsView } else { sessionListView }
@@ -50,7 +52,7 @@ struct DashboardView: View {
         }
         .fullScreenCover(isPresented: $searchAndFollowButton.searchIsOn) {
             CreatingSessionFlowRootView {
-                SearchView()
+                SearchView(isSearchAndFollowLinkActive: $searchAndFollowButton.searchIsOn)
             }
         }
         .navigationBarTitle(Strings.DashboardView.dashboardText)
@@ -137,12 +139,20 @@ struct DashboardView: View {
                 RefreshControl(coordinateSpace: .named(dashboardCoordinateSpaceName), isRefreshing: $isRefreshing)
                 LazyVStack(spacing: 8) {
                     ForEach(sessions.filter { $0.uuid != "" && !$0.gotDeleted }, id: \.uuid) { session in
-                        let followingSetter = MeasurementStreamStorageFollowingSettable(session: session)
-                        let viewModel = SessionCardViewModel(followingSetter: followingSetter)
-                        SessionCardView(session: session,
-                                        sessionCartViewModel: viewModel,
-                                        thresholds: thresholds
-                        )
+                        if session.isExternal && featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) {
+                            if let entity = session as? ExternalSessionEntity {
+                                ExternalSessionCard(session: entity, thresholds: thresholds)
+                            }
+                        } else {
+                            if let entity = session as? SessionEntity {
+                                let followingSetter = MeasurementStreamStorageFollowingSettable(session: entity)
+                                let viewModel = SessionCardViewModel(followingSetter: followingSetter)
+                                SessionCardView(session: entity,
+                                                sessionCartViewModel: viewModel,
+                                                thresholds: thresholds
+                                )
+                            }
+                        }
                     }
                 }
             }

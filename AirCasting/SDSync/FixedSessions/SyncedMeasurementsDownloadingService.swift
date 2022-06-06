@@ -12,26 +12,25 @@ struct SyncedMeasurementsDownloadingService: SyncedMeasurementsDownloader {
     @Injected private var measurementStreamStorage: MeasurementStreamStorage
     @Injected private var measurementsDownloadingService: MeasurementUpdatingService
     let measurementTimeframe: Double = 24 * 60 * 60 // 24 hours in seconds
-    
+
     func download(sessionsUUIDs: [SessionUUID]) {
-        
+
         prepareSessionsData(sessionsUUIDs) { sessionsData in
             sessionsData.forEach { session in
                 measurementsDownloadingService.downloadMeasurements(for: session.uuid, lastSynced: session.lastSynced) {
-                    //TODO: this is probably just temporary. Let's figure out how they do it in android
                     removeDoubledMeasurements(session.uuid)
                 }
             }
         }
     }
-    
+
     private func prepareSessionsData(_ sessionsUUIDs: [SessionUUID], completion: @escaping ([(uuid: SessionUUID, lastSynced: Date)]) -> Void) {
         measurementStreamStorage.accessStorage { storage in
             let sessionsData = sessionsUUIDs.map { (uuid: $0, lastSynced: getLastSyncDate(for: $0, storage: storage)) }
             completion(sessionsData)
         }
     }
-    
+
     private func getLastSyncDate(for sessionUUID: SessionUUID, storage: HiddenCoreDataMeasurementStreamStorage) -> Date {
         if let existingSession = try? storage.getExistingSession(with: sessionUUID) {
             if let sessionEndTimeSeconds = existingSession.endTime?.timeIntervalSince1970 {
@@ -50,7 +49,7 @@ struct SyncedMeasurementsDownloadingService: SyncedMeasurementsDownloader {
             return last24hours
         }
     }
-    
+
     private func removeDoubledMeasurements(_ sessionUUID: SessionUUID) {
         measurementStreamStorage.accessStorage { storage in
             do {

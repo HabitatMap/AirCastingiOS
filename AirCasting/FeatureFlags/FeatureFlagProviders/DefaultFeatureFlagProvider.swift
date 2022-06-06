@@ -33,6 +33,12 @@ class DefaultFeatureFlagProvider: FeatureFlagProvider {
             #else
             return false
             #endif
+        case .deleteAccount:
+            #if DEBUG
+            return true
+            #else
+            return false
+            #endif
         }
         
     }

@@ -5,19 +5,19 @@ import SwiftUI
 import Resolver
 
 struct ChartView: View {
-    private let thresholds: [SensorThreshold]
     @Injected private var formatter: UnitFormatter
+    @ObservedObject private var thresholds: ABMeasurementsViewThreshold
     @StateObject private var viewModel: ChartViewModel
     @Binding private var stream: MeasurementStreamEntity?
-    
-    init(thresholds: [SensorThreshold], stream: Binding<MeasurementStreamEntity?>, session: SessionEntity) {
+
+    init(thresholds: ABMeasurementsViewThreshold, stream: Binding<MeasurementStreamEntity?>, session: Sessionable) {
         self.thresholds = thresholds
         self._stream = .init(projectedValue: stream)
         self._viewModel = .init(wrappedValue: .init(session: session, stream: stream.wrappedValue))
     }
-    
+
     var body: some View {
-        UIKitChartView(thresholds: thresholds,
+        UIKitChartView(thresholds: thresholds.value,
                        viewModel: viewModel)
             .frame(height: 120)
             .disabled(true)
@@ -32,7 +32,7 @@ struct ChartView: View {
             endTime
         }
     }
-    
+
     var startTime: some View {
         let formatter = DateFormatters.SessionCartView.pollutionChartDateFormatter
 
@@ -50,9 +50,12 @@ struct ChartView: View {
         let string = formatter.string(from: end)
         return Text(string)
     }
-    
+
     func descriptionText(stream: MeasurementStreamEntity?) -> some View {
         guard let stream = stream else { return Text("") }
-        return Text("\(stream.session.isMobile ? Strings.SessionCartView.avgSessionMin : Strings.SessionCartView.avgSessionH) \(formatter.unitString(for: stream))")
+        if let session = stream.session {
+            return Text("\(session.isMobile ? Strings.SessionCartView.avgSessionMin : Strings.SessionCartView.avgSessionH) \(formatter.unitString(for: stream))")
+        }
+        return Text("\(Strings.SessionCartView.avgSessionH) \(stream.unitSymbol ?? "")")
     }
 }

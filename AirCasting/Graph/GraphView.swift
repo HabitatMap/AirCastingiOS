@@ -18,26 +18,28 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
     @Binding var selectedStream: MeasurementStreamEntity?
     @StateObject var statsContainerViewModel: StatsViewModelType
     let graphStatsDataSource: GraphStatsDataSource
-
+    
     var body: some View {
         VStack(alignment: .trailing) {
-                SessionHeaderView(action: {},
-                                  isExpandButtonNeeded: false,
-                                  isSensorTypeNeeded: false,
-                                  isCollapsed: Binding.constant(false),
-                                  session: session)
-                .padding([.bottom, .leading, .trailing])
+            SessionHeaderView(action: {},
+                              isExpandButtonNeeded: false,
+                              isSensorTypeNeeded: false,
+                              isCollapsed: Binding.constant(false),
+                              session: session)
+            .padding([.bottom, .leading, .trailing])
             
             ABMeasurementsView(
                 session: session,
                 isCollapsed: Binding.constant(false),
                 selectedStream: $selectedStream,
-                thresholds: thresholds, measurementPresentationStyle: .showValues,
-                viewModel: DefaultSyncingMeasurementsViewModel(sessionDownloader: SessionDownloadService(), session: session))
-                .padding(.horizontal)
-           
+                thresholds: .init(value: thresholds),
+                measurementPresentationStyle: .showValues,
+                viewModel: DefaultSyncingMeasurementsViewModel(sessionDownloader: SessionDownloadService(),
+                                                               session: session))
+            .padding(.horizontal)
+            
             if isProceeding(session: session) {
-                if let threshold = thresholds.threshold(for: selectedStream) {
+                if let threshold = thresholds.threshold(for: selectedStream?.sensorName ?? "") {
                     let formatter = Resolver.resolve(ThresholdFormatter.self, args: threshold)
                     if let selectedStream = selectedStream {
                         ZStack(alignment: .topLeading) {
@@ -65,7 +67,7 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                                 .padding([.horizontal, .top])
                         }
                     }
-
+                    
                     ThresholdsSliderView(threshold: threshold)
                         .padding()
                     // Fixes labels covered by tabbar
@@ -83,7 +85,7 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
     }
     
     func isProceeding(session: SessionEntity) -> Bool {
-        return session.allStreams?.allSatisfy({ stream in
+        return session.allStreams.allSatisfy({ stream in
             !(stream.allMeasurements?.isEmpty ?? true)
         }) ?? false
     }

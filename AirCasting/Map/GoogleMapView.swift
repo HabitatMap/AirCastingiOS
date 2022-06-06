@@ -144,6 +144,7 @@ struct GoogleMapView: UIViewRepresentable {
                                                              zoom: 16)
             return newCameraPosition
         }
+        
         if let lastPoint = tracker.googleLocation.last {
             let long = lastPoint.location.longitude
             let lat = lastPoint.location.latitude

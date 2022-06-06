@@ -11,7 +11,7 @@ final class ChartViewModel: ObservableObject {
     @Published var entries: [ChartDataEntry] = []
     @Published var chartStartTime: Date?
     @Published var chartEndTime: Date?
-    @ObservedObject var session: SessionEntity
+    var session: Sessionable
 
     var stream: MeasurementStreamEntity? {
         didSet {
@@ -25,12 +25,12 @@ final class ChartViewModel: ObservableObject {
     private let numberOfEntries = Constants.Chart.numberOfEntries
     private var cancellables: [AnyCancellable] = []
     
-    init(session: SessionEntity, stream: MeasurementStreamEntity?) {
+    init(session: Sessionable, stream: MeasurementStreamEntity?) {
         self.session = session
         self.chartStartTime = session.endTime
         self.chartEndTime = session.endTime
         setupHooks()
-        self.stream = stream ?? session.sortedStreams?.first
+        self.stream = stream ?? session.sortedStreams.first
         setupDatabaseHook()
         generateEntries()
     }
@@ -51,7 +51,7 @@ final class ChartViewModel: ObservableObject {
         databaseObserver = nil
         guard let sensor = stream?.sensorName else { return }
         let filter: ChartDatabaseObserverFilter = session.isFixed ? .hour : .minute(countingFrom: session.startTime?.convertedFromUTCToLocal ?? DateBuilder.getRawDate())
-        databaseObserver = ChartDatabaseObserver(session: session.uuid, sensor: sensor, filtered: filter) { [weak self] in
+        databaseObserver = ChartDatabaseObserver(session: session.uuid?.rawValue ?? "", sensor: sensor, filtered: filter) { [weak self] in
             guard let self = self else { return }
             self.log("Measurements change detected")
             self.generateEntries()
@@ -84,7 +84,16 @@ final class ChartViewModel: ObservableObject {
 
         var entries = [ChartDataEntry]()
         for i in (0..<numberOfEntries).reversed() {
-            if (intervalStart < stream!.session.startTime!.roundedDownToSecond) { break }
+            if (intervalStart < session.startTime!.roundedDownToSecond) {
+                if session.isFixed {
+                    let average = averagedValue(intervalStart, intervalEnd)
+                    if let average = average {
+                        entries.append(ChartDataEntry(x: Double(i), y: average))
+                    }
+                endOfFirstInterval = intervalEnd
+                }
+                break
+            }
             let average = averagedValue(intervalStart, intervalEnd)
             if let average = average {
                 entries.append(ChartDataEntry(x: Double(i), y: average))
@@ -103,7 +112,8 @@ final class ChartViewModel: ObservableObject {
         let sessionStartTime = session.startTime!
 
         if session.isFixed {
-            return (lastMeasurementTime + 120).roundedDownToHour
+            // We want to show an average when we have a measurement from last minute of the hour
+            return (lastMeasurementTime + 60).roundedDownToHour
         } else {
             let secondsSinceFullMinuteFromSessionStart = DateBuilder.getFakeUTCDate().timeIntervalSince(sessionStartTime).truncatingRemainder(dividingBy: timeUnit)
             return DateBuilder.getRawDate().currentUTCTimeZoneDate - secondsSinceFullMinuteFromSessionStart

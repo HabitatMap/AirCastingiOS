@@ -60,7 +60,7 @@ struct UIKitChartView: UIViewRepresentable {
     
     private func generateColorsSet(for entries: [ChartDataEntry]) -> [UIColor] {
         var colors: [UIColor] = []
-        guard let threshold = thresholds.threshold(for: viewModel.stream) else { return [.aircastingGray] }
+        guard let threshold = thresholds.threshold(for: viewModel.stream?.sensorName ?? "") else { return [.aircastingGray] }
         let formatter = Resolver.resolve(ThresholdFormatter.self, args: threshold)
         for entry in entries {
             switch formatter.value(from: entry.y) {
@@ -114,7 +114,7 @@ class UI_PollutionChart: UIView {
         lineChartView.noDataText = Strings.Chart.emptyChartMessage
         lineChartView.noDataTextAlignment = .center
         
-        //disable zooming
+        // disable zooming
         lineChartView.setScaleEnabled(false)
     }
     

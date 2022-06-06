@@ -15,8 +15,7 @@ struct AirMapView: View {
     @Environment(\.scenePhase) var scenePhase
     
     @InjectedObject private var userSettings: UserSettings
-    var thresholds: [SensorThreshold]
-    
+    @ObservedObject var thresholds: ABMeasurementsViewThreshold
     @StateObject var statsContainerViewModel: StatisticsContainerViewModel
     @StateObject var mapNotesVM: MapNotesViewModel
 //  @StateObject var mapStatsDataSource: MapStatsDataSource
@@ -28,7 +27,7 @@ struct AirMapView: View {
     @State var noteNumber = 0
     
     init(session: SessionEntity,
-         thresholds: [SensorThreshold],
+         thresholds: ABMeasurementsViewThreshold,
          statsContainerViewModel: StateObject<StatisticsContainerViewModel>,
          showLoadingIndicator: Binding<Bool>,
          selectedStream: Binding<MeasurementStreamEntity?>) {
@@ -42,7 +41,6 @@ struct AirMapView: View {
     
     private var pathPoints: [PathPoint] {
         return selectedStream?.allMeasurements?.compactMap {
-            #warning("TODO: Do something with no location points")
             guard let location = $0.location else { return nil }
             return PathPoint(location: location, measurementTime: $0.time, measurement: getValue(of: $0))
         } ?? []
@@ -66,7 +64,7 @@ struct AirMapView: View {
                                                                                 session: session))
                 .padding([.bottom, .leading, .trailing])
 
-            if let threshold = thresholds.threshold(for: selectedStream) {
+            if let threshold = thresholds.value.threshold(for: selectedStream?.sensorName ?? "") {
                 if !showLoadingIndicator {
                     ZStack(alignment: .topLeading) {
                         GoogleMapView(pathPoints: pathPoints,
@@ -115,6 +113,7 @@ struct AirMapView: View {
 //            mapStatsDataSource.visiblePathPoints = pathPoints
 //            statsContainerViewModel.adjustForNewData()
 //        }
+        .onAppear { statsContainerViewModel.adjustForNewData() }
         .onChange(of: scenePhase) { phase in
             switch phase {
             case .background, .inactive: isUserInteracting = false

@@ -80,11 +80,7 @@ final class SessionDownloadService: SessionDownstream, MeasurementsDownloadable 
         ]
         
         let url = urlComponents.url!
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.addValue("application/json", forHTTPHeaderField: "Accept")
-        
+        var request = URLRequest.jsonGET(url: url)
         do {
             try authorization.authorise(request: &request)
         } catch {

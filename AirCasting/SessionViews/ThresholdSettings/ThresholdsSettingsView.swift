@@ -22,51 +22,17 @@ struct ThresholdsSettingsView: View {
     }
     
     var body: some View {
-        Form {
-            VStack(alignment: .leading, spacing: 16) {
-                Text(Strings.SessionCart.heatmapSettingsTitle)
-                    .foregroundColor(.darkBlue)
-                    .font(Fonts.heavyTitle1)
-                Text(Strings.SessionCart.heatmapSettingsdescription)
-                    .foregroundColor(.aircastingGray)
-                    .font(Fonts.regularHeading2)
-            }
-            .padding()
-            
-            Section {
-                veryHighTextfield
-                highTextfield
-                mediumTextfield
-                lowTextfield
-                veryLowTextfield
-            }
-            
-            VStack {
-                Button(action: {
-                    thresholdValues = thresholdSettingsViewModel.updateToNewThresholds()
-                    presentationMode.wrappedValue.dismiss()
-                })
-                {
-                    Text(Strings.SessionCart.saveChangesButton)
-                        .frame(maxWidth: .infinity)
+        if #available(iOS 15.0, *) {
+            mainBody
+                .toolbar {
+                    ToolbarItemGroup(placement: .keyboard) {
+                        Spacer()
+                        Button(Strings.SessionCart.keyboardToolbarDoneButton) { hideKeyboard() }
+                    }
                 }
-                .buttonStyle(BlueButtonStyle())
-                
-                Button(Strings.SessionCart.resetChangesButton, action: {
-                    thresholdValues = thresholdSettingsViewModel.resetToDefault()
-                    presentationMode.wrappedValue.dismiss()
-                })
-                    .frame(minHeight: 35)
-            }
-            .listRowBackground(Color.clear)
-            .buttonStyle(BorderlessButtonStyle())
-        }
-        .onAppear {
-            thresholdSettingsViewModel.thresholdVeryLow = string(thresholdValues.veryLow)
-            thresholdSettingsViewModel.thresholdLow = string(thresholdValues.low)
-            thresholdSettingsViewModel.thresholdMedium = string(thresholdValues.medium)
-            thresholdSettingsViewModel.thresholdHigh = string(thresholdValues.high)
-            thresholdSettingsViewModel.thresholdVeryHigh = string(thresholdValues.veryHigh)
+        } else {
+            mainBody
+                .onTapGesture { hideKeyboard() }
         }
     }
                                                                  
@@ -115,6 +81,56 @@ struct ThresholdsSettingsView: View {
         HStack {
             showDescriptionLabel(text: Strings.Thresholds.veryLow)
             showThresholdTextfield(value: $thresholdSettingsViewModel.thresholdVeryLow)
+        }
+    }
+    
+    var mainBody: some View {
+        Form {
+            VStack(alignment: .leading, spacing: 16) {
+                Text(Strings.SessionCart.heatmapSettingsTitle)
+                    .foregroundColor(.darkBlue)
+                    .font(Fonts.heavyTitle1)
+                Text(Strings.SessionCart.heatmapSettingsdescription)
+                    .foregroundColor(.aircastingGray)
+                    .font(Fonts.regularHeading2)
+            }
+            .padding()
+            
+            Section {
+                veryHighTextfield
+                highTextfield
+                mediumTextfield
+                lowTextfield
+                veryLowTextfield
+            }
+            .keyboardType(.numberPad)
+            
+            VStack {
+                Button(action: {
+                    thresholdValues = thresholdSettingsViewModel.updateToNewThresholds()
+                    presentationMode.wrappedValue.dismiss()
+                })
+                {
+                    Text(Strings.SessionCart.saveChangesButton)
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(BlueButtonStyle())
+                
+                Button(Strings.SessionCart.resetChangesButton, action: {
+                    thresholdValues = thresholdSettingsViewModel.resetToDefault()
+                    presentationMode.wrappedValue.dismiss()
+                })
+                .frame(minHeight: 35)
+            }
+            .listRowBackground(Color.clear)
+            .buttonStyle(BorderlessButtonStyle())
+        }
+        .onAppear {
+            thresholdSettingsViewModel.thresholdVeryLow = string(thresholdValues.veryLow)
+            thresholdSettingsViewModel.thresholdLow = string(thresholdValues.low)
+            thresholdSettingsViewModel.thresholdMedium = string(thresholdValues.medium)
+            thresholdSettingsViewModel.thresholdHigh = string(thresholdValues.high)
+            thresholdSettingsViewModel.thresholdVeryHigh = string(thresholdValues.veryHigh)
         }
     }
 }

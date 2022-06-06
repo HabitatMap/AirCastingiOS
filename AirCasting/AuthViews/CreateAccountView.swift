@@ -13,6 +13,7 @@ struct CreateAccountView: View {
     var completion: () -> Void
     @InjectedObject private var lifeTimeEventsProvider: LifeTimeEventsProvider
     @InjectedObject private var userAuthenticationSession: UserAuthenticationSession
+    @InjectedObject private var userState: UserState
     private let authorizationAPIService: AuthorizationAPIService = AuthorizationAPIService() // [Resolver] Move to dep.
 
     @State private var email: String = ""
@@ -22,12 +23,22 @@ struct CreateAccountView: View {
     @State private var isEmailCorrect = true
     @State private var isUsernameBlank = false
     @State private var presentedError: AuthorizationError?
-    
+    @State private var alert: AlertInfo?
+    @State private var isLoading = false
+
     init(completion: @escaping () -> Void) {
         self.completion = completion
     }
 
     var body: some View {
+        LoadingView(isShowing: $isLoading) {
+            contentView
+        }
+    }
+}
+
+private extension CreateAccountView {
+    var contentView: some View {
         GeometryReader { geometry in
             ScrollView {
                 VStack(spacing: 50) {
@@ -72,6 +83,14 @@ struct CreateAccountView: View {
                 .alert(item: $presentedError) { error in
                     displayErrorAlert(error: error)
                 }
+                .alert(item: $alert, content: { $0.makeAlert() })
+                .onAppear {
+                    if userState.currentState == .deletingAccount {
+                        alert = InAppAlerts.successfulAccountDeletionConfirmation {
+                            userState.currentState = .idle
+                        }
+                    }
+                }
             }
         }
         .simultaneousGesture(
@@ -82,9 +101,6 @@ struct CreateAccountView: View {
         })
         )
     }
-}
-
-private extension CreateAccountView {
     
     var progressBar: some View {
         ProgressView(value: 0.8)
@@ -114,13 +130,7 @@ private extension CreateAccountView {
             .autocapitalization(.none)
     }
     var passwordTextfield: some View {
-        SecureField(Strings.CreateAccountView.password, text: $password)
-            .padding()
-            .autocapitalization(.none)
-            .disableAutocorrection(true)
-            .frame(height: 50)
-            .background(Color.aircastingGray.opacity(0.05))
-            .border(Color.aircastingGray.opacity(0.1))
+        createSecuredTextfield(placeholder: Strings.CreateAccountView.password, binding: $password)
     }
     
     var createAccountButton: some View {
@@ -131,6 +141,7 @@ private extension CreateAccountView {
             
             if isPasswordCorrect && isEmailCorrect && !isUsernameBlank {
                 #warning("Show progress and lock ui to prevent multiple api calls")
+                isLoading = true
                 let userInput = AuthorizationAPI.SignupUserInput(email: email,
                                                                 username: username,
                                                                 password: password,
@@ -152,6 +163,7 @@ private extension CreateAccountView {
                                 presentedError = .other(error)
                             }
                         }
+                        isLoading = false
                     }
                 }
             }
