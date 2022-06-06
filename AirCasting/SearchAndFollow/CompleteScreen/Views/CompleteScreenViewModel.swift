@@ -215,8 +215,8 @@ class CompleteScreenViewModel: ObservableObject {
                     return
                 }
                 
-                // Special filter for PurpleAir as its measurements are not consistent
-                // PurpleAir — measurements from there are not consistent, so we need to do more 'manual work' 🔧
+                // Special filter for PurpleAir and OpenAQ as its measurements are not consistent
+                // PurpleAir/OpenAQ — measurements from there are not consistent, so we need to do more 'manual work' 🔧
                 var streamWithMeasureementsCopy = downloadedStreamsWithMeasurements
                 if (self.session.provider == SensorType.OpenAQ.capitalizedName) || (self.session.provider == SensorType.PurpleAir.capitalizedName) {
                     guard let measurements = streamWithMeasureementsCopy.first?.measurements,
