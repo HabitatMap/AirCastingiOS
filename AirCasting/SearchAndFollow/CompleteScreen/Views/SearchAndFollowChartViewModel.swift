@@ -54,7 +54,9 @@ class SearchAndFollowChartViewModel: ObservableObject {
     
     private func addAverage(for buffer: [ChartMeasurement], times: inout [Date], thresholds: ThresholdsValue) {
         guard !buffer.isEmpty else { return }
-        let average = round((buffer.map { $0.value }.reduce(0, +)) / Double(buffer.count))
+        var average = round((buffer.map { $0.value }.reduce(0, +)) / Double(buffer.count))
+        
+        if average == -0 { average = 0 }
         
         times.append(buffer.last!.time.roundedUpToHour)
         entries.append(ChartDot(value: Double(average), color: thresholds.colorFor(value: average)))
