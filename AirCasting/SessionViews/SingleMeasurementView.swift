@@ -46,6 +46,7 @@ struct SingleMeasurementView: View {
                         .font(Fonts.systemFont1)
                         .scaledToFill()
                     if let threshold = threshold.value, measurementPresentationStyle == .showValues {
+                        let formatter = Resolver.resolve(ThresholdFormatter.self, args: threshold)
                         HStack(spacing: 3) {
                             if value != nil {
                                 MeasurementDotView(value: value!, thresholds: threshold)
@@ -62,7 +63,7 @@ struct SingleMeasurementView: View {
                         .padding(.horizontal, 9)
                         .overlay(
                             RoundedRectangle(cornerRadius: 8)
-                                .strokeBorder((selectedStream == stream && value != nil) ? threshold.colorFor(value: Int32(value!)) : .clear)
+                                .strokeBorder((selectedStream == stream && value != nil) ? formatter.color(for: value!) : .clear)
                         )
                     }
                 }
