@@ -35,7 +35,8 @@ public class MeasurementStreamEntity: NSManagedObject, Identifiable {
     @NSManaged public var unitSymbol: String?
     // Of type MeasurementEntity
     @NSManaged public var measurements: NSOrderedSet?
-    @NSManaged public var session: SessionEntity!
+    @NSManaged public var session: SessionEntity?
+    @NSManaged public var externalSession: ExternalSessionEntity?
     
     public var id: MeasurementStreamID? {
         get { value(forKey: "id") as? MeasurementStreamID }

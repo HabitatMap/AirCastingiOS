@@ -5,16 +5,26 @@ import SwiftUI
 import AirCastingStyling
 import Resolver
 
+class SingleMeasurementViewThreshold: ObservableObject {
+    var value: SensorThreshold?
+    
+    init(value: SensorThreshold? = nil) {
+        self.value = value
+    }
+}
+
 struct SingleMeasurementView: View {
     @ObservedObject var stream: MeasurementStreamEntity
-    var threshold: SensorThreshold?
+    @ObservedObject var threshold: SingleMeasurementViewThreshold
     @Binding var selectedStream: MeasurementStreamEntity?
     @Binding var isCollapsed: Bool
     @InjectedObject private var userSettings: UserSettings
     let measurementPresentationStyle: MeasurementPresentationStyle
     let isDormant: Bool
-    var value: Double {
-        let measurementValue = isDormant ? stream.averageValue : (stream.latestValue ?? 0)
+    var value: Double? {
+        guard let measurementValue = isDormant ? stream.averageValue : stream.latestValue else {
+            return nil
+        }
         
         guard !(stream.isTemperature && userSettings.convertToCelsius) else {
             return TemperatureConverter.calculateCelsius(fahrenheit: measurementValue)
@@ -35,18 +45,24 @@ struct SingleMeasurementView: View {
                     Text(showStreamName())
                         .font(Fonts.systemFont1)
                         .scaledToFill()
-                    if let threshold = threshold, measurementPresentationStyle == .showValues {
+                    if let threshold = threshold.value, measurementPresentationStyle == .showValues {
                         HStack(spacing: 3) {
-                            MeasurementDotView(value: value, thresholds: threshold)
-                            Text("\(Int(value))")
-                                .font(Fonts.regularHeading3)
-                                .scaledToFill()
+                            if value != nil {
+                                MeasurementDotView(value: value!, thresholds: threshold)
+                                Text("\(Int(value!))")
+                                    .font(Fonts.regularHeading3)
+                                    .scaledToFill()
+                            } else {
+                                Text("-")
+                                    .font(Fonts.regularHeading3)
+                                    .scaledToFill()
+                            }
                         }
                         .padding(.vertical, 4)
                         .padding(.horizontal, 9)
                         .overlay(
                             RoundedRectangle(cornerRadius: 8)
-                                .strokeBorder((selectedStream == stream) ? threshold.colorFor(value: Int32(value)) : .clear)
+                                .strokeBorder((selectedStream == stream && value != nil) ? threshold.colorFor(value: Int32(value!)) : .clear)
                         )
                     }
                 }

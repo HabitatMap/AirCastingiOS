@@ -10,11 +10,8 @@ struct AirBeamOnboarding: View {
     var body: some View {
         VStack(alignment: .leading) {
             progressBar
-            HStack() {
-                Spacer()
-                mainImage
-                Spacer()
-            }
+            mainImage
+                .frame(maxWidth: .infinity, alignment: .center)
             titleText
             descriptionText
             continueButton

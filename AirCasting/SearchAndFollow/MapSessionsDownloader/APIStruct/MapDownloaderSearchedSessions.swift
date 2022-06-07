@@ -5,7 +5,7 @@ import Foundation
 
 struct MapDownloaderSearchedSession: Codable {
     let id: Int
-    let uuid: String
+    let uuid: SessionUUID
     let title: String
     let startTimeLocal: String
     let endTimeLocal: String

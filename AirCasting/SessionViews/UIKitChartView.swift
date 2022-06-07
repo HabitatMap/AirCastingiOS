@@ -15,11 +15,11 @@ struct UIKitChartView: UIViewRepresentable {
     
     typealias UIViewType = UI_PollutionChart
     
-    func makeUIView(context: Context) -> UI_PollutionChart {
-        UI_PollutionChart()
+    func makeUIView(context: Context) -> UIViewType {
+        UIViewType()
     }
     
-    func updateUIView(_ uiView: UI_PollutionChart, context: Context) {
+    func updateUIView(_ uiView: UIViewType, context: Context) {
         guard !viewModel.entries.isEmpty else { return }
         
         var entries = viewModel.entries
@@ -60,7 +60,7 @@ struct UIKitChartView: UIViewRepresentable {
     
     private func generateColorsSet(for entries: [ChartDataEntry]) -> [UIColor] {
         var colors: [UIColor] = []
-        guard let threshold = thresholds.threshold(for: viewModel.stream) else { return [.aircastingGray] }
+        guard let threshold = thresholds.threshold(for: viewModel.stream?.sensorName ?? "") else { return [.aircastingGray] }
         for entry in entries {
             switch Int32(entry.y) {
             case threshold.thresholdVeryLow..<threshold.thresholdLow:
@@ -69,8 +69,10 @@ struct UIKitChartView: UIViewRepresentable {
                 colors.append(UIColor.aircastingYellow)
             case threshold.thresholdMedium..<threshold.thresholdHigh:
                 colors.append(UIColor.aircastingOrange)
-            default:
+            case threshold.thresholdHigh..<threshold.thresholdVeryHigh:
                 colors.append(UIColor.aircastingRed)
+            default:
+                colors.append(UIColor.aircastingGray)
             }
         }
         return colors
@@ -80,7 +82,7 @@ struct UIKitChartView: UIViewRepresentable {
 class UI_PollutionChart: UIView {
     let lineChartView = LineChartView()
     
-    init() {
+    init(addMoreSpace: Bool = false) {
         super.init(frame: .zero)
         
         self.addSubview(lineChartView)
@@ -107,13 +109,18 @@ class UI_PollutionChart: UIView {
         lineChartView.leftAxis.drawLabelsEnabled = false
         lineChartView.leftAxis.drawAxisLineEnabled = false
         
+        if addMoreSpace {
+            lineChartView.leftAxis.axisMinimum = -5
+            lineChartView.leftAxis.spaceTop = 1
+        }
+        
         lineChartView.rightAxis.enabled = false
         
         lineChartView.legend.enabled = false
         lineChartView.noDataText = Strings.Chart.emptyChartMessage
         lineChartView.noDataTextAlignment = .center
         
-        //disable zooming
+        // disable zooming
         lineChartView.setScaleEnabled(false)
     }
     

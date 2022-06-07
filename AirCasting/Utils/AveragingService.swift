@@ -101,7 +101,7 @@ final class AveragingService: NSObject {
     
     private func perform(storage: HiddenCoreDataMeasurementStreamStorage, session: SessionEntity, averagingWindow: AveragingWindow, windowDidChange: Bool) {
         Log.info("Performing averaging for \(session.uuid ?? "N/A") [\(session.name ?? "unnamed")]")
-        session.allStreams?.forEach { stream in
+        session.allStreams.forEach { stream in
             var averagedMeasurements: [MeasurementEntity] = (stream.allMeasurements ?? []).filter {
                 $0.averagingWindow == averagingWindow.rawValue
             }

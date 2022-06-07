@@ -19,7 +19,7 @@ struct SearchMapView: View {
                                                sensorType: sensorType))
         _isSearchAndFollowLinkActive = .init(projectedValue: isSearchAndFollowLinkActive)
     }
-    
+
     var body: some View {
         GeometryReader { reader in
             ZStack(alignment: .top, content: {
@@ -93,21 +93,21 @@ private extension SearchMapView {
         .disabled(true)
         .onTapGesture { viewModel.textFieldTapped() }
     }
-    
+
     var measurementTypeText: some View {
         Text(String(format: Strings.SearchMapView.parameterText, arguments: [viewModel.getMeasurementName()]))
             .font(Fonts.semiboldHeading2)
             .lineLimit(1)
             .scaledToFill()
     }
-    
+
     var sensorTypeText: some View {
         Text(String(format: Strings.SearchMapView.sensorText, arguments: [viewModel.getSensorName()]))
             .font(Fonts.semiboldHeading2)
             .lineLimit(1)
             .scaledToFill()
     }
-    
+
     var searchAgainButton: some View {
         Button {
             withAnimation(.easeOut(duration: 0.2)) {
@@ -120,7 +120,7 @@ private extension SearchMapView {
                 .scaledToFill()
         }
     }
-    
+
     var map: some View {
         GeometryReader { reader in
             ZStack(alignment: .top) {
@@ -147,11 +147,11 @@ private extension SearchMapView {
                                                            .white]),
                                startPoint: .bottom,
                                endPoint: .top)
-                .frame(width: reader.size.width, height: reader.size.height / 4.5, alignment: .top)
+                    .frame(width: reader.size.width, height: reader.size.height / 4.5, alignment: .top)
             }
         }
     }
-    
+
     var cardsTitle: some View {
         StringCustomizer.customizeString(String(format: Strings.SearchMapView.cardsTitle,
                                                 arguments: ["\(viewModel.sessionsList.count)",
@@ -160,34 +160,25 @@ private extension SearchMapView {
                                          color: .darkBlue,
                                          standardColor: .darkBlue,
                                          font: Fonts.boldHeading2)
-        .foregroundColor(.darkBlue)
+            .foregroundColor(.darkBlue)
     }
-    
+
     var cards: some View {
         ScrollViewReader { scrollProxy in
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(alignment: .bottom, spacing: 12) {
-                    ForEach(viewModel.sessionsList, id: \.id) { session in
-                        BottomCardView(id: session.id,
-                                       uuid: session.uuid,
-                                       title: session.title,
-                                       startTime: session.startTime,
-                                       endTime: session.endTime,
-                                       latitude: session.location.latitude,
-                                       longitude: session.location.longitude,
-                                       streamId: session.streamId,
-                                       thresholds: session.thresholdsValues,
-                                       username: session.username,
-                                       sensorType: viewModel.getSensorName())
-                        .onMarkerChange(action: { pointer in
-                            viewModel.markerSelectionChanged(using: pointer)
-                        })
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 8)
-                                .stroke(viewModel.strokeColor(with: session.id), lineWidth: 1)
-                        ).padding(2)
+                    ForEach(viewModel.sessionsList, id: \.id) { sessionMarker in
+                        let session = sessionMarker.session
+                        BottomCardView(session: session)
+                            .onMarkerChange(action: { pointer in
+                                viewModel.markerSelectionChanged(using: pointer)
+                            })
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .stroke(viewModel.strokeColor(with: session.id), lineWidth: 1)
+                            ).padding(2)
                     }
-                                       }
+                }
                 .onChange(of: viewModel.cardPointerID.number , perform: { newValue in
                     withAnimation(.linear) {
                         scrollProxy.scrollTo(viewModel.cardPointerID.number, anchor: .leading)
@@ -196,7 +187,7 @@ private extension SearchMapView {
             }
         }
     }
-    
+
     var finishButton: some View {
         Button {
             isSearchAndFollowLinkActive = false
