@@ -44,7 +44,6 @@ struct CompleteScreen: View {
             }
             buttons
             confirmationButton
-            if !viewModel.sessionHasFullStreamsSet { errorMessage(text: Strings.SearchFollowCompleteScreen.missingStreams) }
             Spacer()
         }
         .font(Fonts.regularHeading4)

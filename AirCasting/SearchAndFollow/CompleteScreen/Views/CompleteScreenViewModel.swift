@@ -34,7 +34,6 @@ class CompleteScreenViewModel: ObservableObject {
     @Published var chartStartTime: Date?
     @Published var chartEndTime: Date?
     @Published var isMapSelected: Bool = true
-    @Published var sessionHasFullStreamsSet: Bool = true
     @Published var alert: AlertInfo?
     
     let sessionLongitude: Double
@@ -165,7 +164,7 @@ class CompleteScreenViewModel: ObservableObject {
                 case .success(let downloadedStreams):
                     
                     // TODO: - FIX Thresholds, get those values from backend not from our hardcoded struct
-#warning("🚨 FIX Thresholds 🚨")
+                    #warning("🚨 FIX Thresholds 🚨")
                     let streamsSortedHardcoded = [MeasurementStream(sensorName: .f, sensorPackageName: ""),
                                                   MeasurementStream(sensorName: .pm1, sensorPackageName: ""),
                                                   MeasurementStream(sensorName: .pm2_5, sensorPackageName: ""),
@@ -190,15 +189,16 @@ class CompleteScreenViewModel: ObservableObject {
                         }
                     }
                     
-                    self.sessionHasFullStreamsSet = (self.session.stream.count == 5)
                     Log.info("Completed downloading missing streams.")
                     self.getMeasurementsAndDisplayData()
                 case .failure(let error):
                     Log.error("Something went wrong when downloading missing streams. \(error.localizedDescription)")
+                    self.showAlert()
                 }
             }
         } catch {
             Log.error("Something went wrong when downloading missing streams. \(error.localizedDescription)")
+            self.showAlert()
         }
         return
     }

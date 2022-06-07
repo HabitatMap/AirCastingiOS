@@ -1052,8 +1052,4 @@ struct Strings {
     enum ProtectedScreen {
         static let title: String = NSLocalizedString("Please, do not force close the app while recording a session!", comment: "")
     }
-    
-    enum SearchFollowCompleteScreen {
-        static let missingStreams: String = NSLocalizedString("Some streams are missing, although you can still follow this session.", comment: "")
-    }
 }
