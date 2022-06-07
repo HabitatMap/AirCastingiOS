@@ -41,6 +41,11 @@ class MeasurementStreamStorageFollowingSettable: SessionFollowingSettable {
                 uiStorage.accessStorage { uiStorage in
                     if newValue == .following {
                         uiStorage.giveHighestOrder(to: id)
+                        do {
+                            try uiStorage.cardStateToggle(for: id)
+                        } catch {
+                            Log.error("Changing card state failed: \(error)")
+                        }
                     } else {
                         uiStorage.setOrderToZero(for: id)
                     }
