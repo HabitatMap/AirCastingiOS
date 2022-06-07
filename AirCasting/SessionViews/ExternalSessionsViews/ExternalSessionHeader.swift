@@ -20,6 +20,9 @@ struct ExternalSessionHeader: View {
             sessionHeader
             measurements
         }
+        .onChange(of: isCollapsed, perform: { _ in
+            isCollapsed ? (chevronIndicator = "chevron.down") :  (chevronIndicator = "chevron.up")
+        })
     }
 }
 
@@ -50,7 +53,6 @@ private extension ExternalSessionHeader {
                 if let action = expandingAction {
                     Button(action: {
                         action()
-                        chevronIndicator = chevronIndicator == "chevron.down" ? "chevron.up" : "chevron.down"
                     }) {
                         Image(systemName: chevronIndicator)
                             .renderingMode(.original)

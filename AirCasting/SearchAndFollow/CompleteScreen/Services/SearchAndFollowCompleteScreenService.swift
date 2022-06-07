@@ -64,6 +64,11 @@ struct DefaultSearchAndFollowCompleteScreenService: SearchAndFollowCompleteScree
             case .success:
                 uiStore.accessStorage { store in
                     store.giveHighestOrder(to: session.uuid)
+                    do {
+                        try store.cardStateToggle(for: session.uuid)
+                    } catch {
+                        Log.error("Changing card state failed: \(error)")
+                    }
                     completion(.success(()))
                 }
             case .failure(let error): completion(.failure(error))

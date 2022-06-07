@@ -69,8 +69,10 @@ struct UIKitChartView: UIViewRepresentable {
                 colors.append(UIColor.aircastingYellow)
             case threshold.thresholdMedium..<threshold.thresholdHigh:
                 colors.append(UIColor.aircastingOrange)
-            default:
+            case threshold.thresholdHigh..<threshold.thresholdVeryHigh:
                 colors.append(UIColor.aircastingRed)
+            default:
+                colors.append(UIColor.aircastingGray)
             }
         }
         return colors
