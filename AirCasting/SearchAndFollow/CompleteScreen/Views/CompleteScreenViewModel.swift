@@ -154,7 +154,7 @@ class CompleteScreenViewModel: ObservableObject {
     }
     
     private func refresh() {
-        guard let stream = session.stream.first else { return }
+        guard let stream = session.stream.first else { self.showAlert(); return }
         guard stream.sensorName.contains("AirBeam") else { getMeasurementsAndDisplayData(); return }
         var currentSensor = AirBeamStreamPrefix.airBeam3
         if session.stream.first!.sensorName.contains("AirBeam2") { currentSensor = .airBeam2 }
