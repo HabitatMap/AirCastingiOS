@@ -10,6 +10,7 @@ struct NearAirDescription: View {
         VStack(alignment: .leading, spacing: 25) {
             progressView
             mainImage
+                .frame(maxWidth: .infinity, alignment: .center)
             VStack(alignment: .leading, spacing: 15) {
                 titleText
                 descriptionText
