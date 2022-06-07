@@ -12,7 +12,7 @@ final class TemperatureUnitFormatter: UnitFormatter {
     @InjectedObject private var userSettings: UserSettings
     
     func unitString(for stream: MeasurementStreamEntity) -> String {
-        guard stream.isTemperature else { return stream.sensorName ?? "" }
+        guard stream.isTemperature else { return stream.unitSymbol ?? "" }
         return userSettings.convertToCelsius ? Strings.SingleMeasurementView.celsiusUnit : Strings.SingleMeasurementView.fahrenheitUnit
     }
 }

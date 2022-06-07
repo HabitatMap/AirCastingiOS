@@ -56,6 +56,6 @@ struct ChartView: View {
         if let session = stream.session {
             return Text("\(session.isMobile ? Strings.SessionCartView.avgSessionMin : Strings.SessionCartView.avgSessionH) \(formatter.unitString(for: stream))")
         }
-        return Text("\(Strings.SessionCartView.avgSessionH) \(stream.unitSymbol ?? "")")
+        return Text("\(Strings.SessionCartView.avgSessionH) \(formatter.unitString(for: stream))")
     }
 }
