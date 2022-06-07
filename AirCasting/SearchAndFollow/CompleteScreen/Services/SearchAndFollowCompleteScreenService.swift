@@ -6,7 +6,7 @@ import Resolver
 
 protocol SearchAndFollowCompleteScreenService {
     func createExternalSession(from session: PartialExternalSession, with downloadedStreamsWithMeasurements: [StreamWithMeasurements]) -> ExternalSessionWithStreamsAndMeasurements
-    func downloadMeasurements(streamsIds: [Int], provider: String, completion: @escaping (Result<[StreamWithMeasurements], Error>) -> Void)
+    func downloadMeasurements(streamsIds: [Int], completion: @escaping (Result<[StreamWithMeasurements], Error>) -> Void)
     func followSession(session: ExternalSessionWithStreamsAndMeasurements, completion: @escaping (Result<Void, Error>) -> Void)
 }
 
@@ -40,7 +40,7 @@ struct DefaultSearchAndFollowCompleteScreenService: SearchAndFollowCompleteScree
         })
     }
     
-    func downloadMeasurements(streamsIds: [Int], provider: String, completion: @escaping (Result<[StreamWithMeasurements], Error>) -> Void) {
+    func downloadMeasurements(streamsIds: [Int], completion: @escaping (Result<[StreamWithMeasurements], Error>) -> Void) {
         guard !streamsIds.isEmpty else {
             completion(.failure(CompletionScreenError.noStreams))
             return

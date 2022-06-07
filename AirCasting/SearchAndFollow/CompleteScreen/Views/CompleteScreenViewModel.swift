@@ -202,7 +202,7 @@ class CompleteScreenViewModel: ObservableObject {
     private func getMeasurementsAndDisplayData() {
         let streams = session.stream.map(\.id)
         
-        service.downloadMeasurements(streamsIds: streams, provider: session.provider) { [weak self] result in
+        service.downloadMeasurements(streamsIds: streams) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .failure(let error):
