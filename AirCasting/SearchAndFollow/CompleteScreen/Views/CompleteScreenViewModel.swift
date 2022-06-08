@@ -57,10 +57,6 @@ class CompleteScreenViewModel: ObservableObject {
     
     private var session: PartialExternalSession
     private var externalSessionWithStreams: ExternalSessionWithStreamsAndMeasurements?
-    //?
-    private var sessionAlreadyFollowed: Bool {
-        externalSessionsStore.doesSessionExist(uuid: session.uuid)
-    }
     
     @Injected private var singleSessionDownloader: SingleSessionDownloader
     @Injected private var externalSessionsStore: ExternalSessionsStore
