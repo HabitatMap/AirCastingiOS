@@ -2,12 +2,11 @@
 //
 
 import SwiftUI
+import Resolver
 
 struct MeasurementDotView: View {
-    
     let value: Double
     @ObservedObject var thresholds: SensorThreshold
-    
     var body: some View {
         color
             .clipShape(Circle())
@@ -15,25 +14,7 @@ struct MeasurementDotView: View {
     }
     
     var color: Color {
-        switch Int32(value) {
-        case thresholds.thresholdVeryLow ..< thresholds.thresholdLow:
-            return Color.aircastingGreen
-        case thresholds.thresholdLow ..< thresholds.thresholdMedium:
-            return Color.aircastingYellow
-        case thresholds.thresholdMedium ..< thresholds.thresholdHigh :
-            return Color.aircastingOrange
-        case thresholds.thresholdHigh ... thresholds.thresholdVeryHigh :
-            return Color.aircastingRed
-        default:
-            return Color.aircastingGray
-        }
+        let formatter = Resolver.resolve(ThresholdFormatter.self, args: thresholds)
+        return formatter.color(for: value)
     }
 }
-
-#if DEBUG
-struct MeasurementDotView_Previews: PreviewProvider {
-    static var previews: some View {
-        MeasurementDotView(value: 15.0, thresholds: .mock)
-    }
-}
-#endif
