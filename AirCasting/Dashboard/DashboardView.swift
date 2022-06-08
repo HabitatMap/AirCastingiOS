@@ -18,7 +18,7 @@ struct DashboardView: View {
     @EnvironmentObject var reorderButton: ReorderButton
     @EnvironmentObject var searchAndFollowButton: SearchAndFollowButton
     @State var isRefreshing: Bool = false
-    @State var isSwipingLeft: Bool = false
+    @State private var isSwipingLeft: Bool = false
     @Injected private var sessionSynchronizer: SessionSynchronizer
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
 
@@ -43,44 +43,29 @@ struct DashboardView: View {
             // Bug report was filled with Apple
             PreventCollapseView()
             if reorderButton.reorderIsOn {
-                followingTab
+                followingReorderTab
                 ReorderingDashboard(sessions: sessions,
                                     thresholds: Array(self.thresholds))
             } else {
                 sessionTypePicker
-                if sessions.isEmpty {
-                    Group {
-                        if selectedSection.selectedSection == .following {
-                            emptyFollowingSessionsView
-                        } else if selectedSection.selectedSection == .mobileActive {
-                            emptyMobileActiveSessionsView
-                        } else if selectedSection.selectedSection == .mobileDormant {
-                            emptyMobileDormantSessionsView
-                        } else if selectedSection.selectedSection == .fixed {
-                            emptyFixedSessionsView
-                        }
+                Group {
+                    if selectedSection.selectedSection == .following {
+                        followingTab
+                            .transition(AnyTransition.asymmetric(insertion: .move(edge: .trailing), removal: .move(edge: .leading)))
+                    } else if selectedSection.selectedSection == .mobileActive {
+                        mobileActiveTab
+                            .transition(AnyTransition.asymmetric(insertion: .move(edge: isSwipingLeft ? .trailing : .leading), removal: .move(edge: isSwipingLeft ? .leading : .trailing)))
+                    } else if selectedSection.selectedSection == .mobileDormant {
+                        mobileDormantTab
+                            .transition(AnyTransition.asymmetric(insertion: .move(edge: isSwipingLeft ? .trailing : .leading), removal: .move(edge: isSwipingLeft ? .leading : .trailing)))
+                    } else if selectedSection.selectedSection == .fixed {
+                        fixedTab
+                            .transition(AnyTransition.asymmetric(insertion: .move(edge: isSwipingLeft ? .trailing : .leading), removal: .move(edge: isSwipingLeft ? .leading : .trailing)))
                     }
-                    .transition(AnyTransition.asymmetric(insertion: .move(edge: isSwipingLeft ? .trailing : .leading), removal: .move(edge: isSwipingLeft ? .leading : .trailing)))
-                } else {
-                    Group {
-                        if selectedSection.selectedSection == .following {
-                            followingSessionListView
-                        } else if selectedSection.selectedSection == .mobileActive {
-                            mobileActiveSessionListView
-                        } else if selectedSection.selectedSection == .mobileDormant {
-                            mobileDormantSessionListView
-                        } else if selectedSection.selectedSection == .fixed {
-                            fixedSessionListView
-                        }
-                    }
-                    .transition(AnyTransition.asymmetric(insertion: .move(edge: isSwipingLeft ? .trailing : .leading), removal: .move(edge: isSwipingLeft ? .leading : .trailing)))
                 }
             }
         }
-        .highPriorityGesture(DragGesture().onEnded({
-            self.handleSwipe(translation: $0.translation.width)
-        }))
-        .animation(.default)
+        .gesture(drag)
         .fullScreenCover(isPresented: $searchAndFollowButton.searchIsOn) {
             CreatingSessionFlowRootView {
                 SearchView(isSearchAndFollowLinkActive: $searchAndFollowButton.searchIsOn)
@@ -122,7 +107,7 @@ struct DashboardView: View {
             .zIndex(2)
     }
 
-    private var followingTab: some View {
+    private var followingReorderTab: some View {
         HStack {
             Button(Strings.DashboardView.following) {
             }
@@ -142,7 +127,31 @@ struct DashboardView: View {
         )
         .zIndex(2)
     }
-
+    
+    private var mobileActiveTab: some View {
+        Group {
+            if sessions.isEmpty { emptySessionsView } else { sessionListView }
+        }
+    }
+    
+    private var followingTab: some View {
+        Group {
+            if sessions.isEmpty { emptySessionsView } else { sessionListView }
+        }
+    }
+    
+    private var mobileDormantTab: some View {
+        Group {
+            if sessions.isEmpty { emptySessionsView } else { sessionListView }
+        }
+    }
+    
+    private var fixedTab: some View {
+        Group {
+            if sessions.isEmpty { emptySessionsView } else { sessionListView }
+        }
+    }
+    
     private var emptySessionsView: some View {
         GeometryReader { geometry in
             ScrollView(.vertical, showsIndicators: false) {
@@ -162,14 +171,6 @@ struct DashboardView: View {
         }
     }
     
-    private var emptyFollowingSessionsView: some View { emptySessionsView }
-    
-    private var emptyMobileActiveSessionsView: some View { emptySessionsView }
-    
-    private var emptyMobileDormantSessionsView: some View { emptySessionsView }
-    
-    private var emptyFixedSessionsView: some View { emptySessionsView }
-
     private var sessionListView: some View {
         ZStack(alignment: .bottomTrailing) {
             Image("dashboard-background-thing")
@@ -202,14 +203,6 @@ struct DashboardView: View {
         .background(Color.aircastingGray.opacity(0.05))
     }
     
-    private var fixedSessionListView: some View { sessionListView }
-    
-    private var followingSessionListView: some View { sessionListView }
-    
-    private var mobileActiveSessionListView: some View { sessionListView }
-    
-    private var mobileDormantSessionListView: some View { sessionListView }
-
     private func onCurrentSyncEnd(_ completion: @escaping () -> Void) {
         guard sessionSynchronizer.syncInProgress.value else { completion(); return }
         var cancellable: AnyCancellable?
@@ -219,7 +212,7 @@ struct DashboardView: View {
             cancellable?.cancel()
         }
     }
-
+    
     private func showPreviousTab() {
         switch selectedSection.selectedSection {
         case .following:
@@ -232,7 +225,7 @@ struct DashboardView: View {
             selectedSection.selectedSection = .mobileDormant
         }
     }
-
+    
     private func showNextTab() {
         switch selectedSection.selectedSection {
         case .following:
@@ -251,10 +244,21 @@ struct DashboardView: View {
         if translation > minDragTranslationForSwipe {
             showPreviousTab()
             isSwipingLeft = false
+            Log.info("\(isSwipingLeft)")
         } else  if translation < -minDragTranslationForSwipe {
             showNextTab()
             isSwipingLeft = true
+            Log.info("\(isSwipingLeft)")
         }
+    }
+    
+    private var drag: some Gesture {
+        DragGesture()
+            .onEnded { value in
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    self.handleSwipe(translation: value.translation.width)
+                }
+            }
     }
 }
 
