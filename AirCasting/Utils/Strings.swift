@@ -924,6 +924,7 @@ struct Strings {
                                                      comment: "")
         static let description: String = NSLocalizedString("Your note will be timestamped and displayed on the AirCasting map",
                                                            comment: "")
+        static let photoButton = NSLocalizedString("Tap to add picture", comment: "")
         static let placeholder: String = NSLocalizedString("Note",
                                                            comment: "")
         static let continueButton: String = NSLocalizedString("Add a note",

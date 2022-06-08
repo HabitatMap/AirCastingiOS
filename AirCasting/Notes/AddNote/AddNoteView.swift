@@ -5,15 +5,23 @@ import AirCastingStyling
 
 struct AddNoteView<VM: AddNoteViewModel>: View {
     @StateObject var viewModel: VM
+    @State var picture = UIImage(named: "message-square")!
+    @State var presentPhotoPicker = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
             title
             description
+            addPhotoButton
             noteField
+            photo
             continueButton
             cancelButton
-        }.padding()
+        }
+        .padding()
+        .sheet(isPresented: $presentPhotoPicker) {
+            PhotoPicker(picture: $picture)
+        }
     }
 }
 
@@ -29,6 +37,22 @@ private extension AddNoteView {
         Text(Strings.AddNoteView.description)
             .font(Fonts.muliHeading2)
             .foregroundColor(.aircastingGray)
+    }
+    
+    var addPhotoButton: some View {
+        Button(action: {
+            presentPhotoPicker = true
+        }) {
+            Text(Strings.AddNoteView.photoButton)
+        }
+    }
+    
+    var photo: some View {
+        Image(uiImage: picture)
+            .resizable()
+            .scaledToFit()
+            .frame(maxWidth: 180)
+            .padding()
     }
     
     var noteField: some View {
