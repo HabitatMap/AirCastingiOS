@@ -14,10 +14,10 @@ public struct GrayButtonStyle: ButtonStyle {
         configuration
             .label
             .foregroundColor(.accentColor)
-            .padding(.vertical, 7)
+            .frame(height: 29)
             .padding(.horizontal, 13)
             .background(Color.buttonGray)
             .cornerRadius(50)
-            .padding(-3)
     }
 }
+
