@@ -368,6 +368,8 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         uiState.session = sessionEntity
         return sessionEntity
     }
+    
+    // MARK: - Create Session
 
     func createSession(_ session: Session) throws {
         let sessionEntity = newSessionEntity()
