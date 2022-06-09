@@ -2,8 +2,10 @@
 //
 
 import SwiftUI
+import Resolver
 
 struct ChartView: View {
+    @Injected private var formatter: UnitFormatter
     @ObservedObject private var thresholds: ABMeasurementsViewThreshold
     @StateObject private var viewModel: ChartViewModel
     @Binding private var stream: MeasurementStreamEntity?
@@ -52,8 +54,8 @@ struct ChartView: View {
     func descriptionText(stream: MeasurementStreamEntity?) -> some View {
         guard let stream = stream else { return Text("") }
         if let session = stream.session {
-            return Text("\(session.isMobile ? Strings.SessionCartView.avgSessionMin : Strings.SessionCartView.avgSessionH) \(stream.unitSymbol ?? "")")
+            return Text("\(session.isMobile ? Strings.SessionCartView.avgSessionMin : Strings.SessionCartView.avgSessionH) \(formatter.unitString(for: stream))")
         }
-        return Text("\(Strings.SessionCartView.avgSessionH) \(stream.unitSymbol ?? "")")
+        return Text("\(Strings.SessionCartView.avgSessionH) \(formatter.unitString(for: stream))")
     }
 }

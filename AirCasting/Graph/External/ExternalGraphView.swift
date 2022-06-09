@@ -27,7 +27,8 @@ struct ExternalGraphView<StatsViewModelType>: View where StatsViewModelType: Sta
                                                     threshold: threshold)
                         }
                         NavigationLink(destination: ThresholdsSettingsView(thresholdValues: threshold.thresholdsBinding,
-                                                                           initialThresholds: selectedStream.thresholds)) {
+                                                                           initialThresholds: selectedStream.thresholds,
+                                                                           threshold: threshold)) {
                             EditButtonView()
                                 .padding([.horizontal, .top])
                         }

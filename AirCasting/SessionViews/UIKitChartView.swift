@@ -7,19 +7,19 @@
 
 import SwiftUI
 import Charts
+import Resolver
 
 struct UIKitChartView: UIViewRepresentable {
     let thresholds: [SensorThreshold]
-
     @StateObject var viewModel: ChartViewModel
     
     typealias UIViewType = UI_PollutionChart
     
-    func makeUIView(context: Context) -> UI_PollutionChart {
-        UI_PollutionChart()
+    func makeUIView(context: Context) -> UIViewType {
+        UIViewType()
     }
     
-    func updateUIView(_ uiView: UI_PollutionChart, context: Context) {
+    func updateUIView(_ uiView: UIViewType, context: Context) {
         guard !viewModel.entries.isEmpty else { return }
         
         var entries = viewModel.entries
@@ -61,8 +61,9 @@ struct UIKitChartView: UIViewRepresentable {
     private func generateColorsSet(for entries: [ChartDataEntry]) -> [UIColor] {
         var colors: [UIColor] = []
         guard let threshold = thresholds.threshold(for: viewModel.stream?.sensorName ?? "") else { return [.aircastingGray] }
+        let formatter = Resolver.resolve(ThresholdFormatter.self, args: threshold)
         for entry in entries {
-            switch Int32(entry.y) {
+            switch formatter.value(from: entry.y) {
             case threshold.thresholdVeryLow..<threshold.thresholdLow:
                 colors.append(UIColor.aircastingGreen)
             case threshold.thresholdLow..<threshold.thresholdMedium:
@@ -82,7 +83,7 @@ struct UIKitChartView: UIViewRepresentable {
 class UI_PollutionChart: UIView {
     let lineChartView = LineChartView()
     
-    init() {
+    init(addMoreSpace: Bool = false) {
         super.init(frame: .zero)
         
         self.addSubview(lineChartView)
@@ -108,6 +109,11 @@ class UI_PollutionChart: UIView {
         lineChartView.leftAxis.gridColor = .aircastingGray.withAlphaComponent(0.2)
         lineChartView.leftAxis.drawLabelsEnabled = false
         lineChartView.leftAxis.drawAxisLineEnabled = false
+        
+        if addMoreSpace {
+            lineChartView.leftAxis.axisMinimum = -5
+            lineChartView.leftAxis.spaceTop = 1
+        }
         
         lineChartView.rightAxis.enabled = false
         
