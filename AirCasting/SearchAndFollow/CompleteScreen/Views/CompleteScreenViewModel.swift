@@ -34,7 +34,16 @@ class CompleteScreenViewModel: ObservableObject {
     @Published var chartStartTime: Date?
     @Published var chartEndTime: Date?
     @Published var isMapSelected: Bool = true
+    @Published var isSessionFollowed: Bool = false
     @Published var alert: AlertInfo?
+    @Published var followButtonEnabled: Bool = false
+    @Published var followButtonText: String = Strings.CompleteSearchView.followButtonTitle
+    @Published var sessionStreams: Loadable<[SessionStreamViewModel]> = .loading {
+        didSet {
+            followButtonEnabled = sessionStreams.isReady && !isOwnSession
+        }
+    }
+    @Published var chartViewModel = SearchAndFollowChartViewModel()
     
     let sessionLongitude: Double
     let sessionLatitude: Double
@@ -42,25 +51,11 @@ class CompleteScreenViewModel: ObservableObject {
     let sessionStartTime: Date
     let sessionEndTime: Date
     let sensorType: String
-    @Published var completeButtonEnabled: Bool = false
-    @Published var completeButtonText: String = Strings.CompleteSearchView.confirmationButtonTitle
-    @Published var sessionStreams: Loadable<[SessionStreamViewModel]> = .loading {
-        didSet {
-            completeButtonEnabled = sessionStreams.isReady && !sessionAlreadyFollowed && !isOwnSession
-        }
-    }
-    @Published var chartViewModel = SearchAndFollowChartViewModel()
-    private var isOwnSession: Bool { userAuthenticationSession.user?.username == session.provider }
-    
     let exitRoute: () -> Void
-    
+
+    private var isOwnSession: Bool { userAuthenticationSession.user?.username == session.provider }
     private var session: PartialExternalSession
     private var externalSessionWithStreams: ExternalSessionWithStreamsAndMeasurements?
-    private var sessionAlreadyFollowed: Bool {
-        externalSessionsStore.doesSessionExist(uuid: session.uuid)
-    }
-    private var followedText = Strings.CompleteSearchView.followedSessionButtonTitle
-    private var followingText = Strings.CompleteSearchView.followingSessionButtonTitle
     
     @Injected private var singleSessionDownloader: SingleSessionDownloader
     @Injected private var externalSessionsStore: ExternalSessionsStore
@@ -79,6 +74,7 @@ class CompleteScreenViewModel: ObservableObject {
         self.exitRoute = exitRoute
         refreshCompleteButtonText()
         reloadData()
+        isSessionFollowed = externalSessionsStore.doesSessionExist(uuid: session.uuid)
     }
     
     private func reloadData() {
@@ -105,32 +101,47 @@ class CompleteScreenViewModel: ObservableObject {
         exitRoute()
     }
     
-    func confirmationButtonPressed() {
+    func followButtonPressed() {
         guard externalSessionWithStreams != nil else {
-            completeButtonEnabled = false
+            followButtonEnabled = false
             self.showAlert()
             return
         }
-        setButtonToFollowing()
+        followButtonText = Strings.CompleteSearchView.followingSessionButtonTitle
+        followButtonEnabled = false
         saveToDb()
     }
     
-    private func setButtonToFollowing() {
-        completeButtonEnabled = false
-        refreshCompleteButtonText()
+    func unfollowButtonPressed() {
+        guard let externalSessionWithStreams = externalSessionWithStreams else {
+            assertionFailure("Unfollow button pressed when there was no session with streams")
+            return
+        }
+        service.unfollowSession(session: externalSessionWithStreams) { result in
+            switch result {
+            case .success:
+                Log.info("Successfully unfollowed session: \(externalSessionWithStreams.uuid)")
+                DispatchQueue.main.async {
+                    self.isSessionFollowed = false
+                    self.followButtonEnabled = true
+                }
+            case .failure(let error):
+                Log.error("Unfollowing external session failed: \(error)")
+                self.showAlert()
+            }
+        }
     }
     
     private func refreshCompleteButtonText() {
         guard !isOwnSession else {
-            completeButtonText = Strings.CompleteSearchView.ownSessionButtonTitle
+            followButtonText = Strings.CompleteSearchView.ownSessionButtonTitle
             return
         }
-        completeButtonText = sessionAlreadyFollowed ? Strings.CompleteSearchView.followedSessionButtonTitle : Strings.CompleteSearchView.confirmationButtonTitle
     }
     
     private func saveToDb() {
         guard let externalSessionWithStreams = externalSessionWithStreams else {
-            assertionFailure("Confirmation button pressed when there was no session with streams")
+            assertionFailure("Follow button pressed when there was no session with streams")
             return
         }
         
@@ -140,7 +151,8 @@ class CompleteScreenViewModel: ObservableObject {
                 Log.info("Successfully followed session: \(externalSessionWithStreams.uuid)")
                 guard let self = self else { return }
                 DispatchQueue.main.async {
-                    self.refreshCompleteButtonText()
+                    self.isSessionFollowed = true
+                    self.followButtonText = Strings.CompleteSearchView.followButtonTitle
                 }
             case .failure(let error):
                 Log.error("Following external session failed: \(error)")
