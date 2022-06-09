@@ -204,6 +204,18 @@ struct InAppAlerts {
             .default(title: Strings.Commons.gotIt, action: nil)
         ])
     }
+    
+    static func noInternetConnection(error: AuthorizationError) -> AlertInfo {
+        AlertInfo(title: Strings.CreateAccountView.noInternetTitle, message: error.localizedDescription, buttons: [
+            .default(title: Strings.Commons.ok, action: nil)
+        ])
+    }
+    
+    static func createAccountAlert(error: AuthorizationError) -> AlertInfo {
+        AlertInfo(title: Strings.CreateAccountView.takenAndOtherTitle, message: error.localizedDescription, buttons: [
+            .default(title: Strings.Commons.ok, action: nil)
+        ])
+    }
 }
 
 import SwiftUI

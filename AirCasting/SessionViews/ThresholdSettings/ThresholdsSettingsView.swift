@@ -15,10 +15,10 @@ struct ThresholdsSettingsView: View {
     let initialThresholds: ThresholdsValue
     @StateObject private var thresholdSettingsViewModel: ThresholdSettingsViewModel
     
-    init(thresholdValues: Binding<ThresholdsValue>, initialThresholds: ThresholdsValue) {
+    init(thresholdValues: Binding<ThresholdsValue>, initialThresholds: ThresholdsValue, threshold: SensorThreshold) {
         _thresholdValues = thresholdValues
         self.initialThresholds = initialThresholds
-        _thresholdSettingsViewModel = .init(wrappedValue: ThresholdSettingsViewModel(initialThresholds: initialThresholds))
+        _thresholdSettingsViewModel = .init(wrappedValue: ThresholdSettingsViewModel(initialThresholds: initialThresholds, threshold: threshold))
     }
     
     var body: some View {
@@ -147,7 +147,8 @@ struct HeatmapSettings_Previews: PreviewProvider {
                                                                            low:      15,
                                                                            medium:   20,
                                                                            high:     25,
-                                                                           veryHigh: 30))
+                                                                           veryHigh: 30),
+                                   threshold: .mock)
         }
 }
 #endif
