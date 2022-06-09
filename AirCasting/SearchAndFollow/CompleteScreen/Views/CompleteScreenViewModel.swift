@@ -180,7 +180,7 @@ class CompleteScreenViewModel: ObservableObject {
                                                                                      measurementShortType: streamLocalData.measurementShortType ?? "",
                                                                                      measurementType: streamLocalData.measurementType ?? "",
                                                                                      sensorName: stream.sensorName,
-                                                                                     sensorPackageName: currentSensor.rawName,
+                                                                                     sensorPackageName: currentSensor.userFacingName,
                                                                                      thresholdsValues: .init(veryLow: streamLocalData.thresholdVeryLow,
                                                                                                              low: streamLocalData.thresholdLow,
                                                                                                              medium: streamLocalData.thresholdMedium,
