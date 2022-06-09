@@ -36,13 +36,6 @@ class CompleteScreenViewModel: ObservableObject {
     @Published var isMapSelected: Bool = true
     @Published var isSessionFollowed: Bool = false
     @Published var alert: AlertInfo?
-    
-    let sessionLongitude: Double
-    let sessionLatitude: Double
-    let sessionName: String
-    let sessionStartTime: Date
-    let sessionEndTime: Date
-    let sensorType: String
     @Published var followButtonEnabled: Bool = false
     @Published var followButtonText: String = Strings.CompleteSearchView.followButtonTitle
     @Published var sessionStreams: Loadable<[SessionStreamViewModel]> = .loading {
@@ -51,10 +44,16 @@ class CompleteScreenViewModel: ObservableObject {
         }
     }
     @Published var chartViewModel = SearchAndFollowChartViewModel()
-    private var isOwnSession: Bool { userAuthenticationSession.user?.username == session.provider }
     
+    let sessionLongitude: Double
+    let sessionLatitude: Double
+    let sessionName: String
+    let sessionStartTime: Date
+    let sessionEndTime: Date
+    let sensorType: String
     let exitRoute: () -> Void
-    
+
+    private var isOwnSession: Bool { userAuthenticationSession.user?.username == session.provider }
     private var session: PartialExternalSession
     private var externalSessionWithStreams: ExternalSessionWithStreamsAndMeasurements?
     
@@ -118,18 +117,17 @@ class CompleteScreenViewModel: ObservableObject {
             assertionFailure("Unfollow button pressed when there was no session with streams")
             return
         }
-        service.unfollowSession(session: externalSessionWithStreams) { [weak self] result in
+        service.unfollowSession(session: externalSessionWithStreams) { result in
             switch result {
             case .success:
                 Log.info("Successfully unfollowed session: \(externalSessionWithStreams.uuid)")
                 DispatchQueue.main.async {
-                    guard let self = self else { return }
                     self.isSessionFollowed = false
                     self.followButtonEnabled = true
                 }
             case .failure(let error):
                 Log.error("Unfollowing external session failed: \(error)")
-                self?.showAlert()
+                self.showAlert()
             }
         }
     }
