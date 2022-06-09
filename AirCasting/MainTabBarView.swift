@@ -207,11 +207,31 @@ class FinishAndSyncButtonTapped: ObservableObject {
 class ReorderButton: ObservableObject {
     @Published var reorderIsOn = false
     @Published var isHidden = false
+    
+    func navigationLink(isActive: Bool) {
+        if isActive {
+            isHidden = true
+        } else {
+            withAnimation {
+                isHidden = false
+            }
+        }
+    }
 }
 
 class SearchAndFollowButton: ObservableObject {
      @Published var searchIsOn = false
      @Published var isHidden = false
+    
+    func navigationLink(isActive: Bool) {
+        if isActive {
+            isHidden = true
+        } else {
+            withAnimation {
+                isHidden = false
+            }
+        }
+    }
  }
 
 extension MainTabBarView {

@@ -57,6 +57,10 @@ struct ExternalSessionCard: View {
                 mapStatsDataSource?.dataSource.stream = newStream
                 uiStateHandler.changeSelectedStream(sessionUUID: session.uuid, newStream: newStream?.sensorName ?? "")
             })
+            .onChange(of: isMapButtonActive) { _ in
+                reorderButton.navigationLink(isActive: isMapButtonActive)
+                searchAndFollowButton.navigationLink(isActive: isMapButtonActive)
+            }
     }
 
     var sessionCard: some View {
@@ -127,8 +131,6 @@ private extension ExternalSessionCard {
     private var mapButton: some View {
         Button {
             isMapButtonActive = true
-            reorderButton.isHidden = true
-            searchAndFollowButton.isHidden = true
         } label: {
             Text(Strings.SessionCartView.map)
                 .font(Fonts.semiboldHeading2)
