@@ -917,6 +917,12 @@ struct Strings {
                                                                    comment: "")
         static let accountDeletionSuccessMessage: String = NSLocalizedString("Your account has been deleted.",
                                                                    comment: "")
+        static let logoutWarningTitle: String = NSLocalizedString("Are you sure to sign out?",
+                                                                   comment: "")
+        static let logoutWarningMessage: String = NSLocalizedString("You will lose the location-less sessions.",
+                                                                   comment: "")
+        static let logoutWarningConfirmButton: String = NSLocalizedString("Confirm",
+                                                                          comment: "")
     }
     
     enum AddNoteView {

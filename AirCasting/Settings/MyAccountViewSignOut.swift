@@ -41,18 +41,12 @@ private extension MyAccountViewSignOut {
     
     var signOutButton: some View {
         Button(action: {
-            guard networkChecker.connectionAvailable else {
-                alert = InAppAlerts.unableToLogOutAlert()
-                return
-            }
-            userState.currentState = .loggingOut
-            do {
-                try logoutController.logout {
-                    userState.currentState = .idle
+            if true {
+                alert = InAppAlerts.logoutWarningAlert {
+                    logoutUser()
                 }
-            } catch {
-                userState.currentState = .idle
-                assertionFailure("Failed to deauthorize \(error)")
+            } else {
+                logoutUser()
             }
         }) {
             Group {
@@ -94,4 +88,21 @@ private extension MyAccountViewSignOut {
         .padding(.bottom, 20)
         .padding()
     }
+    
+    private func logoutUser() {
+        guard networkChecker.connectionAvailable else {
+            alert = InAppAlerts.unableToLogOutAlert()
+            return
+        }
+        userState.currentState = .loggingOut
+        do {
+            try logoutController.logout {
+                userState.currentState = .idle
+            }
+        } catch {
+            userState.currentState = .idle
+            assertionFailure("Failed to deauthorize \(error)")
+        }
+    }
+    
 }

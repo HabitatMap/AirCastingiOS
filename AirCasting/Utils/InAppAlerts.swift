@@ -216,6 +216,17 @@ struct InAppAlerts {
             .default(title: Strings.Commons.ok, action: nil)
         ])
     }
+    
+    static func logoutWarningAlert(action: @escaping (() -> Void)) -> AlertInfo {
+        AlertInfo(
+            title: Strings.InAppAlerts.logoutWarningTitle, message: Strings.InAppAlerts.logoutWarningMessage,
+            buttons: [
+                .default(title: Strings.InAppAlerts.logoutWarningConfirmButton,
+                         action: action),
+                .cancel()
+            ]
+        )
+    }
 }
 
 import SwiftUI
