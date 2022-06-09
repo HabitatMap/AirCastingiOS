@@ -11,6 +11,7 @@ final class AirBeamCellularSessionCreator: SessionCreator {
     }
     @Injected private var userAuthenticationSession: UserAuthenticationSession
     @Injected private var measurementStreamStorage: MeasurementStreamStorage
+    @Injected private var uiStore: UIStorage
     private let createSessionService: CreateSessionAPIService
     
     init() {
@@ -72,6 +73,9 @@ final class AirBeamCellularSessionCreator: SessionCreator {
                                                                         do {
                                                                             let sessionWithURL = session.withUrlLocation(output.location)
                                                                             try storage.createSession(sessionWithURL)
+                                                                            self.uiStore.accessStorage({ storage in
+                                                                                storage.giveHighestOrder(to: sessionWithURL.uuid)
+                                                                            })
                                                                             try AirBeam3Configurator(peripheral: peripheral).configureFixedCellularSession(uuid: sessionUUID,
                                                                                                                                                            location: sessionContext.startingLocation ?? CLLocationCoordinate2D(latitude: 200, longitude: 200),
                                                                                                                                                            date: DateBuilder.getFakeUTCDate())
