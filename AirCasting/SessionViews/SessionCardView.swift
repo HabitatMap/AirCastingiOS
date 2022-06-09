@@ -90,12 +90,12 @@ struct SessionCardView: View {
             uiState.changeSelectedStream(sessionUUID: session.uuid, newStream: newStream?.sensorName ?? "")
         })
         .onChange(of: isMapButtonActive) { _ in
-            reorderButton.navigationLink(isActive: isMapButtonActive)
-            searchAndFollowButton.navigationLink(isActive: isMapButtonActive)
+            reorderButton.isHidden(if: isMapButtonActive)
+            searchAndFollowButton.isHidden(if: isMapButtonActive)
         }
         .onChange(of: isGraphButtonActive) { _ in
-            reorderButton.navigationLink(isActive: isGraphButtonActive)
-            searchAndFollowButton.navigationLink(isActive: isGraphButtonActive)
+            reorderButton.isHidden(if: isGraphButtonActive)
+            searchAndFollowButton.isHidden(if: isGraphButtonActive)
         }
         .font(Fonts.regularHeading4)
         .foregroundColor(.aircastingGray)
