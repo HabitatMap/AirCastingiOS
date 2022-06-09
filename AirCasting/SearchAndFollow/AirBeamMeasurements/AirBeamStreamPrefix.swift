@@ -14,7 +14,7 @@ enum AirBeamStreamPrefix: CaseIterable {
         }
     }
     
-    var capitalizedName: String {
+    var userFacingName: String {
         switch self {
         case .airBeam2: return "AirBeam2"
         case .airBeam3: return "AirBeam3"
