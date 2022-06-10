@@ -155,6 +155,7 @@ struct DashboardView: View {
                         }
                     }
                 }
+                .padding(5)
             }
             .coordinateSpace(name: dashboardCoordinateSpaceName)
         }

@@ -45,7 +45,7 @@ struct BottomCardView: View {
         .background(
             Group {
                 Color.white
-                    .shadow(color: .sessionCardShadow, radius: 9, x: 0, y: 1)
+                    .shadow(color: .bottomCardShadow, radius: 9, x: 0, y: 1)
             }
         )
         .cornerRadius(8)
