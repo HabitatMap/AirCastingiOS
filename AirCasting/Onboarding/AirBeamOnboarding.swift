@@ -6,7 +6,8 @@ import AirCastingStyling
 
 struct AirBeamOnboarding: View {
     var completion: () -> Void
-    @State var showingHalfModal = false
+    @State var sheetIsPresented = false
+    
     var body: some View {
         VStack(alignment: .leading) {
             progressBar
@@ -22,9 +23,22 @@ struct AirBeamOnboarding: View {
     }
     
     private struct ModalPopView: View {
-        @Binding var showingHalfModal: Bool
+        @Binding var sheetIsPresented: Bool
+        
         var body: some View {
             VStack(alignment: .leading) {
+                HStack {
+                    Spacer()
+                    Button(action: {
+                        sheetIsPresented = false
+                    }, label: {
+                        Image(systemName: "xmark")
+                            .foregroundColor(.aircastingDarkGray)
+                            .imageScale(.large)
+                    })
+                    .padding()
+                }
+
                 Spacer()
                 sheetTitle
                     .padding()
@@ -76,7 +90,7 @@ private extension AirBeamOnboarding {
     
     private var buttonToShowScreen: some View {
         Button(action: {
-            showingHalfModal = true
+            sheetIsPresented = true
         }, label: {
             Text(Strings.OnboardingAirBeam.sheetButton)
                 .navigationBarTitle("")
@@ -84,7 +98,7 @@ private extension AirBeamOnboarding {
                 .font(Fonts.semiboldHeading1)
         })
         .buttonStyle(GreenTextButtonStyle())
-        .sheet(isPresented: $showingHalfModal) { ModalPopView(showingHalfModal: self.$showingHalfModal) }
+        .sheet(isPresented: $sheetIsPresented) { ModalPopView(sheetIsPresented: self.$sheetIsPresented) }
     }
     
     private var descriptionText: some View {
