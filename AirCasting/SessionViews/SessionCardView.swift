@@ -89,6 +89,14 @@ struct SessionCardView: View {
             mapStatsDataSource?.dataSource.stream = newStream
             uiState.changeSelectedStream(sessionUUID: session.uuid, newStream: newStream?.sensorName ?? "")
         })
+        .onChange(of: isMapButtonActive) { _ in
+            reorderButton.setHidden(if: isMapButtonActive)
+            searchAndFollowButton.setHidden(if: isMapButtonActive)
+        }
+        .onChange(of: isGraphButtonActive) { _ in
+            reorderButton.setHidden(if: isGraphButtonActive)
+            searchAndFollowButton.setHidden(if: isGraphButtonActive)
+        }
         .font(Fonts.regularHeading4)
         .foregroundColor(.aircastingGray)
         .padding()
@@ -147,8 +155,6 @@ private extension SessionCardView {
     private var graphButton: some View {
         Button {
             isGraphButtonActive = true
-            reorderButton.isHidden = true
-            searchAndFollowButton.isHidden = true
             Log.info("\(reorderButton)")
         } label: {
             Text(Strings.SessionCartView.graph)
@@ -160,8 +166,6 @@ private extension SessionCardView {
     private var mapButton: some View {
         Button {
             isMapButtonActive = true
-            reorderButton.isHidden = true
-            searchAndFollowButton.isHidden = true
         } label: {
             Text(Strings.SessionCartView.map)
                 .font(Fonts.semiboldHeading2)
