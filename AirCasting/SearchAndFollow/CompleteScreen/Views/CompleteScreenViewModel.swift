@@ -113,17 +113,17 @@ class CompleteScreenViewModel: ObservableObject {
     }
     
     func unfollowButtonPressed() {
-        guard let externalSessionWithStreams = externalSessionWithStreams else {
-            assertionFailure("Unfollow button pressed when there was no session with streams")
+        guard isSessionFollowed else {
+            assertionFailure("Unfollow button pressed but this session is not in our DB")
             return
         }
-        service.unfollowSession(session: externalSessionWithStreams) { result in
+        service.unfollowSession(sessionUUID: session.uuid) { result in
             switch result {
             case .success:
-                Log.info("Successfully unfollowed session: \(externalSessionWithStreams.uuid)")
+                Log.info("Successfully unfollowed session: \(self.session.uuid)")
                 DispatchQueue.main.async {
                     self.isSessionFollowed = false
-                    self.followButtonEnabled = true
+                    if self.externalSessionWithStreams != nil { self.followButtonEnabled = true }
                 }
             case .failure(let error):
                 Log.error("Unfollowing external session failed: \(error)")
