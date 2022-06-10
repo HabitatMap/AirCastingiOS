@@ -208,7 +208,7 @@ class ReorderButton: ObservableObject {
     @Published var reorderIsOn = false
     @Published var isHidden = false
     
-    func isHidden(if isActive: Bool) {
+    func setHidden(if isActive: Bool) {
         if isActive {
             isHidden = true
         } else {
@@ -223,7 +223,7 @@ class SearchAndFollowButton: ObservableObject {
      @Published var searchIsOn = false
      @Published var isHidden = false
     
-    func isHidden(if isActive: Bool) {
+    func setHidden(if isActive: Bool) {
         if isActive {
             isHidden = true
         } else {

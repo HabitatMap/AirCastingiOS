@@ -58,8 +58,8 @@ struct ExternalSessionCard: View {
                 uiStateHandler.changeSelectedStream(sessionUUID: session.uuid, newStream: newStream?.sensorName ?? "")
             })
             .onChange(of: isMapButtonActive) { _ in
-                reorderButton.isHidden(if: isMapButtonActive)
-                searchAndFollowButton.isHidden(if: isMapButtonActive)
+                reorderButton.setHidden(if: isMapButtonActive)
+                searchAndFollowButton.setHidden(if: isMapButtonActive)
             }
     }
 
