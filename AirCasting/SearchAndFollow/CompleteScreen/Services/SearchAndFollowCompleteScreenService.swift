@@ -8,6 +8,7 @@ protocol SearchAndFollowCompleteScreenService {
     func createExternalSession(from session: PartialExternalSession, with downloadedStreamsWithMeasurements: [StreamWithMeasurements]) -> ExternalSessionWithStreamsAndMeasurements
     func downloadMeasurements(streamsIds: [Int], completion: @escaping (Result<[StreamWithMeasurements], Error>) -> Void)
     func followSession(session: ExternalSessionWithStreamsAndMeasurements, completion: @escaping (Result<Void, Error>) -> Void)
+    func unfollowSession(sessionUUID: SessionUUID, completion: @escaping (Result<Void, Error>) -> Void)
 }
 
 struct DefaultSearchAndFollowCompleteScreenService: SearchAndFollowCompleteScreenService {
@@ -64,9 +65,26 @@ struct DefaultSearchAndFollowCompleteScreenService: SearchAndFollowCompleteScree
             case .success:
                 uiStore.accessStorage { store in
                     store.giveHighestOrder(to: session.uuid)
+                    do {
+                        try store.cardStateToggle(for: session.uuid)
+                    } catch {
+                        Log.error("Changing card state failed: \(error)")
+                    }
                     completion(.success(()))
                 }
             case .failure(let error): completion(.failure(error))
+            }
+        }
+    }
+    
+    func unfollowSession(sessionUUID: SessionUUID, completion: @escaping (Result<Void, Error>) -> Void) {
+        externalSessionsStore.deleteSession(uuid: sessionUUID) { result in
+            switch result {
+            case .success:
+                completion(.success(()))
+            case .failure(let error):
+                completion(.failure(error))
+                Log.error("Failing to delete External Session: \(error)")
             }
         }
     }

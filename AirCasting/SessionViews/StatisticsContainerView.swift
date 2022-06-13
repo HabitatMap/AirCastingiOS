@@ -6,10 +6,18 @@
 //
 
 import SwiftUI
+import Resolver
 
 struct StatisticsContainerView<ViewModelType>: View where ViewModelType: StatisticsContainerViewModelable {
     @ObservedObject var statsContainerViewModel: ViewModelType
     @ObservedObject var threshold: SensorThreshold
+    private let formatter: ThresholdFormatter
+    
+    init(statsContainerViewModel: ViewModelType, threshold: SensorThreshold) {
+        self._statsContainerViewModel = .init(wrappedValue: statsContainerViewModel)
+        self._threshold = .init(wrappedValue: threshold)
+        self.formatter = Resolver.resolve(ThresholdFormatter.self, args: threshold)
+    }
     
     var body: some View {
         HStack {
@@ -35,12 +43,12 @@ struct StatisticsContainerView<ViewModelType>: View where ViewModelType: Statist
     
     private func standardParameter(value: Double) -> some View {
         ZStack {
-            threshold.colorFor(value: Int32(value))
+            formatter.color(for: value)
                 .opacity(0.32)
                 .cornerRadius(7.5)
             HStack {
                 Spacer()
-                threshold.colorFor(value: Int32(value))
+                formatter.color(for: value)
                     .clipShape(Circle())
                     .frame(width: 6, height: 6)
                 Spacer()
@@ -54,12 +62,12 @@ struct StatisticsContainerView<ViewModelType>: View where ViewModelType: Statist
     
     private func distinctParameter(value: Double) -> some View {
         ZStack {
-            threshold.colorFor(value: Int32(value))
+            formatter.color(for: value)
                 .opacity(0.32)
                 .cornerRadius(7.5)
             HStack {
                 Spacer()
-                threshold.colorFor(value: Int32(value))
+                formatter.color(for: value)
                     .clipShape(Circle())
                     .frame(width: 8, height: 8)
                 Spacer()
@@ -70,7 +78,6 @@ struct StatisticsContainerView<ViewModelType>: View where ViewModelType: Statist
             }
         }.frame(width: 68, height: 33, alignment: .center)
     }
-    
 }
 
 #if DEBUG
