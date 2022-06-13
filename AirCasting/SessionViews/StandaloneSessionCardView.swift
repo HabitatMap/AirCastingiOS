@@ -22,8 +22,10 @@ struct StandaloneSessionCardView: View {
             .font(Fonts.regularHeading4)
             .foregroundColor(.aircastingGray)
             .padding()
-            .background(Color.white
-                .shadow(color: .sessionCardShadow, radius: 3, x: 0, y: 2))
+            .background(
+                Color.white
+                    .cardShadow()
+            )
             .overlay(Rectangle().frame(width: nil, height: 4, alignment: .top).foregroundColor(Color.red), alignment: .top)
         }
     }
