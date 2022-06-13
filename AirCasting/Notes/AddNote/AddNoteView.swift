@@ -3,15 +3,9 @@
 import SwiftUI
 import AirCastingStyling
 
-struct UserImage: Identifiable {
-    var id: Int
-    var image: UIImage
-    var data: Data
-}
-
 struct AddNoteView<VM: AddNoteViewModel>: View {
     @StateObject var viewModel: VM
-    @State var pictures: [UserImage] = []
+    @State var picture: UIImage?
     @State var presentPhotoPicker = false
     
     var body: some View {
@@ -28,7 +22,7 @@ struct AddNoteView<VM: AddNoteViewModel>: View {
         .padding()
         }
         .sheet(isPresented: $presentPhotoPicker) {
-            PhotoPicker(pictures: $pictures)
+            PhotoPicker(picture: $picture)
         }
             
     }
@@ -58,8 +52,8 @@ private extension AddNoteView {
     
     var photo: some View {
         VStack {
-            ForEach(pictures) { picture in
-                Image(uiImage: picture.image)
+            if let picture = picture {
+                Image(uiImage: picture)
                     .resizable()
                     .scaledToFit()
             }
@@ -95,16 +89,8 @@ struct AddNoteView_Previews: PreviewProvider {
     static var previews: some View {
         AddNoteView(
             viewModel: AddNoteViewModel(sessionUUID: "", withLocation: false, exitRoute: {}),
-            pictures: [
-                UserImage(
-                    id: 1,
-                    image: UIImage(named: "message-square")!,
-                    data: UIImage(named: "message-square")!.jpegData(compressionQuality: 0.5)!),
-                UserImage(
-                    id: 2,
-                    image: UIImage(named: "message-square")!,
-                    data: UIImage(named: "message-square")!.jpegData(compressionQuality: 0.5)!)
-            ])
+            picture: UIImage(named: "message-square")!
+        )
     }
 }
 #endif
