@@ -289,6 +289,15 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         }
     }
     
+    func checkForLocationlessSessions() throws -> Bool {
+        do {
+            return try context.checkForLocationlessSessions()
+        } catch {
+            Log.error("Error when checking for locationless sessions: \(error.localizedDescription)")
+        }
+        return false
+    }
+    
     // MARK: - Notes
 
     enum NoteStorageError: Swift.Error, LocalizedError {

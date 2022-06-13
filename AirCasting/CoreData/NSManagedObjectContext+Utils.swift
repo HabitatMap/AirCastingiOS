@@ -103,6 +103,14 @@ extension NSManagedObjectContext {
         new.setValue(uuid.rawValue, forKey: "uuid")
         return new
     }
+    
+    func checkForLocationlessSessions() throws -> Bool  {
+        let fetchRequest: NSFetchRequest<SessionEntity> = SessionEntity.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "locationless = %d", true)
+
+        let results = try self.fetch(fetchRequest)
+        if !results.isEmpty { return true } else { return false }
+    }
 }
 
 extension NSManagedObjectContext {

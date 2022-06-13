@@ -12,6 +12,7 @@ struct MyAccountViewSignOut: View {
     @Injected private var networkChecker: NetworkChecker
     @Injected private var logoutController: LogoutController
     @Injected private var deleteController: DeleteAccountController
+    @Injected private var measurementStreamStorage: MeasurementStreamStorage
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
     
     var body: some View {
@@ -41,12 +42,19 @@ private extension MyAccountViewSignOut {
     
     var signOutButton: some View {
         Button(action: {
-            if true {
-                alert = InAppAlerts.logoutWarningAlert {
-                    logoutUser()
+            measurementStreamStorage.accessStorage { storage in
+                do {
+                    let result = try storage.checkForLocationlessSessions()
+                    switch result {
+                    case true:
+                        alert = InAppAlerts.logoutWarningAlert {
+                            logoutUser()
+                        }
+                    case false: logoutUser()
+                    }
+                } catch {
+                    Log.error("Error when informing the user about loosing locationless sessions")
                 }
-            } else {
-                logoutUser()
             }
         }) {
             Group {
@@ -58,7 +66,7 @@ private extension MyAccountViewSignOut {
                 .padding(.horizontal)
             }
         }.buttonStyle(BlueButtonStyle())
-        .padding()
+            .padding()
     }
     
     var deleteProfileButton: some View {
