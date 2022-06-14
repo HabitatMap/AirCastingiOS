@@ -52,9 +52,7 @@ class CompleteScreenViewModel: ObservableObject {
     let sessionEndTime: Date
     let sensorType: String
     let exitRoute: () -> Void
-
-    private var followingText = Strings.CompleteSearchView.followingSessionButtonTitle
-
+    
     private var isOwnSession: Bool { userAuthenticationSession.user?.username == session.provider }
     private var session: PartialExternalSession
     private var externalSessionWithStreams: ExternalSessionWithStreamsAndMeasurements?
