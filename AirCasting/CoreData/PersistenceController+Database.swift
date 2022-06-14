@@ -152,7 +152,8 @@ extension Database.Session {
                                                  text: n.text ?? "",
                                                  latitude: n.lat,
                                                  longitude: n.long,
-                                                 number: Int(n.number))
+                                                 number: Int(n.number),
+                                                 originalPictureData: n.originalPictureData)
                         } ?? [])
         )
     }

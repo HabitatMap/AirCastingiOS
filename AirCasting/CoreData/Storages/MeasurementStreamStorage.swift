@@ -315,6 +315,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         noteEntity.text = note.text
         noteEntity.date = note.date
         noteEntity.number = Int64(note.number)
+        noteEntity.originalPictureData = note.pictureData
         sessionEntity.addToNotes(noteEntity)
     }
 
@@ -337,10 +338,11 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         return sessionEntity.notes?.map { note -> Note in
             let n = note as! NoteEntity
             return Note(date: n.date ?? DateBuilder.getFakeUTCDate(),
-                                   text: n.text ?? "",
-                                   lat: n.lat,
-                                   long: n.long,
-                                   number: Int(n.number))
+                        text: n.text ?? "",
+                        lat: n.lat,
+                        long: n.long,
+                        pictureData: n.originalPictureData,
+                        number: Int(n.number))
         } ?? []
     }
 
@@ -359,6 +361,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
                     text: note.text ?? "",
                     lat: note.lat,
                     long: note.long,
+                    pictureData: note.originalPictureData,
                     number: Int(note.number))
     }
     

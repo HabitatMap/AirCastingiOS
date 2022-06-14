@@ -66,7 +66,7 @@ private extension AddNoteView {
     
     var continueButton: some View {
         Button {
-            viewModel.continueTapped()
+            viewModel.continueTapped(selectedPictureData: picture?.jpegData(compressionQuality: 1))
         } label: {
             Text(Strings.AddNoteView.continueButton)
                 .bold()
