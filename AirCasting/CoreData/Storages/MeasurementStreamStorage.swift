@@ -294,8 +294,8 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
             return try context.checkForLocationlessSessions()
         } catch {
             Log.error("Error when checking for locationless sessions: \(error.localizedDescription)")
+            return false
         }
-        return false
     }
     
     // MARK: - Notes
