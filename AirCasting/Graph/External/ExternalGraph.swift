@@ -40,21 +40,20 @@ struct ExternalGraph: UIViewRepresentable {
         let allLimitLines = getLimitLines()
         uiView.limitLines = allLimitLines
         simplifyGraphline(entries: entries, uiView: uiView)
-        context.coordinator.totalNumberOfMeasurements = entries.count
+        
         context.coordinator.currentThreshold = ThresholdWitness(sensorThreshold: thresholds)
-        context.coordinator.currentMeasurementsNumber = calculateSeeingPointsNumber(entries: entries, uiView: uiView)
+        context.coordinator.currentMeasurementsNumber = calculateVisiblePointsNumber(entries: entries, uiView: uiView)
         context.coordinator.entries = entries
+        context.coordinator.lastMeasurementTime = stream.allMeasurements?.last?.time
         context.coordinator.stream = stream
         return uiView
     }
     
     func updateUIView(_ uiView: AirCastingGraph, context: Context) {
-        // This code helps us to make graph faster and snappier
-        // The -if- statement is executed on dormant and active sessions to ensure it updates graph line well
-        // The -guard- code is executed only on active sessions and on data change events
-        // (⊙_◎)
+        
         let thresholdWitness = ThresholdWitness(sensorThreshold: self.thresholds)
-        let counter: Int = calculateSeeingPointsNumber(entries: context.coordinator.entries!, uiView: uiView)
+        let counter: Int = calculateVisiblePointsNumber(entries: context.coordinator.entries!, uiView: uiView)
+        let lastMeasurementTime = stream.allMeasurements?.last?.time
         
         if counter != context.coordinator.currentMeasurementsNumber {
             simplifyGraphline(entries: context.coordinator.entries!, uiView: uiView)
@@ -62,8 +61,8 @@ struct ExternalGraph: UIViewRepresentable {
         }
         
         guard context.coordinator.currentThreshold != thresholdWitness ||
-                context.coordinator.totalNumberOfMeasurements != stream.allMeasurements?.count ||
-                stream != context.coordinator.stream else { return }
+                stream != context.coordinator.stream ||
+                lastMeasurementTime != context.coordinator.lastMeasurementTime else { return }
         
         try? uiView.updateWithThreshold(thresholdValues: thresholds.rawThresholdsBinding.wrappedValue)
         let allLimitLines = getLimitLines()
@@ -79,14 +78,14 @@ struct ExternalGraph: UIViewRepresentable {
         
         context.coordinator.entries = entries
         context.coordinator.currentThreshold = ThresholdWitness(sensorThreshold: thresholds)
-        context.coordinator.totalNumberOfMeasurements = entries.count
         context.coordinator.currentMeasurementsNumber = entries.count
+        context.coordinator.lastMeasurementTime = stream.allMeasurements?.last?.time
         context.coordinator.stream = stream
     }
     
     private func simplifyGraphline(entries: [ChartDataEntry], uiView: AirCastingGraph) {
         
-        let counter: Int = calculateSeeingPointsNumber(entries: entries, uiView: uiView)
+        let counter: Int = calculateVisiblePointsNumber(entries: entries, uiView: uiView)
         
         guard counter > simplifiedGraphEntryThreshold else {
             uiView.updateWithEntries(entries: entries, isAutozoomEnabled: isAutozoomEnabled)
@@ -99,7 +98,7 @@ struct ExternalGraph: UIViewRepresentable {
         Log.info("Simplified \(entries.count) to \(simplifiedPoints.count)")
     }
     
-    func calculateSeeingPointsNumber(entries: [ChartDataEntry], uiView: AirCastingGraph) -> Int {
+    func calculateVisiblePointsNumber(entries: [ChartDataEntry], uiView: AirCastingGraph) -> Int {
         let startTime = uiView.lineChartView.lowestVisibleX
         let endTime = uiView.lineChartView.highestVisibleX
         
@@ -119,16 +118,15 @@ struct ExternalGraph: UIViewRepresentable {
         var midnightPoints: [Double] = []
         
         while (midnight > firstMeasurementDate) {
-            let previous = Calendar.current.nextDate(after: midnight,
-                                                    matching: components,
-                                                    matchingPolicy: Calendar.MatchingPolicy.previousTimePreservingSmallerComponents,
-                                                    repeatedTimePolicy: Calendar.RepeatedTimePolicy.first,
-                                                     direction: .backward)
+            guard let previous = Calendar.current.nextDate(after: midnight,
+                                                           matching: components,
+                                                           matchingPolicy: Calendar.MatchingPolicy.previousTimePreservingSmallerComponents,
+                                                           repeatedTimePolicy: Calendar.RepeatedTimePolicy.first,
+                                                           direction: .backward) else { return [] }
             
-            if let midnightPoint = previous?.currentUTCTimeZoneDate.timeIntervalSince1970 {
-                midnightPoints.append(midnightPoint)
-            }
-            midnight = previous!
+            let previousTimeInterval = previous.currentUTCTimeZoneDate.timeIntervalSince1970
+            midnightPoints.append(previousTimeInterval)
+            midnight = previous
         }
         return midnightPoints
     }
@@ -151,13 +149,13 @@ struct ExternalGraph: UIViewRepresentable {
     }
     
     class Coordinator: NSObject, UINavigationControllerDelegate {
-
-        var parent: ExternalGraph!
-        var totalNumberOfMeasurements: Int?
+        
+        var stream: MeasurementStreamEntity?
         var currentThreshold: ThresholdWitness?
         var currentMeasurementsNumber: Int?
         var entries: [ChartDataEntry]?
-        var stream: MeasurementStreamEntity?
+        var lastMeasurementTime: Date?
+        var parent: ExternalGraph!
         
         init(_ parent: ExternalGraph) {
             self.parent = parent

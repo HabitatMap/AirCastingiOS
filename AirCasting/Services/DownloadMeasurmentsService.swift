@@ -23,8 +23,7 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
     private var timerSink: Cancellable?
     private var lastFetchCancellableTask: Cancellable?
     @Injected private var removeOldServiceDefault: RemoveOldMeasurements
-    @Injected private var removeOldServiceOpenAQ: RemoveOldMeasurementsOpenAQ
-    @Injected private var removeOldServicePurpleAir: RemoveOldMeasurementsPurpleAir
+
 
     #warning("Add locking here so updates won't bump on one another")
     func start() {
@@ -136,19 +135,13 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
                             })
                         }
                     })
-                    if session.provider == SensorType.OpenAQ.capitalizedName {
-                        try self.removeOldServiceOpenAQ.removeOldestMeasurements(in: context, from: sessionUUID)
-                    } else if session.provider == SensorType.PurpleAir.capitalizedName {
-                        try self.removeOldServicePurpleAir.removeOldestMeasurements(in: context, from: sessionUUID)
-                    } else {
-                        try self.removeOldServiceDefault.removeOldestMeasurements(in: context,
-                                                                                  from: sessionUUID)
-                    }
+                    try self.removeOldServiceDefault.removeOldestMeasurements(in: context,
+                                                                              from: sessionUUID)
                 }
                 try context.save()
             } catch let error as UpdateSessionParamsService.Error {
                 Log.error("Failed to update session params: \(error)")
-            } catch let error as DefaultOldMeasurementsService.Error {
+            } catch let error as DefaultRemoveOldMeasurementsService.Error {
                 Log.error("Failed to remove old measaurements from fixed session \(error)")
             } catch {
                 Log.error("Save error: \(error)")

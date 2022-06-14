@@ -216,9 +216,7 @@ extension Resolver: ResolverRegistering {
         main.register { AirBeamMeasurementsDownloaderDefault() as AirBeamMeasurementsDownloader }
     
         // MARK: - Old measurements remover
-        main.register { DefaultOldMeasurementsService() as RemoveOldMeasurements }
-        main.register { OpenAQMeasurementsService() as RemoveOldMeasurementsOpenAQ }
-        main.register { PurpleAirMeasurementsService() as RemoveOldMeasurementsPurpleAir }
+        main.register { DefaultRemoveOldMeasurementsService() as RemoveOldMeasurements }
     }
     
     // MARK: - Composition helpers

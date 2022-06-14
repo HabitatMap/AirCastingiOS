@@ -8,7 +8,7 @@ protocol SearchAndFollowCompleteScreenService {
     func createExternalSession(from session: PartialExternalSession, with downloadedStreamsWithMeasurements: [StreamWithMeasurements]) -> ExternalSessionWithStreamsAndMeasurements
     func downloadMeasurements(streamsIds: [Int], completion: @escaping (Result<[StreamWithMeasurements], Error>) -> Void)
     func followSession(session: ExternalSessionWithStreamsAndMeasurements, completion: @escaping (Result<Void, Error>) -> Void)
-    func unfollowSession(session: ExternalSessionWithStreamsAndMeasurements, completion: @escaping (Result<Void, Error>) -> Void)
+    func unfollowSession(sessionUUID: SessionUUID, completion: @escaping (Result<Void, Error>) -> Void)
 }
 
 struct DefaultSearchAndFollowCompleteScreenService: SearchAndFollowCompleteScreenService {
@@ -79,8 +79,8 @@ struct DefaultSearchAndFollowCompleteScreenService: SearchAndFollowCompleteScree
         }
     }
     
-    func unfollowSession(session: ExternalSessionWithStreamsAndMeasurements, completion: @escaping (Result<Void, Error>) -> Void) {
-        externalSessionsStore.deleteSession(uuid: session.uuid) { result in
+    func unfollowSession(sessionUUID: SessionUUID, completion: @escaping (Result<Void, Error>) -> Void) {
+        externalSessionsStore.deleteSession(uuid: sessionUUID) { result in
             switch result {
             case .success:
                 completion(.success(()))

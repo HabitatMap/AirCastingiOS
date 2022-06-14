@@ -4,10 +4,9 @@
 import Foundation
 // swiftlint:disable airCasting_date
 extension Date {
-    static let msFormatter: DateFormatter = DateFormatters.DateExtension.milisecondsDateFormatter
     
     var milliseconds: Int {
-        Int(Date.msFormatter.string(from: self).dropFirst())!
+        Int((self.timeIntervalSince1970 * 1000.0).rounded())
     }
 
     // TODO: This uses two date formatters. It's relatively slow and should be changed to more roboust solution as we're using this quite often

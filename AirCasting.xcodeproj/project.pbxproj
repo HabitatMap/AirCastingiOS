@@ -165,7 +165,7 @@
 		AC7EB3B125A7152000A7F2AF /* Muli-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB39B25A7152000A7F2AF /* Muli-Regular.ttf */; };
 		AC7EB3B225A7152000A7F2AF /* Muli-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB39C25A7152000A7F2AF /* Muli-LightItalic.ttf */; };
 		AC7EB3B325A7152000A7F2AF /* Moderat-Trial-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB39D25A7152000A7F2AF /* Moderat-Trial-Black.otf */; };
-		AC8431D0265E6143004DC890 /* DefaultOldMeasurementsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8431CF265E6143004DC890 /* DefaultOldMeasurementsService.swift */; };
+		AC8431D0265E6143004DC890 /* DefaultRemoveOldMeasurementsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8431CF265E6143004DC890 /* DefaultRemoveOldMeasurementsService.swift */; };
 		AC86EE6B25D03DC00083F8C0 /* SelectDeviceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC86EE6A25D03DC00083F8C0 /* SelectDeviceView.swift */; };
 		AC8CFF3625E502DD00FB2918 /* CreateAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8CFF3525E502DD00FB2918 /* CreateAccountView.swift */; };
 		AC8CFF4125E5095600FB2918 /* Textfield.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8CFF4025E5095600FB2918 /* Textfield.swift */; };
@@ -458,8 +458,6 @@
 		DDF7599A268332E900D906BA /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF75999268332E900D906BA /* Strings.swift */; };
 		EE969E7E1981C41852FB7745 /* Pods_AirCastingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A54057326D27D23E9906704 /* Pods_AirCastingTests.framework */; };
 		FA028B6C28520C0700BB66A0 /* RemoveOldMeasurements.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA028B6B28520C0700BB66A0 /* RemoveOldMeasurements.swift */; };
-		FA028B6E28520C1000BB66A0 /* OpenAQMeasurementsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA028B6D28520C1000BB66A0 /* OpenAQMeasurementsService.swift */; };
-		FA028B7028520C1800BB66A0 /* PurpleAirMeasurementsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA028B6F28520C1800BB66A0 /* PurpleAirMeasurementsService.swift */; };
 		FA26E9E928107150008EE514 /* SearchParameter.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA26E9E828107150008EE514 /* SearchParameter.swift */; };
 		FA45FEFE2844D53700F9C25F /* ExternalGraphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA45FEFD2844D53700F9C25F /* ExternalGraphView.swift */; };
 		FA45FF002844DD4100F9C25F /* ExternalGraph.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA45FEFF2844DD4100F9C25F /* ExternalGraph.swift */; };
@@ -655,7 +653,7 @@
 		AC7EB39B25A7152000A7F2AF /* Muli-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Muli-Regular.ttf"; sourceTree = "<group>"; };
 		AC7EB39C25A7152000A7F2AF /* Muli-LightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Muli-LightItalic.ttf"; sourceTree = "<group>"; };
 		AC7EB39D25A7152000A7F2AF /* Moderat-Trial-Black.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Moderat-Trial-Black.otf"; sourceTree = "<group>"; };
-		AC8431CF265E6143004DC890 /* DefaultOldMeasurementsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultOldMeasurementsService.swift; sourceTree = "<group>"; };
+		AC8431CF265E6143004DC890 /* DefaultRemoveOldMeasurementsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultRemoveOldMeasurementsService.swift; sourceTree = "<group>"; };
 		AC86EE6A25D03DC00083F8C0 /* SelectDeviceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectDeviceView.swift; sourceTree = "<group>"; };
 		AC8CFF3525E502DD00FB2918 /* CreateAccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateAccountView.swift; sourceTree = "<group>"; };
 		AC8CFF4025E5095600FB2918 /* Textfield.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Textfield.swift; sourceTree = "<group>"; };
@@ -946,8 +944,6 @@
 		DDF62600269C779800F23489 /* UIApplication+AppInfo.swift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+AppInfo.swift.swift"; sourceTree = "<group>"; };
 		DDF75999268332E900D906BA /* Strings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Strings.swift; sourceTree = "<group>"; };
 		FA028B6B28520C0700BB66A0 /* RemoveOldMeasurements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoveOldMeasurements.swift; sourceTree = "<group>"; };
-		FA028B6D28520C1000BB66A0 /* OpenAQMeasurementsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAQMeasurementsService.swift; sourceTree = "<group>"; };
-		FA028B6F28520C1800BB66A0 /* PurpleAirMeasurementsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurpleAirMeasurementsService.swift; sourceTree = "<group>"; };
 		FA26E9E828107150008EE514 /* SearchParameter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchParameter.swift; sourceTree = "<group>"; };
 		FA45FEFD2844D53700F9C25F /* ExternalGraphView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalGraphView.swift; sourceTree = "<group>"; };
 		FA45FEFF2844DD4100F9C25F /* ExternalGraph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalGraph.swift; sourceTree = "<group>"; };
@@ -2421,9 +2417,7 @@
 			isa = PBXGroup;
 			children = (
 				FA028B6B28520C0700BB66A0 /* RemoveOldMeasurements.swift */,
-				AC8431CF265E6143004DC890 /* DefaultOldMeasurementsService.swift */,
-				FA028B6D28520C1000BB66A0 /* OpenAQMeasurementsService.swift */,
-				FA028B6F28520C1800BB66A0 /* PurpleAirMeasurementsService.swift */,
+				AC8431CF265E6143004DC890 /* DefaultRemoveOldMeasurementsService.swift */,
 			);
 			path = OldMeasurementRemovers;
 			sourceTree = "<group>";
@@ -2634,7 +2628,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nif [ \"${CONFIGURATION}\" == \"Release\" ] \nthen\n    echo \"FirebaseCrashlytics\"\n    \"${PODS_ROOT}/FirebaseCrashlytics/run\"\nelse\n    echo \"Will run FirebaseCrashlytics in release mode\"\nfi\n";
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nif [ \"${CONFIGURATION}\" == \"Release\" ] \nthen\n    echo \"FirebaseCrashlytics\"\n    \"${BUILD_DIR%Build/*}/SourcePackages/checkouts/firebase-ios-sdk/Crashlytics/run\"\nelse\n    echo \"Will run FirebaseCrashlytics in release mode\"\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		BA797DF3793837CC1AFA2CA9 /* [CP] Check Pods Manifest.lock */ = {
@@ -2833,7 +2827,7 @@
 				B3FD77B6267C94AF00E97CC2 /* DatabaseSession.swift in Sources */,
 				AC32043625CD534700A68520 /* ChooseSessionTypeView.swift in Sources */,
 				3387DD4C278F1A4000B11D02 /* ShareLocationlessSessionViewModel.swift in Sources */,
-				AC8431D0265E6143004DC890 /* DefaultOldMeasurementsService.swift in Sources */,
+				AC8431D0265E6143004DC890 /* DefaultRemoveOldMeasurementsService.swift in Sources */,
 				DD2DDBAC27B535EC00807011 /* SessionCardUIState.swift in Sources */,
 				B3E2B65A27506E0D00019167 /* FileLineReader.swift in Sources */,
 				B30BAC152694AA7200AE0476 /* MeasurementsStatisticsInput.swift in Sources */,
@@ -2859,7 +2853,6 @@
 				336F86D0282E98E500FEFD61 /* ExternalSessionMapView.swift in Sources */,
 				33A7FF2127C5160A00A138D6 /* StaticSessionHeader.swift in Sources */,
 				DDD24D9526A8569400D4A327 /* EmailForgotPasswordController.swift in Sources */,
-				FA028B6E28520C1000BB66A0 /* OpenAQMeasurementsService.swift in Sources */,
 				DD2DDBAE27B5450100807011 /* UIStorage.swift in Sources */,
 				AC524A892614733D0061AD45 /* CreatingSessionFlowRootView.swift in Sources */,
 				3387DD4A278F1A2900B11D02 /* ShareLocationlessSessionView.swift in Sources */,
@@ -2917,7 +2910,6 @@
 				DD22F0FD27D668DD00CB8B97 /* BottomCard.swift in Sources */,
 				33F3D47C27AC1A5C003CA386 /* SessionTypeIndicator.swift in Sources */,
 				4F945EF02649F455008A5B22 /* AirBeamFixedWifiSessionCreator.swift in Sources */,
-				FA028B7028520C1800BB66A0 /* PurpleAirMeasurementsService.swift in Sources */,
 				B30BAC132694AA3200AE0476 /* MeasurementsStatisticsController.swift in Sources */,
 				DD9DD37527A2B92E00E657E4 /* TurnOnLocationFixedViewModel.swift in Sources */,
 				FAB34933281AB208001F6E58 /* URLRequest.swift in Sources */,
@@ -3009,7 +3001,7 @@
 				DDEE3A44269736270098CCA9 /* NetworkChecker.swift in Sources */,
 				B376DD25268096E20083FD2F /* SessionSynchronizationDatabase.swift in Sources */,
 				FA45FEFE2844D53700F9C25F /* ExternalGraphView.swift in Sources */,
-				AC6D56A525AF211200D221BA /* MultiSliderView.swift in Sources */,
+				AC6D56A525AF211200D221BA /* ThresholdsSliderView.swift in Sources */,
 				AC6D56A525AF211200D221BA /* ThresholdsSliderView.swift in Sources */,
 				AC524A7626133A370061AD45 /* MeaurementStreamExtension.swift in Sources */,
 				DD9DD37327A2B91A00E657E4 /* TurnOnLocationFixedView.swift in Sources */,
@@ -3346,7 +3338,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 10;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
@@ -3374,7 +3366,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = AirCasting/Info.plist;
@@ -3462,7 +3454,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = AirCasting/Info.plist;

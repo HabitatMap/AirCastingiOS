@@ -52,10 +52,6 @@ class CompleteScreenViewModel: ObservableObject {
     let sessionEndTime: Date
     let sensorType: String
     let exitRoute: () -> Void
-    
-    private var sessionAlreadyFollowed: Bool {
-        externalSessionsStore.doesSessionExist(uuid: session.uuid)
-    }
 
     private var followingText = Strings.CompleteSearchView.followingSessionButtonTitle
 
@@ -119,17 +115,17 @@ class CompleteScreenViewModel: ObservableObject {
     }
     
     func unfollowButtonPressed() {
-        guard let externalSessionWithStreams = externalSessionWithStreams else {
-            assertionFailure("Unfollow button pressed when there was no session with streams")
+        guard isSessionFollowed else {
+            assertionFailure("Unfollow button pressed but this session is not in our DB")
             return
         }
-        service.unfollowSession(session: externalSessionWithStreams) { result in
+        service.unfollowSession(sessionUUID: session.uuid) { result in
             switch result {
             case .success:
-                Log.info("Successfully unfollowed session: \(externalSessionWithStreams.uuid)")
+                Log.info("Successfully unfollowed session: \(self.session.uuid)")
                 DispatchQueue.main.async {
                     self.isSessionFollowed = false
-                    self.followButtonEnabled = true
+                    if self.externalSessionWithStreams != nil { self.followButtonEnabled = true }
                 }
             case .failure(let error):
                 Log.error("Unfollowing external session failed: \(error)")
@@ -182,27 +178,30 @@ class CompleteScreenViewModel: ObservableObject {
                 case .success(let downloadedStreams):
                     
                     // TODO: - FIX Thresholds, get those values from backend not from our hardcoded struct
-#warning("🚨 FIX Thresholds 🚨")
-                    let streamHardcodedData = [MeasurementStream(sensorName: .f, sensorPackageName: ""),
-                                               MeasurementStream(sensorName: .pm1, sensorPackageName: ""),
-                                               MeasurementStream(sensorName: .pm10, sensorPackageName: ""),
-                                               MeasurementStream(sensorName: .pm2_5, sensorPackageName: ""),
-                                               MeasurementStream(sensorName: .rh, sensorPackageName: "")]
+                    #warning("🚨 FIX Thresholds 🚨")
+                    let streamsSortedHardcoded = [MeasurementStream(sensorName: .f, sensorPackageName: ""),
+                                                  MeasurementStream(sensorName: .pm1, sensorPackageName: ""),
+                                                  MeasurementStream(sensorName: .pm2_5, sensorPackageName: ""),
+                                                  MeasurementStream(sensorName: .pm10, sensorPackageName: ""),
+                                                  MeasurementStream(sensorName: .rh, sensorPackageName: "")]
+                    self.session.stream = []
                     
-                    let sessionStream = downloadedStreams.map({ stream -> PartialExternalSession.Stream in
-                        let streamLocalData = streamHardcodedData.first(where: { Self.getSensorName($0.sensorName ?? "") == Self.getSensorName(stream.sensorName)})
-                        return PartialExternalSession.Stream(id: stream.streamId,
-                                                             unitName: streamLocalData?.unitName ?? "",
-                                                             unitSymbol: stream.sensorUnit,
-                                                             measurementShortType: streamLocalData?.measurementShortType ?? "",
-                                                             measurementType: streamLocalData?.measurementType ?? "",
-                                                             sensorName: stream.sensorName,
-                                                             sensorPackageName: currentSensor.rawName,
-                                                             thresholdsValues: .init(veryLow: streamLocalData?.thresholdVeryLow ?? 0,
-                                                                                     low: streamLocalData?.thresholdLow ?? 0,
-                                                                                     medium: streamLocalData?.thresholdMedium ?? 0,
-                                                                                     high: streamLocalData?.thresholdHigh ?? 0,
-                                                                                     veryHigh: streamLocalData?.thresholdVeryHigh ?? 0))})
+                    streamsSortedHardcoded.forEach { streamLocalData in
+                        if let stream = downloadedStreams.first(where: { Self.getSensorName($0.sensorName) == Self.getSensorName(streamLocalData.sensorName ?? "") }) {
+                            self.session.stream.append(PartialExternalSession.Stream(id: stream.streamId,
+                                                                                     unitName: streamLocalData.unitName ?? "",
+                                                                                     unitSymbol: stream.sensorUnit,
+                                                                                     measurementShortType: streamLocalData.measurementShortType ?? "",
+                                                                                     measurementType: streamLocalData.measurementType ?? "",
+                                                                                     sensorName: stream.sensorName,
+                                                                                     sensorPackageName: currentSensor.userFacingName,
+                                                                                     thresholdsValues: .init(veryLow: streamLocalData.thresholdVeryLow,
+                                                                                                             low: streamLocalData.thresholdLow,
+                                                                                                             medium: streamLocalData.thresholdMedium,
+                                                                                                             high: streamLocalData.thresholdHigh,
+                                                                                                             veryHigh: streamLocalData.thresholdVeryHigh)))
+                        }
+                    }
                     
                     Log.info("Completed downloading missing streams.")
                     self.getMeasurementsAndDisplayData()
@@ -234,16 +233,13 @@ class CompleteScreenViewModel: ObservableObject {
                     return
                 }
                 
-                // Special filter for PurpleAir and OpenAQ as its measurements are not consistent
-                // PurpleAir/OpenAQ — measurements from there are not consistent, so we need to do more 'manual work' 🔧
+                // Special filter for Sensors as those measurements are not consistent
                 var streamWithMeasureementsCopy = downloadedStreamsWithMeasurements
-                if (self.session.provider == SensorType.OpenAQ.capitalizedName) || (self.session.provider == SensorType.PurpleAir.capitalizedName) {
-                    guard let measurements = streamWithMeasureementsCopy.first?.measurements,
-                          let lastMeasurement = measurements.last else { return }
-                    let twentyFourHours = 86400000 // 24 hours in miliseconds: 60 * 60 * 24
-                    let beginingOfCorrectPeriod = lastMeasurement.time - twentyFourHours
-                    streamWithMeasureementsCopy[0].measurements = (measurements.filter({ $0.time >= beginingOfCorrectPeriod }))
-                }
+                guard let measurements = streamWithMeasureementsCopy.first?.measurements,
+                      let lastMeasurement = measurements.last else { return }
+                let twentyFourHours = 86400000 // 24 hours in miliseconds: 60 * 60 * 24
+                let beginingOfCorrectPeriod = lastMeasurement.time - twentyFourHours
+                streamWithMeasureementsCopy[0].measurements = (measurements.filter({ $0.time >= beginingOfCorrectPeriod }))
                 
                 DispatchQueue.main.async {
                     self.externalSessionWithStreams = self.service.createExternalSession(from: self.session, with: streamWithMeasureementsCopy)

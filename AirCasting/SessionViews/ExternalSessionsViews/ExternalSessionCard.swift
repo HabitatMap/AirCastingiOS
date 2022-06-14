@@ -65,6 +65,10 @@ struct ExternalSessionCard: View {
                 graphStatsDataSource.stream = newStream
                 graphStatsDataSource.dataSource.stream = newStream
             })
+            .onChange(of: isMapButtonActive) { _ in
+                reorderButton.setHidden(if: isMapButtonActive)
+                searchAndFollowButton.setHidden(if: isMapButtonActive)
+            }
     }
     
     var sessionCard: some View {
@@ -137,8 +141,6 @@ private extension ExternalSessionCard {
     private var mapButton: some View {
         Button {
             isMapButtonActive = true
-            reorderButton.isHidden = true
-            searchAndFollowButton.isHidden = true
         } label: {
             Text(Strings.SessionCartView.map)
                 .font(Fonts.semiboldHeading2)

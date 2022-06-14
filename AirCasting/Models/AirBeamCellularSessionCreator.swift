@@ -20,7 +20,8 @@ final class AirBeamCellularSessionCreator: SessionCreator {
     
     func createSession(_ sessionContext: CreateSessionContext, completion: @escaping (Result<Void, Error>) -> Void) {
         guard let sessionType = sessionContext.sessionType,
-              let sessionUUID = sessionContext.sessionUUID else {
+              let sessionUUID = sessionContext.sessionUUID,
+              let isIndoor = sessionContext.isIndoor else {
             assertionFailure("invalidCreateSessionContext \(sessionContext)")
             completion(.failure(AirBeamSessionCreatorError.invalidCreateSessionContext(sessionContext)))
             return
@@ -33,6 +34,7 @@ final class AirBeamCellularSessionCreator: SessionCreator {
                               location: sessionContext.startingLocation,
                               startTime: DateBuilder.getFakeUTCDate(),
                               followedAt: DateBuilder.getFakeUTCDate(),
+                              isIndoor: isIndoor,
                               tags: sessionContext.sessionTags)
         
         // if session is fixed: create an empty session on server,
@@ -40,8 +42,7 @@ final class AirBeamCellularSessionCreator: SessionCreator {
         guard let name = session.name,
               let startTime = session.startTime,
               let peripheral = sessionContext.peripheral,
-              let contribute = sessionContext.contribute,
-              let isIndoor = sessionContext.isIndoor else {
+              let contribute = sessionContext.contribute else {
             assertionFailure("invalidCreateSessionContext \(sessionContext)")
             completion(.failure(AirBeamSessionCreatorError.invalidCreateSessionContext(sessionContext)))
             return
