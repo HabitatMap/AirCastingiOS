@@ -7,7 +7,7 @@ import AirCastingStyling
 struct CompleteScreen: View {
     @StateObject var viewModel: CompleteScreenViewModel
     
-    init(session: CompleteScreenViewModel.PartialExternalSession, exitRoute: @escaping () -> Void) {
+    init(session: PartialExternalSession, exitRoute: @escaping () -> Void) {
         _viewModel = .init(wrappedValue: CompleteScreenViewModel(session: session, exitRoute: exitRoute))
     }
     
@@ -43,7 +43,11 @@ struct CompleteScreen: View {
                 chartDescription
             }
             buttons
-            confirmationButton
+            if viewModel.isSessionFollowed {
+                unfollowButton
+            } else {
+                followButton
+            }
             Spacer()
         }
         .font(Fonts.regularHeading4)
@@ -140,14 +144,25 @@ private extension CompleteScreen {
         }
     }
     
-    var confirmationButton: some View {
+    var followButton: some View {
         Button {
-            //
+            viewModel.followButtonPressed()
         } label: {
-            Text(Strings.CompleteSearchView.confirmationButtonTitle)
+            Text(viewModel.followButtonText)
                 .font(Fonts.semiboldHeading1)
         }
         .buttonStyle(BlueButtonStyle())
+        .disabled(!viewModel.followButtonEnabled)
+    }
+    
+    var unfollowButton: some View {
+        Button {
+            viewModel.unfollowButtonPressed()
+        } label: {
+            Text(Strings.CompleteSearchView.unfollowButtonTitle)
+                .font(Fonts.semiboldHeading1)
+        }
+        .buttonStyle(WhiteButtonStyle())
     }
 }
 

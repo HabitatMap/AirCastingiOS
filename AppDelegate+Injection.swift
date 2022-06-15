@@ -154,6 +154,8 @@ extension Resolver: ResolverRegistering {
         main.register { DefaultAirBeamConnectionController() as AirBeamConnectionController }
         main.register { DefaultSessionUpdateService() as SessionUpdateService }
         main.register { DefaultLogoutController() as LogoutController }
+        main.register { DefaultDeleteAccountController() as DeleteAccountController }
+        main.register { DefaultRemoveDataController() as RemoveDataController }
         
         // MARK: - Session stopping
         
@@ -202,10 +204,16 @@ extension Resolver: ResolverRegistering {
         // MARK: - Search and Follow
         main.register { SessionsForLocationDownloaderDefault() as SessionsForLocationDownloader }
         main.register { DefaultStreamDownloader() as StreamDownloader }
-        main.register { (_, _) -> ThresholdsStore in
+        main.register { DefaultSearchAndFollowCompleteScreenService() as SearchAndFollowCompleteScreenService }
+        main.register { (_, _) -> ExternalSessionsStore in
             let context = Resolver.resolve(PersistenceController.self).editContext
-            return DefaultThresholdsStore(context: context)
+            return DefaultExternalSessionsStore(context: context)
         }
+        
+        // MARK: Unit / value formatting
+        main.register { (_, args) in TemperatureThresholdFormatter(threshold: args()) as ThresholdFormatter }
+        main.register { TemperatureUnitFormatter() as UnitFormatter }
+        main.register { AirBeamMeasurementsDownloaderDefault() as AirBeamMeasurementsDownloader }
     }
     
     // MARK: - Composition helpers

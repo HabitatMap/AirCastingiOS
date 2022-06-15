@@ -144,6 +144,7 @@ struct GoogleMapView: UIViewRepresentable {
                                                              zoom: 16)
             return newCameraPosition
         }
+        
         if let lastPoint = tracker.googleLocation.last {
             let long = lastPoint.location.longitude
             let lat = lastPoint.location.latitude
@@ -161,8 +162,9 @@ struct GoogleMapView: UIViewRepresentable {
     }
     
     func color(point: PathPoint) -> UIColor {
-        let measurement = Int32(point.measurement)
         guard let thresholds = threshold else { return .white }
+        let formatter = Resolver.resolve(ThresholdFormatter.self, args: thresholds)
+        let measurement = formatter.value(from: point.measurement)
         
         return GoogleMapView.color(value: measurement, threshold: thresholds)
     }

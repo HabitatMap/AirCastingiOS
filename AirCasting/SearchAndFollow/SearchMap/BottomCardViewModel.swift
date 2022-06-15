@@ -7,13 +7,11 @@ import SwiftUI
 class BottomCardViewModel: ObservableObject {
     @Published private var isModalScreenPresented = false
     let dataModel: BottomCardModel
-    let sensorType: String
-    let username: String
+    let session: PartialExternalSession
     
-    init(id: Int, uuid: String, title: String, startTime: String, endTime: String, latitude: Double, longitude: Double, streamId: Int, thresholds: ThresholdsValue, sensorType: String, username: String) {
-        dataModel = .init(id: id, uuid: uuid, title: title, startTime: startTime, endTime: endTime, latitude: latitude, longitude: longitude, streamId: streamId, thresholds: thresholds)
-        self.sensorType = sensorType
-        self.username = username
+    init(session: PartialExternalSession) {
+        dataModel = .init(id: session.id, title: session.name, startTime: session.startTime, endTime: session.endTime)
+        self.session = session
     }
     
     func getIsModalScreenPresented() -> Bool { isModalScreenPresented }
@@ -25,37 +23,14 @@ class BottomCardViewModel: ObservableObject {
     
     func adaptTimeAndDate() -> String {
         let formatter = DateFormatters.SessionCartView.utcDateIntervalFormatter
-        let start = startTimeAsDate()
-        let end = endTimeAsDate()
+        let start = dataModel.startTime
+        let end = dataModel.endTime
         let string = formatter.string(from: start, to: end)
         return string
     }
     
-    func startTimeAsDate() -> Date {
-        let formatter = DateFormatters.SearchAndFollow.timeFormatter
-        let date = formatter.date(from: dataModel.startTime)
-        guard let d = date else { return DateBuilder.getFakeUTCDate() }
-        return d
-    }
-    
-    func endTimeAsDate() -> Date {
-        let formatter = DateFormatters.SearchAndFollow.timeFormatter
-        let date = formatter.date(from: dataModel.endTime)
-        guard let d = date else { return DateBuilder.getFakeUTCDate() }
-        return d
-    }
-    
     func initCompleteScreen() -> CompleteScreen {
-        CompleteScreen(session: .init(uuid: "\(dataModel.uuid)",
-                                      provider: username,
-                                      name: dataModel.title,
-                                      startTime: startTimeAsDate(),
-                                      endTime: endTimeAsDate(),
-                                      longitude: dataModel.longitude,
-                                      latitude: dataModel.latitude,
-                                      sensorName: sensorType,
-                                      streamID: dataModel.streamId,
-                                      thresholdsValues: dataModel.thresholds)) { [weak self] in
+        CompleteScreen(session: session) { [weak self] in
             self?.isModalScreenPresented = false
         }
     }

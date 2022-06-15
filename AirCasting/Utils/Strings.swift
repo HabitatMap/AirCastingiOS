@@ -97,6 +97,8 @@ struct Strings {
                                                       comment: "")
         static let signOut: String = NSLocalizedString("Sign Out",
                                                        comment: "")
+        static let deleteAccount: String = NSLocalizedString("Delete Account",
+                                                             comment: "")
     }
     
     enum ForgotPassword {
@@ -240,6 +242,7 @@ struct Strings {
                                                               comment: "")
         static let lastMinuteMeasurement: String = NSLocalizedString("Last minute measurement",
                                                                      comment: "")
+        static let keyboardToolbarDoneButton: String = NSLocalizedString("Done", comment: "")
     }
     
     enum Thresholds {
@@ -737,6 +740,8 @@ struct Strings {
     enum MainTabBarView {
         static let loggingOut: String = NSLocalizedString("Logging out, please wait...",
                                                           comment: "")
+        static let deletingAccount: String = NSLocalizedString("Deleting account, please wait...",
+                                                             comment: "")
         static let finished: String = NSLocalizedString("Finished", comment: "")
         static let homeIcon: String = "home"
         static let homeBlueIcon: String = "bluehome"
@@ -890,6 +895,28 @@ struct Strings {
                                                                      comment: "")
         static let failedSavingButton: String = NSLocalizedString("Got it!",
                                                                     comment: "")
+        static let firstDeletingAccountTitle: String = NSLocalizedString("Delete account?",
+                                                                    comment: "")
+        static let firstDeletingAccountMessage: String = NSLocalizedString("Would you like to delete your account?",
+                                                                      comment: "")
+        static let firstConfirmingDeletingButton: String = NSLocalizedString("Confirm",
+                                                                          comment: "")
+        static let secondDeletingAccountTitle: String = NSLocalizedString("Delete confirmation",
+                                                                          comment: "")
+        static let secondDeletingAccountMessage: String = NSLocalizedString("You will lose all your sessions and data. Are you sure to delete the account?",
+                                                                            comment: "")
+        static let secondConfirmingDeletingButton: String = NSLocalizedString("Delete",
+                                                                              comment: "")
+        static let failedDeletingAccountErrorMessage: String = NSLocalizedString("Something went wrong deleting the account. Please try again later.",
+                                                                     comment: "")
+        static let unableToConnectTitle: String = NSLocalizedString("No Internet connection",
+                                                                  comment: "")
+        static let unableToConnectMessage: String = NSLocalizedString("To sign out, you must be connected to the Internet",
+                                                                    comment: "")
+        static let accountDeletionSuccessTitle: String = NSLocalizedString("Success",
+                                                                   comment: "")
+        static let accountDeletionSuccessMessage: String = NSLocalizedString("Your account has been deleted.",
+                                                                   comment: "")
     }
     
     enum AddNoteView {
@@ -930,7 +957,10 @@ struct Strings {
         static let map: String = NSLocalizedString("map", comment: "")
         static let chart: String = NSLocalizedString("chart", comment: "")
         static let lastMeasurement = NSLocalizedString("Last measurement", comment: "")
-        static let confirmationButtonTitle: String = NSLocalizedString("Follow Session", comment: "")
+        static let followButtonTitle: String = NSLocalizedString("Follow Session", comment: "")
+        static let unfollowButtonTitle: String = NSLocalizedString("Unfollow Session", comment: "")
+        static let ownSessionButtonTitle: String = NSLocalizedString("Your session", comment: "")
+        static let followingSessionButtonTitle: String = NSLocalizedString("Following...", comment: "")
         static let noStreamsDescription = NSLocalizedString("No streams available for this session", comment: "")
         static let failedDownloadAlertTitle = NSLocalizedString("Session download failed", comment: "")
         static let failedDownloadAlertMessage = NSLocalizedString("Please try again later.", comment: "")
@@ -1014,6 +1044,8 @@ struct Strings {
         static let cardsTitle: String = NSLocalizedString("Sessions showing %@ of %@ results",
                                                               comment: "")
         static let sessionsText: String = NSLocalizedString("Sessions",
+                                                              comment: "")
+        static let finishText: String = NSLocalizedString("Finish",
                                                               comment: "")
     }
     

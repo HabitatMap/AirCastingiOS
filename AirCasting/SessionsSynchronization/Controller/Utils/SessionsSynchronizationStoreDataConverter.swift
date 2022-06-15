@@ -37,7 +37,7 @@ struct SynchronizationDataConverter {
                      contribute: download.contribute,
                      endTime: download.endTime,
                      gotDeleted: false,
-                     isIndoor: download.isIndoor,
+                     isIndoor: download.isIndoor ?? false,
                      name: download.title,
                      startTime: download.startTime,
                      tags: download.tagList,

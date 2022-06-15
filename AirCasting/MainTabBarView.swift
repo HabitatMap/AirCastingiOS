@@ -27,7 +27,7 @@ struct MainTabBarView: View {
     @StateObject var coreDataHook: CoreDataHook
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
     
-    private var sessions: [SessionEntity] {
+    private var sessions: [Sessionable] {
         coreDataHook.sessions
     }
     
@@ -207,11 +207,31 @@ class FinishAndSyncButtonTapped: ObservableObject {
 class ReorderButton: ObservableObject {
     @Published var reorderIsOn = false
     @Published var isHidden = false
+    
+    func setHidden(if isActive: Bool) {
+        if isActive {
+            isHidden = true
+        } else {
+            withAnimation {
+                isHidden = false
+            }
+        }
+    }
 }
 
 class SearchAndFollowButton: ObservableObject {
      @Published var searchIsOn = false
      @Published var isHidden = false
+    
+    func setHidden(if isActive: Bool) {
+        if isActive {
+            isHidden = true
+        } else {
+            withAnimation {
+                isHidden = false
+            }
+        }
+    }
  }
 
 extension MainTabBarView {

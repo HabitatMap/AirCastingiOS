@@ -59,7 +59,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
     func markStreamForDelete(_ sessionUUID: SessionUUID, sensorsName: [String], completion: () -> Void) throws {
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
         try sensorsName.forEach { sensorName in
-            guard let stream = sessionEntity.allStreams?.first(where: { $0.sensorName == sensorName }) else {
+            guard let stream = sessionEntity.allStreams.first(where: { $0.sensorName == sensorName }) else {
                 Log.info("Error when trying to hide measurement streams")
                 return
             }
@@ -98,7 +98,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
 
     func deleteStreams(_ sessionUUID: SessionUUID) throws {
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
-        let toDelete = sessionEntity.allStreams!.filter({ $0.gotDeleted })
+        let toDelete = sessionEntity.allStreams.filter({ $0.gotDeleted })
         toDelete.forEach { object in
             context.delete(object)
         }
@@ -118,7 +118,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
 
     func removeDuplicatedMeasurements(for sessionUUID: SessionUUID) throws {
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
-        sessionEntity.allStreams?.forEach({ stream in
+        sessionEntity.allStreams.forEach({ stream in
             guard let measurements = stream.allMeasurements else { return }
             let sortedMeasurements = measurements.sorted(by: { $0.time < $1.time })
             for (i, measurement) in sortedMeasurements.enumerated() {
@@ -221,6 +221,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         guard let sensorName = stream.sensorName else {
             throw Error.missingSensorName
         }
+        
         let existingThreshold: SensorThreshold? = try context.existingObject(sensorName: sensorName)
         if existingThreshold == nil {
             let threshold: SensorThreshold = try context.newOrExisting(sensorName: sensorName)
@@ -282,37 +283,6 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
                     context.delete(ui)
                 }
             }
-            try context.save()
-        } catch {
-            Log.error("Error when saving changes in session: \(error.localizedDescription)")
-        }
-    }
-
-    func updateSessionOrder(_ order: Int, for sessionUUID: SessionUUID) {
-        do {
-            let sessionEntity = try context.existingSession(uuid: sessionUUID)
-            sessionEntity.rowOrder = Int64(order)
-            try context.save()
-        } catch {
-            Log.error("Error when saving changes in session: \(error.localizedDescription)")
-        }
-    }
-
-    func giveHighestOrder(to sessionUUID: SessionUUID) {
-        do {
-            let sessionEntity = try context.existingSession(uuid: sessionUUID)
-            let highestOrder = try context.getHighestRowOrder()
-            sessionEntity.rowOrder = (highestOrder ?? 0) + 1
-            try context.save()
-        } catch {
-            Log.error("Error when saving changes in session: \(error.localizedDescription)")
-        }
-    }
-
-    func setOrderToZero(for sessionUUID: SessionUUID) {
-        do {
-            let sessionEntity = try context.existingSession(uuid: sessionUUID)
-            sessionEntity.rowOrder = 0
             try context.save()
         } catch {
             Log.error("Error when saving changes in session: \(error.localizedDescription)")
@@ -398,6 +368,8 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         uiState.session = sessionEntity
         return sessionEntity
     }
+    
+    // MARK: - Create Session
 
     func createSession(_ session: Session) throws {
         let sessionEntity = newSessionEntity()

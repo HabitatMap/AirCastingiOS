@@ -9,14 +9,17 @@ import AirCastingStyling
 struct SearchMapView: View {
     @StateObject private var viewModel: SearchMapViewModel
     @Environment(\.presentationMode) var presentationMode
-    
-    init(locationName: String, locationAddress: CLLocationCoordinate2D, parameterType: MapDownloaderMeasurementType, sensorType: MapDownloaderSensorType) {
+    @Binding var isSearchAndFollowLinkActive: Bool
+    @EnvironmentObject var tabSelection: TabBarSelection
+
+    init(locationName: String, locationAddress: CLLocationCoordinate2D, parameterType: MeasurementType, sensorType: SensorType, isSearchAndFollowLinkActive: Binding<Bool>) {
         _viewModel = .init(wrappedValue: .init(passedLocation: locationName,
                                                passedLocationAddress: locationAddress,
                                                measurementType: parameterType,
                                                sensorType: sensorType))
+        _isSearchAndFollowLinkActive = .init(projectedValue: isSearchAndFollowLinkActive)
     }
-    
+
     var body: some View {
         GeometryReader { reader in
             ZStack(alignment: .top, content: {
@@ -30,7 +33,7 @@ struct SearchMapView: View {
                                 .frame(width: reader.size.width, height: reader.size.height / 7, alignment: .leading)
                         }
                         .padding(.horizontal, 5)
-                        .padding(.bottom, 5)
+                        .padding(.bottom, 28)
                     }
                 }
                 VStack(alignment: .center, content: {
@@ -51,7 +54,7 @@ struct SearchMapView: View {
                         .disabled(!viewModel.searchAgainButton)
                         .opacity(viewModel.searchAgainButton ? 1.0 : 0.0)
                 })
-                    .padding(.top, 50)
+                    .padding(.top, 20)
                     .padding(.horizontal)
             })
         }
@@ -59,30 +62,52 @@ struct SearchMapView: View {
                 result ? self.presentationMode.wrappedValue.dismiss() : nil
             })
             .alert(item: $viewModel.alert, content: { $0.makeAlert() })
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    finishButton
+                }
+            }
+            .sheet(isPresented: $viewModel.isLocationPopupPresented) {
+                PlacePicker(service: SearchPickerService(addressName: .init(get: {
+                    viewModel.passedLocation
+                }, set: { new in
+                    viewModel.enteredNewLocation(name: new)
+                }), addressLocation: .init(get: {
+                    viewModel.passedLocationAddress
+                }, set: { new in
+                    viewModel.enteredNewLocationAdress(new)
+                })))
+            }
     }
 }
 
 // MARK: - Private View Components
 private extension SearchMapView {
     var addressTextField: some View {
-        createTextfield(placeholder: "", binding: .constant(viewModel.passedLocation))
-            .disabled(true)
+        createTextfield(placeholder: Strings.SearchView.placeholder,
+                        binding: .init(get: {
+            viewModel.passedLocation
+        }, set: { new in
+            viewModel.enteredNewLocation(name: new)
+        }))
+        .disabled(true)
+        .onTapGesture { viewModel.textFieldTapped() }
     }
-    
+
     var measurementTypeText: some View {
         Text(String(format: Strings.SearchMapView.parameterText, arguments: [viewModel.getMeasurementName()]))
             .font(Fonts.semiboldHeading2)
             .lineLimit(1)
             .scaledToFill()
     }
-    
+
     var sensorTypeText: some View {
         Text(String(format: Strings.SearchMapView.sensorText, arguments: [viewModel.getSensorName()]))
             .font(Fonts.semiboldHeading2)
             .lineLimit(1)
             .scaledToFill()
     }
-    
+
     var searchAgainButton: some View {
         Button {
             withAnimation(.easeOut(duration: 0.2)) {
@@ -95,11 +120,11 @@ private extension SearchMapView {
                 .scaledToFill()
         }
     }
-    
+
     var map: some View {
         GeometryReader { reader in
             ZStack(alignment: .top) {
-                SearchAndFollowMap(startingPoint: viewModel.passedLocationAddress,
+                SearchAndFollowMap(startingPoint: $viewModel.passedLocationAddress,
                                    showSearchAgainButton: $viewModel.searchAgainButton,
                                    sessions: $viewModel.sessionsList,
                                    selectedPointerID: $viewModel.cardPointerID)
@@ -109,6 +134,9 @@ private extension SearchMapView {
                 .onMarkerChange(action: { pointer in
                     viewModel.markerSelectionChanged(using: pointer)
                 })
+                .onStartingLocationChange { geoSquare in
+                    viewModel.startingLocationChanged(geoSquare: geoSquare)
+                }
                                    .padding(.top, 50)
                                    .ignoresSafeArea(.all, edges: [.bottom])
                 LinearGradient(gradient: Gradient(colors: [.white.opacity(0.1),
@@ -119,11 +147,11 @@ private extension SearchMapView {
                                                            .white]),
                                startPoint: .bottom,
                                endPoint: .top)
-                .frame(width: reader.size.width, height: reader.size.height / 4.5, alignment: .top)
+                    .frame(width: reader.size.width, height: reader.size.height / 4.5, alignment: .top)
             }
         }
     }
-    
+
     var cardsTitle: some View {
         StringCustomizer.customizeString(String(format: Strings.SearchMapView.cardsTitle,
                                                 arguments: ["\(viewModel.sessionsList.count)",
@@ -132,31 +160,25 @@ private extension SearchMapView {
                                          color: .darkBlue,
                                          standardColor: .darkBlue,
                                          font: Fonts.boldHeading2)
-        .foregroundColor(.darkBlue)
+            .foregroundColor(.darkBlue)
     }
-    
+
     var cards: some View {
         ScrollViewReader { scrollProxy in
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(alignment: .bottom, spacing: 12) {
-                    ForEach(viewModel.sessionsList, id: \.id) { session in
-                        BottomCardView(id: session.id,
-                                       uuid: session.uuid,
-                                       title: session.title,
-                                       startTime: session.startTime,
-                                       endTime: session.endTime,
-                                       latitude: session.location.latitude,
-                                       longitude: session.location.longitude,
-                                       streamId: session.streamId,
-                                       thresholds: session.thresholdsValues,
-                                       username: session.username,
-                                       sensorType: viewModel.getSensorName())
-                        .onMarkerChange(action: { pointer in
-                            viewModel.markerSelectionChanged(using: pointer)
-                        })
-                        .border((viewModel.cardPointerID.number == session.id ? Color.accentColor : .clear), width: 1)
+                    ForEach(viewModel.sessionsList, id: \.id) { sessionMarker in
+                        let session = sessionMarker.session
+                        BottomCardView(session: session)
+                            .onMarkerChange(action: { pointer in
+                                viewModel.markerSelectionChanged(using: pointer)
+                            })
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .stroke(viewModel.strokeColor(with: session.id), lineWidth: 1)
+                            ).padding(2)
                     }
-                                       }
+                }
                 .onChange(of: viewModel.cardPointerID.number , perform: { newValue in
                     withAnimation(.linear) {
                         scrollProxy.scrollTo(viewModel.cardPointerID.number, anchor: .leading)
@@ -164,5 +186,23 @@ private extension SearchMapView {
                 })
             }
         }
+    }
+
+    var finishButton: some View {
+        Button {
+            isSearchAndFollowLinkActive = false
+            tabSelection.selection = .dashboard
+        } label: {
+            Text(Strings.SearchMapView.finishText)
+                .font(Fonts.muliHeading2.bold())
+                .padding(.trailing, 7)
+        }
+        .overlay(
+            Capsule()
+                .frame(width: 85, height: 35)
+                .foregroundColor(.accentColor)
+                .opacity(0.1)
+        )
+        .padding(.trailing, 10)
     }
 }

@@ -36,7 +36,6 @@ public class SessionEntity: NSManagedObject, Identifiable {
     @NSManaged public var urlLocation: String?
     @NSManaged public var version: Int16
     @NSManaged public var changesCount: Int32
-    @NSManaged public var rowOrder: Int64
     
     // UserInterface state
     @NSManaged public var userInterface: UIStateEntity?
@@ -86,14 +85,14 @@ public class SessionEntity: NSManagedObject, Identifiable {
         set { setValue(newValue.rawValue, forKey: "type") }
     }
     
-    public var sortedStreams: [MeasurementStreamEntity]? {
+    public var sortedStreams: [MeasurementStreamEntity] {
         let defaultSortedABStreams = [FStream,
                                       pm1Stream,
                                       pm2Stream,
                                       pm10Stream,
                                       HStream].compactMap { $0 }
         
-        return allStreams?.sorted(by: { a, b in
+        return allStreams.sorted(by: { a, b in
             let aIdx = defaultSortedABStreams.firstIndex(of: a)
             let bIdx = defaultSortedABStreams.firstIndex(of: b)
             
@@ -105,23 +104,23 @@ public class SessionEntity: NSManagedObject, Identifiable {
             // If 'A' and 'B' streams are known,
             // preserve order of 'defaultSortedABStrams'
             return aIdx < bIdx
-        }) ?? []
+        }) 
     }
     
-    public var allStreams: [MeasurementStreamEntity]? {
-        measurementStreams?.array as? [MeasurementStreamEntity]
+    public var allStreams: [MeasurementStreamEntity] {
+        (measurementStreams?.array as? [MeasurementStreamEntity]) ?? []
     }
     
     public var lastMeasurementTime: Date? {
-        allStreams?.filter { $0.lastMeasurementTime != nil }.map { $0.lastMeasurementTime! }.max()
+        allStreams.filter { $0.lastMeasurementTime != nil }.map { $0.lastMeasurementTime! }.max()
     }
     
     public var sensorPackageName: String {
-        allStreams?.first?.sensorPackageName ?? ""
+        allStreams.first?.sensorPackageName ?? ""
     }
     
     func streamWith(sensorName: String) -> MeasurementStreamEntity? {
-       allStreams?.first { stream in
+       allStreams.first { stream in
             stream.sensorName == sensorName
         }
     }

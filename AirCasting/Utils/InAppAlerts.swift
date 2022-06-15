@@ -160,6 +160,62 @@ struct InAppAlerts {
                              action: dismiss)
                   ])
     }
+    
+    static func firstConfirmationDeletingAccountAlert(action: @escaping (() -> Void)) -> AlertInfo {
+        AlertInfo(
+            title: Strings.InAppAlerts.firstDeletingAccountTitle, message: Strings.InAppAlerts.firstDeletingAccountMessage,
+            buttons: [
+                .default(title: Strings.InAppAlerts.firstConfirmingDeletingButton,
+                         action: action),
+                .cancel()
+            ]
+        )
+    }
+    
+    static func secondConfirmationDeletingAccountAlert(action: @escaping (() -> Void)) -> AlertInfo {
+        AlertInfo(
+            title: Strings.InAppAlerts.secondDeletingAccountTitle, message: Strings.InAppAlerts.secondDeletingAccountMessage,
+            buttons: [
+                .default(title: Strings.InAppAlerts.secondConfirmingDeletingButton,
+                         action: action),
+                .cancel()
+            ]
+        )
+    }
+    
+    static func successfulAccountDeletionConfirmation(action: @escaping (() -> Void)) -> AlertInfo {
+        AlertInfo(
+            title: Strings.InAppAlerts.accountDeletionSuccessTitle, message: Strings.InAppAlerts.accountDeletionSuccessMessage,
+            buttons: [
+                .default(title: Strings.Commons.gotIt,
+                         action: action),
+            ]
+        )
+    }
+    
+    static func unableToConnectBeforeDeletingAccount() -> AlertInfo {
+        AlertInfo(title: Strings.InAppAlerts.unableToConnectTitle, message: Strings.InAppAlerts.unableToConnectMessage, buttons: [
+            .default(title: Strings.Commons.gotIt, action: nil)
+        ])
+    }
+    
+    static func failedDeletingAccount() -> AlertInfo {
+        AlertInfo(title: Strings.InAppAlerts.failedTitle, message: Strings.InAppAlerts.failedDeletingAccountErrorMessage, buttons: [
+            .default(title: Strings.Commons.gotIt, action: nil)
+        ])
+    }
+    
+    static func noInternetConnection(error: AuthorizationError) -> AlertInfo {
+        AlertInfo(title: Strings.CreateAccountView.noInternetTitle, message: error.localizedDescription, buttons: [
+            .default(title: Strings.Commons.ok, action: nil)
+        ])
+    }
+    
+    static func createAccountAlert(error: AuthorizationError) -> AlertInfo {
+        AlertInfo(title: Strings.CreateAccountView.takenAndOtherTitle, message: error.localizedDescription, buttons: [
+            .default(title: Strings.Commons.ok, action: nil)
+        ])
+    }
 }
 
 import SwiftUI

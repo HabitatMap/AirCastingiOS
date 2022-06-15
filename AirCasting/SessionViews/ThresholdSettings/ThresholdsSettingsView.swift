@@ -15,57 +15,24 @@ struct ThresholdsSettingsView: View {
     let initialThresholds: ThresholdsValue
     @StateObject private var thresholdSettingsViewModel: ThresholdSettingsViewModel
     
-    init(thresholdValues: Binding<ThresholdsValue>, initialThresholds: ThresholdsValue) {
+    init(thresholdValues: Binding<ThresholdsValue>, initialThresholds: ThresholdsValue, threshold: SensorThreshold) {
         _thresholdValues = thresholdValues
         self.initialThresholds = initialThresholds
-        _thresholdSettingsViewModel = .init(wrappedValue: ThresholdSettingsViewModel(initialThresholds: initialThresholds))
+        _thresholdSettingsViewModel = .init(wrappedValue: ThresholdSettingsViewModel(initialThresholds: initialThresholds, threshold: threshold))
     }
     
     var body: some View {
-        Form {
-            VStack(alignment: .leading, spacing: 16) {
-                Text(Strings.SessionCart.heatmapSettingsTitle)
-                    .foregroundColor(.darkBlue)
-                    .font(Fonts.heavyTitle1)
-                Text(Strings.SessionCart.heatmapSettingsdescription)
-                    .foregroundColor(.aircastingGray)
-                    .font(Fonts.regularHeading2)
-            }
-            .padding()
-            
-            Section {
-                veryHighTextfield
-                highTextfield
-                mediumTextfield
-                lowTextfield
-                veryLowTextfield
-            }
-            
-            VStack {
-                Button(action: {
-                    thresholdValues = thresholdSettingsViewModel.updateToNewThresholds()
-                    presentationMode.wrappedValue.dismiss()
-                })
-                {
-                    Text(Strings.SessionCart.saveChangesButton)
-                        .frame(maxWidth: .infinity)
+        if #available(iOS 15.0, *) {
+            mainBody
+                .toolbar {
+                    ToolbarItemGroup(placement: .keyboard) {
+                        Spacer()
+                        Button(Strings.SessionCart.keyboardToolbarDoneButton) { hideKeyboard() }
+                    }
                 }
-                .buttonStyle(BlueButtonStyle())
-                
-                Button(Strings.SessionCart.resetChangesButton, action: {
-                    thresholdValues = thresholdSettingsViewModel.resetToDefault()
-                    presentationMode.wrappedValue.dismiss()
-                })
-                    .frame(minHeight: 35)
-            }
-            .buttonStyle(BorderlessButtonStyle())
-        }
-        .onAppear {
-            thresholdSettingsViewModel.thresholdVeryLow = string(thresholdValues.veryLow)
-            thresholdSettingsViewModel.thresholdLow = string(thresholdValues.low)
-            thresholdSettingsViewModel.thresholdMedium = string(thresholdValues.medium)
-            thresholdSettingsViewModel.thresholdHigh = string(thresholdValues.high)
-            thresholdSettingsViewModel.thresholdVeryHigh = string(thresholdValues.veryHigh)
+        } else {
+            mainBody
+                .onTapGesture { hideKeyboard() }
         }
     }
                                                                  
@@ -116,6 +83,56 @@ struct ThresholdsSettingsView: View {
             showThresholdTextfield(value: $thresholdSettingsViewModel.thresholdVeryLow)
         }
     }
+    
+    var mainBody: some View {
+        Form {
+            VStack(alignment: .leading, spacing: 16) {
+                Text(Strings.SessionCart.heatmapSettingsTitle)
+                    .foregroundColor(.darkBlue)
+                    .font(Fonts.heavyTitle1)
+                Text(Strings.SessionCart.heatmapSettingsdescription)
+                    .foregroundColor(.aircastingGray)
+                    .font(Fonts.regularHeading2)
+            }
+            .padding()
+            
+            Section {
+                veryHighTextfield
+                highTextfield
+                mediumTextfield
+                lowTextfield
+                veryLowTextfield
+            }
+            .keyboardType(.numberPad)
+            
+            VStack {
+                Button(action: {
+                    thresholdValues = thresholdSettingsViewModel.updateToNewThresholds()
+                    presentationMode.wrappedValue.dismiss()
+                })
+                {
+                    Text(Strings.SessionCart.saveChangesButton)
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(BlueButtonStyle())
+                
+                Button(Strings.SessionCart.resetChangesButton, action: {
+                    thresholdValues = thresholdSettingsViewModel.resetToDefault()
+                    presentationMode.wrappedValue.dismiss()
+                })
+                .frame(minHeight: 35)
+            }
+            .listRowBackground(Color.clear)
+            .buttonStyle(BorderlessButtonStyle())
+        }
+        .onAppear {
+            thresholdSettingsViewModel.thresholdVeryLow = string(thresholdValues.veryLow)
+            thresholdSettingsViewModel.thresholdLow = string(thresholdValues.low)
+            thresholdSettingsViewModel.thresholdMedium = string(thresholdValues.medium)
+            thresholdSettingsViewModel.thresholdHigh = string(thresholdValues.high)
+            thresholdSettingsViewModel.thresholdVeryHigh = string(thresholdValues.veryHigh)
+        }
+    }
 }
 
 #if DEBUG
@@ -130,7 +147,8 @@ struct HeatmapSettings_Previews: PreviewProvider {
                                                                            low:      15,
                                                                            medium:   20,
                                                                            high:     25,
-                                                                           veryHigh: 30))
+                                                                           veryHigh: 30),
+                                   threshold: .mock)
         }
 }
 #endif

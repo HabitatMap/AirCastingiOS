@@ -13,11 +13,11 @@ struct SearchAndFollowChartView: UIViewRepresentable {
         _viewModel = .init(wrappedValue: viewModel)
     }
     
-    func makeUIView(context: Context) -> UI_PollutionChart {
-        UI_PollutionChart()
+    func makeUIView(context: Context) -> UIViewType {
+        UIViewType(addMoreSpace: true)
     }
     
-    func updateUIView(_ uiView: UI_PollutionChart, context: Context) {
+    func updateUIView(_ uiView: UIViewType, context: Context) {
         guard !viewModel.entries.isEmpty else { return }
         
         let entries = viewModel.entries.enumerated().map { (i, dot) -> ChartDataEntry in
