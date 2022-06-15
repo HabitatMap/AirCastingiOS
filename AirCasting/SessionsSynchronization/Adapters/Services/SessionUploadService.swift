@@ -49,23 +49,39 @@ final class SessionUploadService: SessionUpstream {
                 let sessionBase64String = gzippedSessionData.base64EncodedString(options: [.lineLength76Characters, .endLineWithLineFeed])
                 Log.info("## notes: \(session.session.notes)")
                 Log.info("## \(session.photos)")
-                let photosAsBase64String = session.photos.map({ $0?.base64EncodedString(options: [.lineLength76Characters, .endLineWithLineFeed]) ?? "" })
-                let apiCallData = APICallData(session: sessionBase64String, photos: photosAsBase64String, compression: true)
-                let apiCallBody = try encoder.encode(apiCallData)
-                request.httpBody = apiCallBody
-                try authorization.authorise(request: &request)
+                getPhotosData(photos: session.photos) { photosAsBase64String in
+                    do {
+                        let apiCallData = APICallData(session: sessionBase64String, photos: photosAsBase64String, compression: true)
+                        let apiCallBody = try encoder.encode(apiCallData)
+                        request.httpBody = apiCallBody
+                        try authorization.authorise(request: &request)
+                        
+                        client.requestTask(for: request) { result, request in
+                            promise(
+                                result.tryMap { result -> SessionsSynchronization.SessionUpstreamResult in
+                                    try responseValidator.validate(response: result.response, data: result.data)
+                                    let response = try self.decoder.decode(SessionsSynchronization.SessionUpstreamResult.self, from: result.data)
+                                    return response
+                                }
+                            )
+                        }
+                    } catch {
+                        promise(.failure(error))
+                    }
+                }
             } catch {
                 promise(.failure(error))
             }
-            client.requestTask(for: request) { result, request in
-                promise(
-                    result.tryMap { result -> SessionsSynchronization.SessionUpstreamResult in
-                        try responseValidator.validate(response: result.response, data: result.data)
-                        let response = try self.decoder.decode(SessionsSynchronization.SessionUpstreamResult.self, from: result.data)
-                        return response
-                    }
-                )
-            }
+        }
+    }
+    
+    func getPhotosData(photos: [URL?], completion: @escaping ([String]) -> Void) {
+        DispatchQueue.global().async {
+            let result = photos.map( { photoURL -> String in
+                guard let photoURL = photoURL, let image = UIImage(contentsOfFile: photoURL.path)?.jpegData(compressionQuality: 0.8) else { return "" }
+                return image.base64EncodedString(options: [.lineLength76Characters, .endLineWithLineFeed])
+            } )
+            completion(result)
         }
     }
 }

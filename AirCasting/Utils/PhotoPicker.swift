@@ -4,7 +4,7 @@
 import SwiftUI
 
 struct PhotoPicker: UIViewControllerRepresentable {
-    @Binding var picture: UIImage?
+    @Binding var picture: URL?
     
     func makeUIViewController(context: Context) -> UIImagePickerController {
         let picker = UIImagePickerController()
@@ -28,15 +28,11 @@ struct PhotoPicker: UIViewControllerRepresentable {
         }
         
         func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-            if let image = info[.editedImage] as? UIImage {
-                guard let data = image.jpegData(compressionQuality: 0.4), let compressedImage = UIImage(data: data) else {
-                    Log.error("Failed to compress the image")
-                    return
-                }
-                photoPicker.picture = compressedImage
-            } else {
-                Log.error("Failed to load an image")
+            guard let photoURL = info[.imageURL] as? URL else {
+                Log.error("Failed to compress the image")
+                return
             }
+            photoPicker.picture = photoURL
             picker.dismiss(animated: true)
         }
     }

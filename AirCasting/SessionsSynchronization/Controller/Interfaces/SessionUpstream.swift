@@ -19,7 +19,7 @@ protocol SessionUpstream {
 extension SessionsSynchronization {
     struct SessionWithPhotosUpstreamData: Equatable, Encodable {
         let session: SessionUpstreamData
-        let photos: [Data?]
+        let photos: [URL?]
     }
     struct SessionUpstreamData: Equatable, Encodable {
         let uuid: SessionUUID
@@ -44,7 +44,7 @@ extension SessionsSynchronization {
         
         struct NotesResult: Equatable, Codable {
             let number: Int
-            let photo_location: URL
+            let photoLocation: URL
         }
     }
     

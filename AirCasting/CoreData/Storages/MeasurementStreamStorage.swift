@@ -315,7 +315,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         noteEntity.text = note.text
         noteEntity.date = note.date
         noteEntity.number = Int64(note.number)
-        noteEntity.originalPictureData = note.pictureData
+        noteEntity.photoLocation = note.photoLocation
         sessionEntity.addToNotes(noteEntity)
     }
 
@@ -341,7 +341,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
                         text: n.text ?? "",
                         lat: n.lat,
                         long: n.long,
-                        pictureData: n.originalPictureData,
+                        photoLocation: n.photoLocation,
                         number: Int(n.number))
         } ?? []
     }
@@ -361,7 +361,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
                     text: note.text ?? "",
                     lat: note.lat,
                     long: note.long,
-                    pictureData: note.originalPictureData,
+                    photoLocation: note.photoLocation,
                     number: Int(note.number))
     }
     

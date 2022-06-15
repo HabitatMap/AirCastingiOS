@@ -5,7 +5,7 @@ import AirCastingStyling
 
 struct AddNoteView<VM: AddNoteViewModel>: View {
     @StateObject var viewModel: VM
-    @State var picture: UIImage?
+    @State var picture: URL?
     @State var presentPhotoPicker = false
     
     var body: some View {
@@ -52,8 +52,8 @@ private extension AddNoteView {
     
     var photo: some View {
         VStack {
-            if let picture = picture {
-                Image(uiImage: picture)
+            if let picture = picture, let image = UIImage(contentsOfFile: picture.path) {
+                Image(uiImage: image)
                     .resizable()
                     .scaledToFit()
             }
@@ -66,7 +66,7 @@ private extension AddNoteView {
     
     var continueButton: some View {
         Button {
-            viewModel.continueTapped(selectedPictureData: picture?.jpegData(compressionQuality: 1))
+            viewModel.continueTapped(selectedPictureURL: picture)
         } label: {
             Text(Strings.AddNoteView.continueButton)
                 .bold()
@@ -89,7 +89,7 @@ struct AddNoteView_Previews: PreviewProvider {
     static var previews: some View {
         AddNoteView(
             viewModel: AddNoteViewModel(sessionUUID: "", withLocation: false, exitRoute: {}),
-            picture: UIImage(named: "message-square")!
+            picture: nil
         )
     }
 }

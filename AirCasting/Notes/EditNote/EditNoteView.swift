@@ -11,6 +11,7 @@ struct EditNoteView<VM: EditNoteViewModel>: View {
             title
             description
             noteField
+            photo
             continueButton
             deleteButton
             cancelButton
@@ -34,6 +35,17 @@ private extension EditNoteView {
     
     var noteField: some View {
         createNoteTextField(binding: $viewModel.noteText)
+    }
+    
+    var photo: some View {
+        Group {
+            if #available(iOS 15, *) {
+                if let url = viewModel.notePhoto {
+                    AsyncImage(url: url)
+                }
+            }
+        }
+            
     }
     
     var continueButton: some View {

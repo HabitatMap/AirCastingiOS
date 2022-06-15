@@ -11,7 +11,7 @@ extension Database {
         public let latitude: Double
         public let longitude: Double
         public let number: Int
-        public let originalPictureData: Data?
+        public let photoLocation: URL?
         
         public init(
             date: Date,
@@ -19,14 +19,14 @@ extension Database {
             latitude: Double,
             longitude: Double,
             number: Int,
-            originalPictureData: Data? = nil
+            photoLocation: URL? = nil
         ) {
             self.date = date
             self.text = text
             self.latitude = latitude
             self.longitude = longitude
             self.number = number
-            self.originalPictureData = originalPictureData
+            self.photoLocation = photoLocation
         }
     }
 }

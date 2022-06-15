@@ -9,6 +9,6 @@ struct Note {
     let text: String
     let lat: CLLocationDegrees
     let long: CLLocationDegrees
-    let pictureData: Data?
+    let photoLocation: URL?
     let number: Int
 }

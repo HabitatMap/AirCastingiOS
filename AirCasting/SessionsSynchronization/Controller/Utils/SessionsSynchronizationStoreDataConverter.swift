@@ -161,7 +161,7 @@ struct SynchronizationDataConverter {
                                                                measurementStreams: measurements ?? [],
                                                                deleted: entity.gotDeleted,
                                                                notes: notes ?? [],
-                                                               notesPhotos: entity.notes?.sorted(by: { $0.number < $1.number }).map({ $0.originalPictureData}) ?? [])
+                                                               notesPhotos: entity.notes?.sorted(by: { $0.number < $1.number }).map({ $0.photoLocation}) ?? [])
     }
     
     func convertDownloadDataToDatabaseStream(data: SessionsSynchronization.MeasurementStreamDownstreamData) -> SessionsSynchronization.SessionStoreMeasurementStreamData {
