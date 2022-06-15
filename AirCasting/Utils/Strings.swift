@@ -919,7 +919,7 @@ struct Strings {
                                                                    comment: "")
         static let logoutWarningTitle: String = NSLocalizedString("Are you sure to sign out?",
                                                                    comment: "")
-        static let logoutWarningMessage: String = NSLocalizedString("You will lose the location-less sessions.",
+        static let logoutWarningMessage: String = NSLocalizedString("You will lose the session recorder with disabled location.",
                                                                    comment: "")
         static let logoutWarningConfirmButton: String = NSLocalizedString("Confirm",
                                                                           comment: "")

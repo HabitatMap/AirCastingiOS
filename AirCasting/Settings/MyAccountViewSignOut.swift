@@ -42,6 +42,11 @@ private extension MyAccountViewSignOut {
     
     var signOutButton: some View {
         Button(action: {
+            guard networkChecker.connectionAvailable else {
+                alert = InAppAlerts.unableToLogOutAlert()
+                return
+            }
+            
             measurementStreamStorage.accessStorage { storage in
                 do {
                     let result = try storage.checkForLocationlessSessions()
@@ -98,10 +103,6 @@ private extension MyAccountViewSignOut {
     }
     
     private func logoutUser() {
-        guard networkChecker.connectionAvailable else {
-            alert = InAppAlerts.unableToLogOutAlert()
-            return
-        }
         userState.currentState = .loggingOut
         do {
             try logoutController.logout {
