@@ -40,6 +40,12 @@ extension SessionsSynchronization {
     
     struct SessionUpstreamResult: Equatable, Codable {
         let location: String
+        let notes: [NotesResult]
+        
+        struct NotesResult: Equatable, Codable {
+            let number: Int
+            let photo_location: URL
+        }
     }
     
     struct MeasurementStreamUpstreamData: Equatable, Codable {

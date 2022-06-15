@@ -48,8 +48,8 @@ final class SessionUploadService: SessionUpstream {
                 let gzippedSessionData = try sessionData.gzipped()
                 let sessionBase64String = gzippedSessionData.base64EncodedString(options: [.lineLength76Characters, .endLineWithLineFeed])
                 Log.info("## notes: \(session.session.notes)")
-                Log.info("## \(session.photos.count)")
-                let photosAsBase64String = session.photos.map({ $0.base64EncodedString(options: [.lineLength76Characters, .endLineWithLineFeed]) })
+                Log.info("## \(session.photos)")
+                let photosAsBase64String = session.photos.map({ $0?.base64EncodedString(options: [.lineLength76Characters, .endLineWithLineFeed]) ?? "" })
                 let apiCallData = APICallData(session: sessionBase64String, photos: photosAsBase64String, compression: true)
                 let apiCallBody = try encoder.encode(apiCallData)
                 request.httpBody = apiCallBody
