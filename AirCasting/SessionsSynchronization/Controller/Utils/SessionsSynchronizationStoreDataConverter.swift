@@ -48,26 +48,28 @@ struct SynchronizationDataConverter {
                      sessionType: download.type,
                      measurementStreams: measurements,
                      deleted: false,
-                     notes: notes)
+                     notes: notes,
+                     notesPhotos: [])
     }
     
-    func convertSessionToUploadData(_ session: SessionsSynchronization.SessionStoreSessionData) -> SessionsSynchronization.SessionUpstreamData {
-        return .init(uuid: session.uuid,
-                     type: session.sessionType,
-                     title: session.name,
-                     notes: convertDatabaseNotesToMetadata(session.notes).sorted(by: { $0.number < $1.number }),
-                     tagList: session.tags ?? "",
-                     startTime: session.startTime,
-                     endTime: session.endTime,
-                     contribute: session.contribute,
-                     isIndoor: session.isIndoor,
-                     version: session.version,
-                     // NOTE: This is not being sent from Android app too and any attempt to put data here
-                     // is causing a 500 Server Error, so it's probably how it should work.
-                     streams: convertDatabaseStreamsToUploadData(session),
-                     latitude: session.latitude,
-                     longitude: session.longitude,
-                     deleted: session.gotDeleted)
+    func convertSessionToUploadData(_ session: SessionsSynchronization.SessionStoreSessionData) -> SessionsSynchronization.SessionWithPhotosUpstreamData {
+        return .init(session: .init(uuid: session.uuid,
+                                    type: session.sessionType,
+                                    title: session.name,
+                                    notes: convertDatabaseNotesToMetadata(session.notes).sorted(by: { $0.number < $1.number }),
+                                    tagList: session.tags ?? "",
+                                    startTime: session.startTime,
+                                    endTime: session.endTime,
+                                    contribute: session.contribute,
+                                    isIndoor: session.isIndoor,
+                                    version: session.version,
+                                    // NOTE: This is not being sent from Android app too and any attempt to put data here
+                                    // is causing a 500 Server Error, so it's probably how it should work.
+                                    streams: convertDatabaseStreamsToUploadData(session),
+                                    latitude: session.latitude,
+                                    longitude: session.longitude,
+                                    deleted: session.gotDeleted),
+                     photos: session.notesPhotos)
     }
     
     func convertDatabaseNotesToMetadata(_ notes: [SessionsSynchronization.SessionStoreNotesData]) -> [SessionsSynchronization.NoteUpstreamData] {
@@ -158,7 +160,8 @@ struct SynchronizationDataConverter {
                                                                sessionType: entity.type.rawValue,
                                                                measurementStreams: measurements ?? [],
                                                                deleted: entity.gotDeleted,
-                                                               notes: notes ?? [])
+                                                               notes: notes ?? [],
+                                                               notesPhotos: entity.notes?.map({ $0.originalPictureData}) ?? [])
     }
     
     func convertDownloadDataToDatabaseStream(data: SessionsSynchronization.MeasurementStreamDownstreamData) -> SessionsSynchronization.SessionStoreMeasurementStreamData {

@@ -56,6 +56,7 @@ extension SessionsSynchronization {
         let measurementStreams: [SessionStoreMeasurementStreamData]
         let deleted: Bool
         let notes: [SessionStoreNotesData]
+        let notesPhotos: [Data?]
     }
     
     struct SessionStoreMeasurementStreamData: Equatable {
