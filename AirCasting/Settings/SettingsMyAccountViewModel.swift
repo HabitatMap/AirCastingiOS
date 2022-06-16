@@ -7,7 +7,6 @@ import Resolver
 final class SettingsMyAccountViewModel: ObservableObject {
     @Injected private var networkChecker: NetworkChecker
     @Injected private var sessionEntityStore: SessionEntityStore
-    @Injected private var measurementStreamStorage: MeasurementStreamStorage
     @Injected private var logoutController: LogoutController
     @Injected private var deleteController: DeleteAccountController
     @InjectedObject private var userState: UserState

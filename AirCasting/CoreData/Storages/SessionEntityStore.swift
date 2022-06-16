@@ -1,7 +1,6 @@
 // Created by Lunar on 16/06/2022.
 //
 
-import Foundation
 import CoreData
 
 protocol SessionEntityStore {
