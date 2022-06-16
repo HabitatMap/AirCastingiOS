@@ -227,6 +227,14 @@ struct InAppAlerts {
             ]
         )
     }
+    
+    static func failedFetchingLocationlessSessionsAlert() -> AlertInfo {
+        AlertInfo(
+            title: Strings.InAppAlerts.failedTitle, message: Strings.InAppAlerts.fetchingDataFailedMessage,
+            buttons: [
+                .default(title: Strings.Commons.ok, action: nil)
+            ])
+    }
 }
 
 import SwiftUI

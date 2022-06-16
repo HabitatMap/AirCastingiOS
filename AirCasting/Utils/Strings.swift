@@ -923,6 +923,7 @@ struct Strings {
                                                                    comment: "")
         static let logoutWarningConfirmButton: String = NSLocalizedString("Confirm",
                                                                           comment: "")
+        static let fetchingDataFailedMessage: String = NSLocalizedString("Something went wrong fetching the data. Please try again later.", comment: "")
     }
     
     enum AddNoteView {

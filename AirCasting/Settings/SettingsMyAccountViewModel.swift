@@ -6,6 +6,7 @@ import Resolver
 
 final class SettingsMyAccountViewModel: ObservableObject {
     @Injected private var networkChecker: NetworkChecker
+    @Injected private var sessionEntityStore: SessionEntityStore
     @Injected private var measurementStreamStorage: MeasurementStreamStorage
     @Injected private var logoutController: LogoutController
     @Injected private var deleteController: DeleteAccountController
@@ -18,19 +19,18 @@ final class SettingsMyAccountViewModel: ObservableObject {
             return
         }
         
-        measurementStreamStorage.accessStorage { storage in
-            do {
-                let result = try storage.anyLocationlessSessionsPresent()
-                switch result {
-                case true:
-                    self.showAlert(InAppAlerts.logoutWarningAlert {
-                        self.logoutUser()
-                    })
-                case false: self.logoutUser()
-                }
-            } catch {
-                Log.error("Error when informing the user about loosing locationless sessions")
+        do {
+            let result = try sessionEntityStore.anyLocationlessSessionsPresent()
+            switch result {
+            case true:
+                self.showAlert(InAppAlerts.logoutWarningAlert {
+                    self.logoutUser()
+                })
+            case false: self.logoutUser()
             }
+        } catch {
+            Log.error("Error when informing the user about loosing locationless sessions")
+            self.showAlert(InAppAlerts.failedFetchingLocationlessSessionsAlert())
         }
     }
     
