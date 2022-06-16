@@ -153,10 +153,10 @@ struct DashboardView: View {
                         }
                     }
                 }
+                .padding(.horizontal)
             }
             .coordinateSpace(name: dashboardCoordinateSpaceName)
         }
-        .padding(.horizontal)
         .frame(maxWidth: .infinity)
         .background(Color.aircastingGray.opacity(0.05))
     }
