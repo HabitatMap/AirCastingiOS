@@ -5,14 +5,10 @@ import SwiftUI
 import AirCastingStyling
 import Resolver
 
-struct MyAccountViewSignOut: View {
-    @State private var alert: AlertInfo?
-    @Injected private var networkChecker: NetworkChecker
-    @Injected private var logoutController: LogoutController
-    @Injected private var deleteController: DeleteAccountController
-    @InjectedObject private var userState: UserState
+struct SettingsMyAccountView<VM : SettingsMyAccountViewModel>: View {
+    @ObservedObject var viewModel: VM
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
-    
+
     var body: some View {
         ZStack {
             VStack(alignment: .leading) {
@@ -26,11 +22,11 @@ struct MyAccountViewSignOut: View {
             }
         }
         .navigationTitle(Strings.Commons.myAccount)
-        .alert(item: <#Binding<_?>#>, content: { $0.makeAlert() })
+        .alert(item: $viewModel.alert, content: { $0.makeAlert() })
     }
 }
 
-private extension MyAccountViewSignOut {
+private extension SettingsMyAccountView {
     var logInLabel: some View {
         Text(Strings.SignOutSettings.logged + "\(KeychainStorage(service:  Bundle.main.bundleIdentifier!).getUsername())")
             .foregroundColor(.aircastingGray)
@@ -40,7 +36,7 @@ private extension MyAccountViewSignOut {
     
     var signOutButton: some View {
         Button(action: {
-            logoutController.signOutButtonTapped()
+            viewModel.signOutButtonTapped()
         }) {
             Group {
                 HStack {
@@ -56,24 +52,7 @@ private extension MyAccountViewSignOut {
     
     var deleteProfileButton: some View {
         Button {
-            alert = InAppAlerts.firstConfirmationDeletingAccountAlert {
-                alert = InAppAlerts.secondConfirmationDeletingAccountAlert {
-                    guard networkChecker.connectionAvailable else {
-                        alert = InAppAlerts.unableToConnectBeforeDeletingAccount()
-                        return
-                    }
-                    userState.currentState = .deletingAccount
-                    deleteController.deleteAccount { result in
-                        userState.currentState = .idle
-                        switch result {
-                        case .success(_): break
-                        case .failure(let error):
-                            alert = InAppAlerts.failedDeletingAccount()
-                            assertionFailure("Failed to delete account: \(error)")
-                        }
-                    }
-                }
-            }
+            viewModel.deleteButtonTapped()
         } label: {
             Text(Strings.SignOutSettings.deleteAccount)
         }
