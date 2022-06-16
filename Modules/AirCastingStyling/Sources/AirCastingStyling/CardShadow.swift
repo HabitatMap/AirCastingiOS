@@ -11,7 +11,8 @@ public struct CardShadow: ViewModifier {
     
     public func body(content: Content) -> some View {
         content
-            .shadow(color: .sessionCardShadow, radius: 3, x: 0, y: 2)
+            .shadow(color: .sessionCardShadow, radius: 3, x: 1, y: 2)
+            .shadow(color: .sessionCardShadow, radius: 3, x: -1, y: 2)
     }
 }
 
