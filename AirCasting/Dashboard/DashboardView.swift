@@ -14,7 +14,7 @@ import Resolver
 struct DashboardView: View {
     @StateObject var coreDataHook: CoreDataHook
     @FetchRequest<SensorThreshold>(sortDescriptors: [.init(key: "sensorName", ascending: true)]) var thresholds
-    // TODO: - We can remove it in a future
+    // TODO: - We can rethink the way how "Select Section" works and change it
     @EnvironmentObject var selectedSection_: SelectSection
     @EnvironmentObject var reorderButton: ReorderButton
     @EnvironmentObject var searchAndFollowButton: SearchAndFollowButton
