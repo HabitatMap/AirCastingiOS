@@ -289,9 +289,9 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         }
     }
     
-    func checkForLocationlessSessions() throws -> Bool {
+    func anyLocationlessSessionsPresent() throws -> Bool {
         do {
-            return try context.checkForLocationlessSessions()
+            return try context.anyLocationlessSessionsPresent()
         } catch {
             Log.error("Error when checking for locationless sessions: \(error.localizedDescription)")
             return false

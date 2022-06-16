@@ -7,12 +7,10 @@ import Resolver
 
 struct MyAccountViewSignOut: View {
     @State private var alert: AlertInfo?
-    @InjectedObject private var userAuthenticationSession: UserAuthenticationSession
-    @InjectedObject private var userState: UserState
     @Injected private var networkChecker: NetworkChecker
     @Injected private var logoutController: LogoutController
     @Injected private var deleteController: DeleteAccountController
-    @Injected private var measurementStreamStorage: MeasurementStreamStorage
+    @InjectedObject private var userState: UserState
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
     
     var body: some View {
@@ -28,7 +26,7 @@ struct MyAccountViewSignOut: View {
             }
         }
         .navigationTitle(Strings.Commons.myAccount)
-        .alert(item: $alert, content: { $0.makeAlert() })
+        .alert(item: <#Binding<_?>#>, content: { $0.makeAlert() })
     }
 }
 
@@ -42,25 +40,7 @@ private extension MyAccountViewSignOut {
     
     var signOutButton: some View {
         Button(action: {
-            guard networkChecker.connectionAvailable else {
-                alert = InAppAlerts.unableToLogOutAlert()
-                return
-            }
-            
-            measurementStreamStorage.accessStorage { storage in
-                do {
-                    let result = try storage.checkForLocationlessSessions()
-                    switch result {
-                    case true:
-                        alert = InAppAlerts.logoutWarningAlert {
-                            logoutUser()
-                        }
-                    case false: logoutUser()
-                    }
-                } catch {
-                    Log.error("Error when informing the user about loosing locationless sessions")
-                }
-            }
+            logoutController.signOutButtonTapped()
         }) {
             Group {
                 HStack {
@@ -101,17 +81,4 @@ private extension MyAccountViewSignOut {
         .padding(.bottom, 20)
         .padding()
     }
-    
-    private func logoutUser() {
-        userState.currentState = .loggingOut
-        do {
-            try logoutController.logout {
-                userState.currentState = .idle
-            }
-        } catch {
-            userState.currentState = .idle
-            assertionFailure("Failed to deauthorize \(error)")
-        }
-    }
-    
 }
