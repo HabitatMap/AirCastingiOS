@@ -168,39 +168,29 @@ class CompleteScreenViewModel: ObservableObject {
     private func refresh() {
         guard let stream = session.stream.first else { self.showAlert(); return }
         guard stream.sensorName.contains("AirBeam") else { getMeasurementsAndDisplayData(); return }
-        var currentSensor = AirBeamStreamPrefix.airBeam3
-        if session.stream.first!.sensorName.contains("AirBeam2") { currentSensor = .airBeam2 }
         do {
-            try streamsDownloader.downloadStreams(with: session.id, for: currentSensor) { result in
+            try streamsDownloader.downloadStreams(with: session.id) { result in
                 switch result {
                 case .success(let downloadedStreams):
                     
-                    // TODO: - FIX Thresholds, get those values from backend not from our hardcoded struct
-                    #warning("🚨 FIX Thresholds 🚨")
-                    let streamsSortedHardcoded = [MeasurementStream(sensorName: .f, sensorPackageName: ""),
-                                                  MeasurementStream(sensorName: .pm1, sensorPackageName: ""),
-                                                  MeasurementStream(sensorName: .pm2_5, sensorPackageName: ""),
-                                                  MeasurementStream(sensorName: .pm10, sensorPackageName: ""),
-                                                  MeasurementStream(sensorName: .rh, sensorPackageName: "")]
                     self.session.stream = []
                     
-                    streamsSortedHardcoded.forEach { streamLocalData in
-                        if let stream = downloadedStreams.first(where: { Self.getSensorName($0.sensorName) == Self.getSensorName(streamLocalData.sensorName ?? "") }) {
-                            self.session.stream.append(PartialExternalSession.Stream(id: stream.streamId,
-                                                                                     unitName: streamLocalData.unitName ?? "",
-                                                                                     unitSymbol: stream.sensorUnit,
-                                                                                     measurementShortType: streamLocalData.measurementShortType ?? "",
-                                                                                     measurementType: streamLocalData.measurementType ?? "",
-                                                                                     sensorName: stream.sensorName,
-                                                                                     sensorPackageName: currentSensor.userFacingName,
-                                                                                     thresholdsValues: .init(veryLow: streamLocalData.thresholdVeryLow,
-                                                                                                             low: streamLocalData.thresholdLow,
-                                                                                                             medium: streamLocalData.thresholdMedium,
-                                                                                                             high: streamLocalData.thresholdHigh,
-                                                                                                             veryHigh: streamLocalData.thresholdVeryHigh)))
-                        }
+//                    TODO: Sort those streams
+                    downloadedStreams.streams.forEach { stream in
+                        self.session.stream.append(PartialExternalSession.Stream(id: stream.stream_id,
+                                                                                 unitName: stream.unit_name,
+                                                                                 unitSymbol: stream.sensor_unit,
+                                                                                 measurementShortType: stream.measurement_short_type,
+                                                                                 measurementType: stream.measurement_type,
+                                                                                 sensorName: stream.sensor_name,
+                                                                                 sensorPackageName: stream.sensor_name,
+                                                                                 thresholdsValues: .init(veryLow: stream.threshold_very_low,
+                                                                                                         low: stream.threshold_low,
+                                                                                                         medium: stream.threshold_medium,
+                                                                                                         high: stream.threshold_high,
+                                                                                                         veryHigh: stream.threshold_very_high)))
                     }
-                    
+                    self.session.stream.sorted(by: <#T##(PartialExternalSession.Stream, PartialExternalSession.Stream) throws -> Bool#>)
                     Log.info("Completed downloading missing streams.")
                     self.getMeasurementsAndDisplayData()
                 case .failure(let error):
