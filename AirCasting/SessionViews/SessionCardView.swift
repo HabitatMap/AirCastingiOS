@@ -201,7 +201,7 @@ private extension SessionCardView {
                 followButton
             }
             Spacer()
-            !(session.isIndoor || session.locationless) ? mapButton.padding(.trailing, 10) : nil
+            !(session.isIndoor || session.locationless) ? mapButton.padding(.trailing, 5) : nil
             graphButton
         }.padding(.top, 10)
         .buttonStyle(GrayButtonStyle())
