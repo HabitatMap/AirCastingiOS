@@ -5,7 +5,7 @@ import SwiftUI
 import AirCastingStyling
 import Resolver
 
-struct SettingsMyAccountView<VM : SettingsMyAccountViewModel>: View {
+struct SettingsMyAccountView<VM: SettingsMyAccountViewModel>: View {
     @ObservedObject var viewModel: VM
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
 
@@ -28,7 +28,7 @@ struct SettingsMyAccountView<VM : SettingsMyAccountViewModel>: View {
 
 private extension SettingsMyAccountView {
     var logInLabel: some View {
-        Text(Strings.SignOutSettings.logged + "\(KeychainStorage(service:  Bundle.main.bundleIdentifier!).getUsername())")
+        Text(Strings.SignOutSettings.logged + "\(KeychainStorage(service: Bundle.main.bundleIdentifier!).getUsername())")
             .foregroundColor(.aircastingGray)
             .font(Fonts.muliHeading2)
             .padding()
@@ -46,8 +46,9 @@ private extension SettingsMyAccountView {
                 }
                 .padding(.horizontal)
             }
-        }.buttonStyle(BlueButtonStyle())
-            .padding()
+        }
+        .buttonStyle(BlueButtonStyle())
+        .padding()
     }
     
     var deleteProfileButton: some View {
