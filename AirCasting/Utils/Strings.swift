@@ -917,13 +917,13 @@ struct Strings {
                                                                    comment: "")
         static let accountDeletionSuccessMessage: String = NSLocalizedString("Your account has been deleted.",
                                                                    comment: "")
-        static let logoutWarningTitle: String = NSLocalizedString("Are you sure to sign out?",
+        static let logoutWarningTitle: String = NSLocalizedString("Are you sure?",
                                                                    comment: "")
-        static let logoutWarningMessage: String = NSLocalizedString("You will lose the session recorder with disabled location.",
+        static let logoutWarningMessage: String = NSLocalizedString("You will lose sessions recorded with disabled location.",
                                                                    comment: "")
         static let logoutWarningConfirmButton: String = NSLocalizedString("Confirm",
                                                                           comment: "")
-        static let fetchingDataFailedMessage: String = NSLocalizedString("Something went wrong fetching the data. Please try again later.", comment: "")
+        static let fetchingDataFailedMessage: String = NSLocalizedString("Something went wrong. Please try again later.", comment: "")
     }
     
     enum AddNoteView {
