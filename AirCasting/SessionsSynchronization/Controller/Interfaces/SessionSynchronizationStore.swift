@@ -22,10 +22,7 @@ protocol SessionSynchronizationStore {
     func addSessions(with: [SessionsSynchronization.SessionStoreSessionData]) -> Future<Void, Error>
     
     @discardableResult
-    func saveURLForSession(uuid: SessionUUID, url: String) -> Future<Void, Error>
-    
-    @discardableResult
-    func savePhotosURLs(uuid: SessionUUID, notes: [SessionsSynchronization.NotesResultData]) -> Future<Void, Error>
+    func saveUploadResponseForSession(uuid: SessionUUID, response: SessionsSynchronization.SessionUpstreamResult) -> Future<Void, Error>
     
     @discardableResult
     func removeSessions(with: [SessionUUID]) -> Future<Void, Error>

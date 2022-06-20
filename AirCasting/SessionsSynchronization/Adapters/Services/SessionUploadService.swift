@@ -76,12 +76,10 @@ final class SessionUploadService: SessionUpstream {
     }
     
     func getPhotosData(photos: [URL?], completion: @escaping ([String]) -> Void) {
-        DispatchQueue.global().async {
             let result = photos.map( { photoURL -> String in
                 guard let photoURL = photoURL, let image = UIImage(contentsOfFile: photoURL.path)?.jpegData(compressionQuality: 0.8) else { return "" }
                 return image.base64EncodedString(options: [.lineLength76Characters, .endLineWithLineFeed])
             } )
             completion(result)
-        }
     }
 }
