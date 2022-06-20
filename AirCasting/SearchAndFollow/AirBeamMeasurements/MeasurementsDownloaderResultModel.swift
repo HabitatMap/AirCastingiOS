@@ -8,17 +8,25 @@ struct MeasurementsDownloaderResultModel: Decodable {
     let streams: [Stream]
     
     struct Stream: Decodable {
-        let stream_id: Int
-        let sensor_name: String
-        let threshold_very_low: Int32
-        let threshold_low: Int32
-        let threshold_medium: Int32
-        let threshold_high: Int32
-        let threshold_very_high: Int32
-        let unit_name: String
-        let measurement_short_type: String
-        let measurement_type: String
-        let sensor_unit: String
+        let streamId: Int
+        let sensorName: String
+        let thresholdVeryLow: Int32
+        let thresholdLow: Int32
+        let thresholdMedium: Int32
+        let thresholdHigh: Int32
+        let thresholdVeryHigh: Int32
+        let unitName: String
+        let measurementShortType: String
+        let measurementType: String
+        let sensorUnit: String
+        let measurements: [Measurement]
+    }
+    
+    struct Measurement: Decodable {
+        let value: Double
+        let time: Double
+        let longitude: Double
+        let latitude: Double
     }
 }
 

@@ -15,6 +15,7 @@ final class AirBeamMeasurementsDownloaderDefault: AirBeamMeasurementsDownloader 
     
     func downloadStreams(with sessionID: Int, completion: @escaping (Result<MeasurementsDownloaderResultModel, Error>) -> Void) throws {
         let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
         let request = prepareRequests(using: sessionID)
         
         client.requestTask(for: request) { [responseValidator] result, _ in
@@ -43,8 +44,8 @@ final class AirBeamMeasurementsDownloaderDefault: AirBeamMeasurementsDownloader 
     private func structureURLComponents(with urlComponentPart: URL) -> URL {
         var urlComponents = URLComponents(string: urlComponentPart.absoluteString)!
         urlComponents.queryItems = [
-            // optional parameter: measurements_limit (on the web is equal to 1440)
-            URLQueryItem(name: "measurements_limit", value: "1"),
+            // 1440 measurements so measurement every minute in 24h period
+            URLQueryItem(name: "measurements_limit", value: "1440"),
         ]
         return urlComponents.url!
     }
