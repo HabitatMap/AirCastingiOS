@@ -1,6 +1,10 @@
 import Foundation
 import CoreData
 
+protocol RemoveOldMeasurements {
+    func removeOldestMeasurements(in context: NSManagedObjectContext, from sessionUUID: SessionUUID) throws
+}
+
 final class DefaultRemoveOldMeasurementsService: RemoveOldMeasurements {
     
     enum Error: Swift.Error {
@@ -26,10 +30,10 @@ final class DefaultRemoveOldMeasurementsService: RemoveOldMeasurements {
     }
     
     private func timeBasedRemover(context: NSManagedObjectContext, stream: MeasurementStreamEntity) {
-        let lastMeasurement = stream.allMeasurements?.last
+        guard let lastMeasurement = stream.allMeasurements?.last else { Log.error("No last measurement when trying to remove those from > 24h"); return }
         let twentyFour = 86400000 // 24 hours in miliseconds: 60 * 60 * 24
-        let beginingOfCorrectPeriod = lastMeasurement!.time.milliseconds - twentyFour
-        stream.allMeasurements?.reversed().forEach({ measurement in
+        let beginingOfCorrectPeriod = lastMeasurement.time.milliseconds - twentyFour
+        stream.allMeasurements?.forEach({ measurement in
             if measurement.time.milliseconds < beginingOfCorrectPeriod { context.delete(measurement) }
         })
     }

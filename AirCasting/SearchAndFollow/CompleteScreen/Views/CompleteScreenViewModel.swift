@@ -231,13 +231,16 @@ class CompleteScreenViewModel: ObservableObject {
                     return
                 }
                 
-                // Special filter for Sensors as those measurements are not consistent
+                // Special filter for sensors as those measurements are not consistent
                 var streamWithMeasureementsCopy = downloadedStreamsWithMeasurements
-                guard let measurements = streamWithMeasureementsCopy.first?.measurements,
-                      let lastMeasurement = measurements.last else { return }
                 let twentyFourHours = 86400000 // 24 hours in miliseconds: 60 * 60 * 24
-                let beginingOfCorrectPeriod = lastMeasurement.time - twentyFourHours
-                streamWithMeasureementsCopy[0].measurements = (measurements.filter({ $0.time >= beginingOfCorrectPeriod }))
+                
+                streamWithMeasureementsCopy.enumerated().forEach { id, streamWithMeasurements in
+                    let measurements = streamWithMeasurements.measurements
+                    guard let lastMeasurement = measurements.last else { return }
+                    let beginingOfCorrectPeriod = lastMeasurement.time - twentyFourHours
+                    streamWithMeasureementsCopy[id].measurements = (measurements.filter({ $0.time >= beginingOfCorrectPeriod }))
+                }
                 
                 DispatchQueue.main.async {
                     self.externalSessionWithStreams = self.service.createExternalSession(from: self.session, with: streamWithMeasureementsCopy)
