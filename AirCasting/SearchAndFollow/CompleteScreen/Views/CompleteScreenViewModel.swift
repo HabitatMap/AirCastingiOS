@@ -174,10 +174,15 @@ class CompleteScreenViewModel: ObservableObject {
                         self.showAlert(); return
                     }
                     
+                    guard downloadedSessionWithAllStreams.streams.first!.sensorName.contains("AirBeam") else {
+                        self.createExternalSession(with: downloadedSessionWithAllStreams.streams)
+                        return
+                    }
+                    
                     let sensors = AirBeamStreamSuffixes.allCases.map({ $0.capitalizedName })
                     var sortedStreams = [MeasurementsDownloaderResultModel.Stream]()
                     sensors.forEach { sensorSorted in
-                        guard let matchingStream = downloadedSessionWithAllStreams.streams.first(where: { Self.getSensorName($0.sensorName) == sensorSorted }) else { Log.error(""); return }
+                        guard let matchingStream = downloadedSessionWithAllStreams.streams.first(where: { Self.getSensorName($0.sensorName) == sensorSorted }) else { Log.error("No stream found with matching sensor name"); return }
                         sortedStreams.append(matchingStream)
                     }
                     
