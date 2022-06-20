@@ -62,9 +62,6 @@ struct DashboardView: View {
             }
         }
         .navigationBarTitle(Strings.DashboardView.dashboardText)
-        .onChange(of: selectedSection_.selectedSection) { selectedSection in
-            self.selectedSection_.selectedSection = selectedSection
-        }
         .onChange(of: selectedSection, perform: { newValue in
             self.selectedSection_.selectedSection = newValue
         })
