@@ -216,6 +216,16 @@ struct InAppAlerts {
             .default(title: Strings.Commons.ok, action: nil)
         ])
     }
+    
+    static func thresholdsValuesSettingsWarning() -> AlertInfo {
+        AlertInfo(
+            title: Strings.InAppAlerts.thresholdsValuesSettingsTitle, message: Strings.InAppAlerts.thresholdsValuesSettingsMessage,
+            buttons: [
+                .default(title: Strings.Commons.gotIt,
+                         action: nil),
+            ]
+        )
+    }
 }
 
 import SwiftUI

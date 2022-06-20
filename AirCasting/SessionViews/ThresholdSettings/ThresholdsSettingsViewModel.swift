@@ -14,7 +14,8 @@ class ThresholdSettingsViewModel: ObservableObject {
     let initialThresholds: ThresholdsValue
     var threshold: SensorThreshold
     private let formatter: ThresholdFormatter
-    
+    @Published var alert: AlertInfo?
+
     init(initialThresholds: ThresholdsValue, threshold: SensorThreshold) {
         self.initialThresholds = initialThresholds
         self.threshold = threshold
@@ -23,15 +24,27 @@ class ThresholdSettingsViewModel: ObservableObject {
 
     func resetToDefault() -> ThresholdsValue { initialThresholds }
     
-    func updateToNewThresholds() -> ThresholdsValue {
+    func updateToNewThresholds(completion: @escaping ((Result<ThresholdsValue, Error>) -> Void)) {
+        enum ThresholdValuesError: Error {
+            case veryLowEqualsVeryHigh
+        }
+        
+        guard thresholdVeryLow != thresholdVeryHigh else {
+            DispatchQueue.main.async {
+                self.alert = InAppAlerts.thresholdsValuesSettingsWarning()
+            }
+            completion(.failure(ThresholdValuesError.veryLowEqualsVeryHigh))
+            return
+        }
+        
         let newValues: [Int32] = [thresholdVeryHigh, thresholdHigh, thresholdMedium, thresholdLow, thresholdVeryLow]
             .map { formatter.value(from: $0) ?? 0 }
             .sorted { $0 < $1 }
         
-        return ThresholdsValue(veryLow: newValues[0],
-                               low: newValues[1],
-                               medium: newValues[2],
-                               high: newValues[3],
-                               veryHigh: newValues[4])
+        return completion(.success(ThresholdsValue(veryLow: newValues[0],
+                                                   low: newValues[1],
+                                                   medium: newValues[2],
+                                                   high: newValues[3],
+                                                   veryHigh: newValues[4])))
     }
 }
