@@ -14,7 +14,7 @@ final class SettingsMyAccountViewModel: ObservableObject {
     
     func signOutButtonTapped() {
         guard networkChecker.connectionAvailable else {
-            showAlert(InAppAlerts.unableToLogOutAlert())
+            showAlert(InAppAlerts.noInternetConnectionAlert())
             return
         }
         
@@ -47,7 +47,7 @@ final class SettingsMyAccountViewModel: ObservableObject {
                     case .success(_): break
                     case .failure(let error):
                         self.showAlert(InAppAlerts.failedDeletingAccount())
-                        assertionFailure("Failed to delete account: \(error)")
+                        Log.error("Failed to delete account: \(error)")
                     }
                 }
             })

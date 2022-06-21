@@ -117,11 +117,11 @@ struct InAppAlerts {
                                      action: redirection.goToLocationAuthSettings)])
     }
     
-    static func unableToLogOutAlert() -> AlertInfo {
-        AlertInfo(title: Strings.InAppAlerts.unableToLogOutTitle,
-                  message: Strings.InAppAlerts.unableToLogOutMessage,
+    static func noInternetConnectionAlert() -> AlertInfo {
+        AlertInfo(title: Strings.InAppAlerts.noInternetConnectionTitle,
+                  message: Strings.InAppAlerts.noInternetConnectionMessage,
                   buttons: [
-                    .default(title: Strings.InAppAlerts.unableToLogOutButton,
+                    .default(title: Strings.InAppAlerts.noInternetConnectionButton,
                              action: nil)
                   ])
     }

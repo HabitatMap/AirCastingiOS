@@ -873,11 +873,11 @@ struct Strings {
     }
     
     enum InAppAlerts {
-        static let unableToLogOutTitle: String = NSLocalizedString("No internet connection",
+        static let noInternetConnectionTitle: String = NSLocalizedString("No internet connection",
                                                                    comment: "")
-        static let unableToLogOutMessage: String = NSLocalizedString("To sign out, you must be connected to the Internet.",
+        static let noInternetConnectionMessage: String = NSLocalizedString("To sign out, you must be connected to the Internet.",
                                                                      comment: "")
-        static let unableToLogOutButton: String = NSLocalizedString("Got it!",
+        static let noInternetConnectionButton: String = NSLocalizedString("Got it!",
                                                                     comment: "")
         static let failedTitle: String = NSLocalizedString("Failed",
                                                                     comment: "")

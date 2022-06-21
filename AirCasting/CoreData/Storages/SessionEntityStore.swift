@@ -18,7 +18,16 @@ struct DefaultSessionEntityStore: SessionEntityStore {
         let fetchRequest: NSFetchRequest<SessionEntity> = SessionEntity.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "locationless = %d", true)
 
-        let results = try context.fetch(fetchRequest)
-        return !results.isEmpty
+        var result: [SessionEntity] = [SessionEntity]()
+        var error: Error? = nil
+        context.performAndWait {
+            do {
+                result = try context.fetch(fetchRequest)
+            } catch let anError {
+                error = anError
+            }
+        }
+        if let error = error { throw error }
+        return !result.isEmpty
     }
 }
