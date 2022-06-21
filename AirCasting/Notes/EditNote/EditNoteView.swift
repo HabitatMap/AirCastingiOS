@@ -7,15 +7,18 @@ struct EditNoteView<VM: EditNoteViewModel>: View {
     @StateObject var viewModel: VM
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
-            title
-            description
-            noteField
-            photo
-            continueButton
-            deleteButton
-            cancelButton
-        }.padding()
+        ScrollView {
+            VStack(alignment: .leading, spacing: 20) {
+                title
+                description
+                noteField
+                photo
+                continueButton
+                deleteButton
+                cancelButton
+            }
+        }
+        .padding()
     }
 }
 
