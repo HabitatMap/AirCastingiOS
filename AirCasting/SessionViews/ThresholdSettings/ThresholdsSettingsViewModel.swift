@@ -32,8 +32,8 @@ class ThresholdSettingsViewModel: ObservableObject {
         guard thresholdVeryLow != thresholdVeryHigh else {
             DispatchQueue.main.async {
                 self.alert = InAppAlerts.thresholdsValuesSettingsWarning()
+                completion(.failure(ThresholdValuesError.veryLowEqualsVeryHigh))
             }
-            completion(.failure(ThresholdValuesError.veryLowEqualsVeryHigh))
             return
         }
         
