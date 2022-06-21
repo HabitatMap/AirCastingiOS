@@ -19,7 +19,7 @@ struct AddNoteView<VM: AddNoteViewModel>: View {
                 continueButton
                 cancelButton
             }
-        .padding()
+            .padding()
         }
         .sheet(isPresented: $presentPhotoPicker) {
             PhotoPicker(picture: $picture)
