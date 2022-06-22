@@ -32,17 +32,21 @@ struct PhotoPicker: UIViewControllerRepresentable {
                 Log.error("Failed to compress the image")
                 return
             }
-            let fm = FileManager.default
-            let destinationDirectory = fm.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("NotesPhotos")
-            do {
-                if !fm.fileExists(atPath: destinationDirectory.path) {
-                    try fm.createDirectory(at: destinationDirectory, withIntermediateDirectories: false)
+            DispatchQueue.global().async {
+                let fm = FileManager.default
+                let destinationDirectory = fm.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("NotesPhotos")
+                do {
+                    if !fm.fileExists(atPath: destinationDirectory.path) {
+                        try fm.createDirectory(at: destinationDirectory, withIntermediateDirectories: false)
+                    }
+                    let filePath = destinationDirectory.appendingPathComponent(UUID().uuidString)
+                    try FileManager.default.copyItem(at: photoURL, to: filePath)
+                    DispatchQueue.main.async {
+                        self.photoPicker.picture = filePath
+                    }
+                } catch {
+                    Log.error("Failed to save photo in documents directory")
                 }
-                let filePath = destinationDirectory.appendingPathComponent(UUID().uuidString)
-                try FileManager.default.copyItem(at: photoURL, to: filePath)
-                photoPicker.picture = filePath
-            } catch {
-                Log.error("Failed to save photo in documents directory")
             }
             picker.dismiss(animated: true)
         }
