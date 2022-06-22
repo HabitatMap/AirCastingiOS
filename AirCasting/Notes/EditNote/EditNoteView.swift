@@ -17,8 +17,8 @@ struct EditNoteView<VM: EditNoteViewModel>: View {
                 deleteButton
                 cancelButton
             }
+            .padding()
         }
-        .padding()
     }
 }
 
@@ -41,14 +41,13 @@ private extension EditNoteView {
     }
     
     var photo: some View {
-        Group {
-            if #available(iOS 15, *) {
-                if let url = viewModel.notePhoto {
-                    AsyncImage(url: url)
-                }
+        HStack {
+            if let url = viewModel.notePhoto {
+                Spacer()
+                DownloadableImage(url: url)
+                Spacer()
             }
         }
-            
     }
     
     var continueButton: some View {
