@@ -134,7 +134,10 @@ extension PersistenceController: SessionUpdateable {
                 request.predicate = predicate
                 let notes = try context.fetch(request)
                 urls.forEach { noteInfo in
-                    notes.first(where: { $0.number == noteInfo.noteNumber })?.photoLocation = noteInfo.url
+                    if let note = notes.first(where: { $0.number == noteInfo.noteNumber }), let photoUrl = note.photoLocation {
+                        try? FileManager.default.removeItem(at: photoUrl)
+                        note.photoLocation = noteInfo.url
+                    }
                 }
                 try context.save()
                 completion?(nil)
