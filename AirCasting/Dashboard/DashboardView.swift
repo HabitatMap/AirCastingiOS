@@ -22,7 +22,6 @@ struct DashboardView: View {
     @State var selectedSection: SelectedSection = .following
     @Injected private var sessionSynchronizer: SessionSynchronizer
     @Injected private var persistenceController: PersistenceController
-    @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
     
     private var sessions: [Sessionable] {
         coreDataHook.sessions
