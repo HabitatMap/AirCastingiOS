@@ -22,7 +22,11 @@ final class SessionUploadService: SessionUpstream {
         return encoder
     }()
     
-    private let decoder = JSONDecoder()
+    private let decoder: JSONDecoder = {
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        return decoder
+    }()
     
     private struct APICallData: Encodable {
         let session: String
@@ -47,8 +51,6 @@ final class SessionUploadService: SessionUpstream {
                 let sessionData = try encoder.encode(session.session)
                 let gzippedSessionData = try sessionData.gzipped()
                 let sessionBase64String = gzippedSessionData.base64EncodedString(options: [.lineLength76Characters, .endLineWithLineFeed])
-                Log.info("## notes: \(session.session.notes)")
-                Log.info("## \(session.photos)")
                 getPhotosData(photos: session.photos) { photosAsBase64String in
                     do {
                         let apiCallData = APICallData(session: sessionBase64String, photos: photosAsBase64String, compression: true)
@@ -60,7 +62,6 @@ final class SessionUploadService: SessionUpstream {
                             promise(
                                 result.tryMap { result -> SessionsSynchronization.SessionUpstreamResult in
                                     try responseValidator.validate(response: result.response, data: result.data)
-                                    self.decoder.keyDecodingStrategy = .convertFromSnakeCase
                                     let response = try self.decoder.decode(SessionsSynchronization.SessionUpstreamResult.self, from: result.data)
                                     return response
                                 }

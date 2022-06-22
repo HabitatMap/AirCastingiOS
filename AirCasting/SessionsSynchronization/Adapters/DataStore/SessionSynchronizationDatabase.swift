@@ -117,18 +117,6 @@ final class SessionSynchronizationDatabase: SessionSynchronizationStore {
         }
     }
     
-    func savePhotosURLs(uuid: SessionUUID, notes: [SessionsSynchronization.NotesResultData]) -> Future<Void, Error> {
-        Future { [sessionsUpdater] promise in
-            sessionsUpdater.updateNotesPhotosLocations(urls: notes.map({ (url: $0.photoLocation, noteNumber: $0.number)}), for: uuid) { error in
-                if let error = error {
-                    promise(.failure(error))
-                } else {
-                    promise(.success(()))
-                }
-            }
-        }
-    }
-    
     public func removeSessions(with uuids: [SessionUUID]) -> Future<Void, Error> {
         Future { [sessionsRemover] promise in
             sessionsRemover.removeSessions(where: .predicate(NSPredicate(format: "uuid IN %@", uuids))) { error in
