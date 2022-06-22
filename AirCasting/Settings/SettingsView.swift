@@ -157,7 +157,7 @@ struct SettingsView: View {
     }
 
     private var signOutLink: some View {
-        NavigationLink(destination: MyAccountViewSignOut()) {
+        NavigationLink(destination: SettingsMyAccountView(viewModel: SettingsMyAccountViewModel())) {
             Text(Strings.Settings.myAccount)
                 .font(Fonts.boldHeading1)
         }
