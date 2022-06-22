@@ -1,24 +1,25 @@
 //
-//  File.swift
+//  WhiteButtonStyle.swift
 //  
 //
-//  Created by Lunar on 19/07/2021.
+//  Created by lunar  on 08/06/2022.
 //
 
 import SwiftUI
 
-public struct UnFollowButtonStyle: ButtonStyle {
+public struct WhiteButtonStyle: ButtonStyle {
     public init() {}
     
     public func makeBody(configuration: Configuration) -> some View {
         configuration
             .label
             .foregroundColor(.accentColor)
-            .frame(width: 82, height: 29, alignment: .center)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 12)
             .background(Color.white)
-            .font(.muli(size: 13, weight: .semibold))
             .overlay(
-                RoundedRectangle(cornerRadius: 14)
+                RoundedRectangle(cornerRadius: 5)
                     .stroke(Color.accentColor, lineWidth: 1))
+            .padding(-3)            
     }
 }

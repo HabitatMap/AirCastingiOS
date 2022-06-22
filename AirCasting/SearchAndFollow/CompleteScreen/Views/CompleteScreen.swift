@@ -43,7 +43,11 @@ struct CompleteScreen: View {
                 chartDescription
             }
             buttons
-            confirmationButton
+            if viewModel.isSessionFollowed {
+                unfollowButton
+            } else {
+                followButton
+            }
             Spacer()
         }
         .font(Fonts.regularHeading4)
@@ -140,15 +144,25 @@ private extension CompleteScreen {
         }
     }
     
-    var confirmationButton: some View {
+    var followButton: some View {
         Button {
-            viewModel.confirmationButtonPressed()
+            viewModel.followButtonPressed()
         } label: {
-            Text(viewModel.completeButtonText)
+            Text(viewModel.followButtonText)
                 .font(Fonts.semiboldHeading1)
         }
         .buttonStyle(BlueButtonStyle())
-        .disabled(!viewModel.completeButtonEnabled)
+        .disabled(!viewModel.followButtonEnabled)
+    }
+    
+    var unfollowButton: some View {
+        Button {
+            viewModel.unfollowButtonPressed()
+        } label: {
+            Text(Strings.CompleteSearchView.unfollowButtonTitle)
+                .font(Fonts.semiboldHeading1)
+        }
+        .buttonStyle(WhiteButtonStyle())
     }
 }
 

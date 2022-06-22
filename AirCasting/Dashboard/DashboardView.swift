@@ -75,8 +75,6 @@ struct DashboardView: View {
         })
         .onAppear() {
             try! coreDataHook.setup(selectedSection: self.selectedSection_.selectedSection)
-            reorderButton.isHidden = false
-            searchAndFollowButton.isHidden = false
         }
     }
 

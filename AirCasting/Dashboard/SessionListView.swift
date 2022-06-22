@@ -60,10 +60,10 @@ struct SessionsListView: View {
                         }
                     }
                 }
+                .padding(.horizontal)
             }
             .coordinateSpace(name: listCoordinateSpaceName)
         }
-        .padding(.horizontal)
         .frame(maxWidth: .infinity)
         .background(Color.aircastingGray.opacity(0.05))
     }

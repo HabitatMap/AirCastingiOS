@@ -7,10 +7,10 @@
 
 import SwiftUI
 import Charts
+import Resolver
 
 struct UIKitChartView: UIViewRepresentable {
     let thresholds: [SensorThreshold]
-
     @StateObject var viewModel: ChartViewModel
     
     typealias UIViewType = UI_PollutionChart
@@ -61,8 +61,9 @@ struct UIKitChartView: UIViewRepresentable {
     private func generateColorsSet(for entries: [ChartDataEntry]) -> [UIColor] {
         var colors: [UIColor] = []
         guard let threshold = thresholds.threshold(for: viewModel.stream?.sensorName ?? "") else { return [.aircastingGray] }
+        let formatter = Resolver.resolve(ThresholdFormatter.self, args: threshold)
         for entry in entries {
-            switch Int32(entry.y) {
+            switch formatter.value(from: entry.y) {
             case threshold.thresholdVeryLow..<threshold.thresholdLow:
                 colors.append(UIColor.aircastingGreen)
             case threshold.thresholdLow..<threshold.thresholdMedium:

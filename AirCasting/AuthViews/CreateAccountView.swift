@@ -9,7 +9,6 @@ import AirCastingStyling
 import Resolver
 
 struct CreateAccountView: View {
-    
     var completion: () -> Void
     @InjectedObject private var lifeTimeEventsProvider: LifeTimeEventsProvider
     @InjectedObject private var userAuthenticationSession: UserAuthenticationSession
@@ -22,7 +21,6 @@ struct CreateAccountView: View {
     @State private var isPasswordCorrect = true
     @State private var isEmailCorrect = true
     @State private var isUsernameBlank = false
-    @State private var presentedError: AuthorizationError?
     @State private var alert: AlertInfo?
     @State private var isLoading = false
 
@@ -73,16 +71,13 @@ private extension CreateAccountView {
                     }
                     VStack(spacing: 25) {
                         createAccountButton
-                        signinButton
+                        signInButton
                     }
                     Spacer()
                 }
                 .padding()
                 .navigationBarHidden(true)
                 .frame(maxWidth: .infinity, minHeight: geometry.size.height)
-                .alert(item: $presentedError) { error in
-                    displayErrorAlert(error: error)
-                }
                 .alert(item: $alert, content: { $0.makeAlert() })
                 .onAppear {
                     if userState.currentState == .deletingAccount {
@@ -94,11 +89,10 @@ private extension CreateAccountView {
             }
         }
         .simultaneousGesture(
-
-    DragGesture(minimumDistance: 2, coordinateSpace: .global)
-        .onChanged({ (_) in
-            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-        })
+            DragGesture(minimumDistance: 2, coordinateSpace: .global)
+                .onChanged({ (_) in
+                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                })
         )
     }
     
@@ -150,7 +144,7 @@ private extension CreateAccountView {
                     DispatchQueue.main.async {
                         switch result {
                         case .failure(let error):
-                                presentedError = error
+                            self.displayErrorAlert(error: error)
                             Log.warning("Failed to create account \(error)")
                         case .success(let output):
                             completion()
@@ -160,7 +154,7 @@ private extension CreateAccountView {
                                 try userAuthenticationSession.authorise(user)
                             } catch {
                                 Log.error("Failed to store credentials \(error)")
-                                presentedError = .other(error)
+                                self.displayErrorAlert(error: .other(error))
                             }
                         }
                         isLoading = false
@@ -171,7 +165,7 @@ private extension CreateAccountView {
         .buttonStyle(BlueButtonStyle())
     }
     
-    var signinButton: some View {
+    var signInButton: some View {
         NavigationLink(
             destination: SignInView(completion: completion).environmentObject(lifeTimeEventsProvider),
             label: {
@@ -195,21 +189,12 @@ private extension CreateAccountView {
         isUsernameBlank = checkIfBlank(text: username)
     }
 
-    func displayErrorAlert(error: AuthorizationError) -> Alert {
+    func displayErrorAlert(error: AuthorizationError) {
         switch error {
-        case .emailTaken, .invalidCredentials, .usernameTaken:
-            return Alert(title: Text(Strings.CreateAccountView.takenAndOtherTitle),
-                         message: Text(error.localizedDescription),
-                         dismissButton: .default(Text(Strings.Commons.ok)))
-
+        case .emailTaken, .invalidCredentials, .usernameTaken, .other, .timeout:
+            self.alert = InAppAlerts.createAccountAlert(error: error)
         case .noConnection:
-            return Alert(title: Text(Strings.CreateAccountView.noInternetTitle),
-                         message: Text(error.localizedDescription),
-                         dismissButton: .default(Text(Strings.Commons.ok)))
-        case .other, .timeout:
-            return Alert(title: Text(Strings.CreateAccountView.takenAndOtherTitle),
-                         message: Text(error.localizedDescription),
-                         dismissButton: .default(Text(Strings.Commons.ok)))
+            self.alert = InAppAlerts.noInternetConnection(error: error)
         }
     }
 }
