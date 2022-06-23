@@ -231,7 +231,7 @@ class CompleteScreenViewModel: ObservableObject {
                     return
                 }
                 
-                // Special filter for sensors as those measurements are not consistent
+                // Time based filter for sensors as those measurements are not consistent
                 var streamWithMeasureementsCopy = downloadedStreamsWithMeasurements
                 let twentyFourHours = 86400000 // 24 hours in miliseconds: 60 * 60 * 24
                 

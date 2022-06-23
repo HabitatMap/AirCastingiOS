@@ -65,6 +65,9 @@ struct ExternalSessionCard: View {
                 graphStatsDataSource.stream = newStream
                 graphStatsDataSource.dataSource.stream = newStream
             })
+            .onChange(of: isGraphButtonActive) { _ in
+                reorderButton.setHidden(if: isGraphButtonActive)
+                searchAndFollowButton.setHidden(if: isGraphButtonActive) }
             .onChange(of: isMapButtonActive) { _ in
                 reorderButton.setHidden(if: isMapButtonActive)
                 searchAndFollowButton.setHidden(if: isMapButtonActive)

@@ -1,5 +1,6 @@
 import Foundation
 import CoreData
+import Resolver
 
 protocol RemoveOldMeasurements {
     func removeOldestMeasurements(in context: NSManagedObjectContext, from sessionUUID: SessionUUID) throws
@@ -11,6 +12,8 @@ final class DefaultRemoveOldMeasurementsService: RemoveOldMeasurements {
         case removingMeasurementsSurplusFailed
         case noStreamInSession
     }
+    
+    @Injected private var measurementStreamStorage: MeasurementStreamStorage
     
     /// In fixed and external sessions we need to remove measurements older than 24h, and we treat 24 like a date.
     /// We know the time of the last measurement and based on that we are subtracking 24h in seconds.
@@ -29,12 +32,29 @@ final class DefaultRemoveOldMeasurementsService: RemoveOldMeasurements {
         }
     }
     
+//    private func timeBasedRemover(context: NSManagedObjectContext, stream: MeasurementStreamEntity) {
+//        guard let lastMeasurement = stream.allMeasurements?.last else { Log.error("No last measurement when trying to remove those from > 24h"); return }
+//        let twentyFourHours = 86400000 // 24 hours in miliseconds: 60 * 60 * 24
+//        let beginingOfCorrectPeriod = lastMeasurement.time.milliseconds - twentyFourHours
+//        stream.allMeasurements?.forEach({ measurement in
+//            if measurement.time.milliseconds < beginingOfCorrectPeriod { context.delete(measurement) }
+//        })
+//    }
+    
     private func timeBasedRemover(context: NSManagedObjectContext, stream: MeasurementStreamEntity) {
-        guard let lastMeasurement = stream.allMeasurements?.last else { Log.error("No last measurement when trying to remove those from > 24h"); return }
-        let twentyFour = 86400000 // 24 hours in miliseconds: 60 * 60 * 24
-        let beginingOfCorrectPeriod = lastMeasurement.time.milliseconds - twentyFour
-        stream.allMeasurements?.forEach({ measurement in
-            if measurement.time.milliseconds < beginingOfCorrectPeriod { context.delete(measurement) }
-        })
+        guard let lastMeasurementTime = stream.allMeasurements?.last?.time else { Log.error("No last measurement when trying to remove those from > 24h"); return }
+        let threshold = lastMeasurementTime.twentyFourHoursBefore
+        do {
+            let result = try context.deleteMeasurements(threshold: threshold, stream: stream)
+        } catch {
+            
+        }
+    }
+}
+
+extension Date {
+    var twentyFourHoursBefore: Double {
+        let twentyFourHours = 86400000 // 24 hours in miliseconds: 60 * 60 * 24
+        return Double(self.milliseconds - twentyFourHours)
     }
 }

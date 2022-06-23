@@ -50,7 +50,6 @@ struct ExternalGraph: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: AirCastingGraph, context: Context) {
-        
         let thresholdWitness = ThresholdWitness(sensorThreshold: self.thresholds)
         let counter: Int = calculateVisiblePointsNumber(entries: context.coordinator.entries!, uiView: uiView)
         let lastMeasurementTime = stream.allMeasurements?.last?.time
@@ -84,7 +83,6 @@ struct ExternalGraph: UIViewRepresentable {
     }
     
     private func simplifyGraphline(entries: [ChartDataEntry], uiView: AirCastingGraph) {
-        
         let counter: Int = calculateVisiblePointsNumber(entries: entries, uiView: uiView)
         
         guard counter > simplifiedGraphEntryThreshold else {

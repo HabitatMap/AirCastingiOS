@@ -13,6 +13,14 @@ extension NSManagedObjectContext {
         let uuid: SessionUUID
     }
     
+    func deleteMeasurements(threshold: Double, stream: MeasurementStreamEntity) throws -> Result<String, Error> {
+        let req: NSFetchRequest<MeasurementStreamEntity> = NSFetchRequest(entityName: "MeasurementEntity")
+        req.predicate = NSPredicate(format: "time < %@ AND measurementStream == %@", threshold as CVarArg, stream)
+        guard let measurements = try? self.fetch(req) else { return .failure(ExternalSessionEntityError.errorWhenDeletingMeasureements)}
+        measurements.forEach { Log.info("Removing measurement: \($0)"); self.delete($0) }
+        return .success("Removed all nedeed measurements")
+    }
+    
     func existingSession(uuid: SessionUUID) throws -> SessionEntity  {
         let fetchRequest: NSFetchRequest<SessionEntity> = SessionEntity.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "uuid == %@", uuid.rawValue)
@@ -38,6 +46,7 @@ extension NSManagedObjectContext {
     enum ExternalSessionEntityError: Error {
         case noSession(with: String)
         case moreThanOneSession(with: String)
+        case errorWhenDeletingMeasureements
     }
     
     func existingExternalSession(uuid: SessionUUID) throws -> ExternalSessionEntity {
