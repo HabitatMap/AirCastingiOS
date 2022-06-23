@@ -46,8 +46,19 @@ private extension AddNoteView {
         Button(action: {
             presentPhotoPicker = true
         }) {
-            Text(Strings.AddNoteView.photoButton)
+            HStack {
+                Image(systemName: "camera")
+                Text(Strings.AddNoteView.photoButton)
+                Spacer()
+            }
+            .padding()
+            .foregroundColor(.aircastingGray)
+            .overlay(
+                RoundedRectangle(cornerRadius: 0)
+                    .stroke(Color.aircastingGray.opacity(0.1), lineWidth: 1)
+            )
         }
+        .background(Color.aircastingGray.opacity(0.05))
     }
     
     var photo: some View {
