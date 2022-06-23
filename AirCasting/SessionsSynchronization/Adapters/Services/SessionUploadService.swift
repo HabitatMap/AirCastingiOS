@@ -58,6 +58,7 @@ final class SessionUploadService: SessionUpstream {
                         request.httpBody = apiCallBody
                         try authorization.authorise(request: &request)
                         
+                        Log.info("## Uploading session with \(photosAsBase64String.count) photos")
                         client.requestTask(for: request) { result, request in
                             promise(
                                 result.tryMap { result -> SessionsSynchronization.SessionUpstreamResult in
@@ -68,6 +69,7 @@ final class SessionUploadService: SessionUpstream {
                             )
                         }
                     } catch {
+                        Log.error("Failed to upload a session: \(error)")
                         promise(.failure(error))
                     }
                 }

@@ -17,9 +17,10 @@ class AddNoteViewModel: ObservableObject {
     }
     
     func continueTapped(selectedPictureURL: URL?) {
+        Log.info("## Continue tapped")
         notesHandler.addNote(noteText: noteText, photo: selectedPictureURL, withLocation: trackLocation)
         exitRoute()
     }
 
-    func cancelTapped() { exitRoute() }
+    func cancelTapped() { Log.info("## Cancel tapped"); exitRoute() }
 }

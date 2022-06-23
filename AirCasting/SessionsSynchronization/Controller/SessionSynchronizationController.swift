@@ -79,7 +79,7 @@ final class SessionSynchronizationController: SessionSynchronizer {
                     .logError(message: "[SYNC] Couldn't retrieve sync context")
             }
             .flatMap { context in
-                Publishers.MergeMany (
+                Publishers.MergeMany(
                     // Should this be extracted to separate strategy objects?
                     //
                     //                                           I think: no.
