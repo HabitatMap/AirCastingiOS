@@ -44,7 +44,7 @@ extension SessionsSynchronization {
         
         struct NotesResult: Equatable, Codable {
             let number: Int
-            let photoLocation: URL
+            let photoLocation: URL?
         }
     }
     

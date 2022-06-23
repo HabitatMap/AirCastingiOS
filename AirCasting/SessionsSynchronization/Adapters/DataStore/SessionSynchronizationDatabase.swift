@@ -101,14 +101,17 @@ final class SessionSynchronizationDatabase: SessionSynchronizationStore {
     
     func saveUploadResponseForSession(uuid: SessionUUID, response: SessionsSynchronization.SessionUpstreamResult) -> Future<Void, Error> {
         Future { [sessionsUpdater] promise in
+            Log.info("## Updating session with a repsonse: \(response)")
             sessionsUpdater.updateSessionUrl(response.location, for: uuid) { error in
                 if let error = error {
                     promise(.failure(error))
                 } else {
-                    sessionsUpdater.updateNotesPhotosLocations(urls: response.notes.map({ (url: $0.photoLocation, noteNumber: $0.number)}), for: uuid) { error in
+                    sessionsUpdater.updateNotesPhotosLocations(urls: response.notes.filter({ $0.photoLocation != nil }).map({ (url: $0.photoLocation!, noteNumber: $0.number)}), for: uuid) { error in
                                             if let error = error {
+                                                Log.info("## FAILED with photo urls: \(response.notes.filter({ $0.photoLocation != nil }).map({ (url: $0.photoLocation!, noteNumber: $0.number)}))")
                                                 promise(.failure(error))
                                             } else {
+                                                Log.info("## Updated with photo urls: \(response.notes.map({ (url: $0.photoLocation, noteNumber: $0.number)}))")
                                                 promise(.success(()))
                                             }
                                         }
