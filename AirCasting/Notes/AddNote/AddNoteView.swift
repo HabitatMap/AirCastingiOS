@@ -66,7 +66,6 @@ private extension AddNoteView {
     
     var continueButton: some View {
         Button {
-//            Log.info("## Continue button pressed. Photo: \(picture), text: \($viewModel.noteText)")
             viewModel.continueTapped(selectedPictureURL: picture)
         } label: {
             Text(Strings.AddNoteView.continueButton)
@@ -77,7 +76,6 @@ private extension AddNoteView {
     
     var cancelButton: some View {
         Button {
-            Log.info("## Cancel button pressed. Photo: \(picture), text: \($viewModel.noteText)")
             viewModel.cancelTapped()
         } label: {
             Text(Strings.AddNoteView.cancelButton)
