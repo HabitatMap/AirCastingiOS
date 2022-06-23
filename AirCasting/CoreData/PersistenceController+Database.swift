@@ -128,7 +128,6 @@ extension PersistenceController: SessionUpdateable {
         let context = self.editContext
         context.perform {
             do {
-                // REMOVE FILE
                 let request = NSFetchRequest<NoteEntity>(entityName: "NoteEntity")
                 let predicate = NSPredicate(format: "session.uuid == %@ AND number IN %@", session.rawValue, urls.map(\.noteNumber))
                 request.predicate = predicate
