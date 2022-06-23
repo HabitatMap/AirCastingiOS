@@ -5,9 +5,11 @@ import SwiftUI
 
 struct PhotoPicker: UIViewControllerRepresentable {
     @Binding var picture: URL?
+    var source: UIImagePickerController.SourceType = .camera
     
     func makeUIViewController(context: Context) -> UIImagePickerController {
         let picker = UIImagePickerController()
+        picker.sourceType = source
         picker.delegate = context.coordinator
         picker.allowsEditing = true
         return picker
@@ -28,7 +30,7 @@ struct PhotoPicker: UIViewControllerRepresentable {
         }
         
         func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-            guard let photoURL = info[.imageURL] as? URL else {
+            guard let imageData = (info[.editedImage] as? UIImage)?.jpegData(compressionQuality: 0.8) else {
                 Log.error("Failed to compress the image")
                 return
             }
@@ -40,7 +42,7 @@ struct PhotoPicker: UIViewControllerRepresentable {
                         try fm.createDirectory(at: destinationDirectory, withIntermediateDirectories: false)
                     }
                     let filePath = destinationDirectory.appendingPathComponent(UUID().uuidString)
-                    try FileManager.default.copyItem(at: photoURL, to: filePath)
+                    try imageData.write(to: filePath)
                     DispatchQueue.main.async {
                         self.photoPicker.picture = filePath
                     }
