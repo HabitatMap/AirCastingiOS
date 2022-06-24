@@ -28,7 +28,7 @@ struct SettingsMyAccountView<VM: SettingsMyAccountViewModel>: View {
 
 private extension SettingsMyAccountView {
     var logInLabel: some View {
-        Text(Strings.SignOutSettings.logged + "\(KeychainStorage(service: Bundle.main.bundleIdentifier!).getUsername())")
+        Text(Strings.SignOutSettings.logged + "\(KeychainStorage(service: Bundle.main.bundleIdentifier!).getProfileData(.email))")
             .foregroundColor(.aircastingGray)
             .font(Fonts.muliHeading2)
             .padding()

@@ -12,6 +12,7 @@ class SettingsViewModel: ObservableObject {
     @Published var locationScreenGo = false
     
     var SDClearingRouteProcess = true
+    let username = "\(KeychainStorage(service: Bundle.main.bundleIdentifier!).getProfileData(.username))"
     
     @Injected private var urlProvider: URLProvider
     @Injected private var locationHandler: LocationHandler

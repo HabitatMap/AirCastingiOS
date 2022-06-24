@@ -10,6 +10,11 @@ final class KeychainStorage {
         case unhandledError(status: OSStatus)
     }
     
+    enum UserData: String {
+        case username = "username"
+        case email = "email"
+    }
+    
     let service: String
     let accessGroup: String?
     
@@ -71,11 +76,11 @@ final class KeychainStorage {
         return string
     }
     
-    public func getUsername() -> String {
+    public func getProfileData(_ from: UserData) -> String {
         if let value = try! (KeychainStorage(service: service).data(forKey: "UserProfileKey")) {
             do {
                 let json = try JSONSerialization.jsonObject(with: value, options: []) as? [String : Any]
-                return json?["email"] as! String
+                return json?[from.rawValue] as! String
             } catch {
                 return "[error fetching]"
             }
