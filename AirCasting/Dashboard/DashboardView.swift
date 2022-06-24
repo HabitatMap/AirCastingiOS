@@ -35,12 +35,8 @@ struct DashboardView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            // It seems that there is a bug in SwiftUI for when a view contains a ScrollView (AirSectionPickerView).
-            // When user pops back to this view using navigation the `large` title is displayed incorrectly.
-            // As a workaround I`ve put a 1px rectangle between ScrollView and top. It seems to be doing the trick.
-            //
-            // Bug report was filled with Apple
-            PreventCollapseView()
+            customNavigationBar
+        
             if reorderButton.reorderIsOn {
                 followingReorderTab
                 ReorderingDashboard(sessions: sessions,
@@ -60,7 +56,8 @@ struct DashboardView: View {
                 SearchView(isSearchAndFollowLinkActive: $searchAndFollowButton.searchIsOn)
             }
         }
-        .navigationBarTitle(Strings.DashboardView.dashboardText)
+        .navigationBarTitle("")
+        .navigationBarHidden(true)
         .onChange(of: selectedSection, perform: { newValue in
             self.selectedSection_.selectedSection = newValue
         })
@@ -78,6 +75,29 @@ struct DashboardView: View {
         .onAppear() {
             try! coreDataHook.setup(selectedSection: self.selectedSection_.selectedSection)
         }
+    }
+    
+    private var customNavigationBar: some View {
+        VStack {
+            customSpacer
+            HStack {
+                Text(Strings.DashboardView.dashboardText)
+                    .font(Fonts.navBarSystemFont)
+                    .foregroundColor(Color.darkBlue)
+                    .padding()
+                    .offset(x: 0, y: 20)
+                
+                Spacer()
+            }
+            
+            customSpacer
+        }
+    }
+    
+    private var customSpacer: some View {
+        Rectangle()
+            .fill(Color(UIColor.systemBackground))
+            .frame(height: 6)
     }
 
     private var sessionTypePicker: some View {
@@ -125,15 +145,5 @@ struct DashboardView: View {
             completion()
             cancellable?.cancel()
         }
-    }
-}
-
-@available(iOS, deprecated: 15, obsoleted: 15, message: "Please review if this is still needed")
-struct PreventCollapseView: View {
-    private var mostlyClear = Color(UIColor(white: 0.0, alpha: 0.0005))
-    var body: some View {
-        Rectangle()
-            .fill(mostlyClear)
-            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 1)
     }
 }
