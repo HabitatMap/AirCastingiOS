@@ -64,6 +64,9 @@ struct DashboardView: View {
         .onChange(of: selectedSection, perform: { newValue in
             self.selectedSection_.selectedSection = newValue
         })
+        .onChange(of: selectedSection_.selectedSection , perform: { newValue in
+            self.selectedSection = newValue
+        })
         .onChange(of: isRefreshing, perform: { newValue in
             guard newValue == true else { return }
             guard !sessionSynchronizer.syncInProgress.value else {
