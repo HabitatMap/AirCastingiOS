@@ -129,23 +129,7 @@ class SearchMapViewModel: ObservableObject {
                                                        startTime: self.timeAsDate(s.startTimeLocal),
                                                        endTime: self.timeAsDate(s.endTimeLocal),
                                                        longitude: s.longitude,
-                                                       latitude: s.latitude,
-                                                       stream: s.streams.values.map { stream in
-                        .init(
-                            id: stream.id,
-                            unitName: stream.unitName,
-                            unitSymbol: stream.unitSymbol,
-                            measurementShortType: stream.measurementShortType,
-                            measurementType: stream.measurementType,
-                            sensorName: stream.sensorName,
-                            sensorPackageName: stream.sensorPackageName,
-                            thresholdsValues: .init(veryLow: Int32(stream.thresholdVeryLow),
-                                                    low: Int32(stream.thresholdLow),
-                                                    medium: Int32(stream.thresholdMedium),
-                                                    high: Int32(stream.thresholdHigh),
-                                                    veryHigh: Int32(stream.thresholdVeryHigh))
-                        )
-                })
+                                                       latitude: s.latitude)
                 )
             }
         }

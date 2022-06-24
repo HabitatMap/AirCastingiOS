@@ -12,9 +12,9 @@ protocol LogoutController {
 final class DefaultLogoutController: LogoutController {
     @Injected private var sessionSynchronizer: SessionSynchronizer
     @Injected private var removeDataController: RemoveDataController
-    
-    private let responseHandler = AuthorizationHTTPResponseHandler()
 
+    private let responseHandler = AuthorizationHTTPResponseHandler()
+    
     func logout(onEnd: @escaping () -> Void) throws {
         if sessionSynchronizer.syncInProgress.value {
             var subscription: AnyCancellable?

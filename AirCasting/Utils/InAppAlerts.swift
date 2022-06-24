@@ -117,11 +117,11 @@ struct InAppAlerts {
                                      action: redirection.goToLocationAuthSettings)])
     }
     
-    static func unableToLogOutAlert() -> AlertInfo {
-        AlertInfo(title: Strings.InAppAlerts.unableToLogOutTitle,
-                  message: Strings.InAppAlerts.unableToLogOutMessage,
+    static func noInternetConnectionAlert() -> AlertInfo {
+        AlertInfo(title: Strings.InAppAlerts.noInternetConnectionTitle,
+                  message: Strings.InAppAlerts.noInternetConnectionMessage,
                   buttons: [
-                    .default(title: Strings.InAppAlerts.unableToLogOutButton,
+                    .default(title: Strings.InAppAlerts.noInternetConnectionButton,
                              action: nil)
                   ])
     }
@@ -225,6 +225,25 @@ struct InAppAlerts {
                          action: nil),
             ]
         )
+    }
+    
+    static func logoutWarningAlert(action: @escaping (() -> Void)) -> AlertInfo {
+        AlertInfo(
+            title: Strings.InAppAlerts.logoutWarningTitle, message: Strings.InAppAlerts.logoutWarningMessage,
+            buttons: [
+                .default(title: Strings.InAppAlerts.logoutWarningConfirmButton,
+                         action: action),
+                .cancel()
+            ]
+        )
+    }
+    
+    static func failedFetchingLocationlessSessionsAlert() -> AlertInfo {
+        AlertInfo(
+            title: Strings.InAppAlerts.failedTitle, message: Strings.InAppAlerts.fetchingDataFailedMessage,
+            buttons: [
+                .default(title: Strings.Commons.ok, action: nil)
+            ])
     }
 }
 
