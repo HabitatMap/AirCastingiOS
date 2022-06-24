@@ -22,6 +22,7 @@ struct TextView: UIViewRepresentable {
         textView.layer.borderColor = UIColor.aircastingGray.withAlphaComponent(0.1).cgColor
         textView.layer.borderWidth = 1
         textView.textColor = noteIsEditing ? .black : .lightGray
+        textView.addDoneButtonToKeyboard()
         
         return textView
     }
@@ -58,5 +59,32 @@ struct TextView: UIViewRepresentable {
     
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
+    }
+}
+
+
+extension UITextView {
+    func addDoneButtonToKeyboard(){
+        let toolbar: UIToolbar = UIToolbar(frame: CGRect.init(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 50))
+        toolbar.barStyle = .default
+        
+        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace,
+                                        target: nil,
+                                        action: nil)
+        
+        let done: UIBarButtonItem = UIBarButtonItem(title: "Done",
+                                                    style: .done,
+                                                    target: self,
+                                                    action: #selector(self.doneButtonTapped))
+        
+        let items = [flexibleSpace, done]
+        toolbar.items = items
+        toolbar.sizeToFit()
+        
+        self.inputAccessoryView = toolbar
+    }
+    
+    @objc func doneButtonTapped(){
+        self.resignFirstResponder()
     }
 }

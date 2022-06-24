@@ -7,18 +7,15 @@ struct EditNoteView<VM: EditNoteViewModel>: View {
     @StateObject var viewModel: VM
     
     var body: some View {
-        if #available(iOS 15.0, *) {
-            mainBody
-                .toolbar {
-                    ToolbarItemGroup(placement: .keyboard) {
-                        Spacer()
-                        Button(Strings.SessionCart.keyboardToolbarDoneButton) { hideKeyboard() }
-                    }
-                }
-        } else {
-            mainBody
-                .onTapGesture { hideKeyboard() }
+        VStack(alignment: .leading, spacing: 20) {
+            title
+            description
+            noteField
+            continueButton
+            deleteButton
+            cancelButton
         }
+        .padding()
     }
 }
 
@@ -67,22 +64,5 @@ private extension EditNoteView {
             Text(Strings.EditNoteView.cancelButton)
         }
         .buttonStyle(BlueTextButtonStyle())
-    }
-    
-    var mainBody: some View {
-        NavigationView {
-            VStack(alignment: .leading, spacing: 20) {
-                title
-                description
-                noteField
-                continueButton
-                deleteButton
-                cancelButton
-            }
-            .padding()
-        }
-        .navigationTitle("")
-        .navigationBarHidden(true)
-        .navigationBarBackButtonHidden(true)
     }
 }

@@ -7,18 +7,14 @@ struct AddNoteView<VM: AddNoteViewModel>: View {
     @StateObject var viewModel: VM
     
     var body: some View {
-        if #available(iOS 15.0, *) {
-            mainBody
-                .toolbar {
-                    ToolbarItemGroup(placement: .keyboard) {
-                        Spacer()
-                        Button(Strings.SessionCart.keyboardToolbarDoneButton) { hideKeyboard() }
-                    }
-                }
-        } else {
-            mainBody
-                .onTapGesture { hideKeyboard() }
+        VStack(alignment: .leading, spacing: 20) {
+            title
+            description
+            noteField
+            continueButton
+            cancelButton
         }
+        .padding()
     }
 }
 
@@ -57,16 +53,5 @@ private extension AddNoteView {
             Text(Strings.AddNoteView.cancelButton)
         }
         .buttonStyle(BlueTextButtonStyle())
-    }
-    
-    var mainBody: some View {
-        VStack(alignment: .leading, spacing: 20) {
-            title
-            description
-            noteField
-            continueButton
-            cancelButton
-        }
-        .padding()
     }
 }
