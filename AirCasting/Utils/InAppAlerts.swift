@@ -217,6 +217,16 @@ struct InAppAlerts {
         ])
     }
     
+    static func thresholdsValuesSettingsWarning() -> AlertInfo {
+        AlertInfo(
+            title: Strings.InAppAlerts.thresholdsValuesSettingsTitle, message: Strings.InAppAlerts.thresholdsValuesSettingsMessage,
+            buttons: [
+                .default(title: Strings.Commons.gotIt,
+                         action: nil),
+            ]
+        )
+    }
+    
     static func logoutWarningAlert(action: @escaping (() -> Void)) -> AlertInfo {
         AlertInfo(
             title: Strings.InAppAlerts.logoutWarningTitle, message: Strings.InAppAlerts.logoutWarningMessage,

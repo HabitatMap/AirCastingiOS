@@ -918,6 +918,8 @@ struct Strings {
                                                                    comment: "")
         static let accountDeletionSuccessMessage: String = NSLocalizedString("Your account has been deleted.",
                                                                    comment: "")
+        static let thresholdsValuesSettingsTitle: String = NSLocalizedString("Wrong values", comment: "")
+        static let thresholdsValuesSettingsMessage: String = NSLocalizedString("The lowest threshold value has to be smaller than the highest threshold value", comment: "")
         static let logoutWarningTitle: String = NSLocalizedString("Are you sure?",
                                                                    comment: "")
         static let logoutWarningMessage: String = NSLocalizedString("You will lose sessions recorded with disabled location.",
