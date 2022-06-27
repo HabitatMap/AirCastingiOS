@@ -1059,4 +1059,8 @@ struct Strings {
     enum ProtectedScreen {
         static let title: String = NSLocalizedString("Please, do not force close the app while recording a session!", comment: "")
     }
+    
+    enum TextView {
+        static let doneButton: String = NSLocalizedString("Done", comment: "")
+    }
 }

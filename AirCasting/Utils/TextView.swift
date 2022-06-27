@@ -72,7 +72,7 @@ extension UITextView {
                                         target: nil,
                                         action: nil)
         
-        let done: UIBarButtonItem = UIBarButtonItem(title: "Done",
+        let done: UIBarButtonItem = UIBarButtonItem(title: Strings.TextView.doneButton,
                                                     style: .done,
                                                     target: self,
                                                     action: #selector(self.doneButtonTapped))
