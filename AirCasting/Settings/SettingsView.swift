@@ -158,11 +158,7 @@ struct SettingsView: View {
 
     private var signOutLink: some View {
         NavigationLink(destination: SettingsMyAccountView(viewModel: SettingsMyAccountViewModel())) {
-            VStack(alignment: .leading) {
-                Text(Strings.Settings.myAccount)
-                    .font(Fonts.boldHeading1)
-                usernameText
-            }
+            myAccount
         }
     }
     
@@ -170,6 +166,14 @@ struct SettingsView: View {
         Text(viewModel.username)
             .font(Fonts.muliHeading2)
             .foregroundColor(.aircastingGray)
+    }
+    
+    private var myAccount: some View {
+        VStack(alignment: .leading) {
+            Text(Strings.Settings.myAccount)
+                .font(Fonts.boldHeading1)
+            usernameText
+        }
     }
 
     private var keepScreenOnSwitch: some View {
