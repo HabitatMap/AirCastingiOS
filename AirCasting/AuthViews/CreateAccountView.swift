@@ -23,7 +23,10 @@ struct CreateAccountView: View {
     @State private var isUsernameBlank = false
     @State private var alert: AlertInfo?
     @State private var isLoading = false
-
+    
+    @State private var linkActive = false
+    @StateObject var SignInPersistanceObserved = SignInPersistance.shared
+    
     init(completion: @escaping () -> Void) {
         self.completion = completion
     }
@@ -74,6 +77,9 @@ private extension CreateAccountView {
                         signInButton
                     }
                     Spacer()
+                    if userState.currentState == .loggingOut {
+                        backgroundSignOutIndication
+                    }
                 }
                 .padding()
                 .navigationBarHidden(true)
@@ -93,6 +99,11 @@ private extension CreateAccountView {
                 .onChanged({ (_) in
                     UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                 })
+        )
+        .background(
+            Group {
+              signInLink
+            }
         )
     }
     
@@ -114,17 +125,18 @@ private extension CreateAccountView {
     
     var emailTextfield: some View {
         createTextfield(placeholder: Strings.CreateAccountView.email,
-                        binding: $email)
+                        binding: $SignInPersistanceObserved.email)
             .autocapitalization(.none)
     }
     
     var usernameTextfield: some View {
         createTextfield(placeholder: Strings.CreateAccountView.profile,
-                        binding: $username)
+                        binding: $SignInPersistanceObserved.username)
             .autocapitalization(.none)
     }
     var passwordTextfield: some View {
-        createSecuredTextfield(placeholder: Strings.CreateAccountView.password, binding: $password)
+        createSecuredTextfield(placeholder: Strings.CreateAccountView.password,
+                               binding: $SignInPersistanceObserved.password)
     }
     
     var createAccountButton: some View {
@@ -162,15 +174,27 @@ private extension CreateAccountView {
                 }
             }
         }
+        .disabled(userState.currentState == .loggingOut)
         .buttonStyle(BlueButtonStyle())
     }
     
-    var signInButton: some View {
+    var signInLink: some View {
         NavigationLink(
             destination: SignInView(completion: completion).environmentObject(lifeTimeEventsProvider),
+            isActive: $linkActive,
             label: {
-                signingButtonText
+                EmptyView()
             })
+    }
+    
+    var signInButton: some View {
+        Button {
+            SignInPersistanceObserved.signInActive = true
+            SignInPersistanceObserved.clearCredentials()
+            linkActive = true
+        } label: {
+            signingButtonText
+        }
     }
     
     var signingButtonText: some View {
@@ -181,6 +205,14 @@ private extension CreateAccountView {
         + Text(Strings.CreateAccountView.signIn_2)
             .font(Fonts.boldHeading2)
             .foregroundColor(.accentColor)
+    }
+    
+    var backgroundSignOutIndication: some View {
+        HStack {
+            ActivityIndicator(isAnimating: .constant(userState.currentState == .loggingOut), style: .large)
+            Text(Strings.CreateAccountView.loggingOutInBackground)
+                .foregroundColor(.aircastingGray)
+        }
     }
 
     func checkIfUserInputIsCorrect() {

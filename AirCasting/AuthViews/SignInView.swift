@@ -18,16 +18,16 @@ struct SignInView: View {
     var completion: () -> Void
     
     @State var isActive: Bool
-    
     @InjectedObject private var userAuthenticationSession: UserAuthenticationSession
+    @InjectedObject private var userState: UserState
     private let authorizationAPIService = AuthorizationAPIService()
-    @State private var username: String = ""
-    @State private var password: String = ""
     @State private var task: Cancellable? = nil
     @State private var presentedError: AuthorizationError? = nil
     @State private var isUsernameBlank = false
     @State private var isPasswordBlank = false
     
+    @State private var linkActive = false
+    @StateObject var SignInPersistanceObserved = SignInPersistance.shared
     
     init(completion: @escaping () -> Void, active: Bool = false) {
         _isActive = State(initialValue: active)
@@ -73,6 +73,9 @@ private extension SignInView {
                         signupButton
                     }
                     Spacer()
+                    if userState.currentState == .loggingOut {
+                        backgroundSignOutIndication
+                    }
                 }
                 .padding()
                 .navigationBarHidden(true)
@@ -87,6 +90,11 @@ private extension SignInView {
                 .onChanged { _ in
                     UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                 })
+        .background(
+            Group {
+              signUpLink
+            }
+        )
     }
     
     var progressBar: some View {
@@ -107,13 +115,14 @@ private extension SignInView {
     
     var usernameTextfield: some View {
         createTextfield(placeholder: Strings.SignInView.usernameField,
-                        binding: $username)
+                        binding: $SignInPersistanceObserved.username)
             .disableAutocorrection(true)
             .autocapitalization(.none)
     }
     
     var passwordTextfield: some View {
-        createSecuredTextfield(placeholder: Strings.SignInView.passwordField, binding: $password)
+        createSecuredTextfield(placeholder: Strings.SignInView.passwordField,
+                               binding: $SignInPersistanceObserved.password)
     }
     
     var signinButton: some View {
@@ -122,7 +131,7 @@ private extension SignInView {
             if !isPasswordBlank, !isUsernameBlank {
                 isActive = true
                 
-                task = authorizationAPIService.signIn(input: AuthorizationAPI.SigninUserInput(username: username, password: password)) { result in
+                task = authorizationAPIService.signIn(input: AuthorizationAPI.SigninUserInput(username: SignInPersistanceObserved.username, password: SignInPersistanceObserved.password)) { result in
                     DispatchQueue.main.async {
                         switch result {
                         case .success(let output):
@@ -144,6 +153,7 @@ private extension SignInView {
                 }
             }
         }
+        .disabled(userState.currentState == .loggingOut)
         .buttonStyle(BlueButtonStyle())
     }
     
@@ -160,12 +170,23 @@ private extension SignInView {
         .buttonStyle(BlueTextButtonStyle())
     }
     
-    var signupButton: some View {
+    var signUpLink: some View {
         NavigationLink(
             destination: CreateAccountView(completion: completion).environmentObject(lifeTimeEventsProvider),
+            isActive: $linkActive,
             label: {
-                signupButtonText
+                EmptyView()
             })
+    }
+    
+    var signupButton: some View {
+        Button {
+            SignInPersistanceObserved.signInActive = false
+            SignInPersistanceObserved.clearCredentials()
+            linkActive = true
+        } label: {
+            signupButtonText
+        }
     }
     
     var signupButtonText: some View {
@@ -178,9 +199,17 @@ private extension SignInView {
             .foregroundColor(.accentColor)
     }
     
+    var backgroundSignOutIndication: some View {
+        HStack {
+            ActivityIndicator(isAnimating: .constant(userState.currentState == .loggingOut), style: .large)
+            Text(Strings.CreateAccountView.loggingOutInBackground)
+                .foregroundColor(.aircastingGray)
+        }
+    }
+    
     func checkInput() {
-        isPasswordBlank = checkIfBlank(text: password)
-        isUsernameBlank = checkIfBlank(text: username)
+        isPasswordBlank = checkIfBlank(text: SignInPersistanceObserved.password)
+        isUsernameBlank = checkIfBlank(text: SignInPersistanceObserved.username)
     }
     
     func displayErrorAlert(error: AuthorizationError) -> Alert {

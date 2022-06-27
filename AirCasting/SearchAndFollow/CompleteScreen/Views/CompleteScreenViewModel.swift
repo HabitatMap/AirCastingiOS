@@ -5,7 +5,6 @@ import Foundation
 import SwiftUI
 import Resolver
 
-
 enum CompletionScreenError: Error {
     case noStreams
 }
@@ -166,43 +165,29 @@ class CompleteScreenViewModel: ObservableObject {
     }
     
     private func refresh() {
-        guard let stream = session.stream.first else { self.showAlert(); return }
-        guard stream.sensorName.contains("AirBeam") else { getMeasurementsAndDisplayData(); return }
-        var currentSensor = AirBeamStreamPrefix.airBeam3
-        if session.stream.first!.sensorName.contains("AirBeam2") { currentSensor = .airBeam2 }
         do {
-            try streamsDownloader.downloadStreams(with: session.id, for: currentSensor) { result in
+            try streamsDownloader.downloadStreams(with: session.id) { result in
                 switch result {
-                case .success(let downloadedStreams):
-                    
-                    // TODO: - FIX Thresholds, get those values from backend not from our hardcoded struct
-                    #warning("🚨 FIX Thresholds 🚨")
-                    let streamsSortedHardcoded = [MeasurementStream(sensorName: .f, sensorPackageName: ""),
-                                                  MeasurementStream(sensorName: .pm1, sensorPackageName: ""),
-                                                  MeasurementStream(sensorName: .pm2_5, sensorPackageName: ""),
-                                                  MeasurementStream(sensorName: .pm10, sensorPackageName: ""),
-                                                  MeasurementStream(sensorName: .rh, sensorPackageName: "")]
-                    self.session.stream = []
-                    
-                    streamsSortedHardcoded.forEach { streamLocalData in
-                        if let stream = downloadedStreams.first(where: { Self.getSensorName($0.sensorName) == Self.getSensorName(streamLocalData.sensorName ?? "") }) {
-                            self.session.stream.append(PartialExternalSession.Stream(id: stream.streamId,
-                                                                                     unitName: streamLocalData.unitName ?? "",
-                                                                                     unitSymbol: stream.sensorUnit,
-                                                                                     measurementShortType: streamLocalData.measurementShortType ?? "",
-                                                                                     measurementType: streamLocalData.measurementType ?? "",
-                                                                                     sensorName: stream.sensorName,
-                                                                                     sensorPackageName: currentSensor.userFacingName,
-                                                                                     thresholdsValues: .init(veryLow: streamLocalData.thresholdVeryLow,
-                                                                                                             low: streamLocalData.thresholdLow,
-                                                                                                             medium: streamLocalData.thresholdMedium,
-                                                                                                             high: streamLocalData.thresholdHigh,
-                                                                                                             veryHigh: streamLocalData.thresholdVeryHigh)))
-                        }
+                case .success(let downloadedSessionWithAllStreams):
+                    guard !downloadedSessionWithAllStreams.streams.isEmpty else {
+                        Log.error("Session has no streams")
+                        self.showAlert(); return
                     }
                     
+                    guard downloadedSessionWithAllStreams.streams.first!.sensorName.contains("AirBeam") else {
+                        self.createExternalSession(with: downloadedSessionWithAllStreams.streams)
+                        return
+                    }
+                    
+                    let sensors = AirBeamStreamSuffixes.allCases.map({ $0.capitalizedName })
+                    var sortedStreams = [MeasurementsDownloaderResultModel.Stream]()
+                    sensors.forEach { sensorSorted in
+                        guard let matchingStream = downloadedSessionWithAllStreams.streams.first(where: { Self.getSensorName($0.sensorName) == sensorSorted }) else { Log.error("No stream found with matching sensor name"); return }
+                        sortedStreams.append(matchingStream)
+                    }
+                    
+                    self.createExternalSession(with: sortedStreams)
                     Log.info("Completed downloading missing streams.")
-                    self.getMeasurementsAndDisplayData()
                 case .failure(let error):
                     Log.error("Something went wrong when downloading missing streams. \(error.localizedDescription)")
                     self.showAlert()
@@ -215,39 +200,26 @@ class CompleteScreenViewModel: ObservableObject {
         return
     }
     
-    private func getMeasurementsAndDisplayData() {
-        let streams = session.stream.map(\.id)
-        
-        service.downloadMeasurements(streamsIds: streams) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .failure(let error):
-                Log.error("Failed to download session: \(error)")
-                self.showAlert()
-            case .success(let downloadedStreamsWithMeasurements):
-                guard !downloadedStreamsWithMeasurements.isEmpty else {
-                    Log.error("Session has no streams")
-                    self.showAlert()
-                    return
-                }
-                
-                DispatchQueue.main.async {
-                    self.externalSessionWithStreams = self.service.createExternalSession(from: self.session, with: downloadedStreamsWithMeasurements)
-                    
-                    self.sessionStreams = .ready( self.externalSessionWithStreams!.streams.map {
-                        .init(id: $0.id,
-                              sensorName: Self.getSensorName($0.sensorName),
-                              sensorUnit: $0.unitSymbol,
-                              lastMeasurementValue: $0.measurements.last?.value ?? 0,
-                              color: $0.thresholdsValues.colorFor(value: $0.measurements.last?.value ?? 0),
-                              measurements: $0.measurements.map({.init(value: $0.value, time: $0.time, latitude: $0.latitude, longitude: $0.longitude)}), thresholds: $0.thresholdsValues)
-                    })
-                    
-                    if let stream = self.externalSessionWithStreams!.streams.first {
-                        self.assignValues(with: stream)
-                        self.defineChartRange(with: stream)
-                    }
-                }
+    private func createExternalSession(with sortedStreams: [MeasurementsDownloaderResultModel.Stream]) {
+        DispatchQueue.main.async {
+            self.externalSessionWithStreams = self.service.createExternalSession(from: self.session, with: sortedStreams)
+            
+            self.sessionStreams = .ready(self.externalSessionWithStreams!.streams.map {
+                .init(id: $0.id,
+                      sensorName: Self.getSensorName($0.sensorName),
+                      sensorUnit: $0.unitSymbol,
+                      lastMeasurementValue: $0.measurements.last?.value ?? 0,
+                      color: $0.thresholdsValues.colorFor(value: $0.measurements.last?.value ?? 0),
+                      measurements: $0.measurements.map({.init(value: $0.value,
+                                                               time: $0.time,
+                                                               latitude: $0.latitude,
+                                                               longitude: $0.longitude)}),
+                      thresholds: $0.thresholdsValues)
+            })
+            
+            if let stream = self.externalSessionWithStreams!.streams.first {
+                self.assignValues(with: stream)
+                self.defineChartRange(with: stream)
             }
         }
     }
