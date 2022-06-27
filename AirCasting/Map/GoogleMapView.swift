@@ -281,11 +281,11 @@ struct GoogleMapView: UIViewRepresentable {
             let lat = mapView.projection.coordinate(for: mapView.center).latitude
             let len = mapView.projection.coordinate(for: mapView.center).longitude
             
-            //MARK: - Picker screen logic
+            // MARK: - Picker screen logic
             if parent.isMapOnPickerScreen {
                 parent.placePickerLocation = CLLocationCoordinate2D(latitude: lat, longitude: len)
             } else {
-                parent.tracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: lat, longitude: len), measurementTime: DateBuilder.getFakeUTCDate())]
+                parent.tracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: lat, longitude: len), measurementTime: DateBuilder.getFakeUTCDate())] // possibly to be removed
             }
             positionChanged(for: mapView)
             shouldAutoTrack = false
