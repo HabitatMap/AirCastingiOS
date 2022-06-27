@@ -53,6 +53,7 @@
 		33A7FF1D27C511A200A138D6 /* CompleteScreenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33A7FF1C27C511A200A138D6 /* CompleteScreenViewModel.swift */; };
 		33A7FF2127C5160A00A138D6 /* StaticSessionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33A7FF2027C5160A00A138D6 /* StaticSessionHeader.swift */; };
 		33AC7D5C273C1B9700EB1274 /* StandaloneSessionCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33AC7D5B273C1B9700EB1274 /* StandaloneSessionCardView.swift */; };
+		33B397D9284FB77400C95387 /* PhotoPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33B397D8284FB77400C95387 /* PhotoPicker.swift */; };
 		33BA3368266E4BCA00899343 /* MobilePeripheralSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33BA3367266E4BCA00899343 /* MobilePeripheralSessionManager.swift */; };
 		33BA336A266E4D1000899343 /* MobileSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33BA3369266E4D1000899343 /* MobileSession.swift */; };
 		33D07A252825963000F25B4C /* ExternalSessionEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33D07A232825963000F25B4C /* ExternalSessionEntity+CoreDataClass.swift */; };
@@ -68,6 +69,7 @@
 		33F604AF2824174E00B48C63 /* ExternalSessionCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F604AE2824174E00B48C63 /* ExternalSessionCard.swift */; };
 		33F604B12824180900B48C63 /* ExternalSessionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F604B02824180900B48C63 /* ExternalSessionHeader.swift */; };
 		33F82FC227F60498001654D8 /* ThresholdsValue+Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F82FC127F60498001654D8 /* ThresholdsValue+Color.swift */; };
+		33F87611286343D70073A3D4 /* DownloadableImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F87610286343D70073A3D4 /* DownloadableImage.swift */; };
 		33FD502227A144B300162384 /* SingleMeasurementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33FD502127A144B300162384 /* SingleMeasurementView.swift */; };
 		4F15548B263C44AF00FF3208 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F15548A263C44AF00FF3208 /* Session.swift */; };
 		4F15548F263C819C00FF3208 /* MeasurementEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F15548E263C819C00FF3208 /* MeasurementEntity.swift */; };
@@ -506,6 +508,7 @@
 		336A909427A48CA400851100 /* ReorderingSessionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReorderingSessionHeader.swift; sourceTree = "<group>"; };
 		336A909627A492A000851100 /* DropViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropViewDelegate.swift; sourceTree = "<group>"; };
 		336A909827A4946400851100 /* ReorderingDashboardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReorderingDashboardViewModel.swift; sourceTree = "<group>"; };
+		336BFBCD2857788E008D4645 /* AirCasting v7.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AirCasting v7.xcdatamodel"; sourceTree = "<group>"; };
 		336F86CF282E98E500FEFD61 /* ExternalSessionMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalSessionMapView.swift; sourceTree = "<group>"; };
 		3375E8CE279185430019A5DE /* TemperatureConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemperatureConverter.swift; sourceTree = "<group>"; };
 		3375E8D32791EDC50019A5DE /* CLLocationCoordinate2D.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLLocationCoordinate2D.swift; sourceTree = "<group>"; };
@@ -533,6 +536,7 @@
 		33A7FF1C27C511A200A138D6 /* CompleteScreenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteScreenViewModel.swift; sourceTree = "<group>"; };
 		33A7FF2027C5160A00A138D6 /* StaticSessionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaticSessionHeader.swift; sourceTree = "<group>"; };
 		33AC7D5B273C1B9700EB1274 /* StandaloneSessionCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandaloneSessionCardView.swift; sourceTree = "<group>"; };
+		33B397D8284FB77400C95387 /* PhotoPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPicker.swift; sourceTree = "<group>"; };
 		33BA3367266E4BCA00899343 /* MobilePeripheralSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobilePeripheralSessionManager.swift; sourceTree = "<group>"; };
 		33BA3369266E4D1000899343 /* MobileSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileSession.swift; sourceTree = "<group>"; };
 		33D07A232825963000F25B4C /* ExternalSessionEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExternalSessionEntity+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -548,6 +552,7 @@
 		33F604AE2824174E00B48C63 /* ExternalSessionCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalSessionCard.swift; sourceTree = "<group>"; };
 		33F604B02824180900B48C63 /* ExternalSessionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalSessionHeader.swift; sourceTree = "<group>"; };
 		33F82FC127F60498001654D8 /* ThresholdsValue+Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ThresholdsValue+Color.swift"; sourceTree = "<group>"; };
+		33F87610286343D70073A3D4 /* DownloadableImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadableImage.swift; sourceTree = "<group>"; };
 		33FD502127A144B300162384 /* SingleMeasurementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleMeasurementView.swift; sourceTree = "<group>"; };
 		3A54057326D27D23E9906704 /* Pods_AirCastingTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AirCastingTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4327910762891E7B1AE9102E /* Pods-AirCastingTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AirCastingTests.debug.xcconfig"; path = "Target Support Files/Pods-AirCastingTests/Pods-AirCastingTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -1294,6 +1299,8 @@
 				DD38A4AE27B1584600D2091F /* StringsCustomizer.swift */,
 				33D92F5E27EB742800252F3B /* Loadable.swift */,
 				338CA6F627D104AF00505331 /* WebView.swift */,
+				33B397D8284FB77400C95387 /* PhotoPicker.swift */,
+				33F87610286343D70073A3D4 /* DownloadableImage.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -2820,6 +2827,7 @@
 				B38E6CD026C5F83D00C21C45 /* StandardSesssionStopper.swift in Sources */,
 				3399394D27DA1722006144AF /* SingleSessionDownloader.swift in Sources */,
 				B30F9A612745601F00C85E17 /* SDSyncController.swift in Sources */,
+				33B397D9284FB77400C95387 /* PhotoPicker.swift in Sources */,
 				33406247281821FA004DA4DA /* ExternalSessionsStore.swift in Sources */,
 				B33B15FE27AEE6E900138FFA /* WeakRef+DisposableDataHolder.swift in Sources */,
 				750A51DA2754D47F00D6F4E7 /* GridSquare.swift in Sources */,
@@ -3067,6 +3075,7 @@
 				ACD01F4025F8C1F800B8F65F /* SessionContext.swift in Sources */,
 				336A909327A4553000851100 /* ReoredringSessionCard.swift in Sources */,
 				B33B161927AF26BC00138FFA /* DateFormatter+Extensions.swift in Sources */,
+				33F87611286343D70073A3D4 /* DownloadableImage.swift in Sources */,
 				DDF62601269C779800F23489 /* UIApplication+AppInfo.swift.swift in Sources */,
 				75B1DD48273BCCD200BCDF9B /* Heatmap.swift in Sources */,
 				AC8D6C7225C0574800ED74D1 /* LocationTracker.swift in Sources */,
@@ -3611,6 +3620,7 @@
 		338C30E625F10BFE00E0305C /* AirCasting.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				336BFBCD2857788E008D4645 /* AirCasting v7.xcdatamodel */,
 				B3620725283F97750079C052 /* AirCasting v6.xcdatamodel */,
 				3340624528181376004DA4DA /* AirCasting v5.xcdatamodel */,
 				DD2DDBA927B517CD00807011 /* AirCasting v4.xcdatamodel */,
@@ -3618,7 +3628,7 @@
 				DDF551D427985AAB009D1347 /* AirCasting v2.xcdatamodel */,
 				338C30E725F10BFE00E0305C /* AirCasting.xcdatamodel */,
 			);
-			currentVersion = B3620725283F97750079C052 /* AirCasting v6.xcdatamodel */;
+			currentVersion = 336BFBCD2857788E008D4645 /* AirCasting v7.xcdatamodel */;
 			path = AirCasting.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

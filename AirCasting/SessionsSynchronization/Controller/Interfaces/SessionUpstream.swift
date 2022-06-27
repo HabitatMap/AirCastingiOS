@@ -11,12 +11,16 @@ import Combine
 /// 2. Diff them against upstream database
 /// 3. Download/Upload/Delete accordingly (this interface)
 protocol SessionUpstream {
-    func upload(session: SessionsSynchronization.SessionUpstreamData) -> Future<SessionsSynchronization.SessionUpstreamResult, Error>
+    func upload(session: SessionsSynchronization.SessionWithPhotosUpstreamData) -> Future<SessionsSynchronization.SessionUpstreamResult, Error>
 }
 
 // MARK: Data structures
 
 extension SessionsSynchronization {
+    struct SessionWithPhotosUpstreamData: Equatable, Encodable {
+        let session: SessionUpstreamData
+        let photos: [URL?]
+    }
     struct SessionUpstreamData: Equatable, Encodable {
         let uuid: SessionUUID
         let type: String
@@ -36,6 +40,12 @@ extension SessionsSynchronization {
     
     struct SessionUpstreamResult: Equatable, Codable {
         let location: String
+        let notes: [NotesResult]
+        
+        struct NotesResult: Equatable, Codable {
+            let number: Int
+            let photoLocation: URL?
+        }
     }
     
     struct MeasurementStreamUpstreamData: Equatable, Codable {
