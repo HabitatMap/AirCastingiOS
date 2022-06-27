@@ -76,11 +76,11 @@ final class KeychainStorage {
         return string
     }
     
-    public func getProfileData(_ from: UserData) -> String {
+    public func getProfileData(for key: UserData) -> String {
         if let value = try! (KeychainStorage(service: service).data(forKey: "UserProfileKey")) {
             do {
                 let json = try JSONSerialization.jsonObject(with: value, options: []) as? [String : Any]
-                return json?[from.rawValue] as! String
+                return json?[key.rawValue] as! String
             } catch {
                 return "[error fetching]"
             }
