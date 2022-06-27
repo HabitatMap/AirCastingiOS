@@ -148,7 +148,6 @@ extension ConfirmCreatingSessionView {
         #endif
         if sessionContext.sessionType == .fixed || sessionContext.locationless {
             if sessionContext.isIndoor! || sessionContext.locationless {
-                locationTracker.googleLocation = [PathPoint.fakePathPoint] // possibly should be removed
                 sessionContext.saveCurrentLocation(lat: 200, log: 200)
             }
             // if session is fixed and outdoor then starting location should be already saved in the session context, so this is just for double checking
@@ -160,7 +159,6 @@ extension ConfirmCreatingSessionView {
         } else {
             guard let lat = (locationTracker.locationManager.location?.coordinate.latitude),
                   let lon = (locationTracker.locationManager.location?.coordinate.longitude) else { return }
-            locationTracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: lat, longitude: lon), measurementTime: DateBuilder.getFakeUTCDate())] // possibly should be removed
             sessionContext.saveCurrentLocation(lat: lat, log: lon)
         }
     }

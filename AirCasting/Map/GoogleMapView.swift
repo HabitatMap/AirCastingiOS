@@ -134,7 +134,7 @@ struct GoogleMapView: UIViewRepresentable {
                 return GMSCameraUpdate.setTarget(location)
             }
             
-            let location = tracker.googleLocation.last?.location ?? CLLocationCoordinate2D(latitude: 0, longitude: 0)
+            let location = tracker.locationManager.location?.coordinate ?? CLLocationCoordinate2D(latitude: 0, longitude: 0)
             return GMSCameraUpdate.setTarget(location)
         }
         let initialBounds = GMSCoordinateBounds()
@@ -159,9 +159,10 @@ struct GoogleMapView: UIViewRepresentable {
             return newCameraPosition
         }
         
-        if let lastPoint = tracker.googleLocation.last {
-            let long = lastPoint.location.longitude
-            let lat = lastPoint.location.latitude
+        // This get's overwritten anyway by camera update so setting starting point only makes sense if shouldAutoTrack is set to false (so when it's not a place picker screen)
+        if let location = tracker.locationManager.location?.coordinate {
+            let long = location.longitude
+            let lat = location.latitude
             
             let newCameraPosition = GMSCameraPosition.camera(withLatitude: lat,
                                                              longitude: long,
@@ -284,8 +285,6 @@ struct GoogleMapView: UIViewRepresentable {
             // MARK: - Picker screen logic
             if parent.isMapOnPickerScreen {
                 parent.placePickerLocation = CLLocationCoordinate2D(latitude: lat, longitude: len)
-            } else {
-                parent.tracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: lat, longitude: len), measurementTime: DateBuilder.getFakeUTCDate())] // possibly to be removed
             }
             positionChanged(for: mapView)
             shouldAutoTrack = false

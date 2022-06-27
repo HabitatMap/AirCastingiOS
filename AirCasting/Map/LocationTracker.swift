@@ -12,7 +12,6 @@ class LocationTracker: NSObject, ObservableObject, CLLocationManagerDelegate {
     
     let locationManager: CLLocationManager
     @Published var locationGranted: LocationState
-    @Published var googleLocation: [PathPoint]
     
     init(locationManager: CLLocationManager) {
         self.locationManager = locationManager
@@ -22,17 +21,8 @@ class LocationTracker: NSObject, ObservableObject, CLLocationManagerDelegate {
         switch locationManager.authorizationStatus {
             case .authorizedAlways, .authorizedWhenInUse:
                 self.locationGranted = .granted
-                if locationManager.location?.coordinate.latitude != nil && locationManager.location?.coordinate.longitude != nil {
-                    googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude:(locationManager.location?.coordinate.latitude)!,
-                                                longitude: (locationManager.location?.coordinate.longitude)!),
-                                                measurementTime: DateBuilder.getRawDate(),
-                                                measurement: 20)]
-                } else {
-                    googleLocation = [PathPoint.fakePathPoint]
-                }
             case .denied, .notDetermined, .restricted:
                 self.locationGranted = .denied
-                googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: 37.35, longitude: -122.05), measurementTime: DateBuilder.getFakeUTCDate())]
             @unknown default:
                 fatalError()
         }
