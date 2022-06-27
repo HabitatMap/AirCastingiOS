@@ -56,7 +56,7 @@ struct DashboardView: View {
                 SearchView(isSearchAndFollowLinkActive: $searchAndFollowButton.searchIsOn)
             }
         }
-        .navigationBarTitle("Dashboard")
+        .navigationBarTitle(Strings.DashboardView.dashboardText)
         .navigationBarHidden(true)
         .onChange(of: selectedSection, perform: { newValue in
             self.selectedSection_.selectedSection = newValue
