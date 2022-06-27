@@ -93,7 +93,7 @@ struct ConfirmCreatingSessionView: View {
                             CreatingSessionMapView(isMyLocationEnabled: true)
                         }
                     } else if !(sessionContext.isIndoor ?? false) {
-                        CreatingSessionMapView(isMyLocationEnabled: false, startingLocation: sessionContext.startingLocation) // pass location from session context here
+                        CreatingSessionMapView(isMyLocationEnabled: false, startingLocation: sessionContext.startingLocation)
                             .disabled(true)
                         // It needs to be disabled to prevent user interaction (swiping map) because it is only conformation screen
                         dot
@@ -153,13 +153,13 @@ extension ConfirmCreatingSessionView {
             }
             // if session is fixed and outdoor then starting location should be already saved in the session context, so this is just for double checking
             if sessionContext.startingLocation == nil {
-                guard let lat = (locationTracker.currentLocation?.latitude),
-                      let lon = (locationTracker.currentLocation?.longitude) else { return }
+                guard let lat = (locationTracker.locationManager.location?.coordinate.latitude),
+                      let lon = (locationTracker.locationManager.location?.coordinate.longitude) else { return }
                 sessionContext.saveCurrentLocation(lat: lat, log: lon)
             }
         } else {
-            guard let lat = (locationTracker.currentLocation?.latitude),
-                  let lon = (locationTracker.currentLocation?.longitude) else { return }
+            guard let lat = (locationTracker.locationManager.location?.coordinate.latitude),
+                  let lon = (locationTracker.locationManager.location?.coordinate.longitude) else { return }
             locationTracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: lat, longitude: lon), measurementTime: DateBuilder.getFakeUTCDate())] // possibly should be removed
             sessionContext.saveCurrentLocation(lat: lat, log: lon)
         }

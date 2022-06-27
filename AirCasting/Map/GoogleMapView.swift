@@ -151,8 +151,8 @@ struct GoogleMapView: UIViewRepresentable {
     func setStartingPoint(points: [PathPoint]) -> GMSCameraPosition {
         guard !isMapOnPickerScreen else {
             // MARK: - Picker screen logic
-            let lat = tracker.currentLocation?.latitude ?? 37.35
-            let long = tracker.currentLocation?.longitude ?? -122.05
+            let lat = tracker.locationManager.location?.coordinate.latitude ?? 37.35
+            let long = tracker.locationManager.location?.coordinate.longitude ?? -122.05
             let newCameraPosition = GMSCameraPosition.camera(withLatitude: lat,
                                                              longitude: long,
                                                              zoom: 16)
