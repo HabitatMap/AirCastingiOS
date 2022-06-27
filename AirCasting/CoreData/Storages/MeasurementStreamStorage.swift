@@ -345,8 +345,6 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
                         number: Int(n.number))
         } ?? []
     }
-    
-    //TODO: Add func for highest note number
 
     func fetchSpecifiedNote(for sessionUUID: SessionUUID, number: Int) throws -> Note {
         let session = try context.existingSession(uuid: sessionUUID)

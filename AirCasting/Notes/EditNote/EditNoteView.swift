@@ -32,7 +32,7 @@ private extension EditNoteView {
     
     var description: some View {
         Text(Strings.EditNoteView.description)
-            .font(Fonts.muliHeading2)
+            .font(Fonts.regularHeading2)
             .foregroundColor(.aircastingGray)
     }
     
@@ -43,9 +43,8 @@ private extension EditNoteView {
     var photo: some View {
         HStack {
             if let url = viewModel.notePhoto {
-                Spacer()
                 DownloadableImage(url: url)
-                Spacer()
+                    .frame(maxWidth: .infinity, alignment: .center)
             }
         }
     }
@@ -55,7 +54,7 @@ private extension EditNoteView {
             viewModel.saveTapped()
         } label: {
             Text(Strings.EditNoteView.saveButton)
-                .bold()
+                .font(Fonts.boldHeading1)
         }
         .buttonStyle(BlueButtonStyle())
     }

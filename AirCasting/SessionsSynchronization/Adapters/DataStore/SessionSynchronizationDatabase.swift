@@ -105,7 +105,7 @@ final class SessionSynchronizationDatabase: SessionSynchronizationStore {
                 if let error = error {
                     promise(.failure(error))
                 } else {
-                    sessionsUpdater.updateNotesPhotosLocations(urls: response.notes.filter({ $0.photoLocation != nil }).map({ (url: $0.photoLocation!, noteNumber: $0.number)}), for: uuid) { error in
+                    sessionsUpdater.updateNotesPhotosLocations(notesUrls: response.notes.filter({ $0.photoLocation != nil }).map({ (url: $0.photoLocation!, noteNumber: $0.number)}), for: uuid) { error in
                                             if let error = error {
                                                 promise(.failure(error))
                                             } else {

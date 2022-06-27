@@ -28,5 +28,5 @@ protocol SessionInsertable {
 
 protocol SessionUpdateable {
     func updateSessionUrl(_ url: String, for session: SessionUUID, completion: ((Error?) -> Void)?)
-    func updateNotesPhotosLocations(urls: [(url: URL, noteNumber: Int)], for session: SessionUUID, completion: ((Error?) -> Void)?)
+    func updateNotesPhotosLocations(notesUrls: [(url: URL, noteNumber: Int)], for session: SessionUUID, completion: ((Error?) -> Void)?)
 }

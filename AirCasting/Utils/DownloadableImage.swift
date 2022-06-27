@@ -33,7 +33,6 @@ struct DownloadableImage: View {
     }
 }
 
-
 class ImageLoader: ObservableObject {
     @Published var image: Result<UIImage, Error>?
     
@@ -41,19 +40,27 @@ class ImageLoader: ObservableObject {
 
     init(url: URL) {
         guard !url.isFileURL else {
-            DispatchQueue.global().async {
-                let result: Result<UIImage, Error> = {
-                    let image = UIImage(contentsOfFile: url.path)
-                    return image != nil ? .success(image!) : .failure(NoImageError())
-                }()
-                
-                DispatchQueue.main.async {
-                    self.image = result
-                }
-            }
+            loadImageFromFile(url)
             return
         }
         
+        loadImageFromWeb(url)
+    }
+    
+    private func loadImageFromFile(_ url: URL) {
+        DispatchQueue.global().async {
+            let result: Result<UIImage, Error> = {
+                let image = UIImage(contentsOfFile: url.path)
+                return image != nil ? .success(image!) : .failure(NoImageError())
+            }()
+            
+            DispatchQueue.main.async {
+                self.image = result
+            }
+        }
+    }
+    
+    private func loadImageFromWeb(_ url: URL) {
         let task = URLSession.shared.dataTask(with: url) { data, response, error in
             guard let data = data, let image = UIImage(data: data) else {
                 DispatchQueue.main.async {

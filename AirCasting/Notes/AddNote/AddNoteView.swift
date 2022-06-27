@@ -23,8 +23,8 @@ struct AddNoteView<VM: AddNoteViewModel>: View {
         }
         .sheet(isPresented: $presentPhotoPicker) {
             PhotoPicker(picture: $picture)
+                .ignoresSafeArea(.all, edges: [.bottom])
         }
-            
     }
 }
 
@@ -38,7 +38,7 @@ private extension AddNoteView {
     
     var description: some View {
         Text(Strings.AddNoteView.description)
-            .font(Fonts.muliHeading2)
+            .font(Fonts.regularHeading2)
             .foregroundColor(.aircastingGray)
     }
     
@@ -48,7 +48,14 @@ private extension AddNoteView {
         }) {
             HStack {
                 Image(systemName: "camera")
-                Text(Strings.AddNoteView.photoButton)
+                    .font(Fonts.regularHeading2)
+                if picture == nil {
+                    Text(Strings.AddNoteView.photoButton)
+                        .font(Fonts.regularHeading2)
+                } else {
+                    Text(Strings.AddNoteView.retakePhotoButton)
+                        .font(Fonts.regularHeading2)
+                }
                 Spacer()
             }
             .padding()
@@ -80,7 +87,7 @@ private extension AddNoteView {
             viewModel.continueTapped(selectedPictureURL: picture)
         } label: {
             Text(Strings.AddNoteView.continueButton)
-                .bold()
+                .font(Fonts.boldHeading1)
         }
         .buttonStyle(BlueButtonStyle())
     }

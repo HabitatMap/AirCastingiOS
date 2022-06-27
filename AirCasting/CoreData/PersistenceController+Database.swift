@@ -124,15 +124,15 @@ extension PersistenceController: SessionUpdateable {
         }
     }
     
-    func updateNotesPhotosLocations(urls: [(url: URL, noteNumber: Int)], for session: SessionUUID, completion: ((Error?) -> Void)?) {
+    func updateNotesPhotosLocations(notesUrls: [(url: URL, noteNumber: Int)], for session: SessionUUID, completion: ((Error?) -> Void)?) {
         let context = self.editContext
         context.perform {
             do {
                 let request = NSFetchRequest<NoteEntity>(entityName: "NoteEntity")
-                let predicate = NSPredicate(format: "session.uuid == %@ AND number IN %@", session.rawValue, urls.map(\.noteNumber))
+                let predicate = NSPredicate(format: "session.uuid == %@ AND number IN %@", session.rawValue, notesUrls.map(\.noteNumber))
                 request.predicate = predicate
                 let notes = try context.fetch(request)
-                urls.forEach { noteInfo in
+                notesUrls.forEach { noteInfo in
                     if let note = notes.first(where: { $0.number == noteInfo.noteNumber }), let photoUrl = note.photoLocation {
                         try? FileManager.default.removeItem(at: photoUrl)
                         note.photoLocation = noteInfo.url
