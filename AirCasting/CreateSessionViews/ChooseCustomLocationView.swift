@@ -3,20 +3,26 @@
 
 import AirCastingStyling
 import SwiftUI
+import CoreLocation
+import Resolver
 
 struct ChooseCustomLocationView: View {
+    @InjectedObject var locationTracker: LocationTracker
     @State private var isConfirmCreatingSessionActive: Bool = false
-    @State private var location = ""
+    @State private var locationName = ""
+    @State private var location: CLLocationCoordinate2D?
     @State var placePickerIsUpdating: Bool = false
     @State var isLocationPopupPresented = false
     @Binding var creatingSessionFlowContinues: Bool
     var sessionName: String
+    
+    @EnvironmentObject private var sessionContext: CreateSessionContext
 
     var body: some View {
         VStack(spacing: 40) {
             ProgressView(value: 0.85)
             titleLabel
-            createTextfield(placeholder: Strings.ChooseCustomLocationView.sessionLocation, binding: $location)
+            createTextfield(placeholder: Strings.ChooseCustomLocationView.sessionLocation, binding: $locationName)
                 .disabled(true)
                 .onTapGesture {
                     isLocationPopupPresented.toggle()
@@ -29,7 +35,7 @@ struct ChooseCustomLocationView: View {
         }
         .background(confirmCreatingSessionLink)
         .sheet(isPresented: $isLocationPopupPresented) {
-            PlacePicker(service: ChooseLocationPickerService(address: $location))
+            PlacePicker(service: ChooseLocationPickerService(address: $locationName, location: $location))
         }
         .onChange(of: isLocationPopupPresented, perform: { present in
             // The reason for this is to prevent map from multiple times refreshing after first map update
@@ -43,7 +49,8 @@ struct ChooseCustomLocationView: View {
                       placePickerIsUpdating: $placePickerIsUpdating,
                       isUserInteracting: Binding.constant(true),
                       mapNotes: .constant([]),
-                      isMapOnPickerScreen: true)
+                      isMapOnPickerScreen: true,
+                      placePickerLocation: $location)
     }
 
     var dot: some View {
@@ -60,6 +67,11 @@ struct ChooseCustomLocationView: View {
     
     var confirmButton: some View {
         Button(action: {
+            guard let location = location else {
+                assertionFailure("Location wasn't set")
+                return
+            }
+            sessionContext.startingLocation = location
             isConfirmCreatingSessionActive.toggle()
         }, label: {
             Text(Strings.Commons.continue)
