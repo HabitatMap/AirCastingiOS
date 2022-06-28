@@ -178,7 +178,7 @@ private extension SearchMapView {
                                 Group {
                                     Color.white
                                         .cornerRadius(8)
-                                        .cardShadow()
+                                        .shadow(color: .sessionCardShadow, radius: 1, x: 0, y: 2)
                                 }
                             )
                             .overlay(
