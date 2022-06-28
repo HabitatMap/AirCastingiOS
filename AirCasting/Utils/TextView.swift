@@ -4,11 +4,10 @@
 import SwiftUI
 
 struct TextView: UIViewRepresentable {
-    
     @Binding var text: String
     var placeholder: String
     var font = UIFont.preferredFont(forTextStyle: .body)
-    var noteIsEditing = false
+    var isEditing = false
     
     func makeUIView(context: Context) -> UITextView {
         let textView = UITextView()
@@ -21,7 +20,7 @@ struct TextView: UIViewRepresentable {
         textView.backgroundColor = UIColor.aircastingGray.withAlphaComponent(0.05)
         textView.layer.borderColor = UIColor.aircastingGray.withAlphaComponent(0.1).cgColor
         textView.layer.borderWidth = 1
-        textView.textColor = noteIsEditing ? .black : .lightGray
+        textView.textColor = isEditing ? .black : .lightGray
         textView.addDoneButtonToKeyboard()
         
         return textView
@@ -61,7 +60,6 @@ struct TextView: UIViewRepresentable {
         Coordinator(self)
     }
 }
-
 
 extension UITextView {
     func addDoneButtonToKeyboard(){
