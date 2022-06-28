@@ -81,7 +81,7 @@ struct SelectDeviceView: View {
                 isTurnOnBluetoothLinkActive = true
             }
         }, label: {
-            bluetoothLabels
+            createLabel(title: Strings.SelectDeviceView.bluetoothLabel, subtitle: Strings.SelectDeviceView.bluetoothDevice)
         })
         .buttonStyle(WhiteSelectingButtonStyle(isSelected: selected == 1))
     }
@@ -105,7 +105,7 @@ struct SelectDeviceView: View {
                 }
             }
         }, label: {
-            micLabels
+            createLabel(title: Strings.SelectDeviceView.micLabel_1, subtitle: Strings.SelectDeviceView.phoneMicrophone)
         })
         .buttonStyle(WhiteSelectingButtonStyle(isSelected: selected == 2))
         .disabled(microphoneManager.isRecording)
@@ -114,11 +114,11 @@ struct SelectDeviceView: View {
         }
     }
     
-    var bluetoothLabels: some View {
+    private func createLabel(title text: String, subtitle string: String) -> some View {
         HStack {
             VStack(alignment: .leading, spacing: 6) {
-                StringCustomizer.customizeString(Strings.SelectDeviceView.bluetoothLabel,
-                                                 using: [Strings.SelectDeviceView.bluetoothDevice],
+                StringCustomizer.customizeString(text,
+                                                 using: [string],
                                                  fontWeight: .bold,
                                                  color: .accentColor,
                                                  font: Fonts.boldHeading1,
@@ -128,36 +128,12 @@ struct SelectDeviceView: View {
             }
             
             Spacer()
-            chevronImage
-        }
-        .padding(.horizontal)
-    }
-    
-    var micLabels: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 6) {
-                StringCustomizer.customizeString(Strings.SelectDeviceView.micLabel_1,
-                                using: [Strings.SelectDeviceView.phoneMicrophone],
-                                fontWeight: .bold,
-                                color: .accentColor,
-                                font: Fonts.boldHeading1,
-                                makeNewLineAfterCustomized: true)
-                    .font(Fonts.muliHeading3)
-                    .foregroundColor(.aircastingGray)
+            VStack {
+                Image(systemName: "chevron.right")
+                    .foregroundColor(.accentColor)
+                    .padding(.bottom, 20)
             }
-            
-            Spacer()
-            chevronImage
         }
         .padding(.horizontal)
-    }
-    
-    private var chevronImage: some View {
-        VStack {
-            Image(systemName: "chevron.right")
-                .foregroundColor(.accentColor)
-                .padding(.bottom, 20)
-            
-        }
     }
 }
