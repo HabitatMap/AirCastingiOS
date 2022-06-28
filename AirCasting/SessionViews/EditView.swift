@@ -36,18 +36,20 @@ struct EditView<VM: EditViewModel>: View {
             titleLabel
                 .padding(.bottom, 20)
             VStack(alignment: .leading) {
-                Text(Strings.EditSession.sessionNameLabel)
+                createLabel(with: Strings.EditSession.sessionNameLabel)
                 createTextfield(placeholder: Strings.EditSession.sessionNamePlaceholder,
                                 binding: $editSessionViewModel.sessionName)
+                .font(.body)
                 if editSessionViewModel.shouldShowError {
                     errorMessage(text: Strings.EditSession.erorr)
                 }
             }
             .padding(.bottom)
             Group {
-                Text(Strings.EditSession.sessionTagsLabel)
+                createLabel(with: Strings.EditSession.sessionTagsLabel)
                 createTextfield(placeholder: Strings.EditSession.tagPlaceholder,
                                 binding: $editSessionViewModel.sessionTags)
+                .font(.body)
             }
             Spacer()
             saveButton
@@ -84,5 +86,11 @@ struct EditView<VM: EditViewModel>: View {
         Button(Strings.Commons.cancel) {
             presentationMode.wrappedValue.dismiss()
         }.buttonStyle(BlueTextButtonStyle())
+    }
+    
+    private func createLabel(with text: String) -> some View {
+        Text(text)
+            .font(Font(Fonts.muliHeadingUIFont1).bold())
+            .foregroundColor(.aircastingDarkGray)
     }
 }
