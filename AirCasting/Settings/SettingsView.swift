@@ -172,6 +172,7 @@ struct SettingsView: View {
         VStack(alignment: .leading, spacing: 5) {
             Text(Strings.Settings.myAccount)
                 .font(Fonts.boldHeading1)
+                .padding(.top, 5)
             usernameText
         }
     }
