@@ -61,7 +61,7 @@ private extension GetStarted {
     
     var getStarted: some View {
         Text(Strings.OnboardingGetStarted.getStarted)
-            .font(Font.moderate(size: 16, weight: .bold))
+            .font(Fonts.boldHeading2)
             .frame(maxWidth: .infinity)
             .navigationBarHidden(true)
             .buttonStyle(BlueTextButtonStyle())
