@@ -29,11 +29,29 @@ struct SearchMapView: View {
                         VStack(alignment: .leading) {
                             Spacer()
                             cardsTitle
-                            cards
-                                .frame(width: reader.size.width, height: reader.size.height / 7, alignment: .leading)
+                                .padding(.horizontal, 5)
+                            if !viewModel.sessionsList.isEmpty {
+                                cards
+                                    .frame(width: reader.size.width, height: reader.size.height / 7, alignment: .leading)
+                                    .padding(.horizontal, 5)
+                                    .padding(.bottom, 28)
+                            } else {
+                                ZStack(alignment: .topLeading) {
+                                    LinearGradient(gradient: Gradient(colors: [.white.opacity(0.1),
+                                                                               .white.opacity(0.5),
+                                                                               .white.opacity(0.7),
+                                                                               .white.opacity(0.8),
+                                                                               .white.opacity(0.9),
+                                                                               .white]),
+                                                   startPoint: .top,
+                                                   endPoint: .bottom)
+                                    .frame(width: reader.size.width, height: reader.size.height / 3.5, alignment: .bottom)
+                                    Text("No results found within selected area.")
+                                        .foregroundColor(.darkBlue)
+                                        .padding(.horizontal, 5)
+                                }.ignoresSafeArea()
+                            }
                         }
-                        .padding(.horizontal, 5)
-                        .padding(.bottom, 28)
                     }
                 }
                 VStack(alignment: .center, content: {
