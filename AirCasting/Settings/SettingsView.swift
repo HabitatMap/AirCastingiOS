@@ -169,7 +169,7 @@ struct SettingsView: View {
     }
     
     private var myAccount: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 5) {
             Text(Strings.Settings.myAccount)
                 .font(Fonts.boldHeading1)
             usernameText
