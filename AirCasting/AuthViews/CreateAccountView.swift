@@ -37,63 +37,67 @@ struct CreateAccountView: View {
 
 private extension CreateAccountView {
     var contentView: some View {
-        GeometryReader { geometry in
-            ScrollView {
-                VStack(alignment: .leading, spacing: 50) {
-                    if lifeTimeEventsProvider.hasEverLoggedIn {
-                        progressBar.hidden()
-                    } else {
-                        progressBar
-                    }
-                    titleLabel
-                    VStack(spacing: 20) {
-                        VStack(alignment: .leading, spacing: 5) {
-                            emailTextfield
-                                .keyboardType(.emailAddress)
-                            if !isEmailCorrect {
-                                errorMessage(text: AuthErrors.incorrectEmail.localizedDescription)
+        ZStack(alignment: .bottomTrailing) {
+            Image("dashboard-background-thing")
+                .offset(x: 0, y: 40)
+            GeometryReader { geometry in
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 50) {
+                        if lifeTimeEventsProvider.hasEverLoggedIn {
+                            progressBar.hidden()
+                        } else {
+                            progressBar
+                        }
+                        titleLabel
+                        VStack(spacing: 20) {
+                            VStack(alignment: .leading, spacing: 5) {
+                                emailTextfield
+                                    .keyboardType(.emailAddress)
+                                if !isEmailCorrect {
+                                    errorMessage(text: AuthErrors.incorrectEmail.localizedDescription)
+                                }
+                            }
+                            
+                            VStack(alignment: .leading, spacing: 5) {
+                                usernameTextfield
+                                if isUsernameBlank {
+                                    errorMessage(text: AuthErrors.emptyTextfield.localizedDescription)
+                                }
+                            }
+                            
+                            VStack(alignment: .leading, spacing: 5) {
+                                passwordTextfield
+                                if !isPasswordCorrect {
+                                    errorMessage(text: AuthErrors.passwordTooShort.localizedDescription)
+                                }
                             }
                         }
-                        
-                        VStack(alignment: .leading, spacing: 5) {
-                            usernameTextfield
-                            if isUsernameBlank {
-                                errorMessage(text: AuthErrors.emptyTextfield.localizedDescription)
-                            }
+                        VStack(spacing: 25) {
+                            createAccountButton
+                            signInButton
                         }
-                        
-                        VStack(alignment: .leading, spacing: 5) {
-                            passwordTextfield
-                            if !isPasswordCorrect {
-                                errorMessage(text: AuthErrors.passwordTooShort.localizedDescription)
+                        Spacer()
+                    }
+                    .padding()
+                    .navigationBarHidden(true)
+                    .frame(maxWidth: .infinity, minHeight: geometry.size.height)
+                    .alert(item: $alert, content: { $0.makeAlert() })
+                    .onAppear {
+                        if userState.currentState == .deletingAccount {
+                            alert = InAppAlerts.successfulAccountDeletionConfirmation {
+                                userState.currentState = .idle
                             }
-                        }
-                    }
-                    VStack(spacing: 25) {
-                        createAccountButton
-                        signInButton
-                    }
-                    Spacer()
-                }
-                .padding()
-                .navigationBarHidden(true)
-                .frame(maxWidth: .infinity, minHeight: geometry.size.height)
-                .alert(item: $alert, content: { $0.makeAlert() })
-                .onAppear {
-                    if userState.currentState == .deletingAccount {
-                        alert = InAppAlerts.successfulAccountDeletionConfirmation {
-                            userState.currentState = .idle
                         }
                     }
                 }
             }
+            .simultaneousGesture(
+                DragGesture(minimumDistance: 2, coordinateSpace: .global)
+                    .onChanged({ (_) in
+                        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                    })
+            )
         }
-        .simultaneousGesture(
-            DragGesture(minimumDistance: 2, coordinateSpace: .global)
-                .onChanged({ (_) in
-                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-                })
-        )
     }
     
     var progressBar: some View {

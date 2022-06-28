@@ -43,50 +43,54 @@ struct SignInView: View {
 
 private extension SignInView {
     private var contentView: some View {
-        GeometryReader { geometry in
-            ScrollView {
-                VStack(alignment: .leading, spacing: 40) {
-                    if lifeTimeEventsProvider.hasEverLoggedIn {
-                        progressBar.hidden()
-                    } else {
-                        progressBar
-                    }
-                    titleLabel
-                    VStack(spacing: 20) {
-                        VStack(alignment: .leading, spacing: 5) {
-                            usernameTextfield
-                            if isUsernameBlank {
-                                errorMessage(text: AuthErrors.emptyTextfield.localizedDescription)
+        ZStack(alignment: .bottomTrailing) {
+            Image("dashboard-background-thing")
+                .offset(x: 0, y: 40)
+            GeometryReader { geometry in
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 40) {
+                        if lifeTimeEventsProvider.hasEverLoggedIn {
+                            progressBar.hidden()
+                        } else {
+                            progressBar
+                        }
+                        titleLabel
+                        VStack(spacing: 20) {
+                            VStack(alignment: .leading, spacing: 5) {
+                                usernameTextfield
+                                if isUsernameBlank {
+                                    errorMessage(text: AuthErrors.emptyTextfield.localizedDescription)
+                                }
+                            }
+                            
+                            VStack(alignment: .leading, spacing: 5) {
+                                passwordTextfield
+                                if isPasswordBlank {
+                                    errorMessage(text: AuthErrors.emptyTextfield.localizedDescription)
+                                }
                             }
                         }
-                        
-                        VStack(alignment: .leading, spacing: 5) {
-                            passwordTextfield
-                            if isPasswordBlank {
-                                errorMessage(text: AuthErrors.emptyTextfield.localizedDescription)
-                            }
+                        VStack(spacing: 10) {
+                            signinButton
+                            forgotPassword
+                            signupButton
                         }
+                        Spacer()
                     }
-                    VStack(spacing: 10) {
-                        signinButton
-                        forgotPassword
-                        signupButton
+                    .padding()
+                    .navigationBarHidden(true)
+                    .frame(maxWidth: .infinity, minHeight: geometry.size.height)
+                    .alert(item: $presentedError) { error in
+                        displayErrorAlert(error: error)
                     }
-                    Spacer()
-                }
-                .padding()
-                .navigationBarHidden(true)
-                .frame(maxWidth: .infinity, minHeight: geometry.size.height)
-                .alert(item: $presentedError) { error in
-                    displayErrorAlert(error: error)
                 }
             }
+            .simultaneousGesture(
+                DragGesture(minimumDistance: 2, coordinateSpace: .global)
+                    .onChanged { _ in
+                        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                    })
         }
-        .simultaneousGesture(
-            DragGesture(minimumDistance: 2, coordinateSpace: .global)
-                .onChanged { _ in
-                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-                })
     }
     
     var progressBar: some View {
