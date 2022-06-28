@@ -41,13 +41,7 @@ struct BottomCardView: View {
             viewModel.setIsModalScreenPresented(using: value)
         }), content: { viewModel.initCompleteScreen() })
         .frame(width: 200, alignment: .leading)
-        .padding([.all], 10)
-        .background(
-            Group {
-                Color.white
-                    .cardShadow()
-            }
-        )
+        .padding(10)
         .cornerRadius(8)
     }
 }

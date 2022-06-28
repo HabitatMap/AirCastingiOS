@@ -43,6 +43,7 @@ struct SearchMapView: View {
                         Spacer()
                         sensorTypeText
                     }
+                    .padding(.bottom, 10)
                     searchAgainButton
                         .foregroundColor(.white)
                         .frame(width: reader.size.width / 2.2, height: 8, alignment: .center)
@@ -173,6 +174,13 @@ private extension SearchMapView {
                             .onMarkerChange(action: { pointer in
                                 viewModel.markerSelectionChanged(using: pointer)
                             })
+                            .background(
+                                Group {
+                                    Color.white
+                                        .cornerRadius(8)
+                                        .shadow(color: .sessionCardShadow, radius: 1, x: 0, y: 2)
+                                }
+                            )
                             .overlay(
                                 RoundedRectangle(cornerRadius: 8)
                                     .stroke(viewModel.strokeColor(with: session.id), lineWidth: 1)
