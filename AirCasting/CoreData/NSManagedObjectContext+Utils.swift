@@ -13,10 +13,17 @@ extension NSManagedObjectContext {
         let uuid: SessionUUID
     }
     
-    func deleteMeasurements(threshold: Double, stream: MeasurementStreamEntity) throws -> Result<String, Error> {
-        let req: NSFetchRequest<MeasurementStreamEntity> = NSFetchRequest(entityName: "MeasurementEntity")
-        req.predicate = NSPredicate(format: "time < %@ AND measurementStream == %@", threshold as CVarArg, stream)
-        guard let measurements = try? self.fetch(req) else { return .failure(ExternalSessionEntityError.errorWhenDeletingMeasureements)}
+    enum MeasurementsDeletion: Error {
+        case errorWhenFetchingRequest(_: String)
+    }
+    
+    func deleteMeasurements(thresholdInMiliseconds: Double, stream: MeasurementStreamEntity) -> Result<String, Error> {
+        let req: NSFetchRequest<MeasurementEntity> = NSFetchRequest(entityName: "MeasurementEntity")
+        req.predicate = NSPredicate(format: "time < %@ AND measurementStream == %@",
+                                    NSDate(timeIntervalSince1970: thresholdInMiliseconds/1000), stream)
+        guard let measurements = try? self.fetch(req) else {
+            return .failure(MeasurementsDeletion.errorWhenFetchingRequest("Problem occured when trying to fetch predicate for measurement deletion"))
+        }
         measurements.forEach { Log.info("Removing measurement: \($0)"); self.delete($0) }
         return .success("Removed all nedeed measurements")
     }
@@ -46,7 +53,6 @@ extension NSManagedObjectContext {
     enum ExternalSessionEntityError: Error {
         case noSession(with: String)
         case moreThanOneSession(with: String)
-        case errorWhenDeletingMeasureements
     }
     
     func existingExternalSession(uuid: SessionUUID) throws -> ExternalSessionEntity {
