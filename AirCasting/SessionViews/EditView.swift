@@ -39,7 +39,7 @@ struct EditView<VM: EditViewModel>: View {
                 createLabel(with: Strings.EditSession.sessionNameLabel)
                 createTextfield(placeholder: Strings.EditSession.sessionNamePlaceholder,
                                 binding: $editSessionViewModel.sessionName)
-                .font(.body)
+                .font(Fonts.regularHeading2)
                 if editSessionViewModel.shouldShowError {
                     errorMessage(text: Strings.EditSession.erorr)
                 }
@@ -49,7 +49,7 @@ struct EditView<VM: EditViewModel>: View {
                 createLabel(with: Strings.EditSession.sessionTagsLabel)
                 createTextfield(placeholder: Strings.EditSession.tagPlaceholder,
                                 binding: $editSessionViewModel.sessionTags)
-                .font(.body)
+                .font(Fonts.regularHeading2)
             }
             Spacer()
             saveButton
