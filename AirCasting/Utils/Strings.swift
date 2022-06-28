@@ -556,7 +556,7 @@ struct Strings {
     enum EditSession {
         static let title: String = NSLocalizedString("Edit session details",
                                                      comment: "")
-        static let namePlaceholder: String = NSLocalizedString("Session name",
+        static let sessionNamePlaceholder: String = NSLocalizedString("Session name",
                                                                comment: "")
         static let tagPlaceholder: String = NSLocalizedString("Tags",
                                                               comment: "")
@@ -564,9 +564,9 @@ struct Strings {
                                                             comment: "")
         static let erorr: String = NSLocalizedString("Session name can't be blank",
                                                      comment: "")
-        static let tagLabel: String = NSLocalizedString("Session tags",
+        static let sessionTagsLabel: String = NSLocalizedString("Session tags",
                                                               comment: "")
-        static let nameLabel: String = NSLocalizedString("Session name",
+        static let sessionNameLabel: String = NSLocalizedString("Session name",
                                                                comment: "")
     }
     
