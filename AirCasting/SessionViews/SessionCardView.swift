@@ -103,7 +103,7 @@ struct SessionCardView: View {
         .background(
             Group {
                 Color.white
-                    .shadow(color: .sessionCardShadow, radius: 9, x: 0, y: 1)
+                    .cardShadow()
                 mapNavigationLink
                 graphNavigationLink
                 // SwiftUI bug: two navigation links don't work properly
@@ -201,7 +201,7 @@ private extension SessionCardView {
                 followButton
             }
             Spacer()
-            !(session.isIndoor || session.locationless) ? mapButton.padding(.trailing, 10) : nil
+            !(session.isIndoor || session.locationless) ? mapButton.padding(.trailing, 5) : nil
             graphButton
         }.padding(.top, 10)
         .buttonStyle(GrayButtonStyle())

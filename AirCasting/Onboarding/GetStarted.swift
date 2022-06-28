@@ -53,14 +53,17 @@ private extension GetStarted {
     }
     
     var startButton: some View {
-            NavigationLink(
-                destination: AirBeamOnboarding(completion: completion),
-                label: {
-                    Text(Strings.OnboardingGetStarted.getStarted)
-                        .frame(maxWidth:.infinity)
-                        .navigationBarHidden(true)
-                }
-            ).buttonStyle(BlueTextButtonStyle())
+        NavigationLink(
+            destination: AirBeamOnboarding(completion: completion),
+            label: { getStarted }
+        )
+    }
+    
+    var getStarted: some View {
+        Button(Strings.OnboardingGetStarted.getStarted) { }
+            .frame(maxWidth: .infinity)
+            .navigationBarHidden(true)
+            .buttonStyle(BlueTextButtonStyle())
             .background(
                 RoundedRectangle(cornerRadius: 5)
                     .stroke(lineWidth: 0.1)
@@ -72,18 +75,8 @@ private extension GetStarted {
     var continueToAirNearYouScreenButton: some View {
         NavigationLink(
             destination: NearAirDescription(completion: completion),
-            label: {
-                Text(Strings.OnboardingGetStarted.getStarted)
-                    .frame(maxWidth:.infinity)
-                    .navigationBarHidden(true)
-            }
-        ).buttonStyle(BlueTextButtonStyle())
-        .background(
-            RoundedRectangle(cornerRadius: 5)
-                .stroke(lineWidth: 0.1)
-                .accentColor(Color.aircastingGray)
+            label: { getStarted }
         )
-        .padding()
     }
 }
 

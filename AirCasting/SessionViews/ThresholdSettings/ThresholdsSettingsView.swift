@@ -107,8 +107,12 @@ struct ThresholdsSettingsView: View {
             
             VStack {
                 Button(action: {
-                    thresholdValues = thresholdSettingsViewModel.updateToNewThresholds()
-                    presentationMode.wrappedValue.dismiss()
+                    thresholdSettingsViewModel.updateToNewThresholds { result in
+                        if case .success(let newValues) = result {
+                            thresholdValues = newValues
+                            presentationMode.wrappedValue.dismiss()
+                        }
+                    }
                 })
                 {
                     Text(Strings.SessionCart.saveChangesButton)
@@ -132,6 +136,7 @@ struct ThresholdsSettingsView: View {
             thresholdSettingsViewModel.thresholdHigh = string(thresholdValues.high)
             thresholdSettingsViewModel.thresholdVeryHigh = string(thresholdValues.veryHigh)
         }
+        .alert(item: $thresholdSettingsViewModel.alert, content: { $0.makeAlert() })
     }
 }
 

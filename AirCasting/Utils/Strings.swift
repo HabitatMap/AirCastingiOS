@@ -873,11 +873,11 @@ struct Strings {
     }
     
     enum InAppAlerts {
-        static let unableToLogOutTitle: String = NSLocalizedString("No internet connection",
+        static let noInternetConnectionTitle: String = NSLocalizedString("No internet connection",
                                                                    comment: "")
-        static let unableToLogOutMessage: String = NSLocalizedString("To sign out, you must be connected to the Internet.",
+        static let noInternetConnectionMessage: String = NSLocalizedString("To sign out, you must be connected to the Internet.",
                                                                      comment: "")
-        static let unableToLogOutButton: String = NSLocalizedString("Got it!",
+        static let noInternetConnectionButton: String = NSLocalizedString("Got it!",
                                                                     comment: "")
         static let failedTitle: String = NSLocalizedString("Failed",
                                                                     comment: "")
@@ -917,6 +917,15 @@ struct Strings {
                                                                    comment: "")
         static let accountDeletionSuccessMessage: String = NSLocalizedString("Your account has been deleted.",
                                                                    comment: "")
+        static let thresholdsValuesSettingsTitle: String = NSLocalizedString("Wrong values", comment: "")
+        static let thresholdsValuesSettingsMessage: String = NSLocalizedString("The lowest threshold value has to be smaller than the highest threshold value", comment: "")
+        static let logoutWarningTitle: String = NSLocalizedString("Are you sure?",
+                                                                   comment: "")
+        static let logoutWarningMessage: String = NSLocalizedString("You will lose sessions recorded with disabled location.",
+                                                                   comment: "")
+        static let logoutWarningConfirmButton: String = NSLocalizedString("Confirm",
+                                                                          comment: "")
+        static let fetchingDataFailedMessage: String = NSLocalizedString("Something went wrong. Please try again later.", comment: "")
     }
     
     enum AddNoteView {

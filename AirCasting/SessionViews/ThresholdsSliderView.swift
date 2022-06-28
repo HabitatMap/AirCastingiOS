@@ -63,6 +63,10 @@ struct ThresholdsSliderView: View {
     
     func calculateXAxisSize(thresholdValue: Float, geometry: GeometryProxy) -> CGFloat {
         let frameWidth = geometry.frame(in: .local).size.width
+        guard thresholdVeryHigh > thresholdVeryLow else {
+            Log.warning("Threshold very high was lower than threshold very low")
+            return 0
+        }
         return CGFloat(thresholdValue - thresholdVeryLow) / CGFloat(thresholdVeryHigh - thresholdVeryLow) * frameWidth
     }
     

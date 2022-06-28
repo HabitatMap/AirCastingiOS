@@ -219,9 +219,13 @@ extension AirCastingGraph {
     }
     
     private func visibleRangeForXAxis(with dataSet: IChartDataSet) -> ClosedRange<Double> {
-        lineChartView.lowestVisibleX < lineChartView.highestVisibleX ?
-            { lineChartView.lowestVisibleX...lineChartView.highestVisibleX }() :
-            { dataSet.xMin...dataSet.xMax }()
+        if lineChartView.lowestVisibleX < lineChartView.highestVisibleX {
+            return { lineChartView.lowestVisibleX...lineChartView.highestVisibleX }()
+        } else if dataSet.xMin <= dataSet.xMax {
+            return { dataSet.xMin...dataSet.xMax }()
+        } else {
+            return { dataSet.xMax...dataSet.xMin }()
+        }
     }
     
     private func onScreenButtons(dataSet: IChartDataSet) -> [NoteButtonData] {
