@@ -60,10 +60,11 @@ private extension GetStarted {
     }
     
     var getStarted: some View {
-        Button(Strings.OnboardingGetStarted.getStarted) { }
+        Text(Strings.OnboardingGetStarted.getStarted)
             .frame(maxWidth: .infinity)
             .navigationBarHidden(true)
             .buttonStyle(BlueTextButtonStyle())
+            .padding(12)
             .background(
                 RoundedRectangle(cornerRadius: 5)
                     .stroke(lineWidth: 0.1)
