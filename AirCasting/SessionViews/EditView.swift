@@ -35,14 +35,16 @@ struct EditView<VM: EditViewModel>: View {
             Spacer()
             titleLabel
                 .padding(.bottom, 20)
-            Text(Strings.EditSession.sessionNameLabel)
-            createTextfield(placeholder: Strings.EditSession.sessionNamePlaceholder,
-                            binding: $editSessionViewModel.sessionName)
-            if editSessionViewModel.shouldShowError {
-                errorMessage(text: Strings.EditSession.erorr)
+            VStack(alignment: .leading) {
+                Text(Strings.EditSession.sessionNameLabel)
+                createTextfield(placeholder: Strings.EditSession.sessionNamePlaceholder,
+                                binding: $editSessionViewModel.sessionName)
+                if editSessionViewModel.shouldShowError {
+                    errorMessage(text: Strings.EditSession.erorr)
+                }
             }
+            .padding(.bottom)
             Group {
-                customSpacer
                 Text(Strings.EditSession.sessionTagsLabel)
                 createTextfield(placeholder: Strings.EditSession.tagPlaceholder,
                                 binding: $editSessionViewModel.sessionTags)
@@ -50,7 +52,8 @@ struct EditView<VM: EditViewModel>: View {
             Spacer()
             saveButton
             cancelButton
-        }.padding()
+        }
+        .padding()
     }
     
     var loader: some View {
@@ -81,11 +84,5 @@ struct EditView<VM: EditViewModel>: View {
         Button(Strings.Commons.cancel) {
             presentationMode.wrappedValue.dismiss()
         }.buttonStyle(BlueTextButtonStyle())
-    }
-    
-    private var customSpacer: some View {
-        Rectangle()
-            .fill(Color(UIColor.systemBackground))
-            .frame(height: 10)
     }
 }
