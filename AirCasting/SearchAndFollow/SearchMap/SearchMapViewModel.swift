@@ -63,6 +63,7 @@ class SearchMapViewModel: ObservableObject {
             Log.warning("Should never happen that current position is not present")
             return
         }
+        sessionsList = []
         updateSessionList(geoSquare: currentPosition)
         searchAgainButton = false
         cardPointerID = .noValue
