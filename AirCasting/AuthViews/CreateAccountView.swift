@@ -20,7 +20,6 @@ struct CreateAccountView: View {
     @State private var isUsernameBlank = false
     @State private var alert: AlertInfo?
     @State private var isLoading = false
-    
     @State private var linkActive = false
     @StateObject var SignInPersistanceObserved = SignInPersistance.shared
     
