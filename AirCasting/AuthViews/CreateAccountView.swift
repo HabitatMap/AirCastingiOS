@@ -39,7 +39,7 @@ private extension CreateAccountView {
     var contentView: some View {
         GeometryReader { geometry in
             ScrollView {
-                VStack(spacing: 50) {
+                VStack(alignment: .leading, spacing: 50) {
                     if lifeTimeEventsProvider.hasEverLoggedIn {
                         progressBar.hidden()
                     } else {

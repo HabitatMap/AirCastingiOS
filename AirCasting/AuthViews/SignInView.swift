@@ -45,7 +45,7 @@ private extension SignInView {
     private var contentView: some View {
         GeometryReader { geometry in
             ScrollView {
-                VStack(spacing: 40) {
+                VStack(alignment: .leading, spacing: 40) {
                     if lifeTimeEventsProvider.hasEverLoggedIn {
                         progressBar.hidden()
                     } else {
