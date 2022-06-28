@@ -15,9 +15,6 @@ struct CreateAccountView: View {
     @InjectedObject private var userState: UserState
     private let authorizationAPIService: AuthorizationAPIService = AuthorizationAPIService() // [Resolver] Move to dep.
 
-    @State private var email: String = ""
-    @State private var username: String = ""
-    @State private var password: String = ""
     @State private var isPasswordCorrect = true
     @State private var isEmailCorrect = true
     @State private var isUsernameBlank = false
@@ -148,10 +145,10 @@ private extension CreateAccountView {
             if isPasswordCorrect && isEmailCorrect && !isUsernameBlank {
                 #warning("Show progress and lock ui to prevent multiple api calls")
                 isLoading = true
-                let userInput = AuthorizationAPI.SignupUserInput(email: email,
-                                                                username: username,
-                                                                password: password,
-                                                                send_emails: false)
+                let userInput = AuthorizationAPI.SignupUserInput(email: SignInPersistanceObserved.email,
+                                                                 username: SignInPersistanceObserved.username,
+                                                                 password: SignInPersistanceObserved.password,
+                                                                 send_emails: false)
                 authorizationAPIService.createAccount(input: userInput) { result in
                     DispatchQueue.main.async {
                         switch result {
@@ -216,9 +213,9 @@ private extension CreateAccountView {
     }
 
     func checkIfUserInputIsCorrect() {
-        isPasswordCorrect = checkIsPasswordValid(password: password)
-        isEmailCorrect = checkIsEmailValid(email: email)
-        isUsernameBlank = checkIfBlank(text: username)
+        isPasswordCorrect = checkIsPasswordValid(password: SignInPersistanceObserved.password)
+        isEmailCorrect = checkIsEmailValid(email: SignInPersistanceObserved.email)
+        isUsernameBlank = checkIfBlank(text: SignInPersistanceObserved.username)
     }
 
     func displayErrorAlert(error: AuthorizationError) {
