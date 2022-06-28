@@ -115,28 +115,49 @@ struct SelectDeviceView: View {
     }
     
     var bluetoothLabels: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            StringCustomizer.customizeString(Strings.SelectDeviceView.bluetoothLabel,
-                            using: [Strings.SelectDeviceView.bluetoothDevice],
-                            fontWeight: .bold,
-                            color: .accentColor,
-                            font: Fonts.boldHeading1,
-                            makeNewLineAfterCustomized: true)
+        HStack {
+            VStack(alignment: .leading, spacing: 6) {
+                StringCustomizer.customizeString(Strings.SelectDeviceView.bluetoothLabel,
+                                                 using: [Strings.SelectDeviceView.bluetoothDevice],
+                                                 fontWeight: .bold,
+                                                 color: .accentColor,
+                                                 font: Fonts.boldHeading1,
+                                                 makeNewLineAfterCustomized: true)
                 .font(Fonts.muliHeading3)
                 .foregroundColor(.aircastingGray)
+            }
+            
+            Spacer()
+            chevronImage
         }
+        .padding(.horizontal)
     }
     
     var micLabels: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            StringCustomizer.customizeString(Strings.SelectDeviceView.micLabel_1,
-                            using: [Strings.SelectDeviceView.phoneMicrophone],
-                            fontWeight: .bold,
-                            color: .accentColor,
-                            font: Fonts.boldHeading1,
-                            makeNewLineAfterCustomized: true)
-                .font(Fonts.muliHeading3)
-                .foregroundColor(.aircastingGray)
+        HStack {
+            VStack(alignment: .leading, spacing: 6) {
+                StringCustomizer.customizeString(Strings.SelectDeviceView.micLabel_1,
+                                using: [Strings.SelectDeviceView.phoneMicrophone],
+                                fontWeight: .bold,
+                                color: .accentColor,
+                                font: Fonts.boldHeading1,
+                                makeNewLineAfterCustomized: true)
+                    .font(Fonts.muliHeading3)
+                    .foregroundColor(.aircastingGray)
+            }
+            
+            Spacer()
+            chevronImage
+        }
+        .padding(.horizontal)
+    }
+    
+    private var chevronImage: some View {
+        VStack {
+            Image(systemName: "chevron.right")
+                .foregroundColor(.accentColor)
+                .padding(.bottom, 20)
+            
         }
     }
 }
