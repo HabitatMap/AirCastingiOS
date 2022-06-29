@@ -150,12 +150,6 @@ extension ConfirmCreatingSessionView {
             if sessionContext.isIndoor! || sessionContext.locationless {
                 sessionContext.saveCurrentLocation(lat: 200, log: 200)
             }
-            // if session is fixed and outdoor then starting location should be already saved in the session context, so this is just for double checking
-            if sessionContext.startingLocation == nil {
-                guard let lat = (locationTracker.locationManager.location?.coordinate.latitude),
-                      let lon = (locationTracker.locationManager.location?.coordinate.longitude) else { return }
-                sessionContext.saveCurrentLocation(lat: lat, log: lon)
-            }
         } else {
             guard let lat = (locationTracker.locationManager.location?.coordinate.latitude),
                   let lon = (locationTracker.locationManager.location?.coordinate.longitude) else { return }

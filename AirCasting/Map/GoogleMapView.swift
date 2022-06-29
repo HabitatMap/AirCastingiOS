@@ -127,16 +127,18 @@ struct GoogleMapView: UIViewRepresentable {
     }
     
     var cameraUpdate: GMSCameraUpdate {
+        // MARK: - Picker screen logic
+        if isMapOnPickerScreen {
+            let location = placePickerLocation ?? CLLocationCoordinate2D(latitude: 0, longitude: 0)
+            return GMSCameraUpdate.setTarget(location)
+        }
+        
         guard !pathPoints.isEmpty else {
-            // MARK: - Picker screen logic
-            if isMapOnPickerScreen {
-                let location = placePickerLocation ?? CLLocationCoordinate2D(latitude: 0, longitude: 0)
-                return GMSCameraUpdate.setTarget(location)
-            }
-            
+            // We are not sure if this can ever happen
             let location = tracker.locationManager.location?.coordinate ?? CLLocationCoordinate2D(latitude: 0, longitude: 0)
             return GMSCameraUpdate.setTarget(location)
         }
+        
         let initialBounds = GMSCoordinateBounds()
         guard liveModeOn else {
             let pathPointsBoundingBox = pathPoints.reduce(initialBounds) { bounds, point in
