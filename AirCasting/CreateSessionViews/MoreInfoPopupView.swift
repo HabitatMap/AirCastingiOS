@@ -9,17 +9,20 @@ import SwiftUI
 
 struct MoreInfoPopupView: View {
     var body: some View {
-        VStack(alignment: .leading, spacing: 25) {
-            Text(Strings.MoreInfoPopupView.text_1)
-                .font(Fonts.boldTitle2)
-                .foregroundColor(.accentColor)
-            Text(Strings.MoreInfoPopupView.text_2)
-            Text(Strings.MoreInfoPopupView.text_3)
+        ZStack {
+            XmarkButton()
+            VStack(alignment: .leading, spacing: 25) {
+                Text(Strings.MoreInfoPopupView.text_1)
+                    .font(Fonts.boldTitle2)
+                    .foregroundColor(.accentColor)
+                Text(Strings.MoreInfoPopupView.text_2)
+                Text(Strings.MoreInfoPopupView.text_3)
+            }
+            .font(Fonts.muliHeading2)
+            .lineSpacing(12)
+            .foregroundColor(.aircastingGray)
+            .padding()
         }
-        .font(Fonts.muliHeading2)
-        .lineSpacing(12)
-        .foregroundColor(.aircastingGray)
-        .padding()
     }
 }
 
