@@ -11,7 +11,6 @@ struct ShareLocationlessSessionView: View {
         LoadingView(isShowing: $viewModel.loaderVisible, activityIndicatorText: Strings.SessionShare.loadingFile) {
             ZStack {
                 XmarkButton()
-                    .font(.body)
                 VStack(alignment: .leading) {
                     VStack(alignment: .leading, spacing: 40) {
                         title

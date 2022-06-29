@@ -7,25 +7,30 @@ import SwiftUI
 struct DeleteView<VM: DeleteSessionViewModel>: View {
     @ObservedObject var viewModel: VM
     @Binding var deleteModal: Bool
+    
     var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
-            title
-            description
-            chooseStream
-            continueButton
-            cancelButton
-        }.alert(isPresented: $viewModel.showingConfirmationAlert) {
-            Alert(
-                title: Text(Strings.DeleteSession.deleteAlert),
-                primaryButton: .destructive(Text(Strings.DeleteSession.deleteButton), action: {
-                    viewModel.deleteSelected()
-                    deleteModal.toggle()
-                }),
-                secondaryButton: .default(Text(Strings.Commons.cancel), action: {
-                    deleteModal.toggle()
-                }))
+        ZStack {
+            XmarkButton()
+            VStack(alignment: .leading, spacing: 20) {
+                title
+                description
+                chooseStream
+                continueButton
+                cancelButton
+            }
+            .alert(isPresented: $viewModel.showingConfirmationAlert) {
+                Alert(
+                    title: Text(Strings.DeleteSession.deleteAlert),
+                    primaryButton: .destructive(Text(Strings.DeleteSession.deleteButton), action: {
+                        viewModel.deleteSelected()
+                        deleteModal.toggle()
+                    }),
+                    secondaryButton: .default(Text(Strings.Commons.cancel), action: {
+                        deleteModal.toggle()
+                    }))
+            }
+            .padding()
         }
-        .padding()
     }
     
     private var title: some View {

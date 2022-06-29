@@ -8,16 +8,20 @@ struct EditNoteView<VM: EditNoteViewModel>: View {
     
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
-                title
-                description
-                noteField
-                photo
-                continueButton
-                deleteButton
-                cancelButton
+            ZStack {
+                XmarkButton()
+                VStack(alignment: .leading, spacing: 20) {
+                    title
+                    description
+                    noteField
+                    photo
+                    continueButton
+                    deleteButton
+                    cancelButton
+                }
+                .padding()
             }
-            .padding()
+            
         }
     }
 }

@@ -17,6 +17,7 @@ struct XmarkButton: View {
                         Image(systemName: "xmark")
                             .foregroundColor(.aircastingDarkGray)
                             .imageScale(.large)
+                            .font(.body)
                     }
                     .padding()
                 }
