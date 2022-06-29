@@ -659,6 +659,10 @@ struct Strings {
                                                       comment: "")
         static let text_3: String = NSLocalizedString("If you plan to leave the AirBeam3 indoors or hang it outside then configure it to record a fixed session. When recording fixed AirCasting sessions, measurements are created and timestamped once per minute, and geocoordinates are fixed to a set location.",
                                                       comment: "")
+        static let mobile: String = NSLocalizedString("mobile",
+                                                      comment: "")
+        static let fixed: String = NSLocalizedString("fixed",
+                                                      comment: "")
     }
     
     enum ConnectingABView {
