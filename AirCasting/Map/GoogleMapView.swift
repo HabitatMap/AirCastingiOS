@@ -12,7 +12,7 @@ import GooglePlaces
 import Resolver
 
 struct GoogleMapView: UIViewRepresentable {
-    @InjectedObject private var tracker: LocationTracker
+    @Injected private var tracker: LocationTracker
     
     @Binding var isUserInteracting: Bool
     @Binding var noteMarketTapped: Bool
@@ -135,7 +135,7 @@ struct GoogleMapView: UIViewRepresentable {
         
         guard !pathPoints.isEmpty else {
             // We are not sure if this can ever happen
-            let location = tracker.locationManager.location?.coordinate ?? CLLocationCoordinate2D(latitude: 0, longitude: 0)
+            let location = tracker.location.value?.coordinate ?? CLLocationCoordinate2D(latitude: 0, longitude: 0)
             return GMSCameraUpdate.setTarget(location)
         }
         
@@ -153,8 +153,8 @@ struct GoogleMapView: UIViewRepresentable {
     func setStartingPoint(points: [PathPoint]) -> GMSCameraPosition {
         guard !isMapOnPickerScreen else {
             // MARK: - Picker screen logic
-            let lat = tracker.locationManager.location?.coordinate.latitude ?? 37.35
-            let long = tracker.locationManager.location?.coordinate.longitude ?? -122.05
+            let lat = tracker.location.value?.coordinate.latitude ?? 37.35
+            let long = tracker.location.value?.coordinate.longitude ?? -122.05
             let newCameraPosition = GMSCameraPosition.camera(withLatitude: lat,
                                                              longitude: long,
                                                              zoom: 16)
@@ -162,7 +162,7 @@ struct GoogleMapView: UIViewRepresentable {
         }
         
         // This get's overwritten anyway by camera update so setting starting point only makes sense if shouldAutoTrack is set to false (so when it's not a place picker screen)
-        if let location = tracker.locationManager.location?.coordinate {
+        if let location = tracker.location.value?.coordinate {
             let long = location.longitude
             let lat = location.latitude
             
@@ -278,6 +278,11 @@ struct GoogleMapView: UIViewRepresentable {
         
         init(_ parent: GoogleMapView) {
             self.parent = parent
+            parent.tracker.start()
+        }
+        
+        deinit {
+            parent.tracker.stop()
         }
         
         func mapView(_ mapView: GMSMapView, didChange position: GMSCameraPosition) {
@@ -327,17 +332,17 @@ struct GoogleMapView: UIViewRepresentable {
         
         func centerMap(for mapView: GMSMapView) {
             guard !parent.isMapOnPickerScreen else {
-                let lat = parent.tracker.locationManager.location?.coordinate.latitude ?? 37.35
-                let long = parent.tracker.locationManager.location?.coordinate.longitude ?? -122.05
+                let lat = parent.tracker.location.value?.coordinate.latitude ?? 37.35
+                let long = parent.tracker.location.value?.coordinate.longitude ?? -122.05
                 let camera = GMSCameraPosition.camera(withLatitude: lat, longitude: long, zoom: 16)
                 mapView.animate(to: camera)
                 return
             }
             let lat = parent.liveModeOn ?
-            parent.tracker.locationManager.location!.coordinate.latitude :
+            parent.tracker.location.value!.coordinate.latitude :
             parent.pathPoints.last?.location.latitude ?? 37.35
             let long = parent.liveModeOn ?
-            parent.tracker.locationManager.location!.coordinate.longitude :
+            parent.tracker.location.value!.coordinate.longitude :
             parent.pathPoints.last?.location.longitude ?? -122.05
             
             let camera = GMSCameraPosition.camera(withLatitude: lat, longitude: long, zoom: 16)

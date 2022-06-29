@@ -14,7 +14,7 @@ class SettingsViewModel: ObservableObject {
     var SDClearingRouteProcess = true
     
     @Injected private var urlProvider: URLProvider
-    @Injected private var locationHandler: LocationHandler
+    @Injected private var locationAuthorization: LocationAuthorization
     @Injected private var bluetoothHandler: BluetoothHandler
     let sessionContext: CreateSessionContext
 
@@ -28,7 +28,7 @@ class SettingsViewModel: ObservableObject {
     }
 
     func nextStep() -> ProceedToView {
-        guard !locationHandler.isLocationDenied() else { return .location }
+        guard locationAuthorization.locationState != .denied else { return .location }
         guard !bluetoothHandler.isBluetoothDenied() else { return .bluetooth }
         return .airBeam
     }

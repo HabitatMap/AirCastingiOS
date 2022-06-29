@@ -3,6 +3,7 @@
 //
 
 import Foundation
+import Resolver
 import AVFoundation
 import CoreAudio
 import CoreLocation
@@ -27,7 +28,7 @@ final class MicrophoneManager: NSObject, ObservableObject {
     private lazy var audioSession = AVAudioSession.sharedInstance()
     private var levelTimer: Timer?
     private(set) var session: Session?
-    private lazy var locationProvider = LocationProvider()
+    @Injected private var locationTracker: LocationTracker
     private var interruptionHandler: AVSessionInterruptionHandler!
 
     init(measurementStreamStorage: MeasurementStreamStorage) {
@@ -59,7 +60,7 @@ final class MicrophoneManager: NSObject, ObservableObject {
                     DispatchQueue.main.async {
                         self?.isRecording = true
                         if !session.locationless {
-                            self?.locationProvider.requestLocation()
+                            self?.locationTracker.start()
                         }
                         self?.levelTimer = self?.createTimer()
                     }
@@ -74,7 +75,7 @@ final class MicrophoneManager: NSObject, ObservableObject {
         guard isRecording, let recorder = recorder else { return }
         levelTimer?.invalidate()
         if !(session?.locationless ?? false) {
-            locationProvider.stopUpdatingLocation()
+            locationTracker.stop()
         }
         isRecording = false
         measurementStreamLocalID = nil
@@ -207,7 +208,7 @@ private extension MicrophoneManager {
     }
     
     func obtainCurrentLocation() -> CLLocationCoordinate2D? {
-        locationProvider.currentLocation?.coordinate
+        locationTracker.location.value?.coordinate
     }
     
     enum MicrophoneSessionError: Error {

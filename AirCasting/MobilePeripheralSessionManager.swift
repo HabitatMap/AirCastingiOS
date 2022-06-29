@@ -4,12 +4,13 @@
 import Foundation
 import CoreBluetooth
 import CoreLocation
+import Resolver
 
 class MobilePeripheralSessionManager {
     var isMobileSessionActive: Bool { activeMobileSession != nil }
 
     private let measurementStreamStorage: MeasurementStreamStorage
-    private lazy var locationProvider = LocationProvider()
+    @Injected private var locationTracker: LocationTracker
 
     private var activeMobileSession: MobileSession?
 
@@ -25,7 +26,7 @@ class MobilePeripheralSessionManager {
                 try storage.createSession(session)
                 DispatchQueue.main.async {
                     if !session.locationless {
-                        self?.locationProvider.requestLocation()
+                        self?.locationTracker.start()
                     }
                     self?.activeMobileSession = MobileSession(peripheral: peripheral, session: session)
                 }
@@ -79,7 +80,7 @@ class MobilePeripheralSessionManager {
 
         centralManager.cancelPeripheralConnection(activeSession.peripheral)
         if activeSession.session.locationless {
-            locationProvider.stopUpdatingLocation()
+            locationTracker.stop()
         }
         activeMobileSession = nil
     }
@@ -107,7 +108,7 @@ class MobilePeripheralSessionManager {
 
         centralManager.cancelPeripheralConnection(activePeripheral)
         if !activeMobileSession!.session.locationless {
-            locationProvider.stopUpdatingLocation()
+            locationTracker.stop()
         }
         activeMobileSession = nil
     }
@@ -117,7 +118,7 @@ class MobilePeripheralSessionManager {
             Log.warning("Enter standalone mode called for perihperal which is not associated with active session")
             return
         }
-
+        locationTracker.stop()
         activeMobileSession = nil
     }
 
@@ -144,7 +145,7 @@ class MobilePeripheralSessionManager {
     }
 
     private func updateStreams(stream: ABMeasurementStream, sessionUUID: SessionUUID, isLocationTracked: Bool) throws {
-        let  location = isLocationTracked ? locationProvider.currentLocation?.coordinate : .undefined
+        let  location = isLocationTracked ? locationTracker.location.value?.coordinate : .undefined
 
         measurementStreamStorage.accessStorage { storage in
             do {
@@ -180,10 +181,9 @@ class MobilePeripheralSessionManager {
 
     func configureAB() {
         guard let peripheral = activeMobileSession?.peripheral else { return }
-        locationProvider.requestLocation()
         AirBeam3Configurator(peripheral: peripheral)
             .configureMobileSession(
-                location: locationProvider.currentLocation?.coordinate ?? .undefined
+                location: locationTracker.location.value?.coordinate ?? .undefined
             )
     }
 

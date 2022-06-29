@@ -10,7 +10,6 @@ import Resolver
 struct CreatingSessionMapView: UIViewRepresentable {
     
     typealias UIViewType = GMSMapView
-    @InjectedObject private var tracker: LocationTracker
     var isMyLocationEnabled = false
     var startingLocation: CLLocationCoordinate2D?
     
@@ -20,8 +19,12 @@ struct CreatingSessionMapView: UIViewRepresentable {
     }
     
     func makeUIView(context: Context) -> GMSMapView {
-        let latitude = (isMyLocationEnabled ? tracker.locationManager.location?.coordinate.latitude : startingLocation?.latitude) ?? 37.35
-        let longitude = (isMyLocationEnabled ? tracker.locationManager.location?.coordinate.longitude :
+        let location = context.coordinator.tracker.location.value
+        if location == nil {
+            Log.error("Location not found on makeUIView()!")
+        }
+        let latitude = (isMyLocationEnabled ? context.coordinator.tracker.location.value?.coordinate.latitude : startingLocation?.latitude) ?? 37.35
+        let longitude = (isMyLocationEnabled ? context.coordinator.tracker.location.value?.coordinate.longitude :
                             startingLocation?.longitude) ?? -122.05
         let camera = GMSCameraPosition.camera(withLatitude: latitude, longitude: longitude, zoom: 16)
         let mapView = GMSMapView.map(withFrame: .zero, camera: camera)
@@ -48,9 +51,16 @@ struct CreatingSessionMapView: UIViewRepresentable {
 
     class Coordinator: NSObject, UINavigationControllerDelegate, GMSMapViewDelegate {
         var parent: CreatingSessionMapView!
+        @Injected var tracker: LocationTracker
         
         init(_ parent: CreatingSessionMapView) {
             self.parent = parent
+            super.init()
+            tracker.start()
+        }
+        
+        deinit {
+            tracker.stop()
         }
         
         func mapView(_ mapView: GMSMapView, didChange position: GMSCameraPosition) {
@@ -62,8 +72,8 @@ struct CreatingSessionMapView: UIViewRepresentable {
         }
         
         func centerMap(for mapView: GMSMapView) {
-            let lat = parent.tracker.locationManager.location?.coordinate.latitude ?? 37.35
-            let long = parent.tracker.locationManager.location?.coordinate.longitude ?? -122.05
+            let lat = tracker.location.value?.coordinate.latitude ?? 37.35
+            let long = tracker.location.value?.coordinate.longitude ?? -122.05
             
             let camera = GMSCameraPosition.camera(withLatitude: lat, longitude: long, zoom: 16)
             mapView.animate(to: camera)

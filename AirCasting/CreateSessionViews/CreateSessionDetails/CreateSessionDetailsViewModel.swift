@@ -19,7 +19,7 @@ class CreateSessionDetailsViewModel: ObservableObject {
     @Published var isSSIDTextfieldDisplayed: Bool = false
     @Published var showErrorIndicator: Bool = false
     var shouldShowError: Bool { sessionName.isEmpty && showErrorIndicator }
-    @Injected private var locationHandler: LocationHandler
+    @Injected private var locationAuthorization: LocationAuthorization
     
     
     func onScreenEnter() {
@@ -60,7 +60,7 @@ class CreateSessionDetailsViewModel: ObservableObject {
     
     func compareIsIndoor(sessionContext: CreateSessionContext) -> CreateSessionContext {
         sessionContext.isIndoor = isIndoor
-        guard locationHandler.isLocationDenied() && !isIndoor else {
+        guard locationAuthorization.locationState == .denied && !isIndoor else {
             isLocationSessionDetailsActive = !isIndoor
             isConfirmCreatingSessionActive = isIndoor
             return sessionContext

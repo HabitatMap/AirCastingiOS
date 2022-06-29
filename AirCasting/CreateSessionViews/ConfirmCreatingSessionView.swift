@@ -20,7 +20,7 @@ struct ConfirmCreatingSessionView: View {
     @State private var isPresentingAlert: Bool = false
     @EnvironmentObject var selectedSection: SelectSection
     @EnvironmentObject private var sessionContext: CreateSessionContext
-    @InjectedObject private var locationTracker: LocationTracker
+    @Injected private var locationTracker: LocationTracker
     @EnvironmentObject private var tabSelection: TabBarSelection
     @Binding var creatingSessionFlowContinues: Bool
 
@@ -151,8 +151,9 @@ extension ConfirmCreatingSessionView {
                 sessionContext.saveCurrentLocation(lat: 200, log: 200)
             }
         } else {
-            guard let lat = (locationTracker.locationManager.location?.coordinate.latitude),
-                  let lon = (locationTracker.locationManager.location?.coordinate.longitude) else { return }
+            #warning("No certainty that location tracker has a location at all or that it's even running at this point")
+            guard let lat = (locationTracker.location.value?.coordinate.latitude),
+                  let lon = (locationTracker.location.value?.coordinate.longitude) else { return }
             sessionContext.saveCurrentLocation(lat: lat, log: lon)
         }
     }

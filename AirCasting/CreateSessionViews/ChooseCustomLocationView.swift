@@ -7,7 +7,6 @@ import CoreLocation
 import Resolver
 
 struct ChooseCustomLocationView: View {
-    @InjectedObject var locationTracker: LocationTracker
     @State private var isConfirmCreatingSessionActive: Bool = false
     @State private var locationName = ""
     @State private var location: CLLocationCoordinate2D?
