@@ -118,17 +118,21 @@ private extension CreateAccountView {
     
     var emailTextfield: some View {
         createTextfield(placeholder: Strings.CreateAccountView.email,
-                        binding: $email)
+                        binding: $email,
+                        checkingIf: !isEmailCorrect)
             .autocapitalization(.none)
     }
     
     var usernameTextfield: some View {
         createTextfield(placeholder: Strings.CreateAccountView.profile,
-                        binding: $username)
+                        binding: $username,
+                        checkingIf: isUsernameBlank)
             .autocapitalization(.none)
     }
     var passwordTextfield: some View {
-        createSecuredTextfield(placeholder: Strings.CreateAccountView.password, binding: $password)
+        createSecuredTextfield(placeholder: Strings.CreateAccountView.password,
+                               binding: $password,
+                               checkingIf: !isPasswordCorrect)
     }
     
     var createAccountButton: some View {
