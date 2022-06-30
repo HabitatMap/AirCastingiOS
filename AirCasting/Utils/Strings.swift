@@ -1058,6 +1058,8 @@ struct Strings {
                                                               comment: "")
         static let finishText: String = NSLocalizedString("Finish",
                                                               comment: "")
+        static let noResults: String = NSLocalizedString("No results found within selected area.",
+                                                              comment: "")
     }
     
     enum ProtectedScreen {
