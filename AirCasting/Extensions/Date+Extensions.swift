@@ -61,4 +61,11 @@ extension Date {
         calendar.timeZone = TimeZone.utc
         return calendar.startOfDay(for: self).timeIntervalSince1970 + (23 * 60 * 60 + 3540 + 59)
     }
+    
+    var twentyFourHoursBefore: Double {
+        let twentyFourHours = 86400000 // 24 hours in miliseconds: 60 * 60 * 24
+        return Double(self.milliseconds - twentyFourHours)
+    }
+    
+
 }

@@ -35,20 +35,10 @@ final class DefaultRemoveOldMeasurementsService: RemoveOldMeasurements {
     private func timeBasedRemover(context: NSManagedObjectContext, stream: MeasurementStreamEntity) {
         guard let lastMeasurementTime = stream.allMeasurements?.last?.time else { Log.error("No last measurement when trying to remove those from > 24h"); return }
         let threshold = lastMeasurementTime.twentyFourHoursBefore
-        let result = context.deleteMeasurements(thresholdInMiliseconds: threshold, stream: stream)
-        switch result {
-        case .success(let success):
-            try! context.save()
-            Log.info(success)
-        case .failure(let error):
-            Log.error(error.localizedDescription)
+        do {
+            try context.deleteMeasurements(thresholdInMiliseconds: threshold, stream: stream)
+        } catch {
+            Log.error("Problem occured when trying to fetch predicate for measurement deletion")
         }
-    }
-}
-
-extension Date {
-    var twentyFourHoursBefore: Double {
-        let twentyFourHours = 86400000 // 24 hours in miliseconds: 60 * 60 * 24
-        return Double(self.milliseconds - twentyFourHours)
     }
 }

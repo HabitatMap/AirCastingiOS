@@ -202,7 +202,17 @@ class CompleteScreenViewModel: ObservableObject {
     
     private func createExternalSession(with sortedStreams: [MeasurementsDownloaderResultModel.Stream]) {
         DispatchQueue.main.async {
-            self.externalSessionWithStreams = self.service.createExternalSession(from: self.session, with: sortedStreams)
+            var streamsWithMeasurements = sortedStreams
+            
+            streamsWithMeasurements.enumerated().forEach { id, streamWithMeasurements in
+                let measurements = streamWithMeasurements.measurements
+                guard let lastMeasurement = measurements.last else { return }
+                let twentyFourHours: Double = 86400000
+                let beginingOfCorrectPeriod = lastMeasurement.time - twentyFourHours
+                streamsWithMeasurements[id].measurements = (measurements.filter({ $0.time >= beginingOfCorrectPeriod }))
+            }
+            
+            self.externalSessionWithStreams = self.service.createExternalSession(from: self.session, with: streamsWithMeasurements)
             
             self.sessionStreams = .ready(self.externalSessionWithStreams!.streams.map {
                 .init(id: $0.id,
