@@ -11,10 +11,10 @@ import Resolver
 
 struct RootAppView: View {
 
-    @InjectedObject var userAuthenticationSession: UserAuthenticationSession
-    @InjectedObject var lifeTimeEventsProvider: LifeTimeEventsProvider
+    @InjectedObject private var userAuthenticationSession: UserAuthenticationSession
+    @InjectedObject private var lifeTimeEventsProvider: LifeTimeEventsProvider
     @InjectedObject private var userState: UserState
-    @StateObject var SignInPersistanceObserved = SignInPersistance.shared
+    @StateObject private var SignInPersistanceObserved = SignInPersistance.shared
     
     var body: some View {
         ZStack {
