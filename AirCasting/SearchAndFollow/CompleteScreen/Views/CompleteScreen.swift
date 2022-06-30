@@ -65,7 +65,7 @@ private extension CompleteScreen {
     var measurements: some View {
         VStack(alignment: .leading, spacing: 5) {
             Text(Strings.CompleteSearchView.lastMeasurement)
-                .font(Fonts.moderateTitle1)
+                .font(Fonts.muliHeading4)
                 .padding(.bottom, 3)
             if let streams = viewModel.sessionStreams.get {
                 HStack {
@@ -91,6 +91,7 @@ private extension CompleteScreen {
             Spacer()
             formatChartTime(time: viewModel.chartEndTime)
         }
+        .font(Fonts.muliHeading5)
     }
 
     func formatChartTime(time: Date?) -> some View {

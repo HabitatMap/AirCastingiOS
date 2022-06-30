@@ -20,6 +20,7 @@ struct ShareSessionView<VM: ShareSessionViewModel>: View {
             descriptionMail
             VStack(alignment: .leading, spacing: -5.0) {
                 createTextfield(placeholder: Strings.SessionShare.emailPlaceholder, binding: $viewModel.email)
+                    .font(Fonts.regularHeading2)
                     .padding(.vertical)
                     .disableAutocorrection(true)
                     .autocapitalization(.none)
@@ -46,7 +47,7 @@ struct ShareSessionView<VM: ShareSessionViewModel>: View {
     
     private var description: some View {
         Text(Strings.SessionShare.description)
-            .font(Fonts.muliHeading2)
+            .font(Fonts.regularHeading2)
             .foregroundColor(.aircastingGray)
     }
     
@@ -58,6 +59,7 @@ struct ShareSessionView<VM: ShareSessionViewModel>: View {
                         viewModel.didSelect(option: option)
                     }
                     Text(option.title)
+                        .font(Fonts.muliHeading2)
                 }
             }
         }.padding()
@@ -66,19 +68,21 @@ struct ShareSessionView<VM: ShareSessionViewModel>: View {
     private var shareButton: some View {
         Button(Strings.SessionShare.shareLinkButton) {
             viewModel.shareLinkTapped()
-        }.buttonStyle(BlueButtonStyle())
-            .padding(.bottom)
+        }
+        .font(Fonts.boldHeading1)
+        .buttonStyle(BlueButtonStyle())
+        .padding(.bottom)
     }
     
     private var descriptionMail: some View {
         Text(Strings.SessionShare.emailDescription)
-            .font(Fonts.muliHeading5)
+            .font(Fonts.regularHeading2)
             .foregroundColor(.aircastingGray)
     }
     
     private var emailErrorLabel: some View {
         Text(Strings.SessionShare.invalidEmailLabel)
-            .font(Fonts.regularHeading5)
+            .font(Fonts.regularHeading4)
             .foregroundColor(.aircastingRed)
             .multilineTextAlignment(.leading)
     }
@@ -87,13 +91,16 @@ struct ShareSessionView<VM: ShareSessionViewModel>: View {
         Button(Strings.SessionShare.shareFileButton) {
             viewModel.shareEmailTapped()
         }
+        .font(Fonts.boldHeading1)
         .buttonStyle(BlueButtonStyle())
     }
     
     private var cancelButton: some View {
         Button(Strings.Commons.cancel) {
             viewModel.cancelTapped()
-        }.buttonStyle(BlueTextButtonStyle())
+        }
+        .font(Fonts.regularHeading2)
+        .buttonStyle(BlueTextButtonStyle())
     }
 }
 
