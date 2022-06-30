@@ -1044,7 +1044,7 @@ struct Strings {
     }
     
     enum SearchMapView {
-        static let loadingText: String = NSLocalizedString("Loading sessions.",
+        static let loadingText: String = NSLocalizedString("Loading sessions",
                                                               comment: "")
         static let parameterText: String = NSLocalizedString("Results for: %@",
                                                               comment: "")
