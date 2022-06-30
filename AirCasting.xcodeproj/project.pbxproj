@@ -305,6 +305,8 @@
 		B3A8CEA628340E2500DC3B38 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A8CEA528340E2500DC3B38 /* LocationService.swift */; };
 		B3AA784927D4D22A003B39F6 /* Resolver+XCTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3AA784827D4D22A003B39F6 /* Resolver+XCTest.swift */; };
 		B3AA784B27D4D7EF003B39F6 /* APIServiceTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3AA784A27D4D7EF003B39F6 /* APIServiceTestCase.swift */; };
+		B3AAACF5286DC07600DFBD36 /* LevelMeasurementControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3AAACF4286DC07600DFBD36 /* LevelMeasurementControllerTests.swift */; };
+		B3AAACF7286DD91700DFBD36 /* DecibelSamplerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3AAACF6286DD91700DFBD36 /* DecibelSamplerTests.swift */; };
 		B3AB8BE526BB5EF400AF23CC /* Array+MeasurementStatistics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3AB8BE426BB5EF400AF23CC /* Array+MeasurementStatistics.swift */; };
 		B3C3F8B92695A295003E2CB4 /* StatisticsContainerViewModelable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3C3F8B82695A295003E2CB4 /* StatisticsContainerViewModelable.swift */; };
 		B3D1928D26F1FA1C0029E1C8 /* FixedSessionFaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EFAB1D26F1F9DB00E88141 /* FixedSessionFaker.swift */; };
@@ -794,6 +796,8 @@
 		B3A8CEA528340E2500DC3B38 /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
 		B3AA784827D4D22A003B39F6 /* Resolver+XCTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Resolver+XCTest.swift"; sourceTree = "<group>"; };
 		B3AA784A27D4D7EF003B39F6 /* APIServiceTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIServiceTestCase.swift; sourceTree = "<group>"; };
+		B3AAACF4286DC07600DFBD36 /* LevelMeasurementControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelMeasurementControllerTests.swift; sourceTree = "<group>"; };
+		B3AAACF6286DD91700DFBD36 /* DecibelSamplerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecibelSamplerTests.swift; sourceTree = "<group>"; };
 		B3AB8BE426BB5EF400AF23CC /* Array+MeasurementStatistics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+MeasurementStatistics.swift"; sourceTree = "<group>"; };
 		B3C3F8B82695A295003E2CB4 /* StatisticsContainerViewModelable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsContainerViewModelable.swift; sourceTree = "<group>"; };
 		B3D4B4B326C2C6A1004322FC /* Date+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extensions.swift"; sourceTree = "<group>"; };
@@ -1961,6 +1965,15 @@
 			path = Interfaces;
 			sourceTree = "<group>";
 		};
+		B3AAACF3286DC05C00DFBD36 /* MicrophoneSessions */ = {
+			isa = PBXGroup;
+			children = (
+				B3AAACF4286DC07600DFBD36 /* LevelMeasurementControllerTests.swift */,
+				B3AAACF6286DD91700DFBD36 /* DecibelSamplerTests.swift */,
+			);
+			path = MicrophoneSessions;
+			sourceTree = "<group>";
+		};
 		B3E26A042676DA14001A8E4C /* Other */ = {
 			isa = PBXGroup;
 			children = (
@@ -1988,6 +2001,7 @@
 		B3E26A0A2676DAB0001A8E4C /* Logic */ = {
 			isa = PBXGroup;
 			children = (
+				B3AAACF3286DC05C00DFBD36 /* MicrophoneSessions */,
 				B3EFAB1A26EFEA8100E88141 /* Bootstrap */,
 				B30BABF92693507800AE0476 /* Statistics */,
 				DDF12AEC26B2B7E300D067C7 /* SessionCartTests */,
@@ -2759,6 +2773,7 @@
 				4FB39E402622252700E5E564 /* XCTestCase+Extensions.swift in Sources */,
 				DDBC992626A1652A00B0662E /* ForgotPasswordTest.swift in Sources */,
 				DDDCEC3927D0C8C700B3757C /* DateBuilderTests.swift in Sources */,
+				B3AAACF5286DC07600DFBD36 /* LevelMeasurementControllerTests.swift in Sources */,
 				B33DB5742686120600ED1344 /* XCTestCase+AssertContainsSameElements.swift in Sources */,
 				4FA83EEF26342D84003E2BF2 /* AuthorizationAPIServiceTests.swift in Sources */,
 				4F5D3F7F262D735A003AD82E /* CreateSessionAPIServiceTests.swift in Sources */,
@@ -2777,6 +2792,7 @@
 				B33B161027AF0B3600138FFA /* DocumentsFileLoggerStoreTests.swift in Sources */,
 				B30BABFF26935C2B00AE0476 /* TimeInterval+Helpers.swift in Sources */,
 				B3AA784927D4D22A003B39F6 /* Resolver+XCTest.swift in Sources */,
+				B3AAACF7286DD91700DFBD36 /* DecibelSamplerTests.swift in Sources */,
 				B3E2B65F27506EA000019167 /* FileLineReaderTests.swift in Sources */,
 				B33DB5722686013400ED1344 /* XCTestCase+AwaitPublisher.swift in Sources */,
 				B30BAC252694B5D900AE0476 /* TestStreamGenerator.swift in Sources */,

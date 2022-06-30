@@ -11,7 +11,7 @@ final class LevelMeasurementController<Sampler: LevelSampler, Saver: Measurement
     private let timer: TimerScheduler
     private var timerToken: AnyObject?
     
-    init(sampler: Sampler, measurementSaver: Saver, sessionStopper: SessionStoppable, timer: TimerScheduler) {
+    init(sampler: Sampler, measurementSaver: Saver, timer: TimerScheduler) {
         self.sampler = sampler
         self.measurementSaver = measurementSaver
         self.timer = timer
