@@ -19,7 +19,7 @@ struct MeasurementsDownloaderResultModel: Decodable {
         let measurementShortType: String
         let measurementType: String
         let sensorUnit: String
-        var measurements: [Measurement]
+        let measurements: [Measurement]
     }
     
     struct Measurement: Decodable {

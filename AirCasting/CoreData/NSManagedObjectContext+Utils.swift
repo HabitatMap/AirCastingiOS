@@ -17,10 +17,10 @@ extension NSManagedObjectContext {
         case errorWhenFetchingRequest(_: String)
     }
     
-    func deleteMeasurements(thresholdInMiliseconds: Double, stream: MeasurementStreamEntity) throws {
+    func deleteMeasurements(thresholdInSeconds: Double, stream: MeasurementStreamEntity) throws {
         let req: NSFetchRequest<MeasurementEntity> = NSFetchRequest(entityName: "MeasurementEntity")
         req.predicate = NSPredicate(format: "time < %@ AND measurementStream == %@",
-                                    NSDate(timeIntervalSince1970: thresholdInMiliseconds/1000), stream)
+                                    NSDate(timeIntervalSince1970: thresholdInSeconds), stream)
         do {
             let measurements = try self.fetch(req)
             measurements.forEach { Log.info("Removing measurement: \($0)"); self.delete($0) }
