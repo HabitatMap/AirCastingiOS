@@ -3,7 +3,7 @@
 
 import SwiftUI
 
-struct XmarkButton: View {
+struct XMarkButton: View {
     @Environment(\.presentationMode) private var presentationMode
     
     var body: some View {
@@ -29,6 +29,6 @@ struct XmarkButton: View {
 
 struct XmarkButton_Previews: PreviewProvider {
     static var previews: some View {
-        XmarkButton()
+        XMarkButton()
     }
 }

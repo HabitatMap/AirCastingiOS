@@ -10,7 +10,7 @@ struct DeleteView<VM: DeleteSessionViewModel>: View {
     
     var body: some View {
         ZStack {
-            XmarkButton()
+            XMarkButton()
             VStack(alignment: .leading, spacing: 20) {
                 title
                 description

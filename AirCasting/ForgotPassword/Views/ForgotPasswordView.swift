@@ -16,7 +16,7 @@ struct ForgotPasswordView<VM: ForgotPasswordViewModel>: View {
     
     var body: some View {
         ZStack {
-            XmarkButton()
+            XMarkButton()
             VStack(alignment: .leading, spacing: 30) {
                 title
                 createTextfield(placeholder: viewModel.emailInputTitle, binding: $email)

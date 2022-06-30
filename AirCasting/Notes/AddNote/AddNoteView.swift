@@ -11,7 +11,7 @@ struct AddNoteView<VM: AddNoteViewModel>: View {
     var body: some View {
         ScrollView {
             ZStack {
-                XmarkButton()
+                XMarkButton()
                 VStack(alignment: .leading, spacing: 20) {
                     title
                     description

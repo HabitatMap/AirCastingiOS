@@ -10,7 +10,7 @@ struct ShareLocationlessSessionView: View {
     var body: some View {
         LoadingView(isShowing: $viewModel.loaderVisible, activityIndicatorText: Strings.SessionShare.loadingFile) {
             ZStack {
-                XmarkButton()
+                XMarkButton()
                 VStack(alignment: .leading) {
                     VStack(alignment: .leading, spacing: 40) {
                         title

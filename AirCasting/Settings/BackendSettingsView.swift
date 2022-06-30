@@ -32,7 +32,7 @@ struct BackendSettingsView: View {
     
     var body: some View {
         ZStack {
-            XmarkButton()
+            XMarkButton()
             VStack(alignment: .leading) {
                 title
                 Spacer()

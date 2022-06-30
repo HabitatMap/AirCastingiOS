@@ -10,7 +10,7 @@ import SwiftUI
 struct MoreInfoPopupView: View {
     var body: some View {
         ZStack {
-            XmarkButton()
+            XMarkButton()
             VStack(alignment: .leading, spacing: 25) {
                 Text(Strings.MoreInfoPopupView.text_1)
                     .font(Fonts.boldTitle2)
