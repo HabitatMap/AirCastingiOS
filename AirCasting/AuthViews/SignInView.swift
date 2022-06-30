@@ -43,11 +43,11 @@ struct SignInView: View {
 
 private extension SignInView {
     private var contentView: some View {
-        ZStack(alignment: .bottomTrailing) {
-            Image("dashboard-background-thing")
-                .offset(x: 0, y: 40)
-            GeometryReader { geometry in
-                ScrollView {
+        GeometryReader { geometry in
+            ScrollView {
+                ZStack(alignment: .bottomTrailing) {
+                    Image("dashboard-background-thing")
+                        .offset(x: 0, y: 40)
                     VStack(alignment: .leading, spacing: 40) {
                         if lifeTimeEventsProvider.hasEverLoggedIn {
                             progressBar.hidden()
@@ -85,12 +85,13 @@ private extension SignInView {
                     }
                 }
             }
-            .simultaneousGesture(
-                DragGesture(minimumDistance: 2, coordinateSpace: .global)
-                    .onChanged { _ in
-                        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-                    })
         }
+        .simultaneousGesture(
+            DragGesture(minimumDistance: 2, coordinateSpace: .global)
+                .onChanged { _ in
+                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                })
+        .ignoresSafeArea(.keyboard, edges: .bottom)
     }
     
     var progressBar: some View {
@@ -113,8 +114,8 @@ private extension SignInView {
         createTextfield(placeholder: Strings.SignInView.usernameField,
                         binding: $username,
                         shouldWarnUser: isUsernameBlank)
-            .disableAutocorrection(true)
-            .autocapitalization(.none)
+        .disableAutocorrection(true)
+        .autocapitalization(.none)
     }
     
     var passwordTextfield: some View {
