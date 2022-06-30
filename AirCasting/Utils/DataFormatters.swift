@@ -87,12 +87,6 @@ enum DateFormatters {
     }
     
     enum DateExtension {
-        static let milisecondsDateFormatter: DateFormatter = {
-            let df = DateFormatter()
-            df.dateFormat = "SSS"
-            return df
-        }()
-        
         static let currentTimeZoneDateFormatter: DateFormatter = {
             let df = DateFormatter()
             df.timeZone = TimeZone.current

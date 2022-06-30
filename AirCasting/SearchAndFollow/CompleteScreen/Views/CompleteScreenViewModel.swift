@@ -51,7 +51,7 @@ class CompleteScreenViewModel: ObservableObject {
     let sessionEndTime: Date
     let sensorType: String
     let exitRoute: () -> Void
-
+    
     private var isOwnSession: Bool { userAuthenticationSession.user?.username == session.provider }
     private var session: PartialExternalSession
     private var externalSessionWithStreams: ExternalSessionWithStreamsAndMeasurements?
@@ -139,9 +139,17 @@ class CompleteScreenViewModel: ObservableObject {
     }
     
     private func saveToDb() {
-        guard let externalSessionWithStreams = externalSessionWithStreams else {
+        guard var externalSessionWithStreams = externalSessionWithStreams else {
             assertionFailure("Follow button pressed when there was no session with streams")
             return
+        }
+        
+        externalSessionWithStreams.streams.enumerated().forEach { id, streamWithMeasurements in
+            let measurements = streamWithMeasurements.measurements
+            guard let lastMeasurement = measurements.last else { return }
+            let beginingOfCorrectPeriod = lastMeasurement.time.twentyFourHoursBeforeInSeconds
+            let beginingOfCorrectPeriodDate = DateBuilder.getDateWithTimeIntervalSince1970(beginingOfCorrectPeriod)
+            externalSessionWithStreams.streams[id].measurements = (measurements.filter({ $0.time >= beginingOfCorrectPeriodDate }))
         }
         
         service.followSession(session: externalSessionWithStreams) { [weak self] result in
@@ -202,6 +210,7 @@ class CompleteScreenViewModel: ObservableObject {
     
     private func createExternalSession(with sortedStreams: [MeasurementsDownloaderResultModel.Stream]) {
         DispatchQueue.main.async {
+            
             self.externalSessionWithStreams = self.service.createExternalSession(from: self.session, with: sortedStreams)
             
             self.sessionStreams = .ready(self.externalSessionWithStreams!.streams.map {
