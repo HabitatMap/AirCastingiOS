@@ -91,6 +91,7 @@ private extension CompleteScreen {
             Spacer()
             formatChartTime(time: viewModel.chartEndTime)
         }
+        .font(Fonts.muliRegularHeading6)
     }
 
     func formatChartTime(time: Date?) -> some View {

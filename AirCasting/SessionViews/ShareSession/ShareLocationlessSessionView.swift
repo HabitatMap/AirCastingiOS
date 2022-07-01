@@ -33,25 +33,29 @@ struct ShareLocationlessSessionView: View {
     
     private var title: some View {
         Text(Strings.SessionShare.title)
-            .font(Fonts.moderateBoldTitle1)
-            .foregroundColor(.accentColor)
+            .font(Fonts.muliHeavyTitle1)
+            .foregroundColor(.darkBlue)
     }
     
     private var description: some View {
         Text(Strings.SessionShare.locationlessDescription)
+            .font(Fonts.moderateRegularHeading2)
     }
     
     private var shareFileButton: some View {
         Button(Strings.SessionShare.shareFileButton) {
             viewModel.shareFileTapped()
         }
+        .font(Fonts.muliBoldHeading1)
         .buttonStyle(BlueButtonStyle())
     }
     
     private var cancelButton: some View {
         Button(Strings.Commons.cancel) {
             viewModel.cancelTapped()
-        }.buttonStyle(BlueTextButtonStyle())
+        }
+        .font(Fonts.moderateRegularHeading2)
+        .buttonStyle(BlueTextButtonStyle())
     }
 }
 

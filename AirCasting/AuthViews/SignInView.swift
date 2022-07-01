@@ -45,40 +45,44 @@ private extension SignInView {
     private var contentView: some View {
         GeometryReader { geometry in
             ScrollView {
-                VStack(spacing: 40) {
-                    if lifeTimeEventsProvider.hasEverLoggedIn {
-                        progressBar.hidden()
-                    } else {
-                        progressBar
-                    }
-                    titleLabel
-                    VStack(spacing: 20) {
-                        VStack(alignment: .leading, spacing: 5) {
-                            usernameTextfield
-                            if isUsernameBlank {
-                                errorMessage(text: AuthErrors.emptyTextfield.localizedDescription)
+                ZStack(alignment: .bottomTrailing) {
+                    Image("dashboard-background-thing")
+                        .offset(x: 0, y: 40)
+                    VStack(alignment: .leading, spacing: 40) {
+                        if lifeTimeEventsProvider.hasEverLoggedIn {
+                            progressBar.hidden()
+                        } else {
+                            progressBar
+                        }
+                        titleLabel
+                        VStack(spacing: 20) {
+                            VStack(alignment: .leading, spacing: 5) {
+                                usernameTextfield
+                                if isUsernameBlank {
+                                    errorMessage(text: AuthErrors.emptyTextfield.localizedDescription)
+                                }
+                            }
+                            
+                            VStack(alignment: .leading, spacing: 5) {
+                                passwordTextfield
+                                if isPasswordBlank {
+                                    errorMessage(text: AuthErrors.emptyTextfield.localizedDescription)
+                                }
                             }
                         }
-                        
-                        VStack(alignment: .leading, spacing: 5) {
-                            passwordTextfield
-                            if isPasswordBlank {
-                                errorMessage(text: AuthErrors.emptyTextfield.localizedDescription)
-                            }
+                        VStack(spacing: 10) {
+                            signinButton
+                            forgotPassword
+                            signupButton
                         }
+                        Spacer()
                     }
-                    VStack(spacing: 10) {
-                        signinButton
-                        forgotPassword
-                        signupButton
+                    .padding()
+                    .navigationBarHidden(true)
+                    .frame(maxWidth: .infinity, minHeight: geometry.size.height)
+                    .alert(item: $presentedError) { error in
+                        displayErrorAlert(error: error)
                     }
-                    Spacer()
-                }
-                .padding()
-                .navigationBarHidden(true)
-                .frame(maxWidth: .infinity, minHeight: geometry.size.height)
-                .alert(item: $presentedError) { error in
-                    displayErrorAlert(error: error)
                 }
             }
         }
@@ -87,6 +91,7 @@ private extension SignInView {
                 .onChanged { _ in
                     UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                 })
+        .ignoresSafeArea(.keyboard, edges: .bottom)
     }
     
     var progressBar: some View {
@@ -107,15 +112,18 @@ private extension SignInView {
     
     var usernameTextfield: some View {
         createTextfield(placeholder: Strings.SignInView.usernameField,
-                        binding: $username)
+                        binding: $username,
+                        isInputValid: isUsernameBlank)
         .font(Fonts.moderateRegularHeading2)
         .disableAutocorrection(true)
         .autocapitalization(.none)
     }
     
     var passwordTextfield: some View {
-        createSecuredTextfield(placeholder: Strings.SignInView.passwordField, binding: $password)
-            .font(Fonts.moderateRegularHeading2)
+        createSecuredTextfield(placeholder: Strings.SignInView.passwordField,
+                               binding: $password,
+                               isInputValid: isPasswordBlank)
+        .font(Fonts.moderateRegularHeading2)
     }
     
     var signinButton: some View {

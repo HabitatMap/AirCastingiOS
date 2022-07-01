@@ -36,19 +36,27 @@ struct EditView<VM: EditViewModel>: View {
             Spacer()
             titleLabel
                 .padding(.bottom, 20)
-            createTextfield(placeholder: Strings.EditSession.namePlaceholder,
-                            binding: $editSessionViewModel.sessionName)
-            .font(Fonts.moderateRegularHeading2)
-            if editSessionViewModel.shouldShowError {
-                errorMessage(text: Strings.EditSession.erorr)
+            VStack(alignment: .leading) {
+                createLabel(with: Strings.EditSession.sessionNameLabel)
+                createTextfield(placeholder: Strings.EditSession.sessionNamePlaceholder,
+                                binding: $editSessionViewModel.sessionName)
+                .font(Fonts.moderateRegularHeading2)
+                if editSessionViewModel.shouldShowError {
+                    errorMessage(text: Strings.EditSession.erorr)
+                }
             }
-            createTextfield(placeholder: Strings.EditSession.tagPlaceholder,
-                            binding: $editSessionViewModel.sessionTags)
-            .font(Fonts.moderateRegularHeading2)
+            .padding(.bottom)
+            Group {
+                createLabel(with: Strings.EditSession.sessionTagsLabel)
+                createTextfield(placeholder: Strings.EditSession.tagPlaceholder,
+                                binding: $editSessionViewModel.sessionTags)
+                .font(Fonts.moderateRegularHeading2)
+            }
             Spacer()
             saveButton
             cancelButton
-        }.padding()
+        }
+        .padding()
     }
     
     var loader: some View {
@@ -79,5 +87,11 @@ struct EditView<VM: EditViewModel>: View {
         Button(Strings.Commons.cancel) {
             presentationMode.wrappedValue.dismiss()
         }.buttonStyle(BlueTextButtonStyle())
+    }
+    
+    private func createLabel(with text: String) -> some View {
+        Text(text)
+            .font(Font(Fonts.muliRegularHeadingUIFont1).bold())
+            .foregroundColor(.aircastingDarkGray)
     }
 }

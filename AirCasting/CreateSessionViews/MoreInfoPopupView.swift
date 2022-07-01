@@ -15,12 +15,17 @@ struct MoreInfoPopupView: View {
                 Text(Strings.MoreInfoPopupView.text_1)
                     .font(Fonts.moderateBoldTitle2)
                     .foregroundColor(.accentColor)
-                Text(Strings.MoreInfoPopupView.text_2)
-                Text(Strings.MoreInfoPopupView.text_3)
+                StringCustomizer.customizeString(Strings.MoreInfoPopupView.text_2,
+                                                 using: [Strings.MoreInfoPopupView.mobile],
+                                                 color: .accentColor,
+                                                 standardFont: Fonts.muliRegularHeading3)
+                StringCustomizer.customizeString(Strings.MoreInfoPopupView.text_3,
+                                                 using: [Strings.MoreInfoPopupView.fixed],
+                                                 color: .accentColor,
+                                                 standardFont: Fonts.muliRegularHeading3)
             }
             .font(Fonts.muliRegularHeading3)
             .lineSpacing(12)
-            .foregroundColor(.aircastingGray)
             .padding()
         }
     }

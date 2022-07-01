@@ -556,14 +556,18 @@ struct Strings {
     enum EditSession {
         static let title: String = NSLocalizedString("Edit session details",
                                                      comment: "")
-        static let namePlaceholder: String = NSLocalizedString("Session name",
+        static let sessionNamePlaceholder: String = NSLocalizedString("Session name",
                                                                comment: "")
-        static let tagPlaceholder: String = NSLocalizedString("Session tags",
+        static let tagPlaceholder: String = NSLocalizedString("Tags",
                                                               comment: "")
         static let buttonAccept: String = NSLocalizedString("Accept",
                                                             comment: "")
         static let erorr: String = NSLocalizedString("Session name can't be blank",
                                                      comment: "")
+        static let sessionTagsLabel: String = NSLocalizedString("Session tags",
+                                                              comment: "")
+        static let sessionNameLabel: String = NSLocalizedString("Session name",
+                                                               comment: "")
     }
     
     enum SessionHeaderView {
@@ -658,6 +662,10 @@ struct Strings {
         static let text_2: String = NSLocalizedString("If you plan on moving around with the AirBeam3 while recording air quality measurement, configure the AirBeam to record a mobile session. When recording a mobile AirCasting session, measurements are created, timestamped, and geolocated once per second.",
                                                       comment: "")
         static let text_3: String = NSLocalizedString("If you plan to leave the AirBeam3 indoors or hang it outside then configure it to record a fixed session. When recording fixed AirCasting sessions, measurements are created and timestamped once per minute, and geocoordinates are fixed to a set location.",
+                                                      comment: "")
+        static let mobile: String = NSLocalizedString("mobile",
+                                                      comment: "")
+        static let fixed: String = NSLocalizedString("fixed",
                                                       comment: "")
     }
     
@@ -1064,5 +1072,9 @@ struct Strings {
     
     enum ProtectedScreen {
         static let title: String = NSLocalizedString("Please, do not force close the app while recording a session!", comment: "")
+    }
+    
+    enum TextView {
+        static let doneButton: String = NSLocalizedString("Done", comment: "")
     }
 }
