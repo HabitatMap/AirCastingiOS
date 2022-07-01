@@ -20,6 +20,7 @@ private extension StaticSessionHeader {
         VStack(alignment: .leading, spacing: 3) {
             HStack {
                 dateAndTime
+                    .font(Fonts.muliHeading4)
                     .foregroundColor(Color.aircastingTimeGray)
                 Spacer()
             }
