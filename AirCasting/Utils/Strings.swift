@@ -917,6 +917,8 @@ struct Strings {
                                                                    comment: "")
         static let accountDeletionSuccessMessage: String = NSLocalizedString("Your account has been deleted.",
                                                                    comment: "")
+        static let thresholdsValuesSettingsTitle: String = NSLocalizedString("Wrong values", comment: "")
+        static let thresholdsValuesSettingsMessage: String = NSLocalizedString("The lowest threshold value has to be smaller than the highest threshold value", comment: "")
         static let logoutWarningTitle: String = NSLocalizedString("Are you sure?",
                                                                    comment: "")
         static let logoutWarningMessage: String = NSLocalizedString("You will lose sessions recorded with disabled location.",
@@ -931,6 +933,8 @@ struct Strings {
                                                      comment: "")
         static let description: String = NSLocalizedString("Your note will be timestamped and displayed on the AirCasting map",
                                                            comment: "")
+        static let photoButton = NSLocalizedString("Tap to add picture", comment: "")
+        static let retakePhotoButton = NSLocalizedString("Retake a picture", comment: "")
         static let placeholder: String = NSLocalizedString("Note",
                                                            comment: "")
         static let continueButton: String = NSLocalizedString("Add a note",
@@ -1040,7 +1044,7 @@ struct Strings {
     }
     
     enum SearchMapView {
-        static let loadingText: String = NSLocalizedString("Loading sessions.",
+        static let loadingText: String = NSLocalizedString("Loading sessions",
                                                               comment: "")
         static let parameterText: String = NSLocalizedString("Results for: %@",
                                                               comment: "")
@@ -1053,6 +1057,8 @@ struct Strings {
         static let sessionsText: String = NSLocalizedString("Sessions",
                                                               comment: "")
         static let finishText: String = NSLocalizedString("Finish",
+                                                              comment: "")
+        static let noResults: String = NSLocalizedString("No results found within selected area.",
                                                               comment: "")
     }
     

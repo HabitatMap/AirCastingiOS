@@ -22,14 +22,19 @@ final class SessionUploadService: SessionUpstream {
         return encoder
     }()
     
-    private let decoder = JSONDecoder()
+    private let decoder: JSONDecoder = {
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        return decoder
+    }()
     
     private struct APICallData: Encodable {
         let session: String
+        let photos: [String]
         let compression: Bool
     }
     
-    func upload(session: SessionsSynchronization.SessionUpstreamData) -> Future<SessionsSynchronization.SessionUpstreamResult, Error> {
+    func upload(session: SessionsSynchronization.SessionWithPhotosUpstreamData) -> Future<SessionsSynchronization.SessionUpstreamResult, Error> {
         .init { [self, client, authorization, encoder, responseValidator] promise in
             let url = urlProvider.baseAppURL.appendingPathComponent("api/sessions")
             var request = URLRequest(url: url)
@@ -43,25 +48,42 @@ final class SessionUploadService: SessionUpstream {
                 // where `session` field is a *string* containing a JSON.
                 //
                 // 🤷‍♂️
-                let sessionData = try encoder.encode(session)
+                let sessionData = try encoder.encode(session.session)
                 let gzippedSessionData = try sessionData.gzipped()
                 let sessionBase64String = gzippedSessionData.base64EncodedString(options: [.lineLength76Characters, .endLineWithLineFeed])
-                let apiCallData = APICallData(session: sessionBase64String, compression: true)
-                let apiCallBody = try encoder.encode(apiCallData)
-                request.httpBody = apiCallBody
-                try authorization.authorise(request: &request)
+                getPhotosData(photos: session.photos) { photosAsBase64String in
+                    do {
+                        let apiCallData = APICallData(session: sessionBase64String, photos: photosAsBase64String, compression: true)
+                        let apiCallBody = try encoder.encode(apiCallData)
+                        request.httpBody = apiCallBody
+                        try authorization.authorise(request: &request)
+                        
+                        Log.info("Uploading session with \(photosAsBase64String.count) photos")
+                        client.requestTask(for: request) { result, request in
+                            promise(
+                                result.tryMap { result -> SessionsSynchronization.SessionUpstreamResult in
+                                    try responseValidator.validate(response: result.response, data: result.data)
+                                    let response = try self.decoder.decode(SessionsSynchronization.SessionUpstreamResult.self, from: result.data)
+                                    return response
+                                }
+                            )
+                        }
+                    } catch {
+                        Log.error("Failed to upload a session: \(error)")
+                        promise(.failure(error))
+                    }
+                }
             } catch {
                 promise(.failure(error))
             }
-            client.requestTask(for: request) { result, request in
-                promise(
-                    result.tryMap { result -> SessionsSynchronization.SessionUpstreamResult in
-                        try responseValidator.validate(response: result.response, data: result.data)
-                        let response = try self.decoder.decode(SessionsSynchronization.SessionUpstreamResult.self, from: result.data)
-                        return response
-                    }
-                )
-            }
         }
+    }
+    
+    func getPhotosData(photos: [URL?], completion: @escaping ([String]) -> Void) {
+            let result = photos.map( { photoURL -> String in
+                guard let photoURL = photoURL, let image = UIImage(contentsOfFile: photoURL.path)?.jpegData(compressionQuality: 0.8) else { return "" }
+                return image.base64EncodedString(options: [.lineLength76Characters, .endLineWithLineFeed])
+            } )
+            completion(result)
     }
 }

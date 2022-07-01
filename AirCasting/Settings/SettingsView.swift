@@ -158,8 +158,22 @@ struct SettingsView: View {
 
     private var signOutLink: some View {
         NavigationLink(destination: SettingsMyAccountView(viewModel: SettingsMyAccountViewModel())) {
+            myAccount
+        }
+    }
+    
+    private var usernameText: some View {
+        Text(viewModel.username)
+            .font(Fonts.muliHeading2)
+            .foregroundColor(.aircastingGray)
+    }
+    
+    private var myAccount: some View {
+        VStack(alignment: .leading, spacing: 5) {
             Text(Strings.Settings.myAccount)
                 .font(Fonts.boldHeading1)
+                .padding(.top, 5)
+            usernameText
         }
     }
 

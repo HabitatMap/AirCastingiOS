@@ -7,7 +7,7 @@ import Resolver
 struct StreamWithMeasurements: Decodable {
     let title: String
     let username: String
-    let measurements: [StreamWithMeasurements.Measurements]
+    var measurements: [StreamWithMeasurements.Measurements]
     let id: Int
     let lastMeasurementValue: Double
     let sensorName: String
