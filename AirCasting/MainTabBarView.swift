@@ -154,7 +154,6 @@ private extension MainTabBarView {
                     } label: {
                         Text(Strings.MainTabBarView.finished)
                             .font(Fonts.muliRegularHeading3)
-                            .bold()
                     }
                 }
                 .padding()

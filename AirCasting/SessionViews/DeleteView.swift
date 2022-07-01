@@ -65,7 +65,6 @@ struct DeleteView<VM: DeleteSessionViewModel>: View {
         } label: {
             Text(Strings.DeleteSession.continueButton)
                 .font(Fonts.muliBoldHeading1)
-                .bold()
         }
         .buttonStyle(BlueButtonStyle())
     }

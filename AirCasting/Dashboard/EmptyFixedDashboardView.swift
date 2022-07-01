@@ -54,7 +54,6 @@ private extension EmptyFixedDashboardView {
         }, label: {
             Text(Strings.EmptyDashboardFixed.exploreSessionsButton)
                 .font(Fonts.moderateBoldHeading1)
-                .bold()
         })
     }
     
