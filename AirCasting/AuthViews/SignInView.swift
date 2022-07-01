@@ -113,7 +113,7 @@ private extension SignInView {
     var usernameTextfield: some View {
         createTextfield(placeholder: Strings.SignInView.usernameField,
                         binding: $username,
-                        shouldWarnUser: isUsernameBlank)
+                        isInputValid: isUsernameBlank)
         .disableAutocorrection(true)
         .autocapitalization(.none)
     }
@@ -121,7 +121,7 @@ private extension SignInView {
     var passwordTextfield: some View {
         createSecuredTextfield(placeholder: Strings.SignInView.passwordField,
                                binding: $password,
-                               shouldWarnUser: isPasswordBlank)
+                               isInputValid: isPasswordBlank)
     }
     
     var signinButton: some View {

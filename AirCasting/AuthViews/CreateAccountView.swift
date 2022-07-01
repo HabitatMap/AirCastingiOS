@@ -120,20 +120,20 @@ private extension CreateAccountView {
     var emailTextfield: some View {
         createTextfield(placeholder: Strings.CreateAccountView.email,
                         binding: $email,
-                        shouldWarnUser: !isEmailCorrect)
+                        isInputValid: !isEmailCorrect)
             .autocapitalization(.none)
     }
     
     var usernameTextfield: some View {
         createTextfield(placeholder: Strings.CreateAccountView.profile,
                         binding: $username,
-                        shouldWarnUser: isUsernameBlank)
+                        isInputValid: isUsernameBlank)
             .autocapitalization(.none)
     }
     var passwordTextfield: some View {
         createSecuredTextfield(placeholder: Strings.CreateAccountView.password,
                                binding: $password,
-                               shouldWarnUser: !isPasswordCorrect)
+                               isInputValid: !isPasswordCorrect)
     }
     
     var createAccountButton: some View {
