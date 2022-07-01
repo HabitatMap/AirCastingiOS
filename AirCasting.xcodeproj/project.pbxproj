@@ -166,7 +166,7 @@
 		AC7EB3B125A7152000A7F2AF /* Muli-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB39B25A7152000A7F2AF /* Muli-Regular.ttf */; };
 		AC7EB3B225A7152000A7F2AF /* Muli-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB39C25A7152000A7F2AF /* Muli-LightItalic.ttf */; };
 		AC7EB3B325A7152000A7F2AF /* Moderat-Trial-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB39D25A7152000A7F2AF /* Moderat-Trial-Black.otf */; };
-		AC8431D0265E6143004DC890 /* RemoveOldMeasurementsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8431CF265E6143004DC890 /* RemoveOldMeasurementsService.swift */; };
+		AC8431D0265E6143004DC890 /* DefaultRemoveOldMeasurementsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8431CF265E6143004DC890 /* DefaultRemoveOldMeasurementsService.swift */; };
 		AC86EE6B25D03DC00083F8C0 /* SelectDeviceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC86EE6A25D03DC00083F8C0 /* SelectDeviceView.swift */; };
 		AC8CFF3625E502DD00FB2918 /* CreateAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8CFF3525E502DD00FB2918 /* CreateAccountView.swift */; };
 		AC8CFF4125E5095600FB2918 /* Textfield.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8CFF4025E5095600FB2918 /* Textfield.swift */; };
@@ -194,6 +194,7 @@
 		ACBB050E2761F1B600A6B3FB /* SDSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACBB050D2761F1B600A6B3FB /* SDSession.swift */; };
 		ACBB05102761F1C400A6B3FB /* SDStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACBB050F2761F1C400A6B3FB /* SDStream.swift */; };
 		ACBB05132761F21500A6B3FB /* SDCardFixedSessionsSavingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACBB05122761F21500A6B3FB /* SDCardFixedSessionsSavingService.swift */; };
+		ACBF1AD2286C618F006DF793 /* XMarkButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACBF1AD1286C618F006DF793 /* XMarkButton.swift */; };
 		ACC536E026395C0900327267 /* MeasurementDotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACC536DF26395C0900327267 /* MeasurementDotView.swift */; };
 		ACC883882645784400C5DB70 /* GraphErorrHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACC883872645784400C5DB70 /* GraphErorrHandling.swift */; };
 		ACC8838C265284AA00C5DB70 /* CoreDataHook.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACC8838B265284AA00C5DB70 /* CoreDataHook.swift */; };
@@ -461,6 +462,8 @@
 		DDF7599A268332E900D906BA /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF75999268332E900D906BA /* Strings.swift */; };
 		EE969E7E1981C41852FB7745 /* Pods_AirCastingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A54057326D27D23E9906704 /* Pods_AirCastingTests.framework */; };
 		FA26E9E928107150008EE514 /* SearchParameter.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA26E9E828107150008EE514 /* SearchParameter.swift */; };
+		FA45FEFE2844D53700F9C25F /* ExternalGraphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA45FEFD2844D53700F9C25F /* ExternalGraphView.swift */; };
+		FA45FF002844DD4100F9C25F /* ExternalGraph.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA45FEFF2844DD4100F9C25F /* ExternalGraph.swift */; };
 		FA4F1B732817EDDE002711B4 /* AirBeamMeasurementsDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4F1B722817EDDE002711B4 /* AirBeamMeasurementsDownloader.swift */; };
 		FA4F1B75281809B2002711B4 /* AirBeamStreamSuffixes.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4F1B74281809B2002711B4 /* AirBeamStreamSuffixes.swift */; };
 		FA4F1B77281809EE002711B4 /* MeasurementsDownloaderResultModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4F1B76281809EE002711B4 /* MeasurementsDownloaderResultModel.swift */; };
@@ -655,7 +658,7 @@
 		AC7EB39B25A7152000A7F2AF /* Muli-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Muli-Regular.ttf"; sourceTree = "<group>"; };
 		AC7EB39C25A7152000A7F2AF /* Muli-LightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Muli-LightItalic.ttf"; sourceTree = "<group>"; };
 		AC7EB39D25A7152000A7F2AF /* Moderat-Trial-Black.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Moderat-Trial-Black.otf"; sourceTree = "<group>"; };
-		AC8431CF265E6143004DC890 /* RemoveOldMeasurementsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoveOldMeasurementsService.swift; sourceTree = "<group>"; };
+		AC8431CF265E6143004DC890 /* DefaultRemoveOldMeasurementsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultRemoveOldMeasurementsService.swift; sourceTree = "<group>"; };
 		AC86EE6A25D03DC00083F8C0 /* SelectDeviceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectDeviceView.swift; sourceTree = "<group>"; };
 		AC8CFF3525E502DD00FB2918 /* CreateAccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateAccountView.swift; sourceTree = "<group>"; };
 		AC8CFF4025E5095600FB2918 /* Textfield.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Textfield.swift; sourceTree = "<group>"; };
@@ -683,6 +686,7 @@
 		ACBB050D2761F1B600A6B3FB /* SDSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSession.swift; sourceTree = "<group>"; };
 		ACBB050F2761F1C400A6B3FB /* SDStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDStream.swift; sourceTree = "<group>"; };
 		ACBB05122761F21500A6B3FB /* SDCardFixedSessionsSavingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDCardFixedSessionsSavingService.swift; sourceTree = "<group>"; };
+		ACBF1AD1286C618F006DF793 /* XMarkButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMarkButton.swift; sourceTree = "<group>"; };
 		ACC536DF26395C0900327267 /* MeasurementDotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementDotView.swift; sourceTree = "<group>"; };
 		ACC883872645784400C5DB70 /* GraphErorrHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphErorrHandling.swift; sourceTree = "<group>"; };
 		ACC8838B265284AA00C5DB70 /* CoreDataHook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataHook.swift; sourceTree = "<group>"; };
@@ -948,6 +952,8 @@
 		DDF62600269C779800F23489 /* UIApplication+AppInfo.swift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+AppInfo.swift.swift"; sourceTree = "<group>"; };
 		DDF75999268332E900D906BA /* Strings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Strings.swift; sourceTree = "<group>"; };
 		FA26E9E828107150008EE514 /* SearchParameter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchParameter.swift; sourceTree = "<group>"; };
+		FA45FEFD2844D53700F9C25F /* ExternalGraphView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalGraphView.swift; sourceTree = "<group>"; };
+		FA45FEFF2844DD4100F9C25F /* ExternalGraph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalGraph.swift; sourceTree = "<group>"; };
 		FA4F1B722817EDDE002711B4 /* AirBeamMeasurementsDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirBeamMeasurementsDownloader.swift; sourceTree = "<group>"; };
 		FA4F1B74281809B2002711B4 /* AirBeamStreamSuffixes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirBeamStreamSuffixes.swift; sourceTree = "<group>"; };
 		FA4F1B76281809EE002711B4 /* MeasurementsDownloaderResultModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementsDownloaderResultModel.swift; sourceTree = "<group>"; };
@@ -1301,6 +1307,7 @@
 				338CA6F627D104AF00505331 /* WebView.swift */,
 				33B397D8284FB77400C95387 /* PhotoPicker.swift */,
 				33F87610286343D70073A3D4 /* DownloadableImage.swift */,
+				ACBF1AD1286C618F006DF793 /* XMarkButton.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1334,6 +1341,7 @@
 			children = (
 				B30BAC002694A88800AE0476 /* StatisticsContainer */,
 				AC6D56A125AEF55C00D221BA /* GraphView.swift */,
+				FA45FF012844DD5200F9C25F /* External */,
 				AC5832D925B196DD008C5DD5 /* Graph.swift */,
 				AC4A6A69267CB3890001F639 /* AirCastingGraph.swift */,
 				AC4A6A6B267CB3D40001F639 /* GraphRenderers.swift */,
@@ -1747,9 +1755,9 @@
 		ACF7C05D260CC9DB007C24AE /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				FA028B6A28520BE000BB66A0 /* OldMeasurementRemovers */,
 				AC524A8D2615C8270061AD45 /* UpdateSessionParams.swift */,
 				ACF7C05E260CC9FF007C24AE /* DownloadMeasurmentsService.swift */,
-				AC8431CF265E6143004DC890 /* RemoveOldMeasurementsService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -2416,6 +2424,23 @@
 			path = SessionCartTests;
 			sourceTree = "<group>";
 		};
+		FA028B6A28520BE000BB66A0 /* OldMeasurementRemovers */ = {
+			isa = PBXGroup;
+			children = (
+				AC8431CF265E6143004DC890 /* DefaultRemoveOldMeasurementsService.swift */,
+			);
+			path = OldMeasurementRemovers;
+			sourceTree = "<group>";
+		};
+		FA45FF012844DD5200F9C25F /* External */ = {
+			isa = PBXGroup;
+			children = (
+				FA45FEFD2844D53700F9C25F /* ExternalGraphView.swift */,
+				FA45FEFF2844DD4100F9C25F /* ExternalGraph.swift */,
+			);
+			path = External;
+			sourceTree = "<group>";
+		};
 		FA4F1B712817EDC8002711B4 /* AirBeamMeasurements */ = {
 			isa = PBXGroup;
 			children = (
@@ -2812,7 +2837,7 @@
 				B3FD77B6267C94AF00E97CC2 /* DatabaseSession.swift in Sources */,
 				AC32043625CD534700A68520 /* ChooseSessionTypeView.swift in Sources */,
 				3387DD4C278F1A4000B11D02 /* ShareLocationlessSessionViewModel.swift in Sources */,
-				AC8431D0265E6143004DC890 /* RemoveOldMeasurementsService.swift in Sources */,
+				AC8431D0265E6143004DC890 /* DefaultRemoveOldMeasurementsService.swift in Sources */,
 				DD2DDBAC27B535EC00807011 /* SessionCardUIState.swift in Sources */,
 				B3E2B65A27506E0D00019167 /* FileLineReader.swift in Sources */,
 				B30BAC152694AA7200AE0476 /* MeasurementsStatisticsInput.swift in Sources */,
@@ -2973,6 +2998,7 @@
 				FAF3B4E128057EC100F0F4B0 /* MeasurementType.swift in Sources */,
 				B3C3F8B92695A295003E2CB4 /* StatisticsContainerViewModelable.swift in Sources */,
 				AC32040425CC067D00A68520 /* CheckBox.swift in Sources */,
+				ACBF1AD2286C618F006DF793 /* XMarkButton.swift in Sources */,
 				3375E8D42791EDC50019A5DE /* CLLocationCoordinate2D.swift in Sources */,
 				33050876276B7A4400D18C69 /* ShareSessionStreamOptionViewModel.swift in Sources */,
 				33F82FC227F60498001654D8 /* ThresholdsValue+Color.swift in Sources */,
@@ -2987,6 +3013,8 @@
 				AC96DBEA2742705100D5E8E0 /* ThresholdsSettingsViewModel.swift in Sources */,
 				DDEE3A44269736270098CCA9 /* NetworkChecker.swift in Sources */,
 				B376DD25268096E20083FD2F /* SessionSynchronizationDatabase.swift in Sources */,
+				FA45FEFE2844D53700F9C25F /* ExternalGraphView.swift in Sources */,
+				AC6D56A525AF211200D221BA /* ThresholdsSliderView.swift in Sources */,
 				AC6D56A525AF211200D221BA /* ThresholdsSliderView.swift in Sources */,
 				AC524A7626133A370061AD45 /* MeaurementStreamExtension.swift in Sources */,
 				DD9DD37327A2B91A00E657E4 /* TurnOnLocationFixedView.swift in Sources */,
@@ -3022,6 +3050,7 @@
 				DD1EEB8B26B7C2F100AFC5C1 /* TurnOnLocationViewModel.swift in Sources */,
 				DDF7599A268332E900D906BA /* Strings.swift in Sources */,
 				DD6CD56227F31D040044F843 /* BottomCardModel.swift in Sources */,
+				FA45FF002844DD4100F9C25F /* ExternalGraph.swift in Sources */,
 				DDD1F9B12705852400D8E87F /* DataFormatters.swift in Sources */,
 				ACCEB22B276A240D0040140B /* EditViewModel.swift in Sources */,
 				B367A590274E9EAA004C605B /* FirebaseFeatureFlagProvider.swift in Sources */,
@@ -3322,7 +3351,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
@@ -3350,7 +3379,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = AirCasting/Info.plist;
@@ -3438,7 +3467,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = AirCasting/Info.plist;

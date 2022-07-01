@@ -1048,7 +1048,7 @@ struct Strings {
     }
     
     enum SearchMapView {
-        static let loadingText: String = NSLocalizedString("Loading sessions.",
+        static let loadingText: String = NSLocalizedString("Loading sessions",
                                                               comment: "")
         static let parameterText: String = NSLocalizedString("Results for: %@",
                                                               comment: "")
@@ -1061,6 +1061,8 @@ struct Strings {
         static let sessionsText: String = NSLocalizedString("Sessions",
                                                               comment: "")
         static let finishText: String = NSLocalizedString("Finish",
+                                                              comment: "")
+        static let noResults: String = NSLocalizedString("No results found within selected area.",
                                                               comment: "")
     }
     

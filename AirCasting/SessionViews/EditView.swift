@@ -15,6 +15,7 @@ struct EditView<VM: EditViewModel>: View {
     
     var body: some View {
         ZStack {
+            XMarkButton()
             if editSessionViewModel.isSessionDownloaded {
                 editView
             } else {
