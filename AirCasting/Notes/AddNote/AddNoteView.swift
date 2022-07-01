@@ -10,16 +10,19 @@ struct AddNoteView<VM: AddNoteViewModel>: View {
     
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
-                title
-                description
-                addPhotoButton
-                noteField
-                photo
-                continueButton
-                cancelButton
+            ZStack {
+                XMarkButton()
+                VStack(alignment: .leading, spacing: 20) {
+                    title
+                    description
+                    addPhotoButton
+                    noteField
+                    photo
+                    continueButton
+                    cancelButton
+                }
+                .padding()
             }
-            .padding()
         }
         .sheet(isPresented: $presentPhotoPicker) {
             PhotoPicker(picture: $picture)

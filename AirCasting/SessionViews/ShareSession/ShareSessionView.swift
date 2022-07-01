@@ -10,39 +10,42 @@ struct ShareSessionView<VM: ShareSessionViewModel>: View {
     @ObservedObject var viewModel: VM
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
-            VStack(alignment: .leading, spacing: 5) {
-                title
-                description
-            }
-            chooseStream
-            shareButton
-            descriptionMail
-            VStack(alignment: .leading, spacing: -5.0) {
-                createTextfield(placeholder: Strings.SessionShare.emailPlaceholder, binding: $viewModel.email)
-                    .font(Fonts.regularHeading2)
-                    .padding(.vertical)
-                    .disableAutocorrection(true)
-                    .autocapitalization(.none)
-                if viewModel.showInvalidEmailError {
-                    emailErrorLabel
+        ZStack {
+            XMarkButton()
+            VStack(alignment: .leading, spacing: 20) {
+                VStack(alignment: .leading, spacing: 5) {
+                    title
+                    description
+                }
+                chooseStream
+                shareButton
+                descriptionMail
+                VStack(alignment: .leading, spacing: -5.0) {
+                    createTextfield(placeholder: Strings.SessionShare.emailPlaceholder, binding: $viewModel.email)
+                        .font(Fonts.regularHeading2)
+                        .padding(.vertical)
+                        .disableAutocorrection(true)
+                        .autocapitalization(.none)
+                    if viewModel.showInvalidEmailError {
+                        emailErrorLabel
+                    }
+                }
+                .padding(.vertical)
+                VStack(alignment: .leading, spacing: 5) {
+                    oKButton
+                    cancelButton
                 }
             }
-            .padding(.vertical)
-            VStack(alignment: .leading, spacing: 5) {
-                oKButton
-                cancelButton
-            }
+            .alert(item: $viewModel.alert, content: { $0.makeAlert() })
+            .sheet(isPresented: $viewModel.showShareSheet, content: { viewModel.getSharePage() })
+            .padding()
         }
-        .alert(item: $viewModel.alert, content: { $0.makeAlert() })
-        .sheet(isPresented: $viewModel.showShareSheet, content: { viewModel.getSharePage() })
-        .padding()
     }
     
     private var title: some View {
         Text(Strings.SessionShare.title)
-            .font(Fonts.boldTitle1)
-            .foregroundColor(.accentColor)
+            .font(Fonts.heavyTitle1)
+            .foregroundColor(.darkBlue)
     }
     
     private var description: some View {
@@ -59,7 +62,7 @@ struct ShareSessionView<VM: ShareSessionViewModel>: View {
                         viewModel.didSelect(option: option)
                     }
                     Text(option.title)
-                        .font(Fonts.muliHeading2)
+                        .font(Fonts.mediumHeading1)
                 }
             }
         }.padding()
