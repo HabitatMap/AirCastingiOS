@@ -214,6 +214,7 @@
 		ACCEB2272763A2230040140B /* UnplugABViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACCEB2182763A2230040140B /* UnplugABViewModel.swift */; };
 		ACCEB2292768A13B0040140B /* ThresholdsValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACCEB2282768A13B0040140B /* ThresholdsValue.swift */; };
 		ACCEB22B276A240D0040140B /* EditViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACCEB22A276A240D0040140B /* EditViewModel.swift */; };
+		ACCEEAB1286EE152005A32B5 /* NotesTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACCEEAB0286EE152005A32B5 /* NotesTextView.swift */; };
 		ACD01F4025F8C1F800B8F65F /* SessionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACD01F3F25F8C1F800B8F65F /* SessionContext.swift */; };
 		ACD01F7625FF61CE00B8F65F /* LocationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACD01F7525FF61CE00B8F65F /* LocationProvider.swift */; };
 		ACD01F922600A3C800B8F65F /* RootAppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACD01F912600A3C800B8F65F /* RootAppView.swift */; };
@@ -705,6 +706,7 @@
 		ACCEB2182763A2230040140B /* UnplugABViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnplugABViewModel.swift; sourceTree = "<group>"; };
 		ACCEB2282768A13B0040140B /* ThresholdsValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThresholdsValue.swift; sourceTree = "<group>"; };
 		ACCEB22A276A240D0040140B /* EditViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditViewModel.swift; sourceTree = "<group>"; };
+		ACCEEAB0286EE152005A32B5 /* NotesTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesTextView.swift; sourceTree = "<group>"; };
 		ACD01F3F25F8C1F800B8F65F /* SessionContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionContext.swift; sourceTree = "<group>"; };
 		ACD01F6C25FF4C8C00B8F65F /* AirCasting.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AirCasting.entitlements; sourceTree = "<group>"; };
 		ACD01F7525FF61CE00B8F65F /* LocationProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationProvider.swift; sourceTree = "<group>"; };
@@ -2341,6 +2343,7 @@
 			children = (
 				DDC86647276B607C00A8E610 /* Note.swift */,
 				DDC86649276B695400A8E610 /* NotesHandler.swift */,
+				ACCEEAB0286EE152005A32B5 /* NotesTextView.swift */,
 				DDC86641276B547A00A8E610 /* AddNote */,
 				DDC86642276B548300A8E610 /* EditNote */,
 			);
@@ -3084,6 +3087,7 @@
 				AC4EC6BC25B5ABB700C1E312 /* StatisticsContainerView.swift in Sources */,
 				B3FD77B8267C94AF00E97CC2 /* Database.swift in Sources */,
 				AC524A942615D8620061AD45 /* SessionEntity.swift in Sources */,
+				ACCEEAB1286EE152005A32B5 /* NotesTextView.swift in Sources */,
 				DDEE3A48269747250098CCA9 /* EditView.swift in Sources */,
 				AC8CFF3625E502DD00FB2918 /* CreateAccountView.swift in Sources */,
 				B35A09A12845615F00F9837B /* UnitFormatter.swift in Sources */,
