@@ -82,7 +82,7 @@ private extension AddNoteView {
     }
     
     var noteField: some View {
-        createNoteTextField(binding: $viewModel.noteText)
+       createNoteTextField(binding: $viewModel.noteText)
     }
     
     var continueButton: some View {

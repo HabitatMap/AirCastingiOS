@@ -4,7 +4,6 @@
 import SwiftUI
 
 struct TextView: UIViewRepresentable {
-    
     @Binding var text: String
     var placeholder: String
     var font = UIFont.preferredFont(forTextStyle: .body)
@@ -21,12 +20,21 @@ struct TextView: UIViewRepresentable {
         textView.layer.borderColor = UIColor.aircastingGray.withAlphaComponent(0.1).cgColor
         textView.layer.borderWidth = 1
         
+        if text.isEmpty {
+            textView.text = placeholder
+            textView.textColor = .lightGray
+        }
+        
+        textView.addDoneButtonToKeyboard()
+        
         return textView
     }
     
     func updateUIView(_ uiView: UITextView, context: Context) {
-        uiView.text = text
-        text == placeholder ? (uiView.textColor = .lightGray) : (uiView.textColor = .black)
+        if !text.isEmpty {
+            uiView.textColor = .black
+            uiView.text = text
+        }
     }
     
     class Coordinator : NSObject, UITextViewDelegate {
@@ -36,25 +44,50 @@ struct TextView: UIViewRepresentable {
         init(_ uiTextView: TextView) {
             self.parent = uiTextView
         }
+        
         func textViewDidChange(_ textView: UITextView) {
             self.parent.text = textView.text
         }
         
         func textViewDidBeginEditing(_ textView: UITextView) {
-            if textView.textColor == .lightGray {
-                parent.text = ""
+            if parent.text.isEmpty {
+                textView.text = ""
                 textView.textColor = .black
             }
         }
         
         func textViewDidEndEditing(_ textView: UITextView) {
-            if parent.text == parent.placeholder {
-                parent.text = ""
-            }
+            self.parent.text = textView.text
         }
     }
     
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
+    }
+}
+
+extension UITextView {
+    func addDoneButtonToKeyboard(){
+        let toolbar: UIToolbar = UIToolbar(frame: CGRect.init(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 50))
+        toolbar.barStyle = .default
+        
+        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace,
+                                        target: nil,
+                                        action: nil)
+        
+        let done: UIBarButtonItem = UIBarButtonItem(title: Strings.TextView.doneButton,
+                                                    style: .done,
+                                                    target: self,
+                                                    action: #selector(self.doneButtonTapped))
+        
+        let items = [flexibleSpace, done]
+        toolbar.items = items
+        toolbar.sizeToFit()
+        
+        self.inputAccessoryView = toolbar
+    }
+    
+    @objc func doneButtonTapped(){
+        self.resignFirstResponder()
     }
 }

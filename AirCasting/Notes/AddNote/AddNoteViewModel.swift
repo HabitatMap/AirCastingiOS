@@ -4,7 +4,7 @@ import Foundation
 import Resolver
 
 class AddNoteViewModel: ObservableObject {
-    @Published var noteText = Strings.Commons.note
+    @Published var noteText = ""
     
     private let notesHandler: NotesHandler
     private let exitRoute: () -> Void

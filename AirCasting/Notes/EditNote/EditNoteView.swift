@@ -21,7 +21,6 @@ struct EditNoteView<VM: EditNoteViewModel>: View {
                 }
                 .padding()
             }
-            
         }
     }
 }

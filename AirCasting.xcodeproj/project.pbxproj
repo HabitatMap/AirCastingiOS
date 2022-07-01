@@ -214,6 +214,7 @@
 		ACCEB2272763A2230040140B /* UnplugABViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACCEB2182763A2230040140B /* UnplugABViewModel.swift */; };
 		ACCEB2292768A13B0040140B /* ThresholdsValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACCEB2282768A13B0040140B /* ThresholdsValue.swift */; };
 		ACCEB22B276A240D0040140B /* EditViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACCEB22A276A240D0040140B /* EditViewModel.swift */; };
+		ACCEEAB1286EE152005A32B5 /* NotesTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACCEEAB0286EE152005A32B5 /* NotesTextView.swift */; };
 		ACD01F4025F8C1F800B8F65F /* SessionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACD01F3F25F8C1F800B8F65F /* SessionContext.swift */; };
 		ACD01F7625FF61CE00B8F65F /* LocationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACD01F7525FF61CE00B8F65F /* LocationProvider.swift */; };
 		ACD01F922600A3C800B8F65F /* RootAppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACD01F912600A3C800B8F65F /* RootAppView.swift */; };
@@ -449,7 +450,6 @@
 		DDD951B427550C250063D43D /* Pods_AirCasting.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E819223F8D800D3B8ED8F56 /* Pods_AirCasting.framework */; };
 		DDDA056627DF3B3A00C6B9B9 /* MapDownloaderSearchedStreams.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDA056527DF3B3A00C6B9B9 /* MapDownloaderSearchedStreams.swift */; };
 		DDDBD48826D3BEC000EAA0A1 /* EmptyFixedDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDBD48726D3BEC000EAA0A1 /* EmptyFixedDashboardView.swift */; };
-		DDDC8B692799971A00F64803 /* NotesTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDC8B682799971A00F64803 /* NotesTextView.swift */; };
 		DDDCEC3927D0C8C700B3757C /* DateBuilderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDCEC3827D0C8C700B3757C /* DateBuilderTests.swift */; };
 		DDDCEC3B27D0DA7100B3757C /* GeoSquare.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDCEC3A27D0DA7100B3757C /* GeoSquare.swift */; };
 		DDEE3A44269736270098CCA9 /* NetworkChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDEE3A43269736270098CCA9 /* NetworkChecker.swift */; };
@@ -706,6 +706,7 @@
 		ACCEB2182763A2230040140B /* UnplugABViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnplugABViewModel.swift; sourceTree = "<group>"; };
 		ACCEB2282768A13B0040140B /* ThresholdsValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThresholdsValue.swift; sourceTree = "<group>"; };
 		ACCEB22A276A240D0040140B /* EditViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditViewModel.swift; sourceTree = "<group>"; };
+		ACCEEAB0286EE152005A32B5 /* NotesTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesTextView.swift; sourceTree = "<group>"; };
 		ACD01F3F25F8C1F800B8F65F /* SessionContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionContext.swift; sourceTree = "<group>"; };
 		ACD01F6C25FF4C8C00B8F65F /* AirCasting.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AirCasting.entitlements; sourceTree = "<group>"; };
 		ACD01F7525FF61CE00B8F65F /* LocationProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationProvider.swift; sourceTree = "<group>"; };
@@ -939,7 +940,6 @@
 		DDD24D9426A8569400D4A327 /* ForgotPasswordController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForgotPasswordController.swift; sourceTree = "<group>"; };
 		DDDA056527DF3B3A00C6B9B9 /* MapDownloaderSearchedStreams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapDownloaderSearchedStreams.swift; sourceTree = "<group>"; };
 		DDDBD48726D3BEC000EAA0A1 /* EmptyFixedDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyFixedDashboardView.swift; sourceTree = "<group>"; };
-		DDDC8B682799971A00F64803 /* NotesTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesTextView.swift; sourceTree = "<group>"; };
 		DDDCEC3827D0C8C700B3757C /* DateBuilderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateBuilderTests.swift; sourceTree = "<group>"; };
 		DDDCEC3A27D0DA7100B3757C /* GeoSquare.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeoSquare.swift; sourceTree = "<group>"; };
 		DDEE3A43269736270098CCA9 /* NetworkChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkChecker.swift; sourceTree = "<group>"; };
@@ -2343,7 +2343,7 @@
 			children = (
 				DDC86647276B607C00A8E610 /* Note.swift */,
 				DDC86649276B695400A8E610 /* NotesHandler.swift */,
-				DDDC8B682799971A00F64803 /* NotesTextView.swift */,
+				ACCEEAB0286EE152005A32B5 /* NotesTextView.swift */,
 				DDC86641276B547A00A8E610 /* AddNote */,
 				DDC86642276B548300A8E610 /* EditNote */,
 			);
@@ -2793,7 +2793,6 @@
 				B3FD77C4267C94AF00E97CC2 /* SessionSynchronizationService.swift in Sources */,
 				B34D4648275B12A000194E51 /* CrashlyticsLogger.swift in Sources */,
 				ACCEB21D2763A2230040140B /* SDSyncRootViewModel.swift in Sources */,
-				DDDC8B692799971A00F64803 /* NotesTextView.swift in Sources */,
 				335A8B2F2785D49100355D46 /* ShareSessionAPI.swift in Sources */,
 				DD123EC527BD35E8001083C3 /* SessionsForLocationDownloader.swift in Sources */,
 				DD123EC527BD35E8001083C3 /* SessionsForLocationDownloader.swift in Sources */,
@@ -3088,6 +3087,7 @@
 				AC4EC6BC25B5ABB700C1E312 /* StatisticsContainerView.swift in Sources */,
 				B3FD77B8267C94AF00E97CC2 /* Database.swift in Sources */,
 				AC524A942615D8620061AD45 /* SessionEntity.swift in Sources */,
+				ACCEEAB1286EE152005A32B5 /* NotesTextView.swift in Sources */,
 				DDEE3A48269747250098CCA9 /* EditView.swift in Sources */,
 				AC8CFF3625E502DD00FB2918 /* CreateAccountView.swift in Sources */,
 				B35A09A12845615F00F9837B /* UnitFormatter.swift in Sources */,
