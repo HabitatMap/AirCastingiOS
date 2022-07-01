@@ -43,13 +43,13 @@ struct ShareSessionView<VM: ShareSessionViewModel>: View {
     
     private var title: some View {
         Text(Strings.SessionShare.title)
-            .font(Fonts.boldTitle1)
+            .font(Fonts.moderateBoldTitle1)
             .foregroundColor(.accentColor)
     }
     
     private var description: some View {
         Text(Strings.SessionShare.description)
-            .font(Fonts.muliHeading2)
+            .font(Fonts.muliRegularHeading3)
             .foregroundColor(.aircastingGray)
     }
     
@@ -75,13 +75,13 @@ struct ShareSessionView<VM: ShareSessionViewModel>: View {
     
     private var descriptionMail: some View {
         Text(Strings.SessionShare.emailDescription)
-            .font(Fonts.muliHeading5)
+            .font(Fonts.muliRegularHeading6)
             .foregroundColor(.aircastingGray)
     }
     
     private var emailErrorLabel: some View {
         Text(Strings.SessionShare.invalidEmailLabel)
-            .font(Fonts.regularHeading5)
+            .font(Fonts.moderateRegularHeading6)
             .foregroundColor(.aircastingRed)
             .multilineTextAlignment(.leading)
     }

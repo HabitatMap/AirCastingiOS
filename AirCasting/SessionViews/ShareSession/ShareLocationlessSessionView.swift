@@ -33,7 +33,7 @@ struct ShareLocationlessSessionView: View {
     
     private var title: some View {
         Text(Strings.SessionShare.title)
-            .font(Fonts.boldTitle1)
+            .font(Fonts.moderateBoldTitle1)
             .foregroundColor(.accentColor)
     }
     

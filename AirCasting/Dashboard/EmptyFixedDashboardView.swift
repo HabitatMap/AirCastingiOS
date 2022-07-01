@@ -53,6 +53,7 @@ private extension EmptyFixedDashboardView {
             tabSelection.selection = .createSession
         }, label: {
             Text(Strings.EmptyDashboardFixed.exploreSessionsButton)
+                .font(Fonts.moderateBoldHeading1)
                 .bold()
         })
     }
@@ -60,12 +61,12 @@ private extension EmptyFixedDashboardView {
     private var emptyFixedDashboardText: some View {
         VStack(spacing: 14) {
             Text(Strings.EmptyDashboardFixed.title)
-                .font(Fonts.boldTitle4)
+                .font(Fonts.moderateBoldTitle4)
                 .foregroundColor(Color.darkBlue)
                 .minimumScaleFactor(0.1)
             
             Text(featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) ? Strings.EmptyDashboardFixed.exploreSessionsDescription : Strings.EmptyDashboardFixed.description)
-                .font(Fonts.muliHeading2)
+                .font(Fonts.muliRegularHeading3)
                 .foregroundColor(Color.aircastingGray)
                 .lineSpacing(9.0)
                 .padding(.horizontal, 35)

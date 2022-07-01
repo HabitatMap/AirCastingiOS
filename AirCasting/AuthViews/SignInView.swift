@@ -97,10 +97,10 @@ private extension SignInView {
     var titleLabel: some View {
         VStack(alignment: .leading, spacing: 15) {
             Text(Strings.SignInView.signIn_1)
-                .font(Fonts.boldTitle1)
+                .font(Fonts.moderateBoldTitle1)
                 .foregroundColor(.accentColor)
             Text(Strings.SignInView.signIn_2)
-                .font(Fonts.muliHeading2)
+                .font(Fonts.muliRegularHeading3)
                 .foregroundColor(.aircastingGray)
         }
     }
@@ -108,12 +108,14 @@ private extension SignInView {
     var usernameTextfield: some View {
         createTextfield(placeholder: Strings.SignInView.usernameField,
                         binding: $username)
-            .disableAutocorrection(true)
-            .autocapitalization(.none)
+        .font(Fonts.moderateRegularHeading2)
+        .disableAutocorrection(true)
+        .autocapitalization(.none)
     }
     
     var passwordTextfield: some View {
         createSecuredTextfield(placeholder: Strings.SignInView.passwordField, binding: $password)
+            .font(Fonts.moderateRegularHeading2)
     }
     
     var signinButton: some View {
@@ -144,6 +146,7 @@ private extension SignInView {
                 }
             }
         }
+        .font(Fonts.muliBoldHeading1)
         .buttonStyle(BlueButtonStyle())
     }
     
@@ -157,6 +160,7 @@ private extension SignInView {
             let vm = DefaultForgotPasswordViewModel(controller: scheduledController)
             ForgotPasswordView(viewModel: vm)
         }
+        .font(Fonts.moderateBoldHeading1)
         .buttonStyle(BlueTextButtonStyle())
     }
     
@@ -170,11 +174,11 @@ private extension SignInView {
     
     var signupButtonText: some View {
         Text(Strings.SignInView.signUpButton_1)
-            .font(Fonts.muliHeading2)
+            .font(Fonts.muliRegularHeading3)
             .foregroundColor(.aircastingGray)
             
             + Text(Strings.SignInView.signUpButton_2)
-            .font(Fonts.boldHeading2)
+            .font(Fonts.moderateBoldHeading1)
             .foregroundColor(.accentColor)
     }
     

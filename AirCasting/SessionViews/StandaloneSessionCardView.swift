@@ -19,7 +19,7 @@ struct StandaloneSessionCardView: View {
                 header
                 content
             }
-            .font(Fonts.regularHeading4)
+            .font(Fonts.moderateRegularHeading4)
             .foregroundColor(.aircastingGray)
             .padding()
             .background(
@@ -42,10 +42,11 @@ struct StandaloneSessionCardView: View {
     var content: some View {
         VStack(spacing: 15) {
             Text(Strings.StandaloneSessionCardView.heading)
-                .font(Fonts.boldHeading3)
+                .font(Fonts.moderateBoldHeading1)
                 .foregroundColor(.darkBlue)
                 .multilineTextAlignment(.center)
             Text(Strings.StandaloneSessionCardView.description)
+                .font(Fonts.moderateRegularHeading3)
                 .multilineTextAlignment(.center)
             finishAndSyncButton
             finishAndDontSyncButton
@@ -65,6 +66,7 @@ struct StandaloneSessionCardView: View {
                 alert = InAppAlerts.noNetworkAlert()
             }
         }
+        .font(Fonts.muliBoldHeading1)
         .buttonStyle(BlueButtonStyle())
     }
 

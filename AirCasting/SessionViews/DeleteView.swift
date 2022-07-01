@@ -35,13 +35,13 @@ struct DeleteView<VM: DeleteSessionViewModel>: View {
     
     private var title: some View {
         Text(Strings.DeleteSession.title)
-            .font(Fonts.boldTitle4)
+            .font(Fonts.muliHeavyTitle1)
             .foregroundColor(.darkBlue)
     }
     
     private var description: some View {
         Text(Strings.DeleteSession.description)
-            .font(Fonts.muliHeading2)
+            .font(Fonts.moderateRegularHeading2)
             .foregroundColor(.aircastingGray)
     }
     
@@ -53,6 +53,7 @@ struct DeleteView<VM: DeleteSessionViewModel>: View {
                         viewModel.didSelect(option: option)
                     }
                     Text(option.title)
+                        .font(Fonts.muliBoldHeading1)
                 }
             }
         }.padding()
@@ -63,6 +64,7 @@ struct DeleteView<VM: DeleteSessionViewModel>: View {
             viewModel.showConfirmationAlert()
         } label: {
             Text(Strings.DeleteSession.continueButton)
+                .font(Fonts.muliBoldHeading1)
                 .bold()
         }
         .buttonStyle(BlueButtonStyle())

@@ -50,7 +50,7 @@ struct CompleteScreen: View {
             }
             Spacer()
         }
-        .font(Fonts.regularHeading4)
+        .font(Fonts.moderateRegularHeading4)
         .foregroundColor(.aircastingGray)
         .padding()
     }
@@ -65,7 +65,7 @@ private extension CompleteScreen {
     var measurements: some View {
         VStack(alignment: .leading, spacing: 5) {
             Text(Strings.CompleteSearchView.lastMeasurement)
-                .font(Fonts.moderateTitle1)
+                .font(Fonts.muliRegularHeading5)
                 .padding(.bottom, 3)
             if let streams = viewModel.sessionStreams.get {
                 HStack {
@@ -129,7 +129,7 @@ private extension CompleteScreen {
             viewModel.mapTapped()
         } label: {
             Text(Strings.CompleteSearchView.map)
-                .font(Fonts.semiboldHeading2)
+                .font(Fonts.muliSemiboldHeading2)
                 .padding(.horizontal, 8)
         }
     }
@@ -139,7 +139,7 @@ private extension CompleteScreen {
             viewModel.chartTapped()
         } label: {
             Text(Strings.CompleteSearchView.chart)
-                .font(Fonts.semiboldHeading2)
+                .font(Fonts.muliSemiboldHeading2)
                 .padding(.horizontal, 8)
         }
     }
@@ -149,7 +149,7 @@ private extension CompleteScreen {
             viewModel.followButtonPressed()
         } label: {
             Text(viewModel.followButtonText)
-                .font(Fonts.semiboldHeading1)
+                .font(Fonts.muliBoldHeading1)
         }
         .buttonStyle(BlueButtonStyle())
         .disabled(!viewModel.followButtonEnabled)
@@ -160,7 +160,7 @@ private extension CompleteScreen {
             viewModel.unfollowButtonPressed()
         } label: {
             Text(Strings.CompleteSearchView.unfollowButtonTitle)
-                .font(Fonts.semiboldHeading1)
+                .font(Fonts.muliBoldHeading1)
         }
         .buttonStyle(WhiteButtonStyle())
     }

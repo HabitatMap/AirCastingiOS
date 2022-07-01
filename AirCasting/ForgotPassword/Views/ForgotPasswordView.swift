@@ -32,7 +32,7 @@ struct ForgotPasswordView<VM: ForgotPasswordViewModel>: View {
     
     private var title: some View {
         Text(viewModel.title)
-            .font(Fonts.boldTitle1)
+            .font(Fonts.moderateBoldTitle1)
             .foregroundColor(.accentColor)
     }
     

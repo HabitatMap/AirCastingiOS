@@ -30,13 +30,13 @@ private extension EditNoteView {
     
     var title: some View {
         Text(Strings.EditNoteView.title)
-            .font(Fonts.boldTitle4)
+            .font(Fonts.moderateBoldTitle4)
             .foregroundColor(.darkBlue)
     }
     
     var description: some View {
         Text(Strings.EditNoteView.description)
-            .font(Fonts.regularHeading2)
+            .font(Fonts.moderateRegularHeading2)
             .foregroundColor(.aircastingGray)
     }
     
@@ -58,7 +58,7 @@ private extension EditNoteView {
             viewModel.saveTapped()
         } label: {
             Text(Strings.EditNoteView.saveButton)
-                .font(Fonts.boldHeading1)
+                .font(Fonts.muliBoldHeading1)
         }
         .buttonStyle(BlueButtonStyle())
     }

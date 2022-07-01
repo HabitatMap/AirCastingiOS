@@ -43,7 +43,7 @@ struct UIKitChartView: UIViewRepresentable {
         let formatter = NumberFormatter()
         formatter.maximumFractionDigits = 0
         data.setValueFormatter(DefaultValueFormatter(formatter: formatter))
-        data.setValueFont(Fonts.muliHeadingUIFont2)
+        data.setValueFont(Fonts.muliRegularHeadingUIFont2)
         data.setValueTextColor(UIColor.aircastingGray)
     }
     

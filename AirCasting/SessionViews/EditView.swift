@@ -38,11 +38,13 @@ struct EditView<VM: EditViewModel>: View {
                 .padding(.bottom, 20)
             createTextfield(placeholder: Strings.EditSession.namePlaceholder,
                             binding: $editSessionViewModel.sessionName)
+            .font(Fonts.moderateRegularHeading2)
             if editSessionViewModel.shouldShowError {
                 errorMessage(text: Strings.EditSession.erorr)
             }
             createTextfield(placeholder: Strings.EditSession.tagPlaceholder,
                             binding: $editSessionViewModel.sessionTags)
+            .font(Fonts.moderateRegularHeading2)
             Spacer()
             saveButton
             cancelButton
@@ -58,7 +60,7 @@ struct EditView<VM: EditViewModel>: View {
     
     var titleLabel: some View {
         Text(Strings.EditSession.title)
-            .font(Fonts.boldTitle4)
+            .font(Fonts.muliHeavyTitle1)
             .foregroundColor(.darkBlue)
     }
     
@@ -67,7 +69,7 @@ struct EditView<VM: EditViewModel>: View {
             editSessionViewModel.saveChanges()
         }, label: {
             Text(Strings.EditSession.buttonAccept)
-                .font(Fonts.semiboldHeading1)
+                .font(Fonts.muliBoldHeading1)
         })
             .buttonStyle(BlueButtonStyle())
             .padding(.top, 20)

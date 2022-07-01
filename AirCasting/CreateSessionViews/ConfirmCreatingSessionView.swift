@@ -48,8 +48,8 @@ struct ConfirmCreatingSessionView: View {
                                                 using: [sessionType, sessionName],
                                                 fontWeight: .bold,
                                                 color: .accentColor,
-                                                font: Fonts.muliHeading2,
-                                                standardFont: Fonts.muliHeading2)
+                                                font: Fonts.muliRegularHeading3,
+                                                standardFont: Fonts.muliRegularHeading3)
     }
 
     var dot: some View {
@@ -73,7 +73,7 @@ struct ConfirmCreatingSessionView: View {
             VStack(alignment: .leading, spacing: 40) {
                 ProgressView(value: 0.95)
                 Text(Strings.ConfirmCreatingSessionView.contentViewTitle)
-                    .font(Fonts.boldTitle4)
+                    .font(Fonts.muliHeavyTitle1)
                     .foregroundColor(.darkBlue)
                 VStack(alignment: .leading, spacing: 15) {
                     if sessionContext.sessionType == .fixed {
@@ -84,7 +84,7 @@ struct ConfirmCreatingSessionView: View {
                         defaultDescriptionText
                     }
                 }
-                .font(Fonts.muliHeading2)
+                .font(Fonts.muliRegularHeading3)
                 .foregroundColor(Color.aircastingGray)
                 .lineSpacing(9.0)
                 ZStack {
@@ -105,7 +105,7 @@ struct ConfirmCreatingSessionView: View {
                     createSession(sessionCreator: sessionCreator)
                 }, label: {
                     Text(Strings.ConfirmCreatingSessionView.startRecording)
-                        .bold()
+                        .font(Fonts.muliBoldHeading1)
                 })
                     .buttonStyle(BlueButtonStyle())
             }

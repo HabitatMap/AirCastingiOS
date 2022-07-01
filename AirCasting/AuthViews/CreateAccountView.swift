@@ -104,10 +104,10 @@ private extension CreateAccountView {
     var titleLabel: some View {
         VStack(alignment: .leading, spacing: 15) {
             Text(Strings.CreateAccountView.createTitle_1)
-                .font(Fonts.boldTitle1)
+                .font(Fonts.moderateBoldTitle1)
                 .foregroundColor(.accentColor)
             Text(Strings.CreateAccountView.createTitle_2)
-                .font(Fonts.muliHeading2)
+                .font(Fonts.muliRegularHeading3)
                 .foregroundColor(.aircastingGray)
         }
     }
@@ -115,16 +115,20 @@ private extension CreateAccountView {
     var emailTextfield: some View {
         createTextfield(placeholder: Strings.CreateAccountView.email,
                         binding: $email)
-            .autocapitalization(.none)
+        .font(Fonts.moderateRegularHeading2)
+        .autocapitalization(.none)
     }
     
     var usernameTextfield: some View {
         createTextfield(placeholder: Strings.CreateAccountView.profile,
                         binding: $username)
-            .autocapitalization(.none)
+        .font(Fonts.moderateRegularHeading2)
+        .autocapitalization(.none)
     }
     var passwordTextfield: some View {
-        createSecuredTextfield(placeholder: Strings.CreateAccountView.password, binding: $password)
+        createSecuredTextfield(placeholder: Strings.CreateAccountView.password,
+                               binding: $password)
+        .font(Fonts.moderateRegularHeading2)
     }
     
     var createAccountButton: some View {
@@ -162,6 +166,7 @@ private extension CreateAccountView {
                 }
             }
         }
+        .font(Fonts.muliBoldHeading1)
         .buttonStyle(BlueButtonStyle())
     }
     
@@ -175,11 +180,11 @@ private extension CreateAccountView {
     
     var signingButtonText: some View {
         Text(Strings.CreateAccountView.signIn_1)
-            .font(Fonts.muliHeading2)
+            .font(Fonts.muliRegularHeading3)
             .foregroundColor(.aircastingGray)
         + Text(" ")
         + Text(Strings.CreateAccountView.signIn_2)
-            .font(Fonts.boldHeading2)
+            .font(Fonts.moderateBoldHeading1)
             .foregroundColor(.accentColor)
     }
 

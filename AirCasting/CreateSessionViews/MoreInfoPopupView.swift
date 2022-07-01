@@ -13,12 +13,12 @@ struct MoreInfoPopupView: View {
             XMarkButton()
             VStack(alignment: .leading, spacing: 25) {
                 Text(Strings.MoreInfoPopupView.text_1)
-                    .font(Fonts.boldTitle2)
+                    .font(Fonts.moderateBoldTitle2)
                     .foregroundColor(.accentColor)
                 Text(Strings.MoreInfoPopupView.text_2)
                 Text(Strings.MoreInfoPopupView.text_3)
             }
-            .font(Fonts.muliHeading2)
+            .font(Fonts.muliRegularHeading3)
             .lineSpacing(12)
             .foregroundColor(.aircastingGray)
             .padding()
