@@ -12,7 +12,7 @@ protocol EditNoteViewModel: ObservableObject {
 }
 
 class EditNoteViewModelDefault: EditNoteViewModel, ObservableObject {
-    @Published var noteText = Strings.Commons.note
+    @Published var noteText = ""
     @Published var notePhoto: URL? = nil
     private var note: Note!
     private let notesHandler: NotesHandler
@@ -33,6 +33,7 @@ class EditNoteViewModelDefault: EditNoteViewModel, ObservableObject {
     }
     
     func saveTapped() {
+        Log.info("## Save tapped \(noteText)")
         notesHandler.updateNote(note: note, newText: noteText, completion: {
             self.exitRoute()
         })

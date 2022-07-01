@@ -7,7 +7,6 @@ struct TextView: UIViewRepresentable {
     @Binding var text: String
     var placeholder: String
     var font = UIFont.preferredFont(forTextStyle: .body)
-    var isEditing = false
     
     func makeUIView(context: Context) -> UITextView {
         let textView = UITextView()
@@ -20,14 +19,26 @@ struct TextView: UIViewRepresentable {
         textView.backgroundColor = UIColor.aircastingGray.withAlphaComponent(0.05)
         textView.layer.borderColor = UIColor.aircastingGray.withAlphaComponent(0.1).cgColor
         textView.layer.borderWidth = 1
-        textView.textColor = isEditing ? .black : .lightGray
+        Log.info("## text: \(text)")
+        Log.info("## placeholder: \(placeholder)")
+        
+        if text.isEmpty {
+            textView.text = placeholder
+            textView.textColor = .lightGray
+        }
+        
         textView.addDoneButtonToKeyboard()
         
         return textView
     }
     
     func updateUIView(_ uiView: UITextView, context: Context) {
-        uiView.text = text
+        Log.info("## update uiview.text: \(uiView.text)")
+        Log.info("## update text: \(text)")
+        if !text.isEmpty {
+            uiView.textColor = .black
+            uiView.text = text
+        }
     }
     
     class Coordinator : NSObject, UITextViewDelegate {
@@ -39,20 +50,22 @@ struct TextView: UIViewRepresentable {
         }
         
         func textViewDidChange(_ textView: UITextView) {
+            Log.info("## Text view did change")
             self.parent.text = textView.text
         }
         
         func textViewDidBeginEditing(_ textView: UITextView) {
-            if textView.textColor == .lightGray {
-                parent.text = ""
+            Log.info("## Did begin editing: \(parent.text)")
+            if parent.text.isEmpty {
+                Log.info("## Did begin editing.")
+                textView.text = ""
                 textView.textColor = .black
             }
         }
         
         func textViewDidEndEditing(_ textView: UITextView) {
-            if parent.text == parent.placeholder {
-                parent.text = ""
-            }
+            Log.info("## Did end editing. Saving text: \(textView.text)")
+            self.parent.text = textView.text
         }
     }
     

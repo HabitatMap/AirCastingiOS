@@ -40,7 +40,8 @@ private extension EditNoteView {
     }
     
     var noteField: some View {
-        createNoteTextField(binding: $viewModel.noteText, isEditing: true)
+        Log.info("## note text: \(viewModel.noteText)")
+        return createNoteTextField(binding: $viewModel.noteText)
     }
     
     var photo: some View {
