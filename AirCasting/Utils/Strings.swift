@@ -556,14 +556,18 @@ struct Strings {
     enum EditSession {
         static let title: String = NSLocalizedString("Edit session details",
                                                      comment: "")
-        static let namePlaceholder: String = NSLocalizedString("Session name",
+        static let sessionNamePlaceholder: String = NSLocalizedString("Session name",
                                                                comment: "")
-        static let tagPlaceholder: String = NSLocalizedString("Session tags",
+        static let tagPlaceholder: String = NSLocalizedString("Tags",
                                                               comment: "")
         static let buttonAccept: String = NSLocalizedString("Accept",
                                                             comment: "")
         static let erorr: String = NSLocalizedString("Session name can't be blank",
                                                      comment: "")
+        static let sessionTagsLabel: String = NSLocalizedString("Session tags",
+                                                              comment: "")
+        static let sessionNameLabel: String = NSLocalizedString("Session name",
+                                                               comment: "")
     }
     
     enum SessionHeaderView {
