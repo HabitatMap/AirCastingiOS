@@ -31,24 +31,29 @@ struct BackendSettingsView: View {
     @State private var buttonEnabled: Bool = false
     
     var body: some View {
-        VStack(alignment: .leading) {
-            title
-            Spacer()
-            createTextfield(placeholder: "\(Strings.BackendSettings.currentURL): \(urlWithoutPort!)", binding: $pathText)
-                .onChange(of: pathText) { _ in
-                    updateURL()
-                }
-            createTextfield(placeholder: "\(Strings.BackendSettings.currentPort): \(port ?? 80)", binding: $portText)
-                .onChange(of: portText) { _ in
-                    updateURL()
-                }
-            Spacer()
-            oKButton
-            cancelButton
-        }.alert(isPresented: $alertPresented, content: {
-            Alert(title: Text(Strings.BackendSettings.alertTitle), message: Text(Strings.BackendSettings.alertMessage),  dismissButton: .default(Text(Strings.Commons.ok)))
-        })
-        .padding()
+        ZStack {
+            XMarkButton()
+            VStack(alignment: .leading) {
+                title
+                Spacer()
+                createTextfield(placeholder: "\(Strings.BackendSettings.currentURL): \(urlWithoutPort!)", binding: $pathText)
+                    .onChange(of: pathText) { _ in
+                        updateURL()
+                    }
+                createTextfield(placeholder: "\(Strings.BackendSettings.currentPort): \(port ?? 80)", binding: $portText)
+                    .onChange(of: portText) { _ in
+                        updateURL()
+                    }
+                Spacer()
+                oKButton
+                cancelButton
+            }
+            .alert(isPresented: $alertPresented, content: {
+                Alert(title: Text(Strings.BackendSettings.alertTitle), message: Text(Strings.BackendSettings.alertMessage),  dismissButton: .default(Text(Strings.Commons.ok)))
+            })
+            .padding()
+        }
+        
     }
     
     private var title: some View {
