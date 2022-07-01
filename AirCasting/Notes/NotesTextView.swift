@@ -4,7 +4,6 @@
 import SwiftUI
 
 func createNoteTextField(binding: Binding<String>) -> some View {
-    Log.info("## binding: \(binding)")
     return TextView(text: binding, placeholder: Strings.Commons.note)
               .frame(minWidth: UIScreen.main.bounds.width - 30,
                      maxWidth: UIScreen.main.bounds.width - 30,

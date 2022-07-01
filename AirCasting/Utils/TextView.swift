@@ -19,8 +19,6 @@ struct TextView: UIViewRepresentable {
         textView.backgroundColor = UIColor.aircastingGray.withAlphaComponent(0.05)
         textView.layer.borderColor = UIColor.aircastingGray.withAlphaComponent(0.1).cgColor
         textView.layer.borderWidth = 1
-        Log.info("## text: \(text)")
-        Log.info("## placeholder: \(placeholder)")
         
         if text.isEmpty {
             textView.text = placeholder
@@ -33,8 +31,6 @@ struct TextView: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: UITextView, context: Context) {
-        Log.info("## update uiview.text: \(uiView.text)")
-        Log.info("## update text: \(text)")
         if !text.isEmpty {
             uiView.textColor = .black
             uiView.text = text
@@ -50,21 +46,17 @@ struct TextView: UIViewRepresentable {
         }
         
         func textViewDidChange(_ textView: UITextView) {
-            Log.info("## Text view did change")
             self.parent.text = textView.text
         }
         
         func textViewDidBeginEditing(_ textView: UITextView) {
-            Log.info("## Did begin editing: \(parent.text)")
             if parent.text.isEmpty {
-                Log.info("## Did begin editing.")
                 textView.text = ""
                 textView.textColor = .black
             }
         }
         
         func textViewDidEndEditing(_ textView: UITextView) {
-            Log.info("## Did end editing. Saving text: \(textView.text)")
             self.parent.text = textView.text
         }
     }

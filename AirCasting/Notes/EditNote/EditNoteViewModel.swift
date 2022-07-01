@@ -33,7 +33,6 @@ class EditNoteViewModelDefault: EditNoteViewModel, ObservableObject {
     }
     
     func saveTapped() {
-        Log.info("## Save tapped \(noteText)")
         notesHandler.updateNote(note: note, newText: noteText, completion: {
             self.exitRoute()
         })
