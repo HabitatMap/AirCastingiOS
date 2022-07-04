@@ -46,13 +46,13 @@ struct CreateSessionDetailsView: View {
         }
         .onAppear {
             viewModel.onScreenEnter()
-            if sessionContext.sessionType == .mobile {
+            if sessionContext.sessionType == .fixed || sessionContext.locationless != true {
                 Log.info("## Starting location tracker")
                 locationTracker.start()
             }
         }
         .onDisappear {
-            if sessionContext.sessionType == .mobile {
+            if sessionContext.sessionType == .fixed || sessionContext.locationless != true {
                 Log.info("## Stopping location tracker")
                 locationTracker.stop()
             }

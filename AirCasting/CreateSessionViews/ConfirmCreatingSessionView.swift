@@ -36,13 +36,13 @@ struct ConfirmCreatingSessionView: View {
         LoadingView(isShowing: $isActive) {
             contentViewWithAlert
                 .onAppear {
-                    if sessionContext.sessionType == .mobile {
+                    if sessionContext.sessionType == .mobile && sessionContext.locationless != true {
                         Log.info("## Starting location tracker")
                         locationTracker.start()
                     }
                 }
                 .onDisappear {
-                    if sessionContext.sessionType == .mobile {
+                    if sessionContext.sessionType == .mobile && sessionContext.locationless != true {
                         Log.info("## Stopping location tracker")
                         locationTracker.stop()
                     }
