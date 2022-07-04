@@ -55,6 +55,7 @@ private extension ReoredringSessionCard {
                                               threshold: .init(value: threshold),
                                               selectedStream: .constant(nil),
                                               isCollapsed: .constant(true),
+                                              hasAnyMeasurements: true,
                                               measurementPresentationStyle: .showValues,
                                               isDormant: false)
                     }

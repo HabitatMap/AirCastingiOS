@@ -94,6 +94,7 @@ private extension ExternalSessionHeader {
                                               threshold: SingleMeasurementViewThreshold(value: threshold),
                                               selectedStream: $selectedStream,
                                               isCollapsed: $isCollapsed,
+                                              hasAnyMeasurements: true,
                                               measurementPresentationStyle: .showValues,
                                               isDormant: false)
                     }

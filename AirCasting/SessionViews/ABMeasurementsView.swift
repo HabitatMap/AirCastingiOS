@@ -71,6 +71,7 @@ struct _ABMeasurementsView: View {
                                                       threshold: .init(value: threshold),
                                                       selectedStream: $selectedStream,
                                                       isCollapsed: $isCollapsed,
+                                                      hasAnyMeasurements: true,
                                                       measurementPresentationStyle: measurementPresentationStyle,
                                                       isDormant: session.isDormant)
                             }
@@ -95,10 +96,10 @@ struct _ABMeasurementsView: View {
                                     .progressViewStyle(CircularProgressViewStyle())
                             }
                         } else {
-                            if !isCollapsed && measurementsViewModel.showLoadingIndicator {
-                                ProgressView()
-                                    .progressViewStyle(CircularProgressViewStyle())
-                            }
+//                            if !isCollapsed && measurementsViewModel.showLoadingIndicator {
+//                                ProgressView()
+//                                    .progressViewStyle(CircularProgressViewStyle())
+//                            }
                         }
                     }
                 }
@@ -120,6 +121,7 @@ struct _ABMeasurementsView: View {
                                           threshold: .init(),
                                           selectedStream: $selectedStream,
                                           isCollapsed: $isCollapsed,
+                                          hasAnyMeasurements: !(streamsToShow.first! == stream),
                                           measurementPresentationStyle: .hideValues,
                                           isDormant: session.isDormant)
                     Spacer()

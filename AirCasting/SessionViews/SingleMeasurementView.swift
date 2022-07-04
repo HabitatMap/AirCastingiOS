@@ -18,6 +18,7 @@ struct SingleMeasurementView: View {
     @ObservedObject var threshold: SingleMeasurementViewThreshold
     @Binding var selectedStream: MeasurementStreamEntity?
     @Binding var isCollapsed: Bool
+    var hasAnyMeasurements: Bool
     @InjectedObject private var userSettings: UserSettings
     let measurementPresentationStyle: MeasurementPresentationStyle
     let isDormant: Bool
@@ -65,10 +66,31 @@ struct SingleMeasurementView: View {
                             RoundedRectangle(cornerRadius: 8)
                                 .strokeBorder((selectedStream == stream && value != nil) ? formatter.color(for: value!) : .clear)
                         )
+                    } else {
+                        ZStack {
+                            fakeMeasurement
+                            if !hasAnyMeasurements && !isCollapsed { ProgressView() }
+                        }
                     }
                 }
             })
         }
+    }
+    
+    var fakeMeasurement: some View {
+        HStack(spacing: 3) {
+            Color.clear
+                .clipShape(Circle())
+                .frame(width: 5, height: 5)
+            Text("--")
+                .foregroundColor(.clear)
+        }
+            .padding(.vertical, 4)
+            .padding(.horizontal, 9)
+            .overlay(
+                RoundedRectangle(cornerRadius: 8)
+                    .strokeBorder(.clear)
+            )
     }
     
     func showStreamName() -> String {
