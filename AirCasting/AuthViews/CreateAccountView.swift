@@ -20,7 +20,6 @@ struct CreateAccountView: View {
     @State private var isUsernameBlank = false
     @State private var alert: AlertInfo?
     @State private var isLoading = false
-    @State private var linkActive = false
     @StateObject var signInPersistanceObserved = SignInPersistance.shared
     
     init(completion: @escaping () -> Void) {
@@ -126,15 +125,15 @@ private extension CreateAccountView {
     
     var usernameTextfield: some View {
         createTextfield(placeholder: Strings.CreateAccountView.profile,
-                        binding: $signInPersistanceObserved.username)
+                        binding: $signInPersistanceObserved.username,
+                        isInputValid: isUsernameBlank)
         .autocapitalization(.none)
     }
     
     var passwordTextfield: some View {
         createSecuredTextfield(placeholder: Strings.CreateAccountView.password,
                                binding: $signInPersistanceObserved.password,
-                               isInputValid: isUsernameBlank)
-        .autocapitalization(.none)
+                               isInputValid: !isPasswordCorrect)
     }
     
     var createAccountButton: some View {
@@ -176,20 +175,10 @@ private extension CreateAccountView {
         .buttonStyle(BlueButtonStyle())
     }
     
-    var signInLink: some View {
-        NavigationLink(
-            destination: SignInView(completion: completion).environmentObject(lifeTimeEventsProvider),
-            isActive: $linkActive,
-            label: {
-                EmptyView()
-            })
-    }
-    
     var signInButton: some View {
         Button {
             signInPersistanceObserved.credentialsScreen = .signIn
             signInPersistanceObserved.clearCredentials()
-            linkActive = true
         } label: {
             signingButtonText
         }

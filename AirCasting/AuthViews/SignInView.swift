@@ -26,7 +26,6 @@ struct SignInView: View {
     @State private var isUsernameBlank = false
     @State private var isPasswordBlank = false
     
-    @State private var linkActive = false
     @StateObject var signInPersistanceObserved = SignInPersistance.shared
     
     init(completion: @escaping () -> Void, active: Bool = false) {
@@ -91,11 +90,6 @@ private extension SignInView {
                     .onChanged { _ in
                         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                     })
-            .background(
-                Group {
-                    signUpLink
-                }
-            )
             .ignoresSafeArea(.keyboard, edges: .bottom)
         }
     }
@@ -175,20 +169,10 @@ private extension SignInView {
         .buttonStyle(BlueTextButtonStyle())
     }
     
-    var signUpLink: some View {
-        NavigationLink(
-            destination: CreateAccountView(completion: completion).environmentObject(lifeTimeEventsProvider),
-            isActive: $linkActive,
-            label: {
-                EmptyView()
-            })
-    }
-    
     var signupButton: some View {
         Button {
             signInPersistanceObserved.credentialsScreen = .createAccount
             signInPersistanceObserved.clearCredentials()
-            linkActive = true
         } label: {
             signupButtonText
         }

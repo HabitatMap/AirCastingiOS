@@ -30,7 +30,9 @@ struct RootAppView: View {
             } else {
                 NavigationView {
                     if signInPersistanceObserved.credentialsScreen == .signIn {
+                        withAnimation(.easeIn(duration: 5.0)) {
                         SignInView(completion: { self.lifeTimeEventsProvider.hasEverLoggedIn = true }).environmentObject(lifeTimeEventsProvider)
+                        }
                     } else {
                         CreateAccountView(completion: { self.lifeTimeEventsProvider.hasEverLoggedIn = true }).environmentObject(lifeTimeEventsProvider)
                     }
