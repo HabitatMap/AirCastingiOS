@@ -11,7 +11,7 @@ struct ExternalSessionWithStreamsAndMeasurements {
     let endTime: Date
     let longitude: Double
     let latitude: Double
-    let streams: [Stream]
+    var streams: [Stream]
     
     struct Stream {
         let id: Int
@@ -22,7 +22,7 @@ struct ExternalSessionWithStreamsAndMeasurements {
         let sensorName: String
         let sensorPackageName: String
         let thresholdsValues: ThresholdsValue
-        let measurements: [Measurement]
+        var measurements: [Measurement]
     }
     
     struct Measurement {

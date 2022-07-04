@@ -7,14 +7,21 @@ struct EditNoteView<VM: EditNoteViewModel>: View {
     @StateObject var viewModel: VM
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
-            title
-            description
-            noteField
-            continueButton
-            deleteButton
-            cancelButton
-        }.padding()
+        ScrollView {
+            ZStack {
+                XMarkButton()
+                VStack(alignment: .leading, spacing: 20) {
+                    title
+                    description
+                    noteField
+                    photo
+                    continueButton
+                    deleteButton
+                    cancelButton
+                }
+                .padding()
+            }
+        }
     }
 }
 
@@ -28,7 +35,7 @@ private extension EditNoteView {
     
     var description: some View {
         Text(Strings.EditNoteView.description)
-            .font(Fonts.muliHeading2)
+            .font(Fonts.regularHeading2)
             .foregroundColor(.aircastingGray)
     }
     
@@ -36,12 +43,21 @@ private extension EditNoteView {
         createNoteTextField(binding: $viewModel.noteText)
     }
     
+    var photo: some View {
+        HStack {
+            if let url = viewModel.notePhoto {
+                DownloadableImage(url: url)
+                    .frame(maxWidth: .infinity, alignment: .center)
+            }
+        }
+    }
+    
     var continueButton: some View {
         Button {
             viewModel.saveTapped()
         } label: {
             Text(Strings.EditNoteView.saveButton)
-                .bold()
+                .font(Fonts.boldHeading1)
         }
         .buttonStyle(BlueButtonStyle())
     }

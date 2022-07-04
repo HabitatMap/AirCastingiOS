@@ -218,6 +218,9 @@ extension Resolver: ResolverRegistering {
         main.register { (_, args) in TemperatureThresholdFormatter(threshold: args()) as ThresholdFormatter }
         main.register { TemperatureUnitFormatter() as UnitFormatter }
         main.register { AirBeamMeasurementsDownloaderDefault() as AirBeamMeasurementsDownloader }
+    
+        // MARK: - Old measurements remover
+        main.register { DefaultRemoveOldMeasurementsService() as RemoveOldMeasurements }
     }
     
     // MARK: - Composition helpers

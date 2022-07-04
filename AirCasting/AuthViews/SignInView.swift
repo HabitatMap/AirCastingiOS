@@ -44,7 +44,10 @@ struct SignInView: View {
 private extension SignInView {
     private var contentView: some View {
         GeometryReader { geometry in
-                VStack(spacing: 40) {
+            ZStack(alignment: .bottomTrailing) {
+                Image("dashboard-background-thing")
+                    .offset(x: 0, y: 40)
+                VStack(alignment: .leading, spacing: 40) {
                     if lifeTimeEventsProvider.hasEverLoggedIn {
                         progressBar.hidden()
                     } else {
@@ -82,24 +85,26 @@ private extension SignInView {
                 .alert(item: $presentedError) { error in
                     displayErrorAlert(error: error)
                 }
-        }
-        .simultaneousGesture(
-            DragGesture(minimumDistance: 2, coordinateSpace: .global)
-                .onChanged { _ in
-                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-                })
-        .background(
-            Group {
-              signUpLink
             }
-        )
+            .simultaneousGesture(
+                DragGesture(minimumDistance: 2, coordinateSpace: .global)
+                    .onChanged { _ in
+                        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                    })
+            .background(
+                Group {
+                    signUpLink
+                }
+            )
+            .ignoresSafeArea(.keyboard, edges: .bottom)
+        }
     }
     
     var progressBar: some View {
         ProgressView(value: 0.825)
             .accentColor(.accentColor)
     }
-
+    
     var titleLabel: some View {
         VStack(alignment: .leading, spacing: 15) {
             Text(Strings.SignInView.signIn_1)
@@ -113,14 +118,16 @@ private extension SignInView {
     
     var usernameTextfield: some View {
         createTextfield(placeholder: Strings.SignInView.usernameField,
-                        binding: $signInPersistanceObserved.username)
-            .disableAutocorrection(true)
-            .autocapitalization(.none)
+                        binding: $signInPersistanceObserved.username,
+                        isInputValid: isUsernameBlank)
+        .disableAutocorrection(true)
+        .autocapitalization(.none)
     }
     
     var passwordTextfield: some View {
         createSecuredTextfield(placeholder: Strings.SignInView.passwordField,
-                               binding: $signInPersistanceObserved.password)
+                               binding: $signInPersistanceObserved.password,
+                               isInputValid: isPasswordBlank)
     }
     
     var signinButton: some View {
@@ -191,8 +198,8 @@ private extension SignInView {
         Text(Strings.SignInView.signUpButton_1)
             .font(Fonts.muliHeading2)
             .foregroundColor(.aircastingGray)
-            
-            + Text(Strings.SignInView.signUpButton_2)
+        
+        + Text(Strings.SignInView.signUpButton_2)
             .font(Fonts.boldHeading2)
             .foregroundColor(.accentColor)
     }
