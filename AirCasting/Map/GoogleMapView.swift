@@ -278,11 +278,16 @@ struct GoogleMapView: UIViewRepresentable {
         
         init(_ parent: GoogleMapView) {
             self.parent = parent
-            parent.tracker.start()
+            if parent.isMapOnPickerScreen {
+                parent.tracker.start()
+            }
         }
         
         deinit {
-            parent.tracker.stop()
+            if parent.isMapOnPickerScreen {
+                Log.info("## Stopping tracker")
+                parent.tracker.stop()
+            }
         }
         
         func mapView(_ mapView: GMSMapView, didChange position: GMSCameraPosition) {
@@ -339,10 +344,10 @@ struct GoogleMapView: UIViewRepresentable {
                 return
             }
             let lat = parent.liveModeOn ?
-            parent.tracker.location.value!.coordinate.latitude :
+            parent.tracker.location.value?.coordinate.latitude ?? 37.35 :
             parent.pathPoints.last?.location.latitude ?? 37.35
             let long = parent.liveModeOn ?
-            parent.tracker.location.value!.coordinate.longitude :
+            parent.tracker.location.value?.coordinate.longitude ?? -122.05 :
             parent.pathPoints.last?.location.longitude ?? -122.05
             
             let camera = GMSCameraPosition.camera(withLatitude: lat, longitude: long, zoom: 16)

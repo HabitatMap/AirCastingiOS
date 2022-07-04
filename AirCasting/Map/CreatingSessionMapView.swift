@@ -12,17 +12,22 @@ struct CreatingSessionMapView: UIViewRepresentable {
     typealias UIViewType = GMSMapView
     var isMyLocationEnabled = false
     var startingLocation: CLLocationCoordinate2D?
+    @State var currentLocation: CLLocationCoordinate2D?
+    @Binding var loading: Bool
     
-    init(isMyLocationEnabled: Bool = false, startingLocation: CLLocationCoordinate2D? = nil) {
+    init(isMyLocationEnabled: Bool = false, startingLocation: CLLocationCoordinate2D? = nil, loading: Binding<Bool> = .constant(false)) {
         self.isMyLocationEnabled = isMyLocationEnabled
         self.startingLocation = startingLocation
+        _loading = .init(projectedValue: loading)
     }
     
     func makeUIView(context: Context) -> GMSMapView {
         let location = context.coordinator.tracker.location.value
         if location == nil {
-            Log.error("Location not found on makeUIView()!")
+            Log.error("## Location not found on makeUIView()!")
         }
+        Log.info("## location: \(location)")
+        // Add observing tracker location
         let latitude = (isMyLocationEnabled ? context.coordinator.tracker.location.value?.coordinate.latitude : startingLocation?.latitude) ?? 37.35
         let longitude = (isMyLocationEnabled ? context.coordinator.tracker.location.value?.coordinate.longitude :
                             startingLocation?.longitude) ?? -122.05
@@ -46,7 +51,8 @@ struct CreatingSessionMapView: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: GMSMapView, context: Context) {
-        //
+        guard let currentLocation = currentLocation else { return }
+        uiView.moveCamera(GMSCameraUpdate.setTarget(currentLocation))
     }
 
     class Coordinator: NSObject, UINavigationControllerDelegate, GMSMapViewDelegate {
@@ -56,11 +62,6 @@ struct CreatingSessionMapView: UIViewRepresentable {
         init(_ parent: CreatingSessionMapView) {
             self.parent = parent
             super.init()
-            tracker.start()
-        }
-        
-        deinit {
-            tracker.stop()
         }
         
         func mapView(_ mapView: GMSMapView, didChange position: GMSCameraPosition) {

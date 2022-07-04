@@ -98,6 +98,7 @@ class ChooseSessionTypeViewModel: ObservableObject {
     
     private func mobileSessionNextStep() -> ProceedToView {
         let isLocationDenied = locationAuthorization.locationState != .granted
+        Log.info("Mobile next step: \(isLocationDenied)")
         return !userSettings.disableMapping && isLocationDenied ? .location : .mobile
     }
 }

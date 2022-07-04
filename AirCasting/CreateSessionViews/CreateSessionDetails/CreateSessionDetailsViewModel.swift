@@ -21,7 +21,6 @@ class CreateSessionDetailsViewModel: ObservableObject {
     var shouldShowError: Bool { sessionName.isEmpty && showErrorIndicator }
     @Injected private var locationAuthorization: LocationAuthorization
     
-    
     func onScreenEnter() {
         if let ssid = getWiFiSsid() { wifiSSID = ssid }
         isSSIDTextfieldDisplayed = wifiSSID.isEmpty
@@ -61,10 +60,12 @@ class CreateSessionDetailsViewModel: ObservableObject {
     func compareIsIndoor(sessionContext: CreateSessionContext) -> CreateSessionContext {
         sessionContext.isIndoor = isIndoor
         guard locationAuthorization.locationState == .denied && !isIndoor else {
+            Log.info("## Location isn't denied: \(locationAuthorization.locationState)")
             isLocationSessionDetailsActive = !isIndoor
             isConfirmCreatingSessionActive = isIndoor
             return sessionContext
         }
+        Log.info("## Location is denied: \(locationAuthorization.locationState)")
         isLocationScreenNedeed = true
         return sessionContext
     }

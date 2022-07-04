@@ -2,12 +2,14 @@
 //
 import AirCastingStyling
 import SwiftUI
+import Resolver
 
 struct CreateSessionDetailsView: View {
     
     @EnvironmentObject private var sessionContext: CreateSessionContext
     @StateObject private var viewModel: CreateSessionDetailsViewModel = .init()
     @Binding var creatingSessionFlowContinues: Bool
+    @Injected private var locationTracker: LocationTracker
     
     init(creatingSessionFlowContinues: Binding<Bool>) {
         self._creatingSessionFlowContinues = creatingSessionFlowContinues
@@ -42,7 +44,19 @@ struct CreateSessionDetailsView: View {
             })
             .background(navigation)
         }
-        .onAppear { viewModel.onScreenEnter() }
+        .onAppear {
+            viewModel.onScreenEnter()
+            if sessionContext.sessionType == .mobile {
+                Log.info("## Starting location tracker")
+                locationTracker.start()
+            }
+        }
+        .onDisappear {
+            if sessionContext.sessionType == .mobile {
+                Log.info("## Stopping location tracker")
+                locationTracker.stop()
+            }
+        }
         .onChange(of: viewModel.sessionName) { _ in
             viewModel.showErrorIndicator = false
         }

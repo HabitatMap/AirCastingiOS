@@ -75,6 +75,7 @@ final class MicrophoneManager: NSObject, ObservableObject {
         guard isRecording, let recorder = recorder else { return }
         levelTimer?.invalidate()
         if !(session?.locationless ?? false) {
+            Log.info("## Stopping tracker")
             locationTracker.stop()
         }
         isRecording = false
@@ -208,7 +209,8 @@ private extension MicrophoneManager {
     }
     
     func obtainCurrentLocation() -> CLLocationCoordinate2D? {
-        locationTracker.location.value?.coordinate
+        Log.info("Obtaining current location with: \(locationTracker.location.value)")
+        return locationTracker.location.value?.coordinate
     }
     
     enum MicrophoneSessionError: Error {
