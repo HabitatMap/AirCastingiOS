@@ -26,7 +26,6 @@ class MobilePeripheralSessionManager {
                 try storage.createSession(session)
                 DispatchQueue.main.async {
                     if !session.locationless {
-                        Log.info("## Starting tracker")
                         self?.locationTracker.start()
                     }
                     self?.activeMobileSession = MobileSession(peripheral: peripheral, session: session)
@@ -81,7 +80,6 @@ class MobilePeripheralSessionManager {
 
         centralManager.cancelPeripheralConnection(activeSession.peripheral)
         if !activeSession.session.locationless {
-            Log.info("## Stopping tracker")
             locationTracker.stop()
         }
         
@@ -111,7 +109,6 @@ class MobilePeripheralSessionManager {
 
         centralManager.cancelPeripheralConnection(activePeripheral)
         if !activeMobileSession!.session.locationless {
-            Log.info("## Stopping tracker")
             locationTracker.stop()
         }
         activeMobileSession = nil
@@ -122,7 +119,6 @@ class MobilePeripheralSessionManager {
             Log.warning("Enter standalone mode called for perihperal which is not associated with active session")
             return
         }
-        Log.info("## Stopping tracker")
         locationTracker.stop()
         activeMobileSession = nil
     }
@@ -150,7 +146,6 @@ class MobilePeripheralSessionManager {
     }
 
     private func updateStreams(stream: ABMeasurementStream, sessionUUID: SessionUUID, isLocationTracked: Bool) throws {
-        Log.info("## tracker location when updating stream: \(locationTracker.location.value)")
         let  location = isLocationTracked ? locationTracker.location.value?.coordinate : .undefined
 
         measurementStreamStorage.accessStorage { storage in
@@ -187,7 +182,6 @@ class MobilePeripheralSessionManager {
 
     func configureAB() {
         guard let peripheral = activeMobileSession?.peripheral else { return }
-        Log.info("## Configuring AB with: \(locationTracker.location.value)")
         AirBeam3Configurator(peripheral: peripheral)
             .configureMobileSession(
                 location: locationTracker.location.value?.coordinate ?? .undefined

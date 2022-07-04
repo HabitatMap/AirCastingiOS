@@ -39,60 +39,37 @@ final class CoreLocationTracker: NSObject, LocationTracker, LocationAuthorizatio
     init(locationManager: CLLocationManager) {
         self.locationManager = locationManager
         super.init()
-        Log.info("## Location tracker initialized")
-        self.updateAuthorizationState() // redundant, cause did change authorization method get's called anyway
-        Log.info("## Assigning delegate")
+        self.updateAuthorizationState()
         self.locationManager.delegate = self
     }
     
     func start() {
-        Log.info("## Tracker started: \(locationStartReference)")
         referenceLock.lock(); defer { referenceLock.unlock() }
         if locationStartReference == 0 {
             requestAuthorization()
-            Log.info("## Starting updating locations")
             locationManager.startUpdatingLocation()
         }
         locationStartReference += 1
     }
     
     func stop() {
-        Log.info("## Tracker stopped: \(locationStartReference)")
         referenceLock.lock(); defer { referenceLock.unlock() }
         locationStartReference -= 1
         if locationStartReference == 0 {
-            Log.info("## Stopping updating locations")
             locationManager.stopUpdatingLocation()
             location.value = nil
         }
     }
     
-//    func getCurrentLocation(completion: @escaping (CLLocation?) -> Void) {
-//        referenceLock.lock(); defer { referenceLock.unlock() }
-//        guard locationStartReference == 0 else {
-//            Log.info("## locationStartReference wasn't 0: \(locationStartReference)")
-//            completion(location.value)
-//            return
-//        }
-//        oneTimeObservers.append(completion)
-//        Log.info("## appended one time observer")
-//        guard oneTimeObservers.count == 1 else { return }
-//        Log.info("## requesting location")
-//        locationManager.requestLocation()
-//    }
-    
     func requestAuthorization() {
-        Log.info("## Requesting authorization")
         locationManager.requestAlwaysAuthorization()
     }
     
     private func updateAuthorizationState() {
         switch locationManager.authorizationStatus {
             case .authorizedAlways, .authorizedWhenInUse:
-                Log.info("## Updating authorization: changing location state to granted")
                 self.locationState = .granted
             case .denied, .notDetermined, .restricted:
-                Log.info("## Updating authorization: changing location state to denied")
                 self.locationState = .denied
             @unknown default:
                 fatalError()
@@ -104,63 +81,16 @@ final class CoreLocationTracker: NSObject, LocationTracker, LocationAuthorizatio
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let latestLocation = locations.last else { return }
         location.value = latestLocation
-//        oneTimeObservers.forEach { $0(latestLocation) }
-        Log.info("## Did update locations.")
-//        oneTimeObservers = []
     }
     
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        Log.info("## Location manager did change authorization")
         switch manager.authorizationStatus {
         case .authorizedAlways, .authorizedWhenInUse:
-            Log.info("## Changing location state to granted")
             locationState = .granted
         case .denied, .notDetermined, .restricted:
-            Log.info("## Changing location state to denied")
             locationState = .denied
         @unknown default:
             fatalError()
         }
     }
-    
-//    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-//        Log.error("Location manager failed with error: \(error)")
-//    }
 }
-
-//class LocationTracker: NSObject, ObservableObject, CLLocationManagerDelegate {
-//
-//    let locationManager: CLLocationManager
-//    @Published var locationGranted: LocationState
-//
-//    init(locationManager: CLLocationManager) {
-//        self.locationManager = locationManager
-//        self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
-//        locationManager.allowsBackgroundLocationUpdates = true
-//        locationManager.pausesLocationUpdatesAutomatically = false
-//        switch locationManager.authorizationStatus {
-//            case .authorizedAlways, .authorizedWhenInUse:
-//                self.locationGranted = .granted
-//            case .denied, .notDetermined, .restricted:
-//                self.locationGranted = .denied
-//            @unknown default:
-//                fatalError()
-//        }
-//        super.init()
-//        self.locationManager.delegate = self
-//    }
-//
-//    func requestAuthorisation() {
-//        locationManager.requestAlwaysAuthorization()
-//    }
-//
-//    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-//        switch manager.authorizationStatus {
-//        case .authorizedAlways, .authorizedWhenInUse:
-//            locationGranted = .granted
-//        case .denied, .notDetermined, .restricted:  locationGranted = .denied
-//        @unknown default:
-//            fatalError()
-//        }
-//    }
-//}

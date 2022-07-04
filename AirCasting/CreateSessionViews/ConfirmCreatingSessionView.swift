@@ -37,13 +37,11 @@ struct ConfirmCreatingSessionView: View {
             contentViewWithAlert
                 .onAppear {
                     if sessionContext.sessionType == .mobile && sessionContext.locationless != true {
-                        Log.info("## Starting location tracker")
                         locationTracker.start()
                     }
                 }
                 .onDisappear {
                     if sessionContext.sessionType == .mobile && sessionContext.locationless != true {
-                        Log.info("## Stopping location tracker")
                         locationTracker.stop()
                     }
                 }
@@ -167,8 +165,6 @@ extension ConfirmCreatingSessionView {
                 sessionContext.saveCurrentLocation(lat: 200, log: 200)
             }
         } else {
-            Log.info("## Saving location for mobile session with: \(locationTracker.location) value: \(locationTracker.location.value)")
-            #warning("No certainty that location tracker has a location at all or that it's even running at this point")
             guard let lat = (locationTracker.location.value?.coordinate.latitude),
                   let lon = (locationTracker.location.value?.coordinate.longitude) else { return }
             sessionContext.saveCurrentLocation(lat: lat, log: lon)

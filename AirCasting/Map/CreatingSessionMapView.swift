@@ -24,9 +24,8 @@ struct CreatingSessionMapView: UIViewRepresentable {
     func makeUIView(context: Context) -> GMSMapView {
         let location = context.coordinator.tracker.location.value
         if location == nil {
-            Log.error("## Location not found on makeUIView()!")
+            Log.error("Location not found on makeUIView()!")
         }
-        Log.info("## location: \(location)")
         // Add observing tracker location
         let latitude = (isMyLocationEnabled ? context.coordinator.tracker.location.value?.coordinate.latitude : startingLocation?.latitude) ?? 37.35
         let longitude = (isMyLocationEnabled ? context.coordinator.tracker.location.value?.coordinate.longitude :

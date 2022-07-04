@@ -285,7 +285,6 @@ struct GoogleMapView: UIViewRepresentable {
         
         deinit {
             if parent.isMapOnPickerScreen {
-                Log.info("## Stopping tracker")
                 parent.tracker.stop()
             }
         }

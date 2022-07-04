@@ -135,9 +135,6 @@ extension Resolver: ResolverRegistering {
             .implements(SessionSynchronizer.self)
         
         // MARK: - Location handling
-//        main.register { LocationTracker(locationManager: CLLocationManager()) }.scope(.application)
-//        main.register { DefaultLocationHandler() as LocationHandler }.scope(.application)
-        
         main.register { _ -> LocationTracker in
             let manager = CLLocationManager()
             manager.desiredAccuracy = kCLLocationAccuracyBest
