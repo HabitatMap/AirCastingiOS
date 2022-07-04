@@ -22,7 +22,7 @@ struct AirBeamOnboarding: View {
         .padding()
         .navigationBarHidden(true)
     }
-//    
+    
     private struct ModalPopView: View {
         @Binding var sheetIsPresented: Bool
         
