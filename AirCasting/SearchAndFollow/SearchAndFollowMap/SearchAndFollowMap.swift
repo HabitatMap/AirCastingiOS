@@ -8,7 +8,6 @@ import Resolver
 import Combine
 
 struct SearchAndFollowMap: UIViewRepresentable {
-    
     typealias UIViewType = GMSMapView
     @Binding var startingPoint: CLLocationCoordinate2D
     @Binding var showSearchAgainButton: Bool
@@ -64,6 +63,7 @@ struct SearchAndFollowMap: UIViewRepresentable {
         } catch {
             Log.error("One or more of the map styles failed to load. \(error)")
         }
+        if UserDefaults.standard.bool(forKey: "satteliteMapKey") { mapView.mapType = .satellite }
         mapView.delegate = context.coordinator
         return mapView
     }
