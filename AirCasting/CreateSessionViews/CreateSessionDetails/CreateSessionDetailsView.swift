@@ -47,6 +47,8 @@ struct CreateSessionDetailsView: View {
         .onAppear {
             viewModel.onScreenEnter()
             if sessionContext.sessionType == .fixed || sessionContext.locationless != true {
+                // We are adding this here to show the most recent location on the map on fixed session location picker screen
+                // and on the map for mobile session confirmation screen
                 locationTracker.start()
             }
         }

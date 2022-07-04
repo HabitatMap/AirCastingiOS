@@ -12,13 +12,10 @@ struct CreatingSessionMapView: UIViewRepresentable {
     typealias UIViewType = GMSMapView
     var isMyLocationEnabled = false
     var startingLocation: CLLocationCoordinate2D?
-    @State var currentLocation: CLLocationCoordinate2D?
-    @Binding var loading: Bool
     
-    init(isMyLocationEnabled: Bool = false, startingLocation: CLLocationCoordinate2D? = nil, loading: Binding<Bool> = .constant(false)) {
+    init(isMyLocationEnabled: Bool = false, startingLocation: CLLocationCoordinate2D? = nil) {
         self.isMyLocationEnabled = isMyLocationEnabled
         self.startingLocation = startingLocation
-        _loading = .init(projectedValue: loading)
     }
     
     func makeUIView(context: Context) -> GMSMapView {
@@ -26,9 +23,9 @@ struct CreatingSessionMapView: UIViewRepresentable {
         if location == nil {
             Log.error("Location not found on makeUIView()!")
         }
-        // Add observing tracker location
-        let latitude = (isMyLocationEnabled ? context.coordinator.tracker.location.value?.coordinate.latitude : startingLocation?.latitude) ?? 37.35
-        let longitude = (isMyLocationEnabled ? context.coordinator.tracker.location.value?.coordinate.longitude :
+        
+        let latitude = (isMyLocationEnabled ? location?.coordinate.latitude : startingLocation?.latitude) ?? 37.35
+        let longitude = (isMyLocationEnabled ? location?.coordinate.longitude :
                             startingLocation?.longitude) ?? -122.05
         let camera = GMSCameraPosition.camera(withLatitude: latitude, longitude: longitude, zoom: 16)
         let mapView = GMSMapView.map(withFrame: .zero, camera: camera)
@@ -50,8 +47,7 @@ struct CreatingSessionMapView: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: GMSMapView, context: Context) {
-        guard let currentLocation = currentLocation else { return }
-        uiView.moveCamera(GMSCameraUpdate.setTarget(currentLocation))
+        //
     }
 
     class Coordinator: NSObject, UINavigationControllerDelegate, GMSMapViewDelegate {

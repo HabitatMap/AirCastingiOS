@@ -37,6 +37,7 @@ struct ConfirmCreatingSessionView: View {
             contentViewWithAlert
                 .onAppear {
                     if sessionContext.sessionType == .mobile && sessionContext.locationless != true {
+                        // We need to start tracking location to save the most recent location as the session starting location
                         locationTracker.start()
                     }
                 }
