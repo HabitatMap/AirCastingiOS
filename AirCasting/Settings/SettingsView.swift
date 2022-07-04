@@ -131,6 +131,7 @@ struct SettingsView: View {
                     disableMappingDescription
                 }
             }
+            colorSchemeToggle
             keepScreenOnSwitch
             VStack(alignment: .leading) {
                 temperatureSwitch
@@ -250,6 +251,18 @@ struct SettingsView: View {
              }
          }
      }
+    
+    private var colorSchemeToggle: some View {
+        settingSwitch(toogle: $userSettings.useDarkMode,
+                      label: Strings.Settings.useDarkMode)
+        .onChange(of: userSettings.useDarkMode) { newValue in
+            changeDarkMode(state: newValue)
+        }
+    }
+    
+    func changeDarkMode(state: Bool){
+        (UIApplication.shared.connectedScenes.first as? UIWindowScene)?.windows.first!.overrideUserInterfaceStyle = state ? .dark : .light
+    }
 
     #if DEBUG || BETA
     private var navigateToAppConfigurationButton: some View {

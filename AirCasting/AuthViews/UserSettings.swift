@@ -10,8 +10,9 @@ class UserSettings: ObservableObject {
     private let crowdMapKey = Constants.UserDefaultsKeys.crowdMap
     private let locationlessKey = Constants.UserDefaultsKeys.disableMapping
     private let keepScreenOnKey = Constants.UserDefaultsKeys.keepScreenOn
-    @Injected private var featureFlagProvider: FeatureFlagProvider
     private let convertToCelsiusKey = Constants.UserDefaultsKeys.convertToCelsius
+    private let useDarkModeKey = Constants.UserDefaultsKeys.useDarkMode
+    @Injected private var featureFlagProvider: FeatureFlagProvider
 
     var contributingToCrowdMap: Bool {
         get {
@@ -56,6 +57,17 @@ class UserSettings: ObservableObject {
             objectWillChange.send()
         }
     }
+    
+    var useDarkMode: Bool {
+        get {
+            userDefaults.bool(forKey: useDarkModeKey)
+        }
+        set {
+            userDefaults.setValue(newValue, forKey: useDarkModeKey)
+            Log.info("Changed Color Scheme to \(useDarkMode ? "Dark" : "Light")")
+            objectWillChange.send()
+        }
+    }
 
     init(userDefaults: UserDefaults = .standard) {
         self.userDefaults = userDefaults
@@ -65,5 +77,6 @@ class UserSettings: ObservableObject {
         let isFeatureFlagOn = featureFlagProvider.isFeatureOn(.locationlessSessions) ?? false
         disableMapping = isFeatureFlagOn ? userDefaults.bool(forKey: locationlessKey) : false
         convertToCelsius = userDefaults.bool(forKey: convertToCelsiusKey)
+        useDarkMode = userDefaults.bool(forKey: useDarkModeKey)
     }
 }
