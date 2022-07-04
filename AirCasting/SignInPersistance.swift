@@ -1,10 +1,14 @@
 import Foundation
 
 class SignInPersistance: ObservableObject {
+    enum ScreenState {
+        case signIn
+        case createAccount
+    }
     @Published var username: String = ""
     @Published var password: String = ""
     @Published var email: String = ""
-    @Published var signInActive: Bool = false
+    @Published var credentialsScreen: ScreenState = .createAccount
     
     public static let shared = SignInPersistance()
     
@@ -14,10 +18,10 @@ class SignInPersistance: ObservableObject {
         password = ""
     }
 
-    func clearDataWithCredentials() {
+    func clearSavedStatesWithCredentials() {
         username = ""
         email = ""
         password = ""
-        signInActive = false
+        credentialsScreen = .createAccount
     }
 }

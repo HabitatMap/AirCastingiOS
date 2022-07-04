@@ -184,7 +184,7 @@ private extension CreateAccountView {
     
     var signInButton: some View {
         Button {
-            signInPersistanceObserved.signInActive = true
+            signInPersistanceObserved.credentialsScreen = .signIn
             signInPersistanceObserved.clearCredentials()
             linkActive = true
         } label: {

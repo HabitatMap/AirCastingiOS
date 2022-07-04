@@ -179,7 +179,7 @@ private extension SignInView {
     
     var signupButton: some View {
         Button {
-            signInPersistanceObserved.signInActive = false
+            signInPersistanceObserved.credentialsScreen = .createAccount
             signInPersistanceObserved.clearCredentials()
             linkActive = true
         } label: {

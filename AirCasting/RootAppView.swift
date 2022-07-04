@@ -21,7 +21,7 @@ struct RootAppView: View {
             if userAuthenticationSession.isLoggedIn && userState.currentState != .loggingOut {
                 MainAppView()
                     .onAppear {
-                        signInPersistanceObserved.clearDataWithCredentials()
+                        signInPersistanceObserved.clearSavedStatesWithCredentials()
                     }
             } else if !lifeTimeEventsProvider.hasEverPassedOnBoarding {
                 GetStarted(completion: {
@@ -29,7 +29,7 @@ struct RootAppView: View {
                 })
             } else {
                 NavigationView {
-                    if signInPersistanceObserved.signInActive {
+                    if signInPersistanceObserved.credentialsScreen == .signIn {
                         SignInView(completion: { self.lifeTimeEventsProvider.hasEverLoggedIn = true }).environmentObject(lifeTimeEventsProvider)
                     } else {
                         CreateAccountView(completion: { self.lifeTimeEventsProvider.hasEverLoggedIn = true }).environmentObject(lifeTimeEventsProvider)
@@ -39,7 +39,7 @@ struct RootAppView: View {
         }
         .environment(\.managedObjectContext, Resolver.resolve(PersistenceController.self).viewContext) //TODO: Where is this used??
         .onAppWentToBackground {
-            signInPersistanceObserved.clearDataWithCredentials()
+            signInPersistanceObserved.clearSavedStatesWithCredentials()
         }
     }
     
