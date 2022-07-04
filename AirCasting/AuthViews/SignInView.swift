@@ -27,7 +27,7 @@ struct SignInView: View {
     @State private var isPasswordBlank = false
     
     @State private var linkActive = false
-    @StateObject var SignInPersistanceObserved = SignInPersistance.shared
+    @StateObject var signInPersistanceObserved = SignInPersistance.shared
     
     init(completion: @escaping () -> Void, active: Bool = false) {
         _isActive = State(initialValue: active)
@@ -44,7 +44,6 @@ struct SignInView: View {
 private extension SignInView {
     private var contentView: some View {
         GeometryReader { geometry in
-            ScrollView {
                 VStack(spacing: 40) {
                     if lifeTimeEventsProvider.hasEverLoggedIn {
                         progressBar.hidden()
@@ -83,7 +82,6 @@ private extension SignInView {
                 .alert(item: $presentedError) { error in
                     displayErrorAlert(error: error)
                 }
-            }
         }
         .simultaneousGesture(
             DragGesture(minimumDistance: 2, coordinateSpace: .global)
@@ -115,14 +113,14 @@ private extension SignInView {
     
     var usernameTextfield: some View {
         createTextfield(placeholder: Strings.SignInView.usernameField,
-                        binding: $SignInPersistanceObserved.username)
+                        binding: $signInPersistanceObserved.username)
             .disableAutocorrection(true)
             .autocapitalization(.none)
     }
     
     var passwordTextfield: some View {
         createSecuredTextfield(placeholder: Strings.SignInView.passwordField,
-                               binding: $SignInPersistanceObserved.password)
+                               binding: $signInPersistanceObserved.password)
     }
     
     var signinButton: some View {
@@ -131,7 +129,7 @@ private extension SignInView {
             if !isPasswordBlank, !isUsernameBlank {
                 isActive = true
                 
-                task = authorizationAPIService.signIn(input: AuthorizationAPI.SigninUserInput(username: SignInPersistanceObserved.username, password: SignInPersistanceObserved.password)) { result in
+                task = authorizationAPIService.signIn(input: AuthorizationAPI.SigninUserInput(username: signInPersistanceObserved.username, password: signInPersistanceObserved.password)) { result in
                     DispatchQueue.main.async {
                         switch result {
                         case .success(let output):
@@ -181,8 +179,8 @@ private extension SignInView {
     
     var signupButton: some View {
         Button {
-            SignInPersistanceObserved.signInActive = false
-            SignInPersistanceObserved.clearCredentials()
+            signInPersistanceObserved.signInActive = false
+            signInPersistanceObserved.clearCredentials()
             linkActive = true
         } label: {
             signupButtonText
@@ -208,8 +206,8 @@ private extension SignInView {
     }
     
     func checkInput() {
-        isPasswordBlank = checkIfBlank(text: SignInPersistanceObserved.password)
-        isUsernameBlank = checkIfBlank(text: SignInPersistanceObserved.username)
+        isPasswordBlank = checkIfBlank(text: signInPersistanceObserved.password)
+        isUsernameBlank = checkIfBlank(text: signInPersistanceObserved.username)
     }
     
     func displayErrorAlert(error: AuthorizationError) -> Alert {

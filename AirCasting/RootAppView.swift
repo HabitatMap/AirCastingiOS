@@ -14,14 +14,14 @@ struct RootAppView: View {
     @InjectedObject private var userAuthenticationSession: UserAuthenticationSession
     @InjectedObject private var lifeTimeEventsProvider: LifeTimeEventsProvider
     @InjectedObject private var userState: UserState
-    @StateObject private var SignInPersistanceObserved = SignInPersistance.shared
+    @StateObject private var signInPersistanceObserved = SignInPersistance.shared
     
     var body: some View {
         ZStack {
             if userAuthenticationSession.isLoggedIn && userState.currentState != .loggingOut {
                 MainAppView()
                     .onAppear {
-                        SignInPersistanceObserved.clearDataWithCredentials()
+                        signInPersistanceObserved.clearDataWithCredentials()
                     }
             } else if !lifeTimeEventsProvider.hasEverPassedOnBoarding {
                 GetStarted(completion: {
@@ -29,7 +29,7 @@ struct RootAppView: View {
                 })
             } else {
                 NavigationView {
-                    if SignInPersistanceObserved.signInActive {
+                    if signInPersistanceObserved.signInActive {
                         SignInView(completion: { self.lifeTimeEventsProvider.hasEverLoggedIn = true }).environmentObject(lifeTimeEventsProvider)
                     } else {
                         CreateAccountView(completion: { self.lifeTimeEventsProvider.hasEverLoggedIn = true }).environmentObject(lifeTimeEventsProvider)
@@ -39,7 +39,7 @@ struct RootAppView: View {
         }
         .environment(\.managedObjectContext, Resolver.resolve(PersistenceController.self).viewContext) //TODO: Where is this used??
         .onAppWentToBackground {
-            SignInPersistanceObserved.clearDataWithCredentials()
+            signInPersistanceObserved.clearDataWithCredentials()
         }
     }
     
