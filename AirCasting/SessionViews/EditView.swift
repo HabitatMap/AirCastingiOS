@@ -91,7 +91,7 @@ struct EditView<VM: EditViewModel>: View {
     
     private func createLabel(with text: String) -> some View {
         Text(text)
-            .font(Font(Fonts.muliRegularHeadingUIFont1).bold())
+            .font(Fonts.muliRegularHeading4.bold())
             .foregroundColor(.aircastingDarkGray)
     }
 }
