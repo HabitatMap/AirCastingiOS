@@ -10,7 +10,7 @@ struct BackendSyncCompletedView<VM: BackendSyncCompletedViewModel>: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 40) {
-            ProgressView(value: 0.2)
+            ProgressView(value: 0.284)
             Spacer()
             HStack() {
                 Spacer()

@@ -22,7 +22,7 @@ struct SelectPeripheralView: View {
     var body: some View {
         GeometryReader { geometry in
             VStack(spacing: 30) {
-                ProgressView(value: 0.375)
+                ProgressView(value: syncMode! ? 0.710 : 0.375)
                 titleLabel
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 25) {

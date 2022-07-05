@@ -10,7 +10,7 @@ struct SDSyncRootView: View {
     
     var body: some View {
         VStack(spacing: 40) {
-            ProgressView(value: 0.1)
+            ProgressView(value: 0.142)
             Spacer()
             ZStack(alignment: Alignment(horizontal: .trailing, vertical: .bottom), content: {
                 syncImage

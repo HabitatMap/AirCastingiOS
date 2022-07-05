@@ -15,7 +15,7 @@ struct UnplugABView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 40) {
-            ProgressView(value: 0.3)
+            ProgressView(value: 0.426)
             Spacer()
             HStack() {
                 Spacer()

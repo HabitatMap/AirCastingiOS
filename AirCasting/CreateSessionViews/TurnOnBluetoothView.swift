@@ -22,7 +22,7 @@ struct TurnOnBluetoothView: View {
 
     var body: some View {
         VStack(spacing: 50) {
-            ProgressView(value: 0.125)
+            ProgressView(value: sdSyncContinues ? 0.355 : 0.125)
             Image("1-bluetooth")
                 .resizable()
                 .scaledToFit()

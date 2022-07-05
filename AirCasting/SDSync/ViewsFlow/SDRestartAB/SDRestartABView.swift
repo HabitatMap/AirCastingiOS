@@ -15,7 +15,7 @@ struct SDRestartABView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 40) {
-            ProgressView(value: 0.3)
+            ProgressView(value: 0.568)
             Spacer()
             HStack() {
                 Spacer()

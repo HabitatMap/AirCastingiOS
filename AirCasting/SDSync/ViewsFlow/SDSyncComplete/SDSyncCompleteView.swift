@@ -12,7 +12,7 @@ struct SDSyncCompleteView<VM: SDSyncCompleteViewModel>: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 40) {
-            ProgressView(value: 0.9)
+            ProgressView(value: 0.994)
             Spacer()
             HStack() {
                 Spacer()
