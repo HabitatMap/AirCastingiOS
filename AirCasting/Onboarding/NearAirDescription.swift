@@ -41,7 +41,7 @@ private extension NearAirDescription {
             .font(Fonts.boldTitle1)
             .foregroundColor(.accentColor)
             .multilineTextAlignment(.leading)
-            .padding(.bottom, 55)
+            .padding(.bottom, 30)
             .scaledToFill()
     }
     

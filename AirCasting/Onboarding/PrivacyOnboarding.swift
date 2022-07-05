@@ -72,7 +72,7 @@ private extension PrivacyOnboarding {
             .font(Fonts.boldTitle1)
             .foregroundColor(.accentColor)
             .multilineTextAlignment(.leading)
-            .padding(.bottom, 55)
+            .padding(.bottom, 30)
     }
     
     private var descriptionText: some View {

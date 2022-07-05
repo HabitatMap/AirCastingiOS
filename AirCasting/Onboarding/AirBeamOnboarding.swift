@@ -86,7 +86,7 @@ private extension AirBeamOnboarding {
             .font(Fonts.boldTitle1)
             .foregroundColor(.aircastingMint)
             .multilineTextAlignment(.leading)
-            .padding(.bottom, 20)
+            .padding(.bottom, 30)
     }
     
     private var buttonToShowScreen: some View {
