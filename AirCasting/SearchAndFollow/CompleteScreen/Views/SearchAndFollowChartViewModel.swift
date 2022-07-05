@@ -12,6 +12,7 @@ class SearchAndFollowChartViewModel: ObservableObject {
     }
     
     struct ChartDot {
+        let xPosition: Double
         let value: Double
         let color: Color
     }
@@ -23,12 +24,14 @@ class SearchAndFollowChartViewModel: ObservableObject {
     func generateEntries(with measurements: [ChartMeasurement], thresholds: ThresholdsValue, using sensor: ChartMeasurementsFilter) -> (Date?, Date?) {
         var times: [Date] = []
         var buffer: [ChartMeasurement] = []
+        var expectedNumberOfEntries = 9
+        var xPosition = expectedNumberOfEntries - 1
         clearEntries()
         
         let updatedMeasurements = sensor.filter(measurements: measurements)
         
         for measurement in updatedMeasurements.reversed() {
-            if entries.count == 9 {
+            if entries.count >= expectedNumberOfEntries {
                 break
             }
             
@@ -37,13 +40,19 @@ class SearchAndFollowChartViewModel: ObservableObject {
                 continue
             }
             
-            addAverage(for: buffer, times: &times, thresholds: thresholds)
+            addAverage(for: buffer, atPosition: xPosition, times: &times, thresholds: thresholds)
+            
+            guard let lastMeasurement = buffer.last else { assertionFailure(); return (nil, nil)}
+            
+            let hoursDifference = hoursDifference(between: measurement, and: lastMeasurement )
+            xPosition -= hoursDifference
+            expectedNumberOfEntries -= (hoursDifference - 1)
             
             buffer = [measurement]
         }
         
-        if entries.count < 9 && !buffer.isEmpty {
-            addAverage(for: buffer, times: &times, thresholds: thresholds)
+        if entries.count < expectedNumberOfEntries && !buffer.isEmpty {
+            addAverage(for: buffer, atPosition: xPosition, times: &times, thresholds: thresholds)
         }
         
         entries.reverse()
@@ -52,14 +61,24 @@ class SearchAndFollowChartViewModel: ObservableObject {
     
     private func clearEntries() { entries = [] }
     
-    private func addAverage(for buffer: [ChartMeasurement], times: inout [Date], thresholds: ThresholdsValue) {
+    private func hoursDifference(between currentMeasurement: ChartMeasurement, and lastMeasurement: ChartMeasurement) -> Int {
+        let nowComponent = Calendar.current.component(.hour, from: currentMeasurement.time)
+        let lastComponent = Calendar.current.component(.hour, from: lastMeasurement.time)
+        
+        // last component is smaller from now component when there is midnight between them
+        let difference = lastComponent < nowComponent ? 24 - nowComponent + lastComponent : lastComponent - nowComponent
+        return difference
+    }
+    
+    private func addAverage(for buffer: [ChartMeasurement], atPosition xPosition: Int, times: inout [Date], thresholds: ThresholdsValue) {
         guard !buffer.isEmpty else { return }
         var average = round((buffer.map { $0.value }.reduce(0, +)) / Double(buffer.count))
         
         if average == -0 { average = 0 }
         
         times.append(buffer.last!.time.roundedUpToHour)
-        entries.append(ChartDot(value: Double(average), color: thresholds.colorFor(value: average)))
+        
+        entries.append(ChartDot(xPosition: Double(xPosition), value: Double(average), color: thresholds.colorFor(value: average)))
     }
     
     private func hourIsAlreadyPresent(in times: [Date], date: Date) -> Bool {
