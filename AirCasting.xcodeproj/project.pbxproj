@@ -461,6 +461,7 @@
 		DDF62601269C779800F23489 /* UIApplication+AppInfo.swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF62600269C779800F23489 /* UIApplication+AppInfo.swift.swift */; };
 		DDF7599A268332E900D906BA /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF75999268332E900D906BA /* Strings.swift */; };
 		EE969E7E1981C41852FB7745 /* Pods_AirCastingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A54057326D27D23E9906704 /* Pods_AirCastingTests.framework */; };
+		FA1C30BD2861BA5F0034C1C9 /* SignInPersistance.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1C30BC2861BA5F0034C1C9 /* SignInPersistance.swift */; };
 		FA26E9E928107150008EE514 /* SearchParameter.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA26E9E828107150008EE514 /* SearchParameter.swift */; };
 		FA45FEFE2844D53700F9C25F /* ExternalGraphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA45FEFD2844D53700F9C25F /* ExternalGraphView.swift */; };
 		FA45FF002844DD4100F9C25F /* ExternalGraph.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA45FEFF2844DD4100F9C25F /* ExternalGraph.swift */; };
@@ -951,6 +952,7 @@
 		DDF551D427985AAB009D1347 /* AirCasting v2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AirCasting v2.xcdatamodel"; sourceTree = "<group>"; };
 		DDF62600269C779800F23489 /* UIApplication+AppInfo.swift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+AppInfo.swift.swift"; sourceTree = "<group>"; };
 		DDF75999268332E900D906BA /* Strings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Strings.swift; sourceTree = "<group>"; };
+		FA1C30BC2861BA5F0034C1C9 /* SignInPersistance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInPersistance.swift; sourceTree = "<group>"; };
 		FA26E9E828107150008EE514 /* SearchParameter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchParameter.swift; sourceTree = "<group>"; };
 		FA45FEFD2844D53700F9C25F /* ExternalGraphView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalGraphView.swift; sourceTree = "<group>"; };
 		FA45FEFF2844DD4100F9C25F /* ExternalGraph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalGraph.swift; sourceTree = "<group>"; };
@@ -1418,6 +1420,7 @@
 				B3FD77A0267C94AF00E97CC2 /* Database */,
 				B3FD779F267C94AF00E97CC2 /* SessionsSynchronization */,
 				ACD01F6C25FF4C8C00B8F65F /* AirCasting.entitlements */,
+				FA1C30BC2861BA5F0034C1C9 /* SignInPersistance.swift */,
 				AC7EB37525A6FB3A00A7F2AF /* AirCastingApp.swift */,
 				ACD01F912600A3C800B8F65F /* RootAppView.swift */,
 				FAF3B4E428058B6700F0F4B0 /* ProtectedScreen.swift */,
@@ -2966,6 +2969,7 @@
 				3346F1F626318C1600BA4695 /* SettingsManager.swift in Sources */,
 				DDCE5D3826A1FE2D0033C211 /* DeleteSessionViewModel.swift in Sources */,
 				DDD24D9626A8569400D4A327 /* ResetPasswordService.swift in Sources */,
+				FA1C30BD2861BA5F0034C1C9 /* SignInPersistance.swift in Sources */,
 				B3D4B4B426C2C6A1004322FC /* Date+Extensions.swift in Sources */,
 				750A51D82754D41A00D6F4E7 /* GridCalculator.swift in Sources */,
 				DD80AE1D27BA46C800D9B123 /* SearchView.swift in Sources */,

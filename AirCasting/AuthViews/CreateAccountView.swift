@@ -14,20 +14,18 @@ struct CreateAccountView: View {
     @InjectedObject private var userAuthenticationSession: UserAuthenticationSession
     @InjectedObject private var userState: UserState
     private let authorizationAPIService: AuthorizationAPIService = AuthorizationAPIService() // [Resolver] Move to dep.
-
-    @State private var email: String = ""
-    @State private var username: String = ""
-    @State private var password: String = ""
+    
     @State private var isPasswordCorrect = true
     @State private var isEmailCorrect = true
     @State private var isUsernameBlank = false
     @State private var alert: AlertInfo?
     @State private var isLoading = false
-
+    @StateObject var signInPersistanceObserved = SignInPersistance.shared
+    
     init(completion: @escaping () -> Void) {
         self.completion = completion
     }
-
+    
     var body: some View {
         LoadingView(isShowing: $isLoading) {
             contentView
@@ -38,55 +36,56 @@ struct CreateAccountView: View {
 private extension CreateAccountView {
     var contentView: some View {
         GeometryReader { geometry in
-            ScrollView {
-                ZStack(alignment: .bottomTrailing) {
-                    Image("dashboard-background-thing")
-                        .offset(x: 0, y: 40)
-                    VStack(alignment: .leading, spacing: 50) {
-                        if lifeTimeEventsProvider.hasEverLoggedIn {
-                            progressBar.hidden()
-                        } else {
-                            progressBar
-                        }
-                        titleLabel
-                        VStack(spacing: 20) {
-                            VStack(alignment: .leading, spacing: 5) {
-                                emailTextfield
-                                    .keyboardType(.emailAddress)
-                                if !isEmailCorrect {
-                                    errorMessage(text: AuthErrors.incorrectEmail.localizedDescription)
-                                }
-                            }
-                            
-                            VStack(alignment: .leading, spacing: 5) {
-                                usernameTextfield
-                                if isUsernameBlank {
-                                    errorMessage(text: AuthErrors.emptyTextfield.localizedDescription)
-                                }
-                            }
-                            
-                            VStack(alignment: .leading, spacing: 5) {
-                                passwordTextfield
-                                if !isPasswordCorrect {
-                                    errorMessage(text: AuthErrors.passwordTooShort.localizedDescription)
-                                }
-                            }
-                        }
-                        VStack(spacing: 25) {
-                            createAccountButton
-                            signInButton
-                        }
-                        Spacer()
+            ZStack(alignment: .bottomTrailing) {
+                Image("dashboard-background-thing")
+                    .offset(x: 0, y: 40)
+                VStack(alignment: .leading, spacing: 40) {
+                    if lifeTimeEventsProvider.hasEverLoggedIn {
+                        progressBar.hidden()
+                    } else {
+                        progressBar
                     }
-                    .padding()
-                    .navigationBarHidden(true)
-                    .frame(maxWidth: .infinity, minHeight: geometry.size.height)
-                    .alert(item: $alert, content: { $0.makeAlert() })
-                    .onAppear {
-                        if userState.currentState == .deletingAccount {
-                            alert = InAppAlerts.successfulAccountDeletionConfirmation {
-                                userState.currentState = .idle
+                    titleLabel
+                    VStack(spacing: 20) {
+                        VStack(alignment: .leading, spacing: 5) {
+                            emailTextfield
+                                .keyboardType(.emailAddress)
+                            if !isEmailCorrect {
+                                errorMessage(text: AuthErrors.incorrectEmail.localizedDescription)
                             }
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 5) {
+                            usernameTextfield
+                            if isUsernameBlank {
+                                errorMessage(text: AuthErrors.emptyTextfield.localizedDescription)
+                            }
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 5) {
+                            passwordTextfield
+                            if !isPasswordCorrect {
+                                errorMessage(text: AuthErrors.passwordTooShort.localizedDescription)
+                            }
+                        }
+                    }
+                    VStack(spacing: 25) {
+                        createAccountButton
+                        signInButton
+                    }
+                    Spacer()
+                    if userState.currentState == .loggingOut {
+                        backgroundSignOutIndication
+                    }
+                }
+                .padding()
+                .navigationBarHidden(true)
+                .frame(maxWidth: .infinity, minHeight: geometry.size.height)
+                .alert(item: $alert, content: { $0.makeAlert() })
+                .onAppear {
+                    if userState.currentState == .deletingAccount {
+                        alert = InAppAlerts.successfulAccountDeletionConfirmation {
+                            userState.currentState = .idle
                         }
                     }
                 }
@@ -119,20 +118,21 @@ private extension CreateAccountView {
     
     var emailTextfield: some View {
         createTextfield(placeholder: Strings.CreateAccountView.email,
-                        binding: $email,
+                        binding: $signInPersistanceObserved.email,
                         isInputValid: !isEmailCorrect)
-            .autocapitalization(.none)
+        .autocapitalization(.none)
     }
     
     var usernameTextfield: some View {
         createTextfield(placeholder: Strings.CreateAccountView.profile,
-                        binding: $username,
+                        binding: $signInPersistanceObserved.username,
                         isInputValid: isUsernameBlank)
-            .autocapitalization(.none)
+        .autocapitalization(.none)
     }
+    
     var passwordTextfield: some View {
         createSecuredTextfield(placeholder: Strings.CreateAccountView.password,
-                               binding: $password,
+                               binding: $signInPersistanceObserved.password,
                                isInputValid: !isPasswordCorrect)
     }
     
@@ -143,12 +143,12 @@ private extension CreateAccountView {
             UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
             
             if isPasswordCorrect && isEmailCorrect && !isUsernameBlank {
-                #warning("Show progress and lock ui to prevent multiple api calls")
+#warning("Show progress and lock ui to prevent multiple api calls")
                 isLoading = true
-                let userInput = AuthorizationAPI.SignupUserInput(email: email,
-                                                                username: username,
-                                                                password: password,
-                                                                send_emails: false)
+                let userInput = AuthorizationAPI.SignupUserInput(email: signInPersistanceObserved.email,
+                                                                 username: signInPersistanceObserved.username,
+                                                                 password: signInPersistanceObserved.password,
+                                                                 send_emails: false)
                 authorizationAPIService.createAccount(input: userInput) { result in
                     DispatchQueue.main.async {
                         switch result {
@@ -171,15 +171,17 @@ private extension CreateAccountView {
                 }
             }
         }
+        .disabled(userState.currentState == .loggingOut)
         .buttonStyle(BlueButtonStyle())
     }
     
     var signInButton: some View {
-        NavigationLink(
-            destination: SignInView(completion: completion).environmentObject(lifeTimeEventsProvider),
-            label: {
-                signingButtonText
-            })
+        Button {
+            signInPersistanceObserved.credentialsScreen = .signIn
+            signInPersistanceObserved.clearCredentials()
+        } label: {
+            signingButtonText
+        }
     }
     
     var signingButtonText: some View {
@@ -191,13 +193,22 @@ private extension CreateAccountView {
             .font(Fonts.boldHeading2)
             .foregroundColor(.accentColor)
     }
-
-    func checkIfUserInputIsCorrect() {
-        isPasswordCorrect = checkIsPasswordValid(password: password)
-        isEmailCorrect = checkIsEmailValid(email: email)
-        isUsernameBlank = checkIfBlank(text: username)
+    
+    var backgroundSignOutIndication: some View {
+        HStack {
+            ActivityIndicator(isAnimating: .constant(userState.currentState == .loggingOut), style: .large)
+            Text(Strings.CreateAccountView.loggingOutInBackground)
+                .foregroundColor(.aircastingGray)
+                .fixedSize(horizontal: false, vertical: true)
+        }
     }
-
+    
+    func checkIfUserInputIsCorrect() {
+        isPasswordCorrect = checkIsPasswordValid(password: signInPersistanceObserved.password)
+        isEmailCorrect = checkIsEmailValid(email: signInPersistanceObserved.email)
+        isUsernameBlank = checkIfBlank(text: signInPersistanceObserved.username)
+    }
+    
     func displayErrorAlert(error: AuthorizationError) {
         switch error {
         case .emailTaken, .invalidCredentials, .usernameTaken, .other, .timeout:
