@@ -20,7 +20,6 @@ struct ExternalSessionWithStreamsAndMeasurements {
         let measurementShortType: String
         let measurementType: String
         let sensorName: String
-        let sensorPackageName: String
         let thresholdsValues: ThresholdsValue
         var measurements: [Measurement]
     }

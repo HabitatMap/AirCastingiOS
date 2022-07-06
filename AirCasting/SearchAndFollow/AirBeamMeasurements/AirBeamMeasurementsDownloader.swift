@@ -4,7 +4,7 @@ import SwiftUI
 import Resolver
 
 protocol AirBeamMeasurementsDownloader {
-    func downloadStreams(with sessionID: Int, completion: @escaping (Result<MeasurementsDownloaderResultModel, Error>) -> Void) throws
+    func downloadStreams(with sessionID: Int, completion: @escaping (Result<MeasurementsDownloaderResultModel, Error>) -> Void)
 }
 
 final class AirBeamMeasurementsDownloaderDefault: AirBeamMeasurementsDownloader {
@@ -13,7 +13,7 @@ final class AirBeamMeasurementsDownloaderDefault: AirBeamMeasurementsDownloader 
     @Injected private var responseValidator: HTTPResponseValidator
     private let responseHandler = AuthorizationHTTPResponseHandler()
     
-    func downloadStreams(with sessionID: Int, completion: @escaping (Result<MeasurementsDownloaderResultModel, Error>) -> Void) throws {
+    func downloadStreams(with sessionID: Int, completion: @escaping (Result<MeasurementsDownloaderResultModel, Error>) -> Void) {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         let request = prepareRequests(using: sessionID)
@@ -26,10 +26,10 @@ final class AirBeamMeasurementsDownloaderDefault: AirBeamMeasurementsDownloader 
                     let resultPart = try decoder.decode(MeasurementsDownloaderResultModel.self, from: response.data)
                     completion(.success(resultPart))
                 } catch {
-                    Log.info("Error when downloading one of the AirBeam streams: \(error)")
+                    completion(.failure(error))
                 }
             case .failure(let error):
-                Log.info("Error when downloading one of the AirBeam streams: \(error)")
+                completion(.failure(error))
             }
         }
     }
