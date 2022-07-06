@@ -63,7 +63,7 @@ struct SearchAndFollowMap: UIViewRepresentable {
         } catch {
             Log.error("One or more of the map styles failed to load. \(error)")
         }
-        if UserDefaults.standard.bool(forKey: "satteliteMapKey") { mapView.mapType = .satellite }
+        if Constants.isSatelliteMapOn { mapView.mapType = .satellite }
         mapView.delegate = context.coordinator
         return mapView
     }

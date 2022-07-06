@@ -12,7 +12,7 @@ class UserSettings: ObservableObject {
     private let keepScreenOnKey = Constants.UserDefaultsKeys.keepScreenOn
     @Injected private var featureFlagProvider: FeatureFlagProvider
     private let convertToCelsiusKey = Constants.UserDefaultsKeys.convertToCelsius
-    private let satteliteMapKey = "satteliteMapKey"
+    private let satteliteMapKey = Constants.UserDefaultsKeys.satelliteMapKey
 
     var contributingToCrowdMap: Bool {
         get {

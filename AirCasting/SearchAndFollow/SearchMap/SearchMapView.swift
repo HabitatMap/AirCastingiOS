@@ -160,17 +160,19 @@ private extension SearchMapView {
                 .onStartingLocationChange { geoSquare in
                     viewModel.startingLocationChanged(geoSquare: geoSquare)
                 }
-                .padding(.top, 50)
+                .padding(.top, Constants.isSatelliteMapOn ? 100 : 50)
                 .ignoresSafeArea(.all, edges: [.bottom])
-                LinearGradient(gradient: Gradient(colors: [.white.opacity(0.1),
-                                                           .white.opacity(0.5),
-                                                           .white.opacity(0.7),
-                                                           .white.opacity(0.8),
-                                                           .white.opacity(0.9),
-                                                           .white]),
-                               startPoint: .bottom,
-                               endPoint: .top)
-                .frame(width: reader.size.width, height: reader.size.height / 4.5, alignment: .top)
+                if !Constants.isSatelliteMapOn {
+                    LinearGradient(gradient: Gradient(colors: [.white.opacity(0.1),
+                                                               .white.opacity(0.5),
+                                                               .white.opacity(0.7),
+                                                               .white.opacity(0.8),
+                                                               .white.opacity(0.9),
+                                                               .white]),
+                                   startPoint: .bottom,
+                                   endPoint: .top)
+                    .frame(width: reader.size.width, height: reader.size.height / 4.5, alignment: .top)
+                }
             }
         }
     }
@@ -180,8 +182,8 @@ private extension SearchMapView {
                                                 arguments: ["\(viewModel.sessionsList.count)",
                                                             "\(viewModel.sessionsList.count)"]),
                                          using: [Strings.SearchMapView.sessionsText],
-                                         color: .darkBlue,
-                                         standardColor: .darkBlue,
+                                         color: Constants.isSatelliteMapOn ? .white : .darkBlue,
+                                         standardColor: Constants.isSatelliteMapOn ? .white : .darkBlue,
                                          font: Fonts.boldHeading2)
         .foregroundColor(.darkBlue)
     }

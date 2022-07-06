@@ -180,7 +180,7 @@ struct SettingsView: View {
     
     private var satelliteMapSwitch: some View {
         settingSwitch(toogle: $userSettings.satteliteMap,
-                      label: "Satellite map")
+                      label: Strings.Settings.satelliteMap)
     }
 
     private var keepScreenOnSwitch: some View {

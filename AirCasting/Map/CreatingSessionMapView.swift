@@ -23,7 +23,7 @@ struct CreatingSessionMapView: UIViewRepresentable {
         tracker.googleLocation.last?.location.longitude ?? -122.05
         let camera = GMSCameraPosition.camera(withLatitude: latitude, longitude: longitude, zoom: 16)
         let mapView = GMSMapView.map(withFrame: .zero, camera: camera)
-        if UserDefaults.standard.bool(forKey: "satteliteMapKey") { mapView.mapType = .satellite }
+        if Constants.isSatelliteMapOn { mapView.mapType = .satellite }
         
         mapView.settings.myLocationButton = isMyLocationEnabled
         mapView.isMyLocationEnabled = isMyLocationEnabled

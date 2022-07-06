@@ -55,6 +55,8 @@ struct Strings {
                                                     comment: "")
         static let buildText = NSLocalizedString("build",
                                                  comment: "")
+        static let satelliteMap = NSLocalizedString("Satellite map",
+                                                       comment: "")
         static let crashlyticsSectionTitle = "Crashlytics integration testing:"
         
         static let appConfig = "App config"
