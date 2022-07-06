@@ -11,7 +11,7 @@ struct CreatingSessionMapView: UIViewRepresentable {
     
     typealias UIViewType = GMSMapView
     @InjectedObject private var tracker: LocationTracker
-    @Injected private var userSettings: UserSettings
+    @InjectedObject private var userSettings: UserSettings
     var isMyLocationEnabled = false
     
     init(isMyLocationEnabled: Bool = false) {

@@ -7,7 +7,7 @@ import GoogleMaps
 import Resolver
 
 struct SearchCompleteScreenMapView: UIViewRepresentable {
-    @Injected private var userSettings: UserSettings
+    @InjectedObject private var userSettings: UserSettings
     typealias UIViewType = GMSMapView
     var longitude: CLLocationDegrees
     var latitude: CLLocationDegrees

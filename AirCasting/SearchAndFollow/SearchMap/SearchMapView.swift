@@ -8,7 +8,7 @@ import AirCastingStyling
 import Resolver
 
 struct SearchMapView: View {
-    @Injected private var userSettings: UserSettings
+    @InjectedObject private var userSettings: UserSettings
     @StateObject private var viewModel: SearchMapViewModel
     @Environment(\.presentationMode) var presentationMode
     @Binding var isSearchAndFollowLinkActive: Bool

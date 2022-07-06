@@ -13,7 +13,7 @@ import Resolver
 
 struct GoogleMapView: UIViewRepresentable {
     @InjectedObject private var tracker: LocationTracker
-    @Injected private var userSettings: UserSettings
+    @InjectedObject private var userSettings: UserSettings
     @Binding var placePickerIsUpdating: Bool
     @Binding var isUserInteracting: Bool
     @Binding var noteMarketTapped: Bool

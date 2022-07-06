@@ -8,7 +8,7 @@ import Resolver
 import Combine
 
 struct SearchAndFollowMap: UIViewRepresentable {
-    @Injected private var userSettings: UserSettings
+    @InjectedObject private var userSettings: UserSettings
     typealias UIViewType = GMSMapView
     @Binding var startingPoint: CLLocationCoordinate2D
     @Binding var showSearchAgainButton: Bool
