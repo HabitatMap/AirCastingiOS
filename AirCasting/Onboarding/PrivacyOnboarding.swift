@@ -7,16 +7,15 @@ import AirCastingStyling
 struct PrivacyOnboarding: View {
     var completion: () -> Void
     @State var presentingModal = false
+    
     var body: some View {
-        VStack(alignment: .leading, spacing: 40) {
+        VStack(alignment: .leading) {
             progressBar
             Spacer()
             titleText
             descriptionText
-            VStack(spacing: 5) {
-                continueButton
-                learnMoreButton
-            }
+            continueButton
+            learnMoreButton
         }
         .padding()
         .navigationBarHidden(true)
@@ -73,7 +72,7 @@ private extension PrivacyOnboarding {
             .font(Fonts.boldTitle1)
             .foregroundColor(.accentColor)
             .multilineTextAlignment(.leading)
-            .padding(.bottom, 20)
+            .padding(.bottom, 30)
     }
     
     private var descriptionText: some View {
@@ -82,6 +81,7 @@ private extension PrivacyOnboarding {
             .foregroundColor(.aircastingGray)
             .lineSpacing(10.0)
             .multilineTextAlignment(.leading)
+            .padding(.bottom, 30)
     }
     
     private var continueButton: some View {
@@ -92,7 +92,6 @@ private extension PrivacyOnboarding {
                 .font(Fonts.semiboldHeading1)
         })
         .buttonStyle(BlueButtonStyle())
-        .padding(.top, 20)
     }
     
     private var learnMoreButton: some View {

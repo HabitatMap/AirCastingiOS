@@ -72,6 +72,7 @@ private extension GetStarted {
                     .accentColor(Color.aircastingGray)
             )
             .padding()
+            .padding(.bottom, 41)
     }
     
     var continueToAirNearYouScreenButton: some View {
