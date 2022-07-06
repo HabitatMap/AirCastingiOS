@@ -5,8 +5,10 @@ import CoreLocation
 import Foundation
 import SwiftUI
 import AirCastingStyling
+import Resolver
 
 struct SearchMapView: View {
+    @Injected private var userSettings: UserSettings
     @StateObject private var viewModel: SearchMapViewModel
     @Environment(\.presentationMode) var presentationMode
     @Binding var isSearchAndFollowLinkActive: Bool
@@ -160,9 +162,9 @@ private extension SearchMapView {
                 .onStartingLocationChange { geoSquare in
                     viewModel.startingLocationChanged(geoSquare: geoSquare)
                 }
-                .padding(.top, Constants.isSatelliteMapOn ? 100 : 50)
+                .padding(.top, userSettings.satteliteMap ? 100 : 50)
                 .ignoresSafeArea(.all, edges: [.bottom])
-                if !Constants.isSatelliteMapOn {
+                if !userSettings.satteliteMap {
                     LinearGradient(gradient: Gradient(colors: [.white.opacity(0.1),
                                                                .white.opacity(0.5),
                                                                .white.opacity(0.7),
@@ -182,8 +184,8 @@ private extension SearchMapView {
                                                 arguments: ["\(viewModel.sessionsList.count)",
                                                             "\(viewModel.sessionsList.count)"]),
                                          using: [Strings.SearchMapView.sessionsText],
-                                         color: Constants.isSatelliteMapOn ? .white : .darkBlue,
-                                         standardColor: Constants.isSatelliteMapOn ? .white : .darkBlue,
+                                         color: userSettings.satteliteMap ? .white : .darkBlue,
+                                         standardColor: userSettings.satteliteMap ? .white : .darkBlue,
                                          font: Fonts.boldHeading2)
         .foregroundColor(.darkBlue)
     }

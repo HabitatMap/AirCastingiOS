@@ -29,8 +29,6 @@ struct Constants {
         formatter.dateFormat = "HH:mm"
         return formatter
     }()
-    
-    static var isSatelliteMapOn: Bool { UserDefaults.standard.bool(forKey: UserDefaultsKeys.satelliteMapKey) }
 
     enum SDCardSync {
         static let numberOfMeasurementsInDataChunk = 4

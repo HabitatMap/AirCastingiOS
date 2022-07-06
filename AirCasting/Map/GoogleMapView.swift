@@ -13,6 +13,7 @@ import Resolver
 
 struct GoogleMapView: UIViewRepresentable {
     @InjectedObject private var tracker: LocationTracker
+    @Injected private var userSettings: UserSettings
     @Binding var placePickerIsUpdating: Bool
     @Binding var isUserInteracting: Bool
     @Binding var noteMarketTapped: Bool
@@ -59,7 +60,7 @@ struct GoogleMapView: UIViewRepresentable {
         } catch {
             Log.error("One or more of the map styles failed to load. \(error)")
         }
-        if Constants.isSatelliteMapOn { mapView.mapType = .satellite }
+        if userSettings.satteliteMap { mapView.mapType = .satellite }
         mapView.delegate = context.coordinator
         mapView.isMyLocationEnabled = isMyLocationEnabled
         drawPolyline(mapView, context: context)
