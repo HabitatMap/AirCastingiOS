@@ -20,7 +20,7 @@ struct SearchAndFollowChartView: UIViewRepresentable {
     func updateUIView(_ uiView: UIViewType, context: Context) {
         guard !viewModel.entries.isEmpty else { return }
         
-        let entries = viewModel.entries.map { (dot) -> ChartDataEntry in
+        let entries = viewModel.entries.map { dot -> ChartDataEntry in
             ChartDataEntry(x: dot.xPosition, y: dot.value)
         }
         

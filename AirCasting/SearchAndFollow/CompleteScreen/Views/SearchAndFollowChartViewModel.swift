@@ -19,8 +19,6 @@ class SearchAndFollowChartViewModel: ObservableObject {
     
     @Published var entries: [ChartDot] = []
     
-    let numberOfEntries = 9
-    
     func generateEntries(with measurements: [ChartMeasurement], thresholds: ThresholdsValue, using sensor: ChartMeasurementsFilter) -> (Date?, Date?) {
         var times: [Date] = []
         var buffer: [ChartMeasurement] = []
@@ -42,9 +40,9 @@ class SearchAndFollowChartViewModel: ObservableObject {
             
             addAverage(for: buffer, atPosition: xPosition, times: &times, thresholds: thresholds)
             
-            guard let lastMeasurement = buffer.last else { assertionFailure(); return (nil, nil)}
+            guard let lastMeasurement = buffer.last else { assertionFailure(); return (nil, nil) }
             
-            let hoursDifference = hoursDifference(between: measurement, and: lastMeasurement )
+            let hoursDifference = hoursDifference(between: measurement, and: lastMeasurement)
             xPosition -= hoursDifference
             expectedNumberOfEntries -= (hoursDifference - 1)
             
