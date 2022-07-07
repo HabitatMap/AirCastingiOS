@@ -10,6 +10,7 @@ struct CreateSessionDetailsView: View {
     @StateObject private var viewModel: CreateSessionDetailsViewModel = .init()
     @Binding var creatingSessionFlowContinues: Bool
     @Injected private var locationTracker: LocationTracker
+    private var shouldTrackLocation: Bool { sessionContext.sessionType == .fixed || !sessionContext.locationless }
     
     init(creatingSessionFlowContinues: Binding<Bool>) {
         self._creatingSessionFlowContinues = creatingSessionFlowContinues
@@ -46,14 +47,14 @@ struct CreateSessionDetailsView: View {
         }
         .onAppear {
             viewModel.onScreenEnter()
-            if sessionContext.sessionType == .fixed || sessionContext.locationless != true {
+            if shouldTrackLocation {
                 // We are adding this here to show the most recent location on the map on fixed session location picker screen
                 // and on the map for mobile session confirmation screen
                 locationTracker.start()
             }
         }
         .onDisappear {
-            if sessionContext.sessionType == .fixed || sessionContext.locationless != true {
+            if shouldTrackLocation {
                 locationTracker.stop()
             }
         }

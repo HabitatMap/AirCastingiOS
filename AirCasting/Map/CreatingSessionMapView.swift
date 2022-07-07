@@ -25,8 +25,7 @@ struct CreatingSessionMapView: UIViewRepresentable {
         }
         
         let latitude = (isMyLocationEnabled ? location?.coordinate.latitude : startingLocation?.latitude) ?? 37.35
-        let longitude = (isMyLocationEnabled ? location?.coordinate.longitude :
-                            startingLocation?.longitude) ?? -122.05
+        let longitude = (isMyLocationEnabled ? location?.coordinate.longitude : startingLocation?.longitude) ?? -122.05
         let camera = GMSCameraPosition.camera(withLatitude: latitude, longitude: longitude, zoom: 16)
         let mapView = GMSMapView.map(withFrame: .zero, camera: camera)
         

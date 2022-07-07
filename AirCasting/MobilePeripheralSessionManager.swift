@@ -146,7 +146,7 @@ class MobilePeripheralSessionManager {
     }
 
     private func updateStreams(stream: ABMeasurementStream, sessionUUID: SessionUUID, isLocationTracked: Bool) throws {
-        let  location = isLocationTracked ? locationTracker.location.value?.coordinate : .undefined
+        let location = isLocationTracked ? locationTracker.location.value?.coordinate : .undefined
 
         measurementStreamStorage.accessStorage { storage in
             do {

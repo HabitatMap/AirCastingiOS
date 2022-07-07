@@ -19,7 +19,6 @@ protocol LocationTracker {
     func start()
     func stop()
     var location: CurrentValueSubject<CLLocation?, Never> { get }
-//    func getCurrentLocation(completion: @escaping (CLLocation?) -> Void)
 }
 
 final class CoreLocationTracker: NSObject, LocationTracker, LocationAuthorization, CLLocationManagerDelegate {
@@ -28,10 +27,6 @@ final class CoreLocationTracker: NSObject, LocationTracker, LocationAuthorizatio
     // when no object really needs location. This is why we're using this counter
     private var locationStartReference: Int = 0
     private let referenceLock = NSRecursiveLock()
-    // Stores all the observers that requested `getCurrentLocation`. There can
-    // be multiple because of the fact that CLLocationManager's requestLocation
-    // function can take several seconds to report back its results.
-//    private var oneTimeObservers: [(CLLocation?) -> Void] = []
     private(set) var locationState: LocationState = .denied
     
     var location: CurrentValueSubject<CLLocation?, Never> = .init(nil)

@@ -26,6 +26,7 @@ struct ConfirmCreatingSessionView: View {
 
     var sessionName: String
     private var sessionType: String { (sessionContext.sessionType ?? .fixed).description.lowercased() }
+    private var shouldTrackLocation: Bool { sessionContext.sessionType == .mobile && !sessionContext.locationless }
     
     init(creatingSessionFlowContinues: Binding<Bool>, sessionName: String) {
         _creatingSessionFlowContinues = .init(projectedValue: creatingSessionFlowContinues)
@@ -36,13 +37,13 @@ struct ConfirmCreatingSessionView: View {
         LoadingView(isShowing: $isActive) {
             contentViewWithAlert
                 .onAppear {
-                    if sessionContext.sessionType == .mobile && sessionContext.locationless != true {
+                    if shouldTrackLocation {
                         // We need to start tracking location to save the most recent location as the session starting location
                         locationTracker.start()
                     }
                 }
                 .onDisappear {
-                    if sessionContext.sessionType == .mobile && sessionContext.locationless != true {
+                    if shouldTrackLocation {
                         locationTracker.stop()
                     }
                 }
