@@ -137,7 +137,6 @@ private extension CreateAccountView {
         createSecuredTextfield(placeholder: Strings.CreateAccountView.password,
                                binding: $password,
                                isInputValid: !isPasswordCorrect)
-        .font(Fonts.moderateRegularHeading2)
     }
     
     var createAccountButton: some View {

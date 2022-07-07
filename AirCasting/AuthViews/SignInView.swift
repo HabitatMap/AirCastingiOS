@@ -123,7 +123,6 @@ private extension SignInView {
         createSecuredTextfield(placeholder: Strings.SignInView.passwordField,
                                binding: $password,
                                isInputValid: isPasswordBlank)
-        .font(Fonts.moderateRegularHeading2)
     }
     
     var signinButton: some View {
