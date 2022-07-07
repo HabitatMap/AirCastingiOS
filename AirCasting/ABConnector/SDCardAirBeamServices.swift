@@ -49,6 +49,8 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
         var receivedMeasurementsCount: [SDCardSessionType: Int] = [:]
         var currentSessionType: SDCardSessionType?
         
+        Log.info("## Downloading data")
+        
         configureABforSync(peripheral: peripheral)
         metadataCharacteristicObserver = bluetoothManager.subscribeToCharacteristic(DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID) { result in
             switch result {
@@ -111,6 +113,8 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
     }
     
     func clearSDCard(of peripheral: CBPeripheral, completion: @escaping (Result<Void, Error>) -> Void) {
+        Log.info("## Sending clear config")
+        // It's possible that device has disconnected from us if there was a lot of data, so we need to connect to it again
         sendClearConfig(peripheral: peripheral)
         clearCardCharacteristicObserver = bluetoothManager.subscribeToCharacteristic(DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID, timeout: 10) { result in
             switch result {

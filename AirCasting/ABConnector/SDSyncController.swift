@@ -39,6 +39,7 @@ class SDSyncController {
     private let writingQueue = DispatchQueue(label: "SDSyncController")
     
     func syncFromAirbeam(_ airbeamConnection: CBPeripheral, progress: @escaping (SDCardSyncStatus) -> Void, completion: @escaping (Bool) -> Void) {
+        Log.info("## Starting syncing")
         guard let sensorName = airbeamConnection.name else {
             Log.error("[SD Sync] Unable to identify the device")
             completion(false)
@@ -56,9 +57,10 @@ class SDSyncController {
             self.writingQueue.sync {
                 switch result {
                 case .success(let metadata):
+                    Log.info("## Finished reading data with success")
                     progress(.finalizing)
                     let files = self.fileWriter.finishAndSave()
-                    
+                    Log.info("## Files: \(files)")
                     guard !files.isEmpty else {
                         completion(true)
                         return
@@ -68,6 +70,7 @@ class SDSyncController {
                     self.checkFilesForCorruption(files, expectedMeasurementsCount: metadata.expectedMeasurementsCount) { fileValidationResult in
                         switch fileValidationResult {
                         case .success(let verifiedFiles):
+                            Log.info("## Check for corruption passed")
                             self.handle(files: verifiedFiles, sensorName: sensorName, completion: completion)
                         case .failure(let error):
                             Log.error(error.localizedDescription)
@@ -119,7 +122,7 @@ class SDSyncController {
     }
     
     private func process(fixedSessionFile: URL, deviceID: String, completion: @escaping (Result<[SessionUUID], Error>) -> Void) {
-        Log.info("Processing fixed file")
+        Log.info("## Processing fixed file")
         fixedSessionsUploader.processAndUpload(fileURL: fixedSessionFile, deviceID: deviceID) { result in
             switch result {
             case .success(let sessions):
@@ -132,8 +135,9 @@ class SDSyncController {
     }
     
     private func process(mobileSessionFile: URL, deviceID: String, completion: @escaping (Bool) -> Void) {
-        Log.info("Processing fixed file")
+        Log.info("## Processing mobile file")
         self.mobileSessionsSaver.saveDataToDb(fileURL: mobileSessionFile, deviceID: deviceID) { result in
+            Log.info("## Saved mobile data with result: \(result)")
             switch result {
             case .success(let sessions):
                 self.averagingService.averageMeasurements(for: sessions) {

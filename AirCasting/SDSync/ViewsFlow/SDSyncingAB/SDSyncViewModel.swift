@@ -42,6 +42,7 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
 
     func connectToAirBeamAndSync() {
         self.airBeamConnectionController.connectToAirBeam(peripheral: peripheral) { success in
+            Log.info("## Completed connecting to AB")
             guard success else {
                 DispatchQueue.main.async {
                     self.presentNextScreen = success
@@ -63,6 +64,7 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
                     }
                 }
             }, completion: { [weak self] result in
+                Log.info("## Completed syncing with result: \(result)")
                 guard let self = self else { return }
                 if result {
                     self.clearSDCard()
