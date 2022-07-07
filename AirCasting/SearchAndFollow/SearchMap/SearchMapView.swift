@@ -62,6 +62,7 @@ struct SearchMapView: View {
                 }
                 VStack(alignment: .center, content: {
                     addressTextField
+                        .font(Fonts.moderateRegularHeading2)
                     HStack {
                         measurementTypeText
                         Spacer()
@@ -121,14 +122,14 @@ private extension SearchMapView {
     
     var measurementTypeText: some View {
         Text(String(format: Strings.SearchMapView.parameterText, arguments: [viewModel.getMeasurementName()]))
-            .font(Fonts.semiboldHeading2)
+            .font(Fonts.muliSemiboldHeading2)
             .lineLimit(1)
             .scaledToFill()
     }
     
     var sensorTypeText: some View {
         Text(String(format: Strings.SearchMapView.sensorText, arguments: [viewModel.getSensorName()]))
-            .font(Fonts.semiboldHeading2)
+            .font(Fonts.muliSemiboldHeading2)
             .lineLimit(1)
             .scaledToFill()
     }
@@ -140,7 +141,7 @@ private extension SearchMapView {
             }
         } label: {
             Text("\(Strings.SearchMapView.redoText) \(Image(systemName: "goforward"))")
-                .font(Fonts.boldHeading3)
+                .font(Fonts.muliBoldHeading2)
                 .lineLimit(1)
                 .scaledToFill()
         }
@@ -186,7 +187,8 @@ private extension SearchMapView {
                                          using: [Strings.SearchMapView.sessionsText],
                                          color: userSettings.satteliteMap ? .white : .darkBlue,
                                          standardColor: userSettings.satteliteMap ? .white : .darkBlue,
-                                         font: Fonts.boldHeading2)
+                                         font: Fonts.muliBoldHeading1)
+
         .foregroundColor(.darkBlue)
     }
     
@@ -233,7 +235,7 @@ private extension SearchMapView {
             tabSelection.selection = .dashboard
         } label: {
             Text(Strings.SearchMapView.finishText)
-                .font(Fonts.muliHeading2.bold())
+                .font(Fonts.muliRegularHeading3.bold())
                 .padding(.trailing, 7)
         }
         .overlay(

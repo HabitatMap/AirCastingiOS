@@ -11,24 +11,36 @@ import Resolver
 
 struct RootAppView: View {
 
-    @InjectedObject var userAuthenticationSession: UserAuthenticationSession
-    @InjectedObject var lifeTimeEventsProvider: LifeTimeEventsProvider
+    @InjectedObject private var userAuthenticationSession: UserAuthenticationSession
+    @InjectedObject private var lifeTimeEventsProvider: LifeTimeEventsProvider
+    @InjectedObject private var userState: UserState
+    @StateObject private var signInPersistanceObserved = SignInPersistance.shared
     
     var body: some View {
         ZStack {
-            if userAuthenticationSession.isLoggedIn {
+            if userAuthenticationSession.isLoggedIn && userState.currentState != .loggingOut {
                 MainAppView()
-            } else if !userAuthenticationSession.isLoggedIn && lifeTimeEventsProvider.hasEverPassedOnBoarding {
-                NavigationView {
-                    CreateAccountView(completion: { self.lifeTimeEventsProvider.hasEverLoggedIn = true }).environmentObject(lifeTimeEventsProvider)
-                }
-            } else {
+                    .onAppear {
+                        signInPersistanceObserved.clearSavedStatesWithCredentials()
+                    }
+            } else if !lifeTimeEventsProvider.hasEverPassedOnBoarding {
                 GetStarted(completion: {
                     self.lifeTimeEventsProvider.hasEverPassedOnBoarding = true
                 })
+            } else {
+                NavigationView {
+                    if signInPersistanceObserved.credentialsScreen == .signIn {
+                        SignInView(completion: { self.lifeTimeEventsProvider.hasEverLoggedIn = true }).environmentObject(lifeTimeEventsProvider)
+                    } else {
+                        CreateAccountView(completion: { self.lifeTimeEventsProvider.hasEverLoggedIn = true }).environmentObject(lifeTimeEventsProvider)
+                    }
+                }
             }
         }
         .environment(\.managedObjectContext, Resolver.resolve(PersistenceController.self).viewContext) //TODO: Where is this used??
+        .onAppWentToBackground {
+            signInPersistanceObserved.clearSavedStatesWithCredentials()
+        }
     }
     
 }
@@ -38,8 +50,8 @@ struct MainAppView: View {
     @InjectedObject private var user: UserState
     
     var body: some View {
-        let shouldPresentLoading = Binding<Bool>(get: { user.currentState != .idle } , set: { _ in assertionFailure("Unexpected binding setting") })
-        LoadingView(isShowing: shouldPresentLoading, activityIndicatorText: user.currentState == .loggingOut ? Strings.MainTabBarView.loggingOut : Strings.MainTabBarView.deletingAccount) {
+        let shouldPresentLoading = Binding<Bool>(get: { user.currentState == .deletingAccount } , set: { _ in assertionFailure("Unexpected binding setting") })
+        LoadingView(isShowing: shouldPresentLoading, activityIndicatorText: Strings.MainTabBarView.deletingAccount) {
             MainTabBarView(sessionContext: CreateSessionContext(),
                            coreDataHook: CoreDataHook(context: persistenceController.viewContext))
         }

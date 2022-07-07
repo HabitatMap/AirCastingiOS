@@ -15,7 +15,7 @@ struct UnplugABView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 40) {
-            ProgressView(value: 0.3)
+            ProgressView(value: 0.426)
             Spacer()
             HStack() {
                 Spacer()
@@ -45,13 +45,13 @@ extension UnplugABView {
     
     var titleLabel: some View {
         Text(Strings.UnplugAirbeamView.title)
-            .font(Fonts.boldTitle3)
+            .font(Fonts.moderateBoldTitle3)
             .foregroundColor(.accentColor)
     }
     
     var messageLabel: some View {
         Text(Strings.UnplugAirbeamView.message)
-            .font(Fonts.regularHeading1)
+            .font(Fonts.moderateRegularHeading1)
             .foregroundColor(.aircastingGray)
     }
     

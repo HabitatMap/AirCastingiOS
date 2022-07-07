@@ -16,7 +16,7 @@ struct SyncingABView<VM: SDSyncViewModel>: View {
 
     var body: some View {
         VStack(spacing: 40) {
-            ProgressView(value: 0.7)
+            ProgressView(value: 0.852)
             Spacer()
             ZStack(alignment: Alignment(horizontal: .trailing, vertical: .bottom), content: {
                 syncingImage
@@ -67,13 +67,13 @@ extension SyncingABView {
                 Text(progressCount ?? "")
             }
         }
-            .font(Fonts.boldTitle3)
+            .font(Fonts.moderateBoldTitle3)
             .foregroundColor(.accentColor)
     }
 
     var messageLabel: some View {
         Text(Strings.SyncingABView.message)
-            .font(Fonts.regularHeading1)
+            .font(Fonts.moderateRegularHeading1)
             .foregroundColor(.aircastingGray)
     }
 

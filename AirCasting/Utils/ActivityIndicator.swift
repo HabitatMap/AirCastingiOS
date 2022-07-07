@@ -13,6 +13,7 @@ struct ActivityIndicator: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: UIActivityIndicatorView, context: UIViewRepresentableContext<ActivityIndicator>) {
+        uiView.color = UIColor(Color.accentColor)
         isAnimating ? uiView.startAnimating() : uiView.stopAnimating()
     }
 }

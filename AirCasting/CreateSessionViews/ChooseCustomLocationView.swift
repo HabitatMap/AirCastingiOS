@@ -17,6 +17,7 @@ struct ChooseCustomLocationView: View {
             ProgressView(value: 0.85)
             titleLabel
             createTextfield(placeholder: Strings.ChooseCustomLocationView.sessionLocation, binding: $location)
+                .font(Fonts.moderateRegularHeading2)
                 .disabled(true)
                 .onTapGesture {
                     isLocationPopupPresented.toggle()
@@ -54,7 +55,7 @@ struct ChooseCustomLocationView: View {
 
     var titleLabel: some View {
         Text(Strings.ChooseCustomLocationView.titleLabel)
-            .font(Fonts.boldTitle4)
+            .font(Fonts.muliHeavyTitle2)
             .foregroundColor(.darkBlue)
     }
     
@@ -63,7 +64,7 @@ struct ChooseCustomLocationView: View {
             isConfirmCreatingSessionActive.toggle()
         }, label: {
             Text(Strings.Commons.continue)
-                .bold()
+                .font(Fonts.muliBoldHeading1)
         }).buttonStyle(BlueButtonStyle())
     }
     

@@ -66,7 +66,7 @@ struct SelectDeviceView: View {
     
     var titleLabel: some View {
         Text(Strings.SelectDeviceView.title)
-            .font(Fonts.boldTitle3)
+            .font(Fonts.moderateBoldTitle3)
             .foregroundColor(.accentColor)
     }
     
@@ -121,9 +121,9 @@ struct SelectDeviceView: View {
                                                  using: [string],
                                                  fontWeight: .bold,
                                                  color: .accentColor,
-                                                 font: Fonts.boldHeading1,
+                                                 font: Fonts.muliBoldHeading1,
                                                  makeNewLineAfterCustomized: true)
-                .font(Fonts.muliHeading3)
+                .font(Fonts.muliRegularHeading4)
                 .foregroundColor(.aircastingGray)
             }
             

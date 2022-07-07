@@ -165,14 +165,14 @@ struct SettingsView: View {
     
     private var usernameText: some View {
         Text(viewModel.username)
-            .font(Fonts.muliHeading2)
+            .font(Fonts.muliRegularHeading3)
             .foregroundColor(.aircastingGray)
     }
     
     private var myAccount: some View {
         VStack(alignment: .leading, spacing: 5) {
             Text(Strings.Settings.myAccount)
-                .font(Fonts.boldHeading1)
+                .font(Fonts.muliBoldHeading1)
                 .padding(.top, 5)
             usernameText
         }
@@ -195,7 +195,7 @@ struct SettingsView: View {
 
     private var crowdMapDescription: some View {
         Text(Strings.Settings.crowdMapDescription)
-            .font(Fonts.muliHeading2)
+            .font(Fonts.muliRegularHeading3)
             .foregroundColor(.aircastingGray)
     }
 
@@ -206,7 +206,7 @@ struct SettingsView: View {
     
     private var disableMappingDescription: some View {
         Text(Strings.Settings.disableMappingDescription)
-            .font(Fonts.muliHeading2)
+            .font(Fonts.muliRegularHeading3)
             .foregroundColor(.aircastingGray)
     }
     
@@ -217,7 +217,7 @@ struct SettingsView: View {
 
     private var temperatureDescription: some View {
         Text(Strings.Settings.celsiusDescription)
-            .font(Fonts.muliHeading2)
+            .font(Fonts.muliRegularHeading3)
             .foregroundColor(.aircastingGray)
     }
 
@@ -228,7 +228,7 @@ struct SettingsView: View {
             Group {
                 HStack {
                     Text(Strings.Settings.backendSettings)
-                        .font(Fonts.boldHeading1)
+                        .font(Fonts.muliBoldHeading1)
                         .accentColor(.black)
                     Spacer()
                     Image(systemName: "control")
@@ -247,7 +247,7 @@ struct SettingsView: View {
              Group {
                  HStack {
                      Text(Strings.Settings.clearSDTitle)
-                         .font(Fonts.boldHeading1)
+                         .font(Fonts.muliBoldHeading1)
                          .accentColor(.black)
                      Spacer()
                      Image(systemName: "chevron.right")
@@ -263,7 +263,7 @@ struct SettingsView: View {
             AppConfigurationView()
                 .navigationTitle(Strings.Settings.appConfig)
         })
-            .font(Fonts.boldHeading1)
+            .font(Fonts.muliBoldHeading1)
     }
     
     private var shareLogsButton: some View {
@@ -291,7 +291,7 @@ extension SettingsView {
     func settingSwitch(toogle using: Binding<Bool>, label with: String) -> some View {
         Toggle(isOn: using, label: {
             Text(with)
-                .font(Fonts.boldHeading1)
+                .font(Fonts.muliBoldHeading1)
                 .multilineTextAlignment(.leading)
         }).toggleStyle(SwitchToggleStyle(tint: .accentColor))
     }

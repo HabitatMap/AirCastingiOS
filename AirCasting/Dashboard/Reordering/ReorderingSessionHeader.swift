@@ -22,7 +22,7 @@ private extension ReorderingSessionHeader {
             }
             nameLabel
         }
-        .font(Fonts.regularHeading4)
+        .font(Fonts.moderateRegularHeading4)
         .foregroundColor(.aircastingGray)
     }
 
@@ -34,11 +34,11 @@ private extension ReorderingSessionHeader {
         VStack(alignment: .leading, spacing: 3) {
             HStack {
                 Text(session.name ?? "")
-                    .font(Fonts.regularHeading1)
+                    .font(Fonts.moderateMediumHeading1)
                 Spacer()
             }
             sensorType
-                .font(Fonts.regularHeading4)
+                .font(Fonts.moderateRegularHeading4)
         }
         .foregroundColor(.darkBlue)
     }

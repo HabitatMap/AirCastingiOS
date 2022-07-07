@@ -32,7 +32,6 @@ struct DefaultSearchAndFollowCompleteScreenService: SearchAndFollowCompleteScree
                          measurementShortType: stream.measurementShortType,
                          measurementType: stream.measurementType,
                          sensorName: stream.sensorName,
-                         sensorPackageName: stream.sensorName,
                          thresholdsValues: .init(veryLow: stream.thresholdVeryLow,
                                                  low: stream.thresholdLow,
                                                  medium: stream.thresholdMedium,
