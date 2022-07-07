@@ -1634,13 +1634,13 @@
 		ACCEB2012763A2230040140B /* ViewsFlow */ = {
 			isa = PBXGroup;
 			children = (
+				ACCEB2082763A2230040140B /* SDSyncRootView */,
+				ACCEB2102763A2230040140B /* BackendSyncCompleted */,
+				ACCEB2162763A2230040140B /* SDSyncUnplugAB */,
+				ACCEB20D2763A2230040140B /* SDRestartAB */,
+				ACCEB2132763A2230040140B /* SDSyncingAB */,
 				ACCEB2022763A2230040140B /* SDSyncComplete */,
 				ACCEB2052763A2230040140B /* ClearingSDCard */,
-				ACCEB2082763A2230040140B /* SDSyncRootView */,
-				ACCEB20D2763A2230040140B /* SDRestartAB */,
-				ACCEB2102763A2230040140B /* BackendSyncCompleted */,
-				ACCEB2132763A2230040140B /* SDSyncingAB */,
-				ACCEB2162763A2230040140B /* SDSyncUnplugAB */,
 			);
 			path = ViewsFlow;
 			sourceTree = "<group>";

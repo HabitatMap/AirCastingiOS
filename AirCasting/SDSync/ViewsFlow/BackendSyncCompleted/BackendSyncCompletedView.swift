@@ -11,7 +11,7 @@ struct BackendSyncCompletedView<VM: BackendSyncCompletedViewModel>: View {
     var body: some View {
         GeometryReader { reader in
             VStack(alignment: .leading, spacing: 40) {
-                ProgressView(value: 0.2)
+                ProgressView(value: 0.284)
                 Spacer()
                 HStack() {
                     Spacer()
@@ -42,13 +42,13 @@ private extension BackendSyncCompletedView {
     
     var titleLabel: some View {
         Text(Strings.SDSyncSuccessView.title)
-            .font(Fonts.boldTitle3)
+            .font(Fonts.moderateBoldTitle3)
             .foregroundColor(.accentColor)
     }
     
     var messageLabel: some View {
         Text(Strings.SDSyncSuccessView.message)
-            .font(Fonts.regularHeading1)
+            .font(Fonts.moderateRegularHeading1)
             .foregroundColor(.aircastingGray)
     }
     

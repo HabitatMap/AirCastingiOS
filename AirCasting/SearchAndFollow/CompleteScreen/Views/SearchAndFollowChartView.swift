@@ -20,8 +20,8 @@ struct SearchAndFollowChartView: UIViewRepresentable {
     func updateUIView(_ uiView: UIViewType, context: Context) {
         guard !viewModel.entries.isEmpty else { return }
         
-        let entries = viewModel.entries.enumerated().map { (i, dot) -> ChartDataEntry in
-            ChartDataEntry(x: Double(i), y: dot.value)
+        let entries = viewModel.entries.map { dot -> ChartDataEntry in
+            ChartDataEntry(x: dot.xPosition, y: dot.value)
         }
         
         let dataSet = LineChartDataSet(entries: entries)
@@ -40,7 +40,7 @@ struct SearchAndFollowChartView: UIViewRepresentable {
         let formatter = NumberFormatter()
         formatter.maximumFractionDigits = 0
         data.setValueFormatter(DefaultValueFormatter(formatter: formatter))
-        data.setValueFont(Fonts.muliHeadingUIFont2)
+        data.setValueFont(Fonts.muliRegularHeadingUIFont2)
         data.setValueTextColor(UIColor.aircastingGray)
         data.highlightEnabled = false
     }

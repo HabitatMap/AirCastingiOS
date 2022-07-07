@@ -108,10 +108,10 @@ private extension CreateAccountView {
     var titleLabel: some View {
         VStack(alignment: .leading, spacing: 15) {
             Text(Strings.CreateAccountView.createTitle_1)
-                .font(Fonts.boldTitle1)
+                .font(Fonts.moderateBoldTitle1)
                 .foregroundColor(.accentColor)
             Text(Strings.CreateAccountView.createTitle_2)
-                .font(Fonts.muliHeading2)
+                .font(Fonts.muliRegularHeading3)
                 .foregroundColor(.aircastingGray)
         }
     }
@@ -120,6 +120,7 @@ private extension CreateAccountView {
         createTextfield(placeholder: Strings.CreateAccountView.email,
                         binding: $signInPersistanceObserved.email,
                         isInputValid: !isEmailCorrect)
+        .font(Fonts.moderateRegularHeading2)
         .autocapitalization(.none)
     }
     
@@ -127,6 +128,7 @@ private extension CreateAccountView {
         createTextfield(placeholder: Strings.CreateAccountView.profile,
                         binding: $signInPersistanceObserved.username,
                         isInputValid: isUsernameBlank)
+        .font(Fonts.moderateRegularHeading2)
         .autocapitalization(.none)
     }
     
@@ -171,6 +173,7 @@ private extension CreateAccountView {
                 }
             }
         }
+        .font(Fonts.muliBoldHeading1)
         .disabled(userState.currentState == .loggingOut)
         .buttonStyle(BlueButtonStyle())
     }
@@ -186,11 +189,11 @@ private extension CreateAccountView {
     
     var signingButtonText: some View {
         Text(Strings.CreateAccountView.signIn_1)
-            .font(Fonts.muliHeading2)
+            .font(Fonts.muliRegularHeading3)
             .foregroundColor(.aircastingGray)
         + Text(" ")
         + Text(Strings.CreateAccountView.signIn_2)
-            .font(Fonts.boldHeading2)
+            .font(Fonts.moderateBoldHeading1)
             .foregroundColor(.accentColor)
     }
     
@@ -198,6 +201,7 @@ private extension CreateAccountView {
         HStack {
             ActivityIndicator(isAnimating: .constant(userState.currentState == .loggingOut), style: .large)
             Text(Strings.CreateAccountView.loggingOutInBackground)
+                .font(Fonts.muliRegularHeading3)
                 .foregroundColor(.aircastingGray)
                 .fixedSize(horizontal: false, vertical: true)
         }

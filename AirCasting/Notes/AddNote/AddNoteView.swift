@@ -35,13 +35,13 @@ private extension AddNoteView {
     
     var title: some View {
         Text(Strings.AddNoteView.title)
-            .font(Fonts.boldTitle4)
+            .font(Fonts.muliHeavyTitle1)
             .foregroundColor(.darkBlue)
     }
     
     var description: some View {
         Text(Strings.AddNoteView.description)
-            .font(Fonts.regularHeading2)
+            .font(Fonts.moderateRegularHeading2)
             .foregroundColor(.aircastingGray)
     }
     
@@ -51,13 +51,13 @@ private extension AddNoteView {
         }) {
             HStack {
                 Image(systemName: "camera")
-                    .font(Fonts.regularHeading2)
+                    .font(Fonts.moderateRegularHeading2)
                 if picture == nil {
                     Text(Strings.AddNoteView.photoButton)
-                        .font(Fonts.regularHeading2)
+                        .font(Fonts.moderateRegularHeading2)
                 } else {
                     Text(Strings.AddNoteView.retakePhotoButton)
-                        .font(Fonts.regularHeading2)
+                        .font(Fonts.moderateRegularHeading2)
                 }
                 Spacer()
             }
@@ -82,7 +82,8 @@ private extension AddNoteView {
     }
     
     var noteField: some View {
-       createNoteTextField(binding: $viewModel.noteText)
+        createNoteTextField(binding: $viewModel.noteText)
+            .font(Fonts.muliRegularHeading3)
     }
     
     var continueButton: some View {
@@ -90,7 +91,7 @@ private extension AddNoteView {
             viewModel.continueTapped(selectedPictureURL: picture)
         } label: {
             Text(Strings.AddNoteView.continueButton)
-                .font(Fonts.boldHeading1)
+                .font(Fonts.muliBoldHeading1)
         }
         .buttonStyle(BlueButtonStyle())
     }

@@ -16,7 +16,7 @@ struct SDRestartABView: View {
     var body: some View {
         GeometryReader { reader in
             VStack(alignment: .leading, spacing: 40) {
-                ProgressView(value: 0.3)
+                ProgressView(value: 0.568)
                 Spacer()
                 HStack() {
                     Spacer()
@@ -47,13 +47,13 @@ extension SDRestartABView {
     
     var titleLabel: some View {
         Text(Strings.SDRestartABView.title)
-            .font(Fonts.boldTitle3)
+            .font(Fonts.moderateBoldTitle3)
             .foregroundColor(.accentColor)
     }
     
     var messageLabel: some View {
         Text(Strings.SDRestartABView.message)
-            .font(Fonts.regularHeading1)
+            .font(Fonts.moderateRegularHeading1)
             .foregroundColor(.aircastingGray)
     }
     

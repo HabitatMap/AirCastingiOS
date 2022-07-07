@@ -7,16 +7,15 @@ import AirCastingStyling
 struct PrivacyOnboarding: View {
     var completion: () -> Void
     @State var presentingModal = false
+    
     var body: some View {
-        VStack(alignment: .leading, spacing: 40) {
+        VStack(alignment: .leading) {
             progressBar
             Spacer()
             titleText
             descriptionText
-            VStack(spacing: 5) {
-                continueButton
-                learnMoreButton
-            }
+            continueButton
+            learnMoreButton
         }
         .padding()
         .navigationBarHidden(true)
@@ -45,7 +44,7 @@ struct PrivacyOnboarding: View {
         
         private var sheetTitle: some View {
             Text(Strings.OnboardingPrivacySheet.title)
-                .font(Fonts.boldTitle2)
+                .font(Fonts.moderateBoldTitle2)
                 .foregroundColor(.accentColor)
                 .multilineTextAlignment(.leading)
                 .padding(.horizontal)
@@ -53,7 +52,7 @@ struct PrivacyOnboarding: View {
         
         private var sheetDescription: some View {
             Text(Strings.OnboardingPrivacySheet.description)
-                .font(Fonts.muliHeading3)
+                .font(Fonts.muliRegularHeading4)
                 .lineSpacing(10.0)
                 .padding()
                 .foregroundColor(.aircastingGray)
@@ -70,18 +69,19 @@ private extension PrivacyOnboarding {
     
     private var titleText: some View {
         Text(Strings.OnboardingPrivacy.title)
-            .font(Fonts.boldTitle1)
+            .font(Fonts.moderateBoldTitle1)
             .foregroundColor(.accentColor)
             .multilineTextAlignment(.leading)
-            .padding(.bottom, 20)
+            .padding(.bottom, 30)
     }
     
     private var descriptionText: some View {
         Text(Strings.OnboardingPrivacy.description)
-            .font(Fonts.muliHeading2)
+            .font(Fonts.muliRegularHeading3)
             .foregroundColor(.aircastingGray)
             .lineSpacing(10.0)
             .multilineTextAlignment(.leading)
+            .padding(.bottom, 30)
     }
     
     private var continueButton: some View {
@@ -89,10 +89,9 @@ private extension PrivacyOnboarding {
             completion()
         }, label: {
             Text(Strings.OnboardingPrivacy.continueButton)
-                .font(Fonts.semiboldHeading1)
+                .font(Fonts.muliBoldHeading1)
         })
         .buttonStyle(BlueButtonStyle())
-        .padding(.top, 20)
     }
     
     private var learnMoreButton: some View {
@@ -100,6 +99,7 @@ private extension PrivacyOnboarding {
             presentingModal = true
         }, label: {
             Text(Strings.OnboardingPrivacy.sheetButton)
+                .font(Fonts.moderateBoldHeading1)
         })
         .buttonStyle(BlueTextButtonStyle())
         .sheet(isPresented: $presentingModal) {

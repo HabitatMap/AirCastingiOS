@@ -11,7 +11,7 @@ struct SDSyncRootView: View {
     var body: some View {
         GeometryReader { reader in
             VStack(spacing: 40) {
-                ProgressView(value: 0.1)
+                ProgressView(value: 0.142)
                 Spacer()
                 ZStack(alignment: Alignment(horizontal: .trailing, vertical: .bottom), content: {
                     syncImage
@@ -43,13 +43,13 @@ private extension SDSyncRootView {
     
     var titleLabel: some View {
         Text(Strings.SDSyncRootView.title)
-            .font(Fonts.boldTitle3)
+            .font(Fonts.moderateBoldTitle3)
             .foregroundColor(.accentColor)
     }
     
     var messageLabel: some View {
         Text(Strings.SDSyncRootView.message)
-            .font(Fonts.regularHeading1)
+            .font(Fonts.moderateRegularHeading1)
             .foregroundColor(.aircastingGray)
     }
     
