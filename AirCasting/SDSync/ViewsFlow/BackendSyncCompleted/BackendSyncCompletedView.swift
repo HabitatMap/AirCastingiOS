@@ -40,13 +40,13 @@ private extension BackendSyncCompletedView {
 
     var titleLabel: some View {
         Text(Strings.SDSyncSuccessView.title)
-            .font(Fonts.boldTitle3)
+            .font(Fonts.moderateBoldTitle3)
             .foregroundColor(.accentColor)
     }
 
     var messageLabel: some View {
         Text(Strings.SDSyncSuccessView.message)
-            .font(Fonts.regularHeading1)
+            .font(Fonts.moderateRegularHeading1)
             .foregroundColor(.aircastingGray)
     }
 

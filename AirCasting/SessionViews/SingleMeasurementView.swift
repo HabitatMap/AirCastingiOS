@@ -43,7 +43,7 @@ struct SingleMeasurementView: View {
             }, label: {
                 VStack(spacing: 1) {
                     Text(showStreamName())
-                        .font(Fonts.systemFont1)
+                        .font(Fonts.systemFontRegularHeading1)
                         .scaledToFill()
                     if let threshold = threshold.value, measurementPresentationStyle == .showValues {
                         let formatter = Resolver.resolve(ThresholdFormatter.self, args: threshold)
@@ -51,11 +51,11 @@ struct SingleMeasurementView: View {
                             if value != nil {
                                 MeasurementDotView(value: value!, thresholds: threshold)
                                 Text("\(Int(value!))")
-                                    .font(Fonts.regularHeading3)
+                                    .font(Fonts.moderateRegularHeading3)
                                     .scaledToFill()
                             } else {
                                 Text("-")
-                                    .font(Fonts.regularHeading3)
+                                    .font(Fonts.moderateRegularHeading3)
                                     .scaledToFill()
                             }
                         }

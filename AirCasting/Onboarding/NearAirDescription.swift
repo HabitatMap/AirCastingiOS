@@ -38,7 +38,7 @@ private extension NearAirDescription {
     
     private var titleText: some View {
         Text(Strings.OnboardingNearAir.title)
-            .font(Fonts.boldTitle1)
+            .font(Fonts.moderateBoldTitle1)
             .foregroundColor(.accentColor)
             .multilineTextAlignment(.leading)
             .padding(.bottom, 30)
@@ -48,7 +48,7 @@ private extension NearAirDescription {
     
     private var descriptionText: some View {
         Text(Strings.OnboardingNearAir.description)
-            .font(Fonts.muliHeading2)
+            .font(Fonts.muliRegularHeading3)
             .foregroundColor(.aircastingGray)
             .multilineTextAlignment(.leading)
             .lineSpacing(10.0)
@@ -60,7 +60,7 @@ private extension NearAirDescription {
             destination: AirBeamOnboarding(completion: completion),
             label: {
                 Text(Strings.Commons.continue)
-                    .font(Fonts.semiboldHeading1)
+                    .font(Fonts.muliBoldHeading1)
             }
         )
         .buttonStyle(BlueButtonStyle())

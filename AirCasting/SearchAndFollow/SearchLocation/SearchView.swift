@@ -75,7 +75,7 @@ private extension SearchView {
     var title: some View {
         Text(Strings.SearchView.title)
             .foregroundColor(.aircastingDarkGray)
-            .font(Font.muli(size: 24, weight: .medium))
+            .font(Fonts.muliSemiboldTitle1)
             .padding(.bottom, 20)
     }
     
@@ -86,6 +86,7 @@ private extension SearchView {
         }, set: { new in
             viewModel.locationNameInteracted(with: new)
         }))
+        .font(Fonts.moderateRegularHeading2)
         .disabled(true)
         .onTapGesture { viewModel.textFieldTapped() }
     }
@@ -93,14 +94,14 @@ private extension SearchView {
     var parametersQuestion: some View {
         Text(Strings.SearchView.parametersQuestion)
             .padding(.top, 20)
-            .font(Fonts.mediumHeading2)
+            .font(Fonts.muliMediumHeading2)
             .foregroundColor(.aircastingDarkGray)
     }
     
     var sensorQuestion: some View {
         Text(Strings.SearchView.sensorQuestion)
             .padding(.top, 20)
-            .font(Fonts.mediumHeading2)
+            .font(Fonts.muliMediumHeading2)
             .foregroundColor(.aircastingDarkGray)
     }
     

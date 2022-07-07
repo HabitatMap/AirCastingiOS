@@ -97,7 +97,7 @@ struct SessionCardView: View {
             reorderButton.setHidden(if: isGraphButtonActive)
             searchAndFollowButton.setHidden(if: isGraphButtonActive)
         }
-        .font(Fonts.regularHeading4)
+        .font(Fonts.moderateRegularHeading4)
         .foregroundColor(.aircastingGray)
         .padding()
         .background(
@@ -158,7 +158,7 @@ private extension SessionCardView {
             Log.info("\(reorderButton)")
         } label: {
             Text(Strings.SessionCartView.graph)
-                .font(Fonts.semiboldHeading2)
+                .font(Fonts.muliSemiboldHeading2)
                 .padding(.horizontal, 8)
         }
     }
@@ -168,7 +168,7 @@ private extension SessionCardView {
             isMapButtonActive = true
         } label: {
             Text(Strings.SessionCartView.map)
-                .font(Fonts.semiboldHeading2)
+                .font(Fonts.muliSemiboldHeading2)
                 .padding(.horizontal, 8)
         }
     }
@@ -189,7 +189,7 @@ private extension SessionCardView {
         VStack() {
             ChartView(thresholds: .init(value: thresholds), stream: $selectedStream, session: session)
                 .foregroundColor(.aircastingGray)
-                .font(Fonts.semiboldHeading2)
+                .font(Fonts.muliSemiboldHeading2)
         }
     }
 

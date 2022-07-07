@@ -40,7 +40,7 @@ struct EditView<VM: EditViewModel>: View {
                 createLabel(with: Strings.EditSession.sessionNameLabel)
                 createTextfield(placeholder: Strings.EditSession.sessionNamePlaceholder,
                                 binding: $editSessionViewModel.sessionName)
-                .font(Fonts.regularHeading2)
+                .font(Fonts.moderateRegularHeading2)
                 if editSessionViewModel.shouldShowError {
                     errorMessage(text: Strings.EditSession.erorr)
                 }
@@ -50,7 +50,7 @@ struct EditView<VM: EditViewModel>: View {
                 createLabel(with: Strings.EditSession.sessionTagsLabel)
                 createTextfield(placeholder: Strings.EditSession.tagPlaceholder,
                                 binding: $editSessionViewModel.sessionTags)
-                .font(Fonts.regularHeading2)
+                .font(Fonts.moderateRegularHeading2)
             }
             Spacer()
             saveButton
@@ -68,7 +68,7 @@ struct EditView<VM: EditViewModel>: View {
     
     var titleLabel: some View {
         Text(Strings.EditSession.title)
-            .font(Fonts.boldTitle4)
+            .font(Fonts.muliHeavyTitle1)
             .foregroundColor(.darkBlue)
     }
     
@@ -77,7 +77,7 @@ struct EditView<VM: EditViewModel>: View {
             editSessionViewModel.saveChanges()
         }, label: {
             Text(Strings.EditSession.buttonAccept)
-                .font(Fonts.semiboldHeading1)
+                .font(Fonts.muliBoldHeading1)
         })
             .buttonStyle(BlueButtonStyle())
             .padding(.top, 20)
@@ -91,7 +91,7 @@ struct EditView<VM: EditViewModel>: View {
     
     private func createLabel(with text: String) -> some View {
         Text(text)
-            .font(Font(Fonts.muliHeadingUIFont1).bold())
+            .font(Fonts.muliBoldHeading2)
             .foregroundColor(.aircastingDarkGray)
     }
 }

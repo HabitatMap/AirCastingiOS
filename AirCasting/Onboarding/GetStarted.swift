@@ -47,7 +47,7 @@ private extension GetStarted {
     var descriptionText: some View {
         Text(Strings.OnboardingGetStarted.description)
             .padding(.horizontal, 18)
-            .font(Fonts.muliHeading2)
+            .font(Fonts.muliRegularHeading2)
             .lineSpacing(10.0)
             .foregroundColor(.aircastingGray)
     }
@@ -61,7 +61,7 @@ private extension GetStarted {
     
     var getStarted: some View {
         Text(Strings.OnboardingGetStarted.getStarted)
-            .font(Fonts.boldHeading2)
+            .font(Fonts.moderateRegularHeading2)
             .frame(maxWidth: .infinity)
             .navigationBarHidden(true)
             .buttonStyle(BlueTextButtonStyle())

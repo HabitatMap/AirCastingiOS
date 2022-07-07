@@ -24,6 +24,7 @@ struct EmptyDashboardButtonView: View {
                     .bold()
             }
         })
+        .font(Fonts.muliBoldHeading1)
         .frame(maxWidth: 250)
         .buttonStyle(BlueButtonStyle())
     }
