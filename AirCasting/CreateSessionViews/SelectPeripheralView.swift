@@ -17,12 +17,12 @@ struct SelectPeripheralView: View {
     @EnvironmentObject var sessionContext: CreateSessionContext
     @Injected private var connectionController: AirBeamConnectionController
     @Binding var creatingSessionFlowContinues: Bool
-    var syncMode: Bool? = false
+    var syncMode: Bool = false
     
     var body: some View {
         GeometryReader { geometry in
             VStack(spacing: 30) {
-                ProgressView(value: syncMode! ? 0.710 : 0.375)
+                ProgressView(value: syncMode ? 0.710 : 0.375)
                 titleLabel
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 25) {
