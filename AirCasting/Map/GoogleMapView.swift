@@ -103,6 +103,8 @@ struct GoogleMapView: UIViewRepresentable {
             context.coordinator.drawHeatmap(uiView)
         }
         
+        if userSettings.satteliteMap { uiView.mapType = .hybrid } else { uiView.mapType = .normal }
+        
         if placePickerIsUpdating {
             uiView.moveCamera(cameraUpdate)
             DispatchQueue.main.async {
