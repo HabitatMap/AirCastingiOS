@@ -13,6 +13,7 @@ struct AirBeamOnboarding: View {
             progressBar
             mainImage
                 .frame(maxWidth: .infinity, alignment: .center)
+            Spacer()
             titleText
             descriptionText
             continueButton
@@ -70,7 +71,7 @@ private extension AirBeamOnboarding {
     private var progressBar: some View {
         ProgressView(value: 0.4)
             .accentColor(.aircastingMint)
-            .padding(.bottom, 20)
+            .padding(.bottom, 30)
     }
     
     private var mainImage: some View {
@@ -85,7 +86,7 @@ private extension AirBeamOnboarding {
             .font(Fonts.moderateBoldTitle1)
             .foregroundColor(.aircastingMint)
             .multilineTextAlignment(.leading)
-            .padding(.bottom, 20)
+            .padding(.bottom, 30)
     }
     
     private var buttonToShowScreen: some View {
@@ -107,7 +108,7 @@ private extension AirBeamOnboarding {
             .foregroundColor(.aircastingGray)
             .lineSpacing(10.0)
             .multilineTextAlignment(.leading)
-            .padding(.bottom, 20)
+            .padding(.bottom, 30)
     }
     
     private var continueButton: some View {

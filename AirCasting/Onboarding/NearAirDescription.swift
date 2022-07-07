@@ -6,15 +6,15 @@ import AirCastingStyling
 
 struct NearAirDescription: View {
     var completion: () -> Void
+    
     var body: some View {
-        VStack(alignment: .leading, spacing: 25) {
+        VStack(alignment: .leading) {
             progressView
             mainImage
                 .frame(maxWidth: .infinity, alignment: .center)
-            VStack(alignment: .leading, spacing: 15) {
-                titleText
-                descriptionText
-            }
+            Spacer()
+            titleText
+            descriptionText
             continueButton
         }
         .padding()
@@ -26,7 +26,7 @@ private extension NearAirDescription {
     private var progressView: some View {
         ProgressView(value: 0.2)
             .accentColor(.accentColor)
-            .padding(.bottom, 20)
+            .padding(.bottom, 30)
     }
     
     private var mainImage: some View {
@@ -42,7 +42,8 @@ private extension NearAirDescription {
             .foregroundColor(.accentColor)
             .multilineTextAlignment(.leading)
             .padding(.bottom, 30)
-            .scaledToFill()
+            .scaledToFit()
+            .minimumScaleFactor(0.8)
     }
     
     private var descriptionText: some View {
@@ -51,7 +52,7 @@ private extension NearAirDescription {
             .foregroundColor(.aircastingGray)
             .multilineTextAlignment(.leading)
             .lineSpacing(10.0)
-            .padding(.bottom, 20)
+            .padding(.bottom, 30)
     }
     
     private var continueButton: some View {
@@ -63,7 +64,7 @@ private extension NearAirDescription {
             }
         )
         .buttonStyle(BlueButtonStyle())
-        .padding(.bottom, 30)
+        .padding(.bottom, 52)
     }
 }
 

@@ -5,7 +5,7 @@ import SwiftUI
 
 struct StaticSingleStreamView: View {
     let streamName: String
-    let value: Double
+    let value: Double?
     let color: Color
     let isSelected: Bool
     let action: () -> Void
@@ -19,9 +19,10 @@ struct StaticSingleStreamView: View {
                     Text(streamName)
                         .font(Fonts.systemFontRegularHeading1)
                         .scaledToFill()
+                    if value != nil {
                         HStack(spacing: 3) {
                             dot
-                            Text("\(Int(value))")
+                            Text("\(Int(value!))")
                                 .font(Fonts.moderateRegularHeading3)
                                 .scaledToFill()
                         }
@@ -31,7 +32,12 @@ struct StaticSingleStreamView: View {
                             RoundedRectangle(cornerRadius: 8)
                                 .strokeBorder(isSelected ? color : .clear)
                         )
+                    } else {
+                        Text("-")
+                            .font(Fonts.moderateRegularHeading3)
+                            .scaledToFill()
                     }
+                }
             })
         }
     }

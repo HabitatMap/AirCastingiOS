@@ -68,5 +68,6 @@ struct PickerButtonStyle: ButtonStyle {
             .background(Color.white)
             .padding(.trailing, 10)
             .padding(.top)
+            .padding(.bottom, 5)
     }
 }
