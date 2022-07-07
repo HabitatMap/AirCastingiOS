@@ -83,7 +83,7 @@ struct DashboardView: View {
                         .shadow(color: Color.aircastingDarkGray.opacity(0.4),
                                 radius: 6)
                         .padding(.horizontal, -30)
-                    Color.white
+                    Color.aircastingWhite
                 }
             )
             .zIndex(2)
@@ -104,7 +104,7 @@ struct DashboardView: View {
                     .shadow(color: Color.aircastingDarkGray.opacity(0.4),
                             radius: 6)
                     .padding(.horizontal, -30)
-                Color.white
+                Color.aircastingWhite
             }
         )
         .zIndex(2)
@@ -125,7 +125,7 @@ struct DashboardView: View {
                 }
             }
             .coordinateSpace(name: dashboardCoordinateSpaceName)
-            .background(Color.aliceBlue)
+            .background(Color.aircastingWhite)
         }
     }
 

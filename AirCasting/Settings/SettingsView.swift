@@ -14,6 +14,8 @@ struct SettingsView: View {
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
     @InjectedObject private var userSettings: UserSettings
     @InjectedObject private var bluetoothManager: BluetoothManager
+    @InjectedObject var colorSchemeMode: ColorSchemeMode
+
     private let sessionContext: CreateSessionContext
     #if DEBUG || BETA
     @StateObject private var shareLogsViewModel = ShareLogsViewModel()
@@ -224,7 +226,7 @@ struct SettingsView: View {
                 HStack {
                     Text(Strings.Settings.backendSettings)
                         .font(Fonts.boldHeading1)
-                        .accentColor(.black)
+                        .accentColor(.primary)
                     Spacer()
                     Image(systemName: "control")
                         .accentColor(.gray).opacity(0.6)
@@ -243,7 +245,7 @@ struct SettingsView: View {
                  HStack {
                      Text(Strings.Settings.clearSDTitle)
                          .font(Fonts.boldHeading1)
-                         .accentColor(.black)
+                         .accentColor(.primary)
                      Spacer()
                      Image(systemName: "chevron.right")
                          .accentColor(.gray).opacity(0.6)
@@ -256,12 +258,8 @@ struct SettingsView: View {
         settingSwitch(toogle: $userSettings.useDarkMode,
                       label: Strings.Settings.useDarkMode)
         .onChange(of: userSettings.useDarkMode) { newValue in
-            changeDarkMode(state: newValue)
+            colorSchemeMode.changeDarkMode(state: newValue)
         }
-    }
-    
-    func changeDarkMode(state: Bool){
-        (UIApplication.shared.connectedScenes.first as? UIWindowScene)?.windows.first!.overrideUserInterfaceStyle = state ? .dark : .light
     }
 
     #if DEBUG || BETA

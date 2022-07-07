@@ -45,10 +45,15 @@ extension Color {
         return Color(white: 150/255, opacity: 0.5)
     }
     public static var aliceBlue: Color {
-        Color(red: 251/255, green: 253/255, blue: 255/255)
+        return Color("AliceBlue")
     }
-    
     public static var sessionCardShadow: Color {
         return Color(red: 205/255, green: 209/255, blue: 214/255)
+    }
+    public static var aircastingWhite: Color {
+        return Color("AircastingWhite")
+    }
+    public static var aircastingWhiteForDarkMode: Color {
+        return Color("AircastingWhiteForDarkMode")
     }
 }

@@ -13,6 +13,8 @@ struct RootAppView: View {
 
     @InjectedObject var userAuthenticationSession: UserAuthenticationSession
     @InjectedObject var lifeTimeEventsProvider: LifeTimeEventsProvider
+    @InjectedObject var userSettings: UserSettings
+    @InjectedObject var colorSchemeMode: ColorSchemeMode
     
     var body: some View {
         ZStack {
@@ -29,6 +31,9 @@ struct RootAppView: View {
             }
         }
         .environment(\.managedObjectContext, Resolver.resolve(PersistenceController.self).viewContext) //TODO: Where is this used??
+        .onAppear {
+            colorSchemeMode.changeDarkMode(state: userSettings.useDarkMode)
+        }
     }
     
 }

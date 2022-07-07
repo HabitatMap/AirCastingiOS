@@ -231,7 +231,6 @@ struct ChooseSessionTypeView: View {
                 titleLabel
                 messageLabel
             }
-            .background(Color.white)
             .padding(.horizontal)
             
             VStack(alignment: .leading, spacing: 15) {
@@ -401,7 +400,7 @@ extension View {
                minHeight: (UIScreen.main.bounds.height) / 4.5 < 145 ? (UIScreen.main.bounds.height) : 145,
                maxHeight: 145,
                alignment: .leading)
-        .background(Color.white)
+        .background(Color.aircastingWhite)
         .cornerRadius(8)
         .shadow(color: Color.shadow, radius: 9, x: 0, y: 1)
     }

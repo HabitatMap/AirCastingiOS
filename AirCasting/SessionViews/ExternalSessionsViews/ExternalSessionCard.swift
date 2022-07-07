@@ -89,7 +89,7 @@ struct ExternalSessionCard: View {
         .padding()
         .background(
             Group {
-                Color.white
+                Color.aircastingWhiteForDarkMode
                     .cardShadow()
                 mapNavigationLink
                 graphNavigationLink
