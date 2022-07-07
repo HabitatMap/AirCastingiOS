@@ -7,49 +7,51 @@ import SwiftUI
 struct BackendSyncCompletedView<VM: BackendSyncCompletedViewModel>: View {
     @StateObject var viewModel: VM
     @Binding var creatingSessionFlowContinues: Bool
-
+    
     var body: some View {
-        VStack(alignment: .leading, spacing: 40) {
-            ProgressView(value: 0.284)
-            Spacer()
-            HStack() {
+        GeometryReader { reader in
+            VStack(alignment: .leading, spacing: 40) {
+                ProgressView(value: 0.284)
                 Spacer()
-                connectedImage
+                HStack() {
+                    Spacer()
+                    connectedImage
+                        .frame(width: reader.size.width / 2, height: reader.size.height / 3, alignment: .center)
+                    Spacer()
+                }
+                Spacer()
+                VStack(alignment: .leading, spacing: 15) {
+                    titleLabel
+                    messageLabel
+                }
+                continueButton
                 Spacer()
             }
-            Spacer()
-            VStack(alignment: .leading, spacing: 15) {
-                titleLabel
-                messageLabel
-            }
-            continueButton
-            Spacer()
+            .background(Group { restartNavigationLink; BTNavigationLink })
+            .padding()
         }
-        .background(Group { restartNavigationLink; BTNavigationLink })
-        .padding()
     }
 }
 
 private extension BackendSyncCompletedView {
-
+    
     var connectedImage: some View {
         Image("4-connected")
-            .resizable()
             .aspectRatio(contentMode: .fit)
     }
-
+    
     var titleLabel: some View {
         Text(Strings.SDSyncSuccessView.title)
             .font(Fonts.moderateBoldTitle3)
             .foregroundColor(.accentColor)
     }
-
+    
     var messageLabel: some View {
         Text(Strings.SDSyncSuccessView.message)
             .font(Fonts.moderateRegularHeading1)
             .foregroundColor(.aircastingGray)
     }
-
+    
     var continueButton: some View {
         Button {
             viewModel.continueButtonTapped()
@@ -57,7 +59,7 @@ private extension BackendSyncCompletedView {
             Text(Strings.Commons.continue)
         }.buttonStyle(BlueButtonStyle())
     }
-
+    
     var restartNavigationLink: some View {
         NavigationLink(
             destination: UnplugABView(isSDClearProcess: false, creatingSessionFlowContinues: $creatingSessionFlowContinues),
@@ -66,7 +68,7 @@ private extension BackendSyncCompletedView {
                 EmptyView()
             })
     }
-
+    
     var BTNavigationLink: some View {
         NavigationLink(
             destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sdSyncContinues: .constant(true)),

@@ -14,24 +14,27 @@ struct UnplugABView: View {
     }
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 40) {
-            ProgressView(value: 0.426)
-            Spacer()
-            HStack() {
+        GeometryReader { reader in
+            VStack(alignment: .leading, spacing: 40) {
+                ProgressView(value: 0.426)
                 Spacer()
-                unplugImage
+                HStack() {
+                    Spacer()
+                    unplugImage
+                        .frame(width: reader.size.width / 2, height: reader.size.height / 3, alignment: .center)
+                    Spacer()
+                }
+                Spacer()
+                VStack(alignment: .leading, spacing: 15) {
+                    titleLabel
+                    messageLabel
+                }
+                continueButton
                 Spacer()
             }
-            Spacer()
-            VStack(alignment: .leading, spacing: 15) {
-                titleLabel
-                messageLabel
-            }
-            continueButton
-            Spacer()
+            .background(navigationLink)
+            .padding()
         }
-        .background(navigationLink)
-        .padding()
     }
 }
 
@@ -39,7 +42,6 @@ extension UnplugABView {
     
     var unplugImage: some View {
         Image("airbeam-unplugged")
-            .resizable()
             .aspectRatio(contentMode: .fit)
     }
     
