@@ -60,7 +60,7 @@ struct GoogleMapView: UIViewRepresentable {
         } catch {
             Log.error("One or more of the map styles failed to load. \(error)")
         }
-        if userSettings.satteliteMap { mapView.mapType = .satellite }
+        if userSettings.satteliteMap { mapView.mapType = .hybrid }
         mapView.delegate = context.coordinator
         mapView.isMyLocationEnabled = isMyLocationEnabled
         drawPolyline(mapView, context: context)

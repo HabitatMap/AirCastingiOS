@@ -27,7 +27,7 @@ struct SearchCompleteScreenMapView: UIViewRepresentable {
         
         let camera = GMSCameraPosition.camera(withLatitude: latitude, longitude: longitude, zoom: 15.0)
         let mapView = GMSMapView.map(withFrame: .zero, camera: camera)
-        if userSettings.satteliteMap { mapView.mapType = .satellite }
+        if userSettings.satteliteMap { mapView.mapType = .hybrid }
         
         do {
             if let styleURL = Bundle.main.url(forResource: "style", withExtension: "json") {
