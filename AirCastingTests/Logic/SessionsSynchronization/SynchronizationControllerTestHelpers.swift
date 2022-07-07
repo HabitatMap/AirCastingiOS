@@ -18,7 +18,7 @@ extension SynchronizationControllerTests {
     }
 
     func setupUploadWithStubbedSessionLocations(_ urlLocations: [String]) {
-        uploadService.toReturn = .success(.init(location: urlLocations[0]))
+        uploadService.toReturn = .success(.init(location: urlLocations[0], notes: []))
         let uuidsToUpload = [SessionUUID](creating: .init(rawValue: UUID().uuidString)!, times: urlLocations.count)
         let context = SessionsSynchronization.SynchronizationContext(needToBeDownloaded: [], needToBeUploaded: uuidsToUpload, removed: [])
         remoteContextProvider.toReturn = .success(context)
@@ -27,7 +27,7 @@ extension SynchronizationControllerTests {
         sub = uploadService.$recordedHistory.sink { history in
             guard history.count > 0 else { return }
             guard count <= urlLocations.count else { sub?.cancel(); return }
-            self.uploadService.toReturn = .success(.init(location: urlLocations[count]))
+            self.uploadService.toReturn = .success(.init(location: urlLocations[count], notes: []))
             count += 1
         }
     }
@@ -90,9 +90,9 @@ extension SynchronizationControllerTests {
     func spyStoreURLUpdates(count: Int = 1) -> [String] {
         spyOnPublisher(store.$recordedHistory, count: count, filter: {
             guard $0.count > 0 else { return false }
-            guard case .saveURLForSession(_) = $0.last else { return false }
+            guard case .saveResponse(_) = $0.last else { return false }
             return true
-        }).last?.allUpdatedURLs.map(\.url) ?? []
+        }).last?.allSavedResponses.map(\.result.location) ?? []
     }
 
     func spyStoreRemove(count: Int = 1) -> [SessionUUID] {
@@ -219,7 +219,7 @@ extension SynchronizationControllerTests {
             if count == errorousUploadIndex {
                 self.uploadService.toReturn = .failure(DummyError())
             } else {
-                self.uploadService.toReturn = .success(.init(location: "http://example.com/loc"))
+                self.uploadService.toReturn = .success(.init(location: "http://example.com/loc", notes: []))
             }
             if count == totalUploads { exp.fulfill() }
         }

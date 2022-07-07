@@ -46,30 +46,30 @@ class UploadServiceMock: SessionUpstream {
     
     var allUploadedUUIDs: [SessionUUID] { recordedHistory.map(\.uuid) }
     
-    func upload(session: SessionsSynchronization.SessionUpstreamData) -> Future<SessionsSynchronization.SessionUpstreamResult, Error> {
-        recordedHistory.append(session)
+    func upload(session: SessionsSynchronization.SessionWithPhotosUpstreamData) -> Future<SessionsSynchronization.SessionUpstreamResult, Error> {
+        recordedHistory.append(session.session)
         return .init { promise in
-            promise(self.toReturn ?? .success(.init(location: "http://example.com/loc")))
+            promise(self.toReturn ?? .success(.init(location: "http://example.com/loc", notes: [])))
         }
     }
 }
 
 class SessionStoreMock: SessionSynchronizationStore {
     enum HistoryItem: Equatable {
-        struct SaveURLArgs: Equatable {
+        struct SaveResponseArgs: Equatable {
             let uuid: SessionUUID
-            let url: String
+            let result: SessionsSynchronization.SessionUpstreamResult
         }
         case getLocalSessions
         case addSessions([SessionsSynchronization.SessionStoreSessionData])
-        case saveURLForSession(SaveURLArgs)
+        case saveResponse(SaveResponseArgs)
         case removeSessions([SessionUUID])
         case readSession(SessionUUID)
     }
     
     @Published private(set) var recordedHistory: [HistoryItem] = []
     var writeErrorToReturn: Error? = nil
-    var saveURLErrorToReturn: Error? = nil
+    var saveResponseErrorToReturn: Error? = nil
     var readErrorToReturn: Error? = nil
     var deleteErrorToReturn: Error? = nil
     
@@ -90,13 +90,6 @@ class SessionStoreMock: SessionSynchronizationStore {
         }
     }
     
-    func saveURLForSession(uuid: SessionUUID, url: String) -> Future<Void, Error> {
-        recordedHistory.append(.saveURLForSession(.init(uuid: uuid, url: url)))
-        return .init {
-            $0(self.saveURLErrorToReturn == nil ? .success(()) : .failure(self.saveURLErrorToReturn!))
-        }
-    }
-    
     func removeSessions(with sessions: [SessionUUID]) -> Future<Void, Error> {
         recordedHistory.append(.removeSessions(sessions))
         return .init {
@@ -108,6 +101,13 @@ class SessionStoreMock: SessionSynchronizationStore {
         recordedHistory.append(.readSession(uuid))
         return .init {
             $0(self.readErrorToReturn == nil ? .success(self.readSessionToReturn ?? .mock(uuid: uuid.rawValue)) : .failure(self.readErrorToReturn!))
+        }
+    }
+    
+    func saveUploadResponseForSession(uuid: SessionUUID, response: SessionsSynchronization.SessionUpstreamResult) -> Future<Void, Error> {
+        recordedHistory.append(.saveResponse(.init(uuid: uuid, result: response)))
+        return .init {
+            $0(self.saveResponseErrorToReturn == nil ? .success(()) : .failure(self.saveResponseErrorToReturn!))
         }
     }
 }
