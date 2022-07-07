@@ -16,7 +16,7 @@ struct SyncingABView<VM: SDSyncViewModel>: View {
 
     var body: some View {
         VStack(spacing: 40) {
-            ProgressView(value: 0.7)
+            ProgressView(value: 0.852)
             Spacer()
             ZStack(alignment: Alignment(horizontal: .trailing, vertical: .bottom), content: {
                 syncingImage
