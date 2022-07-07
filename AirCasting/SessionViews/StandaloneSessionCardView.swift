@@ -19,7 +19,6 @@ struct StandaloneSessionCardView: View {
                 header
                 content
             }
-            .font(Fonts.moderateRegularHeading4)
             .foregroundColor(.aircastingGray)
             .padding()
             .background(
@@ -77,6 +76,7 @@ struct StandaloneSessionCardView: View {
             }
         }
         .foregroundColor(.accentColor)
+        .font(Fonts.moderateRegularHeading2)
     }
 
     func finishSessionAndSyncAlertAction() {
