@@ -201,6 +201,7 @@ private extension CreateAccountView {
         HStack {
             ActivityIndicator(isAnimating: .constant(userState.currentState == .loggingOut), style: .large)
             Text(Strings.CreateAccountView.loggingOutInBackground)
+                .font(Fonts.muliRegularHeading3)
                 .foregroundColor(.aircastingGray)
                 .fixedSize(horizontal: false, vertical: true)
         }
