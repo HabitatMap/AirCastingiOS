@@ -132,6 +132,7 @@ struct SettingsView: View {
                 }
             }
             keepScreenOnSwitch
+            satelliteMapSwitch
             VStack(alignment: .leading) {
                 temperatureSwitch
                 Spacer()
@@ -175,6 +176,11 @@ struct SettingsView: View {
                 .padding(.top, 5)
             usernameText
         }
+    }
+    
+    private var satelliteMapSwitch: some View {
+        settingSwitch(toogle: $userSettings.satteliteMap,
+                      label: Strings.Settings.satelliteMap)
     }
 
     private var keepScreenOnSwitch: some View {

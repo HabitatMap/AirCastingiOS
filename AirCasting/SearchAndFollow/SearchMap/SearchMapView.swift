@@ -5,8 +5,10 @@ import CoreLocation
 import Foundation
 import SwiftUI
 import AirCastingStyling
+import Resolver
 
 struct SearchMapView: View {
+    @InjectedObject private var userSettings: UserSettings
     @StateObject private var viewModel: SearchMapViewModel
     @Environment(\.presentationMode) var presentationMode
     @Binding var isSearchAndFollowLinkActive: Bool
@@ -161,17 +163,19 @@ private extension SearchMapView {
                 .onStartingLocationChange { geoSquare in
                     viewModel.startingLocationChanged(geoSquare: geoSquare)
                 }
-                .padding(.top, 50)
+                .padding(.top, userSettings.satteliteMap ? 100 : 50)
                 .ignoresSafeArea(.all, edges: [.bottom])
-                LinearGradient(gradient: Gradient(colors: [.white.opacity(0.1),
-                                                           .white.opacity(0.5),
-                                                           .white.opacity(0.7),
-                                                           .white.opacity(0.8),
-                                                           .white.opacity(0.9),
-                                                           .white]),
-                               startPoint: .bottom,
-                               endPoint: .top)
-                .frame(width: reader.size.width, height: reader.size.height / 4.5, alignment: .top)
+                if !userSettings.satteliteMap {
+                    LinearGradient(gradient: Gradient(colors: [.white.opacity(0.1),
+                                                               .white.opacity(0.5),
+                                                               .white.opacity(0.7),
+                                                               .white.opacity(0.8),
+                                                               .white.opacity(0.9),
+                                                               .white]),
+                                   startPoint: .bottom,
+                                   endPoint: .top)
+                    .frame(width: reader.size.width, height: reader.size.height / 4.5, alignment: .top)
+                }
             }
         }
     }
@@ -181,9 +185,10 @@ private extension SearchMapView {
                                                 arguments: ["\(viewModel.sessionsList.count)",
                                                             "\(viewModel.sessionsList.count)"]),
                                          using: [Strings.SearchMapView.sessionsText],
-                                         color: .darkBlue,
-                                         standardColor: .darkBlue,
+                                         color: userSettings.satteliteMap ? .white : .darkBlue,
+                                         standardColor: userSettings.satteliteMap ? .white : .darkBlue,
                                          font: Fonts.muliBoldHeading1)
+
         .foregroundColor(.darkBlue)
     }
     

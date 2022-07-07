@@ -12,6 +12,7 @@ class UserSettings: ObservableObject {
     private let keepScreenOnKey = Constants.UserDefaultsKeys.keepScreenOn
     @Injected private var featureFlagProvider: FeatureFlagProvider
     private let convertToCelsiusKey = Constants.UserDefaultsKeys.convertToCelsius
+    private let satteliteMapKey = Constants.UserDefaultsKeys.satelliteMapKey
 
     var contributingToCrowdMap: Bool {
         get {
@@ -56,6 +57,17 @@ class UserSettings: ObservableObject {
             objectWillChange.send()
         }
     }
+    
+    var satteliteMap: Bool {
+        get {
+            userDefaults.bool(forKey: satteliteMapKey)
+        }
+        set {
+            userDefaults.setValue(newValue, forKey: satteliteMapKey)
+            Log.info("Changed satellite setting to \(satteliteMap ? "ON" : "OFF")")
+            objectWillChange.send()
+        }
+    }
 
     init(userDefaults: UserDefaults = .standard) {
         self.userDefaults = userDefaults
@@ -65,5 +77,6 @@ class UserSettings: ObservableObject {
         let isFeatureFlagOn = featureFlagProvider.isFeatureOn(.locationlessSessions) ?? false
         disableMapping = isFeatureFlagOn ? userDefaults.bool(forKey: locationlessKey) : false
         convertToCelsius = userDefaults.bool(forKey: convertToCelsiusKey)
+        satteliteMap = userDefaults.bool(forKey: satteliteMapKey)
     }
 }
