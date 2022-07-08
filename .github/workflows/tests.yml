@@ -73,7 +73,7 @@ jobs:
       - name: XCode select
         uses: devbotsxyz/xcode-select@v1
         with:
-          version: "13.4.1"
+          version: "13.2.1"
       - uses: actions/cache@v2
         with:
           path: Pods
