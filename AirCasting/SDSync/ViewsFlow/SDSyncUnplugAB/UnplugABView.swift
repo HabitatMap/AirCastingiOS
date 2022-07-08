@@ -30,7 +30,6 @@ struct UnplugABView: View {
                     messageLabel
                 }
                 continueButton
-                Spacer()
             }
             .background(navigationLink)
             .padding()
@@ -55,7 +54,6 @@ extension UnplugABView {
         Text(Strings.UnplugAirbeamView.message)
             .font(Fonts.moderateRegularHeading1)
             .foregroundColor(.aircastingGray)
-            .minimumScaleFactor(0.8)
     }
     
     var continueButton: some View {
@@ -63,7 +61,9 @@ extension UnplugABView {
             viewModel.continueButtonTapped()
         } label: {
             Text(Strings.Commons.continue)
-        }.buttonStyle(BlueButtonStyle())
+        }
+        .buttonStyle(BlueButtonStyle())
+        .padding(.bottom, 15)
     }
     
     var navigationLink: some View {

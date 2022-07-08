@@ -25,7 +25,6 @@ struct BackendSyncCompletedView<VM: BackendSyncCompletedViewModel>: View {
                     messageLabel
                 }
                 continueButton
-                Spacer()
             }
             .background(Group { restartNavigationLink; BTNavigationLink })
             .padding()
@@ -57,7 +56,9 @@ private extension BackendSyncCompletedView {
             viewModel.continueButtonTapped()
         } label: {
             Text(Strings.Commons.continue)
-        }.buttonStyle(BlueButtonStyle())
+        }
+        .buttonStyle(BlueButtonStyle())
+        .padding(.bottom, 15)
     }
     
     var restartNavigationLink: some View {
