@@ -54,7 +54,14 @@ class SearchAndFollowChartViewModel: ObservableObject {
         }
         
         entries.reverse()
-        return (startTime: times.min(), endTime: times.max())
+        
+        guard let startTime = times.min(), let endTime = times.max(), !entries.isEmpty else { return (startTime: nil, endTime: nil) }
+        
+        // This is to handle the situation when there is no measurement in the first hour of 9h window
+        let gapOnTheLeft = entries.first!.xPosition
+        let emptyHours = gapOnTheLeft*60*60
+        
+        return (startTime: startTime - emptyHours, endTime: endTime)
     }
     
     private func clearEntries() { entries = [] }
