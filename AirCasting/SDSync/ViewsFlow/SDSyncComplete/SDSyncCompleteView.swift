@@ -25,7 +25,6 @@ struct SDSyncCompleteView<VM: SDSyncCompleteViewModel>: View {
                 messageLabel
             }
             continueButton
-            Spacer()
         }
         .padding()
     }
@@ -57,7 +56,9 @@ private extension SDSyncCompleteView {
             tabSelection.selection = TabBarSelection.Tab.dashboard
         } label: {
             Text(Strings.Commons.continue)
-        }.buttonStyle(BlueButtonStyle())
+        }
+        .buttonStyle(BlueButtonStyle())
+        .padding(.bottom, 15)
     }
 }
 

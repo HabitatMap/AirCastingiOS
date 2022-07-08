@@ -30,7 +30,6 @@ struct SDRestartABView: View {
                     messageLabel
                 }
                 continueButton
-                Spacer()
             }
             .background(selectDeviceLink)
             .padding()
@@ -62,7 +61,9 @@ extension SDRestartABView {
             viewModel.continueSyncFlow()
         } label: {
             Text(Strings.Commons.continue)
-        }.buttonStyle(BlueButtonStyle())
+        }
+        .buttonStyle(BlueButtonStyle())
+        .padding(.bottom, 15)
     }
 
     var selectDeviceLink: some View {
