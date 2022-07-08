@@ -55,6 +55,7 @@ extension UnplugABView {
         Text(Strings.UnplugAirbeamView.message)
             .font(Fonts.moderateRegularHeading1)
             .foregroundColor(.aircastingGray)
+            .minimumScaleFactor(0.8)
     }
     
     var continueButton: some View {
