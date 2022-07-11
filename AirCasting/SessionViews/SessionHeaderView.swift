@@ -204,7 +204,7 @@ private extension SessionHeaderView {
         Button {
             bluetoothManager.enterStandaloneMode(sessionUUID: session.uuid)
         } label: {
-            Label(Strings.SessionHeaderView.enterStandaloneModeButton, systemImage: "xmark.circle")
+            Label(Strings.SessionHeaderView.enterStandaloneModeButton, image: "standalone-icon")
         }
     }
     
