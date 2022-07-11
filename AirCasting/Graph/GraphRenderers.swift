@@ -23,7 +23,7 @@ class TimeAxisRenderer: XAxisRenderer {
                   x: minPxX + 10,
                   y: bottomPxY,
                   attributes: [.foregroundColor : UIColor.aircastingGray,
-                               .font: Fonts.muliHeadingUIFont1],
+                               .font: Fonts.muliRegularHeadingUIFont1],
                   constrainedToSize: .zero,
                   anchor: .zero,
                   angleRadians: 0)
@@ -36,7 +36,7 @@ class TimeAxisRenderer: XAxisRenderer {
                   x: maxPxX - 50,
                   y: bottomPxY,
                   attributes: [.foregroundColor : UIColor.aircastingGray,
-                               .font: Fonts.muliHeadingUIFont1],
+                               .font: Fonts.muliRegularHeadingUIFont1],
                   constrainedToSize: .zero,
                   anchor: .zero,
                   angleRadians: 0)

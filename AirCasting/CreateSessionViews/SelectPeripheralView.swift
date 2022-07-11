@@ -17,12 +17,12 @@ struct SelectPeripheralView: View {
     @EnvironmentObject var sessionContext: CreateSessionContext
     @Injected private var connectionController: AirBeamConnectionController
     @Binding var creatingSessionFlowContinues: Bool
-    var syncMode: Bool? = false
+    var syncMode: Bool = false
     
     var body: some View {
         GeometryReader { geometry in
             VStack(spacing: 30) {
-                ProgressView(value: 0.375)
+                ProgressView(value: syncMode ? 0.710 : 0.375)
                 titleLabel
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 25) {
@@ -45,10 +45,11 @@ struct SelectPeripheralView: View {
                     Spacer()
                 }
                 .listStyle(PlainListStyle())
-                .font(Fonts.regularHeading1)
+                .font(Fonts.moderateRegularHeading1)
                 .foregroundColor(.aircastingDarkGray)
                 if !bluetoothManager.isScanning {
                     refreshButton
+                        .font(Fonts.moderateRegularHeading3)
                         .frame(alignment: .trailing)
                 }
                 connectButton.disabled(selection == nil)
@@ -93,7 +94,7 @@ struct SelectPeripheralView: View {
             title = Text(Strings.SelectPeripheralView.titleLabel)
         }
         return title
-            .font(Fonts.boldTitle3)
+            .font(Fonts.moderateBoldTitle3)
             .foregroundColor(.accentColor)
             .multilineTextAlignment(.leading)
             .lineSpacing(10.0)
@@ -101,7 +102,7 @@ struct SelectPeripheralView: View {
     
     func showDevice(name: String) -> some View {
         Text(name)
-            .font(Fonts.mediumHeading1)
+            .font(Fonts.muliMediumHeading1)
             .foregroundColor(.aircastingGray)
     }
     
@@ -141,6 +142,7 @@ struct SelectPeripheralView: View {
         return NavigationLink(destination: destination) {
             Text(Strings.SelectPeripheralView.connectText)
         }
+        .font(Fonts.muliBoldHeading1)
         .buttonStyle(BlueButtonStyle())
     }
 }

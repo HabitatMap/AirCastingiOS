@@ -10,6 +10,7 @@ import Resolver
 struct CreatingSessionMapView: UIViewRepresentable {
     
     typealias UIViewType = GMSMapView
+    @InjectedObject private var userSettings: UserSettings
     var isMyLocationEnabled = false
     var startingLocation: CLLocationCoordinate2D?
     
@@ -28,6 +29,7 @@ struct CreatingSessionMapView: UIViewRepresentable {
         let longitude = (isMyLocationEnabled ? location?.coordinate.longitude : startingLocation?.longitude) ?? -122.05
         let camera = GMSCameraPosition.camera(withLatitude: latitude, longitude: longitude, zoom: 16)
         let mapView = GMSMapView.map(withFrame: .zero, camera: camera)
+        if userSettings.satteliteMap { mapView.mapType = .hybrid }
         
         mapView.settings.myLocationButton = isMyLocationEnabled
         mapView.isMyLocationEnabled = isMyLocationEnabled

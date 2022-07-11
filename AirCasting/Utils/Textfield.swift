@@ -7,19 +7,19 @@
 
 import SwiftUI
 
-func createTextfield(placeholder: String, binding: Binding<String>) -> some View {
+func createTextfield(placeholder: String, binding: Binding<String>, isInputValid: Bool = false) -> some View {
     TextField(placeholder,
               text: binding)
     .padding()
     .frame(height: 50)
     .overlay(
         RoundedRectangle(cornerRadius: 8)
-            .stroke(Color.aircastingGray.opacity(0.1), lineWidth: 1)
+            .stroke(isInputValid ? .red : Color.aircastingGray.opacity(0.1), lineWidth: 1)
     )
     .background(RoundedRectangle(cornerRadius: 8).fill(Color.aircastingGray.opacity(0.05)))
 }
 
-func createSecuredTextfield(placeholder: String, binding: Binding<String>) -> some View {
+func createSecuredTextfield(placeholder: String, binding: Binding<String>, isInputValid: Bool = false) -> some View {
     SecureField(placeholder,
                 text: binding)
     .padding()
@@ -27,7 +27,7 @@ func createSecuredTextfield(placeholder: String, binding: Binding<String>) -> so
     .disableAutocorrection(true)
     .overlay(
         RoundedRectangle(cornerRadius: 8)
-            .stroke(Color.aircastingGray.opacity(0.1), lineWidth: 1)
+            .stroke(isInputValid ? .red : Color.aircastingGray.opacity(0.1), lineWidth: 1)
     )
     .background(RoundedRectangle(cornerRadius: 8).fill(Color.aircastingGray.opacity(0.05)))
 }

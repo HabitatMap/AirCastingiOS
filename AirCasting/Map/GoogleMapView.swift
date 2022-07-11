@@ -13,7 +13,7 @@ import Resolver
 
 struct GoogleMapView: UIViewRepresentable {
     @Injected private var tracker: LocationTracker
-    
+    @InjectedObject private var userSettings: UserSettings
     @Binding var isUserInteracting: Bool
     @Binding var noteMarketTapped: Bool
     @Binding var noteNumber: Int
@@ -64,6 +64,7 @@ struct GoogleMapView: UIViewRepresentable {
         } catch {
             Log.error("One or more of the map styles failed to load. \(error)")
         }
+        if userSettings.satteliteMap { mapView.mapType = .hybrid }
         mapView.delegate = context.coordinator
         mapView.isMyLocationEnabled = isMyLocationEnabled
         drawPolyline(mapView, context: context)
@@ -106,6 +107,8 @@ struct GoogleMapView: UIViewRepresentable {
             context.coordinator.drawHeatmap(uiView)
         }
         
+        if userSettings.satteliteMap { uiView.mapType = .hybrid } else { uiView.mapType = .normal }
+
         // MARK: Picker screen logic
         if placePickerIsUpdating {
             uiView.moveCamera(cameraUpdate)
@@ -342,6 +345,8 @@ struct GoogleMapView: UIViewRepresentable {
                 mapView.animate(to: camera)
                 return
             }
+            
+            #warning("Remove force unwrapping cause we are not sure if it will have a value")
             let lat = parent.liveModeOn ?
             parent.tracker.location.value?.coordinate.latitude ?? 37.35 :
             parent.pathPoints.last?.location.latitude ?? 37.35

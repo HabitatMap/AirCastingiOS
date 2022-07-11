@@ -12,7 +12,7 @@ struct SDSyncCompleteView<VM: SDSyncCompleteViewModel>: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 40) {
-            ProgressView(value: 0.9)
+            ProgressView(value: 0.994)
             Spacer()
             HStack() {
                 Spacer()
@@ -25,7 +25,6 @@ struct SDSyncCompleteView<VM: SDSyncCompleteViewModel>: View {
                 messageLabel
             }
             continueButton
-            Spacer()
         }
         .padding()
     }
@@ -41,13 +40,13 @@ private extension SDSyncCompleteView {
     
     var titleLabel: some View {
         Text(isSDClearProcess ? Strings.SDSyncCompleteView.SDClearTitle : Strings.SDSyncCompleteView.title)
-            .font(Fonts.boldTitle3)
+            .font(Fonts.moderateBoldTitle3)
             .foregroundColor(.accentColor)
     }
     
     var messageLabel: some View {
         Text(isSDClearProcess ? Strings.SDSyncCompleteView.SDClearMessage : Strings.SDSyncCompleteView.message)
-            .font(Fonts.regularHeading1)
+            .font(Fonts.moderateRegularHeading1)
             .foregroundColor(.aircastingGray)
     }
     
@@ -57,7 +56,9 @@ private extension SDSyncCompleteView {
             tabSelection.selection = TabBarSelection.Tab.dashboard
         } label: {
             Text(Strings.Commons.continue)
-        }.buttonStyle(BlueButtonStyle())
+        }
+        .buttonStyle(BlueButtonStyle())
+        .padding(.bottom, 15)
     }
 }
 

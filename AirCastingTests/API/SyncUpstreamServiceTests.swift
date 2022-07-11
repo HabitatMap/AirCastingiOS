@@ -169,3 +169,9 @@ extension SessionsSynchronization.MeasurementUpstreamData {
         .init(value: 12.00, milliseconds: 87, latitude: 51.01, longitude: 50.12, time: Date(timeIntervalSinceReferenceDate: 150))
     }
 }
+
+extension SessionsSynchronization.SessionWithPhotosUpstreamData {
+    static func mock() -> Self {
+        .init(session: .mock(), photos: [])
+    }
+}

@@ -7,36 +7,41 @@ import SwiftUI
 struct DeleteView<VM: DeleteSessionViewModel>: View {
     @ObservedObject var viewModel: VM
     @Binding var deleteModal: Bool
+    
     var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
-            title
-            description
-            chooseStream
-            continueButton
-            cancelButton
-        }.alert(isPresented: $viewModel.showingConfirmationAlert) {
-            Alert(
-                title: Text(Strings.DeleteSession.deleteAlert),
-                primaryButton: .destructive(Text(Strings.DeleteSession.deleteButton), action: {
-                    viewModel.deleteSelected()
-                    deleteModal.toggle()
-                }),
-                secondaryButton: .default(Text(Strings.Commons.cancel), action: {
-                    deleteModal.toggle()
-                }))
+        ZStack {
+            XMarkButton()
+            VStack(alignment: .leading, spacing: 20) {
+                title
+                description
+                chooseStream
+                continueButton
+                cancelButton
+            }
+            .alert(isPresented: $viewModel.showingConfirmationAlert) {
+                Alert(
+                    title: Text(Strings.DeleteSession.deleteAlert),
+                    primaryButton: .destructive(Text(Strings.DeleteSession.deleteButton), action: {
+                        viewModel.deleteSelected()
+                        deleteModal.toggle()
+                    }),
+                    secondaryButton: .default(Text(Strings.Commons.cancel), action: {
+                        deleteModal.toggle()
+                    }))
+            }
+            .padding()
         }
-        .padding()
     }
     
     private var title: some View {
         Text(Strings.DeleteSession.title)
-            .font(Fonts.boldTitle4)
+            .font(Fonts.muliHeavyTitle1)
             .foregroundColor(.darkBlue)
     }
     
     private var description: some View {
         Text(Strings.DeleteSession.description)
-            .font(Fonts.muliHeading2)
+            .font(Fonts.moderateRegularHeading2)
             .foregroundColor(.aircastingGray)
     }
     
@@ -48,6 +53,7 @@ struct DeleteView<VM: DeleteSessionViewModel>: View {
                         viewModel.didSelect(option: option)
                     }
                     Text(option.title)
+                        .font(Fonts.muliBoldHeading1)
                 }
             }
         }.padding()
@@ -58,7 +64,7 @@ struct DeleteView<VM: DeleteSessionViewModel>: View {
             viewModel.showConfirmationAlert()
         } label: {
             Text(Strings.DeleteSession.continueButton)
-                .bold()
+                .font(Fonts.muliBoldHeading1)
         }
         .buttonStyle(BlueButtonStyle())
     }

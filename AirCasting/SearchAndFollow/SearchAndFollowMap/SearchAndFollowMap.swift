@@ -8,7 +8,7 @@ import Resolver
 import Combine
 
 struct SearchAndFollowMap: UIViewRepresentable {
-    
+    @InjectedObject private var userSettings: UserSettings
     typealias UIViewType = GMSMapView
     @Binding var startingPoint: CLLocationCoordinate2D
     @Binding var showSearchAgainButton: Bool
@@ -64,6 +64,7 @@ struct SearchAndFollowMap: UIViewRepresentable {
         } catch {
             Log.error("One or more of the map styles failed to load. \(error)")
         }
+        if userSettings.satteliteMap { mapView.mapType = .hybrid }
         mapView.delegate = context.coordinator
         return mapView
     }

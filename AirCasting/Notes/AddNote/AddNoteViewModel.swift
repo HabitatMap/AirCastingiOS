@@ -4,7 +4,7 @@ import Foundation
 import Resolver
 
 class AddNoteViewModel: ObservableObject {
-    @Published var noteText = Strings.Commons.note
+    @Published var noteText = ""
     
     private let notesHandler: NotesHandler
     private let exitRoute: () -> Void
@@ -16,9 +16,9 @@ class AddNoteViewModel: ObservableObject {
         trackLocation = withLocation
     }
     
-    func continueTapped() {
-        notesHandler.addNote(noteText: noteText, withLocation: trackLocation)
-            exitRoute()
+    func continueTapped(selectedPictureURL: URL?) {
+        notesHandler.addNote(noteText: noteText, photo: selectedPictureURL, withLocation: trackLocation)
+        exitRoute()
     }
 
     func cancelTapped() { exitRoute() }

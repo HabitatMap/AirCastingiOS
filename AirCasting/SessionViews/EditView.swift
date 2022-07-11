@@ -15,6 +15,7 @@ struct EditView<VM: EditViewModel>: View {
     
     var body: some View {
         ZStack {
+            XMarkButton()
             if editSessionViewModel.isSessionDownloaded {
                 editView
             } else {
@@ -35,17 +36,27 @@ struct EditView<VM: EditViewModel>: View {
             Spacer()
             titleLabel
                 .padding(.bottom, 20)
-            createTextfield(placeholder: Strings.EditSession.namePlaceholder,
-                            binding: $editSessionViewModel.sessionName)
-            if editSessionViewModel.shouldShowError {
-                errorMessage(text: Strings.EditSession.erorr)
+            VStack(alignment: .leading) {
+                createLabel(with: Strings.EditSession.sessionNameLabel)
+                createTextfield(placeholder: Strings.EditSession.sessionNamePlaceholder,
+                                binding: $editSessionViewModel.sessionName)
+                .font(Fonts.moderateRegularHeading2)
+                if editSessionViewModel.shouldShowError {
+                    errorMessage(text: Strings.EditSession.erorr)
+                }
             }
-            createTextfield(placeholder: Strings.EditSession.tagPlaceholder,
-                            binding: $editSessionViewModel.sessionTags)
+            .padding(.bottom)
+            Group {
+                createLabel(with: Strings.EditSession.sessionTagsLabel)
+                createTextfield(placeholder: Strings.EditSession.tagPlaceholder,
+                                binding: $editSessionViewModel.sessionTags)
+                .font(Fonts.moderateRegularHeading2)
+            }
             Spacer()
             saveButton
             cancelButton
-        }.padding()
+        }
+        .padding()
     }
     
     var loader: some View {
@@ -57,7 +68,7 @@ struct EditView<VM: EditViewModel>: View {
     
     var titleLabel: some View {
         Text(Strings.EditSession.title)
-            .font(Fonts.boldTitle4)
+            .font(Fonts.muliHeavyTitle1)
             .foregroundColor(.darkBlue)
     }
     
@@ -66,7 +77,7 @@ struct EditView<VM: EditViewModel>: View {
             editSessionViewModel.saveChanges()
         }, label: {
             Text(Strings.EditSession.buttonAccept)
-                .font(Fonts.semiboldHeading1)
+                .font(Fonts.muliBoldHeading1)
         })
             .buttonStyle(BlueButtonStyle())
             .padding(.top, 20)
@@ -76,5 +87,11 @@ struct EditView<VM: EditViewModel>: View {
         Button(Strings.Commons.cancel) {
             presentationMode.wrappedValue.dismiss()
         }.buttonStyle(BlueTextButtonStyle())
+    }
+    
+    private func createLabel(with text: String) -> some View {
+        Text(text)
+            .font(Fonts.muliBoldHeading2)
+            .foregroundColor(.aircastingDarkGray)
     }
 }

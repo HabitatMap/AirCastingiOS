@@ -115,7 +115,7 @@ final class SynchronizationControllerTests: ACTestCase {
                                                       deleted: false,
                                                       measurements: [
                                                         .init(value: 12.02,
-                                                              milliseconds: 0,
+                                                              milliseconds: 978307350000,
                                                               latitude: 51.04,
                                                               longitude: 50.12,
                                                               time: Date(timeIntervalSinceReferenceDate: 150))

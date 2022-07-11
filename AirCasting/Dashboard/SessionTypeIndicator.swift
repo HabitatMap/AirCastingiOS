@@ -20,6 +20,7 @@ struct SessionTypeIndicator: View {
         }
         text = stream.joined(separator: ", ")
         return Text("\(sessionType.description) : \(text)")
+            .font(Fonts.moderateRegularHeading4)
     }
     
     private func componentsSeparation(name: inout String) {
