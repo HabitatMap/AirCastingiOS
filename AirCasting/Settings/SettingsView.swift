@@ -29,6 +29,7 @@ struct SettingsView: View {
             NavigationView {
                 main
             }
+            .navigationViewStyle(.stack)
             .fullScreenCover(isPresented: $viewModel.startSDClear) {
                 CreatingSessionFlowRootView {
                     SDRestartABView(isSDClearProcess: viewModel.SDClearingRouteProcess,

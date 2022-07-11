@@ -10,20 +10,18 @@ struct GetStarted: View {
     
     var completion: () -> Void
     var body: some View {
-        NavigationView {
-            VStack {
-                ZStack(alignment: .bottom) {
-                    mainImage
-                    logoImage
-                }
-                descriptionText
-                if featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) {
-                    continueToAirNearYouScreenButton
-                } else {
-                    startButton
-                }
-                Spacer()
+        VStack {
+            ZStack(alignment: .bottom) {
+                mainImage
+                logoImage
             }
+            descriptionText
+            if featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) {
+                continueToAirNearYouScreenButton
+            } else {
+                startButton
+            }
+            Spacer()
         }
     }
 }

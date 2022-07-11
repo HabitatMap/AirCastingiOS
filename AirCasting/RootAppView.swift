@@ -24,9 +24,12 @@ struct RootAppView: View {
                         signInPersistanceObserved.clearSavedStatesWithCredentials()
                     }
             } else if !lifeTimeEventsProvider.hasEverPassedOnBoarding {
-                GetStarted(completion: {
-                    self.lifeTimeEventsProvider.hasEverPassedOnBoarding = true
-                })
+                NavigationView {
+                    GetStarted(completion: {
+                        self.lifeTimeEventsProvider.hasEverPassedOnBoarding = true
+                    })
+                }
+                .navigationViewStyle(.stack)
             } else {
                 NavigationView {
                     if signInPersistanceObserved.credentialsScreen == .signIn {
@@ -35,6 +38,7 @@ struct RootAppView: View {
                         CreateAccountView(completion: { self.lifeTimeEventsProvider.hasEverLoggedIn = true }).environmentObject(lifeTimeEventsProvider)
                     }
                 }
+                .navigationViewStyle(.stack)
             }
         }
         .environment(\.managedObjectContext, Resolver.resolve(PersistenceController.self).viewContext) //TODO: Where is this used??
