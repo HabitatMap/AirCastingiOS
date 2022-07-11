@@ -5,10 +5,18 @@ import SwiftUI
 import Resolver
 
 struct ChartView: View {
+    @InjectedObject private var userSettings: UserSettings
     @Injected private var formatter: UnitFormatter
     @ObservedObject private var thresholds: ABMeasurementsViewThreshold
     @StateObject private var viewModel: ChartViewModel
     @Binding private var stream: MeasurementStreamEntity?
+    var timeFormatter: DateFormatter {
+        if userSettings.twentyFourHour {
+            return DateFormatters.SessionCardView.pollutionChartDateFormatter
+        }
+        return  DateFormatters.SessionCardView.pollutionChartDate12hFormatter
+    }
+
 
     init(thresholds: ABMeasurementsViewThreshold, stream: Binding<MeasurementStreamEntity?>, session: Sessionable) {
         self.thresholds = thresholds
@@ -34,20 +42,16 @@ struct ChartView: View {
     }
 
     var startTime: some View {
-        let formatter = DateFormatters.SessionCartView.pollutionChartDateFormatter
-
         guard let start = viewModel.chartStartTime else { return Text("") }
 
-        let string = formatter.string(from: start)
+        let string = timeFormatter.string(from: start)
         return Text(string)
     }
 
     var endTime: some View {
-        let formatter = DateFormatters.SessionCartView.pollutionChartDateFormatter
-
         let end = viewModel.chartEndTime ?? DateBuilder.getFakeUTCDate()
 
-        let string = formatter.string(from: end)
+        let string = timeFormatter.string(from: end)
         return Text(string)
     }
 

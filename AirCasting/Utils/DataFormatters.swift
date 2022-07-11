@@ -42,7 +42,7 @@ enum DateFormatters {
         }()
     }
     
-    enum SessionCartView {
+    enum SessionCardView {
         static let pollutionChartDateFormatter: DateFormatter = {
             let df = DateFormatter()
             df.dateFormat = "HH:mm"
@@ -50,9 +50,24 @@ enum DateFormatters {
             return df
         }()
         
+        static let pollutionChartDate12hFormatter: DateFormatter = {
+            let df = DateFormatter()
+            df.dateFormat = "h:mm a"
+            df.timeZone = TimeZone(abbreviation: "UTC")
+            return df
+        }()
+        
         static let utcDateIntervalFormatter: DateIntervalFormatter = {
             let df = DateIntervalFormatter()
             df.dateTemplate = "MM/dd/yy HH:mm"
+            df.timeZone = TimeZone(abbreviation: "UTC")
+            df.locale = Locale(identifier: "en_US_POSIX")
+            return df
+        }()
+        
+        static let utcDateInterval12hFormatter: DateIntervalFormatter = {
+            let df = DateIntervalFormatter()
+            df.dateTemplate = "MM/dd/yy h:mm a"
             df.timeZone = TimeZone(abbreviation: "UTC")
             df.locale = Locale(identifier: "en_US_POSIX")
             return df
@@ -82,6 +97,14 @@ enum DateFormatters {
             df.timeZone =  TimeZone.init(abbreviation: "UTC")
             df.locale = Locale(identifier: "en_US")
             df.dateFormat = "HH:mm"
+            return df
+        }()
+        
+        static let shortUTCDate12hFormatter: DateFormatter = {
+            let df = DateFormatter()
+            df.timeZone =  TimeZone.init(abbreviation: "UTC")
+            df.locale = Locale(identifier: "en_US")
+            df.dateFormat = "h:mm a"
             return df
         }()
     }

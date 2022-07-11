@@ -2,8 +2,10 @@
 //
 
 import SwiftUI
+import Resolver
 
 struct ReorderingSessionHeader: View {
+    @InjectedObject private var userSettings: UserSettings
     var session: Sessionable
     
     var body: some View {
@@ -49,7 +51,10 @@ private extension ReorderingSessionHeader {
     }
 
     func adaptTimeAndDate() -> Text {
-        let formatter = DateFormatters.SessionCartView.utcDateIntervalFormatter
+        var formatter: DateIntervalFormatter {
+            if userSettings.twentyFourHour { return DateFormatters.SessionCardView.utcDateIntervalFormatter }
+            return DateFormatters.SessionCardView.utcDateInterval12hFormatter
+        }
         
         guard let start = session.startTime else { return Text("") }
         let end = session.endTime ?? DateBuilder.getFakeUTCDate()

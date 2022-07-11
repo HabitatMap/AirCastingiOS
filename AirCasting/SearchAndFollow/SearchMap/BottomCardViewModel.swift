@@ -3,8 +3,10 @@
 
 import Foundation
 import SwiftUI
+import Resolver
 
 class BottomCardViewModel: ObservableObject {
+    @InjectedObject private var userSettings: UserSettings
     @Published private var isModalScreenPresented = false
     let dataModel: BottomCardModel
     let session: PartialExternalSession
@@ -22,7 +24,10 @@ class BottomCardViewModel: ObservableObject {
     }
     
     func adaptTimeAndDate() -> String {
-        let formatter = DateFormatters.SessionCartView.utcDateIntervalFormatter
+        var formatter: DateIntervalFormatter {
+            if userSettings.twentyFourHour { return DateFormatters.SessionCardView.utcDateIntervalFormatter }
+            return DateFormatters.SessionCardView.utcDateInterval12hFormatter
+        }
         let start = dataModel.startTime
         let end = dataModel.endTime
         let string = formatter.string(from: start, to: end)
