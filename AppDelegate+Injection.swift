@@ -189,7 +189,7 @@ extension Resolver: ResolverRegistering {
         // MARK: - SDSync
         main.register { SDSyncController() }.scope(.cached)
         main.register { SDCardMobileSessionsSavingService() as SDCardMobileSessionssSaver }
-        main.register { UploadFixedSessionAPIService() }
+        main.register { DefaultUploadFixedSessionAPIService() as UploadFixedSessionAPIService }
         main.register { SDCardFixedSessionsUploadingService() }
         main.register { SDSyncFileValidationService() as SDSyncFileValidator }
         main.register { SDSyncFileWritingService(bufferThreshold: 1000) as SDSyncFileWriter }

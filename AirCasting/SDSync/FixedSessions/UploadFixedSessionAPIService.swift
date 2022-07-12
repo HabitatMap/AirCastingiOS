@@ -6,8 +6,35 @@ import Combine
 import Gzip
 import Resolver
 
-// TODO: Hide this behind protocol
-class UploadFixedSessionAPIService {
+protocol UploadFixedSessionAPIService {
+    @discardableResult
+    func uploadFixedSession(input: UploadFixedMeasurementsParams, completion: @escaping (Result<APIOutput, Error>) -> Void) -> Cancellable
+}
+
+struct UploadFixedMeasurementsParams: Encodable {
+    let session_uuid: String
+    let sensor_package_name: String
+    let sensor_name: String?
+    let measurement_type: String?
+    let measurement_short_type: String?
+    let unit_name: String?
+    let unit_symbol: String?
+    let threshold_very_high: Int?
+    let threshold_high: Int?
+    let threshold_medium: Int?
+    let threshold_low: Int?
+    let threshold_very_low: Int?
+    let measurements: [CSVMeasurement]
+}
+
+fileprivate struct APIInput: Encodable {
+    let data: String
+    var compression: Bool = true
+}
+
+struct APIOutput: Codable {}
+
+class DefaultUploadFixedSessionAPIService: UploadFixedSessionAPIService {
 
     @Injected private var urlProvider: URLProvider
     @Injected private var apiClient: APIClient
@@ -59,30 +86,4 @@ class UploadFixedSessionAPIService {
             return EmptyCancellable()
         }
     }
-}
-
-extension UploadFixedSessionAPIService {
-    
-    struct UploadFixedMeasurementsParams: Encodable {
-        let session_uuid: String
-        let sensor_package_name: String
-        let sensor_name: String?
-        let measurement_type: String?
-        let measurement_short_type: String?
-        let unit_name: String?
-        let unit_symbol: String?
-        let threshold_very_high: Int?
-        let threshold_high: Int?
-        let threshold_medium: Int?
-        let threshold_low: Int?
-        let threshold_very_low: Int?
-        let measurements: [CSVMeasurement]
-    }
-    
-    fileprivate struct APIInput: Encodable {
-        let data: String
-        var compression: Bool = true
-    }
-    
-    struct APIOutput: Codable {}
 }

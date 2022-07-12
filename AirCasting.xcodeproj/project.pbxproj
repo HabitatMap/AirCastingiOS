@@ -314,6 +314,9 @@
 		B3AA784927D4D22A003B39F6 /* Resolver+XCTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3AA784827D4D22A003B39F6 /* Resolver+XCTest.swift */; };
 		B3AA784B27D4D7EF003B39F6 /* APIServiceTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3AA784A27D4D7EF003B39F6 /* APIServiceTestCase.swift */; };
 		B3AB8BE526BB5EF400AF23CC /* Array+MeasurementStatistics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3AB8BE426BB5EF400AF23CC /* Array+MeasurementStatistics.swift */; };
+		B3B8BB65287DCBE300B8AFD2 /* SDSyncRegressions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3B8BB64287DCBE300B8AFD2 /* SDSyncRegressions.swift */; };
+		B3B8BB6A287DD8AE00B8AFD2 /* CBPeripheralBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = B3B8BB69287DD8AE00B8AFD2 /* CBPeripheralBuilder.m */; };
+		B3B8BB6D287DEB7B00B8AFD2 /* PeripheralProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = B3B8BB6C287DEB7B00B8AFD2 /* PeripheralProxy.m */; };
 		B3C3F8B92695A295003E2CB4 /* StatisticsContainerViewModelable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3C3F8B82695A295003E2CB4 /* StatisticsContainerViewModelable.swift */; };
 		B3D1928D26F1FA1C0029E1C8 /* FixedSessionFaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EFAB1D26F1F9DB00E88141 /* FixedSessionFaker.swift */; };
 		B3D4B4B426C2C6A1004322FC /* Date+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3D4B4B326C2C6A1004322FC /* Date+Extensions.swift */; };
@@ -803,6 +806,12 @@
 		B3AA784827D4D22A003B39F6 /* Resolver+XCTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Resolver+XCTest.swift"; sourceTree = "<group>"; };
 		B3AA784A27D4D7EF003B39F6 /* APIServiceTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIServiceTestCase.swift; sourceTree = "<group>"; };
 		B3AB8BE426BB5EF400AF23CC /* Array+MeasurementStatistics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+MeasurementStatistics.swift"; sourceTree = "<group>"; };
+		B3B8BB64287DCBE300B8AFD2 /* SDSyncRegressions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSyncRegressions.swift; sourceTree = "<group>"; };
+		B3B8BB68287DD8AE00B8AFD2 /* AirCastingTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AirCastingTests-Bridging-Header.h"; sourceTree = "<group>"; };
+		B3B8BB69287DD8AE00B8AFD2 /* CBPeripheralBuilder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CBPeripheralBuilder.m; sourceTree = "<group>"; };
+		B3B8BB6B287DD90100B8AFD2 /* CBPeripheralBuilder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CBPeripheralBuilder.h; sourceTree = "<group>"; };
+		B3B8BB6C287DEB7B00B8AFD2 /* PeripheralProxy.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PeripheralProxy.m; sourceTree = "<group>"; };
+		B3B8BB6E287DEB9D00B8AFD2 /* PeripheralProxy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PeripheralProxy.h; sourceTree = "<group>"; };
 		B3C3F8B82695A295003E2CB4 /* StatisticsContainerViewModelable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsContainerViewModelable.swift; sourceTree = "<group>"; };
 		B3D4B4B326C2C6A1004322FC /* Date+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extensions.swift"; sourceTree = "<group>"; };
 		B3E26A022676D9AA001A8E4C /* ArrayUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayUtils.swift; sourceTree = "<group>"; };
@@ -1179,6 +1188,7 @@
 		4FB39DFD2621B53C00E5E564 /* AirCastingTests */ = {
 			isa = PBXGroup;
 			children = (
+				B3B8BB66287DD87E00B8AFD2 /* Regressions */,
 				B37E1C932748208C0020A281 /* SDSyncFileWritingServiceTests.swift */,
 				DDDCEC3727D0C89F00B3757C /* DateBuilderTests */,
 				B3AA784827D4D22A003B39F6 /* Resolver+XCTest.swift */,
@@ -1947,6 +1957,27 @@
 			path = SessionStopping;
 			sourceTree = "<group>";
 		};
+		B3B8BB66287DD87E00B8AFD2 /* Regressions */ = {
+			isa = PBXGroup;
+			children = (
+				B3B8BB67287DD88400B8AFD2 /* SDSync */,
+			);
+			path = Regressions;
+			sourceTree = "<group>";
+		};
+		B3B8BB67287DD88400B8AFD2 /* SDSync */ = {
+			isa = PBXGroup;
+			children = (
+				B3B8BB64287DCBE300B8AFD2 /* SDSyncRegressions.swift */,
+				B3B8BB6B287DD90100B8AFD2 /* CBPeripheralBuilder.h */,
+				B3B8BB69287DD8AE00B8AFD2 /* CBPeripheralBuilder.m */,
+				B3B8BB6E287DEB9D00B8AFD2 /* PeripheralProxy.h */,
+				B3B8BB6C287DEB7B00B8AFD2 /* PeripheralProxy.m */,
+				B3B8BB68287DD8AE00B8AFD2 /* AirCastingTests-Bridging-Header.h */,
+			);
+			path = SDSync;
+			sourceTree = "<group>";
+		};
 		B3E26A042676DA14001A8E4C /* Other */ = {
 			isa = PBXGroup;
 			children = (
@@ -2515,6 +2546,7 @@
 				TargetAttributes = {
 					4FB39DFB2621B53C00E5E564 = {
 						CreatedOnToolsVersion = 12.4;
+						LastSwiftMigration = 1340;
 						TestTargetID = AC7EB37125A6FB3A00A7F2AF;
 					};
 					AC7EB37125A6FB3A00A7F2AF = {
@@ -2726,6 +2758,9 @@
 				B3F1447826AE4337006A4612 /* FilterErrorTests.swift in Sources */,
 				4FB39E402622252700E5E564 /* XCTestCase+Extensions.swift in Sources */,
 				DDBC992626A1652A00B0662E /* ForgotPasswordTest.swift in Sources */,
+				B3B8BB6D287DEB7B00B8AFD2 /* PeripheralProxy.m in Sources */,
+				B3B8BB65287DCBE300B8AFD2 /* SDSyncRegressions.swift in Sources */,
+				B3B8BB6A287DD8AE00B8AFD2 /* CBPeripheralBuilder.m in Sources */,
 				DDDCEC3927D0C8C700B3757C /* DateBuilderTests.swift in Sources */,
 				B33DB5742686120600ED1344 /* XCTestCase+AssertContainsSameElements.swift in Sources */,
 				4FA83EEF26342D84003E2BF2 /* AuthorizationAPIServiceTests.swift in Sources */,
@@ -3181,6 +3216,7 @@
 			baseConfigurationReference = 4327910762891E7B1AE9102E /* Pods-AirCastingTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				INFOPLIST_FILE = AirCastingTests/Info.plist;
@@ -3192,6 +3228,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.habitatmap.AirCastingTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "AirCastingTests/Regressions/SDSync/AirCastingTests-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AirCasting.app/AirCasting";
@@ -3203,6 +3241,7 @@
 			baseConfigurationReference = 08139B8AACC5B29DDED2C953 /* Pods-AirCastingTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				INFOPLIST_FILE = AirCastingTests/Info.plist;
@@ -3214,6 +3253,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.habitatmap.AirCastingTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "AirCastingTests/Regressions/SDSync/AirCastingTests-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AirCasting.app/AirCasting";
@@ -3486,6 +3526,7 @@
 			baseConfigurationReference = D1F718AF5A721F439FE112FF /* Pods-AirCastingTests.beta.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				INFOPLIST_FILE = AirCastingTests/Info.plist;
@@ -3497,6 +3538,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.habitatmap.AirCastingTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "AirCastingTests/Regressions/SDSync/AirCastingTests-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AirCasting.app/AirCasting";

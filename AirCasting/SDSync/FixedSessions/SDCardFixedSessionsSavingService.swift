@@ -133,8 +133,8 @@ class SDCardFixedSessionsUploadingService {
         return allSuccess
     }
     
-    private func getSyncParams(streamsWithMeasurements: [SDStream: [Measurement]], deviceID: String) -> [UploadFixedSessionAPIService.UploadFixedMeasurementsParams] {
-        streamsWithMeasurements.compactMap { sdStream, measurements -> UploadFixedSessionAPIService.UploadFixedMeasurementsParams? in
+    private func getSyncParams(streamsWithMeasurements: [SDStream: [Measurement]], deviceID: String) -> [UploadFixedMeasurementsParams] {
+        streamsWithMeasurements.compactMap { sdStream, measurements -> UploadFixedMeasurementsParams? in
             guard let stream = CSVMeasurementStream.SUPPORTED_STREAMS[sdStream.header] else {
                 Log.info("Unsupported stream")
                 return nil
@@ -148,7 +148,7 @@ class SDCardFixedSessionsUploadingService {
                                value: $0.value)
             }
             
-            return UploadFixedSessionAPIService.UploadFixedMeasurementsParams(session_uuid: sdStream.sessionUUID.rawValue,
+            return UploadFixedMeasurementsParams(session_uuid: sdStream.sessionUUID.rawValue,
                                                                               sensor_package_name: deviceID.replacingOccurrences(of: ":", with: "-"),
                                                                               sensor_name: stream.sensorName,
                                                                               measurement_type: stream.measurementType,
