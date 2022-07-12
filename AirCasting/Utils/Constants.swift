@@ -39,6 +39,7 @@ struct Constants {
         static let keepScreenOn = "keepScreenOn"
         static let disableMapping = "disableMapping"
         static let convertToCelsius = "convertToCelsius"
+        static let satelliteMapKey = "satteliteMapKey"
     }
     
     enum PrivacyPolicy {

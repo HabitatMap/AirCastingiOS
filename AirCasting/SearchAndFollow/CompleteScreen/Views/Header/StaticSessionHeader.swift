@@ -20,13 +20,14 @@ private extension StaticSessionHeader {
         VStack(alignment: .leading, spacing: 3) {
             HStack {
                 dateAndTime
+                    .font(Fonts.muliRegularHeading5)
                     .foregroundColor(Color.aircastingTimeGray)
                 Spacer()
             }
             .padding(.vertical)
             nameLabel
         }
-        .font(Fonts.regularHeading4)
+        .font(Fonts.muliRegularHeading5)
         .foregroundColor(.aircastingGray)
     }
 
@@ -38,11 +39,11 @@ private extension StaticSessionHeader {
         VStack(alignment: .leading, spacing: 3) {
             HStack {
                 Text(viewModel.sessionName)
-                    .font(Fonts.regularHeading1)
+                    .font(Fonts.moderateMediumHeading1)
                 Spacer()
             }
             sensorType
-                .font(Fonts.regularHeading4)
+                .font(Fonts.muliRegularHeading5)
         }
         .foregroundColor(.darkBlue)
     }

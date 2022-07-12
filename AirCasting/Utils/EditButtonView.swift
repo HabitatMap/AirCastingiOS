@@ -14,7 +14,7 @@ struct EditButtonView: View {
     
     var dot: some View {
         Color.aircastingGray
-            .frame(width: 3, height: 3)
+            .frame(width: 4, height: 4)
             .clipShape(Circle())
     }
     var dots: some View {

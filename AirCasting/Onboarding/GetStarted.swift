@@ -47,43 +47,39 @@ private extension GetStarted {
     var descriptionText: some View {
         Text(Strings.OnboardingGetStarted.description)
             .padding(.horizontal, 18)
-            .font(Fonts.muliHeading2)
+            .font(Fonts.muliRegularHeading2)
             .lineSpacing(10.0)
             .foregroundColor(.aircastingGray)
     }
     
     var startButton: some View {
-            NavigationLink(
-                destination: AirBeamOnboarding(completion: completion),
-                label: {
-                    Text(Strings.OnboardingGetStarted.getStarted)
-                        .frame(maxWidth:.infinity)
-                        .navigationBarHidden(true)
-                }
-            ).buttonStyle(BlueTextButtonStyle())
+        NavigationLink(
+            destination: AirBeamOnboarding(completion: completion),
+            label: { getStarted }
+        )
+    }
+    
+    var getStarted: some View {
+        Text(Strings.OnboardingGetStarted.getStarted)
+            .font(Fonts.moderateRegularHeading2)
+            .frame(maxWidth: .infinity)
+            .navigationBarHidden(true)
+            .buttonStyle(BlueTextButtonStyle())
+            .padding(12)
             .background(
                 RoundedRectangle(cornerRadius: 5)
                     .stroke(lineWidth: 0.1)
                     .accentColor(Color.aircastingGray)
             )
             .padding()
+            .padding(.bottom, 41)
     }
     
     var continueToAirNearYouScreenButton: some View {
         NavigationLink(
             destination: NearAirDescription(completion: completion),
-            label: {
-                Text(Strings.OnboardingGetStarted.getStarted)
-                    .frame(maxWidth:.infinity)
-                    .navigationBarHidden(true)
-            }
-        ).buttonStyle(BlueTextButtonStyle())
-        .background(
-            RoundedRectangle(cornerRadius: 5)
-                .stroke(lineWidth: 0.1)
-                .accentColor(Color.aircastingGray)
+            label: { getStarted }
         )
-        .padding()
     }
 }
 

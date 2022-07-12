@@ -15,20 +15,24 @@ struct ForgotPasswordView<VM: ForgotPasswordViewModel>: View {
     }
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 30) {
-            title
-            createTextfield(placeholder: viewModel.emailInputTitle, binding: $email)
-            VStack(alignment: .leading) {
-                sendButton
-                cancelButton
+        ZStack {
+            XMarkButton()
+            VStack(alignment: .leading, spacing: 30) {
+                title
+                createTextfield(placeholder: viewModel.emailInputTitle, binding: $email)
+                VStack(alignment: .leading) {
+                    sendButton
+                    cancelButton
+                }
             }
-        }.onChange(of: email, perform: { self.viewModel.emailChanged(to: $0) })
+            .onChange(of: email, perform: { self.viewModel.emailChanged(to: $0) })
             .padding()
+        }
     }
     
     private var title: some View {
         Text(viewModel.title)
-            .font(Fonts.boldTitle1)
+            .font(Fonts.moderateBoldTitle1)
             .foregroundColor(.accentColor)
     }
     

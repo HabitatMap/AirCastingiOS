@@ -284,31 +284,31 @@ private extension ChooseSessionTypeView {
 private extension ChooseSessionTypeView {
     var titleLabel: some View {
         Text(Strings.ChooseSessionTypeView.title)
-            .font(Fonts.boldTitle1)
+            .font(Fonts.moderateBoldTitle1)
             .foregroundColor(.accentColor)
     }
     
     var messageLabel: some View {
         Text(Strings.ChooseSessionTypeView.message)
-            .font(Fonts.regularHeading1)
+            .font(Fonts.moderateRegularHeading1)
             .foregroundColor(.aircastingGray)
     }
     
     var recordNewLabel: some View {
         Text(Strings.ChooseSessionTypeView.recordNew)
-            .font(Fonts.boldHeading3)
+            .font(Fonts.muliBoldHeading2)
             .foregroundColor(.aircastingGray)
     }
     
     var orLabel: some View {
         Text(Strings.ChooseSessionTypeView.orLabel)
-            .font(Fonts.boldHeading3)
+            .font(Fonts.muliBoldHeading2)
             .foregroundColor(.aircastingGray)
     }
     
     var moreInfoLabel: some View {
         Text(Strings.ChooseSessionTypeView.moreInfo)
-            .font(Fonts.regularHeading3)
+            .font(Fonts.moderateRegularHeading3)
             .foregroundColor(.accentColor)
     }
     
@@ -363,27 +363,27 @@ private extension ChooseSessionTypeView {
         chooseSessionButton(title: StringCustomizer.customizeString(Strings.ChooseSessionTypeView.fixedLabel,
                                                                      using: [Strings.ChooseSessionTypeView.fixedSession],
                                                                      color: .accentColor,
-                                                                     font: Fonts.boldHeading1))
+                                                                     font: Fonts.muliBoldHeading1))
     }
     
     var mobileSessionLabel: some View {
         chooseSessionButton(title: StringCustomizer.customizeString(Strings.ChooseSessionTypeView.mobileLabel,
                                                                     using: [Strings.ChooseSessionTypeView.mobileSession],
                                                                     color: .accentColor,
-                                                                    font: Fonts.boldHeading1))
+                                                                    font: Fonts.muliBoldHeading1))
     }
     
     var syncButtonLabel: some View {
         chooseSessionButton(title: StringCustomizer.customizeString(Strings.ChooseSessionTypeView.syncTitle,
                                                                      using: [Strings.ChooseSessionTypeView.syncData],
-                                                                     font: Fonts.boldHeading1,
+                                                                     font: Fonts.muliBoldHeading1,
                                                                      makeNewLineAfterCustomized: true))
     }
     
     var followButtonLabel: some View {
         chooseSessionButton(title: StringCustomizer.customizeString(Strings.ChooseSessionTypeView.followButtonTitle,
                                                                     using: [Strings.ChooseSessionTypeView.followSession],
-                                                                    font: Fonts.boldHeading1))
+                                                                    font: Fonts.muliBoldHeading1))
     }
 }
 
@@ -391,7 +391,7 @@ extension View {
     func chooseSessionButton(title: Text) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             title
-                .font(Fonts.muliHeading3)
+                .font(Fonts.muliRegularHeading4)
                 .foregroundColor(.aircastingGray)
         }
         .multilineTextAlignment(.leading)

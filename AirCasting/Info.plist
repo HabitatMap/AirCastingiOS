@@ -17,7 +17,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
-	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<string>7</string>
 	<key>FirebaseAppDelegateProxyEnabled</key>
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
@@ -38,15 +38,17 @@
 		</dict>
 	</dict>
 	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>We need Bluetooth to connect with AirBeam, it's impossible to collect the data without it. </string>
+	<string>We need Bluetooth to connect with AirBeam, it&apos;s impossible to collect the data without it. </string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
-	<string>We need Bluetooth to connect with the AirBeam, it's impossible to collect the pollution data without it. </string>
+	<string>We need Bluetooth to connect with the AirBeam, it&apos;s impossible to collect the pollution data without it. </string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>AirCasting uses your location to map your measurements.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>AirCasting uses your location to map your measurements.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>AirCasting uses microphone to measure noise level while session is recording.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>This will allow you to attach photos to your mobile session notes.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Moderat-Trial-Black.otf</string>

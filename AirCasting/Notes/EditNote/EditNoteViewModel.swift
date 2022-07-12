@@ -5,13 +5,15 @@ import Resolver
 
 protocol EditNoteViewModel: ObservableObject {
     var noteText: String { get set }
+    var notePhoto: URL? { get set }
     func saveTapped()
     func deleteTapped()
     func cancelTapped()
 }
 
 class EditNoteViewModelDefault: EditNoteViewModel, ObservableObject {
-    @Published var noteText = Strings.Commons.note
+    @Published var noteText = ""
+    @Published var notePhoto: URL? = nil
     private var note: Note!
     private let notesHandler: NotesHandler
     private let exitRoute: () -> Void
@@ -25,6 +27,7 @@ class EditNoteViewModelDefault: EditNoteViewModel, ObservableObject {
             DispatchQueue.main.async {
                 self.note = note
                 self.noteText = note.text
+                self.notePhoto = note.photoLocation
             }
         }
     }

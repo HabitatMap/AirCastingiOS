@@ -113,6 +113,7 @@ private extension SessionHeaderView {
         VStack(alignment: .leading, spacing: 3) {
             HStack {
                 dateAndTime
+                    .font(Fonts.moderateRegularHeading4)
                     .foregroundColor(Color.aircastingTimeGray)
                 Spacer()
                 (isMenuNeeded && selectedSection.selectedSection != .following) ? actionsMenu : nil
@@ -123,7 +124,6 @@ private extension SessionHeaderView {
         .onChange(of: isCollapsed, perform: { value in
             isCollapsed ? (chevronIndicator = "chevron.down") :  (chevronIndicator = "chevron.up")
         })
-        .font(Fonts.regularHeading4)
         .foregroundColor(.aircastingGray)
     }
 
@@ -135,7 +135,7 @@ private extension SessionHeaderView {
         VStack(alignment: .leading, spacing: 3) {
             HStack {
                 Text(session.name ?? "")
-                    .font(Fonts.regularHeading1)
+                    .font(Fonts.moderateMediumHeading1)
                 Spacer()
                 if isExpandButtonNeeded {
                     Button(action: {
@@ -143,6 +143,9 @@ private extension SessionHeaderView {
                     }) {
                         Image(systemName: chevronIndicator)
                             .renderingMode(.original)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 15, height: 15)
                     }
                 }
             }
@@ -154,7 +157,7 @@ private extension SessionHeaderView {
 #warning("Fix - Handle session.deviceType (for now it is always nill)")
             if isSensorTypeNeeded {
                 sensorType
-                    .font(Fonts.regularHeading4)
+                    .font(Fonts.moderateRegularHeading4)
             }
         }
         .foregroundColor(.darkBlue)

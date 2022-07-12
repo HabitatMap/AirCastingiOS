@@ -73,6 +73,10 @@ extension Resolver: ResolverRegistering {
             let context = Resolver.resolve(PersistenceController.self).editContext
             return CoreDataUIStorage(context: context)
         }.scope(.cached)
+        main.register { (_, _) -> SessionEntityStore in
+            let context = Resolver.resolve(PersistenceController.self).editContext
+            return DefaultSessionEntityStore(context: context)
+        }
         main.register { DefaultFileLineReader() as FileLineReader }
         main.register { SessionDataEraser() as DataEraser }
         
@@ -214,6 +218,9 @@ extension Resolver: ResolverRegistering {
         main.register { (_, args) in TemperatureThresholdFormatter(threshold: args()) as ThresholdFormatter }
         main.register { TemperatureUnitFormatter() as UnitFormatter }
         main.register { AirBeamMeasurementsDownloaderDefault() as AirBeamMeasurementsDownloader }
+    
+        // MARK: - Old measurements remover
+        main.register { DefaultRemoveOldMeasurementsService() as RemoveOldMeasurements }
     }
     
     // MARK: - Composition helpers

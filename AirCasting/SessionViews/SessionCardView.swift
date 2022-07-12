@@ -97,13 +97,13 @@ struct SessionCardView: View {
             reorderButton.setHidden(if: isGraphButtonActive)
             searchAndFollowButton.setHidden(if: isGraphButtonActive)
         }
-        .font(Fonts.regularHeading4)
+        .font(Fonts.moderateRegularHeading4)
         .foregroundColor(.aircastingGray)
         .padding()
         .background(
             Group {
                 Color.white
-                    .shadow(color: .sessionCardShadow, radius: 9, x: 0, y: 1)
+                    .cardShadow()
                 mapNavigationLink
                 graphNavigationLink
                 // SwiftUI bug: two navigation links don't work properly
@@ -158,7 +158,7 @@ private extension SessionCardView {
             Log.info("\(reorderButton)")
         } label: {
             Text(Strings.SessionCartView.graph)
-                .font(Fonts.semiboldHeading2)
+                .font(Fonts.muliSemiboldHeading2)
                 .padding(.horizontal, 8)
         }
     }
@@ -168,7 +168,7 @@ private extension SessionCardView {
             isMapButtonActive = true
         } label: {
             Text(Strings.SessionCartView.map)
-                .font(Fonts.semiboldHeading2)
+                .font(Fonts.muliSemiboldHeading2)
                 .padding(.horizontal, 8)
         }
     }
@@ -189,7 +189,7 @@ private extension SessionCardView {
         VStack() {
             ChartView(thresholds: .init(value: thresholds), stream: $selectedStream, session: session)
                 .foregroundColor(.aircastingGray)
-                .font(Fonts.semiboldHeading2)
+                .font(Fonts.muliSemiboldHeading2)
         }
     }
 
@@ -201,7 +201,7 @@ private extension SessionCardView {
                 followButton
             }
             Spacer()
-            !(session.isIndoor || session.locationless) ? mapButton.padding(.trailing, 10) : nil
+            !(session.isIndoor || session.locationless) ? mapButton.padding(.trailing, 5) : nil
             graphButton
         }.padding(.top, 10)
         .buttonStyle(GrayButtonStyle())

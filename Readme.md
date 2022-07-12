@@ -57,7 +57,7 @@ The Release lane will build and release the app to the appstoreconnect and Fireb
 Use the `release_update` lane when you need to add some changes to the release candidate:
 1. `cd` into top project directory
 2. `git checkout` to the release branch (i.e. `release/1.3.0`)
-3. apply and commit changes that are needed (note: it's VERY recommended to *only* `cherry-pick` commits already present and tested on develop at this step)
+3. apply and commit changes that are needed. DO NOT cherry-pick commits from develop branch. Remember to merge PRs with fixes directly to the release branch
 4. run `fastlane release_update` 
 
 ### Integration

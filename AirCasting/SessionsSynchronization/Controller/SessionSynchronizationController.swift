@@ -21,7 +21,7 @@ final class SessionSynchronizationController: SessionSynchronizer {
     private let lock = NSRecursiveLock()
     
     private var cancellables: [AnyCancellable] = []
-    
+
     func triggerSynchronization(options: SessionSynchronizationOptions, completion: (() -> Void)?) {
         lock.lock(); defer { lock.unlock() }
         if syncInProgress.value { return }
@@ -79,7 +79,7 @@ final class SessionSynchronizationController: SessionSynchronizer {
                     .logError(message: "[SYNC] Couldn't retrieve sync context")
             }
             .flatMap { context in
-                Publishers.MergeMany (
+                Publishers.MergeMany(
                     // Should this be extracted to separate strategy objects?
                     //
                     //                                           I think: no.
@@ -144,9 +144,9 @@ final class SessionSynchronizationController: SessionSynchronizer {
             .flatMap { uploadData in
                 self.upstream
                     .upload(session: uploadData)
-                    .onError({ _ in self.errorStream?.handleSyncError(.uploadFailure(uploadData.uuid)) })
+                    .onError({ _ in self.errorStream?.handleSyncError(.uploadFailure(uploadData.session.uuid)) })
                     .filterError(self.isConnectionError(_:))
-                    .flatMap { self.store.saveURLForSession(uuid: uploadData.uuid, url: $0.location) }
+                    .flatMap { self.store.saveUploadResponseForSession(uuid: uploadData.session.uuid, response: $0) }
                     .logError(message: "[SYNC] Uploading session failed")
             }
             .eraseToAnyPublisher()
