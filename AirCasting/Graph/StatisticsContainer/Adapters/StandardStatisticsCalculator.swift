@@ -15,7 +15,7 @@ class StandardStatisticsCalculator: StatisticsCalculator {
     private func calculateAverage(from measurements: [MeasurementStatistics.Measurement]) -> Double {
         guard measurements.count > 0 else { return 0 } // If empty default to 0.0
         let summed = measurements.map(\.value).reduce(0, +)
-        return summed / Double(measurements.count)
+        return (summed / Double(measurements.count)).rounded()
     }
     
     private func calculateHigh(from measurements: [MeasurementStatistics.Measurement]) -> Double {
