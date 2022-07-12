@@ -10,13 +10,7 @@ struct ChartView: View {
     @ObservedObject private var thresholds: ABMeasurementsViewThreshold
     @StateObject private var viewModel: ChartViewModel
     @Binding private var stream: MeasurementStreamEntity?
-    var timeFormatter: DateFormatter {
-        if userSettings.twentyFourHour {
-            return DateFormatters.SessionCardView.pollutionChartDateFormatter
-        }
-        return  DateFormatters.SessionCardView.pollutionChartDate12hFormatter
-    }
-
+    let timeFormatter: DateFormatter = DateFormatters.SessionCardView.shared.pollutionChartDateFormatter
 
     init(thresholds: ABMeasurementsViewThreshold, stream: Binding<MeasurementStreamEntity?>, session: Sessionable) {
         self.thresholds = thresholds

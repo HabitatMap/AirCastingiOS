@@ -9,9 +9,8 @@ class TimeAxisRenderer: XAxisRenderer {
     @InjectedObject private var userSettings: UserSettings
     var rightMarginOffset: CGFloat = 50
     var dateFormatter: DateFormatter {
-        if userSettings.twentyFourHour { return DateFormatters.TimeAxisRenderer.shortUTCDateFormatter }
-        rightMarginOffset = 60
-        return DateFormatters.TimeAxisRenderer.shortUTCDate12hFormatter
+        if !userSettings.twentyFourHour { rightMarginOffset = 70 }
+        return DateFormatters.TimeAxisRenderer.shared.shortUTCDateFormatter
     }
     
     override func drawLabels(context: CGContext, pos: CGFloat, anchor: CGPoint) {

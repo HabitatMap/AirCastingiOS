@@ -5,7 +5,6 @@ import SwiftUI
 import Resolver
 
 struct StaticSessionHeader: View {
-    @InjectedObject private var userSettings: UserSettings
     @StateObject var viewModel: StaticSessionHeaderViewModel
     
     init(name: String, startTime: Date, endTime: Date, sensorType: String) {
@@ -55,11 +54,7 @@ private extension StaticSessionHeader {
     }
 
     func adaptTimeAndDate() -> Text {
-        var formatter: DateIntervalFormatter {
-            if userSettings.twentyFourHour { return DateFormatters.SessionCardView.utcDateIntervalFormatter }
-            return DateFormatters.SessionCardView.utcDateInterval12hFormatter
-        }
-
+        let formatter: DateIntervalFormatter = DateFormatters.SessionCardView.shared.utcDateIntervalFormatter
         let start = viewModel.sessionStartTime
         let end = viewModel.sessionEndTime
 

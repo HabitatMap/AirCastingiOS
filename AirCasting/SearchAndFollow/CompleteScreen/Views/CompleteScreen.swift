@@ -95,7 +95,7 @@ private extension CompleteScreen {
     }
 
     func formatChartTime(time: Date?) -> some View {
-        let formatter = DateFormatters.SessionCardView.pollutionChartDateFormatter
+        let formatter = DateFormatters.SessionCardView.shared.pollutionChartDateFormatter
 
         let date = time ?? DateBuilder.getFakeUTCDate()
 

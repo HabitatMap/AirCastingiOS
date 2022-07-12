@@ -5,7 +5,6 @@ import SwiftUI
 import Resolver
 
 struct ExternalSessionHeader: View {
-    @InjectedObject private var userSettings: UserSettings
     var session: Sessionable
     @ObservedObject var thresholds: ABMeasurementsViewThreshold
     @Binding var selectedStream: MeasurementStreamEntity?
@@ -74,11 +73,7 @@ private extension ExternalSessionHeader {
 
 
     func adaptTimeAndDate() -> Text {
-        var formatter: DateIntervalFormatter {
-            if userSettings.twentyFourHour { return DateFormatters.SessionCardView.utcDateIntervalFormatter }
-            return DateFormatters.SessionCardView.utcDateInterval12hFormatter
-        }
-
+        let formatter: DateIntervalFormatter = DateFormatters.SessionCardView.shared.utcDateIntervalFormatter
         let start = session.startTime ?? DateBuilder.getFakeUTCDate()
         let end = session.endTime ?? DateBuilder.getFakeUTCDate()
 

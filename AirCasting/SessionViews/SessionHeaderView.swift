@@ -21,7 +21,6 @@ struct SessionHeaderView: View {
     @State private var showingNoConnectionAlert = false
     @State private var alert: AlertInfo?
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
-    @InjectedObject private var userSettings: UserSettings
     @State var showDeleteModal = false
     @State var showAddNoteModal = false
     @State var showShareModal = false
@@ -250,11 +249,7 @@ private extension SessionHeaderView {
     }
 
     func adaptTimeAndDate() -> Text {
-        var formatter: DateIntervalFormatter {
-            if userSettings.twentyFourHour { return DateFormatters.SessionCardView.utcDateIntervalFormatter }
-            return DateFormatters.SessionCardView.utcDateInterval12hFormatter
-        }
-        
+        let formatter: DateIntervalFormatter = DateFormatters.SessionCardView.shared.utcDateIntervalFormatter
         guard let start = session.startTime else { return Text("") }
         let end = session.endTime ?? DateBuilder.getFakeUTCDate()
         
