@@ -121,7 +121,7 @@ struct SessionCardView: View {
             if let newStream = session.streamWith(sensorName: session.userInterface?.sensorName ?? "") {
                 return selectedStream = newStream
             }
-            selectedStream = streams.first
+            selectedStream = session.defaultStreamSelection() ?? streams.first
         }
     }
 }

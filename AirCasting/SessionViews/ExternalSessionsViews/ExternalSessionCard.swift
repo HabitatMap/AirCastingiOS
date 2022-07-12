@@ -121,7 +121,7 @@ private extension ExternalSessionCard {
             if let newStream = session.streamWith(sensorName: session.uiState?.sensorName ?? "") {
                 return selectedStream = newStream
             }
-            selectedStream = streams.first
+            selectedStream = session.defaultStreamSelection() ?? streams.first
         }
     }
     

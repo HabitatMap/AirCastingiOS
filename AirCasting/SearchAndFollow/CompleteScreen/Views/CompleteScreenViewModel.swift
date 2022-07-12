@@ -221,11 +221,17 @@ class CompleteScreenViewModel: ObservableObject {
                       thresholds: $0.thresholdsValues)
             })
             
-            if let stream = self.externalSessionWithStreams!.streams.first {
-                self.assignValues(with: stream)
-                self.generateChartEntires(with: stream)
+            guard let stream = self.externalSessionWithStreams!.defaultStreamSelection() else {
+                if let stream = self.externalSessionWithStreams!.streams.first { self.passValueOf(stream) }
+                return
             }
+            self.passValueOf(stream)
         }
+    }
+    
+    private func passValueOf(_ stream: ExternalSessionWithStreamsAndMeasurements.Stream) {
+        self.assignValues(with: stream)
+        self.generateChartEntires(with: stream)
     }
     
     private func assignValues(with stream: ExternalSessionWithStreamsAndMeasurements.Stream) {
