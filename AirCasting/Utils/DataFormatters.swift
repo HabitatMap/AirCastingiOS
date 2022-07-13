@@ -10,6 +10,8 @@ enum DateFormatters {
         @InjectedObject private var userSettings: UserSettings
         static let shared = SessionCardView()
         
+        private init() { }
+        
         var pollutionChartDateFormatter: DateFormatter {
             let df = DateFormatter()
             if userSettings.twentyFourHour { df.dateFormat = "HH:mm" } else { df.dateFormat = "h:mm a" }

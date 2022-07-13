@@ -6,12 +6,7 @@ import Charts
 import Resolver
 
 class TimeAxisRenderer: XAxisRenderer {
-    @InjectedObject private var userSettings: UserSettings
-    var rightMarginOffset: CGFloat = 50
-    var dateFormatter: DateFormatter {
-        if !userSettings.twentyFourHour { rightMarginOffset = 70 }
-        return DateFormatters.TimeAxisRenderer.shared.shortUTCDateFormatter
-    }
+    let dateFormatter: DateFormatter = DateFormatters.TimeAxisRenderer.shared.shortUTCDateFormatter
     
     override func drawLabels(context: CGContext, pos: CGFloat, anchor: CGPoint) {
         let minPxX = viewPortHandler.contentLeft
@@ -35,10 +30,12 @@ class TimeAxisRenderer: XAxisRenderer {
         
         let endTime = DateBuilder.getDateWithTimeIntervalSince1970(TimeInterval(maxX))
         let timeRightLabel = dateFormatter.string(from: endTime)
+        let myString = "\(timeRightLabel)"
+        let size: CGSize = myString.size(withAttributes: [.font: Fonts.muliRegularHeadingUIFont1])
         
         drawLabel(context: context,
                   formattedLabel: timeRightLabel,
-                  x: maxPxX - rightMarginOffset,
+                  x: maxPxX - size.width - 10,
                   y: bottomPxY,
                   attributes: [.foregroundColor : UIColor.aircastingGray,
                                .font: Fonts.muliRegularHeadingUIFont1],
