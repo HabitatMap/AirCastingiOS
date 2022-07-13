@@ -56,9 +56,10 @@ class SDSyncController {
             self.writingQueue.sync {
                 switch result {
                 case .success(let metadata):
+                    Log.verbose("[TEST] Downloaded SD card data from AB")
                     progress(.finalizing)
                     let files = self.fileWriter.finishAndSave()
-                    
+                    Log.verbose("[TEST] File saved.")
                     guard !files.isEmpty else {
                         completion(true)
                         return
@@ -68,13 +69,16 @@ class SDSyncController {
                     self.checkFilesForCorruption(files, expectedMeasurementsCount: metadata.expectedMeasurementsCount) { fileValidationResult in
                         switch fileValidationResult {
                         case .success(let verifiedFiles):
+                            Log.verbose("[TEST] Files verified.")
                             self.handle(files: verifiedFiles, sensorName: sensorName, completion: completion)
                         case .failure(let error):
+                            Log.verbose("[TEST] File verification failed. \(error.localizedDescription)")
                             Log.error(error.localizedDescription)
                             completion(false)
                         }
                     }
                 case .failure:
+                    Log.verbose("[TEST] Failed to download SD card data from AB")
                     self.fileWriter.finishAndRemoveFiles()
                     completion(false)
                 }
@@ -132,10 +136,12 @@ class SDSyncController {
     }
     
     private func process(mobileSessionFile: URL, deviceID: String, completion: @escaping (Bool) -> Void) {
-        Log.info("Processing fixed file")
+        Log.info("Processing mobile file")
+        Log.verbose("[TEST] Starting saving mobile file \(mobileSessionFile.lastPathComponent)")
         self.mobileSessionsSaver.saveDataToDb(fileURL: mobileSessionFile, deviceID: deviceID) { result in
             switch result {
             case .success(let sessions):
+                Log.verbose("[TEST] Saved mobile file")
                 self.averagingService.averageMeasurements(for: sessions) {
                     Log.info("[SD Sync] Averaging done")
                     self.onCurrentSyncEnd { self.startBackendSync() }
@@ -149,6 +155,7 @@ class SDSyncController {
     }
     
     func clearSDCard(_ airbeamConnection: CBPeripheral, completion: @escaping (Bool) -> Void) {
+        Log.verbose("[TEST] Clearing SD card")
         airbeamServices.clearSDCard(of: airbeamConnection) { result in
             switch result {
             case .success():

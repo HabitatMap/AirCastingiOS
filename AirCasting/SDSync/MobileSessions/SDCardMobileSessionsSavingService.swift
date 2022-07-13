@@ -24,14 +24,15 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         var sessionsToCreate: [SessionUUID] = []
         var sessionsToIgnore: [SessionUUID] = []
         
+        // TODO: Change it to not spend so much time inside accessStorage. Remove buffers, do everything ad-hoc, once per every file line
         measurementStreamStorage.accessStorage { storage in
             do {
+                // TODO: Why is reading file inside accessStorage? It can cause problems
                 try self.fileLineReader.readLines(of: fileURL, progress: { line in
                     switch line {
                     case .line(let content):
                         let measurementsRow = self.parser.parseMeasurement(lineString: content)
                         guard let measurements = measurementsRow, !sessionsToIgnore.contains(measurements.sessionUUID) else { return }
-                        
                         var session = processedSessions.first(where: { $0.uuid == measurements.sessionUUID })
                         if session == nil {
                             session = self.processSession(storage: storage, sessionUUID: measurements.sessionUUID, deviceID: deviceID, sessionsToIgnore: &sessionsToIgnore, sessionsToCreate: &sessionsToCreate)
@@ -41,6 +42,7 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
                         
                         guard session!.lastMeasurementTime == nil || measurements.date > session!.lastMeasurementTime! else { return }
                         
+                        // TODO: this causes a lot of memory usage:
                         self.enqueueForSaving(measurements: measurements, buffer: &streamsWithMeasurements)
                     case .endOfFile:
                         Log.info("Reached end of csv file")

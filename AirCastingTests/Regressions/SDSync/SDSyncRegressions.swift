@@ -8,9 +8,12 @@ import Combine
 import CoreData
 @testable import AirCasting
 
+// swiftlint:disable print_using
+
 class SDSyncRegressions: ACTestCase {
     let uuid = UUID()
-    lazy var airBeamServices = AirBeamServices(measurementCount: 100_000, uuid: uuid)
+    let measurementsCount = 100_000
+    lazy var airBeamServices = AirBeamServices(measurementCount: measurementsCount, uuid: uuid)
     lazy var uploadServices = UploadFixedSessionService()
     lazy var fixedServices = FixedSessionUpdatingService()
     lazy var synchronizer = Synchronizer()
@@ -28,7 +31,6 @@ class SDSyncRegressions: ACTestCase {
         Resolver.test.register { self.airBeamServices as SDCardAirBeamServices }
         Resolver.test.register { self.uploadServices as UploadFixedSessionAPIService }
         Resolver.test.register { self.fixedServices as MeasurementUpdatingService }
-        Resolver.test.register { self.synchronizer as SessionSynchronizer }
         Resolver.test.register { self.persistence as PersistenceController }
     }
     
@@ -41,10 +43,15 @@ class SDSyncRegressions: ACTestCase {
         let controller = SDSyncController()
         let peripheral = CBPeripheralBuilder.create(withName: "AirBeam3-F")!
         let exp = expectation(description: "Synchronizaion finishes")
-        controller.syncFromAirbeam(peripheral, progress: { _ in }, completion: { _ in })
+        print("[TEST] Starting SD sync")
+        controller.syncFromAirbeam(peripheral, progress: { _ in }, completion: { _ in
+            print("[TEST] SD sync finished")
+            exp.fulfill()
+        })
         wait(for: [exp], timeout: 180)
-        let req = NSFetchRequest<SessionEntity>()
-        XCTAssertEqual(try persistence.viewContext.fetch(req).count, 100_000)
+        let req = NSFetchRequest<SessionEntity>(entityName: "SessionEntity")
+        print("[TEST] Testing persistence")
+        XCTAssertEqual(try persistence.viewContext.fetch(req).count, measurementsCount)
     }
 
     // MARK: Doubles
