@@ -119,6 +119,7 @@ struct ChooseSessionTypeView: View {
                         }
                     }
             }
+            .navigationViewStyle(.stack)
             .onAppear { defineNextMove() }
             .onChange(of: tabSelection.selection, perform: { _ in defineNextMove() })
             .environmentObject(viewModel.passSessionContext)
