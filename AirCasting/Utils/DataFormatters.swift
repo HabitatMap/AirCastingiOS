@@ -36,13 +36,27 @@ enum DateFormatters {
         @InjectedObject private var userSettings: UserSettings
         static let shared = TimeAxisRenderer()
         
+        private init() { }
+        
         var shortUTCDateFormatter: DateFormatter {
+            userSettings.twentyFourHour ? Self.shortUTCDateFormatter24 : Self.shortUTCDateFormatter12
+        }
+        
+        static let shortUTCDateFormatter12: DateFormatter = {
             let df = DateFormatter()
             df.timeZone =  TimeZone.init(abbreviation: "UTC")
             df.locale = Locale(identifier: "en_US")
-            if userSettings.twentyFourHour { df.dateFormat = "HH:mm" } else { df.dateFormat = "h:mm a" }
+            df.dateFormat = "h:mm a"
             return df
-        }
+        }()
+        
+        static let shortUTCDateFormatter24: DateFormatter = {
+            let df = DateFormatter()
+            df.timeZone =  TimeZone.init(abbreviation: "UTC")
+            df.locale = Locale(identifier: "en_US")
+            df.dateFormat = "HH:mm"
+            return df
+        }()
     }
     
     enum SessionDownloadService {
