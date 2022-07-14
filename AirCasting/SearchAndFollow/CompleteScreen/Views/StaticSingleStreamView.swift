@@ -22,7 +22,7 @@ struct StaticSingleStreamView: View {
                     if value != nil {
                         HStack(spacing: 3) {
                             dot
-                            Text("\(Int(value!))")
+                            Text("\(Int(round(value!)))")
                                 .font(Fonts.moderateRegularHeading3)
                                 .scaledToFill()
                         }

@@ -34,7 +34,7 @@ struct ExternalGraph: UIViewRepresentable {
 
         let entries = stream.allMeasurements?.sorted(by: { $0.time < $1.time }).compactMap({ measurement -> ChartDataEntry? in
             let timeInterval = Double(measurement.time.timeIntervalSince1970)
-            let chartDataEntry = ChartDataEntry(x: timeInterval, y: getValue(of: measurement))
+            let chartDataEntry = ChartDataEntry(x: timeInterval, y: round(getValue(of: measurement)))
             return chartDataEntry
         }) ?? []
         let allLimitLines = getLimitLines()
@@ -69,7 +69,7 @@ struct ExternalGraph: UIViewRepresentable {
         
         let entries = stream.allMeasurements?.sorted(by: { $0.time < $1.time }).compactMap({ measurement -> ChartDataEntry? in
             let timeInterval = Double(measurement.time.timeIntervalSince1970)
-            let chartDataEntry = ChartDataEntry(x: timeInterval, y: getValue(of: measurement))
+            let chartDataEntry = ChartDataEntry(x: timeInterval, y: round(getValue(of: measurement)))
             return chartDataEntry
         }) ?? []
         
