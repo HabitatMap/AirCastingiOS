@@ -5,9 +5,11 @@ import Foundation
 // swiftlint:disable airCasting_date
 extension Date {
     
-    var milliseconds: Int {
-        Int((self.timeIntervalSince1970 * 1000.0).rounded())
-    }
+    static let msFormatter: DateFormatter = DateFormatters.DateExtension.milisecondsDateFormatter
+       
+   var milliseconds: Int {
+       Int(Date.msFormatter.string(from: self).dropFirst())!
+   }
 
     // TODO: This uses two date formatters. It's relatively slow and should be changed to more roboust solution as we're using this quite often
     // https://github.com/HabitatMap/AirCastingiOS/issues/595
