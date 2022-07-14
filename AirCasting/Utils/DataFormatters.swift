@@ -13,23 +13,42 @@ enum DateFormatters {
         private init() { }
         
         var pollutionChartDateFormatter: DateFormatter {
-            let df = DateFormatter()
-            if userSettings.twentyFourHour { df.dateFormat = "HH:mm" } else { df.dateFormat = "h:mm a" }
-            df.timeZone = TimeZone(abbreviation: "UTC")
-            return df
+            userSettings.twentyFourHour ? Self.pollutionChartDateFormatter24 : Self.pollutionChartDateFormatter12
         }
         
         var utcDateIntervalFormatter: DateIntervalFormatter {
+            userSettings.twentyFourHour ? Self.utcDateIntervalFormatter24 : Self.utcDateIntervalFormatter12
+        }
+        
+        static let pollutionChartDateFormatter24: DateFormatter = {
+            let df = DateFormatter()
+            df.dateFormat = "HH:mm"
+            df.timeZone = TimeZone(abbreviation: "UTC")
+            return df
+        }()
+        
+        static let pollutionChartDateFormatter12: DateFormatter = {
+            let df = DateFormatter()
+            df.dateFormat = "h:mm a"
+            df.timeZone = TimeZone(abbreviation: "UTC")
+            return df
+        }()
+        
+        static let utcDateIntervalFormatter24: DateIntervalFormatter = {
             let df = DateIntervalFormatter()
-            if userSettings.twentyFourHour {
-                df.dateTemplate = "MM/dd/yy HH:mm"
-            } else {
-                df.dateTemplate = "MM/dd/yy h:mm a"
-            }
+            df.dateTemplate = "MM/dd/yy HH:mm"
             df.timeZone = TimeZone(abbreviation: "UTC")
             df.locale = Locale(identifier: "en_US_POSIX")
             return df
-        }
+        }()
+        
+        static let utcDateIntervalFormatter12: DateIntervalFormatter = {
+            let df = DateIntervalFormatter()
+            df.dateTemplate = "MM/dd/yy h:mm a"
+            df.timeZone = TimeZone(abbreviation: "UTC")
+            df.locale = Locale(identifier: "en_US_POSIX")
+            return df
+        }()
     }
     
     struct TimeAxisRenderer {
