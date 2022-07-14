@@ -33,7 +33,7 @@ extension SessionsSynchronization.SessionDownstreamData {
 }
 
 extension SessionsSynchronization.SessionStoreSessionData {
-    static func mock(uuid: String = "1234-5678") -> Self {
+    static func mock(uuid: String = "1234-5678", measurementTime: Date = DateBuilder.getDateWithTimeIntervalSinceReferenceDate(150)) -> Self {
         .init(uuid: .init(rawValue: uuid)!,
               contribute: true,
               endTime: .distantFuture,
@@ -63,7 +63,7 @@ extension SessionsSynchronization.SessionStoreSessionData {
                                                                                deleted: false,
                                                                                measurements: [
                                                                                 .init(id: 1234,
-                                                                                      time: DateBuilder.getDateWithTimeIntervalSinceReferenceDate(150),
+                                                                                      time: measurementTime,
                                                                                       value: 12.02,
                                                                                       latitude: 51.04,
                                                                                       longitude: 50.12)

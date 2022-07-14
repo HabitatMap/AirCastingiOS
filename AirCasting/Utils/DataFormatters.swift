@@ -100,6 +100,12 @@ enum DateFormatters {
             df.dateFormat = "yyyy-MM-dd HH:mm:ss"
             return df
         }()
+        
+        static let milisecondsDateFormatter: DateFormatter = {
+            let df = DateFormatter()
+            df.dateFormat = "SSS"
+            return df
+        }()
     }
     
     enum SDCardSync {
