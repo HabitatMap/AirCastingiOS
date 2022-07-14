@@ -249,8 +249,7 @@ private extension SessionHeaderView {
     }
 
     func adaptTimeAndDate() -> Text {
-        let formatter = DateFormatters.SessionCartView.utcDateIntervalFormatter
-        
+        let formatter: DateIntervalFormatter = DateFormatters.SessionCardView.shared.utcDateIntervalFormatter
         guard let start = session.startTime else { return Text("") }
         let end = session.endTime ?? DateBuilder.getFakeUTCDate()
         

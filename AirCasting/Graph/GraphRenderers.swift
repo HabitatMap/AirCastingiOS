@@ -3,10 +3,10 @@
 
 import SwiftUI
 import Charts
+import Resolver
 
 class TimeAxisRenderer: XAxisRenderer {
-    
-    lazy var dateFormatter = DateFormatters.TimeAxisRenderer.shortUTCDateFormatter
+    let dateFormatter: DateFormatter = DateFormatters.TimeAxisRenderer.shared.shortUTCDateFormatter
     
     override func drawLabels(context: CGContext, pos: CGFloat, anchor: CGPoint) {
         let minPxX = viewPortHandler.contentLeft
@@ -30,10 +30,12 @@ class TimeAxisRenderer: XAxisRenderer {
         
         let endTime = DateBuilder.getDateWithTimeIntervalSince1970(TimeInterval(maxX))
         let timeRightLabel = dateFormatter.string(from: endTime)
+        let myString = "\(timeRightLabel)"
+        let size: CGSize = myString.size(withAttributes: [.font: Fonts.muliRegularHeadingUIFont1])
         
         drawLabel(context: context,
                   formattedLabel: timeRightLabel,
-                  x: maxPxX - 50,
+                  x: maxPxX - size.width - 10,
                   y: bottomPxY,
                   attributes: [.foregroundColor : UIColor.aircastingGray,
                                .font: Fonts.muliRegularHeadingUIFont1],
