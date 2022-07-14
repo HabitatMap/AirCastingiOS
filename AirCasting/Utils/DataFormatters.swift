@@ -6,6 +6,7 @@ import Resolver
 
 enum DateFormatters {
     
+    
     struct SessionCardView {
         @InjectedObject private var userSettings: UserSettings
         static let shared = SessionCardView()
@@ -144,6 +145,12 @@ enum DateFormatters {
             let df = DateFormatter()
             df.timeZone = TimeZone.init(abbreviation: "UTC")
             df.dateFormat = "yyyy-MM-dd HH:mm:ss"
+            return df
+        }()
+        
+        static let milisecondsDateFormatter: DateFormatter = {
+            let df = DateFormatter()
+            df.dateFormat = "SSS"
             return df
         }()
     }
