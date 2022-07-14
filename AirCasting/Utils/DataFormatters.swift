@@ -20,21 +20,21 @@ enum DateFormatters {
             userSettings.twentyFourHour ? Self.utcDateIntervalFormatter24 : Self.utcDateIntervalFormatter12
         }
         
-        static let pollutionChartDateFormatter24: DateFormatter = {
+        private static let pollutionChartDateFormatter24: DateFormatter = {
             let df = DateFormatter()
             df.dateFormat = "HH:mm"
             df.timeZone = TimeZone(abbreviation: "UTC")
             return df
         }()
         
-        static let pollutionChartDateFormatter12: DateFormatter = {
+        private static let pollutionChartDateFormatter12: DateFormatter = {
             let df = DateFormatter()
             df.dateFormat = "h:mm a"
             df.timeZone = TimeZone(abbreviation: "UTC")
             return df
         }()
         
-        static let utcDateIntervalFormatter24: DateIntervalFormatter = {
+        private static let utcDateIntervalFormatter24: DateIntervalFormatter = {
             let df = DateIntervalFormatter()
             df.dateTemplate = "MM/dd/yy HH:mm"
             df.timeZone = TimeZone(abbreviation: "UTC")
@@ -42,7 +42,7 @@ enum DateFormatters {
             return df
         }()
         
-        static let utcDateIntervalFormatter12: DateIntervalFormatter = {
+        private static let utcDateIntervalFormatter12: DateIntervalFormatter = {
             let df = DateIntervalFormatter()
             df.dateTemplate = "MM/dd/yy h:mm a"
             df.timeZone = TimeZone(abbreviation: "UTC")
@@ -61,7 +61,7 @@ enum DateFormatters {
             userSettings.twentyFourHour ? Self.shortUTCDateFormatter24 : Self.shortUTCDateFormatter12
         }
         
-        static let shortUTCDateFormatter12: DateFormatter = {
+        private static let shortUTCDateFormatter12: DateFormatter = {
             let df = DateFormatter()
             df.timeZone =  TimeZone.init(abbreviation: "UTC")
             df.locale = Locale(identifier: "en_US")
@@ -69,7 +69,7 @@ enum DateFormatters {
             return df
         }()
         
-        static let shortUTCDateFormatter24: DateFormatter = {
+        private static let shortUTCDateFormatter24: DateFormatter = {
             let df = DateFormatter()
             df.timeZone =  TimeZone.init(abbreviation: "UTC")
             df.locale = Locale(identifier: "en_US")
