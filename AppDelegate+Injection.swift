@@ -161,6 +161,9 @@ extension Resolver: ResolverRegistering {
         main.register { DefaultDeleteAccountController() as DeleteAccountController }
         main.register { DefaultRemoveDataController() as RemoveDataController }
         
+        // MARK: TEST
+        main.register { BluetoothConnectionProtector(context: Resolver.resolve(PersistenceController.self).viewContext) as Connectable }
+        
         // MARK: - Session stopping
         
         main.register { (_, args) in

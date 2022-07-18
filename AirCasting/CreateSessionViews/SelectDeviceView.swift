@@ -19,6 +19,7 @@ struct SelectDeviceView: View {
     @EnvironmentObject private var sessionContext: CreateSessionContext
     @InjectedObject private var bluetoothManager: BluetoothManager
     @InjectedObject private var microphoneManager: MicrophoneManager
+    @Injected private var bluetoothConnectionProtector: Connectable
     @Binding var creatingSessionFlowContinues : Bool
     @Binding var sdSyncContinues : Bool
     @State private var showAlert = false
@@ -33,7 +34,6 @@ struct SelectDeviceView: View {
             bluetoothButton
             micButton
             Spacer()
-            
         }
         .alert(item: $alert, content: { $0.makeAlert() })
         .padding()
@@ -84,6 +84,10 @@ struct SelectDeviceView: View {
             createLabel(title: Strings.SelectDeviceView.bluetoothLabel, subtitle: Strings.SelectDeviceView.bluetoothDevice)
         })
         .buttonStyle(WhiteSelectingButtonStyle(isSelected: selected == 1))
+        .disabled(!isBTButtonActive())
+        .onTapGesture {
+            alert = InAppAlerts.microphoneSessionAlreadyRecordingAlert()
+        }
     }
     
     var micButton: some View {
@@ -135,5 +139,15 @@ struct SelectDeviceView: View {
             }
         }
         .padding(.horizontal)
+    }
+    
+    func isBTButtonActive() -> Bool {
+        switch bluetoothConnectionProtector.isAvailableForNewConnection() {
+        case .success(_):
+           return true
+        case .failure(let error):
+            Log.info("Trying to use BT connection again \(error.localizedDescription)")
+            return false
+        }
     }
 }
