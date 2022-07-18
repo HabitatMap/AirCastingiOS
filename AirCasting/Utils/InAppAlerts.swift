@@ -107,6 +107,14 @@ struct InAppAlerts {
                              action: nil) ])
     }
     
+    static func bluetoothSessionAlreadyRecordingAlert() -> AlertInfo {
+        AlertInfo(title: Strings.BluetoothSessionAlreadyRecordingAlert.title,
+                  message: Strings.BluetoothSessionAlreadyRecordingAlert.message,
+                  buttons: [
+                    .default(title: Strings.Commons.gotIt,
+                             action: nil) ])
+    }
+    
     static func locationAlert() -> AlertInfo {
         let redirection = Resolver.resolve(SettingsRedirection.self)
         return AlertInfo(title: Strings.SelectDeviceView.alertTitle,

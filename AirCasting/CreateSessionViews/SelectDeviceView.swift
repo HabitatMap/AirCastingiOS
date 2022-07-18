@@ -86,7 +86,7 @@ struct SelectDeviceView: View {
         .buttonStyle(WhiteSelectingButtonStyle(isSelected: selected == 1))
         .disabled(!isBTButtonActive())
         .onTapGesture {
-            alert = InAppAlerts.microphoneSessionAlreadyRecordingAlert()
+            alert = InAppAlerts.bluetoothSessionAlreadyRecordingAlert()
         }
     }
     
@@ -142,11 +142,11 @@ struct SelectDeviceView: View {
     }
     
     func isBTButtonActive() -> Bool {
-        switch bluetoothConnectionProtector.isAvailableForNewConnection() {
+        switch bluetoothConnectionProtector.isAirBeamAvailableForNewConnection() {
         case .success(_):
            return true
         case .failure(let error):
-            Log.info("Trying to use BT connection again \(error.localizedDescription)")
+            Log.info("Trying to use start BT mobile session again \(error.localizedDescription)")
             return false
         }
     }

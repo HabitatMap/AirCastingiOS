@@ -885,6 +885,13 @@ struct Strings {
                                                        comment: "")
     }
     
+    enum BluetoothSessionAlreadyRecordingAlert {
+        static let title: String = NSLocalizedString("There is already a mobile AirBeam session in progress",
+                                                     comment: "")
+        static let message: String = NSLocalizedString("You can record only one mobile AirBeam session at once.",
+                                                       comment: "")
+    }
+    
     enum InAppAlerts {
         static let noInternetConnectionTitle: String = NSLocalizedString("No internet connection",
                                                                    comment: "")

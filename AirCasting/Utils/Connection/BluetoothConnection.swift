@@ -1,21 +1,22 @@
 import SwiftUI
 import CoreData
 
-enum BluetoothConnectionError: Error {
-    case BTConnectionError
-}
-
-class BluetoothConnectionProtector: Connectable {
-    @StateObject var coreDataHook: CoreDataHook
+final class BluetoothConnectionProtector: Connectable {
     
-    init(context: NSManagedObjectContext) {
-        self._coreDataHook = .init(wrappedValue: CoreDataHook(context: context))
+    enum BluetoothConnectionProtector: Error {
+        case alreadyConnected
     }
     
-    func isAvailableForNewConnection() -> Result<Void, Error> {
-        guard let sessions = coreDataHook.sessions as? [SessionEntity] else { return .failure(BluetoothConnectionError.BTConnectionError) }
+    private var coreDataHook: CoreDataHook
+    
+    init(context: NSManagedObjectContext) {
+        self.coreDataHook = CoreDataHook(context: context)
+    }
+    
+    func isAirBeamAvailableForNewConnection() -> Result<Void, Error> {
+        guard let sessions = coreDataHook.sessions as? [SessionEntity] else { return .failure(BluetoothConnectionProtector.alreadyConnected) }
         if sessions.contains(where: { $0.isActive == true && $0.deviceType == .AIRBEAM3 }) {
-            return .failure(BluetoothConnectionError.BTConnectionError)
+            return .failure(BluetoothConnectionProtector.alreadyConnected)
         }
         return .success(())
     }
