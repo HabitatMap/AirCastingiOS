@@ -121,7 +121,7 @@ struct SessionCardView: View {
             if let newStream = session.streamWith(sensorName: session.userInterface?.sensorName ?? "") {
                 return selectedStream = newStream
             }
-            selectedStream = streams.first
+            selectedStream = session.defaultStreamSelection() ?? streams.first
         }
     }
 }
@@ -255,4 +255,14 @@ private extension SessionCardView {
                                  EmptyView()
                                })
      }
+}
+
+// Extension for selecting Stream PM2.5 as default one.
+extension SessionEntity {
+    func defaultStreamSelection() -> MeasurementStreamEntity? {
+        allStreams.first { stream in
+            guard let name = stream.sensorName else { return false }
+            return name.contains("PM2.5")
+         }
+    }
 }

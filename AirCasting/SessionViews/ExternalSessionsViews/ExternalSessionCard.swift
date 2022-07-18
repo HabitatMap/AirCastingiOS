@@ -121,7 +121,7 @@ private extension ExternalSessionCard {
             if let newStream = session.streamWith(sensorName: session.uiState?.sensorName ?? "") {
                 return selectedStream = newStream
             }
-            selectedStream = streams.first
+            selectedStream = session.defaultStreamSelection() ?? streams.first
         }
     }
     
@@ -203,5 +203,15 @@ private extension ExternalSessionCard {
         let viewModel = StatisticsContainerViewModel(statsInput: controller)
         controller.output = viewModel
         return viewModel
+    }
+}
+
+// Extension for selecting Stream PM2.5 as default one.
+extension ExternalSessionEntity {
+    func defaultStreamSelection() -> MeasurementStreamEntity? {
+        allStreams.first { stream in
+            guard let name = stream.sensorName else { return false }
+            return name.contains("PM2.5")
+         }
     }
 }
