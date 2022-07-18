@@ -18,7 +18,7 @@ public struct WhiteSelectingButtonStyle: ButtonStyle {
         configuration
             .label
             .frame(maxWidth: .infinity, maxHeight: 80)
-            .background(Color.aircastingWhiteForDarkMode)
+            .background(Color.aircastingWhite)
             .shadow( color: isSelected ? (Color.accentColor.opacity(0.5)) : (Color(white: 150/255, opacity: 0.2)),
                      radius: 9, x: 0, y: 1)
             .padding()

@@ -83,7 +83,7 @@ struct DashboardView: View {
                         .shadow(color: Color.aircastingDarkGray.opacity(0.4),
                                 radius: 6)
                         .padding(.horizontal, -30)
-                    Color.aircastingWhite
+                    Color.aircastingBackgroundWhite
                 }
             )
             .zIndex(2)

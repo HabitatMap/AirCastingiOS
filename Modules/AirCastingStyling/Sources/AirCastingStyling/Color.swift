@@ -53,7 +53,7 @@ extension Color {
     public static var aircastingWhite: Color {
         return Color("AircastingWhite")
     }
-    public static var aircastingWhiteForDarkMode: Color {
-        return Color("AircastingWhiteForDarkMode")
+    public static var aircastingBackgroundWhite: Color {
+        return Color("AircastingBackgroundWhite")
     }
 }
