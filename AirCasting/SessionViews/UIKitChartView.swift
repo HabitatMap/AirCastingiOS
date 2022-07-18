@@ -52,7 +52,6 @@ struct UIKitChartView: UIViewRepresentable {
         dataSet.circleColors = generateColorsSet(for: dataSet.entries)
         dataSet.drawCircleHoleEnabled = false
         dataSet.circleRadius = 4
-
         
         // line color
         dataSet.setColor(UIColor.aircastingGray.withAlphaComponent(0.7))
@@ -64,13 +63,13 @@ struct UIKitChartView: UIViewRepresentable {
         let formatter = Resolver.resolve(ThresholdFormatter.self, args: threshold)
         for entry in entries {
             switch formatter.value(from: entry.y) {
-            case threshold.thresholdVeryLow..<threshold.thresholdLow:
+            case threshold.thresholdVeryLow...threshold.thresholdLow:
                 colors.append(UIColor.aircastingGreen)
-            case threshold.thresholdLow..<threshold.thresholdMedium:
+            case threshold.thresholdLow + 1...threshold.thresholdMedium:
                 colors.append(UIColor.aircastingYellow)
-            case threshold.thresholdMedium..<threshold.thresholdHigh:
+            case threshold.thresholdMedium + 1...threshold.thresholdHigh:
                 colors.append(UIColor.aircastingOrange)
-            case threshold.thresholdHigh..<threshold.thresholdVeryHigh:
+            case threshold.thresholdHigh + 1...threshold.thresholdVeryHigh:
                 colors.append(UIColor.aircastingRed)
             default:
                 colors.append(UIColor.aircastingGray)
