@@ -43,13 +43,13 @@ struct TurnOnLocationFixedView: View {
     
     var titleLabel: some View {
         Text(Strings.TurnOnLocationView.title)
-            .font(Fonts.boldTitle3)
+            .font(Fonts.moderateBoldTitle3)
             .foregroundColor(.accentColor)
     }
     
     var messageLabel: some View {
         Text(Strings.TurnOnLocationView.messageText)
-            .font(Fonts.regularHeading1)
+            .font(Fonts.moderateRegularHeading1)
             .foregroundColor(.aircastingGray)
             .lineSpacing(10.0)
     }

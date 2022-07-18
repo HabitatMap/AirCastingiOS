@@ -30,7 +30,7 @@ private extension SettingsMyAccountView {
     var logInLabel: some View {
         Text(Strings.SignOutSettings.logged + "\(KeychainStorage(service: Bundle.main.bundleIdentifier!).getProfileData(for: .email))")
             .foregroundColor(.aircastingGray)
-            .font(Fonts.muliHeading2)
+            .font(Fonts.muliRegularHeading3)
             .padding()
     }
     
@@ -47,6 +47,7 @@ private extension SettingsMyAccountView {
                 .padding(.horizontal)
             }
         }
+        .font(Fonts.muliBoldHeading1)
         .buttonStyle(BlueButtonStyle())
         .padding()
     }

@@ -57,6 +57,10 @@ struct Strings {
                                                     comment: "")
         static let buildText = NSLocalizedString("build",
                                                  comment: "")
+        static let satelliteMap = NSLocalizedString("Satellite map",
+                                                       comment: "")
+        static let twentyFourHourFormat = NSLocalizedString("Use 24-hour format",
+                                                       comment: "")
         static let crashlyticsSectionTitle = "Crashlytics integration testing:"
         
         static let appConfig = "App config"
@@ -143,6 +147,7 @@ struct Strings {
                                                          comment: "")
         static let noConnectionText = NSLocalizedString("Please make sure your device is connected to the internet.",
                                                         comment: "")
+        static let loggingOutInBackground: String = NSLocalizedString("Currently logging out in the background. You can fill out credentials.", comment:  "")
     }
     
     enum SessionShare {
@@ -1041,6 +1046,7 @@ struct Strings {
                                                                   comment:  "")
         static let noInternetTitle: String = NSLocalizedString("No Internet Connection"
                                                                , comment:  "")
+        static let loggingOutInBackground: String = NSLocalizedString("Currently logging out in the background. You can fill out credentials.", comment:  "")
         
     }
     

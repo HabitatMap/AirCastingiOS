@@ -40,6 +40,8 @@ struct Constants {
         static let disableMapping = "disableMapping"
         static let convertToCelsius = "convertToCelsius"
         static let useDarkMode = "getDarkMode"
+        static let satelliteMapKey = "satteliteMapKey"
+        static let twentyFourHoursFormatKey = "twentyFourHourFormatKey"
     }
     
     enum PrivacyPolicy {

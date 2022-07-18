@@ -12,7 +12,7 @@ struct ProtectedScreen: View {
                 .resizable()
                 .scaledToFit()
             Text(Strings.ProtectedScreen.title)
-                .font(Fonts.boldTitle1)
+                .font(Fonts.moderateBoldTitle1)
                 .foregroundColor(.accentColor)
         }.padding()
     }

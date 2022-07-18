@@ -25,7 +25,7 @@ struct ReoredringSessionCard: View {
                 SessionLoadingView()
             }
         }
-        .font(Fonts.regularHeading4)
+        .font(Fonts.moderateRegularHeading4)
         .foregroundColor(.aircastingGray)
         .padding()
         .background(
@@ -45,7 +45,7 @@ private extension ReoredringSessionCard {
     private var measurements: some View {
         VStack(alignment: .leading, spacing: 5) {
             Text(Strings.SessionCart.lastMinuteMeasurement)
-                .font(Fonts.moderateTitle1)
+                .font(Fonts.moderateRegularHeading5)
                 .padding(.bottom, 3)
             HStack {
                 session.sortedStreams.count != 1 ? Spacer() : nil

@@ -9,27 +9,28 @@ struct SDSyncRootView: View {
     @Binding var creatingSessionFlowContinues: Bool
     
     var body: some View {
-        VStack(spacing: 40) {
-            ProgressView(value: 0.1)
-            Spacer()
-            ZStack(alignment: Alignment(horizontal: .trailing, vertical: .bottom), content: {
-                syncImage
-                loader
-                    .padding()
-                    .padding(.vertical)
-            })
-            Spacer()
-            VStack(alignment: .leading, spacing: 15) {
-                titleLabel
-                messageLabel
+        GeometryReader { reader in
+            VStack(spacing: 40) {
+                ProgressView(value: 0.142)
+                Spacer()
+                ZStack(alignment: Alignment(horizontal: .trailing, vertical: .bottom), content: {
+                    syncImage
+                    loader
+                        .padding(.top)
+                }).frame(width: reader.size.width / 2.1, height: reader.size.height / 3.1, alignment: .center)
+                Spacer()
+                VStack(alignment: .leading, spacing: 15) {
+                    titleLabel
+                    messageLabel
+                }
+                Spacer()
             }
-            Spacer()
-        }
-        .padding()
-        .background(navigationLink)
-        .onAppear() {
-            finishAndSyncButtonTapped.finishAndSyncButtonWasTapped = false
-            viewModel.executeBackendSync()
+            .padding()
+            .background(navigationLink)
+            .onAppear() {
+                finishAndSyncButtonTapped.finishAndSyncButtonWasTapped = false
+                viewModel.executeBackendSync()
+            }
         }
     }
 }
@@ -37,19 +38,18 @@ struct SDSyncRootView: View {
 private extension SDSyncRootView {
     var syncImage: some View {
         Image("airbeam")
-            .resizable()
             .aspectRatio(contentMode: .fit)
     }
     
     var titleLabel: some View {
         Text(Strings.SDSyncRootView.title)
-            .font(Fonts.boldTitle3)
+            .font(Fonts.moderateBoldTitle3)
             .foregroundColor(.accentColor)
     }
     
     var messageLabel: some View {
         Text(Strings.SDSyncRootView.message)
-            .font(Fonts.regularHeading1)
+            .font(Fonts.moderateRegularHeading1)
             .foregroundColor(.aircastingGray)
     }
     

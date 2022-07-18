@@ -3,6 +3,7 @@
 
 import Foundation
 import SwiftUI
+import Resolver
 
 class BottomCardViewModel: ObservableObject {
     @Published private var isModalScreenPresented = false
@@ -22,7 +23,7 @@ class BottomCardViewModel: ObservableObject {
     }
     
     func adaptTimeAndDate() -> String {
-        let formatter = DateFormatters.SessionCartView.utcDateIntervalFormatter
+        let formatter: DateIntervalFormatter = DateFormatters.SessionCardView.shared.utcDateIntervalFormatter 
         let start = dataModel.startTime
         let end = dataModel.endTime
         let string = formatter.string(from: start, to: end)

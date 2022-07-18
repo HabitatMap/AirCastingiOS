@@ -61,7 +61,7 @@ struct _ABMeasurementsView: View {
             if hasAnyMeasurements {
                 VStack(alignment: .leading, spacing: 5) {
                     measurementsTitle
-                        .font(Fonts.moderateTitle1)
+                        .font(Fonts.moderateRegularHeading5)
                         .padding(.bottom, 3)
                     HStack {
                         streamsToShow.count != 1 ? Spacer() : nil
@@ -87,7 +87,7 @@ struct _ABMeasurementsView: View {
                 } else {
                     VStack(alignment: .leading, spacing: 8) {
                         measurementsTitle
-                            .font(Fonts.moderateTitle1)
+                            .font(Fonts.moderateRegularHeading5)
                         streamNames
                         if session.type == .mobile {
                             if measurementsViewModel.showLoadingIndicator {
@@ -149,8 +149,10 @@ extension _ABMeasurementsView {
             }
         } else if session.isFollowed {
             return Text(Strings.SessionCart.lastMinuteMeasurement)
+                .font(Fonts.moderateRegularHeading4)
         } else if session.type == .mobile && session.deviceType == .AIRBEAM3 {
             return Text(Strings.SessionCart.measurementsTitle)
+                .font(Fonts.moderateRegularHeading4)
         }
         return Text("")
     }

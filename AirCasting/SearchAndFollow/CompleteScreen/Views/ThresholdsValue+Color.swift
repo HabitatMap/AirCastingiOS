@@ -6,13 +6,13 @@ import SwiftUI
 extension ThresholdsValue {
     func colorFor(value: Double) -> Color {
         switch Int32(value) {
-        case veryLow..<low:
+        case veryLow...low:
             return .aircastingGreen
-        case low..<medium:
+        case low + 1...medium:
             return .aircastingYellow
-        case medium..<high:
+        case medium + 1...high:
             return .aircastingOrange
-        case high...veryHigh:
+        case high + 1...veryHigh:
             return .aircastingRed
         default:
             return .aircastingGray

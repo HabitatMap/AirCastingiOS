@@ -2,6 +2,7 @@
 //
 
 import SwiftUI
+import Resolver
 
 struct StaticSessionHeader: View {
     @StateObject var viewModel: StaticSessionHeaderViewModel
@@ -20,14 +21,14 @@ private extension StaticSessionHeader {
         VStack(alignment: .leading, spacing: 3) {
             HStack {
                 dateAndTime
-                    .font(Fonts.muliHeading4)
+                    .font(Fonts.muliRegularHeading5)
                     .foregroundColor(Color.aircastingTimeGray)
                 Spacer()
             }
             .padding(.vertical)
             nameLabel
         }
-        .font(Fonts.regularHeading4)
+        .font(Fonts.muliRegularHeading5)
         .foregroundColor(.aircastingGray)
     }
 
@@ -39,11 +40,11 @@ private extension StaticSessionHeader {
         VStack(alignment: .leading, spacing: 3) {
             HStack {
                 Text(viewModel.sessionName)
-                    .font(Fonts.regularHeading1)
+                    .font(Fonts.moderateMediumHeading1)
                 Spacer()
             }
             sensorType
-                .font(Fonts.regularHeading4)
+                .font(Fonts.muliRegularHeading5)
         }
         .foregroundColor(.darkBlue)
     }
@@ -53,8 +54,7 @@ private extension StaticSessionHeader {
     }
 
     func adaptTimeAndDate() -> Text {
-        let formatter = DateFormatters.SessionCartView.utcDateIntervalFormatter
-
+        let formatter: DateIntervalFormatter = DateFormatters.SessionCardView.shared.utcDateIntervalFormatter
         let start = viewModel.sessionStartTime
         let end = viewModel.sessionEndTime
 

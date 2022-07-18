@@ -14,24 +14,26 @@ struct UnplugABView: View {
     }
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 40) {
-            ProgressView(value: 0.3)
-            Spacer()
-            HStack() {
+        GeometryReader { reader in
+            VStack(alignment: .leading, spacing: 40) {
+                ProgressView(value: 0.426)
                 Spacer()
-                unplugImage
+                HStack() {
+                    Spacer()
+                    unplugImage
+                        .frame(width: reader.size.width / 2, height: reader.size.height / 3, alignment: .center)
+                    Spacer()
+                }
                 Spacer()
+                VStack(alignment: .leading, spacing: 15) {
+                    titleLabel
+                    messageLabel
+                }
+                continueButton
             }
-            Spacer()
-            VStack(alignment: .leading, spacing: 15) {
-                titleLabel
-                messageLabel
-            }
-            continueButton
-            Spacer()
+            .background(navigationLink)
+            .padding()
         }
-        .background(navigationLink)
-        .padding()
     }
 }
 
@@ -39,19 +41,18 @@ extension UnplugABView {
     
     var unplugImage: some View {
         Image("airbeam-unplugged")
-            .resizable()
             .aspectRatio(contentMode: .fit)
     }
     
     var titleLabel: some View {
         Text(Strings.UnplugAirbeamView.title)
-            .font(Fonts.boldTitle3)
+            .font(Fonts.moderateBoldTitle3)
             .foregroundColor(.accentColor)
     }
     
     var messageLabel: some View {
         Text(Strings.UnplugAirbeamView.message)
-            .font(Fonts.regularHeading1)
+            .font(Fonts.moderateRegularHeading1)
             .foregroundColor(.aircastingGray)
     }
     
@@ -60,7 +61,9 @@ extension UnplugABView {
             viewModel.continueButtonTapped()
         } label: {
             Text(Strings.Commons.continue)
-        }.buttonStyle(BlueButtonStyle())
+        }
+        .buttonStyle(BlueButtonStyle())
+        .padding(.bottom, 15)
     }
     
     var navigationLink: some View {

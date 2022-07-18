@@ -5,8 +5,10 @@ import CoreLocation
 import Foundation
 import SwiftUI
 import AirCastingStyling
+import Resolver
 
 struct SearchMapView: View {
+    @InjectedObject private var userSettings: UserSettings
     @StateObject private var viewModel: SearchMapViewModel
     @Environment(\.presentationMode) var presentationMode
     @Binding var isSearchAndFollowLinkActive: Bool
@@ -60,6 +62,7 @@ struct SearchMapView: View {
                 }
                 VStack(alignment: .center, content: {
                     addressTextField
+                        .font(Fonts.moderateRegularHeading2)
                     HStack {
                         measurementTypeText
                         Spacer()
@@ -119,14 +122,14 @@ private extension SearchMapView {
     
     var measurementTypeText: some View {
         Text(String(format: Strings.SearchMapView.parameterText, arguments: [viewModel.getMeasurementName()]))
-            .font(Fonts.semiboldHeading2)
+            .font(Fonts.muliSemiboldHeading2)
             .lineLimit(1)
             .scaledToFill()
     }
     
     var sensorTypeText: some View {
         Text(String(format: Strings.SearchMapView.sensorText, arguments: [viewModel.getSensorName()]))
-            .font(Fonts.semiboldHeading2)
+            .font(Fonts.muliSemiboldHeading2)
             .lineLimit(1)
             .scaledToFill()
     }
@@ -138,7 +141,7 @@ private extension SearchMapView {
             }
         } label: {
             Text("\(Strings.SearchMapView.redoText) \(Image(systemName: "goforward"))")
-                .font(Fonts.boldHeading3)
+                .font(Fonts.muliBoldHeading2)
                 .lineLimit(1)
                 .scaledToFill()
         }
@@ -160,17 +163,19 @@ private extension SearchMapView {
                 .onStartingLocationChange { geoSquare in
                     viewModel.startingLocationChanged(geoSquare: geoSquare)
                 }
-                .padding(.top, 50)
+                .padding(.top, userSettings.satteliteMap ? 100 : 50)
                 .ignoresSafeArea(.all, edges: [.bottom])
-                LinearGradient(gradient: Gradient(colors: [.white.opacity(0.1),
-                                                           .white.opacity(0.5),
-                                                           .white.opacity(0.7),
-                                                           .white.opacity(0.8),
-                                                           .white.opacity(0.9),
-                                                           .white]),
-                               startPoint: .bottom,
-                               endPoint: .top)
-                .frame(width: reader.size.width, height: reader.size.height / 4.5, alignment: .top)
+                if !userSettings.satteliteMap {
+                    LinearGradient(gradient: Gradient(colors: [.white.opacity(0.1),
+                                                               .white.opacity(0.5),
+                                                               .white.opacity(0.7),
+                                                               .white.opacity(0.8),
+                                                               .white.opacity(0.9),
+                                                               .white]),
+                                   startPoint: .bottom,
+                                   endPoint: .top)
+                    .frame(width: reader.size.width, height: reader.size.height / 4.5, alignment: .top)
+                }
             }
         }
     }
@@ -180,9 +185,10 @@ private extension SearchMapView {
                                                 arguments: ["\(viewModel.sessionsList.count)",
                                                             "\(viewModel.sessionsList.count)"]),
                                          using: [Strings.SearchMapView.sessionsText],
-                                         color: .darkBlue,
-                                         standardColor: .darkBlue,
-                                         font: Fonts.boldHeading2)
+                                         color: userSettings.satteliteMap ? .white : .darkBlue,
+                                         standardColor: userSettings.satteliteMap ? .white : .darkBlue,
+                                         font: Fonts.muliBoldHeading1)
+
         .foregroundColor(.darkBlue)
     }
     
@@ -229,7 +235,7 @@ private extension SearchMapView {
             tabSelection.selection = .dashboard
         } label: {
             Text(Strings.SearchMapView.finishText)
-                .font(Fonts.muliHeading2.bold())
+                .font(Fonts.muliRegularHeading3.bold())
                 .padding(.trailing, 7)
         }
         .overlay(

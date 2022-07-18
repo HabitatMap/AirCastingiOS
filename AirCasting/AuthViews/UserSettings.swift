@@ -12,8 +12,10 @@ class UserSettings: ObservableObject {
     private let keepScreenOnKey = Constants.UserDefaultsKeys.keepScreenOn
     private let convertToCelsiusKey = Constants.UserDefaultsKeys.convertToCelsius
     private let useDarkModeKey = Constants.UserDefaultsKeys.useDarkMode
+    private let satteliteMapKey = Constants.UserDefaultsKeys.satelliteMapKey
+    private let twentyFourHourFormatKey = Constants.UserDefaultsKeys.twentyFourHoursFormatKey
     @Injected private var featureFlagProvider: FeatureFlagProvider
-
+    
     var contributingToCrowdMap: Bool {
         get {
             userDefaults.bool(forKey: crowdMapKey)
@@ -23,7 +25,7 @@ class UserSettings: ObservableObject {
             Log.info("Changed crowdMap contribution setting to \(contributingToCrowdMap ? "ON" : "OFF")")
         }
     }
-
+    
     var keepScreenOn: Bool {
         get {
             userDefaults.bool(forKey: keepScreenOnKey)
@@ -35,7 +37,7 @@ class UserSettings: ObservableObject {
             objectWillChange.send()
         }
     }
-
+    
     var disableMapping: Bool {
         get {
             userDefaults.bool(forKey: locationlessKey)
@@ -46,7 +48,7 @@ class UserSettings: ObservableObject {
             objectWillChange.send()
         }
     }
-
+    
     var convertToCelsius: Bool {
         get {
             userDefaults.bool(forKey: convertToCelsiusKey)
@@ -68,7 +70,29 @@ class UserSettings: ObservableObject {
             objectWillChange.send()
         }
     }
-
+    
+    var satteliteMap: Bool {
+        get {
+            userDefaults.bool(forKey: satteliteMapKey)
+        }
+        set {
+            userDefaults.setValue(newValue, forKey: satteliteMapKey)
+            Log.info("Changed satellite setting to \(satteliteMap ? "ON" : "OFF")")
+            objectWillChange.send()
+        }
+    }
+    
+    var twentyFourHour: Bool {
+        get {
+            userDefaults.bool(forKey: twentyFourHourFormatKey)
+        }
+        set {
+            userDefaults.setValue(newValue, forKey: twentyFourHourFormatKey)
+            Log.info("Changed twenty four hour format to \(twentyFourHour ? "ON" : "OFF")")
+            objectWillChange.send()
+        }
+    }
+    
     init(userDefaults: UserDefaults = .standard) {
         self.userDefaults = userDefaults
         contributingToCrowdMap = userDefaults.valueExists(forKey: crowdMapKey) ? userDefaults.bool(forKey: crowdMapKey) : true
@@ -78,5 +102,7 @@ class UserSettings: ObservableObject {
         disableMapping = isFeatureFlagOn ? userDefaults.bool(forKey: locationlessKey) : false
         convertToCelsius = userDefaults.bool(forKey: convertToCelsiusKey)
         useDarkMode = userDefaults.bool(forKey: useDarkModeKey)
+        satteliteMap = userDefaults.bool(forKey: satteliteMapKey)
+        twentyFourHour = userDefaults.valueExists(forKey: twentyFourHourFormatKey) ? userDefaults.bool(forKey: twentyFourHourFormatKey) : true
     }
 }

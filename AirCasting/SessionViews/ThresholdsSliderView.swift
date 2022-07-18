@@ -101,7 +101,7 @@ struct ThresholdsSliderView: View {
                 .position(x: calculateXAxisSize(thresholdValue: thresholds[index], geometry: geometry),
                           y: y)
                 .foregroundColor(.aircastingGray)
-                .font(Fonts.muliHeading5)
+                .font(Fonts.muliMediumHeading3)
                 .offset(x: 0, y: 20)
         }
     }

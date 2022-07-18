@@ -84,7 +84,7 @@ struct ExternalSessionCard: View {
                 }
             }
         }
-        .font(Fonts.regularHeading4)
+        .font(Fonts.moderateRegularHeading4)
         .foregroundColor(.aircastingGray)
         .padding()
         .background(
@@ -112,7 +112,7 @@ private extension ExternalSessionCard {
         return VStack() {
             ChartView(thresholds: .init(value: thresholds), stream: $selectedStream, session: session)
                 .foregroundColor(.aircastingGray)
-                .font(Fonts.semiboldHeading2)
+                .font(Fonts.muliSemiboldHeading2)
         }
     }
     
@@ -121,7 +121,7 @@ private extension ExternalSessionCard {
             if let newStream = session.streamWith(sensorName: session.uiState?.sensorName ?? "") {
                 return selectedStream = newStream
             }
-            selectedStream = streams.first
+            selectedStream = session.defaultStreamSelection() ?? streams.first
         }
     }
     
@@ -146,7 +146,7 @@ private extension ExternalSessionCard {
             isMapButtonActive = true
         } label: {
             Text(Strings.SessionCartView.map)
-                .font(Fonts.semiboldHeading2)
+                .font(Fonts.muliSemiboldHeading2)
                 .padding(.horizontal, 8)
         }
     }
@@ -158,7 +158,7 @@ private extension ExternalSessionCard {
             searchAndFollowButton.isHidden = true
         } label: {
             Text(Strings.SessionCartView.graph)
-                .font(Fonts.semiboldHeading2)
+                .font(Fonts.muliSemiboldHeading2)
                 .padding(.horizontal, 8)
         }
     }
@@ -203,5 +203,15 @@ private extension ExternalSessionCard {
         let viewModel = StatisticsContainerViewModel(statsInput: controller)
         controller.output = viewModel
         return viewModel
+    }
+}
+
+// Extension for selecting Stream PM2.5 as default one.
+extension ExternalSessionEntity {
+    func defaultStreamSelection() -> MeasurementStreamEntity? {
+        allStreams.first { stream in
+            guard let name = stream.sensorName else { return false }
+            return name.contains("PM2.5")
+         }
     }
 }

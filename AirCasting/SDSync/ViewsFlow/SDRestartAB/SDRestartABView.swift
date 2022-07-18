@@ -14,24 +14,26 @@ struct SDRestartABView: View {
     }
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 40) {
-            ProgressView(value: 0.3)
-            Spacer()
-            HStack() {
+        GeometryReader { reader in
+            VStack(alignment: .leading, spacing: 40) {
+                ProgressView(value: 0.568)
                 Spacer()
-                restartImage
+                HStack() {
+                    Spacer()
+                    restartImage
+                        .frame(width: reader.size.width / 2, height: reader.size.height / 3, alignment: .center)
+                    Spacer()
+                }
                 Spacer()
+                VStack(alignment: .leading, spacing: 15) {
+                    titleLabel
+                    messageLabel
+                }
+                continueButton
             }
-            Spacer()
-            VStack(alignment: .leading, spacing: 15) {
-                titleLabel
-                messageLabel
-            }
-            continueButton
-            Spacer()
+            .background(selectDeviceLink)
+            .padding()
         }
-        .background(selectDeviceLink)
-        .padding()
     }
 }
 
@@ -39,19 +41,18 @@ extension SDRestartABView {
     
     var restartImage: some View {
         Image("2-power")
-            .resizable()
             .aspectRatio(contentMode: .fit)
     }
     
     var titleLabel: some View {
         Text(Strings.SDRestartABView.title)
-            .font(Fonts.boldTitle3)
+            .font(Fonts.moderateBoldTitle3)
             .foregroundColor(.accentColor)
     }
     
     var messageLabel: some View {
         Text(Strings.SDRestartABView.message)
-            .font(Fonts.regularHeading1)
+            .font(Fonts.moderateRegularHeading1)
             .foregroundColor(.aircastingGray)
     }
     
@@ -60,7 +61,9 @@ extension SDRestartABView {
             viewModel.continueSyncFlow()
         } label: {
             Text(Strings.Commons.continue)
-        }.buttonStyle(BlueButtonStyle())
+        }
+        .buttonStyle(BlueButtonStyle())
+        .padding(.bottom, 15)
     }
 
     var selectDeviceLink: some View {
