@@ -2,12 +2,15 @@
 //
 import AirCastingStyling
 import SwiftUI
+import Resolver
 
 struct CreateSessionDetailsView: View {
     
     @EnvironmentObject private var sessionContext: CreateSessionContext
     @StateObject private var viewModel: CreateSessionDetailsViewModel = .init()
     @Binding var creatingSessionFlowContinues: Bool
+    @Injected private var locationTracker: LocationTracker
+    private var shouldTrackLocation: Bool { sessionContext.sessionType == .fixed || !sessionContext.locationless }
     
     init(creatingSessionFlowContinues: Binding<Bool>) {
         self._creatingSessionFlowContinues = creatingSessionFlowContinues
@@ -42,7 +45,19 @@ struct CreateSessionDetailsView: View {
             })
             .background(navigation)
         }
-        .onAppear { viewModel.onScreenEnter() }
+        .onAppear {
+            viewModel.onScreenEnter()
+            if shouldTrackLocation {
+                // We are adding this here to show the most recent location on the map on fixed session location picker screen
+                // and on the map for mobile session confirmation screen
+                locationTracker.start()
+            }
+        }
+        .onDisappear {
+            if shouldTrackLocation {
+                locationTracker.stop()
+            }
+        }
         .onChange(of: viewModel.sessionName) { _ in
             viewModel.showErrorIndicator = false
         }

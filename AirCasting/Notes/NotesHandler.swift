@@ -44,9 +44,8 @@ class NotesHandlerDefault: NSObject, NotesHandler, NSFetchedResultsControllerDel
     }
 
     func addNote(noteText: String, photo: URL?, withLocation: Bool) {
-        let latitude = withLocation ? locationTracker.locationManager.location?.coordinate.latitude ?? locationTracker.googleLocation.last?.location.latitude ?? 20.0 : 20.0
-        let longitude = withLocation ? locationTracker.locationManager.location?.coordinate.longitude ?? locationTracker.googleLocation.last?.location.longitude ?? 20.0 : 20.0
-        Log.info("Saving note with a photo: \(photo)")
+        let latitude = withLocation ? locationTracker.location.value?.coordinate.latitude ?? 20.0 : 20.0
+        let longitude = withLocation ? locationTracker.location.value?.coordinate.longitude ?? 20.0 : 20.0
         measurementStreamStorage.accessStorage { [self] storage in
             do {
                 let currentNumber = try storage.getNotes(for: sessionUUID).map(\.number).sorted(by: < ).last
