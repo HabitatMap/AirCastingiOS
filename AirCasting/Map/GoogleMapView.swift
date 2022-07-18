@@ -346,7 +346,6 @@ struct GoogleMapView: UIViewRepresentable {
                 return
             }
             
-            #warning("Remove force unwrapping cause we are not sure if it will have a value")
             let lat = parent.liveModeOn ?
             parent.tracker.location.value?.coordinate.latitude ?? 37.35 :
             parent.pathPoints.last?.location.latitude ?? 37.35

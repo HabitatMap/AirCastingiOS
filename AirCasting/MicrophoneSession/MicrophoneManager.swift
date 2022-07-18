@@ -208,7 +208,6 @@ private extension MicrophoneManager {
     }
     
     func obtainCurrentLocation() -> CLLocationCoordinate2D? {
-        Log.info("Obtaining current location with: \(locationTracker.location.value)")
         return locationTracker.location.value?.coordinate
     }
     
