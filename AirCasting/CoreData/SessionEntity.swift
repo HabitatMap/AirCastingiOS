@@ -124,13 +124,6 @@ public class SessionEntity: NSManagedObject, Identifiable {
             stream.sensorName == sensorName
         }
     }
-    
-    func defaultStreamSelection() -> MeasurementStreamEntity? {
-        allStreams.first { stream in
-            guard let name = stream.sensorName else { return false }
-            return name.contains("PM2.5")
-         }
-    }
 }
 
 extension NSFetchRequest where ResultType == SessionEntity {

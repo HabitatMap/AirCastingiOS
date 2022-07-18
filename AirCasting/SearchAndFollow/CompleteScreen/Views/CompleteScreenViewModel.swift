@@ -269,3 +269,12 @@ class CompleteScreenViewModel: ObservableObject {
         return value.components(separatedBy: CharacterSet.decimalDigits).joined()
     }
 }
+
+// Extension for selecting Stream PM2.5 as default one.
+extension ExternalSessionWithStreamsAndMeasurements {
+    func defaultStreamSelection() -> Self.Stream? {
+        self.streams.first { stream in
+            stream.sensorName.contains("PM2.5")
+        }
+    }
+}

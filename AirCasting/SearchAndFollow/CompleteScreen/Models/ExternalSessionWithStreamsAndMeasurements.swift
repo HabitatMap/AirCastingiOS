@@ -30,10 +30,4 @@ struct ExternalSessionWithStreamsAndMeasurements {
         let latitude: Double
         let longitude: Double
     }
-    
-    func defaultStreamSelection() -> Self.Stream? {
-        self.streams.first { stream in
-            stream.sensorName.contains("PM2.5")
-         }
-    }
 }
