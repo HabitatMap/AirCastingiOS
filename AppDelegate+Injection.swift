@@ -162,7 +162,7 @@ extension Resolver: ResolverRegistering {
         main.register { DefaultRemoveDataController() as RemoveDataController }
         
         // MARK: TEST
-        main.register { BluetoothConnectionProtector(context: Resolver.resolve(PersistenceController.self).viewContext) as Connectable }
+        main.register { BluetoothConnectionProtector() as Connectable }
         
         // MARK: - Session stopping
         

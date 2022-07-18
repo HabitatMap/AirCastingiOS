@@ -1,23 +1,29 @@
 import SwiftUI
 import CoreData
+import Resolver
 
 final class BluetoothConnectionProtector: Connectable {
     
-    enum BluetoothConnectionProtector: Error {
+    enum BluetoothConnectionProtectorError: Error {
         case alreadyConnected
+        case readError(Error)
     }
     
-    private var coreDataHook: CoreDataHook
-    
-    init(context: NSManagedObjectContext) {
-        self.coreDataHook = CoreDataHook(context: context)
-    }
+    @Injected private var persistenceController: PersistenceController
     
     func isAirBeamAvailableForNewConnection() -> Result<Void, Error> {
-        guard let sessions = coreDataHook.sessions as? [SessionEntity] else { return .failure(BluetoothConnectionProtector.alreadyConnected) }
-        if sessions.contains(where: { $0.isActive == true && $0.deviceType == .AIRBEAM3 }) {
-            return .failure(BluetoothConnectionProtector.alreadyConnected)
+        var result: Result<Void, Error>!
+        let context = persistenceController.editContext
+        context.performAndWait {
+            let request: NSFetchRequest<SessionEntity> = SessionEntity.fetchRequest()
+            request.predicate = NSPredicate(format: "isActive == %@ AND deviceType == $@", true, DeviceType.AIRBEAM3.rawValue)
+            do {
+                result = try context.fetch(request).count > 0 ? .failure(BluetoothConnectionProtectorError.alreadyConnected) : .success(())
+            } catch {
+                result = .failure(BluetoothConnectionProtectorError.readError(error))
+            }
         }
-        return .success(())
+            
+        return result
     }
 }
