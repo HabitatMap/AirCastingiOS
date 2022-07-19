@@ -138,6 +138,7 @@ struct ThresholdsSettingsView: View {
             thresholdSettingsViewModel.thresholdMedium = string(thresholdValues.medium)
             thresholdSettingsViewModel.thresholdHigh = string(thresholdValues.high)
             thresholdSettingsViewModel.thresholdVeryHigh = string(thresholdValues.veryHigh)
+            UITableView.appearance().backgroundColor = UIColor(Color.formBackgroundColor)
         }
         .alert(item: $thresholdSettingsViewModel.alert, content: { $0.makeAlert() })
     }

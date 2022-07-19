@@ -34,42 +34,46 @@ struct DashboardView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
-            // It seems that there is a bug in SwiftUI for when a view contains a ScrollView (AirSectionPickerView).
-            // When user pops back to this view using navigation the `large` title is displayed incorrectly.
-            // As a workaround I`ve put a 1px rectangle between ScrollView and top. It seems to be doing the trick.
-            //
-            // Bug report was filled with Apple
-            PreventCollapseView()
-            if reorderButton.reorderIsOn {
-                followingTab
-                ReorderingDashboard(sessions: sessions,
-                                    thresholds: Array(self.thresholds))
-            } else {
-                sessionTypePicker
-                if sessions.isEmpty { emptySessionsView } else { sessionListView }
+        ZStack {
+            Color.aircastingBackgroundWhite
+                .ignoresSafeArea()
+            VStack(spacing: 0) {
+                // It seems that there is a bug in SwiftUI for when a view contains a ScrollView (AirSectionPickerView).
+                // When user pops back to this view using navigation the `large` title is displayed incorrectly.
+                // As a workaround I`ve put a 1px rectangle between ScrollView and top. It seems to be doing the trick.
+                //
+                // Bug report was filled with Apple
+                PreventCollapseView()
+                if reorderButton.reorderIsOn {
+                    followingTab
+                    ReorderingDashboard(sessions: sessions,
+                                        thresholds: Array(self.thresholds))
+                } else {
+                    sessionTypePicker
+                    if sessions.isEmpty { emptySessionsView } else { sessionListView }
+                }
             }
-        }
-        .fullScreenCover(isPresented: $searchAndFollowButton.searchIsOn) {
-            CreatingSessionFlowRootView {
-                SearchView(isSearchAndFollowLinkActive: $searchAndFollowButton.searchIsOn)
+            .fullScreenCover(isPresented: $searchAndFollowButton.searchIsOn) {
+                CreatingSessionFlowRootView {
+                    SearchView(isSearchAndFollowLinkActive: $searchAndFollowButton.searchIsOn)
+                }
             }
-        }
-        .navigationBarTitle(Strings.DashboardView.dashboardText)
-        .onChange(of: selectedSection.selectedSection) { selectedSection in
-            self.selectedSection.selectedSection = selectedSection
-            try! coreDataHook.setup(selectedSection: self.selectedSection.selectedSection)
-        }
-        .onChange(of: isRefreshing, perform: { newValue in
-            guard newValue == true else { return }
-            guard !sessionSynchronizer.syncInProgress.value else {
-                onCurrentSyncEnd { isRefreshing = false }
-                return
+            .navigationBarTitle(Strings.DashboardView.dashboardText)
+            .onChange(of: selectedSection.selectedSection) { selectedSection in
+                self.selectedSection.selectedSection = selectedSection
+                try! coreDataHook.setup(selectedSection: self.selectedSection.selectedSection)
             }
-            sessionSynchronizer.triggerSynchronization() { isRefreshing = false }
-        })
-        .onAppear() {
-            try! coreDataHook.setup(selectedSection: self.selectedSection.selectedSection)
+            .onChange(of: isRefreshing, perform: { newValue in
+                guard newValue == true else { return }
+                guard !sessionSynchronizer.syncInProgress.value else {
+                    onCurrentSyncEnd { isRefreshing = false }
+                    return
+                }
+                sessionSynchronizer.triggerSynchronization() { isRefreshing = false }
+            })
+            .onAppear() {
+                try! coreDataHook.setup(selectedSection: self.selectedSection.selectedSection)
+        }
         }
     }
 
@@ -104,7 +108,7 @@ struct DashboardView: View {
                     .shadow(color: Color.aircastingDarkGray.opacity(0.4),
                             radius: 6)
                     .padding(.horizontal, -30)
-                Color.aircastingWhite
+                Color.aircastingBackgroundWhite
             }
         )
         .zIndex(2)
@@ -158,7 +162,7 @@ struct DashboardView: View {
             .coordinateSpace(name: dashboardCoordinateSpaceName)
         }
         .frame(maxWidth: .infinity)
-        .background(Color.aircastingGray.opacity(0.05))
+        .background(Color.aircastingWhite)
     }
 
     private func onCurrentSyncEnd(_ completion: @escaping () -> Void) {

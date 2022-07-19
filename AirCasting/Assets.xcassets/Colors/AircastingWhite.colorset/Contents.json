@@ -20,7 +20,7 @@
         }
       ],
       "color" : {
-        "color-space" : "extended-linear-srgb",
+        "color-space" : "srgb",
         "components" : {
           "alpha" : "1.000",
           "blue" : "0x5D",

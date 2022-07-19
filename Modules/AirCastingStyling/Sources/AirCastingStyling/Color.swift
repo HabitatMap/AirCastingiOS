@@ -56,4 +56,10 @@ extension Color {
     public static var aircastingBackgroundWhite: Color {
         return Color("AircastingBackgroundWhite")
     }
+    public static var unfollowButtonColor: Color {
+        return Color("UnfollowButtonColor")
+    }
+    public static var formBackgroundColor: Color {
+        return Color("FormBackground")
+    }
 }

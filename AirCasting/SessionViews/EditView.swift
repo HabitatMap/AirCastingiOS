@@ -15,6 +15,8 @@ struct EditView<VM: EditViewModel>: View {
     
     var body: some View {
         ZStack {
+            Color.aircastingBackgroundWhite
+                .ignoresSafeArea()
             XMarkButton()
             if editSessionViewModel.isSessionDownloaded {
                 editView

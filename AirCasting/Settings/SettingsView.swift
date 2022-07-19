@@ -116,6 +116,9 @@ struct SettingsView: View {
             #endif
             appInfoSection
         }
+        .onAppear {
+            UITableView.appearance().backgroundColor = UIColor(Color.formBackgroundColor)
+        }
         .listStyle(GroupedListStyle())
         .navigationBarTitle(Strings.Settings.title)
     }

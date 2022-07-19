@@ -85,6 +85,7 @@ private extension ExternalSessionHeader {
         VStack(alignment: .leading, spacing: 5) {
             Text(Strings.SessionCart.lastMinuteMeasurement)
                 .font(Fonts.moderateRegularHeading4)
+                .foregroundColor(.aircastingGray)
                 .padding(.bottom, 3)
             HStack {
                 streams.count != 1 ? Spacer() : nil

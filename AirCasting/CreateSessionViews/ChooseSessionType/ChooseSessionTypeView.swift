@@ -227,46 +227,50 @@ struct ChooseSessionTypeView: View {
     
     
     private var mainContent: some View {
-        VStack(spacing: 50) {
-            VStack(alignment: .leading, spacing: 10) {
-                titleLabel
-                messageLabel
-            }
-            .padding(.horizontal)
-            
-            VStack(alignment: .leading, spacing: 15) {
-                HStack {
-                    recordNewLabel
-                    Spacer()
-                    moreInfo
+        ZStack {
+            Color.aircastingBackgroundWhite
+                .ignoresSafeArea()
+            VStack(spacing: 50) {
+                VStack(alignment: .leading, spacing: 10) {
+                    titleLabel
+                    messageLabel
                 }
-                HStack {
-                    fixedSessionButton
-                    Spacer()
-                    mobileSessionButton
-                }
-                Spacer()
-                if featureFlagsViewModel.enabledFeatures.contains(.sdCardSync) || featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) {
-                    orLabel
-                }
-                HStack {
-                    if featureFlagsViewModel.enabledFeatures.contains(.sdCardSync) {
-                        sdSyncButton
+                .padding(.horizontal)
+                
+                VStack(alignment: .leading, spacing: 15) {
+                    HStack {
+                        recordNewLabel
+                        Spacer()
+                        moreInfo
+                    }
+                    HStack {
+                        fixedSessionButton
+                        Spacer()
+                        mobileSessionButton
                     }
                     Spacer()
-                    if featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) {
-                        followSessionButton
+                    if featureFlagsViewModel.enabledFeatures.contains(.sdCardSync) || featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) {
+                        orLabel
                     }
+                    HStack {
+                        if featureFlagsViewModel.enabledFeatures.contains(.sdCardSync) {
+                            sdSyncButton
+                        }
+                        Spacer()
+                        if featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) {
+                            followSessionButton
+                        }
+                    }
+                    Spacer()
                 }
-                Spacer()
+                .padding([.bottom, .vertical])
+                .padding(.horizontal, 30)
+                .background(
+                    Color.aircastingBackground
+                        .ignoresSafeArea()
+                )
+                .alert(item: $viewModel.alert, content: { $0.makeAlert() })
             }
-            .padding([.bottom, .vertical])
-            .padding(.horizontal, 30)
-            .background(
-                Color.aircastingBackground.opacity(0.25)
-                    .ignoresSafeArea()
-            )
-            .alert(item: $viewModel.alert, content: { $0.makeAlert() })
         }
     }
 }
@@ -296,7 +300,7 @@ private extension ChooseSessionTypeView {
     
     var recordNewLabel: some View {
         Text(Strings.ChooseSessionTypeView.recordNew)
-            .font(Fonts.muliBoldHeading2)
+            .font(Fonts.muliBoldHeading1)
             .foregroundColor(.aircastingGray)
     }
     

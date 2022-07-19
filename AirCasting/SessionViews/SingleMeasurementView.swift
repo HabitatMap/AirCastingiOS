@@ -44,6 +44,7 @@ struct SingleMeasurementView: View {
                 VStack(spacing: 1) {
                     Text(showStreamName())
                         .font(Fonts.systemFontRegularHeading1)
+                        .foregroundColor(.aircastingGray)
                         .scaledToFill()
                     if let threshold = threshold.value, measurementPresentationStyle == .showValues {
                         let formatter = Resolver.resolve(ThresholdFormatter.self, args: threshold)
@@ -52,10 +53,12 @@ struct SingleMeasurementView: View {
                                 MeasurementDotView(value: value!, thresholds: threshold)
                                 Text("\(Int(round(value!)))")
                                     .font(Fonts.moderateRegularHeading3)
+                                    .foregroundColor(.aircastingGray)
                                     .scaledToFill()
                             } else {
                                 Text("-")
                                     .font(Fonts.moderateRegularHeading3)
+                                    .foregroundColor(.aircastingGray)
                                     .scaledToFill()
                             }
                         }

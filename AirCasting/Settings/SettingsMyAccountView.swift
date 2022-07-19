@@ -11,6 +11,8 @@ struct SettingsMyAccountView<VM: SettingsMyAccountViewModel>: View {
 
     var body: some View {
         ZStack {
+            Color.aircastingBackgroundWhite
+                .ignoresSafeArea()
             VStack(alignment: .leading) {
                 logInLabel
                 signOutButton

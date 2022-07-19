@@ -51,6 +51,7 @@ struct ExternalSessionMapView: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .padding(.bottom)
+        .background(Color.aircastingBackgroundWhite)
     }
     
     private func getValue(of measurement: MeasurementEntity) -> Double {

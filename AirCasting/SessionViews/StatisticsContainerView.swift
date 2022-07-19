@@ -35,7 +35,7 @@ struct StatisticsContainerView<ViewModelType>: View where ViewModelType: Statist
         .font(Fonts.muliMediumHeading3)
         .foregroundColor(.aircastingGray)
         .frame(width: 220, height: 80)
-        .background(Color.white)
+        .background(Color.aircastingBackgroundWhite)
         .cornerRadius(8)
         .padding(.leading, 10)
         .padding(.top, 10)

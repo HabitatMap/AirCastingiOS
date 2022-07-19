@@ -61,7 +61,7 @@ struct MainTabBarView: View {
             let navBarAppearance = UINavigationBar.appearance()
             navBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(Color.darkBlue),
                                                          .font: Fonts.systemFontBoldTitle1]
-            UITabBar.appearance().backgroundColor = .systemBackground
+            UITabBar.appearance().backgroundColor = UIColor(named: "AircastingBackgroundWhite")
             let appearance = UITabBarAppearance()
             appearance.backgroundImage = UIImage()
             appearance.shadowImage = UIImage.mainTabBarShadow
@@ -138,6 +138,8 @@ private extension MainTabBarView {
                     reorderButton.reorderIsOn = true
                 } label: {
                     Image("draggable-icon")
+                        .renderingMode(.template)
+                        .foregroundColor(.primary)
                         .frame(width: 60, height: 60)
                         .imageScale(.large)
                 }
