@@ -14,7 +14,7 @@ struct SettingsView: View {
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
     @InjectedObject private var userSettings: UserSettings
     @InjectedObject private var bluetoothManager: BluetoothManager
-    @InjectedObject var colorSchemeMode: ColorSchemeMode
+//    @InjectedObject var colorSchemeMode: ColorSchemeMode
 
     private let sessionContext: CreateSessionContext
     #if DEBUG || BETA
@@ -137,7 +137,6 @@ struct SettingsView: View {
                     disableMappingDescription
                 }
             }
-            colorSchemeToggle
             keepScreenOnSwitch
             satelliteMapSwitch
             twentyFourHourFormatSwitch
@@ -269,14 +268,6 @@ struct SettingsView: View {
              }
          }
      }
-    
-    private var colorSchemeToggle: some View {
-        settingSwitch(toogle: $userSettings.useDarkMode,
-                      label: Strings.Settings.useDarkMode)
-        .onChange(of: userSettings.useDarkMode) { newValue in
-            colorSchemeMode.changeDarkMode(state: newValue)
-        }
-    }
 
     #if DEBUG || BETA
     private var navigateToAppConfigurationButton: some View {

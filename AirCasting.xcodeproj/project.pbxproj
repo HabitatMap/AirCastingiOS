@@ -166,7 +166,6 @@
 		AC7EB3B125A7152000A7F2AF /* Muli-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB39B25A7152000A7F2AF /* Muli-Regular.ttf */; };
 		AC7EB3B225A7152000A7F2AF /* Muli-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB39C25A7152000A7F2AF /* Muli-LightItalic.ttf */; };
 		AC7EB3B325A7152000A7F2AF /* Moderat-Trial-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = AC7EB39D25A7152000A7F2AF /* Moderat-Trial-Black.otf */; };
-		AC8000752876D188001D6276 /* ColorSchemeMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8000742876D188001D6276 /* ColorSchemeMode.swift */; };
 		AC8431D0265E6143004DC890 /* DefaultRemoveOldMeasurementsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8431CF265E6143004DC890 /* DefaultRemoveOldMeasurementsService.swift */; };
 		AC86EE6B25D03DC00083F8C0 /* SelectDeviceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC86EE6A25D03DC00083F8C0 /* SelectDeviceView.swift */; };
 		AC8CFF3625E502DD00FB2918 /* CreateAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8CFF3525E502DD00FB2918 /* CreateAccountView.swift */; };
@@ -660,7 +659,6 @@
 		AC7EB39B25A7152000A7F2AF /* Muli-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Muli-Regular.ttf"; sourceTree = "<group>"; };
 		AC7EB39C25A7152000A7F2AF /* Muli-LightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Muli-LightItalic.ttf"; sourceTree = "<group>"; };
 		AC7EB39D25A7152000A7F2AF /* Moderat-Trial-Black.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Moderat-Trial-Black.otf"; sourceTree = "<group>"; };
-		AC8000742876D188001D6276 /* ColorSchemeMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorSchemeMode.swift; sourceTree = "<group>"; };
 		AC8431CF265E6143004DC890 /* DefaultRemoveOldMeasurementsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultRemoveOldMeasurementsService.swift; sourceTree = "<group>"; };
 		AC86EE6A25D03DC00083F8C0 /* SelectDeviceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectDeviceView.swift; sourceTree = "<group>"; };
 		AC8CFF3525E502DD00FB2918 /* CreateAccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateAccountView.swift; sourceTree = "<group>"; };
@@ -1312,7 +1310,6 @@
 				33B397D8284FB77400C95387 /* PhotoPicker.swift */,
 				33F87610286343D70073A3D4 /* DownloadableImage.swift */,
 				ACBF1AD1286C618F006DF793 /* XMarkButton.swift */,
-				AC8000742876D188001D6276 /* ColorSchemeMode.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -3137,7 +3134,6 @@
 				331EA80A25E32094009DEFDB /* ConfirmCreatingSessionView.swift in Sources */,
 				33F604A528227F9700B48C63 /* PartialExternalSession.swift in Sources */,
 				DD430B082670FE6100F1BF2E /* GreenTextButtonStyle.swift in Sources */,
-				AC8000752876D188001D6276 /* ColorSchemeMode.swift in Sources */,
 				DD8A36A726C3E76200C26725 /* PlacePicker.swift in Sources */,
 				AC049F872608B74C00398197 /* FixedSession.swift in Sources */,
 				B30BAC1B2694AA9C00AE0476 /* MeasurementsStatisticsDataSource.swift in Sources */,

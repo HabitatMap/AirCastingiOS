@@ -11,7 +11,6 @@ class UserSettings: ObservableObject {
     private let locationlessKey = Constants.UserDefaultsKeys.disableMapping
     private let keepScreenOnKey = Constants.UserDefaultsKeys.keepScreenOn
     private let convertToCelsiusKey = Constants.UserDefaultsKeys.convertToCelsius
-    private let useDarkModeKey = Constants.UserDefaultsKeys.useDarkMode
     private let satteliteMapKey = Constants.UserDefaultsKeys.satelliteMapKey
     private let twentyFourHourFormatKey = Constants.UserDefaultsKeys.twentyFourHoursFormatKey
     @Injected private var featureFlagProvider: FeatureFlagProvider
@@ -59,18 +58,7 @@ class UserSettings: ObservableObject {
             objectWillChange.send()
         }
     }
-    
-    var useDarkMode: Bool {
-        get {
-            userDefaults.bool(forKey: useDarkModeKey)
-        }
-        set {
-            userDefaults.setValue(newValue, forKey: useDarkModeKey)
-            Log.info("Changed Color Scheme to \(useDarkMode ? "Dark" : "Light")")
-            objectWillChange.send()
-        }
-    }
-    
+
     var satteliteMap: Bool {
         get {
             userDefaults.bool(forKey: satteliteMapKey)
@@ -101,7 +89,6 @@ class UserSettings: ObservableObject {
         let isFeatureFlagOn = featureFlagProvider.isFeatureOn(.locationlessSessions) ?? false
         disableMapping = isFeatureFlagOn ? userDefaults.bool(forKey: locationlessKey) : false
         convertToCelsius = userDefaults.bool(forKey: convertToCelsiusKey)
-        useDarkMode = userDefaults.bool(forKey: useDarkModeKey)
         satteliteMap = userDefaults.bool(forKey: satteliteMapKey)
         twentyFourHour = userDefaults.valueExists(forKey: twentyFourHourFormatKey) ? userDefaults.bool(forKey: twentyFourHourFormatKey) : true
     }

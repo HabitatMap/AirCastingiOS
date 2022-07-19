@@ -39,8 +39,6 @@ struct Strings {
                                                    comment: "")
         static let celsiusDescription = NSLocalizedString("Use Celsius",
                                                           comment: "")
-        static let useDarkMode = NSLocalizedString("Use Dark Mode",
-                                                          comment: "")
         static let backendSettings: String = NSLocalizedString("Backend settings",
                                                                comment: "")
         static let settingsHelp: String = NSLocalizedString("Help",
