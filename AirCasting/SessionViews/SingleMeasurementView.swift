@@ -50,7 +50,7 @@ struct SingleMeasurementView: View {
                         HStack(spacing: 3) {
                             if value != nil {
                                 MeasurementDotView(value: value!, thresholds: threshold)
-                                Text("\(Int(value!))")
+                                Text("\(Int(round(value!)))")
                                     .font(Fonts.moderateRegularHeading3)
                                     .scaledToFill()
                             } else {

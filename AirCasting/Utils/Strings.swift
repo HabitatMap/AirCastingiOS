@@ -57,6 +57,8 @@ struct Strings {
                                                  comment: "")
         static let satelliteMap = NSLocalizedString("Satellite map",
                                                        comment: "")
+        static let twentyFourHourFormat = NSLocalizedString("Use 24-hour format",
+                                                       comment: "")
         static let crashlyticsSectionTitle = "Crashlytics integration testing:"
         
         static let appConfig = "App config"

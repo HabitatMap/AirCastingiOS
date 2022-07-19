@@ -2,6 +2,7 @@
 //
 
 import SwiftUI
+import Resolver
 
 struct ExternalSessionHeader: View {
     var session: Sessionable
@@ -72,8 +73,7 @@ private extension ExternalSessionHeader {
 
 
     func adaptTimeAndDate() -> Text {
-        let formatter = DateFormatters.SessionCartView.utcDateIntervalFormatter
-
+        let formatter: DateIntervalFormatter = DateFormatters.SessionCardView.shared.utcDateIntervalFormatter
         let start = session.startTime ?? DateBuilder.getFakeUTCDate()
         let end = session.endTime ?? DateBuilder.getFakeUTCDate()
 

@@ -13,6 +13,7 @@ class UserSettings: ObservableObject {
     @Injected private var featureFlagProvider: FeatureFlagProvider
     private let convertToCelsiusKey = Constants.UserDefaultsKeys.convertToCelsius
     private let satteliteMapKey = Constants.UserDefaultsKeys.satelliteMapKey
+    private let twentyFourHourFormatKey = Constants.UserDefaultsKeys.twentyFourHoursFormatKey
 
     var contributingToCrowdMap: Bool {
         get {
@@ -68,6 +69,17 @@ class UserSettings: ObservableObject {
             objectWillChange.send()
         }
     }
+    
+    var twentyFourHour: Bool {
+        get {
+            userDefaults.bool(forKey: twentyFourHourFormatKey)
+        }
+        set {
+            userDefaults.setValue(newValue, forKey: twentyFourHourFormatKey)
+            Log.info("Changed twenty four hour format to \(twentyFourHour ? "ON" : "OFF")")
+            objectWillChange.send()
+        }
+    }
 
     init(userDefaults: UserDefaults = .standard) {
         self.userDefaults = userDefaults
@@ -78,5 +90,6 @@ class UserSettings: ObservableObject {
         disableMapping = isFeatureFlagOn ? userDefaults.bool(forKey: locationlessKey) : false
         convertToCelsius = userDefaults.bool(forKey: convertToCelsiusKey)
         satteliteMap = userDefaults.bool(forKey: satteliteMapKey)
+        twentyFourHour = userDefaults.valueExists(forKey: twentyFourHourFormatKey) ? userDefaults.bool(forKey: twentyFourHourFormatKey) : true
     }
 }

@@ -2,8 +2,82 @@
 //
 
 import Foundation
+import Resolver
 
 enum DateFormatters {
+    
+    
+    struct SessionCardView {
+        @InjectedObject private var userSettings: UserSettings
+        static let shared = SessionCardView()
+        
+        private init() { }
+        
+        var pollutionChartDateFormatter: DateFormatter {
+            userSettings.twentyFourHour ? Self.pollutionChartDateFormatter24 : Self.pollutionChartDateFormatter12
+        }
+        
+        var utcDateIntervalFormatter: DateIntervalFormatter {
+            userSettings.twentyFourHour ? Self.utcDateIntervalFormatter24 : Self.utcDateIntervalFormatter12
+        }
+        
+        private static let pollutionChartDateFormatter24: DateFormatter = {
+            let df = DateFormatter()
+            df.dateFormat = "HH:mm"
+            df.timeZone = TimeZone(abbreviation: "UTC")
+            return df
+        }()
+        
+        private static let pollutionChartDateFormatter12: DateFormatter = {
+            let df = DateFormatter()
+            df.dateFormat = "h:mm a"
+            df.timeZone = TimeZone(abbreviation: "UTC")
+            return df
+        }()
+        
+        private static let utcDateIntervalFormatter24: DateIntervalFormatter = {
+            let df = DateIntervalFormatter()
+            df.dateTemplate = "MM/dd/yy HH:mm"
+            df.timeZone = TimeZone(abbreviation: "UTC")
+            df.locale = Locale(identifier: "en_US_POSIX")
+            return df
+        }()
+        
+        private static let utcDateIntervalFormatter12: DateIntervalFormatter = {
+            let df = DateIntervalFormatter()
+            df.dateTemplate = "MM/dd/yy h:mm a"
+            df.timeZone = TimeZone(abbreviation: "UTC")
+            df.locale = Locale(identifier: "en_US_POSIX")
+            return df
+        }()
+    }
+    
+    struct TimeAxisRenderer {
+        @InjectedObject private var userSettings: UserSettings
+        static let shared = TimeAxisRenderer()
+        
+        private init() { }
+        
+        var shortUTCDateFormatter: DateFormatter {
+            userSettings.twentyFourHour ? Self.shortUTCDateFormatter24 : Self.shortUTCDateFormatter12
+        }
+        
+        private static let shortUTCDateFormatter12: DateFormatter = {
+            let df = DateFormatter()
+            df.timeZone =  TimeZone.init(abbreviation: "UTC")
+            df.locale = Locale(identifier: "en_US")
+            df.dateFormat = "h:mm a"
+            return df
+        }()
+        
+        private static let shortUTCDateFormatter24: DateFormatter = {
+            let df = DateFormatter()
+            df.timeZone =  TimeZone.init(abbreviation: "UTC")
+            df.locale = Locale(identifier: "en_US")
+            df.dateFormat = "HH:mm"
+            return df
+        }()
+    }
     
     enum SessionDownloadService {
         static let decoderDateFormatter: DateFormatter = {
@@ -42,23 +116,6 @@ enum DateFormatters {
         }()
     }
     
-    enum SessionCartView {
-        static let pollutionChartDateFormatter: DateFormatter = {
-            let df = DateFormatter()
-            df.dateFormat = "HH:mm"
-            df.timeZone = TimeZone(abbreviation: "UTC")
-            return df
-        }()
-        
-        static let utcDateIntervalFormatter: DateIntervalFormatter = {
-            let df = DateIntervalFormatter()
-            df.dateTemplate = "MM/dd/yy HH:mm"
-            df.timeZone = TimeZone(abbreviation: "UTC")
-            df.locale = Locale(identifier: "en_US_POSIX")
-            return df
-        }()
-    }
-    
     enum GraphView {
         static let usLocalTimeDateFormatter: DateFormatter = {
             let df = DateFormatter()
@@ -76,16 +133,6 @@ enum DateFormatters {
         }()
     }
     
-    enum TimeAxisRenderer {
-        static let shortUTCDateFormatter: DateFormatter = {
-            let df = DateFormatter()
-            df.timeZone =  TimeZone.init(abbreviation: "UTC")
-            df.locale = Locale(identifier: "en_US")
-            df.dateFormat = "HH:mm"
-            return df
-        }()
-    }
-    
     enum DateExtension {
         static let currentTimeZoneDateFormatter: DateFormatter = {
             let df = DateFormatter()
@@ -98,6 +145,12 @@ enum DateFormatters {
             let df = DateFormatter()
             df.timeZone = TimeZone.init(abbreviation: "UTC")
             df.dateFormat = "yyyy-MM-dd HH:mm:ss"
+            return df
+        }()
+        
+        static let milisecondsDateFormatter: DateFormatter = {
+            let df = DateFormatter()
+            df.dateFormat = "SSS"
             return df
         }()
     }
