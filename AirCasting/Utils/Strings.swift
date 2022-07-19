@@ -59,6 +59,7 @@ struct Strings {
                                                        comment: "")
         static let twentyFourHourFormat = NSLocalizedString("Use 24-hour format",
                                                        comment: "")
+        static let syncOnlyThroughWifi = NSLocalizedString("Sync only through Wi-Fi", comment: "")
         static let crashlyticsSectionTitle = "Crashlytics integration testing:"
         
         static let appConfig = "App config"
