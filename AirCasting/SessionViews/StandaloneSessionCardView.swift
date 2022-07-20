@@ -10,6 +10,7 @@ struct StandaloneSessionCardView: View {
     @EnvironmentObject private var tabSelection: TabBarSelection
     @EnvironmentObject private var finishAndSyncButtonTapped: FinishAndSyncButtonTapped
     @Injected private var networkChecker: NetworkChecker
+    @InjectedObject private var userSettings: UserSettings
     @State private var alert: AlertInfo?
     
     var body: some View {
@@ -58,6 +59,10 @@ struct StandaloneSessionCardView: View {
     var finishAndSyncButton: some View {
         Button(Strings.StandaloneSessionCardView.finishAndSyncButtonLabel) {
             if networkChecker.connectionAvailable {
+                guard !userSettings.syncOnlyThroughWifi || networkChecker.isUsingWifi else {
+                    alert = InAppAlerts.noWifiNetworkSyncAlert()
+                    return
+                }
                 alert = InAppAlerts.finishAndSyncAlert(sessionName: session.name) {
                     self.finishSessionAndSyncAlertAction()
                 }
