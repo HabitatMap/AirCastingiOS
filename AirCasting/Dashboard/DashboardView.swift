@@ -46,6 +46,7 @@ struct DashboardView: View {
             //
             // Bug report was filled with Apple
             PreventCollapseView()
+                .alert(item: $alert, content: { $0.makeAlert() })
             if reorderButton.reorderIsOn {
                 followingTab
                 ReorderingDashboard(sessions: sessions,
@@ -61,7 +62,6 @@ struct DashboardView: View {
             }
         }
         .navigationBarTitle(Strings.DashboardView.dashboardText)
-        .alert(item: $alert, content: { $0.makeAlert() })
         .onChange(of: selectedSection.selectedSection) { selectedSection in
             self.selectedSection.selectedSection = selectedSection
             try! coreDataHook.setup(selectedSection: self.selectedSection.selectedSection)
