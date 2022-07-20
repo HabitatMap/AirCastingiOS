@@ -10,11 +10,17 @@ final class SettingsMyAccountViewModel: ObservableObject {
     @Injected private var logoutController: LogoutController
     @Injected private var deleteController: DeleteAccountController
     @InjectedObject private var userState: UserState
+    @InjectedObject private var userSettings: UserSettings
     @Published var alert: AlertInfo?
     
     func signOutButtonTapped() {
         guard networkChecker.connectionAvailable else {
             showAlert(InAppAlerts.noInternetConnectionSignOutAlert())
+            return
+        }
+        
+        guard !userSettings.syncOnlyThroughWifi || networkChecker.isUsingWifi else {
+            showAlert(InAppAlerts.noWifiNetworkSyncAlert())
             return
         }
         
