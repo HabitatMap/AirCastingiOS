@@ -18,8 +18,13 @@ struct DashboardView: View {
     @EnvironmentObject var reorderButton: ReorderButton
     @EnvironmentObject var searchAndFollowButton: SearchAndFollowButton
     @State var isRefreshing: Bool = false
+    
+    @State private var alert: AlertInfo?
+    
     @Injected private var sessionSynchronizer: SessionSynchronizer
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
+    @InjectedObject private var userSettings: UserSettings
+    @Injected private var networkChecker: NetworkChecker
 
     private let dashboardCoordinateSpaceName = "dashboardCoordinateSpace"
 
@@ -56,6 +61,7 @@ struct DashboardView: View {
             }
         }
         .navigationBarTitle(Strings.DashboardView.dashboardText)
+        .alert(item: $alert, content: { $0.makeAlert() })
         .onChange(of: selectedSection.selectedSection) { selectedSection in
             self.selectedSection.selectedSection = selectedSection
             try! coreDataHook.setup(selectedSection: self.selectedSection.selectedSection)
@@ -64,6 +70,16 @@ struct DashboardView: View {
             guard newValue == true else { return }
             guard !sessionSynchronizer.syncInProgress.value else {
                 onCurrentSyncEnd { isRefreshing = false }
+                return
+            }
+            guard networkChecker.connectionAvailable else {
+                alert = InAppAlerts.noNetworkSyncAlert()
+                isRefreshing = false
+                return
+            }
+            guard !userSettings.syncOnlyThroughWifi || networkChecker.isUsingWifi else {
+                alert = InAppAlerts.noWifiNetworkSyncAlert()
+                isRefreshing = false
                 return
             }
             sessionSynchronizer.triggerSynchronization() { isRefreshing = false }

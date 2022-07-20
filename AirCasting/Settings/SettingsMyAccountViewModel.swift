@@ -14,7 +14,7 @@ final class SettingsMyAccountViewModel: ObservableObject {
     
     func signOutButtonTapped() {
         guard networkChecker.connectionAvailable else {
-            showAlert(InAppAlerts.noInternetConnectionAlert())
+            showAlert(InAppAlerts.noInternetConnectionSignOutAlert())
             return
         }
         
