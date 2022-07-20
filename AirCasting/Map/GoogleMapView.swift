@@ -28,7 +28,8 @@ struct GoogleMapView: UIViewRepresentable {
     let isMapOnPickerScreen: Bool
     @Binding var mapNotes: [MapNote]
     let showMyLocationButton: Bool
-    
+    @Environment(\.colorScheme) var colorScheme
+
     init(pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false, placePickerIsUpdating: Binding<Bool>, isUserInteracting: Binding<Bool>, isSessionActive: Bool = false, isSessionFixed: Bool = false, noteMarketTapped: Binding<Bool> = .constant(false), noteNumber: Binding<Int> = .constant(0), mapNotes: Binding<[MapNote]>, showMyLocationButton: Bool = true, isMapOnPickerScreen: Bool = false) {
         self.pathPoints = pathPoints
         self.threshold = threshold
@@ -52,7 +53,7 @@ struct GoogleMapView: UIViewRepresentable {
         mapView.settings.myLocationButton = showMyLocationButton
         placeNotes(mapView, notes: mapNotes, context: context)
         do {
-            if let styleURL = Bundle.main.url(forResource: "style", withExtension: "json") {
+            if let styleURL = Bundle.main.url(forResource: colorScheme == .light ? "style" : "darkStyle", withExtension: "json") {
                 mapView.mapStyle = try GMSMapStyle(contentsOfFileURL: styleURL)
             } else {
                 Log.error("Unable to find style.json")
@@ -89,6 +90,16 @@ struct GoogleMapView: UIViewRepresentable {
             placeNotes(uiView, notes: mapNotes, context: context)
             drawPolyline(uiView, context: context)
             context.coordinator.mapNotesCounter = mapNotes.count
+        }
+        
+        do {
+            if let styleURL = Bundle.main.url(forResource: colorScheme == .light ? "style" : "darkStyle", withExtension: "json") {
+                uiView.mapStyle = try GMSMapStyle(contentsOfFileURL: styleURL)
+            } else {
+                Log.error("Unable to find style.json")
+            }
+        } catch {
+            Log.error("One or more of the map styles failed to load. \(error)")
         }
         
         guard isUserInteracting else { return }

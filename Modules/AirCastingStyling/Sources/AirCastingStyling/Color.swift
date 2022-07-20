@@ -9,7 +9,7 @@ import SwiftUI
 
 extension Color {
     public static var aircastingGray: Color {
-        return Color("AircastingGray700")
+        return Color("AircastingGray")
     }
     public static var darkBlue: Color {
         return Color("DarkBlue")
@@ -33,7 +33,7 @@ extension Color {
         return Color("DarkGray")
     }
     public static var aircastingBackground: Color {
-        return Color("aircastingBackground")
+        return Color("AircastingBackground")
     }
     public static var aircastingMint: Color {
         return Color("AircastingMint")
@@ -56,9 +56,6 @@ extension Color {
     public static var aircastingBackgroundWhite: Color {
         return Color("AircastingBackgroundWhite")
     }
-    public static var unfollowButtonColor: Color {
-        return Color("UnfollowButtonColor")
-    }
     public static var formBackgroundColor: Color {
         return Color("FormBackground")
     }
@@ -74,10 +71,13 @@ extension Color {
     public static var sectionPickerShadowColor: Color {
         return Color("SectionPickerShadow")
     }
-    public static var textViewTextColor: Color {
-        return Color("TextViewText")
+    public static var textColor: Color {
+        return Color("AircastingTextColor")
     }
-    public static var whiteForDarkColor: Color {
-        return Color("WhiteForDark")
+    public static var listBackgroundColor: Color {
+        return Color("ListBackground")
+    }
+    public static var gradientColor: Color {
+        return Color("GradientWhite")
     }
 }

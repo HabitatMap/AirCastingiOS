@@ -17,7 +17,7 @@ public struct MultiSelectButtonStyle: ButtonStyle {
             .label
             .padding([.all], 8)
             .background(isSelected ? Color.accentColor : Color.buttonGray)
-            .foregroundColor(isSelected ? .white : .textViewTextColor)
+            .foregroundColor(isSelected ? .white : .textColor)
             .clipShape(Capsule())
             .padding(-3)
             .shadow(color: Color.shadow, radius: 9, x: 0, y: 1)

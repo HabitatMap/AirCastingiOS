@@ -32,7 +32,7 @@ struct TextView: UIViewRepresentable {
     
     func updateUIView(_ uiView: UITextView, context: Context) {
         if !text.isEmpty {
-            uiView.textColor = .textViewTextColor
+            uiView.textColor = .textColor
             uiView.text = text
         }
     }
@@ -52,7 +52,7 @@ struct TextView: UIViewRepresentable {
         func textViewDidBeginEditing(_ textView: UITextView) {
             if parent.text.isEmpty {
                 textView.text = ""
-                textView.textColor = .textViewTextColor
+                textView.textColor = .textColor
             }
         }
         

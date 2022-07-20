@@ -86,25 +86,28 @@ struct ThresholdsSettingsView: View {
     
     var mainBody: some View {
         Form {
-            VStack(alignment: .leading, spacing: 16) {
-                Text(Strings.SessionCart.heatmapSettingsTitle)
-                    .foregroundColor(.darkBlue)
-                    .font(Fonts.muliHeavyTitle1)
-                Text(Strings.SessionCart.heatmapSettingsdescription)
-                    .foregroundColor(.aircastingGray)
-                    .font(Fonts.moderateRegularHeading2)
+            Group {
+                VStack(alignment: .leading, spacing: 16) {
+                    Text(Strings.SessionCart.heatmapSettingsTitle)
+                        .foregroundColor(.darkBlue)
+                        .font(Fonts.muliHeavyTitle1)
+                    Text(Strings.SessionCart.heatmapSettingsdescription)
+                        .foregroundColor(.aircastingGray)
+                        .font(Fonts.moderateRegularHeading2)
+                }
+                .padding()
+                
+                Section {
+                    veryHighTextfield
+                    highTextfield
+                    mediumTextfield
+                    lowTextfield
+                    veryLowTextfield
+                }
+                .font(Fonts.moderateRegularHeading2)
+                .keyboardType(.numberPad)
             }
-            .padding()
-            
-            Section {
-                veryHighTextfield
-                highTextfield
-                mediumTextfield
-                lowTextfield
-                veryLowTextfield
-            }
-            .font(Fonts.moderateRegularHeading2)
-            .keyboardType(.numberPad)
+            .listRowBackground(Color.listBackgroundColor)
             
             VStack {
                 Button(action: {

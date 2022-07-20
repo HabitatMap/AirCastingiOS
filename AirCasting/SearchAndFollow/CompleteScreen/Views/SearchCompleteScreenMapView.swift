@@ -11,7 +11,8 @@ struct SearchCompleteScreenMapView: UIViewRepresentable {
     typealias UIViewType = GMSMapView
     var longitude: CLLocationDegrees
     var latitude: CLLocationDegrees
-    
+    @Environment(\.colorScheme) var colorScheme
+
     init(longitude: CLLocationDegrees, latitude: CLLocationDegrees) {
         self.longitude = longitude
         self.latitude = latitude
@@ -30,7 +31,7 @@ struct SearchCompleteScreenMapView: UIViewRepresentable {
         if userSettings.satteliteMap { mapView.mapType = .hybrid }
         
         do {
-            if let styleURL = Bundle.main.url(forResource: "style", withExtension: "json") {
+            if let styleURL = Bundle.main.url(forResource: colorScheme == .light ? "style" : "darkStyle", withExtension: "json") {
                 mapView.mapStyle = try GMSMapStyle(contentsOfFileURL: styleURL)
             } else {
                 Log.error("Unable to find style.json")
@@ -50,6 +51,14 @@ struct SearchCompleteScreenMapView: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: GMSMapView, context: Context) {
-        //
+        do {
+            if let styleURL = Bundle.main.url(forResource: colorScheme == .light ? "style" : "darkStyle", withExtension: "json") {
+                uiView.mapStyle = try GMSMapStyle(contentsOfFileURL: styleURL)
+            } else {
+                Log.error("Unable to find style.json")
+            }
+        } catch {
+            Log.error("One or more of the map styles failed to load. \(error)")
+        }
     }
 }

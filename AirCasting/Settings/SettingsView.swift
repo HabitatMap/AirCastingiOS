@@ -14,7 +14,6 @@ struct SettingsView: View {
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
     @InjectedObject private var userSettings: UserSettings
     @InjectedObject private var bluetoothManager: BluetoothManager
-//    @InjectedObject var colorSchemeMode: ColorSchemeMode
 
     private let sessionContext: CreateSessionContext
     #if DEBUG || BETA
@@ -101,20 +100,23 @@ struct SettingsView: View {
 
     private var main: some View {
         Form {
-            Section() {
-                signOutLink
+            Group {
+                Section() {
+                    signOutLink
+                }
+                settingsSection
+                #if BETA || DEBUG
+                Section() {
+                    navigateToAppConfigurationButton
+                    shareLogsButton
+                    Text(Strings.Settings.crashlyticsSectionTitle)
+                    crashButton
+                    createErrorButton
+                }
+                #endif
+                appInfoSection
             }
-            settingsSection
-            #if BETA || DEBUG
-            Section() {
-                navigateToAppConfigurationButton
-                shareLogsButton
-                Text(Strings.Settings.crashlyticsSectionTitle)
-                crashButton
-                createErrorButton
-            }
-            #endif
-            appInfoSection
+            .listRowBackground(Color.listBackgroundColor)
         }
         .onAppear {
             UITableView.appearance().backgroundColor = UIColor(Color.formBackgroundColor)

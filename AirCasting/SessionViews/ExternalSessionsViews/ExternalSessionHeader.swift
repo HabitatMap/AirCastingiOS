@@ -57,6 +57,9 @@ private extension ExternalSessionHeader {
                     }) {
                         Image(systemName: chevronIndicator)
                             .renderingMode(.original)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 15, height: 15)
                     }
                 }
             }
