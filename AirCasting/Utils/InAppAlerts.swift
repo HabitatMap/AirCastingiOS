@@ -57,6 +57,15 @@ struct InAppAlerts {
                   ])
     }
     
+    static func backendSettingsLogoutAlert() -> AlertInfo {
+        AlertInfo(title: Strings.BackendSettings.alertTitle,
+                  message: Strings.BackendSettings.alertMessage,
+                  buttons: [
+                    .default(title: Strings.Commons.gotIt,
+                             action: nil)
+                  ])
+    }
+    
     static func failedSharingAlert() -> AlertInfo {
         AlertInfo(title: Strings.SessionShare.linkSharingAlertTitle,
                   message: Strings.SessionShare.linkSharingAlertMessage,
