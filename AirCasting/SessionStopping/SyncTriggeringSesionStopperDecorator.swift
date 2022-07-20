@@ -19,10 +19,6 @@ class SyncTriggeringSesionStopperDecorator: SessionStoppable {
     func stopSession() throws {
         try stoppable.stopSession()
         
-        guard !userSettings.syncOnlyThroughWifi || networkChecker.isUsingWifi else {
-            Log.info("Skipping sync after finishing session because of no wifi connection")
-            return
-        }
         synchronizer.triggerSynchronization()
     }
 }
