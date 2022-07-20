@@ -1057,6 +1057,14 @@
 			path = Storages;
 			sourceTree = "<group>";
 		};
+		338607AF2886E0ED0002D3A8 /* NetworkMonitoring */ = {
+			isa = PBXGroup;
+			children = (
+				DDEE3A43269736270098CCA9 /* NetworkChecker.swift */,
+			);
+			path = NetworkMonitoring;
+			sourceTree = "<group>";
+		};
 		338C30E025F1042000E0305C /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
@@ -1267,6 +1275,7 @@
 		AC32040625CC122900A68520 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				338607AF2886E0ED0002D3A8 /* NetworkMonitoring */,
 				B31AFB6E27AE6EF200CA6FA3 /* Logging */,
 				B3E2B65827506DF500019167 /* FileLineReader */,
 				B32D08A0267A493C006C97ED /* Publishers */,
@@ -1282,7 +1291,6 @@
 				B3E26A022676D9AA001A8E4C /* ArrayUtils.swift */,
 				DDF75999268332E900D906BA /* Strings.swift */,
 				DD5687C226CFC8080028C2CA /* Constants.swift */,
-				DDEE3A43269736270098CCA9 /* NetworkChecker.swift */,
 				DDD24D8326A7FCE300D4A327 /* View+Print.swift */,
 				DD839E14269F33A6006A8625 /* LocationState.swift */,
 				DDBC156326A0799300982526 /* SystemSettings.swift */,
