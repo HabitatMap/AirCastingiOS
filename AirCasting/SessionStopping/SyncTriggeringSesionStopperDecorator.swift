@@ -2,10 +2,14 @@
 //
 
 import Foundation
+import Resolver
 
 class SyncTriggeringSesionStopperDecorator: SessionStoppable {
     private let stoppable: SessionStoppable
     private let synchronizer: SessionSynchronizer
+    
+    @InjectedObject private var userSettings: UserSettings
+    @Injected private var networkChecker: NetworkChecker
     
     init(stoppable: SessionStoppable, synchronizer: SessionSynchronizer) {
         self.stoppable = stoppable
@@ -14,6 +18,11 @@ class SyncTriggeringSesionStopperDecorator: SessionStoppable {
     
     func stopSession() throws {
         try stoppable.stopSession()
+        
+        guard !userSettings.syncOnlyThroughWifi || networkChecker.isUsingWifi else {
+            Log.info("Skipping sync after finishing session because of no wifi connection")
+            return
+        }
         synchronizer.triggerSynchronization()
     }
 }
