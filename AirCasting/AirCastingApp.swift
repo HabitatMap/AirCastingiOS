@@ -60,12 +60,15 @@ final class SynchronizationScheduler {
     private var cancellables: [AnyCancellable] = []
     @Injected private var synchronizer: SessionSynchronizer
     @Injected private var authorization: UserAuthenticationSession
+    @InjectedObject private var userSettings: UserSettings
+    @Injected private var networkChecker: NetworkChecker
     
     init(appBecameActive: AnyPublisher<Void, Never>) {
         
         appBecameActive
             .filter { self.authorization.isLoggedIn }
             .sink {
+                guard !self.userSettings.syncOnlyThroughWifi || self.networkChecker.isUsingWifi else { return }
                 self.synchronizer.triggerSynchronization()
             }
             .store(in: &cancellables)
@@ -85,6 +88,7 @@ final class SynchronizationScheduler {
             .filter { $0 }
             .eraseToVoid()
             .sink {
+                guard !self.userSettings.syncOnlyThroughWifi || self.networkChecker.isUsingWifi else { return }
                 self.synchronizer.triggerSynchronization()
             }
             .store(in: &cancellables)
