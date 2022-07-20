@@ -31,6 +31,7 @@ struct DeleteView<VM: DeleteSessionViewModel>: View {
             }
             .padding()
         }
+        .background(Color.aircastingBackgroundWhite.ignoresSafeArea())
     }
     
     private var title: some View {

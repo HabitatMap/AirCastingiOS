@@ -20,38 +20,42 @@ struct ExternalSessionMapView: View {
     }
     
     var body: some View {
-        VStack(alignment: .trailing) {
-            ExternalSessionHeader(session: session, thresholds: thresholds, selectedStream: $selectedStream, isCollapsed: .constant(false), expandingAction: nil)
-                .padding([.bottom, .leading, .trailing])
-            if let threshold = thresholds.value.threshold(for: selectedStream?.sensorName ?? "") {
-                ZStack(alignment: .topLeading) {
-                    GoogleMapView(pathPoints: pathPoints,
-                                  threshold: threshold,
-                                  placePickerIsUpdating: Binding.constant(false),
-                                  isUserInteracting: Binding.constant(true),
-                                  isSessionActive: false,
-                                  isSessionFixed: true,
-                                  noteMarketTapped: Binding.constant(false),
-                                  noteNumber: Binding.constant(0),
-                                  mapNotes: Binding.constant([]))
-                    StatisticsContainerView(statsContainerViewModel: statsContainerViewModel,
-                                                threshold: threshold)
-                }.padding(.bottom)
-                if let selectedStream = selectedStream {
-                    NavigationLink(destination: ThresholdsSettingsView(thresholdValues: threshold.thresholdsBinding,
-                                                                       initialThresholds: selectedStream.thresholds, threshold: threshold)) {
-                        EditButtonView()
-                    }.padding([.bottom, .leading, .trailing])
-                }
-                ThresholdsSliderView(threshold: threshold)
-                    // Fixes labels covered by tabbar
+        ZStack {
+            Color.aircastingBackgroundWhite
+                .ignoresSafeArea()
+            VStack(alignment: .trailing) {
+                ExternalSessionHeader(session: session, thresholds: thresholds, selectedStream: $selectedStream, isCollapsed: .constant(false), expandingAction: nil)
                     .padding([.bottom, .leading, .trailing])
+                if let threshold = thresholds.value.threshold(for: selectedStream?.sensorName ?? "") {
+                    ZStack(alignment: .topLeading) {
+                        GoogleMapView(pathPoints: pathPoints,
+                                      threshold: threshold,
+                                      placePickerIsUpdating: Binding.constant(false),
+                                      isUserInteracting: Binding.constant(true),
+                                      isSessionActive: false,
+                                      isSessionFixed: true,
+                                      noteMarketTapped: Binding.constant(false),
+                                      noteNumber: Binding.constant(0),
+                                      mapNotes: Binding.constant([]))
+                        StatisticsContainerView(statsContainerViewModel: statsContainerViewModel,
+                                                    threshold: threshold)
+                    }.padding(.bottom)
+                    if let selectedStream = selectedStream {
+                        NavigationLink(destination: ThresholdsSettingsView(thresholdValues: threshold.thresholdsBinding,
+                                                                           initialThresholds: selectedStream.thresholds, threshold: threshold)) {
+                            EditButtonView()
+                        }.padding([.bottom, .leading, .trailing])
+                    }
+                    ThresholdsSliderView(threshold: threshold)
+                        // Fixes labels covered by tabbar
+                        .padding([.bottom, .leading, .trailing])
+                }
+                Spacer()
             }
-            Spacer()
-        }
-        .navigationBarTitleDisplayMode(.inline)
-        .padding(.bottom)
+            .navigationBarTitleDisplayMode(.inline)
+            .padding(.bottom)
         .background(Color.aircastingBackgroundWhite)
+        }
     }
     
     private func getValue(of measurement: MeasurementEntity) -> Double {

@@ -29,12 +29,9 @@ struct ConfirmCreatingSessionView: View {
 
     var body: some View {
         LoadingView(isShowing: $isActive) {
-            ZStack {
-                Color.aircastingBackgroundWhite
-                    .ignoresSafeArea()
-                contentViewWithAlert
-            }
+            contentViewWithAlert
         }
+        .background(Color.aircastingBackgroundWhite.ignoresSafeArea())
     }
 
     private var contentViewWithAlert: some View {

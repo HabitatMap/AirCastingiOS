@@ -97,6 +97,7 @@ private extension CreateAccountView {
                     UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                 })
         )
+        .background(Color.aircastingBackgroundWhite.ignoresSafeArea())
         .ignoresSafeArea(.keyboard, edges: .bottom)
     }
     

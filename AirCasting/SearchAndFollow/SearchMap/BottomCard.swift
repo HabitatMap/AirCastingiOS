@@ -43,6 +43,7 @@ struct BottomCardView: View {
         }), content: { viewModel.initCompleteScreen() })
         .frame(width: 200, alignment: .leading)
         .padding(10)
+        .background(Color.aircastingBackgroundWhite)
         .cornerRadius(8)
     }
 }

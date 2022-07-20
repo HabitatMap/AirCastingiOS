@@ -21,6 +21,7 @@ struct AirBeamOnboarding: View {
         }
         .padding()
         .navigationBarHidden(true)
+        .background(Color.aircastingBackgroundWhite.ignoresSafeArea())
     }
     
     private struct ModalPopView: View {
@@ -47,6 +48,7 @@ struct AirBeamOnboarding: View {
                     .padding()
                 Spacer()
             }
+            .background(Color.aircastingBackgroundWhite.ignoresSafeArea())
         }
         
         private var sheetTitle: some View {

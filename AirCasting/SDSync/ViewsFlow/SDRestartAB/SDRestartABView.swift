@@ -14,25 +14,29 @@ struct SDRestartABView: View {
     }
     
     var body: some View {
-        GeometryReader { reader in
-            VStack(alignment: .leading, spacing: 40) {
-                ProgressView(value: 0.568)
-                Spacer()
-                HStack() {
+        ZStack {
+            Color.aircastingBackgroundWhite
+                .ignoresSafeArea()
+            GeometryReader { reader in
+                VStack(alignment: .leading, spacing: 40) {
+                    ProgressView(value: 0.568)
                     Spacer()
-                    restartImage
-                        .frame(width: reader.size.width / 2, height: reader.size.height / 3, alignment: .center)
+                    HStack() {
+                        Spacer()
+                        restartImage
+                            .frame(width: reader.size.width / 2, height: reader.size.height / 3, alignment: .center)
+                        Spacer()
+                    }
                     Spacer()
+                    VStack(alignment: .leading, spacing: 15) {
+                        titleLabel
+                        messageLabel
+                    }
+                    continueButton
                 }
-                Spacer()
-                VStack(alignment: .leading, spacing: 15) {
-                    titleLabel
-                    messageLabel
-                }
-                continueButton
+                .background(selectDeviceLink)
+                .padding()
             }
-            .background(selectDeviceLink)
-            .padding()
         }
     }
 }

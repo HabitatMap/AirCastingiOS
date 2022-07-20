@@ -84,7 +84,7 @@ struct DashboardView: View {
                 ZStack(alignment: .bottom) {
                     Color.green
                         .frame(height: 3)
-                        .shadow(color: Color.aircastingDarkGray.opacity(0.4),
+                        .shadow(color: Color.sectionPickerShadowColor,
                                 radius: 6)
                         .padding(.horizontal, -30)
                     Color.aircastingBackgroundWhite
@@ -105,7 +105,7 @@ struct DashboardView: View {
             ZStack(alignment: .bottom) {
                 Color.green
                     .frame(height: 3)
-                    .shadow(color: Color.aircastingDarkGray.opacity(0.4),
+                    .shadow(color: Color.sectionPickerShadowColor,
                             radius: 6)
                     .padding(.horizontal, -30)
                 Color.aircastingBackgroundWhite

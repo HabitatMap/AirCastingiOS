@@ -23,6 +23,7 @@ struct GetStarted: View {
             }
             Spacer()
         }
+        .background(Color.aircastingBackgroundWhite.ignoresSafeArea())
     }
 }
 
@@ -53,31 +54,27 @@ private extension GetStarted {
     var startButton: some View {
         NavigationLink(
             destination: AirBeamOnboarding(completion: completion),
-            label: { getStarted }
+            label: {
+                Text(Strings.OnboardingGetStarted.getStarted)
+                    .font(Fonts.muliBoldHeading1)
+            }
         )
-    }
-    
-    var getStarted: some View {
-        Text(Strings.OnboardingGetStarted.getStarted)
-            .font(Fonts.moderateBoldHeading1)
-            .frame(maxWidth: .infinity)
-            .navigationBarHidden(true)
-            .buttonStyle(BlueTextButtonStyle())
-            .padding(12)
-            .background(
-                RoundedRectangle(cornerRadius: 5)
-                    .stroke(lineWidth: 0.2)
-                    .accentColor(Color.aircastingGray)
-            )
-            .padding()
-            .padding(.bottom, 41)
+        .buttonStyle(BlueButtonStyle())
+        .padding()
+        .padding(.bottom, 42)
     }
     
     var continueToAirNearYouScreenButton: some View {
         NavigationLink(
             destination: NearAirDescription(completion: completion),
-            label: { getStarted }
+            label: {
+                Text(Strings.OnboardingGetStarted.getStarted)
+                    .font(Fonts.muliBoldHeading1)
+            }
         )
+        .buttonStyle(BlueButtonStyle())
+        .padding()
+        .padding(.bottom, 42)
     }
 }
 

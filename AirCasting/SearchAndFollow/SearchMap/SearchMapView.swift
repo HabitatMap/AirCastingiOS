@@ -84,6 +84,7 @@ struct SearchMapView: View {
                 .padding(.horizontal)
             })
         }
+        .background(Color.aircastingBackgroundWhite.ignoresSafeArea())
         .onChange(of: viewModel.shouldDismissView, perform: { result in
             result ? self.presentationMode.wrappedValue.dismiss() : nil
         })
@@ -123,12 +124,14 @@ private extension SearchMapView {
     var measurementTypeText: some View {
         Text(String(format: Strings.SearchMapView.parameterText, arguments: [viewModel.getMeasurementName()]))
             .font(Fonts.muliSemiboldHeading2)
+            .foregroundColor(Color.textViewTextColor)
             .lineLimit(1)
             .scaledToFill()
     }
     
     var sensorTypeText: some View {
         Text(String(format: Strings.SearchMapView.sensorText, arguments: [viewModel.getSensorName()]))
+            .foregroundColor(Color.textViewTextColor)
             .font(Fonts.muliSemiboldHeading2)
             .lineLimit(1)
             .scaledToFill()

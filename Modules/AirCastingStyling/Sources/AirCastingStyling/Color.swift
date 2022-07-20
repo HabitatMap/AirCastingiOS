@@ -42,13 +42,13 @@ extension Color {
         return Color("AirCastingTime")
     }
     public static var shadow: Color {
-        return Color(white: 150/255, opacity: 0.5)
+        return Color("ButtonShadow")
     }
     public static var aliceBlue: Color {
         return Color("AliceBlue")
     }
     public static var sessionCardShadow: Color {
-        return Color(red: 205/255, green: 209/255, blue: 214/255)
+        return Color("SessionCardShadow")
     }
     public static var aircastingWhite: Color {
         return Color("AircastingWhite")
@@ -61,5 +61,23 @@ extension Color {
     }
     public static var formBackgroundColor: Color {
         return Color("FormBackground")
+    }
+    public static var textFieldBorderColor: Color {
+        return Color("TextFieldBorder")
+    }
+    public static var sliderShadowColor: Color {
+        return Color("SliderShadow")
+    }
+    public static var textFieldBackgroundColor: Color {
+        return Color("TextFieldBackground")
+    }
+    public static var sectionPickerShadowColor: Color {
+        return Color("SectionPickerShadow")
+    }
+    public static var textViewTextColor: Color {
+        return Color("TextViewText")
+    }
+    public static var whiteForDarkColor: Color {
+        return Color("WhiteForDark")
     }
 }

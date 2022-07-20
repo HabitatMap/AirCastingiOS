@@ -46,4 +46,7 @@ extension UIColor {
     static var accentColor: UIColor {
         return UIColor(Color("AccentColor"))
     }
+    static var textViewTextColor: UIColor {
+        return UIColor(Color("TextViewText"))
+    }
 }

@@ -19,6 +19,7 @@ struct PrivacyOnboarding: View {
         }
         .padding()
         .navigationBarHidden(true)
+        .background(Color.aircastingBackgroundWhite.ignoresSafeArea())
     }
     
     struct ModalView: View {
