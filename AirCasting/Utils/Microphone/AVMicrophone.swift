@@ -27,6 +27,7 @@ final class AVMicrophone: Microphone {
     }
     
     func getCurrentDecibelLevel() -> Double? {
+        guard state == .recording else { return nil }
         recorder.updateMeters()
         let power = recorder.averagePower(forChannel: 0)
         var decibels = Double(power + 90.0)

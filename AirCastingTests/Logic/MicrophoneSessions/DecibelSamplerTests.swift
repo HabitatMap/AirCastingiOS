@@ -48,7 +48,7 @@ class DecibelSamplerTests: XCTestCase {
         microphone.state = .interrupted
         sut.sample { result in
             do { _ = try result.get(); XCTFail("Expected to throw an error") }
-            catch _ as LevelSamplerDisconnectedError { }
+            catch _ as LevelSamplerError { }
             catch { XCTFail("Invalid error type for microphone interrupted state") }
             expectation.fulfill()
         }

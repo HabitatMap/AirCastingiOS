@@ -30,7 +30,7 @@ class LevelMeasurementControllerTests: XCTestCase {
     func test_whenNewMeasurementComes_savesIt() {
         let timerStub = TimerStub()
         let measurementValue = 9.0
-        let result: Result<Double, Error> = .success(measurementValue)
+        let result: Result<Double, LevelSamplerError> = .success(measurementValue)
         let samplerStub = SamplerStub(stubbedValue: result)
         let saverSpy = SaverSpy()
         let sut = LevelMeasurementController(sampler: samplerStub,
@@ -43,7 +43,7 @@ class LevelMeasurementControllerTests: XCTestCase {
     
     func test_whenSamplerDisconnects_callsHandleInterruptionOnSaver() {
         let timerStub = TimerStub()
-        let result: Result<Double, Error> = .failure(LevelSamplerDisconnectedError())
+        let result: Result<Double, LevelSamplerError> = .failure(LevelSamplerError.disconnected)
         let samplerStub = SamplerStub(stubbedValue: result)
         let saverSpy = SaverSpy()
         let sut = LevelMeasurementController(sampler: samplerStub,
@@ -68,7 +68,7 @@ class LevelMeasurementControllerTests: XCTestCase {
     // MARK: - Test Doubles
     
     struct DummySampler: LevelSampler {
-        func sample(completion: (Result<Double, Error>) -> Void) { }
+        func sample(completion: (Result<Double, LevelSamplerError>) -> Void) { }
     }
     
     struct DummySaver: MeasurementSaveable {
@@ -109,7 +109,7 @@ class LevelMeasurementControllerTests: XCTestCase {
     class SamplerSpy: LevelSampler {
         var sampledTimes = 0
         
-        func sample(completion: (Result<Double, Error>) -> Void) {
+        func sample(completion: (Result<Double, LevelSamplerError>) -> Void) {
             sampledTimes += 1
         }
     }
@@ -128,19 +128,17 @@ class LevelMeasurementControllerTests: XCTestCase {
             return Token()
         }
         
-        func stop(token: AnyObject) {
-            
-        }
+        func stop(token: AnyObject) { }
     }
     
     class SamplerStub: LevelSampler {
-        private let stubbedValue: Result<Double, Error>
+        private let stubbedValue: Result<Double, LevelSamplerError>
         
-        init(stubbedValue: Result<Double, Error>) {
+        init(stubbedValue: Result<Double, LevelSamplerError>) {
             self.stubbedValue = stubbedValue
         }
         
-        func sample(completion: (Result<Double, Error>) -> Void) {
+        func sample(completion: (Result<Double, LevelSamplerError>) -> Void) {
             completion(stubbedValue)
         }
     }

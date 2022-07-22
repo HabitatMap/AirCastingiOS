@@ -3,23 +3,27 @@
 
 import Foundation
 
-class DecibelSampler: LevelSampler {
+final class DecibelSampler: LevelSampler {
+    enum DecibelSamplerError: Error {
+        case couldntGetMicrophoneLevel
+    }
+    
     private let microphone: Microphone
     
     init(microphone: Microphone) {
         self.microphone = microphone
     }
     
-    func sample(completion: (Result<Double, Error>) -> Void) {
+    func sample(completion: (Result<Double, LevelSamplerError>) -> Void) {
         do {
-            guard microphone.state != .interrupted else { throw LevelSamplerDisconnectedError() }
+            guard microphone.state != .interrupted else { throw LevelSamplerError.disconnected }
             if microphone.state == .notRecording { try microphone.startRecording() }
             guard let db = microphone.getCurrentDecibelLevel() else {
                 throw DecibelSamplerError.couldntGetMicrophoneLevel
             }
             completion(.success(db))
         } catch {
-            completion(.failure(error))
+            completion(.failure(LevelSamplerError.readError(error)))
         }
     }
     
@@ -29,9 +33,5 @@ class DecibelSampler: LevelSampler {
         } catch {
             Log.error("Couldn't stop recording: \(error)")
         }
-    }
-    
-    enum DecibelSamplerError: Error {
-        case couldntGetMicrophoneLevel
     }
 }

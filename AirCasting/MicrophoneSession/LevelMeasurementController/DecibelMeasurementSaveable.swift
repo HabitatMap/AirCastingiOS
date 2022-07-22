@@ -4,7 +4,7 @@
 import Foundation
 import Resolver
 
-class DecibelMeasurementSaveable: MeasurementSaveable {
+final class DecibelMeasurementSaveable: MeasurementSaveable {
     private let session: Session
     private var databasePrepared: Bool = false
     @Injected private var persistence: MeasurementStreamStorage

@@ -3,7 +3,6 @@
 
 import Foundation
 import CoreLocation
-import Resolver
 
 final class LevelMeasurementController<Sampler: LevelSampler, Saver: MeasurementSaveable>: LevelMeasurer where Sampler.Measurement == Saver.Measurement {
     private var sampler: Sampler
@@ -27,18 +26,19 @@ final class LevelMeasurementController<Sampler: LevelSampler, Saver: Measurement
                         case .failure(let error): Log.error("Failed to save measurement: \(error)")
                         }
                     })
-                } catch _ as LevelSamplerDisconnectedError {
-                    Log.verbose("[DEBUG] Sampler disconnected")
-                    self?.measurementSaver.handleInterruption()
+                } catch let error as LevelSamplerError {
+                    switch error {
+                    case .disconnected: self?.measurementSaver.handleInterruption()
+                    case .readError(let readError): Log.error("Sampling failed with read error: \(readError.localizedDescription)")
+                    }
                 } catch {
-                    Log.error("Sampling failed: \(error)")
+                    Log.error("Sampling failed with unexpected error: \(error)")
                 }
             }
         }
     }
     
     deinit {
-        Log.info("[DEBUG] Deinitialized")
         if let timerToken = timerToken {
             timer.stop(token: timerToken)
         }
