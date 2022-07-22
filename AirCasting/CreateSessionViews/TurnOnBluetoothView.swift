@@ -21,24 +21,21 @@ struct TurnOnBluetoothView: View {
     var isSDClearProcess: Bool = false
 
     var body: some View {
-        ZStack {
-            Color.aircastingBackgroundWhite
-                .ignoresSafeArea()
-            VStack(spacing: 50) {
-                ProgressView(value: sdSyncContinues ? 0.355 : 0.125)
-                Image("1-bluetooth")
-                    .resizable()
-                    .scaledToFit()
-                Spacer()
-                VStack(alignment: .leading, spacing: 15) {
-                    titleLabel
-                    messageLabel
-                }
-                continueButton
-                    .buttonStyle(BlueButtonStyle())
+        VStack(spacing: 50) {
+            ProgressView(value: sdSyncContinues ? 0.355 : 0.125)
+            Image("1-bluetooth")
+                .resizable()
+                .scaledToFit()
+            Spacer()
+            VStack(alignment: .leading, spacing: 15) {
+                titleLabel
+                messageLabel
             }
-            .background(
-                Group {
+            continueButton
+                .buttonStyle(BlueButtonStyle())
+        }
+        .background(
+            Group {
                 NavigationLink(
                     destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues),
                     isActive: $isPowerABLinkActive,
@@ -46,28 +43,28 @@ struct TurnOnBluetoothView: View {
                         EmptyView()
                     }
                 )
-               NavigationLink(
+                NavigationLink(
                     destination: UnplugABView(isSDClearProcess: isSDClearProcess, creatingSessionFlowContinues: $creatingSessionFlowContinues),
                     isActive: $presentUnplugScreen,
                     label: {
                         EmptyView()
                     }
-               )
+                )
                 NavigationLink(
-                     destination: SDRestartABView(isSDClearProcess: isSDClearProcess, creatingSessionFlowContinues: $creatingSessionFlowContinues),
-                     isActive: $presentRestartScreen,
-                     label: {
-                         EmptyView()
-                     })
-                 }
-            )
-            .onAppear(perform: {
-                if CBCentralManager.authorization != .allowedAlways {
-                    _ = bluetoothManager.centralManager
-                }
-            })
+                    destination: SDRestartABView(isSDClearProcess: isSDClearProcess, creatingSessionFlowContinues: $creatingSessionFlowContinues),
+                    isActive: $presentRestartScreen,
+                    label: {
+                        EmptyView()
+                    })
+            }
+        )
+        .onAppear(perform: {
+            if CBCentralManager.authorization != .allowedAlways {
+                _ = bluetoothManager.centralManager
+            }
+        })
         .padding()
-        }
+        .background(Color.aircastingBackgroundWhite.ignoresSafeArea())
     }
 
     var titleLabel: some View {

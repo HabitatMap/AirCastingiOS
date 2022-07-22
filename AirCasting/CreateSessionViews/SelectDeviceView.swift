@@ -25,46 +25,42 @@ struct SelectDeviceView: View {
     @EnvironmentObject private var emptyDashboardButtonTapped: EmptyDashboardButtonTapped
     @EnvironmentObject private var tabSelection: TabBarSelection
 
-    
     var body: some View {
-        ZStack {
-            Color.aircastingBackgroundWhite
-                .ignoresSafeArea()
-            VStack(spacing: 30) {
-                ProgressView(value: 0.125)
-                titleLabel
-                bluetoothButton
-                micButton
-                Spacer()
-            }
-            .alert(item: $alert, content: { $0.makeAlert() })
-            .padding()
-            .background( Group {
-                NavigationLink(
-                    destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues),
-                    isActive: $isPowerABLinkActive,
-                    label: {
-                        EmptyView()
-                    })
-                NavigationLink(
-                    destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sdSyncContinues: $sdSyncContinues),
-                    isActive: $isTurnOnBluetoothLinkActive,
-                    label: {
-                        EmptyView()
-                    })
-                NavigationLink(
-                    destination: CreateSessionDetailsView(creatingSessionFlowContinues: $creatingSessionFlowContinues),
-                    isActive: $isMicLinkActive,
-                    label: {
-                        EmptyView()
-                    })
-            })
-            .onAppear() {
-                selected = 0
-                #warning("Handle that mobileWasTapped is somehow public")
-                emptyDashboardButtonTapped.mobileWasTapped = false
+        VStack(spacing: 30) {
+            ProgressView(value: 0.125)
+            titleLabel
+            bluetoothButton
+            micButton
+            Spacer()
         }
+        .alert(item: $alert, content: { $0.makeAlert() })
+        .padding()
+        .background( Group {
+            NavigationLink(
+                destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues),
+                isActive: $isPowerABLinkActive,
+                label: {
+                    EmptyView()
+                })
+            NavigationLink(
+                destination: TurnOnBluetoothView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sdSyncContinues: $sdSyncContinues),
+                isActive: $isTurnOnBluetoothLinkActive,
+                label: {
+                    EmptyView()
+                })
+            NavigationLink(
+                destination: CreateSessionDetailsView(creatingSessionFlowContinues: $creatingSessionFlowContinues),
+                isActive: $isMicLinkActive,
+                label: {
+                    EmptyView()
+                })
+        })
+        .onAppear() {
+            selected = 0
+            #warning("Handle that mobileWasTapped is somehow public")
+            emptyDashboardButtonTapped.mobileWasTapped = false
         }
+        .background(Color.aircastingBackgroundWhite.ignoresSafeArea())
     }
     
     var titleLabel: some View {

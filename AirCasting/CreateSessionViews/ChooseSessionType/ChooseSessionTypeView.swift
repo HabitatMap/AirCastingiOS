@@ -227,48 +227,45 @@ struct ChooseSessionTypeView: View {
     
     
     private var mainContent: some View {
-        ZStack {
-            Color.aircastingBackgroundWhite
-                .ignoresSafeArea()
-            VStack(spacing: 50) {
-                VStack(alignment: .leading, spacing: 10) {
-                    titleLabel
-                    messageLabel
-                }
-                .padding(.horizontal)
-                
-                VStack(alignment: .leading, spacing: 15) {
-                    HStack {
-                        recordNewLabel
-                        Spacer()
-                        moreInfo
-                    }
-                    HStack {
-                        fixedSessionButton
-                        Spacer()
-                        mobileSessionButton
-                    }
-                    Spacer()
-                    if featureFlagsViewModel.enabledFeatures.contains(.sdCardSync) || featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) {
-                        orLabel
-                    }
-                    HStack {
-                        if featureFlagsViewModel.enabledFeatures.contains(.sdCardSync) {
-                            sdSyncButton
-                        }
-                        Spacer()
-                        if featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) {
-                            followSessionButton
-                        }
-                    }
-                    Spacer()
-                }
-                .padding([.bottom, .vertical])
-                .padding(.horizontal, 30)
-                .background(Color.aircastingSecondaryBackground.ignoresSafeArea())
-                .alert(item: $viewModel.alert, content: { $0.makeAlert() })
+        VStack(spacing: 50) {
+            VStack(alignment: .leading, spacing: 10) {
+                titleLabel
+                messageLabel
             }
+            .padding(.horizontal)
+            
+            VStack(alignment: .leading, spacing: 15) {
+                HStack {
+                    recordNewLabel
+                    Spacer()
+                    moreInfo
+                }
+                HStack {
+                    fixedSessionButton
+                    Spacer()
+                    mobileSessionButton
+                }
+                Spacer()
+                if featureFlagsViewModel.enabledFeatures.contains(.sdCardSync) || featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) {
+                    orLabel
+                }
+                HStack {
+                    if featureFlagsViewModel.enabledFeatures.contains(.sdCardSync) {
+                        sdSyncButton
+                    }
+                    Spacer()
+                    if featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) {
+                        followSessionButton
+                    }
+                }
+                Spacer()
+            }
+            .padding([.bottom, .vertical])
+            .padding(.horizontal, 30)
+            .background(Color.aircastingSecondaryBackground.ignoresSafeArea())
+            .alert(item: $viewModel.alert, content: { $0.makeAlert() })
         }
+        .background(Color.aircastingBackgroundWhite.ignoresSafeArea())
     }
 }
 

@@ -11,8 +11,6 @@ struct SettingsMyAccountView<VM: SettingsMyAccountViewModel>: View {
 
     var body: some View {
         ZStack {
-            Color.aircastingBackgroundWhite
-                .ignoresSafeArea()
             VStack(alignment: .leading) {
                 logInLabel
                 signOutButton
@@ -22,6 +20,7 @@ struct SettingsMyAccountView<VM: SettingsMyAccountViewModel>: View {
                 }
                 Spacer()
             }
+            .background(Color.aircastingBackgroundWhite.ignoresSafeArea())
         }
         .navigationTitle(Strings.Commons.myAccount)
         .alert(item: $viewModel.alert, content: { $0.makeAlert() })

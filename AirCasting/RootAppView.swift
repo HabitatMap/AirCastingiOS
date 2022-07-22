@@ -10,10 +10,8 @@ import CoreLocation
 import Resolver
 
 struct RootAppView: View {
-
-    @InjectedObject var userAuthenticationSession: UserAuthenticationSession
-    @InjectedObject var lifeTimeEventsProvider: LifeTimeEventsProvider
-    @InjectedObject var userSettings: UserSettings
+    @InjectedObject private var userAuthenticationSession: UserAuthenticationSession
+    @InjectedObject private var lifeTimeEventsProvider: LifeTimeEventsProvider
     @InjectedObject private var userState: UserState
     @StateObject private var signInPersistanceObserved = SignInPersistance.shared
     

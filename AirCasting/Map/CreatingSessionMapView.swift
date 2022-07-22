@@ -29,9 +29,7 @@ struct CreatingSessionMapView: UIViewRepresentable {
         
         mapView.settings.myLocationButton = isMyLocationEnabled
         mapView.isMyLocationEnabled = isMyLocationEnabled
-        
-        mapView.backgroundColor = .black
-        
+                
         do {
             if let styleURL = Bundle.main.url(forResource: colorScheme == .light ? "style" : "darkStyle", withExtension: "json") {
                 mapView.mapStyle = try GMSMapStyle(contentsOfFileURL: styleURL)

@@ -14,29 +14,24 @@ struct PowerABView: View {
     @EnvironmentObject private var sessionContext: CreateSessionContext
 
     var body: some View {
-        ZStack {
-            Color.aircastingBackgroundWhite
-                .ignoresSafeArea()
-            VStack() {
-                ProgressView(value: 0.25)
-                    .padding(.bottom, 50)
-                Image("2-power")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: UIScreen.main.bounds.width - 40, height:  UIScreen.main.bounds.height / 2, alignment: .center)
-                HStack() {
-                    titleLabel
-                    Spacer()
-                }
+        VStack() {
+            ProgressView(value: 0.25)
+                .padding(.bottom, 50)
+            Image("2-power")
+                .resizable()
+                .scaledToFit()
+                .frame(width: UIScreen.main.bounds.width - 40, height:  UIScreen.main.bounds.height / 2, alignment: .center)
+            HStack() {
+                titleLabel
                 Spacer()
-                continueButton
-                    .buttonStyle(BlueButtonStyle())
             }
-            .padding()
-            .onAppear(perform: {
-                sessionContext.deviceType = .AIRBEAM3
-        })
+            Spacer()
+            continueButton
+                .buttonStyle(BlueButtonStyle())
         }
+        .padding()
+        .onAppear(perform: { sessionContext.deviceType = .AIRBEAM3 })
+        .background(Color.aircastingBackgroundWhite.ignoresSafeArea())
     }
 
     var titleLabel: some View {

@@ -14,41 +14,38 @@ struct CreateSessionDetailsView: View {
     }
     
     var body: some View {
-        ZStack {
-            Color.aircastingBackgroundWhite
-                .ignoresSafeArea()
-            GeometryReader { geometry in
-                ScrollView(.vertical) {
-                        VStack(alignment: .leading, spacing: 25) {
-                            ProgressView(value: 0.75)
-                            titleLabel
-                            VStack(alignment: .leading) {
-                                sessionNameField
-                                if viewModel.shouldShowError { errorMessage(text: Strings.EditSession.erorr) }
-                                sessionTagsField
-                                    .padding(.top, 20)
-                            }
-                            if sessionContext.sessionType == SessionType.fixed { fixedSessionDetails }
-                            Spacer()
-                            continueButton
-                                .onTapGesture {
-                                    viewModel.areCredentialsEmpty() ? (viewModel.showAlertAboutEmptyCredentials = true) : nil
-                                }
+        GeometryReader { geometry in
+            ScrollView(.vertical) {
+                VStack(alignment: .leading, spacing: 25) {
+                    ProgressView(value: 0.75)
+                    titleLabel
+                    VStack(alignment: .leading) {
+                        sessionNameField
+                        if viewModel.shouldShowError { errorMessage(text: Strings.EditSession.erorr) }
+                        sessionTagsField
+                            .padding(.top, 20)
+                    }
+                    if sessionContext.sessionType == SessionType.fixed { fixedSessionDetails }
+                    Spacer()
+                    continueButton
+                        .onTapGesture {
+                            viewModel.areCredentialsEmpty() ? (viewModel.showAlertAboutEmptyCredentials = true) : nil
                         }
-                    .padding()
-                    .frame(maxWidth: .infinity, minHeight: geometry.size.height, alignment: .top)
                 }
-                .alert(isPresented: $viewModel.showAlertAboutEmptyCredentials, content: {
-                    Alert(title: Text(Strings.CreateSessionDetailsView.wifiAlertTitle),
-                          message: Text(Strings.CreateSessionDetailsView.wifiAlertMessage),
-                          dismissButton: .default(Text(Strings.Commons.continue)))
-                })
-                .background(navigation)
+                .padding()
+                .frame(maxWidth: .infinity, minHeight: geometry.size.height, alignment: .top)
             }
-            .onAppear { viewModel.onScreenEnter() }
-            .onChange(of: viewModel.sessionName) { _ in
-                viewModel.showErrorIndicator = false
+            .alert(isPresented: $viewModel.showAlertAboutEmptyCredentials, content: {
+                Alert(title: Text(Strings.CreateSessionDetailsView.wifiAlertTitle),
+                      message: Text(Strings.CreateSessionDetailsView.wifiAlertMessage),
+                      dismissButton: .default(Text(Strings.Commons.continue)))
+            })
+            .background(navigation)
+            .background(Color.aircastingBackgroundWhite.ignoresSafeArea())
         }
+        .onAppear { viewModel.onScreenEnter() }
+        .onChange(of: viewModel.sessionName) { _ in
+            viewModel.showErrorIndicator = false
         }
     }
 }

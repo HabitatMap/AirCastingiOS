@@ -10,8 +10,6 @@ import SwiftUI
 struct MoreInfoPopupView: View {
     var body: some View {
         ZStack {
-            Color.aircastingBackgroundWhite
-                .ignoresSafeArea()
             XMarkButton()
             VStack(alignment: .leading, spacing: 25) {
                 Text(Strings.MoreInfoPopupView.text_1)
@@ -30,6 +28,7 @@ struct MoreInfoPopupView: View {
             .lineSpacing(12)
             .padding()
         }
+        .background(Color.aircastingBackgroundWhite.ignoresSafeArea())
     }
 }
 

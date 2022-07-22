@@ -55,7 +55,6 @@ struct BackendSettingsView: View {
             })
             .padding()
         }
-        
     }
     
     private var title: some View {
