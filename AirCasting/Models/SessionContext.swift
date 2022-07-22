@@ -24,10 +24,6 @@ final class CreateSessionContext: ObservableObject {
     var deviceType: DeviceType?
     var contribute: Bool?
     var locationless: Bool = false
-
-    private var syncSink: Any?
-    
-    private var locationSink: Any?
     
     func ovverride(sessionContext: CreateSessionContext) {
         sessionName = sessionContext.sessionName

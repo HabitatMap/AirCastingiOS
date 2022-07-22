@@ -13,7 +13,7 @@ struct SessionLoadingView: View {
                 Text(Strings.LoadingSession.title)
                 Text(Strings.LoadingSession.description)
             }
-            .font(Fonts.regularHeading4)
+            .font(Fonts.moderateRegularHeading4)
             .lineSpacing(5)
             .foregroundColor(.darkBlue)
         }

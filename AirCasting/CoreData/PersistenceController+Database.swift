@@ -29,6 +29,11 @@ extension PersistenceController: SessionInsertable {
         let context = self.editContext
         context.perform {
             sessions.forEach {
+                    // This is added to ensure that we don't add session if a session with this uuid already existis in the database
+                    guard (try? context.existingSession(uuid: $0.uuid)) == nil else {
+                        Log.error("Tried to add new session with same UUID")
+                        return
+                    }
                     let sessionEntity: SessionEntity = SessionEntity(context: context)
                     sessionEntity.uuid = $0.uuid
                     sessionEntity.type = $0.type
@@ -118,6 +123,29 @@ extension PersistenceController: SessionUpdateable {
             }
         }
     }
+    
+    func updateNotesPhotosLocations(notesUrls: [(url: URL, noteNumber: Int)], for session: SessionUUID, completion: ((Error?) -> Void)?) {
+        let context = self.editContext
+        context.perform {
+            do {
+                let request = NSFetchRequest<NoteEntity>(entityName: "NoteEntity")
+                let predicate = NSPredicate(format: "session.uuid == %@ AND number IN %@", session.rawValue, notesUrls.map(\.noteNumber))
+                request.predicate = predicate
+                let notes = try context.fetch(request)
+                notesUrls.forEach { noteInfo in
+                    if let note = notes.first(where: { $0.number == noteInfo.noteNumber }), let photoUrl = note.photoLocation {
+                        try? FileManager.default.removeItem(at: photoUrl)
+                        note.photoLocation = noteInfo.url
+                    }
+                }
+                try context.save()
+                completion?(nil)
+            } catch {
+                Log.error("Error adding urlLocation for session: \(error)")
+                completion?(error)
+            }
+        }
+    }
 }
 
 
@@ -147,7 +175,8 @@ extension Database.Session {
                                                  text: n.text ?? "",
                                                  latitude: n.lat,
                                                  longitude: n.long,
-                                                 number: Int(n.number))
+                                                 number: Int(n.number),
+                                                 photoLocation: n.photoLocation)
                         } ?? [])
         )
     }

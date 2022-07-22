@@ -4,14 +4,14 @@
 import Foundation
 
 struct ExternalSessionWithStreamsAndMeasurements {
-    let uuid: String
+    let uuid: SessionUUID
     let provider: String
     let name: String
     let startTime: Date
     let endTime: Date
     let longitude: Double
     let latitude: Double
-    let streams: [Stream]
+    var streams: [Stream]
     
     struct Stream {
         let id: Int
@@ -20,9 +20,8 @@ struct ExternalSessionWithStreamsAndMeasurements {
         let measurementShortType: String
         let measurementType: String
         let sensorName: String
-        let sensorPackageName: String
         let thresholdsValues: ThresholdsValue
-        let measurements: [Measurement]
+        var measurements: [Measurement]
     }
     
     struct Measurement {

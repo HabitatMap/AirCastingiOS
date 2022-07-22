@@ -6,15 +6,14 @@ import AirCastingStyling
 
 struct AirBeamOnboarding: View {
     var completion: () -> Void
-    @State var showingHalfModal = false
+    @State var sheetIsPresented = false
+    
     var body: some View {
         VStack(alignment: .leading) {
             progressBar
-            HStack() {
-                Spacer()
-                mainImage
-                Spacer()
-            }
+            mainImage
+                .frame(maxWidth: .infinity, alignment: .center)
+            Spacer()
             titleText
             descriptionText
             continueButton
@@ -25,9 +24,22 @@ struct AirBeamOnboarding: View {
     }
     
     private struct ModalPopView: View {
-        @Binding var showingHalfModal: Bool
+        @Binding var sheetIsPresented: Bool
+        
         var body: some View {
             VStack(alignment: .leading) {
+                HStack {
+                    Spacer()
+                    Button(action: {
+                        sheetIsPresented = false
+                    }, label: {
+                        Image(systemName: "xmark")
+                            .foregroundColor(.aircastingDarkGray)
+                            .imageScale(.large)
+                    })
+                    .padding()
+                }
+
                 Spacer()
                 sheetTitle
                     .padding()
@@ -39,7 +51,7 @@ struct AirBeamOnboarding: View {
         
         private var sheetTitle: some View {
             Text(Strings.OnboardingAirBeamSheet.sheetTitle)
-                .font(Fonts.boldTitle2)
+                .font(Fonts.moderateBoldTitle2)
                 .foregroundColor(.aircastingMint)
         }
         
@@ -48,7 +60,7 @@ struct AirBeamOnboarding: View {
                                              using: [Strings.OnboardingAirBeamSheet.fixed,
                                                      Strings.OnboardingAirBeamSheet.mobile],
                                              color: .aircastingMint,
-                                             standardFont: Fonts.muliHeading2)
+                                             standardFont: Fonts.muliRegularHeading3)
                 .lineSpacing(10.0)
                 .multilineTextAlignment(.leading)
         }
@@ -59,7 +71,7 @@ private extension AirBeamOnboarding {
     private var progressBar: some View {
         ProgressView(value: 0.4)
             .accentColor(.aircastingMint)
-            .padding(.bottom, 20)
+            .padding(.bottom, 30)
     }
     
     private var mainImage: some View {
@@ -71,32 +83,32 @@ private extension AirBeamOnboarding {
     
     private var titleText: some View {
         Text(Strings.OnboardingAirBeam.title)
-            .font(Fonts.boldTitle1)
+            .font(Fonts.moderateBoldTitle1)
             .foregroundColor(.aircastingMint)
             .multilineTextAlignment(.leading)
-            .padding(.bottom, 20)
+            .padding(.bottom, 30)
     }
     
     private var buttonToShowScreen: some View {
         Button(action: {
-            showingHalfModal = true
+            sheetIsPresented = true
         }, label: {
             Text(Strings.OnboardingAirBeam.sheetButton)
                 .navigationBarTitle("")
                 .navigationBarHidden(true)
-                .font(Fonts.semiboldHeading1)
+                .font(Fonts.moderateBoldHeading1)
         })
         .buttonStyle(GreenTextButtonStyle())
-        .sheet(isPresented: $showingHalfModal) { ModalPopView(showingHalfModal: self.$showingHalfModal) }
+        .sheet(isPresented: $sheetIsPresented) { ModalPopView(sheetIsPresented: self.$sheetIsPresented) }
     }
     
     private var descriptionText: some View {
         Text(Strings.OnboardingAirBeam.description)
-            .font(Fonts.muliHeading2)
+            .font(Fonts.muliRegularHeading3)
             .foregroundColor(.aircastingGray)
             .lineSpacing(10.0)
             .multilineTextAlignment(.leading)
-            .padding(.bottom, 20)
+            .padding(.bottom, 30)
     }
     
     private var continueButton: some View {
@@ -104,7 +116,7 @@ private extension AirBeamOnboarding {
             destination: PrivacyOnboarding(completion: completion),
             label: {
                 Text(Strings.Commons.continue)
-                    .font(Fonts.semiboldHeading1)
+                    .font(Fonts.muliBoldHeading1)
             }
         )
         .buttonStyle(GreenButtonStyle())

@@ -59,7 +59,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
     func markStreamForDelete(_ sessionUUID: SessionUUID, sensorsName: [String], completion: () -> Void) throws {
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
         try sensorsName.forEach { sensorName in
-            guard let stream = sessionEntity.allStreams?.first(where: { $0.sensorName == sensorName }) else {
+            guard let stream = sessionEntity.allStreams.first(where: { $0.sensorName == sensorName }) else {
                 Log.info("Error when trying to hide measurement streams")
                 return
             }
@@ -98,7 +98,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
 
     func deleteStreams(_ sessionUUID: SessionUUID) throws {
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
-        let toDelete = sessionEntity.allStreams!.filter({ $0.gotDeleted })
+        let toDelete = sessionEntity.allStreams.filter({ $0.gotDeleted })
         toDelete.forEach { object in
             context.delete(object)
         }
@@ -118,7 +118,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
 
     func removeDuplicatedMeasurements(for sessionUUID: SessionUUID) throws {
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
-        sessionEntity.allStreams?.forEach({ stream in
+        sessionEntity.allStreams.forEach({ stream in
             guard let measurements = stream.allMeasurements else { return }
             let sortedMeasurements = measurements.sorted(by: { $0.time < $1.time })
             for (i, measurement) in sortedMeasurements.enumerated() {
@@ -288,37 +288,6 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
             Log.error("Error when saving changes in session: \(error.localizedDescription)")
         }
     }
-
-    func updateSessionOrder(_ order: Int, for sessionUUID: SessionUUID) {
-        do {
-            let sessionEntity = try context.existingSession(uuid: sessionUUID)
-            sessionEntity.rowOrder = Int64(order)
-            try context.save()
-        } catch {
-            Log.error("Error when saving changes in session: \(error.localizedDescription)")
-        }
-    }
-
-    func giveHighestOrder(to sessionUUID: SessionUUID) {
-        do {
-            let sessionEntity = try context.existingSession(uuid: sessionUUID)
-            let highestOrder = try context.getHighestRowOrder()
-            sessionEntity.rowOrder = (highestOrder ?? 0) + 1
-            try context.save()
-        } catch {
-            Log.error("Error when saving changes in session: \(error.localizedDescription)")
-        }
-    }
-
-    func setOrderToZero(for sessionUUID: SessionUUID) {
-        do {
-            let sessionEntity = try context.existingSession(uuid: sessionUUID)
-            sessionEntity.rowOrder = 0
-            try context.save()
-        } catch {
-            Log.error("Error when saving changes in session: \(error.localizedDescription)")
-        }
-    }
     
     // MARK: - Notes
 
@@ -346,6 +315,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         noteEntity.text = note.text
         noteEntity.date = note.date
         noteEntity.number = Int64(note.number)
+        noteEntity.photoLocation = note.photoLocation
         sessionEntity.addToNotes(noteEntity)
     }
 
@@ -368,10 +338,11 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         return sessionEntity.notes?.map { note -> Note in
             let n = note as! NoteEntity
             return Note(date: n.date ?? DateBuilder.getFakeUTCDate(),
-                                   text: n.text ?? "",
-                                   lat: n.lat,
-                                   long: n.long,
-                                   number: Int(n.number))
+                        text: n.text ?? "",
+                        lat: n.lat,
+                        long: n.long,
+                        photoLocation: n.photoLocation,
+                        number: Int(n.number))
         } ?? []
     }
 
@@ -390,6 +361,7 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
                     text: note.text ?? "",
                     lat: note.lat,
                     long: note.long,
+                    photoLocation: note.photoLocation,
                     number: Int(note.number))
     }
     
@@ -399,6 +371,8 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
         uiState.session = sessionEntity
         return sessionEntity
     }
+    
+    // MARK: - Create Session
 
     func createSession(_ session: Session) throws {
         let sessionEntity = newSessionEntity()

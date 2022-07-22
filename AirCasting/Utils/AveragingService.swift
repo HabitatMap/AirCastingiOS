@@ -101,7 +101,7 @@ final class AveragingService: NSObject {
     
     private func perform(storage: HiddenCoreDataMeasurementStreamStorage, session: SessionEntity, averagingWindow: AveragingWindow, windowDidChange: Bool) {
         Log.info("Performing averaging for \(session.uuid ?? "N/A") [\(session.name ?? "unnamed")]")
-        session.allStreams?.forEach { stream in
+        session.allStreams.forEach { stream in
             var averagedMeasurements: [MeasurementEntity] = (stream.allMeasurements ?? []).filter {
                 $0.averagingWindow == averagingWindow.rawValue
             }
@@ -158,8 +158,11 @@ final class AveragingService: NSObject {
     }
     
     private func scheduleAveraging(session: SessionEntity) {
+        guard let uuid = session.uuid else {
+            Log.info("Couldn't schedule averaging because session \(String(describing: session.name)) doesn't have UUID")
+            return
+        }
         guard let startTime = session.startTime else { return }
-        let uuid = session.uuid
         
         let fromSessionStartToFirstThreshold = (startTime.timeIntervalSince(DateBuilder.getFakeUTCDate()) + Double(TimeThreshold.firstThreshold.rawValue) + Double(1))
         Log.info("Scheduling periodic averaging start in \(fromSessionStartToFirstThreshold)s for \(session.uuid ?? "N/A") [\(session.name ?? "unnamed")]")

@@ -37,20 +37,21 @@ struct PowerABView: View {
 
     var titleLabel: some View {
         Text(Strings.PowerABView.title)
-            .font(Fonts.boldTitle3)
+            .font(Fonts.moderateBoldTitle3)
             .foregroundColor(.accentColor)
     }
 
     //stays here for maybe future needs
     var messageLabel: some View {
         Text(Strings.PowerABView.messageText)
-            .font(Fonts.regularHeading1)
+            .font(Fonts.moderateRegularHeading1)
             .foregroundColor(.aircastingGray)
     }
 
     var continueButton: some View {
         NavigationLink(destination: SelectPeripheralView(SDClearingRouteProcess: false, creatingSessionFlowContinues: $creatingSessionFlowContinues)) {
             Text(Strings.Commons.continue)
+                .font(Fonts.muliBoldHeading1)
                 .frame(maxWidth: .infinity)
         }
     }

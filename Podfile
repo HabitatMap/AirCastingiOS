@@ -5,16 +5,9 @@ target 'AirCasting' do
 
   # Pods for AirCasting
   pod 'GzipSwift'
-  pod 'GoogleMaps', '4.1.0'
-  pod 'GooglePlaces', '4.1.0'
+  pod 'GoogleMaps', '6.2.1'
+  pod 'GooglePlaces', '6.2.1'
   pod 'DeviceKit', '~> 4.5.0'
-
-  # add the Firebase pod for Google Analytics
-  pod 'Firebase/Analytics'
-  pod 'Firebase/Crashlytics'
-  pod 'Firebase/Messaging'
-  pod 'Firebase/RemoteConfig'
-
     target 'AirCastingTests' do
         inherit! :search_paths
     end

@@ -217,4 +217,23 @@ final class SynchronizationControllerTests: ACTestCase {
         simulateBreakingDownloadFailure(firstDownload: 87, error: URLError(.notConnectedToInternet))
         XCTAssertEqual(errorStream.allErrors, [.noConnection])
     }
+    
+    //
+    // Regression: "milliseconds" in uploaded measurements should be actual measurement date milliseconds
+    // takeen in `SSS` format, but excluding the most significant digit.
+    //
+    // e.g. for a measurement taken at 2021-04-10T20:19:21.543Z
+    // the "milliseconds" property should be 43.
+    //
+    func test_whenSendingMeasurements_milliseconsAreSetCorrectly() throws {
+        // Set the time to exactly 08.07.2014 20:00.000 UTC
+        var measurementDate = Date(timeIntervalSince1970: 1404849600)
+        // Add some (420) milliseconds to it
+        measurementDate.addTimeInterval(0.420)
+        setupWithStubbingStoreReads([.mock(measurementTime: measurementDate)])
+        let uploadedData = try XCTUnwrap(spyUploadRequest().first)
+        let stream = try XCTUnwrap(uploadedData.streams["Phone Microphone"])
+        let measurement = try XCTUnwrap(stream.measurements.first)
+        XCTAssertEqual(measurement.milliseconds, 20)
+    }
 }

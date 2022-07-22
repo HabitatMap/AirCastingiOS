@@ -7,19 +7,19 @@
 
 import SwiftUI
 import Charts
+import Resolver
 
 struct UIKitChartView: UIViewRepresentable {
     let thresholds: [SensorThreshold]
-
     @StateObject var viewModel: ChartViewModel
     
     typealias UIViewType = UI_PollutionChart
     
-    func makeUIView(context: Context) -> UI_PollutionChart {
-        UI_PollutionChart()
+    func makeUIView(context: Context) -> UIViewType {
+        UIViewType()
     }
     
-    func updateUIView(_ uiView: UI_PollutionChart, context: Context) {
+    func updateUIView(_ uiView: UIViewType, context: Context) {
         guard !viewModel.entries.isEmpty else { return }
         
         var entries = viewModel.entries
@@ -43,7 +43,7 @@ struct UIKitChartView: UIViewRepresentable {
         let formatter = NumberFormatter()
         formatter.maximumFractionDigits = 0
         data.setValueFormatter(DefaultValueFormatter(formatter: formatter))
-        data.setValueFont(Fonts.muliHeadingUIFont2)
+        data.setValueFont(Fonts.muliRegularHeadingUIFont2)
         data.setValueTextColor(UIColor.aircastingGray)
     }
     
@@ -52,7 +52,6 @@ struct UIKitChartView: UIViewRepresentable {
         dataSet.circleColors = generateColorsSet(for: dataSet.entries)
         dataSet.drawCircleHoleEnabled = false
         dataSet.circleRadius = 4
-
         
         // line color
         dataSet.setColor(UIColor.aircastingGray.withAlphaComponent(0.7))
@@ -61,16 +60,19 @@ struct UIKitChartView: UIViewRepresentable {
     private func generateColorsSet(for entries: [ChartDataEntry]) -> [UIColor] {
         var colors: [UIColor] = []
         guard let threshold = thresholds.threshold(for: viewModel.stream?.sensorName ?? "") else { return [.aircastingGray] }
+        let formatter = Resolver.resolve(ThresholdFormatter.self, args: threshold)
         for entry in entries {
-            switch Int32(entry.y) {
-            case threshold.thresholdVeryLow..<threshold.thresholdLow:
+            switch formatter.value(from: entry.y) {
+            case threshold.thresholdVeryLow...threshold.thresholdLow:
                 colors.append(UIColor.aircastingGreen)
-            case threshold.thresholdLow..<threshold.thresholdMedium:
+            case threshold.thresholdLow + 1...threshold.thresholdMedium:
                 colors.append(UIColor.aircastingYellow)
-            case threshold.thresholdMedium..<threshold.thresholdHigh:
+            case threshold.thresholdMedium + 1...threshold.thresholdHigh:
                 colors.append(UIColor.aircastingOrange)
-            default:
+            case threshold.thresholdHigh + 1...threshold.thresholdVeryHigh:
                 colors.append(UIColor.aircastingRed)
+            default:
+                colors.append(UIColor.aircastingGray)
             }
         }
         return colors
@@ -80,7 +82,7 @@ struct UIKitChartView: UIViewRepresentable {
 class UI_PollutionChart: UIView {
     let lineChartView = LineChartView()
     
-    init() {
+    init(addMoreSpace: Bool = false) {
         super.init(frame: .zero)
         
         self.addSubview(lineChartView)
@@ -107,13 +109,18 @@ class UI_PollutionChart: UIView {
         lineChartView.leftAxis.drawLabelsEnabled = false
         lineChartView.leftAxis.drawAxisLineEnabled = false
         
+        if addMoreSpace {
+            lineChartView.leftAxis.axisMinimum = -5
+            lineChartView.leftAxis.spaceTop = 1
+        }
+        
         lineChartView.rightAxis.enabled = false
         
         lineChartView.legend.enabled = false
         lineChartView.noDataText = Strings.Chart.emptyChartMessage
         lineChartView.noDataTextAlignment = .center
         
-        //disable zooming
+        // disable zooming
         lineChartView.setScaleEnabled(false)
     }
     

@@ -9,30 +9,37 @@ import AirCastingStyling
 import Resolver
 
 struct CreateAccountView: View {
-    
     var completion: () -> Void
     @InjectedObject private var lifeTimeEventsProvider: LifeTimeEventsProvider
     @InjectedObject private var userAuthenticationSession: UserAuthenticationSession
     @InjectedObject private var userState: UserState
     private let authorizationAPIService: AuthorizationAPIService = AuthorizationAPIService() // [Resolver] Move to dep.
-
-    @State private var email: String = ""
-    @State private var username: String = ""
-    @State private var password: String = ""
+    
     @State private var isPasswordCorrect = true
     @State private var isEmailCorrect = true
     @State private var isUsernameBlank = false
-    @State private var presentedError: AuthorizationError?
     @State private var alert: AlertInfo?
+    @State private var isLoading = false
+    @StateObject var signInPersistanceObserved = SignInPersistance.shared
     
     init(completion: @escaping () -> Void) {
         self.completion = completion
     }
-
+    
     var body: some View {
+        LoadingView(isShowing: $isLoading) {
+            contentView
+        }
+    }
+}
+
+private extension CreateAccountView {
+    var contentView: some View {
         GeometryReader { geometry in
-            ScrollView {
-                VStack(spacing: 50) {
+            ZStack(alignment: .bottomTrailing) {
+                Image("dashboard-background-thing")
+                    .offset(x: 0, y: 40)
+                VStack(alignment: .leading, spacing: 40) {
                     if lifeTimeEventsProvider.hasEverLoggedIn {
                         progressBar.hidden()
                     } else {
@@ -64,16 +71,16 @@ struct CreateAccountView: View {
                     }
                     VStack(spacing: 25) {
                         createAccountButton
-                        signinButton
+                        signInButton
                     }
                     Spacer()
+                    if userState.currentState == .loggingOut {
+                        backgroundSignOutIndication
+                    }
                 }
                 .padding()
                 .navigationBarHidden(true)
                 .frame(maxWidth: .infinity, minHeight: geometry.size.height)
-                .alert(item: $presentedError) { error in
-                    displayErrorAlert(error: error)
-                }
                 .alert(item: $alert, content: { $0.makeAlert() })
                 .onAppear {
                     if userState.currentState == .deletingAccount {
@@ -85,16 +92,13 @@ struct CreateAccountView: View {
             }
         }
         .simultaneousGesture(
-
-    DragGesture(minimumDistance: 2, coordinateSpace: .global)
-        .onChanged({ (_) in
-            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-        })
+            DragGesture(minimumDistance: 2, coordinateSpace: .global)
+                .onChanged({ (_) in
+                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                })
         )
+        .ignoresSafeArea(.keyboard, edges: .bottom)
     }
-}
-
-private extension CreateAccountView {
     
     var progressBar: some View {
         ProgressView(value: 0.8)
@@ -104,27 +108,34 @@ private extension CreateAccountView {
     var titleLabel: some View {
         VStack(alignment: .leading, spacing: 15) {
             Text(Strings.CreateAccountView.createTitle_1)
-                .font(Fonts.boldTitle1)
+                .font(Fonts.moderateBoldTitle1)
                 .foregroundColor(.accentColor)
             Text(Strings.CreateAccountView.createTitle_2)
-                .font(Fonts.muliHeading2)
+                .font(Fonts.muliRegularHeading3)
                 .foregroundColor(.aircastingGray)
         }
     }
     
     var emailTextfield: some View {
         createTextfield(placeholder: Strings.CreateAccountView.email,
-                        binding: $email)
-            .autocapitalization(.none)
+                        binding: $signInPersistanceObserved.email,
+                        isInputValid: !isEmailCorrect)
+        .font(Fonts.moderateRegularHeading2)
+        .autocapitalization(.none)
     }
     
     var usernameTextfield: some View {
         createTextfield(placeholder: Strings.CreateAccountView.profile,
-                        binding: $username)
-            .autocapitalization(.none)
+                        binding: $signInPersistanceObserved.username,
+                        isInputValid: isUsernameBlank)
+        .font(Fonts.moderateRegularHeading2)
+        .autocapitalization(.none)
     }
+    
     var passwordTextfield: some View {
-        createSecuredTextfield(placeholder: Strings.CreateAccountView.password, binding: $password)
+        createSecuredTextfield(placeholder: Strings.CreateAccountView.password,
+                               binding: $signInPersistanceObserved.password,
+                               isInputValid: !isPasswordCorrect)
     }
     
     var createAccountButton: some View {
@@ -134,16 +145,17 @@ private extension CreateAccountView {
             UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
             
             if isPasswordCorrect && isEmailCorrect && !isUsernameBlank {
-                #warning("Show progress and lock ui to prevent multiple api calls")
-                let userInput = AuthorizationAPI.SignupUserInput(email: email,
-                                                                username: username,
-                                                                password: password,
-                                                                send_emails: false)
+#warning("Show progress and lock ui to prevent multiple api calls")
+                isLoading = true
+                let userInput = AuthorizationAPI.SignupUserInput(email: signInPersistanceObserved.email,
+                                                                 username: signInPersistanceObserved.username,
+                                                                 password: signInPersistanceObserved.password,
+                                                                 send_emails: false)
                 authorizationAPIService.createAccount(input: userInput) { result in
                     DispatchQueue.main.async {
                         switch result {
                         case .failure(let error):
-                                presentedError = error
+                            self.displayErrorAlert(error: error)
                             Log.warning("Failed to create account \(error)")
                         case .success(let output):
                             completion()
@@ -153,55 +165,60 @@ private extension CreateAccountView {
                                 try userAuthenticationSession.authorise(user)
                             } catch {
                                 Log.error("Failed to store credentials \(error)")
-                                presentedError = .other(error)
+                                self.displayErrorAlert(error: .other(error))
                             }
                         }
+                        isLoading = false
                     }
                 }
             }
         }
+        .font(Fonts.muliBoldHeading1)
+        .disabled(userState.currentState == .loggingOut)
         .buttonStyle(BlueButtonStyle())
     }
     
-    var signinButton: some View {
-        NavigationLink(
-            destination: SignInView(completion: completion).environmentObject(lifeTimeEventsProvider),
-            label: {
-                signingButtonText
-            })
+    var signInButton: some View {
+        Button {
+            signInPersistanceObserved.credentialsScreen = .signIn
+            signInPersistanceObserved.clearCredentials()
+        } label: {
+            signingButtonText
+        }
     }
     
     var signingButtonText: some View {
         Text(Strings.CreateAccountView.signIn_1)
-            .font(Fonts.muliHeading2)
+            .font(Fonts.muliRegularHeading3)
             .foregroundColor(.aircastingGray)
         + Text(" ")
         + Text(Strings.CreateAccountView.signIn_2)
-            .font(Fonts.boldHeading2)
+            .font(Fonts.moderateBoldHeading1)
             .foregroundColor(.accentColor)
     }
-
-    func checkIfUserInputIsCorrect() {
-        isPasswordCorrect = checkIsPasswordValid(password: password)
-        isEmailCorrect = checkIsEmailValid(email: email)
-        isUsernameBlank = checkIfBlank(text: username)
+    
+    var backgroundSignOutIndication: some View {
+        HStack {
+            ActivityIndicator(isAnimating: .constant(userState.currentState == .loggingOut), style: .large)
+            Text(Strings.CreateAccountView.loggingOutInBackground)
+                .font(Fonts.muliRegularHeading3)
+                .foregroundColor(.aircastingGray)
+                .fixedSize(horizontal: false, vertical: true)
+        }
     }
-
-    func displayErrorAlert(error: AuthorizationError) -> Alert {
+    
+    func checkIfUserInputIsCorrect() {
+        isPasswordCorrect = checkIsPasswordValid(password: signInPersistanceObserved.password)
+        isEmailCorrect = checkIsEmailValid(email: signInPersistanceObserved.email)
+        isUsernameBlank = checkIfBlank(text: signInPersistanceObserved.username)
+    }
+    
+    func displayErrorAlert(error: AuthorizationError) {
         switch error {
-        case .emailTaken, .invalidCredentials, .usernameTaken:
-            return Alert(title: Text(Strings.CreateAccountView.takenAndOtherTitle),
-                         message: Text(error.localizedDescription),
-                         dismissButton: .default(Text(Strings.Commons.ok)))
-
+        case .emailTaken, .invalidCredentials, .usernameTaken, .other, .timeout:
+            self.alert = InAppAlerts.createAccountAlert(error: error)
         case .noConnection:
-            return Alert(title: Text(Strings.CreateAccountView.noInternetTitle),
-                         message: Text(error.localizedDescription),
-                         dismissButton: .default(Text(Strings.Commons.ok)))
-        case .other, .timeout:
-            return Alert(title: Text(Strings.CreateAccountView.takenAndOtherTitle),
-                         message: Text(error.localizedDescription),
-                         dismissButton: .default(Text(Strings.Commons.ok)))
+            self.alert = InAppAlerts.noInternetConnection(error: error)
         }
     }
 }

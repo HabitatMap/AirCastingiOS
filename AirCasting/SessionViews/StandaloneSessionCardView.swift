@@ -19,11 +19,12 @@ struct StandaloneSessionCardView: View {
                 header
                 content
             }
-            .font(Fonts.regularHeading4)
             .foregroundColor(.aircastingGray)
             .padding()
-            .background(Color.white
-                            .shadow(color: .sessionCardShadow, radius: 9, x: 0, y: 1))
+            .background(
+                Color.white
+                    .cardShadow()
+            )
             .overlay(Rectangle().frame(width: nil, height: 4, alignment: .top).foregroundColor(Color.red), alignment: .top)
         }
     }
@@ -40,10 +41,11 @@ struct StandaloneSessionCardView: View {
     var content: some View {
         VStack(spacing: 15) {
             Text(Strings.StandaloneSessionCardView.heading)
-                .font(Fonts.boldHeading3)
+                .font(Fonts.moderateBoldHeading1)
                 .foregroundColor(.darkBlue)
                 .multilineTextAlignment(.center)
             Text(Strings.StandaloneSessionCardView.description)
+                .font(Fonts.moderateRegularHeading3)
                 .multilineTextAlignment(.center)
             finishAndSyncButton
             finishAndDontSyncButton
@@ -63,6 +65,7 @@ struct StandaloneSessionCardView: View {
                 alert = InAppAlerts.noNetworkAlert()
             }
         }
+        .font(Fonts.muliBoldHeading1)
         .buttonStyle(BlueButtonStyle())
     }
 
@@ -73,6 +76,7 @@ struct StandaloneSessionCardView: View {
             }
         }
         .foregroundColor(.accentColor)
+        .font(Fonts.moderateRegularHeading2)
     }
 
     func finishSessionAndSyncAlertAction() {

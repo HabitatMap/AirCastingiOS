@@ -34,7 +34,7 @@ struct DefaultGenerateSessionFileController: GenerateSessionFileController {
         var content = ""
         let headers1 = "sensor_model, sensor_package, sensor_capability, sensor_units\n"
         let headers2 = "Timestamp, Value\n"
-        session.allStreams?.forEach({ stream in
+        session.allStreams.forEach({ stream in
             content.append(headers1)
             content.append("\(stream.sensorName ?? ""), \(stream.sensorPackageName ?? ""), \(stream.measurementType ?? ""), \(stream.unitName ?? "")\n")
             content.append(headers2)

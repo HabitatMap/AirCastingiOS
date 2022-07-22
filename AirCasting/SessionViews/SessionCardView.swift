@@ -36,9 +36,9 @@ struct SessionCardView: View {
         self.session = session
         self.sessionCartViewModel = sessionCartViewModel
         self.thresholds = thresholds
-        
+
         self._isCollapsed = .init(initialValue: !(session.userInterface?.expandedCard ?? false))
-        
+
         let mapDataSource = ConveringStatisticsDataSourceDecorator<MapStatsDataSource>(dataSource: MapStatsDataSource(), stream: nil)
         self._mapStatsDataSource = .init(wrappedValue: mapDataSource)
         self._mapStatsViewModel = .init(wrappedValue: SessionCardView.createStatsContainerViewModel(dataSource: mapDataSource, session: session))
@@ -57,10 +57,6 @@ struct SessionCardView: View {
         (session.isMobile && session.isActive) || (session.isFixed && selectedSection.selectedSection == SelectedSection.following)
     }
 
-    var hasStreams: Bool {
-        session.allStreams != nil || session.allStreams != []
-    }
-
     var body: some View {
         if session.isInStandaloneMode && featureFlagsViewModel.enabledFeatures.contains(.standaloneMode) {
             standaloneSessionCard
@@ -72,23 +68,19 @@ struct SessionCardView: View {
     var sessionCard: some View {
         VStack(alignment: .leading, spacing: 5) {
             header
-            if hasStreams {
-                measurements
-                VStack(alignment: .trailing, spacing: 10) {
-                    if !isCollapsed {
-                        showChart ? pollutionChart(thresholds: thresholds) : nil
-                        displayButtons()
-                    }
+            measurements
+            VStack(alignment: .trailing, spacing: 10) {
+                if !isCollapsed {
+                    showChart ? pollutionChart(thresholds: thresholds) : nil
+                    displayButtons()
                 }
-            } else {
-                SessionLoadingView()
             }
         }
         .onAppear {
-            selectDefaultStreamIfNeeded(streams: session.sortedStreams ?? [])
+            selectDefaultStreamIfNeeded(streams: session.sortedStreams)
         }
         .onChange(of: session.sortedStreams) { newValue in
-            selectDefaultStreamIfNeeded(streams: newValue ?? [])
+            selectDefaultStreamIfNeeded(streams: newValue)
         }
         .onChange(of: selectedStream, perform: { [weak graphStatsDataSource, weak mapStatsDataSource] newStream in
             graphStatsDataSource?.stream = newStream
@@ -97,13 +89,21 @@ struct SessionCardView: View {
             mapStatsDataSource?.dataSource.stream = newStream
             uiState.changeSelectedStream(sessionUUID: session.uuid, newStream: newStream?.sensorName ?? "")
         })
-        .font(Fonts.regularHeading4)
+        .onChange(of: isMapButtonActive) { _ in
+            reorderButton.setHidden(if: isMapButtonActive)
+            searchAndFollowButton.setHidden(if: isMapButtonActive)
+        }
+        .onChange(of: isGraphButtonActive) { _ in
+            reorderButton.setHidden(if: isGraphButtonActive)
+            searchAndFollowButton.setHidden(if: isGraphButtonActive)
+        }
+        .font(Fonts.moderateRegularHeading4)
         .foregroundColor(.aircastingGray)
         .padding()
         .background(
             Group {
                 Color.white
-                    .shadow(color: .sessionCardShadow, radius: 9, x: 0, y: 1)
+                    .cardShadow()
                 mapNavigationLink
                 graphNavigationLink
                 // SwiftUI bug: two navigation links don't work properly
@@ -121,7 +121,7 @@ struct SessionCardView: View {
             if let newStream = session.streamWith(sensorName: session.userInterface?.sensorName ?? "") {
                 return selectedStream = newStream
             }
-            selectedStream = streams.first
+            selectedStream = session.defaultStreamSelection() ?? streams.first
         }
     }
 }
@@ -148,19 +148,17 @@ private extension SessionCardView {
                             session: session,
                             isCollapsed: $isCollapsed,
                             selectedStream: $selectedStream,
-                            thresholds: thresholds,
+                            thresholds: .init(value: thresholds),
                             measurementPresentationStyle: shouldShowValues)
     }
 
     private var graphButton: some View {
         Button {
             isGraphButtonActive = true
-            reorderButton.isHidden = true
-            searchAndFollowButton.isHidden = true
             Log.info("\(reorderButton)")
         } label: {
             Text(Strings.SessionCartView.graph)
-                .font(Fonts.semiboldHeading2)
+                .font(Fonts.muliSemiboldHeading2)
                 .padding(.horizontal, 8)
         }
     }
@@ -168,12 +166,9 @@ private extension SessionCardView {
     private var mapButton: some View {
         Button {
             isMapButtonActive = true
-            reorderButton.isHidden = true
-            searchAndFollowButton.isHidden = true
-            Log.info("\(reorderButton)")
         } label: {
             Text(Strings.SessionCartView.map)
-                .font(Fonts.semiboldHeading2)
+                .font(Fonts.muliSemiboldHeading2)
                 .padding(.horizontal, 8)
         }
     }
@@ -191,10 +186,10 @@ private extension SessionCardView {
     }
 
     func pollutionChart(thresholds: [SensorThreshold]) -> some View {
-        return VStack() {
-            ChartView(thresholds: thresholds, stream: $selectedStream, session: .session(session))
-            .foregroundColor(.aircastingGray)
-                .font(Fonts.semiboldHeading2)
+        VStack() {
+            ChartView(thresholds: .init(value: thresholds), stream: $selectedStream, session: session)
+                .foregroundColor(.aircastingGray)
+                .font(Fonts.muliSemiboldHeading2)
         }
     }
 
@@ -206,7 +201,7 @@ private extension SessionCardView {
                 followButton
             }
             Spacer()
-            !(session.isIndoor || session.locationless) ? mapButton.padding(.trailing, 10) : nil
+            !(session.isIndoor || session.locationless) ? mapButton.padding(.trailing, 5) : nil
             graphButton
         }.padding(.top, 10)
         .buttonStyle(GrayButtonStyle())
@@ -233,7 +228,7 @@ private extension SessionCardView {
 
     private var mapNavigationLink: some View {
          let mapView = AirMapView(session: session,
-                                  thresholds: thresholds,
+                                  thresholds: .init(value: thresholds),
                                   statsContainerViewModel: _mapStatsViewModel,
                                   showLoadingIndicator: $showLoadingIndicator,
                                   selectedStream: $selectedStream)
@@ -260,4 +255,14 @@ private extension SessionCardView {
                                  EmptyView()
                                })
      }
+}
+
+// Extension for selecting Stream PM2.5 as default one.
+extension SessionEntity {
+    func defaultStreamSelection() -> MeasurementStreamEntity? {
+        allStreams.first { stream in
+            guard let name = stream.sensorName else { return false }
+            return name.contains("PM2.5")
+         }
+    }
 }

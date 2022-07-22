@@ -12,9 +12,10 @@ class SettingsViewModel: ObservableObject {
     @Published var locationScreenGo = false
     
     var SDClearingRouteProcess = true
+    let username = "\(KeychainStorage(service: Bundle.main.bundleIdentifier!).getProfileData(for: .username))"
     
     @Injected private var urlProvider: URLProvider
-    @Injected private var locationHandler: LocationHandler
+    @Injected private var locationAuthorization: LocationAuthorization
     @Injected private var bluetoothHandler: BluetoothHandler
     @Injected private var microphone: Microphone
     let sessionContext: CreateSessionContext
@@ -29,7 +30,7 @@ class SettingsViewModel: ObservableObject {
     }
 
     func nextStep() -> ProceedToView {
-        guard !locationHandler.isLocationDenied() else { return .location }
+        guard locationAuthorization.locationState != .denied else { return .location }
         guard !bluetoothHandler.isBluetoothDenied() else { return .bluetooth }
         return .airBeam
     }

@@ -9,7 +9,7 @@ struct ReorderingDashboard: View {
     @EnvironmentObject var searchAndFollowButton: SearchAndFollowButton
     @State private var changedView: Bool = false
     
-    init(sessions: [SessionEntity], thresholds: [SensorThreshold]) {
+    init(sessions: [Sessionable], thresholds: [SensorThreshold]) {
         _viewModel = .init(wrappedValue: ReorderingDashboardViewModel(sessions: sessions, thresholds: thresholds))
     }
     
@@ -18,9 +18,9 @@ struct ReorderingDashboard: View {
     var body: some View {
         ScrollView {
             LazyVGrid(columns: columns) {
-                ForEach(viewModel.sessions) { session in
+                ForEach(viewModel.sessions, id: \.uuid) { session in
                     ReoredringSessionCard(session: session, thresholds: viewModel.thresholds)
-                        .overlay(viewModel.currentlyDraggedSession == session && changedView ? Color.white.opacity(0.8) : Color.clear)
+                        .overlay(viewModel.currentlyDraggedSession?.uuid == session.uuid && changedView ? Color.white.opacity(0.8) : Color.clear)
                         .onDrag({
                             viewModel.currentlyDraggedSession = session
                             changedView = false

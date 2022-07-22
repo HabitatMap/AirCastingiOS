@@ -38,7 +38,7 @@ final class DefaultSyncingMeasurementsViewModel: SyncingMeasurementsViewModel, O
                 let dataBaseStreams = data.streams.values.map { value in
                     SynchronizationDataConverter().convertDownloadDataToDatabaseStream(data: value)
                 }
-                let sessionId = self.session.uuid
+                let sessionId = self.session.uuid!
                 let sessionName = self.session.name
                 
                 // TODO: Move all this logic to a service/controller

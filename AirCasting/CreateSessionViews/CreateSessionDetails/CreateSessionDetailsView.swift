@@ -2,12 +2,15 @@
 //
 import AirCastingStyling
 import SwiftUI
+import Resolver
 
 struct CreateSessionDetailsView: View {
     
     @EnvironmentObject private var sessionContext: CreateSessionContext
     @StateObject private var viewModel: CreateSessionDetailsViewModel = .init()
     @Binding var creatingSessionFlowContinues: Bool
+    @Injected private var locationTracker: LocationTracker
+    private var shouldTrackLocation: Bool { sessionContext.sessionType == .fixed || !sessionContext.locationless }
     
     init(creatingSessionFlowContinues: Binding<Bool>) {
         self._creatingSessionFlowContinues = creatingSessionFlowContinues
@@ -42,7 +45,19 @@ struct CreateSessionDetailsView: View {
             })
             .background(navigation)
         }
-        .onAppear { viewModel.onScreenEnter() }
+        .onAppear {
+            viewModel.onScreenEnter()
+            if shouldTrackLocation {
+                // We are adding this here to show the most recent location on the map on fixed session location picker screen
+                // and on the map for mobile session confirmation screen
+                locationTracker.start()
+            }
+        }
+        .onDisappear {
+            if shouldTrackLocation {
+                locationTracker.stop()
+            }
+        }
         .onChange(of: viewModel.sessionName) { _ in
             viewModel.showErrorIndicator = false
         }
@@ -90,18 +105,22 @@ private extension CreateSessionDetailsView {
     
     var wifiPasswordField: some View {
         createTextfield(placeholder: Strings.WifiPopupView.passwordPlaceholder, binding: $viewModel.wifiPassword)
+            .font(Fonts.moderateRegularHeading2)
     }
     
     var wifiSSIDField: some View {
         createTextfield(placeholder: Strings.WifiPopupView.wifiPlaceholder, binding: $viewModel.wifiSSID)
+            .font(Fonts.moderateRegularHeading2)
     }
     
     var sessionNameField: some View {
         createTextfield(placeholder: Strings.CreateSessionDetailsView.sessionNamePlaceholder, binding: $viewModel.sessionName)
+            .font(Fonts.moderateRegularHeading2)
     }
     
     var sessionTagsField: some View {
         createTextfield(placeholder: Strings.CreateSessionDetailsView.sessionTagPlaceholder, binding: $viewModel.sessionTags)
+            .font(Fonts.moderateRegularHeading2)
     }
     
     var navigation: some View {
@@ -150,6 +169,7 @@ private extension CreateSessionDetailsView {
             sessionContext.ovverride(sessionContext: updatedContext)
         }, label: {
             Text(Strings.Commons.continue)
+                .font(Fonts.muliBoldHeading1)
                 .frame(maxWidth: .infinity)
         })
         .buttonStyle(BlueButtonStyle())
@@ -158,14 +178,14 @@ private extension CreateSessionDetailsView {
 
     var titleLabel: some View {
         Text(Strings.CreateSessionDetailsView.title)
-            .font(Fonts.boldTitle4)
+            .font(Fonts.muliHeavyTitle1)
             .foregroundColor(.darkBlue)
     }
 
     var placementPicker: some View {
         VStack(alignment: .leading, spacing: 15) {
             Text(Strings.CreateSessionDetailsView.placementPicker_1)
-                .font(Fonts.boldHeading1)
+                .font(Fonts.moderateBoldHeading1)
                 .foregroundColor(.aircastingDarkGray)
             Picker(selection: $viewModel.isIndoor, label: Text("")) {
                 Text(Strings.CreateSessionDetailsView.placementPicker_2).tag(true)
@@ -178,7 +198,7 @@ private extension CreateSessionDetailsView {
     var transmissionTypePicker: some View {
         VStack(alignment: .leading, spacing: 15) {
             Text(Strings.CreateSessionDetailsView.transmissionPicker)
-                .font(Fonts.boldHeading1)
+                .font(Fonts.moderateBoldHeading1)
                 .foregroundColor(.aircastingDarkGray)
             Picker(selection: $viewModel.isWiFi, label: Text("")) {
                 Text(Strings.CreateSessionDetailsView.wifiText).tag(true)
@@ -190,13 +210,13 @@ private extension CreateSessionDetailsView {
     
     var providePasswordTitle: some View {
         Text(Strings.WifiPopupView.passwordTitle)
-            .font(Fonts.boldHeading1)
+            .font(Fonts.muliBoldHeading1)
             .foregroundColor(.aircastingDarkGray)
     }
     
     var provideNameAndPasswordTitle: some View {
         Text(String(format: Strings.WifiPopupView.nameAndPasswordTitle, arguments: [viewModel.wifiSSID]))
-            .font(Fonts.boldHeading1)
+            .font(Fonts.muliBoldHeading1)
             .foregroundColor(.aircastingDarkGray)
     }
     

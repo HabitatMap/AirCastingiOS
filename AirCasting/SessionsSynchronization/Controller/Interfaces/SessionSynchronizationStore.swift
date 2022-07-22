@@ -22,7 +22,7 @@ protocol SessionSynchronizationStore {
     func addSessions(with: [SessionsSynchronization.SessionStoreSessionData]) -> Future<Void, Error>
     
     @discardableResult
-    func saveURLForSession(uuid: SessionUUID, url: String) -> Future<Void, Error>
+    func saveUploadResponseForSession(uuid: SessionUUID, response: SessionsSynchronization.SessionUpstreamResult) -> Future<Void, Error>
     
     @discardableResult
     func removeSessions(with: [SessionUUID]) -> Future<Void, Error>
@@ -56,6 +56,7 @@ extension SessionsSynchronization {
         let measurementStreams: [SessionStoreMeasurementStreamData]
         let deleted: Bool
         let notes: [SessionStoreNotesData]
+        let notesPhotos: [URL?]
     }
     
     struct SessionStoreMeasurementStreamData: Equatable {
@@ -89,5 +90,10 @@ extension SessionsSynchronization {
         let latitude: Double
         let longitude: Double
         let number: Int
+    }
+    
+    struct NotesResultData {
+        let number: Int
+        let photoLocation: URL
     }
 }

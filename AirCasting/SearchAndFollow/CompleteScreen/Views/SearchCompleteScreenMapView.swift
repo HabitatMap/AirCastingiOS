@@ -4,8 +4,10 @@
 import SwiftUI
 import UIKit
 import GoogleMaps
+import Resolver
 
 struct SearchCompleteScreenMapView: UIViewRepresentable {
+    @InjectedObject private var userSettings: UserSettings
     typealias UIViewType = GMSMapView
     var longitude: CLLocationDegrees
     var latitude: CLLocationDegrees
@@ -25,6 +27,7 @@ struct SearchCompleteScreenMapView: UIViewRepresentable {
         
         let camera = GMSCameraPosition.camera(withLatitude: latitude, longitude: longitude, zoom: 15.0)
         let mapView = GMSMapView.map(withFrame: .zero, camera: camera)
+        if userSettings.satteliteMap { mapView.mapType = .hybrid }
         
         do {
             if let styleURL = Bundle.main.url(forResource: "style", withExtension: "json") {

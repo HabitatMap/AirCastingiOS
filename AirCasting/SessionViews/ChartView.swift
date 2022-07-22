@@ -2,20 +2,24 @@
 //
 
 import SwiftUI
+import Resolver
 
 struct ChartView: View {
-    private let thresholds: [SensorThreshold]
+    @InjectedObject private var userSettings: UserSettings
+    @Injected private var formatter: UnitFormatter
+    @ObservedObject private var thresholds: ABMeasurementsViewThreshold
     @StateObject private var viewModel: ChartViewModel
     @Binding private var stream: MeasurementStreamEntity?
-    
-    init(thresholds: [SensorThreshold], stream: Binding<MeasurementStreamEntity?>, session: ChartViewModel.Session) {
+    let timeFormatter: DateFormatter = DateFormatters.SessionCardView.shared.pollutionChartDateFormatter
+
+    init(thresholds: ABMeasurementsViewThreshold, stream: Binding<MeasurementStreamEntity?>, session: Sessionable) {
         self.thresholds = thresholds
         self._stream = .init(projectedValue: stream)
         self._viewModel = .init(wrappedValue: .init(session: session, stream: stream.wrappedValue))
     }
-    
+
     var body: some View {
-        UIKitChartView(thresholds: thresholds,
+        UIKitChartView(thresholds: thresholds.value,
                        viewModel: viewModel)
             .frame(height: 120)
             .disabled(true)
@@ -30,30 +34,26 @@ struct ChartView: View {
             endTime
         }
     }
-    
-    var startTime: some View {
-        let formatter = DateFormatters.SessionCartView.pollutionChartDateFormatter
 
+    var startTime: some View {
         guard let start = viewModel.chartStartTime else { return Text("") }
 
-        let string = formatter.string(from: start)
+        let string = timeFormatter.string(from: start)
         return Text(string)
     }
 
     var endTime: some View {
-        let formatter = DateFormatters.SessionCartView.pollutionChartDateFormatter
-
         let end = viewModel.chartEndTime ?? DateBuilder.getFakeUTCDate()
 
-        let string = formatter.string(from: end)
+        let string = timeFormatter.string(from: end)
         return Text(string)
     }
-    
+
     func descriptionText(stream: MeasurementStreamEntity?) -> some View {
         guard let stream = stream else { return Text("") }
         if let session = stream.session {
-            return Text("\(session.isMobile ? Strings.SessionCartView.avgSessionMin : Strings.SessionCartView.avgSessionH) \(stream.unitSymbol ?? "")")
+            return Text("\(session.isMobile ? Strings.SessionCartView.avgSessionMin : Strings.SessionCartView.avgSessionH) \(formatter.unitString(for: stream))")
         }
-        return Text("\(Strings.SessionCartView.avgSessionH) \(stream.unitSymbol ?? "")")
+        return Text("\(Strings.SessionCartView.avgSessionH) \(formatter.unitString(for: stream))")
     }
 }

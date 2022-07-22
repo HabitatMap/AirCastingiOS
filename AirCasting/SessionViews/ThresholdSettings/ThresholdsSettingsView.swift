@@ -15,10 +15,10 @@ struct ThresholdsSettingsView: View {
     let initialThresholds: ThresholdsValue
     @StateObject private var thresholdSettingsViewModel: ThresholdSettingsViewModel
     
-    init(thresholdValues: Binding<ThresholdsValue>, initialThresholds: ThresholdsValue) {
+    init(thresholdValues: Binding<ThresholdsValue>, initialThresholds: ThresholdsValue, threshold: SensorThreshold) {
         _thresholdValues = thresholdValues
         self.initialThresholds = initialThresholds
-        _thresholdSettingsViewModel = .init(wrappedValue: ThresholdSettingsViewModel(initialThresholds: initialThresholds))
+        _thresholdSettingsViewModel = .init(wrappedValue: ThresholdSettingsViewModel(initialThresholds: initialThresholds, threshold: threshold))
     }
     
     var body: some View {
@@ -38,7 +38,7 @@ struct ThresholdsSettingsView: View {
                                                                  
     func showDescriptionLabel(text: String) -> some View {
         Text(text)
-            .font(Fonts.muliHeading4)
+            .font(Fonts.muliRegularHeading5)
             .foregroundColor(.aircastingGray)
     }
                                                                  
@@ -48,7 +48,7 @@ struct ThresholdsSettingsView: View {
     
     func showThresholdTextfield(value: Binding<String>) -> some View {
         TextField("0", text: value)
-            .font(Fonts.muliHeading3)
+            .font(Fonts.muliRegularHeading4)
             .foregroundColor(.aircastingGray)
             .multilineTextAlignment(.trailing)
     }
@@ -89,10 +89,10 @@ struct ThresholdsSettingsView: View {
             VStack(alignment: .leading, spacing: 16) {
                 Text(Strings.SessionCart.heatmapSettingsTitle)
                     .foregroundColor(.darkBlue)
-                    .font(Fonts.heavyTitle1)
+                    .font(Fonts.muliHeavyTitle1)
                 Text(Strings.SessionCart.heatmapSettingsdescription)
                     .foregroundColor(.aircastingGray)
-                    .font(Fonts.regularHeading2)
+                    .font(Fonts.moderateRegularHeading2)
             }
             .padding()
             
@@ -103,16 +103,22 @@ struct ThresholdsSettingsView: View {
                 lowTextfield
                 veryLowTextfield
             }
+            .font(Fonts.moderateRegularHeading2)
             .keyboardType(.numberPad)
             
             VStack {
                 Button(action: {
-                    thresholdValues = thresholdSettingsViewModel.updateToNewThresholds()
-                    presentationMode.wrappedValue.dismiss()
+                    thresholdSettingsViewModel.updateToNewThresholds { result in
+                        if case .success(let newValues) = result {
+                            thresholdValues = newValues
+                            presentationMode.wrappedValue.dismiss()
+                        }
+                    }
                 })
                 {
                     Text(Strings.SessionCart.saveChangesButton)
                         .frame(maxWidth: .infinity)
+                        .font(Fonts.muliBoldHeading1)
                 }
                 .buttonStyle(BlueButtonStyle())
                 
@@ -120,18 +126,20 @@ struct ThresholdsSettingsView: View {
                     thresholdValues = thresholdSettingsViewModel.resetToDefault()
                     presentationMode.wrappedValue.dismiss()
                 })
+                .font(Fonts.moderateRegularHeading2)
                 .frame(minHeight: 35)
             }
             .listRowBackground(Color.clear)
             .buttonStyle(BorderlessButtonStyle())
-            .onAppear {
-                thresholdSettingsViewModel.thresholdVeryLow = string(thresholdValues.veryLow)
-                thresholdSettingsViewModel.thresholdLow = string(thresholdValues.low)
-                thresholdSettingsViewModel.thresholdMedium = string(thresholdValues.medium)
-                thresholdSettingsViewModel.thresholdHigh = string(thresholdValues.high)
-                thresholdSettingsViewModel.thresholdVeryHigh = string(thresholdValues.veryHigh)
-            }
         }
+        .onAppear {
+            thresholdSettingsViewModel.thresholdVeryLow = string(thresholdValues.veryLow)
+            thresholdSettingsViewModel.thresholdLow = string(thresholdValues.low)
+            thresholdSettingsViewModel.thresholdMedium = string(thresholdValues.medium)
+            thresholdSettingsViewModel.thresholdHigh = string(thresholdValues.high)
+            thresholdSettingsViewModel.thresholdVeryHigh = string(thresholdValues.veryHigh)
+        }
+        .alert(item: $thresholdSettingsViewModel.alert, content: { $0.makeAlert() })
     }
 }
 
@@ -147,7 +155,8 @@ struct HeatmapSettings_Previews: PreviewProvider {
                                                                            low:      15,
                                                                            medium:   20,
                                                                            high:     25,
-                                                                           veryHigh: 30))
+                                                                           veryHigh: 30),
+                                   threshold: .mock)
         }
 }
 #endif

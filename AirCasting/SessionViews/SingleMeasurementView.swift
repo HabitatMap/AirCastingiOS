@@ -5,9 +5,17 @@ import SwiftUI
 import AirCastingStyling
 import Resolver
 
+class SingleMeasurementViewThreshold: ObservableObject {
+    var value: SensorThreshold?
+    
+    init(value: SensorThreshold? = nil) {
+        self.value = value
+    }
+}
+
 struct SingleMeasurementView: View {
     @ObservedObject var stream: MeasurementStreamEntity
-    var threshold: SensorThreshold?
+    @ObservedObject var threshold: SingleMeasurementViewThreshold
     @Binding var selectedStream: MeasurementStreamEntity?
     @Binding var isCollapsed: Bool
     @InjectedObject private var userSettings: UserSettings
@@ -35,18 +43,19 @@ struct SingleMeasurementView: View {
             }, label: {
                 VStack(spacing: 1) {
                     Text(showStreamName())
-                        .font(Fonts.systemFont1)
+                        .font(Fonts.systemFontRegularHeading1)
                         .scaledToFill()
-                    if let threshold = threshold, measurementPresentationStyle == .showValues {
+                    if let threshold = threshold.value, measurementPresentationStyle == .showValues {
+                        let formatter = Resolver.resolve(ThresholdFormatter.self, args: threshold)
                         HStack(spacing: 3) {
                             if value != nil {
                                 MeasurementDotView(value: value!, thresholds: threshold)
-                                Text("\(Int(value!))")
-                                    .font(Fonts.regularHeading3)
+                                Text("\(Int(round(value!)))")
+                                    .font(Fonts.moderateRegularHeading3)
                                     .scaledToFill()
                             } else {
                                 Text("-")
-                                    .font(Fonts.regularHeading3)
+                                    .font(Fonts.moderateRegularHeading3)
                                     .scaledToFill()
                             }
                         }
@@ -54,7 +63,7 @@ struct SingleMeasurementView: View {
                         .padding(.horizontal, 9)
                         .overlay(
                             RoundedRectangle(cornerRadius: 8)
-                                .strokeBorder((selectedStream == stream && value != nil) ? threshold.colorFor(value: Int32(value!)) : .clear)
+                                .strokeBorder((selectedStream == stream && value != nil) ? formatter.color(for: value!) : .clear)
                         )
                     }
                 }

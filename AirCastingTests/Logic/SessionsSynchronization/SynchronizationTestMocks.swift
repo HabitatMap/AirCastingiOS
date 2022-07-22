@@ -33,7 +33,7 @@ extension SessionsSynchronization.SessionDownstreamData {
 }
 
 extension SessionsSynchronization.SessionStoreSessionData {
-    static func mock(uuid: String = "1234-5678") -> Self {
+    static func mock(uuid: String = "1234-5678", measurementTime: Date = DateBuilder.getDateWithTimeIntervalSinceReferenceDate(150)) -> Self {
         .init(uuid: .init(rawValue: uuid)!,
               contribute: true,
               endTime: .distantFuture,
@@ -63,14 +63,15 @@ extension SessionsSynchronization.SessionStoreSessionData {
                                                                                deleted: false,
                                                                                measurements: [
                                                                                 .init(id: 1234,
-                                                                                      time: DateBuilder.getDateWithTimeIntervalSinceReferenceDate(150),
+                                                                                      time: measurementTime,
                                                                                       value: 12.02,
                                                                                       latitude: 51.04,
                                                                                       longitude: 50.12)
                                                                                ])
               ],
               deleted: false,
-              notes: [])
+              notes: [],
+              notesPhotos: [])
     }
 }
 
@@ -123,7 +124,7 @@ extension Array where Element == SessionStoreMock.HistoryItem {
     var allReads: [Element] { filter { if case .readSession(_) = $0 { return true }; return false } }
     var allWrites: [Element] { filter { if case .addSessions(_) = $0 { return true }; return false } }
     var allDeletes: [Element] { filter { if case .removeSessions(_) = $0 { return true }; return false } }
-    var allURLUpdates: [Element] { filter { if case .saveURLForSession(_) = $0 { return true }; return false } }
+    var allResponsesSaved: [Element] { filter { if case .saveResponse(_) = $0 { return true }; return false } }
     
     var allWrittenData: [SessionsSynchronization.SessionStoreSessionData] {
         allWrites.map { write -> [SessionsSynchronization.SessionStoreSessionData]? in
@@ -145,9 +146,9 @@ extension Array where Element == SessionStoreMock.HistoryItem {
         .flatMap { $0 }
     }
     
-    var allUpdatedURLs: [SessionStoreMock.HistoryItem.SaveURLArgs] {
-        allURLUpdates.compactMap { item -> SessionStoreMock.HistoryItem.SaveURLArgs? in
-            guard case .saveURLForSession(let args) = item else { return nil }
+    var allSavedResponses: [SessionStoreMock.HistoryItem.SaveResponseArgs] {
+        allResponsesSaved.compactMap { item -> SessionStoreMock.HistoryItem.SaveResponseArgs? in
+            guard case .saveResponse(let args) = item else { return nil }
             return args
         }
     }

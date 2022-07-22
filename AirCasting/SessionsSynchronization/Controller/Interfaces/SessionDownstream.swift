@@ -35,7 +35,7 @@ extension SessionsSynchronization {
         let version: Int
         let streams: [String: MeasurementStreamDownstreamData]
         let location: URL?
-        let isIndoor: Bool
+        let isIndoor: Bool?
         let notes: [NoteDownstreamData]
     }
 

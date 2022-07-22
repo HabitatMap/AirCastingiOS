@@ -11,6 +11,7 @@ final class AirBeamCellularSessionCreator: SessionCreator {
     }
     @Injected private var userAuthenticationSession: UserAuthenticationSession
     @Injected private var measurementStreamStorage: MeasurementStreamStorage
+    @Injected private var uiStore: UIStorage
     private let createSessionService: CreateSessionAPIService
     
     init() {
@@ -19,7 +20,8 @@ final class AirBeamCellularSessionCreator: SessionCreator {
     
     func createSession(_ sessionContext: CreateSessionContext, completion: @escaping (Result<Void, Error>) -> Void) {
         guard let sessionType = sessionContext.sessionType,
-              let sessionUUID = sessionContext.sessionUUID else {
+              let sessionUUID = sessionContext.sessionUUID,
+              let isIndoor = sessionContext.isIndoor else {
             assertionFailure("invalidCreateSessionContext \(sessionContext)")
             completion(.failure(AirBeamSessionCreatorError.invalidCreateSessionContext(sessionContext)))
             return
@@ -32,6 +34,7 @@ final class AirBeamCellularSessionCreator: SessionCreator {
                               location: sessionContext.startingLocation,
                               startTime: DateBuilder.getFakeUTCDate(),
                               followedAt: DateBuilder.getFakeUTCDate(),
+                              isIndoor: isIndoor,
                               tags: sessionContext.sessionTags)
         
         // if session is fixed: create an empty session on server,
@@ -39,8 +42,7 @@ final class AirBeamCellularSessionCreator: SessionCreator {
         guard let name = session.name,
               let startTime = session.startTime,
               let peripheral = sessionContext.peripheral,
-              let contribute = sessionContext.contribute,
-              let isIndoor = sessionContext.isIndoor else {
+              let contribute = sessionContext.contribute else {
             assertionFailure("invalidCreateSessionContext \(sessionContext)")
             completion(.failure(AirBeamSessionCreatorError.invalidCreateSessionContext(sessionContext)))
             return
@@ -72,6 +74,9 @@ final class AirBeamCellularSessionCreator: SessionCreator {
                                                                         do {
                                                                             let sessionWithURL = session.withUrlLocation(output.location)
                                                                             try storage.createSession(sessionWithURL)
+                                                                            self.uiStore.accessStorage({ storage in
+                                                                                storage.giveHighestOrder(to: sessionWithURL.uuid)
+                                                                            })
                                                                             try AirBeam3Configurator(peripheral: peripheral).configureFixedCellularSession(uuid: sessionUUID,
                                                                                                                                                            location: sessionContext.startingLocation ?? CLLocationCoordinate2D(latitude: 200, longitude: 200),
                                                                                                                                                            date: DateBuilder.getFakeUTCDate())

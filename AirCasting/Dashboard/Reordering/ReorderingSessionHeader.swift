@@ -2,9 +2,10 @@
 //
 
 import SwiftUI
+import Resolver
 
 struct ReorderingSessionHeader: View {
-    var session: SessionEntity
+    var session: Sessionable
     
     var body: some View {
         sessionHeader
@@ -22,7 +23,7 @@ private extension ReorderingSessionHeader {
             }
             nameLabel
         }
-        .font(Fonts.regularHeading4)
+        .font(Fonts.moderateRegularHeading4)
         .foregroundColor(.aircastingGray)
     }
 
@@ -34,23 +35,22 @@ private extension ReorderingSessionHeader {
         VStack(alignment: .leading, spacing: 3) {
             HStack {
                 Text(session.name ?? "")
-                    .font(Fonts.regularHeading1)
+                    .font(Fonts.moderateMediumHeading1)
                 Spacer()
             }
             sensorType
-                .font(Fonts.regularHeading4)
+                .font(Fonts.moderateRegularHeading4)
         }
         .foregroundColor(.darkBlue)
     }
     
     var sensorType: some View {
-        let allStreams = session.allStreams ?? []
-        return SessionTypeIndicator(sessionType: session.type, streamSensorNames: allStreams.compactMap(\.sensorPackageName))
+        let allStreams = session.allStreams
+        return SessionTypeIndicator(sessionType: .fixed, streamSensorNames: allStreams.compactMap(\.sensorPackageName))
     }
 
     func adaptTimeAndDate() -> Text {
-        let formatter = DateFormatters.SessionCartView.utcDateIntervalFormatter
-        
+        let formatter: DateIntervalFormatter = DateFormatters.SessionCardView.shared.utcDateIntervalFormatter
         guard let start = session.startTime else { return Text("") }
         let end = session.endTime ?? DateBuilder.getFakeUTCDate()
         
