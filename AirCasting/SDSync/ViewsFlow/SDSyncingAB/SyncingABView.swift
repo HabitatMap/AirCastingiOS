@@ -33,6 +33,7 @@ struct SyncingABView<VM: SDSyncViewModel>: View {
         }
         .padding()
         .background(navigationLink)
+        .background(Color.aircastingBackgroundWhite.ignoresSafeArea())
         .onReceive(viewModel.progress, perform: { newProgress in
             if let progress = newProgress {
                 self.progressTitle = progress.title

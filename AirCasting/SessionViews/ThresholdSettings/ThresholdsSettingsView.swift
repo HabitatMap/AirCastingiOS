@@ -132,7 +132,7 @@ struct ThresholdsSettingsView: View {
                 .font(Fonts.moderateRegularHeading2)
                 .frame(minHeight: 35)
             }
-            .listRowBackground(Color.clear)
+            .listRowBackground(Color.formBackgroundColor)
             .buttonStyle(BorderlessButtonStyle())
         }
         .onAppear {
