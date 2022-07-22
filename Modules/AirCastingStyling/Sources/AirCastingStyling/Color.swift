@@ -32,8 +32,8 @@ extension Color {
     public static var aircastingDarkGray: Color {
         return Color("DarkGray")
     }
-    public static var aircastingBackground: Color {
-        return Color("AircastingBackground")
+    public static var aircastingSecondaryBackground: Color {
+        return Color("AircastingSecondaryBackground")
     }
     public static var aircastingMint: Color {
         return Color("AircastingMint")

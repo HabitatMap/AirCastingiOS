@@ -265,7 +265,7 @@ struct ChooseSessionTypeView: View {
                 }
                 .padding([.bottom, .vertical])
                 .padding(.horizontal, 30)
-                .background(Color.aircastingBackground.ignoresSafeArea())
+                .background(Color.aircastingSecondaryBackground.ignoresSafeArea())
                 .alert(item: $viewModel.alert, content: { $0.makeAlert() })
             }
         }

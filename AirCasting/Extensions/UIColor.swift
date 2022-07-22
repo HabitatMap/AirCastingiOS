@@ -28,8 +28,8 @@ extension UIColor {
     static var aircastingDarkGray: UIColor {
         return UIColor(Color("DarkGray"))
     }
-    static var aircastingBackground: UIColor {
-        return UIColor(Color("AircastingBackground"))
+    static var aircastingSecondaryBackground: UIColor {
+        return UIColor(Color("AircastingSecondaryBackground"))
     }
     static var graphGreen: UIColor {
         return UIColor(Color("GraphGreen"))
