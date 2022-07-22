@@ -30,6 +30,7 @@ struct AirSectionPickerView: View {
                     }
                 }
             }
+            .onTapGesture { } // Fix for a bug that caused buttons to not be fully tappable. SwiftUI 🤷‍♂️
         }
     }
 }
