@@ -14,6 +14,7 @@ class UserSettings: ObservableObject {
     private let convertToCelsiusKey = Constants.UserDefaultsKeys.convertToCelsius
     private let satteliteMapKey = Constants.UserDefaultsKeys.satelliteMapKey
     private let twentyFourHourFormatKey = Constants.UserDefaultsKeys.twentyFourHoursFormatKey
+    private let syncOnlyThroughWifiKey = Constants.UserDefaultsKeys.syncOnlyThroughWifi
 
     var contributingToCrowdMap: Bool {
         get {
@@ -80,6 +81,17 @@ class UserSettings: ObservableObject {
             objectWillChange.send()
         }
     }
+    
+    var syncOnlyThroughWifi: Bool {
+        get {
+            userDefaults.bool(forKey: syncOnlyThroughWifiKey)
+        }
+        set {
+            userDefaults.setValue(newValue, forKey: syncOnlyThroughWifiKey)
+            Log.info("Changed sync only through wifi to \(syncOnlyThroughWifi ? "ON" : "OFF")")
+            objectWillChange.send()
+        }
+    }
 
     init(userDefaults: UserDefaults = .standard) {
         self.userDefaults = userDefaults
@@ -91,5 +103,6 @@ class UserSettings: ObservableObject {
         convertToCelsius = userDefaults.bool(forKey: convertToCelsiusKey)
         satteliteMap = userDefaults.bool(forKey: satteliteMapKey)
         twentyFourHour = userDefaults.valueExists(forKey: twentyFourHourFormatKey) ? userDefaults.bool(forKey: twentyFourHourFormatKey) : true
+        syncOnlyThroughWifi = userDefaults.bool(forKey: syncOnlyThroughWifiKey)
     }
 }

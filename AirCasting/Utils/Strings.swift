@@ -59,6 +59,7 @@ struct Strings {
                                                        comment: "")
         static let twentyFourHourFormat = NSLocalizedString("Use 24-hour format",
                                                        comment: "")
+        static let syncOnlyThroughWifi = NSLocalizedString("Sync only through Wi-Fi", comment: "")
         static let crashlyticsSectionTitle = "Crashlytics integration testing:"
         
         static let appConfig = "App config"
@@ -888,8 +889,14 @@ struct Strings {
     enum InAppAlerts {
         static let noInternetConnectionTitle: String = NSLocalizedString("No internet connection",
                                                                    comment: "")
-        static let noInternetConnectionMessage: String = NSLocalizedString("To sign out, you must be connected to the Internet.",
+        static let noWifiConnectionTitle: String = NSLocalizedString("No Wi-Fi connection",
+                                                                   comment: "")
+        static let noInternetConnectionSignOutMessage: String = NSLocalizedString("To sign out, you must be connected to the Internet.",
                                                                      comment: "")
+        static let noInternetConnectionSyncMessage: String = NSLocalizedString("Connect device to the Internet to sync sessions.",
+                                                                     comment: "")
+        static let noWifiConnectionSyncMessage: String = NSLocalizedString("Connect device to Wi-Fi network to sync sessions or turn off \"sync only through Wi-Fi\" setting.",
+                                                                   comment: "")
         static let noInternetConnectionButton: String = NSLocalizedString("Got it!",
                                                                     comment: "")
         static let failedTitle: String = NSLocalizedString("Failed",
@@ -1046,6 +1053,13 @@ struct Strings {
                                                                , comment:  "")
         static let loggingOutInBackground: String = NSLocalizedString("Currently logging out in the background. You can fill out credentials.", comment:  "")
         
+    }
+    
+    enum ConnectionAlerts {
+        static let noInternetTitle: String = NSLocalizedString("No Internet Connection"
+                                                               , comment:  "")
+        static let noInternetMessage: String = NSLocalizedString("Please, make sure your device is connected to the internet."
+                                                               , comment:  "")
     }
     
     enum AuthErrors {

@@ -34,6 +34,7 @@
 		33769A5C2705B06F007D1EA7 /* ChartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33769A5B2705B06F007D1EA7 /* ChartViewModel.swift */; };
 		3383511E2747C24800308068 /* SDSyncFileFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3383511D2747C24800308068 /* SDSyncFileFactory.swift */; };
 		3384C1DD274EC4C00022B008 /* SDSyncFileValidationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3384C1DC274EC4C00022B008 /* SDSyncFileValidationService.swift */; };
+		3387448E28896C5D00E178F6 /* WifiAwareSessionSynchronizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3387448D28896C5D00E178F6 /* WifiAwareSessionSynchronizerTests.swift */; };
 		3387DD48278F0FC300B11D02 /* CSVFileGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3387DD47278F0FC300B11D02 /* CSVFileGenerator.swift */; };
 		3387DD4A278F1A2900B11D02 /* ShareLocationlessSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3387DD49278F1A2900B11D02 /* ShareLocationlessSessionView.swift */; };
 		3387DD4C278F1A4000B11D02 /* ShareLocationlessSessionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3387DD4B278F1A4000B11D02 /* ShareLocationlessSessionViewModel.swift */; };
@@ -60,6 +61,7 @@
 		33D07A262825963000F25B4C /* ExternalSessionEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33D07A242825963000F25B4C /* ExternalSessionEntity+CoreDataProperties.swift */; };
 		33D92F5F27EB742800252F3B /* Loadable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33D92F5E27EB742800252F3B /* Loadable.swift */; };
 		33E56F3D27F3498A0032117E /* StreamDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33E56F3C27F3498A0032117E /* StreamDownloader.swift */; };
+		33E63A86288EC0A3008D92EC /* WiFiAwareSessionSynchronizerProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33E63A85288EC0A3008D92EC /* WiFiAwareSessionSynchronizerProxy.swift */; };
 		33F20FDD27692231004364EA /* SyncedMeasurementsDownloadingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F20FDC27692231004364EA /* SyncedMeasurementsDownloadingService.swift */; };
 		33F2238A270C674E00F14909 /* TimeInterval.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F22389270C674E00F14909 /* TimeInterval.swift */; };
 		33F3D47C27AC1A5C003CA386 /* SessionTypeIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F3D47B27AC1A5C003CA386 /* SessionTypeIndicator.swift */; };
@@ -519,6 +521,7 @@
 		33769A5B2705B06F007D1EA7 /* ChartViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartViewModel.swift; sourceTree = "<group>"; };
 		3383511D2747C24800308068 /* SDSyncFileFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSyncFileFactory.swift; sourceTree = "<group>"; };
 		3384C1DC274EC4C00022B008 /* SDSyncFileValidationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDSyncFileValidationService.swift; sourceTree = "<group>"; };
+		3387448D28896C5D00E178F6 /* WifiAwareSessionSynchronizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WifiAwareSessionSynchronizerTests.swift; sourceTree = "<group>"; };
 		3387DD47278F0FC300B11D02 /* CSVFileGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSVFileGenerator.swift; sourceTree = "<group>"; };
 		3387DD49278F1A2900B11D02 /* ShareLocationlessSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareLocationlessSessionView.swift; sourceTree = "<group>"; };
 		3387DD4B278F1A4000B11D02 /* ShareLocationlessSessionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareLocationlessSessionViewModel.swift; sourceTree = "<group>"; };
@@ -546,6 +549,7 @@
 		33D07A242825963000F25B4C /* ExternalSessionEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExternalSessionEntity+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		33D92F5E27EB742800252F3B /* Loadable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Loadable.swift; sourceTree = "<group>"; };
 		33E56F3C27F3498A0032117E /* StreamDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamDownloader.swift; sourceTree = "<group>"; };
+		33E63A85288EC0A3008D92EC /* WiFiAwareSessionSynchronizerProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WiFiAwareSessionSynchronizerProxy.swift; sourceTree = "<group>"; };
 		33F20FDC27692231004364EA /* SyncedMeasurementsDownloadingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncedMeasurementsDownloadingService.swift; sourceTree = "<group>"; };
 		33F22389270C674E00F14909 /* TimeInterval.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeInterval.swift; sourceTree = "<group>"; };
 		33F3D47B27AC1A5C003CA386 /* SessionTypeIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionTypeIndicator.swift; sourceTree = "<group>"; };
@@ -1059,6 +1063,22 @@
 			path = Storages;
 			sourceTree = "<group>";
 		};
+		338607AF2886E0ED0002D3A8 /* NetworkMonitoring */ = {
+			isa = PBXGroup;
+			children = (
+				DDEE3A43269736270098CCA9 /* NetworkChecker.swift */,
+			);
+			path = NetworkMonitoring;
+			sourceTree = "<group>";
+		};
+		3387448C28896BE700E178F6 /* SyncProxyTests */ = {
+			isa = PBXGroup;
+			children = (
+				3387448D28896C5D00E178F6 /* WifiAwareSessionSynchronizerTests.swift */,
+			);
+			path = SyncProxyTests;
+			sourceTree = "<group>";
+		};
 		338C30E025F1042000E0305C /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
@@ -1269,6 +1289,7 @@
 		AC32040625CC122900A68520 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				338607AF2886E0ED0002D3A8 /* NetworkMonitoring */,
 				B31AFB6E27AE6EF200CA6FA3 /* Logging */,
 				B3E2B65827506DF500019167 /* FileLineReader */,
 				B32D08A0267A493C006C97ED /* Publishers */,
@@ -1284,7 +1305,6 @@
 				B3E26A022676D9AA001A8E4C /* ArrayUtils.swift */,
 				DDF75999268332E900D906BA /* Strings.swift */,
 				DD5687C226CFC8080028C2CA /* Constants.swift */,
-				DDEE3A43269736270098CCA9 /* NetworkChecker.swift */,
 				DDD24D8326A7FCE300D4A327 /* View+Print.swift */,
 				DD839E14269F33A6006A8625 /* LocationState.swift */,
 				DDBC156326A0799300982526 /* SystemSettings.swift */,
@@ -1983,6 +2003,7 @@
 		B3E26A0B2676DABA001A8E4C /* SessionsSynchronization */ = {
 			isa = PBXGroup;
 			children = (
+				3387448C28896BE700E178F6 /* SyncProxyTests */,
 				B37141582672117D0057BF60 /* SynchronizationControllerTests.swift */,
 				B3E26A2926780D96001A8E4C /* SynchronizationControllerTestHelpers.swift */,
 				B3E26A0C2676DAD2001A8E4C /* SynchronizationTestDoubles.swift */,
@@ -2102,6 +2123,7 @@
 				B3FD77A8267C94AF00E97CC2 /* SessionsSynchronizationStoreDataConverter.swift */,
 				B3FD77A9267C94AF00E97CC2 /* ScheduledSessionSynchronizerProxy.swift */,
 				B376DD22268091B80083FD2F /* BodyEncodingError.swift */,
+				33E63A85288EC0A3008D92EC /* WiFiAwareSessionSynchronizerProxy.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -2713,6 +2735,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3387448E28896C5D00E178F6 /* WifiAwareSessionSynchronizerTests.swift in Sources */,
 				B32D089D267A3232006C97ED /* LogErrorPublisherTests.swift in Sources */,
 				DD2E8BE92685E12000439F8B /* URLValidatorTests.swift in Sources */,
 				4FB39E362621B77D00E5E564 /* APIClientMock.swift in Sources */,
@@ -3085,6 +3108,7 @@
 				B35A09A12845615F00F9837B /* UnitFormatter.swift in Sources */,
 				B369CF32275A7A1500B71D81 /* OverridingFeatureFlagProvider.swift in Sources */,
 				338C30E825F10BFE00E0305C /* AirCasting.xcdatamodeld in Sources */,
+				33E63A86288EC0A3008D92EC /* WiFiAwareSessionSynchronizerProxy.swift in Sources */,
 				DD009D662698844A009F0443 /* DeleteView.swift in Sources */,
 				DD197FAE27BE857D00340672 /* MapDownloaderSearchedSessions.swift in Sources */,
 				DD197FAE27BE857D00340672 /* MapDownloaderSearchedSessions.swift in Sources */,

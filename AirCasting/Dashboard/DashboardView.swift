@@ -19,10 +19,13 @@ struct DashboardView: View {
     @EnvironmentObject var reorderButton: ReorderButton
     @EnvironmentObject var searchAndFollowButton: SearchAndFollowButton
     @State var isRefreshing: Bool = false
+    @State private var alert: AlertInfo?
+    @InjectedObject private var userSettings: UserSettings
+    @Injected private var networkChecker: NetworkChecker
     @State var selectedSection: SelectedSection = .following
     @Injected private var sessionSynchronizer: SessionSynchronizer
     @Injected private var persistenceController: PersistenceController
-    
+
     private var sessions: [Sessionable] {
         coreDataHook.sessions
     }
@@ -36,7 +39,7 @@ struct DashboardView: View {
     var body: some View {
         VStack(spacing: 0) {
             customNavigationBar
-        
+                .alert(item: $alert, content: { $0.makeAlert() })
             if reorderButton.reorderIsOn {
                 followingReorderTab
                 ReorderingDashboard(sessions: sessions,
@@ -70,13 +73,23 @@ struct DashboardView: View {
                 onCurrentSyncEnd { isRefreshing = false }
                 return
             }
+            guard networkChecker.connectionAvailable else {
+                alert = InAppAlerts.noNetworkSyncAlert()
+                isRefreshing = false
+                return
+            }
+            guard !userSettings.syncOnlyThroughWifi || networkChecker.isUsingWifi else {
+                alert = InAppAlerts.noWifiNetworkSyncAlert()
+                isRefreshing = false
+                return
+            }
             sessionSynchronizer.triggerSynchronization() { isRefreshing = false }
         })
         .onAppear() {
             try! coreDataHook.setup(selectedSection: self.selectedSection_.selectedSection)
         }
     }
-    
+
     private var customNavigationBar: some View {
         VStack {
             customSpacer
@@ -86,14 +99,14 @@ struct DashboardView: View {
                     .foregroundColor(Color.darkBlue)
                     .padding()
                     .offset(x: 0, y: 20)
-                
+
                 Spacer()
             }
-            
+
             customSpacer
         }
     }
-    
+
     private var customSpacer: some View {
         Rectangle()
             .fill(Color(UIColor.systemBackground))
@@ -136,7 +149,7 @@ struct DashboardView: View {
         )
         .zIndex(2)
     }
-    
+
     private func onCurrentSyncEnd(_ completion: @escaping () -> Void) {
         guard sessionSynchronizer.syncInProgress.value else { completion(); return }
         var cancellable: AnyCancellable?
