@@ -9,36 +9,6 @@ import Combine
 // be the case tho)
 import class UIKit.UIApplication
 import struct UIKit.UIBackgroundTaskIdentifier
-import Resolver
-
-final class WiFiAwareSessionSynchronizerProxy: SessionSynchronizer {
-    @InjectedObject private var userSettings: UserSettings
-    @Injected private var networkChecker: NetworkChecker
-    lazy var syncInProgress: CurrentValueSubject<Bool, Never> = self.controller.syncInProgress
-    private var controller: SessionSynchronizer
-    
-    var errorStream: SessionSynchronizerErrorStream? {
-        get { controller.errorStream }
-        set { controller.errorStream = newValue }
-    }
-    
-    init(controller: SessionSynchronizer) {
-        self.controller = controller
-    }
-    
-    func triggerSynchronization(options: SessionSynchronizationOptions, completion: (() -> Void)?) {
-        guard !userSettings.syncOnlyThroughWifi || networkChecker.isUsingWifi else {
-            completion?()
-            Log.info("Skipping sync cause of no wifi connection")
-            return
-        }
-        controller.triggerSynchronization(options: options, completion: completion)
-    }
-    
-    func stopSynchronization() {
-        controller.stopSynchronization()
-    }
-}
 
 /// A  _Proxy_ object wrapping any instance of  a `SessionSynchronizationController` and dispatching its work to a passed `Scheduler`. It also wraps it into a background task.
 ///

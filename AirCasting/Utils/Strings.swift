@@ -872,8 +872,6 @@ struct Strings {
                                                             comment: "")
     }
     
-    
-    
     enum MicrophoneAlert {
         static let title: String = NSLocalizedString("Allow AirCasting to record audio",
                                                      comment: "")

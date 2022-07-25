@@ -240,9 +240,10 @@ struct InAppAlerts {
     
     static func noInternetConnection() -> AlertInfo {
         AlertInfo(title: Strings.ConnectionAlerts.noInternetTitle,
-                  message: Strings.ConnectionAlerts.noInternetMessage, buttons: [
-            .default(title: Strings.Commons.ok, action: nil)
-        ])
+                  message: Strings.ConnectionAlerts.noInternetMessage,
+                  buttons: [
+                    .default(title: Strings.Commons.ok, action: nil)
+                  ])
     }
     
     static func createAccountAlert(error: AuthorizationError) -> AlertInfo {

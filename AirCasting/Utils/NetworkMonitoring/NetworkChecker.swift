@@ -24,7 +24,7 @@ final class DefaultNetworkChecker: NetworkChecker {
                 Log.info(Strings.NetworkChecker.satisfiedPathText)
                 self.connectionAvailable = true
                 self.isUsingWifi = path.usesInterfaceType(.wifi)
-                Log.info("CHANGED WIFI STATUS TO: \(self.isUsingWifi)")
+                Log.info("Changed wifi status to: \(self.isUsingWifi)")
             } else {
                 Log.info(Strings.NetworkChecker.failurePathText)
                 self.connectionAvailable = false

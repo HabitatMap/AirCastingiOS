@@ -61,6 +61,7 @@
 		33D07A262825963000F25B4C /* ExternalSessionEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33D07A242825963000F25B4C /* ExternalSessionEntity+CoreDataProperties.swift */; };
 		33D92F5F27EB742800252F3B /* Loadable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33D92F5E27EB742800252F3B /* Loadable.swift */; };
 		33E56F3D27F3498A0032117E /* StreamDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33E56F3C27F3498A0032117E /* StreamDownloader.swift */; };
+		33E63A86288EC0A3008D92EC /* WiFiAwareSessionSynchronizerProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33E63A85288EC0A3008D92EC /* WiFiAwareSessionSynchronizerProxy.swift */; };
 		33F20FDD27692231004364EA /* SyncedMeasurementsDownloadingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F20FDC27692231004364EA /* SyncedMeasurementsDownloadingService.swift */; };
 		33F2238A270C674E00F14909 /* TimeInterval.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F22389270C674E00F14909 /* TimeInterval.swift */; };
 		33F3D47C27AC1A5C003CA386 /* SessionTypeIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F3D47B27AC1A5C003CA386 /* SessionTypeIndicator.swift */; };
@@ -547,6 +548,7 @@
 		33D07A242825963000F25B4C /* ExternalSessionEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExternalSessionEntity+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		33D92F5E27EB742800252F3B /* Loadable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Loadable.swift; sourceTree = "<group>"; };
 		33E56F3C27F3498A0032117E /* StreamDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamDownloader.swift; sourceTree = "<group>"; };
+		33E63A85288EC0A3008D92EC /* WiFiAwareSessionSynchronizerProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WiFiAwareSessionSynchronizerProxy.swift; sourceTree = "<group>"; };
 		33F20FDC27692231004364EA /* SyncedMeasurementsDownloadingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncedMeasurementsDownloadingService.swift; sourceTree = "<group>"; };
 		33F22389270C674E00F14909 /* TimeInterval.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeInterval.swift; sourceTree = "<group>"; };
 		33F3D47B27AC1A5C003CA386 /* SessionTypeIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionTypeIndicator.swift; sourceTree = "<group>"; };
@@ -2118,6 +2120,7 @@
 				B3FD77A8267C94AF00E97CC2 /* SessionsSynchronizationStoreDataConverter.swift */,
 				B3FD77A9267C94AF00E97CC2 /* ScheduledSessionSynchronizerProxy.swift */,
 				B376DD22268091B80083FD2F /* BodyEncodingError.swift */,
+				33E63A85288EC0A3008D92EC /* WiFiAwareSessionSynchronizerProxy.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -3101,6 +3104,7 @@
 				B35A09A12845615F00F9837B /* UnitFormatter.swift in Sources */,
 				B369CF32275A7A1500B71D81 /* OverridingFeatureFlagProvider.swift in Sources */,
 				338C30E825F10BFE00E0305C /* AirCasting.xcdatamodeld in Sources */,
+				33E63A86288EC0A3008D92EC /* WiFiAwareSessionSynchronizerProxy.swift in Sources */,
 				DD009D662698844A009F0443 /* DeleteView.swift in Sources */,
 				DD197FAE27BE857D00340672 /* MapDownloaderSearchedSessions.swift in Sources */,
 				DD197FAE27BE857D00340672 /* MapDownloaderSearchedSessions.swift in Sources */,
