@@ -29,10 +29,12 @@ struct GetStarted: View {
 
 private extension GetStarted {
     var mainImage: some View {
-        Image("Bitmap")
-            .resizable()
-            .edgesIgnoringSafeArea(.top)
-            .scaledToFill()
+        GeometryReader { geo in
+            Image("Bitmap")
+                .resizable()
+                .edgesIgnoringSafeArea(.top)
+                .frame(height: geo.size.height * 0.8)
+        }
     }
     
     var logoImage: some View {
