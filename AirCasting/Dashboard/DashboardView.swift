@@ -15,7 +15,7 @@ struct DashboardView: View {
     @StateObject var coreDataHook: CoreDataHook
     @FetchRequest<SensorThreshold>(sortDescriptors: [.init(key: "sensorName", ascending: true)]) var thresholds
     // TODO: - We can rethink the way how "Select Section" works and change it
-    @EnvironmentObject var selectedSection_: SelectSection
+    @EnvironmentObject var selectedSectionNeededForSwipingImplementation: SelectSection
     @EnvironmentObject var reorderButton: ReorderButton
     @EnvironmentObject var searchAndFollowButton: SearchAndFollowButton
     @State var isRefreshing: Bool = false
@@ -59,9 +59,9 @@ struct DashboardView: View {
         .navigationBarTitle(Strings.DashboardView.dashboardText)
         .navigationBarHidden(true)
         .onChange(of: selectedSection, perform: { newValue in
-            self.selectedSection_.selectedSection = newValue
+            self.selectedSectionNeededForSwipingImplementation.selectedSection = newValue
         })
-        .onChange(of: selectedSection_.selectedSection , perform: { newValue in
+        .onChange(of: selectedSectionNeededForSwipingImplementation.selectedSection , perform: { newValue in
             self.selectedSection = newValue
         })
         .onChange(of: isRefreshing, perform: { newValue in
@@ -73,7 +73,7 @@ struct DashboardView: View {
             sessionSynchronizer.triggerSynchronization() { isRefreshing = false }
         })
         .onAppear() {
-            try! coreDataHook.setup(selectedSection: self.selectedSection_.selectedSection)
+            try! coreDataHook.setup(selectedSection: self.selectedSectionNeededForSwipingImplementation.selectedSection)
         }
     }
     
