@@ -6,7 +6,6 @@ import GooglePlaces
 import Resolver
 
 struct PlacePicker: UIViewControllerRepresentable {
-    @InjectedObject private var tracker: LocationTracker
     @Environment(\.presentationMode) var presentationMode
     let service: PlacePickerService
 

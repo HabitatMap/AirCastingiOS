@@ -4,10 +4,15 @@
 import Foundation
 // swiftlint:disable airCasting_date
 extension Date {
+    
     static let msFormatter: DateFormatter = DateFormatters.DateExtension.milisecondsDateFormatter
     
     var milliseconds: Int {
         Int(Date.msFormatter.string(from: self).dropFirst())!
+    }
+    
+    var millisecondsSinceReferenceDate: Int {
+        Int((self.timeIntervalSince1970 * 1000.0).rounded())
     }
 
     // TODO: This uses two date formatters. It's relatively slow and should be changed to more roboust solution as we're using this quite often
@@ -61,5 +66,10 @@ extension Date {
         var calendar = Calendar.current
         calendar.timeZone = TimeZone.utc
         return calendar.startOfDay(for: self).timeIntervalSince1970 + (23 * 60 * 60 + 3540 + 59)
+    }
+    
+    var twentyFourHoursBeforeInSeconds: Double {
+        let twentyFourHours = 86400000 // 24 hours in miliseconds: 60 * 60 * 24
+        return Double(self.millisecondsSinceReferenceDate - twentyFourHours)/1000
     }
 }

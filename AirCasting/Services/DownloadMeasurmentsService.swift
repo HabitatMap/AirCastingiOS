@@ -22,7 +22,8 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
     private let fixedSessionService = FixedSessionAPIService()
     private var timerSink: Cancellable?
     private var lastFetchCancellableTask: Cancellable?
-    private lazy var removeOldService: RemoveOldMeasurementsService = RemoveOldMeasurementsService()
+    @Injected private var removeOldServiceDefault: RemoveOldMeasurements
+
 
     #warning("Add locking here so updates won't bump on one another")
     func start() {
@@ -117,7 +118,7 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
                     Log.info("Processing regular session response")
                     let session: SessionEntity = try context.newOrExisting(uuid: output.uuid)
                     try UpdateSessionParamsService().updateSessionsParams(session: session, output: output)
-                    try self.removeOldService.removeOldestMeasurements(in: context,
+                    try self.removeOldServiceDefault.removeOldestMeasurements(in: context,
                                                                        from: sessionUUID)
                 } else {
                     Log.info("Processing external session response")
@@ -134,13 +135,13 @@ final class DownloadMeasurementsService: MeasurementUpdatingService {
                             })
                         }
                     })
-                    try self.removeOldService.removeOldestMeasurements(in: context,
-                                                                       from: sessionUUID)
+                    try self.removeOldServiceDefault.removeOldestMeasurements(in: context,
+                                                                              from: sessionUUID)
                 }
                 try context.save()
             } catch let error as UpdateSessionParamsService.Error {
                 Log.error("Failed to update session params: \(error)")
-            } catch let error as RemoveOldMeasurementsService.Error {
+            } catch let error as DefaultRemoveOldMeasurementsService.Error {
                 Log.error("Failed to remove old measaurements from fixed session \(error)")
             } catch {
                 Log.error("Save error: \(error)")

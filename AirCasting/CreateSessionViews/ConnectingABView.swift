@@ -72,13 +72,13 @@ struct ConnectingABView<VM: AirbeamConnectionViewModel>: View {
     
     var titleLabel: some View {
         Text(Strings.ConnectingABView.title)
-            .font(Fonts.boldTitle3)
+            .font(Fonts.moderateBoldTitle3)
             .foregroundColor(.accentColor)
     }
     
     var messageLabel: some View {
         Text(Strings.ConnectingABView.message)
-            .font(Fonts.regularHeading1)
+            .font(Fonts.moderateRegularHeading1)
             .foregroundColor(.aircastingGray)
     }
     

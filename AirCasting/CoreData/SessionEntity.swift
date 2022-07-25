@@ -124,7 +124,6 @@ public class SessionEntity: NSManagedObject, Identifiable {
             stream.sensorName == sensorName
         }
     }
-    
 }
 
 extension NSFetchRequest where ResultType == SessionEntity {

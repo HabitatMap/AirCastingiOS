@@ -9,15 +9,15 @@ class TurnOnLocationFixedViewModel: ObservableObject {
     @Published var alert: AlertInfo?
     
     private let sessionContext: CreateSessionContext
-    @Injected private var locationHandler: LocationHandler
+    @Injected private var locationAuthorization: LocationAuthorization
     @Injected private var urlProvider: URLProvider
     
     var shouldShowAlert: Bool {
-        return locationHandler.isLocationDenied()
+        locationAuthorization.locationState == .denied
     }
     
     var getSessionName: String {
-        return sessionContext.sessionName ?? ""
+        sessionContext.sessionName ?? ""
     }
     
     init(sessionContext: CreateSessionContext) {
@@ -25,7 +25,7 @@ class TurnOnLocationFixedViewModel: ObservableObject {
     }
     
     func requestLocationAuthorisation() {
-        locationHandler.requestAuthorisation()
+        locationAuthorization.requestAuthorization()
     }
     
     func onContinueButtonClick() {

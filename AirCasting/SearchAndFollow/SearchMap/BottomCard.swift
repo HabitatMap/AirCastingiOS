@@ -23,13 +23,14 @@ struct BottomCardView: View {
         } label: {
             VStack(alignment: .leading, spacing: 5) {
                 Text(viewModel.dataModel.title)
+                    .font(Fonts.muliSemiboldHeading1)
                     .foregroundColor(.darkBlue)
                     .multilineTextAlignment(.leading)
                     .lineLimit(3)
                     .minimumScaleFactor(0.7)
                 Spacer(minLength: 0.01)
                 dataAndTime
-                    .font(Fonts.regularHeading4)
+                    .font(Fonts.muliRegularHeading6)
                     .foregroundColor(.aircastingGray)
                     .minimumScaleFactor(0.1)
                     .scaledToFit()
@@ -41,13 +42,7 @@ struct BottomCardView: View {
             viewModel.setIsModalScreenPresented(using: value)
         }), content: { viewModel.initCompleteScreen() })
         .frame(width: 200, alignment: .leading)
-        .padding([.all], 10)
-        .background(
-            Group {
-                Color.white
-                    .cardShadow()
-            }
-        )
+        .padding(10)
         .cornerRadius(8)
     }
 }

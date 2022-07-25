@@ -10,13 +10,13 @@ enum AirBeamStreamSuffixes: CaseIterable {
     case pm10
     case RH
     
-    var rawName: String {
+    var capitalizedName: String {
         switch self {
-        case .F: return "f"
-        case .pm1: return "pm1"
-        case .pm25: return "pm2.5"
-        case .pm10: return "pm10"
-        case .RH: return "rh"
+        case .F: return "F"
+        case .pm1: return "PM1"
+        case .pm25: return "PM2.5"
+        case .pm10: return "PM10"
+        case .RH: return "RH"
         }
     }
 }

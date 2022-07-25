@@ -123,6 +123,29 @@ extension PersistenceController: SessionUpdateable {
             }
         }
     }
+    
+    func updateNotesPhotosLocations(notesUrls: [(url: URL, noteNumber: Int)], for session: SessionUUID, completion: ((Error?) -> Void)?) {
+        let context = self.editContext
+        context.perform {
+            do {
+                let request = NSFetchRequest<NoteEntity>(entityName: "NoteEntity")
+                let predicate = NSPredicate(format: "session.uuid == %@ AND number IN %@", session.rawValue, notesUrls.map(\.noteNumber))
+                request.predicate = predicate
+                let notes = try context.fetch(request)
+                notesUrls.forEach { noteInfo in
+                    if let note = notes.first(where: { $0.number == noteInfo.noteNumber }), let photoUrl = note.photoLocation {
+                        try? FileManager.default.removeItem(at: photoUrl)
+                        note.photoLocation = noteInfo.url
+                    }
+                }
+                try context.save()
+                completion?(nil)
+            } catch {
+                Log.error("Error adding urlLocation for session: \(error)")
+                completion?(error)
+            }
+        }
+    }
 }
 
 
@@ -152,7 +175,8 @@ extension Database.Session {
                                                  text: n.text ?? "",
                                                  latitude: n.lat,
                                                  longitude: n.long,
-                                                 number: Int(n.number))
+                                                 number: Int(n.number),
+                                                 photoLocation: n.photoLocation)
                         } ?? [])
         )
     }

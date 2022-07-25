@@ -73,6 +73,10 @@ extension Resolver: ResolverRegistering {
             let context = Resolver.resolve(PersistenceController.self).editContext
             return CoreDataUIStorage(context: context)
         }.scope(.cached)
+        main.register { (_, _) -> SessionEntityStore in
+            let context = Resolver.resolve(PersistenceController.self).editContext
+            return DefaultSessionEntityStore(context: context)
+        }
         main.register { DefaultFileLineReader() as FileLineReader }
         main.register { SessionDataEraser() as DataEraser }
         
@@ -131,8 +135,15 @@ extension Resolver: ResolverRegistering {
             .implements(SessionSynchronizer.self)
         
         // MARK: - Location handling
-        main.register { LocationTracker(locationManager: CLLocationManager()) }.scope(.application)
-        main.register { DefaultLocationHandler() as LocationHandler }.scope(.application)
+        main.register { _ -> LocationTracker in
+            let manager = CLLocationManager()
+            manager.desiredAccuracy = kCLLocationAccuracyBest
+            manager.allowsBackgroundLocationUpdates = true
+            manager.pausesLocationUpdatesAutomatically = false
+            return CoreLocationTracker(locationManager: manager) as LocationTracker
+        }
+        .implements(LocationAuthorization.self)
+        .scope(.application)
         
         // MARK: - Settings
         main.register { UserSettings(userDefaults: .standard) }.scope(.cached)
@@ -214,6 +225,9 @@ extension Resolver: ResolverRegistering {
         main.register { (_, args) in TemperatureThresholdFormatter(threshold: args()) as ThresholdFormatter }
         main.register { TemperatureUnitFormatter() as UnitFormatter }
         main.register { AirBeamMeasurementsDownloaderDefault() as AirBeamMeasurementsDownloader }
+    
+        // MARK: - Old measurements remover
+        main.register { DefaultRemoveOldMeasurementsService() as RemoveOldMeasurements }
     }
     
     // MARK: - Composition helpers

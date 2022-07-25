@@ -2,6 +2,7 @@
 //
 
 import SwiftUI
+import Resolver
 
 struct ExternalSessionHeader: View {
     var session: Sessionable
@@ -36,7 +37,7 @@ private extension ExternalSessionHeader {
             }
             nameLabel
         }
-        .font(Fonts.regularHeading4)
+        .font(Fonts.moderateRegularHeading4)
         .foregroundColor(.aircastingGray)
     }
 
@@ -48,7 +49,7 @@ private extension ExternalSessionHeader {
         VStack(alignment: .leading, spacing: 3) {
             HStack {
                 Text(session.name ?? "")
-                    .font(Fonts.regularHeading1)
+                    .font(Fonts.moderateMediumHeading1)
                 Spacer()
                 if let action = expandingAction {
                     Button(action: {
@@ -60,7 +61,7 @@ private extension ExternalSessionHeader {
                 }
             }
             sensorType
-                .font(Fonts.regularHeading4)
+                .font(Fonts.moderateRegularHeading4)
         }
         .foregroundColor(.darkBlue)
     }
@@ -72,8 +73,7 @@ private extension ExternalSessionHeader {
 
 
     func adaptTimeAndDate() -> Text {
-        let formatter = DateFormatters.SessionCartView.utcDateIntervalFormatter
-
+        let formatter: DateIntervalFormatter = DateFormatters.SessionCardView.shared.utcDateIntervalFormatter
         let start = session.startTime ?? DateBuilder.getFakeUTCDate()
         let end = session.endTime ?? DateBuilder.getFakeUTCDate()
 
@@ -84,7 +84,7 @@ private extension ExternalSessionHeader {
     var measurements: some View {
         VStack(alignment: .leading, spacing: 5) {
             Text(Strings.SessionCart.lastMinuteMeasurement)
-                .font(Fonts.moderateTitle1)
+                .font(Fonts.moderateRegularHeading4)
                 .padding(.bottom, 3)
             HStack {
                 streams.count != 1 ? Spacer() : nil

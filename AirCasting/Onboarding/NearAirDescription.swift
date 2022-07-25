@@ -6,15 +6,15 @@ import AirCastingStyling
 
 struct NearAirDescription: View {
     var completion: () -> Void
+    
     var body: some View {
-        VStack(alignment: .leading, spacing: 25) {
+        VStack(alignment: .leading) {
             progressView
             mainImage
                 .frame(maxWidth: .infinity, alignment: .center)
-            VStack(alignment: .leading, spacing: 15) {
-                titleText
-                descriptionText
-            }
+            Spacer()
+            titleText
+            descriptionText
             continueButton
         }
         .padding()
@@ -26,7 +26,7 @@ private extension NearAirDescription {
     private var progressView: some View {
         ProgressView(value: 0.2)
             .accentColor(.accentColor)
-            .padding(.bottom, 20)
+            .padding(.bottom, 30)
     }
     
     private var mainImage: some View {
@@ -38,20 +38,21 @@ private extension NearAirDescription {
     
     private var titleText: some View {
         Text(Strings.OnboardingNearAir.title)
-            .font(Fonts.boldTitle1)
+            .font(Fonts.moderateBoldTitle1)
             .foregroundColor(.accentColor)
             .multilineTextAlignment(.leading)
             .padding(.bottom, 30)
-            .scaledToFill()
+            .scaledToFit()
+            .minimumScaleFactor(0.8)
     }
     
     private var descriptionText: some View {
         Text(Strings.OnboardingNearAir.description)
-            .font(Fonts.muliHeading2)
+            .font(Fonts.muliRegularHeading3)
             .foregroundColor(.aircastingGray)
             .multilineTextAlignment(.leading)
             .lineSpacing(10.0)
-            .padding(.bottom, 20)
+            .padding(.bottom, 30)
     }
     
     private var continueButton: some View {
@@ -59,11 +60,11 @@ private extension NearAirDescription {
             destination: AirBeamOnboarding(completion: completion),
             label: {
                 Text(Strings.Commons.continue)
-                    .font(Fonts.semiboldHeading1)
+                    .font(Fonts.muliBoldHeading1)
             }
         )
         .buttonStyle(BlueButtonStyle())
-        .padding(.bottom, 30)
+        .padding(.bottom, 52)
     }
 }
 

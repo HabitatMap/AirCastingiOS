@@ -5,7 +5,6 @@ import Foundation
 import SwiftUI
 import Resolver
 
-
 enum CompletionScreenError: Error {
     case noStreams
 }
@@ -16,7 +15,7 @@ class CompleteScreenViewModel: ObservableObject {
         let id: Int
         let sensorName: String
         let sensorUnit: String
-        let lastMeasurementValue: Double
+        let lastMeasurementValue: Double?
         let color: Color
         let measurements: [Measurement]
         let thresholds: ThresholdsValue
@@ -52,7 +51,7 @@ class CompleteScreenViewModel: ObservableObject {
     let sessionEndTime: Date
     let sensorType: String
     let exitRoute: () -> Void
-
+    
     private var isOwnSession: Bool { userAuthenticationSession.user?.username == session.provider }
     private var session: PartialExternalSession
     private var externalSessionWithStreams: ExternalSessionWithStreamsAndMeasurements?
@@ -93,7 +92,7 @@ class CompleteScreenViewModel: ObservableObject {
     func selectedStream(with id: Int) {
         if let stream = externalSessionWithStreams?.streams.first(where: { $0.id == id }) {
             assignValues(with: stream)
-            defineChartRange(with: stream)
+            generateChartEntires(with: stream)
         }
     }
     
@@ -140,9 +139,17 @@ class CompleteScreenViewModel: ObservableObject {
     }
     
     private func saveToDb() {
-        guard let externalSessionWithStreams = externalSessionWithStreams else {
+        guard var externalSessionWithStreams = externalSessionWithStreams else {
             assertionFailure("Follow button pressed when there was no session with streams")
             return
+        }
+        
+        externalSessionWithStreams.streams.enumerated().forEach { id, streamWithMeasurements in
+            let measurements = streamWithMeasurements.measurements
+            guard let lastMeasurement = measurements.last else { return }
+            let beginingOfCorrectPeriod = lastMeasurement.time.twentyFourHoursBeforeInSeconds
+            let beginingOfCorrectPeriodDate = DateBuilder.getDateWithTimeIntervalSince1970(beginingOfCorrectPeriod)
+            externalSessionWithStreams.streams[id].measurements = (measurements.filter({ $0.time >= beginingOfCorrectPeriodDate }))
         }
         
         service.followSession(session: externalSessionWithStreams) { [weak self] result in
@@ -166,90 +173,65 @@ class CompleteScreenViewModel: ObservableObject {
     }
     
     private func refresh() {
-        guard let stream = session.stream.first else { self.showAlert(); return }
-        guard stream.sensorName.contains("AirBeam") else { getMeasurementsAndDisplayData(); return }
-        var currentSensor = AirBeamStreamPrefix.airBeam3
-        if session.stream.first!.sensorName.contains("AirBeam2") { currentSensor = .airBeam2 }
-        do {
-            try streamsDownloader.downloadStreams(with: session.id, for: currentSensor) { result in
-                switch result {
-                case .success(let downloadedStreams):
-                    
-                    // TODO: - FIX Thresholds, get those values from backend not from our hardcoded struct
-                    #warning("🚨 FIX Thresholds 🚨")
-                    let streamsSortedHardcoded = [MeasurementStream(sensorName: .f, sensorPackageName: ""),
-                                                  MeasurementStream(sensorName: .pm1, sensorPackageName: ""),
-                                                  MeasurementStream(sensorName: .pm2_5, sensorPackageName: ""),
-                                                  MeasurementStream(sensorName: .pm10, sensorPackageName: ""),
-                                                  MeasurementStream(sensorName: .rh, sensorPackageName: "")]
-                    self.session.stream = []
-                    
-                    streamsSortedHardcoded.forEach { streamLocalData in
-                        if let stream = downloadedStreams.first(where: { Self.getSensorName($0.sensorName) == Self.getSensorName(streamLocalData.sensorName ?? "") }) {
-                            self.session.stream.append(PartialExternalSession.Stream(id: stream.streamId,
-                                                                                     unitName: streamLocalData.unitName ?? "",
-                                                                                     unitSymbol: stream.sensorUnit,
-                                                                                     measurementShortType: streamLocalData.measurementShortType ?? "",
-                                                                                     measurementType: streamLocalData.measurementType ?? "",
-                                                                                     sensorName: stream.sensorName,
-                                                                                     sensorPackageName: currentSensor.userFacingName,
-                                                                                     thresholdsValues: .init(veryLow: streamLocalData.thresholdVeryLow,
-                                                                                                             low: streamLocalData.thresholdLow,
-                                                                                                             medium: streamLocalData.thresholdMedium,
-                                                                                                             high: streamLocalData.thresholdHigh,
-                                                                                                             veryHigh: streamLocalData.thresholdVeryHigh)))
-                        }
-                    }
-                    
-                    Log.info("Completed downloading missing streams.")
-                    self.getMeasurementsAndDisplayData()
-                case .failure(let error):
-                    Log.error("Something went wrong when downloading missing streams. \(error.localizedDescription)")
-                    self.showAlert()
+        streamsDownloader.downloadStreams(with: session.id) { result in
+            switch result {
+            case .success(let downloadedSessionWithAllStreams):
+                guard !downloadedSessionWithAllStreams.streams.isEmpty else {
+                    Log.error("Session has no streams")
+                    self.showAlert(); return
                 }
+                
+                guard downloadedSessionWithAllStreams.streams.first!.sensorName.contains("AirBeam") else {
+                    self.createExternalSessionAndLoadData(with: downloadedSessionWithAllStreams.streams)
+                    return
+                }
+                
+                let sensors = AirBeamStreamSuffixes.allCases.map({ $0.capitalizedName })
+                var sortedStreams = [MeasurementsDownloaderResultModel.Stream]()
+                sensors.forEach { sensorSorted in
+                    guard let matchingStream = downloadedSessionWithAllStreams.streams.first(where: { Self.getSensorName($0.sensorName) == sensorSorted }) else { Log.error("No stream found with matching sensor name"); return }
+                    sortedStreams.append(matchingStream)
+                }
+                
+                self.createExternalSessionAndLoadData(with: sortedStreams)
+                Log.info("Complete downloading missing streams and sorting them.")
+            case .failure(let error):
+                Log.error("Something went wrong when downloading missing streams. \(error.localizedDescription)")
+                self.showAlert()
             }
-        } catch {
-            Log.error("Something went wrong when downloading missing streams. \(error.localizedDescription)")
-            self.showAlert()
         }
         return
     }
     
-    private func getMeasurementsAndDisplayData() {
-        let streams = session.stream.map(\.id)
-        
-        service.downloadMeasurements(streamsIds: streams) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .failure(let error):
-                Log.error("Failed to download session: \(error)")
-                self.showAlert()
-            case .success(let downloadedStreamsWithMeasurements):
-                guard !downloadedStreamsWithMeasurements.isEmpty else {
-                    Log.error("Session has no streams")
-                    self.showAlert()
-                    return
-                }
-                
-                DispatchQueue.main.async {
-                    self.externalSessionWithStreams = self.service.createExternalSession(from: self.session, with: downloadedStreamsWithMeasurements)
-                    
-                    self.sessionStreams = .ready( self.externalSessionWithStreams!.streams.map {
-                        .init(id: $0.id,
-                              sensorName: Self.getSensorName($0.sensorName),
-                              sensorUnit: $0.unitSymbol,
-                              lastMeasurementValue: $0.measurements.last?.value ?? 0,
-                              color: $0.thresholdsValues.colorFor(value: $0.measurements.last?.value ?? 0),
-                              measurements: $0.measurements.map({.init(value: $0.value, time: $0.time, latitude: $0.latitude, longitude: $0.longitude)}), thresholds: $0.thresholdsValues)
-                    })
-                    
-                    if let stream = self.externalSessionWithStreams!.streams.first {
-                        self.assignValues(with: stream)
-                        self.defineChartRange(with: stream)
-                    }
-                }
+    private func createExternalSessionAndLoadData(with sortedStreams: [MeasurementsDownloaderResultModel.Stream]) {
+        DispatchQueue.main.async {
+            
+            self.externalSessionWithStreams = self.service.createExternalSession(from: self.session, with: sortedStreams)
+            
+            self.sessionStreams = .ready(self.externalSessionWithStreams!.streams.map {
+                .init(id: $0.id,
+                      sensorName: Self.getSensorName($0.sensorName),
+                      sensorUnit: $0.unitSymbol,
+                      lastMeasurementValue: $0.measurements.last?.value,
+                      color: $0.thresholdsValues.colorFor(value: $0.measurements.last?.value ?? 0),
+                      measurements: $0.measurements.map({.init(value: $0.value,
+                                                               time: $0.time,
+                                                               latitude: $0.latitude,
+                                                               longitude: $0.longitude)}),
+                      thresholds: $0.thresholdsValues)
+            })
+            
+            guard let stream = self.externalSessionWithStreams!.defaultStreamSelection() else {
+                if let stream = self.externalSessionWithStreams!.streams.first { self.passValueOf(stream) }
+                return
             }
+            self.passValueOf(stream)
         }
+    }
+    
+    private func passValueOf(_ stream: ExternalSessionWithStreamsAndMeasurements.Stream) {
+        self.assignValues(with: stream)
+        self.generateChartEntires(with: stream)
     }
     
     private func assignValues(with stream: ExternalSessionWithStreamsAndMeasurements.Stream) {
@@ -257,7 +239,7 @@ class CompleteScreenViewModel: ObservableObject {
         self.selectedStreamUnitSymbol = stream.unitSymbol
     }
     
-    private func defineChartRange(with stream: ExternalSessionWithStreamsAndMeasurements.Stream) {
+    private func generateChartEntires(with stream: ExternalSessionWithStreamsAndMeasurements.Stream) {
         guard let separatedSensorName = self.componentsSeparation(name: stream.sensorName) else {
             Log.error("No sensor name can be extracted from current stream.sensorName")
             return
@@ -285,5 +267,14 @@ class CompleteScreenViewModel: ObservableObject {
         }
         let value = name.components(separatedBy: "-").first!
         return value.components(separatedBy: CharacterSet.decimalDigits).joined()
+    }
+}
+
+// Extension for selecting Stream PM2.5 as default one.
+extension ExternalSessionWithStreamsAndMeasurements {
+    func defaultStreamSelection() -> Self.Stream? {
+        self.streams.first { stream in
+            stream.sensorName.contains("PM2.5")
+        }
     }
 }

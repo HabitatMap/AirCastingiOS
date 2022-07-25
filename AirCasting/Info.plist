@@ -17,7 +17,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
-	<string>2</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>FirebaseAppDelegateProxyEnabled</key>
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
@@ -41,6 +41,8 @@
 	<string>We need Bluetooth to connect with AirBeam, it's impossible to collect the data without it. </string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>We need Bluetooth to connect with the AirBeam, it's impossible to collect the pollution data without it. </string>
+	<key>NSCameraUsageDescription</key>
+	<string>This will allow you to attach photos to your mobile session notes.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>AirCasting uses your location to map your measurements.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>

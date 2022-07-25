@@ -58,6 +58,9 @@ struct MainTabBarView: View {
             measurementUpdatingService.updateAllSessionsMeasurements()
         }
         .onAppear {
+            let navBarAppearance = UINavigationBar.appearance()
+            navBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(Color.darkBlue),
+                                                         .font: Fonts.systemFontBoldTitle1]
             UITabBar.appearance().backgroundColor = .systemBackground
             let appearance = UITabBarAppearance()
             appearance.backgroundImage = UIImage()
@@ -150,8 +153,7 @@ private extension MainTabBarView {
                         reorderButton.reorderIsOn = false
                     } label: {
                         Text(Strings.MainTabBarView.finished)
-                            .font(Fonts.muliHeading2)
-                            .bold()
+                            .font(Fonts.muliRegularHeading3)
                     }
                 }
                 .padding()
