@@ -50,10 +50,8 @@ struct SearchView: View {
             button
         }.padding()
             .onAppear(perform: {
-                viewModel.viewInitialized {
-                    presentationMode.wrappedValue.dismiss()
-                    exploreSessionsButton.exploreSessionsButtonTapped = false
-                }
+                viewModel.viewInitialized { presentationMode.wrappedValue.dismiss() }
+                exploreSessionsButton.exploreSessionsButtonTapped = false
             })
             .alert(item: $viewModel.alert, content: { $0.makeAlert() })
             .sheet(isPresented: $viewModel.isLocationPopupPresented) {
