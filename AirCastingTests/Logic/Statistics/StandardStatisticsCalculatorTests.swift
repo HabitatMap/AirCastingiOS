@@ -21,7 +21,17 @@ class StandardStatisticsCalculatorTests: ACTestCase {
             .init(measurementTime: Date(), value: 30.0),
             .init(measurementTime: Date(), value: 12.6),
         ])
-        XCTAssertEqual(average, 18.15, accuracy: 0.001)
+        XCTAssertEqual(average, 18.00, accuracy: 0.001)
+    }
+    
+    func test_averageValueCalculationIsRoundUpCorrectly() {
+        let average = calculator.calculateValue(for: .average, from: [
+            .init(measurementTime: Date(), value: 2.0),
+            .init(measurementTime: Date(), value: 2.0),
+            .init(measurementTime: Date(), value: 3.7),
+            .init(measurementTime: Date(), value: 3.7),
+        ])
+        XCTAssertEqual(average, 3.0, accuracy: 0.001)
     }
     
     func test_highestValueCalculation() {

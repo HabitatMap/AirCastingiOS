@@ -59,9 +59,6 @@ struct MainTabBarView: View {
             measurementUpdatingService.updateAllSessionsMeasurements()
         }
         .onAppear {
-            let navBarAppearance = UINavigationBar.appearance()
-            navBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(Color.darkBlue),
-                                                         .font: Fonts.systemFontBoldTitle1]
             UITabBar.appearance().backgroundColor = .aircastingBackgroundWhite
             let appearance = UITabBarAppearance()
             appearance.backgroundImage = UIImage()

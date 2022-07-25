@@ -4,7 +4,6 @@
 import SwiftUI
 
 struct AirSectionPickerView: View {
-    
     @Binding var selection: SelectedSection
     
     var body: some View {
@@ -31,6 +30,7 @@ struct AirSectionPickerView: View {
                     }
                 }
             }
+            .onTapGesture { } // Fix for a bug that caused buttons to not be fully tappable. SwiftUI 🤷‍♂️
         }
     }
 }

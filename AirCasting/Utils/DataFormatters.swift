@@ -6,6 +6,7 @@ import Resolver
 
 enum DateFormatters {
     
+    
     struct SessionCardView {
         @InjectedObject private var userSettings: UserSettings
         static let shared = SessionCardView()
