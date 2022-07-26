@@ -28,6 +28,7 @@ struct MoreInfoPopupView: View {
             .lineSpacing(12)
             .padding()
         }
+        .background(Color.aircastingBackground.ignoresSafeArea())
     }
 }
 

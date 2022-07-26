@@ -9,11 +9,14 @@ struct WebView: UIViewRepresentable {
     
     private let webView = WKWebView()
     
+    
     func makeUIView(context: Context) -> some UIView {
+        webView.backgroundColor = .aircastingBackground
         return webView
     }
     
     func updateUIView(_ uiView: UIViewType, context: Context) {
+        uiView.backgroundColor = .aircastingBackground
         webView.load(url)
     }
 }

@@ -26,6 +26,7 @@ struct TurnOnLocationFixedView: View {
         .padding()
         .alert(item: $viewModel.alert, content: { $0.makeAlert() })
         .background(locationPickerLink)
+        .background(Color.aircastingBackground.ignoresSafeArea())
         .onAppear {
             viewModel.requestLocationAuthorisation()
         }

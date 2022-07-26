@@ -33,6 +33,7 @@ struct SDRestartABView: View {
             }
             .background(selectDeviceLink)
             .padding()
+            .background(Color.aircastingBackground.ignoresSafeArea())
         }
     }
 }

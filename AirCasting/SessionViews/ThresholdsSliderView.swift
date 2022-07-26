@@ -74,7 +74,7 @@ struct ThresholdsSliderView: View {
             Color.white
                 .frame(width: 18, height: 25)
                 .clipShape(Circle())
-                .shadow(color: Color(red: 156/255, green: 155/255, blue: 155/255, opacity: 0.5), radius: 9)
+                .shadow(color: Color.sliderShadowColor, radius: 9)
     }
     
     func dragGesture(index: Int, geometry: GeometryProxy) -> some Gesture {

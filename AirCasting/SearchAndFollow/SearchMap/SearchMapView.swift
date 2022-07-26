@@ -13,6 +13,7 @@ struct SearchMapView: View {
     @Environment(\.presentationMode) var presentationMode
     @Binding var isSearchAndFollowLinkActive: Bool
     @EnvironmentObject var tabSelection: TabBarSelection
+    @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var selectedSection: SelectSection
     
     init(locationName: String, locationAddress: CLLocationCoordinate2D, parameterType: MeasurementType, sensorType: SensorType, isSearchAndFollowLinkActive: Binding<Bool>) {
@@ -40,12 +41,12 @@ struct SearchMapView: View {
                                     .padding(.bottom, 28)
                             } else {
                                 ZStack(alignment: .topLeading) {
-                                    LinearGradient(gradient: Gradient(colors: [.white.opacity(0.1),
-                                                                               .white.opacity(0.5),
-                                                                               .white.opacity(0.7),
-                                                                               .white.opacity(0.8),
-                                                                               .white.opacity(0.9),
-                                                                               .white]),
+                                    LinearGradient(gradient: Gradient(colors: [.gradientColor.opacity(0.1),
+                                                                               .gradientColor.opacity(0.5),
+                                                                               .gradientColor.opacity(0.7),
+                                                                               .gradientColor.opacity(0.8),
+                                                                               .gradientColor.opacity(0.9),
+                                                                               .gradientColor]),
                                                    startPoint: .top,
                                                    endPoint: .bottom).ignoresSafeArea()
                                         .frame(width: reader.size.width, height: reader.size.height / 3.5, alignment: .bottom)
@@ -85,6 +86,7 @@ struct SearchMapView: View {
                 .padding(.horizontal)
             })
         }
+        .background(Color.aircastingBackground.ignoresSafeArea())
         .onChange(of: viewModel.shouldDismissView, perform: { result in
             result ? self.presentationMode.wrappedValue.dismiss() : nil
         })
@@ -124,12 +126,14 @@ private extension SearchMapView {
     var measurementTypeText: some View {
         Text(String(format: Strings.SearchMapView.parameterText, arguments: [viewModel.getMeasurementName()]))
             .font(Fonts.muliSemiboldHeading2)
+            .foregroundColor(Color.textColor)
             .lineLimit(1)
             .scaledToFill()
     }
     
     var sensorTypeText: some View {
         Text(String(format: Strings.SearchMapView.sensorText, arguments: [viewModel.getSensorName()]))
+            .foregroundColor(Color.textColor)
             .font(Fonts.muliSemiboldHeading2)
             .lineLimit(1)
             .scaledToFill()
@@ -167,12 +171,12 @@ private extension SearchMapView {
                 .padding(.top, userSettings.satteliteMap ? 100 : 50)
                 .ignoresSafeArea(.all, edges: [.bottom])
                 if !userSettings.satteliteMap {
-                    LinearGradient(gradient: Gradient(colors: [.white.opacity(0.1),
-                                                               .white.opacity(0.5),
-                                                               .white.opacity(0.7),
-                                                               .white.opacity(0.8),
-                                                               .white.opacity(0.9),
-                                                               .white]),
+                    LinearGradient(gradient: Gradient(colors: [.gradientColor.opacity(0.1),
+                                                               .gradientColor.opacity(0.5),
+                                                               .gradientColor.opacity(0.7),
+                                                               .gradientColor.opacity(0.8),
+                                                               .gradientColor.opacity(0.9),
+                                                               .gradientColor]),
                                    startPoint: .bottom,
                                    endPoint: .top)
                     .frame(width: reader.size.width, height: reader.size.height / 4.5, alignment: .top)
@@ -210,7 +214,7 @@ private extension SearchMapView {
                             })
                             .background(
                                 Group {
-                                    Color.white
+                                    Color.aircastingBackground
                                         .cornerRadius(8)
                                         .shadow(color: .sessionCardShadow, radius: 1, x: 0, y: 2)
                                 }

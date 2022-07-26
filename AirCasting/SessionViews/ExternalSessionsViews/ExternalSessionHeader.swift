@@ -57,6 +57,9 @@ private extension ExternalSessionHeader {
                     }) {
                         Image(systemName: chevronIndicator)
                             .renderingMode(.original)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 15, height: 15)
                     }
                 }
             }
@@ -85,6 +88,7 @@ private extension ExternalSessionHeader {
         VStack(alignment: .leading, spacing: 5) {
             Text(Strings.SessionCart.lastMinuteMeasurement)
                 .font(Fonts.moderateRegularHeading4)
+                .foregroundColor(.aircastingGray)
                 .padding(.bottom, 3)
             HStack {
                 streams.count != 1 ? Spacer() : nil

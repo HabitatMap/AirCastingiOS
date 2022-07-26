@@ -102,14 +102,14 @@ struct DashboardView: View {
 
                 Spacer()
             }
-
             customSpacer
         }
+        .background(Color.aircastingBackground.ignoresSafeArea())
     }
 
     private var customSpacer: some View {
         Rectangle()
-            .fill(Color(UIColor.systemBackground))
+            .fill(Color(UIColor.aircastingBackground))
             .frame(height: 6)
     }
 
@@ -120,10 +120,10 @@ struct DashboardView: View {
                 ZStack(alignment: .bottom) {
                     Color.green
                         .frame(height: 3)
-                        .shadow(color: Color.aircastingDarkGray.opacity(0.4),
+                        .shadow(color: Color.sectionPickerShadowColor,
                                 radius: 6)
                         .padding(.horizontal, -30)
-                    Color.white
+                    Color.aircastingBackground
                 }
             )
             .zIndex(2)
@@ -141,10 +141,10 @@ struct DashboardView: View {
             ZStack(alignment: .bottom) {
                 Color.green
                     .frame(height: 3)
-                    .shadow(color: Color.aircastingDarkGray.opacity(0.4),
+                    .shadow(color: Color.sectionPickerShadowColor,
                             radius: 6)
                     .padding(.horizontal, -30)
-                Color.white
+                Color.aircastingBackground
             }
         )
         .zIndex(2)

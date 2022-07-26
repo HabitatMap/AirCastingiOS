@@ -19,14 +19,18 @@ struct GetStarted: View {
             } else {
                 startButton
             }
-        }.background(
-            VStack {
-                mainImage
-                GeometryReader { reader in
-                    Color.white
-                        .frame(width: reader.size.width,
-                               height: reader.size.height * 0.3,
-                               alignment: .bottom)
+        }
+        .background(
+            ZStack {
+                Color.aircastingBackground.ignoresSafeArea()
+                VStack {
+                    mainImage
+                    GeometryReader { reader in
+                        Color.aircastingBackground
+                            .frame(width: reader.size.width,
+                                   height: reader.size.height * 0.3,
+                                   alignment: .bottom)
+                    }
                 }
             }
         )
@@ -35,10 +39,12 @@ struct GetStarted: View {
 
 private extension GetStarted {
     var mainImage: some View {
-        Image("Bitmap")
-            .resizable()
-            .edgesIgnoringSafeArea(.top)
-            .scaledToFill()
+        GeometryReader { geo in
+            Image("Bitmap")
+                .resizable()
+                .edgesIgnoringSafeArea(.top)
+                .frame(height: geo.size.height * 0.8)
+        }
     }
     
     var logoImage: some View {
@@ -60,31 +66,27 @@ private extension GetStarted {
     var startButton: some View {
         NavigationLink(
             destination: AirBeamOnboarding(completion: completion),
-            label: { getStarted }
+            label: {
+                Text(Strings.OnboardingGetStarted.getStarted)
+                    .font(Fonts.muliBoldHeading1)
+            }
         )
-    }
-    
-    var getStarted: some View {
-        Text(Strings.OnboardingGetStarted.getStarted)
-            .font(Fonts.moderateBoldHeading1)
-            .frame(maxWidth: .infinity)
-            .navigationBarHidden(true)
-            .buttonStyle(BlueTextButtonStyle())
-            .padding(12)
-            .background(
-                RoundedRectangle(cornerRadius: 5)
-                    .stroke(lineWidth: 0.2)
-                    .accentColor(Color.aircastingGray)
-            )
-            .padding()
-            .padding(.bottom, 41)
+        .buttonStyle(BlueButtonStyle())
+        .padding()
+        .padding(.bottom, 42)
     }
     
     var continueToAirNearYouScreenButton: some View {
         NavigationLink(
             destination: NearAirDescription(completion: completion),
-            label: { getStarted }
+            label: {
+                Text(Strings.OnboardingGetStarted.getStarted)
+                    .font(Fonts.muliBoldHeading1)
+            }
         )
+        .buttonStyle(BlueButtonStyle())
+        .padding()
+        .padding(.bottom, 42)
     }
 }
 

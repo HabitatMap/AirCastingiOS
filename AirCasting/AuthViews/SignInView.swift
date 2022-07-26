@@ -37,6 +37,7 @@ struct SignInView: View {
     var body: some View {
         LoadingView(isShowing: $isActive) {
             contentView
+                .background(Color.aircastingBackground.ignoresSafeArea())
         }
     }
 }

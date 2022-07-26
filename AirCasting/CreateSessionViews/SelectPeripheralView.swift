@@ -65,6 +65,7 @@ struct SelectPeripheralView: View {
                 bluetoothManager.centralManager.stopScan()
             }
             .padding()
+            .background(Color.aircastingBackground.ignoresSafeArea())
             .frame(maxWidth: .infinity, minHeight: geometry.size.height, alignment: .top)
         }
     }
