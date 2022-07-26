@@ -1,14 +1,9 @@
-//
-//  GoogleMapView.swift
-//  AirCasting
-//
 //  Created by Lunar on 26/01/2021.
 //
 
 import UIKit
 import SwiftUI
 import GoogleMaps
-import GooglePlaces
 import Resolver
 
 struct GoogleMapView: UIViewRepresentable {
