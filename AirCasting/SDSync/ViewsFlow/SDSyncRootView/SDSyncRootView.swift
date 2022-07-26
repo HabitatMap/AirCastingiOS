@@ -27,7 +27,7 @@ struct SDSyncRootView: View {
             }
             .padding()
             .background(navigationLink)
-            .background(Color.aircastingBackgroundWhite.ignoresSafeArea())
+            .background(Color.aircastingBackground.ignoresSafeArea())
             .onAppear() {
                 finishAndSyncButtonTapped.finishAndSyncButtonWasTapped = false
                 viewModel.executeBackendSync()

@@ -68,7 +68,7 @@ struct ConnectingABView<VM: AirbeamConnectionViewModel>: View {
                 viewModel.connectToAirBeam()
             }
         })
-        .background(Color.aircastingBackgroundWhite.ignoresSafeArea())
+        .background(Color.aircastingBackground.ignoresSafeArea())
     }
     
     var titleLabel: some View {

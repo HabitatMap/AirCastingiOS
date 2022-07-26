@@ -22,11 +22,11 @@ struct GetStarted: View {
         }
         .background(
             ZStack {
-                Color.aircastingBackgroundWhite.ignoresSafeArea()
+                Color.aircastingBackground.ignoresSafeArea()
                 VStack {
                     mainImage
                     GeometryReader { reader in
-                        Color.aircastingBackgroundWhite
+                        Color.aircastingBackground
                             .frame(width: reader.size.width,
                                    height: reader.size.height * 0.3,
                                    alignment: .bottom)

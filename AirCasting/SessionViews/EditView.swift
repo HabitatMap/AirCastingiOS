@@ -22,7 +22,7 @@ struct EditView<VM: EditViewModel>: View {
                 loader
             }
         }
-        .background(Color.aircastingBackgroundWhite.ignoresSafeArea())
+        .background(Color.aircastingBackground.ignoresSafeArea())
         .onAppear {
             editSessionViewModel.viewAppeared()
         }

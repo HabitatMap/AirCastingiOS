@@ -5,12 +5,12 @@
       "scale" : "1x"
     },
     {
-      "filename" : "onboarding_bluetooth.png",
+      "filename" : "bluetooth@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "onboarding_bluetooth@3x.png",
+      "filename" : "bluetooth@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

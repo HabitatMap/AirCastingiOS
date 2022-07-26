@@ -40,7 +40,7 @@ struct ShareSessionView<VM: ShareSessionViewModel>: View {
             .sheet(isPresented: $viewModel.showShareSheet, content: { viewModel.getSharePage() })
             .padding()
         }
-        .background(Color.aircastingBackgroundWhite.ignoresSafeArea())
+        .background(Color.aircastingBackground.ignoresSafeArea())
     }
     
     private var title: some View {

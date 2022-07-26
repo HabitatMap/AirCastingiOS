@@ -28,7 +28,7 @@ struct BackendSyncCompletedView<VM: BackendSyncCompletedViewModel>: View {
             }
             .background(Group { restartNavigationLink; BTNavigationLink })
             .padding()
-            .background(Color.aircastingBackgroundWhite.ignoresSafeArea())
+            .background(Color.aircastingBackground.ignoresSafeArea())
         }
     }
 }

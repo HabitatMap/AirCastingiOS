@@ -44,7 +44,7 @@ struct CreateSessionDetailsView: View {
                       dismissButton: .default(Text(Strings.Commons.continue)))
             })
             .background(navigation)
-            .background(Color.aircastingBackgroundWhite.ignoresSafeArea())
+            .background(Color.aircastingBackground.ignoresSafeArea())
         }
         .onAppear {
             viewModel.onScreenEnter()

@@ -30,7 +30,7 @@ struct ReoredringSessionCard: View {
         .padding()
         .background(
             Group {
-                Color.aircastingBackgroundWhite
+                Color.aircastingBackground
                     .cardShadow()
             }
         )

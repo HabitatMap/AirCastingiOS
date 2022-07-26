@@ -40,7 +40,7 @@ struct ClearingSDCardView<VM: ClearingSDCardViewModel>: View {
         })
         .padding()
         .background(navigationLink)
-        .background(Color.aircastingBackgroundWhite.ignoresSafeArea())
+        .background(Color.aircastingBackground.ignoresSafeArea())
     }
 }
 

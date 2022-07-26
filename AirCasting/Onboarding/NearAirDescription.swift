@@ -19,7 +19,7 @@ struct NearAirDescription: View {
         }
         .padding()
         .navigationBarHidden(true)
-        .background(Color.aircastingBackgroundWhite.ignoresSafeArea())
+        .background(Color.aircastingBackground.ignoresSafeArea())
     }
 }
 

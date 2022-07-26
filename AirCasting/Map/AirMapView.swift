@@ -122,7 +122,7 @@ struct AirMapView: View {
             }
         }
         .padding(.bottom)
-        .background(Color.aircastingBackgroundWhite.ignoresSafeArea())
+        .background(Color.aircastingBackground.ignoresSafeArea())
     }
     
     private func getValue(of measurement: MeasurementEntity) -> Double {

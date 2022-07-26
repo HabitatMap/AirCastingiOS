@@ -41,7 +41,7 @@ struct ExternalGraphView<StatsViewModelType>: View where StatsViewModelType: Sta
             Spacer()
         }
         .navigationBarTitleDisplayMode(.inline)
-        .background(Color.aircastingBackgroundWhite.ignoresSafeArea())
+        .background(Color.aircastingBackground.ignoresSafeArea())
     }
     
     func isProceeding(session: ExternalSessionEntity) -> Bool {

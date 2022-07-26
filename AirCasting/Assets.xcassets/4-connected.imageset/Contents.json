@@ -5,12 +5,12 @@
       "scale" : "1x"
     },
     {
-      "filename" : "onboarding_connected.png",
+      "filename" : "connected@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "onboarding_connected@3x.png",
+      "filename" : "connected@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

@@ -102,7 +102,7 @@ struct SessionCardView: View {
         .padding()
         .background(
             Group {
-                Color.aircastingBackgroundWhite
+                Color.aircastingBackground
                     .cardShadow()
                 mapNavigationLink
                 graphNavigationLink

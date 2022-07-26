@@ -49,7 +49,7 @@ extension UIColor {
     static var textColor: UIColor {
         return UIColor(Color("AircastingTextColor"))
     }
-    static var aircastingBackgroundWhite: UIColor {
-        return UIColor(Color("AircastingBackgroundWhite"))
+    static var aircastingBackground: UIColor {
+        return UIColor(Color("AircastingBackground"))
     }
 }

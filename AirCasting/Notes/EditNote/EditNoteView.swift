@@ -22,7 +22,7 @@ struct EditNoteView<VM: EditNoteViewModel>: View {
                 .padding()
             }
         }
-        .background(Color.aircastingBackgroundWhite.ignoresSafeArea())
+        .background(Color.aircastingBackground.ignoresSafeArea())
     }
 }
 

@@ -50,7 +50,7 @@ struct SearchView: View {
             button
         }
         .padding()
-        .background(Color.aircastingBackgroundWhite.ignoresSafeArea())
+        .background(Color.aircastingBackground.ignoresSafeArea())
         .onAppear(perform: {
             viewModel.viewInitialized { presentationMode.wrappedValue.dismiss() }
             exploreSessionsButton.exploreSessionsButtonTapped = false

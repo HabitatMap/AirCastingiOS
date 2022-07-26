@@ -21,7 +21,7 @@ struct TurnOnLocationView: View {
             continueButton
         }
         .padding()
-        .background(Color.aircastingBackgroundWhite.ignoresSafeArea())
+        .background(Color.aircastingBackground.ignoresSafeArea())
         .alert(item: $viewModel.alert, content: { $0.makeAlert() })
         .background(
             Group {

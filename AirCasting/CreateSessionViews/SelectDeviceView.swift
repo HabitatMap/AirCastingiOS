@@ -60,7 +60,7 @@ struct SelectDeviceView: View {
             #warning("Handle that mobileWasTapped is somehow public")
             emptyDashboardButtonTapped.mobileWasTapped = false
         }
-        .background(Color.aircastingBackgroundWhite.ignoresSafeArea())
+        .background(Color.aircastingBackground.ignoresSafeArea())
     }
     
     var titleLabel: some View {

@@ -32,7 +32,7 @@ struct BackendSettingsView: View {
     
     var body: some View {
         ZStack {
-            Color.aircastingBackgroundWhite
+            Color.aircastingBackground
                 .ignoresSafeArea()
             XMarkButton()
             VStack(alignment: .leading) {

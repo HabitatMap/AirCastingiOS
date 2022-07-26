@@ -86,7 +86,7 @@ struct SearchMapView: View {
                 .padding(.horizontal)
             })
         }
-        .background(Color.aircastingBackgroundWhite.ignoresSafeArea())
+        .background(Color.aircastingBackground.ignoresSafeArea())
         .onChange(of: viewModel.shouldDismissView, perform: { result in
             result ? self.presentationMode.wrappedValue.dismiss() : nil
         })
@@ -214,7 +214,7 @@ private extension SearchMapView {
                             })
                             .background(
                                 Group {
-                                    Color.aircastingBackgroundWhite
+                                    Color.aircastingBackground
                                         .cornerRadius(8)
                                         .shadow(color: .sessionCardShadow, radius: 1, x: 0, y: 2)
                                 }

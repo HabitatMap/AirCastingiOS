@@ -64,7 +64,7 @@ struct TurnOnBluetoothView: View {
             }
         })
         .padding()
-        .background(Color.aircastingBackgroundWhite.ignoresSafeArea())
+        .background(Color.aircastingBackground.ignoresSafeArea())
     }
 
     var titleLabel: some View {

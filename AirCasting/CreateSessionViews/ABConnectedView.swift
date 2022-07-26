@@ -27,7 +27,7 @@ struct ABConnectedView: View {
             continueButton
         }
         .padding()
-        .background(Color.aircastingBackgroundWhite.ignoresSafeArea())
+        .background(Color.aircastingBackground.ignoresSafeArea())
     }
 }
 

@@ -24,7 +24,7 @@ struct AddNoteView<VM: AddNoteViewModel>: View {
                 .padding()
             }
         }
-        .background(Color.aircastingBackgroundWhite.ignoresSafeArea())
+        .background(Color.aircastingBackground.ignoresSafeArea())
         .sheet(isPresented: $presentPhotoPicker) {
             PhotoPicker(picture: $picture)
                 .ignoresSafeArea(.all, edges: [.bottom])

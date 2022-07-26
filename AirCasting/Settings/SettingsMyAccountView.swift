@@ -20,7 +20,7 @@ struct SettingsMyAccountView<VM: SettingsMyAccountViewModel>: View {
                 }
                 Spacer()
             }
-            .background(Color.aircastingBackgroundWhite.ignoresSafeArea())
+            .background(Color.aircastingBackground.ignoresSafeArea())
         }
         .navigationTitle(Strings.Commons.myAccount)
         .alert(item: $viewModel.alert, content: { $0.makeAlert() })

@@ -82,7 +82,7 @@ struct GraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsC
                                                              sessionUUID: session.uuid))
         })
         .navigationBarTitleDisplayMode(.inline)
-        .background(Color.aircastingBackgroundWhite.ignoresSafeArea())
+        .background(Color.aircastingBackground.ignoresSafeArea())
     }
     
     func isProceeding(session: SessionEntity) -> Bool {

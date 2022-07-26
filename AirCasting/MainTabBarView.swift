@@ -59,7 +59,7 @@ struct MainTabBarView: View {
             measurementUpdatingService.updateAllSessionsMeasurements()
         }
         .onAppear {
-            UITabBar.appearance().backgroundColor = .aircastingBackgroundWhite
+            UITabBar.appearance().backgroundColor = .aircastingBackground
             let appearance = UITabBarAppearance()
             appearance.backgroundImage = UIImage()
             appearance.shadowImage = UIImage.mainTabBarShadow
