@@ -17,7 +17,7 @@ struct MainTabBarView: View {
     @State var plusImage: String = PlusIcon.unselected.string
     @InjectedObject private var bluetoothManager: BluetoothManager
     @StateObject var tabSelection: TabBarSelection = TabBarSelection()
-    @StateObject var selectedSection = SelectSection()
+    @StateObject var selectedSection = SelectedSection()
     @StateObject var reorderButton = ReorderButton()
     @StateObject var searchAndFollow = SearchAndFollowButton()
     @StateObject var emptyDashboardButtonTapped = EmptyDashboardButtonTapped()
@@ -42,11 +42,11 @@ struct MainTabBarView: View {
                 tabSelection.selection = .dashboard
                 try! coreDataHook.setup(selectedSection: .mobileActive)
                 if sessions.contains(where: { $0.isActive }) {
-                    selectedSection.selectedSection = .mobileActive
+                    selectedSection.section = .mobileActive
                 } else {
-                    selectedSection.selectedSection = .following
+                    selectedSection.section = .following
                 }
-                try! coreDataHook.setup(selectedSection: selectedSection.selectedSection)
+                try! coreDataHook.setup(selectedSection: selectedSection.section)
             } label: {
                 Rectangle()
                     .fill(Color.clear)
@@ -100,10 +100,10 @@ private extension MainTabBarView {
             .overlay(
                 Group{
                     HStack {
-                        if !searchAndFollow.isHidden && featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) && selectedSection.selectedSection == .following {
+                        if !searchAndFollow.isHidden && featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) && selectedSection.section == .following {
                             searchAndFollowButton
                         }
-                        if !reorderButton.isHidden && sessions.count > 1 && selectedSection.selectedSection == .following {
+                        if !reorderButton.isHidden && sessions.count > 1 && selectedSection.section == .following {
                             reorderingButton
                         }
                     }
@@ -184,8 +184,8 @@ class TabBarSelection: ObservableObject {
     }
 }
 
-class SelectSection: ObservableObject {
-    @Published var selectedSection = SelectedSection.following
+class SelectedSection: ObservableObject {
+    @Published var section = DashboardSection.following
 }
 
 class EmptyDashboardButtonTapped: ObservableObject {

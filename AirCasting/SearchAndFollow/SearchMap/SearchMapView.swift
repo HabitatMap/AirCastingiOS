@@ -13,7 +13,7 @@ struct SearchMapView: View {
     @Environment(\.presentationMode) var presentationMode
     @Binding var isSearchAndFollowLinkActive: Bool
     @EnvironmentObject var tabSelection: TabBarSelection
-    @EnvironmentObject var selectedSection: SelectSection
+    @EnvironmentObject var selectedSection: SelectedSection
     
     init(locationName: String, locationAddress: CLLocationCoordinate2D, parameterType: MeasurementType, sensorType: SensorType, isSearchAndFollowLinkActive: Binding<Bool>) {
         _viewModel = .init(wrappedValue: .init(passedLocation: locationName,
@@ -234,7 +234,7 @@ private extension SearchMapView {
         Button {
             isSearchAndFollowLinkActive = false
             tabSelection.selection = .dashboard
-            selectedSection.selectedSection = .following
+            selectedSection.section = .following
         } label: {
             Text(Strings.SearchMapView.finishText)
                 .font(Fonts.muliRegularHeading3.bold())

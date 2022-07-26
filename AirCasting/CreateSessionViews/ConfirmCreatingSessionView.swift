@@ -18,7 +18,7 @@ struct ConfirmCreatingSessionView: View {
         }
     }
     @State private var isPresentingAlert: Bool = false
-    @EnvironmentObject var selectedSection: SelectSection
+    @EnvironmentObject var selectedSection: SelectedSection
     @EnvironmentObject private var sessionContext: CreateSessionContext
     @Injected private var locationTracker: LocationTracker
     @EnvironmentObject private var tabSelection: TabBarSelection
@@ -140,9 +140,9 @@ extension ConfirmCreatingSessionView {
                 case .success:
                     self.creatingSessionFlowContinues = false
                     if sessionContext.sessionType == .mobile {
-                        selectedSection.selectedSection = SelectedSection.mobileActive
+                        selectedSection.section = DashboardSection.mobileActive
                     } else {
-                        selectedSection.selectedSection = SelectedSection.following
+                        selectedSection.section = DashboardSection.following
                     }
                     tabSelection.selection = TabBarSelection.Tab.dashboard
 

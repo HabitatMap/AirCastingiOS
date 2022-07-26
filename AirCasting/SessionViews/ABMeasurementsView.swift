@@ -45,7 +45,7 @@ struct _ABMeasurementsView: View {
     @ObservedObject var thresholds: ABMeasurementsViewThreshold
     let measurementPresentationStyle: MeasurementPresentationStyle
     
-    @EnvironmentObject var selectedSection: SelectSection
+    @EnvironmentObject var selectedSection: SelectedSection
     @EnvironmentObject var userSettings: UserSettings
     
     private var streamsToShow: [MeasurementStreamEntity] {
