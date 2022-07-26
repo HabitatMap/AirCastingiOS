@@ -140,9 +140,9 @@ extension ConfirmCreatingSessionView {
                 case .success:
                     self.creatingSessionFlowContinues = false
                     if sessionContext.sessionType == .mobile {
-                        selectedSection.section = DashboardSection.mobileActive
+                        selectedSection.section = .mobileActive
                     } else {
-                        selectedSection.section = DashboardSection.following
+                        selectedSection.section = .following
                     }
                     tabSelection.selection = TabBarSelection.Tab.dashboard
 

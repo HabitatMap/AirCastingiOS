@@ -49,12 +49,12 @@ struct SessionCardView: View {
 
     var shouldShowValues: MeasurementPresentationStyle {
         // We need to specify selectedSection to show values for fixed session only in following tab
-        let shouldHide = isCollapsed && ( (session.isFixed && selectedSection.section == DashboardSection.fixed) || session.isDormant)
+        let shouldHide = isCollapsed && ( (session.isFixed && selectedSection.section == .fixed) || session.isDormant)
         return shouldHide ? .hideValues : .showValues
     }
 
     var showChart: Bool {
-        (session.isMobile && session.isActive) || (session.isFixed && selectedSection.section == DashboardSection.following)
+        (session.isMobile && session.isActive) || (session.isFixed && selectedSection.section == .following)
     }
 
     var body: some View {
