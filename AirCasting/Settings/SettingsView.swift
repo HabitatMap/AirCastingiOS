@@ -141,6 +141,7 @@ struct SettingsView: View {
             keepScreenOnSwitch
             satelliteMapSwitch
             twentyFourHourFormatSwitch
+            syncOnlyThroughWifiSwitch
             VStack(alignment: .leading) {
                 temperatureSwitch
                 Spacer()
@@ -194,6 +195,11 @@ struct SettingsView: View {
     private var twentyFourHourFormatSwitch: some View {
         settingSwitch(toogle: $userSettings.twentyFourHour,
                       label: Strings.Settings.twentyFourHourFormat)
+    }
+    
+    private var syncOnlyThroughWifiSwitch: some View {
+        settingSwitch(toogle: $userSettings.syncOnlyThroughWifi,
+                      label: Strings.Settings.syncOnlyThroughWifi)
     }
 
     private var keepScreenOnSwitch: some View {

@@ -24,7 +24,7 @@ class ChooseSessionTypeViewModel: ObservableObject {
     @Injected private var networkChecker: NetworkChecker
     @Injected private var locationAuthorization: LocationAuthorization
     @Injected private var bluetoothHandler: BluetoothHandler
-    @Injected private var userSettings: UserSettings
+    @InjectedObject private var userSettings: UserSettings
     @Injected private var urlProvider: URLProvider
     private let sessionContext: CreateSessionContext
     
@@ -67,6 +67,10 @@ class ChooseSessionTypeViewModel: ObservableObject {
     }
     
     func syncButtonTapped() {
+        guard !userSettings.syncOnlyThroughWifi || networkChecker.isUsingWifi else {
+            alert = InAppAlerts.noWifiNetworkSyncAlert()
+            return
+        }
         networkChecker.connectionAvailable ? startSync.toggle() : (alert = InAppAlerts.noNetworkAlert())
     }
     

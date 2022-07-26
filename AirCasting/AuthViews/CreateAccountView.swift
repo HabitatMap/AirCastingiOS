@@ -13,6 +13,7 @@ struct CreateAccountView: View {
     @InjectedObject private var lifeTimeEventsProvider: LifeTimeEventsProvider
     @InjectedObject private var userAuthenticationSession: UserAuthenticationSession
     @InjectedObject private var userState: UserState
+    @Injected private var networkChecker: NetworkChecker
     private let authorizationAPIService: AuthorizationAPIService = AuthorizationAPIService() // [Resolver] Move to dep.
     
     @State private var isPasswordCorrect = true
@@ -144,6 +145,12 @@ private extension CreateAccountView {
             checkIfUserInputIsCorrect()
             // Hiding keyboard prevents from double displaying alert
             UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+            
+            guard networkChecker.connectionAvailable else {
+                alert = InAppAlerts.noNetworkAlert()
+                return
+            }
+            
             
             if isPasswordCorrect && isEmailCorrect && !isUsernameBlank {
 #warning("Show progress and lock ui to prevent multiple api calls")
