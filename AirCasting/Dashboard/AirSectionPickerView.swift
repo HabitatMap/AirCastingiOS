@@ -33,15 +33,14 @@ struct AirSectionPickerView: View {
     }
 }
 
-//struct AirSectionPickerView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        AirSectionPickerView(selection: .constant(.mobileActive))
-//            .padding()
-//            .frame(width: 300)
-//            .previewLayout(.sizeThatFits)
-//    }
-//}
-
+struct AirSectionPickerView_Previews: PreviewProvider {
+    static var previews: some View {
+        AirSectionPickerView(selection: .constant(.mobileActive))
+            .padding()
+            .frame(width: 300)
+            .previewLayout(.sizeThatFits)
+    }
+}
 
 enum DashboardSection: String, CaseIterable {
     case following = "Following"
