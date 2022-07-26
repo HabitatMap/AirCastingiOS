@@ -130,7 +130,10 @@ extension Resolver: ResolverRegistering {
         main.register { SessionUploadService() as SessionUpstream }
         main.register { SessionSynchronizationDatabase() as SessionSynchronizationStore }
         main.register {
-            ScheduledSessionSynchronizerProxy(controller: SessionSynchronizationController(), scheduler: DispatchQueue.global())
+            WiFiAwareSessionSynchronizerProxy(
+                controller: ScheduledSessionSynchronizerProxy(controller: SessionSynchronizationController(),
+                                                              scheduler: DispatchQueue.global())
+            )
         }.scope(.application)
             .implements(SessionSynchronizer.self)
         

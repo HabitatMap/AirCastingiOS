@@ -26,6 +26,7 @@ struct TurnOnBluetoothView: View {
             Image("1-bluetooth")
                 .resizable()
                 .scaledToFit()
+            Spacer()
             VStack(alignment: .leading, spacing: 15) {
                 titleLabel
                 messageLabel
@@ -35,27 +36,27 @@ struct TurnOnBluetoothView: View {
         }
         .background(
             Group {
-            NavigationLink(
-                destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues),
-                isActive: $isPowerABLinkActive,
-                label: {
-                    EmptyView()
-                }
-            )
-           NavigationLink(
-                destination: UnplugABView(isSDClearProcess: isSDClearProcess, creatingSessionFlowContinues: $creatingSessionFlowContinues),
-                isActive: $presentUnplugScreen,
-                label: {
-                    EmptyView()
-                }
-           )
-            NavigationLink(
-                 destination: SDRestartABView(isSDClearProcess: isSDClearProcess, creatingSessionFlowContinues: $creatingSessionFlowContinues),
-                 isActive: $presentRestartScreen,
-                 label: {
-                     EmptyView()
-                 })
-             }
+                NavigationLink(
+                    destination: PowerABView(creatingSessionFlowContinues: $creatingSessionFlowContinues),
+                    isActive: $isPowerABLinkActive,
+                    label: {
+                        EmptyView()
+                    }
+                )
+                NavigationLink(
+                    destination: UnplugABView(isSDClearProcess: isSDClearProcess, creatingSessionFlowContinues: $creatingSessionFlowContinues),
+                    isActive: $presentUnplugScreen,
+                    label: {
+                        EmptyView()
+                    }
+                )
+                NavigationLink(
+                    destination: SDRestartABView(isSDClearProcess: isSDClearProcess, creatingSessionFlowContinues: $creatingSessionFlowContinues),
+                    isActive: $presentRestartScreen,
+                    label: {
+                        EmptyView()
+                    })
+            }
         )
         .onAppear(perform: {
             if CBCentralManager.authorization != .allowedAlways {
@@ -63,6 +64,7 @@ struct TurnOnBluetoothView: View {
             }
         })
         .padding()
+        .background(Color.aircastingBackground.ignoresSafeArea())
     }
 
     var titleLabel: some View {

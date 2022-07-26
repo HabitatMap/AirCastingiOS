@@ -4,7 +4,6 @@
 import SwiftUI
 
 struct AirSectionPickerView: View {
-    
     @Binding var selection: SelectedSection
     
     var body: some View {
@@ -31,6 +30,7 @@ struct AirSectionPickerView: View {
                     }
                 }
             }
+            .onTapGesture { } // Fix for a bug that caused buttons to not be fully tappable. SwiftUI 🤷‍♂️
         }
     }
 }
@@ -65,7 +65,7 @@ struct PickerButtonStyle: ButtonStyle {
             .foregroundColor(isSelected ? Color.accentColor : Color.aircastingGray)
             .font(Fonts.muliRegularHeading3)
             .frame(maxHeight: 30)
-            .background(Color.white)
+            .background(Color.aircastingBackground)
             .padding(.trailing, 10)
             .padding(.top)
             .padding(.bottom, 5)

@@ -48,12 +48,12 @@ struct AirMapView: View {
 
     var body: some View {
         VStack(alignment: .trailing) {
-                SessionHeaderView(action: {},
-                                  isExpandButtonNeeded: false,
-                                  isSensorTypeNeeded: false,
-                                  isCollapsed: Binding.constant(false),
-                                  session: session)
-                .padding([.bottom, .leading, .trailing])
+            SessionHeaderView(action: {},
+                              isExpandButtonNeeded: false,
+                              isSensorTypeNeeded: false,
+                              isCollapsed: Binding.constant(false),
+                              session: session)
+            .padding([.bottom, .leading, .trailing])
             
             ABMeasurementsView(session: session,
                                isCollapsed: Binding.constant(false),
@@ -61,9 +61,9 @@ struct AirMapView: View {
                                thresholds: thresholds,
                                measurementPresentationStyle: .showValues,
                                viewModel:  DefaultSyncingMeasurementsViewModel(sessionDownloader: SessionDownloadService(),
-                                                                                session: session))
-                .padding([.bottom, .leading, .trailing])
-
+                                                                               session: session))
+            .padding([.bottom, .leading, .trailing])
+            
             if let threshold = thresholds.value.threshold(for: selectedStream?.sensorName ?? "") {
                 if !showLoadingIndicator {
                     ZStack(alignment: .topLeading) {
@@ -76,12 +76,12 @@ struct AirMapView: View {
                                       noteMarketTapped: $noteMarkerTapped,
                                       noteNumber: $noteNumber,
                                       mapNotes: $mapNotesVM.notes)
-                        #warning("TODO: Implement calculating stats only for visible path points")
+#warning("TODO: Implement calculating stats only for visible path points")
                         // This doesn't work properly and it needs to be fixed, so I'm commenting it out
-//                            .onPositionChange { [weak mapStatsDataSource, weak statsContainerViewModel] visiblePoints in
-//                                mapStatsDataSource?.visiblePathPoints = visiblePoints
-//                                statsContainerViewModel?.adjustForNewData()
-//                            }
+                        //                            .onPositionChange { [weak mapStatsDataSource, weak statsContainerViewModel] visiblePoints in
+                        //                                mapStatsDataSource?.visiblePathPoints = visiblePoints
+                        //                                statsContainerViewModel?.adjustForNewData()
+                        //                            }
                         // Statistics container shouldn't be presented in mobile dormant tab
                         if !(session.type == .mobile && session.isActive == false) {
                             StatisticsContainerView(statsContainerViewModel: statsContainerViewModel,
@@ -97,7 +97,7 @@ struct AirMapView: View {
                         }.padding([.bottom, .leading, .trailing])
                     }
                     ThresholdsSliderView(threshold: threshold)
-                        // Fixes labels covered by tabbar
+                    // Fixes labels covered by tabbar
                         .padding([.bottom, .leading, .trailing])
                 }
             }
@@ -109,10 +109,10 @@ struct AirMapView: View {
                                                              sessionUUID: session.uuid))
         })
         .navigationBarTitleDisplayMode(.inline)
-//        .onChange(of: selectedStream) { newStream in
-//            mapStatsDataSource.visiblePathPoints = pathPoints
-//            statsContainerViewModel.adjustForNewData()
-//        }
+        //        .onChange(of: selectedStream) { newStream in
+        //            mapStatsDataSource.visiblePathPoints = pathPoints
+        //            statsContainerViewModel.adjustForNewData()
+        //        }
         .onAppear { statsContainerViewModel.adjustForNewData() }
         .onChange(of: scenePhase) { phase in
             switch phase {
@@ -122,6 +122,7 @@ struct AirMapView: View {
             }
         }
         .padding(.bottom)
+        .background(Color.aircastingBackground.ignoresSafeArea())
     }
     
     private func getValue(of measurement: MeasurementEntity) -> Double {

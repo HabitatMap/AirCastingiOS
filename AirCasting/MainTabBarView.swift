@@ -26,6 +26,7 @@ struct MainTabBarView: View {
     @StateObject var sessionContext: CreateSessionContext
     @StateObject var coreDataHook: CoreDataHook
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
+    @Environment(\.colorScheme) var colorScheme
     
     private var sessions: [Sessionable] {
         coreDataHook.sessions
@@ -58,10 +59,7 @@ struct MainTabBarView: View {
             measurementUpdatingService.updateAllSessionsMeasurements()
         }
         .onAppear {
-            let navBarAppearance = UINavigationBar.appearance()
-            navBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(Color.darkBlue),
-                                                         .font: Fonts.systemFontBoldTitle1]
-            UITabBar.appearance().backgroundColor = .systemBackground
+            UITabBar.appearance().backgroundColor = .aircastingBackground
             let appearance = UITabBarAppearance()
             appearance.backgroundImage = UIImage()
             appearance.shadowImage = UIImage.mainTabBarShadow
@@ -97,7 +95,7 @@ private extension MainTabBarView {
             DashboardView(coreDataHook: coreDataHook)
         }.navigationViewStyle(StackNavigationViewStyle())
             .tabItem {
-                Image(homeImage)
+                createTabBarImage(homeImage)
             }
             .tag(TabBarSelection.Tab.dashboard)
             .overlay(
@@ -118,7 +116,7 @@ private extension MainTabBarView {
     private var createSessionTab: some View {
         ChooseSessionTypeView(sessionContext: sessionContext)
             .tabItem {
-                Image(plusImage)
+                createTabBarImage(plusImage)
             }
             .tag(TabBarSelection.Tab.createSession)
     }
@@ -126,7 +124,7 @@ private extension MainTabBarView {
     private var settingsTab: some View {
         SettingsView(sessionContext: sessionContext)
             .tabItem {
-                Image(settingsImage)
+                createTabBarImage(settingsImage)
             }
             .tag(TabBarSelection.Tab.settings)
     }
@@ -138,6 +136,8 @@ private extension MainTabBarView {
                     reorderButton.reorderIsOn = true
                 } label: {
                     Image("draggable-icon")
+                        .renderingMode(.template)
+                        .foregroundColor(colorScheme == .light ? .black : .aircastingGray)
                         .frame(width: 60, height: 60)
                         .imageScale(.large)
                 }
@@ -173,6 +173,18 @@ private extension MainTabBarView {
                     .imageScale(.large)
             }
             .offset(CGSize(width: 0.0, height: 40.0))
+        }
+    }
+    
+    private func createTabBarImage(_ imageName: String) -> some View {
+        Group {
+            if colorScheme == .light {
+                Image(imageName)
+            } else {
+                Image(imageName)
+                    .renderingMode(.template)
+                    .foregroundColor(.white)
+            }
         }
     }
 }

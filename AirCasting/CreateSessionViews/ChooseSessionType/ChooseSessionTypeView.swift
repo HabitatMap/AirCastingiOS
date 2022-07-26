@@ -232,7 +232,6 @@ struct ChooseSessionTypeView: View {
                 titleLabel
                 messageLabel
             }
-            .background(Color.white)
             .padding(.horizontal)
             
             VStack(alignment: .leading, spacing: 15) {
@@ -263,12 +262,10 @@ struct ChooseSessionTypeView: View {
             }
             .padding([.bottom, .vertical])
             .padding(.horizontal, 30)
-            .background(
-                Color.aircastingBackground.opacity(0.25)
-                    .ignoresSafeArea()
-            )
+            .background(Color.aircastingSecondaryBackground.ignoresSafeArea())
             .alert(item: $viewModel.alert, content: { $0.makeAlert() })
         }
+        .background(Color.aircastingBackground.ignoresSafeArea())
     }
 }
 
@@ -297,7 +294,7 @@ private extension ChooseSessionTypeView {
     
     var recordNewLabel: some View {
         Text(Strings.ChooseSessionTypeView.recordNew)
-            .font(Fonts.muliBoldHeading2)
+            .font(Fonts.muliBoldHeading1)
             .foregroundColor(.aircastingGray)
     }
     
@@ -402,7 +399,7 @@ extension View {
                minHeight: (UIScreen.main.bounds.height) / 4.5 < 145 ? (UIScreen.main.bounds.height) : 145,
                maxHeight: 145,
                alignment: .leading)
-        .background(Color.white)
+        .background(Color.aircastingBackground)
         .cornerRadius(8)
         .shadow(color: Color.shadow, radius: 9, x: 0, y: 1)
     }
