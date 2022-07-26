@@ -11,19 +11,29 @@ struct GetStarted: View {
     var completion: () -> Void
     var body: some View {
         VStack {
-            ZStack(alignment: .bottom) {
-                mainImage
-                logoImage
-            }
+            Spacer()
+            logoImage
             descriptionText
             if featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) {
                 continueToAirNearYouScreenButton
             } else {
                 startButton
             }
-            Spacer()
         }
-        .background(Color.aircastingBackgroundWhite.ignoresSafeArea())
+        .background(
+            ZStack {
+                Color.aircastingBackgroundWhite.ignoresSafeArea()
+                VStack {
+                    mainImage
+                    GeometryReader { reader in
+                        Color.aircastingBackgroundWhite
+                            .frame(width: reader.size.width,
+                                   height: reader.size.height * 0.3,
+                                   alignment: .bottom)
+                    }
+                }
+            }
+        )
     }
 }
 
