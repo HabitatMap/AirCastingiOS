@@ -150,6 +150,8 @@ extension Resolver: ResolverRegistering {
         .implements(LocationAuthorization.self)
         .scope(.application)
         
+        main.register { LocationServiceAdapter(tracker: Resolver.resolve()) as LocationService }.scope(.unique)
+        
         // MARK: - Settings
         main.register { UserSettings(userDefaults: .standard) }.scope(.cached)
         

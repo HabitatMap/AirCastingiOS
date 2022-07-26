@@ -321,6 +321,9 @@
 		B3AAACF7286DD91700DFBD36 /* DecibelSamplerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3AAACF6286DD91700DFBD36 /* DecibelSamplerTests.swift */; };
 		B3AB8BE526BB5EF400AF23CC /* Array+MeasurementStatistics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3AB8BE426BB5EF400AF23CC /* Array+MeasurementStatistics.swift */; };
 		B3C3F8B92695A295003E2CB4 /* StatisticsContainerViewModelable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3C3F8B82695A295003E2CB4 /* StatisticsContainerViewModelable.swift */; };
+		B3C6D07E28905FCC00A25F5F /* LocationServiceAdapterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3C6D07D28905FCC00A25F5F /* LocationServiceAdapterTests.swift */; };
+		B3C6D080289062E100A25F5F /* CLLocation+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3C6D07F289062E100A25F5F /* CLLocation+Helpers.swift */; };
+		B3C6D0832890631900A25F5F /* LocationServiceAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3C6D0822890631900A25F5F /* LocationServiceAdapter.swift */; };
 		B3D1928D26F1FA1C0029E1C8 /* FixedSessionFaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EFAB1D26F1F9DB00E88141 /* FixedSessionFaker.swift */; };
 		B3D4B4B426C2C6A1004322FC /* Date+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3D4B4B326C2C6A1004322FC /* Date+Extensions.swift */; };
 		B3E26A032676D9AA001A8E4C /* ArrayUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E26A022676D9AA001A8E4C /* ArrayUtils.swift */; };
@@ -821,6 +824,9 @@
 		B3AAACF6286DD91700DFBD36 /* DecibelSamplerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecibelSamplerTests.swift; sourceTree = "<group>"; };
 		B3AB8BE426BB5EF400AF23CC /* Array+MeasurementStatistics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+MeasurementStatistics.swift"; sourceTree = "<group>"; };
 		B3C3F8B82695A295003E2CB4 /* StatisticsContainerViewModelable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsContainerViewModelable.swift; sourceTree = "<group>"; };
+		B3C6D07D28905FCC00A25F5F /* LocationServiceAdapterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationServiceAdapterTests.swift; sourceTree = "<group>"; };
+		B3C6D07F289062E100A25F5F /* CLLocation+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLLocation+Helpers.swift"; sourceTree = "<group>"; };
+		B3C6D0822890631900A25F5F /* LocationServiceAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationServiceAdapter.swift; sourceTree = "<group>"; };
 		B3D4B4B326C2C6A1004322FC /* Date+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extensions.swift"; sourceTree = "<group>"; };
 		B3E26A022676D9AA001A8E4C /* ArrayUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayUtils.swift; sourceTree = "<group>"; };
 		B3E26A052676DA23001A8E4C /* ArrayExtensionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayExtensionsTests.swift; sourceTree = "<group>"; };
@@ -1986,9 +1992,18 @@
 			isa = PBXGroup;
 			children = (
 				B3AAACF4286DC07600DFBD36 /* LevelMeasurementControllerTests.swift */,
+				B3C6D07D28905FCC00A25F5F /* LocationServiceAdapterTests.swift */,
 				B3AAACF6286DD91700DFBD36 /* DecibelSamplerTests.swift */,
 			);
 			path = MicrophoneSessions;
+			sourceTree = "<group>";
+		};
+		B3C6D0812890630900A25F5F /* Adapters */ = {
+			isa = PBXGroup;
+			children = (
+				B3C6D0822890631900A25F5F /* LocationServiceAdapter.swift */,
+			);
+			path = Adapters;
 			sourceTree = "<group>";
 		};
 		B3E26A042676DA14001A8E4C /* Other */ = {
@@ -2011,6 +2026,7 @@
 				B33DB5732686120600ED1344 /* XCTestCase+AssertContainsSameElements.swift */,
 				B30BABFE26935C2B00AE0476 /* TimeInterval+Helpers.swift */,
 				B30BAC222694B3DA00AE0476 /* XCTest+Persistence.swift */,
+				B3C6D07F289062E100A25F5F /* CLLocation+Helpers.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -2112,6 +2128,7 @@
 		B3FD30A62831638700C33656 /* LevelMeasurementController */ = {
 			isa = PBXGroup;
 			children = (
+				B3C6D0812890630900A25F5F /* Adapters */,
 				B3A8CEA22833F94C00DC3B38 /* Interfaces */,
 				B3FD30A7283163A300C33656 /* LevelMeasurementController.swift */,
 				B3FD30AB2831786400C33656 /* DecibelSampler.swift */,
@@ -2833,8 +2850,10 @@
 				B31B7ECB267E4DF6002DAC18 /* DummyError.swift in Sources */,
 				B33B161427AF0B3600138FFA /* FileLoggerTestCase.swift in Sources */,
 				B31B7ECD267E500B002DAC18 /* SyncDownstreamServiceTests.swift in Sources */,
+				B3C6D080289062E100A25F5F /* CLLocation+Helpers.swift in Sources */,
 				B33B160E27AF0B3600138FFA /* ScheduledLoggerTests.swift in Sources */,
 				B30BABFB2693509D00AE0476 /* StandardStatisticsCalculatorTests.swift in Sources */,
+				B3C6D07E28905FCC00A25F5F /* LocationServiceAdapterTests.swift in Sources */,
 				DDF12AEE26B2B87F00D067C7 /* SessionCartViewModelTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2863,7 +2882,6 @@
 				B3FD77C4267C94AF00E97CC2 /* SessionSynchronizationService.swift in Sources */,
 				B34D4648275B12A000194E51 /* CrashlyticsLogger.swift in Sources */,
 				ACCEB21D2763A2230040140B /* SDSyncRootViewModel.swift in Sources */,
-				DDDC8B692799971A00F64803 /* NotesTextView.swift in Sources */,
 				B3A8CE9F2833F90E00DC3B38 /* LevelSampler.swift in Sources */,
 				335A8B2F2785D49100355D46 /* ShareSessionAPI.swift in Sources */,
 				DD123EC527BD35E8001083C3 /* SessionsForLocationDownloader.swift in Sources */,
@@ -2898,6 +2916,7 @@
 				ACD32A4F2600A8DD00818946 /* SettingsView.swift in Sources */,
 				4F8CDBD4265F8EE000976B25 /* SessionStorage.swift in Sources */,
 				AC006D29275F52CB00E99019 /* CSVMeasurementStream.swift in Sources */,
+				B3C6D0832890631900A25F5F /* LocationServiceAdapter.swift in Sources */,
 				B376DD23268091B80083FD2F /* BodyEncodingError.swift in Sources */,
 				DDB44C252704AF830027176E /* AveragingService.swift in Sources */,
 				336A909727A492A000851100 /* DropViewDelegate.swift in Sources */,
