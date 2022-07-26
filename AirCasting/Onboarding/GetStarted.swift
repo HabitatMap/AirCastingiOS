@@ -11,18 +11,25 @@ struct GetStarted: View {
     var completion: () -> Void
     var body: some View {
         VStack {
-            ZStack(alignment: .bottom) {
-                mainImage
-                logoImage
-            }
+            Spacer()
+            logoImage
             descriptionText
             if featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) {
                 continueToAirNearYouScreenButton
             } else {
                 startButton
             }
-            Spacer()
-        }
+        }.background(
+            VStack {
+                mainImage
+                GeometryReader { reader in
+                    Color.white
+                        .frame(width: reader.size.width,
+                               height: reader.size.height * 0.3,
+                               alignment: .bottom)
+                }
+            }
+        )
     }
 }
 
