@@ -15,6 +15,7 @@ protocol ShareSessionAPIServices {
 
 struct ShareSessionApi: ShareSessionAPIServices {
     @Injected private var urlProvider: URLProvider
+    @Injected private var apiClient: APIClient
     
     func sendSession(email: String, uuid: String, completion: @escaping (Result<Void, ShareSessionAPIError>) -> Void) {
         let url = urlProvider.baseAppURL.appendingPathComponent("api/sessions/export_by_uuid.json")
@@ -33,8 +34,6 @@ struct ShareSessionApi: ShareSessionAPIServices {
         var request = URLRequest.jsonGET(url: requestUrl)
         request.httpShouldHandleCookies = false
         request.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
-        
-        let apiClient = URLSession.shared
         
         _ = apiClient.requestTask(for: request) { result, _ in
             switch result {
