@@ -188,6 +188,17 @@ class SelectedSection: ObservableObject {
     @Published var section = DashboardSection.following
 }
 
+enum DashboardSection: String, CaseIterable {
+    case following = "Following"
+    case mobileActive = "Mobile active"
+    case mobileDormant = "Mobile dormant"
+    case fixed = "Fixed"
+    
+    var localizedString: String {
+        NSLocalizedString(rawValue, comment: "")
+    }
+}
+
 class EmptyDashboardButtonTapped: ObservableObject {
     @Published var mobileWasTapped = false
 }

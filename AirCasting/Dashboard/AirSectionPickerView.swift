@@ -21,6 +21,7 @@ struct AirSectionPickerView: View {
                         }.onChange(of: selection, perform: { section in
                             withAnimation(.easeInOut(duration: 0.2)) {
                                 section == .following ? scrollReader.scrollTo(DashboardSection.following) : nil
+                                section == .fixed ? scrollReader.scrollTo(DashboardSection.fixed) : nil
                             }
                         })
                         .buttonStyle(PickerButtonStyle(isSelected: section == selection))
@@ -39,17 +40,6 @@ struct AirSectionPickerView_Previews: PreviewProvider {
             .padding()
             .frame(width: 300)
             .previewLayout(.sizeThatFits)
-    }
-}
-
-enum DashboardSection: String, CaseIterable {
-    case following = "Following"
-    case mobileActive = "Mobile active"
-    case mobileDormant = "Mobile dormant"
-    case fixed = "Fixed"
-    
-    var localizedString: String {
-        NSLocalizedString(rawValue, comment: "")
     }
 }
 
