@@ -1,17 +1,16 @@
 {
   "images" : [
     {
-      "filename" : "ab3-img.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "ab3-img@2x.png",
+      "filename" : "airbeam_cable@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "ab3-img@3x.png",
+      "filename" : "airbeam_cable@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

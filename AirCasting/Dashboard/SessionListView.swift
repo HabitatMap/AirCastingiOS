@@ -65,7 +65,7 @@ struct SessionsListView: View {
             .coordinateSpace(name: listCoordinateSpaceName)
         }
         .frame(maxWidth: .infinity)
-        .background(Color.aircastingGray.opacity(0.05))
+        .background(Color.aircastingWhite.ignoresSafeArea())
     }
     
     private var emptySessionsView: some View {
@@ -83,7 +83,7 @@ struct SessionsListView: View {
                 }
             }
             .coordinateSpace(name: listCoordinateSpaceName)
-            .background(Color.aliceBlue)
+            .background(Color.aircastingWhite)
         }
     }
 }

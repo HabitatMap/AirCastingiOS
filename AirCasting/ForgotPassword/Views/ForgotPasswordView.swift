@@ -28,6 +28,7 @@ struct ForgotPasswordView<VM: ForgotPasswordViewModel>: View {
             .onChange(of: email, perform: { self.viewModel.emailChanged(to: $0) })
             .padding()
         }
+        .background(Color.aircastingBackground.ignoresSafeArea())
     }
     
     private var title: some View {

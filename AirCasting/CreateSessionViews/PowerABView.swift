@@ -30,9 +30,8 @@ struct PowerABView: View {
                 .buttonStyle(BlueButtonStyle())
         }
         .padding()
-        .onAppear(perform: {
-            sessionContext.deviceType = .AIRBEAM3
-        })
+        .onAppear(perform: { sessionContext.deviceType = .AIRBEAM3 })
+        .background(Color.aircastingBackground.ignoresSafeArea())
     }
 
     var titleLabel: some View {

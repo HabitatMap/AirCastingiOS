@@ -99,20 +99,26 @@ struct SettingsView: View {
 
     private var main: some View {
         Form {
-            Section() {
-                signOutLink
+            Group {
+                Section() {
+                    signOutLink
+                }
+                settingsSection
+                #if BETA || DEBUG
+                Section() {
+                    navigateToAppConfigurationButton
+                    shareLogsButton
+                    Text(Strings.Settings.crashlyticsSectionTitle)
+                    crashButton
+                    createErrorButton
+                }
+                #endif
+                appInfoSection
             }
-            settingsSection
-            #if BETA || DEBUG
-            Section() {
-                navigateToAppConfigurationButton
-                shareLogsButton
-                Text(Strings.Settings.crashlyticsSectionTitle)
-                crashButton
-                createErrorButton
-            }
-            #endif
-            appInfoSection
+            .listRowBackground(Color.listBackgroundColor)
+        }
+        .onAppear {
+            UITableView.appearance().backgroundColor = UIColor(Color.formBackgroundColor)
         }
         .listStyle(GroupedListStyle())
         .navigationBarTitle(Strings.Settings.title)
@@ -135,6 +141,7 @@ struct SettingsView: View {
             keepScreenOnSwitch
             satelliteMapSwitch
             twentyFourHourFormatSwitch
+            syncOnlyThroughWifiSwitch
             VStack(alignment: .leading) {
                 temperatureSwitch
                 Spacer()
@@ -189,6 +196,11 @@ struct SettingsView: View {
         settingSwitch(toogle: $userSettings.twentyFourHour,
                       label: Strings.Settings.twentyFourHourFormat)
     }
+    
+    private var syncOnlyThroughWifiSwitch: some View {
+        settingSwitch(toogle: $userSettings.syncOnlyThroughWifi,
+                      label: Strings.Settings.syncOnlyThroughWifi)
+    }
 
     private var keepScreenOnSwitch: some View {
         settingSwitch(toogle: $userSettings.keepScreenOn,
@@ -236,7 +248,7 @@ struct SettingsView: View {
                 HStack {
                     Text(Strings.Settings.backendSettings)
                         .font(Fonts.muliBoldHeading1)
-                        .accentColor(.black)
+                        .accentColor(.primary)
                     Spacer()
                     Image(systemName: "control")
                         .accentColor(.gray).opacity(0.6)
@@ -255,7 +267,7 @@ struct SettingsView: View {
                  HStack {
                      Text(Strings.Settings.clearSDTitle)
                          .font(Fonts.muliBoldHeading1)
-                         .accentColor(.black)
+                         .accentColor(.primary)
                      Spacer()
                      Image(systemName: "chevron.right")
                          .accentColor(.gray).opacity(0.6)

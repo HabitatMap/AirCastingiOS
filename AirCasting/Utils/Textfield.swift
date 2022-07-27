@@ -14,9 +14,9 @@ func createTextfield(placeholder: String, binding: Binding<String>, isInputValid
     .frame(height: 50)
     .overlay(
         RoundedRectangle(cornerRadius: 8)
-            .stroke(isInputValid ? .red : Color.aircastingGray.opacity(0.1), lineWidth: 1)
+            .stroke(isInputValid ? .red : Color.textFieldBorderColor, lineWidth: 1)
     )
-    .background(RoundedRectangle(cornerRadius: 8).fill(Color.aircastingGray.opacity(0.05)))
+    .background(RoundedRectangle(cornerRadius: 8).fill(Color.textFieldBackgroundColor))
 }
 
 func createSecuredTextfield(placeholder: String, binding: Binding<String>, isInputValid: Bool = false) -> some View {
@@ -27,7 +27,7 @@ func createSecuredTextfield(placeholder: String, binding: Binding<String>, isInp
     .disableAutocorrection(true)
     .overlay(
         RoundedRectangle(cornerRadius: 8)
-            .stroke(isInputValid ? .red : Color.aircastingGray.opacity(0.1), lineWidth: 1)
+            .stroke(isInputValid ? .red : Color.textFieldBorderColor, lineWidth: 1)
     )
-    .background(RoundedRectangle(cornerRadius: 8).fill(Color.aircastingGray.opacity(0.05)))
+    .background(RoundedRectangle(cornerRadius: 8).fill(Color.textFieldBackgroundColor))
 }

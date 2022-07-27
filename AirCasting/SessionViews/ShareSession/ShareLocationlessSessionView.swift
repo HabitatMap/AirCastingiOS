@@ -28,6 +28,7 @@ struct ShareLocationlessSessionView: View {
                 .sheet(isPresented: $viewModel.showShareSheet, content: { viewModel.getSharePage() })
                 .padding()
             }
+            .background(Color.aircastingBackground.ignoresSafeArea())
         }
     }
     

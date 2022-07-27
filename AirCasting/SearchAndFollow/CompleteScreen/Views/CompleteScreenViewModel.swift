@@ -82,11 +82,11 @@ class CompleteScreenViewModel: ObservableObject {
     }
     
     func mapTapped() {
-        isMapSelected = true
+        withAnimation { isMapSelected = true }
     }
     
     func chartTapped() {
-        isMapSelected = false
+        withAnimation { isMapSelected = false }
     }
     
     func selectedStream(with id: Int) {

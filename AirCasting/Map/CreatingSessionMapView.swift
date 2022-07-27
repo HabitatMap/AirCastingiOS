@@ -4,7 +4,6 @@
 import UIKit
 import SwiftUI
 import GoogleMaps
-import GooglePlaces
 import Resolver
 
 struct CreatingSessionMapView: UIViewRepresentable {
@@ -12,6 +11,7 @@ struct CreatingSessionMapView: UIViewRepresentable {
     typealias UIViewType = GMSMapView
     @InjectedObject private var userSettings: UserSettings
     var isMyLocationEnabled = false
+    @Environment(\.colorScheme) var colorScheme
     var startingLocation: CLLocationCoordinate2D?
     
     init(isMyLocationEnabled: Bool = false, startingLocation: CLLocationCoordinate2D? = nil) {
@@ -33,9 +33,9 @@ struct CreatingSessionMapView: UIViewRepresentable {
         
         mapView.settings.myLocationButton = isMyLocationEnabled
         mapView.isMyLocationEnabled = isMyLocationEnabled
-
+                
         do {
-            if let styleURL = Bundle.main.url(forResource: "style", withExtension: "json") {
+            if let styleURL = Bundle.main.url(forResource: colorScheme == .light ? "style" : "darkStyle", withExtension: "json") {
                 mapView.mapStyle = try GMSMapStyle(contentsOfFileURL: styleURL)
             } else {
                 Log.error("Unable to find style.json")
@@ -48,7 +48,15 @@ struct CreatingSessionMapView: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: GMSMapView, context: Context) {
-        //
+        do {
+            if let styleURL = Bundle.main.url(forResource: colorScheme == .light ? "style" : "darkStyle", withExtension: "json") {
+                uiView.mapStyle = try GMSMapStyle(contentsOfFileURL: styleURL)
+            } else {
+                Log.error("Unable to find style.json")
+            }
+        } catch {
+            Log.error("One or more of the map styles failed to load. \(error)")
+        }
     }
 
     class Coordinator: NSObject, UINavigationControllerDelegate, GMSMapViewDelegate {
