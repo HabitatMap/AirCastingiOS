@@ -49,8 +49,7 @@ struct ChooseCustomLocationView: View {
                       placePickerIsUpdating: $placePickerIsUpdating,
                       isUserInteracting: Binding.constant(true),
                       mapNotes: .constant([]),
-                      isMapOnPickerScreen: true,
-                      placePickerLocation: $location)
+                      isMapOnPickerScreen: true, placePickerLocation: $location)
     }
 
     var dot: some View {

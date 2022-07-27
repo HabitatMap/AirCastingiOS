@@ -9,30 +9,43 @@ import Resolver
 struct GoogleMapView: UIViewRepresentable {
     @Injected private var tracker: LocationTracker
     @InjectedObject private var userSettings: UserSettings
+    
+    @StateObject var butler: GoogleMapButler
+    
     @Binding var isUserInteracting: Bool
     @Binding var noteMarketTapped: Bool
     @Binding var noteNumber: Int
-    var liveModeOn: Bool
-    typealias UIViewType = GMSMapView
-    let pathPoints: [PathPoint]
-    private(set) var threshold: SensorThreshold?
-    var isMyLocationEnabled: Bool = false
-    private var onPositionChange: (([PathPoint]) -> ())? = nil
-    var isSessionFixed: Bool
-    let isMapOnPickerScreen: Bool
     @Binding var mapNotes: [MapNote]
-    let showMyLocationButton: Bool
-    @Environment(\.colorScheme) var colorScheme
-    
-    //MARK: - Place picker variables
     @Binding var placePickerIsUpdating: Bool
     @Binding var placePickerLocation: CLLocationCoordinate2D?
     
-    init(pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false, placePickerIsUpdating: Binding<Bool>, isUserInteracting: Binding<Bool>, isSessionActive: Bool = false, isSessionFixed: Bool = false, noteMarketTapped: Binding<Bool> = .constant(false), noteNumber: Binding<Int> = .constant(0), mapNotes: Binding<[MapNote]>, showMyLocationButton: Bool = true, isMapOnPickerScreen: Bool = false, placePickerLocation: Binding<CLLocationCoordinate2D?> = .constant(nil)) {
+    var liveModeOn: Bool
+    var isSessionFixed: Bool
+    
+    let pathPoints: [PathPoint]
+    let isMapOnPickerScreen: Bool
+    let showMyLocationButton: Bool
+    
+    private(set) var threshold: SensorThreshold?
+    private var onPositionChange: (([PathPoint]) -> ())? = nil
+    
+    @Environment(\.colorScheme) var colorScheme
+    
+    init(pathPoints: [PathPoint],
+         threshold: SensorThreshold? = nil,
+         placePickerIsUpdating: Binding<Bool>,
+         isUserInteracting: Binding<Bool>,
+         isSessionActive: Bool = false,
+         isSessionFixed: Bool = false,
+         noteMarketTapped: Binding<Bool> = .constant(false),
+         noteNumber: Binding<Int> = .constant(0),
+         mapNotes: Binding<[MapNote]>,
+         showMyLocationButton: Bool = true,
+         isMapOnPickerScreen: Bool = false,
+         placePickerLocation: Binding<CLLocationCoordinate2D?> = .constant(nil)) {
 
         self.pathPoints = pathPoints
         self.threshold = threshold
-        self.isMyLocationEnabled = isMyLocationEnabled
         self._placePickerIsUpdating = placePickerIsUpdating
         self._isUserInteracting = isUserInteracting
         self.liveModeOn = isSessionActive
@@ -43,38 +56,10 @@ struct GoogleMapView: UIViewRepresentable {
         self.showMyLocationButton = showMyLocationButton
         self.isMapOnPickerScreen = isMapOnPickerScreen
         self._placePickerLocation = placePickerLocation
-    }
-    
-    func makeUIView(context: Context) -> GMSMapView {
-        let startingPoint = setStartingPoint(points: pathPoints)
-        
-        let mapView = GMSMapView.map(withFrame: .zero,
-                                     camera: startingPoint)
-        mapView.settings.myLocationButton = showMyLocationButton
-        placeNotes(mapView, notes: mapNotes, context: context)
-        do {
-            if let styleURL = Bundle.main.url(forResource: colorScheme == .light ? "style" : "darkStyle", withExtension: "json") {
-                mapView.mapStyle = try GMSMapStyle(contentsOfFileURL: styleURL)
-            } else {
-                Log.error("Unable to find style.json")
-            }
-        } catch {
-            Log.error("One or more of the map styles failed to load. \(error)")
-        }
-        if userSettings.satteliteMap { mapView.mapType = .hybrid }
-        mapView.delegate = context.coordinator
-        mapView.isMyLocationEnabled = isMyLocationEnabled
-        drawPolyline(mapView, context: context)
-        context.coordinator.mapNotesCounter = mapNotes.count
-        context.coordinator.currentlyDisplayedPathPoints = pathPoints
-        context.coordinator.currentThresholdWitness = ThresholdWitness(sensorThreshold: threshold)
-        context.coordinator.currentThreshold = threshold
-        context.coordinator.myLocationSink = mapView.publisher(for: \.myLocation)
-            .sink { [weak mapView] (location) in
-                guard let coordinate = location?.coordinate else { return }
-                mapView?.animate(toLocation: coordinate)
-            }
-        return mapView
+        self._butler = .init(wrappedValue: .init(pathPoints: pathPoints,
+                                                 isMapOnPickerScreen: isMapOnPickerScreen,
+                                                 showMyLocationButton: showMyLocationButton,
+                                                 placePickerLocation: placePickerLocation.wrappedValue))
     }
     
     /// Adds an action for when the map viewport is changed.
@@ -85,29 +70,44 @@ struct GoogleMapView: UIViewRepresentable {
         return newSelf
     }
     
+    func makeUIView(context: Context) -> GMSMapView {
+        let mapView = butler.defineMakeUIVIew()
+        butler.placeNotes(mapView, notes: mapNotes, context: context)
+        butler.drawPolyline(mapView, context: context)
+        
+        mapView.delegate = context.coordinator
+        context.coordinator.mapNotesCounter = mapNotes.count
+        context.coordinator.currentlyDisplayedPathPoints = pathPoints
+        context.coordinator.currentThresholdWitness = ThresholdWitness(sensorThreshold: threshold)
+        context.coordinator.currentThreshold = threshold
+        context.coordinator.myLocationSink = mapView.publisher(for: \.myLocation)
+            .sink { [weak mapView] (location) in
+                guard let coordinate = location?.coordinate else { return }
+                mapView?.animate(toLocation: coordinate)
+            }
+        
+        return mapView
+    }
+    
     func updateUIView(_ uiView: GMSMapView, context: Context) {
         if mapNotes.count != context.coordinator.mapNotesCounter {
-            placeNotes(uiView, notes: mapNotes, context: context)
-            drawPolyline(uiView, context: context)
+            butler.placeNotes(uiView,
+                              notes: mapNotes,
+                              context: context)
+            butler.drawPolyline(uiView,
+                                context: context)
             context.coordinator.mapNotesCounter = mapNotes.count
         }
         
-        do {
-            if let styleURL = Bundle.main.url(forResource: colorScheme == .light ? "style" : "darkStyle", withExtension: "json") {
-                uiView.mapStyle = try GMSMapStyle(contentsOfFileURL: styleURL)
-            } else {
-                Log.error("Unable to find style.json")
-            }
-        } catch {
-            Log.error("One or more of the map styles failed to load. \(error)")
-        }
+        butler.applyStylying(to: uiView)
         
         guard isUserInteracting else { return }
         let thresholdWitness = ThresholdWitness(sensorThreshold: self.threshold)
         
         if pathPoints != context.coordinator.currentlyDisplayedPathPoints ||
             thresholdWitness != context.coordinator.currentThresholdWitness {
-            drawPolyline(uiView, context: context)
+            butler.drawPolyline(uiView,
+                                context: context)
             context.coordinator.currentlyDisplayedPathPoints = pathPoints
             context.coordinator.currentThresholdWitness = ThresholdWitness(sensorThreshold: threshold)
             context.coordinator.currentThreshold = threshold
@@ -118,7 +118,7 @@ struct GoogleMapView: UIViewRepresentable {
 
         // MARK: Picker screen logic
         if placePickerIsUpdating {
-            uiView.moveCamera(cameraUpdate)
+            uiView.moveCamera(butler.cameraUpdate)
             DispatchQueue.main.async {
                 placePickerIsUpdating = false
             }
@@ -127,7 +127,7 @@ struct GoogleMapView: UIViewRepresentable {
         // Update camera's starting point
         guard context.coordinator.shouldAutoTrack else { return }
         DispatchQueue.main.async {
-            uiView.moveCamera(cameraUpdate)
+            uiView.moveCamera(butler.cameraUpdate)
             if uiView.camera.zoom > 16 {
                 // The zoom is set automatically somehow which results sometimes in 'too close' map
                 // This helps us to fix it and still manage to fit into the 'bigger picture' if needed because of the long session
@@ -135,146 +135,10 @@ struct GoogleMapView: UIViewRepresentable {
             }
         }
     }
-    
-    var cameraUpdate: GMSCameraUpdate {
-        // MARK: - Picker screen logic
-        if isMapOnPickerScreen {
-            let location = placePickerLocation ?? CLLocationCoordinate2D(latitude: 0, longitude: 0)
-            return GMSCameraUpdate.setTarget(location)
-        }
-        
-        guard !pathPoints.isEmpty else {
-            // We are not sure if this can ever happen
-            let location = tracker.location.value?.coordinate ?? CLLocationCoordinate2D(latitude: 0, longitude: 0)
-            return GMSCameraUpdate.setTarget(location)
-        }
-        
-        let initialBounds = GMSCoordinateBounds()
-        guard liveModeOn else {
-            let pathPointsBoundingBox = pathPoints.reduce(initialBounds) { bounds, point in
-                bounds.includingCoordinate(point.location)
-            }
-            return GMSCameraUpdate.fit(pathPointsBoundingBox, withPadding: 1.0)
-        }
-        let pathPointsBoundingBox = initialBounds.includingCoordinate(pathPoints.last!.location)
-        return GMSCameraUpdate.fit(pathPointsBoundingBox, withPadding: 1.0)
-    }
-    
-    func setStartingPoint(points: [PathPoint]) -> GMSCameraPosition {
-        guard !isMapOnPickerScreen else {
-            // MARK: - Picker screen logic
-            let lat = tracker.location.value?.coordinate.latitude ?? 37.35
-            let long = tracker.location.value?.coordinate.longitude ?? -122.05
-            let newCameraPosition = GMSCameraPosition.camera(withLatitude: lat,
-                                                             longitude: long,
-                                                             zoom: 16)
-            return newCameraPosition
-        }
-        
-        // This get's overwritten anyway by camera update so setting starting point only makes sense if shouldAutoTrack is set to false (so when it's not a place picker screen)
-        if let location = tracker.location.value?.coordinate {
-            let long = location.longitude
-            let lat = location.latitude
-            
-            let newCameraPosition = GMSCameraPosition.camera(withLatitude: lat,
-                                                             longitude: long,
-                                                             zoom: 16)
-            return newCameraPosition
-        } else {
-            let appleParkPosition = GMSCameraPosition.camera(withLatitude: 37.35,
-                                                             longitude: -122.05,
-                                                             zoom: 16)
-            return appleParkPosition
-        }
-    }
-    
-    func color(point: PathPoint) -> UIColor {
-        guard let thresholds = threshold else { return .white }
-        let formatter = Resolver.resolve(ThresholdFormatter.self, args: thresholds)
-        let measurement = formatter.value(from: point.measurement)
-        
-        return GoogleMapView.color(value: measurement, threshold: thresholds)
-    }
-    
-    static func color(value: Int32, threshold: SensorThreshold?) -> UIColor {
-        guard let threshold = threshold else { return .white }
-        
-        let veryLow = threshold.thresholdVeryLow
-        let low = threshold.thresholdLow
-        let medium = threshold.thresholdMedium
-        let high = threshold.thresholdHigh
-        let veryHigh = threshold.thresholdVeryHigh
-        
-        switch value {
-        case veryLow ..< low:
-            return UIColor.aircastingGreen
-        case low ..< medium:
-            return UIColor.aircastingYellow
-        case medium ..< high:
-            return UIColor.aircastingOrange
-        case high ... veryHigh:
-            return UIColor.aircastingRed
-        default:
-            return UIColor.aircastingGray
-        }
-    }
-    
-    fileprivate func drawLastMeasurementPoint(_ dot: GMSMarker) {
-        guard liveModeOn || isSessionFixed else {
-            dot.map = nil
-            return
-        }
-        
-        guard let last = pathPoints.last else { return }
-        
-        let mainPoint = UIImage.imageWithColor(color: color(point: last), size: CGSize(width: Constants.Map.dotWidth, height: Constants.Map.dotHeight))
-        dot.icon = mainPoint
-    }
-    
-    func drawPolyline(_ uiView: GMSMapView, context: Context) {
-        // Drawing the path
-        let path = GMSMutablePath()
-        let dot = context.coordinator.dot
-        
-        for point in pathPoints {
-            let coordinate = point.location
-            path.add(coordinate)
-            
-            dot.position = coordinate
-            dot.map = uiView
-        }
-        
-        drawLastMeasurementPoint(dot)
-        
-        let polyline = context.coordinator.polyline
-        
-        polyline.path = path
-        polyline.strokeColor = .accentColor
-        polyline.strokeWidth = CGFloat(Constants.Map.polylineWidth)
-        polyline.map = uiView
-    }
-    
-    func placeNotes(_ uiView: GMSMapView, notes: [MapNote], context: Context) {
-        context.coordinator.noteMarkers.forEach { marker in
-            marker.map = nil
-        }
-        context.coordinator.noteMarkers = []
-        DispatchQueue.main.async {
-            notes.forEach { note in
-                let marker = GMSMarker()
-                // 10 used here to be sure it will be on top of evertyhing
-                marker.zIndex = 10
-                let markerImage = note.markerImage
-                let markerView = UIImageView(image: markerImage.withRenderingMode(.alwaysOriginal))
-                marker.position = note.location
-                marker.userData = note.id
-                marker.iconView = markerView
-                marker.map = uiView
-                context.coordinator.noteMarkers.append(marker)
-            }
-        }
-    }
-    
+}
+
+// MARK: Coordinator
+extension GoogleMapView {
     class Coordinator: NSObject, UINavigationControllerDelegate, GMSMapViewDelegate {
         var parent: GoogleMapView!
         let polyline = GMSPolyline()

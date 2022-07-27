@@ -476,6 +476,7 @@
 		FAB34935281AC28E001F6E58 /* AirBeamStreamPrefix.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB34934281AC28E001F6E58 /* AirBeamStreamPrefix.swift */; };
 		FAC3B67A283B96480095D915 /* ChartMeasurementsFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC3B679283B96480095D915 /* ChartMeasurementsFilter.swift */; };
 		FAEE8656289154DC00078FCF /* GoogleMapButler.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAEE8655289154DC00078FCF /* GoogleMapButler.swift */; };
+		FAEE8658289155AD00078FCF /* GoogleMapCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAEE8657289155AD00078FCF /* GoogleMapCore.swift */; };
 		FAF3B4DD28057A3300F0F4B0 /* SensorType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF3B4DC28057A3300F0F4B0 /* SensorType.swift */; };
 		FAF3B4E128057EC100F0F4B0 /* MeasurementType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF3B4E028057EC100F0F4B0 /* MeasurementType.swift */; };
 		FAF3B4E528058B6700F0F4B0 /* ProtectedScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF3B4E428058B6700F0F4B0 /* ProtectedScreen.swift */; };
@@ -970,6 +971,7 @@
 		FAB34934281AC28E001F6E58 /* AirBeamStreamPrefix.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirBeamStreamPrefix.swift; sourceTree = "<group>"; };
 		FAC3B679283B96480095D915 /* ChartMeasurementsFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartMeasurementsFilter.swift; sourceTree = "<group>"; };
 		FAEE8655289154DC00078FCF /* GoogleMapButler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleMapButler.swift; sourceTree = "<group>"; };
+		FAEE8657289155AD00078FCF /* GoogleMapCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleMapCore.swift; sourceTree = "<group>"; };
 		FAF3B4DC28057A3300F0F4B0 /* SensorType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorType.swift; sourceTree = "<group>"; };
 		FAF3B4E028057EC100F0F4B0 /* MeasurementType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementType.swift; sourceTree = "<group>"; };
 		FAF3B4E428058B6700F0F4B0 /* ProtectedScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProtectedScreen.swift; sourceTree = "<group>"; };
@@ -2476,6 +2478,7 @@
 			children = (
 				AC93B8FD25C02E0B003D0A0D /* GoogleMapView.swift */,
 				FAEE8655289154DC00078FCF /* GoogleMapButler.swift */,
+				FAEE8657289155AD00078FCF /* GoogleMapCore.swift */,
 			);
 			path = GoogleMap;
 			sourceTree = "<group>";
@@ -2825,6 +2828,7 @@
 				ACCEB21D2763A2230040140B /* SDSyncRootViewModel.swift in Sources */,
 				335A8B2F2785D49100355D46 /* ShareSessionAPI.swift in Sources */,
 				DD123EC527BD35E8001083C3 /* SessionsForLocationDownloader.swift in Sources */,
+				FAEE8658289155AD00078FCF /* GoogleMapCore.swift in Sources */,
 				DD123EC527BD35E8001083C3 /* SessionsForLocationDownloader.swift in Sources */,
 				B33DB5762686161300ED1344 /* SensorName.swift in Sources */,
 				DD8AFE4F272886D700ED1CED /* ThresholdWitness.swift in Sources */,
