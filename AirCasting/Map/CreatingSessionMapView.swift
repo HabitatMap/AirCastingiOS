@@ -4,7 +4,6 @@
 import UIKit
 import SwiftUI
 import GoogleMaps
-import GooglePlaces
 import Resolver
 
 struct CreatingSessionMapView: UIViewRepresentable {
