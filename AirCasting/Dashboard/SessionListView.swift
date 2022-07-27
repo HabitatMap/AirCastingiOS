@@ -17,9 +17,9 @@ struct SessionsListView: View {
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
     
     private let listCoordinateSpaceName = "listCoordinateSpace"
-    private let selectedSection: SelectedSection
+    private let selectedSection: DashboardSection
 
-    init(selectedSection: SelectedSection, isRefreshing: Binding<Bool>, context: NSManagedObjectContext) {
+    init(selectedSection: DashboardSection, isRefreshing: Binding<Bool>, context: NSManagedObjectContext) {
         self.selectedSection = selectedSection
         _isRefreshing = .init(projectedValue: isRefreshing)
         _coreDataHook = .init(wrappedValue: .init(context: context))

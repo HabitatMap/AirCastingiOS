@@ -16,7 +16,7 @@ struct SessionHeaderView: View {
     @Binding var isCollapsed: Bool
     @State var chevronIndicator = "chevron.down"
     @InjectedObject private var bluetoothManager: BluetoothManager
-    @EnvironmentObject var selectedSection: SelectSection
+    @EnvironmentObject var selectedSection: SelectedSection
     @ObservedObject var session: SessionEntity
     @State private var showingNoConnectionAlert = false
     @State private var alert: AlertInfo?
@@ -116,7 +116,7 @@ private extension SessionHeaderView {
                     .font(Fonts.moderateRegularHeading4)
                     .foregroundColor(Color.aircastingTimeGray)
                 Spacer()
-                (isMenuNeeded && selectedSection.selectedSection != .following) ? actionsMenu : nil
+                (isMenuNeeded && selectedSection.section != .following) ? actionsMenu : nil
             }
             nameLabelAndExpandButton
         }
