@@ -58,6 +58,10 @@ class GoogleMapButler: ObservableObject {
         coreMap.apllyStylying(to: mapView)
     }
     
+    func defineMapType(_ uiView: GMSMapView) {
+        if userSettings.satteliteMap { uiView.mapType = .hybrid } else { uiView.mapType = .normal }
+    }
+    
     func placeNotes(_ uiView: GMSMapView, notes: [MapNote], context: UIViewRepresentableContext<GoogleMapView>) {
         context.coordinator.noteMarkers.forEach { marker in
             marker.map = nil

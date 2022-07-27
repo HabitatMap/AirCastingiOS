@@ -8,7 +8,6 @@ import Resolver
 
 struct GoogleMapView: UIViewRepresentable {
     @Injected private var tracker: LocationTracker
-    @InjectedObject private var userSettings: UserSettings
     
     @StateObject var butler: GoogleMapButler
     
@@ -24,7 +23,6 @@ struct GoogleMapView: UIViewRepresentable {
     
     let pathPoints: [PathPoint]
     let isMapOnPickerScreen: Bool
-    let showMyLocationButton: Bool
     
     private(set) var threshold: SensorThreshold?
     private var onPositionChange: (([PathPoint]) -> ())? = nil
@@ -53,7 +51,6 @@ struct GoogleMapView: UIViewRepresentable {
         self._noteMarketTapped = noteMarketTapped
         self._noteNumber = noteNumber
         self._mapNotes = mapNotes
-        self.showMyLocationButton = showMyLocationButton
         self.isMapOnPickerScreen = isMapOnPickerScreen
         self._placePickerLocation = placePickerLocation
         self._butler = .init(wrappedValue: .init(pathPoints: pathPoints,
@@ -77,14 +74,12 @@ struct GoogleMapView: UIViewRepresentable {
         
         mapView.delegate = context.coordinator
         context.coordinator.mapNotesCounter = mapNotes.count
-        context.coordinator.currentlyDisplayedPathPoints = pathPoints
-        context.coordinator.currentThresholdWitness = ThresholdWitness(sensorThreshold: threshold)
-        context.coordinator.currentThreshold = threshold
         context.coordinator.myLocationSink = mapView.publisher(for: \.myLocation)
             .sink { [weak mapView] (location) in
                 guard let coordinate = location?.coordinate else { return }
                 mapView?.animate(toLocation: coordinate)
             }
+        updateContextThresholdAndPathPoints(context: context)
         
         return mapView
     }
@@ -106,15 +101,12 @@ struct GoogleMapView: UIViewRepresentable {
         
         if pathPoints != context.coordinator.currentlyDisplayedPathPoints ||
             thresholdWitness != context.coordinator.currentThresholdWitness {
-            butler.drawPolyline(uiView,
-                                context: context)
-            context.coordinator.currentlyDisplayedPathPoints = pathPoints
-            context.coordinator.currentThresholdWitness = ThresholdWitness(sensorThreshold: threshold)
-            context.coordinator.currentThreshold = threshold
+            butler.drawPolyline(uiView, context: context)
+            updateContextThresholdAndPathPoints(context: context)
             context.coordinator.drawHeatmap(uiView)
         }
         
-        if userSettings.satteliteMap { uiView.mapType = .hybrid } else { uiView.mapType = .normal }
+        butler.defineMapType(uiView)
 
         // MARK: Picker screen logic
         if placePickerIsUpdating {
@@ -128,12 +120,16 @@ struct GoogleMapView: UIViewRepresentable {
         guard context.coordinator.shouldAutoTrack else { return }
         DispatchQueue.main.async {
             uiView.moveCamera(butler.cameraUpdate)
-            if uiView.camera.zoom > 16 {
-                // The zoom is set automatically somehow which results sometimes in 'too close' map
-                // This helps us to fix it and still manage to fit into the 'bigger picture' if needed because of the long session
-                uiView.animate(toZoom: 16)
-            }
+            if uiView.camera.zoom > 16 {  uiView.animate(toZoom: 16) }
+            // The zoom is set automatically somehow which results sometimes in 'too close' map
+            // This helps us to fix it and still manage to fit into the 'bigger picture' if needed because of the long session
         }
+    }
+    
+    func updateContextThresholdAndPathPoints(context: Context) {
+        context.coordinator.currentlyDisplayedPathPoints = pathPoints
+        context.coordinator.currentThresholdWitness = ThresholdWitness(sensorThreshold: threshold)
+        context.coordinator.currentThreshold = threshold
     }
 }
 
