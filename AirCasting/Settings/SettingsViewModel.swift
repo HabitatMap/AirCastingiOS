@@ -14,9 +14,9 @@ class SettingsViewModel: ObservableObject {
     var SDClearingRouteProcess = true
     let username = "\(KeychainStorage(service: Bundle.main.bundleIdentifier!).getProfileData(for: .username))"
     
-    @Injected private var urlProvider: URLProvider
     @Injected private var locationAuthorization: LocationAuthorization
     @Injected private var bluetoothHandler: BluetoothHandler
+    @Injected private var controller: SettingsController
     let sessionContext: CreateSessionContext
 
 
@@ -40,5 +40,9 @@ class SettingsViewModel: ObservableObject {
         case .location: locationScreenGo.toggle()
         case .airBeam, .mobile: startSDClear.toggle()
         }
+    }
+    
+    func dormantStreamAlertSettingChanged(to value: Bool) {
+        controller.changeDormantAlertSettings(to: value)
     }
 }

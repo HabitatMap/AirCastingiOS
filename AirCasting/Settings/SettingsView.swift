@@ -138,6 +138,11 @@ struct SettingsView: View {
                     disableMappingDescription
                 }
             }
+            VStack(alignment: .leading) {
+                dormantSessionsAlertSwitch
+                Spacer()
+                dormantSessionsAlertDescription
+            }
             keepScreenOnSwitch
             satelliteMapSwitch
             twentyFourHourFormatSwitch
@@ -225,6 +230,19 @@ struct SettingsView: View {
     
     private var disableMappingDescription: some View {
         Text(Strings.Settings.disableMappingDescription)
+            .font(Fonts.muliRegularHeading3)
+            .foregroundColor(.aircastingGray)
+    }
+    
+    
+    private var dormantSessionsAlertSwitch: some View {
+        settingSwitch(toogle: $userSettings.dormantSessionsAlert,
+                      label: Strings.Settings.dormantSessionsAlert)
+            .onChange(of: userSettings.dormantSessionsAlert, perform: { newValue in viewModel.dormantStreamAlertSettingChanged(to: newValue) })
+    }
+    
+    private var dormantSessionsAlertDescription: some View {
+        Text(Strings.Settings.dormantSessionsAlertDescription)
             .font(Fonts.muliRegularHeading3)
             .foregroundColor(.aircastingGray)
     }

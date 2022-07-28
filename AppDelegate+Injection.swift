@@ -154,6 +154,8 @@ extension Resolver: ResolverRegistering {
         
         // MARK: - Settings
         main.register { UserSettings(userDefaults: .standard) }.scope(.cached)
+        main.register { DefaultSettingsController() as SettingsController }
+        
         
         // MARK: - Services
         main.register { DownloadMeasurementsService() }.implements(MeasurementUpdatingService.self).scope(.cached)
