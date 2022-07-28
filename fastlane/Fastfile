@@ -44,6 +44,7 @@ platform :ios do
          git_commit(path: "", message: "Beta releasae of #{version}b#{build}")
       rescue => ex
          reset_git_repo(skip_clean: true)
+         raise
       end
    end
 
@@ -76,6 +77,7 @@ platform :ios do
          sh("git push -u origin release/#{version}")
       rescue => ex
          reset_git_repo(skip_clean: true)
+         raise
       end
    end
 
@@ -143,6 +145,7 @@ platform :ios do
          sh("git push -u origin release/#{version}")
       rescue => ex
          reset_git_repo(skip_clean: true)
+         raise
       end
    end
 
