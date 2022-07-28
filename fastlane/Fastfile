@@ -16,6 +16,11 @@ default_platform(:ios)
 
 platform :ios do
    desc "AirCastingApp"
+
+   before_all do |lane|
+      tests
+   end
+
    lane :beta do
       ensure_git_branch(branch: "develop")
       ensure_git_status_clean
@@ -24,6 +29,7 @@ platform :ios do
       build = get_build_number
       begin
          cocoapods
+
          add_badge
          output_dir = "./build_ipa/#{version}b#{build}(BT)"
          build_app(workspace: "AirCasting.xcworkspace", scheme: "AirCasting", export_method: "ad-hoc", silent: "true", output_directory: output_dir, configuration: "Beta")
@@ -148,6 +154,10 @@ platform :ios do
          raise
       end
    end
+
+   lane :tests do
+      run_tests(scheme: "AirCasting")
+    end
 
    private_lane :test_flight do
       cocoapods
