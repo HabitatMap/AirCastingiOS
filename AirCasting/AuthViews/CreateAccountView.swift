@@ -147,7 +147,7 @@ private extension CreateAccountView {
             UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
             
             guard networkChecker.connectionAvailable else {
-                alert = InAppAlerts.noNetworkAlert()
+                alert = InAppAlerts.noNetworkAuthorizationAlert()
                 return
             }
             
