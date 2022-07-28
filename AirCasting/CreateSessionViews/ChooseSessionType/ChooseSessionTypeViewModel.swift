@@ -22,7 +22,7 @@ class ChooseSessionTypeViewModel: ObservableObject {
     @Published var isInfoPresented: Bool = false
     @Published var alert: AlertInfo?
     @Injected private var networkChecker: NetworkChecker
-    @Injected private var locationHandler: LocationHandler
+    @Injected private var locationAuthorization: LocationAuthorization
     @Injected private var bluetoothHandler: BluetoothHandler
     @Injected private var userSettings: UserSettings
     @Injected private var urlProvider: URLProvider
@@ -97,6 +97,7 @@ class ChooseSessionTypeViewModel: ObservableObject {
     }
     
     private func mobileSessionNextStep() -> ProceedToView {
-        !userSettings.disableMapping && locationHandler.isLocationDenied() ? .location : .mobile
+        let isLocationDenied = locationAuthorization.locationState != .granted
+        return !userSettings.disableMapping && isLocationDenied ? .location : .mobile
     }
 }

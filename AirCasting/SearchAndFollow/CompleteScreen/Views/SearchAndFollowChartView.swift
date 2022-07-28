@@ -21,7 +21,7 @@ struct SearchAndFollowChartView: UIViewRepresentable {
         guard !viewModel.entries.isEmpty else { return }
         
         let entries = viewModel.entries.map { dot -> ChartDataEntry in
-            ChartDataEntry(x: dot.xPosition, y: dot.value)
+            ChartDataEntry(x: dot.xPosition, y: round(dot.value))
         }
         
         let dataSet = LineChartDataSet(entries: entries)

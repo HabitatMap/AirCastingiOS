@@ -2,6 +2,7 @@
 //
 
 import SwiftUI
+import Resolver
 
 struct StaticSessionHeader: View {
     @StateObject var viewModel: StaticSessionHeaderViewModel
@@ -53,8 +54,7 @@ private extension StaticSessionHeader {
     }
 
     func adaptTimeAndDate() -> Text {
-        let formatter = DateFormatters.SessionCartView.utcDateIntervalFormatter
-
+        let formatter: DateIntervalFormatter = DateFormatters.SessionCardView.shared.utcDateIntervalFormatter
         let start = viewModel.sessionStartTime
         let end = viewModel.sessionEndTime
 

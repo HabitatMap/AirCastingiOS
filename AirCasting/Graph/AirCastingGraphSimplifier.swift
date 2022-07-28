@@ -36,6 +36,6 @@ final class AirCastingGraphSimplifier {
         let XPoints = temporaryPoints.map( {$0.x} ).reduce(0, +)
         let YPoints = temporaryPoints.map( {$0.y} ).reduce(0, +)
         
-        return ChartDataEntry(x: Double(XPoints/sumOfPoints), y: Double(YPoints/sumOfPoints))
+        return ChartDataEntry(x: round(Double(XPoints/sumOfPoints)), y: round(Double(YPoints/sumOfPoints)))
     }
 }

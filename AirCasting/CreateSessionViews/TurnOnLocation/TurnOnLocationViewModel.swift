@@ -13,20 +13,20 @@ class TurnOnLocationViewModel: ObservableObject {
     @Published var alert: AlertInfo?
     var isSDClearProcess: Bool
 
-    @Injected private var locationHandler: LocationHandler
+    @Injected private var locationAuthorization: LocationAuthorization
     @Injected private var bluetoothHandler: BluetoothHandler
     private let sessionContext: CreateSessionContext
     
     var shouldShowAlert: Bool {
-        return locationHandler.isLocationDenied()
+        locationAuthorization.locationState == .denied
     }
     
     var isMobileSession: Bool {
-        return sessionContext.sessionType == .mobile
+        sessionContext.sessionType == .mobile
     }
     
     var getSessionContext: CreateSessionContext {
-        return sessionContext
+        sessionContext
     }
     
     init(sessionContext: CreateSessionContext, isSDClearProcess: Bool) {
@@ -35,11 +35,11 @@ class TurnOnLocationViewModel: ObservableObject {
     }
     
     func requestLocationAuthorisation() {
-        locationHandler.requestAuthorisation()
+        locationAuthorization.requestAuthorization()
     }
     
     func checkIfBluetoothDenied() -> Bool {
-       return bluetoothHandler.isBluetoothDenied()
+       bluetoothHandler.isBluetoothDenied()
     }
     
     func onButtonClick() {

@@ -2,7 +2,7 @@
 //  ConfirmCreatingSession.swift
 //  AirCasting
 //
-//  Created by Anna Olak on 22/02/2021.
+//  Created by Lunar on 22/02/2021.
 //
 
 import AirCastingStyling
@@ -20,16 +20,33 @@ struct ConfirmCreatingSessionView: View {
     @State private var isPresentingAlert: Bool = false
     @EnvironmentObject var selectedSection: SelectSection
     @EnvironmentObject private var sessionContext: CreateSessionContext
-    @InjectedObject private var locationTracker: LocationTracker
+    @Injected private var locationTracker: LocationTracker
     @EnvironmentObject private var tabSelection: TabBarSelection
     @Binding var creatingSessionFlowContinues: Bool
 
     var sessionName: String
     private var sessionType: String { (sessionContext.sessionType ?? .fixed).description.lowercased() }
+    private var shouldTrackLocation: Bool { sessionContext.sessionType == .mobile && !sessionContext.locationless }
+    
+    init(creatingSessionFlowContinues: Binding<Bool>, sessionName: String) {
+        _creatingSessionFlowContinues = .init(projectedValue: creatingSessionFlowContinues)
+        self.sessionName = sessionName
+    }
 
     var body: some View {
         LoadingView(isShowing: $isActive) {
             contentViewWithAlert
+                .onAppear {
+                    if shouldTrackLocation {
+                        // We need to start tracking location to save the most recent location as the session starting location
+                        locationTracker.start()
+                    }
+                }
+                .onDisappear {
+                    if shouldTrackLocation {
+                        locationTracker.stop()
+                    }
+                }
         }
     }
 
@@ -93,7 +110,7 @@ struct ConfirmCreatingSessionView: View {
                             CreatingSessionMapView(isMyLocationEnabled: true)
                         }
                     } else if !(sessionContext.isIndoor ?? false) {
-                        CreatingSessionMapView(isMyLocationEnabled: false)
+                        CreatingSessionMapView(isMyLocationEnabled: false, startingLocation: sessionContext.startingLocation)
                             .disabled(true)
                         // It needs to be disabled to prevent user interaction (swiping map) because it is only conformation screen
                         dot
@@ -147,16 +164,11 @@ extension ConfirmCreatingSessionView {
         #endif
         if sessionContext.sessionType == .fixed || sessionContext.locationless {
             if sessionContext.isIndoor! || sessionContext.locationless {
-                locationTracker.googleLocation = [PathPoint.fakePathPoint]
+                sessionContext.saveCurrentLocation(lat: 200, log: 200)
             }
-            guard let lat: Double = (locationTracker.googleLocation.last?.location.latitude),
-                  let lon: Double = (locationTracker.googleLocation.last?.location.longitude) else { return }
-#warning("Do something with exposed googleLocation")
-            sessionContext.saveCurrentLocation(lat: lat, log: lon)
         } else {
-            guard let lat = (locationTracker.locationManager.location?.coordinate.latitude),
-                  let lon = (locationTracker.locationManager.location?.coordinate.longitude) else { return }
-            locationTracker.googleLocation = [PathPoint(location: CLLocationCoordinate2D(latitude: lat, longitude: lon), measurementTime: DateBuilder.getFakeUTCDate())]
+            guard let lat = (locationTracker.location.value?.coordinate.latitude),
+                  let lon = (locationTracker.location.value?.coordinate.longitude) else { return }
             sessionContext.saveCurrentLocation(lat: lat, log: lon)
         }
     }

@@ -10,20 +10,18 @@ struct GetStarted: View {
     
     var completion: () -> Void
     var body: some View {
-        NavigationView {
-            VStack {
-                ZStack(alignment: .bottom) {
-                    mainImage
-                    logoImage
-                }
-                descriptionText
-                if featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) {
-                    continueToAirNearYouScreenButton
-                } else {
-                    startButton
-                }
-                Spacer()
+        VStack {
+            ZStack(alignment: .bottom) {
+                mainImage
+                logoImage
             }
+            descriptionText
+            if featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) {
+                continueToAirNearYouScreenButton
+            } else {
+                startButton
+            }
+            Spacer()
         }
     }
 }
@@ -61,14 +59,14 @@ private extension GetStarted {
     
     var getStarted: some View {
         Text(Strings.OnboardingGetStarted.getStarted)
-            .font(Fonts.moderateRegularHeading2)
+            .font(Fonts.moderateBoldHeading1)
             .frame(maxWidth: .infinity)
             .navigationBarHidden(true)
             .buttonStyle(BlueTextButtonStyle())
             .padding(12)
             .background(
                 RoundedRectangle(cornerRadius: 5)
-                    .stroke(lineWidth: 0.1)
+                    .stroke(lineWidth: 0.2)
                     .accentColor(Color.aircastingGray)
             )
             .padding()

@@ -29,6 +29,7 @@ struct SettingsView: View {
             NavigationView {
                 main
             }
+            .navigationViewStyle(.stack)
             .fullScreenCover(isPresented: $viewModel.startSDClear) {
                 CreatingSessionFlowRootView {
                     SDRestartABView(isSDClearProcess: viewModel.SDClearingRouteProcess,
@@ -133,6 +134,7 @@ struct SettingsView: View {
             }
             keepScreenOnSwitch
             satelliteMapSwitch
+            twentyFourHourFormatSwitch
             VStack(alignment: .leading) {
                 temperatureSwitch
                 Spacer()
@@ -181,6 +183,11 @@ struct SettingsView: View {
     private var satelliteMapSwitch: some View {
         settingSwitch(toogle: $userSettings.satteliteMap,
                       label: Strings.Settings.satelliteMap)
+    }
+    
+    private var twentyFourHourFormatSwitch: some View {
+        settingSwitch(toogle: $userSettings.twentyFourHour,
+                      label: Strings.Settings.twentyFourHourFormat)
     }
 
     private var keepScreenOnSwitch: some View {
