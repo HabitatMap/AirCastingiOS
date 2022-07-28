@@ -868,6 +868,11 @@ struct Strings {
                                                             comment: "")
     }
     
+    enum NetworkAuthorizationAlert {
+        static let alertMessage: String = NSLocalizedString("Connect to the internet to create a profile or sign in.",
+                                                            comment: "")
+    }
+    
     enum MicrophoneAlert {
         static let title: String = NSLocalizedString("Allow AirCasting to record audio",
                                                      comment: "")
