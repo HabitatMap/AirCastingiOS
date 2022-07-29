@@ -10,6 +10,7 @@ class SettingsViewModel: ObservableObject {
     @Published var startSDClear = false
     @Published var BTScreenGo = false
     @Published var locationScreenGo = false
+    @Published var alert: AlertInfo?
     
     var SDClearingRouteProcess = true
     let username = "\(KeychainStorage(service: Bundle.main.bundleIdentifier!).getProfileData(for: .username))"
@@ -17,6 +18,7 @@ class SettingsViewModel: ObservableObject {
     @Injected private var locationAuthorization: LocationAuthorization
     @Injected private var bluetoothHandler: BluetoothHandler
     @Injected private var controller: SettingsController
+    @Injected private var userSettings: UserSettings
     let sessionContext: CreateSessionContext
 
 
@@ -43,6 +45,16 @@ class SettingsViewModel: ObservableObject {
     }
     
     func dormantStreamAlertSettingChanged(to value: Bool) {
-        controller.changeDormantAlertSettings(to: value)
+        controller.changeDormantAlertSettings(to: value) { result in
+            switch result {
+            case .success():
+                Log.info("## success")
+            case .failure(let error):
+//                self.userSettings.dormantSessionsAlert = !value
+                DispatchQueue.main.async {
+                    self.alert = InAppAlerts.failedSharingAlert()
+                }
+            }
+        }
     }
 }

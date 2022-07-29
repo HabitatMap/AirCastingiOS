@@ -50,6 +50,9 @@ class SessionsForLocationDownloaderDefault: SessionsForLocationDownloader {
             var request = URLRequest.jsonGET(url: url)
             
             try authorization.authorise(request: &request)
+            
+            Log.info("## \(request)")
+            
             client.requestTask(for: request) { [responseValidator] response, _ in
                 switch response {
                 case .failure(let error):

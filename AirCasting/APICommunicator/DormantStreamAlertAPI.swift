@@ -5,6 +5,7 @@ import Foundation
 import Resolver
 
 enum DormantStreamAlertAPIError: Error {
+    case wrongRequest
     case failedRequest(Error)
 }
 
@@ -12,15 +13,43 @@ struct DormantStreamAlertAPI {
     @Injected private var urlProvider: URLProvider
     @Injected private var apiClient: APIClient
     @Injected private var validator: HTTPResponseValidator
+    @Injected private var authorization: RequestAuthorisationService
+    
+    private let encoder = JSONEncoder()
+    private let decoder = JSONDecoder()
+    
+    struct Params: Encodable {
+        private let data: Nested
+        
+        struct Nested: Encodable {
+            let sessionStoppedAlert: String
+        }
+        
+        init(value: Bool) {
+            self.data = Nested(sessionStoppedAlert: String(value))
+        }
+    }
+    
+    struct Output: Decodable {
+        let action: String
+    }
     
     func sendNewSetting(value: Bool, completion: @escaping (Result<Void, DormantStreamAlertAPIError>) -> Void) {
         let url = urlProvider.baseAppURL.appendingPathComponent("api/user/settings")
         
-        let params = ["session_stopped_alert": value]
+        let params = Params(value: value)
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
-        request.httpBody = try? JSONSerialization.data(withJSONObject: params, options: [])
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        encoder.keyEncodingStrategy = .convertToSnakeCase
+        
+        do {
+            request.httpBody = try encoder.encode(params)
+            _ = try authorization.authorise(request: &request)
+        } catch {
+            Log.error("Failed to prepare request")
+            completion(.failure(.wrongRequest))
+        }
         
         _ = apiClient.requestTask(for: request) { [validator] result, request in
             do {
@@ -28,6 +57,8 @@ struct DormantStreamAlertAPI {
                 case .failure(let error): completion(.failure(.failedRequest(error)))
                 case .success((let data, let response)):
                     try validator.validate(response: response, data: data)
+                    let responseMessage = try decoder.decode(Output.self, from: data)
+                    Log.info("Server response: \(responseMessage.action)")
                     completion(.success(()))
                 }
             } catch {

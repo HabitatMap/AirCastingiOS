@@ -122,6 +122,7 @@ struct SettingsView: View {
         }
         .listStyle(GroupedListStyle())
         .navigationBarTitle(Strings.Settings.title)
+        .alert(item: $viewModel.alert, content: { $0.makeAlert() })
     }
 
     private var settingsSection: some View {
