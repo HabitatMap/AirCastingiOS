@@ -131,10 +131,8 @@ struct SelectPeripheralView: View {
                 let viewModel = ClearingSDCardViewModelDefault(isSDClearProcess: SDClearingRouteProcess, peripheral: selection)
                 destination = AnyView(ClearingSDCardView(viewModel: viewModel, creatingSessionFlowContinues: $creatingSessionFlowContinues))
             } else {
-                let viewModel =
-                AirbeamConnectionViewModelDefault(sessionContext: sessionContext,
-                                                  peripheral: selection)
-                destination = AnyView(ConnectingABView(viewModel: viewModel, creatingSessionFlowContinues: $creatingSessionFlowContinues))
+                destination = AnyView(ConnectingABView(sessionContext: sessionContext,
+                                                       peripheral: selection, creatingSessionFlowContinues: $creatingSessionFlowContinues))
             }
         } else {
             destination = AnyView(EmptyView())

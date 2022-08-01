@@ -30,6 +30,42 @@ struct InAppAlerts {
                   ])
     }
     
+    static func noNetworkSyncAlert(dismiss: (() -> Void)? = nil) -> AlertInfo {
+        AlertInfo(title: Strings.InAppAlerts.noInternetConnectionTitle,
+                  message: Strings.InAppAlerts.noInternetConnectionSyncMessage,
+                  buttons: [
+                    .default(title: Strings.Commons.gotIt,
+                             action: dismiss)
+                  ])
+    }
+    
+    static func noWifiNetworkSyncAlert(dismiss: (() -> Void)? = nil) -> AlertInfo {
+        AlertInfo(title: Strings.InAppAlerts.noWifiConnectionTitle,
+                  message: Strings.InAppAlerts.noWifiConnectionSyncMessage,
+                  buttons: [
+                    .default(title: Strings.Commons.gotIt,
+                             action: dismiss)
+                  ])
+    }
+    
+    static func noInternetConnectionSignOutAlert() -> AlertInfo {
+        AlertInfo(title: Strings.InAppAlerts.noInternetConnectionTitle,
+                  message: Strings.InAppAlerts.noInternetConnectionSignOutMessage,
+                  buttons: [
+                    .default(title: Strings.InAppAlerts.noInternetConnectionButton,
+                             action: nil)
+                  ])
+    }
+    
+    static func backendSettingsLogoutAlert() -> AlertInfo {
+        AlertInfo(title: Strings.BackendSettings.alertTitle,
+                  message: Strings.BackendSettings.alertMessage,
+                  buttons: [
+                    .default(title: Strings.Commons.gotIt,
+                             action: nil)
+                  ])
+    }
+    
     static func failedSharingAlert() -> AlertInfo {
         AlertInfo(title: Strings.SessionShare.linkSharingAlertTitle,
                   message: Strings.SessionShare.linkSharingAlertMessage,
@@ -107,12 +143,12 @@ struct InAppAlerts {
                              action: nil) ])
     }
     
-    static func bluetoothSessionAlreadyRecordingAlert() -> AlertInfo {
+    static func bluetoothSessionAlreadyRecordingAlert(dismiss: (@escaping () -> Void)) -> AlertInfo {
         AlertInfo(title: Strings.BluetoothSessionAlreadyRecordingAlert.title,
                   message: Strings.BluetoothSessionAlreadyRecordingAlert.message,
                   buttons: [
                     .default(title: Strings.Commons.gotIt,
-                             action: nil) ])
+                             action: dismiss) ])
     }
     
     static func locationAlert() -> AlertInfo {
@@ -123,15 +159,6 @@ struct InAppAlerts {
                             .cancel(title: Strings.Commons.ok),
                             .default(title: Strings.SelectDeviceView.alertSettings,
                                      action: redirection.goToLocationAuthSettings)])
-    }
-    
-    static func noInternetConnectionAlert() -> AlertInfo {
-        AlertInfo(title: Strings.InAppAlerts.noInternetConnectionTitle,
-                  message: Strings.InAppAlerts.noInternetConnectionMessage,
-                  buttons: [
-                    .default(title: Strings.InAppAlerts.noInternetConnectionButton,
-                             action: nil)
-                  ])
     }
     
     static func failedSessionDownloadAlert(dismiss: @escaping () -> Void) -> AlertInfo {
@@ -217,6 +244,14 @@ struct InAppAlerts {
         AlertInfo(title: Strings.CreateAccountView.noInternetTitle, message: error.localizedDescription, buttons: [
             .default(title: Strings.Commons.ok, action: nil)
         ])
+    }
+    
+    static func noInternetConnection() -> AlertInfo {
+        AlertInfo(title: Strings.ConnectionAlerts.noInternetTitle,
+                  message: Strings.ConnectionAlerts.noInternetMessage,
+                  buttons: [
+                    .default(title: Strings.Commons.ok, action: nil)
+                  ])
     }
     
     static func createAccountAlert(error: AuthorizationError) -> AlertInfo {

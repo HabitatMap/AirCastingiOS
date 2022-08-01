@@ -24,9 +24,10 @@ extension Database {
         public let measurementStreams: [MeasurementStream]?
         public let status: SessionStatus?
         public let notes: [Note]?
+        public let peripheralUUID: String?
 
         public init(uuid: SessionUUID, type: SessionType, name: String?, deviceType: DeviceType?, location: CLLocationCoordinate2D?, startTime: Date?,
-                    contribute: Bool = true, deviceId: String? = nil, endTime: Date? = nil, followedAt: Date? = nil, gotDeleted: Bool = false, isIndoor: Bool = false, tags: String? = nil, urlLocation: String? = nil, version: Int? = nil, measurementStreams: [MeasurementStream]? = nil, status: SessionStatus? = nil, notes: [Note]? = []) {
+                    contribute: Bool = true, deviceId: String? = nil, endTime: Date? = nil, followedAt: Date? = nil, gotDeleted: Bool = false, isIndoor: Bool = false, tags: String? = nil, urlLocation: String? = nil, version: Int? = nil, measurementStreams: [MeasurementStream]? = nil, status: SessionStatus? = nil, notes: [Note]? = [], peripheralUUID: String? = nil) {
             self.uuid = uuid
             self.type = type
             self.name = name
@@ -45,6 +46,7 @@ extension Database {
             self.measurementStreams = measurementStreams
             self.status = status
             self.notes = notes
+            self.peripheralUUID = peripheralUUID
         }
     }
 }

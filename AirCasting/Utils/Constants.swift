@@ -41,6 +41,7 @@ struct Constants {
         static let convertToCelsius = "convertToCelsius"
         static let satelliteMapKey = "satteliteMapKey"
         static let twentyFourHoursFormatKey = "twentyFourHourFormatKey"
+        static let syncOnlyThroughWifi = "syncOnlyThroughWifi"
     }
     
     enum PrivacyPolicy {

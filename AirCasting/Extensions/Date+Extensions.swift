@@ -5,7 +5,13 @@ import Foundation
 // swiftlint:disable airCasting_date
 extension Date {
     
+    static let msFormatter: DateFormatter = DateFormatters.DateExtension.milisecondsDateFormatter
+    
     var milliseconds: Int {
+        Int(Date.msFormatter.string(from: self).dropFirst())!
+    }
+    
+    var millisecondsSinceReferenceDate: Int {
         Int((self.timeIntervalSince1970 * 1000.0).rounded())
     }
 
@@ -64,8 +70,6 @@ extension Date {
     
     var twentyFourHoursBeforeInSeconds: Double {
         let twentyFourHours = 86400000 // 24 hours in miliseconds: 60 * 60 * 24
-        return Double(self.milliseconds - twentyFourHours)/1000
+        return Double(self.millisecondsSinceReferenceDate - twentyFourHours)/1000
     }
-    
-
 }

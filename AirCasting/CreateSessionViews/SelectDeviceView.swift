@@ -19,10 +19,9 @@ struct SelectDeviceView: View {
     @EnvironmentObject private var sessionContext: CreateSessionContext
     @InjectedObject private var bluetoothManager: BluetoothManager
     @InjectedObject private var microphoneManager: MicrophoneManager
-    @Injected private var bluetoothConnectionProtector: Connectable
+    @Injected private var bluetoothConnectionProtector: ConnectionProtectable
     @Binding var creatingSessionFlowContinues : Bool
     @Binding var sdSyncContinues : Bool
-    @State private var showAlert = false
     @EnvironmentObject private var emptyDashboardButtonTapped: EmptyDashboardButtonTapped
     @EnvironmentObject private var tabSelection: TabBarSelection
 
@@ -84,10 +83,6 @@ struct SelectDeviceView: View {
             createLabel(title: Strings.SelectDeviceView.bluetoothLabel, subtitle: Strings.SelectDeviceView.bluetoothDevice)
         })
         .buttonStyle(WhiteSelectingButtonStyle(isSelected: selected == 1))
-        .disabled(!isBTButtonActive())
-        .onTapGesture {
-            alert = InAppAlerts.bluetoothSessionAlreadyRecordingAlert()
-        }
     }
     
     var micButton: some View {
@@ -139,15 +134,5 @@ struct SelectDeviceView: View {
             }
         }
         .padding(.horizontal)
-    }
-    
-    func isBTButtonActive() -> Bool {
-        switch bluetoothConnectionProtector.isAirBeamAvailableForNewConnection() {
-        case .success(_):
-           return true
-        case .failure(let error):
-            Log.info("Trying to use start BT mobile session again \(error.localizedDescription)")
-            return false
-        }
     }
 }

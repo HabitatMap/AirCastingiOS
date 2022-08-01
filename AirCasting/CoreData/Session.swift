@@ -6,6 +6,7 @@ import CoreLocation
 
 public struct Session {
     let uuid: SessionUUID
+    let peripheralUUID: String?
     let type: SessionType
     let name: String?
     let deviceType: DeviceType?
@@ -26,7 +27,7 @@ public struct Session {
     let status: SessionStatus?
 
     init(uuid: SessionUUID, type: SessionType, name: String?, deviceType: DeviceType?, location: CLLocationCoordinate2D?, startTime: Date?,
-         contribute: Bool = true, locationless: Bool = false, deviceId: String? = nil, endTime: Date? = nil, followedAt: Date? = nil, gotDeleted: Bool = false, isIndoor: Bool = false, tags: String? = nil, urlLocation: String? = nil, version: Int16 = 0, measurementStreams: [Any]? = nil, status: SessionStatus? = nil) {
+         contribute: Bool = true, locationless: Bool = false, deviceId: String? = nil, endTime: Date? = nil, followedAt: Date? = nil, gotDeleted: Bool = false, isIndoor: Bool = false, tags: String? = nil, urlLocation: String? = nil, version: Int16 = 0, measurementStreams: [Any]? = nil, status: SessionStatus? = nil, peripheralUUID: String? = nil) {
         self.uuid = uuid
         self.type = type
         self.name = name
@@ -45,6 +46,7 @@ public struct Session {
         self.version = version
         self.measurementStreams = measurementStreams
         self.status = status
+        self.peripheralUUID = peripheralUUID
     }
 }
 

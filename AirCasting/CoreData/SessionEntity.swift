@@ -18,7 +18,9 @@ public class SessionEntity: NSManagedObject, Identifiable {
     @nonobjc public class func fetchRequest() -> NSFetchRequest<SessionEntity> {
         return NSFetchRequest<SessionEntity>(entityName: "SessionEntity")
     }
-
+    
+    @NSManaged public var peripheralUUID: String?
+    
     @NSManaged public var contribute: Bool
     @NSManaged public var deviceId: String?
 
