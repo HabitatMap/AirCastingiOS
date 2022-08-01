@@ -130,7 +130,7 @@ private extension SignInView {
             checkInput()
             
             guard networkChecker.connectionAvailable else {
-                alert = InAppAlerts.noNetworkAlert()
+                alert = InAppAlerts.noNetworkAuthorizationAlert()
                 return
             }
             
