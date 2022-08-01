@@ -237,9 +237,9 @@ struct SettingsView: View {
     
     
     private var dormantSessionsAlertSwitch: some View {
-        settingSwitch(toogle: $userSettings.dormantSessionsAlert,
+        settingSwitch(toogle: .init(get: { viewModel.dormantAlert },
+                                    set: { viewModel.dormantStreamAlertSettingChanged(to: $0) }),
                       label: Strings.Settings.dormantSessionsAlert)
-            .onChange(of: userSettings.dormantSessionsAlert, perform: { newValue in viewModel.dormantStreamAlertSettingChanged(to: newValue) })
     }
     
     private var dormantSessionsAlertDescription: some View {

@@ -11,6 +11,7 @@ class SettingsViewModel: ObservableObject {
     @Published var BTScreenGo = false
     @Published var locationScreenGo = false
     @Published var alert: AlertInfo?
+    @Published var dormantAlert = false
     
     var SDClearingRouteProcess = true
     let username = "\(KeychainStorage(service: Bundle.main.bundleIdentifier!).getProfileData(for: .username))"
@@ -24,6 +25,7 @@ class SettingsViewModel: ObservableObject {
 
     init(sessionContext: CreateSessionContext) {
         self.sessionContext = sessionContext
+        dormantAlert = userSettings.dormantSessionsAlert
     }
     
     func navigateToBackendButtonTapped() {
@@ -45,14 +47,20 @@ class SettingsViewModel: ObservableObject {
     }
     
     func dormantStreamAlertSettingChanged(to value: Bool) {
+        dormantAlert = value
+        
         controller.changeDormantAlertSettings(to: value) { result in
             switch result {
             case .success():
-                Log.info("## success")
-            case .failure(let error):
-//                self.userSettings.dormantSessionsAlert = !value
                 DispatchQueue.main.async {
-                    self.alert = InAppAlerts.failedSharingAlert()
+                    self.userSettings.dormantSessionsAlert = value
+                }
+            case .failure(let error):
+                Log.error("Failed to change dormant alert settings: \(error)")
+                DispatchQueue.main.async {
+                    self.userSettings.dormantSessionsAlert = !value
+                    self.dormantAlert = !value
+                    self.alert = InAppAlerts.failedDormantStreamSettingAlert()
                 }
             }
         }

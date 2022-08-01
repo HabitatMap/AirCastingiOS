@@ -86,6 +86,15 @@ struct InAppAlerts {
         )
     }
     
+    static func failedDormantStreamSettingAlert() -> AlertInfo {
+        AlertInfo(title: Strings.Settings.failedDormantStreamAlertTitle,
+                  message: Strings.Settings.failedDormantStreamAlertMessage,
+                  buttons: [
+                    .default(title: Strings.Commons.gotIt,
+                             action: nil)
+                  ])
+    }
+    
     static func finishSessionAlert(sessionName: String?, action: @escaping (() -> Void)) -> AlertInfo {
         AlertInfo(
             title: ((sessionName == nil) ? Strings.SessionHeaderView.finishAlertTitleNoName : String(format: Strings.SessionHeaderView.finishAlertTitleNamed, arguments: [sessionName!])),
