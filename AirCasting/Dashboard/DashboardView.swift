@@ -14,15 +14,13 @@ import Resolver
 struct DashboardView: View {
     @StateObject var coreDataHook: CoreDataHook
     @FetchRequest<SensorThreshold>(sortDescriptors: [.init(key: "sensorName", ascending: true)]) var thresholds
-    // TODO: - We can rethink the way how "Select Section" works and change it
-    @EnvironmentObject var selectedSection_: SelectSection
+    @EnvironmentObject var selectedSection: SelectedSection
     @EnvironmentObject var reorderButton: ReorderButton
     @EnvironmentObject var searchAndFollowButton: SearchAndFollowButton
     @State var isRefreshing: Bool = false
     @State private var alert: AlertInfo?
     @InjectedObject private var userSettings: UserSettings
     @Injected private var networkChecker: NetworkChecker
-    @State var selectedSection: SelectedSection = .following
     @Injected private var sessionSynchronizer: SessionSynchronizer
     @Injected private var persistenceController: PersistenceController
 
@@ -46,8 +44,8 @@ struct DashboardView: View {
                                     thresholds: Array(self.thresholds))
             } else {
                 sessionTypePicker
-                TabView(selection: $selectedSection) {
-                    ForEach(SelectedSection.allCases, id: \.self) {
+                TabView(selection: $selectedSection.section) {
+                    ForEach(DashboardSection.allCases, id: \.self) {
                         SessionsListView(selectedSection: $0, isRefreshing: $isRefreshing, context: persistenceController.viewContext)
                     }
                 }
@@ -61,12 +59,6 @@ struct DashboardView: View {
         }
         .navigationBarTitle(Strings.DashboardView.dashboardText)
         .navigationBarHidden(true)
-        .onChange(of: selectedSection, perform: { newValue in
-            self.selectedSection_.selectedSection = newValue
-        })
-        .onChange(of: selectedSection_.selectedSection , perform: { newValue in
-            self.selectedSection = newValue
-        })
         .onChange(of: isRefreshing, perform: { newValue in
             guard newValue == true else { return }
             guard !sessionSynchronizer.syncInProgress.value else {
@@ -86,7 +78,7 @@ struct DashboardView: View {
             sessionSynchronizer.triggerSynchronization() { isRefreshing = false }
         })
         .onAppear() {
-            try! coreDataHook.setup(selectedSection: self.selectedSection_.selectedSection)
+            try! coreDataHook.setup(selectedSection: self.selectedSection.section)
         }
     }
 
@@ -114,7 +106,7 @@ struct DashboardView: View {
     }
 
     private var sessionTypePicker: some View {
-        AirSectionPickerView(selection: self.$selectedSection)
+        AirSectionPickerView(selection: self.$selectedSection.section)
             .padding(.leading)
             .background(
                 ZStack(alignment: .bottom) {
