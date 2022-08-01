@@ -5,7 +5,6 @@ import Foundation
 import Resolver
 
 class SettingsViewModel: ObservableObject {
-    
     @Published var showBackendSettings = false
     @Published var startSDClear = false
     @Published var BTScreenGo = false
@@ -20,6 +19,7 @@ class SettingsViewModel: ObservableObject {
     @Injected private var bluetoothHandler: BluetoothHandler
     @Injected private var controller: SettingsController
     @Injected private var userSettings: UserSettings
+    @Injected private var networkChecker: NetworkChecker
     let sessionContext: CreateSessionContext
 
 
@@ -47,8 +47,11 @@ class SettingsViewModel: ObservableObject {
     }
     
     func dormantStreamAlertSettingChanged(to value: Bool) {
+        guard networkChecker.connectionAvailable else {
+            self.alert = InAppAlerts.noInternetConnection()
+            return
+        }
         dormantAlert = value
-        
         controller.changeDormantAlertSettings(to: value) { result in
             switch result {
             case .success():
