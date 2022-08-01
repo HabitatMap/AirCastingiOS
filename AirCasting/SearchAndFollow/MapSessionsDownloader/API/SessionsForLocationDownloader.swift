@@ -51,8 +51,6 @@ class SessionsForLocationDownloaderDefault: SessionsForLocationDownloader {
             
             try authorization.authorise(request: &request)
             
-            Log.info("## \(request)")
-            
             client.requestTask(for: request) { [responseValidator] response, _ in
                 switch response {
                 case .failure(let error):
