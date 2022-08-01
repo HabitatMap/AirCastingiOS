@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="25px" height="21px" viewBox="0 0 25 21" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>93106370-DC42-45BE-922E-9C1E8B0F3503</title>
+    <g id="Screens" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Dashboard---FOLLOWING-GRAPH-DarkMode" transform="translate(-289.000000, -87.000000)" stroke="#00B2EF">
+            <g id="Search-icon" transform="translate(290.000000, 89.000000)">
+                <g id="Group" transform="translate(3.325698, 0.000000)" stroke-width="2">
+                    <circle id="Oval" transform="translate(10.213316, 8.360000) rotate(48.000000) translate(-10.213316, -8.360000) " cx="10.2133164" cy="8.36" r="5.72"></circle>
+                    <line x1="4.9815768" y1="13.0706795" x2="0.194302171" y2="16.6800739" id="Line-2" stroke-linecap="square"></line>
+                </g>
+                <line x1="0.44" y1="2.16007394" x2="7.48" y2="2.16007394" id="Line-5" stroke-linecap="square"></line>
+                <line x1="4.90285714" y1="4.80007394" x2="0.377142857" y2="4.80007394" id="Line-3" stroke-linecap="square"></line>
+                <line x1="4.90285714" y1="7.44007394" x2="0.377142857" y2="7.44007394" id="Line-3" stroke-linecap="square"></line>
+                <line x1="4.90285714" y1="10.0800739" x2="0.377142857" y2="10.0800739" id="Line-3" stroke-linecap="square"></line>
+            </g>
+        </g>
+    </g>
+</svg>

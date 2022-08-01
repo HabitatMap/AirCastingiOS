@@ -48,23 +48,25 @@ struct SearchView: View {
             }
             Spacer()
             button
-        }.padding()
-            .onAppear(perform: {
-                viewModel.viewInitialized { presentationMode.wrappedValue.dismiss() }
-                exploreSessionsButton.exploreSessionsButtonTapped = false
-            })
-            .alert(item: $viewModel.alert, content: { $0.makeAlert() })
-            .sheet(isPresented: $viewModel.isLocationPopupPresented) {
-                PlacePicker(service: SearchPickerService(addressName: .init(get: {
-                    viewModel.addressName
-                }, set: { new in
-                    viewModel.locationNameInteracted(with: new)
-                }), addressLocation: .init(get: {
-                    viewModel.addresslocation
-                }, set: { new in
-                    viewModel.locationAddressInteracted(with: new)
-                })))
-            }
+        }
+        .padding()
+        .background(Color.aircastingBackground.ignoresSafeArea())
+        .onAppear(perform: {
+            viewModel.viewInitialized { presentationMode.wrappedValue.dismiss() }
+            exploreSessionsButton.exploreSessionsButtonTapped = false
+        })
+        .alert(item: $viewModel.alert, content: { $0.makeAlert() })
+        .sheet(isPresented: $viewModel.isLocationPopupPresented) {
+            PlacePicker(service: SearchPickerService(addressName: .init(get: {
+                viewModel.addressName
+            }, set: { new in
+                viewModel.locationNameInteracted(with: new)
+            }), addressLocation: .init(get: {
+                viewModel.addresslocation
+            }, set: { new in
+                viewModel.locationAddressInteracted(with: new)
+            })))
+        }
     }
 }
 

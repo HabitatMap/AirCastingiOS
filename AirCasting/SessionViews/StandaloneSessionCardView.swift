@@ -23,7 +23,7 @@ struct StandaloneSessionCardView: View {
             .foregroundColor(.aircastingGray)
             .padding()
             .background(
-                Color.white
+                Color.aircastingBackground
                     .cardShadow()
             )
             .overlay(Rectangle().frame(width: nil, height: 4, alignment: .top).foregroundColor(Color.red), alignment: .top)

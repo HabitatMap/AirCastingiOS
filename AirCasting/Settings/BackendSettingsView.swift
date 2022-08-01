@@ -34,6 +34,8 @@ struct BackendSettingsView: View {
     
     var body: some View {
         ZStack {
+            Color.aircastingBackground
+                .ignoresSafeArea()
             XMarkButton()
             VStack(alignment: .leading) {
                 title
@@ -53,7 +55,6 @@ struct BackendSettingsView: View {
             .alert(item: $alert, content: { $0.makeAlert() })
             .padding()
         }
-        
     }
     
     private var title: some View {

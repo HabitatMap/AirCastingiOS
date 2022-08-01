@@ -25,7 +25,6 @@ struct SelectDeviceView: View {
     @EnvironmentObject private var emptyDashboardButtonTapped: EmptyDashboardButtonTapped
     @EnvironmentObject private var tabSelection: TabBarSelection
 
-    
     var body: some View {
         VStack(spacing: 30) {
             ProgressView(value: 0.125)
@@ -61,6 +60,7 @@ struct SelectDeviceView: View {
             #warning("Handle that mobileWasTapped is somehow public")
             emptyDashboardButtonTapped.mobileWasTapped = false
         }
+        .background(Color.aircastingBackground.ignoresSafeArea())
     }
     
     var titleLabel: some View {

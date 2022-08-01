@@ -9,7 +9,7 @@ import SwiftUI
 
 extension Color {
     public static var aircastingGray: Color {
-        return Color("AircastingGray700")
+        return Color("AircastingGray")
     }
     public static var darkBlue: Color {
         return Color("DarkBlue")
@@ -32,8 +32,8 @@ extension Color {
     public static var aircastingDarkGray: Color {
         return Color("DarkGray")
     }
-    public static var aircastingBackground: Color {
-        return Color("aircastingBackground")
+    public static var aircastingSecondaryBackground: Color {
+        return Color("AircastingSecondaryBackground")
     }
     public static var aircastingMint: Color {
         return Color("AircastingMint")
@@ -42,13 +42,42 @@ extension Color {
         return Color("AirCastingTime")
     }
     public static var shadow: Color {
-        return Color(white: 150/255, opacity: 0.5)
+        return Color("ButtonShadow")
     }
     public static var aliceBlue: Color {
-        Color(red: 251/255, green: 253/255, blue: 255/255)
+        return Color("AliceBlue")
     }
-    
     public static var sessionCardShadow: Color {
-        return Color(red: 205/255, green: 209/255, blue: 214/255)
+        return Color("SessionCardShadow")
+    }
+    public static var aircastingWhite: Color {
+        return Color("AircastingWhite")
+    }
+    public static var aircastingBackground: Color {
+        return Color("AircastingBackground")
+    }
+    public static var formBackgroundColor: Color {
+        return Color("FormBackground")
+    }
+    public static var textFieldBorderColor: Color {
+        return Color("TextFieldBorder")
+    }
+    public static var sliderShadowColor: Color {
+        return Color("SliderShadow")
+    }
+    public static var textFieldBackgroundColor: Color {
+        return Color("TextFieldBackground")
+    }
+    public static var sectionPickerShadowColor: Color {
+        return Color("SectionPickerShadow")
+    }
+    public static var textColor: Color {
+        return Color("AircastingTextColor")
+    }
+    public static var listBackgroundColor: Color {
+        return Color("ListBackground")
+    }
+    public static var gradientColor: Color {
+        return Color("GradientWhite")
     }
 }

@@ -10,11 +10,11 @@ class UserSettings: ObservableObject {
     private let crowdMapKey = Constants.UserDefaultsKeys.crowdMap
     private let locationlessKey = Constants.UserDefaultsKeys.disableMapping
     private let keepScreenOnKey = Constants.UserDefaultsKeys.keepScreenOn
-    @Injected private var featureFlagProvider: FeatureFlagProvider
     private let convertToCelsiusKey = Constants.UserDefaultsKeys.convertToCelsius
     private let satteliteMapKey = Constants.UserDefaultsKeys.satelliteMapKey
     private let twentyFourHourFormatKey = Constants.UserDefaultsKeys.twentyFourHoursFormatKey
     private let syncOnlyThroughWifiKey = Constants.UserDefaultsKeys.syncOnlyThroughWifi
+    @Injected private var featureFlagProvider: FeatureFlagProvider
 
     var contributingToCrowdMap: Bool {
         get {
@@ -25,7 +25,7 @@ class UserSettings: ObservableObject {
             Log.info("Changed crowdMap contribution setting to \(contributingToCrowdMap ? "ON" : "OFF")")
         }
     }
-
+    
     var keepScreenOn: Bool {
         get {
             userDefaults.bool(forKey: keepScreenOnKey)
@@ -37,7 +37,7 @@ class UserSettings: ObservableObject {
             objectWillChange.send()
         }
     }
-
+    
     var disableMapping: Bool {
         get {
             userDefaults.bool(forKey: locationlessKey)
@@ -48,7 +48,7 @@ class UserSettings: ObservableObject {
             objectWillChange.send()
         }
     }
-
+    
     var convertToCelsius: Bool {
         get {
             userDefaults.bool(forKey: convertToCelsiusKey)
@@ -59,7 +59,7 @@ class UserSettings: ObservableObject {
             objectWillChange.send()
         }
     }
-    
+
     var satteliteMap: Bool {
         get {
             userDefaults.bool(forKey: satteliteMapKey)

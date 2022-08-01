@@ -136,10 +136,6 @@ struct Strings {
                                                       comment: "It consists of few parts. Please consider them together. Whole text is following: First time here? Create an account")
         static let signUpButton_2 = NSLocalizedString("Create an account",
                                                       comment: "")
-        static let alertTitle = NSLocalizedString("Login Error",
-                                                  comment: "")
-        static let alertComment = NSLocalizedString("Login Error alert title",
-                                                    comment: "")
         static let InvalidCredentialText = NSLocalizedString("The profile name or password is incorrect. Please try again. ",
                                                              comment: "")
         static let noConnectionTitle = NSLocalizedString("No Internet Connection",
@@ -953,6 +949,8 @@ struct Strings {
         static let logoutWarningConfirmButton: String = NSLocalizedString("Confirm",
                                                                           comment: "")
         static let fetchingDataFailedMessage: String = NSLocalizedString("Something went wrong. Please try again later.", comment: "")
+        static let signInErrorTitle: String = NSLocalizedString("Cannot sign in",
+                                                                          comment:  "")
     }
     
     enum AddNoteView {

@@ -260,6 +260,13 @@ struct InAppAlerts {
         ])
     }
     
+    
+    static func signInAlert(error: AuthorizationError) -> AlertInfo {
+        AlertInfo(title: Strings.InAppAlerts.signInErrorTitle, message: error.localizedDescription, buttons: [
+            .default(title: Strings.Commons.ok, action: nil)
+        ])
+    }
+    
     static func thresholdsValuesSettingsWarning() -> AlertInfo {
         AlertInfo(
             title: Strings.InAppAlerts.thresholdsValuesSettingsTitle, message: Strings.InAppAlerts.thresholdsValuesSettingsMessage,

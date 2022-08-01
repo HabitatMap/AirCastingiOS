@@ -5,6 +5,7 @@ import SwiftUI
 import Resolver
 
 struct ReorderingSessionHeader: View {
+    @Environment(\.colorScheme) var colorScheme
     var session: Sessionable
     
     var body: some View {
@@ -20,6 +21,8 @@ private extension ReorderingSessionHeader {
                     .foregroundColor(Color.aircastingTimeGray)
                 Spacer()
                 Image("draggable-icon")
+                    .renderingMode(.template)
+                    .foregroundColor(colorScheme == .light ? .black : .aircastingGray)
             }
             nameLabel
         }

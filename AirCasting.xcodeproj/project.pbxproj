@@ -186,6 +186,7 @@
 		AC93B8FE25C02E0B003D0A0D /* GoogleMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC93B8FD25C02E0B003D0A0D /* GoogleMapView.swift */; };
 		AC960C7825DD39F500EC95DD /* ABConnectedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC960C7725DD39F500EC95DD /* ABConnectedView.swift */; };
 		AC96DBEA2742705100D5E8E0 /* ThresholdsSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96DBE92742705100D5E8E0 /* ThresholdsSettingsViewModel.swift */; };
+		AC986BE52886F4EB00E736B0 /* darkStyle.json in Resources */ = {isa = PBXBuildFile; fileRef = AC986BE42886F4EB00E736B0 /* darkStyle.json */; };
 		AC9EB64526ECB11B00B1F780 /* DefaultSyncingMeasurementsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9EB64426ECB11B00B1F780 /* DefaultSyncingMeasurementsViewModel.swift */; };
 		AC9EB64726EF4EEB00B1F780 /* AirBeamCellularSessionCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9EB64626EF4EEB00B1F780 /* AirBeamCellularSessionCreator.swift */; };
 		AC9EB64926F1EB8D00B1F780 /* MeasurementsDownloadable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9EB64826F1EB8D00B1F780 /* MeasurementsDownloadable.swift */; };
@@ -683,6 +684,7 @@
 		AC93B8FD25C02E0B003D0A0D /* GoogleMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleMapView.swift; sourceTree = "<group>"; };
 		AC960C7725DD39F500EC95DD /* ABConnectedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ABConnectedView.swift; sourceTree = "<group>"; };
 		AC96DBE92742705100D5E8E0 /* ThresholdsSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThresholdsSettingsViewModel.swift; sourceTree = "<group>"; };
+		AC986BE42886F4EB00E736B0 /* darkStyle.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = darkStyle.json; sourceTree = "<group>"; };
 		AC9EB64426ECB11B00B1F780 /* DefaultSyncingMeasurementsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultSyncingMeasurementsViewModel.swift; sourceTree = "<group>"; };
 		AC9EB64626EF4EEB00B1F780 /* AirBeamCellularSessionCreator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirBeamCellularSessionCreator.swift; sourceTree = "<group>"; };
 		AC9EB64826F1EB8D00B1F780 /* MeasurementsDownloadable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementsDownloadable.swift; sourceTree = "<group>"; };
@@ -1449,9 +1451,9 @@
 				FA1C30BC2861BA5F0034C1C9 /* SignInPersistance.swift */,
 				AC7EB37525A6FB3A00A7F2AF /* AirCastingApp.swift */,
 				ACD01F912600A3C800B8F65F /* RootAppView.swift */,
+				AC7EB37725A6FB3A00A7F2AF /* MainTabBarView.swift */,
 				FAF3B4E428058B6700F0F4B0 /* ProtectedScreen.swift */,
 				B3F1448126AE4CD9006A4612 /* OfflineMessageViewModel.swift */,
-				AC7EB37725A6FB3A00A7F2AF /* MainTabBarView.swift */,
 				DD430AFE2670BB3000F1BF2E /* Onboarding */,
 				AC9F52682652A360003CF61F /* Dashboard */,
 				DD123EBD27BD1CA8001083C3 /* SearchAndFollow */,
@@ -1572,6 +1574,7 @@
 			isa = PBXGroup;
 			children = (
 				DD7B74AA278C63F80072DDF1 /* style.json */,
+				AC986BE42886F4EB00E736B0 /* darkStyle.json */,
 				750A51D62754D3E800D6F4E7 /* Heatmap */,
 				DD8DE68A2785B939009B1726 /* MapNotesViewModel.swift */,
 				AC93B8E625BEFE4F003D0A0D /* AirMapView.swift */,
@@ -2617,6 +2620,7 @@
 				AC7EB3A025A7152000A7F2AF /* Muli-ExtraLightItalic.ttf in Resources */,
 				AC7EB3A425A7152000A7F2AF /* Muli-Italic-VariableFont_wght.ttf in Resources */,
 				AC7EB3B225A7152000A7F2AF /* Muli-LightItalic.ttf in Resources */,
+				AC986BE52886F4EB00E736B0 /* darkStyle.json in Resources */,
 				AC7EB3A825A7152000A7F2AF /* Muli-ExtraBoldItalic.ttf in Resources */,
 				AC7EB37A25A6FB3D00A7F2AF /* Assets.xcassets in Resources */,
 				AC5EF76125C84888003657B1 /* GoogleService-Info.plist in Resources */,
@@ -3390,7 +3394,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 0;
+				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
@@ -3418,7 +3422,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 0;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = AirCasting/Info.plist;
@@ -3506,7 +3510,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirCasting/AirCasting.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 0;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = LXAGXH6CF6;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = AirCasting/Info.plist;

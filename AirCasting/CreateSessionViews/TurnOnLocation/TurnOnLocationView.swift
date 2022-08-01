@@ -13,6 +13,7 @@ struct TurnOnLocationView: View {
             Image("location-1")
                 .resizable()
                 .scaledToFit()
+            Spacer()
             VStack(alignment: .leading, spacing: 15) {
                 titleLabel
                 messageLabel
@@ -20,6 +21,7 @@ struct TurnOnLocationView: View {
             continueButton
         }
         .padding()
+        .background(Color.aircastingBackground.ignoresSafeArea())
         .alert(item: $viewModel.alert, content: { $0.makeAlert() })
         .background(
             Group {

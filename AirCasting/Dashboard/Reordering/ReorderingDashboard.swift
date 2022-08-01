@@ -35,7 +35,7 @@ struct ReorderingDashboard: View {
             searchAndFollowButton.isHidden = true
         })
         .navigationBarTitle(Strings.ReorderingDashboard.navigationTitle)
-        .background(Color.clear.edgesIgnoringSafeArea(.all))
+        .background(Color.aircastingWhite)
         // this is added to avoid session card staying 0.8 opaque when user drops card on the edges
         .onDrop(of: [.text], delegate: DropOutsideOfGridDelegate(currentlyDraggedSession: $viewModel.currentlyDraggedSession))
         .onDisappear() {

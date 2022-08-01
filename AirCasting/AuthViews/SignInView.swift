@@ -20,11 +20,12 @@ struct SignInView: View {
     @State var isActive: Bool
     @InjectedObject private var userAuthenticationSession: UserAuthenticationSession
     @InjectedObject private var userState: UserState
+    @Injected private var networkChecker: NetworkChecker
     private let authorizationAPIService = AuthorizationAPIService()
     @State private var task: Cancellable? = nil
-    @State private var presentedError: AuthorizationError? = nil
     @State private var isUsernameBlank = false
     @State private var isPasswordBlank = false
+    @State private var alert: AlertInfo?
     
     @StateObject var signInPersistanceObserved = SignInPersistance.shared
     
@@ -36,6 +37,7 @@ struct SignInView: View {
     var body: some View {
         LoadingView(isShowing: $isActive) {
             contentView
+                .background(Color.aircastingBackground.ignoresSafeArea())
         }
     }
 }
@@ -81,9 +83,7 @@ private extension SignInView {
                 .padding()
                 .navigationBarHidden(true)
                 .frame(maxWidth: .infinity, minHeight: geometry.size.height)
-                .alert(item: $presentedError) { error in
-                    displayErrorAlert(error: error)
-                }
+                .alert(item: $alert, content: { $0.makeAlert() })
             }
             .simultaneousGesture(
                 DragGesture(minimumDistance: 2, coordinateSpace: .global)
@@ -128,6 +128,12 @@ private extension SignInView {
     var signinButton: some View {
         Button(Strings.SignInView.signIn_1) {
             checkInput()
+            
+            guard networkChecker.connectionAvailable else {
+                alert = InAppAlerts.noNetworkAlert()
+                return
+            }
+            
             if !isPasswordBlank, !isUsernameBlank {
                 isActive = true
                 
@@ -142,12 +148,11 @@ private extension SignInView {
                                 Log.info("Successfully logged in")
                             } catch {
                                 assertionFailure("Failed to store credentials \(error)")
-                                presentedError = .other(error)
+                                displayErrorAlert(error: .other(error))
                             }
                         case .failure(let error):
                             Log.warning("Failed to login \(error)")
-                            presentedError = error
-                        }
+                            displayErrorAlert(error: error)                        }
                         isActive = false
                     }
                 }
@@ -204,22 +209,12 @@ private extension SignInView {
         isUsernameBlank = checkIfBlank(text: signInPersistanceObserved.username)
     }
     
-    func displayErrorAlert(error: AuthorizationError) -> Alert {
-        let title = Strings.SignInView.alertTitle
+    func displayErrorAlert(error: AuthorizationError) {
         switch error {
-        case .emailTaken, .invalidCredentials, .usernameTaken:
-            return Alert(title: Text(title),
-                         message: Text(Strings.SignInView.InvalidCredentialText),
-                         dismissButton: .default(Text(Strings.Commons.ok)))
-            
+        case .emailTaken, .invalidCredentials, .usernameTaken, .other, .timeout:
+            self.alert = InAppAlerts.signInAlert(error: error)
         case .noConnection:
-            return Alert(title: Text(Strings.SignInView.noConnectionTitle),
-                         message: Text(Strings.SignInView.noConnectionText),
-                         dismissButton: .default(Text(Strings.Commons.ok)))
-        case .other, .timeout:
-            return Alert(title: Text(title),
-                         message: Text(error.localizedDescription),
-                         dismissButton: .default(Text(Strings.Commons.ok)))
+            self.alert = InAppAlerts.noInternetConnection(error: error)
         }
     }
 }

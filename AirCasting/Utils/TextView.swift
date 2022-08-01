@@ -16,13 +16,13 @@ struct TextView: UIViewRepresentable {
         textView.autocapitalizationType = .sentences
         textView.isSelectable = true
         textView.isUserInteractionEnabled = true
-        textView.backgroundColor = UIColor.aircastingGray.withAlphaComponent(0.05)
-        textView.layer.borderColor = UIColor.aircastingGray.withAlphaComponent(0.1).cgColor
+        textView.backgroundColor = UIColor(Color.textFieldBackgroundColor)
+        textView.layer.borderColor = UIColor(Color.textFieldBorderColor).cgColor
         textView.layer.borderWidth = 1
         
         if text.isEmpty {
             textView.text = placeholder
-            textView.textColor = .lightGray
+            textView.textColor = .aircastingGray
         }
         
         textView.addDoneButtonToKeyboard()
@@ -32,7 +32,7 @@ struct TextView: UIViewRepresentable {
     
     func updateUIView(_ uiView: UITextView, context: Context) {
         if !text.isEmpty {
-            uiView.textColor = .black
+            uiView.textColor = .textColor
             uiView.text = text
         }
     }
@@ -52,7 +52,7 @@ struct TextView: UIViewRepresentable {
         func textViewDidBeginEditing(_ textView: UITextView) {
             if parent.text.isEmpty {
                 textView.text = ""
-                textView.textColor = .black
+                textView.textColor = .textColor
             }
         }
         

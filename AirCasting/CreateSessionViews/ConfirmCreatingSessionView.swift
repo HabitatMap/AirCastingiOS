@@ -48,6 +48,7 @@ struct ConfirmCreatingSessionView: View {
                     }
                 }
         }
+        .background(Color.aircastingBackground.ignoresSafeArea())
     }
 
     private var contentViewWithAlert: some View {

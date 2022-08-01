@@ -23,13 +23,13 @@ extension UIColor {
         return UIColor(Color("AircastingRed"))
     }
     static var aircastingGray: UIColor {
-        return UIColor(Color("AircastingGray700"))
+        return UIColor(Color("AircastingGray"))
     }
     static var aircastingDarkGray: UIColor {
         return UIColor(Color("DarkGray"))
     }
-    static var aircastingBackground: UIColor {
-        return UIColor(Color("aircastingBackground"))
+    static var aircastingSecondaryBackground: UIColor {
+        return UIColor(Color("AircastingSecondaryBackground"))
     }
     static var graphGreen: UIColor {
         return UIColor(Color("GraphGreen"))
@@ -45,5 +45,11 @@ extension UIColor {
     }
     static var accentColor: UIColor {
         return UIColor(Color("AccentColor"))
+    }
+    static var textColor: UIColor {
+        return UIColor(Color("AircastingTextColor"))
+    }
+    static var aircastingBackground: UIColor {
+        return UIColor(Color("AircastingBackground"))
     }
 }

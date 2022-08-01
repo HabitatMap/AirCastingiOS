@@ -16,7 +16,7 @@ struct SDSyncRootView: View {
                 ZStack(alignment: Alignment(horizontal: .trailing, vertical: .bottom), content: {
                     syncImage
                     loader
-                        .padding(.top)
+                        .offset(x: -reader.size.width / 15, y: -reader.size.height / 80)
                 }).frame(width: reader.size.width / 2.1, height: reader.size.height / 3.1, alignment: .center)
                 Spacer()
                 VStack(alignment: .leading, spacing: 15) {
@@ -27,6 +27,7 @@ struct SDSyncRootView: View {
             }
             .padding()
             .background(navigationLink)
+            .background(Color.aircastingBackground.ignoresSafeArea())
             .onAppear() {
                 finishAndSyncButtonTapped.finishAndSyncButtonWasTapped = false
                 viewModel.executeBackendSync()
