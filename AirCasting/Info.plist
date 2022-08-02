@@ -15,9 +15,9 @@
 	<key>CFBundlePackageType</key>
 	<string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
 	<key>CFBundleShortVersionString</key>
-	<string>$(MARKETING_VERSION)</string>
+  <string>1.10.0</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>2</string>
 	<key>FirebaseAppDelegateProxyEnabled</key>
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
@@ -38,9 +38,9 @@
 		</dict>
 	</dict>
 	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>We need Bluetooth to connect with AirBeam, it's impossible to collect the data without it. </string>
+	<string>We need Bluetooth to connect with AirBeam, it&apos;s impossible to collect the data without it. </string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
-	<string>We need Bluetooth to connect with the AirBeam, it's impossible to collect the pollution data without it. </string>
+	<string>We need Bluetooth to connect with the AirBeam, it&apos;s impossible to collect the pollution data without it. </string>
 	<key>NSCameraUsageDescription</key>
 	<string>This will allow you to attach photos to your mobile session notes.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
@@ -104,7 +104,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>UIUserInterfaceStyle</key>
-	<string>Light</string>
 </dict>
 </plist>

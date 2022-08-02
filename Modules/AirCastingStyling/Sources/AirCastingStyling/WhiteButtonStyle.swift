@@ -16,7 +16,7 @@ public struct WhiteButtonStyle: ButtonStyle {
             .foregroundColor(.accentColor)
             .frame(maxWidth: .infinity)
             .padding(.vertical, 12)
-            .background(Color.white)
+            .background(Color.clear)
             .overlay(
                 RoundedRectangle(cornerRadius: 5)
                     .stroke(Color.accentColor, lineWidth: 1))

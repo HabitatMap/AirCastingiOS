@@ -33,6 +33,7 @@ struct UnplugABView: View {
             }
             .background(navigationLink)
             .padding()
+            .background(Color.aircastingBackground.ignoresSafeArea())
         }
     }
 }

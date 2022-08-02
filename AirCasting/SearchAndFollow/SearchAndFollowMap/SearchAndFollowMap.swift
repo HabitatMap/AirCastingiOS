@@ -5,7 +5,6 @@ import UIKit
 import SwiftUI
 import GoogleMaps
 import Resolver
-import Combine
 
 struct SearchAndFollowMap: UIViewRepresentable {
     @InjectedObject private var userSettings: UserSettings
@@ -18,7 +17,8 @@ struct SearchAndFollowMap: UIViewRepresentable {
     private var onMarkerChangeAction: ((Int) -> ())? = nil
     private var onStartingLocationAction: ((GeoSquare) -> ())? = nil
     @State var startingPointChanged = false
-    
+    @Environment(\.colorScheme) var colorScheme
+
     init(startingPoint: Binding<CLLocationCoordinate2D>, showSearchAgainButton: Binding<Bool>, sessions: Binding<[MapSessionMarker]>, selectedPointerID: Binding<PointerValue>) {
         self._startingPoint = .init(projectedValue: startingPoint)
         self._showSearchAgainButton = .init(projectedValue: showSearchAgainButton)
@@ -56,7 +56,7 @@ struct SearchAndFollowMap: UIViewRepresentable {
         placeDots(mapView, context: context)
         
         do {
-            if let styleURL = Bundle.main.url(forResource: "style", withExtension: "json") {
+            if let styleURL = Bundle.main.url(forResource: colorScheme == .light ? "style" : "darkStyle", withExtension: "json") {
                 mapView.mapStyle = try GMSMapStyle(contentsOfFileURL: styleURL)
             } else {
                 Log.error("Unable to find style.json")
@@ -80,6 +80,16 @@ struct SearchAndFollowMap: UIViewRepresentable {
         } else if !showSearchAgainButton && selectedPointerID == .noValue && context.coordinator.sessionKeeper != sessions {
             placeDots(uiView, context: context)
             context.coordinator.sessionKeeper = sessions
+        }
+        
+        do {
+            if let styleURL = Bundle.main.url(forResource: colorScheme == .light ? "style" : "darkStyle", withExtension: "json") {
+                uiView.mapStyle = try GMSMapStyle(contentsOfFileURL: styleURL)
+            } else {
+                Log.error("Unable to find style.json")
+            }
+        } catch {
+            Log.error("One or more of the map styles failed to load. \(error)")
         }
     }
     

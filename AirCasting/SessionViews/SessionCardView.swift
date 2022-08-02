@@ -16,7 +16,7 @@ struct SessionCardView: View {
     @State private var isGraphButtonActive = false
     @State private var showLoadingIndicator = false
     @ObservedObject var session: SessionEntity
-    @EnvironmentObject var selectedSection: SelectSection
+    @EnvironmentObject var selectedSection: SelectedSection
     @EnvironmentObject var reorderButton: ReorderButton
     @EnvironmentObject var searchAndFollowButton: SearchAndFollowButton
     let sessionCartViewModel: SessionCardViewModel
@@ -49,12 +49,12 @@ struct SessionCardView: View {
 
     var shouldShowValues: MeasurementPresentationStyle {
         // We need to specify selectedSection to show values for fixed session only in following tab
-        let shouldHide = isCollapsed && ( (session.isFixed && selectedSection.selectedSection == SelectedSection.fixed) || session.isDormant)
+        let shouldHide = isCollapsed && ( (session.isFixed && selectedSection.section == .fixed) || session.isDormant)
         return shouldHide ? .hideValues : .showValues
     }
 
     var showChart: Bool {
-        (session.isMobile && session.isActive) || (session.isFixed && selectedSection.selectedSection == SelectedSection.following)
+        (session.isMobile && session.isActive) || (session.isFixed && selectedSection.section == .following)
     }
 
     var body: some View {
@@ -102,7 +102,7 @@ struct SessionCardView: View {
         .padding()
         .background(
             Group {
-                Color.white
+                Color.aircastingBackground
                     .cardShadow()
                 mapNavigationLink
                 graphNavigationLink

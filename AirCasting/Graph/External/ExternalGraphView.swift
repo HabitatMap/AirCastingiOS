@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct ExternalGraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsContainerViewModelable {
-    
     let session: ExternalSessionEntity
     let thresholds: ABMeasurementsViewThreshold
     @Binding var selectedStream: MeasurementStreamEntity?
@@ -42,6 +41,7 @@ struct ExternalGraphView<StatsViewModelType>: View where StatsViewModelType: Sta
             Spacer()
         }
         .navigationBarTitleDisplayMode(.inline)
+        .background(Color.aircastingBackground.ignoresSafeArea())
     }
     
     func isProceeding(session: ExternalSessionEntity) -> Bool {
