@@ -43,13 +43,10 @@ struct ChooseCustomLocationView: View {
         })
         .padding()
     }
-
+    
     var mapGoogle: some View {
-        GoogleMapView(pathPoints: [],
-                      placePickerIsUpdating: $placePickerIsUpdating,
-                      isUserInteracting: Binding.constant(true),
-                      mapNotes: .constant([]),
-                      isMapOnPickerScreen: true, placePickerLocation: $location)
+        CustomLocationMap(placePickerIsUpdating: $placePickerIsUpdating,
+                          placePickerLocation: $location)
     }
 
     var dot: some View {

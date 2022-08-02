@@ -476,6 +476,8 @@
 		FAB34933281AB208001F6E58 /* URLRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB34932281AB208001F6E58 /* URLRequest.swift */; };
 		FAB34935281AC28E001F6E58 /* AirBeamStreamPrefix.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB34934281AC28E001F6E58 /* AirBeamStreamPrefix.swift */; };
 		FAC3B67A283B96480095D915 /* ChartMeasurementsFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC3B679283B96480095D915 /* ChartMeasurementsFilter.swift */; };
+		FAE291A3289800530011FC5B /* CustomLocationMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE291A2289800530011FC5B /* CustomLocationMap.swift */; };
+		FAE291A5289800600011FC5B /* CustomLocationButler.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE291A4289800600011FC5B /* CustomLocationButler.swift */; };
 		FAEE8656289154DC00078FCF /* GoogleMapButler.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAEE8655289154DC00078FCF /* GoogleMapButler.swift */; };
 		FAEE8658289155AD00078FCF /* GoogleMapCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAEE8657289155AD00078FCF /* GoogleMapCore.swift */; };
 		FAF3B4DD28057A3300F0F4B0 /* SensorType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF3B4DC28057A3300F0F4B0 /* SensorType.swift */; };
@@ -972,6 +974,8 @@
 		FAB34932281AB208001F6E58 /* URLRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLRequest.swift; sourceTree = "<group>"; };
 		FAB34934281AC28E001F6E58 /* AirBeamStreamPrefix.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirBeamStreamPrefix.swift; sourceTree = "<group>"; };
 		FAC3B679283B96480095D915 /* ChartMeasurementsFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartMeasurementsFilter.swift; sourceTree = "<group>"; };
+		FAE291A2289800530011FC5B /* CustomLocationMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLocationMap.swift; sourceTree = "<group>"; };
+		FAE291A4289800600011FC5B /* CustomLocationButler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLocationButler.swift; sourceTree = "<group>"; };
 		FAEE8655289154DC00078FCF /* GoogleMapButler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleMapButler.swift; sourceTree = "<group>"; };
 		FAEE8657289155AD00078FCF /* GoogleMapCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleMapCore.swift; sourceTree = "<group>"; };
 		FAF3B4DC28057A3300F0F4B0 /* SensorType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorType.swift; sourceTree = "<group>"; };
@@ -1573,9 +1577,11 @@
 			children = (
 				DD7B74AA278C63F80072DDF1 /* style.json */,
 				AC986BE42886F4EB00E736B0 /* darkStyle.json */,
-				750A51D62754D3E800D6F4E7 /* Heatmap */,
 				DD8DE68A2785B939009B1726 /* MapNotesViewModel.swift */,
 				AC93B8E625BEFE4F003D0A0D /* AirMapView.swift */,
+				FAEE8657289155AD00078FCF /* GoogleMapCore.swift */,
+				750A51D62754D3E800D6F4E7 /* Heatmap */,
+				FA6B3D69289912D10031C069 /* CustomLocationMap */,
 				FAEE8654289154C600078FCF /* GoogleMap */,
 				ACAC936C27EAFF7900829F82 /* CreatingSessionMapView.swift */,
 				AC8D6C7125C0574800ED74D1 /* LocationTracker.swift */,
@@ -2476,12 +2482,20 @@
 			path = AirBeamMeasurements;
 			sourceTree = "<group>";
 		};
+		FA6B3D69289912D10031C069 /* CustomLocationMap */ = {
+			isa = PBXGroup;
+			children = (
+				FAE291A2289800530011FC5B /* CustomLocationMap.swift */,
+				FAE291A4289800600011FC5B /* CustomLocationButler.swift */,
+			);
+			path = CustomLocationMap;
+			sourceTree = "<group>";
+		};
 		FAEE8654289154C600078FCF /* GoogleMap */ = {
 			isa = PBXGroup;
 			children = (
 				AC93B8FD25C02E0B003D0A0D /* GoogleMapView.swift */,
 				FAEE8655289154DC00078FCF /* GoogleMapButler.swift */,
-				FAEE8657289155AD00078FCF /* GoogleMapCore.swift */,
 			);
 			path = GoogleMap;
 			sourceTree = "<group>";
@@ -2938,6 +2952,7 @@
 				B3EBB10626A06CD7002BD81F /* ScheduledForgotPasswordControllerProxy.swift in Sources */,
 				AC08A662266E2AEC0081697C /* ABMeasurementsView.swift in Sources */,
 				FA4F1B75281809B2002711B4 /* AirBeamStreamSuffixes.swift in Sources */,
+				FAE291A3289800530011FC5B /* CustomLocationMap.swift in Sources */,
 				B3ED03C32729A8E300513522 /* AirCastingNotifications.swift in Sources */,
 				AC006D2B275F537300E99019 /* UploadFixedSessionAPIService.swift in Sources */,
 				B33B15FF27AEE6E900138FFA /* WeakRef.swift in Sources */,
@@ -3152,6 +3167,7 @@
 				AC4EC6C425B6FE0D00C1E312 /* ThresholdsSettingsView.swift in Sources */,
 				DDD24D8626A8295F00D4A327 /* ConnectingABViewModel.swift in Sources */,
 				338CA6F727D104AF00505331 /* WebView.swift in Sources */,
+				FAE291A5289800600011FC5B /* CustomLocationButler.swift in Sources */,
 				FAF3B4E528058B6700F0F4B0 /* ProtectedScreen.swift in Sources */,
 				B3FD77C8267C997800E97CC2 /* PersistenceController+Database.swift in Sources */,
 				DDC86646276B561500A8E610 /* EditNoteViewModel.swift in Sources */,

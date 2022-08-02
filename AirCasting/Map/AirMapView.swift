@@ -22,7 +22,6 @@ struct AirMapView: View {
     @ObservedObject var session: SessionEntity
     @Binding var showLoadingIndicator: Bool
     @Binding var selectedStream: MeasurementStreamEntity?
-    @State var isUserInteracting = true
     @State var noteMarkerTapped = false
     @State var noteNumber = 0
     
@@ -69,8 +68,6 @@ struct AirMapView: View {
                     ZStack(alignment: .topLeading) {
                         GoogleMapView(pathPoints: pathPoints,
                                       threshold: threshold,
-                                      placePickerIsUpdating: Binding.constant(false),
-                                      isUserInteracting: $isUserInteracting,
                                       isSessionActive: session.isActive,
                                       isSessionFixed: session.isFixed,
                                       noteMarketTapped: $noteMarkerTapped,
@@ -114,13 +111,6 @@ struct AirMapView: View {
         //            statsContainerViewModel.adjustForNewData()
         //        }
         .onAppear { statsContainerViewModel.adjustForNewData() }
-        .onChange(of: scenePhase) { phase in
-            switch phase {
-            case .background, .inactive: isUserInteracting = false
-            case .active: isUserInteracting = true
-            @unknown default: fatalError()
-            }
-        }
         .padding(.bottom)
         .background(Color.aircastingBackground.ignoresSafeArea())
     }
