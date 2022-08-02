@@ -40,7 +40,7 @@ class SDSyncController {
     
     func syncFromAirbeam(_ airbeamConnection: CBPeripheral, progress: @escaping (SDCardSyncStatus) -> Void, completion: @escaping (Bool) -> Void) {
         guard let sensorName = airbeamConnection.name else {
-            Log.error("[SD Sync] Unable to identify the device")
+            Log.error("Unable to identify the device with \(airbeamConnection)")
             completion(false)
             return
         }
@@ -56,10 +56,8 @@ class SDSyncController {
             self.writingQueue.sync {
                 switch result {
                 case .success(let metadata):
-                    Log.verbose("[TEST] Downloaded SD card data from AB")
                     progress(.finalizing)
                     let files = self.fileWriter.finishAndSave()
-                    Log.verbose("[TEST] File saved.")
                     guard !files.isEmpty else {
                         completion(true)
                         return
@@ -69,16 +67,15 @@ class SDSyncController {
                     self.checkFilesForCorruption(files, expectedMeasurementsCount: metadata.expectedMeasurementsCount) { fileValidationResult in
                         switch fileValidationResult {
                         case .success(let verifiedFiles):
-                            Log.verbose("[TEST] Files verified.")
+                            Log.info("Files verified.")
                             self.handle(files: verifiedFiles, sensorName: sensorName, completion: completion)
                         case .failure(let error):
-                            Log.verbose("[TEST] File verification failed. \(error.localizedDescription)")
-                            Log.error(error.localizedDescription)
+                            Log.error("File verification \(error.localizedDescription)")
                             completion(false)
                         }
                     }
                 case .failure:
-                    Log.verbose("[TEST] Failed to download SD card data from AB")
+                    Log.error("Failed to download SD card data from AB")
                     self.fileWriter.finishAndRemoveFiles()
                     completion(false)
                 }
@@ -129,7 +126,7 @@ class SDSyncController {
             case .success(let sessions):
                 completion(.success(sessions))
             case .failure(let error):
-                Log.error("[SD Sync] Failed to upload sessions to backend: \(error.localizedDescription)")
+                Log.error("Failed to upload sessions to backend: \(error.localizedDescription)")
                 completion(.failure(error))
             }
         }
@@ -137,29 +134,27 @@ class SDSyncController {
     
     private func process(mobileSessionFile: URL, deviceID: String, completion: @escaping (Bool) -> Void) {
         Log.info("Processing mobile file")
-        Log.verbose("[TEST] Starting saving mobile file \(mobileSessionFile.lastPathComponent)")
         self.mobileSessionsSaver.saveDataToDb(fileURL: mobileSessionFile, deviceID: deviceID) { result in
             switch result {
             case .success(let sessions):
-                Log.verbose("[TEST] Saved mobile file")
                 self.averagingService.averageMeasurements(for: sessions) {
-                    Log.info("[SD Sync] Averaging done")
+                    Log.info("Averaging done")
                     self.onCurrentSyncEnd { self.startBackendSync() }
                 }
                 completion(true)
             case .failure(let error):
-                Log.error("[SD Sync] Failed to save sessions to database: \(error.localizedDescription)")
+                Log.error("Failed to save sessions to database: \(error.localizedDescription)")
                 completion(false)
             }
         }
     }
     
     func clearSDCard(_ airbeamConnection: CBPeripheral, completion: @escaping (Bool) -> Void) {
-        Log.verbose("[TEST] Clearing SD card")
         airbeamServices.clearSDCard(of: airbeamConnection) { result in
             switch result {
             case .success():
                 completion(true)
+                Log.info("Complete clearing SD card")
             case .failure(let error):
                 Log.error("Failed to clear SD card: \(error.localizedDescription)")
                 completion(false)

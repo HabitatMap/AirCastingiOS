@@ -17,39 +17,43 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
     func saveDataToDb(fileURL: URL, deviceID: String, completion: @escaping (Result<[SessionUUID], Error>) -> Void) {
         var streamsWithMeasurements: [SDStream: [Measurement]] = [:]
         
-            do {
-                try self.fileLineReader.readLines(of: fileURL, progress: { line in
-                    switch line {
-                    case .line(let content):
-                        let measurementsRow = self.parser.parseMeasurement(lineString: content)
-                        guard let measurements = measurementsRow, !shouldSessionBeIgnored(sessionUUID: measurements.sessionUUID, deviceID: deviceID) else { return }
-                        var session = getProcessedSession(sessionUUID: measurements.sessionUUID)
-                        
-                        if session == nil {
-                            session = self.processSession(sessionUUID: measurements.sessionUUID, deviceID: deviceID)
-                            guard let createdSession = session else { return }
-                            if createdSession.lastMeasurementTime == nil {
-                                streamsWithMeasurements.keys.forEach { stream in
-                                    self.createSession(sdStream: stream,
-                                                       location: .init(latitude: measurements.lat, longitude: measurements.long),
-                                                       time: measurements.date)
-                                }
+        do {
+            try self.fileLineReader.readLines(of: fileURL, progress: { line in
+                switch line {
+                case .line(let content):
+                    let measurementsRow = self.parser.parseMeasurement(lineString: content)
+                    guard let measurements = measurementsRow else { return }
+                    shouldSessionBeIgnored(sessionUUID: measurements.sessionUUID, deviceID: deviceID) { value in
+                        guard !value else { return }
+                        self.getProcessedSession(sessionUUID: measurements.sessionUUID) { session in
+                            
+                            if session == nil {
+                                self.processSession(sessionUUID: measurements.sessionUUID, deviceID: deviceID, completion: { session in
+                                    guard let createdSession = session else { return }
+                                    if createdSession.lastMeasurementTime == nil {
+                                        streamsWithMeasurements.keys.forEach { stream in
+                                            self.createSession(sdStream: stream,
+                                                               location: .init(latitude: measurements.lat, longitude: measurements.long),
+                                                               time: measurements.date)
+                                        }
+                                    }
+                                })
                             }
+                            guard session!.lastMeasurementTime == nil || measurements.date > session!.lastMeasurementTime! else { return }
                         }
-                        guard session!.lastMeasurementTime == nil || measurements.date > session!.lastMeasurementTime! else { return }
-                        
-                        // TODO: this causes a lot of memory usage:
-                        self.enqueueForSaving(measurements: measurements, buffer: &streamsWithMeasurements)
-                        
-                    case .endOfFile:
-                        Log.info("Reached end of csv file")
                     }
-                })
-                self.saveData(streamsWithMeasurements, with: deviceID)
-                completion(.success(Array(Set(streamsWithMeasurements.keys.map(\.sessionUUID)))))
-            } catch {
-                completion(.failure(error))
-            }
+                    // TODO: this causes a lot of memory usage:
+                    self.enqueueForSaving(measurements: measurements, buffer: &streamsWithMeasurements)
+                    
+                case .endOfFile:
+                    Log.info("Reached end of csv file")
+                }
+            })
+            self.saveData(streamsWithMeasurements, with: deviceID)
+            completion(.success(Array(Set(streamsWithMeasurements.keys.map(\.sessionUUID)))))
+        } catch {
+            completion(.failure(error))
+        }
     }
     
     private func saveData(_ streamsWithMeasurements: [SDStream: [Measurement]], with deviceID: String) {
@@ -85,34 +89,39 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
                 }
                 try storage.addMeasurements(measurements, toStreamWithID: existingStreamID!)
             } catch {
-                Log.info("Saving measurements failed: \(error)")
+                Log.error("Saving measurements failed: \(error)")
             }
         }
     }
     
-    private func shouldSessionBeIgnored(sessionUUID: SessionUUID, deviceID: String) -> Bool {
-        let session = getExistingSession(sessionUUID: sessionUUID)
-        if let session = session, !session.isInStandaloneMode, session.sensorPackageName != deviceID {
-            Log.info("[SD SYNC] Ignoring session \(session.name ?? "none")");  return true
-        }
-        return false
-    }
-    
-    private func getProcessedSession(sessionUUID: SessionUUID) -> SDSession? {
-        let session = getExistingSession(sessionUUID: sessionUUID)
-        guard let uuid = session?.uuid else { return nil }
-        return SDSession(uuid: uuid, lastMeasurementTime: session?.lastMeasurementTime)
-    }
-    
-    private func processSession(sessionUUID: SessionUUID, deviceID: String) -> SDSession? {
-        let session = getExistingSession(sessionUUID: sessionUUID)
-        if let existingSession = session {
-            guard existingSession.isInStandaloneMode && existingSession.sensorPackageName == deviceID else {
-                return nil
+    private func shouldSessionBeIgnored(sessionUUID: SessionUUID, deviceID: String, completion: @escaping ((Bool) -> Void)) {
+        getExistingSession(sessionUUID: sessionUUID) { session in
+            if let session = session, !session.isInStandaloneMode, session.sensorPackageName != deviceID {
+                Log.info("[SD SYNC] Ignoring session \(session.name ?? "none")")
+                completion(true)
             }
-            return SDSession(uuid: sessionUUID, lastMeasurementTime: existingSession.lastMeasurementTime)
-        } else {
-            return SDSession(uuid: sessionUUID, lastMeasurementTime: nil)
+            completion(false)
+        }
+    }
+    
+    private func getProcessedSession(sessionUUID: SessionUUID, completion: @escaping ((SDSession?) -> Void)) {
+        getExistingSession(sessionUUID: sessionUUID) { session in
+            guard let uuid = session?.uuid else { completion(nil); return }
+            completion(SDSession(uuid: uuid, lastMeasurementTime: session?.lastMeasurementTime))
+        }
+    }
+    
+    private func processSession(sessionUUID: SessionUUID, deviceID: String, completion: @escaping ((SDSession?) -> Void)) {
+        getExistingSession(sessionUUID: sessionUUID) { session in
+            if let existingSession = session {
+                guard existingSession.isInStandaloneMode && existingSession.sensorPackageName == deviceID else {
+                    completion(nil)
+                    return
+                }
+                completion(SDSession(uuid: sessionUUID, lastMeasurementTime: existingSession.lastMeasurementTime))
+            } else {
+                completion(SDSession(uuid: sessionUUID, lastMeasurementTime: nil))
+            }
         }
     }
     
@@ -128,11 +137,10 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         MeasurementStream(sensorName: sensorName, sensorPackageName: sensorPackageName)
     }
     
-    private func getExistingSession(sessionUUID: SessionUUID) -> SessionEntity? {
-        var session: SessionEntity?
+    private func getExistingSession(sessionUUID: SessionUUID, completion: @escaping ((SessionEntity?) -> Void)) {
         measurementStreamStorage.accessStorage { storage in
-            session = try? storage.getExistingSession(with: sessionUUID)
+            let session = try? storage.getExistingSession(with: sessionUUID)
+            completion(session)
         }
-        return session
     }
 }
