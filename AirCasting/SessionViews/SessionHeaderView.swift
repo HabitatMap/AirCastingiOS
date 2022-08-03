@@ -172,7 +172,7 @@ private extension SessionHeaderView {
     }
     
     var sensorType: some View {
-        let allStreams = session.allStreams ?? []
+        let allStreams = session.allStreams
         return SessionTypeIndicator(sessionType: session.type, streamSensorNames: allStreams.compactMap(\.sensorPackageName))
     }
 
@@ -182,6 +182,7 @@ private extension SessionHeaderView {
             session.editable ? actionsMenuEditButton : nil
             session.shareable ? actionsMenuShareButton : nil
             session.deletable ? actionsMenuDeleteButton : nil
+            session.isFixed ? actionsMenuThresholdAlertButton : nil
             if session.deviceType == .AIRBEAM3 && session.isActive && featureFlagsViewModel.enabledFeatures.contains(.standaloneMode) {
                 actionsMenuMobileEnterStandaloneMode
             }
@@ -256,8 +257,16 @@ private extension SessionHeaderView {
         }
     }
     
+    var actionsMenuThresholdAlertButton: some View {
+        Button {
+            showThresholdAlertModal.toggle()
+        } label: {
+            Label(Strings.SessionHeaderView.thresholdAlertsButton, systemImage: "exclamationmark.triangle")
+        }
+    }
+    
     var thresholdAlertSheet: some View {
-        ThresholdAlertSheet(viewModel: ThresholdAlertSheetViewModel(session: session, apiClient: ShareSessionApi(), exitRoute: {_ in }), isActive: $showThresholdAlertModal)
+        ThresholdAlertSheet(viewModel: ThresholdAlertSheetViewModel(session: session, apiClient: ShareSessionApi()), isActive: $showThresholdAlertModal)
     }
 
     func adaptTimeAndDate() -> Text {

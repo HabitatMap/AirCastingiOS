@@ -3,70 +3,63 @@
 
 import Foundation
 
+enum ThresholdAlertFrequency {
+    case oneHour
+    case twentyFourHours
+}
+
 class ThresholdAlertSheetViewModel: ObservableObject {
     @Published var isOn = false
-    private let exitRoute: (ShareSessionResult) -> Void
     private var session: Sessionable
     private let apiClient: ShareSessionAPIServices
-    private lazy var selectedStream = streamOptions.first
     
-    var streamOptions: [ShareSessionStreamOptionViewModel] {
-        willSet {
-            objectWillChange.send()
-        }
+    @Published var streamOptions: [StreamOption] = []
+    @Published var frequency = ThresholdAlertFrequency.oneHour
+    
+    struct StreamOption: Identifiable {
+        var id: Int
+        var streamName: String
+        var shortStreamName: String
+        var isOn: Bool
+        var thresholdValue: String
     }
     
-    init(session: SessionEntity, apiClient: ShareSessionAPIServices, exitRoute: @escaping (ShareSessionResult) -> Void) {
+    init(session: Sessionable, apiClient: ShareSessionAPIServices) {
         self.session = session
-        self.exitRoute = exitRoute
         self.apiClient = apiClient
-        
-        var sessionStreams: [MeasurementStreamEntity] {
-            return session.sortedStreams.filter( {!$0.gotDeleted} )
-        }
-        
-        streamOptions = []
-        showProperStreams(sessionStreams: sessionStreams)
-    }
-    
-    func didSelect(option: ShareSessionStreamOptionViewModel) {
-        guard let index = streamOptions.firstIndex(where: { $0.id == option.id }) else {
-            assertionFailure("Unknown option index")
-            return
-        }
-        
-        if !streamOptions[index].isSelected {
-            for i in streamOptions.indices {
-                streamOptions[i].changeSelection(newSelected: false)
-            }
-            streamOptions[index].toggleSelection()
-            selectedStream = streamOptions[index]
-        }
+        showProperStreams()
     }
     
     func confirmationButtonPressed() {}
     
-    private func showProperStreams(sessionStreams: [MeasurementStreamEntity]) {
-        var sensorName: String
+    func changeIsOn(of id: Int, to value: Bool) {
+        guard let streamOptionId = streamOptions.first(where: { $0.id == id })?.id else { return }
+        streamOptions[streamOptionId].isOn = value
+        Log.info("## \(streamOptions[streamOptionId])")
+    }
+    
+    func changeThreshold(of id: Int, to value: String) {
+        guard let streamOptionId = streamOptions.first(where: { $0.id == id })?.id else { return }
+        streamOptions[streamOptionId].thresholdValue = value
+        Log.info("## \(streamOptions[streamOptionId])")
+    }
+    
+    func save() {
         
-        for (id, stream) in sessionStreams.enumerated() {
-            if let streamName = stream.sensorName {
-                if streamName == Constants.SensorName.microphone {
-                    streamOptions.append(.init(id: id, title: "dB", streamName: Constants.SensorName.microphone, isSelected: false, isEnabled: false))
-                } else {
-                    let sensorNameComponents = streamName.components(separatedBy: "-")
-                    if sensorNameComponents.count == 2 {
-                        sensorName = streamName.components(separatedBy: "-")[1]
-                    } else {
-                        Log.warning("Received unexpected stream name format from server")
-                        sensorName = streamName
-                    }
-                    streamOptions.append(.init(id: id, title: sensorName, streamName: streamName, isSelected: false, isEnabled: false))
-                }
-            }
+    }
+    
+    private func showProperStreams() {
+        let sessionStreams = session.sortedStreams.filter( {!$0.gotDeleted} )
+        streamOptions = []
+        var i = 0
+        sessionStreams.forEach { stream in
+            guard let name = stream.sensorName else { return }
+            streamOptions.append(StreamOption(id: i, streamName: name, shortStreamName: shorten(name), isOn: false, thresholdValue: ""))
+            i+=1
         }
-        if !streamOptions.isEmpty {
-            streamOptions[0].toggleSelection()
-        }
+    }
+    
+    func shorten(_ streamName: String) -> String {
+        String(streamName.replacingOccurrences(of: ":", with: "-").split(separator: "-").last ?? "")
     }
 }

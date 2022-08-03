@@ -15,6 +15,7 @@ struct ThresholdAlertSheet<VM: ThresholdAlertSheetViewModel>: View {
                 title
                 description
                 chooseStream
+                frequencyPicker
                 continueButton
                 cancelButton
             }
@@ -35,29 +36,34 @@ struct ThresholdAlertSheet<VM: ThresholdAlertSheetViewModel>: View {
             .foregroundColor(.aircastingGray)
     }
     
-    private var onOffToggle: some View {
-        Toggle("Turn on", isOn: $viewModel.isOn)
-    }
-    
     private var chooseStream: some View {
         VStack(alignment: .leading) {
-            ForEach(viewModel.streamOptions, id: \.id) { option in
-                HStack {
-                    CheckBox(isSelected: option.isSelected).onTapGesture {
-                        viewModel.didSelect(option: option)
-                    }
-                    Text(option.title)
-                        .font(Fonts.muliBoldHeading1)
-                }
+            ForEach(viewModel.streamOptions) { option in
+                ThresholdAlertStreamOption(
+                    isOn: .init( get: { option.isOn}, set: { viewModel.changeIsOn(of: option.id, to: $0) }),
+                    thresholdValue: .init( get: { option.thresholdValue}, set: { viewModel.changeThreshold(of: option.id, to: $0) }),
+                    streamName: option.shortStreamName
+                )
             }
         }.padding()
+    }
+    
+    private var frequencyPicker: some View {
+        HStack {
+            Text(Strings.ThresholdAlertSheet.frequencyLabel)
+            Picker(Strings.ThresholdAlertSheet.frequencyLabel, selection: $viewModel.frequency) {
+                Text("1 hour").tag(ThresholdAlertFrequency.oneHour)
+                Text("24 hours").tag(ThresholdAlertFrequency.twentyFourHours)
+            }
+            .pickerStyle(.segmented)
+        }
     }
     
     private var continueButton: some View {
         Button {
             viewModel.confirmationButtonPressed()
         } label: {
-            Text(Strings.DeleteSession.continueButton)
+            Text(Strings.ThresholdAlertSheet.saveButton)
                 .font(Fonts.muliBoldHeading1)
         }
         .buttonStyle(BlueButtonStyle())
@@ -75,6 +81,6 @@ struct ThresholdAlertSheet<VM: ThresholdAlertSheetViewModel>: View {
 
 struct ThresholdAlertSheet_Previews: PreviewProvider {
     static var previews: some View {
-        ThresholdAlertSheet(viewModel: ThresholdAlertSheetViewModel(session: SessionEntity.mock, apiClient: ShareSessionApi(), exitRoute: { _ in }), isActive: .constant(true))
+        ThresholdAlertSheet(viewModel: ThresholdAlertSheetViewModel(session: SessionEntity.mock, apiClient: ShareSessionApi()), isActive: .constant(true))
     }
 }

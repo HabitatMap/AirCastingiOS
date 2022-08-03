@@ -557,12 +557,10 @@ struct Strings {
     
     enum ThresholdAlertSheet {
         static let title: String = NSLocalizedString("Create threshold alert", comment: "")
-        static let description: String = NSLocalizedString("Get notified when measured value for PM 2.5 exceeds given threshold", comment: "")
+        static let description: String = NSLocalizedString("Get notified when measured value for a stream exceeds given threshold", comment: "")
         static let thresholdLabel: String = NSLocalizedString("Threshold", comment: "")
         static let frequencyLabel: String = NSLocalizedString("Frequency", comment: "")
-        static let createButton: String = NSLocalizedString("Create", comment: "")
-        static let updateButton: String = NSLocalizedString("Update", comment: "")
-        static let deleteButton: String = NSLocalizedString("Delete", comment: "")
+        static let saveButton: String = NSLocalizedString("Save", comment: "")
     }
     
     enum EditSession {
@@ -625,6 +623,8 @@ struct Strings {
         static let mic: String = NSLocalizedString("Phone Mic",
                                                    comment: "")
         static let addNoteButton: String = NSLocalizedString("Add a note",
+                                                             comment: "")
+        static let thresholdAlertsButton: String = NSLocalizedString("Threshold alerts",
                                                              comment: "")
     }
     
