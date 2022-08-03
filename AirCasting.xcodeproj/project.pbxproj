@@ -14,6 +14,8 @@
 		332020A6283CF6D1003E07F3 /* ExternalSessionEntity+Sessionable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332020A5283CF6D1003E07F3 /* ExternalSessionEntity+Sessionable.swift */; };
 		332020A8283CF724003E07F3 /* SessionEntity+Sessionable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332020A7283CF724003E07F3 /* SessionEntity+Sessionable.swift */; };
 		332066A42891730E00798AC1 /* ShareSessionFileTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332066A32891730E00798AC1 /* ShareSessionFileTest.swift */; };
+		332066AC2898156D00798AC1 /* ThresholdAlertSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332066AB2898156D00798AC1 /* ThresholdAlertSheet.swift */; };
+		332066AF28981EDD00798AC1 /* ThresholdAlertSheetViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332066AE28981EDD00798AC1 /* ThresholdAlertSheetViewModel.swift */; };
 		332F521425FA38430047236D /* MicrophoneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332F521325FA38430047236D /* MicrophoneManager.swift */; };
 		334062442816B4B6004DA4DA /* EditLocationlessSessionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 334062432816B4B6004DA4DA /* EditLocationlessSessionViewModel.swift */; };
 		33406247281821FA004DA4DA /* ExternalSessionsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33406246281821FA004DA4DA /* ExternalSessionsStore.swift */; };
@@ -502,6 +504,8 @@
 		332020A5283CF6D1003E07F3 /* ExternalSessionEntity+Sessionable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExternalSessionEntity+Sessionable.swift"; sourceTree = "<group>"; };
 		332020A7283CF724003E07F3 /* SessionEntity+Sessionable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SessionEntity+Sessionable.swift"; sourceTree = "<group>"; };
 		332066A32891730E00798AC1 /* ShareSessionFileTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSessionFileTest.swift; sourceTree = "<group>"; };
+		332066AB2898156D00798AC1 /* ThresholdAlertSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThresholdAlertSheet.swift; sourceTree = "<group>"; };
+		332066AE28981EDD00798AC1 /* ThresholdAlertSheetViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThresholdAlertSheetViewModel.swift; sourceTree = "<group>"; };
 		332F521325FA38430047236D /* MicrophoneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrophoneManager.swift; sourceTree = "<group>"; };
 		334062432816B4B6004DA4DA /* EditLocationlessSessionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditLocationlessSessionViewModel.swift; sourceTree = "<group>"; };
 		3340624528181376004DA4DA /* AirCasting v5.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AirCasting v5.xcdatamodel"; sourceTree = "<group>"; };
@@ -1020,6 +1024,15 @@
 			path = ShareSession;
 			sourceTree = "<group>";
 		};
+		332066AD28981EBF00798AC1 /* ThresholdAlert */ = {
+			isa = PBXGroup;
+			children = (
+				332066AB2898156D00798AC1 /* ThresholdAlertSheet.swift */,
+				332066AE28981EDD00798AC1 /* ThresholdAlertSheetViewModel.swift */,
+			);
+			path = ThresholdAlert;
+			sourceTree = "<group>";
+		};
 		3328F11E266786C600B72D61 /* Chart */ = {
 			isa = PBXGroup;
 			children = (
@@ -1380,6 +1393,7 @@
 			children = (
 				33F604AD2824173300B48C63 /* ExternalSessionsViews */,
 				3305086F276B566800D18C69 /* ShareSession */,
+				332066AD28981EBF00798AC1 /* ThresholdAlert */,
 				DDF12AE926B2ADFD00D067C7 /* SessionCardView */,
 				AC6D569E25AEEAE700D221BA /* SessionHeaderView.swift */,
 				DD009D652698844A009F0443 /* DeleteView.swift */,
@@ -2799,6 +2813,7 @@
 				AC93B8FE25C02E0B003D0A0D /* GoogleMapView.swift in Sources */,
 				B3F1447426ADF8A7006A4612 /* ScheduledTimer.swift in Sources */,
 				B30BAC042694A8B400AE0476 /* MapStatsDataSource.swift in Sources */,
+				332066AC2898156D00798AC1 /* ThresholdAlertSheet.swift in Sources */,
 				AC9EB64526ECB11B00B1F780 /* DefaultSyncingMeasurementsViewModel.swift in Sources */,
 				B30BAC1D2694AABC00AE0476 /* MeasurementStatisticsTypes.swift in Sources */,
 				B32D08AF267A6D13006C97ED /* ErasingToVoidPublisher.swift in Sources */,
@@ -2874,6 +2889,7 @@
 				B38E6CD026C5F83D00C21C45 /* StandardSesssionStopper.swift in Sources */,
 				3399394D27DA1722006144AF /* SingleSessionDownloader.swift in Sources */,
 				B30F9A612745601F00C85E17 /* SDSyncController.swift in Sources */,
+				332066AF28981EDD00798AC1 /* ThresholdAlertSheetViewModel.swift in Sources */,
 				33B397D9284FB77400C95387 /* PhotoPicker.swift in Sources */,
 				33406247281821FA004DA4DA /* ExternalSessionsStore.swift in Sources */,
 				B33B15FE27AEE6E900138FFA /* WeakRef+DisposableDataHolder.swift in Sources */,

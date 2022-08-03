@@ -26,6 +26,7 @@ struct SessionHeaderView: View {
     @State var showShareModal = false
     @State var showEditView = false
     @State var detectEmailSent = false
+    @State var showThresholdAlertModal = false
     
     var body: some View {
         if #available(iOS 15, *) {
@@ -55,6 +56,9 @@ struct SessionHeaderView: View {
                 }
                 .sheet(isPresented: $showAddNoteModal) {
                     AddNoteView(viewModel: AddNoteViewModel(sessionUUID: session.uuid, withLocation: !session.locationless, exitRoute: { showAddNoteModal.toggle() }))
+                }
+                .sheet(isPresented: $showThresholdAlertModal) {
+                    thresholdAlertSheet
                 }
         } else {
             sessionHeader
@@ -90,6 +94,10 @@ struct SessionHeaderView: View {
                         EmptyView()
                             .sheet(isPresented: $showAddNoteModal) {
                                 AddNoteView(viewModel: AddNoteViewModel(sessionUUID: session.uuid, withLocation: !session.locationless, exitRoute: { showAddNoteModal.toggle() }))
+                            }
+                        EmptyView()
+                            .sheet(isPresented: $showThresholdAlertModal) {
+                                thresholdAlertSheet
                             }
                     }
                 )
@@ -246,6 +254,10 @@ private extension SessionHeaderView {
         } label: {
             Label(Strings.SessionHeaderView.addNoteButton, systemImage: "square.and.pencil")
         }
+    }
+    
+    var thresholdAlertSheet: some View {
+        ThresholdAlertSheet(viewModel: ThresholdAlertSheetViewModel(session: session, apiClient: ShareSessionApi(), exitRoute: {_ in }), isActive: $showThresholdAlertModal)
     }
 
     func adaptTimeAndDate() -> Text {

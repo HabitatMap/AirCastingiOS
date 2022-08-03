@@ -555,6 +555,16 @@ struct Strings {
         static let deleteButton: String = NSLocalizedString("Delete", comment: "")
     }
     
+    enum ThresholdAlertSheet {
+        static let title: String = NSLocalizedString("Create threshold alert", comment: "")
+        static let description: String = NSLocalizedString("Get notified when measured value for PM 2.5 exceeds given threshold", comment: "")
+        static let thresholdLabel: String = NSLocalizedString("Threshold", comment: "")
+        static let frequencyLabel: String = NSLocalizedString("Frequency", comment: "")
+        static let createButton: String = NSLocalizedString("Create", comment: "")
+        static let updateButton: String = NSLocalizedString("Update", comment: "")
+        static let deleteButton: String = NSLocalizedString("Delete", comment: "")
+    }
+    
     enum EditSession {
         static let title: String = NSLocalizedString("Edit session details",
                                                      comment: "")
