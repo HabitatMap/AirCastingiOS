@@ -32,7 +32,7 @@ class DormantStreamAlertAPITest: APIServiceTestCase {
         XCTAssertEqual(request.httpMethod, "POST")
     }
 
-    func test_whenSendsRequestwithTrueValue_hasCorrectBody() throws {
+    func test_whenSendsRequestWithTrueValue_hasCorrectBody() throws {
         var receivedRequest: URLRequest?
         client.requestTaskStub = { request, completion in
             receivedRequest = request

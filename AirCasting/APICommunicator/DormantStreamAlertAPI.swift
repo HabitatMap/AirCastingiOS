@@ -45,13 +45,13 @@ struct DormantStreamAlertAPI {
         
         do {
             request.httpBody = try encoder.encode(params)
-            _ = try authorization.authorise(request: &request)
+            try authorization.authorise(request: &request)
         } catch {
             Log.error("Failed to prepare request")
             completion(.failure(.wrongRequest))
         }
         
-        _ = apiClient.requestTask(for: request) { [validator] result, request in
+        apiClient.requestTask(for: request) { [validator] result, request in
             do {
                 switch result {
                 case .failure(let error): completion(.failure(.failedRequest(error)))
