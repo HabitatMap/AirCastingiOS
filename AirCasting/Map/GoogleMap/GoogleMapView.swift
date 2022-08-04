@@ -8,7 +8,7 @@ import Resolver
 struct GoogleMapView: UIViewRepresentable {
     @ObservedObject private var butler: GoogleMapButler
     
-    @Binding private var noteMarketTapped: Bool
+    @Binding private var noteMarkerTapped: Bool
     @Binding private var noteNumber: Int
     
     private var liveModeOn: Bool
@@ -32,7 +32,7 @@ struct GoogleMapView: UIViewRepresentable {
         self.threshold = threshold
         self.liveModeOn = isSessionActive
         self.isSessionFixed = isSessionFixed
-        self._noteMarketTapped = noteMarketTapped
+        self._noteMarkerTapped = noteMarketTapped
         self._noteNumber = noteNumber
         self._butler = .init(wrappedValue: .init(pathPoints: pathPoints,
                                                  showMyLocationButton: showMyLocationButton,
@@ -74,10 +74,9 @@ struct GoogleMapView: UIViewRepresentable {
     
     func updateUIView(_ uiView: GMSMapView, context: Context) {
         context.coordinator.butler = butler
-        
+        butler.applyStylying(to: uiView)
         if butler.notesNumber != context.coordinator.mapNotesCounter {
             butler.placeNotes(uiView, context: context)
-            uiView.isMyLocationEnabled = false
             butler.drawPolyline(uiView,context: context)
             context.coordinator.mapNotesCounter = butler.notesNumber
         }
@@ -90,8 +89,8 @@ struct GoogleMapView: UIViewRepresentable {
             updateContextThresholdAndPathPoints(context: context)
             context.coordinator.drawHeatmap(uiView)
         }
-        butler.applyStylying(to: uiView)
-        butler.defineMapType(uiView)
+//        butler.applyStylying(to: uiView)
+//        butler.defineMapType(uiView)
     }
     
     private func updateContextThresholdAndPathPoints(context: Context) {
@@ -159,7 +158,7 @@ extension GoogleMapView {
         func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
             if let userData = marker.userData as? Int {
                 parent.noteNumber = userData
-                parent.noteMarketTapped = true
+                parent.noteMarkerTapped = true
             }
             return true
         }

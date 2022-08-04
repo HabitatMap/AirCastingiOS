@@ -9,12 +9,13 @@ protocol GoogleMapCore {
     func apllyStylying(to mapView: GMSMapView)
     func optionalTrackerLocation() -> (Double, Double)
     func defineMapType(_ uiView: GMSMapView)
+    func getLocationForEmptyPathPoints() -> CLLocationCoordinate2D
 }
 
 struct GoogleMapCoreDefault: GoogleMapCore {
-    @Environment(\.colorScheme) var colorScheme
     @Injected private var tracker: LocationTracker
     @InjectedObject private var userSettings: UserSettings
+    var isLightMode: Bool { UITraitCollection.current.userInterfaceStyle == .light }
     
     func initialCommonMakeUIView() -> GMSMapView {
         let startingPoint = setStartingPoint()
@@ -26,7 +27,7 @@ struct GoogleMapCoreDefault: GoogleMapCore {
     
     func apllyStylying(to mapView: GMSMapView) {
         do {
-            if let styleURL = Bundle.main.url(forResource: colorScheme == .light ? "style" : "darkStyle", withExtension: "json") {
+            if let styleURL = Bundle.main.url(forResource: isLightMode ? "style" : "darkStyle", withExtension: "json") {
                 mapView.mapStyle = try GMSMapStyle(contentsOfFileURL: styleURL)
             } else {
                 Log.error("Unable to find style.json")
@@ -44,6 +45,10 @@ struct GoogleMapCoreDefault: GoogleMapCore {
     
     func defineMapType(_ uiView: GMSMapView) {
         if userSettings.satteliteMap { uiView.mapType = .hybrid } else { uiView.mapType = .normal }
+    }
+    
+    func getLocationForEmptyPathPoints() -> CLLocationCoordinate2D {
+        return tracker.location.value?.coordinate ?? CLLocationCoordinate2D(latitude: 0, longitude: 0)
     }
     
     private func setStartingPoint() -> GMSCameraPosition {

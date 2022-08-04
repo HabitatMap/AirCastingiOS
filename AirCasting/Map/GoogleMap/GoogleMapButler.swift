@@ -38,6 +38,11 @@ class GoogleMapButler: ObservableObject {
     
     var cameraUpdate: GMSCameraUpdate {
         let initialBounds = GMSCoordinateBounds()
+        guard !pathPoints.isEmpty else {
+            let location = coreMap.getLocationForEmptyPathPoints()
+            return GMSCameraUpdate.setTarget(location)
+        }
+        
         guard liveModeOn else {
             let pathPointsBoundingBox = pathPoints.reduce(initialBounds) { bounds, point in
                 bounds.includingCoordinate(point.location)
