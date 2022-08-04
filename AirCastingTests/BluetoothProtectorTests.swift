@@ -7,7 +7,7 @@ class BluetoothProtectorTests: ACTestCase {
     let databaseSpy = AirBeamDatabaseSpy()
     lazy var sut = BluetoothConnectionProtector()
     
-    func testWrongStatuses_whenAskedToPredicate_shouldResultWithZero() throws {
+    func test_whenDatabaseAsksForExistingSessions_doNotRequestStatusesOtherThen_NewRecording() throws {
         Resolver.test.register { self.databaseSpy as SessionsFetchable }
         
         sut.isAirBeamAvailableForNewConnection(peripheraUUID: "", completion: { _ in })
@@ -23,7 +23,7 @@ class BluetoothProtectorTests: ACTestCase {
         XCTAssertEqual(0, (invalidStatuses as NSArray).filtered(using: predicate).count)
     }
     
-    func testCorrectStatuses_whenAskedToPredicate_shouldResultWithTwo() throws {
+    func test_whenDatabaseAsksForExistingSessions_requestOnlyStatuses_NewRecordingDisconnected() throws {
         Resolver.test.register { self.databaseSpy as SessionsFetchable }
         
         sut.isAirBeamAvailableForNewConnection(peripheraUUID: "", completion: { _ in })
@@ -33,9 +33,10 @@ class BluetoothProtectorTests: ACTestCase {
         guard case let .predicate(predicate) = constraint else { XCTFail(); return }
         
         let correctStatuses: [FakePredicateBlueprint] = [.createPredicateWithExpected(status: 2),
-                                                         .createPredicateWithExpected(status: -1)]
+                                                         .createPredicateWithExpected(status: -1),
+                                                         .createPredicateWithExpected(status: 0)]
         
-        XCTAssertEqual(2, (correctStatuses as NSArray).filtered(using: predicate).count)
+        XCTAssertEqual(3, (correctStatuses as NSArray).filtered(using: predicate).count)
     }
     
     func testWrongDeviceTypes_whenAskedToPredicate_souldResultWithZero() throws {
