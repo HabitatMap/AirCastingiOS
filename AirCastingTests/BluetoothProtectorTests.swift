@@ -7,7 +7,7 @@ class BluetoothProtectorTests: ACTestCase {
     let databaseSpy = AirBeamDatabaseSpy()
     lazy var sut = BluetoothConnectionProtector()
     
-    func test_whenDatabaseAsksForExistingSessions_doNotRequestStatusesOtherThen_NewRecording() throws {
+    func test_whenDatabaseAsksForExistingSessions_exclcudeOtherThenNewRecordingStatuses() throws {
         Resolver.test.register { self.databaseSpy as SessionsFetchable }
         
         sut.isAirBeamAvailableForNewConnection(peripheraUUID: "", completion: { _ in })
@@ -23,7 +23,7 @@ class BluetoothProtectorTests: ACTestCase {
         XCTAssertEqual(0, (invalidStatuses as NSArray).filtered(using: predicate).count)
     }
     
-    func test_whenDatabaseAsksForExistingSessions_requestOnlyStatuses_NewRecordingDisconnected() throws {
+    func test_whenDatabaseAsksForExistingSessions_inlcudeOnlyNewRecordingStatuses() throws {
         Resolver.test.register { self.databaseSpy as SessionsFetchable }
         
         sut.isAirBeamAvailableForNewConnection(peripheraUUID: "", completion: { _ in })
@@ -39,7 +39,7 @@ class BluetoothProtectorTests: ACTestCase {
         XCTAssertEqual(3, (correctStatuses as NSArray).filtered(using: predicate).count)
     }
     
-    func testWrongDeviceTypes_whenAskedToPredicate_souldResultWithZero() throws {
+    func test_whenDatabaseAsksForExistingSessions_requestOnlyABDevices() throws {
         Resolver.test.register { self.databaseSpy as SessionsFetchable }
         
         sut.isAirBeamAvailableForNewConnection(peripheraUUID: "", completion: { _ in })
@@ -55,7 +55,7 @@ class BluetoothProtectorTests: ACTestCase {
         XCTAssertEqual(0, (invalidDeviceType as NSArray).filtered(using: predicate).count)
     }
     
-    func testWrongSessionTypes_whenAskedToPredicate_shouldResultWithZero() throws {
+    func test_whenAsksDatabaseForExistingSession_requestOnlyMobileSessions() throws {
         Resolver.test.register { self.databaseSpy as SessionsFetchable }
         
         sut.isAirBeamAvailableForNewConnection(peripheraUUID: "", completion: { _ in })
@@ -71,7 +71,7 @@ class BluetoothProtectorTests: ACTestCase {
         XCTAssertEqual(0, (invalidSessionType as NSArray).filtered(using: predicate).count)
     }
     
-    func testPeripheralUUIDGivenFromUser_whenAskedToPredicate_shouldSucced() throws {
+    func test_whenAsksDatabaseForExistingSession_requestThoseWithMatchingPeripheralUUID() throws {
         Resolver.test.register { self.databaseSpy as SessionsFetchable }
         
         sut.isAirBeamAvailableForNewConnection(peripheraUUID: "112", completion: { _ in })
@@ -87,7 +87,7 @@ class BluetoothProtectorTests: ACTestCase {
         XCTAssertEqual(1, (mixedPeripheralUUID as NSArray).filtered(using: predicate).count)
     }
     
-    func testPredicate_whenAskedToFilterActiveStandaloneSessions_shouldSucced() throws {
+    func test_whenAsksDatabaseForExistingeSession_requestOnlyThoseInStandaloneMode() throws {
         Resolver.test.register { self.databaseSpy as SessionsFetchable }
         
         sut.isAirBeamAvailableForNewConnection(peripheraUUID: "112-911-000", completion: { _ in })
@@ -101,7 +101,7 @@ class BluetoothProtectorTests: ACTestCase {
         XCTAssertEqual(1, ([mobileStandaloneSession] as NSArray).filtered(using: predicate).count)
     }
     
-    func testPredicate_whenAskedToFilterActiveABSessions_shouldSucced() throws {
+    func test_whenAsksDatabaseForExistingeSession_requestOnlyThoseInConnectedRecordingMode() throws {
         Resolver.test.register { self.databaseSpy as SessionsFetchable }
         
         sut.isAirBeamAvailableForNewConnection(peripheraUUID: "112-911-000", completion: { _ in })
