@@ -15,7 +15,13 @@ struct ThresholdAlertSheet<VM: ThresholdAlertSheetViewModel>: View {
                 VStack(alignment: .leading, spacing: 20) {
                     title
                     description
-                    chooseStream
+                    if viewModel.activeAlerts.isReady {
+                        chooseStream
+                    } else {
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle())
+                            .padding(.vertical)
+                    }
                     continueButton
                     cancelButton
                 }
@@ -44,7 +50,7 @@ struct ThresholdAlertSheet<VM: ThresholdAlertSheetViewModel>: View {
                     isOn: option.isOn,
                     thresholdValue: .init( get: { option.thresholdValue}, set: { viewModel.changeThreshold(of: option.id, to: $0) }),
                     frequency: .init( get: { option.frequency}, set: { viewModel.changeFrequency(of: option.id, to: $0) }),
-                    streamName: option.shortStreamName
+                    streamName: option.shortSensorName
                 ) { isOn in
                     viewModel.changeIsOn(of: option.id, to: isOn)
                 }
@@ -56,12 +62,15 @@ struct ThresholdAlertSheet<VM: ThresholdAlertSheetViewModel>: View {
     
     private var continueButton: some View {
         Button {
-            viewModel.confirmationButtonPressed()
+            viewModel.save {
+                isActive = false
+            }
         } label: {
             Text(Strings.ThresholdAlertSheet.saveButton)
                 .font(Fonts.muliBoldHeading1)
         }
         .buttonStyle(BlueButtonStyle())
+        .disabled(!viewModel.saveButtonEnabled)
     }
     
     private var cancelButton: some View {

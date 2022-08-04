@@ -80,11 +80,11 @@
         <relationship name="userInterface" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="UIStateEntity" inverseName="session" inverseEntity="UIStateEntity"/>
     </entity>
     <entity name="ThresholdAlert" representedClassName="ThresholdAlert" syncable="YES" codeGenerationType="class">
-        <attribute name="frequency" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="id" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="sensorName" optional="YES" attributeType="String"/>
-        <attribute name="sessionUUID" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
-        <attribute name="thresholdValue" optional="YES" attributeType="String"/>
+        <attribute name="frequency" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="id" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="sensorName" attributeType="String"/>
+        <attribute name="sessionUUID" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="thresholdValue" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
     </entity>
     <entity name="UIStateEntity" representedClassName="UIStateEntity" syncable="YES" codeGenerationType="class">
         <attribute name="expandedCard" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
