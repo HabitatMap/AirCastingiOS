@@ -40,7 +40,7 @@ class SearchViewModel: ObservableObject {
     func textFieldTapped() { isLocationPopupPresented.toggle() }
     
     func onParameterTap(with param: String) {
-        self.measurementTypes.forEach({ $0.isSelected = false })
+        deselectAll(measurementTypes)
         self.measurementTypes.first(where: { $0.name == param })?.isSelected = true
         switch measurementType(from: param) {
         case .particulateMatter: self.sensorTypes = [
@@ -56,9 +56,13 @@ class SearchViewModel: ObservableObject {
     }
     
     func onSensorTap(with name: String) {
-        self.sensorTypes.forEach({ $0.isSelected = false })
+        deselectAll(sensorTypes)
         self.sensorTypes.first(where: { $0.name == name })?.isSelected = true
         self.objectWillChange.send()
+    }
+    
+    func deselectAll(_ all: [SearchParameter]) {
+        all.forEach({ $0.isSelected = false })
     }
     
     func locationNameInteracted(with newLocationName: String) {

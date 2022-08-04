@@ -471,6 +471,12 @@
 		FA4F1B732817EDDE002711B4 /* AirBeamMeasurementsDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4F1B722817EDDE002711B4 /* AirBeamMeasurementsDownloader.swift */; };
 		FA4F1B75281809B2002711B4 /* AirBeamStreamSuffixes.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4F1B74281809B2002711B4 /* AirBeamStreamSuffixes.swift */; };
 		FA4F1B77281809EE002711B4 /* MeasurementsDownloaderResultModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4F1B76281809EE002711B4 /* MeasurementsDownloaderResultModel.swift */; };
+		FA5F782D289A8BF60016DF79 /* MapDownloaderMeasurementTypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5F782C289A8BF60016DF79 /* MapDownloaderMeasurementTypeTests.swift */; };
+		FA5F782F289A8C0E0016DF79 /* MapDownloaderSensorTypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5F782E289A8C0E0016DF79 /* MapDownloaderSensorTypeTests.swift */; };
+		FA5F7831289A8C140016DF79 /* MapDownloaderUnitSymbolTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5F7830289A8C140016DF79 /* MapDownloaderUnitSymbolTests.swift */; };
+		FA5F7833289A8C190016DF79 /* SessionForLocationDownloaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5F7832289A8C190016DF79 /* SessionForLocationDownloaderTests.swift */; };
+		FA5F7835289A8C1F0016DF79 /* AirBeamMeasurementDownloaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5F7834289A8C1F0016DF79 /* AirBeamMeasurementDownloaderTests.swift */; };
+		FA5F7847289AB7C20016DF79 /* SearchViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5F7846289AB7C20016DF79 /* SearchViewModelTests.swift */; };
 		FAB1D4A427FAD83E004F531D /* BottomCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB1D4A327FAD83E004F531D /* BottomCardViewModel.swift */; };
 		FAB1D4A627FB28C8004F531D /* MapDownloaderSensorType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB1D4A527FB28C8004F531D /* MapDownloaderSensorType.swift */; };
 		FAB34933281AB208001F6E58 /* URLRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB34932281AB208001F6E58 /* URLRequest.swift */; };
@@ -965,6 +971,12 @@
 		FA4F1B722817EDDE002711B4 /* AirBeamMeasurementsDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirBeamMeasurementsDownloader.swift; sourceTree = "<group>"; };
 		FA4F1B74281809B2002711B4 /* AirBeamStreamSuffixes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirBeamStreamSuffixes.swift; sourceTree = "<group>"; };
 		FA4F1B76281809EE002711B4 /* MeasurementsDownloaderResultModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementsDownloaderResultModel.swift; sourceTree = "<group>"; };
+		FA5F782C289A8BF60016DF79 /* MapDownloaderMeasurementTypeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapDownloaderMeasurementTypeTests.swift; sourceTree = "<group>"; };
+		FA5F782E289A8C0E0016DF79 /* MapDownloaderSensorTypeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapDownloaderSensorTypeTests.swift; sourceTree = "<group>"; };
+		FA5F7830289A8C140016DF79 /* MapDownloaderUnitSymbolTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapDownloaderUnitSymbolTests.swift; sourceTree = "<group>"; };
+		FA5F7832289A8C190016DF79 /* SessionForLocationDownloaderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionForLocationDownloaderTests.swift; sourceTree = "<group>"; };
+		FA5F7834289A8C1F0016DF79 /* AirBeamMeasurementDownloaderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AirBeamMeasurementDownloaderTests.swift; sourceTree = "<group>"; };
+		FA5F7846289AB7C20016DF79 /* SearchViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModelTests.swift; sourceTree = "<group>"; };
 		FAB1D4A327FAD83E004F531D /* BottomCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomCardViewModel.swift; sourceTree = "<group>"; };
 		FAB1D4A527FB28C8004F531D /* MapDownloaderSensorType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapDownloaderSensorType.swift; sourceTree = "<group>"; };
 		FAB34932281AB208001F6E58 /* URLRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLRequest.swift; sourceTree = "<group>"; };
@@ -1201,6 +1213,7 @@
 		4FB39DFD2621B53C00E5E564 /* AirCastingTests */ = {
 			isa = PBXGroup;
 			children = (
+				FA5F782B289A8BDD0016DF79 /* SearchAndFollowTests */,
 				B37E1C932748208C0020A281 /* SDSyncFileWritingServiceTests.swift */,
 				DDDCEC3727D0C89F00B3757C /* DateBuilderTests */,
 				B3AA784827D4D22A003B39F6 /* Resolver+XCTest.swift */,
@@ -2472,6 +2485,19 @@
 			path = AirBeamMeasurements;
 			sourceTree = "<group>";
 		};
+		FA5F782B289A8BDD0016DF79 /* SearchAndFollowTests */ = {
+			isa = PBXGroup;
+			children = (
+				FA5F782C289A8BF60016DF79 /* MapDownloaderMeasurementTypeTests.swift */,
+				FA5F782E289A8C0E0016DF79 /* MapDownloaderSensorTypeTests.swift */,
+				FA5F7830289A8C140016DF79 /* MapDownloaderUnitSymbolTests.swift */,
+				FA5F7832289A8C190016DF79 /* SessionForLocationDownloaderTests.swift */,
+				FA5F7834289A8C1F0016DF79 /* AirBeamMeasurementDownloaderTests.swift */,
+				FA5F7846289AB7C20016DF79 /* SearchViewModelTests.swift */,
+			);
+			path = SearchAndFollowTests;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -2757,7 +2783,9 @@
 				B33DB5742686120600ED1344 /* XCTestCase+AssertContainsSameElements.swift in Sources */,
 				4FA83EEF26342D84003E2BF2 /* AuthorizationAPIServiceTests.swift in Sources */,
 				4F5D3F7F262D735A003AD82E /* CreateSessionAPIServiceTests.swift in Sources */,
+				FA5F7833289A8C190016DF79 /* SessionForLocationDownloaderTests.swift in Sources */,
 				B371415B26726A930057BF60 /* SynchronizationControllerTests.swift in Sources */,
+				FA5F7847289AB7C20016DF79 /* SearchViewModelTests.swift in Sources */,
 				4FB39E092621B55D00E5E564 /* FixedSessionTests.swift in Sources */,
 				B37E1C942748208C0020A281 /* SDSyncFileWritingServiceTests.swift in Sources */,
 				B30BAC232694B3DA00AE0476 /* XCTest+Persistence.swift in Sources */,
@@ -2766,9 +2794,12 @@
 				332066A42891730E00798AC1 /* ShareSessionFileTest.swift in Sources */,
 				B33DB5702685FCFB00ED1344 /* SynchronizationTestMocks.swift in Sources */,
 				B3E26A2A26780D96001A8E4C /* SynchronizationControllerTestHelpers.swift in Sources */,
+				FA5F782F289A8C0E0016DF79 /* MapDownloaderSensorTypeTests.swift in Sources */,
 				B30BAC212694AEAA00AE0476 /* GraphStatsDataSourceTests.swift in Sources */,
 				4FEEAED3262C53C20024AB7E /* UpdateSessionParamsServiceTests.swift in Sources */,
+				FA5F782D289A8BF60016DF79 /* MapDownloaderMeasurementTypeTests.swift in Sources */,
 				B30BABFD2693532700AE0476 /* MeasurementsStatisticsControllerTests.swift in Sources */,
+				FA5F7831289A8C140016DF79 /* MapDownloaderUnitSymbolTests.swift in Sources */,
 				B33DB56E2685FB2400ED1344 /* LocalizedErrorStub.swift in Sources */,
 				B33B161027AF0B3600138FFA /* DocumentsFileLoggerStoreTests.swift in Sources */,
 				B30BABFF26935C2B00AE0476 /* TimeInterval+Helpers.swift in Sources */,
@@ -2785,6 +2816,7 @@
 				B3E26A0D2676DAD2001A8E4C /* SynchronizationTestDoubles.swift in Sources */,
 				B31B7ECB267E4DF6002DAC18 /* DummyError.swift in Sources */,
 				B33B161427AF0B3600138FFA /* FileLoggerTestCase.swift in Sources */,
+				FA5F7835289A8C1F0016DF79 /* AirBeamMeasurementDownloaderTests.swift in Sources */,
 				B31B7ECD267E500B002DAC18 /* SyncDownstreamServiceTests.swift in Sources */,
 				B33B160E27AF0B3600138FFA /* ScheduledLoggerTests.swift in Sources */,
 				B30BABFB2693509D00AE0476 /* StandardStatisticsCalculatorTests.swift in Sources */,
