@@ -41,11 +41,13 @@ struct ThresholdAlertSheet<VM: ThresholdAlertSheetViewModel>: View {
         VStack(alignment: .leading) {
             ForEach(viewModel.streamOptions) { option in
                 ThresholdAlertStreamOption(
-                    isOn: .init( get: { option.isOn}, set: { viewModel.changeIsOn(of: option.id, to: $0) }),
+                    isOn: option.isOn,
                     thresholdValue: .init( get: { option.thresholdValue}, set: { viewModel.changeThreshold(of: option.id, to: $0) }),
                     frequency: .init( get: { option.frequency}, set: { viewModel.changeFrequency(of: option.id, to: $0) }),
                     streamName: option.shortStreamName
-                )
+                ) { isOn in
+                    viewModel.changeIsOn(of: option.id, to: isOn)
+                }
             }
         }.padding()
     }

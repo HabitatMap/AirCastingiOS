@@ -4,14 +4,17 @@
 import SwiftUI
 
 struct ThresholdAlertStreamOption: View {
-    @Binding var isOn: Bool
+    @State var isOn: Bool = false
     @Binding var thresholdValue: String
     @Binding var frequency: ThresholdAlertFrequency
     var streamName = "PM2.5"
     
+    var isOnChanged: ((Bool) -> Void) = { _ in }
+    
     var body: some View {
         mainBody
             .onTapGesture { hideKeyboard() }
+            .onChange(of: isOn, perform: isOnChanged)
     }
     
     private var mainBody: some View {
@@ -54,6 +57,6 @@ struct ThresholdAlertStreamOption: View {
 
 struct ThresholdAlertStreamOption_Previews: PreviewProvider {
     static var previews: some View {
-        ThresholdAlertStreamOption(isOn: .constant(true), thresholdValue: .constant("6"), frequency: .constant(.oneHour))
+        ThresholdAlertStreamOption(thresholdValue: .constant("6"), frequency: .constant(.oneHour))
     }
 }
