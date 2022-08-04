@@ -22,6 +22,7 @@ class ThresholdAlertSheetViewModel: ObservableObject {
         var shortStreamName: String
         var isOn: Bool
         var thresholdValue: String
+        var frequency: ThresholdAlertFrequency
     }
     
     init(session: Sessionable, apiClient: ShareSessionAPIServices) {
@@ -44,6 +45,12 @@ class ThresholdAlertSheetViewModel: ObservableObject {
         Log.info("## \(streamOptions[streamOptionId])")
     }
     
+    func changeFrequency(of id: Int, to value: ThresholdAlertFrequency) {
+        guard let streamOptionId = streamOptions.first(where: { $0.id == id })?.id else { return }
+        streamOptions[streamOptionId].frequency = value
+        Log.info("## \(streamOptions[streamOptionId])")
+    }
+    
     func save() {
         
     }
@@ -54,7 +61,7 @@ class ThresholdAlertSheetViewModel: ObservableObject {
         var i = 0
         sessionStreams.forEach { stream in
             guard let name = stream.sensorName else { return }
-            streamOptions.append(StreamOption(id: i, streamName: name, shortStreamName: shorten(name), isOn: false, thresholdValue: ""))
+            streamOptions.append(StreamOption(id: i, streamName: name, shortStreamName: shorten(name), isOn: false, thresholdValue: "", frequency: .oneHour))
             i+=1
         }
     }

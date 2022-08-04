@@ -556,7 +556,7 @@ struct Strings {
     }
     
     enum ThresholdAlertSheet {
-        static let title: String = NSLocalizedString("Create threshold alert", comment: "")
+        static let title: String = NSLocalizedString("Threshold alerts", comment: "")
         static let description: String = NSLocalizedString("Get notified when measured value for a stream exceeds given threshold", comment: "")
         static let thresholdLabel: String = NSLocalizedString("Threshold", comment: "")
         static let frequencyLabel: String = NSLocalizedString("Frequency", comment: "")

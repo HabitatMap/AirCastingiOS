@@ -9,17 +9,18 @@ struct ThresholdAlertSheet<VM: ThresholdAlertSheetViewModel>: View {
     @Binding var isActive: Bool
     
     var body: some View {
-        ZStack {
-            XMarkButton()
-            VStack(alignment: .leading, spacing: 20) {
-                title
-                description
-                chooseStream
-                frequencyPicker
-                continueButton
-                cancelButton
+        ScrollView {
+            ZStack {
+                XMarkButton()
+                VStack(alignment: .leading, spacing: 20) {
+                    title
+                    description
+                    chooseStream
+                    continueButton
+                    cancelButton
+                }
+                .padding()
             }
-            .padding()
         }
         .background(Color.aircastingBackground.ignoresSafeArea())
     }
@@ -42,22 +43,14 @@ struct ThresholdAlertSheet<VM: ThresholdAlertSheetViewModel>: View {
                 ThresholdAlertStreamOption(
                     isOn: .init( get: { option.isOn}, set: { viewModel.changeIsOn(of: option.id, to: $0) }),
                     thresholdValue: .init( get: { option.thresholdValue}, set: { viewModel.changeThreshold(of: option.id, to: $0) }),
+                    frequency: .init( get: { option.frequency}, set: { viewModel.changeFrequency(of: option.id, to: $0) }),
                     streamName: option.shortStreamName
                 )
             }
         }.padding()
     }
     
-    private var frequencyPicker: some View {
-        HStack {
-            Text(Strings.ThresholdAlertSheet.frequencyLabel)
-            Picker(Strings.ThresholdAlertSheet.frequencyLabel, selection: $viewModel.frequency) {
-                Text("1 hour").tag(ThresholdAlertFrequency.oneHour)
-                Text("24 hours").tag(ThresholdAlertFrequency.twentyFourHours)
-            }
-            .pickerStyle(.segmented)
-        }
-    }
+    
     
     private var continueButton: some View {
         Button {
