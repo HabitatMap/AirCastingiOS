@@ -94,6 +94,7 @@ extension Resolver: ResolverRegistering {
         main.register { UserDefaultsURLProvider() as URLProvider }
         main.register { DefaultNetworkChecker() as NetworkChecker }.scope(.application)
         main.register { DefaultSingleSessionDownloader() as SingleSessionDownloader }
+        main.register { DefaultDormantStreamAlertAPI() as DormantStreamAlertAPI }
         
         // MARK: - Feature flags
         main.register { DefaultRemoteNotificationRouter() }

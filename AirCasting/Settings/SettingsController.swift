@@ -9,10 +9,10 @@ protocol SettingsController {
 }
 
 struct DefaultSettingsController: SettingsController {
-    private var apiConntector = DormantStreamAlertAPI()
+    @Injected private var apiConnector: DormantStreamAlertAPI
     
     func changeDormantAlertSettings(to value: Bool, completion: @escaping (Result<Void, Error>) -> Void) {
-        apiConntector.sendNewSetting(value: value) { result in
+        apiConnector.sendNewSetting(value: value) { result in
             switch result {
             case .success():
                 completion(.success(()))
