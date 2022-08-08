@@ -14,6 +14,7 @@ struct ThresholdAlertSheet<VM: ThresholdAlertSheetViewModel>: View {
                 XMarkButton()
                 VStack(alignment: .leading, spacing: 20) {
                     title
+                        .padding(.top, 20)
                     description
                     if viewModel.activeAlerts.isReady {
                         chooseStream
@@ -54,6 +55,7 @@ struct ThresholdAlertSheet<VM: ThresholdAlertSheetViewModel>: View {
                 ) { isOn in
                     viewModel.changeIsOn(of: option.id, to: isOn)
                 }
+                !option.valid && option.isOn ? Text(Strings.ThresholdAlertSheet.emptyThresholdMessage).foregroundColor(.red) : nil
             }
         }.padding()
     }

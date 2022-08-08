@@ -49,6 +49,7 @@ class ThresholdAlertSheetViewModel: ObservableObject {
         var isOn: Bool
         var thresholdValue: String
         var frequency: ThresholdAlertFrequency
+        var valid: Bool = true
         
         static func ==(lhs: AlertOption, rhs: Alert) -> Bool {
             lhs.thresholdValue == rhs.thresholdValue && lhs.frequency == lhs.frequency && lhs.isOn
@@ -90,8 +91,10 @@ class ThresholdAlertSheetViewModel: ObservableObject {
     
     func save(completion: () -> Void) {
         Log.info("## saving")
-        guard streamOptions.filter({ $0.isOn && $0.thresholdValue == "" }).isEmpty else {
-            // can't be empty
+        let streamsWithEmptyThresholds = streamOptions.filter({ $0.isOn && $0.thresholdValue == "" }).map(\.id)
+        
+        guard streamsWithEmptyThresholds.isEmpty else {
+            streamsWithEmptyThresholds.forEach({ streamOptions[$0].valid = false })
             return
         }
         
