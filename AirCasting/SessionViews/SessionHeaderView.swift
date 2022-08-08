@@ -124,7 +124,7 @@ private extension SessionHeaderView {
                     .font(Fonts.moderateRegularHeading4)
                     .foregroundColor(Color.aircastingTimeGray)
                 Spacer()
-                (isMenuNeeded && selectedSection.section != .following) ? actionsMenu : nil
+                isMenuNeeded ? actionsMenu : nil
             }
             nameLabelAndExpandButton
         }
