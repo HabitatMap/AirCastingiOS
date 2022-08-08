@@ -13,8 +13,10 @@ struct SessionHeaderView: View {
     let isExpandButtonNeeded: Bool
     var isSensorTypeNeeded: Bool = true
     var isMenuNeeded = true
+    var chevronIndicator: String {
+        isCollapsed ? "chevron.down" : "chevron.up"
+    }
     @Binding var isCollapsed: Bool
-    @State var chevronIndicator = "chevron.down"
     @InjectedObject private var bluetoothManager: BluetoothManager
     @EnvironmentObject var selectedSection: SelectedSection
     @ObservedObject var session: SessionEntity
@@ -121,9 +123,6 @@ private extension SessionHeaderView {
             nameLabelAndExpandButton
         }
         .alert(item: $alert, content: { $0.makeAlert() })
-        .onChange(of: isCollapsed, perform: { value in
-            isCollapsed ? (chevronIndicator = "chevron.down") :  (chevronIndicator = "chevron.up")
-        })
         .foregroundColor(.aircastingGray)
     }
 
