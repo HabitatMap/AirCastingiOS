@@ -106,7 +106,6 @@ final class UpdateSessionParamsService {
         entity.urlLocation = session.urlLocation
         entity.version = session.version
         entity.status = session.status
-        entity.peripheralUUID = session.peripheralUUID
     }
 }
 

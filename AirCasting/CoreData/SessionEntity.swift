@@ -19,7 +19,7 @@ public class SessionEntity: NSManagedObject, Identifiable {
         return NSFetchRequest<SessionEntity>(entityName: "SessionEntity")
     }
     
-    @NSManaged public var peripheralUUID: String?
+    @NSManaged public var bluetoothConnection: BluetoothConnectionEntity?
     
     @NSManaged public var contribute: Bool
     @NSManaged public var deviceId: String?

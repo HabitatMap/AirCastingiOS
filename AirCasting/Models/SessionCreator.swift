@@ -84,8 +84,7 @@ final class MobilePeripheralSessionCreator: SessionCreator {
                                   contribute: contribute,
                                   locationless: sessionContext.locationless,
                                   tags: sessionContext.sessionTags,
-                                  status: .NEW,
-                                  peripheralUUID: peripheral.identifier.description)
+                                  status: .NEW)
             AirBeam3Configurator(peripheral: peripheral).configureMobileSession(
                                     location: sessionContext.startingLocation ?? CLLocationCoordinate2D(latitude: 200, longitude: 200))
             mobilePeripheralSessionManager.startRecording(session: session, peripheral: peripheral)

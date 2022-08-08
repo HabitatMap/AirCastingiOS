@@ -12,11 +12,11 @@ final class BluetoothConnectionProtector: ConnectionProtectable {
     @Injected private var database: SessionsFetchable
     
     func isAirBeamAvailableForNewConnection(peripheraUUID: String, completion: @escaping (Result<Void, Error>) -> Void) {
-        let defaultPredicate =  NSPredicate(format: "deviceType == %@ AND type == %@",
+        let defaultPredicate = NSPredicate(format: "deviceType == %@ AND type == %@",
                                             "1", SessionType.mobile.rawValue)
         let p1 = NSPredicate(format: "status == %li || status == %li",
                              SessionStatus.RECORDING.rawValue, SessionStatus.NEW.rawValue)
-        let p2 = NSPredicate(format: "status == %li AND peripheralUUID == %@",
+        let p2 = NSPredicate(format: "status == %li AND bluetoothConnection.peripheralUUID == %@",
                              SessionStatus.DISCONNECTED.rawValue, peripheraUUID)
         let predicate = NSCompoundPredicate(orPredicateWithSubpredicates: [p1, p2])
         let predicateWithDefault = NSCompoundPredicate(andPredicateWithSubpredicates: [defaultPredicate, predicate])

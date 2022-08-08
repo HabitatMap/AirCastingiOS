@@ -16,5 +16,12 @@ class StandardSesssionStopper: SessionStoppable {
     func stopSession() {
         Log.verbose("Stopping session with uuid \(uuid.rawValue) using standard session stopper")
         bluetoothManager.finishMobileSession(with: uuid)
+        self.measurementStreamStorage.accessStorage { storage in
+            do {
+                try storage.clearBluetoothPeripheralUUID(self.uuid)
+            } catch {
+                Log.error("Error occured while using storage \(error.localizedDescription)")
+            }
+        }
     }
 }

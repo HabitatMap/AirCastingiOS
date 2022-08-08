@@ -472,6 +472,7 @@
 		FA4F1B732817EDDE002711B4 /* AirBeamMeasurementsDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4F1B722817EDDE002711B4 /* AirBeamMeasurementsDownloader.swift */; };
 		FA4F1B75281809B2002711B4 /* AirBeamStreamSuffixes.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4F1B74281809B2002711B4 /* AirBeamStreamSuffixes.swift */; };
 		FA4F1B77281809EE002711B4 /* MeasurementsDownloaderResultModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4F1B76281809EE002711B4 /* MeasurementsDownloaderResultModel.swift */; };
+		FA63D212289C0282002A4BD5 /* DatabaseDeviceUUID.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA63D211289C0282002A4BD5 /* DatabaseDeviceUUID.swift */; };
 		FA94089A2886D3FE0022E1A5 /* BluetoothProtectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9408992886D3FE0022E1A5 /* BluetoothProtectorTests.swift */; };
 		FAB1D4A427FAD83E004F531D /* BottomCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB1D4A327FAD83E004F531D /* BottomCardViewModel.swift */; };
 		FAB1D4A627FB28C8004F531D /* MapDownloaderSensorType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB1D4A527FB28C8004F531D /* MapDownloaderSensorType.swift */; };
@@ -968,6 +969,7 @@
 		FA4F1B722817EDDE002711B4 /* AirBeamMeasurementsDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirBeamMeasurementsDownloader.swift; sourceTree = "<group>"; };
 		FA4F1B74281809B2002711B4 /* AirBeamStreamSuffixes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirBeamStreamSuffixes.swift; sourceTree = "<group>"; };
 		FA4F1B76281809EE002711B4 /* MeasurementsDownloaderResultModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementsDownloaderResultModel.swift; sourceTree = "<group>"; };
+		FA63D211289C0282002A4BD5 /* DatabaseDeviceUUID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseDeviceUUID.swift; sourceTree = "<group>"; };
 		FA9408992886D3FE0022E1A5 /* BluetoothProtectorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothProtectorTests.swift; sourceTree = "<group>"; };
 		FA9E08C828926C07006475D6 /* AirCasting v8.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AirCasting v8.xcdatamodel"; sourceTree = "<group>"; };
 		FAB1D4A327FAD83E004F531D /* BottomCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomCardViewModel.swift; sourceTree = "<group>"; };
@@ -2112,6 +2114,7 @@
 				B3FD77A4267C94AF00E97CC2 /* DatabaseMeasurementStream.swift */,
 				B3FD77A2267C94AF00E97CC2 /* DatabaseMeasurement.swift */,
 				DD49FB6E27904119004A1CA8 /* DatabaseNote.swift */,
+				FA63D211289C0282002A4BD5 /* DatabaseDeviceUUID.swift */,
 			);
 			name = Database;
 			path = SessionsSynchronization/Database;
@@ -3030,6 +3033,7 @@
 				ACC883882645784400C5DB70 /* GraphErorrHandling.swift in Sources */,
 				B33B15F027AEE69900138FFA /* DocumentsFileLoggerStore.swift in Sources */,
 				B3FD77BC267C94AF00E97CC2 /* ScheduledSessionSynchronizerProxy.swift in Sources */,
+				FA63D212289C0282002A4BD5 /* DatabaseDeviceUUID.swift in Sources */,
 				4F5D3F73262C91C6003AD82E /* UserAuthenticationSession.swift in Sources */,
 				AC6D569F25AEEAE700D221BA /* SessionHeaderView.swift in Sources */,
 				B3AB8BE526BB5EF400AF23CC /* Array+MeasurementStatistics.swift in Sources */,
