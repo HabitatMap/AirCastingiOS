@@ -14,6 +14,7 @@ class UserSettings: ObservableObject {
     private let satteliteMapKey = Constants.UserDefaultsKeys.satelliteMapKey
     private let twentyFourHourFormatKey = Constants.UserDefaultsKeys.twentyFourHoursFormatKey
     private let syncOnlyThroughWifiKey = Constants.UserDefaultsKeys.syncOnlyThroughWifi
+    private let dormantSessionsAlertKey = Constants.UserDefaultsKeys.dormantSessionsAlert
     @Injected private var featureFlagProvider: FeatureFlagProvider
 
     var contributingToCrowdMap: Bool {
@@ -92,6 +93,17 @@ class UserSettings: ObservableObject {
             objectWillChange.send()
         }
     }
+    
+    var dormantSessionsAlert: Bool {
+        get {
+            userDefaults.bool(forKey: dormantSessionsAlertKey)
+        }
+        set {
+            userDefaults.setValue(newValue, forKey: dormantSessionsAlertKey)
+            Log.info("Changed dormant sessions alert to \(dormantSessionsAlert ? "ON" : "OFF")")
+            objectWillChange.send()
+        }
+    }
 
     init(userDefaults: UserDefaults = .standard) {
         self.userDefaults = userDefaults
@@ -104,5 +116,6 @@ class UserSettings: ObservableObject {
         satteliteMap = userDefaults.bool(forKey: satteliteMapKey)
         twentyFourHour = userDefaults.valueExists(forKey: twentyFourHourFormatKey) ? userDefaults.bool(forKey: twentyFourHourFormatKey) : true
         syncOnlyThroughWifi = userDefaults.bool(forKey: syncOnlyThroughWifiKey)
+        dormantSessionsAlert = userDefaults.bool(forKey: dormantSessionsAlertKey)
     }
 }

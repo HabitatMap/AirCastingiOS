@@ -13,6 +13,9 @@
 		331EA80A25E32094009DEFDB /* ConfirmCreatingSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331EA80925E32094009DEFDB /* ConfirmCreatingSessionView.swift */; };
 		332020A6283CF6D1003E07F3 /* ExternalSessionEntity+Sessionable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332020A5283CF6D1003E07F3 /* ExternalSessionEntity+Sessionable.swift */; };
 		332020A8283CF724003E07F3 /* SessionEntity+Sessionable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332020A7283CF724003E07F3 /* SessionEntity+Sessionable.swift */; };
+		332066A62892D94400798AC1 /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332066A52892D94400798AC1 /* SettingsController.swift */; };
+		332066A82892DB2F00798AC1 /* DormantStreamAlertAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332066A72892DB2F00798AC1 /* DormantStreamAlertAPI.swift */; };
+		332066AA2897FD1C00798AC1 /* DormantStreamAlertAPITest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332066A92897FD1C00798AC1 /* DormantStreamAlertAPITest.swift */; };
 		332066A42891730E00798AC1 /* ShareSessionFileTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332066A32891730E00798AC1 /* ShareSessionFileTest.swift */; };
 		332F521425FA38430047236D /* MicrophoneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332F521325FA38430047236D /* MicrophoneManager.swift */; };
 		334062442816B4B6004DA4DA /* EditLocationlessSessionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 334062432816B4B6004DA4DA /* EditLocationlessSessionViewModel.swift */; };
@@ -510,6 +513,9 @@
 		331EA80925E32094009DEFDB /* ConfirmCreatingSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmCreatingSessionView.swift; sourceTree = "<group>"; };
 		332020A5283CF6D1003E07F3 /* ExternalSessionEntity+Sessionable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExternalSessionEntity+Sessionable.swift"; sourceTree = "<group>"; };
 		332020A7283CF724003E07F3 /* SessionEntity+Sessionable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SessionEntity+Sessionable.swift"; sourceTree = "<group>"; };
+		332066A52892D94400798AC1 /* SettingsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
+		332066A72892DB2F00798AC1 /* DormantStreamAlertAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DormantStreamAlertAPI.swift; sourceTree = "<group>"; };
+		332066A92897FD1C00798AC1 /* DormantStreamAlertAPITest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DormantStreamAlertAPITest.swift; sourceTree = "<group>"; };
 		332066A32891730E00798AC1 /* ShareSessionFileTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSessionFileTest.swift; sourceTree = "<group>"; };
 		332F521325FA38430047236D /* MicrophoneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrophoneManager.swift; sourceTree = "<group>"; };
 		334062432816B4B6004DA4DA /* EditLocationlessSessionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditLocationlessSessionViewModel.swift; sourceTree = "<group>"; };
@@ -1250,6 +1256,7 @@
 				B31B7EC8267E2024002DAC18 /* SyncContextServiceTests.swift */,
 				B31B7ECC267E500B002DAC18 /* SyncDownstreamServiceTests.swift */,
 				B31B7ECE267E83F6002DAC18 /* SyncUpstreamServiceTests.swift */,
+				332066A92897FD1C00798AC1 /* DormantStreamAlertAPITest.swift */,
 				332066A32891730E00798AC1 /* ShareSessionFileTest.swift */,
 			);
 			path = API;
@@ -1562,6 +1569,7 @@
 				335A8B2E2785D49100355D46 /* ShareSessionAPI.swift */,
 				3399394C27DA1722006144AF /* SingleSessionDownloader.swift */,
 				33E56F3C27F3498A0032117E /* StreamDownloader.swift */,
+				332066A72892DB2F00798AC1 /* DormantStreamAlertAPI.swift */,
 			);
 			path = APICommunicator;
 			sourceTree = "<group>";
@@ -1765,6 +1773,7 @@
 				ACDA5EBC285B249900A531E9 /* SettingsMyAccountViewModel.swift */,
 				DD2181EE267BBCBC0010EC2E /* MyAccountView.swift */,
 				DD2E8BEA2685E13600439F8B /* BackendURLValidator.swift */,
+				332066A52892D94400798AC1 /* SettingsController.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -2839,6 +2848,7 @@
 				B33B161327AF0B3600138FFA /* ThresholdLoggerProxyTests.swift in Sources */,
 				B33B160F27AF0B3600138FFA /* LoggerSpy.swift in Sources */,
 				B31B7EC9267E2024002DAC18 /* SyncContextServiceTests.swift in Sources */,
+				332066AA2897FD1C00798AC1 /* DormantStreamAlertAPITest.swift in Sources */,
 				B33B161127AF0B3600138FFA /* TextFileTrimmerTests.swift in Sources */,
 				B31B7ECF267E83F6002DAC18 /* SyncUpstreamServiceTests.swift in Sources */,
 				B3E26A062676DA23001A8E4C /* ArrayExtensionsTests.swift in Sources */,
@@ -3027,6 +3037,7 @@
 				DDC8664A276B695400A8E610 /* NotesHandler.swift in Sources */,
 				AC8BB74A28522B16004EF398 /* SessionListView.swift in Sources */,
 				DD430B062670FCC000F1BF2E /* GreenButtonStyle.swift in Sources */,
+				332066A62892D94400798AC1 /* SettingsController.swift in Sources */,
 				33D92F5F27EB742800252F3B /* Loadable.swift in Sources */,
 				334CC6FA2751454C00C10B53 /* SDCardMobileSessionsSavingService.swift in Sources */,
 				3387DD48278F0FC300B11D02 /* CSVFileGenerator.swift in Sources */,
@@ -3156,6 +3167,7 @@
 				B3FD77BE267C94AF00E97CC2 /* SessionSynchronizationStore.swift in Sources */,
 				ACD01F952600A54400B8F65F /* UserDefaults+Preferences.swift in Sources */,
 				B33B15F427AEE69900138FFA /* CompositeLogger.swift in Sources */,
+				332066A82892DB2F00798AC1 /* DormantStreamAlertAPI.swift in Sources */,
 				33F2238A270C674E00F14909 /* TimeInterval.swift in Sources */,
 				4FB39E3A2621BE7F00E5E564 /* APIClient.swift in Sources */,
 				AC9F526D2652A360003CF61F /* EmptyMobileDashboardView.swift in Sources */,

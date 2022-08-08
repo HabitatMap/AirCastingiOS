@@ -42,6 +42,7 @@ struct Constants {
         static let satelliteMapKey = "satteliteMapKey"
         static let twentyFourHoursFormatKey = "twentyFourHourFormatKey"
         static let syncOnlyThroughWifi = "syncOnlyThroughWifi"
+        static let dormantSessionsAlert = "dormantSessionsAlert"
     }
     
     enum PrivacyPolicy {
