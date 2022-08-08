@@ -44,7 +44,7 @@ struct ThresholdAlertSheet<VM: ThresholdAlertSheetViewModel>: View {
     }
     
     private var chooseStream: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 20) {
             ForEach(viewModel.streamOptions) { option in
                 ThresholdAlertStreamOption(
                     isOn: option.isOn,
