@@ -40,18 +40,18 @@ class DormantStreamAlertAPITest: APIServiceTestCase {
             completion(.failure(URLError(.timedOut)), request)
         }
         
-        var completionCheck = 0
+        var completionCalledTimes = 0
         
         sut.sendNewSetting(value: true, completion: { result in
             switch result {
             case .success(_):
                 XCTFail()
             case .failure(_):
-                completionCheck += 1
+                completionCalledTimes += 1
             }
         })
         
-        XCTAssertEqual(1, completionCheck)
+        XCTAssertEqual(1, completionCalledTimes)
     }
     
     func test_whenSendsRequestWithSuccess_callsCompletionWithSuccess() throws {
@@ -59,18 +59,18 @@ class DormantStreamAlertAPITest: APIServiceTestCase {
             completion(.success((data: Data(#"{ "action": "success" }"#.utf8), response: HTTPURLResponse())), request)
         }
         
-        var completionCheck = 0
+        var completionCalledTimes = 0
         
         sut.sendNewSetting(value: true, completion: { result in
             switch result {
             case .success(_):
-                completionCheck += 1
+                completionCalledTimes += 1
             case .failure(_):
                 XCTFail()
             }
         })
         
-        XCTAssertEqual(1, completionCheck)
+        XCTAssertEqual(1, completionCalledTimes)
     }
     
     private func captureRequestForSendingNewSetting(value: Bool) -> URLRequest? {
