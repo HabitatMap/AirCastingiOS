@@ -4,17 +4,13 @@ import XCTest
 @testable import AirCasting
 
 class SearchViewModelTests: XCTestCase {
-    var sut: SearchViewModel!
+    let sut: SearchViewModel = .init()
     
-    override func setUp() {
-        super.setUp()
-        sut = .init()
-    }
-    
-    func test_onInitialization_onlyParticulateMatterShouldBeSelected() {
+    func test_onInitialization_onlyParticulateMatterShouldBeSelected() throws {
         let selected = sut.measurementTypes.filter({ $0.isSelected })
         XCTAssertEqual(selected.count, 1)
-        XCTAssertEqual(selected.first?.name, "Particulate Matter")
+        let name = try XCTUnwrap(selected.first?.name, "Problem occured when trying to get a name.")
+        XCTAssertEqual(name, "Particulate Matter")
     }
     
     func test_whenSensorTapHappens_shouldSelectTapped() {
@@ -32,25 +28,15 @@ class SearchViewModelTests: XCTestCase {
         XCTAssertEqual(selected.first!.name, tappingSensorName)
     }
     
-    func test_whenAskedToDeselectAll_shouldIsSelectedBeFalse() {
-        sut.sensorTypes = [.init(isSelected: true, name: "1"),
-                           .init(isSelected: false, name: "2"),
-                           .init(isSelected: true, name: "3")]
-        
-        sut.deselectAll(sut.sensorTypes)
-        let unSelected = sut.sensorTypes.filter({ !$0.isSelected })
-        XCTAssertEqual(unSelected.count, sut.sensorTypes.count)
-    }
-    
-    func test_particulateMatterTap_correspondingSensorsShouldAppear() {
+    func test_particulareMatterTapped_correspondingSensorsAppears() {
         let particulateMatter = "Particulate Matter"
         sut.onParameterTap(with: particulateMatter)
-        XCTAssertEqual(sut.sensorTypes.count, 3)
+        XCTAssertEqual(sut.sensorTypes.map(\.name), ["AirBeam", "OpenAQ", "PurpleAir"])
     }
     
-    func test_ozoneTap_correspondingSensorsShouldAppear() {
+    func test_ozoneTapped_correspondingSensorsAppears() {
         let particulateMatter = "Ozone"
         sut.onParameterTap(with: particulateMatter)
-        XCTAssertEqual(sut.sensorTypes.count, 1)
+        XCTAssertEqual(sut.sensorTypes.map(\.name), ["OpenAQ"])
     }
 }

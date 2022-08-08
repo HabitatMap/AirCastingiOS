@@ -6,57 +6,56 @@ import Resolver
 
 class SessionForLocationDownloaderTests: ACTestCase {
     lazy var sut = SessionsForLocationDownloaderDefault()
-    let clientSpy = APIClientSpy()
+    let clientSpy = APIClientMock()
     
-    func test_whenRequestingDataFromServer_shouldUseGetMethod() {
+    override func setUp() {
+        super.setUp()
         Resolver.test.register { self.clientSpy as APIClient }
-        MockedSession.getAnySession(using: sut)
-        XCTAssertEqual(clientSpy.request.httpMethod, "GET")
     }
     
-    func test_whenCreatingQueryItems_shouldUseSmallQAsKey() {
-        Resolver.test.register { self.clientSpy as APIClient }
-        MockedSession.getAnySession(using: sut)
-        guard let queryItems = URLComponents(string: clientSpy.request.description)?.queryItems else { XCTFail("Problem when trying to get query items from url."); return }
-        XCTAssertEqual(queryItems[0].name, "q")
+    func test_requestingDataFromServer_usesGetMethod() {
+        clientSpy.returning((data: Data.default, response: .success()))
+        requestMockSession()
+        XCTAssert(clientSpy.callHistory.count == 1, "Number of requests should be equal to one, as only once call was requested.")
+        XCTAssertEqual(clientSpy.callHistory.first!.httpMethod, "GET")
     }
     
-    func test_whenCreatingUrl_shouldUseAssertedPath() {
-        Resolver.test.register { self.clientSpy as APIClient }
-        MockedSession.getAnySession(using: sut)
-        guard let url = URLComponents(string: clientSpy.request.description)?.url else { XCTFail("Problem when trying to get url request."); return }
+    func test_creatingQueryItems_usesSmallQAsParameterName() throws {
+        clientSpy.returning((data: Data.default, response: .success()))
+        requestMockSession()
+        XCTAssert(clientSpy.callHistory.count == 1, "Number of requests should be equal to one, as only once call was requested.")
+        let firstQueryItems = try XCTUnwrap(URLComponents(string: clientSpy.callHistory.first!.description)?.queryItems?.first, "Problem when trying to get query items from url.")
+        XCTAssertEqual(firstQueryItems.name, "q")
+    }
+    
+    func test_creatingUrl_usesCorrectPath() throws {
+        clientSpy.returning((data: Data.default, response: .success()))
+        requestMockSession()
+        XCTAssert(clientSpy.callHistory.count == 1, "Number of requests should be equal to one, as only once call was requested.")
+        let url = try XCTUnwrap(URLComponents(string: clientSpy.callHistory.first!.description)?.url, "Problem when trying to get url request.")
         XCTAssertEqual(url.path, "/api/fixed/active/sessions.json")
     }
     
-    // This test is considered as valid one, having in mind that [MapDownloaderUnitSymbol] is tested alongside.
-    func test_whenGettingProperUnitSymbolForParticulateMatter_shouldReturn_uqm3() {
-        Resolver.test.register { self.clientSpy as APIClient }
+    // This test is considered as valid one, having in mind that [MapDownloaderUnitSymbol] is tested in a separate unit test.
+    func test_gettingProperUnitSymbolForParticulateMatter_returns_uqm3() {
         let symbol = sut.getProperUnitSymbol(using: .particulateMatter)
         XCTAssertEqual(symbol, .uqm3)
     }
     
-    // This test is considered as valid one, having in mind that [MapDownloaderUnitSymbol] is tested alongside.
-    func test_whenGettingProperUnitSymbolForOzone_shouldReturn_ppb() {
-        Resolver.test.register { self.clientSpy as APIClient }
+    // This test is considered as valid one, having in mind that [MapDownloaderUnitSymbol] is tested in a separate unit test.
+    func test_gettingProperUnitSymbolForOzone_returns_ppb() {
         let symbol = sut.getProperUnitSymbol(using: .ozone)
         XCTAssertEqual(symbol, .ppb)
     }
     
-    class APIClientSpy: APIClient {
-        struct URLSessionCancellable: Cancellable {
-            weak var dataTask: URLSessionDataTask?
-            
-            func cancel() {
-                dataTask?.cancel()
-            }
-        }
-        
-        var request: URLRequest!
-        
-        func requestTask(for request: URLRequest, completion: @escaping (Result<(data: Data, response: HTTPURLResponse), Error>, URLRequest) -> Void) -> Cancellable {
-            self.request = request
-            return URLSessionCancellable()
-        }
+    private func requestMockSession() {
+        let mock = MockedSession.any
+        sut.getSessions(geoSquare: mock.geoSquare,
+                        timeFrom: mock.timeFrom,
+                        timeTo: mock.timeTo,
+                        measurementType: mock.measurementType,
+                        sensor: mock.sensor,
+                        completion: { _ in })
     }
     
     struct MockedSession {
@@ -66,22 +65,15 @@ class SessionForLocationDownloaderTests: ACTestCase {
         let measurementType: MapDownloaderMeasurementType
         let sensor: MapDownloaderSensorType
         
-        static func getAnySession(using sut: SessionsForLocationDownloader) {
-            let session = MockedSession(geoSquare: .init(north: 20.20,
-                                                         south: 20.20,
-                                                         east: 20.20,
-                                                         west: 20.20),
-                                        timeFrom: 20.20,
-                                        timeTo: 20.20,
-                                        measurementType: .particulateMatter,
-                                        sensor: .AB3and2)
-            
-            sut.getSessions(geoSquare: session.geoSquare,
-                            timeFrom: session.timeFrom,
-                            timeTo: session.timeTo,
-                            measurementType: session.measurementType,
-                            sensor: session.sensor,
-                            completion: { _ in })
+        static var any: Self {
+            MockedSession(geoSquare: .init(north: 20.20,
+                                           south: 20.20,
+                                           east: 20.20,
+                                           west: 20.20),
+                          timeFrom: 20.20,
+                          timeTo: 20.20,
+                          measurementType: .particulateMatter,
+                          sensor: .AB3and2)
         }
     }
 }

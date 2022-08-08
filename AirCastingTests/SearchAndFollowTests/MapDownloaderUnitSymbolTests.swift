@@ -5,7 +5,7 @@ import XCTest
 @testable import AirCasting
 
 class MapDownloaderUnitSymbolTests: XCTestCase {
-    func testGettingName_whenAsked_shouldReturnBelowString() {
+    func test_gettingSymbolName_returnsCorrectString() {
         let uqm3: String = MapDownloaderUnitSymbol.uqm3.name
         XCTAssertEqual(uqm3, "µg/m³")
         

@@ -5,7 +5,7 @@ import XCTest
 @testable import AirCasting
 
 class MapDownloaderSensorTypeTests: XCTestCase {
-    func testGettingSensorNamePrefix_whenAsked_shouldReturnBelowString() {
+    func test_gettingSensorNamePrefix_returnsCorrectString() {
         let airbeam: String = MapDownloaderSensorType.AB3and2.sensorNamePrefix
         XCTAssertEqual(airbeam, "airbeam")
         
@@ -16,7 +16,7 @@ class MapDownloaderSensorTypeTests: XCTestCase {
         XCTAssertEqual(purpleAir, "purpleair")
     }
     
-    func testGettingCapitalizedName_whenAsked_shouldReturnBelowString() {
+    func test_gettingCapitalizedName_returnCorrectString() {
         let airbeam: String = MapDownloaderSensorType.AB3and2.capitalizedName
         XCTAssertEqual(airbeam, "AirBeam")
         

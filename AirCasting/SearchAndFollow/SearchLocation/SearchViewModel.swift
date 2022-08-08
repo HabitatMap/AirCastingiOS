@@ -61,10 +61,6 @@ class SearchViewModel: ObservableObject {
         self.objectWillChange.send()
     }
     
-    func deselectAll(_ all: [SearchParameter]) {
-        all.forEach({ $0.isSelected = false })
-    }
-    
     func locationNameInteracted(with newLocationName: String) {
         addressName = newLocationName
     }
@@ -79,6 +75,10 @@ class SearchViewModel: ObservableObject {
                 onEnd()
             }))
         }
+    }
+    
+    private func deselectAll(_ all: [SearchParameter]) {
+        all.forEach({ $0.isSelected = false })
     }
     
     private func measurementType(from: String) -> MeasurementType? {
