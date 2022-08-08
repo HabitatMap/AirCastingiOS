@@ -42,6 +42,8 @@ class ThresholdAlertSheetViewModel: ObservableObject {
     }
     @Published var saveButtonEnabled = false
     
+    let createAlertApiCommunitator: CreateThresholdAlertAPI = DefaultCreateThresholdAlertAPI()
+    
     struct AlertOption: Identifiable {
         var id: Int
         var sensorName: String
@@ -117,10 +119,9 @@ class ThresholdAlertSheetViewModel: ObservableObject {
             } else {
                 alertOption.isOn ? toCreate.append(alertOption) : nil
             }
-            
-            deleteAlerts(ids: toDelete)
-            createAlerts(alerts: toCreate)
         }
+        deleteAlerts(ids: toDelete)
+        createAlerts(alerts: toCreate)
     }
     
     func deleteAlerts(ids: [Int]) {
@@ -128,9 +129,31 @@ class ThresholdAlertSheetViewModel: ObservableObject {
     }
     
     func createAlerts(alerts: [AlertOption]) {
+        Log.info("alerts: \(alerts)")
+        let group = DispatchGroup()
         alerts.forEach { alert in
-            alertsStore.createAlert(id: alert.id, sessionUUID: session.uuid.rawValue, sensorName: alert.sensorName, thresholdValue: Double(alert.thresholdValue) ?? 0.0, frequency: alert.frequency.rawValue()) { _ in }
+            Log.info("## laert: \(alert)")
+            group.enter()
+            createAlertApiCommunitator.createAlert(sessionUUID: session.uuid, sensorName: alert.shortSensorName, thresholdValue: alert.thresholdValue, frequency: alert.frequency) { result in
+                switch result {
+                case .success(let id):
+                    Log.info("## Success!! Creating alert")
+                    self.alertsStore.createAlert(id: id.id, sessionUUID: self.session.uuid.rawValue, sensorName: alert.sensorName, thresholdValue: Double(alert.thresholdValue) ?? 0.0, frequency: alert.frequency.rawValue()) { result in
+                        switch result {
+                        case .success():
+                            Log.info("## Created alert")
+                        case .failure(let error):
+                            Log.error("## Failed")
+                        }
+                    }
+                case .failure(let error):
+                    Log.error("## ERROR")
+                }
+                group.leave()
+            }
         }
+        group.wait()
+        Log.info("## FINISHED")
     }
     
     func updateAlert() {

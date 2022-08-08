@@ -51,6 +51,7 @@
 		338CA6D327CD2F1900505331 /* SearchAndFollowChartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 338CA6D227CD2F1900505331 /* SearchAndFollowChartViewModel.swift */; };
 		338CA6F527D1045400505331 /* WKWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 338CA6F427D1045300505331 /* WKWebView.swift */; };
 		338CA6F727D104AF00505331 /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 338CA6F627D104AF00505331 /* WebView.swift */; };
+		3392B3F828A1522600432B92 /* CreateThresholdAlertAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3392B3F728A1522600432B92 /* CreateThresholdAlertAPI.swift */; };
 		3397C81F2787024C0050B333 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3397C81E2787024C0050B333 /* UserDefaults.swift */; };
 		3399394D27DA1722006144AF /* SingleSessionDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3399394C27DA1722006144AF /* SingleSessionDownloader.swift */; };
 		339BF3E127D231F000BBCB23 /* StaticSessionHeaderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 339BF3E027D231F000BBCB23 /* StaticSessionHeaderViewModel.swift */; };
@@ -545,6 +546,7 @@
 		338CA6F427D1045300505331 /* WKWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WKWebView.swift; sourceTree = "<group>"; };
 		338CA6F627D104AF00505331 /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
 		338FE86027AAB0F1006148DA /* AirCasting v3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AirCasting v3.xcdatamodel"; sourceTree = "<group>"; };
+		3392B3F728A1522600432B92 /* CreateThresholdAlertAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateThresholdAlertAPI.swift; sourceTree = "<group>"; };
 		3397C81E2787024C0050B333 /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 		3399394C27DA1722006144AF /* SingleSessionDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleSessionDownloader.swift; sourceTree = "<group>"; };
 		339BF3E027D231F000BBCB23 /* StaticSessionHeaderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaticSessionHeaderViewModel.swift; sourceTree = "<group>"; };
@@ -1562,6 +1564,7 @@
 				335A8B2E2785D49100355D46 /* ShareSessionAPI.swift */,
 				3399394C27DA1722006144AF /* SingleSessionDownloader.swift */,
 				33E56F3C27F3498A0032117E /* StreamDownloader.swift */,
+				3392B3F728A1522600432B92 /* CreateThresholdAlertAPI.swift */,
 			);
 			path = APICommunicator;
 			sourceTree = "<group>";
@@ -3139,6 +3142,7 @@
 				DDEE3A48269747250098CCA9 /* EditView.swift in Sources */,
 				AC8CFF3625E502DD00FB2918 /* CreateAccountView.swift in Sources */,
 				B35A09A12845615F00F9837B /* UnitFormatter.swift in Sources */,
+				3392B3F828A1522600432B92 /* CreateThresholdAlertAPI.swift in Sources */,
 				B369CF32275A7A1500B71D81 /* OverridingFeatureFlagProvider.swift in Sources */,
 				338C30E825F10BFE00E0305C /* AirCasting.xcdatamodeld in Sources */,
 				33E63A86288EC0A3008D92EC /* WiFiAwareSessionSynchronizerProxy.swift in Sources */,
