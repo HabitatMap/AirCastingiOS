@@ -52,6 +52,7 @@
 		338CA6F527D1045400505331 /* WKWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 338CA6F427D1045300505331 /* WKWebView.swift */; };
 		338CA6F727D104AF00505331 /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 338CA6F627D104AF00505331 /* WebView.swift */; };
 		3392B3F828A1522600432B92 /* CreateThresholdAlertAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3392B3F728A1522600432B92 /* CreateThresholdAlertAPI.swift */; };
+		3392B3FA28A1601000432B92 /* DeleteThresholdAlertAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3392B3F928A1601000432B92 /* DeleteThresholdAlertAPI.swift */; };
 		3397C81F2787024C0050B333 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3397C81E2787024C0050B333 /* UserDefaults.swift */; };
 		3399394D27DA1722006144AF /* SingleSessionDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3399394C27DA1722006144AF /* SingleSessionDownloader.swift */; };
 		339BF3E127D231F000BBCB23 /* StaticSessionHeaderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 339BF3E027D231F000BBCB23 /* StaticSessionHeaderViewModel.swift */; };
@@ -547,6 +548,7 @@
 		338CA6F627D104AF00505331 /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
 		338FE86027AAB0F1006148DA /* AirCasting v3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AirCasting v3.xcdatamodel"; sourceTree = "<group>"; };
 		3392B3F728A1522600432B92 /* CreateThresholdAlertAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateThresholdAlertAPI.swift; sourceTree = "<group>"; };
+		3392B3F928A1601000432B92 /* DeleteThresholdAlertAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteThresholdAlertAPI.swift; sourceTree = "<group>"; };
 		3397C81E2787024C0050B333 /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 		3399394C27DA1722006144AF /* SingleSessionDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleSessionDownloader.swift; sourceTree = "<group>"; };
 		339BF3E027D231F000BBCB23 /* StaticSessionHeaderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaticSessionHeaderViewModel.swift; sourceTree = "<group>"; };
@@ -1565,6 +1567,7 @@
 				3399394C27DA1722006144AF /* SingleSessionDownloader.swift */,
 				33E56F3C27F3498A0032117E /* StreamDownloader.swift */,
 				3392B3F728A1522600432B92 /* CreateThresholdAlertAPI.swift */,
+				3392B3F928A1601000432B92 /* DeleteThresholdAlertAPI.swift */,
 			);
 			path = APICommunicator;
 			sourceTree = "<group>";
@@ -2846,6 +2849,7 @@
 				DD123EC527BD35E8001083C3 /* SessionsForLocationDownloader.swift in Sources */,
 				B33DB5762686161300ED1344 /* SensorName.swift in Sources */,
 				DD8AFE4F272886D700ED1CED /* ThresholdWitness.swift in Sources */,
+				3392B3FA28A1601000432B92 /* DeleteThresholdAlertAPI.swift in Sources */,
 				B3F1447C26AE437E006A4612 /* OnErrorPublisher.swift in Sources */,
 				B39AAE1C27C0F28F00D2F3C0 /* ChartView.swift in Sources */,
 				B3FD77B7267C94AF00E97CC2 /* DatabaseMeasurement.swift in Sources */,

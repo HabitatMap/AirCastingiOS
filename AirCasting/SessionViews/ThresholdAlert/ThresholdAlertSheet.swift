@@ -55,7 +55,7 @@ struct ThresholdAlertSheet<VM: ThresholdAlertSheetViewModel>: View {
                 ) { isOn in
                     viewModel.changeIsOn(of: option.id, to: isOn)
                 }
-                !option.valid && option.isOn ? Text(Strings.ThresholdAlertSheet.emptyThresholdMessage).foregroundColor(.red) : nil
+                !option.valid && option.isOn ? Text(Strings.ThresholdAlertSheet.invalidThresholdMessage).foregroundColor(.red) : nil
             }
         }.padding()
     }

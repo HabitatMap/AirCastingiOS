@@ -43,6 +43,7 @@ class ThresholdAlertSheetViewModel: ObservableObject {
     @Published var saveButtonEnabled = false
     
     let createAlertApiCommunitator: CreateThresholdAlertAPI = DefaultCreateThresholdAlertAPI()
+    let deleteAlertApiCommunitator: DeleteThresholdAlertAPI = DefaultDeleteThresholdAlertAPI()
     
     struct AlertOption: Identifiable {
         var id: Int
@@ -68,6 +69,7 @@ class ThresholdAlertSheetViewModel: ObservableObject {
     init(session: Sessionable, apiClient: ShareSessionAPIServices) {
         self.session = session
         self.apiClient = apiClient
+        Log.info("## INIT")
         showProperStreams()
     }
     
@@ -93,7 +95,7 @@ class ThresholdAlertSheetViewModel: ObservableObject {
     
     func save(completion: () -> Void) {
         Log.info("## saving")
-        let streamsWithEmptyThresholds = streamOptions.filter({ $0.isOn && $0.thresholdValue == "" }).map(\.id)
+        let streamsWithEmptyThresholds = streamOptions.filter({ $0.isOn && ($0.thresholdValue == "" || Double($0.thresholdValue) == nil) }).map(\.id)
         
         guard streamsWithEmptyThresholds.isEmpty else {
             streamsWithEmptyThresholds.forEach({ streamOptions[$0].valid = false })
@@ -102,7 +104,9 @@ class ThresholdAlertSheetViewModel: ObservableObject {
         
         var toDelete: [Int] = []
         var toCreate: [AlertOption] = []
+        var toUpdate: [(id: Int, newAlert: AlertOption)] = []
         
+        Log.info("## alert options: \(streamOptions)")
         streamOptions.forEach { alertOption in
             if let activeAlert = activeAlerts.get?.first(where: { $0.sensorName == alertOption.sensorName }) {
                 if alertOption == activeAlert {
@@ -110,8 +114,7 @@ class ThresholdAlertSheetViewModel: ObservableObject {
                     return
                 } else {
                     if alertOption.isOn {
-                        toDelete.append(activeAlert.id)
-                        toCreate.append(alertOption)
+                        toUpdate.append((id: activeAlert.id, newAlert: alertOption))
                     } else {
                         toDelete.append(activeAlert.id)
                     }
@@ -120,16 +123,51 @@ class ThresholdAlertSheetViewModel: ObservableObject {
                 alertOption.isOn ? toCreate.append(alertOption) : nil
             }
         }
-        deleteAlerts(ids: toDelete)
-        createAlerts(alerts: toCreate)
+        var failedAlerts: [String] = []
+        let group = DispatchGroup()
+        deleteAlerts(ids: toDelete) { result in
+            
+        }
+        group.enter()
+        createAlerts(alerts: toCreate) { result in
+            switch result {
+            case .success():
+                Log.info("Created alert successfully")
+            case .failure(let error):
+                if case let .failedCreating(failedCreatingAlerts) = error {
+                    failedAlerts.append(contentsOf: failedCreatingAlerts)
+                }
+            }
+            group.leave()
+        }
+        updateAlerts(alerts: toUpdate)
+        group.wait()
+        Log.info("## Failed alerts: \(failedAlerts)")
     }
     
-    func deleteAlerts(ids: [Int]) {
-        alertsStore.deleteAlerts(ids: ids) {_ in }
+    enum AlertAPIError: Error {
+        case failedCreating([String])
+        case failedDeleting([String])
     }
     
-    func createAlerts(alerts: [AlertOption]) {
+    private func deleteAlerts(ids: [Int], completion: (Result<Void, AlertAPIError>) -> Void) {
+        var failedAlerts: [String] = []
+        ids.forEach {id in
+            deleteAlertApiCommunitator.DeleteAlert(id: id) { result in
+                switch result {
+                case .success():
+                    Log.info("## Deleted: \(id)")
+                    self.alertsStore.deleteAlerts(ids: ids) {_ in }
+                case .failure(_):
+                    Log.info("## Failed deleting")
+                }
+            }
+        }
+    }
+    
+    private func createAlerts(alerts: [AlertOption], completion: (Result<Void, AlertAPIError>) -> Void) {
         Log.info("alerts: \(alerts)")
+        var failedAlerts: [String] = []
         let group = DispatchGroup()
         alerts.forEach { alert in
             Log.info("## laert: \(alert)")
@@ -137,26 +175,28 @@ class ThresholdAlertSheetViewModel: ObservableObject {
             createAlertApiCommunitator.createAlert(sessionUUID: session.uuid, sensorName: alert.shortSensorName, thresholdValue: alert.thresholdValue, frequency: alert.frequency) { result in
                 switch result {
                 case .success(let id):
-                    Log.info("## Success!! Creating alert")
                     self.alertsStore.createAlert(id: id.id, sessionUUID: self.session.uuid.rawValue, sensorName: alert.sensorName, thresholdValue: Double(alert.thresholdValue) ?? 0.0, frequency: alert.frequency.rawValue()) { result in
                         switch result {
                         case .success():
-                            Log.info("## Created alert")
+                            Log.info("Created alert for: \(alert.sensorName)")
                         case .failure(let error):
-                            Log.error("## Failed")
+                            // it's not a big problem if it fails as long as we are syncing with database when entering this view
+                            Log.error("Failed to create an alert in the database: \(error)")
                         }
                     }
                 case .failure(let error):
-                    Log.error("## ERROR")
+                    Log.error("Failed to create an alert on backend: \(error)")
+                    failedAlerts.append(alert.shortSensorName)
                 }
                 group.leave()
             }
         }
         group.wait()
         Log.info("## FINISHED")
+        failedAlerts.isEmpty ? completion(.success(())) : completion(.failure(.failedCreating(failedAlerts)))
     }
     
-    func updateAlert() {
+    private func updateAlerts(alerts: [(id: Int, newAlert: AlertOption)]) {
         
     }
     

@@ -560,7 +560,7 @@ struct Strings {
         static let description: String = NSLocalizedString("Get notified when measured value for a stream exceeds given threshold", comment: "")
         static let thresholdLabel: String = NSLocalizedString("Threshold", comment: "")
         static let frequencyLabel: String = NSLocalizedString("Frequency", comment: "")
-        static let emptyThresholdMessage: String = NSLocalizedString("Threshold can't be blank", comment: "")
+        static let invalidThresholdMessage: String = NSLocalizedString("Threshold has to have a numeric value", comment: "")
         static let saveButton: String = NSLocalizedString("Save", comment: "")
     }
     
