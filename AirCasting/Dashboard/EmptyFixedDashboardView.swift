@@ -6,13 +6,13 @@ import Resolver
 
 struct EmptyFixedDashboardView: View {
     @StateObject private var defaultSessionSynchronizerViewModel = SessionSynchronizationViewModel()
-    @EnvironmentObject var selectedSection: SelectSection
+    @EnvironmentObject var selectedSection: SelectedSection
     @EnvironmentObject private var tabSelection: TabBarSelection
     @EnvironmentObject private var exploreSessionsButton: ExploreSessionsButton
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
     
     var shouldSessionFetch: Bool {
-        (selectedSection.selectedSection == .mobileDormant || selectedSection.selectedSection == .fixed) && defaultSessionSynchronizerViewModel.syncInProgress
+        (selectedSection.section == .mobileDormant || selectedSection.section == .fixed) && defaultSessionSynchronizerViewModel.syncInProgress
     }
     
     var body: some View {

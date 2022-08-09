@@ -48,6 +48,15 @@ struct InAppAlerts {
                   ])
     }
     
+    static func noNetworkAuthorizationAlert(dismiss: (() -> Void)? = nil) -> AlertInfo {
+        AlertInfo(title: Strings.NetworkAlert.alertTitle,
+                  message: Strings.NetworkAuthorizationAlert.alertMessage,
+                  buttons: [
+                    .default(title: Strings.Commons.gotIt,
+                             action: dismiss)
+                  ])
+    }
+    
     static func noInternetConnectionSignOutAlert() -> AlertInfo {
         AlertInfo(title: Strings.InAppAlerts.noInternetConnectionTitle,
                   message: Strings.InAppAlerts.noInternetConnectionSignOutMessage,
@@ -84,6 +93,15 @@ struct InAppAlerts {
                          action: nil)
             ]
         )
+    }
+    
+    static func failedDormantStreamSettingAlert() -> AlertInfo {
+        AlertInfo(title: Strings.Settings.failedDormantStreamAlertTitle,
+                  message: Strings.Settings.failedDormantStreamAlertMessage,
+                  buttons: [
+                    .default(title: Strings.Commons.gotIt,
+                             action: nil)
+                  ])
     }
     
     static func finishSessionAlert(sessionName: String?, action: @escaping (() -> Void)) -> AlertInfo {
