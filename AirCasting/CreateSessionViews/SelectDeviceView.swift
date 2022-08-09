@@ -19,7 +19,6 @@ struct SelectDeviceView: View {
     @EnvironmentObject private var sessionContext: CreateSessionContext
     @InjectedObject private var bluetoothManager: BluetoothManager
     @InjectedObject private var microphoneManager: MicrophoneManager
-    @Injected private var bluetoothConnectionProtector: ConnectionProtectable
     @Binding var creatingSessionFlowContinues : Bool
     @Binding var sdSyncContinues : Bool
     @EnvironmentObject private var emptyDashboardButtonTapped: EmptyDashboardButtonTapped

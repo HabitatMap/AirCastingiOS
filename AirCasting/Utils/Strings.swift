@@ -885,7 +885,7 @@ struct Strings {
     enum BluetoothSessionAlreadyRecordingAlert {
         static let title: String = NSLocalizedString("There is already a mobile AirBeam session in progress",
                                                      comment: "")
-        static let message: String = NSLocalizedString("Only one session can be recorded on a given device at a time.",
+        static let message: String = NSLocalizedString("A device can record only one session at a time.",
                                                        comment: "")
     }
     

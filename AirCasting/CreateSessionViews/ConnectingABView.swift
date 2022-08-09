@@ -49,10 +49,10 @@ struct ConnectingABView<VM: AirbeamConnectionViewModel>: View {
         )
         .padding()
         .onChange(of: viewModel.isDeviceConnected, perform: { isConnected in
-            showNextScreen = (isConnected == true)
+            showNextScreen = isConnected
         })
         .onChange(of: viewModel.shouldDismiss, perform: { shouldDismiss in
-            if shouldDismiss == true { presentationMode.wrappedValue.dismiss() }
+            if shouldDismiss { presentationMode.wrappedValue.dismiss() }
         })
         .alert(item: $viewModel.alert, content: { $0.makeAlert() })
         .onAppear(perform: {

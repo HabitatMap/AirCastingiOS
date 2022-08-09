@@ -28,7 +28,6 @@ protocol MeasurementStreamStorageContextUpdate {
     func deleteSession(_ sessionUUID: SessionUUID) throws
     func deleteStreams(_ sessionUUID: SessionUUID) throws
     func addNote(_ note: Note, for sessionUUID: SessionUUID) throws
-    func clearBluetoothPeripheralUUID(_ sessionUUID: SessionUUID) throws 
     func save() throws
 }
 
@@ -69,12 +68,6 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
             forceUpdate(sessionEntity: sessionEntity)
         }
         completion()
-    }
-    
-    func clearBluetoothPeripheralUUID(_ sessionUUID: SessionUUID) throws {
-        let sessionEntity = try context.existingSession(uuid: sessionUUID)
-        guard let bluetoothConnection = sessionEntity.bluetoothConnection else { return }
-        bluetoothConnection.peripheralUUID = ""
     }
 
     func markSessionForDelete(_ sessionUUID: SessionUUID) throws {

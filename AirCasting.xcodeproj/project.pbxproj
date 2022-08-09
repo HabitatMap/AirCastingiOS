@@ -84,7 +84,7 @@
 		4F858F4C2624A82B0059271A /* SampleFixedSession.json in Resources */ = {isa = PBXBuildFile; fileRef = 4F858F4B2624A82B0059271A /* SampleFixedSession.json */; };
 		4F858F5E2624B4980059271A /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F858F5D2624B4980059271A /* Log.swift */; };
 		4F8CDBD2265F8DAC00976B25 /* Assertions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8CDBD1265F8DAC00976B25 /* Assertions.swift */; };
-		4F8CDBD4265F8EE000976B25 /* SessionStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8CDBD3265F8EE000976B25 /* SessionStorage.swift */; };
+		4F8CDBD4265F8EE000976B25 /* SessionDataEraser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8CDBD3265F8EE000976B25 /* SessionDataEraser.swift */; };
 		4F945EEE2649F3F5008A5B22 /* SessionCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F945EED2649F3F5008A5B22 /* SessionCreator.swift */; };
 		4F945EF02649F455008A5B22 /* AirBeamFixedWifiSessionCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F945EEF2649F455008A5B22 /* AirBeamFixedWifiSessionCreator.swift */; };
 		4F945EF4264B2813008A5B22 /* ActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F945EF3264B2813008A5B22 /* ActivityIndicator.swift */; };
@@ -465,6 +465,7 @@
 		EE969E7E1981C41852FB7745 /* Pods_AirCastingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A54057326D27D23E9906704 /* Pods_AirCastingTests.framework */; };
 		FA1C30BD2861BA5F0034C1C9 /* SignInPersistance.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1C30BC2861BA5F0034C1C9 /* SignInPersistance.swift */; };
 		FA26E9E928107150008EE514 /* SearchParameter.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA26E9E828107150008EE514 /* SearchParameter.swift */; };
+		FA396CA128A246BA00F8067C /* SessionStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA396CA028A246BA00F8067C /* SessionStorage.swift */; };
 		FA3AB51428853FBF00DB9A2B /* ConnectionProtectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3AB51328853FBF00DB9A2B /* ConnectionProtectable.swift */; };
 		FA3AB5162885403B00DB9A2B /* BluetoothConnectionProtector.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3AB5152885403B00DB9A2B /* BluetoothConnectionProtector.swift */; };
 		FA45FEFE2844D53700F9C25F /* ExternalGraphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA45FEFD2844D53700F9C25F /* ExternalGraphView.swift */; };
@@ -579,7 +580,7 @@
 		4F858F4B2624A82B0059271A /* SampleFixedSession.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = SampleFixedSession.json; sourceTree = "<group>"; };
 		4F858F5D2624B4980059271A /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		4F8CDBD1265F8DAC00976B25 /* Assertions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assertions.swift; sourceTree = "<group>"; };
-		4F8CDBD3265F8EE000976B25 /* SessionStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionStorage.swift; sourceTree = "<group>"; };
+		4F8CDBD3265F8EE000976B25 /* SessionDataEraser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionDataEraser.swift; sourceTree = "<group>"; };
 		4F945EED2649F3F5008A5B22 /* SessionCreator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionCreator.swift; sourceTree = "<group>"; };
 		4F945EEF2649F455008A5B22 /* AirBeamFixedWifiSessionCreator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirBeamFixedWifiSessionCreator.swift; sourceTree = "<group>"; };
 		4F945EF3264B2813008A5B22 /* ActivityIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityIndicator.swift; sourceTree = "<group>"; };
@@ -962,6 +963,7 @@
 		DDF75999268332E900D906BA /* Strings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Strings.swift; sourceTree = "<group>"; };
 		FA1C30BC2861BA5F0034C1C9 /* SignInPersistance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInPersistance.swift; sourceTree = "<group>"; };
 		FA26E9E828107150008EE514 /* SearchParameter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchParameter.swift; sourceTree = "<group>"; };
+		FA396CA028A246BA00F8067C /* SessionStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionStorage.swift; sourceTree = "<group>"; };
 		FA3AB51328853FBF00DB9A2B /* ConnectionProtectable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionProtectable.swift; sourceTree = "<group>"; };
 		FA3AB5152885403B00DB9A2B /* BluetoothConnectionProtector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothConnectionProtector.swift; sourceTree = "<group>"; };
 		FA45FEFD2844D53700F9C25F /* ExternalGraphView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalGraphView.swift; sourceTree = "<group>"; };
@@ -1066,8 +1068,9 @@
 			isa = PBXGroup;
 			children = (
 				4F2D84EA2647DBE0003D9ED5 /* MeasurementStreamStorage.swift */,
-				4F8CDBD3265F8EE000976B25 /* SessionStorage.swift */,
 				DD2DDBAD27B5450100807011 /* UIStorage.swift */,
+				FA396CA028A246BA00F8067C /* SessionStorage.swift */,
+				4F8CDBD3265F8EE000976B25 /* SessionDataEraser.swift */,
 				33406246281821FA004DA4DA /* ExternalSessionsStore.swift */,
 				ACDA5EF4285B43FD00A531E9 /* SessionEntityStore.swift */,
 			);
@@ -2864,8 +2867,9 @@
 				B31AFB7027AE6F0700CA6FA3 /* PrintLogger.swift in Sources */,
 				AC32041F25CC485E00A68520 /* ConnectingABView.swift in Sources */,
 				ACD32A4F2600A8DD00818946 /* SettingsView.swift in Sources */,
-				4F8CDBD4265F8EE000976B25 /* SessionStorage.swift in Sources */,
+				4F8CDBD4265F8EE000976B25 /* SessionDataEraser.swift in Sources */,
 				AC006D29275F52CB00E99019 /* CSVMeasurementStream.swift in Sources */,
+				FA396CA128A246BA00F8067C /* SessionStorage.swift in Sources */,
 				B376DD23268091B80083FD2F /* BodyEncodingError.swift in Sources */,
 				DDB44C252704AF830027176E /* AveragingService.swift in Sources */,
 				336A909727A492A000851100 /* DropViewDelegate.swift in Sources */,

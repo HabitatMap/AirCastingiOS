@@ -6,7 +6,7 @@ import Resolver
 
 class StandardSesssionStopper: SessionStoppable {
     private let uuid: SessionUUID
-    @Injected private var measurementStreamStorage: MeasurementStreamStorage
+    @Injected private var sessionStorage: SessionStorage
     @Injected private var bluetoothManager: BluetoothManager
     
     init(uuid: SessionUUID) {
@@ -16,7 +16,7 @@ class StandardSesssionStopper: SessionStoppable {
     func stopSession() {
         Log.verbose("Stopping session with uuid \(uuid.rawValue) using standard session stopper")
         bluetoothManager.finishMobileSession(with: uuid)
-        self.measurementStreamStorage.accessStorage { storage in
+        self.sessionStorage.accessStorage { storage in
             do {
                 try storage.clearBluetoothPeripheralUUID(self.uuid)
             } catch {
