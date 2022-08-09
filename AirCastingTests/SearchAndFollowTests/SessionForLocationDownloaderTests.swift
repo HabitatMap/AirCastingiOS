@@ -13,26 +13,32 @@ class SessionForLocationDownloaderTests: ACTestCase {
         Resolver.test.register { self.clientSpy as APIClient }
     }
     
-    func test_requestingDataFromServer_usesGetMethod() {
+    func test_requestingDataFromServer_usesGetMethod() throws {
         clientSpy.returning((data: Data.default, response: .success()))
         requestMockSession()
+        
+        let firstCallHistoryElement = try XCTUnwrap(clientSpy.callHistory.first, "After sut execution there should be first element in call history.")
         XCTAssert(clientSpy.callHistory.count == 1, "Number of requests should be equal to one, as only once call was requested.")
-        XCTAssertEqual(clientSpy.callHistory.first!.httpMethod, "GET")
+        XCTAssertEqual(firstCallHistoryElement.httpMethod, "GET")
     }
     
     func test_creatingQueryItems_usesSmallQAsParameterName() throws {
         clientSpy.returning((data: Data.default, response: .success()))
         requestMockSession()
+        
+        let firstCallHistoryElement = try XCTUnwrap(clientSpy.callHistory.first, "After sut execution there should be first element in call history.")
         XCTAssert(clientSpy.callHistory.count == 1, "Number of requests should be equal to one, as only once call was requested.")
-        let firstQueryItems = try XCTUnwrap(URLComponents(string: clientSpy.callHistory.first!.description)?.queryItems?.first, "Problem when trying to get query items from url.")
+        let firstQueryItems = try XCTUnwrap(URLComponents(string: firstCallHistoryElement.description)?.queryItems?.first, "Problem when trying to get query items from url.")
         XCTAssertEqual(firstQueryItems.name, "q")
     }
     
     func test_creatingUrl_usesCorrectPath() throws {
         clientSpy.returning((data: Data.default, response: .success()))
         requestMockSession()
+        
+        let firstCallHistoryElement = try XCTUnwrap(clientSpy.callHistory.first, "After sut execution there should be first element in call history.")
         XCTAssert(clientSpy.callHistory.count == 1, "Number of requests should be equal to one, as only once call was requested.")
-        let url = try XCTUnwrap(URLComponents(string: clientSpy.callHistory.first!.description)?.url, "Problem when trying to get url request.")
+        let url = try XCTUnwrap(URLComponents(string: firstCallHistoryElement.description)?.url, "Problem when trying to get url request.")
         XCTAssertEqual(url.path, "/api/fixed/active/sessions.json")
     }
     
