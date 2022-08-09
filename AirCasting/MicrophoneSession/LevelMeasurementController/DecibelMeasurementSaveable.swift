@@ -49,9 +49,7 @@ final class DecibelMeasurementSaveable: MeasurementSaveable {
         persistence.accessStorage { [weak self] storage in
             guard let self = self else { return }
             do {
-                Log.info("[DEBUG] Disconnecting \(self.session.name ?? "Unknown") [\(self.session.uuid)]")
                 try storage.updateSessionStatus(.DISCONNECTED, for: self.session.uuid)
-                Log.info("[DEBUG] Disconnected \(self.session.name ?? "Unknown") [\(self.session.uuid)]")
             } catch {
                 Log.error("Couldn't disconnect \(self.session.name ?? "Unknown") [\(self.session.uuid)]! \(error.localizedDescription)")
             }

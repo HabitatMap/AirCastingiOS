@@ -65,7 +65,7 @@ extension AVMicrophone: AVSessionInterruptionObserver {
     }
     
     func onAVSessionInteruptionEnd(shouldResume: Bool) {
-        Log.info("audio recorder interruption ended (should resume? \(shouldResume ? "yes." : "no.")")
+        Log.info("audio recorder interruption ended (should resume? \(shouldResume ? "yes." : "no.)")")
         guard shouldResume == true else { return }
         do {
             try resumeInterruptedRecording(audioRecorder: recorder)
@@ -78,14 +78,19 @@ extension AVMicrophone: AVSessionInterruptionObserver {
     private func pauseForRecordingInterruption() throws {
         recorder.pause()
         try audioSession.setActive(false, options: [])
-        state = .interrupted
+        DispatchQueue.main.async {
+            self.state = .interrupted
+            Log.info("recording interrupted.")
+        }
     }
     
     private func resumeInterruptedRecording(audioRecorder: AVAudioRecorder) throws {
         try audioSession.setActive(true, options: [])
-        guard audioRecorder.record() else { Log.warning("recording failed to resume!"); return }
-        state = .recording
-        Log.info("recording resumed.")
+        DispatchQueue.main.async {
+            guard audioRecorder.record() else { Log.warning("recording failed to resume!"); return }
+            self.state = .recording
+            Log.info("recording resumed.")
+        }
     }
 }
 

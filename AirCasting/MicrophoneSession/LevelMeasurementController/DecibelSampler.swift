@@ -15,8 +15,11 @@ final class DecibelSampler: LevelSampler {
     }
     
     func sample(completion: (Result<Double, LevelSamplerError>) -> Void) {
+        guard microphone.state != .interrupted else {
+            completion(.failure(LevelSamplerError.disconnected))
+            return
+        }
         do {
-            guard microphone.state != .interrupted else { throw LevelSamplerError.disconnected }
             if microphone.state == .notRecording { try microphone.startRecording() }
             guard let db = microphone.getCurrentDecibelLevel() else {
                 throw DecibelSamplerError.couldntGetMicrophoneLevel
