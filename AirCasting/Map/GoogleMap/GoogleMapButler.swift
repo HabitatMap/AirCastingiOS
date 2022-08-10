@@ -13,16 +13,14 @@ class GoogleMapButler: ObservableObject {
     
     private var pathPoints: [PathPoint]
     private var isMyLocationEnabled: Bool
-    private var liveModeOn: Bool
-    private var isSessionFixed: Bool
+    private var mapPositioning: MapPositioning
     private(set) var threshold: SensorThreshold?
     var notesNumber: Int { notes.count }
     
     init(pathPoints: [PathPoint],
          showMyLocationButton: Bool,
          isMyLocationEnabled: Bool = false,
-         isSessionActive: Bool = false,
-         isSessionFixed: Bool = false,
+         mapPositioning: MapPositioning = .init(),
          threshold: SensorThreshold? = nil,
          notes: Binding<[MapNote]>) {
         
@@ -30,8 +28,7 @@ class GoogleMapButler: ObservableObject {
         self.showMyLocationButton = showMyLocationButton
         self.isMyLocationEnabled = isMyLocationEnabled
         self.threshold = threshold
-        self.liveModeOn = isSessionActive
-        self.isSessionFixed = isSessionFixed
+        self.mapPositioning = mapPositioning
         self._notes = notes
         self.coreMap = GoogleMapCoreDefault()
     }
@@ -43,7 +40,7 @@ class GoogleMapButler: ObservableObject {
             return GMSCameraUpdate.setTarget(location)
         }
         
-        guard liveModeOn else {
+        guard mapPositioning.live else {
             let pathPointsBoundingBox = pathPoints.reduce(initialBounds) { bounds, point in
                 bounds.includingCoordinate(point.location)
             }
@@ -54,7 +51,7 @@ class GoogleMapButler: ObservableObject {
     }
     
     func initialMakeUIVIew(context: UIViewRepresentableContext<GoogleMapView>) -> GMSMapView {
-        let mapView = coreMap.initialCommonMakeUIView()
+        let mapView = coreMap.setStartingPointAndInitGMSMap()
         mapView.settings.myLocationButton = showMyLocationButton
         placeNotes(mapView, context: context)
         drawPolyline(mapView, context: context)
@@ -62,7 +59,7 @@ class GoogleMapButler: ObservableObject {
         return mapView
     }
     
-    func applyStylying(to mapView: GMSMapView) { coreMap.apllyStylying(to: mapView) }
+    func applyStylying(to mapView: GMSMapView) { coreMap.applyJSONStylying(to: mapView) }
     
     func defineMapType(_ uiView: GMSMapView) { coreMap.defineMapType(uiView) }
     
@@ -110,7 +107,7 @@ class GoogleMapButler: ObservableObject {
     }
     
     fileprivate func drawLastMeasurementPoint(_ dot: GMSMarker) {
-        guard liveModeOn || isSessionFixed else {
+        guard mapPositioning.live || mapPositioning.fixed else {
             dot.map = nil
             return
         }

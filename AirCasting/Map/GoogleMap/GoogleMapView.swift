@@ -11,8 +11,7 @@ struct GoogleMapView: UIViewRepresentable {
     @Binding private var noteMarkerTapped: Bool
     @Binding private var noteNumber: Int
     
-    private var liveModeOn: Bool
-    private var isSessionFixed: Bool
+    private var mapPositioning: MapPositioning
     private var pathPoints: [PathPoint]
     
     private(set) var threshold: SensorThreshold?
@@ -21,8 +20,7 @@ struct GoogleMapView: UIViewRepresentable {
     init(pathPoints: [PathPoint],
          threshold: SensorThreshold? = nil,
          isMyLocationEnabled: Bool = false,
-         isSessionActive: Bool = false,
-         isSessionFixed: Bool = false,
+         mapPositioning: MapPositioning = .init(),
          noteMarketTapped: Binding<Bool> = .constant(false),
          noteNumber: Binding<Int> = .constant(0),
          mapNotes: Binding<[MapNote]> = .constant([]),
@@ -30,15 +28,13 @@ struct GoogleMapView: UIViewRepresentable {
         
         self.pathPoints = pathPoints
         self.threshold = threshold
-        self.liveModeOn = isSessionActive
-        self.isSessionFixed = isSessionFixed
+        self.mapPositioning = mapPositioning
         self._noteMarkerTapped = noteMarketTapped
         self._noteNumber = noteNumber
         self._butler = .init(wrappedValue: .init(pathPoints: pathPoints,
                                                  showMyLocationButton: showMyLocationButton,
                                                  isMyLocationEnabled: isMyLocationEnabled,
-                                                 isSessionActive: isSessionActive,
-                                                 isSessionFixed: isSessionFixed,
+                                                 mapPositioning: mapPositioning,
                                                  threshold: threshold,
                                                  notes: mapNotes))
     }
@@ -133,7 +129,7 @@ extension GoogleMapView {
         }
         
         func drawHeatmap(_ mapView: GMSMapView) {
-            guard !parent.isSessionFixed else { return }
+            guard !parent.mapPositioning.fixed else { return }
             
             let mapWidth = mapView.frame.width
             let mapHeight = mapView.frame.height
@@ -164,8 +160,8 @@ extension GoogleMapView {
         private func centerMap(for mapView: GMSMapView) {
             let location = butler.optionalTrackerLocation()
             
-            let lat = parent.liveModeOn ? location.0 : parent.pathPoints.last?.location.latitude ?? 37.35
-            let long = parent.liveModeOn ? location.1 : parent.pathPoints.last?.location.longitude ?? -122.05
+            let lat = parent.mapPositioning.live ? location.0 : parent.pathPoints.last?.location.latitude ?? 37.35
+            let long = parent.mapPositioning.live ? location.1 : parent.pathPoints.last?.location.longitude ?? -122.05
             
             let camera = GMSCameraPosition.camera(withLatitude: lat, longitude: long, zoom: 16)
             mapView.animate(to: camera)

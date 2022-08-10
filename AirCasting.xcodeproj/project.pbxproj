@@ -13,10 +13,10 @@
 		331EA80A25E32094009DEFDB /* ConfirmCreatingSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331EA80925E32094009DEFDB /* ConfirmCreatingSessionView.swift */; };
 		332020A6283CF6D1003E07F3 /* ExternalSessionEntity+Sessionable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332020A5283CF6D1003E07F3 /* ExternalSessionEntity+Sessionable.swift */; };
 		332020A8283CF724003E07F3 /* SessionEntity+Sessionable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332020A7283CF724003E07F3 /* SessionEntity+Sessionable.swift */; };
+		332066A42891730E00798AC1 /* ShareSessionFileTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332066A32891730E00798AC1 /* ShareSessionFileTest.swift */; };
 		332066A62892D94400798AC1 /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332066A52892D94400798AC1 /* SettingsController.swift */; };
 		332066A82892DB2F00798AC1 /* DormantStreamAlertAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332066A72892DB2F00798AC1 /* DormantStreamAlertAPI.swift */; };
 		332066AA2897FD1C00798AC1 /* DormantStreamAlertAPITest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332066A92897FD1C00798AC1 /* DormantStreamAlertAPITest.swift */; };
-		332066A42891730E00798AC1 /* ShareSessionFileTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332066A32891730E00798AC1 /* ShareSessionFileTest.swift */; };
 		332F521425FA38430047236D /* MicrophoneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332F521325FA38430047236D /* MicrophoneManager.swift */; };
 		334062442816B4B6004DA4DA /* EditLocationlessSessionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 334062432816B4B6004DA4DA /* EditLocationlessSessionViewModel.swift */; };
 		33406247281821FA004DA4DA /* ExternalSessionsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33406246281821FA004DA4DA /* ExternalSessionsStore.swift */; };
@@ -485,6 +485,7 @@
 		FAE291A5289800600011FC5B /* CustomLocationButler.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE291A4289800600011FC5B /* CustomLocationButler.swift */; };
 		FAEE8656289154DC00078FCF /* GoogleMapButler.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAEE8655289154DC00078FCF /* GoogleMapButler.swift */; };
 		FAEE8658289155AD00078FCF /* GoogleMapCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAEE8657289155AD00078FCF /* GoogleMapCore.swift */; };
+		FAF2ADDB28A3A5F500A83127 /* MapPositioning.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF2ADDA28A3A5F500A83127 /* MapPositioning.swift */; };
 		FAF3B4DD28057A3300F0F4B0 /* SensorType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF3B4DC28057A3300F0F4B0 /* SensorType.swift */; };
 		FAF3B4E128057EC100F0F4B0 /* MeasurementType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF3B4E028057EC100F0F4B0 /* MeasurementType.swift */; };
 		FAF3B4E528058B6700F0F4B0 /* ProtectedScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF3B4E428058B6700F0F4B0 /* ProtectedScreen.swift */; };
@@ -517,10 +518,10 @@
 		331EA80925E32094009DEFDB /* ConfirmCreatingSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmCreatingSessionView.swift; sourceTree = "<group>"; };
 		332020A5283CF6D1003E07F3 /* ExternalSessionEntity+Sessionable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExternalSessionEntity+Sessionable.swift"; sourceTree = "<group>"; };
 		332020A7283CF724003E07F3 /* SessionEntity+Sessionable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SessionEntity+Sessionable.swift"; sourceTree = "<group>"; };
+		332066A32891730E00798AC1 /* ShareSessionFileTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSessionFileTest.swift; sourceTree = "<group>"; };
 		332066A52892D94400798AC1 /* SettingsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
 		332066A72892DB2F00798AC1 /* DormantStreamAlertAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DormantStreamAlertAPI.swift; sourceTree = "<group>"; };
 		332066A92897FD1C00798AC1 /* DormantStreamAlertAPITest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DormantStreamAlertAPITest.swift; sourceTree = "<group>"; };
-		332066A32891730E00798AC1 /* ShareSessionFileTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSessionFileTest.swift; sourceTree = "<group>"; };
 		332F521325FA38430047236D /* MicrophoneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrophoneManager.swift; sourceTree = "<group>"; };
 		334062432816B4B6004DA4DA /* EditLocationlessSessionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditLocationlessSessionViewModel.swift; sourceTree = "<group>"; };
 		3340624528181376004DA4DA /* AirCasting v5.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AirCasting v5.xcdatamodel"; sourceTree = "<group>"; };
@@ -996,6 +997,7 @@
 		FAE291A4289800600011FC5B /* CustomLocationButler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLocationButler.swift; sourceTree = "<group>"; };
 		FAEE8655289154DC00078FCF /* GoogleMapButler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleMapButler.swift; sourceTree = "<group>"; };
 		FAEE8657289155AD00078FCF /* GoogleMapCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleMapCore.swift; sourceTree = "<group>"; };
+		FAF2ADDA28A3A5F500A83127 /* MapPositioning.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapPositioning.swift; sourceTree = "<group>"; };
 		FAF3B4DC28057A3300F0F4B0 /* SensorType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorType.swift; sourceTree = "<group>"; };
 		FAF3B4E028057EC100F0F4B0 /* MeasurementType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementType.swift; sourceTree = "<group>"; };
 		FAF3B4E428058B6700F0F4B0 /* ProtectedScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProtectedScreen.swift; sourceTree = "<group>"; };
@@ -2512,6 +2514,15 @@
 			path = AirBeamMeasurements;
 			sourceTree = "<group>";
 		};
+		FA5F783B289A98310016DF79 /* AirCastingUITests */ = {
+			isa = PBXGroup;
+			children = (
+				FA5F783C289A98310016DF79 /* ExploreSessionButtonTests.swift */,
+				FA5F783E289A98310016DF79 /* AirCastingUITestsLaunchTests.swift */,
+			);
+			path = AirCastingUITests;
+			sourceTree = "<group>";
+		};
 		FA6B3D69289912D10031C069 /* CustomLocationMap */ = {
 			isa = PBXGroup;
 			children = (
@@ -2526,17 +2537,9 @@
 			children = (
 				AC93B8FD25C02E0B003D0A0D /* GoogleMapView.swift */,
 				FAEE8655289154DC00078FCF /* GoogleMapButler.swift */,
+				FAF2ADDA28A3A5F500A83127 /* MapPositioning.swift */,
 			);
 			path = GoogleMap;
-            sourceTree = "<group>";
-        };
-		FA5F783B289A98310016DF79 /* AirCastingUITests */ = {
-			isa = PBXGroup;
-			children = (
-				FA5F783C289A98310016DF79 /* ExploreSessionButtonTests.swift */,
-				FA5F783E289A98310016DF79 /* AirCastingUITestsLaunchTests.swift */,
-			);
-			path = AirCastingUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -3244,6 +3247,7 @@
 				B3FD77C8267C997800E97CC2 /* PersistenceController+Database.swift in Sources */,
 				DDC86646276B561500A8E610 /* EditNoteViewModel.swift in Sources */,
 				AC8CFF4525E510CB00FB2918 /* AuthorizationAPI.swift in Sources */,
+				FAF2ADDB28A3A5F500A83127 /* MapPositioning.swift in Sources */,
 				DD9EBB4E26AFDD2100D51804 /* TurnOnLocationView.swift in Sources */,
 				DDC86648276B607C00A8E610 /* Note.swift in Sources */,
 				B3EFAB1726EFE2DB00E88141 /* FirstRunInfoProvidable.swift in Sources */,

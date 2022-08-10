@@ -68,8 +68,8 @@ struct AirMapView: View {
                     ZStack(alignment: .topLeading) {
                         GoogleMapView(pathPoints: pathPoints,
                                       threshold: threshold,
-                                      isSessionActive: session.isActive,
-                                      isSessionFixed: session.isFixed,
+                                      mapPositioning: .init(fixed: session.isActive,
+                                                            live: session.isFixed),
                                       noteMarketTapped: $noteMarkerTapped,
                                       noteNumber: $noteNumber,
                                       mapNotes: $mapNotesVM.notes)

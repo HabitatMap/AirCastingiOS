@@ -5,8 +5,8 @@ import GoogleMaps
 import Resolver
 
 protocol GoogleMapCore {
-    func initialCommonMakeUIView() -> GMSMapView 
-    func apllyStylying(to mapView: GMSMapView)
+    func setStartingPointAndInitGMSMap() -> GMSMapView 
+    func applyJSONStylying(to mapView: GMSMapView)
     func optionalTrackerLocation() -> (Double, Double)
     func defineMapType(_ uiView: GMSMapView)
     func getLocationForEmptyPathPoints() -> CLLocationCoordinate2D
@@ -17,15 +17,15 @@ struct GoogleMapCoreDefault: GoogleMapCore {
     @InjectedObject private var userSettings: UserSettings
     var isLightMode: Bool { UITraitCollection.current.userInterfaceStyle == .light }
     
-    func initialCommonMakeUIView() -> GMSMapView {
+    func setStartingPointAndInitGMSMap() -> GMSMapView {
         let startingPoint = setStartingPoint()
         let mapView = GMSMapView.map(withFrame: .zero, camera: startingPoint)
-        apllyStylying(to: mapView)
+        applyJSONStylying(to: mapView)
         defineMapType(mapView)
         return mapView
     }
     
-    func apllyStylying(to mapView: GMSMapView) {
+    func applyJSONStylying(to mapView: GMSMapView) {
         do {
             if let styleURL = Bundle.main.url(forResource: isLightMode ? "style" : "darkStyle", withExtension: "json") {
                 mapView.mapStyle = try GMSMapStyle(contentsOfFileURL: styleURL)

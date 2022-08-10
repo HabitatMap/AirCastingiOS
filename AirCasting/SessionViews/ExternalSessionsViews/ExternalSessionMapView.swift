@@ -26,7 +26,8 @@ struct ExternalSessionMapView: View {
                 ZStack(alignment: .topLeading) {
                     GoogleMapView(pathPoints: pathPoints,
                                   threshold: threshold,
-                                  isSessionFixed: true)
+                                  mapPositioning: .init(fixed: true,
+                                                        live: false))
                     StatisticsContainerView(statsContainerViewModel: statsContainerViewModel,
                                             threshold: threshold)
                 }.padding(.bottom)

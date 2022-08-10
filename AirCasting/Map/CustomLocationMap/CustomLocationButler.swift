@@ -18,7 +18,7 @@ class CustomLocationButler: ObservableObject {
     }
     
     func initialMakeUIVIew() -> GMSMapView {
-        coreMap.initialCommonMakeUIView()
+        coreMap.setStartingPointAndInitGMSMap()
     }
     
     func optionalTrackerLocation() -> (Double, Double) {
