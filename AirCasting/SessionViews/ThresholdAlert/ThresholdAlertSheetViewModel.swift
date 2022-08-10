@@ -55,7 +55,7 @@ class ThresholdAlertSheetViewModel: ObservableObject {
         var valid: Bool = true
         
         static func ==(lhs: AlertOption, rhs: Alert) -> Bool {
-            lhs.thresholdValue == rhs.thresholdValue && lhs.frequency == lhs.frequency && lhs.isOn
+            lhs.thresholdValue == rhs.thresholdValue && lhs.frequency == rhs.frequency && lhs.isOn
         }
     }
     
@@ -102,9 +102,9 @@ class ThresholdAlertSheetViewModel: ObservableObject {
             return
         }
         
-        var toDelete: [Int] = []
+        var toDelete: [Alert] = []
         var toCreate: [AlertOption] = []
-        var toUpdate: [(id: Int, newAlert: AlertOption)] = []
+        var toUpdate: [(oldAlert: Alert, newAlert: AlertOption)] = []
         
         Log.info("## alert options: \(streamOptions)")
         streamOptions.forEach { alertOption in
@@ -114,34 +114,60 @@ class ThresholdAlertSheetViewModel: ObservableObject {
                     return
                 } else {
                     if alertOption.isOn {
-                        toUpdate.append((id: activeAlert.id, newAlert: alertOption))
+                        toUpdate.append((oldAlert: activeAlert, newAlert: alertOption))
                     } else {
-                        toDelete.append(activeAlert.id)
+                        toDelete.append(activeAlert)
                     }
                 }
             } else {
                 alertOption.isOn ? toCreate.append(alertOption) : nil
             }
         }
+        
         var failedAlerts: [String] = []
-        let group = DispatchGroup()
-        deleteAlerts(ids: toDelete) { result in
-            
+        let mainGroup = DispatchGroup()
+        
+        mainGroup.enter() // creating
+        mainGroup.enter() // deleting
+        mainGroup.enter() // updating
+        
+        deleteAlerts(toDelete) { result in
+            switch result {
+            case .success():
+                Log.info("Deleted alerts successfully")
+            case .failure(let error):
+                if case let .failedDeleting(failedDeletingAlerts) = error {
+                    failedAlerts.append(contentsOf: failedDeletingAlerts)
+                }
+            }
+            mainGroup.leave()
         }
-        group.enter()
+        
         createAlerts(alerts: toCreate) { result in
             switch result {
             case .success():
-                Log.info("Created alert successfully")
+                Log.info("Created alerts successfully")
             case .failure(let error):
                 if case let .failedCreating(failedCreatingAlerts) = error {
                     failedAlerts.append(contentsOf: failedCreatingAlerts)
                 }
             }
-            group.leave()
+            mainGroup.leave()
         }
-        updateAlerts(alerts: toUpdate)
-        group.wait()
+        
+        updateAlerts(alerts: toUpdate) { result in
+            switch result {
+            case .success():
+                Log.info("Updated alerts successfully")
+            case .failure(let error):
+                if case let .failedCreating(failedCreatingAlerts) = error {
+                    failedAlerts.append(contentsOf: failedCreatingAlerts)
+                }
+            }
+            mainGroup.leave()
+        }
+        
+        mainGroup.wait()
         Log.info("## Failed alerts: \(failedAlerts)")
     }
     
@@ -150,27 +176,32 @@ class ThresholdAlertSheetViewModel: ObservableObject {
         case failedDeleting([String])
     }
     
-    private func deleteAlerts(ids: [Int], completion: (Result<Void, AlertAPIError>) -> Void) {
+    private func deleteAlerts(_ alerts: [Alert], completion: @escaping (Result<Void, AlertAPIError>) -> Void) {
         var failedAlerts: [String] = []
-        ids.forEach {id in
-            deleteAlertApiCommunitator.DeleteAlert(id: id) { result in
+        let group = DispatchGroup()
+        alerts.forEach {alert in
+            group.enter()
+            deleteAlertApiCommunitator.DeleteAlert(id: alert.id) { result in
                 switch result {
                 case .success():
-                    Log.info("## Deleted: \(id)")
-                    self.alertsStore.deleteAlerts(ids: ids) {_ in }
+                    Log.info("## Deleted: \(alert)")
+                    self.alertsStore.deleteAlerts(ids: [alert.id]) {_ in }
                 case .failure(_):
                     Log.info("## Failed deleting")
+                    failedAlerts.append(self.shorten(alert.sensorName))
                 }
+                group.leave()
             }
         }
+        group.wait()
+        Log.info("## FINISHED DELETING")
+        failedAlerts.isEmpty ? completion(.success(())) : completion(.failure(.failedDeleting(failedAlerts)))
     }
     
     private func createAlerts(alerts: [AlertOption], completion: (Result<Void, AlertAPIError>) -> Void) {
-        Log.info("alerts: \(alerts)")
         var failedAlerts: [String] = []
         let group = DispatchGroup()
         alerts.forEach { alert in
-            Log.info("## laert: \(alert)")
             group.enter()
             createAlertApiCommunitator.createAlert(sessionUUID: session.uuid, sensorName: alert.shortSensorName, thresholdValue: alert.thresholdValue, frequency: alert.frequency) { result in
                 switch result {
@@ -192,12 +223,46 @@ class ThresholdAlertSheetViewModel: ObservableObject {
             }
         }
         group.wait()
-        Log.info("## FINISHED")
+        Log.info("## FINISHED CREATING")
         failedAlerts.isEmpty ? completion(.success(())) : completion(.failure(.failedCreating(failedAlerts)))
     }
     
-    private func updateAlerts(alerts: [(id: Int, newAlert: AlertOption)]) {
-        
+    private func updateAlerts(alerts: [(oldAlert: Alert, newAlert: AlertOption)], completion: @escaping (Result<Void, AlertAPIError>) -> Void) {
+        var failedAlerts: [String] = []
+        let group = DispatchGroup()
+        alerts.forEach {alert in
+            group.enter()
+            deleteAlertApiCommunitator.DeleteAlert(id: alert.oldAlert.id) { result in
+                switch result {
+                case .success():
+                    Log.info("## Deleted from backed: \(alert.oldAlert)")
+                    self.createAlertApiCommunitator.createAlert(sessionUUID: self.session.uuid, sensorName: alert.newAlert.shortSensorName, thresholdValue: alert.newAlert.thresholdValue, frequency: alert.newAlert.frequency) { result in
+                        switch result {
+                        case .success(let id):
+                            self.alertsStore.updateAlert(oldId: alert.oldAlert.id, newId: id.id, thresholdValue: Double(alert.newAlert.thresholdValue) ?? 0.0, frequency: alert.newAlert.frequency.rawValue()) { result in
+                                switch result {
+                                case .success():
+                                    Log.info("Updated alert for: \(alert.newAlert.sensorName)")
+                                case .failure(let error):
+                                    // it's not a big problem if it fails as long as we are syncing with database when entering this view
+                                    Log.error("Failed to update an alert in the database: \(error)")
+                                }
+                            }
+                        case .failure(let error):
+                            Log.error("Failed to create an alert on backend: \(error)")
+                            failedAlerts.append(alert.newAlert.shortSensorName)
+                        }
+                        group.leave()
+                    }
+                case .failure(_):
+                    Log.info("## Failed deleting")
+                    failedAlerts.append(self.shorten(alert.oldAlert.sensorName))
+                    group.leave()
+                }
+            }
+        }
+        group.wait()
+        failedAlerts.isEmpty ? completion(.success(())) : completion(.failure(.failedDeleting(failedAlerts)))
     }
     
     private func showProperStreams() {
@@ -228,7 +293,7 @@ class ThresholdAlertSheetViewModel: ObservableObject {
         }
     }
     
-    func shorten(_ streamName: String) -> String {
+    private func shorten(_ streamName: String) -> String {
         String(streamName.replacingOccurrences(of: ":", with: "-").split(separator: "-").last ?? "")
     }
 }

@@ -8,6 +8,7 @@ protocol ThresholdAlertsStore {
     func getAlertsForSession(uuid: String, completion: @escaping (Result<[ThresholdAlert], Error>) -> Void)
     func deleteAlerts(ids: [Int], completion: @escaping (Result<Void, Error>) -> Void)
     func createAlert(id: Int, sessionUUID: String, sensorName: String, thresholdValue: Double, frequency: Int, completion: @escaping (Result<Void, Error>) -> Void)
+    func updateAlert(oldId: Int, newId: Int, thresholdValue: Double, frequency: Int, completion: @escaping (Result<Void, Error>) -> Void)
 }
 
 class DefaultThresholdAlertsStore: ThresholdAlertsStore {
@@ -51,10 +52,6 @@ class DefaultThresholdAlertsStore: ThresholdAlertsStore {
     }
     
     func createAlert(id: Int, sessionUUID: String, sensorName: String, thresholdValue: Double, frequency: Int, completion: @escaping (Result<Void, Error>) -> Void) {
-        enum CreatingThresholdAlertError: Error {
-            case sessionAlreadyExists
-        }
-
         context.perform {
             do {
                 let alert = ThresholdAlert(context: self.context)
@@ -64,6 +61,32 @@ class DefaultThresholdAlertsStore: ThresholdAlertsStore {
                 alert.thresholdValue = thresholdValue
                 alert.frequency = Int16(frequency)
                 
+                try self.context.save()
+                completion(.success(()))
+            } catch {
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    func updateAlert(oldId: Int, newId: Int, thresholdValue: Double, frequency: Int, completion: @escaping (Result<Void, Error>) -> Void) {
+        struct UpdatingAlertsError: Error {}
+        let fetchRequest = ThresholdAlert.fetchRequest()
+        let predicate = NSPredicate(format: "id == %i", oldId)
+        fetchRequest.predicate = predicate
+        
+        context.perform {
+            do {
+                let result = try self.context.fetch(fetchRequest)
+                Log.debug("## existing alerts: \(result)")
+                guard result.count == 1 else {
+                    completion(.failure(UpdatingAlertsError()))
+                    return
+                }
+                result.first!.id = Int16(newId)
+                result.first!.thresholdValue = thresholdValue
+                result.first!.frequency = Int16(frequency)
+                Log.debug("## changed alert: \(result.first)")
                 try self.context.save()
                 completion(.success(()))
             } catch {
