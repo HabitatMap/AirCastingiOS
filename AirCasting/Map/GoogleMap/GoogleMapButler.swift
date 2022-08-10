@@ -14,7 +14,7 @@ class GoogleMapButler: ObservableObject {
     private var pathPoints: [PathPoint]
     private var isMyLocationEnabled: Bool
     private var mapPositioning: MapPositioning
-    private(set) var threshold: SensorThreshold?
+    private var threshold: SensorThreshold?
     var notesNumber: Int { notes.count }
     
     init(pathPoints: [PathPoint],
@@ -104,6 +104,19 @@ class GoogleMapButler: ObservableObject {
         polyline.strokeColor = .accentColor
         polyline.strokeWidth = CGFloat(Constants.Map.polylineWidth)
         polyline.map = uiView
+    }
+    
+    func thresholdWitnessAssertion(context: UIViewRepresentableContext<GoogleMapView>) -> Bool {
+        let thresholdWitness = ThresholdWitness(sensorThreshold: self.threshold)
+        return thresholdWitness != context.coordinator.currentThresholdWitness
+    }
+    
+    func thresholdWitnessUpdateOn(context: UIViewRepresentableContext<GoogleMapView>) {
+        context.coordinator.currentThresholdWitness = ThresholdWitness(sensorThreshold: threshold)
+    }
+    
+    func currentThresholdUpdateOn(context: UIViewRepresentableContext<GoogleMapView>) {
+        context.coordinator.currentThreshold = threshold
     }
     
     fileprivate func drawLastMeasurementPoint(_ dot: GMSMarker) {

@@ -14,7 +14,6 @@ struct GoogleMapView: UIViewRepresentable {
     private var mapPositioning: MapPositioning
     private var pathPoints: [PathPoint]
     
-    private(set) var threshold: SensorThreshold?
     private var onPositionChange: (([PathPoint]) -> ())? = nil
     
     init(pathPoints: [PathPoint],
@@ -27,7 +26,6 @@ struct GoogleMapView: UIViewRepresentable {
          showMyLocationButton: Bool = true) {
         
         self.pathPoints = pathPoints
-        self.threshold = threshold
         self.mapPositioning = mapPositioning
         self._noteMarkerTapped = noteMarketTapped
         self._noteNumber = noteNumber
@@ -77,10 +75,10 @@ struct GoogleMapView: UIViewRepresentable {
             context.coordinator.mapNotesCounter = butler.notesNumber
         }
         
-        let thresholdWitness = ThresholdWitness(sensorThreshold: self.threshold)
+//        let thresholdWitness = ThresholdWitness(sensorThreshold: self.threshold)
         
         if pathPoints != context.coordinator.currentlyDisplayedPathPoints ||
-            thresholdWitness != context.coordinator.currentThresholdWitness {
+            butler.thresholdWitnessAssertion(context: context) {
             butler.drawPolyline(uiView, context: context)
             updateContextThresholdAndPathPoints(context: context)
             context.coordinator.drawHeatmap(uiView)
@@ -89,8 +87,8 @@ struct GoogleMapView: UIViewRepresentable {
     
     private func updateContextThresholdAndPathPoints(context: Context) {
         context.coordinator.currentlyDisplayedPathPoints = pathPoints
-        context.coordinator.currentThresholdWitness = ThresholdWitness(sensorThreshold: threshold)
-        context.coordinator.currentThreshold = threshold
+        butler.thresholdWitnessUpdateOn(context: context)
+        butler.currentThresholdUpdateOn(context: context)
     }
 }
 
