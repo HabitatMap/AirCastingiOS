@@ -5,7 +5,7 @@ import SwiftUI
 import AirCastingStyling
 
 struct ThresholdAlertSheet<VM: ThresholdAlertSheetViewModel>: View {
-    @ObservedObject var viewModel: VM
+    @StateObject var viewModel: VM
     @Binding var isActive: Bool
     
     var body: some View {
