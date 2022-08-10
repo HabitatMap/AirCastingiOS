@@ -5,7 +5,7 @@ import Foundation
 import Resolver
 
 protocol DeleteThresholdAlertAPI {
-    func DeleteAlert(id: Int, completion: @escaping (Result<Void, Error>) -> ())
+    func deleteAlert(id: Int, completion: @escaping (Result<Void, Error>) -> ())
 }
 
 class DefaultDeleteThresholdAlertAPI: DeleteThresholdAlertAPI {
@@ -14,7 +14,7 @@ class DefaultDeleteThresholdAlertAPI: DeleteThresholdAlertAPI {
     @Injected private var responseValidator: HTTPResponseValidator
     @Injected private var authorisationService: RequestAuthorisationService
     
-    func DeleteAlert(id: Int, completion: @escaping (Result<Void, Error>) -> ()) {
+    func deleteAlert(id: Int, completion: @escaping (Result<Void, Error>) -> ()) {
         let url = urlProvider.baseAppURL.appendingPathComponent("api/fixed/threshold_alerts/\(id)")
         var request = URLRequest(url: url)
         request.httpMethod = "DELETE"

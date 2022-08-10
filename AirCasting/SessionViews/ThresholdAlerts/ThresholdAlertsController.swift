@@ -32,6 +32,20 @@ class ThresholdAlertsController {
     @Injected var alertsStore: ThresholdAlertsStore
     let createAlertApiCommunitator: CreateThresholdAlertAPI = DefaultCreateThresholdAlertAPI()
     let deleteAlertApiCommunitator: DeleteThresholdAlertAPI = DefaultDeleteThresholdAlertAPI()
+    let fetchAlertsApiCommunitator: FetchThresholdAlertsAPI = DefaultFetchThresholdAlertsAPI()
+    
+    func getAlerts(sessionUUID: SessionUUID, completion: @escaping (Result<[FetchedThresholdAlert], Error>) -> Void) {
+        fetchAlertsApiCommunitator.fetchAlerts { result in
+            switch result {
+            case .success(let existingAlerts):
+                let alertsOfTheSession = existingAlerts.filter({ $0.sessionUuid == sessionUUID.rawValue })
+                Log.info("## Response: \(alertsOfTheSession)")
+                completion(.success(alertsOfTheSession))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
     
     func processAlerts(delete toDelete: [DeleteAlertData], create toCreate: [NewThresholdAlertData], update toUpdate: [UpdateAlertData], completion: @escaping (Result<Void, ThresholdAlertsError>) -> Void) {
         var failedAlerts: [String] = []
@@ -86,7 +100,7 @@ class ThresholdAlertsController {
         let group = DispatchGroup()
         alerts.forEach {alert in
             group.enter()
-            deleteAlertApiCommunitator.DeleteAlert(id: alert.id) { result in
+            deleteAlertApiCommunitator.deleteAlert(id: alert.id) { result in
                 switch result {
                 case .success():
                     Log.info("## Deleted: \(alert)")
@@ -137,7 +151,7 @@ class ThresholdAlertsController {
         let group = DispatchGroup()
         alerts.forEach {alert in
             group.enter()
-            deleteAlertApiCommunitator.DeleteAlert(id: alert.oldId) { result in
+            deleteAlertApiCommunitator.deleteAlert(id: alert.oldId) { result in
                 switch result {
                 case .success():
                     Log.info("## Deleted from backed: \(alert.oldId)")

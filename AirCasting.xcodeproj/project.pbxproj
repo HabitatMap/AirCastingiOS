@@ -54,6 +54,7 @@
 		3392B3F828A1522600432B92 /* CreateThresholdAlertAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3392B3F728A1522600432B92 /* CreateThresholdAlertAPI.swift */; };
 		3392B3FA28A1601000432B92 /* DeleteThresholdAlertAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3392B3F928A1601000432B92 /* DeleteThresholdAlertAPI.swift */; };
 		3392B3FC28A3C35600432B92 /* ThresholdAlertsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3392B3FB28A3C35600432B92 /* ThresholdAlertsController.swift */; };
+		3392B3FE28A3D5D000432B92 /* FetchThresholdAlertsAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3392B3FD28A3D5D000432B92 /* FetchThresholdAlertsAPI.swift */; };
 		3397C81F2787024C0050B333 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3397C81E2787024C0050B333 /* UserDefaults.swift */; };
 		3399394D27DA1722006144AF /* SingleSessionDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3399394C27DA1722006144AF /* SingleSessionDownloader.swift */; };
 		339BF3E127D231F000BBCB23 /* StaticSessionHeaderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 339BF3E027D231F000BBCB23 /* StaticSessionHeaderViewModel.swift */; };
@@ -551,6 +552,7 @@
 		3392B3F728A1522600432B92 /* CreateThresholdAlertAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateThresholdAlertAPI.swift; sourceTree = "<group>"; };
 		3392B3F928A1601000432B92 /* DeleteThresholdAlertAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteThresholdAlertAPI.swift; sourceTree = "<group>"; };
 		3392B3FB28A3C35600432B92 /* ThresholdAlertsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThresholdAlertsController.swift; sourceTree = "<group>"; };
+		3392B3FD28A3D5D000432B92 /* FetchThresholdAlertsAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchThresholdAlertsAPI.swift; sourceTree = "<group>"; };
 		3397C81E2787024C0050B333 /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 		3399394C27DA1722006144AF /* SingleSessionDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleSessionDownloader.swift; sourceTree = "<group>"; };
 		339BF3E027D231F000BBCB23 /* StaticSessionHeaderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaticSessionHeaderViewModel.swift; sourceTree = "<group>"; };
@@ -1571,6 +1573,7 @@
 				33E56F3C27F3498A0032117E /* StreamDownloader.swift */,
 				3392B3F728A1522600432B92 /* CreateThresholdAlertAPI.swift */,
 				3392B3F928A1601000432B92 /* DeleteThresholdAlertAPI.swift */,
+				3392B3FD28A3D5D000432B92 /* FetchThresholdAlertsAPI.swift */,
 			);
 			path = APICommunicator;
 			sourceTree = "<group>";
@@ -3032,6 +3035,7 @@
 				AC32041C25CC46EF00A68520 /* PowerABView.swift in Sources */,
 				B32D08AD267A6437006C97ED /* LogEvent.swift in Sources */,
 				ACDA5EBD285B249900A531E9 /* SettingsMyAccountViewModel.swift in Sources */,
+				3392B3FE28A3D5D000432B92 /* FetchThresholdAlertsAPI.swift in Sources */,
 				DD80AE2227BA5EF500D9B123 /* ChooseLocationPickerService.swift in Sources */,
 				ACBB05132761F21500A6B3FB /* SDCardFixedSessionsSavingService.swift in Sources */,
 				33BA336A266E4D1000899343 /* MobileSession.swift in Sources */,
