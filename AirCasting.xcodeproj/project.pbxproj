@@ -53,6 +53,7 @@
 		338CA6F727D104AF00505331 /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 338CA6F627D104AF00505331 /* WebView.swift */; };
 		3392B3F828A1522600432B92 /* CreateThresholdAlertAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3392B3F728A1522600432B92 /* CreateThresholdAlertAPI.swift */; };
 		3392B3FA28A1601000432B92 /* DeleteThresholdAlertAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3392B3F928A1601000432B92 /* DeleteThresholdAlertAPI.swift */; };
+		3392B3FC28A3C35600432B92 /* ThresholdAlertsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3392B3FB28A3C35600432B92 /* ThresholdAlertsController.swift */; };
 		3397C81F2787024C0050B333 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3397C81E2787024C0050B333 /* UserDefaults.swift */; };
 		3399394D27DA1722006144AF /* SingleSessionDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3399394C27DA1722006144AF /* SingleSessionDownloader.swift */; };
 		339BF3E127D231F000BBCB23 /* StaticSessionHeaderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 339BF3E027D231F000BBCB23 /* StaticSessionHeaderViewModel.swift */; };
@@ -549,6 +550,7 @@
 		338FE86027AAB0F1006148DA /* AirCasting v3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AirCasting v3.xcdatamodel"; sourceTree = "<group>"; };
 		3392B3F728A1522600432B92 /* CreateThresholdAlertAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateThresholdAlertAPI.swift; sourceTree = "<group>"; };
 		3392B3F928A1601000432B92 /* DeleteThresholdAlertAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteThresholdAlertAPI.swift; sourceTree = "<group>"; };
+		3392B3FB28A3C35600432B92 /* ThresholdAlertsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThresholdAlertsController.swift; sourceTree = "<group>"; };
 		3397C81E2787024C0050B333 /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 		3399394C27DA1722006144AF /* SingleSessionDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleSessionDownloader.swift; sourceTree = "<group>"; };
 		339BF3E027D231F000BBCB23 /* StaticSessionHeaderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaticSessionHeaderViewModel.swift; sourceTree = "<group>"; };
@@ -1033,14 +1035,15 @@
 			path = ShareSession;
 			sourceTree = "<group>";
 		};
-		332066AD28981EBF00798AC1 /* ThresholdAlert */ = {
+		332066AD28981EBF00798AC1 /* ThresholdAlerts */ = {
 			isa = PBXGroup;
 			children = (
 				332066AB2898156D00798AC1 /* ThresholdAlertSheet.swift */,
 				332066AE28981EDD00798AC1 /* ThresholdAlertSheetViewModel.swift */,
 				332066B0289AB69300798AC1 /* ThresholdAlertStreamOption.swift */,
+				3392B3FB28A3C35600432B92 /* ThresholdAlertsController.swift */,
 			);
-			path = ThresholdAlert;
+			path = ThresholdAlerts;
 			sourceTree = "<group>";
 		};
 		3328F11E266786C600B72D61 /* Chart */ = {
@@ -1404,7 +1407,7 @@
 			children = (
 				33F604AD2824173300B48C63 /* ExternalSessionsViews */,
 				3305086F276B566800D18C69 /* ShareSession */,
-				332066AD28981EBF00798AC1 /* ThresholdAlert */,
+				332066AD28981EBF00798AC1 /* ThresholdAlerts */,
 				DDF12AE926B2ADFD00D067C7 /* SessionCardView */,
 				AC6D569E25AEEAE700D221BA /* SessionHeaderView.swift */,
 				DD009D652698844A009F0443 /* DeleteView.swift */,
@@ -3173,6 +3176,7 @@
 				B3FD77C8267C997800E97CC2 /* PersistenceController+Database.swift in Sources */,
 				DDC86646276B561500A8E610 /* EditNoteViewModel.swift in Sources */,
 				AC8CFF4525E510CB00FB2918 /* AuthorizationAPI.swift in Sources */,
+				3392B3FC28A3C35600432B92 /* ThresholdAlertsController.swift in Sources */,
 				DD9EBB4E26AFDD2100D51804 /* TurnOnLocationView.swift in Sources */,
 				DDC86648276B607C00A8E610 /* Note.swift in Sources */,
 				B3EFAB1726EFE2DB00E88141 /* FirstRunInfoProvidable.swift in Sources */,
