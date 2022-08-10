@@ -89,8 +89,6 @@ struct GoogleMapView: UIViewRepresentable {
             updateContextThresholdAndPathPoints(context: context)
             context.coordinator.drawHeatmap(uiView)
         }
-//        butler.applyStylying(to: uiView)
-//        butler.defineMapType(uiView)
     }
     
     private func updateContextThresholdAndPathPoints(context: Context) {
