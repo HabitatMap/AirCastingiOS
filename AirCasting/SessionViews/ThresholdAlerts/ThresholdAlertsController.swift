@@ -29,7 +29,6 @@ struct NewThresholdAlertData {
 }
 
 class ThresholdAlertsController {
-    @Injected var alertsStore: ThresholdAlertsStore
     let createAlertApiCommunitator: CreateThresholdAlertAPI = DefaultCreateThresholdAlertAPI()
     let deleteAlertApiCommunitator: DeleteThresholdAlertAPI = DefaultDeleteThresholdAlertAPI()
     let fetchAlertsApiCommunitator: FetchThresholdAlertsAPI = DefaultFetchThresholdAlertsAPI()
@@ -104,7 +103,6 @@ class ThresholdAlertsController {
                 switch result {
                 case .success():
                     Log.info("## Deleted: \(alert)")
-                    self.alertsStore.deleteAlerts(ids: [alert.id]) {_ in }
                 case .failure(_):
                     Log.info("## Failed deleting")
                     failedAlerts.append(self.shorten(alert.sensorName))
@@ -125,15 +123,7 @@ class ThresholdAlertsController {
             createAlertApiCommunitator.createAlert(sessionUUID: alert.sessionUUID, sensorName: self.shorten(alert.sensorName), thresholdValue: String(alert.thresholdValue), frequency: alert.frequency) { result in
                 switch result {
                 case .success(let id):
-                    self.alertsStore.createAlert(id: id.id, sessionUUID: alert.sessionUUID.rawValue, sensorName: alert.sensorName, thresholdValue: alert.thresholdValue, frequency: alert.frequency.rawValue()) { result in
-                        switch result {
-                        case .success():
-                            Log.info("Created alert for: \(alert.sensorName)")
-                        case .failure(let error):
-                            // it's not a big problem if it fails as long as we are syncing with database when entering this view
-                            Log.error("Failed to create an alert in the database: \(error)")
-                        }
-                    }
+                    Log.info("Created alert for: \(alert.sensorName)")
                 case .failure(let error):
                     Log.error("Failed to create an alert on backend: \(error)")
                     failedAlerts.append(self.shorten(alert.sensorName))
@@ -158,15 +148,7 @@ class ThresholdAlertsController {
                     self.createAlertApiCommunitator.createAlert(sessionUUID: alert.sessionUUID, sensorName: self.shorten(alert.sensorName), thresholdValue: String(alert.newThresholdValue), frequency: alert.newFrequency) { result in
                         switch result {
                         case .success(let id):
-                            self.alertsStore.updateAlert(oldId: alert.oldId, newId: id.id, thresholdValue: alert.newThresholdValue, frequency: alert.newFrequency.rawValue()) { result in
-                                switch result {
-                                case .success():
-                                    Log.info("Updated alert for: \(alert.sensorName)")
-                                case .failure(let error):
-                                    // it's not a big problem if it fails as long as we are syncing with database when entering this view
-                                    Log.error("Failed to update an alert in the database: \(error)")
-                                }
-                            }
+                            Log.info("Updated alert for: \(alert.sensorName)")
                         case .failure(let error):
                             Log.error("Failed to create an alert on backend: \(error)")
                             failedAlerts.append(self.shorten(alert.sensorName))

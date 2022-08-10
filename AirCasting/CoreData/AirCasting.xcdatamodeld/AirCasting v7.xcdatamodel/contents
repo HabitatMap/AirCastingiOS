@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="20086" systemVersion="21F79" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Entity" representedClassName="Entity" syncable="YES" codeGenerationType="class"/>
     <entity name="ExternalSessionEntity" representedClassName="ExternalSessionEntity" syncable="YES">
         <attribute name="endTime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0" usesScalarValueType="YES"/>
@@ -94,5 +95,6 @@
         <element name="SensorThreshold" positionX="388.8433837890625" positionY="56.29141235351562" width="128" height="133"/>
         <element name="SessionEntity" positionX="192.664794921875" positionY="224.3333435058594" width="128" height="359"/>
         <element name="UIStateEntity" positionX="416.1559448242188" positionY="560.4293060302734" width="128" height="104"/>
+        <element name="Entity" positionX="126" positionY="-81" width="128" height="29"/>
     </elements>
 </model>

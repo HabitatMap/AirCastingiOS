@@ -16,7 +16,7 @@ struct ThresholdAlertSheet<VM: ThresholdAlertSheetViewModel>: View {
                     title
                         .padding(.top, 20)
                     description
-                    if viewModel.activeAlerts.isReady {
+                    if !viewModel.loading {
                         chooseStream
                     } else {
                         ProgressView()
@@ -72,7 +72,7 @@ struct ThresholdAlertSheet<VM: ThresholdAlertSheetViewModel>: View {
                 .font(Fonts.muliBoldHeading1)
         }
         .buttonStyle(BlueButtonStyle())
-        .disabled(!viewModel.saveButtonEnabled)
+        .disabled(viewModel.loading)
     }
     
     private var cancelButton: some View {
@@ -87,6 +87,6 @@ struct ThresholdAlertSheet<VM: ThresholdAlertSheetViewModel>: View {
 
 struct ThresholdAlertSheet_Previews: PreviewProvider {
     static var previews: some View {
-        ThresholdAlertSheet(viewModel: ThresholdAlertSheetViewModel(session: SessionEntity.mock, apiClient: ShareSessionApi()), isActive: .constant(true))
+        ThresholdAlertSheet(viewModel: ThresholdAlertSheetViewModel(session: SessionEntity.mock), isActive: .constant(true))
     }
 }

@@ -266,7 +266,7 @@ private extension SessionHeaderView {
     }
     
     var thresholdAlertSheet: some View {
-        ThresholdAlertSheet(viewModel: ThresholdAlertSheetViewModel(session: session, apiClient: ShareSessionApi()), isActive: $showThresholdAlertModal)
+        ThresholdAlertSheet(viewModel: ThresholdAlertSheetViewModel(session: session), isActive: $showThresholdAlertModal)
     }
 
     func adaptTimeAndDate() -> Text {

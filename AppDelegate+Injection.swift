@@ -228,12 +228,6 @@ extension Resolver: ResolverRegistering {
             return DefaultExternalSessionsStore(context: context)
         }
         
-        // MARK: - ThresholdAlerts
-        main.register { (_, _) -> ThresholdAlertsStore in
-            let context = Resolver.resolve(PersistenceController.self).editContext
-            return DefaultThresholdAlertsStore(context: context)
-        }
-        
         // MARK: Unit / value formatting
         main.register { (_, args) in TemperatureThresholdFormatter(threshold: args()) as ThresholdFormatter }
         main.register { TemperatureUnitFormatter() as UnitFormatter }
