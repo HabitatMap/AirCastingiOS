@@ -23,14 +23,12 @@ class SDCardMobileSessionsSavingService: SDCardMobileSessionssSaver {
         // We only want to save measurements of new sessions or for sessions in standalone mode recorded with the syncing device
         var sessionsToCreate: [SessionUUID] = []
         var sessionsToIgnore: [SessionUUID] = []
-        var i = 1
         
         measurementStreamStorage.accessStorage { storage in
             do {
                 try self.fileLineReader.readLines(of: fileURL, progress: { line in
                     switch line {
                     case .line(let content):
-                        i += 1
                         let measurementsRow = self.parser.parseMeasurement(lineString: content)
                         guard let measurements = measurementsRow, !sessionsToIgnore.contains(measurements.sessionUUID) else {
                             return
