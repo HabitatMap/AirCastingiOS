@@ -42,7 +42,7 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
 
     func connectToAirBeamAndSync() {
         self.airBeamConnectionController.connectToAirBeam(peripheral: peripheral) { success in
-            Log.info("## Completed connecting to AB")
+            Log.info("[SD SYNC] Completed connecting to AB")
             guard success else {
                 DispatchQueue.main.async {
                     self.presentNextScreen = success
@@ -64,9 +64,14 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
                     }
                 }
             }, completion: { [weak self] result in
-                Log.info("## Completed syncing with result: \(result)")
+                Log.info("[SD SYNC] Completed syncing with result: \(result)")
                 guard let self = self else { return }
                 if result {
+                    guard self.peripheral.state == .connected else {
+                        Log.info("[SD SYNC] Device disconnected. Attempting reconnect")
+                        self.reconnectWithAirbeamAndClearCard()
+                        return
+                    }
                     self.clearSDCard()
                 } else {
                     DispatchQueue.main.async {
@@ -84,10 +89,25 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
             DispatchQueue.main.async {
                 self.presentNextScreen = true
                 if !result {
-                    Log.error("Couldn't clear SD card after sync")
+                    Log.error("[SD SYNC] Couldn't clear SD card after sync")
                 }
             }
             self.disconnectAirBeam()
+        }
+    }
+    
+    private func reconnectWithAirbeamAndClearCard() {
+        airBeamConnectionController.connectToAirBeam(peripheral: peripheral) { [weak self] success in
+            guard let self = self else { return }
+            guard success else {
+                Log.info("[SD SYNC] Reconnecting failed")
+                DispatchQueue.main.async {
+                    self.presentNextScreen = false
+                    self.presentFailedSyncAlert = true
+                }
+                return
+            }
+            self.clearSDCard()
         }
     }
 

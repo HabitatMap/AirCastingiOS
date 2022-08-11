@@ -80,7 +80,7 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
                  and in that case we want to set currentSessionTypeExpected to 0 */
                 expectedMeasurementsCount[currentSessionType!] = measurementsCount ?? 0
             case .failure(let error):
-                Log.warning("Error while receiving metadata from SD card: \(error.localizedDescription)")
+                Log.warning("[SD SYNC]  Error while receiving metadata from SD card: \(error.localizedDescription)")
                 self.finishSync { completion(.failure(error)) }
             }
         }
@@ -90,7 +90,7 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
             case .success(let data):
                 guard let data = data, let payload = String(data: data, encoding: .utf8) else { return }
                 guard let sessionType = currentSessionType else {
-                    Log.error("Received data before first metadata payload!")
+                    Log.error("[SD SYNC] Received data before first metadata payload!")
                     self.finishSync { completion(.failure(SDCardSyncError.wrongOrderOfReceivedPayload)) }
                     return
                 }
@@ -113,8 +113,7 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
     }
     
     func clearSDCard(of peripheral: CBPeripheral, completion: @escaping (Result<Void, Error>) -> Void) {
-        Log.info("## Sending clear config")
-        // It's possible that device has disconnected from us if there was a lot of data, so we need to connect to it again
+        Log.info("[SD Sync] Starting clearing SD card process")
         sendClearConfig(peripheral: peripheral)
         clearCardCharacteristicObserver = bluetoothManager.subscribeToCharacteristic(DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID, timeout: 10) { result in
             switch result {
