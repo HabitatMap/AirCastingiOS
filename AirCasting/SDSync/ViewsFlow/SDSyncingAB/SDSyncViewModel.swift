@@ -79,28 +79,7 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
                     self.clearSDCard()
                 case .failure(let error):
                     DispatchQueue.main.async {
-                        switch error {
-                        case .unidetifiableDevice:
-                            self.alert = InAppAlerts.connectionTimeoutAlert {
-                                self.shouldDismiss = true
-                            }
-                        case .filesCorrupted:
-                            self.alert = InAppAlerts.sdSyncFilesCorruptedAlert {
-                                self.shouldDismiss = true
-                            }
-                        case .readingDataFailure:
-                            self.alert = InAppAlerts.sdSyncReadingDataAlert {
-                                self.shouldDismiss = true
-                            }
-                        case .fixedSessionsProcessingFailure:
-                            self.alert = InAppAlerts.sdSyncFixedFailAlert {
-                                self.shouldDismiss = true
-                            }
-                        case .mobileSessionsProcessingFailure:
-                            self.alert = InAppAlerts.sdSyncMobileFailAlert {
-                                self.shouldDismiss = true
-                            }
-                        }
+                        self.alert = self.alertForError(error)
                         self.presentNextScreen = false
                     }
                     self.disconnectAirBeam()
@@ -140,6 +119,31 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
 
     private func disconnectAirBeam() {
         airBeamConnectionController.disconnectAirBeam(peripheral: peripheral)
+    }
+    
+    private func alertForError(_ error: SDSyncError) -> AlertInfo {
+        switch error {
+        case .unidetifiableDevice:
+            return InAppAlerts.connectionTimeoutAlert {
+                self.shouldDismiss = true
+            }
+        case .filesCorrupted:
+            return InAppAlerts.sdSyncFilesCorruptedAlert {
+                self.shouldDismiss = true
+            }
+        case .readingDataFailure:
+            return InAppAlerts.sdSyncReadingDataAlert {
+                self.shouldDismiss = true
+            }
+        case .fixedSessionsProcessingFailure:
+            return InAppAlerts.sdSyncFixedFailAlert {
+                self.shouldDismiss = true
+            }
+        case .mobileSessionsProcessingFailure:
+            return InAppAlerts.sdSyncMobileFailAlert {
+                self.shouldDismiss = true
+            }
+        }
     }
 
     private func stringForSessionType(_ sessionType: SDCardSessionType) -> String {
