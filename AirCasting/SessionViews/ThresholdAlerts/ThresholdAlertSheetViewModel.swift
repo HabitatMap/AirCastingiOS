@@ -30,6 +30,7 @@ enum ThresholdAlertFrequency {
 class ThresholdAlertSheetViewModel: ObservableObject {
     private var session: Sessionable
     @Injected var controller: ThresholdAlertsController
+    @Injected var networkChecker: NetworkChecker
     
     @Published var streamOptions: [AlertOption] = []
     private var activeAlerts: Loadable<[Alert]> = .loading {
@@ -136,9 +137,7 @@ class ThresholdAlertSheetViewModel: ObservableObject {
                 }
                 DispatchQueue.main.async {
                     self.alert = InAppAlerts.failedThresholdAlertsAlert {
-                        DispatchQueue.main.async {
-                            self.shouldDismiss = true
-                        }
+                        self.shouldDismiss = true
                     }
                 }
             }
@@ -147,6 +146,12 @@ class ThresholdAlertSheetViewModel: ObservableObject {
     
     
     private func showProperStreams() {
+        guard networkChecker.connectionAvailable else {
+            alert = InAppAlerts.noInternetConnection {
+                self.shouldDismiss = true
+            }
+            return
+        }
         activeAlerts = .loading
         controller.getAlerts(sessionUUID: self.session.uuid) {result in
             switch result {

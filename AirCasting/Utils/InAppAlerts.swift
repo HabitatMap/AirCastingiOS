@@ -265,11 +265,11 @@ struct InAppAlerts {
         ])
     }
     
-    static func noInternetConnection() -> AlertInfo {
+    static func noInternetConnection(dismiss: (() -> Void)?) -> AlertInfo {
         AlertInfo(title: Strings.ConnectionAlerts.noInternetTitle,
                   message: Strings.ConnectionAlerts.noInternetMessage,
                   buttons: [
-                    .default(title: Strings.Commons.ok, action: nil)
+                    .default(title: Strings.Commons.ok, action: dismiss)
                   ])
     }
     

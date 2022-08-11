@@ -25,10 +25,10 @@ struct ThresholdAlertSheet<VM: ThresholdAlertSheetViewModel>: View {
                     .padding()
                 }
             }
-            .background(Color.aircastingBackground.ignoresSafeArea())
-            .onChange(of: viewModel.shouldDismiss) {
-                $0 ? presentationMode.wrappedValue.dismiss() : ()
-            }
+        }
+        .background(Color.aircastingBackground.ignoresSafeArea())
+        .onChange(of: viewModel.shouldDismiss) {
+            $0 ? presentationMode.wrappedValue.dismiss() : ()
         }
         .alert(item: $viewModel.alert, content: { $0.makeAlert() })
     }
