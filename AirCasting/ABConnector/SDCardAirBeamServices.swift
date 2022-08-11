@@ -49,7 +49,7 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
         var receivedMeasurementsCount: [SDCardSessionType: Int] = [:]
         var currentSessionType: SDCardSessionType?
         
-        Log.info("## Downloading data")
+        Log.info("[SD Sync] Downloading data")
         
         configureABforSync(peripheral: peripheral)
         metadataCharacteristicObserver = bluetoothManager.subscribeToCharacteristic(DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID) { result in
