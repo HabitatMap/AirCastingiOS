@@ -14,20 +14,21 @@ struct SDSyncProgressViewModel {
 protocol SDSyncViewModel: ObservableObject {
     var presentNextScreen: Bool { get set }
     var isDownloadingFinished: Bool { get }
-    var presentFailedSyncAlert: Bool { get set }
+    var shouldDismiss: Bool { get set }
+    var alert: AlertInfo? { get set }
     var progress: Published<SDSyncProgressViewModel?>.Publisher { get }
     func connectToAirBeamAndSync()
 }
 
 // [RESOLVER] Move this VM init to view afte all dependencies are resolved
 class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
-
     var progress: Published<SDSyncProgressViewModel?>.Publisher { $progressValue }
 
     @Published private var progressValue: SDSyncProgressViewModel?
     @Published var isDownloadingFinished: Bool = false
     @Published var presentNextScreen: Bool = false
-    @Published var presentFailedSyncAlert: Bool = false
+    @Published var shouldDismiss: Bool = false
+    @Published var alert: AlertInfo?
 
     private let peripheral: CBPeripheral
     @Injected private var airBeamConnectionController: AirBeamConnectionController
@@ -42,10 +43,13 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
 
     func connectToAirBeamAndSync() {
         self.airBeamConnectionController.connectToAirBeam(peripheral: peripheral) { success in
+            Log.info("[SD SYNC] Completed connecting to AB")
             guard success else {
                 DispatchQueue.main.async {
                     self.presentNextScreen = success
-                    self.presentFailedSyncAlert = !success
+                    self.alert = InAppAlerts.connectionTimeoutAlert {
+                        self.shouldDismiss = true
+                    }
                 }
                 return
             }
@@ -63,13 +67,20 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
                     }
                 }
             }, completion: { [weak self] result in
+                Log.info("[SD SYNC] Completed syncing with result: \(result)")
                 guard let self = self else { return }
-                if result {
+                switch result {
+                case .success():
+                    guard self.peripheral.state == .connected else {
+                        Log.info("[SD SYNC] Device disconnected. Attempting reconnect")
+                        self.reconnectWithAirbeamAndClearCard()
+                        return
+                    }
                     self.clearSDCard()
-                } else {
+                case .failure(let error):
                     DispatchQueue.main.async {
+                        self.alert = self.alertForError(error)
                         self.presentNextScreen = false
-                        self.presentFailedSyncAlert = true
                     }
                     self.disconnectAirBeam()
                 }
@@ -82,15 +93,57 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
             DispatchQueue.main.async {
                 self.presentNextScreen = true
                 if !result {
-                    Log.error("Couldn't clear SD card after sync")
+                    Log.error("[SD SYNC] Couldn't clear SD card after sync")
                 }
             }
             self.disconnectAirBeam()
         }
     }
+    
+    private func reconnectWithAirbeamAndClearCard() {
+        airBeamConnectionController.connectToAirBeam(peripheral: peripheral) { [weak self] success in
+            guard let self = self else { return }
+            guard success else {
+                Log.info("[SD SYNC] Reconnecting failed")
+                DispatchQueue.main.async {
+                    self.presentNextScreen = false
+                    self.alert = InAppAlerts.failedSDClearingAlert {
+                        self.shouldDismiss = true
+                    }
+                }
+                return
+            }
+            self.clearSDCard()
+        }
+    }
 
     private func disconnectAirBeam() {
         airBeamConnectionController.disconnectAirBeam(peripheral: peripheral)
+    }
+    
+    private func alertForError(_ error: SDSyncError) -> AlertInfo {
+        switch error {
+        case .unidetifiableDevice:
+            return InAppAlerts.connectionTimeoutAlert {
+                self.shouldDismiss = true
+            }
+        case .filesCorrupted:
+            return InAppAlerts.sdSyncFilesCorruptedAlert {
+                self.shouldDismiss = true
+            }
+        case .readingDataFailure:
+            return InAppAlerts.sdSyncReadingDataAlert {
+                self.shouldDismiss = true
+            }
+        case .fixedSessionsProcessingFailure:
+            return InAppAlerts.sdSyncFixedFailAlert {
+                self.shouldDismiss = true
+            }
+        case .mobileSessionsProcessingFailure:
+            return InAppAlerts.sdSyncMobileFailAlert {
+                self.shouldDismiss = true
+            }
+        }
     }
 
     private func stringForSessionType(_ sessionType: SDCardSessionType) -> String {
