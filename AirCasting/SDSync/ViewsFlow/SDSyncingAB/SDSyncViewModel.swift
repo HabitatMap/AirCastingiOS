@@ -14,20 +14,21 @@ struct SDSyncProgressViewModel {
 protocol SDSyncViewModel: ObservableObject {
     var presentNextScreen: Bool { get set }
     var isDownloadingFinished: Bool { get }
-    var presentFailedSyncAlert: Bool { get set }
+    var shouldDismiss: Bool { get set }
+    var alert: AlertInfo? { get set }
     var progress: Published<SDSyncProgressViewModel?>.Publisher { get }
     func connectToAirBeamAndSync()
 }
 
 // [RESOLVER] Move this VM init to view afte all dependencies are resolved
 class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
-
     var progress: Published<SDSyncProgressViewModel?>.Publisher { $progressValue }
 
     @Published private var progressValue: SDSyncProgressViewModel?
     @Published var isDownloadingFinished: Bool = false
     @Published var presentNextScreen: Bool = false
-    @Published var presentFailedSyncAlert: Bool = false
+    @Published var shouldDismiss: Bool = false
+    @Published var alert: AlertInfo?
 
     private let peripheral: CBPeripheral
     @Injected private var airBeamConnectionController: AirBeamConnectionController
@@ -46,7 +47,9 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
             guard success else {
                 DispatchQueue.main.async {
                     self.presentNextScreen = success
-                    self.presentFailedSyncAlert = !success
+                    self.alert = InAppAlerts.connectionTimeoutAlert {
+                        self.shouldDismiss = true
+                    }
                 }
                 return
             }
@@ -66,17 +69,39 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
             }, completion: { [weak self] result in
                 Log.info("[SD SYNC] Completed syncing with result: \(result)")
                 guard let self = self else { return }
-                if result {
+                switch result {
+                case .success():
                     guard self.peripheral.state == .connected else {
                         Log.info("[SD SYNC] Device disconnected. Attempting reconnect")
                         self.reconnectWithAirbeamAndClearCard()
                         return
                     }
                     self.clearSDCard()
-                } else {
+                case .failure(let error):
                     DispatchQueue.main.async {
+                        switch error {
+                        case .unidetifiableDevice:
+                            self.alert = InAppAlerts.connectionTimeoutAlert {
+                                self.shouldDismiss = true
+                            }
+                        case .filesCorrupted:
+                            self.alert = InAppAlerts.sdSyncFilesCorruptedAlert {
+                                self.shouldDismiss = true
+                            }
+                        case .readingDataFailure:
+                            self.alert = InAppAlerts.sdSyncReadingDataAlert {
+                                self.shouldDismiss = true
+                            }
+                        case .fixedSessionsProcessingFailure:
+                            self.alert = InAppAlerts.sdSyncFixedFailAlert {
+                                self.shouldDismiss = true
+                            }
+                        case .mobileSessionsProcessingFailure:
+                            self.alert = InAppAlerts.sdSyncMobileFailAlert {
+                                self.shouldDismiss = true
+                            }
+                        }
                         self.presentNextScreen = false
-                        self.presentFailedSyncAlert = true
                     }
                     self.disconnectAirBeam()
                 }
@@ -103,7 +128,9 @@ class SDSyncViewModelDefault: SDSyncViewModel, ObservableObject {
                 Log.info("[SD SYNC] Reconnecting failed")
                 DispatchQueue.main.async {
                     self.presentNextScreen = false
-                    self.presentFailedSyncAlert = true
+                    self.alert = InAppAlerts.failedSDClearingAlert {
+                        self.shouldDismiss = true
+                    }
                 }
                 return
             }

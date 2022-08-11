@@ -25,6 +25,14 @@ enum SDCardSyncStatus {
     case finalizing
 }
 
+enum SDSyncError: Error {
+    case unidetifiableDevice
+    case filesCorrupted
+    case readingDataFailure
+    case fixedSessionsProcessingFailure
+    case mobileSessionsProcessingFailure
+}
+
 class SDSyncController {
     @Injected private var fileWriter: SDSyncFileWriter
     @Injected private var airbeamServices: SDCardAirBeamServices
@@ -38,11 +46,11 @@ class SDSyncController {
     
     private let writingQueue = DispatchQueue(label: "SDSyncController")
     
-    func syncFromAirbeam(_ airbeamConnection: CBPeripheral, progress: @escaping (SDCardSyncStatus) -> Void, completion: @escaping (Bool) -> Void) {
+    func syncFromAirbeam(_ airbeamConnection: CBPeripheral, progress: @escaping (SDCardSyncStatus) -> Void, completion: @escaping (Result<Void, SDSyncError>) -> Void) {
         Log.info("[SD SYNC] Starting syncing")
         guard let sensorName = airbeamConnection.name else {
             Log.error("[SD SYNC] Unable to identify the device")
-            completion(false)
+            completion(.failure(.unidetifiableDevice))
             return
         }
 
@@ -63,7 +71,7 @@ class SDSyncController {
                     Log.info("[SD SYNC] Files: \(files)")
                     guard !files.isEmpty else {
                         Log.info("[SD SYNC] No files. Finishing sd sync")
-                        completion(true)
+                        completion(.success(()))
                         return
                     }
                     
@@ -75,21 +83,19 @@ class SDSyncController {
                             self.handle(files: verifiedFiles, sensorName: sensorName, completion: completion)
                         case .failure(let error):
                             Log.error(error.localizedDescription)
-                            completion(false)
+                            completion(.failure(.filesCorrupted))
                         }
                     }
                 case .failure:
-                    Log.info("[SD SYNC] Check for corruption passed")
+                    Log.info("[SD SYNC] Reading data from AirBeam failed")
                     self.fileWriter.finishAndRemoveFiles()
-                    completion(false)
+                    completion(.failure(.readingDataFailure))
                 }
             }
         })
     }
     
-    private func handle(files: [(URL, SDCardSessionType)], sensorName: String, completion: @escaping (Bool) -> Void ) {
-        Log.info("WAITING")
-        sleep(6)
+    private func handle(files: [(URL, SDCardSessionType)], sensorName: String, completion: @escaping (Result<Void, SDSyncError>) -> Void ) {
         let mobileFileURL = files.first(where: { $0.1 == SDCardSessionType.mobile })?.0
         let fixedFileURL = files.first(where: { $0.1 == SDCardSessionType.fixed })?.0
         
@@ -98,9 +104,9 @@ class SDSyncController {
                 switch result {
                 case .success(let fixedSessionsUUIDs):
                     self.measurementsDownloader.download(sessionsUUIDs: fixedSessionsUUIDs)
-                    completion(true)
+                    completion(.success(()))
                 case .failure:
-                    completion(false)
+                    completion(.failure(.fixedSessionsProcessingFailure))
                 }
             }
         }
@@ -108,20 +114,20 @@ class SDSyncController {
         if let mobileFileURL = mobileFileURL {
             process(mobileSessionFile: mobileFileURL, deviceID: sensorName) { mobileResult in
                 guard mobileResult else {
-                    completion(mobileResult)
+                    completion(.failure(.mobileSessionsProcessingFailure))
                     return
                 }
                 
                 if let fixedFileURL = fixedFileURL {
                     handleFixedFile(fixedFileURL: fixedFileURL)
                 } else {
-                    completion(true)
+                    completion(.success(()))
                 }
             }
         } else if let fixedFileURL = fixedFileURL {
             handleFixedFile(fixedFileURL: fixedFileURL)
         } else {
-            completion(true)
+            completion(.success(()))
         }
     }
     
