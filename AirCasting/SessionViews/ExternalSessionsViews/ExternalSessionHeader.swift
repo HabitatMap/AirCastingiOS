@@ -11,7 +11,6 @@ struct ExternalSessionHeader: View {
     @Binding var isCollapsed: Bool
     let expandingAction: (() -> Void)?
     @State var chevronIndicator = "chevron.down"
-    @State var showThresholdAlertModal = false
 
     var streams: [MeasurementStreamEntity] {
         session.sortedStreams
@@ -35,7 +34,6 @@ private extension ExternalSessionHeader {
             HStack {
                 dateAndTime
                     .foregroundColor(Color.aircastingTimeGray)
-                Spacer()
             }
             nameLabel
         }

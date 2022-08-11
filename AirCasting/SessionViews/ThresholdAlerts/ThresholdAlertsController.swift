@@ -10,7 +10,7 @@ protocol ThresholdAlertsController {
 }
 
 enum ThresholdAlertsError: Error {
-    case failedRequestsForAlerts([String])
+    case failedRequests
 }
 
 struct DeleteAlertData {
@@ -43,7 +43,6 @@ class DefaultThresholdAlertsController: ThresholdAlertsController {
             switch result {
             case .success(let existingAlerts):
                 let alertsOfTheSession = existingAlerts.filter({ $0.sessionUuid == sessionUUID.rawValue })
-                Log.info("## Response: \(alertsOfTheSession)")
                 completion(.success(alertsOfTheSession))
             case .failure(let error):
                 completion(.failure(error))
@@ -52,7 +51,7 @@ class DefaultThresholdAlertsController: ThresholdAlertsController {
     }
     
     func processAlerts(delete toDelete: [DeleteAlertData], create toCreate: [NewThresholdAlertData], update toUpdate: [UpdateAlertData], completion: @escaping (Result<Void, ThresholdAlertsError>) -> Void) {
-        var failedAlerts: [String] = []
+        var failed = false
         let mainGroup = DispatchGroup()
         
         mainGroup.enter() // creating
@@ -64,9 +63,8 @@ class DefaultThresholdAlertsController: ThresholdAlertsController {
             case .success():
                 Log.info("Deleted alerts successfully")
             case .failure(let error):
-                if case let .failedRequestsForAlerts(failedDeletingAlerts) = error {
-                    failedAlerts.append(contentsOf: failedDeletingAlerts)
-                }
+                Log.error("Deleting request failed: \(error)")
+                failed = true
             }
             mainGroup.leave()
         }
@@ -76,9 +74,8 @@ class DefaultThresholdAlertsController: ThresholdAlertsController {
             case .success():
                 Log.info("Created alerts successfully")
             case .failure(let error):
-                if case let .failedRequestsForAlerts(failedCreatingAlerts) = error {
-                    failedAlerts.append(contentsOf: failedCreatingAlerts)
-                }
+                Log.error("Creating request failed: \(error)")
+                failed = true
             }
             mainGroup.leave()
         }
@@ -88,61 +85,54 @@ class DefaultThresholdAlertsController: ThresholdAlertsController {
             case .success():
                 Log.info("Updated alerts successfully")
             case .failure(let error):
-                if case let .failedRequestsForAlerts(failedUpdatingAlerts) = error {
-                    failedAlerts.append(contentsOf: failedUpdatingAlerts)
-                }
+                Log.error("Updating request failed: \(error)")
+                failed = true
             }
             mainGroup.leave()
         }
         
         mainGroup.wait()
-        failedAlerts.isEmpty ? completion(.success(())) : completion(.failure(.failedRequestsForAlerts(failedAlerts)))
+        !failed ? completion(.success(())) : completion(.failure(.failedRequests))
     }
     
     private func deleteAlerts(_ alerts: [DeleteAlertData], completion: @escaping (Result<Void, ThresholdAlertsError>) -> Void) {
-        var failedAlerts: [String] = []
+        var failed = false
         let group = DispatchGroup()
         alerts.forEach {alert in
             group.enter()
             deleteAlertApiCommunitator.deleteAlert(id: alert.id) { result in
-                switch result {
-                case .success():
-                    Log.info("## Deleted: \(alert)")
-                case .failure(_):
-                    Log.info("## Failed deleting")
-                    failedAlerts.append(self.shorten(alert.sensorName))
+                if case .failure(_) = result {
+                    failed = true
                 }
                 group.leave()
             }
         }
         group.wait()
-        Log.info("## FINISHED DELETING")
-        failedAlerts.isEmpty ? completion(.success(())) : completion(.failure(.failedRequestsForAlerts(failedAlerts)))
+        failed ? completion(.failure(.failedRequests)) : completion(.success(()))
     }
     
     private func createAlerts(alerts: [NewThresholdAlertData], completion: (Result<Void, ThresholdAlertsError>) -> Void) {
-        var failedAlerts: [String] = []
+        var failed = false
         let group = DispatchGroup()
         alerts.forEach { alert in
             group.enter()
             createAlertApiCommunitator.createAlert(sessionUUID: alert.sessionUUID, sensorName: self.shorten(alert.sensorName), thresholdValue: String(alert.thresholdValue), frequency: alert.frequency) { result in
                 switch result {
-                case .success(let id):
+                case .success(_):
                     Log.info("Created alert for: \(alert.sensorName)")
                 case .failure(let error):
                     Log.error("Failed to create an alert on backend: \(error)")
-                    failedAlerts.append(self.shorten(alert.sensorName))
+                    failed = true
                 }
                 group.leave()
             }
         }
         group.wait()
-        Log.info("## FINISHED CREATING")
-        failedAlerts.isEmpty ? completion(.success(())) : completion(.failure(.failedRequestsForAlerts(failedAlerts)))
+        !failed ? completion(.success(())) : completion(.failure(.failedRequests))
     }
     
     private func updateAlerts(alerts: [UpdateAlertData], completion: @escaping (Result<Void, ThresholdAlertsError>) -> Void) {
-        var failedAlerts: [String] = []
+        var failed = false
         let group = DispatchGroup()
         alerts.forEach {alert in
             group.enter()
@@ -152,24 +142,23 @@ class DefaultThresholdAlertsController: ThresholdAlertsController {
                     Log.info("## Deleted from backed: \(alert.oldId)")
                     self.createAlertApiCommunitator.createAlert(sessionUUID: alert.sessionUUID, sensorName: self.shorten(alert.sensorName), thresholdValue: String(alert.newThresholdValue), frequency: alert.newFrequency) { result in
                         switch result {
-                        case .success(let id):
+                        case .success(_):
                             Log.info("Updated alert for: \(alert.sensorName)")
                         case .failure(let error):
                             Log.error("Failed to create an alert on backend: \(error)")
-                            failedAlerts.append(self.shorten(alert.sensorName))
+                            failed = true
                         }
                         group.leave()
                     }
-                case .failure(_):
-                    Log.info("## Failed deleting")
-                    failedAlerts.append(self.shorten(alert.sensorName))
+                case .failure(let error):
+                    Log.error("Failed to delete an alert on backend: \(error)")
+                    failed = true
                     group.leave()
                 }
             }
         }
         group.wait()
-        Log.info("## FINISHED UPDATING")
-        failedAlerts.isEmpty ? completion(.success(())) : completion(.failure(.failedRequestsForAlerts(failedAlerts)))
+        !failed ? completion(.success(())) : completion(.failure(.failedRequests))
     }
     
     private func shorten(_ streamName: String) -> String {

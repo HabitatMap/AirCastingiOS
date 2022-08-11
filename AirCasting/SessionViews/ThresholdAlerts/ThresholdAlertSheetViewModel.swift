@@ -131,10 +131,7 @@ class ThresholdAlertSheetViewModel: ObservableObject {
                 DispatchQueue.main.async {
                     self.shouldDismiss = true
                 }
-            case .failure(let error):
-                if case let .failedRequestsForAlerts(failedAlerts) = error {
-                    Log.error("Failed alerts: \(failedAlerts)")
-                }
+            case .failure(_):
                 DispatchQueue.main.async {
                     self.alert = InAppAlerts.failedThresholdAlertsAlert {
                         self.shouldDismiss = true
@@ -143,7 +140,6 @@ class ThresholdAlertSheetViewModel: ObservableObject {
             }
         }
     }
-    
     
     private func showProperStreams() {
         guard networkChecker.connectionAvailable else {
