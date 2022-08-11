@@ -562,6 +562,10 @@ struct Strings {
         static let frequencyLabel: String = NSLocalizedString("Frequency", comment: "")
         static let invalidThresholdMessage: String = NSLocalizedString("Threshold has to have a numeric value", comment: "")
         static let saveButton: String = NSLocalizedString("Save", comment: "")
+        static let savingButton: String = NSLocalizedString("Saving...", comment: "")
+        static let failureAlertTitle: String = NSLocalizedString("Something went wrong", comment: "")
+        static let failureAlertMessage: String = NSLocalizedString("Some of the changes couldn't be saved on the server. Please, try again later.", comment: "")
+        static let fetchingFailureAlertMessage: String = NSLocalizedString("There was a problem with connecting to the server. Please, try again later.", comment: "")
     }
     
     enum EditSession {

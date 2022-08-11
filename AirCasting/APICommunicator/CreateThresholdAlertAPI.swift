@@ -46,7 +46,7 @@ class DefaultCreateThresholdAlertAPI: CreateThresholdAlertAPI {
     }()
     
     func createAlert(sessionUUID: SessionUUID, sensorName: String, thresholdValue: String, frequency: ThresholdAlertFrequency, completion: @escaping (Result<AlertId, Error>) -> ()) {
-        let url = urlProvider.baseAppURL.appendingPathComponent("api/fixed/threshold_alerts")
+        let url = urlProvider.baseAppURL.appendingPathComponent("api/fixed/threshold_alertss")
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")

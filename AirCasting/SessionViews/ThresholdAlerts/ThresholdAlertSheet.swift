@@ -7,29 +7,30 @@ import AirCastingStyling
 struct ThresholdAlertSheet<VM: ThresholdAlertSheetViewModel>: View {
     @StateObject var viewModel: VM
     @Binding var isActive: Bool
+    @Environment(\.presentationMode) private var presentationMode
     
     var body: some View {
-        ScrollView {
-            ZStack {
-                XMarkButton()
-                VStack(alignment: .leading, spacing: 20) {
-                    title
-                        .padding(.top, 20)
-                    description
-                    if !viewModel.loading {
+        LoadingView(isShowing: $viewModel.loading) {
+            ScrollView {
+                ZStack {
+                    XMarkButton()
+                    VStack(alignment: .leading, spacing: 20) {
+                        title
+                            .padding(.top, 20)
+                        description
                         chooseStream
-                    } else {
-                        ProgressView()
-                            .progressViewStyle(CircularProgressViewStyle())
-                            .padding(.vertical)
+                        continueButton
+                        cancelButton
                     }
-                    continueButton
-                    cancelButton
+                    .padding()
                 }
-                .padding()
+            }
+            .background(Color.aircastingBackground.ignoresSafeArea())
+            .onChange(of: viewModel.shouldDismiss) {
+                $0 ? presentationMode.wrappedValue.dismiss() : ()
             }
         }
-        .background(Color.aircastingBackground.ignoresSafeArea())
+        .alert(item: $viewModel.alert, content: { $0.makeAlert() })
     }
     
     private var title: some View {
@@ -68,11 +69,11 @@ struct ThresholdAlertSheet<VM: ThresholdAlertSheetViewModel>: View {
                 isActive = false
             }
         } label: {
-            Text(Strings.ThresholdAlertSheet.saveButton)
+            Text(viewModel.saveButtonText)
                 .font(Fonts.muliBoldHeading1)
         }
         .buttonStyle(BlueButtonStyle())
-        .disabled(viewModel.loading)
+        .disabled(viewModel.isSaving)
     }
     
     private var cancelButton: some View {

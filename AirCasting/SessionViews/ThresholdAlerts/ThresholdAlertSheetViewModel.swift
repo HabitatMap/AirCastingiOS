@@ -34,11 +34,14 @@ class ThresholdAlertSheetViewModel: ObservableObject {
     @Published var streamOptions: [AlertOption] = []
     private var activeAlerts: Loadable<[Alert]> = .loading {
         didSet {
-            loading = false
+            activeAlerts.isReady ? loading = false : nil
         }
     }
     @Published var loading = true
     @Published var isSaving = false
+    @Published var saveButtonText = Strings.ThresholdAlertSheet.saveButton
+    @Published var shouldDismiss = false
+    @Published var alert: AlertInfo?
     
     struct AlertOption: Identifiable {
         var id: Int
@@ -63,7 +66,6 @@ class ThresholdAlertSheetViewModel: ObservableObject {
     
     init(session: Sessionable) {
         self.session = session
-        Log.info("## INIT")
         showProperStreams()
     }
     
@@ -72,23 +74,19 @@ class ThresholdAlertSheetViewModel: ObservableObject {
     func changeIsOn(of id: Int, to value: Bool) {
         guard let streamOptionId = streamOptions.first(where: { $0.id == id })?.id else { return }
         streamOptions[streamOptionId].isOn = value
-        Log.info("## changed isOn \(streamOptions[streamOptionId])")
     }
     
     func changeThreshold(of id: Int, to value: String) {
         guard let streamOptionId = streamOptions.first(where: { $0.id == id })?.id else { return }
         streamOptions[streamOptionId].thresholdValue = value
-        Log.info("## changed threshold \(streamOptions[streamOptionId])")
     }
     
     func changeFrequency(of id: Int, to value: ThresholdAlertFrequency) {
         guard let streamOptionId = streamOptions.first(where: { $0.id == id })?.id else { return }
         streamOptions[streamOptionId].frequency = value
-        Log.info("## changed frequency \(streamOptions[streamOptionId])")
     }
     
     func save(completion: () -> Void) {
-        Log.info("## saving...")
         let streamsWithEmptyThresholds = streamOptions.filter({ $0.isOn && ($0.thresholdValue == "" || Double($0.thresholdValue) == nil) }).map(\.id)
         
         guard streamsWithEmptyThresholds.isEmpty else {
@@ -96,6 +94,15 @@ class ThresholdAlertSheetViewModel: ObservableObject {
             return
         }
         
+        saveButtonText = Strings.ThresholdAlertSheet.savingButton
+        isSaving = true
+        
+        DispatchQueue.global(qos: .userInitiated).async {
+            self.processChanges()
+        }
+    }
+    
+    private func processChanges() {
         var toDelete: [DeleteAlertData] = []
         var toCreate: [NewThresholdAlertData] = []
         var toUpdate: [UpdateAlertData] = []
@@ -120,9 +127,19 @@ class ThresholdAlertSheetViewModel: ObservableObject {
             switch result {
             case .success():
                 Log.info("Processed alerts successfully")
+                DispatchQueue.main.async {
+                    self.shouldDismiss = true
+                }
             case .failure(let error):
                 if case let .failedRequestsForAlerts(failedAlerts) = error {
-                    Log.info("Failed alerts \(failedAlerts)")
+                    Log.error("Failed alerts: \(failedAlerts)")
+                }
+                DispatchQueue.main.async {
+                    self.alert = InAppAlerts.failedThresholdAlertsAlert {
+                        DispatchQueue.main.async {
+                            self.shouldDismiss = true
+                        }
+                    }
                 }
             }
         }
@@ -153,7 +170,13 @@ class ThresholdAlertSheetViewModel: ObservableObject {
                 }
             case .failure(let error):
                 Log.error(error.localizedDescription)
-                // alert
+                DispatchQueue.main.async {
+                    self.alert = InAppAlerts.failedThresholdAlertsFetchingAlert {
+                        DispatchQueue.main.async {
+                            self.shouldDismiss = true
+                        }
+                    }
+                }
             }
         }
     }
