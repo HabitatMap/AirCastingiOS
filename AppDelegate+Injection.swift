@@ -174,6 +174,7 @@ extension Resolver: ResolverRegistering {
         main.register { DefaultLogoutController() as LogoutController }
         main.register { DefaultDeleteAccountController() as DeleteAccountController }
         main.register { DefaultRemoveDataController() as RemoveDataController }
+        main.register { DefaultThresholdAlertsController() as ThresholdAlertsController }
         
         // MARK: - Session stopping
         

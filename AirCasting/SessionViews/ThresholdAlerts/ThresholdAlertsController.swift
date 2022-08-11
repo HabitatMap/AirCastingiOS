@@ -4,6 +4,11 @@
 import Foundation
 import Resolver
 
+protocol ThresholdAlertsController {
+    func getAlerts(sessionUUID: SessionUUID, completion: @escaping (Result<[FetchedThresholdAlert], Error>) -> Void)
+    func processAlerts(delete toDelete: [DeleteAlertData], create toCreate: [NewThresholdAlertData], update toUpdate: [UpdateAlertData], completion: @escaping (Result<Void, ThresholdAlertsError>) -> Void)
+}
+
 enum ThresholdAlertsError: Error {
     case failedRequestsForAlerts([String])
 }
@@ -28,7 +33,7 @@ struct NewThresholdAlertData {
     let frequency: ThresholdAlertFrequency
 }
 
-class ThresholdAlertsController {
+class DefaultThresholdAlertsController: ThresholdAlertsController {
     let createAlertApiCommunitator: CreateThresholdAlertAPI = DefaultCreateThresholdAlertAPI()
     let deleteAlertApiCommunitator: DeleteThresholdAlertAPI = DefaultDeleteThresholdAlertAPI()
     let fetchAlertsApiCommunitator: FetchThresholdAlertsAPI = DefaultFetchThresholdAlertsAPI()

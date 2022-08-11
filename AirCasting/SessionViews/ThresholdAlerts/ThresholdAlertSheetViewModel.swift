@@ -29,7 +29,7 @@ enum ThresholdAlertFrequency {
 
 class ThresholdAlertSheetViewModel: ObservableObject {
     private var session: Sessionable
-    let controller = ThresholdAlertsController()
+    @Injected var controller: ThresholdAlertsController
     
     @Published var streamOptions: [AlertOption] = []
     private var activeAlerts: Loadable<[Alert]> = .loading {
