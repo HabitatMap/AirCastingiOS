@@ -1,40 +1,53 @@
-// Created by Lunar on 27/05/2021.
+// Created by Lunar on 09/08/2022.
 //
-
-import Foundation
 import CoreData
 import Resolver
 
-final class SessionDataEraser: ObservableObject {
-    @Injected private var persistenceController: PersistenceController
+protocol SessionStorage {
+    func accessStorage(_ task: @escaping(HiddenCoreDataSessionStorage) -> Void)
+}
 
-    func clearAllSessionsAndThresholds(completion: ((Result<Void, Error>) -> Void)?) {
-        let context = persistenceController.editContext
-        context.perform({
-            do {
-                let request: NSFetchRequest<SessionEntity> = SessionEntity.fetchRequest()
-                let sessions = try context.fetch(request)
-                sessions.forEach(context.delete)
-                
-                let externalSessionsRequest = ExternalSessionEntity.fetchRequest()
-                let externalSessions = try context.fetch(externalSessionsRequest)
-                externalSessions.forEach(context.delete)
-                
-                let thresholdsRequest = SensorThreshold.fetchRequest()
-                let thresholds = try context.fetch(thresholdsRequest)
-                thresholds.forEach(context.delete)
-                
-                try context.save()
-                completion?(.success(()))
-            } catch {
-                completion?(.failure(error))
-            }
-        })
+protocol SessionStorageContextUpdate {
+    func clearBluetoothPeripheralUUID(_ sessionUUID: SessionUUID) throws
+    func save() throws
+}
+
+final class CoreDataSessionStorage: SessionStorage {
+    
+    private let context: NSManagedObjectContext
+    private lazy var updateSessionParamsService = UpdateSessionParamsService()
+    private lazy var hiddenStorage = HiddenCoreDataSessionStorage(context: self.context)
+    
+    init(context: NSManagedObjectContext) {
+        self.context = context
+    }
+    
+    /// All actions performed on CoreDataMeasurementStreamStorage must be performed
+    /// within a block passed to this methood.
+    /// This ensures thread-safety by dispatching all calls to the queue owned by the NSManagedObjectContext.
+    func accessStorage(_ task: @escaping(HiddenCoreDataSessionStorage) -> Void) {
+        context.perform {
+            task(self.hiddenStorage)
+            try? self.hiddenStorage.save()
+        }
     }
 }
 
-extension SessionDataEraser: DataEraser {
-    func eraseAllData(completion: ((Result<Void, Error>) -> Void)?) {
-        clearAllSessionsAndThresholds(completion: completion)
+final class HiddenCoreDataSessionStorage: SessionStorageContextUpdate {
+    
+    private let context: NSManagedObjectContext
+    
+    init(context: NSManagedObjectContext) {
+        self.context = context
+    }
+    
+    func clearBluetoothPeripheralUUID(_ sessionUUID: SessionUUID) throws {
+        let sessionEntity = try context.existingSession(uuid: sessionUUID)
+        guard let bluetoothConnection = sessionEntity.bluetoothConnection else { return }
+        bluetoothConnection.peripheralUUID = ""
+    }
+
+    func save() throws {
+        try self.context.save()
     }
 }

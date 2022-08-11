@@ -38,6 +38,16 @@
                ReferencedContainer = "container:AirCasting.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "FA5F7839289A98310016DF79"
+               BuildableName = "AirCastingUITests.xctest"
+               BlueprintName = "AirCastingUITests"
+               ReferencedContainer = "container:AirCasting.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

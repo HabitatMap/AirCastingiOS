@@ -35,6 +35,12 @@ struct Strings {
                                                               comment: "")
         static let disableMappingDescription: String = NSLocalizedString("Turns off GPS tracking & session syncing. Use \"Share file\" to retrieve your measurements via email.",
                                                                          comment: "")
+        static let dormantSessionsAlert: String = NSLocalizedString("Dormant stream alert",
+                                                                    comment: "")
+        static let dormantSessionsAlertDescription: String = NSLocalizedString("Send email when active fixed sessions go dormant for >30 minutes",
+                                                                         comment: "")
+        static let failedDormantStreamAlertTitle: String = NSLocalizedString("Sorry, something went wrong", comment: "")
+        static let failedDormantStreamAlertMessage: String = NSLocalizedString("We couldn't change the alert settings on the server. Please try again later.", comment: "")
         static let temperature = NSLocalizedString("Temperature Units",
                                                    comment: "")
         static let celsiusDescription = NSLocalizedString("Use Celsius",
@@ -899,6 +905,13 @@ struct Strings {
         static let title: String = NSLocalizedString("There is already a microphone session in progress",
                                                      comment: "")
         static let message: String = NSLocalizedString("You can record only one microphone session at once.",
+                                                       comment: "")
+    }
+    
+    enum BluetoothSessionAlreadyRecordingAlert {
+        static let title: String = NSLocalizedString("There is already a mobile AirBeam session in progress",
+                                                     comment: "")
+        static let message: String = NSLocalizedString("A device can record only one session at a time.",
                                                        comment: "")
     }
     
