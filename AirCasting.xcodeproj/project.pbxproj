@@ -88,7 +88,7 @@
 		4F858F4C2624A82B0059271A /* SampleFixedSession.json in Resources */ = {isa = PBXBuildFile; fileRef = 4F858F4B2624A82B0059271A /* SampleFixedSession.json */; };
 		4F858F5E2624B4980059271A /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F858F5D2624B4980059271A /* Log.swift */; };
 		4F8CDBD2265F8DAC00976B25 /* Assertions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8CDBD1265F8DAC00976B25 /* Assertions.swift */; };
-		4F8CDBD4265F8EE000976B25 /* SessionStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8CDBD3265F8EE000976B25 /* SessionStorage.swift */; };
+		4F8CDBD4265F8EE000976B25 /* SessionDataEraser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8CDBD3265F8EE000976B25 /* SessionDataEraser.swift */; };
 		4F945EEE2649F3F5008A5B22 /* SessionCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F945EED2649F3F5008A5B22 /* SessionCreator.swift */; };
 		4F945EF02649F455008A5B22 /* AirBeamFixedWifiSessionCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F945EEF2649F455008A5B22 /* AirBeamFixedWifiSessionCreator.swift */; };
 		4F945EF4264B2813008A5B22 /* ActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F945EF3264B2813008A5B22 /* ActivityIndicator.swift */; };
@@ -469,11 +469,16 @@
 		EE969E7E1981C41852FB7745 /* Pods_AirCastingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A54057326D27D23E9906704 /* Pods_AirCastingTests.framework */; };
 		FA1C30BD2861BA5F0034C1C9 /* SignInPersistance.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1C30BC2861BA5F0034C1C9 /* SignInPersistance.swift */; };
 		FA26E9E928107150008EE514 /* SearchParameter.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA26E9E828107150008EE514 /* SearchParameter.swift */; };
+		FA396CA128A246BA00F8067C /* SessionStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA396CA028A246BA00F8067C /* SessionStorage.swift */; };
+		FA3AB51428853FBF00DB9A2B /* ConnectionProtectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3AB51328853FBF00DB9A2B /* ConnectionProtectable.swift */; };
+		FA3AB5162885403B00DB9A2B /* BluetoothConnectionProtector.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3AB5152885403B00DB9A2B /* BluetoothConnectionProtector.swift */; };
 		FA45FEFE2844D53700F9C25F /* ExternalGraphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA45FEFD2844D53700F9C25F /* ExternalGraphView.swift */; };
 		FA45FF002844DD4100F9C25F /* ExternalGraph.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA45FEFF2844DD4100F9C25F /* ExternalGraph.swift */; };
 		FA4F1B732817EDDE002711B4 /* AirBeamMeasurementsDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4F1B722817EDDE002711B4 /* AirBeamMeasurementsDownloader.swift */; };
 		FA4F1B75281809B2002711B4 /* AirBeamStreamSuffixes.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4F1B74281809B2002711B4 /* AirBeamStreamSuffixes.swift */; };
 		FA4F1B77281809EE002711B4 /* MeasurementsDownloaderResultModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4F1B76281809EE002711B4 /* MeasurementsDownloaderResultModel.swift */; };
+		FA63D212289C0282002A4BD5 /* DatabaseDeviceUUID.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA63D211289C0282002A4BD5 /* DatabaseDeviceUUID.swift */; };
+		FA94089A2886D3FE0022E1A5 /* BluetoothProtectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9408992886D3FE0022E1A5 /* BluetoothProtectorTests.swift */; };
 		FA5F783D289A98310016DF79 /* ExploreSessionButtonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5F783C289A98310016DF79 /* ExploreSessionButtonTests.swift */; };
 		FA5F783F289A98310016DF79 /* AirCastingUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5F783E289A98310016DF79 /* AirCastingUITestsLaunchTests.swift */; };
 		FAB1D4A427FAD83E004F531D /* BottomCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB1D4A327FAD83E004F531D /* BottomCardViewModel.swift */; };
@@ -592,7 +597,7 @@
 		4F858F4B2624A82B0059271A /* SampleFixedSession.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = SampleFixedSession.json; sourceTree = "<group>"; };
 		4F858F5D2624B4980059271A /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		4F8CDBD1265F8DAC00976B25 /* Assertions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assertions.swift; sourceTree = "<group>"; };
-		4F8CDBD3265F8EE000976B25 /* SessionStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionStorage.swift; sourceTree = "<group>"; };
+		4F8CDBD3265F8EE000976B25 /* SessionDataEraser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionDataEraser.swift; sourceTree = "<group>"; };
 		4F945EED2649F3F5008A5B22 /* SessionCreator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionCreator.swift; sourceTree = "<group>"; };
 		4F945EEF2649F455008A5B22 /* AirBeamFixedWifiSessionCreator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirBeamFixedWifiSessionCreator.swift; sourceTree = "<group>"; };
 		4F945EF3264B2813008A5B22 /* ActivityIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityIndicator.swift; sourceTree = "<group>"; };
@@ -975,11 +980,17 @@
 		DDF75999268332E900D906BA /* Strings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Strings.swift; sourceTree = "<group>"; };
 		FA1C30BC2861BA5F0034C1C9 /* SignInPersistance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInPersistance.swift; sourceTree = "<group>"; };
 		FA26E9E828107150008EE514 /* SearchParameter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchParameter.swift; sourceTree = "<group>"; };
+		FA396CA028A246BA00F8067C /* SessionStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionStorage.swift; sourceTree = "<group>"; };
+		FA3AB51328853FBF00DB9A2B /* ConnectionProtectable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionProtectable.swift; sourceTree = "<group>"; };
+		FA3AB5152885403B00DB9A2B /* BluetoothConnectionProtector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothConnectionProtector.swift; sourceTree = "<group>"; };
 		FA45FEFD2844D53700F9C25F /* ExternalGraphView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalGraphView.swift; sourceTree = "<group>"; };
 		FA45FEFF2844DD4100F9C25F /* ExternalGraph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalGraph.swift; sourceTree = "<group>"; };
 		FA4F1B722817EDDE002711B4 /* AirBeamMeasurementsDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirBeamMeasurementsDownloader.swift; sourceTree = "<group>"; };
 		FA4F1B74281809B2002711B4 /* AirBeamStreamSuffixes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirBeamStreamSuffixes.swift; sourceTree = "<group>"; };
 		FA4F1B76281809EE002711B4 /* MeasurementsDownloaderResultModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementsDownloaderResultModel.swift; sourceTree = "<group>"; };
+		FA63D211289C0282002A4BD5 /* DatabaseDeviceUUID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseDeviceUUID.swift; sourceTree = "<group>"; };
+		FA9408992886D3FE0022E1A5 /* BluetoothProtectorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothProtectorTests.swift; sourceTree = "<group>"; };
+		FA9E08C828926C07006475D6 /* AirCasting v8.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AirCasting v8.xcdatamodel"; sourceTree = "<group>"; };
 		FA5F783A289A98310016DF79 /* AirCastingUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AirCastingUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA5F783C289A98310016DF79 /* ExploreSessionButtonTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreSessionButtonTests.swift; sourceTree = "<group>"; };
 		FA5F783E289A98310016DF79 /* AirCastingUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirCastingUITestsLaunchTests.swift; sourceTree = "<group>"; };
@@ -1084,8 +1095,9 @@
 			isa = PBXGroup;
 			children = (
 				4F2D84EA2647DBE0003D9ED5 /* MeasurementStreamStorage.swift */,
-				4F8CDBD3265F8EE000976B25 /* SessionStorage.swift */,
 				DD2DDBAD27B5450100807011 /* UIStorage.swift */,
+				FA396CA028A246BA00F8067C /* SessionStorage.swift */,
+				4F8CDBD3265F8EE000976B25 /* SessionDataEraser.swift */,
 				33406246281821FA004DA4DA /* ExternalSessionsStore.swift */,
 				ACDA5EF4285B43FD00A531E9 /* SessionEntityStore.swift */,
 			);
@@ -1242,6 +1254,7 @@
 				4F858F4A2624A8120059271A /* Resources */,
 				4FB39E002621B53C00E5E564 /* Info.plist */,
 				4FB39E3F2622252700E5E564 /* XCTestCase+Extensions.swift */,
+				FA9408992886D3FE0022E1A5 /* BluetoothProtectorTests.swift */,
 			);
 			path = AirCastingTests;
 			sourceTree = "<group>";
@@ -1320,6 +1333,7 @@
 		AC32040625CC122900A68520 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				FA3AB51228853FA400DB9A2B /* Connection */,
 				338607AF2886E0ED0002D3A8 /* NetworkMonitoring */,
 				B31AFB6E27AE6EF200CA6FA3 /* Logging */,
 				B3E2B65827506DF500019167 /* FileLineReader */,
@@ -2136,6 +2150,7 @@
 				B3FD77A4267C94AF00E97CC2 /* DatabaseMeasurementStream.swift */,
 				B3FD77A2267C94AF00E97CC2 /* DatabaseMeasurement.swift */,
 				DD49FB6E27904119004A1CA8 /* DatabaseNote.swift */,
+				FA63D211289C0282002A4BD5 /* DatabaseDeviceUUID.swift */,
 			);
 			name = Database;
 			path = SessionsSynchronization/Database;
@@ -2480,6 +2495,15 @@
 				AC8431CF265E6143004DC890 /* DefaultRemoveOldMeasurementsService.swift */,
 			);
 			path = OldMeasurementRemovers;
+			sourceTree = "<group>";
+		};
+		FA3AB51228853FA400DB9A2B /* Connection */ = {
+			isa = PBXGroup;
+			children = (
+				FA3AB51328853FBF00DB9A2B /* ConnectionProtectable.swift */,
+				FA3AB5152885403B00DB9A2B /* BluetoothConnectionProtector.swift */,
+			);
+			path = Connection;
 			sourceTree = "<group>";
 		};
 		FA45FF012844DD5200F9C25F /* External */ = {
@@ -2844,6 +2868,7 @@
 				B3AA784927D4D22A003B39F6 /* Resolver+XCTest.swift in Sources */,
 				B3E2B65F27506EA000019167 /* FileLineReaderTests.swift in Sources */,
 				B33DB5722686013400ED1344 /* XCTestCase+AwaitPublisher.swift in Sources */,
+				FA94089A2886D3FE0022E1A5 /* BluetoothProtectorTests.swift in Sources */,
 				B30BAC252694B5D900AE0476 /* TestStreamGenerator.swift in Sources */,
 				B33B161327AF0B3600138FFA /* ThresholdLoggerProxyTests.swift in Sources */,
 				B33B160F27AF0B3600138FFA /* LoggerSpy.swift in Sources */,
@@ -2916,8 +2941,9 @@
 				B31AFB7027AE6F0700CA6FA3 /* PrintLogger.swift in Sources */,
 				AC32041F25CC485E00A68520 /* ConnectingABView.swift in Sources */,
 				ACD32A4F2600A8DD00818946 /* SettingsView.swift in Sources */,
-				4F8CDBD4265F8EE000976B25 /* SessionStorage.swift in Sources */,
+				4F8CDBD4265F8EE000976B25 /* SessionDataEraser.swift in Sources */,
 				AC006D29275F52CB00E99019 /* CSVMeasurementStream.swift in Sources */,
+				FA396CA128A246BA00F8067C /* SessionStorage.swift in Sources */,
 				B376DD23268091B80083FD2F /* BodyEncodingError.swift in Sources */,
 				DDB44C252704AF830027176E /* AveragingService.swift in Sources */,
 				336A909727A492A000851100 /* DropViewDelegate.swift in Sources */,
@@ -3056,6 +3082,7 @@
 				33E56F3D27F3498A0032117E /* StreamDownloader.swift in Sources */,
 				DDEE3A4B26979D4C0098CCA9 /* SharePage.swift in Sources */,
 				DDF12AE826B2ADF400D067C7 /* SessionCartViewModel.swift in Sources */,
+				FA3AB5162885403B00DB9A2B /* BluetoothConnectionProtector.swift in Sources */,
 				3346F1F626318C1600BA4695 /* SettingsManager.swift in Sources */,
 				DDCE5D3826A1FE2D0033C211 /* DeleteSessionViewModel.swift in Sources */,
 				DDD24D9626A8569400D4A327 /* ResetPasswordService.swift in Sources */,
@@ -3085,6 +3112,7 @@
 				ACC883882645784400C5DB70 /* GraphErorrHandling.swift in Sources */,
 				B33B15F027AEE69900138FFA /* DocumentsFileLoggerStore.swift in Sources */,
 				B3FD77BC267C94AF00E97CC2 /* ScheduledSessionSynchronizerProxy.swift in Sources */,
+				FA63D212289C0282002A4BD5 /* DatabaseDeviceUUID.swift in Sources */,
 				4F5D3F73262C91C6003AD82E /* UserAuthenticationSession.swift in Sources */,
 				AC6D569F25AEEAE700D221BA /* SessionHeaderView.swift in Sources */,
 				B3AB8BE526BB5EF400AF23CC /* Array+MeasurementStatistics.swift in Sources */,
@@ -3236,6 +3264,7 @@
 				DD430B082670FE6100F1BF2E /* GreenTextButtonStyle.swift in Sources */,
 				DD8A36A726C3E76200C26725 /* PlacePicker.swift in Sources */,
 				AC049F872608B74C00398197 /* FixedSession.swift in Sources */,
+				FA3AB51428853FBF00DB9A2B /* ConnectionProtectable.swift in Sources */,
 				B30BAC1B2694AA9C00AE0476 /* MeasurementsStatisticsDataSource.swift in Sources */,
 				DDBA6137276B3AD700E3FEF9 /* AddNoteView.swift in Sources */,
 				B30BAC0B2694A9CB00AE0476 /* StandardStatisticsCalculator.swift in Sources */,
@@ -3828,6 +3857,7 @@
 		338C30E625F10BFE00E0305C /* AirCasting.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				FA9E08C828926C07006475D6 /* AirCasting v8.xcdatamodel */,
 				336BFBCD2857788E008D4645 /* AirCasting v7.xcdatamodel */,
 				B3620725283F97750079C052 /* AirCasting v6.xcdatamodel */,
 				3340624528181376004DA4DA /* AirCasting v5.xcdatamodel */,
@@ -3836,7 +3866,7 @@
 				DDF551D427985AAB009D1347 /* AirCasting v2.xcdatamodel */,
 				338C30E725F10BFE00E0305C /* AirCasting.xcdatamodel */,
 			);
-			currentVersion = 336BFBCD2857788E008D4645 /* AirCasting v7.xcdatamodel */;
+			currentVersion = FA9E08C828926C07006475D6 /* AirCasting v8.xcdatamodel */;
 			path = AirCasting.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

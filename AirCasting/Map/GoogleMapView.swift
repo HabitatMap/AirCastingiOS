@@ -29,7 +29,7 @@ struct GoogleMapView: UIViewRepresentable {
     @Binding var placePickerLocation: CLLocationCoordinate2D?
     
     init(pathPoints: [PathPoint], threshold: SensorThreshold? = nil, isMyLocationEnabled: Bool = false, placePickerIsUpdating: Binding<Bool>, isUserInteracting: Binding<Bool>, isSessionActive: Bool = false, isSessionFixed: Bool = false, noteMarketTapped: Binding<Bool> = .constant(false), noteNumber: Binding<Int> = .constant(0), mapNotes: Binding<[MapNote]>, showMyLocationButton: Bool = true, isMapOnPickerScreen: Bool = false, placePickerLocation: Binding<CLLocationCoordinate2D?> = .constant(nil)) {
-
+        
         self.pathPoints = pathPoints
         self.threshold = threshold
         self.isMyLocationEnabled = isMyLocationEnabled

@@ -77,6 +77,10 @@ extension Resolver: ResolverRegistering {
             let context = Resolver.resolve(PersistenceController.self).editContext
             return CoreDataUIStorage(context: context)
         }.scope(.cached)
+        main.register { (_, _) -> SessionStorage in
+            let context = Resolver.resolve(PersistenceController.self).editContext
+            return CoreDataSessionStorage(context: context)
+        }.scope(.cached)
         main.register { (_, _) -> SessionEntityStore in
             let context = Resolver.resolve(PersistenceController.self).editContext
             return DefaultSessionEntityStore(context: context)
@@ -177,6 +181,7 @@ extension Resolver: ResolverRegistering {
         main.register { DefaultLogoutController() as LogoutController }
         main.register { DefaultDeleteAccountController() as DeleteAccountController }
         main.register { DefaultRemoveDataController() as RemoveDataController }
+        main.register { BluetoothConnectionProtector() as ConnectionProtectable }
         
         // MARK: - Session stopping
         

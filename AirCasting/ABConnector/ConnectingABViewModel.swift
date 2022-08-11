@@ -5,44 +5,52 @@ import Combine
 import CoreBluetooth
 import Resolver
 
-protocol AirbeamConnectionViewModel: ObservableObject {
-    var shouldDismiss: Published<Bool>.Publisher { get }
-    var isDeviceConnected: Published<Bool>.Publisher { get }
-    func connectToAirBeam()
-}
-
 // [RESOLVER] Move this VM init to View when all dependencies resolved
-class AirbeamConnectionViewModelDefault: AirbeamConnectionViewModel, ObservableObject {
-    var shouldDismiss: Published<Bool>.Publisher { $shouldDismissValue }
-    var isDeviceConnected: Published<Bool>.Publisher { $isDeviceConnectedValue }
+class AirbeamConnectionViewModel: ObservableObject {
     
-    @Published private var shouldDismissValue: Bool = false
-    @Published private var isDeviceConnectedValue: Bool = false
+    private enum AlertType {
+        case timeOut
+        case busyDevice
+    }
     
-    private let peripheral: CBPeripheral
     @Injected private var airBeamConnectionController: AirBeamConnectionController
     @Injected private var userAuthenticationSession: UserAuthenticationSession
+    @Injected private var bluetoothConnectionProtector: ConnectionProtectable
+    
+    @Published var isDeviceConnected: Bool = false
+    @Published var shouldDismiss: Bool = false
+    @Published var alert: AlertInfo? = nil
+    
+    private let peripheral: CBPeripheral
     private let sessionContext: CreateSessionContext
     
-    init(sessionContext: CreateSessionContext,
+    required init(sessionContext: CreateSessionContext,
          peripheral: CBPeripheral) {
         self.peripheral = peripheral
         self.sessionContext = sessionContext
     }
     
     func connectToAirBeam() {
-        self.airBeamConnectionController.connectToAirBeam(peripheral: peripheral) { success in
-            self.isDeviceConnectedValue = success
-            self.shouldDismissValue = !success
-            
-            guard success else { return }
-            self.configureAB()
+        self.bluetoothConnectionProtector.isAirBeamAvailableForNewConnection(peripheraUUID: peripheral.identifier.description) { result in
+            switch result {
+            case .success(_):
+                self.airBeamConnectionController.connectToAirBeam(peripheral: self.peripheral) { success in
+                    guard success else {
+                        self.getAlert(.timeOut); return
+                    }
+                    self.isDeviceConnected = success
+                    self.configureAB()
+                }
+            case .failure(let error):
+                Log.info("Cannot create new mobile session while other is ongoing \(error.localizedDescription)")
+                self.getAlert(.busyDevice); return
+            }
         }
     }
     
     private func configureAB() {
         if let sessionUUID = self.sessionContext.sessionUUID {
-            //[Resolver] NOTE: Do we want configurator to be injected?
+            // [Resolver] NOTE: Do we want configurator to be injected?
             let configurator = AirBeam3Configurator(peripheral: self.peripheral)
             do {
                 try configurator.configureFixed(uuid: sessionUUID)
@@ -51,14 +59,17 @@ class AirbeamConnectionViewModelDefault: AirbeamConnectionViewModel, ObservableO
             }
         }
     }
-}
-
-class NeverConnectingAirbeamConnectionViewModel: AirbeamConnectionViewModel {
-    var shouldDismiss: Published<Bool>.Publisher { $shouldDismissValue }
-    var isDeviceConnected: Published<Bool>.Publisher { $isDeviceConnectedValue }
     
-    @Published private var shouldDismissValue: Bool = false
-    @Published private var isDeviceConnectedValue: Bool = false
-    
-    func connectToAirBeam() { }
+    private func getAlert(_ alert: AlertType) {
+        switch alert {
+        case .timeOut:
+            self.alert = InAppAlerts.connectionTimeoutAlert {
+                self.shouldDismiss = true
+            }
+        case .busyDevice:
+            self.alert = InAppAlerts.bluetoothSessionAlreadyRecordingAlert {
+                self.shouldDismiss = true
+            }
+        }
+    }
 }

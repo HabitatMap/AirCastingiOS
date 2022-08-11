@@ -1,22 +1,23 @@
-//
-//  ConnectingABView.swift
-//  AirCasting
-//
 //  Created by Lunar on 04/02/2021.
 //
 
 import CoreBluetooth
 import SwiftUI
 import AirCastingStyling
+import Resolver
 
 struct ConnectingABView<VM: AirbeamConnectionViewModel>: View {
     
-    @Environment(\.presentationMode) var presentationMode
     @StateObject var viewModel: VM
     @Binding var creatingSessionFlowContinues: Bool
     @State private var showNextScreen: Bool = false
-    @State private var presentAlert: Bool = false
+    @Injected private var mobilePeripheralSessionManager: MobilePeripheralSessionManager
+    @Environment(\.presentationMode) var presentationMode
     
+    init(sessionContext: CreateSessionContext, peripheral: CBPeripheral, creatingSessionFlowContinues: Binding<Bool>) {
+        _viewModel = .init(wrappedValue: VM(sessionContext: sessionContext, peripheral: peripheral))
+        self._creatingSessionFlowContinues = .init(projectedValue: creatingSessionFlowContinues)
+    }
     
     var body: some View {
         VStack() {
@@ -47,20 +48,13 @@ struct ConnectingABView<VM: AirbeamConnectionViewModel>: View {
             )
         )
         .padding()
-        .onReceive(viewModel.isDeviceConnected, perform: { isConnected in
+        .onChange(of: viewModel.isDeviceConnected, perform: { isConnected in
             showNextScreen = isConnected
         })
-        .onReceive(viewModel.shouldDismiss, perform: { dismiss in
-            presentAlert = dismiss
-            
+        .onChange(of: viewModel.shouldDismiss, perform: { shouldDismiss in
+            if shouldDismiss { presentationMode.wrappedValue.dismiss() }
         })
-        .alert(isPresented: $presentAlert, content: {
-            Alert(title: Text(Strings.AirBeamConnector.connectionTimeoutTitle),
-                  message: Text(Strings.AirBeamConnector.connectionTimeoutDescription),
-                  dismissButton: .default(Text(Strings.Commons.gotIt), action: {
-                presentationMode.wrappedValue.dismiss()
-            }))
-        })
+        .alert(item: $viewModel.alert, content: { $0.makeAlert() })
         .onAppear(perform: {
             /* App is pushing the next view before this view is fully loaded. It resulted with showing next view and going back to this one.
              The async enables app to load this view and then push the next one. */
