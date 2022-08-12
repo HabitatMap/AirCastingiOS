@@ -318,10 +318,20 @@
 		B38E6CD226C5F85000C21C45 /* SyncTriggeringSesionStopperDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B38E6CD126C5F85000C21C45 /* SyncTriggeringSesionStopperDecorator.swift */; };
 		B392DC332755F944002F0145 /* AppConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B392DC322755F944002F0145 /* AppConfigurationView.swift */; };
 		B39AAE1C27C0F28F00D2F3C0 /* ChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B39AAE1B27C0F28F00D2F3C0 /* ChartView.swift */; };
+		B3A8CE9D2833F8F300DC3B38 /* LevelMeasurer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A8CE9C2833F8F300DC3B38 /* LevelMeasurer.swift */; };
+		B3A8CE9F2833F90E00DC3B38 /* LevelSampler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A8CE9E2833F90E00DC3B38 /* LevelSampler.swift */; };
+		B3A8CEA12833F93D00DC3B38 /* MeasurementSaveable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A8CEA02833F93D00DC3B38 /* MeasurementSaveable.swift */; };
+		B3A8CEA42834016000DC3B38 /* AVMicrophone.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A8CEA32834016000DC3B38 /* AVMicrophone.swift */; };
+		B3A8CEA628340E2500DC3B38 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A8CEA528340E2500DC3B38 /* LocationService.swift */; };
 		B3AA784927D4D22A003B39F6 /* Resolver+XCTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3AA784827D4D22A003B39F6 /* Resolver+XCTest.swift */; };
 		B3AA784B27D4D7EF003B39F6 /* APIServiceTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3AA784A27D4D7EF003B39F6 /* APIServiceTestCase.swift */; };
+		B3AAACF5286DC07600DFBD36 /* LevelMeasurementControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3AAACF4286DC07600DFBD36 /* LevelMeasurementControllerTests.swift */; };
+		B3AAACF7286DD91700DFBD36 /* DecibelSamplerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3AAACF6286DD91700DFBD36 /* DecibelSamplerTests.swift */; };
 		B3AB8BE526BB5EF400AF23CC /* Array+MeasurementStatistics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3AB8BE426BB5EF400AF23CC /* Array+MeasurementStatistics.swift */; };
 		B3C3F8B92695A295003E2CB4 /* StatisticsContainerViewModelable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3C3F8B82695A295003E2CB4 /* StatisticsContainerViewModelable.swift */; };
+		B3C6D07E28905FCC00A25F5F /* LocationServiceAdapterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3C6D07D28905FCC00A25F5F /* LocationServiceAdapterTests.swift */; };
+		B3C6D080289062E100A25F5F /* CLLocation+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3C6D07F289062E100A25F5F /* CLLocation+Helpers.swift */; };
+		B3C6D0832890631900A25F5F /* LocationServiceAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3C6D0822890631900A25F5F /* LocationServiceAdapter.swift */; };
 		B3D1928D26F1FA1C0029E1C8 /* FixedSessionFaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EFAB1D26F1F9DB00E88141 /* FixedSessionFaker.swift */; };
 		B3D4B4B426C2C6A1004322FC /* Date+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3D4B4B326C2C6A1004322FC /* Date+Extensions.swift */; };
 		B3E26A032676D9AA001A8E4C /* ArrayUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E26A022676D9AA001A8E4C /* ArrayUtils.swift */; };
@@ -352,6 +362,12 @@
 		B3F1447C26AE437E006A4612 /* OnErrorPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3F1447B26AE437E006A4612 /* OnErrorPublisher.swift */; };
 		B3F1448026AE4CA0006A4612 /* OfflineAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3F1447F26AE4CA0006A4612 /* OfflineAlert.swift */; };
 		B3F1448226AE4CD9006A4612 /* OfflineMessageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3F1448126AE4CD9006A4612 /* OfflineMessageViewModel.swift */; };
+		B3FD30A8283163A300C33656 /* LevelMeasurementController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3FD30A7283163A300C33656 /* LevelMeasurementController.swift */; };
+		B3FD30AA28316BF700C33656 /* DecibelMeasurementSaveable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3FD30A928316BF700C33656 /* DecibelMeasurementSaveable.swift */; };
+		B3FD30AC2831786400C33656 /* DecibelSampler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3FD30AB2831786400C33656 /* DecibelSampler.swift */; };
+		B3FD30AE2831787B00C33656 /* Microphone.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3FD30AD2831787B00C33656 /* Microphone.swift */; };
+		B3FD30B0283180FE00C33656 /* TimerScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3FD30AF283180FE00C33656 /* TimerScheduler.swift */; };
+		B3FD30B22831810D00C33656 /* FoundationTimerScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3FD30B12831810D00C33656 /* FoundationTimerScheduler.swift */; };
 		B3FD77B6267C94AF00E97CC2 /* DatabaseSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3FD77A1267C94AF00E97CC2 /* DatabaseSession.swift */; };
 		B3FD77B7267C94AF00E97CC2 /* DatabaseMeasurement.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3FD77A2267C94AF00E97CC2 /* DatabaseMeasurement.swift */; };
 		B3FD77B8267C94AF00E97CC2 /* Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3FD77A3267C94AF00E97CC2 /* Database.swift */; };
@@ -827,10 +843,20 @@
 		B38E6CD126C5F85000C21C45 /* SyncTriggeringSesionStopperDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncTriggeringSesionStopperDecorator.swift; sourceTree = "<group>"; };
 		B392DC322755F944002F0145 /* AppConfigurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfigurationView.swift; sourceTree = "<group>"; };
 		B39AAE1B27C0F28F00D2F3C0 /* ChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartView.swift; sourceTree = "<group>"; };
+		B3A8CE9C2833F8F300DC3B38 /* LevelMeasurer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelMeasurer.swift; sourceTree = "<group>"; };
+		B3A8CE9E2833F90E00DC3B38 /* LevelSampler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelSampler.swift; sourceTree = "<group>"; };
+		B3A8CEA02833F93D00DC3B38 /* MeasurementSaveable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementSaveable.swift; sourceTree = "<group>"; };
+		B3A8CEA32834016000DC3B38 /* AVMicrophone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVMicrophone.swift; sourceTree = "<group>"; };
+		B3A8CEA528340E2500DC3B38 /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
 		B3AA784827D4D22A003B39F6 /* Resolver+XCTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Resolver+XCTest.swift"; sourceTree = "<group>"; };
 		B3AA784A27D4D7EF003B39F6 /* APIServiceTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIServiceTestCase.swift; sourceTree = "<group>"; };
+		B3AAACF4286DC07600DFBD36 /* LevelMeasurementControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelMeasurementControllerTests.swift; sourceTree = "<group>"; };
+		B3AAACF6286DD91700DFBD36 /* DecibelSamplerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecibelSamplerTests.swift; sourceTree = "<group>"; };
 		B3AB8BE426BB5EF400AF23CC /* Array+MeasurementStatistics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+MeasurementStatistics.swift"; sourceTree = "<group>"; };
 		B3C3F8B82695A295003E2CB4 /* StatisticsContainerViewModelable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsContainerViewModelable.swift; sourceTree = "<group>"; };
+		B3C6D07D28905FCC00A25F5F /* LocationServiceAdapterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationServiceAdapterTests.swift; sourceTree = "<group>"; };
+		B3C6D07F289062E100A25F5F /* CLLocation+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLLocation+Helpers.swift"; sourceTree = "<group>"; };
+		B3C6D0822890631900A25F5F /* LocationServiceAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationServiceAdapter.swift; sourceTree = "<group>"; };
 		B3D4B4B326C2C6A1004322FC /* Date+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extensions.swift"; sourceTree = "<group>"; };
 		B3E26A022676D9AA001A8E4C /* ArrayUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayUtils.swift; sourceTree = "<group>"; };
 		B3E26A052676DA23001A8E4C /* ArrayExtensionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayExtensionsTests.swift; sourceTree = "<group>"; };
@@ -861,6 +887,12 @@
 		B3F1447B26AE437E006A4612 /* OnErrorPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnErrorPublisher.swift; sourceTree = "<group>"; };
 		B3F1447F26AE4CA0006A4612 /* OfflineAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineAlert.swift; sourceTree = "<group>"; };
 		B3F1448126AE4CD9006A4612 /* OfflineMessageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineMessageViewModel.swift; sourceTree = "<group>"; };
+		B3FD30A7283163A300C33656 /* LevelMeasurementController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelMeasurementController.swift; sourceTree = "<group>"; };
+		B3FD30A928316BF700C33656 /* DecibelMeasurementSaveable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecibelMeasurementSaveable.swift; sourceTree = "<group>"; };
+		B3FD30AB2831786400C33656 /* DecibelSampler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecibelSampler.swift; sourceTree = "<group>"; };
+		B3FD30AD2831787B00C33656 /* Microphone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Microphone.swift; sourceTree = "<group>"; };
+		B3FD30AF283180FE00C33656 /* TimerScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerScheduler.swift; sourceTree = "<group>"; };
+		B3FD30B12831810D00C33656 /* FoundationTimerScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoundationTimerScheduler.swift; sourceTree = "<group>"; };
 		B3FD77A1267C94AF00E97CC2 /* DatabaseSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseSession.swift; sourceTree = "<group>"; };
 		B3FD77A2267C94AF00E97CC2 /* DatabaseMeasurement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseMeasurement.swift; sourceTree = "<group>"; };
 		B3FD77A3267C94AF00E97CC2 /* Database.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Database.swift; sourceTree = "<group>"; };
@@ -1070,6 +1102,7 @@
 		332F521825FA38B90047236D /* MicrophoneSession */ = {
 			isa = PBXGroup;
 			children = (
+				B3FD30A62831638700C33656 /* LevelMeasurementController */,
 				332F521325FA38430047236D /* MicrophoneManager.swift */,
 				B3EAF78E2730C161000FFF23 /* AVSessionInterruptionHandler.swift */,
 			);
@@ -1333,6 +1366,8 @@
 		AC32040625CC122900A68520 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				B3FD30B42831814900C33656 /* Microphone */,
+				B3FD30B32831813800C33656 /* TimerScheduler */,
 				FA3AB51228853FA400DB9A2B /* Connection */,
 				338607AF2886E0ED0002D3A8 /* NetworkMonitoring */,
 				B31AFB6E27AE6EF200CA6FA3 /* Logging */,
@@ -2015,6 +2050,35 @@
 			path = SessionStopping;
 			sourceTree = "<group>";
 		};
+		B3A8CEA22833F94C00DC3B38 /* Interfaces */ = {
+			isa = PBXGroup;
+			children = (
+				B3A8CE9C2833F8F300DC3B38 /* LevelMeasurer.swift */,
+				B3A8CE9E2833F90E00DC3B38 /* LevelSampler.swift */,
+				B3A8CEA02833F93D00DC3B38 /* MeasurementSaveable.swift */,
+				B3A8CEA528340E2500DC3B38 /* LocationService.swift */,
+			);
+			path = Interfaces;
+			sourceTree = "<group>";
+		};
+		B3AAACF3286DC05C00DFBD36 /* MicrophoneSessions */ = {
+			isa = PBXGroup;
+			children = (
+				B3AAACF4286DC07600DFBD36 /* LevelMeasurementControllerTests.swift */,
+				B3C6D07D28905FCC00A25F5F /* LocationServiceAdapterTests.swift */,
+				B3AAACF6286DD91700DFBD36 /* DecibelSamplerTests.swift */,
+			);
+			path = MicrophoneSessions;
+			sourceTree = "<group>";
+		};
+		B3C6D0812890630900A25F5F /* Adapters */ = {
+			isa = PBXGroup;
+			children = (
+				B3C6D0822890631900A25F5F /* LocationServiceAdapter.swift */,
+			);
+			path = Adapters;
+			sourceTree = "<group>";
+		};
 		B3E26A042676DA14001A8E4C /* Other */ = {
 			isa = PBXGroup;
 			children = (
@@ -2035,6 +2099,7 @@
 				B33DB5732686120600ED1344 /* XCTestCase+AssertContainsSameElements.swift */,
 				B30BABFE26935C2B00AE0476 /* TimeInterval+Helpers.swift */,
 				B30BAC222694B3DA00AE0476 /* XCTest+Persistence.swift */,
+				B3C6D07F289062E100A25F5F /* CLLocation+Helpers.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -2042,6 +2107,7 @@
 		B3E26A0A2676DAB0001A8E4C /* Logic */ = {
 			isa = PBXGroup;
 			children = (
+				B3AAACF3286DC05C00DFBD36 /* MicrophoneSessions */,
 				B3EFAB1A26EFEA8100E88141 /* Bootstrap */,
 				B30BABF92693507800AE0476 /* Statistics */,
 				DDF12AEC26B2B7E300D067C7 /* SessionCartTests */,
@@ -2131,6 +2197,36 @@
 				B3EFAB1B26EFEA8B00E88141 /* AppBootstrapTests.swift */,
 			);
 			path = Bootstrap;
+			sourceTree = "<group>";
+		};
+		B3FD30A62831638700C33656 /* LevelMeasurementController */ = {
+			isa = PBXGroup;
+			children = (
+				B3C6D0812890630900A25F5F /* Adapters */,
+				B3A8CEA22833F94C00DC3B38 /* Interfaces */,
+				B3FD30A7283163A300C33656 /* LevelMeasurementController.swift */,
+				B3FD30AB2831786400C33656 /* DecibelSampler.swift */,
+				B3FD30A928316BF700C33656 /* DecibelMeasurementSaveable.swift */,
+			);
+			path = LevelMeasurementController;
+			sourceTree = "<group>";
+		};
+		B3FD30B32831813800C33656 /* TimerScheduler */ = {
+			isa = PBXGroup;
+			children = (
+				B3FD30B12831810D00C33656 /* FoundationTimerScheduler.swift */,
+				B3FD30AF283180FE00C33656 /* TimerScheduler.swift */,
+			);
+			path = TimerScheduler;
+			sourceTree = "<group>";
+		};
+		B3FD30B42831814900C33656 /* Microphone */ = {
+			isa = PBXGroup;
+			children = (
+				B3FD30AD2831787B00C33656 /* Microphone.swift */,
+				B3A8CEA32834016000DC3B38 /* AVMicrophone.swift */,
+			);
+			path = Microphone;
 			sourceTree = "<group>";
 		};
 		B3FD779F267C94AF00E97CC2 /* SessionsSynchronization */ = {
@@ -2847,6 +2943,7 @@
 				4FB39E402622252700E5E564 /* XCTestCase+Extensions.swift in Sources */,
 				DDBC992626A1652A00B0662E /* ForgotPasswordTest.swift in Sources */,
 				DDDCEC3927D0C8C700B3757C /* DateBuilderTests.swift in Sources */,
+				B3AAACF5286DC07600DFBD36 /* LevelMeasurementControllerTests.swift in Sources */,
 				B33DB5742686120600ED1344 /* XCTestCase+AssertContainsSameElements.swift in Sources */,
 				4FA83EEF26342D84003E2BF2 /* AuthorizationAPIServiceTests.swift in Sources */,
 				4F5D3F7F262D735A003AD82E /* CreateSessionAPIServiceTests.swift in Sources */,
@@ -2866,6 +2963,7 @@
 				B33B161027AF0B3600138FFA /* DocumentsFileLoggerStoreTests.swift in Sources */,
 				B30BABFF26935C2B00AE0476 /* TimeInterval+Helpers.swift in Sources */,
 				B3AA784927D4D22A003B39F6 /* Resolver+XCTest.swift in Sources */,
+				B3AAACF7286DD91700DFBD36 /* DecibelSamplerTests.swift in Sources */,
 				B3E2B65F27506EA000019167 /* FileLineReaderTests.swift in Sources */,
 				B33DB5722686013400ED1344 /* XCTestCase+AwaitPublisher.swift in Sources */,
 				FA94089A2886D3FE0022E1A5 /* BluetoothProtectorTests.swift in Sources */,
@@ -2881,8 +2979,10 @@
 				B31B7ECB267E4DF6002DAC18 /* DummyError.swift in Sources */,
 				B33B161427AF0B3600138FFA /* FileLoggerTestCase.swift in Sources */,
 				B31B7ECD267E500B002DAC18 /* SyncDownstreamServiceTests.swift in Sources */,
+				B3C6D080289062E100A25F5F /* CLLocation+Helpers.swift in Sources */,
 				B33B160E27AF0B3600138FFA /* ScheduledLoggerTests.swift in Sources */,
 				B30BABFB2693509D00AE0476 /* StandardStatisticsCalculatorTests.swift in Sources */,
+				B3C6D07E28905FCC00A25F5F /* LocationServiceAdapterTests.swift in Sources */,
 				DDF12AEE26B2B87F00D067C7 /* SessionCartViewModelTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2911,6 +3011,7 @@
 				B3FD77C4267C94AF00E97CC2 /* SessionSynchronizationService.swift in Sources */,
 				B34D4648275B12A000194E51 /* CrashlyticsLogger.swift in Sources */,
 				ACCEB21D2763A2230040140B /* SDSyncRootViewModel.swift in Sources */,
+				B3A8CE9F2833F90E00DC3B38 /* LevelSampler.swift in Sources */,
 				335A8B2F2785D49100355D46 /* ShareSessionAPI.swift in Sources */,
 				DD123EC527BD35E8001083C3 /* SessionsForLocationDownloader.swift in Sources */,
 				DD123EC527BD35E8001083C3 /* SessionsForLocationDownloader.swift in Sources */,
@@ -2928,6 +3029,7 @@
 				33F604A728227FD700B48C63 /* ExternalSessionWithStreamsAndMeasurements.swift in Sources */,
 				DD80AE2727BA74A100D9B123 /* SearchPickerService.swift in Sources */,
 				ACBB05102761F1C400A6B3FB /* SDStream.swift in Sources */,
+				B3A8CEA628340E2500DC3B38 /* LocationService.swift in Sources */,
 				DD72DC4226A99D5000325FE5 /* ShareSessionView.swift in Sources */,
 				DD49FB6F27904119004A1CA8 /* DatabaseNote.swift in Sources */,
 				B392DC332755F944002F0145 /* AppConfigurationView.swift in Sources */,
@@ -2943,6 +3045,7 @@
 				ACD32A4F2600A8DD00818946 /* SettingsView.swift in Sources */,
 				4F8CDBD4265F8EE000976B25 /* SessionDataEraser.swift in Sources */,
 				AC006D29275F52CB00E99019 /* CSVMeasurementStream.swift in Sources */,
+				B3C6D0832890631900A25F5F /* LocationServiceAdapter.swift in Sources */,
 				FA396CA128A246BA00F8067C /* SessionStorage.swift in Sources */,
 				B376DD23268091B80083FD2F /* BodyEncodingError.swift in Sources */,
 				DDB44C252704AF830027176E /* AveragingService.swift in Sources */,
@@ -2950,6 +3053,7 @@
 				AC9F526C2652A360003CF61F /* DashboardView.swift in Sources */,
 				AC3203CB25CA991C00A68520 /* TurnOnBluetoothView.swift in Sources */,
 				DD430B0C26710E0600F1BF2E /* PrivacyOnboarding.swift in Sources */,
+				B3FD30A8283163A300C33656 /* LevelMeasurementController.swift in Sources */,
 				4FF60BEA265500C4001618BE /* BluetoothManager.swift in Sources */,
 				DDC86644276B54A400A8E610 /* AddNoteViewModel.swift in Sources */,
 				B3FD77B6267C94AF00E97CC2 /* DatabaseSession.swift in Sources */,
@@ -2982,6 +3086,7 @@
 				336F86D0282E98E500FEFD61 /* ExternalSessionMapView.swift in Sources */,
 				33A7FF2127C5160A00A138D6 /* StaticSessionHeader.swift in Sources */,
 				DDD24D9526A8569400D4A327 /* EmailForgotPasswordController.swift in Sources */,
+				B3A8CEA42834016000DC3B38 /* AVMicrophone.swift in Sources */,
 				DD2DDBAE27B5450100807011 /* UIStorage.swift in Sources */,
 				AC524A892614733D0061AD45 /* CreatingSessionFlowRootView.swift in Sources */,
 				3387DD4A278F1A2900B11D02 /* ShareLocationlessSessionView.swift in Sources */,
@@ -2999,6 +3104,7 @@
 				DD8C38092689A34E00901FDF /* UserDefaultsURLProvider.swift in Sources */,
 				DDF12AEB26B2B76C00D067C7 /* SessionCartFollowing.swift in Sources */,
 				B33B15F527AEE69900138FFA /* FileLogger.swift in Sources */,
+				B3A8CEA12833F93D00DC3B38 /* MeasurementSaveable.swift in Sources */,
 				B3F1448226AE4CD9006A4612 /* OfflineMessageViewModel.swift in Sources */,
 				334062442816B4B6004DA4DA /* EditLocationlessSessionViewModel.swift in Sources */,
 				B3FFBA2B273DC0690095BA4A /* RefreshControl.swift in Sources */,
@@ -3090,10 +3196,12 @@
 				B3D4B4B426C2C6A1004322FC /* Date+Extensions.swift in Sources */,
 				750A51D82754D41A00D6F4E7 /* GridCalculator.swift in Sources */,
 				DD80AE1D27BA46C800D9B123 /* SearchView.swift in Sources */,
+				B3FD30AA28316BF700C33656 /* DecibelMeasurementSaveable.swift in Sources */,
 				338CA6D127CD2D9200505331 /* SearchAndFollowChartView.swift in Sources */,
 				ACCEB2272763A2230040140B /* UnplugABViewModel.swift in Sources */,
 				B3FD77BB267C94AF00E97CC2 /* SessionsSynchronizationStoreDataConverter.swift in Sources */,
 				DD38A4AF27B1584600D2091F /* StringsCustomizer.swift in Sources */,
+				B3FD30B22831810D00C33656 /* FoundationTimerScheduler.swift in Sources */,
 				AC32041C25CC46EF00A68520 /* PowerABView.swift in Sources */,
 				B32D08AD267A6437006C97ED /* LogEvent.swift in Sources */,
 				ACDA5EBD285B249900A531E9 /* SettingsMyAccountViewModel.swift in Sources */,
@@ -3142,6 +3250,7 @@
 				33F604AA2822B93C00B48C63 /* SearchAndFollowCompleteScreenService.swift in Sources */,
 				DDC5F58A271979F100F1F9D8 /* Fonts.swift in Sources */,
 				33F20FDD27692231004364EA /* SyncedMeasurementsDownloadingService.swift in Sources */,
+				B3FD30AC2831786400C33656 /* DecibelSampler.swift in Sources */,
 				3397C81F2787024C0050B333 /* UserDefaults.swift in Sources */,
 				B3EAF01A27B00F7300290222 /* FileLoggerHeaderProvider.swift in Sources */,
 				33A7FF1D27C511A200A138D6 /* CompleteScreenViewModel.swift in Sources */,
@@ -3150,6 +3259,7 @@
 				DD28047926B3D7370060F55E /* AirBeamConnectionController.swift in Sources */,
 				DD8DE68B2785B93A009B1726 /* MapNotesViewModel.swift in Sources */,
 				B367A594274E9EAA004C605B /* AppDelegate.swift in Sources */,
+				B3FD30AE2831787B00C33656 /* Microphone.swift in Sources */,
 				DD430B042670FA9600F1BF2E /* AirBeamOnboarding.swift in Sources */,
 				B33B161727AF0B8C00138FFA /* LoggerBuilder.swift in Sources */,
 				3387DD4E278F2AE400B11D02 /* GenerateSessionFileController.swift in Sources */,
@@ -3205,6 +3315,7 @@
 				DDDBD48826D3BEC000EAA0A1 /* EmptyFixedDashboardView.swift in Sources */,
 				FAF3B4DD28057A3300F0F4B0 /* SensorType.swift in Sources */,
 				AC9EB64726EF4EEB00B1F780 /* AirBeamCellularSessionCreator.swift in Sources */,
+				B3A8CE9D2833F8F300DC3B38 /* LevelMeasurer.swift in Sources */,
 				B33B15F727AEE6B000138FFA /* ScheduledLogger.swift in Sources */,
 				B3FD77C1267C94AF00E97CC2 /* SessionUpstream.swift in Sources */,
 				AC4EC6BC25B5ABB700C1E312 /* StatisticsContainerView.swift in Sources */,
@@ -3271,6 +3382,7 @@
 				B38E6CCE26C5F81B00C21C45 /* MicrophoneSessionStopper.swift in Sources */,
 				B3EBB10326A05551002BD81F /* ForgotPasswordViewModel.swift in Sources */,
 				ACCEB2212763A2230040140B /* SDRestartABViewModel.swift in Sources */,
+				B3FD30B0283180FE00C33656 /* TimerScheduler.swift in Sources */,
 				B3FD77BD267C94AF00E97CC2 /* SessionSynchronizationController.swift in Sources */,
 				AC9EB64926F1EB8D00B1F780 /* MeasurementsDownloadable.swift in Sources */,
 				B3EFAB1526EFE2D200E88141 /* AppBootstrap.swift in Sources */,
