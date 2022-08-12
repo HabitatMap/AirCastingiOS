@@ -6,7 +6,7 @@ import CoreData
 
 final class CoreDataHook: NSObject, ObservableObject {
     @Published private(set) var sessions: [Sessionable] = []
-    private var selectedSection: SelectedSection?
+    private var selectedSection: DashboardSection?
     private var observerToken: AnyObject?
 
     let context: NSManagedObjectContext
@@ -50,7 +50,7 @@ final class CoreDataHook: NSObject, ObservableObject {
         return fetchedResultsController
     }()
 
-    func setup(selectedSection: SelectedSection) throws {
+    func setup(selectedSection: DashboardSection) throws {
         let predicate: NSPredicate
         var externalSessionsPredicate = NSPredicate(value: false)
         self.selectedSection = selectedSection

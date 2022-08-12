@@ -5,7 +5,6 @@ import UIKit
 import SwiftUI
 import GoogleMaps
 import Resolver
-import Combine
 
 struct SearchAndFollowMap: UIViewRepresentable {
     @InjectedObject private var userSettings: UserSettings

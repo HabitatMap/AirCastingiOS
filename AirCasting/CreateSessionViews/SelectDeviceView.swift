@@ -22,7 +22,6 @@ struct SelectDeviceView: View {
     @Injected private var microphonePermissions: MicrophonePermissions
     @Binding var creatingSessionFlowContinues : Bool
     @Binding var sdSyncContinues : Bool
-    @State private var showAlert = false
     @EnvironmentObject private var emptyDashboardButtonTapped: EmptyDashboardButtonTapped
     @EnvironmentObject private var tabSelection: TabBarSelection
 

@@ -11,7 +11,6 @@ class AppDelegate: NSObject, UIApplicationDelegate, MessagingDelegate {
             performCleanBoot()
         }
         
-        FirebaseApp.configure()
         Messaging.messaging().delegate = self
         // NOTE: We don't ask user for the remote notifications permissions since we're only using APNS for
         // the firebase config change notifications (silent push notifications - no permission is needed for

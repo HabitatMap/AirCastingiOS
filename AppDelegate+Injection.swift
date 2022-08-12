@@ -5,10 +5,14 @@ import Foundation
 import CoreLocation
 import Resolver
 import DeviceKit
+import Firebase
 
 extension Resolver: ResolverRegistering {
     public static let fileLoggerQueue = DispatchQueue(label: "com.habitatmap.filelogger", qos: .utility, attributes: [], autoreleaseFrequency: .workItem, target: nil)
     public static func registerAllServices() {
+        // We do Firebase config here as this is actually the first place that gets called in the app.
+        FirebaseApp.configure()
+        
         // MARK: Logging
         main.register { (_, _) -> Logger in
             var composite = CompositeLogger()
@@ -73,6 +77,10 @@ extension Resolver: ResolverRegistering {
             let context = Resolver.resolve(PersistenceController.self).editContext
             return CoreDataUIStorage(context: context)
         }.scope(.cached)
+        main.register { (_, _) -> SessionStorage in
+            let context = Resolver.resolve(PersistenceController.self).editContext
+            return CoreDataSessionStorage(context: context)
+        }.scope(.cached)
         main.register { (_, _) -> SessionEntityStore in
             let context = Resolver.resolve(PersistenceController.self).editContext
             return DefaultSessionEntityStore(context: context)
@@ -90,6 +98,7 @@ extension Resolver: ResolverRegistering {
         main.register { UserDefaultsURLProvider() as URLProvider }
         main.register { DefaultNetworkChecker() as NetworkChecker }.scope(.application)
         main.register { DefaultSingleSessionDownloader() as SingleSessionDownloader }
+        main.register { DefaultDormantStreamAlertAPI() as DormantStreamAlertAPI }
         
         // MARK: - Feature flags
         main.register { DefaultRemoteNotificationRouter() }
@@ -157,6 +166,8 @@ extension Resolver: ResolverRegistering {
         
         // MARK: - Settings
         main.register { UserSettings(userDefaults: .standard) }.scope(.cached)
+        main.register { DefaultSettingsController() as SettingsController }
+        
         
         // MARK: - Services
         main.register { DownloadMeasurementsService() }.implements(MeasurementUpdatingService.self).scope(.cached)
@@ -177,6 +188,7 @@ extension Resolver: ResolverRegistering {
         main.register { DefaultLogoutController() as LogoutController }
         main.register { DefaultDeleteAccountController() as DeleteAccountController }
         main.register { DefaultRemoveDataController() as RemoveDataController }
+        main.register { BluetoothConnectionProtector() as ConnectionProtectable }
         
         // MARK: - Session stopping
         

@@ -10,7 +10,9 @@ struct ExternalSessionHeader: View {
     @Binding var selectedStream: MeasurementStreamEntity?
     @Binding var isCollapsed: Bool
     let expandingAction: (() -> Void)?
-    @State var chevronIndicator = "chevron.down"
+    var chevronIndicator: String {
+        isCollapsed ? "chevron.down" : "chevron.up"
+    }
 
     var streams: [MeasurementStreamEntity] {
         session.sortedStreams
@@ -21,9 +23,6 @@ struct ExternalSessionHeader: View {
             sessionHeader
             measurements
         }
-        .onChange(of: isCollapsed, perform: { _ in
-            isCollapsed ? (chevronIndicator = "chevron.down") :  (chevronIndicator = "chevron.up")
-        })
     }
 }
 
