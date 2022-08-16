@@ -1125,4 +1125,11 @@ struct Strings {
     enum TextView {
         static let doneButton: String = NSLocalizedString("Done", comment: "")
     }
+    
+    enum MicrophoneCalibration {
+        static let microphoneUnavailableAlertTitle = NSLocalizedString("Microphone not available", comment: "")
+        static let microphoneUnavailableAlertBody = NSLocalizedString("Cannot calibrate - the microphone is busy", comment: "")
+        
+        static let calibrationFailedAlertTitle = NSLocalizedString("Calibration failed", comment: "")
+    }
 }

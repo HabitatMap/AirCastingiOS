@@ -361,6 +361,16 @@ struct InAppAlerts {
                     .default(title: Strings.Commons.gotIt,
                              action: dismiss) ])
     }
+    static func microphoneUnavailableForCalibration() -> AlertInfo {
+        AlertInfo(title: Strings.MicrophoneCalibration.microphoneUnavailableAlertTitle,
+                  message: Strings.MicrophoneCalibration.microphoneUnavailableAlertBody,
+                  buttons: [.default(title: Strings.Commons.ok, action: nil)])
+    }
+    static func microphoneCalibrationError(error: Error) -> AlertInfo {
+        AlertInfo(title: Strings.MicrophoneCalibration.calibrationFailedAlertTitle,
+                  message: error.localizedDescription,
+                  buttons: [.default(title: Strings.Commons.ok, action: nil)])
+    }
 }
 
 import SwiftUI

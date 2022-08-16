@@ -153,8 +153,13 @@ struct SettingsView: View {
                 Spacer()
                 temperatureDescription
             }
-            if featureFlagsViewModel.enabledFeatures.contains(.sdCardSync) {
-                clearSDCard
+            Group {
+                if featureFlagsViewModel.enabledFeatures.contains(.sdCardSync) {
+                    clearSDCard
+                }
+                if featureFlagsViewModel.enabledFeatures.contains(.microphoneCalibration) {
+                    calibrateMicrophone
+                }
             }
             navigateToBackendSettingsButton
         }
@@ -294,6 +299,14 @@ struct SettingsView: View {
              }
          }
      }
+    
+    private var calibrateMicrophone: some View {
+        NavigationLink("Calibrate microphone") {
+            MicrophoneCalibrationView(onFinish: {
+                
+            })
+        }
+    }
 
     #if DEBUG || BETA
     private var navigateToAppConfigurationButton: some View {

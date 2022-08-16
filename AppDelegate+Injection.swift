@@ -146,11 +146,6 @@ extension Resolver: ResolverRegistering {
         }.scope(.application)
             .implements(SessionSynchronizer.self)
         
-        // MARK: - Session recording
-        main.register { try! AVMicrophone() as Microphone }
-            .scope(.application)
-            .implements(MicrophonePermissions.self)
-        
         // MARK: - Location handling
         main.register { _ -> LocationTracker in
             let manager = CLLocationManager()
@@ -251,6 +246,29 @@ extension Resolver: ResolverRegistering {
     
         // MARK: - Old measurements remover
         main.register { DefaultRemoveOldMeasurementsService() as RemoveOldMeasurements }
+        
+        // MARK: - Microphone
+        main.register { CalibratableMicrophoneDecorator(microphone: resolve(AVMicrophone.self)) as Microphone }
+            .scope(.application)
+            
+        main.register { try! AVMicrophone() }
+            .implements(MicrophonePermissions.self)
+            .scope(.application)
+        
+        main.register { FoundationTimerScheduler() as TimerScheduler }
+            .scope(.unique)
+        
+        main.register { MicrophoneCalibrator(microphone: try! AVMicrophone(),
+                                             dateProvider: DateBuilder.getRawDate,
+                                             minimalMeasurementsCount: 12,
+                                             calibrationDuration: 5.0,
+                                             timeBetweenMeasurements: 0.25) as MicrophoneCalibration }
+        
+        main.register { UserDefaultsMicrophoneCalibraionValueProvider() }
+            .implements(MicrophoneCalibraionValueProvider.self)
+            .implements(MicrophoneCalibrationValueWritable.self)
+        
+        main.register { DefaultCalibrationDurationDecider() as CalibrationDurationDecider }
     }
     
     // MARK: - Composition helpers
