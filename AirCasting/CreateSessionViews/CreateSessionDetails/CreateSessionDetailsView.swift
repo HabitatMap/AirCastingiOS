@@ -72,14 +72,14 @@ private extension CreateSessionDetailsView {
             placementPicker
             transmissionTypePicker
             if viewModel.shouldShowCompleteCredentials() {
-                passwordEntry
+                wifiNameAndPasswordEntry
             } else if viewModel.isWiFi {
-               nameAndPasswordEntry
+               wifiPasswordEntry
             }
         }
     }
     
-    var passwordEntry: some View {
+    var wifiNameAndPasswordEntry: some View {
         VStack(alignment: .leading, spacing: 25) {
             providePasswordTitle
             if #available(iOS 15.0, *) {
@@ -92,10 +92,14 @@ private extension CreateSessionDetailsView {
         }
     }
     
-    var nameAndPasswordEntry: some View {
+    var wifiPasswordEntry: some View {
         VStack(alignment: .leading, spacing: 25) {
-            provideNameAndPasswordTitle
-            wifiPasswordField
+            if viewModel.showWifiPasswordField {
+                provideNameAndPasswordTitle
+                wifiPasswordField
+            } else {
+                connectedWifiLabel
+            }
             HStack {
                 Spacer()
                 connectToDifferentWifi
@@ -217,6 +221,12 @@ private extension CreateSessionDetailsView {
     
     var provideNameAndPasswordTitle: some View {
         Text(String(format: Strings.WifiPopupView.nameAndPasswordTitle, arguments: [viewModel.wifiSSID]))
+            .font(Fonts.muliBoldHeading1)
+            .foregroundColor(.aircastingDarkGray)
+    }
+    
+    var connectedWifiLabel: some View {
+        Text(String(format: Strings.WifiPopupView.connectedNetworkTitle, arguments: [viewModel.wifiSSID]))
             .font(Fonts.muliBoldHeading1)
             .foregroundColor(.aircastingDarkGray)
     }

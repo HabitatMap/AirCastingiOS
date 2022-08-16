@@ -18,15 +18,23 @@ class CreateSessionDetailsViewModel: ObservableObject {
     @Published var showAlertAboutEmptyCredentials = false
     @Published var isSSIDTextfieldDisplayed: Bool = false
     @Published var showErrorIndicator: Bool = false
+    @Published var showWifiPasswordField = true
     var shouldShowError: Bool { sessionName.isEmpty && showErrorIndicator }
     @Injected private var locationAuthorization: LocationAuthorization
     
     func onScreenEnter() {
-        if let ssid = getWiFiSsid() { wifiSSID = ssid }
+        if let ssid = getWiFiSsid() {
+            wifiSSID = ssid
+            if let data = KeychainManager.get(service: "wifi", account: ssid), let password = String(data: data, encoding: .utf8) {
+                wifiPassword = password
+                showWifiPasswordField = false
+            }
+        }
         isSSIDTextfieldDisplayed = wifiSSID.isEmpty
     }
     
     func onContinueClick(sessionContext: CreateSessionContext) -> CreateSessionContext {
+        saveWifiPassword()
         // sessionContext is needed becouse it is being modified in the session creation proccess
         // by 'modified' I mean - the data it ovverriden by the proper one (get from user) on every step
         guard !sessionName.isEmpty else { showErrorIndicator = true; return sessionContext }
@@ -43,7 +51,13 @@ class CreateSessionDetailsViewModel: ObservableObject {
         return sessionContext
     }
     
-    func checkIfWiFi(sessionContext: CreateSessionContext) -> CreateSessionContext {
+    private func saveWifiPassword() {
+        guard !wifiPassword.isEmpty else { return }
+        guard let passwordData = wifiPassword.data(using: .utf8) else { return }
+        try? KeychainManager.save(service: "wifi", account: wifiSSID, password: passwordData)
+    }
+    
+    private func checkIfWiFi(sessionContext: CreateSessionContext) -> CreateSessionContext {
         if isWiFi, !(areCredentialsEmpty()) {
             sessionContext.wifiSSID = wifiSSID
             sessionContext.wifiPassword = wifiPassword
@@ -57,7 +71,7 @@ class CreateSessionDetailsViewModel: ObservableObject {
         return sessionContext
     }
     
-    func compareIsIndoor(sessionContext: CreateSessionContext) -> CreateSessionContext {
+    private func compareIsIndoor(sessionContext: CreateSessionContext) -> CreateSessionContext {
         sessionContext.isIndoor = isIndoor
         guard locationAuthorization.locationState == .denied && !isIndoor else {
             isLocationSessionDetailsActive = !isIndoor
