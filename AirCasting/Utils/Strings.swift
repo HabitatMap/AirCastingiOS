@@ -1127,9 +1127,14 @@ struct Strings {
     }
     
     enum MicrophoneCalibration {
-        static let microphoneUnavailableAlertTitle = NSLocalizedString("Microphone not available", comment: "")
-        static let microphoneUnavailableAlertBody = NSLocalizedString("Cannot calibrate - the microphone is busy", comment: "")
-        
-        static let calibrationFailedAlertTitle = NSLocalizedString("Calibration failed", comment: "")
+        static let title = NSLocalizedString("Microphone calibration", comment: "")
+        static let settingsItemTitle = NSLocalizedString("Phone microphone calibration", comment: "")
+        static let settingsItemDescription = NSLocalizedString("Adjust via trial & error until the measurements in the app match your reference sound level meter. For most phones it's between 80 and 100.", comment: "")
+        enum Wizard {
+            static let microphoneUnavailableAlertTitle = NSLocalizedString("Microphone not available", comment: "")
+            static let microphoneUnavailableAlertBody = NSLocalizedString("Cannot calibrate - the microphone is busy", comment: "")
+            static let calibrationFailedAlertTitle = NSLocalizedString("Calibration failed", comment: "")
+            static let settingsItemTitle = NSLocalizedString("Microphone calibration wizard", comment: "")
+        }
     }
 }

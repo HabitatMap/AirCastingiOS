@@ -157,7 +157,10 @@ struct SettingsView: View {
                 if featureFlagsViewModel.enabledFeatures.contains(.sdCardSync) {
                     clearSDCard
                 }
-                if featureFlagsViewModel.enabledFeatures.contains(.microphoneCalibration) {
+                if featureFlagsViewModel.enabledFeatures.contains(.microphoneCalibrationWizard) {
+                    autoCalibrateMicrophone
+                }
+                if featureFlagsViewModel.enabledFeatures.contains(.microphoneCalibrationWizard) {
                     calibrateMicrophone
                 }
             }
@@ -301,10 +304,31 @@ struct SettingsView: View {
      }
     
     private var calibrateMicrophone: some View {
-        NavigationLink("Calibrate microphone") {
-            MicrophoneCalibrationView(onFinish: {
-                
-            })
+        Button(action: {
+            viewModel.manualMicrophoneCalibrationTapped()
+        }) {
+            VStack {
+                buttonCell(title: Strings.MicrophoneCalibration.settingsItemTitle)
+                Spacer()
+                Text(Strings.MicrophoneCalibration.settingsItemDescription)
+                    .font(Fonts.muliRegularHeading3)
+                    .foregroundColor(.aircastingGray)
+            }
+        }
+        .sheet(isPresented: $viewModel.showMicrophoneManualCalibation, content: {
+            MicrophoneManualCalibrationView { viewModel.showMicrophoneManualCalibation = false }
+        })
+    }
+    
+    private var autoCalibrateMicrophone: some View {
+        VStack {
+            NavigationLink(Strings.MicrophoneCalibration.Wizard.settingsItemTitle) {
+                MicrophoneAutoCalibrationView(onFinish: { } )
+            }
+            Spacer()
+            Text("Experimental feature, available only for BETA builds.")
+                .font(Fonts.muliRegularHeading3)
+                .foregroundColor(.aircastingGray)
         }
     }
 
@@ -339,6 +363,19 @@ struct SettingsView: View {
 }
 
 extension SettingsView {
+    func buttonCell(title: String) -> some View {
+        Group {
+            HStack {
+                Text(title)
+                    .font(Fonts.muliBoldHeading1)
+                    .accentColor(.primary)
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .accentColor(.gray).opacity(0.6)
+            }
+        }
+    }
+    
     func settingSwitch(toogle using: Binding<Bool>, label with: String) -> some View {
         Toggle(isOn: using, label: {
             Text(with)

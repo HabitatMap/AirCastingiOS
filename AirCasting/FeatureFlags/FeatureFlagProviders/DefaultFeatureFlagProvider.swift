@@ -45,6 +45,12 @@ class DefaultFeatureFlagProvider: FeatureFlagProvider {
             #else
             return false
             #endif
+        case .microphoneCalibrationWizard:
+            #if DEBUG
+            return true
+            #else
+            return false
+            #endif
         }
         
     }

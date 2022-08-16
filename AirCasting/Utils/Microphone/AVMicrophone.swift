@@ -95,6 +95,9 @@ extension AVMicrophone: AVSessionInterruptionObserver {
 extension AVMicrophone: MicrophonePermissions {
     var permissionGranted: Bool { AVAudioSession.sharedInstance().recordPermission == .granted }
     func requestRecordPermission(_ response: @escaping (Bool) -> Void) {
-        AVAudioSession.sharedInstance().requestRecordPermission(response)
+        // TODO: Put an alert here in case the user already denied?
+        AVAudioSession.sharedInstance().requestRecordPermission { answer in
+            DispatchQueue.main.async { response(answer) }
+        }
     }
 }

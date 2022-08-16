@@ -17,10 +17,15 @@ class CalibratableMicrophoneDecoratorTests: ACTestCase {
     // MARK: Adjustment application tests
     
     func test_whenAskedForDecibelLevel_addsCorectValueToOriginalMeasurement() throws {
+        let autoCalibrationValue = 333.0
+        let micReadout = 87.0
+        let paddingAdjustment = 30.0
+        
         let sut = createSUT(calibration: 333.0)
         microphone.stubbedLevel = 87.0
-        let adjustment = sut.constAdjustment
-        XCTAssertEqual(try XCTUnwrap(sut.getCurrentDecibelLevel()), 246 + adjustment, accuracy: 0.001)
+        
+        let level = try XCTUnwrap(sut.getCurrentDecibelLevel())
+        XCTAssertEqual(level, micReadout - autoCalibrationValue + paddingAdjustment, accuracy: 0.001)
     }
     
     // MARK: Message passing tests

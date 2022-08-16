@@ -4,9 +4,10 @@
 import Foundation
 import Resolver
 
+/// A `Microphone` decorator that adds the ability to adjust the output using the value from `MicrophoneCalibraionValueProvider`.
+/// We assume that nobody will calibrate in a perfect 0dB room, so we're adding +20dB.
 class CalibratableMicrophoneDecorator: Microphone {
     let microphone: Microphone
-    let constAdjustment = 10.0
     @Injected private var calibrationValueProvider: MicrophoneCalibraionValueProvider
     
     var state: MicrophoneState { microphone.state }
@@ -17,7 +18,7 @@ class CalibratableMicrophoneDecorator: Microphone {
     }
     
     func getCurrentDecibelLevel() -> Double? {
-        microphone.getCurrentDecibelLevel().map { $0 - calibrationValueProvider.zeroLevelAdjustment + constAdjustment }
+        microphone.getCurrentDecibelLevel().map { $0 - calibrationValueProvider.zeroLevelAdjustment + MicrophoneCalibrationConstants.automaticCalibrationPadding }
     }
     
     func startRecording() throws { try microphone.startRecording() }

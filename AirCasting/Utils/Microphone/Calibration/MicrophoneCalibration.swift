@@ -4,18 +4,29 @@
 import Foundation
 import Resolver
 
+/// A struct representing an outcome of a microphone calibration session
 struct MicrophoneCalibrationDescription: Equatable {
+    /// A lowest power output recorded while calibrating
     let lowestPower: Double
+    /// A highest power output recorded while calibrating
     let highestPower: Double
 }
 
 enum MicrophoneCalibrationError: Error {
+    /// Thrown when the system could not gather sufficient amount of data for calibration
     case couldntGetEnoughMeasurements
+    /// Thrown when the underlying device returns an error
     case microphoneError(Error)
 }
 
+/// Interface used to calibrate the microphone dB level
 protocol MicrophoneCalibration {
+    /// Tells if calibration can be started.
+    /// Important: you need to check if before starting a calibration, if `startCalibration` is called on for an unavailable state the behavior is undefined
+    /// - Returns: `Bool` value indicating wheter the calibration can be performed at the moment.
     var isAvailable: Bool { get }
+    /// Starts a microphone calibration session
+    /// - Parameter completion: closure called when the calibation finishes
     func startCalibration(completion: @escaping (Result<MicrophoneCalibrationDescription, MicrophoneCalibrationError>) -> ())
 }
 

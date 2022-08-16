@@ -362,12 +362,12 @@ struct InAppAlerts {
                              action: dismiss) ])
     }
     static func microphoneUnavailableForCalibration() -> AlertInfo {
-        AlertInfo(title: Strings.MicrophoneCalibration.microphoneUnavailableAlertTitle,
-                  message: Strings.MicrophoneCalibration.microphoneUnavailableAlertBody,
+        AlertInfo(title: Strings.MicrophoneCalibration.Wizard.microphoneUnavailableAlertTitle,
+                  message: Strings.MicrophoneCalibration.Wizard.microphoneUnavailableAlertBody,
                   buttons: [.default(title: Strings.Commons.ok, action: nil)])
     }
     static func microphoneCalibrationError(error: Error) -> AlertInfo {
-        AlertInfo(title: Strings.MicrophoneCalibration.calibrationFailedAlertTitle,
+        AlertInfo(title: Strings.MicrophoneCalibration.Wizard.calibrationFailedAlertTitle,
                   message: error.localizedDescription,
                   buttons: [.default(title: Strings.Commons.ok, action: nil)])
     }

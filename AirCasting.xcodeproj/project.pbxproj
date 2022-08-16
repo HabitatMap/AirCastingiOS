@@ -243,7 +243,8 @@
 		B308DC0E28ABC9B7004FC3EB /* CalibratableMicrophoneDecoratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B308DC0D28ABC9B7004FC3EB /* CalibratableMicrophoneDecoratorTests.swift */; };
 		B308DC1028ABCB08004FC3EB /* Numeric+ArrayCreation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B308DC0F28ABCB08004FC3EB /* Numeric+ArrayCreation.swift */; };
 		B308DC1228ABCB2B004FC3EB /* MicrophoneCalibraionValueProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B308DC1128ABCB2B004FC3EB /* MicrophoneCalibraionValueProvider.swift */; };
-		B308DC1428ABCE5F004FC3EB /* MicrophoneCalibrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B308DC1328ABCE5F004FC3EB /* MicrophoneCalibrationView.swift */; };
+		B308DC1428ABCE5F004FC3EB /* MicrophoneAutoCalibrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B308DC1328ABCE5F004FC3EB /* MicrophoneAutoCalibrationView.swift */; };
+		B308DC1728AC0B78004FC3EB /* MicrophoneAutoCalibrationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B308DC1628AC0B78004FC3EB /* MicrophoneAutoCalibrationViewModel.swift */; };
 		B30BABFB2693509D00AE0476 /* StandardStatisticsCalculatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30BABFA2693509D00AE0476 /* StandardStatisticsCalculatorTests.swift */; };
 		B30BABFD2693532700AE0476 /* MeasurementsStatisticsControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30BABFC2693532700AE0476 /* MeasurementsStatisticsControllerTests.swift */; };
 		B30BABFF26935C2B00AE0476 /* TimeInterval+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30BABFE26935C2B00AE0476 /* TimeInterval+Helpers.swift */; };
@@ -301,6 +302,11 @@
 		B33DB5722686013400ED1344 /* XCTestCase+AwaitPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33DB5712686013400ED1344 /* XCTestCase+AwaitPublisher.swift */; };
 		B33DB5742686120600ED1344 /* XCTestCase+AssertContainsSameElements.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33DB5732686120600ED1344 /* XCTestCase+AssertContainsSameElements.swift */; };
 		B33DB5762686161300ED1344 /* SensorName.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33DB5752686161300ED1344 /* SensorName.swift */; };
+		B34BB2E628ACFC86009E5927 /* MicrophoneManualCalibrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34BB2E528ACFC86009E5927 /* MicrophoneManualCalibrationView.swift */; };
+		B34BB2E828AD07BA009E5927 /* MicrophoneManualCalibrationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34BB2E728AD07BA009E5927 /* MicrophoneManualCalibrationViewModel.swift */; };
+		B34BB2EB28AD0BCE009E5927 /* MicrophoneManualCalibrationViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34BB2EA28AD0BCE009E5927 /* MicrophoneManualCalibrationViewModelTests.swift */; };
+		B34BB2ED28AD0F29009E5927 /* MicrophoneAutoCalibrationViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34BB2EC28AD0F29009E5927 /* MicrophoneAutoCalibrationViewModelTests.swift */; };
+		B34BB2EF28AD200D009E5927 /* AlertInfo+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34BB2EE28AD200D009E5927 /* AlertInfo+Equatable.swift */; };
 		B34D4648275B12A000194E51 /* CrashlyticsLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34D4647275B12A000194E51 /* CrashlyticsLogger.swift */; };
 		B35A09A12845615F00F9837B /* UnitFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B35A09A02845615F00F9837B /* UnitFormatter.swift */; };
 		B35E04C1278C922A00227D8D /* Resolver in Frameworks */ = {isa = PBXBuildFile; productRef = B35E04C0278C922A00227D8D /* Resolver */; };
@@ -781,7 +787,8 @@
 		B308DC0D28ABC9B7004FC3EB /* CalibratableMicrophoneDecoratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalibratableMicrophoneDecoratorTests.swift; sourceTree = "<group>"; };
 		B308DC0F28ABCB08004FC3EB /* Numeric+ArrayCreation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Numeric+ArrayCreation.swift"; sourceTree = "<group>"; };
 		B308DC1128ABCB2B004FC3EB /* MicrophoneCalibraionValueProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrophoneCalibraionValueProvider.swift; sourceTree = "<group>"; };
-		B308DC1328ABCE5F004FC3EB /* MicrophoneCalibrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrophoneCalibrationView.swift; sourceTree = "<group>"; };
+		B308DC1328ABCE5F004FC3EB /* MicrophoneAutoCalibrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrophoneAutoCalibrationView.swift; sourceTree = "<group>"; };
+		B308DC1628AC0B78004FC3EB /* MicrophoneAutoCalibrationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrophoneAutoCalibrationViewModel.swift; sourceTree = "<group>"; };
 		B30BABFA2693509D00AE0476 /* StandardStatisticsCalculatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandardStatisticsCalculatorTests.swift; sourceTree = "<group>"; };
 		B30BABFC2693532700AE0476 /* MeasurementsStatisticsControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementsStatisticsControllerTests.swift; sourceTree = "<group>"; };
 		B30BABFE26935C2B00AE0476 /* TimeInterval+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TimeInterval+Helpers.swift"; sourceTree = "<group>"; };
@@ -839,6 +846,11 @@
 		B33DB5712686013400ED1344 /* XCTestCase+AwaitPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+AwaitPublisher.swift"; sourceTree = "<group>"; };
 		B33DB5732686120600ED1344 /* XCTestCase+AssertContainsSameElements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+AssertContainsSameElements.swift"; sourceTree = "<group>"; };
 		B33DB5752686161300ED1344 /* SensorName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorName.swift; sourceTree = "<group>"; };
+		B34BB2E528ACFC86009E5927 /* MicrophoneManualCalibrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrophoneManualCalibrationView.swift; sourceTree = "<group>"; };
+		B34BB2E728AD07BA009E5927 /* MicrophoneManualCalibrationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrophoneManualCalibrationViewModel.swift; sourceTree = "<group>"; };
+		B34BB2EA28AD0BCE009E5927 /* MicrophoneManualCalibrationViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrophoneManualCalibrationViewModelTests.swift; sourceTree = "<group>"; };
+		B34BB2EC28AD0F29009E5927 /* MicrophoneAutoCalibrationViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrophoneAutoCalibrationViewModelTests.swift; sourceTree = "<group>"; };
+		B34BB2EE28AD200D009E5927 /* AlertInfo+Equatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlertInfo+Equatable.swift"; sourceTree = "<group>"; };
 		B34D4647275B12A000194E51 /* CrashlyticsLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrashlyticsLogger.swift; sourceTree = "<group>"; };
 		B35A09A02845615F00F9837B /* UnitFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitFormatter.swift; sourceTree = "<group>"; };
 		B35E04C2278C931700227D8D /* AppDelegate+Injection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppDelegate+Injection.swift"; sourceTree = "<group>"; };
@@ -1831,8 +1843,8 @@
 		ACD32A4D2600A8CC00818946 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				B308DC1528AC0B60004FC3EB /* MicrophoneCalibration */,
 				ACD32A4E2600A8DD00818946 /* SettingsView.swift */,
-				B308DC1328ABCE5F004FC3EB /* MicrophoneCalibrationView.swift */,
 				B3EAF01727AFC43300290222 /* ShareLogsViewModel.swift */,
 				DDC3E953275E4C3A0066A5DF /* SettingsViewModel.swift */,
 				B392DC322755F944002F0145 /* AppConfigurationView.swift */,
@@ -1882,8 +1894,8 @@
 		B308DC0328ABA30A004FC3EB /* Mic Calibration */ = {
 			isa = PBXGroup;
 			children = (
-				B308DC0428ABA31F004FC3EB /* MicrophoneCalibratorTests.swift */,
-				B308DC0D28ABC9B7004FC3EB /* CalibratableMicrophoneDecoratorTests.swift */,
+				B34BB2E928AD096F009E5927 /* Auto */,
+				B34BB2EA28AD0BCE009E5927 /* MicrophoneManualCalibrationViewModelTests.swift */,
 			);
 			path = "Mic Calibration";
 			sourceTree = "<group>";
@@ -1897,6 +1909,16 @@
 				B308DC0928ABC552004FC3EB /* CalibrationDurationDecider.swift */,
 			);
 			path = Calibration;
+			sourceTree = "<group>";
+		};
+		B308DC1528AC0B60004FC3EB /* MicrophoneCalibration */ = {
+			isa = PBXGroup;
+			children = (
+				B34BB2E428ACFA56009E5927 /* Automatic */,
+				B34BB2E528ACFC86009E5927 /* MicrophoneManualCalibrationView.swift */,
+				B34BB2E728AD07BA009E5927 /* MicrophoneManualCalibrationViewModel.swift */,
+			);
+			path = MicrophoneCalibration;
 			sourceTree = "<group>";
 		};
 		B30BABF92693507800AE0476 /* Statistics */ = {
@@ -2039,6 +2061,25 @@
 			path = GarbageCollector;
 			sourceTree = "<group>";
 		};
+		B34BB2E428ACFA56009E5927 /* Automatic */ = {
+			isa = PBXGroup;
+			children = (
+				B308DC1328ABCE5F004FC3EB /* MicrophoneAutoCalibrationView.swift */,
+				B308DC1628AC0B78004FC3EB /* MicrophoneAutoCalibrationViewModel.swift */,
+			);
+			path = Automatic;
+			sourceTree = "<group>";
+		};
+		B34BB2E928AD096F009E5927 /* Auto */ = {
+			isa = PBXGroup;
+			children = (
+				B34BB2EC28AD0F29009E5927 /* MicrophoneAutoCalibrationViewModelTests.swift */,
+				B308DC0428ABA31F004FC3EB /* MicrophoneCalibratorTests.swift */,
+				B308DC0D28ABC9B7004FC3EB /* CalibratableMicrophoneDecoratorTests.swift */,
+			);
+			path = Auto;
+			sourceTree = "<group>";
+		};
 		B367A587274E9E05004C605B /* FeatureFlags */ = {
 			isa = PBXGroup;
 			children = (
@@ -2141,6 +2182,7 @@
 				B3C6D07F289062E100A25F5F /* CLLocation+Helpers.swift */,
 				B308DC0628ABA3C7004FC3EB /* CommonTestDoubles.swift */,
 				B308DC0F28ABCB08004FC3EB /* Numeric+ArrayCreation.swift */,
+				B34BB2EE28AD200D009E5927 /* AlertInfo+Equatable.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -2979,6 +3021,7 @@
 				DD2E8BE92685E12000439F8B /* URLValidatorTests.swift in Sources */,
 				4FB39E362621B77D00E5E564 /* APIClientMock.swift in Sources */,
 				B3E26A092676DA55001A8E4C /* TestDefaultProviding.swift in Sources */,
+				B34BB2ED28AD0F29009E5927 /* MicrophoneAutoCalibrationViewModelTests.swift in Sources */,
 				B33B161227AF0B3600138FFA /* CompositeLoggerTests.swift in Sources */,
 				B3EFAB1C26EFEA8B00E88141 /* AppBootstrapTests.swift in Sources */,
 				B30BAC1F2694AE9E00AE0476 /* MapStatsDataSourceTests.swift in Sources */,
@@ -2999,10 +3042,12 @@
 				332066A42891730E00798AC1 /* ShareSessionFileTest.swift in Sources */,
 				B33DB5702685FCFB00ED1344 /* SynchronizationTestMocks.swift in Sources */,
 				B3E26A2A26780D96001A8E4C /* SynchronizationControllerTestHelpers.swift in Sources */,
+				B34BB2EB28AD0BCE009E5927 /* MicrophoneManualCalibrationViewModelTests.swift in Sources */,
 				B30BAC212694AEAA00AE0476 /* GraphStatsDataSourceTests.swift in Sources */,
 				4FEEAED3262C53C20024AB7E /* UpdateSessionParamsServiceTests.swift in Sources */,
 				B30BABFD2693532700AE0476 /* MeasurementsStatisticsControllerTests.swift in Sources */,
 				B33DB56E2685FB2400ED1344 /* LocalizedErrorStub.swift in Sources */,
+				B34BB2EF28AD200D009E5927 /* AlertInfo+Equatable.swift in Sources */,
 				B33B161027AF0B3600138FFA /* DocumentsFileLoggerStoreTests.swift in Sources */,
 				B30BABFF26935C2B00AE0476 /* TimeInterval+Helpers.swift in Sources */,
 				B3AA784927D4D22A003B39F6 /* Resolver+XCTest.swift in Sources */,
@@ -3053,6 +3098,7 @@
 				B308DC1228ABCB2B004FC3EB /* MicrophoneCalibraionValueProvider.swift in Sources */,
 				B3D1928D26F1FA1C0029E1C8 /* FixedSessionFaker.swift in Sources */,
 				339BF3E127D231F000BBCB23 /* StaticSessionHeaderViewModel.swift in Sources */,
+				B308DC1728AC0B78004FC3EB /* MicrophoneAutoCalibrationViewModel.swift in Sources */,
 				AC049F7F2604B7AF00398197 /* AuthErorrHandling.swift in Sources */,
 				DDBA6139276B3AE200E3FEF9 /* EditNoteView.swift in Sources */,
 				750A51DC2754D4BD00D6F4E7 /* VisibleRegionCoordinates.swift in Sources */,
@@ -3138,7 +3184,7 @@
 				DDD24D9526A8569400D4A327 /* EmailForgotPasswordController.swift in Sources */,
 				B3A8CEA42834016000DC3B38 /* AVMicrophone.swift in Sources */,
 				DD2DDBAE27B5450100807011 /* UIStorage.swift in Sources */,
-				B308DC1428ABCE5F004FC3EB /* MicrophoneCalibrationView.swift in Sources */,
+				B308DC1428ABCE5F004FC3EB /* MicrophoneAutoCalibrationView.swift in Sources */,
 				AC524A892614733D0061AD45 /* CreatingSessionFlowRootView.swift in Sources */,
 				3387DD4A278F1A2900B11D02 /* ShareLocationlessSessionView.swift in Sources */,
 				AC158E0B26A199F9006C61D3 /* Array+SensorThreshold.swift in Sources */,
@@ -3272,6 +3318,7 @@
 				B33B15F027AEE69900138FFA /* DocumentsFileLoggerStore.swift in Sources */,
 				B3FD77BC267C94AF00E97CC2 /* ScheduledSessionSynchronizerProxy.swift in Sources */,
 				FA63D212289C0282002A4BD5 /* DatabaseDeviceUUID.swift in Sources */,
+				B34BB2E828AD07BA009E5927 /* MicrophoneManualCalibrationViewModel.swift in Sources */,
 				4F5D3F73262C91C6003AD82E /* UserAuthenticationSession.swift in Sources */,
 				AC6D569F25AEEAE700D221BA /* SessionHeaderView.swift in Sources */,
 				B3AB8BE526BB5EF400AF23CC /* Array+MeasurementStatistics.swift in Sources */,
@@ -3282,6 +3329,7 @@
 				3375E8D42791EDC50019A5DE /* CLLocationCoordinate2D.swift in Sources */,
 				33050876276B7A4400D18C69 /* ShareSessionStreamOptionViewModel.swift in Sources */,
 				33F82FC227F60498001654D8 /* ThresholdsValue+Color.swift in Sources */,
+				B34BB2E628ACFC86009E5927 /* MicrophoneManualCalibrationView.swift in Sources */,
 				ACCEB2242763A2230040140B /* SyncingABView.swift in Sources */,
 				3375E8CF279185430019A5DE /* TemperatureConverter.swift in Sources */,
 				AC8D6C6E25C056B400ED74D1 /* PathPoint.swift in Sources */,

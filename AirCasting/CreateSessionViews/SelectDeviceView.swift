@@ -93,13 +93,11 @@ struct SelectDeviceView: View {
                 isMicLinkActive = true
             } else {
                 microphonePermissions.requestRecordPermission { isGranted in
-                    DispatchQueue.main.async {
-                        if isGranted {
-                            isMicLinkActive = true
-                        } else {
-                            alert = InAppAlerts.microphonePermissionAlert()
-                            selected = 0
-                        }
+                    if isGranted {
+                        isMicLinkActive = true
+                    } else {
+                        alert = InAppAlerts.microphonePermissionAlert()
+                        selected = 0
                     }
                 }
             }
