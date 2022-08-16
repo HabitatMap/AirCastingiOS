@@ -6,7 +6,6 @@ import Foundation
 class KeychainManager {
     enum KeychainError: Error {
         case duplicateEntry
-        case entryNotFound
         case unknown(OSStatus)
     }
     
@@ -28,7 +27,7 @@ class KeychainManager {
             throw KeychainError.unknown(status)
         }
         
-        Log.info("## Saved password")
+        Log.info("Saved password to keychain")
     }
     
     static func get(service: String, account: String) -> Data? {
@@ -44,7 +43,7 @@ class KeychainManager {
         let status = SecItemCopyMatching(query as CFDictionary, &result)
         
         if status != errSecSuccess {
-            Log.error("## Failed to fetch data from keychain: \(status)")
+            Log.error("Failed to fetch data from keychain: \(status.description)")
         }
         
         return result as? Data
