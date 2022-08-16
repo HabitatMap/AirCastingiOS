@@ -30,9 +30,7 @@ final class AVMicrophone: Microphone {
         guard state == .recording else { return nil }
         recorder.updateMeters()
         let power = recorder.averagePower(forChannel: 0)
-        var decibels = Double(power + 90.0)
-        (decibels < 0) ? decibels = 0 : nil
-        return decibels
+        return Double(power)
     }
     
     func startRecording() throws {
