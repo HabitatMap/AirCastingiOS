@@ -22,10 +22,12 @@ class CreateSessionDetailsViewModel: ObservableObject {
     var shouldShowError: Bool { sessionName.isEmpty && showErrorIndicator }
     @Injected private var locationAuthorization: LocationAuthorization
     
+    private let keychainStorage = KeychainStorage(service: Bundle.main.bundleIdentifier!)
+    
     func onScreenEnter() {
         if let ssid = getWiFiSsid() {
             wifiSSID = ssid
-            if let data = KeychainManager.get(service: "wifi", account: ssid), let password = String(data: data, encoding: .utf8) {
+            if let data = try? keychainStorage.data(forKey: ssid), let password = String(data: data, encoding: .utf8) {
                 wifiPassword = password
                 showWifiPasswordField = false
             }
@@ -33,9 +35,13 @@ class CreateSessionDetailsViewModel: ObservableObject {
         isSSIDTextfieldDisplayed = wifiSSID.isEmpty
     }
     
+    func updatePasswordTapped() {
+        showWifiPasswordField = true
+    }
+    
     func onContinueClick(sessionContext: CreateSessionContext) -> CreateSessionContext {
         saveWifiPassword()
-        // sessionContext is needed becouse it is being modified in the session creation proccess
+        // sessionContext is needed because it is being modified in the session creation proccess
         // by 'modified' I mean - the data it ovverriden by the proper one (get from user) on every step
         guard !sessionName.isEmpty else { showErrorIndicator = true; return sessionContext }
         sessionContext.sessionName = sessionName
@@ -52,9 +58,14 @@ class CreateSessionDetailsViewModel: ObservableObject {
     }
     
     private func saveWifiPassword() {
-        guard !wifiPassword.isEmpty else { return }
+        // We only want to save password for the default wifi network
+        guard !wifiPassword.isEmpty && !isSSIDTextfieldDisplayed else { return }
         guard let passwordData = wifiPassword.data(using: .utf8) else { return }
-        try? KeychainManager.save(service: "wifi", account: wifiSSID, password: passwordData)
+        do {
+            try keychainStorage.setValue(value: passwordData, forKey: wifiSSID)
+        } catch {
+            Log.error("Failed to save wifi password to the keychain")
+        }
     }
     
     private func checkIfWiFi(sessionContext: CreateSessionContext) -> CreateSessionContext {

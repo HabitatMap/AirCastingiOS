@@ -279,7 +279,9 @@ struct Strings {
                                                                       comment: "")
         static let connectedNetworkTitle: String = NSLocalizedString("Connected to %@ network",
                                                                       comment: "")
-        static let differentNetwork: String = NSLocalizedString("Connect to a different WiFi network.",
+        static let differentNetwork: String = NSLocalizedString("Connect to a different WiFi network",
+                                                                comment: "")
+        static let updatePassword: String = NSLocalizedString("Update password",
                                                                 comment: "")
     }
     

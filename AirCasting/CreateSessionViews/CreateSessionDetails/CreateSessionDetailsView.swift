@@ -93,18 +93,21 @@ private extension CreateSessionDetailsView {
     }
     
     var wifiPasswordEntry: some View {
-        VStack(alignment: .leading, spacing: 25) {
+        VStack(alignment: .leading, spacing: 15) {
             if viewModel.showWifiPasswordField {
                 provideNameAndPasswordTitle
                 wifiPasswordField
             } else {
                 connectedWifiLabel
+                updatePasswordButton
             }
-            HStack {
-                Spacer()
-                connectToDifferentWifi
-                Spacer()
-            }
+            connectToDifferentWifi
+        }
+    }
+    
+    private var updatePasswordButton: some View {
+        Button(Strings.WifiPopupView.updatePassword) {
+            viewModel.updatePasswordTapped()
         }
     }
     
