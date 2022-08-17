@@ -273,11 +273,15 @@ struct Strings {
                                                                    comment: "")
         static let connectButton: String = NSLocalizedString("Connect",
                                                              comment: "")
-        static let passwordTitle: String = NSLocalizedString("WiFi network name & password:",
+        static let passwordTitle: String = NSLocalizedString("Password for %@ network",
                                                              comment: "")
-        static let nameAndPasswordTitle: String = NSLocalizedString("Password for %@ network",
+        static let nameAndPasswordTitle: String = NSLocalizedString("WiFi network name & password:",
+                                                                    comment: "")
+        static let connectedNetworkTitle: String = NSLocalizedString("Connected to %@ network",
                                                                       comment: "")
-        static let differentNetwork: String = NSLocalizedString("Connect to a different WiFi network.",
+        static let differentNetwork: String = NSLocalizedString("Connect to a different WiFi network",
+                                                                comment: "")
+        static let updatePassword: String = NSLocalizedString("Update password",
                                                                 comment: "")
     }
     
