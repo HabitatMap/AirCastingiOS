@@ -29,9 +29,13 @@ class EditSessionViewModel: EditViewModel {
     @Injected private var sessionDownloader: SingleSessionDownloader
     @Injected private var sessionUpdateService: SessionUpdateService
     private let sessionUUID: SessionUUID
+    private var sessionAlreadySynced: Bool
 
-    init(sessionUUID: SessionUUID) {
+    init(sessionUUID: SessionUUID, sessionName: String, sessionTags: String, sessionSynced: Bool) {
         self.sessionUUID = sessionUUID
+        self.sessionName = sessionName
+        self.sessionTags = sessionTags
+        sessionAlreadySynced = sessionSynced
     }
 
     func saveChanges() {
@@ -46,22 +50,29 @@ class EditSessionViewModel: EditViewModel {
                 try storage.updateSessionNameAndTags(name: name,
                                                      tags: tags,
                                                      for: sessionUUID)
+                guard sessionAlreadySynced else {
+                    DispatchQueue.main.async {
+                        self.shouldDismiss = true
+                    }
+                    return
+                }
+                
                 let session = try storage.getExistingSession(with: sessionUUID)
                 sessionUpdateService.updateSession(session: session) { result in
                     switch result {
                     case .success(let session):
                         self.measurementStreamStorage.accessStorage { storage in
                             do {
-                                try storage.updateVersion(for: sessionUUID, to: session.version)
+                                try storage.updateVersion(for: self.sessionUUID, to: session.version)
                                 Log.info("Updated session version to: \(session.version)")
                             } catch {
                                 Log.error("Error while saving edited session name and tags \(error).")
-                                showAlert(InAppAlerts.failedSavingData(dismiss: self.dismissView))
+                                self.showAlert(InAppAlerts.failedSavingData(dismiss: self.dismissView))
                             }
                         }
                     case .failure(let error):
                         Log.error("Error while sending updated session to backend \(error).")
-                        showAlert(InAppAlerts.failedSavingData(dismiss: self.dismissView))
+                        self.showAlert(InAppAlerts.failedSavingData(dismiss: self.dismissView))
                     }
                     DispatchQueue.main.async {
                         self.shouldDismiss = true
@@ -75,6 +86,10 @@ class EditSessionViewModel: EditViewModel {
     }
 
     func viewAppeared() {
+        guard sessionAlreadySynced else {
+            isSessionDownloaded = true
+            return
+        }
         sessionDownloader.downloadSessionNameAndTags(with: sessionUUID) { [weak self] result in
             guard let self = self else { return }
             switch result {
