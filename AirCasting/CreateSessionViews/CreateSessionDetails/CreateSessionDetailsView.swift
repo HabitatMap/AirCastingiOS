@@ -81,7 +81,7 @@ private extension CreateSessionDetailsView {
     
     var wifiNameAndPasswordEntry: some View {
         VStack(alignment: .leading, spacing: 25) {
-            providePasswordTitle
+            provideNameAndPasswordTitle
             if #available(iOS 15.0, *) {
                wifiSSIDField
                     .onSubmit { viewModel.isSSIDTextfieldDisplayed = false }
@@ -95,7 +95,7 @@ private extension CreateSessionDetailsView {
     var wifiPasswordEntry: some View {
         VStack(alignment: .leading, spacing: 15) {
             if viewModel.showWifiPasswordField {
-                provideNameAndPasswordTitle
+                providePasswordTitle
                 wifiPasswordField
             } else {
                 connectedWifiLabel
@@ -217,13 +217,13 @@ private extension CreateSessionDetailsView {
     }
     
     var providePasswordTitle: some View {
-        Text(Strings.WifiPopupView.passwordTitle)
+        Text(String(format: Strings.WifiPopupView.passwordTitle, arguments: [viewModel.wifiSSID]))
             .font(Fonts.muliBoldHeading1)
             .foregroundColor(.aircastingDarkGray)
     }
     
     var provideNameAndPasswordTitle: some View {
-        Text(String(format: Strings.WifiPopupView.nameAndPasswordTitle, arguments: [viewModel.wifiSSID]))
+        Text(Strings.WifiPopupView.nameAndPasswordTitle)
             .font(Fonts.muliBoldHeading1)
             .foregroundColor(.aircastingDarkGray)
     }
