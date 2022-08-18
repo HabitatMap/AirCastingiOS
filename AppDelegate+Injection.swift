@@ -269,6 +269,11 @@ extension Resolver: ResolverRegistering {
             .implements(MicrophoneCalibrationValueWritable.self)
         
         main.register { DefaultCalibrationDurationDecider() as CalibrationDurationDecider }
+        
+        // MARK: Alerts
+        
+        main.register { WindowAlertPresenter() as GlobalAlertPresenter }
+            .scope(.application)
     }
     
     // MARK: - Composition helpers
