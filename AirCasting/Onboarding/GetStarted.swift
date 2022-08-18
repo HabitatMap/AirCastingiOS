@@ -42,6 +42,7 @@ private extension GetStarted {
         GeometryReader { geo in
             Image("Bitmap")
                 .resizable()
+                .scaledToFill()
                 .edgesIgnoringSafeArea(.top)
                 .frame(height: geo.size.height * 0.8)
         }
