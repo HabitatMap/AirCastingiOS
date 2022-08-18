@@ -4,10 +4,15 @@
 import SwiftUI
 import AirCastingStyling
 
-struct ThresholdAlertSheet<VM: ThresholdAlertSheetViewModel>: View {
-    @StateObject var viewModel: VM
+struct ThresholdAlertSheet: View {
+    @StateObject var viewModel: ThresholdAlertSheetViewModel
     @Binding var isActive: Bool
     @Environment(\.presentationMode) private var presentationMode
+    
+    init(session: Sessionable, isActive: Binding<Bool>) {
+        _viewModel = .init(wrappedValue: ThresholdAlertSheetViewModel(session: session))
+        _isActive = .init(projectedValue: isActive)
+    }
     
     var body: some View {
         LoadingView(isShowing: $viewModel.loading) {
@@ -50,8 +55,8 @@ struct ThresholdAlertSheet<VM: ThresholdAlertSheetViewModel>: View {
             ForEach(viewModel.streamOptions) { option in
                 ThresholdAlertStreamOption(
                     isOn: option.isOn,
-                    thresholdValue: .init( get: { option.thresholdValue}, set: { viewModel.changeThreshold(of: option.id, to: $0) }),
-                    frequency: .init( get: { option.frequency}, set: { viewModel.changeFrequency(of: option.id, to: $0) }),
+                    thresholdValue: .init( get: { option.thresholdValue }, set: { viewModel.changeThreshold(of: option.id, to: $0) }),
+                    frequency: .init( get: { option.frequency }, set: { viewModel.changeFrequency(of: option.id, to: $0) }),
                     streamName: option.shortSensorName
                 ) { isOn in
                     viewModel.changeIsOn(of: option.id, to: isOn)
@@ -86,8 +91,10 @@ struct ThresholdAlertSheet<VM: ThresholdAlertSheetViewModel>: View {
     }
 }
 
+#if DEBUG
 struct ThresholdAlertSheet_Previews: PreviewProvider {
     static var previews: some View {
-        ThresholdAlertSheet(viewModel: ThresholdAlertSheetViewModel(session: SessionEntity.mock), isActive: .constant(true))
+        ThresholdAlertSheet(session: SessionEntity.mock, isActive: .constant(true))
     }
 }
+#endif
