@@ -925,6 +925,8 @@ struct Strings {
                                                                      comment: "")
         static let noInternetConnectionSyncMessage: String = NSLocalizedString("Connect device to the Internet to sync sessions.",
                                                                      comment: "")
+        static let noInternetConnectionEditMessage: String = NSLocalizedString("Connect device to the Internet to edit sessions.",
+                                                                     comment: "")
         static let noWifiConnectionSyncMessage: String = NSLocalizedString("Connect device to Wi-Fi network to sync sessions or turn off \"sync only through Wi-Fi\" setting.",
                                                                    comment: "")
         static let noInternetConnectionButton: String = NSLocalizedString("Got it!",

@@ -39,6 +39,15 @@ struct InAppAlerts {
                   ])
     }
     
+    static func noNetworkEditAlert(dismiss: (() -> Void)? = nil) -> AlertInfo {
+        AlertInfo(title: Strings.InAppAlerts.noInternetConnectionTitle,
+                  message: Strings.InAppAlerts.noInternetConnectionEditMessage,
+                  buttons: [
+                    .default(title: Strings.Commons.gotIt,
+                             action: dismiss)
+                  ])
+    }
+    
     static func noWifiNetworkSyncAlert(dismiss: (() -> Void)? = nil) -> AlertInfo {
         AlertInfo(title: Strings.InAppAlerts.noWifiConnectionTitle,
                   message: Strings.InAppAlerts.noWifiConnectionSyncMessage,

@@ -28,6 +28,7 @@ class EditSessionViewModel: EditViewModel {
     @Injected private var measurementStreamStorage: MeasurementStreamStorage
     @Injected private var sessionDownloader: SingleSessionDownloader
     @Injected private var sessionUpdateService: SessionUpdateService
+    @Injected private var networkChecker: NetworkChecker
     private let sessionUUID: SessionUUID
     private var sessionAlreadySynced: Bool
 
@@ -43,6 +44,12 @@ class EditSessionViewModel: EditViewModel {
             shouldShowError = true
             return
         }
+        
+        guard networkChecker.connectionAvailable else {
+            alert = InAppAlerts.noNetworkEditAlert(dismiss: nil)
+            return
+        }
+        
         let name = sessionName
         let tags = sessionTags
         measurementStreamStorage.accessStorage { [self] storage in
@@ -67,12 +74,12 @@ class EditSessionViewModel: EditViewModel {
                                 Log.info("Updated session version to: \(session.version)")
                             } catch {
                                 Log.error("Error while saving edited session name and tags \(error).")
-                                self.showAlert(InAppAlerts.failedSavingData(dismiss: self.dismissView))
+                                self.showAlert(InAppAlerts.failedSavingData(dismiss: { self.dismissView() }))
                             }
                         }
                     case .failure(let error):
                         Log.error("Error while sending updated session to backend \(error).")
-                        self.showAlert(InAppAlerts.failedSavingData(dismiss: self.dismissView))
+                        self.showAlert(InAppAlerts.failedSavingData(dismiss: { self.dismissView() }))
                     }
                     DispatchQueue.main.async {
                         self.shouldDismiss = true
@@ -90,6 +97,12 @@ class EditSessionViewModel: EditViewModel {
             isSessionDownloaded = true
             return
         }
+        
+        guard networkChecker.connectionAvailable else {
+            alert = InAppAlerts.noNetworkEditAlert(dismiss: { self.dismissView() })
+            return
+        }
+        
         sessionDownloader.downloadSessionNameAndTags(with: sessionUUID) { [weak self] result in
             guard let self = self else { return }
             switch result {
