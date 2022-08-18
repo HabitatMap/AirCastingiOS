@@ -4,11 +4,11 @@
 import Foundation
 import Resolver
 
-protocol DeleteThresholdAlertAPI {
+protocol DeleteThresholdAlertService {
     func deleteAlert(id: Int, completion: @escaping (Result<Void, Error>) -> ())
 }
 
-class DefaultDeleteThresholdAlertAPI: DeleteThresholdAlertAPI {
+class DefaultDeleteThresholdAlertAPI: DeleteThresholdAlertService {
     @Injected private var urlProvider: URLProvider
     @Injected private var apiClient: APIClient
     @Injected private var responseValidator: HTTPResponseValidator

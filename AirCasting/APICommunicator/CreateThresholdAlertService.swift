@@ -4,7 +4,7 @@
 import Foundation
 import Resolver
 
-protocol CreateThresholdAlertAPI {
+protocol CreateThresholdAlertService {
     func createAlert(sessionUUID: SessionUUID, sensorName: String, thresholdValue: String, frequency: ThresholdAlertFrequency, completion: @escaping (Result<AlertId, Error>) -> ())
 }
 
@@ -12,7 +12,7 @@ struct AlertId: Decodable {
     let id: Int
 }
 
-class DefaultCreateThresholdAlertAPI: CreateThresholdAlertAPI {
+class DefaultCreateThresholdAlertAPI: CreateThresholdAlertService {
     @Injected private var urlProvider: URLProvider
     @Injected private var apiClient: APIClient
     @Injected private var responseValidator: HTTPResponseValidator

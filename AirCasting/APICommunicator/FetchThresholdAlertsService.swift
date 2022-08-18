@@ -4,7 +4,7 @@
 import Foundation
 import Resolver
 
-protocol FetchThresholdAlertsAPI {
+protocol FetchThresholdAlertsService {
     func fetchAlerts(completion: @escaping (Result<[FetchedThresholdAlert], Error>) -> ())
 }
 
@@ -16,7 +16,7 @@ struct FetchedThresholdAlert: Decodable {
     let frequency: Int
 }
 
-class DefaultFetchThresholdAlertsAPI: FetchThresholdAlertsAPI {
+class DefaultFetchThresholdAlertsAPI: FetchThresholdAlertsService {
     @Injected private var urlProvider: URLProvider
     @Injected private var apiClient: APIClient
     @Injected private var responseValidator: HTTPResponseValidator

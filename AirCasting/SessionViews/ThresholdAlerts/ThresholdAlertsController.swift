@@ -34,9 +34,9 @@ struct NewThresholdAlertData {
 }
 
 class DefaultThresholdAlertsController: ThresholdAlertsController {
-    let createAlertApiCommunitator: CreateThresholdAlertAPI = DefaultCreateThresholdAlertAPI()
-    let deleteAlertApiCommunitator: DeleteThresholdAlertAPI = DefaultDeleteThresholdAlertAPI()
-    let fetchAlertsApiCommunitator: FetchThresholdAlertsAPI = DefaultFetchThresholdAlertsAPI()
+    let createAlertApiCommunitator: CreateThresholdAlertService = DefaultCreateThresholdAlertAPI()
+    let deleteAlertApiCommunitator: DeleteThresholdAlertService = DefaultDeleteThresholdAlertAPI()
+    let fetchAlertsApiCommunitator: FetchThresholdAlertsService = DefaultFetchThresholdAlertsAPI()
     
     func getAlerts(sessionUUID: SessionUUID, completion: @escaping (Result<[FetchedThresholdAlert], Error>) -> Void) {
         fetchAlertsApiCommunitator.fetchAlerts { result in
