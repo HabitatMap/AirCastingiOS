@@ -55,8 +55,10 @@ struct ThresholdAlertStreamOption: View {
     }
 }
 
+#if DEBUG
 struct ThresholdAlertStreamOption_Previews: PreviewProvider {
     static var previews: some View {
         ThresholdAlertStreamOption(thresholdValue: .constant("6"), frequency: .constant(.oneHour))
     }
 }
+#endif

@@ -70,7 +70,7 @@ struct ThresholdAlertSheet: View {
     
     private var continueButton: some View {
         Button {
-            viewModel.save {
+            viewModel.saveButtonTapped {
                 isActive = false
             }
         } label: {

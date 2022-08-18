@@ -4,45 +4,27 @@
 import Foundation
 import Resolver
 
-enum ThresholdAlertFrequency {
-    case oneHour
-    case twentyFourHours
-    
-    init(_ value: Int) {
-        switch value {
-        case 24:
-            self = .twentyFourHours
-        default:
-            self = .oneHour
-        }
-    }
-    
-    func rawValue() -> Int {
-        switch self {
-        case .oneHour:
-            return 1
-        case .twentyFourHours:
-            return 24
-        }
-    }
+enum ThresholdAlertFrequency: Int {
+    case oneHour = 1
+    case twentyFourHours = 24
 }
 
 class ThresholdAlertSheetViewModel: ObservableObject {
-    private var session: Sessionable
-    @Injected var controller: ThresholdAlertsController
-    @Injected var networkChecker: NetworkChecker
-    
     @Published var streamOptions: [AlertOption] = []
-    private var activeAlerts: Loadable<[Alert]> = .loading {
-        didSet {
-            activeAlerts.isReady ? loading = false : nil
-        }
-    }
     @Published var loading = true
     @Published var isSaving = false
     @Published var saveButtonText = Strings.ThresholdAlertSheet.saveButton
     @Published var shouldDismiss = false
     @Published var alert: AlertInfo?
+    
+    private var activeAlerts: Loadable<[Alert]> = .loading {
+        didSet {
+            activeAlerts.isReady ? loading = false : nil
+        }
+    }
+    private var session: Sessionable
+    @Injected var controller: ThresholdAlertsController
+    @Injected var networkChecker: NetworkChecker
     
     struct AlertOption: Identifiable {
         var id: Int
@@ -87,7 +69,7 @@ class ThresholdAlertSheetViewModel: ObservableObject {
         streamOptions[streamOptionId].frequency = value
     }
     
-    func save(completion: () -> Void) {
+    func saveButtonTapped(completion: () -> Void) {
         let streamsWithEmptyThresholds = streamOptions.filter({ $0.isOn && ($0.thresholdValue == "" || Double($0.thresholdValue) == nil) }).map(\.id)
         
         guard streamsWithEmptyThresholds.isEmpty else {
@@ -112,12 +94,11 @@ class ThresholdAlertSheetViewModel: ObservableObject {
             if let activeAlert = activeAlerts.get?.first(where: { $0.sensorName == self.shorten(alertOption.sensorName) }) {
                 if alertOption == activeAlert {
                     return
+                }
+                if alertOption.isOn {
+                    toUpdate.append(.init(sensorName: alertOption.sensorName, sessionUUID: self.session.uuid, oldId: activeAlert.id, newThresholdValue: Double(alertOption.thresholdValue)!, newFrequency: alertOption.frequency))
                 } else {
-                    if alertOption.isOn {
-                        toUpdate.append(.init(sensorName: alertOption.sensorName, sessionUUID: self.session.uuid, oldId: activeAlert.id, newThresholdValue: Double(alertOption.thresholdValue)!, newFrequency: alertOption.frequency))
-                    } else {
-                        toDelete.append(.init(id: activeAlert.id, sensorName: activeAlert.sensorName))
-                    }
+                    toDelete.append(.init(id: activeAlert.id, sensorName: activeAlert.sensorName))
                 }
             } else {
                 alertOption.isOn ? toCreate.append(.init(sensorName: alertOption.sensorName, sessionUUID: self.session.uuid, thresholdValue: Double(alertOption.thresholdValue)!, frequency: alertOption.frequency)) : nil
@@ -153,16 +134,15 @@ class ThresholdAlertSheetViewModel: ObservableObject {
             switch result {
             case .success(let existingAlerts):
                 let alerts: [Alert] = existingAlerts.compactMap { alert in
-                    return Alert(id: Int(alert.id), sensorName: alert.sensorName, thresholdValue: String(alert.thresholdValue), frequency: .init(Int(alert.frequency)))
+                    Alert(id: Int(alert.id), sensorName: alert.sensorName, thresholdValue: String(alert.thresholdValue), frequency: .init(rawValue: Int(alert.frequency)) ?? .oneHour)
                 }
                 let sessionStreams = self.session.sortedStreams.filter( {!$0.gotDeleted} )
                 var newAlertOptions: [AlertOption] = []
-                var i = 0
-                sessionStreams.forEach { stream in
-                    guard let sensorName = stream.sensorName else { return }
+                
+                newAlertOptions = sessionStreams.enumerated().compactMap { i, stream in
+                    guard let sensorName = stream.sensorName else { return nil }
                     let streamAlert = alerts.first(where: { $0.sensorName == self.shorten(sensorName) })
-                    newAlertOptions.append(AlertOption(id: i, sensorName: sensorName, shortSensorName: self.shorten(sensorName), isOn: streamAlert != nil, thresholdValue: streamAlert?.thresholdValue ?? "", frequency: streamAlert?.frequency ?? .oneHour))
-                    i+=1
+                    return AlertOption(id: i, sensorName: sensorName, shortSensorName: self.shorten(sensorName), isOn: streamAlert != nil, thresholdValue: streamAlert?.thresholdValue ?? "", frequency: streamAlert?.frequency ?? .oneHour)
                 }
                 
                 DispatchQueue.main.async {

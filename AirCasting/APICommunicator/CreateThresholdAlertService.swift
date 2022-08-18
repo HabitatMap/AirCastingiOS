@@ -29,7 +29,7 @@ class DefaultCreateThresholdAlertAPI: CreateThresholdAlertService {
         }
         
         init(sessionUUID: SessionUUID, sensorName: String, thresholdValue: String, frequency: ThresholdAlertFrequency) {
-            self.data = Nested(sensorName: sensorName, sessionUuid: sessionUUID.rawValue, thresholdValue: thresholdValue, frequency: String(frequency.rawValue()))
+            self.data = Nested(sensorName: sensorName, sessionUuid: sessionUUID.rawValue, thresholdValue: thresholdValue, frequency: String(frequency.rawValue))
         }
     }
     
