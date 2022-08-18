@@ -96,7 +96,6 @@ struct SelectDeviceView: View {
                     if isGranted {
                         isMicLinkActive = true
                     } else {
-                        alert = InAppAlerts.microphonePermissionAlert()
                         selected = 0
                     }
                 }
