@@ -35,7 +35,6 @@ struct GetStarted: View {
 
 private extension GetStarted {
     var mainImage: some View {
-        
         GeometryReader { geo in
             if UIDevice.current.userInterfaceIdiom != .pad {
                 Image("Bitmap")
