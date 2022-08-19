@@ -12,7 +12,7 @@ extension Resolver: ResolverRegistering {
     public static func registerAllServices() {
         // We do Firebase config here as this is actually the first place that gets called in the app.
         FirebaseApp.configure()
-
+        
         // MARK: Logging
         main.register { (_, _) -> Logger in
             var composite = CompositeLogger()
@@ -30,11 +30,11 @@ extension Resolver: ResolverRegistering {
 #endif
             return composite
         }.scope(.application)
-
+        
         main.register { PrintLogger() }.scope(.application)
         main.register { FileLogger() }.scope(.application)
         main.register { CrashlyticsLogger() }.scope(.application)
-
+        
         main.register {
             DocumentsFileLoggerStore(logDirectory: "logs",
                                      logFilename: "log.txt",
@@ -44,11 +44,11 @@ extension Resolver: ResolverRegistering {
         .implements(FileLoggerResettable.self)
         .implements(LogfileProvider.self)
         .scope(.application)
-
+        
         main.register {
             SimpleLogFormatter() as LogFormatter
         }
-
+        
         main.register { (_, _) -> FileLoggerHeaderProvider in
             let loggerDateFormatter = DateFormatter(format: "MM-dd-y HH:mm:ss", timezone: .utc, locale: Locale(identifier: "en_US"))
             return AirCastingLogoFileLoggerHeaderProvider(logVersion: "1.0",
@@ -56,7 +56,7 @@ extension Resolver: ResolverRegistering {
                                                           device: "\(Device.current)",
                                                           os: "\(Device.current.systemName ?? "??") \(Device.current.systemVersion ?? "??")") as FileLoggerHeaderProvider
         }
-
+        
         // MARK: Garbage collection
         main.register { (_, _) -> GarbageCollector in
             let collector = GarbageCollector()
@@ -64,7 +64,7 @@ extension Resolver: ResolverRegistering {
             collector.addHolder(logsHolder)
             return collector
         }.scope(.application)
-
+        
         // MARK: Persistence
         main.register { PersistenceController(inMemory: false) }
         .implements(SessionsFetchable.self)
@@ -87,7 +87,7 @@ extension Resolver: ResolverRegistering {
         }
         main.register { DefaultFileLineReader() as FileLineReader }
         main.register { SessionDataEraser() as DataEraser }
-
+        
         // MARK: - Networking
         main.register { URLSession.shared as APIClient }.scope(.application)
         main.register { UserAuthenticationSession() }
@@ -99,7 +99,7 @@ extension Resolver: ResolverRegistering {
         main.register { DefaultNetworkChecker() as NetworkChecker }.scope(.application)
         main.register { DefaultSingleSessionDownloader() as SingleSessionDownloader }
         main.register { DefaultDormantStreamAlertAPI() as DormantStreamAlertService }
-
+        
         // MARK: - Feature flags
         main.register { DefaultRemoteNotificationRouter() }
         .implements(RemoteNotificationRouter.self)
@@ -130,7 +130,7 @@ extension Resolver: ResolverRegistering {
 #endif
         }
         main.register { FeatureFlagsViewModel() }.scope(.application)
-
+        
         // MARK: - Session sync
         main.register { SessionSynchronizationService() as SessionSynchronizationContextProvidable }
         main.register { SessionDownloadService() }
@@ -145,7 +145,7 @@ extension Resolver: ResolverRegistering {
             )
         }.scope(.application)
             .implements(SessionSynchronizer.self)
-
+        
         // MARK: - Location handling
         main.register { _ -> LocationTracker in
             let manager = CLLocationManager()
@@ -156,12 +156,12 @@ extension Resolver: ResolverRegistering {
         }
         .implements(LocationAuthorization.self)
         .scope(.application)
-
+        
         // MARK: - Settings
         main.register { UserSettings(userDefaults: .standard) }.scope(.cached)
         main.register { DefaultSettingsController() as SettingsController }
-
-
+        
+        
         // MARK: - Services
         main.register { DownloadMeasurementsService() }.implements(MeasurementUpdatingService.self).scope(.cached)
         main.register { DefaultSettingsRedirection() as SettingsRedirection }.scope(.application)
@@ -183,13 +183,13 @@ extension Resolver: ResolverRegistering {
         main.register { DefaultRemoveDataController() as RemoveDataController }
         main.register { DefaultThresholdAlertsController() as ThresholdAlertsController }
         main.register { BluetoothConnectionProtector() as ConnectionProtectable }
-
+        
         // MARK: - Session stopping
-
+        
         main.register { (_, args) in
             getSessionStopper(for: args())
         }
-
+        
         func getSessionStopper(for session: SessionEntity) -> SessionStoppable {
             let stopper = matchStopper(for: session)
             if session.locationless {
@@ -200,7 +200,7 @@ extension Resolver: ResolverRegistering {
             }
             return SyncTriggeringSesionStopperDecorator(stoppable: stopper, synchronizer: Resolver.resolve())
         }
-
+        
         func matchStopper(for session: SessionEntity) -> SessionStoppable {
             switch session.deviceType {
             case .MIC: return MicrophoneSessionStopper(uuid: session.uuid)
@@ -208,7 +208,7 @@ extension Resolver: ResolverRegistering {
             case .none: return StandardSesssionStopper(uuid: session.uuid)
             }
         }
-
+        
         // MARK: - SDSync
         main.register { SDSyncController() }.scope(.cached)
         main.register { SDCardMobileSessionsSavingService() as SDCardMobileSessionssSaver }
@@ -217,17 +217,17 @@ extension Resolver: ResolverRegistering {
         main.register { SDSyncFileValidationService() as SDSyncFileValidator }
         main.register { SDSyncFileWritingService(bufferThreshold: 1000) as SDSyncFileWriter }
         main.register { BluetoothSDCardAirBeamServices() as SDCardAirBeamServices }
-
+        
         main.register { SessionCardUIStateHandlerDefault() as SessionCardUIStateHandler }.scope(.cached)
-
+        
         // MARK: - Notes
         main.register { (_, args) in
             NotesHandlerDefault(sessionUUID: args()) as NotesHandler
         }
-
+        
         // MARK: - Update Session Params Service
         main.register { UpdateSessionParamsService() }
-
+        
         // MARK: - Search and Follow
         main.register { SessionsForLocationDownloaderDefault() as SessionsForLocationDownloader }
         main.register { DefaultStreamDownloader() as StreamDownloader }
@@ -236,18 +236,18 @@ extension Resolver: ResolverRegistering {
             let context = Resolver.resolve(PersistenceController.self).editContext
             return DefaultExternalSessionsStore(context: context)
         }
-
+        
         // MARK: Unit / value formatting
         main.register { (_, args) in TemperatureThresholdFormatter(threshold: args()) as ThresholdFormatter }
         main.register { TemperatureUnitFormatter() as UnitFormatter }
         main.register { AirBeamMeasurementsDownloaderDefault() as AirBeamMeasurementsDownloader }
-
+    
         // MARK: - Old measurements remover
         main.register { DefaultRemoveOldMeasurementsService() as RemoveOldMeasurements }
     }
-
+    
     // MARK: - Composition helpers
-
+    
     private class CompositeFeatureFlagProvider: FeatureFlagProvider {
         var onFeatureListChange: (() -> Void)? {
             didSet {
@@ -256,18 +256,18 @@ extension Resolver: ResolverRegistering {
                 }
             }
         }
-
+        
         private var children: [FeatureFlagProvider]
-
+        
         init(children: [FeatureFlagProvider]) {
             self.children = children
         }
-
+        
         func isFeatureOn(_ feature: FeatureFlag) -> Bool? {
             children.compactMap { $0.isFeatureOn(feature) }.first
         }
     }
-
+    
     private struct AllFeaturesOn: FeatureFlagProvider {
         var onFeatureListChange: (() -> Void)?
         func isFeatureOn(_ feature: FeatureFlag) -> Bool? { true }
