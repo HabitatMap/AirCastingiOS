@@ -109,14 +109,10 @@ class ThresholdAlertSheetViewModel: ObservableObject {
             switch result {
             case .success():
                 Log.info("Processed alerts successfully")
-                DispatchQueue.main.async {
-                    self.shouldDismiss = true
-                }
+                self.shouldDismiss = true
             case .failure(_):
-                DispatchQueue.main.async {
-                    self.alert = InAppAlerts.failedThresholdAlertsAlert {
-                        self.shouldDismiss = true
-                    }
+                self.alert = InAppAlerts.failedThresholdAlertsAlert {
+                    self.shouldDismiss = true
                 }
             }
         }
