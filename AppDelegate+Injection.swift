@@ -98,7 +98,7 @@ extension Resolver: ResolverRegistering {
         main.register { UserDefaultsURLProvider() as URLProvider }
         main.register { DefaultNetworkChecker() as NetworkChecker }.scope(.application)
         main.register { DefaultSingleSessionDownloader() as SingleSessionDownloader }
-        main.register { DefaultDormantStreamAlertAPI() as DormantStreamAlertAPI }
+        main.register { DefaultDormantStreamAlertAPI() as DormantStreamAlertService }
         
         // MARK: - Feature flags
         main.register { DefaultRemoteNotificationRouter() }
@@ -188,6 +188,7 @@ extension Resolver: ResolverRegistering {
         main.register { DefaultLogoutController() as LogoutController }
         main.register { DefaultDeleteAccountController() as DeleteAccountController }
         main.register { DefaultRemoveDataController() as RemoveDataController }
+        main.register { DefaultThresholdAlertsController() as ThresholdAlertsController }
         main.register { BluetoothConnectionProtector() as ConnectionProtectable }
         
         // MARK: - Session stopping

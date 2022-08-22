@@ -28,6 +28,7 @@ struct SessionHeaderView: View {
     @State var showShareModal = false
     @State var showEditView = false
     @State var detectEmailSent = false
+    @State var showThresholdAlertModal = false
     
     var body: some View {
         if #available(iOS 15, *) {
@@ -57,6 +58,9 @@ struct SessionHeaderView: View {
                 }
                 .sheet(isPresented: $showAddNoteModal) {
                     AddNoteView(viewModel: AddNoteViewModel(sessionUUID: session.uuid, withLocation: !session.locationless, exitRoute: { showAddNoteModal.toggle() }))
+                }
+                .sheet(isPresented: $showThresholdAlertModal) {
+                    thresholdAlertSheet
                 }
         } else {
             sessionHeader
@@ -93,6 +97,10 @@ struct SessionHeaderView: View {
                             .sheet(isPresented: $showAddNoteModal) {
                                 AddNoteView(viewModel: AddNoteViewModel(sessionUUID: session.uuid, withLocation: !session.locationless, exitRoute: { showAddNoteModal.toggle() }))
                             }
+                        EmptyView()
+                            .sheet(isPresented: $showThresholdAlertModal) {
+                                thresholdAlertSheet
+                            }
                     }
                 )
         }
@@ -118,7 +126,7 @@ private extension SessionHeaderView {
                     .font(Fonts.moderateRegularHeading4)
                     .foregroundColor(Color.aircastingTimeGray)
                 Spacer()
-                (isMenuNeeded && selectedSection.section != .following) ? actionsMenu : nil
+                isMenuNeeded ? actionsMenu : nil
             }
             nameLabelAndExpandButton
         }
@@ -163,7 +171,7 @@ private extension SessionHeaderView {
     }
     
     var sensorType: some View {
-        let allStreams = session.allStreams ?? []
+        let allStreams = session.allStreams
         return SessionTypeIndicator(sessionType: session.type, streamSensorNames: allStreams.compactMap(\.sensorPackageName))
     }
 
@@ -173,6 +181,7 @@ private extension SessionHeaderView {
             session.editable ? actionsMenuEditButton : nil
             session.shareable ? actionsMenuShareButton : nil
             session.deletable ? actionsMenuDeleteButton : nil
+            session.isFixed ? actionsMenuThresholdAlertButton : nil
             if session.deviceType == .AIRBEAM3 && session.isActive && featureFlagsViewModel.enabledFeatures.contains(.standaloneMode) {
                 actionsMenuMobileEnterStandaloneMode
             }
@@ -245,6 +254,18 @@ private extension SessionHeaderView {
         } label: {
             Label(Strings.SessionHeaderView.addNoteButton, systemImage: "square.and.pencil")
         }
+    }
+    
+    var actionsMenuThresholdAlertButton: some View {
+        Button {
+            showThresholdAlertModal.toggle()
+        } label: {
+            Label(Strings.SessionHeaderView.thresholdAlertsButton, systemImage: "exclamationmark.triangle")
+        }
+    }
+    
+    var thresholdAlertSheet: some View {
+        ThresholdAlertSheet(session: session, isActive: $showThresholdAlertModal)
     }
 
     func adaptTimeAndDate() -> Text {

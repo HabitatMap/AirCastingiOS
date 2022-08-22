@@ -565,6 +565,19 @@ struct Strings {
         static let deleteButton: String = NSLocalizedString("Delete", comment: "")
     }
     
+    enum ThresholdAlertSheet {
+        static let title: String = NSLocalizedString("Threshold alerts", comment: "")
+        static let description: String = NSLocalizedString("Get notified when measured value for a stream exceeds given threshold", comment: "")
+        static let thresholdLabel: String = NSLocalizedString("Threshold", comment: "")
+        static let frequencyLabel: String = NSLocalizedString("Frequency", comment: "")
+        static let invalidThresholdMessage: String = NSLocalizedString("Threshold has to have a numeric value", comment: "")
+        static let saveButton: String = NSLocalizedString("Save", comment: "")
+        static let savingButton: String = NSLocalizedString("Saving...", comment: "")
+        static let failureAlertTitle: String = NSLocalizedString("Something went wrong", comment: "")
+        static let failureAlertMessage: String = NSLocalizedString("Some of the changes couldn't be saved on the server. Please, try again later.", comment: "")
+        static let fetchingFailureAlertMessage: String = NSLocalizedString("There was a problem with connecting to the server. Please, try again later.", comment: "")
+    }
+    
     enum EditSession {
         static let title: String = NSLocalizedString("Edit session details",
                                                      comment: "")
@@ -625,6 +638,8 @@ struct Strings {
         static let mic: String = NSLocalizedString("Phone Mic",
                                                    comment: "")
         static let addNoteButton: String = NSLocalizedString("Add a note",
+                                                             comment: "")
+        static let thresholdAlertsButton: String = NSLocalizedString("Threshold alerts",
                                                              comment: "")
     }
     

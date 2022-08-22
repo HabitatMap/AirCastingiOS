@@ -15,8 +15,11 @@
 		332020A8283CF724003E07F3 /* SessionEntity+Sessionable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332020A7283CF724003E07F3 /* SessionEntity+Sessionable.swift */; };
 		332066A42891730E00798AC1 /* ShareSessionFileTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332066A32891730E00798AC1 /* ShareSessionFileTest.swift */; };
 		332066A62892D94400798AC1 /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332066A52892D94400798AC1 /* SettingsController.swift */; };
-		332066A82892DB2F00798AC1 /* DormantStreamAlertAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332066A72892DB2F00798AC1 /* DormantStreamAlertAPI.swift */; };
+		332066A82892DB2F00798AC1 /* DormantStreamAlertService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332066A72892DB2F00798AC1 /* DormantStreamAlertService.swift */; };
 		332066AA2897FD1C00798AC1 /* DormantStreamAlertAPITest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332066A92897FD1C00798AC1 /* DormantStreamAlertAPITest.swift */; };
+		332066AC2898156D00798AC1 /* ThresholdAlertSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332066AB2898156D00798AC1 /* ThresholdAlertSheet.swift */; };
+		332066AF28981EDD00798AC1 /* ThresholdAlertSheetViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332066AE28981EDD00798AC1 /* ThresholdAlertSheetViewModel.swift */; };
+		332066B1289AB69300798AC1 /* ThresholdAlertStreamOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332066B0289AB69300798AC1 /* ThresholdAlertStreamOption.swift */; };
 		332F521425FA38430047236D /* MicrophoneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332F521325FA38430047236D /* MicrophoneManager.swift */; };
 		334062442816B4B6004DA4DA /* EditLocationlessSessionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 334062432816B4B6004DA4DA /* EditLocationlessSessionViewModel.swift */; };
 		33406247281821FA004DA4DA /* ExternalSessionsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33406246281821FA004DA4DA /* ExternalSessionsStore.swift */; };
@@ -51,6 +54,10 @@
 		338CA6D327CD2F1900505331 /* SearchAndFollowChartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 338CA6D227CD2F1900505331 /* SearchAndFollowChartViewModel.swift */; };
 		338CA6F527D1045400505331 /* WKWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 338CA6F427D1045300505331 /* WKWebView.swift */; };
 		338CA6F727D104AF00505331 /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 338CA6F627D104AF00505331 /* WebView.swift */; };
+		3392B3F828A1522600432B92 /* CreateThresholdAlertService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3392B3F728A1522600432B92 /* CreateThresholdAlertService.swift */; };
+		3392B3FA28A1601000432B92 /* DeleteThresholdAlertService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3392B3F928A1601000432B92 /* DeleteThresholdAlertService.swift */; };
+		3392B3FC28A3C35600432B92 /* ThresholdAlertsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3392B3FB28A3C35600432B92 /* ThresholdAlertsController.swift */; };
+		3392B3FE28A3D5D000432B92 /* FetchThresholdAlertsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3392B3FD28A3D5D000432B92 /* FetchThresholdAlertsService.swift */; };
 		3397C81F2787024C0050B333 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3397C81E2787024C0050B333 /* UserDefaults.swift */; };
 		3399394D27DA1722006144AF /* SingleSessionDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3399394C27DA1722006144AF /* SingleSessionDownloader.swift */; };
 		339BF3E127D231F000BBCB23 /* StaticSessionHeaderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 339BF3E027D231F000BBCB23 /* StaticSessionHeaderViewModel.swift */; };
@@ -536,8 +543,11 @@
 		332020A7283CF724003E07F3 /* SessionEntity+Sessionable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SessionEntity+Sessionable.swift"; sourceTree = "<group>"; };
 		332066A32891730E00798AC1 /* ShareSessionFileTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSessionFileTest.swift; sourceTree = "<group>"; };
 		332066A52892D94400798AC1 /* SettingsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
-		332066A72892DB2F00798AC1 /* DormantStreamAlertAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DormantStreamAlertAPI.swift; sourceTree = "<group>"; };
+		332066A72892DB2F00798AC1 /* DormantStreamAlertService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DormantStreamAlertService.swift; sourceTree = "<group>"; };
 		332066A92897FD1C00798AC1 /* DormantStreamAlertAPITest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DormantStreamAlertAPITest.swift; sourceTree = "<group>"; };
+		332066AB2898156D00798AC1 /* ThresholdAlertSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThresholdAlertSheet.swift; sourceTree = "<group>"; };
+		332066AE28981EDD00798AC1 /* ThresholdAlertSheetViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThresholdAlertSheetViewModel.swift; sourceTree = "<group>"; };
+		332066B0289AB69300798AC1 /* ThresholdAlertStreamOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThresholdAlertStreamOption.swift; sourceTree = "<group>"; };
 		332F521325FA38430047236D /* MicrophoneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrophoneManager.swift; sourceTree = "<group>"; };
 		334062432816B4B6004DA4DA /* EditLocationlessSessionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditLocationlessSessionViewModel.swift; sourceTree = "<group>"; };
 		3340624528181376004DA4DA /* AirCasting v5.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AirCasting v5.xcdatamodel"; sourceTree = "<group>"; };
@@ -574,6 +584,10 @@
 		338CA6F427D1045300505331 /* WKWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WKWebView.swift; sourceTree = "<group>"; };
 		338CA6F627D104AF00505331 /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
 		338FE86027AAB0F1006148DA /* AirCasting v3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AirCasting v3.xcdatamodel"; sourceTree = "<group>"; };
+		3392B3F728A1522600432B92 /* CreateThresholdAlertService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateThresholdAlertService.swift; sourceTree = "<group>"; };
+		3392B3F928A1601000432B92 /* DeleteThresholdAlertService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteThresholdAlertService.swift; sourceTree = "<group>"; };
+		3392B3FB28A3C35600432B92 /* ThresholdAlertsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThresholdAlertsController.swift; sourceTree = "<group>"; };
+		3392B3FD28A3D5D000432B92 /* FetchThresholdAlertsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchThresholdAlertsService.swift; sourceTree = "<group>"; };
 		3397C81E2787024C0050B333 /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 		3399394C27DA1722006144AF /* SingleSessionDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleSessionDownloader.swift; sourceTree = "<group>"; };
 		339BF3E027D231F000BBCB23 /* StaticSessionHeaderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaticSessionHeaderViewModel.swift; sourceTree = "<group>"; };
@@ -1088,6 +1102,17 @@
 			path = ShareSession;
 			sourceTree = "<group>";
 		};
+		332066AD28981EBF00798AC1 /* ThresholdAlerts */ = {
+			isa = PBXGroup;
+			children = (
+				332066AB2898156D00798AC1 /* ThresholdAlertSheet.swift */,
+				332066AE28981EDD00798AC1 /* ThresholdAlertSheetViewModel.swift */,
+				332066B0289AB69300798AC1 /* ThresholdAlertStreamOption.swift */,
+				3392B3FB28A3C35600432B92 /* ThresholdAlertsController.swift */,
+			);
+			path = ThresholdAlerts;
+			sourceTree = "<group>";
+		};
 		3328F11E266786C600B72D61 /* Chart */ = {
 			isa = PBXGroup;
 			children = (
@@ -1455,6 +1480,7 @@
 			children = (
 				33F604AD2824173300B48C63 /* ExternalSessionsViews */,
 				3305086F276B566800D18C69 /* ShareSession */,
+				332066AD28981EBF00798AC1 /* ThresholdAlerts */,
 				DDF12AE926B2ADFD00D067C7 /* SessionCardView */,
 				AC6D569E25AEEAE700D221BA /* SessionHeaderView.swift */,
 				DD009D652698844A009F0443 /* DeleteView.swift */,
@@ -1618,7 +1644,10 @@
 				335A8B2E2785D49100355D46 /* ShareSessionAPI.swift */,
 				3399394C27DA1722006144AF /* SingleSessionDownloader.swift */,
 				33E56F3C27F3498A0032117E /* StreamDownloader.swift */,
-				332066A72892DB2F00798AC1 /* DormantStreamAlertAPI.swift */,
+				3392B3F728A1522600432B92 /* CreateThresholdAlertService.swift */,
+				3392B3F928A1601000432B92 /* DeleteThresholdAlertService.swift */,
+				3392B3FD28A3D5D000432B92 /* FetchThresholdAlertsService.swift */,
+				332066A72892DB2F00798AC1 /* DormantStreamAlertService.swift */,
 			);
 			path = APICommunicator;
 			sourceTree = "<group>";
@@ -2994,6 +3023,7 @@
 				AC93B8FE25C02E0B003D0A0D /* GoogleMapView.swift in Sources */,
 				B3F1447426ADF8A7006A4612 /* ScheduledTimer.swift in Sources */,
 				B30BAC042694A8B400AE0476 /* MapStatsDataSource.swift in Sources */,
+				332066AC2898156D00798AC1 /* ThresholdAlertSheet.swift in Sources */,
 				AC9EB64526ECB11B00B1F780 /* DefaultSyncingMeasurementsViewModel.swift in Sources */,
 				B30BAC1D2694AABC00AE0476 /* MeasurementStatisticsTypes.swift in Sources */,
 				B32D08AF267A6D13006C97ED /* ErasingToVoidPublisher.swift in Sources */,
@@ -3017,6 +3047,7 @@
 				DD123EC527BD35E8001083C3 /* SessionsForLocationDownloader.swift in Sources */,
 				B33DB5762686161300ED1344 /* SensorName.swift in Sources */,
 				DD8AFE4F272886D700ED1CED /* ThresholdWitness.swift in Sources */,
+				3392B3FA28A1601000432B92 /* DeleteThresholdAlertService.swift in Sources */,
 				B3F1447C26AE437E006A4612 /* OnErrorPublisher.swift in Sources */,
 				B39AAE1C27C0F28F00D2F3C0 /* ChartView.swift in Sources */,
 				B3FD77B7267C94AF00E97CC2 /* DatabaseMeasurement.swift in Sources */,
@@ -3074,6 +3105,7 @@
 				B38E6CD026C5F83D00C21C45 /* StandardSesssionStopper.swift in Sources */,
 				3399394D27DA1722006144AF /* SingleSessionDownloader.swift in Sources */,
 				B30F9A612745601F00C85E17 /* SDSyncController.swift in Sources */,
+				332066AF28981EDD00798AC1 /* ThresholdAlertSheetViewModel.swift in Sources */,
 				33B397D9284FB77400C95387 /* PhotoPicker.swift in Sources */,
 				33406247281821FA004DA4DA /* ExternalSessionsStore.swift in Sources */,
 				B33B15FE27AEE6E900138FFA /* WeakRef+DisposableDataHolder.swift in Sources */,
@@ -3205,6 +3237,7 @@
 				AC32041C25CC46EF00A68520 /* PowerABView.swift in Sources */,
 				B32D08AD267A6437006C97ED /* LogEvent.swift in Sources */,
 				ACDA5EBD285B249900A531E9 /* SettingsMyAccountViewModel.swift in Sources */,
+				3392B3FE28A3D5D000432B92 /* FetchThresholdAlertsService.swift in Sources */,
 				DD80AE2227BA5EF500D9B123 /* ChooseLocationPickerService.swift in Sources */,
 				ACBB05132761F21500A6B3FB /* SDCardFixedSessionsSavingService.swift in Sources */,
 				33BA336A266E4D1000899343 /* MobileSession.swift in Sources */,
@@ -3219,6 +3252,7 @@
 				B32D08A4267A4957006C97ED /* LogErrorAndCompletePublisher.swift in Sources */,
 				ACC883882645784400C5DB70 /* GraphErorrHandling.swift in Sources */,
 				B33B15F027AEE69900138FFA /* DocumentsFileLoggerStore.swift in Sources */,
+				332066B1289AB69300798AC1 /* ThresholdAlertStreamOption.swift in Sources */,
 				B3FD77BC267C94AF00E97CC2 /* ScheduledSessionSynchronizerProxy.swift in Sources */,
 				FA63D212289C0282002A4BD5 /* DatabaseDeviceUUID.swift in Sources */,
 				4F5D3F73262C91C6003AD82E /* UserAuthenticationSession.swift in Sources */,
@@ -3305,7 +3339,7 @@
 				B3FD77BE267C94AF00E97CC2 /* SessionSynchronizationStore.swift in Sources */,
 				ACD01F952600A54400B8F65F /* UserDefaults+Preferences.swift in Sources */,
 				B33B15F427AEE69900138FFA /* CompositeLogger.swift in Sources */,
-				332066A82892DB2F00798AC1 /* DormantStreamAlertAPI.swift in Sources */,
+				332066A82892DB2F00798AC1 /* DormantStreamAlertService.swift in Sources */,
 				33F2238A270C674E00F14909 /* TimeInterval.swift in Sources */,
 				4FB39E3A2621BE7F00E5E564 /* APIClient.swift in Sources */,
 				AC9F526D2652A360003CF61F /* EmptyMobileDashboardView.swift in Sources */,
@@ -3325,6 +3359,7 @@
 				DDEE3A48269747250098CCA9 /* EditView.swift in Sources */,
 				AC8CFF3625E502DD00FB2918 /* CreateAccountView.swift in Sources */,
 				B35A09A12845615F00F9837B /* UnitFormatter.swift in Sources */,
+				3392B3F828A1522600432B92 /* CreateThresholdAlertService.swift in Sources */,
 				B369CF32275A7A1500B71D81 /* OverridingFeatureFlagProvider.swift in Sources */,
 				338C30E825F10BFE00E0305C /* AirCasting.xcdatamodeld in Sources */,
 				33E63A86288EC0A3008D92EC /* WiFiAwareSessionSynchronizerProxy.swift in Sources */,
@@ -3351,6 +3386,7 @@
 				B3FD77C8267C997800E97CC2 /* PersistenceController+Database.swift in Sources */,
 				DDC86646276B561500A8E610 /* EditNoteViewModel.swift in Sources */,
 				AC8CFF4525E510CB00FB2918 /* AuthorizationAPI.swift in Sources */,
+				3392B3FC28A3C35600432B92 /* ThresholdAlertsController.swift in Sources */,
 				DD9EBB4E26AFDD2100D51804 /* TurnOnLocationView.swift in Sources */,
 				DDC86648276B607C00A8E610 /* Note.swift in Sources */,
 				B3EFAB1726EFE2DB00E88141 /* FirstRunInfoProvidable.swift in Sources */,
