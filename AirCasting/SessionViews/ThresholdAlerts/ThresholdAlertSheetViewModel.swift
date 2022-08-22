@@ -52,8 +52,6 @@ class ThresholdAlertSheetViewModel: ObservableObject {
         showProperStreams()
     }
     
-    func confirmationButtonPressed() {}
-    
     func changeIsOn(of id: Int, to value: Bool) {
         guard let streamOptionId = streamOptions.first(where: { $0.id == id })?.id else { return }
         streamOptions[streamOptionId].isOn = value
@@ -149,9 +147,7 @@ class ThresholdAlertSheetViewModel: ObservableObject {
                 Log.error(error.localizedDescription)
                 DispatchQueue.main.async {
                     self.alert = InAppAlerts.failedThresholdAlertsFetchingAlert {
-                        DispatchQueue.main.async {
-                            self.shouldDismiss = true
-                        }
+                        self.shouldDismiss = true
                     }
                 }
             }
