@@ -89,12 +89,12 @@ class MicrophoneAutoCalibrationViewModelTests: ACTestCase {
         XCTAssertEqual(sut.state, .done)
     }
     
-    func test_calibrationFinishes_withSuccess_savesRecordedValueToStore() {
+    func test_calibrationFinishes_withSuccess_savesRecordedValueToStoreWithAddedPadding() {
         let (sut, calibratorStub) = createSUT(calibrator: CalibratorStub())
         let lowestPowerRecorded = 42.0
         calibratorStub.toReturn = .success(.init(lowestPower: lowestPowerRecorded, highestPower: .infinity))
         sut.calibrateTapped()
-        XCTAssertEqual(dataStore.zeroLevelAdjustment, lowestPowerRecorded)
+        XCTAssertEqual(dataStore.zeroLevelAdjustment, lowestPowerRecorded + MicrophoneCalibrationConstants.automaticCalibrationPadding)
     }
     
     func test_calibrationFinishes_withSuccess_noAlertIsPresented() {

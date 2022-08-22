@@ -41,7 +41,7 @@ class MicrophoneAutoCalibrationViewModel: ObservableObject {
             do {
                 let newZero = try result.get().lowestPower
                 Log.info("Mic calibration ended with new low power: \(newZero)")
-                self?.store.zeroLevelAdjustment = newZero
+                self?.store.zeroLevelAdjustment = newZero + MicrophoneCalibrationConstants.automaticCalibrationPadding
                 self?.state = .done
                 Log.info("Mic calibration store adjusted.")
             } catch {

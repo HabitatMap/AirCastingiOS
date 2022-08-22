@@ -18,7 +18,7 @@ class CalibratableMicrophoneDecorator: Microphone {
     }
     
     func getCurrentDecibelLevel() -> Double? {
-        microphone.getCurrentDecibelLevel().map { $0 - calibrationValueProvider.zeroLevelAdjustment + MicrophoneCalibrationConstants.automaticCalibrationPadding }
+        microphone.getCurrentDecibelLevel().map { $0 - calibrationValueProvider.zeroLevelAdjustment }
     }
     
     func startRecording() throws { try microphone.startRecording() }
