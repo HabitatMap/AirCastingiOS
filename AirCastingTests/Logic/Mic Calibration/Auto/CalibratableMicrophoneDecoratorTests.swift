@@ -24,7 +24,7 @@ class CalibratableMicrophoneDecoratorTests: ACTestCase {
         microphone.stubbedLevel = 87.0
         
         let level = try XCTUnwrap(sut.getCurrentDecibelLevel())
-        XCTAssertEqual(level, micReadout - autoCalibrationValue, accuracy: 0.001)
+        XCTAssertEqual(level, micReadout + autoCalibrationValue, accuracy: 0.001)
     }
     
     // MARK: Message passing tests

@@ -91,10 +91,25 @@ class MicrophoneAutoCalibrationViewModelTests: ACTestCase {
     
     func test_calibrationFinishes_withSuccess_savesRecordedValueToStoreWithAddedPadding() {
         let (sut, calibratorStub) = createSUT(calibrator: CalibratorStub())
-        let lowestPowerRecorded = 42.0
-        calibratorStub.toReturn = .success(.init(lowestPower: lowestPowerRecorded, highestPower: .infinity))
+        calibratorStub.toReturn = .success(.init(lowestPower: 0, highestPower: .infinity))
         sut.calibrateTapped()
-        XCTAssertEqual(dataStore.zeroLevelAdjustment, lowestPowerRecorded + MicrophoneCalibrationConstants.automaticCalibrationPadding)
+        XCTAssertEqual(dataStore.zeroLevelAdjustment, MicrophoneCalibrationConstants.automaticCalibrationPadding)
+    }
+    
+    func test_calibrationFinishes_withSuccess_savesAbsoluteValueOfNegativeLowestPower() {
+        let (sut, calibratorStub) = createSUT(calibrator: CalibratorStub())
+        let lowestPowerReadout = -40.0
+        calibratorStub.toReturn = .success(.init(lowestPower: lowestPowerReadout, highestPower: .infinity))
+        sut.calibrateTapped()
+        XCTAssertEqual(dataStore.zeroLevelAdjustment, abs(lowestPowerReadout) + MicrophoneCalibrationConstants.automaticCalibrationPadding)
+    }
+    
+    func test_calibrationFinishes_withSuccess_savesZeroInsteadOfAnyPositiveLowestPower() {
+        let (sut, calibratorStub) = createSUT(calibrator: CalibratorStub())
+        let lowestPowerReadout = 40.0
+        calibratorStub.toReturn = .success(.init(lowestPower: lowestPowerReadout, highestPower: .infinity))
+        sut.calibrateTapped()
+        XCTAssertEqual(dataStore.zeroLevelAdjustment, MicrophoneCalibrationConstants.automaticCalibrationPadding)
     }
     
     func test_calibrationFinishes_withSuccess_noAlertIsPresented() {
