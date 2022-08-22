@@ -25,6 +25,14 @@ enum SDCardSyncStatus {
     case finalizing
 }
 
+enum SDSyncError: Error {
+    case unidetifiableDevice
+    case filesCorrupted
+    case readingDataFailure
+    case fixedSessionsProcessingFailure
+    case mobileSessionsProcessingFailure
+}
+
 class SDSyncController {
     @Injected private var fileWriter: SDSyncFileWriter
     @Injected private var airbeamServices: SDCardAirBeamServices
@@ -38,10 +46,11 @@ class SDSyncController {
     
     private let writingQueue = DispatchQueue(label: "SDSyncController")
     
-    func syncFromAirbeam(_ airbeamConnection: CBPeripheral, progress: @escaping (SDCardSyncStatus) -> Void, completion: @escaping (Bool) -> Void) {
+    func syncFromAirbeam(_ airbeamConnection: CBPeripheral, progress: @escaping (SDCardSyncStatus) -> Void, completion: @escaping (Result<Void, SDSyncError>) -> Void) {
+        Log.info("[SD SYNC] Starting syncing")
         guard let sensorName = airbeamConnection.name else {
-            Log.error("[SD Sync] Unable to identify the device")
-            completion(false)
+            Log.error("[SD SYNC] Unable to identify the device")
+            completion(.failure(.unidetifiableDevice))
             return
         }
 
@@ -56,11 +65,13 @@ class SDSyncController {
             self.writingQueue.sync {
                 switch result {
                 case .success(let metadata):
+                    Log.info("[SD SYNC] Finished reading data with success")
                     progress(.finalizing)
                     let files = self.fileWriter.finishAndSave()
-                    
+                    Log.info("[SD SYNC] Files: \(files)")
                     guard !files.isEmpty else {
-                        completion(true)
+                        Log.info("[SD SYNC] No files. Finishing sd sync")
+                        completion(.success(()))
                         return
                     }
                     
@@ -68,21 +79,23 @@ class SDSyncController {
                     self.checkFilesForCorruption(files, expectedMeasurementsCount: metadata.expectedMeasurementsCount) { fileValidationResult in
                         switch fileValidationResult {
                         case .success(let verifiedFiles):
+                            Log.info("[SD SYNC] Check for corruption passed")
                             self.handle(files: verifiedFiles, sensorName: sensorName, completion: completion)
                         case .failure(let error):
                             Log.error(error.localizedDescription)
-                            completion(false)
+                            completion(.failure(.filesCorrupted))
                         }
                     }
                 case .failure:
+                    Log.info("[SD SYNC] Reading data from AirBeam failed")
                     self.fileWriter.finishAndRemoveFiles()
-                    completion(false)
+                    completion(.failure(.readingDataFailure))
                 }
             }
         })
     }
     
-    private func handle(files: [(URL, SDCardSessionType)], sensorName: String, completion: @escaping (Bool) -> Void ) {
+    private func handle(files: [(URL, SDCardSessionType)], sensorName: String, completion: @escaping (Result<Void, SDSyncError>) -> Void ) {
         let mobileFileURL = files.first(where: { $0.1 == SDCardSessionType.mobile })?.0
         let fixedFileURL = files.first(where: { $0.1 == SDCardSessionType.fixed })?.0
         
@@ -91,9 +104,9 @@ class SDSyncController {
                 switch result {
                 case .success(let fixedSessionsUUIDs):
                     self.measurementsDownloader.download(sessionsUUIDs: fixedSessionsUUIDs)
-                    completion(true)
+                    completion(.success(()))
                 case .failure:
-                    completion(false)
+                    completion(.failure(.fixedSessionsProcessingFailure))
                 }
             }
         }
@@ -101,28 +114,29 @@ class SDSyncController {
         if let mobileFileURL = mobileFileURL {
             process(mobileSessionFile: mobileFileURL, deviceID: sensorName) { mobileResult in
                 guard mobileResult else {
-                    completion(mobileResult)
+                    completion(.failure(.mobileSessionsProcessingFailure))
                     return
                 }
                 
                 if let fixedFileURL = fixedFileURL {
                     handleFixedFile(fixedFileURL: fixedFileURL)
                 } else {
-                    completion(true)
+                    completion(.success(()))
                 }
             }
         } else if let fixedFileURL = fixedFileURL {
             handleFixedFile(fixedFileURL: fixedFileURL)
         } else {
-            completion(true)
+            completion(.success(()))
         }
     }
     
     private func process(fixedSessionFile: URL, deviceID: String, completion: @escaping (Result<[SessionUUID], Error>) -> Void) {
-        Log.info("Processing fixed file")
+        Log.info("[SD Sync] Processing fixed file")
         fixedSessionsUploader.processAndUpload(fileURL: fixedSessionFile, deviceID: deviceID) { result in
             switch result {
             case .success(let sessions):
+                Log.info("[SD Sync] Finished processing fixed file with success")
                 completion(.success(sessions))
             case .failure(let error):
                 Log.error("[SD Sync] Failed to upload sessions to backend: \(error.localizedDescription)")
@@ -132,10 +146,11 @@ class SDSyncController {
     }
     
     private func process(mobileSessionFile: URL, deviceID: String, completion: @escaping (Bool) -> Void) {
-        Log.info("Processing fixed file")
+        Log.info("[SD Sync] Processing mobile file")
         self.mobileSessionsSaver.saveDataToDb(fileURL: mobileSessionFile, deviceID: deviceID) { result in
             switch result {
             case .success(let sessions):
+                Log.info("[SD Sync] Saved mobile data with success")
                 self.averagingService.averageMeasurements(for: sessions) {
                     Log.info("[SD Sync] Averaging done")
                     self.onCurrentSyncEnd { self.startBackendSync() }

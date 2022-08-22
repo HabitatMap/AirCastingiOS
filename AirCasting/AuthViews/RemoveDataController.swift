@@ -9,7 +9,7 @@ protocol RemoveDataController {
 }
 
 final class DefaultRemoveDataController: RemoveDataController {
-    @Injected private var microphoneManager: MicrophoneManager
+    @Injected private var microphone: Microphone
     @Injected private var deauthorizer: Deauthorizable
     @Injected private var dataEraser: DataEraser
 
@@ -18,9 +18,9 @@ final class DefaultRemoveDataController: RemoveDataController {
         URLSession.shared.getAllTasks { tasks in
             tasks.forEach { $0.cancel() }
         }
-        if microphoneManager.isRecording {
+        if microphone.state != .notRecording {
             Log.info("[LOGOUT] Canceling recording session")
-            microphoneManager.stopRecording()
+            try? microphone.stopRecording()
         }
         Log.info("[LOGOUT] Clearing user credentials")
         do {

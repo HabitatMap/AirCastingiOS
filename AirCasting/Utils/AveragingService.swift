@@ -158,10 +158,7 @@ final class AveragingService: NSObject {
     }
     
     private func scheduleAveraging(session: SessionEntity) {
-        guard let uuid = session.uuid else {
-            Log.info("Couldn't schedule averaging because session \(String(describing: session.name)) doesn't have UUID")
-            return
-        }
+        let uuid = session.uuid
         guard let startTime = session.startTime else { return }
         
         let fromSessionStartToFirstThreshold = (startTime.timeIntervalSince(DateBuilder.getFakeUTCDate()) + Double(TimeThreshold.firstThreshold.rawValue) + Double(1))

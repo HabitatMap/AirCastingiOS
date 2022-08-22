@@ -18,7 +18,8 @@ struct SelectDeviceView: View {
     @State private var isMicLinkActive: Bool = false
     @EnvironmentObject private var sessionContext: CreateSessionContext
     @InjectedObject private var bluetoothManager: BluetoothManager
-    @InjectedObject private var microphoneManager: MicrophoneManager
+    @Injected private var microphone: Microphone
+    @Injected private var microphonePermissions: MicrophonePermissions
     @Binding var creatingSessionFlowContinues : Bool
     @Binding var sdSyncContinues : Bool
     @EnvironmentObject private var emptyDashboardButtonTapped: EmptyDashboardButtonTapped
@@ -88,10 +89,10 @@ struct SelectDeviceView: View {
         Button(action: {
             sessionContext.deviceType = DeviceType.MIC
             selected = 2
-            if microphoneManager.recordPermissionGranted() {
+            if microphonePermissions.permissionGranted {
                 isMicLinkActive = true
             } else {
-                microphoneManager.requestRecordPermission { isGranted in
+                microphonePermissions.requestRecordPermission { isGranted in
                     DispatchQueue.main.async {
                         if isGranted {
                             isMicLinkActive = true
@@ -106,7 +107,7 @@ struct SelectDeviceView: View {
             createLabel(title: Strings.SelectDeviceView.micLabel_1, subtitle: Strings.SelectDeviceView.phoneMicrophone)
         })
         .buttonStyle(WhiteSelectingButtonStyle(isSelected: selected == 2))
-        .disabled(microphoneManager.isRecording)
+        .disabled(microphone.state != .notRecording)
         .onTapGesture {
             alert = InAppAlerts.microphoneSessionAlreadyRecordingAlert()
         }

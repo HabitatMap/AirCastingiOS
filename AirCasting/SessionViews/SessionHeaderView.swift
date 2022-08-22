@@ -112,7 +112,7 @@ struct SessionHeaderView: View {
             let vm = EditLocationlessSessionViewModel(sessionUUID: session.uuid, sessionName: session.name ?? "", sessionTags: session.tags ?? "")
             EditView(viewModel: vm)
         } else {
-            let vm = EditSessionViewModel(sessionUUID: session.uuid)
+            let vm = EditSessionViewModel(sessionUUID: session.uuid, sessionName: session.name ?? "", sessionTags: session.tags ?? "", sessionSynced: session.urlLocation != nil)
             EditView(viewModel: vm)
         }
     }
