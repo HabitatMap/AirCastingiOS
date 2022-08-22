@@ -3,8 +3,42 @@ class DefaultFeatureFlagProvider: FeatureFlagProvider {
     
     func isFeatureOn(_ feature: FeatureFlag) -> Bool? {
         switch feature {
-        default:
+        case .sdCardSync:
+            #if DEBUG
             return true
+            #else
+            return true
+            #endif
+        case .standaloneMode:
+            #if DEBUG
+            return true
+            #else
+            return true
+            #endif
+        case .notes:
+            #if DEBUG
+            return true
+            #else
+            return true
+            #endif
+        case .locationlessSessions:
+            #if DEBUG
+            return true
+            #else
+            return true
+            #endif
+        case .searchAndFollow:
+            #if DEBUG
+            return true
+            #else
+            return true
+            #endif
+        case .deleteAccount:
+            #if DEBUG
+            return true
+            #else
+            return true
+            #endif
         }
     }
 }
