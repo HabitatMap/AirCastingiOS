@@ -15,14 +15,14 @@ struct MicrophoneManualCalibrationView: View {
     var body: some View {
         VStack(alignment: .center) {
             Group {
-                title.padding(.top, 30.0)
+                title.padding(.top, 30)
                 Spacer()
                 createTextfield(placeholder: "", binding: $viewModel.text)
                     .keyboardType(.numberPad)
                 Spacer()
                 okButton
                     .disabled(!viewModel.okButtonEnabled)
-                cancelButton.padding(.bottom, 30.0)
+                cancelButton.padding(.bottom, 30)
             }.padding()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -44,6 +44,6 @@ struct MicrophoneManualCalibrationView: View {
     private var cancelButton: some View {
         Button { viewModel.cancelTapped() } label: {
             Text(Strings.Commons.cancel)
-        }.buttonStyle(BlueButtonStyle())
+        }.buttonStyle(BlueTextButtonStyle())
     }
 }

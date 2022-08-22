@@ -26,7 +26,7 @@ struct MicrophoneAutoCalibrationView: View {
     }
     
     private var title: some View {
-        Text("Microphone calibration")
+        Text(Strings.MicrophoneCalibration.Wizard.title)
             .foregroundColor(.aircastingDarkGray)
             .font(Fonts.muliSemiboldTitle1)
             .padding(.bottom, 30)
@@ -37,9 +37,9 @@ struct MicrophoneAutoCalibrationView: View {
             Image(systemName: "speaker.slash")
                 .font(.system(size: 100).italic())
             Group {
-                Text("Please put your phone in a quiet space and press \"Start\", the calibration will take aprox. 5sec")
+                Text(Strings.MicrophoneCalibration.Wizard.subtitle)
                     .font(Fonts.muliMediumHeading2)
-                Button("Start", action: { self.viewModel.calibrateTapped() })
+                Button(Strings.Commons.start, action: { self.viewModel.calibrateTapped() })
                     .buttonStyle(BlueButtonStyle())
                     .padding(.top, 20)
             }.padding()
@@ -49,7 +49,7 @@ struct MicrophoneAutoCalibrationView: View {
     private var inProgressView: some View {
         Group {
             ActivityIndicator(isAnimating: .constant(true), style: .large)
-            Text("Microphone is calibrating. Please try to keep silence")
+            Text(Strings.MicrophoneCalibration.Wizard.keepSilence)
                 .font(Fonts.muliMediumHeading2)
                 .padding(.top, 20)
         }.padding()
@@ -60,10 +60,10 @@ struct MicrophoneAutoCalibrationView: View {
             Image(systemName: "checkmark.circle")
                 .font(.system(size: 100).italic())
             Group {
-                Text("Microphone is calibrated")
+                Text(Strings.MicrophoneCalibration.Wizard.success)
                     .font(Fonts.muliMediumHeading2)
                     .padding(.top, 20)
-                Button("Ok", action: { self.presentationMode.wrappedValue.dismiss() })
+                Button(Strings.Commons.ok.capitalized, action: { self.presentationMode.wrappedValue.dismiss() })
                     .buttonStyle(BlueButtonStyle())
                     .padding(.top, 20)
             }

@@ -5,7 +5,7 @@ import Foundation
 import Resolver
 
 /// A `Microphone` decorator that adds the ability to adjust the output using the value from `MicrophoneCalibraionValueProvider`.
-/// We assume that nobody will calibrate in a perfect 0dB room, so we're adding +20dB.
+/// We assume that nobody will calibrate in a perfect 0dB room, so we're adding +30dB.
 class CalibratableMicrophoneDecorator: Microphone {
     let microphone: Microphone
     @Injected private var calibrationValueProvider: MicrophoneCalibraionValueProvider

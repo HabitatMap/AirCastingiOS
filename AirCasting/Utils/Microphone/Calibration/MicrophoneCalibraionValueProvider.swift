@@ -8,13 +8,13 @@ enum MicrophoneCalibrationConstants {
     static let automaticCalibrationPadding = 30.0
 }
 
-/// Represents an object that can read dB level adjustgment value
+/// Represents an object that can read dB level adjustment value
 protocol MicrophoneCalibraionValueProvider {
     /// The value by which all `Microphone` measurements will be adjusted (by subtraction)
     var zeroLevelAdjustment: Double { get }
 }
 
-/// Represents an object that can write a new dB level adjustgment value
+/// Represents an object that can write a new dB level adjustment value
 protocol MicrophoneCalibrationValueWritable {
     /// The value by which all `Microphone` measurements will be adjusted (by subtraction)
     var zeroLevelAdjustment: Double { get set }

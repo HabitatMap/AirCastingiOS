@@ -313,6 +313,7 @@ struct SettingsView: View {
                 Text(Strings.MicrophoneCalibration.settingsItemDescription)
                     .font(Fonts.muliRegularHeading3)
                     .foregroundColor(.aircastingGray)
+                    .padding(.leading, -20.0)
             }
         }
         .sheet(isPresented: $viewModel.showMicrophoneManualCalibation, content: {
@@ -325,10 +326,13 @@ struct SettingsView: View {
             NavigationLink(Strings.MicrophoneCalibration.Wizard.settingsItemTitle) {
                 MicrophoneAutoCalibrationView(onFinish: { } )
             }
+            .font(Fonts.muliBoldHeading1)
+            .accentColor(.primary)
             Spacer()
-            Text("Experimental feature, available only for BETA builds.")
+            Text(Strings.MicrophoneCalibration.Wizard.settingsItemDescription)
                 .font(Fonts.muliRegularHeading3)
                 .foregroundColor(.aircastingGray)
+                .padding(.leading, -20.0)
         }
     }
 

@@ -22,7 +22,7 @@ enum MicrophoneCalibrationError: Error {
 /// Interface used to calibrate the microphone dB level
 protocol MicrophoneCalibration {
     /// Tells if calibration can be started.
-    /// Important: you need to check if before starting a calibration, if `startCalibration` is called on for an unavailable state the behavior is undefined
+    /// Important: you need to check it before starting a calibration. If `startCalibration` is called on for an unavailable state the behavior is undefined
     /// - Returns: `Bool` value indicating wheter the calibration can be performed at the moment.
     var isAvailable: Bool { get }
     /// Starts a microphone calibration session
@@ -47,6 +47,9 @@ class MicrophoneCalibrator: MicrophoneCalibration {
          minimalMeasurementsCount: UInt = 12,
          calibrationDuration: Double = 5.0,
          timeBetweenMeasurements: Double = 0.25) {
+        // Check for impossible minimal measurements count
+        assert(Double(minimalMeasurementsCount) < Double(calibrationDuration / timeBetweenMeasurements))
+        assert(minimalMeasurementsCount > 0)
         self.microphone = microphone
         self.dateProvider = dateProvider
         self.minimalMeasurementsCount = minimalMeasurementsCount
@@ -72,7 +75,7 @@ class MicrophoneCalibrator: MicrophoneCalibration {
             try? self.microphone.stopRecording()
             self.timerScheduler.stop(token: token)
             let values = allMeasurements.compactMap { $0 }
-            guard values.count > minimalMeasurementsCount else {
+            guard values.count >= minimalMeasurementsCount else {
                 completion(.failure(.couldntGetEnoughMeasurements))
                 return
             }

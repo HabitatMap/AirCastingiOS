@@ -24,7 +24,7 @@ protocol GlobalAlertPresenter {
     /// - Parameters:
     ///   - title: the alert title
     ///   - text: the alert body
-    ///   - buttonTitle: a dismiss button title.
+    ///   - buttons: a list of buttons to be presented
     func showAlert(title: String, text: String, buttons: [GlobalAlertButton])
 }
 
