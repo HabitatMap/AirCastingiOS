@@ -16,7 +16,7 @@ protocol MeasurementStreamStorageContextUpdate {
     func addMeasurement(_ measurement: Measurement, toStreamWithID id: MeasurementStreamLocalID) throws
     func saveThresholdFor(sensorName: String, thresholdVeryHigh: Int32, thresholdHigh: Int32, thresholdMedium: Int32, thresholdLow: Int32, thresholdVeryLow: Int32) throws
     func saveMeasurementStream(_ stream: MeasurementStream, for sessionUUID: SessionUUID) throws -> MeasurementStreamLocalID
-    func createSession(_ session: Session) throws
+    @discardableResult func createSession(_ session: Session) throws -> SessionEntity
     func createSessionAndMeasurementStream(_ session: Session, _ stream: MeasurementStream) throws -> MeasurementStreamLocalID
     func updateSessionStatus(_ sessionStatus: SessionStatus, for sessionUUID: SessionUUID) throws
     func updateSessionEndtime(_ endTime: Date, for sessionUUID: SessionUUID) throws
@@ -373,11 +373,13 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
     }
     
     // MARK: - Create Session
-
-    func createSession(_ session: Session) throws {
+    
+    @discardableResult
+    func createSession(_ session: Session) throws -> SessionEntity {
         let sessionEntity = newSessionEntity()
         updateSessionParamsService.updateSessionsParams(sessionEntity, session: session)
         try context.save()
+        return sessionEntity
     }
 
     func observerFor<T>(request: NSFetchRequest<T>) -> NSFetchedResultsController<T> {

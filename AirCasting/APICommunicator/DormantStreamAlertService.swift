@@ -4,7 +4,7 @@
 import Foundation
 import Resolver
 
-protocol DormantStreamAlertAPI {
+protocol DormantStreamAlertService {
     func sendNewSetting(value: Bool, completion: @escaping (Result<Void, DormantStreamAlertAPIError>) -> Void)
 }
 
@@ -13,7 +13,7 @@ enum DormantStreamAlertAPIError: Error {
     case failedRequest(Error)
 }
 
-struct DefaultDormantStreamAlertAPI: DormantStreamAlertAPI {
+struct DefaultDormantStreamAlertAPI: DormantStreamAlertService {
     @Injected private var urlProvider: URLProvider
     @Injected private var apiClient: APIClient
     @Injected private var validator: HTTPResponseValidator

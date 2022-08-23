@@ -77,6 +77,10 @@ extension Resolver: ResolverRegistering {
             let context = Resolver.resolve(PersistenceController.self).editContext
             return CoreDataUIStorage(context: context)
         }.scope(.cached)
+        main.register { (_, _) -> SessionStorage in
+            let context = Resolver.resolve(PersistenceController.self).editContext
+            return CoreDataSessionStorage(context: context)
+        }.scope(.cached)
         main.register { (_, _) -> SessionEntityStore in
             let context = Resolver.resolve(PersistenceController.self).editContext
             return DefaultSessionEntityStore(context: context)
@@ -94,7 +98,7 @@ extension Resolver: ResolverRegistering {
         main.register { UserDefaultsURLProvider() as URLProvider }
         main.register { DefaultNetworkChecker() as NetworkChecker }.scope(.application)
         main.register { DefaultSingleSessionDownloader() as SingleSessionDownloader }
-        main.register { DefaultDormantStreamAlertAPI() as DormantStreamAlertAPI }
+        main.register { DefaultDormantStreamAlertAPI() as DormantStreamAlertService }
         
         // MARK: - Feature flags
         main.register { DefaultRemoteNotificationRouter() }
@@ -142,6 +146,11 @@ extension Resolver: ResolverRegistering {
         }.scope(.application)
             .implements(SessionSynchronizer.self)
         
+        // MARK: - Session recording
+        main.register { try! AVMicrophone() as Microphone }
+            .scope(.application)
+            .implements(MicrophonePermissions.self)
+        
         // MARK: - Location handling
         main.register { _ -> LocationTracker in
             let manager = CLLocationManager()
@@ -153,6 +162,8 @@ extension Resolver: ResolverRegistering {
         .implements(LocationAuthorization.self)
         .scope(.application)
         
+        main.register { LocationServiceAdapter(tracker: Resolver.resolve()) as LocationService }.scope(.unique)
+        
         // MARK: - Settings
         main.register { UserSettings(userDefaults: .standard) }.scope(.cached)
         main.register { DefaultSettingsController() as SettingsController }
@@ -162,7 +173,7 @@ extension Resolver: ResolverRegistering {
         main.register { DownloadMeasurementsService() }.implements(MeasurementUpdatingService.self).scope(.cached)
         main.register { DefaultSettingsRedirection() as SettingsRedirection }.scope(.application)
         main.register { LifeTimeEventsProvider(userDefaults: .standard) }.implements(FirstRunInfoProvidable.self).scope(.application)
-        main.register { MicrophoneManager(measurementStreamStorage: Resolver.resolve()) }.scope(.cached)
+        main.register { MicrophoneManager() }.scope(.cached)
         main.register { AveragingService(measurementStreamStorage: Resolver.resolve()) }.scope(.cached)
         main.register { MobilePeripheralSessionManager(measurementStreamStorage: Resolver.resolve()) }.scope(.cached)
         main.register { BluetoothManager(mobilePeripheralSessionManager: Resolver.resolve()) }
@@ -177,6 +188,8 @@ extension Resolver: ResolverRegistering {
         main.register { DefaultLogoutController() as LogoutController }
         main.register { DefaultDeleteAccountController() as DeleteAccountController }
         main.register { DefaultRemoveDataController() as RemoveDataController }
+        main.register { DefaultThresholdAlertsController() as ThresholdAlertsController }
+        main.register { BluetoothConnectionProtector() as ConnectionProtectable }
         
         // MARK: - Session stopping
         
@@ -184,7 +197,8 @@ extension Resolver: ResolverRegistering {
             getSessionStopper(for: args())
         }
         
-        func getSessionStopper(for session: SessionEntity) -> SessionStoppable {
+        // TODO: Move to a Sessionable when merged in (?)
+        func getSessionStopper(for session: DevicedSession) -> SessionStoppable {
             let stopper = matchStopper(for: session)
             if session.locationless {
                 if session.deviceType == .MIC {
@@ -195,7 +209,7 @@ extension Resolver: ResolverRegistering {
             return SyncTriggeringSesionStopperDecorator(stoppable: stopper, synchronizer: Resolver.resolve())
         }
         
-        func matchStopper(for session: SessionEntity) -> SessionStoppable {
+        func matchStopper(for session: DevicedSession) -> SessionStoppable {
             switch session.deviceType {
             case .MIC: return MicrophoneSessionStopper(uuid: session.uuid)
             case .AIRBEAM3: return StandardSesssionStopper(uuid: session.uuid)
@@ -267,3 +281,12 @@ extension Resolver: ResolverRegistering {
         func isFeatureOn(_ feature: FeatureFlag) -> Bool? { true }
     }
 }
+
+protocol DevicedSession {
+    var uuid: SessionUUID { get }
+    var deviceType: DeviceType? { get }
+    var locationless: Bool { get }
+}
+
+extension Session: DevicedSession { }
+extension SessionEntity: DevicedSession { }

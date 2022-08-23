@@ -70,21 +70,21 @@ final class MobilePeripheralSessionCreator: SessionCreator {
             completion(.failure(MobilePeripheralSessionCreatorError.invalidCreateSessionContext(sessionContext)))
             return
         }
-        let session = Session(uuid: sessionUUID,
-                              type: sessionType,
-                              name: sessionContext.sessionName,
-                              deviceType: sessionContext.deviceType,
-                              location: startingLocation,
-                              startTime: DateBuilder.getFakeUTCDate(),
-                              contribute: contribute,
-                              locationless: sessionContext.locationless,
-                              tags: sessionContext.sessionTags,
-                              status: .NEW)
         do {
             guard let peripheral = sessionContext.peripheral else {
                 assertionFailure("invalidCreateSessionContext \(sessionContext)")
                 throw MobilePeripheralSessionCreatorError.invalidCreateSessionContext(sessionContext)
             }
+            let session = Session(uuid: sessionUUID,
+                                  type: sessionType,
+                                  name: sessionContext.sessionName,
+                                  deviceType: sessionContext.deviceType,
+                                  location: startingLocation,
+                                  startTime: DateBuilder.getFakeUTCDate(),
+                                  contribute: contribute,
+                                  locationless: sessionContext.locationless,
+                                  tags: sessionContext.sessionTags,
+                                  status: .NEW)
             AirBeam3Configurator(peripheral: peripheral).configureMobileSession(
                                     location: sessionContext.startingLocation ?? CLLocationCoordinate2D(latitude: 200, longitude: 200))
             mobilePeripheralSessionManager.startRecording(session: session, peripheral: peripheral)

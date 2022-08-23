@@ -161,11 +161,13 @@ private extension AirBeam3Configurator {
     
     private func downloadFromSDCardModeRequest() {
         let message = hexMessageBuilder.downloadFromSDCardModeRequest
+        Log.info("Sending download from SD card mode request to peripheral")
         sendConfigMessage(data: message)
     }
     
     private func clearSDCardModeRequest() {
         let message = hexMessageBuilder.clearSDCardModeRequest
+        Log.info("Sending clear SD card mode request to peripheral")
         sendConfigMessage(data: message)
     }
     

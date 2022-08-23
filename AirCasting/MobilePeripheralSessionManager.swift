@@ -23,7 +23,10 @@ class MobilePeripheralSessionManager {
     func startRecording(session: Session, peripheral: CBPeripheral) {
         measurementStreamStorage.accessStorage { [weak self] storage in
             do {
-                try storage.createSession(session)
+                let sessionReturned = try storage.createSession(session)
+                let entity = BluetoothConnectionEntity(context: sessionReturned.managedObjectContext!)
+                entity.peripheralUUID = peripheral.identifier.description
+                entity.session = sessionReturned
                 DispatchQueue.main.async {
                     if !session.locationless {
                         self?.locationTracker.start()

@@ -39,6 +39,15 @@ struct InAppAlerts {
                   ])
     }
     
+    static func noNetworkEditAlert(dismiss: (() -> Void)? = nil) -> AlertInfo {
+        AlertInfo(title: Strings.InAppAlerts.noInternetConnectionTitle,
+                  message: Strings.InAppAlerts.noInternetConnectionEditMessage,
+                  buttons: [
+                    .default(title: Strings.Commons.gotIt,
+                             action: dismiss)
+                  ])
+    }
+    
     static func noWifiNetworkSyncAlert(dismiss: (() -> Void)? = nil) -> AlertInfo {
         AlertInfo(title: Strings.InAppAlerts.noWifiConnectionTitle,
                   message: Strings.InAppAlerts.noWifiConnectionSyncMessage,
@@ -72,6 +81,24 @@ struct InAppAlerts {
                   buttons: [
                     .default(title: Strings.Commons.gotIt,
                              action: nil)
+                  ])
+    }
+    
+    static func failedThresholdAlertsAlert(dismiss: @escaping () -> Void) -> AlertInfo {
+        AlertInfo(title: Strings.ThresholdAlertSheet.failureAlertTitle,
+                  message: Strings.ThresholdAlertSheet.failureAlertMessage,
+                  buttons: [
+                    .default(title: Strings.Commons.gotIt,
+                             action: dismiss)
+                  ])
+    }
+    
+    static func failedThresholdAlertsFetchingAlert(dismiss: @escaping () -> Void) -> AlertInfo {
+        AlertInfo(title: Strings.ThresholdAlertSheet.failureAlertTitle,
+                  message: Strings.ThresholdAlertSheet.fetchingFailureAlertMessage,
+                  buttons: [
+                    .default(title: Strings.Commons.gotIt,
+                             action: dismiss)
                   ])
     }
     
@@ -136,14 +163,6 @@ struct InAppAlerts {
                                       action: dismiss) ])
     }
     
-    static func failedSDClearingAlert(dismiss: (@escaping () -> Void)) -> AlertInfo {
-        AlertInfo(title: Strings.ClearingSDCardView.failedClearingAlertTitle,
-                  message: Strings.ClearingSDCardView.failedClearingAlertMessage,
-                  buttons: [
-                    .default(title: Strings.Commons.gotIt,
-                             action: dismiss) ])
-    }
-    
     static func microphonePermissionAlert() -> AlertInfo {
         AlertInfo(title: Strings.MicrophoneAlert.title,
                   message: Strings.MicrophoneAlert.message,
@@ -159,6 +178,14 @@ struct InAppAlerts {
                   buttons: [
                     .default(title: Strings.Commons.gotIt,
                              action: nil) ])
+    }
+    
+    static func bluetoothSessionAlreadyRecordingAlert(dismiss: (@escaping () -> Void)) -> AlertInfo {
+        AlertInfo(title: Strings.BluetoothSessionAlreadyRecordingAlert.title,
+                  message: Strings.BluetoothSessionAlreadyRecordingAlert.message,
+                  buttons: [
+                    .default(title: Strings.Commons.gotIt,
+                             action: dismiss) ])
     }
     
     static func locationAlert() -> AlertInfo {
@@ -256,11 +283,11 @@ struct InAppAlerts {
         ])
     }
     
-    static func noInternetConnection() -> AlertInfo {
+    static func noInternetConnection(dismiss: (() -> Void)? = nil) -> AlertInfo {
         AlertInfo(title: Strings.ConnectionAlerts.noInternetTitle,
                   message: Strings.ConnectionAlerts.noInternetMessage,
                   buttons: [
-                    .default(title: Strings.Commons.ok, action: nil)
+                    .default(title: Strings.Commons.ok, action: dismiss)
                   ])
     }
     
@@ -304,6 +331,62 @@ struct InAppAlerts {
             buttons: [
                 .default(title: Strings.Commons.ok, action: nil)
             ])
+    }
+    
+    // MARK: - SD Sync
+    static func failedSDClearingBasicAlert(dismiss: (@escaping () -> Void)) -> AlertInfo {
+        AlertInfo(title: Strings.ClearingSDCardView.failedClearingAlertTitle,
+                  message: Strings.ClearingSDCardView.failedClearingAlertMessage,
+                  buttons: [
+                    .default(title: Strings.Commons.gotIt,
+                             action: dismiss) ])
+    }
+    
+    static func failedSDClearingAlert(dismiss: (@escaping () -> Void)) -> AlertInfo {
+        AlertInfo(title: Strings.SDSyncAlerts.clearFailTitle,
+                  message: Strings.SDSyncAlerts.clearFailMessage,
+                  buttons: [
+                    .default(title: Strings.Commons.gotIt,
+                             action: dismiss) ])
+    }
+    
+    static func sdSyncUnidentifiableDeviceAlert(dismiss: (@escaping () -> Void)) -> AlertInfo {
+        AlertInfo(title: Strings.SDSyncAlerts.genericFailTitle,
+                  message: Strings.SDSyncAlerts.unidetifiableDeviceMessage,
+                  buttons: [
+                    .default(title: Strings.Commons.gotIt,
+                             action: dismiss) ])
+    }
+    
+    static func sdSyncFilesCorruptedAlert(dismiss: (@escaping () -> Void)) -> AlertInfo {
+        AlertInfo(title: Strings.SDSyncAlerts.genericFailTitle,
+                  message: Strings.SDSyncAlerts.readingFilesFailMessage,
+                  buttons: [
+                    .default(title: Strings.Commons.gotIt,
+                             action: dismiss) ])
+    }
+    
+    static func sdSyncReadingDataAlert(dismiss: (@escaping () -> Void)) -> AlertInfo {
+        AlertInfo(title: Strings.SDSyncAlerts.genericFailTitle,
+                  message: Strings.SDSyncAlerts.readingDataFailMessage,
+                  buttons: [
+                    .default(title: Strings.Commons.gotIt,
+                             action: dismiss) ])
+    }
+    
+    static func sdSyncFixedFailAlert(dismiss: (@escaping () -> Void)) -> AlertInfo {
+        AlertInfo(title: Strings.SDSyncAlerts.genericFailTitle,
+                  message: Strings.SDSyncAlerts.processingFixedFailMessage,
+                  buttons: [
+                    .default(title: Strings.Commons.gotIt,
+                             action: dismiss) ])
+    }
+    static func sdSyncMobileFailAlert(dismiss: (@escaping () -> Void)) -> AlertInfo {
+        AlertInfo(title: Strings.SDSyncAlerts.genericFailTitle,
+                  message: Strings.SDSyncAlerts.processingMobileFailMessage,
+                  buttons: [
+                    .default(title: Strings.Commons.gotIt,
+                             action: dismiss) ])
     }
 }
 
