@@ -19,7 +19,7 @@ extension Publisher {
     ///    .sink()
     ///~~~
     func logVerbose(message: StringLiteralType,
-                    file: String = #file,
+                    file: String = #fileID,
                     function: String = #function,
                     line: Int = #line,
                     logFunc: @escaping Publishers.Logging.LogFunc = { Log.verbose($0, file: $1, function: $2, line: $3) }) -> Publishers.LogEvent<Self> {
@@ -43,7 +43,7 @@ extension Publisher {
     ///    .sink()
     ///~~~
     func logVerbose(_ messageClosure: @escaping (_ output: Output) -> String,
-                    file: String = #file,
+                    file: String = #fileID,
                     function: String = #function,
                     line: Int = #line,
                     _ logFunc: @escaping Publishers.Logging.LogFunc = { Log.verbose($0, file: $1, function: $2, line: $3) }) -> Publishers.LogEvent<Self> {
