@@ -27,12 +27,16 @@ extension Resolver: ResolverRegistering {
             composite.add(LoggerBuilder(type: .crashlytics)
                             .addMinimalLevel(.info)
                             .build())
+            composite.add(LoggerBuilder(type: .crashlyticsError)
+                            .addMinimalLevel(.error)
+                            .build())
 #endif
             return composite
         }.scope(.application)
         
         main.register { PrintLogger() }.scope(.application)
         main.register { FileLogger() }.scope(.application)
+        main.register { CrashlyticsErrorLogger() }.scope(.application)
         main.register { CrashlyticsLogger() }.scope(.application)
         
         main.register {
