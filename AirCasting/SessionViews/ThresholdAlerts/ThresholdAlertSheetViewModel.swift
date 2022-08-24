@@ -89,7 +89,7 @@ class ThresholdAlertSheetViewModel: ObservableObject {
         var toUpdate: [UpdateAlertData] = []
         
         streamOptions.forEach { alertOption in
-            if let activeAlert = activeAlerts.get?.first(where: { $0.sensorName == self.shorten(alertOption.sensorName) }) {
+            if let activeAlert = activeAlerts.get?.first(where: { $0.sensorName == alertOption.sensorName }) {
                 if alertOption == activeAlert {
                     return
                 }
@@ -135,7 +135,7 @@ class ThresholdAlertSheetViewModel: ObservableObject {
                 
                 newAlertOptions = sessionStreams.enumerated().compactMap { i, stream in
                     guard let sensorName = stream.sensorName else { return nil }
-                    let streamAlert = alerts.first(where: { $0.sensorName == self.shorten(sensorName) })
+                    let streamAlert = alerts.first(where: { $0.sensorName == sensorName })
                     return AlertOption(id: i, sensorName: sensorName, shortSensorName: self.shorten(sensorName), isOn: streamAlert != nil, thresholdValue: streamAlert?.thresholdValue ?? "", frequency: streamAlert?.frequency ?? .oneHour)
                 }
                 
