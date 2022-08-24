@@ -118,7 +118,7 @@ class DefaultThresholdAlertsController: ThresholdAlertsController {
         let group = DispatchGroup()
         alerts.forEach { alert in
             group.enter()
-            createAlertApiCommunitator.createAlert(sessionUUID: alert.sessionUUID, sensorName: self.shorten(alert.sensorName), thresholdValue: String(alert.thresholdValue), frequency: alert.frequency) { result in
+            createAlertApiCommunitator.createAlert(sessionUUID: alert.sessionUUID, sensorName: alert.sensorName, thresholdValue: String(alert.thresholdValue), frequency: alert.frequency) { result in
                 switch result {
                 case .success(_):
                     Log.info("Created alert for: \(alert.sensorName)")
@@ -143,7 +143,7 @@ class DefaultThresholdAlertsController: ThresholdAlertsController {
                 switch result {
                 case .success():
                     Log.info("Deleted from backed: \(alert.oldId)")
-                    self.createAlertApiCommunitator.createAlert(sessionUUID: alert.sessionUUID, sensorName: self.shorten(alert.sensorName), thresholdValue: String(alert.newThresholdValue), frequency: alert.newFrequency) { result in
+                    self.createAlertApiCommunitator.createAlert(sessionUUID: alert.sessionUUID, sensorName: alert.sensorName, thresholdValue: String(alert.newThresholdValue), frequency: alert.newFrequency) { result in
                         switch result {
                         case .success(_):
                             Log.info("Updated alert for: \(alert.sensorName)")
@@ -163,9 +163,5 @@ class DefaultThresholdAlertsController: ThresholdAlertsController {
         group.notify(queue: DispatchQueue.global()) {
             !failed ? completion(.success(())) : completion(.failure(.failedRequests))
         }
-    }
-    
-    private func shorten(_ streamName: String) -> String {
-        String(streamName.replacingOccurrences(of: ":", with: "-").split(separator: "-").last ?? "")
     }
 }
