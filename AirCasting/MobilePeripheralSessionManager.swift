@@ -11,6 +11,7 @@ class MobilePeripheralSessionManager {
 
     private let measurementStreamStorage: MeasurementStreamStorage
     @Injected private var locationTracker: LocationTracker
+    @Injected private var uiStorage: UIStorage
 
     private var activeMobileSession: MobileSession?
 
@@ -27,11 +28,19 @@ class MobilePeripheralSessionManager {
                 let entity = BluetoothConnectionEntity(context: sessionReturned.managedObjectContext!)
                 entity.peripheralUUID = peripheral.identifier.description
                 entity.session = sessionReturned
+                guard let self = self else { return }
+                self.uiStorage.accessStorage { storage in
+                    do {
+                        try storage.switchCardExpanded(to: true, sessionUUID: session.uuid)
+                    } catch {
+                        Log.error("\(error)")
+                    }
+                }
                 DispatchQueue.main.async {
                     if !session.locationless {
-                        self?.locationTracker.start()
+                        self.locationTracker.start()
                     }
-                    self?.activeMobileSession = MobileSession(peripheral: peripheral, session: session)
+                    self.activeMobileSession = MobileSession(peripheral: peripheral, session: session)
                 }
             } catch {
                 Log.info("\(error)")

@@ -11,6 +11,7 @@ protocol UIStorage {
 protocol UIStorageContextUpdate {
     func cardStateToggle(for sessionUUID: SessionUUID) throws
     func changeStream(for sessionUUID: SessionUUID, stream: String) throws
+    func switchCardExpanded(to newValue: Bool, sessionUUID: SessionUUID) throws 
     func save() throws
 }
 
@@ -52,6 +53,17 @@ final class HiddenCoreDataUIStorage: UIStorageContextUpdate {
         let sessionEntity = try context.existingSession(uuid: sessionUUID)
         createUIStateIfNeeded(entity: sessionEntity)
         sessionEntity.userInterface?.expandedCard.toggle()
+    }
+    
+    func switchCardExpanded(to newValue: Bool, sessionUUID: SessionUUID) throws {
+        if let sessionEntity = try? context.existingExternalSession(uuid: sessionUUID) {
+            createUIStateIfNeededForExternalSession(entity: sessionEntity)
+            sessionEntity.userInterface?.expandedCard = newValue
+            return
+        }
+        let sessionEntity = try context.existingSession(uuid: sessionUUID)
+        createUIStateIfNeeded(entity: sessionEntity)
+        sessionEntity.userInterface?.expandedCard = newValue
     }
     
     func changeStream(for sessionUUID: SessionUUID, stream: String) throws {
