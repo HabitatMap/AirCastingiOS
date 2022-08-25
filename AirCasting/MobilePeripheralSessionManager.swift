@@ -39,14 +39,14 @@ class MobilePeripheralSessionManager {
         }
     }
 
-    func handlePeripheralMeasurement(_ measurement: PeripheralMeasurement) {
+    func handlePeripheralMeasurement(_ measurement: PeripheralMeasurement, time: Date) {
         if activeMobileSession == nil {
             return
         }
 
         if activeMobileSession?.peripheral == measurement.peripheral {
             do {
-                try updateStreams(stream: measurement.measurementStream, sessionUUID: activeMobileSession!.session.uuid, isLocationTracked: !activeMobileSession!.session.locationless)
+                try updateStreams(stream: measurement.measurementStream, sessionUUID: activeMobileSession!.session.uuid, isLocationTracked: !activeMobileSession!.session.locationless, time: time)
             } catch {
                 Log.error("Unable to save measurement from airbeam to database because of an error: \(error)")
             }
@@ -148,7 +148,7 @@ class MobilePeripheralSessionManager {
         }
     }
 
-    private func updateStreams(stream: ABMeasurementStream, sessionUUID: SessionUUID, isLocationTracked: Bool) throws {
+    private func updateStreams(stream: ABMeasurementStream, sessionUUID: SessionUUID, isLocationTracked: Bool, time: Date) throws {
         let location = isLocationTracked ? locationTracker.location.value?.coordinate : .undefined
 
         measurementStreamStorage.accessStorage { storage in
@@ -156,10 +156,10 @@ class MobilePeripheralSessionManager {
                 let existingStreamID = try storage.existingMeasurementStream(sessionUUID, name: stream.sensorName)
                 guard let id = existingStreamID else {
                     let streamId = try self.createSessionStream(stream, sessionUUID, storage: storage)
-                    try storage.addMeasurementValue(stream.measuredValue, at: location, toStreamWithID: streamId)
+                    try storage.addMeasurementValue(stream.measuredValue, at: location, toStreamWithID: streamId, on: time)
                     return
                 }
-                try storage.addMeasurementValue(stream.measuredValue, at: location, toStreamWithID: id)
+                try storage.addMeasurementValue(stream.measuredValue, at: location, toStreamWithID: id, on: time)
             } catch {
                 Log.error("Error saving value from peripheral: \(error)")
             }

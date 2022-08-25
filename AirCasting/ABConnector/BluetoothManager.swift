@@ -33,6 +33,18 @@ extension BluetoothCommunicator {
 }
 
 class BluetoothManager: NSObject, BluetoothCommunicator, ObservableObject {
+    
+    class PeripheralMeasurementTimeManager {
+        private(set) var collectedValuesCount: Int = 5
+        private(set) var currentTime: Date = DateBuilder.getRawDate().currentUTCTimeZoneDate
+        
+        func startNewValuesRound() {
+            currentTime = DateBuilder.getRawDate().currentUTCTimeZoneDate
+            collectedValuesCount = 0
+        }
+        
+        func incrementCounter() { collectedValuesCount += 1 }
+    }
 
     lazy var centralManager: CBCentralManager = {
         let centralManager = CBCentralManager()
@@ -49,6 +61,7 @@ class BluetoothManager: NSObject, BluetoothCommunicator, ObservableObject {
     @Published var centralManagerState: CBManagerState = .unknown
     @Published var mobileSessionReconnected = false
     var observed: NSKeyValueObservation?
+    var peripheralMeasurementManager = PeripheralMeasurementTimeManager()
 
     let mobilePeripheralSessionManager: MobilePeripheralSessionManager
     @Injected private var featureFlagProvider: FeatureFlagProvider
@@ -280,7 +293,9 @@ extension BluetoothManager: CBPeripheralDelegate {
         }
 
         if let parsedMeasurement = parseData(data: value) {
-            mobilePeripheralSessionManager.handlePeripheralMeasurement(PeripheralMeasurement(peripheral: peripheral, measurementStream: parsedMeasurement))
+            if peripheralMeasurementManager.collectedValuesCount == 5 { peripheralMeasurementManager.startNewValuesRound() }
+            mobilePeripheralSessionManager.handlePeripheralMeasurement(PeripheralMeasurement(peripheral: peripheral, measurementStream: parsedMeasurement), time: peripheralMeasurementManager.currentTime)
+            peripheralMeasurementManager.incrementCounter()
         }
     }
 
