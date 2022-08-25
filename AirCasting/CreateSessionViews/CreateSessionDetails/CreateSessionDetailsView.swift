@@ -162,7 +162,7 @@ private extension CreateSessionDetailsView {
     
     var createSesssionLink: some View {
         NavigationLink(
-            destination: ConfirmCreatingSessionView(creatingSessionFlowContinues: $creatingSessionFlowContinues, sessionName: viewModel.sessionName),
+            destination: WiFiCheckView(wifiSSID: viewModel.wifiSSID, wifiPassword: viewModel.wifiPassword),
             isActive: $viewModel.isConfirmCreatingSessionActive,
             label: {
                 EmptyView()
