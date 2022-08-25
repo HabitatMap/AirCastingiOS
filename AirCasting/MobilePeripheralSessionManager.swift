@@ -7,6 +7,20 @@ import CoreLocation
 import Resolver
 
 class MobilePeripheralSessionManager {
+    
+    class PeripheralMeasurementTimeManager {
+        private(set) var collectedValuesCount: Int = 5
+        private(set) var currentTime: Date = DateBuilder.getFakeUTCDate()
+        
+        func startNewValuesRound() {
+            currentTime = DateBuilder.getFakeUTCDate()
+            collectedValuesCount = 0
+        }
+        
+        func incrementCounter() { collectedValuesCount += 1 }
+    }
+    
+    var peripheralMeasurementManager = PeripheralMeasurementTimeManager()
     var isMobileSessionActive: Bool { activeMobileSession != nil }
 
     private let measurementStreamStorage: MeasurementStreamStorage
@@ -52,14 +66,17 @@ class MobilePeripheralSessionManager {
         if activeMobileSession == nil {
             return
         }
+        
+        if peripheralMeasurementManager.collectedValuesCount == 5 { peripheralMeasurementManager.startNewValuesRound() }
 
         if activeMobileSession?.peripheral == measurement.peripheral {
             do {
-                try updateStreams(stream: measurement.measurementStream, sessionUUID: activeMobileSession!.session.uuid, isLocationTracked: !activeMobileSession!.session.locationless)
+                try updateStreams(stream: measurement.measurementStream, sessionUUID: activeMobileSession!.session.uuid, isLocationTracked: !activeMobileSession!.session.locationless, time: peripheralMeasurementManager.currentTime)
             } catch {
                 Log.error("Unable to save measurement from airbeam to database because of an error: \(error)")
             }
         }
+        peripheralMeasurementManager.incrementCounter()
     }
     
     // This function is still needed for when the standalone mode flag is disabled
@@ -157,7 +174,7 @@ class MobilePeripheralSessionManager {
         }
     }
 
-    private func updateStreams(stream: ABMeasurementStream, sessionUUID: SessionUUID, isLocationTracked: Bool) throws {
+    private func updateStreams(stream: ABMeasurementStream, sessionUUID: SessionUUID, isLocationTracked: Bool, time: Date) throws {
         let location = isLocationTracked ? locationTracker.location.value?.coordinate : .undefined
 
         measurementStreamStorage.accessStorage { storage in
@@ -165,10 +182,10 @@ class MobilePeripheralSessionManager {
                 let existingStreamID = try storage.existingMeasurementStream(sessionUUID, name: stream.sensorName)
                 guard let id = existingStreamID else {
                     let streamId = try self.createSessionStream(stream, sessionUUID, storage: storage)
-                    try storage.addMeasurementValue(stream.measuredValue, at: location, toStreamWithID: streamId)
+                    try storage.addMeasurementValue(stream.measuredValue, at: location, toStreamWithID: streamId, on: time)
                     return
                 }
-                try storage.addMeasurementValue(stream.measuredValue, at: location, toStreamWithID: id)
+                try storage.addMeasurementValue(stream.measuredValue, at: location, toStreamWithID: id, on: time)
             } catch {
                 Log.error("Error saving value from peripheral: \(error)")
             }
