@@ -7,6 +7,20 @@ import CoreLocation
 import Resolver
 
 class MobilePeripheralSessionManager {
+    
+    class PeripheralMeasurementTimeManager {
+        private(set) var collectedValuesCount: Int = 5
+        private(set) var currentTime: Date = DateBuilder.getFakeUTCDate()
+        
+        func startNewValuesRound() {
+            currentTime = DateBuilder.getFakeUTCDate()
+            collectedValuesCount = 0
+        }
+        
+        func incrementCounter() { collectedValuesCount += 1 }
+    }
+    
+    var peripheralMeasurementManager = PeripheralMeasurementTimeManager()
     var isMobileSessionActive: Bool { activeMobileSession != nil }
 
     private let measurementStreamStorage: MeasurementStreamStorage
@@ -39,18 +53,21 @@ class MobilePeripheralSessionManager {
         }
     }
 
-    func handlePeripheralMeasurement(_ measurement: PeripheralMeasurement, time: Date) {
+    func handlePeripheralMeasurement(_ measurement: PeripheralMeasurement) {
         if activeMobileSession == nil {
             return
         }
+        
+        if peripheralMeasurementManager.collectedValuesCount == 5 { peripheralMeasurementManager.startNewValuesRound() }
 
         if activeMobileSession?.peripheral == measurement.peripheral {
             do {
-                try updateStreams(stream: measurement.measurementStream, sessionUUID: activeMobileSession!.session.uuid, isLocationTracked: !activeMobileSession!.session.locationless, time: time)
+                try updateStreams(stream: measurement.measurementStream, sessionUUID: activeMobileSession!.session.uuid, isLocationTracked: !activeMobileSession!.session.locationless, time: peripheralMeasurementManager.currentTime)
             } catch {
                 Log.error("Unable to save measurement from airbeam to database because of an error: \(error)")
             }
         }
+        peripheralMeasurementManager.incrementCounter()
     }
     
     // This function is still needed for when the standalone mode flag is disabled
