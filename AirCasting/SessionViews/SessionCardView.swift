@@ -117,11 +117,15 @@ struct SessionCardView: View {
     }
 
     private func selectDefaultStreamIfNeeded(streams: [MeasurementStreamEntity]) {
-        if selectedStream == nil {
-            if let newStream = session.streamWith(sensorName: session.userInterface?.sensorName ?? "") {
-                return selectedStream = newStream
+        // AirBeam is giving us two streams at first (F, RH) when doing mobile active, which prevents us from switching to PM2.5 as selected stream.
+        // Solution below is not ideal, as in the future (this was written in 29/08/2022) the number of streams can change. Yet, it is working well - selecting PM2.5 as deafult stream for every session.
+        if streams.count == 5 || streams.count == 1 {
+            if selectedStream == nil {
+                if let newStream = session.streamWith(sensorName: session.userInterface?.sensorName ?? "") {
+                    return selectedStream = newStream
+                }
+                selectedStream = session.defaultStreamSelection() ?? streams.first
             }
-            selectedStream = session.defaultStreamSelection() ?? streams.first
         }
     }
 }
