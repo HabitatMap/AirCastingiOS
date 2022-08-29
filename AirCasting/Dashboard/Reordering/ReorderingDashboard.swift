@@ -6,7 +6,6 @@ import SwiftUI
 struct ReorderingDashboard: View {
     
     @StateObject var viewModel: ReorderingDashboardViewModel
-//    @State private var editMode = EditMode.active
     @EnvironmentObject var searchAndFollowButton: SearchAndFollowButton
     @State private var changedView: Bool = false
     
@@ -17,17 +16,18 @@ struct ReorderingDashboard: View {
     private let columns = [GridItem(.flexible())]
     
     var body: some View {
-//        ScrollView {
-            List {
+        ScrollView {
+            LazyVGrid(columns: columns) {
                 ForEach(viewModel.sessions, id: \.uuid) { session in
                     ReoredringSessionCard(session: session, thresholds: viewModel.thresholds)
-//                        .swipeActions(
-//                                      trailing: [
-//                                        SwipeActionButton(icon: Image(systemName: "trash"), action: {
-//                                            Log.info("Trash")
-//                                        }, tint: .red)
-//                                      ],
-//                                      allowsFullSwipeTrailing: true)
+                        .swipeActions(
+                                      trailing: [
+                                        SwipeActionButton(icon: Image(systemName: "trash"), action: {
+                                            Log.info("Trash")
+                                        }, tint: .red)
+                                      ],
+                                      allowsFullSwipeTrailing: true)
+                        .background(Color.accentColor)
                         .overlay(viewModel.currentlyDraggedSession?.uuid == session.uuid && changedView ? Color.white.opacity(0.8) : Color.clear)
                         .onDrag({
                             viewModel.currentlyDraggedSession = session
@@ -36,13 +36,9 @@ struct ReorderingDashboard: View {
                         })
                         .onDrop(of: [.text], delegate: DropViewDelegate(sessionAtDropDestination: session, currentlyDraggedSession: $viewModel.currentlyDraggedSession, sessions: $viewModel.sessions, changedView: $changedView))
                 }
-//                .onMove(perform: move)
-//                .onDelete(perform: { _ in Log.debug("Delete") })
             }
-//            .environment(\.editMode, $editMode)
-            .listStyle(.plain)
             .padding()
-//        }
+        }
         .onAppear(perform: {
             searchAndFollowButton.isHidden = true
         })
@@ -54,10 +50,6 @@ struct ReorderingDashboard: View {
             searchAndFollowButton.isHidden = false
             viewModel.finish()
         }
-    }
-    
-    func move(from source: IndexSet, to destination: Int) {
-        viewModel.sessions.move(fromOffsets: source, toOffset: destination)
     }
 }
 
