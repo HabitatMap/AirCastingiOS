@@ -8,11 +8,15 @@ import Resolver
 
 class MobilePeripheralSessionManager {
     
-    class PeripheralMeasurementTimeManager {
+    class PeripheralMeasurementTimeLocationManager {
+        @Injected private var locationTracker: LocationTracker
+        
         private(set) var collectedValuesCount: Int = 5
         private(set) var currentTime: Date = DateBuilder.getFakeUTCDate()
+        private(set) var currentLocation: CLLocationCoordinate2D? = .undefined
         
-        func startNewValuesRound() {
+        func startNewValuesRound(locationless: Bool) {
+            currentLocation = !locationless ? locationTracker.location.value?.coordinate : .undefined
             currentTime = DateBuilder.getFakeUTCDate()
             collectedValuesCount = 0
         }
@@ -20,7 +24,7 @@ class MobilePeripheralSessionManager {
         func incrementCounter() { collectedValuesCount += 1 }
     }
     
-    var peripheralMeasurementManager = PeripheralMeasurementTimeManager()
+    var peripheralMeasurementManager = PeripheralMeasurementTimeLocationManager()
     var isMobileSessionActive: Bool { activeMobileSession != nil }
 
     private let measurementStreamStorage: MeasurementStreamStorage
@@ -66,17 +70,18 @@ class MobilePeripheralSessionManager {
         if activeMobileSession == nil {
             return
         }
-        
-        if peripheralMeasurementManager.collectedValuesCount == 5 { peripheralMeasurementManager.startNewValuesRound() }
 
         if activeMobileSession?.peripheral == measurement.peripheral {
+            if peripheralMeasurementManager.collectedValuesCount == 5 { peripheralMeasurementManager.startNewValuesRound(locationless: activeMobileSession!.session.locationless) }
+            
             do {
-                try updateStreams(stream: measurement.measurementStream, sessionUUID: activeMobileSession!.session.uuid, isLocationTracked: !activeMobileSession!.session.locationless, time: peripheralMeasurementManager.currentTime)
+                try updateStreams(stream: measurement.measurementStream, sessionUUID: activeMobileSession!.session.uuid, location: peripheralMeasurementManager.currentLocation, time: peripheralMeasurementManager.currentTime)
             } catch {
                 Log.error("Unable to save measurement from airbeam to database because of an error: \(error)")
             }
+            
+            peripheralMeasurementManager.incrementCounter()
         }
-        peripheralMeasurementManager.incrementCounter()
     }
     
     // This function is still needed for when the standalone mode flag is disabled
@@ -174,8 +179,7 @@ class MobilePeripheralSessionManager {
         }
     }
 
-    private func updateStreams(stream: ABMeasurementStream, sessionUUID: SessionUUID, isLocationTracked: Bool, time: Date) throws {
-        let location = isLocationTracked ? locationTracker.location.value?.coordinate : .undefined
+    private func updateStreams(stream: ABMeasurementStream, sessionUUID: SessionUUID, location: CLLocationCoordinate2D?, time: Date) throws {
 
         measurementStreamStorage.accessStorage { storage in
             do {
