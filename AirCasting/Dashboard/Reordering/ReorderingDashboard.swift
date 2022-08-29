@@ -20,6 +20,13 @@ struct ReorderingDashboard: View {
             LazyVGrid(columns: columns) {
                 ForEach(viewModel.sessions, id: \.uuid) { session in
                     ReoredringSessionCard(session: session, thresholds: viewModel.thresholds)
+                        .swipeActions(
+                                      trailing: [
+                                        SwipeActionButton(icon: Image(systemName: "trash"), action: {
+                                            Log.info("Trash")
+                                        }, tint: .red)
+                                      ],
+                                      allowsFullSwipeTrailing: true)
                         .overlay(viewModel.currentlyDraggedSession?.uuid == session.uuid && changedView ? Color.white.opacity(0.8) : Color.clear)
                         .onDrag({
                             viewModel.currentlyDraggedSession = session
@@ -44,3 +51,12 @@ struct ReorderingDashboard: View {
         }
     }
 }
+
+#if DEBUG
+struct ReorderingDashboard_Previews: PreviewProvider {
+    static var previews: some View {
+        ReorderingDashboard(sessions: [SessionEntity.mock(uuid: "mock1"), SessionEntity.mock(uuid: "mock2"), SessionEntity.mock(uuid: "mock3")], thresholds: [.mock, .mock])
+            .environmentObject(SearchAndFollowButton())
+    }
+}
+#endif
