@@ -20,6 +20,9 @@ private extension ReorderingSessionHeader {
                 dateAndTime
                     .foregroundColor(Color.aircastingTimeGray)
                 Spacer()
+                Image("draggable-icon")
+                    .renderingMode(.template)
+                    .foregroundColor(colorScheme == .light ? .black : .aircastingGray)
             }
             nameLabel
         }

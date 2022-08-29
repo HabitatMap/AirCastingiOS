@@ -20,16 +20,6 @@ extension SessionEntity {
                 
         return session
     }
-    
-    static func mock(uuid: String) -> SessionEntity {
-        let context = Resolver.resolve(PersistenceController.self).viewContext
-        let session: SessionEntity = try! context.newOrExisting(uuid: SessionUUID(rawValue: uuid)!)
-        session.type = .mobile
-        session.name = "Session mock"
-        // ...
-                
-        return session
-    }
 }
 
 extension MeasurementStreamEntity {
