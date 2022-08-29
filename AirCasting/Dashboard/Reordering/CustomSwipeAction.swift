@@ -166,7 +166,7 @@ struct SwipeActionView: ViewModifier {
         })
     }
     // Remove internal row padding to allow the buttons to occupy full row height
-//    .listRowInsets(EdgeInsets())
+    .listRowInsets(EdgeInsets())
   }
 
   // Checks if full swipe is supported and currently active for the given edge.
