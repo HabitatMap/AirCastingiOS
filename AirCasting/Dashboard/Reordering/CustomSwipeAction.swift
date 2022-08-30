@@ -72,62 +72,8 @@ struct SwipeActionView: ViewModifier {
   }
 
   func body(content: Content) -> some View {
-    // Use a GeometryReader to get the size of the view on which we're adding
-    // the custom swipe actions.
-    GeometryReader { geo in
-      // Place leading buttons, the wrapped content and trailing buttons
-      // in an HStack with no spacing.
-      HStack(spacing: 0) {
-        // If any swiping on the left-hand side has occurred, reveal
-        // leading buttons. This also resolves button flickering.
-        if offset > 0 {
-          // If the user has swiped enough for it to qualify as a full swipe,
-          // render just the first button across the entire swipe length.
-          if fullSwipeEnabled(edge: .leading, width: geo.size.width) {
-            button(for: leading.first)
-              .frame(width: offset, height: geo.size.height)
-          } else {
-            // If we aren't in a full swipe, render all buttons with widths
-            // proportional to the swipe length.
-            ForEach(leading) { actionView in
-              button(for: actionView)
-              .frame(width: individualButtonWidth(edge: .leading),
-                     height: geo.size.height)
-            }
-          }
-        }
-
-        // This is the list row itself
         content
-          // Add horizontal padding as we removed it to allow the
-          // swipe buttons to occupy full row height.
-          .padding(.horizontal, 16)
-          .frame(width: geo.size.width, height: geo.size.height, alignment: .leading)
           .offset(x: (offset > 0) ? 0 : offset)
-
-        // If any swiping on the right-hand side has occurred, reveal
-        // trailing buttons. This also resolves button flickering.
-        if offset < 0 {
-          Group {
-            // If the user has swiped enough for it to qualify as a full swipe,
-            // render just the last button across the entire swipe length.
-            if fullSwipeEnabled(edge: .trailing, width: geo.size.width) {
-              button(for: trailing.last)
-                .frame(width: -offset, height: geo.size.height)
-            } else {
-              // If we aren't in a full swipe, render all buttons with widths
-              // proportional to the swipe length.
-              ForEach(trailing) { actionView in
-                button(for: actionView)
-                  .frame(width: individualButtonWidth(edge: .trailing),
-                        height: geo.size.height)
-              }
-            }
-          }
-          // The leading buttons need to move to the left as the swipe progresses.
-          .offset(x: offset)
-        }
-      }
       // animate the view as `offset` changes
       .animation(.spring(), value: offset)
       // allows the DragGesture to work even if there are now interactable
@@ -138,35 +84,17 @@ struct SwipeActionView: ViewModifier {
       .gesture(DragGesture(minimumDistance: 10,
                            coordinateSpace: .local)
         .onChanged { gesture in
-          // Compute the total swipe based on the gesture values.
-          var total = gesture.translation.width + prevOffset
-          if !allowsFullSwipeLeading {
-            total = min(total, totalLeadingWidth)
-          }
-          if !allowsFullSwipeTrailing {
-            total = max(total, -totalLeadingWidth)
-          }
-          offset = total
+          offset = gesture.translation.width
         }
         .onEnded { _ in
-          // Adjust the offset based on if the user has swiped enough to reveal
-          // all the buttons or not. Also handles full swipe logic.
-          if offset > SwipeActionView.minSwipeableWidth && !leading.isEmpty {
-            if !checkAndHandleFullSwipe(for: leading, edge: .leading, width: geo.size.width) {
-              offset = totalLeadingWidth
-            }
-          } else if offset < -SwipeActionView.minSwipeableWidth && !trailing.isEmpty {
-            if !checkAndHandleFullSwipe(for: trailing, edge: .trailing, width: -geo.size.width) {
-              offset = -totalTrailingWidth
-            }
-          } else {
+            if !checkAndHandleFullSwipe(for: trailing, edge: .trailing, width: -UIScreen.main.bounds.size.width) {
             offset = 0
           }
           prevOffset = offset
         })
-    }
+//    }
     // Remove internal row padding to allow the buttons to occupy full row height
-    .listRowInsets(EdgeInsets())
+//    .listRowInsets(EdgeInsets())
   }
 
   // Checks if full swipe is supported and currently active for the given edge.

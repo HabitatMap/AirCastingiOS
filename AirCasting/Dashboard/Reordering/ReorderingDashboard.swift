@@ -20,13 +20,6 @@ struct ReorderingDashboard: View {
             LazyVGrid(columns: columns) {
                 ForEach(viewModel.sessions, id: \.uuid) { session in
                     ReoredringSessionCard(session: session, thresholds: viewModel.thresholds)
-                        .swipeActions(
-                                      trailing: [
-                                        SwipeActionButton(icon: Image(systemName: "trash"), action: {
-                                            Log.info("Trash")
-                                        }, tint: .red)
-                                      ],
-                                      allowsFullSwipeTrailing: true)
                         .background(Color.accentColor)
                         .overlay(viewModel.currentlyDraggedSession?.uuid == session.uuid && changedView ? Color.white.opacity(0.8) : Color.clear)
                         .onDrag({
@@ -35,6 +28,13 @@ struct ReorderingDashboard: View {
                             return NSItemProvider(object: String(describing: session.uuid) as NSString)
                         })
                         .onDrop(of: [.text], delegate: DropViewDelegate(sessionAtDropDestination: session, currentlyDraggedSession: $viewModel.currentlyDraggedSession, sessions: $viewModel.sessions, changedView: $changedView))
+                        .swipeActions(
+                                      trailing: [
+                                        SwipeActionButton(icon: Image(systemName: "trash"), action: {
+                                            Log.info("Trash")
+                                        }, tint: .red)
+                                      ],
+                                      allowsFullSwipeTrailing: true)
                 }
             }
             .padding()
