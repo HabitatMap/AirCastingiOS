@@ -29,7 +29,10 @@ struct ReorderingDashboard: View {
                         })
                         .onDrop(of: [.text], delegate: DropViewDelegate(sessionAtDropDestination: session, currentlyDraggedSession: $viewModel.currentlyDraggedSession, sessions: $viewModel.sessions, changedView: $changedView))
                         .trailingSwipeAction {
-                            Log.info("Trash")
+                            withAnimation(.easeOut(duration: 0.5)) {
+                                viewModel.sessions.removeAll(where: { $0.uuid == session.uuid })
+                            }
+                            viewModel.clear(session: session)
                         }
                 }
             }
