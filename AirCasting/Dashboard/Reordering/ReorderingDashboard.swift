@@ -21,7 +21,7 @@ struct ReorderingDashboard: View {
                 ForEach(viewModel.sessions, id: \.uuid) { session in
                     ReoredringSessionCard(session: session, thresholds: viewModel.thresholds)
                         .background(Color.accentColor)
-                        .overlay(viewModel.currentlyDraggedSession?.uuid == session.uuid && changedView ? Color.white.opacity(0.8) : Color.clear)
+                        .overlay(viewModel.currentlyDraggedSession?.uuid == session.uuid && changedView ? Color.aircastingWhite.opacity(0.8) : Color.clear)
                         .onDrag({
                             viewModel.currentlyDraggedSession = session
                             changedView = false
