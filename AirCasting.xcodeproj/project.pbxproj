@@ -149,7 +149,6 @@
 		AC524AAC2616003C0061AD45 /* DateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC524AAB2616003C0061AD45 /* DateFormatter.swift */; };
 		AC5832DA25B196DD008C5DD5 /* Graph.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC5832D925B196DD008C5DD5 /* Graph.swift */; };
 		AC5EF76125C84888003657B1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = AC5EF76025C84888003657B1 /* GoogleService-Info.plist */; };
-		AC6D567C25AC540D00D221BA /* Charts in Frameworks */ = {isa = PBXBuildFile; productRef = AC6D567B25AC540D00D221BA /* Charts */; };
 		AC6D567F25AC54A400D221BA /* UIKitChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6D567E25AC54A400D221BA /* UIKitChartView.swift */; };
 		AC6D569F25AEEAE700D221BA /* SessionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6D569E25AEEAE700D221BA /* SessionHeaderView.swift */; };
 		AC6D56A225AEF55C00D221BA /* GraphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6D56A125AEF55C00D221BA /* GraphView.swift */; };
@@ -514,6 +513,7 @@
 		FAB1D4A627FB28C8004F531D /* MapDownloaderSensorType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB1D4A527FB28C8004F531D /* MapDownloaderSensorType.swift */; };
 		FAB34933281AB208001F6E58 /* URLRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB34932281AB208001F6E58 /* URLRequest.swift */; };
 		FAB34935281AC28E001F6E58 /* AirBeamStreamPrefix.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB34934281AC28E001F6E58 /* AirBeamStreamPrefix.swift */; };
+		FABFB85E28BE64A700C8B157 /* Charts in Frameworks */ = {isa = PBXBuildFile; productRef = FABFB85D28BE64A700C8B157 /* Charts */; };
 		FAC2672C28BE3F3500D5C13A /* Sequence+MapWithNext.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC2672B28BE3F3500D5C13A /* Sequence+MapWithNext.swift */; };
 		FAC3B67A283B96480095D915 /* ChartMeasurementsFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC3B679283B96480095D915 /* ChartMeasurementsFilter.swift */; };
 		FAF3B4DD28057A3300F0F4B0 /* SensorType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF3B4DC28057A3300F0F4B0 /* SensorType.swift */; };
@@ -1078,11 +1078,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				B35E04C1278C922A00227D8D /* Resolver in Frameworks */,
-				AC6D567C25AC540D00D221BA /* Charts in Frameworks */,
 				B37DA29B283189DD002A9708 /* FirebaseMessaging in Frameworks */,
 				ACF600BE2678D7F4005DD97C /* SwiftSimplify in Frameworks */,
 				AC5226C3270C50520048A585 /* Algorithms in Frameworks */,
 				B37DA29D283189DD002A9708 /* FirebaseRemoteConfigSwift in Frameworks */,
+				FABFB85E28BE64A700C8B157 /* Charts in Frameworks */,
 				AC787D75267B41990034B222 /* AirCastingStyling in Frameworks */,
 				DDD951B427550C250063D43D /* Pods_AirCasting.framework in Frameworks */,
 				B37DA299283189DD002A9708 /* FirebaseCrashlytics in Frameworks */,
@@ -2730,7 +2730,6 @@
 			);
 			name = AirCasting;
 			packageProductDependencies = (
-				AC6D567B25AC540D00D221BA /* Charts */,
 				AC787D74267B41990034B222 /* AirCastingStyling */,
 				ACF600BD2678D7F4005DD97C /* SwiftSimplify */,
 				AC5226C2270C50520048A585 /* Algorithms */,
@@ -2740,6 +2739,7 @@
 				B37DA298283189DD002A9708 /* FirebaseCrashlytics */,
 				B37DA29A283189DD002A9708 /* FirebaseMessaging */,
 				B37DA29C283189DD002A9708 /* FirebaseRemoteConfigSwift */,
+				FABFB85D28BE64A700C8B157 /* Charts */,
 			);
 			productName = AirCasting;
 			productReference = AC7EB37225A6FB3A00A7F2AF /* AirCasting.app */;
@@ -2796,12 +2796,12 @@
 			);
 			mainGroup = AC7EB36925A6FB3A00A7F2AF;
 			packageReferences = (
-				AC6D567A25AC540D00D221BA /* XCRemoteSwiftPackageReference "Charts" */,
 				ACF600BC2678D7F4005DD97C /* XCRemoteSwiftPackageReference "SwiftSimplify" */,
 				AC5226C1270C50520048A585 /* XCRemoteSwiftPackageReference "swift-algorithms" */,
 				B35E04BF278C922A00227D8D /* XCRemoteSwiftPackageReference "Resolver" */,
 				3375E8D02791E7100019A5DE /* XCRemoteSwiftPackageReference "ZipArchive" */,
 				B37DA295283189DD002A9708 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				FABFB85C28BE64A700C8B157 /* XCRemoteSwiftPackageReference "Charts" */,
 			);
 			productRefGroup = AC7EB37325A6FB3A00A7F2AF /* Products */;
 			projectDirPath = "";
@@ -3951,14 +3951,6 @@
 				minimumVersion = 1.0.0;
 			};
 		};
-		AC6D567A25AC540D00D221BA /* XCRemoteSwiftPackageReference "Charts" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/danielgindi/Charts";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 3.0.0;
-			};
-		};
 		ACF600BC2678D7F4005DD97C /* XCRemoteSwiftPackageReference "SwiftSimplify" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/smialko/SwiftSimplify";
@@ -3983,6 +3975,14 @@
 				minimumVersion = 9.0.0;
 			};
 		};
+		FABFB85C28BE64A700C8B157 /* XCRemoteSwiftPackageReference "Charts" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/jterhorst/Charts";
+			requirement = {
+				branch = bugfix/3.6.1_xcode14_compilation;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -3995,11 +3995,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = AC5226C1270C50520048A585 /* XCRemoteSwiftPackageReference "swift-algorithms" */;
 			productName = Algorithms;
-		};
-		AC6D567B25AC540D00D221BA /* Charts */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = AC6D567A25AC540D00D221BA /* XCRemoteSwiftPackageReference "Charts" */;
-			productName = Charts;
 		};
 		AC787D74267B41990034B222 /* AirCastingStyling */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -4034,6 +4029,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B37DA295283189DD002A9708 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseRemoteConfigSwift;
+		};
+		FABFB85D28BE64A700C8B157 /* Charts */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FABFB85C28BE64A700C8B157 /* XCRemoteSwiftPackageReference "Charts" */;
+			productName = Charts;
 		};
 /* End XCSwiftPackageProductDependency section */
 
