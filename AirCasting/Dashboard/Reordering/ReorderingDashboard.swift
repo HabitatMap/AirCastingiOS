@@ -20,7 +20,6 @@ struct ReorderingDashboard: View {
             LazyVGrid(columns: columns) {
                 ForEach(viewModel.sessions, id: \.uuid) { session in
                     ReoredringSessionCard(session: session, thresholds: viewModel.thresholds)
-                        .background(Color.accentColor)
                         .overlay(viewModel.currentlyDraggedSession?.uuid == session.uuid && changedView ? Color.aircastingWhite.opacity(0.8) : Color.clear)
                         .onDrag({
                             viewModel.currentlyDraggedSession = session
