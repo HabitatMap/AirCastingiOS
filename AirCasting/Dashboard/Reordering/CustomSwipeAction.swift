@@ -4,7 +4,7 @@
 import Foundation
 import SwiftUI
 
-// Adds custom swipe action to a given view
+/// Adds custom swipe action to a given view
 struct SwipeActionView: ViewModifier {
     let trailingAction: () -> Void
     
@@ -31,9 +31,7 @@ struct SwipeActionView: ViewModifier {
                     offset = gesture.translation.width
                 }
                 .onEnded { _ in
-                    if !checkAndHandleFullSwipe(for: trailingAction, edge: .trailing, width: -UIScreen.main.bounds.size.width) {
-                        offset = 0
-                    }
+                    checkAndHandleFullSwipe(for: trailingAction, edge: .trailing, width: -UIScreen.main.bounds.size.width)
                     prevOffset = offset
                 })
     }
@@ -53,17 +51,12 @@ struct SwipeActionView: ViewModifier {
     // Checks if the view is in full swipe. If so, trigger the action
     private func checkAndHandleFullSwipe(for action: () -> Void,
                                          edge: Edge,
-                                         width: CGFloat) -> Bool {
+                                         width: CGFloat) {
         if fullSwipeEnabled(edge: edge, width: width) {
             offset = width * 1.2
             action()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                offset = 0
-                prevOffset = 0
-            }
-            return true
         } else {
-            return false
+            offset = 0
         }
     }
     

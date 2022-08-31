@@ -19,22 +19,11 @@ class ReorderingDashboardViewModel: ObservableObject {
     }
     
     func clear(session: Sessionable) {
+        sessions.removeAll(where: { $0.uuid == session.uuid })
         if session.isExternal {
-            externalSessionsStore.deleteSession(uuid: session.uuid) { result in
-                switch result {
-                case .success:
-                    Log.info("Deleted external session")
-                case .failure(let error):
-                    Log.error("Failed to delete External Session: \(error)")
-                }
-            }
+            deleteExternalSession(with: session.uuid)
         } else {
-            measurementStreamStorage.accessStorage { storage in
-                storage.updateSessionFollowing(.notFollowing, for: session.uuid)
-                self.uiStorage.accessStorage { uiStorage in
-                    uiStorage.setOrderToZero(for: session.uuid)
-                }
-            }
+            unfollowFixedSession(with: session.uuid)
         }
     }
     
@@ -42,6 +31,26 @@ class ReorderingDashboardViewModel: ObservableObject {
         uiStorage.accessStorage { storage in
             self.sessions.reversed().enumerated().forEach { index, session in
                 storage.updateSessionOrder(index + 1, for: session.uuid)
+            }
+        }
+    }
+    
+    private func deleteExternalSession(with uuid: SessionUUID) {
+        externalSessionsStore.deleteSession(uuid: uuid) { result in
+            switch result {
+            case .success:
+                Log.info("Deleted external session")
+            case .failure(let error):
+                Log.error("Failed to delete External Session: \(error)")
+            }
+        }
+    }
+    
+    private func unfollowFixedSession(with uuid: SessionUUID) {
+        measurementStreamStorage.accessStorage { storage in
+            storage.updateSessionFollowing(.notFollowing, for: uuid)
+            self.uiStorage.accessStorage { uiStorage in
+                uiStorage.setOrderToZero(for: uuid)
             }
         }
     }

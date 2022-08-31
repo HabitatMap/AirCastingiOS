@@ -104,7 +104,7 @@ private extension MainTabBarView {
                         if !searchAndFollow.isHidden && featureFlagsViewModel.enabledFeatures.contains(.searchAndFollow) && selectedSection.section == .following {
                             searchAndFollowButton
                         }
-                        if !reorderButton.isHidden && (reorderButton.reorderIsOn || sessions.count > 1) && selectedSection.section == .following {
+                        if reorderButton.reorderIsOn || (!reorderButton.isHidden && sessions.count > 1 && selectedSection.section == .following) {
                             reorderingButton
                         }
                     }
