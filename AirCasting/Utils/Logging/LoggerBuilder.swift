@@ -10,6 +10,7 @@ class LoggerBuilder {
         case file
         case debug
         case crashlytics
+        case crashlyticsError
     }
     
     private var partialLogger: Logger
@@ -19,6 +20,7 @@ class LoggerBuilder {
         case .debug: partialLogger = Self.createDebugLogger()
         case .file: partialLogger = Self.createFileLogger()
         case .crashlytics: partialLogger = Self.createCrashlyticsLogger()
+        case .crashlyticsError: partialLogger = Self.createCrashlyticsErrorLogger()
         }
     }
     
@@ -49,5 +51,9 @@ class LoggerBuilder {
     
     private static func createCrashlyticsLogger() -> Logger {
         Resolver.resolve(CrashlyticsLogger.self)
+    }
+    
+    private static func createCrashlyticsErrorLogger() -> Logger {
+        Resolver.resolve(CrashlyticsErrorLogger.self)
     }
 }
