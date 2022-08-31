@@ -80,6 +80,9 @@ struct DashboardView: View {
         .onAppear() {
             try! coreDataHook.setup(selectedSection: self.selectedSection.section)
         }
+        .onChange(of: selectedSection.section) { newValue in
+            try! coreDataHook.setup(selectedSection: newValue)
+        }
     }
     
     private var customNavigationBar: some View {
