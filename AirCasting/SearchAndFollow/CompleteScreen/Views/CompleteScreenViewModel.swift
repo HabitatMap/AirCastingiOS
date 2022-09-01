@@ -61,6 +61,7 @@ class CompleteScreenViewModel: ObservableObject {
     @Injected private var service: SearchAndFollowCompleteScreenService
     @Injected private var streamsDownloader: AirBeamMeasurementsDownloader
     @Injected private var userAuthenticationSession: UserAuthenticationSession
+    @Injected private var userSettings: UserSettings
     
     init(session: PartialExternalSession, exitRoute: @escaping () -> Void) {
         self.session = session
@@ -212,7 +213,7 @@ class CompleteScreenViewModel: ObservableObject {
                 .init(id: $0.id,
                       sensorName: Self.getSensorName($0.sensorName),
                       sensorUnit: $0.unitSymbol,
-                      lastMeasurementValue: $0.measurements.last?.value,
+                      lastMeasurementValue: $0.measurements.last?.value != nil ? self.showConvertedValue($0.measurements.last!.value, sensorName: $0.sensorName) : $0.measurements.last?.value,
                       color: $0.thresholdsValues.colorFor(value: $0.measurements.last?.value ?? 0),
                       measurements: $0.measurements.map({.init(value: $0.value,
                                                                time: $0.time,
@@ -267,6 +268,10 @@ class CompleteScreenViewModel: ObservableObject {
         }
         let value = name.components(separatedBy: "-").first!
         return value.components(separatedBy: CharacterSet.decimalDigits).joined()
+    }
+    
+    private func showConvertedValue(_ value: Double, sensorName: String) -> Double {
+        self.userSettings.convertToCelsius && sensorName == "F" ? TemperatureConverter.calculateCelsius(fahrenheit: value) : value
     }
 }
 
