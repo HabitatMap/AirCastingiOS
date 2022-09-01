@@ -44,9 +44,12 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
     private var metadataCharacteristicObserver: AnyHashable?
     private var clearCardCharacteristicObserver: AnyHashable?
     
+    private var expectedMeasurementsCount: [SDCardSessionType: Int] = [:]
+    private var receivedMeasurementsCount: [SDCardSessionType: Int] = [:]
+    private var timerToken: AnyObject?
+    private let timer: TimerScheduler = FoundationTimerScheduler()
+    
     func downloadData(from peripheral: CBPeripheral, progress: @escaping (SDCardDataChunk) -> Void, completion: @escaping (Result<SDCardDownloadSummary, Error>) -> Void) {
-        var expectedMeasurementsCount: [SDCardSessionType: Int] = [:]
-        var receivedMeasurementsCount: [SDCardSessionType: Int] = [:]
         var currentSessionType: SDCardSessionType?
         
         Log.info("[SD Sync] Downloading data")
@@ -62,8 +65,13 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
                 currentSessionType = currentSessionType.next
                 Log.info("[SD CARD SYNC] " + payload)
                 if payload == "SD_SYNC_FINISH" {
-                    self.finishSync { completion(.success(.init(expectedMeasurementsCount: expectedMeasurementsCount))) }
-                    Log.info("[SD CARD SYNC] Sync finished.")
+                    // It is possible that when Airbeam is pluged in and the data is sent faster than iPhone can process, we receive this SD_SYNC_FINISH message before all of the payload is sent.
+                    // That's why we have to add the monitoring which checks if any new data is still being send, and if not, then we are letting the called know that Airbeam finished sending data.
+                    Log.info("[SD Sync] Received SD_SYNC_FINISH message. Monitoring for end of payload.")
+                    self.startMonitoringForEnd {
+                        self.finishSync { completion(.success(.init(expectedMeasurementsCount: self.expectedMeasurementsCount))) }
+                        Log.info("[SD CARD SYNC] Sync finished.")
+                    }
                     return
                 }
                 
@@ -78,7 +86,7 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
                 
                 /* It can happen, that in the given airbeam some type of session was never recorded. In that case, metadata format will be different
                  and in that case we want to set currentSessionTypeExpected to 0 */
-                expectedMeasurementsCount[currentSessionType!] = measurementsCount ?? 0
+                self.expectedMeasurementsCount[currentSessionType!] = measurementsCount ?? 0
             case .failure(let error):
                 Log.warning("[SD SYNC]  Error while receiving metadata from SD card: \(error.localizedDescription)")
                 self.finishSync { completion(.failure(error)) }
@@ -94,17 +102,16 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
                     self.finishSync { completion(.failure(SDCardSyncError.wrongOrderOfReceivedPayload)) }
                     return
                 }
-                receivedMeasurementsCount[sessionType, default: 0] += Constants.SDCardSync.numberOfMeasurementsInDataChunk
+                self.receivedMeasurementsCount[sessionType, default: 0] += Constants.SDCardSync.numberOfMeasurementsInDataChunk
                 
-                guard let expectedMeasurementsCount = expectedMeasurementsCount[sessionType], expectedMeasurementsCount != 0 else {
+                guard let expectedMeasurementsCount = self.expectedMeasurementsCount[sessionType], expectedMeasurementsCount != 0 else {
                     Log.error("[SD SYNC] Received data for session type which should have 0 measurements")
                     return
                 }
                 
-                let receivedMeasurementsNumber = receivedMeasurementsCount[sessionType]! < expectedMeasurementsCount ? receivedMeasurementsCount[sessionType]! : expectedMeasurementsCount
+                let receivedMeasurementsNumber = self.receivedMeasurementsCount[sessionType]! < expectedMeasurementsCount ? self.receivedMeasurementsCount[sessionType]! : expectedMeasurementsCount
                 let progressFraction = SDCardProgress(received: receivedMeasurementsNumber, expected: expectedMeasurementsCount)
                 progress(SDCardDataChunk(payload: payload, sessionType: sessionType, progress: progressFraction))
-
             case .failure(let error):
                 Log.warning("Error while receiving data from SD card: \(error.localizedDescription)")
                 self.finishSync { completion(.failure(error)) }
@@ -153,7 +160,32 @@ class BluetoothSDCardAirBeamServices: SDCardAirBeamServices {
     private func finishSync(completion: () -> Void) {
         self.bluetoothManager.unsubscribeCharacteristicObserver(self.dataCharacteristicObserver!)
         self.bluetoothManager.unsubscribeCharacteristicObserver(self.metadataCharacteristicObserver!)
+        expectedMeasurementsCount = [:]
+        receivedMeasurementsCount = [:]
+        if let timerToken = timerToken {
+            timer.stop(token: timerToken)
+        }
         completion()
+    }
+    
+    private func startMonitoringForEnd(completion: @escaping () -> Void) -> Void {
+        var checkedMeasurementsCount: [SDCardSessionType: Int] = [:]
+        timerToken = timer.schedule(every: 1) { [weak self] in
+            guard let self = self else { return }
+            Log.debug("Checking with:\n expected \(self.expectedMeasurementsCount)\n received \(self.receivedMeasurementsCount)\n checked \(checkedMeasurementsCount)")
+            guard checkedMeasurementsCount != self.receivedMeasurementsCount else {
+                Log.debug("NO NEW MEASUREMENT IN 1 SEC")
+                completion()
+                return
+            }
+            checkedMeasurementsCount = self.receivedMeasurementsCount
+            for temp in self.receivedMeasurementsCount {
+                if self.expectedMeasurementsCount[temp.key] ?? 0 < temp.value {
+                    Log.info("All measurements downloaded")
+                    completion(); return
+                }
+            }
+        }
     }
 }
 
