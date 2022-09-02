@@ -22,4 +22,12 @@ public struct ThresholdsValue {
         self.high = high
         self.veryHigh = veryHigh
     }
+    
+    func convertedToCelsius() -> Self {
+        .init(veryLow: Int32(TemperatureConverter.calculateCelsius(fahrenheit: Double(veryLow))),
+              low: Int32(TemperatureConverter.calculateCelsius(fahrenheit: Double(low))),
+              medium: Int32(TemperatureConverter.calculateCelsius(fahrenheit: Double(medium))),
+              high: Int32(TemperatureConverter.calculateCelsius(fahrenheit: Double(high))),
+              veryHigh: Int32(TemperatureConverter.calculateCelsius(fahrenheit: Double(veryHigh))))
+    }
 }
