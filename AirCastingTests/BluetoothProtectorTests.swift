@@ -23,7 +23,7 @@ class BluetoothProtectorTests: ACTestCase {
         XCTAssertEqual(0, (invalidStatuses as NSArray).filtered(using: predicate).count)
     }
     
-    func TOBEFIXEDtest_whenDatabaseAsksForExistingSessions_inlcudeOnlyNewRecordingStatuses() throws {
+    func test_whenDatabaseAsksForExistingSessions_inlcudeOnlyNewRecordingStatuses() throws {
         Resolver.test.register { self.databaseSpy as SessionsFetchable }
         
         sut.isAirBeamAvailableForNewConnection(peripheraUUID: "", completion: { _ in })
@@ -71,7 +71,7 @@ class BluetoothProtectorTests: ACTestCase {
         XCTAssertEqual(0, (invalidSessionType as NSArray).filtered(using: predicate).count)
     }
     
-    func TOBEFIXEDtest_whenAsksDatabaseForExistingSession_requestThoseWithMatchingPeripheralUUID() throws {
+    func test_whenAsksDatabaseForExistingSession_requestThoseWithMatchingPeripheralUUID() throws {
         Resolver.test.register { self.databaseSpy as SessionsFetchable }
         
         sut.isAirBeamAvailableForNewConnection(peripheraUUID: "112", completion: { _ in })
@@ -87,7 +87,7 @@ class BluetoothProtectorTests: ACTestCase {
         XCTAssertEqual(1, (mixedPeripheralUUID as NSArray).filtered(using: predicate).count)
     }
     
-    func TOBEFIXEDtest_whenAsksDatabaseForExistingeSession_requestOnlyThoseInStandaloneMode() throws {
+    func test_whenAsksDatabaseForExistingeSession_requestOnlyThoseInStandaloneMode() throws {
         Resolver.test.register { self.databaseSpy as SessionsFetchable }
         
         sut.isAirBeamAvailableForNewConnection(peripheraUUID: "112-911-000", completion: { _ in })
@@ -249,13 +249,13 @@ extension BluetoothProtectorTests {
         @objc let deviceType: String
         @objc let type: String
         @objc let status: Int
-        @objc let peripheralUUID: String
+        @objc let bluetoothConnection: FakeBluetoothConnection
         
         init(deviceType: String, type: String, status: Int, peripheralUUID: String) {
             self.deviceType = deviceType
             self.type = type
             self.status = status
-            self.peripheralUUID = peripheralUUID
+            self.bluetoothConnection = .init(peripheralUUID: peripheralUUID)
         }
         
         static func createPredicateWithExpected(status: Int) -> FakePredicateBlueprint {
@@ -263,6 +263,14 @@ extension BluetoothProtectorTests {
                   type: "MobileSession",
                   status: status,
                   peripheralUUID: "")
+        }
+        
+        @objc class FakeBluetoothConnection: NSObject {
+            @objc let peripheralUUID: String
+            
+            init(peripheralUUID: String) {
+                self.peripheralUUID = peripheralUUID
+            }
         }
     }
 }

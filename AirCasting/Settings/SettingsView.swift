@@ -277,7 +277,7 @@ struct SettingsView: View {
                         .font(Fonts.muliBoldHeading1)
                         .accentColor(.primary)
                     Spacer()
-                    Image(systemName: "control")
+                    Image(systemName: "chevron.right")
                         .accentColor(.gray).opacity(0.6)
                 }
             }

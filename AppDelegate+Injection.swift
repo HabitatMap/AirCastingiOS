@@ -27,12 +27,16 @@ extension Resolver: ResolverRegistering {
             composite.add(LoggerBuilder(type: .crashlytics)
                             .addMinimalLevel(.info)
                             .build())
+            composite.add(LoggerBuilder(type: .crashlyticsError)
+                            .addMinimalLevel(.error)
+                            .build())
 #endif
             return composite
         }.scope(.application)
         
         main.register { PrintLogger() }.scope(.application)
         main.register { FileLogger() }.scope(.application)
+        main.register { CrashlyticsErrorLogger() }.scope(.application)
         main.register { CrashlyticsLogger() }.scope(.application)
         
         main.register {
@@ -98,7 +102,7 @@ extension Resolver: ResolverRegistering {
         main.register { UserDefaultsURLProvider() as URLProvider }
         main.register { DefaultNetworkChecker() as NetworkChecker }.scope(.application)
         main.register { DefaultSingleSessionDownloader() as SingleSessionDownloader }
-        main.register { DefaultDormantStreamAlertAPI() as DormantStreamAlertAPI }
+        main.register { DefaultDormantStreamAlertAPI() as DormantStreamAlertService }
         
         // MARK: - Feature flags
         main.register { DefaultRemoteNotificationRouter() }
@@ -183,6 +187,7 @@ extension Resolver: ResolverRegistering {
         main.register { DefaultLogoutController() as LogoutController }
         main.register { DefaultDeleteAccountController() as DeleteAccountController }
         main.register { DefaultRemoveDataController() as RemoveDataController }
+        main.register { DefaultThresholdAlertsController() as ThresholdAlertsController }
         main.register { BluetoothConnectionProtector() as ConnectionProtectable }
         
         // MARK: - Session stopping

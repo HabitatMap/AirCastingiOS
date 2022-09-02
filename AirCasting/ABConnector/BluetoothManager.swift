@@ -33,7 +33,7 @@ extension BluetoothCommunicator {
 }
 
 class BluetoothManager: NSObject, BluetoothCommunicator, ObservableObject {
-
+    
     lazy var centralManager: CBCentralManager = {
         let centralManager = CBCentralManager()
         centralManager.delegate = self

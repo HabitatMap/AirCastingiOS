@@ -25,13 +25,9 @@ struct GetStarted: View {
                 Color.aircastingBackground.ignoresSafeArea()
                 VStack {
                     mainImage
-                    GeometryReader { reader in
-                        Color.aircastingBackground
-                            .frame(width: reader.size.width,
-                                   height: reader.size.height * 0.3,
-                                   alignment: .bottom)
-                    }
+                    Spacer()
                 }
+                .edgesIgnoringSafeArea(.top)
             }
         )
     }
@@ -40,10 +36,16 @@ struct GetStarted: View {
 private extension GetStarted {
     var mainImage: some View {
         GeometryReader { geo in
-            Image("Bitmap")
-                .resizable()
-                .edgesIgnoringSafeArea(.top)
-                .frame(height: geo.size.height * 0.8)
+            if UIDevice.current.userInterfaceIdiom != .pad {
+                Image("Bitmap")
+                    .resizable()
+                    .scaledToFit()
+            } else {
+                Image("Bitmap")
+                    .resizable()
+                    .scaledToFill()
+                    .frame(maxHeight: geo.size.height * 0.7)
+            }
         }
     }
     

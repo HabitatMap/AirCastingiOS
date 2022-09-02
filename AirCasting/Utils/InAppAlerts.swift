@@ -39,6 +39,15 @@ struct InAppAlerts {
                   ])
     }
     
+    static func noNetworkEditAlert(dismiss: (() -> Void)? = nil) -> AlertInfo {
+        AlertInfo(title: Strings.InAppAlerts.noInternetConnectionTitle,
+                  message: Strings.InAppAlerts.noInternetConnectionEditMessage,
+                  buttons: [
+                    .default(title: Strings.Commons.gotIt,
+                             action: dismiss)
+                  ])
+    }
+    
     static func noWifiNetworkSyncAlert(dismiss: (() -> Void)? = nil) -> AlertInfo {
         AlertInfo(title: Strings.InAppAlerts.noWifiConnectionTitle,
                   message: Strings.InAppAlerts.noWifiConnectionSyncMessage,
@@ -72,6 +81,24 @@ struct InAppAlerts {
                   buttons: [
                     .default(title: Strings.Commons.gotIt,
                              action: nil)
+                  ])
+    }
+    
+    static func failedThresholdAlertsAlert(dismiss: @escaping () -> Void) -> AlertInfo {
+        AlertInfo(title: Strings.ThresholdAlertSheet.failureAlertTitle,
+                  message: Strings.ThresholdAlertSheet.failureAlertMessage,
+                  buttons: [
+                    .default(title: Strings.Commons.gotIt,
+                             action: dismiss)
+                  ])
+    }
+    
+    static func failedThresholdAlertsFetchingAlert(dismiss: @escaping () -> Void) -> AlertInfo {
+        AlertInfo(title: Strings.ThresholdAlertSheet.failureAlertTitle,
+                  message: Strings.ThresholdAlertSheet.fetchingFailureAlertMessage,
+                  buttons: [
+                    .default(title: Strings.Commons.gotIt,
+                             action: dismiss)
                   ])
     }
     
@@ -256,11 +283,11 @@ struct InAppAlerts {
         ])
     }
     
-    static func noInternetConnection() -> AlertInfo {
+    static func noInternetConnection(dismiss: (() -> Void)? = nil) -> AlertInfo {
         AlertInfo(title: Strings.ConnectionAlerts.noInternetTitle,
                   message: Strings.ConnectionAlerts.noInternetMessage,
                   buttons: [
-                    .default(title: Strings.Commons.ok, action: nil)
+                    .default(title: Strings.Commons.ok, action: dismiss)
                   ])
     }
     

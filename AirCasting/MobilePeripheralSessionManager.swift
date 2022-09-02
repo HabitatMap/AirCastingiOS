@@ -7,10 +7,29 @@ import CoreLocation
 import Resolver
 
 class MobilePeripheralSessionManager {
+    
+    class PeripheralMeasurementTimeLocationManager {
+        @Injected private var locationTracker: LocationTracker
+        
+        private(set) var collectedValuesCount: Int = 5
+        private(set) var currentTime: Date = DateBuilder.getFakeUTCDate()
+        private(set) var currentLocation: CLLocationCoordinate2D? = .undefined
+        
+        func startNewValuesRound(locationless: Bool) {
+            currentLocation = !locationless ? locationTracker.location.value?.coordinate : .undefined
+            currentTime = DateBuilder.getFakeUTCDate()
+            collectedValuesCount = 0
+        }
+        
+        func incrementCounter() { collectedValuesCount += 1 }
+    }
+    
+    var peripheralMeasurementManager = PeripheralMeasurementTimeLocationManager()
     var isMobileSessionActive: Bool { activeMobileSession != nil }
 
     private let measurementStreamStorage: MeasurementStreamStorage
     @Injected private var locationTracker: LocationTracker
+    @Injected private var uiStorage: UIStorage
 
     private var activeMobileSession: MobileSession?
 
@@ -27,11 +46,19 @@ class MobilePeripheralSessionManager {
                 let entity = BluetoothConnectionEntity(context: sessionReturned.managedObjectContext!)
                 entity.peripheralUUID = peripheral.identifier.description
                 entity.session = sessionReturned
+                guard let self = self else { return }
+                self.uiStorage.accessStorage { storage in
+                    do {
+                        try storage.switchCardExpanded(to: true, sessionUUID: session.uuid)
+                    } catch {
+                        Log.error("\(error)")
+                    }
+                }
                 DispatchQueue.main.async {
                     if !session.locationless {
-                        self?.locationTracker.start()
+                        self.locationTracker.start()
                     }
-                    self?.activeMobileSession = MobileSession(peripheral: peripheral, session: session)
+                    self.activeMobileSession = MobileSession(peripheral: peripheral, session: session)
                 }
             } catch {
                 Log.info("\(error)")
@@ -45,11 +72,15 @@ class MobilePeripheralSessionManager {
         }
 
         if activeMobileSession?.peripheral == measurement.peripheral {
+            if peripheralMeasurementManager.collectedValuesCount == 5 { peripheralMeasurementManager.startNewValuesRound(locationless: activeMobileSession!.session.locationless) }
+            
             do {
-                try updateStreams(stream: measurement.measurementStream, sessionUUID: activeMobileSession!.session.uuid, isLocationTracked: !activeMobileSession!.session.locationless)
+                try updateStreams(stream: measurement.measurementStream, sessionUUID: activeMobileSession!.session.uuid, location: peripheralMeasurementManager.currentLocation, time: peripheralMeasurementManager.currentTime)
             } catch {
                 Log.error("Unable to save measurement from airbeam to database because of an error: \(error)")
             }
+            
+            peripheralMeasurementManager.incrementCounter()
         }
     }
     
@@ -148,18 +179,17 @@ class MobilePeripheralSessionManager {
         }
     }
 
-    private func updateStreams(stream: ABMeasurementStream, sessionUUID: SessionUUID, isLocationTracked: Bool) throws {
-        let location = isLocationTracked ? locationTracker.location.value?.coordinate : .undefined
+    private func updateStreams(stream: ABMeasurementStream, sessionUUID: SessionUUID, location: CLLocationCoordinate2D?, time: Date) throws {
 
         measurementStreamStorage.accessStorage { storage in
             do {
                 let existingStreamID = try storage.existingMeasurementStream(sessionUUID, name: stream.sensorName)
                 guard let id = existingStreamID else {
                     let streamId = try self.createSessionStream(stream, sessionUUID, storage: storage)
-                    try storage.addMeasurementValue(stream.measuredValue, at: location, toStreamWithID: streamId)
+                    try storage.addMeasurementValue(stream.measuredValue, at: location, toStreamWithID: streamId, on: time)
                     return
                 }
-                try storage.addMeasurementValue(stream.measuredValue, at: location, toStreamWithID: id)
+                try storage.addMeasurementValue(stream.measuredValue, at: location, toStreamWithID: id, on: time)
             } catch {
                 Log.error("Error saving value from peripheral: \(error)")
             }
