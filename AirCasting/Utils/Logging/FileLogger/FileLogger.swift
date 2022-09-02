@@ -26,7 +26,7 @@ class FileLogger: Logger {
         self.fileHandle = Resolver.resolve(FileLoggerStore.self).openOrCreateLogFile()
     }
     
-    func log(_ message: @escaping @autoclosure () -> String, type: LogLevel, file: String = #file, function: String = #function, line: Int = #line) {
+    func log(_ message: @escaping @autoclosure () -> String, type: LogLevel, file: String = #fileID, function: String = #function, line: Int = #line) {
         let formattedMessage = formatter.format(message(), type: type, file: file, function: function, line: line)
         do {
             try fileHandle.appendFile(with: formattedMessage)

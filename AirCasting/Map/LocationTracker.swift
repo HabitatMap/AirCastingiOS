@@ -45,6 +45,7 @@ final class CoreLocationTracker: NSObject, LocationTracker, LocationAuthorizatio
             locationManager.startUpdatingLocation()
         }
         locationStartReference += 1
+        Log.info("Started location tracking (refcount: \(locationStartReference))")
     }
     
     func stop() {
@@ -54,6 +55,7 @@ final class CoreLocationTracker: NSObject, LocationTracker, LocationAuthorizatio
             locationManager.stopUpdatingLocation()
             location.value = nil
         }
+        Log.info("Stopped location tracking (refcount: \(locationStartReference))")
     }
     
     func requestAuthorization() {

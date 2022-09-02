@@ -33,7 +33,7 @@ class MeasurementStreamStorageFollowingSettable: SessionFollowingSettable {
             return session.followedAt != nil ? .following : .notFollowing
         }
         set {
-            let id = self.session.uuid!
+            let id = self.session.uuid
             measurementStreamStorage.accessStorage { [sessionId = session.uuid, uiStorage] storage in
                 Log.info("\(newValue == .following ? "Following" : "Unfollowing") session [\(sessionId ?? "NONE")]")
                 storage.updateSessionFollowing(newValue, for: id)

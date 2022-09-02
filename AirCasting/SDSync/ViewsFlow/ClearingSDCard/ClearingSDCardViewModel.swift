@@ -69,11 +69,11 @@ class ClearingSDCardViewModelDefault: ClearingSDCardViewModel, ObservableObject 
     private func getAlert() {
         switch error {
         case .undefined:
-            alert = InAppAlerts.failedSDClearingAlert { self.dismissView() }
+            alert = InAppAlerts.failedSDClearingBasicAlert { self.dismissView() }
         case .noConnection:
             alert = InAppAlerts.connectionTimeoutAlert { self.dismissView() }
         case .noClearing:
-            alert = InAppAlerts.failedSDClearingAlert { self.dismissView() }
+            alert = InAppAlerts.failedSDClearingBasicAlert { self.dismissView() }
         }
     }
     

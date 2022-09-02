@@ -81,7 +81,7 @@ struct DashboardView: View {
             try! coreDataHook.setup(selectedSection: self.selectedSection.section)
         }
     }
-
+    
     private var customNavigationBar: some View {
         VStack {
             customSpacer

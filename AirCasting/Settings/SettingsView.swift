@@ -122,6 +122,7 @@ struct SettingsView: View {
         }
         .listStyle(GroupedListStyle())
         .navigationBarTitle(Strings.Settings.title)
+        .alert(item: $viewModel.alert, content: { $0.makeAlert() })
     }
 
     private var settingsSection: some View {
@@ -137,6 +138,11 @@ struct SettingsView: View {
                     Spacer()
                     disableMappingDescription
                 }
+            }
+            VStack(alignment: .leading) {
+                dormantSessionsAlertSwitch
+                Spacer()
+                dormantSessionsAlertDescription
             }
             keepScreenOnSwitch
             satelliteMapSwitch
@@ -229,6 +235,19 @@ struct SettingsView: View {
             .foregroundColor(.aircastingGray)
     }
     
+    
+    private var dormantSessionsAlertSwitch: some View {
+        settingSwitch(toogle: .init(get: { viewModel.dormantAlert },
+                                    set: { viewModel.dormantStreamAlertSettingChanged(to: $0) }),
+                      label: Strings.Settings.dormantSessionsAlert)
+    }
+    
+    private var dormantSessionsAlertDescription: some View {
+        Text(Strings.Settings.dormantSessionsAlertDescription)
+            .font(Fonts.muliRegularHeading3)
+            .foregroundColor(.aircastingGray)
+    }
+    
     private var temperatureSwitch: some View {
         settingSwitch(toogle: $userSettings.convertToCelsius,
                       label: Strings.Settings.temperature)
@@ -250,7 +269,7 @@ struct SettingsView: View {
                         .font(Fonts.muliBoldHeading1)
                         .accentColor(.primary)
                     Spacer()
-                    Image(systemName: "control")
+                    Image(systemName: "chevron.right")
                         .accentColor(.gray).opacity(0.6)
                 }
             }

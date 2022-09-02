@@ -7,7 +7,7 @@ import SwiftUI
 
 
 struct ShareSessionView<VM: ShareSessionViewModel>: View {
-    @ObservedObject var viewModel: VM
+    @StateObject var viewModel: VM
     
     var body: some View {
         ZStack {

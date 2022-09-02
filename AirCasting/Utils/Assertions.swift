@@ -4,13 +4,13 @@
 import Foundation
 import FirebaseCrashlytics
 
-public func assert(_ condition: @autoclosure () -> Bool, _ message: @autoclosure () -> String = String(), file: StaticString = #file, line: UInt = #line) {
+public func assert(_ condition: @autoclosure () -> Bool, _ message: @autoclosure () -> String = String(), file: StaticString = #fileID, line: UInt = #line) {
     if !condition() {
         assertionFailure(message(), file: file, line: line)
     }
 }
 
-public func assertionFailure(_ message: @autoclosure () -> String = String(), file: StaticString = #file, line: UInt = #line) {
+public func assertionFailure(_ message: @autoclosure () -> String = String(), file: StaticString = #fileID, line: UInt = #line) {
     Swift.assert(false, message(), file: file, line: line)
     #if !DEBUG
     let file = "\(file)".split(separator: "/").last.map(String.init) ?? "\(file)"

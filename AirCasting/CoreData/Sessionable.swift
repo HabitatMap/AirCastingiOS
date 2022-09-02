@@ -11,7 +11,7 @@ protocol Sessionable {
     var startTime: Date? { get }
     var userInterface: UIStateEntity? { get }
     var location: CLLocationCoordinate2D? { get }
-    var uuid: SessionUUID! { get }
+    var uuid: SessionUUID { get }
     var sortedStreams: [MeasurementStreamEntity] { get }
     var allStreams: [MeasurementStreamEntity] { get }
     var isFixed: Bool { get }
