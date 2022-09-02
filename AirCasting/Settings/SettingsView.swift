@@ -307,13 +307,13 @@ struct SettingsView: View {
         Button(action: {
             viewModel.manualMicrophoneCalibrationTapped()
         }) {
-            VStack {
+            VStack(alignment: .leading) {
                 buttonCell(title: Strings.MicrophoneCalibration.settingsItemTitle)
                 Spacer()
                 Text(Strings.MicrophoneCalibration.settingsItemDescription)
                     .font(Fonts.muliRegularHeading3)
                     .foregroundColor(.aircastingGray)
-                    .padding(.leading, -20.0)
+                    .multilineTextAlignment(.leading)
             }
         }
         .sheet(isPresented: $viewModel.showMicrophoneManualCalibation, content: {
@@ -322,7 +322,7 @@ struct SettingsView: View {
     }
     
     private var autoCalibrateMicrophone: some View {
-        VStack {
+        VStack(alignment: .leading) {
             NavigationLink(Strings.MicrophoneCalibration.Wizard.settingsItemTitle) {
                 MicrophoneAutoCalibrationView(onFinish: { } )
             }
@@ -332,7 +332,7 @@ struct SettingsView: View {
             Text(Strings.MicrophoneCalibration.Wizard.settingsItemDescription)
                 .font(Fonts.muliRegularHeading3)
                 .foregroundColor(.aircastingGray)
-                .padding(.leading, -20.0)
+                .multilineTextAlignment(.leading)
         }
     }
 
