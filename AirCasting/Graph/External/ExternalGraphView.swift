@@ -1,4 +1,5 @@
 import SwiftUI
+import Resolver
 
 struct ExternalGraphView<StatsViewModelType>: View where StatsViewModelType: StatisticsContainerViewModelable {
     let session: ExternalSessionEntity
@@ -13,6 +14,7 @@ struct ExternalGraphView<StatsViewModelType>: View where StatsViewModelType: Sta
                 .padding([.bottom, .leading, .trailing])
             if isProceeding(session: session) {
                 if let threshold = thresholds.value.threshold(for: selectedStream?.sensorName ?? "") {
+                    let formatter = Resolver.resolve(ThresholdFormatter.self, args: threshold)
                     if let selectedStream = selectedStream {
                         ZStack(alignment: .topLeading) {
                             ExternalGraph(stream: selectedStream,
@@ -25,7 +27,7 @@ struct ExternalGraphView<StatsViewModelType>: View where StatsViewModelType: Sta
                             StatisticsContainerView(statsContainerViewModel: statsContainerViewModel,
                                                     threshold: threshold)
                         }
-                        NavigationLink(destination: ThresholdsSettingsView(thresholdValues: threshold.thresholdsBinding,
+                        NavigationLink(destination: ThresholdsSettingsView(thresholdValues: formatter.formattedBinding(),
                                                                            initialThresholds: selectedStream.thresholds,
                                                                            threshold: threshold)) {
                             EditButtonView()
