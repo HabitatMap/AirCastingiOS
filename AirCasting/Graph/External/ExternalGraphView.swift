@@ -17,7 +17,7 @@ struct ExternalGraphView<StatsViewModelType>: View where StatsViewModelType: Sta
                     let formatter = Resolver.resolve(ThresholdFormatter.self, args: threshold)
                     if let selectedStream = selectedStream {
                         ZStack(alignment: .topLeading) {
-                            ExternalGraph(stream: selectedStream,
+                            Graph(stream: selectedStream,
                                           thresholds: threshold,
                                           isAutozoomEnabled: false)
                             .onDateRangeChange { [weak graphStatsDataSource, weak statsContainerViewModel] range in

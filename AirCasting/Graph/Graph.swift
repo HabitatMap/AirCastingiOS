@@ -36,7 +36,7 @@ struct Graph: UIViewRepresentable {
     private var rangeChangeAction: OnChange?
     private var noteAction: NoteAction?
     
-    private var notesHandler: NotesHandler
+    private var notesHandler: NotesHandler?
     
     var isAutozoomEnabled: Bool
     let simplifiedGraphEntryThreshold = 1000
@@ -46,7 +46,9 @@ struct Graph: UIViewRepresentable {
         self.stream = stream
         self.thresholds = thresholds
         self.isAutozoomEnabled = isAutozoomEnabled
-        self.notesHandler = Resolver.resolve(NotesHandler.self, args: stream.session!.uuid)
+        if let session = stream.session {
+            self.notesHandler = Resolver.resolve(NotesHandler.self, args: session.uuid)
+        }
         self.formatter = Resolver.resolve(ThresholdFormatter.self, args: thresholds)
 
     }
@@ -82,7 +84,7 @@ struct Graph: UIViewRepresentable {
         context.coordinator.entries = entries
         context.coordinator.stream = stream
         refreshNotes(uiView)
-        notesHandler.observer = {
+        notesHandler?.observer = {
             refreshNotes(uiView)
         }
         return uiView
@@ -140,7 +142,7 @@ struct Graph: UIViewRepresentable {
     }
     
     private func refreshNotes(_ uiView: AirCastingGraph) {
-        notesHandler.getNotes { notes in
+        notesHandler?.getNotes { notes in
             DispatchQueue.main.async {
                 uiView.setupNotes(notes) { noteAction?($0) }
             }
