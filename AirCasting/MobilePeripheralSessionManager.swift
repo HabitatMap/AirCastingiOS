@@ -73,7 +73,7 @@ class MobilePeripheralSessionManager {
 
         if activeMobileSession?.peripheral == measurement.peripheral {
             if peripheralMeasurementManager.collectedValuesCount == 5 { peripheralMeasurementManager.startNewValuesRound(locationless: activeMobileSession!.session.locationless) }
-            
+            Log.info("## Should happen but: \(peripheralMeasurementManager.currentTime)")
             do {
                 try updateStreams(stream: measurement.measurementStream, sessionUUID: activeMobileSession!.session.uuid, location: peripheralMeasurementManager.currentLocation, time: peripheralMeasurementManager.currentTime)
             } catch {

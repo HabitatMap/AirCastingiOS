@@ -134,7 +134,12 @@ final class HiddenCoreDataMeasurementStreamStorage: MeasurementStreamStorageCont
 
     func addMeasurement(_ measurement: Measurement, toStreamWithID id: MeasurementStreamLocalID) throws {
         let stream = try context.existingObject(with: id.id) as! MeasurementStreamEntity
-
+        Log.info("## ------------- NEW ---------------")
+        Log.info("## measurement: \(measurement.time), \(measurement.value)")
+        if stream.allMeasurements!.contains(where: { $0.time == measurement.time }) {
+            Log.info("## ! Having this measurement already in the DB !")
+            Log.info("## measurement: \(stream.allMeasurements!.map({ ($0.value, $0.time) }))")
+        }
         let newMeasurement = MeasurementEntity(context: context)
         newMeasurement.location = measurement.location
         newMeasurement.time = measurement.time
