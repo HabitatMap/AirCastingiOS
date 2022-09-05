@@ -24,13 +24,9 @@ struct MainTabBarView: View {
     @StateObject var finishAndSyncButtonTapped = FinishAndSyncButtonTapped()
     @StateObject var exploreSessionsButton = ExploreSessionsButton()
     @StateObject var sessionContext: CreateSessionContext
-//    @StateObject var coreDataHook: CoreDataHook
+    @StateObject var viewModel = MainTabBarViewModel()
     @InjectedObject private var featureFlagsViewModel: FeatureFlagsViewModel
     @Environment(\.colorScheme) var colorScheme
-    
-//    private var sessions: [Sessionable] {
-//        coreDataHook.sessions
-//    }
     
     var body: some View {
         ZStack(alignment: .bottomLeading) {
@@ -40,16 +36,8 @@ struct MainTabBarView: View {
                 settingsTab
             }
             Button {
-                //TODO: Add logic for going to either following or active when home button is pressed
                 tabSelection.selection = .dashboard
-                selectedSection.section = .following
-//                try! coreDataHook.setup(selectedSection: .mobileActive)
-//                if sessions.contains(where: { $0.isActive }) {
-//                    selectedSection.section = .mobileActive
-//                } else {
-//                    selectedSection.section = .following
-//                }
-//                try! coreDataHook.setup(selectedSection: selectedSection.section)
+                viewModel.chooseDashboardSection { selectedSection.section = $0 }
             } label: {
                 Rectangle()
                     .fill(Color.clear)
@@ -186,6 +174,31 @@ private extension MainTabBarView {
                 Image(imageName)
                     .renderingMode(.template)
                     .foregroundColor(.white)
+            }
+        }
+    }
+}
+
+class MainTabBarViewModel: ObservableObject {
+    @Injected private var persistenceController: PersistenceController
+    
+    func chooseDashboardSection(completion: @escaping (DashboardSection) -> Void) {
+        let context = persistenceController.viewContext
+        
+        context.perform {
+            do {
+                let request = NSFetchRequest<SessionEntity>(entityName: "SessionEntity")
+                request.sortDescriptors = [NSSortDescriptor(key: "startTime", ascending: false)]
+                request.predicate = NSPredicate(format: "type == %@ AND (status == %li || status == %li || status == %li)", SessionType.mobile.rawValue,
+                                                SessionStatus.RECORDING.rawValue,
+                                                SessionStatus.DISCONNECTED.rawValue,
+                                                SessionStatus.NEW.rawValue)
+                request.fetchLimit = 1
+                let sessionEntities = try context.fetch(request)
+                completion(sessionEntities.count == 1 ? DashboardSection.mobileActive : DashboardSection.following)
+            } catch {
+                Log.error("Failed to fetch sessions after dashobard button was tapped")
+                completion(DashboardSection.following)
             }
         }
     }
