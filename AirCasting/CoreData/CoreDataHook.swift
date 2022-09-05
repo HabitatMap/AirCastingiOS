@@ -94,8 +94,15 @@ final class CoreDataHook: NSObject, ObservableObject {
 }
 
 extension CoreDataHook: NSFetchedResultsControllerDelegate {
-
-    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        refreshSessions()
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+        guard anObject is Sessionable else { return }
+        
+        switch type {
+        case .insert:
+            refreshSessions()
+        case .delete:
+            refreshSessions()
+        default: break
+        }
     }
 }
