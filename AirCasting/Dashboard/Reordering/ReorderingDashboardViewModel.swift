@@ -10,15 +10,14 @@ class ReorderingDashboardViewModel: ObservableObject {
     @Published var isLoading = true
     @Published var currentlyDraggedSession: Sessionable?
     var thresholds: [SensorThreshold]
-    private var context: NSManagedObjectContext
 
     @Injected private var uiStorage: UIStorage
     @Injected private var externalSessionsStore: ExternalSessionsStore
     @Injected private var measurementStreamStorage: MeasurementStreamStorage
+    @Injected private var persistanceController: PersistenceController
 
-    init(thresholds: [SensorThreshold], context: NSManagedObjectContext) {
+    init(thresholds: [SensorThreshold]) {
         self.thresholds = thresholds
-        self.context = context
         fetchSessions()
     }
 
@@ -64,6 +63,7 @@ class ReorderingDashboardViewModel: ObservableObject {
     }
 
     private func performFetch(completion: @escaping ([Sessionable]) -> Void) {
+        let context = persistanceController.viewContext
         context.perform {
             do {
                 let externalRequest = NSFetchRequest<ExternalSessionEntity>(entityName: "ExternalSessionEntity")
@@ -73,8 +73,8 @@ class ReorderingDashboardViewModel: ObservableObject {
                 request.sortDescriptors = [NSSortDescriptor(key: "startTime", ascending: false)]
                 request.predicate = NSPredicate(format: "followedAt != NULL")
 
-                let sessionEntities = try self.context.fetch(request)
-                let externalSessionEntities = try self.context.fetch(externalRequest)
+                let sessionEntities = try context.fetch(request)
+                let externalSessionEntities = try context.fetch(externalRequest)
                 let allSessions: [Sessionable] = (sessionEntities + externalSessionEntities).sorted {
                     ($0.userInterface?.rowOrder ?? 0) > ($1.userInterface?.rowOrder ?? 0)
                 }

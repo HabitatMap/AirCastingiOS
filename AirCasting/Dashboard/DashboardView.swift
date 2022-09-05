@@ -12,7 +12,6 @@ import Combine
 import Resolver
 
 struct DashboardView: View {
-//    @StateObject var coreDataHook: CoreDataHook
     @FetchRequest<SensorThreshold>(sortDescriptors: [.init(key: "sensorName", ascending: true)]) var thresholds
     @EnvironmentObject var selectedSection: SelectedSection
     @EnvironmentObject var reorderButton: ReorderButton
@@ -24,14 +23,9 @@ struct DashboardView: View {
     @Injected private var sessionSynchronizer: SessionSynchronizer
     @Injected private var persistenceController: PersistenceController
 
-//    private var sessions: [Sessionable] {
-//        coreDataHook.sessions
-//    }
-
     init() {
         let navBarAppearance = UINavigationBar.appearance()
         navBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(Color.darkBlue)]
-//        _coreDataHook = StateObject(wrappedValue: coreDataHook)
     }
 
     var body: some View {
@@ -40,7 +34,7 @@ struct DashboardView: View {
                 .alert(item: $alert, content: { $0.makeAlert() })
             if reorderButton.reorderIsOn {
                 followingReorderTab
-                ReorderingDashboard(thresholds: Array(self.thresholds), context: persistenceController.viewContext)
+                ReorderingDashboard(thresholds: Array(self.thresholds))
             } else {
                 sessionTypePicker
                 TabView(selection: $selectedSection.section) {

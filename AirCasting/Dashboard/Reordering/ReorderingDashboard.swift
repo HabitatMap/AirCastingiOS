@@ -10,8 +10,8 @@ struct ReorderingDashboard: View {
     @EnvironmentObject var searchAndFollowButton: SearchAndFollowButton
     @State private var changedView: Bool = false
     
-    init(thresholds: [SensorThreshold], context: NSManagedObjectContext) {
-        _viewModel = .init(wrappedValue: ReorderingDashboardViewModel(thresholds: thresholds, context: context))
+    init(thresholds: [SensorThreshold]) {
+        _viewModel = .init(wrappedValue: ReorderingDashboardViewModel(thresholds: thresholds))
     }
     
     private let columns = [GridItem(.flexible())]
@@ -54,7 +54,7 @@ struct ReorderingDashboard: View {
 #if DEBUG
 struct ReorderingDashboard_Previews: PreviewProvider {
     static var previews: some View {
-        ReorderingDashboard(sessions: [SessionEntity.mock(uuid: "mock1"), SessionEntity.mock(uuid: "mock2"), SessionEntity.mock(uuid: "mock3")], thresholds: [.mock, .mock])
+        ReorderingDashboard(thresholds: [.mock, .mock])
             .environmentObject(SearchAndFollowButton())
     }
 }
