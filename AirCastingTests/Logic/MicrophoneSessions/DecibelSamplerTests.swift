@@ -61,33 +61,4 @@ class DecibelSamplerTests: XCTestCase {
         let _: DecibelSampler? = DecibelSampler(microphone: microphone)
         XCTAssertEqual(microphone.callHistory.last, .stop)
     }
-    
-    // MARK: - Test doubles
-    
-    class MicrophoneMock: Microphone {
-        enum CallHistoryItem: Equatable {
-            case getLevel
-            case start
-            case stop
-        }
-        
-        var callHistory: [CallHistoryItem] = []
-        var stubbedLevel: Double? = nil
-        
-        var state: MicrophoneState = .notRecording
-        
-        func getCurrentDecibelLevel() -> Double? {
-            callHistory.append(.getLevel)
-            return stubbedLevel
-        }
-        
-        func startRecording() throws {
-            callHistory.append(.start)
-        }
-        
-        func stopRecording() throws {
-            callHistory.append(.stop)
-        }
-    }
-    
 }

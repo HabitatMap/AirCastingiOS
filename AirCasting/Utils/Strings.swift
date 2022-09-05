@@ -21,6 +21,8 @@ struct Strings {
                                                      comment: "")
         static let note: String = NSLocalizedString("Note",
                                                     comment: "")
+        static let start: String = NSLocalizedString("Start",
+                                                    comment: "")
     }
     
     enum Settings {
@@ -1145,5 +1147,23 @@ struct Strings {
     
     enum TextView {
         static let doneButton: String = NSLocalizedString("Done", comment: "")
+    }
+    
+    enum MicrophoneCalibration {
+        static let title = NSLocalizedString("Microphone calibration", comment: "")
+        static let settingsItemTitle = NSLocalizedString("Phone microphone calibration", comment: "")
+        static let settingsItemDescription = NSLocalizedString("Adjust via trial & error until the measurements in the app match your reference sound level meter. For most phones it's between 80 and 100.", comment: "")
+        enum Wizard {
+            static let title = NSLocalizedString("Microphone calibration", comment: "")
+            static let subtitle = NSLocalizedString("Please put your phone in a quiet space and press \"Start\", the calibration will take aprox. 5sec", comment: "")
+            static let keepSilence = NSLocalizedString("Microphone is calibrating. Please try to keep silence.", comment: "")
+            static let success = NSLocalizedString("Microphone is calibrated", comment: "")
+            
+            static let microphoneUnavailableAlertTitle = NSLocalizedString("Microphone not available", comment: "")
+            static let microphoneUnavailableAlertBody = NSLocalizedString("Cannot calibrate - the microphone is busy", comment: "")
+            static let calibrationFailedAlertTitle = NSLocalizedString("Calibration failed", comment: "")
+            static let settingsItemTitle = NSLocalizedString("Microphone calibration wizard", comment: "")
+            static let settingsItemDescription = NSLocalizedString("Experimental feature, available only for BETA builds.", comment: "")
+        }
     }
 }
