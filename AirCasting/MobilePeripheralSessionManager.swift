@@ -6,6 +6,12 @@ import CoreBluetooth
 import CoreLocation
 import Resolver
 
+extension Date {
+    func adding(minutes: Int) -> Date {
+        return Calendar.current.date(byAdding: .second, value: minutes, to: self)!
+    }
+}
+
 class MobilePeripheralSessionManager {
     
     class PeripheralMeasurementTimeLocationManager {
@@ -17,7 +23,7 @@ class MobilePeripheralSessionManager {
         
         func startNewValuesRound(locationless: Bool) {
             currentLocation = !locationless ? locationTracker.location.value?.coordinate : .undefined
-            currentTime = DateBuilder.getFakeUTCDate()
+            currentTime = currentTime.adding(minutes: 1)
             collectedValuesCount = 0
         }
         
@@ -67,20 +73,22 @@ class MobilePeripheralSessionManager {
     }
 
     func handlePeripheralMeasurement(_ measurement: PeripheralMeasurement) {
-        if activeMobileSession == nil {
-            return
-        }
-
-        if activeMobileSession?.peripheral == measurement.peripheral {
-            if peripheralMeasurementManager.collectedValuesCount == 5 { peripheralMeasurementManager.startNewValuesRound(locationless: activeMobileSession!.session.locationless) }
-            Log.info("## Should happen but: \(peripheralMeasurementManager.currentTime)")
-            do {
-                try updateStreams(stream: measurement.measurementStream, sessionUUID: activeMobileSession!.session.uuid, location: peripheralMeasurementManager.currentLocation, time: peripheralMeasurementManager.currentTime)
-            } catch {
-                Log.error("Unable to save measurement from airbeam to database because of an error: \(error)")
+        DispatchQueue.main.async { [self] in
+            if self.activeMobileSession == nil {
+                return
             }
-            
-            peripheralMeasurementManager.incrementCounter()
+            Log.info("## WAS HERE AS I SHOULD: \(self.activeMobileSession?.peripheral == measurement.peripheral)")
+            if self.activeMobileSession?.peripheral == measurement.peripheral {
+                if self.peripheralMeasurementManager.collectedValuesCount == 5 { peripheralMeasurementManager.startNewValuesRound(locationless: self.activeMobileSession!.session.locationless) }
+                Log.info("## peripheralMeasurementManager current time: \(self.peripheralMeasurementManager.currentTime)")
+                do {
+                    try self.updateStreams(stream: measurement.measurementStream, sessionUUID: self.activeMobileSession!.session.uuid, location: self.peripheralMeasurementManager.currentLocation, time: peripheralMeasurementManager.currentTime)
+                } catch {
+                    Log.error("Unable to save measurement from airbeam to database because of an error: \(error)")
+                }
+                
+                self.peripheralMeasurementManager.incrementCounter()
+            }
         }
     }
     
